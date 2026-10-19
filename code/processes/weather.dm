@@ -21,6 +21,7 @@
 	processes.weather = src
 
 /process/weather/fire()
+	if(persistence_save_in_progress) return
 	var/prob_of_weather_mod = (25*schedule_interval)/mod_weather_interval
 	var/prob_of_weather_change = (25*schedule_interval)/change_weather_interval
 	if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
@@ -33,6 +34,9 @@
 		if (world.realtime >= next_can_change_weather)
 			change_weather_somehow()
 		next_can_change_weather = world.realtime + minimum_change_weather_delay
+	if(map && map.uses_durable_metadata())
+		map.durable_weather_events()
+		return
 	if ((season == "WINTER" && map.triggered_blizzard) && !map.blizzard)
 		if (prob(1) || map.triggered_blizzard)
 			if(prob(50) || map.triggered_blizzard)

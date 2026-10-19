@@ -14,6 +14,8 @@
 			qdel(src)
 
 /obj/item/wood_ash/attackby(obj/item/weapon/reagent_containers/glass/C as obj, mob/user as  mob )
+	if (!istype(C) || !C.reagents || !loc || C.reagents.maximum_volume - C.reagents.total_volume < 1)
+		return TRUE
 	C.reagents.add_reagent("ash", 1)
 	to_chat(user, "You collect ash into \the [C.name]")
 	qdel(src)

@@ -346,11 +346,19 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		release_transform_tiles(move_turfs)
 		throw e
 	release_transform_tiles(move_turfs)
+	refresh_passenger_vision()
 	return TRUE
 
 /obj/structure/vehicleparts/axis/Destroy()
 	release_transform_tiles(transform_tiles)
 	return ..()
+
+// The fork's per-seat movement hooks ran before this branch's final hull/facing.
+// Rebuild cones only after a successful complete translation or rotation.
+/obj/structure/vehicleparts/axis/proc/refresh_passenger_vision()
+	for (var/mob/living/M in transporting)
+		if (!QDELETED(M) && get_turf(M))
+			M.update_vision_cone()
 
 /obj/structure/vehicleparts/axis/proc/release_transform_tiles(var/list/tiles)
 	for (var/turf/T in tiles)
@@ -814,6 +822,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		release_transform_tiles(turn_turfs)
 		throw e
 	release_transform_tiles(turn_turfs)
+	refresh_passenger_vision()
 	return TRUE
 
 /obj/effect/pseudovehicle

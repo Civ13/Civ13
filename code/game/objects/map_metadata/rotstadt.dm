@@ -159,9 +159,11 @@ var/no_loop_rot = FALSE
 		REDFACTION = FALSE,
 	)
 	var/obj/map_metadata/rotstadt/MR = map
-	src << browse(null, "window=latechoices")
+	if (!lobby_join_validation)
+		src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
+	var/list/join_jobs = list()
 	dat += "<big><b>Welcome, [key].</b></big>"
 	dat += "<br>"
 	dat += "Round Duration: [roundduration2text_days()]"
@@ -217,9 +219,10 @@ var/no_loop_rot = FALSE
 				end_extra_span = ""
 
 			dat += "[extra_span]<a style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] (Active: [active])</a>[end_extra_span]"
+			join_jobs |= job.title
 			++available_jobs_per_side[job.base_type_flag()]
 
 	dat += "</center>"
 
-	show_latechoices_window(dat)
+	show_latechoices_window(dat, join_jobs)
 

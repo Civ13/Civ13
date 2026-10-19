@@ -585,6 +585,27 @@
 	var/tmp/obj/item/weapon/storage/internal/storage //storage for dryed raw items (for algorithm purpose)
 	var/tmp/current_process_id = "" //for control of only one process at time to one dehydrator
 
+/obj/structure/dehydrator/persistence_runtime_var(key)
+	return (key in list("slots", "storage", "current_process_id")) || ..()
+
+/obj/structure/dehydrator/proc/ensure_runtime_storage()
+	// Load_Entry replaces constructor contents. Reuse a legacy restored wrapper,
+	// or rebuild an absent one, without retaining the detached constructor child.
+	if (!storage || storage.loc != src)
+		storage = null
+		for (var/obj/item/weapon/storage/internal/candidate in contents)
+			if (candidate.loc == src)
+				storage = candidate
+				break
+		if (!storage)
+			storage = new/obj/item/weapon/storage/internal(src)
+	storage.master_item = src
+	storage.storage_slots = 12
+	storage.max_storage_space = 120000
+	// before_save drops the paid inputs to their turf; this empty wrapper is runtime state.
+	storage.should_save = FALSE
+	return storage
+
 /obj/structure/dehydrator/update_icon()
 	var/icon/I = new('icons/obj/food/dryer.dmi')
 	for (var/L in overlays)
@@ -775,7 +796,8 @@
 	if (this_process<>current_process_id) //only one process for one dehydrator and this process must die
 		return
 	spawn(150) //one tick at 15 seconds will be enough
-		if (!storage) //storage remove, dehydrator dismantled, process must die
+		// Ownership can change during the wait; obsolete callbacks must not mutate current inputs.
+		if (this_process != current_process_id || !isturf(loc) || !storage || storage.loc != src || storage.master_item != src)
 			return
 		if (storage.contents.len>0)
 			for (I in storage.contents)
@@ -786,6 +808,24 @@
 					if (dry_timer >= TIME_TO_DRY)
 						pos = split_size(text2num(copytext(I.name, findtext(I.name,"POS_")+4, findtext(I.name,"POS_")+5), 16))
 						P = new I.dried_type(null)
+						if (istype(I, /obj/item/weapon/reagent_containers/food) && istype(P, /obj/item/weapon/reagent_containers/food))
+							var/obj/item/weapon/reagent_containers/food/input_food = I
+							var/obj/item/weapon/reagent_containers/food/output_food = P
+							// Preserve hunger value while allowing recipes to convert protein into nutriment.
+							if (istype(input_food, /obj/item/weapon/reagent_containers/food/snacks) && istype(output_food, /obj/item/weapon/reagent_containers/food/snacks))
+								var/obj/item/weapon/reagent_containers/food/snacks/input_snack = input_food
+								var/obj/item/weapon/reagent_containers/food/snacks/output_snack = output_food
+								var/input_nutrition = input_snack.nutriments_value()
+								var/output_nutrition = output_snack.nutriments_value()
+								if (output_nutrition > input_nutrition)
+									var/retained_fraction = max(0, input_nutrition) / output_nutrition
+									for (var/datum/reagent/nutrient in output_food.reagents.reagent_list.Copy())
+										if (istype(nutrient, /datum/reagent/nutriment) || istype(nutrient, /datum/reagent/drink))
+											output_food.reagents.remove_reagent(nutrient.id, nutrient.volume * (1 - retained_fraction))
+							var/decay_offset = findtext(I.name, "DECAY_") + 6
+							var/original_decay = text2num(copytext(I.name, decay_offset, decay_offset + 8))
+							if (original_decay > 0 && output_food.decay > 0)
+								output_food.decaytimer = max(output_food.decaytimer, input_food.decaytimer * output_food.decay / original_decay)
 						var/obj/item/I_s = slots[pos[1]][pos[2]]
 						is_rotated = !!findtext(I_s.name, "_ROTATED_")
 						sizeHV = split_size(I_s.dry_size, is_rotated)
@@ -871,15 +911,18 @@
 
 /obj/structure/dehydrator/proc/reinit()
 	spawn(rand(5,15)) //To prevent too much load when starting the server and to slightly spread the processes of dehydrators loaded from the map in time.
+		if (current_process_id == "SAVE_REPAIR_REQUIRED")
+			return
+		if (!isturf(loc))
+			return
+		ensure_runtime_storage()
 		refill()
 		current_process_id = "[time2text(world.realtime,"DDhhmmss")]-[num2text(rand(1,99999),5,10)]" //New value will kill old process on next Call
 		dry_process()
 
 /obj/structure/dehydrator/New()
 	. = ..()
-	storage = new/obj/item/weapon/storage/internal(src)
-	storage.storage_slots = 12 //enough
-	storage.max_storage_space = 120000 //may be enough
+	ensure_runtime_storage()
 	spawn(rand(5,15))
 		reinit()
 
@@ -916,7 +959,8 @@
 	. = ..()
 
 /obj/structure/dehydrator/after_load() //after load from map save
-	current_process_id = "" //because save algorithm may save this var, or load algorithm may leave old process
+	current_process_id = "" //Invalidate callbacks from before restoration.
+	ensure_runtime_storage()
 	spawn(50+rand(50,100))
 		reinit()
 	..()
@@ -925,6 +969,48 @@
 	//Don't know which algorithm will be used, but we have reinit() and may safely drop all items to ground without changes
 	clean_drop_slots()
 	..()
+
+/obj/structure/dehydrator/before_save_context(map_storage/save_storage, datum/save_export_frame/frame)
+	// Only declare actual paid children. Busy strings reserve layout cells, and
+	// one item may occupy several cells; neither adds a second transfer identity.
+	var/list/paid_items = list()
+	for (var/row = 1, row <= 4, row++)
+		for (var/column = 1, column <= 3, column++)
+			var/slot = slots[row][column]
+			if (isnull(slot) || (istext(slot) && findtext(slot, "busy")))
+				continue
+			if (!istype(slot, /obj/item))
+				throw EXCEPTION("Dehydrator save contains an invalid paid slot")
+			paid_items |= slot
+	var/obj/item/weapon/storage/internal/origin = storage
+	if (!origin || origin.loc != src || origin.master_item != src || paid_items.len > 12 || origin.contents.len > 12)
+		throw EXCEPTION("Dehydrator save has invalid paid-child ownership")
+	for (var/obj/item/item in paid_items)
+		if (item.loc != origin)
+			throw EXCEPTION("Dehydrator save paid child left its storage")
+	// An adopted wrapper can contain paid food before queued refill builds slots.
+	// It is excluded from saves, so never let undeclared children disappear.
+	for (var/atom/movable/child in origin.contents)
+		if (!(child in paid_items))
+			throw EXCEPTION("Dehydrator save has an unrepresented storage child")
+	if (!paid_items.len)
+		return before_save()
+	if (!save_storage)
+		throw EXCEPTION("Dehydrator save has no export context")
+	var/turf/destination = get_turf(src)
+	// The serializer rejects unsupported discovery or parent ownership before
+	// the production hook clears slots or moves any paid child.
+	var/datum/save_transfer/ticket = save_storage.prepare_save_transfer(frame, origin, destination, paid_items)
+	if (!ticket)
+		throw EXCEPTION("Dehydrator save transfer was not admitted")
+	try
+		before_save()
+		save_storage.commit_save_transfer(ticket)
+	catch (var/exception/error)
+		// Keep real paid items and encoded progress. Delayed refill could reclaim
+		// an item whose ownership changed while sleeping; leave failure quiescent.
+		current_process_id = "SAVE_REPAIR_REQUIRED"
+		throw EXCEPTION("Dehydrator save failed; rack ownership requires repair: [error]")
 
 ////////////////////////////////////////////////////////////////////////
 //  Fermentation jar  //////////////////////////////////////////////////
@@ -1907,6 +1993,9 @@
 /obj/structure/compost/examine(mob/user)
 	if (!..(user, TRUE))
 		return
+	if (nitrary_mode)
+		nitrary_examine(user)
+		return
 	if (current==0)
 		to_chat(user, "<span class='notice'>It's empty</span>")
 	else if (current<1)
@@ -1938,6 +2027,9 @@
 	qdel(W)
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	if (nitrary_mode && !istype(W, /obj/item/weapon/wrench) && !istype(W, /obj/item/weapon/hammer))
+		nitrary_feed(W, H)
+		return TRUE
 	if (current>=10)
 		to_chat(H, "<span class='warning'>The compost bin is full!</span>")
 		return
@@ -1959,6 +2051,8 @@
 	to_chat(H, "<span class='warning'>\the [W] is not suitable for compost.</span>")
 
 /obj/structure/compost/proc/auto_load(var/mob/living/human/H)
+	if (nitrary_mode)
+		return
 	for (var/obj/item/W in src.loc)
 		if (current>=10)
 			if (H)
@@ -1992,6 +2086,8 @@
 			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
 
 /obj/structure/compost/proc/compost()
+	if (nitrary_mode)
+		return
 	if (!src)
 		return
 	if (!src.loc)
@@ -2002,14 +2098,22 @@
 			compost()
 	else
 		spawn(rand(800,1000))
+			if (nitrary_mode)
+				return
 			visible_message("The composted material begins to degrade.")
 			spawn(rand(800,1000))
+				if (nitrary_mode)
+					return
 				current--
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(loc)
 				compost()
 
 /obj/structure/compost/initialize()
 	. = ..()
+	if (nitrary_mode)
+		nitrary_last_tick = world.time
+		processing_objects |= src
+		return
 	if (!composting)
 		auto_load()
 		composting = TRUE
@@ -2018,13 +2122,19 @@
 
 /obj/structure/compost/before_save()
 	. = ..()
+	if (nitrary_mode)
+		return
 	var/obj/item/O = new/obj/item/stack/ore(src.loc, current/10)
 	O.alpha = 0
 	current = 0
 
 /obj/structure/compost/after_load()
 	. = ..()
-	initialize()
+	if (nitrary_mode)
+		nitrary_last_tick = world.time
+		processing_objects |= src
+	else
+		initialize()
 
 
 

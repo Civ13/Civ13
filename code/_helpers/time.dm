@@ -30,7 +30,7 @@ var/roundstart_hour = 0
 var/station_date = ""
 var/next_station_date_change = 1 DAYS
 
-#define roundduration2text_in_ticks (round_start_time ? world.time - round_start_time : 0)
+#define roundduration2text_in_ticks (round_start_time || round_elapsed_offset ? max(0, world.time - round_start_time) + round_elapsed_offset : 0)
 #define station_time_in_ticks (roundstart_hour HOURS + roundduration2text_in_ticks)
 
 /proc/stationtime2text()
@@ -56,14 +56,17 @@ var/next_duration_update_days= 0
 var/last_roundduration2text = 0
 var/last_roundduration2text_days = 0
 var/round_start_time = 0
+// Saved active-server time, independent of the new process's world.time.
+var/round_elapsed_offset = 0
 
 /hook/roundstart/proc/start_timer()
 	round_start_time = world.time
+	round_elapsed_offset = 0
 	time_offset = 0
 	return TRUE
 
 /proc/roundduration2text()
-	if (!round_start_time)
+	if (!round_start_time && !round_elapsed_offset)
 		return "00:00"
 	if (last_roundduration2text && world.time < next_duration_update)
 		return last_roundduration2text
@@ -81,7 +84,7 @@ var/round_start_time = 0
 	return last_roundduration2text
 
 /proc/roundduration2text_days()
-	if (!round_start_time)
+	if (!round_start_time && !round_elapsed_offset)
 		return "0 mins"
 
 	if (last_roundduration2text_days && world.time < next_duration_update_days)

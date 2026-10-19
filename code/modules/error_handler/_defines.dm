@@ -7,3 +7,7 @@
 
 // How long to wait between messaging admins about occurrences of a unique error
 #define ERROR_MSG_DELAY 50
+
+// Recent detail history only; source summaries and cooldowns last the round.
+#define ERROR_HISTORY_LIMIT 1000
+#define ERROR_SOURCE_HISTORY_LIMIT 100

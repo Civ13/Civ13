@@ -6,6 +6,20 @@
 			return /mob/living/human
 
 /mob/new_player
+	var/tmp/lobby_join_active = FALSE
+	var/tmp/client/lobby_join_client
+	var/tmp/lobby_join_native = FALSE
+	var/tmp/obj/map_metadata/lobby_join_map
+	var/tmp/lobby_join_game_id
+	var/tmp/lobby_join_validation = FALSE
+	var/tmp/list/lobby_join_jobs
+	var/tmp/lobby_join_selected
+	// Last own-lobby attempt only; never retain prompt text, roles or history.
+	var/tmp/lobby_join_attempts = 0
+	var/tmp/lobby_join_phase = "not_entered"
+	var/tmp/lobby_join_reason = "none"
+	var/tmp/lobby_join_tick
+	var/tmp/lobby_join_result
 	var/ready = FALSE
 	var/spawning = FALSE //Referenced when you want to delete the new_player later on in the code.
 	var/totalPlayers = 0		 //Player counts for the Lobby tab
@@ -13,7 +27,7 @@
 	var/datum/job/delayed_spawning_as_job = null // job title. Self explanatory.
 
 	var/pregameBrowserLoaded = FALSE
-	
+
 	universal_speak = TRUE
 
 	invisibility = 101
@@ -188,6 +202,8 @@ var/global/redirect_all_players = null
 
 
 /mob/new_player/Topic(href, href_list[])
+	if (lobby_join_active)
+		return FALSE
 	if (!client)	return FALSE
 
 	if (href_list["show_preferences"])
@@ -257,7 +273,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -283,13 +299,207 @@ var/global/redirect_all_players = null
 		LateChoices()
 		return TRUE
 
+	if (href_list["tribes"] || href_list["civilizations"] || href_list["nomads"] || href_list["join_campaign"] || href_list["late_join"] || href_list["SelectedJob"])
+		return handle_lobby_join(href_list)
+
+	if (!ready && href_list["preference"])
+		if (client)
+			client.prefs.process_link(src, href_list)
+	else if (!href_list["late_join"])
+		new_player_panel()
+
+// Both the lobby button and the typed Join verb use this admission path.
+/mob/new_player/proc/lobby_join_mode()
+	if (!ticker || !map || ticker.current_state <= GAME_STATE_PREGAME)
+		return null
+	if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.ID == MAP_FOUR_KINGDOMS)
+		return "tribes"
+	if (map.ID == MAP_CAMPAIGN || map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
+		return "join_campaign"
+	if (map.civilizations && !map.nomads)
+		return "civilizations"
+	if (map.nomads || map.ID == MAP_ANTARCTICA || map.ID == MAP_LIGHTS_OUT || map.ID == MAP_WIZARD_BOY)
+		return "nomads"
+	return "late_join"
+
+/client
+	// Clients are never serialized by the custom saver. This is own-session only.
+	var/lobby_native_join_attempts = 0
+	var/lobby_native_join_tick
+	var/lobby_native_join_reason = "not_entered"
+
+/client/verb/Join()
+	set name = "Join"
+	set category = "Lobby"
+	set invisibility = 0
+	set desc = "Join the round using native role selection prompts."
+	lobby_native_join_attempts = min(lobby_native_join_attempts + 1, 65535)
+	lobby_native_join_tick = world.time
+	lobby_native_join_reason = "not_current_lobby"
+	if (!usr || usr.client != src || mob != usr || !istype(mob, /mob/new_player))
+		return
+	var/mob/new_player/N = mob
+	lobby_native_join_reason = "forwarded"
+	N.native_join_round()
+
+/mob/new_player/proc/native_join_round()
+	// The client verb forwards only its own current lobby mob. Keep usr intact.
+	if (src != usr || !client || client.mob != src)
+		return FALSE
+	lobby_join_attempts = min(lobby_join_attempts + 1, 65535)
+	lobby_join_result = null
+	lobby_join_trace("native_entry", "none")
+	var/join_mode = lobby_join_mode()
+	if (!join_mode)
+		lobby_join_trace("native_denied", "round_not_started")
+		to_chat(src, "The game has not started yet.")
+		return
+	var/list/join_request = list()
+	join_request[join_mode] = 1
+	handle_lobby_join(join_request, TRUE)
+
+// Fixed call-site codes only. Bounds also protect future diagnostic callers.
+/mob/new_player/proc/lobby_join_trace(phase, reason)
+	lobby_join_phase = copytext(phase, 1, 65)
+	lobby_join_reason = copytext(reason, 1, 65)
+	lobby_join_tick = world.time
+
+/mob/new_player/proc/lobby_join_current()
+	return src == usr && client && client == lobby_join_client && client.mob == src && !spawning && map == lobby_join_map && game_id == lobby_join_game_id
+
+/mob/new_player/proc/handle_lobby_join(list/href_list, native_choices = FALSE)
+	if (lobby_join_active || src != usr || !client || client.mob != src || spawning)
+		lobby_join_trace("handler_denied", "owner_or_busy")
+		return FALSE
+	lobby_join_trace("handler_entered", "none")
+	lobby_join_result = null
+	lobby_join_active = TRUE
+	lobby_join_client = client
+	lobby_join_map = map
+	lobby_join_game_id = game_id
+	lobby_join_native = native_choices
+	var/result = FALSE
+	try
+		result = process_lobby_join(href_list)
+	catch (var/exception/error)
+		lobby_join_trace("handler_exception", "details_withheld")
+		clear_lobby_join()
+		throw error
+	lobby_join_result = result ? TRUE : FALSE
+	clear_lobby_join()
+	return result
+
+/mob/new_player/proc/clear_lobby_join()
+	lobby_join_active = FALSE
+	lobby_join_client = null
+	lobby_join_map = null
+	lobby_join_game_id = null
+	lobby_join_validation = FALSE
+	lobby_join_jobs = null
+	lobby_join_native = FALSE
+	lobby_join_selected = null
+
+/mob/new_player/persistence_runtime_var(key)
+	return (key in list("lobby_join_active", "lobby_join_client", "lobby_join_native", "lobby_join_selected", "lobby_join_map", "lobby_join_game_id", "lobby_join_validation", "lobby_join_jobs", "lobby_join_attempts", "lobby_join_phase", "lobby_join_reason", "lobby_join_tick", "lobby_join_result")) || ..()
+
+// Native waits may return after disconnect, transfer or a restart hold.
+/mob/new_player/proc/lobby_join_admission_current()
+	return lobby_join_current() && ticker && ticker.current_state == GAME_STATE_PLAYING && ticker.players_can_join && map && !persistence_restart.startup_hold && !persistence_restart.busy && GLOB.enter_allowed && !client.quickBan_isbanned("Playing") && check_trait_points(client.prefs.traits) <= 0
+
+/mob/new_player/proc/lobby_join_input(message, title, default_value, list/choices)
+	if (!lobby_join_admission_current())
+		return null
+	var/whitelist_policy = disable_campaign_whitelist
+	var/result = WWinput(src, message, title, default_value, choices)
+	if (!lobby_join_admission_current())
+		return null
+	if (title == "Admin Respawn" && !check_rights(R_ADMIN, FALSE, src))
+		return null
+	if (title == "Faction Choice" && (disable_campaign_whitelist != whitelist_policy || disable_campaign_whitelist == FALSE))
+		return null
+	return result
+
+/mob/new_player/proc/lobby_join_confirmation(message, selected_job)
+	if (!lobby_join_admission_current())
+		return "No"
+	var/result = input(src, message) in list("Yes", "No")
+	if (!lobby_join_admission_current() || result != "Yes" || !lobby_join_job_available(selected_job))
+		return "No"
+	return "Yes"
+
+
+/mob/new_player/proc/lobby_join_campaign_faction()
+	var/factjob
+	for (var/i in faction_list_blue)
+		var/temp_ckey = lowertext(i)
+		temp_ckey = replacetext(temp_ckey," ", "")
+		temp_ckey = replacetext(temp_ckey,"_", "")
+		if (temp_ckey == client.ckey)
+			factjob = "blue"
+
+	for (var/i in faction_list_red)
+		var/temp_ckey = lowertext(i)
+		temp_ckey = replacetext(temp_ckey," ", "")
+		temp_ckey = replacetext(temp_ckey,"_", "")
+		if (temp_ckey == client.ckey)
+			factjob = "red"
+
+	if (!factjob)
+		for (var/i in faction_list_organizer)
+			var/temp_ckey = lowertext(i)
+			temp_ckey = replacetext(temp_ckey," ", "")
+			temp_ckey = replacetext(temp_ckey,"_", "")
+			if (temp_ckey == client.ckey)
+				factjob = "organizer"
+	return factjob
+
+
+/mob/new_player/proc/lobby_join_job_available(selected_job)
+	if (!lobby_join_admission_current())
+		return FALSE
+	if (jobBanned(selected_job))
+		return FALSE
+	var/datum/job/selected = job_master.GetJob(selected_job)
+	if (selected && factionBanned(selected.base_type_flag(1)))
+		return FALSE
+	var/join_mode = lobby_join_mode()
+	lobby_join_validation = TRUE
+	lobby_join_jobs = list()
+	try
+		if (join_mode == "join_campaign")
+			var/factjob = lobby_join_campaign_faction()
+			if (!factjob && disable_campaign_whitelist != FALSE)
+				factjob = global.player_faction_list[client.ckey]
+			if (factjob)
+				if (map.ID == MAP_CAMPAIGN)
+					LateChoicesCampaign(factjob)
+				else
+					LateChoicesCampaignNew(factjob)
+		else if (map.ID == MAP_ROTSTADT)
+			LateChoicesRotstadt()
+		else
+			LateChoices()
+	catch (var/exception/error)
+		lobby_join_validation = FALSE
+		lobby_join_jobs = null
+		throw error
+	lobby_join_validation = FALSE
+	var/available = (selected_job in lobby_join_jobs)
+	lobby_join_jobs = null
+	return available
+
+/mob/new_player/proc/process_lobby_join(list/href_list)
+	lobby_join_trace("process_entered", "none")
+	if (!lobby_join_active || !lobby_join_current())
+		lobby_join_trace("process_denied", "stale_owner")
+		return FALSE
 	if (href_list["tribes"])
 
 		if (client && client.quickBan_isbanned("Playing"))
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -304,7 +514,7 @@ var/global/redirect_all_players = null
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
+				if ((lobby_join_input("If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
@@ -331,7 +541,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -346,14 +556,14 @@ var/global/redirect_all_players = null
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes" && map.ID != MAP_PIONEERS_WASTELAND_2)
+				if ((lobby_join_input("If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes" && map.ID != MAP_PIONEERS_WASTELAND_2)
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
 					close_spawn_windows()
 					AttemptLateSpawn(pick(map.availablefactions))
 					return TRUE
-				else if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
+				else if ((lobby_join_input("If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
@@ -373,27 +583,33 @@ var/global/redirect_all_players = null
 
 
 	if (href_list["nomads"])
+		lobby_join_trace("nomads_entered", "none")
 
 		if (client && client.quickBan_isbanned("Playing"))
+			lobby_join_trace("nomads_denied", "playing_unavailable")
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
+			lobby_join_trace("nomads_denied", "join_hold")
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
 		if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			lobby_join_trace("nomads_denied", "round_not_playing")
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
 		if (check_trait_points(client.prefs.traits) > 0)
+			lobby_join_trace("nomads_denied", "traits_unbalanced")
 			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
+			lobby_join_trace("nomads_wait", "respawn_delay")
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
+				if ((lobby_join_input("If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
@@ -455,7 +671,7 @@ var/global/redirect_all_players = null
 			WWalert(src,"You're banned from playing.","Error")
 			return TRUE
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -468,28 +684,7 @@ var/global/redirect_all_players = null
 			WWalert(src, "Because you died in combat, you must wait [wait] more minutes to respawn.", "Error")
 			return FALSE
 
-		var/factjob
-		for (var/i in faction_list_blue)
-			var/temp_ckey = lowertext(i)
-			temp_ckey = replacetext(temp_ckey," ", "")
-			temp_ckey = replacetext(temp_ckey,"_", "")
-			if (temp_ckey == client.ckey)
-				factjob = "blue"
-		
-		for (var/i in faction_list_red)
-			var/temp_ckey = lowertext(i)
-			temp_ckey = replacetext(temp_ckey," ", "")
-			temp_ckey = replacetext(temp_ckey,"_", "")
-			if (temp_ckey == client.ckey)
-				factjob = "red"
-				
-		if (!factjob)
-			for (var/i in faction_list_organizer)
-				var/temp_ckey = lowertext(i)
-				temp_ckey = replacetext(temp_ckey," ", "")
-				temp_ckey = replacetext(temp_ckey,"_", "")
-				if (temp_ckey == client.ckey)
-					factjob = "organizer"
+		var/factjob = lobby_join_campaign_faction()
 		if (factjob)
 			if (map.ID == MAP_CAMPAIGN)
 				LateChoicesCampaign(factjob)
@@ -498,7 +693,7 @@ var/global/redirect_all_players = null
 		else if (disable_campaign_whitelist != FALSE)
 			factjob = global.player_faction_list[client.ckey]
 			if (!factjob)
-				factjob = WWinput(src, "This round is part of a campaign, but the whitelist has been disabled. Which faction do you want to join?", "Faction Choice", "blue", list("blue", "red"))
+				factjob = lobby_join_input("This round is part of a campaign, but the whitelist has been disabled. Which faction do you want to join?", "Faction Choice", "blue", list("blue", "red"))
 				if (factjob)
 					global.player_faction_list[client.ckey] = factjob
 			if (factjob)
@@ -536,7 +731,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"The game is currently only accepting approved players. Visit the Discord to get approved.", "Error")
 				return
 
-		if (!ticker.players_can_join)
+		if (!ticker.players_can_join || persistence_restart.startup_hold || persistence_restart.busy)
 			WWalert(src,"You can't join the game yet.","Error")
 			return TRUE
 
@@ -547,7 +742,7 @@ var/global/redirect_all_players = null
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
 			var/wait = ceil((client.next_normal_respawn-world.realtime)/600)
 			if (check_rights(R_ADMIN, FALSE, src))
-				if ((WWinput(src, "If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
+				if ((lobby_join_input("If you were a normal player, you would have to wait [wait] more minutes to respawn. Do you want to bypass this? You can still join as a reinforcement.", "Admin Respawn", "No", list("Yes", "No"))) == "Yes")
 					var/msg = "[key_name(src)] bypassed a [wait] minute wait to respawn."
 					log_admin(msg)
 					message_admins(msg, client.ckey)
@@ -565,6 +760,8 @@ var/global/redirect_all_players = null
 		return TRUE
 
 	if (href_list["SelectedJob"])
+		if (!lobby_join_job_available(href_list["SelectedJob"]))
+			return FALSE
 		if(href_list["SelectedJob"] == "Company Member")
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
@@ -587,10 +784,10 @@ var/global/redirect_all_players = null
 		if (map && map.has_occupied_base(job_flag) && !map.can_spawn_on_base_capture)
 			WWalert(usr,"The enemy is currently occupying your base! You can't be deployed right now.", "Error")
 			return
-		
+
 		if (map.ID == MAP_CAMPAIGN)
 			if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
-				if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
+				if ((lobby_join_confirmation("This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?", href_list["SelectedJob"])) != "Yes")
 					return
 			if(findtext(href_list["SelectedJob"],"BAF"))
 				var/obj/map_metadata/campaign/MC = map
@@ -625,7 +822,7 @@ var/global/redirect_all_players = null
 					MC.squad_jobs_blue["none"]["Officer"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Commander"))
 					MC.squad_jobs_blue["none"]["Commander"]--
-					
+
 				else if(findtext(href_list["SelectedJob"],"BAF Recon"))
 					MC.squad_jobs_blue["Recon"]["Sniper"]--
 				else if(findtext(href_list["SelectedJob"],"BAF Anti-Tank"))
@@ -733,7 +930,7 @@ var/global/redirect_all_players = null
 
 			if (map.ID == CAMPAIGN_MAP_LIST_MAPID_OR)
 				if (!findtext(href_list["SelectedJob"], "Private") && !findtext(href_list["SelectedJob"], "Machinegunner") && !findtext(href_list["SelectedJob"], "Des. Marksman"))
-					if ((input(src, "This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?") in list("Yes", "No")) == "No")
+					if ((lobby_join_confirmation("This is a specialist role. You should have decided with your faction on which roles you should pick. If you haven't done so, its probably better if you join as a Private instead. Are you sure you want to join in as a [href_list["SelectedJob"]]?", href_list["SelectedJob"])) != "Yes")
 						return
 				if(findtext(href_list["SelectedJob"],"CAFR"))
 					var/obj/map_metadata/campaign_new/MC = map
@@ -768,7 +965,7 @@ var/global/redirect_all_players = null
 						MC.squad_jobs_blue["none"]["Officer"]--
 					else if(findtext(href_list["SelectedJob"],"CAFR Commander"))
 						MC.squad_jobs_blue["none"]["Commander"]--
-						
+
 					else if(findtext(href_list["SelectedJob"],"CAFR Recon"))
 						MC.squad_jobs_blue["Recon"]["Sniper"]--
 					else if(findtext(href_list["SelectedJob"],"CAFR Anti-Tank"))
@@ -939,11 +1136,11 @@ var/global/redirect_all_players = null
 				return
 
 		if (actual_job.is_officer)
-			if ((input(src, "This is an officer position. You're expected to coordinate your team's actions instead of engaging in direct combat. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
+			if ((lobby_join_confirmation("This is an officer position. You're expected to coordinate your team's actions instead of engaging in direct combat. Are you sure you want to join in as a [actual_job.title]?", href_list["SelectedJob"])) != "Yes")
 				return
 
 		if (actual_job.is_squad_leader)
-			if ((input(src, "This is a squad leader position. You're expected to coordinate your squad actions and accomplish orders given by your superiors. If you die, your squad members won't be able to spawn on you anymore. Are you sure you want to join in as a [actual_job.title]?") in list("Yes", "No")) == "No")
+			if ((lobby_join_confirmation("This is a squad leader position. You're expected to coordinate your squad actions and accomplish orders given by your superiors. If you die, your squad members won't be able to spawn on you anymore. Are you sure you want to join in as a [actual_job.title]?", href_list["SelectedJob"])) != "Yes")
 				return
 
 		if (actual_job.spawn_delay)
@@ -956,10 +1153,7 @@ var/global/redirect_all_players = null
 		else
 			AttemptLateSpawn(href_list["SelectedJob"])
 
-	if (!ready && href_list["preference"])
-		if (client)
-			client.prefs.process_link(src, href_list)
-	else if (!href_list["late_join"])
+	if (!lobby_join_native && !href_list["late_join"])
 		new_player_panel()
 
 /mob/new_player/proc/IsJobAvailable(rank, var/list/restricted_choices = list())
@@ -986,9 +1180,15 @@ var/global/redirect_all_players = null
 	return FALSE
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
+	lobby_join_trace("spawn_entered", "none")
+	if (lobby_join_active && !lobby_join_admission_current())
+		lobby_join_trace("spawn_denied", "admission_changed")
+		return FALSE
 	if (src != usr)
+		lobby_join_trace("spawn_denied", "actor_changed")
 		return FALSE
 	if (!ticker || ticker.current_state != GAME_STATE_PLAYING)
+		lobby_join_trace("spawn_denied", "round_not_playing")
 		if (!nomsg)
 			WWalert(usr,"The round is either not ready, or has already finished.","Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -997,6 +1197,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"The round is either not ready, or has already finished.", "Error")
 		return FALSE
 	if (!GLOB.enter_allowed)
+		lobby_join_trace("spawn_denied", "entry_locked")
 		if (!nomsg)
 			WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -1005,6 +1206,7 @@ var/global/redirect_all_players = null
 					WWalert(usr,"There is an administrative lock on entering the game!", "Error")
 		return FALSE
 	if (jobBanned(rank))
+		lobby_join_trace("spawn_denied", "role_unavailable")
 		if (!nomsg)
 			WWalert(usr,"You're banned from this role!", "Error")
 			if (map.ID == MAP_TRIBES || map.ID == MAP_THREE_TRIBES || map.civilizations || map.ID == MAP_FOUR_KINGDOMS)
@@ -1262,9 +1464,11 @@ var/global/redirect_all_players = null
 
 /mob/new_player/proc/LateChoices()
 
-	src << browse(null, "window=latechoices")
+	if (!lobby_join_validation)
+		src << browse(null, "window=latechoices")
 
 	var/list/dat = list("<center>")
+	var/list/join_jobs = list()
 	dat += "<font size=5><b>Welcome, [key].</b></font>"
 	dat += "<br>"
 	dat += "<font size=4>Round Duration: [roundduration2text_days()]</font>"
@@ -1325,14 +1529,17 @@ var/global/redirect_all_players = null
 			if (!job.en_meaning)
 				if (job_is_available)
 					dat += "&[job.base_type_flag()]&<a class=\"[job_class]\" style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]/[job.total_positions]) (Active: [active])</a>"
+					join_jobs |= job.title
 					++available_jobs_per_side[job.base_type_flag()]
 			else
 				if (job_is_available)
 					dat += "&[job.base_type_flag()]&<a class=\"[job_class]\" style=\"background-color:[job.selection_color];\" href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.en_meaning]) ([job.current_positions]/[job.total_positions]) (Active: [active])</a>"
+					join_jobs |= job.title
 					++available_jobs_per_side[job.base_type_flag()]
 
 	if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 		dat += "&[CIVILIAN]&<b><a style=\"background-color:#010203;\" href='byond://?src=\ref[src];SelectedJob=Company Member'>Company Member (Random) </b><br>"
+		join_jobs |= "Company Member"
 		if (CIVILIAN in available_jobs_per_side)
 			++available_jobs_per_side[CIVILIAN]
 	dat += "</center>"
@@ -1358,6 +1565,9 @@ var/global/redirect_all_players = null
 					dat[v] = replacetext(dat[v], "&&[key]&&", "")
 					replaced_faction_title = TRUE
 
+	if (lobby_join_validation)
+		return show_latechoices_window(dat, join_jobs)
+
 	if (!any_available_jobs && !ticker)
 		WWalert(usr,"The game is loading.","Error")
 		return
@@ -1366,7 +1576,7 @@ var/global/redirect_all_players = null
 		WWalert(usr,"All roles are disabled by autobalance!","Error")
 		return
 
-	show_latechoices_window(dat)
+	show_latechoices_window(dat, join_jobs)
 
 /mob/new_player/proc/create_character(mobtype)
 

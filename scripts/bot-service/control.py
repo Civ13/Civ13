@@ -36,7 +36,11 @@ def main():
     flags = os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW
     fd = os.open(STATE + "/lock", flags, 0o600)
     with os.fdopen(fd, "r+") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
+        # Never queue a sleeping game proc behind another helper invocation.
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return 75
         raw = lock.read().strip()
         previous = float(raw) if raw else None
         code, stamp = perform(sys.argv[1], previous, time.monotonic(), subprocess.run)

@@ -74,9 +74,10 @@ restart the old bot before the new one has stopped.
 
 The game passes fixed literal commands to sudo with `-n`, so it cannot prompt
 for a password. The helper accepts start/restart/status only, serializes requests
-with a root-owned flock in /run, and shares a sixty-second mutation cooldown
+with a nonblocking root-owned flock in /run, and shares a sixty-second mutation cooldown
 across all game servers. Failed requests also consume that budget. Reboot clears
-the budget. Status does not consume it. systemctl mutations use --no-block:
+the budget. A contended lock returns busy (75) immediately without running
+systemctl or changing the cooldown; callers may retry later. Status does not consume it. systemctl mutations use --no-block:
 zero means the request was accepted, not that Discord is connected. Recheck
 status/journal. The subprocess has a three-second timeout; the DM calling proc sleeps until
 the command finishes, and the operation is deliberately admin-only, not a tick
@@ -90,7 +91,8 @@ No public lifecycle HTTP endpoint, credentials or configurable shell is added.
 
 `python3 -m unittest discover -s tests/bot_service -v` tests exact commands,
 invalid input rejection, shared cooldown boundaries, status, failed requests and
-timeouts with injected effects. It never invokes systemctl.
+timeouts with injected effects, plus real local lock contention/release and the
+default-off deployment guard. It never invokes systemctl.
 Compile the game with BYOND 516.1681. These checks do not prove host permissions,
 real service recovery, Discord connection or deployment. Installation acceptance
 requires the explicit cutover checks above.
