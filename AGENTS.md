@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: disabled lighting composition V2 -->
+Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.
+V2 separates weather from tile RGB and explicitly represents visible fullbright
+coverage. Historical render receipts bind only tests/light_plane_composition/rejected;
+never relabel their failed weather/fullbright counterexamples as V2 evidence.
+Headless mode/coverage checks and synthetic pixel-oracle tests cannot prove rendering.
+
 <!-- 2026-10-18: private Help conversation boundary -->
 Help history belongs to an authenticated client session, never a saved mob.
 `conversation_probe.dm` is included by the existing isolated Help fixture;

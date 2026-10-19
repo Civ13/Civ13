@@ -25,6 +25,7 @@
 			var/area/A = get_area(src)
 			if (A && A.dynamic_lighting)
 				lighting_build_overlay()
+			sync_fullbright_coverage()
 
 /turf/proc/get_window_coeff()
 	if (window_coeff_dirty)
@@ -43,6 +44,10 @@
 /turf/proc/lighting_clear_overlay()
 	if (lighting_overlay)
 		qdel(lighting_overlay)
+		#if LIGHTING_COMPOSITION_V2
+		lighting_overlay = null
+		#endif
+	sync_fullbright_coverage()
 
 	for (var/A in corners)
 		if (!A)
@@ -153,6 +158,8 @@
 
 		else
 			lighting_clear_overlay()
+
+	sync_fullbright_coverage()
 
 /turf/proc/get_corners(var/dir)
 	if (has_opaque_atom)

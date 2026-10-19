@@ -1,4 +1,49 @@
-# Experimental lighting plane composition
+# Disabled second-generation composition candidate
+
+Production now defaults to the legacy compositor (`LIGHTING_COMPOSITION_V2=0`).
+The known-regressing first prototype is no longer active by default. The source
+under `rejected/` is frozen to the historical hashes in `render-results.json`;
+`counterexamples.json` remains unchanged. Those receipts describe rejected source,
+not this new implementation. No new native pixel acceptance is claimed.
+
+The opt-in implementation separates weather on plane 3 from tile RGB on plane 4.
+The latter is multiplied once after weather. Intentionally mask-free visible
+cells have explicit opaque white coverage on plane 4. Coverage is rooted on its
+own turf, carries no light luminosity, has no corners or light-source membership,
+and cannot broaden native visibility. A missing mask on an ordinary dynamic cell
+is never classified as fullbright. An actual mask wins over the fullbright policy.
+
+Coverage refreshes after bulk startup, runtime turf creation/replacement, area
+changes, mask construction/clearing and turf import. It is unsaved, rejected on
+legacy import, preserved with the other runtime renderers through ClearMap, and
+excluded from building-sky falling. Repeated refreshes retain one owner and detach
+obsolete/duplicate appearances before deferred deletion. OpenDream keeps its old
+path. Runtime direct mutations outside those lifecycle paths, unexpected area
+subtypes, pooling and full-map weather lifecycle still require integration review.
+
+## Verification and remaining gates
+
+Offline preparation tests bind the frozen rejected evidence and new exact source.
+The existing native CI runner now checks both disabled legacy and enabled separate
+plane modes, explicit fullbright allocation/retirement, excluded-z policy,
+mask precedence and bypass cycles. Its coverage-omission mutation must fail at
+`explicit fullbright coverage`. These headless assertions cannot prove pixels.
+The small fixture's deletion and turf/area adapters are declared in `probe.dm`;
+they do not constitute full production save/import or client HUD lifecycle proof.
+
+`verify_render.py` requires NEW source-bound native PNGs for nine explicit pixel
+cases: weather, intentional fullbright, both policy transitions, replacement,
+save/import, bypass, restored ordinary sight, and oversized-occluder clipping.
+Every pixel must match its independently established reference. The oversized
+reference must preserve visible content and black only the uncovered overhang;
+reference construction and native view membership need independent review.
+Synthetic oracle controls detect 1, 283 and 1024 changed pixels; they do not replace
+DreamSeeker captures. There is no accepted new capture packet yet. Keep this PR
+draft and the production flag zero until native rendering and integration gates
+are independently satisfied. No live world or user computer was touched.
+
+## Historical rejected prototype and evidence
+
 
 **BLOCKED: not a general fix and not suitable for merge/deployment.** The ordinary-lighting candidate fixes the isolated canopy defect, but final native counterexamples remove weather pixels and darken intentionally mask-free cells. Source/CI success is not renderer acceptance. See `counterexamples.json`.
 

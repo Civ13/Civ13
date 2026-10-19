@@ -23,34 +23,49 @@
 	plane = LIGHTING_PLANE
 	layer = LIGHTING_LAYER
 	blend_mode = BLEND_MULTIPLY
-	invisibility = 0
+	invisibility = INVISIBILITY_LEVEL_TWO
 	appearance_flags = NO_CLIENT_COLOR | PLANE_MASTER
 	mouse_opacity = 0
-	var/tmp/last_lighting_bypass
 
 /obj/screen/plane_master/lighting/New()
 	..()
 	#ifdef OPENDREAM
 	appearance_flags |= KEEP_TOGETHER
 	invisibility = 0
+	#else
+	#if LIGHTING_COMPOSITION_V2
+	// Weather remains on plane 3; it must never share the tile RGB surface.
+	blend_mode = BLEND_OVERLAY
+	invisibility = 0
 	#endif
-// Compose tile RGB on a transparent plane, then make uncovered pixels black.
-// Never broaden native world visibility to obtain an occluded tile's mask.
-/obj/screen/plane_master/lighting/backdrop(mob/mymob)
+	#endif
+
+/obj/screen/plane_master/light_mask
+	name = "experimental light-only plane master"
+	plane = LIGHTING_MASK_PLANE
+	blend_mode = BLEND_MULTIPLY
+	invisibility = 0
+	appearance_flags = NO_CLIENT_COLOR | PLANE_MASTER
+	mouse_opacity = 0
+	var/tmp/last_lighting_bypass
+
+/obj/screen/plane_master/light_mask/backdrop(mob/mymob)
+	#if LIGHTING_COMPOSITION_V2
 	#ifndef OPENDREAM
 	var/bypass = mymob && mymob.see_invisible >= INVISIBILITY_LEVEL_TWO
 	if(!isnull(last_lighting_bypass) && last_lighting_bypass == bypass)
 		return
 	last_lighting_bypass = bypass
-	// Preserve the existing see>=45 lighting bypass (NVG/dead/observer sight).
-	// This changes only the client's plane; corner data remains authoritative.
+	// Explicit white coverage marks intentionally mask-free visible tiles.
+	// Only uncovered pixels on this light-only plane are made black.
 	color = bypass ? list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1) : list(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1)
+	#endif
 	#endif
 
 /mob/proc/update_lighting_plane()
 	if(!client || !hud_used)
 		return
-	var/obj/screen/plane_master/lighting/P = hud_used.plane_masters["[LIGHTING_PLANE]"]
+	var/obj/screen/plane_master/light_mask/P = hud_used.plane_masters["[LIGHTING_MASK_PLANE]"]
 	if(P)
 		P.backdrop(src)
 

@@ -119,6 +119,7 @@ var/created_lighting_corners_and_overlays = FALSE
 			C.update_active(TRUE)
 			if (environment_sweep_pause(++work))
 				work = 0
+		sync_fullbright_coverage_world()
 		activate_existing_lighting_corners()
 		lighting_corners_initialised = TRUE
 		created_lighting_corners_and_overlays = TRUE

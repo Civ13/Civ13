@@ -16,7 +16,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 CORE = 'code/game/objects/building_levels.dm'
 CONTROLS = {
-    'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),
+    'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),
     'removal': ('\t\tqdel(C)', '\t\treturn', 'FAIL: roof removal removes floor'),
     'foundation': ('if (building_floor_height(get_turf(A), depth, max(h + 1, required_height)) >= 0)', 'if (TRUE)', 'FAIL: strong upper pillar cannot bypass weaker foundation'),
     'persistence': ('"building_pair_id", "building_floor_z", "health"', '"building_floor_z", "health"', 'FAIL: disk restored slab links'),
