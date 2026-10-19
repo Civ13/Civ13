@@ -105,6 +105,20 @@ def main():
                 replacements[relative] = subprocess.check_output(
                     ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
             receipt['wound_control_commit'] = baseline
+            # The immutable loader predates the content codec now shared with
+            # durable reachability. Keep both historical files byte-for-byte;
+            # supply only the missing current helper in the fixture's functions
+            # copy, so compilation can reach the original wound constructor bug.
+            loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
+            if loading.count(marker) != 1:
+                raise RuntimeError('Historical wound compatibility helper anchor changed')
+            start = loading.index(marker)
+            end = loading.find('\n/map_storage/proc/', start + len(marker))
+            helper = loading[start:end if end >= 0 else len(loading)]
+            relative = 'code/modules/persistence/functions.dm'
+            replacements[relative] = (root / relative).read_text(encoding='utf-8') + '\n' + helper
+            receipt['wound_control_compatibility_helper_sha256'] = hashlib.sha256(helper.encode()).hexdigest()
         elif args.negative_control == 'lighting-shared':
             relative = 'code/modules/lighting/lighting_source.dm'
             text = (root / relative).read_text(encoding='utf-8')
