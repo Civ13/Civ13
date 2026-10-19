@@ -131,3 +131,32 @@ positive results. Each omission control must fail at its named assertion and
 allocation boundary. Preparation and offline oracle checks do not execute it.
 The new suite has its own existing-selector workflow guard; editing the workflow
 does not dispatch CI or establish acceptance.
+
+## Operational policy and exact CI selection
+
+This is a deliberate fail-closed policy, not a claim that 600,000 cells are safe.
+In particular, a save containing additional levels beyond the compiled world's
+current maximum is refused even if those levels existed before this patch and
+fit every arithmetic limit. Such a save enters the non-destructive hold described
+above. There is no grandfathering, host toggle, memory allowance, or automatic
+recovery route. Reusing an already allocated plane remains permitted. Review
+save dimensions against the actual compiled map before adopting this policy.
+
+The `Verify centralized z admission and unmeasured controls` workflow
+step is selected by extensive regressions, introduction of `tests/new_z_budget`,
+or `persistence_integration_regressions`. Ordinary edits to an existing test
+suite do not independently select it. The step runs:
+
+- Offline `tests/new_z_budget/test_*.py` checks.
+- Native `tests/new_z_budget/run.py` positive case, then `memory-admission`,
+  `cell-limit` and `roof-ceiling` generated-source controls.
+- Native disk `run-dimension-bootstrap.py` positive case, then
+  `memory-admission` and `budget-hold` controls.
+- Native `run-durable-world.py --dimension-bootstrap --profile europe`.
+
+The runner is pinned to BYOND 516.1681 and the workflow's exact head commit;
+artifacts are retained under `new-z-budget-<head>`. The tiny fixture's explicit
+admission subclass is test-only. Neither the Europe-named durable fixture nor
+the arithmetic Gaia cases measure a live map's memory or authorize production
+allocation. CI success must be reported against its actual commit and selected
+steps; source preparation or a skipped step does not establish native success.
