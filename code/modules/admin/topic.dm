@@ -670,6 +670,9 @@
 	else if (href_list["modify_world_var"])
 		if (!check_rights(R_DEBUG))	return
 		var/somevar = input(usr, "Modify what world variable?") as text
+		if (new_z_dimension_variable(somevar))
+			to_chat(usr, "World dimensions cannot be edited directly. Use the reviewed level allocator; existing saves are never shrunk to meet a budget.")
+			return
 		if (world.vars.Find(somevar)) // prevents runtimes
 			var/thing = world.vars[somevar]
 			if (isdatum(thing) || isclient(thing) || islist(thing))

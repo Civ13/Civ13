@@ -84,6 +84,16 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 ## Maps
 
+<!-- 2026-10-18: centralized level admission -->
+Dynamic z growth must reserve its complete target through world_z_budget before
+the first native resize. The uncalibrated hard ceiling is 600,000 total grid cells,
+with one roof-added plane and lower-only host settings. Production additionally
+refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
+reviewed; configuration cannot bypass this. Isolated tests select a tests-only
+subclass, never a production opt-out. This is not an OOM guarantee. Overcap saved expansion holds before mutation and blocks
+later save overwrite. See docs/new-z-budget.md and tests/new_z_budget/prepare.py;
+source preparation does not establish native acceptance.
+
 - Maps use lowercase names with `_` for spaces.
 - WIP maps go in `maps/WIP/`.
 - No second z-levels unless same size as main level.
