@@ -33,6 +33,10 @@ on:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
         type: boolean
         default: false
+      world_save_profile_regressions:
+        description: 'Opt in only to serializer phase profiling and its mutation controls'
+        type: boolean
+        default: false
       world_save_operation_regressions:
         description: 'Opt in only to save/load admission and busy-transition controls'
         type: boolean
@@ -67,6 +71,8 @@ jobs:
           persist-credentials: false
       - name: Verify noninteractive BYOND bootstrap commands offline
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
+      - name: Test serializer profiling source contracts
+        run: python3 -B tests/world_save/test_progress_sources.py -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
@@ -833,6 +839,30 @@ jobs:
           name: world-save-operations
           path: ${{ runner.temp }}/world-save-operations/
           if-no-files-found: error
+      - name: Opt-in serializer phase profiling
+        id: world_save_profile
+        shell: bash
+        if: github.event_name == 'workflow_dispatch' && inputs.world_save_profile_regressions
+        run: |
+          set -eo pipefail
+          mkdir -p "$RUNNER_TEMP/world-save-profile"
+          export TMPDIR="$RUNNER_TEMP/world-save-profile"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          set -u
+          saving_sha=$(sha256sum code/modules/persistence/saving.dm | cut -d' ' -f1)
+          profile=(python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --progress --phase-profile)
+          "${profile[@]}"
+          "${profile[@]}" --phase-profile-negative-control
+          "${profile[@]}" --phase-profile-clock-contract
+          "${profile[@]}" --phase-profile-clock-contract --phase-profile-attribution-negative-control
+
+      - name: Retain serializer phase profiling evidence
+        if: always() && steps.world_save_profile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: world-save-profile
+          path: ${{ runner.temp }}/world-save-profile/
+
       - name: Offline world-save round-trip regression
         id: world_save
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || inputs.world_save_regressions == true
