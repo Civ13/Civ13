@@ -1,5 +1,11 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: collision mining ownership -->
+Dense mineable underground rock uses one shared click/bump mining action. Its
+explicit optional do_after context owns actor and turf reservations before any
+spawn; never queue mining from deferred living.Bump work or switch the player's
+active hand. The custom saver must exclude both reservation pointers.
+
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
 adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
