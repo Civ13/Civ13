@@ -27,7 +27,9 @@ var/global/world_save_progress_test_clock = 0
 /proc/world_save_progress_elapsed(started, now)
 	// Bounded diagnostic runs are shorter than one day. This is wall time,
 	// not a monotonic clock or CPU measurement.
-	return (now - started + 864000) % 864000
+	// Quantize endpoints before subtracting: truncating every fractional interval
+	// separately loses time when many phase transitions occur within one ds.
+	return (round(now) - round(started) + 864000) % 864000
 
 /proc/world_save_progress_begin()
 	world_save_progress_active = TRUE

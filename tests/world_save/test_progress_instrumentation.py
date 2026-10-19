@@ -60,6 +60,12 @@ class ProgressInstrumentationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Expected'):
             MODULE.profile_helper(original.replace('\tworld_save_progress_sleeps++\n', ''))
 
+    def test_elapsed_quantizes_endpoints_before_interval_arithmetic(self):
+        helper = Path(__file__).with_name('progress-probe.dm').read_text()
+        self.assertIn('(round(now) - round(started) + 864000) % 864000', helper)
+        probe = Path(__file__).with_name('phase-profile-clock-probe.dm').read_text()
+        self.assertIn('fractional phase endpoints lost time', probe)
+
     def test_missing_checkpoint_fails_closed(self):
         saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
         with self.assertRaisesRegex(ValueError, 'three bounded serializer sleep sites'):
