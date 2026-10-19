@@ -138,7 +138,8 @@ READER = WORLD_HEADER + r'''
         var/list/result = inspect_file(filename)
         text2file(json_encode(result), selftest ? "native-selftest.json" : "native-result.json")
     catch(var/exception/E)
-        text2file("NATIVE_ERROR\n", "native-error.txt")
+        // Use only the exception's kind, never its text or private data.
+        text2file(istype(E, /exception) ? "NATIVE_ERROR\n" : "NATIVE_NONEXCEPTION_ERROR\n", "native-error.txt")
         del(world)
         return
     del(world)
@@ -242,7 +243,7 @@ def compile_world(stage, name, text):
     log = native_run([str(BIN/'DreamMaker'), name+'.dme'], stage, name+'-compile')
     require(re.search(r'DM compiler version\s+516[.]1681\b', log), 'Expected existing BYOND 516.1681 compiler.')
     require('0 errors, 0 warnings' in log and (stage/(name+'.dmb')).is_file(),
-            'Inspector compilation did not pass with zero errors and warnings.')
+            name + ' compilation did not pass with zero errors and warnings.')
 
 
 def run_world(stage, name, mode, expect_rejection=False):

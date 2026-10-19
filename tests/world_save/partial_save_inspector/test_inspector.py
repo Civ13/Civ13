@@ -140,6 +140,8 @@ class InspectorTests(unittest.TestCase):
         new_body = m.READER.rsplit('/world/New()', 1)[1]
         self.assertIn('try\n', new_body)
         self.assertIn('catch(var/exception/E)', new_body)
+        self.assertIn('istype(E, /exception) ? "NATIVE_ERROR', new_body)
+        self.assertNotIn('E.', new_body)
         self.assertIn('del(world)\n        return', new_body)
 
     def test_native_cli_project_trusted_loopback(self):
