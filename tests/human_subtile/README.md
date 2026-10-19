@@ -1,12 +1,16 @@
 # Opt-in human sub-tile adapter
 
-Source-only integration stacked from the separately verified native primitive
+Opt-in integration stacked from the separately verified native primitive
 at `c605363a11050dbf67fe4820cc8cc4587c9cf97c` (Civ13 base `cc03b199`).
-The root owner verified42 headless integration assertions at production source
-`805aeac436d911fc5cd53e2c864f1e31b8b5f7bf` using BYOND516.1681. This covered
-actual human movement and the real serializer. Connected-client timing and
-visual acceptance remain separate pending gates. The source preparer does not
-launch local native processes; root owns the reviewed execution envelope.
+The root owner verified exact source
+`c3767579b0e72035debe702ae2147c75549a7455` with BYOND516.1681:42 headless
+integration assertions and39 assertions through a real connected client's
+scripted `client.Move`. The private showcase adapter passed three additional
+collision/restriction checks, including a measured2px partial collision; those
+are separate from the public fixture's42/39 counts. Compilation had zero errors
+and warnings, diagnostics were clean, and the full Windows owned-Job envelope
+confirmed cleanup and an unchanged live-server baseline. Later test/docs/CI
+packaging retains those production and probe bytes.
 
 The opt-in is disabled by default. `set_human_subtile(TRUE)` enables it for an
 eligible ordinary human. Client Move retains its existing admission checks and
@@ -19,7 +23,10 @@ the adapter does not rescale it a second time afterward. Pulse times are absolut
 fractions of that interval. More than one pulse may occur in an engine frame;
 frame rate limits visible increments. Preserved speed means the admitted tile
 interval and sustained distance/time, not identical startup arrival phase or
-intermediate positions. A native timing comparison is still required.
+intermediate positions. Native comparisons passed for ordinary walking, slow
+floor, Agile, Slowness+Gigantism and running: three admitted tiles per leg had
+matching sustained elapsed time, final cooldown, nutrition and stamina costs.
+Blocked attempts also retained matching admission costs and cooldowns.
 
 Existing client nutrition/water/stamina/velocity rules run once per admitted
 32px intent, including blocked attempts, as they did before. They are not
@@ -129,6 +136,27 @@ only that wrapper and append its reviewed one-client admission/capture adapter.
 Any compile warning/runtime/incorrect assertion or missing terminal receipt
 rejects native acceptance. Actual game input, timing and visuals must be
 reported separately; no publication or live activation is implied.
+
+The connected test adapts startup, gameplay Login, HUD setup and Logout for one
+isolated client. It executes production `client.Move` by script; it does not
+prove OS keyboard delivery or movementMachine polling. A real DreamSeeker
+recording was inspected, while its caption layout is being refined separately
+before sharing. Neither that recording nor these bounded checks establishes
+combat, vehicles, dragging, diagonal/multi-z compatibility, input latency, RAM
+improvement or general gameplay readiness. The opt-in remains disabled by
+default.
+
+Earlier packets remain retained. The initial compile found an if-local variable
+used outside its scope and a reserved `run` proc name; both were corrected.
+Earlier supervisor output lookups assumed process cwd rather than the DMB file
+root; the public runner now puts both in one runtime directory. The first
+connected blocked comparison failed because a fractional sleep woke at164.5
+before the actual164.85 client deadline. The production admission guard correctly
+rejected that input; this was a fixture wait error, not a cooldown regression.
+The fixture now loops with positive tick sleeps until the deadline is reached,
+without changing the39 assertions or production cooldown arithmetic. Earlier
+standalone savefile diagnostics and their unresolved relative-first-read cause
+remain documented in the primitive packet.
 
 ## Public staging and CI
 
