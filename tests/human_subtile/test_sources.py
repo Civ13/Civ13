@@ -117,6 +117,9 @@ class SourceContracts(unittest.TestCase):
         self.assertLess(blocked.index('human_subtile_fixture_record_client(row)'), blocked.index('human_subtile_fixture_assert('))
         self.assertIn('row["admission_state"] = blocked_admission_state', blocked)
         self.assertIn('row["end_state"] = human_subtile_fixture_client_state(C, H)', blocked)
+        self.assertIn('/proc/human_subtile_fixture_wait(client/C)\n\t// Native fractional sleeps may wake before the client\'s exact deadline.\n\twhile (C.move_delay > world.time)\n\t\tsleep(world.tick_lag)', fixture)
+        self.assertEqual(fixture.count('human_subtile_fixture_wait(C)'), 4)
+        self.assertNotIn('sleep(C.move_delay - world.time)', fixture)
 
 
 if __name__ == "__main__":

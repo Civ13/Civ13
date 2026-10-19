@@ -99,6 +99,11 @@ var/human_subtile_fixture_phase = "initializing"
 	// Append BEFORE assertions so a failing final comparison retains both rows.
 	text2file(json_encode(row), "client-observations.jsonl")
 
+/proc/human_subtile_fixture_wait(client/C)
+	// Native fractional sleeps may wake before the client's exact deadline.
+	while (C.move_delay > world.time)
+		sleep(world.tick_lag)
+
 /proc/human_subtile_fixture_assert(ok, label)
 	human_subtile_fixture_checks++
 	if (!ok)
@@ -344,8 +349,7 @@ var/human_subtile_fixture_phase = "initializing"
 			H.next_calculate_tally = -1
 			for (var/turf/floor/T in world)
 				T.move_delay = test_case["slow"]
-			if (C.move_delay > world.time)
-				sleep(C.move_delay - world.time)
+			human_subtile_fixture_wait(C)
 			var/start = world.time
 			var/start_x = H.x
 			var/nutrition_before = H.nutrition
@@ -353,15 +357,13 @@ var/human_subtile_fixture_phase = "initializing"
 			var/list/admission_state = human_subtile_fixture_client_state(C, H)
 			var/list/intervals = list()
 			for (var/i = 1, i <= 3, i++)
-				if (C.move_delay > world.time)
-					sleep(C.move_delay - world.time)
+				human_subtile_fixture_wait(C)
 				C.canmove = TRUE
 				var/admission = world.time
 				var/direction = enabled ? WEST : EAST
 				C.Move(get_step(H, direction), direction, FALSE)
 				intervals += C.move_delay - admission
-				if (C.move_delay > world.time)
-					sleep(C.move_delay - world.time)
+				human_subtile_fixture_wait(C)
 			var/list/row = list("case" = test_case["name"], "enabled" = enabled, "elapsed" = world.time - start, "pixels" = abs(H.x - start_x) * 32, "intervals" = intervals, "nutrition_cost" = nutrition_before - H.nutrition, "stamina_cost" = stamina_before - H.stats["stamina"][1])
 			rows += list(row)
 			row["admission_state"] = admission_state
@@ -385,8 +387,7 @@ var/human_subtile_fixture_phase = "initializing"
 	for (var/enabled_blocked in list(FALSE, TRUE))
 		human_subtile_fixture_phase = "blocked [enabled_blocked ? "4px" : "baseline"]"
 		H.set_human_subtile(enabled_blocked)
-		if (C.move_delay > world.time)
-			sleep(C.move_delay - world.time)
+		human_subtile_fixture_wait(C)
 		var/list/before = H.human_subtile_snapshot()
 		var/food = H.nutrition
 		var/at = world.time
