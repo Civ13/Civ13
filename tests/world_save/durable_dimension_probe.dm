@@ -3,6 +3,8 @@
 /world/New()
 	world.OpenPort(0)
 	try
+		if(world.params["dimension_mode"] != "unmeasured")
+			world_z_budget = new /datum/world_z_budget/fixture_admission
 		map_storage.record_compiled_dimensions()
 		config = new
 		config.webhook_can_fire = FALSE
@@ -18,6 +20,25 @@
 		season = "SUMMER"
 		time_of_day = "Evening"
 		game_hour = 129
+		if(world.params["dimension_mode"] == "unmeasured")
+			var/unmeasured_header = file2text("map_saves/round.json")
+			var/unmeasured_marker = file2text("map_saves/save_complete.txt")
+			var/list/unmeasured_round = json_decode(unmeasured_header)
+			var/list/unmeasured_identity = list("version" = 1, "generation" = unmeasured_round["generation"], "metadata" = md5(file2text("map_saves/map.txt")), "round" = md5(unmeasured_header))
+			text2file(json_encode(unmeasured_identity), persistence_restart.intent_path)
+			var/unmeasured_intent = file2text(persistence_restart.intent_path)
+			persistence_restart.startup_hold = TRUE
+			persistence_save_in_progress = TRUE
+			durable_world_check(!persistence_restart.resume_startup(), "unmeasured restart admission accepted")
+			durable_world_check(world.maxz == 2 && !building_allocating_z && !world_z_budget.active, "unmeasured restart allocated grid")
+			durable_world_check(map_storage.dimension_budget_hold && !map_storage.dimension_recovery_required && persistence_restart.startup_hold && persistence_save_in_progress, "unmeasured restart lost preallocation hold")
+			durable_world_check(!persistence_restart.import_started && !persistence_restart.import_complete, "unmeasured restart began import")
+			durable_world_check(findtext(map_storage.last_error, "UNMEASURED:") > 0, "unmeasured restart diagnostic missing")
+			durable_world_check(file2text(persistence_restart.intent_path) == unmeasured_intent && file2text("map_saves/round.json") == unmeasured_header && file2text("map_saves/save_complete.txt") == unmeasured_marker, "unmeasured restart changed intent or generation")
+			durable_world_check(!map_storage.Save_World(), "unmeasured restart allowed save overwrite")
+			text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks)), "metadata-result.json")
+			del(world)
+			return
 		var/operation_kind = world.params["dimension_mode"] == "write" ? "save" : "load"
 		var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, operation_kind)
 		durable_world_check(operation && operation.current(map_storage, operation_kind), "expanded durable admission failed")

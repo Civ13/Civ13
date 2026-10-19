@@ -10,6 +10,9 @@ import tempfile
 import textwrap
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+sys.path.insert(0, str(ROOT / "scripts/gameplay_bridge"))
+from gather_context import project
 
 
 def procedure(source, name):
@@ -23,6 +26,7 @@ def production(control):
     paths = ['code/game/mob/living/carbon/human/human_life.dm',
              'code/_helpers/mobs.dm', 'code/modules/1713/active_training.dm']
     life, actions, training = [(ROOT / p).read_text(encoding='utf-8-sig') for p in paths]
+    actions = project(actions, set())[0]  # Compile-disabled production wait contract.
     helpers = life[life.index('/mob/living/human/proc/survival_metabolism_time()'):
                    life.index('/mob/living/human/Life()')]
     fields = re.findall(r'^\tvar/tmp/survival_[^\n]+', life, re.M)

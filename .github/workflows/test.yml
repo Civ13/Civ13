@@ -33,6 +33,10 @@ on:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
         type: boolean
         default: false
+      world_save_profile_regressions:
+        description: 'Opt in only to serializer phase profiling and its mutation controls'
+        type: boolean
+        default: false
       world_save_operation_regressions:
         description: 'Opt in only to save/load admission and busy-transition controls'
         type: boolean
@@ -67,6 +71,8 @@ jobs:
           persist-credentials: false
       - name: Verify noninteractive BYOND bootstrap commands offline
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
+      - name: Test serializer profiling source contracts
+        run: python3 -B tests/world_save/test_progress_sources.py -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
@@ -139,6 +145,23 @@ jobs:
         if: needs.changes.outputs.game == 'true'
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
+
+      - name: Run native HUD appearance and preservation fixture
+        id: hud_visual
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hud_visual')
+        timeout-minutes: 5
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/hud_visual -p 'test_*.py' -v
+          python3 -B tests/hud_visual/ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/hud-visual"
+      - name: Upload native HUD evidence
+        if: always() && steps.hud_visual.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: hud-visual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hud-visual
+          if-no-files-found: error
 
       - name: Check core-boot runner offline and compile generated variants
         id: core_boot_compile
@@ -281,9 +304,9 @@ jobs:
           python3 -m unittest discover -s tests/lobby_join -p 'test_*.py'
           python3 tests/lobby_join/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
 
-      - name: Compile disabled gameplay bridge closure without running it
+      - name: Compile stock disabled and gather-enabled bridge closures without running them
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
-        timeout-minutes: 8
+        timeout-minutes: 22
         shell: bash
         env:
           CIV13_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -295,6 +318,39 @@ jobs:
           git worktree add --detach "$compile_source" "$CIV13_EXPECTED_COMMIT"
           test "$(git -C "$compile_source" rev-parse HEAD)" = "$CIV13_EXPECTED_COMMIT"
           python3 -B "$compile_source/scripts/gameplay_bridge/compile_check.py" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --expected-commit "$CIV13_EXPECTED_COMMIT" --evidence-dir "$RUNNER_TEMP/gameplay-bridge-compile"
+      - name: Compile normal-startup ordinary-client gather fixture only
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
+        timeout-minutes: 8
+        shell: bash
+        env:
+          CIV13_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          compile_source="$RUNNER_TEMP/gameplay-bridge-source"
+          test "$(git -C "$compile_source" rev-parse HEAD)" = "$CIV13_EXPECTED_COMMIT"
+          python3 -B "$compile_source/scripts/gameplay_bridge/compile_client_gather.py" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --expected-commit "$CIV13_EXPECTED_COMMIT" --evidence-dir "$RUNNER_TEMP/gameplay-client-gather-compile"
+      - name: Run native gather ownership cancellation and parity controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
+        timeout-minutes: 40
+        shell: bash
+        env:
+          CIV13_EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          compile_source="$RUNNER_TEMP/gameplay-bridge-source"
+          test "$(git -C "$compile_source" rev-parse HEAD)" = "$CIV13_EXPECTED_COMMIT"
+          python3 -B "$compile_source/scripts/gameplay_bridge/run_gather_ci.py" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --expected-commit "$CIV13_EXPECTED_COMMIT" --output "$RUNNER_TEMP/gameplay-gather-native"
+      - name: Retain native gather logs and per-assertion results
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gameplay-gather-native-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/gameplay-gather-native/manifest.json
+            ${{ runner.temp }}/gameplay-gather-native/ci-result.json
+            ${{ runner.temp }}/gameplay-gather-native/runtime/**/*.log
+            ${{ runner.temp }}/gameplay-gather-native/runtime/**/result.json
       - name: Retain gameplay bridge compile logs and source manifest
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -302,9 +358,11 @@ jobs:
           name: gameplay-bridge-compile-${{ github.event.pull_request.head.sha || github.sha }}
           if-no-files-found: warn
           path: |
-            ${{ runner.temp }}/gameplay-bridge-compile/compiler.log
+            ${{ runner.temp }}/gameplay-bridge-compile/compiler-*.log
             ${{ runner.temp }}/gameplay-bridge-compile/manifest.json
             ${{ runner.temp }}/gameplay-bridge-source-status.txt
+            ${{ runner.temp }}/gameplay-client-gather-compile/compiler.log
+            ${{ runner.temp }}/gameplay-client-gather-compile/manifest.json
       - name: Verify scheduler replacement ownership and omission controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/process_replacement')
         shell: bash
@@ -424,6 +482,28 @@ jobs:
           python3 tests/lighting_queues/run.py --byond-bin "$PWD/BYOND/byond/bin" --size 500 --negative-control retain --output "$RUNNER_TEMP/lighting-retain.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
+      - name: Check exclusion dispatch source while native execution is held
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch')
+        run: |
+          python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
+          python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
+      - name: Verify Linux exclusion dispatch parity and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch')
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/exclusion_dispatch/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/exclusion-native"
+      - name: Retain Linux exclusion dispatch evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/exclusion-native/
+            !${{ runner.temp }}/exclusion-native/**/*.dmb
+            !${{ runner.temp }}/exclusion-native/**/*.rsc
+          if-no-files-found: error
       - name: Verify held pickaxe collision mining and cancellation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining')
         timeout-minutes: 12
@@ -432,6 +512,7 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -B -m unittest discover -s tests/bump_mining -v
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/bump-mining/baseline"
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --bridge-enabled --output "$RUNNER_TEMP/bump-mining/bridge-enabled"
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control dispatch --output "$RUNNER_TEMP/bump-mining/dispatch"
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control reservation --output "$RUNNER_TEMP/bump-mining/reservation"
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control position --output "$RUNNER_TEMP/bump-mining/position"
@@ -615,6 +696,32 @@ jobs:
           name: yeast-bread-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/yeast-bread/
           retention-days: 7
+      - name: Verify centralized z admission and unmeasured controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/new-z-budget"
+          export TMPDIR="$RUNNER_TEMP/new-z-budget"
+          git diff --binary -- UI/crafting-atlas.json > "$RUNNER_TEMP/new-z-budget/bootstrap-generated-catalog.patch"
+          git restore --source=HEAD -- UI/crafting-atlas.json
+          python3 -m unittest discover -s tests/new_z_budget -p 'test_*.py' -v
+          python3 tests/new_z_budget/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "${{ github.event.pull_request.head.sha || github.sha }}" --output "$RUNNER_TEMP/new-z-budget/positive"
+          for control in memory-admission cell-limit roof-ceiling; do
+            python3 tests/new_z_budget/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "${{ github.event.pull_request.head.sha || github.sha }}" --control "$control" --output "$RUNNER_TEMP/new-z-budget/$control"
+          done
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin"
+          for control in memory-admission budget-hold; do
+            python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-durable-world.py --dimension-bootstrap --profile europe --byond-bin "$PWD/BYOND/byond/bin"
+      - name: Upload z admission evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: new-z-budget-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/new-z-budget/
+          retention-days: 7
       - name: Verify linked building levels and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/building_levels') || inputs.persistence_integration_regressions == true
         shell: bash
@@ -735,6 +842,30 @@ jobs:
           name: world-save-operations
           path: ${{ runner.temp }}/world-save-operations/
           if-no-files-found: error
+      - name: Opt-in serializer phase profiling
+        id: world_save_profile
+        shell: bash
+        if: github.event_name == 'workflow_dispatch' && inputs.world_save_profile_regressions
+        run: |
+          set -eo pipefail
+          mkdir -p "$RUNNER_TEMP/world-save-profile"
+          export TMPDIR="$RUNNER_TEMP/world-save-profile"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          set -u
+          saving_sha=$(sha256sum code/modules/persistence/saving.dm | cut -d' ' -f1)
+          profile=(python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --progress --phase-profile)
+          "${profile[@]}"
+          "${profile[@]}" --phase-profile-negative-control
+          "${profile[@]}" --phase-profile-clock-contract
+          "${profile[@]}" --phase-profile-clock-contract --phase-profile-attribution-negative-control
+
+      - name: Retain serializer phase profiling evidence
+        if: always() && steps.world_save_profile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: world-save-profile
+          path: ${{ runner.temp }}/world-save-profile/
+
       - name: Offline world-save round-trip regression
         id: world_save
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || inputs.world_save_regressions == true
