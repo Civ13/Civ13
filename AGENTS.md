@@ -8,6 +8,17 @@ and copied links. The role-free worker contract derives only user/assistant
 turns, bounded by UTF-8 history and complete ASCII-JSON request bytes. Spool
 cleanup is not encryption or guaranteed crash-time erasure. Server and worker
 updates require separately coordinated restarts; offline checks do not prove them.
+<!-- 2026-10-19: consumed crafting handles -->
+Consumed wood handles are selected from hands and real equipment slots, including
+shoulder/back, then retained through do_after. Revalidate the exact item and source
+before debit; consume only after successful stack.use and clear its actual slot.
+Do not recurse through storage or recreate handles on cancellation. Existing
+get_equipped_items omits shoulder; use the slot getter with equipment priority.
+<!-- 2026-10-19: collision mining ownership -->
+Dense mineable underground rock uses one shared click/bump mining action. Its
+explicit optional do_after context owns actor and turf reservations before any
+spawn; never queue mining from deferred living.Bump work or switch the player's
+active hand. The custom saver must exclude both reservation pointers.
 
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
