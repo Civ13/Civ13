@@ -149,6 +149,7 @@ var/list/gamemode_cache = list()
 	var/new_z_safehouse_reserve = 0
 
 	// webhook stuff
+	var/bot_service_control = FALSE
 	var/webhook_can_fire = TRUE
 	var/webhook_address = null
 	var/webhook_key = null
@@ -461,6 +462,9 @@ var/list/gamemode_cache = list()
 					else
 						config.persistence_reboot_hour = -1
 						log_misc("Configuration: PERSISTENCE_REBOOT_HOUR '[value]' is not an hour (0-23); daily maintenance reboot disabled.")
+
+				if ("bot_service_control")
+					bot_service_control = text2num(value) == 1
 
 				if ("webhook_can_fire")
 					config.webhook_can_fire = TRUE

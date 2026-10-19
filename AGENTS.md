@@ -987,6 +987,10 @@ initializer raises a type-mismatch exception. `tests/floor_decal_tracking` cover
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
 
+<!-- 2026-10-19: bot helper contention -->
+Bot control uses nonblocking flock and returns busy (75) without systemctl or
+cooldown writes under contention. The draft unit remains disabled pending
+independent game supervision and native bot-restart/game-survival acceptance.
 <!-- 2026-10-19: serializer profile admission -->
 Test-only save profiling starts after save_world_contents accepts its operation
 token. Never wrap the public Save_World entry on current sources: busy/reentrant
