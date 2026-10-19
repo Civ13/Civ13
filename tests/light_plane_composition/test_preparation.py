@@ -14,6 +14,7 @@ class Preparation(unittest.TestCase):
     def test_exact_source_and_controls(self):
         expected = (ROOT / runner.PLANE).read_text()
         self.assertEqual(runner.prepare()["production.dm"], expected)
+        self.assertEqual(runner.prepare()["coverage.dm"], (ROOT / "code/modules/lighting/lighting_composition.dm").read_text())
         for control, replacement in (("bypass", "FALSE"), ("ordinary", "TRUE")):
             self.assertEqual(runner.prepare(control)["production.dm"], expected.replace(
                 "mymob && mymob.see_invisible >= INVISIBILITY_LEVEL_TWO", replacement))

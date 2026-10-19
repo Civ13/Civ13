@@ -4,6 +4,7 @@ import importlib.util
 import os
 from pathlib import Path
 import re
+import shutil
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -17,7 +18,6 @@ def prepare(control=None, enabled=True):
         assert source.count(anchor) == 1
         source = source.replace(anchor, "FALSE" if control == "bypass" else "TRUE")
     coverage = (ROOT / "code/modules/lighting/lighting_composition.dm").read_text()
-    coverage = coverage.replace("'icons/effects/icon.png'", "'" + (ROOT / "icons/effects/icon.png").as_posix() + "'")
     if control == "coverage":
         coverage = coverage.replace("\tif(needed && !retained)\n\t\tnew", "\tif(FALSE && !retained)\n\t\tnew")
     return {"production.dm": source, "coverage.dm": coverage,
@@ -39,6 +39,9 @@ def main():
         out = Path(tmp)
         for name, text in prepare(args.negative_control, not args.disabled).items():
             (out / name).write_text(text)
+        resource = out / "icons/effects/icon.png"
+        resource.parent.mkdir(parents=True)
+        shutil.copyfile(ROOT / "icons/effects/icon.png", resource)
         compiler = args.byond_bin / ("dm.exe" if os.name == "nt" else "DreamMaker")
         daemon = args.byond_bin / ("dd.exe" if os.name == "nt" else "DreamDaemon")
         flags = 0x8 if os.name == "nt" else 0

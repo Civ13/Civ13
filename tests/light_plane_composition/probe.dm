@@ -25,6 +25,7 @@ var/checks = 0
 		check(value[i] == expected[i], "[label] coefficient [i]")
 
 /atom/movable
+	var/anchored = FALSE
 	var/simulated = FALSE
 	var/should_save = TRUE
 /turf
