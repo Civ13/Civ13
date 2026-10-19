@@ -30,10 +30,15 @@ def run(command, work, role, deadline):
     receipt = dict(command=command, reaped=False)
     child = None
     started = time.monotonic()
+    # Git otherwise maps up to 1 GiB of a packed repository per window,
+    # exceeding the child's 512 MiB address-space bound during source reads.
+    environment = dict(os.environ, GIT_CONFIG_COUNT='2',
+                       GIT_CONFIG_KEY_0='core.packedGitWindowSize', GIT_CONFIG_VALUE_0='16m',
+                       GIT_CONFIG_KEY_1='core.packedGitLimit', GIT_CONFIG_VALUE_1='32m')
     try:
         with (work / (role + '.stdout')).open('w') as out, (work / (role + '.stderr')).open('w') as err:
             child = subprocess.Popen(command, cwd=work, stdout=out, stderr=err,
-                                     start_new_session=True, preexec_fn=limits)
+                                     start_new_session=True, preexec_fn=limits, env=environment)
             receipt['pid'] = child.pid
             child.wait(timeout=remaining)
             if child.returncode:

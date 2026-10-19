@@ -153,3 +153,10 @@ receipts remain source-only; `native-ci.json` separately reports actual executio
 Seventeen offline tests currently pass, including Linux child timeout/reaping,
 result rejection and all prior source/resource contracts. Native Linux evidence
 must still come from the exact-head CI run; adding the lane is not a passing run.
+
+The first Linux CI attempt at `0a010e4503741b10f9d78da6291166ad7516b85e`
+failed during source preparation: Git's default packed-file mapping exceeded the
+512 MiB child address-space limit. No native fixture process ran. The CI runner
+now bounds Git mapping windows to 16 MiB and its mapping cache to 32 MiB through
+child-only environment settings, preserving every process limit. An additional
+offline test runs actual source preparation under those same limits.

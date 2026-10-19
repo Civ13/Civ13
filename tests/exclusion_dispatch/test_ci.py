@@ -58,6 +58,15 @@ class LinuxCITests(unittest.TestCase):
             self.assertNotEqual(receipt['returncode'], 0)
             self.assertIn('error', receipt)
 
+    def test_actual_source_preparation_with_bounded_git_mapping(self):
+        with tempfile.TemporaryDirectory() as temp:
+            work = Path(temp)
+            packet = work / 'source.json'
+            ci.run([sys.executable, str(ci.HERE / 'run.py'), '--source-only',
+                    '--output', str(packet)], work, 'prepare', time.monotonic() + 40)
+            self.assertFalse(json.loads(packet.read_text())['native_execution'])
+            self.assertTrue((work / 'source.sources/production.dm').is_file())
+
     def test_clean_process_retains_logs_and_receipt(self):
         with tempfile.TemporaryDirectory() as temp:
             work = Path(temp)
