@@ -17,6 +17,8 @@ class AccessoryPreparation(unittest.TestCase):
                     expected = expected.replace('\t\tuser.put_in_hands(src)\n', '\t\tusr.put_in_hands(src)\n')
                 if control == 'fork-guard':
                     expected = expected.replace('\tif (user)\n', '\tif (usr)\n')
+                declaration = '/obj/item/clothing/accessory/proc/on_removed(var/mob/user)\n'
+                expected = expected.replace(declaration, declaration + '\taccessory_actor_observe(src, user, usr, "' + (control or 'production') + '")\n')
                 self.assertEqual(body, expected)
                 self.assertIn('\t\t' + ('usr' if control else 'user') + '.put_in_hands(src)', body)
                 self.assertIn('\tif (' + ('usr' if control == 'fork-guard' else 'user') + ')', body)
@@ -36,22 +38,24 @@ class AccessoryPreparation(unittest.TestCase):
         labels = [f'check-{i}' for i in range(266)] + list(CONTROLS.values())
         labels += [label.rsplit('/', 1)[0] + '/completed' for label in CONTROLS.values()]
         good = dict(case_count=27, check_count=270, runtime_error=False, failed_labels=[],
-                    checks=[dict(label=label, passed=True) for label in labels])
+                    checks=[dict(label=label, passed=True) for label in labels],
+                    body_witnesses=[dict(case=str(i), body_marker='production') for i in range(27)])
         verify_result(good, None)
         for changed in (dict(case_count=26), dict(check_count=269), dict(runtime_error=True),
                         dict(failed_labels=['unrelated'])):
             with self.assertRaises(ValueError):
                 verify_result(dict(good, **changed), None)
         for control in CONTROLS:
+            witness = [dict(case=str(i), body_marker=control) for i in range(27)]
             with self.assertRaises(ValueError):
                 verify_result(dict(good, failed_labels=['unrelated']), control)
             checks = [dict(label=label, passed=label != CONTROLS[control]) for label in labels]
-            verify_result(dict(good, checks=checks, failed_labels=[CONTROLS[control]]), control)
+            verify_result(dict(good, checks=checks, failed_labels=[CONTROLS[control]], body_witnesses=witness), control)
             completion = CONTROLS[control].rsplit('/', 1)[0] + '/completed'
             failed = [label for label in labels if label in (CONTROLS[control], completion)]
             checks = [dict(label=label, passed=label not in failed) for label in labels]
             with self.assertRaises(ValueError):
-                verify_result(dict(good, checks=checks, failed_labels=failed), control)
+                verify_result(dict(good, checks=checks, failed_labels=failed, body_witnesses=witness), control)
         with self.assertRaises(ValueError):
             verify_result(dict(good, checks=[]), None)
 

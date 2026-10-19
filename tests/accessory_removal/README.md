@@ -35,6 +35,12 @@ instead of generating DNA/account prints. The clothing icon callback counts
 refreshes. Initial attachment, hands-full state and payload placement are fixture
 setup. No strip UI or connected-client acceptance is claimed.
 
+Generated removal bodies include a read-only observer call recording their
+literal profile marker, explicit actor and ambient `usr` role. Every native
+receipt must contain all 27 matching body witnesses. This distinguishes source
+selection/execution from assumptions about context propagation; it changes no
+removal branch, inventory call or acceptance oracle.
+
 There are 27 explicit cases (nine actor/hand states across tie, holster and sheath)
 and 270 per-label checks. Each verifies completion, parent/overlay cleanup,
 correct hands or turf, fingerprint actor, caller membership, payload identity,

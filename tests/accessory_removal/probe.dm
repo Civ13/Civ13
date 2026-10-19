@@ -19,6 +19,7 @@ var/global/list/accessory_actor_checks = list()
 var/global/list/accessory_actor_failed = list()
 var/global/accessory_actor_runtime_error = FALSE
 var/global/accessory_actor_cases = 0
+var/global/list/accessory_actor_witnesses = list()
 
 /world/Error(exception/E)
 	accessory_actor_runtime_error = TRUE
@@ -42,10 +43,27 @@ var/global/accessory_actor_cases = 0
 /obj/item/clothing/accessory
 	var/list/probe_print_actors = list()
 	var/probe_print_calls = 0
+	var/probe_body_marker
+	var/mob/probe_body_user
+	var/mob/probe_body_usr
 /obj/item/clothing/accessory/add_fingerprint(mob/living/M, ignoregloves=FALSE)
 	probe_print_calls++
 	if (M)
 		probe_print_actors += M
+
+/proc/accessory_actor_observe(obj/item/clothing/accessory/A, mob/user, mob/ambient, marker)
+	A.probe_body_marker = marker
+	A.probe_body_user = user
+	A.probe_body_usr = ambient
+
+/proc/accessory_actor_role(mob/M, mob/actor, mob/other)
+	if (!M)
+		return "null"
+	if (M == actor)
+		return "actor"
+	if (M == other)
+		return "other"
+	return "unexpected"
 
 /proc/accessory_actor_check(condition, label)
 	accessory_actor_checks += list(list("label"=label, "passed"=!!condition))
@@ -94,6 +112,7 @@ var/global/accessory_actor_cases = 0
 		usr = other
 	if (mode == "same_usr")
 		usr = actor
+	var/requested_usr = accessory_actor_role(usr, actor, other)
 	var/completed = TRUE
 	try
 		if (no_argument)
@@ -104,6 +123,7 @@ var/global/accessory_actor_cases = 0
 		completed = FALSE
 	usr = null
 	var/id = "[kind]/[mode]"
+	accessory_actor_witnesses += list(list("case"=id, "body_marker"=A.probe_body_marker, "requested_usr"=requested_usr, "body_usr"=accessory_actor_role(A.probe_body_usr, actor, other), "body_user"=accessory_actor_role(A.probe_body_user, actor, other)))
 	accessory_actor_check(completed, "[id]/completed")
 	accessory_actor_check(!A.has_suit, "[id]/suit_backlink")
 	var/overlay_ok = S.overlays.len == 1
@@ -157,6 +177,6 @@ var/global/accessory_actor_cases = 0
 	for (var/kind in types)
 		for (var/mode in list("null_usr", "different_usr", "same_usr", "null_user", "null_user_other_usr", "full_hands", "lying", "no_argument", "no_argument_null_usr"))
 			accessory_actor_case(types[kind], kind, mode)
-	text2file(json_encode(list("commit"=world.params["tested_commit"], "case_count"=accessory_actor_cases, "check_count"=accessory_actor_checks.len, "failed_labels"=accessory_actor_failed, "runtime_error"=accessory_actor_runtime_error, "checks"=accessory_actor_checks)), "result.json")
+	text2file(json_encode(list("commit"=world.params["tested_commit"], "case_count"=accessory_actor_cases, "check_count"=accessory_actor_checks.len, "failed_labels"=accessory_actor_failed, "runtime_error"=accessory_actor_runtime_error, "checks"=accessory_actor_checks, "body_witnesses"=accessory_actor_witnesses)), "result.json")
 	world.log << "COMPLETE accessory actor fixture"
 	del(world)

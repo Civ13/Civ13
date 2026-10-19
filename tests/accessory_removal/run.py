@@ -41,6 +41,10 @@ def sources(root=ROOT, control=None):
                                  '\t\tusr.put_in_hands(src)\n')
     if control == 'fork-guard':
         accessory = replace_once(accessory, '\tif (user)\n', '\tif (usr)\n')
+    # Read-only execution witness: identify the actual compiled removal body.
+    declaration = '/obj/item/clothing/accessory/proc/on_removed(var/mob/user)\n'
+    observer = '\taccessory_actor_observe(src, user, usr, "' + (control or 'production') + '")\n'
+    accessory = replace_once(accessory, declaration, declaration + observer)
     dme = (root / 'civ13.dme').read_text(encoding='utf-8')
     for old, new in [('code\\world.dm', PREFIX + '_world.dm'),
                      ('code\\controllers\\mc\\globals.dm', PREFIX + '_globals.dm'),
@@ -63,12 +67,14 @@ def prepare(evidence, control=None, root=ROOT):
              'code/game/objects/items/clothing/under/accessories/holster.dm',
              'code/game/objects/items/clothing/under/accessories/sheaths.dm',
              'code/game/mob/inventory.dm', 'code/game/mob/living/carbon/human/human.dm',
-             'tests/accessory_removal/probe.dm', 'scripts/gameplay_bridge/prepare_native.py']
+             'tests/accessory_removal/probe.dm', 'tests/accessory_removal/run.py',
+             'tests/accessory_removal/test_sources.py', 'scripts/gameplay_bridge/prepare_native.py']
     metadata = dict(head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
                     control=control, required_failure=CONTROLS.get(control),
                     source_sha256={p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in paths},
                     generated_sha256={p: hashlib.sha256(s.encode()).hexdigest() for p, s in generated.items()},
                     seams=['existing isolated_startup world/global constructor adapter',
+                           'read-only generated-body profile/user/usr observer',
                            'human New and inventory icon updates only; production hand placement retained',
                            'fingerprint argument recorder, no DNA/account attribution claim',
                            'fixture attachment setup and clothing icon-update counter'],
@@ -86,6 +92,9 @@ def verify_result(result, control):
     failed = result.get('failed_labels', [])
     if failed != [c['label'] for c in checks if not c['passed']]:
         raise ValueError('Failure list disagrees with native checks')
+    witnesses = result.get('body_witnesses', [])
+    if len(witnesses) != 27 or len({w['case'] for w in witnesses}) != 27 or any(w['body_marker'] != (control or 'production') for w in witnesses):
+        raise ValueError('Wrong or missing compiled removal-body witness')
     if control:
         if CONTROLS[control] not in failed:
             raise ValueError('Control missed its named actor-custody oracle')
@@ -107,6 +116,8 @@ def main():
         parser.error('Explicit pinned BYOND bin required for native execution')
     evidence = args.evidence_dir.resolve()
     generated, metadata = prepare(evidence, args.negative_control)
+    print(json.dumps(dict(head=metadata['head'], control=args.negative_control,
+                          generated_sha256=metadata['generated_sha256']), sort_keys=True), flush=True)
     if args.prepare_only:
         print('PASS source preparation; native compilation/runtime UNRUN')
         return
