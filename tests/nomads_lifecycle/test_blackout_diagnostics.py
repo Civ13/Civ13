@@ -48,7 +48,16 @@ def audit(lifecycle, source):
         errors.append('private/unbounded field')
     if re.search(r'\b(?:call|spawn|sleep|Life|reset_view|update_sight|forceMove|shell|world\.Export|locate)\s*\(', source.replace('locate(T.x + dx, T.y + dy, T.z)', '')):
         errors.append('effectful or arbitrary access')
-    if re.search(r'\b(?:C|M|N|H|L|P|S|T|O|A|K)(?:\.\w+)+\s*(?:=(?!=)|\+=|-=|\+\+|--)', source):
+    # Exact diagnostic cache writes are authorized; gameplay writes remain banned.
+    checked = source
+    for permitted in ('if(!C.blackout_click_session) C.blackout_click_session = input["operation"]',
+                      'M.blackout_click_owner = own_host',
+                      'M.blackout_click_client_ref = "\\ref[C]:[C.blackout_click_session]"',
+                      'M.blackout_click_counts = list()',
+                      'M.blackout_click_started = world.time',
+                      'M.blackout_click_expires = world.time + 3000'):
+        checked = checked.replace(permitted, '')
+    if re.search(r'\b(?:C|M|N|H|L|P|S|T|O|A|K)(?:\.\w+)+\s*(?:=(?!=)|\+=|-=|\+\+|--)', checked):
         errors.append('gameplay state write')
     for literal in ('row["overlay_luminosity"] = O.luminosity',
                     '"icon" = T.icon ? blackout_diagnostic_scalar("[T.icon]") : null',
@@ -71,10 +80,62 @@ def audit(lifecycle, source):
             errors.append('missing bounded ownership diagnostic')
     if re.search(r'\b(?:icon|icon_states|fcopy_rsc|update_icon|update_overlay|get_window_coeff)\s*\(', source):
         errors.append('derived appearance access')
+    for literal in ('"mouse_opacity" = M.mouse_opacity', '"alpha" = M.alpha',
+                    'M.HUDneed ? M.HUDneed["hover name"] : null',
+                    'if(!istype(hover_label, /obj/screen/hover_name)) hover_label = null',
+                    'blackout_diagnostic_display(hover_label, C)',
+                    'hover_label ? (hover_label.parentmob == M) : FALSE',
+                    'hover_label ? !!hover_label.hover_target : FALSE',
+                    'hover_label ? !!length(hover_label.maptext) : FALSE'):
+        if literal not in source:
+            errors.append('missing bounded hover diagnostic')
+    hover_checked = source.replace('!!length(hover_label.maptext)', 'FALSE').replace(
+        '!!hover_label.hover_target', 'FALSE')
+    if re.search(r'\b(?:maptext|hover_target)\b', hover_checked):
+        errors.append('raw hover text or target access')
+    if re.search(r'\b(?:resolve|view|get_visible_name|get_hover_name|target_visible|set_target|clear_target|process)\s*\(', source):
+        errors.append('effectful hover getter')
+    for literal in ('"body_kelvin" = H.bodytemperature', '"cold_wetness" = H.cold_wetness',
+                    '"cold_level_1_kelvin" = H.species.cold_level_1',
+                    '"map_civilizations" = map ? map.civilizations : null',
+                    'thermal_area.weather', 'thermal_hud.icon_state',
+                    'for(var/thermal_slot in list("head", "suit", "uniform", "shoes", "gloves", "mask"))'):
+        if literal not in source:
+            errors.append('missing bounded thermal diagnostic')
+    if re.search(r'\b(?:get_temp|get_cold_protection|get_cold_coverage|find_trait|handle_environment|stabilize_body_temperature)\s*\(', source):
+        errors.append('derived or effectful thermal access')
     return errors
 
 
 class SourceBoundary(unittest.TestCase):
+    def test_thermal_raw_fields_and_getter_controls(self):
+        lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
+        source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
+        for field in ('H.bodytemperature', 'H.cold_wetness', 'H.species.cold_level_1',
+                      'thermal_area.weather', 'thermal_hud.icon_state'):
+            with self.subTest(field=field):
+                self.assertTrue(audit(lifecycle, source.replace(field, 'null')))
+        for effect in ('get_temp(H)', 'H.get_cold_protection(244)', 'H.find_trait("Cold Tolerance")',
+                       'H.handle_environment()', 'H.stabilize_body_temperature()'):
+            with self.subTest(effect=effect):
+                self.assertTrue(audit(lifecycle, source + '\n/proc/unsafe()\n\t' + effect + '\n'))
+
+    def test_hover_observation_privacy_and_effect_controls(self):
+        lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
+        source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()
+        for field in ('M.mouse_opacity', '"alpha" = M.alpha',
+                      'hover_label.parentmob == M', '!!hover_label.hover_target',
+                      '!!length(hover_label.maptext)'):
+            with self.subTest(field=field):
+                self.assertTrue(audit(lifecycle, source.replace(field, 'null')))
+        for unsafe in ('return hover_label.maptext', 'return hover_label.hover_target',
+                       'return "\\ref[hover_label.hover_target]"',
+                       'hover_label.hover_target.resolve()', 'view(C.view, C.eye)',
+                       'M.get_visible_name()', 'hover_label.process()',
+                       'M.get_hover_name()', 'hover_label.target_visible(M)'):
+            with self.subTest(unsafe=unsafe):
+                self.assertTrue(audit(lifecycle, source + '\n/proc/unsafe()\n\t' + unsafe + '\n'))
+
     def test_bounded_ownership_omission_controls(self):
         lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
         source = (ROOT / 'code/modules/persistence/blackout_diagnostics.dm').read_text()

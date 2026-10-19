@@ -188,13 +188,15 @@ Proc for attack log creation, because really why not
 #define CIV13_GAMEPLAY_WAIT_GUARDS
 #endif
 #ifdef CIV13_GAMEPLAY_BRIDGE
-/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/gameplay_action_lease/gameplay_context = null)
+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null)
 #else
-/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE)
+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null)
 #endif
 	if (!user || !user.may_do_after)
 		return FALSE
 #ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!isnull(gameplay_context) && !isnull(mining_context))
+		return FALSE
 	var/datum/gameplay_action_lease/gameplay_lease
 	if (!isnull(gameplay_context))
 		if (!istype(gameplay_context, /datum/gameplay_action_lease))
@@ -203,6 +205,10 @@ Proc for attack log creation, because really why not
 		if (!gameplay_lease.claim_gather_wait(user, target))
 			return FALSE
 #endif
+	if (!isnull(mining_context) && (!istype(mining_context, /datum/pickaxe_mining_action) || !mining_context.claim(user, target)))
+		return FALSE
+	if (mining_context)
+		mining_context.wait_started = TRUE
 	user.survival_action_started()
 
 	if (check_for_repeats)
@@ -220,6 +226,8 @@ Proc for attack log creation, because really why not
 	var/datum/progressbar/progbar
 	if (progress)
 		progbar = new(user, delay, target)
+		if (mining_context)
+			mining_context.progressbar = progbar
 
 	var/endtime = world.time + delay
 	var/starttime = world.time
@@ -231,6 +239,9 @@ Proc for attack log creation, because really why not
 			. = FALSE
 			break
 #endif
+		if (mining_context && !mining_context.valid(user, target))
+			. = FALSE
+			break
 		if (progress)
 			progbar.update(world.time - starttime)
 
@@ -251,8 +262,12 @@ Proc for attack log creation, because really why not
 			if (user.get_active_hand() != holding)
 				. = FALSE
 				break
+	if (mining_context && !mining_context.valid(user, target))
+		. = FALSE
 	if (user)
 		user.may_do_after = TRUE
+		if (mining_context)
+			mining_context.wait_started = FALSE
 		user.survival_action_finished()
 
 	if (progbar)
@@ -261,6 +276,8 @@ Proc for attack log creation, because really why not
 	if (gameplay_lease && !gameplay_lease.valid())
 		. = FALSE
 #endif
+	if (mining_context)
+		mining_context.progressbar = null
 
 //Returns a list of all mobs with their name
 /proc/getmobs()

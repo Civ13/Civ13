@@ -422,7 +422,7 @@
 		M.Stun(5)
 		M.Weaken(5)
 
-/datum/reagent/condensedcapsaicin/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+/datum/reagent/capsaicin/condensed/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
 	if (ishuman(M))
 		var/mob/living/human/H = M
 		if (H.species && (H.species.flags & NO_PAIN))
@@ -684,6 +684,7 @@
 
 /datum/reagent/drink/kiraspecial
 	name = "Kira Special"
+	id = "kiraspecial"
 	description = "Long live the guy who everyone had mistaken for a girl. Baka!"
 	taste_description = "fruity sweetness"
 	color = "#cccc99"
@@ -756,10 +757,27 @@
 
 /datum/reagent/drink/coffee/cafe_latte
 	name = "Cafe Latte"
+	id = "cafe_latte"
 	description = "A nice, strong and tasty beverage while you are reading."
 	taste_description = "bitter creamy coffee"
 	color = "#c65905"
 	adj_temp = 5
+
+/datum/reagent/drink/tea/icetea
+	name = "Iced Tea"
+	id = "icetea"
+	description = "No relation to a certain rap artist/actor."
+	taste_description = "sweet tea"
+	color = "#104038"
+	adj_temp = -5
+
+/datum/reagent/drink/coffee/icecoffee
+	name = "Iced Coffee"
+	id = "icecoffee"
+	description = "Coffee and ice, refreshing and cool."
+	taste_description = "bitter coldness"
+	color = "#102838"
+	adj_temp = -5
 
 /datum/reagent/drink/hot_coco
 	name = "Hot Chocolate"
@@ -841,6 +859,7 @@
 	taste_description = "nothing"
 
 /datum/reagent/drink/health
+	name = null // abstract parent; not registered
 /datum/reagent/drink/health/minor
 	name = "Minor Healing"
 	id = "minor"
@@ -937,6 +956,7 @@
 		M.updatehealth()
 
 /datum/reagent/drink/stamina
+	name = null // abstract parent; not registered
 /datum/reagent/drink/stamina/minor
 	name = "Minor Stamina"
 	id = "minor_stamina"
@@ -1071,6 +1091,7 @@
 
 //Base type for alchoholic drinks containing coffee
 /datum/reagent/ethanol/coffee
+	name = null // abstract parent; not registered
 	overdose = 45
 
 /datum/reagent/ethanol/coffee/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
@@ -1320,6 +1341,38 @@
 	description = "For the lactose-intolerant. Still as classy as a White Russian."
 	taste_description = "bitterness"
 	color = "#360000"
+	strength = 35
+
+/datum/reagent/ethanol/white_russian
+	name = "White Russian"
+	id = "whiterussian"
+	description = "That's just, like, your opinion, man..."
+	taste_description = "bitter cream"
+	color = "#A68340"
+	strength = 50
+
+/datum/reagent/ethanol/screwdrivercocktail
+	name = "Screwdriver"
+	id = "screwdrivercocktail"
+	description = "Vodka mixed with plain ol' orange juice."
+	taste_description = "oranges"
+	color = "#A68310"
+	strength = 35
+
+/datum/reagent/ethanol/tequilla_sunrise
+	name = "Tequila Sunrise"
+	id = "tequillasunrise"
+	description = "Tequila and orange juice. Much like a Screwdriver, only Mexican."
+	taste_description = "oranges"
+	color = "#FFE48C"
+	strength = 35
+
+/datum/reagent/ethanol/vodkamartini
+	name = "Vodka Martini"
+	id = "vodkamartini"
+	description = "Vodka with gin. Not quite how 007 enjoyed it, but still delicious."
+	taste_description = "shaken, not stirred"
+	color = "#664300"
 	strength = 35
 
 /datum/reagent/ethanol/bloody_mary

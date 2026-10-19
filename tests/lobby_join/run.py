@@ -25,7 +25,7 @@ def main():
     phases = (
         ('compile', [str(compiler), '-max_errors', '0', 'control.dme']),
         ('runtime', [str(daemon), 'control.dmb', *(['-invisible', '-close'] if os.name == 'nt' else []),
-                     '-safe', '-log', 'native.log']),
+                     '-trusted', '-log', 'native.log']),
     )
     for name, command in phases:
         try:

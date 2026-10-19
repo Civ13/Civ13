@@ -1,6 +1,6 @@
 # Disabled bridge and typed gather verification
 
-Base: public merged670f415240c1634dcfb6e373da15cd86d84d676a.
+Base: reviewed master 75890d883190355e430f9958fd102864ee88429a.
 Original aeaf checkout/evidence is preserved separately. Production DME excludes
 this bridge and defines no feature macro. No deployment or ordinary-client acceptance.
 
@@ -32,7 +32,7 @@ Join, natural Life, real HTTP transport or ordinary-client E2E.
 
 wait_overlay.py prints/validates the current explicit helper diff. It does not
 apply source. do_after.guard.patch matches the actual helper. Disabled full-file
-projections match public670, including survival callbacks and stock overlap rules.
+projections match reviewed master, including survival callbacks and stock overlap rules.
 
 Historical native probes are retained for provenance only. prepare_native.py
 refuses their obsolete ambient lease/craft profiles. prepare_gather.py builds
@@ -65,3 +65,17 @@ compile_client_gather.py CI target does not alter/run any of the six accepted
 headless profiles. Genuine two-client consent/native assignment, natural pickup,
 full startup geometry and ordinary E2E/cleanup remain not_run. See the normal-
 startup candidate section in docs/gameplay-gather-acceptance.md.
+
+## Mining integration refresh
+
+The optional ninth `do_after` argument remains `mining_context`; opt-in gather
+adds `gameplay_context` in the tenth slot and uses named forwarding. Supplying
+both is rejected before either one-use claim or any survival callback. The
+four disabled projections match reviewed master, including tall-grass dispatch.
+Enabled gather remains deliberately limited to its reviewed turf handler.
+
+CI runs the actual headless gather fixture and all six omission controls with
+stock/disabled/enabled-null parity, then the mining fixture with the bridge both
+disabled and enabled. Mining covers cancellation, one-use claims, positional
+compatibility, dual-context rejection and owned progress cleanup. Those tests
+use inert client/authority boundaries, not connected-client acceptance.

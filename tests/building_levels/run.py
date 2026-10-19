@@ -1,4 +1,7 @@
-"""Offline production-path building regression. Never opens a client or server port."""
+"""Production-path building regressions with fixture startup.
+
+Probes close the native port in world.New(); this is not OS network isolation.
+"""
 import argparse
 import hashlib
 import json
@@ -13,6 +16,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 CORE = 'code/game/objects/building_levels.dm'
 CONTROLS = {
+    'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),
     'removal': ('\t\tqdel(C)', '\t\treturn', 'FAIL: roof removal removes floor'),
     'foundation': ('if (building_floor_height(get_turf(A), depth, max(h + 1, required_height)) >= 0)', 'if (TRUE)', 'FAIL: strong upper pillar cannot bypass weaker foundation'),
     'persistence': ('"building_pair_id", "building_floor_z", "health"', '"building_floor_z", "health"', 'FAIL: disk restored slab links'),
@@ -22,13 +26,20 @@ CONTROLS = {
 
 
 
-def source_for(control):
+def source_for(control, allocation_interleave=False):
     source = (ROOT / CORE).read_text(encoding='utf-8')
     if control:
         old, new, _ = CONTROLS[control]
         if source.count(old) != 1:
             raise RuntimeError('Mutation target missing or ambiguous')
         source = source.replace(old, new, 1)
+    if allocation_interleave:
+        marker = '\tworld.maxz = target_z\n'
+        if source.count(marker) != 1:
+            raise RuntimeError('Allocation scheduling marker changed')
+        # Diagnostic scheduling adapter only: allow the real deferred dirt
+        # lighting constructor to run before real raw sky replacement.
+        source = source.replace(marker, marker + '\tsleep(6)\n', 1)
     return source
 
 
@@ -38,10 +49,31 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--negative-control', choices=CONTROLS)
     parser.add_argument('--source-check', action='store_true')
+    parser.add_argument('--lighting-gravity', action='store_true',
+                        help='Actual lighting startup and renderer/item/mob sky entry; no client rendering')
+    parser.add_argument('--lighting-roof', action='store_true',
+                        help='Actual first-roof allocation, distant ground and torch lifecycle')
+    parser.add_argument('--allocation-interleave', action='store_true',
+                        help='Diagnostic six-tick pause after native expansion; not unadapted timing')
     args = parser.parse_args()
+    if args.lighting_gravity and args.lighting_roof:
+        parser.error('Choose one focused lighting probe')
+    if args.allocation_interleave and not args.lighting_roof:
+        parser.error('--allocation-interleave requires --lighting-roof')
+    if args.negative_control == 'lighting-gravity' and not (args.lighting_gravity or args.lighting_roof):
+        parser.error('lighting-gravity control requires a focused lighting probe')
+    if (args.lighting_gravity or args.lighting_roof) and args.negative_control not in (None, 'lighting-gravity'):
+        parser.error('Use only lighting-gravity control with this probe')
+    if args.lighting_roof and args.negative_control and not args.allocation_interleave:
+        parser.error('Roof negative control requires explicit diagnostic --allocation-interleave')
+    probe = ('tests/building_levels/lighting_gravity_probe.dm' if args.lighting_gravity else
+             'tests/building_levels/lighting_roof_probe.dm' if args.lighting_roof else
+             'tests/building_levels/probe.dm')
     if args.source_check:
         for control in (None, *CONTROLS):
             source_for(control)
+            if args.lighting_roof:
+                source_for(control, True)
         print('PASS: source and unique mutation targets; no compiler/runtime launched')
         return
     if not args.byond_bin or not args.output:
@@ -63,8 +95,12 @@ def main():
              'code/game/turfs/flooring/flooring_premade.dm',
              'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm',
              'code/modules/persistence/functions.dm',
-             'tests/building_levels/probe.dm', 'tests/building_levels/run.py']
-    metadata = {'head_sha': commit, 'control': args.negative_control,
+             probe, 'tests/building_levels/run.py',
+             'code/modules/lighting/lighting_system.dm', 'code/modules/lighting/lighting_turf.dm',
+             'code/modules/lighting/lighting_overlay.dm', 'code/modules/lighting/lighting_corner.dm',
+             'code/game/turfs/turf.dm', 'code/game/atoms_movable.dm']
+    metadata = {'head_sha': commit, 'control': args.negative_control, 'probe': probe,
+                'allocation_pause_ticks': 6 if args.allocation_interleave else 0,
                 'source_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}}
     (args.output / 'metadata.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
     (args.output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
@@ -83,7 +119,7 @@ def main():
         if globals_source.count(marker) != 1:
             raise RuntimeError('Controller isolation marker changed')
         generated[2].write_text(globals_source.replace(marker, marker + '\treturn\n', 1), encoding='utf-8')
-        generated[3].write_text(source_for(args.negative_control), encoding='utf-8')
+        generated[3].write_text(source_for(args.negative_control, args.allocation_interleave), encoding='utf-8')
         source = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', generated[1].name)
         source = source.replace('code\\controllers\\mc\\globals.dm', generated[2].name)
@@ -93,7 +129,7 @@ def main():
         else:
             source += '\n#include "' + generated[3].name + '"\n'
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
-        generated[0].write_text(source + '\n#include "tests/building_levels/probe.dm"\n', encoding='utf-8')
+        generated[0].write_text(source + '\n#include "' + probe + '"\n', encoding='utf-8')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=ROOT, capture_output=True, text=True, timeout=180, creationflags=flags)
         output = build.stdout + build.stderr
@@ -109,10 +145,10 @@ def main():
             shutil.copy2(ROOT / 'config/crafting/material_recipes_global.txt', work / 'config/crafting/material_recipes_global.txt')
             result = subprocess.run([str(daemon), str(work / generated[4].name),
                                      *(['-invisible', '-close'] if os.name == 'nt' else []),
-                                     '-safe', '-log', 'runtime.log'], cwd=work,
+                                     '-trusted', '-log', 'runtime.log'], cwd=work,
                                     capture_output=True, text=True, timeout=45, creationflags=flags)
             diagnostics = result.stdout + result.stderr
-            for filename in ('runtime.log', 'errors.txt', 'result.txt', 'fixture.json'):
+            for filename in ('runtime.log', 'errors.txt', 'result.txt', 'fixture.json', 'fixture.jsonl'):
                 path = work / filename
                 if path.exists():
                     shutil.copy2(path, args.output / filename)
@@ -120,7 +156,9 @@ def main():
                         diagnostics += path.read_text(encoding='utf-8', errors='replace')
             (args.output / 'daemon.log').write_text(result.stdout + result.stderr, encoding='utf-8')
             actual = (work / 'result.txt').read_text(encoding='utf-8').strip() if (work / 'result.txt').exists() else ''
-            expected = CONTROLS[args.negative_control][2] if args.negative_control else 'PASS: linked building levels'
+            expected = CONTROLS[args.negative_control][2] if args.negative_control else ('PASS: lighting gravity' if args.lighting_gravity else 'PASS: first roof lighting' if args.lighting_roof else 'PASS: linked building levels')
+            if args.lighting_roof and args.negative_control:
+                expected = 'FAIL: distant unroofed tile keeps one lighting overlay'
             if result.returncode or actual != expected or any(marker in diagnostics.lower() for marker in ('runtime error:', 'bug:', '## error:')):
                 raise RuntimeError(f'Expected {expected!r}, got {actual!r}; diagnostics: {diagnostics[-2500:]}')
             print(('PASS expected mutation: ' if args.negative_control else '') + actual)

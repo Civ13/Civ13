@@ -1,7 +1,7 @@
 """Reviewed first-gather conditional source projection; never executes DM.
 
 Restricted to two known conditional symbols. Not a general DM preprocessor.
-Pinned whole-file disabled hashes bind the public 670 source without Git objects.
+Pinned whole-file disabled hashes bind the reviewed master 75890d88 source without Git objects.
 """
 import hashlib
 import re
@@ -11,10 +11,10 @@ MARKER = "CIV13_GAMEPLAY_WAIT_GUARDS"
 PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
          "code/modules/gameplay_bridge/bridge.dm", "code/modules/gameplay_bridge/mechanics.dm")
 DISABLED_SHA256 = {
- PATHS[0]: "31002a014453dc9240b3dc39933d2d30a012b2769ee8ed704bd2057e2c1b2214",
- PATHS[1]: "2dd5710c82a07635608f29825eb30d3d15e47fc9ba9fdc50e22bf8b46ce2a9a7",
- PATHS[2]: "0e51dfc52f32c5729cff3a8cb18c4a21746f66968a5f5b9a37838f67e0ac3912",
- PATHS[3]: "d9dcfdf9d56086b86ec8a88db95c9f30bd84099567b9cb7bcefef188857ac73f",
+ PATHS[0]: "f048a7cc53fad9001161e2ee12d97c2b3f4ad9b51fad18e557a9d0c4e33c34fd",
+ PATHS[1]: "06768a7a93d6c49120ba66c1a67a33c227c398c274d87728317c38e82aae92ee",
+ PATHS[2]: "9a2f299490853811f6bb6c6bffaf25a1d1a4e92b1c7224b3c0e68c1bf01d53e9",
+ PATHS[3]: "ef11a72c838e5b704e6e88029964d04182ba8f9920dd4493c1a76ce956ca369f",
 }
 CLIENT_FILES = ("code/modules/client/client_procs.dm", "code/modules/client/movement.dm")
 

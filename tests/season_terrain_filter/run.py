@@ -66,7 +66,7 @@ def main():
         if os.name != 'nt':
             import resource
             cpu_start = resource.getrusage(resource.RUSAGE_CHILDREN)
-        command = [str(dd), 'probe.dmb'] + (['-invisible', '-close'] if os.name == 'nt' else []) + ['-safe', '-log', 'runtime.log']
+        command = [str(dd), 'probe.dmb'] + (['-invisible', '-close'] if os.name == 'nt' else []) + ['-trusted', '-log', 'runtime.log']
         process = subprocess.Popen(command, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=flags)
         try:
             stdout, stderr = process.communicate(timeout=180)

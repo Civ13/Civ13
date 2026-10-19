@@ -51,7 +51,7 @@ var/global/datum/ticker
     print(result.stdout)
     if result.returncode: raise SystemExit(result.returncode)
     try:
-        result = subprocess.run([str(a.byond_bin / 'dd.exe'), 'probe.dmb', '-safe', '-invisible', '-close', '-log', 'runtime.log'], cwd=work, capture_output=True, text=True, timeout=30)
+        result = subprocess.run([str(a.byond_bin / 'dd.exe'), 'probe.dmb', '-trusted', '-invisible', '-close', '-log', 'runtime.log'], cwd=work, capture_output=True, text=True, timeout=30)
     except subprocess.TimeoutExpired:
         print((work / 'runtime.log').read_text() if (work / 'runtime.log').exists() else 'No runtime log', flush=True)
         raise

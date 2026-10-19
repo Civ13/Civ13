@@ -201,7 +201,7 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 				actions += "drink"
 #else
 		if (wait_guards_ready())
-			if (A.type == /turf/floor/grass && sharp_flint())
+			if (grass_target(A) && sharp_flint())
 				actions += "gather"
 			if (water_target(A))
 				if (held_cup())

@@ -75,7 +75,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-process-loops-') as directory:
     (out/'compile.log').write_text(compile_log)
     print(compile_log,flush=True)
     if build.returncode or '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned native compilation failed')
-    run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-safe','-log','runtime.log'],cwd=out,capture_output=True,timeout=20,creationflags=flags)
+    run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-trusted','-log','runtime.log'],cwd=out,capture_output=True,timeout=20,creationflags=flags)
     (out/'daemon.log').write_bytes(run.stdout+run.stderr)
     log = (out/'runtime.log').read_text(errors='replace')
     print(log,flush=True)

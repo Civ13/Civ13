@@ -21,6 +21,9 @@
 	var/obj/item/weapon/flint/F = actor ? actor.get_active_hand() : null
 	return F && (F.type == /obj/item/weapon/flint || F.type == /obj/item/weapon/flint/sharpened) && F.loc == actor && F.sharpened ? F : null
 
+/datum/gameplay_bridge/proc/grass_target(atom/A)
+	return A && (A.type == /turf/floor/grass || A.type == /obj/structure/wild/tallgrass || A.type == /obj/structure/wild/tallgrass2)
+
 /datum/gameplay_bridge/proc/held_cup()
 	var/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/C = actor ? actor.get_active_hand() : null
 	return C && C.type == /obj/item/weapon/reagent_containers/food/drinks/drinkingglass && C.loc == actor && C.is_open_container() && C.reagents && C.reagents.total_volume < C.volume ? C : null
@@ -212,7 +215,7 @@
 #ifdef CIV13_GAMEPLAY_BRIDGE
 		return owner.wait_guards_ready("gather") && target.type == /turf/floor/grass && owner.sharp_flint() == tool
 #else
-		return target.type == /turf/floor/grass && owner.sharp_flint() == tool
+		return owner.grass_target(target) && owner.sharp_flint() == tool
 #endif
 	if (kind == "refill")
 #ifdef CIV13_GAMEPLAY_BRIDGE
@@ -328,21 +331,26 @@
 #ifdef CIV13_GAMEPLAY_BRIDGE
 	if (kind == "gather" && wait_guards_ready("gather") && target.type == /turf/floor/grass)
 #else
-	if (kind == "gather" && wait_guards_ready() && target.type == /turf/floor/grass)
+	if (kind == "gather" && wait_guards_ready() && grass_target(target))
 #endif
 		var/obj/item/weapon/flint/F = sharp_flint()
 		var/before = stock(/obj/item/stack/grass_cuttings)
 		if (!F || before < 0)
 			return FALSE
-		var/turf/floor/grass/G = target
 #ifdef CIV13_GAMEPLAY_BRIDGE
+		var/turf/floor/grass/G = target
 		if (!worker_context.matches_gather_wait(actor, G) || worker_context.tool != F || worker_context.wait_claimed)
 			return FALSE
 		// Same canonical handler used by ordinary floor.attackby, with explicit owned context.
 		G.gather_grass_cuttings(actor, F, worker_context)
 		return action_lease == worker_context && active(worker_context.run_generation) && worker_context.wait_claimed && stock(/obj/item/stack/grass_cuttings) == before + 2
 #else
-		G.attackby(F, actor)
+		if (isturf(target))
+			var/turf/floor/grass/G = target
+			G.attackby(F, actor)
+		else
+			var/obj/structure/wild/G = target
+			G.attackby(F, actor)
 		return active(action_lease.run_generation) && stock(/obj/item/stack/grass_cuttings) == before + 2
 #endif
 #ifdef CIV13_GAMEPLAY_BRIDGE
