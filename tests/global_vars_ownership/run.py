@@ -29,7 +29,7 @@ compile_log = build.stdout+build.stderr
 (a.evidence_dir/'compile.log').write_text(compile_log)
 print(compile_log,flush=True)
 if build.returncode or 'DM compiler version 516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned fixture compile failed')
-run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-safe','-log','runtime.log'],cwd=a.evidence_dir,capture_output=True,timeout=20,creationflags=flags)
+run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-trusted','-log','runtime.log'],cwd=a.evidence_dir,capture_output=True,timeout=20,creationflags=flags)
 log = (a.evidence_dir/'runtime.log').read_text()
 (a.evidence_dir/'daemon.log').write_bytes(run.stdout+run.stderr)
 print(log,flush=True)

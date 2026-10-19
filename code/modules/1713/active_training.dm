@@ -17,7 +17,7 @@
 	var/tmp/obj/structure/exercise/exercise_equipment
 
 /mob/living/human/persistence_runtime_var(key)
-	return (key in list("exercise_rest_epoch", "exercise_equipment")) || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()
@@ -47,7 +47,7 @@
 
 /obj/structure/exercise
 	name = "stone lifting weights"
-	desc = "Crafted stone weights for manually completed lifting sets. Click three times, completing each fifteen-second repetition. Leaving the weights, interruption or cancelling loses the unfinished set."
+	desc = "Crafted stone weights. With an empty active hand, click for each of three fifteen-second repetitions. Stay still to finish each repetition; interruption or cancelling loses the unfinished set. Stone weights train strength below 125; fatigue can require a rest."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "sheet-stone"
 	anchored = TRUE
@@ -72,7 +72,7 @@
 
 /obj/structure/exercise/modern
 	name = "gym lifting weights"
-	desc = "Machined lifting weights for three manually started fifteen-second repetitions. Fatigue and native skill caps still apply."
+	desc = "Machined lifting weights. With an empty active hand, click for each of three fifteen-second repetitions. Stay still to finish each repetition. These weights train strength below 150; fatigue can require a rest."
 	icon_state = "sheet-iron"
 	skill_cap = 150
 	reward_rate = 0.006
@@ -109,15 +109,35 @@
 	if (. && previous != loc)
 		clear_exercise()
 
-/obj/structure/exercise/proc/eligible(mob/living/human/H)
-	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || H.lying || !isturf(H.loc) || !anchored || !isturf(loc) || H.z != z || !exercise_recipe_era(type))
+/obj/structure/exercise/proc/eligible(mob/living/human/H, feedback = FALSE)
+	if (!istype(H))
+		return FALSE
+	if (H.stat != CONSCIOUS || !H.can_use_hands() || H.lying)
+		if (feedback)
+			to_chat(H, "You must be conscious, standing and able to use your hands to exercise.")
+		return FALSE
+	if (!isturf(H.loc) || !anchored || !isturf(loc) || H.z != z)
+		if (feedback)
+			to_chat(H, "Use anchored training equipment while standing on the same level's floor.")
+		return FALSE
+	if (!exercise_recipe_era(type))
+		if (feedback)
+			to_chat(H, "This training equipment requires the Modern era.")
 		return FALSE
 	H.recover_exercise()
 	if (H.exercise_fatigue >= 6)
+		if (feedback)
+			to_chat(H, "You are too fatigued to exercise. Rest; one fatigue point recovers per running-server minute.")
 		return FALSE
 	var/list/skills = course ? list("dexterity", "stamina") : list("strength")
 	for (var/skill in skills)
-		if (H.stats[skill][1] < 10 || H.stats[skill][1] >= skill_cap || H.stats[skill][2] >= skill_cap)
+		if (H.stats[skill][1] < 10)
+			if (feedback)
+				to_chat(H, "Your current [skill] is too low to train here.")
+			return FALSE
+		if (H.stats[skill][1] >= skill_cap || H.stats[skill][2] >= skill_cap)
+			if (feedback)
+				to_chat(H, "Your [skill] has reached this equipment's [skill_cap] training limit.")
 			return FALSE
 	return TRUE
 
@@ -131,10 +151,31 @@
 /obj/structure/exercise/proc/exercise_wait(mob/living/human/H, duration)
 	return do_after(H, duration, H.loc)
 
+/obj/structure/exercise/attackby(obj/item/W, mob/user, icon_x, icon_y)
+	// Preserve parent tool actions if a subtype enables moving or dismantling.
+	if (!not_movable || !not_disassemblable)
+		return ..()
+	if (!ishuman(user) || user.z != z || get_dist(user, src) > 1)
+		return ..()
+	to_chat(user, "Use an empty active hand to exercise. Switch hands or put away the held item, then click again.")
+	return TRUE
+
 /obj/structure/exercise/attack_hand(mob/living/human/H)
 	if (actor && exercise_time() >= expiry)
 		clear_exercise()
-	if (!eligible(H) || H.z != z || get_dist(H, src) > 1 || busy || (actor && actor != H) || (H.exercise_equipment && H.exercise_equipment != src))
+	if (!eligible(H, TRUE))
+		return
+	if (H.z != z || get_dist(H, src) > 1)
+		to_chat(H, "Stand next to the training equipment to exercise.")
+		return
+	if (busy)
+		to_chat(H, "A repetition is already in progress. Wait for it to finish.")
+		return
+	if (actor && actor != H)
+		to_chat(H, "Someone else is using this training equipment.")
+		return
+	if (H.exercise_equipment && H.exercise_equipment != src)
+		to_chat(H, "Finish your other exercise set or use Stop Exercise before starting here.")
 		return
 	if (!actor)
 		if (course && (H.loc != loc || !locate(x+3,y+3,z)))
@@ -149,7 +190,7 @@
 	if (course)
 		tell_goal(H)
 	else
-		complete_repetition(H)
+		complete_repetition(H, TRUE)
 
 /obj/structure/exercise/proc/tell_goal(mob/living/human/H)
 	var/turf/T = goal()
@@ -159,23 +200,31 @@
 	set name = "Exercise Step"
 	set category = "IC"
 	if (exercise_equipment && exercise_equipment.course)
-		exercise_equipment.complete_repetition(src)
+		exercise_equipment.complete_repetition(src, TRUE)
 
-/obj/structure/exercise/proc/complete_repetition(mob/living/human/H)
+/obj/structure/exercise/proc/complete_repetition(mob/living/human/H, feedback = FALSE)
 	if (!istype(H) || busy || actor != H || H.exercise_equipment != src)
+		if (feedback && istype(H))
+			to_chat(H, "No repetition can start now. Wait for the current repetition or start a new set.")
 		return FALSE
 	if (!eligible(H) || exercise_time() >= expiry || loc != get_turf(src) || (course ? H.loc != goal() : H.loc != origin))
 		H.cancel_exercise()
+		if (feedback)
+			to_chat(H, "Your unfinished exercise set ended. Return to the starting position and click to start again.")
 		return FALSE
 	var/token = epoch
 	var/turf/start = H.loc
 	busy = TRUE
+	if (feedback)
+		to_chat(H, "You begin [course ? "course leg" : "lifting repetition"] [repetition+1]/[course ? 4 : 3]. Stay still for [course ? 11.25 : 15] seconds; Stop Exercise cancels the set.")
 	var/success = exercise_wait(H, course ? 112.5 : 150)
 	if (epoch != token || actor != H || H.exercise_equipment != src)
 		return FALSE
 	busy = FALSE
 	if (!success || !eligible(H) || H.loc != start || !anchored || !isturf(loc) || exercise_time() >= expiry)
 		H.cancel_exercise()
+		if (feedback)
+			to_chat(H, "Your exercise was interrupted. The unfinished set gives no partial training; click to start again.")
 		return FALSE
 	repetition++
 	var/total = course ? 4 : 3

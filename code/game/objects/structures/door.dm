@@ -188,6 +188,10 @@
 		for(var/obj/roof/R in range(1,src))
 			R.update_transparency(0)
 /obj/structure/simple_door/Destroy()
+	door_list -= src
+	processing_objects -= src
+	for (var/obj/roof/R in loc)
+		R.collapse_check()
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()

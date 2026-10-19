@@ -36,7 +36,7 @@ compile_log = build.stdout+build.stderr
 (a.evidence_dir/'compile.log').write_text(compile_log)
 print(compile_log, flush=True)
 if build.returncode or '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log: raise SystemExit('Pinned native compile failed')
-run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'], cwd=a.evidence_dir, capture_output=True, timeout=30, creationflags=flags)
+run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=a.evidence_dir, capture_output=True, timeout=30, creationflags=flags)
 (a.evidence_dir/'daemon.log').write_bytes(run.stdout+run.stderr)
 log = (a.evidence_dir/'runtime.log').read_text(errors='replace')
 combined = log + (run.stdout+run.stderr).decode(errors='replace')

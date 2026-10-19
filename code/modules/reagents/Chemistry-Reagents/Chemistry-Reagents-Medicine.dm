@@ -63,6 +63,7 @@
 
 /datum/reagent/salbutamol
 	name = "Salbutamol"
+	id = "salbutamol"
 	description = "A potent short-acting bronchodilator used to relieve airway obstruction and improve breathing."
 	taste_description = "bitterness"
 	reagent_state = LIQUID

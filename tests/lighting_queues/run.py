@@ -38,7 +38,7 @@ def main():
         with (out/'daemon.log').open('w') as log:
             cmd=[str(dd),'probe.dmb']
             if os.name=='nt': cmd+=['-invisible','-close']
-            cmd+=['-safe','-params',f'size={a.size}','-log','runtime.log']
+            cmd+=['-trusted','-params',f'size={a.size}','-log','runtime.log']
             proc = subprocess.Popen(cmd, cwd=out, stdout=log, stderr=log, creationflags=flags)
             peak = 0
             samples = []

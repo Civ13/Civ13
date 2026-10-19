@@ -21,6 +21,33 @@ https://civ13.com/
 
 
 ## Playing the game
+
+### OpenDream client for Windows
+
+The portable OpenDream client is experimental. Download the
+[current Windows launcher package](https://github.com/Civ13/Civ13/releases/download/opendream-client-2026-10-12-movement/Civ13-Launcher-Windows-v2.zip),
+extract it, and double-click **Civ13.cmd**. Its first run downloads the full client,
+so allow time for the download. Choose **Sign in** and use your own account, then
+choose **Play Nomads** or **Play TDM**. This is the currently published client's
+sign-in flow; the new BYOND identity integration is still under verification.
+
+Windows x64 is required. You do not need to install .NET separately or run the
+launcher as administrator. Clients are kept under `%LOCALAPPDATA%\Civ13`; updates
+keep older client versions and your account settings. The launcher checks verified
+updates at startup and can use an already installed client when offline.
+
+The next generated launcher download will be a single **Civ13.exe** on the
+[GitHub releases page](https://github.com/Civ13/Civ13/releases). Once that file is
+published, download it and double-click it to use the same menu. The EXE also checks
+its own updates. There is no public EXE download yet; use the package above until
+one appears. The executable is unsigned, so Windows may show a publisher warning.
+The EXE checks for the project's required BYOND **516.1681** and offers the official
+installer if it is missing. Review the installer license and any Windows prompts;
+its suggested separate folder keeps other BYOND versions. Installing BYOND does
+not log you into an account.
+
+### BYOND client
+
 You will need a windows machine or a virtual machine running it from another OS.
 
 1. Download the latest BYOND distribution from http://www.byond.com/download/

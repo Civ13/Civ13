@@ -201,6 +201,11 @@ var/list/global/wall_cache = list()
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 
+/turf/wall/Del()
+	for (var/obj/roof/R in range(2, src))
+		R.collapse_check()
+	return ..()
+
 /turf/wall/Destroy()
 	dismantle_wall(null,null,1)
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))

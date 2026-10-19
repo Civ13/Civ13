@@ -2,6 +2,19 @@ var/datum/vote/vote = new()
 
 var/global/list/round_voters = list() //Keeps track of the individuals voting for a given round, for use in forcedrafting.
 
+// Keep the round alive even if configuration allows restart votes or a saved
+// round contains an old finished flag. Administrative save/restart is separate.
+/proc/persistence_round_active()
+	return (map && (map.persistence || map.perschadplus)) || (config && config.allowedgamemodes == "PERSISTENCE")
+
+/proc/persistence_blocks_vote(var/vote_type)
+	if (!persistence_round_active())
+		return FALSE
+	if (vote_type == "restart")
+		return TRUE
+	// Initial lobby map selection must still be possible.
+	return ticker && ticker.current_state >= GAME_STATE_PLAYING && (vote_type == "epoch" || vote_type == "map" || vote_type == "gamemode")
+
 /datum/vote
 	var/initiator = null
 	var/started_time = null
@@ -30,6 +43,11 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/process()	//called by master_controller
 		if (mode)
+			if (persistence_blocks_vote(mode))
+				to_chat(world, "<b>Voting aborted: persistent rounds cannot be ended or restarted by a vote.</b>")
+				callback = null
+				reset()
+				return
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
 			if ((mode == "gamemode" || mode == "ship selection") && ticker.current_state >= 2)
@@ -150,6 +168,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		return .
 
 	proc/result()
+		if (persistence_blocks_vote(mode))
+			callback = null
+			reset()
+			return FALSE
 		. = announce_result()
 		if (.)
 			switch(mode)
@@ -210,6 +232,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		return FALSE
 
 	proc/initiate_vote(var/vote_type, var/initiator_key, var/automatic = FALSE, var/list/_callback = list())
+		if (persistence_blocks_vote(vote_type))
+			to_chat(world, "<b>Persistent rounds cannot be ended or restarted by a vote.</b>")
+			return FALSE
 		if (!mode)
 			if (started_time != null && !(check_rights(R_ADMIN) || automatic))
 				var/next_allowed_time = (started_time + config.vote_delay)
@@ -419,7 +444,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		else
 			. += "<h2>Start a vote:</h2><hr><ul><li>"
 			//restart
-			if (admin || config.allow_vote_restart)
+			if (!persistence_blocks_vote("restart") && (admin || config.allow_vote_restart))
 				. += "<a href='?src=\ref[src];vote=restart'>Restart</a>"
 			else
 				. += "<font color='grey'>Restart (Disallowed)</font>"

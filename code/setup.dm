@@ -150,7 +150,7 @@
 		// Resume from the last completed save for this map, if any. The daily
 		// save+reboot cycle (see start_persistence_loop()) relies on this to
 		// carry the world across restarts.
-		if (fexists("map_saves/map.txt"))
+		if (!persistence_restart.startup_hold && fexists("map_saves/map.txt"))
 			var/list/saved_meta = splittext(file2text("map_saves/map.txt"), "\n")
 			if (saved_meta.len && saved_meta[1] == map.ID)
 				if (fexists("map_saves/save_complete.txt"))
@@ -164,6 +164,12 @@
 			else
 				admin_notice("<span class='danger'>Found a map save for '[saved_meta.len ? saved_meta[1] : "unknown"]' but the current map is '[map.ID]'. Not auto-loading.</span>", R_DEBUG)
 
+	// All constructors/configuration are initialized before importing. An intent
+	// applies independently of the PERSISTENCE gamemode configuration above.
+	if(persistence_restart.startup_hold)
+		nextsave = world.realtime + 216000
+		spawn(50)
+			if(ticker) persistence_restart.resume_startup()
 	//////////////////////////////////////////////////////
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)

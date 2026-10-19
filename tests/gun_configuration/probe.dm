@@ -78,6 +78,7 @@ var/configuration_concurrent
 	for (var/datum/D in map_storage.all_loaded.Copy()) D.after_load()
 	return result
 /world/New()
+	world.OpenPort(0)
 	try
 		run_configuration_checks()
 		configuration_check(!configuration_runtime,"no runtime errors")
@@ -243,6 +244,7 @@ var/configuration_concurrent
 	var/obj/item/weapon/gun/projectile/semiautomatic/svd/acog/AV = new(T)
 	configuration_check(istype(AV.scope,/obj/item/weapon/attachment/scope/adjustable/sniper_scope/acog) && AV.scope.loc == AV,"native ACOG replacement constructor remains valid")
 	configuration_recipe_checks()
+	configuration_feedback_checks()
 
 /obj/map_metadata/configuration_ci
 	New()

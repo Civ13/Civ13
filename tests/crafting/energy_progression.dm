@@ -18,3 +18,23 @@
 	recipe_ci_food_expect(!civ_generation_can_build(H,path), "solar rejects crafting104")
 	map.ordinal_age = 0
 	qdel(H)
+	H = new(locate(1,1,1))
+	H.civilization = "nuclear_locked_ci"
+	map.faction_baseline_era[H.civilization] = 0
+	H.stats["crafting"] = list(105,105)
+	map.ordinal_age = 8
+	for (var/result in list(/obj/structure/civ_generator/nuclear,/obj/structure/reactor_fuel_processor))
+		var/material_type = result == /obj/structure/civ_generator/nuclear ? /material/electronics : /material/steel
+		recipe_ci_food_expect(get_recipe_node_req("[result]") == "nuclear_power", "nuclear explicit node mapping")
+		recipe_ci_food_expect(!recipe_ci_food_recipe(material_type,result,H.civilization) && !civ_generation_can_build(H,result), "nuclear locked node rejects construction")
+	entry = map.ensure_node_entry(H.civilization,"nuclear_power")
+	entry[RNODE_ENTRY_STATUS] = RNODE_DONE
+	for (var/result in list(/obj/structure/civ_generator/nuclear,/obj/structure/reactor_fuel_processor))
+		var/material_type = result == /obj/structure/civ_generator/nuclear ? /material/electronics : /material/steel
+		R = recipe_ci_food_recipe(material_type,result,H.civilization)
+		recipe_ci_food_expect(R && R.req_amount == (result == /obj/structure/civ_generator/nuclear ? 40 : 20) && civ_generation_can_build(H,result), "nuclear completed node paid recipe")
+		map.ordinal_age = 7
+		recipe_ci_food_expect(!recipe_ci_food_recipe(material_type,result,H.civilization) && !civ_generation_can_build(H,result), "nuclear preModern rejected")
+		map.ordinal_age = 8
+	map.ordinal_age = 0
+	qdel(H)

@@ -231,6 +231,7 @@ var/global/harvest_duplicate_result = null
 				harvest_assert(!cuttings && !G.busy && istype(site, /turf/floor/grass), "Interrupted grass harvest: [action]")
 			qdel(H)
 			harvest_clear(site)
+		harvest_tall_grass_regressions(site, U, K)
 		var/obj/structure/oven/oven = new(site)
 		var/obj/item/weapon/reagent_containers/food/snacks/meat/offal/heart/heart = new(oven)
 		oven.process()
@@ -284,3 +285,5 @@ var/global/harvest_duplicate_result = null
 	if (test_action == "concurrent")
 		gather_grass_cuttings(user, H)
 	return TRUE
+
+#include "tall_grass_probe.dm"

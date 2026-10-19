@@ -1993,6 +1993,9 @@
 /obj/structure/compost/examine(mob/user)
 	if (!..(user, TRUE))
 		return
+	if (nitrary_mode)
+		nitrary_examine(user)
+		return
 	if (current==0)
 		to_chat(user, "<span class='notice'>It's empty</span>")
 	else if (current<1)
@@ -2024,6 +2027,9 @@
 	qdel(W)
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	if (nitrary_mode && !istype(W, /obj/item/weapon/wrench) && !istype(W, /obj/item/weapon/hammer))
+		nitrary_feed(W, H)
+		return TRUE
 	if (current>=10)
 		to_chat(H, "<span class='warning'>The compost bin is full!</span>")
 		return
@@ -2045,6 +2051,8 @@
 	to_chat(H, "<span class='warning'>\the [W] is not suitable for compost.</span>")
 
 /obj/structure/compost/proc/auto_load(var/mob/living/human/H)
+	if (nitrary_mode)
+		return
 	for (var/obj/item/W in src.loc)
 		if (current>=10)
 			if (H)
@@ -2078,6 +2086,8 @@
 			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
 
 /obj/structure/compost/proc/compost()
+	if (nitrary_mode)
+		return
 	if (!src)
 		return
 	if (!src.loc)
@@ -2088,14 +2098,22 @@
 			compost()
 	else
 		spawn(rand(800,1000))
+			if (nitrary_mode)
+				return
 			visible_message("The composted material begins to degrade.")
 			spawn(rand(800,1000))
+				if (nitrary_mode)
+					return
 				current--
 				new/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer(loc)
 				compost()
 
 /obj/structure/compost/initialize()
 	. = ..()
+	if (nitrary_mode)
+		nitrary_last_tick = world.time
+		processing_objects |= src
+		return
 	if (!composting)
 		auto_load()
 		composting = TRUE
@@ -2104,13 +2122,19 @@
 
 /obj/structure/compost/before_save()
 	. = ..()
+	if (nitrary_mode)
+		return
 	var/obj/item/O = new/obj/item/stack/ore(src.loc, current/10)
 	O.alpha = 0
 	current = 0
 
 /obj/structure/compost/after_load()
 	. = ..()
-	initialize()
+	if (nitrary_mode)
+		nitrary_last_tick = world.time
+		processing_objects |= src
+	else
+		initialize()
 
 
 

@@ -143,6 +143,8 @@ Please contact me on #coderbus IRC. ~Carn x
 
 /mob/living/human/Login()
 	..()
+	if(client)
+		human_clients_mob_list |= src
 	update_hud()
 	return
 

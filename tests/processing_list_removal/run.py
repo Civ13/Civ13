@@ -76,7 +76,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
     (out / 'compile.log').write_text(log)
     if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise SystemExit(log)
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'],
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
                          cwd=out, capture_output=True, timeout=120, creationflags=flags)
     log = (out / 'runtime.log').read_text(errors='replace')
     (out / 'daemon.log').write_bytes(run.stdout + run.stderr)
