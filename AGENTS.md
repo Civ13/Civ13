@@ -605,6 +605,12 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-19: inactive Dagger compilation -->
+`tests/dagger_map/compile_map.py` compiles the inactive DMM with production types
+in a disposable root-local DME, plus a missing-type diagnostic control. CI's
+`dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
+compilation is not controller, instancing, protection or gameplay acceptance.
+
 <!-- 2026-10-11: firearm configuration verification -->
 Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
 Keep runtime action owners and work reservations out of native item saves; saved

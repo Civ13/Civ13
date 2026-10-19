@@ -339,6 +339,30 @@ policy: it runs this newly introduced suite on the introducing PR, then becomes
 opt-in through `workflow_dispatch`. It performs only the three static commands
 above; the existing production compile does not include this inactive WIP map.
 
+Native **compile-only** coverage is available through **CI**, **Run workflow**,
+with `dagger_map_compile: true` and `extensive_regressions: false`. It also runs
+for the introducing `tests/dagger_map` PR under the suite-selection policy.
+Locally, after generating the normal crafting catalog, run:
+
+```sh
+python3 scripts/build-crafting-atlas.py --catalog-only --game-catalog UI/crafting-atlas.json
+python3 tests/dagger_map/compile_map.py --byond-bin /path/to/byond/bin --evidence-dir /fresh/evidence/directory
+```
+
+The runner retains all production declarations and substitutes the unchanged
+Dagger DMM for the production map include in a unique temporary root-local DME.
+BYOND 516.1681 must compile it with zero errors/warnings and produce a DMB. A
+second generated DMM changes one turf path to a nonexistent type; exactly its
+undefined-type diagnostic must fail compilation. The control ensures native map
+type checking actually occurs. The production DME/DMM are never edited, generated
+executables are removed even on failure, and no DreamDaemon is launched.
+Exact-head logs, generated include manifests and map hashes are retained in the
+`dagger-compile-<SHA>` CI artifact. Python harness tests validate preparation and
+result checking only; they are not native compile evidence. A successful native
+compile verifies DMM parsing/type references, not constructor execution, map
+startup, rendered appearance, controller availability or any gameplay contracts.
+The separate gameplay acceptance below remains required.
+
 For each PR map or icon revision:
 
 - Regenerate the DMM, manifest and source diagram from the current source.

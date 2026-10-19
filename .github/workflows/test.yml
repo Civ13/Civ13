@@ -17,6 +17,10 @@ on:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
         default: false
+      dagger_map_compile:
+        description: 'Opt in to native compilation of the inactive Dagger map and missing-type control'
+        type: boolean
+        default: false
       rack_save_regressions:
         description: 'Opt in only to the paid rack save probe and its six mutation controls'
         type: boolean
@@ -165,6 +169,23 @@ jobs:
             ${{ runner.temp }}/core-boot-compile/*/compile.log
             ${{ runner.temp }}/core-boot-compile/*/compile-status.json
             ${{ runner.temp }}/core-boot-compile/*/compile-summary.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Compile inactive Dagger map and missing-type control
+        id: dagger_compile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dagger_map') || inputs.dagger_map_compile == true
+        timeout-minutes: 25
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/dagger_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/dagger-compile"
+      - name: Retain Dagger native compile evidence
+        if: always() && steps.dagger_compile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dagger-compile-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/dagger-compile/
           if-no-files-found: error
           retention-days: 7
 
