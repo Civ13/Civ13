@@ -1,0 +1,12 @@
+window "smoke"
+    elem "smoke"
+        type = MAIN
+        pos = 80,80
+        size = 224x224
+        title = "Civ13 DreamSeeker smoke"
+        can-resize = false
+    elem "map"
+        type = MAP
+        pos = 0,0
+        size = 224x224
+        is-default = true
