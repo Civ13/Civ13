@@ -135,6 +135,23 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Run native HUD appearance and preservation fixture
+        id: hud_visual
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hud_visual')
+        timeout-minutes: 5
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/hud_visual -p 'test_*.py' -v
+          python3 -B tests/hud_visual/ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/hud-visual"
+      - name: Upload native HUD evidence
+        if: always() && steps.hud_visual.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: hud-visual-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hud-visual
+          if-no-files-found: error
+
       - name: Check core-boot runner offline and compile generated variants
         id: core_boot_compile
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/core_boot')

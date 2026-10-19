@@ -11,7 +11,7 @@ from pathlib import Path
 
 from guard_config import BINARIES, LIMITS, digest
 
-BASE = '41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1'
+BASE = '75890d883190355e430f9958fd102864ee88429a'
 ROOT = Path(__file__).resolve().parents[2]
 BIN = Path('C:/Program Files (x86)/BYOND/bin')
 
@@ -62,7 +62,7 @@ def prepare(out):
                   generated=generated,harness=harness,production=production,
                   probe=digest(ROOT/'tests/hud_visual/probe.dm'),binaries=BINARIES,
                   commands=[[str(BIN/'DreamMaker.exe'),'-max_errors','0',str(dme)],
-                            [str(BIN/'DreamDaemon.exe'),'.hud_visual_fixture.dmb','59474','-ip','127.0.0.1','-invisible','-close','-safe','-log','runtime.log']],
+                            [str(BIN/'DreamDaemon.exe'),'.hud_visual_fixture.dmb','59474','-ip','127.0.0.1','-invisible','-close','-trusted','-log','runtime.log']],
                   limits=dict(shared_seconds=120,compile_seconds=75,compile_cpu_seconds=30,
                               runtime_seconds=30,runtime_cpu_seconds=10,cleanup_seconds=10,
                               compile_private_bytes=1024*1024**2,runtime_private_bytes=512*1024**2,

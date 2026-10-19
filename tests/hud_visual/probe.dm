@@ -39,8 +39,8 @@ var/hud_probe_unexpected = FALSE
 	return result
 /proc/hud_black(obj/screen/damageoverlay/D)
 	var/count = 0
-	for (var/image/I in D.underlays)
-		if (I.icon_state == "blackimageoverlay")
+	for (var/U in D.underlays)
+		if (U:icon_state == "blackimageoverlay")
 			count++
 	return count
 /proc/hud_state(mob/living/human/H, obj/screen/damageoverlay/D)
@@ -70,9 +70,9 @@ var/hud_probe_unexpected = FALSE
 		organ_index[key] = "\ref[O]"
 	state["organ_index"] = organ_index
 	var/list/unrelated = list()
-	for (var/image/I in D.underlays)
-		if (I.icon_state != "blackimageoverlay")
-			unrelated += list(list("icon"="[I.icon]", "state"=I.icon_state, "alpha"=I.alpha, "color"=I.color, "layer"=I.layer, "plane"=I.plane))
+	for (var/U in D.underlays)
+		if (U:icon_state != "blackimageoverlay")
+			unrelated += list(list("icon"="[U:icon]", "state"=U:icon_state, "alpha"=U:alpha, "color"=U:color, "layer"=U:layer, "plane"=U:plane))
 	state["unrelated_underlays"] = unrelated
 	state["shared_blind_icon"] = list("icon"="[D.blind_icon.icon]", "state"=D.blind_icon.icon_state, "alpha"=D.blind_icon.alpha, "color"=D.blind_icon.color, "layer"=D.blind_icon.layer, "plane"=D.blind_icon.plane)
 	var/list/gear = list()
@@ -107,6 +107,9 @@ var/hud_probe_unexpected = FALSE
 	D.underlays.Cut()
 	D.underlays += D.blind_icon
 	D.underlays += image('icons/mob/screen1_full.dmi', "brutedamageoverlay1")
+	var/list/initial_state = json_decode(hud_state(H,D))
+	var/list/unrelated = initial_state["unrelated_underlays"]
+	hud_assert(unrelated.len == 1, "[label] unrelated appearance observed")
 	var/before = hud_state(H,D)
 	var/accepted = hud_visual_only(H,D,completed_vision)
 	hud_assert(accepted == expected_accept, "[label] acceptance")
@@ -137,9 +140,11 @@ var/hud_probe_unexpected = FALSE
 	text2file("entered", "entered.txt")
 	try
 		hud_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")
+		makeDatumRefLists()
 		map = new /obj/map_metadata/hud_probe
 		var/mob/living/human/H = new(locate(2,2,1))
 		hud_assert(H.organs.len && H.internal_organs.len && (H in living_mob_list), "actual human constructor and organs")
+		H.defaultHUD = "1713Style"
 		H.create_HUDtech()
 		var/obj/screen/damageoverlay/D = H.HUDtech["damageoverlay"]
 		hud_assert(istype(D) && D.parentmob == H && (D in H.HUDprocess), "actual production create_HUDtech registered real damageoverlay")

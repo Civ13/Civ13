@@ -1,6 +1,6 @@
 # Isolated native HUD investigation
 
-This opt-in probe targets deployed source `41e2d02fe1f9130e0987aee0efd2eba0ca7b3bf1`.
+This opt-in probe targets reviewed master source `75890d883190355e430f9958fd102864ee88429a`.
 It uses real human constructors/organs, `create_HUDtech`, native damage-overlay
 objects/appearances and the production human HUD processing loop. Three uniquely
 tagged health-entry exceptions compare unchanged ordering with a test-only reordered
@@ -31,7 +31,7 @@ sampling and explicit hidden-window flags are the only adaptations.
 
 The daemon argv fixes initial binding to `127.0.0.1:59474`; the fixture closes its
 port at entry. Owned socket observations reject other listeners and listeners
-after entry. This does not prove the process never bound. Job objects and safe
+after entry. This does not prove the process never bound. Job objects and trusted
 mode do not sandbox engine-originated outbound traffic. No external service is
 required; unexpected service dependence or engine diagnostics invalidate evidence.
 
@@ -43,4 +43,14 @@ configuration, saves, credentials, player connection or network settings are use
 
 Headless appearance assertions cannot establish connected-client rendering,
 reconnection, original incident causality, winter lighting or production recovery.
-The test is not automatically selected by CI and has no native run by default.
+The CI job runs `ci.py` with pinned BYOND 516.1681 when this new suite is selected,
+or when extensive regressions are explicitly requested. It compiles and executes
+the actual probe with temporary config/storage, retained evidence and bounded
+subprocess timeouts. This Linux CI path is separate from the Windows exact-packet
+grant runner above; it does not claim Windows Job resource containment.
+
+`python3 tests/hud_visual/ci.py --prepare-only --output <fresh-directory>` checks
+source pins and prepares inputs without native tools. Native execution requires
+`--byond-bin <516.1681-bin>`. CI preserves logs and per-assertion records.
+The native fixture now also asserts its unrelated-appearance snapshot is nonempty,
+so a typed-loop regression cannot silently weaken the preservation oracle.
