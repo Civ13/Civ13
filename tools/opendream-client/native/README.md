@@ -73,6 +73,17 @@ No native channel activates merely by merging this PR. A missing/offline channel
 launcher. Only newer semantic versions update; the candidate PE product version
 must match its manifest. Never point this channel at an unaccepted candidate.
 
+Startup reports the installed/latest versions and check/download/restart stage.
+Transport resets and timeouts get at most three attempts, with 250 ms then 750 ms
+backoff. The manifest has a 20-second total budget (six seconds per attempt).
+Downloads retain a ten-minute total budget, including the body, with 20-second
+response-header deadlines. Each retry starts from the original URL and a new
+empty staged file; only the failed attempt's own file is removed. Certificate
+validation/native authentication errors, HTTP rejections, untrusted redirects,
+and checksum/version mismatches do not receive transport retries. TLS validation
+and the release redirect allowlist remain enabled. Diagnostic failures report
+only bounded exception classifications/codes, never signed URLs or raw messages.
+
 The updater stages and verifies the EXE, starts a copied native helper, and exits.
 The helper waits for the original process identity to exit, reacquires the update
 lock, rechecks the hash/version, and uses same-volume atomic `File.Replace` beside
@@ -206,3 +217,7 @@ or an unverified address keeps the menu open for retry without starting a game.
 DNS resolution does not authenticate a server. Older direct Play CMD files are
 legacy experimental OpenDream entrypoints and retain their packaged test ports
 (Nomads 18452, TDM 18453). They are not native BYOND server shortcuts.
+
+Main-menu order: 1 BYOND sign-in, 2 Civ13.com, 3 ValZarGaming.com, 4 Exit,
+5-8 existing community links, and 9 experimental OpenDream. Provider-specific
+Nomads/TDM ports remain independent; menu reordering does not change endpoints.

@@ -433,6 +433,14 @@ file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an
 immutable historical log_error control. `--prepare-only` runs no native tools.
 
+<!-- 2026-10-19: bounded launcher transport retries -->
+Launcher retry tests use injected HTTP handlers, never BYOND/accounts. Retry only
+classified resets/timeouts with finite attempts and an overall body-read budget;
+certificate/auth failures, untrusted redirects and bad hashes remain fail-closed.
+Delete only a failed attempt's newly created staged file, never a pre-existing
+path. Preserve TLS validation and redact errors. Proxy IsBypassed(false) alone
+does not prove traffic used a proxy. Source changes do not activate a release.
+
 <!-- 2026-10-19: distinct native launcher catalogs -->
 Official Civ13.com Nomads uses 1715 and TDM 1714 (published website); ValZarGaming
 uses the opposite mapping. Keep these independent. Official BYOND URLs use the
