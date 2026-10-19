@@ -4,11 +4,11 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Keep pushes on master; also verify the focused Help conversation stack.
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, help-markdown-byond-html ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -202,6 +202,53 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Verify restored faction UI assets and registration omission control
+        id: faction_ui_assets
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/faction_ui_assets')
+        shell: bash
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/faction_ui_assets -v
+          node tests/faction_ui_assets/check_templates.mjs
+          /usr/bin/python3 -B tests/faction_ui_assets/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/faction-ui-assets-positive"
+          /usr/bin/python3 -B tests/faction_ui_assets/run.py --byond-bin "$PWD/BYOND/byond/bin" --omit-registration --evidence-dir "$RUNNER_TEMP/faction-ui-assets-omission"
+      - name: Upload focused faction UI asset evidence
+        if: always() && steps.faction_ui_assets.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: faction-ui-assets-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/faction-ui-assets-positive/metadata.json
+            ${{ runner.temp }}/faction-ui-assets-positive/result.json
+            ${{ runner.temp }}/faction-ui-assets-positive/draft.json
+            ${{ runner.temp }}/faction-ui-assets-positive/browser/**
+            ${{ runner.temp }}/faction-ui-assets-positive/compile.log
+            ${{ runner.temp }}/faction-ui-assets-positive/runtime.log
+            ${{ runner.temp }}/faction-ui-assets-positive/daemon.log
+            ${{ runner.temp }}/faction-ui-assets-omission/metadata.json
+            ${{ runner.temp }}/faction-ui-assets-omission/result.json
+            ${{ runner.temp }}/faction-ui-assets-omission/draft.json
+            ${{ runner.temp }}/faction-ui-assets-omission/browser/**
+            ${{ runner.temp }}/faction-ui-assets-omission/compile.log
+            ${{ runner.temp }}/faction-ui-assets-omission/runtime.log
+            ${{ runner.temp }}/faction-ui-assets-omission/daemon.log
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify accessory removal actor and native controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/accessory_removal')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/accessory_removal -v
+          /usr/bin/python3 tests/accessory_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/accessory-removal-positive"
+          control_status=0
+          for control in original-usr fork-guard; do
+            /usr/bin/python3 tests/accessory_removal/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/accessory-removal-$control" --negative-control "$control" || control_status=1
+          done
+          test "$control_status" = 0
+
       - name: Verify optional player help bridge and native negative controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/player_help')
         run: |
@@ -216,6 +263,8 @@ jobs:
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control rate-limit
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control prompt-first
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control disconnect
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control conversation-generation
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control conversation-action
       - name: Verify native lobby Join controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lobby_join')
         shell: bash
@@ -367,6 +416,29 @@ jobs:
           python3 tests/lighting_queues/run.py --byond-bin "$PWD/BYOND/byond/bin" --size 500 --negative-control retain --output "$RUNNER_TEMP/lighting-retain.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
+      - name: Verify held pickaxe collision mining and cancellation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining')
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/bump_mining -v
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/bump-mining/baseline"
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control dispatch --output "$RUNNER_TEMP/bump-mining/dispatch"
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control reservation --output "$RUNNER_TEMP/bump-mining/reservation"
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control position --output "$RUNNER_TEMP/bump-mining/position"
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control persistence --output "$RUNNER_TEMP/bump-mining/persistence"
+      - name: Retain held pickaxe collision evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bump-mining-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/bump-mining/
+            !${{ runner.temp }}/bump-mining/**/*.dmb
+            !${{ runner.temp }}/bump-mining/**/*.rsc
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify native wall appearance and neighbor work
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wall_appearance')
         shell: bash
@@ -391,6 +463,23 @@ jobs:
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control sword
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control twohanded
+      - name: Verify turret key-release callbacks and original control
+        id: turret_key_release
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/turret_key_release')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/turret_key_release -v
+          python3 -B tests/turret_key_release/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/turret-key-release/current"
+          python3 -B tests/turret_key_release/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control --output "$RUNNER_TEMP/turret-key-release/original"
+      - name: Retain turret key-release evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/turret_key_release'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: turret-key-release-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/turret-key-release
+          if-no-files-found: warn
+          retention-days: 7
       - name: Verify native NPC cover choices and scores
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/npc_cover')
         shell: bash
@@ -420,7 +509,7 @@ jobs:
           /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin"
           /usr/bin/python3 tests/weather/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
       - name: Verify idle metabolism and mutation controls
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/idle_metabolism')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/idle_metabolism') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -429,7 +518,7 @@ jobs:
             python3 tests/idle_metabolism/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/idle-metabolism/$control"
           done
       - name: Upload idle metabolism evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/idle_metabolism'))
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/idle_metabolism') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: idle-metabolism-${{ github.event.pull_request.head.sha || github.sha }}
@@ -543,7 +632,8 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/crafting')
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
-          python3 scripts/check-recipes.py --report recipe-checks.txt
+          python3 scripts/check-recipes.py --report recipe-checks.txt --evidence-dir "$RUNNER_TEMP/crafting-handles/positive"
+          python3 scripts/check-recipes.py --handle-hands-negative-control --evidence-dir "$RUNNER_TEMP/crafting-handles/hands-only"
           python3 scripts/check-recipes.py --camera-prototype-negative-control
         shell: bash
 
@@ -566,7 +656,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: recipe-validation
-          path: recipe-checks.txt
+          path: |
+            recipe-checks.txt
+            ${{ runner.temp }}/crafting-handles/
+          retention-days: 7
           if-no-files-found: warn
       - name: Isolated save restart transaction regression
         id: restart_transaction
@@ -1060,6 +1153,27 @@ jobs:
           /usr/bin/python3 tests/error_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/error-history-fixed"
           /usr/bin/python3 tests/error_history/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/error-history-historical" --historical
 
+      - name: Verify forced relocation and vehicle cone refresh
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cone_refresh')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -m unittest discover -s tests/cone_refresh -p test_offline.py -v
+          mkdir -p "$RUNNER_TEMP/cone-refresh"
+          git diff --binary -- UI/crafting-atlas.json > "$RUNNER_TEMP/cone-refresh/generated-atlas.patch"
+          git restore --source=HEAD -- UI/crafting-atlas.json
+          /usr/bin/python3 tests/cone_refresh/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "$(git rev-parse HEAD)" --output "$RUNNER_TEMP/cone-refresh/positive"
+          for control in forced-move translation rotation early-refresh seat-facing; do
+            /usr/bin/python3 tests/cone_refresh/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-commit "$(git rev-parse HEAD)" --output "$RUNNER_TEMP/cone-refresh/$control" --control "$control"
+          done
+      - name: Retain cone refresh source and oracle evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cone_refresh'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: cone-refresh-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/cone-refresh
+          if-no-files-found: error
+
       - name: Verify timed decal lifecycle and historical baseline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/decal_decay')
         shell: bash
@@ -1130,12 +1244,33 @@ jobs:
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ForgeMergeControl
 
       - name: Verify finite active training and post-wait negative control
+        id: active_training
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/active_training')
+        timeout-minutes: 20
         shell: bash
         run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          mkdir -p "$RUNNER_TEMP/training-click"
           source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/active_training -p 'test_click*.py' -v 2>&1 | tee "$RUNNER_TEMP/training-click/offline-tests.log"
           pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
+          pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ClickFeedback -EvidenceDirectory "$RUNNER_TEMP/training-click/candidate"
+          pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ClickFeedback -OriginalSilence -EvidenceDirectory "$RUNNER_TEMP/training-click/original-silence"
+      - name: Retain active training click feedback evidence
+        if: always() && steps.active_training.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: training-click-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/training-click/offline-tests.log
+            ${{ runner.temp }}/training-click/*/metadata.json
+            ${{ runner.temp }}/training-click/*/*-status.json
+            ${{ runner.temp }}/training-click/*/*.log
+            ${{ runner.temp }}/training-click/*/result.json
+            ${{ runner.temp }}/training-click/*/verification.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Verify firearm configuration, hardware, maintenance and ownership negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gun_configuration')
