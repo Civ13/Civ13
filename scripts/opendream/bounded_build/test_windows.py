@@ -73,6 +73,12 @@ class Native:
 
 
 class Tests(unittest.TestCase):
+    def setUp(self):
+        # The injected DLL failure path must not consult native Windows TLS.
+        self.error = patch.object(C, "get_last_error", return_value=5, create=True)
+        self.error.start()
+        self.addCleanup(self.error.stop)
+
     def adapter(self,native):
         # Tripwire proves even DLL construction is forbidden during these tests.
         with patch.object(C,'WinDLL',side_effect=AssertionError('Native binding forbidden'),create=True):

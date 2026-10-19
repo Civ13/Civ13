@@ -21,6 +21,16 @@ class RegressionPolicyTests(unittest.TestCase):
             self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'),
                              ['tests/test_new.py', 'tests/weather', 'tools/mcp'])
 
+    def test_bounded_build_only_added_registered_tests_select_suite(self):
+        for name in ('test_guard.py', 'test_windows.py'):
+            with self.subTest(name=name), patch.object(selection.subprocess, 'check_output',
+                    return_value=f'scripts/opendream/bounded_build/{name}\0'.encode()):
+                self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'),
+                                 ['scripts/opendream/bounded_build'])
+        with patch.object(selection.subprocess, 'check_output', return_value=
+                b'scripts/opendream/bounded_build/guard.py\0scripts/opendream/bounded_build/README.md\0'):
+            self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'), [])
+
     def test_push_manual_missing_or_failed_comparisons_never_auto_select(self):
         for event in ('push', 'workflow_dispatch', 'pull_request_target', ''):
             self.assertEqual(selection.introduced_tests('base', 'head', event), [])
