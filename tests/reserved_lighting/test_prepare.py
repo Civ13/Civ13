@@ -29,6 +29,7 @@ class SourcePreparation(unittest.TestCase):
                 self.assertEqual((ROOT/rel).read_text(), (out/rel).read_text())
             dme = (out/'probe.dme').read_text()
             self.assertNotIn('#include "maps\\', dme)
+            self.assertNotIn('.dmf"', dme)
             self.assertIn('tests/reserved_lighting/probe.dm', dme)
             self.assertNotIn('/world/New()', (out/'world.dm').read_text(encoding='utf-8'))
             for name, signature in (('movement.dm', '/client/proc/unused_reserved_movement_new()'),

@@ -19,7 +19,7 @@ FILES = (
 CONTROLS = {
     'virtual-master': (FILES[2], 'T.lighting_overlay || T.omit_reserved_lighting_overlay()', 'T.lighting_overlay'),
     'halo': (FILES[0], '\t\tif (!T.lighting_reserved)\n\t\t\treturn FALSE\n', ''),
-    'refusal-owner': (FILES[3], 'isturf(reserved_turf) && reserved_turf.omit_reserved_lighting_overlay()', 'FALSE'),
+    'refusal-owner': (FILES[3], 'isturf(reserved_turf) && reserved_turf.omit_reserved_lighting_overlay()', 'isturf(reserved_turf) && reserved_turf.z < 0'),
     'owner-identity': (FILES[3], 'istype(T) && T.lighting_overlay == src', 'istype(T)'),
 }
 
@@ -40,7 +40,7 @@ def prepare(repo, output, control=None, provenance=None):
     source = (repo / 'civ13.dme').read_text(encoding='utf-8')
     lines = []
     for line in source.splitlines():
-        if line.startswith('#include "maps\\'):
+        if line.startswith('#include "maps\\') or (line.startswith('#include ') and '.dmf"' in line):
             continue
         if line.startswith('#include "'):
             rel = line.split('"')[1].replace('\\', '/')
