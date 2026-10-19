@@ -202,6 +202,40 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Verify restored faction UI assets and registration omission control
+        id: faction_ui_assets
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/faction_ui_assets')
+        shell: bash
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/faction_ui_assets -v
+          node tests/faction_ui_assets/check_templates.mjs
+          /usr/bin/python3 -B tests/faction_ui_assets/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/faction-ui-assets-positive"
+          /usr/bin/python3 -B tests/faction_ui_assets/run.py --byond-bin "$PWD/BYOND/byond/bin" --omit-registration --evidence-dir "$RUNNER_TEMP/faction-ui-assets-omission"
+      - name: Upload focused faction UI asset evidence
+        if: always() && steps.faction_ui_assets.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: faction-ui-assets-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/faction-ui-assets-positive/metadata.json
+            ${{ runner.temp }}/faction-ui-assets-positive/result.json
+            ${{ runner.temp }}/faction-ui-assets-positive/draft.json
+            ${{ runner.temp }}/faction-ui-assets-positive/browser/**
+            ${{ runner.temp }}/faction-ui-assets-positive/compile.log
+            ${{ runner.temp }}/faction-ui-assets-positive/runtime.log
+            ${{ runner.temp }}/faction-ui-assets-positive/daemon.log
+            ${{ runner.temp }}/faction-ui-assets-omission/metadata.json
+            ${{ runner.temp }}/faction-ui-assets-omission/result.json
+            ${{ runner.temp }}/faction-ui-assets-omission/draft.json
+            ${{ runner.temp }}/faction-ui-assets-omission/browser/**
+            ${{ runner.temp }}/faction-ui-assets-omission/compile.log
+            ${{ runner.temp }}/faction-ui-assets-omission/runtime.log
+            ${{ runner.temp }}/faction-ui-assets-omission/daemon.log
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify accessory removal actor and native controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/accessory_removal')
         shell: bash
