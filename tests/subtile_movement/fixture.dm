@@ -183,22 +183,22 @@ var/list/probe_observations = list()
 	// Disk-backed scalar policy demonstration; deliberately NOT the game codec.
 	var/list/saved = K.position()
 	var/savefile/F = new("offset-roundtrip.sav")
-	F["position"] << saved
+	F["/position"] << saved
 	F.Flush()
 	var/list/written_state = probe_savefile_state(F)
 	F = null
 	F = new("offset-roundtrip.sav")
 	var/list/reopened_state = probe_savefile_state(F)
 	var/list/loaded
-	F["position"] >> loaded
-	var/list/relative_state = probe_savefile_state(F)
+	F["/position"] >> loaded
+	var/list/canonical_state = probe_savefile_state(F)
 	// Diagnostic reads below must never replace loaded as the assertion source.
-	var/list/absolute_loaded
-	F["/position"] >> absolute_loaded
-	var/list/absolute_state = probe_savefile_state(F)
+	var/list/relative_loaded
+	F["position"] >> relative_loaded
+	var/list/relative_state = probe_savefile_state(F)
 	var/exported = F.ExportText("/")
 	F = null
-	probe_observe("scalar_roundtrip_values", list("saved" = probe_scalar_summary(saved), "loaded" = probe_scalar_summary(loaded), "written" = written_state, "reopened" = reopened_state, "relative_read" = relative_state, "absolute_read" = absolute_state, "absolute_loaded" = probe_scalar_summary(absolute_loaded), "export" = istext(exported) ? copytext(exported, 1, 4097) : null, "export_truncated" = istext(exported) && length(exported) > 4096))
+	probe_observe("scalar_roundtrip_values", list("saved" = probe_scalar_summary(saved), "loaded" = probe_scalar_summary(loaded), "written" = written_state, "reopened" = reopened_state, "canonical_read" = canonical_state, "relative_read" = relative_state, "relative_loaded" = probe_scalar_summary(relative_loaded), "export" = istext(exported) ? copytext(exported, 1, 4097) : null, "export_truncated" = istext(exported) && length(exported) > 4096))
 	probe_assert(probe_same(saved, loaded), "scalar_disk_roundtrip")
 	del(A)
 	var/obj/subtile_actor/S = new(locate(2, 6, 1))

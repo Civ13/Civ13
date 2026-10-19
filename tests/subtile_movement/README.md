@@ -76,12 +76,20 @@ ordering is not an equality test. Before asserting equality, one bounded
 diagnostic observation records saved/loaded list shape, fixed-field membership,
 type flags and values, and a bounded JSON representation. The retained v1 failed
 `scalar_disk_roundtrip`; v2 proved the loaded value was not a list, ruling out
-key ordering as its explanation. The cause remains unresolved. This successor
-adds one documented pending-write drain (`Flush`) after writing, preserving the
-original relative read as the assertion source. The same diagnostic row records
-bounded name/cd/directory state before close and after reopen/read, plus an
-absolute `/position` read and a root text export capped at4KiB. Those later
-reads are observations only; they never supply a fallback value or a pass.
+key ordering as its explanation. v3 still read null after an explicit `Flush`,
+while a later absolute `/position` read returned all five correct integers.
+Recorded cd remained `/`; the cause of the first-read difference is unresolved.
+The next proof defines a canonical absolute-entry format: write `/position`,
+then read `/position` FIRST after reopen. That first result alone must satisfy
+the unchanged strict scalar assertion. This follows Civ13's absolute metadata
+and entry paths (`saving.dm:67`, `loading.dm:400`) without changing its codec.
+The explicit pending-write drain remains. The same diagnostic row records
+bounded name/cd/directory state before close and after reopen/read, plus a later
+relative read and a root text export capped at4KiB. Those later reads are
+observations only; they never supply a fallback value or a pass. This canonical
+first-read format remains unverified until native measurement. If it still
+fails assertion38, retain the scoped savefile blocker rather than adding more
+speculative writes or yields.
 Restoration validates
 them and calls native Move. A distant same-z restore is **placement/jump**, not
 swept travel: intermediate walls are not promised to block it. A blocked
