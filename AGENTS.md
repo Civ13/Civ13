@@ -954,3 +954,11 @@ Native nullable tracking lists do not auto-materialize on `|=`: omitting the
 initializer raises a type-mismatch exception. `tests/floor_decal_tracking` covers
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
+
+<!-- 2026-10-19: independent typed wait contexts -->
+`do_after` keeps mining_context in its ninth argument; opt-in gameplay_context
+is tenth and forwarded by name. Reject simultaneous contexts before either
+claim. Preserve mining progress/owner cleanup and ordinary null callback order.
+The gather disabled-source hashes project reviewed master; refresh them only
+after verifying all four full-file projections. Idle-metabolism extraction must
+project the disabled helper before finding its conditional proc declaration.
