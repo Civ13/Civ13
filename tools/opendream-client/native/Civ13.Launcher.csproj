@@ -18,6 +18,8 @@
     <Compile Include="Byond.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ServerCatalog.cs" />
+    <Compile Include="ServerDirectory.cs" />
+    <Compile Include="ServerBrowser.cs" />
     <Compile Include="CommunityLinks.cs" />
     <Compile Include="LocalDreamDaemon.cs" />
     <EmbeddedResource Include="../channel.json" LogicalName="client-channel.json" />

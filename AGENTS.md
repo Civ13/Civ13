@@ -45,6 +45,14 @@ Login or click, which would bypass live cooldowns/actions. The world-save
 runner's --input-runtime adapter checks disk-backed migration and the production
 early click gate; connected-client interaction remains separate evidence.
 
+<!-- 2026-10-19: live launcher directory contract -->
+The unreleased native launcher consumes direct HTTPS provider directories at
+/.well-known/civ13/servers.json. Public ports come only from fresh validated
+records; stale/offline/incomplete records cannot launch. Re-fetch before joining
+and preserve the existing provider hostname/DNS policy. Backend deployment and
+real BYOND joins gate release; do not replace 1.0.4 with an empty-directory build.
+See tools/opendream-client/native/SERVER-DIRECTORY.md for the shared schema.
+
 ## Language & toolchain
 NEVER use "—": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.

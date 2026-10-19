@@ -1,12 +1,18 @@
 # Single-file Windows launcher
 
-For ordinary native play, open `Civ13.exe`, sign into BYOND Pager with your own
-account, then choose **Civ13.com servers > Nomads** (port 1715) or **TDM**
-(port 1714). **ValZarGaming servers** also remains available with Nomads on
-1714 and TDM on 1715. The launcher verifies BYOND 516.1681 and offers its normal
-prerequisite installation when missing. These choices require no host receipt
-or operator arguments and do not download OpenDream. ValZarGaming public service
-remains held until persistence/recovery acceptance and the accepted launcher release.
+This branch contains an unreleased live-directory candidate. It must not replace
+the working 1.0.4 release until both HTTPS directory endpoints and genuine public
+joins are verified. See [SERVER-DIRECTORY.md](SERVER-DIRECTORY.md) for the exact
+schema, backend dependency, safety checks and rollout gate.
+
+For native play, open `Civ13.exe`, sign into BYOND Pager with your own account,
+then choose **Civ13.com servers** or **ValZarGaming.com servers**. The candidate
+fetches the provider's live directory and lists only fresh verified online
+entries, including player counts, map, mode and round details. Select a listed
+server or use Refresh/Back. Ports come from the provider, not the executable.
+Unavailable or stale directories provide no selectable fallback. The launcher
+verifies BYOND 516.1681 and offers its normal prerequisite installation when
+missing. Public native choices do not download OpenDream.
 
 The script ZIP and its existing shortcuts are legacy OpenDream entrypoints.
 New script-installed shortcuts include `OpenDream` in their names. They do not
@@ -160,64 +166,18 @@ This prerequisite prepares the BYOND binaries. It neither logs a user into BYOND
 nor validates or implements the separate PR18 BYOND-derived identity handshake.
 The current published client's authentication flow remains unchanged.
 
-## Player server selection
-
-Open the native launcher and choose either native server group:
-
-- **Civ13.com servers** (menu 9): **Nomads** on `civ13.com:1715`,
-  **TDM** on `civ13.com:1714`, as published on the
-  [official website](https://civ13.github.io/) (checked 2026-10-19).
-- **ValZarGaming servers** (menu 2): **Nomads** on port **1714**,
-  **TDM** on port **1715**, using its existing verified endpoint policy.
-
-The port mappings intentionally differ between these hosts. Both select
-DreamDaemon through BYOND 516.1681. Existing menu numbers and community links
-are unchanged. Use **BYOND sign in** to open the BYOND Pager and sign in with
-your own account. The launcher checks the installed client version before
-dispatching; it offers the pinned official installer when that version is missing.
-No local host receipt, engine setting, port argument or typed game username is
-required for these public server choices. The BYOND client supplies the account.
-
-**OpenDream (experimental)** is a separate menu choice retaining the existing
-OpenDream account/client flow. Its client package is downloaded only when that
-choice is selected. It is not used for either native DreamDaemon server group.
-
-Source and offline tests do not establish that a public server is online.
-ValZarGaming public Nomads launch remains held until the required persistence/recovery changes
-are merged and verified. Public selection/dispatch/join acceptance and launcher
-release publication remain separate steps; this source change is not a release.
-
-## Game server hostname
-
-Civ13.com selections pass only the fixed published hostname and catalog port
-to DreamSeeker (`byond://civ13.com:1715` or `byond://civ13.com:1714`), letting
-BYOND resolve the official hostname. They do not reuse ValZarGaming DNS or its
-IP allowlist. The catalog rejects substituted hosts, ports and engines; this
-validates the chosen address, not server identity or live availability.
-
-Each ValZarGaming Play attempt resolves `valzargaming.com`, excludes
-`192.64.119.81`, and requires the remaining answer to be the operator-approved
-`72.218.249.221`. It displays and passes only that freshly verified DNS address to
-the selected installed client, preventing a second lookup
-from selecting the excluded address. A changed/unverified endpoint blocks Play
-until its configuration is reviewed; the launcher never falls back to a stale IP.
-The legacy connection helper retains historical OpenDream defaults, but the
-native launcher blocks OpenDream game joins without an explicit operator
-`--server-port` for a verified OpenDream service. No public OpenDream service
-is configured; the DreamDaemon catalog does not establish one.
-`Civ13.exe --server-port 18459` explicitly overrides
-the experimental OpenDream port (valid range 1-65535). Public BYOND selections
-reject that override. Local DreamDaemon mode
-continues to use its verified receipt port and rejects this separate override.
-For explicit experimental OpenDream joins, the launcher invokes the packaged `dotnet.exe` and `Robust.Client.dll` directly
-with the existing UDP connection arguments, content mount, runtime/webview
-environment and `+launchauth`. It does not rewrite installed package scripts.
-Lookup failure, timeout,
-or an unverified address keeps the menu open for retry without starting a game.
-DNS resolution does not authenticate a server. Older direct Play CMD files are
-legacy experimental OpenDream entrypoints and retain their packaged test ports
-(Nomads 18452, TDM 18453). They are not native BYOND server shortcuts.
+## Player server selection and discovery
 
 Main-menu order: 1 BYOND sign-in, 2 Civ13.com, 3 ValZarGaming.com, 4 Exit,
-5-8 existing community links, and 9 experimental OpenDream. Provider-specific
-Nomads/TDM ports remain independent; menu reordering does not change endpoints.
+5-8 existing community links, and 9 experimental OpenDream.
+
+[The directory contract and rollout checklist](SERVER-DIRECTORY.md) describe
+fresh HTTPS discovery, status details, Refresh/Back, selection revalidation,
+provider hostname checks and the existing ValZarGaming DNS pin. Public choices
+reject `--server-port`. No live availability is inferred from old website links,
+static mode names, DNS alone, or a cached snapshot.
+
+Experimental OpenDream still requires an explicitly verified operator
+`--server-port`. It does not consume the BYOND directory. Legacy OpenDream
+shortcuts retain their historical packaged endpoints; they are not native BYOND
+shortcuts. Local DreamDaemon verification still uses its genuine host receipt.

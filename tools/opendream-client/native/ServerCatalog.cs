@@ -2,13 +2,12 @@ using System.Diagnostics;
 
 namespace Civ13.Launcher;
 
-public sealed record GameServer(string Name, string Mode, int Port, string Engine);
-
 public static class ServerCatalog {
     public const string OfficialHost = "civ13.com";
     public const string OfficialMenuKey = "2";
     public const string ValZarGamingMenuKey = "3";
     public const string OpenDreamMenuKey = "9";
+    public const string DirectoryPath = "/.well-known/civ13/servers.json";
     public const string MainMenu = "\nCiv13 - 1: BYOND sign in   " + OfficialMenuKey +
         ": Civ13.com servers   " + ValZarGamingMenuKey + ": ValZarGaming.com servers   4: Exit";
     public const string OpenDreamMenu = OpenDreamMenuKey + ": OpenDream (experimental)";
@@ -17,38 +16,29 @@ public static class ServerCatalog {
         ValZarGamingMenuKey => "ValZarGaming",
         _ => null
     };
+    public static string Host(string provider) => provider switch {
+        "Civ13.com" => OfficialHost,
+        "ValZarGaming" => Connection.Host,
+        _ => throw new IOException("Unknown server provider.")
+    };
+    public static Uri DirectoryUrl(string provider) => new("https://" + Host(provider) + DirectoryPath);
     public static int OpenDreamPort(string mode, string? operatorPort) {
         if (operatorPort == null)
             throw new IOException("OpenDream game service is not configured. An operator must supply --server-port for a verified OpenDream service.");
         return Connection.Port(mode, operatorPort);
     }
 
-    public static GameServer Select(string server, string mode) {
-        if (server is not ("ValZarGaming" or "Civ13.com") || mode is not ("Nomads" or "TDM"))
-            throw new IOException("Unknown game server or mode.");
-        // The official site publishes the opposite port mapping to ValZarGaming.
-        var port = server == "Civ13.com"
-            ? (mode == "Nomads" ? 1715 : 1714)
-            : (mode == "Nomads" ? 1714 : 1715);
-        return new GameServer(server, mode, port, "BYOND");
-    }
-
     public static async Task<string> NativeEndpoint(GameServer server,
-        Func<string, Task<System.Net.IPAddress[]>>? resolver = null) {
-        Validate(server);
-        // Use the published official hostname; do not borrow ValZarGaming's IP pin.
-        return server.Name == "Civ13.com" ? OfficialHost : (await Connection.Resolve(resolver)).Single();
-    }
-
-    private static void Validate(GameServer server) {
-        if (server != Select(server.Name, server.Mode) || server.Engine != "BYOND")
-            throw new IOException("Server engine or port differs from the catalog.");
+        Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null) {
+        server.Validate(now ?? DateTimeOffset.UtcNow);
+        // The directory may choose ports, never a different game hostname or DNS policy.
+        return server.Provider == "Civ13.com" ? OfficialHost : (await Connection.Resolve(resolver)).Single();
     }
 
     public static ProcessStartInfo NativeStart(GameServer server, string bin, string endpoint,
-        ByondRequirement requirement, Func<string, bool> matchesClient) {
-        Validate(server);
-        var expectedEndpoint = server.Name == "Civ13.com" ? OfficialHost : Connection.ApprovedEndpoint;
+        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null) {
+        server.Validate(now ?? DateTimeOffset.UtcNow);
+        var expectedEndpoint = server.Provider == "Civ13.com" ? OfficialHost : Connection.ApprovedEndpoint;
         if (endpoint != expectedEndpoint)
             throw new IOException("Unverified game endpoint rejected.");
         requirement.Validate();
