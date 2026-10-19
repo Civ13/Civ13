@@ -21,32 +21,30 @@ public static class ServerCatalog {
         "ValZarGaming" => Connection.Host,
         _ => throw new IOException("Unknown server provider.")
     };
-    public static Uri DirectoryUrl(string provider) => new("https://" + Host(provider) + DirectoryPath);
+    public static Uri DirectoryUrl(string provider) => new("https://" + OfficialHost + DirectoryPath + "?provider=" + Host(provider));
     public static int OpenDreamPort(string mode, string? operatorPort) {
         if (operatorPort == null)
             throw new IOException("OpenDream game service is not configured. An operator must supply --server-port for a verified OpenDream service.");
         return Connection.Port(mode, operatorPort);
     }
 
-    public static async Task<string> NativeEndpoint(GameServer server,
+    public static async Task<PublicEndpoint> NativeEndpoint(GameServer server,
         Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null) {
         server.Validate(now ?? DateTimeOffset.UtcNow);
-        // The directory may choose ports, never a different game hostname or DNS policy.
-        return server.Provider == "Civ13.com" ? OfficialHost : (await Connection.Resolve(resolver)).Single();
+        // Resolve this approved hostname afresh; never use a directory IP or permanent pin.
+        return await Connection.ResolveHost(server.Host, resolver);
     }
 
-    public static ProcessStartInfo NativeStart(GameServer server, string bin, string endpoint,
+    public static ProcessStartInfo NativeStart(GameServer server, string bin, PublicEndpoint endpoint,
         ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null) {
         server.Validate(now ?? DateTimeOffset.UtcNow);
-        var expectedEndpoint = server.Provider == "Civ13.com" ? OfficialHost : Connection.ApprovedEndpoint;
-        if (endpoint != expectedEndpoint)
-            throw new IOException("Unverified game endpoint rejected.");
+        var address = endpoint.Validate(server.Host);
         requirement.Validate();
         if (!matchesClient(bin)) throw new IOException("Required BYOND " + requirement.Version + " client unavailable.");
         var start = new ProcessStartInfo(Path.Combine(bin, "dreamseeker.exe")) {
             UseShellExecute = false, WorkingDirectory = bin
         };
-        start.ArgumentList.Add($"byond://{endpoint}:{server.Port}");
+        start.ArgumentList.Add($"byond://{address}:{server.Port}");
         return start;
     }
 }

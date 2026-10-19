@@ -1,22 +1,37 @@
 # Live server directory contract (unreleased)
 
 This candidate replaces the public BYOND port catalog with an HTTPS directory.
-It is **not ready for release until both provider endpoints are deployed and the
+It is **not ready for release until the central directory serves both providers and the
 end-to-end path is verified**. The shipped 1.0.4 executable and stable update feed
 remain unchanged. Merging this code does not deploy the backend or publish an EXE.
 
-## Trusted provider endpoints
+## Central HTTPS authority
 
-- Civ13.com: `https://civ13.com/.well-known/civ13/servers.json`
-- ValZarGaming: `https://valzargaming.com/.well-known/civ13/servers.json`
+Both menus fetch the same fixed HTTPS authority and path, with one exact,
+allowlisted provider query:
 
-These are proposed routes, not endpoints demonstrated to be live. The existing
-Civ13 site redirects to GitHub Pages; ValZarGaming's historical
-`/servers/serverinfo.json` redirects to Twitch. Neither legacy location supplies
-this contract. The provider must serve the well-known path directly over trusted
-HTTPS, without redirects or cookies/authentication. Keep the path separate from
-site-wide redirect rules. A reverse proxy may route it to Civilizationbot's
-existing read-only HTTP service. Do not expose bot administration routes.
+- Civ13.com: `https://civ13.com/.well-known/civ13/servers.json?provider=civ13.com`
+- ValZarGaming: `https://civ13.com/.well-known/civ13/servers.json?provider=valzargaming.com`
+
+The query is a provider selector, never a URL, DNS name to probe, or port override.
+Only these two canonical raw query strings are valid. Extra/repeated parameters,
+encoded alternatives, missing queries and unknown values are not part of the
+contract. The launcher constructs the URLs internally and validates the exact
+response URL, including its query. It never accepts a redirect.
+
+These are proposed routes, not endpoints demonstrated to be live. Civ13.com must
+serve the well-known path directly over trusted HTTPS without cookies or
+credentials, separate from site-wide redirects. No ValZarGaming HTTPS endpoint
+is required. A reverse proxy may route this path and its unchanged query to
+Civilizationbot's existing read-only HTTP service. Do not expose bot administration
+routes. Civ13.com is the trusted directory authority for both inventories;
+per-entry host checks still prevent one provider's records from joining another.
+
+An unconfigured provider returns HTTP 404 and appears unavailable. A configured
+provider with no verified online servers returns HTTP 200 with a fresh empty
+array. One provider's availability must not select or reuse another's snapshot.
+The backend limits the combined configured inventory to 32 entries and each
+response to 65,536 bytes; the launcher independently enforces both response caps.
 
 The backend config owns the inventory of enabled game-server keys and their
 ports, not the launcher. It queries only those configured servers. No port scan,
@@ -106,19 +121,42 @@ host/port/engine must remain present. A changed or vanished target requires a ne
 selection. Freshness is checked again after DNS and immediately before starting
 the verified native client.
 
-Civ13.com still passes only its fixed hostname to DreamSeeker. ValZarGaming
-still performs fresh DNS verification and passes only its existing approved IP;
-the excluded/changed address rules are unchanged. The directory cannot substitute
-another host or engine. BYOND 516.1681 detection/installation, Pager sign-in,
-local receipt verification, updater controls and experimental OpenDream operator
-flow are unchanged. Public BYOND selection still rejects `--server-port`.
+Both providers resolve their exact approved hostname afresh before each join.
+There is no permanent public-IP pin: a changed valid public IP is accepted.
+The obsolete individual parking-IP exclusion is also removed; the same public
+address rules apply to every answer.
+The candidate requests IPv4 A records, accepts 1-32 answers, rejects the entire
+answer set if any address is private, loopback, link-local, multicast, reserved or
+otherwise unsupported, and deterministically selects one validated address.
+IPv6-only game hosts are unavailable in this candidate. The conservative IPv4
+exclusions follow the [IANA IPv4 Special-Purpose Address Registry](https://www.iana.org/assignments/iana-ipv4-special-registry/),
+including its special-purpose ranges even where an individual exception is
+marked globally reachable.
+
+The immutable endpoint result is bound to its approved hostname and expires after
+15 seconds on a monotonic clock. Dispatch passes its validated IPv4 literal to
+DreamSeeker, avoiding a second hostname lookup between validation and connection.
+The same fresh-address policy replaces the old IP pin for the experimental
+OpenDream operator path. DNS may still use the operating system's resolver cache;
+this code does not alter machine DNS settings. DNS and HTTPS directory trust do
+not authenticate the game session cryptographically, prove port ownership, or
+control any later reconnect/redirect performed by the third-party game client.
+A failed or stale resolution never falls back to a compiled or cached IP.
+
+The directory cannot substitute another host or engine. BYOND 516.1681
+detection/installation, Pager sign-in, local receipt verification, updater
+controls and the explicit OpenDream operator-port requirement remain unchanged.
+Public BYOND selection still rejects `--server-port`.
 
 ## Verification and rollout gate
 
 1. Deploy the separately reviewed Civilizationbot adapter and configure each
-   provider's enabled server keys. Confirm its bounded probe and no-secret output.
-2. Configure both public HTTPS routes and prove that redirects cannot move them
-   to the website, Twitch, GitHub Pages or an arbitrary origin. Check TLS normally.
+   provider's enabled managed server keys or explicit status-only targets. The latter
+   must not construct managed game services or require local game directories.
+   Confirm bounded probes, public-address validation and no-secret output.
+2. Configure the central HTTPS route and both exact provider queries. Prove that
+   redirects cannot move them to the website, GitHub Pages or an arbitrary origin.
+   Check TLS normally and verify unknown/extra query parameters are rejected.
 3. Compare each reported record against the actual configured service and a fresh
    game status response. Confirm zero players remains online, a stopped server
    disappears, a new configured port appears without rebuilding the launcher,
@@ -128,10 +166,15 @@ flow are unchanged. Public BYOND selection still rejects `--server-port`.
    Offline responses do not establish production availability or game acceptance.
 5. Only after acceptance, separately bump the launcher version and publish an
    immutable release through the existing reviewed flow. Do not overwrite 1.0.4
-   or activate this candidate on the stable feed while either endpoint is absent.
+   or activate this candidate on the stable feed while either provider is unavailable.
 
 Tests: `dotnet run --project tests/Launcher.Tests.csproj -- --directory-only`
 runs the offline directory contracts on .NET 8. The normal Windows suite includes
 these tests plus the existing updater, native-client and executable replacement
 checks. All HTTP/DNS/game-process effects in the directory suite are injected;
 there is no scanning, real game connection, credential use or production mutation.
+
+The shared `tests/fixtures/server-directory-unicode.json` and
+`tests/fixtures/server-directory-vzg.json` files also exercise Civilizationbot's
+production projection. Fixture timestamps and ports are synthetic test data,
+never deployment configuration or evidence that a public server is online.

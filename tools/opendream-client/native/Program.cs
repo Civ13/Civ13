@@ -145,12 +145,11 @@ public static class Program {
                         if (engineChoice is not ("2" or "3")) continue;
                         var mode = engineChoice == "2" ? "Nomads" : "TDM";
                         var openDreamPort = ServerCatalog.OpenDreamPort(mode, serverPort);
-                        var addresses = await Connection.Resolve();
-                        Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
-                        // Pass only the approved address from this lookup, avoiding a second
-                        // unrestricted lookup that could select the explicitly excluded address.
+                        var endpoint = await Connection.Resolve();
+                        Console.WriteLine(Connection.Host + " verified public address for this attempt: " + endpoint.Address);
+                        // Pass this one validated DNS result, never ask the game client to resolve again.
                         Console.WriteLine($"Connecting to experimental OpenDream {mode} on operator port {openDreamPort}.");
-                        Process.Start(Connection.Start(destination, mode, addresses.Single(), serverPort));
+                        Process.Start(Connection.Start(destination, mode, endpoint, serverPort));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
             }

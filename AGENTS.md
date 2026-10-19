@@ -46,10 +46,12 @@ runner's --input-runtime adapter checks disk-backed migration and the production
 early click gate; connected-client interaction remains separate evidence.
 
 <!-- 2026-10-19: live launcher directory contract -->
-The unreleased native launcher consumes direct HTTPS provider directories at
-/.well-known/civ13/servers.json. Public ports come only from fresh validated
-records; stale/offline/incomplete records cannot launch. Re-fetch before joining
-and preserve the existing provider hostname/DNS policy. Backend deployment and
+The unreleased native launcher consumes the fixed civ13.com HTTPS directory at
+/.well-known/civ13/servers.json with exactly provider=civ13.com or
+provider=valzargaming.com. Public ports come only from fresh validated records;
+stale/offline/incomplete records cannot launch. Re-fetch before joining, resolve
+the exact approved hostname to public IPv4 addresses and bind the selected
+validated literal to that attempt. Never restore a permanent public-IP pin. Backend deployment and
 real BYOND joins gate release; do not replace 1.0.4 with an empty-directory build.
 See tools/opendream-client/native/SERVER-DIRECTORY.md for the shared schema.
 

@@ -45,6 +45,19 @@ internal static class ServerDirectoryTests {
         Require(sharedServer.Name == "Nomads 🌍" && sharedServer.Players == 0 && sharedServer.Map == "Gaia" &&
             sharedServer.Mode == "Nomads" && sharedServer.Epoch == "1200" && sharedServer.RoundId == "round-42" &&
             sharedServer.RoundDurationSeconds == 1234 && sharedServer.Port == 1715, "shared Unicode contract fixture changed");
+        using var vzgFixture = typeof(ServerDirectoryTests).Assembly.GetManifestResourceStream("server-directory-vzg.json")
+            ?? throw new Exception("Shared VZG contract fixture missing.");
+        using var vzgBytes = new MemoryStream();
+        vzgFixture.CopyTo(vzgBytes);
+        var vzgDirectory = ServerDirectory.Read("ValZarGaming", vzgBytes.ToArray(), now);
+        Require(vzgDirectory.Servers.Count == 1, "shared VZG fixture did not produce one selectable server");
+        var vzgServer = vzgDirectory.Servers.Single();
+        Require(vzgServer.Id == "vzg-fixture" && vzgServer.Name == "VZG fixture" && vzgServer.Host == "valzargaming.com" &&
+            vzgServer.Port == 24017 && vzgServer.Players == 0 && vzgServer.Map == "Gaia" && vzgServer.Mode == "Nomads" &&
+            vzgServer.Epoch == "1200" && vzgServer.RoundId == "round-42" && vzgServer.RoundDurationSeconds == 1234,
+            "shared VZG production projection changed");
+        Require(ServerDirectory.Read("Civ13.com", vzgBytes.ToArray(), now).Servers.Count == 0,
+            "shared VZG projection leaked into official provider");
         var directory = Parse(Document(Entry()));
         var server = directory.Servers.Single();
         Require(server.Name == "Nomads Europe" && server.Players == 12 && server.Map == "Europe" && server.Mode == "Nomads" &&
@@ -62,7 +75,7 @@ internal static class ServerDirectoryTests {
         Hidden(e => e["checked_at"] = "2026-10-19T16:58:59Z", "stale probe");
         Hidden(e => e["checked_at"] = "2026-10-19T17:00:01Z", "probe newer than generation");
         Hidden(e => e["checked_at"] = "2026-10-19T17:00:00+00:00", "noncontract timestamp");
-        foreach (var host in new[] { "127.0.0.1", "localhost", "72.218.249.221", "civ13.com.evil.test", "valzargaming.com", "https://civ13.com", "civ13.com:1714", "civ13.com;calc.exe", "CIV13.COM", "civ13.com." })
+        foreach (var host in new[] { "127.0.0.1", "localhost", "8.8.8.8", "civ13.com.evil.test", "valzargaming.com", "https://civ13.com", "civ13.com:1714", "civ13.com;calc.exe", "CIV13.COM", "civ13.com." })
             Hidden(e => e["host"] = host, "substituted hostname");
         foreach (var engine in new[] { "OpenDream", "byond", "BYOND --arg", "", "DreamDaemon" }) Hidden(e => e["engine"] = engine, "engine");
         foreach (var port in new[] { 0, -1, 65536 }) Hidden(e => e["port"] = port, "out-of-range port");
@@ -126,35 +139,89 @@ internal static class ServerDirectoryTests {
         Reject(() => Parse(Document(), "attacker.test"), "unknown provider");
         Reject(() => server.Validate(now.AddMinutes(1)), "expired selected server");
         Reject(() => server.Validate(now.AddMinutes(-1)), "clock rollback");
-        var endpoint = await ServerCatalog.NativeEndpoint(server, _ => throw new Exception("official used VZG resolver"), now);
+        var officialCalls = 0;
+        var endpoint = await ServerCatalog.NativeEndpoint(server, host => {
+            officialCalls++; Require(host == "civ13.com", "official selection resolved wrong hostname");
+            return Task.FromResult(new[] { IPAddress.Parse("8.8.8.8") });
+        }, now);
         var start = ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now);
-        Require(start.ArgumentList.Single() == "byond://civ13.com:24017" && !start.UseShellExecute, "official fresh directory dispatch");
-        foreach (var invalid in new[] { "72.218.249.221", "192.64.119.81", "civ13.com;calc.exe", "https://civ13.com", "valzargaming.com" })
-            Reject(() => ServerCatalog.NativeStart(server, root, invalid, Civ13.Launcher.Program.RequiredByond(), _ => true, now), "unverified endpoint");
+        Require(start.ArgumentList.Single() == "byond://8.8.8.8:24017" && !start.UseShellExecute && officialCalls == 1,
+            "official dispatch did not bind the single validated DNS result");
         Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => false, now), "client version");
         Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now.AddMinutes(1)), "expired dispatch");
         var valzar = Parse(Document(Entry("ValZarGaming", 32009)), "ValZarGaming").Servers.Single();
         var calls = 0;
-        var pinned = await ServerCatalog.NativeEndpoint(valzar, host => {
+        Task<IPAddress[]> ChangingDns(string host) {
             calls++; Require(host == "valzargaming.com", "wrong DNS name");
-            return Task.FromResult(new[] { IPAddress.Parse(Connection.ApprovedEndpoint), IPAddress.Parse(Connection.ExcludedEndpoint) });
-        }, now);
-        Require(pinned == Connection.ApprovedEndpoint && calls == 1, "VZG DNS pin changed");
-        Require(ServerCatalog.NativeStart(valzar, root, pinned, Civ13.Launcher.Program.RequiredByond(), _ => true, now).ArgumentList.Single() ==
-            "byond://72.218.249.221:32009", "VZG directory port ignored");
-        await RejectAsync(() => ServerCatalog.NativeEndpoint(valzar, _ => Task.FromResult(new[] { IPAddress.Loopback }), now), "VZG unverified DNS");
-        await RejectAsync(() => ServerCatalog.NativeEndpoint(valzar, _ => Task.FromResult(new[] { IPAddress.Parse(Connection.ExcludedEndpoint) }), now), "VZG excluded DNS");
+            return Task.FromResult(new[] { IPAddress.Parse(calls == 1 ? "8.8.4.4" : "1.1.1.1") });
+        }
+        var first = await ServerCatalog.NativeEndpoint(valzar, ChangingDns, now);
+        var changedIp = await ServerCatalog.NativeEndpoint(valzar, ChangingDns, now);
+        Require(first.Address == "8.8.4.4" && changedIp.Address == "1.1.1.1" && calls == 2, "fresh valid public IP change was blocked or DNS was cached");
+        Require(ServerCatalog.NativeStart(valzar, root, first, Civ13.Launcher.Program.RequiredByond(), _ => true, now).ArgumentList.Single() ==
+            "byond://8.8.4.4:32009", "first DNS result was not bound to its connection attempt");
+        Require(ServerCatalog.NativeStart(valzar, root, changedIp, Civ13.Launcher.Program.RequiredByond(), _ => true, now).ArgumentList.Single() ==
+            "byond://1.1.1.1:32009" && calls == 2, "dispatch re-resolved DNS or ignored the current address");
+        Reject(() => ServerCatalog.NativeStart(server, root, first, Civ13.Launcher.Program.RequiredByond(), _ => true, now), "VZG DNS identity substituted for official provider");
+        Reject(() => ServerCatalog.NativeStart(valzar, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now), "official DNS identity substituted for VZG");
+        var ticks = 1000L;
+        var expiringEndpoint = await Connection.ResolveHost("civ13.com", _ => Task.FromResult(new[] { IPAddress.Parse("8.8.8.8") }), () => ticks);
+        ticks = 16000;
+        Require(ServerCatalog.NativeStart(server, root, expiringEndpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now).ArgumentList.Single() ==
+            "byond://8.8.8.8:24017", "endpoint rejected within its monotonic freshness bound");
+        ticks = 16001;
+        Reject(() => ServerCatalog.NativeStart(server, root, expiringEndpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now), "stale DNS result reused");
+        ticks = 999;
+        Reject(() => ServerCatalog.NativeStart(server, root, expiringEndpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now), "endpoint monotonic clock rollback");
+        foreach (var invalidHost in new[] { "evil.test", "CIV13.COM", "civ13.com.", "127.0.0.1", "civ13.com;calc.exe", "https://civ13.com", "valzargaming.com:1715" })
+            await RejectAsync(() => Connection.ResolveHost(invalidHost, _ => throw new Exception("unapproved hostname reached DNS")), "hostname allowlist");
+        foreach (var invalidIp in new[] { "0.1.2.3", "10.0.0.1", "100.64.0.1", "100.127.255.254", "127.0.0.1", "169.254.169.254", "172.16.0.1", "172.31.255.254",
+            "192.0.0.9", "192.0.2.1", "192.31.196.1", "192.52.193.1", "192.88.99.1", "192.168.1.1", "192.175.48.1", "198.18.0.1", "198.19.255.254",
+            "198.51.100.1", "203.0.113.1", "224.0.0.1", "239.255.255.255", "240.0.0.1", "255.255.255.255", "::", "::1", "fe80::1", "fc00::1", "::ffff:8.8.8.8", "2606:4700:4700::1111" }) {
+            await RejectAsync(() => ServerCatalog.NativeEndpoint(valzar, _ => Task.FromResult(new[] { IPAddress.Parse(invalidIp) }), now), "private/reserved/unsupported DNS: " + invalidIp);
+            await RejectAsync(() => ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { IPAddress.Parse("8.8.8.8"), IPAddress.Parse(invalidIp) }), now), "mixed public/unsafe DNS: " + invalidIp);
+        }
+        foreach (var publicIp in new[] { "1.1.1.1", "8.8.8.8", "100.63.255.254", "100.128.0.1", "172.15.255.254", "172.32.0.1", "198.17.255.254", "198.20.0.1" })
+            Require(Connection.IsPublicIPv4(IPAddress.Parse(publicIp)), "public range boundary blocked: " + publicIp);
+        await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<IPAddress>())), "empty DNS has no fallback");
+        await RejectAsync(() => Connection.Resolve(_ => Task.FromException<IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure has no fallback");
+        await RejectAsync(() => Connection.Resolve(_ => Task.FromException<IPAddress[]>(new TimeoutException())), "DNS timeout has no fallback");
+        await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Enumerable.Repeat(IPAddress.Parse("8.8.8.8"), 33).ToArray())), "DNS answer bound");
+        var multi = await Connection.Resolve(_ => Task.FromResult(new[] { IPAddress.Parse("8.8.8.8"), IPAddress.Parse("1.1.1.1"), IPAddress.Parse("8.8.8.8") }));
+        Require(multi.Address == "1.1.1.1", "multi-address selection was not deterministic and bounded");
+
+        Require(ServerCatalog.DirectoryUrl("Civ13.com").AbsoluteUri == "https://civ13.com/.well-known/civ13/servers.json?provider=civ13.com", "official canonical query changed");
+        Require(ServerCatalog.DirectoryUrl("ValZarGaming").AbsoluteUri == "https://civ13.com/.well-known/civ13/servers.json?provider=valzargaming.com", "VZG canonical central query changed");
+        foreach (var provider in new[] { "civ13.com", "Civ13.com&port=1714", "ValZarGaming&provider=civ13.com", "https://evil.test", "ValZarGaming?host=127.0.0.1" })
+            Reject(() => ServerCatalog.DirectoryUrl(provider), "query/provider injection");
+        Require(Parse(Document(Enumerable.Range(0, 32).Select(i => Entry(port: 30000 + i, id: "n" + i)).ToArray())).Servers.Count == 32, "maximum bounded directory rejected");
+        var cappedBytes = Enumerable.Repeat((byte)' ', ServerDirectory.MaxBytes).ToArray();
+        Bytes(Document()).CopyTo(cappedBytes, 0);
+        Require(ServerDirectory.Read("Civ13.com", cappedBytes, now).Servers.Count == 0, "exact byte cap rejected");
+        Require(Parse(Document(Entry(), Entry("ValZarGaming", id: "other")), "ValZarGaming").Servers.Single().Provider == "ValZarGaming", "same port on another approved host caused cross-provider collision");
+        using (var partialTransport = new ServerDirectoryTransport(new DirectoryHandler((request, _) => {
+            var response = Response(request, Bytes(Document(Entry())));
+            if (request.RequestUri == ServerCatalog.DirectoryUrl("ValZarGaming")) response.StatusCode = HttpStatusCode.NotFound;
+            return Task.FromResult(response);
+        }))) {
+            Require(ServerDirectory.Read("Civ13.com", await partialTransport.Fetch("Civ13.com"), now).Servers.Count == 1, "configured provider unavailable");
+            await RejectAsync(() => partialTransport.Fetch("ValZarGaming"), "unconfigured provider must not borrow another snapshot");
+            Require(ServerDirectory.Read("Civ13.com", await partialTransport.Fetch("Civ13.com"), now).Servers.Count == 1, "one unavailable provider poisoned the other");
+        }
 
         // Exercise production HTTP code with bounded offline response streams, never real ports.
         var httpCalls = 0;
         using (var transport = new ServerDirectoryTransport(new DirectoryHandler((request, _) => {
             httpCalls++;
-            Require(request.RequestUri == new Uri("https://civ13.com/.well-known/civ13/servers.json"), "wrong discovery origin/path");
+            var provider = request.RequestUri!.Query == "?provider=valzargaming.com" ? "ValZarGaming" : "Civ13.com";
+            Require(request.RequestUri == ServerCatalog.DirectoryUrl(provider) && request.RequestUri.Host == "civ13.com", "wrong central discovery origin/path/query");
             Require(request.Headers.CacheControl is { NoCache: true, NoStore: true }, "directory cache bypass missing");
-            return Task.FromResult(Response(request, Bytes(Document(Entry()))));
+            return Task.FromResult(Response(request, Bytes(Document(Entry(provider)))));
         }))) {
             Require(ServerDirectory.Read("Civ13.com", await transport.Fetch("Civ13.com"), now).Servers.Count == 1, "HTTP parse");
             await transport.Fetch("Civ13.com"); Require(httpCalls == 2, "directory responses cached");
+            Require(ServerDirectory.Read("ValZarGaming", await transport.Fetch("ValZarGaming"), now).Servers.Single().Host == "valzargaming.com", "central VZG query did not retain provider identity");
+            Require(httpCalls == 3, "VZG menu reused another provider response");
         }
         foreach (var status in new[] { HttpStatusCode.MovedPermanently, HttpStatusCode.Redirect, HttpStatusCode.NotFound, HttpStatusCode.ServiceUnavailable }) {
             using var transport = new ServerDirectoryTransport(new DirectoryHandler((request, _) => {
@@ -163,12 +230,13 @@ internal static class ServerDirectoryTests {
             }));
             await RejectAsync(() => transport.Fetch("Civ13.com"), "redirect/status " + status);
         }
-        foreach (var kind in new[] { "html", "origin", "length", "stream" }) {
+        foreach (var kind in new[] { "html", "origin", "query", "length", "stream" }) {
             using var transport = new ServerDirectoryTransport(new DirectoryHandler((request, _) => {
                 var bytes = kind is "length" or "stream" ? new byte[ServerDirectory.MaxBytes + 1] : Bytes(Document());
                 var response = Response(request, bytes);
                 if (kind == "html") response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
                 if (kind == "origin") response.RequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://evil.test/");
+                if (kind == "query") response.RequestMessage = new HttpRequestMessage(HttpMethod.Get, ServerCatalog.DirectoryUrl("ValZarGaming"));
                 if (kind == "stream") response.Content = new StreamContent(new NonSeekStream(bytes));
                 if (kind == "stream") response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                 return Task.FromResult(response);
@@ -185,18 +253,19 @@ internal static class ServerDirectoryTests {
         using (var transport = new ServerDirectoryTransport(new DirectoryHandler((_, _) => throw new HttpRequestException("private URL"))))
             await RejectAsync(() => transport.Fetch("Civ13.com"), "network failure");
 
-        async Task<(string Output, int Fetches, int Launches)> Browse(string input, params byte[][] responses) {
+        async Task<(string Output, int Fetches, int Launches)> BrowseProvider(string provider, string input, params byte[][] responses) {
             var fetched = 0; var launched = 0;
             var transport = new DirectoryFixture(_ => {
                 if (fetched >= responses.Length) throw new IOException("offline");
                 return responses[fetched++];
             });
             using var output = new StringWriter();
-            await ServerBrowser.Run("Civ13.com", transport, new StringReader(input), output, candidate => {
-                launched++; Require(candidate.Port == 24017, "browser launched changed target"); return Task.CompletedTask;
+            await ServerBrowser.Run(provider, transport, new StringReader(input), output, candidate => {
+                launched++; Require(candidate.Port == 24017 && candidate.Provider == provider, "browser launched changed target/provider"); return Task.CompletedTask;
             }, () => now);
             return (output.ToString(), fetched, launched);
         }
+        Task<(string Output, int Fetches, int Launches)> Browse(string input, params byte[][] responses) => BrowseProvider("Civ13.com", input, responses);
         var selected = await Browse("1\n", Bytes(Document(Entry())), Bytes(Document(Entry())));
         Require(selected.Launches == 1 && selected.Fetches == 2, "selection did not revalidate before launch");
         var refreshed = await Browse("R\n1\n", Bytes(Document()), Bytes(Document(Entry())), Bytes(Document(Entry())));
@@ -209,6 +278,17 @@ internal static class ServerDirectoryTests {
         Require(unavailable.Launches == 0 && unavailable.Output.Contains("unavailable"), "failed fetch used fallback");
         var empty = await Browse("1\nB\n", Bytes(Document()));
         Require(empty.Launches == 0 && empty.Output.Contains("No verified online servers"), "empty directory used static catalog");
+        var emptyVzg = await BrowseProvider("ValZarGaming", "1\nB\n", Bytes(Document()));
+        Require(emptyVzg.Launches == 0 && emptyVzg.Output.Contains("No verified online servers") && !emptyVzg.Output.Contains("unavailable"), "configured empty VZG response was mislabeled");
+        var unavailableVzg = await BrowseProvider("ValZarGaming", "1\nB\n");
+        Require(unavailableVzg.Launches == 0 && unavailableVzg.Output.Contains("unavailable"), "unconfigured VZG fell back to static servers");
+        var wrongProvider = await BrowseProvider("ValZarGaming", "1\nB\n", Bytes(Document(Entry())));
+        Require(wrongProvider.Launches == 0 && wrongProvider.Output.Contains("No verified online servers"), "official records leaked into VZG menu");
+        var swappedProvider = await BrowseProvider("ValZarGaming", "1\nB\n", Bytes(Document(Entry("ValZarGaming"))), Bytes(Document(Entry())), Bytes(Document()));
+        Require(swappedProvider.Launches == 0, "prejoin allowed an identically named server from another provider");
+        var zeroVzg = Entry("ValZarGaming"); zeroVzg["players"] = 0;
+        var selectedVzg = await BrowseProvider("ValZarGaming", "1\n", Bytes(Document(zeroVzg)), Bytes(Document(Entry("ValZarGaming"))));
+        Require(selectedVzg.Launches == 1 && selectedVzg.Fetches == 2, "zero-player VZG selection was not refreshed and retained");
         var staleDocument = Document(Entry()); staleDocument["expires_at"] = "2026-10-19T17:00:00Z";
         var expired = await Browse("1\nB\n", Bytes(Document(Entry())), Bytes(staleDocument), Bytes(Document()));
         Require(expired.Launches == 0, "expired prejoin response launched");

@@ -1,13 +1,14 @@
 # Single-file Windows launcher
 
 This branch contains an unreleased live-directory candidate. It must not replace
-the working 1.0.4 release until both HTTPS directory endpoints and genuine public
+the working 1.0.4 release until the central HTTPS directory serves both providers and genuine public
 joins are verified. See [SERVER-DIRECTORY.md](SERVER-DIRECTORY.md) for the exact
 schema, backend dependency, safety checks and rollout gate.
 
 For native play, open `Civ13.exe`, sign into BYOND Pager with your own account,
 then choose **Civ13.com servers** or **ValZarGaming.com servers**. The candidate
-fetches the provider's live directory and lists only fresh verified online
+fetches the selected provider's live directory from the fixed civ13.com HTTPS
+authority and lists only fresh verified online
 entries, including player counts, map, mode and round details. Select a listed
 server or use Refresh/Back. Ports come from the provider, not the executable.
 Unavailable or stale directories provide no selectable fallback. The launcher
