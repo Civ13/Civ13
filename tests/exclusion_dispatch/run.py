@@ -13,7 +13,7 @@ import time
 from resources import Budget, DIAGNOSTIC, binary_info
 from source_contract import validate
 
-BASE = '75890d883190355e430f9958fd102864ee88429a'
+BASE = '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019'
 PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--byond-bin', type=Path)

@@ -29,9 +29,12 @@ their own tile. Removing a support schedules the normal roof collapse check;
 removing either slab face removes its partner and exposes the floor opening.
 
 New levels are open air, with no broken-floor render registry. Expansion is
-bounded to 32 total levels, eight added levels, and two million cells per added
-level. Native BYOND allocates the default turf synchronously; replacement is
-budgeted across ticks. These bounds do not establish low latency on large maps.
+bounded by the shared total-cell budget, default 600,000 cells and one roof-added
+plane, with lower-only host settings. Existing structural ceilings remain;
+see `docs/new-z-budget.md`. Native BYOND allocates the default turf synchronously;
+replacement is budgeted across ticks. These bounds do not establish low latency
+or sufficient heap/save/player headroom. The support-tier fixture uses seven
+compiled levels; first-roof allocation has separate budget/lighting probes.
 
 The focused lighting-gravity mode uses actual lighting startup, native turf
 replacement, and production forceMove/Entered. It records the replacement
@@ -70,3 +73,9 @@ inject a black renderer nor replace Entered or the turf.New content loop.
 The existing linked-building CI step runs all five lighting profiles when this
 suite is selected. New executable tests select the suite on pull requests;
 existing-suite reruns also remain available through the existing regression inputs.
+
+New native growth is refused in production while memory admission is UNMEASURED.
+The accepted-growth lighting probe explicitly instantiates the tests-only
+`fixture_admission` subclass; it is not a validated memory profile. The ordinary
+support fixture uses compiled planes. Production default rejection, paid-item
+preservation and existing-plane reuse are checked by `tests/new_z_budget`.

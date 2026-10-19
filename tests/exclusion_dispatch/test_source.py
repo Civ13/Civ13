@@ -13,7 +13,7 @@ import resources
 from source_contract import transform, validate
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '75890d883190355e430f9958fd102864ee88429a'
+BASE = '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',

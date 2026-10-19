@@ -4,7 +4,7 @@ Candidate: replace the atom, turf and mob runtime-exclusion temporary name lists
 with exact switch cases. Unmatched keys still call the parent once; matched keys
 return without calling it. No cache, partial parsing, saved-variable selection,
 saver/loader, or persistent fields change. Baseline is pinned to
-`75890d883190355e430f9958fd102864ee88429a`.
+`5ac2df336b717f4ca2ccc60f2697b76ab4f2e019`.
 
 The runner fails closed on source drift. It imports production hooks, representative
 movable/item/human inherited hooks, full get_saved_vars bodies and the dirt override.
@@ -86,7 +86,7 @@ candidate without a demonstrated performance benefit.
 
 ## Current-master conflict resolution
 
-The baseline is master `75890d883190355e430f9958fd102864ee88429a`.
+The baseline is master `5ac2df336b717f4ca2ccc60f2697b76ab4f2e019`.
 The three switch hooks retain its 3 atom, 8 turf and 22 mob exclusions, including
 all nine process-local input/trace fields and the three mining ownership fields. The datum weak-reference exclusion,
 restored-lighting calls and all other persistence code remain baseline-identical.
@@ -111,7 +111,7 @@ daemon, and records `native_execution: false` and the held authorization state.
 ## Refreshed source packet (2026-10-19)
 
 The pinned baseline and inherited-helper checks now use master
-`75890d883190355e430f9958fd102864ee88429a`. The transformer preserves leading
+`5ac2df336b717f4ca2ccc60f2697b76ab4f2e019`. The transformer preserves leading
 mining guards verbatim and replaces only the terminal list-membership expression.
 The whole-file equality guard still rejects unrelated changes. Offline tests
 individually omit all three mining fields and verify their generated parity keys.

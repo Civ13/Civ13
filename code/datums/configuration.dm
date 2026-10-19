@@ -142,6 +142,11 @@ var/list/gamemode_cache = list()
 	var/seasons_on = TRUE
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
+	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
+	var/new_z_cell_budget = 600000
+	var/new_z_roof_levels = 1
+	var/new_z_instance_reserve = 0
+	var/new_z_safehouse_reserve = 0
 
 	// webhook stuff
 	var/webhook_can_fire = TRUE
@@ -442,6 +447,12 @@ var/list/gamemode_cache = list()
 
 				if ("skip_persistence_saving")
 					config.skip_persistence_saving = TRUE
+
+				if ("new_z_cell_budget", "new_z_roof_levels", "new_z_instance_reserve", "new_z_safehouse_reserve")
+					if (world_z_budget.configure(name, value))
+						config.vars[name] = text2num(value)
+					else
+						log_misc("Configuration: '[name]' rejected; use a bounded decimal integer while no level reservation is active. Existing allocator policy retained.")
 
 				if ("persistence_reboot_hour")
 					var/reboot_hour = text2num(value)
