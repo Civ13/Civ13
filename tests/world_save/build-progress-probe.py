@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 
@@ -16,9 +17,15 @@ def replace_once(source, before, after):
 
 
 def instrument(saving, functions):
-    if saving.count('\tTICK_CHECK\n') != 2:
-        raise ValueError('Expected the two production serializer tick checks')
+    if saving.count('\tTICK_CHECK\n') != 1:
+        raise ValueError('Expected the production list serializer tick check')
     saving = saving.replace('TICK_CHECK', 'WORLD_SAVE_PROGRESS_TICK_CHECK')
+    # Observe the bounded saver's explicit waits without altering their delay,
+    # threshold, work counter or relative-slice policy.
+    saving, sleeps = re.subn(r'(?m)^(\s*)sleep\((world.tick_lag|0)\)$',
+                             r'\1world_save_progress_sleep(\2)', saving)
+    if sleeps != 3:
+        raise ValueError('Expected the three bounded serializer sleep sites')
     saving = ('#ifndef WORLD_SAVE_PROGRESS_TICK_CHECK\n'
               '#define WORLD_SAVE_PROGRESS_TICK_CHECK ( world.tick_usage > TICK_LIMIT_RUNNING ? world_save_progress_stoplag() : 0 )\n'
               '#endif\n'
@@ -37,12 +44,12 @@ def instrument(saving, functions):
     saving = replace_once(saving, '\t\tvar/savefile/savefile = new("map_saves/[A].sav")\n',
                           '\t\tworld_save_progress_emit("level_start", A, 0, TRUE)\n'
                           '\t\tvar/savefile/savefile = new("map_saves/[A].sav")\n')
-    saving = replace_once(saving, '\t\t\t\tsavefile["[turf.x]"] << ref\n\t\t\t\tWORLD_SAVE_PROGRESS_TICK_CHECK\n',
-                          '\t\t\t\tsavefile["[turf.x]"] << ref\n'
+    saving = replace_once(saving, '\t\t\t\tsavefile["/map/[A]/[y]/[x]"] << ref\n\t\t\t\tsave_work_check()\n',
+                          '\t\t\t\tsavefile["/map/[A]/[y]/[x]"] << ref\n'
                           '\t\t\t\tprogress_completed_turfs++\n'
                           '\t\t\t\tif(progress_completed_turfs % 1024 == 0)\n'
                           '\t\t\t\t\tworld_save_progress_emit("turfs", A, progress_completed_turfs)\n'
-                          '\t\t\t\tWORLD_SAVE_PROGRESS_TICK_CHECK\n')
+                          '\t\t\t\tsave_work_check()\n')
     saving = replace_once(saving, '\t\tlog_startup_progress("\tSaved z-level [A].")\n',
                           '\t\tworld_save_progress_emit("level_serialized", A, progress_completed_turfs, TRUE)\n'
                           '\t\tlog_startup_progress("\tSaved z-level [A].")\n')
@@ -50,8 +57,8 @@ def instrument(saving, functions):
                           '\tworld_save_progress_emit("completion_marker", world.maxz, world.maxx * world.maxy, TRUE)\n'
                           '\tworld_save_progress_active = FALSE\n'
                           '\tlog_startup_progress("Finished saving.")\n')
-    # Original stoplag body is unchanged. Only the two saver checks call a
-    # scoped wrapper with the same production threshold and return value.
+    # Original stoplag and bounded-work policy bodies are unchanged. Scoped
+    # wrappers preserve their thresholds, wait delays and return values.
     return saving, functions
 
 

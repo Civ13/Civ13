@@ -102,7 +102,14 @@ var/last_identity
 			// Establish a completed generation before exercising that refusal.
 			if(!map_storage.Save_World()) throw EXCEPTION("initial save failed")
 			spawn(0) mutate_during_save()
-			if(map_storage.Save_World()) throw EXCEPTION("invalidated frame was published")
+			var/refused = FALSE
+			try
+				map_storage.Save_World()
+			catch(var/exception/mutation_error)
+				if(!findtext("[mutation_error]", "Save export frame") && !findtext("[mutation_error]", "Save export turf") && !findtext("[mutation_error]", "Child moved or disappeared"))
+					throw mutation_error
+				refused = TRUE
+			if(!refused) throw EXCEPTION("invalidated frame was published")
 			mutation_cancel = TRUE
 			if(!mutation_done) throw EXCEPTION("movement callback never ran during save")
 			if(fexists("map_saves/save_complete.txt") || map_storage.validate_world_save()) throw EXCEPTION("failed generation accepted")

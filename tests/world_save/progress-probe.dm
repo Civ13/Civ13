@@ -4,6 +4,8 @@ var/global/world_save_progress_started = 0
 var/global/world_save_progress_last_write = 0
 var/global/world_save_progress_yields = 0
 var/global/world_save_progress_yield_ds = 0
+var/global/world_save_progress_sleeps = 0
+var/global/world_save_progress_sleep_ds = 0
 var/global/world_save_progress_unavailable = FALSE
 var/global/world_save_progress_error = null
 #ifdef WORLD_SAVE_PROGRESS_TEST_CLOCK
@@ -33,6 +35,8 @@ var/global/world_save_progress_test_clock = 0
 	world_save_progress_last_write = world_save_progress_started
 	world_save_progress_yields = 0
 	world_save_progress_yield_ds = 0
+	world_save_progress_sleeps = 0
+	world_save_progress_sleep_ds = 0
 	world_save_progress_unavailable = FALSE
 	world_save_progress_error = null
 	world_save_progress_emit("save_entered", 0, 0, TRUE)
@@ -44,13 +48,21 @@ var/global/world_save_progress_test_clock = 0
 	. = stoplag()
 	world_save_progress_yield_ds += world_save_progress_elapsed(started, world_save_progress_now())
 
+// Separate explicit sleep observations from the historical stoplag counters.
+/proc/world_save_progress_sleep(delay)
+	if(!world_save_progress_active) return sleep(delay)
+	var/started = world_save_progress_now()
+	world_save_progress_sleeps++
+	. = sleep(delay)
+	world_save_progress_sleep_ds += world_save_progress_elapsed(started, world_save_progress_now())
+
 /proc/world_save_progress_emit(stage, level, completed_turfs, force = FALSE)
 	if(!world_save_progress_active) return
 	var/now = world_save_progress_now()
 	if(!force && world_save_progress_elapsed(world_save_progress_last_write, now) < 100) return
 	world_save_progress_last_write = now
 	try
-		var/list/row = list("scope" = "test-only serialization progress", "clock_source" = "world.timeofday (24-hour wrap)", "stage" = stage, "level" = level, "completed_turfs" = completed_turfs, "turfs_per_level" = world.maxx * world.maxy, "levels" = world.maxz, "elapsed_real_ds" = world_save_progress_elapsed(world_save_progress_started, now), "world_time_ds" = world.time, "tick_usage_percent" = world.tick_usage, "stoplag_calls" = world_save_progress_yields, "stoplag_elapsed_real_ds" = world_save_progress_yield_ds, "entries_active_level" = map_storage.saving_reference_pins.len, "lists_active_level" = map_storage.saving_list_pins.len, "save_complete_marker" = fexists("map_saves/save_complete.txt"))
+		var/list/row = list("scope" = "test-only serialization progress", "clock_source" = "world.timeofday (24-hour wrap)", "stage" = stage, "level" = level, "completed_turfs" = completed_turfs, "turfs_per_level" = world.maxx * world.maxy, "levels" = world.maxz, "elapsed_real_ds" = world_save_progress_elapsed(world_save_progress_started, now), "world_time_ds" = world.time, "tick_usage_percent" = world.tick_usage, "sleep_calls" = world_save_progress_sleeps, "sleep_elapsed_real_ds" = world_save_progress_sleep_ds, "stoplag_calls" = world_save_progress_yields, "stoplag_elapsed_real_ds" = world_save_progress_yield_ds, "entries_active_level" = map_storage.saving_reference_pins.len, "lists_active_level" = map_storage.saving_list_pins.len, "save_complete_marker" = fexists("map_saves/save_complete.txt"))
 #ifdef WORLD_SAVE_PROGRESS_TEST_CLOCK
 		row["clock_source"] = "fixture timeofday (24-hour wrap)"
 #endif

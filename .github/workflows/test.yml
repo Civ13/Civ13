@@ -784,6 +784,10 @@ jobs:
           mkdir -p "$RUNNER_TEMP/save-latency"
           export TMPDIR="$RUNNER_TEMP/save-latency"
           python3 -B -m unittest discover -s tests/save_latency -v
+          python3 -B -m unittest discover -s tests/world_save -p 'test_*.py' -v
+          saving_sha=$(sha256sum code/modules/persistence/saving.dm | cut -d ' ' -f 1)
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --progress --progress-clock-probe
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --progress --progress-fault-stage level_serialized --progress-fault-operation write
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --verify-backup
           python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --dense --verify-backup
           for scenario in concurrent movement parent-deletion; do

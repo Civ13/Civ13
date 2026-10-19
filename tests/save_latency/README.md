@@ -47,3 +47,10 @@ Dispatch `test.yml` at the exact published commit with
 `save_latency_regressions=true` to run this suite plus current ordinary save and
 operation-admission regressions. This remains draft pending those results and
 representative acceptance. No live save, import, restart or deployment is covered.
+
+The ordinary transfer fixture includes a version-3 checkpoint callback that moves
+one paid item after the first transfer drain. Publication must reject it and
+release every frame. Progress instrumentation follows the new coordinate writer
+and wraps explicit sleeps without changing the 8192/20/80 policy. Explicit sleep
+counts/times remain distinct from historical stoplag metrics. Native progress
+clock and diagnostic-write-failure isolation checks run alongside this suite.
