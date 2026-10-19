@@ -34,7 +34,8 @@
 /mob/living/human/cone_probe/update_vision_cone()
 	cone_calls++
 	if (cone_axis)
-		cone_check(!cone_axis.transforming_vehicle && !get_turf(src).vehicle_transforming && get_turf(src) == cone_expected && get_turf(cone_frame) == cone_expected && dir == cone_facing, "vehicle callback observes final geometry")
+		var/turf/current = get_turf(src)
+		cone_check(!cone_axis.transforming_vehicle && current && !current.vehicle_transforming && current == cone_expected && get_turf(cone_frame) == cone_expected && dir == cone_facing, "vehicle callback observes final geometry")
 	return ..()
 /mob/living/cone_target/New()
 	return
