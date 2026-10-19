@@ -40,13 +40,20 @@ class CompileMapTests(unittest.TestCase):
             self.assertFalse(compile_map.accepted(log, code))
 
     def test_control_requires_exact_missing_type_failure(self):
-        good = ('DM compiler version 516.1681\nmissing-type.dmm:2:error: ' +
-                compile_map.MISSING_TYPE + ': undefined type path\nfixture.dmb - 1 error, 0 warnings')
+        good = ('DM compiler version 516.1681\n'
+                '.dagger-native-example/missing-type.dmm:2:error: undefined type: '
+                + compile_map.MISSING_TYPE + '\n'
+                '.dagger-native-example/missing-type.dmm:2:error: unknown type\n'
+                'fixture.dmb - 2 errors, 0 warnings')
         self.assertTrue(compile_map.accepted(good, 1, True))
         for log in (good.replace(compile_map.MISSING_TYPE, '/turf/unrelated'),
                     good.replace('undefined type', 'syntax'),
-                    good.replace('1 error', '2 errors'),
-                    good.replace('0 warnings', '1 warnings')):
+                    good.replace('2 errors', '1 error'),
+                    good.replace('0 warnings', '1 warnings'),
+                    good.replace(':2:error: unknown', ':3:error: unknown'),
+                    good.replace('unknown type', 'unrelated failure'),
+                    good + '\nother.dm:1:error: unrelated',
+                    good.replace('missing-type.dmm', 'other.dm')):
             self.assertFalse(compile_map.accepted(log, 1, True))
 
 
@@ -72,8 +79,10 @@ class CompileMapTests(unittest.TestCase):
                         raise subprocess.TimeoutExpired(command, 600)
                     log = 'DM compiler version 516.1681\n'
                     if control:
-                        log += ('missing-type.dmm:1:error: ' + compile_map.MISSING_TYPE +
-                                ': undefined type path\nfixture.dmb - 1 error, 0 warnings')
+                        log += ('missing-type.dmm:1:error: undefined type: ' +
+                                compile_map.MISSING_TYPE +
+                                '\nmissing-type.dmm:1:error: unknown type\n'
+                                'fixture.dmb - 2 errors, 0 warnings')
                     else:
                         log += 'fixture.dmb - 0 errors, 0 warnings'
                     return subprocess.CompletedProcess(command, int(control), log, '')

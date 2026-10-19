@@ -36,10 +36,16 @@ def accepted(log, returncode, control=False):
         return False
     errors, warnings = map(int, summaries[0])
     if control:
-        # Require the specific DMM type diagnostic, not an unrelated build failure.
-        return (errors == 1 and warnings == 0 and
-                any(MISSING_TYPE in line and re.search(r'error:.*undefined type', line, re.I)
-                    for line in log.splitlines()))
+        # BYOND emits both the named undefined type and a companion unknown-type
+        # diagnostic for the same DMM cell. Require that exact pair, so unrelated
+        # failures cannot make the mutation appear to pass.
+        diagnostics = [line.strip() for line in log.splitlines()
+                       if re.search(r'\b(?:error|warning):', line, re.I)]
+        if errors != 2 or warnings != 0 or len(diagnostics) != 2:
+            return False
+        named = re.fullmatch(r'(.*/?missing-type\.dmm:\d+):error: undefined type: '
+                             + re.escape(MISSING_TYPE), diagnostics[0])
+        return bool(named and diagnostics[1] == named[1] + ':error: unknown type')
     return returncode == 0 and errors == 0 and warnings == 0
 
 
