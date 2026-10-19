@@ -11,7 +11,10 @@ iron and the gym circuit marker costs eight iron; both require Modern, Factories
 and 105 current crafting skill. The material recipe menu and construction action
 recheck the era, research and skill gates.
 
-Lifting uses three manually started fifteen-second repetitions. Click the
+Use an **empty active hand** to click the equipment. The inactive hand may hold
+an item. A held-item click explains how to switch hands; it does not start training.
+Lifting uses three manually started fifteen-second repetitions. Each click gives
+an immediate start message, even when progress bars are disabled. Click the
 weights again after each completed repetition. Moving during a repetition, interruption,
 unconsciousness, equipment movement/deletion or Stop Exercise cancels the
 unfinished set without partial XP. Another player cannot take occupied equipment
@@ -28,6 +31,9 @@ Completed sets add two points to shared character fatigue, bounded at six.
 Six blocks training; one point recovers per running-server minute, evaluated
 when training is used. Fatigue is saved, but active sessions and recovery epochs
 are not. A restart preserves fatigue and starts a new rest clock.
+Explicit input explains fatigue, skill limits and occupied equipment/session
+rejections. An interrupted repetition reports the lost unfinished set. Internal
+eligibility rechecks do not repeat those input messages.
 
 Early lifting gains 0.5% before 100 trained strength; early courses gain 0.3%
 in native dexterity and stamina. Modern equipment uses 0.6% and 0.4% respectively.
@@ -51,3 +57,16 @@ measure elapsed gameplay or client controls. It tests native stats, cancellation
 reentry/concurrency, physical course positions, caps/fatigue and native whole-world
 reload. Genuine existing resource and flag DMI states provide the equipment
 graphics. No production-server performance or deployment is established.
+
+`tests/active_training/prepare_click.py` prepares inspectable candidate and
+pinned original-silence source overlays, without compiling or launching BYOND.
+The additional fixture calls production ClickOn on the same turf (avoiding
+headless client-facing dependencies), forwards to the real exercise wait and
+measures native 150-tick repetitions. Its inventory fields and chat observation
+are fixture adapters; a connected client must still establish adjacent input
+and visible feedback. Prepared source and offline tests are not native passes.
+The existing `run.ps1 -ClickFeedback` mode consumes those overlays, retaining
+strict compiler/100-second runtime receipts and an exact causal result oracle.
+`-OriginalSilence` requires precisely the missing-feedback failures while the
+original finite reward still passes. Existing accelerated modes remain separate;
+the existing CI suite guard selects offline checks and both kinds of mode.

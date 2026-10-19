@@ -73,7 +73,7 @@ def generate(repo, output, prefix, negative, created, service_negative=False):
     setup_adapted = setup.rstrip() + '\n\tfull_season_probe.setup_complete = TRUE\n\ttext2file(json_encode(list("world_time_ds" = world.time, "timeofday_ds" = world.timeofday)), "setup-ready.json")\n'
     world_source = (repo / WORLD).read_text(encoding='utf-8-sig')
     loop_write = '\tif (map && istype(map,/obj/map_metadata/nomads/persistence_beta))\n\t\tloop_checks = FALSE\n'
-    loop_adapter = '\t// Isolated -safe benchmark retains native long-loop protection.\n'
+    loop_adapter = '\t// Isolated -trusted benchmark retains native long-loop protection.\n'
     if world_source.count(loop_write) != 1:
         raise RuntimeError('Unexpected Beta native loop-check assignment boundary')
     world_adapted = world_source.replace(loop_write, loop_adapter)
@@ -305,7 +305,7 @@ def main():
         command = [str(daemon), 'probe.dmb']
         if os.name == 'nt':
             command += ['-invisible', '-close']
-        command += ['-safe', '-params', 'tested_commit=' + head, '-log', 'startup.log']
+        command += ['-trusted', '-params', 'tested_commit=' + head, '-log', 'startup.log']
         result, samples = run_daemon(command, output, 'service' if args.service_negative_control else ('population' if args.negative_control else None))
         if not args.negative_control and not args.service_negative_control and result['tested_commit'] != head:
             raise RuntimeError('Native exact-head receipt mismatch')

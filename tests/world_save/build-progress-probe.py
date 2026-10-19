@@ -23,13 +23,30 @@ def instrument(saving, functions, phase_profile=False):
               '#define WORLD_SAVE_PROGRESS_TICK_CHECK ( world.tick_usage > TICK_LIMIT_RUNNING ? world_save_progress_stoplag() : 0 )\n'
               '#endif\n'
               + saving)
-    saving = replace_once(saving, '/map_storage/proc/Save_World()\n',
-                          '/map_storage/proc/Save_World()\n'
-                          '\tworld_save_progress_begin()\n'
-                          '\ttry\n\t\treturn world_save_progress_original_Save_World()\n'
+    # Current admission owns the operation before entering the serializer. Do not
+    # start profiling at Save_World: rejected/reentrant requests must not reset
+    # an active sample, and transaction/validation time is outside this scope.
+    admission = '\tif(!operation || !operation.enter_contents(src, "save")) return FALSE\n'
+    if '/map_storage/proc/save_world_contents(' in saving:
+        entry = '/map_storage/proc/Save_World()\n\treturn run_world_operation("save")\n'
+        if saving.count(entry) != 1 or saving.count('/map_storage/proc/Save_World()\n') != 1:
+            raise ValueError('Expected one unchanged operation-admission entry')
+        signature = 'save_world_contents(datum/persistence_world_operation/operation)'
+        arguments = 'operation'
+        saving = replace_once(saving, admission, admission + '\tworld_save_progress_begin()\n')
+        begin = ''
+    else:
+        # Explicitly hash-bound legacy packet sources retain their old entry.
+        signature = 'Save_World()'
+        arguments = ''
+        begin = '\tworld_save_progress_begin()\n'
+    original = 'world_save_progress_original_' + signature
+    saving = replace_once(saving, '/map_storage/proc/' + signature + '\n',
+                          '/map_storage/proc/' + signature + '\n' + begin +
+                          '\ttry\n\t\treturn world_save_progress_original_' + signature.split('(')[0] + '(' + arguments + ')\n'
                           '\tcatch(var/exception/E)\n'
                           '\t\tworld_save_progress_active = FALSE\n\t\tthrow E\n\n'
-                          '/map_storage/proc/world_save_progress_original_Save_World()\n')
+                          '/map_storage/proc/' + original + '\n')
     saving = replace_once(saving, '\tfor(var/A = 1, A <= world.maxz, A++)\n',
                           '\tworld_save_progress_emit("metadata", 0, 0, TRUE)\n'
                           '\tfor(var/A = 1, A <= world.maxz, A++)\n'

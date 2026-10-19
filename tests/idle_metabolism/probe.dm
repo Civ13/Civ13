@@ -20,6 +20,18 @@
 	return
 /datum/progressbar/proc/update(progress)
 	return
+// Mining is outside this fixture: production do_after is called only with its
+// default null context. Keep its optional interface declared and fail closed if
+// a future probe accidentally supplies a mining context.
+/datum/pickaxe_mining_action
+	var/wait_started = FALSE
+	var/datum/progressbar/progressbar
+/datum/pickaxe_mining_action/proc/claim(mob/user, atom/target)
+	check(FALSE, "unexpected mining context in metabolism fixture")
+	return FALSE
+/datum/pickaxe_mining_action/proc/valid(mob/user, atom/target)
+	check(FALSE, "unexpected mining context in metabolism fixture")
+	return FALSE
 /proc/qdel(datum/D)
 	del(D)
 /obj/structure/bed

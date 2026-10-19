@@ -175,7 +175,12 @@
 				contents -= I
 				qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
-			contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
+			var/obj/item/weapon/reagent_containers/food/snacks/dough/D = I
+			// Only risen yeasted dough becomes a loaf; unleavened dough bakes flat.
+			if (D.check_risen())
+				contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
+			else
+				contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
 			contents -= I
 			qdel(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))

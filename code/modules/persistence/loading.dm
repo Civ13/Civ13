@@ -46,6 +46,10 @@
 			object = replacement
 		else if(ispath(type, /atom))
 			object = new type(starting_loc)
+		else if(ispath(type, /datum/wound/lost_limb))
+			// The lost limb is not a constructor input during graph recovery.
+			// Register an explicit shell before decoding cyclic organ references.
+			object = new type(null, null, null, TRUE)
 		else
 			// Non-atom datums have no location argument. In particular, matrix
 			// construction must use its no-argument identity initializer.
@@ -116,6 +120,9 @@
 				object.vars[v] = savefile[v]
 			savefile.cd = entry_path(savefile, ind)
 			TICK_CHECK
+		if(istype(object, /datum/wound/lost_limb))
+			var/datum/wound/lost_limb/restored_wound = object
+			restored_wound.validate_restored_state()
 		savefile.cd = ".."
 		if (ishuman(object))
 			var/mob/living/human/H = object
@@ -169,6 +176,10 @@
 			return L
 	throw EXCEPTION("Unknown saved value kind: [value["kind"]]")
 /map_storage/proc/Load_World()
+	return run_world_operation("load")
+
+/map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)
+	if(!operation || !operation.enter_contents(src, "load")) return FALSE
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")

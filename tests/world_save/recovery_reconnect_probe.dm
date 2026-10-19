@@ -81,9 +81,8 @@ var/recovery_fixture_late_arrived = FALSE
 			H.health = 73.25
 			new /obj/item/clothing/under/loinleather(H)
 			if(account == "fixtureaccount") map.faction_research_director = list("saved" = H)
-		persistence_save_in_progress = TRUE
 		durable_world_check(map_storage.Save_World() && map_storage.validate_world_save(), "reconnect generation export invalid")
-		persistence_save_in_progress = FALSE
+		durable_world_check(!persistence_active_operation && !persistence_save_in_progress, "reconnect export admission not released")
 		var/datum/persistence_restart_transaction/recovery_probe/T = new
 		persistence_restart = T
 		T.publish(T.current_identity())

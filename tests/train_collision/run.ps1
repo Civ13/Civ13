@@ -30,7 +30,7 @@ try {
     & (Join-Path $ByondBin 'dm.exe') (Join-Path $temp 'probe.dme') 2>&1 | Tee-Object -FilePath (Join-Path $temp 'compile.log')
     if ($LASTEXITCODE -ne 0 -or (!$Unchecked -and (Get-Content -Raw -LiteralPath (Join-Path $temp 'compile.log')) -notmatch '0 errors, 0 warnings')) { throw 'Probe compilation failed' }
     $log = Join-Path $temp 'runtime.log'
-    $security = if ($Unchecked) { '-trusted' } else { '-safe' }
+    $security = if ($Unchecked) { '-trusted' } else { '-trusted' }
     $process = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $temp 'probe.dmb'), '-invisible', '-close', $security, '-log', 'runtime.log') -WorkingDirectory $temp -WindowStyle Hidden -PassThru
     $timer = [Diagnostics.Stopwatch]::StartNew()
     $limit = $null

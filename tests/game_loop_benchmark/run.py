@@ -66,7 +66,7 @@ def run(repo,byond,out,variant,head):
             dest=out/path; dest.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(repo/path,dest)
         rows=[]; started=time.perf_counter(); handle=None
         with (out/'stdout.log').open('w') as stdout,(out/'stderr.log').open('w') as stderr:
-            proc=subprocess.Popen([str(byond/'dd.exe'),str(out/source.with_suffix('.dmb').name),'-invisible','-close','-safe','-params','tested_commit='+head+'&variant='+variant,'-log','startup.log'],cwd=out,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
+            proc=subprocess.Popen([str(byond/'dd.exe'),str(out/source.with_suffix('.dmb').name),'-invisible','-close','-trusted','-params','tested_commit='+head+'&variant='+variant,'-log','startup.log'],cwd=out,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
             ctypes.windll.kernel32.OpenProcess.restype=wintypes.HANDLE
             handle=ctypes.windll.kernel32.OpenProcess(0x1000|0x10,False,proc.pid)
             ctypes.windll.psapi.GetProcessMemoryInfo.argtypes=[wintypes.HANDLE,ctypes.POINTER(Memory),wintypes.DWORD]

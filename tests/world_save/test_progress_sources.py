@@ -103,6 +103,19 @@ class ProgressSources(unittest.TestCase):
         for name, expected in manifest['generated'].items():
             self.assertEqual(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), expected)
 
+    def test_current_admission_precedes_profile_and_is_not_wrapped(self):
+        saving = self.inputs['saving'][1].decode().replace('\r\n', '\n')
+        if 'save_world_contents(' not in saving:
+            self.skipTest('Legacy source has no operation-admission boundary')
+        generated, _ = progress.instrument(saving, '', phase_profile=True)
+        self.assertIn('/map_storage/proc/Save_World()\n\treturn run_world_operation("save")\n', generated)
+        self.assertNotIn('world_save_progress_original_Save_World', generated)
+        self.assertEqual(generated.count('operation.enter_contents(src, "save")'), 1)
+        self.assertIn('if(!operation || !operation.enter_contents(src, "save")) return FALSE\n\tworld_save_progress_begin()\n', generated)
+        for broken in ('', '\treturn TRUE\n'):
+            with self.assertRaisesRegex(ValueError, 'Expected'):
+                progress.instrument(saving.replace('\tif(!operation || !operation.enter_contents(src, "save")) return FALSE\n', broken), '', True)
+
     def test_wrong_source_hash_rejects_before_creating_outputs(self):
         for name in self.inputs:
             with self.subTest(source=name):

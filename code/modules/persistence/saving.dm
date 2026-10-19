@@ -7,6 +7,10 @@
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
 /map_storage/proc/Save_World()
+	return run_world_operation("save")
+
+/map_storage/proc/save_world_contents(datum/persistence_world_operation/operation)
+	if(!operation || !operation.enter_contents(src, "save")) return FALSE
 	if(building_allocating_z || dimension_recovery_required)
 		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
 	prepare_player_ownership()

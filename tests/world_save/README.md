@@ -114,7 +114,7 @@ The small fixture also restores a manually constructed unversioned legacy save,
 including the old empty-list marker and a null `pixloc` field.
 
 For visual evidence, compile the fixture and copy its `.dmb` and `.rsc` to a new
-temporary directory. Start that copy with DreamDaemon/DD using `-invisible -safe
+temporary directory. Start that copy with DreamDaemon/DD using `-invisible -trusted
 -params visual=1`. Connect Dream Seeker to the local port printed in the log. The
 restored fixture and its actual test result remain open for capture. A screenshot
 of this fixture does not prove normal game constructors, lighting, registries,
@@ -457,7 +457,7 @@ equipment, map seeding and round-start hooks. The time-of-day loop is idempotent
 
 Run `run-string-path.py --round-state` with the existing pinned BYOND and saving
 hash arguments. Controls `--round-state-negative-control setup`, `clock`,
-`generation`, `busy`, `tod`, `music-body`, `music-round` and `music-lobby`
+`generation`, `busy`, `tod`, `music-body`, `music-round`, `music-lobby` and `jobs`
 must fail at the named regression assertion, with clean native
 compilation and no unexpected diagnostics. `--prepare-only` generates sources
 and input hashes without compiling or launching; it is source preparation only.
@@ -471,6 +471,17 @@ the engine. Sound transport is injected: normal/restored living Login and active
 round transition stop only channel 1, while a pregame lobby still plays and an
 active round cannot replay it. These adapters do not prove a fresh
 full-game process restart or connected-player acceptance.
+
+The round-state fixture extracts production occupation construction, capacity
+initialization, lookup, fresh-join availability and role assignment procedures,
+using the production Nomad title and capacity defaults. Current disk imports
+and owned legacy restores must admit a fresh Nomad; unowned legacy and pregame
+restores must not initialize active capacity. Existing occupancy and round/world
+state remain intact, disabled/missing/full jobs remain unavailable, and capacity
+initialization is idempotent. The `jobs` control omits both restore initialization
+calls in generated source and must fail `restored Nomad fresh-join gate unavailable`.
+The probe checks the real availability/assignment gates with offline actors;
+it does not create authenticated BYOND accounts or prove connected fresh joining.
 
 Legacy timestamp markers retain compatibility. A successfully loaded legacy
 world with a unique living durable-owned restored human resumes the active
@@ -515,10 +526,109 @@ or rendered illumination. Controls `lighting-export`, `lighting-legacy` and
 `lighting-rebuild`, `lighting-opacity` and `lighting-view` each remove one production safeguard in generated source.
 The legacy control must reproduce the ownerless `light_sources` constructor error.
 
+The fixture also checks lazy corner source-list allocation with actual native
+list identities, independent ownership, both propagation insertion/removal paths,
+retained identity after removal, and nontrivial movement/obstruction changes.
+Smart updates are compared with full recomputation. A coordinate-normalized
+pre-save/post-load graph compares RGB, source membership and falloff strength.
+`lighting-allocation-initial.json` records counts before the null assertion;
+`lighting-allocation.json` records final allocated and distinct list counts.
+These counts do not measure process memory or RAM savings. Controls
+`lighting-eager` and `lighting-shared` change only generated test inputs and must
+fail their specific allocation/ownership assertion. The offline
+`test_lighting_corner_allocation.py` checks preparation and source preservation;
+it does not compile or execute BYOND.
+
 The native CI workflow accepts `lighting_recovery_regressions=true` for these
-six cases. The fixture closes its native port, rejects reopening and checks a
+cases. The fixture closes its native port, rejects reopening and checks a
 live OS socket census; a brief native startup listener can precede its entry.
 Obstruction caches rebuild after contents/fields/hooks and before source updates.
 On this Windows host, even the existing startup-only control exits
 with `0xC0000409` before its entry marker. Clean compilation is separate evidence;
 run the actual assertions on Linux CI rather than treating that exit as a pass.
+
+## Restored input state regression
+
+`run-string-path.py --input-runtime` runs the production saver/loader against
+disk-backed v2 and unversioned legacy entries with old-process click/movement
+deadlines and action locks. It checks export exclusion, import defaults, identity,
+inventory and location preservation, and retention of existing live locks on a
+replacement object. The actual early `ClickOn` gate and modifier dispatch run
+against route counters, including ordinary/shift clicks and a live future
+cooldown. This adapter does not prove rendered client input or gathering.
+
+The input adapter also extracts the production fixed click-counter helper and
+checks saturation, arbitrary-code rejection, no-client rejection, parsed icon
+coordinates, and runtime trace export exclusion. It supplies the exact production
+`isatom` macro and declares unavailable client rights/directory dependencies;
+it creates no real client. Own-host authorization is checked separately by
+`tests/nomads_lifecycle/test_input_trace.py`, including negative controls and
+immutable pre-trace click-source parity with observational calls removed.
+
+The existing authenticated `diagnose` action now arms a transient own-mob click
+trace for 3000 world ticks on the first request for that client/mob. Reads do not
+extend the window. Reconnects bind a fresh session token. Only fixed saturating
+route counts are retained, never click targets or raw parameters. The same
+response samples current click/move deadlines, remaining delays, action locks,
+direction and facing lock. This changes diagnostic bookkeeping only; it does not
+reset gameplay clocks or actions. Connected-client behavior still needs a normal
+functional retest. The ordinary round-metadata fixture's job-limit initializer
+is a pure no-op dependency adapter in shared `stubs.dm`, also used by the direct
+round-trip fixture. Round-state mode defines `WORLD_SAVE_JOB_ADAPTER` and keeps
+its production occupation adapter. This is not production occupation coverage.
+
+Use the runner's required `--byond-bin` and `--expected-saving-sha256` arguments.
+Run `--input-runtime-negative-control export` and `import` separately: each
+removes only the corresponding runtime exclusion in generated temporary source
+and must reproduce its specific failure. The export control bypasses these four
+fields in both changed-variable selection and the final encoder, since either
+guard alone prevents export. `--prepare-only` hashes and generates
+sources without starting a compiler or game. Native execution requires the
+current runtime owner's quiet window.
+
+The standalone lifecycle fixture declares the fixed snapshot's operation/error
+types with no active operation or collector. Its separate diagnose adapter
+returns `fixture_diagnostics_unavailable`. Authentication, status and shutdown
+controls still exercise the production endpoint; this fixture does not verify
+live diagnostic collection.
+
+The dimension and durable-world probes acquire production persistence operation
+identities before bootstrap or import and pass the same identity to the backend.
+They check nested direct-call rejection and final admission release. A manually
+set busy flag does not authorize a positive save/load operation. Explicit busy
+and concurrency rejection controls retain their original guards.
+
+
+### Lost-limb wound recovery
+
+`run-durable-world.py --wounds --byond-bin <516.1681-bin>` uses the production
+wound constructor, encoder and loader with normal startup disabled and isolated
+native savefiles. It checks 18 disk round trips: edged, blunt and burned wounds,
+clean and unclean, through actual current-format export, explicit typed entries
+and legacy flat entries. Assertions retain injury/stage/bleeding/treatment state,
+helper arrays, embedded item identity and the cyclic organ/wound backlink.
+Missing dynamic stage tables are rejected rather than reconstructed as healing.
+The explicit entries model supported historical encodings; they are not the
+incident Gaia save graph or full-world recovery evidence.
+
+`--wounds --negative-control wound-restore` substitutes immutable wound and loader
+sources from `d0ffbfb2335eb735756b998f3f2ff617c28f144b` in generated copies. Its
+expected result is the original `Cannot read null.max_damage` constructor failure
+at line 394 after the four ordinary-constructor checks. `--prepare-only` generates
+and hashes inputs without compiling or running BYOND.
+
+### Current admission boundary and CI (2026-10-19)
+
+Current-source instrumentation leaves `Save_World` and operation admission intact.
+Profiling starts only after `save_world_contents` accepts its operation token;
+rejected or busy requests cannot restart the active serializer sample. Legacy
+hash-bound inputs retain their original entry wrapper. Neither path measures
+post-serializer validation or transaction/receipt work.
+
+CI always runs `test_progress_sources.py` without native processes. The manual
+`world_save_profile_regressions` option runs the positive profile, value-counter
+control, clock contract and attribution control using the pinned trusted runner.
+It is disabled by default. Source preparation accepts an existing `--byond-bin`
+directory without installed native tools when `--prepare-only` is used.
+Native parity, instrumentation overhead and end-to-end timing remain unverified
+until those exact-source runs are actually completed and reviewed.

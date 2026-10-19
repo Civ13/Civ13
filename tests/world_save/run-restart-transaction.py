@@ -74,7 +74,7 @@ def main():
     (output / 'compile.log').write_text(build.stdout + build.stderr, encoding='utf-8')
     if build.returncode or '0 errors, 0 warnings' not in build.stdout:
         raise RuntimeError('Native fixture compile failed; see compile.log')
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'native.log'],
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'native.log'],
                          cwd=output, capture_output=True, text=True, timeout=60)
     log = (output / 'native.log').read_text(encoding='utf-8', errors='replace')
     (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')

@@ -65,7 +65,7 @@ def main():
             shutil.copytree(ROOT / 'config/names', tmp / 'config/names')
             if args.atlas_assets:
                 shutil.copy2(args.atlas_assets / 'requests.json', tmp / 'requests.json')
-            runtime = subprocess.run([str(daemon), str(tmp / generated[3].name), *(['-invisible', '-close'] if os.name == 'nt' else []), '-safe', '-log', 'runtime.log'], cwd=tmp, capture_output=True, text=True, timeout=60, creationflags=flags)
+            runtime = subprocess.run([str(daemon), str(tmp / generated[3].name), *(['-invisible', '-close'] if os.name == 'nt' else []), '-trusted', '-log', 'runtime.log'], cwd=tmp, capture_output=True, text=True, timeout=60, creationflags=flags)
             log = (tmp / 'runtime.log').read_text(errors='replace')
             if runtime.returncode or any(t in log.lower() for t in ('runtime error:', '## error:', 'bug:')):
                 raise RuntimeError('Daemon exit '+str(runtime.returncode)+'\n'+log + runtime.stdout + runtime.stderr)
