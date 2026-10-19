@@ -112,6 +112,11 @@ class SourceContracts(unittest.TestCase):
         self.assertIn('"real_client_failed_attempt_cost_and_cooldown_parity"', fixture)
         self.assertIn('"production_shoe_step_and_footstep_gate_once"', fixture)
         self.assertIn('var/human_subtile_fixture_phase', fixture)
+        self.assertIn('text2file(json_encode(row), "client-observations.jsonl")', fixture)
+        blocked = fixture[fixture.index('for (var/enabled_blocked'):]
+        self.assertLess(blocked.index('human_subtile_fixture_record_client(row)'), blocked.index('human_subtile_fixture_assert('))
+        self.assertIn('row["admission_state"] = blocked_admission_state', blocked)
+        self.assertIn('row["end_state"] = human_subtile_fixture_client_state(C, H)', blocked)
 
 
 if __name__ == "__main__":

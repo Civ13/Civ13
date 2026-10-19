@@ -86,7 +86,18 @@
 
 var/human_subtile_fixture_checks = 0
 var/list/human_subtile_fixture_rows = list()
+var/list/human_subtile_fixture_client_rows = list()
 var/human_subtile_fixture_phase = "initializing"
+
+/proc/human_subtile_fixture_client_state(client/C, mob/living/human/H)
+	return list("at" = world.time, "position" = H.human_subtile_snapshot(), "dir" = H.dir, "client_canmove" = C.canmove, "client_moving" = C.moving, "move_delay" = C.move_delay, "nutrition" = H.nutrition, "stamina" = H.stats["stamina"][1], "velocity" = H.velocity, "velocity_lastdir" = H.velocity_lastdir, "last_movement" = H.last_movement, "last_run_delay" = H.last_run_delay, "next_calculate_run_delay" = H.next_calculate_run_delay, "next_calculate_tally" = H.next_calculate_tally, "movement_speed_multiplier" = H.movement_speed_multiplier, "human_canmove" = H.canmove, "enabled" = H.human_subtile_enabled)
+
+/proc/human_subtile_fixture_record_client(list/row)
+	if (human_subtile_fixture_client_rows.len >= 12)
+		throw EXCEPTION("Client diagnostic row bound exceeded")
+	human_subtile_fixture_client_rows += list(row)
+	// Append BEFORE assertions so a failing final comparison retains both rows.
+	text2file(json_encode(row), "client-observations.jsonl")
 
 /proc/human_subtile_fixture_assert(ok, label)
 	human_subtile_fixture_checks++
@@ -339,6 +350,7 @@ var/human_subtile_fixture_phase = "initializing"
 			var/start_x = H.x
 			var/nutrition_before = H.nutrition
 			var/stamina_before = H.stats["stamina"][1]
+			var/list/admission_state = human_subtile_fixture_client_state(C, H)
 			var/list/intervals = list()
 			for (var/i = 1, i <= 3, i++)
 				if (C.move_delay > world.time)
@@ -352,6 +364,9 @@ var/human_subtile_fixture_phase = "initializing"
 					sleep(C.move_delay - world.time)
 			var/list/row = list("case" = test_case["name"], "enabled" = enabled, "elapsed" = world.time - start, "pixels" = abs(H.x - start_x) * 32, "intervals" = intervals, "nutrition_cost" = nutrition_before - H.nutrition, "stamina_cost" = stamina_before - H.stats["stamina"][1])
 			rows += list(row)
+			row["admission_state"] = admission_state
+			row["end_state"] = human_subtile_fixture_client_state(C, H)
+			human_subtile_fixture_record_client(row)
 			human_subtile_fixture_assert(row["pixels"] == 96 && !H.step_x && !H.step_y, "real_client_three_admitted_tiles")
 			if (!enabled)
 				baseline = row
@@ -375,9 +390,13 @@ var/human_subtile_fixture_phase = "initializing"
 		var/list/before = H.human_subtile_snapshot()
 		var/food = H.nutrition
 		var/at = world.time
+		var/list/blocked_admission_state = human_subtile_fixture_client_state(C, H)
 		C.Move(blocked, EAST, FALSE)
 		var/list/row = list("case" = "blocked", "enabled" = enabled_blocked, "interval" = C.move_delay - at, "nutrition_cost" = food - H.nutrition)
 		rows += list(row)
+		row["admission_state"] = blocked_admission_state
+		row["end_state"] = human_subtile_fixture_client_state(C, H)
+		human_subtile_fixture_record_client(row)
 		human_subtile_fixture_assert(human_subtile_same(before, H.human_subtile_snapshot()), "real_client_blocked_position_preserved")
 		if (!enabled_blocked)
 			blocked_baseline = row
