@@ -40,9 +40,15 @@ try {
     Require(safeDeep.Length <= 512 && safeDeep.EndsWith("..."), "deep exception chain was not bounded and marked incomplete");
     Require(!safeDeep.Contains("PRIVATE") && !safeDeep.Contains("token="), "deep exception chain leaked message content");
     Require(Updater.DescribeFailure(new Exception(privateFailure)).StartsWith("Exception HRESULT=0x"), "unknown exception diagnostic was not safely classified");
-    Require(ServerCatalog.MainMenu.Contains("2: Civ13.com servers") &&
-        ServerCatalog.MainMenu.Contains("3: ValZarGaming.com servers") &&
-        ServerCatalog.MainMenu.Contains("9: OpenDream (experimental)"), "public menu order changed");
+    using var menuOutput = new StringWriter();
+    Civ13.Launcher.Program.WriteMainMenu(menuOutput);
+    var menuText = menuOutput.ToString();
+    Require(menuText.Contains("2: Civ13.com servers") &&
+        menuText.Contains("3: ValZarGaming.com servers") &&
+        menuText.Contains("9: OpenDream (experimental)"), "public menu labels changed");
+    var menuPositions = Enumerable.Range(1, 9).Select(key => menuText.IndexOf(key + ": ", StringComparison.Ordinal)).ToArray();
+    Require(menuPositions.All(position => position >= 0) &&
+        menuPositions.SequenceEqual(menuPositions.Order()), "main menu did not render options in 1-9 visual order");
     Require(ServerCatalog.OpenDreamMenuKey == "9", "experimental menu key changed");
     foreach (var mode in new[] { "Nomads", "TDM" }) {
         var officialMenu = ServerCatalog.Select(ServerCatalog.MenuServer("2")!, mode);

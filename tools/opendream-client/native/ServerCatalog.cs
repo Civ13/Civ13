@@ -10,8 +10,8 @@ public static class ServerCatalog {
     public const string ValZarGamingMenuKey = "3";
     public const string OpenDreamMenuKey = "9";
     public const string MainMenu = "\nCiv13 - 1: BYOND sign in   " + OfficialMenuKey +
-        ": Civ13.com servers   " + ValZarGamingMenuKey + ": ValZarGaming.com servers   4: Exit   " +
-        OpenDreamMenuKey + ": OpenDream (experimental)";
+        ": Civ13.com servers   " + ValZarGamingMenuKey + ": ValZarGaming.com servers   4: Exit";
+    public const string OpenDreamMenu = OpenDreamMenuKey + ": OpenDream (experimental)";
     public static string? MenuServer(string? choice) => choice switch {
         OfficialMenuKey => "Civ13.com",
         ValZarGamingMenuKey => "ValZarGaming",

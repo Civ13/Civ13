@@ -5,6 +5,13 @@ using System.Text.Json;
 namespace Civ13.Launcher;
 
 public static class Program {
+    public static void WriteMainMenu(TextWriter output) {
+        output.WriteLine(ServerCatalog.MainMenu);
+        foreach (var link in CommunityLinks.Items)
+            output.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
+        output.WriteLine(ServerCatalog.OpenDreamMenu);
+    }
+
     public static string BundledChannel() {
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("client-channel.json")
             ?? throw new InvalidOperationException("Bundled client manifest missing.");
@@ -101,9 +108,7 @@ public static class Program {
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
             while (true) {
-                Console.WriteLine(ServerCatalog.MainMenu);
-                foreach (var link in CommunityLinks.Items)
-                    Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
+                WriteMainMenu(Console.Out);
                 Console.Write("Choose a number: ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
