@@ -5,9 +5,40 @@ This is an original, opt-in experiment under the repository's AGPL-3.0
 license. `civ13.dme`, production movement, CI, launchers and gameplay defaults
 are unchanged. Only `prototype.dme` defines `SUBTILE_FEASIBILITY`.
 
-Status: source and offline oracle only. No compiler or DreamDaemon was run
-during preparation. Engine behavior below is an assertion to measure on pinned
-BYOND **516.1681**, not an observed result. No connected-client acceptance.
+Status: the root owner verified the standalone v4 packet at exact source head
+`8b2a40b2a28ed89f60d832180b24824954f8b453` on Windows BYOND **516.1681**.
+The following result applies to this isolated physical primitive, with no
+connected client or production gameplay integration.
+
+## Verified standalone result
+
+The positive profile passed all42 assertions. The cosmetic profile stopped at
+its third check with exactly `physical_east_four_pixels`, measuring zero
+physical displacement. Both compilations had zero errors and warnings; all
+four compile/runtime phases exited zero, terminal owned Jobs were empty and
+all cleanup succeeded. Six retained baseline censuses preserved the existing
+daemon identity. Root independently rehashed all20 frozen inputs and reviewed
+the ten logs and raw measurements.
+
+| Native measurement | Observed result |
+| --- | --- |
+| Cardinal east request4px | Actual movement4px, native return4 |
+| Dense wall | Actual movement0px, native return0 |
+| Dense movable with2px gap | Partial movement2px, native return2 |
+| Cosmetic-offset control | Actual physical movement0px; exact intended assertion failure |
+| First canonical disk read | Exact integers `x=2,y=2,z=1,sx=28,sy=0` |
+| Synthetic placement | Restored offsets; blocked destination preserved existing position |
+
+The8x8x2 fixture retained legacy movement and32x32 bounds. Normalization,
+overlapping `locs`/contents, native callbacks and the remaining input/work guards
+passed with the positive profile. Total elapsed2.596499 seconds includes
+containment and census work; it is **not a latency benchmark**.
+
+[Root acceptance receipt](D:/GitHub/civ13-preview-evidence/subtile-movement-20261019/contained-v4/root-acceptance.json)
+has SHA256 `6d31445fa8c81806c6be217c75aa45756dbb7e99cbac840c1517876b10e21a27`.
+Earlier v1-v3 evidence remains retained, including their scalar-read failures.
+Game scheduler, combat/range/door/vehicle integration, actual Civ13 codec
+recovery, visual feel, multiplayer latency and performance remain unverified.
 
 ## Source/library audit
 
@@ -64,7 +95,7 @@ request only to visual offsets, returns a success value, and must fail exactly
 `physical_east_four_pixels`. The control must not be accepted for an unrelated
 exception or diagnostic.
 
-The remaining native assertions cover normalization east/west and north/south,
+The passed native assertions cover normalization east/west and north/south,
 overlapping `locs` and turf contents, actual entry/exit/cross callbacks, fixed
 tick work bound, dense turf blocking and reopening, a dense movable with a2px
 gap producing an exact partial slide, bump callbacks, reverse escape, rejected
@@ -75,23 +106,22 @@ requires exactly those five keys with matching numeric integer values; JSON
 ordering is not an equality test. Before asserting equality, one bounded
 diagnostic observation records saved/loaded list shape, fixed-field membership,
 type flags and values, and a bounded JSON representation. The retained v1 failed
-`scalar_disk_roundtrip`; v2 proved the loaded value was not a list, ruling out
+`scalar_disk_roundtrip` and emitted doubled output line endings; the explicit
+newline arguments were removed in v2. v2 proved the loaded value was not a list, ruling out
 key ordering as its explanation. v3 still read null after an explicit `Flush`,
 while a later absolute `/position` read returned all five correct integers.
 Recorded cd remained `/`; the cause of the first-read difference is unresolved.
-The next proof defines a canonical absolute-entry format: write `/position`,
-then read `/position` FIRST after reopen. That first result alone must satisfy
+The accepted v4 proof defines a canonical absolute-entry format: write `/position`,
+then read `/position` FIRST after reopen. That first result alone satisfied
 the unchanged strict scalar assertion. This follows Civ13's absolute metadata
 and entry paths (`saving.dm:67`, `loading.dm:400`) without changing its codec.
 The explicit pending-write drain remains. The same diagnostic row records
 bounded name/cd/directory state before close and after reopen/read, plus a later
 relative read and a root text export capped at4KiB. Those later reads are
-observations only; they never supply a fallback value or a pass. This canonical
-first-read format remains unverified until native measurement. If it still
-fails assertion38, retain the scoped savefile blocker rather than adding more
-speculative writes or yields.
-Restoration validates
-them and calls native Move. A distant same-z restore is **placement/jump**, not
+observations only; they never supply a fallback value or a pass. The canonical
+first-read format passed the native measurement; the earlier relative-first
+read difference remains unexplained.
+Restoration validates the scalars and calls native Move. A distant same-z restore is **placement/jump**, not
 swept travel: intermediate walls are not promised to block it. A blocked
 destination must leave the actor in place. Malformed offsets and cross-z
 restoration are rejected. This is a synthetic offset policy demonstration,
