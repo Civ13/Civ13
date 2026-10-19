@@ -60,7 +60,7 @@ def main():
             if "FAIL checks=" not in logs or expected not in logs or "PASS checks=" in logs:
                 raise RuntimeError("Wrong negative-control outcome")
             print("PASS: expected " + args.negative_control + " control caught")
-        elif "PASS checks=" not in logs or "FAIL checks=" in logs:
+        elif not re.search(r"^PASS checks=" + str(8 if args.disabled else 287) + r"\s*$", logs, re.M) or "FAIL checks=" in logs:
             raise RuntimeError("Plane fixture assertions failed")
 
 
