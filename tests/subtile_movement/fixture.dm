@@ -74,8 +74,9 @@ var/list/probe_observations = list()
 	return 1
 
 /proc/probe_scalar_summary(value)
-	var/list/summary = list("is_list" = islist(value))
+	var/list/summary = list("is_list" = islist(value), "numeric" = isnum(value), "text" = istext(value), "null" = isnull(value))
 	if (!islist(value))
+		summary["value"] = isnum(value) ? value : istext(value) ? copytext(value, 1, 257) : null
 		return summary
 	var/list/L = value
 	summary["length"] = L.len
@@ -88,6 +89,14 @@ var/list/probe_observations = list()
 		fields += list(list("key" = key, "present" = present, "numeric" = isnum(field), "text" = istext(field), "null" = isnull(field), "value" = (isnum(field) || istext(field)) ? field : null))
 	summary["fields"] = fields
 	return summary
+
+/proc/probe_savefile_state(savefile/F)
+	var/list/dirs = list()
+	for (var/entry in F.dir)
+		if (dirs.len >= 8)
+			break
+		dirs += copytext("[entry]", 1, 65)
+	return list("name" = copytext(F.name, 1, 257), "cd" = copytext(F.cd, 1, 257), "dir" = dirs)
 
 /proc/probe_run(control)
 	probe_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned_engine")
@@ -175,12 +184,21 @@ var/list/probe_observations = list()
 	var/list/saved = K.position()
 	var/savefile/F = new("offset-roundtrip.sav")
 	F["position"] << saved
+	F.Flush()
+	var/list/written_state = probe_savefile_state(F)
 	F = null
 	F = new("offset-roundtrip.sav")
+	var/list/reopened_state = probe_savefile_state(F)
 	var/list/loaded
 	F["position"] >> loaded
+	var/list/relative_state = probe_savefile_state(F)
+	// Diagnostic reads below must never replace loaded as the assertion source.
+	var/list/absolute_loaded
+	F["/position"] >> absolute_loaded
+	var/list/absolute_state = probe_savefile_state(F)
+	var/exported = F.ExportText("/")
 	F = null
-	probe_observe("scalar_roundtrip_values", list("saved" = probe_scalar_summary(saved), "loaded" = probe_scalar_summary(loaded)))
+	probe_observe("scalar_roundtrip_values", list("saved" = probe_scalar_summary(saved), "loaded" = probe_scalar_summary(loaded), "written" = written_state, "reopened" = reopened_state, "relative_read" = relative_state, "absolute_read" = absolute_state, "absolute_loaded" = probe_scalar_summary(absolute_loaded), "export" = istext(exported) ? copytext(exported, 1, 4097) : null, "export_truncated" = istext(exported) && length(exported) > 4096))
 	probe_assert(probe_same(saved, loaded), "scalar_disk_roundtrip")
 	del(A)
 	var/obj/subtile_actor/S = new(locate(2, 6, 1))

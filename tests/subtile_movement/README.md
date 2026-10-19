@@ -75,8 +75,14 @@ requires exactly those five keys with matching numeric integer values; JSON
 ordering is not an equality test. Before asserting equality, one bounded
 diagnostic observation records saved/loaded list shape, fixed-field membership,
 type flags and values, and a bounded JSON representation. The retained v1 failed
-`scalar_disk_roundtrip`; its output lacked those values, so the cause remains
-unresolved until a further authorized measurement. Restoration validates
+`scalar_disk_roundtrip`; v2 proved the loaded value was not a list, ruling out
+key ordering as its explanation. The cause remains unresolved. This successor
+adds one documented pending-write drain (`Flush`) after writing, preserving the
+original relative read as the assertion source. The same diagnostic row records
+bounded name/cd/directory state before close and after reopen/read, plus an
+absolute `/position` read and a root text export capped at4KiB. Those later
+reads are observations only; they never supply a fallback value or a pass.
+Restoration validates
 them and calls native Move. A distant same-z restore is **placement/jump**, not
 swept travel: intermediate walls are not promised to block it. A blocked
 destination must leave the actor in place. Malformed offsets and cross-z
