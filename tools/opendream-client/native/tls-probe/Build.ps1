@@ -26,3 +26,5 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
 "$hash  Civ13-TLS-Diagnostic.exe" | Set-Content (Join-Path $output 'Civ13-TLS-Diagnostic.exe.sha256')
 Write-Output "Diagnostic EXE SHA256: $hash"
+
+Copy-Item (Join-Path $PSScriptRoot 'README.txt') (Join-Path $output 'README.txt')
