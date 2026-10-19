@@ -6,6 +6,18 @@
 // can be references using a number instead of a fully written out type class.
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
+// Experimental duty-cycle policy, not an equivalent-budget optimization.
+// Native copies, hooks and writes remain nonpreemptible.
+/map_storage/proc/save_work_check()
+	saving_work++
+	if(saving_work >= 8192 || world.tick_usage - saving_slice_start >= 20 || world.tick_usage >= 80)
+		saving_work = 0
+		if(world.tick_usage >= 80)
+			sleep(world.tick_lag)
+		else
+			sleep(0)
+		saving_slice_start = world.tick_usage
+
 /map_storage/proc/Save_World()
 	return run_world_operation("save")
 
@@ -31,6 +43,7 @@
 			if(!fdel("map_backups/save_complete.txt"))
 				throw EXCEPTION("Could not invalidate backup marker; existing save retained")
 		for(var/name in flist("map_saves/"))
+			save_work_check()
 			if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
 				if(!fcopy("map_saves/[name]", "[backup_dir][name]"))
 					throw EXCEPTION("Could not back up [name]; existing save retained")
@@ -54,6 +67,7 @@
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
+		saving_content_owners = list()
 		saving_lists = list()
 		saving_reference_pins = list()
 		saving_list_pins = list()
@@ -64,19 +78,23 @@
 			if(!fdel("map_saves/[A].sav"))
 				throw EXCEPTION("Could not replace saved level [A]")
 		var/savefile/savefile = new("map_saves/[A].sav")
-		savefile["/format_version"] << 2
+		savefile["/format_version"] << 3
 		savefile["/generation"] << generation
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
 		savefile["/maxz"] << world.maxz
-		for(var/turf/turf in world)
-			if (turf.z == A)
-				var/ref = BuildVarDirectory(savefile, turf, 1)
+		// Visit each coordinate once, without rescanning other levels.
+		for(var/y = 1, y <= world.maxy, y++)
+			for(var/x = 1, x <= world.maxx, x++)
+				var/turf/T = locate(x, y, A)
+				var/ref = BuildVarDirectory(savefile, T, 1)
 				if(!ref)
-					throw EXCEPTION("Turf [turf.x],[turf.y],[turf.z] could not be saved")
-				savefile.cd = "/map/[turf.z]/[turf.y]"
-				savefile["[turf.x]"] << ref
-				TICK_CHECK
+					throw EXCEPTION("Turf [x],[y],[A] could not be saved")
+				savefile["/map/[A]/[y]/[x]"] << ref
+				save_work_check()
+		savefile.Flush()
+		savefile = null
+		sleep(world.tick_lag)
 		log_startup_progress("	Saved z-level [A].")
 	clear_bookkeeping()
 	if(world_state)
@@ -91,7 +109,7 @@
 	log_startup_progress("Finished saving.")
 	return 1
 
-/map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0)
+/map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0, traversal = FALSE)
 	if(!A || istype(A, /client))
 		return 0
 	if(!A.should_save)
@@ -103,6 +121,10 @@
 			return 0
 	if(istype(A, /atom/movable))
 		var/atom/movable/movable = A
+		var/list/previous = saving_world_movables["\ref[A]"]
+		if(previous && previous["atom"] == A && previous["z"] != saving_z)
+			if(traversal) return 0
+			throw EXCEPTION("Captured object belongs to another saved level")
 		if(movable.z && movable.z != saving_z)
 			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type]")
 	var/ind = saving_references["\ref[A]"]
@@ -112,6 +134,8 @@
 	ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
 	saving_references["\ref[A]"] = ref
+	if(istype(A, /atom/movable))
+		saving_world_movables["\ref[A]"] = list("atom" = A, "z" = saving_z)
 	if(durable_export) durable_export.bind_entry(A, saving_z, ref)
 	var/datum/save_export_frame/frame = new
 	frame.exporter = src
@@ -137,20 +161,30 @@
 			// Keep obj-before-mob order; only declared transfers extend discovery.
 			for(var/obj/content in parent.contents)
 				if(content.loc != parent) continue
-				var/child_ref = BuildVarDirectory(savefile, content, 1)
+				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
+				if(child_ref && (!content || content.loc != parent))
+					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
+				save_work_check()
+				require_export_frame(frame)
 			for(var/mob/content in parent.contents)
 				if(content.loc != parent) continue
-				var/child_ref = BuildVarDirectory(savefile, content, 1)
+				var/child_ref = BuildVarDirectory(savefile, content, 1, TRUE)
 				require_export_frame(frame)
+				if(child_ref && (!content || content.loc != parent))
+					throw EXCEPTION("Child moved or disappeared during capture")
 				add_export_content(frame, child_ref)
+				save_work_check()
+				require_export_frame(frame)
 		var/list/changing_vars = A.get_saved_vars()
 		if(istype(A, /atom/movable))
 			var/atom/movable/AM = A
 			if(contents && AM.load_datums)
 				changing_vars += "reagents"
 		for(var/v in changing_vars)
+			save_work_check()
+			require_export_frame(frame)
 			if(A.persistence_runtime_var(v))
 				continue
 			if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
@@ -164,7 +198,7 @@
 		drain_save_transfers(frame)
 		if(frame.accepts_children)
 			savefile.cd = entry_path(savefile, ref)
-			savefile["content"] << list2params(frame.content_refs)
+			savefile["content"] << encode_saved_contents(savefile, frame)
 		savefile.cd = ".."
 	catch(var/exception/e)
 		release_export_frame(frame)
@@ -193,6 +227,7 @@
 			var/list/snapshot = L.Copy()
 			F["/lists/[id]/length"] << snapshot.len
 			for(var/i = 1, i <= snapshot.len, i++)
+				save_work_check()
 				TICK_CHECK
 				var/key = snapshot[i]
 				var/encoded_key = encode_saved_value(F, key)
@@ -207,3 +242,17 @@
 		var/id = BuildVarDirectory(F, value, 1)
 		return list("kind" = "entry", "ref" = id)
 	return list("kind" = "value", "value" = value)
+
+// Version 3 advertises dense chunks so version-2 readers reject before import.
+// Direct callers writing version 2 retain the historical small-record format.
+/map_storage/proc/encode_saved_contents(savefile/F, datum/save_export_frame/frame)
+	if(F["/format_version"] != 3)
+		if(frame.content_refs.len > 500)
+			throw EXCEPTION("Dense contents require save format 3")
+		return list2params(frame.content_refs)
+	var/list/chunks = list()
+	for(var/start = 1, start <= frame.content_refs.len, start += 500)
+		chunks += list2params(frame.content_refs.Copy(start, min(start + 500, frame.content_refs.len + 1)))
+		save_work_check()
+		require_export_frame(frame)
+	return chunks

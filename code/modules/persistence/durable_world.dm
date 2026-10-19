@@ -144,7 +144,7 @@
 			var/path = entry_path(F, ref)
 			var/type = F["[path]/type"]
 			if(ispath(type, /obj/screen) || ispath(type, /datum/hud)) continue
-			for(var/child in params2list(F["[path]/content"])) queue += child
+			for(var/child in saved_content_refs(F["[path]/content"], F["/format_version"])) queue += child
 		if(wanted.len) throw EXCEPTION("Durable metadata references an unreachable world entry")
 
 // Read-only rejection before player ownership or timer state is changed.

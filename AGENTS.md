@@ -947,3 +947,14 @@ Native nullable tracking lists do not auto-materialize on `|=`: omitting the
 initializer raises a type-mismatch exception. `tests/floor_decal_tracking` covers
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
+
+<!-- 2026-10-19: bounded admitted saver draft -->
+World-save traversal retains operation admission, durable state/player ownership,
+and active before_save_context transfer frames. Invalidated active parents fail
+closed with backup recovery; do not restore the old detached-parent exporter.
+Level format 3 adds bounded content chunks; keep version-2 and legacy readers,
+including durable reachability and ownership decoding. Round-state versioning is
+independent. Old readers reject version 3, so downgrade needs retained old files.
+The sleep(0)-below-80% policy increases effective duty cycle and is experimental.
+Dispatch save_latency_regressions for native dense/backup/heartbeat/refusal and
+current persistence checks; preparation alone is not acceptance or deployment.

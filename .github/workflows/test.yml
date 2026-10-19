@@ -29,6 +29,10 @@ on:
         description: 'Opt in only to isolated save restart transaction checks'
         type: boolean
         default: false
+      save_latency_regressions:
+        description: 'Opt in to bounded save, compatibility, admission and current persistence probes'
+        type: boolean
+        default: false
       world_save_regressions:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
         type: boolean
@@ -709,7 +713,7 @@ jobs:
           if-no-files-found: error
       - name: Save/load operation admission regression
         id: world_save_operations
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save_operations') || (github.event_name == 'workflow_dispatch' && inputs.world_save_operation_regressions)
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save_operations') || (github.event_name == 'workflow_dispatch' && (inputs.world_save_operation_regressions || inputs.save_latency_regressions))
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/world-save-operations"
@@ -732,7 +736,7 @@ jobs:
           if-no-files-found: error
       - name: Offline world-save round-trip regression
         id: world_save
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || inputs.world_save_regressions == true
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || (inputs.world_save_regressions || inputs.save_latency_regressions) == true
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/world-save"
@@ -770,6 +774,33 @@ jobs:
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
         shell: bash
+      - name: Verify bounded admitted save traversal and backup recovery
+        id: save_latency
+        if: inputs.save_latency_regressions || needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency')
+        timeout-minutes: 40
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/save-latency"
+          export TMPDIR="$RUNNER_TEMP/save-latency"
+          python3 -B -m unittest discover -s tests/save_latency -v
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --verify-backup
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --dense --verify-backup
+          for scenario in concurrent movement parent-deletion; do
+            python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario "$scenario"
+          done
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --interrupt
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control yield
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control old-reader
+      - name: Retain bounded save source and native evidence
+        if: always() && steps.save_latency.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: save-latency-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/save-latency/
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Retain ordinary world-save evidence
         if: always() && steps.world_save.outcome != 'skipped'
         uses: actions/upload-artifact@v4
