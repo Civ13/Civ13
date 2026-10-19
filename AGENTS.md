@@ -84,6 +84,16 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 ## Maps
 
+<!-- 2026-10-18: centralized level admission -->
+Dynamic z growth must reserve its complete target through world_z_budget before
+the first native resize. The uncalibrated hard ceiling is 600,000 total grid cells,
+with one roof-added plane and lower-only host settings. Production additionally
+refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
+reviewed; configuration cannot bypass this. Isolated tests select a tests-only
+subclass, never a production opt-out. This is not an OOM guarantee. Overcap saved expansion holds before mutation and blocks
+later save overwrite. See docs/new-z-budget.md and tests/new_z_budget/prepare.py;
+source preparation does not establish native acceptance.
+
 - Maps use lowercase names with `_` for spaces.
 - WIP maps go in `maps/WIP/`.
 - No second z-levels unless same size as main level.
@@ -960,3 +970,28 @@ Test-only save profiling starts after save_world_contents accepts its operation
 token. Never wrap the public Save_World entry on current sources: busy/reentrant
 requests must not restart another serializer's clock. Source tests are offline;
 manual world_save_profile_regressions is separate native evidence.
+
+<!-- 2026-10-19: exclusion dispatch source contract -->
+Runtime-exclusion hooks can have early mining ownership guards before their
+terminal list-membership return. Preserve those guards when replacing only the
+list with switch dispatch; source fixtures must pin current inherited helpers
+and include all mining fields. Offline source parity is not native evidence.
+
+<!-- 2026-10-19: Linux exclusion parity lane -->
+Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
+parity and three controls, retaining receipts. It is separate from run.py's held
+Windows grant runner; neither an offline pass nor workflow addition proves native
+parity, and this lane makes no benchmark or listener-sampling claim.
+
+<!-- 2026-10-19: native bind versus host address -->
+Linux BYOND world.address can report the host interface even with -ip 127.0.0.1.
+Isolated exclusion CI verifies the engine's startup bind diagnostic plus closed
+port/refused reopen state; do not use world.address as the socket-bind oracle.
+
+<!-- 2026-10-19: independent typed wait contexts -->
+`do_after` keeps mining_context in its ninth argument; opt-in gameplay_context
+is tenth and forwarded by name. Reject simultaneous contexts before either
+claim. Preserve mining progress/owner cleanup and ordinary null callback order.
+The gather disabled-source hashes project reviewed master; refresh them only
+after verifying all four full-file projections. Idle-metabolism extraction must
+project the disabled helper before finding its conditional proc declaration.

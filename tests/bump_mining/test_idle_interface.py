@@ -13,7 +13,7 @@ spec.loader.exec_module(idle)
 class IdleWaitContract(unittest.TestCase):
     def test_null_context_fixture_declares_production_wait_interface(self):
         helper = (ROOT / "code/_helpers/mobs.dm").read_text(encoding="utf-8")
-        wait = idle.procedure(helper, "/proc/do_after")
+        wait = idle.procedure(idle.project(helper, set())[0], "/proc/do_after")
         fixture = (ROOT / "tests/idle_metabolism/probe.dm").read_text(encoding="utf-8")
         generated, _ = idle.production(None)
         self.assertIn(wait, generated)
