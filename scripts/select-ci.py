@@ -52,6 +52,9 @@ def introduced_tests(base, head, event):
         suffix = PurePosixPath(path).suffix.lower()
         if len(parts) >= 2 and parts[0] == 'tests' and suffix in {'.py', '.ps1', '.dm', '.sh'}:
             suites.add('/'.join(parts[:2]))
+        elif path in {'scripts/opendream/bounded_build/test_guard.py',
+                      'scripts/opendream/bounded_build/test_windows.py'}:
+            suites.add('scripts/opendream/bounded_build')
         elif path.startswith('tools/') and (path.endswith('.test.mjs') or path.endswith('.test.js')):
             suites.add('/'.join(parts[:2]))
     return sorted(suites)
