@@ -1,5 +1,11 @@
 # Vehicle projectile routing
 
+Blocked diagnostic draft: native CI has not reproduced the claimed movement-order
+bypass. Both initial runs stopped at the occupant-before-frame precondition.
+The next packet records actual transport membership, locations and native contents
+order plus old/current dense-object comparisons. These are not an interior-versus-
+external-cover policy or permission to rebalance armor interactions.
+
 Vehicle movement transports occupants and interior structures before its component
 frames. Projectile collision must resolve frame armor before visiting those
 occupants, regardless of the resulting turf.contents order.

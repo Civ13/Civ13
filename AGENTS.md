@@ -1,10 +1,10 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-18: vehicle projectile order -->
-Vehicle do_move transports occupants before its component frames. Projectile
-handleTurf must check vehicle armor before ordinary turf contents; native
-contents order is not an armor boundary. tests/vehicle_projectile_routing keeps
-immutable frame-first callback parity and an original-order causal control.
+Vehicle do_move calls occupant moves before component frame moves, which alone
+does not prove native turf.contents order. The vehicle_projectile_routing draft
+records actual ordering and immutable frame-first parity; do not promote the
+prepass without a native bypass and an explicit interior/external-cover policy.
 
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file

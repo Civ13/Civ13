@@ -15,6 +15,7 @@
 
 var/list/routing_owned = list()
 var/list/routing_results = list()
+var/list/routing_diagnostics = list()
 var/routing_checks = 0
 /datum/vehicle_routing_trace
 	var/list/events = list()
@@ -142,8 +143,20 @@ var/routing_checks = 0
 	routing_owned += axis
 	if (moved)
 		routing_assert(F in range(7,axis.loc), "target frame is inside production transport scan")
+		axis.add_transporting()
+		var/list/movement = list("transported_mob"=(M in axis.transporting),"component_frame"=(F in axis.components),"before_mob"="[M.x],[M.y]","before_frame"="[F.x],[F.y]")
+		routing_diagnostics["movement"] = movement
 		routing_assert(axis.do_move(), "production vehicle movement completed")
 		T = get_turf(F)
+		movement["after_mob"] = "[M.x],[M.y]"
+		movement["after_frame"] = "[F.x],[F.y]"
+		movement["mob_index"] = T.contents.Find(M)
+		movement["frame_index"] = T.contents.Find(F)
+		var/list/native_order = list()
+		for (var/atom/movable/A in T.contents)
+			native_order += "[A.type]"
+		movement["native_order"] = native_order
+		world.log << "VEHICLE ROUTING movement diagnostic: [json_encode(movement)]"
 		routing_assert(M.loc == T && T.contents.Find(M) < T.contents.Find(F), "production movement places occupant before frame")
 	start = locate(T.x - round(cos(angle)*3), T.y - round(sin(angle)*3), 1)
 	var/obj/item/projectile/P = new projectile_type(start)
@@ -199,7 +212,12 @@ var/routing_checks = 0
 					var/list/current = routing_scene(TRUE,armor,kind,shot_angle)
 					routing_assert(json_encode(old) == json_encode(current), "frame-first callback parity")
 					routing_assert(current["armor"] == 1, "one armor callback per frame")
-		// The immutable baseline must fail this source-reachable ordering case.
+		// Observe native ordering without assigning contents or manufacturing a list.
+		// These comparisons diagnose routing; they do not establish an interior policy.
+		routing_diagnostics["stationary_mob_created_before_frame"] = list("baseline"=routing_scene(FALSE,1000,/obj/item/projectile/vehicle_routing_probe,0,"ordinary",TRUE),"candidate"=routing_scene(FALSE,1000))
+		routing_diagnostics["stationary_dense_object_created_before_frame"] = list("baseline"=routing_scene(FALSE,1000,/obj/item/projectile/vehicle_routing_probe,0,"interior",TRUE),"candidate"=routing_scene(FALSE,1000,/obj/item/projectile/vehicle_routing_probe,0,"interior"))
+		routing_diagnostics["stationary_dense_object_created_after_frame"] = list("baseline"=routing_scene(TRUE,1000,/obj/item/projectile/vehicle_routing_probe,0,"interior",TRUE),"candidate"=routing_scene(TRUE,1000,/obj/item/projectile/vehicle_routing_probe,0,"interior"))
+		// Source call order alone does not prove native contents order.
 		var/list/moved = routing_scene(TRUE,1000,/obj/item/projectile/vehicle_routing_probe,0,"ordinary",FALSE,"mob",TRUE)
 		routing_assert(moved["armor"] == 1 && moved["mobs"] == 0, "armor checked before protected occupant")
 		for (var/target_kind in list("mob","turret","seat","ground"))
@@ -224,10 +242,10 @@ var/routing_checks = 0
 		routing_assert(multiple["armor"] == 2 && !multiple["mobs"], "all frame armor checks precede occupants")
 		var/list/untouchable = routing_scene(FALSE,1000,/obj/item/projectile/vehicle_routing_probe,0,"untouchable")
 		routing_assert(!untouchable["armor"] && untouchable["mobs"] == 1, "untouchable frame remains excluded")
-		text2file(json_encode(list("checks"=routing_checks,"scenes"=routing_results)),"fixture.json")
+		text2file(json_encode(list("checks"=routing_checks,"scenes"=routing_results,"diagnostics"=routing_diagnostics)),"fixture.json")
 		text2file("PASS: vehicle projectile routing","result.txt")
 	catch (var/exception/E)
-		text2file(json_encode(list("checks"=routing_checks,"scenes"=routing_results)),"fixture.json")
+		text2file(json_encode(list("checks"=routing_checks,"scenes"=routing_results,"diagnostics"=routing_diagnostics)),"fixture.json")
 		text2file("FAIL: [E.name]","result.txt")
 		world.log << "VEHICLE ROUTING exception: [E] at [E.file]:[E.line]"
 	shutdown()
