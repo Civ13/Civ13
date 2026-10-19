@@ -668,13 +668,15 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
       - name: Native reserved lighting parity and causal controls
+        shell: bash
+        timeout-minutes: 35
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/reserved_lighting/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/reserved-lighting"
       - name: Retain reserved lighting parity evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting'))
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: reserved-lighting
           path: ${{ runner.temp }}/reserved-lighting/
