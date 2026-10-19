@@ -34,6 +34,7 @@ var/training_click_done = FALSE
 	var/item_entries = 0
 	var/wait_calls = 0
 	var/list/wait_ticks = list()
+	var/list/start_feedback_present = list()
 
 /obj/structure/exercise/click_fixture/attack_hand(mob/living/human/H)
 	hand_entries++
@@ -46,6 +47,7 @@ var/training_click_done = FALSE
 /obj/structure/exercise/click_fixture/exercise_wait(mob/living/human/H, duration)
 	wait_calls++
 	var/started = world.time
+	start_feedback_present += !!training_click_seen(H, "You begin lifting repetition [repetition+1]/3")
 	. = ..()
 	wait_ticks += world.time - started
 
@@ -94,7 +96,7 @@ var/training_click_done = FALSE
 		for (var/i = 1, i <= 3, i++)
 			training_click_input(H, E, "real repetition [i]")
 			training_click_check(E.wait_calls == i && E.wait_ticks[i] >= 150 && H.may_do_after, "real wait [i] reaches150 ticks and releases action lock")
-			training_click_check(training_click_seen(H, "You begin lifting repetition [i]/3"), "repetition [i] acknowledges start")
+			training_click_check(E.start_feedback_present[i], "repetition [i] acknowledges start before real wait")
 			if (i < 3)
 				training_click_check(H.getMaxStat("strength") == 80 && E.repetition == i, "repetition [i] has no partial gain")
 		training_click_check(abs(H.getMaxStat("strength") - 80.4) < 0.001 && H.exercise_fatigue == 2 && !E.actor && !H.exercise_equipment, "original finite set reward remains intact")
