@@ -60,10 +60,14 @@ def prepare(output, control=None):
         shutil.copyfile(Path(__file__).with_name(name), output / name)
     (output / 'production.dm').write_text(generated, encoding='utf-8')
     (output / 'probe.dme').write_text('#include "support.dm"\n#include "production.dm"\n#include "probe.dm"\n')
+    asset = 'sound/effects/pickaxe.ogg'
+    (output / asset).parent.mkdir(parents=True)
+    shutil.copyfile(ROOT / asset, output / asset)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     manifest = dict(head=head, control=control, expected_failure=expected, byond='516.1681',
                     source_sha256={p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in files},
-                    generated_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in output.iterdir()},
+                    generated_sha256={p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in output.rglob('*') if p.is_file()},
+                    resource_sha256={asset: hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()},
                     scope='extracted production Bump/mining/wait; inert human/tool/output/authority boundaries',
                     subtile_3228='not integrated; offset cancellation tested, not opt-in transaction acceptance')
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')

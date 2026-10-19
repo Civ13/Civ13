@@ -71,7 +71,8 @@ class Sources(unittest.TestCase):
             with patch.object(R.subprocess, 'run', side_effect=AssertionError('native forbidden')), patch.object(R.subprocess, 'check_output', return_value=BASE):
                 M = R.prepare(Path(temp) / 'probe')
             self.assertEqual(len(M['source_sha256']), 5)
-            self.assertEqual(set(M['generated_sha256']), {'support.dm','probe.dm','production.dm','probe.dme'})
+            self.assertEqual(set(M['generated_sha256']), {'support.dm','probe.dm','production.dm','probe.dme','sound/effects/pickaxe.ogg'})
+            self.assertEqual(M['generated_sha256']['sound/effects/pickaxe.ogg'], M['resource_sha256']['sound/effects/pickaxe.ogg'])
             self.assertIn('not integrated', M['subtile_3228'])
 
     def test_ci_selects_new_suite_on_PR_and_retains_diagnostics(self):
