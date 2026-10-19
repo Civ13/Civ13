@@ -30,6 +30,8 @@ class PreparationTests(unittest.TestCase):
                      'require_export_frame(frame)', 'drain_save_transfers(frame)'):
             self.assertIn(call, source)
         self.assertIn('player_reclaim.dm', (output / 'probe.dme').read_text())
+        publication = source[source.index('var/content_value = encode_saved_contents'): ]
+        self.assertLess(publication.index('drain_save_transfers(frame)'), publication.index('savefile["content"] << content_value'))
 
     def test_version_three_and_current_reader(self):
         output, _ = self.stage('--dense', '--verify-backup')

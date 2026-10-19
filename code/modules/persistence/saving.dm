@@ -197,8 +197,12 @@
 		// Saved-variable recursion can declare a sibling after direct traversal.
 		drain_save_transfers(frame)
 		if(frame.accepts_children)
+			var/content_value = encode_saved_contents(savefile, frame)
+			// Chunk encoding can yield after the first transfer drain. Recheck
+			// paid children at publication, not only before that last yield.
+			drain_save_transfers(frame)
 			savefile.cd = entry_path(savefile, ref)
-			savefile["content"] << encode_saved_contents(savefile, frame)
+			savefile["content"] << content_value
 		savefile.cd = ".."
 	catch(var/exception/e)
 		release_export_frame(frame)
