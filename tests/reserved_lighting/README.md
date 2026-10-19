@@ -108,3 +108,21 @@ Offline tests use real normal/snow pine resources and all six live states with
 1,734 offset placements. Full-rectangle controls reject two/three-tile overlap,
 allow a nonintersecting declared scene and reject unknown/death/transform/nested
 appearance, source drift and invalid cells. These are not native renderer tests.
+
+## Current CI parity lane
+
+`run-ci.py --byond-bin <516.1681-bin> --output <new-directory>` runs only
+in a disposable CI workspace. It prepares the actual merged production sources,
+compiles five closed-port 16x16 fixtures, and compares all six complete native
+state snapshots with reserved omission off versus on. The virtual-master mutation
+must reach a structural snapshot mismatch; halo and refused-owner mutations must
+fail their named assertions. Compilation and execution have finite per-process
+timeouts and preserve logs and source manifests. No live world, user session or
+renderer is used. The default area clearance flag remains FALSE and no map opts in.
+
+The workflow now selects this native lane for the introduced suite or extensive
+regressions and retains evidence even on failure. The older Windows contained
+runner remains a separate explicitly granted workflow. Earlier statements above
+about an unregistered/unrun native fixture describe that original review stage.
+A passing CI run establishes only these native state/parity checks, never client
+pixels, complete map clearance, net memory savings or deployment readiness.

@@ -667,6 +667,18 @@ jobs:
             ${{ runner.temp }}/crafting-handles/
           retention-days: 7
           if-no-files-found: warn
+      - name: Native reserved lighting parity and causal controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/reserved_lighting/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/reserved-lighting"
+      - name: Retain reserved lighting parity evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: reserved-lighting
+          path: ${{ runner.temp }}/reserved-lighting/
+          if-no-files-found: error
       - name: Isolated save restart transaction regression
         id: restart_transaction
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.restart_transaction_regressions == true || inputs.persistence_integration_regressions == true
