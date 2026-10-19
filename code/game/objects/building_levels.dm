@@ -36,6 +36,9 @@ var/building_compiled_maxz = 0
 	desc = "There is no floor here."
 
 /turf/sky/building/Entered(atom/movable/A)
+	// Lighting renderers belong to their turf; they are not falling cargo.
+	if (istype(A, /atom/movable/lighting_overlay))
+		return
 	if (!A || !A.loc || istype(A, /obj/covers) || istype(A, /obj/roof) || isobserver(A) || (locate(/obj/covers) in src) || (locate(/obj/structure/multiz/ladder) in src))
 		return
 	if (istype(A, /obj/effect) || istype(A, /obj/item/projectile))

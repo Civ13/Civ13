@@ -1,11 +1,21 @@
 // Only local bounded files are read here. The optional bridge owns HTTP/model work.
 var/global/datum/player_help_service/player_help_service = new
 
+/client
+	// Session-only state. Never attached to a mob or passed to native persistence.
+	var/tmp/list/player_help_turns = list()
+	var/tmp/player_help_generation = 0
+	var/tmp/player_help_touched = 0
+	var/tmp/player_help_action_token
+	var/tmp/player_help_acknowledged = FALSE
+
 /client/verb/ask_player_help()
 	set name = "Ask for help"
 	set category = "Help!"
+	player_help_service.expire_conversations()
+	var/generation = player_help_generation
 	var/question = player_help_prompt()
-	if (question && (src in clients))
+	if (question && (src in clients) && generation == player_help_generation)
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
@@ -22,7 +32,82 @@ var/global/datum/player_help_service/player_help_service = new
 	var/account_salt
 	var/list/accounts = list()
 	var/list/global_times = list()
+	var/conversation_supported = FALSE
+	var/list/conversation_clients = list()
 	var/list/limits = list("cooldown_seconds"=30, "burst_requests"=3, "burst_seconds"=120, "window_requests"=10, "window_seconds"=600, "global_requests"=30, "global_seconds"=60, "max_accounts"=2048, "queue_slots"=8)
+
+/datum/player_help_service/persistence_runtime_var(key)
+	return (key in list("pending", "accounts", "global_times", "conversation_clients", "account_salt", "sequence", "serial", "heartbeat_confirmed", "heartbeat_time", "conversation_supported")) || ..()
+
+/datum/player_help_service/proc/reset_conversation(client/C)
+	C.player_help_turns = list()
+	C.player_help_generation++
+	C.player_help_action_token = null
+	C.player_help_acknowledged = FALSE
+	conversation_clients -= C
+	// A pending account reservation survives reset until response/timeout.
+
+/datum/player_help_service/proc/expire_conversations()
+	// At most 128 retained client sessions. Release disconnected client refs.
+	for (var/client/C in conversation_clients.Copy())
+		if (!(C in clients) || limit_time() - C.player_help_touched >= 9000)
+			reset_conversation(C)
+
+/datum/player_help_service/proc/remember(client/C, question, answer)
+	if (!(C in conversation_clients) && conversation_clients.len >= 128)
+		reset_conversation(conversation_clients[1])
+	// Trim on Unicode boundaries; length() is the native UTF-8 byte count.
+	if (length(answer) > 3000)
+		var/end = 1
+		while (end <= length(answer))
+			var/bytes = length(ascii2text(text2ascii(answer, end)))
+			if (end + bytes - 1 > 3000)
+				break
+			end += bytes
+		answer = copytext(answer, 1, end)
+	C.player_help_turns += list(list("question" = question, "answer" = answer))
+	var/size = 0
+	for (var/list/pair in C.player_help_turns)
+		size += length(pair["question"]) + length(pair["answer"])
+	while (C.player_help_turns.len > 3 || size > 4096)
+		var/list/oldest = C.player_help_turns[1]
+		size -= length(oldest["question"]) + length(oldest["answer"])
+		C.player_help_turns.Cut(1, 2)
+	C.player_help_touched = limit_time()
+	C.player_help_acknowledged = TRUE
+	C.player_help_action_token = md5("[world.realtime]-[rand(1, 1000000000)]-[++serial]")
+	conversation_clients |= C
+
+/datum/player_help_service/proc/request_size(list/request)
+	// Bound the ASCII JSON representation even when native JSON emits UTF-8.
+	var/encoded = json_encode(request)
+	var/size = 0
+	var/i = 1
+	while (i <= length(encoded))
+		var/codepoint = text2ascii(encoded, i)
+		size += codepoint > 65535 ? 12 : (codepoint > 127 ? 6 : 1)
+		i += length(ascii2text(codepoint))
+	return size
+
+/datum/player_help_service/Topic(href, list/href_list)
+	// The global service ref is public. The actor always comes from usr.client;
+	// a copied URL cannot select another account, client or conversation.
+	var/client/C = usr ? usr.client : null
+	expire_conversations()
+	if (!valid_action(C, href_list["token"]))
+		return
+	if (href_list["action"] == "reset")
+		reset_conversation(C)
+		C << browse(null, "window=player_help")
+		C << "AI gameplay help conversation cleared. Ask for help to start a new conversation."
+	else if (href_list["action"] == "followup")
+		if (!available() || !conversation_supported || !C.player_help_acknowledged || !C.player_help_turns.len)
+			C << "Follow-up context is unavailable. Start a new conversation or try again later."
+			return
+		C.ask_player_help()
+
+/datum/player_help_service/proc/valid_action(client/C, token)
+	return C && (C in clients) && C.player_help_action_token && token == C.player_help_action_token
 
 // Account identity comes only from the authenticated client, never player input.
 // A per-server salt keeps account names out of the bridge and model payload.
@@ -108,9 +193,11 @@ var/global/datum/player_help_service/player_help_service = new
 
 /datum/player_help_service/proc/available()
 	refresh_limits()
+	conversation_supported = FALSE
 	var/list/health = read_json("[root]health.json", 256)
 	if (!islist(health) || health["enabled"] != TRUE || !istext(health["sequence"]))
 		return FALSE
+	conversation_supported = health["conversation_protocol"] == 1
 	if (isnum(health["request_timeout_seconds"]))
 		request_timeout_seconds = max(60, min(600, health["request_timeout_seconds"]))
 	if (sequence != health["sequence"])
@@ -213,23 +300,42 @@ var/global/datum/player_help_service/player_help_service = new
 
 // Server-owned queue boundary; no client/Topic-supplied account identifiers.
 /datum/player_help_service/proc/enqueue(account, question, client/C)
+	expire_conversations()
 	if (!available())
 		return "AI gameplay help is unavailable. Please use the Crafting Atlas or try again later."
 	if (!istext(question) || !length(question) || length(question) > 500)
 		return "Please keep your question to 1 through 500 characters."
+	if (C && C.player_help_turns.len && !conversation_supported)
+		return "This helper cannot carry follow-up context. Use New conversation to ask a standalone question."
 	var/slot = reserve(account)
 	if (!isnum(slot))
 		return slot
 	serial++
 	var/id = "[world.realtime]-[rand(1, 999999)]-[serial]"
 	var/list/request = list("id" = id, "account" = account, "question" = question, "game_context" = game_context(C ? C.mob : null))
+	request["render_contract"] = list("version" = 1, "capabilities" = list("markdown-basic-v1"))
+	if (C && conversation_supported)
+		request["conversation"] = list("version" = 1, "turns" = C.player_help_turns.Copy())
+	// Includes escaping, IDs, context and metadata, not just dialogue bytes.
+	// Retain complete newest pairs when the existing spool envelope is tight.
+	while (request_size(request) > 16384 && request["conversation"])
+		var/list/conversation = request["conversation"]
+		var/list/turns = conversation["turns"]
+		if (!turns.len)
+			break
+		turns.Cut(1, 2)
+	if (request_size(request) > 16384)
+		clear_slot(slot)
+		return "AI gameplay help could not fit this question and context. Please try a shorter question."
 	fdel("[root][slot].ready")
 	fdel("[root][slot].request.json")
 	fdel("[root][slot].response.json")
 	if (!write_request(slot, request))
 		clear_slot(slot)
 		return "AI gameplay help could not send your question. Please try again later."
-	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "deadline" = world.time + request_timeout_seconds * 10)
+	var/list/sent_conversation = request["conversation"]
+	var/list/sent_turns = sent_conversation ? sent_conversation["turns"] : null
+	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "generation" = C ? C.player_help_generation : null, "question" = question, "conversation" = !!sent_conversation, "had_history" = sent_turns && sent_turns.len, "deadline" = world.time + request_timeout_seconds * 10)
 	return TRUE
 
 /datum/player_help_service/proc/write_request(slot, list/request)
@@ -237,18 +343,28 @@ var/global/datum/player_help_service/player_help_service = new
 
 /datum/player_help_service/proc/poll()
 	available()
+	expire_conversations()
 	for (var/i = 1, i <= 8, i++)
 		var/list/entry = pending["[i]"]
 		if (!islist(entry))
 			continue
 		var/client/C = entry["client"]
 		// Disconnect does not cancel work or release the account's pending lock.
-		if (C && !(C in clients))
+		if (C && (!(C in clients) || C.player_help_generation != entry["generation"]))
 			C = null
 		var/list/response = matching_response(i, entry["id"])
 		if (islist(response))
-			if (C && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) <= 4000)
-				C << browse(render_answer(response["answer"]), "window=player_help;size=600x500")
+			var/answer_format = response_format(response)
+			if (C && response["status"] == "ok" && entry["had_history"] && response["conversation_protocol"] != 1)
+				C << "The helper did not accept follow-up context. Your conversation was cleared; please start a new conversation."
+				reset_conversation(C)
+			else if (C && answer_format && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) && length(response["answer"]) <= 4000)
+				if (entry["conversation"] && response["conversation_protocol"] == 1)
+					remember(C, entry["question"], response["answer"])
+				else
+					reset_conversation(C)
+					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
+				C << browse(render_answer(response["answer"], answer_format, C), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
@@ -261,8 +377,230 @@ var/global/datum/player_help_service/player_help_service = new
 				C << "AI gameplay help timed out without a response. Please try again later or use the Crafting Atlas."
 			clear_slot(i)
 
-/datum/player_help_service/proc/render_answer(answer)
-	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p><pre style='white-space:pre-wrap'>[html_encode(answer)]</pre><p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+/datum/player_help_service/proc/response_format(list/response)
+	// Missing both keys is the old worker protocol. Partial/null metadata fails closed.
+	if (!("render_protocol" in response) && !("answer_format" in response))
+		return "markdown-basic-v1"
+	if (response["render_protocol"] != 1)
+		return null
+	if (response["answer_format"] == "plain-v1" || response["answer_format"] == "markdown-basic-v1")
+		return response["answer_format"]
+	return null
+
+/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null)
+	if (!istext(answer) || length(answer) > 4000)
+		answer = "AI gameplay help did not receive a usable response."
+	var/body
+	if (answer_format == "plain-v1")
+		body = "<pre style='white-space:pre-wrap'>[html_encode(answer)]</pre>"
+	else if (answer_format == "markdown-basic-v1")
+		body = markdown_answer(answer)
+	else
+		return null
+	if (C && C.player_help_action_token)
+		var/actions = "<a href='?src=\ref[src];action=reset;token=[C.player_help_action_token]'>New conversation</a>"
+		if (C.player_help_acknowledged && C.player_help_turns.len)
+			actions = "<a href='?src=\ref[src];action=followup;token=[C.player_help_action_token]'>Follow up</a> | [actions]"
+		body += "<p>[actions]</p>"
+	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+
+// Bounded display subset of CommonMark 0.31.2, not an HTML trust boundary
+// delegated to the model. Only these routines generate answer markup.
+/datum/player_help_service/proc/markdown_text(value)
+	return html_encode(value)
+
+/datum/player_help_service/proc/markdown_blank(value)
+	for (var/i = 1, i <= length(value), i++)
+		var/c = text2ascii(value, i)
+		if (c != 9 && c != 32)
+			return FALSE
+	return TRUE
+
+/datum/player_help_service/proc/markdown_url(value)
+	// Do not decode entities/percent escapes into a different scheme. Reject
+	// controls, whitespace, quotes and backslashes before producing an attribute.
+	if (!istext(value) || !(findtext(value, "https://") == 1 || findtext(value, "http://") == 1))
+		return FALSE
+	var/start = findtext(value, "://") + 3
+	if (start > length(value))
+		return FALSE
+	for (var/i = 1, i <= length(value), i++)
+		var/c = text2ascii(value, i)
+		if (c <= 32 || c == 127 || c == 34 || c == 39 || c == 60 || c == 62 || c == 92)
+			return FALSE
+	return TRUE
+
+/datum/player_help_service/proc/markdown_inline(value, depth = 0, links = TRUE)
+	if (depth >= 8)
+		return markdown_text(value)
+	var/result = ""
+	var/plain = ""
+	var/n = length(value)
+	for (var/i = 1, i <= n, i++)
+		var/c = text2ascii(value, i)
+		// Backslash escapes ASCII punctuation; never turn escaped text into tags.
+		if (c == 92 && i < n)
+			var/next = text2ascii(value, i + 1)
+			if ((next >= 33 && next <= 47) || (next >= 58 && next <= 64) || (next >= 91 && next <= 96) || (next >= 123 && next <= 126))
+				plain += copytext(value, i + 1, i + 2)
+				i++
+				continue
+		if (c == 96)
+			var/run = 1
+			while (i + run <= n && text2ascii(value, i + run) == 96)
+				run++
+			var/end = i + run
+			while (end <= n)
+				if (text2ascii(value, end) != 96)
+					end++
+					continue
+				var/closing = 1
+				while (end + closing <= n && text2ascii(value, end + closing) == 96)
+					closing++
+				if (closing == run)
+					break
+				end += closing
+			if (end <= n)
+				var/code = replacetext(copytext(value, i + run, end), "\n", " ")
+				if (length(code) >= 2 && copytext(code, 1, 2) == " " && copytext(code, length(code)) == " " && !markdown_blank(code))
+					code = copytext(code, 2, length(code))
+				result += "[markdown_text(plain)]<code>[markdown_text(code)]</code>"
+				plain = ""
+				i = end + run - 1
+				continue
+			plain += copytext(value, i, i + run)
+			i += run - 1
+			continue
+		// Balanced inline links. Images are kept as text, with no remote fetch.
+		if (c == 91 && links && !(i > 1 && text2ascii(value, i - 1) == 33))
+			var/end = i + 1
+			var/brackets = 1
+			while (end <= n && brackets)
+				var/b = text2ascii(value, end)
+				if (b == 92)
+					end += 2
+					continue
+				if (b == 91)
+					brackets++
+				if (b == 93)
+					brackets--
+				end++
+			if (!brackets && end <= n && text2ascii(value, end) == 40)
+				var/close = end + 1
+				var/parens = 1
+				while (close <= n && parens)
+					var/b = text2ascii(value, close)
+					if (b == 40)
+						parens++
+					if (b == 41)
+						parens--
+					close++
+				if (!parens)
+					var/url = copytext(value, end + 1, close - 1)
+					if (markdown_url(url))
+						result += "[markdown_text(plain)]<a href=\"[html_encode(url)]\">[markdown_inline(copytext(value, i + 1, end - 1), depth + 1, FALSE)]</a>"
+						plain = ""
+						i = close - 1
+						continue
+		if (c == 42 || c == 95)
+			// Underscores inside names such as crude_twine remain literal.
+			var/previous = i > 1 ? text2ascii(value, i - 1) : 32
+			var/run = 1
+			while (i + run <= n && text2ascii(value, i + run) == c)
+				run++
+			if (run <= 3 && i + run <= n && text2ascii(value, i + run) > 32 && (c != 95 || previous <= 32 || previous == 40))
+				var/mark = copytext(value, i, i + run)
+				var/end = findtext(value, mark, i + run)
+				while (end && (text2ascii(value, end - 1) <= 32 || text2ascii(value, end - 1) == 92))
+					end = findtext(value, mark, end + run)
+				if (end > i + run)
+					var/open = run == 1 ? "<i>" : (run == 2 ? "<b>" : "<b><i>")
+					var/shut = run == 1 ? "</i>" : (run == 2 ? "</b>" : "</i></b>")
+					result += "[markdown_text(plain)][open][markdown_inline(copytext(value, i + run, end), depth + 1, links)][shut]"
+					plain = ""
+					i = end + run - 1
+					continue
+		plain += copytext(value, i, i + 1)
+	return result + markdown_text(plain)
+
+/datum/player_help_service/proc/markdown_answer(answer)
+	if (!istext(answer) || length(answer) > 4000)
+		return "<p>AI gameplay help did not receive a usable response.</p>"
+	var/carriage_return = ascii2text(13)
+	answer = replacetext(replacetext(answer, "[carriage_return]\n", "\n"), carriage_return, "\n")
+	var/list/lines = splittext(answer, "\n")
+	var/result = ""
+	var/paragraph = FALSE
+	var/fence = ""
+	var/fence_length = 0
+	var/code = ""
+	var/regex/fences = regex("^ {0,3}(`{3,}|~{3,})(.*)$")
+	var/regex/headings = regex("^ {0,3}(#{1,6})( +|$)(.*)$")
+	var/regex/bullets = regex("^( *)(- |\\* |\\+ )(.+)$")
+	var/regex/numbers = regex("^( *)(\[0-9]{1,9})(\\.|\\)) +(.+)$")
+	var/line_number = 0
+	for (var/line in lines)
+		line_number++
+		var/has_fence = fences.Find(line)
+		if (length(fence))
+			if (has_fence && copytext(fences.group[1], 1, 2) == fence && length(fences.group[1]) >= fence_length && markdown_blank(fences.group[2]))
+				result += "<pre>[markdown_text(code)]</pre>"
+				fence = ""
+				code = ""
+			else
+				code += "[line]\n"
+			continue
+		if (has_fence && !(copytext(fences.group[1], 1, 2) == "`" && findtext(fences.group[2], "`")))
+			if (paragraph)
+				result += "</p>"
+				paragraph = FALSE
+			fence = copytext(fences.group[1], 1, 2)
+			fence_length = length(fences.group[1])
+			continue
+		if (markdown_blank(line))
+			if (paragraph)
+				result += "</p>"
+				paragraph = FALSE
+			continue
+		if (headings.Find(line))
+			if (paragraph)
+				result += "</p>"
+				paragraph = FALSE
+			var/level = length(headings.group[1])
+			result += "<h[level]>[markdown_inline(headings.group[3])]</h[level]>"
+			continue
+		var/prefix = ""
+		var/content = line
+		if (bullets.Find(line))
+			prefix = "[replacetext(bullets.group[1], " ", "&nbsp;")]&bull; "
+			content = bullets.group[3]
+		else if (numbers.Find(line))
+			prefix = "[replacetext(numbers.group[1], " ", "&nbsp;")][numbers.group[2]]. "
+			content = numbers.group[4]
+		if (length(prefix))
+			if (paragraph)
+				result += "</p>"
+			paragraph = FALSE
+			result += "<p>[prefix][markdown_inline(content)]</p>"
+			continue
+		if (!paragraph)
+			result += "<p>"
+			paragraph = TRUE
+		else
+			result += "<br>"
+		// Keep explicit line breaks readable, including CommonMark hard breaks.
+		if (line_number < lines.len)
+			var/slashes = 0
+			for (var/i = length(content), i >= 1 && text2ascii(content, i) == 92, i--)
+				slashes++
+			if (slashes % 2)
+				content = copytext(content, 1, length(content))
+		result += markdown_inline(content)
+	if (paragraph)
+		result += "</p>"
+	if (length(fence))
+		result += "<pre>[markdown_text(code)]</pre>"
+	return result
 
 /process/player_help/setup()
 	processes.player_help = src

@@ -61,7 +61,7 @@ def main():
         log=build.stdout+build.stderr
         (out/"compile.log").write_text(log);print(log,flush=True)
         assert build.returncode==0 and "516.1681" in log and "0 errors, 0 warnings" in log,"Pinned native compilation failed"
-        run=subprocess.run([str(daemon),"probe.dmb","-invisible","-close","-safe","-log","runtime.log"],cwd=out,capture_output=True,timeout=30,creationflags=flags)
+        run=subprocess.run([str(daemon),"probe.dmb","-invisible","-close","-trusted","-log","runtime.log"],cwd=out,capture_output=True,timeout=30,creationflags=flags)
         (out/"daemon.log").write_bytes(run.stdout+run.stderr)
         log=(out/"runtime.log").read_text(errors="replace")+(run.stdout+run.stderr).decode(errors="replace")
         print(log,flush=True)

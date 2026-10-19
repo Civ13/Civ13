@@ -128,6 +128,12 @@ var/datum/fixture_jobs/job_master = new
 	fixture_round_load_failure = TRUE
 	game_id = "failed-import-session"
 	check(!T.loadmap() && !map_storage.round_restored && game_id == "failed-import-session", "failed import restored round state")
+	check(persistence_load_recovery_required && persistence_save_in_progress, "failed import lost recovery hold")
+	check(!T.loadmap() && !map_storage.Save_World(), "failed import admitted another operation")
+	// The remaining cases model a fresh process after the failed import. Only
+	// this isolated fixture resets the process-wide recovery latch.
+	persistence_load_recovery_required = FALSE
+	persistence_save_in_progress = FALSE
 	fixture_round_load_failure = FALSE
 	state = map_storage.read_round_state()
 	state["state"] = GAME_STATE_PLAYING

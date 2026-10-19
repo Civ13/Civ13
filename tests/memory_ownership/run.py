@@ -99,7 +99,7 @@ def main():
     command = [str(a.byond_bin/('dd.exe' if win else 'DreamDaemon')), str(out/'probe.dmb')]
     if win:
         command += ['-invisible', '-close']
-    command += ['-safe', '-log', 'runtime.log']
+    command += ['-trusted', '-log', 'runtime.log']
     params = []
     if a.case:
         params.append('case='+a.case)

@@ -8,7 +8,7 @@ instructions, biological models or real engine-fuel recommendations.
 The reaction bench costs 10 glass under Apothecary. Insert a glass container,
 then pour individual feedstocks from other glass containers using their selected
 transfer amount. Its collector stays inert so shared elemental ingredients do
-not react before you choose one of its 32 recipes. Missing inputs/catalysts,
+not react before you choose one of its 33 recipes. Missing inputs/catalysts,
 unregistered outputs and output overflow preserve inputs. Ejection or destruction
 restores the container's original inert state and releases it.
 
@@ -59,6 +59,7 @@ progression still determine which recipes a player is offered.
 | Salt separation | Centrifuge salt -> equal sodium/chlorine game yields |
 | Polypropylene | 2 propylene -> 25 solid units at a heated bench; retains 10 titaniumchloride, 5 borontrifluoride, 5 aluminumchloride |
 | Engine fuel | 9 gasoline + 1 purified ethanol -> 10 liquid enginefuel units |
+| Butyl rubber | 10 isobutylene + 1 aluminum chloride -> 5 solid butyl rubber |
 
 Gelatin supports all three treatments with both finishing solvents. Its yields
 and the 6:3:1 blood split are deterministic game abstractions. Plasma proteins

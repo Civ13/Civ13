@@ -1,0 +1,44 @@
+--- a/code/_helpers/mobs.dm
++++ b/code/_helpers/mobs.dm
+@@ -177,10 +177,18 @@
+ 		qdel(progbar)
+ 
+ /mob/var/may_do_after = TRUE
++#ifdef CIV13_GAMEPLAY_BRIDGE
++#define CIV13_GAMEPLAY_WAIT_GUARDS
++#endif
+ /proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE)
+ 	if (!user || !user.may_do_after)
+ 		return FALSE
+ 
++#ifdef CIV13_GAMEPLAY_BRIDGE
++	var/datum/gameplay_action_lease/gameplay_lease = gameplay_bridge.wait_lease(user)
++	if (gameplay_lease && !gameplay_lease.valid())
++		return FALSE
++#endif
+ 	if (check_for_repeats)
+ 		user.may_do_after = FALSE
+ 
+@@ -202,6 +210,11 @@
+ 	. = TRUE
+ 	while (world.time < endtime)
+ 		sleep(0.1)
++#ifdef CIV13_GAMEPLAY_BRIDGE
++		if (gameplay_lease && !gameplay_lease.valid())
++			. = FALSE
++			break
++#endif
+ 		if (progress)
+ 			progbar.update(world.time - starttime)
+ 
+@@ -227,6 +240,10 @@
+ 
+ 	if (progbar)
+ 		qdel(progbar)
++#ifdef CIV13_GAMEPLAY_BRIDGE
++	if (gameplay_lease && !gameplay_lease.valid())
++		. = FALSE
++#endif
+ 
+ //Returns a list of all mobs with their name
+ /proc/getmobs()

@@ -85,8 +85,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	return ticker.savemap(src)
 
 /datum/persistence_restart_transaction/proc/load_generation()
-	// Hand the same synchronous lock to loadmap before it can yield.
-	persistence_save_in_progress = FALSE
+	// Startup ownership is admitted explicitly; never clear another operation.
 	return ticker.loadmap(src)
 
 /datum/persistence_restart_transaction/proc/request_restart()

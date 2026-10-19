@@ -259,7 +259,7 @@ def main():
             raise SystemExit(buildlog)
         start = time.monotonic()
         from telemetry import run_native
-        returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-safe', '-log', 'runtime.log'], root, flags, 900)
+        returncode, stdout, stderr, telemetry = run_native([str(daemon), 'probe.dmb'] + (['-invisible'] if os.name == 'nt' else []) + ['-close', '-trusted', '-log', 'runtime.log'], root, flags, 900)
         log = (root / 'runtime.log').read_text(errors='replace') + (stdout + stderr).decode(errors='replace')
         (logs / 'runtime.log').write_text(log)
         diagnostics = classify_runtime(log, args.negative_control == 'legacy-loop')

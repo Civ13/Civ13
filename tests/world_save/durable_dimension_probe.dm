@@ -18,7 +18,9 @@
 		season = "SUMMER"
 		time_of_day = "Evening"
 		game_hour = 129
-		persistence_save_in_progress = TRUE
+		var/operation_kind = world.params["dimension_mode"] == "write" ? "save" : "load"
+		var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, operation_kind)
+		durable_world_check(operation && operation.current(map_storage, operation_kind), "expanded durable admission failed")
 		if(world.params["dimension_mode"] == "write")
 			durable_world_check(building_allocate_level(3, TRUE), "upper level writer allocation failed")
 			var/turf/upper = locate(8,8,3)
@@ -30,7 +32,8 @@
 			map.faction1_squad_leaders[7] = leader
 			map.faction_research = list("upper" = upper, "area" = upper.loc)
 			map.faction_research_director = list("first" = leader)
-			durable_world_check(map_storage.Save_World(), "expanded durable export failed")
+			durable_world_check(!map_storage.Save_World() && operation.current(map_storage, "save"), "nested expanded save admitted")
+			durable_world_check(map_storage.run_world_operation("save", operation), "expanded durable export failed")
 			durable_world_check(map_storage.validate_world_save(), "expanded writer validation failed: [map_storage.last_error]")
 		else
 			durable_world_check(world.maxz == 2 && map_storage.compiled_maxz == 2, "reader did not start with compiled dimensions")
@@ -60,7 +63,8 @@
 			durable_world_check(map_storage.validate_world_save(), "expanded exact durable validation failed")
 			map_storage.suspend_durable_world()
 			map_storage.ClearMap()
-			durable_world_check(map_storage.Load_World() && map_storage.load_map_metadata(), "expanded durable import failed")
+			durable_world_check(!map_storage.Load_World() && operation.current(map_storage, "load"), "nested expanded import admitted")
+			durable_world_check(map_storage.run_world_operation("load", operation) && map_storage.load_map_metadata(), "expanded durable import failed")
 			map_storage.restore_durable_world()
 			var/mob/living/human/durable_probe_leader/leader = locate(/mob/living/human/durable_probe_leader)
 			durable_world_check(leader && leader.z == 3 && leader.persistence_owner_ckey == "metadatafixture", "upper durable entry identity lost")
@@ -68,6 +72,7 @@
 			var/turf/upper = locate(8,8,3)
 			durable_world_check(map.faction_research["upper"] == upper && map.faction_research["area"] == upper.loc && upper.name == "durable upper corner", "upper metadata location references lost")
 			durable_world_check(season == "SUMMER" && game_hour == 129 && time_of_day == "Evening", "expanded environment state lost")
+		durable_world_check(operation.finish(TRUE) && !persistence_active_operation && !persistence_save_in_progress, "expanded durable admission not released")
 		text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks)), "metadata-result.json")
 	catch(var/exception/e)
 		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "error" = "[e]")), "metadata-result.json")

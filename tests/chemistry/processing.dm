@@ -32,7 +32,7 @@ var/processing_error = FALSE
 		chemistry_assert(!processing_error, "Runtime error during processing")
 		if(!processing_error)
 #ifdef BIOCHEMISTRY_PROBE
-			text2file("PASS: 32 controlled recipes, finite feedstock/equipment construction, seed/plant/harvest and biological extraction, cold/expired/fuelled polymerization, actual engine blend consumption, six gelatin routes, blood fractions and timed centrifuge callback", "chemistry_result.txt")
+			text2file("PASS: 33 controlled recipes, finite feedstock/equipment construction, seed/plant/harvest and biological extraction, cold/expired/fuelled polymerization, actual engine blend consumption, six gelatin routes, blood fractions and timed centrifuge callback", "chemistry_result.txt")
 #else
 			text2file("PASS: controlled recipe outputs, calcium chain, transfers, catalyst/capacity/missing-input guards, beaker lifecycle, research/catalog and production construction", "chemistry_result.txt")
 #endif

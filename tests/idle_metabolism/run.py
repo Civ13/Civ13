@@ -74,7 +74,7 @@ def main():
         print(log, flush=True)
         if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
             raise RuntimeError('Pinned compilation failed')
-        result = subprocess.run([str(daemon), 'probe.dmb', '-close', '-safe', '-log', 'runtime.log']
+        result = subprocess.run([str(daemon), 'probe.dmb', '-close', '-trusted', '-log', 'runtime.log']
                                 + (['-invisible'] if os.name == 'nt' else []), cwd=work,
                                 capture_output=True, text=True, timeout=25, creationflags=flags)
         runtime = (work / 'runtime.log').read_text(errors='replace') if (work / 'runtime.log').exists() else ''

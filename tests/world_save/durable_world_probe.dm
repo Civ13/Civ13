@@ -119,9 +119,14 @@ var/durable_probe_tips = 0
 		var/icon/before_icon = map.faction_symbol_icon["first"]
 		before_icon.DrawBox("#123456", 4, 7, 4, 7)
 		map.durable_schedule("tips", 30)
-		persistence_save_in_progress = TRUE
+		var/datum/persistence_world_operation/save_operation = begin_persistence_operation(map_storage, "save")
+		durable_world_check(save_operation && save_operation.current(map_storage, "save"), "metadata export admission failed")
 		text2file("save begins", "probe-progress.log")
-		durable_world_check(map_storage.Save_World(), "metadata disk export failed")
+		durable_world_check(!map_storage.Save_World() && save_operation.current(map_storage, "save"), "nested metadata export admitted")
+		durable_world_check(map_storage.run_world_operation("save", save_operation), "metadata disk export failed")
+		durable_world_check(save_operation.finish(TRUE) && !persistence_active_operation && !persistence_save_in_progress, "metadata export admission not released")
+		var/datum/persistence_world_operation/load_operation = begin_persistence_operation(map_storage, "load")
+		durable_world_check(load_operation && load_operation.current(map_storage, "load"), "metadata import admission failed")
 		text2file("save completed", "probe-progress.log")
 		var/header = file2text("map_saves/round.json")
 		var/list/state = map_storage.read_round_state()
@@ -202,10 +207,11 @@ var/durable_probe_tips = 0
 		protected_area.artillery_integrity = 27
 		map_storage.suspend_durable_world()
 		map_storage.ClearMap()
-		durable_world_check(map_storage.Load_World(), "metadata world import failed")
+		durable_world_check(!map_storage.Load_World() && load_operation.current(map_storage, "load"), "nested metadata import admitted")
+		durable_world_check(map_storage.run_world_operation("load", load_operation), "metadata world import failed")
 		durable_world_check(map_storage.load_map_metadata(), "legacy metadata load failed")
 		map_storage.restore_durable_world()
-		persistence_save_in_progress = FALSE
+		durable_world_check(load_operation.finish(TRUE) && !persistence_active_operation && !persistence_save_in_progress, "metadata import admission not released")
 		durable_world_check(season == "SUMMER" && time_of_day == "Evening" && game_hour == 129, "environment phase reset")
 		durable_world_check(processes.time_of_day.TOD_ticks == 337 && TOD_may_automatically_change, "TOD progress reset")
 		durable_world_check(map.age == "1713" && map.age3_done && map.default_research == 88.75 && map.resourceresearch && map.research_active, "research or mode flags reset")
@@ -229,13 +235,14 @@ var/durable_probe_tips = 0
 		durable_world_check(durable_probe_tips == 0, "restored callback duplicated")
 		// Reload the same disk generation through the actual import path. The
 		// first restored sleeper and the original pre-save sleeper must retire.
-		persistence_save_in_progress = TRUE
+		load_operation = begin_persistence_operation(map_storage, "load")
+		durable_world_check(load_operation && load_operation.current(map_storage, "load"), "callback reload admission failed")
 		durable_world_check(map_storage.validate_world_save(), "callback reload preflight failed")
 		map_storage.suspend_durable_world()
 		map_storage.ClearMap()
-		durable_world_check(map_storage.Load_World() && map_storage.load_map_metadata(), "callback reload import failed")
+		durable_world_check(map_storage.run_world_operation("load", load_operation) && map_storage.load_map_metadata(), "callback reload import failed")
 		map_storage.restore_durable_world()
-		persistence_save_in_progress = FALSE
+		durable_world_check(load_operation.finish(TRUE) && !persistence_active_operation && !persistence_save_in_progress, "callback reload admission not released")
 		timers = Q.snapshot()
 		durable_world_check(isnum(timers["tips"]) && abs(timers["tips"] - saved_tip_delay) <= 1, "callback reload remainder changed")
 		sleep(saved_tip_delay + 5)
