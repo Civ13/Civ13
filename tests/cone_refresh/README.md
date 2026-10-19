@@ -24,7 +24,11 @@ py -3 tests/cone_refresh/run.py --prepare-only --output <new-evidence-directory>
 ```
 
 The isolated native runner requires an explicit reviewed source commit and
-BYOND 516.1681. It does not connect a client or open a network port:
+BYOND 516.1681. No client connects. The runner requests `-ip 127.0.0.1` so the
+engine's initial ephemeral bind is on loopback. The fixture closes the listener
+at the start of world.New and requires port=0 in its result. This is an explicit
+launch argument and closed-port result, not socket monitoring or proof of full
+OS isolation:
 
 ```
 py -3 tests/cone_refresh/run.py --byond-bin <bin> --expected-commit <sha> --output <new-directory>
@@ -37,7 +41,10 @@ as a caught regression. The runner requires one exact pinned compiler banner,
 one clean artifact-specific summary, bounded output and no fatal diagnostics.
 
 The full production includes remain in the fixture. Only ordinary world/global
-startup and inert actor/vehicle constructors are suppressed. The production
+startup and inert actor/vehicle constructors are suppressed. The fixture
+explicitly creates the real moved/direction/destroyed/stat/name observation
+events used by movement and codec paths, matching existing isolated fixtures.
+The production
 cone body uses a fixture-only client-image transport datum instead of a network
 client. Native view(), cone(), InCone(), images and rest/disabled/HUD gates are
 unchanged. Human forceMove, axis transport/matrix/flag release, seat update_icon

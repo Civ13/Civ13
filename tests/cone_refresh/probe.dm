@@ -281,6 +281,15 @@ var/cone_runtime = FALSE
 	OpenPort("none")
 	var/result = "PASS: cone refresh"
 	try
+		// Normal global startup is disabled; retain real observation procedures.
+		if (!GLOB)
+			GLOB = new /datum/controller/global_vars
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		GLOB.stat_set_event = new
+		GLOB.name_set_event = new
 		config = new
 		config.disable_fov = FALSE
 		config.webhook_can_fire = FALSE
@@ -295,6 +304,7 @@ var/cone_runtime = FALSE
 		cone_phases += "save"
 	catch (var/exception/E)
 		result = "FAIL: [E]"
+		text2file(json_encode(list("message"="[E]","file"=E.file,"line"=E.line)),"failure.json")
 	if (cone_runtime)
 		result = "Unexpected runtime error"
 	text2file(result,"result.txt")

@@ -85,7 +85,10 @@ def main():
     shutil.copytree(ROOT / 'config/names', runtime / 'config/names')
     (runtime / 'config/crafting').mkdir()
     shutil.copy2(ROOT / 'config/crafting/material_recipes_global.txt', runtime / 'config/crafting/material_recipes_global.txt')
-    completed = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'],
+    daemon_argv = [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-trusted', '-log', 'runtime.log']
+    (output / 'launch.json').write_text(json.dumps({'argv': daemon_argv, 'cwd': str(runtime),
+                                                  'binding': 'requested loopback; fixture closes listener in New; no socket-monitor claim'}, indent=2) + '\n', encoding='utf-8')
+    completed = subprocess.run(daemon_argv,
                                cwd=runtime, capture_output=True, text=True, timeout=90, creationflags=flags)
     diagnostics = completed.stdout + completed.stderr
     (output / 'daemon.log').write_text(diagnostics, encoding='utf-8')
@@ -100,7 +103,7 @@ def main():
     validate_native(completed.returncode, diagnostics, result, receipt, args.control)
     summary = {'head': head, 'control': args.control, 'result': result, 'native': receipt,
                'compiler_sha256': hashlib.sha256(compiler.read_bytes()).hexdigest(),
-               'daemon_sha256': hashlib.sha256(daemon.read_bytes()).hexdigest(), 'source': source}
+               'daemon_sha256': hashlib.sha256(daemon.read_bytes()).hexdigest(), 'daemon_argv': daemon_argv, 'source': source}
     (output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
     print('PASS: bounded isolated fixture ' + (args.control or 'positive'))
 
