@@ -399,6 +399,8 @@
 			football_bump(AM)
 	if (now_pushing || !yes)
 		return
+	if (try_bump_mining(AM))
+		return
 	..()
 
 /mob/living/human/slip(var/slipped_on,stun_duration=8)

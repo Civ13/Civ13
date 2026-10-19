@@ -1,5 +1,56 @@
 # Optional gameplay help checks
 
+`test_conversations.py` uses injected transports and temporary storage to check
+role-free closed schemas, follow-up reference retrieval, private independent
+snapshots, reset/empty snapshots, failures, worker replacement without a private
+cache, old/new renderer compatibility, Unicode and complete request envelopes.
+These are offline tests, not a running installed worker or model.
+
+The existing `run.py` native fixture includes `conversation_probe.dm` and executes
+production reset/remember/expiry/enqueue/poll/request-size/action-validation
+procedures. Only client/input/output boundaries are adapted to offline probe
+mobs and a fixture-owned connected-client list. It covers copied tokens,
+per-session isolation, generations, duplicate pending/replies, wrong correlation,
+failure/timeout, Unicode clipping, limits, disconnect/reconnect and old workers.
+The `conversation-generation` and `conversation-action` mutations must fail the
+corresponding regression assertions. Added executable tests select the existing
+Help CI suite; its two new controls run only in that existing step. Production
+compilation separately checks actual client types and Topic integration. No
+browser clicks, installed-worker restart or live inference are established.
+
+Game CI accepts PRs targeting `master` and the exact `help-markdown-byond-html`
+dependency branch so the focused conversation stack receives automatic native
+checks. Push triggers remain limited to `master`; no wildcard base or privileged
+PR trigger is added. The offline branch-policy test enforces this allowlist.
+The original conversation head `bb35d68e3` had no game CI because it preceded
+this narrow trigger correction; use the successor's actual CI results.
+
+`test_render_protocol.py` uses injected transports to check old/new/rollback
+capabilities, admission before quota, immutable asynchronous format selection,
+literal plaintext/code/URL preservation and complete serialized response bounds
+(ASCII, CJK, non-BMP and malformed Unicode). The native fixture additionally checks
+response metadata validation and verbatim escaped plaintext. Offline tests do not
+prove a worker was installed or a native Help dialog was opened.
+
+`run.py` also executes `render-cases.json` through the actual production
+`render_answer()` and Markdown helpers. Cases cover the reported winter-help
+bullet/bold answer, headings, numbered/indented lists, paragraphs and CRLF,
+code-span/fence precedence, unmatched input, raw HTML, encoded injection,
+unsafe/obfuscated link schemes and image suppression. `render-results.json`
+retains the actual HTML. `render_contract.py` independently checks required
+text, forbidden output, balanced allowed tags and HTTP/HTTPS-only attributes.
+`test_markdown.py` proves the oracle rejects injected markup/unsafe links and
+malformed structure. The existing escaping mutation now removes the actual
+Markdown text encoder and must still fail its original escaped-HTML assertion.
+These checks do not prove native browser layout; verify the actual Help dialog
+separately under an exclusive UI allocation, without contacting a model for the
+deterministic rendering cases.
+
+`run.py --byond-bin <516.1681-bin> --prepare-only --output <new-directory>`
+writes the exact fixture and hashes without compiling or starting BYOND. This
+supports an external coordinator's bounded process supervisor while a native
+resource hold is active. The normal runner retains its existing CLI behavior.
+
 Run Python bridge tests with `python3 -m unittest discover -s tests/player_help -v`.
 `python3 tests/player_help/run-spool-controls.py` requires temporary source
 mutations of the old ID validator, admission marker and completion marker to fail
@@ -31,7 +82,9 @@ Run `run.py --byond-bin <516.1681-bin>` and repeat with
 actual production DM help service with minimal process/global adapters and no
 normal world startup. The native fixture verifies heartbeat startup/expiry,
 malformed files, escaped HTML, request identity and disconnected-slot cleanup.
-It closes its port immediately and uses isolated disk files.
+It compiles with hub visibility disabled, refuses port opening and client admission,
+and uses isolated disk files. Native assertions check the closed port and refusal
+to reopen it. The external supervisor separately rejects non-loopback connections.
 
 Client ownership and absence of a duplicate mob verb are source-checked. The
 production verb/helper bodies run relocated to a mob proxy with injected
