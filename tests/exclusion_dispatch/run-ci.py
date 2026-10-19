@@ -67,8 +67,14 @@ def validate_result(mode, result, log):
     failures = result.get('failures')
     if not isinstance(failures, int) or (failures != 0 if mode == 'parity' else failures <= 0):
         raise RuntimeError('Parity failed or mutation control survived')
+    # world.address reports the host interface on Linux even with -ip loopback.
+    # Require the engine's actual bind diagnostic instead, retaining the DM
+    # address as audit data and checking the resulting closed-port state.
+    bindings = re.findall(r'World opened on network port [0-9]+ for address ([^\s]+)\.', log)
+    if not bindings or any(address != '127.0.0.1' for address in bindings):
+        raise RuntimeError('Native startup did not establish IPv4 loopback binding')
     network = result['network']
-    if (network['preclose_address'] != '127.0.0.1' or network['closed_port'] != 0
+    if (network['closed_port'] != 0
             or network['reopen_result'] != 0 or network['after_reopen_port'] != 0):
         raise RuntimeError('Closed-port fixture contract failed')
     if result.get('samples'):
@@ -107,6 +113,8 @@ def main():
             log += (work / 'runtime.log').read_text(errors='replace')
             if '516.1681' not in log:
                 raise RuntimeError('Pinned native runtime banner required')
+            if DIAGNOSTIC.search(log):
+                raise RuntimeError('Unexpected native diagnostic; see retained runtime.log')
             result = json.loads((work / 'result.json').read_text())
             validate_result(mode, result, log)
             summary['modes'][mode] = result

@@ -959,3 +959,8 @@ Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
 parity and three controls, retaining receipts. It is separate from run.py's held
 Windows grant runner; neither an offline pass nor workflow addition proves native
 parity, and this lane makes no benchmark or listener-sampling claim.
+
+<!-- 2026-10-19: native bind versus host address -->
+Linux BYOND world.address can report the host interface even with -ip 127.0.0.1.
+Isolated exclusion CI verifies the engine's startup bind diagnostic plus closed
+port/refused reopen state; do not use world.address as the socket-bind oracle.

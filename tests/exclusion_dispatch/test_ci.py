@@ -13,19 +13,22 @@ ci = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(ci)
 
 
+BIND_LOG = 'World opened on network port 12345 for address 127.0.0.1.\n'
+
+
 class LinuxCITests(unittest.TestCase):
     def result(self, failures=0):
         return dict(cases=1000, failures=failures, samples=[], network=dict(
             preclose_address='127.0.0.1', closed_port=0, reopen_result=0, after_reopen_port=0))
 
     def test_parity_and_mutation_dispatch(self):
-        ci.validate_result('parity', self.result(), '')
+        ci.validate_result('parity', self.result(), BIND_LOG)
         for mode in ('omit', 'parent', 'eager'):
-            ci.validate_result(mode, self.result(1), '')
+            ci.validate_result(mode, self.result(1), BIND_LOG)
             with self.assertRaises(RuntimeError):
-                ci.validate_result(mode, self.result(), '')
+                ci.validate_result(mode, self.result(), BIND_LOG)
         with self.assertRaises(RuntimeError):
-            ci.validate_result('parity', self.result(1), '')
+            ci.validate_result('parity', self.result(1), BIND_LOG)
 
     def test_diagnostics_network_and_incomplete_results_fail(self):
         for log in ('BUG: invalid', 'runtime error: bad loc', 'Bad ref'):
@@ -35,12 +38,22 @@ class LinuxCITests(unittest.TestCase):
             result = self.result()
             result['network'][key] = 1
             with self.assertRaises(RuntimeError):
-                ci.validate_result('parity', result, '')
+                ci.validate_result('parity', result, BIND_LOG)
         for key, value in (('cases', 0), ('samples', [1])):
             result = self.result()
             result[key] = value
             with self.assertRaises(RuntimeError):
-                ci.validate_result('parity', result, '')
+                ci.validate_result('parity', result, BIND_LOG)
+
+    def test_bind_diagnostic_is_separate_from_host_address(self):
+        result = self.result()
+        result['network']['preclose_address'] = '10.1.1.178'
+        ci.validate_result('parity', result, BIND_LOG)
+        for log in ('', BIND_LOG.replace('127.0.0.1', '0.0.0.0'),
+                    BIND_LOG.replace('127.0.0.1', '10.1.1.178'),
+                    BIND_LOG + BIND_LOG.replace('127.0.0.1', '::')):
+            with self.assertRaises(RuntimeError):
+                ci.validate_result('parity', result, log)
 
     def test_deadline_prevents_process_creation(self):
         with tempfile.TemporaryDirectory() as temp:

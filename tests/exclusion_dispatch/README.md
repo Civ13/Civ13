@@ -160,3 +160,14 @@ failed during source preparation: Git's default packed-file mapping exceeded the
 now bounds Git mapping windows to 16 MiB and its mapping cache to 32 MiB through
 child-only environment settings, preserving every process limit. An additional
 offline test runs actual source preparation under those same limits.
+
+At `5eff39dbe9716c7708fbddfe7d266c45cc00d1e2`, Linux CI compiled the fixture
+cleanly, then caught the old address oracle: native startup logged a bind to
+127.0.0.1 while DM `world.address` reported the runner's 10.1.1.178 interface.
+The recorded closed port, refused reopen and final port were all zero. The Linux
+runner now requires the native startup bind diagnostic to name only 127.0.0.1,
+while the fixture still requires closed state and refused reopening. DM's reported
+host address remains audit data. Offline controls reject absent, wildcard,
+nonloopback and IPv6 bind diagnostics. This corrects the earlier README statement
+that the pre-close-address assertion was unchanged; the Windows listener monitor
+and unconditional grant hold are unchanged. Native parity still awaits a rerun.

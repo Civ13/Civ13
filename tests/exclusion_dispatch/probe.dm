@@ -44,7 +44,7 @@ var/list/network_receipt = list()
 	network_receipt["closed_port"] = port
 	network_receipt["reopen_result"] = OpenPort(0)
 	network_receipt["after_reopen_port"] = port
-	if(network_receipt["preclose_address"] != "127.0.0.1" || network_receipt["closed_port"] != 0 || network_receipt["reopen_result"] != FALSE || port != 0)
+	if(network_receipt["closed_port"] != 0 || network_receipt["reopen_result"] != FALSE || port != 0)
 		text2file(json_encode(network_receipt),"network-failure.json")
 		world.log << "BUG: fixture network contract failed"
 		del(world)
