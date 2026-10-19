@@ -6,6 +6,17 @@ public sealed record GameServer(string Name, string Mode, int Port, string Engin
 
 public static class ServerCatalog {
     public const string OfficialHost = "civ13.com";
+    public const string OfficialMenuKey = "2";
+    public const string ValZarGamingMenuKey = "3";
+    public const string OpenDreamMenuKey = "9";
+    public const string MainMenu = "\nCiv13 - 1: BYOND sign in   " + OfficialMenuKey +
+        ": Civ13.com servers   " + ValZarGamingMenuKey + ": ValZarGaming.com servers   4: Exit   " +
+        OpenDreamMenuKey + ": OpenDream (experimental)";
+    public static string? MenuServer(string? choice) => choice switch {
+        OfficialMenuKey => "Civ13.com",
+        ValZarGamingMenuKey => "ValZarGaming",
+        _ => null
+    };
     public static int OpenDreamPort(string mode, string? operatorPort) {
         if (operatorPort == null)
             throw new IOException("OpenDream game service is not configured. An operator must supply --server-port for a verified OpenDream service.");

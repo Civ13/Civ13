@@ -217,3 +217,7 @@ or an unverified address keeps the menu open for retry without starting a game.
 DNS resolution does not authenticate a server. Older direct Play CMD files are
 legacy experimental OpenDream entrypoints and retain their packaged test ports
 (Nomads 18452, TDM 18453). They are not native BYOND server shortcuts.
+
+Main-menu order: 1 BYOND sign-in, 2 Civ13.com, 3 ValZarGaming.com, 4 Exit,
+5-8 existing community links, and 9 experimental OpenDream. Provider-specific
+Nomads/TDM ports remain independent; menu reordering does not change endpoints.

@@ -40,6 +40,20 @@ try {
     Require(safeDeep.Length <= 512 && safeDeep.EndsWith("..."), "deep exception chain was not bounded and marked incomplete");
     Require(!safeDeep.Contains("PRIVATE") && !safeDeep.Contains("token="), "deep exception chain leaked message content");
     Require(Updater.DescribeFailure(new Exception(privateFailure)).StartsWith("Exception HRESULT=0x"), "unknown exception diagnostic was not safely classified");
+    Require(ServerCatalog.MainMenu.Contains("2: Civ13.com servers") &&
+        ServerCatalog.MainMenu.Contains("3: ValZarGaming.com servers") &&
+        ServerCatalog.MainMenu.Contains("9: OpenDream (experimental)"), "public menu order changed");
+    Require(ServerCatalog.OpenDreamMenuKey == "9", "experimental menu key changed");
+    foreach (var mode in new[] { "Nomads", "TDM" }) {
+        var officialMenu = ServerCatalog.Select(ServerCatalog.MenuServer("2")!, mode);
+        var valzarMenu = ServerCatalog.Select(ServerCatalog.MenuServer("3")!, mode);
+        Require(officialMenu.Name == "Civ13.com" && officialMenu.Port == (mode == "Nomads" ? 1715 : 1714),
+            "option 2 did not select the official provider and port");
+        Require(valzarMenu.Name == "ValZarGaming" && valzarMenu.Port == (mode == "Nomads" ? 1714 : 1715),
+            "option 3 did not preserve ValZarGaming provider and port");
+    }
+    foreach (var key in new string?[] { null, "1", "4", "5", "6", "7", "8", "9", "unknown" })
+        Require(ServerCatalog.MenuServer(key) is null, "nonserver menu key selected a public provider");
     Reject(() => ServerCatalog.OpenDreamPort("Nomads", null), "unconfigured OpenDream service");
     Require(ServerCatalog.OpenDreamPort("Nomads", "18462") == 18462, "explicit OpenDream operator port changed");
     var expectedLinks = new[] { "https://civ13.com/", "https://civ13.github.io/civ13-wiki/", "https://civ13.com/discord", "https://github.com/civ13/civ13/" };

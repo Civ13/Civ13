@@ -101,7 +101,7 @@ public static class Program {
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
             while (true) {
-                Console.WriteLine("\nCiv13 - 1: BYOND sign in   2: ValZarGaming servers   3: OpenDream (experimental)   4: Exit   9: Civ13.com servers");
+                Console.WriteLine(ServerCatalog.MainMenu);
                 foreach (var link in CommunityLinks.Items)
                     Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
                 Console.Write("Choose a number: ");
@@ -109,8 +109,7 @@ public static class Program {
                 if (choice is null or "4") return 0;
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
-                if (choice is "2" or "9") {
-                    var serverName = choice == "9" ? "Civ13.com" : "ValZarGaming";
+                if (ServerCatalog.MenuServer(choice) is { } serverName) {
                     Console.WriteLine($"{serverName} - 1: Nomads   2: TDM   3: Back");
                     var modeChoice = Console.ReadLine();
                     if (modeChoice is not ("1" or "2")) continue;
@@ -123,7 +122,7 @@ public static class Program {
                         Process.Start(ServerCatalog.NativeStart(server, byond, endpoint, RequiredByond(), path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
-                if (choice == "3") {
+                if (choice == ServerCatalog.OpenDreamMenuKey) {
                     try {
                         using var clientOwner = Updater.Lock(root);
                         var client = await Updater.ClientChannel(transport, root, BundledChannel());
