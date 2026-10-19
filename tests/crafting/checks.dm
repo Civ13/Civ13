@@ -6,7 +6,7 @@
 	maxx = 1
 	maxy = 1
 	maxz = 1
-	turf = /turf
+	turf = /turf/floor/plating
 	area = /area
 
 /obj/map_metadata/recipe_ci
@@ -139,6 +139,7 @@ var/recipe_ci_files = 0
 	recipe_ci_telecom_progression()
 	recipe_ci_energy_progression()
 	recipe_ci_craft_fixture()
+	recipe_ci_handles()
 	// Negative fixtures must prove errors, without suppressing real catalog failures.
 	var/list/catalog_errors = recipe_ci_errors.Copy()
 	recipe_ci_errors = list()

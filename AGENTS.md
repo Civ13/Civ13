@@ -1,5 +1,11 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: consumed crafting handles -->
+Consumed wood handles are selected from hands and real equipment slots, including
+shoulder/back, then retained through do_after. Revalidate the exact item and source
+before debit; consume only after successful stack.use and clear its actual slot.
+Do not recurse through storage or recreate handles on cancellation. Existing
+get_equipped_items omits shoulder; use the slot getter with equipment priority.
 <!-- 2026-10-19: collision mining ownership -->
 Dense mineable underground rock uses one shared click/bump mining action. Its
 explicit optional do_after context owns actor and turf reservations before any
