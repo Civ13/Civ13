@@ -75,8 +75,18 @@ class RegressionPolicyTests(unittest.TestCase):
             if 'uses: actions/upload-artifact' in block:
                 continue
             if re.search(r'(tests/|unittest discover|scripts/(check-recipes|test-power|test-batteries|check-battery-items))', block):
-                if block.startswith('      - name: Verify noninteractive BYOND bootstrap commands offline\n'):
-                    self.assertEqual(block, '      - name: Verify noninteractive BYOND bootstrap commands offline\n        run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v\n')
+                # These two cheap source-only checks intentionally run on every PR.
+                always_on = {
+                    'Verify noninteractive BYOND bootstrap commands offline': 'python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v',
+                    'Test serializer profiling source contracts': 'python3 -B tests/world_save/test_progress_sources.py -v',
+                }
+                if any(block.startswith('      - name: ' + name + '\n') for name in always_on):
+                    name = block.splitlines()[0].removeprefix('      - name: ')
+                    self.assertEqual(block, f'      - name: {name}\n        run: {always_on[name]}\n')
+                    continue
+                if block.startswith('      - name: Opt-in serializer phase profiling\n'):
+                    self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.world_save_profile_regressions\n", block)
+                    self.assertRegex(workflow, r'world_save_profile_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
                     continue
                 if block.startswith('      - name: Verify paid rack save and six mutation controls\n'):
                     self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions\n", block)
