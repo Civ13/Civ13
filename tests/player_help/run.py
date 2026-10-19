@@ -34,6 +34,13 @@ PRELUDE = '''
     return null
 var/season = "WINTER"
 var/time_of_day = "Night"
+var/list/probe_clients = list()
+/datum/proc/persistence_runtime_var(key)
+    return FALSE
+/mob/probe_client
+    var/mob/mob
+/mob/probe_help
+    parent_type = /mob/probe_client
 /proc/IsGuestKey(key)
     return findtext(key, "guest") == 1
 /area
@@ -339,7 +346,7 @@ def main():
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
     parser.add_argument('--prepare-only', action='store_true', help='Write the exact isolated fixture without launching any process; requires --output')
-    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect'])
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect', 'conversation-generation', 'conversation-action'])
     args = parser.parse_args()
     if args.prepare_only and not args.output:
         parser.error('--prepare-only requires --output')
@@ -349,22 +356,26 @@ def main():
     with storage as directory:
         temp = Path(directory)
         (temp / 'spool').mkdir()
-        production = (ROOT / 'code/game/mob/player_help.dm').read_text()
+        production = (ROOT / 'code/game/mob/player_help.dm').read_text(encoding='utf-8')
         (temp / 'render-cases.json').write_bytes((ROOT / 'tests/player_help/render-cases.json').read_bytes())
         if production.count('/client/verb/ask_player_help()') != 1 or '/mob/verb/ask_player_help()' in production:
             raise SystemExit('Help must have one client-owned verb, matching Adminhelp ownership')
         # Inject only the unavailable native client/input boundary. The actual
         # verb body runs; reserve/poll below are unmodified production paths.
-        production = production.replace('/client/verb/ask_player_help()', '/mob/verb/ask_player_help()')
-        production = production.replace('/client/proc/player_help_prompt()', '/mob/proc/player_help_prompt()')
-        production = production.replace('if (question && (src in clients))', 'if (question && probe_connected)')
+        production = production.replace('client/', 'mob/probe_client/').replace('/client\n', '/mob/probe_client\n')
+        production = production.replace(' in clients)', ' in probe_clients)')
+        production = production.replace('if (question && (src in probe_clients) && generation == player_help_generation)', 'if (question && probe_connected && generation == player_help_generation)')
         production = production.replace('player_help_service.submit(src, question)', 'probe_submit(question)')
-        if args.negative_control == 'rate-limit':
+        if args.negative_control == 'conversation-generation':
+            production = production.replace(' || C.player_help_generation != entry["generation"]', '')
+        elif args.negative_control == 'conversation-action':
+            production = production.replace('token == C.player_help_action_token', 'TRUE')
+        elif args.negative_control == 'rate-limit':
             production = production.replace('if (retry)', 'if (FALSE && retry)')
         elif args.negative_control == 'prompt-first':
             production = production.replace('var/question = player_help_prompt()', 'if (!player_help_service.available())\n\t\treturn\n\tvar/question = player_help_prompt()')
         elif args.negative_control == 'disconnect':
-            production = production.replace('if (C && !(C in clients))', 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\tif (C && !(C in clients))')
+            production = production.replace('if (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"]))', 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\tif (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"]))')
         production = production.replace('inspected++', 'inspected++; probe_inspections++')
         if args.negative_control == 'inventory-budget':
             production = production.replace('queue.len >= 64 || inspected + children_inspected >= 64', 'queue.len >= 64 || children_inspected + children_inspected >= 64')
@@ -379,8 +390,10 @@ def main():
             production = production.replace('return heartbeat_confirmed && world.time - heartbeat_time < 100', 'return TRUE')
         elif args.negative_control == 'identity':
             production = production.replace('islist(response) && response["id"] == id', 'islist(response)')
-        (temp / 'production.dm').write_text(production)
-        (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + PROBE)
+        (temp / 'production.dm').write_text(production, encoding='utf-8')
+        conversation_probe = (ROOT / 'tests/player_help/conversation_probe.dm').read_text(encoding='utf-8')
+        probe = PROBE.replace('    world.log << "RESULT: [failures]"', conversation_probe + '\n    world.log << "RESULT: [failures]"')
+        (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + probe, encoding='utf-8')
         if args.prepare_only:
             (temp / 'prepared.json').write_text(json.dumps({
                 'control': args.negative_control,
@@ -417,7 +430,9 @@ def main():
                         'inventory-budget': 'combined entry and child inspection budget reaches exactly 64',
                         'rate-limit': 'rapid repeats retain account cooldown',
                         'prompt-first': 'unavailable service still prompts and cancellation consumes no allowance',
-                        'disconnect': 'disconnect does not release pending account'}[args.negative_control]
+                        'disconnect': 'disconnect does not release pending account',
+                        'conversation-generation': 'reset invalidates stale completion and releases slot',
+                        'conversation-action': 'copied action token cannot select another client'}[args.negative_control]
             if ('FAIL: ' + expected) not in output or any(error in output.lower() for error in ('runtime error:', 'bad ref', 'unhandled exception')):
                 print(output)
                 raise SystemExit('Negative control not detected')

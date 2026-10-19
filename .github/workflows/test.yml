@@ -216,6 +216,8 @@ jobs:
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control rate-limit
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control prompt-first
           python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control disconnect
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control conversation-generation
+          python3 tests/player_help/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control conversation-action
       - name: Verify native lobby Join controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lobby_join')
         shell: bash

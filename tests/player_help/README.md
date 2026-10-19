@@ -1,5 +1,23 @@
 # Optional gameplay help checks
 
+`test_conversations.py` uses injected transports and temporary storage to check
+role-free closed schemas, follow-up reference retrieval, private independent
+snapshots, reset/empty snapshots, failures, worker replacement without a private
+cache, old/new renderer compatibility, Unicode and complete request envelopes.
+These are offline tests, not a running installed worker or model.
+
+The existing `run.py` native fixture includes `conversation_probe.dm` and executes
+production reset/remember/expiry/enqueue/poll/request-size/action-validation
+procedures. Only client/input/output boundaries are adapted to offline probe
+mobs and a fixture-owned connected-client list. It covers copied tokens,
+per-session isolation, generations, duplicate pending/replies, wrong correlation,
+failure/timeout, Unicode clipping, limits, disconnect/reconnect and old workers.
+The `conversation-generation` and `conversation-action` mutations must fail the
+corresponding regression assertions. Added executable tests select the existing
+Help CI suite; its two new controls run only in that existing step. Production
+compilation separately checks actual client types and Topic integration. No
+browser clicks, installed-worker restart or live inference are established.
+
 `test_render_protocol.py` uses injected transports to check old/new/rollback
 capabilities, admission before quota, immutable asynchronous format selection,
 literal plaintext/code/URL preservation and complete serialized response bounds

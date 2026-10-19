@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: private Help conversation boundary -->
+Help history belongs to an authenticated client session, never a saved mob.
+`conversation_probe.dm` is included by the existing isolated Help fixture;
+conversation generation and action-token negative controls check stale replies
+and copied links. The role-free worker contract derives only user/assistant
+turns, bounded by UTF-8 history and complete ASCII-JSON request bytes. Spool
+cleanup is not encryption or guaranteed crash-time erasure. Server and worker
+updates require separately coordinated restarts; offline checks do not prove them.
+
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
 adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
