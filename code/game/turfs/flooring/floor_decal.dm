@@ -4,7 +4,7 @@
 // decal list of the floor under them. Use them rather than distinct icon_states
 // when mapping in interesting floor designs.
 var/list/floor_decals = list()
-/turf/var/list/floor_decal_cache_keys = list()
+/turf/var/list/floor_decal_cache_keys
 
 /obj/effect/floor_decal
 	name = "floor decal"
@@ -43,6 +43,7 @@ var/list/floor_decals = list()
 		if (!T.decals) T.decals = list()
 		T.decals |= floor_decals[cache_key]
 		T.overlays |= floor_decals[cache_key]
+		if (!T.floor_decal_cache_keys) T.floor_decal_cache_keys = list()
 		T.floor_decal_cache_keys |= cache_key
 	qdel(src)
 	return
