@@ -36,7 +36,8 @@ overlapping `locs`/contents, native callbacks and the remaining input/work guard
 passed with the positive profile. Total elapsed2.596499 seconds includes
 containment and census work; it is **not a latency benchmark**.
 
-[Root acceptance receipt](D:/GitHub/civ13-preview-evidence/subtile-movement-20261019/contained-v4/root-acceptance.json)
+The retained standalone v4 root acceptance receipt has SHA256
+`6d31445fa8c81806c6be217c75aa45756dbb7e99cbac840c1517876b10e21a27`.
 has SHA256 `6d31445fa8c81806c6be217c75aa45756dbb7e99cbac840c1517876b10e21a27`.
 Earlier v1-v3 evidence remains retained, including their scalar-read failures.
 Game scheduler, combat/range/door/vehicle integration, actual Civ13 codec
@@ -63,7 +64,7 @@ The mechanism comes from BYOND's documented native interface, summarized here:
 - [locs](https://www.byond.com/docs/ref/#/atom/movable/var/locs) enumerates
   covered turfs; one actor can be present in multiple turf contents lists.
 - The installed official reference at
-  `C:/Program Files (x86)/BYOND/help/ref/info.html` was read directly for Move,
+  The installed BYOND `help/ref/info.html` was read directly for Move,
   pixel movement, offsets, bounds, movement mode and file output. Its text is
   not used as proof of the pinned engine's measured behavior.
 
