@@ -120,10 +120,10 @@ public static class Program {
                         Console.WriteLine("Public server selections use the live directory; omit --server-port.");
                         continue;
                     }
+                    var desktop = new WindowsByondDesktop();
                     await ServerBrowser.Run(serverName, directories, Console.In, Console.Out, async server => {
                         var endpoint = await ServerCatalog.NativeEndpoint(server);
                         Console.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
-                        var desktop = new WindowsByondDesktop();
                         try {
                             using var game = Process.Start(ServerCatalog.NativeStart(server, byond, endpoint, RequiredByond(),
                                 path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
