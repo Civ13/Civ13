@@ -192,8 +192,9 @@
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
 	var/datum/human_subtile_pulse/subtile_pulse
+	var/mob/living/human/subtile_actor
 	if (ishuman(src))
-		var/mob/living/human/subtile_actor = src
+		subtile_actor = src
 		if (subtile_actor.human_subtile_pulse)
 			subtile_pulse = subtile_actor.human_subtile_take_pulse(newloc, direct)
 			if (!subtile_pulse)

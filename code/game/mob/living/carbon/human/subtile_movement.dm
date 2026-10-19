@@ -108,7 +108,7 @@
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
-		moved = T.run(direct)
+		moved = T.perform(direct)
 	catch (var/exception/subtile_error)
 		T.finish()
 		throw subtile_error
@@ -128,7 +128,7 @@
 		return FALSE
 	return human_subtile_same(expected, actor.human_subtile_snapshot())
 
-/datum/human_subtile_transaction/proc/run(direction)
+/datum/human_subtile_transaction/proc/perform(direction)
 	total_distance = 0
 	var/duration = end_time - start_time
 	for (var/i = 1, i <= 8, i++)

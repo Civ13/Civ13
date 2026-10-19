@@ -68,10 +68,14 @@ class SourceContracts(unittest.TestCase):
 
     def test_one_use_context_and_no_direct_position_bypass(self):
         module = read(MODULE)
+        self.assertIn('moved = T.perform(direct)', module)
+        self.assertIn('/datum/human_subtile_transaction/proc/perform(direction)', module)
+        self.assertNotIn('/proc/run(', module)  # DM reserves run.
         for guard in ('!P.armed', 'P.actor != src', 'P.destination != destination', 'P.direction != direction', 'P.armed = FALSE'):
             self.assertIn(guard, module)
         self.assertNotRegex(module, r"\b(?:loc|step_x|step_y)\s*=(?!=)")
         source = read(MOVEMENT)
+        self.assertIn('var/mob/living/human/subtile_actor\n\tif (ishuman(src))\n\t\tsubtile_actor = src', source)
         self.assertIn("..(newloc, direct, subtile_pulse.sx, subtile_pulse.sy)", source)
         self.assertIn("if (!subtile_pulse)\n\t\t\t\treturn FALSE", source)
 
