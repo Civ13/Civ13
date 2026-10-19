@@ -65,6 +65,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Test floor decal tracking source and offline native evidence contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
+        run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
       - name: Test disabled gameplay bridge contracts without native processes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
         run: python3 -B -m unittest discover -s tests/gameplay_bridge -v
