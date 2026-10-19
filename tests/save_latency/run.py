@@ -27,7 +27,7 @@ def main():
     output = Path(tempfile.mkdtemp(prefix='civ13-save-latency-'))
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     print(f'Evidence: {output}', flush=True)
-    files = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/persistence/functions.dm',
+    files = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
              'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'tests/save_latency/probe.dm']
     hashes = {}
     for relative in files:

@@ -24,6 +24,42 @@ class ProgressInstrumentationTests(unittest.TestCase):
         self.assertIn('savefile["/map/[A]/[y]/[x]"] << ref', generated)
         self.assertIn('WORLD_SAVE_PROGRESS_TICK_CHECK\n', generated)
 
+    def test_phase_profile_preserves_bounded_policy_and_traversal_argument(self):
+        original = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+        generated, _ = MODULE.instrument(original, '', phase_profile=True)
+        start = '/map_storage/proc/save_work_check()'
+        end = '/map_storage/proc/Save_World()'
+        self.assertEqual(generated[generated.index(start):generated.index(end)]
+                         .replace('world_save_progress_sleep(', 'sleep('),
+                         original[original.index(start):original.index(end)])
+        self.assertIn('for(var/y = 1, y <= world.maxy, y++)', generated)
+        self.assertNotIn('for(var/turf/turf in world)', generated)
+        self.assertIn('var/turf/T = locate(x, y, A)\n'
+                      '\t\t\t\tworld_save_profile_visited++\n'
+                      '\t\t\t\tworld_save_profile_selected++\n', generated)
+        call = 'world_save_profile_original_BuildVarDirectory(savefile, A, contents, traversal)'
+        self.assertEqual(generated.count(call), 2)
+        self.assertIn('BuildVarDirectory(savefile, content, 1, TRUE)', generated)
+        self.assertIn('world_save_profile_phase("index")\n'
+                      '\t\t\t\tsavefile["/map/[A]/[y]/[x]"] << ref', generated)
+        self.assertIn('save_work_check()\n\t\t\t\tworld_save_profile_phase("traversal")', generated)
+        self.assertIn('world_save_profile_values++', generated)
+
+    def test_phase_helper_attributes_both_wait_kinds_and_preserves_inactive_sleep(self):
+        original = Path(__file__).with_name('progress-probe.dm').read_text()
+        generated = MODULE.profile_helper(original)
+        self.assertEqual(generated.count('var/previous_phase = world_save_profile_phase("yield")'), 2)
+        for wait in ('. = stoplag()', 'sleep(delay)'):
+            self.assertIn('var/previous_phase = world_save_profile_phase("yield")\n\t' + wait +
+                          '\n\tworld_save_profile_phase(previous_phase)', generated)
+        self.assertIn('if(!world_save_progress_active)\n\t\tsleep(delay)\n\t\treturn', generated)
+        self.assertIn('world_save_progress_sleeps++', generated)
+        self.assertIn('world_save_progress_yields++', generated)
+        self.assertIn('world_save_profile_begin(world_save_progress_started)', generated)
+        self.assertIn('world_save_profile_row(row)', generated)
+        with self.assertRaisesRegex(ValueError, 'Expected'):
+            MODULE.profile_helper(original.replace('\tworld_save_progress_sleeps++\n', ''))
+
     def test_missing_checkpoint_fails_closed(self):
         saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
         with self.assertRaisesRegex(ValueError, 'three bounded serializer sleep sites'):

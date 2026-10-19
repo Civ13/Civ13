@@ -34,12 +34,12 @@ def source_for(control, allocation_interleave=False):
             raise RuntimeError('Mutation target missing or ambiguous')
         source = source.replace(old, new, 1)
     if allocation_interleave:
-        marker = '\tworld.maxz = target_z\n'
+        marker = '\t\tworld.maxz = target_z\n'
         if source.count(marker) != 1:
             raise RuntimeError('Allocation scheduling marker changed')
         # Diagnostic scheduling adapter only: allow the real deferred dirt
         # lighting constructor to run before real raw sky replacement.
-        source = source.replace(marker, marker + '\tsleep(6)\n', 1)
+        source = source.replace(marker, marker + '\t\tsleep(6)\n', 1)
     return source
 
 
@@ -89,7 +89,7 @@ def main():
     generated = [ROOT / (prefix + suffix) for suffix in
                  ('.dme', '_world.dm', '_globals.dm', '_building.dm', '.dmb', '.rsc')]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    paths = [CORE, 'civ13.dme', 'code/game/objects/roof_stuff.dm',
+    paths = [CORE, 'civ13.dme', 'tests/new_z_budget/fixture_admission.dm', 'code/modules/multiz/world_z_budget.dm', 'code/game/objects/roof_stuff.dm',
              'code/game/objects/covers.dm', 'code/game/objects/covers_types/cover_walltypes.dm',
              'code/game/objects/items/stacks/stack.dm', 'code/game/turfs/floor_attackby.dm',
              'code/game/turfs/flooring/flooring_premade.dm',
@@ -129,7 +129,7 @@ def main():
         else:
             source += '\n#include "' + generated[3].name + '"\n'
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
-        generated[0].write_text(source + '\n#include "' + probe + '"\n', encoding='utf-8')
+        generated[0].write_text(source + '\n#include "tests/new_z_budget/fixture_admission.dm"\n#include "' + probe + '"\n', encoding='utf-8')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=ROOT, capture_output=True, text=True, timeout=180, creationflags=flags)
         output = build.stdout + build.stderr

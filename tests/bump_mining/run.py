@@ -51,7 +51,7 @@ def source(control=None):
     return bump + mining + wait + adjacent + policy, expected, files
 
 
-def prepare(output, control=None):
+def prepare(output, control=None, bridge_enabled=False):
     output = Path(output)
     if output.exists(): raise ValueError('fresh output required')
     output.mkdir(parents=True)
@@ -59,12 +59,12 @@ def prepare(output, control=None):
     for name in ('support.dm', 'probe.dm'):
         shutil.copyfile(Path(__file__).with_name(name), output / name)
     (output / 'production.dm').write_text(generated, encoding='utf-8')
-    (output / 'probe.dme').write_text('#include "support.dm"\n#include "production.dm"\n#include "probe.dm"\n')
+    (output / 'probe.dme').write_text(('#define CIV13_GAMEPLAY_BRIDGE\n' if bridge_enabled else '') + '#include "support.dm"\n#include "production.dm"\n#include "probe.dm"\n')
     asset = 'sound/effects/pickaxe.ogg'
     (output / asset).parent.mkdir(parents=True)
     shutil.copyfile(ROOT / asset, output / asset)
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    manifest = dict(head=head, control=control, expected_failure=expected, byond='516.1681',
+    manifest = dict(head=head, control=control, bridge_enabled=bridge_enabled, expected_failure=expected, byond='516.1681',
                     source_sha256={p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in files},
                     generated_sha256={p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in output.rglob('*') if p.is_file()},
                     resource_sha256={asset: hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()},
@@ -80,8 +80,9 @@ def main():
     p.add_argument('--prepare-only', action='store_true')
     p.add_argument('--byond-bin', type=Path)
     p.add_argument('--negative-control', choices=('dispatch', 'reservation', 'position', 'persistence'))
+    p.add_argument('--bridge-enabled', action='store_true')
     a = p.parse_args()
-    M = prepare(a.output, a.negative_control)
+    M = prepare(a.output, a.negative_control, a.bridge_enabled)
     if a.prepare_only: return
     if a.byond_bin is None: p.error('--byond-bin required for native execution')
     binaries = a.byond_bin.resolve()
@@ -100,7 +101,7 @@ def main():
     if errors.exists() and errors.stat().st_size: raise RuntimeError('fixture error handler fired')
     if R.returncode or re.search(r'BUG:|##\s*error|runtime error|bad ref|bad loc|cannot (?:read|execute) null', log, re.I): raise RuntimeError('unexpected native diagnostic')
     if result['head'] != M['head'] or result['build'] != 1681: raise RuntimeError('native identity mismatch')
-    if result['checks'] != 32: raise RuntimeError('incomplete named oracle coverage')
+    if result['checks'] != (35 if a.bridge_enabled else 32): raise RuntimeError('incomplete named oracle coverage')
     failures = result['failures']
     if M['expected_failure']:
         if M['expected_failure'] not in failures: raise RuntimeError('named negative control escaped')

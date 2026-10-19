@@ -30,6 +30,9 @@ class PreparationTests(unittest.TestCase):
                      'require_export_frame(frame)', 'drain_save_transfers(frame)'):
             self.assertIn(call, source)
         self.assertIn('player_reclaim.dm', (output / 'probe.dme').read_text())
+        self.assertIn('world_z_budget.dm', (output / 'probe.dme').read_text())
+        functions = (output / 'code/modules/persistence/functions.dm').read_text()
+        self.assertIn('storage.dimension_budget_hold || world_z_budget.active', functions)
         publication = source[source.index('var/content_value = encode_saved_contents'): ]
         self.assertLess(publication.index('drain_save_transfers(frame)'), publication.index('savefile["content"] << content_value'))
 

@@ -20,6 +20,7 @@ def main():
     hashes = {}
     sources = [('code/predefines.dm', 'predefines.dm'),
                ('tests/world_save/stubs.dm', 'stubs.dm'),
+               ('code/modules/multiz/world_z_budget.dm', 'world_z_budget.dm'),
                ('tests/world_save_operations/probe.dm', 'probe.dm')]
     sources += [(f'code/modules/persistence/{name}.dm', f'{name}.dm')
                 for name in ('functions', 'player_reclaim', 'saving', 'loading')]
@@ -69,6 +70,7 @@ def main():
 #define EXCEPTION(message) new /exception(message)
 #include "predefines.dm"
 #include "stubs.dm"
+#include "world_z_budget.dm"
 #define fdel(path) delete_file_adapter(path)
 #include "durable_transition.dm"
 #include "functions.dm"
