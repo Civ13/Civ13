@@ -130,13 +130,18 @@ var/routing_checks = 0
 	routing_owned += seat
 	if (!frame_first)
 		F = routing_frame(T,armor)
-	var/obj/structure/vehicleparts/axis/routing_probe/axis = new(F)
-	axis.components = list(F)
+	// A distinct pivot matches a multi-tile assembly. range(7, axis.loc) excludes
+	// its center atom; nesting the axis in the only tested frame prunes that frame.
+	var/obj/structure/vehicleparts/frame/routing_probe/pivot = routing_frame(locate(7,8,1),armor)
+	var/obj/structure/vehicleparts/axis/routing_probe/axis = new(pivot)
+	axis.components = list(pivot,F)
 	axis.dir = NORTH
-	axis.maxdist = 1
+	axis.maxdist = 2
+	pivot.axis = axis
 	F.axis = axis
 	routing_owned += axis
 	if (moved)
+		routing_assert(F in range(7,axis.loc), "target frame is inside production transport scan")
 		routing_assert(axis.do_move(), "production vehicle movement completed")
 		T = get_turf(F)
 		routing_assert(M.loc == T && T.contents.Find(M) < T.contents.Find(F), "production movement places occupant before frame")

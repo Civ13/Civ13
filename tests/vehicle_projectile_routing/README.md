@@ -29,6 +29,9 @@ startup is disabled. A renamed immutable handleTurf from cc03b199128f8afed587139
 provides frame-first callback parity for ordinary bullets, shells and missiles at
 eight angles. The causal control compiles that same original collision procedure
 and must fail after real vehicle movement places an occupant before its frame.
+The axis is nested in a separate pivot frame: the production transport scan's
+range excludes its center atom, so a one-frame axis fixture cannot establish
+this movement precondition.
 
 Additional checks cover protected mobs, a co-located turret and gunner seat,
 dense interior structures, penetrated armor, multiple frames, null firers,
