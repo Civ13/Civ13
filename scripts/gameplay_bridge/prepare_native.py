@@ -17,7 +17,7 @@ from wait_overlay import unguarded_source
 PROFILES = ("compile_stock", "compile_disabled", "compile_enabled", "headless", "baseline",
             "disabled", "no_hook", "omit_entry", "omit_wake", "omit_final", "reacquire")
 GUARDS = {
-    "omit_entry": "\tif (gameplay_lease && !gameplay_lease.valid())\n\t\treturn FALSE\n",
+    "omit_entry": "\t\tif (!gameplay_lease.claim_gather_wait(user, target))\n\t\t\treturn FALSE\n",
     "omit_wake": "\t\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t\t. = FALSE\n\t\t\tbreak\n",
     "omit_final": "\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t. = FALSE\n",
 }
@@ -156,7 +156,7 @@ def helper_variant(source, profile):
         body = source[begin:end]
         if body.count(marker) != 1:
             raise ValueError("sleep anchor drift")
-        body = body.replace(marker, marker + "#ifdef CIV13_GAMEPLAY_BRIDGE\n\t\tgameplay_lease = gameplay_bridge.wait_lease(user)\n#endif\n", 1)
+        body = body.replace(marker, marker + "#ifdef CIV13_GAMEPLAY_BRIDGE\n\t\tgameplay_lease = gameplay_context\n#endif\n", 1)
         return source[:begin] + body + source[end:]
     return source
 
@@ -224,83 +224,10 @@ def prepare(root, output, expected_commit):
     head = git(root, "rev-parse", "HEAD").decode().strip()
     if head != expected_commit or git(root, "status", "--porcelain", "--untracked-files=all").strip():
         raise ValueError("exact clean frozen HEAD required")
-    tracked = set(git(root, "ls-files", "-z").decode().split("\0")) - {""}
-    selected = selected_files(root, tracked)
-    # Validate transformations before making a packet directory.
-    read = lambda p: (root / p).read_text(encoding="utf-8-sig")
-    world, globals_source = isolated_startup(read("code/world.dm"), read("code/controllers/mc/globals.dm"))
-    helper = read("code/_helpers/mobs.dm")
-    variants = {p: helper_variant(helper, p) for p in PROFILES}
-    dme = read("civ13.dme")
-    dme = re.sub(r'^#include "[^"\n]+\.dmm"\s*$', "", dme, flags=re.M)
-    output.mkdir(parents=True)
-    source_root = output / "source"
-    # Git archive gives canonical immutable bytes, independent of checkout EOLs.
-    import io
-    import tarfile
-    prefixes = ["code/", "icons/", "sound/", "UI/", "interface/", "scripts/gameplay_bridge/", NATIVE, "config/names/", "config/crafting/"]
-    archive_paths = [p.rstrip("/") for p in prefixes if any(f.startswith(p) for f in selected)]
-    archive_paths += [p for p in selected if not p.startswith(tuple(prefixes))]
-    archive = git(root, "archive", "--format=tar", head, "--", *archive_paths)
-    with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as tar:
-        for member in tar:
-            rel = PurePosixPath(member.name)
-            if rel.is_absolute() or ".." in rel.parts or not (member.isfile() or member.isdir()):
-                raise ValueError("unsafe archive entry")
-            if member.isfile():
-                if rel.as_posix() not in selected:
-                    raise ValueError("unselected archive file")
-                target = source_root.joinpath(*rel.parts)
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(tar.extractfile(member).read())
-    generated = source_root / "packet_generated"
-    generated.mkdir()
-    (generated / "world.dm").write_text(world, encoding="utf-8", newline="\n")
-    (generated / "globals.dm").write_text(globals_source, encoding="utf-8", newline="\n")
-    profiles = []
-    for profile in PROFILES:
-        (generated / (profile + "_mobs.dm")).write_text(variants[profile], encoding="utf-8", newline="\n")
-        prefix = "" if profile in ("baseline", "disabled", "compile_disabled", "compile_stock") else "#define CIV13_GAMEPLAY_BRIDGE\n"
-        if profile in ("baseline", "disabled"):
-            prefix += "#define GAMEPLAY_PACKET_ORDINARY\n"
-        if profile == "no_hook":
-            prefix += "#define GAMEPLAY_PACKET_NO_HOOK\n"
-        body = dme.replace("code\\world.dm", "packet_generated/world.dm").replace("code\\controllers\\mc\\globals.dm", "packet_generated/globals.dm").replace("code\\_helpers\\mobs.dm", "packet_generated/" + profile + "_mobs.dm")
-        if any(x in body for x in ("code\\world.dm", "code\\controllers\\mc\\globals.dm", "code\\_helpers\\mobs.dm")):
-            raise ValueError("DME redirect failed")
-        suffix = "compile_probe.dm" if profile.startswith("compile_") else "headless_probe.dm"
-        body = prefix + body
-        if profile != "compile_stock":
-            body += '\n#include "code/modules/gameplay_bridge/bridge.dm"\n'
-        if profile == "compile_enabled":
-            body += '#include "' + NATIVE + 'client_assertions.dm"\n'
-        body += '#include "' + NATIVE + suffix + '"\n'
-        (source_root / (profile + ".dme")).write_text(body, encoding="utf-8", newline="\n")
-        runtime = output / "runtime" / profile
-        runtime.mkdir(parents=True)
-        for path in selected:
-            if path.startswith(("config/names/", "config/crafting/")) or path == "rust_g.dll":
-                dest = runtime / path
-                dest.parent.mkdir(parents=True, exist_ok=True)
-                dest.write_bytes((source_root / path).read_bytes())
-        profiles.append({"name": profile, "status": "not_run", **profile_contract(profile),
-                         "compiler_argv": ["<approved-byond-516.1681>/dm.exe", "-max_errors", "0", profile + ".dme"],
-                         "compiler_cwd": "source", "copy_after_compile": [profile + ".dmb", profile + ".rsc"],
-                         "daemon_argv_after_separate_approval": None if profile.startswith("compile_") else ["<approved-byond-516.1681>/dd.exe", profile + ".dmb", "0", "-invisible", "-close", "-trusted", "-params", "tested_commit=" + head + "&profile=" + profile, "-log", "runtime.log"]})
-    if git(root, "rev-parse", "HEAD").decode().strip() != head or git(root, "status", "--porcelain", "--untracked-files=all").strip():
-        raise ValueError("source changed during preparation; packet invalid")
-    files = {p.relative_to(output).as_posix(): digest(p) for p in sorted(output.rglob("*")) if p.is_file()}
-    manifest = {"schema": 1, "commit": head, "state": "prepared_not_executed", "os": "Windows", "byond": "516.1681",
-                "native_lease": None, "execution_priority": "after vehicle/sender; explicit core lease and parent approval",
-                "map": {"source": NATIVE + "headless_probe.dm", "dimensions": [9, 9, 1], "kind": "synthetic Nomads-ID fixture"},
-                "profiles": profiles, "source_files": selected, "sha256": files,
-                "verified_unexpanded_optional_resource_macros": list(UNUSED_RESOURCE_MACROS),
-                "real_client_packet": "source/" + NATIVE + "client_scenarios.json",
-                "seams": ["global/world startup disabled in generated copies only", "constructor-only headless human; no connected client/anatomy/Life parity", "headless icon/HUD redraw omitted and output hand placement refused; real cord stays on spawn turf; removal/amount/loc handlers retained", "headless directly calls production handlers/recipe producer; no UI/click/crafting-lock parity from that profile", "headless bridge identity override only for lease probes; production ready and lease predicates retained", "zero-delay guard phase counter is a declared test lease; not normal mechanics"],
-                "limits": ["No compiler/runtime/client/listener/inference launched", "No HTTP transport or real-client positive visibility proof in headless profile", "Real-client suite requires separate normal isolated session and recorded ordinary actor/peer identity/consent/operator assignment", "No model output counts as trusted state; no full Nomads acceptance from supplied fixture"],
-                "cleanup": {"processes": "only exact task-owned PID plus creation-time/executable match after approval; never name-based kills", "files": "retain evidence; remove only this resolved fresh packet directory after review, never checkout or shared runtime", "secrets": "none provisioned; any future synthetic run-only environment/config removed with isolated run"}}
-    (output / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    return manifest
+    # Historical ambient/craft probes are deliberately not reusable for typed
+    # gather. Keep their source for review, never emit executable stale packets.
+    raise ValueError("historical ambient profiles refused; use prepare_gather.py for typed gather")
+
 
 
 def main():

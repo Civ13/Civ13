@@ -51,7 +51,7 @@ class CIAdmission(unittest.TestCase):
     def test_merge_preserves_mining_and_reserved_runtime_ownership(self):
         source = (runner.ROOT/'code/modules/persistence/functions.dm').read_text()
         self.assertIn('key == "pickaxe_mining_owner" || key == "mining_in_progress"', source)
-        self.assertIn('list("lighting_reserved", "affecting_lights"', source)
+        self.assertIn('switch(key)\n\t\tif ("lighting_reserved", "affecting_lights"', source)
         self.assertIn('return key == "lighting_reserved_clearance_enabled" || ..()', source)
         corner = (runner.ROOT/'code/modules/lighting/lighting_corner.dm').read_text()
         self.assertIn('T.lighting_overlay || T.omit_reserved_lighting_overlay()', corner)

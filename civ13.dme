@@ -336,6 +336,7 @@
 #include "code\game\objects\random.dm"
 #include "code\game\objects\roof_stuff.dm"
 #include "code\game\objects\building_levels.dm"
+#include "code\modules\multiz\world_z_budget.dm"
 #include "code\game\objects\structures.dm"
 #include "code\game\objects\weapons.dm"
 #include "code\game\objects\covers_types\cover_floortypes.dm"
