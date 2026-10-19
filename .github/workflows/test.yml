@@ -69,6 +69,8 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Verify noninteractive BYOND bootstrap commands offline
+        run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
       - name: Test floor decal tracking source and offline native evidence contracts
