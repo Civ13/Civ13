@@ -33,7 +33,10 @@ class ProgressInstrumentationTests(unittest.TestCase):
         helper = Path(__file__).with_name('progress-probe.dm').read_text()
         self.assertIn('"sleep_calls" = world_save_progress_sleeps', helper)
         self.assertIn('"stoplag_calls" = world_save_progress_yields', helper)
-        self.assertIn('. = sleep(delay)', helper)
+        self.assertIn('\t\tsleep(delay)\n\t\treturn', helper)
+        self.assertIn('world_save_progress_sleeps++\n\tsleep(delay)', helper)
+        self.assertNotIn('return sleep(', helper)
+        self.assertNotIn('. = sleep(', helper)
         self.assertIn('. = stoplag()', helper)
 
 if __name__ == '__main__':

@@ -50,10 +50,12 @@ var/global/world_save_progress_test_clock = 0
 
 // Separate explicit sleep observations from the historical stoplag counters.
 /proc/world_save_progress_sleep(delay)
-	if(!world_save_progress_active) return sleep(delay)
+	if(!world_save_progress_active)
+		sleep(delay)
+		return
 	var/started = world_save_progress_now()
 	world_save_progress_sleeps++
-	. = sleep(delay)
+	sleep(delay)
 	world_save_progress_sleep_ds += world_save_progress_elapsed(started, world_save_progress_now())
 
 /proc/world_save_progress_emit(stage, level, completed_turfs, force = FALSE)
