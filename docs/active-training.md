@@ -65,3 +65,8 @@ headless client-facing dependencies), forwards to the real exercise wait and
 measures native150-tick repetitions. Its inventory fields and chat observation
 are fixture adapters; a connected client must still establish adjacent input
 and visible feedback. Prepared source and offline tests are not native passes.
+The existing `run.ps1 -ClickFeedback` mode consumes those overlays, retaining
+strict compiler/100-second runtime receipts and an exact causal result oracle.
+`-OriginalSilence` requires precisely the missing-feedback failures while the
+original finite reward still passes. Existing accelerated modes remain separate;
+the existing CI suite guard selects offline checks and both kinds of mode.

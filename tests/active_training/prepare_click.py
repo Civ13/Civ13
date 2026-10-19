@@ -29,7 +29,8 @@ def prepare(output, original_silence=False):
     head = git('rev-parse', 'HEAD').decode().strip()
     inputs = ['civ13.dme', 'code/world.dm', 'code/controllers/mc/globals.dm', TRAINING,
               'tests/active_training/game.dm', 'tests/active_training/click_game.dm',
-              'tests/active_training/prepare_click.py', 'code/_onclick/click.dm',
+              'tests/active_training/prepare_click.py', 'tests/active_training/run.ps1',
+              'tests/active_training/verify_click.py', 'code/_onclick/click.dm',
               'code/_onclick/other_mobs.dm', 'code/_onclick/item_attack.dm',
               'code/game/objects/structures.dm', 'code/_helpers/mobs.dm',
               'code/datums/progressbar.dm']

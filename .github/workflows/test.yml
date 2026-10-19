@@ -1129,12 +1129,33 @@ jobs:
           pwsh -NoProfile -File tests/blackpowder/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ForgeMergeControl
 
       - name: Verify finite active training and post-wait negative control
+        id: active_training
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/active_training')
+        timeout-minutes: 20
         shell: bash
         run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          mkdir -p "$RUNNER_TEMP/training-click"
           source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/active_training -p 'test_click*.py' -v 2>&1 | tee "$RUNNER_TEMP/training-click/offline-tests.log"
           pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -NegativeControl
+          pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ClickFeedback -EvidenceDirectory "$RUNNER_TEMP/training-click/candidate"
+          pwsh -NoProfile -File tests/active_training/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -ClickFeedback -OriginalSilence -EvidenceDirectory "$RUNNER_TEMP/training-click/original-silence"
+      - name: Retain active training click feedback evidence
+        if: always() && steps.active_training.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: training-click-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/training-click/offline-tests.log
+            ${{ runner.temp }}/training-click/*/metadata.json
+            ${{ runner.temp }}/training-click/*/*-status.json
+            ${{ runner.temp }}/training-click/*/*.log
+            ${{ runner.temp }}/training-click/*/result.json
+            ${{ runner.temp }}/training-click/*/verification.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Verify firearm configuration, hardware, maintenance and ownership negative control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gun_configuration')
