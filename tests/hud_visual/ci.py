@@ -40,6 +40,7 @@ def sources():
         generated[name] = isolated
         dme = dme.replace(path.replace('/', '\\'), name)
     dme += '\n#include "tests/hud_visual/probe.dm"\n'
+    world += '\n/client/New(TopicData)\n\treturn FALSE\n'
     generated.update({PREFIX + '_world.dm': world, PREFIX + '.dme': dme})
     return generated
 

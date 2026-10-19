@@ -15,8 +15,6 @@ var/hud_probe_unexpected = FALSE
 	return FALSE
 /world/Topic(T, addr, master, key)
 	return "Isolated HUD fixture; no operations."
-/client/New(TopicData)
-	return FALSE
 /world/Error(exception/E)
 	hud_probe_unexpected = TRUE
 	text2file("UNEXPECTED [E]", "result.txt")
