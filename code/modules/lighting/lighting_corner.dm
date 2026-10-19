@@ -7,7 +7,7 @@
 
 /datum/lighting_corner
 	var/list/turf/masters				 = list()
-	var/list/datum/light_source/affecting = list() // Light sources affecting us.
+	var/list/datum/light_source/affecting // Light sources affecting us.
 	var/active							= FALSE  // TRUE if one of our masters has dynamic lighting.
 
 	var/x	 = 0
