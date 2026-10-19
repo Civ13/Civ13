@@ -129,19 +129,22 @@ var/reserved_startup_waiting_turf = null
 			var/turf/refusal_site = locate(9,9,1)
 			var/atom/movable/lighting_overlay/refused = new(refusal_site)
 			reserved_assert(!refused.loc, "refused constructor detached before deferred deletion")
-			// Explicit offline retirement adapter: run real cleanup, remove the
-			// pending queue slot, and use real pool reset/reconstruction callbacks.
-			refused.Destroy()
-			delayed_garbage -= refused
-			PlaceInPool(refused, TRUE)
+			// qdel runs Destroy synchronously and immediately returns eligible
+			// overlays to the pool. Never invoke Destroy on an old reference after
+			// activation: it may now identify a newly constructed live owner.
+			reserved_assert(refused in GlobalPool[/atom/movable/lighting_overlay], "refusal retired to pool")
 			var/atom/movable/lighting_overlay/reused = PoolOrNew(/atom/movable/lighting_overlay, refusal_site)
 			reserved_assert(reused == refused && !reused.loc, "pooled constructor refusal detaches")
 			refusal_site.activate_reserved_lighting()
 			var/atom/movable/lighting_overlay/owner = refusal_site.lighting_overlay
-			reserved_assert(owner, "post-refusal activation owner")
-			// Exercise the actual deferred cleanup body after a new owner exists.
-			reused.Destroy()
-			reserved_assert(refusal_site.lighting_overlay == owner, "refused cleanup preserves new owner")
+			reserved_assert(owner && owner.loc == refusal_site && !QDELETED(owner), "post-refusal activation owner")
+			// Distinct superseded owner, not a recycled alias of the live object.
+			var/atom/movable/lighting_overlay/superseded = new(refusal_site, TRUE)
+			reserved_assert(superseded != owner, "distinct cleanup identity")
+			refusal_site.lighting_overlay = owner
+			var/old_luminosity = refusal_site.luminosity
+			qdel(superseded)
+			reserved_assert(refusal_site.lighting_overlay == owner && refusal_site.luminosity == old_luminosity, "superseded cleanup preserves owner")
 		// Actual production startup success and exception release, using a
 		// wrapper around its real yielding sweep (no fake readiness toggles).
 		reserved_startup_mode = "failure"

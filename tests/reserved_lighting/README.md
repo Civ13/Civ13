@@ -132,3 +132,12 @@ from the checked-out revision beside each generated DME. BYOND resolves resource
 literals relative to that DME even when source includes are absolute. No existing
 save or runtime configuration directory is linked into the fixture. This staging
 fix does not change the frozen Windows runner or claim parity before native tests.
+
+The current native ownership probe follows synchronous `qdel` retirement and real
+pool reuse. It must never call `Destroy` through a reference that may already have
+been reconstructed as a live overlay. A separate, distinct superseded overlay is
+retired with the real `qdel` path while a replacement owns the turf backlink;
+backlink identity must preserve that owner and luminosity. The Linux CI lane adds
+an `owner-identity` mutation removing this guard. The refusal control now removes
+the constructor's admission guard, since synchronous `qdel` itself also detaches
+refused overlays. No deferred-Destroy behavior is assumed.

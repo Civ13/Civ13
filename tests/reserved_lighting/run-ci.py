@@ -12,7 +12,8 @@ from compare import compare
 ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
             'halo': 'FAIL: assertion: overlay allocation count',
-            'refusal-owner': 'FAIL: assertion: refused constructor detached before deferred deletion'}
+            'refusal-owner': 'FAIL: assertion: refused constructor detached before deferred deletion',
+            'owner-identity': 'FAIL: assertion: superseded cleanup preserves owner'}
 DIAGNOSTIC = re.compile(r'runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
 
 
@@ -74,7 +75,7 @@ def main():
     else:
         raise RuntimeError('Virtual-master mutation survived the complete comparison')
     (out/'parity.json').write_text(json.dumps(parity, indent=2))
-    print('PASS native reserved-lighting state parity and three causal controls', parity)
+    print('PASS native reserved-lighting state parity and four causal controls', parity)
 
 
 if __name__ == '__main__':

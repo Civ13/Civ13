@@ -61,7 +61,7 @@
 
 /atom/movable/lighting_overlay/Destroy()
 	var/turf/T   = loc
-	if (istype(T))
+	if (istype(T) && T.lighting_overlay == src)
 		T.lighting_overlay = null
 
 		T.luminosity = TRUE

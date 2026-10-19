@@ -19,7 +19,8 @@ FILES = (
 CONTROLS = {
     'virtual-master': (FILES[2], 'T.lighting_overlay || T.omit_reserved_lighting_overlay()', 'T.lighting_overlay'),
     'halo': (FILES[0], '\t\tif (!T.lighting_reserved)\n\t\t\treturn FALSE\n', ''),
-    'refusal-owner': (FILES[3], '\t\tsrc.loc = null\n', ''),
+    'refusal-owner': (FILES[3], 'isturf(reserved_turf) && reserved_turf.omit_reserved_lighting_overlay()', 'FALSE'),
+    'owner-identity': (FILES[3], 'istype(T) && T.lighting_overlay == src', 'istype(T)'),
 }
 
 
