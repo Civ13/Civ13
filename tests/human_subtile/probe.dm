@@ -415,10 +415,13 @@ var/human_subtile_fixture_phase = "initializing"
 	var/error = null
 	try
 		human_subtile_fixture_initialize()
-		human_subtile_fixture_headless()
+		if (world.params["mining_integration"])
+			human_subtile_fixture_mining()
+		else
+			human_subtile_fixture_headless()
 	catch (var/exception/fixture_error)
 		error = fixture_error.name
 	text2file(error ? "FAIL [error]" : "PASS", "result.txt")
-	text2file(json_encode(list("head" = world.params["tested_commit"], "byond_version" = byond_version, "byond_build" = byond_build, "checks" = human_subtile_fixture_checks, "error" = error, "rows" = human_subtile_fixture_rows, "scope" = "actual human/codec; headless authority adapter")), "receipt.json")
+	text2file(json_encode(list("head" = world.params["tested_commit"], "byond_version" = byond_version, "byond_build" = byond_build, "checks" = human_subtile_fixture_checks, "error" = error, "rows" = human_subtile_fixture_rows, "mining_checks" = human_subtile_mining_checks, "mining_rows" = human_subtile_mining_rows, "scope" = "actual human/codec; headless authority adapter")), "receipt.json")
 	del(world)
 	return

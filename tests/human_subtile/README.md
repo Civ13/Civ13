@@ -208,3 +208,44 @@ This Linux runner provides process-group cleanup and bounded phase deadlines;
 it does not claim the Windows Job resource limits, process census or socket
 sampling supplied by root's separate local envelope. It does not exercise a
 real connected client or capture video.
+
+## Combined bump-mining integration (#3231)
+
+The new `--suite mining` profile compiles the complete merged game and runs
+`human_subtile_fixture_mining()` in the same closed headless envelope. Its
+52 assertions compare ordinary tile movement with enabled movement at physical
+Y offsets 0, 4 and 28. All tested bumps originate in native movement through the
+production turf Enter/Bump path; the probe never directly invokes Bump or mining
+admission. It checks exact mining origin/offset snapshots, blocked movement
+context release, repeated collision reservation identity, a real production
+`do_after` completion, physical orthogonal movement cancellation and release of
+actor, wall, tool, origin and progressbar references. The fixture uses a pickaxe
+with usespeed 4 to bound runtime and counts final ore/collapse effects instead
+of changing the terrain or producing ore. It does not establish mining yields.
+
+The `mining-position` control removes only the production action's step_x/step_y
+validity guard in the staged copy. The ordinary tile case still cancels on loc
+change; the first enabled same-anchor 4px drift must fail exactly at
+`mining_drift_rejected` (assertion 24). A different failure is rejected.
+
+```bash
+python3 -B tests/human_subtile/run.py --suite mining --byond-bin "$PWD/BYOND/byond/bin" --output /tmp/subtile-mining
+python3 -B tests/human_subtile/run.py --suite mining --control mining-position --byond-bin "$PWD/BYOND/byond/bin" --output /tmp/subtile-mining-control
+```
+
+These profiles are wired into the existing new-suite CI job. At introduction,
+45 offline contracts passed (26 human, 8 bump-mining, 11 primitive); native
+compilation/execution of this new combined profile still requires CI. The older
+42 headless / 39 connected-client results above do not cover this addition.
+
+Headless mining authority is explicitly adapted, just like headless movement
+authority. It cannot prove native client ownership. The optional
+`human_subtile_fixture_mining(C)` entry requires a real attached fixture client,
+uses production `client.Move`, preserves both production authority checks,
+observes `client.moving` inside the real Bump and asserts it is released on
+return. It has 57 assertions (one initial client check plus 14 per case).
+It is not invoked by the closed CI runner and remains unaccepted until a
+separate authorized connected-client session executes it. Its drift leg is a
+full admitted movement; the headless leg separately tests one-pulse same-anchor
+4px drift. Neither entry proves keyboard delivery, rendering, latency or broad
+movement/combat compatibility. The production opt-in stays disabled.

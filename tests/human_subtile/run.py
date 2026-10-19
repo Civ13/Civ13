@@ -51,9 +51,9 @@ def isolate_startup(rel, text):
 
 
 def prepare(root, out, suite, control='none'):
-    if suite not in ('human', 'primitive') or control not in ('none', 'cosmetic'):
+    if suite not in ('human', 'primitive', 'mining') or control not in ('none', 'cosmetic', 'mining-position'):
         raise ValueError('Unknown suite/control')
-    if suite == 'human' and control != 'none':
+    if (suite != 'primitive' and control == 'cosmetic') or (control == 'mining-position' and suite != 'mining'):
         raise ValueError('The human fixture has no cosmetic transport adapter')
     out = out.resolve()
     if out.exists():
@@ -63,7 +63,7 @@ def prepare(root, out, suite, control='none'):
         raise ValueError('Expected exact commit')
     # Always use Git objects. Uncommitted source cannot silently enter evidence.
     wanted = (['civ13.dme', 'code', 'icons', 'sound', 'UI', 'interface', 'config',
-               'tests/human_subtile'] if suite == 'human' else ['tests/subtile_movement'])
+               'tests/human_subtile'] if suite in ('human', 'mining') else ['tests/subtile_movement'])
     tracked = git(root, 'ls-tree', '-r', '--name-only', head).decode().splitlines()
     wanted = [p for p in wanted if any(f == p or f.startswith(p + '/') for f in tracked)]
     if not wanted:
@@ -103,7 +103,7 @@ def prepare(root, out, suite, control='none'):
         if proc.stdout:
             proc.stdout.close()
     adaptations = {}
-    if suite == 'human':
+    if suite in ('human', 'mining'):
         for rel in ('code/world.dm', 'code/controllers/mc/globals.dm'):
             path = stage / rel
             adapted = isolate_startup(rel, path.read_text(encoding='utf-8'))
@@ -112,9 +112,19 @@ def prepare(root, out, suite, control='none'):
                                 'adapted_sha256': digest(path.read_bytes())}
         source = (stage / 'civ13.dme').read_text(encoding='utf-8')
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
-        source += '\n#include "tests\\human_subtile\\probe.dm"\n'
+        source += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n'
         dme = stage / 'human_subtile.dme'
         dme.write_text(source, encoding='utf-8', newline='\n')
+        if control == 'mining-position':
+            rel = 'code/game/turfs/floor_attackby.dm'
+            path = stage / rel
+            original = path.read_text(encoding='utf-8')
+            guard = 'actor.step_x == sx && actor.step_y == sy && '
+            if original.count(guard) != 1:
+                raise ValueError('Mining position control anchor drift')
+            path.write_text(original.replace(guard, ''), encoding='utf-8', newline='\n')
+            adaptations[rel] = {'original_sha256': originals[rel]['sha256'],
+                                'adapted_sha256': digest(path.read_bytes())}
         # Names/public data only; this is still a temporary committed snapshot.
         if not (stage / 'config/config.txt').exists():
             (stage / 'config').mkdir(exist_ok=True)
@@ -181,7 +191,7 @@ def prepare_runtime(out, manifest):
         shutil.copy2(source, target)
         raw = target.read_bytes()
         artifacts[target.name] = {'bytes': len(raw), 'sha256': digest(raw)}
-    if manifest['suite'] == 'human':
+    if manifest['suite'] in ('human', 'mining'):
         shutil.copytree(out / 'stage/config', work / 'config')
     return work, work / dme.with_suffix('.dmb').name, artifacts
 
@@ -229,6 +239,20 @@ def validate_receipt(row, suite, control, head):
         oracle.receipt_contract(row, control)
         if len(row['observations']) != (9 if control == 'none' else 1):
             raise ValueError('Wrong observation count')
+    elif suite == 'mining':
+        if row.get('head') != head:
+            raise ValueError('Wrong mining source')
+        if control == 'mining-position':
+            if row.get('error') != 'mining_drift_rejected' or row.get('mining_checks') != 24:
+                raise ValueError('Mining position control failed outside intended oracle')
+            return
+        rows = row.get('mining_rows')
+        if row.get('error') is not None or row.get('mining_checks') != 52:
+            raise ValueError('Mining integration failed/incomplete checks')
+        if not isinstance(rows, list) or [(r.get('enabled'), r.get('sy')) for r in rows] != [(0, 0), (1, 0), (1, 4), (1, 28)]:
+            raise ValueError('Mining integration cases missing')
+        if any(r.get('client') != 0 or r.get('effects') != 1 or r.get('bumps', 0) < 3 for r in rows):
+            raise ValueError('Mining integration observations failed')
     else:
         if row.get('head') != head or row.get('checks') != 42 or row.get('error') is not None:
             raise ValueError('Human fixture failed/wrong source')
@@ -257,13 +281,16 @@ def execute(out, manifest, byond):
     validate_compile(compile_log, dme.with_suffix('.dmb').name)
     work, binary, artifacts = prepare_runtime(out, manifest)
     params = 'tested_commit=' + manifest['head']
+    if manifest['suite'] == 'mining':
+        params += ';mining_integration=1'
     if manifest['control'] != 'none':
         params += ';control=' + manifest['control']
     phases.append(run_process([str(daemon), str(binary), '59474',
                                '-ip', '127.0.0.1', '-trusted', '-params', params,
                                '-log', 'runtime.log'], work, 'daemon', 120))
     inspect_logs(work)
-    expected = b'FAIL physical_east_four_pixels\n' if manifest['control'] == 'cosmetic' else b'PASS\n'
+    expected = {'cosmetic': b'FAIL physical_east_four_pixels\n',
+                'mining-position': b'FAIL mining_drift_rejected\n'}.get(manifest['control'], b'PASS\n')
     if (work / 'port-closed.txt').read_bytes() != b'closed\n' or (work / 'result.txt').read_bytes() != expected:
         raise RuntimeError('Exact closed-port/result markers required')
     receipt = work / 'receipt.json'
@@ -282,8 +309,8 @@ def execute(out, manifest, byond):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--suite', choices=('human', 'primitive'), default='human')
-    parser.add_argument('--control', choices=('none', 'cosmetic'), default='none')
+    parser.add_argument('--suite', choices=('human', 'primitive', 'mining'), default='human')
+    parser.add_argument('--control', choices=('none', 'cosmetic', 'mining-position'), default='none')
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--byond-bin', type=Path)

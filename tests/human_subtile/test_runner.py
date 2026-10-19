@@ -23,6 +23,8 @@ class RunnerContracts(unittest.TestCase):
         files = {'civ13.dme': '#include "code\\world.dm"\n#include "maps\\removed.dmm"\n',
                  'code/world.dm': '/datum/global_init/New()\n\tinitialize()\n/world/New()\n\t..()\n\tstartup()\n',
                  'code/controllers/mc/globals.dm': '/datum/controller/global_vars/New()\n\tinitialize()\n',
+                 'tests/human_subtile/mining.dm': '// integration fixture\n',
+                 'code/game/turfs/floor_attackby.dm': '// actor.step_x == sx && actor.step_y == sy && guard\n',
                  'tests/human_subtile/probe.dm': '/client/New()\n\tdel(src)\n/world/Topic()\n\treturn null\n/world/New()\n\tOpenPort("none")\n',
                  'tests/subtile_movement/prototype.dme': '#include "kernel.dm"\n#include "fixture.dm"\n',
                  'tests/subtile_movement/kernel.dm': '// actual primitive\n',
@@ -57,6 +59,44 @@ class RunnerContracts(unittest.TestCase):
             self.assertEqual(set(manifest['adaptations']), {'code/world.dm', 'code/controllers/mc/globals.dm'})
             self.assertEqual((out / 'stage/config/config.txt').read_bytes(), b'')
             self.assertEqual(json.loads((out / 'source-manifest.json').read_text())['head'], head)
+
+    def test_mining_control_changes_only_staged_position_guard(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, files, head = self.fixture_repository(directory)
+            out = Path(directory) / 'mining'
+            manifest = runner.prepare(root, out, 'mining', 'mining-position')
+            rel = 'code/game/turfs/floor_attackby.dm'
+            self.assertEqual((root / rel).read_text(), files[rel])
+            self.assertNotIn('actor.step_x == sx', (out / 'stage' / rel).read_text())
+            self.assertIn(rel, manifest['adaptations'])
+            self.assertEqual(manifest['head'], head)
+            self.assertFalse(manifest['native_executed'])
+            self.assertEqual((out / 'stage/tests/human_subtile/mining.dm').read_text(), files['tests/human_subtile/mining.dm'])
+
+    def test_mining_receipt_rejects_missing_cases_checks_and_unrelated_failure(self):
+        rows = [dict(enabled=enabled, sy=sy, client=0, effects=1, bumps=3)
+                for enabled, sy in ((0, 0), (1, 0), (1, 4), (1, 28))]
+        receipt = dict(head='abc', byond_version=516, byond_build=1681,
+                       error=None, mining_checks=52, mining_rows=rows)
+        runner.validate_receipt(receipt, 'mining', 'none', 'abc')
+        for key, value in [('head', 'wrong'), ('mining_checks', 51),
+                           ('error', 'mining_native_collision_dispatch'), ('mining_rows', rows[:3])]:
+            bad = copy.deepcopy(receipt)
+            bad[key] = value
+            with self.assertRaises(ValueError):
+                runner.validate_receipt(bad, 'mining', 'none', 'abc')
+        for key, value in [('effects', 2), ('client', 1), ('bumps', 0), ('sy', 1)]:
+            bad = copy.deepcopy(receipt)
+            bad['mining_rows'][0][key] = value
+            with self.assertRaises(ValueError):
+                runner.validate_receipt(bad, 'mining', 'none', 'abc')
+        receipt.update(error='mining_drift_rejected', mining_checks=24)
+        runner.validate_receipt(receipt, 'mining', 'mining-position', 'abc')
+        for key, value in [('error', None), ('error', 'mining_second_snapshot'), ('mining_checks', 11)]:
+            bad = copy.deepcopy(receipt)
+            bad[key] = value
+            with self.assertRaises(ValueError):
+                runner.validate_receipt(bad, 'mining', 'mining-position', 'abc')
 
     def test_primitive_snapshot_does_not_import_game_or_change_sources(self):
         with tempfile.TemporaryDirectory() as directory:
