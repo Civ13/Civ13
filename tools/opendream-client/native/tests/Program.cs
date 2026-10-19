@@ -99,9 +99,31 @@ try {
         Reject(() => ServerCatalog.NativeStart(server with { Engine = "OpenDream" }, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true), "OpenDream substituted for DreamDaemon");
         Reject(() => ServerCatalog.NativeStart(server with { Port = 18459 }, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true), "isolated test port substituted for public server");
         Reject(() => ServerCatalog.NativeStart(server, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => false), "wrong BYOND version");
-        foreach (var endpoint in new[] { "192.64.119.81", "192.0.2.2", "valzargaming.com", "72.218.249.221;calc.exe" })
+        foreach (var endpoint in new[] { "192.64.119.81", "192.0.2.2", "valzargaming.com", "civ13.com", "72.218.249.221;calc.exe" })
             Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "unverified native endpoint");
     }
+    foreach (var mode in new[] { "Nomads", "TDM" }) {
+        var server = ServerCatalog.Select("Civ13.com", mode);
+        var endpoint = await ServerCatalog.NativeEndpoint(server, _ => throw new Exception("Official server used ValZarGaming DNS policy"));
+        var expectedPort = mode == "Nomads" ? 1715 : 1714;
+        Require(endpoint == "civ13.com" && server.Port == expectedPort && server.Engine == "BYOND", "official catalog mapping changed");
+        var native = ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true);
+        Require(native.FileName == Path.Combine(root, "dreamseeker.exe") && !native.UseShellExecute &&
+            native.ArgumentList.SequenceEqual(new[] { $"byond://civ13.com:{expectedPort}" }), "official server did not dispatch exact published URL");
+        Reject(() => ServerCatalog.NativeStart(server with { Port = expectedPort == 1715 ? 1714 : 1715 }, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "official ports reversed");
+        Reject(() => ServerCatalog.NativeStart(server with { Engine = "OpenDream" }, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "official engine changed");
+        Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => false), "official wrong BYOND version");
+        foreach (var wrongEndpoint in new[] { Connection.ApprovedEndpoint, Connection.ExcludedEndpoint, "valzargaming.com", "civ13.com;calc.exe", "civ13.com.evil.test", "https://civ13.com" })
+            Reject(() => ServerCatalog.NativeStart(server, root, wrongEndpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "official endpoint substituted");
+    }
+    Require(await ServerCatalog.NativeEndpoint(ServerCatalog.Select("ValZarGaming", "Nomads"), name => {
+        Require(name == "valzargaming.com", "native selection resolved wrong server");
+        return Task.FromResult(new[] { System.Net.IPAddress.Parse(Connection.ApprovedEndpoint) });
+    }) == Connection.ApprovedEndpoint, "ValZarGaming native resolution lost its IP pin");
+    await RejectAsync(() => ServerCatalog.NativeEndpoint(ServerCatalog.Select("ValZarGaming", "TDM"),
+        _ => Task.FromResult(new[] { System.Net.IPAddress.Parse("192.0.2.2") })), "native selection accepted unverified ValZarGaming endpoint");
+    await RejectAsync(() => ServerCatalog.NativeEndpoint(ServerCatalog.Select("Civ13.com", "Nomads") with { Port = 18459 }), "resolver accepted noncatalog port");
+    Reject(() => ServerCatalog.Select("Civ13.com", "unknown"), "unknown official mode");
     Reject(() => ServerCatalog.Select("unknown", "Nomads"), "unknown public server");
     Reject(() => ServerCatalog.Select("ValZarGaming", "unknown"), "unknown public mode");
     await RejectAsync(() => Connection.Resolve(ResolveFixture), "changed unverified DNS endpoint");
