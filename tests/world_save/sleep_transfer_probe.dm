@@ -5,6 +5,8 @@ var/mob/living/human/sleep_fixture/sleep_actor
 var/mob/living/human/sleep_fixture/sleep_decoy
 var/obj/structure/bed/sleep_fixture/sleep_bed
 
+/atom/movable
+	var/anchored = FALSE // Production atoms_movable.dm default used by unbuckle.
 /mob/living
 	var/obj/buckled
 	var/list/pinned = list()
