@@ -123,11 +123,16 @@ and port `59474`; world New then closes that port before any assertions. Socket
 sampling can witness closure but is not OS network isolation. Root's separate
 execution envelope owns containment and any initial-bind exposure controls.
 
-Expected output contract after a future authorized run:
+Expected output contract after a future authorized run: `text2file` writes
+platform-native line endings. The exact logical lines below end in LF on Linux
+and CRLF on Windows. The caller must match the target platform's exact bytes;
+it must not strip whitespace, accept extra blank lines, or allow both endings
+for one platform. The reviewed Windows packet requires CRLF with no fallback.
 
-- `port-closed.txt`: exact bytes `closed\n`.
-- `result.txt`: positive exact `PASS\n`; cosmetic exact
-  `FAIL physical_east_four_pixels\n`.
+- `port-closed.txt`: exactly one `closed` line (`closed\r\n` on Windows).
+- `result.txt`: exactly one `PASS` line for positive, or one
+  `FAIL physical_east_four_pixels` line for cosmetic (`PASS\r\n` or
+  `FAIL physical_east_four_pixels\r\n` on Windows).
 - `receipt.json`: version/build, port, check count, failed-name list, control,
   caught error string or null, and bounded scalar observations. Positive has
   **42 checks**, no failures, control `none`, null error and eight observations.
