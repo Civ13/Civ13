@@ -15,11 +15,13 @@ spec.loader.exec_module(prepare)
 
 class ClickSourceTests(unittest.TestCase):
     def generate(self, output, original=False):
+        """Prepare candidate or pinned-control overlays and return their metadata."""
         # check_output invokes Git read commands internally; compiler/runtime
         # launch mechanisms have no place in this preparation API.
         return prepare.prepare(output, original)
 
     def test_candidate_preserves_real_input_wait_clock_and_bound_sources(self):
+        """Keep production click dispatch, waits and clocks in the hashed overlay."""
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / 'candidate'
             metadata = self.generate(output)
@@ -36,6 +38,7 @@ class ClickSourceTests(unittest.TestCase):
                 self.assertEqual(metadata['inputs_sha256'][path], hashlib.sha256((prepare.ROOT / path).read_bytes()).hexdigest())
 
     def test_original_silence_uses_pinned_production_blob_not_a_fake_boolean(self):
+        """Use the pinned training blob with only chat observation substitutions."""
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / 'control'
             metadata = self.generate(output, True)
@@ -49,6 +52,7 @@ class ClickSourceTests(unittest.TestCase):
             self.assertIn('H.adaptStat(skill,', actual)
 
     def test_reward_and_persistence_blocks_are_identical_to_original(self):
+        """Keep reward and persistence code identical to the pinned original."""
         source = (prepare.ROOT / prepare.TRAINING).read_text(encoding='utf-8')
         original = prepare.git('show', prepare.ORIGINAL + ':' + prepare.TRAINING).decode()
         reward = '\tvar/list/skills = course ? list("dexterity", "stamina") : list("strength")'
@@ -57,6 +61,7 @@ class ClickSourceTests(unittest.TestCase):
             self.assertEqual(source.split(marker, 1)[1].split('\n\n', 1)[0], original.split(marker, 1)[1].split('\n\n', 1)[0])
 
     def test_source_overlay_removes_map_and_production_startup(self):
+        """Emit five overlay files with the map and production world startup removed."""
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / 'candidate'
             self.generate(output)
@@ -68,6 +73,7 @@ class ClickSourceTests(unittest.TestCase):
             self.assertEqual(len(list((output / 'overlay').iterdir())), 5)
 
     def test_input_hashes_and_generated_receipts_are_complete(self):
+        """Persist matching metadata and content hashes for every generated overlay."""
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / 'candidate'
             metadata = self.generate(output)
@@ -77,6 +83,7 @@ class ClickSourceTests(unittest.TestCase):
             self.assertIn('Not run', metadata['execution'])
 
     def assert_real_round_identity_before_save(self, source):
+        """Require real round initialization before map creation and validated saving."""
         startup = source.split('/world/New()\n', 1)[1]
         identity = '\tgenerate_gameid()\n'
         self.assertEqual(startup.count(identity), 1)
@@ -87,6 +94,7 @@ class ClickSourceTests(unittest.TestCase):
         self.assertIn('map_storage.Save_World() && map_storage.validate_world_save()', startup)
 
     def test_accelerated_fixture_uses_real_round_initialization_before_save(self):
+        """Restore the round identity prerequisite bypassed by fixture startup."""
         source = (prepare.ROOT / 'tests/active_training/game.dm').read_text(encoding='utf-8')
         self.assert_real_round_identity_before_save(source)
         # Bind to the actual startup prerequisite the runner bypasses, rather
@@ -97,6 +105,7 @@ class ClickSourceTests(unittest.TestCase):
         self.assertIn('"/datum/global_init/New()`n`treturn"', runner)
 
     def test_round_identity_guard_detects_original_omission_literal_and_late_init(self):
+        """Reject missing, fabricated or delayed round initialization in source controls."""
         source = (prepare.ROOT / 'tests/active_training/game.dm').read_text(encoding='utf-8')
         original = prepare.git('show', '250ff2ca00c85302f57c8e1a67764fdb536b5596:tests/active_training/game.dm').decode()
         identity = '\tgenerate_gameid()\n'
@@ -109,7 +118,9 @@ class ClickSourceTests(unittest.TestCase):
                 self.assert_real_round_identity_before_save(mutant)
 
     def test_actual_runner_keeps_python_options_an_array_before_both_splats(self):
+        """Accept typed Python argument arrays and reject the historical scalar form."""
         def assert_argument_contract(runner):
+            """Require an explicit string array splatted into preparation and verification."""
             assignments = [line.strip() for line in runner.splitlines() if '$pythonArguments = ' in line]
             self.assertEqual(assignments, ["[string[]]$pythonArguments = if ($options.Count) { @('-3','-B') } else { @('-B') }"])
             self.assertIn('& $pythonCommand @pythonArguments @prepareArguments', runner)
@@ -123,6 +134,7 @@ class ClickSourceTests(unittest.TestCase):
             assert_argument_contract(original)
 
     def test_output_inside_checkout_or_nonempty_is_rejected(self):
+        """Reject checkout-local or nonempty outputs while preserving existing evidence."""
         with self.assertRaisesRegex(ValueError, 'outside'):
             self.generate(prepare.ROOT / 'forbidden-training-output')
         with tempfile.TemporaryDirectory() as temp:
@@ -133,8 +145,10 @@ class ClickSourceTests(unittest.TestCase):
             self.assertEqual((output / 'preserve.txt').read_text(), 'existing evidence')
 
     def test_git_commands_are_only_read_operations(self):
+        """Limit Git calls made by both preparation modes to rev-parse and show."""
         actual = prepare.git
         def read_only(*args):
+            """Assert the Git operation is allowed before forwarding its arguments."""
             self.assertIn(args[0], ('rev-parse', 'show'))
             return actual(*args)
         with tempfile.TemporaryDirectory() as temp, mock.patch.object(prepare, 'git', side_effect=read_only):

@@ -13,14 +13,23 @@ PREFIX = '.active_training_click'
 
 
 def git(*args):
+    """Run Git with the supplied arguments in ROOT and return stdout bytes."""
     return subprocess.check_output(['git', '-C', str(ROOT), *args])
 
 
 def sha(data):
+    """Return the hexadecimal SHA-256 digest of the supplied bytes."""
     return hashlib.sha256(data).hexdigest()
 
 
 def prepare(output, original_silence=False):
+    """Write five source overlays and metadata to an empty external directory.
+
+    Use the pinned original training blob when original_silence is true;
+    otherwise use the working tree. Return metadata with input and overlay
+    hashes. Reject unsafe output paths or ambiguous source markers with
+    ValueError. No compiler or game process is launched.
+    """
     output = output.resolve()
     if output.is_relative_to(ROOT.resolve()):
         raise ValueError('Keep prepared evidence outside the source checkout')
@@ -36,6 +45,7 @@ def prepare(output, original_silence=False):
               'code/datums/progressbar.dm']
     blobs = {path: (ROOT / path).read_bytes() for path in inputs}
     def text(path):
+        """Decode a captured input as UTF-8, stripping its BOM and normalizing newlines."""
         return blobs[path].decode('utf-8-sig').replace('\r\n', '\n').replace('\r', '\n')
     world = text('code/world.dm')
     marker = '/world/New()'
@@ -96,6 +106,7 @@ def prepare(output, original_silence=False):
 
 
 def main():
+    """Parse output and control options, then prepare source overlays only."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--original-silence', action='store_true')

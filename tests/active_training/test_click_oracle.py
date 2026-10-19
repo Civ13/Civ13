@@ -17,7 +17,9 @@ HEAD = 'a' * 40
 
 class ClickOracleTests(unittest.TestCase):
     def make(self, folder, original=False):
+        """Write synthetic valid candidate or pinned-control receipts into folder."""
         def write(name, value):
+            """Serialize a fixture value as UTF-8 JSON in the evidence directory."""
             (folder / name).write_text(json.dumps(value), encoding='utf-8')
         write('metadata.json', {'checkout_head': HEAD, 'control': 'original-silence' if original else 'candidate',
               'original_control_commit': oracle.ORIGINAL if original else None,
@@ -38,12 +40,14 @@ class ClickOracleTests(unittest.TestCase):
         (folder / 'runtime-stderr.log').write_text('')
 
     def change(self, folder, name, mutate):
+        """Apply mutate to a retained JSON value and write it back for rejection tests."""
         path = folder / name
         value = json.loads(path.read_text())
         mutate(value)
         path.write_text(json.dumps(value))
 
     def test_candidate_requires_complete_success(self):
+        """Accept a complete candidate receipt with all 21 checks passing."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder)
@@ -52,12 +56,14 @@ class ClickOracleTests(unittest.TestCase):
             self.assertEqual(result['expected_feedback_failures'], 0)
 
     def test_original_exact_feedback_failures_and_reward_pass_are_accepted(self):
+        """Accept the control only with its 11 expected feedback failures."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder, True)
             self.assertEqual(oracle.verify(folder, HEAD, True)['expected_feedback_failures'], 11)
 
     def test_original_cannot_pass_from_arbitrary_or_additional_failures(self):
+        """Reject extra result rows even when they describe plausible control failures."""
         for label in ['original finite set reward remains intact', 'unrelated FAIL marker']:
             with self.subTest(label=label), tempfile.TemporaryDirectory() as temp:
                 folder = Path(temp)
@@ -67,16 +73,19 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD, True)
 
     def test_ordinary_reward_failure_invalidates_original_control(self):
+        """Reject a control that loses the original reward alongside missing feedback."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder, True)
             def corrupt(value):
+                """Mark the finite reward check as failed in the synthetic result."""
                 next(row for row in value['checks'] if row['label'] == 'original finite set reward remains intact')['passed'] = 0
             self.change(folder, 'result.json', corrupt)
             with self.assertRaisesRegex(ValueError, 'Unexpected causal failures'):
                 oracle.verify(folder, HEAD, True)
 
     def test_nonzero_timeout_and_elapsed_deadlines_never_accept_receipts(self):
+        """Reject process failures, timeouts, expired deadlines and invalid status types."""
         for phase, limit in [('compile', 180), ('runtime', 100)]:
             for field, value in [('returncode', 7), ('timed_out', True), ('wall_seconds', limit),
                                  ('returncode', False), ('wall_seconds', '50')]:
@@ -88,6 +97,7 @@ class ClickOracleTests(unittest.TestCase):
                         oracle.verify(folder, HEAD)
 
     def test_wrong_commit_or_original_source_identity_reject(self):
+        """Reject receipts with mismatched revisions or pinned-control source hashes."""
         for name, field, bad in [('result.json', 'commit', 'b' * 40),
                                  ('metadata.json', 'checkout_head', 'b' * 40),
                                  ('metadata.json', 'original_control_commit', 'b' * 40),
@@ -100,6 +110,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD, True)
 
     def test_pinned_compiler_summary_is_required(self):
+        """Reject an unpinned compiler or a build summary containing errors or warnings."""
         for text in ['DM compiler version 516.1680\n0 errors, 0 warnings',
                      'DM compiler version 516.1681\n10 errors, 0 warnings',
                      'DM compiler version 516.1681\n0 errors, 1 warning']:
@@ -111,6 +122,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD)
 
     def test_unrelated_runtime_diagnostic_alongside_expected_failures_rejects(self):
+        """Reject runtime errors in any runtime stream even for the silence control."""
         for name in ['runtime.log', 'runtime-stdout.log', 'runtime-stderr.log']:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temp:
                 folder = Path(temp)
@@ -121,6 +133,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD, True)
 
     def test_compile_requires_unique_exact_banner_and_binary_result(self):
+        """Reject incomplete, duplicate, reordered or contaminated compiler results."""
         banner = 'DM compiler version 516.1681\n'
         summary = '.active_training_click.dmb - 0 errors, 0 warnings\n'
         invalid = [banner + '0 errors, 0 warnings\n',
@@ -139,6 +152,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD)
 
     def test_native_compiler_timestamp_and_console_copy_are_accepted(self):
+        """Accept the native summary timestamp and its duplicate in console output."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder)
@@ -148,6 +162,7 @@ class ClickOracleTests(unittest.TestCase):
             oracle.verify(folder, HEAD)
 
     def test_comprehensive_diagnostics_reject_every_compile_and_runtime_stream(self):
+        """Reject each known diagnostic marker in every retained log stream."""
         diagnostics = ['runtime error:', 'bad ref', 'bad loc', 'BUG:', '## ERROR:', 'RUNTIME:',
                        'assertion failed', 'infinite loop', 'segmentation fault', 'fatal error',
                        'Unexpected runtime', 'OOM', 'out of memory', 'access violation', 'CRASH',
@@ -164,6 +179,7 @@ class ClickOracleTests(unittest.TestCase):
                         oracle.verify(folder, HEAD, True)
 
     def test_unrelated_fail_rejects_all_streams_even_with_exact_control_result(self):
+        """Reject unrelated FAIL markers despite otherwise valid control receipts."""
         for name in [n for n in oracle.RETAINED_FILES if n.endswith('.log')]:
             for marker in ['FAIL: unrelated failure', 'FAIL unrelated failure', 'FAIL']:
                 with self.subTest(name=name, marker=marker), tempfile.TemporaryDirectory() as temp:
@@ -175,6 +191,7 @@ class ClickOracleTests(unittest.TestCase):
                         oracle.verify(folder, HEAD, True)
 
     def test_aggregate_bound_is_checked_before_any_metadata_or_log_read(self):
+        """Reject oversized evidence using file sizes before opening retained files."""
         for names in [('metadata.json',), ('runtime-stdout.log', 'runtime-stderr.log')]:
             with self.subTest(names=names), tempfile.TemporaryDirectory() as temp:
                 folder = Path(temp)
@@ -187,6 +204,7 @@ class ClickOracleTests(unittest.TestCase):
                         oracle.verify(folder, HEAD)
 
     def test_bounded_reads_reject_file_growth_after_preflight(self):
+        """Reject reads exceeding the aggregate limit when file size checks are stale."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder)
@@ -199,6 +217,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD)
 
     def test_canonical_compile_log_keeps_accepted_one_mib_bound(self):
+        """Reject a canonical compiler log exceeding its separate 1 MiB limit."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder)
@@ -208,6 +227,7 @@ class ClickOracleTests(unittest.TestCase):
                 oracle.verify(folder, HEAD)
 
     def test_missing_duplicate_check_or_case_rejects(self):
+        """Reject missing or duplicate result rows and invalid check boolean types."""
         for mutate in [lambda v: v['checks'].pop(), lambda v: v['checks'].append(v['checks'][0]),
                        lambda v: v['cases'].pop(), lambda v: v['checks'][0].update(passed='true')]:
             with tempfile.TemporaryDirectory() as temp:
@@ -218,6 +238,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD)
 
     def test_missing_or_additional_canonical_log_marker_rejects(self):
+        """Reject an empty canonical runtime log or an unrelated failure marker."""
         for text in ['', 'FAIL: unrelated failure\n']:
             with self.subTest(text=text), tempfile.TemporaryDirectory() as temp:
                 folder = Path(temp)
@@ -227,6 +248,7 @@ class ClickOracleTests(unittest.TestCase):
                     oracle.verify(folder, HEAD)
 
     def test_console_repetition_is_not_double_counted_as_control_failure(self):
+        """Allow a console copy of canonical control markers without double counting."""
         with tempfile.TemporaryDirectory() as temp:
             folder = Path(temp)
             self.make(folder, True)
@@ -234,6 +256,7 @@ class ClickOracleTests(unittest.TestCase):
             oracle.verify(folder, HEAD, True)
 
     def test_actual_selector_and_existing_workflow_scope(self):
+        """Check real Git suite selection, all four runner modes and artifact filtering."""
         spec = importlib.util.spec_from_file_location('training_ci_selection', ROOT / 'scripts/select-ci.py')
         selection = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(selection)

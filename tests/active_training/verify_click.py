@@ -63,11 +63,19 @@ COMPILED_ARTIFACT = '.active_training_click.dmb'
 
 
 def require(ok, message):
+    """Raise ValueError with message when an evidence condition is false."""
     if not ok:
         raise ValueError(message)
 
 
 def verify(folder, expected_commit, original_silence=False):
+    """Validate bounded retained evidence for a full expected commit SHA.
+
+    Require all 21 checks to pass for the candidate, or exactly the 11 known
+    feedback failures for original_silence. Return a verification receipt on
+    success; raise ValueError for rejected evidence contracts. Missing files,
+    malformed JSON or missing fields propagate their read or parsing errors.
+    """
     folder = Path(folder)
     # Check the aggregate before reading metadata or any output. The bounded
     # reads also reject growth between stat and read without allocating >16 MiB.
@@ -82,6 +90,7 @@ def verify(folder, expected_commit, original_silence=False):
         remaining -= len(data)
         texts[name] = data.decode('utf-8-sig')
     def read(name):
+        """Parse one retained JSON file from the already bounded text snapshot."""
         return json.loads(texts[name])
     metadata, result = read('metadata.json'), read('result.json')
     require(re.fullmatch('[0-9a-f]{40}', expected_commit), 'Full expected commit required')
@@ -138,6 +147,7 @@ def verify(folder, expected_commit, original_silence=False):
 
 
 def main():
+    """Parse evidence options, verify receipts, and write and print verification JSON."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--evidence', type=Path, required=True)
     parser.add_argument('--expected-commit', required=True)
