@@ -77,7 +77,7 @@ def run(root, output, byond, variant, repetitions, batches, negative=None):
     if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError(log)
     params = f'repetitions={repetitions}&batches={batches}' + ('&baseline=1' if variant == 'baseline' else '')
-    command = [str(byond/'dd.exe'), str(output/'probe.dmb'), '-invisible', '-close', '-safe', '-log', 'runtime.log', '-params', params]
+    command = [str(byond/'dd.exe'), str(output/'probe.dmb'), '-invisible', '-close', '-trusted', '-log', 'runtime.log', '-params', params]
     rows = []
     with (output/'daemon.log').open('w') as daemon:
         process = subprocess.Popen(command, cwd=output, stdout=daemon, stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW)

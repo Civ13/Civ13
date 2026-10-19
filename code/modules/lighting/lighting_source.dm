@@ -222,6 +222,8 @@
 				if (!C.active)
 					continue
 
+				if (!C.affecting)
+					C.affecting = list()
 				C.affecting += src
 				APPLY_CORNER(C)
 
@@ -258,7 +260,8 @@
 		var/datum/lighting_corner/C = A
 		REMOVE_CORNER(C)
 
-		C.affecting -= src
+		if (C.affecting)
+			C.affecting -= src
 
 	effect_str.Cut()
 
@@ -288,6 +291,8 @@
 				T.affecting_lights = list()
 			T.affecting_lights += src
 
+		if (!C.affecting)
+			C.affecting = list()
 		C.affecting += src
 		APPLY_CORNER(C)
 
@@ -304,7 +309,8 @@
 			if (T.affecting_lights)
 				T.affecting_lights -= src
 
-		C.affecting -= src
+		if (C.affecting)
+			C.affecting -= src
 		REMOVE_CORNER(C)
 		effect_str -= C
 

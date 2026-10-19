@@ -63,6 +63,7 @@ def main():
     environment = '''#define TRUE 1
 #define FALSE 0
 #define WORLD_SAVE_REAL_DURABLE_IDLE
+#define WORLD_SAVE_JOB_ADAPTER
 #define TICK_CHECK fixture_tick_check()
 #define TICK_LIMIT_TO_RUN 100
 #define EXCEPTION(message) new /exception(message)
@@ -91,7 +92,7 @@ def main():
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     for name, command in [('compile', [str(compiler), '-max_errors', '0', 'probe.dme']),
-                          ('runtime', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])]:
+                          ('runtime', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])]:
         completed = subprocess.run(command, cwd=output, capture_output=True, text=True, timeout=90)
         log = completed.stdout + completed.stderr
         (output / f'{name}.log').write_text(log, encoding='utf-8')
