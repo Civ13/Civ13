@@ -7,6 +7,10 @@ class HudRunnerTests(unittest.TestCase):
         generated = ci.sources()
         self.assertIn('#include "tests/hud_visual/probe.dm"', generated[ci.PREFIX + '.dme'])
         self.assertNotIn('/world/New()', generated[ci.PREFIX + '_world.dm'])
+        self.assertNotIn('/world/Topic(', generated[ci.PREFIX + '_world.dm'])
+        self.assertIn('/client/New(TopicData)\n\treturn FALSE', generated[ci.PREFIX + '_world.dm'])
+        for index in range(2):
+            self.assertNotIn('/client/New(', generated[ci.PREFIX + '_client_' + str(index) + '.dm'])
         self.assertNotIn('.dmm"', generated[ci.PREFIX + '.dme'])
 
     def test_verdict_rejects_missing_partial_failed_and_diagnostic_runs(self):

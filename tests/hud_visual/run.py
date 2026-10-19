@@ -30,6 +30,7 @@ def prepare(out):
     parent = world.index('\n\t..()', anchor)
     world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
     world = world.replace('/world/New()', '/world/proc/unused_hud_probe_startup()', 1)
+    world = world.replace('/world/Topic(T, addr, master, key)', '/world/proc/unused_hud_probe_topic(T, addr, master, key)', 1)
     world_path = ROOT / '.hud_visual_world.dm'
     dme = ROOT / '.hud_visual_fixture.dme'
     if world_path.exists() or dme.exists():

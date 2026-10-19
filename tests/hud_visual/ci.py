@@ -27,6 +27,7 @@ def sources():
     parent = world.index('\n\t..()', anchor)
     world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
     world = world.replace('/world/New()', '/world/proc/unused_hud_probe_startup()', 1)
+    world = world.replace('/world/Topic(T, addr, master, key)', '/world/proc/unused_hud_probe_topic(T, addr, master, key)', 1)
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
     dme = dme.replace('code\\world.dm', PREFIX + '_world.dm')
     dme = re.sub(r'^#include\s+"[^"\n]+\.dmm"\s*$', '', dme, flags=re.M)
