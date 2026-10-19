@@ -68,7 +68,7 @@ class Sources(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             with patch.object(R.subprocess, 'run', side_effect=AssertionError('native forbidden')), patch.object(R.subprocess, 'check_output', return_value=BASE):
                 M = R.prepare(Path(temp) / 'probe')
-            self.assertEqual(len(M['source_sha256']), 3)
+            self.assertEqual(len(M['source_sha256']), 4)
             self.assertEqual(set(M['generated_sha256']), {'support.dm','probe.dm','production.dm','probe.dme'})
             self.assertIn('not integrated', M['subtile_3228'])
 

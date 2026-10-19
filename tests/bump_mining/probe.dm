@@ -73,6 +73,10 @@ var/checks = 0
 		H.Bump(T, TRUE)
 		check(!H.pickaxe_mining_action, "click_cooldown_preserved")
 		H.next_move = -1
+		var/obj/structure/vehicleparts/frame/F = new(H.loc)
+		H.Bump(T, TRUE)
+		check(!H.pickaxe_mining_action, "vehicle_frame_does_not_mine")
+		del(F)
 		H.l_hand = null
 		H.Bump(T, TRUE)
 		check(!H.pickaxe_mining_action, "carried_inventory_not_equipped")

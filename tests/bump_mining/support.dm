@@ -2,6 +2,7 @@
 #define FALSE 0
 #define INCAPACITATION_DEFAULT 1
 #define OPPOSITE_DIR(D) turn(D,180)
+#define ON_BORDER 1
 /world
 	maxx = 8
 	maxy = 8
@@ -25,8 +26,16 @@
 	var/moving = FALSE
 /client/New()
 	return FALSE
-/atom/proc/Adjacent(atom/A)
-	return get_dist(src, A) <= 1 && z == A.z
+/proc/get_turf(atom/A)
+	while (A && !isturf(A))
+		A = A.loc
+	return A
+/obj
+	var/flags = 0
+	var/throwpass = FALSE
+/obj/structure/vehicleparts/frame
+/obj/structure/window/proc/is_fulltile()
+	return FALSE
 /mob
 	var/canmove = TRUE
 	var/stat = 0

@@ -17,7 +17,7 @@ def block(text, start, end):
 
 def source(control=None):
     files = {p: (ROOT / p).read_text(encoding='utf-8') for p in (
-        'code/game/mob/living/carbon/carbon.dm', 'code/game/turfs/floor_attackby.dm', 'code/_helpers/mobs.dm')}
+        'code/game/mob/living/carbon/carbon.dm', 'code/game/turfs/floor_attackby.dm', 'code/_helpers/mobs.dm', 'code/_onclick/adjacent.dm')}
     bump = block(files['code/game/mob/living/carbon/carbon.dm'], '/mob/living/human/Bump(', '/mob/living/human/slip(')
     mining = block(files['code/game/turfs/floor_attackby.dm'], '/mob/var/tmp/datum/pickaxe_mining_action/', '/turf/proc/extracting_proc(')
     wait = block(files['code/_helpers/mobs.dm'], '/mob/var/may_do_after', '//Returns a list of all mobs')
@@ -34,7 +34,12 @@ def source(control=None):
         assert 'actor.step_x == sx && actor.step_y == sy && ' in mining
         mining = mining.replace('actor.step_x == sx && actor.step_y == sy && ', '')
         expected = 'subtile_motion_cancels'
-    return bump + mining + wait, expected, files
+    adjacency = files['code/_onclick/adjacent.dm']
+    adjacent = '/atom/proc/Adjacent(atom/neighbor)\n\treturn FALSE\n'
+    adjacent += block(adjacency, '/turf/Adjacent(', '/turf/rangedAdjacent(')
+    adjacent += block(adjacency, '/atom/movable/Adjacent(', '/*\n\tSpecial case:')
+    adjacent += block(adjacency, '/turf/proc/ClickCross(', '/*\n\tAside:')
+    return bump + mining + wait + adjacent, expected, files
 
 
 def prepare(output, control=None):
@@ -78,8 +83,11 @@ def main():
     (a.output / 'complete-runtime.log').write_text(log)
     result = json.loads((a.output / 'result.json').read_text())
     print(json.dumps(result))
+    errors = a.output / 'errors.txt'
+    if errors.exists() and errors.stat().st_size: raise RuntimeError('fixture error handler fired')
     if R.returncode or re.search(r'BUG:|##\s*error|runtime error|bad ref|bad loc|cannot (?:read|execute) null', log, re.I): raise RuntimeError('unexpected native diagnostic')
     if result['head'] != M['head'] or result['build'] != 1681: raise RuntimeError('native identity mismatch')
+    if result['checks'] != 30: raise RuntimeError('incomplete named oracle coverage')
     failures = result['failures']
     if M['expected_failure']:
         if M['expected_failure'] not in failures: raise RuntimeError('named negative control escaped')
