@@ -75,6 +75,9 @@ class RegressionPolicyTests(unittest.TestCase):
             if 'uses: actions/upload-artifact' in block:
                 continue
             if re.search(r'(tests/|unittest discover|scripts/(check-recipes|test-power|test-batteries|check-battery-items))', block):
+                if block.startswith('      - name: Verify noninteractive BYOND bootstrap commands offline\n'):
+                    self.assertEqual(block, '      - name: Verify noninteractive BYOND bootstrap commands offline\n        run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v\n')
+                    continue
                 if block.startswith('      - name: Verify paid rack save and six mutation controls\n'):
                     self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions\n", block)
                     self.assertRegex(workflow, r'rack_save_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')

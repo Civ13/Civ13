@@ -10,57 +10,29 @@ sys.path.insert(0, str(ROOT / "scripts" / "gameplay_bridge"))
 from wait_overlay import PUBLIC_BASE_SHA256, guarded_source, unguarded_source
 
 
-def abstract_wait(source, *, delay=1, entry=True, wake=True, final=True, replace=False,
-                  ordinary_cancel=False, enabled=True):
-    """Bounded oracle for extracted hook phases, NOT a DM interpreter or runtime."""
-    baseline = unguarded_source(source)
-    assert guarded_source(baseline) == source
-    captured = {"valid": entry}
-    service_lease = captured
-    cleanup = False
-    if enabled and not captured["valid"]:
-        return False, cleanup
-    if delay:
-        captured["valid"] = wake
-        if replace:
-            service_lease = {"valid": True}
-        # Actual source has one capture, so replacement cannot change the guard.
-        if ordinary_cancel or (enabled and not captured["valid"]):
-            cleanup = True
-            return False, cleanup
-    captured["valid"] = final
-    cleanup = True
-    return not enabled or captured["valid"], cleanup
-
-
 class WaitOverlayTests(unittest.TestCase):
     def setUp(self):
         self.path = ROOT / "code/_helpers/mobs.dm"
         # In-memory abstract overlay on PUBLIC source, never applied/accepted.
-        self.source = guarded_source(self.path.read_text(encoding="utf-8"))
+        self.source = self.path.read_text(encoding="utf-8")
         self.baseline = unguarded_source(self.source)
 
     def test_abstract_disabled_path_matches_unmodified_public_helper(self):
-        baseline = self.path.read_text(encoding="utf-8")
+        baseline = self.baseline
         self.assertEqual(self.baseline, baseline)
         self.assertEqual(hashlib.sha256(baseline.encode()).hexdigest(), PUBLIC_BASE_SHA256)
         self.assertEqual(guarded_source(baseline), self.source)
         # All disabled text is exactly preserved, including signature/defaults.
-        self.assertEqual(abstract_wait(self.source, enabled=False), (True, True))
-        self.assertEqual(abstract_wait(self.source, enabled=False, ordinary_cancel=True), (False, True))
 
-    def test_hook_only_adds_conditional_checks_to_existing_wait(self):
-        changes = list(difflib.ndiff(self.baseline.splitlines(), self.source.splitlines()))
-        self.assertFalse(any(row.startswith("- ") for row in changes))
-        self.assertEqual(self.source.count("gameplay_lease.valid()"), 3)
-        capture = self.source.index("gameplay_bridge.wait_lease(user)")
-        self.assertGreater(capture, self.source.index("if (!user || !user.may_do_after)", self.source.index("/proc/do_after(")))
-        self.assertLess(capture, self.source.index("if (check_for_repeats)", capture))
-        self.assertGreater(self.source.rindex("gameplay_lease.valid()"), self.source.index("qdel(progbar)", capture))
-        self.assertEqual(self.source.count("gameplay_bridge.wait_lease(user)"), 1)
+    def test_exact_explicit_patch_and_no_ambient_capture(self):
+        patch = "".join(difflib.unified_diff(self.baseline.splitlines(True), self.source.splitlines(True),
+                       fromfile="a/code/_helpers/mobs.dm",tofile="b/code/_helpers/mobs.dm"))
+        self.assertEqual((ROOT/"code/modules/gameplay_bridge/do_after.guard.patch").read_text(),patch)
+        self.assertEqual(self.source.count("gameplay_lease = gameplay_context"),1)
+        self.assertNotIn("wait_lease(",self.source)
 
     def test_omission_controls_detect_missing_entry_wake_and_final(self):
-        blocks = ["\tif (gameplay_lease && !gameplay_lease.valid())\n\t\treturn FALSE\n",
+        blocks = ["\t\tif (!gameplay_lease.claim_gather_wait(user, target))\n\t\t\treturn FALSE\n",
                   "\t\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t\t. = FALSE\n\t\t\tbreak\n",
                   "\tif (gameplay_lease && !gameplay_lease.valid())\n\t\t. = FALSE\n"]
         for block in blocks:
@@ -72,26 +44,15 @@ class WaitOverlayTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             unguarded_source(mutation)
 
-    def test_old_cancelled_new_lease_abstract_oracle(self):
-        self.assertEqual(abstract_wait(self.source, wake=False, replace=True), (False, True))
-
-    def test_entry_wake_final_and_zero_delay_abstract_oracles(self):
-        self.assertEqual(abstract_wait(self.source, entry=False), (False, False))
-        self.assertEqual(abstract_wait(self.source, wake=False), (False, True))
-        self.assertEqual(abstract_wait(self.source, final=False), (False, True))
-        self.assertEqual(abstract_wait(self.source, delay=0, final=False), (False, True))
-        self.assertEqual(abstract_wait(self.source, delay=0), (True, True))
-
     def test_production_wait_drift_rejects(self):
         with self.assertRaises(ValueError):
             guarded_source(self.baseline.replace("\t\tsleep(0.1)\n", "\t\tsleep(1)\n"))
 
-    def test_current_public_helper_remains_unmodified_and_not_source_patched(self):
-        current = self.path.read_text(encoding="utf-8")
-        self.assertEqual(hashlib.sha256(current.encode()).hexdigest(), PUBLIC_BASE_SHA256)
-        self.assertNotIn("CIV13_GAMEPLAY_WAIT_GUARDS", current)
-        self.assertIn("user.survival_action_finished()", current)
-        self.assertNotEqual(current, self.source)
+    def test_type_and_callback_omission_refuses(self):
+        for anchor in ("if (!istype(gameplay_context, /datum/gameplay_action_lease))",
+                       "user.survival_action_started()", "user.survival_action_finished()"):
+            with self.subTest(anchor=anchor), self.assertRaises(ValueError):
+                unguarded_source(self.source.replace(anchor,"OMITTED",1))
 
 
 if __name__ == "__main__":

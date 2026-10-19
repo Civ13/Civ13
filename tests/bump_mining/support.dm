@@ -121,3 +121,14 @@
 	return
 /proc/qdel(datum/D)
 	del(D)
+
+#ifdef CIV13_GAMEPLAY_BRIDGE
+// Only the unused gather boundary is stubbed here; mining and do_after are production.
+/datum/gameplay_action_lease
+	var/claims = 0
+/datum/gameplay_action_lease/proc/claim_gather_wait(mob/user, atom/target)
+	claims++
+	return FALSE
+/datum/gameplay_action_lease/proc/valid()
+	return FALSE
+#endif
