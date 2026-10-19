@@ -953,3 +953,9 @@ Runtime-exclusion hooks can have early mining ownership guards before their
 terminal list-membership return. Preserve those guards when replacing only the
 list with switch dispatch; source fixtures must pin current inherited helpers
 and include all mining fields. Offline source parity is not native evidence.
+
+<!-- 2026-10-19: Linux exclusion parity lane -->
+Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
+parity and three controls, retaining receipts. It is separate from run.py's held
+Windows grant runner; neither an offline pass nor workflow addition proves native
+parity, and this lane makes no benchmark or listener-sampling claim.

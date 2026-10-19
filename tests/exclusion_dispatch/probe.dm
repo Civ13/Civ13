@@ -21,7 +21,14 @@ var/list/network_receipt = list()
 /turf/floor/dirt
 	var/soil_nutrition = 80
 	map_storage_saved_vars = "icon_state;name"
+/client/New()
+	del(src)
+	return
+/world/Topic()
+	return null
 /world
+	hub = ""
+	visibility = 0
 	maxx = 4
 	maxy = 4
 	maxz = 1

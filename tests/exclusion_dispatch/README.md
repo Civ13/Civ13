@@ -126,3 +126,30 @@ The report's old Linux run is historical evidence, not a run of this candidate.
 The unconditional native hold remains in force, with no flag or receipt bypass.
 Native parity, all controls, generated-source compilation and paired benchmarks
 remain acceptance blockers for the refreshed candidate.
+
+## Separate Linux CI parity lane
+
+`run-ci.py --byond-bin <516.1681-bin> --output <fresh-directory>` is the
+separately authorized isolated Linux CI lane. It consumes the existing runner's
+source-only packets, compiles and executes parity plus omit/parent/eager controls.
+It does not alter the Windows runner, grant receipts or unconditional native hold
+in `run.py`. The earlier blanket hold statements describe that Windows workflow.
+
+Each Linux child has 40-second wall and CPU limits, a 512 MiB address-space limit,
+16 MiB file limit, no core dumps, an owned process group and unconditional cleanup.
+All four cases share a 180-second wall deadline. Compiler and runtime banners must
+match 516.1681; errors, warnings, runtime diagnostics, incomplete coverage,
+unexpected failures or surviving mutation controls reject the result. Logs,
+source hashes, binary hashes, generated packets, process receipts and final
+summary are retained even on failure. The CI artifact excludes compiled binaries.
+
+The fixture rejects clients/Topic requests, disables hub visibility, binds IPv4
+loopback and closes/refuses ports. This lane does not implement Windows listener
+sampling, its leases, or a network namespace; it makes no no-transient-listener
+claim. It imports only isolated hook/selection bodies, with no normal game startup,
+external hooks, account session, live server, benchmark or deployment. Source-only
+receipts remain source-only; `native-ci.json` separately reports actual execution.
+
+Seventeen offline tests currently pass, including Linux child timeout/reaping,
+result rejection and all prior source/resource contracts. Native Linux evidence
+must still come from the exact-head CI run; adding the lane is not a passing run.
