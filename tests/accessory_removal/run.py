@@ -89,6 +89,9 @@ def verify_result(result, control):
     if control:
         if CONTROLS[control] not in failed:
             raise ValueError('Control missed its named actor-custody oracle')
+        completion = CONTROLS[control].rsplit('/', 1)[0] + '/completed'
+        if not any(c['label'] == completion and c['passed'] for c in checks):
+            raise ValueError('Control custody failure must come from a completed removal')
     elif failed:
         raise ValueError('Production actor contracts failed: ' + ', '.join(failed))
 
@@ -137,10 +140,10 @@ def main():
         if runtime.returncode or re.search(r'runtime error|Bad ref|Bad loc|BUG:|## ERROR:', diagnostics, re.I):
             raise ValueError('Unexpected native diagnostics; inspect retained logs')
         result = json.loads((evidence / 'result.json').read_text(encoding='utf-8'))
+        print(json.dumps(result, sort_keys=True), flush=True)
         if result.get('commit') != metadata['head'] or 'COMPLETE accessory actor fixture' not in diagnostics:
             raise ValueError('Wrong source or missing terminal oracle')
         verify_result(result, args.negative_control)
-        print(json.dumps(result, sort_keys=True), flush=True)
         print('PASS ' + (args.negative_control or 'production accessory actor consistency'), flush=True)
     finally:
         for path in owned:

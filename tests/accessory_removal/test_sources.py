@@ -33,7 +33,8 @@ class AccessoryPreparation(unittest.TestCase):
             sources(control='unknown')
 
     def test_incomplete_generic_fault_or_wrong_named_failure_never_accepts(self):
-        labels = [f'check-{i}' for i in range(268)] + list(CONTROLS.values())
+        labels = [f'check-{i}' for i in range(266)] + list(CONTROLS.values())
+        labels += [label.rsplit('/', 1)[0] + '/completed' for label in CONTROLS.values()]
         good = dict(case_count=27, check_count=270, runtime_error=False, failed_labels=[],
                     checks=[dict(label=label, passed=True) for label in labels])
         verify_result(good, None)
@@ -46,6 +47,11 @@ class AccessoryPreparation(unittest.TestCase):
                 verify_result(dict(good, failed_labels=['unrelated']), control)
             checks = [dict(label=label, passed=label != CONTROLS[control]) for label in labels]
             verify_result(dict(good, checks=checks, failed_labels=[CONTROLS[control]]), control)
+            completion = CONTROLS[control].rsplit('/', 1)[0] + '/completed'
+            failed = [label for label in labels if label in (CONTROLS[control], completion)]
+            checks = [dict(label=label, passed=label not in failed) for label in labels]
+            with self.assertRaises(ValueError):
+                verify_result(dict(good, checks=checks, failed_labels=failed), control)
         with self.assertRaises(ValueError):
             verify_result(dict(good, checks=[]), None)
 
