@@ -690,9 +690,10 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/lighting-recovery"
           export TMPDIR="$RUNNER_TEMP/lighting-recovery"
+          python3 tests/world_save/test_lighting_corner_allocation.py
           python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
-          for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view; do
+          for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view lighting-eager lighting-shared; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
           done
         shell: bash
