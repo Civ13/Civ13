@@ -64,7 +64,30 @@ var/list/probe_observations = list()
 	probe_observations += list(row)
 
 /proc/probe_same(list/a, list/b)
-	return json_encode(a) == json_encode(b)
+	if (!islist(a) || !islist(b) || a.len != 5 || b.len != 5)
+		return 0
+	for (var/key in list("x", "y", "z", "sx", "sy"))
+		if (!(key in a) || !(key in b) || !isnum(a[key]) || !isnum(b[key]))
+			return 0
+		if (a[key] != round(a[key]) || b[key] != round(b[key]) || a[key] != b[key])
+			return 0
+	return 1
+
+/proc/probe_scalar_summary(value)
+	var/list/summary = list("is_list" = islist(value))
+	if (!islist(value))
+		return summary
+	var/list/L = value
+	summary["length"] = L.len
+	if (L.len <= 5)
+		summary["json"] = copytext(json_encode(L), 1, 1025)
+	var/list/fields = list()
+	for (var/key in list("x", "y", "z", "sx", "sy"))
+		var/present = (key in L)
+		var/field = present ? L[key] : null
+		fields += list(list("key" = key, "present" = present, "numeric" = isnum(field), "text" = istext(field), "null" = isnull(field), "value" = (isnum(field) || istext(field)) ? field : null))
+	summary["fields"] = fields
+	return summary
 
 /proc/probe_run(control)
 	probe_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned_engine")
@@ -157,6 +180,7 @@ var/list/probe_observations = list()
 	var/list/loaded
 	F["position"] >> loaded
 	F = null
+	probe_observe("scalar_roundtrip_values", list("saved" = probe_scalar_summary(saved), "loaded" = probe_scalar_summary(loaded)))
 	probe_assert(probe_same(saved, loaded), "scalar_disk_roundtrip")
 	del(A)
 	var/obj/subtile_actor/S = new(locate(2, 6, 1))
@@ -183,7 +207,7 @@ var/list/probe_observations = list()
 	OpenPort("none")
 	if (world.port)
 		return
-	text2file("closed\n", "port-closed.txt")
+	text2file("closed", "port-closed.txt")
 	var/control = world.params["control"]
 	if (isnull(control))
 		control = "none"
@@ -194,7 +218,7 @@ var/list/probe_observations = list()
 		error = E.name
 		if (!probe_failed.len)
 			probe_failed += "unexpected_exception"
-	var/result = probe_failed.len ? "FAIL [probe_failed[1]]\n" : "PASS\n"
+	var/result = probe_failed.len ? "FAIL [probe_failed[1]]" : "PASS"
 	text2file(result, "result.txt")
 	text2file(json_encode(list("byond_version" = world.byond_version, "byond_build" = world.byond_build, "port" = world.port, "checks" = probe_checks, "failed" = probe_failed, "control" = control, "error" = error, "observations" = probe_observations)), "receipt.json")
 	del(world)

@@ -33,6 +33,13 @@ def exact_motion(row, expected):
     return measured
 
 
+def same_position(a, b):
+    keys = {"x", "y", "z", "sx", "sy"}
+    return (type(a) is dict and type(b) is dict and a.keys() == b.keys() == keys
+            and all(type(v) in (int, float) and v == int(v)
+                    for row in (a, b) for v in row.values()) and a == b)
+
+
 def receipt_contract(row, control):
     if (row["byond_version"], row["byond_build"], row["port"]) != (516, 1681, 0):
         raise ValueError("engine or port")
@@ -55,6 +62,14 @@ def receipt_contract(row, control):
 
 
 class OfflineOracle(unittest.TestCase):
+    def test_scalar_equality_ignores_order_but_rejects_type_or_value_loss(self):
+        original = dict(x=2, y=2, z=1, sx=28, sy=0)
+        self.assertTrue(same_position(original, dict(reversed(list(original.items())))))
+        for bad in (dict(original, sy=None), dict(original, sy="0"),
+                    dict(original, sx=28.5), dict(original, sx=27),
+                    dict(original, extra=1), {k: v for k, v in original.items() if k != "sy"}):
+            self.assertFalse(same_position(original, bad))
+
     def test_all_offsets_and_cardinal_directions(self):
         for sx in range(32):
             for sy in range(32):
@@ -138,7 +153,12 @@ class OfflineOracle(unittest.TestCase):
         fixture = (HERE / "fixture.dm").read_text()
         self.assertEqual(re.findall(r'#include "([^"]+)"', dme), ["kernel.dm", "fixture.dm"])
         self.assertIn('#define SUBTILE_FEASIBILITY', dme)
-        self.assertIn('text2file("closed\\n", "port-closed.txt")', fixture)
+        self.assertIn('text2file("closed", "port-closed.txt")', fixture)
+        self.assertNotIn('text2file("closed\\n", "port-closed.txt")', fixture)
+        self.assertIn('"scalar_roundtrip_values"', fixture)
+        self.assertIn('var/present = (key in L)', fixture)
+        self.assertNotIn('var/present = key in L', fixture)
+        self.assertNotIn('json_encode(a) == json_encode(b)', fixture)
         self.assertIn('movement_mode = LEGACY_MOVEMENT_MODE', fixture)
         self.assertIn('hub = ""', fixture)
         self.assertIn('visibility = 0', fixture)

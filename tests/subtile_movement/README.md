@@ -70,7 +70,13 @@ tick work bound, dense turf blocking and reopening, a dense movable with a2px
 gap producing an exact partial slide, bump callbacks, reverse escape, rejected
 inputs/deadlines/map edge and refusal of an unreviewed smaller footbox.
 
-A fresh disk savefile stores just five position scalars. Restoration validates
+A fresh disk savefile stores just five position scalars. Roundtrip comparison
+requires exactly those five keys with matching numeric integer values; JSON
+ordering is not an equality test. Before asserting equality, one bounded
+diagnostic observation records saved/loaded list shape, fixed-field membership,
+type flags and values, and a bounded JSON representation. The retained v1 failed
+`scalar_disk_roundtrip`; its output lacked those values, so the cause remains
+unresolved until a further authorized measurement. Restoration validates
 them and calls native Move. A distant same-z restore is **placement/jump**, not
 swept travel: intermediate walls are not promised to block it. A blocked
 destination must leave the actor in place. Malformed offsets and cross-z
@@ -123,7 +129,8 @@ and port `59474`; world New then closes that port before any assertions. Socket
 sampling can witness closure but is not OS network isolation. Root's separate
 execution envelope owns containment and any initial-bind exposure controls.
 
-Expected output contract after a future authorized run: `text2file` writes
+Expected output contract after a future authorized run: `text2file` appends a
+newline, so each output argument omits an explicit trailing newline. It writes
 platform-native line endings. The exact logical lines below end in LF on Linux
 and CRLF on Windows. The caller must match the target platform's exact bytes;
 it must not strip whitespace, accept extra blank lines, or allow both endings
@@ -135,7 +142,7 @@ for one platform. The reviewed Windows packet requires CRLF with no fallback.
   `FAIL physical_east_four_pixels\r\n` on Windows).
 - `receipt.json`: version/build, port, check count, failed-name list, control,
   caught error string or null, and bounded scalar observations. Positive has
-  **42 checks**, no failures, control `none`, null error and eight observations.
+  **42 checks**, no failures, control `none`, null error and nine observations.
   Cosmetic has **3 checks**, one exact named failure and one observation with
   zero native displacement. Raw native slide return remains present in rows.
 - `offset-roundtrip.sav`: synthetic scalar file, positive profile only.
