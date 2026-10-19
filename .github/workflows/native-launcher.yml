@@ -60,7 +60,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Civ13-TLS-Diagnostic-Windows
-          path: tools/opendream-client/native/tls-probe/publish/*
+          path: |
+            tools/opendream-client/native/tls-probe/publish/Civ13-TLS-Diagnostic.exe
+            tools/opendream-client/native/tls-probe/publish/Civ13-TLS-Diagnostic.exe.sha256
           if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
