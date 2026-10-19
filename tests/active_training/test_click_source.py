@@ -76,6 +76,38 @@ class ClickSourceTests(unittest.TestCase):
                 self.assertEqual(digest, hashlib.sha256((output / 'overlay' / name).read_bytes()).hexdigest())
             self.assertIn('Not run', metadata['execution'])
 
+    def assert_real_round_identity_before_save(self, source):
+        startup = source.split('/world/New()\n', 1)[1]
+        identity = '\tgenerate_gameid()\n'
+        self.assertEqual(startup.count(identity), 1)
+        self.assertLess(startup.index('\tOpenPort("none")'), startup.index(identity))
+        self.assertLess(startup.index(identity), startup.index('\tmap = new'))
+        self.assertLess(startup.index(identity), startup.index('map_storage.Save_World()'))
+        self.assertNotRegex(startup, r'(?m)^\s*(?:global\.)?game_id\s*=')
+        self.assertIn('map_storage.Save_World() && map_storage.validate_world_save()', startup)
+
+    def test_accelerated_fixture_uses_real_round_initialization_before_save(self):
+        source = (prepare.ROOT / 'tests/active_training/game.dm').read_text(encoding='utf-8')
+        self.assert_real_round_identity_before_save(source)
+        # Bind to the actual startup prerequisite the runner bypasses, rather
+        # than assigning a synthetic ID or weakening the production validator.
+        world = (prepare.ROOT / 'code/world.dm').read_text(encoding='utf-8')
+        self.assertIn('/datum/global_init/New()\n\tgenerate_gameid()', world)
+        runner = (prepare.ROOT / 'tests/active_training/run.ps1').read_text(encoding='utf-8')
+        self.assertIn('"/datum/global_init/New()`n`treturn"', runner)
+
+    def test_round_identity_guard_detects_original_omission_literal_and_late_init(self):
+        source = (prepare.ROOT / 'tests/active_training/game.dm').read_text(encoding='utf-8')
+        original = prepare.git('show', '250ff2ca00c85302f57c8e1a67764fdb536b5596:tests/active_training/game.dm').decode()
+        identity = '\tgenerate_gameid()\n'
+        mutants = [original,
+                   source.replace(identity, '\tglobal.game_id = "fake-round-id"\n'),
+                   source.replace(identity, '').replace('\t\tmap_storage.ClearMap()',
+                                                        '\t\tgenerate_gameid()\n\t\tmap_storage.ClearMap()')]
+        for mutant in mutants:
+            with self.subTest(source=mutant[:50]), self.assertRaises(AssertionError):
+                self.assert_real_round_identity_before_save(mutant)
+
     def test_output_inside_checkout_or_nonempty_is_rejected(self):
         with self.assertRaisesRegex(ValueError, 'outside'):
             self.generate(prepare.ROOT / 'forbidden-training-output')
