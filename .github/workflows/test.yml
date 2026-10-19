@@ -940,7 +940,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/protected-sleep"
           export TMPDIR="$RUNNER_TEMP/protected-sleep"
           python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin"
-          for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate; do
+          for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
             python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
           # Synthetic writer/reader only. No private save path or staging upload.

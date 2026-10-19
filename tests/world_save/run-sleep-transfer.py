@@ -17,8 +17,10 @@ HELPERS = (
 BUCKLING = ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')
 CASES = ('normal', 'legacy-wake', 'unrelated-occupant', 'refused-unbuckle', 'busy',
          'busy-recheck', 'moved-origin', 'refused-move', 'invalid-return',
-         'inventory-busy', 'inventory-move', 'inventory-rebuckle', 'legacy-save', 'disk')
-MINIMUM_CHECKS = dict(zip(CASES, (14, 7, 10, 10, 10, 9, 7, 9, 7, 7, 7, 8, 11, 16)))
+         'inventory-busy', 'inventory-move', 'inventory-rebuckle', 'legacy-save', 'disk',
+         'diagnostic-cross-level', 'diagnostic-chain', 'diagnostic-duplicate', 'diagnostic-null-frame')
+MINIMUM_CHECKS = dict(zip(CASES, (14, 7, 10, 10, 10, 9, 7, 9, 7, 7, 7, 8, 11, 16, 30, 40, 20, 12)))
+RECORD_PROC = '/map_storage/proc/record_save_reference_failure'
 CONTROLS = {
     'old-bed': ('disk', 'FAIL: protected sleeper/bed export rejected: Cross-level object reference cannot be represented in per-level save files: /obj/structure/bed/sleep_fixture saved_z=1 native_z=2 turf_z=2 source_type=/mob/living/human/sleep_fixture source_field=buckled'),
     'persistence-gate': ('busy', 'FAIL: entry moved during persistence'),
@@ -26,11 +28,12 @@ CONTROLS = {
     'wake-actor': ('normal', 'FAIL: wake helper moved the wrong actor'),
     'move-rollback': ('refused-move', 'FAIL: failed relocation committed sleep protection'),
     'inventory-gate': ('inventory-busy', 'FAIL: inventory callback bypassed transfer revalidation'),
+    'diagnostic-record': ('diagnostic-cross-level', 'FAIL: cross-level failure record missing'),
 }
 
 
 def mutate(source, control):
-    if not control:
+    if not control or control == 'diagnostic-record':
         return source
     if control == 'old-bed':
         body = BASE.extract_proc(source, HELPERS[0])
@@ -54,11 +57,20 @@ def mutate(source, control):
     return BASE.replace_once(source, before, after, 'sleep mutation control')
 
 
+def omit_record(source):
+    body = BASE.extract_proc(source, RECORD_PROC)
+    header = body.splitlines()[0]
+    return BASE.replace_once(source, body, header + '\n\treturn\n', 'diagnostic-record control')
+
+
 def prepare(output, control=None, root=ROOT):
     receipt = BASE.prepare(output, root=root)
     output = Path(output)
     receipt.update(scope=__doc__, negative_control=control,
                    actual_client_timing_verified=False, full_gameplay_verified=False)
+    if control == 'diagnostic-record':
+        path = output / 'functions.dm'
+        path.write_text(omit_record(path.read_text(encoding='utf-8')), encoding='utf-8')
     for relative, target, paths in (
         ('code/game/mob/living/carbon/human/human_helpers.dm', 'sleep_helpers.dm', HELPERS),
         ('code/game/objects/buckling.dm', 'buckling.dm', BUCKLING),
@@ -110,7 +122,8 @@ def main():
     minimum = MINIMUM_CHECKS.copy()
     if args.negative_control:
         minimum[cases[0]] = {'old-bed': 6, 'persistence-gate': 5, 'other-occupant': 7,
-                             'wake-actor': 12, 'move-rollback': 5, 'inventory-gate': 5}[args.negative_control]
+                             'wake-actor': 12, 'move-rollback': 5, 'inventory-gate': 5,
+                             'diagnostic-record': 9}[args.negative_control]
     receipt.update(cases=list(cases), expected_results=expected, minimum_checks=minimum)
     BASE.refresh_receipt(output, receipt)
     print(f'Retained evidence: {output}', flush=True)

@@ -44,18 +44,28 @@ class SleepTransferSourceTests(unittest.TestCase):
             startup_count = sum((output / name).read_text().count('/world/New()\n') for name in sources)
             self.assertEqual(startup_count, 1)
 
-    def test_every_control_changes_only_generated_helper_projection(self):
+    def test_every_control_changes_only_its_generated_source(self):
         for control in RUNNER.CONTROLS:
             with self.subTest(control=control), tempfile.TemporaryDirectory() as directory:
                 output = Path(directory)
                 RUNNER.prepare(output, control)
                 self.assertEqual((output / 'sleep_helpers.dm').read_text(), RUNNER.mutate(self.helpers, control))
-                self.assertNotEqual((output / 'sleep_helpers.dm').read_text(), self.helpers)
+                if control != 'diagnostic-record':
+                    self.assertNotEqual((output / 'sleep_helpers.dm').read_text(), self.helpers)
                 for relative in RUNNER.BASE.PRODUCTION:
-                    self.assertEqual((output / Path(relative).name).read_text(), (ROOT / relative).read_text(encoding='utf-8-sig'))
+                    expected = (ROOT / relative).read_text(encoding='utf-8-sig')
+                    if control == 'diagnostic-record' and Path(relative).name == 'functions.dm':
+                        expected = RUNNER.omit_record(expected)
+                    self.assertEqual((output / Path(relative).name).read_text(), expected)
 
     def test_every_control_rejects_missing_and_ambiguous_anchors(self):
         for control in RUNNER.CONTROLS:
+            if control == 'diagnostic-record':
+                source = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+                for invalid in ('', source + source):
+                    with self.assertRaises(RuntimeError):
+                        RUNNER.omit_record(invalid)
+                continue
             for source in ('', self.helpers + self.helpers):
                 with self.subTest(control=control), self.assertRaises(RuntimeError):
                     RUNNER.mutate(source, control)
@@ -131,6 +141,38 @@ class SleepTransferSourceTests(unittest.TestCase):
             for result in ('PASS', expected + ' extra', 'FAIL: unrelated failure'):
                 with self.assertRaisesRegex(RuntimeError, 'Wrong assertion'):
                     RUNNER.BASE.adjudicate(dict(row, result=result), '', case, expected)
+
+    def test_diagnostic_omission_preserves_both_production_rejection_guards(self):
+        source = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+        changed = RUNNER.omit_record(source)
+        body = RUNNER.BASE.extract_proc(changed, RUNNER.RECORD_PROC)
+        self.assertEqual(body.splitlines()[1:], ['\treturn'])
+        self.assertIn('if(kind == "save") last_save_reference_failure = null', changed)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            RUNNER.prepare(output, 'diagnostic-record')
+            for name in ('saving.dm', 'durable_graph.dm'):
+                self.assertEqual((output / name).read_text(), (ROOT / 'code/modules/persistence' / name).read_text())
+        self.assertEqual(RUNNER.CONTROLS['diagnostic-record'],
+                         ('diagnostic-cross-level', 'FAIL: cross-level failure record missing'))
+
+    def test_diagnostic_cases_cover_identity_cleanup_bounds_and_reset_order(self):
+        source = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
+        for marker in ('snapshot["lookup_ref"] == "\\ref[expected]"',
+                       'sleep_check_detached_record(record)',
+                       'json_encode(record) == snapshot_json',
+                       'chain.len == 8 && record["owner_chain_truncated"]',
+                       'length(oversized["field"]) == 80',
+                       'rejected busy save erased the failure record',
+                       'rejected busy load erased the failure record',
+                       'accepted save did not clear the previous record before contents',
+                       'record["first_entry"] == first_entry',
+                       'record["current_entry"] == source["entry"] + 1',
+                       'invalid owner frame masked the original cross-level exception'):
+            self.assertIn(marker, source)
+        self.assertIn('map_storage.saving_export_stack = list(bad_owner)', source)
+        self.assertIn('sleep_check_invalid_frame_record(null)', source)
+        self.assertIn('sleep_check_invalid_frame_record(not_a_frame)', source)
 
 
 if __name__ == '__main__':

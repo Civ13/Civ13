@@ -243,6 +243,169 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 	for(var/obj/structure/bed/sleep_fixture/bed in world) beds++
 	cross_check(actors == 1 && beds == 1, "disk roundtrip duplicated protected actor or bed")
 
+// Diagnostic snapshots may contain nested lists and scalar lookup hints, but
+// must never retain any of the live sources whose cleanup they describe.
+/proc/sleep_check_detached_record(value, depth = 0)
+	cross_check(depth <= 16, "failure record exceeded its structural depth bound")
+	if(islist(value))
+		var/list/values = value
+		for(var/i = 1, i <= values.len, i++)
+			var/key = values[i]
+			sleep_check_detached_record(key, depth + 1)
+			if(istext(key)) sleep_check_detached_record(values[key], depth + 1)
+		return
+	cross_check(isnull(value) || isnum(value) || istext(value), "failure record retained a live datum or non-scalar value")
+
+/proc/sleep_check_snapshot(list/snapshot, datum/expected, native_x, native_y, native_z, turf_x, turf_y, turf_z)
+	cross_check(islist(snapshot) && snapshot["type"] == "[expected.type]" && snapshot["lookup_ref"] == "\ref[expected]", "failure snapshot identified the wrong source or target")
+	cross_check(snapshot["native_x"] == native_x && snapshot["native_y"] == native_y && snapshot["native_z"] == native_z, "failure snapshot changed native coordinates")
+	cross_check(snapshot["turf_x"] == turf_x && snapshot["turf_y"] == turf_y && snapshot["turf_z"] == turf_z, "failure snapshot changed containing-turf coordinates")
+
+/map_storage/cross_level/sleep_transfer/diagnostic
+	var/check_reset_on_entry = FALSE
+/map_storage/cross_level/sleep_transfer/diagnostic/save_world_contents(datum/persistence_world_operation/operation)
+	if(check_reset_on_entry)
+		cross_check(isnull(last_save_reference_failure), "accepted save did not clear the previous record before contents")
+	return ..()
+
+/proc/sleep_check_failure_record()
+	sleep_setup()
+	sleep_make_legacy_state()
+	var/map_storage/cross_level/sleep_transfer/diagnostic/storage = new("sleep-diagnostic-fixture")
+	map_storage = storage
+	var/start_clock = world.time
+	var/reason = cross_try_save()
+	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "diagnostic fixture did not reach the production cross-level guard")
+	var/list/record = map_storage.last_save_reference_failure
+	cross_check(islist(record), "cross-level failure record missing")
+	cross_check(record["schema_version"] == 1 && record["kind"] == "cross_level_object", "cross-level failure record has the wrong schema or kind")
+	cross_check(record["saved_z"] == 1 && record["current_entry"] == 0 && record["first_z"] == 0 && record["first_entry"] == 0, "cross-level failure record invented entry bindings")
+	cross_check(isnum(record["captured_realtime"]) && record["captured_realtime"] > 0 && record["captured_world_time"] >= start_clock && record["captured_world_time"] <= world.time, "failure record did not capture native clocks")
+	var/list/source = record["source"]
+	var/list/target = record["target"]
+	sleep_check_snapshot(source, sleep_actor, 1, 1, 1, 1, 1, 1)
+	sleep_check_snapshot(target, sleep_bed, 3, 2, 2, 3, 2, 2)
+	cross_check(source["field"] == "buckled" && source["entry"] > 0, "failure record lost the owning source field")
+	var/list/chain = record["owner_chain"]
+	cross_check(chain.len == 2 && chain[chain.len] == source && !record["owner_chain_truncated"], "short failure chain was truncated or reordered")
+	cross_check(map_storage.persistence_runtime_var("last_save_reference_failure"), "failure record was eligible for custom persistence")
+	sleep_check_detached_record(record)
+	var/snapshot_json = json_encode(record)
+	map_storage.cleanup_world_operation()
+	cross_check(map_storage.last_save_reference_failure == record && json_encode(record) == snapshot_json, "cleanup erased or mutated the failure record")
+	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save")
+	cross_check(operation && !map_storage.Save_World(), "busy save was admitted during diagnostic retention check")
+	cross_check(map_storage.last_save_reference_failure == record, "rejected busy save erased the failure record")
+	cross_check(!map_storage.Load_World() && map_storage.last_save_reference_failure == record, "rejected busy load erased the failure record")
+	cross_check(operation.finish(FALSE), "diagnostic retention check could not release its operation")
+	var/source_lookup = source["lookup_ref"]
+	var/target_lookup = target["lookup_ref"]
+	del(sleep_actor)
+	del(sleep_bed)
+	cross_check(!locate(source_lookup) && !locate(target_lookup), "diagnostic pins prevented explicit native deletion")
+	cross_check(json_encode(record) == snapshot_json && source["lookup_ref"] == source_lookup && target["lookup_ref"] == target_lookup, "deletion changed the scalar diagnostic snapshot")
+	sleep_check_detached_record(record)
+	storage.check_reset_on_entry = TRUE
+	cross_check(map_storage.Save_World(), "new accepted save could not complete after diagnostic cleanup")
+	cross_check(isnull(map_storage.last_save_reference_failure), "new accepted save retained the previous failure record")
+
+/datum/sleep_diagnostic_link
+	var/next
+	var/probe_long_parent_field = FALSE
+/datum/sleep_diagnostic_link/get_saved_vars()
+	return list("next")
+/datum/sleep_diagnostic_link/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
+	if(probe_long_parent_field)
+		var/datum/save_export_frame/parent = exporter.saving_export_stack[exporter.saving_export_stack.len - 1]
+		var/long_field = ""
+		for(var/i = 1, i <= 120, i++) long_field += "x"
+		// Inject an oversized diagnostic label while preserving actual traversal.
+		parent.current_field = long_field
+
+/proc/sleep_check_failure_chain()
+	cross_capture_target = FALSE
+	cross_target = new(locate(2,1,2))
+	var/obj/cross_holder/holder = new(locate(1,1,1))
+	var/list/links = list()
+	for(var/i = 1, i <= 12, i++) links += new /datum/sleep_diagnostic_link
+	holder.payload = links[1]
+	for(var/i = 1, i < links.len, i++)
+		var/datum/sleep_diagnostic_link/link = links[i]
+		link.next = links[i + 1]
+	var/datum/sleep_diagnostic_link/last = links[links.len]
+	last.next = cross_target
+	last.probe_long_parent_field = TRUE
+	map_storage = new /map_storage/cross_level("diagnostic-chain-fixture")
+	var/reason = cross_try_save()
+	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "deep diagnostic chain did not reject a cross-level edge")
+	var/list/record = map_storage.last_save_reference_failure
+	cross_check(islist(record), "deep failure record missing")
+	var/list/chain = record["owner_chain"]
+	cross_check(chain.len == 8 && record["owner_chain_truncated"], "failure owner chain did not retain exactly the last eight owners")
+	for(var/i = 1, i <= chain.len, i++)
+		var/list/row = chain[i]
+		var/datum/sleep_diagnostic_link/expected = links[i + 4]
+		sleep_check_snapshot(row, expected, 0, 0, 0, 0, 0, 0)
+		cross_check(row["entry"] > 0 && length(row["field"]) <= 80, "failure owner field exceeded its bound or lost its entry")
+	var/list/oversized = chain[7]
+	cross_check(length(oversized["field"]) == 80, "failure owner field was not truncated to eighty characters")
+	cross_check(record["source"] == chain[8], "failure source was not the final owner in its chain")
+	sleep_check_snapshot(record["target"], cross_target, 2, 1, 2, 2, 1, 2)
+	sleep_check_detached_record(record)
+
+/proc/sleep_check_duplicate_record()
+	cross_setup_movement()
+	map_storage = new /map_storage/cross_level("diagnostic-duplicate-fixture")
+	var/reason = cross_try_save()
+	cross_assert_failed_save(reason, "Durable metadata atom was exported more than once", "duplicate diagnostic fixture did not reach the original binder guard")
+	var/list/record = map_storage.last_save_reference_failure
+	cross_check(islist(record) && record["schema_version"] == 1 && record["kind"] == "duplicate_durable_entry", "duplicate durable failure record missing")
+	var/list/source = record["source"]
+	var/list/target = record["target"]
+	sleep_check_snapshot(source, locate(1,1,2), 1, 1, 2, 1, 1, 2)
+	sleep_check_snapshot(target, cross_target, 1, 1, 2, 1, 1, 2)
+	var/savefile/F = new("map_saves/1.sav")
+	var/turf_ref = F["/map/1/1/1"]
+	var/list/first_contents = params2list(F["[map_storage.entry_path(F, turf_ref)]/content"])
+	cross_check(first_contents.len == 1, "duplicate fixture lost its first native placement")
+	var/first_entry = text2num(first_contents[1])
+	cross_check(record["first_z"] == 1 && record["first_entry"] == first_entry && record["saved_z"] == 2 && record["current_entry"] == source["entry"] + 1, "duplicate failure record lost first or current entry identity")
+	cross_check(source["field"] == "contents" && !record["owner_chain_truncated"], "duplicate failure source context was incorrect")
+	sleep_check_detached_record(record)
+	var/snapshot_json = json_encode(record)
+	del(cross_target)
+	cross_check(map_storage.last_save_reference_failure == record && json_encode(record) == snapshot_json, "duplicate record retained or followed its deleted atom")
+
+/proc/sleep_check_invalid_frame_record(bad_owner)
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	map_storage.saving_export_stack = list(bad_owner)
+	var/obj/item/cross_target/target = new(locate(2,1,2))
+	var/savefile/F = new("null-frame-diagnostic.sav")
+	var/reason
+	try
+		map_storage.BuildVarDirectory(F, target, 1)
+	catch(var/exception/null_frame_error)
+		reason = null_frame_error.name
+	cross_check(findtext(reason, "Cross-level object reference cannot be represented") == 1, "invalid owner frame masked the original cross-level exception")
+	var/list/record = map_storage.last_save_reference_failure
+	cross_check(islist(record) && record["kind"] == "cross_level_object", "null-frame failure record missing")
+	var/list/chain = record["owner_chain"]
+	cross_check(chain.len == 1 && !record["owner_chain_truncated"], "null frame changed owner-chain bounds")
+	var/list/source = record["source"]
+	cross_check(source == chain[1] && source["type"] == "none" && isnull(source["lookup_ref"]) && source["field"] == "unavailable" && source["entry"] == 0, "null owner frame did not receive an unavailable placeholder")
+	sleep_check_snapshot(record["target"], target, 2, 1, 2, 2, 1, 2)
+	sleep_check_detached_record(record)
+	map_storage.clear_bookkeeping()
+	cross_check(map_storage.last_save_reference_failure == record, "null-frame cleanup erased the diagnostic")
+	del(target)
+
+/proc/sleep_check_null_frame_record()
+	sleep_check_invalid_frame_record(null)
+	var/datum/not_a_frame = new
+	sleep_check_invalid_frame_record(not_a_frame)
+	del(not_a_frame)
+
 /world/New()
 	OpenPort("none")
 	..()
@@ -269,6 +432,10 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 			if("inventory-rebuckle") sleep_check_inventory("rebuckle")
 			if("legacy-save") sleep_check_legacy_save()
 			if("disk") sleep_check_disk()
+			if("diagnostic-cross-level") sleep_check_failure_record()
+			if("diagnostic-chain") sleep_check_failure_chain()
+			if("diagnostic-duplicate") sleep_check_duplicate_record()
+			if("diagnostic-null-frame") sleep_check_null_frame_record()
 			else throw EXCEPTION("Unknown protected sleep fixture scenario")
 	catch(var/exception/probe_error)
 		result = "FAIL: [probe_error.name]"

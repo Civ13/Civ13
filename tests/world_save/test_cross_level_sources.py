@@ -84,6 +84,41 @@ class CrossLevelSourceTests(unittest.TestCase):
             self.assertNotIn('.ckey', line)
         self.assertIn('if(node["ref"] && (node["ref"] != ref || node["z"] != z))', graph)
 
+    def test_structured_record_is_bounded_private_runtime_context(self):
+        source = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+        snapshot = RUNNER.extract_proc(source, '/map_storage/proc/reference_failure_snapshot')
+        record = RUNNER.extract_proc(source, '/map_storage/proc/record_save_reference_failure')
+        self.assertIn('"type" = value ? "[value.type]" : "none"', snapshot)
+        self.assertIn('"lookup_ref" = value ? "\\ref[value]" : null', snapshot)
+        self.assertNotIn('"value" = value', snapshot)
+        for key in ('native_x', 'native_y', 'native_z', 'turf_x', 'turf_y', 'turf_z'):
+            self.assertIn(f'"{key}"', snapshot)
+        self.assertIn('saving_export_stack.len - 7', record)
+        self.assertIn('saving_export_stack.len > 8', record)
+        self.assertIn('copytext(frame.current_field, 1, 81)', record)
+        self.assertIn('istext(frame.current_field)', record)
+        self.assertIn('istype(frame, /datum/save_export_frame)', record)
+        self.assertIn(': "unavailable"', record)
+        self.assertIn('frame_snapshot["entry"] = valid_frame ? frame.entry : 0', record)
+        for forbidden in ('.name', '.ckey', '.key', '.client', '.vars'):
+            self.assertNotIn(forbidden, snapshot + record)
+        self.assertIn('if(key == "last_save_reference_failure") return TRUE', source)
+
+    def test_record_reset_follows_save_admission_and_precedes_contents(self):
+        source = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+        operation = RUNNER.extract_proc(source, '/map_storage/proc/run_world_operation')
+        reset = 'if(kind == "save") last_save_reference_failure = null'
+        self.assertEqual(source.count(reset), 1)
+        self.assertLess(operation.index('!operation.enter_backend(src, kind)'), operation.index(reset))
+        self.assertLess(operation.index(reset), operation.index('success = save_world_contents(operation)'))
+        for proc in ('clear_bookkeeping', 'cleanup_world_operation'):
+            self.assertNotIn('last_save_reference_failure', RUNNER.extract_proc(source, '/map_storage/proc/' + proc))
+        saving = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+        graph = (ROOT / 'code/modules/persistence/durable_graph.dm').read_text()
+        self.assertIn('record_save_reference_failure("cross_level_object", A)', saving)
+        self.assertIn('durable_export.bind_entry(A, saving_z, ref, src)', saving)
+        self.assertIn('exporter.record_save_reference_failure("duplicate_durable_entry", A, ref, node["z"], node["ref"])', graph)
+
     def test_bounded_characterization_accepts_only_intended_duplicate(self):
         expected = RUNNER.BASELINE_DEFECTS['move-direct']
         message = ('FAIL: movement export rejected: Durable metadata atom was exported more than once: '

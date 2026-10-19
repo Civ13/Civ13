@@ -24,12 +24,25 @@ save-entry identifiers and z-levels, never player names, client keys or live
 native references. General movement during serialization remains a separate
 snapshot problem; no save format or loader migration is introduced here.
 
+For a rejected object reference, inspect the single admin VV field
+`map_storage.last_save_reference_failure`: Game Panel, **View/Debug a Global
+Variable, List, or Object**, enter `map_storage`, then open that field (requires
+the existing debug permission). It snapshots source/target types,
+process-local lookup references, native and turf coordinates, the saved level,
+entry IDs and up to eight owning field frames. The duplicate-binding case also
+records its first level/entry. It contains no field values, player names, client
+keys or live object references. Cleanup preserves the snapshot; an accepted new
+save clears it, while a rejected busy request does not. Capture time identifies
+when it was recorded. A lookup reference can be recycled after deletion, so
+verify the current type and location before acting. This diagnostic does not
+authorize clearing a relationship or prove which relationship should be durable.
+
 ```sh
 python3 -B tests/world_save/test_sleep_transfer_sources.py -v
 python3 tests/world_save/run-sleep-transfer.py --prepare-only
 # Only in an approved isolated native execution window:
 python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin /path/to/byond/bin
-for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate; do
+for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
   python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin /path/to/byond/bin --negative-control "$control"
 done
 ```
