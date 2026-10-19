@@ -1,4 +1,7 @@
-# Lighting plane composition
+# Experimental lighting plane composition
+
+**BLOCKED: not a general fix and not suitable for merge/deployment.** The ordinary-lighting candidate fixes the isolated canopy defect, but final native counterexamples remove weather pixels and darken intentionally mask-free cells. Source/CI success is not renderer acceptance. See `counterexamples.json`.
+
 
 An opaque object's root can remain visible while it occludes neighboring turf roots. Its oversized icon and plane shadow can draw pixels over those neighbors, but the neighbors' turf-local lighting masks are culled by native visibility. The existing lighting master is itself invisible to living sight (45 versus 25), so those uncovered pixels escape the ordinary per-tile multiplication.
 
@@ -30,3 +33,11 @@ py -3 -B -m unittest discover -s tests/light_plane_composition -p "test_*.py" -v
 ```
 
 The automatic introduced-suite CI step compiles the exact production plane source and exercises 276 mode/cache/isolation assertions, plus two causal mutations (ordinary mode forced on or bypass forced off). It reuses `tests/lighting_startup/run.py`'s bounded subprocess seam. The native world closes/refuses its listener and rejects clients. These headless assertions do not establish rendered pixels; the separate client captures do.
+
+## Why this prototype is blocked
+
+`/area` draws weather on lighting plane 3, layer 10; existing masks sit above it at layer 13. Composing opaque tile colors with OVERLAY replaces lower-plane weather instead of preserving its prior multiplication. A frozen actual `rain1` frame at the production plane/layer loses 283 pixels in the candidate. Separately, `supports_lighting_overlays()` deliberately excludes non-dynamic areas (including sewers/sky). A visible mask-free tile changes by all 1024 pixels when the new plane fills its transparent hole with black. Both old-renderer restorations are pixel-exact. The weather control is one frozen area-appearance proxy, not a weather-controller integration test.
+
+These failures expose a real ambiguity: a transparent hole can mean a culled lighting mask or intentionally fullbright content. Plane alpha alone cannot distinguish them. No additional source changes or client experiments are allocated to hide that distinction.
+
+A bounded next design would need a light-only surface separated from weather and an explicit fullbright-coverage representation, with lifecycle/import and boundary tests. An alternative is per-client clipping of visible oversized appearances; that requires complete appearance bounds and view-change/retirement handling. Neither is a safe one-field fix. Do not bypass native sight or send hidden gameplay objects to make masks appear.

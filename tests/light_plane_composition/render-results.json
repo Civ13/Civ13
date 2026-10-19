@@ -1,5 +1,5 @@
 {
-  "status": "SYNTHETIC_RENDER_CANDIDATE_PASS",
+  "status": "ORDINARY_COMPOSITION_PASS_GENERAL_FIX_BLOCKED",
   "source_commit": "cc03b199128f8afed58713912c551ad7556e6bc4",
   "candidate": "Visible opaque-alpha MULTIPLY lighting master, tile colors composed with OVERLAY, explicit see>=45 legacy white bypass",
   "pairs": [
@@ -189,5 +189,6 @@
     "code/game/mob/living/life.dm": "afb476fc2e2fb2515df9297b193c23ca6080260a2eefbf062615f3b7034cfc2d",
     "code/game/mob/observer/ghost/ghost.dm": "00e6f2bf76ebe532b06f87770ce4fc814895ba823234d0a362a3e3ac09387595"
   },
-  "candidate_sources_sha256_format": "Raw Windows staged bytes used by the native fixture. canonical_lf_sources_sha256 binds the Git/CI LF-normalized production source."
+  "candidate_sources_sha256_format": "Raw Windows staged bytes used by the native fixture. canonical_lf_sources_sha256 binds the Git/CI LF-normalized production source.",
+  "general_fix_counterexamples": "counterexamples.json"
 }
