@@ -1,5 +1,6 @@
 """Source preparation and oracle controls only; no native execution."""
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -7,6 +8,17 @@ from run import ACCESSORY, CONTROLS, PREFIX, ROOT, USER_MODES, USR_ROLES, prepar
 
 
 class AccessoryPreparation(unittest.TestCase):
+    def test_membership_assignments_are_boolean_before_native_execution(self):
+        source = (ROOT / 'tests/accessory_removal/probe.dm').read_text(encoding='utf-8')
+        def bound(text):
+            return set(re.findall(r'^\tvar/(no_actor|no_argument) = \(mode in list\([^\n]+\)\)$', text, re.M)) == {'no_actor', 'no_argument'}
+        self.assertTrue(bound(source))
+        for variable in ('no_actor', 'no_argument'):
+            line = next(line for line in source.splitlines() if line.startswith('\tvar/' + variable + ' ='))
+            unparenthesized = line.replace('= (', '= ', 1)[:-1]
+            with self.subTest(variable=variable):
+                self.assertFalse(bound(source.replace(line, unparenthesized, 1)))
+
     def test_three_actual_source_variants_prepare_without_native(self):
         with tempfile.TemporaryDirectory() as directory:
             for control in (None, *CONTROLS):

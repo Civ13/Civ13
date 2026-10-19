@@ -41,6 +41,16 @@ receipt must contain all 27 matching body witnesses. This distinguishes source
 selection/execution from assumptions about context propagation; it changes no
 removal branch, inventory call or acceptance oracle.
 
+Membership predicates on the right side of fixture boolean assignments must be
+parenthesized. The earlier unparenthesized `no_actor` and `no_argument`
+assignments retained truthy mode values, routing every case through no-argument
+removal. Historical positive receipts from `f087fbf26`, `16c9d8591` and
+`1a5d9ebd6` therefore cover only null-user fallback, not explicit-actor removal.
+Those failed diagnostic runs remain retained. The offline source guard rejects
+either old assignment, and corrected acceptance requires actual `body_user`,
+`body_usr` and requested ambient roles for every named case, in addition to all
+existing custody and negative-control oracles.
+
 There are 27 explicit cases (nine actor/hand states across tie, holster and sheath)
 and 270 per-label checks. Each verifies completion, parent/overlay cleanup,
 correct hands or turf, fingerprint actor, caller membership, payload identity,
