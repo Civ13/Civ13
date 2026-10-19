@@ -378,6 +378,7 @@ jobs:
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control dispatch --output "$RUNNER_TEMP/bump-mining/dispatch"
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control reservation --output "$RUNNER_TEMP/bump-mining/reservation"
           python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control position --output "$RUNNER_TEMP/bump-mining/position"
+          python3 -B tests/bump_mining/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control persistence --output "$RUNNER_TEMP/bump-mining/persistence"
       - name: Retain held pickaxe collision evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

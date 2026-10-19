@@ -52,7 +52,7 @@
 	should_save = FALSE
 
 /turf/persistence_runtime_var(key)
-	if (key == "pickaxe_mining_owner")
+	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
 		return TRUE
 	return (key in list("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")) || ..()
 

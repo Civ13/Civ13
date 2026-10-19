@@ -17,7 +17,7 @@ def block(text, start, end):
 
 def source(control=None):
     files = {p: (ROOT / p).read_text(encoding='utf-8') for p in (
-        'code/game/mob/living/carbon/carbon.dm', 'code/game/turfs/floor_attackby.dm', 'code/_helpers/mobs.dm', 'code/_onclick/adjacent.dm')}
+        'code/game/mob/living/carbon/carbon.dm', 'code/game/turfs/floor_attackby.dm', 'code/_helpers/mobs.dm', 'code/_onclick/adjacent.dm', 'code/modules/persistence/functions.dm')}
     bump = block(files['code/game/mob/living/carbon/carbon.dm'], '/mob/living/human/Bump(', '/mob/living/human/slip(')
     mining = block(files['code/game/turfs/floor_attackby.dm'], '/mob/var/tmp/datum/pickaxe_mining_action/', '/turf/proc/extracting_proc(')
     wait = block(files['code/_helpers/mobs.dm'], '/mob/var/may_do_after', '//Returns a list of all mobs')
@@ -39,7 +39,16 @@ def source(control=None):
     adjacent += block(adjacency, '/turf/Adjacent(', '/turf/rangedAdjacent(')
     adjacent += block(adjacency, '/atom/movable/Adjacent(', '/*\n\tSpecial case:')
     adjacent += block(adjacency, '/turf/proc/ClickCross(', '/*\n\tAside:')
-    return bump + mining + wait + adjacent, expected, files
+    persistence = files['code/modules/persistence/functions.dm']
+    policy = block(persistence, '/datum/proc/persistence_runtime_var(key)', '/datum/proc/get_saved_vars()')
+    policy += block(persistence, '/atom/persistence_runtime_var(key)', '// Lighting graphs')
+    policy += block(persistence, '/turf/persistence_runtime_var(key)', '// HUD objects')
+    policy += block(persistence, '/mob/persistence_runtime_var(key)', '/obj/screen')
+    if control == 'persistence':
+        assert ' || key == "mining_in_progress"' in policy
+        policy = policy.replace(' || key == "mining_in_progress"', '')
+        expected = 'runtime_import_rejects_busy'
+    return bump + mining + wait + adjacent + policy, expected, files
 
 
 def prepare(output, control=None):
@@ -66,7 +75,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--prepare-only', action='store_true')
     p.add_argument('--byond-bin', type=Path)
-    p.add_argument('--negative-control', choices=('dispatch', 'reservation', 'position'))
+    p.add_argument('--negative-control', choices=('dispatch', 'reservation', 'position', 'persistence'))
     a = p.parse_args()
     M = prepare(a.output, a.negative_control)
     if a.prepare_only: return
@@ -87,7 +96,7 @@ def main():
     if errors.exists() and errors.stat().st_size: raise RuntimeError('fixture error handler fired')
     if R.returncode or re.search(r'BUG:|##\s*error|runtime error|bad ref|bad loc|cannot (?:read|execute) null', log, re.I): raise RuntimeError('unexpected native diagnostic')
     if result['head'] != M['head'] or result['build'] != 1681: raise RuntimeError('native identity mismatch')
-    if result['checks'] != 30: raise RuntimeError('incomplete named oracle coverage')
+    if result['checks'] != 32: raise RuntimeError('incomplete named oracle coverage')
     failures = result['failures']
     if M['expected_failure']:
         if M['expected_failure'] not in failures: raise RuntimeError('named negative control escaped')

@@ -16,7 +16,7 @@ do_after calls have no context and retain their original helper path.
 Offline: `-B -m unittest discover -s tests/bump_mining -v` with a verified Python.
 `run.py --prepare-only --output <fresh-folder>` extracts production Bump, mining
 entry/context and do_after without executing native tools. Remote CI compiles
-and runs the baseline and dispatch/reservation/position omission controls with
+and runs the baseline and dispatch/reservation/position/persistence omission controls with
 pinned BYOND516.1681 and retained source/compiler/runtime/result hashes.
 
 The small native fixture adapts human construction, real-client movement
@@ -26,6 +26,11 @@ one completion callback, not production mining RNG/yields or connected-client
 input/rendering. PR3228's opt-in subtile adapter is not on this master baseline;
 pixel-offset cancellation coverage does not establish that transaction's
 integration. No local native execution or player-server deployment is authorized.
+
+The transient mining busy flag and both reservation pointers are excluded from
+export and legacy import. Native savefile controls exercise the actual runtime
+policy with an old TRUE busy field; source checks bind the normal exporter and
+importer to that policy. This is not full typed-map-codec roundtrip acceptance.
 
 Restart required: yes. The collision hook and shared mining/wait code require a
 rebuilt world and controlled restart before players receive the feature.

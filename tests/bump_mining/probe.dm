@@ -91,6 +91,16 @@ var/checks = 0
 		check(M && !M.claim(H,T), "wait_context_one_use")
 		H.stat = 1
 		settle(H)
+		check(T.persistence_runtime_var("mining_in_progress") && T.persistence_runtime_var("pickaxe_mining_owner") && H.persistence_runtime_var("pickaxe_mining_action") && !T.persistence_runtime_var("name"), "runtime_export_policy")
+		// Real native savefile carrying legacy runtime fields; use the actual
+		// production policy. This is not the full typed map codec.
+		var/savefile/Fsave = new("legacy-runtime.sav")
+		Fsave["mining_in_progress"] << TRUE
+		for (var/v in Fsave.dir)
+			if (T.persistence_runtime_var(v))
+				continue
+			Fsave[v] >> T.vars[v]
+		check(!T.mining_in_progress, "runtime_import_rejects_busy")
 		text2file(json_encode(list("head"=world.params["tested_commit"], "build"=world.byond_build, "checks"=checks, "failures"=failures)), "result.json")
 		del(world)
 		return

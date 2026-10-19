@@ -52,13 +52,15 @@ class Sources(unittest.TestCase):
         self.assertIn('actor.pickaxe_mining_action == src', generated)
         self.assertIn('wall.pickaxe_mining_owner == src', generated)
         functions = (ROOT / 'code/modules/persistence/functions.dm').read_text()
-        for field in ('pickaxe_mining_action', 'pickaxe_mining_owner'):
+        for field in ('pickaxe_mining_action', 'pickaxe_mining_owner', 'mining_in_progress'):
             self.assertIn('key == "' + field + '"', functions)
+        self.assertIn('if(A.persistence_runtime_var(v))', (ROOT / 'code/modules/persistence/saving.dm').read_text())
+        self.assertIn('if(object.persistence_runtime_var(v))', (ROOT / 'code/modules/persistence/loading.dm').read_text())
         self.assertIn('catch (var/exception/mining_error)\n\t\trelease()', generated)
 
     def test_mutations_change_actual_production_and_name_specific_oracles(self):
         normal, _, _ = R.source()
-        for control, label in [('dispatch','bump_starts_once'), ('reservation','different_wall_cannot_queue'), ('position','subtile_motion_cancels')]:
+        for control, label in [('dispatch','bump_starts_once'), ('reservation','different_wall_cannot_queue'), ('position','subtile_motion_cancels'), ('persistence','runtime_import_rejects_busy')]:
             changed, expected, _ = R.source(control)
             self.assertNotEqual(normal, changed)
             self.assertEqual(expected, label)
@@ -68,14 +70,14 @@ class Sources(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             with patch.object(R.subprocess, 'run', side_effect=AssertionError('native forbidden')), patch.object(R.subprocess, 'check_output', return_value=BASE):
                 M = R.prepare(Path(temp) / 'probe')
-            self.assertEqual(len(M['source_sha256']), 4)
+            self.assertEqual(len(M['source_sha256']), 5)
             self.assertEqual(set(M['generated_sha256']), {'support.dm','probe.dm','production.dm','probe.dme'})
             self.assertIn('not integrated', M['subtile_3228'])
 
     def test_ci_selects_new_suite_on_PR_and_retains_diagnostics(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining')", workflow)
-        for control in ('dispatch', 'reservation', 'position'):
+        for control in ('dispatch', 'reservation', 'position', 'persistence'):
             self.assertIn('--negative-control ' + control, workflow)
         runner = Path(__file__).with_name('run.py').read_text()
         self.assertIn(r'\b0 errors,\s*0 warnings', runner)
