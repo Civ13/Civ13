@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: private Help conversation boundary -->
+Help history belongs to an authenticated client session, never a saved mob.
+`conversation_probe.dm` is included by the existing isolated Help fixture;
+conversation generation and action-token negative controls check stale replies
+and copied links. The role-free worker contract derives only user/assistant
+turns, bounded by UTF-8 history and complete ASCII-JSON request bytes. Spool
+cleanup is not encryption or guaranteed crash-time erasure. Server and worker
+updates require separately coordinated restarts; offline checks do not prove them.
 <!-- 2026-10-19: consumed crafting handles -->
 Consumed wood handles are selected from hands and real equipment slots, including
 shoulder/back, then retained through do_after. Revalidate the exact item and source
@@ -18,6 +26,16 @@ adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
 removes exactly one native line ending at admission and completion. Run
 tests/player_help/run-spool-controls.py for the three old-defect controls;
 all model transports in these spool checks are injected and offline.
+
+<!-- 2026-10-18: native Help line endings -->
+BYOND 516.1681 rejects the DM string escape `\r`; use `ascii2text(13)` for
+carriage-return normalization. `\n` is supported. JSON-decoded CRLF test data
+must still exercise the actual native renderer, not only a Python equivalent.
+
+<!-- 2026-10-18: isolated fixture ports -->
+`world.OpenPort(0)` opens an available port; `OpenPort("none")` closes it.
+The Help fixture disables compile-time visibility, rejects clients and overrides
+OpenPort to prevent reopening. These controls do not replace external socket monitoring.
 
 <!-- 2026-10-18: restored input clocks and action locks -->
 The custom saver includes changed tmp fields. Mob next_click/next_move and

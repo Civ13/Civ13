@@ -1,0 +1,274 @@
+[
+  {
+    "name": "screenshot winter answer",
+    "markdown": "To survive winter:\n\n* **Clothing:** Wear fur and use a *knife*.\n* **Shelter:** Stay in a roofed area.\n* **Fire:** Fuel a **campfire** with wood.\n\nCold can still harm you.",
+    "contains": [
+      "<b>Clothing:</b>",
+      "<i>knife</i>",
+      "&bull; ",
+      "<b>Shelter:</b>",
+      "<b>campfire</b>",
+      "<p>Cold can still harm you.</p>"
+    ],
+    "absent": [
+      "**",
+      "* **",
+      "<pre"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "headings and numbered nested lists",
+    "markdown": "# Survive\n## Shelter\n1. Find wood\n2. Build\n  - Check the roof",
+    "contains": [
+      "<h1>Survive</h1>",
+      "<h2>Shelter</h2>",
+      "<p>1. Find wood</p>",
+      "<p>2. Build</p>",
+      "&nbsp;&nbsp;&bull; Check the roof"
+    ],
+    "absent": [
+      "<ul",
+      "<ol",
+      "<style"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "line endings and paragraphs",
+    "markdown": "one\r\ntwo  \r\nthree\\\r\nfour\r\n\r\nfive\rsix",
+    "contains": [
+      "one<br>two  <br>three<br>four</p><p>five<br>six"
+    ],
+    "absent": [
+      "\r"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "fenced code is inert",
+    "markdown": "```html\n<script>alert(1)</script> **literal**\n```",
+    "contains": [
+      "<pre>&lt;script&gt;alert(1)&lt;/script&gt; **literal**\n</pre>"
+    ],
+    "absent": [
+      "<script>",
+      "<b>literal</b>",
+      "class=",
+      "style="
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "unclosed tilde fence",
+    "markdown": "~~~~\n**literal**\n~~~",
+    "contains": [
+      "<pre>**literal**\n~~~\n</pre>"
+    ],
+    "absent": [
+      "<b>"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "inline code precedence",
+    "markdown": "Use `**literal** <img>` or ``a ` b``.",
+    "contains": [
+      "<code>**literal** &lt;img&gt;</code>",
+      "<code>a ` b</code>"
+    ],
+    "absent": [
+      "<img>",
+      "<b>literal</b>"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "raw HTML and attributes",
+    "markdown": "<script>alert(1)</script><img src=x onerror=evil()> & <a href='byond://?src=x'>click</a>",
+    "contains": [
+      "&lt;script&gt;",
+      "&lt;img src=x onerror=evil()&gt;",
+      "&amp;",
+      "&lt;a href="
+    ],
+    "absent": [
+      "<script>",
+      "<img ",
+      "<a href='byond"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "safe links and balanced destination",
+    "markdown": "[**Wiki**](https://example.org/roof_(floor)?x=1&y=2) [HTTP](http://example.org/)",
+    "contains": [
+      "<a href=\"https://example.org/roof_(floor)?x=1&amp;y=2\"><b>Wiki</b></a>",
+      "<a href=\"http://example.org/\">HTTP</a>"
+    ],
+    "absent": [],
+    "expected_links": [
+      "https://example.org/roof_(floor)?x=1&y=2",
+      "http://example.org/",
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "dangerous schemes stay text",
+    "markdown": "[js](javascript:alert(1)) [data](data:text/html,evil) [local](file:///secret) [game](byond://?src=x) [relative](?src=x) [protocol](//evil.test)",
+    "contains": [
+      "javascript:alert(1)",
+      "data:text/html,evil",
+      "file:///secret",
+      "byond://?src=x"
+    ],
+    "absent": [
+      "<a href=\""
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "obfuscated schemes stay text",
+    "markdown": "[x](java&#115;cript:alert(1)) [y](%6aavascript:alert(1)) [z](https://ok.test/\"onmouseover=evil) [n](https://ok.test/\nattack)",
+    "contains": [
+      "java&amp;#115;cript:",
+      "%6aavascript:",
+      "onmouseover=evil"
+    ],
+    "absent": [
+      "<a href=\""
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ],
+    "contains_text": [
+      "\"onmouseover=evil"
+    ]
+  },
+  {
+    "name": "no remote images",
+    "markdown": "![alt](https://example.org/track.png)",
+    "contains": [
+      "![alt](https://example.org/track.png)"
+    ],
+    "absent": [
+      "<img",
+      "<a href=\""
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "unmatched markers and link",
+    "markdown": "**unclosed [label](https://example.org/ _x",
+    "contains": [
+      "**unclosed [label](https://example.org/ _x"
+    ],
+    "absent": [
+      "<b>",
+      "<a href=\"",
+      "<i>"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "escapes and item identifiers",
+    "markdown": "\\*literal\\* crude_twine **bold** _italic_ ***both***",
+    "contains": [
+      "*literal* crude_twine <b>bold</b> <i>italic</i> <b><i>both</i></b>"
+    ],
+    "absent": [],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "code spacing",
+    "markdown": "` padded ` `   ` `unclosed",
+    "contains": [
+      "<code>padded</code>",
+      "<code>   </code>",
+      "`unclosed"
+    ],
+    "absent": [],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "heading must be delimited",
+    "markdown": "#not heading\n####### too many",
+    "contains": [
+      "#not heading<br>####### too many"
+    ],
+    "absent": [
+      "<h1>",
+      "<h6>"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "entity text cannot become HTML",
+    "markdown": "&lt;script&gt; &quot; &#60;img&#62;",
+    "contains": [
+      "&amp;lt;script&amp;gt;",
+      "&amp;#60;img&amp;#62;"
+    ],
+    "absent": [
+      "<script>",
+      "<img"
+    ],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  },
+  {
+    "name": "backslash text at line ends",
+    "markdown": "paired\\\\\nnext\nfinal\\",
+    "contains": [
+      "paired\\<br>next<br>final\\</p>"
+    ],
+    "absent": [],
+    "expected_links": [
+      "https://civ13.github.io/civ13-wiki/",
+      "https://civ13.github.io/Civ13/crafting/"
+    ]
+  }
+]
