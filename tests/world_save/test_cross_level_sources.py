@@ -106,6 +106,14 @@ class CrossLevelSourceTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'Wrong assertion'):
             RUNNER.adjudicate(dict(row, result='FAIL: other'), '', 'pins')
 
+    def test_native_numeric_json_flags_are_strictly_validated(self):
+        row = {'case': 'normal', 'done': 1, 'runtime_failed': 0, 'checks': 14, 'port': 0, 'result': 'PASS'}
+        RUNNER.adjudicate(row, '', 'normal')
+        for field in ('done', 'runtime_failed'):
+            for invalid in (None, '0', '1', 2, -1, 0.0, 1.0):
+                with self.subTest(field=field, invalid=invalid), self.assertRaisesRegex(RuntimeError, 'Incomplete'):
+                    RUNNER.adjudicate(dict(row, **{field: invalid}), '', 'normal')
+
 
 if __name__ == '__main__':
     unittest.main()

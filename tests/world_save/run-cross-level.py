@@ -159,8 +159,10 @@ def owned_process(command, cwd, role, timeout=120):
 
 
 def adjudicate(result, log, case, expected='PASS', minimum=3):
-    if (result.get('case') != case or result.get('done') is not True
-            or result.get('runtime_failed') is not False or result.get('checks', 0) < minimum
+    # Native DM json_encode emits its TRUE/FALSE constants as numeric 1/0.
+    done, failed = result.get('done'), result.get('runtime_failed')
+    if (result.get('case') != case or type(done) not in (bool, int) or done != 1
+            or type(failed) not in (bool, int) or failed != 0 or result.get('checks', 0) < minimum
             or result.get('port') or DIAGNOSTIC.search(log)):
         raise RuntimeError(f'Incomplete or contaminated native fixture evidence: {result}')
     actual = result.get('result')
