@@ -5,6 +5,9 @@ import re
 import subprocess
 import tempfile
 import unittest
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts/gameplay_bridge"))
+from gather_context import project
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -17,7 +20,7 @@ BASE = 'cc03b199128f8afed58713912c551ad7556e6bc4'
 class Sources(unittest.TestCase):
     def test_optional_null_wait_projection_matches_existing_full_helper(self):
         old = subprocess.check_output(['git', 'show', BASE + ':code/_helpers/mobs.dm'], cwd=ROOT).decode()
-        current = (ROOT / 'code/_helpers/mobs.dm').read_text()
+        current = project((ROOT / 'code/_helpers/mobs.dm').read_text(), set())[0]
         current = current.replace(', datum/pickaxe_mining_action/mining_context = null', '')
         # Remove only explicit new optional-context branches. Every other byte
         # of the helper file must remain the normalized original Git source.
