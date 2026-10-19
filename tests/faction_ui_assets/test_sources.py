@@ -20,6 +20,17 @@ class FactionAssets(unittest.TestCase):
         self.assertIn('node tests/faction_ui_assets/check_templates.mjs', step)
         self.assertEqual(step.count('tests/faction_ui_assets/run.py'), 2)
         self.assertEqual(step.count('--omit-registration'), 1)
+        self.assertIn('id: faction_ui_assets', step)
+        self.assertIn('echo "started=true" >> "$GITHUB_OUTPUT"', step)
+        upload = workflow.split('      - name: Upload focused faction UI asset evidence\n', 1)[1].split('      - name:', 1)[0]
+        self.assertIn("if: always() && steps.faction_ui_assets.outputs.started == 'true'", upload)
+        self.assertIn('retention-days: 7', upload)
+        self.assertIn('if-no-files-found: error', upload)
+        self.assertNotIn('.dmb', upload)
+        self.assertNotIn('.rsc', upload)
+        for profile in ('positive', 'omission'):
+            for name in ('metadata.json', 'result.json', 'draft.json', 'browser/**', 'compile.log', 'runtime.log', 'daemon.log'):
+                self.assertIn('faction-ui-assets-' + profile + '/' + name, upload)
         self.assertLess(workflow.index(title), workflow.index('      - name: Verify optional player help bridge'))
 
     def test_real_git_added_probe_selects_only_this_suite_then_edits_do_not(self):
