@@ -195,6 +195,16 @@ They use tiny fake files, including changed Shared, missing Resources, added use
 data, wrong-head/startup receipts, metadata disagreement, traversal/case collisions,
 native helper hash changes and staging cleanup. They do not run a game.
 
+Native cleanup acceptance must include a root that exits before a surviving
+helper (including a WebView child). The current launcher waits on the root
+process and uses taskkill while that root is running; an exited root is not
+proof that all descendants are gone. The injected state-write fixture does not
+model surviving helpers. Before activation, demonstrate retained ownership and
+confirmed exit of every launched helper, including root-first exit and failed
+state writes, before deleting the runtime or clearing ownership. Do not use PID
+rediscovery to kill an unverified process. Until that native lifecycle evidence
+exists, root-only cleanup must not be described as whole-tree acceptance.
+
 This is not an installed or playable launcher update. Native account/exact CID,
 guest rejection, reconnect/cleanup, actual rendering, admin joining and saving
 remain separate acceptance gates. Do not change a published client channel from
