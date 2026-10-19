@@ -1,3 +1,15 @@
+## Reserved-lighting integration policy
+
+The historical list baseline is explicitly projected with two new exclusions:
+`turf.lighting_reserved` and `area.lighting_reserved_clearance_enabled`. Strict,
+unique source anchors reject partial/duplicate projections and all unrelated
+file drift. Native comparison now checks list-versus-switch dispatch under this
+same new policy, NOT unchanged historical policy. The area hook is compiled in
+both variants; direct assertions require both new exclusions independently of
+parity. Mining ownership, root parent behavior and restored-lighting guards stay
+in the exact source contract. The reserved-lighting CI selection also runs this
+suite and its three causal controls.
+
 # Persistence exclusion dispatch
 
 Candidate: replace the atom, turf and mob runtime-exclusion temporary name lists
