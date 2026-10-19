@@ -19,6 +19,10 @@ CONTROLS = {
     'original-usr': 'tie/different_usr/actor_custody',
     'fork-guard': 'tie/null_user_other_usr/actor_custody',
 }
+USR_ROLES = dict(null_usr='null', different_usr='other', same_usr='actor', null_user='null',
+                 null_user_other_usr='other', full_hands='null', lying='null',
+                 no_argument='other', no_argument_null_usr='null')
+USER_MODES = {'null_usr', 'different_usr', 'same_usr', 'full_hands', 'lying'}
 
 
 def replace_once(source, old, new):
@@ -93,8 +97,14 @@ def verify_result(result, control):
     if failed != [c['label'] for c in checks if not c['passed']]:
         raise ValueError('Failure list disagrees with native checks')
     witnesses = result.get('body_witnesses', [])
-    if len(witnesses) != 27 or len({w['case'] for w in witnesses}) != 27 or any(w['body_marker'] != (control or 'production') for w in witnesses):
+    expected_cases = {kind + '/' + mode for kind in ('tie', 'holster', 'sheath') for mode in USR_ROLES}
+    if len(witnesses) != 27 or {w['case'] for w in witnesses} != expected_cases or any(w['body_marker'] != (control or 'production') for w in witnesses):
         raise ValueError('Wrong or missing compiled removal-body witness')
+    for witness in witnesses:
+        mode = witness['case'].split('/')[1]
+        expected_user = 'actor' if mode in USER_MODES else 'null'
+        if witness['body_user'] != expected_user or witness['body_usr'] != USR_ROLES[mode] or witness['requested_usr'] != USR_ROLES[mode]:
+            raise ValueError('Actual user/usr context does not match the named case')
     if control:
         if CONTROLS[control] not in failed:
             raise ValueError('Control missed its named actor-custody oracle')

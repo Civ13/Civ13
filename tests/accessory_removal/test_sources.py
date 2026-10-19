@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from run import ACCESSORY, CONTROLS, PREFIX, ROOT, prepare, replace_once, sources, verify_result
+from run import ACCESSORY, CONTROLS, PREFIX, ROOT, USER_MODES, USR_ROLES, prepare, replace_once, sources, verify_result
 
 
 class AccessoryPreparation(unittest.TestCase):
@@ -37,16 +37,21 @@ class AccessoryPreparation(unittest.TestCase):
     def test_incomplete_generic_fault_or_wrong_named_failure_never_accepts(self):
         labels = [f'check-{i}' for i in range(266)] + list(CONTROLS.values())
         labels += [label.rsplit('/', 1)[0] + '/completed' for label in CONTROLS.values()]
+        def witnesses(profile):
+            return [dict(case=kind+'/'+mode, body_marker=profile,
+                         body_user='actor' if mode in USER_MODES else 'null',
+                         body_usr=role, requested_usr=role)
+                    for kind in ('tie', 'holster', 'sheath') for mode, role in USR_ROLES.items()]
         good = dict(case_count=27, check_count=270, runtime_error=False, failed_labels=[],
                     checks=[dict(label=label, passed=True) for label in labels],
-                    body_witnesses=[dict(case=str(i), body_marker='production') for i in range(27)])
+                    body_witnesses=witnesses('production'))
         verify_result(good, None)
         for changed in (dict(case_count=26), dict(check_count=269), dict(runtime_error=True),
                         dict(failed_labels=['unrelated'])):
             with self.assertRaises(ValueError):
                 verify_result(dict(good, **changed), None)
         for control in CONTROLS:
-            witness = [dict(case=str(i), body_marker=control) for i in range(27)]
+            witness = witnesses(control)
             with self.assertRaises(ValueError):
                 verify_result(dict(good, failed_labels=['unrelated']), control)
             checks = [dict(label=label, passed=label != CONTROLS[control]) for label in labels]
@@ -58,6 +63,10 @@ class AccessoryPreparation(unittest.TestCase):
                 verify_result(dict(good, checks=checks, failed_labels=failed, body_witnesses=witness), control)
         with self.assertRaises(ValueError):
             verify_result(dict(good, checks=[]), None)
+        wrong_context = witnesses('production')
+        wrong_context[0]['body_user'] = 'null'
+        with self.assertRaises(ValueError):
+            verify_result(dict(good, body_witnesses=wrong_context), None)
 
     def test_workflow_selects_only_this_registered_suite(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')

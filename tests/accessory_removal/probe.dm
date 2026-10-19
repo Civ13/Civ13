@@ -105,8 +105,8 @@ var/global/list/accessory_actor_witnesses = list()
 		actor.r_hand = new /obj/item(actor)
 	if (mode == "lying")
 		actor.lying = TRUE
-	var/no_actor = mode in list("null_user", "null_user_other_usr", "no_argument", "no_argument_null_usr")
-	var/no_argument = mode in list("no_argument", "no_argument_null_usr")
+	var/no_actor = (mode in list("null_user", "null_user_other_usr", "no_argument", "no_argument_null_usr"))
+	var/no_argument = (mode in list("no_argument", "no_argument_null_usr"))
 	usr = null
 	if (mode in list("different_usr", "null_user_other_usr", "no_argument"))
 		usr = other
