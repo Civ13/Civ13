@@ -1,5 +1,50 @@
 # World-save regression world
 
+## Protected sleep transfers
+
+Protected sleep sends a body to a different z-level while preserving scalar
+return coordinates. A reciprocal `mob.buckled` / `bed.buckled_mob` relationship
+must be released through the normal unbuckle method before that transfer. The
+same release on wake supports a still-protected body left with the old distant
+bed link. A mismatched occupant or refused unbuckle rejects the transfer; it does
+not clear arbitrary pointers. A failed wake retains sleep protection for retry.
+
+The focused sleep fixture extracts the actual entry/wake helpers, production
+buckling methods and base forced movement, with narrow physiology/inventory and
+startup adapters. It checks normal and old-state transfers, other-occupant
+protection, refusal and persistence-busy paths, and a real version-2 save,
+preflight and import with metadata aliases. Delayed verb/client ownership is
+covered by source contracts; this headless fixture does not establish real
+connected-client timing or full gameplay acceptance. Preparation alone does not
+establish a native pass.
+
+The serializer still fails closed on unsupported cross-z object fields and on
+duplicate durable bindings. Diagnostics report only bounded source field/type,
+save-entry identifiers and z-levels, never player names, client keys or live
+native references. General movement during serialization remains a separate
+snapshot problem; no save format or loader migration is introduced here.
+
+```sh
+python3 -B tests/world_save/test_sleep_transfer_sources.py -v
+python3 tests/world_save/run-sleep-transfer.py --prepare-only
+# Only in an approved isolated native execution window:
+python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin /path/to/byond/bin
+for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate; do
+  python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin /path/to/byond/bin --negative-control "$control"
+done
+```
+
+Each control mutates only generated fixture source and must produce its exact
+intended assertion. The old-bed control requires the real serializer's cross-z
+bed rejection. Compiler errors, unexpected assertions, runtimes, unfinished
+results, and timeouts are failures, not evidence that a control worked. CI has a
+focused `protected_sleep_regressions` dispatch option and retains receipts,
+source hashes, logs and temporary saves for every attempted run.
+
+`run-cross-level.py` is an optional diagnostic scaffold for the broader snapshot
+problem. Its `--expect-current-defects` mode characterizes existing traversal
+defects; those scenarios are not fixed or asserted as passing by this patch.
+
 `run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
 generation, then launches fresh two-level readers. It runs the production saver,
 preflight, loader and shared building allocator. The runner stages the allocator

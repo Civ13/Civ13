@@ -104,7 +104,11 @@
 	if(istype(A, /atom/movable))
 		var/atom/movable/movable = A
 		if(movable.z && movable.z != saving_z)
-			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type]")
+			var/turf/location = get_turf(movable)
+			var/datum/save_export_frame/owner = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+			var/source_type = owner && owner.source ? "[owner.source.type]" : "none"
+			var/source_field = owner && owner.current_field ? copytext("[owner.current_field]", 1, 81) : "contents"
+			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type] saved_z=[saving_z] native_z=[movable.z] turf_z=[location ? location.z : 0] source_type=[source_type] source_field=[source_field]")
 	var/ind = saving_references["\ref[A]"]
 	var/ref = 0
 	if(ind && saving_reference_pins[ind] == A)
@@ -156,7 +160,9 @@
 			if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
 				continue
 			if(A.vars.Find(v))
+				frame.current_field = v
 				var/value = encode_saved_value(savefile, A.vars[v])
+				frame.current_field = null
 				require_export_frame(frame)
 				savefile.cd = entry_path(savefile, ref)
 				savefile[v] << value

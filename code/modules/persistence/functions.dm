@@ -515,6 +515,7 @@ var/global/persistence_load_recovery_required = FALSE
 	var/savefile/file
 	var/datum/source
 	var/source_identity
+	var/current_field
 	var/entry
 	var/accepts_children = FALSE
 	var/active = TRUE
@@ -637,6 +638,7 @@ var/global/persistence_load_recovery_required = FALSE
 	frame.active = FALSE
 	frame.source = null
 	frame.source_identity = null
+	frame.current_field = null
 	frame.file = null
 	frame.exporter = null
 

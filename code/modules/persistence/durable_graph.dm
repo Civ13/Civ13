@@ -76,7 +76,9 @@
 		throw EXCEPTION("Durable metadata atom identity changed during export")
 	var/list/node = nodes[id]
 	if(node["ref"] && (node["ref"] != ref || node["z"] != z))
-		throw EXCEPTION("Durable metadata atom was exported more than once")
+		var/atom/movable/movable = A
+		var/turf/location = get_turf(movable)
+		throw EXCEPTION("Durable metadata atom was exported more than once: type=[A.type] first_z=[node["z"]] first_ref=[node["ref"]] current_z=[z] current_ref=[ref] native_z=[movable.z] turf_z=[location ? location.z : 0]")
 	node["z"] = z
 	node["ref"] = ref
 
