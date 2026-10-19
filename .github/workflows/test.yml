@@ -86,6 +86,7 @@ jobs:
         run: |
           python3 -B tests/world_save/test_sleep_transfer_sources.py -v
           python3 -B tests/world_save/test_cross_level_sources.py -v
+          python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
@@ -942,6 +943,8 @@ jobs:
           for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate; do
             python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
+          # Synthetic writer/reader only. No private save path or staging upload.
+          python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"
       - name: Retain protected sleep regression evidence
         if: always() && steps.protected_sleep.outcome != 'skipped'
         uses: actions/upload-artifact@v4
@@ -949,6 +952,14 @@ jobs:
           name: protected-sleep
           path: ${{ runner.temp }}/protected-sleep/
           if-no-files-found: error
+
+      - name: Retain synthetic save inspector receipt
+        if: always() && steps.protected_sleep.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: partial-save-inspector-selftest
+          path: ~/civ13-save-inspect-*/selftest-summary.json
+          if-no-files-found: ignore
 
       - name: Offline world-save round-trip regression
         id: world_save
