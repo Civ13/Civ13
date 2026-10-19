@@ -161,6 +161,8 @@ map_storage
 		list/loaded_lists = list()
 		var/saving_z = 0
 		var/last_error = null
+		// Admin VV diagnostic snapshots only. Never retain live objects here.
+		var/list/last_save_reference_failure
 		var/round_restored = FALSE
 		var/per_pause = 200
 		var/so_far = 0
@@ -171,6 +173,39 @@ map_storage
 		if(ignore)
 			src.ignore_types = ignore
 		return
+
+/map_storage/persistence_runtime_var(key)
+	if(key == "last_save_reference_failure") return TRUE
+	return ..()
+
+// Native lookup references are process-local hints, not durable IDs. Operators
+// must compare type/location before acting: deletion can later recycle a ref.
+/map_storage/proc/reference_failure_snapshot(datum/value)
+	var/list/snapshot = list("type" = value ? "[value.type]" : "none", "lookup_ref" = value ? "\ref[value]" : null, "native_x" = 0, "native_y" = 0, "native_z" = 0, "turf_x" = 0, "turf_y" = 0, "turf_z" = 0)
+	if(istype(value, /atom))
+		var/atom/A = value
+		snapshot["native_x"] = A.x
+		snapshot["native_y"] = A.y
+		snapshot["native_z"] = A.z
+		var/turf/T = get_turf(A)
+		if(T)
+			snapshot["turf_x"] = T.x
+			snapshot["turf_y"] = T.y
+			snapshot["turf_z"] = T.z
+	return snapshot
+
+// Capture only bounded schema context, never values, names or client data. Keep
+// this record through failed-operation cleanup so one admin VV field is enough.
+/map_storage/proc/record_save_reference_failure(kind, datum/target, current_entry = 0, first_z = 0, first_entry = 0)
+	var/list/chain = list()
+	for(var/i = max(1, saving_export_stack.len - 7), i <= saving_export_stack.len, i++)
+		var/datum/save_export_frame/frame = saving_export_stack[i]
+		var/valid_frame = istype(frame, /datum/save_export_frame)
+		var/list/frame_snapshot = reference_failure_snapshot(valid_frame ? frame.source : null)
+		frame_snapshot["field"] = valid_frame ? (istext(frame.current_field) ? copytext(frame.current_field, 1, 81) : "contents") : "unavailable"
+		frame_snapshot["entry"] = valid_frame ? frame.entry : 0
+		chain += list(frame_snapshot)
+	last_save_reference_failure = list("schema_version" = 1, "kind" = kind, "captured_at" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss"), "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = current_entry, "first_z" = first_z, "first_entry" = first_entry, "source" = chain.len ? chain[chain.len] : reference_failure_snapshot(null), "target" = reference_failure_snapshot(target), "owner_chain" = chain, "owner_chain_truncated" = saving_export_stack.len > 8)
 
 // Drops the save/load bookkeeping references so qdel'd atoms can be garbage
 // collected - these lists otherwise pin every atom they touched until the next
@@ -302,6 +337,8 @@ var/global/persistence_load_recovery_required = FALSE
 	var/owns_operation = !operation
 	if(owns_operation) operation = begin_persistence_operation(src, kind)
 	if(!operation || !operation.enter_backend(src, kind)) return FALSE
+	// A busy/rejected request must not erase the active save's failure context.
+	if(kind == "save") last_save_reference_failure = null
 	var/success = FALSE
 	try
 		if(kind == "save") success = save_world_contents(operation)
@@ -515,6 +552,7 @@ var/global/persistence_load_recovery_required = FALSE
 	var/savefile/file
 	var/datum/source
 	var/source_identity
+	var/current_field
 	var/entry
 	var/accepts_children = FALSE
 	var/active = TRUE
@@ -637,6 +675,7 @@ var/global/persistence_load_recovery_required = FALSE
 	frame.active = FALSE
 	frame.source = null
 	frame.source_identity = null
+	frame.current_field = null
 	frame.file = null
 	frame.exporter = null
 

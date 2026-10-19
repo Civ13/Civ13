@@ -37,6 +37,10 @@ on:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
         type: boolean
         default: false
+      protected_sleep_regressions:
+        description: 'Opt in only to protected sleep transfers and save compatibility checks'
+        type: boolean
+        default: false
       world_save_profile_regressions:
         description: 'Opt in only to serializer phase profiling and its mutation controls'
         type: boolean
@@ -77,6 +81,12 @@ jobs:
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
+      - name: Test protected sleep source and fixture contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true
+        run: |
+          python3 -B tests/world_save/test_sleep_transfer_sources.py -v
+          python3 -B tests/world_save/test_cross_level_sources.py -v
+          python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
@@ -920,6 +930,45 @@ jobs:
         with:
           name: world-save-profile
           path: ${{ runner.temp }}/world-save-profile/
+
+      - name: Verify protected sleep transfers and version-2 saves
+        id: protected_sleep
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/protected-sleep"
+          export TMPDIR="$RUNNER_TEMP/protected-sleep"
+          python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin"
+          for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
+            python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case field-direct
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case move-direct --expect-current-defects
+          # Synthetic writer/reader only. No private save path or staging upload.
+          if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"; then
+            # These two compiler logs contain only fixed synthetic source, never
+            # a source save or runtime input. Bound diagnostics; do not upload logs.
+            for log in "$HOME"/civ13-save-inspect-*/{writer,reader}-compile.log; do
+              if [ -f "$log" ]; then head -c 4096 "$log"; fi
+            done
+            exit 1
+          fi
+      - name: Retain protected sleep regression evidence
+        if: always() && steps.protected_sleep.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: protected-sleep
+          path: ${{ runner.temp }}/protected-sleep/
+          if-no-files-found: error
+
+      - name: Retain synthetic save inspector receipt
+        if: always() && steps.protected_sleep.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: partial-save-inspector-selftest
+          path: ~/civ13-save-inspect-*/selftest-summary.json
+          if-no-files-found: ignore
 
       - name: Offline world-save round-trip regression
         id: world_save
