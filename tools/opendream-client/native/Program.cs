@@ -72,18 +72,28 @@ public static class Program {
                 Environment.SetEnvironmentVariable("TMPDIR", root);
             }
             using var owner = Updater.Lock(root);
-            using var transport = new ReleaseTransport();
+            using var transport = new ReleaseTransport(new HttpClientHandler { AllowAutoRedirect = false }, Console.WriteLine);
             Console.WriteLine("Civ13 Launcher " + version.ToString(3));
+            Console.WriteLine("Checking for launcher updates (installed " + version.ToString(3) + ")...");
+            var updateStage = "manifest check";
             try {
                 var manifest = Channel.Read(await transport.Text(Updater.LauncherChannelUrl));
+                manifest.Validate(true);
+                var latest = Version.Parse(manifest.Version);
+                Console.WriteLine("Latest stable launcher: " + latest + ".");
+                if (latest <= version)
+                    Console.WriteLine("This launcher is current or newer than the stable release.");
+                else Console.WriteLine("Downloading and verifying launcher " + latest + "...");
+                updateStage = "download and verification";
                 var candidate = await Updater.StageLauncher(manifest, version, root, transport);
                 if (candidate is not null) {
+                    updateStage = "starting update helper";
                     StartUpdateHelper(candidate, manifest, root);
                     Console.WriteLine("Verified launcher update downloaded. Restarting after this launcher exits...");
                     return 0;
                 }
-            } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or TaskCanceledException or JsonException or FormatException) {
-                Console.WriteLine("Launcher update unavailable: " + Updater.DescribeFailure(e));
+            } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException or TimeoutException or JsonException or FormatException) {
+                Console.WriteLine("Launcher update unavailable during " + updateStage + ": " + Updater.DescribeFailure(e));
             }
             using var byondTransport = new ByondTransport();
             var byond = await Byond.Ensure(RequiredByond(), root, byondTransport, new WindowsByondDesktop());
