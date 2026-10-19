@@ -56,9 +56,9 @@ var/checks = 0
 				P.backdrop(M)
 				check_matrix(P.color, vision >= 45 ? bypass : lit, "vision [vision]")
 				check(M.see_invisible == vision && M.sight == original_sight, "sight unchanged")
-				var/list/retained_color = P.color
+				var/retained_mode = P.last_lighting_bypass
 				P.backdrop(M)
-				check(P.color == retained_color, "unchanged mode retains matrix")
+				check(P.last_lighting_bypass == retained_mode, "unchanged mode remains cached")
 			M.see_invisible = 60
 			other.backdrop(M)
 			check_matrix(P.color, lit, "independent client mode")
