@@ -9,8 +9,9 @@ containers are excluded. This applies even to open storage: the existing recursi
 get_contents/return_inv helpers do not enforce container accessibility.
 
 The same selected handle survives the construction wait. Cancellation preserves
-its identity, name and quality. Moving or deleting it aborts without substituting
-a spare. Both the source stack and selected handle are checked again before the
+its identity, name and quality. Moving it out of accessible owned equipment or
+deleting it aborts without substituting a spare; moving between eligible owned
+slots remains valid. Both the source stack and selected handle are checked again before the
 material debit. Only a successful stack.use consumes the handle, through actual
 slot removal and qdel. No clone-based handReturnMap refund is used for handles.
 Normal menu crafting still requires a held material stack. Direct production

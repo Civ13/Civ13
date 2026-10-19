@@ -4,6 +4,11 @@
 var/list/handle_ci_cases = list()
 var/handle_ci_retired = 0
 
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+
 /mob/living/human/handle_ci/New()
 	return
 /mob/living/human/handle_ci/religion_check()
@@ -97,6 +102,14 @@ var/handle_ci_retired = 0
 	return stock.amount == before_stock && handle_ci_outputs(recipe.result_type) == before_output && handle_ci_retired == before_retired && !QDELETED(handle) && handle.loc == actor && actor.get_equipped_item(slot) == handle && handle.name == "selected custom handle" && handle.crafting_quality == 2
 
 /proc/recipe_ci_handles()
+	// The isolated runner bypasses global startup; use actual event objects for
+	// real equipment exits/entries rather than replacing those lifecycle hooks.
+	GLOB.all_observable_events = list()
+	GLOB.moved_event = new
+	GLOB.dir_set_event = new
+	GLOB.destroyed_event = new
+	GLOB.name_set_event = new
+	GLOB.stat_set_event = new
 	var/turf/T = locate(1,1,1)
 	if (!isfloor(T))
 		T = new /turf/floor/plating(T)
@@ -157,9 +170,11 @@ var/handle_ci_retired = 0
 	handle_ci_expect(C.stock.amount == 1 && handle_ci_outputs(C.recipe.result_type) == C.before_output && handle_ci_retired == C.before_retired && C.actor.back == C.handle, "failed material debit does not consume handle")
 	for (var/change in list("handle moved", "handle deleted", "stock moved", "stock deleted"))
 		C = new("bone pickaxe", slot_back, 4)
-		spare = new(C.actor)
-		C.actor.shoulder = spare
+		spare = null
 		spawn(1)
+			// Introduce the alternative after the exact original was selected.
+			spare = new(C.actor)
+			C.actor.shoulder = spare
 			if (change == "handle moved") C.actor.remove_from_mob(C.handle)
 			if (change == "handle deleted") qdel(C.handle)
 			if (change == "stock moved") C.stock.loc = T
