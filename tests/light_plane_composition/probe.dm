@@ -63,10 +63,12 @@ var/datum/map_fixture/map
 		try
 			check(!world.port && !OpenPort(59474) && !world.port, "closed port")
 			var/obj/screen/plane_master/light_mask/P = new
+			#if LIGHTING_COMPOSITION_V2
 			var/obj/screen/plane_master/light_mask/other = new
 			var/mob/M = new
 			var/list/lit = list(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,1)
 			var/list/bypass = list(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1)
+			#endif
 			check(P.invisibility == 0 && P.blend_mode == BLEND_MULTIPLY, "eligible multiply plane")
 			check(P.mouse_opacity == 0, "no input interception")
 			var/obj/screen/plane_master/lighting/weather = new
