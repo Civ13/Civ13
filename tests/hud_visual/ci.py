@@ -30,8 +30,18 @@ def sources():
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
     dme = dme.replace('code\\world.dm', PREFIX + '_world.dm')
     dme = re.sub(r'^#include\s+"[^"\n]+\.dmm"\s*$', '', dme, flags=re.M)
+    generated = {}
+    for index, path in enumerate(('code/modules/client/client_procs.dm', 'code/modules/client/movement.dm')):
+        original = (ROOT / path).read_text(encoding='utf-8')
+        isolated, count = re.subn(r'(?ms)^/client/New\([^\n]*\)\n.*?(?=^/(?!/)|\Z)', '', original)
+        if count != 1:
+            raise ValueError('Client entry isolation drift: ' + path)
+        name = PREFIX + '_client_' + str(index) + '.dm'
+        generated[name] = isolated
+        dme = dme.replace(path.replace('/', '\\'), name)
     dme += '\n#include "tests/hud_visual/probe.dm"\n'
-    return {PREFIX + '_world.dm': world, PREFIX + '.dme': dme}
+    generated.update({PREFIX + '_world.dm': world, PREFIX + '.dme': dme})
+    return generated
 
 
 def verify(result, cases, logs):

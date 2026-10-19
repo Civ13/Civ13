@@ -5,9 +5,18 @@ var/hud_probe_unexpected = FALSE
 /world
 	hub = ""
 	hub_password = ""
+	visibility = 0
 	maxx = 3
 	maxy = 3
 	maxz = 1
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+/world/Topic(T, addr, master, key)
+	return "Isolated HUD fixture; no operations."
+/client/New(TopicData)
+	return FALSE
 /world/Error(exception/E)
 	hud_probe_unexpected = TRUE
 	text2file("UNEXPECTED [E]", "result.txt")
@@ -136,9 +145,10 @@ var/hud_probe_unexpected = FALSE
 	hud_assert(caught && D.health_calls == 1, "[label] exact injected fault caught once")
 	hud_assert((hud_black(D) > 0) == expected_black, "[label] underlay order")
 /world/New()
-	world.OpenPort(0)
+	world.OpenPort("none")
 	text2file("entered", "entered.txt")
 	try
+		hud_assert(!world.port && !world.OpenPort(0), "closed port and refused reopen")
 		hud_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")
 		makeDatumRefLists()
 		map = new /obj/map_metadata/hud_probe
