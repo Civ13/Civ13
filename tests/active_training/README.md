@@ -52,6 +52,20 @@ while all 10 other checks, including the native reward, pass. Matching canonical
 PASS/FAIL log labels are required. Missing receipts, warnings, unrelated runtime
 diagnostics, abnormal exits and timeouts cannot satisfy the causal oracle.
 
+The compiler evidence contract requires one exact 516.1681 banner followed by
+one complete `.active_training_click.dmb - 0 errors, 0 warnings` result line
+(with optional native timestamp). Its version 1 diagnostic pattern and compiler
+validator are copied unchanged from the accepted `contained-bb89a0b8-v7` helper
+`oracle/z_budget_evidence.py` (SHA256
+`133c130845ab28cfb6f0bfb8b2c63b595d3694afc44a3af398cb1fdf3de584db`),
+identical to the `client-native-v10-composited-capture/helpers` copy. Additional
+fixture-specific diagnostics remain rejected. Compiler logs retain the helper's
+1 MiB bound. All ten required metadata/result/status/log files have a combined
+16 MiB bound checked before reading, with bounded reads guarding subsequent
+file growth. Every compiler/runtime stream rejects diagnostics and unrelated
+FAIL markers; repeated intended original-silence markers in console copies are
+allowed while the canonical log must still match the exact 21-check receipt.
+
 The existing active_training CI step selects offline checks, the two original
 accelerated positive/post-wait modes and both ClickFeedback modes under the
 existing introduced-tests/extensive guard. Its 20-minute step bound also limits

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -28,7 +29,9 @@ class ClickOracleTests(unittest.TestCase):
         for phase, limit in [('compile', 180), ('runtime', 100)]:
             write(phase + '-status.json', {'returncode': 0, 'timed_out': False,
                   'wall_seconds': 8 if phase == 'compile' else 50, 'deadline_seconds': limit})
-        (folder / 'compile.log').write_text('DM compiler version 516.1681\nprobe.dmb - 0 errors, 0 warnings\n')
+        (folder / 'compile.log').write_text('DM compiler version 516.1681\n.active_training_click.dmb - 0 errors, 0 warnings\n')
+        (folder / 'compile-stdout.log').write_text((folder / 'compile.log').read_text())
+        (folder / 'compile-stderr.log').write_text('')
         log = '\n'.join(('FAIL: ' if row['label'] in failed else 'PASS ') + row['label'] for row in checks) + '\n'
         (folder / 'runtime.log').write_text(log)
         (folder / 'runtime-stdout.log').write_text('')
@@ -116,6 +119,93 @@ class ClickOracleTests(unittest.TestCase):
                     log.write('\nruntime error: unrelated failure\n')
                 with self.assertRaisesRegex(ValueError, 'Unrelated runtime'):
                     oracle.verify(folder, HEAD, True)
+
+    def test_compile_requires_unique_exact_banner_and_binary_result(self):
+        banner = 'DM compiler version 516.1681\n'
+        summary = '.active_training_click.dmb - 0 errors, 0 warnings\n'
+        invalid = [banner + '0 errors, 0 warnings\n',
+                   banner + 'probe.dmb - 0 errors, 0 warnings\n',
+                   banner + banner + summary, banner + summary + summary,
+                   summary + banner, 'prefix ' + banner + summary,
+                   banner + summary.rstrip() + ' trailing text\n',
+                   banner + summary + 'other.dmb - 1 error, 0 warnings\n',
+                   banner + summary + 'invalid file: absent.dme\n']
+        for text in invalid:
+            with self.subTest(text=text), tempfile.TemporaryDirectory() as temp:
+                folder = Path(temp)
+                self.make(folder)
+                (folder / 'compile.log').write_text(text)
+                with self.assertRaisesRegex(ValueError, 'warning-free'):
+                    oracle.verify(folder, HEAD)
+
+    def test_native_compiler_timestamp_and_console_copy_are_accepted(self):
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            self.make(folder)
+            text = 'DM compiler version 516.1681\n.active_training_click.dmb - 0 errors, 0 warnings (10/19/26 9:01 am)\n'
+            (folder / 'compile.log').write_text(text)
+            (folder / 'compile-stdout.log').write_text(text)
+            oracle.verify(folder, HEAD)
+
+    def test_comprehensive_diagnostics_reject_every_compile_and_runtime_stream(self):
+        diagnostics = ['runtime error:', 'bad ref', 'bad loc', 'BUG:', '## ERROR:', 'RUNTIME:',
+                       'assertion failed', 'infinite loop', 'segmentation fault', 'fatal error',
+                       'Unexpected runtime', 'OOM', 'out of memory', 'access violation', 'CRASH',
+                       'CRASHED', 'invalid file', 'Cannot read null', 'Cannot execute null',
+                       'exception', 'fixture deadline']
+        for name in [n for n in oracle.RETAINED_FILES if n.endswith('.log')]:
+            for diagnostic in diagnostics:
+                with self.subTest(name=name, diagnostic=diagnostic), tempfile.TemporaryDirectory() as temp:
+                    folder = Path(temp)
+                    self.make(folder, True)
+                    with (folder / name).open('a') as log:
+                        log.write('\n' + diagnostic + ' unrelated\n')
+                    with self.assertRaises(ValueError):
+                        oracle.verify(folder, HEAD, True)
+
+    def test_unrelated_fail_rejects_all_streams_even_with_exact_control_result(self):
+        for name in [n for n in oracle.RETAINED_FILES if n.endswith('.log')]:
+            for marker in ['FAIL: unrelated failure', 'FAIL unrelated failure', 'FAIL']:
+                with self.subTest(name=name, marker=marker), tempfile.TemporaryDirectory() as temp:
+                    folder = Path(temp)
+                    self.make(folder, True)
+                    with (folder / name).open('a') as log:
+                        log.write('\n' + marker + '\n')
+                    with self.assertRaises(ValueError):
+                        oracle.verify(folder, HEAD, True)
+
+    def test_aggregate_bound_is_checked_before_any_metadata_or_log_read(self):
+        for names in [('metadata.json',), ('runtime-stdout.log', 'runtime-stderr.log')]:
+            with self.subTest(names=names), tempfile.TemporaryDirectory() as temp:
+                folder = Path(temp)
+                self.make(folder)
+                for name in names:
+                    with (folder / name).open('wb') as stream:
+                        stream.truncate(oracle.MAX_RETAINED_BYTES // len(names))
+                with mock.patch.object(Path, 'open', side_effect=AssertionError('Must reject before reading')):
+                    with self.assertRaisesRegex(ValueError, '16 MiB aggregate'):
+                        oracle.verify(folder, HEAD)
+
+    def test_bounded_reads_reject_file_growth_after_preflight(self):
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            self.make(folder)
+            # Simulate a stale stat that passed, then a larger retained receipt.
+            size = sum((folder / name).stat().st_size for name in oracle.RETAINED_FILES)
+            with mock.patch.object(oracle, 'MAX_RETAINED_BYTES', size - 1), \
+                 mock.patch.object(Path, 'stat') as stat:
+                stat.return_value.st_size = 0
+                with self.assertRaisesRegex(ValueError, 'grew past 16 MiB'):
+                    oracle.verify(folder, HEAD)
+
+    def test_canonical_compile_log_keeps_accepted_one_mib_bound(self):
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp)
+            self.make(folder)
+            with (folder / 'compile.log').open('a') as log:
+                log.write('x' * oracle.MAX_COMPILE_LOG)
+            with self.assertRaisesRegex(ValueError, 'warning-free'):
+                oracle.verify(folder, HEAD)
 
     def test_missing_duplicate_check_or_case_rejects(self):
         for mutate in [lambda v: v['checks'].pop(), lambda v: v['checks'].append(v['checks'][0]),
