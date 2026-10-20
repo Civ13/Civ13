@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 jobs:
   changes:
     uses: ./.github/workflows/ci-selection.yml

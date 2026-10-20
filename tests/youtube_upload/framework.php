@@ -87,9 +87,14 @@ try {
     $youtube->close();
 
     foreach ([401, 429, 500, 503] as $status) {
-        [$youtube, $loop, $driver] = client([new Response($status, [], '{"error":{"code":503,"message":"DO-NOT-LOG-SECRET"}}')]);
+        [$youtube, $loop, $driver, $guard] = client([new Response($status, ['Retry-After' => '120'], '{"error":{"code":503,"message":"DO-NOT-LOG-SECRET"}}')]);
         refused(fn () => uploadClip($youtube, $loop, $input));
         check(count($driver->requests) === 1);
+        if ($status === 429) {
+            check($guard->rateLimit()['media_attempted'] === true);
+            check($guard->rateLimit()['status'] === 429);
+            check(!str_contains(json_encode($guard->rateLimit()), 'DO-NOT-LOG-SECRET'));
+        }
         $youtube->close();
     }
     [$youtube, $loop, $driver] = client([new RuntimeException('TOKEN-AND-URL-MUST-NOT-ESCAPE')]);
@@ -112,6 +117,16 @@ foreach ([video(privacy: 'unlisted'), video(privacy: 'private'), video(channel: 
     check(count($driver->requests) === 1);
     $youtube->close();
 }
+
+check(safeRetryAt(new Response(429, ['Retry-After' => '120']), 10000) === 10120);
+check(safeRetryAt(new Response(429, ['Retry-After' => 'Thu, 01 Jan 1970 04:00:00 GMT']), 10000) === 14400);
+check(safeRetryAt(new Response(429, ['X-RateLimit-Reset' => '14400']), 10000) === 14400);
+check(safeRetryAt(new Response(429, ['Retry-After' => '-5']), 10000) === 96400);
+[$youtube, $loop, $driver, $guard] = client([new Response(429, ['Retry-After' => '120'], 'PRIVATE-BODY')]);
+refused(fn () => requireChannel($youtube, $loop));
+check($guard->rateLimit()['media_attempted'] === false);
+check($guard->rateLimit()['retry_at'] >= time() + 119);
+$youtube->close();
 [$youtube, $loop, $driver] = client([jsonResponse(video())]);
 verifyVideo($youtube, $loop, 'abcdefghijk');
 check(str_contains($driver->requests[0]->getUrl(), 'processingDetails'));
