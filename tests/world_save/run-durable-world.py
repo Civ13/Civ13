@@ -312,8 +312,9 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
+        # 141 wound assertions plus the generated offline-client startup check.
         if args.wounds and not args.negative_control:
-            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 141:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 142:
                 raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
         if args.lifecycle_shutdown:
             # The DM receipt is written before native deletion. Acceptance must
@@ -352,7 +353,7 @@ def main():
                     'lighting-shared': 'corners share mutable affecting list'}
         if args.negative_control:
             if args.negative_control == 'wound-restore':
-                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 4:
+                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 5:
                     raise RuntimeError('Historical wound source did not reproduce the constructor failure: ' + str(result))
                 receipt['result'] = result
                 receipt['expected_failure_caught'] = True
@@ -361,11 +362,11 @@ def main():
                 return
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
-            # Four operation-admission checks precede the malformed-wire guard.
-            if args.negative_control == 'preflight' and result.get('checks') != 11:
+            # Includes four operation-admission checks and the offline startup check.
+            if args.negative_control == 'preflight' and result.get('checks') != 12:
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
-            # Includes the export operation-release assertion before recovery.
-            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:
+            # Includes export operation-release and offline startup checks before recovery.
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:
                 raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
             if args.negative_control == 'lighting-legacy':
                 import_error = result.get('import_error') or ''

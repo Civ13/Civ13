@@ -12,7 +12,8 @@ echo "Setting up BYOND."
 rm -rf "BYOND"
 mkdir -p "BYOND"
 cd "BYOND"
-wget -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
+# Bound transient download failures without weakening TLS or changing source/version.
+wget --timeout=60 --tries=3 --waitretry=5 -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
 ls
 unzip -o 516.1681_byond_linux.zip
 cd byond
