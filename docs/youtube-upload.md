@@ -300,8 +300,8 @@ Wrong state, denied/error callbacks, duplicates, expired/missing tokens, expande
 scopes or another channel stop before secret placement. The helper makes no
 automatic retry or account/client change. It never requests production publication.
 
-After channel verification it separately displays the exact three secret names,
-repository and environment and asks the user to type:
+After channel verification it displays the repository/environment and refers to
+the three credential fields documented above, then asks the user to type:
 
 ```text
 STORE Civ13/Civ13 youtube-unlisted
