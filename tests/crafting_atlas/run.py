@@ -59,7 +59,7 @@ def main():
         if args.compile_only:
             print('PASS: Compile only, 0 errors/warnings; no runtime launched')
             return
-        run = subprocess.run([str(daemon), 'probe.dmb', *(['-invisible', '-close'] if os.name == 'nt' else []), '-safe', '-log', 'runtime.log'], cwd=tmp, text=True, capture_output=True, timeout=30, creationflags=flags)
+        run = subprocess.run([str(daemon), 'probe.dmb', *(['-invisible', '-close'] if os.name == 'nt' else []), '-trusted', '-log', 'runtime.log'], cwd=tmp, text=True, capture_output=True, timeout=30, creationflags=flags)
         logs = (tmp / 'runtime.log').read_text(errors='replace') if (tmp / 'runtime.log').exists() else ''
         if run.returncode or any(marker in logs.lower() for marker in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError(str(run.returncode) + logs + run.stdout + run.stderr)

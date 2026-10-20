@@ -1,5 +1,8 @@
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Net.Sockets;
 using System.IO.Compression;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -29,44 +32,150 @@ public interface ITransport {
 }
 
 public sealed class ReleaseTransport : ITransport, IDisposable {
-    private readonly HttpClient _http = new(new HttpClientHandler { AllowAutoRedirect = false }) {
-        Timeout = TimeSpan.FromMinutes(10)
-    };
-    public async Task<string> Text(string url) {
-        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-        using var response = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
+    private readonly HttpClient _http;
+    private readonly Action<string>? _report;
+    private readonly Func<TimeSpan, CancellationToken, Task> _delay;
+    private readonly TimeSpan _textBudget;
+    private readonly TimeSpan _downloadBudget;
+    private const int Attempts = 3;
+    public ReleaseTransport() : this(new HttpClientHandler { AllowAutoRedirect = false }) { }
+    public ReleaseTransport(HttpMessageHandler handler, Action<string>? report = null,
+        Func<TimeSpan, CancellationToken, Task>? delay = null, TimeSpan? textBudget = null,
+        TimeSpan? downloadBudget = null) {
+        _http = new HttpClient(handler) { Timeout = Timeout.InfiniteTimeSpan };
+        _report = report;
+        _delay = delay ?? ((time, token) => Task.Delay(time, token));
+        _textBudget = textBudget ?? TimeSpan.FromSeconds(20);
+        _downloadBudget = downloadBudget ?? TimeSpan.FromMinutes(10);
+        if (_textBudget <= TimeSpan.Zero || _downloadBudget <= TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(textBudget), "Update budgets must be positive.");
+    }
+    public static bool IsTransient(Exception error) {
+        var transient = false;
+        Exception? current = error;
+        for (var depth = 0; current is not null && depth < 16; depth++, current = current.InnerException) {
+            // Never retry certificate/native authentication errors or HTTP rejections.
+            if (current is HttpRequestException request && (request.StatusCode is not null ||
+                request.HttpRequestError is HttpRequestError.UserAuthenticationError or HttpRequestError.ProxyTunnelError)) return false;
+            if (current is Win32Exception && current is not SocketException) return false;
+            if (current is SocketException socket) {
+                if (socket.SocketErrorCode is not (SocketError.ConnectionReset or SocketError.ConnectionAborted or
+                    SocketError.NetworkReset or SocketError.TimedOut)) return false;
+                transient = true;
+            }
+            if (current is TimeoutException) transient = true;
+        }
+        // An incomplete chain could hide a non-retryable cause.
+        return current is null && transient;
+    }
+    private async Task<T> Retry<T>(Func<CancellationToken, Task<T>> action, TimeSpan budget,
+        TimeSpan? attemptBudget, string stage) {
+        using var overall = new CancellationTokenSource(budget);
+        for (var attempt = 1; ; attempt++) {
+            overall.Token.ThrowIfCancellationRequested();
+            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(overall.Token);
+            if (attemptBudget is { } limit) deadline.CancelAfter(limit);
+            try { return await action(deadline.Token); }
+            catch (Exception e) when (attempt < Attempts && !overall.IsCancellationRequested &&
+                (IsTransient(e) || (e is OperationCanceledException && deadline.IsCancellationRequested))) {
+                _report?.Invoke($"{stage} connection interrupted; retrying ({attempt + 1}/{Attempts})...");
+                await _delay(TimeSpan.FromMilliseconds(attempt == 1 ? 250 : 750), overall.Token);
+            }
+        }
+    }
+    public Task<string> Text(string url) => Retry(async token => {
+        using var response = await _http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token);
         response.EnsureSuccessStatusCode();
         if (response.Content.Headers.ContentLength > 65536) throw new InvalidDataException("Manifest too large.");
-        var text = await response.Content.ReadAsStringAsync(timeout.Token);
+        var text = await response.Content.ReadAsStringAsync(token);
         if (text.Length > 65536) throw new InvalidDataException("Manifest too large.");
         return text;
-    }
-    public async Task Download(string url, string destination) {
-        var uri = new Uri(url);
-        for (var redirects = 0; redirects <= 5; redirects++) {
-            using var response = await _http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
-            if ((int)response.StatusCode is >= 300 and < 400) {
-                var location = response.Headers.Location ?? throw new IOException("Missing release redirect.");
-                uri = location.IsAbsoluteUri ? location : new Uri(uri, location);
-                if (uri.Scheme != "https" || !uri.IsDefaultPort || uri.UserInfo.Length != 0 ||
-                    (uri.Host != "github.com" && uri.Host != "release-assets.githubusercontent.com" &&
-                     uri.Host != "objects.githubusercontent.com"))
-                    throw new IOException("Untrusted release redirect.");
-                continue;
+    }, _textBudget, TimeSpan.FromSeconds(6), "Update manifest");
+
+    public async Task Download(string url, string destination) => await Retry(async token => {
+        var created = false;
+        var complete = false;
+        try {
+            var uri = new Uri(url);
+            for (var redirects = 0; redirects <= 5; redirects++) {
+                using var headerDeadline = CancellationTokenSource.CreateLinkedTokenSource(token);
+                headerDeadline.CancelAfter(TimeSpan.FromSeconds(20));
+                HttpResponseMessage response;
+                try { response = await _http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, headerDeadline.Token); }
+                catch (OperationCanceledException e) when (headerDeadline.IsCancellationRequested && !token.IsCancellationRequested) {
+                    throw new HttpRequestException(HttpRequestError.ConnectionError, "Release response headers timed out.",
+                        new TimeoutException("Release response headers timed out.", e));
+                }
+                headerDeadline.CancelAfter(Timeout.InfiniteTimeSpan);
+                using (response) {
+                    if ((int)response.StatusCode is >= 300 and < 400) {
+                        var location = response.Headers.Location ?? throw new IOException("Missing release redirect.");
+                        uri = location.IsAbsoluteUri ? location : new Uri(uri, location);
+                        if (uri.Scheme != "https" || !uri.IsDefaultPort || uri.UserInfo.Length != 0 ||
+                            (uri.Host != "github.com" && uri.Host != "release-assets.githubusercontent.com" &&
+                             uri.Host != "objects.githubusercontent.com"))
+                            throw new IOException("Untrusted release redirect.");
+                        continue;
+                    }
+                    response.EnsureSuccessStatusCode();
+                    await using (var output = new FileStream(destination, FileMode.CreateNew)) {
+                        created = true;
+                        await response.Content.CopyToAsync(output, token);
+                        await output.FlushAsync(token);
+                        output.Flush(true);
+                    }
+                    complete = true;
+                    return true;
+                }
             }
-            response.EnsureSuccessStatusCode();
-            await using var output = new FileStream(destination, FileMode.CreateNew);
-            await response.Content.CopyToAsync(output);
-            await output.FlushAsync();
-            output.Flush(true);
-            return;
+            throw new IOException("Too many release redirects.");
+        } finally {
+            // Only a file this attempt created belongs to us. Never remove a caller's
+            // pre-existing file after CreateNew rejects it; never append on retry.
+            if (created && !complete) File.Delete(destination);
         }
-        throw new IOException("Too many release redirects.");
-    }
+    }, _downloadBudget, null, "Update download");
     public void Dispose() => _http.Dispose();
 }
 
 public static class Updater {
+    // Exception messages/stack traces can contain signed URLs or credentials.
+    // Keep only framework classifications and numeric codes from a bounded chain.
+    public static string DescribeFailure(Exception error) {
+        ArgumentNullException.ThrowIfNull(error);
+        var parts = new List<string>();
+        Exception? current = error;
+        for (var depth = 0; current is not null && depth < 6; depth++, current = current.InnerException) {
+            var kind = current switch {
+                HttpRequestException => "HttpRequestException",
+                AuthenticationException => "AuthenticationException",
+                SocketException => "SocketException",
+                Win32Exception => "Win32Exception",
+                TaskCanceledException => "TaskCanceledException",
+                TimeoutException => "TimeoutException",
+                OperationCanceledException => "OperationCanceledException",
+                IOException => "IOException",
+                JsonException => "JsonException",
+                FormatException => "FormatException",
+                _ => "Exception"
+            };
+            var part = kind + FormattableString.Invariant($" HRESULT=0x{unchecked((uint)current.HResult):X8}");
+            if (current is HttpRequestException request) {
+                part += " " + request.HttpRequestError;
+                if (request.StatusCode is { } status)
+                    part += FormattableString.Invariant($" HTTP={(int)status}");
+            }
+            if (current is SocketException socket)
+                part += " " + socket.SocketErrorCode;
+            if (current is Win32Exception native)
+                part += FormattableString.Invariant($" native={native.NativeErrorCode}/0x{unchecked((uint)native.NativeErrorCode):X8}");
+            parts.Add(part);
+        }
+        if (current is not null) parts.Add("...");
+        var result = string.Join(" -> ", parts);
+        return result.Length > 512 ? result[..509] + "..." : result;
+    }
+
     public const string ClientChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/master/tools/opendream-client/channel.json";
     public const string LauncherChannelUrl = "https://raw.githubusercontent.com/Civ13/Civ13/native-launcher-updates/native-launcher-channel.json";
     public static readonly string[] Required = ["Sign-In.cmd", "Play-Nomads.cmd", "Play-TDM.cmd", "Connect.ps1",
@@ -96,7 +205,7 @@ public static class Updater {
     public static async Task<Channel> ClientChannel(ITransport transport, string root, string bundled) {
         string json;
         try { json = await transport.Text(ClientChannelUrl); }
-        catch (Exception e) when (e is HttpRequestException or IOException or TaskCanceledException) {
+        catch (Exception e) when (e is HttpRequestException or IOException or OperationCanceledException) {
             Console.WriteLine("Update check unavailable. Using the last verified or bundled client.");
             var cache = Path.Combine(root, "last-channel.json");
             json = File.Exists(cache) ? File.ReadAllText(cache) : bundled;
@@ -134,7 +243,7 @@ public static class Updater {
     }
     public static async Task<string> EnsureClient(Channel channel, string root, ITransport transport) {
         try { return await InstallClient(channel, root, transport); }
-        catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or TaskCanceledException) {
+        catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException) {
             var cache = Path.Combine(root, "last-channel.json");
             if (!File.Exists(cache)) throw;
             var previous = Channel.Read(File.ReadAllText(cache));

@@ -13,6 +13,7 @@ var/TOD_may_automatically_change = FALSE
 	processes.time_of_day = src
 
 /process/time_of_day/fire()
+	if(persistence_save_in_progress) return
 	if (!roundstart_time || (map && map.times_of_day.len == 1))
 		return
 	try

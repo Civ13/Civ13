@@ -81,7 +81,7 @@ def main():
         def run(phase):
             (target / 'result.txt').unlink(missing_ok=True)
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'],
+            ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'],
                                  cwd=target, capture_output=True, text=True, timeout=60, creationflags=flags)
             result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
             log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''

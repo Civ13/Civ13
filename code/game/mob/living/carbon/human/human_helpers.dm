@@ -75,41 +75,112 @@
 				equipment_see_invis = G.see_invisible
 
 
+// Protected sleep moves the body off-map; buckling is a spatial relationship,
+// not a bed claim. Release only this body's reciprocal seat before teleporting.
+/mob/living/human/proc/release_protected_sleep_buckle()
+	if (!buckled)
+		return TRUE
+	var/obj/seat = buckled
+	if (seat.buckled_mob != src)
+		return FALSE
+	seat.unbuckle_mob()
+	return !buckled && (!seat || seat.buckled_mob != src)
+
+/mob/living/human/proc/enter_protected_sleep()
+	if (persistence_save_in_progress || inducedSSD)
+		return FALSE
+	var/turf/return_turf = get_turf(src)
+	var/turf/sleep_turf = locate(1,1,1)
+	if (!return_turf || !sleep_turf)
+		return FALSE
+	// Retain the return point before unbuckling; hooks must not change it.
+	if (!release_protected_sleep_buckle() || persistence_save_in_progress || get_turf(src) != return_turf)
+		return FALSE
+	drop_item()
+	// Inventory hooks may yield or move/rebuckle the body; recheck before transfer.
+	if (persistence_save_in_progress || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)
+		return FALSE
+	var/previous_lastx = lastx
+	var/previous_lasty = lasty
+	var/previous_lastz = lastz
+	var/previous_sleeping = sleeping
+	lastx = return_turf.x
+	lasty = return_turf.y
+	lastz = return_turf.z
+	sleeping = 66
+	inducedSSD = TRUE
+	forceMove(sleep_turf)
+	if (!sleep_turf || get_turf(src) != sleep_turf)
+		lastx = previous_lastx
+		lasty = previous_lasty
+		lastz = previous_lastz
+		sleeping = previous_sleeping
+		inducedSSD = FALSE
+		return FALSE
+	sleep_update()
+	return TRUE
+
+/mob/living/human/proc/complete_protected_wakeup()
+	if (persistence_save_in_progress || !inducedSSD)
+		return FALSE
+	var/turf/return_turf = locate(lastx,lasty,lastz)
+	if (!return_turf)
+		return FALSE
+	// Also repairs the reciprocal, distant bed link made by older sleep code.
+	// Never release a different occupant through an inconsistent stale pointer.
+	if (!release_protected_sleep_buckle() || persistence_save_in_progress || !return_turf || locate(lastx,lasty,lastz) != return_turf)
+		return FALSE
+	forceMove(return_turf)
+	if (!return_turf || get_turf(src) != return_turf)
+		return FALSE
+	sleeping = 0
+	inducedSSD = FALSE
+	return TRUE
+
 /mob/living/human/verb/mob_sleep()
 	set name = "Sleep"
 	set category = "IC"
 
+	if (usr != src || !client || client.mob != src)
+		return
+	var/client/sleeping_client = client
+	if (persistence_save_in_progress)
+		to_chat(src, SPAN_RED("Wait for the world save or load to finish before sleeping."))
+		return
+
 	if(map && map.ID == MAP_VOYAGE)
-		WWalert("You cannot use this function on this map.","Disabled",usr)
+		WWalert("You cannot use this function on this map.","Disabled",src)
 		return
 
 	if (disease)
-		to_chat(usr, SPAN_RED("You toss and turn but you are too unwell to sleep."))
+		to_chat(src, SPAN_RED("You toss and turn but you are too unwell to sleep."))
 		return
 
 	for (var/obj/item/clothing/C in list(wear_suit,w_uniform,shoes))
 		if (C.fleas == TRUE)
-			to_chat(usr, SPAN_RED("You toss and turn but your skin is crawling and you can not sleep."))
+			to_chat(src, SPAN_RED("You toss and turn but your skin is crawling and you can not sleep."))
 			return
 
 	if (hygiene <= 80)
-		to_chat(usr, SPAN_RED("You toss and turn but you are too filthy to sleep."))
+		to_chat(src, SPAN_RED("You toss and turn but you are too filthy to sleep."))
 		return
 
-	if (usr.sleeping)
-		to_chat(usr, SPAN_RED("You are already sleeping."))
+	if (sleeping)
+		to_chat(src, SPAN_RED("You are already sleeping."))
 		return
 	var/found = FALSE
 	for (var/obj/structure/bed/B in get_turf(src))
 		if (B)
 			found = TRUE
 	if (!found)
-		to_chat(usr, SPAN_RED("You need to be over a bed."))
+		to_chat(src, SPAN_RED("You need to be over a bed."))
 		return
 	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but you must stay ingame for 2 minutes for it to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
-		to_chat(usr, SPAN_NOTICE("You will start sleeping in two minutes."))
+		to_chat(src, SPAN_NOTICE("You will start sleeping in two minutes."))
 		if (do_after(src, 2 MINUTES, src, FALSE))
-			if (usr.sleeping)
+			if (!sleeping_client || client != sleeping_client || sleeping_client.mob != src)
+				return
+			if (sleeping)
 				return
 			else
 				found = FALSE
@@ -117,37 +188,38 @@
 					if (B)
 						found = TRUE
 				if (!found)
-					to_chat(usr, SPAN_RED("You need to be over a bed."))
+					to_chat(src, SPAN_RED("You need to be over a bed."))
 					return
 				else
-					lastx = usr.x
-					lasty = usr.y
-					lastz = usr.z
-					usr.sleeping = 66 //nap
-					inducedSSD = TRUE
-					usr.drop_item()
-					sleep_update()
-					usr.forceMove(locate(1,1,1))
+					if (!enter_protected_sleep())
+						to_chat(src, SPAN_RED("You could not enter protected sleep. Wait for any world save or load to finish, then check your bed and try again."))
 					return
 		else
-			to_chat(usr, SPAN_NOTICE("You stop trying to sleep"))
+			to_chat(src, SPAN_NOTICE("You stop trying to sleep"))
 
 /mob/living/human/verb/mob_wakeup()
 	set name = "Wake Up"
 	set category = "IC"
 
-	if (!usr.sleeping && !inducedSSD)
-		to_chat(usr, SPAN_RED("You are already awake."))
+	if (usr != src || !client || client.mob != src)
+		return
+	if (!sleeping && !inducedSSD)
+		to_chat(src, SPAN_RED("You are already awake."))
 		return
 	if (!inducedSSD)
-		to_chat(usr, SPAN_RED("You aren't asleep that deeply, just wait."))
+		to_chat(src, SPAN_RED("You aren't asleep that deeply, just wait."))
 		return
-	if (inducedSSD && WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
-		to_chat(usr, "You will wake up in 30 seconds.")
+	if (persistence_save_in_progress)
+		to_chat(src, SPAN_RED("Wait for the world save or load to finish before waking up."))
+		return
+	var/client/waking_client = client
+	if (WWinput(src, "Are you sure you want to wake up? This will take 30 seconds.", "Wake Up", "Yes", list("Yes","No")) == "Yes")
+		to_chat(src, "You will wake up in 30 seconds.")
 		spawn(300)
-			usr.forceMove(locate(lastx,lasty,lastz))
-			usr.sleeping = 0 //Short nap
-			inducedSSD = FALSE
+			if (!src || !waking_client || client != waking_client || waking_client.mob != src || !inducedSSD)
+				return
+			if (!complete_protected_wakeup())
+				to_chat(src, SPAN_RED("You could not wake up safely. Your sleep protection remains active. Wait for any world save or load to finish, then try Wake Up again."))
 			return
 
 //to keep the character sleeping

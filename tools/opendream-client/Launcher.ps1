@@ -48,7 +48,8 @@ try {
 if ($InstallOnly) { return }
 while ($true) {
  Write-Host ''
- Write-Host 'Civ13 - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit'
+ Write-Host 'Legacy OpenDream launcher. For native BYOND servers use Civ13.exe.'
+ Write-Host 'OpenDream (experimental) - 1: Sign in   2: Play Nomads   3: Play TDM   4: Exit'
  $choice = Read-Host 'Choose a number (sign in before your first game)'
  $file = switch ($choice) { '1' {'Sign-In.cmd'} '2' {'Play-Nomads.cmd'} '3' {'Play-TDM.cmd'} '4' {return} default {$null} }
  if ($file) { Start-Process -FilePath (Join-Path $destination $file) -WorkingDirectory $destination }

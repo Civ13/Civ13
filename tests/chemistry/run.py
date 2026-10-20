@@ -109,7 +109,7 @@ def main():
         if args.visual:
             daemon_output = (logs / 'daemon.log').open('w', encoding='utf-8')
             visual = subprocess.Popen([str(daemon), str(logs / generated[3].name), str(args.port),
-                                       '-invisible', '-safe', '-params', f'tested_commit={commit}&visual=1&probe={args.probe}',
+                                       '-invisible', '-trusted', '-params', f'tested_commit={commit}&visual=1&probe={args.probe}',
                                        '-log', 'runtime.log'], cwd=logs, stdout=daemon_output,
                                       stderr=subprocess.STDOUT, creationflags=flags)
             daemon_output.close()
@@ -121,7 +121,7 @@ def main():
         # normal world startup. The probe calls production holders/reactions.
         platform_flags = ['-invisible', '-close'] if os.name == 'nt' else []
         runtime = subprocess.run([str(daemon), str(logs / generated[3].name), *platform_flags,
-                                  '-safe', '-params', f'tested_commit={commit}&probe={args.probe}',
+                                  '-trusted', '-params', f'tested_commit={commit}&probe={args.probe}',
                                   '-log', 'runtime.log'], cwd=logs,
                                  capture_output=True, text=True, timeout=45,
                                  creationflags=flags)

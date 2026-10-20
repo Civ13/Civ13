@@ -73,8 +73,8 @@ try {
     $parameters = 'tested_commit=' + $commit
     if ($VehicleWorldSave) { $parameters += '&vehicle_world_save=1' }
     if ($Visual) { $parameters += '&visual=1' }
-    $daemonArguments = @('area.dmb',"$Port",'-invisible','-safe','-params',$parameters,'-log','startup.log')
-    if (!$Visual) { $daemonArguments = @('area.dmb','0','-close','-invisible','-safe','-params',$parameters,'-log','startup.log') }
+    $daemonArguments = @('area.dmb',"$Port",'-invisible','-trusted','-params',$parameters,'-log','startup.log')
+    if (!$Visual) { $daemonArguments = @('area.dmb','0','-close','-invisible','-trusted','-params',$parameters,'-log','startup.log') }
     $owned = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList $daemonArguments -WorkingDirectory $run -WindowStyle Hidden -PassThru
     Write-Output "RUN_DIRECTORY=$run; OWNED_PID=$($owned.Id)"
     if ($Visual) { Write-Output "LOCAL_CONNECT=byond://127.0.0.1:$Port; use two real accounts and close manually launched clients after testing" }

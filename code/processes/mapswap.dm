@@ -126,6 +126,8 @@
 
 /process/epochswap/proc/is_ready()
 	. = FALSE
+	if (persistence_round_active())
+		return FALSE
 	if (ready)
 		if (restart_triggered)
 			. = TRUE
@@ -137,6 +139,8 @@
 	return .
 
 /process/epochswap/proc/swap(var/winner = "Imperial Age (1650-1780)")
+	if (persistence_blocks_vote("epoch"))
+		return
 	vote.voted_epoch = winner
 
 
@@ -366,6 +370,8 @@
 
 /process/mapswap/proc/is_ready()
 	. = FALSE
+	if (persistence_round_active())
+		return FALSE
 	if (ready)
 		if (restart_triggered)
 			. = TRUE
@@ -377,6 +383,8 @@
 	return .
 
 /process/mapswap/proc/swap(var/winner = "Karak")
+	if (persistence_blocks_vote("map"))
+		return
 	if (map_title_to_id[winner])
 		winner = map_title_to_id[winner]
 	next_map_title = (map_id_to_title[winner] ? map_id_to_title[winner] : winner)

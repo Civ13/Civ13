@@ -105,9 +105,9 @@ def main():
             shutil.copy2(root / rel, destination)
         (out / 'config/config.txt').write_text('', encoding='utf-8')
         log = (out / 'daemon.log').open('w')
-        cmd = [str(daemon), str(out / generated[3].name), '-close']
-        if os.name == 'nt': cmd += ['-invisible']
-        cmd += ['-safe', '-params', f'tested_commit={head}', '-log', 'runtime.log']
+        cmd = [str(daemon), str(out / generated[3].name)]
+        if os.name == 'nt': cmd += ['-invisible', '-close']
+        cmd += ['-trusted', '-params', f'tested_commit={head}', '-log', 'runtime.log']
         proc = subprocess.Popen(cmd, cwd=out, stdout=log, stderr=subprocess.STDOUT, creationflags=flags)
         samples = []
         start = time.monotonic()

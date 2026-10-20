@@ -7,6 +7,20 @@
 // You can also specify a name and password for the map, along with any extra
 // variables (in params format) that you want saved along with the map file.
 /map_storage/proc/Save_World()
+	return run_world_operation("save")
+
+/map_storage/proc/save_world_contents(datum/persistence_world_operation/operation)
+	if(!operation || !operation.enter_contents(src, "save")) return FALSE
+	if(building_allocating_z || dimension_recovery_required)
+		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
+	prepare_player_ownership()
+	var/list/world_state = capture_durable_world()
+	var/prefix = world_state ? "round-v2" : "round-v1"
+	var/generation = "[prefix]:[md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]")]"
+	var/list/round_state = capture_round_state(generation)
+	if(world_state)
+		round_state["version"] = 2
+		round_state["world_state"] = world_state
 	clear_bookkeeping()
 	// ***** MAP SECTION *****
 	var/backup_dir = "map_backups/"
@@ -17,7 +31,7 @@
 			if(!fdel("map_backups/save_complete.txt"))
 				throw EXCEPTION("Could not invalidate backup marker; existing save retained")
 		for(var/name in flist("map_saves/"))
-			if(name == "map.txt" || copytext(name, max(1, length(name)-3)) == ".sav")
+			if(name == "map.txt" || name == "round.json" || copytext(name, max(1, length(name)-3)) == ".sav")
 				if(!fcopy("map_saves/[name]", "[backup_dir][name]"))
 					throw EXCEPTION("Could not back up [name]; existing save retained")
 		if(!fcopy("map_saves/save_complete.txt", "[backup_dir]save_complete.txt"))
@@ -36,6 +50,7 @@
 	metadata += list("[map.persistence]", "[map.research_active]", "[map.resourceresearch]", "[map.perschadplus]")
 	if(!text2file(jointext(metadata, "\n"), F0))
 		throw EXCEPTION("Could not write world-save metadata")
+	round_state["metadata"] = md5(file2text(F0))
 	log_startup_progress("	Saved metadata.")
 	for(var/A = 1, A <= world.maxz, A++)
 		saving_z = A
@@ -50,6 +65,7 @@
 				throw EXCEPTION("Could not replace saved level [A]")
 		var/savefile/savefile = new("map_saves/[A].sav")
 		savefile["/format_version"] << 2
+		savefile["/generation"] << generation
 		savefile["/maxx"] << world.maxx
 		savefile["/maxy"] << world.maxy
 		savefile["/maxz"] << world.maxz
@@ -63,7 +79,14 @@
 				TICK_CHECK
 		log_startup_progress("	Saved z-level [A].")
 	clear_bookkeeping()
-	if(!text2file(time2text(world.realtime,"YYYY-MM-DD-(hh-mm-ss)"),"map_saves/save_complete.txt"))
+	if(world_state)
+		world_state["nodes"] = durable_export.finish_export()
+		durable_export = null
+	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
+		throw EXCEPTION("Could not replace round state")
+	if(!text2file(json_encode(round_state), "map_saves/round.json"))
+		throw EXCEPTION("Could not write round state")
+	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
 	log_startup_progress("Finished saving.")
 	return 1
@@ -81,7 +104,13 @@
 	if(istype(A, /atom/movable))
 		var/atom/movable/movable = A
 		if(movable.z && movable.z != saving_z)
-			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type]")
+			var/turf/location = get_turf(movable)
+			var/datum/save_export_frame/owner = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+			var/valid_owner = istype(owner, /datum/save_export_frame)
+			var/source_type = valid_owner && owner.source ? "[owner.source.type]" : "none"
+			var/source_field = valid_owner && istext(owner.current_field) ? copytext("[owner.current_field]", 1, 81) : "contents"
+			record_save_reference_failure("cross_level_object", A)
+			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type] saved_z=[saving_z] native_z=[movable.z] turf_z=[location ? location.z : 0] source_type=[source_type] source_field=[source_field]")
 	var/ind = saving_references["\ref[A]"]
 	var/ref = 0
 	if(ind && saving_reference_pins[ind] == A)
@@ -89,6 +118,7 @@
 	ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
 	saving_references["\ref[A]"] = ref
+	if(durable_export) durable_export.bind_entry(A, saving_z, ref, src)
 	var/datum/save_export_frame/frame = new
 	frame.exporter = src
 	frame.file = savefile
@@ -132,7 +162,9 @@
 			if(v in list("loc", "locs", "pixloc", "contents", "vars", "type", "parent_type", "x", "y", "z", "vis_locs", "client", "key", "ckey"))
 				continue
 			if(A.vars.Find(v))
+				frame.current_field = v
 				var/value = encode_saved_value(savefile, A.vars[v])
+				frame.current_field = null
 				require_export_frame(frame)
 				savefile.cd = entry_path(savefile, ref)
 				savefile[v] << value

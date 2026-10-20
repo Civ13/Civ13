@@ -159,6 +159,7 @@
 	B.loc = locate(1,1,1)
 	L.process()
 	check(!L.maptext, "out of view")
+	check_own_hover(C, viewer, L)
 	B.loc = locate(9,8,1)
 	C.MouseEntered(B, null, "map", "")
 	C.clear_hover_name()

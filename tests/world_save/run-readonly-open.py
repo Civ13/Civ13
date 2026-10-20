@@ -86,7 +86,7 @@ def main():
         raise RuntimeError(f'Pinned clean compilation required: {compile_log}')
 
     def native(role, expected):
-        run_owned(role, [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe',
+        run_owned(role, [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted',
                         '-log', f'{role}-runtime.log', '-params', f'role={role}'], 15)
         receipt = json.loads(bounded_text(output / f'{role}.json'))
         if (receipt.get('role') != role or receipt.get('byond_version') != 516

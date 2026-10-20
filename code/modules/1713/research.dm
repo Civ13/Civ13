@@ -170,24 +170,24 @@
 			return
 		if (user.original_job_title == "Nomad")
 			if (map.age1_done == FALSE)
-				if (world.time < 36000 && ( (map.custom_civs[user.civilization][1] >= 19) || (map.custom_civs[user.civilization][2] >= 19) || (map.custom_civs[user.civilization][3] >= 19)) )
-					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(36000-world.time)/600] minutes.")
+				if (map.research_time() < 36000 && ( (map.custom_civs[user.civilization][1] >= 19) || (map.custom_civs[user.civilization][2] >= 19) || (map.custom_civs[user.civilization][3] >= 19)) )
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(36000-map.research_time())/600] minutes.")
 					return
 			else if (map.age1_done == TRUE && map.age2_done == FALSE)
-				if (world.time < map.age2_timer && ( (map.custom_civs[user.civilization][1] >= map.age1_top) || (map.custom_civs[user.civilization][2] >= map.age1_top) || (map.custom_civs[user.civilization][3] >= map.age1_top)) )
-					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age2_timer-world.time)/600] minutes.")
+				if (map.research_time() < map.age2_timer && ( (map.custom_civs[user.civilization][1] >= map.age1_top) || (map.custom_civs[user.civilization][2] >= map.age1_top) || (map.custom_civs[user.civilization][3] >= map.age1_top)) )
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age2_timer-map.research_time())/600] minutes.")
 					return
 			if (map.age2_done == TRUE && map.age3_done == FALSE)
-				if (world.time < map.age3_timer && ( (map.custom_civs[user.civilization][1] >= map.age2_top) || (map.custom_civs[user.civilization][2] >= map.age2_top) || (map.custom_civs[user.civilization][3] >= map.age2_top)) )
-					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age3_timer-world.time)/600] minutes.")
+				if (map.research_time() < map.age3_timer && ( (map.custom_civs[user.civilization][1] >= map.age2_top) || (map.custom_civs[user.civilization][2] >= map.age2_top) || (map.custom_civs[user.civilization][3] >= map.age2_top)) )
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age3_timer-map.research_time())/600] minutes.")
 					return
 			if (map.age3_done == TRUE && map.age4_done == FALSE)
-				if (world.time < map.age4_timer && ( (map.custom_civs[user.civilization][1] >= map.age3_top) || (map.custom_civs[user.civilization][2] >= map.age3_top) || (map.custom_civs[user.civilization][3] >= map.age3_top)) )
-					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age4_timer-world.time)/600] minutes.")
+				if (map.research_time() < map.age4_timer && ( (map.custom_civs[user.civilization][1] >= map.age3_top) || (map.custom_civs[user.civilization][2] >= map.age3_top) || (map.custom_civs[user.civilization][3] >= map.age3_top)) )
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age4_timer-map.research_time())/600] minutes.")
 					return
 			if (map.age4_done == TRUE && map.age5_done == FALSE)
-				if (world.time < map.age5_timer && ( (map.custom_civs[user.civilization][1] >= map.age4_top) || (map.custom_civs[user.civilization][2] >= map.age4_top) || (map.custom_civs[user.civilization][3] >= map.age4_top)) )
-					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age5_timer-world.time)/600] minutes.")
+				if (map.research_time() < map.age5_timer && ( (map.custom_civs[user.civilization][1] >= map.age4_top) || (map.custom_civs[user.civilization][2] >= map.age4_top) || (map.custom_civs[user.civilization][3] >= map.age4_top)) )
+					to_chat(user, "You are too advanced in one of these research types or are too fast. You can research again in [(map.age5_timer-map.research_time())/600] minutes.")
 					return
 
 		var/current_tribesmen = 0

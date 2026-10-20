@@ -29,6 +29,12 @@ var/list/seed_list_jungle
 	var/max_leaves = 0
 	var/branches = 0
 	var/max_branches = 0
+	var/tmp/cutting_grass = FALSE
+
+/obj/structure/wild/persistence_runtime_var(key)
+	if (key == "cutting_grass")
+		return TRUE
+	return ..()
 
 /obj/structure/wild/New()
 	..()
@@ -666,6 +672,7 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/tallgrass
 	name = "tall grass"
+	desc = "Tall grass. A sharp tool can cut its fibres for crude twine."
 	icon = 'icons/obj/flora/wild.dmi'
 	icon_state = "tall_grass_1"
 	deadicon = 'icons/obj/flora/wild.dmi'
@@ -698,12 +705,55 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/tallgrass2
 	name = "tall grass"
+	desc = "Tall grass. A sharp tool can cut its fibres for crude twine."
 	icon = 'icons/obj/flora/wild.dmi'
 	icon_state = "tall_grass_6"
 	deadicon = 'icons/obj/flora/wild.dmi'
 	deadicon_state = "tall_grass_6"
 	opacity = FALSE
 	density = FALSE
+
+/obj/structure/wild/proc/grass_cutting_tool(obj/item/tool)
+	return !QDELETED(tool) && tool.sharp && !istype(tool, /obj/item/weapon/reagent_containers) && !istype(tool, /obj/item/weapon/macuahuitl)
+
+/obj/structure/wild/proc/grass_cutting_actor_connected(mob/user)
+	return user && user.client
+
+/obj/structure/wild/proc/grass_cutting_valid(mob/user, obj/item/tool, turf/site)
+	return !QDELETED(src) && (istype(src, /obj/structure/wild/tallgrass) || istype(src, /obj/structure/wild/tallgrass2)) && isturf(loc) && loc == site && !QDELETED(user) && grass_cutting_actor_connected(user) && user.stat == CONSCIOUS && !user.incapacitated() && isturf(user.loc) && grass_cutting_tool(tool) && tool.loc == user && user.get_active_hand() == tool && get_dist(user, src) <= 1
+
+/obj/structure/wild/proc/grass_cutting_wait(mob/user)
+	return do_after(user, 30, src)
+
+/obj/structure/wild/proc/gather_grass_cuttings(mob/user, obj/item/tool)
+	var/turf/site = loc
+	var/turf/actor_site = get_turf(user)
+	if (cutting_grass || !grass_cutting_valid(user, tool, site))
+		return FALSE
+	cutting_grass = TRUE
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	user.visible_message(SPAN_NOTICE("[user] starts cutting fibres from [src]."))
+	var/completed = grass_cutting_wait(user)
+	if (QDELETED(src))
+		return FALSE
+	if (!completed || !grass_cutting_valid(user, tool, site) || user.loc != actor_site)
+		cutting_grass = FALSE
+		return FALSE
+	// Keep the claim until deletion; no wait occurs while constructing the yield.
+	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
+	user.visible_message(SPAN_NOTICE("[user] cuts grass fibres for twisting into twine."))
+	qdel(src)
+	return TRUE
+
+/obj/structure/wild/tallgrass/attackby(obj/item/tool, mob/user)
+	if (grass_cutting_tool(tool))
+		return gather_grass_cuttings(user, tool)
+	return ..()
+
+/obj/structure/wild/tallgrass2/attackby(obj/item/tool, mob/user)
+	if (grass_cutting_tool(tool))
+		return gather_grass_cuttings(user, tool)
+	return ..()
 
 /obj/structure/wild/tallgrass2/fire_act(temperature)
 	if (prob(55 * (temperature/500)))

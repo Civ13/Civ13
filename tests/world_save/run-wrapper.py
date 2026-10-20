@@ -9,7 +9,8 @@ import tempfile
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--negative-control', choices=('metadata', 'recovery'))
     parser.add_argument('--roundtrip', action='store_true', help='Also execute ordinary legacy/v2 disk round trips')
     args = parser.parse_args()
@@ -17,9 +18,8 @@ def main():
         parser.error('Omission controls require the focused wrapper-only fixture')
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
-    byond = args.byond_bin.resolve(strict=True)
-    compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+    if not args.prepare_only and not args.byond_bin:
+        parser.error('--byond-bin is required for native execution')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     output = Path(tempfile.mkdtemp(prefix='civ13-restore-wrapper-'))
     print(f'Evidence: {output}', flush=True)
@@ -30,8 +30,8 @@ def main():
         after = 'if((storage.load_map_metadata() != TRUE) && FALSE)'
         expected_failure = 'metadata exact TRUE required'
     elif args.negative_control == 'recovery':
-        before = '(mutation_started && outcome.recovery_retained != TRUE)'
-        after = '(mutation_started && outcome.recovery_retained != TRUE && FALSE)'
+        before = '(operation.mutation_started && outcome.recovery_retained != TRUE)'
+        after = '(operation.mutation_started && outcome.recovery_retained != TRUE && FALSE)'
         expected_failure = 'failed cleanup remains separately visible'
     if args.negative_control:
         if source.count(before) != 1:
@@ -48,6 +48,12 @@ def main():
 
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.MULTILINE)
     (output / 'wrapper.dme').write_text(environment, encoding='utf-8')
+    if args.prepare_only:
+        print('PASS: wrapper sources prepared; native compile/runtime not run')
+        return
+    byond = args.byond_bin.resolve(strict=True)
+    compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
+    daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     build = subprocess.run([str(compiler), '-max_errors', '0', 'wrapper.dme'], cwd=output,
                            capture_output=True, text=True, timeout=120, creationflags=flags)
     compile_log = build.stdout + build.stderr
@@ -55,7 +61,7 @@ def main():
     if build.returncode or '0 errors, 0 warnings' not in compile_log or '516.1681' not in compile_log:
         print(compile_log)
         raise RuntimeError(f'Wrapper compile failed; see {output / "compile.log"}')
-    daemon_args = [str(daemon), 'wrapper.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log']
+    daemon_args = [str(daemon), 'wrapper.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log']
     if not args.roundtrip:
         daemon_args += ['-params', 'wrapper_only=1']
     runtime = subprocess.run(daemon_args,

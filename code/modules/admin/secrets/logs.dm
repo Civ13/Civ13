@@ -6,6 +6,7 @@
 	if (!.)
 		return
 	var/dat = "<b>Admin Log<HR></b>"
+	dat += "Recent history normally keeps up to 1,024 entries. Older entries are archived in the private server log before removal. If archiving fails, they remain here.<HR>"
 	for (var/l in admin_log)
 		dat += "<li>[l]</li>"
 	if (!admin_log.len)

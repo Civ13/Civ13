@@ -1,4 +1,7 @@
 /mob/living/human/proc/nomads_spawn()
+	// Saved identity, languages and appearance have already been restored.
+	if(persistence_restored)
+		return
 	var/list/possible_h_list = list("Black")
 	var/list/possible_e_list = list("Black")
 	var/list/possible_s_range = list(-10,-60)

@@ -128,7 +128,7 @@ def main():
         for phase in phases:
             (target / 'result.txt').unlink(missing_ok=True)
             try:
-                ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'],
+                ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'],
                                      cwd=target, capture_output=True, text=True, timeout=45, creationflags=flags)
             except subprocess.TimeoutExpired:
                 log_path = target / 'runtime.log'
@@ -429,7 +429,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             for phase in phases:
                 (target / 'result.txt').unlink(missing_ok=True)
                 try:
-                    ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
+                    ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
                                          capture_output=True, text=True, timeout=120 if probe in ('mode', 'equipment') else 60, creationflags=flags)
                 except subprocess.TimeoutExpired:
                     log_path = target / 'runtime.log'

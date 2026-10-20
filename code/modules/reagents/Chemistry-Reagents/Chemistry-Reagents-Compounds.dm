@@ -311,6 +311,92 @@
 	reagent_state = LIQUID
 	color = "#C80000"
 
+// Products of existing reactions that previously had no registered reagent,
+// so mixing consumed their inputs without producing anything.
+/datum/reagent/pentane
+	name = "Pentane"
+	id = "pentane"
+	description = "A volatile hydrocarbon solvent."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/hexane
+	name = "Hexane"
+	id = "hexane"
+	description = "A hydrocarbon solvent used in extraction."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/heptane
+	name = "Heptane"
+	id = "heptane"
+	description = "A hydrocarbon solvent and fuel component."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/cyclohexane
+	name = "Cyclohexane"
+	id = "cyclohexane"
+	description = "A ring-shaped hydrocarbon solvent."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/benzene
+	name = "Benzene"
+	id = "benzene"
+	description = "An aromatic hydrocarbon feedstock."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/xylene
+	name = "Xylene"
+	id = "xylene"
+	description = "An aromatic hydrocarbon solvent."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/isobutanol
+	name = "Isobutanol"
+	id = "isobutanol"
+	description = "An alcohol used as a solvent and fuel additive."
+	reagent_state = LIQUID
+	color = "#EEEEEE"
+
+/datum/reagent/butylrubber
+	name = "Butyl Rubber"
+	id = "butylrubber"
+	description = "A synthetic rubber polymerized from isobutylene."
+	reagent_state = SOLID
+	color = "#333333"
+
+/datum/reagent/carbon_dioxide
+	name = "Carbon Dioxide"
+	id = "carbon_dioxide"
+	description = "A colourless, odourless gas."
+	reagent_state = GAS
+	color = "#EEEEEE"
+
+/datum/reagent/sodium_hypochlorite
+	name = "Sodium Hypochlorite"
+	id = "sodium_hypochlorite"
+	description = "A chlorine compound diluted to make bleach."
+	reagent_state = LIQUID
+	color = "#DDEEAA"
+
+/datum/reagent/baking_soda
+	name = "Baking Soda"
+	id = "baking_soda"
+	description = "Sodium bicarbonate, a white powder."
+	reagent_state = SOLID
+	color = "#FFFFFF"
+
+/datum/reagent/zeolite
+	name = "Zeolite"
+	id = "zeolite"
+	description = "A porous aluminosilicate mineral."
+	reagent_state = SOLID
+	color = "#DDDDCC"
+
 // Chemistry Expansion: products used by the polyethylene chain.
 /datum/reagent/ethylene
 	name = "Ethylene"

@@ -1,0 +1,14 @@
+{
+  "root": "D:/GitHub/civ13-nomads-test-lifecycle",
+  "repository": "D:/GitHub/Civ13",
+  "branch": "master",
+  "port": 1714,
+  "poll_seconds": 300,
+  "save_timeout_seconds": 1800,
+  "startup_timeout_seconds": 1800,
+  "config_directory": "D:/GitHub/civ13-nomads-test-lifecycle/server-config",
+  "git": "C:/Program Files/Git/cmd/git.exe",
+  "python": "C:/path/to/verified/python.exe",
+  "compiler": "C:/path/to/BYOND/516.1681/bin/dm.exe",
+  "daemon": "C:/path/to/BYOND/516.1681/bin/dd.exe"
+}

@@ -7,6 +7,8 @@ from pathlib import Path
 import subprocess
 import tempfile
 
+from render_contract import validate as validate_render
+
 ROOT = Path(__file__).resolve().parents[2]
 PRELUDE = '''
 #define TRUE 1
@@ -22,8 +24,23 @@ PRELUDE = '''
 #define WEATHER_WET 2
 #define WEATHER_EXTREME 3
 #define WEATHER_SMOG 4
+/world
+    hub = ""
+    visibility = 0
+/world/OpenPort(port)
+    return ..("none")
+/client/New()
+    del(src)
+    return null
 var/season = "WINTER"
 var/time_of_day = "Night"
+var/list/probe_clients = list()
+/datum/proc/persistence_runtime_var(key)
+    return FALSE
+/mob/probe_client
+    var/mob/mob
+/mob/probe_help
+    parent_type = /mob/probe_client
 /proc/IsGuestKey(key)
     return findtext(key, "guest") == 1
 /area
@@ -117,7 +134,10 @@ PROBE = '''
         failures++
 var/failures = 0
 /world/New()
-    world.OpenPort(0)
+    world.OpenPort("none")
+    check(!world.port && !world.visibility, "fixture starts offline")
+    world.OpenPort(59474)
+    check(!world.port, "fixture refuses reopening")
     world.log << "BEGIN"
     var/datum/player_help_service/H = player_help_service
     H.root = "spool/"
@@ -217,6 +237,10 @@ var/failures = 0
     check(B.enqueue(md5("backend success"), "Question", null) == TRUE, "actual queue publishes request")
     var/list/sent = B.read_json("spool/1.request.json", 16384)
     check(sent["account"] == md5("backend success") && sent["question"] == "Question", "server request includes bounded account and question")
+    var/list/render_contract = sent["render_contract"]
+    check(islist(render_contract) && render_contract.len == 2 && render_contract["version"] == 1, "actual request advertises render protocol")
+    var/list/render_capabilities = islist(render_contract) ? render_contract["capabilities"] : null
+    check(islist(render_capabilities) && render_capabilities.len == 1 && render_capabilities[1] == "markdown-basic-v1", "actual request advertises Markdown capability")
     text2file(json_encode(list("id"=sent["id"], "status"="unavailable")), "spool/1.response.json")
     B.poll()
     check(!B.pending.len && !fexists("spool/1.ready"), "failed response releases queue and removes dispatch marker")
@@ -272,6 +296,33 @@ var/failures = 0
     var/rendered = H.render_answer("<script>alert('x')</script>")
     check(!findtext(rendered, "<script>"), "escaped HTML")
     check(findtext(rendered, "&lt;script&gt;"), "text retained")
+    check(H.response_format(list("answer"="legacy")) == "markdown-basic-v1", "old worker response compatibility")
+    check(H.response_format(list("render_protocol"=1,"answer_format"="plain-v1")) == "plain-v1", "plain response negotiation")
+    check(H.response_format(list("render_protocol"=1,"answer_format"="markdown-basic-v1")) == "markdown-basic-v1", "Markdown response negotiation")
+    check(isnull(H.response_format(list("render_protocol"=1))), "partial protocol rejected")
+    check(isnull(H.response_format(list("answer_format"="plain-v1"))), "partial format rejected")
+    check(isnull(H.response_format(list("render_protocol"=null,"answer_format"=null))), "null metadata rejected")
+    check(isnull(H.response_format(list("render_protocol"=2,"answer_format"="plain-v1"))), "unknown protocol rejected")
+    check(isnull(H.response_format(list("render_protocol"=1,"answer_format"="html"))), "unknown format rejected")
+    var/plain_rendered = H.render_answer("**literal** <script>x</script>", "plain-v1")
+    check(findtext(plain_rendered, "**literal** &lt;script&gt;x&lt;/script&gt;"), "plain is escaped verbatim")
+    check(!findtext(plain_rendered, "<b>literal</b>"), "plain is not reparsed")
+    check(findtext(H.render_answer(null, "plain-v1"), "usable response"), "plain rejects null")
+    var/list/render_cases = json_decode(file2text("render-cases.json"))
+    var/list/render_results = list()
+    for (var/list/render_case in render_cases)
+        var/html = H.render_answer(render_case["markdown"])
+        for (var/expected in render_case["contains"])
+            check(findtextEx(html, expected), "Markdown required text: [render_case["name"]]")
+        for (var/forbidden in render_case["absent"])
+            check(!findtextEx(html, forbidden), "Markdown forbidden text: [render_case["name"]]")
+        render_results += list(list("name" = render_case["name"], "html" = html))
+    text2file(json_encode(render_results), "render-results.json")
+    var/oversized_answer = ""
+    for (var/i = 1, i <= 4001, i++)
+        oversized_answer += "x"
+    check(findtext(H.render_answer(oversized_answer), "usable response"), "renderer enforces answer bound")
+    check(findtext(H.render_answer(oversized_answer, "plain-v1"), "usable response"), "plain enforces answer bound")
     text2file(json_encode(list("id"="old", "status"="ok", "answer"="old answer")), "spool/1.response.json")
     check(isnull(H.matching_response(1, "new")), "wrong response identity rejected")
     check(islist(H.matching_response(1, "old")), "matching response accepted")
@@ -294,48 +345,72 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
-    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect'])
+    parser.add_argument('--prepare-only', action='store_true', help='Write the exact isolated fixture without launching any process; requires --output')
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect', 'conversation-generation', 'conversation-action'])
     args = parser.parse_args()
+    if args.prepare_only and not args.output:
+        parser.error('--prepare-only requires --output')
     if args.output:
         args.output.mkdir(parents=True, exist_ok=False)
     storage = contextlib.nullcontext(str(args.output)) if args.output else tempfile.TemporaryDirectory(prefix='civ13-player-help-')
     with storage as directory:
         temp = Path(directory)
         (temp / 'spool').mkdir()
-        production = (ROOT / 'code/game/mob/player_help.dm').read_text()
+        production = (ROOT / 'code/game/mob/player_help.dm').read_text(encoding='utf-8')
+        (temp / 'render-cases.json').write_bytes((ROOT / 'tests/player_help/render-cases.json').read_bytes())
         if production.count('/client/verb/ask_player_help()') != 1 or '/mob/verb/ask_player_help()' in production:
             raise SystemExit('Help must have one client-owned verb, matching Adminhelp ownership')
         # Inject only the unavailable native client/input boundary. The actual
         # verb body runs; reserve/poll below are unmodified production paths.
-        production = production.replace('/client/verb/ask_player_help()', '/mob/verb/ask_player_help()')
-        production = production.replace('/client/proc/player_help_prompt()', '/mob/proc/player_help_prompt()')
-        production = production.replace('if (question && (src in clients))', 'if (question && probe_connected)')
+        production = production.replace('client/', 'mob/probe_client/').replace('/client\n', '/mob/probe_client\n')
+        production = production.replace(' in clients)', ' in probe_clients)')
+        production = production.replace('if (question && (src in probe_clients) && generation == player_help_generation)', 'if (question && probe_connected && generation == player_help_generation)')
         production = production.replace('player_help_service.submit(src, question)', 'probe_submit(question)')
-        if args.negative_control == 'rate-limit':
+        if args.negative_control == 'conversation-generation':
+            production = production.replace(' || C.player_help_generation != entry["generation"]', '')
+        elif args.negative_control == 'conversation-action':
+            production = production.replace('token == C.player_help_action_token', 'TRUE')
+        elif args.negative_control == 'rate-limit':
             production = production.replace('if (retry)', 'if (FALSE && retry)')
         elif args.negative_control == 'prompt-first':
             production = production.replace('var/question = player_help_prompt()', 'if (!player_help_service.available())\n\t\treturn\n\tvar/question = player_help_prompt()')
         elif args.negative_control == 'disconnect':
-            production = production.replace('if (C && !(C in clients))', 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\tif (C && !(C in clients))')
+            production = production.replace('if (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"]))', 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\tif (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"]))')
         production = production.replace('inspected++', 'inspected++; probe_inspections++')
         if args.negative_control == 'inventory-budget':
             production = production.replace('queue.len >= 64 || inspected + children_inspected >= 64', 'queue.len >= 64 || children_inspected + children_inspected >= 64')
         elif args.negative_control == 'player-context':
             production = production.replace('round(100 * H.health / max(1, H.maxHealth))', '100')
         elif args.negative_control == 'escaping':
-            production = production.replace('html_encode(answer)', 'answer')
+            target = '/datum/player_help_service/proc/markdown_text(value)\n\treturn html_encode(value)'
+            if production.count(target) != 1:
+                raise SystemExit('Escaping control target changed')
+            production = production.replace(target, '/datum/player_help_service/proc/markdown_text(value)\n\treturn value')
         elif args.negative_control == 'heartbeat':
             production = production.replace('return heartbeat_confirmed && world.time - heartbeat_time < 100', 'return TRUE')
         elif args.negative_control == 'identity':
             production = production.replace('islist(response) && response["id"] == id', 'islist(response)')
-        (temp / 'production.dm').write_text(production)
-        (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + PROBE)
+        (temp / 'production.dm').write_text(production, encoding='utf-8')
+        conversation_probe = (ROOT / 'tests/player_help/conversation_probe.dm').read_text(encoding='utf-8')
+        probe = PROBE.replace('    world.log << "RESULT: [failures]"', conversation_probe + '\n    world.log << "RESULT: [failures]"')
+        (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + probe, encoding='utf-8')
+        if args.prepare_only:
+            (temp / 'prepared.json').write_text(json.dumps({
+                'control': args.negative_control,
+                'production_sha256': hashlib.sha256((ROOT / 'code/game/mob/player_help.dm').read_bytes()).hexdigest(),
+                'files': {name: hashlib.sha256((temp / name).read_bytes()).hexdigest()
+                          for name in ('production.dm', 'probe.dme', 'render-cases.json')},
+                'no_processes_launched': True,
+            }, indent=2))
+            print('Help fixture prepared without compilation or runtime')
+            return
         compiler = args.byond_bin / ('dm.exe' if (args.byond_bin / 'dm.exe').exists() else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if (args.byond_bin / 'dd.exe').exists() else 'DreamDaemon')
         built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
         (temp / 'compile.log').write_text(built.stdout + built.stderr)
         print(built.stdout)
-        if built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout:
+        if (built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout
+                or 'invalid file' in (built.stdout + built.stderr).lower()):
             raise SystemExit('Fixture compilation failed')
         ran = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'probe.log'], cwd=temp, capture_output=True, text=True, timeout=40)
         output = ran.stdout + ran.stderr + (temp / 'probe.log').read_text(errors='replace')
@@ -355,7 +430,9 @@ def main():
                         'inventory-budget': 'combined entry and child inspection budget reaches exactly 64',
                         'rate-limit': 'rapid repeats retain account cooldown',
                         'prompt-first': 'unavailable service still prompts and cancellation consumes no allowance',
-                        'disconnect': 'disconnect does not release pending account'}[args.negative_control]
+                        'disconnect': 'disconnect does not release pending account',
+                        'conversation-generation': 'reset invalidates stale completion and releases slot',
+                        'conversation-action': 'copied action token cannot select another client'}[args.negative_control]
             if ('FAIL: ' + expected) not in output or any(error in output.lower() for error in ('runtime error:', 'bad ref', 'unhandled exception')):
                 print(output)
                 raise SystemExit('Negative control not detected')
@@ -364,6 +441,12 @@ def main():
             print(output)
             raise SystemExit('Native help probe failed')
         else:
+            cases = json.loads((temp / 'render-cases.json').read_text())
+            results = json.loads((temp / 'render-results.json').read_text())
+            if [row['name'] for row in results] != [case['name'] for case in cases]:
+                raise SystemExit('Native render cases missing or reordered')
+            for case, result in zip(cases, results):
+                validate_render(case, result['html'])
             print('Native help probe PASS')
 
 
