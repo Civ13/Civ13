@@ -259,6 +259,23 @@ class LinuxAdapter:
             try:
                 pid = child.process.pid
                 deadline = time.monotonic()+5
+                if not hasattr(child, 'identity'):
+                    # Popen returned but identity acquisition failed. Until
+                    # wait4 reaps it, our direct child's PID cannot be reused.
+                    # Do not signal a group whose ownership was never recorded.
+                    while child.result is None:
+                        waited, status, usage = os.wait4(pid, os.WNOHANG)
+                        if waited:
+                            child.result = (os.waitstatus_to_exitcode(status), usage.ru_utime+usage.ru_stime)
+                            child.process.returncode = child.result[0]
+                            break
+                        try:
+                            os.kill(pid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass  # still reap our retained child on the next pass
+                        require(time.monotonic() < deadline, 'Direct-child cleanup deadline')
+                        time.sleep(.01)
+                    raise ValueError('Direct child reaped; group ownership unavailable, containment cleanup required')
                 while True:
                     # A live leader must retain its birth identity. Descendants
                     # must retain the session/group established at launch.

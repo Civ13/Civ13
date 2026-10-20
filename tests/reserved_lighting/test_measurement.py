@@ -132,7 +132,7 @@ class Measurements(unittest.TestCase):
 
     def test_reaped_parent_group_is_retired_without_double_wait(self):
         adapter=object.__new__(m.LinuxAdapter)
-        adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[])
+        adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[],identity={'pid':123,'start_ticks':100})
         with patch.object(adapter,'group_members',side_effect=[[456],[]]), \
              patch.object(m.os,'killpg',create=True) as kill, \
              patch.object(m.os,'wait4',create=True) as wait, patch.object(m.time,'sleep'), \
@@ -145,7 +145,7 @@ class Measurements(unittest.TestCase):
     def test_surviving_group_or_changed_ownership_fails_cleanup(self):
         for changed in (False,True):
             adapter=object.__new__(m.LinuxAdapter)
-            adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[])
+            adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[],identity={'pid':123,'start_ticks':100})
             with patch.object(adapter,'group_members',side_effect=ValueError('ownership') if changed else None,
                               return_value=[456]), patch.object(m.os,'killpg',create=True) as kill, \
                  patch.object(m.time,'monotonic',side_effect=[0,6]), patch('signal.SIGKILL',9,create=True):
@@ -211,6 +211,33 @@ class Measurements(unittest.TestCase):
         result=adapter.cleanup(None)
         self.assertTrue(result['all_exited'] and result['empty'])
         self.assertTrue(all(handle.closed for handle in handles))
+
+    def test_post_popen_identity_failure_reaps_direct_child_without_group_signal(self):
+        for already_exited in (False,True):
+            adapter=object.__new__(m.LinuxAdapter);adapter.child=None
+            work=self.root/('post-popen-'+str(already_exited));work.mkdir()
+            process=SimpleNamespace(pid=123,returncode=None)
+            usage=SimpleNamespace(ru_utime=.1,ru_stime=.2)
+            waits=[(123,0,usage)] if already_exited else [(0,0,None),(123,0,usage)]
+            with patch.dict('sys.modules',{'resource':SimpleNamespace()}), \
+                 patch('subprocess.Popen',return_value=process), \
+                 patch.object(Path,'read_text',side_effect=OSError('injected stat failure')):
+                with self.assertRaisesRegex(OSError,'stat failure'):
+                    adapter.launch(self.packet,self.inputs,work,'baseline')
+            handles=list(adapter.child.handles)
+            with patch.object(m.os,'wait4',side_effect=waits,create=True) as wait, \
+                 patch.object(m.os,'kill') as kill, patch.object(m.os,'killpg',create=True) as killpg, \
+                 patch.object(m.os,'waitstatus_to_exitcode',return_value=0,create=True), \
+                 patch.object(m.os,'WNOHANG',1,create=True), \
+                 patch('signal.SIGKILL',9,create=True), patch.object(m.time,'sleep'):
+                result=adapter.cleanup(None)
+            self.assertEqual(wait.call_count,len(waits))
+            self.assertEqual(kill.call_count,0 if already_exited else 1)
+            killpg.assert_not_called()
+            self.assertEqual(process.returncode,0)
+            self.assertTrue(all(handle.closed for handle in handles))
+            self.assertFalse(result['empty'])
+            self.assertIn('containment cleanup required',result['errors'][0])
 
     def test_aggregate_timeout_and_source_drift_stop_after_cleanup(self):
         ticks=iter((0,0,0,0,0,0,961))
