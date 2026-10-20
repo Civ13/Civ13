@@ -53,6 +53,10 @@ on:
         description: 'Opt in only to actual-constructor lighting persistence recovery and controls'
         type: boolean
         default: false
+      extraction_instance_regressions:
+        description: 'Opt in to standalone extraction instance assertions and four mutation controls'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -127,6 +131,52 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p test_outdoor_bootstrap.py -v
           python3 scripts/check-outdoor-bootstrap.py
+
+  extraction-instances:
+    needs: changes
+    if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)
+    runs-on: ubuntu-22.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Install pinned standalone BYOND without compiling the game
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo dpkg --add-architecture i386
+          sudo timeout 120 apt-get update
+          sudo timeout 120 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip make
+          mkdir BYOND
+          curl --fail --location --connect-timeout 10 --max-time 60 --retry 0 --output BYOND/pinned.zip "https://civ13.com/downloads/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip"
+          unzip -q BYOND/pinned.zip -d BYOND
+          (cd BYOND/byond && make here)
+      - name: Verify standalone extraction instances and named mutation assertions
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)
+        timeout-minutes: 6
+        shell: bash
+        env:
+          INSTANCE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -B -m unittest discover -s tests/extraction/instances -p 'test_*.py' -v
+          # Vendor setup may append to optional, initially unset environment variables.
+          set +u
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          set -u
+          /usr/bin/python3 -B tests/extraction/instances/run_ci.py --head "$INSTANCE_HEAD" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/extraction-instances"
+      - name: Retain standalone extraction instance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: extraction-instances-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/extraction-instances
+          retention-days: 7
+          if-no-files-found: warn
 
   # Existing game compilation gate.
   build:
