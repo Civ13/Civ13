@@ -50,6 +50,43 @@ def pilot():
 
 
 class HistoricalImportTests(unittest.TestCase):
+    def test_empty_historical_run_association_requires_exact_merged_commit_pr(self):
+        p, m, gh = pilot()
+        gh.objects['/actions/runs/38127733413']['pull_requests'] = []
+        pr = gh.objects['/pulls/3031']
+        pr.update(merged=True, number=3031)
+        pr['head']['sha'] = m['source']['commit']
+        path = f'/commits/{m["source"]["commit"]}/pulls?per_page=100'
+        gh.objects[path] = [copy.deepcopy(pr)]
+        u.validate_provenance(gh, m, p)
+        for target, field, value in [('association', 'number', 3228),
+                ('association_head', 'sha', 'c' * 40),
+                ('association_repo', 'id', 999), ('pr', 'merged', False),
+                ('pr_head', 'sha', 'c' * 40)]:
+            altered = copy.deepcopy(gh)
+            obj = {'association': altered.objects[path][0],
+                'association_head': altered.objects[path][0]['head'],
+                'association_repo': altered.objects[path][0]['head']['repo'],
+                'pr': altered.objects['/pulls/3031'],
+                'pr_head': altered.objects['/pulls/3031']['head']}[target]
+            obj[field] = value
+            with self.subTest(target=target, field=field), self.assertRaises(u.Refused):
+                u.validate_provenance(altered, m, p)
+        gh.objects[path] = []
+        with self.assertRaises(u.Refused):
+            u.validate_provenance(gh, m, p)
+
+    def test_nonempty_wrong_run_association_and_generic_empty_run_still_refused(self):
+        p, m, gh = pilot()
+        gh.objects['/actions/runs/38127733413']['pull_requests'] = [{'number': 3228}]
+        with self.assertRaises(u.Refused):
+            u.validate_provenance(gh, m, p)
+        p, m, *_ = fixtures()
+        gh = FakeGH(m)
+        gh.objects['/actions/runs/1']['pull_requests'] = []
+        with self.assertRaises(u.Refused):
+            u.validate_provenance(gh, m, p)
+
     def test_exact_owner_approval_and_separate_source_packaging_provenance(self):
         p, m, gh = pilot()
         u.validate_manifest(m, p)
