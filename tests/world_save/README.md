@@ -1,5 +1,69 @@
 # World-save regression world
 
+## Protected sleep transfers
+
+Protected sleep sends a body to a different z-level while preserving scalar
+return coordinates. A reciprocal `mob.buckled` / `bed.buckled_mob` relationship
+must be released through the normal unbuckle method before that transfer. The
+same release on wake supports a still-protected body left with the old distant
+bed link. A mismatched occupant or refused unbuckle rejects the transfer; it does
+not clear arbitrary pointers. A failed wake retains sleep protection for retry.
+
+The focused sleep fixture extracts the actual entry/wake helpers, production
+buckling methods and base forced movement, with narrow physiology/inventory and
+startup adapters. It checks normal and old-state transfers, other-occupant
+protection, refusal and persistence-busy paths, and a real format-3 save,
+preflight and import with metadata aliases. Delayed verb/client ownership is
+covered by source contracts; this headless fixture does not establish real
+connected-client timing or full gameplay acceptance. Preparation alone does not
+establish a native pass.
+
+The serializer still fails closed on unsupported cross-z object fields and on
+duplicate durable bindings. Diagnostics report only bounded source field/type,
+save-entry identifiers and z-levels, never player names, client keys or live
+native references in log messages. This draft uses bounded format-3 captures
+and preserves the first completed spatial capture across later movement; it is
+not an atomic world snapshot. Current readers retain format-2 compatibility.
+
+For a rejected object reference, inspect the single admin VV field
+`map_storage.last_save_reference_failure`: Game Panel, **View/Debug a Global
+Variable, List, or Object**, enter `map_storage`, then open that field (requires
+the existing debug permission). It snapshots source/target types,
+process-local lookup references, native and turf coordinates, the saved level,
+entry IDs and up to eight owning field frames. The duplicate-binding case also
+records its first level/entry. It contains no field values, player names, client
+keys or live object references. Cleanup preserves the snapshot; an accepted new
+save clears it, while a rejected busy request does not. Capture time identifies
+when it was recorded. A lookup reference can be recycled after deletion, so
+verify the current type and location before acting. This diagnostic does not
+authorize clearing a relationship or prove which relationship should be durable.
+
+```sh
+python3 -B tests/world_save/test_sleep_transfer_sources.py -v
+python3 tests/world_save/run-sleep-transfer.py --prepare-only
+# Only in an approved isolated native execution window:
+python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin /path/to/byond/bin
+for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
+  python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin /path/to/byond/bin --negative-control "$control"
+done
+```
+
+Each control mutates only generated fixture source and must produce its exact
+intended assertion. The old-bed control requires the real serializer's cross-z
+bed rejection. Compiler errors, unexpected assertions, runtimes, unfinished
+results, and timeouts are failures, not evidence that a control worked. CI has a
+focused `protected_sleep_regressions` dispatch option and retains receipts,
+source hashes, logs and temporary saves for every attempted run.
+
+`run-cross-level.py` is an optional diagnostic scaffold for the broader snapshot
+problem. Its `--expect-current-defects` mode characterizes existing traversal
+defects; without that flag it requires ordinary `PASS` results. Mutation controls
+retain their own exact expected failures. CI checks the ordinary `field-direct`
+and `move-direct` cases with format-3 restoration, unique placement and durable
+alias checks. The `first-capture` mutation reproduces the exact old duplicate
+binding rejection. Broader cases outside this focused CI gate retain historical
+characterization expectations and are not claimed as an all-cases passing suite.
+
 `run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
 generation, then launches fresh two-level readers. It runs the production saver,
 preflight, loader and shared building allocator. The runner stages the allocator

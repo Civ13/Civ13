@@ -54,3 +54,12 @@ release every frame. Progress instrumentation follows the new coordinate writer
 and wraps explicit sleeps without changing the 8192/20/80 policy. Explicit sleep
 counts/times remain distinct from historical stoplag metrics. Native progress
 clock and diagnostic-write-failure isolation checks run alongside this suite.
+
+Current-master integration also runs protected-sleep and reference-failure
+regressions with `protected_sleep_regressions=true`. The cross-level movement
+probe requires one format-3 entry, one spatial parent, preserved scalar state,
+and durable aliases resolving to the restored first capture. Its first-capture
+mutation must reproduce the exact original duplicate-binding rejection. The
+sleep diagnostic fixture deliberately bypasses only its target's first-capture
+tracking to exercise the production duplicate guard and scalar failure snapshot;
+this injected diagnostic case is not evidence of a production duplicate.

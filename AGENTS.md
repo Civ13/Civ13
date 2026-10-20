@@ -1,5 +1,19 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: protected sleep buckle ownership -->
+Protected sleep relocates the body between z-levels, so release only its matching
+reciprocal buckle before entry or wake. Keep return coordinates captured before
+unbuckling, reject mismatched occupants, and leave sleep protection active on a
+failed wake. Both delayed verbs retain the initiating client/body and recheck the
+persistence gate at transfer time. Per-level saves still reject cross-z object
+fields; never suppress that guard to hide a stale spatial relationship.
+`map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
+cross-level and duplicate-entry failures, including direct Save_World calls.
+Keep only scalar identities/coordinates and at most eight schema-field frames;
+never pin live objects, retain values or print lookup refs in public reports.
+Preserve it through cleanup, clear it only at accepted save admission, and verify
+lookup type/location because native refs can be recycled after deletion.
+
 <!-- 2026-10-18: private Help conversation boundary -->
 Help history belongs to an authenticated client session, never a saved mob.
 `conversation_probe.dm` is included by the existing isolated Help fixture;
@@ -100,6 +114,10 @@ source preparation does not establish native acceptance.
 - Map backups should use Git, not saved copies in the repo.
 
 ### DMM format rules
+
+<!-- 2026-10-16: standalone map constants -->
+- Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
+  MapDiffBot's standalone map reader rejects unresolved variables in map values.
 
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
@@ -280,6 +298,25 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
 
+<!-- 2026-10-19: combined sub-tile mining acceptance -->
+`tests/human_subtile/run.py --suite mining` stages the full merged game and
+exercises native collision dispatch, mining snapshots and physical offset drift.
+Its mining-position control must fail the same-anchor drift oracle, not merely
+some assertion. Headless authority is adapted: only a separately attached real
+client can establish client.moving ownership through the optional client entry.
+Keep the production adapter disabled until that separate acceptance is met.
+
+<!-- 2026-10-19: opt-in physical human movement -->
+The experimental human adapter keeps the living Move third gameplay flag and
+uses one-use context at movable's native offset seam. Runtime ownership fields
+need explicit custom-save exclusion. Owned capsule presence is detected before
+loader assignments; no-capsule legacy humans retain their old offset policy.
+The minimal world-save stub rejects owned capsules instead of faking restoration.
+Use tests/human_subtile/run.py --prepare-only for offline exact-Git staging;
+native integration and connected-client timing are separate acceptance gates.
+DM reserves proc name run, and an if-local variable cannot be read afterward;
+offline text contracts do not replace the pinned native compiler.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
@@ -432,6 +469,14 @@ world/Error cooldown dictionaries remain for the round; distinct synthetic
 file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an
 immutable historical log_error control. `--prepare-only` runs no native tools.
+
+<!-- 2026-10-19: bounded launcher transport retries -->
+Launcher retry tests use injected HTTP handlers, never BYOND/accounts. Retry only
+classified resets/timeouts with finite attempts and an overall body-read budget;
+certificate/auth failures, untrusted redirects and bad hashes remain fail-closed.
+Delete only a failed attempt's newly created staged file, never a pre-existing
+path. Preserve TLS validation and redact errors. Proxy IsBypassed(false) alone
+does not prove traffic used a proxy. Source changes do not activate a release.
 
 <!-- 2026-10-19: distinct native launcher catalogs -->
 Official Civ13.com Nomads uses 1715 and TDM 1714 (published website); ValZarGaming
@@ -617,6 +662,12 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-19: inactive Dagger compilation -->
+`tests/dagger_map/compile_map.py` compiles the inactive DMM with production types
+in a disposable root-local DME, plus a missing-type diagnostic control. CI's
+`dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
+compilation is not controller, instancing, protection or gameplay acceptance.
 
 <!-- 2026-10-11: firearm configuration verification -->
 Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
@@ -926,6 +977,10 @@ logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
 
+<!-- 2026-10-19: injected Windows adapter CI -->
+The bounded-build test suite runs without Windows DLLs. Inject ctypes error
+state too: get_last_error does not exist on Linux. CI explicitly recognizes the
+two added bounded-build tests; passing them is not native containment evidence.
 <!-- 2026-10-14: chemical smoke source retirement -->
 Chemical smoke systems are single-use: their two reaction callers construct fresh
 systems. The hidden reagent source must survive every queued spawn callback, then
@@ -975,6 +1030,10 @@ independent. Old readers reject version 3, so downgrade needs retained old files
 The sleep(0)-below-80% policy increases effective duty cycle and is experimental.
 Dispatch save_latency_regressions for native dense/backup/heartbeat/refusal and
 current persistence checks; preparation alone is not acceptance or deployment.
+<!-- 2026-10-19: bot helper contention -->
+Bot control uses nonblocking flock and returns busy (75) without systemctl or
+cooldown writes under contention. The draft unit remains disabled pending
+independent game supervision and native bot-restart/game-survival acceptance.
 <!-- 2026-10-19: serializer profile admission -->
 Test-only save profiling starts after save_world_contents accepts its operation
 token. Never wrap the public Save_World entry on current sources: busy/reentrant
