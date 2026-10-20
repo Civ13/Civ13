@@ -148,11 +148,11 @@ var/parent_order_ok = 1
 	OpenPort("none")
 	var/reopen = OpenPort(0)
 	if(initial_port != 0 || port != 0 || reopen != 0)
-		world.log << "BUG network contract"
+		world.log << "BUG network contract initial=[initial_port] current=[port] reopen=[reopen]"
 		del(world)
 		return
 	if(byond_version != 516 || byond_build != 1681)
-		world.log << "BUG runtime version"
+		world.log << "BUG runtime version actual=[byond_version].[byond_build]"
 		del(world)
 		return
 CALLS
@@ -264,6 +264,16 @@ def execute(args, runner=run):
                                   generated_sha256=mode['source_sha256'],
                                   binary_sha256=summary['binary_sha256'])), flush=True)
         summary['status'] = 'prepared-only' if args.prepare_only else 'passed'
+    except Exception:
+        # Preserve bounded actual engine evidence in CI even if no result was written.
+        for path in sorted(output.glob('*/*')):
+            if path.name in ('compile.stdout', 'compile.stderr', 'daemon.stdout', 'daemon.stderr', 'runtime.log'):
+                try:
+                    print('ENGINE EVIDENCE ' + str(path.relative_to(output)), flush=True)
+                    print(read_bounded(path)[-16384:], flush=True)
+                except (OSError, ValueError):
+                    print('Engine output unavailable or exceeded its safety limit', flush=True)
+        raise
     finally:
         (output / 'summary.json').write_text(json.dumps(summary, indent=2))
     return summary
