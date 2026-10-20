@@ -115,19 +115,19 @@
 
 /mob/living/simple_animal/cattle/cow/death()
 
-	cow_count &= src
+	cow_count -= src
 	..()
 /mob/living/simple_animal/cattle/cow/Destroy()
 
-	cow_count &= src
+	cow_count -= src
 	..()
 /mob/living/simple_animal/cattle/bull/death()
 
-	cow_count &= src
+	cow_count -= src
 	..()
 /mob/living/simple_animal/cattle/bull/Destroy()
 
-	cow_count &= src
+	cow_count -= src
 	..()
 /mob/living/simple_animal/cattle/bull/New()
 	cow_count |= src
@@ -434,19 +434,19 @@
 
 /mob/living/simple_animal/pig_gilt/death()
 
-	pig_count &= src
+	pig_count -= src
 	..()
 /mob/living/simple_animal/pig_boar/death()
 
-	pig_count &= src
+	pig_count -= src
 	..()
 /mob/living/simple_animal/pig_gilt/Destroy()
 
-	pig_count &= src
+	pig_count -= src
 	..()
 /mob/living/simple_animal/pig_boar/Destroy()
 
-	pig_count &= src
+	pig_count -= src
 	..()
 /mob/living/simple_animal/pig_boar/New()
 	pig_count |= src
@@ -605,15 +605,15 @@
 
 /mob/living/simple_animal/boar_gilt/death()
 
-	boar_count &= src
+	boar_count -= src
 	..()
 /mob/living/simple_animal/boar_boar/death()
 
-	boar_count &= src
+	boar_count -= src
 	..()
 /mob/living/simple_animal/boar_gilt/Destroy()
 
-	boar_count &= src
+	boar_count -= src
 	..()
 /mob/living/simple_animal/boar_gilt/New()
 	boar_count |= src
@@ -751,11 +751,11 @@
 
 /mob/living/simple_animal/goat/death()
 
-	goat_count &= src
+	goat_count -= src
 	..()
 /mob/living/simple_animal/goat/Destroy()
 
-	goat_count &= src
+	goat_count -= src
 	..()
 /mob/living/simple_animal/goat/female/New()
 	udder = new(50)
@@ -889,11 +889,11 @@
 	var/overpopulationCountdown = 0
 /mob/living/simple_animal/sheep/death()
 
-	sheep_count &= src
+	sheep_count -= src
 	..()
 /mob/living/simple_animal/sheep/Destroy()
 
-	sheep_count &= src
+	sheep_count -= src
 	..()
 /mob/living/simple_animal/sheep/New()
 	sheep_count |= src
