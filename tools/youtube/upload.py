@@ -36,7 +36,7 @@ LEDGER_PATH = "receipts.json"
 PILOT_AUTHORIZATION_ID = "owner-approved-pr3031-public-20261020"
 PILOT_APPROVAL_DIGEST = "57f205c2d5692f95aced89237d7ae64faae09257040fa7e77fde8c7778eb0413"
 ATTACHMENT_APPROVAL_DIGEST = "5e3277908210fb71e0f27bd6ffdb20c12ca9c78ec6fb07c0279836c25e04493e"
-TRAIN_APPROVAL_DIGEST = "f894e5a081b7d28c80fc538bf36af801726d7b933e601deadd4cf5e1b98cf4fd"
+TRAIN_APPROVAL_DIGEST = "1015a451f2beca67d8b4780bf7075e2fe122deba53935f2d1248ad8c345836e9"
 HISTORICAL_APPROVAL_DIGESTS = {3081: ATTACHMENT_APPROVAL_DIGEST, 3032: TRAIN_APPROVAL_DIGEST}
 
 
@@ -355,6 +355,15 @@ def validate_train_source_relation(gh, m, pr, run):
     require(approval_hash(m) == TRAIN_APPROVAL_DIGEST,
             "Rebased historical source is not the exact approved train material")
     relation = m["import"]["source_relation"]
+    # PR CI checked out its synthetic merge revision. Preserve both identities
+    # and prove the complete tree equals the recorded game source.
+    checkout = relation["ci_checkout"]
+    captured = gh.repo(f'/git/commits/{m["source"]["commit"]}')
+    compiled = gh.repo(f'/git/commits/{checkout["commit"]}')
+    require(captured["sha"] == m["source"]["commit"] and compiled["sha"] == checkout["commit"] and
+            captured["tree"]["sha"] == compiled["tree"]["sha"] == checkout["tree"] and
+            any(parent["sha"] == m["source"]["commit"] for parent in compiled["parents"]),
+            "Historical CI merge checkout differs from the captured source tree")
     require(pr["merged"] is True and pr["number"] == relation["pr"] and
             pr["head"]["sha"] == relation["final_head"] and
             pr["merge_commit_sha"] == relation["merge_commit"] and
@@ -380,6 +389,7 @@ def validate_train_source_relation(gh, m, pr, run):
             tested["head_sha"] == m["source"]["commit"] and tested["event"] == "pull_request" and
             tested["head_branch"] == m["source"]["head_branch"] and
             tested["status"] == "completed" and tested["conclusion"] == "success" and
+            isinstance(tested["pull_requests"], list) and
             all(item["number"] == 3032 for item in tested["pull_requests"]),
             "Captured train regression provenance changed")
     cache = {}

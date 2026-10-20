@@ -241,6 +241,10 @@ requirements. It uses a separate, exactly pinned
 
 - Successful original CI38128091280 and train regression38128091416, with exact
   repository/run/attempt/workflow/event/branch/captured-SHA identities.
+  Their run head metadata names the capture revision, while retained job logs
+  show actual PR merge checkout `86410bad61ba9498e0a075367a0fdb7ef5eb64fc`.
+  Git commit metadata must prove that checkout's complete tree equals the capture
+  tree `91978d85c89d1a8102d2cd125b3987d6ef199021`; neither revision is relabeled.
 - PR3032 still merged with its pinned final head and merge commit; conflicting
   nonempty source-run PR associations fail.
 - Both original owner comment6107678670 and scoped-equivalence comment6107755107
@@ -261,7 +265,7 @@ in the existing importer with the original attachment URL from the owner comment
 Obtain a new exact, unedited comment by the allowlisted human **on PR3032**:
 
 ```text
-I approve Civ13 YouTube upload f894e5a081b7d28c80fc538bf36af801726d7b933e601deadd4cf5e1b98cf4fd to @valzartech8995 (UCFRx_n3Mh3FfvL9yOUfG-yw) as public.
+I approve Civ13 YouTube upload 1015a451f2beca67d8b4780bf7075e2fe122deba53935f2d1248ad8c345836e9 to @valzartech8995 (UCFRx_n3Mh3FfvL9yOUfG-yw) as public.
 ```
 
 `MANIFEST_ID=pr3032-trains-public prepare_import.py approval` prints this offline;

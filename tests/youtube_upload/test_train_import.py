@@ -21,6 +21,10 @@ def train():
         head_branch=m['source']['head_branch'], event='pull_request', pull_requests=[])
     gh.objects[f'/actions/runs/{source["id"]}'] = source
     relation = m['import']['source_relation']
+    checkout = relation['ci_checkout']
+    for commit in (m['source']['commit'], checkout['commit']):
+        gh.objects['/git/commits/' + commit] = {'sha': commit,
+            'tree': {'sha': checkout['tree']}, 'parents': [{'sha': m['source']['commit']}]}
     regression = relation['regression_run']
     gh.objects[f'/actions/runs/{regression["id"]}'] = dict(source,
         id=regression['id'], workflow_id=regression['workflow_id'], path=regression['workflow_path'])
@@ -117,6 +121,18 @@ class ExactTrainImportTests(unittest.TestCase):
             gh.objects['/issues/comments/789'][field] = value
             with self.subTest(publication=field), self.assertRaises(u.Refused):
                 u.validate_provenance(gh, m, p)
+
+    def test_historical_merge_checkout_keeps_actual_identity_and_complete_tree_equality(self):
+        p, m, gh = train()
+        captured = '/git/commits/' + m['source']['commit']
+        compiled = '/git/commits/' + m['import']['source_relation']['ci_checkout']['commit']
+        for target, field, value in [(captured, 'sha', 'c' * 40),
+                (captured, 'tree', {'sha': 'c' * 40}),
+                (compiled, 'tree', {'sha': 'c' * 40}), (compiled, 'parents', [])]:
+            altered = copy.deepcopy(gh)
+            altered.objects[target][field] = value
+            with self.subTest(target=target, field=field), self.assertRaises(u.Refused):
+                u.validate_provenance(altered, m, p)
 
     def test_runtime_tree_metadata_cannot_replace_any_of_the_22_source_entries(self):
         p, m, baseline = train()

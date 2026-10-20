@@ -28,7 +28,7 @@
   },
   "metadata": {
     "title": "Civ13 train collision fix: locomotives stop and coupled wagons follow (PR #3032)",
-    "description": "Original sampled native Dream Seeker footage for Civ13 PR #3032, captured at ad0c9ce9847dbad62fe0d636134250310cf5c95b with BYOND 516.1681, NOMADS 155x225x2. Two powered steam locomotives approach, one towing two flatbeds. They stop adjacent at (27,22,1) and (28,22,1); native logs report health 995 and automovement 0. This is an 11.4-second local verification scene built from 25 timed native captures, not a production-server recording or continuous frame-rate benchmark. No audio or added imagery. The captured revision was rebased out of the final PR history; scoped source equivalence and successful tests are separate evidence, not Git ancestry. Startup bad-reference diagnostics and later resource-guard termination are disclosed; the clip does not establish a production hard crash or clean full-game runtime. Source: https://github.com/Civ13/Civ13/pull/3032#issuecomment-6107678670 ; scoped equivalence: https://github.com/Civ13/Civ13/pull/3032#issuecomment-6107755107",
+    "description": "Original sampled native Dream Seeker footage for Civ13 PR #3032, captured at ad0c9ce9847dbad62fe0d636134250310cf5c95b with BYOND 516.1681, NOMADS 155x225x2. Two powered steam locomotives approach, one towing two flatbeds. They stop adjacent at (27,22,1) and (28,22,1); native logs report health 995 and automovement 0. This is an 11.4-second local verification scene built from 25 timed native captures, not a production-server recording or continuous frame-rate benchmark. No audio or added imagery. The captured revision was rebased out of the final PR history; scoped source equivalence and successful tests are separate evidence, not Git ancestry. Startup bad-reference diagnostics and later resource-guard termination are disclosed; the clip does not establish a production hard crash or clean full-game runtime. Source: https://github.com/Civ13/Civ13/pull/3032#issuecomment-6107678670 ; scoped equivalence: https://github.com/Civ13/Civ13/pull/3032#issuecomment-6107755107 Historical CI used PR merge checkout 86410bad61ba9498e0a075367a0fdb7ef5eb64fc, whose source tree equals the recorded revision.",
     "made_for_kids": false,
     "contains_synthetic_media": false
   },
@@ -36,7 +36,7 @@
     "classification": "genuine-gameplay",
     "reproduction": "Two powered steam locomotives in the isolated NOMADS train scene approach on one track; one tows two flatbeds. Both stop adjacent and native logs show health995 and automovement0; followers track vacated tiles.",
     "capture_context": "Owner valzargaming native local Dream Seeker capture, BYOND516.1681, NOMADS155x225x2, captured ad0c9ce9847dbad62fe0d636134250310cf5c95b. Rebased-out historical revision; exact original media is retained without transformation.",
-    "known_limits": "11.4seconds,25 sampled native captures encoded as114frames. Isolated local scene; no audio, interpolation, looping or padding. Startup bad-reference diagnostics and later resource-guard termination disclosed. Scoped equivalence is not ancestry or whole-game identity. No production hard-crash or clean-runtime acceptance.",
+    "known_limits": "11.4seconds,25 sampled native captures encoded as114frames. Isolated local scene; no audio, interpolation, looping or padding. Startup bad-reference diagnostics and later resource-guard termination disclosed. Scoped equivalence is not ancestry or whole-game identity. No production hard-crash or clean-runtime acceptance. Historical PR CI checked out merge86410bad61ba9498e0a075367a0fdb7ef5eb64fc; its source tree exactly matches the captured revision.",
     "content_review": "Original media hash and all114-frame decode verified; full-duration2fps survey plus original-resolution boundary text inspected. Native HUD, commit, map, test logs and public wiki link remain. No private chat, credentials, session Game ID, real player identity or internal paths observed. Adult game-development audience; no synthetic imagery."
   },
   "original": {
@@ -177,7 +177,12 @@
         "workflow_id": 381122235,
         "workflow_path": ".github/workflows/train-collision.yml"
       },
-      "graph_limit": "Actions pull_requests and commit-to-PR association are empty. Captured and final heads diverged; this is scoped owner-attested equivalence, not ancestry."
+      "graph_limit": "Actions pull_requests and commit-to-PR association are empty. Captured and final heads diverged; this is scoped owner-attested equivalence, not ancestry.",
+      "ci_checkout": {
+        "commit": "86410bad61ba9498e0a075367a0fdb7ef5eb64fc",
+        "tree": "91978d85c89d1a8102d2cd125b3987d6ef199021",
+        "basis": "Both retained historical job logs show the PR merge checkout; its entire source tree equals the captured revision. The merge checkout is not relabeled as the recording commit."
+      }
     }
   }
 }
