@@ -78,7 +78,8 @@ and metadata consistency, not gameplay acceptance or publication approval.
 Artifacts must use the `gameplay-video-...` name prefix and contain exactly two
 flat regular files: `gameplay.mp4` and `evidence.json`. No directories, symlinks,
 encrypted entries, executables or additional files are accepted. The MP4 must be
-15-180 seconds, 320-1920 by 240-1080 pixels, H.264 with optional AAC, at most
+15-180 seconds (except the exact reviewed 11.4-second PR3032 original below),
+320-1920 by 240-1080 pixels, H.264 with optional AAC, at most
 32 MiB. Its declared duration must match inspection within one second. The ZIP
 must be at most 33 MiB, match both GitHub's SHA256 artifact digest and the approved
 archive hash, and have been created during the exact successful approved run
@@ -95,7 +96,7 @@ The embedded evidence object has exactly these fields, with actual values:
 Enforce duration/size caps **before** an artifact upload. If an approved capture
 producer is added later, pin `actions/upload-artifact` by SHA, select only these
 files, disable hidden files, set `retention-days: 1`, and fail when no clip exists.
-Do not attach whole evidence trees, saves or logs to the video artifact. The bounded historical importer below retains only the two exact enrolled historical clips for one day; no automatic capture producer is installed.
+Do not attach whole evidence trees, saves or logs to the video artifact. The bounded historical importer below retains only the exact enrolled historical clips for one day; no automatic capture producer is installed.
 
 Review the entire genuine clip for meaningful observed behavior, source ownership,
 private chat, credentials, player names, session data, internal paths, unexpected
@@ -210,6 +211,69 @@ changed media/metadata and bot/edited comments cannot authorize this upload.
 The later live dispatch still requires all six bounded gates and the protected
 environment's explicit owner review. `verify_only=true` supports the same clip
 with its known receipt after artifact expiry; it never inserts another video.
+
+## Exact historical PR3032 train recording
+
+`imports/pr3032.json` enrolls the unchanged
+[original train recording](https://github.com/Civ13/Civ13/pull/3032#issuecomment-6107678670):
+SHA256 `853235bca3e3ad1daeb911f47d849622d890f80ec08ed4c4fed8e73ca8ddc8ee`,
+404,424 bytes, 11.4 seconds, H.2641920x1032 at10fps, no audio. Two native steam
+locomotives approach, one towing two flatbeds, and stop adjacent; native logs show
+health995 and automovement0. This sampled local scene contains25 timed native
+captures encoded as114 frames. Startup bad-reference diagnostics and later
+resource-guard termination remain disclosed. It is not production crash
+reproduction, a continuous rendering benchmark or clean full-game acceptance.
+
+The owner explicitly approved implementing a provenance exception for this one
+recording after reviewing the rebased-source limitation. Publication still needs
+its own exact human comment and protected environment review. The15-second floor
+remains for every other clip. This original11.4-second duration is accepted only
+when the entire reviewed train material digest matches; there is no configurable
+short-video switch. The importer performs no padding, looping or interpolation.
+Maximum byte/duration/archive/codec/dimension/decoder bounds still apply.
+
+Captured game `ad0c9ce9847dbad62fe0d636134250310cf5c95b` was rebased out of PR3032.
+Actions run38128091280 and GitHub's commit-to-PR query have empty PR associations;
+comparison to final head `62a2e84179a3cdb47d4f035c64c198396cbda444` diverges.
+The uploader does not describe it as the final head or waive generic association
+requirements. It uses a separate, exactly pinned
+`owner-attested-rebased-historical-revision` relation, requiring:
+
+- Successful original CI38128091280 and train regression38128091416, with exact
+  repository/run/attempt/workflow/event/branch/captured-SHA identities.
+  Their run head metadata names the capture revision, while retained job logs
+  show actual PR merge checkout `86410bad61ba9498e0a075367a0fdb7ef5eb64fc`.
+  Git commit metadata must prove that checkout's complete tree equals the capture
+  tree `91978d85c89d1a8102d2cd125b3987d6ef199021`; neither revision is relabeled.
+- PR3032 still merged with its pinned final head and merge commit; conflicting
+  nonempty source-run PR associations fail.
+- Both original owner comment6107678670 and scoped-equivalence comment6107755107
+  still on PR3032, authored by User`valzargaming`/ID7202504, with exact body hashes
+  and unedited timestamps.
+- All22 captured/final blob or tree identities in the reviewed relation still
+  equal their pinned values. Bounded nonrecursive Git-tree metadata is checked;
+  source code is never checked out or executed by this validation.
+
+The proof is scoped. The recorded power-cleanup and later runner provenance-check
+differences remain explicit limitations. The earlier owner equivalence comment
+concerns an intermediate final revision; fresh22-entry checks bind the final
+merged PR head separately. Source and evidence hashes are part of the human
+approval digest. Other historical/generic clips retain their existing rules.
+
+After normal source review and merge, select `manifest_id=pr3032-trains-public`
+in the existing importer with the original attachment URL from the owner comment.
+Obtain a new exact, unedited comment by the allowlisted human **on PR3032**:
+
+```text
+I approve Civ13 YouTube upload 1015a451f2beca67d8b4780bf7075e2fe122deba53935f2d1248ad8c345836e9 to @valzartech8995 (UCFRx_n3Mh3FfvL9yOUfG-yw) as public.
+```
+
+`MANIFEST_ID=pr3032-trains-public prepare_import.py approval` prints this offline;
+the checked-in comment ID1 remains a placeholder. Use the actual human comment ID
+and successful same-current-commit importer run in the upload wrapper, inspect
+first, then retain explicit environment review. The same two-reservation rolling
+cap, uncertain-receipt block, public destination, notifications-off request and
+default-off gates apply. Known-ID verification survives artifact expiry.
 
 ## Durable receipts and uncertain outcomes
 

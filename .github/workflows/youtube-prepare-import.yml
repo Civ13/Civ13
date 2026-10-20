@@ -6,7 +6,7 @@ on:
       manifest_id:
         description: Exact reviewed historical clip (no recording or transformation)
         type: choice
-        options: [pr3031-power-public, pr3081-attachments-public]
+        options: [pr3031-power-public, pr3081-attachments-public, pr3032-trains-public]
         default: pr3031-power-public
         required: true
       attachment_url:

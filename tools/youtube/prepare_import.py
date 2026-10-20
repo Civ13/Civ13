@@ -1,9 +1,9 @@
-"""Credential-free, manual import of two exact reviewed historical clips.
+"""Credential-free, manual import of exact reviewed historical clips.
 
 This packages existing bytes. It never records a game, transforms footage, grants
 OAuth access or uploads to YouTube. Media transport uses public GitHub attachment
-URLs only. Both clips are pinned by their complete reviewed material digest;
-PR3081 still requires an exact human approval comment before upload inspection.
+URLs only. Clips are pinned by their complete reviewed material digest;
+new enrollments require an exact human approval comment before upload inspection.
 """
 import argparse
 import json
@@ -18,7 +18,8 @@ import upload as u
 WORKFLOW_PATH = ".github/workflows/youtube-prepare-import.yml"
 PILOT_ID = "pr3031-power-public"
 ARTIFACT_NAME = "gameplay-video-pr3031-power-public"
-IMPORTS = {PILOT_ID: "pr3031.json", "pr3081-attachments-public": "pr3081.json"}
+IMPORTS = {PILOT_ID: "pr3031.json", "pr3081-attachments-public": "pr3081.json",
+           "pr3032-trains-public": "pr3032.json"}
 
 
 def specification(manifest_id=PILOT_ID):
@@ -50,7 +51,7 @@ def policy(m):
 
 def select_material(spec, run, approval_comment_id):
     m = material(spec, run)
-    if m["source"]["pr"] == 3081:
+    if m["source"]["pr"] in u.HISTORICAL_APPROVAL_DIGESTS:
         u.integer(approval_comment_id)
         m["approval"]["comment_id"] = approval_comment_id
     else:
@@ -156,10 +157,19 @@ def prepare(gh, transport, spec, run_id, run_attempt, trusted_commit, url, desti
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("prepare", "probe-smoke", "approval"))
+    parser.add_argument("mode", choices=("prepare", "probe-smoke", "source-smoke", "approval"))
     args = parser.parse_args()
     manifest_id = os.environ.get("MANIFEST_ID", PILOT_ID)
     spec = specification(manifest_id)
+    if args.mode == "source-smoke":
+        # Credential-free publication boundary: read-only GitHub metadata only.
+        m = material(spec, {"id": 1, "run_attempt": 1, "workflow_id": 1, "head_sha": "0" * 40})
+        p = policy(m)
+        gh = u.GitHub(u.Transport(), os.environ["GITHUB_TOKEN"])
+        u.validate_source_provenance(gh, m, p)
+        u.validate_import_attestation(gh, m)
+        print("Historical source and scoped metadata proof verified; no channel access or upload")
+        return
     if args.mode == "approval":
         # Offline preview only: no assertion that the human has approved it.
         m = material(spec, {"id": 1, "run_attempt": 1, "workflow_id": 1, "head_sha": "0" * 40})
