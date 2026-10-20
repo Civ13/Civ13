@@ -70,6 +70,12 @@ class RestoreIntegrationSources(unittest.TestCase):
         self.assertIn('!world.OpenPort(0)', rewritten)
         self.assertIn("if '/world/OpenPort(' not in probe:", runner)
 
+    def test_every_roundtrip_environment_includes_wrapper(self):
+        for path in (ROOT / 'tests/world_save').glob('*.dme'):
+            source = path.read_text()
+            if '#include "roundtrip.dm"' in source:
+                self.assertIn('#include "restore_wrapper.dm"', source, str(path))
+
     def test_fixture_exercises_admitted_backend_and_recovery_hold(self):
         source = (ROOT / 'tests/world_save/restore_wrapper.dm').read_text()
         self.assertNotIn('\tLoad_World()', source)

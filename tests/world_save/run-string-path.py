@@ -337,10 +337,10 @@ def main():
                     raise RuntimeError('UI fixture marker changed')
                 source = source.replace(marker, marker + '\t\tcheck_player_ui()\n', 1)
             if args.player_reclaim_negative_control == 'legacy':
-                marker = '\ttry\n\t\tcheck_datum_constructor()\n'
+                marker = '\t\tcheck_datum_constructor()\n'
                 if source.count(marker) != 1:
                     raise RuntimeError('Early legacy probe marker changed')
-                source = source.replace(marker, '\ttry\n\t\tcheck_legacy_player_owner()\n\t\tcheck_datum_constructor()\n', 1)
+                source = source.replace(marker, '\t\tcheck_legacy_player_owner()\n' + marker, 1)
             if admission:
                 marker = '\t\tcheck_player_reclaim()\n'
                 if source.count(marker) != 1:
