@@ -351,7 +351,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'reentry': ('if (generation != H.generation || active_request) return .', 'reset()\n\t\tif (generation != H.generation || active_request) return .', 'reentrant callback replacement survives old completion'),
                 'disruptive_creation': ('return disruptive_votes_enabled || !disruptive_action(vote_type, completion)', 'return TRUE', 'disabled manual and automatic disruptive creation denied'),
                 'disruptive_pending': ('if (!disruptive_votes_enabled && is_current(active_request) && disruptive_action(mode, active_request.completion))', 'if (FALSE && is_current(active_request))', 'disabling disruptive votes cancels pending action and stale resolution'),
-                'disruptive_result': ('if (!action_allowed(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', '// omitted post-callback policy\n\t\tif (.) apply_result', 'callback policy change prevents old disruptive result route'),
+                'disruptive_result': ('if (persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', 'if (persistence_blocks_vote(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', 'callback policy change prevents old disruptive result route'),
             }
             marker, replacement, expected_vote_failure = mutations[vote_control]
             if vote_source.count(marker) != 1:

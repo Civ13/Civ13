@@ -70,6 +70,12 @@ class RestoreIntegrationSources(unittest.TestCase):
         self.assertIn('!world.OpenPort(0)', rewritten)
         self.assertIn("if '/world/OpenPort(' not in probe:", runner)
 
+    def test_shell_and_dynamic_binary_launchers_bind_loopback(self):
+        shell = (ROOT / 'tests/world_save/run.sh').read_text()
+        self.assertIn('"$daemon" roundtrip.dmb -ip 127.0.0.1 -nowebclient', shell)
+        vote = (ROOT / 'tests/persistence_round/run.py').read_text()
+        self.assertIn("[str(daemon), str(logs / generated[2].name), '-ip', '127.0.0.1', '-nowebclient',", vote)
+
     def test_every_roundtrip_environment_includes_wrapper(self):
         for path in (ROOT / 'tests/world_save').glob('*.dme'):
             source = path.read_text()

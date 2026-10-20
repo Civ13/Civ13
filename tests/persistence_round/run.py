@@ -78,7 +78,7 @@ def main():
         shutil.copy2(generated[3], logs / generated[3].name)
         shutil.copytree(root / 'config/names', logs / 'config/names')
         (logs / 'config/config.txt').write_text('# Offline fixture\n', encoding='utf-8')
-        runtime = subprocess.run([str(daemon), str(logs / generated[2].name),
+        runtime = subprocess.run([str(daemon), str(logs / generated[2].name), '-ip', '127.0.0.1', '-nowebclient',
                                   *(['-invisible', '-close'] if os.name == 'nt' else []),
                                   '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'],
                                  cwd=logs, capture_output=True, text=True, timeout=60,

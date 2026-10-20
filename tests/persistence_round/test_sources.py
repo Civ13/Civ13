@@ -37,6 +37,33 @@ class PersistenceVoteMergeContracts(unittest.TestCase):
             self.assertIn(f'istype(completion[1], /process/{kind})', guard)
         self.assertLess(guard.index('vote_type == "restart"'), guard.index('ticker.current_state < GAME_STATE_PLAYING'))
 
+    def test_extraction_vote_control_staging(self):
+        # Inspect the runner's literal mutation table without importing or launching it.
+        runner = ast.parse((ROOT / 'tests/extraction/run.py').read_text(encoding='utf-8'))
+        tables = [node.value for node in ast.walk(runner)
+                  if isinstance(node, ast.Assign)
+                  and any(isinstance(target, ast.Name) and target.id == 'mutations'
+                          for target in node.targets)]
+        self.assertEqual(len(tables), 1)
+        mutations = ast.literal_eval(tables[0])
+        for name, (marker, replacement, expected_failure) in mutations.items():
+            with self.subTest(control=name):
+                self.assertEqual(VOTE.count(marker), 1, 'Vote mutation marker changed')
+                self.assertNotEqual(VOTE.replace(marker, replacement), VOTE)
+                self.assertTrue(expected_failure)
+        marker, replacement, expected = mutations['disruptive_result']
+        mutated = VOTE.replace(marker, replacement)
+        original_result = proc('\tproc/result(datum/vote_handle/H)', '\tproc/apply_result(')
+        mutated_result = mutated.split('\tproc/result(datum/vote_handle/H)', 1)[1].split('\tproc/apply_result(', 1)[0]
+        # Omit only the post-callback disruptive-policy predicate. Keep persistence,
+        # generation, pre-callback and the separate production application gates.
+        self.assertEqual(mutated_result, original_result.replace(
+            'persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)',
+            'persistence_blocks_vote(resolved_mode, completion)'))
+        self.assertEqual(mutated.split('\tproc/apply_result(', 1)[1], VOTE.split('\tproc/apply_result(', 1)[1])
+        self.assertEqual(mutated.count('persistence_blocks_vote('), VOTE.count('persistence_blocks_vote('))
+        self.assertEqual(expected, 'callback policy change prevents old disruptive result route')
+
     def test_fixture_uses_real_handles(self):
         self.assertNotIn('vote.result()', PROBE)
         self.assertNotIn('vote.callback =', PROBE)
