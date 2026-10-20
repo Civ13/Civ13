@@ -28,6 +28,10 @@ def verified_master(repository, git='git', *, update=False, expected_origin=ORIG
         raise RuntimeError('Master guard refused: sparse checkout is unsupported')
     if command('symbolic-ref', '--quiet', '--short', 'HEAD') != 'master':
         raise RuntimeError('Master guard refused: checkout must be on branch master')
+    if command('rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}') != 'origin/master':
+        raise RuntimeError('Master guard refused: expected upstream origin/master')
+    if command('symbolic-ref', '--quiet', 'refs/remotes/origin/HEAD') != 'refs/remotes/origin/master':
+        raise RuntimeError('Master guard refused: expected local origin default master')
     if command('status', '--porcelain=v1', '--untracked-files=all'):
         raise RuntimeError('Master guard refused: checkout has local changes or untracked files')
     flags = command('ls-files', '-v').splitlines()
@@ -40,8 +44,11 @@ def verified_master(repository, git='git', *, update=False, expected_origin=ORIG
     command('fetch', '--no-tags', 'origin',
             'refs/heads/master:refs/remotes/origin/master')
     target = command('rev-parse', '--verify', 'refs/remotes/origin/master^{commit}')
-    remote = command('ls-remote', '--exit-code', 'origin', 'refs/heads/master').split()
-    if len(remote) != 2 or remote != [target, 'refs/heads/master']:
+    advertised = [line.split() for line in command('ls-remote', '--symref', '--exit-code', 'origin', 'HEAD', 'refs/heads/master').splitlines()]
+    if ['ref:', 'refs/heads/master', 'HEAD'] not in advertised:
+        raise RuntimeError('Master guard refused: expected remote default branch master')
+    remote = [line for line in advertised if not line or line[0] != 'ref:']
+    if sorted(remote) != sorted([[target, 'HEAD'], [target, 'refs/heads/master']]):
         raise RuntimeError('Master guard refused: fetched and advertised master differ; retry later')
     if len(target) != 40 or any(c not in '0123456789abcdef' for c in target):
         raise RuntimeError('Master guard refused: invalid fetched master identity')
@@ -60,7 +67,7 @@ def verified_master(repository, git='git', *, update=False, expected_origin=ORIG
         command('merge', '--ff-only', target)
     if command('symbolic-ref', '--quiet', '--short', 'HEAD') != 'master' or command('rev-parse', 'HEAD') != target or command('status', '--porcelain=v1', '--untracked-files=all'):
         raise RuntimeError('Master guard refused: final master identity or clean state changed')
-    return {'repository': str(repository), 'branch': 'master', 'before': before,
+    return {'repository': str(repository), 'branch': 'master', 'upstream': 'origin/master', 'default_branch': 'master', 'before': before,
             'commit': target, 'origin': expected_origin, 'fresh_remote_verified': True}
 
 
