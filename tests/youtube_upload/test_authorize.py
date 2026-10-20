@@ -175,6 +175,29 @@ class ClientAndProtocolTests(unittest.TestCase):
         self.assertNotIn(b'FAKE-CALLBACK-SECRET', response[0][1])
         self.assertEqual(output.getvalue(), '')
 
+    def test_manual_local_start_redirect_keeps_google_url_out_of_output(self):
+        callback = a.Callback('expected', timeout=3)
+        callback.authorization_url = a.consent_url(client(), callback.redirect_uri, 'expected', 'FAKE-CHALLENGE')
+        response = []
+        def request():
+            port = urllib.parse.urlsplit(callback.redirect_uri).port
+            connection = http.client.HTTPConnection('127.0.0.1', port, timeout=3)
+            connection.request('GET', '/authorize')
+            result = connection.getresponse()
+            response.append((result.status, result.getheader('Location'), result.read()))
+            connection.close()
+        output = io.StringIO()
+        with contextlib.redirect_stderr(output), contextlib.redirect_stdout(output):
+            worker = threading.Thread(target=request, daemon=True)
+            worker.start()
+            try:
+                callback.server.handle_request()
+                worker.join(3)
+            finally:
+                callback.close()
+        self.assertEqual(response, [(302, callback.authorization_url, b'')])
+        self.assertEqual(output.getvalue(), '')
+
     def test_expired_callback_never_exchanges_code(self):
         class Server:
             server_address = ('127.0.0.1', 1234)
@@ -354,6 +377,8 @@ class AuthorizationGateTests(unittest.TestCase):
         self.assertTrue(success['closed'])
         for secret in [client()['client_secret'], token()['access_token'], token()['refresh_token'], 'FAKE-CODE']:
             self.assertNotIn(secret, success['output'])
+        self.assertNotIn('client_id=', success['output'])
+        self.assertNotIn(a.AUTH_URL, success['output'])
 
     def test_callback_failure_wrong_channel_and_expiry_cannot_write_secrets(self):
         failed_callback = self.run_flow([], callback_error=a.Stopped('OAuth state mismatch'))

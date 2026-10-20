@@ -203,7 +203,8 @@ the agent. Secret placement remains a separately confirmed action.
    browser cookies/tokens, bypass site prompts, put secrets into chat or use an
    unofficial token broker. The user-run helper `tools/youtube/authorize.py`
    implements the code exchange. It never runs from Actions or controls a browser.
-   It prints Google's consent URL for the user to open directly, with PKCE S256,
+   It prints a local start link for the user to open directly; that link redirects
+   to Google without logging its authorization parameters. It uses PKCE S256,
    a constant-time state check and a five-minute IPv4 loopback callback. Its
    channel check uses the pinned YoutubePHP framework. Credential/token values
    are not displayed, logged, passed as arguments or written to token files.
@@ -291,8 +292,10 @@ Replace the illustrative path locally; do not send its contents to the agent.
 `check` validates the Desktop JSON's exact project and trusted endpoint fields,
 then reads GitHub protection/secret metadata without granting access or writing
 secrets. `authorize` requires an interactive local terminal. It rechecks all
-prerequisites, prints a fresh Google consent URL, and waits at most five minutes.
-The user opens the URL directly and selects the approved channel/account.
+prerequisites, prints a fresh local consent-start link, and waits at most five minutes.
+The user opens that link directly; its loopback redirect reaches Google's normal
+consent page, where the user selects the approved channel/account. The Google
+authorization URL, state/challenge and client fields are not logged to the terminal.
 Wrong state, denied/error callbacks, duplicates, expired/missing tokens, expanded
 scopes or another channel stop before secret placement. The helper makes no
 automatic retry or account/client change. It never requests production publication.

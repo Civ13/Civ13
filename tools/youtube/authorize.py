@@ -166,12 +166,23 @@ class Callback:
     def __init__(self, state, timeout=300, clock=time.monotonic, factory=LocalServer):
         self.state, self.timeout, self.clock = state, timeout, clock
         self.code, self.error = None, None
+        self.authorization_url = None
         owner = self
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *args):
                 pass
             def do_GET(self):
-                if urllib.parse.urlsplit(self.path).path != '/':
+                parsed = urllib.parse.urlsplit(self.path)
+                if parsed.path == '/authorize' and not parsed.query and owner.authorization_url:
+                    # The user opens this local link directly. Keep Google's
+                    # client/state/challenge URL out of terminal transcripts.
+                    self.send_response(302)
+                    self.send_header('Location', owner.authorization_url)
+                    self.send_header('Cache-Control', 'no-store')
+                    self.send_header('Content-Length', '0')
+                    self.end_headers()
+                    return
+                if parsed.path != '/':
                     self.send_response(404)
                     self.end_headers()
                     return
@@ -374,8 +385,9 @@ def authorize(client, github, reader=input, callback_factory=Callback,
     state = secrets.token_urlsafe(32)
     callback = callback_factory(state)
     try:
-        print('Open this Google consent URL yourself; do not paste its callback or tokens into chat:')
-        print(consent_url(client, callback.redirect_uri, state, challenge))
+        callback.authorization_url = consent_url(client, callback.redirect_uri, state, challenge)
+        print('Open this local consent link yourself; it redirects to Google. Do not paste callback or tokens into chat:')
+        print(callback.redirect_uri + 'authorize')
         code = callback.wait()
         token = exchange(client, code, verifier, callback.redirect_uri)
     finally:
