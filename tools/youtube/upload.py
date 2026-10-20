@@ -36,6 +36,8 @@ LEDGER_PATH = "receipts.json"
 PILOT_AUTHORIZATION_ID = "owner-approved-pr3031-public-20261020"
 PILOT_APPROVAL_DIGEST = "57f205c2d5692f95aced89237d7ae64faae09257040fa7e77fde8c7778eb0413"
 ATTACHMENT_APPROVAL_DIGEST = "5e3277908210fb71e0f27bd6ffdb20c12ca9c78ec6fb07c0279836c25e04493e"
+TRAIN_APPROVAL_DIGEST = "f894e5a081b7d28c80fc538bf36af801726d7b933e601deadd4cf5e1b98cf4fd"
+HISTORICAL_APPROVAL_DIGESTS = {3081: ATTACHMENT_APPROVAL_DIGEST, 3032: TRAIN_APPROVAL_DIGEST}
 
 
 class Refused(Exception):
@@ -146,8 +148,8 @@ def validate_manifest(m, p):
     sha(clip["sha256"])
     integer(clip["bytes"], 1024, MAX_CLIP)
     require(type(clip["duration_seconds"]) in {int, float} and
-            math.isfinite(clip["duration_seconds"]) and 15 <= clip["duration_seconds"] <= 180,
-            "Clip duration must be 15-180 seconds")
+            math.isfinite(clip["duration_seconds"]) and 0 < clip["duration_seconds"] <= 180,
+            "Invalid or excessive clip duration")
     keys(m["metadata"], "title description made_for_kids contains_synthetic_media")
     text(m["metadata"]["title"], 10, 90)
     text(m["metadata"]["description"], 30, 2000)
@@ -158,6 +160,12 @@ def validate_manifest(m, p):
     require(m["review"]["classification"] == "genuine-gameplay", "Fixtures/synthetic media are ineligible")
     for field in ("reproduction", "capture_context", "known_limits", "content_review"):
         text(m["review"][field], 20, 1000)
+    # One reviewed original is shorter; no arbitrary short clip or PR-number
+    # spoof can lower the generic floor. The complete material is immutable.
+    short_train = (m["schema_version"] == 2 and source["pr"] == 3032 and
+                   approval_hash(m) == TRAIN_APPROVAL_DIGEST)
+    require(clip["duration_seconds"] >= 15 or (short_train and clip["duration_seconds"] == 11.4),
+            "Clip duration must be 15-180 seconds except the exact reviewed 11.4-second train recording")
     if m["schema_version"] == 2:
         validate_import_spec(m, p)
     if m["schema_version"] == 2 and m["source"]["pr"] == 3031:
@@ -170,8 +178,9 @@ def validate_manifest(m, p):
         integer(m["approval"]["issue_number"])
         integer(m["approval"]["comment_id"])
         if m["schema_version"] == 2:
-            require(m["approval"]["issue_number"] == 3081 and
-                    approval_hash(m) == ATTACHMENT_APPROVAL_DIGEST and
+            require(m["approval"]["issue_number"] == source["pr"] and
+                    source["pr"] in HISTORICAL_APPROVAL_DIGESTS and
+                    approval_hash(m) == HISTORICAL_APPROVAL_DIGESTS[source["pr"]] and
                     p["approvers"] == ["valzargaming"],
                     "Attachment import material changed; new source review required")
 
@@ -179,7 +188,8 @@ def validate_manifest(m, p):
 def validate_import_spec(m, p):
     require(p["schema_version"] == 2, "Historical import requires its reviewed policy")
     item = m["import"]
-    keys(item, "run_id run_attempt workflow_id workflow_path commit original_url original_sha256 original_bytes source_comment_id source_comment_sha256 transformation")
+    fields = "run_id run_attempt workflow_id workflow_path commit original_url original_sha256 original_bytes source_comment_id source_comment_sha256 transformation"
+    keys(item, fields + (" source_relation" if m["source"]["pr"] == 3032 else ""))
     for field in ("run_id", "run_attempt", "workflow_id", "source_comment_id"):
         integer(item[field])
     sha(item["commit"], 40)
@@ -188,11 +198,11 @@ def validate_import_spec(m, p):
     integer(item["original_bytes"], 1024, MAX_CLIP)
     require({k: item[k] for k in ("workflow_id", "workflow_path")} in p["importers"],
             "Historical packager not allowlisted")
-    if m["source"]["pr"] == 3081:
-        # A second exact historical clip, never a wildcard historical import.
+    if m["source"]["pr"] in HISTORICAL_APPROVAL_DIGESTS:
+        # Exact reviewed historical clips, never a wildcard historical import.
         # Its human approval comment is still required at inspection/upload.
-        require(approval_hash(m) == ATTACHMENT_APPROVAL_DIGEST,
-                "Historical import differs from the reviewed PR3081 attachment")
+        require(approval_hash(m) == HISTORICAL_APPROVAL_DIGESTS[m["source"]["pr"]],
+                "Historical import differs from its reviewed exact material")
         return
     # Initial import is intentionally bounded to the exact reviewed pilot, not
     # a general URL fetch or a claim that old CI generated a local recording.
@@ -317,6 +327,9 @@ def validate_source_provenance(gh, m, p):
     pr = gh.repo(f'/pulls/{s["pr"]}')
     require(pr["base"]["repo"]["id"] == REPO_ID and pr["head"]["repo"]["id"] == REPO_ID,
             "Fork PR artifacts are not initially eligible")
+    if m["schema_version"] == 2 and s["pr"] == 3032:
+        validate_train_source_relation(gh, m, pr, run)
+        return
     if s["event"] == "pull_request":
         if m["schema_version"] == 2 and run["pull_requests"] == []:
             # Historical merged runs can have an empty Actions association.
@@ -334,6 +347,62 @@ def validate_source_provenance(gh, m, p):
     else:
         require(pr["merged"] is True and pr["merge_commit_sha"] == s["commit"],
                 "Non-PR capture must test the exact merged PR commit")
+
+
+def validate_train_source_relation(gh, m, pr, run):
+    # The owner explicitly approved this alternative relation for one recording
+    # rebased out of the PR history. Never describe these checks as Git ancestry.
+    require(approval_hash(m) == TRAIN_APPROVAL_DIGEST,
+            "Rebased historical source is not the exact approved train material")
+    relation = m["import"]["source_relation"]
+    require(pr["merged"] is True and pr["number"] == relation["pr"] and
+            pr["head"]["sha"] == relation["final_head"] and
+            pr["merge_commit_sha"] == relation["merge_commit"] and
+            isinstance(run["pull_requests"], list) and
+            all(item["number"] == 3032 for item in run["pull_requests"]),
+            "Train final PR identity or source association changed")
+    for comment_id, expected_hash, created_at in (
+            (m["import"]["source_comment_id"], m["import"]["source_comment_sha256"], relation["source_comment_created_at"]),
+            (relation["equivalence_comment_id"], relation["equivalence_comment_sha256"], relation["equivalence_comment_created_at"])):
+        comment = gh.repo(f'/issues/comments/{comment_id}')
+        require(comment["user"]["type"] == "User" and
+                comment["user"]["login"] == relation["owner_login"] and
+                comment["user"]["id"] == relation["owner_id"] and
+                comment["issue_url"] == f'https://api.github.com/repos/{REPO}/issues/3032' and
+                digest(comment["body"].encode()) == expected_hash and
+                comment["created_at"] == comment["updated_at"] == created_at,
+                "Train owner historical attestation changed")
+    regression = relation["regression_run"]
+    tested = gh.repo(f'/actions/runs/{regression["id"]}')
+    require(tested["id"] == regression["id"] and tested["run_attempt"] == regression["attempt"] and
+            tested["workflow_id"] == regression["workflow_id"] and tested["path"] == regression["workflow_path"] and
+            tested["repository"]["id"] == tested["head_repository"]["id"] == REPO_ID and
+            tested["head_sha"] == m["source"]["commit"] and tested["event"] == "pull_request" and
+            tested["head_branch"] == m["source"]["head_branch"] and
+            tested["status"] == "completed" and tested["conclusion"] == "success" and
+            all(item["number"] == 3032 for item in tested["pull_requests"]),
+            "Captured train regression provenance changed")
+    cache = {}
+    def node(commit, path):
+        current = commit
+        for part in path.split('/'):
+            require(part not in {"", ".", ".."}, "Unsafe trusted proof path")
+            if current not in cache:
+                require(len(cache) < 100, "Train proof request cap reached")
+                tree = gh.repo(f'/git/trees/{current}')
+                require(tree.get("truncated") is False and isinstance(tree["tree"], list) and
+                        len(tree["tree"]) <= 5000, "Incomplete/oversized train proof tree")
+                cache[current] = tree["tree"]
+            matches = [entry for entry in cache[current] if entry["path"] == part]
+            require(len(matches) == 1 and matches[0]["type"] in {"blob", "tree"} and
+                    matches[0]["mode"] in {"100644", "100755", "040000"}, "Train source proof path/type changed")
+            current = matches[0]["sha"]
+            sha(current, 40)
+        return current
+    for entry in relation["dependencies"]:
+        require(node(m["source"]["commit"], entry["path"]) == entry["captured_sha"] and
+                node(relation["final_head"], entry["path"]) == entry["final_sha"] and
+                entry["captured_sha"] == entry["final_sha"], "Scoped train source equivalence changed")
 
 
 def validate_import_attestation(gh, m):
@@ -630,15 +699,15 @@ def main():
     import_run = os.environ.get("IMPORT_RUN_ID", "")
     if import_run:
         require(args.mode in {"inspect", "upload"} and args.manifest in
-                {"pr3031-power-public", "pr3081-attachments-public"} and
+                {"pr3031-power-public", "pr3081-attachments-public", "pr3032-trains-public"} and
                 re.fullmatch(r"[1-9][0-9]{0,14}", import_run), "Invalid historical pilot selection")
         require_trusted_dispatch()
         from prepare_import import resolve_pilot, resolve_pilot_receipt
         pilot_gh = GitHub(Transport(), os.environ["GITHUB_TOKEN"])
         comment_id = os.environ.get("APPROVAL_COMMENT_ID", "")
-        if args.manifest == "pr3081-attachments-public":
+        if args.manifest != "pr3031-power-public":
             require(re.fullmatch(r"[1-9][0-9]{0,14}", comment_id),
-                    "PR3081 requires the owner's exact per-clip approval comment ID")
+                    "Historical clip requires the owner's exact per-clip approval comment ID")
         else:
             require(comment_id == "", "PR3031 does not accept another approval input")
         options = {"manifest_id": args.manifest,

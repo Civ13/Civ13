@@ -1,9 +1,9 @@
-"""Credential-free, manual import of two exact reviewed historical clips.
+"""Credential-free, manual import of exact reviewed historical clips.
 
 This packages existing bytes. It never records a game, transforms footage, grants
 OAuth access or uploads to YouTube. Media transport uses public GitHub attachment
-URLs only. Both clips are pinned by their complete reviewed material digest;
-PR3081 still requires an exact human approval comment before upload inspection.
+URLs only. Clips are pinned by their complete reviewed material digest;
+new enrollments require an exact human approval comment before upload inspection.
 """
 import argparse
 import json
@@ -18,7 +18,8 @@ import upload as u
 WORKFLOW_PATH = ".github/workflows/youtube-prepare-import.yml"
 PILOT_ID = "pr3031-power-public"
 ARTIFACT_NAME = "gameplay-video-pr3031-power-public"
-IMPORTS = {PILOT_ID: "pr3031.json", "pr3081-attachments-public": "pr3081.json"}
+IMPORTS = {PILOT_ID: "pr3031.json", "pr3081-attachments-public": "pr3081.json",
+           "pr3032-trains-public": "pr3032.json"}
 
 
 def specification(manifest_id=PILOT_ID):
@@ -50,7 +51,7 @@ def policy(m):
 
 def select_material(spec, run, approval_comment_id):
     m = material(spec, run)
-    if m["source"]["pr"] == 3081:
+    if m["source"]["pr"] in u.HISTORICAL_APPROVAL_DIGESTS:
         u.integer(approval_comment_id)
         m["approval"]["comment_id"] = approval_comment_id
     else:

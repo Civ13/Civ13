@@ -35,3 +35,7 @@ jobs:
         env:
           MANIFEST_ID: pr3081-attachments-public
         run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke
+      - name: Parse unchanged original PR3032 train MP4 without channel access or capture
+        env:
+          MANIFEST_ID: pr3032-trains-public
+        run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke
