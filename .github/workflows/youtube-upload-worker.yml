@@ -8,6 +8,9 @@ on:
       execute_upload:
         type: boolean
         default: false
+      verify_only:
+        type: boolean
+        default: false
 permissions: {}
 # One destination-wide lock, including different manifests and reruns.
 concurrency:
@@ -35,6 +38,7 @@ jobs:
       - name: Inspect approved provenance and media without channel secrets
         env:
           MANIFEST_ID: ${{ inputs.manifest_id }}
+          VERIFY_ONLY: ${{ inputs.verify_only }}
           GITHUB_TOKEN: ${{ github.token }}
         run: /usr/bin/python3 -B tools/youtube/upload.py inspect
   upload:
@@ -68,6 +72,7 @@ jobs:
       - name: Reserve, upload unlisted, and verify destination and processing
         env:
           MANIFEST_ID: ${{ inputs.manifest_id }}
+          VERIFY_ONLY: ${{ inputs.verify_only }}
           GITHUB_TOKEN: ${{ github.token }}
           YOUTUBE_UPLOAD_ENABLED: ${{ vars.YOUTUBE_UPLOAD_ENABLED }}
           YOUTUBE_UPLOAD_STOP_USE: ${{ vars.YOUTUBE_UPLOAD_STOP_USE }}

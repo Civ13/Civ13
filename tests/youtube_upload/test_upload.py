@@ -395,6 +395,12 @@ class PhpBridgeTests(unittest.TestCase):
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_verification_only_flag_reaches_both_trusted_jobs(self):
+        wrapper = (ROOT / '.github/workflows/youtube-upload.yml').read_text()
+        worker = (ROOT / '.github/workflows/youtube-upload-worker.yml').read_text()
+        self.assertIn('verify_only: ${{ inputs.verify_only }}', wrapper)
+        self.assertEqual(worker.count('VERIFY_ONLY: ${{ inputs.verify_only }}'), 2)
+
     def test_framework_lock_is_pinned_and_portable(self):
         lock = json.loads((ROOT / 'tools/youtube/composer.lock').read_text())
         framework = next(p for p in lock['packages'] if p['name'] == 'vzgcoders/youtubephp')
@@ -421,6 +427,65 @@ class WorkflowTests(unittest.TestCase):
         for line in workflow.splitlines():
             if "uses: actions/" in line:
                 self.assertRegex(line, r"@[0-9a-f]{40}")
+
+
+class VerificationOnlyMainTests(unittest.TestCase):
+    def setUp(self):
+        self.p, self.m, *_ = fixtures()
+        self.gh = FakeGH(self.m)
+        self.record = {"channel_id": u.CHANNEL, "clip_sha256": self.m["clip"]["sha256"],
+            "commit": self.m["source"]["commit"], "reserved_at": 100000,
+            "state": "uploaded", "video_id": "abcdefghijk"}
+        self.gh.ledger["records"][u.receipt_key(self.m)] = self.record
+        # These formerly made both main/workflow stages fail before readback.
+        self.gh.objects['/actions/artifacts/2']['expired'] = True
+        self.gh.objects['/actions/runs/1']['run_attempt'] = 2
+
+    def run_main(self, mode, youtube):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'tools/youtube/approved').mkdir(parents=True)
+            (root / 'tools/youtube/policy.json').write_bytes(u.canonical(self.p))
+            (root / 'tools/youtube/approved/offline-example.json').write_bytes(u.canonical(self.m))
+            env = {'GITHUB_REPOSITORY': u.REPO, 'GITHUB_REF': 'refs/heads/master',
+                'GITHUB_EVENT_NAME': 'workflow_dispatch', 'GITHUB_TOKEN': 'OFFLINE-FAKE',
+                'GITHUB_WORKFLOW_REF': u.REPO + '/.github/workflows/youtube-upload.yml@refs/heads/master',
+                'VERIFY_ONLY': 'true', 'YOUTUBE_UPLOAD_ENABLED': 'true',
+                'YOUTUBE_UPLOAD_STOP_USE': 'false', 'YOUTUBE_ZERO_COST_CONFIRMED': 'true'}
+            with patch.object(sys, 'argv', ['upload.py', mode, '--manifest', 'offline-example']), \
+                    patch.object(u, '__file__', str(root / 'tools/youtube/upload.py')), \
+                    patch.dict(u.os.environ, env, clear=True), \
+                    patch.object(u, 'GitHub', return_value=self.gh), \
+                    patch.object(u, 'Transport', side_effect=lambda: object()), \
+                    patch.object(u, 'PhpYouTube', side_effect=youtube), \
+                    patch.object(u, 'validate_provenance', side_effect=AssertionError('NO SOURCE DEPENDENCY')), \
+                    patch.object(u, 'inspect_archive', side_effect=AssertionError('NO MEDIA')), \
+                    patch.object(u, 'probe_media', side_effect=AssertionError('NO DECODER')), \
+                    patch.object(u, 'publish', side_effect=AssertionError('NO INSERT PATH')):
+                u.main()
+
+    def test_inspect_receipt_survives_expired_artifact_and_producer_rerun_without_oauth(self):
+        def no_oauth():
+            raise AssertionError('Inspection must not touch OAuth')
+        self.run_main('inspect', no_oauth)
+        self.assertEqual(self.gh.saves, [])
+
+    def test_execute_only_verifies_known_id_without_upload_or_media(self):
+        youtube = FakeYT(self.gh)
+        self.run_main('upload', lambda: youtube)
+        self.assertEqual(youtube.calls, ['channel', 'verify'])
+        self.assertEqual(len(self.gh.saves), 1)
+        self.assertEqual(next(iter(self.gh.saves[0]['records'].values()))['state'], 'verified')
+
+    def test_unknown_or_uncertain_receipt_stops_before_oauth(self):
+        for state, video_id in [('reserved', None), ('uncertain', 'abcdefghijk'), ('uploaded', None)]:
+            with self.subTest(state=state, video_id=video_id):
+                self.record['state'] = state
+                self.record.pop('video_id', None)
+                if video_id:
+                    self.record['video_id'] = video_id
+                with self.assertRaises(u.Refused):
+                    self.run_main('upload', lambda: self.fail('No OAuth for uncertain receipt'))
 
 
 if __name__ == "__main__":

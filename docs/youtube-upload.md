@@ -16,6 +16,7 @@ or pending processing cannot produce a successful upload receipt.
 ## Trust boundaries
 
 `youtube-upload.yml` accepts a manifest ID and `execute_upload` (default false).
+Its optional `verify_only` flag (default false) selects receipt-only readback.
 It calls the reusable `youtube-upload-worker.yml` from the same reviewed commit.
 Only a manual invocation of the default-branch wrapper is eligible. PR events,
 forks, non-default dispatches and other callers cannot reach the worker's jobs.
@@ -149,8 +150,12 @@ attempted. A single destination-wide workflow lock serializes the full lifecycle
 After successful video insertion, the video ID is saved as `uploaded`, then owner
 readback must confirm channel, unlisted privacy, processed upload status and
 successful processing before the record becomes `verified`. Polling is bounded to
-12 reads with 11 ten-second waits. A later dispatch with a known ID verifies only;
-it never reinserts media. YoutubePHP uses one bounded multipart `videos.insert` call; this pinned version
+12 reads with 11 ten-second waits. For a saved video ID, dispatch with
+`verify_only:true`: both inspection and execution validate the current human
+approval and durable receipt without requiring retained source media or an
+unchanged producer run. This route cannot insert media, reserve a new upload or
+clear an uncertain outcome; an unknown ID or unreconciled receipt stops before
+OAuth. Environment/budget gates still apply. YoutubePHP uses one bounded multipart `videos.insert` call; this pinned version
 does not implement resumable video uploads. It holds the file in memory, so the
 32 MiB cap applies before the PHP process. There is no upload resumption. The
 adapter explicitly overrides the framework's normal 503/rate-limit retry behavior:

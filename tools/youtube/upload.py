@@ -231,11 +231,15 @@ class GitHub:
         return raw
 
 
-def validate_provenance(gh, m, p):
+def validate_repository(gh):
     repo = gh.repo("")
     require(repo["id"] == REPO_ID and repo["full_name"] == REPO and
             repo["visibility"] == "public" and repo["default_branch"] == "master",
             "Require the public repository/default branch; stop if billing assumptions change")
+
+
+def validate_provenance(gh, m, p):
+    validate_repository(gh)
     s, a = m["source"], m["artifact"]
     run = gh.repo(f'/actions/runs/{s["run_id"]}')
     require(run["id"] == s["run_id"] and run["repository"]["id"] == REPO_ID and
@@ -269,6 +273,10 @@ def validate_provenance(gh, m, p):
             attempt["status"] == "completed" and attempt["head_sha"] == s["commit"] and
             attempt["run_started_at"] <= artifact["created_at"] <= attempt["updated_at"],
             "Artifact not from approved successful attempt")
+    validate_approval(gh, m, p)
+
+
+def validate_approval(gh, m, p):
     approval = gh.repo(f'/issues/comments/{m["approval"]["comment_id"]}')
     require(approval["user"]["type"] == "User" and approval["user"]["login"] in p["approvers"] and
             approval["issue_url"] == f'https://api.github.com/repos/{REPO}/issues/{m["approval"]["issue_number"]}' and
@@ -438,6 +446,30 @@ def load_inputs(root, manifest_id):
     return p, m
 
 
+def existing_receipt(m, ledger):
+    record = ledger.find(m)
+    require(record is not None and record["state"] in {"uploaded", "verified", "imported"} and
+            "video_id" in record, "Verification-only requires a reconciled receipt with a known video ID")
+    return record
+
+
+def verify_existing(m, ledger, youtube, now):
+    # No clip/archive, upload call or reservation path exists in this operation.
+    record = existing_receipt(m, ledger)
+    youtube.channel()
+    youtube.verify(record["video_id"])
+    record["state"], record["verified_at"] = "verified", now
+    ledger.save()
+    return "https://youtu.be/" + record["video_id"]
+
+
+def require_upload_gate():
+    require(os.environ.get("YOUTUBE_UPLOAD_ENABLED") == "true" and
+            os.environ.get("YOUTUBE_UPLOAD_STOP_USE") == "false" and
+            os.environ.get("YOUTUBE_ZERO_COST_CONFIRMED") == "true",
+            "Upload disabled or budget/stop-use gate closed")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("inspect", "upload", "approval", "dry-run"))
@@ -460,16 +492,28 @@ def main():
             "Only the trusted default-branch manual workflow may run")
     transport = Transport()
     gh = GitHub(transport, os.environ["GITHUB_TOKEN"])
+    verify_only = os.environ.get("VERIFY_ONLY", "false")
+    require(verify_only in {"true", "false"}, "Invalid verification-only flag")
+    if verify_only == "true":
+        # Expired/deleted artifacts and a rerun producer cannot prevent readback
+        # of an already durable video ID. Current human approval still applies.
+        validate_repository(gh)
+        validate_approval(gh, m, p)
+        ledger = Ledger(gh)
+        existing_receipt(m, ledger)
+        if args.mode == "inspect":
+            print("Approved durable receipt checked; verification-only cannot insert media")
+            return
+        require_upload_gate()
+        print("Verified unlisted upload: " + verify_existing(m, ledger, PhpYouTube(), int(time.time())))
+        return
     validate_provenance(gh, m, p)
     clip = inspect_archive(gh.archive(m["artifact"]["id"]), m)
     if args.mode == "inspect":
         probe_media(clip, m["clip"]["duration_seconds"])
         print("Approved source provenance, bounded media and per-clip approval checked")
         return
-    require(os.environ.get("YOUTUBE_UPLOAD_ENABLED") == "true" and
-            os.environ.get("YOUTUBE_UPLOAD_STOP_USE") == "false" and
-            os.environ.get("YOUTUBE_ZERO_COST_CONFIRMED") == "true",
-            "Upload disabled or budget/stop-use gate closed")
+    require_upload_gate()
     ledger = Ledger(gh)  # Missing ledger is an error, never initialize on the fly.
     youtube = PhpYouTube()
     url = publish(m, clip, ledger, youtube, int(time.time()))
