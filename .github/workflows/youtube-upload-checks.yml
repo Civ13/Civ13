@@ -31,3 +31,7 @@ jobs:
         run: /usr/bin/python3 -B -m unittest discover -s tests/youtube_upload -v
       - name: Real MP4 parser smoke check without channel access or capture
         run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke
+      - name: Parse existing PR3081 MP4 without channel access or capture
+        env:
+          MANIFEST_ID: pr3081-attachments-public
+        run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke

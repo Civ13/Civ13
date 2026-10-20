@@ -1,8 +1,9 @@
-"""Credential-free, manual import of the one exact owner-approved historical clip.
+"""Credential-free, manual import of two exact reviewed historical clips.
 
 This packages existing bytes. It never records a game, transforms footage, grants
 OAuth access or uploads to YouTube. Media transport uses public GitHub attachment
-URLs only; the approved masked SHA is mandatory, so the original cannot substitute.
+URLs only. Both clips are pinned by their complete reviewed material digest;
+PR3081 still requires an exact human approval comment before upload inspection.
 """
 import argparse
 import json
@@ -17,15 +18,19 @@ import upload as u
 WORKFLOW_PATH = ".github/workflows/youtube-prepare-import.yml"
 PILOT_ID = "pr3031-power-public"
 ARTIFACT_NAME = "gameplay-video-pr3031-power-public"
+IMPORTS = {PILOT_ID: "pr3031.json", "pr3081-attachments-public": "pr3081.json"}
 
 
-def specification():
-    return u.parse_json((Path(__file__).parent / "imports/pr3031.json").read_bytes())
+def specification(manifest_id=PILOT_ID):
+    u.require(manifest_id in IMPORTS, "Historical clip not enrolled")
+    return u.parse_json((Path(__file__).parent / "imports" / IMPORTS[manifest_id]).read_bytes())
 
 
 def material(spec, run):
     m = {k: spec[k] for k in ("repository", "channel_id", "channel_handle", "privacy", "source", "clip", "metadata", "review")}
-    m.update(schema_version=2, approval={"authorization_id": spec["authorization_id"]})
+    approval = ({"authorization_id": spec["authorization_id"]} if "authorization_id" in spec
+                else dict(spec["approval"]))
+    m.update(schema_version=2, approval=approval)
     m["import"] = dict(spec["original"], run_id=run["id"], run_attempt=run["run_attempt"],
                        workflow_id=run["workflow_id"], workflow_path=WORKFLOW_PATH, commit=run["head_sha"])
     return m
@@ -38,8 +43,19 @@ def policy(m):
         importers=[{k: m["import"][k] for k in ("workflow_id", "workflow_path")}])
     u.validate_policy(p)
     u.validate_import_spec(m, p)
-    u.validate_approval(None, m, p)
+    if m["source"]["pr"] == 3031:
+        u.validate_approval(None, m, p)
     return p
+
+
+def select_material(spec, run, approval_comment_id):
+    m = material(spec, run)
+    if m["source"]["pr"] == 3081:
+        u.integer(approval_comment_id)
+        m["approval"]["comment_id"] = approval_comment_id
+    else:
+        u.require(approval_comment_id is None, "Pilot approval cannot be replaced")
+    return m
 
 
 def public_media(transport, url, expected_bytes, expected_sha):
@@ -68,7 +84,7 @@ def public_media(transport, url, expected_bytes, expected_sha):
     raise u.Refused("Attachment redirect cap reached")
 
 
-def resolve_pilot(gh, run_id, trusted_commit):
+def resolve_pilot(gh, run_id, trusted_commit, manifest_id=PILOT_ID, approval_comment_id=None):
     u.integer(run_id)
     u.sha(trusted_commit, 40)
     run = gh.repo(f"/actions/runs/{run_id}")
@@ -76,12 +92,12 @@ def resolve_pilot(gh, run_id, trusted_commit):
     u.require(workflow["path"] == WORKFLOW_PATH and workflow["state"] == "active" and
         workflow["id"] == run["workflow_id"] and run["head_sha"] == trusted_commit,
         "Import must use the current trusted dispatch commit and actual enrolled workflow identity")
-    m = material(specification(), run)
+    m = select_material(specification(manifest_id), run, approval_comment_id)
     p = policy(m)
     artifacts = gh.repo(f"/actions/runs/{run_id}/artifacts?per_page=10")
     u.require(artifacts["total_count"] <= 10 and len(artifacts["artifacts"]) == artifacts["total_count"],
         "Unexpected import artifact inventory")
-    selected = [a for a in artifacts["artifacts"] if a["name"] == ARTIFACT_NAME]
+    selected = [a for a in artifacts["artifacts"] if a["name"] == "gameplay-video-" + manifest_id]
     u.require(len(selected) == 1, "Require one exact pilot artifact")
     item = selected[0]
     u.require(item["digest"].startswith("sha256:"), "Artifact digest missing")
@@ -93,19 +109,19 @@ def resolve_pilot(gh, run_id, trusted_commit):
     return p, m
 
 
-def resolve_pilot_receipt(gh, run_id):
+def resolve_pilot_receipt(gh, run_id, manifest_id=PILOT_ID, approval_comment_id=None):
     # Known-ID readback must survive artifact expiry and later master commits.
     u.integer(run_id)
     u.validate_repository(gh)
-    spec = specification()
+    spec = specification(manifest_id)
     records = [r for r in u.Ledger(gh).data["records"].values()
         if r["clip_sha256"] == spec["clip"]["sha256"] and r["channel_id"] == u.CHANNEL]
     u.require(len(records) == 1, "No unique pilot receipt")
     record = records[0]
     item = record.get("historical_import", {})
     u.require(item.get("run_id") == run_id, "Pilot receipt importer mismatch")
-    m = material(spec, {"id": item["run_id"], "run_attempt": item["run_attempt"],
-        "workflow_id": item["workflow_id"], "head_sha": item["commit"]})
+    m = select_material(spec, {"id": item["run_id"], "run_attempt": item["run_attempt"],
+        "workflow_id": item["workflow_id"], "head_sha": item["commit"]}, approval_comment_id)
     u.require(m["import"] == item, "Pilot receipt source provenance mismatch")
     p = policy(m)
     m["artifact"] = {"id": record["artifact_id"], "name": record["artifact_name"],
@@ -140,13 +156,21 @@ def prepare(gh, transport, spec, run_id, run_attempt, trusted_commit, url, desti
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("prepare", "probe-smoke"))
+    parser.add_argument("mode", choices=("prepare", "probe-smoke", "approval"))
     args = parser.parse_args()
-    spec = specification()
+    manifest_id = os.environ.get("MANIFEST_ID", PILOT_ID)
+    spec = specification(manifest_id)
+    if args.mode == "approval":
+        # Offline preview only: no assertion that the human has approved it.
+        m = material(spec, {"id": 1, "run_attempt": 1, "workflow_id": 1, "head_sha": "0" * 40})
+        policy(m)
+        print(u.approval_text(m))
+        return
     if args.mode == "probe-smoke":
         original = spec["original"]
         clip = public_media(u.Transport(), original["original_url"], original["original_bytes"], original["original_sha256"])
-        u.probe_media(clip, 40.56)
+        duration = 40.56 if manifest_id == PILOT_ID else spec["clip"]["duration_seconds"]
+        u.probe_media(clip, duration)
         print("Real public source MP4 parsed with pinned runner MediaInfo; no game, grant or upload")
         return
     u.require(os.environ.get("GITHUB_REPOSITORY") == u.REPO and

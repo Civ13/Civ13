@@ -15,7 +15,11 @@ on:
         type: boolean
         default: false
       import_run_id:
-        description: Successful current-commit historical importer run ID (pilot only; otherwise empty)
+        description: Successful current-commit historical importer run ID (otherwise empty)
+        type: string
+        default: ''
+      approval_comment_id:
+        description: Owner's exact per-clip approval comment ID (required for PR3081 import)
         type: string
         default: ''
 permissions: {}
@@ -39,3 +43,4 @@ jobs:
       execute_upload: ${{ inputs.execute_upload }}
       verify_only: ${{ inputs.verify_only }}
       import_run_id: ${{ inputs.import_run_id }}
+      approval_comment_id: ${{ inputs.approval_comment_id }}
