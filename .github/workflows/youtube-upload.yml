@@ -19,7 +19,7 @@ on:
         type: string
         default: ''
       approval_comment_id:
-        description: Owner's exact per-clip approval comment ID (required for PR3081 import)
+        description: Owner's exact per-clip approval comment ID (required for new historical imports)
         type: string
         default: ''
 permissions: {}
