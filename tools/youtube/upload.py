@@ -272,10 +272,12 @@ class Transport:
         except urllib.error.HTTPError as error:
             if error.code == 302:
                 return 302, dict(error.headers), b""
-            if method == "GET" and (error.code == 429 or
-                    error.code == 403 and header(dict(error.headers), "X-RateLimit-Remaining") == "0"):
-                from deferred import retry_at
-                raise RateLimited(error.code, retry_at(dict(error.headers), int(time.time()))) from None
+            if method == "GET" and error.code in {403, 429}:
+                from deferred import retry_at, retry_after_at
+                now, metadata = int(time.time()), dict(error.headers)
+                if (error.code == 429 or header(metadata, "X-RateLimit-Remaining") == "0" or
+                        retry_after_at(header(metadata, "Retry-After"), now) is not None):
+                    raise RateLimited(error.code, retry_at(metadata, now)) from None
             raise Refused(f"HTTP {error.code}; stop and inspect sanitized service status") from None
         except (OSError, ValueError):
             raise Refused("Network outcome uncertain; do not retry an upload") from None

@@ -70,6 +70,25 @@ def setup(now=100000, attachment=False):
 
 
 class EligibilityTests(unittest.TestCase):
+    def test_secondary_get_limit_differs_from_permission_failure_and_post(self):
+        url = 'https://api.github.com/repos/Civ13/Civ13'
+        for method, headers, limited in (
+                ('GET', {'Retry-After': '120', 'X-RateLimit-Remaining': '4999'}, True),
+                ('GET', {'X-RateLimit-Remaining': '0'}, True),
+                ('GET', {'Retry-After': 'PRIVATE-URL'}, False),
+                ('GET', {}, False),
+                ('POST', {'Retry-After': '120', 'X-RateLimit-Remaining': '0'}, False)):
+            transport = u.Transport()
+            error = u.urllib.error.HTTPError(url, 403, 'PRIVATE-BODY', headers, None)
+            with patch.object(transport.opener, 'open', side_effect=error), patch.object(u.time, 'time', return_value=100000):
+                with self.assertRaises(u.Refused) as caught:
+                    transport.request(method, url)
+            self.assertEqual(isinstance(caught.exception, u.RateLimited), limited)
+            self.assertNotIn('PRIVATE', str(caught.exception))
+            if limited:
+                self.assertFalse(caught.exception.media_attempted)
+                self.assertGreaterEqual(caught.exception.retry_at, 100120 if headers.get('Retry-After') else 100060)
+
     def test_inclusive_boundary_and_current_two_reservations(self):
         records = [{'reserved_at': 1792497964}, {'reserved_at': 1792509762}]
         self.assertEqual(d.rolling_eligible_at(records, 1792518000), 1792584365)

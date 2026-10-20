@@ -44,22 +44,28 @@ def rolling_eligible_at(records, now):
     return sorted(active)[-2] + 86401 if len(active) >= 2 else now
 
 
+def retry_after_at(raw, now):
+    """A valid bounded Retry-After is a positive secondary-limit signal."""
+    value = None
+    if re.fullmatch(r"[0-9]{1,7}", raw):
+        value = now + int(raw)
+    elif 1 <= len(raw) <= 80:
+        try:
+            date = parsedate_to_datetime(raw)
+            if date.tzinfo is not None:
+                value = int(date.timestamp())
+        except (TypeError, ValueError, OverflowError):
+            pass
+    return value if value is not None and now <= value <= now + MAX_LIFETIME else None
+
+
 def retry_at(headers, now, attempt=0):
     """Only sanitized TLS-provider headers, never response bodies or URLs."""
     u.integer(now, 0)
     u.integer(attempt, 0, MAX_ATTEMPTS)
     values = {str(k).lower(): str(v) for k, v in headers.items()}
-    candidates = []
-    raw = values.get("retry-after", "")
-    if re.fullmatch(r"[0-9]{1,7}", raw):
-        candidates.append(now + int(raw))
-    elif 1 <= len(raw) <= 80:
-        try:
-            date = parsedate_to_datetime(raw)
-            if date.tzinfo is not None:
-                candidates.append(int(date.timestamp()))
-        except (TypeError, ValueError, OverflowError):
-            pass
+    after = retry_after_at(values.get("retry-after", ""), now)
+    candidates = [after] if after is not None else []
     reset = values.get("x-ratelimit-reset", "")
     if re.fullmatch(r"[0-9]{1,12}", reset):
         candidates.append(int(reset))
