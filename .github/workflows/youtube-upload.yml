@@ -47,6 +47,7 @@ jobs:
       YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
       YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      YOUTUBE_CONTROL_APP_PRIVATE_KEY: ${{ secrets.YOUTUBE_CONTROL_APP_PRIVATE_KEY }}
     with:
       manifest_id: ${{ inputs.manifest_id }}
       execute_upload: ${{ inputs.execute_upload }}

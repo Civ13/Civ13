@@ -427,10 +427,12 @@ class WorkflowTests(unittest.TestCase):
         forwarding = wrapper.split('\n    secrets:\n')[1].split('\n    with:\n')[0]
         required = worker.split('\n    secrets:\n')[1].split('\n    inputs:\n')[0]
         names = ('YOUTUBE_CLIENT_ID', 'YOUTUBE_CLIENT_SECRET', 'YOUTUBE_REFRESH_TOKEN')
-        self.assertEqual(len(forwarding.splitlines()), 3)
+        self.assertEqual(len(forwarding.splitlines()), 4)
         for name in names:
             self.assertIn(name + ': ${{ secrets.' + name + ' }}', forwarding)
             self.assertIn(name + ':\n        required: true', required)
+        self.assertIn('YOUTUBE_CONTROL_APP_PRIVATE_KEY: ${{ secrets.YOUTUBE_CONTROL_APP_PRIVATE_KEY }}', forwarding)
+        self.assertIn('YOUTUBE_CONTROL_APP_PRIVATE_KEY:\n        required: false', required)
         inspect = worker.split('\n  inspect:\n')[1].split('\n  upload:\n')[0]
         self.assertNotIn('secrets.', inspect)
         self.assertNotIn('environment:', inspect)

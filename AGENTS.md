@@ -1,6 +1,15 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-20: reviewed video upload boundary -->
+<!-- 2026-10-20: deferred control-read capability -->
+Deferred upload controls use a dedicated Variables/Environments/Metadata-read App,
+installed only for Civ13/Civ13, through eight named variable GETs. Its ephemeral
+token never substitutes for queue/actions GITHUB_TOKEN. Pinned create-github-app-token
+v3.3.0 lacks permission-variables; omit all permission inputs only while that
+installation retains exactly the three approved read permissions. Keep post-job
+revocation and feature OFF until separately approved storage/activation. Create
+and read back master-only youtube-controls before placing its key; a missing
+workflow environment otherwise auto-creates without branch protections.
 `docs/youtube-upload.md` defines the manual/default-off public YouTube uploader contract after explicit owner approval.
 Only trusted default-branch code receives environment credentials; PR media stays
 data, with decoder inspection in a secret-free job. Per-clip human approval binds

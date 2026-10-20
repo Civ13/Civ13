@@ -1,13 +1,16 @@
 """Offline durable deferral contracts; no grants, settings, dispatches or uploads."""
 import base64
+import contextlib
 import copy
 import importlib.util
 import json
+import io
 from pathlib import Path
 import sys
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
+import re
 
 from test_import import u, h, pilot
 import test_import as history
@@ -59,6 +62,17 @@ class GH:
             return {'content': {'sha': str(self.version)}}
         return self.original.repo(path, method, value)
 
+    def variables(self, scope):
+        path = '/actions/variables?per_page=100' if scope == 'repository' else '/environments/youtube-unlisted/variables?per_page=100'
+        return {v['name']: v['value'] for v in self.repo(path)['variables']}
+
+    def read(self, scope, name):
+        return self.variables(scope)[name]
+
+
+def run_tick(gh, *args, **kwargs):
+    return d.tick(gh, *args, control=gh, **kwargs)
+
 
 def setup(now=100000, attachment=False):
     p, m, fake = history.HistoricalImportTests().attachment() if attachment else pilot()
@@ -67,6 +81,128 @@ def setup(now=100000, attachment=False):
     queue = d.Queue(gh)
     ident, entry = queue.enqueue(manifest_id, m, 10, now, now, 'rolling_cap')
     return gh, ident, m
+
+
+class ControlReaderTests(unittest.TestCase):
+    def response(self, name, value='false', status=200):
+        return status, {}, u.canonical({'name': name, 'value': value})
+
+    def test_only_eight_named_gets_receive_app_token_and_writes_keep_workflow_token(self):
+        names = [(scope, name) for scope, values in d.CONTROL_NAMES.items() for name in values]
+        transport = history.FakeTransport([self.response(name) for _, name in names])
+        reader = d.ControlReader(transport, 'CONTROL-READ-ONLY')
+        for scope in d.CONTROL_NAMES:
+            reader.variables(scope)
+        self.assertEqual(len(transport.calls), 8)
+        for (scope, name), (args, kwargs) in zip(names, transport.calls):
+            prefix = '/actions/variables/' if scope == 'repository' else '/environments/youtube-unlisted/variables/'
+            self.assertEqual(args[0:2], ('GET', 'https://api.github.com/repos/Civ13/Civ13' + prefix + name))
+            self.assertEqual(args[2]['Authorization'], 'Bearer CONTROL-READ-ONLY')
+            self.assertEqual(len(args), 3)  # No request body or mutation method.
+            self.assertEqual(kwargs, {})
+        writes = history.FakeTransport([(200, {}, b'{}'), (204, {}, b''), (202, {}, b'')])
+        gh = u.GitHub(writes, 'WORKFLOW-WRITES')
+        gh.repo('/contents/deferred.json', method='PUT', value={'fixture': True})
+        d.dispatch(gh, 'youtube-upload.yml', {'fixture': 'true'})
+        d.cancel_overdue_run(gh, 42)
+        for args, _ in writes.calls:
+            self.assertIn(args[0], {'PUT', 'POST'})
+            self.assertEqual(args[2]['Authorization'], 'Bearer WORKFLOW-WRITES')
+            self.assertNotIn('CONTROL-READ-ONLY', str(args))
+
+    def test_missing_token_or_control_never_falls_back_to_github_token_or_other_path(self):
+        with patch.dict(d.os.environ, {'GITHUB_TOKEN': 'WORKFLOW-ONLY'}, clear=True), \
+                patch.object(u.Transport, 'request', side_effect=AssertionError('No token fallback')):
+            with self.assertRaises(u.Refused):
+                d.ControlReader.from_environment()
+        transport = history.FakeTransport([])
+        reader = d.ControlReader(transport, 'OFFLINE-CONTROL')
+        for scope, name in [('other', 'YOUTUBE_UPLOAD_ENABLED'), ('environment', 'YOUTUBE_DEFERRED_ENABLED'),
+                ('repository', 'UNRELATED_SECRET'), ('environment', '../other/variables/x')]:
+            with self.assertRaises(u.Refused):
+                reader.read(scope, name)
+        self.assertEqual(transport.calls, [])
+        for response in [(403, {}, b'PRIVATE'), (404, {}, b'PRIVATE'), (500, {}, b'PRIVATE'),
+                (200, {}, b'{}'), self.response('WRONG-NAME')]:
+            reader = d.ControlReader(history.FakeTransport([response]), 'OFFLINE-CONTROL')
+            with self.assertRaises(u.Refused) as caught:
+                reader.read('repository', 'YOUTUBE_UPLOAD_ENABLED')
+            self.assertNotIn('PRIVATE', str(caught.exception))
+
+    def test_fresh_both_scope_reads_and_manual_feature_off_no_app_dependency(self):
+        values = {'YOUTUBE_UPLOAD_ENABLED': 'true', 'YOUTUBE_UPLOAD_STOP_USE': 'false',
+            'YOUTUBE_ZERO_COST_CONFIRMED': 'true', 'YOUTUBE_DEFERRED_ENABLED': 'true',
+            'YOUTUBE_DEFERRED_ARMED_UNTIL': '100900'}
+        responses = [self.response(name, values[name]) for scope in d.CONTROL_NAMES for name in d.CONTROL_NAMES[scope]]
+        stopped = responses.copy()
+        stopped[6] = self.response('YOUTUBE_UPLOAD_STOP_USE', 'true')
+        transport = history.FakeTransport(responses + stopped)
+        reader = d.ControlReader(transport, 'OFFLINE-CONTROL')
+        self.assertEqual(d.controls(100000, reader), '')
+        self.assertEqual(d.controls(100001, reader), 'emergency_stop')
+        self.assertEqual(len(transport.calls), 16)
+        with patch.dict(d.os.environ, {'YOUTUBE_DEFERRED_ENABLED': 'false'}, clear=True), \
+                patch.object(d.ControlReader, 'from_environment', side_effect=AssertionError('Manual path must not need App')):
+            self.assertFalse(d.defer_upload(None, 'unused', None, None, 100000))
+
+    def test_pinned_action_inherits_only_approved_installation_permissions_and_revokes(self):
+        root = Path(__file__).resolve().parents[2]
+        metadata = (root / 'tests/youtube_upload/fixtures/create-app-token-v3.3.0-action.yml').read_text()
+        inputs = metadata.split('\ninputs:\n')[1].split('\noutputs:\n')[0]
+        supported = set(re.findall(r'^  ([a-z][a-z0-9-]*):', inputs, re.M))
+        self.assertIn('permission-environments', supported)
+        self.assertNotIn('permission-variables', supported)
+        self.assertIn('using: "node24"', metadata)
+        pin = 'actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510'
+        for filename in ('youtube-deferred.yml', 'youtube-upload-worker.yml'):
+            workflow = (root / '.github/workflows' / filename).read_text()
+            mint = workflow.split('uses: ' + pin)[1].split('\n      - name:')[0]
+            self.assertIn('owner: Civ13', mint)
+            self.assertIn('repositories: Civ13', mint)
+            self.assertIn('skip-token-revoke: false', mint)
+            self.assertIn('app-id: ${{ vars.YOUTUBE_CONTROL_APP_ID }}', mint)
+            self.assertIn('private-key: ${{ secrets.YOUTUBE_CONTROL_APP_PRIVATE_KEY }}', mint)
+            self.assertNotRegex(mint, r'\n\s+permission-[a-z-]+:')
+            self.assertIn('YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}', workflow)
+            self.assertNotIn('GITHUB_TOKEN: ${{ steps.control-token.outputs.token }}', workflow)
+        worker = (root / '.github/workflows/youtube-upload-worker.yml').read_text()
+        inspect, upload = worker.split('\n  upload:\n')
+        self.assertNotIn(pin, inspect)
+        self.assertIn('environment: youtube-unlisted', upload)
+        self.assertIn("if: vars.YOUTUBE_DEFERRED_ENABLED == 'true' || inputs.deferred_id != '' || inputs.deferred_token != ''", upload)
+        controller = (root / '.github/workflows/youtube-deferred.yml').read_text()
+        self.assertIn('environment: youtube-controls', controller)
+        self.assertIn("if: contains(fromJSON('[\"tick\",\"control-probe\"]'), inputs.operation || 'tick')", controller)
+        manage = controller.split('\n  manage:\n')[1]
+        self.assertNotIn('environment:', manage)
+        self.assertNotIn('control-token', manage)
+        checks = (root / '.github/workflows/youtube-upload-checks.yml').read_text()
+        self.assertNotIn('capability-probe', checks)
+
+    def test_app_probe_reports_named_status_without_values_and_never_touches_queue(self):
+        pairs = [(scope, name) for scope, values in d.CONTROL_NAMES.items() for name in values]
+        responses = [self.response(name, 'PRIVATE-CONTROL-VALUE') for _, name in pairs]
+        for index in (3, 4):
+            responses[index] = (404, {}, b'PRIVATE-ERROR')
+        reader = d.ControlReader(history.FakeTransport(responses), 'OFFLINE-APP')
+        proof = d.control_probe(reader)
+        self.assertFalse(proof['all_controls_readable'])
+        self.assertEqual(proof['controls']['repository:YOUTUBE_DEFERRED_ENABLED']['status'], 404)
+        self.assertNotIn('PRIVATE', json.dumps(proof))
+        responses = [self.response(name) for _, name in pairs]
+        with patch.object(d.ControlReader, 'from_environment', return_value=d.ControlReader(history.FakeTransport(responses), 'OFFLINE-APP')), \
+                patch.object(d, 'Queue', side_effect=AssertionError('Probe never initializes or reads queue')), \
+                patch.object(u, 'GitHub', side_effect=AssertionError('No workflow-token API proof')), \
+                patch.dict(d.os.environ, {'GITHUB_REPOSITORY': u.REPO, 'GITHUB_REF': 'refs/heads/master',
+                    'GITHUB_EVENT_NAME': 'workflow_dispatch', 'GITHUB_WORKFLOW_REF': u.REPO + '/' + d.WORKFLOW + '@refs/heads/master'}, clear=True), \
+                patch.object(sys, 'argv', ['deferred.py', 'control-probe']), contextlib.redirect_stdout(io.StringIO()) as output:
+            d.main()
+        self.assertTrue(json.loads(output.getvalue())['all_controls_readable'])
+        limited = history.FakeTransport([u.RateLimited(429, 100120)])
+        proof = d.control_probe(d.ControlReader(limited, 'OFFLINE-APP'))
+        self.assertEqual(len(limited.calls), 1)
+        self.assertFalse(proof['all_controls_readable'])
+        self.assertEqual(list(proof['controls'].values())[1]['status'], 'not_attempted_after_limit')
 
 
 class EligibilityTests(unittest.TestCase):
@@ -115,7 +251,7 @@ class QueueTests(unittest.TestCase):
         gh.objects['/actions/workflows/youtube-upload.yml/runs?branch=master&status=waiting&per_page=100'] = {
             'total_count': 1, 'workflow_runs': [{'id': 99}]}
         with patch.object(d, 'dispatch') as send:
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
         self.assertEqual(gh.queue['records'][ident]['hold_reason'], 'destination_busy')
         self.assertEqual(gh.queue['records'][ident]['attempts'], 0)
@@ -123,44 +259,44 @@ class QueueTests(unittest.TestCase):
         gh.queue['records'][ident].update(state='blocked', reason='dispatch_outcome_unknown')
         with patch.object(d, 'destination_busy', side_effect=AssertionError('Unknown claim already owns destination')), \
                 patch.object(d, 'dispatch') as send:
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
 
     def test_read_limit_wait_is_finite_and_attempted_insert_cannot_defer(self):
         gh, ident, _ = setup()
         with patch.object(d, 'core_material', side_effect=u.RateLimited(429, 100120)):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         entry = gh.queue['records'][ident]
         self.assertEqual((entry['reason'], entry['next_eligible_at'], entry['attempts']), ('provider_limit', 100120, 1))
         with patch.object(d, 'core_material', side_effect=AssertionError('Wait until provider boundary')):
-            d.tick(gh, 100119, 'b' * 40)
+            run_tick(gh, 100119, 'b' * 40)
         with self.assertRaises(u.Refused):
             d.provider_wait(entry, u.RateLimited(429, 100120, True), 100000)
         gh.queue['records'][ident]['attempts'] = d.MAX_ATTEMPTS
-        d.tick(gh, 100120, 'b' * 40)
+        run_tick(gh, 100120, 'b' * 40)
         self.assertEqual(gh.queue['records'][ident]['state'], 'exhausted')
 
     def test_inventory_retry_after_respected_and_expiry_precedes_outage(self):
         gh, ident, _ = setup()
         with patch.object(d, 'destination_busy', side_effect=u.RateLimited(429, 100900)) as read:
-            d.tick(gh, 100000, 'b' * 40)
-            d.tick(gh, 100899, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100899, 'b' * 40)
         self.assertEqual(read.call_count, 1)
         self.assertEqual(gh.queue['records'][ident]['attempts'], 1)
         gh.queue['records'][ident]['expires_at'] = 100901
         with patch.object(d, 'destination_busy', side_effect=AssertionError('Expired before provider access')):
-            d.tick(gh, 100901, 'b' * 40)
+            run_tick(gh, 100901, 'b' * 40)
         self.assertEqual(gh.queue['records'][ident]['state'], 'expired')
         gh, ident, _ = setup()
         gh.queue['records'][ident]['attempts'] = d.MAX_ATTEMPTS
         with patch.object(d, 'destination_busy', side_effect=AssertionError('Exhausted before provider access')):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         self.assertEqual(gh.queue['records'][ident]['state'], 'exhausted')
 
     def test_overdue_protected_review_cancels_without_releasing_receipt(self):
         gh, ident, m = setup()
         with patch.object(d, 'dispatch'):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         gh.queue['records'][ident]['active_run_id'] = 42
         gh.objects['/actions/runs/42'] = {'id': 42, 'repository': {'id': u.REPO_ID}, 'head_sha': 'b' * 40,
             'event': 'workflow_dispatch', 'head_branch': 'master', 'run_attempt': 1, 'status': 'waiting'}
@@ -169,7 +305,7 @@ class QueueTests(unittest.TestCase):
         gh.ledger['records'][u.receipt_key(m)] = record.copy()
         with patch.object(d, 'cancel_overdue_run', side_effect=u.Refused('Cancellation outcome uncertain')) as cancel:
             with self.assertRaises(u.Refused):
-                d.tick(gh, 100900, 'b' * 40)
+                run_tick(gh, 100900, 'b' * 40)
         cancel.assert_called_once_with(gh, 42)
         self.assertEqual(gh.queue['records'][ident]['reason'], 'run_deadline_requires_reconciliation')
         self.assertEqual(gh.ledger['records'][u.receipt_key(m)], record)
@@ -183,11 +319,12 @@ class QueueTests(unittest.TestCase):
             return original(path, *args, **kwargs)
         with patch.object(gh, 'repo', side_effect=denied), patch.object(d, 'dispatch') as send:
             with self.assertRaises(u.Refused):
-                d.tick(gh, 100000, 'b' * 40)
-            proof = d.capability_probe(gh)
+                run_tick(gh, 100000, 'b' * 40)
+            proof = d.control_probe(gh)
         send.assert_not_called()
-        self.assertEqual(proof, {scope: {'supported': False, 'status': 'denied_or_unavailable'}
-            for scope in ('repository_variables', 'environment_variables')})
+        self.assertFalse(proof['all_controls_readable'])
+        self.assertTrue(all(item == {'supported': False, 'status': 'invalid_or_unavailable'}
+            for item in proof['controls'].values()))
         self.assertNotIn('value', json.dumps(proof))
 
     def test_reviewed_derivative_never_uses_private_original_and_locks_are_separate(self):
@@ -252,7 +389,7 @@ class QueueTests(unittest.TestCase):
             'commit': 'b' * 40, 'state': 'verified', 'reserved_at': 100000, 'video_id': 'abcdefghijk'}}
         gh.set_gates(100000, stop=True)
         with patch.object(d, 'dispatch', side_effect=AssertionError('No dispatch under stop')):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         entry = gh.queue['records'][ident]
         self.assertEqual((entry['reason'], entry['hold_reason'], entry['attempts']), ('rolling_cap', 'emergency_stop', 0))
         self.assertEqual(entry['next_eligible_at'], 186400)
@@ -261,7 +398,7 @@ class QueueTests(unittest.TestCase):
         for stale in (False, True):
             gh, ident, _ = setup()
             with patch.object(d, 'resolve_artifact', return_value=not stale), patch.object(d, 'dispatch') as send:
-                d.tick(gh, 100000, 'b' * 40)
+                run_tick(gh, 100000, 'b' * 40)
             entry = gh.queue['records'][ident]
             self.assertEqual(entry['state'], 'dispatching')
             self.assertEqual(entry['attempts'], 1)
@@ -273,32 +410,32 @@ class QueueTests(unittest.TestCase):
         gh, ident, _ = setup()
         gh.fail_save = gh.writes + 1
         with patch.object(d, 'dispatch') as send, self.assertRaises(u.Refused):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
         gh, ident, _ = setup()
         with patch.object(d, 'dispatch', side_effect=u.Refused('Unknown dispatch')):
             with self.assertRaises(u.Refused):
-                d.tick(gh, 100000, 'b' * 40)
+                run_tick(gh, 100000, 'b' * 40)
         entry = gh.queue['records'][ident]
         self.assertEqual(entry['state'], 'dispatching')
         gh.objects[d.runs_path(entry)] = {
             'total_count': 0, 'workflow_runs': []}
         with patch.object(d, 'dispatch', side_effect=AssertionError('No blind redispatch')):
-            d.tick(gh, 100900, 'b' * 40)
+            run_tick(gh, 100900, 'b' * 40)
         self.assertEqual(gh.queue['records'][ident]['reason'], 'dispatch_outcome_unknown')
 
     def test_revoked_approval_and_uncertain_receipt_block_dispatch(self):
         gh, ident, m = setup(attachment=True)
         gh.objects['/issues/comments/456']['body'] = 'Revoked or edited'
         with patch.object(d, 'dispatch') as send:
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
         self.assertEqual(gh.queue['records'][ident]['reason'], 'approval_or_source_invalid')
         gh, ident, m = setup()
         gh.ledger['records'][u.receipt_key(m)] = {'state': 'uncertain', 'channel_id': u.CHANNEL,
             'clip_sha256': m['clip']['sha256'], 'commit': m['source']['commit'], 'reserved_at': 99999}
         with patch.object(d, 'dispatch') as send:
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
         self.assertEqual(gh.queue['records'][ident]['reason'], 'media_outcome_uncertain')
 
@@ -309,7 +446,7 @@ class QueueTests(unittest.TestCase):
         gh.ledger['records'][u.receipt_key(m)] = record
         gh.queue['records'][ident]['import_run_id'] = 999
         with patch.object(d, 'resolve_artifact', side_effect=AssertionError('No artifact for known ID')), patch.object(d, 'dispatch') as send:
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         self.assertEqual(send.call_args.args[2]['verify_only'], 'true')
         self.assertEqual(send.call_args.args[2]['import_run_id'], '10')
         entry = gh.queue['records'][ident]
@@ -319,7 +456,7 @@ class QueueTests(unittest.TestCase):
         gh.ledger['records'][u.receipt_key(m)] = record
         gh.ledger['records'][u.receipt_key(m)]['commit'] = 'c' * 40
         with patch.object(d, 'dispatch') as send, self.assertRaises(u.Refused):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
 
     def test_expiry_cancellation_retry_exhaustion_and_feature_off_never_dispatch(self):
@@ -327,32 +464,32 @@ class QueueTests(unittest.TestCase):
             gh, ident, _ = setup()
             gh.queue['records'][ident]['state'] = state
             with patch.object(d, 'dispatch') as send:
-                d.tick(gh, 100000, 'b' * 40)
+                run_tick(gh, 100000, 'b' * 40)
             send.assert_not_called()
         gh, ident, _ = setup()
         gh.queue['records'][ident]['attempts'] = d.MAX_ATTEMPTS
-        d.tick(gh, 100000, 'b' * 40)
+        run_tick(gh, 100000, 'b' * 40)
         self.assertEqual(gh.queue['records'][ident]['state'], 'exhausted')
         gh, ident, _ = setup()
         gh.set_gates(100000, enabled=False)
         with patch.object(d, 'dispatch') as send:
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         send.assert_not_called()
         self.assertEqual(gh.queue['records'][ident]['hold_reason'], 'feature_disabled')
 
     def test_worker_claim_is_single_owner_and_rechecks_arm_and_cancellation(self):
         gh, ident, _ = setup()
         with patch.object(d, 'dispatch'):
-            d.tick(gh, 100000, 'b' * 40)
+            run_tick(gh, 100000, 'b' * 40)
         token = gh.queue['records'][ident]['token']
-        d.worker_guard(gh, ident, token, 42, 100000, 'b' * 40, upload_step=True)
+        d.worker_guard(gh, ident, token, 42, 100000, 'b' * 40, upload_step=True, control=gh)
         with self.assertRaises(u.Refused):
-            d.worker_guard(gh, ident, token, 43, 100000, 'b' * 40, upload_step=True)
+            d.worker_guard(gh, ident, token, 43, 100000, 'b' * 40, upload_step=True, control=gh)
         with self.assertRaises(u.Refused):
-            d.worker_guard(gh, ident, token, 42, 100900, 'b' * 40, upload_step=True)
+            d.worker_guard(gh, ident, token, 42, 100900, 'b' * 40, upload_step=True, control=gh)
         gh.queue['records'][ident]['state'] = 'cancelled'
         with self.assertRaises(u.Refused):
-            d.worker_guard(gh, ident, token, 42, 100001, 'b' * 40, upload_step=True)
+            d.worker_guard(gh, ident, token, 42, 100001, 'b' * 40, upload_step=True, control=gh)
 
 
 if __name__ == '__main__':

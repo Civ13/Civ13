@@ -25,6 +25,41 @@ REVIEWED_TRANSPORTS = {
 FIELDS = ("manifest_id approval_sha256 approval_comment_id created_at expires_at next_eligible_at "
           "attempts generation state reason hold_reason stage token active_run_id dispatch_started_at "
           "import_run_id trusted_commit updated_at video_id channel_id clip_sha256")
+GATE_NAMES = ("YOUTUBE_UPLOAD_ENABLED", "YOUTUBE_UPLOAD_STOP_USE", "YOUTUBE_ZERO_COST_CONFIRMED")
+CONTROL_NAMES = {"repository": (*GATE_NAMES, "YOUTUBE_DEFERRED_ENABLED", "YOUTUBE_DEFERRED_ARMED_UNTIL"),
+                 "environment": GATE_NAMES}
+
+
+class ControlReader:
+    """The installation token is restricted to eight fixed named variable GETs.
+
+    No general GitHub client, write method, arbitrary route, archive redirect or
+    queue access exists on this capability. The private key never enters Python.
+    """
+    def __init__(self, transport, token):
+        u.require(isinstance(token, str) and 1 <= len(token) <= 8192 and token.isascii() and
+                  all(33 <= ord(c) < 127 for c in token), "Dedicated control token unavailable")
+        self._transport, self._token = transport, token
+
+    @classmethod
+    def from_environment(cls):
+        return cls(u.Transport(), os.environ.get("YOUTUBE_CONTROL_TOKEN", ""))
+
+    def read(self, scope, name):
+        u.require(scope in CONTROL_NAMES and name in CONTROL_NAMES[scope], "Control read outside allowlist")
+        prefix = "/actions/variables/" if scope == "repository" else "/environments/youtube-unlisted/variables/"
+        status, _, raw = self._transport.request("GET", f"https://api.github.com/repos/{u.REPO}{prefix}{name}",
+            {"Authorization": "Bearer " + self._token, "Accept": "application/vnd.github+json",
+             "X-GitHub-Api-Version": "2022-11-28"})
+        u.require(status == 200, f"HTTP {status}; stop and inspect sanitized service status")
+        data = u.parse_json(raw)
+        u.require(data.get("name") == name and isinstance(data.get("value"), str) and len(data["value"]) <= 8192,
+                  "Dedicated control variable missing or malformed")
+        return data["value"]
+
+    def variables(self, scope):
+        u.require(scope in CONTROL_NAMES, "Control scope outside allowlist")
+        return {name: self.read(scope, name) for name in CONTROL_NAMES[scope]}
 
 
 def utc(value):
@@ -160,15 +195,10 @@ def validate_entry(ident, entry):
         u.require(re.fullmatch(r"[A-Za-z0-9_-]{11}", entry["video_id"]), "Invalid queued video ID")
 
 
-def controls(gh, now):
+def controls(now, control=None):
     """Read BOTH scopes freshly. This module has no variable-write operation."""
-    repo = gh.repo("/actions/variables?per_page=100")
-    env = gh.repo("/environments/youtube-unlisted/variables?per_page=100")
-    values = []
-    for data in (repo, env):
-        u.require(data["total_count"] <= 100 and len(data["variables"]) == data["total_count"],
-                  "Variable inventory exceeds bounded page")
-        values.append({v["name"]: v["value"] for v in data["variables"]})
+    reader = control if control is not None else ControlReader.from_environment()
+    values = [reader.variables(scope) for scope in ("repository", "environment")]
     if values[0].get("YOUTUBE_DEFERRED_ENABLED") != "true":
         return "feature_disabled"
     if any(v.get("YOUTUBE_UPLOAD_STOP_USE") != "false" for v in values):
@@ -342,7 +372,7 @@ def reconcile(gh, entry, ledger, now):
             _finish(entry, "blocked", "failed_run_requires_reconciliation", now)
 
 
-def tick(gh, now, current_commit):
+def tick(gh, now, current_commit, control=None):
     u.validate_repository(gh)
     u.sha(current_commit, 40)
     u.require(gh.repo("/commits/master")["sha"] == current_commit, "Default branch moved; next scheduled tick must refresh source")
@@ -442,7 +472,7 @@ def tick(gh, now, current_commit):
             if eligible > now:
                 entry.update(next_eligible_at=max(entry["next_eligible_at"], eligible), reason="rolling_cap")
         try:
-            entry["hold_reason"] = controls(gh, now)
+            entry["hold_reason"] = controls(now, control)
         except u.RateLimited as error:
             provider_wait(entry, error, now)
             queue.save()
@@ -481,7 +511,7 @@ def tick(gh, now, current_commit):
     return queue
 
 
-def worker_guard(gh, ident, token, run_id, now, commit, upload_step=False):
+def worker_guard(gh, ident, token, run_id, now, commit, upload_step=False, control=None):
     u.sha(ident)
     u.sha(token)
     queue = Queue(gh)
@@ -492,21 +522,21 @@ def worker_guard(gh, ident, token, run_id, now, commit, upload_step=False):
               now < entry["expires_at"] and entry["active_run_id"] in {None, run_id},
               "Deferred ownership, expiry or cancellation changed; stop")
     if upload_step:
-        u.require(controls(gh, now) == "", "Deferred arm or emergency gates closed")
+        u.require(controls(now, control) == "", "Deferred arm or emergency gates closed")
         u.require(gh.repo("/commits/master")["sha"] == commit, "Deferred trusted source changed")
         entry.update(state="running", active_run_id=run_id, updated_at=now)
         queue.save()
     return entry
 
 
-def defer_upload(gh, manifest_id, m, import_run_id, now, provider=None):
+def defer_upload(gh, manifest_id, m, import_run_id, now, provider=None, control=None):
     """Called only after approval/provenance validation and before any media send."""
     if os.environ.get("YOUTUBE_DEFERRED_ENABLED") != "true":
         return False
-    variables = gh.repo("/actions/variables?per_page=100")
-    u.require(variables["total_count"] <= 100 and len(variables["variables"]) == variables["total_count"] and
-              {v["name"]: v["value"] for v in variables["variables"]}.get("YOUTUBE_DEFERRED_ENABLED") == "true",
+    reader = control if control is not None else ControlReader.from_environment()
+    u.require(reader.read("repository", "YOUTUBE_DEFERRED_ENABLED") == "true",
               "Deferred feature is not explicitly enabled in repository metadata")
+    u.require(controls(now, reader) == "", "Deferred arm or emergency gates closed")
     ledger = u.Ledger(gh)
     if ledger.find(m) is not None:
         return False  # Never turn a reserved/uncertain insertion into a retry grant.
@@ -537,34 +567,45 @@ def summary(queue):
     return "\n".join(lines) + "\n"
 
 
-def capability_probe(gh):
-    """Harmless CI proof; only HTTP outcomes are emitted, never variable values."""
-    result = {}
-    for label, path in (("repository_variables", "/actions/variables?per_page=100"),
-                        ("environment_variables", "/environments/youtube-unlisted/variables?per_page=100")):
-        try:
-            data = gh.repo(path)
-            result[label] = {"supported": isinstance(data.get("variables"), list), "status": 200}
-        except u.Refused:
-            result[label] = {"supported": False, "status": "denied_or_unavailable"}
-    return result
+def control_probe(control=None):
+    """New App authority only: named GET outcomes, no values or queue operations."""
+    reader = control if control is not None else ControlReader.from_environment()
+    result, limited = {}, False
+    for scope, names in CONTROL_NAMES.items():
+        for name in names:
+            label = scope + ":" + name
+            if limited:
+                result[label] = {"supported": False, "status": "not_attempted_after_limit"}
+                continue
+            try:
+                reader.read(scope, name)
+                result[label] = {"supported": True, "status": 200}
+            except u.RateLimited as error:
+                result[label] = {"supported": False, "status": error.status}
+                limited = True
+            except u.Refused as error:
+                status = re.fullmatch(r"HTTP ([0-9]{3}); stop and inspect sanitized service status", str(error))
+                result[label] = {"supported": False, "status": int(status[1]) if status else "invalid_or_unavailable"}
+    return {"all_controls_readable": all(item["supported"] for item in result.values()), "controls": result}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("tick", "cancel", "status", "capability-probe"))
+    parser.add_argument("mode", choices=("tick", "cancel", "status", "control-probe"))
     parser.add_argument("--queue-id", default=os.environ.get("DEFERRED_ID", ""))
     args = parser.parse_args()
-    if args.mode == "capability-probe":
-        u.require(os.environ.get("GITHUB_REPOSITORY") == u.REPO and
-                  os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch",
-                  "Capability proof is manual and credential-free")
-        print(u.canonical(capability_probe(u.GitHub(u.Transport(), os.environ["GITHUB_TOKEN"]))).decode())
-        return
     u.require(os.environ.get("GITHUB_REPOSITORY") == u.REPO and os.environ.get("GITHUB_REF") == "refs/heads/master" and
               os.environ.get("GITHUB_EVENT_NAME") in {"schedule", "workflow_dispatch"} and
               os.environ.get("GITHUB_WORKFLOW_REF") == u.REPO + "/" + WORKFLOW + "@refs/heads/master",
               "Deferred controller is trusted default-branch only")
+    if args.mode == "control-probe":
+        u.require(os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch", "Control proof must be explicitly dispatched")
+        result = control_probe()
+        print(u.canonical(result).decode())
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(u.canonical(result).decode(), encoding="utf-8")
+        u.require(result["all_controls_readable"], "Dedicated control proof incomplete; keep feature disabled")
+        return
     gh = u.GitHub(u.Transport(), os.environ["GITHUB_TOKEN"])
     now = int(time.time())
     if args.mode == "tick":

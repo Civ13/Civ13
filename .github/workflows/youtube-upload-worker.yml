@@ -8,6 +8,8 @@ on:
         required: true
       YOUTUBE_REFRESH_TOKEN:
         required: true
+      YOUTUBE_CONTROL_APP_PRIVATE_KEY:
+        required: false
     inputs:
       manifest_id:
         required: true
@@ -90,7 +92,21 @@ jobs:
           coverage: none
       - name: Install trusted locked YoutubePHP dependencies without scripts or plugins
         run: composer install --working-dir=tools/youtube --no-dev --no-scripts --no-plugins --prefer-dist --no-interaction --no-progress
-      # No PR checkout/scripts, decoder, input interpolation or post-upload action.
+      # This job starts only after the existing human environment approval.
+      # The key is bound only to this pinned action, never to Python or PHP.
+      # No permission-* inputs: v3.3.0 lacks permission-variables (upstream #231).
+      - name: Mint short-lived control-read token after environment review
+        id: control-token
+        if: vars.YOUTUBE_DEFERRED_ENABLED == 'true' || inputs.deferred_id != '' || inputs.deferred_token != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0, node24
+        with:
+          app-id: ${{ vars.YOUTUBE_CONTROL_APP_ID }}
+          private-key: ${{ secrets.YOUTUBE_CONTROL_APP_PRIVATE_KEY }}
+          owner: Civ13
+          repositories: Civ13
+          skip-token-revoke: false
+      # No PR checkout/scripts, decoder or input interpolation. The sole action
+      # cleanup after upload is revocation of the short-lived control-read token.
       # Setup/install steps above have NO YouTube credentials in their environment.
       - name: Reserve, upload public, and verify destination and processing
         env:
@@ -102,6 +118,7 @@ jobs:
           DEFERRED_TOKEN: ${{ inputs.deferred_token }}
           YOUTUBE_DEFERRED_ENABLED: ${{ vars.YOUTUBE_DEFERRED_ENABLED }}
           GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}
           YOUTUBE_UPLOAD_ENABLED: ${{ vars.YOUTUBE_UPLOAD_ENABLED }}
           YOUTUBE_UPLOAD_STOP_USE: ${{ vars.YOUTUBE_UPLOAD_STOP_USE }}
           YOUTUBE_ZERO_COST_CONFIRMED: ${{ vars.YOUTUBE_ZERO_COST_CONFIRMED }}
