@@ -19,6 +19,147 @@ from mall_run_support import OwnedRun, write_manifest
 import run_mall
 
 
+BINDING = 'World opened on network port 12345 for address 127.0.0.1.\n'
+CLOSURE = 'World no longer opened to new users.\n'
+NETWORK_LOG = BINDING + CLOSURE
+CONTROLS = {
+    'mission': 'secure floors excluded by mission policy',
+    'vehicle': 'only highway exits admit cars',
+    'key_charge': 'successful extraction preserves remaining key uses',
+    'key_construction': 'keyed factory construction failure exposes no reward',
+    'stair_landing': 'all cores reject dense destination occupancy without moving the actor',
+    'stair_return': 'all cores reject a missing return stair without moving the actor',
+    'ordinary_replay': 'ordinary container claim is unique before reopening',
+}
+
+
+class NativeOracleTests(unittest.TestCase):
+    def validate(self, *, report=None, expected=None, stages=None, **outputs):
+        streams = {'stdout': BINDING, 'stderr': '', 'runtime.log': NETWORK_LOG}
+        streams.update(outputs)
+        return run_mall.validate_native_result(
+            run_mall.PASS_RESULT + '\n' if report is None else report,
+            run_mall.NETWORK_STAGE + '\n' if stages is None else stages,
+            streams, expected)
+
+    def failure(self, expected, line=46):
+        return f'FAIL: {expected} at tests/extraction/mall_probe.dm:{line}'
+
+    def test_exact_positive_requires_network_receipt(self):
+        self.assertEqual(self.validate(), run_mall.PASS_RESULT)
+        for stages in ('', run_mall.NETWORK_STAGE + '\n' + run_mall.NETWORK_STAGE):
+            with self.subTest(stages=stages), self.assertRaises(RuntimeError):
+                self.validate(stages=stages)
+
+    def test_missing_nonloopback_and_malformed_bind_records_are_rejected(self):
+        for output in (BINDING.replace('127.0.0.1', '0.0.0.0'),
+                       BINDING.replace('127.0.0.1', '192.0.2.1'),
+                       BINDING.replace('127.0.0.1', '127.0.0.1.evil'),
+                       BINDING.rstrip() + ' unexpected suffix\n',
+                       'World opened on network port 12345\n',
+                       BINDING + 'World opened on network port 12345\n'):
+            with self.subTest(output=output), self.assertRaises(RuntimeError):
+                self.validate(stdout=output)
+        with self.assertRaises(RuntimeError):
+            self.validate(stderr=BINDING.replace('127.0.0.1', '0.0.0.0'))
+
+    def test_canonical_runtime_log_requires_one_ordered_binding_and_closure(self):
+        for log in ('', BINDING, CLOSURE, CLOSURE + BINDING,
+                    BINDING + BINDING + CLOSURE, BINDING + CLOSURE + CLOSURE,
+                    BINDING.rstrip() + ' unexpected suffix\n' + CLOSURE,
+                    BINDING + CLOSURE.rstrip() + ' unexpected suffix\n',
+                    NETWORK_LOG.replace('127.0.0.1', '0.0.0.0')):
+            with self.subTest(log=log), self.assertRaises(RuntimeError):
+                self.validate(**{'runtime.log': log})
+        for stream in ('stdout', 'stderr'):
+            for log in (BINDING + BINDING, CLOSURE + CLOSURE, CLOSURE + BINDING):
+                with self.subTest(stream=stream, log=log), self.assertRaises(RuntimeError):
+                    self.validate(**{stream: log})
+        self.assertEqual(self.validate(stdout=NETWORK_LOG, stderr=NETWORK_LOG),
+                         run_mall.PASS_RESULT)
+
+    def test_positive_rejects_wrong_duplicate_and_collateral_results(self):
+        for report in ('PASS: other contract', run_mall.PASS_RESULT + '\nFAIL: unrelated',
+                       run_mall.PASS_RESULT + '\n' + run_mall.PASS_RESULT,
+                       run_mall.PASS_RESULT + '\n\n'):
+            with self.subTest(report=report), self.assertRaises(RuntimeError):
+                self.validate(report=report)
+        for stream in ('stdout', 'stderr', 'runtime.log'):
+            for record in ('FAIL: unrelated\n', run_mall.PASS_RESULT + '\n'):
+                with self.subTest(stream=stream, record=record), self.assertRaises(RuntimeError):
+                    self.validate(**{stream: NETWORK_LOG + record})
+
+    def test_every_control_accepts_one_exact_failure_and_native_crlf(self):
+        for expected in CONTROLS.values():
+            with self.subTest(expected=expected):
+                failure = self.failure(expected)
+                self.assertEqual(
+                    self.validate(report=failure + '\r\n', expected=expected,
+                                  **{'runtime.log': NETWORK_LOG.replace('\n', '\r\n')
+                                     + failure + '\r\n'}),
+                    'PASS: negative control rejected at ' + expected)
+                # Native world.log may be mirrored once to stdout/stderr.
+                self.validate(report=failure, expected=expected,
+                              stdout=BINDING + failure + '\n', stderr=failure + '\n',
+                              **{'runtime.log': NETWORK_LOG + failure + '\n'})
+
+    def test_negative_requires_exact_file_message_and_one_result(self):
+        expected = CONTROLS['mission']
+        failure = self.failure(expected)
+        for report in ('FAIL: unrelated ' + expected, failure + ' extra',
+                       failure.replace('mall_probe.dm', 'other_probe.dm'),
+                       failure + '\n' + failure, failure + '\nFAIL: unrelated',
+                       failure + '\n' + run_mall.PASS_RESULT, run_mall.PASS_RESULT):
+            with self.subTest(report=report), self.assertRaises(RuntimeError):
+                self.validate(report=report, expected=expected,
+                              **{'runtime.log': NETWORK_LOG + failure + '\n'})
+
+    def test_negative_requires_matching_runtime_log_and_rejects_duplicates(self):
+        expected = CONTROLS['vehicle']
+        failure = self.failure(expected)
+        for log in ('', self.failure(expected, line=47),
+                    failure + '\n' + failure, failure + '\nFAIL: unrelated',
+                    failure + '\n' + run_mall.PASS_RESULT):
+            with self.subTest(log=log), self.assertRaises(RuntimeError):
+                self.validate(report=failure, expected=expected,
+                              **{'runtime.log': NETWORK_LOG + log})
+        for stream in ('stdout', 'stderr'):
+            for extra in ('FAIL: unrelated', failure + '\n' + failure,
+                          self.failure(expected, line=47), run_mall.PASS_RESULT):
+                with self.subTest(stream=stream, extra=extra), self.assertRaises(RuntimeError):
+                    self.validate(report=failure, expected=expected,
+                                  **{'runtime.log': NETWORK_LOG + failure,
+                                     stream: BINDING + extra})
+
+    def test_engine_diagnostics_rejected_in_every_stream_for_both_modes(self):
+        expected = CONTROLS['stair_return']
+        failure = self.failure(expected)
+        for stream in ('stdout', 'stderr', 'runtime.log'):
+            for diagnostic in run_mall.DIAGNOSTICS:
+                with self.subTest(stream=stream, diagnostic=diagnostic):
+                    with self.assertRaises(RuntimeError):
+                        self.validate(**{stream: BINDING + diagnostic})
+                    outputs = {'runtime.log': NETWORK_LOG + failure}
+                    outputs[stream] = BINDING + failure + '\n' + diagnostic
+                    with self.assertRaises(RuntimeError):
+                        self.validate(report=failure, expected=expected, **outputs)
+
+    def test_fixture_blocks_clients_exports_topics_and_port_reopening(self):
+        source = (HERE / 'mall_probe.dm').read_text()
+        self.assertIn('\tvisibility = 0\n', source)
+        self.assertIn('/client/New()\n\tdel(src)\n\treturn null\n', source)
+        self.assertIn('\tExport()\n\t\treturn null\n', source)
+        self.assertIn('\tTopic()\n\t\treturn null\n', source)
+        self.assertIn('\tOpenPort(port)\n\t\tif (port == "none") return ..()\n\t\treturn FALSE\n', source)
+        self.assertIn('\tNew()\n\t\tworld.OpenPort("none")\n', source)
+        self.assertIn('mall_assert(!world.port && !world.visibility', source)
+        self.assertIn('mall_assert(!world.OpenPort(0) && !world.port', source)
+        self.assertIn('world.byond_version == 516 && world.byond_build == 1681', source)
+        self.assertLess(source.index('try\n'), source.index('mall_assert(!world.port'))
+        self.assertLess(source.index('mall_stage("' + run_mall.NETWORK_STAGE + '")'),
+                        source.index('\t\t\t\tmall_probe()'))
+
+
 class Clock:
     def __init__(self):
         self.value = 0
@@ -402,9 +543,21 @@ class MainTests(unittest.TestCase):
         self.addCleanup(self.storage.cleanup)
         self.root = Path(self.storage.name)
         fixtures = {
-            'civ13.dme': '#include "code\\world.dm"\n#include "code\\controllers\\mc\\globals.dm"\n',
+            'civ13.dme': '#include "code\\world.dm"\n#include "code\\controllers\\mc\\globals.dm"\n'
+                         '#include "code\\modules\\1713\\extraction\\mall.dm"\n'
+                         '#include "code\\modules\\1713\\extraction\\loot.dm"\n'
+                         '#include "code\\modules\\1713\\extraction\\equipment.dm"\n',
             'code/world.dm': '/world/New()\n\t..()\n/datum/global_init/New()\n\treturn\n',
             'code/controllers/mc/globals.dm': '/datum/controller/global_vars/New()\n\treturn\n',
+            'code/modules/1713/extraction/mall.dm':
+                'return level in list(1, 4, 5)\n'
+                'return ..() && istype(E, /obj/effect/extraction_exit/highway) && E.z == 1\n'
+                'if (A.density || isliving(A)) return FALSE\n'
+                'if (!return_stairs || return_stairs.destination_z != z) return FALSE\n',
+            'code/modules/1713/extraction/loot.dm':
+                'stash -= list(entry)\n'
+                'if (!isnull(test_fail_constructor_after) && constructed.len >= test_fail_constructor_after)\n',
+            'code/modules/1713/extraction/equipment.dm': 'scalars[key] = value\n',
             'config/names/test.txt': 'fixture only\n',
         }
         for name, value in fixtures.items():
@@ -415,7 +568,8 @@ class MainTests(unittest.TestCase):
     def invoke(self, *, git_code=0, compile_code=0, compile_error=None,
                daemon_code=0, daemon_error=None, diagnostic='', compile_only=False,
                unlink=None, writer=None, git_output=b'a' * 40 + b'\n',
-               compile_output=b'516.1681\n0 errors, 0 warnings\n'):
+               compile_output=b'516.1681\n0 errors, 0 warnings\n',
+               negative_control=None):
         clock = Clock()
         children = [Child(clock, [(0, git_code)]),
                     Child(clock, [(0, compile_error or compile_code), (0, -9)]),
@@ -431,8 +585,15 @@ class MainTests(unittest.TestCase):
                 dme.with_suffix('.rsc').write_bytes(b'fake resources')
             else:
                 target = Path(kwargs['cwd'])
-                (target / 'result.txt').write_text('PASS: fake native contract')
-                (target / 'runtime.log').write_text(diagnostic)
+                report = run_mall.PASS_RESULT
+                if negative_control:
+                    report = (f'FAIL: {CONTROLS[negative_control]}'
+                              ' at tests/extraction/mall_probe.dm:46')
+                (target / 'result.txt').write_text(report + '\n')
+                (target / 'stages.txt').write_text(run_mall.NETWORK_STAGE + '\n')
+                (target / 'runtime.log').write_text(
+                    NETWORK_LOG + (report + '\n' if negative_control else '') + diagnostic)
+                kwargs['stdout'].write(BINDING.encode())
         self.spawn = Spawn(children, output)
         def factory(root, prefix, metadata, files):
             options = {'unlink': unlink} if unlink else {}
@@ -445,6 +606,8 @@ class MainTests(unittest.TestCase):
         argv = ['--byond-bin', str(self.root / 'fake-byond')]
         if compile_only:
             argv.append('--compile-only')
+        if negative_control:
+            argv.extend(['--negative-control', negative_control])
         # Guard accidental subprocess.run calls as well as the injected Popen.
         with mock.patch.object(subprocess, 'run', side_effect=AssertionError('real subprocess forbidden')):
             with mock.patch.object(subprocess, 'Popen', side_effect=AssertionError('real subprocess forbidden')):
@@ -522,8 +685,23 @@ class MainTests(unittest.TestCase):
         self.assertEqual(len(self.spawn.calls), 3)
         self.assertFalse(self.owner.runtime.exists())
         self.assertEqual((self.owner.destination / 'result.txt').read_text(),
-                         'PASS: fake native contract')
-        self.assertIn('PASS: fake native contract', self.stdout.getvalue())
+                         run_mall.PASS_RESULT + '\n')
+        self.assertIn(run_mall.PASS_RESULT, self.stdout.getvalue())
+        command = self.spawn.calls[-1][0]
+        self.assertEqual(command[1:], ['probe.dmb', '-ip', '127.0.0.1', '-invisible',
+                                      '-close', '-trusted', '-nowebclient',
+                                      '-log', 'runtime.log'])
+
+    def test_all_seven_mutations_reach_their_exact_oracle(self):
+        for control, expected in CONTROLS.items():
+            with self.subTest(control=control):
+                self.invoke(negative_control=control)
+                self.assertEqual(len(self.spawn.calls), 3)
+                self.assertIn('PASS: negative control rejected at ' + expected,
+                              self.stdout.getvalue())
+                manifest = json.loads((self.owner.destination / 'manifest.json').read_text())
+                self.assertEqual(manifest['negative_control'], control)
+                self.assertEqual(manifest['outcome'], 'passed')
 
     def test_native_nonzero_and_diagnostics_reject_pass_report(self):
         for code, log in ((4, ''), (0, 'Runtime error'), (0, 'Bad ref'),

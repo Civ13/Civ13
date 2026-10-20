@@ -17,6 +17,10 @@ on:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
         default: false
+      mall_regressions:
+        description: 'Opt in only to native mall interactions and seven omission controls'
+        type: boolean
+        default: false
       dagger_map_compile:
         description: 'Opt in to native compilation of the inactive Dagger map and missing-type control'
         type: boolean
@@ -447,6 +451,37 @@ jobs:
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/sprites.json"
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/sprites-negative.json" --negative-control
 
+      - name: Verify native mall interactions and omission controls
+        id: mall_native
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || inputs.mall_regressions == true) }}
+        timeout-minutes: 30
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/test_map_environment.py
+          /usr/bin/python3 tests/extraction/test_mall.py
+          /usr/bin/python3 tests/extraction/test_mall_routes.py
+          /usr/bin/python3 tests/extraction/test_mall_runner.py
+          /usr/bin/python3 tests/extraction/test_key_maps.py
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control mission
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control vehicle
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_charge
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_construction
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control stair_landing
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control stair_return
+          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control ordinary_replay
+
+      - name: Retain native mall fixture receipts
+        if: always() && steps.mall_native.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: mall-native-${{ github.event.pull_request.head.sha || github.sha }}
+          path: data/mall-fixture/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Verify extraction accounts, equipment, safe hub and provenance control
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction')
         shell: bash
@@ -466,19 +501,6 @@ jobs:
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe restart
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe settlement
           /usr/bin/python3 tests/extraction/test_recovery.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
-          /usr/bin/python3 tests/extraction/test_map_environment.py
-          /usr/bin/python3 tests/extraction/test_mall.py
-          /usr/bin/python3 tests/extraction/test_mall_routes.py
-          /usr/bin/python3 tests/extraction/test_mall_runner.py
-          /usr/bin/python3 tests/extraction/test_key_maps.py
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control mission
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control vehicle
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_charge
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control key_construction
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control stair_landing
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control stair_return
-          /usr/bin/python3 tests/extraction/run_mall.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control ordinary_replay
           /usr/bin/python3 tests/extraction/check_catalog.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe npc --npc-insurance-negative-control

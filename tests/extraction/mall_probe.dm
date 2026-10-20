@@ -18,29 +18,40 @@ var/global/mall_fixture_failed = FALSE
 /world
 	hub = ""
 	hub_password = ""
+	visibility = 0
 	OpenPort(port)
 		if (port == "none") return ..()
 		return FALSE
 	Export()
+		return null
+	Topic()
 		return null
 	Error(exception/E)
 		mall_fixture_failed = TRUE
 		text2file("FAIL: runtime [E] at [E.file]:[E.line]", "result.txt")
 		world.log << "Runtime error: [E] at [E.file]:[E.line]"
 	New()
-		mall_stage("world New entered")
-		mall_assert(!world.port, "daemon starts without a listening port")
 		world.OpenPort("none")
+		mall_stage("world New entered")
 		spawn(2)
 			try
+				mall_assert(!world.port && !world.visibility, "daemon closes listening port and hides fixture")
+				mall_assert(!world.OpenPort(0) && !world.port, "daemon rejects reopening listening port")
+				mall_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")
+				mall_stage("network closed and reopen refused")
 				mall_probe()
 				if (!mall_fixture_failed)
 					text2file("PASS: native mall floors, stairs, loot, highway policy and extraction", "result.txt")
 			catch (var/exception/E)
 				mall_fixture_failed = TRUE
 				text2file("FAIL: [E] at [E.file]:[E.line]", "result.txt")
-				world.log << "FAIL: [E]"
+				world.log << "FAIL: [E] at [E.file]:[E.line]"
 			del(world)
+			return
+
+/client/New()
+	del(src)
+	return null
 
 /proc/mall_assert(condition, message)
 	if (!condition) throw EXCEPTION(message)

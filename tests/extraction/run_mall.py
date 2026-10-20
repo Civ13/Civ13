@@ -10,6 +10,68 @@ import uuid
 from mall_run_support import OwnedRun
 
 
+PASS_RESULT = 'PASS: native mall floors, stairs, loot, highway policy and extraction'
+NETWORK_STAGE = 'network closed and reopen refused'
+DIAGNOSTICS = ('runtime error', 'bad ref', '## error', 'fatal error')
+BINDING = re.compile(r'^World opened on network port [0-9]+ for address ([^\s]+)\.[ \t]*\r?$',
+                     re.MULTILINE)
+CLOSURE = re.compile(r'^World no longer opened to new users\.[ \t]*\r?$', re.MULTILINE)
+
+
+def validate_native_result(report, stages, streams, expected=None):
+    """Require the exact oracle and reject collateral failures in every stream.
+
+    BYOND can mirror world.log to another stream. Each emitting stream may carry
+    one identical expected assertion, but duplicate assertions within a stream
+    are rejected. The retained runtime.log must itself contain that assertion.
+    """
+    if stages.splitlines().count(NETWORK_STAGE) != 1:
+        raise RuntimeError('Native mall fixture did not establish closed/refused-reopen state')
+    bindings = []
+    for name, output in streams.items():
+        if any(value in output.lower() for value in DIAGNOSTICS):
+            raise RuntimeError('Unexpected native diagnostic in ' + name)
+        matches = list(BINDING.finditer(output))
+        closures = list(CLOSURE.finditer(output))
+        if len(matches) > 1 or len(closures) > 1:
+            raise RuntimeError('Duplicate native network diagnostic in ' + name)
+        if matches and closures and matches[0].start() >= closures[0].start():
+            raise RuntimeError('Native network closure preceded startup binding in ' + name)
+        if name == 'runtime.log' and (len(matches) != 1 or len(closures) != 1):
+            raise RuntimeError('Retained runtime log lacks its sole startup binding and closure')
+        bindings.extend(match.group(1) for match in matches)
+        if 'opened on network port' in BINDING.sub('', output).lower():
+            raise RuntimeError('Unrecognized native bind diagnostic in ' + name)
+    # world.address is not a reliable Linux bind witness. Check the native
+    # startup diagnostic instead, alongside the fixture's closed-port assertion.
+    if ('runtime.log' not in streams or not bindings
+            or any(address != '127.0.0.1' for address in bindings)):
+        raise RuntimeError('Native mall fixture did not establish IPv4 loopback binding')
+    if expected is None:
+        if report.splitlines() != [PASS_RESULT]:
+            raise RuntimeError('Native mall fixture did not produce its sole exact positive result')
+        if any('fail:' in output.lower() or 'pass:' in output.lower()
+               for output in streams.values()):
+            raise RuntimeError('Unexpected native result record outside the positive receipt')
+        return PASS_RESULT
+    failure = (r'FAIL: ' + re.escape(expected)
+               + r' at tests[/\\]extraction[/\\]mall_probe\.dm:[0-9]+')
+    lines = report.splitlines()
+    if len(lines) != 1 or not re.fullmatch(failure, lines[0]):
+        raise RuntimeError('Negative control did not produce its sole exact expected assertion')
+    record = r'^' + re.escape(lines[0]) + r'[ \t]*$'
+    for name, output in streams.items():
+        # Normalize only native CRLF, not arbitrary whitespace or extra records.
+        normalized = output.replace('\r\n', '\n')
+        records = re.findall(record, normalized, flags=re.MULTILINE)
+        if len(records) > 1 or (name == 'runtime.log' and len(records) != 1):
+            raise RuntimeError('Negative control assertion count is invalid in ' + name)
+        remainder = re.sub(record, '', normalized, flags=re.MULTILINE).lower()
+        if 'fail:' in remainder or 'pass:' in remainder:
+            raise RuntimeError('Collateral native result record in ' + name)
+    return 'PASS: negative control rejected at ' + expected
+
+
 def main(argv=None, *, root=None, run_factory=OwnedRun):
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
@@ -94,20 +156,20 @@ def main(argv=None, *, root=None, run_factory=OwnedRun):
             shutil.copy2(files[4], target / 'probe.dmb')
             shutil.copy2(files[5], target / 'probe.rsc')
             shutil.copytree(root / 'config/names', target / 'config/names')
-            platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            result = owned.run('daemon', [str(daemon), 'probe.dmb', '-port', 'none', *platform, '-safe', '-log', 'runtime.log'], target, 90, creationflags=flags)
+            result = owned.run('daemon', [str(daemon), 'probe.dmb', '-ip', '127.0.0.1',
+                                         '-invisible', '-close', '-trusted', '-nowebclient',
+                                         '-log', 'runtime.log'], target, 90, creationflags=flags)
             report = (target / 'result.txt').read_text(encoding='utf-8') if (target / 'result.txt').exists() else ''
-            log = result.stdout + result.stderr + ((target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else '')
-            if result.returncode or any(value in log.lower() for value in ('runtime error', 'bad ref', '## error', 'opened on network port')):
-                raise RuntimeError('Native mall fixture failed:\n' + log)
-            if expected:
-                if not report.startswith('FAIL:') or expected not in report:
-                    raise RuntimeError('Negative control missed expected assertion: ' + report + '\n' + log)
-                accepted = 'PASS: negative control rejected at ' + expected
-            elif not report.startswith('PASS:'):
-                raise RuntimeError(report + '\n' + log)
-            else:
-                accepted = report.strip()
+            stages = (target / 'stages.txt').read_text(encoding='utf-8') if (target / 'stages.txt').exists() else ''
+            streams = {
+                'stdout': result.stdout,
+                'stderr': result.stderr,
+                'runtime.log': ((target / 'runtime.log').read_text(errors='replace')
+                                if (target / 'runtime.log').exists() else ''),
+            }
+            if result.returncode:
+                raise RuntimeError('Native mall fixture exited unsuccessfully; inspect retained receipts')
+            accepted = validate_native_result(report, stages, streams, expected)
     # Overall success is only emitted after receipt retention and owned cleanup.
     print(accepted, flush=True)
 

@@ -179,15 +179,21 @@ omission control must fail at its expected assertion; a compiler error, timeout
 or unrelated runtime failure does not establish detection.
 
 Using a verified Python interpreter, run `-m unittest discover -s
-tests/extraction -p "test_mall*.py" -v` for 27 mocked launcher cases and 16 offline
+tests/extraction -p "test_mall*.py" -v` for mocked launcher/oracle cases and 16 offline
 map/circulation checks. Launcher children are injected fakes; these commands do
-not launch BYOND. The existing opt-in Extraction job registers these files and all
-seven native omission controls. Registration does not establish their execution;
+not launch BYOND. The independent mall CI step registers these files and all
+seven native omission controls. Its `mall_regressions` manual input defaults to
+false; select it with `extensive_regressions=false` to avoid unrelated suites.
+The step retains synthetic receipts for seven days even after a native failure.
+Registration does not establish their execution;
 check each selected run's results against the tested commit.
 
 `run_mall.py` requires the pinned BYOND bin directory, uses unique generated
-source names and temporary save storage, and rejects outbound Export/port
-opening. `mall_run_support.py` records commands, stage output, failures and
+source names and temporary save storage. It runs trusted as required by the
+repository, with outbound Export disabled. BYOND may open an ephemeral loopback
+listener before `/world/New()`; the runner explicitly binds `127.0.0.1`, and the
+fixture immediately closes that listener and refuses reopening. This is not a
+claim that no socket ever opens, and it does not start a public game server. `mall_run_support.py` records commands, stage output, failures and
 direct-child exit/cleanup results under `data/mall-fixture/`, including compiler
 failures before a daemon can launch. Its stage waits share a 240-second budget
 (Git up to 10 seconds, compiler up to 120, daemon up to 90), followed by a shared
