@@ -394,7 +394,7 @@ def authorize(client, github, reader=input, callback_factory=Callback,
         callback.close()
     channel_check(token)
     print('Verified approved channel. No credential values are displayed or saved locally.')
-    print('Placement: ' + REPOSITORY + ' environment ' + ENVIRONMENT + ': ' + ', '.join(SECRET_NAMES))
+    print('Placement: ' + REPOSITORY + ' environment ' + ENVIRONMENT + '. See the reviewed setup document for the three credential fields.')
     require(confirmed('Approve persistent GitHub secret placement separately. The grant allows video management/upload and channel reads. '
                       'Revoke it in your Google account and delete environment secrets to terminate access.',
                       STORE_PHRASE, reader),

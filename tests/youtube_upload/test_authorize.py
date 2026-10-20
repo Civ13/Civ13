@@ -380,6 +380,13 @@ class AuthorizationGateTests(unittest.TestCase):
         self.assertNotIn('client_id=', success['output'])
         self.assertNotIn(a.AUTH_URL, success['output'])
 
+    def test_placement_output_does_not_enumerate_credential_fields(self):
+        with patch.object(a, 'SECRET_NAMES', ['FAKE-PRIVATE-FIELD-LABEL']):
+            result = self.run_flow([a.STORE_PHRASE])
+        self.assertEqual(result['store'], 1)
+        self.assertNotIn('FAKE-PRIVATE-FIELD-LABEL', result['output'])
+        self.assertIn('Placement: Civ13/Civ13 environment youtube-unlisted.', result['output'])
+
     def test_callback_failure_wrong_channel_and_expiry_cannot_write_secrets(self):
         failed_callback = self.run_flow([], callback_error=a.Stopped('OAuth state mismatch'))
         self.assertEqual((failed_callback['exchange'], failed_callback['store']), (0, 0))
