@@ -142,6 +142,11 @@ var/list/mutate_on_tick = null
 	return
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0
+/mob/living/human/proc/human_subtile_prepare_import(savefile/F)
+	// This minimal fixture has no physical sub-tile movement implementation.
+	if ("human_subtile_position" in F.dir)
+		throw EXCEPTION("Sub-tile restoration requires the full-source human fixture")
+	return
 /mob/living/human/proc/rejuvenate()
 	rejuvenate_calls++
 	stat = CONSCIOUS

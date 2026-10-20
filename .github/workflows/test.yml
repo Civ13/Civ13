@@ -17,6 +17,10 @@ on:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
         default: false
+      dagger_map_compile:
+        description: 'Opt in to native compilation of the inactive Dagger map and missing-type control'
+        type: boolean
+        default: false
       rack_save_regressions:
         description: 'Opt in only to the paid rack save probe and its six mutation controls'
         type: boolean
@@ -31,6 +35,10 @@ on:
         default: false
       world_save_regressions:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
+        type: boolean
+        default: false
+      protected_sleep_regressions:
+        description: 'Opt in only to protected sleep transfers and save compatibility checks'
         type: boolean
         default: false
       world_save_profile_regressions:
@@ -73,6 +81,12 @@ jobs:
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
+      - name: Test protected sleep source and fixture contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true
+        run: |
+          python3 -B tests/world_save/test_sleep_transfer_sources.py -v
+          python3 -B tests/world_save/test_cross_level_sources.py -v
+          python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
@@ -91,9 +105,15 @@ jobs:
       - name: Test admin history source preparation
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_history')
         run: python3 -m unittest discover -s tests/admin_history -p test_sources.py -v
+      - name: Test fixed bot service control without host effects
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bot_service')
+        run: python3 -m unittest discover -s tests/bot_service -v
       - name: Test isolated OpenDream process and control adapter
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_control.py') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_opendream_receipts.py')
         run: python3 -m unittest discover -s tests -p 'test_opendream*.py' -v
+      - name: Test injected bounded-build guard and Windows adapter
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'scripts/opendream/bounded_build')
+        run: python3 -m unittest discover -s scripts/opendream/bounded_build -p 'test_*.py' -v
       - name: Test local WSL staging and owned-process failure paths without WSL
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_local_wsl.py')
         run: python3 -m unittest discover -s tests -p test_local_wsl.py -v
@@ -193,6 +213,23 @@ jobs:
             ${{ runner.temp }}/core-boot-compile/*/compile.log
             ${{ runner.temp }}/core-boot-compile/*/compile-status.json
             ${{ runner.temp }}/core-boot-compile/*/compile-summary.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Compile inactive Dagger map and missing-type control
+        id: dagger_compile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/dagger_map') || inputs.dagger_map_compile == true
+        timeout-minutes: 25
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/dagger_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/dagger-compile"
+      - name: Retain Dagger native compile evidence
+        if: always() && steps.dagger_compile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: dagger-compile-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/dagger-compile/
           if-no-files-found: error
           retention-days: 7
 
@@ -552,6 +589,37 @@ jobs:
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control sword
           python3 tests/weapon_parry/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control twohanded
+      - name: Verify opt-in human and primitive sub-tile movement
+        id: human_subtile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/human_subtile') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/subtile_movement')
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 -B -m unittest discover -s tests/human_subtile -p 'test_*.py' -v
+          /usr/bin/python3 -B tests/subtile_movement/test_oracle.py
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite primitive --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/primitive"
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite primitive --control cosmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cosmetic"
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite human --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/human"
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining"
+          /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --control mining-position --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining-position"
+
+      - name: Retain sub-tile movement evidence
+        if: always() && steps.human_subtile.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: human-subtile-${{ github.event.pull_request.head.sha || github.sha }}
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/human-subtile/**/source-manifest.json
+            ${{ runner.temp }}/human-subtile/**/runner-receipt.json
+            ${{ runner.temp }}/human-subtile/**/*.log
+            ${{ runner.temp }}/human-subtile/**/data/logs/runtime/*.txt
+            ${{ runner.temp }}/human-subtile/**/receipt.json
+            ${{ runner.temp }}/human-subtile/**/result.txt
+            ${{ runner.temp }}/human-subtile/**/port-closed.txt
+
       - name: Verify turret key-release callbacks and original control
         id: turret_key_release
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/turret_key_release')
@@ -879,6 +947,45 @@ jobs:
         with:
           name: world-save-profile
           path: ${{ runner.temp }}/world-save-profile/
+
+      - name: Verify protected sleep transfers and version-2 saves
+        id: protected_sleep
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/protected-sleep"
+          export TMPDIR="$RUNNER_TEMP/protected-sleep"
+          python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin"
+          for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
+            python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+          done
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case field-direct
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case move-direct --expect-current-defects
+          # Synthetic writer/reader only. No private save path or staging upload.
+          if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"; then
+            # These two compiler logs contain only fixed synthetic source, never
+            # a source save or runtime input. Bound diagnostics; do not upload logs.
+            for log in "$HOME"/civ13-save-inspect-*/{writer,reader}-compile.log; do
+              if [ -f "$log" ]; then head -c 4096 "$log"; fi
+            done
+            exit 1
+          fi
+      - name: Retain protected sleep regression evidence
+        if: always() && steps.protected_sleep.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: protected-sleep
+          path: ${{ runner.temp }}/protected-sleep/
+          if-no-files-found: error
+
+      - name: Retain synthetic save inspector receipt
+        if: always() && steps.protected_sleep.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: partial-save-inspector-selftest
+          path: ~/civ13-save-inspect-*/selftest-summary.json
+          if-no-files-found: ignore
 
       - name: Offline world-save round-trip regression
         id: world_save

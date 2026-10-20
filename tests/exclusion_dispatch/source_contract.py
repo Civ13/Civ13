@@ -7,6 +7,19 @@ AREA_POLICY = ('// Author policy is not restored from an ordinary or historical 
                '\treturn key == "lighting_reserved_clearance_enabled" || ..()\n\n')
 
 
+def reconstruct_list_baseline(master):
+    """Reverse only the three reviewed switch hooks in pinned current master."""
+    for kind in ('atom', 'turf', 'mob'):
+        pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\tswitch\(key\)\n\t\tif \(([^\n]+)\)\n\t\t\treturn TRUE\n\treturn \.\.\(\)'
+        matches = list(re.finditer(pattern, master, re.M))
+        if len(matches) != 1:
+            raise ValueError(f'Expected exactly one pinned master {kind} switch hook')
+        match = matches[0]
+        replacement = f'/{kind}/persistence_runtime_var(key)\n{match["prefix"]}\treturn (key in list({match[2]})) || ..()'
+        master = master[:match.start()] + replacement + master[match.end():]
+    return master
+
+
 def project_reserved_policy(baseline):
     """Apply only this PR's declared policy to the historical list baseline."""
     anchor = '\treturn (key in list("affecting_lights", "lighting_overlay"'

@@ -19,6 +19,10 @@
 /map_storage/proc/entry_path(savefile/F, ref)
 	return "/entries/[ref]"
 var/map_storage/map_storage = new
+// This standalone graph fixture never supplies an exporter. The full native
+// save fixture exercises operator diagnostics with the actual storage helpers.
+/map_storage/proc/record_save_reference_failure(kind, datum/target, current_entry = 0, first_z = 0, first_entry = 0)
+	return
 /map_storage/proc/save_validation_maxz()
 	return world.maxz
 /map_storage/proc/save_validation_coordinate(x, y, z)

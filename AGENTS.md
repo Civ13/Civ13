@@ -4,9 +4,24 @@
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
 checks declared frozen full-frame geometry only, not map inventory completeness
-or runtime immutability. Offline CI does not launch its proposed native fixture;
-overlay counts, client appearance and net RAM remain unverified. Preserve exact
-frozen helper bytes and require a fresh coordinator grant before native execution.
+or runtime immutability. The separate Linux CI lane compares native state and
+causal controls; it does not prove client appearance or net RAM savings. Preserve
+frozen Windows helper bytes and require a fresh grant for that held runner.
+
+<!-- 2026-10-19: protected sleep buckle ownership -->
+Protected sleep relocates the body between z-levels, so release only its matching
+reciprocal buckle before entry or wake. Keep return coordinates captured before
+unbuckling, reject mismatched occupants, and leave sleep protection active on a
+failed wake. Both delayed verbs retain the initiating client/body and recheck the
+persistence gate at transfer time. Per-level saves still reject cross-z object
+fields; never suppress that guard to hide a stale spatial relationship.
+`map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
+cross-level and duplicate-entry failures, including direct Save_World calls.
+Keep only scalar identities/coordinates and at most eight schema-field frames;
+never pin live objects, retain values or print lookup refs in public reports.
+Preserve it through cleanup, clear it only at accepted save admission, and verify
+lookup type/location because native refs can be recycled after deletion.
+
 <!-- 2026-10-18: private Help conversation boundary -->
 Help history belongs to an authenticated client session, never a saved mob.
 `conversation_probe.dm` is included by the existing isolated Help fixture;
@@ -107,6 +122,10 @@ source preparation does not establish native acceptance.
 - Map backups should use Git, not saved copies in the repo.
 
 ### DMM format rules
+
+<!-- 2026-10-16: standalone map constants -->
+- Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
+  MapDiffBot's standalone map reader rejects unresolved variables in map values.
 
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
@@ -286,6 +305,25 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-13: native catch variable scope -->
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
+
+<!-- 2026-10-19: combined sub-tile mining acceptance -->
+`tests/human_subtile/run.py --suite mining` stages the full merged game and
+exercises native collision dispatch, mining snapshots and physical offset drift.
+Its mining-position control must fail the same-anchor drift oracle, not merely
+some assertion. Headless authority is adapted: only a separately attached real
+client can establish client.moving ownership through the optional client entry.
+Keep the production adapter disabled until that separate acceptance is met.
+
+<!-- 2026-10-19: opt-in physical human movement -->
+The experimental human adapter keeps the living Move third gameplay flag and
+uses one-use context at movable's native offset seam. Runtime ownership fields
+need explicit custom-save exclusion. Owned capsule presence is detected before
+loader assignments; no-capsule legacy humans retain their old offset policy.
+The minimal world-save stub rejects owned capsules instead of faking restoration.
+Use tests/human_subtile/run.py --prepare-only for offline exact-Git staging;
+native integration and connected-client timing are separate acceptance gates.
+DM reserves proc name run, and an if-local variable cannot be read afterward;
+offline text contracts do not replace the pinned native compiler.
 
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
@@ -633,6 +671,12 @@ Dormant comment-review listeners must be workflow_dispatch-only: GitHub can requ
 
 ## Train verification
 
+<!-- 2026-10-19: inactive Dagger compilation -->
+`tests/dagger_map/compile_map.py` compiles the inactive DMM with production types
+in a disposable root-local DME, plus a missing-type diagnostic control. CI's
+`dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
+compilation is not controller, instancing, protection or gameplay acceptance.
+
 <!-- 2026-10-11: firearm configuration verification -->
 Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
 Keep runtime action owners and work reservations out of native item saves; saved
@@ -941,6 +985,10 @@ logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
 
+<!-- 2026-10-19: injected Windows adapter CI -->
+The bounded-build test suite runs without Windows DLLs. Inject ctypes error
+state too: get_last_error does not exist on Linux. CI explicitly recognizes the
+two added bounded-build tests; passing them is not native containment evidence.
 <!-- 2026-10-14: chemical smoke source retirement -->
 Chemical smoke systems are single-use: their two reaction callers construct fresh
 systems. The hidden reagent source must survive every queued spawn callback, then
@@ -980,6 +1028,10 @@ initializer raises a type-mismatch exception. `tests/floor_decal_tracking` cover
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
 
+<!-- 2026-10-19: bot helper contention -->
+Bot control uses nonblocking flock and returns busy (75) without systemctl or
+cooldown writes under contention. The draft unit remains disabled pending
+independent game supervision and native bot-restart/game-survival acceptance.
 <!-- 2026-10-19: serializer profile admission -->
 Test-only save profiling starts after save_world_contents accepts its operation
 token. Never wrap the public Save_World entry on current sources: busy/reentrant

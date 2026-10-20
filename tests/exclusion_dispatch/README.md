@@ -1,3 +1,14 @@
+## Current-master integration (2026-10-20)
+
+The active baseline is pinned to master
+`5bf351248de6050876fe5b53f91209a970cc5668`. Its three switch hooks are
+reconstructed as list dispatch before applying the same reserved policy to both
+variants. Offline tests require those reconstructed hooks to equal the historical
+`5ac2df3` hooks byte for byte, including mining guards. All other current-master
+bytes, including save-failure diagnostics, remain under whole-file equality;
+missing hooks and diagnostic mutations are rejected. This refresh changes the
+test reference only, not production behavior or the separate native hold.
+
 ## Reserved-lighting integration policy
 
 The historical list baseline is explicitly projected with two new exclusions:

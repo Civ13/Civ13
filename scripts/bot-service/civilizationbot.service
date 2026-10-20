@@ -1,0 +1,21 @@
+[Unit]
+Description=CivilizationBot
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+# Matches the observed existing root process. Review privileges before migration.
+User=root
+WorkingDirectory=/home/civ13/Civilizationbot
+ExecStart=/usr/bin/php /home/civ13/Civilizationbot/bot.php
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+KillMode=control-group
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target
