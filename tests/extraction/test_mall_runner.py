@@ -609,6 +609,8 @@ class MainTests(unittest.TestCase):
             elif ordinal == 2:
                 kwargs['stdout'].write(compile_output)
                 dme = self.root / command[-1]
+                metadata = dme.with_name(dme.stem + '_metadata.dm')
+                self.compiled_metadata = metadata.read_text() if metadata.exists() else None
                 dme.with_suffix('.dmb').write_bytes(b'fake bytecode')
                 dme.with_suffix('.rsc').write_bytes(b'fake resources')
             else:
@@ -730,6 +732,23 @@ class MainTests(unittest.TestCase):
                 manifest = json.loads((self.owner.destination / 'manifest.json').read_text())
                 self.assertEqual(manifest['negative_control'], control)
                 self.assertEqual(manifest['outcome'], 'passed')
+
+    def test_stair_return_mutation_only_omits_missing_reciprocal_guard(self):
+        relative = Path('code/modules/1713/extraction/mall.dm')
+        production = (HERE.parents[1] / relative).read_text()
+        original = 'if (!return_stairs || return_stairs.destination_z != z) return FALSE'
+        replacement = 'if (return_stairs && return_stairs.destination_z != z) return FALSE'
+        self.assertEqual(production.count(original), 1)
+        (self.root / relative).write_text(production)
+        self.invoke(negative_control='stair_return', compile_only=True)
+        self.assertEqual(self.compiled_metadata, production.replace(original, replacement, 1))
+        self.assertEqual(self.compiled_metadata.count(replacement), 1)
+        self.assertNotIn(original, self.compiled_metadata)
+        self.assertIn('var/obj/structure/extraction_mall_stairs/return_stairs',
+                      self.compiled_metadata)
+        self.assertIn('return_stairs = A', self.compiled_metadata)
+        self.assertEqual((self.root / relative).read_text(), production)
+        self.assertEqual(len(self.spawn.calls), 2)
 
     def test_native_nonzero_and_diagnostics_reject_pass_report(self):
         for code, log in ((4, ''), (0, 'Runtime error'), (0, 'Bad ref'),

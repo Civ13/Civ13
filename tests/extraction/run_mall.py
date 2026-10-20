@@ -112,7 +112,7 @@ def main(argv=None, *, root=None, run_factory=OwnedRun):
                 'mission': ('return level in list(1, 4, 5)', 'return level in list(1, 2, 3, 4, 5)', 'secure floors excluded by mission policy'),
                 'vehicle': ('return ..() && istype(E, /obj/effect/extraction_exit/highway) && E.z == 1', 'return ..()', 'only highway exits admit cars'),
                 'stair_landing': ('if (A.density || isliving(A)) return FALSE', '// Negative control: ignore occupied landing', 'all cores reject dense destination occupancy without moving the actor'),
-                'stair_return': ('if (!return_stairs || return_stairs.destination_z != z) return FALSE', '// Negative control: ignore return connection', 'all cores reject a missing return stair without moving the actor'),
+                'stair_return': ('if (!return_stairs || return_stairs.destination_z != z) return FALSE', 'if (return_stairs && return_stairs.destination_z != z) return FALSE', 'all cores reject a missing return stair without moving the actor'),
             }[args.negative_control]
             if metadata.count(marker) != 1:
                 raise RuntimeError('Mutation marker changed')
