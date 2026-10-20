@@ -15,6 +15,11 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/youtube_upload')
     runs-on: ubuntu-24.04
     timeout-minutes: 3
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -39,3 +44,8 @@ jobs:
         env:
           MANIFEST_ID: pr3032-trains-public
         run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke
+      - name: Validate existing train source and all scoped GitHub tree proofs
+        env:
+          MANIFEST_ID: pr3032-trains-public
+          GITHUB_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 -B tools/youtube/prepare_import.py source-smoke

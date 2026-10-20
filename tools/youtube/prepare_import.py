@@ -157,10 +157,19 @@ def prepare(gh, transport, spec, run_id, run_attempt, trusted_commit, url, desti
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("prepare", "probe-smoke", "approval"))
+    parser.add_argument("mode", choices=("prepare", "probe-smoke", "source-smoke", "approval"))
     args = parser.parse_args()
     manifest_id = os.environ.get("MANIFEST_ID", PILOT_ID)
     spec = specification(manifest_id)
+    if args.mode == "source-smoke":
+        # Credential-free publication boundary: read-only GitHub metadata only.
+        m = material(spec, {"id": 1, "run_attempt": 1, "workflow_id": 1, "head_sha": "0" * 40})
+        p = policy(m)
+        gh = u.GitHub(u.Transport(), os.environ["GITHUB_TOKEN"])
+        u.validate_source_provenance(gh, m, p)
+        u.validate_import_attestation(gh, m)
+        print("Historical source and scoped metadata proof verified; no channel access or upload")
+        return
     if args.mode == "approval":
         # Offline preview only: no assertion that the human has approved it.
         m = material(spec, {"id": 1, "run_attempt": 1, "workflow_id": 1, "head_sha": "0" * 40})
