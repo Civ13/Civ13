@@ -163,6 +163,60 @@ class RunnerContracts(unittest.TestCase):
         self.assertNotIn('return null', mutant_loop)
         self.assertNotIn('if (FALSE)', mutant_loop)
 
+    def test_generation_mutates_only_home_acquire_admission(self):
+        source = (runner.ROOT / runner.SOURCE).read_text(encoding='utf-8')
+        anchor, replacement, target = runner.CONTROLS['generation']
+        mutant = runner.mutation(source, 'generation')
+        self.assertEqual(target, 'wrong scope acquire rejected')
+        self.assertEqual(replacement, anchor.replace('current(scope_map, scope_generation)',
+                                                     'current(scope_map, generation)'))
+        self.assertEqual(mutant.replace(replacement, anchor), source)
+        before, acquire = source.split('\tproc/reserve_home(', 1)
+        acquire, after = acquire.split('\tproc/release_home(', 1)
+        self.assertIn(anchor, acquire)
+        self.assertTrue(mutant.startswith(before))
+        self.assertTrue(mutant.endswith(after))
+        self.assertIn('generation == scope_generation', mutant)
+
+    def test_rejected_acquires_use_separate_registries(self):
+        lines = self.probe.splitlines()
+        scope = next(line for line in lines if '"wrong scope acquire rejected"' in line)
+        overlap = next(line for line in lines if '"XY-separated homes cannot share z interval"' in line)
+        self.assertEqual(scope.count('scope_probe.reserve_home('), 2)
+        self.assertNotIn('!R.reserve_home(', scope)
+        self.assertIn('var/datum/extraction_instance_registry/scope_probe = new("map_a", "load_1")', self.probe)
+        self.assertIn('var/datum/extraction_instance_registry/overlap_probe = new("map_a", "load_1")', self.probe)
+        self.assertIn('overlap_seed = overlap_probe.reserve_home(A, T, list(1,1,1)', self.probe)
+        self.assertIn('check(overlap_seed && !overlap_probe.reserve_home(B,', overlap)
+        self.assertIn('overlap_probe.homes.len == 1', overlap)
+        self.assertEqual(self.probe.count('scope_probe.reserve_home('), 2)
+        self.assertEqual(self.probe.count('overlap_probe.reserve_home('), 2)
+        self.assertEqual(len(runner.labels(self.probe)), 35)
+
+    def test_release_mutants_and_probes_are_independent(self):
+        source = (runner.ROOT / runner.SOURCE).read_text(encoding='utf-8')
+        for control, proc, probe, target in (
+                ('generation_home_release', 'release_home', 'stale_home_probe',
+                 'stale generation release preserves registry'),
+                ('generation_berth_release', 'release_berth', 'stale_berth_probe',
+                 'stale berth release rejected')):
+            with self.subTest(control=control):
+                anchor, replacement, label = runner.CONTROLS[control]
+                self.assertEqual(label, target)
+                self.assertTrue(anchor.startswith('proc/' + proc + '('))
+                self.assertEqual(replacement, anchor.replace('current(scope_map, scope_generation)',
+                                                            'current(scope_map, generation)'))
+                mutant = runner.mutation(source, control)
+                self.assertEqual(mutant.replace(replacement, anchor), source)
+                self.assertIn('generation == scope_generation', mutant)
+                assertion = next(line for line in self.probe.splitlines() if '"' + target + '"' in line)
+                self.assertIn('!' + probe + '.' + proc + '(', assertion)
+                self.assertNotIn('!R.' + proc + '(', assertion)
+                self.assertIn('var/datum/extraction_instance_registry/' + probe + ' = new("map_a", "load_1")', self.probe)
+                self.assertEqual(self.probe.count(probe + '.' + proc + '('), 1)
+        self.assertIn('registry_state(stale_home_probe) == stale_home_before', self.probe)
+        self.assertIn('stale_berth_probe.berth_tokens["raid_1:raid_west"] == stale_berth_seed', self.probe)
+
     def test_cli_rejects_local_native_before_preparation(self):
         with mock.patch.object(runner.sys, 'platform', 'win32'), \
                 mock.patch.object(runner.sys, 'argv', ['run_ci.py', '--head', 'a' * 40,

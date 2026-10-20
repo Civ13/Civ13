@@ -77,11 +77,34 @@ source and standalone fixture, with SHA-256 inputs. It never launches a compiler
 or daemon. The fixture covers two parties with disjoint four-deck homes, logical
 JSON reconstruction before future decode, occupied/free berth independence,
 stale/replayed handles, unknown schema/fields, missing/duplicate decks, bounds,
-budgets, and zero mutation on rejection. Native compilation/execution and disk
-roundtrips remain unrun until a fresh bounded test grant. Offline packaging tests
-do not establish DM semantics or gameplay acceptance.
+budgets, and zero mutation on rejection. The bounded standalone native run
+recorded below has executed; disk roundtrips and integrated gameplay remain
+unrun. Offline packaging tests alone do not establish DM semantics or gameplay
+acceptance.
 
-## Standalone CI proposal
+## Standalone CI evidence and admission
+
+At exact head `b717ad2a6050885961e837c1721734eb35dc3d58`,
+[run 39140469088](https://github.com/Civ13/Civ13/actions/runs/39140469088)
+compiled and executed baseline, overlap and generation cases with BYOND
+516.1681. Baseline passed all 35 assertions. Overlap failed its named target
+and `second party gets disjoint four-deck block`. Generation failed its named
+target plus `XY-separated homes cannot share z interval`,
+`stale generation release preserves registry`, `release replay rejected`,
+`stale berth release rejected` and `berth release replay rejected`.
+All cases compiled without warnings or errors, and their retained runtime and
+console logs contain no diagnostics recognized by the runner. Both controls
+remain `accepted=false`, `status=needs_review`; the run's actual overall
+`success=false` is unchanged.
+
+The collateral follows shared fixture state: disabling overlap rejection leases
+home B at z1 before its later z5 acquire. Disabling the generation comparison
+admits home B on the old-generation acquire and allows stale home/berth releases
+to remove the entries before their later release checks. This explains the
+observed failures but does not itself change the committed single-target oracle
+or convert the failed run into accepted evidence. Any successor oracle or probe
+needs separate review and exact-head verification. These standalone results do
+not establish disk durability, map projection, transfer integration or gameplay.
 
 `tests/extraction/instances/run_ci.py` reads the production model and authored
 probe from exact full-SHA Git objects. It adapts only the include path in temporary
@@ -93,14 +116,25 @@ using its pinned BYOND directory and a new child of `RUNNER_TEMP`.
 The baseline must report all 35 unique authored assertions and the successful
 terminator. The overlap control must fail `XY-separated homes cannot share z
 interval`; the generation control must fail `wrong scope acquire rejected`.
-Both controls must still report the complete assertion set and their matching
-failure count. Only the named target may fail for acceptance. Other failed
+The `generation_home_release` and `generation_berth_release` controls must
+fail `stale generation release preserves registry` and
+`stale berth release rejected`, respectively. All four controls must still
+report the complete assertion set and their matching failure count. Only the named target may fail for acceptance. Other failed
 assertions are retained separately as collateral: `target_detected` may be true,
 but the control has `needs_review`, `accepted=false`, and overall success stays
 false. Review the actual complete failure set against the single injected change
 before approving a successor oracle. Diagnostic, compiler, process, timeout and missing-result failures
 invalidate evidence. Synthetic oracle tests verify rejection logic only; they
 do not establish that either mutated DM program has run.
+The successor probe isolates rejected scope, overlap and stale-release attempts
+in separate registries. The former global generation mutation is split across
+home acquire, home release and berth release admission. Each injected defect
+therefore has one independent target, without suppressing any of the original
+35 assertions or allowing collateral. Valid acquire/release and replay checks
+still run on the main registry. Production source, runtime resource limits and
+admission remain unchanged. This successor's native execution is pending;
+the historical failed run above does not validate the changed probe or controls.
+
 Compiler admission requires exactly one complete `516.1681` version banner;
 longer version numbers, suffixes and duplicate banners fail closed.
 

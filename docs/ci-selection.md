@@ -32,8 +32,9 @@ This fixture does not establish full-world saves or player/map acceptance.
 For the standalone extraction instance model, enable
 **extraction_instance_regressions** on **CI** with **extensive_regressions** off.
 Its separate Ubuntu job installs BYOND 516.1681 without compiling or starting the
-game. It runs 35 authored assertions against committed source, then two generated
-mutations: overlapping private-home z intervals and stale allocation generation.
+game. It runs 35 authored assertions against committed source, then four generated
+mutations: overlapping private-home z intervals and stale-generation admission
+for home acquire, home release and berth release, each in an isolated registry.
 Each mutation must fail its exact named assertion; compile/runtime errors,
 missing assertions and timeouts are failures, not successful negative controls.
 Only the named target may fail for an accepted control. Additional failed

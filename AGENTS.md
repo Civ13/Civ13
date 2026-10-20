@@ -228,6 +228,13 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-20: extraction instance collateral -->
+The historical extraction instance fixture at b717ad2a6 shared registry state
+across assertions. Its overlap/generation mutants caused downstream failures as well as
+their named targets. Run 39140469088 preserves complete native results; keep its
+failed verdict intact. Explaining collateral is not approval to weaken the
+single-target oracle. See docs/extraction-instance-contract.md.
+
 <!-- 2026-10-17: maintainer rules -->
 - Art: reuse and transform existing art assets where possible. Never use image
   generation tools (Stable Diffusion and similar). New art made from scratch must

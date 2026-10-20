@@ -18,7 +18,20 @@ CONTROLS = {
     'overlap': ('if (origin[3] <= other["top"] && top >= other["bottom"]) return null',
                 'if (origin[3] <= other["top"] && top >= other["bottom"]) continue',
                 'XY-separated homes cannot share z interval'),
-    'generation': ('generation == scope_generation', 'TRUE', 'wrong scope acquire rejected'),
+    # Mutate acquire admission only. Removing current()'s global comparison
+    # also disables independent home/berth release guards and cannot have a
+    # single-target oracle. Those guards have separate isolated mutation cases below.
+    'generation': ('if (!current(scope_map, scope_generation) || !limits.template_valid(T, R)) return null',
+                   'if (!current(scope_map, generation) || !limits.template_valid(T, R)) return null',
+                   'wrong scope acquire rejected'),
+    'generation_home_release': (
+        'proc/release_home(id, datum/extraction_instance_token/token, scope_map, scope_generation)\n\t\tif (!current(scope_map, scope_generation)) return FALSE',
+        'proc/release_home(id, datum/extraction_instance_token/token, scope_map, scope_generation)\n\t\tif (!current(scope_map, generation)) return FALSE',
+        'stale generation release preserves registry'),
+    'generation_berth_release': (
+        'proc/release_berth(destination_id, berth_id, datum/extraction_instance_token/token, scope_map, scope_generation)\n\t\tif (!current(scope_map, scope_generation)',
+        'proc/release_berth(destination_id, berth_id, datum/extraction_instance_token/token, scope_map, scope_generation)\n\t\tif (!current(scope_map, generation)',
+        'stale berth release rejected'),
 }
 DIAGNOSTIC = re.compile(r'runtime error|bad ref|unhandled|traceback|segmentation|fatal|error:|warning:'
                         r'|BUG:|access violation|out of memory', re.I)
