@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "approval": {
+    "issue_number": 3081,
+    "comment_id": 1
+  },
+  "repository": "Civ13/Civ13",
+  "channel_handle": "@valzartech8995",
+  "channel_id": "UCFRx_n3Mh3FfvL9yOUfG-yw",
+  "privacy": "public",
+  "source": {
+    "run_id": 38183016828,
+    "run_attempt": 1,
+    "workflow_id": 16224620,
+    "workflow_path": ".github/workflows/test.yml",
+    "event": "push",
+    "head_branch": "master",
+    "commit": "60b8cf9937617d62c4cc01f82bf32401559b84f4",
+    "pr": 3081,
+    "owner": "valzargaming"
+  },
+  "clip": {
+    "path": "gameplay.mp4",
+    "sha256": "f66da1999bead0b726a1bd48167163ce4529eaf627bc98f57d5ed767eb0daf2f",
+    "bytes": 2200621,
+    "duration_seconds": 126.066667,
+    "content_type": "video/mp4"
+  },
+  "metadata": {
+    "title": "Civ13 weapon attachments: scope removal, optic rail and red dot (PR #3081)",
+    "description": "Native Dream Seeker footage of Civ13 PR #3081 at merged game commit 60b8cf9937617d62c4cc01f82bf32401559b84f4, BYOND 516.1681. An unloaded SVD has its PSO-1 scope removed with a screwdriver, then receives a dovetail-to-Picatinny rail and red dot sight. Native Examine shows the changed attachment. This is a disposable local equipment scene, not a multiplayer round or production-server recording. Conventional cuts, captions, focus enlargement and highlights; retained actions play at 1x; no audio. The 60 percent condition assignment is artificial test setup, not a repair. Completed cleaning, bench repair and firing are not demonstrated. Startup logged Bad ref/DecRefCount and nslookup diagnostics, so this is not clean full-game runtime acceptance. Source and limitations: https://github.com/Civ13/Civ13/pull/3081#issuecomment-6115344644",
+    "made_for_kids": false,
+    "contains_synthetic_media": false
+  },
+  "review": {
+    "classification": "genuine-gameplay",
+    "reproduction": "Native empty SVD check, PSO-1 removal with screwdriver, dovetail-to-Picatinny rail and red-dot installation, native Examine. Retained actions run at 1x.",
+    "capture_context": "Owner valzargaming native local Dream Seeker capture, BYOND516.1681, disposable firearm equipment area. Production game procedures at merged PR3081 commit; scene tooling separately documented by PR3083.",
+    "known_limits": "Local disposable scene; cuts/captions/enlargements/highlights; no audio. Artificial60percent wear setup is disclosed, not a repair. No completed cleaning, bench repair, firing, multiplayer or clean-runtime acceptance. Startup Bad ref/DecRefCount and nslookup diagnostics.",
+    "content_review": "Full-duration one-second frame survey and full decode reviewed, with native text inspected at original resolution. Game HUD, test messages and fictional gun serial remain; no private chat, credentials, session Game ID, real player identity or internal paths observed. Adult game-development audience; genuine native footage with conventional editing."
+  },
+  "original": {
+    "original_url": "https://github.com/user-attachments/assets/6066fc4f-464e-424f-9960-2935b357afac",
+    "original_sha256": "f66da1999bead0b726a1bd48167163ce4529eaf627bc98f57d5ed767eb0daf2f",
+    "original_bytes": 2200621,
+    "source_comment_id": 6115344644,
+    "source_comment_sha256": "f207415522aa3165e2808f83ed42bc3b932bea9e9dd8e21590470a77bc08ab4e",
+    "transformation": "existing-captioned-pr3081-no-transformation"
+  }
+}

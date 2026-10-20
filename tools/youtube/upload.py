@@ -35,6 +35,7 @@ LEDGER_BRANCH = "youtube-upload-receipts"
 LEDGER_PATH = "receipts.json"
 PILOT_AUTHORIZATION_ID = "owner-approved-pr3031-public-20261020"
 PILOT_APPROVAL_DIGEST = "57f205c2d5692f95aced89237d7ae64faae09257040fa7e77fde8c7778eb0413"
+ATTACHMENT_APPROVAL_DIGEST = "5e3277908210fb71e0f27bd6ffdb20c12ca9c78ec6fb07c0279836c25e04493e"
 
 
 class Refused(Exception):
@@ -159,7 +160,7 @@ def validate_manifest(m, p):
         text(m["review"][field], 20, 1000)
     if m["schema_version"] == 2:
         validate_import_spec(m, p)
-    if m["schema_version"] == 2:
+    if m["schema_version"] == 2 and m["source"]["pr"] == 3031:
         keys(m["approval"], "authorization_id")
         require(m["approval"]["authorization_id"] == PILOT_AUTHORIZATION_ID and
                 approval_hash(m) == PILOT_APPROVAL_DIGEST and p["approvers"] == ["valzargaming"],
@@ -168,6 +169,11 @@ def validate_manifest(m, p):
         keys(m["approval"], "issue_number comment_id")
         integer(m["approval"]["issue_number"])
         integer(m["approval"]["comment_id"])
+        if m["schema_version"] == 2:
+            require(m["approval"]["issue_number"] == 3081 and
+                    approval_hash(m) == ATTACHMENT_APPROVAL_DIGEST and
+                    p["approvers"] == ["valzargaming"],
+                    "Attachment import material changed; new source review required")
 
 
 def validate_import_spec(m, p):
@@ -182,6 +188,12 @@ def validate_import_spec(m, p):
     integer(item["original_bytes"], 1024, MAX_CLIP)
     require({k: item[k] for k in ("workflow_id", "workflow_path")} in p["importers"],
             "Historical packager not allowlisted")
+    if m["source"]["pr"] == 3081:
+        # A second exact historical clip, never a wildcard historical import.
+        # Its human approval comment is still required at inspection/upload.
+        require(approval_hash(m) == ATTACHMENT_APPROVAL_DIGEST,
+                "Historical import differs from the reviewed PR3081 attachment")
+        return
     # Initial import is intentionally bounded to the exact reviewed pilot, not
     # a general URL fetch or a claim that old CI generated a local recording.
     require(m["source"]["pr"] == 3031 and
@@ -370,7 +382,7 @@ def validate_provenance(gh, m, p):
 
 
 def validate_approval(gh, m, p):
-    if m["schema_version"] == 2:
+    if m["schema_version"] == 2 and m["source"]["pr"] == 3031:
         require(m["approval"] == {"authorization_id": PILOT_AUTHORIZATION_ID} and
                 approval_hash(m) == PILOT_APPROVAL_DIGEST and p["approvers"] == ["valzargaming"],
                 "Missing exact recorded owner approval for the public pilot")
@@ -617,15 +629,24 @@ def main():
     root = Path(__file__).resolve().parents[2]
     import_run = os.environ.get("IMPORT_RUN_ID", "")
     if import_run:
-        require(args.mode in {"inspect", "upload"} and args.manifest == "pr3031-power-public" and
+        require(args.mode in {"inspect", "upload"} and args.manifest in
+                {"pr3031-power-public", "pr3081-attachments-public"} and
                 re.fullmatch(r"[1-9][0-9]{0,14}", import_run), "Invalid historical pilot selection")
         require_trusted_dispatch()
         from prepare_import import resolve_pilot, resolve_pilot_receipt
         pilot_gh = GitHub(Transport(), os.environ["GITHUB_TOKEN"])
-        if os.environ.get("VERIFY_ONLY", "false") == "true":
-            p, m = resolve_pilot_receipt(pilot_gh, int(import_run))
+        comment_id = os.environ.get("APPROVAL_COMMENT_ID", "")
+        if args.manifest == "pr3081-attachments-public":
+            require(re.fullmatch(r"[1-9][0-9]{0,14}", comment_id),
+                    "PR3081 requires the owner's exact per-clip approval comment ID")
         else:
-            p, m = resolve_pilot(pilot_gh, int(import_run), os.environ["GITHUB_SHA"])
+            require(comment_id == "", "PR3031 does not accept another approval input")
+        options = {"manifest_id": args.manifest,
+                   "approval_comment_id": int(comment_id) if comment_id else None}
+        if os.environ.get("VERIFY_ONLY", "false") == "true":
+            p, m = resolve_pilot_receipt(pilot_gh, int(import_run), **options)
+        else:
+            p, m = resolve_pilot(pilot_gh, int(import_run), os.environ["GITHUB_SHA"], **options)
     else:
         p, m = load_inputs(root, args.manifest)
     if args.mode == "approval":

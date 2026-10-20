@@ -1,5 +1,7 @@
 """Offline contracts for public pilot approval and honest historical provenance."""
 import copy
+import contextlib
+import io
 import importlib.util
 import json
 from pathlib import Path
@@ -50,6 +52,93 @@ def pilot():
 
 
 class HistoricalImportTests(unittest.TestCase):
+    def attachment(self):
+        p, m, gh = pilot()
+        spec = h.specification('pr3081-attachments-public')
+        m = h.select_material(spec, {'id': 10, 'run_attempt': 1,
+            'workflow_id': 77, 'head_sha': 'b' * 40}, 456)
+        p = h.policy(m)
+        m['artifact'] = {'id': 2, 'name': 'gameplay-video-pr3081-attachments-public',
+            'archive_sha256': 'a' * 64, 'bytes': 500}
+        source = gh.objects.pop('/actions/runs/38127733413')
+        source.update(id=m['source']['run_id'], event='push', head_branch='master',
+            head_sha=m['source']['commit'], pull_requests=[])
+        gh.objects[f'/actions/runs/{source["id"]}'] = source
+        pr = gh.objects.pop('/pulls/3031')
+        pr.update(merged=True, merge_commit_sha=m['source']['commit'])
+        gh.objects['/pulls/3081'] = pr
+        attestation = json.loads((Path(__file__).parent / 'fixtures/pr3081-owner-attestation.json').read_text())
+        gh.objects['/issues/comments/6115344644'] = attestation
+        gh.objects['/issues/comments/456'] = {'user': {'type': 'User', 'login': 'valzargaming'},
+            'issue_url': 'https://api.github.com/repos/Civ13/Civ13/issues/3081',
+            'body': u.approval_text(m), 'created_at': '2026-10-20T16:00:00Z',
+            'updated_at': '2026-10-20T16:00:00Z'}
+        gh.objects['/actions/artifacts/2']['name'] = m['artifact']['name']
+        gh.objects['/actions/runs/10/artifacts?per_page=10']['artifacts'][0]['name'] = m['artifact']['name']
+        return p, m, gh
+
+    def test_attachment_resolves_exact_merged_game_and_separate_packager(self):
+        p, m, gh = self.attachment()
+        u.validate_manifest(m, p)
+        u.validate_provenance(gh, m, p)
+        self.assertEqual(u.approval_hash(m), u.ATTACHMENT_APPROVAL_DIGEST)
+        self.assertEqual(h.resolve_pilot(gh, 10, 'b' * 40,
+            'pr3081-attachments-public', 456), (p, m))
+        gh.objects['/pulls/3081']['merge_commit_sha'] = 'c' * 40
+        with self.assertRaises(u.Refused):
+            u.validate_provenance(gh, m, p)
+
+    def test_attachment_requires_exact_human_unedited_comment_and_immutable_material(self):
+        for field, value in [('body', 'I approve'), ('user', {'type': 'Bot', 'login': 'valzargaming'}),
+                ('updated_at', '2026-10-20T16:00:01Z'),
+                ('issue_url', 'https://api.github.com/repos/Civ13/Civ13/issues/3031')]:
+            p, m, gh = self.attachment()
+            gh.objects['/issues/comments/456'][field] = value
+            with self.subTest(field=field), self.assertRaises(u.Refused):
+                u.validate_provenance(gh, m, p)
+        for section, field, value in [('clip', 'sha256', 'c' * 64),
+                ('metadata', 'title', 'Unsupported full gameplay acceptance'),
+                ('source', 'commit', 'c' * 40), ('approval', 'issue_number', 3031),
+                ('import', 'source_comment_id', 6107609332)]:
+            p, m, gh = self.attachment()
+            m[section][field] = value
+            with self.subTest(section=section, field=field), self.assertRaises(u.Refused):
+                u.validate_manifest(m, p)
+        with self.assertRaises(u.Refused):
+            h.select_material(h.specification('pr3081-attachments-public'),
+                {'id': 10, 'run_attempt': 1, 'workflow_id': 77, 'head_sha': 'b' * 40}, None)
+        with self.assertRaises(u.Refused):
+            h.specification('pr3228-anything')
+
+    def test_attachment_receipt_survives_artifact_expiry_and_blocks_duplicate_bytes(self):
+        p, m, gh = self.attachment()
+        ledger = u.Ledger(gh)
+        record = ledger.reserve(m, 100000)
+        record.update(state='uploaded', video_id='abcdefghijk')
+        ledger.save()
+        gh.objects = {'': gh.objects['']}
+        self.assertEqual(h.resolve_pilot_receipt(gh, 10,
+            'pr3081-attachments-public', 456), (p, m))
+        altered = copy.deepcopy(m)
+        altered['source']['commit'] = 'c' * 40
+        with self.assertRaises(u.Refused):
+            u.Ledger(gh).reserve(altered, 100001)
+
+    def test_attachment_approval_preview_is_offline_and_comment_reaches_both_jobs(self):
+        output = io.StringIO()
+        with patch.dict(h.os.environ, {'MANIFEST_ID': 'pr3081-attachments-public'}), \
+                patch.object(sys, 'argv', ['prepare_import.py', 'approval']), \
+                patch.object(h.u, 'Transport', side_effect=AssertionError('No network in preview')), \
+                contextlib.redirect_stdout(output):
+            h.main()
+        _, m, _ = self.attachment()
+        self.assertEqual(output.getvalue().strip(), u.approval_text(m))
+        root = Path(u.__file__).resolve().parents[2]
+        wrapper = (root / '.github/workflows/youtube-upload.yml').read_text()
+        worker = (root / '.github/workflows/youtube-upload-worker.yml').read_text()
+        self.assertIn('approval_comment_id: ${{ inputs.approval_comment_id }}', wrapper)
+        self.assertEqual(worker.count('APPROVAL_COMMENT_ID: ${{ inputs.approval_comment_id }}'), 2)
+
     def test_empty_historical_run_association_requires_exact_merged_commit_pr(self):
         p, m, gh = pilot()
         gh.objects['/actions/runs/38127733413']['pull_requests'] = []

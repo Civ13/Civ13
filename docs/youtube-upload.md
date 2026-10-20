@@ -59,7 +59,7 @@ refresh/access tokens, resumable session URLs or signed artifact download URLs.
 
 ## Producer and approval contract
 
-Generic producer policies/manifests are not enrolled in this PR. The exact historical PR3031 pilot described below has separate owner approval. No other existing
+Generic producer policies/manifests are not enrolled in this feature. The exact historical PR3031 pilot described below has separate owner approval; the separately enrolled PR3081 clip retains a new exact human approval comment. No other existing
 screenshot, fixture or candidate is implicitly approved as a video. A subsequent
 reviewed change must create `tools/youtube/policy.json` from `policy.example.json`,
 enroll actual workflow IDs/paths and named human GitHub approvers, and commit a
@@ -95,7 +95,7 @@ The embedded evidence object has exactly these fields, with actual values:
 Enforce duration/size caps **before** an artifact upload. If an approved capture
 producer is added later, pin `actions/upload-artifact` by SHA, select only these
 files, disable hidden files, set `retention-days: 1`, and fail when no clip exists.
-Do not attach whole evidence trees, saves or logs to the video artifact. The bounded historical importer below retains only the exact approved pilot for one day; no automatic capture producer is installed.
+Do not attach whole evidence trees, saves or logs to the video artifact. The bounded historical importer below retains only the two exact enrolled historical clips for one day; no automatic capture producer is installed.
 
 Review the entire genuine clip for meaningful observed behavior, source ownership,
 private chat, credentials, player names, session data, internal paths, unexpected
@@ -169,6 +169,47 @@ an environment identifier, not the new visibility policy. Its owner reviewer,
 master restriction, disabled administrator bypass and default-off gates remain
 unchanged. A public/private mismatch fails readback; no visibility update call
 is available and no old video is silently made public.
+
+## Historical PR3081 weapon attachment clip
+
+`imports/pr3081.json` enrolls one additional existing public recording, not a new
+capture producer. The owner-attested source is
+[PR3081 comment6115344644](https://github.com/Civ13/Civ13/pull/3081#issuecomment-6115344644):
+`gun-configuration-captioned.mp4`, SHA256
+`f66da1999bead0b726a1bd48167163ce4529eaf627bc98f57d5ed767eb0daf2f`,
+2,200,621 bytes, 126.066667 seconds, H.2641920x1032 at15fps, no audio. The tested
+game is merge commit `60b8cf9937617d62c4cc01f82bf32401559b84f4`; successful push
+CI38183016828 is provenance for that game revision, not its recorder or packager.
+The local disposable scene tooling is separately documented in PR3083.
+
+This footage shows empty-SVD inspection, PSO-1 removal, rail/red-dot installation
+and native Examine. It uses conventional cuts, captions, focus enlargement and
+highlights. Retained actions play at1x. Artificial60percent condition setup is
+disclosed; completed cleaning, bench repair and firing are not established.
+Startup Bad ref/DecRefCount and nslookup diagnostics prevent clean full-game
+runtime acceptance. The MP4 is packaged unchanged from its public attachment;
+no transformation or replacement of the historical game revision is permitted.
+
+After normal source review and merge, select
+`manifest_id=pr3081-attachments-public` in the existing importer and supply its
+public attachment URL from the source comment. Packaging remains credential-free
+and may precede publication approval. The uploader still requires an allowlisted
+human's exact, unedited comment on PR3081:
+
+```text
+I approve Civ13 YouTube upload 5e3277908210fb71e0f27bd6ffdb20c12ca9c78ec6fb07c0279836c25e04493e to @valzartech8995 (UCFRx_n3Mh3FfvL9yOUfG-yw) as public.
+```
+
+Print that sentence offline with `MANIFEST_ID=pr3081-attachments-public` and
+`prepare_import.py approval`; it is a preview, never a claim of approval.
+The checked-in comment ID1 is a placeholder, never publication approval. Dispatch
+the upload wrapper with that manifest ID, the actual current-commit importer run
+ID and `approval_comment_id` from the owner's new comment. Start with
+`execute_upload=false`. Generic statements, old source approval, PR3031's alias,
+changed media/metadata and bot/edited comments cannot authorize this upload.
+The later live dispatch still requires all six bounded gates and the protected
+environment's explicit owner review. `verify_only=true` supports the same clip
+with its known receipt after artifact expiry; it never inserts another video.
 
 ## Durable receipts and uncertain outcomes
 
