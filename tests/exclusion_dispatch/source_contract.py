@@ -3,7 +3,7 @@ import re
 
 
 # Reviewed bounded-save integration adds only these non-hook blocks to the
-# immutable 5ac2 baseline. Keep complete-file equality after this projection;
+# pinned 5bf351 baseline. Keep complete-file equality after this projection;
 # deriving a baseline from candidate source would hide unrelated changes.
 BOUNDED_BLOCKS = (
     ('\t\tlist/saving_export_stack = list()\n',
@@ -13,6 +13,19 @@ BOUNDED_BLOCKS = (
     ('/map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)\n\tif(!ref) return\n\tvar/key = "[ref]"\n',
      '\t// Keep the first captured edge if a completed child later moves.\n\tvar/owner = saving_content_owners[key]\n\tif(owner && owner != frame.entry) return\n\tsaving_content_owners[key] = frame.entry\n'),
 )
+
+def reconstruct_list_baseline(master):
+    """Reverse only the three reviewed switch hooks in pinned current master."""
+    for kind in ('atom', 'turf', 'mob'):
+        pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\tswitch\(key\)\n\t\tif \(([^\n]+)\)\n\t\t\treturn TRUE\n\treturn \.\.\(\)'
+        matches = list(re.finditer(pattern, master, re.M))
+        if len(matches) != 1:
+            raise ValueError(f'Expected exactly one pinned master {kind} switch hook')
+        match = matches[0]
+        replacement = f'/{kind}/persistence_runtime_var(key)\n{match["prefix"]}\treturn (key in list({match[2]})) || ..()'
+        master = master[:match.start()] + replacement + master[match.end():]
+    return master
+
 
 def project_bounded_save(baseline):
     for anchor, addition in BOUNDED_BLOCKS:

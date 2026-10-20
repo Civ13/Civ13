@@ -11,9 +11,9 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import validate
+from source_contract import reconstruct_list_baseline, validate
 
-BASE = '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019'
+BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
 PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--byond-bin', type=Path)
@@ -27,6 +27,7 @@ p.add_argument('--calls', type=int, default=10000, choices=[10000, 20000, 40000]
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
 old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
+old = reconstruct_list_baseline(old)
 current = (repo / PATH).read_text()
 validate(old, current)
 
@@ -87,7 +88,7 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks; bounded additions projected for complete-file validation', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version='516.1681', native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')

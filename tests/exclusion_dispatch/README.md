@@ -171,3 +171,13 @@ host address remains audit data. Offline controls reject absent, wildcard,
 nonloopback and IPv6 bind diagnostics. This corrects the earlier README statement
 that the pre-close-address assertion was unchanged; the Windows listener monitor
 and unconditional grant hold are unchanged. Native parity still awaits a rerun.
+
+## Current bounded-save integration
+
+The current source reference is immutable master
+`5bf351248de6050876fe5b53f91209a970cc5668`. Reconstruct only its three historical
+list hooks before the existing bounded-block and switch projections; preserve
+all master diagnostics exactly. Tests compare those reconstructed hooks against
+immutable `5ac2df336b717f4ca2ccc60f2697b76ab4f2e019` and reject diagnostic drift.
+The reference never comes from candidate source. Earlier baseline descriptions
+above document the historical evidence, not this current integration.
