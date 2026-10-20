@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-20: passive production hang triage -->
+`scripts/hang-watchdog` observes Linux process identity and status-file metadata
+with monotonic deadlines. Its dedicated output is bounded and sanitized; it never
+starts/stops/restarts a game, saves/imports, elevates, or attaches a debugger.
+`tests/hang_watchdog` uses offline proc fixtures only. Keep the ordinary desktop
+test installation on approved master; PR worktrees are not runtime installations.
+Manual debugger/tracer examples require separate approval and confirmed detach;
+an i386 syscall 0 is restart_syscall, not the host's 64-bit read syscall.
+
 <!-- 2026-10-19: protected sleep buckle ownership -->
 Protected sleep relocates the body between z-levels, so release only its matching
 reciprocal buckle before entry or wake. Keep return coordinates captured before
