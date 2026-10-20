@@ -20,6 +20,26 @@ use function React\Promise\resolve;
 const TARGET_CHANNEL = 'UCFRx_n3Mh3FfvL9yOUfG-yw';
 const REQUIRED_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube.upload'];
 
+final class ProviderRateStop extends RuntimeException
+{
+    public function __construct(public readonly array $metadata) { parent::__construct('Provider stopped'); }
+}
+
+function safeRetryAt(ResponseInterface $response, int $now): int
+{
+    $values = [];
+    $raw = $response->getHeaderLine('Retry-After');
+    if (preg_match('/^[0-9]{1,7}$/D', $raw)) { $values[] = $now + (int) $raw; }
+    elseif (strlen($raw) <= 80) {
+        $date = DateTimeImmutable::createFromFormat('!D, d M Y H:i:s \\G\\M\\T', $raw, new DateTimeZone('UTC'));
+        if ($date !== false && $date->format('D, d M Y H:i:s \\G\\M\\T') === $raw) { $values[] = $date->getTimestamp(); }
+    }
+    $reset = $response->getHeaderLine('X-RateLimit-Reset');
+    if (preg_match('/^[0-9]{1,12}$/D', $reset)) { $values[] = (int) $reset; }
+    $values = array_filter($values, static fn (int $value): bool => $value >= $now && $value <= $now + 604800);
+    return $values === [] ? $now + 86400 : max($now + 60, ...$values);
+}
+
 /**
  * The pinned framework retries 503/429 responses, including POST. Convert every
  * error (including network failures) to a sanitized nonretryable response. The
@@ -29,7 +49,9 @@ const REQUIRED_SCOPES = ['https://www.googleapis.com/auth/youtube.readonly', 'ht
 final class FailClosedDriver implements DriverInterface
 {
     private bool $writeSent = false;
+    private ?array $limit = null;
     public function __construct(private DriverInterface $inner) {}
+    public function rateLimit(): ?array { return $this->limit; }
 
     private function stopped(): Response
     {
@@ -61,6 +83,19 @@ final class FailClosedDriver implements DriverInterface
             function (ResponseInterface $response): ResponseInterface {
                 if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300 ||
                     $response->getBody()->getSize() > 1048576) {
+                    $status = $response->getStatusCode();
+                    $quota = false;
+                    if ($status === 403 && $response->getBody()->getSize() <= 1048576) {
+                        $body = json_decode((string) $response->getBody(), true);
+                        foreach (($body['error']['errors'] ?? []) as $error) {
+                            if (in_array($error['reason'] ?? null,
+                                ['quotaExceeded', 'dailyLimitExceeded', 'rateLimitExceeded', 'userRateLimitExceeded'], true)) { $quota = true; }
+                        }
+                    }
+                    if ($status === 429 || $quota) {
+                        $this->limit = ['kind' => 'rate_limit', 'status' => $status,
+                            'retry_at' => safeRetryAt($response, time()), 'media_attempted' => $this->writeSent];
+                    }
                     return $this->stopped();
                 }
                 return $response;
@@ -154,6 +189,7 @@ function adapterMain(): void
     if (!in_array($mode, ['channel', 'upload', 'verify'], true)) { throw new RuntimeException('Unsupported operation'); }
     $loop = new StreamSelectLoop();
     $driver = new FailClosedDriver(new ReactDriver($loop, [], 120.0));
+    try {
     $oauth = new OAuth((string) getenv('YOUTUBE_CLIENT_ID'), (string) getenv('YOUTUBE_CLIENT_SECRET'), $driver);
     $token = waitFor($loop, $oauth->refreshToken((string) getenv('YOUTUBE_REFRESH_TOKEN')));
     validateScopes($token);
@@ -174,11 +210,16 @@ function adapterMain(): void
     } finally {
         $youtube->close();
     }
+    } catch (Throwable $error) {
+        if ($driver->rateLimit() !== null) { throw new ProviderRateStop($driver->rateLimit()); }
+        throw $error;
+    }
 }
 
 if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
     try { adapterMain(); }
     catch (Throwable $error) {
+        if ($error instanceof ProviderRateStop) { echo json_encode($error->metadata, JSON_THROW_ON_ERROR), "\n"; }
         // Never emit exception messages, traces, tokens, media or service bodies.
         fwrite(STDERR, "YoutubePHP operation stopped; inspect durable receipt before retry\n");
         exit(1);

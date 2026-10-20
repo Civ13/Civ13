@@ -24,6 +24,12 @@ on:
       approval_comment_id:
         type: string
         default: ''
+      deferred_id:
+        type: string
+        default: ''
+      deferred_token:
+        type: string
+        default: ''
 permissions: {}
 # One destination-wide lock, including different manifests and reruns.
 concurrency:
@@ -54,6 +60,8 @@ jobs:
           VERIFY_ONLY: ${{ inputs.verify_only }}
           IMPORT_RUN_ID: ${{ inputs.import_run_id }}
           APPROVAL_COMMENT_ID: ${{ inputs.approval_comment_id }}
+          DEFERRED_ID: ${{ inputs.deferred_id }}
+          DEFERRED_TOKEN: ${{ inputs.deferred_token }}
           GITHUB_TOKEN: ${{ github.token }}
         run: /usr/bin/python3 -B tools/youtube/upload.py inspect
   upload:
@@ -90,6 +98,9 @@ jobs:
           VERIFY_ONLY: ${{ inputs.verify_only }}
           IMPORT_RUN_ID: ${{ inputs.import_run_id }}
           APPROVAL_COMMENT_ID: ${{ inputs.approval_comment_id }}
+          DEFERRED_ID: ${{ inputs.deferred_id }}
+          DEFERRED_TOKEN: ${{ inputs.deferred_token }}
+          YOUTUBE_DEFERRED_ENABLED: ${{ vars.YOUTUBE_DEFERRED_ENABLED }}
           GITHUB_TOKEN: ${{ github.token }}
           YOUTUBE_UPLOAD_ENABLED: ${{ vars.YOUTUBE_UPLOAD_ENABLED }}
           YOUTUBE_UPLOAD_STOP_USE: ${{ vars.YOUTUBE_UPLOAD_STOP_USE }}

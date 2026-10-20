@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
 jobs:
   changes:
     uses: ./.github/workflows/ci-selection.yml
@@ -29,6 +30,11 @@ jobs:
         run: php -d display_errors=0 tests/youtube_upload/framework.php
       - name: Mocked upload, no-live dry run, provenance and failure contracts
         run: /usr/bin/python3 -B -m unittest discover -s tests/youtube_upload -v
+      - name: Read-only deferred control capability evidence (no variable values)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 -B tools/youtube/deferred.py capability-probe
       - name: Real MP4 parser smoke check without channel access or capture
         run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke
       - name: Parse existing PR3081 MP4 without channel access or capture

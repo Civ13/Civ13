@@ -42,6 +42,20 @@ class Refused(Exception):
     """Safe diagnostic, with no upstream response bodies or credentials."""
 
 
+class RateLimited(Refused):
+    """Sanitized scheduling metadata; this never authorizes another media send."""
+    def __init__(self, status, retry_at, media_attempted=False):
+        super().__init__("Provider rate limit; defer only before a media reservation")
+        integer(status, 100, 599)
+        integer(retry_at, 0)
+        require(type(media_attempted) is bool, "Invalid media-attempt marker")
+        self.status, self.retry_at, self.media_attempted = status, retry_at, media_attempted
+
+    def metadata(self):
+        return {"kind": "rate_limit", "status": self.status, "retry_at": self.retry_at,
+                "media_attempted": self.media_attempted}
+
+
 def require(ok, message):
     if not ok:
         raise Refused(message)
@@ -248,6 +262,10 @@ class Transport:
         except urllib.error.HTTPError as error:
             if error.code == 302:
                 return 302, dict(error.headers), b""
+            if method == "GET" and (error.code == 429 or
+                    error.code == 403 and header(dict(error.headers), "X-RateLimit-Remaining") == "0"):
+                from deferred import retry_at
+                raise RateLimited(error.code, retry_at(dict(error.headers), int(time.time()))) from None
             raise Refused(f"HTTP {error.code}; stop and inspect sanitized service status") from None
         except (OSError, ValueError):
             raise Refused("Network outcome uncertain; do not retry an upload") from None
@@ -533,7 +551,18 @@ class PhpYouTube:
                 input=canonical({"mode": mode, **values}), capture_output=True, timeout=240)
         except (OSError, subprocess.TimeoutExpired):
             raise Refused("YoutubePHP outcome uncertain; inspect durable receipt before retry") from None
-        require(result.returncode == 0, "YoutubePHP stopped; inspect durable receipt before retry")
+        if result.returncode != 0:
+            # Only trusted adapter's bounded allowlisted metadata can defer.
+            try:
+                failure = parse_json(result.stdout)
+                keys(failure, "kind status retry_at media_attempted")
+                if failure["kind"] == "rate_limit":
+                    raise RateLimited(failure["status"], failure["retry_at"], failure["media_attempted"])
+            except RateLimited:
+                raise
+            except Exception:
+                pass
+            raise Refused("YoutubePHP stopped; inspect durable receipt before retry")
         return parse_json(result.stdout)
 
     def channel(self):
@@ -626,6 +655,17 @@ def main():
     parser.add_argument("mode", choices=("inspect", "upload", "approval", "dry-run"))
     parser.add_argument("--manifest", default=os.environ.get("MANIFEST_ID", ""))
     args = parser.parse_args()
+    deferred_id = os.environ.get("DEFERRED_ID", "")
+    deferred_token = os.environ.get("DEFERRED_TOKEN", "")
+    deferred_entry = None
+    if deferred_id or deferred_token:
+        require(args.mode in {"inspect", "upload"} and os.environ.get("GITHUB_RUN_ATTEMPT") == "1",
+                "Deferred runs cannot be replayed or used for another operation")
+        require_trusted_dispatch()
+        from deferred import worker_guard
+        deferred_entry = worker_guard(GitHub(Transport(), os.environ["GITHUB_TOKEN"]),
+            deferred_id, deferred_token, int(os.environ["GITHUB_RUN_ID"]), int(time.time()),
+            os.environ["GITHUB_SHA"], upload_step=args.mode == "upload")
     root = Path(__file__).resolve().parents[2]
     import_run = os.environ.get("IMPORT_RUN_ID", "")
     if import_run:
@@ -649,6 +689,12 @@ def main():
             p, m = resolve_pilot(pilot_gh, int(import_run), os.environ["GITHUB_SHA"], **options)
     else:
         p, m = load_inputs(root, args.manifest)
+    if deferred_entry:
+        require(deferred_entry["manifest_id"] == args.manifest and
+                deferred_entry["clip_sha256"] == m["clip"]["sha256"] and
+                deferred_entry["approval_sha256"] == approval_hash(m) and
+                (deferred_entry["stage"] == "verify") == (os.environ.get("VERIFY_ONLY", "false") == "true"),
+                "Deferred request differs from its durable approved claim")
     if args.mode == "approval":
         print(approval_text(m))
         return
@@ -682,8 +728,18 @@ def main():
         return
     require_upload_gate()
     ledger = Ledger(gh)  # Missing ledger is an error, never initialize on the fly.
+    from deferred import defer_upload
+    now = int(time.time())
+    if defer_upload(gh, args.manifest, m, int(import_run) if import_run else None, now):
+        return
     youtube = PhpYouTube()
-    url = publish(m, clip, ledger, youtube, int(time.time()))
+    try:
+        url = publish(m, clip, ledger, youtube, now)
+    except RateLimited as error:
+        if error.media_attempted is False and defer_upload(gh, args.manifest, m,
+                int(import_run) if import_run else None, int(time.time()), provider=error.metadata()):
+            return
+        raise
     print("Verified public upload: " + url)
 
 

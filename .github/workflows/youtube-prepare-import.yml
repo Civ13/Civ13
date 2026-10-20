@@ -1,4 +1,5 @@
 name: Prepare approved historical gameplay attachment
+run-name: ${{ inputs.deferred_token && format('YouTube import {0}', inputs.deferred_token) || 'Prepare reviewed historical gameplay attachment' }}
 on:
   workflow_dispatch:
     inputs:
@@ -12,6 +13,10 @@ on:
         description: Public GitHub attachment containing the exact reviewed MP4 bytes
         type: string
         required: true
+      deferred_token:
+        description: Durable import dispatch token (scheduler only)
+        type: string
+        default: ''
 permissions: {}
 concurrency:
   group: youtube-historical-import

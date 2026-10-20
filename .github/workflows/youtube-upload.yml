@@ -1,4 +1,5 @@
 name: Approved gameplay video upload
+run-name: ${{ inputs.deferred_token && format('YouTube deferred {0}', inputs.deferred_token) || 'Reviewed YouTube upload' }}
 on:
   workflow_dispatch:
     inputs:
@@ -20,6 +21,14 @@ on:
         default: ''
       approval_comment_id:
         description: Owner's exact per-clip approval comment ID (required for PR3081 import)
+        type: string
+        default: ''
+      deferred_id:
+        description: Durable queue identity (scheduler only)
+        type: string
+        default: ''
+      deferred_token:
+        description: Durable single-dispatch ownership token (scheduler only)
         type: string
         default: ''
 permissions: {}
@@ -44,3 +53,5 @@ jobs:
       verify_only: ${{ inputs.verify_only }}
       import_run_id: ${{ inputs.import_run_id }}
       approval_comment_id: ${{ inputs.approval_comment_id }}
+      deferred_id: ${{ inputs.deferred_id }}
+      deferred_token: ${{ inputs.deferred_token }}

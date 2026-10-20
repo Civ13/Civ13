@@ -1,0 +1,45 @@
+name: Deferred reviewed YouTube requests
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Bounded queue tick, cancellation or status
+        type: choice
+        options: [tick, cancel, status]
+        default: tick
+      deferred_id:
+        description: Destination/media queue key (cancel only)
+        type: string
+        default: ''
+permissions: {}
+concurrency:
+  # Controller must remain runnable while an upload waits for environment review.
+  group: youtube-deferred-controller
+  cancel-in-progress: false
+jobs:
+  deferred:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.ref == 'refs/heads/master' &&
+      (vars.YOUTUBE_DEFERRED_ENABLED == 'true' ||
+       (github.event_name == 'workflow_dispatch' && contains(fromJSON('["status","cancel"]'), inputs.operation)))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      actions: write
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/youtube
+      - name: Revalidate, reconcile and dispatch at most one approved request
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEFERRED_OPERATION: ${{ inputs.operation || 'tick' }}
+          DEFERRED_ID: ${{ inputs.deferred_id }}
+        run: /usr/bin/python3 -B tools/youtube/deferred.py "$DEFERRED_OPERATION"
