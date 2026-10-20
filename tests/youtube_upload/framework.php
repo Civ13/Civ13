@@ -48,7 +48,7 @@ function client(array $responses): array
     $youtube = new YouTube(['token' => 'OFFLINE-FAKE-TOKEN', 'scopes' => REQUIRED_SCOPES, 'driver' => $guard, 'loop' => $loop]);
     return [$youtube, $loop, $driver, $guard];
 }
-function video(string $privacy = 'unlisted', string $channel = TARGET_CHANNEL,
+function video(string $privacy = 'public', string $channel = TARGET_CHANNEL,
                string $processing = 'succeeded', string $status = 'processed'): array
 {
     return ['items' => [['id' => 'abcdefghijk', 'snippet' => ['channelId' => $channel],
@@ -78,7 +78,7 @@ try {
     check($request->getMethod() === 'POST');
     check(str_contains($request->getUrl(), 'uploadType=multipart'));
     check(str_contains($request->getUrl(), 'notifySubscribers=false'));
-    check(str_contains($request->getContent(), '"privacyStatus":"unlisted"'));
+    check(str_contains($request->getContent(), '"privacyStatus":"public"'));
     check(str_contains($request->getContent(), '"selfDeclaredMadeForKids":false'));
     check(!str_contains($request->getContent(), 'publishAt'));
     // Even a successful operation cannot be issued twice by this process.
@@ -105,7 +105,7 @@ try {
     $youtube->close();
 } finally { unlink($path); }
 
-foreach ([video(privacy: 'public'), video(privacy: 'private'), video(channel: 'other-channel'),
+foreach ([video(privacy: 'unlisted'), video(privacy: 'private'), video(channel: 'other-channel'),
           video(processing: 'failed'), video(status: 'rejected'), ['items' => []]] as $response) {
     [$youtube, $loop, $driver] = client([jsonResponse($response)]);
     refused(fn () => verifyVideo($youtube, $loop, 'abcdefghijk'));

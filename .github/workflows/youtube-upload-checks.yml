@@ -29,3 +29,5 @@ jobs:
         run: php -d display_errors=0 tests/youtube_upload/framework.php
       - name: Mocked upload, no-live dry run, provenance and failure contracts
         run: /usr/bin/python3 -B -m unittest discover -s tests/youtube_upload -v
+      - name: Real MP4 parser smoke check without channel access or capture
+        run: /usr/bin/python3 -B tools/youtube/prepare_import.py probe-smoke

@@ -27,7 +27,7 @@ def fixtures():
                 "clip_sha256": u.digest(clip), "result": "success", "classification": "genuine-gameplay"}
     raw = bundle(clip, evidence)
     manifest = {"schema_version": 1, "repository": u.REPO, "channel_handle": u.HANDLE,
-        "channel_id": u.CHANNEL, "privacy": "unlisted",
+        "channel_id": u.CHANNEL, "privacy": "public",
         "source": {"run_id": 1, "run_attempt": 1, "workflow_id": 42,
             "workflow_path": ".github/workflows/gameplay-capture.yml", "event": "pull_request",
             "head_branch": "test-branch", "commit": "a" * 40, "pr": 100, "owner": "capture-owner"},
@@ -145,7 +145,7 @@ class ManifestTests(unittest.TestCase):
             u.validate_policy(json.loads((ROOT / "tools/youtube/policy.example.json").read_text()))
 
     def test_destination_visibility_and_metadata_override_refused(self):
-        for field, value in (("channel_id", "other"), ("privacy", "public"), ("privacy", "private")):
+        for field, value in (("channel_id", "other"), ("privacy", "unlisted"), ("privacy", "private")):
             m = copy.deepcopy(self.m)
             m[field] = value
             with self.subTest(field=field, value=value), self.assertRaises(u.Refused):
@@ -444,7 +444,7 @@ class VerificationOnlyMainTests(unittest.TestCase):
         self.gh = FakeGH(self.m)
         self.record = {"channel_id": u.CHANNEL, "clip_sha256": self.m["clip"]["sha256"],
             "commit": self.m["source"]["commit"], "reserved_at": 100000,
-            "state": "uploaded", "video_id": "abcdefghijk"}
+            "privacy": "public", "state": "uploaded", "video_id": "abcdefghijk"}
         self.gh.ledger["records"][u.receipt_key(self.m)] = self.record
         # These formerly made both main/workflow stages fail before readback.
         self.gh.objects['/actions/artifacts/2']['expired'] = True

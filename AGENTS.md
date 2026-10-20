@@ -1,7 +1,7 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-20: reviewed video upload boundary -->
-`docs/youtube-upload.md` defines the manual/default-off YouTube uploader contract.
+`docs/youtube-upload.md` defines the manual/default-off public YouTube uploader contract after explicit owner approval.
 Only trusted default-branch code receives environment credentials; PR media stays
 data, with decoder inspection in a secret-free job. Per-clip human approval binds
 media/metadata/destination; durable reservations block ambiguous retries. Never
@@ -13,7 +13,7 @@ activation variables; uncertain secret writes require owner reconciliation even
 when immediate metadata reads show absence. Tests use fake services/local loopback.
 The owner selected sole required reviewer `valzargaming` (User ID `7202504`),
 with self-review allowed and administrator bypass disabled. Keep explicit manual
-environment approval; setup approval does not activate uploads or merge this PR.
+environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
 Protected sleep relocates the body between z-levels, so release only its matching

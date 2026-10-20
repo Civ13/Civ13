@@ -11,6 +11,9 @@ on:
       verify_only:
         type: boolean
         default: false
+      import_run_id:
+        type: string
+        default: ''
 permissions: {}
 # One destination-wide lock, including different manifests and reruns.
 concurrency:
@@ -39,6 +42,7 @@ jobs:
         env:
           MANIFEST_ID: ${{ inputs.manifest_id }}
           VERIFY_ONLY: ${{ inputs.verify_only }}
+          IMPORT_RUN_ID: ${{ inputs.import_run_id }}
           GITHUB_TOKEN: ${{ github.token }}
         run: /usr/bin/python3 -B tools/youtube/upload.py inspect
   upload:
@@ -69,10 +73,11 @@ jobs:
         run: composer install --working-dir=tools/youtube --no-dev --no-scripts --no-plugins --prefer-dist --no-interaction --no-progress
       # No PR checkout/scripts, decoder, input interpolation or post-upload action.
       # Setup/install steps above have NO YouTube credentials in their environment.
-      - name: Reserve, upload unlisted, and verify destination and processing
+      - name: Reserve, upload public, and verify destination and processing
         env:
           MANIFEST_ID: ${{ inputs.manifest_id }}
           VERIFY_ONLY: ${{ inputs.verify_only }}
+          IMPORT_RUN_ID: ${{ inputs.import_run_id }}
           GITHUB_TOKEN: ${{ github.token }}
           YOUTUBE_UPLOAD_ENABLED: ${{ vars.YOUTUBE_UPLOAD_ENABLED }}
           YOUTUBE_UPLOAD_STOP_USE: ${{ vars.YOUTUBE_UPLOAD_STOP_USE }}

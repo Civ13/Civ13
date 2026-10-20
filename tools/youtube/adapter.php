@@ -105,7 +105,7 @@ function uploadClip(YouTube $youtube, LoopInterface $loop, array $input): string
     $video = waitFor($loop, $youtube->videos->insert(
         part: 'snippet,status',
         body: ['snippet' => ['title' => $metadata['title'], 'description' => $metadata['description'], 'categoryId' => '20'],
-               'status' => ['privacyStatus' => 'unlisted', 'selfDeclaredMadeForKids' => false, 'containsSyntheticMedia' => false]],
+               'status' => ['privacyStatus' => 'public', 'selfDeclaredMadeForKids' => false, 'containsSyntheticMedia' => false]],
         media: Media::fromFile($path, 'video/mp4'),
         notifySubscribers: false
     ));
@@ -124,7 +124,7 @@ function verifyVideo(YouTube $youtube, LoopInterface $loop, string $id, ?Closure
         if (count($result->items) !== 1) { throw new RuntimeException('Missing owner readback'); }
         $video = $result->items->first();
         if ($video->id !== $id || $video->snippet->channelId !== TARGET_CHANNEL ||
-            $video->status->privacyStatus !== 'unlisted' ||
+            $video->status->privacyStatus !== 'public' ||
             in_array($video->status->uploadStatus, ['failed', 'rejected', 'deleted'], true) ||
             in_array($video->processingDetails?->processingStatus, ['failed', 'terminated'], true)) {
             throw new RuntimeException('Video channel/visibility/processing mismatch');

@@ -8,8 +8,8 @@ one-off uploader verified this mapping in the authenticated Studio account and
 actual handle link on 2026-10-20. Every API invocation independently verifies the
 same grant's channel before mutation. The earlier Valgorithms destination is obsolete.
 
-Unlisted is link-accessible: anyone with the link can watch or redistribute it.
-The uploader always sets `privacyStatus=unlisted` and `notifySubscribers=false`;
+New uploads are public and can be discovered, watched and redistributed. The owner explicitly replaced the earlier unlisted-only request; this code does not change visibility of existing videos.
+The uploader always sets `privacyStatus=public` and `notifySubscribers=false`;
 neither is a manifest option. A mismatch, rejected video, missing owner readback
 or pending processing cannot produce a successful upload receipt.
 
@@ -25,7 +25,7 @@ No `workflow_run`, scheduled upload or capture trigger is installed.
 The inspection job has a read-only GitHub token and no YouTube secrets. It loads
 only trusted `tools/youtube` code from the default-branch dispatch commit, validates
 the selected run/artifact, downloads a bounded archive, and runs the runner's
-`ffprobe` on the MP4. It never checks out or runs the producer's scripts.
+version-checked `MediaInfoLib 24.01` on the MP4. It never checks out or runs the producer's scripts.
 
 The upload job uses the protected `youtube-unlisted` environment on another
 standard Ubuntu runner. It checks out the same trusted code, revalidates current
@@ -49,7 +49,7 @@ refresh/access tokens, resumable session URLs or signed artifact download URLs.
 
 ## Producer and approval contract
 
-There is no enrolled producer or approved manifest in this PR. No existing
+Generic producer policies/manifests are not enrolled in this PR. The exact historical PR3031 pilot described below has separate owner approval. No other existing
 screenshot, fixture or candidate is implicitly approved as a video. A subsequent
 reviewed change must create `tools/youtube/policy.json` from `policy.example.json`,
 enroll actual workflow IDs/paths and named human GitHub approvers, and commit a
@@ -85,8 +85,7 @@ The embedded evidence object has exactly these fields, with actual values:
 Enforce duration/size caps **before** an artifact upload. If an approved capture
 producer is added later, pin `actions/upload-artifact` by SHA, select only these
 files, disable hidden files, set `retention-days: 1`, and fail when no clip exists.
-Do not attach whole evidence trees, saves or logs to the video artifact. This PR
-adds no producer or storage upload, so it cannot generate growing video storage.
+Do not attach whole evidence trees, saves or logs to the video artifact. The bounded historical importer below retains only the exact approved pilot for one day; no automatic capture producer is installed.
 
 Review the entire genuine clip for meaningful observed behavior, source ownership,
 private chat, credentials, player names, session data, internal paths, unexpected
@@ -111,12 +110,58 @@ timestamps require a new comment; generic approval, bot comments and approval on
 are rejected. Do not put private evidence references or secrets in this public
 manifest or approval comment.
 
+## Exact owner-approved historical pilot
+
+The owner approved the 41-second masked PR3031 recording for public upload, with
+subscriber notifications disabled. `imports/pr3031.json` fixes its exact title,
+description, media SHA256, original attachment/comment, tested commit and limits.
+`upload.py` pins the material approval digest. The public operator approval alias
+`owner-approved-pr3031-public-20261020` records already received authorization;
+it is not a reusable approval input. Any media, metadata, destination, original
+attestation or limitation change fails validation and requires another reviewed
+source change. No private conversation reference is committed. The protected
+environment still requires the owner's explicit job approval.
+
+The original native capture is owner-attested footage from an isolated pregame
+scene, not CI-generated footage or multiplayer acceptance. Its exact-head CI
+run 38127733413 succeeded, but did not produce a media artifact. Schema2 keeps that
+historical tested commit/run separate from the trusted packaging commit/run.
+Original frame presentation times are retained; only the session Game ID is masked,
+and the review copy's ending is 0.44 seconds longer. There is no audio or generated
+or interpolated gameplay imagery.
+
+The importer is manual, master-only, has no environment/channel credentials and
+cannot capture a game, transform media or call YouTube. It needs a **public GitHub
+attachment containing the exact approved masked MP4**. A private Library file or
+the unmasked original cannot substitute. The importer checks the source attachment
+hash, owner comment hash and original successful CI, then separately downloads
+and hashes the exact approved masked bytes. Attachment redirects are anonymous,
+bounded and restricted to GitHub's media hosts. It probes media only in the
+credential-free job, then retains exactly gameplay.mp4/evidence.json for one day.
+The artifact action is pinned; one upload is at most 1.31 MB for this pilot.
+
+After importer success, dispatch the trusted wrapper on the **same default-branch
+commit** with `manifest_id=pr3031-power-public`, its actual `import_run_id`, and
+initially `execute_upload=false`. The trusted code derives the policy and manifest
+from the pinned material plus actual GitHub workflow/run/attempt/artifact IDs,
+size and digest. It never invents identifiers or calls the historical CI run the
+packager. No additional approval-comment post or second enrollment PR is needed
+for this exact already approved pilot. Other clips retain the generic per-clip
+approval path. `verify_only=true` reconstructs this pilot's manifest from its
+durable receipt so artifact expiry cannot block known-ID verification.
+
+The existing credential environment keeps its name `youtube-unlisted`; that is
+an environment identifier, not the new visibility policy. Its owner reviewer,
+master restriction, disabled administrator bypass and default-off gates remain
+unchanged. A public/private mismatch fails readback; no visibility update call
+is available and no old video is silently made public.
+
 ## Durable receipts and uncertain outcomes
 
 Before enrollment, initialize `receipts.json` on a dedicated
 `youtube-upload-receipts` branch using `tools/youtube/ledger.example.json`, after
-owner reconciliation and explicit approval to configure the feature. The uploader
-refuses a missing ledger or `imports_complete:false`. This branch is data only;
+all known attempts have been accounted for and ledger initialization is authorized. The uploader
+refuses a missing ledger or `imports_complete:false`. This flag means all known attempts are imported; an uncertain record may remain blocked while a different clean media hash is tested. Never resolve or delete the uncertain record merely to enable another clip. This branch is data only;
 its contents are never checked out or executed. Do not protect it in a way that
 prevents the configured token from recording receipts. Restrict deletion/force
 push and administrative edits; changes outside the uploader require reconciliation.
@@ -136,8 +181,7 @@ upload is authorized by this source PR.
 **Known blocked hash:**
 `9c82f548ce4d2251e0dff7e0d607eeaac5c4d8e570b418cfb0103545453ec796`, tested commit
 `c3767579b0e72035debe702ae2147c75549a7455` (PR 3228). Its browser file-selection call
-failed with an uncertain outcome on 2026-10-20. No video ID or saved unlisted
-visibility was verified. The ledger example preserves it as `uncertain`, with
+failed with an uncertain outcome on 2026-10-20. No video ID or saved visibility was verified. The ledger example preserves it as `uncertain`, with
 `imports_complete:false`. This record is a duplicate-prevention block, not content
 approval. Do not retry via API or assume that an empty uploads playlist proves no
 incomplete Studio draft exists. Owner-authorized reconciliation must cover possible
@@ -149,7 +193,7 @@ Every new upload first commits a `reserved` record using GitHub Contents API's
 conditional file SHA. If that write fails or is uncertain, no YouTube mutation is
 attempted. A single destination-wide workflow lock serializes the full lifecycle.
 After successful video insertion, the video ID is saved as `uploaded`, then owner
-readback must confirm channel, unlisted privacy, processed upload status and
+readback must confirm channel, public privacy, processed upload status and
 successful processing before the record becomes `verified`. Polling is bounded to
 12 reads with 11 ten-second waits. For a saved video ID, dispatch with
 `verify_only:true`: both inspection and execution validate the current human
@@ -173,15 +217,14 @@ the existing video ID and set a known `uploaded` state, or retain a blocking
 tombstone. A proven no-upload result requires a separately reviewed operator
 decision before any new mutation. Never log session URLs during recovery.
 
-## Exact local setup (not executed by the agent)
+## Secure setup and local helper
 
 Keep one shared setup coordinated with the existing one-off API uploader. Do not
 create duplicate projects or grants. The user created project
 **`calcium-circuit-384407`** and approved the Desktop client/scopes proposal.
 The earlier candidate ID `civ13-gameplay-videos` is obsolete. The user-selected
 downloaded JSON passed bounded type/project/endpoint validation without displaying
-credential values. No live helper authorization, grant exchange or GitHub secret
-write was performed. Secret placement remains a separately confirmed action.
+credential values. The owner subsequently completed the reviewed helper, verified the approved channel and explicitly confirmed the three environment secret writes. Metadata-only readback confirmed placement; upload execution remains disabled. No new grant, secret rotation or account change is part of this feature update.
 
 1. **Project/client:** use only `calcium-circuit-384407`, display name
    `Civ13 Gameplay Videos`. Enable only YouTube Data API v3, with no paid service or billing
@@ -231,7 +274,7 @@ write was performed. Secret placement remains a separately confirmed action.
    of this proposal. Start with inspection-only dispatch before enabling mutation.
 
 Risks to approve: the refresh token is persistent access to upload/manage videos
-and read the channel under the displayed scopes; unlisted links are shareable;
+and read the channel under the displayed scopes; public links are shareable;
 authorized trusted default-branch code and environment administrators can access
 the grant. GitHub masking is not a substitute for keeping tokens/session URLs out
 of output. Store the refresh token only in the approved environment, revoke the

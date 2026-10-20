@@ -33,6 +33,8 @@ SCOPES = {"https://www.googleapis.com/auth/youtube.upload",
           "https://www.googleapis.com/auth/youtube.readonly"}
 LEDGER_BRANCH = "youtube-upload-receipts"
 LEDGER_PATH = "receipts.json"
+PILOT_AUTHORIZATION_ID = "owner-approved-pr3031-public-20261020"
+PILOT_APPROVAL_DIGEST = "57f205c2d5692f95aced89237d7ae64faae09257040fa7e77fde8c7778eb0413"
 
 
 class Refused(Exception):
@@ -87,8 +89,9 @@ def sha(value, length=64):
 
 
 def validate_policy(p):
-    keys(p, "schema_version repository repository_id channel_handle channel_id approvers producers")
-    require(p["schema_version"] == 1 and p["repository"] == REPO and
+    fields = "schema_version repository repository_id channel_handle channel_id approvers producers"
+    keys(p, fields + (" importers" if p.get("schema_version") == 2 else ""))
+    require(p["schema_version"] in {1, 2} and p["repository"] == REPO and
             p["repository_id"] == REPO_ID and p["channel_handle"] == HANDLE and
             p["channel_id"] == CHANNEL, "Policy destination mismatch")
     require(isinstance(p["approvers"], list) and 1 <= len(p["approvers"]) <= 10,
@@ -103,13 +106,22 @@ def validate_policy(p):
         integer(producer["workflow_id"])
         require(re.fullmatch(r"\.github/workflows/[a-z0-9_-]+\.yml", producer["workflow_path"]),
                 "Invalid producer workflow path")
+    if p["schema_version"] == 2:
+        require(isinstance(p["importers"], list) and 1 <= len(p["importers"]) <= 10,
+                "Enroll a trusted historical importer separately from the original test workflow")
+        for importer in p["importers"]:
+            keys(importer, "workflow_id workflow_path")
+            integer(importer["workflow_id"])
+            require(importer["workflow_path"] == ".github/workflows/youtube-prepare-import.yml",
+                    "Only the reviewed default-branch import workflow is eligible")
 
 
 def validate_manifest(m, p):
-    keys(m, "schema_version repository channel_id channel_handle privacy source artifact clip metadata review approval")
-    require(m["schema_version"] == 1 and m["repository"] == REPO and
+    fields = "schema_version repository channel_id channel_handle privacy source artifact clip metadata review approval"
+    keys(m, fields + (" import" if m.get("schema_version") == 2 else ""))
+    require(m["schema_version"] in {1, 2} and m["repository"] == REPO and
             m["channel_id"] == CHANNEL and m["channel_handle"] == HANDLE and
-            m["privacy"] == "unlisted", "Manifest destination must be fixed and unlisted")
+            m["privacy"] == "public", "Manifest destination must be fixed and public")
     source = m["source"]
     keys(source, "run_id run_attempt workflow_id workflow_path event head_branch commit pr owner")
     for key in ("run_id", "run_attempt", "workflow_id", "pr"):
@@ -145,19 +157,61 @@ def validate_manifest(m, p):
     require(m["review"]["classification"] == "genuine-gameplay", "Fixtures/synthetic media are ineligible")
     for field in ("reproduction", "capture_context", "known_limits", "content_review"):
         text(m["review"][field], 20, 1000)
-    keys(m["approval"], "issue_number comment_id")
-    integer(m["approval"]["issue_number"])
-    integer(m["approval"]["comment_id"])
+    if m["schema_version"] == 2:
+        validate_import_spec(m, p)
+    if m["schema_version"] == 2:
+        keys(m["approval"], "authorization_id")
+        require(m["approval"]["authorization_id"] == PILOT_AUTHORIZATION_ID and
+                approval_hash(m) == PILOT_APPROVAL_DIGEST and p["approvers"] == ["valzargaming"],
+                "Historical pilot differs from exact owner-approved public material")
+    else:
+        keys(m["approval"], "issue_number comment_id")
+        integer(m["approval"]["issue_number"])
+        integer(m["approval"]["comment_id"])
+
+
+def validate_import_spec(m, p):
+    require(p["schema_version"] == 2, "Historical import requires its reviewed policy")
+    item = m["import"]
+    keys(item, "run_id run_attempt workflow_id workflow_path commit original_url original_sha256 original_bytes source_comment_id source_comment_sha256 transformation")
+    for field in ("run_id", "run_attempt", "workflow_id", "source_comment_id"):
+        integer(item[field])
+    sha(item["commit"], 40)
+    sha(item["original_sha256"])
+    sha(item["source_comment_sha256"])
+    integer(item["original_bytes"], 1024, MAX_CLIP)
+    require({k: item[k] for k in ("workflow_id", "workflow_path")} in p["importers"],
+            "Historical packager not allowlisted")
+    # Initial import is intentionally bounded to the exact reviewed pilot, not
+    # a general URL fetch or a claim that old CI generated a local recording.
+    require(m["source"]["pr"] == 3031 and
+            m["source"]["commit"] == "861a04010f2819493d5c37d0adf542eea9b78988" and
+            m["source"]["owner"] == "valzargaming" and
+            item["original_url"] == "https://github.com/user-attachments/assets/7fee86f7-834c-44cd-a974-c6b269935c6d" and
+            item["original_sha256"] == "e5531e7848fe47ce02f0dad8b60ceb2f8b07f9147a75a610ae7f5cf5cea55392" and
+            item["original_bytes"] == 1080430 and item["source_comment_id"] == 6107609332 and
+            item["transformation"] == "mask-game-id-pr3031-v1" and
+            m["clip"]["sha256"] == "7a0605e3e4c799beaf76fbd5b9b02ddf27a80fb9e5c4df28853248b742851456" and
+            m["clip"]["bytes"] == 1308770 and m["clip"]["duration_seconds"] == 41,
+            "Historical import differs from the approved masked PR3031 media")
 
 
 def approval_hash(m):
+    if m["schema_version"] == 2:
+        payload = {k: m[k] for k in ("repository", "channel_id", "channel_handle", "privacy", "source", "clip", "metadata", "review")}
+        payload["original"] = {k: v for k, v in m["import"].items()
+            if k not in {"run_id", "run_attempt", "workflow_id", "workflow_path", "commit"}}
+        # Only transport run/artifact identifiers are learned later. Exact media,
+        # metadata, public visibility, source attestation and limits are pinned
+        # to the owner's already received approval, never arbitrary chat text.
+        return digest(b"civ13-youtube-approval-v2\n" + canonical(payload))
     payload = {k: v for k, v in m.items() if k != "approval"}
     return digest(b"civ13-youtube-approval-v1\n" + canonical(payload))
 
 
 def approval_text(m):
     return (f"I approve Civ13 YouTube upload {approval_hash(m)} to "
-            f"{HANDLE} ({CHANNEL}) as unlisted.")
+            f"{HANDLE} ({CHANNEL}) as public.")
 
 
 def receipt_key(m):
@@ -238,9 +292,9 @@ def validate_repository(gh):
             "Require the public repository/default branch; stop if billing assumptions change")
 
 
-def validate_provenance(gh, m, p):
+def validate_source_provenance(gh, m, p):
     validate_repository(gh)
-    s, a = m["source"], m["artifact"]
+    s = m["source"]
     run = gh.repo(f'/actions/runs/{s["run_id"]}')
     require(run["id"] == s["run_id"] and run["repository"]["id"] == REPO_ID and
             run["head_repository"]["id"] == REPO_ID and run["status"] == "completed" and
@@ -257,26 +311,59 @@ def validate_provenance(gh, m, p):
     else:
         require(pr["merged"] is True and pr["merge_commit_sha"] == s["commit"],
                 "Non-PR capture must test the exact merged PR commit")
+
+
+def validate_import_attestation(gh, m):
+    s, item = m["source"], m["import"]
+    comment = gh.repo(f'/issues/comments/{item["source_comment_id"]}')
+    require(comment["user"]["type"] == "User" and comment["user"]["login"] == s["owner"] and
+            comment["issue_url"] == f'https://api.github.com/repos/{REPO}/issues/{s["pr"]}' and
+            digest(comment["body"].encode()) == item["source_comment_sha256"] and
+            item["original_url"] in comment["body"] and s["commit"] in comment["body"],
+            "Original owner attachment attestation changed or belongs to another PR")
+
+
+def validate_provenance(gh, m, p):
+    validate_source_provenance(gh, m, p)
+    s, a = m["source"], m["artifact"]
+    origin = s
+    if m["schema_version"] == 2:
+        item = m["import"]
+        validate_import_attestation(gh, m)
+        imported = gh.repo(f'/actions/runs/{item["run_id"]}')
+        require(imported["id"] == item["run_id"] and imported["repository"]["id"] == REPO_ID and
+                imported["head_repository"]["id"] == REPO_ID and imported["status"] == "completed" and
+                imported["conclusion"] == "success" and imported["run_attempt"] == item["run_attempt"] and
+                imported["workflow_id"] == item["workflow_id"] and imported["path"] == item["workflow_path"] and
+                imported["head_sha"] == item["commit"] and imported["head_branch"] == "master" and
+                imported["event"] == "workflow_dispatch",
+                "Historical packaging run must be its own trusted successful master dispatch")
+        origin = item
     artifact = gh.repo(f'/actions/artifacts/{a["id"]}')
     require(artifact["id"] == a["id"] and artifact["name"] == a["name"] and
             artifact["expired"] is False and artifact["size_in_bytes"] == a["bytes"] and
             artifact["digest"] == "sha256:" + a["archive_sha256"] and
-            artifact["workflow_run"]["id"] == s["run_id"] and
-            artifact["workflow_run"]["head_sha"] == s["commit"] and
+            artifact["workflow_run"]["id"] == origin["run_id"] and
+            artifact["workflow_run"]["head_sha"] == origin["commit"] and
             artifact["workflow_run"]["repository_id"] == REPO_ID and
             artifact["workflow_run"]["head_repository_id"] == REPO_ID,
             "Artifact provenance/digest mismatch")
     # Artifact attempts cannot be inferred from its name. Require creation inside
     # the approved attempt's timestamps, and verify that exact attempt separately.
-    attempt = gh.repo(f'/actions/runs/{s["run_id"]}/attempts/{s["run_attempt"]}')
-    require(attempt["run_attempt"] == s["run_attempt"] and attempt["conclusion"] == "success" and
-            attempt["status"] == "completed" and attempt["head_sha"] == s["commit"] and
+    attempt = gh.repo(f'/actions/runs/{origin["run_id"]}/attempts/{origin["run_attempt"]}')
+    require(attempt["run_attempt"] == origin["run_attempt"] and attempt["conclusion"] == "success" and
+            attempt["status"] == "completed" and attempt["head_sha"] == origin["commit"] and
             attempt["run_started_at"] <= artifact["created_at"] <= attempt["updated_at"],
             "Artifact not from approved successful attempt")
     validate_approval(gh, m, p)
 
 
 def validate_approval(gh, m, p):
+    if m["schema_version"] == 2:
+        require(m["approval"] == {"authorization_id": PILOT_AUTHORIZATION_ID} and
+                approval_hash(m) == PILOT_APPROVAL_DIGEST and p["approvers"] == ["valzargaming"],
+                "Missing exact recorded owner approval for the public pilot")
+        return
     approval = gh.repo(f'/issues/comments/{m["approval"]["comment_id"]}')
     require(approval["user"]["type"] == "User" and approval["user"]["login"] in p["approvers"] and
             approval["issue_url"] == f'https://api.github.com/repos/{REPO}/issues/{m["approval"]["issue_number"]}' and
@@ -308,33 +395,48 @@ def inspect_archive(raw, m):
             "Media digest/size mismatch")
     require(len(clip) >= 16 and clip[4:8] == b"ftyp" and clip[8:12] in
             {b"isom", b"iso2", b"mp41", b"mp42", b"avc1"}, "Not an allowed MP4 header")
-    keys(evidence, "schema_version tested_commit run_id run_attempt clip_sha256 result classification")
-    require(evidence == {"schema_version": 1, "tested_commit": m["source"]["commit"],
-            "run_id": m["source"]["run_id"], "run_attempt": m["source"]["run_attempt"],
-            "clip_sha256": m["clip"]["sha256"], "result": "success",
-            "classification": "genuine-gameplay"}, "Embedded evidence mismatch")
+    require(evidence == expected_evidence(m), "Embedded evidence mismatch")
     return clip
+
+
+def expected_evidence(m):
+    s = m["source"]
+    evidence = {"schema_version": 1, "tested_commit": s["commit"],
+        "run_id": s["run_id"], "run_attempt": s["run_attempt"],
+        "clip_sha256": m["clip"]["sha256"], "result": "success", "classification": "genuine-gameplay"}
+    if m["schema_version"] == 2:
+        item = m["import"]
+        evidence = {"schema_version": 2, "tested_commit": s["commit"],
+            "source_ci_run_id": s["run_id"], "source_ci_run_attempt": s["run_attempt"],
+            "packaging_run_id": item["run_id"], "packaging_run_attempt": item["run_attempt"],
+            "packaging_commit": item["commit"], "original_sha256": item["original_sha256"],
+            "source_comment_id": item["source_comment_id"], "transformation": item["transformation"],
+            "clip_sha256": m["clip"]["sha256"], "result": "success", "classification": "genuine-gameplay",
+            "capture_provenance": "historical-owner-attested; CI did not record this video"}
+    return evidence
 
 
 def probe_media(clip, expected_duration):
     # This function runs ONLY in the job without YouTube secrets. Do not add it
     # to the secret-bearing upload command; decoders consume untrusted bytes.
+    version = subprocess.run(["mediainfo", "--Version"], capture_output=True, timeout=10, check=True)
+    require(b"MediaInfoLib - v24.01" in version.stdout, "MediaInfo version drift; stop for review")
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "gameplay.mp4"
         path.write_bytes(clip)
-        result = subprocess.run(["ffprobe", "-v", "error", "-protocol_whitelist", "file",
-            "-show_entries", "format=duration,format_name:stream=codec_type,codec_name,width,height",
-            "-of", "json", str(path)], capture_output=True, timeout=30, check=True)
+        result = subprocess.run(["mediainfo", "--Output=JSON", "--ParseSpeed=0.5", str(path)],
+            capture_output=True, timeout=30, check=True)
     info = parse_json(result.stdout)
-    require("mp4" in info["format"]["format_name"].split(",") and
-            abs(float(info["format"]["duration"]) - expected_duration) <= 1,
+    tracks = info["media"]["track"]
+    general = [s for s in tracks if s["@type"] == "General"]
+    require(len(general) == 1 and general[0]["Format"] == "MPEG-4" and
+            abs(float(general[0]["Duration"]) - expected_duration) <= 1,
             "Container duration/type mismatch")
-    streams = info["streams"]
-    video = [s for s in streams if s["codec_type"] == "video"]
-    require(len(video) == 1 and video[0]["codec_name"] == "h264" and
-            320 <= video[0]["width"] <= 1920 and 240 <= video[0]["height"] <= 1080 and
-            len(streams) <= 2 and all(s["codec_type"] in {"video", "audio"} for s in streams) and
-            all(s["codec_name"] == "aac" for s in streams if s["codec_type"] == "audio"),
+    video = [s for s in tracks if s["@type"] == "Video"]
+    require(len(video) == 1 and video[0]["Format"] == "AVC" and
+            320 <= int(video[0]["Width"]) <= 1920 and 240 <= int(video[0]["Height"]) <= 1080 and
+            len(tracks) <= 3 and all(s["@type"] in {"General", "Video", "Audio"} for s in tracks) and
+            all(s["Format"] == "AAC" for s in tracks if s["@type"] == "Audio"),
             "Only bounded H.264/AAC gameplay is eligible")
 
 
@@ -382,8 +484,11 @@ class Ledger:
         record = {"channel_id": CHANNEL, "clip_sha256": m["clip"]["sha256"],
                   "commit": m["source"]["commit"], "approval_sha256": approval_hash(m),
                   "artifact_id": m["artifact"]["id"], "artifact_sha256": m["artifact"]["archive_sha256"],
+                  "artifact_name": m["artifact"]["name"], "artifact_bytes": m["artifact"]["bytes"],
                   "run_id": m["source"]["run_id"], "run_attempt": m["source"]["run_attempt"],
-                  "state": "reserved", "reserved_at": now}
+                  "privacy": m["privacy"], "state": "reserved", "reserved_at": now}
+        if m["schema_version"] == 2:
+            record["historical_import"] = dict(m["import"])
         self.data["records"][receipt_key(m)] = record
         self.save()  # MUST succeed before initiating ANY YouTube mutation.
         return record
@@ -417,7 +522,7 @@ class PhpYouTube:
 
     def verify(self, video_id):
         require(self.call("verify", video_id=video_id) == {"verified": True},
-                "YoutubePHP did not verify processing/unlisted visibility")
+                "YoutubePHP did not verify processing/public visibility")
 
 
 def publish(m, clip, ledger, youtube, now):
@@ -431,6 +536,8 @@ def publish(m, clip, ledger, youtube, now):
     else:
         require(record["state"] != "uncertain", "Uncertain outcome requires explicit owner reconciliation")
         require("video_id" in record, "Uncertain/reserved outcome: reconcile before any retry")
+        require(record.get("privacy") == m["privacy"],
+                "Existing receipt privacy requires owner reconciliation; never change old videos automatically")
     youtube.verify(record["video_id"])
     record["state"], record["verified_at"] = "verified", now
     ledger.save()
@@ -453,7 +560,8 @@ def load_inputs(root, manifest_id):
 def existing_receipt(m, ledger):
     record = ledger.find(m)
     require(record is not None and record["state"] in {"uploaded", "verified", "imported"} and
-            "video_id" in record, "Verification-only requires a reconciled receipt with a known video ID")
+            "video_id" in record and record.get("privacy") == m["privacy"],
+            "Verification-only requires a reconciled receipt with matching privacy and a known video ID")
     return record
 
 
@@ -474,13 +582,34 @@ def require_upload_gate():
             "Upload disabled or budget/stop-use gate closed")
 
 
+def require_trusted_dispatch():
+    require(os.environ.get("GITHUB_REPOSITORY") == REPO and
+            os.environ.get("GITHUB_REF") == "refs/heads/master" and
+            os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" and
+            os.environ.get("GITHUB_WORKFLOW_REF") ==
+            REPO + "/.github/workflows/youtube-upload.yml@refs/heads/master",
+            "Only the trusted default-branch manual workflow may run")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("inspect", "upload", "approval", "dry-run"))
     parser.add_argument("--manifest", default=os.environ.get("MANIFEST_ID", ""))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    p, m = load_inputs(root, args.manifest)
+    import_run = os.environ.get("IMPORT_RUN_ID", "")
+    if import_run:
+        require(args.mode in {"inspect", "upload"} and args.manifest == "pr3031-power-public" and
+                re.fullmatch(r"[1-9][0-9]{0,14}", import_run), "Invalid historical pilot selection")
+        require_trusted_dispatch()
+        from prepare_import import resolve_pilot, resolve_pilot_receipt
+        pilot_gh = GitHub(Transport(), os.environ["GITHUB_TOKEN"])
+        if os.environ.get("VERIFY_ONLY", "false") == "true":
+            p, m = resolve_pilot_receipt(pilot_gh, int(import_run))
+        else:
+            p, m = resolve_pilot(pilot_gh, int(import_run), os.environ["GITHUB_SHA"])
+    else:
+        p, m = load_inputs(root, args.manifest)
     if args.mode == "approval":
         print(approval_text(m))
         return
@@ -488,12 +617,7 @@ def main():
         # Deliberately has no network, OAuth, receipt writes or upload call.
         print("No-live dry run: reviewed manifest valid; approval digest " + approval_hash(m))
         return
-    require(os.environ.get("GITHUB_REPOSITORY") == REPO and
-            os.environ.get("GITHUB_REF") == "refs/heads/master" and
-            os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" and
-            os.environ.get("GITHUB_WORKFLOW_REF") ==
-            REPO + "/.github/workflows/youtube-upload.yml@refs/heads/master",
-            "Only the trusted default-branch manual workflow may run")
+    require_trusted_dispatch()
     transport = Transport()
     gh = GitHub(transport, os.environ["GITHUB_TOKEN"])
     verify_only = os.environ.get("VERIFY_ONLY", "false")
@@ -509,7 +633,7 @@ def main():
             print("Approved durable receipt checked; verification-only cannot insert media")
             return
         require_upload_gate()
-        print("Verified unlisted upload: " + verify_existing(m, ledger, PhpYouTube(), int(time.time())))
+        print("Verified public upload: " + verify_existing(m, ledger, PhpYouTube(), int(time.time())))
         return
     validate_provenance(gh, m, p)
     clip = inspect_archive(gh.archive(m["artifact"]["id"]), m)
@@ -521,7 +645,7 @@ def main():
     ledger = Ledger(gh)  # Missing ledger is an error, never initialize on the fly.
     youtube = PhpYouTube()
     url = publish(m, clip, ledger, youtube, int(time.time()))
-    print("Verified unlisted upload: " + url)
+    print("Verified public upload: " + url)
 
 
 if __name__ == "__main__":
