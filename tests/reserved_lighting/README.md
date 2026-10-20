@@ -37,8 +37,8 @@ Before eventual compilation, the coordinator's isolated launcher must place the
 prepared DME in the checkout root so existing resource paths resolve; this
 preparer does not compile the DME from the output directory.
 
-The new native fixture is **uncompiled and unrun**. Expected allocation counts
-are assertions to verify, not results: 256 normal overlays versus 220 for an
+The original Windows review stage left this fixture unrun. Current Linux
+parity acceptance is recorded below; allocation assertions are: 256 normal overlays versus 220 for an
 8x8 reserved region on a 16x16 world, with 289 shared corners in both modes.
 It records normal/halo color, luminosity, ownership and source membership rows,
 torch movement, daylight, opacity, activation, replacement and native entry
@@ -54,14 +54,14 @@ requires an overlay and four corners before recording the actual production
 color matrix, luminosity, TOD, visibility, RGB channels, ordered master
 coordinates/directions and source-owner memberships. Membership never depends
 on observed overlay presence; only six still-unactivated interior cells are
-excluded. These are proposed assertions pending native execution.
+excluded. Current Linux native parity acceptance is recorded below.
 
 The carried-source case uses production top-atom ownership and checks removal
 from the carrier after release. Pooled refusal uses actual cleanup and pool
 callbacks with explicit offline queue retirement, not a running garbage process.
 Ice daylight repair clears only a cached overlay pointer and requires the
 production repair callback to rediscover its actual owner and retain corners.
-Every proposed behavior is still unrun. `compare.py baseline.jsonl candidate.jsonl`
+`compare.py baseline.jsonl candidate.jsonl`
 requires all six ordered snapshots and exact equality of their complete rows;
 its result cannot establish provenance or replace successful native receipts.
 Controls cover virtual masters, halo boundaries and refused ownership. Redundant
@@ -113,7 +113,7 @@ appearance, source drift and invalid cells. These are not native renderer tests.
 
 `run-ci.py --byond-bin <516.1681-bin> --output <new-directory>` runs only
 in a disposable CI workspace. It prepares the actual merged production sources,
-compiles five closed-port 16x16 fixtures, and compares all six complete native
+compiles six closed-port 16x16 fixtures, and compares all six complete native
 state snapshots with reserved omission off versus on. The virtual-master mutation
 must reach a structural snapshot mismatch; halo and refused-owner mutations must
 fail their named assertions. Compilation and execution have finite per-process
@@ -123,7 +123,7 @@ renderer is used. The default area clearance flag remains FALSE and no map opts 
 The workflow now selects this native lane for the introduced suite or extensive
 regressions and retains evidence even on failure. The older Windows contained
 runner remains a separate explicitly granted workflow. Earlier statements above
-about an unregistered/unrun native fixture describe that original review stage.
+describe that original Windows review stage.
 A passing CI run establishes only these native state/parity checks, never client
 pixels, complete map clearance, net memory savings or deployment readiness.
 
@@ -141,3 +141,64 @@ backlink identity must preserve that owner and luminosity. The Linux CI lane add
 an `owner-identity` mutation removing this guard. The refusal control now removes
 the constructor's admission guard, since synchronous `qdel` itself also detaches
 refused overlays. No deferred-Destroy behavior is assumed.
+
+
+## Comparable resource instrumentation
+
+Exact head `2d4229c2ca3062e6c358aa21575f0c203282f995` passed
+[CI 39347909747](https://github.com/Civ13/Civ13/actions/runs/39347909747): six
+snapshots, 1,350 equal rows and four causal controls. This existing parity
+result is reused. It contains no comparable CPU/private-memory measurements.
+
+`measurement.py` is a separate, source-reviewed measurement candidate, not a
+native-accepted adapter. Its injected process/clock/counter interface is exercised
+by `test_measurement.py` without launching any processes. No production/probe
+changes, gate enablement or automatic native CI step are added.
+
+A playable-owner executor can seal an isolated input directory containing
+`daemon`, `probe.dmb`, `probe.rsc`, the unchanged `probe.dm`, and `build.json`:
+
+```text
+<verified-python> tests/reserved_lighting/measurement.py --seal <input-directory> --head <exact-source-sha>
+<verified-python> tests/reserved_lighting/measurement.py --packet <input-directory>/measurement-packet.json --grant <grant.json> --output <fresh-output-directory>
+```
+
+Sealing only hashes files. `build.json` must contain `head`, `byond_version`
+(`516.1681`), `compiler_sha256` and `files` mapping the four input names to SHA256.
+This provenance is a declaration requiring independent exact-build evidence, not
+proof from a compiler run. The sealing step never builds or launches anything.
+The packet binds all inputs and permits only the same executable/DMB/RSC with
+`reserved=0/1` changing. Both production defaults remain FALSE.
+
+The Linux-only adapter needs `/proc`, externally accepted account/network/process
+isolation, and accepted platform/resource containment. A grant binds packet hash,
+head, `executor: "playable-owner"`, `isolated_environment_accepted: true`,
+`platform_adapter_accepted: true`, and numeric `starts_unix`/`ends_unix`. This is an
+executor precondition, not self-authorization. No grant or native run is supplied
+by this change. The Windows stopped-run packet must not be reused.
+
+One excluded warmup per variant precedes ten alternating AB/BA pairs (22 fresh
+processes). Per-process limits are 30 seconds wall, 10 seconds CPU, 512 MiB sampled
+private bytes and 16 MiB generated output; total measurement wall is at most 960
+seconds. Samples occur every 0.1 seconds and retain PID/start ticks. Linux exit
+CPU comes from `wait4` user+kernel seconds; private bytes are sampled
+`Private_Clean + Private_Dirty + Private_Hugetlb`, not RSS, true peak or net RAM.
+No private observation makes a run incomplete. Wall includes observer/sampling
+latency. Compilation, sealing and comparisons are outside the process timer.
+
+Every sample is persisted before validation. Counter drift, wrong attribution,
+sockets/children, output/resource/lease limits, partial outcomes, diagnostics,
+missing parity or cleanup failure abort the batch without retry. Cleanup uses
+only the retained child/group, with a five-second deadline. Between-sample
+activity cannot be excluded by polling: network and child containment must be
+provided by the isolated executor. Sampled private limits are detection limits;
+the executor must supply accepted hard resource containment. The adapter itself
+has not been validated with native BYOND in this task.
+
+Every measured pair must pass six-snapshot/1,350-row equality. Raw paired CPU,
+wall and sampled-private differences and their medians are retained; no automatic
+speedup verdict is emitted. The tiny 16x16 workload may be below useful timer or
+memory resolution. Measurements establish only this end-to-end fixture workload,
+not isolated lighting CPU, client rendering, production latency, OOM remediation
+or whole-server RAM savings. Fresh native allocation and exact input/build
+artifacts remain required before execution.
