@@ -11,10 +11,12 @@ import unittest
 
 import run_native as native
 
+LOG = "World opened on network port 43210 for address 127.0.0.1.\nWorld no longer opened to new users.\nDONE registry fixture\n"
+
 
 def result_for(control=None):
     failures = native.expected_failures(control)
-    return dict(version=native.VERSION, initial_port=0, closed_port=0, reopen=0,
+    return dict(version=native.VERSION, initial_port=43210, closed_port=0, reopen=0,
                 cases=[{'case': c, 'passed': int(c not in failures)} for c in native.case_names()])
 
 
@@ -56,11 +58,11 @@ class NativeRunnerTests(unittest.TestCase):
 
     def test_baseline_and_every_exact_control_verdict(self):
         for control in (None, *native.HOOKS):
-            native.verify(result_for(control), 'DONE registry fixture\n', control)
+            native.verify(result_for(control), LOG, control)
             broken = result_for(control)
             broken['cases'][0]['passed'] = 1 - broken['cases'][0]['passed']
             with self.assertRaises(ValueError):
-                native.verify(broken, 'DONE registry fixture\n', control)
+                native.verify(broken, LOG, control)
 
     def test_missing_duplicate_cases_bad_types_and_network_fail(self):
         changes = [lambda r: r['cases'].pop(),
@@ -75,15 +77,15 @@ class NativeRunnerTests(unittest.TestCase):
                 result = result_for()
                 change(result)
                 with self.assertRaises(ValueError):
-                    native.verify(result, 'DONE registry fixture\n')
+                    native.verify(result, LOG)
 
     def test_diagnostics_completion_and_listener_fail(self):
-        for log in ('', 'DONE registry fixture\n' * 2,
-                    'DONE registry fixture\nruntime error: failed',
-                    'DONE registry fixture\nWorld opened on network port 1000 for address 127.0.0.1.'):
+        for log in ('', LOG * 2, LOG.replace('127.0.0.1', '0.0.0.0'), LOG.replace('World no longer opened to new users.', ''),
+                    LOG + 'runtime error: failed',
+                    LOG + 'World opened on network port 1000 for address 127.0.0.1.'):
             with self.subTest(log=log), self.assertRaises(ValueError):
                 native.verify(result_for(), log)
-        native.verify(result_for(), 'DONE registry fixture\n' * 2, runtime_log='DONE registry fixture\n')
+        native.verify(result_for(), LOG * 2, runtime_log=LOG)
 
     def test_prepare_only_never_invokes_runner(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -115,7 +117,7 @@ class NativeRunnerTests(unittest.TestCase):
                     self.assertIn('-trusted', command)
                     self.assertNotIn('-safe', command)
                     self.assertNotIn('-port', command)
-                    (work/'runtime.log').write_text('DONE registry fixture\n')
+                    (work/'runtime.log').write_text(LOG)
                     (work/'result.json').write_text(json.dumps(result_for(next(controls))))
                     # Simulates a diagnostic on stdout/stderr despite clean canonical log.
                     return 'runtime error' if bad_role == role else ''
