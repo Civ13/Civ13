@@ -147,7 +147,7 @@ var/parent_order_ok = 1
 	var/initial_port = port
 	OpenPort("none")
 	var/reopen = OpenPort(0)
-	if(initial_port != 0 || port != 0 || reopen != 0)
+	if(initial_port <= 0 || port != 0 || reopen != 0)
 		world.log << "BUG network contract initial=[initial_port] current=[port] reopen=[reopen]"
 		del(world)
 		return
@@ -208,9 +208,20 @@ def verify(result, log, control=None, hooks=HOOKS, runtime_log=None):
     canonical = log if runtime_log is None else runtime_log
     if DIAGNOSTIC.search(log) or canonical.count('DONE registry fixture') != 1:
         raise ValueError('Runtime diagnostics or incomplete/duplicate completion')
-    if re.search(r'World opened on network port', log, re.I):
-        raise ValueError('Unexpected open port')
-    if result.get('version') != VERSION or any(result.get(k) != 0 for k in ('initial_port', 'closed_port', 'reopen')):
+    # BYOND opens its startup listener before world/New; require the engine's
+    # loopback bind record, then the immediate closure and refused reopen.
+    canonical = runtime_log if runtime_log is not None else log
+    bindings = re.findall(r'World opened on network port ([0-9]+) for address ([^\s]+)\.', canonical)
+    initial = result.get('initial_port')
+    if (type(initial) is not int or not 1 <= initial <= 65535
+            or bindings != [(str(initial), '127.0.0.1')]
+            or canonical.count('World no longer opened to new users.') != 1
+            or not canonical.index('World opened on network port') < canonical.index('World no longer opened to new users.') < canonical.index('DONE registry fixture')):
+        raise ValueError('Expected one loopback startup binding followed by closure')
+    if any(address != '127.0.0.1' for _, address in re.findall(
+            r'World opened on network port ([0-9]+) for address ([^\s]+)\.', log)):
+        raise ValueError('Non-loopback binding in output')
+    if result.get('version') != VERSION or any(result.get(k) != 0 for k in ('closed_port', 'reopen')):
         raise ValueError('Runtime version/network contract missing')
     rows = result.get('cases')
     if not isinstance(rows, list) or sorted(r.get('case', '') for r in rows) != sorted(case_names(hooks)):

@@ -62,14 +62,18 @@ No repository source is modified during preparation or execution.
 Maintainer-required `-trusted` is used, not an OS or network sandbox. The fixture
 imports no game constructors, shell/export hooks, paid services or client code.
 It rejects clients and Topic requests, disables hub visibility at compile time,
-refuses every OpenPort request except closing, and verifies zero initial/closed
-ports plus failed reopening. Any engine log reporting an opened port fails.
+refuses every OpenPort request except closing. Native evidence showed BYOND opens
+an ephemeral loopback listener before world/New, then the fixture immediately
+closes it. The runner requires exactly one startup binding on 127.0.0.1 matching
+the reported initial port, an ordered closure diagnostic, final port zero and
+refused reopening. Any non-loopback binding or persistent/reopened port fails.
 The official DM reference documents that an overridden OpenPort cannot open a
 port unless its parent is called:
 https://www.byond.com/docs/ref/info.html#/world/proc/OpenPort
-The CLI binds only to 127.0.0.1 as defense in depth, without granting permission
-to open a listener. No speculative no-port CLI argument is used. These checks are not external
-socket-monitoring evidence, and there is no fallback to hosting a listener.
+The CLI explicitly binds only to 127.0.0.1 and disables web clients. This accepts
+only the engine's transient startup listener in ephemeral CI, not public hosting.
+It does not claim zero sockets ever or external socket-monitoring evidence.
+No speculative no-port CLI argument or persistent-listener fallback is used.
 
 Children have 30-second wall and 20-second CPU bounds, 512 MiB address space,
 2 MiB per-file size, no core dumps, and process-group cleanup even on failure.
