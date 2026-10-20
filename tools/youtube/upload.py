@@ -306,8 +306,19 @@ def validate_source_provenance(gh, m, p):
     require(pr["base"]["repo"]["id"] == REPO_ID and pr["head"]["repo"]["id"] == REPO_ID,
             "Fork PR artifacts are not initially eligible")
     if s["event"] == "pull_request":
-        require(any(item["number"] == s["pr"] for item in run["pull_requests"]),
-                "Run does not belong to the selected PR")
+        if m["schema_version"] == 2 and run["pull_requests"] == []:
+            # Historical merged runs can have an empty Actions association.
+            # Keep this alternative confined to the pinned historical pilot:
+            # both the PR and GitHub's commit association must prove exact head.
+            associated = gh.repo(f'/commits/{s["commit"]}/pulls?per_page=100')
+            require(pr["merged"] is True and pr["head"]["sha"] == s["commit"] and
+                    any(item["number"] == s["pr"] and item["head"]["sha"] == s["commit"] and
+                        item["base"]["repo"]["id"] == REPO_ID and
+                        item["head"]["repo"]["id"] == REPO_ID for item in associated),
+                    "Historical commit is not the exact merged PR head")
+        else:
+            require(any(item["number"] == s["pr"] for item in run["pull_requests"]),
+                    "Run does not belong to the selected PR")
     else:
         require(pr["merged"] is True and pr["merge_commit_sha"] == s["commit"],
                 "Non-PR capture must test the exact merged PR commit")

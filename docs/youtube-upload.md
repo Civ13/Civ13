@@ -126,6 +126,10 @@ The original native capture is owner-attested footage from an isolated pregame
 scene, not CI-generated footage or multiplayer acceptance. Its exact-head CI
 run 38127733413 succeeded, but did not produce a media artifact. Schema2 keeps that
 historical tested commit/run separate from the trusted packaging commit/run.
+When that merged historical run has an empty Actions PR association, the pilot
+requires GitHub's commit-to-PR association and the merged PR's exact head SHA,
+with both repositories verified. Generic producers and conflicting run
+associations remain ineligible; no provenance check is skipped.
 Original frame presentation times are retained; only the session Game ID is masked,
 and the review copy's ending is 0.44 seconds longer. There is no audio or generated
 or interpolated gameplay imagery.
