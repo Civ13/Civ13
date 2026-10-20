@@ -1,0 +1,88 @@
+name: Trusted approved gameplay uploader
+on:
+  workflow_call:
+    inputs:
+      manifest_id:
+        required: true
+        type: string
+      execute_upload:
+        type: boolean
+        default: false
+      verify_only:
+        type: boolean
+        default: false
+      import_run_id:
+        type: string
+        default: ''
+permissions: {}
+# One destination-wide lock, including different manifests and reruns.
+concurrency:
+  group: youtube-unlisted-valzartech8995
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: >-
+      github.repository == 'Civ13/Civ13' &&
+      github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' &&
+      github.workflow_ref == 'Civ13/Civ13/.github/workflows/youtube-upload.yml@refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/youtube
+      - name: Inspect approved provenance and media without channel secrets
+        env:
+          MANIFEST_ID: ${{ inputs.manifest_id }}
+          VERIFY_ONLY: ${{ inputs.verify_only }}
+          IMPORT_RUN_ID: ${{ inputs.import_run_id }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: /usr/bin/python3 -B tools/youtube/upload.py inspect
+  upload:
+    needs: inspect
+    if: >-
+      inputs.execute_upload && vars.YOUTUBE_UPLOAD_ENABLED == 'true' &&
+      vars.YOUTUBE_UPLOAD_STOP_USE == 'false' && vars.YOUTUBE_ZERO_COST_CONFIRMED == 'true'
+    environment: youtube-unlisted
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      actions: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/youtube
+      - uses: shivammathur/setup-php@db91e1a0e48e84637d325a7ee4d2677e146ceec4 # 2.36.0
+        with:
+          php-version: '8.4'
+          tools: composer:2.9.8
+          coverage: none
+      - name: Install trusted locked YoutubePHP dependencies without scripts or plugins
+        run: composer install --working-dir=tools/youtube --no-dev --no-scripts --no-plugins --prefer-dist --no-interaction --no-progress
+      # No PR checkout/scripts, decoder, input interpolation or post-upload action.
+      # Setup/install steps above have NO YouTube credentials in their environment.
+      - name: Reserve, upload public, and verify destination and processing
+        env:
+          MANIFEST_ID: ${{ inputs.manifest_id }}
+          VERIFY_ONLY: ${{ inputs.verify_only }}
+          IMPORT_RUN_ID: ${{ inputs.import_run_id }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_UPLOAD_ENABLED: ${{ vars.YOUTUBE_UPLOAD_ENABLED }}
+          YOUTUBE_UPLOAD_STOP_USE: ${{ vars.YOUTUBE_UPLOAD_STOP_USE }}
+          YOUTUBE_ZERO_COST_CONFIRMED: ${{ vars.YOUTUBE_ZERO_COST_CONFIRMED }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: /usr/bin/python3 -B tools/youtube/upload.py upload

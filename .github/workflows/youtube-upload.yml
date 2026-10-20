@@ -1,0 +1,35 @@
+name: Approved gameplay video upload
+on:
+  workflow_dispatch:
+    inputs:
+      manifest_id:
+        description: Reviewed default-branch manifest ID in tools/youtube/approved
+        type: string
+        required: true
+      execute_upload:
+        description: Execute approved action after environment approval (false inspects only)
+        type: boolean
+        default: false
+      verify_only:
+        description: Verify a known receipt video ID only, without source media or insertion
+        type: boolean
+        default: false
+      import_run_id:
+        description: Successful current-commit historical importer run ID (pilot only; otherwise empty)
+        type: string
+        default: ''
+permissions: {}
+jobs:
+  approved-upload:
+    if: github.repository == 'Civ13/Civ13' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+      actions: read
+      issues: read
+      pull-requests: read
+    uses: ./.github/workflows/youtube-upload-worker.yml
+    with:
+      manifest_id: ${{ inputs.manifest_id }}
+      execute_upload: ${{ inputs.execute_upload }}
+      verify_only: ${{ inputs.verify_only }}
+      import_run_id: ${{ inputs.import_run_id }}
