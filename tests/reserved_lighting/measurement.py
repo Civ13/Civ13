@@ -11,12 +11,18 @@ import os
 from pathlib import Path
 import re
 import statistics
+import sys
 import time
 
 from compare import compare
 
 HEX = re.compile(r'[0-9a-f]{64}')
-DIAGNOSTIC = re.compile(r'##ERROR|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
+DIAGNOSTIC = re.compile(r'##\s*ERROR|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot (?:read|execute) null|Bad ref|Bad loc|PORT_OPEN', re.I)
+
+
+def execution_identity():
+    return {str(path.resolve()): sha(path.resolve()) for path in
+            (Path(__file__), Path(__file__).with_name('compare.py'), Path(sys.executable))}
 
 
 def require(value, message):
@@ -37,6 +43,7 @@ def sha(path):
 
 
 def validate_packet(packet, root):
+    require(packet['execution'] == execution_identity(), 'Execution inputs changed')
     require(packet['schema'] == 1 and re.fullmatch('[0-9a-f]{40}', packet['head']), 'Packet identity')
     require(type(packet['pairs']) is int and 1 <= packet['pairs'] <= 10, 'Pair bound')
     require(number(packet['interval']) and .05 <= packet['interval'] <= .5, 'Sampling interval')
@@ -132,6 +139,7 @@ def run(packet, root, output, adapter, clock=time.monotonic, pause=time.sleep, a
             report['runs'].append(row)
             child = None
             try:
+                bound()  # hashing/setup can consume the remaining lease
                 child = adapter.launch(packet, root, work, mode)
                 run_started = clock()
                 row['identity'] = child.identity
@@ -246,37 +254,56 @@ class LinuxAdapter:
         import signal
         child = self.child
         errors = []
-        if child and child.process and child.result is None:
+        empty = True
+        if child and child.process:
             try:
-                os.killpg(child.process.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            try:
+                pid = child.process.pid
                 deadline = time.monotonic()+5
                 while True:
-                    waited, _, _ = os.wait4(child.process.pid, os.WNOHANG)
-                    if waited:
-                        child.process.returncode = -signal.SIGKILL
+                    # A live leader must retain its birth identity. Descendants
+                    # must retain the session/group established at launch.
+                    members = self.group_members(child)
+                    if members:
+                        try:
+                            os.killpg(pid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass  # group disappeared after the ownership read
+                    if child.result is None:
+                        waited, status, usage = os.wait4(pid, os.WNOHANG)
+                        if waited:
+                            child.result = (os.waitstatus_to_exitcode(status), usage.ru_utime+usage.ru_stime)
+                            child.process.returncode = child.result[0]
+                    if not members and child.result is not None:
                         break
                     require(time.monotonic() < deadline, 'Cleanup deadline')
                     time.sleep(.01)
-            except ChildProcessError as error:
+            except (OSError, ValueError) as error:
                 errors.append(str(error))
-            except ValueError as error:
-                errors.append(str(error))
+                empty = False
         if child:
             for handle in child.handles:
                 handle.close()
         self.child = None
-        # Group liveness is checked separately from the retained child's exit.
-        empty = True
-        if child and child.process:
-            try:
-                os.killpg(child.process.pid, 0)
-                empty = False
-            except ProcessLookupError:
-                pass
         return {'all_exited': not errors, 'empty': empty, 'errors': errors}
+
+    def group_members(self, child):
+        pid = child.process.pid
+        require(hasattr(child, 'identity'), 'Missing cleanup ownership identity')
+        members = []
+        for entry in Path('/proc').iterdir():
+            if not entry.name.isdecimal():
+                continue
+            try:
+                stat = (entry/'stat').read_text().rsplit(')', 1)[1].split()
+            except FileNotFoundError:
+                continue
+            start = int(stat[19])
+            if int(entry.name) == pid:
+                require(start == child.identity['start_ticks'], 'Cleanup PID reused')
+            if int(stat[2]) == pid:
+                require(int(stat[3]) == pid and start >= child.identity['start_ticks'], 'Cleanup group ownership changed')
+                members.append(int(entry.name))
+        return members
 
 
 def main():
@@ -322,7 +349,7 @@ def seal(root, head):
             and HEX.fullmatch(build['compiler_sha256']), 'Build provenance')
     for name in names[:4]:
         require(build['files'][name] == sha(root/name), 'Build input mismatch')
-    packet = {'schema':1, 'head':head, 'pairs':10, 'interval':.1,
+    packet = {'schema':1, 'head':head, 'pairs':10, 'interval':.1, 'execution':execution_identity(),
               'parity_run':39347909747, 'parity_head':'2d4229c2ca3062e6c358aa21575f0c203282f995',
               'fixture':'probe.dm', 'fixture_sha256':sha(root/'probe.dm'),
               'daemon':'daemon', 'dmb':'probe.dmb', 'rsc':'probe.rsc',

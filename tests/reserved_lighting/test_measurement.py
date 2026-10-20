@@ -56,6 +56,7 @@ class Measurements(unittest.TestCase):
                      'files':{p.name:m.sha(p) for p in self.inputs.iterdir()},
                      'limits':{'wall':30,'cpu':10,'private':512*1024**2,'output':16*1024**2,'total_wall':960}}
         self.packet['fixture_sha256']=m.sha(self.inputs/'probe.dm')
+        self.packet['execution']=m.execution_identity()
         self.out=self.root/'output'
 
     def execute(self, adapter, **kwargs):
@@ -102,6 +103,71 @@ class Measurements(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'Lease expired'):self.execute(fake,lease=expired)
         self.assertFalse(fake.launched)
 
+    def test_expiration_during_hashing_prevents_launch(self):
+        fake=Fake(); expired=False
+        original=m.validate_packet
+        def validate(*args):
+            nonlocal expired
+            original(*args)
+            expired=True
+        calls=0
+        def lease():
+            nonlocal calls
+            calls+=1
+            if calls>1 and expired:raise ValueError('Lease expired')
+        with patch.object(m,'validate_packet',side_effect=validate):
+            with self.assertRaisesRegex(ValueError,'Lease expired'):self.execute(fake,lease=lease)
+        self.assertFalse(fake.launched)
+
+    def test_execution_drift_rejected_before_launch(self):
+        fake=Fake()
+        self.packet['execution'][str(Path(m.__file__).resolve())]='0'*64
+        with self.assertRaisesRegex(ValueError,'Execution inputs changed'):self.execute(fake)
+        self.assertFalse(fake.launched)
+
+    def test_diagnostic_spacing_and_runtime_errors(self):
+        for text in ('## ERROR: File not found config/config.txt','##ERROR: failure',
+                     'Bad ref','Bad loc','Cannot execute null.proc()','Runtime in /proc/test'):
+            with self.subTest(text=text):self.assertIsNotNone(m.DIAGNOSTIC.search(text))
+
+    def test_reaped_parent_group_is_retired_without_double_wait(self):
+        adapter=object.__new__(m.LinuxAdapter)
+        adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[])
+        with patch.object(adapter,'group_members',side_effect=[[456],[]]), \
+             patch.object(m.os,'killpg',create=True) as kill, \
+             patch.object(m.os,'wait4',create=True) as wait, patch.object(m.time,'sleep'), \
+             patch('signal.SIGKILL',9,create=True):
+            result=adapter.cleanup(None)
+        self.assertTrue(result['all_exited'] and result['empty'])
+        kill.assert_called_once()
+        wait.assert_not_called()
+
+    def test_surviving_group_or_changed_ownership_fails_cleanup(self):
+        for changed in (False,True):
+            adapter=object.__new__(m.LinuxAdapter)
+            adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[])
+            with patch.object(adapter,'group_members',side_effect=ValueError('ownership') if changed else None,
+                              return_value=[456]), patch.object(m.os,'killpg',create=True) as kill, \
+                 patch.object(m.time,'monotonic',side_effect=[0,6]), patch('signal.SIGKILL',9,create=True):
+                result=adapter.cleanup(None)
+            self.assertFalse(result['all_exited'])
+            self.assertFalse(result['empty'])
+            if changed:kill.assert_not_called()
+
+    def test_group_members_validate_birth_and_session(self):
+        adapter=object.__new__(m.LinuxAdapter)
+        child=SimpleNamespace(process=SimpleNamespace(pid=123),identity={'pid':123,'start_ticks':100})
+        for name,start,session,valid in (('456',101,123,True),('456',99,123,False),
+                                        ('456',101,999,False),('123',101,123,False)):
+            fields=['0']*20
+            fields[2]='123';fields[3]=str(session);fields[19]=str(start)
+            path=Path('/proc')/name
+            with patch.object(Path,'iterdir',return_value=iter([path])), \
+                 patch.object(Path,'read_text',return_value='123 (name) '+' '.join(fields)):
+                if valid:self.assertEqual(adapter.group_members(child),[int(name)])
+                else:
+                    with self.assertRaises(ValueError):adapter.group_members(child)
+
     def test_counter_units_regression_and_nonfinite_rejected(self):
         self.assertEqual(m.private_bytes('Private_Clean: 2 kB\nPrivate_Dirty: 3 kB\nPrivate_Hugetlb: 4 kB\n'),9*1024)
         with self.assertRaises(ValueError):m.private_bytes('Private_Clean: 0 kB\n')
@@ -147,7 +213,7 @@ class Measurements(unittest.TestCase):
         self.assertTrue(all(handle.closed for handle in handles))
 
     def test_aggregate_timeout_and_source_drift_stop_after_cleanup(self):
-        ticks=iter((0,0,0,0,0,961))
+        ticks=iter((0,0,0,0,0,0,961))
         fake=Fake()
         with self.assertRaisesRegex(ValueError,'Aggregate wall bound'):
             m.run(self.packet,self.inputs,self.out,fake,clock=lambda:next(ticks),pause=lambda _:None,accept=lambda *_:None)

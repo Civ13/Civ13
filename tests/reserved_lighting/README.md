@@ -169,6 +169,10 @@ This provenance is a declaration requiring independent exact-build evidence, not
 proof from a compiler run. The sealing step never builds or launches anything.
 The packet binds all inputs and permits only the same executable/DMB/RSC with
 `reserved=0/1` changing. Both production defaults remain FALSE.
+It also binds the absolute paths and SHA-256 hashes of the running measurement
+script, comparator and Python executable. Moving or modifying these requires
+resealing and a fresh packet-bound grant. This is not a complete Python runtime
+dependency attestation; executor review must establish the trusted runtime.
 
 The Linux-only adapter needs `/proc`, externally accepted account/network/process
 isolation, and accepted platform/resource containment. A grant binds packet hash,
@@ -202,3 +206,12 @@ memory resolution. Measurements establish only this end-to-end fixture workload,
 not isolated lighting CPU, client rendering, production latency, OOM remediation
 or whole-server RAM savings. Fresh native allocation and exact input/build
 artifacts remain required before execution.
+
+Lease and aggregate bounds are checked again immediately before every launch,
+after input hashing. Cleanup retires surviving group members even after the
+direct child has been reaped, without waiting for that child twice. Before each
+signal it checks Linux group/session membership and leader birth identity;
+changed or unavailable ownership fails closed and reports incomplete cleanup.
+The group inspection is not atomic with signaling and does not replace accepted
+external process containment. Persistent groups fail the bounded cleanup check.
+Diagnostic rejection includes spaced `## ERROR`, Bad ref/loc and null execution.
