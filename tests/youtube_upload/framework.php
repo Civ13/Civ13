@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 // Standalone offline entry point; loads no .env and injects every HTTP request.
 require __DIR__ . '/../../tools/youtube/adapter.php';
+require __DIR__ . '/../../tools/youtube/authorize-channel.php';
 
 use React\EventLoop\StreamSelectLoop;
 use React\Http\Message\Response;
@@ -143,3 +144,12 @@ check(count($driver->requests) === 0);
 $youtube->close();
 
 echo "YoutubePHP offline contracts passed: {$assertions} assertions; no network, grant or upload\n";
+
+$bootstrapToken = ['scope' => REQUIRED_SCOPES, 'token_type' => 'Bearer', 'access_token' => 'OFFLINE-FAKE'];
+$bootstrapDriver = new ScriptedDriver([jsonResponse(['items' => [['id' => TARGET_CHANNEL]]])]);
+check(checkBootstrapChannel($bootstrapToken, $bootstrapDriver) === TARGET_CHANNEL);
+check(count($bootstrapDriver->requests) === 1 && $bootstrapDriver->requests[0]->getEndpoint() === 'channels.list');
+$bootstrapDriver = new ScriptedDriver([jsonResponse(['items' => [['id' => 'wrong-channel']]])]);
+refused(fn () => checkBootstrapChannel($bootstrapToken, $bootstrapDriver));
+check(count($bootstrapDriver->requests) === 1);
+echo "YoutubePHP bootstrap channel contracts passed; total {$assertions} assertions; no OAuth or upload\n";

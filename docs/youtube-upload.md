@@ -172,16 +172,17 @@ the existing video ID and set a known `uploaded` state, or retain a blocking
 tombstone. A proven no-upload result requires a separately reviewed operator
 decision before any new mutation. Never log session URLs during recovery.
 
-## Exact setup proposal (not executed)
+## Exact local setup (not executed by the agent)
 
 Keep one shared setup coordinated with the existing one-off API uploader. Do not
-create duplicate projects or grants. First present the actual selected owner
-Google project ID and request explicit action-time approval for the following:
+create duplicate projects or grants. The user created project
+**`calcium-circuit-384407`** and approved the Desktop client/scopes proposal.
+The earlier candidate ID `civ13-gameplay-videos` is obsolete. No local helper run,
+grant exchange, credential download/read or GitHub secret write was performed by
+the agent. Secret placement remains a separately confirmed action.
 
-1. **Project/client:** reuse a suitable user-owned Google project if available;
-   otherwise propose display name `Civ13 Gameplay Videos` and project ID
-   `civ13-gameplay-videos` (availability and ownership must be checked before
-   confirmation). Enable only YouTube Data API v3, with no paid service or billing
+1. **Project/client:** use only `calcium-circuit-384407`, display name
+   `Civ13 Gameplay Videos`. Enable only YouTube Data API v3, with no paid service or billing
    activation. Create one OAuth Desktop client named `Civ13 reviewed uploader`.
    Confirm consent-screen audience/testing status and refresh-token lifecycle.
 2. **Channel/grant:** authorize the owning Google account's **@valzartech8995 /
@@ -200,9 +201,12 @@ Google project ID and request explicit action-time approval for the following:
    local setup helper. The user completes Google's consent UI securely. API-only
    publication does not remove Google's required interactive consent. Never scrape
    browser cookies/tokens, bypass site prompts, put secrets into chat or use an
-   unofficial token broker. This PR deliberately supplies no credential-generating
-   helper. Approve its exact local credential transfer/temporary-file cleanup
-   procedure before executing it; keep secrets out of command lines and logs.
+   unofficial token broker. The user-run helper `tools/youtube/authorize.py`
+   implements the code exchange. It never runs from Actions or controls a browser.
+   It prints Google's consent URL for the user to open directly, with PKCE S256,
+   a constant-time state check and a five-minute IPv4 loopback callback. Its
+   channel check uses the pinned YoutubePHP framework. Credential/token values
+   are not displayed, logged, passed as arguments or written to token files.
 4. **GitHub destination:** only `Civ13/Civ13`, environment **`youtube-unlisted`**,
    secrets **`YOUTUBE_CLIENT_ID`**, **`YOUTUBE_CLIENT_SECRET`** and
    **`YOUTUBE_REFRESH_TOKEN`**. Use GitHub's encrypted secret input or a reviewed
@@ -227,6 +231,106 @@ of output. Store the refresh token only in the approved environment, revoke the
 Google app grant and remove secrets to terminate access, and close the stop-use
 variables immediately on any budget, quota, rate, auth or ambiguity incident.
 No approval to create/store credentials is inferred from approval of this PR.
+
+## User-run helper sequence
+
+In [YouTube API Library](https://console.cloud.google.com/apis/library/youtube.googleapis.com?project=calcium-circuit-384407),
+enable YouTube Data API v3 with billing unlinked. In Google Auth Platform, choose
+Branding `Civ13 Gameplay Videos`; enter your own support/contact details and
+review Google's policy agreement yourself. Start with External/Testing and only
+your owning Google account as test user. In Data Access enter the **complete
+URLs**, not the shorthand names:
+
+```text
+https://www.googleapis.com/auth/youtube.upload
+https://www.googleapis.com/auth/youtube.readonly
+```
+
+In [Clients](https://console.cloud.google.com/auth/clients?project=calcium-circuit-384407),
+create the approved Desktop app `Civ13 reviewed uploader`. Do not choose a web
+client, service account, API key or TV/device flow. Keep its downloaded JSON in
+a private local folder **outside the repository**, restricted to your Windows
+account/SYSTEM/administrators. The helper does not change Windows ACLs; use a
+private account folder, not shared/synced storage. On Unix it requires owner-only
+file permissions (600). No credential values or downloaded JSON belong in chat.
+
+For this assistant-operated automation client, select **Use this client for an
+AI-powered agent** when Google offers that self-declaration. Retain Desktop app
+and exactly the two full scope URLs above: the designation grants no additional
+scopes or privileges. Agentic client IDs are for AI/automated tool use; a future
+direct human application or mixed use needs a separately planned client. No
+additional client is created by this setup. See [Google's agentic-client guidance](https://support.google.com/cloud/answer/15549257#agentic-client).
+
+Before obtaining a token, the GitHub destination must already have been separately
+authorized and configured: public repository `Civ13/Civ13`, environment
+`youtube-unlisted`, required human reviewers, prevention of self-review, no admin
+bypass where exposed, and an explicit deployment branch policy allowing only
+`master`. The helper creates no environment, changes no permissions, and never
+overwrites existing `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` or
+`YOUTUBE_REFRESH_TOKEN`. Rotation needs a separately reviewed procedure because
+GitHub cannot read back prior secret values for rollback.
+
+Repository activation variables must be explicitly set to
+`YOUTUBE_UPLOAD_ENABLED=false`, `YOUTUBE_UPLOAD_STOP_USE=true`, and
+`YOUTUBE_ZERO_COST_CONFIRMED=false`, shadowing any organization defaults.
+Environment overrides must be absent or have those same disabled values.
+Keep them disabled throughout setup. The helper
+checks those gates before consent and every secret write, and never enables them.
+The current source PR need not be merged to inspect this reviewed local helper;
+setting secrets does not authorize merging or running uploads.
+
+Install the committed Composer lock with scripts/plugins disabled, using PHP 8.4+
+and an already authorized GitHub CLI. Then the user can run this from the repository:
+
+```powershell
+& 'C:\Users\valza\AppData\Local\Programs\Python\Python313\python.exe' -B tools/youtube/authorize.py check --client-json 'C:\PRIVATE-LOCAL-FOLDER\client.json'
+& 'C:\Users\valza\AppData\Local\Programs\Python\Python313\python.exe' -B tools/youtube/authorize.py authorize --client-json 'C:\PRIVATE-LOCAL-FOLDER\client.json'
+```
+
+Replace the illustrative path locally; do not send its contents to the agent.
+`check` validates the Desktop JSON's exact project and trusted endpoint fields,
+then reads GitHub protection/secret metadata without granting access or writing
+secrets. `authorize` requires an interactive local terminal. It rechecks all
+prerequisites, prints a fresh Google consent URL, and waits at most five minutes.
+The user opens the URL directly and selects the approved channel/account.
+Wrong state, denied/error callbacks, duplicates, expired/missing tokens, expanded
+scopes or another channel stop before secret placement. The helper makes no
+automatic retry or account/client change. It never requests production publication.
+
+After channel verification it separately displays the exact three secret names,
+repository and environment and asks the user to type:
+
+```text
+STORE Civ13/Civ13 youtube-unlisted
+```
+
+Only that action starts `gh secret set`, passing values through stdin so GitHub
+CLI encrypts them before transfer. The new refresh/access tokens exist only in
+process memory until placement; the original downloaded client JSON remains under
+the user's control. The helper does not delete that original file. After confirmed
+setup the user can remove that download from their private folder according to
+their own retention choice. Never run setup/rotation concurrently; a local
+credential-free lock prevents two helper processes on this computer.
+
+GitHub has **no multi-secret atomic transaction**. If a write fails, times out or
+is interrupted, the helper does not retry it: it attempts removal of newly
+attempted names and keeps uploads disabled. A remote write can finish after a
+timeout, so every unsuccessful/uncertain write remains blocked for owner
+reconciliation even when immediate metadata snapshots show no secret. If cleanup
+itself cannot be confirmed, it likewise reports only affected names and stops for owner
+reconciliation. A forced process kill or a competing external administrator can
+prevent cleanup; the disabled environment gates and exclusive operator procedure
+are mandatory. This is compensating rollback, not a claim of server-side atomicity.
+No existing secrets are knowingly overwritten or removed. If consent was granted
+but setup is declined/abandoned, revoke the app in your Google account; discarding
+tokens locally does not revoke that Google grant. No automatic revocation is made
+because it could invalidate another authorized session of the same client.
+
+External/Testing refresh tokens for these scopes expire after seven days. Initially
+keep uploads disabled and complete the bounded owner checks. For continued use,
+choose later between a separately approved consent-screen Production change with
+Google's applicable verification requirements, or a separately approved renewal
+procedure. The helper does neither automatically and refuses to overwrite secrets.
 
 ## Limits and verification
 

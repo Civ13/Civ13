@@ -6,6 +6,11 @@ Only trusted default-branch code receives environment credentials; PR media stay
 data, with decoder inspection in a secret-free job. Per-clip human approval binds
 media/metadata/destination; durable reservations block ambiguous retries. Never
 delete uncertain one-off receipts or create OAuth grants from source-PR approval.
+The user-run `tools/youtube/authorize.py` checks only project
+`calcium-circuit-384407`, uses manual Google PKCE consent and a separate stdin
+secret-placement confirmation. Setup requires explicitly disabled repository
+activation variables; uncertain secret writes require owner reconciliation even
+when immediate metadata reads show absence. Tests use fake services/local loopback.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
 Protected sleep relocates the body between z-levels, so release only its matching
