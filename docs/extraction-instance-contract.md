@@ -132,8 +132,18 @@ home acquire, home release and berth release admission. Each injected defect
 therefore has one independent target, without suppressing any of the original
 35 assertions or allowing collateral. Valid acquire/release and replay checks
 still run on the main registry. Production source, runtime resource limits and
-admission remain unchanged. This successor's native execution is pending;
-the historical failed run above does not validate the changed probe or controls.
+admission remain unchanged. At successor commit
+`b030ae05a5b4ae9c3c8ce9111e398fd6ea6a5369`,
+[run 39348165188](https://github.com/Civ13/Civ13/actions/runs/39348165188)
+passed the extraction instance job: baseline passed 35/35 and each of the four
+mutants failed only its named target. Exact generated source/probe bytes and
+stored verdicts were verified against that commit. All five cases compiled
+without errors or warnings, with no runner-recognized runtime/console diagnostics.
+This establishes standalone evidence for that successor only; its separate
+evidence-checker job failed because the outdated branch lacked a newer master
+bootstrap test. The branch subsequently incorporated master `5bf351248` to
+restore that test, requiring fresh exact-head CI. The historical failed run
+above remains unchanged.
 
 Compiler admission requires exactly one complete `516.1681` version banner;
 longer version numbers, suffixes and duplicate banners fail closed.

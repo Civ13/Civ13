@@ -54,7 +54,7 @@ on:
         type: boolean
         default: false
       extraction_instance_regressions:
-        description: 'Opt in to standalone extraction instance assertions and two mutation controls'
+        description: 'Opt in to standalone extraction instance assertions and four mutation controls'
         type: boolean
         default: false
 
