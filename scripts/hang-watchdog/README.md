@@ -71,7 +71,12 @@ copy of this script. Do not run a deployment/updater script as a restart shortcu
 3. Choose a new dedicated output directory outside both the live game directory
    and source checkout. On Linux it must be private (mode 0700); new files are
    created mode 0600. An existing nonempty unmarked directory, symlink, special
-   file, mismatched state or lock refuses startup. No security setting is changed.
+   file or mismatched state refuses startup. A live lock holder refuses a second
+   observer. The script finds an enclosing Civ13 checkout by its `.git`
+   file/directory and `civ13.dme` entry point;
+   a standalone copy such as `/opt/civ13-watchdog/watchdog.py` has no inferred
+   checkout root. Keep output outside any separate source checkout yourself.
+   No security setting is changed.
 4. Start under the existing unprivileged server/monitor account, with a verified
    interpreter. Denied process reads produce partial evidence; they never cause
    a sudo prompt, retry with privilege, or security-policy changes.
@@ -105,6 +110,23 @@ across observer restarts. Collection admission is durably reserved before readin
 diagnostics; interrupted/failed collection is not silently repeated. Reconcile
 that status/state and preserve existing evidence before an operator-authorized
 retry. There is no automatic stale-lock removal or reset command.
+
+Singleton ownership uses Linux nonblocking `flock`, not a stored PID or file
+presence. The private regular `watchdog.lock` file remains in place; the kernel
+releases ownership when the observer exits, including SIGTERM, SIGKILL or OOM.
+An unlocked leftover file can be reused without deletion, while a live holder
+blocks another observer. Never delete or replace this lock file while any
+observer might be running: entrants must lock the same inode. This does not
+configure automatic restart. A leftover `.watchdog.tmp`, invalid state or an
+interrupted incident reservation still fails closed or retains dedup admission;
+preserve those files and reconcile them before an operator-authorized retry.
+Kernel locking does not prove power-loss durability of directory metadata.
+
+Game, installation and output directory ancestors must be trusted against
+concurrent changes by the same account. Path/symlink checks are not descriptor
+pinned against hostile ancestor swaps. A final process identity recheck labels
+recycled-process evidence unverified; it cannot make all intervening `/proc`
+reads atomic with the target's lifetime.
 
 Bundles contain at most 32 thread states/CPU counters/wchan symbols, numeric
 process memory/context-switch counters, local memory/filesystem totals, bounded
@@ -195,7 +217,13 @@ Tests use fake Linux proc files and temporary game/output directories: healthy,
 stale/missing/unreadable heartbeat; open listener with stale game; identity reuse;
 wall/monotonic changes; observer restart dedup; cooldown/recovery; denied evidence;
 privacy canaries; no signals/subprocesses; unchanged game/save bytes; singleton
-locks, symlink/special-file refusal and disk/entry/output caps. The CI step runs
+locks, symlink/special-file refusal and disk/entry/output caps. Copied-script
+configuration tests exercise standalone and shallow paths plus both Git marker
+forms. Linux CI also runs the copied CLI, rejects a live competing observer,
+forcibly kills a temporary fixture observer and verifies lock reacquisition and
+persisted incident dedup. Windows portable detection/storage fixtures bypass
+Linux lock acquisition; Linux-only controls are explicitly skipped there.
+The CI step runs
 for introduced tests or existing extensive-regression opt-in. These tests do not
 establish live Linux proc permissions, service installation, production alert
 delivery, native hang causation or the validity of a save. Those remain explicit

@@ -1,4 +1,8 @@
-"""Offline Linux-proc fixtures and real temporary output; never launch a game."""
+"""Offline proc/output fixtures; Linux controls launch only temporary test observers.
+
+Windows bypasses flock acquisition in portable fixtures. Actual locking, copied
+CLI execution and killed-observer recovery are verified only on Linux.
+"""
 import ast
 from dataclasses import replace
 import hashlib
@@ -6,8 +10,11 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 
@@ -18,6 +25,16 @@ spec = importlib.util.spec_from_file_location('hang_watchdog', SOURCE)
 w = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = w
 spec.loader.exec_module(w)
+
+
+def imported_modules(source):
+    modules = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            modules.update(alias.name.split('.')[0] for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            modules.add(node.module.split('.')[0])
+    return modules
 
 
 def proc_line(pid=321, start=98765):
@@ -63,6 +80,14 @@ class Fixture(unittest.TestCase):
         self.counter = 0
         self.advance()
         self.observer = w.Observer(self.config, self.proc)
+        if sys.platform != 'linux':
+            # These tests exercise portable detection/storage, not POSIX locking.
+            enter = patch.object(w.Store, '__enter__', lambda store: store)
+            leave = patch.object(w.Store, '__exit__', lambda *args: None)
+            enter.start()
+            leave.start()
+            self.addCleanup(enter.stop)
+            self.addCleanup(leave.stop)
 
     @staticmethod
     def write(path, value):
@@ -83,6 +108,17 @@ class Fixture(unittest.TestCase):
 
     def bundle_names(self):
         return sorted(self.output.glob('incident-*.json'))
+
+    def copied_module(self, destination):
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(SOURCE, destination)
+        name = 'copied_watchdog_' + hashlib.sha256(os.fsencode(destination)).hexdigest()
+        spec = importlib.util.spec_from_file_location(name, destination)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[name] = module
+        self.addCleanup(sys.modules.pop, name, None)
+        spec.loader.exec_module(module)
+        return module
 
 
 class DetectionTests(Fixture):
@@ -300,7 +336,7 @@ class CollectionTests(Fixture):
 
     def test_no_process_or_network_execution_capabilities(self):
         tree = ast.parse(SOURCE.read_text())
-        imports = {node.names[0].name for node in ast.walk(tree) if isinstance(node, ast.Import)}
+        imports = imported_modules(SOURCE.read_text())
         self.assertTrue(imports.isdisjoint({'subprocess', 'socket', 'ctypes', 'signal'}))
         # Exercise collection above with os.kill denied; also reject executable
         # escape paths, rather than only checking a disabled configuration flag.
@@ -308,8 +344,58 @@ class CollectionTests(Fixture):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
                 self.assertNotIn(node.func.attr, ('system', 'popen', 'kill', 'killpg', 'execve', 'spawnv'))
 
+    def test_import_guard_detects_multi_alias_and_from_import_controls(self):
+        for source, module in (('import os, subprocess as child', 'subprocess'),
+                               ('from ctypes import CDLL', 'ctypes'),
+                               ('import socket.server as server', 'socket'),
+                               ('from signal import SIGTERM', 'signal')):
+            with self.subTest(source=source):
+                self.assertIn(module, imported_modules(source))
+
 
 class StorageTests(Fixture):
+    def test_copied_installation_accepts_output_outside_game(self):
+        # A generic ancestor Git marker must not turn an installation into the
+        # Civ13 checkout (some developer machines version their whole home).
+        (self.root / '.git').mkdir()
+        installed = self.copied_module(self.root / 'opt/civ13-watchdog/watchdog.py')
+        config = installed.Config(**self.config.__dict__)
+        self.assertEqual(config.output_dir, self.output)
+        self.assertFalse(self.output.exists())
+        with self.assertRaises(ValueError):
+            replace(config, output_dir=self.game / 'evidence')
+
+    def test_shallow_script_path_does_not_index_missing_parents(self):
+        installed = self.copied_module(self.root / 'watchdog.py')
+        with patch.object(installed, '__file__', str(Path(self.root.anchor) / 'watchdog.py')):
+            self.assertEqual(installed.Config(**self.config.__dict__).output_dir, self.output)
+
+    def test_checkout_output_refused_for_git_directory_and_worktree_marker(self):
+        for kind in ('directory', 'file'):
+            checkout = self.root / kind
+            marker = checkout / '.git'
+            checkout.mkdir()
+            marker.mkdir() if kind == 'directory' else marker.write_text('gitdir: elsewhere\n')
+            (checkout / 'civ13.dme').write_text('// source entry-point fixture\n')
+            module = self.copied_module(checkout / 'scripts/hang-watchdog/watchdog.py')
+            with self.subTest(marker=kind), self.assertRaises(ValueError):
+                module.Config(**{**self.config.__dict__, 'output_dir': checkout / 'evidence'})
+            self.assertEqual(module.Config(**self.config.__dict__).output_dir, self.output)
+
+    @unittest.skipUnless(sys.platform == 'linux', 'Copied Linux CLI acceptance runs on Linux CI')
+    def test_copied_installation_runs_once_with_real_cli(self):
+        script = self.root / 'opt/civ13-watchdog/watchdog.py'
+        self.copied_module(script)
+        config = {**self.config.__dict__, 'pid': 2**31 - 1}
+        path = self.root / 'config.json'
+        path.write_text(json.dumps(config, default=str))
+        result = subprocess.run([sys.executable, '-B', str(script), '--config', str(path), '--once'],
+                                capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        status = json.loads((self.output / 'watchdog-status.json').read_text())
+        self.assertEqual(status['process']['status'], 'missing')
+        self.assertFalse(status['automatic_recovery'])
+
     def test_root_cli_is_refused_before_reading_configuration(self):
         with patch.object(w.sys, 'platform', 'linux'), patch.object(w.os, 'geteuid', return_value=0, create=True):
             with patch.object(w, 'bounded_read', side_effect=AssertionError('configuration read before guard')):
@@ -378,17 +464,104 @@ class StorageTests(Fixture):
             w.Store(self.config)
         self.assertEqual(self.output.stat().st_mode & 0o777, 0o755)
 
-    def test_singleton_lock_and_stale_lock_refused(self):
+    @unittest.skipUnless(sys.platform == 'linux', 'Kernel flock acceptance runs on Linux CI')
+    def test_singleton_rejects_live_holder_and_reuses_unlocked_file(self):
         store = w.Store(self.config)
         with store:
+            inode = (self.output / 'watchdog.lock').stat().st_ino
             with self.assertRaises(FileExistsError):
                 with w.Store(self.config):
                     self.fail('second observer acquired lock')
-        self.assertFalse((self.output / 'watchdog.lock').exists())
-        (self.output / 'watchdog.lock').write_text('old process')
-        with self.assertRaises(FileExistsError):
+            with self.assertRaises(FileExistsError):
+                store.__enter__()
+        self.assertIsNone(store.lock_fd)
+        (self.output / 'watchdog.lock').write_text('old diagnostic PID; never ownership proof')
+        with store:
+            self.assertEqual((self.output / 'watchdog.lock').stat().st_ino, inode)
+        self.assertEqual((self.output / 'watchdog.lock').read_text(), 'old diagnostic PID; never ownership proof')
+
+    @unittest.skipUnless(sys.platform == 'linux', 'Killed observer recovery runs on Linux CI')
+    def test_killed_observer_releases_lock_and_retains_incident_dedup(self):
+        # This child owns only a temporary offline observer, never a game process.
+        config = self.root / 'config.json'
+        config.write_text(json.dumps(self.config.__dict__, default=str))
+        ready = self.root / 'ready'
+        program = '''
+import importlib.util, json, pathlib, sys, time
+spec = importlib.util.spec_from_file_location('crash_observer', sys.argv[1])
+w = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = w
+spec.loader.exec_module(w)
+config = w.Config(**json.loads(pathlib.Path(sys.argv[2]).read_text()))
+with w.Store(config) as store:
+    monitor = w.Monitor(config, w.Observer(config, pathlib.Path(sys.argv[3])), store)
+    monitor.step(0, 1700000000)
+    monitor.step(31, 1700000031)
+    pathlib.Path(sys.argv[4]).write_text('ready')
+    time.sleep(15)
+'''
+        child = subprocess.Popen([sys.executable, '-B', '-c', program, str(SOURCE),
+                                  str(config), str(self.proc), str(ready)],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+        try:
+            deadline = time.monotonic() + 10
+            while not ready.exists() and child.poll() is None and time.monotonic() < deadline:
+                time.sleep(0.02)
+            self.assertTrue(ready.exists(), 'temporary observer did not reach the crash checkpoint')
+            inode = (self.output / 'watchdog.lock').stat().st_ino
+            contender = w.Store(self.config)
+            with self.assertRaises(FileExistsError):
+                contender.__enter__()
+            self.assertIsNone(contender.lock_fd)
+            self.assertEqual(len(self.bundle_names()), 1)
+            child.kill()
+            child.wait(timeout=5)
+            monitor, store = self.monitor()
             with store:
-                self.fail('stale lock silently cleared')
+                self.assertEqual((self.output / 'watchdog.lock').stat().st_ino, inode)
+                self.assertIsNone(monitor.step(32, 1700000032)['bundle'])
+                self.assertIsNone(monitor.step(63, 1700000063)['bundle'])
+                self.advance()
+                self.assertEqual(monitor.step(64, 1700000064)['state'], 'healthy')
+                self.assertIsNotNone(monitor.step(95, 1700000095)['bundle'])
+            self.assertEqual(len(self.bundle_names()), 2)
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.communicate(timeout=5)
+
+    @unittest.skipUnless(sys.platform == 'linux', 'Kernel lock path acceptance runs on Linux CI')
+    def test_lock_symlink_special_hardlink_and_public_mode_refused(self):
+        store = w.Store(self.config)
+        target = self.root / 'private'
+        target.write_text('CANARY')
+        target.chmod(0o600)
+        lock = self.output / 'watchdog.lock'
+        for kind in ('symlink', 'fifo', 'hardlink', 'public'):
+            if kind == 'symlink':
+                lock.symlink_to(target)
+            elif kind == 'fifo':
+                os.mkfifo(lock)
+            elif kind == 'hardlink':
+                os.link(target, lock)
+            else:
+                lock.write_text('public')
+                lock.chmod(0o644)
+            try:
+                with self.subTest(kind=kind), self.assertRaises((OSError, ValueError)):
+                    store.__enter__()
+                self.assertIsNone(store.lock_fd)
+                self.assertEqual(target.read_text(), 'CANARY')
+            finally:
+                lock.unlink()
+
+    def test_interrupted_atomic_write_is_preserved_and_requires_reconciliation(self):
+        store = w.Store(self.config)
+        pending = self.output / '.watchdog.tmp'
+        pending.write_text('interrupted evidence')
+        with store, self.assertRaises(FileExistsError):
+            store.write('watchdog-status.json', {'state': 'healthy'})
+        self.assertEqual(pending.read_text(), 'interrupted evidence')
 
     def test_corrupt_or_other_target_state_refused(self):
         store = w.Store(self.config)

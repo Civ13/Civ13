@@ -109,7 +109,13 @@ class Config:
             object.__setattr__(self, name, value.resolve())
         if self.game_root.is_relative_to(self.output_dir) or self.output_dir.is_relative_to(self.game_root):
             raise ValueError('game and output directories must not overlap')
-        if self.output_dir.is_relative_to(Path(__file__).resolve().parents[2]):
+        # A copied installation has no repository layout (and may be shallow).
+        # Require Civ13's entry point too: an unrelated ancestor (e.g. a
+        # version-controlled home directory) is not this script's source checkout.
+        # A normal .git directory and a worktree .git file are both supported.
+        checkout = next((parent for parent in Path(__file__).resolve().parents
+                         if (parent / '.git').exists() and (parent / 'civ13.dme').is_file()), None)
+        if checkout is not None and self.output_dir.is_relative_to(checkout):
             raise ValueError('output must be outside source checkout')
         if not Path(self.daemon).is_absolute():
             raise ValueError('absolute daemon identity required')
@@ -404,17 +410,34 @@ class Store:
         self.lock_fd = None
 
     def __enter__(self):
-        self.lock_fd = os.open(self.root / 'watchdog.lock', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        os.write(self.lock_fd, str(os.getpid()).encode('ascii'))
+        import fcntl  # Linux CLI only; portable fixtures bypass acquisition on Windows.
+        if self.lock_fd is not None:
+            raise FileExistsError('observer already holds the lock')
+        path = self.root / 'watchdog.lock'
+        fd = os.open(path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+        try:
+            own = os.fstat(fd)
+            if not stat.S_ISREG(own.st_mode) or own.st_nlink != 1 or own.st_mode & 0o077:
+                raise ValueError('private regular singleton lock required')
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise FileExistsError('another observer holds the lock') from None
+            current = path.lstat()
+            if (current.st_dev, current.st_ino) != (own.st_dev, own.st_ino):
+                raise ValueError('singleton lock identity changed')
+        except BaseException:
+            os.close(fd)
+            raise
+        self.lock_fd = fd
         return self
 
     def __exit__(self, *_):
         if self.lock_fd is not None:
-            own = os.fstat(self.lock_fd)
             os.close(self.lock_fd)
-            path = self.root / 'watchdog.lock'
-            if path.lstat().st_ino == own.st_ino:
-                path.unlink()
+            self.lock_fd = None
+        # Never unlink: another entrant must lock this same persistent inode.
+        # Kernel ownership ends on descriptor close, SIGKILL, OOM or process exit.
 
     def inventory(self):
         entries = list_bounded(self.root)
