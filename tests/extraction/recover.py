@@ -62,10 +62,10 @@ def main():
             if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
                 raise RuntimeError('Pinned recovery compile failed: ' + built.stdout + built.stderr)
             # DreamDaemon uses the DMB directory as its runtime directory. A
-            # unique temporary binary beside the store keeps safe-mode paths local.
+            # unique temporary binary beside the store keeps fixture paths local.
             shutil.copy2(target / 'recovery.dmb', store / binary_name)
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            ran = subprocess.run([str(daemon), binary_name, *platform, '-safe', '-params', '&'.join(f'{k}={v}' for k, v in params.items()), '-log', log_name], cwd=store, capture_output=True, text=True, timeout=30, creationflags=flags)
+            ran = subprocess.run([str(daemon), binary_name, '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', '&'.join(f'{k}={v}' for k, v in params.items()), '-log', log_name], cwd=store, capture_output=True, text=True, timeout=30, creationflags=flags)
             log = (store / log_name).read_text(errors='replace') if (store / log_name).exists() else ''
             if ran.returncode or any(marker in log.lower() for marker in ('runtime error', 'bad ref', '## error')):
                 raise RuntimeError('Native recovery diagnostics: ' + log + ran.stdout + ran.stderr)

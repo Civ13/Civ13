@@ -128,7 +128,7 @@ def main():
         for phase in phases:
             (target / 'result.txt').unlink(missing_ok=True)
             try:
-                ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'],
+                ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'],
                                      cwd=target, capture_output=True, text=True, timeout=45, creationflags=flags)
             except subprocess.TimeoutExpired:
                 log_path = target / 'runtime.log'
@@ -351,7 +351,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                 'reentry': ('if (generation != H.generation || active_request) return .', 'reset()\n\t\tif (generation != H.generation || active_request) return .', 'reentrant callback replacement survives old completion'),
                 'disruptive_creation': ('return disruptive_votes_enabled || !disruptive_action(vote_type, completion)', 'return TRUE', 'disabled manual and automatic disruptive creation denied'),
                 'disruptive_pending': ('if (!disruptive_votes_enabled && is_current(active_request) && disruptive_action(mode, active_request.completion))', 'if (FALSE && is_current(active_request))', 'disabling disruptive votes cancels pending action and stale resolution'),
-                'disruptive_result': ('if (!action_allowed(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', '// omitted post-callback policy\n\t\tif (.) apply_result', 'callback policy change prevents old disruptive result route'),
+                'disruptive_result': ('if (persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', 'if (persistence_blocks_vote(resolved_mode, completion)) return FALSE\n\t\tif (.) apply_result', 'callback policy change prevents old disruptive result route'),
             }
             marker, replacement, expected_vote_failure = mutations[vote_control]
             if vote_source.count(marker) != 1:
@@ -429,7 +429,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             for phase in phases:
                 (target / 'result.txt').unlink(missing_ok=True)
                 try:
-                    ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
+                    ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
                                          capture_output=True, text=True, timeout=120 if probe in ('mode', 'equipment') else 60, creationflags=flags)
                 except subprocess.TimeoutExpired:
                     log_path = target / 'runtime.log'
@@ -473,8 +473,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                     print('PASS: surface omission detected: ' + surface_control)
                     return
                 if corpse_release_control:
-                    expected = 'bones transition releases original nested insured equipment with stable identity and condition'
-                    if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                    expected = 'corpse retirement releases the actual configured insured weapon'
+                    if ran.returncode or not result.startswith('FAIL:') or not caught_vehicle_assertion_only(log + '\n' + ran.stdout + '\n' + ran.stderr, expected):
                         print(log)
                         raise RuntimeError('Corpse release control failed outside its intended assertion')
                     print('PASS: omitted corpse gear release rejected by integrated death/insurance assertion')

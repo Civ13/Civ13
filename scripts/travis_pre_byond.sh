@@ -2,16 +2,18 @@
 set -e
 echo "Setting up the system for BYOND compilation."
 sudo dpkg --add-architecture i386
-sudo apt update
-sudo apt upgrade
-sudo apt install python3 wget git unzip make sudo
-sudo apt install libstdc++6:i386 libgcc1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+# Install the build dependencies only. Upgrading the entire hosted image can
+# trigger unrelated Firefox/snap provisioning and fail before BYOND is installed.
+sudo env DEBIAN_FRONTEND=noninteractive apt-get update
+sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y python3 wget git unzip make sudo
+sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y libstdc++6:i386 libgcc1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
 
 echo "Setting up BYOND."
 rm -rf "BYOND"
 mkdir -p "BYOND"
 cd "BYOND"
-wget -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
+# Bound transient download failures without weakening TLS or changing source/version.
+wget --timeout=60 --tries=3 --waitretry=5 -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
 ls
 unzip -o 516.1681_byond_linux.zip
 cd byond

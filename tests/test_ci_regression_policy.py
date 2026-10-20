@@ -70,6 +70,16 @@ class RegressionPolicyTests(unittest.TestCase):
             self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'),
                              ['tests/test_new.py', 'tests/weather', 'tools/mcp'])
 
+    def test_bounded_build_only_added_registered_tests_select_suite(self):
+        for name in ('test_guard.py', 'test_windows.py'):
+            with self.subTest(name=name), patch.object(selection.subprocess, 'check_output',
+                    return_value=f'scripts/opendream/bounded_build/{name}\0'.encode()):
+                self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'),
+                                 ['scripts/opendream/bounded_build'])
+        with patch.object(selection.subprocess, 'check_output', return_value=
+                b'scripts/opendream/bounded_build/guard.py\0scripts/opendream/bounded_build/README.md\0'):
+            self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'), [])
+
     def test_push_manual_missing_or_failed_comparisons_never_auto_select(self):
         for event in ('push', 'workflow_dispatch', 'pull_request_target', ''):
             self.assertEqual(selection.introduced_tests('base', 'head', event), [])
@@ -135,6 +145,19 @@ class RegressionPolicyTests(unittest.TestCase):
             if 'uses: actions/upload-artifact' in block:
                 continue
             if re.search(r'(tests/|unittest discover|scripts/(check-recipes|test-power|test-batteries|check-battery-items))', block):
+                # These two cheap source-only checks intentionally run on every PR.
+                always_on = {
+                    'Verify noninteractive BYOND bootstrap commands offline': 'python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v',
+                    'Test serializer profiling source contracts': 'python3 -B tests/world_save/test_progress_sources.py -v',
+                }
+                if any(block.startswith('      - name: ' + name + '\n') for name in always_on):
+                    name = block.splitlines()[0].removeprefix('      - name: ')
+                    self.assertEqual(block, f'      - name: {name}\n        run: {always_on[name]}\n')
+                    continue
+                if block.startswith('      - name: Opt-in serializer phase profiling\n'):
+                    self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.world_save_profile_regressions\n", block)
+                    self.assertRegex(workflow, r'world_save_profile_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
+                    continue
                 if block.startswith('      - name: Verify paid rack save and six mutation controls\n'):
                     self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions\n", block)
                     self.assertRegex(workflow, r'rack_save_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')

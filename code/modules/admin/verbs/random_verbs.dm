@@ -492,7 +492,8 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set category = "Special"
 	set name = "Attack Log"
 
-	to_chat(usr, text("<span class = 'red'><b>Attack Log for []</b></span>", mob))
+	to_chat(usr, text("<span class = 'red'><b>Recent Attack Log for []</b></span>", M))
+	to_chat(usr, "Older entries are archived in the server's private data/logs/attack file. If archival fails, they remain here until it succeeds.")
 	for (var/t in M.attack_log)
 		to_chat(usr, t)
 

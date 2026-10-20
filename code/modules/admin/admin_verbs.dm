@@ -119,6 +119,7 @@ var/list/admin_verbs_spawn = list(
 	)
 
 var/list/admin_verbs_server = list(
+	/client/proc/control_civilizationbot,
 	/datum/admins/verb/startnow,
 	/datum/admins/proc/restart,
 	/datum/admins/proc/delay,
@@ -131,7 +132,9 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/adspawn,
 	/datum/admins/proc/adjump,
 	/datum/admins/proc/loadmap,
-	/datum/admins/proc/savemap
+	/datum/admins/proc/savemap,
+	/datum/admins/proc/save_restart_resume,
+	/datum/admins/proc/resume_pending_recovery
 	)
 var/list/admin_verbs_debug = list(
 	/client/proc/gc_outcomes,

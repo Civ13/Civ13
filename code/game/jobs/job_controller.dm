@@ -114,6 +114,18 @@ var/global/datum/controller/occupations/job_master
 	map.availablefactions_run = FALSE
 	return
 
+// Capacity initialization is also needed when a saved active round skips setup.
+// Keep it separate from faction, squad and map changes in autobalance.
+/datum/controller/occupations/proc/initialize_position_limits()
+	for (var/datum/job/J in occupations)
+		if (J.title != "N/A" && J.title != "generic job")
+			var/positions = J.max_positions
+			positions = max(positions, J.min_positions)
+			positions = min(positions, J.max_positions)
+			J.total_positions = positions
+		else
+			J.total_positions = 0
+
 /datum/controller/occupations/proc/toggle_roundstart_autobalance(var/_clients = 0)
 
 	if (map)
@@ -149,14 +161,7 @@ var/global/datum/controller/occupations/job_master
 			set_factions(autobalance_for_players)
 		if (map && map.ID == MAP_THREE_TRIBES)
 			set_factions3(autobalance_for_players)
-	for (var/datum/job/J in occupations)
-		if (J.title != "N/A" && J.title != "generic job")
-			var/positions = J.max_positions
-			positions = max(positions, J.min_positions)
-			positions = min(positions, J.max_positions)
-			J.total_positions = positions
-		else
-			J.total_positions = 0
+	initialize_position_limits()
 
 	if (map && (map.ID == MAP_LITTLE_CREEK || map.ID == MAP_LITTLE_CREEK_TDM))
 		civilians_forceEnabled = TRUE

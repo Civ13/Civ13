@@ -7,7 +7,9 @@
 #include "../../code/predefines.dm"
 #include "stubs.dm"
 #define fdel(path) delete_file_adapter(path)
+#include "../../code/modules/multiz/world_z_budget.dm"
 #include "../../code/modules/persistence/functions.dm"
+#include "../../code/modules/persistence/player_reclaim.dm"
 #include "../../code/modules/persistence/saving.dm"
 #include "../../code/modules/persistence/loading.dm"
 #include "../../code/modules/persistence/immutable_capture.dm"

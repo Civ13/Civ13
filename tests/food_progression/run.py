@@ -111,7 +111,7 @@ def main():
         command = [str(daemon), str(output / generated['.dmb'].name)]
         if os.name == 'nt':
             command += ['-invisible', '-close']
-        runtime = subprocess.run(command + ['-safe', '-log', 'runtime.log'], cwd=output,
+        runtime = subprocess.run(command + ['-trusted', '-log', 'runtime.log'], cwd=output,
                                  capture_output=True, text=True, timeout=30, creationflags=flags)
         (output / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')
         log = (output / 'runtime.log').read_text(encoding='utf-8', errors='replace')

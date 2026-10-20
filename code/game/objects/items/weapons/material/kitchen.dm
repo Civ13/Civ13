@@ -115,7 +115,7 @@
 		user.apply_damage(src.sharpness*2.5, "brute", "groin")
 		user.death()
 		user.visible_message("<span class = 'warning'>[user] cuts themselves open.</span>")
-		M.attack_log += "\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves."
+		M.append_attack_log("\[[time_stamp()]\] [M]/[M.ckey]</b> disemboweled themselves.")
 		suicide = FALSE
 
 /obj/item/weapon/material/kitchen/utensil/knife/attack(atom/A, mob/living/user, target_zone)

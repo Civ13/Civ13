@@ -14,6 +14,24 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	proc/resolve()
 		return manager ? manager.result(src) : FALSE
 
+// Keep the round alive even if configuration allows restart votes or a saved
+// round contains an old finished flag. Administrative save/restart is separate.
+/proc/persistence_round_active()
+	return (map && (map.persistence || map.perschadplus)) || (config && config.allowedgamemodes == "PERSISTENCE")
+
+/proc/persistence_blocks_vote(var/vote_type, list/completion)
+	if (!persistence_round_active())
+		return FALSE
+	if (vote_type == "restart")
+		return TRUE
+	// Initial lobby map selection must still be possible.
+	if (!ticker || ticker.current_state < GAME_STATE_PLAYING)
+		return FALSE
+	if (vote_type == "epoch" || vote_type == "map" || vote_type == "gamemode")
+		return TRUE
+	// A generic question must not disguise a round-transition callback.
+	return completion && completion.len == 2 && (istype(completion[1], /process/epochswap) || istype(completion[1], /process/mapswap) || istype(completion[1], /process/gamemode))
+
 /datum/vote
 	// Runtime admin policy. Restarting the server restores the existing enabled default.
 	var/disruptive_votes_enabled = TRUE
@@ -50,7 +68,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		if (!initiate_vote(vote_type, initiator_key, automatic, completion)) return null
 		return active_request
 	proc/request_choices(prompt, list/options, initiator_key, duration, list/completion = list(), automatic = FALSE)
-		if (!action_allowed("request", completion)) return null
+		if (persistence_blocks_vote("request", completion) || !action_allowed("request", completion)) return null
 		if (mode || !islist(options) || !options.len || options.len > 100 || !istext(prompt) || !isnum(duration) || duration < 10 || duration > 6000) return null
 		if (started_time != null && !automatic && !check_rights(R_ADMIN) && started_time + config.vote_delay > world.time) return null
 		for (var/option in options)
@@ -105,6 +123,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		var/datum/vote_handle/H = active_request
 		if (!is_current(H)) return
 		if (mode)
+			if (persistence_blocks_vote(mode, H.completion))
+				to_chat(world, "<b>Voting aborted: persistent rounds cannot be ended or restarted by a vote.</b>")
+				cancel_request(H)
+				return
 			// No more change mode votes after the game has started.
 			// 3 is GAME_STATE_PLAYING, but that #define is undefined for some reason
 			if ((mode == "gamemode" || mode == "ship selection") && ticker.current_state >= 2)
@@ -218,7 +240,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/result(datum/vote_handle/H)
 		if (!is_current(H)) return FALSE
-		if (!action_allowed(mode, H.completion))
+		if (persistence_blocks_vote(mode, H.completion) || !action_allowed(mode, H.completion))
 			cancel_request(H)
 			return FALSE
 		// No yielding callbacks until the old session is terminal and detached.
@@ -237,12 +259,12 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		// A completion may create or cancel another session. Never apply the
 		// old route to it, even if the replacement already finished synchronously.
 		if (generation != H.generation || active_request) return .
-		if (!action_allowed(resolved_mode, completion)) return FALSE
+		if (persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)) return FALSE
 		if (.) apply_result(resolved_mode, resolved_faction, ., completion)
 		return .
 
 	proc/apply_result(resolved_mode, resolved_faction, winner, list/completion)
-		if (!action_allowed(resolved_mode, completion)) return FALSE
+		if (persistence_blocks_vote(resolved_mode, completion) || !action_allowed(resolved_mode, completion)) return FALSE
 		. = winner
 		if (.)
 			switch(resolved_mode)
@@ -305,6 +327,9 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 	proc/initiate_vote(var/vote_type, var/initiator_key, var/automatic = FALSE, var/list/_callback = list())
 		if (!action_allowed(vote_type, _callback)) return FALSE
+		if (persistence_blocks_vote(vote_type, _callback))
+			to_chat(world, "<b>Persistent rounds cannot be ended or restarted by a vote.</b>")
+			return FALSE
 		if (!mode)
 			if (started_time != null && !(check_rights(R_ADMIN) || automatic))
 				var/next_allowed_time = (started_time + config.vote_delay)
@@ -449,7 +474,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 
 				else
 					return FALSE
-			if (!action_allowed(vote_type, _callback))
+			if (persistence_blocks_vote(vote_type, _callback) || !action_allowed(vote_type, _callback))
 				reset()
 				return FALSE
 			mode = vote_type
@@ -535,7 +560,7 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 		else
 			. += "<h2>Start a vote:</h2><hr><ul><li>"
 			//restart
-			if (admin || config.allow_vote_restart)
+			if (!persistence_blocks_vote("restart") && (admin || config.allow_vote_restart))
 				. += "<a href='?src=\ref[src];vote=restart'>Restart</a>"
 			else
 				. += "<font color='grey'>Restart (Disallowed)</font>"

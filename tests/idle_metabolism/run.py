@@ -10,6 +10,9 @@ import tempfile
 import textwrap
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+sys.path.insert(0, str(ROOT / "scripts/gameplay_bridge"))
+from gather_context import project
 
 
 def procedure(source, name):
@@ -23,6 +26,7 @@ def production(control):
     paths = ['code/game/mob/living/carbon/human/human_life.dm',
              'code/_helpers/mobs.dm', 'code/modules/1713/active_training.dm']
     life, actions, training = [(ROOT / p).read_text(encoding='utf-8-sig') for p in paths]
+    actions = project(actions, set())[0]  # Compile-disabled production wait contract.
     helpers = life[life.index('/mob/living/human/proc/survival_metabolism_time()'):
                    life.index('/mob/living/human/Life()')]
     fields = re.findall(r'^\tvar/tmp/survival_[^\n]+', life, re.M)
@@ -74,7 +78,7 @@ def main():
         print(log, flush=True)
         if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
             raise RuntimeError('Pinned compilation failed')
-        result = subprocess.run([str(daemon), 'probe.dmb', '-close', '-safe', '-log', 'runtime.log']
+        result = subprocess.run([str(daemon), 'probe.dmb', '-close', '-trusted', '-log', 'runtime.log']
                                 + (['-invisible'] if os.name == 'nt' else []), cwd=work,
                                 capture_output=True, text=True, timeout=25, creationflags=flags)
         runtime = (work / 'runtime.log').read_text(errors='replace') if (work / 'runtime.log').exists() else ''

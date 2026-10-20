@@ -62,7 +62,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-wall-appearance-') as temp:
     (root / 'icons/turf').mkdir(parents=True)
     for asset in ('wall_masks.dmi', 'walls.dmi'):
         shutil.copyfile(repo / 'icons/turf' / asset, root / 'icons/turf' / asset)
-    support = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm']
+    support = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm']
     for i, support_path in enumerate(support):
         shutil.copyfile(repo / support_path, root / f'support-{i}.dm')
     (root / 'probe.dm').write_text(probe)
@@ -77,7 +77,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-wall-appearance-') as temp:
     (logs / 'compile.log').write_text(build_log)
     if build.returncode or '516.1681' not in build_log or '0 errors, 0 warnings' not in build_log:
         raise SystemExit(build_log)
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=60, creationflags=flags)
+    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], cwd=root, capture_output=True, timeout=60, creationflags=flags)
     runtime_log = (root / 'runtime.log').read_text(errors='replace') + (run.stdout + run.stderr).decode(errors='replace')
     (logs / 'runtime.log').write_text(runtime_log)
     if run.returncode or re.search(r'runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null', runtime_log, re.I):

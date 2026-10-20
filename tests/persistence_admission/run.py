@@ -90,7 +90,7 @@ def main():
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'], 60)
     if '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError(f'Pinned clean compilation required: {build}')
-    owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'], 30)
+    owned('daemon', [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], 30)
     actual = text(output / 'result.txt').strip()
     if actual != expected:
         raise RuntimeError(f'Unexpected adapter result: {actual!r}; expected {expected!r}')

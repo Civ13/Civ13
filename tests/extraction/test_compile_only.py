@@ -57,6 +57,36 @@ class CompileOnlyBoundary(unittest.TestCase):
             with self.subTest(log=log):
                 self.assertFalse(RUNNER.caught_vehicle_assertion_only(log, expected))
 
+    def test_corpse_control_uses_current_caught_assertion(self):
+        root = Path(__file__).resolve().parents[2]
+        expected = 'corpse retirement releases the actual configured insured weapon'
+        assertion = f'FAIL: {expected} at tests/extraction/equipment_probe.dm:38\n'
+        cases = [
+            (assertion, '', '', 0, 'FAIL: equipment verification', True),
+            (assertion + assertion, '', '', 0, 'FAIL: equipment verification', False),
+            (assertion + 'FAIL: unrelated\n', '', '', 0, 'FAIL: equipment verification', False),
+            (assertion, 'Runtime error: unrelated', '', 0, 'FAIL: equipment verification', False),
+            (assertion, '', 'Bad ref', 0, 'FAIL: equipment verification', False),
+            (assertion, '', '', 1, 'FAIL: equipment verification', False),
+            (assertion, '', '', 0, 'PASS: equipment verification', False),
+            (assertion.replace(expected, 'bones transition releases original nested insured equipment with stable identity and condition'), '', '', 0, 'FAIL: equipment verification', False),
+        ]
+        for log, stdout, stderr, code, result, accepted in cases:
+            with self.subTest(log=log, stdout=stdout, stderr=stderr, code=code, result=result):
+                def execute(command, **kwargs):
+                    if command[0] == 'compiler':
+                        return subprocess.CompletedProcess(command, 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+                    target = Path(kwargs['cwd'])
+                    (target / 'runtime.log').write_text(log)
+                    (target / 'result.txt').write_text(result)
+                    return subprocess.CompletedProcess(command, code, stdout, stderr)
+                with patch.object(RUNNER.subprocess, 'run', side_effect=execute), patch.object(RUNNER.shutil, 'copy2'), patch.object(RUNNER.shutil, 'copytree'):
+                    if accepted:
+                        RUNNER.equipment(root, Path('compiler'), Path('daemon'), 0, 'mode', corpse_release_control=True)
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, 'Corpse release control failed outside its intended assertion'):
+                            RUNNER.equipment(root, Path('compiler'), Path('daemon'), 0, 'mode', corpse_release_control=True)
+
     def test_store_returns_before_runtime(self):
         result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
         with patch.object(sys, 'argv', ['run.py', '--byond-bin', '.', '--probe', 'store', '--compile-only']):

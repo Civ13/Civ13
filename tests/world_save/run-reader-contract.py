@@ -66,7 +66,7 @@ def main():
         stream = (output / f'{role}-stdio.log').open('w', encoding='utf-8')
         streams[role] = stream
         processes[role] = subprocess.Popen(
-            [str(daemon), 'probe.dmb', '-invisible', '-close', '-safe', '-log',
+            [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log',
              f'{role}-runtime.log', '-params', f'role={role}'], cwd=output,
             stdout=stream, stderr=subprocess.STDOUT, creationflags=flags)
 

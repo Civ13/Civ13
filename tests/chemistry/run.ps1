@@ -29,7 +29,7 @@ try {
     $testedCommit = git rev-parse HEAD
     Write-Output "Tested commit: $testedCommit"
     Write-Output "Isolated runtime and retained logs: $testRun"
-    $runtime = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $testRun '.chemistry_probe.dmb'), '-invisible', '-safe', '-close', '-params', "tested_commit=$testedCommit", '-log', (Join-Path $testRun 'runtime.log')) -WorkingDirectory $testRun -WindowStyle Hidden -PassThru
+    $runtime = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @((Join-Path $testRun '.chemistry_probe.dmb'), '-invisible', '-trusted', '-close', '-params', "tested_commit=$testedCommit", '-log', (Join-Path $testRun 'runtime.log')) -WorkingDirectory $testRun -WindowStyle Hidden -PassThru
     if (!$runtime.WaitForExit(30000)) {
         Stop-Process -Id $runtime.Id
         throw 'Task-owned chemistry probe exceeded 30 seconds'

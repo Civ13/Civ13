@@ -106,6 +106,7 @@
 	if (wall == TRUE)
 		for(var/obj/roof/R in range(2,src))
 			R.collapse_check()
+	building_remove_roof()
 	..()
 	spawn(1)
 		if (opacity)
@@ -114,26 +115,39 @@
 	return TRUE
 
 /obj/item/weapon/covers/attack_self(mob/user)
+	if (!building_item_usable(src, user))
+		return
+	var/turf/target = get_step(user, user.dir)
+	var/turf/start = get_turf(user)
+	if (!target || istype(target, /turf/wall) || istype(target, /turf/floor/beach/water/deep/saltwater))
+		to_chat(user, SPAN_WARNING("You cannot build a floor here."))
+		return
+	var/error = building_floor_error(target)
+	if (error)
+		to_chat(user, SPAN_WARNING(error))
+		return
 	var/covers_time = 80
 	if (ishuman(user))
-		var/turf/targetfloor = get_turf(get_step(user, user.dir))
-		if (istype(targetfloor, /turf/wall) || istype(targetfloor, /turf/floor/beach/water/deep/saltwater))
-			if (map && map.ID != MAP_BATTLE_SHIPS)
-				visible_message("<span class='notice'>You can't build here!</span>")
-				return
 		var/mob/living/human/H = user
 		covers_time /= H.getStatCoeff("strength")
-		covers_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
-	if (WWinput(user, "This will start building a floor cover [dir2text(user.dir)] of you.", "Floor Cover Construction", "Continue", list("Continue", "Stop")) == "Continue")
-		visible_message("<span class='danger'>[user] starts constructing the floor cover.</span>", "<span class='danger'>You start constructing the floor cover.</span>")
-		if (do_after(user, covers_time, user.loc) && src)
-			qdel(src)
-			new/obj/covers/repairedfloor(get_step(user, user.dir), user)
-			visible_message("<span class='danger'>[user] finishes placing the floor cover.</span>")
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				H.adaptStat("crafting", 3)
+		covers_time /= H.getStatCoeff("crafting") ** 2
+	if (WWinput(user, "Build a floor [dir2text(user.dir)] of you?", "Floor Construction", "Continue", list("Continue", "Stop")) != "Continue")
 		return
+	if (get_turf(user) != start || !do_after(user, covers_time, start) || !building_item_usable(src, user) || get_turf(user) != start)
+		return
+	error = building_floor_error(target)
+	if (error)
+		to_chat(user, SPAN_WARNING(error))
+		return
+	var/obj/covers/repairedfloor/C = new(target)
+	if (!C.building_finish_floor())
+		qdel(C)
+		return
+	visible_message(SPAN_NOTICE("[user] finishes placing the floor."))
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		H.adaptStat("crafting", 3)
+	qdel(src)
 
 /obj/item/weapon/covers/ship/attack_self(mob/user)
 	var/covers_time = 80

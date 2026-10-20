@@ -190,7 +190,7 @@ def main():
             raise RuntimeError('Pinned compiler failed')
         platform = ['-invisible', '-close'] if os.name == 'nt' else []
         (target / 'clock.txt').write_text(str(int(time.time())))
-        ran = subprocess.run([str(daemon), 'probe.dmb', *platform, '-safe', '-log', 'runtime.log'],
+        ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-log', 'runtime.log'],
                              cwd=target, capture_output=True, text=True, timeout=60, creationflags=flags)
         result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
         log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''

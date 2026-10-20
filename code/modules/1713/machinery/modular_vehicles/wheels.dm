@@ -1,3 +1,18 @@
+// Adapted from RuCiv13 24434a66. A stationary seat can change its occupant's
+// facing without living.Move/facedir. Moving vehicle passengers refresh once
+// at the axis completion boundary instead of against intermediate geometry.
+/obj/structure/bed/chair/proc/refresh_seated_vision()
+	var/mob/living/M = buckled_mob
+	if (!M || QDELETED(M) || M.buckled != src)
+		return
+	var/turf/T = get_turf(M)
+	if (!T)
+		return
+	var/obj/structure/vehicleparts/axis/vehicle = T.vehicle_transforming
+	if (vehicle && !QDELETED(vehicle) && vehicle.transforming_vehicle && (M in vehicle.transporting))
+		return
+	M.update_vision_cone()
+
 //////////////DRIVING WHEELS///////////////////////
 
 /obj/item/vehicleparts/wheel/modular
@@ -209,6 +224,7 @@
 /obj/structure/bed/chair/drivers/post_buckle_mob()
 	if (axis)
 		axis.driver = buckled_mob
+	refresh_seated_vision()
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(wheel) == FALSE)
 		to_chat(buckled_mob, "Your hands are full!")
 		return
@@ -289,6 +305,7 @@
 	return
 
 /obj/structure/bed/chair/mgunner/post_buckle_mob()
+	refresh_seated_vision()
 	if (buckled_mob && istype(buckled_mob, /mob/living/human) && mg)
 		if(buckled_mob.put_in_active_hand(mg) == FALSE)
 			to_chat(buckled_mob, "Your hands are full!")
@@ -381,13 +398,17 @@
 	pixel_y += turret.pixel_y
 
 	if(buckled_mob)
+		var/old_facing = buckled_mob.dir
 		buckled_mob.dir = dir
 		buckled_mob.pixel_x = pixel_x
 		buckled_mob.pixel_y = pixel_y
+		if (old_facing != buckled_mob.dir)
+			refresh_seated_vision()
 
 /obj/structure/bed/chair/gunner/post_buckle_mob()
 	..()
 	update_icon()
+	refresh_seated_vision()
 	if(buckled_mob)
 		buckled_mob.pixel_x = pixel_x
 		buckled_mob.pixel_y = pixel_y
@@ -514,9 +535,12 @@
 	pixel_y += turret.pixel_y
 
 	if(buckled_mob)
+		var/old_facing = buckled_mob.dir
 		buckled_mob.dir = dir
 		buckled_mob.pixel_x = pixel_x
 		buckled_mob.pixel_y = pixel_y
+		if (old_facing != buckled_mob.dir)
+			refresh_seated_vision()
 
 /obj/item/turret_controls/proc/rotate()
 	if(!turret)
@@ -592,12 +616,16 @@
 	pixel_y += turret.pixel_y
 
 	if(buckled_mob)
+		var/old_facing = buckled_mob.dir
 		buckled_mob.dir = dir
 		buckled_mob.pixel_x = pixel_x
 		buckled_mob.pixel_y = pixel_y
+		if (old_facing != buckled_mob.dir)
+			refresh_seated_vision()
 
 /obj/structure/bed/chair/loader/post_buckle_mob()
 	update_icon()
+	refresh_seated_vision()
 	if(buckled_mob)
 		buckled_mob.pixel_x = pixel_x
 		buckled_mob.pixel_y = pixel_y
@@ -686,9 +714,12 @@
 	pixel_y += turret.pixel_y
 
 	if(buckled_mob)
+		var/old_facing = buckled_mob.dir
 		buckled_mob.dir = dir
 		buckled_mob.pixel_x = pixel_x
 		buckled_mob.pixel_y = pixel_y
+		if (old_facing != buckled_mob.dir)
+			refresh_seated_vision()
 
 /obj/structure/bed/chair/commander/post_buckle_mob()
 	if(buckled_mob)
@@ -696,6 +727,7 @@
 		buckled_mob.pixel_y = pixel_y
 		if(turret)
 			turret.commander = buckled_mob
+		refresh_seated_vision()
 		if (istype(buckled_mob, /mob/living/human) && buckled_mob.put_in_active_hand(periscope) == FALSE)
 			to_chat(buckled_mob, "Your hands are full!")
 			return

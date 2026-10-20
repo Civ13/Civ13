@@ -36,7 +36,7 @@ try {
     $compile = Get-Content -LiteralPath (Join-Path $temporary 'compile.log') -Raw
     Write-Output $compile
     if ($compiler.ExitCode -ne 0 -or $compile -notmatch '516\.1681' -or $compile -notmatch '0 errors, 0 warnings') { throw 'Pinned compilation failed' }
-    $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-safe', '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
+    $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
     if (!$runtime.WaitForExit(60000)) { throw 'Unique graph fixture timed out' }
     $log = Get-Content -LiteralPath (Join-Path $temporary 'runtime.log') -Raw
     Write-Output $log

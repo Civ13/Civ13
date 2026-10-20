@@ -21,7 +21,7 @@ try {
     $compiler = Start-Process -FilePath (Join-Path $ByondBin $compilerName) -ArgumentList @($environment) -Wait -PassThru @processOptions -RedirectStandardOutput (Join-Path $temporary 'compile.log')
     Get-Content -LiteralPath (Join-Path $temporary 'compile.log')
     if ($compiler.ExitCode -ne 0) { throw 'Probe compilation failed.' }
-    $runtime = Start-Process -FilePath (Join-Path $ByondBin $runtimeName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-safe', '-log', 'probe.log') -WorkingDirectory $temporary @processOptions -PassThru
+    $runtime = Start-Process -FilePath (Join-Path $ByondBin $runtimeName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-log', 'probe.log') -WorkingDirectory $temporary @processOptions -PassThru
     if (!$runtime.WaitForExit(30000)) { Stop-Process -Id $runtime.Id; throw 'Probe timed out.' }
     $log = Get-Content -LiteralPath (Join-Path $temporary 'probe.log') -Raw
     Write-Output $log

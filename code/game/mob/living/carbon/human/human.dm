@@ -229,6 +229,22 @@ var/list/coefflist = list()
 					client.add_stat("<b>[capitalize(statname)]:</b> ", "[coeff]x average")
 
 
+// RuCiv13 3c1ee1fa: forced relocation bypasses living.Move's cone refresh.
+// Preserve forceMove's result; vehicle transactions refresh after final geometry.
+/mob/living/human/forceMove(atom/destination, var/special_event)
+	var/turf/origin = get_turf(src)
+	. = ..()
+	var/turf/target = get_turf(src)
+	if (!. || !target || origin == target)
+		return .
+	var/obj/structure/vehicleparts/axis/vehicle = target.vehicle_transforming
+	if (!vehicle && origin)
+		vehicle = origin.vehicle_transforming
+	if (vehicle && !QDELETED(vehicle) && vehicle.transforming_vehicle && (src in vehicle.transporting))
+		return .
+	update_vision_cone()
+	return .
+
 /mob/living/human/ex_act(severity)
 	if (!blinded)
 		if (HUDtech.Find("flash"))
@@ -1326,6 +1342,11 @@ var/list/coefflist = list()
 	. = ..()
 	if (loc != old_location)
 		reset_corpse_decay_age()
+	if (human_subtile_pulse)
+		return .
+	human_movement_completed()
+
+/mob/living/human/proc/human_movement_completed()
 	handle_looks_with_movement()
 
 	if (phosphor_dye_timer > 0)

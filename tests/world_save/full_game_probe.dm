@@ -11,8 +11,14 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 	try
 		if(!map || !ticker)
 			throw EXCEPTION("Game startup did not create map/ticker")
-		world.name = "Civ13 LOCAL full-game world-save probe"
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "map_id" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "probe_metadata.json")
+		if(world.params["player_identity"])
+			check_player_identity()
+			text2file("PASS: real human constructors preserve owned and legacy identity after deferred spawn", "full_game_result.txt")
+			if(!world.params["visual"])
+				del(world)
+			return
+		world.name = "Civ13 LOCAL full-game world-save probe"
 		var/turf/T = locate(20,20,1)
 		var/saved_turf_type = T.type
 		var/obj/structure/closet/crate/C = new(T)
@@ -80,10 +86,70 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 		text2file("PASS: full game constructors, crate, nested knife and seed stock, crop and soil state, metadata, boundary turf", "full_game_result.txt")
 		world.log << "PASS: full-game world-save probe"
 	catch(var/exception/e)
+		text2file(e.name, "full_game_failure.txt")
 		text2file("FAIL: [e]", "full_game_result.txt")
 		world.log << "FAIL: full-game world-save probe: [e]"
 	if(!world.params["visual"])
 		del(world)
+
+/datum/world_save_game_probe/proc/check_player_identity()
+	if(map.ID != MAP_NOMADS_GAIA)
+		throw EXCEPTION("Identity probe requires Gaia")
+	var/turf/T = locate(145,71,2)
+	var/mob/living/human/fresh = new(T)
+	sleep(10)
+	// A fresh body must still take the ordinary biome naming path.
+	fresh.name = "fresh identity sentinel"
+	fresh.nomads_spawn()
+	if(fresh.name == "fresh identity sentinel")
+		throw EXCEPTION("Fresh human spawn customization skipped")
+	for(var/owned in list(FALSE, TRUE))
+		fresh.name = "saved identity sentinel"
+		fresh.real_name = "saved real identity sentinel"
+		fresh.r_hair = 17
+		fresh.g_hair = 23
+		fresh.b_hair = 31
+		fresh.s_tone = -33
+		fresh.persistence_owner_ckey = owned ? "testaccount" : null
+		var/list/saved_languages = list()
+		for(var/datum/language/L in fresh.languages)
+			saved_languages += "[L.type]"
+		var/savefile/F = new(owned ? "identity-owned.sav" : "identity-legacy.sav")
+		F["/format_version"] << 2
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 2
+		var/ref = map_storage.BuildVarDirectory(F, fresh, 1)
+		F.cd = map_storage.entry_path(F, ref)
+		if("persistence_restored" in F.dir)
+			throw EXCEPTION("Restoration marker exported")
+		// Even a crafted old field cannot turn off the runtime marker on import.
+		F["persistence_restored"] << list("kind" = "value", "value" = FALSE)
+		map_storage.clear_bookkeeping()
+		var/mob/living/human/restored = map_storage.Load_Entry(F, ref, starting_loc = T)
+		if(restored.name != "saved identity sentinel" || restored.real_name != "saved real identity sentinel")
+			throw EXCEPTION("Saved human identity not decoded")
+		// Exercise the real constructor's five-tick callback, not a synchronous stub.
+		sleep(20)
+		if(restored.name != "saved identity sentinel" || restored.real_name != "saved real identity sentinel")
+			throw EXCEPTION("Deferred spawn overwrote saved identity")
+		if(!restored.persistence_restored || restored.r_hair != 17 || restored.g_hair != 23 || restored.b_hair != 31 || restored.s_tone != -33)
+			throw EXCEPTION("Deferred spawn overwrote saved appearance")
+		var/list/restored_languages = list()
+		for(var/datum/language/L in restored.languages)
+			restored_languages += "[L.type]"
+		if(jointext(saved_languages, ";") != jointext(restored_languages, ";"))
+			throw EXCEPTION("Deferred spawn overwrote saved languages")
+		var/savefile/exported = new(owned ? "identity-owned-reexport.sav" : "identity-legacy-reexport.sav")
+		exported["/format_version"] << 2
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 2
+		var/export_ref = map_storage.BuildVarDirectory(exported, restored, 1)
+		exported.cd = map_storage.entry_path(exported, export_ref)
+		if("persistence_restored" in exported.dir)
+			throw EXCEPTION("True restoration marker exported")
+		qdel(restored)
+	qdel(fresh)
+	map_storage.clear_bookkeeping()
 
 /client/verb/inspect_restored_save()
 	set category = "Local Verification"

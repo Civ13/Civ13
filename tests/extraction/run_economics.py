@@ -83,7 +83,7 @@ def main():
             def native(phase='poll'):
                 (target / 'result.txt').unlink(missing_ok=True)
                 platform = ['-invisible', '-close'] if os.name == 'nt' else []
-                output = command([daemon, 'probe.dmb', *platform, '-safe', '-params', 'phase=' + phase,
+                output = command([daemon, 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', 'phase=' + phase,
                                   '-log', 'runtime.log'], target)
                 log = (target / 'runtime.log').read_text(errors='replace')
                 result = (target / 'result.txt').read_text().strip()

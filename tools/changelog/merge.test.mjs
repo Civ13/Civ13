@@ -2,6 +2,34 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { changelogLine, run, channel } from './publish.mjs';
 import { checkQueues } from './check-queues.mjs';
+import { checkPR } from './check-pr.mjs';
+import { readFileSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+
+// Exact malformed tail from PR #3184 before its description was corrected.
+const incidentTail = 'Changelog: required\nLauncher update failures now include safe diagnostic codes to help identify connection problems without exposing private error text.';
+const flattenedTail = 'Changelog: required  Player changelog: Nomads TEST gains automatic updates that save the world before restarting and restore the saved round afterward. Update failures stop the updater for investigation. Availability remains pending installation and runtime verification.';
+
+test('actual edited PR event CLI rejects the incident and accepts corrected same-line text', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'changelog-pr-'));
+  try {
+    const eventPath = join(dir, 'event.json');
+    for (const newline of ['\n', '\r\n', '\r\r\n']) {
+      const invalid = incidentTail.replaceAll('\n', newline);
+      const corrected = invalid.replace('required' + newline, '');
+      for (const [body, status] of [[invalid, 1], [flattenedTail, 1], [corrected, 0], ['Changelog:', 0]]) {
+        writeFileSync(eventPath, JSON.stringify({ action: 'edited', pull_request: { body } }));
+        const result = spawnSync(process.execPath, ['tools/changelog/check-pr.mjs'], {
+          env: { ...process.env, GITHUB_EVENT_PATH: eventPath }, encoding: 'utf8',
+        });
+        assert.equal(result.status, status, result.stderr);
+        if (status === 1) assert.match(result.stderr, /placeholder/);
+      }
+    }
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
 
 test('publisher queue compatibility guard rejects dropped runs and unknown queue syntax', () => {
   const valid = 'concurrency:\n  group: discord-changelog\n  cancel-in-progress: false\n  queue: max\njobs:\n';
@@ -15,6 +43,40 @@ test('only an explicit visible single line opts in', () => {
   for (const body of [null, '', 'Ordinary description', 'Changelog:', 'Changelog:  ', '<!-- Changelog: example -->', '```md\nChangelog: example\n```', '> Changelog: quoted', '    Changelog: code']) assert.equal(changelogLine(body), null);
   assert.equal(changelogLine('Details\r\nChangelog: Fixed crafting.\r\nMore details'), 'Fixed crafting.');
   for (const body of ['Changelog: one\nChangelog: two', 'Changelog: @everyone', 'Changelog: <@123>', 'Changelog: ' + 'x'.repeat(1501)]) assert.throws(() => changelogLine(body));
+});
+
+test('placeholder markers and template prompts fail the publisher and PR description check', () => {
+  for (const marker of ['required', 'REQUIRED.', '**required**', '[TODO]', '`TBD`', 'to be determined',
+    'FIXME', 'optional', 'placeholder', 'example', 'none', 'N/A', 'your changelog here',
+    'Enter your changelog here', 'Describe the player-visible change', 'Replace the changelog text']) {
+    const body = `Changelog: ${marker}\nLauncher update failures now include safe diagnostic codes.`;
+    assert.throws(() => changelogLine(body), /placeholder/);
+    assert.throws(() => checkPR({ pull_request: { body } }), /placeholder/);
+  }
+  const text = 'Launcher update failures now include safe diagnostic codes to help identify connection problems without exposing private error text.';
+  assert.equal(checkPR({ pull_request: { body: `Changelog: ${text}\n\nVerification: offline checks passed.` } }), text);
+  assert.equal(changelogLine('Changelog: Required tools are shown before crafting.'), 'Required tools are shown before crafting.');
+  assert.equal(changelogLine('Changelog: Added a TODO list to the journal.'), 'Added a TODO list to the journal.');
+  assert.throws(() => checkPR({}), /PR event/);
+});
+
+test('installed template and documented placeholder labels do not become announcements', () => {
+  const template = readFileSync('.github/pull_request_template.md', 'utf8');
+  assert.equal(checkPR({ pull_request: { body: template } }), null);
+  assert.equal(changelogLine('## Changelog: required\n<!-- Changelog: TODO -->\n```text\nChangelog: required\n```'), null);
+  const filled = template.replace(/Changelog:\s*$/, 'Changelog: Fixed crafting cancellation.');
+  assert.equal(checkPR({ pull_request: { body: filled } }), 'Fixed crafting cancellation.');
+});
+
+test('flattened placeholder with a second player changelog label is rejected', () => {
+  // The actual PR #3174 paragraph is not an opt-in; moving its field onto a
+  // separate line must not make its required marker publishable.
+  assert.equal(changelogLine('Description.  ' + flattenedTail), null);
+  for (const body of [flattenedTail, flattenedTail.replace('required', '**TODO**'),
+    flattenedTail.replace('required  Player changelog:', 'TBD. PLAYER CHANGELOG :')]) {
+    assert.throws(() => changelogLine(body), /placeholder/);
+    assert.throws(() => checkPR({ pull_request: { body } }), /placeholder/);
+  }
 });
 
 const commit = 'b'.repeat(40);
@@ -71,6 +133,18 @@ test('absent or blank fields require no credentials or external effects', async 
   for (const body of [null, 'Description', 'Changelog:']) {
     const e = event(); e.pull_request.body = body;
     await run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, e, { api: async path => { assert.equal(path, ''); return { default_branch: 'master' }; }, http: async () => { throw Error('Must not call Discord'); } });
+  }
+});
+
+test('placeholder merge rejects before receipt writes, credential checks or Discord access', async () => {
+  for (const body of [incidentTail, flattenedTail]) {
+    const e = event(); e.pull_request.body = body;
+    const calls = [];
+    await assert.rejects(run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, e, {
+      api: async path => { calls.push(path); assert.equal(path, ''); return { default_branch: 'master' }; },
+      http: async () => { throw Error('Must not contact Discord'); },
+    }), /placeholder/);
+    assert.deepEqual(calls, ['']);
   }
 });
 test('real API adapter uses the canonical repository URL without a trailing slash', async () => {

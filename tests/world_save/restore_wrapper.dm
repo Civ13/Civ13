@@ -8,6 +8,12 @@
 	proc/event(value)
 		check(persistence_save_in_progress, "wrapper callback retains operation lock")
 		events += value
+	prepare_saved_dimensions(list/expected_intent, datum/persistence_world_operation/operation)
+		return TRUE
+	read_round_state()
+		return list()
+	restore_round_state(datum/controller/gameticker/target, list/state)
+		return
 	validate_world_save()
 		event("validate")
 		if(failure_stage == "preflight")
@@ -18,7 +24,8 @@
 		event("clear")
 		if(failure_stage == "clear")
 			throw EXCEPTION("fixture clear primary")
-	Load_World()
+	load_world_contents(datum/persistence_world_operation/operation)
+		check(operation && operation.enter_contents(src, "load"), "wrapper enters admitted contents once")
 		event("world")
 		if(failure_stage == "world_false")
 			last_error = "fixture world primary"
@@ -121,7 +128,13 @@
 		throw e
 	map_storage = original_storage
 	check(result == expected, (stage == "" && isnull(provider_mode) && metadata_result != TRUE) ? "metadata exact TRUE required" : "wrapper result [stage]/[provider_mode]/[metadata_result]")
-	check(!persistence_save_in_progress, "wrapper releases operation lock")
+	check(!persistence_active_operation, "wrapper releases only operation identity")
+	var/mutated = ("clear" in S.events) || ("world" in S.events)
+	check(persistence_load_recovery_required == (!expected && mutated), "wrapper retains failed mutation recovery hold")
+	check(persistence_save_in_progress == persistence_load_recovery_required, "wrapper busy state preserves recovery hold")
+	// Isolated cases reset the fixture world, never production recovery custody.
+	persistence_load_recovery_required = FALSE
+	persistence_save_in_progress = FALSE
 	check(errors.len == admin_errors + (expected ? 0 : 1), "wrapper reports each failed attempt once")
 	if(expected)
 		check(jointext(S.events, ",") == (isnull(provider_mode) ? "validate,clear,world,metadata" : "begin,validate,reserve,clear,world,metadata,release"), "wrapper success callback order")
