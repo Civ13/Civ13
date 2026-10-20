@@ -44,6 +44,10 @@ class Refused(Exception):
     """Safe diagnostic, with no upstream response bodies or credentials."""
 
 
+class Unavailable(Refused):
+    """Transient GET failure only; never a reason to retry a mutation or insert."""
+
+
 class RateLimited(Refused):
     """Sanitized scheduling metadata; this never authorizes another media send."""
     def __init__(self, status, retry_at, media_attempted=False):
@@ -269,6 +273,10 @@ class Transport:
         try:
             response = self.opener.open(urllib.request.Request(
                 url, data=body, headers=headers or {}, method=method), timeout=120)
+            with response:
+                data = response.read(limit + 1)
+                require(len(data) <= limit, "Response exceeds cap")
+                return response.status, dict(response.headers), data
         except urllib.error.HTTPError as error:
             if error.code == 302:
                 return 302, dict(error.headers), b""
@@ -278,13 +286,15 @@ class Transport:
                 if (error.code == 429 or header(metadata, "X-RateLimit-Remaining") == "0" or
                         retry_after_at(header(metadata, "Retry-After"), now) is not None):
                     raise RateLimited(error.code, retry_at(metadata, now)) from None
+            if method == "GET" and 500 <= error.code <= 599:
+                raise Unavailable("Provider GET temporarily unavailable") from None
             raise Refused(f"HTTP {error.code}; stop and inspect sanitized service status") from None
-        except (OSError, ValueError):
+        except OSError:
+            if method == "GET":
+                raise Unavailable("Provider GET temporarily unavailable") from None
             raise Refused("Network outcome uncertain; do not retry an upload") from None
-        with response:
-            data = response.read(limit + 1)
-            require(len(data) <= limit, "Response exceeds cap")
-            return response.status, dict(response.headers), data
+        except ValueError:
+            raise Refused("Invalid network request; stop") from None
 
 
 def header(headers, name):

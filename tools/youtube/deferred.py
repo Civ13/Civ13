@@ -293,8 +293,13 @@ def _finish(entry, state, reason, now):
 
 
 def provider_wait(entry, error, now):
-    u.require(error.media_attempted is False, "Media outcome cannot become provider retry eligibility")
-    entry.update(reason="provider_limit", next_eligible_at=max(now + 60, error.retry_at),
+    if isinstance(error, u.RateLimited):
+        u.require(error.media_attempted is False, "Media outcome cannot become provider retry eligibility")
+        reason, next_time = "provider_limit", max(now + 60, error.retry_at)
+    else:
+        u.require(isinstance(error, u.Unavailable), "Only transient GET failures may wait")
+        reason, next_time = "provider_unavailable", retry_at({}, now, entry["attempts"])
+    entry.update(reason=reason, next_eligible_at=max(entry["next_eligible_at"], next_time),
                  attempts=min(MAX_ATTEMPTS, entry["attempts"] + 1), updated_at=now)
 
 
@@ -364,9 +369,13 @@ def reconcile(gh, entry, ledger, now):
         entry["active_run_id"] = None  # Worker positively recorded a pre-insert deferral.
     else:
         jobs = gh.repo(f'/actions/runs/{run["id"]}/jobs?per_page=100')
-        u.require(jobs["total_count"] <= 100, "Job inventory too large")
+        u.require(jobs["total_count"] <= 100 and len(jobs["jobs"]) == jobs["total_count"],
+                  "Job inventory too large or incomplete")
         upload_jobs = [j for j in jobs["jobs"] if j["name"].endswith("/ upload")]
-        if len(upload_jobs) == 1 and upload_jobs[0]["conclusion"] == "skipped":
+        inspect_jobs = [j for j in jobs["jobs"] if j["name"].endswith("/ inspect")]
+        if (len(upload_jobs) == len(inspect_jobs) == 1 and
+                upload_jobs[0]["conclusion"] == "skipped" and inspect_jobs[0]["conclusion"] == "success" and
+                inspect_jobs[0]["name"] == upload_jobs[0]["name"][:-len("upload")] + "inspect"):
             entry.update(active_run_id=None, state="waiting", reason="gates_closed", next_eligible_at=now, updated_at=now)
         else:
             _finish(entry, "blocked", "failed_run_requires_reconciliation", now)
@@ -405,12 +414,12 @@ def tick(gh, now, current_commit, control=None):
         for e in queue.data["records"].values())
     candidates = [e for e in queue.data["records"].values() if e["state"] == "waiting" and
                   e["active_run_id"] is None and
-                  not (e["reason"] == "provider_limit" and now < e["next_eligible_at"])]
+                  not (e["reason"] in {"provider_limit", "provider_unavailable"} and now < e["next_eligible_at"])]
     if not busy and not candidates:
         return queue
     try:
         busy = busy or destination_busy(gh)
-    except u.RateLimited as error:
+    except (u.RateLimited, u.Unavailable) as error:
         for entry in candidates:
             provider_wait(entry, error, now)
         queue.save()
@@ -440,11 +449,11 @@ def tick(gh, now, current_commit, control=None):
             _finish(entry, "exhausted", "retry_budget_exhausted", now)
             queue.save()
             continue
-        if entry["reason"] == "provider_limit" and now < entry["next_eligible_at"]:
+        if entry["reason"] in {"provider_limit", "provider_unavailable"} and now < entry["next_eligible_at"]:
             continue
         try:
             _, m = core_material(gh, entry, current_commit)
-        except u.RateLimited as error:
+        except (u.RateLimited, u.Unavailable) as error:
             provider_wait(entry, error, now)
             queue.save()
             continue
@@ -473,7 +482,7 @@ def tick(gh, now, current_commit, control=None):
                 entry.update(next_eligible_at=max(entry["next_eligible_at"], eligible), reason="rolling_cap")
         try:
             entry["hold_reason"] = controls(now, control)
-        except u.RateLimited as error:
+        except (u.RateLimited, u.Unavailable) as error:
             provider_wait(entry, error, now)
             queue.save()
             continue
@@ -488,7 +497,7 @@ def tick(gh, now, current_commit, control=None):
         if entry["stage"] != "verify":
             try:
                 entry["stage"] = "upload" if resolve_artifact(gh, entry, current_commit) else "import"
-            except u.RateLimited as error:
+            except (u.RateLimited, u.Unavailable) as error:
                 provider_wait(entry, error, now)
                 queue.save()
                 continue

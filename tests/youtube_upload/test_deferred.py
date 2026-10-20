@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 import unittest
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 import re
 
 from test_import import u, h, pilot
@@ -206,6 +206,29 @@ class ControlReaderTests(unittest.TestCase):
 
 
 class EligibilityTests(unittest.TestCase):
+    def test_only_transient_get_failures_are_retryable_and_diagnostics_are_sanitized(self):
+        url = 'https://api.github.com/repos/Civ13/Civ13'
+        for method in ('GET', 'POST', 'PUT'):
+            errors = [u.urllib.error.HTTPError(url, code, 'PRIVATE-BODY', {}, None)
+                      for code in (400, 401, 403, 404, 500, 503, 599)]
+            errors += [OSError('PRIVATE-NETWORK'), ValueError('PRIVATE-REQUEST')]
+            for error in errors:
+                transient = method == 'GET' and (type(error) is OSError or
+                    isinstance(error, u.urllib.error.HTTPError) and error.code >= 500)
+                transport = u.Transport()
+                with patch.object(transport.opener, 'open', side_effect=error), self.assertRaises(u.Refused) as caught:
+                    transport.request(method, url)
+                self.assertEqual(isinstance(caught.exception, u.Unavailable), transient)
+                self.assertNotIn('PRIVATE', str(caught.exception))
+            response = MagicMock()
+            response.read.side_effect = OSError('PRIVATE-READ')
+            transport = u.Transport()
+            with patch.object(transport.opener, 'open', return_value=response), \
+                    self.assertRaises(u.Refused) as caught:
+                transport.request(method, url)
+            self.assertEqual(isinstance(caught.exception, u.Unavailable), method == 'GET')
+            self.assertNotIn('PRIVATE', str(caught.exception))
+
     def test_secondary_get_limit_differs_from_permission_failure_and_post(self):
         url = 'https://api.github.com/repos/Civ13/Civ13'
         for method, headers, limited in (
@@ -246,6 +269,83 @@ class EligibilityTests(unittest.TestCase):
 
 
 class QueueTests(unittest.TestCase):
+    def test_transient_source_get_keeps_bounded_wait_instead_of_revoking_approval(self):
+        url = 'https://api.github.com/repos/Civ13/Civ13/actions/runs/123'
+        for error in (u.urllib.error.HTTPError(url, 503, 'PRIVATE-BODY', {}, None),
+                      OSError('PRIVATE-NETWORK-DETAIL')):
+            gh, ident, _ = setup()
+            transport = u.Transport()
+            def read_source(*args):
+                return transport.request('GET', url)
+            with patch.object(transport.opener, 'open', side_effect=error), \
+                    patch.object(d, 'core_material', side_effect=read_source), patch.object(d, 'dispatch') as send:
+                run_tick(gh, 100000, 'b' * 40)
+            send.assert_not_called()
+            entry = gh.queue['records'][ident]
+            self.assertEqual((entry['state'], entry['reason'], entry['attempts']),
+                             ('waiting', 'provider_unavailable', 1))
+            self.assertGreater(entry['next_eligible_at'], 100000)
+
+    def test_unavailable_wait_honors_deadline_budget_and_fresh_revoked_approval(self):
+        gh, ident, _ = setup(attachment=True)
+        with patch.object(d, 'core_material', side_effect=u.Unavailable('Safe GET failure')):
+            run_tick(gh, 100000, 'b' * 40)
+        due = gh.queue['records'][ident]['next_eligible_at']
+        with patch.object(d, 'core_material', side_effect=AssertionError('No early revalidation')), \
+                patch.object(d, 'dispatch') as send:
+            run_tick(gh, due - 1, 'b' * 40)
+        send.assert_not_called()
+        gh.objects['/issues/comments/456']['body'] = 'Revoked'
+        with patch.object(d, 'dispatch') as send:
+            run_tick(gh, due, 'b' * 40)
+        send.assert_not_called()
+        self.assertEqual(gh.queue['records'][ident]['reason'], 'approval_or_source_invalid')
+        gh, ident, _ = setup()
+        now = 100000
+        with patch.object(d, 'core_material', side_effect=u.Unavailable('Safe GET failure')), \
+                patch.object(d, 'dispatch') as send:
+            for attempt in range(d.MAX_ATTEMPTS):
+                run_tick(gh, now, 'b' * 40)
+                entry = gh.queue['records'][ident]
+                self.assertEqual(entry['attempts'], attempt + 1)
+                self.assertGreater(entry['next_eligible_at'], now)
+                now = entry['next_eligible_at']
+            run_tick(gh, now, 'b' * 40)
+        send.assert_not_called()
+        self.assertEqual(gh.queue['records'][ident]['state'], 'exhausted')
+
+    def test_skipped_upload_requires_one_successful_inspect_before_gate_wait(self):
+        for inspections, waiting in ((['success'], True), (['failure'], False),
+                                     (['cancelled'], False), (['timed_out'], False), (['skipped'], False),
+                                     ([], False), (['success', 'success'], False)):
+            gh, ident, _ = setup()
+            with patch.object(d, 'dispatch'):
+                run_tick(gh, 100000, 'b' * 40)
+            queue = d.Queue(gh)
+            entry = queue.data['records'][ident]
+            entry['active_run_id'] = 42
+            gh.objects['/actions/runs/42'] = {'id': 42, 'repository': {'id': u.REPO_ID},
+                'head_sha': 'b' * 40, 'event': 'workflow_dispatch', 'head_branch': 'master',
+                'run_attempt': 1, 'status': 'completed', 'conclusion': 'failure'}
+            jobs = [{'name': 'approved-upload / upload', 'conclusion': 'skipped'}] + [
+                {'name': 'approved-upload / inspect', 'conclusion': value} for value in inspections]
+            gh.objects['/actions/runs/42/jobs?per_page=100'] = {'total_count': len(jobs), 'jobs': jobs}
+            d.reconcile(gh, entry, u.Ledger(gh), 100001)
+            self.assertEqual((entry['state'], entry['reason']),
+                ('waiting', 'gates_closed') if waiting else ('blocked', 'failed_run_requires_reconciliation'))
+            if waiting:
+                # A success from an unrelated reusable-job prefix is insufficient.
+                entry.update(state='dispatching', reason='dispatch_pending', active_run_id=42)
+                jobs[1]['name'] = 'other-worker / inspect'
+                d.reconcile(gh, entry, u.Ledger(gh), 100001)
+                self.assertEqual(entry['state'], 'blocked')
+                jobs[1]['name'] = 'approved-upload / inspect'
+                # Missing/paginated jobs must not be treated as a gate-only skip.
+                entry.update(state='dispatching', reason='dispatch_pending', active_run_id=42)
+                gh.objects['/actions/runs/42/jobs?per_page=100']['total_count'] += 1
+                with self.assertRaises(u.Refused):
+                    d.reconcile(gh, entry, u.Ledger(gh), 100001)
+
     def test_manual_run_and_other_queue_owner_block_destination(self):
         gh, ident, _ = setup()
         gh.objects['/actions/workflows/youtube-upload.yml/runs?branch=master&status=waiting&per_page=100'] = {

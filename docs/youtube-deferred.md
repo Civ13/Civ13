@@ -16,6 +16,14 @@ Environments read and mandatory Metadata read only**, installed only for
 `Civ13/Civ13`. App registration/installation, credential placement and live proof
 remain separate operator steps; source review does not establish their completion.
 A missing token or denied/unavailable read stops before dispatch or transmission.
+Transient GitHub GET failures (HTTP 5xx or network/read errors) wait as
+`provider_unavailable` with finite exponential backoff and consume the existing
+six-attempt budget. The next eligible tick freshly revalidates approval and source;
+invalid/revoked approval, permission denial and malformed data still block. This
+classification never retries a mutation or uncertain media insertion. A skipped
+upload returns to `gates_closed` waiting only when its single matching inspection
+job succeeded and the complete bounded job inventory confirms that pairing.
+Failed, cancelled, missing or ambiguous inspection requires reconciliation.
 
 The denied ordinary-token probe is retired and removed from contract CI; its
 historical evidence is run `39473476821`. Do not retry it. After approved App setup
