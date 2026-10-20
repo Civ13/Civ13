@@ -295,6 +295,9 @@ var/global/mall_fixture_failed = FALSE
 	var/obj/structure/extraction_mall_stairs/retail
 	for (var/obj/structure/extraction_mall_stairs/stairs in range(3, H))
 		if (stairs.destination_z == 5) retail = stairs
+	mall_assert(retail && retail.x == parking.x + 2 && retail.y == parking.y && retail.z == 4 && get_dist(H, retail) == 2, "mapped retail stair is two tiles from parking landing")
+	// Only the approach is injected; traversal must still pass production adjacency.
+	H.forceMove(get_turf(retail))
 	mall_assert(retail && retail.traverse(H) && H.z == 5, "retail to gallery production traverse")
 	var/obj/structure/extraction_mall_stairs/gallery = locate() in get_turf(H)
 	mall_assert(gallery && gallery.traverse(H) && H.z == 4, "gallery return connection")

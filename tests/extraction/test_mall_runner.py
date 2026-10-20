@@ -159,6 +159,34 @@ class NativeOracleTests(unittest.TestCase):
         self.assertLess(source.index('mall_stage("' + run_mall.NETWORK_STAGE + '")'),
                         source.index('\t\t\t\tmall_probe()'))
 
+    def test_retail_stair_approach_precedes_production_traversal(self):
+        source = (HERE / 'mall_probe.dm').read_text()
+        start = source.index('\tvar/obj/structure/extraction_mall_stairs/retail\n')
+        end = source.index('\tvar/obj/structure/extraction_mall_stairs/gallery', start)
+        sequence = source[start:end]
+        geometry = ('mall_assert(retail && retail.x == parking.x + 2'
+                    ' && retail.y == parking.y && retail.z == 4'
+                    ' && get_dist(H, retail) == 2,'
+                    ' "mapped retail stair is two tiles from parking landing")')
+        approach = 'H.forceMove(get_turf(retail))'
+        traverse = ('mall_assert(retail && retail.traverse(H) && H.z == 5,'
+                    ' "retail to gallery production traverse")')
+
+        def require_approach(text):
+            for statement in (geometry, approach, traverse):
+                self.assertEqual(text.count(statement), 1)
+            self.assertLess(text.index(geometry), text.index(approach))
+            self.assertLess(text.index(approach), text.index(traverse))
+
+        require_approach(sequence)
+        # Source-only controls cannot prove movement, but must catch the omitted
+        # or too-late approach that prevented the native traversal from running.
+        for broken in (sequence.replace(approach, ''),
+                       sequence.replace(approach, '') + '\n' + approach,
+                       sequence.replace('get_dist(H, retail) == 2', 'TRUE')):
+            with self.subTest(broken=broken), self.assertRaises(AssertionError):
+                require_approach(broken)
+
 
 class Clock:
     def __init__(self):
