@@ -17,7 +17,7 @@ import time
 from compare import compare
 
 HEX = re.compile(r'[0-9a-f]{64}')
-DIAGNOSTIC = re.compile(r'##\s*ERROR|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot (?:read|execute) null|Bad ref|Bad loc|PORT_OPEN', re.I)
+DIAGNOSTIC = re.compile(r'##\s*ERROR|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot (?:read|execute) null|Bad ref|Bad loc|PORT_OPEN|Unhandled exception|Out of memory|Assertion failed|Access violation', re.I)
 
 
 def execution_identity():

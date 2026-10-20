@@ -130,6 +130,30 @@ class Measurements(unittest.TestCase):
                      'Bad ref','Bad loc','Cannot execute null.proc()','Runtime in /proc/test'):
             with self.subTest(text=text):self.assertIsNotNone(m.DIAGNOSTIC.search(text))
 
+    def test_outcome_rejects_fatal_diagnostics_despite_pass_artifacts(self):
+        work=self.root/'fatal-outcome';work.mkdir()
+        (work/'result.txt').write_text('PASS')
+        (work/'port-closed.txt').write_text('closed')
+        (work/'states.jsonl').write_text('fixture schema checked by injected comparator')
+        logs=('runtime.log','stdout.log','stderr.log')
+        for name in logs:(work/name).write_text('normal fixture completion')
+        with patch.object(m,'compare') as compare:
+            m.outcome(work,4096)
+            compare.assert_called_once()  # positive control reaches comparison
+            for name in logs:
+                for diagnostic in ('## ERROR: File not found config/config.txt',
+                                   'Unhandled exception in fixture','Out of memory',
+                                   'Assertion failed','Access violation'):
+                    with self.subTest(log=name,diagnostic=diagnostic):
+                        compare.reset_mock()
+                        (work/name).write_text(diagnostic)
+                        with self.assertRaisesRegex(ValueError,'Native diagnostic'):
+                            m.outcome(work,4096)
+                        compare.assert_not_called()
+                        (work/name).write_text('normal fixture completion')
+            m.outcome(work,4096)
+            compare.assert_called_once()  # removing diagnostic restores acceptance
+
     def test_reaped_parent_group_is_retired_without_double_wait(self):
         adapter=object.__new__(m.LinuxAdapter)
         adapter.child=SimpleNamespace(process=SimpleNamespace(pid=123),result=(0,.1),handles=[],identity={'pid':123,'start_ticks':100})

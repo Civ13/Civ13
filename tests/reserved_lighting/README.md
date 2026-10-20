@@ -215,6 +215,9 @@ changed or unavailable ownership fails closed and reports incomplete cleanup.
 The group inspection is not atomic with signaling and does not replace accepted
 external process containment. Persistent groups fail the bounded cleanup check.
 Diagnostic rejection includes spaced `## ERROR`, Bad ref/loc and null execution.
+Unhandled exceptions, out-of-memory messages, failed assertions and access
+violations also invalidate PASS artifacts. Injected outcome-entry controls check
+each fatal message in runtime, stdout and stderr, with clean-log controls.
 If post-launch identity acquisition fails, cleanup terminates and reaps only the
 retained, unreaped direct child. It does not signal an unverified process group;
 the receipt remains incomplete and requires external containment cleanup.
