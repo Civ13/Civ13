@@ -62,8 +62,9 @@ class GitHubSimulator:
                           'YOUTUBE_ZERO_COST_CONFIRMED': 'false'}
         self.env_variables = {}
         self.environment = {'can_admins_bypass': False,
-            'protection_rules': [{'type': 'required_reviewers', 'prevent_self_review': True,
-                                  'reviewers': [{'type': 'User', 'reviewer': {'id': 1}}]}],
+            'protection_rules': [{'type': 'required_reviewers', 'prevent_self_review': False,
+                                  'reviewers': [{'type': 'User', 'reviewer': {
+                                      'id': 7202504, 'login': 'valzargaming'}}]}],
             'deployment_branch_policy': {'custom_branch_policies': True, 'protected_branches': False}}
 
     def __call__(self, args, input=None, **kwargs):
@@ -258,6 +259,36 @@ class ClientAndProtocolTests(unittest.TestCase):
 
 
 class SecretPlacementTests(unittest.TestCase):
+    def test_owner_reviewer_required_and_self_review_explicitly_allowed(self):
+        self.assertEqual((a.REVIEWER_LOGIN, a.REVIEWER_ID), ('valzargaming', 7202504))
+        simulator = GitHubSimulator()
+        a.GitHubSecrets(simulator).preflight()
+        changes = [
+            lambda rule: rule.update(prevent_self_review=True),
+            lambda rule: rule.pop('prevent_self_review'),
+            lambda rule: rule.update(reviewers=[]),
+            lambda rule: rule['reviewers'].append(rule['reviewers'][0]),
+            lambda rule: rule['reviewers'][0].update(type='Team'),
+            lambda rule: rule['reviewers'][0]['reviewer'].update(id=14982498),
+            lambda rule: rule['reviewers'][0]['reviewer'].update(login='another-user'),
+        ]
+        for index, change in enumerate(changes):
+            simulator = GitHubSimulator()
+            change(simulator.environment['protection_rules'][0])
+            with self.subTest(index=index), self.assertRaises(a.Stopped):
+                a.GitHubSecrets(simulator).preflight()
+            self.assertEqual(simulator.writes, 0)
+
+    def test_admin_bypass_must_be_confirmed_disabled_for_owner_review(self):
+        for missing in (False, True):
+            simulator = GitHubSimulator()
+            simulator.environment['can_admins_bypass'] = True
+            if missing:
+                simulator.environment.pop('can_admins_bypass')
+            with self.subTest(missing=missing), self.assertRaises(a.Stopped):
+                a.GitHubSecrets(simulator).preflight()
+            self.assertEqual(simulator.writes, 0)
+
     def test_preflight_checks_protection_empty_secrets_and_both_variable_scopes(self):
         simulator = GitHubSimulator()
         github = a.GitHubSecrets(simulator)

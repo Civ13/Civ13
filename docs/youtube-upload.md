@@ -215,8 +215,12 @@ write was performed. Secret placement remains a separately confirmed action.
    **`YOUTUBE_REFRESH_TOKEN`**. Use GitHub's encrypted secret input or a reviewed
    local encrypted transfer, never PR files, workflow inputs, outputs, artifacts,
    repository-wide secrets or chat. Environment deployment branches must allow
-   only `master`; require named human reviewers, prevent self-review, and disable
-   admin bypass where supported. Do not grant secrets to PR/test environments.
+   only `master`; require only `valzargaming` (User ID `7202504`) as reviewer,
+   set `prevent_self_review=false`, and disable admin bypass
+   (`can_admins_bypass=false`). The owner can dispatch and explicitly approve the
+   environment job. This is owner review, without a second-person requirement;
+   allowing self-review does not bypass the approval step. Do not grant secrets
+   to PR/test environments.
 5. **Enrollment/activation:** reconcile/import one-off records first; create the
    data branch and reviewed policy separately. Keep repository variables
    `YOUTUBE_UPLOAD_ENABLED=false`, `YOUTUBE_UPLOAD_STOP_USE=true` and
@@ -266,9 +270,12 @@ additional client is created by this setup. See [Google's agentic-client guidanc
 
 Before obtaining a token, the GitHub destination must already have been separately
 authorized and configured: public repository `Civ13/Civ13`, environment
-`youtube-unlisted`, required human reviewers, prevention of self-review, no admin
-bypass where exposed, and an explicit deployment branch policy allowing only
-`master`. The helper creates no environment, changes no permissions, and never
+`youtube-unlisted`, sole required reviewer `valzargaming` (User ID `7202504`),
+`prevent_self_review=false`, explicitly disabled administrator bypass, and an
+explicit deployment branch policy allowing only `master` (`protected_branches=false`,
+`custom_branch_policies=true`, exactly one rule with `name=master`, `type=branch`).
+The helper refuses another/additional reviewer or missing self-review/bypass state.
+The helper creates no environment, changes no permissions, and never
 overwrites existing `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET` or
 `YOUTUBE_REFRESH_TOKEN`. Rotation needs a separately reviewed procedure because
 GitHub cannot read back prior secret values for rollback.

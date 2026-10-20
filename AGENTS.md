@@ -11,6 +11,9 @@ The user-run `tools/youtube/authorize.py` checks only project
 secret-placement confirmation. Setup requires explicitly disabled repository
 activation variables; uncertain secret writes require owner reconciliation even
 when immediate metadata reads show absence. Tests use fake services/local loopback.
+The owner selected sole required reviewer `valzargaming` (User ID `7202504`),
+with self-review allowed and administrator bypass disabled. Keep explicit manual
+environment approval; setup approval does not activate uploads or merge this PR.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
 Protected sleep relocates the body between z-levels, so release only its matching

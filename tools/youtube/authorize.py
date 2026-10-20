@@ -30,6 +30,8 @@ CHANNEL = 'UCFRx_n3Mh3FfvL9yOUfG-yw'
 HANDLE = '@valzartech8995'
 REPOSITORY = 'Civ13/Civ13'
 ENVIRONMENT = 'youtube-unlisted'
+REVIEWER_LOGIN = 'valzargaming'
+REVIEWER_ID = 7202504
 SCOPES = ['https://www.googleapis.com/auth/youtube.readonly',
           'https://www.googleapis.com/auth/youtube.upload']
 SECRET_NAMES = ['YOUTUBE_CLIENT_ID', 'YOUTUBE_CLIENT_SECRET', 'YOUTUBE_REFRESH_TOKEN']
@@ -306,10 +308,15 @@ class GitHubSecrets:
         require(repo['id'] == 141349998 and repo['full_name'] == REPOSITORY and repo['visibility'] == 'public',
                 'Wrong repository or $0/public-repository assumptions changed')
         environment = self.api('/environments/' + ENVIRONMENT)
-        require(environment.get('can_admins_bypass', False) is False, 'Disable environment admin bypass where supported')
+        require(environment.get('can_admins_bypass') is False, 'Environment admin bypass must be explicitly disabled')
         reviewers = [r for r in environment.get('protection_rules', []) if r['type'] == 'required_reviewers']
-        require(len(reviewers) == 1 and reviewers[0].get('prevent_self_review') is True and
-                reviewers[0].get('reviewers'), 'Environment needs required reviewers and prevention of self-review')
+        require(len(reviewers) == 1 and reviewers[0].get('prevent_self_review') is False,
+                'Owner review requires self-review to be allowed explicitly')
+        people = reviewers[0].get('reviewers', [])
+        require(len(people) == 1 and people[0].get('type') == 'User' and
+                people[0].get('reviewer', {}).get('id') == REVIEWER_ID and
+                people[0].get('reviewer', {}).get('login') == REVIEWER_LOGIN,
+                'Environment must require only the approved valzargaming owner reviewer')
         policy = environment.get('deployment_branch_policy') or {}
         require(policy.get('custom_branch_policies') is True and policy.get('protected_branches') is False,
                 'Environment must use an explicit master-only deployment policy')
