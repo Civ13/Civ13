@@ -174,8 +174,10 @@ Main-menu order: 1 BYOND sign-in, 2 Civ13.com, 3 ValZarGaming.com, 4 Exit,
 
 [The directory contract and rollout checklist](SERVER-DIRECTORY.md) describe
 fresh HTTPS discovery, status details, Refresh/Back, selection revalidation,
-provider hostname checks and the existing ValZarGaming DNS pin. Public choices
-reject `--server-port`. No live availability is inferred from old website links,
+provider hostname checks and fresh public IPv4 validation for both providers.
+Each validated address is bound to its approved hostname for one join attempt
+with a 15-second monotonic lifetime. Public choices reject `--server-port`.
+No live availability is inferred from old website links,
 static mode names, DNS alone, or a cached snapshot.
 
 Experimental OpenDream still requires an explicitly verified operator
