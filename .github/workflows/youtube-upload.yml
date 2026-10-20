@@ -1,0 +1,25 @@
+name: Approved gameplay video upload
+on:
+  workflow_dispatch:
+    inputs:
+      manifest_id:
+        description: Reviewed default-branch manifest ID in tools/youtube/approved
+        type: string
+        required: true
+      execute_upload:
+        description: Upload after inspection and environment approval (false inspects only)
+        type: boolean
+        default: false
+permissions: {}
+jobs:
+  approved-upload:
+    if: github.repository == 'Civ13/Civ13' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+      actions: read
+      issues: read
+      pull-requests: read
+    uses: ./.github/workflows/youtube-upload-worker.yml
+    with:
+      manifest_id: ${{ inputs.manifest_id }}
+      execute_upload: ${{ inputs.execute_upload }}

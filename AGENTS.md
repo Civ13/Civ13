@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-20: reviewed video upload boundary -->
+`docs/youtube-upload.md` defines the manual/default-off YouTube uploader contract.
+Only trusted default-branch code receives environment credentials; PR media stays
+data, with decoder inspection in a secret-free job. Per-clip human approval binds
+media/metadata/destination; durable reservations block ambiguous retries. Never
+delete uncertain one-off receipts or create OAuth grants from source-PR approval.
+
 <!-- 2026-10-19: protected sleep buckle ownership -->
 Protected sleep relocates the body between z-levels, so release only its matching
 reciprocal buckle before entry or wake. Keep return coordinates captured before

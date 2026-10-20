@@ -1,0 +1,31 @@
+name: YouTube uploader contracts
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  changes:
+    uses: ./.github/workflows/ci-selection.yml
+    with:
+      base: ${{ github.event.pull_request.base.sha || '' }}
+  contracts:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/youtube_upload')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@db91e1a0e48e84637d325a7ee4d2677e146ceec4 # 2.36.0
+        with:
+          php-version: '8.4'
+          tools: composer:2.9.8
+          coverage: none
+      - run: composer install --working-dir=tools/youtube --no-dev --no-scripts --no-plugins --prefer-dist --no-interaction --no-progress
+      - name: YoutubePHP mocked requests and no-retry guard
+        run: php -d display_errors=0 tests/youtube_upload/framework.php
+      - name: Mocked upload, no-live dry run, provenance and failure contracts
+        run: /usr/bin/python3 -B -m unittest discover -s tests/youtube_upload -v

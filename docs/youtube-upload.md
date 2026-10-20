@@ -1,0 +1,274 @@
+# Reviewed gameplay video uploads
+
+This source-only feature adds a manual, default-off path for selected successful
+gameplay clips. It does not create credentials, approve a clip, generate recordings,
+publish videos, configure a schedule, or launch a game. The destination is
+**@valzartech8995**, immutable channel **UCFRx_n3Mh3FfvL9yOUfG-yw**. The existing
+one-off uploader verified this mapping in the authenticated Studio account and
+actual handle link on 2026-10-20. Every API invocation independently verifies the
+same grant's channel before mutation. The earlier Valgorithms destination is obsolete.
+
+Unlisted is link-accessible: anyone with the link can watch or redistribute it.
+The uploader always sets `privacyStatus=unlisted` and `notifySubscribers=false`;
+neither is a manifest option. A mismatch, rejected video, missing owner readback
+or pending processing cannot produce a successful upload receipt.
+
+## Trust boundaries
+
+`youtube-upload.yml` accepts a manifest ID and `execute_upload` (default false).
+It calls the reusable `youtube-upload-worker.yml` from the same reviewed commit.
+Only a manual invocation of the default-branch wrapper is eligible. PR events,
+forks, non-default dispatches and other callers cannot reach the worker's jobs.
+No `workflow_run`, scheduled upload or capture trigger is installed.
+
+The inspection job has a read-only GitHub token and no YouTube secrets. It loads
+only trusted `tools/youtube` code from the default-branch dispatch commit, validates
+the selected run/artifact, downloads a bounded archive, and runs the runner's
+`ffprobe` on the MP4. It never checks out or runs the producer's scripts.
+
+The upload job uses the protected `youtube-unlisted` environment on another
+standard Ubuntu runner. It checks out the same trusted code, revalidates current
+source provenance and human approval, and downloads/checks the same artifact
+again. It installs only the trusted committed Composer lock with plugins and scripts
+disabled, before the step that receives OAuth credentials. It never executes an
+artifact, decodes media, checks out a PR, or treats metadata as executable input.
+Checkout and PHP setup actions are pinned by immutable SHA. Composer 2.9.8 installs
+YoutubePHP at commit `7ce9b24eb26a32af7ffcd4936d8083c06a428fb0`; all 23 dependency
+references are locked. Python uses its standard library for provenance/receipts;
+YouTube API calls and OAuth refresh use the requested YoutubePHP framework through
+`adapter.php`. No package update occurs in the secret-bearing workflow.
+
+The worker's GitHub permissions are `contents:read`, `actions:read`, `issues:read`
+and `pull-requests:read` for inspection. Upload needs `contents:write` solely to
+record durable receipts, plus the same read permissions. GitHub's token cannot
+scope Contents writes to one branch: this is a material remaining privilege.
+Protect master against this token and keep the receipt branch separate. Receipts
+contain public video IDs, hashes and provenance only, never authorization headers,
+refresh/access tokens, resumable session URLs or signed artifact download URLs.
+
+## Producer and approval contract
+
+There is no enrolled producer or approved manifest in this PR. No existing
+screenshot, fixture or candidate is implicitly approved as a video. A subsequent
+reviewed change must create `tools/youtube/policy.json` from `policy.example.json`,
+enroll actual workflow IDs/paths and named human GitHub approvers, and commit a
+per-clip manifest in `tools/youtube/approved/<id>.json`. Do not enroll a workflow
+until its recorded tested commit matches its Actions run head SHA. For a PR job,
+capture the actual tested revision explicitly; do not label a tested merge ref as
+the PR head. Initial eligibility is same-repository PRs, or a push/manual run of
+the exact merged PR commit. Fork runs are deliberately ineligible initially.
+
+Generate clips/tests in separate jobs with no upload credentials. A producer
+must retain the immutable real media path, SHA256, exact tested game commit/PR,
+source owner, capture/reproduction context, test result and known limitations.
+Use the existing game evidence checker where applicable; passing it proves file
+and metadata consistency, not gameplay acceptance or publication approval.
+
+Artifacts must use the `gameplay-video-...` name prefix and contain exactly two
+flat regular files: `gameplay.mp4` and `evidence.json`. No directories, symlinks,
+encrypted entries, executables or additional files are accepted. The MP4 must be
+15-180 seconds, 320-1920 by 240-1080 pixels, H.264 with optional AAC, at most
+32 MiB. Its declared duration must match inspection within one second. The ZIP
+must be at most 33 MiB, match both GitHub's SHA256 artifact digest and the approved
+archive hash, and have been created during the exact successful approved run
+attempt. Run ID, attempt, SHA, repository IDs, workflow ID/path, event, branch,
+artifact ID/name/size/digest/expiry and PR association are checked via GitHub API.
+Missing provenance fields fail closed.
+
+The embedded evidence object has exactly these fields, with actual values:
+
+```json
+{"schema_version":1,"tested_commit":"FULL_GAME_COMMIT","run_id":123,"run_attempt":1,"clip_sha256":"MEDIA_SHA256","result":"success","classification":"genuine-gameplay"}
+```
+
+Enforce duration/size caps **before** an artifact upload. If an approved capture
+producer is added later, pin `actions/upload-artifact` by SHA, select only these
+files, disable hidden files, set `retention-days: 1`, and fail when no clip exists.
+Do not attach whole evidence trees, saves or logs to the video artifact. This PR
+adds no producer or storage upload, so it cannot generate growing video storage.
+
+Review the entire genuine clip for meaningful observed behavior, source ownership,
+private chat, credentials, player names, session data, internal paths, unexpected
+audio and other unintended content. Reject blank, redundant, failed, synthetic
+or misleading footage. Factual title/description and review fields use bounded
+printable ASCII without angle brackets; category and audience flags are fixed.
+Do not call a scripted/fixture result full gameplay acceptance. The adult game
+development audience and absence of synthetic media must be affirmatively reviewed.
+
+Use `manifest.example.json` only as a schema example; its values are placeholders.
+After filling real values and creating an enrolled policy, run the trusted script
+with `approval --manifest <id>` to print the exact approval sentence. A named human
+policy approver must independently inspect the clip and post that exact sentence
+as a comment on the specified issue/PR. The sentence binds a SHA256 of all manifest
+fields except the comment reference itself, including channel, media/archive SHA,
+source commit, metadata, audience and content review. Put the actual comment ID
+in the manifest and review/merge it through the normal PR process. An edited
+title, different clip, changed limitations or destination invalidates approval.
+The current API comment author must be an allowlisted human, and the full body
+must match exactly; generic approval, bot comments and approval on another issue
+are rejected. Do not put private evidence references or secrets in this public
+manifest or approval comment.
+
+## Durable receipts and uncertain outcomes
+
+Before enrollment, initialize `receipts.json` on a dedicated
+`youtube-upload-receipts` branch using `tools/youtube/ledger.example.json`, after
+owner reconciliation and explicit approval to configure the feature. The uploader
+refuses a missing ledger or `imports_complete:false`. This branch is data only;
+its contents are never checked out or executed. Do not protect it in a way that
+prevents the configured token from recording receipts. Restrict deletion/force
+push and administrative edits; changes outside the uploader require reconciliation.
+
+The shared source key is:
+
+```text
+SHA256("civ13-youtube-v1\n" + "Civ13/Civ13" + "\n" + tested_commit + "\n" + media_sha256)
+```
+
+The additional destination+media-hash scan catches renamed manifests and the same
+clip from different commits. Coordinate this ledger with every one-off uploader;
+the destination+media hash is authoritative even when its source-key scheme differs.
+The one-off thread remains owner of its attempted publication. No parallel API
+upload is authorized by this source PR.
+
+**Known blocked hash:**
+`9c82f548ce4d2251e0dff7e0d607eeaac5c4d8e570b418cfb0103545453ec796`, tested commit
+`c3767579b0e72035debe702ae2147c75549a7455` (PR 3228). Its browser file-selection call
+failed with an uncertain outcome on 2026-10-20. No video ID or saved unlisted
+visibility was verified. The ledger example preserves it as `uncertain`, with
+`imports_complete:false`. This record is a duplicate-prevention block, not content
+approval. Do not retry via API or assume that an empty uploads playlist proves no
+incomplete Studio draft exists. Owner-authorized reconciliation must cover possible
+drafts/incomplete uploads as well as existing video IDs. The API may not expose all
+Studio drafts; if it cannot resolve this, stop for owner evidence rather than using
+browser automation or another account. Preserve the original one-off receipt.
+
+Every new upload first commits a `reserved` record using GitHub Contents API's
+conditional file SHA. If that write fails or is uncertain, no YouTube mutation is
+attempted. A single destination-wide workflow lock serializes the full lifecycle.
+After successful video insertion, the video ID is saved as `uploaded`, then owner
+readback must confirm channel, unlisted privacy, processed upload status and
+successful processing before the record becomes `verified`. Polling is bounded to
+12 reads with 11 ten-second waits. A later dispatch with a known ID verifies only;
+it never reinserts media. YoutubePHP uses one bounded multipart `videos.insert` call; this pinned version
+does not implement resumable video uploads. It holds the file in memory, so the
+32 MiB cap applies before the PHP process. There is no upload resumption. The
+adapter explicitly overrides the framework's normal 503/rate-limit retry behavior:
+a route allowlist, sanitized nonretryable error responses and a process-wide
+one-write guard prevent another network send, including 401 replay. Each operation
+uses an existing refreshed access token with no device flow, token store or
+automatic reauthorization. No retries or account switching occur after an error.
+
+If insertion times out, the job is cancelled, the video-ID save fails, processing
+fails or any service returns a quota/rate/error response, stop-use and inspect the
+durable record. A reservation without ID or an `uncertain` record blocks another
+upload. Do not delete it to retry. After authorized owner reconciliation, attach
+the existing video ID and set a known `uploaded` state, or retain a blocking
+tombstone. A proven no-upload result requires a separately reviewed operator
+decision before any new mutation. Never log session URLs during recovery.
+
+## Exact setup proposal (not executed)
+
+Keep one shared setup coordinated with the existing one-off API uploader. Do not
+create duplicate projects or grants. First present the actual selected owner
+Google project ID and request explicit action-time approval for the following:
+
+1. **Project/client:** reuse a suitable user-owned Google project if available;
+   otherwise propose display name `Civ13 Gameplay Videos` and project ID
+   `civ13-gameplay-videos` (availability and ownership must be checked before
+   confirmation). Enable only YouTube Data API v3, with no paid service or billing
+   activation. Create one OAuth Desktop client named `Civ13 reviewed uploader`.
+   Confirm consent-screen audience/testing status and refresh-token lifecycle.
+2. **Channel/grant:** authorize the owning Google account's **@valzartech8995 /
+   UCFRx_n3Mh3FfvL9yOUfG-yw** channel, requesting exactly
+   `https://www.googleapis.com/auth/youtube.upload` and, as a separately explained
+   readback requirement, `https://www.googleapis.com/auth/youtube.readonly`.
+   Upload alone is the minimum for insertion. Official API discovery lists
+   `youtube.readonly` for `channels.list` and `videos.list`, while upload is absent
+   from their allowed scope lists. The same combined grant lets `channels.list`
+   with `mine=true` prove the destination before insertion and owner-only video
+   processing readback confirm success afterward. Do not request broad `youtube`,
+   `force-ssl`, partner or unrelated scopes. The implementation rejects any
+   refresh response with missing or additional scopes.
+3. **Secure authorization:** use Google's supported Desktop flow with PKCE S256,
+   state checking and a temporary loopback listener through a separately reviewed
+   local setup helper. The user completes Google's consent UI securely. API-only
+   publication does not remove Google's required interactive consent. Never scrape
+   browser cookies/tokens, bypass site prompts, put secrets into chat or use an
+   unofficial token broker. This PR deliberately supplies no credential-generating
+   helper. Approve its exact local credential transfer/temporary-file cleanup
+   procedure before executing it; keep secrets out of command lines and logs.
+4. **GitHub destination:** only `Civ13/Civ13`, environment **`youtube-unlisted`**,
+   secrets **`YOUTUBE_CLIENT_ID`**, **`YOUTUBE_CLIENT_SECRET`** and
+   **`YOUTUBE_REFRESH_TOKEN`**. Use GitHub's encrypted secret input or a reviewed
+   local encrypted transfer, never PR files, workflow inputs, outputs, artifacts,
+   repository-wide secrets or chat. Environment deployment branches must allow
+   only `master`; require named human reviewers, prevent self-review, and disable
+   admin bypass where supported. Do not grant secrets to PR/test environments.
+5. **Enrollment/activation:** reconcile/import one-off records first; create the
+   data branch and reviewed policy separately. Keep repository variables
+   `YOUTUBE_UPLOAD_ENABLED=false`, `YOUTUBE_UPLOAD_STOP_USE=true` and
+   `YOUTUBE_ZERO_COST_CONFIRMED=false` until their exact setup/first approved run
+   is authorized. For a bounded approved run, explicitly confirm public-repository
+   standard-runner/$0 eligibility and existing account stop-use budget, then set
+   enabled=true, stop-use=false and zero-cost-confirmed=true. No schedule is part
+   of this proposal. Start with inspection-only dispatch before enabling mutation.
+
+Risks to approve: the refresh token is persistent access to upload/manage videos
+and read the channel under the displayed scopes; unlisted links are shareable;
+authorized trusted default-branch code and environment administrators can access
+the grant. GitHub masking is not a substitute for keeping tokens/session URLs out
+of output. Store the refresh token only in the approved environment, revoke the
+Google app grant and remove secrets to terminate access, and close the stop-use
+variables immediately on any budget, quota, rate, auth or ambiguity incident.
+No approval to create/store credentials is inferred from approval of this PR.
+
+## Limits and verification
+
+Only public-repository standard `ubuntu-24.04` runners are configured; no larger
+runners, paid services or scheduled jobs. Jobs time out at 5/8 minutes. One clip
+per dispatch, at most two reservations in a rolling 24 hours, max 1,000 receipt
+records and 1 MiB ledger/JSON are enforced. Reaching a cap stops for a reviewed
+maintenance plan; never prune dedup history to make room. Existing account-wide
+budget/stop-use instructions remain controlling. Short-retention producer artifacts
+can expire before review; fail and obtain new evidence rather than broaden access
+or retain an unbounded archive. Receipts are small durable text, not video storage.
+
+Current official documentation checked 2026-10-20: `videos.insert` describes a
+100-calls/day Video Uploads bucket with cost 1 per call, and says unverified API
+projects are not restricted to private viewing. No obsolete private-only project
+assumption is used. OAuth consent verification and owner account limits remain
+separate considerations. This implementation stays below its own much smaller cap.
+
+Offline contracts and a no-network CLI dry-run test:
+
+```powershell
+& 'C:\Users\valza\AppData\Local\Programs\Python\Python313\python.exe' -B -m unittest discover -s tests/youtube_upload -v
+composer install --working-dir=tools/youtube --no-dev --no-scripts --no-plugins --prefer-dist --no-interaction
+php -d display_errors=0 tests/youtube_upload/framework.php
+```
+
+On Linux use `/usr/bin/python3`. With a real reviewed policy/manifest enrolled,
+`upload.py dry-run --manifest <id>` validates local inputs without network, OAuth,
+receipt writes or uploads; `approval` prints the exact required approval text.
+Composer may warn that the intentional exact framework commit constraint is a
+commit-ref; the lock and offline pin check enforce the reviewed source. Use an
+isolated Composer configuration when resolving dependencies so local global path
+overrides never enter this portable lock. The dry-run fixture is synthetic test data and is never presented as gameplay
+evidence. Tests cover provenance/attempt tampering, approval injection, ZIP paths,
+symlinks/extra files, caps/hash mismatch, credential-free signed redirects,
+reservation ordering, uncertain outcomes, failed receipt persistence, dedup across
+commits, channel/visibility/processing failures and scope restrictions. The PHP test injects a fake driver into the actual locked framework and exercises
+multipart metadata, fixed privacy, channel/processing hydration, 401/429/503/network
+failures, and the single-send guard. Tests do
+not prove live authorization, real media acceptance or channel publication.
+
+Official references:
+
+- [Insert semantics, scopes, notifications and quota](https://developers.google.com/youtube/data/reference/rest/v3/videos/insert?hl=en)
+- [Current API discovery, including method-specific scope lists](https://youtube.googleapis.com/$discovery/rest?version=v3)
+- [Video owner readback fields](https://developers.google.com/youtube/data/reference/rest/v3/videos/list)
+- [Resumable upload protocol](https://developers.google.com/youtube/data/guides/using_resumable_upload_protocol)
+- [Desktop OAuth/PKCE and consent](https://developers.google.com/youtube/data/guides/auth/installed-apps)
+- [GitHub artifact provenance/digests](https://docs.github.com/en/rest/actions/artifacts)
+- [GitHub trusted-workflow security](https://docs.github.com/en/actions/reference/security/secure-use)
