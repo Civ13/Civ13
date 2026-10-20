@@ -62,3 +62,60 @@ husbandry, and farm death plus the recent 200 PR bodies and this file's Git hist
 found no existing repair. Merged #3126 concerns animal health/attack dispatch,
 #3080 harvesting, and #3133 drying preservation, not these retirement operators.
 This correction does not complete the broader #3051 husbandry milestone.
+
+## Isolated native production-hook runner
+
+`run_native.py` builds only the exact 15 production hook declarations/bodies and
+an inert fixture, not Civ13 or its startup adapters. Native `/mob` identities and
+native lists are used. Parent death/Destroy hooks only record invocation and
+observe that removal happened before the parent call. Generated registry getters
+read the authoritative global after every operation; setters give each scenario
+a fresh list, so compound-assignment alias behavior cannot fool the oracle.
+
+Each hook checks registered removal, repeated removal, and an unregistered owner,
+always retaining two distinct peer identities. Every type with both hooks also
+checks death followed by Destroy. Destroy-only cases do not call death first.
+There are 52 cases per run. `--all-controls` compiles/runs the baseline followed
+by all 15 exact single-target restorations of `&=`. A control must fail exactly
+its three direct cases and, where present, its type's death/Destroy sequence.
+Unexpected failures, missing/duplicate cases, or a surviving control fail closed.
+
+Prepare packets without any native execution:
+
+    python tests/animal_registry/run_native.py --prepare-only --all-controls --output /tmp/farm-registry-sources
+
+Run on an authorized Linux host with BYOND 516.1681 already available:
+
+    python tests/animal_registry/run_native.py --byond-bin /path/to/byond/bin --all-controls --output /tmp/farm-registry-native
+
+The output directory must be new. For one control use, for example,
+`--negative-control cattle/cow/death`; with neither selector only baseline runs.
+The runner writes generated source hashes, production source hash, native binary
+hashes, stdout/stderr, runtime logs, process receipts and a fail-closed summary.
+No repository source is modified during preparation or execution.
+
+Maintainer-required `-trusted` is used, not an OS or network sandbox. The fixture
+imports no game constructors, shell/export hooks, paid services or client code.
+It rejects clients and Topic requests, disables hub visibility at compile time,
+refuses every OpenPort request except closing, and verifies zero initial/closed
+ports plus failed reopening. Any engine log reporting an opened port fails.
+The official DM reference documents that an overridden OpenPort cannot open a
+port unless its parent is called:
+https://www.byond.com/docs/ref/info.html#/world/proc/OpenPort
+The CLI binds only to 127.0.0.1 as defense in depth, without granting permission
+to open a listener. No speculative no-port CLI argument is used. These checks are not external
+socket-monitoring evidence, and there is no fallback to hosting a listener.
+
+Children have 30-second wall and 20-second CPU bounds, 512 MiB address space,
+2 MiB per-file size, no core dumps, and process-group cleanup even on failure.
+The full lane has a 600-second deadline. All three runtime output streams are
+scanned for diagnostics; runtime.log alone is the canonical completion marker,
+so an echoed marker on stdout does not create a false duplicate. The compiler
+must report exactly the pinned version and zero errors/warnings. Native runtime
+version/build are also checked inside the fixture before tests execute.
+
+The additional Python tests use generated sources, synthetic result objects,
+injected runners, and bounded Python child processes only. Passing them or
+`--prepare-only` does not establish native compilation/list semantics, game
+startup, save/load, reproduction, visual acceptance or performance. Native
+acceptance remains pending until this runner actually succeeds on BYOND.
