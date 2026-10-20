@@ -207,6 +207,13 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-20: extraction corpse-release oracle -->
+The mode fixture catches corpse-release assertion failures as `FAIL:` records,
+not engine `Runtime error:` records. Its omission control first reaches the
+configured insured-weapon release assertion in scope_insurance_probe.dm. Match
+that exact caught assertion and reject collateral failures in every output stream;
+do not reuse the superseded bones-transition message as the oracle.
+
 <!-- 2026-10-12: extraction NPC retirement -->
 When an NPC's own procedure qdels that actor, its caller can observe a null
 return even after the durable retirement receipt commits. Assert receipt state

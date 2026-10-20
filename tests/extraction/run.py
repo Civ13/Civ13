@@ -473,8 +473,8 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
                     print('PASS: surface omission detected: ' + surface_control)
                     return
                 if corpse_release_control:
-                    expected = 'bones transition releases original nested insured equipment with stable identity and condition'
-                    if ran.returncode or not result.startswith('FAIL:') or expected not in log or any(x in log.lower() for x in ('runtime error', 'bad ref', '## error')):
+                    expected = 'corpse retirement releases the actual configured insured weapon'
+                    if ran.returncode or not result.startswith('FAIL:') or not caught_vehicle_assertion_only(log + '\n' + ran.stdout + '\n' + ran.stderr, expected):
                         print(log)
                         raise RuntimeError('Corpse release control failed outside its intended assertion')
                     print('PASS: omitted corpse gear release rejected by integrated death/insurance assertion')
