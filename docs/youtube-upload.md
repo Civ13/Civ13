@@ -178,9 +178,10 @@ decision before any new mutation. Never log session URLs during recovery.
 Keep one shared setup coordinated with the existing one-off API uploader. Do not
 create duplicate projects or grants. The user created project
 **`calcium-circuit-384407`** and approved the Desktop client/scopes proposal.
-The earlier candidate ID `civ13-gameplay-videos` is obsolete. No local helper run,
-grant exchange, credential download/read or GitHub secret write was performed by
-the agent. Secret placement remains a separately confirmed action.
+The earlier candidate ID `civ13-gameplay-videos` is obsolete. The user-selected
+downloaded JSON passed bounded type/project/endpoint validation without displaying
+credential values. No live helper authorization, grant exchange or GitHub secret
+write was performed. Secret placement remains a separately confirmed action.
 
 1. **Project/client:** use only `calcium-circuit-384407`, display name
    `Civ13 Gameplay Videos`. Enable only YouTube Data API v3, with no paid service or billing
