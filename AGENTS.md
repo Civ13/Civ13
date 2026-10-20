@@ -29,6 +29,13 @@ never pin live objects, retain values or print lookup refs in public reports.
 Preserve it through cleanup, clear it only at accepted save admission, and verify
 lookup type/location because native refs can be recycled after deletion.
 
+<!-- 2026-10-20: bronze Help retrieval -->
+Keep reviewed bronze production and availability evidence in one retrieval record;
+separate ranking let iron-ingot excerpts displace bronze research gates. The route
+uses copper/tin ore in fired blacksmith pots/jugs, then mold pouring and anvil work.
+Ovens fire clay molds; kilns alloy the loaded ores. Preserve map and actual node
+checks, and never infer a player's completed research from era metadata alone.
+
 <!-- 2026-10-18: private Help conversation boundary -->
 Help history belongs to an authenticated client session, never a saved mob.
 `conversation_probe.dm` is included by the existing isolated Help fixture;
@@ -300,6 +307,13 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
+
+<!-- 2026-10-20: extraction instance collateral -->
+The historical extraction instance fixture at b717ad2a6 shared registry state
+across assertions. Its overlap/generation mutants caused downstream failures as well as
+their named targets. Run 39140469088 preserves complete native results; keep its
+failed verdict intact. Explaining collateral is not approval to weaken the
+single-target oracle. See docs/extraction-instance-contract.md.
 
 <!-- 2026-10-17: maintainer rules -->
 - Art: reuse and transform existing art assets where possible. Never use image
