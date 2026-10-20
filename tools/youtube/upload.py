@@ -280,7 +280,11 @@ def validate_approval(gh, m, p):
     approval = gh.repo(f'/issues/comments/{m["approval"]["comment_id"]}')
     require(approval["user"]["type"] == "User" and approval["user"]["login"] in p["approvers"] and
             approval["issue_url"] == f'https://api.github.com/repos/{REPO}/issues/{m["approval"]["issue_number"]}' and
-            approval["body"] == approval_text(m), "Missing exact human per-clip approval")
+            approval["body"] == approval_text(m) and
+            isinstance(approval.get("created_at"), str) and
+            re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z", approval["created_at"]) and
+            approval.get("updated_at") == approval["created_at"],
+            "Missing exact human per-clip approval without edit evidence")
 
 
 def inspect_archive(raw, m):

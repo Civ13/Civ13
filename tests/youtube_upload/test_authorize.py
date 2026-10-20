@@ -152,6 +152,15 @@ class ClientAndProtocolTests(unittest.TestCase):
             with self.subTest(target=target), self.assertRaises(a.Stopped):
                 a.callback_code(target, 'expected')
 
+    def test_google_issuer_accepted_and_other_empty_duplicate_issuers_refused(self):
+        base = '/?state=expected&code=FAKE-CODE'
+        issuer = urllib.parse.quote('https://accounts.google.com', safe='')
+        self.assertEqual(a.callback_code(base + '&iss=' + issuer, 'expected'), 'FAKE-CODE')
+        for suffix in ('&iss=https%3A%2F%2Fevil.invalid', '&iss=',
+                '&iss=' + issuer + '&iss=' + issuer, '&hd=unapproved.invalid'):
+            with self.subTest(suffix=suffix), self.assertRaises(a.Stopped):
+                a.callback_code(base + suffix, 'expected')
+
     def test_loopback_callback_is_local_and_redacts_response_and_logs(self):
         callback = a.Callback('expected', timeout=3)
         response = []

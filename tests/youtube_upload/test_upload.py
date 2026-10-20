@@ -93,7 +93,8 @@ class FakeGH:
             "/actions/runs/1/attempts/1": {"run_attempt": 1, "conclusion": "success", "status": "completed",
                 "head_sha": "a" * 40, "run_started_at": "2026-10-20T12:00:00Z", "updated_at": "2026-10-20T12:02:00Z"},
             "/issues/comments/123": {"user": {"login": "reviewer", "type": "User"},
-                "issue_url": "https://api.github.com/repos/Civ13/Civ13/issues/100", "body": u.approval_text(manifest)}}
+                "issue_url": "https://api.github.com/repos/Civ13/Civ13/issues/100", "body": u.approval_text(manifest),
+                "created_at": "2026-10-20T12:05:00Z", "updated_at": "2026-10-20T12:05:00Z"}}
 
     def repo(self, path, method="GET", value=None):
         if path.startswith("/contents/"):
@@ -221,6 +222,14 @@ class ProvenanceTests(unittest.TestCase):
             gh.objects["/issues/comments/123"][field] = value
             with self.subTest(field=field), self.assertRaises(u.Refused):
                 u.validate_provenance(gh, self.m, self.p)
+
+    def test_approval_edit_or_missing_timestamp_evidence_refused(self):
+        for field, value in (("updated_at", "2026-10-20T12:06:00Z"),
+                ("updated_at", None), ("created_at", None), ("created_at", "")):
+            gh = FakeGH(self.m)
+            gh.objects["/issues/comments/123"][field] = value
+            with self.subTest(field=field), self.assertRaises(u.Refused):
+                u.validate_approval(gh, self.m, self.p)
 
 
 class ArtifactTests(unittest.TestCase):

@@ -105,8 +105,9 @@ fields except the comment reference itself, including channel, media/archive SHA
 source commit, metadata, audience and content review. Put the actual comment ID
 in the manifest and review/merge it through the normal PR process. An edited
 title, different clip, changed limitations or destination invalidates approval.
-The current API comment author must be an allowlisted human, and the full body
-must match exactly; generic approval, bot comments and approval on another issue
+The current API comment author must be an allowlisted human, the full body must
+match exactly, and creation/update timestamps must match. Edit evidence or missing
+timestamps require a new comment; generic approval, bot comments and approval on another issue
 are rejected. Do not put private evidence references or secrets in this public
 manifest or approval comment.
 

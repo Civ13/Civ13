@@ -115,8 +115,10 @@ def callback_code(target, expected_state):
                                       strict_parsing=True, max_num_fields=10)
     except ValueError:
         raise Stopped('Malformed OAuth callback') from None
-    require(set(query) <= {'state', 'code', 'error', 'error_description', 'error_uri', 'scope', 'authuser', 'prompt'} and
+    require(set(query) <= {'state', 'code', 'error', 'error_description', 'error_uri', 'scope', 'authuser', 'prompt', 'iss'} and
             all(len(values) == 1 for values in query.values()), 'Unexpected/duplicate callback field')
+    require('iss' not in query or query['iss'] == ['https://accounts.google.com'],
+            'Unexpected OAuth issuer; no token exchange')
     state = query.get('state', [''])[0]
     require(state.isascii() and hmac.compare_digest(state, expected_state), 'OAuth state mismatch; no token exchange')
     require('error' not in query and 'error_description' not in query and 'error_uri' not in query,
