@@ -1,0 +1,17 @@
+#define TRUE 1
+#define FALSE 0
+#define TICK_CHECK fixture_tick_check()
+#define TICK_LIMIT_TO_RUN 100
+#define EXCEPTION(message) new /exception(message)
+#include "predefines.dm"
+#include "list_macro.dm"
+#include "stubs.dm"
+#define fdel(path) delete_file_adapter(path)
+#include "world_z_budget.dm"
+#include "functions.dm"
+#include "player_reclaim.dm"
+#include "saving.dm"
+#include "loading.dm"
+#include "durable_graph.dm"
+#include "reachability.dm"
+#include "cross_level_probe.dm"

@@ -1,0 +1,3 @@
+    $pythonArguments = if ($options.Count) { @('-3','-B') } else { @('-B') }
+        & $pythonCommand @pythonArguments @prepareArguments
+        & $pythonCommand @pythonArguments @verifyArguments

@@ -1,11 +1,55 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: protected sleep buckle ownership -->
+Protected sleep relocates the body between z-levels, so release only its matching
+reciprocal buckle before entry or wake. Keep return coordinates captured before
+unbuckling, reject mismatched occupants, and leave sleep protection active on a
+failed wake. Both delayed verbs retain the initiating client/body and recheck the
+persistence gate at transfer time. Per-level saves still reject cross-z object
+fields; never suppress that guard to hide a stale spatial relationship.
+`map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
+cross-level and duplicate-entry failures, including direct Save_World calls.
+Keep only scalar identities/coordinates and at most eight schema-field frames;
+never pin live objects, retain values or print lookup refs in public reports.
+Preserve it through cleanup, clear it only at accepted save admission, and verify
+lookup type/location because native refs can be recycled after deletion.
+
+<!-- 2026-10-18: private Help conversation boundary -->
+Help history belongs to an authenticated client session, never a saved mob.
+`conversation_probe.dm` is included by the existing isolated Help fixture;
+conversation generation and action-token negative controls check stale replies
+and copied links. The role-free worker contract derives only user/assistant
+turns, bounded by UTF-8 history and complete ASCII-JSON request bytes. Spool
+cleanup is not encryption or guaranteed crash-time erasure. Server and worker
+updates require separately coordinated restarts; offline checks do not prove them.
+<!-- 2026-10-19: consumed crafting handles -->
+Consumed wood handles are selected from hands and real equipment slots, including
+shoulder/back, then retained through do_after. Revalidate the exact item and source
+before debit; consume only after successful stack.use and clear its actual slot.
+Do not recurse through storage or recreate handles on cancellation. Existing
+get_equipped_items omits shoulder; use the slot getter with equipment priority.
+<!-- 2026-10-19: collision mining ownership -->
+Dense mineable underground rock uses one shared click/bump mining action. Its
+explicit optional do_after context owns actor and turf reservations before any
+spawn; never queue mining from deferred living.Bump work or switch the player's
+active hand. The custom saver must exclude both reservation pointers.
+
 <!-- 2026-10-18: native help spool format -->
 Native DM can interpolate world.realtime in scientific notation, and text2file
 adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
 removes exactly one native line ending at admission and completion. Run
 tests/player_help/run-spool-controls.py for the three old-defect controls;
 all model transports in these spool checks are injected and offline.
+
+<!-- 2026-10-18: native Help line endings -->
+BYOND 516.1681 rejects the DM string escape `\r`; use `ascii2text(13)` for
+carriage-return normalization. `\n` is supported. JSON-decoded CRLF test data
+must still exercise the actual native renderer, not only a Python equivalent.
+
+<!-- 2026-10-18: isolated fixture ports -->
+`world.OpenPort(0)` opens an available port; `OpenPort("none")` closes it.
+The Help fixture disables compile-time visibility, rejects clients and overrides
+OpenPort to prevent reopening. These controls do not replace external socket monitoring.
 
 <!-- 2026-10-18: restored input clocks and action locks -->
 The custom saver includes changed tmp fields. Mob next_click/next_move and
@@ -54,12 +98,26 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 ## Maps
 
+<!-- 2026-10-18: centralized level admission -->
+Dynamic z growth must reserve its complete target through world_z_budget before
+the first native resize. The uncalibrated hard ceiling is 600,000 total grid cells,
+with one roof-added plane and lower-only host settings. Production additionally
+refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
+reviewed; configuration cannot bypass this. Isolated tests select a tests-only
+subclass, never a production opt-out. This is not an OOM guarantee. Overcap saved expansion holds before mutation and blocks
+later save overwrite. See docs/new-z-budget.md and tests/new_z_budget/prepare.py;
+source preparation does not establish native acceptance.
+
 - Maps use lowercase names with `_` for spaces.
 - WIP maps go in `maps/WIP/`.
 - No second z-levels unless same size as main level.
 - Map backups should use Git, not saved copies in the repo.
 
 ### DMM format rules
+
+<!-- 2026-10-16: standalone map constants -->
+- Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
+  MapDiffBot's standalone map reader rejects unresolved variables in map values.
 
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
@@ -247,6 +305,25 @@ single-target oracle. See docs/extraction-instance-contract.md.
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
 
+<!-- 2026-10-19: combined sub-tile mining acceptance -->
+`tests/human_subtile/run.py --suite mining` stages the full merged game and
+exercises native collision dispatch, mining snapshots and physical offset drift.
+Its mining-position control must fail the same-anchor drift oracle, not merely
+some assertion. Headless authority is adapted: only a separately attached real
+client can establish client.moving ownership through the optional client entry.
+Keep the production adapter disabled until that separate acceptance is met.
+
+<!-- 2026-10-19: opt-in physical human movement -->
+The experimental human adapter keeps the living Move third gameplay flag and
+uses one-use context at movable's native offset seam. Runtime ownership fields
+need explicit custom-save exclusion. Owned capsule presence is detected before
+loader assignments; no-capsule legacy humans retain their old offset policy.
+The minimal world-save stub rejects owned capsules instead of faking restoration.
+Use tests/human_subtile/run.py --prepare-only for offline exact-Git staging;
+native integration and connected-client timing are separate acceptance gates.
+DM reserves proc name run, and an if-local variable cannot be read afterward;
+offline text contracts do not replace the pinned native compiler.
+
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
   the selected checkout; investigation-branch probes may not be on master yet.
@@ -399,6 +476,21 @@ world/Error cooldown dictionaries remain for the round; distinct synthetic
 file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an
 immutable historical log_error control. `--prepare-only` runs no native tools.
+
+<!-- 2026-10-19: bounded launcher transport retries -->
+Launcher retry tests use injected HTTP handlers, never BYOND/accounts. Retry only
+classified resets/timeouts with finite attempts and an overall body-read budget;
+certificate/auth failures, untrusted redirects and bad hashes remain fail-closed.
+Delete only a failed attempt's newly created staged file, never a pre-existing
+path. Preserve TLS validation and redact errors. Proxy IsBypassed(false) alone
+does not prove traffic used a proxy. Source changes do not activate a release.
+
+<!-- 2026-10-19: distinct native launcher catalogs -->
+Official Civ13.com Nomads uses 1715 and TDM 1714 (published website); ValZarGaming
+uses the opposite mapping. Keep these independent. Official BYOND URLs use the
+fixed civ13.com hostname; ValZarGaming retains its existing verified DNS/IP pin.
+The native catalog is in tools/opendream-client/native/ServerCatalog.cs despite
+the legacy directory name. Source merge does not activate the launcher feed.
 
 <!-- 2026-10-14: native launcher packaging -->
 `tools/opendream-client/native/Build.ps1` builds the single-file self-contained
@@ -577,6 +669,12 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-19: inactive Dagger compilation -->
+`tests/dagger_map/compile_map.py` compiles the inactive DMM with production types
+in a disposable root-local DME, plus a missing-type diagnostic control. CI's
+`dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
+compilation is not controller, instancing, protection or gameplay acceptance.
 
 <!-- 2026-10-11: firearm configuration verification -->
 Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
@@ -851,6 +949,13 @@ ordinary prestartup direct calls. tests/lighting_startup checks production
 bodies, shared identity, late replacement and failed waiters against a baseline;
 its adapted rendering does not establish client lighting acceptance.
 
+<!-- 2026-10-18: building renderer gravity -->
+Building-sky entry must exempt /atom/movable/lighting_overlay explicitly; it is
+not an /obj/effect. Runtime level allocation and turf replacement can otherwise
+drop a black renderer onto lit ground. The building lighting probes separate
+replacement callbacks, explicit entry, and an adapted allocation interleave.
+They verify native lighting state, not connected-client rendering.
+
 <!-- 2026-10-12: lighting reinitialization -->
 <!-- 2026-10-17: restored-round lighting -->
 Turf luminosity is always 0; native tile visibility comes from lighting overlay
@@ -879,6 +984,10 @@ logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
 
+<!-- 2026-10-19: injected Windows adapter CI -->
+The bounded-build test suite runs without Windows DLLs. Inject ctypes error
+state too: get_last_error does not exist on Linux. CI explicitly recognizes the
+two added bounded-build tests; passing them is not native containment evidence.
 <!-- 2026-10-14: chemical smoke source retirement -->
 Chemical smoke systems are single-use: their two reaction callers construct fresh
 systems. The hidden reagent source must survive every queued spawn callback, then
@@ -912,3 +1021,43 @@ ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
 breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
 The lighting recovery fixture runs production lighting_sources.fire(), not only
 light constructor/registration checks; lighting-view removes the preservation guard.
+<!-- 2026-10-18: lazy floor decal tracking -->
+Native nullable tracking lists do not auto-materialize on `|=`: omitting the
+initializer raises a type-mismatch exception. `tests/floor_decal_tracking` covers
+the writer, seasonal reader and native entry compatibility. Ordinary turf saves
+exclude this derived field through their existing saved-variable allowlist.
+
+<!-- 2026-10-19: bot helper contention -->
+Bot control uses nonblocking flock and returns busy (75) without systemctl or
+cooldown writes under contention. The draft unit remains disabled pending
+independent game supervision and native bot-restart/game-survival acceptance.
+<!-- 2026-10-19: serializer profile admission -->
+Test-only save profiling starts after save_world_contents accepts its operation
+token. Never wrap the public Save_World entry on current sources: busy/reentrant
+requests must not restart another serializer's clock. Source tests are offline;
+manual world_save_profile_regressions is separate native evidence.
+
+<!-- 2026-10-19: exclusion dispatch source contract -->
+Runtime-exclusion hooks can have early mining ownership guards before their
+terminal list-membership return. Preserve those guards when replacing only the
+list with switch dispatch; source fixtures must pin current inherited helpers
+and include all mining fields. Offline source parity is not native evidence.
+
+<!-- 2026-10-19: Linux exclusion parity lane -->
+Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
+parity and three controls, retaining receipts. It is separate from run.py's held
+Windows grant runner; neither an offline pass nor workflow addition proves native
+parity, and this lane makes no benchmark or listener-sampling claim.
+
+<!-- 2026-10-19: native bind versus host address -->
+Linux BYOND world.address can report the host interface even with -ip 127.0.0.1.
+Isolated exclusion CI verifies the engine's startup bind diagnostic plus closed
+port/refused reopen state; do not use world.address as the socket-bind oracle.
+
+<!-- 2026-10-19: independent typed wait contexts -->
+`do_after` keeps mining_context in its ninth argument; opt-in gameplay_context
+is tenth and forwarded by name. Reject simultaneous contexts before either
+claim. Preserve mining progress/owner cleanup and ordinary null callback order.
+The gather disabled-source hashes project reviewed master; refresh them only
+after verifying all four full-file projections. Idle-metabolism extraction must
+project the disabled helper before finding its conditional proc declaration.

@@ -62,6 +62,10 @@ comparisons do not auto-select regressions. After merge, that coverage becomes
 opt-in on subsequent PRs. Adding a helper alongside new coverage selects its
 suite too; this is file-based selection, not a claim about a PR's intent.
 
+The explicitly registered `scripts/opendream/bounded_build/test_guard.py` and
+`test_windows.py` also select their injected adapter suite when introduced.
+These offline tests do not exercise native Windows containment or launch builds.
+
 When introducing a new suite, add a guarded step/job using the reusable
 `ci-selection.yml` output. Example for a game suite:
 

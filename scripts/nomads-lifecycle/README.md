@@ -58,6 +58,30 @@ serializes supervisors. An unexpected owned exit also requires operator action.
 Reclaiming a supervisor stopped during startup requires the same expected
 generation, completed import and consumed intent checks before any next update.
 
+All readiness publication uses `supervisor.publish_ready(root, revision=...,
+expected_map=..., host=..., generation=..., session=..., status=...)`. Public
+fresh startup (no import), restored startup and resumed reconciliation call this
+same function before writing canonical `phase: ready`. A healthy lobby with
+`ready: 0` remains unavailable to the help observer.
+
+An explicitly owned manual launcher must reuse this function from its pinned
+reviewed supervisor module under the same `supervisor.lock`; a private phase
+label alone cannot establish readiness. Capture the expected revision, map,
+host PID/creation/workdir and intended generation from the owned startup state.
+Bind `session` from that process's initial authenticated lifecycle status, then
+supply its final status as `status`. The function checks success/ready flags,
+revision/map, the stable lowercase-hex session, exact current owned state and
+run directory, and rechecks PID creation before atomic publication. Restored
+startup additionally requires the intended generation, completed import and no
+pending intent. Fresh no-import startup requires the lifecycle's exact empty
+string generation marker and `restart_import_complete: 0`; a null, missing or
+other false-like marker is not accepted as an empty generation. Raw session
+challenges are never written to state or events. Other context from state is
+preserved, and any changed context or identity refuses publication. This reuse
+does not enable Gaia build/save automation or authorize a new host, game query,
+helper start, retry reset or installation. The existing Europe builder remains
+unchanged.
+
 Each update retains the old run, exact staged binaries, and a hash-verified copy
 of the completed round-v2 save plus its matching one-shot restart intent. The
 replacement must report the intended generation fully imported and intent
@@ -135,3 +159,9 @@ storage. Bridge tests use mock transports, including publication failure control
 These checks do not establish scheduled-task startup, model answer quality or
 in-game delivery. Native game fixtures are unnecessary for this Python-only
 observer and remain a separate acceptance boundary.
+
+`test_startup_readiness.py` follows the actual public start and resumed paths,
+including no-import and restored startup, and checks that the strict observer
+starts only once after validated publication. Lobby, session/map/revision,
+generation/import, stale-state and missing/recycled/denied-identity cases leave
+state unpromoted. Sockets, processes and help transports are injected offline.

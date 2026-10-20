@@ -46,6 +46,10 @@
 			object = replacement
 		else if(ispath(type, /atom))
 			object = new type(starting_loc)
+		else if(ispath(type, /datum/wound/lost_limb))
+			// The lost limb is not a constructor input during graph recovery.
+			// Register an explicit shell before decoding cyclic organ references.
+			object = new type(null, null, null, TRUE)
 		else
 			// Non-atom datums have no location argument. In particular, matrix
 			// construction must use its no-argument identity initializer.
@@ -57,6 +61,8 @@
 		if(ishuman(object))
 			var/mob/living/human/restored_human = object
 			restored_human.persistence_restored = TRUE
+			savefile.cd = entry_path(savefile, ind)
+			restored_human.human_subtile_prepare_import(savefile)
 		all_loaded += object
 		existing_references["[ind]"] = object
 		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
@@ -116,6 +122,9 @@
 				object.vars[v] = savefile[v]
 			savefile.cd = entry_path(savefile, ind)
 			TICK_CHECK
+		if(istype(object, /datum/wound/lost_limb))
+			var/datum/wound/lost_limb/restored_wound = object
+			restored_wound.validate_restored_state()
 		savefile.cd = ".."
 		if (ishuman(object))
 			var/mob/living/human/H = object

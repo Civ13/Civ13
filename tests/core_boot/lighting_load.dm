@@ -3,7 +3,9 @@
 /datum/core_boot_probe/var/list/lighting_samples = list()
 
 /datum/core_boot_probe/proc/lighting_quiet()
-	return !lighting_update_overlays.len && !lighting_update_lights.len && !processes.time_of_day_change.updating_lighting
+	var/process/lighting_overlays/overlays = processes.lighting_overlays
+	// The live queue can be empty while a detached batch is budget-yielded.
+	return overlays && !lighting_update_overlays.len && !lighting_update_lights.len && !processes.time_of_day_change.updating_lighting && !overlays.processing_batch && (!overlays.current_list || overlays.batch_index > overlays.current_list.len)
 
 /datum/core_boot_probe/proc/sample_turfs()
 	var/list/turfs_out = list()

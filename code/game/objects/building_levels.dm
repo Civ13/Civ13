@@ -17,16 +17,33 @@ var/building_compiled_maxz = 0
 
 // Native expansion creates world.turf first. Dirt's constructor skips its
 // recovery timers while this flag is set; replace those blank cells in batches.
-/proc/building_allocate_level(target_z, bootstrap = FALSE)
+/proc/building_allocate_level(target_z, bootstrap = FALSE, datum/new_z_reservation/reservation)
 	if ((persistence_save_in_progress && !bootstrap) || building_allocating_z || target_z != world.maxz + 1 || target_z > BUILDING_MAX_Z || target_z > building_base_maxz() + BUILDING_EXTRA_LEVELS || world.maxx * world.maxy > BUILDING_MAX_LEVEL_CELLS)
+		world_z_budget.last_error = "The level request is not sequential, or allocation/save ownership is busy."
+		return FALSE
+	var/own_reservation = !reservation
+	if (own_reservation)
+		reservation = world_z_budget.reserve(target_z, bootstrap ? "restore" : "roof")
+	if (!reservation)
+		return FALSE
+	if (!world_z_budget.claim_level(reservation, target_z))
+		if (own_reservation)
+			world_z_budget.finish(reservation, FALSE)
 		return FALSE
 	building_allocating_z = target_z
-	world.maxz = target_z
-	for (var/x = 1 to world.maxx)
-		for (var/y = 1 to world.maxy)
-			new /turf/sky/building(locate(x, y, target_z))
-		TICK_CHECK
+	try
+		world.maxz = target_z
+		for (var/x = 1 to world.maxx)
+			for (var/y = 1 to world.maxy)
+				new /turf/sky/building(locate(x, y, target_z))
+			TICK_CHECK
+	catch (var/exception/allocation_error)
+		world_z_budget.finish(reservation, FALSE)
+		// Keep the busy flag: a partly initialized native grid requires restart.
+		throw allocation_error
 	building_allocating_z = 0
+	if (own_reservation)
+		return world_z_budget.finish(reservation, world.maxz == target_z)
 	return world.maxz == target_z
 
 // Unlike broken_floor, empty building sky has no global rendering registry or
@@ -36,6 +53,9 @@ var/building_compiled_maxz = 0
 	desc = "There is no floor here."
 
 /turf/sky/building/Entered(atom/movable/A)
+	// Lighting renderers belong to their turf; they are not falling cargo.
+	if (istype(A, /atom/movable/lighting_overlay))
+		return
 	if (!A || !A.loc || istype(A, /obj/covers) || istype(A, /obj/roof) || isobserver(A) || (locate(/obj/covers) in src) || (locate(/obj/structure/multiz/ladder) in src))
 		return
 	if (istype(A, /obj/effect) || istype(A, /obj/item/projectile))
@@ -168,6 +188,9 @@ var/building_compiled_maxz = 0
 	if (T.z == world.maxz)
 		if (T.z + 1 > BUILDING_MAX_Z || T.z + 1 > building_base_maxz() + BUILDING_EXTRA_LEVELS || world.maxx * world.maxy > BUILDING_MAX_LEVEL_CELLS)
 			return "This world cannot safely add another building level."
+		var/budget_error = world_z_budget.error(T.z + 1, "roof")
+		if (budget_error)
+			return budget_error
 	else
 		var/turf/above = locate(T.x, T.y, T.z + 1)
 		if (!building_open_turf(above) || (locate(/obj/covers) in above) || istype(get_area(above), /area/caribbean/no_mans_land))
@@ -205,6 +228,7 @@ var/building_compiled_maxz = 0
 		to_chat(user, SPAN_WARNING(error))
 		return null
 	if (T.z == world.maxz && !building_allocate_level(T.z + 1))
+		to_chat(user, SPAN_WARNING(world_z_budget.last_error ? world_z_budget.last_error : "The level allocation could not complete. Try again after recovery."))
 		return null
 	// Allocation can yield: recheck both support and occupancy before placing.
 	error = building_roof_error(T)

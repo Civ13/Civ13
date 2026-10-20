@@ -1,4 +1,11 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// Minimal serializer fixtures do not exercise wounds. Keep the loader's type
+// contract declared, but fail closed if one is introduced into these probes.
+// The --wounds full-source fixture tests actual constructor/state restoration.
+/datum/wound/lost_limb
+/datum/wound/lost_limb/proc/validate_restored_state()
+	throw EXCEPTION("Lost-limb restoration requires the production wound fixture")
+
 #ifndef BUILDING_MAX_Z
 #define BUILDING_MAX_Z 32
 #define BUILDING_EXTRA_LEVELS 8
@@ -128,6 +135,11 @@ var/list/mutate_on_tick = null
 	return
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0
+/mob/living/human/proc/human_subtile_prepare_import(savefile/F)
+	// This minimal fixture has no physical sub-tile movement implementation.
+	if ("human_subtile_position" in F.dir)
+		throw EXCEPTION("Sub-tile restoration requires the full-source human fixture")
+	return
 /mob/living/human/proc/rejuvenate()
 	rejuvenate_calls++
 	stat = CONSCIOUS

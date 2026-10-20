@@ -191,14 +191,24 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 	if (!inventory && get_dist(A, actor) <= 1)
 		if (isturf(A) && abs(A.x-actor.x) + abs(A.y-actor.y) == 1 && safe_step(A))
 			actions += "move"
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		if (wait_guards_ready("gather") && A.type == /turf/floor/grass && sharp_flint())
+			actions += "gather"
+		if (water_target(A))
+			if (wait_guards_ready("refill") && held_cup())
+				actions += "refill"
+			if (wait_guards_ready("drink") && actor.a_intent == I_GRAB && !actor.get_active_hand())
+				actions += "drink"
+#else
 		if (wait_guards_ready())
-			if (A.type == /turf/floor/grass && sharp_flint())
+			if (grass_target(A) && sharp_flint())
 				actions += "gather"
 			if (water_target(A))
 				if (held_cup())
 					actions += "refill"
 				if (actor.a_intent == I_GRAB && !actor.get_active_hand())
 					actions += "drink"
+#endif
 	var/list/available_recipes = recipes_for(A)
 	if (available_recipes.len)
 		actions += "craft"
@@ -329,7 +339,15 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 	if (generation == run_generation)
 		stop("ownership_lost")
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/datum/gameplay_bridge/proc/execute(list/R, run_generation, old_seq, old_time, list/old_entities, datum/gameplay_action_lease/worker_context = null)
+#else
 /datum/gameplay_bridge/proc/execute(list/R, run_generation, old_seq, old_time, list/old_entities)
+#endif
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!istype(worker_context, /datum/gameplay_action_lease) || worker_context.owner != src || action_lease != worker_context || worker_context.body != actor || worker_context.run_generation != run_generation || !islist(R) || worker_context.request_id != R["request_id"])
+		return
+#endif
 	var/list/receipt
 	if (!active(run_generation))
 		return
@@ -367,8 +385,13 @@ var/datum/gameplay_bridge/gameplay_bridge = new
 		return receipt
 	if (kind == "gather" || kind == "refill" || kind == "drink" || kind == "craft")
 		var/atom/target = valid_id(A["target"]) ? old_entities[A["target"]] : null
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		if (target && worker_context.valid())
+			result = survival_action(kind, target, A["recipe"], worker_context)
+#else
 		if (target && action_lease && action_lease.valid())
 			result = survival_action(kind, target, A["recipe"])
+#endif
 	else if (kind == "intent")
 		if (A["intent"] == "help" || A["intent"] == "grab")
 			actor.a_intent_change(A["intent"] == "help" ? I_HELP : I_GRAB)
