@@ -13,6 +13,15 @@ class CaptureControlTests(unittest.TestCase):
     def setUp(self):
         self.source = (ROOT / 'code/modules/persistence/immutable_capture.dm').read_text(encoding='utf-8')
 
+    def test_isolated_environment_includes_real_player_restore_dependencies(self):
+        source = (ROOT / 'tests/world_save/immutable_capture.dme').read_text()
+        player = '#include "../../code/modules/persistence/player_reclaim.dm"'
+        self.assertEqual(source.count(player), 1)
+        self.assertLess(source.index('persistence/functions.dm'), source.index(player))
+        self.assertLess(source.index(player), source.index('persistence/saving.dm'))
+        self.assertLess(source.index(player), source.index('persistence/loading.dm'))
+        self.assertNotIn('player_reclaim_probe.dm', source)
+
     def test_positive_preserves_production_source(self):
         self.assertEqual(RUNNER.prepare_source(self.source), (self.source, 'PASS'))
 
