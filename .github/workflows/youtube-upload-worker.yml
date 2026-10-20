@@ -1,6 +1,13 @@
 name: Trusted approved gameplay uploader
 on:
   workflow_call:
+    secrets:
+      YOUTUBE_CLIENT_ID:
+        required: true
+      YOUTUBE_CLIENT_SECRET:
+        required: true
+      YOUTUBE_REFRESH_TOKEN:
+        required: true
     inputs:
       manifest_id:
         required: true

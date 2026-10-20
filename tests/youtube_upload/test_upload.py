@@ -374,6 +374,22 @@ class ReceiptTests(unittest.TestCase):
 
 
 class PhpBridgeTests(unittest.TestCase):
+    def setUp(self):
+        self.secret_env = patch.dict(u.os.environ, {name: 'OFFLINE-FAKE' for name in
+            ('YOUTUBE_CLIENT_ID', 'YOUTUBE_CLIENT_SECRET', 'YOUTUBE_REFRESH_TOKEN')})
+        self.secret_env.start()
+        self.addCleanup(self.secret_env.stop)
+
+    def test_missing_or_malformed_environment_credentials_stop_before_subprocess(self):
+        for name in ('YOUTUBE_CLIENT_ID', 'YOUTUBE_CLIENT_SECRET', 'YOUTUBE_REFRESH_TOKEN'):
+            for value in ('', 'DO-NOT-LOG\nSECRET', 'x' * 8193):
+                with self.subTest(name=name, case=len(value)), patch.dict(u.os.environ, {name: value}), \
+                        patch.object(u.subprocess, 'run') as run, self.assertRaises(u.Refused) as error:
+                    u.PhpYouTube().channel()
+                run.assert_not_called()
+                self.assertIn('no API request', str(error.exception))
+                self.assertNotIn('DO-NOT-LOG', str(error.exception))
+
     def test_subprocess_failure_redacts_raw_service_errors(self):
         result = u.subprocess.CompletedProcess([], 1, b"secret-token", b"private-auth-url")
         with patch.object(u.subprocess, "run", return_value=result), self.assertRaises(u.Refused) as error:
@@ -404,6 +420,21 @@ class PhpBridgeTests(unittest.TestCase):
 
 
 class WorkflowTests(unittest.TestCase):
+    def test_caller_forwards_only_named_environment_secrets_and_worker_requires_them(self):
+        wrapper = (ROOT / '.github/workflows/youtube-upload.yml').read_text()
+        worker = (ROOT / '.github/workflows/youtube-upload-worker.yml').read_text()
+        self.assertNotIn('secrets: inherit', wrapper)
+        forwarding = wrapper.split('\n    secrets:\n')[1].split('\n    with:\n')[0]
+        required = worker.split('\n    secrets:\n')[1].split('\n    inputs:\n')[0]
+        names = ('YOUTUBE_CLIENT_ID', 'YOUTUBE_CLIENT_SECRET', 'YOUTUBE_REFRESH_TOKEN')
+        self.assertEqual(len(forwarding.splitlines()), 3)
+        for name in names:
+            self.assertIn(name + ': ${{ secrets.' + name + ' }}', forwarding)
+            self.assertIn(name + ':\n        required: true', required)
+        inspect = worker.split('\n  inspect:\n')[1].split('\n  upload:\n')[0]
+        self.assertNotIn('secrets.', inspect)
+        self.assertNotIn('environment:', inspect)
+
     def test_verification_only_flag_reaches_both_trusted_jobs(self):
         wrapper = (ROOT / '.github/workflows/youtube-upload.yml').read_text()
         worker = (ROOT / '.github/workflows/youtube-upload-worker.yml').read_text()

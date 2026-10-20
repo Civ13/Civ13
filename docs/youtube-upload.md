@@ -22,6 +22,16 @@ Only a manual invocation of the default-branch wrapper is eligible. PR events,
 forks, non-default dispatches and other callers cannot reach the worker's jobs.
 No `workflow_run`, scheduled upload or capture trigger is installed.
 
+The wrapper forwards only the three named credential bindings, and the worker
+declares those names required. GitHub requires this forwarding even when the
+values exist only in the worker's protected environment; omitting it silently
+resolves them to empty strings. Required names do not prove nonempty values, so
+the Python bridge also rejects missing/malformed credentials before any OAuth/API
+request. Environment protection still controls value access, and the inspection
+job receives no credential environment variables. Do not use broad secret
+inheritance or move credentials to repository/organization scope. See
+[GitHub's reusable-workflow secret guidance](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows).
+
 The inspection job has a read-only GitHub token and no YouTube secrets. It loads
 only trusted `tools/youtube` code from the default-branch dispatch commit, validates
 the selected run/artifact, downloads a bounded archive, and runs the runner's
