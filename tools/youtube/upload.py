@@ -508,6 +508,13 @@ class Ledger:
 class PhpYouTube:
     """YoutubePHP owns OAuth and video API I/O; Python owns approval/receipts."""
     def call(self, mode, **values):
+        # GitHub checks required secret names, not their resolved values.
+        # Reject a missing environment binding before starting any OAuth/API I/O.
+        require(all(1 <= len(os.environ.get(name, "")) <= 8192 and
+                    os.environ[name].isascii() and
+                    all(33 <= ord(c) < 127 for c in os.environ[name])
+                    for name in ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN")),
+                "Protected channel credentials unavailable or malformed; no API request")
         adapter = Path(__file__).with_name("adapter.php")
         try:
             result = subprocess.run(["php", "-d", "display_errors=0", "-d", "memory_limit=256M", str(adapter)],

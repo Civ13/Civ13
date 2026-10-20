@@ -28,6 +28,12 @@ jobs:
       issues: read
       pull-requests: read
     uses: ./.github/workflows/youtube-upload-worker.yml
+    # Named forwarding is required even for secrets stored only in the
+    # worker's protected environment. Do not inherit unrelated secrets.
+    secrets:
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
     with:
       manifest_id: ${{ inputs.manifest_id }}
       execute_upload: ${{ inputs.execute_upload }}
