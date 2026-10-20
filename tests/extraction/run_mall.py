@@ -24,13 +24,13 @@ def validate_native_result(report, stages, streams, expected=None):
     BYOND can mirror world.log to another stream. Each emitting stream may carry
     one identical expected assertion, but duplicate assertions within a stream
     are rejected. The retained runtime.log must itself contain that assertion.
+    Native assertions can arrive through the catch or world/Error path. Only an
+    exact expected negative result selects its corresponding log dialect.
     """
     if stages.splitlines().count(NETWORK_STAGE) != 1:
         raise RuntimeError('Native mall fixture did not establish closed/refused-reopen state')
     bindings = []
     for name, output in streams.items():
-        if any(value in output.lower() for value in DIAGNOSTICS):
-            raise RuntimeError('Unexpected native diagnostic in ' + name)
         matches = list(BINDING.finditer(output))
         closures = list(CLOSURE.finditer(output))
         if len(matches) > 1 or len(closures) > 1:
@@ -50,16 +50,18 @@ def validate_native_result(report, stages, streams, expected=None):
     if expected is None:
         if report.splitlines() != [PASS_RESULT]:
             raise RuntimeError('Native mall fixture did not produce its sole exact positive result')
-        if any('fail:' in output.lower() or 'pass:' in output.lower()
+        if any(any(value in output.lower() for value in (*DIAGNOSTICS, 'fail:', 'pass:'))
                for output in streams.values()):
             raise RuntimeError('Unexpected native result record outside the positive receipt')
         return PASS_RESULT
-    failure = (r'FAIL: ' + re.escape(expected)
-               + r' at tests[/\\]extraction[/\\]mall_probe\.dm:[0-9]+')
+    failure = (r'FAIL: (?P<runtime>runtime )?(?P<detail>' + re.escape(expected)
+               + r' at tests[/\\]extraction[/\\]mall_probe\.dm:[0-9]+)')
     lines = report.splitlines()
-    if len(lines) != 1 or not re.fullmatch(failure, lines[0]):
+    result = re.fullmatch(failure, lines[0]) if len(lines) == 1 else None
+    if result is None:
         raise RuntimeError('Negative control did not produce its sole exact expected assertion')
-    record = r'^' + re.escape(lines[0]) + r'[ \t]*$'
+    prefix = 'Runtime error: ' if result.group('runtime') else 'FAIL: '
+    record = r'^' + re.escape(prefix + result.group('detail')) + r'[ \t]*$'
     for name, output in streams.items():
         # Normalize only native CRLF, not arbitrary whitespace or extra records.
         normalized = output.replace('\r\n', '\n')
@@ -67,8 +69,8 @@ def validate_native_result(report, stages, streams, expected=None):
         if len(records) > 1 or (name == 'runtime.log' and len(records) != 1):
             raise RuntimeError('Negative control assertion count is invalid in ' + name)
         remainder = re.sub(record, '', normalized, flags=re.MULTILINE).lower()
-        if 'fail:' in remainder or 'pass:' in remainder:
-            raise RuntimeError('Collateral native result record in ' + name)
+        if any(value in remainder for value in (*DIAGNOSTICS, 'fail:', 'pass:')):
+            raise RuntimeError('Collateral native diagnostic or result record in ' + name)
     return 'PASS: negative control rejected at ' + expected
 
 

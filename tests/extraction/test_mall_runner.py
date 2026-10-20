@@ -103,6 +103,70 @@ class NativeOracleTests(unittest.TestCase):
                               stdout=BINDING + failure + '\n', stderr=failure + '\n',
                               **{'runtime.log': NETWORK_LOG + failure + '\n'})
 
+    def test_every_control_accepts_only_its_exact_runtime_assertion_dialect(self):
+        for expected in CONTROLS.values():
+            with self.subTest(expected=expected):
+                detail = self.failure(expected).removeprefix('FAIL: ')
+                report = 'FAIL: runtime ' + detail
+                log = 'Runtime error: ' + detail
+                self.assertEqual(
+                    self.validate(report=report + '\r\n', expected=expected,
+                                  stdout=BINDING + log + '\r\n', stderr=log + '\r\n',
+                                  **{'runtime.log': NETWORK_LOG + log + '\r\n'}),
+                    'PASS: negative control rejected at ' + expected)
+
+    def test_runtime_result_requires_exact_message_file_and_matching_location(self):
+        expected = CONTROLS['stair_return']
+        detail = self.failure(expected).removeprefix('FAIL: ')
+        report = 'FAIL: runtime ' + detail
+        log = 'Runtime error: ' + detail
+        for invalid in (report + ' extra', report + '\n' + report,
+                        report + '\n' + self.failure(expected),
+                        report.replace('mall_probe.dm', 'other_probe.dm'),
+                        report.replace(expected, 'unrelated ' + expected)):
+            with self.subTest(report=invalid), self.assertRaises(RuntimeError):
+                self.validate(report=invalid, expected=expected,
+                              **{'runtime.log': NETWORK_LOG + log})
+        for invalid in ('', log.replace(':46', ':47'),
+                        log.replace('mall_probe.dm', 'other_probe.dm'),
+                        log.replace(expected, 'unrelated ' + expected)):
+            with self.subTest(log=invalid), self.assertRaises(RuntimeError):
+                self.validate(report=report, expected=expected,
+                              **{'runtime.log': NETWORK_LOG + invalid})
+
+    def test_runtime_controls_reject_duplicate_mixed_and_collateral_stream_records(self):
+        expected = CONTROLS['stair_return']
+        caught = self.failure(expected)
+        detail = caught.removeprefix('FAIL: ')
+        report = 'FAIL: runtime ' + detail
+        log = 'Runtime error: ' + detail
+        for stream in ('stdout', 'stderr', 'runtime.log'):
+            for extra in (log, caught, 'FAIL: unrelated', run_mall.PASS_RESULT,
+                          log.replace(':46', ':47'), *run_mall.DIAGNOSTICS):
+                outputs = {'runtime.log': NETWORK_LOG + log}
+                outputs[stream] = NETWORK_LOG + log + '\n' + extra
+                with self.subTest(stream=stream, extra=extra), self.assertRaises(RuntimeError):
+                    self.validate(report=report, expected=expected, **outputs)
+            # The opposite dialect in a different stream is collateral too.
+            outputs = {'runtime.log': NETWORK_LOG + log}
+            outputs[stream] = NETWORK_LOG + caught
+            with self.subTest(stream=stream), self.assertRaises(RuntimeError):
+                self.validate(report=report, expected=expected, **outputs)
+            outputs = {'runtime.log': NETWORK_LOG + caught}
+            outputs[stream] = NETWORK_LOG + log
+            with self.subTest(caught_mode_stream=stream), self.assertRaises(RuntimeError):
+                self.validate(report=caught, expected=expected, **outputs)
+
+    def test_positive_never_accepts_expected_looking_runtime_assertions(self):
+        detail = self.failure(CONTROLS['stair_return']).removeprefix('FAIL: ')
+        log = 'Runtime error: ' + detail
+        for stream in ('stdout', 'stderr', 'runtime.log'):
+            with self.subTest(stream=stream), self.assertRaises(RuntimeError):
+                self.validate(**{stream: NETWORK_LOG + log})
+        with self.assertRaises(RuntimeError):
+            self.validate(report='FAIL: runtime ' + detail,
+                          **{'runtime.log': NETWORK_LOG + log})
+
     def test_negative_requires_exact_file_message_and_one_result(self):
         expected = CONTROLS['mission']
         failure = self.failure(expected)
