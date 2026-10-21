@@ -8,6 +8,10 @@ on:
       base:
         type: string
         default: ''
+      build_prefix:
+        description: Preserve CI subscriptions while allowing build-colon requests on other branches
+        type: boolean
+        default: false
     outputs:
       extensive:
         value: ${{ jobs.changes.outputs.extensive }}
@@ -34,11 +38,12 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           EXTENSIVE: ${{ inputs.extensive }}
+          BUILD_PREFIX: ${{ inputs.build_prefix }}
           BASE_REF: ${{ inputs.base }}
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE"
+        run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX"
       - name: Selection regression tests
-        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py')
+        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_build_prefix.py')
         run: python3 -m unittest discover -s tests -p 'test_ci*.py' -v
       - name: Validate all workflow syntax
         run: |
