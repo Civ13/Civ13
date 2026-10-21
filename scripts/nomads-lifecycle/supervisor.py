@@ -98,7 +98,20 @@ def startup_session(status):
     return session
 
 
-def publish_ready(root, *, revision, expected_map, host, generation, session, status, identity=None):
+def validate_prepared_directory(root, run, canonical_game_directory=None):
+    root, run = Path(root).resolve(strict=True), Path(run).resolve(strict=True)
+    if canonical_game_directory is None:
+        if run.parent != (root / 'runs').resolve(strict=True):
+            raise RuntimeError('Prepared run is outside the owned runtime root')
+    else:
+        canonical = Path(canonical_game_directory).resolve(strict=True)
+        if run != canonical or root != canonical / 'data/desktop-supervisor':
+            raise RuntimeError('Canonical game directory or supervisor root differs')
+    return run
+
+
+def publish_ready(root, *, revision, expected_map, host, generation, session, status, identity=None,
+                  canonical_game_directory=None):
     """Publish canonical readiness under the caller's supervisor.lock.
 
     The caller binds session from its initial lifecycle status for this owned
@@ -117,9 +130,9 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
         raise RuntimeError('Startup owned context changed')
     if (not isinstance(host, dict) or type(host.get('pid')) is not int or host['pid'] <= 0 or
             type(host.get('creation_filetime')) is not int or host['creation_filetime'] <= 0 or
-            not isinstance(host.get('workdir'), str) or
-            Path(host['workdir']).resolve(strict=True).parent != (root / 'runs').resolve(strict=True)):
+            not isinstance(host.get('workdir'), str)):
         raise RuntimeError('Invalid startup host identity or run path')
+    validate_prepared_directory(root, host['workdir'], canonical_game_directory)
     if (status.get('ok') != 1 or status.get('ready') != 1 or status.get('busy') != 0 or
             status.get('restart_hold') != 0 or status.get('restart_intent') != 0 or status.get('error')):
         raise RuntimeError('Running host is not ready')
@@ -255,6 +268,8 @@ class Supervisor:
 
     def build(self, revision):
         c = self.config
+        if c.get('canonical_game_directory'):
+            raise RuntimeError('Canonical builds require the serialized save/load updater')
         folder = self.root / 'builds' / revision
         if folder.exists():
             manifest = json.loads((folder / 'build.json').read_text())
@@ -307,7 +322,8 @@ class Supervisor:
     def publish_ready(self, status, generation, session):
         self.state = publish_ready(self.root, revision=self.state['revision'],
             expected_map=self.state.get('map', 'NOMADS_EUROPE'), host=self.state['host'].copy(),
-            generation=generation, session=session, status=status)
+            generation=generation, session=session, status=status,
+            canonical_game_directory=self.config.get('canonical_game_directory'))
 
     def stop_saved(self, operation):
         before = self.status()
@@ -359,9 +375,7 @@ class Supervisor:
         shell, binary replacement, or a second game-process implementation.
         """
         c = self.config
-        run = Path(run).resolve(strict=True)
-        if run.parent != (self.root / 'runs').resolve(strict=True):
-            raise RuntimeError('Prepared run is outside the owned runtime root')
+        run = validate_prepared_directory(self.root, run, c.get('canonical_game_directory'))
         revision = manifest['revision']
         verify_binaries(run, manifest, revision, c.get('map', 'NOMADS_EUROPE'))
         bind = c.get('bind', '0.0.0.0')
@@ -407,6 +421,8 @@ class Supervisor:
         raise RuntimeError('Owned host exited before readiness')
 
     def cycle(self, force=False):
+        if self.config.get('canonical_game_directory'):
+            raise RuntimeError('Canonical hosting requires the explicit save/load updater; no polling cycle')
         if (self.root / 'HALTED.json').exists():
             raise RuntimeError('Supervisor is latched halted; inspect evidence before operator recovery')
         revision = self.candidate()
