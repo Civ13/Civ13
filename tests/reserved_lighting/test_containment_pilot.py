@@ -23,7 +23,8 @@ def info(script, name='owned', owner='owner', running=True):
                           'NetworkMode':'none','ReadonlyRootfs':True,'Privileged':False,'CgroupnsMode':'private',
                           'IpcMode':'private','PidMode':'','CapDrop':['ALL'],'SecurityOpt':['no-new-privileges'],
                           'PortBindings':{},'Devices':[],'Binds':[],
-                          'Tmpfs':{'/work':f'rw,noexec,nosuid,nodev,size={p.SCRATCH},mode=1777'},'ShmSize':1048576},
+                          'Tmpfs':{'/work':f'rw,noexec,nosuid,nodev,size={p.SCRATCH},mode=1777'},'ShmSize':1048576,
+                          'LogConfig':{'Type':'local','Config':{'max-size':'1m','max-file':'1','compress':'false'}}},
             'Mounts':[{'Type':'bind','Source':str(script),'Destination':'/pilot.py','RW':False}],
             'State':{'Running':running,'Pid':123 if running else 0,'OOMKilled':False}}
 
@@ -53,6 +54,22 @@ class FakeDocker:
 
 
 class Pilot(unittest.TestCase):
+    def test_single_file_local_logging_disables_compression_and_rejects_drift(self):
+        script=Path('public-pilot.py').resolve()
+        args=p.container_args('owned','owner',HEAD,script,'guard',Path('owned.cid'))
+        options=dict(args[index+1].split('=',1) for index,item in enumerate(args) if item=='--log-opt')
+        self.assertEqual(args[args.index('--log-driver')+1],'local')
+        self.assertEqual(options,{'max-size':'1m','max-file':'1','compress':'false'})
+        baseline=info(script)
+        baseline['HostConfig']['LogConfig']={'Type':'local','Config':options}
+        p.inspect_settings(baseline,script)
+        for drift in ({'Type':'local','Config':{'max-size':'1m','max-file':'1'}},
+                      {'Type':'local','Config':{**options,'compress':'true'}},
+                      {'Type':'local','Config':{**options,'max-file':'2'}},
+                      {'Type':'json-file','Config':options}):
+            value=copy.deepcopy(baseline);value['HostConfig']['LogConfig']=drift
+            with self.subTest(drift=drift),self.assertRaisesRegex(ValueError,'Logging'):p.inspect_settings(value,script)
+
     def test_docker_failure_retains_bounded_stderr_and_optional_behavior(self):
         payload=b'discard-this-prefix'+b'x'*600+b'failure-cause'
         def child(*args,**kwargs):
