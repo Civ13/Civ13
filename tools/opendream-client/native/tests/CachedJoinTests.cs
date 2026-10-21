@@ -128,6 +128,12 @@ internal static class CachedJoinTests {
         dispatch.Tick += 2000; dispatch.Now = dispatch.Now.AddSeconds(1); // UTC age60, monotonic age61.
         await Deny(() => Task.Run(() => dispatch.Start(dispatchToken)), "Fresh DNS token extended original monotonic status lifetime");
 
+        var clientDelay = new Scene(root); var clientStatus = await clientDelay.Query(); clientDelay.Advance(59);
+        var clientToken = await clientDelay.Query(clientStatus.Status);
+        await Deny(() => Task.Run(() => ServerCatalog.NativeStart(clientToken, clientDelay.Directory,
+            Civ13.Launcher.Program.RequiredByond(), _ => { clientDelay.Tick += 2000; clientDelay.Now = clientDelay.Now.AddSeconds(1); return true; },
+            clientDelay.Now)), "Client-file verification crossed original monotonic freshness boundary");
+
         var stale = new Scene(root); var staleStatus = await stale.Query(); stale.Advance(61);
         await Deny(() => stale.Query(staleStatus.Status), "Stale proof bypassed real spacing", waiting: true);
         Require(stale.Dns == 1 && stale.Writes == 1, "Stale proof performed early DNS or Topic");

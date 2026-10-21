@@ -44,13 +44,16 @@ public static class ServerCatalog {
     public static ProcessStartInfo NativeStart(VerifiedGameServer verified, string bin,
         ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null) {
         var server = verified.Status;
+        server.Target.Validate();
+        requirement.Validate();
+        if (!matchesClient(bin)) throw new IOException("Required BYOND " + requirement.Version + " client unavailable.");
+        // Client-file verification can block. Sample freshness AFTER it, immediately
+        // before constructing the command, without renewing either original clock.
         var current = now ?? DateTimeOffset.UtcNow;
         server.Validate(current);
         if (verified.Recent is { } recent && !recent.IsFresh(current))
             throw new IOException("Recent game status expired. Refresh when request spacing allows.");
         var address = verified.Endpoint.Validate(server.Host);
-        requirement.Validate();
-        if (!matchesClient(bin)) throw new IOException("Required BYOND " + requirement.Version + " client unavailable.");
         var start = new ProcessStartInfo(Path.Combine(bin, "dreamseeker.exe")) {
             UseShellExecute = false, WorkingDirectory = bin
         };
