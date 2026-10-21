@@ -1,11 +1,34 @@
 # Single-file Windows launcher
 
-For ordinary native play, open `Civ13.exe`, sign into BYOND Pager with your own
-account, then choose **ValZarGaming servers > Nomads** (port 1714) or **TDM**
-(port 1715). The launcher verifies BYOND 516.1681 and offers its normal
-prerequisite installation when missing. These choices require no host receipt
-or operator arguments and do not download OpenDream. Public service remains
-held until persistence/recovery acceptance and the accepted launcher release.
+This branch contains an unreleased direct-status candidate. It must not replace
+the working 1.0.4 release until exact-head packaging/CI, independent review and a
+genuine public BYOND join are verified. No HTTPS server directory or additional
+backend deployment is required. See [SERVER-DISCOVERY.md](SERVER-DISCOVERY.md).
+One successful status query alone does not establish prejoin or gameplay acceptance.
+
+For native play, open `Civ13.exe`, sign into BYOND Pager with your own account,
+then choose **Civ13.com servers** or **ValZarGaming.com servers**. The launcher
+queries that hostname's explicitly configured candidate game ports, 1714 and 1715,
+using BYOND status. Only responding valid game services are selectable. The menu
+shows player counts (including zero), map, mode and round information where
+available; unavailable metadata is labeled rather than invented. An unreachable
+or invalid service does not become a zero-player server. Refresh/Back are available.
+Before joining, the selected endpoint is checked again and DreamSeeker connects
+to the verified public IP literal and configured port. Public port overrides and
+arbitrary scans are rejected. BYOND 516.1681 prerequisite verification/installation
+remains unchanged; public native choices do not download OpenDream.
+
+Public status checks share conservative request spacing across launcher instances
+for this Windows account. A check can be deferred for up to 137 seconds after a
+request; a new instance with recorded request history also has a 133-second
+startup guard. The menu prints the remaining wait and stays responsive. For a
+deferred join, press **J** when ready to obtain fresh status, or **B** to cancel.
+No countdown silently sends a request or launches a game. Refresh uses the same
+limiter. Local timing-state problems are reported as paused checks, not an offline
+game. Timing state lives in `%LOCALAPPDATA%/Civ13/status-requests`, independent of
+`--root`; do not delete it to bypass spacing. Waiting cannot clear an existing
+server ban or prove server game time advanced during lag. Known blocked sources
+must wait for owner-coordinated normal eligibility before further public checks.
 
 The script ZIP and its existing shortcuts are legacy OpenDream entrypoints.
 New script-installed shortcuts include `OpenDream` in their names. They do not
@@ -71,6 +94,17 @@ verify its downloaded hash, then activate the feed through the release workflow.
 No native channel activates merely by merging this PR. A missing/offline channel continues the current
 launcher. Only newer semantic versions update; the candidate PE product version
 must match its manifest. Never point this channel at an unaccepted candidate.
+
+Startup reports the installed/latest versions and check/download/restart stage.
+Transport resets and timeouts get at most three attempts, with 250 ms then 750 ms
+backoff. The manifest has a 20-second total budget (six seconds per attempt).
+Downloads retain a ten-minute total budget, including the body, with 20-second
+response-header deadlines. Each retry starts from the original URL and a new
+empty staged file; only the failed attempt's own file is removed. Certificate
+validation/native authentication errors, HTTP rejections, untrusted redirects,
+and checksum/version mismatches do not receive transport retries. TLS validation
+and the release redirect allowlist remain enabled. Diagnostic failures report
+only bounded exception classifications/codes, never signed URLs or raw messages.
 
 The updater stages and verifies the EXE, starts a copied native helper, and exits.
 The helper waits for the original process identity to exit, reacquires the update
@@ -148,46 +182,20 @@ This prerequisite prepares the BYOND binaries. It neither logs a user into BYOND
 nor validates or implements the separate PR18 BYOND-derived identity handshake.
 The current published client's authentication flow remains unchanged.
 
-## Player server selection
+## Player server selection and discovery
 
-Open the native launcher, choose **ValZarGaming servers**, then **Nomads**.
-This selects DreamDaemon through BYOND 516.1681 on port **1714**. TDM uses
-port **1715**. Use **BYOND sign in** to open the BYOND Pager and sign in with
-your own account. The launcher checks the installed client version before
-dispatching; it offers the pinned official installer when that version is missing.
-No local host receipt, engine setting, port argument or typed game username is
-required for these public server choices. The BYOND client supplies the account.
+Main-menu order: 1 BYOND sign-in, 2 Civ13.com, 3 ValZarGaming.com, 4 Exit,
+5-8 existing community links, and 9 experimental OpenDream.
 
-**OpenDream (experimental)** is a separate menu choice retaining the existing
-OpenDream account/client flow. Its client package is downloaded only when that
-choice is selected. It is not used for ValZarGaming's DreamDaemon servers.
+[The direct status and rollout checklist](SERVER-DISCOVERY.md) describes
+bounded game-service queries, status details, Refresh/Back, selection revalidation,
+provider hostname checks and fresh public IPv4 validation for both providers.
+Each validated address is bound to its approved hostname for one join attempt
+with a 15-second monotonic lifetime. Public choices reject `--server-port`.
+No live availability is inferred from old website links,
+static mode names, DNS alone, or a cached snapshot.
 
-Source and offline tests do not establish that a public server is online.
-Public Nomads launch remains held until the required persistence/recovery changes
-are merged and verified. Public selection/dispatch/join acceptance and launcher
-release publication remain separate steps; this source change is not a release.
-
-## Game server hostname
-
-Each native launcher Play attempt resolves `valzargaming.com`, excludes
-`192.64.119.81`, and requires the remaining answer to be the operator-approved
-`72.218.249.221`. It displays and passes only that freshly verified DNS address to
-the selected installed client, preventing a second lookup
-from selecting the excluded address. A changed/unverified endpoint blocks Play
-until its configuration is reviewed; the launcher never falls back to a stale IP.
-The legacy connection helper retains historical OpenDream defaults, but the
-native launcher blocks OpenDream game joins without an explicit operator
-`--server-port` for a verified OpenDream service. No public OpenDream service
-is configured; the DreamDaemon catalog does not establish one.
-`Civ13.exe --server-port 18459` explicitly overrides
-the experimental OpenDream port (valid range 1-65535). Public BYOND selections
-reject that override. Local DreamDaemon mode
-continues to use its verified receipt port and rejects this separate override.
-For explicit experimental OpenDream joins, the launcher invokes the packaged `dotnet.exe` and `Robust.Client.dll` directly
-with the existing UDP connection arguments, content mount, runtime/webview
-environment and `+launchauth`. It does not rewrite installed package scripts.
-Lookup failure, timeout,
-or an unverified address keeps the menu open for retry without starting a game.
-DNS resolution does not authenticate a server. Older direct Play CMD files are
-legacy experimental OpenDream entrypoints and retain their packaged test ports
-(Nomads 18452, TDM 18453). They are not native BYOND server shortcuts.
+Experimental OpenDream still requires an explicitly verified operator
+`--server-port`. It does not use the BYOND status query. Legacy OpenDream
+shortcuts retain their historical packaged endpoints; they are not native BYOND
+shortcuts. Local DreamDaemon verification still uses its genuine host receipt.

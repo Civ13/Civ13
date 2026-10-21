@@ -79,7 +79,7 @@ def main():
         (logs / 'config/config.txt').write_text('# Offline fixture\n', encoding='utf-8')
         runtime = subprocess.run([str(daemon), str(logs / generated[2].name),
                                   *(['-invisible', '-close'] if os.name == 'nt' else []),
-                                  '-safe', '-params', f'tested_commit={commit}', '-log', 'runtime.log'],
+                                  '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'],
                                  cwd=logs, capture_output=True, text=True, timeout=60,
                                  creationflags=flags)
         (logs / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')

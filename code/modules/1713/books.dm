@@ -23,7 +23,7 @@
 				Here is a guide on basic food recipes and also how to not poison your customers accidentally.
 
 				<h3>Basics:</h3>
-				Knead an egg and some flour to make dough. Bake that to make a bun or flatten and cut it.
+				Knead an egg and some flour to make dough. Shape it into a bun, or flatten and cut it. Baked plain, dough makes flatbread; work some yeast into it and let it rise for a few minutes to bake a loaf of bread.
 
 				<h3>Burger:</h3>
 				Put a bun and some meat into the microwave and turn it on. Then wait.

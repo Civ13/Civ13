@@ -5,6 +5,13 @@ using System.Text.Json;
 namespace Civ13.Launcher;
 
 public static class Program {
+    public static void WriteMainMenu(TextWriter output) {
+        output.WriteLine(ServerCatalog.MainMenu);
+        foreach (var link in CommunityLinks.Items)
+            output.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
+        output.WriteLine(ServerCatalog.OpenDreamMenu);
+    }
+
     public static string BundledChannel() {
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("client-channel.json")
             ?? throw new InvalidOperationException("Bundled client manifest missing.");
@@ -72,47 +79,62 @@ public static class Program {
                 Environment.SetEnvironmentVariable("TMPDIR", root);
             }
             using var owner = Updater.Lock(root);
-            using var transport = new ReleaseTransport();
+            using var transport = new ReleaseTransport(new HttpClientHandler { AllowAutoRedirect = false }, Console.WriteLine);
             Console.WriteLine("Civ13 Launcher " + version.ToString(3));
+            Console.WriteLine("Checking for launcher updates (installed " + version.ToString(3) + ")...");
+            var updateStage = "manifest check";
             try {
                 var manifest = Channel.Read(await transport.Text(Updater.LauncherChannelUrl));
+                manifest.Validate(true);
+                var latest = Version.Parse(manifest.Version);
+                Console.WriteLine("Latest stable launcher: " + latest + ".");
+                if (latest <= version)
+                    Console.WriteLine("This launcher is current or newer than the stable release.");
+                else Console.WriteLine("Downloading and verifying launcher " + latest + "...");
+                updateStage = "download and verification";
                 var candidate = await Updater.StageLauncher(manifest, version, root, transport);
                 if (candidate is not null) {
+                    updateStage = "starting update helper";
                     StartUpdateHelper(candidate, manifest, root);
                     Console.WriteLine("Verified launcher update downloaded. Restarting after this launcher exits...");
                     return 0;
                 }
-            } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or TaskCanceledException or JsonException or FormatException) {
-                Console.WriteLine("Launcher update unavailable: " + Updater.DescribeFailure(e));
+            } catch (Exception e) when (e is HttpRequestException or IOException or InvalidDataException or OperationCanceledException or TimeoutException or JsonException or FormatException) {
+                Console.WriteLine("Launcher update unavailable during " + updateStage + ": " + Updater.DescribeFailure(e));
             }
             using var byondTransport = new ByondTransport();
             var byond = await Byond.Ensure(RequiredByond(), root, byondTransport, new WindowsByondDesktop());
             Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
+            var discovery = new ServerDiscovery();
             while (true) {
-                Console.WriteLine("\nCiv13 - 1: BYOND sign in   2: ValZarGaming servers   3: OpenDream (experimental)   4: Exit");
-                foreach (var link in CommunityLinks.Items)
-                    Console.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
+                WriteMainMenu(Console.Out);
                 Console.Write("Choose a number: ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
-                if (choice == "2") {
-                    Console.WriteLine("ValZarGaming - 1: Nomads   2: TDM   3: Back");
-                    var modeChoice = Console.ReadLine();
-                    if (modeChoice is not ("1" or "2")) continue;
-                    try {
-                        if (serverPort != null) throw new IOException("Public server selections use their catalog port; omit --server-port.");
-                        var server = ServerCatalog.Select("ValZarGaming", modeChoice == "1" ? "Nomads" : "TDM");
-                        var addresses = await Connection.Resolve();
-                        Console.WriteLine($"Connecting to {server.Name} {server.Mode} using BYOND {RequiredByond().Version} on port {server.Port}.");
-                        var desktop = new WindowsByondDesktop();
-                        Process.Start(ServerCatalog.NativeStart(server, byond, addresses.Single(), RequiredByond(), path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())));
-                    } catch (IOException e) { Console.WriteLine(e.Message); }
+                if (ServerCatalog.MenuServer(choice) is { } serverName) {
+                    if (serverPort != null) {
+                        Console.WriteLine("Public server selections check the configured game ports; omit --server-port.");
+                        continue;
+                    }
+                    var desktop = new WindowsByondDesktop();
+                    await ServerBrowser.Run(serverName, discovery, Console.In, Console.Out, verified => {
+                        var server = verified.Status;
+                        Console.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
+                        try {
+                            using var game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
+                                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
+                                ?? throw new IOException("BYOND client did not start.");
+                        } catch (System.ComponentModel.Win32Exception e) {
+                            throw new IOException("BYOND client could not start.", e);
+                        }
+                        return Task.CompletedTask;
+                    });
                 }
-                if (choice == "3") {
+                if (choice == ServerCatalog.OpenDreamMenuKey) {
                     try {
                         using var clientOwner = Updater.Lock(root);
                         var client = await Updater.ClientChannel(transport, root, BundledChannel());
@@ -124,12 +146,11 @@ public static class Program {
                         if (engineChoice is not ("2" or "3")) continue;
                         var mode = engineChoice == "2" ? "Nomads" : "TDM";
                         var openDreamPort = ServerCatalog.OpenDreamPort(mode, serverPort);
-                        var addresses = await Connection.Resolve();
-                        Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
-                        // Pass only the approved address from this lookup, avoiding a second
-                        // unrestricted lookup that could select the explicitly excluded address.
+                        var endpoint = await Connection.Resolve();
+                        Console.WriteLine(Connection.Host + " verified public address for this attempt: " + endpoint.Address);
+                        // Pass this one validated DNS result, never ask the game client to resolve again.
                         Console.WriteLine($"Connecting to experimental OpenDream {mode} on operator port {openDreamPort}.");
-                        Process.Start(Connection.Start(destination, mode, addresses.Single(), serverPort));
+                        Process.Start(Connection.Start(destination, mode, endpoint, serverPort));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
             }

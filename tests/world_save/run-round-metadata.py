@@ -99,7 +99,7 @@ def main():
     build = owned('compile', [str(compiler), '-max_errors', '0', 'roundtrip.dme'])
     if '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError(f'Pinned clean compilation required: {build}')
-    owned('daemon', [str(daemon), 'roundtrip.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log'])
+    owned('daemon', [str(daemon), 'roundtrip.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if actual != expected:
         raise RuntimeError(f'Unexpected round metadata result: {actual!r}; expected {expected!r}')

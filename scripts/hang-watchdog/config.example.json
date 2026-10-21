@@ -1,0 +1,17 @@
+{
+  "game_root": "/srv/civ13/nomads",
+  "output_dir": "/var/lib/civ13-hang-watchdog",
+  "daemon": "/usr/local/byond/bin/DreamDaemon",
+  "pid": 12345,
+  "start_ticks": 987654321,
+  "port": 1715,
+  "poll_seconds": 5,
+  "stale_seconds": 120,
+  "startup_grace_seconds": 120,
+  "cooldown_seconds": 900,
+  "max_bundles": 8,
+  "max_bundle_bytes": 65536,
+  "max_total_bytes": 1048576,
+  "expected_revision": null,
+  "expected_byond": "516.1681"
+}

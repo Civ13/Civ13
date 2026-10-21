@@ -35,8 +35,8 @@ def byond_text_md5(path):
     return hashlib.md5(Path(path).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
 
 
-def verify_binaries(folder, manifest, revision):
-    if manifest.get('revision') != revision or manifest.get('map') != 'NOMADS_EUROPE':
+def verify_binaries(folder, manifest, revision, expected_map='NOMADS_EUROPE'):
+    if manifest.get('revision') != revision or manifest.get('map') != expected_map:
         raise RuntimeError('Staged build identity changed')
     if set(manifest.get('binaries', {})) != {'civ13.dmb', 'civ13.rsc'}:
         raise RuntimeError('Staged build manifest is incomplete')
@@ -91,6 +91,71 @@ def process_identity(pid):
         kernel.CloseHandle(handle)
 
 
+def startup_session(status):
+    session = status.get('session')
+    if not isinstance(session, str) or len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
+        raise RuntimeError('Startup supplied no valid process session challenge')
+    return session
+
+
+def validate_prepared_directory(root, run, canonical_game_directory=None):
+    root, run = Path(root).resolve(strict=True), Path(run).resolve(strict=True)
+    if canonical_game_directory is None:
+        if run.parent != (root / 'runs').resolve(strict=True):
+            raise RuntimeError('Prepared run is outside the owned runtime root')
+    else:
+        canonical = Path(canonical_game_directory).resolve(strict=True)
+        if run != canonical or root != canonical / 'data/desktop-supervisor':
+            raise RuntimeError('Canonical game directory or supervisor root differs')
+    return run
+
+
+def publish_ready(root, *, revision, expected_map, host, generation, session, status, identity=None,
+                  canonical_game_directory=None):
+    """Publish canonical readiness under the caller's supervisor.lock.
+
+    The caller binds session from its initial lifecycle status for this owned
+    process. A final status cannot replace that challenge or the owned context.
+    This function never queries, starts or stops a process, or records a session.
+    """
+    root = Path(root).resolve(strict=True)
+    state_path = root / 'state.json'
+    state = json.loads(state_path.read_text(encoding='utf-8-sig'))
+    if (not isinstance(revision, str) or len(revision) != 40 or
+            any(c not in '0123456789abcdef' for c in revision) or
+            not isinstance(expected_map, str) or not expected_map or
+            state.get('revision') != revision or
+            state.get('map', 'NOMADS_EUROPE') != expected_map or
+            state.get('host') != host or state.get('generation') != generation):
+        raise RuntimeError('Startup owned context changed')
+    if (not isinstance(host, dict) or type(host.get('pid')) is not int or host['pid'] <= 0 or
+            type(host.get('creation_filetime')) is not int or host['creation_filetime'] <= 0 or
+            not isinstance(host.get('workdir'), str)):
+        raise RuntimeError('Invalid startup host identity or run path')
+    validate_prepared_directory(root, host['workdir'], canonical_game_directory)
+    if (status.get('ok') != 1 or status.get('ready') != 1 or status.get('busy') != 0 or
+            status.get('restart_hold') != 0 or status.get('restart_intent') != 0 or status.get('error')):
+        raise RuntimeError('Running host is not ready')
+    if status.get('revision') != revision or status.get('map') != expected_map:
+        raise RuntimeError('Startup status revision/map differs from owned context')
+    if generation is not None and (not generation or status.get('generation') != generation or
+                                   status.get('restart_import_complete') != 1):
+        raise RuntimeError('Startup did not restore the intended generation')
+    if generation is None and (status.get('generation') != '' or status.get('restart_import_complete') != 0):
+        raise RuntimeError('Fresh startup unexpectedly imported a generation')
+    if startup_session({'session': session}) != startup_session(status):
+        raise RuntimeError('Startup process session changed')
+    if (identity or process_identity)(host['pid']) != host['creation_filetime']:
+        raise RuntimeError('Startup host identity changed')
+    # Cooperating writers hold supervisor.lock; detect stale caller state and
+    # changes during the final process check before replacing the state file.
+    if json.loads(state_path.read_text(encoding='utf-8-sig')) != state:
+        raise RuntimeError('Startup owned state changed before publication')
+    state['phase'] = 'ready'
+    write_json(state_path, state)
+    return state
+
+
 def query(port, token, action='status', operation=None, session=None):
     values = {'nomads_lifecycle': '1', 'token': token, 'action': action}
     if operation:
@@ -122,7 +187,7 @@ def query(port, token, action='status', operation=None, session=None):
         return result
 
 
-def validate_generation(folder, operation=None, session=None):
+def validate_generation(folder, operation=None, session=None, expected_map='NOMADS_EUROPE'):
     folder = Path(folder)
     intent = json.loads((folder / 'restart_intent.json').read_text(encoding='utf-8-sig'))
     state = json.loads((folder / 'round.json').read_text(encoding='utf-8-sig'))
@@ -135,7 +200,7 @@ def validate_generation(folder, operation=None, session=None):
         raise RuntimeError('Saved intent does not belong to the acknowledged lifecycle operation')
     if intent.get('metadata') != byond_text_md5(folder / 'map.txt') or intent.get('round') != byond_text_md5(folder / 'round.json'):
         raise RuntimeError('Restart intent metadata mismatch')
-    if state.get('map') != 'NOMADS_EUROPE':
+    if state.get('map') != expected_map:
         raise RuntimeError('Saved generation belongs to another map')
     if any(type(state.get(axis)) is not int or not 1 <= state[axis] <= 32767 for axis in ('maxx', 'maxy')):
         raise RuntimeError('Invalid saved horizontal dimensions')
@@ -151,8 +216,8 @@ def validate_generation(folder, operation=None, session=None):
     return state, names
 
 
-def snapshot(folder, destination, operation=None, session=None):
-    state, names = validate_generation(folder, operation, session)
+def snapshot(folder, destination, operation=None, session=None, expected_map='NOMADS_EUROPE'):
+    state, names = validate_generation(folder, operation, session, expected_map)
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=False)
     hashes = {}
@@ -196,15 +261,15 @@ class Supervisor:
         return result.stdout.decode('utf-8', errors='replace').strip()
 
     def candidate(self):
-        c = self.config
-        self.command([c['git'], 'fetch', 'origin', c.get('branch', 'master')], c['repository'], self.root / 'fetch.log', timeout=180)
-        revision = self.command([c['git'], 'rev-parse', 'FETCH_HEAD^{commit}'], c['repository'])
-        if len(revision) != 40 or any(x not in '0123456789abcdef' for x in revision):
-            raise RuntimeError('Invalid fetched commit')
-        return revision
+        if self.config.get('branch', 'master') != 'master':
+            raise RuntimeError('Normal test-server launch requires branch master')
+        from master_guard import verified_master
+        return verified_master(self.config['repository'], self.config['git'])['commit']
 
     def build(self, revision):
         c = self.config
+        if c.get('canonical_game_directory'):
+            raise RuntimeError('Canonical builds require the serialized save/load updater')
         folder = self.root / 'builds' / revision
         if folder.exists():
             manifest = json.loads((folder / 'build.json').read_text())
@@ -244,7 +309,7 @@ class Supervisor:
 
     def status(self):
         value = query(self.config['port'], self.token)
-        if value.get('revision') != self.state['revision'] or value.get('map') != 'NOMADS_EUROPE':
+        if value.get('revision') != self.state['revision'] or value.get('map') != self.config.get('map', 'NOMADS_EUROPE'):
             raise RuntimeError('Running host revision/map differs from owned state')
         return value
 
@@ -254,13 +319,21 @@ class Supervisor:
         if generation and (status.get('generation') != generation or status.get('restart_intent') or not status.get('restart_import_complete')):
             raise RuntimeError('Startup did not restore the intended generation')
 
-    def stop_saved(self, operation):
+    def publish_ready(self, status, generation, session):
+        self.state = publish_ready(self.root, revision=self.state['revision'],
+            expected_map=self.state.get('map', 'NOMADS_EUROPE'), host=self.state['host'].copy(),
+            generation=generation, session=session, status=status,
+            canonical_game_directory=self.config.get('canonical_game_directory'))
+
+    def stop_saved(self, operation, expected_session=None):
         before = self.status()
-        if not before.get('ready') or before.get('busy') or before.get('error'):
+        if not before.get('ready') or before.get('busy') or before.get('error') or before.get('clients') or before.get('restart_hold') or before.get('restart_intent'):
             raise RuntimeError('Current world is not ready for a safe update')
         session = before.get('session', '')
         if len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
             raise RuntimeError('Current world supplied no valid process session challenge')
+        if expected_session is not None and (session != expected_session or not self.alive()):
+            raise RuntimeError('Owned process session changed before save; no mutation sent')
         self.record('save_requested', operation=operation, revision=self.state['revision'])
         answer = query(self.config['port'], self.token, 'save_shutdown', operation, session)
         if answer.get('operation') != operation:
@@ -277,7 +350,7 @@ class Supervisor:
             except (OSError, TimeoutError):
                 pass
         backup = self.root / 'backups' / operation
-        generation = snapshot(Path(self.state['host']['workdir']) / 'map_saves', backup, operation, session)
+        generation = snapshot(Path(self.state['host']['workdir']) / 'map_saves', backup, operation, session, self.config.get('map', 'NOMADS_EUROPE'))
         self.record('validated_shutdown_backup', operation=operation, generation=generation, backup=str(backup))
         return backup, generation
 
@@ -295,13 +368,38 @@ class Supervisor:
         (run / 'config/lifecycle-revision.txt').write_text(build.name, encoding='ascii')
         if backup:
             shutil.copytree(backup, run / 'map_saves')
+        self.launch_prepared(run, manifest, generation, operation, backup)
+
+    def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None):
+        """Start a verified prepared run; the caller owns supervisor.lock.
+
+        The bot consumer uses this existing lifecycle/startup path without a
+        shell, binary replacement, or a second game-process implementation.
+        An optional readiness_check returns the final accepted status before
+        readiness publication; a failed check leaves this owned host starting.
+        """
+        c = self.config
+        run = validate_prepared_directory(self.root, run, c.get('canonical_game_directory'))
+        revision = manifest['revision']
+        verify_binaries(run, manifest, revision, c.get('map', 'NOMADS_EUROPE'))
+        bind = c.get('bind', '0.0.0.0')
+        if bind not in ('127.0.0.1', '0.0.0.0'):
+            raise RuntimeError('Unsupported native bind address')
+        with socket.socket() as probe:
+            if os.name == 'nt':
+                probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+            probe.bind((bind, c['port']))
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-        child = subprocess.Popen([c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-log', 'supervisor-runtime.log'], cwd=run, creationflags=flags)
+        argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-log', 'supervisor-runtime.log']
+        if bind == '127.0.0.1':
+            argv += ['-ip', bind]
+        child = subprocess.Popen(argv, cwd=run, creationflags=flags)
         previous = {key: self.state.get(key) for key in ('revision', 'host', 'generation', 'backup', 'operation')} if self.state else None
-        self.state = {'revision': build.name, 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
+        self.state = {'revision': revision, 'map': manifest['map'], 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
         write_json(self.state_path, self.state)
-        self.record('started', revision=build.name, pid=child.pid, workdir=str(run), operation=operation)
+        self.record('started', revision=revision, pid=child.pid, workdir=str(run), operation=operation)
         deadline = self.clock() + c.get('startup_timeout_seconds', 1800)
+        session = None
         while self.alive():
             try:
                 status = self.status()
@@ -310,12 +408,21 @@ class Supervisor:
             if status:
                 if status.get('error'):
                     raise RuntimeError('Startup recovery failed; preserve this host and matched backup')
+                observed_session = startup_session(status)
+                if session is None:
+                    session = observed_session
+                elif observed_session != session:
+                    raise RuntimeError('Startup process session changed')
                 if status.get('ready'):
                     self.accept_ready(status, generation)
-                    self.state['phase'] = 'ready'
-                    write_json(self.state_path, self.state)
+                    if readiness_check is not None:
+                        status = readiness_check(status)
+                        self.accept_ready(status, generation)
+                        if startup_session(status) != session or not self.alive():
+                            raise RuntimeError('Startup process changed during continuity acceptance')
+                    self.publish_ready(status, generation, session)
                     public_status = {key: value for key, value in status.items() if key not in ('session', 'token')}
-                    self.record('cycle_complete', revision=build.name, generation=generation, operation=operation, status=public_status)
+                    self.record('cycle_complete', revision=revision, generation=generation, operation=operation, status=public_status)
                     return
             if self.clock() > deadline:
                 raise RuntimeError('Startup readiness timeout; no automatic fresh round or retry')
@@ -323,20 +430,33 @@ class Supervisor:
         raise RuntimeError('Owned host exited before readiness')
 
     def cycle(self, force=False):
+        if self.config.get('canonical_game_directory'):
+            raise RuntimeError('Canonical hosting requires the explicit save/load updater; no polling cycle')
         if (self.root / 'HALTED.json').exists():
             raise RuntimeError('Supervisor is latched halted; inspect evidence before operator recovery')
         revision = self.candidate()
         if self.state and not self.alive():
             raise RuntimeError('Previously owned host exited unexpectedly; refusing automatic restart')
         if self.state and self.state.get('phase') != 'ready':
-            self.accept_ready(self.status(), self.state.get('generation'))
-            self.state['phase'] = 'ready'
-            write_json(self.state_path, self.state)
+            initial = self.status()
+            self.accept_ready(initial, self.state.get('generation'))
+            session = startup_session(initial)
+            self.publish_ready(self.status(), self.state.get('generation'), session)
             self.record('reconciled_ready', revision=self.state['revision'], generation=self.state.get('generation'))
-        if self.state.get('revision') == revision and not force:
+        if self.state:
             status = self.status()
-            self.accept_ready(status, self.state.get('generation'))
-            return
+            # An ordinary admin save temporarily clears ready and replaces the
+            # completion generation. Startup binding is checked above; it must
+            # not be reapplied to later saves of the same running world.
+            if status.get('busy') and not status.get('error') and not status.get('restart_hold'):
+                return
+            self.accept_ready(status, None)
+            if status.get('restart_intent'):
+                raise RuntimeError('Running host has an unconsumed restart intent')
+            if status.get('clients'):
+                return
+            if self.state.get('revision') == revision and not force:
+                return
         build = self.build(revision)  # Compile before requesting any save/shutdown.
         operation = uuid.uuid4().hex
         if self.state:
@@ -354,8 +474,17 @@ def main():
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--once', action='store_true')
     parser.add_argument('--force-cycle', action='store_true')
+    parser.add_argument('--bot-profile', type=Path, help='Explicit disabled-by-default portable bot profile')
+    parser.add_argument('--bot-check', action='store_true', help='Read-only metadata preflight; no token load or process/network access')
     args = parser.parse_args()
     config = json.loads(args.config.read_text(encoding='utf-8-sig'))
+    if args.bot_profile:
+        if args.force_cycle or args.once:
+            parser.error('Bot consumer cannot be combined with ordinary automatic update modes')
+        from bot_consumer import main as bot_main
+        return bot_main(args.config, args.bot_profile, check=args.bot_check)
+    if args.bot_check:
+        parser.error('--bot-check requires --bot-profile')
     supervisor = Supervisor(config)
     with exclusive_lock(supervisor.root / 'supervisor.lock'):
         try:

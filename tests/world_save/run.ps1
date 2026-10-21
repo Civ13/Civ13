@@ -19,7 +19,7 @@ try {
     Copy-Item -LiteralPath 'tests/world_save/roundtrip.rsc' -Destination $testRun
     Push-Location -LiteralPath $testRun
     try {
-        $daemonArgs = @('roundtrip.dmb', '-invisible', '-close', '-safe', '-log', 'runtime.log')
+        $daemonArgs = @('roundtrip.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log')
         if ($Large) { $daemonArgs += @('-params', 'large=1') }
         & $daemon @daemonArgs
         if ($LASTEXITCODE -ne 0) { throw 'Regression daemon failed' }
