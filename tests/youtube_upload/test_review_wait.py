@@ -145,6 +145,18 @@ class ReviewTests(unittest.TestCase):
         with self.assertRaises(u.Refused):
             r.execution_gate(self.gh, reader, clock=lambda: DEADLINE)
 
+    def test_completed_native_admission_step_allows_operator_arm_without_baseline_race(self):
+        reader, clock = Reader(), [DEADLINE - 60]
+        admitted = r.admit(self.gh, reader, clock=lambda: clock[0])
+        # Operator observes successful admission via native job step status,
+        # then arms before the next step. No partial/rerun approval is reused.
+        reader.arm(DEADLINE + 500)
+        with patch("builtins.print"):
+            result = r.await_arm(self.gh, reader, clock=lambda: clock[0], admitted=admitted)
+        self.assertEqual(result["execution_until"], DEADLINE + 500)
+        with self.assertRaises(u.Refused):
+            r.await_arm(self.gh, reader, clock=lambda: DEADLINE + 60, admitted=admitted)
+
     def test_execution_expiry_rearm_changed_source_or_missing_handoff_refused(self):
         reader = self.execution()
         with self.assertRaises(u.Refused):

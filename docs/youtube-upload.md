@@ -580,8 +580,11 @@ dispatches a workflow, reads channel credentials or alters a media receipt.
 
 After the owner clicks Approve, the **same protected job** verifies the closed
 baseline and waits at most 120 seconds for the attended operator to arm execution.
-This step receives only the workflow token and the existing read-only control App
-token, with no YouTube credentials bound. The operator must monitor that step,
+Admission and arm-wait steps receive only the workflow token and the existing
+read-only control App token, with no YouTube credentials bound. The operator must
+observe successful completion of `Admit reviewed request with controls closed`
+through the native job-steps API before opening controls; this avoids racing the
+baseline check and does not depend on access to unfinished job logs. Then
 check cancellation/stop markers, cap, receipts and the original approval, then
 open only the approved six controls with a fresh
 `YOUTUBE_DEFERRED_ARMED_UNTIL` at most 900 seconds away. Keep the controller feature

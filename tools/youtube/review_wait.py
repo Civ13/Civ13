@@ -83,11 +83,19 @@ def execution_controls(now, reader):
             bool(re.fullmatch(r"[0-9]{1,12}", until)) and now < int(until) <= now + EXECUTION_SECONDS)
 
 
-def await_arm(gh, reader, clock=time.time, sleep=time.sleep):
+def admit(gh, reader, clock=time.time):
     deadline = request(gh, int(clock()))
     closed_baseline(reader)
     started = int(clock())
     u.require(started < deadline, "Eight-hour review expired during admission checks")
+    return {"review_started_at": started, "review_deadline": deadline}
+
+
+def await_arm(gh, reader, clock=time.time, sleep=time.sleep, admitted=None):
+    admitted = admit(gh, reader, clock) if admitted is None else admitted
+    started, deadline = admitted["review_started_at"], admitted["review_deadline"]
+    u.require(request(gh, int(clock()), admission=False) == deadline and started < deadline and
+              started <= int(clock()) < started + HANDOFF_SECONDS, "Same-job admission is missing or expired")
     print(f"Review admitted for this run; operator handoff expires at {started + HANDOFF_SECONDS} UTC epoch", flush=True)
     while int(clock()) < started + HANDOFF_SECONDS:
         now = int(clock())
@@ -157,7 +165,13 @@ def main():
                   os.environ.get("GITHUB_EVENT_NAME") in {"schedule", "workflow_dispatch"}, "Untrusted review cleanup")
         expire(gh, int(time.time()))
     else:
-        result = await_arm(gh, ControlReader.from_environment())
+        reader = ControlReader.from_environment()
+        if os.environ.get("REVIEW_OPERATION") == "admit":
+            result = admit(gh, reader)
+        else:
+            values = [os.environ.get(name, "") for name in ("REVIEW_STARTED_AT", "REVIEW_DEADLINE")]
+            u.require(all(value.isdigit() for value in values), "Missing same-job admission outputs")
+            result = await_arm(gh, reader, admitted=dict(zip(("review_started_at", "review_deadline"), map(int, values))))
         with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
             for key, value in result.items():
                 output.write(f"{key}={value}\n")

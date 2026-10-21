@@ -110,11 +110,22 @@ jobs:
           owner: Civ13
           repositories: Civ13
           skip-token-revoke: false
-      - name: Admit reviewed request and await a fresh short operator arm
+      - name: Admit reviewed request with controls closed
+        id: review-admit
+        if: inputs.review_hours == '8'
+        env:
+          REVIEW_OPERATION: admit
+          REVIEW_HOURS: ${{ inputs.review_hours }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}
+        run: /usr/bin/python3 -B tools/youtube/review_wait.py
+      - name: Await a fresh short operator arm after successful admission
         id: review-arm
         if: inputs.review_hours == '8'
         env:
           REVIEW_HOURS: ${{ inputs.review_hours }}
+          REVIEW_STARTED_AT: ${{ steps.review-admit.outputs.review_started_at }}
+          REVIEW_DEADLINE: ${{ steps.review-admit.outputs.review_deadline }}
           GITHUB_TOKEN: ${{ github.token }}
           YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}
         run: /usr/bin/python3 -B tools/youtube/review_wait.py
