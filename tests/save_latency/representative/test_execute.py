@@ -13,6 +13,7 @@ import sys
 import tempfile
 import threading
 import time
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 from urllib.parse import parse_qs
@@ -188,6 +189,10 @@ class ExecutorTests(unittest.TestCase):
         cls.cache = offline.SourceTests.cache
         cls.repo = offline.SourceTests.repo
 
+    def setUp(self):
+        self.enterContext(patch.object(subprocess, 'Popen', side_effect=AssertionError('native process forbidden')))
+        self.enterContext(patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')))
+
     def test_actual_executor_all_seven_owned_phases_without_native_effects(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -210,6 +215,152 @@ class ExecutorTests(unittest.TestCase):
             for label in ('A', 'B'):
                 config = (output / label / 'game/config/config.txt').read_text()
                 self.assertNotIn('forbidden', config)
+
+    def test_expired_phase_and_slow_admission_do_not_launch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            game = Path(temporary)
+            calls = []
+            effect = SimpleNamespace(clock=lambda: 10, launch=lambda *args: calls.append('launch'))
+            for deadline in (9, 160):
+                with self.assertRaises(TimeoutError):
+                    execute.run_phase(effect, game, source.CANDIDATE, {}, {}, deadline, lambda *args: None, 'writer')
+            self.assertEqual(calls, [])
+            now = [0]
+            effect.clock = lambda: now[0]
+            def slow_admit():
+                now[0] = 31
+            with self.assertRaises(TimeoutError):
+                with execute.owned_process(effect, ['inert'], game, deadline=60, admit=slow_admit):
+                    self.fail('expired admission reached body')
+            self.assertEqual(calls, [])
+
+    def test_cleanup_waits_consume_only_remaining_shared_budget(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            now, waits = [0], []
+            process = FakeProcess(stubborn=True)
+            def terminate():
+                now[0] = 95
+            def wait(timeout):
+                waits.append(timeout)
+                if process.alive:
+                    now[0] = 100
+                    raise subprocess.TimeoutExpired('injected', timeout)
+                return 0
+            process.terminate, process.wait = terminate, wait
+            effect = SimpleNamespace(clock=lambda: now[0], launch=lambda *args: process)
+            with execute.owned_process(effect, ['inert'], Path(temporary), deadline=100):
+                pass
+            self.assertEqual(waits, [5, 0])
+            self.assertFalse(process.alive)
+
+    def test_utc_expiry_at_export_prepare_create_and_final_write_refuses(self):
+        class WallEffects(FakeEffects):
+            wall = datetime(2026, 10, 21, 12, tzinfo=timezone.utc)
+            def utcnow(self):
+                return self.wall
+            def expire(self):
+                self.wall = datetime(2026, 10, 23, 12, tzinfo=timezone.utc)
+        for boundary in ('export', 'prepare', 'create', 'final'):
+            with self.subTest(boundary=boundary), tempfile.TemporaryDirectory() as temporary:
+                packet = allocation(Path(temporary))
+                effect = WallEffects(self.cache)
+                original_export, original_prepare = effect.export, source.prepare
+                original_mkdir, original_write = Path.mkdir, execute.write
+                def export(*args):
+                    value = original_export(*args)
+                    if boundary == 'export':
+                        effect.expire()
+                    return value
+                def prepare(*args, **kwargs):
+                    value = original_prepare(*args, **kwargs)
+                    if boundary == 'prepare':
+                        effect.expire()
+                    return value
+                def mkdir(path, *args, **kwargs):
+                    value = original_mkdir(path, *args, **kwargs)
+                    if boundary == 'create' and path == Path(packet['output']):
+                        effect.expire()
+                    return value
+                def write(path, value):
+                    original_write(path, value)
+                    if boundary == 'final' and path.name == 'result.json':
+                        effect.expire()
+                effect.export = export
+                with patch.object(source, 'prepare', side_effect=prepare), patch.object(Path, 'mkdir', mkdir), patch.object(execute, 'write', side_effect=write):
+                    with self.assertRaises(TimeoutError):
+                        execute.execute(self.repo, packet, effect)
+                output = Path(packet['output'])
+                self.assertTrue(json.loads((output / 'failure.json').read_text())['preserve'])
+                phases = [call for call in effect.calls if call[0] == 'phase']
+                self.assertEqual(len(phases), 7 if boundary == 'final' else 0)
+                if boundary == 'final':
+                    self.assertFalse(json.loads((output / 'result.json').read_text())['envelope_valid'])
+                else:
+                    self.assertFalse(any(call[0] == 'compile' for call in effect.calls))
+
+    def test_clock_jumps_cannot_extend_frozen_budget(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            packet = allocation(Path(temporary))
+            effect = FakeEffects(self.cache)
+            wall = [effect.utcnow()]
+            effect.utcnow = lambda: wall[0]
+            bounded = execute.AllocatedEffects(effect, packet, effect.clock(), wall[0])
+            deadline = bounded.deadline
+            wall[0] += execute.timedelta(seconds=31)
+            self.assertEqual(bounded.clock(), 31)
+            wall[0] -= execute.timedelta(seconds=40)
+            effect.now = -1
+            self.assertEqual(bounded.clock(), 31)
+            self.assertEqual(bounded.deadline, deadline)
+
+    def test_post_seed_artifact_tool_config_and_coherent_manifest_mutations_refuse(self):
+        for changed in ('dmb', 'rsc', 'dm.exe', 'dd.exe', 'config/config.txt',
+                        'config/full-map-probe-token.txt', 'representative/probe.dm', 'coherent'):
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as temporary:
+                class Mutated(FakeEffects):
+                    def phase(self, game, commit, packet, helper, deadline, body, role):
+                        value = super().phase(game, commit, packet, helper, deadline, body, role)
+                        if role == 'seed':
+                            for label in ('A', 'B'):
+                                template = Path(packet['output']) / label / 'game'
+                                names = ('representative.dmb', 'representative.rsc') if changed == 'coherent' else (
+                                    'representative.'+changed if changed in ('dmb', 'rsc') else changed,)
+                                for name in names:
+                                    path = Path(packet['byond_bin']) / name if name.endswith('.exe') else template / name
+                                    path.write_bytes(path.read_bytes()+b' injected coherent change')
+                                (Path(packet['output']) / (label+'-manifest.json')).write_text(json.dumps(
+                                    {'rewritten_expected_hashes': {name: files.file_sha(template/name) for name in names
+                                                                  if not name.endswith('.exe')}}))
+                            if changed == 'coherent':
+                                path = Path(packet['byond_bin']) / 'dd.exe'
+                                path.write_bytes(path.read_bytes()+b' changed daemon')
+                        return value
+                packet = allocation(Path(temporary))
+                effect = Mutated(self.cache)
+                with self.assertRaisesRegex(ValueError, 'Independent input seal'):
+                    execute.execute(self.repo, packet, effect)
+                self.assertEqual(len([call for call in effect.calls if call[0] == 'phase']), 1)
+                self.assertTrue((Path(packet['output']) / 'seed-generation/1.sav').is_file())
+                self.assertFalse((Path(packet['output']) / 'result.json').exists())
+
+    def test_slow_or_mutated_copy_never_starts_next_phase(self):
+        for change in ('expired', 'artifact'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                packet = allocation(Path(temporary))
+                effect = FakeEffects(self.cache)
+                original = execute.copy_tree
+                def copy(*args):
+                    original(*args)
+                    if change == 'expired':
+                        effect.now = packet['setup_seconds']+execute.CORE_SECONDS+1
+                    else:
+                        path = args[1] / 'representative.rsc'
+                        path.write_bytes(path.read_bytes()+b' changed during copy')
+                with patch.object(execute, 'copy_tree', side_effect=copy):
+                    with self.assertRaises((TimeoutError, ValueError)):
+                        execute.execute(self.repo, packet, effect)
+                self.assertFalse(any(call[0] == 'phase' for call in effect.calls))
+                self.assertTrue((Path(packet['output']) / 'seed/game/representative.dmb').exists())
 
     def test_timeout_preserves_seed_and_all_partial_outputs(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -253,7 +404,7 @@ class ExecutorTests(unittest.TestCase):
     def test_actual_run_phase_admission_transport_body_owned_exit_and_diagnostics(self):
         helper_data = {name: self.cache[(source.HELPERS, 'tests/world_save/full_map_lifecycle/' + name)]
                        for name in ('query.py', 'run.py')}
-        for refusal in (None, 'listener', 'token', 'session', 'diagnostic'):
+        for refusal in (None, 'listener', 'token', 'session', 'diagnostic', 'exitartifact'):
             with self.subTest(refusal=refusal), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 packet = allocation(root)
@@ -261,6 +412,8 @@ class ExecutorTests(unittest.TestCase):
                 (game / 'config').mkdir(parents=True)
                 (game / 'config/full-map-probe-token.txt').write_text('f'*64)
                 (game / 'representative.dmb').write_bytes(b'nonexecutable owned binary')
+                expected = execute.MappingProxyType({name: files.file_sha(game / name) for name in
+                    ('representative.dmb', 'config/full-map-probe-token.txt')})
                 process, calls = FakeProcess(), []
                 sampled, body_done = threading.Event(), threading.Event()
                 state = {'phase': 'idle'}
@@ -323,26 +476,32 @@ class ExecutorTests(unittest.TestCase):
                         self.assertTrue(sampled.wait(2), 'actual observer did not query transport')
                         self.assertEqual(owned['pid'], process.pid)
                         host.query('first', initial['session'])
-                        return host.poll('first_complete', initial['session'], host.deadline)
+                        result = host.poll('first_complete', initial['session'], host.deadline)
+                        if refusal == 'exitartifact':
+                            (game / 'representative.dmb').write_bytes(b'changed while owned process ran')
+                        return result
                     finally:
                         body_done.set()
 
                 with patch.object(execute.sampler, 'sample', side_effect=sample), patch.object(subprocess, 'Popen', side_effect=AssertionError('native process forbidden')), patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')):
                     if refusal:
                         message = {'listener': 'Listener ownership', 'token': 'refusal control',
-                                   'session': 'refusal control', 'diagnostic': 'Strict native diagnostics'}[refusal]
+                                   'session': 'refusal control', 'diagnostic': 'Strict native diagnostics',
+                                   'exitartifact': 'Independent input seal'}[refusal]
                         with self.assertRaisesRegex((ValueError, RuntimeError), message):
                             execute.run_phase(NativeBoundary(), game, source.CANDIDATE, packet,
-                                              helper_data, time.monotonic()+1000, body, 'writer')
+                                              helper_data, time.monotonic()+1000, body, 'writer', expected)
                     else:
                         result = execute.run_phase(NativeBoundary(), game, source.CANDIDATE, packet,
-                                                   helper_data, time.monotonic()+1000, body, 'writer')
+                                                   helper_data, time.monotonic()+1000, body, 'writer', expected)
                         self.assertEqual(result['representative']['phase'], 'first_complete')
                 self.assertTrue(json.loads((game / 'exit.json').read_text())['owned_exit'])
                 self.assertEqual(process.events[0], 'terminate')
                 self.assertFalse(process.alive)
-                self.assertEqual(calls.count('body'), int(refusal in (None, 'diagnostic')))
-                if refusal in (None, 'diagnostic'):
+                launch = next(call for call in calls if isinstance(call, tuple) and call[0] == 'launch')
+                self.assertEqual(launch[1][launch[1].index('-ip')+1], '127.0.0.1')
+                self.assertEqual(calls.count('body'), int(refusal in (None, 'diagnostic', 'exitartifact')))
+                if refusal in (None, 'diagnostic', 'exitartifact'):
                     requests = [call for call in calls if isinstance(call, dict)]
                     self.assertTrue(any(call['token'] == '0'*64 for call in requests))
                     self.assertTrue(any(call['session'] == 'stale-session' for call in requests))
@@ -374,6 +533,7 @@ class ExecutorTests(unittest.TestCase):
             now = FakeEffects(self.cache).utcnow()
             for change in ({'expires_utc': '2026-10-21T12:01:00Z'}, {'output': 'relative'},
                            {'output': str(root)}, {'port': 1714}, {'authorized': False},
+                           {'listener_addresses': ['0.0.0.0']}, {'toolchain_sha256': {}},
                            {'commits': [source.CANDIDATE, source.REFERENCE]}):
                 with self.assertRaises(ValueError):
                     execute.resource_packet(dict(packet, **change), now)

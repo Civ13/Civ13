@@ -23,6 +23,10 @@ The executor exports exact public source, verifies input hashes, places
 sanitizes public configuration, writes the existing private test token and freezes
 DMB/RSC/toolchain/config hashes. This packet neither copies
 private inputs nor prepares canonical/live directories.
+The expected source/generated input, config/token, compiler/daemon and compiled
+DMB/RSC seals stay in independent immutable memory. They are rechecked before
+each copy/compile/launch, after owned phases and copies, and before/after final
+result publication. Rewriting an on-disk manifest cannot replace those seals.
 
 The test-only DM extension uses existing authenticated/session-bound dispatch.
 It adds asynchronous cohort census and ordered `first`/`second` actions, calls real `ticker.savemap()` and
@@ -83,6 +87,15 @@ seed at most 1800, each arm at most 3600 including both readers, and seven 30-se
 cleanup reserves. No installation/download, PID rediscovery, retry or implicit
 extension occurs. Unsupported anchors, timeout, stale identity, wrong generation
 or cleanup failure preserve every seed, output and recovery file.
+One clock anchored before setup consumes the greater elapsed monotonic or UTC
+time; a forward UTC jump cannot outlive the grant and backward jumps cannot
+extend it. Staging and final-write overruns refuse completion. Each phase retains
+30 seconds inside its existing deadline for owned cleanup; listener admission
+requires another 120 seconds before launch. Stop/wait/join never obtain a new
+deadline. Already-owned handles still receive immediate stop/kill attempts when
+the budget is exhausted, with zero remaining wait rather than an implicit grant.
+Daemon argv adds supported `-ip 127.0.0.1` before startup; the later OS listener
+census verifies that bind and sole ownership. No firewall or host policy changes.
 
 Tests drive the actual orchestration with injected files/transports and seven fake
 owned processes. They run no compiler, native game, sockets or HTTP/DNS. Injected
