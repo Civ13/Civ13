@@ -125,8 +125,10 @@ def capacity_control(root, cap):
     probe = root / ('capacity-' + uuid.uuid4().hex)
     written = 0
     error = None
+    created = False
     try:
         with probe.open('xb', buffering=0) as output:
+            created = True
             block = b'\0' * (1024**2)
             while written <= cap:
                 try:
@@ -137,7 +139,8 @@ def capacity_control(root, cap):
                     break
         require(error == 28 and 0 < written <= cap, 'Missing filesystem ENOSPC control')
     finally:
-        probe.unlink(missing_ok=True)
+        if created:
+            probe.unlink(missing_ok=True)
     after = quota(root, cap)
     require(after['device'] == before['device'], 'Filesystem changed during control')
     return {'errno': error, 'written': written, 'before': before, 'after': after}
@@ -177,6 +180,35 @@ def arguments(name, owner, packet, source, build, output, phase):
             '/source/tests/reserved_lighting/native_preflight/run.py', '--inside', phase]
 
 
+class Budget:
+    """One clock domain for controller, every Docker call and owned cleanup."""
+    def __init__(self, ends, monotonic=None, utc=None):
+        self.monotonic, self.utc, self.ends = monotonic or time.monotonic, utc or time.time, ends
+        self.deadline = self.monotonic() + 600
+
+    def remaining(self):
+        return min(self.deadline - self.monotonic(), self.ends - self.utc())
+
+    def require(self, reserve=15):
+        require(self.remaining() >= reserve, 'Shared outer/grant deadline reserve')
+
+    def timeout(self, requested, cleanup=False):
+        # Leave the CLI's retained direct-child reap headroom inside the total.
+        remaining = self.remaining() - (3 if cleanup else 18)
+        require(remaining > 0, 'Shared operation/cleanup deadline')
+        return min(requested, remaining)
+
+
+class BoundedDocker:
+    def __init__(self, docker, budget):
+        self.docker, self.budget = docker, budget
+
+    def call(self, args, timeout=10, optional=False, cleanup=False):
+        result = self.docker.call(args, timeout=self.budget.timeout(timeout, cleanup), optional=optional, cleanup=cleanup)
+        self.budget.require(0)
+        return result
+
+
 def owned_phase(pilot, docker, packet, source, build, output, phase, lease):
     """Reuse accepted ownership/retirement primitives; never pull or retry.
 
@@ -188,7 +220,7 @@ def owned_phase(pilot, docker, packet, source, build, output, phase, lease):
     row = {'phase': phase, 'name': name, 'owner': owner, 'complete': False}
     cid = None
     try:
-        lease(reserve=195 if phase == 'compile' else 45)
+        lease(reserve=225 if phase == 'compile' else 75)
         try:
             cid_text = docker.call(arguments(name, owner, packet, source, build, output, phase))[1].strip()
             require(re.fullmatch('[0-9a-f]{64}', cid_text), 'Created CID missing')
@@ -209,7 +241,7 @@ def owned_phase(pilot, docker, packet, source, build, output, phase, lease):
                 row['reconciliation_error'] = str(reconcile)
             raise
         settings(candidate, packet, source, build, output, phase == 'compile')
-        lease(reserve=195 if phase == 'compile' else 45)  # after create/inspection, before start
+        lease(reserve=225 if phase == 'compile' else 75)  # includes start/inspection headroom
         row['settings_verified'] = True
         docker.call(['start', cid])
         row['exit_code'] = int(docker.call(['wait', cid], timeout=180 if phase == 'compile' else 30)[1].strip())
@@ -322,6 +354,27 @@ def build_inventory(build, head, compiler, relative):
     return compiled
 
 
+def seal_build(build, output, head, compiler, relative):
+    """Controller memory preserves the original compile identity independently.
+
+    The exported JSON is supporting evidence; later checks use this retained
+    value, never a replacement ledger or replacement exported seal.
+    """
+    compiled = build_inventory(build, head, compiler, relative)
+    for name in ('fixture/probe.dmb', 'fixture/probe.rsc'):
+        require(name in compiled['files'] and (build / name).stat().st_size > 0, 'Missing/empty compiled products')
+    return {'ledger': sha(build / 'build.json'), 'files': dict(compiled['files']),
+            'logs': {name: sha(output / name) for name in ('compile-stdout.log', 'compile-stderr.log')}}
+
+
+def verify_build_seal(build, output, seal):
+    require(sha(build / 'build.json') == seal['ledger'], 'Original compile ledger drift')
+    for name, value in seal['files'].items():
+        require(sha(build / name) == value, 'Original compiled artifact drift')
+    for name, value in seal['logs'].items():
+        require(sha(output / name) == value, 'Original compiler log drift')
+
+
 def execute(packet_path, grant_path, source, build, output, env=os.environ):
     require(sys.platform == 'linux', 'Linux-only execution')
     require(sys.dont_write_bytecode, 'Use Python -B; no unbounded bytecode writers')
@@ -333,9 +386,9 @@ def execute(packet_path, grant_path, source, build, output, env=os.environ):
                 'GITHUB_EVENT_NAME': 'workflow_dispatch', 'CIV13_REPOSITORY_VISIBILITY': 'public',
                 'CIV13_NATIVE_PREFLIGHT_CONFIRMED': 'true', 'GITHUB_SHA': packet['head']}
     require(all(env.get(k) == v for k, v in expected.items()), 'Exact public free-hosted manual job required')
-    start = time.monotonic()
+    budget = Budget(grant['ends'])
     def lease():
-        require(time.monotonic() - start < 585, 'Outer deadline/cleanup reserve')
+        budget.require()
         require(sha(packet_path) == packet['packet_sha256'] and load(grant_path) == grant, 'Admission inputs changed')
         admission(packet, grant, time.time())
     lease()
@@ -360,14 +413,19 @@ def execute(packet_path, grant_path, source, build, output, env=os.environ):
     with (output / 'USED').open('xb') as used:
         used.write(packet['packet_sha256'].encode())
     save(output / 'request.json', packet)
+    request_sha = sha(output / 'request.json')
     save(output / 'capacity.json', capacity)
     pilot = module('accepted_pilot', source / 'tests/reserved_lighting/containment_pilot.py')
     pilot.SCOPE = SCOPE  # local module instance only; never edit the accepted source
+    compile_seal = None
     def verify(final=False, reserve=15):
         lease(); prep.validate(source, manifest)
         quota(build, BUILD); quota(output, SCRATCH)
         if (build / 'build.json').exists():
             build_inventory(build, packet['head'], packet['toolchain']['compiler'], prep.relative)
+        if compile_seal is not None:
+            verify_build_seal(build, output, compile_seal)
+        require(sha(output / 'request.json') == request_sha, 'Original shared request drift')
         for phase in ('baseline', 'candidate'):
             if (output / phase).exists():
                 expected_names = prep.name_paths((source / 'code/names.dm').read_bytes())
@@ -384,11 +442,16 @@ def execute(packet_path, grant_path, source, build, output, env=os.environ):
             require(value == {'snapshots': 6, 'rows': 1350, 'equal': True}, 'Wrong smoke comparison')
             return value
         lease()  # hashing and filesystem observations consume lease time too
-        require(grant['ends'] - time.time() >= reserve, 'Insufficient phase+cleanup lease after hashing')
+        budget.require(reserve)  # min monotonic outer and UTC grant AFTER hashing
     def phase(name):
+        nonlocal compile_seal
         cli = output / ('controller-' + name); cli.mkdir()
-        docker = pilot.Docker(cli)  # every CLI/log/config writer shares the aggregate hard mount
-        return owned_phase(pilot, docker, packet, source, build, output, name, verify)
+        docker = BoundedDocker(pilot.Docker(cli), budget)
+        row = owned_phase(pilot, docker, packet, source, build, output, name, verify)
+        if name == 'compile' and row['complete']:
+            compile_seal = seal_build(build, output, packet['head'], packet['toolchain']['compiler'], prep.relative)
+            save(output / 'compile-seal.json', compile_seal)
+        return row
     result = sequence(phase, verify, lambda value: save(output / 'preflight.json', value))
     require(result['complete'], result.get('error', 'Incomplete preflight'))
     return result

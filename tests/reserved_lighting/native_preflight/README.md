@@ -45,8 +45,18 @@ stdout/stderr have a separate 16 MiB aggregate polling detector on the 128 MiB
 hard filesystem. That detector can overshoot between polls. Compile wall/CPU
 are 180/60 seconds; each smoke wall/CPU is 30/10 seconds. Each
 phase requires 15 seconds of cleanup lease; outer deadline is 600 seconds.
+The shared budget is the minimum of outer monotonic time and grant UTC time.
+Fresh compile/smoke admission reserves 225/75 seconds including helper overhead;
+all CLI operations, waits and cleanup calls are clamped to the shared remainder.
 The caller must provide fresh, writable, correctly owned mounted filesystems;
 this source does not mount them or select an unbounded fallback.
+
+The controller retains an independent in-memory seal of the original compile
+ledger, artifacts and compiler logs. It verifies that identity and the original
+shared request before/after both smokes and final comparison; coherently changing
+an artifact and its current ledger cannot replace the retained identity.
+The capacity probe is removed only after this invocation created it exclusively;
+a UUID collision preserves preexisting bytes and remains a failure.
 
 The supplied source is not execution-ready. Independently reviewed larger-profile
 causal memory/PID/network/descendant controls, an engine/account/socket contract,

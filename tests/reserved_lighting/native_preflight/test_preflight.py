@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -12,6 +13,7 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
+from contextlib import ExitStack
 
 ROOT = Path(__file__).resolve().parent
 
@@ -132,6 +134,30 @@ class SourceContracts(unittest.TestCase):
 
 
 class AdmissionContracts(unittest.TestCase):
+    def test_capacity_exclusive_collision_preserves_unowned_bytes(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            existing = root / 'capacity-collision'
+            existing.write_bytes(b'operator-owned evidence')
+            with patch.object(r, 'quota', return_value={'device': 1}), patch.object(r.uuid, 'uuid4', return_value=SimpleNamespace(hex='collision')):
+                with self.assertRaises(FileExistsError):
+                    r.capacity_control(root, 1024)
+            self.assertTrue(existing.exists(), 'Unowned preexisting capacity probe was deleted')
+            self.assertEqual(existing.read_bytes(), b'operator-owned evidence')
+
+    def test_shared_budget_clamps_work_and_cleanup_to_outer_and_grant(self):
+        clock = [0, 20]
+        budget = r.Budget(10000, lambda: clock[0], lambda: clock[1])
+        clock[0] = 570
+        with self.assertRaisesRegex(ValueError, 'reserve'):
+            budget.require(225)
+        self.assertEqual(budget.timeout(180), 12)
+        self.assertEqual(budget.timeout(180, cleanup=True), 27)
+        clock[1] = 9990
+        self.assertEqual(budget.timeout(180, cleanup=True), 7)
+        with self.assertRaisesRegex(ValueError, 'deadline'):
+            budget.timeout(180)
+
     def test_large_resource_artifact_and_log_policy_are_separate(self):
         limits = {}
         resource = SimpleNamespace(RLIMIT_CPU=1, RLIMIT_FSIZE=2, setrlimit=lambda key, value: limits.update({key: value}))
@@ -257,6 +283,102 @@ class AdmissionContracts(unittest.TestCase):
 
 
 class OrchestrationContracts(unittest.TestCase):
+    def actual_execute(self, fault):
+        """Actual execute/lease/verify/phase/seal; only external effects injected."""
+        with tempfile.TemporaryDirectory() as folder, ExitStack() as stack:
+            base = Path(folder).resolve()
+            source, build, output = (base / name for name in ('source', 'build', 'output'))
+            for path in (source, build, output): path.mkdir()
+            native = source / 'tests/reserved_lighting/native_preflight'; native.mkdir(parents=True)
+            for name in ('run.py', 'prepare.py'): (native / name).write_bytes((ROOT / name).read_bytes())
+            (source / 'source.json').write_text(json.dumps({'head': HEAD, 'files': {}}))
+            packet, grant = admitted()
+            packet.pop('packet_sha256')
+            packet['source_manifest_sha256'] = r.sha(source / 'source.json')
+            packet_path, grant_path = base / 'packet.json', base / 'grant.json'
+            packet_path.write_text(json.dumps(packet))
+            grant.update(packet_sha256=r.sha(packet_path), ends=10000)
+            grant_path.write_text(json.dumps(grant))
+            clock, calls, compiled_done = [0], [], [False]
+            def validate(*args):
+                if fault == 'slow-hash': clock[0] = 570
+                if compiled_done[0]:
+                    if fault == 'rewrite-build':
+                        target = build / 'fixture/probe.dmb'; target.write_bytes(b'coherently changed binary')
+                        ledger = json.loads((build / 'build.json').read_text())
+                        ledger['files']['fixture/probe.dmb'] = r.sha(target)
+                        (build / 'build.json').write_text(json.dumps(ledger))
+                    if fault == 'rewrite-request':
+                        (output / 'request.json').write_text('{}')
+            prep = SimpleNamespace(validate=validate, relative=p.relative)
+            class Docker:
+                def __init__(self, directory): self.phase = directory.name.split('controller-', 1)[1]
+                def call(self, args, **kw):
+                    calls.append((self.phase, args, kw))
+                    if args[0] == 'create':
+                        if fault == 'slow-create': clock[0] = 570
+                        return 0, CID, ''
+                    if args[0] == 'wait':
+                        if self.phase != 'compile': return 0, '0', ''
+                        fixture = build / 'fixture'; fixture.mkdir()
+                        for name in ('probe.dmb', 'probe.rsc'): (fixture / name).write_bytes(b'original product')
+                        ledger = {'head': HEAD, 'compiler': packet['toolchain']['compiler'], 'exit_code': 0,
+                                  'files': {path.relative_to(build).as_posix(): r.sha(path) for path in fixture.iterdir()}}
+                        (build / 'build.json').write_text(json.dumps(ledger))
+                        for name in ('compile-stdout.log', 'compile-stderr.log'): (output / name).write_bytes(b'original compile log')
+                        return 0, '0', ''
+                    return 0, '', ''
+            def retire(docker, *args):
+                docker.call(['rm', CID], cleanup=True)
+                backend = getattr(docker, 'docker', docker)
+                if backend.phase == 'compile': compiled_done[0] = True
+                return {'all_exited': True, 'owned_container_absent': True}
+            def inspect(docker, *args):
+                return inspection(packet, source, build, output, getattr(docker, 'docker', docker).phase == 'compile')
+            pilot = SimpleNamespace(Docker=Docker, inspect=inspect, owned=lambda *a: None, retire=retire)
+            original_stat = Path.stat
+            def stat(path, *args, **kw):
+                value = original_stat(path, *args, **kw)
+                if path in (build, output):
+                    values = list(value); values[2] = 41 if path == build else 42
+                    return os.stat_result(values)
+                return value
+            env = {'GITHUB_ACTIONS': 'true', 'RUNNER_ENVIRONMENT': 'github-hosted', 'RUNNER_OS': 'Linux', 'RUNNER_ARCH': 'X64',
+                   'GITHUB_REPOSITORY': 'Civ13/Civ13', 'GITHUB_REPOSITORY_ID': '141349998', 'GITHUB_EVENT_NAME': 'workflow_dispatch',
+                   'CIV13_REPOSITORY_VISIBILITY': 'public', 'CIV13_NATIVE_PREFLIGHT_CONFIRMED': 'true', 'GITHUB_SHA': HEAD}
+            stack.enter_context(patch.object(r.sys, 'platform', 'linux'))
+            stack.enter_context(patch.object(r.time, 'monotonic', lambda: clock[0]))
+            stack.enter_context(patch.object(r.time, 'time', lambda: 20))
+            stack.enter_context(patch.object(r, 'quota', return_value={}))
+            stack.enter_context(patch.object(r, 'capacity_control', return_value={}))
+            stack.enter_context(patch.object(Path, 'stat', stat))
+            stack.enter_context(patch.object(r, 'module', side_effect=lambda name, path: prep if name == 'native_staging' else pilot))
+            stack.enter_context(patch.object(r, 'build_inventory', side_effect=lambda *a: r.load(build / 'build.json')))
+            with self.assertRaises(ValueError):
+                r.execute(packet_path, grant_path, source, build, output, env)
+            receipt = r.load(output / 'preflight.json')
+            return calls, receipt
+
+    def test_actual_orchestration_refuses_slow_hash_and_create_before_start(self):
+        for fault in ('slow-hash', 'slow-create'):
+            with self.subTest(fault=fault):
+                calls, receipt = self.actual_execute(fault)
+                self.assertFalse(receipt['complete'])
+                self.assertFalse(any(args[0] == 'start' for _, args, _ in calls))
+                self.assertIn('reserve', receipt['runs'][0]['error'])
+                if fault == 'slow-create':
+                    cleanup = [kw['timeout'] for _, args, kw in calls if args[0] == 'rm']
+                    self.assertTrue(cleanup)
+                    self.assertLessEqual(cleanup[0], 27)
+
+    def test_actual_orchestration_rejects_coherent_build_or_request_rewrite(self):
+        for fault, error in (('rewrite-build', 'Original compile ledger drift'), ('rewrite-request', 'Original shared request drift')):
+            with self.subTest(fault=fault):
+                calls, receipt = self.actual_execute(fault)
+                self.assertFalse(receipt['complete'])
+                self.assertEqual([phase for phase, args, _ in calls if args[0] == 'start'], ['compile'])
+                self.assertIn(error, receipt['error'])
+
     def test_exact_compile_two_smokes_stop_on_failure(self):
         for failing in (None, 'compile', 'baseline', 'candidate'):
             calls, saved = [], []
