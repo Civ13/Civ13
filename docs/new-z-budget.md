@@ -2,8 +2,9 @@
 
 Production currently refuses **all new native grid growth** with an explicit
 `UNMEASURED` reason: there is no validated incremental/player/save/address-space
-headroom profile. This happens before native allocation or paid roofbuilder
-consumption. Existing planes remain usable. No host configuration can opt out.
+headroom profile. This happens before native allocation. Roof construction can
+still consume its roofing item and provide shelter without adding a plane or an
+upper floor. Existing planes remain usable. No host configuration can opt out.
 The arithmetic limits below are additional bounds, not memory-admission evidence.
 
 All production native z growth goes through `building_allocate_level` and the
@@ -12,19 +13,19 @@ native grid: `world.maxx * world.maxy * target_z`, including compiled levels,
 existing additions and configured unused reservations. A small room on another
 z still allocates a full world plane. BYOND does not provide a sparse grid here.
 
-The provisional default and hard ceiling is **600,000 total cells**, with at most **one
+The provisional default and inclusive hard ceiling is **1,400,000 total cells**, with at most **one
 roof-added plane** above the actual compiled maximum. Existing limits of 32
 absolute levels and 8 added levels remain. A host may lower these settings in
 `config.txt`; this patch provides no higher override:
 
 ```text
-NEW_Z_CELL_BUDGET 600000
+NEW_Z_CELL_BUDGET 1400000
 NEW_Z_ROOF_LEVELS 1
 NEW_Z_INSTANCE_RESERVE 0
 NEW_Z_SAFEHOUSE_RESERVE 0
 ```
 
-The first two accept decimal integers in 0..600000 and 0..1 respectively. Zero
+The first two accept decimal integers in 0..1400000 and 0..1 respectively. Zero
 disables the corresponding arithmetic permission; no value enables the missing
 production memory admission. The reservation counts accept
 integers in 0..8 and reserve whole planes for future explicit consumers. Unknown
@@ -42,10 +43,20 @@ and grows to 350,000. The controller records actual compiled dimensions before
 startup yields; map names do not determine the initial z count. Compiled worlds
 already exceeding the budget remain intact and playable, with new growth denied.
 
-Roof previews explain refusal before the construction wait. Final allocation
-rechecks admission before resizing, and the existing roofbuilder is consumed
-only after successful slab construction. A request for an existing upper plane
-does not create another plane or consume growth capacity.
+Roof eligibility still checks support, save/allocation ownership and existing
+upper terrain or construction. Final allocation rechecks admission before
+resizing. Refused growth leaves the grid unchanged; a successful roof without an
+upper floor consumes one roofing item normally. Failed or cancelled roof
+construction preserves the item. An available upper plane receives the linked
+walkable floor without consuming growth capacity.
+
+The inclusive tile ceiling is checked for the complete candidate target, with
+unused reservations also charged. With no reservations, a 700,000-cell plane
+may grow from one to two levels (1,400,000 cells) by arithmetic, but one more
+cell above that total is refused. Sequential requests recheck the full total,
+not merely the new plane. Division bounds each plane before multiplication;
+the intermediate product stays at or below 1,400,000, exactly representable by
+the native numeric type. Passing arithmetic still requires memory admission.
 
 When admitted by an independently validated profile (or an explicitly isolated
 fixture adapter), an allocation reserves its complete target without yielding. Each sequential
@@ -134,7 +145,7 @@ does not dispatch CI or establish acceptance.
 
 ## Operational policy and exact CI selection
 
-This is a deliberate fail-closed policy, not a claim that 600,000 cells are safe.
+This is a deliberate fail-closed policy, not a claim that 1,400,000 cells are safe.
 In particular, a save containing additional levels beyond the compiled world's
 current maximum is refused even if those levels existed before this patch and
 fit every arithmetic limit. Such a save enters the non-destructive hold described

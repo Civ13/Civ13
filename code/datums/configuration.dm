@@ -143,7 +143,7 @@ var/list/gamemode_cache = list()
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
-	var/new_z_cell_budget = 600000
+	var/new_z_cell_budget = 1400000
 	var/new_z_roof_levels = 1
 	var/new_z_instance_reserve = 0
 	var/new_z_safehouse_reserve = 0

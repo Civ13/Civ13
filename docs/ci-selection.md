@@ -29,6 +29,29 @@ runtime error or timeout fails the check. Logs, source manifests and per-case
 results are retained in the exact-head `rack-save-<SHA>` artifact for seven days.
 This fixture does not establish full-world saves or player/map acceptance.
 
+For the standalone extraction instance model, enable
+**extraction_instance_regressions** on **CI** with **extensive_regressions** off.
+Its separate Ubuntu job installs BYOND 516.1681 without compiling or starting the
+game. It runs 35 authored assertions against committed source, then four generated
+mutations: overlapping private-home z intervals and stale-generation admission
+for home acquire, home release and berth release, each in an isolated registry.
+Each mutation must fail its exact named assertion; compile/runtime errors,
+missing assertions and timeouts are failures, not successful negative controls.
+Only the named target may fail for an accepted control. Additional failed
+assertions are retained as collateral with `needs_review`; the overall run fails
+until the complete failure set is causally reviewed and an updated oracle approved.
+The job has a 12-minute limit, five-minute setup and six-minute test steps;
+the runner additionally bounds compiler/runtime CPU, memory, output and wall time.
+Seven-day `extraction-instances-<SHA>` artifacts retain source manifests, binary
+hashes, generated cases and logs. The fixture rejects clients and reopened ports;
+it exercises no full game, map loading, physical travel, account I/O or disk save.
+The PR selector groups new files under `tests/extraction`. This foundation
+registers only the standalone instance job for that group; the broader legacy
+extraction runner is not copied into master. The focused manual input does not
+turn on extensive regressions. This workflow is source preparation until
+reviewed and run; offline runner tests are not a
+native BYOND pass.
+
 A PR introducing executable integration tests runs the corresponding registered
 suite automatically. `scripts/select-ci.py` compares the PR base and exact head,
 using added files with rename detection. New `.dm`, `.py`, `.ps1` or `.sh` files

@@ -5,6 +5,18 @@ pair/trace/bundle commands, see [agent debug tools](../../docs/agent-debug-tools
 Their DM collector requires a reviewed rebuild/restart; discovery and offline
 processing do not install or activate a runtime.
 
+Normal native TEST1714 source is a clean checkout attached to master, tracking
+origin/master from https://github.com/Civ13/Civ13.git. The master guard checks
+both the cached and freshly advertised remote default branch, fetches master,
+and requires exact commit agreement before staging. Detached or feature branches,
+wrong upstream/origin, local changes (including untracked or hidden index state),
+offline verification, stale source, and ahead/diverged commits fail closed.
+The explicit `master_guard.py --repository ABSOLUTE_PATH --update` operation
+permits only a clean fast-forward; it never resets, stashes, cleans or switches
+branches. Run updates while the runtime is stopped under its existing ownership
+rules. Experimental PR testing belongs in a separate checkout and explicit
+operator path. Source verification does not establish a current running binary.
+
 Windows supervisor for the native BYOND test server. It fetches the configured
 branch every 300 seconds by default, stages and compiles a separate Europe build,
 then requests the production authenticated save-and-shutdown operation. It never
