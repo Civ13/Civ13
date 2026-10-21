@@ -55,7 +55,7 @@ def route(url):
     value = urlsplit(url)
     require(value.scheme == 'https' and value.port in (None, 443) and not value.username and not value.password
             and not value.query and not value.fragment and value.netloc == value.hostname, 'Public HTTPS route required')
-    allowed = (url == 'https://civ13.com/downloads/516.1681_byond_linux.zip'
+    allowed = (url == 'https://www.byond.com/download/build/516/516.1681_byond_linux.zip'
                or value.hostname == 'deb.debian.org' and value.path.startswith('/debian/pool/') and value.path.endswith('.deb'))
     require(allowed and all(part not in ('.', '..') for part in value.path.split('/')) and '%' not in value.path, 'Acquisition route not admitted')
 

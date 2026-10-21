@@ -113,6 +113,33 @@ class Image:
 
 
 class Acquisition(unittest.TestCase):
+    def test_exact_official_origin_is_admitted_without_mirror_fallback(self):
+        url = 'https://www.byond.com/download/build/516/516.1681_byond_linux.zip'
+        try: a.route(url)
+        except ValueError as failure: self.fail('Exact official route was rejected: '+str(failure))
+        plan = json.loads((ROOT/'plan.json').read_text())
+        self.assertEqual(plan['archive']['url'], url)
+        self.assertEqual(plan['archive']['bytes'], 4884042)
+        self.assertEqual(plan['archive']['sha256'], '614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3')
+        self.assertEqual(len(plan['archive']['members']), 4)
+        self.assertEqual(plan['status'], 'UNRESOLVED_SOURCE_ONLY')
+        with self.assertRaisesRegex(ValueError, 'Unresolved acquisition plan'): a.validate(plan)
+
+    def test_unapproved_official_aliases_and_expired_mirror_fail_before_effects(self):
+        official = 'https://www.byond.com/download/build/516/516.1681_byond_linux.zip'
+        for url in ['https://civ13.com/downloads/516.1681_byond_linux.zip',
+                    official.replace('https:', 'http:'), official+'?token=x', official+'#fragment',
+                    official.replace('www.byond.com', 'byond.com'),
+                    official.replace('516.1681', '516.1682'), official.replace('www.byond.com', 'www.byond.com.evil.invalid'),
+                    official.replace('/516/', '/516/../516/'), official.replace('www.byond.com', 'user@www.byond.com')]:
+            with self.subTest(url=url):
+                plan, data = fixture(); plan['archive']['url'] = url; plan['routes'][0] = url
+                network, storage, image = Network(data), Storage(), Image()
+                data[url] = data.pop(official)
+                with self.assertRaisesRegex(ValueError, 'route|HTTPS'):
+                    self.execute(plan=plan, network=network, storage=storage, image=image)
+                self.assertEqual((network.calls,storage.calls,image.calls), ([],[],[]))
+
     def test_preexisting_claim_is_never_adopted_or_removed(self):
         class Existing(Storage):
             def claim(self, owner, sha): raise FileExistsError('existing operator claim')

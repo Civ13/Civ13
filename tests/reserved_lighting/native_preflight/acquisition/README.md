@@ -3,7 +3,8 @@
 This prepares a separate, future BYOND 516.1681 toolchain acquisition proposal for
 PR #3243. It does not activate a workflow. The command line prints the unresolved
 plan; there is no execution switch or implicit host/network/Docker fallback.
-No archive, dependency, image or registry data was downloaded while preparing it.
+No download is performed by this source update. It reuses the already-retained
+official archive and its independently checked HTTPS-origin receipt.
 No package script, compiler, DreamDaemon, game or measurement runs in this scope.
 The accepted parent preflight source is unchanged.
 
@@ -17,15 +18,22 @@ The reuse review found:
 * The accepted parent `Dockerfile` and Python base digest/ID are exact inputs.
   The existing Python pilot proves neither acquisition nor a BYOND image.
 
-`plan.json` leaves Linux archive/member hashes, dependency package versions/index
-provenance/closure, executor and external network/storage/handoff identities
-unresolved. Validation rejects unresolved values before any adapter action.
+`plan.json` now binds the official Linux archive (4,884,042 bytes, SHA256
+`614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3`)
+and four selected compiler/daemon/bundled-library members. A bounded static read
+validated all 61 regular files, 14,618,256 expanded bytes and five i386 ELFs.
+These are observed official-origin HTTPS identities, not publisher signatures.
+The original collector's EOF bookkeeping error remains in its receipt; exact
+Content-Length and independent hash reads reconciled completion offline. The
+mirror failed TLS and is excluded, without retry or certificate-policy change.
+No new capture workflow or duplicate download is needed to discover these hashes.
+Dependency package versions/index provenance/closure, executor and external
+network/storage/image/handoff identities remain unresolved. Validation rejects unresolved values before any adapter action.
 Every download needs its exact HTTPS URL, SHA256 and byte length. Every selected
 regular member needs its exact archive path, rootfs destination, SHA256 and size.
 There are no whole config/runtime copies, inferred dependencies or package-manager
-scripts. If no independently accepted archive checksum exists, initial checksum
-discovery needs a separate bounded capture proposal; this wrapper does not turn
-an unknown checksum into approval by downloading first.
+scripts. Any future changed archive needs a newly reviewed identity. The wrapper never
+turns an unknown checksum into approval by downloading first.
 
 Candidate acquisition limits, not runtime acceptance:
 

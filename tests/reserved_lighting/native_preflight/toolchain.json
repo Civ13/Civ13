@@ -3,17 +3,43 @@
   "status": "UNRESOLVED_SOURCE_RECIPE_ONLY",
   "version": "516.1681",
   "platform": "linux/amd64",
-  "archive_reference": "https://civ13.com/downloads/516.1681_byond_linux.zip",
-  "archive_sha256": null,
+  "archive_reference": "https://www.byond.com/download/build/516/516.1681_byond_linux.zip",
+  "archive_sha256": "614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3",
   "image": null,
   "image_id": null,
-  "compiler": {"path": "byond/bin/DreamMaker", "sha256": null},
-  "daemon": {"path": "byond/bin/DreamDaemon", "sha256": null},
-  "python": {"path": "/usr/local/bin/python3.12", "sha256": null},
+  "compiler": {
+    "path": "byond/bin/DreamMaker",
+    "sha256": "b9f175ac9a24662a9ba6fa64652b669aff77ff4787b81b84497dff544f166677"
+  },
+  "daemon": {
+    "path": "byond/bin/DreamDaemon",
+    "sha256": "112b3f4e74b95d82b7e117de35fae70f773e4b770a3302f8c0c33758f9e2f4e1"
+  },
+  "python": {
+    "path": "/usr/local/bin/python3.12",
+    "sha256": null
+  },
   "rootfs_files": {},
-  "dependency_references": ["libstdc++6:i386", "libgcc1:i386", "libc6-i386", "libcurl4:i386", "lib32z1", "libncurses6", "libncurses6:i386"],
-  "dependency_resolution": "UNRESOLVED: bind actual 32-bit loader/shared objects, hashes, package versions and licenses before building",
+  "dependency_references": [
+    "/lib/ld-linux.so.2",
+    "libc.so.6",
+    "libm.so.6",
+    "libgcc_s.so.1",
+    "libstdc++.so.6",
+    "libcurl.so.4"
+  ],
+  "dependency_resolution": "UNRESOLVED: static i386 DT_NEEDED in compiler, daemon and bundled libbyond/libext establishes these external SONAME requirements, not package versions, transitive closure or runtime compatibility. Bind actual loader/shared objects, hashes and licenses before building.",
   "acquisition": "EXCLUDED: no download, package installation, image pull/build or registry login in preflight",
   "rootfs_provenance": null,
-  "independent_review": null
+  "independent_review": null,
+  "archive_provenance": {
+    "role": "Observed official-origin HTTPS identity; not publisher-signed or separately published checksum",
+    "observed_utc": "2026-10-21T20:13:59.325352+00:00",
+    "bytes": 4884042,
+    "static_inventory_sha256": "186487765c4e34ce8f304963cc8335ea246409ef0483d81e7acad13a7655a64d",
+    "retained_archive_reread": true,
+    "archive_extracted_or_executed": false,
+    "collector_reconciliation": "Original EOF bookkeeping AttributeError retained; exact response Content-Length and two independent hash readers reconcile completion offline. No request retry.",
+    "mirror": "Expired TLS certificate; no mirror bytes or equality proof. No trust bypass or fallback."
+  }
 }

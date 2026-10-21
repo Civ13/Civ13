@@ -5,20 +5,76 @@
   "head": null,
   "executor": null,
   "byond_version": "516.1681",
-  "archive": {"url": "https://civ13.com/downloads/516.1681_byond_linux.zip", "sha256": null, "bytes": null, "kind": "zip", "members": {}},
+  "archive": {
+    "url": "https://www.byond.com/download/build/516/516.1681_byond_linux.zip",
+    "sha256": "614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3",
+    "bytes": 4884042,
+    "kind": "zip",
+    "members": {
+      "byond/bin/DreamMaker": {
+        "path": "opt/byond/bin/DreamMaker",
+        "sha256": "b9f175ac9a24662a9ba6fa64652b669aff77ff4787b81b84497dff544f166677",
+        "bytes": 43552
+      },
+      "byond/bin/DreamDaemon": {
+        "path": "opt/byond/bin/DreamDaemon",
+        "sha256": "112b3f4e74b95d82b7e117de35fae70f773e4b770a3302f8c0c33758f9e2f4e1",
+        "bytes": 72288
+      },
+      "byond/bin/libext.so": {
+        "path": "opt/byond/bin/libext.so",
+        "sha256": "825d6455eee7e3410a6fabcb1abd874a02b5a7a9641286928196823468edcbf6",
+        "bytes": 2414088
+      },
+      "byond/bin/libbyond.so": {
+        "path": "opt/byond/bin/libbyond.so",
+        "sha256": "2f651ba1de12a0687d2095faaf33db2b5af65b44f93420f4d9578a0e548ddfb8",
+        "bytes": 8332872
+      }
+    },
+    "provenance": {
+      "role": "Observed official-origin HTTPS identity; not publisher-signed or separately published checksum",
+      "observed_utc": "2026-10-21T20:13:59.325352+00:00",
+      "bytes": 4884042,
+      "static_inventory_sha256": "186487765c4e34ce8f304963cc8335ea246409ef0483d81e7acad13a7655a64d",
+      "retained_archive_reread": true,
+      "archive_extracted_or_executed": false,
+      "collector_reconciliation": "Original EOF bookkeeping AttributeError retained; exact response Content-Length and two independent hash readers reconcile completion offline. No request retry.",
+      "mirror": "Expired TLS certificate; no mirror bytes or equality proof. No trust bypass or fallback."
+    }
+  },
   "dependencies": [],
   "dependency_closure_provenance": null,
   "base_image": "docker.io/library/python@sha256:57d96f71de145a98e7ceca18ee4ade77bba4103a33a72dfaea026b23625c6bf0",
   "base_image_id": "sha256:3c4d812a6efe003770aafbdba65f9c1960ba8234ab23a133934205a70bdcda77",
   "recipe_sha256": "696987f7bdf46b1ec503097b9d973d0cacf94c342c375318ad633ee80d573232",
   "image_output_mode": "CAPTURE_CANDIDATE_FOR_INDEPENDENT_REVIEW",
-  "routes": ["https://civ13.com/downloads/516.1681_byond_linux.zip"],
-  "registry_hosts": ["registry-1.docker.io", "auth.docker.io", "production.cloudflare.docker.com"],
+  "routes": [
+    "https://www.byond.com/download/build/516/516.1681_byond_linux.zip"
+  ],
+  "registry_hosts": [
+    "registry-1.docker.io",
+    "auth.docker.io",
+    "production.cloudflare.docker.com"
+  ],
   "network_provenance": null,
   "artifact_handoff_provenance": null,
-  "limits": {"outer_seconds": 600, "cleanup_seconds": 30, "request_seconds": 10, "download_total_bytes": 603979776, "source_bytes": 2147483648, "daemon_bytes": 8589934592, "evidence_bytes": 134217728, "export_bytes": 2147483648, "rootfs_bytes": 536870912, "file_bytes": 67108864, "members": 4096, "receipt_bytes": 8388608},
+  "limits": {
+    "outer_seconds": 600,
+    "cleanup_seconds": 30,
+    "request_seconds": 10,
+    "download_total_bytes": 603979776,
+    "source_bytes": 2147483648,
+    "daemon_bytes": 8589934592,
+    "evidence_bytes": 134217728,
+    "export_bytes": 2147483648,
+    "rootfs_bytes": 536870912,
+    "file_bytes": 67108864,
+    "members": 4096,
+    "receipt_bytes": 8388608
+  },
   "native_compile_count": 0,
   "native_daemon_count": 0,
   "dispatch_count": 0,
-  "notes": "No Linux archive checksum, dependency closure, final image identity, network/storage backend or acquisition approval exists. Windows installer checksum is unrelated. No package installation or BYOND execution is allowed."
+  "notes": "Archive and four selected member identities now come from retained official HTTPS bytes and bounded static inspection. No dependency closure, final image, real private-image/storage backend or execution admission is supplied. Plan remains UNRESOLVED and fails before effects. No duplicate identity-capture download is needed."
 }

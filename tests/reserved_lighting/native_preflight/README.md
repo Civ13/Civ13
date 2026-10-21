@@ -3,15 +3,19 @@
 This is source preparation for PR #3243. No workflow calls this entry. Default
 `run.py` prints a plan. No image, toolchain, compiler or daemon was acquired or
 executed while preparing it. The shipped `toolchain.json` is deliberately
-unresolved and fails admission. Its archive URL and dependency names are
-references from the existing CI bootstrap, not accepted download identities.
-Never invoke that bootstrap as the bounded executor.
+unresolved and fails admission. Its official archive SHA256 and compiler/daemon
+member hashes now come from retained authenticated official HTTPS bytes and
+bounded static inspection. This observed origin identity is not a publisher-signed
+checksum. The original collector EOF bookkeeping error is retained and completion
+was reconciled offline using exact Content-Length and independent hash readers.
+No duplicate identity download is needed. The expired-TLS mirror is excluded.
+Never invoke the old CI bootstrap as the bounded executor.
 
 The Dockerfile is an inert recipe: a digest-pinned Python base plus a separately
 reviewed rootfs containing BYOND and explicit 32-bit loader/shared objects. It
 performs no downloads or package installs. No `toolchain-rootfs` is supplied.
-Archive SHA, compiler/daemon/Python hashes, dependency versions/provenance and
-final image digest/ID remain required. Rootfs acquisition and Docker layer/cache
+Python hash, dependency versions/provenance and final image digest/ID remain
+required; known archive/member hashes do not establish those missing identities. Rootfs acquisition and Docker layer/cache
 disk, network and cleanup bounds need their own concrete reviewed proposal.
 The accepted Python image is not a BYOND image.
 
