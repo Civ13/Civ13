@@ -1,10 +1,31 @@
 """Synthetic oracle tests, never native renderer evidence."""
 import unittest
+import ast
+from unittest.mock import patch
 from PIL import Image
 import run
 
 
 class SmokeContracts(unittest.TestCase):
+    def test_daemon_uses_trusted_loopback_arguments(self):
+        arguments = run.server_arguments(1234)
+        self.assertEqual(arguments, ['fixture.dmb', '1234', '-ip', '127.0.0.1',
+                                     '-invisible', '-trusted', '-nowebclient'])
+        source = (run.ROOT/'run.py').read_text()
+        launches = [node for node in ast.walk(ast.parse(source))
+                    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+                    and node.func.id == 'launch' and node.args
+                    and isinstance(node.args[0], ast.Constant) and node.args[0].value == 'dreamdaemon.exe']
+        self.assertEqual(len(launches), 1)
+        self.assertEqual(ast.unparse(launches[0].args[1]), 'server_arguments(port)')
+
+    def test_safe_flag_negative_control_is_detected(self):
+        arguments = run.server_arguments(1234)
+        arguments[arguments.index('-trusted')] = '-safe'
+        with patch.object(run, 'server_arguments', return_value=arguments):
+            with self.assertRaises(AssertionError):
+                self.test_daemon_uses_trusted_loopback_arguments()
+
     def test_pixels_require_phase_and_actor(self):
         for phase, color in [('red', 'red'), ('blue', 'blue')]:
             image = Image.new('RGB', (224, 224), color)

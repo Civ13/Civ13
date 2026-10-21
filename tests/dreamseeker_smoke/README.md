@@ -19,8 +19,12 @@ the harness has a 150-second deadline and workflow a ten-minute outer bound.
 Retained process handles are used for cleanup and socket ownership checks.
 The fresh environment excludes inherited user credentials/configuration.
 
-The daemon is explicitly started with `-ip 127.0.0.1`, invisible, safe and no
+The daemon is explicitly started with `-ip 127.0.0.1`, invisible, `-trusted` and no
 webclient. Its exact loopback-only listener must be observed before client launch.
+Trusted mode follows the repository's daemon policy; it does not grant execution
+approval. Existing process, socket and resource checks remain required. This
+source correction does not resolve vendor download failures or establish native
+renderer acceptance.
 Only one loopback guest is admitted. An unexpected local address, remote peer,
 listener, UDP endpoint, child, window or prompt fails the run. Socket polling is
 an observation/control, not an OS network sandbox or proof against transient

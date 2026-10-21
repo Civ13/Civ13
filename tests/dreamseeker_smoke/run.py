@@ -17,6 +17,10 @@ from guard_config import VENDOR, LIMITS, digest
 ROOT = Path(__file__).resolve().parent
 
 
+def server_arguments(port):
+    return ['fixture.dmb', str(port), '-ip', '127.0.0.1', '-invisible', '-trusted', '-nowebclient']
+
+
 def pixel_contract(image, phase):
     counts = image.convert('RGB').getcolors(image.width * image.height)
     counts = {rgb: count for count, rgb in counts}
@@ -160,7 +164,7 @@ def run(output):
         with socket.socket() as probe:
             probe.bind(('127.0.0.1', 0))
             port = probe.getsockname()[1]
-        server, serving = launch('dreamdaemon.exe', ['fixture.dmb', str(port), '-ip', '127.0.0.1', '-invisible', '-safe', '-nowebclient'], 'server')
+        server, serving = launch('dreamdaemon.exe', server_arguments(port), 'server')
         while not (fixture/'ready.txt').exists():
             if server.exited(serving):
                 raise RuntimeError('Server exited before readiness')
