@@ -227,7 +227,14 @@ jobs:
       - name: Run a one-line script
         id: byond_setup
         if: needs.changes.outputs.game == 'true'
-        run: sudo bash ./scripts/travis_pre_byond.sh
+        env:
+          OFFICIAL_PINNED_MALL: ${{ github.event_name == 'workflow_dispatch' && inputs.mall_regressions && !inputs.extensive_regressions && !inputs.dagger_map_compile && !inputs.rack_save_regressions && !inputs.persistence_integration_regressions && !inputs.restart_transaction_regressions && !inputs.world_save_regressions && !inputs.protected_sleep_regressions && !inputs.world_save_profile_regressions && !inputs.world_save_operation_regressions && !inputs.lighting_recovery_regressions && !inputs.extraction_instance_regressions }}
+        run: |
+          case "$OFFICIAL_PINNED_MALL" in
+            true) sudo bash ./scripts/travis_pre_byond.sh --official-pinned-mall ;;
+            false) sudo bash ./scripts/travis_pre_byond.sh ;;
+            *) echo 'Invalid fixed bootstrap selection' >&2; exit 64 ;;
+          esac
         shell: bash
 
       - name: Run native HUD appearance and preservation fixture
