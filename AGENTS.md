@@ -115,8 +115,11 @@ reject any nonpublic member before opening sockets. Try literals sequentially
 within one three-second total deadline per candidate, with fair remaining slices.
 Each menu refresh checks only its provider's two candidates concurrently. Valid
 integer players=0 is online; optional metadata is unknown when absent and rejects
-the response when malformed. Recheck directly before joining; reject changed or
-missing previously observed nonempty map/mode/round identity. Bind verified
+the response when malformed. Before joining, validate fresh DNS against the exact
+respondent. A <=60-second UTC/monotonic process-local response proof can avoid a
+duplicate Topic request during cooldown; never reconstruct it from disk cache.
+Reject changed or missing selected map/mode/round identity on new status queries;
+bounded response reuse cannot observe a round change during that short window. Bind verified
 status, literal and configured port together, validate freshness at dispatch,
 and launch only the verified BYOND client. Never add a permanent IP pin or reuse
 this query for OpenDream. Source merge does not activate the launcher feed;
@@ -133,7 +136,10 @@ for its matching endpoint until its next reservation. A lower uptime waits only
 through the new boot's first 133 seconds. Schema 2 caches bounded validated
 metadata, never launch tokens; late results are tied to reservation IDs. Older
 1.0.5 instances fail closed on schema 2. Clock/state/link failures pause locally. J explicitly rechecks a deferred selection; B cancels with no
-background callback. Waiting requires new DNS/status, never extended old tokens.
+background callback. Joining needs fresh safe DNS and an original-age recent proof
+or one eligible new status response. Never extend status age or DNS token life;
+recheck original monotonic and UTC60-second expiry at dispatch. Persisted cache
+is display-only after process restart. See SERVER-DISCOVERY.md for join controls.
 Wall time cannot prove game-time advancement or clear a server ban. Do not probe
 the known banned Desktop source until owner-coordinated normal eligibility.
 

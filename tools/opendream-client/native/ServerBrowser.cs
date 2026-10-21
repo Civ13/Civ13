@@ -4,10 +4,12 @@ namespace Civ13.Launcher;
 
 public static class ServerBrowser {
     public static void WriteServers(TextWriter output, string provider, ServerSnapshot snapshot) {
-        output.WriteLine($"{provider} - direct BYOND status. Checked again before joining.");
+        output.WriteLine($"{provider} - recent BYOND status. Game address verified before joining.");
         if (snapshot.PacingPaused) output.WriteLine("Public checks paused: shared request timing could not be verified. No automatic retry; local timing state needs review.");
         foreach (var deferred in snapshot.Deferred ?? []) {
             output.WriteLine($"{deferred.Target.Name}: next check in {deferred.Seconds} seconds. No request sent.");
+            if (deferred.Cached?.Recent != null)
+                output.WriteLine("   Recent verified status is available below; select it to join now.");
             if (deferred.Cached is { Server: null } cached)
                 output.WriteLine($"   Last check could not verify a game service ({cached.AgeSeconds} seconds ago); current status unknown.");
             else if (deferred.Cached == null)
@@ -27,7 +29,8 @@ public static class ServerBrowser {
                 duration = $"{(int)elapsed.TotalHours}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
             }
             var cached = snapshot.Deferred?.SingleOrDefault(item => item.Target == server.Target)?.Cached;
-            if (cached != null) output.WriteLine($"Cached last verified status ({cached.AgeSeconds} seconds old); fresh verification required before joining.");
+            if (cached != null) output.WriteLine($"Cached last verified status ({cached.AgeSeconds} seconds old); " +
+                (cached.Recent != null ? "game address checked before joining." : "next eligible status check required before joining."));
             output.WriteLine($"{index + 1}: {server.Name} | Players: {server.Players} | {server.Engine}");
             output.WriteLine($"   Map: {Display(server.Map)} | Mode: {Display(server.Mode)}" + (server.Epoch.Length == 0 ? "" : " | Epoch: " + server.Epoch));
             output.WriteLine($"   Round: {Display(server.RoundId)} | Elapsed: {duration}");

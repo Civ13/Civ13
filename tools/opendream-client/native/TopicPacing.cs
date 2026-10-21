@@ -26,6 +26,7 @@ public sealed class TopicPacer {
     private readonly DateTimeOffset startedUtc;
     private readonly long startedTick;
     private readonly object gate = new();
+    private readonly Dictionary<GameTarget, RecentGameStatus> recent = new();
     private static readonly JsonSerializerOptions json = new() {
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow, MaxDepth = 8
     };
@@ -101,9 +102,22 @@ public sealed class TopicPacer {
         });
     }
 
+    internal RecentGameStatus Remember(Guid requestId, GameServer status, IPAddress address) {
+        status.Target.Validate();
+        if (!Connection.IsPublicIPv4(address)) throw new IOException("Unsafe status respondent.");
+        lock (gate) {
+            var proof = new RecentGameStatus(requestId, status, address, monotonic);
+            recent[status.Target] = proof; // At most the four configured targets; never persisted.
+            return proof;
+        }
+    }
+
     public void Record(GameTarget target, Guid requestId, GameServer? status) {
         target.Validate();
         if (status != null && status.Target != target) throw new IOException("Cached status target changed.");
+        if (status == null) lock (gate) {
+            if (recent.TryGetValue(target, out var proof) && proof.RequestId == requestId) recent.Remove(target);
+        }
         Locked((state, statePath) => {
             var now = Clock();
             var entry = state.Entries.SingleOrDefault(item => item.Provider == target.Provider && item.Port == target.Port);
@@ -117,13 +131,24 @@ public sealed class TopicPacer {
         });
     }
 
-    private static CachedStatus? Cached(Entry? entry, DateTimeOffset now) {
-        if (entry?.Result is not { } result) return null;
-        var age = now - result.CheckedAt;
+    private CachedStatus? Cached(Entry? entry, DateTimeOffset now) {
+        if (entry == null) return null;
+        var target = new GameTarget(entry.Provider, entry.Port);
+        recent.TryGetValue(target, out var proof);
+        if (proof != null && (proof.RequestId != entry.RequestId || !entry.Addresses.Contains(proof.Address.ToString(), StringComparer.Ordinal) ||
+            (entry.Result != null && (entry.Result.CheckedAt != proof.Status.CheckedAt || entry.Result.Json != ByondStatus.CacheJson(proof.Status)))))
+            proof = null;
+        // A fresh in-process successful response remains usable if display-cache writing
+        // contended. A recorded failure/replacement cannot inherit that response proof.
+        var checkedAt = entry.Result?.CheckedAt ?? proof?.Status.CheckedAt;
+        if (checkedAt == null) return null;
+        var age = now - checkedAt.Value;
         if (age < TimeSpan.Zero || age > TimeSpan.FromMinutes(10)) return null;
-        var server = result.Json == null ? null : ByondStatus.ParseJson(System.Text.Encoding.UTF8.GetBytes(result.Json),
-            new GameTarget(entry.Provider, entry.Port), result.CheckedAt);
-        return new CachedStatus(server, result.CheckedAt, (int)Math.Ceiling(age.TotalSeconds));
+        var server = entry.Result == null ? proof?.Status : entry.Result.Json == null ? null :
+            ByondStatus.ParseJson(System.Text.Encoding.UTF8.GetBytes(entry.Result.Json), target, checkedAt.Value);
+        return new CachedStatus(server, checkedAt.Value, (int)Math.Ceiling(age.TotalSeconds)) {
+            Recent = proof?.IsFresh(now) == true ? proof : null
+        };
     }
 
     private T Locked<T>(Func<State, string, T> action) {

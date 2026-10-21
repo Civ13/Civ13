@@ -23,13 +23,17 @@ public static class ByondStatus {
         // Explicit injected probes are offline test seams. Every real transport uses Shared.
         var spacing = pacer ?? (probe == null ? TopicPacer.Shared : null);
         if (cancellationToken.IsCancellationRequested) throw new IOException("Public status check was cancelled.");
-        spacing?.Check(target); // A local deferral happens before DNS and the IO budget.
+        TopicWaitException? deferred = null;
+        try { spacing?.Check(target); } // Ordinary refreshes still defer before DNS.
+        catch (TopicWaitException wait) when (expected != null) { deferred = wait; }
         var budget = timeout ?? TotalTimeout;
         if (budget <= TimeSpan.Zero || budget > TotalTimeout) throw new IOException("Invalid public status deadline.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(budget);
         var started = Stopwatch.GetTimestamp();
         try {
+            if (deferred != null)
+                return await ReuseRecent(target, expected!, deferred, spacing!, resolver, clock, deadline.Token);
             // Validate the ENTIRE answer set before any game socket is opened.
             var addresses = await Connection.ResolveAddresses(target.Host, resolver, deadline.Token);
             var endpoints = addresses.Select(address => new PublicEndpoint(target.Host, address, () => Environment.TickCount64)).ToArray();
@@ -53,11 +57,13 @@ public static class ByondStatus {
                     deadline.Token.ThrowIfCancellationRequested();
                     status.Validate(clock());
                     endpoints[index].Validate(target.Host);
+                    RecentGameStatus? recent = null;
                     if (requestId is { } successId) {
+                        recent = spacing!.Remember(successId, status, addresses[index]);
                         try { spacing!.Record(target, successId, status); }
                         catch (TopicWaitException) { } // Display cache contention does not invalidate this fresh response.
                     }
-                    return new VerifiedGameServer(status, endpoints[index]);
+                    return new VerifiedGameServer(status, endpoints[index], recent);
                 } catch (TopicPacingException) { throw; }
                 catch (Exception error) when (error is IOException or SocketException or OperationCanceledException) {
                     // Once reserved, another address cannot safely write. Preserve the
@@ -79,6 +85,31 @@ public static class ByondStatus {
             throw new IOException("Public server verification timed out or was cancelled.", error);
         }
         throw new IOException("No public address returned valid matching BYOND status. Refresh and try again.");
+    }
+
+    private static async Task<VerifiedGameServer> ReuseRecent(GameTarget target, GameServer selected, TopicWaitException wait,
+        TopicPacer spacing, Func<string, Task<IPAddress[]>>? resolver, Func<DateTimeOffset> clock, CancellationToken token) {
+        var recent = wait.Cached?.Recent;
+        if (recent == null || !recent.IsFresh(clock())) throw wait;
+        if (recent.Status.Target != target || !selected.Matches(recent.Status))
+            throw new IOException("Selected game identity changed. Refresh and choose again.");
+        var addresses = await Connection.ResolveAddresses(target.Host, resolver, token);
+        if (!addresses.Contains(recent.Address))
+            throw new IOException("The responding game address is no longer in DNS. Refresh after request spacing.");
+        TopicWaitException? current = null;
+        try { spacing.Check(target); }
+        catch (TopicWaitException latest) { current = latest; }
+        if (current == null || !ReferenceEquals(current.Cached?.Recent, recent)) {
+            if (current?.Cached?.Recent == null && !recent.IsFresh(clock())) throw current ?? wait;
+            throw new IOException("Game verification changed while preparing to join. Refresh and choose again.");
+        }
+        token.ThrowIfCancellationRequested();
+        if (!recent.IsFresh(clock())) throw current;
+        // DNS is new; status keeps its ORIGINAL UTC and process-monotonic age.
+        // No Topic bytes or new reservation, and no first-address/permanent-IP fallback.
+        var endpoint = new PublicEndpoint(target.Host, recent.Address, () => Environment.TickCount64);
+        endpoint.Validate(target.Host);
+        return new VerifiedGameServer(recent.Status, endpoint, recent);
     }
 
     private static async Task<ReadOnlyMemory<byte>> Fetch(IPAddress address, int port, Action beforeWrite, CancellationToken token) {
