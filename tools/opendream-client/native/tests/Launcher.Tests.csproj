@@ -7,8 +7,4 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="../Civ13.Launcher.csproj" /></ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="fixtures/server-directory-unicode.json" LogicalName="server-directory-unicode.json" />
-    <EmbeddedResource Include="fixtures/server-directory-vzg.json" LogicalName="server-directory-vzg.json" />
-  </ItemGroup>
 </Project>

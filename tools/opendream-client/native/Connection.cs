@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Civ13.Launcher;
 
-// An immutable DNS result for one approved hostname, never a directory-supplied IP.
+// An immutable DNS result for one approved hostname, never a game-status-supplied IP.
 public sealed class PublicEndpoint {
     public string Host { get; }
     public string Address { get; }
@@ -54,7 +54,7 @@ public static class Connection {
         var bytes = address.GetAddressBytes();
         var a = bytes[0]; var b = bytes[1]; var c = bytes[2];
         // Conservative exclusion of IANA special-purpose ranges, plus multicast.
-        // No production server IP is pinned here. See SERVER-DIRECTORY.md for sources.
+        // No production server IP is pinned here. See SERVER-DISCOVERY.md for sources.
         return !(a is 0 or 10 or 127 || a >= 224 ||
             (a == 100 && b is >= 64 and <= 127) || (a == 169 && b == 254) ||
             (a == 172 && b is >= 16 and <= 31) ||

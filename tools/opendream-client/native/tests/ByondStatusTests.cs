@@ -37,9 +37,9 @@ internal static class ByondStatusTests {
                 }
                 var selected = await ServerCatalog.NativeEndpoint(server, _ => { dnsCalls++; return Task.FromResult(addresses); }, now,
                     Probe, timeout: TimeSpan.FromMilliseconds(200));
-                Require(selected.Address == desired.ToString() && calls.SequenceEqual(new[] { other.ToString(), desired.ToString() }), "Healthy alternative was not selected");
+                Require(selected.Status.Target == server.Target && calls.SequenceEqual(new[] { other.ToString(), desired.ToString() }), "Healthy alternative was not selected");
                 Require(dnsCalls == 1 && peak == 1 && active == 0, "Re-resolution, socket overlap, or retained socket");
-                var start = ServerCatalog.NativeStart(server, ".", selected, Civ13.Launcher.Program.RequiredByond(), _ => true, now);
+                var start = ServerCatalog.NativeStart(selected, ".", Civ13.Launcher.Program.RequiredByond(), _ => true, now);
                 Require(start.ArgumentList.Single() == $"byond://{desired}:{server.Port}" && dnsCalls == 1, "Selected literal changed at dispatch");
             }
         }
@@ -62,10 +62,6 @@ internal static class ByondStatusTests {
         await Reject(() => ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { desired, other }), now,
             async (_, _, token) => { failures++; await Task.Delay(Timeout.Infinite, token); return Packet(); }, timeout: TimeSpan.FromMilliseconds(100)), "all silent candidates");
         Require(failures == 2 && elapsed.Elapsed < TimeSpan.FromSeconds(1), "Per-address budgets multiplied total deadline");
-        var expired = now;
-        await Reject(() => ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { desired }), statusProbe: (_, _, _) => {
-            expired = now.AddMinutes(2); return Task.FromResult<ReadOnlyMemory<byte>>(Packet());
-        }, clock: () => expired), "directory expired during probe");
         var afterDnsCalls = 0;
         await Reject(() => ServerCatalog.NativeEndpoint(server, async _ => { await Task.Delay(100); return new[] { desired }; }, now,
             (_, _, _) => { afterDnsCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); }, timeout: TimeSpan.FromMilliseconds(20)), "DNS shares deadline");
@@ -76,12 +72,11 @@ internal static class ByondStatusTests {
             await Reject(() => ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { desired }), now, Valid, cancellationToken: cancelled.Token), "caller cancellation");
         }
         foreach (var json in new[] { "{}", "[]", "{\"players\":0,\"players\":1}", "{\"players\":-1}",
-            "{\"players\":0,\"map_name\":\"Europe\",\"map_gamemode\":\"Nomads\",\"game_id\":\"wrong\",\"round_duration_in_ticks\":0}",
-            "{\"players\":0,\"map_name\":\"Europe\",\"map_gamemode\":\"Nomads\",\"round_duration_in_ticks\":-1}" })
-            await Reject(() => Task.Run(() => ByondStatus.ValidatePacket(Packet(json), server)), "incomplete/malformed/mismatched metadata");
+                        "{\"players\":0,\"map_name\":\"Europe\",\"map_gamemode\":\"Nomads\",\"round_duration_in_ticks\":-1}" })
+            await Reject(() => Task.Run(() => ByondStatus.ParsePacket(Packet(json), server.Target, now)), "incomplete/malformed/mismatched metadata");
         foreach (var bytes in new[] { Packet()[..^1], Packet().Concat(new byte[] { 0 }).ToArray(), new byte[65537], Encoding.ASCII.GetBytes("not BYOND") })
-            await Reject(() => Task.Run(() => ByondStatus.ValidatePacket(bytes, server)), "frame bounds/protocol");
-        var valid = Packet(); ByondStatus.ValidatePacket(valid, server); assertions++;
+            await Reject(() => Task.Run(() => ByondStatus.ParsePacket(bytes, server.Target, now)), "frame bounds/protocol");
+        var valid = Packet(); ByondStatus.ParsePacket(valid, server.Target, now); assertions++;
         using (var stream = new OneByteStatusStream(valid)) {
             var read = await ByondStatus.ReadResponse(stream, CancellationToken.None);
             Require(read.Span.SequenceEqual(valid), "Partial header/body reads changed packet");

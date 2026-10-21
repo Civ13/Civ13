@@ -16,12 +16,27 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
-    if (args.SequenceEqual(new[] { "--directory-only" })) {
-        await ServerDirectoryTests.Run(root);
+    if (args.SequenceEqual(new[] { "--probe-public" })) {
+        var discovery = new ServerDiscovery();
+        foreach (var provider in new[] { "Civ13.com", "ValZarGaming" }) {
+            var snapshot = await discovery.Fetch(provider);
+            Console.WriteLine(JsonSerializer.Serialize(new { provider, snapshot.Unverified,
+                servers = snapshot.Servers.Select(server => new { server.Host, server.Port, server.Players,
+                    server.Map, server.Mode, server.Epoch, server.RoundId, server.RoundDurationSeconds, server.CheckedAt }) }));
+            foreach (var server in snapshot.Servers) {
+                var verified = await discovery.Recheck(server);
+                var start = ServerCatalog.NativeStart(verified, ".", Civ13.Launcher.Program.RequiredByond(), _ => true);
+                Console.WriteLine(JsonSerializer.Serialize(new { prejoin = "rechecked; NOT launched", endpoint = start.ArgumentList.Single() }));
+            }
+        }
+        return 0;
+    }
+    if (args.SequenceEqual(new[] { "--discovery-only" })) {
+        await ServerDiscoveryTests.Run(root);
         return 0;
     }
     assertions += await TransportRetryTests.Run(root);
-    assertions += await ServerDirectoryTests.Run(root);
+    assertions += await ServerDiscoveryTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
     var reset = new System.Net.Sockets.SocketException(10054);
     var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);

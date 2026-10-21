@@ -19,7 +19,7 @@
     <Compile Include="ByondStatus.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ServerCatalog.cs" />
-    <Compile Include="ServerDirectory.cs" />
+    <Compile Include="ServerStatus.cs" />
     <Compile Include="ServerBrowser.cs" />
     <Compile Include="CommunityLinks.cs" />
     <Compile Include="LocalDreamDaemon.cs" />

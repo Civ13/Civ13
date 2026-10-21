@@ -45,25 +45,25 @@ Login or click, which would bypass live cooldowns/actions. The world-save
 runner's --input-runtime adapter checks disk-backed migration and the production
 early click gate; connected-client interaction remains separate evidence.
 
-<!-- 2026-10-19: live launcher directory contract -->
-<!-- 2026-10-21: multi-address BYOND selection -->
-Public BYOND joins validate the entire DNS A-answer set before opening sockets,
-then try literal status queries sequentially within one three-second total
-deadline. Each remaining address gets a fair share of the remaining budget;
-complete status must match directory map/mode and any nonempty round ID.
-Never add an IP pin or reuse this BYOND query path for OpenDream. The paired
-backend factory preserves one active socket per target and 32 across a sweep.
-The unreleased native launcher consumes the fixed civ13.com HTTPS directory at
-/.well-known/civ13/servers.json with exactly provider=civ13.com or
-provider=valzargaming.com. Public ports come only from fresh validated records;
-stale/offline/incomplete records cannot launch. Re-fetch before joining, resolve
-the exact approved hostname to public IPv4 addresses and bind the selected
-validated literal to that attempt. Never restore a permanent public-IP pin. Backend deployment and
-real BYOND joins gate release; do not replace 1.0.4 with an empty-directory build.
-See tools/opendream-client/native/SERVER-DIRECTORY.md for the shared schema.
+<!-- 2026-10-21: direct BYOND status discovery -->
+Public native menus probe only the configured Civ13.com and ValZarGaming hostnames
+on ports 1714 and 1715. These are candidates, never an online assertion or a mode
+mapping. No HTTPS server directory, backend deployment, port ranges or arbitrary
+public --server-port override is involved. Resolve the entire A-answer set and
+reject any nonpublic member before opening sockets. Try literals sequentially
+within one three-second total deadline per candidate, with fair remaining slices.
+Each menu refresh checks only its provider's two candidates concurrently. Valid
+integer players=0 is online; optional metadata is unknown when absent and rejects
+the response when malformed. Recheck directly before joining; reject changed or
+missing previously observed nonempty map/mode/round identity. Bind verified
+status, literal and configured port together, validate freshness at dispatch,
+and launch only the verified BYOND client. Never add a permanent IP pin or reuse
+this query for OpenDream. Source merge does not activate the launcher feed;
+exact-head packaging/CI, independent review and a genuine public join gate release.
+See tools/opendream-client/native/SERVER-DISCOVERY.md.
 
 ## Language & toolchain
-NEVER use "—": always use "-" instead.
+NEVER use "â€”": always use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
@@ -480,13 +480,6 @@ certificate/auth failures, untrusted redirects and bad hashes remain fail-closed
 Delete only a failed attempt's newly created staged file, never a pre-existing
 path. Preserve TLS validation and redact errors. Proxy IsBypassed(false) alone
 does not prove traffic used a proxy. Source changes do not activate a release.
-
-<!-- 2026-10-19: distinct native launcher catalogs -->
-Official Civ13.com Nomads uses 1715 and TDM 1714 (published website); ValZarGaming
-uses the opposite mapping. Keep these independent. Official BYOND URLs use the
-fixed civ13.com hostname; ValZarGaming retains its existing verified DNS/IP pin.
-The native catalog is in tools/opendream-client/native/ServerCatalog.cs despite
-the legacy directory name. Source merge does not activate the launcher feed.
 
 <!-- 2026-10-14: native launcher packaging -->
 `tools/opendream-client/native/Build.ps1` builds the single-file self-contained

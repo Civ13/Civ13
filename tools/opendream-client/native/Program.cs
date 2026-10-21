@@ -107,7 +107,7 @@ public static class Program {
             Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
-            using var directories = new ServerDirectoryTransport();
+            var discovery = new ServerDiscovery();
             while (true) {
                 WriteMainMenu(Console.Out);
                 Console.Write("Choose a number: ");
@@ -117,20 +117,21 @@ public static class Program {
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
                 if (ServerCatalog.MenuServer(choice) is { } serverName) {
                     if (serverPort != null) {
-                        Console.WriteLine("Public server selections use the live directory; omit --server-port.");
+                        Console.WriteLine("Public server selections check the configured game ports; omit --server-port.");
                         continue;
                     }
                     var desktop = new WindowsByondDesktop();
-                    await ServerBrowser.Run(serverName, directories, Console.In, Console.Out, async server => {
-                        var endpoint = await ServerCatalog.NativeEndpoint(server);
+                    await ServerBrowser.Run(serverName, discovery, Console.In, Console.Out, verified => {
+                        var server = verified.Status;
                         Console.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
                         try {
-                            using var game = Process.Start(ServerCatalog.NativeStart(server, byond, endpoint, RequiredByond(),
+                            using var game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
                                 path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
                                 ?? throw new IOException("BYOND client did not start.");
                         } catch (System.ComponentModel.Win32Exception e) {
                             throw new IOException("BYOND client could not start.", e);
                         }
+                        return Task.CompletedTask;
                     });
                 }
                 if (choice == ServerCatalog.OpenDreamMenuKey) {
