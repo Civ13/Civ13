@@ -569,6 +569,12 @@ importer to copy the **same approved immutable bytes** on the final master commi
 inspect the resulting digest and then create a fresh request. Do not relabel an
 old artifact, regenerate gameplay, substitute footage in a waiting run, or delete
 a receipt. A moved master, deleted artifact or revoked approval fails closed.
+The request guard reports the first mismatched run field separately from a
+current-master mismatch. Status/conclusion diagnostics include only fixed API
+state names; arbitrary response values are never printed. A non-`in_progress`
+status still refuses immediately, including `waiting` or `queued` after approval.
+No status retry or transfer of review is implied by these diagnostics. Reconcile
+the failed run and receipt before preparing a fresh protected request.
 
 Share the native protected-environment review link and exact UTC deadline. GitHub
 holds the protected job without a runner and without releasing its environment

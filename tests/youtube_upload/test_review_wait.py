@@ -78,6 +78,74 @@ class ReviewTests(unittest.TestCase):
             with patch.dict(os.environ, {field: value}), self.assertRaises(u.Refused):
                 r.request(self.gh, CREATED)
 
+    def test_each_native_run_guard_has_a_distinct_sanitized_diagnostic(self):
+        cases = (("id", 43, "Review run ID differs from this request"),
+            ("repository", {"id": 0}, "Review run repository ID differs"),
+            ("event", "push", "Review run event is not workflow_dispatch"),
+            ("head_branch", "other", "Review run branch is not master"),
+            ("status", "waiting", "Review run status is not in_progress: waiting"),
+            ("conclusion", "cancelled", "Review run already has a conclusion: cancelled"),
+            ("path", "other", "Review run workflow path differs"),
+            ("run_attempt", 2, "Review run attempt is not the original attempt"),
+            ("display_title", "other", "Review run title differs from the protected request"),
+            ("head_sha", "a" * 40, "Review run source differs from this job commit"))
+        for field, value, reason in cases:
+            with self.subTest(field=field), patch.dict(self.run, {field: value}), \
+                    patch.object(self.gh, "repo", wraps=self.gh.repo) as repo:
+                with self.assertRaises(u.Refused) as refused:
+                    r.request(self.gh, CREATED)
+                self.assertEqual(str(refused.exception), reason)
+                self.assertEqual(repo.call_args_list, [unittest.mock.call("/actions/runs/42")])
+        self.gh.objects["/commits/master"] = {"sha": "a" * 40}
+        with patch.object(self.gh, "repo", wraps=self.gh.repo) as repo, self.assertRaises(u.Refused) as refused:
+            r.request(self.gh, CREATED)
+        self.assertEqual(str(refused.exception), "Current master differs from the reviewed run source")
+        self.assertEqual(repo.call_args_list, [unittest.mock.call("/actions/runs/42"),
+                                             unittest.mock.call("/commits/master")])
+
+    def test_non_running_statuses_remain_immediate_refusals_without_arm_polling(self):
+        for status in ("waiting", "queued", "pending", "requested", "completed", None,
+                       "::error::\nPRIVATE-CONTENT", ["in_progress"]):
+            reader = Reader()
+            with self.subTest(status=status), patch.dict(self.run, {"status": status}), \
+                    patch.object(self.gh, "repo", wraps=self.gh.repo) as repo, \
+                    patch("builtins.print") as output, patch.object(r.time, "sleep") as sleep, \
+                    self.assertRaises(u.Refused) as refused:
+                r.await_arm(self.gh, reader, clock=lambda: CREATED,
+                            admitted={"review_started_at": CREATED, "review_deadline": DEADLINE})
+            expected = status if isinstance(status, str) and status in {
+                "waiting", "queued", "pending", "requested", "completed"} else "none" if status is None else "unrecognized"
+            self.assertEqual(str(refused.exception), "Review run status is not in_progress: " + expected)
+            self.assertEqual(repo.call_count, 1)
+            self.assertEqual(reader.reads, [])
+            output.assert_not_called()
+            sleep.assert_not_called()
+
+    def test_unknown_conclusion_is_not_printed_or_accepted(self):
+        for conclusion in ("::error::\nPRIVATE-CONTENT", ["cancelled"], "timed_out"):
+            with self.subTest(conclusion=conclusion), patch.dict(self.run, {"conclusion": conclusion}), \
+                    self.assertRaises(u.Refused) as refused:
+                r.request(self.gh, CREATED)
+            expected = "timed_out" if conclusion == "timed_out" else "unrecognized"
+            self.assertEqual(str(refused.exception), "Review run already has a conclusion: " + expected)
+
+    def test_changed_run_or_master_during_execution_cannot_reserve_or_send_media(self):
+        _, manifest, clip, *_ = fixtures()
+        for source in (False, True):
+            reader = self.execution()
+            if source:
+                self.gh.objects["/commits/master"] = {"sha": "a" * 40}
+            else:
+                self.run["status"] = "waiting"
+            ledger_gh = FakeGH(manifest)
+            youtube = FakeYT(ledger_gh)
+            with self.subTest(source=source), self.assertRaises(u.Refused):
+                u.publish(manifest, clip, u.Ledger(ledger_gh), youtube, CREATED,
+                          before_insert=lambda: r.execution_gate(self.gh, reader, clock=lambda: DEADLINE))
+            self.assertEqual(ledger_gh.saves, [])
+            self.assertNotIn("upload", youtube.calls)
+            self.run["status"] = "in_progress"
+
     def test_artifact_coverage_requires_exact_pinned_bytes_for_full_review(self):
         _, manifest, *_ = fixtures()
         minimum = DEADLINE + r.HANDOFF_SECONDS + r.EXECUTION_SECONDS + r.ARTIFACT_MARGIN

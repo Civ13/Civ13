@@ -15,6 +15,13 @@ ARTIFACT_MARGIN = 300
 TITLE = "YouTube eight-hour review"
 
 
+def state_label(value, allowed):
+    """Report only fixed API state names, never arbitrary response content."""
+    if value is None:
+        return "none"
+    return value if isinstance(value, str) and value in allowed else "unrecognized"
+
+
 def stamp(value):
     u.require(isinstance(value, str), "Missing GitHub timestamp")
     try:
@@ -39,13 +46,21 @@ def request(gh, now, admission=True):
     run_id = os.environ.get("GITHUB_RUN_ID", "")
     u.require(run_id.isdigit(), "Missing review run identity")
     run = gh.repo("/actions/runs/" + run_id)
-    u.require(run["id"] == int(run_id) and run["repository"]["id"] == u.REPO_ID and
-              run["event"] == "workflow_dispatch" and run["head_branch"] == "master" and
-              run["status"] == "in_progress" and run["conclusion"] is None and
-              run["path"] == ".github/workflows/youtube-upload.yml" and run["run_attempt"] == 1 and
-              run["display_title"] == TITLE and run["head_sha"] == os.environ["GITHUB_SHA"] and
-              gh.repo("/commits/master")["sha"] == run["head_sha"],
-              "Review run or current trusted source changed")
+    u.require(run["id"] == int(run_id), "Review run ID differs from this request")
+    u.require(run["repository"]["id"] == u.REPO_ID, "Review run repository ID differs")
+    u.require(run["event"] == "workflow_dispatch", "Review run event is not workflow_dispatch")
+    u.require(run["head_branch"] == "master", "Review run branch is not master")
+    status = state_label(run["status"], {"queued", "in_progress", "completed", "waiting", "pending", "requested"})
+    conclusion = state_label(run["conclusion"], {"action_required", "cancelled", "failure", "neutral",
+                                               "success", "skipped", "stale", "timed_out", "startup_failure"})
+    u.require(run["status"] == "in_progress", "Review run status is not in_progress: " + status)
+    u.require(run["conclusion"] is None, "Review run already has a conclusion: " + conclusion)
+    u.require(run["path"] == ".github/workflows/youtube-upload.yml", "Review run workflow path differs")
+    u.require(run["run_attempt"] == 1, "Review run attempt is not the original attempt")
+    u.require(run["display_title"] == TITLE, "Review run title differs from the protected request")
+    u.require(run["head_sha"] == os.environ["GITHUB_SHA"], "Review run source differs from this job commit")
+    u.require(gh.repo("/commits/master")["sha"] == run["head_sha"],
+              "Current master differs from the reviewed run source")
     created = stamp(run["created_at"])
     deadline = created + REVIEW_SECONDS
     u.require(created <= now < deadline + (0 if admission else HANDOFF_SECONDS + EXECUTION_SECONDS),
