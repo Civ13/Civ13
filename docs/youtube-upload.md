@@ -548,6 +548,68 @@ multipart metadata, fixed privacy, channel/processing hydration, 401/429/503/net
 failures, and the single-send guard. Tests do
 not prove live authorization, real media acceptance or channel publication.
 
+### Eight-hour protected review
+
+For a new manual upload, select `review_hours=8`, `execute_upload=true`,
+`verify_only=false`, and the exact successful current-master importer and owner
+comment. Leave `deferred_id` and `deferred_token` empty. The native run identity
+and first attempt bind the review to the chosen manifest, importer and comment;
+rerunning a request cannot renew its approval. Legacy `review_hours=0` and the
+existing durable retry queue retain their current behavior. Eight-hour requests
+are deliberately separate from a claimed retry, so the queue's 15-minute unknown
+dispatch watchdog cannot cancel a human waiting for this manual review.
+
+Keep all six upload controls OFF, `YOUTUBE_DEFERRED_ARMED_UNTIL=0` and
+`YOUTUBE_DEFERRED_ENABLED=false` throughout review. The secret-free inspection
+checks provenance, exact media and owner approval, plus artifact retention through
+run creation + eight hours + 120-second handoff + 900-second execution allowance
++ 300-second margin. If coverage is insufficient, use the existing trusted
+importer to copy the **same approved immutable bytes** on the final master commit,
+inspect the resulting digest and then create a fresh request. Do not relabel an
+old artifact, regenerate gameplay, substitute footage in a waiting run, or delete
+a receipt. A moved master, deleted artifact or revoked approval fails closed.
+
+Share the native protected-environment review link and exact UTC deadline. GitHub
+holds the protected job without a runner and without releasing its environment
+credentials until the owner approves. Admission expires exactly eight hours after
+native run creation; runner admission at or after the deadline refuses execution.
+The hourly cancel-only job closes expired matching requests independently of the
+controller feature flag. GitHub may retain the button until that cleanup runs;
+clicking after the deadline still cannot upload. The sweeper never changes a gate,
+dispatches a workflow, reads channel credentials or alters a media receipt.
+
+After the owner clicks Approve, the **same protected job** verifies the closed
+baseline and waits at most 120 seconds for the attended operator to arm execution.
+This step receives only the workflow token and the existing read-only control App
+token, with no YouTube credentials bound. The operator must monitor that step,
+check cancellation/stop markers, cap, receipts and the original approval, then
+open only the approved six controls and controller feature with a fresh
+`YOUTUBE_DEFERRED_ARMED_UNTIL` at most 900 seconds away. No additional owner comment
+or second environment approval is required. The workflow cannot open controls;
+if the operator cannot attend this short handoff it refuses without sending media.
+It never sleeps on a runner for eight hours or transfers approval to another job.
+
+Before insertion, the worker revalidates provenance and owner approval, current
+master, exact artifact coverage, all six live controls, controller feature and the
+same newly created arm. It does not rely on `vars` snapshots captured while gates
+were OFF. A replacement arm cannot extend that run. The existing ledger still
+reserves before media and enforces the unchanged inclusive rolling 24-hour cap,
+CAS ownership, destination identity and uncertain-send no-retry rules. A new
+pre-insert limit in this manual mode fails closed for a fresh reviewed request;
+it does not revive a terminal queue claim or automatically transfer this approval.
+
+Use a cleanup-only deadline watchdog during the short execution arm. Restore and
+read back the six OFF controls, arm zero and controller disabled on terminal
+success, failure or arm expiry, then reconcile the receipt before any further
+request. The workflow has read-only access to control settings and cannot reset
+them itself. Serialize the weapon and train requests using the destination lock;
+prepare a fresh import and a separate full review period for the train after the
+weapon request closes. Old 15-minute clock slots do not shorten a new review.
+
+[GitHub's environment review documentation](https://docs.github.com/actions/managing-workflow-runs/reviewing-deployments)
+describes when approved jobs receive environment secrets. This change does not
+alter reviewers, bypass rules, repository protection or credential permissions.
+
 Official references:
 
 - [Insert semantics, scopes, notifications and quota](https://developers.google.com/youtube/data/reference/rest/v3/videos/insert?hl=en)

@@ -675,11 +675,15 @@ class PhpYouTube:
                 "YoutubePHP did not verify processing/public visibility")
 
 
-def publish(m, clip, ledger, youtube, now):
+def publish(m, clip, ledger, youtube, now, before_insert=None):
     youtube.channel()  # Same grant's read scope proves upload destination first.
     record = ledger.find(m)
     if record is None:
+        if before_insert is not None:
+            now = before_insert()
         record = ledger.reserve(m, now)
+        if before_insert is not None:
+            before_insert()  # Receipt persistence may cross an arm/deadline or revocation.
         record["video_id"] = youtube.upload(m, clip)
         record["state"] = "uploaded"
         ledger.save()  # If this fails, durable reservation still blocks a retry.
@@ -796,6 +800,11 @@ def main():
     require_trusted_dispatch()
     transport = Transport()
     gh = GitHub(transport, os.environ["GITHUB_TOKEN"])
+    require(os.environ.get("REVIEW_HOURS", "0") in {"0", "8"}, "Review period must be zero or eight hours")
+    extended_review = os.environ.get("REVIEW_HOURS", "0") == "8"
+    if extended_review:
+        import review_wait
+        review_wait.request(gh, int(time.time()), admission=args.mode == "inspect")
     verify_only = os.environ.get("VERIFY_ONLY", "false")
     require(verify_only in {"true", "false"}, "Invalid verification-only flag")
     if verify_only == "true":
@@ -812,22 +821,37 @@ def main():
         print("Verified public upload: " + verify_existing(m, ledger, PhpYouTube(), int(time.time())))
         return
     validate_provenance(gh, m, p)
+    if extended_review:
+        review_deadline = review_wait.request(gh, int(time.time()), admission=args.mode == "inspect")
+        review_wait.artifact_coverage(gh, m, review_deadline)
+        require(Ledger(gh).find(m) is None, "Existing media receipt requires reconciliation, never another review upload")
     clip = inspect_archive(gh.archive(m["artifact"]["id"]), m)
     if args.mode == "inspect":
         probe_media(clip, m["clip"]["duration_seconds"])
         print("Approved source provenance, bounded media and per-clip approval checked")
+        if extended_review:
+            print("Eight-hour protected review admission deadline (UTC epoch): " + str(review_deadline))
         return
-    require_upload_gate()
+    if extended_review:
+        review_wait.execution_gate(gh, review_wait.ControlReader.from_environment())
+    else:
+        require_upload_gate()
     ledger = Ledger(gh)  # Missing ledger is an error, never initialize on the fly.
     from deferred import defer_upload
     now = int(time.time())
-    if defer_upload(gh, args.manifest, m, int(import_run) if import_run else None, now):
+    if not extended_review and defer_upload(gh, args.manifest, m, int(import_run) if import_run else None, now):
         return
+    def reviewed_insert():
+        # No snapshot vars or transferred approval. The same protected job must
+        # still own its exact short arm immediately before reservation/media.
+        validate_provenance(gh, m, p)
+        review_wait.artifact_coverage(gh, m, review_deadline)
+        return review_wait.execution_gate(gh, review_wait.ControlReader.from_environment())
     youtube = PhpYouTube()
     try:
-        url = publish(m, clip, ledger, youtube, now)
+        url = publish(m, clip, ledger, youtube, now, before_insert=reviewed_insert if extended_review else None)
     except RateLimited as error:
-        if error.media_attempted is False and defer_upload(gh, args.manifest, m,
+        if not extended_review and error.media_attempted is False and defer_upload(gh, args.manifest, m,
                 int(import_run) if import_run else None, int(time.time()), provider=error.metadata()):
             return
         raise
@@ -835,6 +859,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # Helpers share this module's refusal types when the CLI is the entry point.
+    sys.modules["upload"] = sys.modules[__name__]
     try:
         main()
     except Refused as error:
