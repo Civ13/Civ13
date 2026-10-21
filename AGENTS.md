@@ -98,8 +98,35 @@ Login or click, which would bypass live cooldowns/actions. The world-save
 runner's --input-runtime adapter checks disk-backed migration and the production
 early click gate; connected-client interaction remains separate evidence.
 
+<!-- 2026-10-21: direct BYOND status discovery -->
+Public native menus probe only the configured Civ13.com and ValZarGaming hostnames
+on ports 1714 and 1715. These are candidates, never an online assertion or a mode
+mapping. No HTTPS server directory, backend deployment, port ranges or arbitrary
+public --server-port override is involved. Resolve the entire A-answer set and
+reject any nonpublic member before opening sockets. Try literals sequentially
+within one three-second total deadline per candidate, with fair remaining slices.
+Each menu refresh checks only its provider's two candidates concurrently. Valid
+integer players=0 is online; optional metadata is unknown when absent and rejects
+the response when malformed. Recheck directly before joining; reject changed or
+missing previously observed nonempty map/mode/round identity. Bind verified
+status, literal and configured port together, validate freshness at dispatch,
+and launch only the verified BYOND client. Never add a permanent IP pin or reuse
+this query for OpenDream. Source merge does not activate the launcher feed;
+exact-head packaging/CI, independent review and a genuine public join gate release.
+See tools/opendream-client/native/SERVER-DISCOVERY.md.
+Public Topic writes use the fixed per-account status-requests lock/state,
+independent of --root. Reserve before writing, retain failed reservations and
+correlate validated IP aliases plus configured port. Spacing defers locally;
+never sleep inside the three-second IO budget or silently retry after a write.
+The 137-second reservation covers 130 seconds plus IO/clock margins; new instances
+with recorded history use a 133-second monotonic guard. Clock/state/link failures
+pause locally. J explicitly rechecks a deferred selection; B cancels with no
+background callback. Waiting requires new DNS/status, never extended old tokens.
+Wall time cannot prove game-time advancement or clear a server ban. Do not probe
+the known banned Desktop source until owner-coordinated normal eligibility.
+
 ## Language & toolchain
-NEVER use "—": always use "-" instead.
+Never use an em dash; use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
@@ -523,13 +550,6 @@ certificate/auth failures, untrusted redirects and bad hashes remain fail-closed
 Delete only a failed attempt's newly created staged file, never a pre-existing
 path. Preserve TLS validation and redact errors. Proxy IsBypassed(false) alone
 does not prove traffic used a proxy. Source changes do not activate a release.
-
-<!-- 2026-10-19: distinct native launcher catalogs -->
-Official Civ13.com Nomads uses 1715 and TDM 1714 (published website); ValZarGaming
-uses the opposite mapping. Keep these independent. Official BYOND URLs use the
-fixed civ13.com hostname; ValZarGaming retains its existing verified DNS/IP pin.
-The native catalog is in tools/opendream-client/native/ServerCatalog.cs despite
-the legacy directory name. Source merge does not activate the launcher feed.
 
 <!-- 2026-10-14: native launcher packaging -->
 `tools/opendream-client/native/Build.ps1` builds the single-file self-contained
