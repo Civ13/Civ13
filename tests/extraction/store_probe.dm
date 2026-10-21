@@ -124,6 +124,22 @@ var/store_failures = 0
 	var/datum/extraction_service/service = new
 	var/datum/extraction_session/S = service.open("raider")
 	store_assert(S && !service.open("raider"), "duplicate login rejected")
+	var/list/valid_graph = list(list("id" = "shape_root", "equipment" = list("schema" = 2, "nodes" = list(list("id" = "shape_root")))))
+	store_assert(S.valid_entries(valid_graph, 16), "well-formed account graph accepted")
+	var/profile_before = json_encode(S.profile)
+	for (var/invalid in list("malformed", 17))
+		var/list/bad_entries = json_decode(json_encode(valid_graph))
+		bad_entries += invalid
+		var/entries_before = json_encode(bad_entries)
+		store_assert(!S.valid_entries(bad_entries, 16), "scalar account root rejected [invalid]")
+		store_assert(!S.checkpoint_home(bad_entries) && json_encode(S.profile) == profile_before, "scalar roots cannot commit an account checkpoint [invalid]")
+		store_assert(json_encode(bad_entries) == entries_before, "rejected account roots remain unchanged [invalid]")
+		var/list/bad_nodes = json_decode(json_encode(valid_graph))
+		bad_nodes[1]["equipment"]["nodes"] += invalid
+		var/nodes_before = json_encode(bad_nodes)
+		store_assert(!S.valid_entries(bad_nodes, 16), "scalar equipment node rejected [invalid]")
+		store_assert(!S.checkpoint_home(bad_nodes) && json_encode(S.profile) == profile_before, "scalar nodes cannot commit an account checkpoint [invalid]")
+		store_assert(json_encode(bad_nodes) == nodes_before, "rejected equipment nodes remain unchanged [invalid]")
 	var/list/budget_entries = list()
 	for (var/root_index in 1 to 5)
 		var/list/nodes = list(list("id" = "budgetroot[root_index]"))

@@ -99,7 +99,9 @@
 	var/list/ids = list()
 	var/list/node_ids = list()
 	var/total_nodes = 0
-	for (var/list/entry in entries)
+	// Indexed iteration must inspect scalars too; typed loops silently skip them.
+	for (var/entry_index in 1 to entries.len)
+		var/list/entry = entries[entry_index]
 		if (!islist(entry) || !istext(entry["id"]) || !length(entry["id"]) || length(entry["id"]) > 80 || ids[entry["id"]] || !islist(entry["equipment"])) return FALSE
 		ids[entry["id"]] = TRUE
 		if (!isnull(entry["secure"]) && !(entry["secure"] in list(FALSE, TRUE))) return FALSE
@@ -112,7 +114,9 @@
 		if (equipment["schema"] == 2)
 			var/list/nodes = equipment["nodes"]
 			if (!islist(nodes) || !nodes.len) return FALSE
-			for (var/list/node in nodes)
+			for (var/node_index in 1 to nodes.len)
+				var/list/node = nodes[node_index]
+				if (!islist(node)) return FALSE
 				var/id = node["id"]
 				if (!istext(id) || !length(id) || length(id) > 80 || node_ids[id]) return FALSE
 				node_ids[id] = TRUE
