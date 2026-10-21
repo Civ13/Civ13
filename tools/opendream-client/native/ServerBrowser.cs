@@ -50,7 +50,10 @@ public static class ServerBrowser {
                     return;
                 } catch (IOException) {
                     output.WriteLine("The selected server could not be verified or started. Refresh and choose again.");
-                    break;
+                    // Do not turn a failed recheck into another immediate status sweep.
+                    // Some servers rate-limit Topic queries; only explicit Refresh probes again.
+                    snapshot = null;
+                    output.WriteLine("No automatic retry. R: Refresh   B: Back");
                 }
             }
         }

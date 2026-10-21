@@ -58,6 +58,12 @@ and round ID must still match and cannot disappear. Player counts, elapsed time
 and epoch may change naturally. If identity changes, refresh and select again.
 When optional identity was absent, it cannot authenticate a round; BYOND status
 is a consistency/availability check, not cryptographic server authentication.
+If a prejoin check or client start fails, the menu invalidates that selection and
+waits for explicit Refresh/Back. It never automatically repeats the discovery
+sweep after that failure. This avoids an unintended burst of Topic requests;
+it does not bypass server query limits or guarantee a temporarily refused query
+will recover. The checked-in game source has a non-whitelisted Topic cooldown,
+but the running server's configuration and any live ban must be verified separately.
 
 The successful result binds status, public literal and configured port together.
 Dispatch verifies catalog membership, status age <=60 seconds, the monotonic

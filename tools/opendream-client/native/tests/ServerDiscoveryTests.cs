@@ -88,6 +88,21 @@ internal static class ServerDiscoveryTests {
             var back = await Browse(input); Require(back.Launches == 0 && back.Checks == 0, "Back/EOF/invalid choice launched");
         }
         var refreshed = await Browse("R\n1\n"); Require(refreshed.Launches == 1 && refreshed.Checks == 1, "Refresh prevented valid selection");
+        var failedFetches = 0; var failedChecks = 0;
+        var failedDiscovery = new DiscoveryFixture(_ => {
+            failedFetches++;
+            return Task.FromResult(new ServerSnapshot(new[] { server }, 1));
+        }, _ => { failedChecks++; throw new IOException("query refused"); });
+        using (var failureOutput = new StringWriter()) {
+            await ServerBrowser.Run("ValZarGaming", failedDiscovery, new StringReader("1\n1\nB\n"), failureOutput,
+                _ => throw new Exception("Failed status launched"));
+            Require(failedFetches == 1 && failedChecks == 1 && failureOutput.ToString().Contains("No automatic retry"),
+                "Failed prejoin silently swept again or reused the failed selectable status");
+        }
+        failedFetches = 0; failedChecks = 0;
+        await ServerBrowser.Run("ValZarGaming", failedDiscovery, new StringReader("1\nR\nB\n"), TextWriter.Null,
+            _ => throw new Exception("Failed status launched"));
+        Require(failedFetches == 2 && failedChecks == 1, "Explicit Refresh no longer controls the next sweep");
         assertions += await ByondStatusTests.Run(server, now);
         Console.WriteLine($"PASS: {assertions} direct BYOND discovery, metadata, DNS, prejoin and selection controls.");
         return assertions;
