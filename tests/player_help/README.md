@@ -122,3 +122,12 @@ global saturation, state capacity/expiry and transport timeout are covered.
 `run-bridge-control.py` removes admission from generated production source and
 requires the direct rapid-repeat assertion to catch it. Account hashes must
 never appear in the captured model payload.
+
+`test_bronze_retrieval.py` captures the real prompt using the full installed atlas
+and reviewed code, without wiki pages or model/network calls. Bronze production
+and availability are one ranked evidence record so an ingot query cannot retrieve
+manufacturing while losing its research gates. Exact source markers and bounded
+file/excerpt sizes fail closed on drift. Source hashes cover kiln, molds, oven,
+anvil and research/crafting gates. Controls remove the new evidence and reject
+other-map recipe contamination. Passing retrieval does not establish a model's
+answer quality, live faction unlocks or a deployed worker.

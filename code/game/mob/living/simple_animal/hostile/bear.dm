@@ -47,11 +47,11 @@
 	female = TRUE
 
 /mob/living/simple_animal/hostile/bear/death()
-	bear_count &= src
+	bear_count -= src
 	..()
 
 /mob/living/simple_animal/hostile/bear/Destroy()
-	bear_count &= src
+	bear_count -= src
 	..()
 
 /mob/living/simple_animal/hostile/bear/Life()

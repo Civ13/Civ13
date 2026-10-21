@@ -1,0 +1,106 @@
+name: Deferred reviewed YouTube requests
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Bounded queue tick, cancellation or status
+        type: choice
+        options: [tick, cancel, status, control-probe]
+        default: tick
+      deferred_id:
+        description: Destination/media queue key (cancel only)
+        type: string
+        default: ''
+permissions: {}
+concurrency:
+  # Controller must remain runnable while an upload waits for environment review.
+  group: youtube-deferred-controller
+  cancel-in-progress: false
+jobs:
+  expire-review:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.ref == 'refs/heads/master' &&
+      (github.event_name == 'schedule' || inputs.operation == 'tick')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      actions: write
+    # Cancellation only, even with the controller disabled. No environment,
+    # App or channel credentials; never dispatches or opens a stop control.
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/youtube
+      - name: Cancel expired manual eight-hour reviews
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REVIEW_OPERATION: expire
+        run: /usr/bin/python3 -B tools/youtube/review_wait.py
+  deferred:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.ref == 'refs/heads/master' &&
+      ((vars.YOUTUBE_DEFERRED_ENABLED == 'true' &&
+        (github.event_name == 'schedule' || inputs.operation == 'tick')) ||
+       (github.event_name == 'workflow_dispatch' && inputs.operation == 'control-probe'))
+    runs-on: ubuntu-24.04
+    environment: youtube-controls
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      actions: write
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/youtube
+      # Dedicated installation: Variables/Environments/Metadata read only.
+      # v3.3.0 lacks permission-variables: omit ALL permission-* inputs so the
+      # exact approved installation permissions are inherited (upstream #231).
+      - name: Mint short-lived control-read token for a bounded tick
+        id: control-token
+        if: contains(fromJSON('["tick","control-probe"]'), inputs.operation || 'tick')
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0, node24
+        with:
+          app-id: ${{ vars.YOUTUBE_CONTROL_APP_ID }}
+          private-key: ${{ secrets.YOUTUBE_CONTROL_APP_PRIVATE_KEY }}
+          owner: Civ13
+          repositories: Civ13
+          skip-token-revoke: false
+      - name: Revalidate, reconcile and dispatch at most one approved request
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}
+          DEFERRED_OPERATION: ${{ inputs.operation || 'tick' }}
+          DEFERRED_ID: ${{ inputs.deferred_id }}
+        run: /usr/bin/python3 -B tools/youtube/deferred.py "$DEFERRED_OPERATION"
+  manage:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.ref == 'refs/heads/master' &&
+      github.event_name == 'workflow_dispatch' && contains(fromJSON('["status","cancel"]'), inputs.operation)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      actions: write
+    # No environment or App mint: disabled-feature status/cancel cannot create an
+    # unprotected environment or require a control-read private key.
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/youtube
+      - name: Inspect or cancel a durable request without activating uploads
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEFERRED_OPERATION: ${{ inputs.operation }}
+          DEFERRED_ID: ${{ inputs.deferred_id }}
+        run: /usr/bin/python3 -B tools/youtube/deferred.py "$DEFERRED_OPERATION"

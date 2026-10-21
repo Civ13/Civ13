@@ -2,8 +2,6 @@ using System.Diagnostics;
 
 namespace Civ13.Launcher;
 
-public sealed record GameServer(string Name, string Mode, int Port, string Engine);
-
 public static class ServerCatalog {
     public const string OfficialHost = "civ13.com";
     public const string OfficialMenuKey = "2";
@@ -17,46 +15,43 @@ public static class ServerCatalog {
         ValZarGamingMenuKey => "ValZarGaming",
         _ => null
     };
+    public static string Host(string provider) => provider switch {
+        "Civ13.com" => OfficialHost,
+        "ValZarGaming" => Connection.Host,
+        _ => throw new IOException("Unknown server provider.")
+    };
+    public static IReadOnlyList<GameTarget> Candidates(string provider) {
+        _ = Host(provider); // Reject unknown providers before constructing targets.
+        // Explicit pre-existing native game ports. No ranges or arbitrary overrides.
+        return Array.AsReadOnly(new[] { new GameTarget(provider, 1714), new GameTarget(provider, 1715) });
+    }
     public static int OpenDreamPort(string mode, string? operatorPort) {
         if (operatorPort == null)
             throw new IOException("OpenDream game service is not configured. An operator must supply --server-port for a verified OpenDream service.");
         return Connection.Port(mode, operatorPort);
     }
 
-    public static GameServer Select(string server, string mode) {
-        if (server is not ("ValZarGaming" or "Civ13.com") || mode is not ("Nomads" or "TDM"))
-            throw new IOException("Unknown game server or mode.");
-        // The official site publishes the opposite port mapping to ValZarGaming.
-        var port = server == "Civ13.com"
-            ? (mode == "Nomads" ? 1715 : 1714)
-            : (mode == "Nomads" ? 1714 : 1715);
-        return new GameServer(server, mode, port, "BYOND");
+    public static async Task<VerifiedGameServer> NativeEndpoint(GameServer server,
+        Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null,
+        StatusProbe? statusProbe = null,
+        Func<DateTimeOffset>? clock = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default) {
+        var currentClock = clock ?? (() => now ?? DateTimeOffset.UtcNow);
+        // Menu status may be old after a pause; the direct recheck is authoritative.
+        server.Target.Validate();
+        return await ByondStatus.Query(server.Target, resolver, statusProbe, currentClock, timeout, cancellationToken, server);
     }
 
-    public static async Task<string> NativeEndpoint(GameServer server,
-        Func<string, Task<System.Net.IPAddress[]>>? resolver = null) {
-        Validate(server);
-        // Use the published official hostname; do not borrow ValZarGaming's IP pin.
-        return server.Name == "Civ13.com" ? OfficialHost : (await Connection.Resolve(resolver)).Single();
-    }
-
-    private static void Validate(GameServer server) {
-        if (server != Select(server.Name, server.Mode) || server.Engine != "BYOND")
-            throw new IOException("Server engine or port differs from the catalog.");
-    }
-
-    public static ProcessStartInfo NativeStart(GameServer server, string bin, string endpoint,
-        ByondRequirement requirement, Func<string, bool> matchesClient) {
-        Validate(server);
-        var expectedEndpoint = server.Name == "Civ13.com" ? OfficialHost : Connection.ApprovedEndpoint;
-        if (endpoint != expectedEndpoint)
-            throw new IOException("Unverified game endpoint rejected.");
+    public static ProcessStartInfo NativeStart(VerifiedGameServer verified, string bin,
+        ByondRequirement requirement, Func<string, bool> matchesClient, DateTimeOffset? now = null) {
+        var server = verified.Status;
+        server.Validate(now ?? DateTimeOffset.UtcNow);
+        var address = verified.Endpoint.Validate(server.Host);
         requirement.Validate();
         if (!matchesClient(bin)) throw new IOException("Required BYOND " + requirement.Version + " client unavailable.");
         var start = new ProcessStartInfo(Path.Combine(bin, "dreamseeker.exe")) {
             UseShellExecute = false, WorkingDirectory = bin
         };
-        start.ArgumentList.Add($"byond://{endpoint}:{server.Port}");
+        start.ArgumentList.Add($"byond://{address}:{server.Port}");
         return start;
     }
 }

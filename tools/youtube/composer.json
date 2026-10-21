@@ -1,0 +1,16 @@
+{
+  "name": "civ13/reviewed-gameplay-uploader",
+  "description": "Trusted source-only adapter for manually approved unlisted gameplay clips",
+  "type": "project",
+  "license": "AGPL-3.0-or-later",
+  "require": {
+    "php": "^8.4",
+    "vzgcoders/youtubephp": "dev-main#7ce9b24eb26a32af7ffcd4936d8083c06a428fb0"
+  },
+  "repositories": [
+    {"type": "vcs", "url": "https://github.com/Valgorithms/YoutubePHP"}
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {"allow-plugins": false, "sort-packages": true, "platform": {"php": "8.4.0"}}
+}

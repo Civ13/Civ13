@@ -1,7 +1,8 @@
 # New-z admission verification
 
 Production has no calibrated memory profile and must reject new growth with
-`UNMEASURED` before allocation or material debit. Arithmetic alone does not
+`UNMEASURED` before allocation. Roof-only fallback can still consume its roofing
+item and provide shelter without growing the grid. Arithmetic alone does not
 admit a production request. Existing planes and matching-dimension imports
 remain available. The tests-only `fixture_admission` subclass is compiled only
 into isolated fixtures so accepted small-grid paths can still be exercised;
@@ -37,8 +38,7 @@ no engine diagnostics, complete result flags and a final positive 10x10x9 grid.
 Expected control failures are explicit and cannot mask a nonzero exit or an
 unrelated diagnostic. All runtime storage is fresh and outside production.
 
-`memory-admission` must fail on `default unmeasured roof preserves paid builder
-and grid`; `cell-limit` on `one-over total-cell ceiling blocked`; `roof-ceiling`
+`memory-admission` must fail on `default unmeasured allocation preserves grid`; `cell-limit` on `one-over total-cell ceiling blocked`; `roof-ceiling`
 on `raising roof allowance rejected`. The disk controls separately remove the
 same memory refusal or the admission-hold latch. Whole-target refusal must leave
 original generation files byte-identical, retain restart intent, allocate zero
