@@ -16,6 +16,7 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    if (args.Length == 2 && args[0] == "--pacing-cache-child") return TopicPacingTests.Child(args[1], cached: true);
     if (args.Length == 2 && args[0] == "--pacing-child") return TopicPacingTests.Child(args[1]);
     if (args.SequenceEqual(new[] { "--probe-public" })) {
         var discovery = new ServerDiscovery();

@@ -52,15 +52,38 @@ same configured port share eligibility. Addresses are bookkeeping only; they
 never supply a connection destination or permanent IP pin. Before writing any
 Topic bytes, the request durably reserves 137 seconds: 130 seconds of spacing,
 the three-second IO window and the full four-second swing of permitted clock
-slew. A new pacer with recorded history also requires a 133-second monotonic
-startup guard, covering a prior instance's possible in-flight write. Restarting
-the launcher or changing --root cannot shorten that guard. Wall-clock steps
-outside the two-second monotonic comparison tolerance pause checks.
-The comparison uses a fixed process-lifetime anchor: even gradual accumulated
-drift can pause a long session. Rebaselining on every early check would let small
-clock advances consume the spacing margin. If the system clock is stable again,
-close and reopen the launcher normally; retain its timing files and complete the
-133-second startup guard. This does not clear or authorize probing a server ban.
+slew. Schema 2 also persists the system-wide `Environment.TickCount64` value
+at reservation time. New processes keep only the true remaining interval; fresh
+or expired anchored history adds no startup wait. A positive uptime difference
+remains conservative across reboot because the new uptime alone exceeds that
+difference. If uptime is lower than the saved anchor, eligibility requires the
+first 133 seconds of the new boot, without restarting that wait on each launch.
+See [Microsoft's TickCount64 contract](https://learn.microsoft.com/en-us/dotnet/api/system.environment.tickcount64?view=net-8.0).
+The launcher remains pinned to .NET 8; changing clock semantics in a future
+runtime requires rechecking this persisted timing contract.
+
+Schema 1 (1.0.5) has only wall timestamps and no result cache. For those matching
+endpoints only, retain the existing 133-second process-monotonic migration guard
+and any longer valid wall reservation; a new request replaces that entry with
+schema 2. Do not invent cached responses or clear old history. Older 1.0.5
+instances fail closed when they encounter schema 2 instead of ignoring it.
+Wall-clock steps outside the two-second monotonic comparison tolerance still
+pause checks within a process. This fixed anchor cannot absorb gradual clock
+drift through repeated early checks. Waiting cannot establish server game-time
+advancement or clear a ban.
+
+Validated success/failure results are written under the same lock/state, tied to
+the reservation's unique request ID. Late completion cannot replace a newer
+reservation or result. Success caches store only bounded validated metadata and
+the original check timestamp; they never hold an IP destination or verified
+launch token. Failure caches report an unsuccessful last check, not current
+offline status. Unknown/pending results remain unknown. Cache display is limited
+to ten minutes, labeled with age, and requires a new full prejoin validation even
+if selected during cooldown. Cache-write contention cannot replace an established
+verification failure with a waiting selection. Successful-response cache lock
+contention can omit display caching while preserving the freshly verified result;
+invalid storage still pauses checks. No cached result skips pacing,
+DNS, identity validation or dispatch freshness checks.
 
 State is bounded to 32 KiB, schema checked, flushed and replaced atomically in the
 same directory. Missing/inconsistent, corrupt, locked, inaccessible or linked

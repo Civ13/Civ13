@@ -47,7 +47,8 @@ public sealed class VerifiedGameServer {
     internal VerifiedGameServer(GameServer status, PublicEndpoint endpoint) { Status = status; Endpoint = endpoint; }
 }
 
-public sealed record DeferredTarget(GameTarget Target, int Seconds);
+public sealed record CachedStatus(GameServer? Server, DateTimeOffset CheckedAt, int AgeSeconds);
+public sealed record DeferredTarget(GameTarget Target, int Seconds, CachedStatus? Cached = null);
 public sealed record ServerSnapshot(IReadOnlyList<GameServer> Servers, int Unverified, IReadOnlyList<DeferredTarget>? Deferred = null, bool PacingPaused = false);
 
 public interface IServerDiscovery {
@@ -64,7 +65,7 @@ public sealed class ServerDiscovery : IServerDiscovery {
         // Exactly two configured endpoints per provider, at most two active sockets.
         var results = await Task.WhenAll(ServerCatalog.Candidates(provider).Select(async target => {
             try { return (Server: (GameServer?)(await query(target)).Status, Wait: (DeferredTarget?)null, Paused: false); }
-            catch (TopicWaitException wait) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds), Paused: false); }
+            catch (TopicWaitException wait) { return (Server: wait.Cached?.Server, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds, wait.Cached), Paused: false); }
             catch (TopicPacingException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: true); }
             catch (IOException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: false); }
         }));

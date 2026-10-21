@@ -40,11 +40,12 @@ public static class ByondStatus {
                 // Sequential fair slices keep one active socket and leave time for later A records.
                 attempt.CancelAfter(remaining / (addresses.Length - index));
                 var reserved = false;
+                Guid? requestId = null;
                 try {
                     // Production Fetch honors cancellation and disposes its socket before
                     // this task settles; await settlement before starting the next address.
                     var packet = await (probe ?? Fetch)(addresses[index], target.Port,
-                        () => { spacing?.Reserve(target, addresses); reserved = true; }, attempt.Token);
+                        () => { requestId = spacing?.Reserve(target, addresses); reserved = true; }, attempt.Token);
                     var status = ParsePacket(packet, target, clock());
                     if (expected != null && !expected.Matches(status))
                         throw new IOException("Game identity changed. Refresh and choose again.");
@@ -52,12 +53,22 @@ public static class ByondStatus {
                     deadline.Token.ThrowIfCancellationRequested();
                     status.Validate(clock());
                     endpoints[index].Validate(target.Host);
+                    if (requestId is { } successId) {
+                        try { spacing!.Record(target, successId, status); }
+                        catch (TopicWaitException) { } // Display cache contention does not invalidate this fresh response.
+                    }
                     return new VerifiedGameServer(status, endpoints[index]);
                 } catch (TopicPacingException) { throw; }
                 catch (Exception error) when (error is IOException or SocketException or OperationCanceledException) {
                     // Once reserved, another address cannot safely write. Preserve the
                     // verification failure instead of replacing it with a pacing wait.
                     if (reserved) {
+                        // Cache is display data. Contention or a cache-write failure
+                        // must not turn an established verification failure into a wait.
+                        if (requestId is { } failureId) {
+                            try { spacing!.Record(target, failureId, null); }
+                            catch (TopicPacingException) { }
+                        }
                         if (error is IOException) throw;
                         throw new IOException("Public server verification failed after requesting status. Refresh and choose again.", error);
                     }
@@ -107,8 +118,20 @@ public static class ByondStatus {
         if (bytes.Length is < 8 or > MaxBytes || bytes[0] != 0 || bytes[1] != 0x83 ||
             ((bytes[2] << 8) | bytes[3]) + 4 != bytes.Length || bytes[4] != 0x06 || bytes[^1] != 0)
             throw new IOException("Invalid BYOND status packet.");
+        return ParseJson(packet.Slice(5, packet.Length - 6), target, checkedAt);
+    }
+
+    internal static string CacheJson(GameServer status) {
+        var data = new Dictionary<string, object> { ["players"] = status.Players, ["map_name"] = status.Map,
+            ["map_gamemode"] = status.Mode, ["map_age"] = status.Epoch, ["game_id"] = status.RoundId };
+        if (status.RoundDurationSeconds is { } duration) data["round_duration_in_ticks"] = duration * 10L;
+        return JsonSerializer.Serialize(data);
+    }
+
+    internal static GameServer ParseJson(ReadOnlyMemory<byte> json, GameTarget target, DateTimeOffset checkedAt) {
+        target.Validate();
+        if (json.Length is < 2 or > MaxBytes) throw new IOException("Invalid bounded BYOND JSON.");
         try {
-            var json = packet.Slice(5, packet.Length - 6);
             StrictUtf8.GetCharCount(json.Span);
             using var document = JsonDocument.Parse(json, new JsonDocumentOptions { MaxDepth = 16 });
             var root = document.RootElement;
