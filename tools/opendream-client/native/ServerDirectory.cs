@@ -103,7 +103,7 @@ public sealed class ServerDirectory {
             throw new IOException("Required directory field missing.");
         return value;
     }
-    private static int Number(JsonElement item, string name, int minimum, int maximum) {
+    internal static int Number(JsonElement item, string name, int minimum, int maximum) {
         var value = Property(item, name);
         if (value.ValueKind != JsonValueKind.Number || !value.TryGetInt32(out var number) || number < minimum || number > maximum)
             throw new IOException("Invalid directory number.");
@@ -111,7 +111,7 @@ public sealed class ServerDirectory {
     }
     private static string OptionalText(JsonElement item, string name, int maximum) =>
         item.ValueKind == JsonValueKind.Object && item.TryGetProperty(name, out _) ? Text(item, name, maximum, true) : "";
-    private static string Text(JsonElement item, string name, int maximumUtf8Bytes, bool allowEmpty = false) {
+    internal static string Text(JsonElement item, string name, int maximumUtf8Bytes, bool allowEmpty = false) {
         var value = Property(item, name);
         if (value.ValueKind != JsonValueKind.String) throw new IOException("Invalid directory text.");
         string text;
@@ -140,7 +140,7 @@ public sealed class ServerDirectory {
             throw new IOException("Invalid directory timestamp.");
         return timestamp;
     }
-    private static void RejectDuplicateProperties(JsonElement item) {
+    internal static void RejectDuplicateProperties(JsonElement item) {
         if (item.ValueKind == JsonValueKind.Object) {
             var names = new HashSet<string>(StringComparer.Ordinal);
             foreach (var property in item.EnumerateObject()) {

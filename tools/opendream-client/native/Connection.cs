@@ -30,17 +30,21 @@ public static class Connection {
     public static bool IsApprovedHost(string host) => host is "civ13.com" or Host;
     public static Task<PublicEndpoint> Resolve(Func<string, Task<IPAddress[]>>? resolver = null) => ResolveHost(Host, resolver);
     public static async Task<PublicEndpoint> ResolveHost(string host, Func<string, Task<IPAddress[]>>? resolver = null, Func<long>? monotonicClock = null) {
+        var addresses = await ResolveAddresses(host, resolver);
+        return new PublicEndpoint(host, addresses[0], monotonicClock ?? (() => Environment.TickCount64));
+    }
+    internal static async Task<IPAddress[]> ResolveAddresses(string host, Func<string, Task<IPAddress[]>>? resolver = null,
+        CancellationToken cancellationToken = default) {
         if (!IsApprovedHost(host)) throw new IOException("Unapproved game hostname.");
         try {
             // This candidate uses IPv4 literals for verified BYOND/OpenDream dispatch.
             // Resolving A records explicitly avoids an unchecked second client-side lookup.
             var addresses = await (resolver ?? (name => Dns.GetHostAddressesAsync(name, AddressFamily.InterNetwork)))(host)
-                .WaitAsync(TimeSpan.FromSeconds(10));
+                .WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
             if (addresses.Length is 0 or > 32 || addresses.Any(address => !IsPublicIPv4(address)))
                 throw new IOException("DNS must return only public IPv4 game addresses; private, loopback, reserved or unsupported answers are rejected.");
-            var selected = addresses.Select(address => address.ToString()).Distinct(StringComparer.Ordinal)
-                .Order(StringComparer.Ordinal).First();
-            return new PublicEndpoint(host, IPAddress.Parse(selected), monotonicClock ?? (() => Environment.TickCount64));
+            return addresses.Select(address => address.ToString()).Distinct(StringComparer.Ordinal)
+                .Order(StringComparer.Ordinal).Select(IPAddress.Parse).ToArray();
         } catch (Exception e) when (e is SocketException or IOException or TimeoutException) {
             throw new IOException("Could not verify the public game address for " + host + ". No game was started. Try joining again after DNS is available.", e);
         }

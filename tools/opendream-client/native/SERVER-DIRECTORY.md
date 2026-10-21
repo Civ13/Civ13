@@ -127,7 +127,17 @@ The obsolete individual parking-IP exclusion is also removed; the same public
 address rules apply to every answer.
 The candidate requests IPv4 A records, accepts 1-32 answers, rejects the entire
 answer set if any address is private, loopback, link-local, multicast, reserved or
-otherwise unsupported, and deterministically selects one validated address.
+otherwise unsupported, and deduplicates the validated addresses. For BYOND,
+fixed read-only status queries try those literals sequentially on the selected
+directory port, within one three-second DNS/connect/read deadline. Each address
+receives an equal share of the remaining budget; there is at most one active
+game socket. Only complete valid status matching the selected map, mode and
+nonempty round ID can select an address. Player count and elapsed time may
+advance naturally. A silent, malformed or incomplete first address does not
+consume every later address's budget. This is bounded best-effort selection:
+short slices or an exhausted deadline can still leave a slow service unavailable.
+The operator-only OpenDream path retains its separate address selection; it does
+not send BYOND queries to an OpenDream service.
 IPv6-only game hosts are unavailable in this candidate. The conservative IPv4
 exclusions follow the [IANA IPv4 Special-Purpose Address Registry](https://www.iana.org/assignments/iana-ipv4-special-registry/),
 including its special-purpose ranges even where an individual exception is

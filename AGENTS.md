@@ -46,6 +46,13 @@ runner's --input-runtime adapter checks disk-backed migration and the production
 early click gate; connected-client interaction remains separate evidence.
 
 <!-- 2026-10-19: live launcher directory contract -->
+<!-- 2026-10-21: multi-address BYOND selection -->
+Public BYOND joins validate the entire DNS A-answer set before opening sockets,
+then try literal status queries sequentially within one three-second total
+deadline. Each remaining address gets a fair share of the remaining budget;
+complete status must match directory map/mode and any nonempty round ID.
+Never add an IP pin or reuse this BYOND query path for OpenDream. The paired
+backend factory preserves one active socket per target and 32 across a sweep.
 The unreleased native launcher consumes the fixed civ13.com HTTPS directory at
 /.well-known/civ13/servers.json with exactly provider=civ13.com or
 provider=valzargaming.com. Public ports come only from fresh validated records;

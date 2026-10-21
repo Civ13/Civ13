@@ -16,6 +16,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="Byond.cs" />
+    <Compile Include="ByondStatus.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ServerCatalog.cs" />
     <Compile Include="ServerDirectory.cs" />

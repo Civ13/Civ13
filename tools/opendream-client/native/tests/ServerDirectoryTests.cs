@@ -143,7 +143,7 @@ internal static class ServerDirectoryTests {
         var endpoint = await ServerCatalog.NativeEndpoint(server, host => {
             officialCalls++; Require(host == "civ13.com", "official selection resolved wrong hostname");
             return Task.FromResult(new[] { IPAddress.Parse("8.8.8.8") });
-        }, now);
+        }, now, statusProbe: (_, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet()));
         var start = ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true, now);
         Require(start.ArgumentList.Single() == "byond://8.8.8.8:24017" && !start.UseShellExecute && officialCalls == 1,
             "official dispatch did not bind the single validated DNS result");
@@ -155,8 +155,8 @@ internal static class ServerDirectoryTests {
             calls++; Require(host == "valzargaming.com", "wrong DNS name");
             return Task.FromResult(new[] { IPAddress.Parse(calls == 1 ? "8.8.4.4" : "1.1.1.1") });
         }
-        var first = await ServerCatalog.NativeEndpoint(valzar, ChangingDns, now);
-        var changedIp = await ServerCatalog.NativeEndpoint(valzar, ChangingDns, now);
+        var first = await ServerCatalog.NativeEndpoint(valzar, ChangingDns, now, statusProbe: (_, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet()));
+        var changedIp = await ServerCatalog.NativeEndpoint(valzar, ChangingDns, now, statusProbe: (_, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet()));
         Require(first.Address == "8.8.4.4" && changedIp.Address == "1.1.1.1" && calls == 2, "fresh valid public IP change was blocked or DNS was cached");
         Require(ServerCatalog.NativeStart(valzar, root, first, Civ13.Launcher.Program.RequiredByond(), _ => true, now).ArgumentList.Single() ==
             "byond://8.8.4.4:32009", "first DNS result was not bound to its connection attempt");
@@ -302,6 +302,7 @@ internal static class ServerDirectoryTests {
         var eof = await Browse("", Bytes(Document(Entry()))); Require(eof.Launches == 0, "EOF dispatched");
         var badChoice = await Browse("-1\n0\n999\n2;calc\nB\n", Bytes(Document(Entry())));
         Require(badChoice.Launches == 0, "invalid choice dispatched");
+        assertions += await ByondStatusTests.Run(server, now);
         Console.WriteLine($"PASS: {assertions} live-directory, freshness, transport, metadata and selection controls.");
         return assertions;
     }

@@ -29,10 +29,10 @@ public static class ServerCatalog {
     }
 
     public static async Task<PublicEndpoint> NativeEndpoint(GameServer server,
-        Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null) {
-        server.Validate(now ?? DateTimeOffset.UtcNow);
-        // Resolve this approved hostname afresh; never use a directory IP or permanent pin.
-        return await Connection.ResolveHost(server.Host, resolver);
+        Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null,
+        Func<System.Net.IPAddress, int, CancellationToken, Task<ReadOnlyMemory<byte>>>? statusProbe = null,
+        Func<DateTimeOffset>? clock = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default) {
+        return await ByondStatus.Select(server, resolver, statusProbe, clock ?? (() => now ?? DateTimeOffset.UtcNow), timeout, cancellationToken);
     }
 
     public static ProcessStartInfo NativeStart(GameServer server, string bin, PublicEndpoint endpoint,
