@@ -1069,6 +1069,12 @@ with numeric keys and null associations. Collection codecs must handle `/alist`
 explicitly; isolated probes must import the production macro. Numeric alist
 indexing addresses keys, so iterate keys instead of positional indexes.
 
+<!-- 2026-10-15: native seed port contract -->
+`world.OpenPort(0)` opens any available port; `world.OpenPort("none")` closes it.
+Do not infer offline isolation from `-close`: verify the critical phase has port0
+and an actual zero-listener OS census. The Gaia seed observer rejects reopening
+and denies all seed clients; `tests/world_save/playable_reconnect/test_port.py`
+checks its native516.1681 port contract separately from full recovery acceptance.
 <!-- 2026-10-15: paid wood residue and plant nitrary -->
 Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
 and factories; unknown legacy fuel earns no ash. The existing compost bin's
