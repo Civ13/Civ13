@@ -1,5 +1,5 @@
-// Constructed ceilings are two faces of one slab. Coordinates and an ID, rather
-// than cross-level object references, survive the per-level save encoder.
+// Ceilings with an available upper plane have two faces of one slab. Coordinates
+// and an ID, rather than cross-level references, survive per-level saves.
 #define BUILDING_MAX_Z 32
 #define BUILDING_EXTRA_LEVELS 8
 #define BUILDING_MAX_LEVEL_CELLS 2000000
@@ -185,13 +185,9 @@ var/building_compiled_maxz = 0
 		return "That area is already roofed!"
 	if (!building_supported_height(T))
 		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete six and metal eight."
-	if (T.z == world.maxz)
-		if (T.z + 1 > BUILDING_MAX_Z || T.z + 1 > building_base_maxz() + BUILDING_EXTRA_LEVELS || world.maxx * world.maxy > BUILDING_MAX_LEVEL_CELLS)
-			return "This world cannot safely add another building level."
-		var/budget_error = world_z_budget.error(T.z + 1, "roof")
-		if (budget_error)
-			return budget_error
-	else
+	// A roof does not require a new plane. Admission for optional upper-floor
+	// growth stays in building_allocate_level; existing upper turfs must be clear.
+	if (T.z < world.maxz)
 		var/turf/above = locate(T.x, T.y, T.z + 1)
 		if (!building_open_turf(above) || (locate(/obj/covers) in above) || istype(get_area(above), /area/caribbean/no_mans_land))
 			return "There is already terrain or construction above this roof."
@@ -227,9 +223,8 @@ var/building_compiled_maxz = 0
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
 		return null
-	if (T.z == world.maxz && !building_allocate_level(T.z + 1))
-		to_chat(user, SPAN_WARNING(world_z_budget.last_error ? world_z_budget.last_error : "The level allocation could not complete. Try again after recovery."))
-		return null
+	if (T.z == world.maxz)
+		building_allocate_level(T.z + 1)
 	// Allocation can yield: recheck both support and occupancy before placing.
 	error = building_roof_error(T)
 	if (error)
@@ -238,7 +233,10 @@ var/building_compiled_maxz = 0
 	if (source && (!building_item_usable(source, user) || user.z != T.z || get_dist(user, T) > 1))
 		return null
 	var/obj/roof/R = new roof_type(T)
-	var/obj/covers/repairedfloor/C = new(locate(T.x, T.y, T.z + 1))
+	var/turf/above = locate(T.x, T.y, T.z + 1)
+	if (!above)
+		return R // Allocation was refused: the paid roof still provides shelter.
+	var/obj/covers/repairedfloor/C = new(above)
 	C.name = "upper floor"
 	C.desc = "The walkable upper face of the ceiling below. Removing either face removes both."
 	C.flammable = R.flammable

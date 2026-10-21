@@ -1,5 +1,50 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-20: reviewed video upload boundary -->
+<!-- 2026-10-20: deferred control-read capability -->
+Deferred upload controls use a dedicated Variables/Environments/Metadata-read App,
+installed only for Civ13/Civ13, through eight named variable GETs. Its ephemeral
+token never substitutes for queue/actions GITHUB_TOKEN. Pinned create-github-app-token
+v3.3.0 lacks permission-variables; omit all permission inputs only while that
+installation retains exactly the three approved read permissions. Keep post-job
+revocation and feature OFF until separately approved storage/activation. Create
+and read back master-only youtube-controls before placing its key; a missing
+workflow environment otherwise auto-creates without branch protections.
+`docs/youtube-upload.md` defines the manual/default-off public YouTube uploader contract after explicit owner approval.
+Only trusted default-branch code receives environment credentials; PR media stays
+data, with decoder inspection in a secret-free job. Per-clip human approval binds
+media/metadata/destination; durable reservations block ambiguous retries. Never
+delete uncertain one-off receipts or create OAuth grants from source-PR approval.
+The user-run `tools/youtube/authorize.py` checks only project
+`calcium-circuit-384407`, uses manual Google PKCE consent and a separate stdin
+secret-placement confirmation. Setup requires explicitly disabled repository
+activation variables; uncertain secret writes require owner reconciliation even
+when immediate metadata reads show absence. Tests use fake services/local loopback.
+The owner selected sole required reviewer `valzargaming` (User ID `7202504`),
+with self-review allowed and administrator bypass disabled. Keep explicit manual
+environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
+
+<!-- 2026-10-19: protected sleep buckle ownership -->
+Protected sleep relocates the body between z-levels, so release only its matching
+reciprocal buckle before entry or wake. Keep return coordinates captured before
+unbuckling, reject mismatched occupants, and leave sleep protection active on a
+failed wake. Both delayed verbs retain the initiating client/body and recheck the
+persistence gate at transfer time. Per-level saves still reject cross-z object
+fields; never suppress that guard to hide a stale spatial relationship.
+`map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
+cross-level and duplicate-entry failures, including direct Save_World calls.
+Keep only scalar identities/coordinates and at most eight schema-field frames;
+never pin live objects, retain values or print lookup refs in public reports.
+Preserve it through cleanup, clear it only at accepted save admission, and verify
+lookup type/location because native refs can be recycled after deletion.
+
+<!-- 2026-10-20: bronze Help retrieval -->
+Keep reviewed bronze production and availability evidence in one retrieval record;
+separate ranking let iron-ingot excerpts displace bronze research gates. The route
+uses copper/tin ore in fired blacksmith pots/jugs, then mold pouring and anvil work.
+Ovens fire clay molds; kilns alloy the loaded ores. Preserve map and actual node
+checks, and never infer a player's completed research from era metadata alone.
+
 <!-- 2026-10-18: private Help conversation boundary -->
 Help history belongs to an authenticated client session, never a saved mob.
 `conversation_probe.dm` is included by the existing isolated Help fixture;
@@ -14,6 +59,14 @@ shoulder/back, then retained through do_after. Revalidate the exact item and sou
 before debit; consume only after successful stack.use and clear its actual slot.
 Do not recurse through storage or recreate handles on cancellation. Existing
 get_equipped_items omits shoulder; use the slot getter with equipment priority.
+<!-- 2026-10-21: digging tool and research admission -->
+Trench digging uses Field Defenses, matching the trench shovel unlock; ordinary
+non-harm dirt collection remains ungated. Rock mining accepts pickaxes only at
+both click dispatch and shared action admission. The utensil base includes wood
+knives; retain spoons for loose dirt/sand/snow collection, not rock mining.
+`tests/test_digging_tools.py` checks source-derived gates offline; it does not
+establish connected-client collision or native gameplay acceptance.
+
 <!-- 2026-10-19: collision mining ownership -->
 Dense mineable underground rock uses one shared click/bump mining action. Its
 explicit optional do_after context owns actor and turf reservations before any
@@ -113,7 +166,7 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 <!-- 2026-10-18: centralized level admission -->
 Dynamic z growth must reserve its complete target through world_z_budget before
-the first native resize. The uncalibrated hard ceiling is 600,000 total grid cells,
+the first native resize. The uncalibrated hard ceiling is 1,400,000 total grid cells,
 with one roof-added plane and lower-only host settings. Production additionally
 refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
 reviewed; configuration cannot bypass this. Isolated tests select a tests-only
@@ -298,6 +351,13 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
+
+<!-- 2026-10-20: extraction instance collateral -->
+The historical extraction instance fixture at b717ad2a6 shared registry state
+across assertions. Its overlap/generation mutants caused downstream failures as well as
+their named targets. Run 39140469088 preserves complete native results; keep its
+failed verdict intact. Explaining collateral is not approval to weaken the
+single-target oracle. See docs/extraction-instance-contract.md.
 
 <!-- 2026-10-17: maintainer rules -->
 - Art: reuse and transform existing art assets where possible. Never use image
