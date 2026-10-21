@@ -325,3 +325,13 @@ measurement is supplied by this PR. The accepted lighting base remains
 `reserved-cell-lighting-overlays`. A branch-relative fixture build does not
 require resolving #3220's master conflicts or merging/deploying experimental
 lighting. Source acceptance and merge/deployment readiness remain separate.
+
+### Separate native preflight source (default OFF)
+
+The [native preflight source](native_preflight/README.md) now provides an inert
+toolchain recipe, exact public Git staging, and a separate one-compile/two-smoke
+driver with injected negative controls. It does not change the measurement
+batch or the accepted pilot. Its toolchain identities remain unresolved; larger
+causal controls, engine contract, zero-cost handoff and explicit scoped admission
+are required before any acquisition, build or native execution. No workflow
+activates this source and no native result is supplied by it.
