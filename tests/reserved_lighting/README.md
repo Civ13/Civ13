@@ -261,51 +261,67 @@ Exact-head linkage comes from trusted Git-archive preparation and independent
 build review; a self-consistent hand-authored manifest alone does not prove it.
 
 
-### Manual containment-only pilot (default OFF)
+### Registered containment-only pilot (default OFF)
 
-`.github/workflows/reserved-lighting-containment.yml` prepares a separate
-manual pilot; it has no push/PR event and confirmation defaults to false. Its
-only runner is the standard `ubuntu-24.04` GitHub-hosted runner for this public
-repository. A live repository-ID/visibility check, exact reviewed SHA and manual
-confirmation must pass. No BYOND, compiler, game input, measurement batch,
-credentials, cache or artifact-upload step is included. No pilot has run as
-part of this source change. No Desktop image or runtime is installed.
+The three pilot files in this branch match exact master merge
+`61329b29e7e4b5d898662a7adf1c05595b13b357` from #3256 and #3259. They retain
+manual/default-false container execution, the exact repository/head/public-hosted
+guards and read-only job permissions. PR events can select only injected offline
+tests under the existing introduced-suite policy. There are no BYOND, compiler,
+measurement batch, game inputs, secrets, public ports, caches or artifact uploads
+in that workflow. These synchronized draft copies were not executed as this PR.
 
-`containment_pilot.py` defaults to printing an inert plan. Its explicit execution
-mode additionally rejects non-Linux, self-hosted, private-repository, non-manual,
-wrong-repository and mismatched-head contexts before Docker access. The official
-Python Linux/amd64 image is pinned by manifest digest and image ID, sourced from
-Docker's repo-info Git blob `e4a0e633985ceac539eb2d33c23c98df0ef167a9` at
-https://github.com/docker-library/repo-info/blob/master/repos/python/remote/3.12-slim-bookworm.md.
-The future hosted job may anonymously pull that image; no registry login occurs.
+Corrected containment pilot
+[39636638727](https://github.com/Civ13/Civ13/actions/runs/39636638727) executed at
+that master merge, with nine injected tests and all five runtime controls complete.
+It checked denied egress, a protected-input write denial plus positive scratch
+write, actual scratch ENOSPC, PID rejection attributed to the cgroup, hard-memory
+OOM and retirement of an owned surviving descendant. All five owned containers
+were removed; two retained process birth identities and their cgroup retired.
+The independent source owner and sole allocator reconciled the same receipt.
 
-The smaller containment-only envelope is 64 MiB container memory with the same
-memory-plus-swap ceiling (zero swap), 16 PID/threads, 0.25 CPU, an 8 MiB noexec
-scratch tmpfs and 1 MiB shared memory. Host Docker settings and in-container
-cgroup/scratch values must read back correctly. Controls check denied egress,
-protected-input write denial with a positive scratch write, actual scratch
-ENOSPC, PID rejection with an increased cgroup event counter, hard-memory OOM
-and forced retirement of an owned surviving descendant. EACCES alone could be
-file permissions; separate mount RW=false inspection is configuration evidence.
+This is a Python-only 64 MiB memory/zero-swap envelope with 16 PIDs/threads,
+0.25 CPU, 8 MiB noexec scratch and 1 MiB shared memory. EACCES alone is not causal
+read-only mount proof; separate mount RW=false inspection is configuration
+evidence. CPU quota readback is not timing calibration. Host CLI output uses a
+1 MiB polling detection threshold that may overshoot, not a hard host disk quota.
+The exact local logging configuration is max-size=1m, max-file=1, compress=false.
+Nine injected tests cover the source contracts; the successful run supplies only
+the stated small Python containment evidence, not BYOND/platform acceptance.
 
-Containers have a read-only root, only this public pilot script mounted read-only,
-no network/published ports, a non-root user, dropped capabilities and private
-namespaces. Cleanup signals only an exact retained CID after label/identity
-checks, checks retained PID start ticks and cgroup retirement, then removes only
-that stopped container. An uncertain create is reconciled by its fresh unique
-name and labels; it is never started/retried automatically. Every incomplete
-result is retained as incomplete. CLI calls are observed with a 1 MiB log
-detection threshold, which may overshoot between polls; it is not a hard host
-disk quota. Aggregate controller/cleanup deadlines are 240/30 seconds. Six
-injected tests exercise these source contracts; they do not prove Docker or
-cgroup behavior. A successful future pilot would still not admit BYOND or the
-22-run measurement envelope.
+Prior pilot
+[39633874487](https://github.com/Civ13/Civ13/actions/runs/39633874487) failed before
+its first Python control started because Docker rejected compression with one
+log file. Its incomplete receipt and cleanup-only evidence remain preserved.
+Both explicitly approved allocations are consumed. No further execution follows
+from staging, source tests, the successful pilot or these synchronized copies.
 
-GitHub requires a workflow_dispatch workflow on the default branch before it
-can be triggered. This feature-branch preparation does not register or activate
-it, authorize a merge, or require merging/deploying the experimental lighting
-dependency. A separately reviewed containment-only registration/activation and
-named hosted executor remain a concrete decision for the coordinator/parent.
-The standard public runner is free; no larger/paid runner or artifact storage
-is selected. References: https://docs.github.com/en/actions/reference/runners/github-hosted-runners
-and https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow.
+### Remaining native measurement prerequisites
+
+1. Review a bounded, isolated Linux BYOND 516.1681 build/preflight plan and its
+   executor. The accepted Python image does not contain BYOND or establish the
+   larger compiler/runtime envelope. Use a free standard public hosted runner,
+   verified image/tool identities and external hard process/network/memory/swap/
+   scratch/output bounds, with readback and owned cleanup. No Desktop or
+   production resource, save, credential or public test port is a test input.
+2. After explicit scoped admission, regenerate source/runtime manifests with
+   Linux paths at the exact current PR head and compile the unchanged 16x16
+   fixture. Retain independently checked compiler/version/hash, invocation,
+   source inputs and zero-error/zero-warning outputs. Seal daemon, probe.dm,
+   probe.dmb, probe.rsc, build.json and the 146 allowlisted public name inputs.
+   A self-consistent build declaration alone is not exact-build proof.
+3. Validate the real Linux measurement adapter and cleanup with the accepted
+   wrapper: CPU attribution, sampled private memory, lease/aggregate bounds,
+   diagnostics, input mutation, parity and failure cleanup. Python containment
+   controls do not test the BYOND executable, /proc observations or wait4 path.
+4. Obtain a fresh packet/head/executor-bound grant and separate authorization
+   before the 22-process measurement batch. Both variants must use the same
+   exact binary/resources, and every pair must pass six snapshots/1,350 rows.
+   Preserve raw measurements and limitations; no speedup or RAM claim exists.
+
+No native build packet, BYOND preflight, adapter execution or CPU/private-memory
+measurement is supplied by this PR. The accepted lighting base remains
+`2d4229c2ca3062e6c358aa21575f0c203282f995`, and this PR still targets
+`reserved-cell-lighting-overlays`. A branch-relative fixture build does not
+require resolving #3220's master conflicts or merging/deploying experimental
+lighting. Source acceptance and merge/deployment readiness remain separate.

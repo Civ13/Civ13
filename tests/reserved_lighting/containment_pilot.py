@@ -79,7 +79,7 @@ def container_args(name, owner, head, script, case, cidfile):
             '--mount','type=bind,src='+str(script)+',dst=/pilot.py,readonly',
             '--workdir','/work','--env','PYTHONDONTWRITEBYTECODE=1','--env','PYTHONUNBUFFERED=1',
             '--restart','no','--stop-timeout','1','--no-healthcheck',
-            '--log-driver','local','--log-opt','max-size=1m','--log-opt','max-file=1',
+            '--log-driver','local','--log-opt','max-size=1m','--log-opt','max-file=1','--log-opt','compress=false',
             '--entrypoint','/usr/local/bin/python3',IMAGE,'-B','/pilot.py','--inside',case]
 
 
@@ -99,6 +99,7 @@ def inspect_settings(info, script):
     require(host['CapDrop']==['ALL'] and 'no-new-privileges' in host['SecurityOpt']
             and not host.get('PortBindings') and not host.get('Devices') and not host.get('Binds'), 'Capability/port/device drift')
     require(host['Tmpfs']=={'/work':f'rw,noexec,nosuid,nodev,size={SCRATCH},mode=1777'} and host['ShmSize']==1048576, 'Scratch quota drift')
+    require(host.get('LogConfig')=={'Type':'local','Config':{'max-size':'1m','max-file':'1','compress':'false'}}, 'Logging settings drift')
     mounts=info['Mounts']
     require(len(mounts)==1 and mounts[0]['Type']=='bind' and mounts[0]['Source']==str(script)
             and mounts[0]['Destination']=='/pilot.py' and mounts[0]['RW'] is False, 'Unexpected writable/host mount')
@@ -132,7 +133,8 @@ class Docker:
                 if child.poll() is None:
                     child.kill();child.wait(timeout=3)
         result=(child.returncode,paths[0].read_text(errors='replace'),paths[1].read_text(errors='replace'))
-        require(optional or result[0]==0,'Docker command failed: '+args[0])
+        require(optional or result[0]==0,
+                f'Docker command failed: {args[0]} rc={result[0]} stderr={result[2][-512:]!r}')
         return result
 
 
@@ -220,12 +222,21 @@ def execute(head,output):
                     created=docker.call(container_args(name,owner,head,Path(__file__).resolve(),case,cidfile))[1].strip()
                     require(re.fullmatch('[0-9a-f]{64}',created),'Invalid created ID')
                     cid=created
-                finally:
-                    if cid is None:
-                        candidate=inspect(docker,name,cleanup=True)
-                        candidate_id=candidate['Id']
-                        require(re.fullmatch('[0-9a-f]{64}',candidate_id),'Uncertain create identity')
-                        owned(candidate,candidate_id,name,owner,head);cid=candidate_id
+                except BaseException as create_error:
+                    row['create_error']=str(create_error)
+                    try:
+                        code,out,err=docker.call(['inspect',name],optional=True,cleanup=True)
+                        row['create_reconciliation']={'returncode':code}
+                        if code==0:
+                            candidate=json.loads(out)[0]
+                            candidate_id=candidate['Id']
+                            require(re.fullmatch('[0-9a-f]{64}',candidate_id),'Uncertain create identity')
+                            owned(candidate,candidate_id,name,owner,head);cid=candidate_id
+                        else:
+                            row['create_reconciliation']['error']=err[-512:]
+                    except BaseException as reconciliation_error:
+                        row['create_reconciliation']={'error':str(reconciliation_error)}
+                    raise
                 row['cid']=cid;save()
                 info=inspect(docker,cid);owned(info,cid,name,owner,head)
                 inspect_settings(info,Path(__file__).resolve());row['settings_verified']=True
