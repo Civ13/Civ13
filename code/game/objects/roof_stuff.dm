@@ -358,7 +358,7 @@
 	target_type = /obj/roof/mayan
 
 /obj/item/weapon/roofbuilder/proc/building_confirm(mob/user, direction)
-	return WWinput(user, "Build a roof [dir2text(direction)] of you, with a walkable floor above?", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue"
+	return WWinput(user, "Build a roof [dir2text(direction)] of you? A walkable floor is added above when the upper level is available.", "Roof Construction", "Continue", list("Continue", "Stop")) == "Continue"
 
 /obj/item/weapon/roofbuilder/proc/building_wait(mob/user, duration, turf/start)
 	return do_after(user, duration, start)
@@ -385,10 +385,14 @@
 	if (!building_wait(user, covers_time, start) || !building_item_usable(src, user) || done || get_turf(user) != start)
 		return
 	done = TRUE
-	if (!building_construct_roof(target, target_type, user, src))
+	var/obj/roof/R = building_construct_roof(target, target_type, user, src)
+	if (!R)
 		done = FALSE
 		return
-	visible_message(SPAN_NOTICE("[user] finishes building the roof and upper floor."))
+	if (R.building_floor())
+		visible_message(SPAN_NOTICE("[user] finishes building the roof and upper floor."))
+	else
+		visible_message(SPAN_NOTICE("[user] finishes building the roof."))
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		H.adaptStat("crafting", 1)

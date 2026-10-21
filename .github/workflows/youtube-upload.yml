@@ -1,8 +1,13 @@
 name: Approved gameplay video upload
-run-name: ${{ inputs.deferred_token && format('YouTube deferred {0}', inputs.deferred_token) || 'Reviewed YouTube upload' }}
+run-name: ${{ inputs.deferred_token && format('YouTube deferred {0}', inputs.deferred_token) || (inputs.review_hours == '8' && 'YouTube eight-hour review' || 'Reviewed YouTube upload') }}
 on:
   workflow_dispatch:
     inputs:
+      review_hours:
+        description: Eight-hour protected review with gates OFF, followed by short attended execution arm
+        type: choice
+        options: ['0', '8']
+        default: '0'
       manifest_id:
         description: Reviewed default-branch manifest ID in tools/youtube/approved
         type: string
@@ -49,6 +54,7 @@ jobs:
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
       YOUTUBE_CONTROL_APP_PRIVATE_KEY: ${{ secrets.YOUTUBE_CONTROL_APP_PRIVATE_KEY }}
     with:
+      review_hours: ${{ inputs.review_hours || '0' }}
       manifest_id: ${{ inputs.manifest_id }}
       execute_upload: ${{ inputs.execute_upload }}
       verify_only: ${{ inputs.verify_only }}

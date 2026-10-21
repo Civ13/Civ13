@@ -511,7 +511,8 @@ procedure. The helper does neither automatically and refuses to overwrite secret
 Only public-repository standard `ubuntu-24.04` runners are configured; no larger
 runners or paid services. The [deferred controller proposal](youtube-deferred.md)
 adds default-disabled hourly scheduling with separate activation blockers and
-owner approval. Upload jobs time out at 5/8 minutes. One clip
+owner approval. Inspection jobs time out at five minutes; upload jobs use eight
+minutes in legacy mode and 18 minutes in eight-hour review mode. One clip
 per dispatch, at most two reservations in a rolling 24 hours, max 1,000 receipt
 records and 1 MiB ledger/JSON are enforced. Reaching a cap stops for a reviewed
 maintenance plan; never prune dedup history to make room. Existing account-wide
@@ -547,6 +548,80 @@ commits, channel/visibility/processing failures and scope restrictions. The PHP 
 multipart metadata, fixed privacy, channel/processing hydration, 401/429/503/network
 failures, and the single-send guard. Tests do
 not prove live authorization, real media acceptance or channel publication.
+
+### Eight-hour protected review
+
+For a new manual upload, select `review_hours=8`, `execute_upload=true`,
+`verify_only=false`, and the exact successful current-master importer and owner
+comment. Leave `deferred_id` and `deferred_token` empty. The native run identity
+and first attempt bind the review to the chosen manifest, importer and comment;
+rerunning a request cannot renew its approval. Legacy `review_hours=0` and the
+existing durable retry queue retain their current behavior. Eight-hour requests
+are deliberately separate from a claimed retry, so the queue's 15-minute unknown
+dispatch watchdog cannot cancel a human waiting for this manual review.
+
+Keep all six upload controls OFF, `YOUTUBE_DEFERRED_ARMED_UNTIL=0` and
+`YOUTUBE_DEFERRED_ENABLED=false` throughout review. The secret-free inspection
+checks provenance, exact media and owner approval, plus artifact retention through
+run creation + eight hours + 120-second handoff + 900-second execution allowance +
+300-second margin. If coverage is insufficient, use the existing trusted
+importer to copy the **same approved immutable bytes** on the final master commit,
+inspect the resulting digest and then create a fresh request. Do not relabel an
+old artifact, regenerate gameplay, substitute footage in a waiting run, or delete
+a receipt. A moved master, deleted artifact or revoked approval fails closed.
+
+Share the native protected-environment review link and exact UTC deadline. GitHub
+holds the protected job without a runner and without releasing its environment
+credentials until the owner approves. Admission expires exactly eight hours after
+native run creation; runner admission at or after the deadline refuses execution.
+The hourly cancel-only job closes expired matching requests independently of the
+controller feature flag. GitHub may retain the button until that cleanup runs;
+clicking after the deadline still cannot upload. The sweeper never changes a gate,
+dispatches a workflow, reads channel credentials or alters a media receipt.
+
+After the owner clicks Approve, the **same protected job** verifies the closed
+baseline and waits at most 120 seconds for the attended operator to arm execution.
+Admission and arm-wait steps receive only the workflow token and the existing
+read-only control App token, with no YouTube credentials bound. The operator must
+observe successful completion of `Admit reviewed request with controls closed`
+through the native job-steps API before opening controls; this avoids racing the
+baseline check and does not depend on access to unfinished job logs. Then
+check cancellation/stop markers, cap, receipts and the original approval, then
+open only the approved six controls with a fresh
+`YOUTUBE_DEFERRED_ARMED_UNTIL` at most 900 seconds away. Keep the controller feature
+disabled throughout this manual request, including execution, so another queued
+clip cannot dispatch in the interval before cleanup. No additional owner comment
+or second environment approval is required. The workflow cannot open controls;
+if the operator cannot attend this short handoff it refuses without sending media.
+It never sleeps on a runner for eight hours or transfers approval to another job.
+The protected review-mode job has an 18-minute runner budget for setup, the
+120-second handoff and three existing API adapter calls of at most 240 seconds each.
+This does not extend the execution arm beyond 900 seconds; legacy upload jobs retain
+their eight-minute timeout and inspection jobs retain their five-minute timeout.
+Once a protected job has started, its native timeout governs processing/readback;
+hourly expiry cleanup cancels only unstarted requests and cannot cut that budget
+short. Fresh arm checks still precede media, including after receipt persistence.
+
+Before insertion, the worker revalidates provenance and owner approval, current
+master, exact artifact coverage, all six live controls, disabled controller and the
+same newly created arm. It does not rely on `vars` snapshots captured while gates
+were OFF. A replacement arm cannot extend that run. The existing ledger still
+reserves before media and enforces the unchanged inclusive rolling 24-hour cap,
+CAS ownership, destination identity and uncertain-send no-retry rules. A new
+pre-insert limit in this manual mode fails closed for a fresh reviewed request;
+it does not revive a terminal queue claim or automatically transfer this approval.
+
+Use a cleanup-only deadline watchdog during the short execution arm. Restore and
+read back the six OFF controls, arm zero and controller disabled on terminal
+success, failure or arm expiry, then reconcile the receipt before any further
+request. The workflow has read-only access to control settings and cannot reset
+them itself. Serialize the weapon and train requests using the destination lock;
+prepare a fresh import and a separate full review period for the train after the
+weapon request closes. Old 15-minute clock slots do not shorten a new review.
+
+[GitHub's environment review documentation](https://docs.github.com/actions/managing-workflow-runs/reviewing-deployments)
+describes when approved jobs receive environment secrets. This change does not
+alter reviewers, bypass rules, repository protection or credential permissions.
 
 Official references:
 
