@@ -13,6 +13,22 @@ spec.loader.exec_module(m)
 
 
 class Preparation(unittest.TestCase):
+    def test_windows_listener_query_does_not_suppress_inventory_failure(self):
+        source = Path(__file__).with_name('test_port.py').read_text(encoding='utf-8')
+        tree = ast.parse(source)
+        helper = next(node for node in tree.body
+                      if isinstance(node, ast.FunctionDef) and node.name == 'listener_arguments')
+        scope = {}
+        exec(compile(ast.Module(body=[helper], type_ignores=[]), '<listener-command>', 'exec'), scope)
+        command = scope['listener_arguments'](1234)
+        self.assertEqual(command[:4], ['powershell', '-NoProfile', '-NonInteractive', '-Command'])
+        self.assertIn('Get-NetTCPConnection -State Listen -ErrorAction Stop', command[4])
+        self.assertNotIn('SilentlyContinue', command[4])
+        observed = next(node for node in ast.walk(tree) if isinstance(node, ast.Assign)
+                        and any(isinstance(target, ast.Name) and target.id == 'observed' for target in node.targets))
+        self.assertEqual(ast.unparse(observed.value.args[0]), 'listener_arguments(child.pid)')
+        self.assertTrue(next(value.value for value in observed.value.keywords if value.arg == 'check').value)
+
     def test_unsupported_platform_refuses_before_native_or_staging(self):
         port_spec = importlib.util.spec_from_file_location('gaia_port_guard', Path(__file__).with_name('test_port.py'))
         port = importlib.util.module_from_spec(port_spec)

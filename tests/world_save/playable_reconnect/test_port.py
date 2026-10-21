@@ -21,6 +21,11 @@ def require_census_platform(platform):
         raise RuntimeError('Zero-listener OS census is implemented for Windows only')
 
 
+def listener_arguments(pid):
+    command = f'$P=Get-Process -Id {pid} -ErrorAction Stop; $L=@(Get-NetTCPConnection -State Listen -ErrorAction Stop | Where-Object OwningProcess -eq {pid}); [ordered]@{{pid=$P.Id;listeners=$L.Count}} | ConvertTo-Json -Compress'
+    return ['powershell', '-NoProfile', '-NonInteractive', '-Command', command]
+
+
 def main():
     require_census_platform(os.name)
     p = argparse.ArgumentParser(description=__doc__)
@@ -91,8 +96,7 @@ var/datum/probe_storage/map_storage = new
                     raise RuntimeError('Production seed branch did not produce its receipt')
                 time.sleep(0.05)
             if os.name == 'nt':
-                command = f'$P=Get-Process -Id {child.pid} -ErrorAction Stop; $L=@(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object OwningProcess -eq {child.pid}); [ordered]@{{pid=$P.Id;listeners=$L.Count}} | ConvertTo-Json -Compress'
-                observed = subprocess.run(['powershell', '-NoProfile', '-Command', command], capture_output=True, text=True, timeout=20, check=True)
+                observed = subprocess.run(listener_arguments(child.pid), capture_output=True, text=True, timeout=20, check=True)
                 census = json.loads(observed.stdout)
                 (root / 'listener.json').write_text(json.dumps(census), encoding='utf-8')
                 if census['listeners'] or child.poll() is not None:
