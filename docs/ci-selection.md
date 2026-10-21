@@ -1,10 +1,33 @@
 # Game CI and opt-in regressions
 
-Game compilation remains automatic for source, maps, assets, config, shared CI
-and unknown changes. Documentation-only PRs skip compilation. Missing comparisons
+On pushes to `master` and opened/reopened/synchronized PRs targeting `master` or
+`help-markdown-byond-html`, game compilation remains automatic for source, maps,
+assets, config, shared CI and unknown changes. Documentation-only PRs skip compilation. Missing comparisons
 still compile; failed selection fails the build rather than silently skipping.
 Workflow syntax, security analysis, documentation builds and publication validation
 remain automatic. Compilation and publication validation are not regression suites.
+
+Start a commit's first line or a PR title with the exact, case-sensitive `build:`
+prefix to force a fresh `.dmb` compilation, including documentation-only changes.
+CI accepts pushes to every branch and PRs targeting every base for this request.
+Every commit represented in a push is checked, so a request need not be the head
+commit. PR title edits are included; adding `build:` to an existing title starts
+a build. `Build:`, leading whitespace and `build:` in a commit body do not match.
+PR events use the PR title; push events use the pushed commit messages.
+
+The request uses the existing Ubuntu BYOND compiler job on a fresh hosted
+checkout, with the existing logs/artifact behavior. It does not deploy or replace
+a running server. Outside the ordinary subscriptions above, the request selects
+compilation only, with no introduced-test or extensive/native regression suites.
+Other PR edits and unprefixed feature-branch pushes skip compilation. Ordinary
+PRs still select newly introduced suites according to the policy below.
+
+The selector reads titles/messages as JSON data from `GITHUB_EVENT_PATH`, never
+as shell code. Missing, malformed or potentially truncated push metadata selects
+compilation conservatively, with no extra regression admission. GitHub caps the
+[push commit list at 2048](https://docs.github.com/en/webhooks/webhook-events-and-payloads#push);
+a list reaching that cap or a reported size exceeding the list triggers this
+fallback. No workflow can act on an event GitHub does not deliver.
 
 Existing regression suites are opt-in, including game runtime, offline evidence,
 atlas, resource inventory, MCP protocol, comment collector and changelog tests.
@@ -16,8 +39,8 @@ that named workflow to opt in to its tests. No production game is launched.
 For the isolated world serializer, durable graph and expanded-level restart
 fixtures, enable **world_save_regressions** on **CI** with
 **extensive_regressions** disabled. This supports focused verification of stacked
-draft branches whose PR base is not `master`; those PRs do not trigger the
-master-only CI pull-request subscription automatically. The native transaction
+draft branches whose PR base is not `master`; use `build:` for compilation alone
+on those PRs, or the focused manual input for native evidence. The native transaction
 state-machine suite retains its separate **restart_transaction_regressions** flag.
 
 For the paid drying-rack owning-turf save fixture, enable **rack_save_regressions**

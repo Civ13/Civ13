@@ -4,11 +4,11 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Keep pushes on master; also verify the focused Help conversation stack.
+  # Intake every branch/base for build: requests; the selector retains ordinary CI eligibility.
   push:
-    branches: [ master ]
+    branches: [ '**' ]
   pull_request:
-    branches: [ master, help-markdown-byond-html ]
+    types: [ opened, synchronize, reopened, edited ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -70,6 +70,7 @@ jobs:
   changes:
     uses: ./.github/workflows/ci-selection.yml
     with:
+      build_prefix: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   evidence-checker:
@@ -205,9 +206,9 @@ jobs:
           test "$SELECTION_RESULT" = success
           case "$GAME_SELECTION" in true|false) ;; *) exit 1 ;; esac
           case "$EXTENSIVE_SELECTION" in true|false) ;; *) exit 1 ;; esac
-      - name: Explain documentation-only skip
+      - name: Explain compilation skip
         if: needs.changes.outputs.game != 'true'
-        run: echo 'Game compilation skipped because only documentation changed.'
+        run: echo 'Game compilation skipped by change and build-prefix selection.'
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         if: needs.changes.outputs.game == 'true'
