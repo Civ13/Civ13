@@ -238,7 +238,9 @@ fatal diagnostics remain rejected. Before compiling/sealing, the source-only
 `--prepare-runtime <fresh-input-directory> --head <exact-source-sha>` operation
 reads only tracked `code/names.dm` and `config/names` Git blobs, derives the
 explicit literal allowlist, and writes only those public name files (currently
-146 files, 153,247 bytes) plus `runtime-inputs.json`. No settings/config tree,
+146 files, 135,796 Git-object bytes) plus `runtime-inputs.json`. Archive reads
+disable host text expansion and check selected files against the exact Git tree;
+stored CRLF and binary bytes are preserved. No settings/config tree,
 credentials, saves or live files are copied. The script also binds names.dm in
 its execution identity. Other newly discovered runtime reads require review;
 this staging is not a claim that a native run is clean.

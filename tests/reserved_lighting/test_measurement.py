@@ -1,9 +1,13 @@
 """Injected engine counters; Git reads exact public fixture inputs. No BYOND."""
 import copy
 import json
+import io
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import tempfile
+import tarfile
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -346,7 +350,7 @@ class Measurements(unittest.TestCase):
         manifest, data = self.runtime_fixture
         self.assertEqual(set(data), m.runtime_paths())
         self.assertEqual(len(data), 146)
-        self.assertEqual(sum(map(len, data.values())), 153247)
+        self.assertEqual(sum(map(len, data.values())), 135796)  # canonical Git bytes, not checkout EOL
         self.assertNotIn('config/config.txt', data)
         work = self.root/'runtime-work';work.mkdir()
         m.stage_runtime(self.packet, self.inputs, work)
@@ -363,6 +367,39 @@ class Measurements(unittest.TestCase):
         (work/first).unlink()
         with self.assertRaisesRegex(ValueError, 'Unexpected/missing runtime files'):
             m.validate_runtime_files(self.packet['runtime'], work, exact=True)
+
+    def test_runtime_git_archive_ignores_host_text_conversion(self):
+        head = '2d4229c2ca3062e6c358aa21575f0c203282f995'
+        results = []
+        for automatic, eol in (('true', 'crlf'), ('false', 'lf')):
+            with patch.dict(os.environ, {'GIT_CONFIG_COUNT': '2', 'GIT_CONFIG_KEY_0': 'core.autocrlf',
+                    'GIT_CONFIG_VALUE_0': automatic, 'GIT_CONFIG_KEY_1': 'core.eol', 'GIT_CONFIG_VALUE_1': eol}):
+                manifest, files = m.runtime_inventory(head)
+            self.assertEqual(len(files), 146)
+            self.assertEqual(sum(map(len, files.values())), 135796)
+            results.append((manifest, files))
+        self.assertEqual(results[0], results[1])
+
+    def test_runtime_git_blob_drift_stops_before_staging(self):
+        original = subprocess.check_output
+        selected = sorted(m.runtime_paths())[0]
+        def rewritten(command, *args, **kwargs):
+            value = original(command, *args, **kwargs)
+            if 'archive' not in command: return value
+            output = io.BytesIO()
+            with tarfile.open(fileobj=io.BytesIO(value)) as source, tarfile.open(fileobj=output, mode='w') as target:
+                for member in source:
+                    if member.isfile():
+                        data = source.extractfile(member).read()
+                        if member.name == selected: data += b'changed'
+                        member.size = len(data)
+                        target.addfile(member, io.BytesIO(data))
+                    else: target.addfile(member)
+            return output.getvalue()
+        target = self.root/'rejected-git-runtime'
+        with patch.object(subprocess, 'check_output', side_effect=rewritten), self.assertRaisesRegex(ValueError, 'Runtime Git blob mismatch'):
+            m.prepare_runtime(target, '2d4229c2ca3062e6c358aa21575f0c203282f995')
+        self.assertFalse(target.exists())
 
     def test_runtime_paths_links_and_packet_input_drift_rejected(self):
         for path in ('../private.txt','/config/names/public.txt','C:/private.txt',

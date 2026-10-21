@@ -59,8 +59,21 @@ def runtime_inventory(head):
     import tarfile
     require(re.fullmatch('[0-9a-f]{40}', head or ''), 'Runtime source head')
     repo = NAMES_SOURCE.parents[1]
-    archive = subprocess.check_output(['git', '-c', 'safe.directory='+repo.as_posix(), '-C', str(repo),
-                                       'archive', '--format=tar', head, 'code/names.dm', 'config/names'], timeout=20)
+    # Archive text conversion otherwise follows the host's core.autocrlf/eol.
+    # Disable host expansion and bind every selected byte to ls-tree. Stored
+    # blob CRLF/binary bytes are preserved; do not normalize file contents.
+    command = ['git', '-c', 'safe.directory='+repo.as_posix(), '-c', 'core.autocrlf=false',
+               '-c', 'core.eol=lf', '-C', str(repo)]
+    tree = subprocess.check_output(command+['ls-tree', '-r', '-z', head, '--', 'code/names.dm', 'config/names'], timeout=20)
+    require(len(tree) <= 128*1024, 'Runtime Git tree bound')
+    entries = {}
+    for record in tree.split(b'\0'):
+        if not record: continue
+        metadata, name = record.split(b'\t', 1)
+        name = name.decode('utf-8')
+        require(name not in entries, 'Duplicate runtime Git tree path')
+        entries[name] = metadata.decode('ascii').split()
+    archive = subprocess.check_output(command+['archive', '--format=tar', head, 'code/names.dm', 'config/names'], timeout=20)
     require(len(archive) <= 2*1024**2, 'Runtime archive bound')
     data = {}
     with tarfile.open(fileobj=io.BytesIO(archive), mode='r:') as source:
@@ -75,6 +88,11 @@ def runtime_inventory(head):
     require(names.replace(b'\r\n', b'\n') == NAMES_SOURCE.read_bytes().replace(b'\r\n', b'\n'), 'Runtime source differs from head')
     paths = runtime_paths(names.decode('utf-8'))
     require(paths <= data.keys(), 'Missing tracked runtime input')
+    for name in paths | {'code/names.dm'}:
+        metadata = entries.get(name)
+        require(metadata is not None and len(metadata) == 3 and metadata[0] in ('100644', '100755')
+                and metadata[1] == 'blob' and re.fullmatch('[0-9a-f]{40}', metadata[2])
+                and git_blob(data[name]) == metadata[2], 'Runtime Git blob mismatch: '+name)
     files = {name:data[name] for name in sorted(paths)}
     manifest = {'head':head, 'source':'code/names.dm', 'source_sha256':sha(NAMES_SOURCE),
                 'source_git_blob':git_blob(names),
