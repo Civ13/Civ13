@@ -326,7 +326,7 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
-	else if (istype(C, /obj/item/weapon/material/pickaxe) || istype(C, /obj/item/weapon/material/kitchen/utensil))
+	else if (istype(C, /obj/item/weapon/material/pickaxe))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
@@ -684,10 +684,10 @@
 
 /mob/living/human/proc/held_mining_pickaxe()
 	var/obj/item/weapon/material/pickaxe/P = get_active_hand()
-	if (istype(P) && P.loc == src)
+	if (istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src)
 		return P
 	P = get_inactive_hand()
-	return istype(P) && P.loc == src ? P : null
+	return istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src ? P : null
 
 /mob/living/human/proc/pickaxe_mining_ready()
 	if (!isturf(loc) || (locate(/obj/structure/vehicleparts/frame) in loc))
@@ -706,7 +706,7 @@
 /turf/proc/start_pickaxe_mining(mob/living/human/H, obj/item/P, from_bump = FALSE)
 	if (!istype(H) || !istype(src, /turf/floor/dirt/underground) || !is_mineable || mining_in_progress || pickaxe_mining_owner || H.pickaxe_mining_action || !H.may_do_after || !H.pickaxe_mining_ready() || !H.canClick())
 		return FALSE
-	if ((!istype(P, /obj/item/weapon/material/pickaxe) && !istype(P, /obj/item/weapon/material/kitchen/utensil)) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
+	if (!istype(P, /obj/item/weapon/material/pickaxe) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
 		return FALSE
 	if (!isnum(P:usespeed) || P:usespeed <= 0 || H.getStatCoeff("strength") <= 0)
 		return FALSE

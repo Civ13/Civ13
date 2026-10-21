@@ -38,11 +38,16 @@ var/z_budget_existing_plane = FALSE
 		throw EXCEPTION(message)
 
 /proc/z_budget_arithmetic()
+	z_budget_assert(!new_z_grid_error(466666,1,2,1,3,"restore",1400000,1,0,0), "below 1.4 million admitted")
+	z_budget_assert(!new_z_grid_error(700000,1,1,1,2,"roof",1400000,1,0,0), "inclusive 1.4 million admitted")
+	z_budget_assert(new_z_grid_error(466667,1,2,1,3,"restore",1400000,1,0,0), "one-over total-cell ceiling blocked")
+	z_budget_assert(!new_z_grid_error(200000,1,5,1,6,"restore",1400000,1,0,0) && !new_z_grid_error(200000,1,6,1,7,"restore",1400000,1,0,0) && new_z_grid_error(200000,1,7,1,8,"restore",1400000,1,0,0), "repeated requests stop at inclusive ceiling")
+	// Retain lower-host-budget vectors independently of the hard ceiling.
 	z_budget_assert(!new_z_grid_error(375,447,1,1,2,"roof",600000,1,0,0), "Europe one plane admitted")
 	z_budget_assert(!new_z_grid_error(500,350,2,2,3,"roof",600000,1,0,0), "shipped two-z Gaia admitted")
 	z_budget_assert(!new_z_grid_error(500,350,1,1,2,"roof",600000,1,0,0), "generated one-z Gaia admitted")
 	z_budget_assert(!new_z_grid_error(500,400,1,1,3,"restore",600000,1,0,0), "exact total-cell ceiling admitted")
-	z_budget_assert(new_z_grid_error(500,401,1,1,3,"restore",600000,1,0,0), "one-over total-cell ceiling blocked")
+	z_budget_assert(new_z_grid_error(500,401,1,1,3,"restore",600000,1,0,0), "one-over lower host budget blocked")
 	z_budget_assert(new_z_grid_error(500,350,2,2,4,"restore",600000,1,0,0), "multi-level Gaia target refused as a whole")
 	z_budget_assert(new_z_grid_error(375,447,1,1,3,"roof",600000,1,0,0), "second roof plane blocked")
 	z_budget_assert(new_z_grid_error(500,500,3,3,4,"restore",600000,1,0,0), "over-budget compiled world cannot grow")
@@ -77,15 +82,17 @@ var/z_budget_existing_plane = FALSE
 		var/mob/z_budget_fixture/U = new(locate(4,3,1))
 		U.dir = NORTH
 		var/obj/item/weapon/roofbuilder/z_budget_fixture/B = new(U)
+		z_budget_assert(!building_allocate_level(2) && world.maxz == 1, "default unmeasured allocation preserves grid")
+		z_budget_assert(findtext(world_z_budget.last_error, "UNMEASURED:") == 1, "default refusal explains unmeasured profile")
 		B.attack_self(U)
-		z_budget_assert(B && B.loc == U && !B.done && !B.prompts && world.maxz == 1 && !(locate(/obj/roof) in site), "default unmeasured roof preserves paid builder and grid")
-		z_budget_assert(findtext(building_roof_error(site), "UNMEASURED:") == 1, "default refusal explains unmeasured profile")
+		var/obj/roof/fallback = locate(/obj/roof) in site
+		z_budget_assert((!B || !B.loc) && world.maxz == 1 && fallback && !fallback.building_floor(), "unmeasured roof-only fallback consumes builder without growth")
 		z_budget_default_refusal = TRUE
 		// Accepted allocation tests use an explicitly isolated test subclass only.
 		var/datum/world_z_budget/fixture_admission/F = new
 		world_z_budget = F
 		world_z_budget.record_compiled_dimensions()
-		z_budget_assert(!world_z_budget.configure("new_z_cell_budget", "600001"), "raising ceiling rejected")
+		z_budget_assert(!world_z_budget.configure("new_z_cell_budget", "1400001"), "raising ceiling rejected")
 		z_budget_assert(!world_z_budget.configure("new_z_roof_levels", "2"), "raising roof allowance rejected")
 		for (var/bad in list("-1", "1.5", "none", "600000x", "1e3", ""))
 			z_budget_assert(!world_z_budget.configure("new_z_cell_budget", bad), "malformed config rejected")
@@ -93,9 +100,15 @@ var/z_budget_existing_plane = FALSE
 		text2file("NEW_Z_CELL_BUDGET 100\nNEW_Z_ROOF_LEVELS 1\n", "budget-config.txt")
 		config.load("budget-config.txt")
 		z_budget_assert(world_z_budget.cell_limit == 100 && config.new_z_cell_budget == 100, "production config lowers policy")
+		site = locate(6,4,1)
+		new /obj/structure/roof_support(site)
+		U.loc = locate(6,3,1)
+		B = new(U)
+		z_budget_assert(!building_allocate_level(2) && world.maxz == 1, "lowered budget refuses growth")
 		B.attack_self(U)
-		z_budget_assert(B.loc == U && !B.done && !B.prompts && world.maxz == 1 && !(locate(/obj/roof) in site), "denied roof preserves paid builder and grid")
-		z_budget_assert(world_z_budget.configure("new_z_cell_budget", "600000"), "default ceiling restored within hard bound")
+		fallback = locate(/obj/roof) in site
+		z_budget_assert((!B || !B.loc) && world.maxz == 1 && fallback && !fallback.building_floor(), "budget-denied roof-only fallback consumes builder without growth")
+		z_budget_assert(world_z_budget.configure("new_z_cell_budget", "1400000"), "default ceiling restored within hard bound")
 		var/datum/new_z_reservation/R = world_z_budget.reserve(2, "roof")
 		z_budget_assert(R && !world_z_budget.reserve(2, "roof"), "competing reservation refused")
 		z_budget_assert(!begin_persistence_operation(map_storage, "save"), "reservation excludes snapshot admission")
@@ -106,6 +119,10 @@ var/z_budget_existing_plane = FALSE
 		z_budget_assert(!world_z_budget.claim_level(R, 2) && world.maxz == 1, "stale dimensions refused before resize")
 		world_z_budget.finish(R, FALSE)
 		z_budget_assert(!world_z_budget.active, "unused reservation releases ownership")
+		site = locate(8,4,1)
+		new /obj/structure/roof_support(site)
+		U.loc = locate(8,3,1)
+		B = new(U)
 		B.attack_self(U)
 		z_budget_assert(world.maxz == 2 && (locate(/obj/roof) in site) && !B.loc, "first roof allocates and consumes builder only after success")
 		z_budget_assert(!building_allocate_level(3) && world.maxz == 2, "second physical roof plane denied")
@@ -140,7 +157,7 @@ var/z_budget_existing_plane = FALSE
 		map_storage.dimension_bootstrap_busy = FALSE
 		persistence_save_in_progress = FALSE
 		z_budget_assert(!world_z_budget.claim_level(R, 5), "completed reservation cannot replay")
-		z_budget_assert(world_z_budget.configure("new_z_cell_budget", "600000") && world_z_budget.configure("new_z_instance_reserve", "4") && world_z_budget.configure("new_z_safehouse_reserve", "1"), "explicit future-purpose reserve configured")
+		z_budget_assert(world_z_budget.configure("new_z_cell_budget", "1400000") && world_z_budget.configure("new_z_instance_reserve", "4") && world_z_budget.configure("new_z_safehouse_reserve", "1"), "explicit future-purpose reserve configured")
 		R = world_z_budget.reserve(8, "instance")
 		z_budget_assert(R, "future four-deck request reserves entire interval")
 		world_z_budget.finish(R, FALSE)

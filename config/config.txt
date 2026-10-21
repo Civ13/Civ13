@@ -234,8 +234,8 @@ PERSISTENCE_REBOOT_HOUR 9
 
 LANGUAGE english
 # Dynamic z allocation: optional examples (defaults shown; all lines commented).
-# decimal integer 0..600000 total native cells
-# NEW_Z_CELL_BUDGET 600000
+# decimal integer 0..1400000 total native cells (inclusive)
+# NEW_Z_CELL_BUDGET 1400000
 # decimal integer 0..1 roof-added planes
 # NEW_Z_ROOF_LEVELS 1
 # decimal integer 0..8 reserved whole planes
