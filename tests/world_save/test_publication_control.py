@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import io
 import json
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -19,6 +20,29 @@ SPEC.loader.exec_module(RUNNER)
 
 
 class PublicationControlTests(unittest.TestCase):
+    def test_ci_pairs_unadapted_positive_and_publication_control_in_existing_budget(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        step = workflow.split('      - name: Verify bounded admitted save traversal and backup recovery\n', 1)[1].split('      - name:', 1)[0]
+        self.assertIn('        timeout-minutes: 40\n', step)
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions", step)
+        self.assertIn('saving_sha=$(sha256sum code/modules/persistence/saving.dm', step)
+        lines = [line.strip() for line in step.splitlines()]
+        commands = [shlex.split(line) for line in lines
+                    if line.startswith('python3 tests/world_save/run-string-path.py ')]
+        positive = ['python3', 'tests/world_save/run-string-path.py', '--byond-bin',
+                    '$PWD/BYOND/byond/bin', '--expected-saving-sha256', '$saving_sha']
+        self.assertEqual(commands[:2], [positive, positive + ['--publication-negative-control']])
+        self.assertEqual(step.count('--publication-negative-control'), 1)
+        positive_line = next(index for index, line in enumerate(lines)
+                             if line.startswith('python3 tests/world_save/run-string-path.py '))
+        self.assertEqual(shlex.split(lines[positive_line + 1]), positive + ['--publication-negative-control'])
+        self.assertIn('export TMPDIR="$RUNNER_TEMP/save-latency"', step)
+        self.assertTrue('BYOND_MAJOR: "516"' in workflow, 'Pinned BYOND major changed')
+        self.assertTrue('BYOND_MINOR: "1681"' in workflow, 'Pinned BYOND minor changed')
+        artifact = workflow.split('      - name: Retain bounded save source and native evidence\n', 1)[1].split('      - name:', 1)[0]
+        self.assertIn("if: always() && steps.save_latency.outcome != 'skipped'", artifact)
+        self.assertIn('path: ${{ runner.temp }}/save-latency/', artifact)
+
     def test_only_final_drain_is_removed(self):
         path = ROOT / 'code/modules/persistence/saving.dm'
         before = path.read_bytes()

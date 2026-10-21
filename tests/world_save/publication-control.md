@@ -18,3 +18,15 @@ diagnostics, an unchanged positive PASS, and a mutation receipt with exactly
 Source-input receipts retain both original and generated hashes. Run the offline
 `test_publication_control.py` first; its success is not native runtime evidence.
 This control makes no representative-world performance or deployment claim.
+
+The proposed CI wiring adds that unchanged positive/control pair to the already
+selected bounded-save step before its progress adapters. Both use the same
+source hash and pinned toolchain, without extra adapters. Existing selection,
+the 40-minute step limit and seven-day `save-latency-<SHA>` artifact stay intact.
+Temporary source manifests, compiler/runtime logs, cleanup records and accepted
+summary receipts remain under that artifact directory, including after failure.
+Each command retains the runner's 120-second compiler and daemon timeouts, with
+up to six seconds of owned-process termination cleanup per process. No new CPU,
+memory or disk limit is introduced. Full-step timing is still unverified.
+This is source preparation pending execution admission and exact-head CI; neither
+the wiring nor its offline contract tests establish a native publication pass.
