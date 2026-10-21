@@ -106,6 +106,9 @@ jobs:
       - name: Test offline evidence checker
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_game_evidence.py')
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
+      - name: Test passive hang watchdog without native game or host effects
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hang_watchdog')
+        run: python3 -B -m unittest discover -s tests/hang_watchdog -v
       - name: Test attack history writer ownership and source preparation
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/attack_history')
         run: python3 -m unittest discover -s tests/attack_history -p test_sources.py -v
