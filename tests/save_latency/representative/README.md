@@ -54,6 +54,11 @@ actual heartbeat values, timeouts and over-budget transports, with no burst afte
 a stall. Cadence/timeout/sample bounds must be fixed before execution. No absent
 heartbeat is replaced with fabricated progress. This is a component, not an
 already connected listener or source of an accepted latency threshold.
+The owned observer uses one schedule for the complete phase, capped at 100000
+samples and the existing absolute deadline. Response rows are retained before
+resource sampling, whose delays remain explicit missed slots rather than query
+latency. Stop-aware waits end on phase completion; windows never reset the cadence
+or queue catch-up requests. The full-phase sample bound is checked before launch.
 
 The source executor sequences seven non-overlapping game processes: one public
 format-2 seed producer; one writer and two separate fresh readers per revision.

@@ -465,10 +465,12 @@ class ExecutorTests(unittest.TestCase):
 
                 def sample(request, clock, wait, **kwargs):
                     observed = request(1)
+                    row = dict(observed, latency_seconds=.01)
+                    kwargs['record'](row)
                     sampled.set()
                     if not body_done.wait(2):
                         raise AssertionError('injected body failed to finish')
-                    return [dict(observed, latency_seconds=.01)]
+                    return [row]
 
                 def body(host, initial, owned):
                     calls.append('body')

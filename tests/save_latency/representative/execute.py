@@ -279,7 +279,9 @@ class Host:
                 stream.write(json.dumps({'action': action, 'monotonic': self.effect.clock(), 'stage': 'dispatch'}) + '\n')
         result = helpers.query(self.query_source, self.effect.connect, self.effect.clock,
                                self.packet['port'], self.token, action, session,
-                               min(timeout or self.packet['query_timeout_seconds'], self.deadline-self.effect.clock()))
+                               min(self.packet['query_timeout_seconds'],
+                                   timeout if timeout is not None else self.packet['query_timeout_seconds'],
+                                   self.deadline-self.effect.clock()))
         require_time(self.effect.clock, self.deadline)
         protocol.checked_status(result, self.commit, None if session == 'observe' else session)
         if action != 'status':
@@ -335,6 +337,37 @@ def validate_resource(observation, owned, packet):
         raise RuntimeError('Allocated resource ceiling exceeded')
 
 
+def observe(effect, host, game, packet, process, process_receipt, deadline, stop):
+    """One schedule for the owned phase; retain each row before other work."""
+    last_resource = -float('inf')
+    def observation(budget):
+        status = host.query('status', 'observe', budget)
+        return {'heartbeat': status['representative']['heartbeat'],
+                'phase': status['representative']['phase'], 'world_time': status['world_time']}
+    def record(row):
+        nonlocal last_resource
+        with (game / 'latency.jsonl').open('a', encoding='utf-8') as stream:
+            stream.write(json.dumps(row) + '\n')
+        if not stop.is_set() and effect.clock()-last_resource >= packet['resource_cadence_seconds']:
+            require_time(effect.clock, deadline, 30)
+            resource = effect.resources(process.pid)
+            require_time(effect.clock, deadline)
+            resource['monotonic'] = effect.clock()
+            resource['output_bytes'] = generated_bytes(Path(packet['output']))
+            with (game / 'resources.jsonl').open('a') as stream:
+                stream.write(json.dumps(resource) + '\n')
+            validate_resource(resource, process_receipt, packet)
+            last_resource = effect.clock()
+    require_time(effect.clock, deadline)
+    sampler.sample(observation, effect.clock, stop.wait,
+                   duration=deadline-effect.clock(), cadence=packet['sampler_cadence_seconds'],
+                   max_samples=100000, stopped=stop.is_set, record=record, deadline=deadline)
+    if not stop.is_set():
+        stop.wait(max(0, deadline-effect.clock()))
+        if not stop.is_set():
+            raise TimeoutError('Independent observer exhausted aggregate budget')
+
+
 def run_phase(effect, game, commit, packet, helper_data, deadline, body, role, seal=None, tools=None):
     """Actual owned daemon + source-bound transport, with continuous limits."""
     require_time(effect.clock, deadline, 150)
@@ -342,6 +375,7 @@ def run_phase(effect, game, commit, packet, helper_data, deadline, body, role, s
         raise ValueError('Independent precompiled phase seal required')
     tools = tools or MappingProxyType(dict(packet['toolchain_sha256']))
     work_deadline = deadline-30
+    sampler.validate_bounds(work_deadline-effect.clock(), packet['sampler_cadence_seconds'], 100000)
     def admit():
         check_seal(Path(packet['byond_bin']), tools, effect.clock, work_deadline)
         check_seal(game, seal, effect.clock, work_deadline)
@@ -382,37 +416,12 @@ def run_phase(effect, game, commit, packet, helper_data, deadline, body, role, s
         stop = threading.Event()
         failures = []
         host.monitor_failures = failures
-        def observe():
-            last_resource = -float('inf')
+        def monitor_phase():
             try:
-                while not stop.is_set():
-                    remaining = work_deadline-effect.clock()
-                    if remaining <= 0:
-                        raise TimeoutError('Independent observer exhausted aggregate budget')
-                    def observation(budget):
-                        status = host.query('status', 'observe', budget)
-                        return {'heartbeat': status['representative']['heartbeat'],
-                                'phase': status['representative']['phase'], 'world_time': status['world_time']}
-                    rows = sampler.sample(observation,
-                                          effect.clock, effect.sleep, duration=min(1, remaining),
-                                          cadence=packet['sampler_cadence_seconds'],
-                                          max_samples=100000)
-                    with (game / 'latency.jsonl').open('a', encoding='utf-8') as stream:
-                        for row in rows:
-                            stream.write(json.dumps(row) + '\n')
-                    if effect.clock()-last_resource >= packet['resource_cadence_seconds']:
-                        require_time(effect.clock, work_deadline, 30)
-                        observation = effect.resources(process.pid)
-                        require_time(effect.clock, work_deadline)
-                        observation['monotonic'] = effect.clock()
-                        observation['output_bytes'] = generated_bytes(Path(packet['output']))
-                        with (game / 'resources.jsonl').open('a') as stream:
-                            stream.write(json.dumps(observation) + '\n')
-                        validate_resource(observation, process_receipt, packet)
-                        last_resource = effect.clock()
+                observe(effect, host, game, packet, process, process_receipt, work_deadline, stop)
             except BaseException as error:
                 failures.append(error)
-        monitor = threading.Thread(target=observe, name='representative-independent-observer', daemon=True)
+        monitor = threading.Thread(target=monitor_phase, name='representative-independent-observer', daemon=True)
         monitor.start()
         try:
             result = body(host, initial, process_receipt)
