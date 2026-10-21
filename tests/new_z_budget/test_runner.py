@@ -82,7 +82,7 @@ class RunnerEvidenceTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     validate_native(0, diagnostic, 'PASS: new-z budget', self.receipt(), None)
                 with self.assertRaises(RuntimeError):
-                    validate_native(0, diagnostic, 'FAIL: default unmeasured roof preserves paid builder and grid', receipt, 'memory-admission')
+                    validate_native(0, diagnostic, 'FAIL: default unmeasured allocation preserves grid', receipt, 'memory-admission')
 
     def test_complete_positive(self):
         validate_native(0, '', 'PASS: new-z budget', self.receipt(), None)
@@ -99,8 +99,8 @@ class RunnerEvidenceTests(unittest.TestCase):
 
     def test_control_requires_exact_intended_failure(self):
         receipt = self.receipt(maxz=2, checks=22, default_refusal=0, existing_plane=0)
-        validate_native(0, '', 'FAIL: default unmeasured roof preserves paid builder and grid', receipt, 'memory-admission')
-        for result, diagnostic in [('PASS: new-z budget', ''), ('FAIL: unrelated', ''), ('FAIL: default unmeasured roof preserves paid builder and grid', 'runtime error: unrelated')]:
+        validate_native(0, '', 'FAIL: default unmeasured allocation preserves grid', receipt, 'memory-admission')
+        for result, diagnostic in [('PASS: new-z budget', ''), ('FAIL: unrelated', ''), ('FAIL: default unmeasured allocation preserves grid', 'runtime error: unrelated')]:
             with self.subTest(result=result, diagnostic=diagnostic), self.assertRaises(RuntimeError):
                 validate_native(0, diagnostic, result, receipt, 'memory-admission')
 
