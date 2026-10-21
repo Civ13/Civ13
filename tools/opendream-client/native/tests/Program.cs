@@ -30,11 +30,13 @@ try {
         return 0;
     }
     if (args.SequenceEqual(new[] { "--discovery-only" })) {
+        await CachedJoinTests.Run(root);
         await ServerDiscoveryTests.Run(root);
         await TopicPacingTests.Run(root);
         return 0;
     }
     assertions += await TransportRetryTests.Run(root);
+    assertions += await CachedJoinTests.Run(root);
     assertions += await ServerDiscoveryTests.Run(root);
     assertions += await TopicPacingTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";

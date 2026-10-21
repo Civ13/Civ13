@@ -349,7 +349,7 @@ internal static class TopicPacingTests {
         using (var cacheOutput = new StringWriter()) {
             ServerBrowser.WriteServers(cacheOutput, "ValZarGaming", cachedSnapshot);
             Require(cacheOutput.ToString().Contains("Cached last verified status (15 seconds old)") && cacheOutput.ToString().Contains("Players: 0") &&
-                cacheOutput.ToString().Contains("fresh verification required"), "Cache menu hid age or implied current verification");
+                cacheOutput.ToString().Contains("next eligible status check required"), "Cache menu hid age or implied current verification");
         }
         cacheClock.Advance(122);
         var freshAfterCache = await CachedQuery(cacheClock.Pacer(cachePath), Target, cachedValid.Status);
@@ -419,6 +419,7 @@ internal static class TopicPacingTests {
         await ServerBrowser.Run("ValZarGaming", cachedMenu, new StringReader("1\nB\n"), TextWriter.Null,
             _ => { cachedJoins++; return Task.CompletedTask; });
         Require(cachedRechecks == 1 && cachedJoins == 0, "Cached selectable status bypassed the prejoin cooldown");
+        wireClock.Advance(61); // Expire the in-process response proof while genuine spacing remains.
         var inputCount = 0; var freshDns = 0; var dispatched = "";
         var changingInput = new SteppedInput(() => {
             inputCount++;

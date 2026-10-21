@@ -77,13 +77,16 @@ the reservation's unique request ID. Late completion cannot replace a newer
 reservation or result. Success caches store only bounded validated metadata and
 the original check timestamp; they never hold an IP destination or verified
 launch token. Failure caches report an unsuccessful last check, not current
-offline status. Unknown/pending results remain unknown. Cache display is limited
-to ten minutes, labeled with age, and requires a new full prejoin validation even
-if selected during cooldown. Cache-write contention cannot replace an established
+offline status. Persisted unknown/pending results do not invent metadata; the live
+process can retain its actual response proof when display-cache writing contends.
+Cache display is limited to ten minutes and labeled with age. Without a recent
+in-process proof, joining requires an eligible status request. Cache-write
+contention cannot replace an established
 verification failure with a waiting selection. Successful-response cache lock
 contention can omit display caching while preserving the freshly verified result;
-invalid storage still pauses checks. No cached result skips pacing,
-DNS, identity validation or dispatch freshness checks.
+invalid storage still pauses checks. Persisted display data never grants join
+authority. No join skips safe DNS,
+selected identity comparison or original status/endpoint freshness checks.
 
 State is bounded to 32 KiB, schema checked, flushed and replaced atomically in the
 same directory. Missing/inconsistent, corrupt, locked, inaccessible or linked
@@ -103,8 +106,8 @@ verification, rather than disguising the failure as a wait on the next address.
 If a selected join is deferred, the menu retains only
 the selected identity for comparison, prints remaining seconds, and accepts J
 to explicitly recheck or B to cancel. No background timer or delayed send exists.
-An early J is a local check, not another Topic. An eligible J obtains fresh DNS,
-fresh status and a new literal token immediately before dispatch. Old snapshots
+An early J does not send another Topic. An eligible J obtains fresh DNS and
+performs a status request when no recent proof is usable, and returns directly to a new literal token for dispatch. Old snapshots
 or expired 15-second tokens never become permission to join.
 
 These conservative wall-time margins cannot prove 120 game seconds elapsed if
@@ -135,9 +138,10 @@ status are not projected into the menu.
 
 ## Joining and identity limits
 
-Selecting a displayed service performs another direct query of that same catalog
-candidate, even after a long menu pause. Previously observed nonempty map, mode
-and round ID must still match and cannot disappear. Player counts, elapsed time
+Selecting a displayed service validates fresh DNS for the same catalog candidate.
+A recent in-process response proof can avoid a duplicate status query; otherwise
+one eligible direct status request is required. Previously observed nonempty map,
+mode and round ID must match that proof or new response and cannot disappear. Player counts, elapsed time
 and epoch may change naturally. If identity changes, refresh and select again.
 When optional identity was absent, it cannot authenticate a round; BYOND status
 is a consistency/availability check, not cryptographic server authentication.
@@ -149,8 +153,8 @@ will recover. The checked-in game source has a non-whitelisted Topic cooldown,
 but the running server's configuration and any live ban must be verified separately.
 
 The successful result binds status, public literal and configured port together.
-Dispatch verifies catalog membership, status age <=60 seconds, the monotonic
-literal lifetime <=15 seconds and the required verified BYOND client, then passes
+Dispatch verifies catalog membership, original UTC and process-monotonic status
+age <=60 seconds when a recent proof is present, and the DNS literal lifetime <=15 seconds and the required verified BYOND client, then passes
 one argument `byond://<verified-IP>:<configured-port>` to DreamSeeker. No DNS lookup
 occurs in the client URL. OpenDream remains a separate explicit operator path;
 this JSON status contract is BYOND-specific.
@@ -180,3 +184,31 @@ versioned immutable release through the existing workflow. Queries and process
 construction alone do not prove gameplay. Stable release/feed remain 1.0.4 until
 that acceptance and official release pipeline succeed. No game/bot restart or
 additional game installation is required for status verification.
+
+## Joining without a duplicate status request
+
+A successful direct status response retains a bounded process-local proof for at
+most four targets: original status/CheckedAt, actual responding literal, reservation
+ID and monotonic response tick. It is captured before result-cache persistence.
+This proof is never written to disk. A new process or reboot cannot inherit it.
+
+During an active request cooldown, prejoin can reuse this response for at most
+60 seconds in both UTC and the original monotonic clock. It resolves the whole
+approved A-answer set again within the normal three-second deadline, rejects any
+unsafe member, and requires the same responding literal to remain present. It
+never picks the first DNS result or sends another Topic request just to join.
+The reservation/cache timestamps and IDs are unchanged by reuse.
+
+After DNS, reread the locked state and require the same proof, reservation and
+respondent with a pending result or exactly matching successful metadata. Failed,
+changed or corrupt state refuses reuse. The new DNS endpoint retains its 15-second
+lifetime; NativeStart also rechecks the ORIGINAL UTC and monotonic status age.
+A status at age 59 seconds cannot gain another 15 seconds through fresh DNS.
+The selected nonempty map/mode/round identity must match the response proof.
+An actual new status query still rejects changed or missing selected identity.
+Bounded reuse cannot observe a round change during the 60-second window.
+
+Older, missing-proof or restarted metadata-only caches retain ordinary pacing.
+One eligible J status request then returns directly to launch; Refresh is not
+required after that success. Failed checks never auto-retry. No public port,
+DNS, whitelist, ban, account, firewall or server setting is changed.
