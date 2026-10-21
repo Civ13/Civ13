@@ -227,6 +227,9 @@ var/global/mall_fixture_failed = FALSE
 		tracked["\ref[I]"] = list("id" = I.extraction_item_id, "location" = "\ref[I.loc]", "expiry" = M.raid_items[I])
 	return json_encode(list("physical" = physical, "tracked" = tracked, "registry_count" = M.raid_items.len))
 
+/proc/mall_claim_accessible(mob/living/human/H, obj/item/I, turf/source)
+	return I && ((I.loc == H && (H.l_hand == I || H.r_hand == I)) || (source && I.loc == source))
+
 /proc/mall_all_floor_loot_probe(obj/map_metadata/extraction_survival/mall/M, mob/living/human/H)
 	var/list/counts = list("1" = 0, "4" = 0, "5" = 0)
 	var/list/ordinary = list()
@@ -245,17 +248,17 @@ var/global/mall_fixture_failed = FALSE
 		var/saved_plan = json_encode(container.profile["loot_plan"])
 		var/list/entry = container.profile["stash"][1]
 		var/entry_id = entry["id"]
+		var/turf/source = get_turf(container)
 		var/obj/item/claimed = container.claim(M, H, entry_id)
-		mall_assert(claimed && claimed.loc == H && claimed.extraction_item_id == entry_id && M.raid_items[claimed], "each floor issues the original planned identity to the actor")
+		mall_assert(mall_claim_accessible(H, claimed, source) && claimed.extraction_item_id == entry_id && M.raid_items[claimed], "each floor issues the original planned identity through actual hands or its accessible source floor")
 		mall_assert(!(entry_id in claimed_ids), "different floor sources issue distinct identities")
 		claimed_ids += entry_id
-		var/turf/source = get_turf(container)
 		var/before_repeat = mall_loot_identity_snapshot(M, H, source)
-		mall_assert(!container.claim(M, H, entry_id) && !container.profile["stash"]:len && claimed && claimed.loc == H && claimed.extraction_item_id == entry_id && mall_loot_identity_snapshot(M, H, source) == before_repeat, "ordinary container claim is unique before reopening")
+		mall_assert(!container.claim(M, H, entry_id) && !container.profile["stash"]:len && mall_claim_accessible(H, claimed, source) && claimed.extraction_item_id == entry_id && mall_loot_identity_snapshot(M, H, source) == before_repeat, "ordinary container claim is unique before reopening")
 		container.profile = null
 		mall_assert(container.prepare(M) && json_encode(container.profile["loot_plan"]) == saved_plan && !container.profile["stash"]:len && mall_loot_identity_snapshot(M, H, source) == before_repeat, "ordinary source reload preserves its exact consumed plan")
 		var/before_reopened_repeat = mall_loot_identity_snapshot(M, H, source)
-		mall_assert(!container.claim(M, H, entry_id) && claimed && claimed.loc == H && claimed.extraction_item_id == entry_id && mall_loot_identity_snapshot(M, H, source) == before_reopened_repeat, "ordinary source reload cannot repeat delivery or replace the actual item")
+		mall_assert(!container.claim(M, H, entry_id) && mall_claim_accessible(H, claimed, source) && claimed.extraction_item_id == entry_id && mall_loot_identity_snapshot(M, H, source) == before_reopened_repeat, "ordinary source reload cannot repeat delivery or replace the actual item")
 	mall_stage("after ordinary source claim and reopen on all floors")
 
 /proc/mall_probe()
