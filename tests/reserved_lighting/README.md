@@ -147,8 +147,8 @@ refused overlays. No deferred-Destroy behavior is assumed.
 
 Exact head `2d4229c2ca3062e6c358aa21575f0c203282f995` passed
 [CI 39347909747](https://github.com/Civ13/Civ13/actions/runs/39347909747): six
-snapshots, 1,350 equal rows and four causal controls. This existing parity
-result is reused. It contains no comparable CPU/private-memory measurements.
+snapshots, 1,350 equal rows and four causal controls. This historical parity
+result is not acceptance of the changed semantic workload. It contains no comparable CPU/private-memory measurements.
 
 `measurement.py` is a separate, source-reviewed measurement candidate, not a
 native-accepted adapter. Its injected process/clock/counter interface is exercised
@@ -318,13 +318,13 @@ from staging, source tests, the successful pilot or these synchronized copies.
    controls do not test the BYOND executable, /proc observations or wait4 path.
 4. Obtain a fresh packet/head/executor-bound grant and separate authorization
    before the 22-process measurement batch. Both variants must use the same
-   exact binary/resources, and every pair must pass six snapshots/1,350 rows.
+   exact binary/resources, and every pair must pass six snapshots/1,350 overlay rows plus all 1,536 lumcount rows, including 36 rows for the fixed six omitted cells.
    Preserve raw measurements and limitations; no speedup or RAM claim exists.
 
 No native build packet, BYOND preflight, adapter execution or CPU/private-memory
 measurement is supplied by this PR. Historical parity evidence binds lighting
 source `2d4229c2ca3062e6c358aa21575f0c203282f995`; the reconciled current base is
-`a946fd0880ec545c4830a57509584d89c7764464`. Its ordinary master merge does not
+`a93e490e9e05a4faace778dd8431abf0d6f10564`. Its semantic correction does not
 create native acceptance for the new tree. This PR still targets
 `reserved-cell-lighting-overlays`. A branch-relative fixture does not require
 merging/deploying experimental lighting. Source acceptance and merge readiness
@@ -353,3 +353,22 @@ peer/source/grant, one named executor and scoped approval remain prerequisites.
 No capture, image preparation, native preflight or measurement has run here.
 The public standard runner proposal uses no artifact upload or cache storage.
 The pinned image-acquisition controller's unresolved hashes remain strict.
+
+### Semantic base reconciliation
+
+The current base is `a93e490e9e05a4faace778dd8431abf0d6f10564`.
+Its [native correctness run39679381491](https://github.com/Civ13/Civ13/actions/runs/39679381491)
+compiled with zero errors/warnings and passed six snapshots, 1,350 overlay rows,
+1,536 all-cell lumcount rows, 36 fixed-omitted-cell rows and five causal controls.
+The later run39679709439 skipped native checks; its overall success is not this
+native evidence. This changes the workload/probe/comparator relative to the old
+2d4229/a946 source. Neither earlier #3243 packets nor historical CPU/private-memory
+acceptance can be carried forward. No resource measurements exist for either tree.
+
+Measurement sealing now cites the exact semantic-base correctness run/head and
+rejects the old reference. Every pair and the separate preflight smoke require
+the complete semantic coverage summary. Real-comparator offline regressions
+exercise an omitted-cell lumcount mutation and missing/wrong coverage counts.
+Fresh source/runtime manifests must bind the resulting feature head; regenerate
+them again on any future accepted Linux executor. This source reconciliation
+provides no native preflight, platform, measurement, acquisition or runtime grant.

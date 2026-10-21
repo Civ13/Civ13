@@ -16,6 +16,10 @@ import time
 
 from compare import compare
 
+PARITY_HEAD = 'a93e490e9e05a4faace778dd8431abf0d6f10564'
+PARITY_RUN = 39679381491
+PARITY_SUMMARY = {'snapshots': 6, 'rows': 1350, 'lumcount_rows': 1536, 'still_omitted_lumcount_rows': 36, 'equal': True}
+
 NAMES_SOURCE = Path(__file__).resolve().parents[2]/'code/names.dm'
 HEX = re.compile(r'[0-9a-f]{64}')
 DIAGNOSTIC = re.compile(r'##\s*ERROR|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot (?:read|execute) null|Bad ref|Bad loc|PORT_OPEN|Unhandled exception|Out of memory|Assertion failed|Access violation', re.I)
@@ -175,8 +179,8 @@ def validate_packet(packet, root):
     require(packet['schema'] == 1 and re.fullmatch('[0-9a-f]{40}', packet['head']), 'Packet identity')
     require(type(packet['pairs']) is int and 1 <= packet['pairs'] <= 10, 'Pair bound')
     require(number(packet['interval']) and .05 <= packet['interval'] <= .5, 'Sampling interval')
-    require(HEX.fullmatch(packet['fixture_sha256']) and packet['parity_run'] == 39347909747
-            and packet['parity_head'] == '2d4229c2ca3062e6c358aa21575f0c203282f995', 'Workload provenance')
+    require(HEX.fullmatch(packet['fixture_sha256']) and packet['parity_run'] == PARITY_RUN
+            and packet['parity_head'] == PARITY_HEAD, 'Workload provenance')
     require(packet['command_tail'] == ['-close', '-trusted', '-log', 'runtime.log', '-params'], 'Comparable command')
     limits = packet['limits']
     for key, cap in {'wall': 30, 'cpu': 10, 'private': 512*1024**2, 'output': 16*1024**2, 'total_wall': 960}.items():
@@ -317,7 +321,7 @@ def run(packet, root, output, adapter, clock=time.monotonic, pause=time.sleep, a
                 other = next((r for r in report['runs'] if r['pair'] == pair and r['mode'] != mode), None)
                 if other:
                     row['parity'] = parity(output/str(report['runs'].index(other))/'states.jsonl', work/'states.jsonl')
-                    require(row['parity'] == {'snapshots':6,'rows':1350,'equal':True}, 'Incomplete pair parity')
+                    require(row['parity'] == PARITY_SUMMARY, 'Incomplete pair parity')
             persist()
         pairs = []
         for index in range(packet['pairs']):
@@ -521,7 +525,7 @@ def seal(root, head):
     validate_runtime_manifest(runtime, head)
     validate_runtime_files(runtime, root, exact=True)
     packet = {'schema':1, 'head':head, 'pairs':10, 'interval':.1, 'execution':execution_identity(),
-              'parity_run':39347909747, 'parity_head':'2d4229c2ca3062e6c358aa21575f0c203282f995',
+              'parity_run':PARITY_RUN, 'parity_head':PARITY_HEAD,
               'fixture':'probe.dm', 'fixture_sha256':sha(root/'probe.dm'),
               'daemon':'daemon', 'dmb':'probe.dmb', 'rsc':'probe.rsc',
               'files':{name:sha(root/name) for name in (*names, *runtime['files'])}, 'runtime':runtime,

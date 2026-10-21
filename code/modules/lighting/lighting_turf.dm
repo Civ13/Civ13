@@ -118,7 +118,17 @@
 // Used to get a scaled lumcount.
 /turf/proc/get_lumcount(var/minlum = 0, var/maxlum = 1)
 	if (!lighting_overlay)
-		return 0.5
+		// Only an intentional omission can use the retained production graph.
+		// Ordinary mask-free cells and incomplete startup keep their fallback.
+		if (lighting_startup_in_progress || !created_lighting_corners_and_overlays || !omit_reserved_lighting_overlay())
+			return 0.5
+		if (!corners || corners.len != 4)
+			return 0.5
+		for (var/i = 1 to 4)
+			if (!corners[i])
+				return 0.5
+		// An omitted overlay cannot refresh its turf's daylight coefficient.
+		get_window_coeff()
 
 	var/TOD_lum = time_of_day2luminosity[time_of_day] * window_coeff
 	var/totallums = 0

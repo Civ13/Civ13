@@ -53,6 +53,13 @@ def module(name, path):
     return value
 
 
+def compare_smokes(baseline, candidate):
+    from compare import compare
+    value = compare(baseline, candidate)
+    require(value == {'snapshots': 6, 'rows': 1350, 'lumcount_rows': 1536, 'still_omitted_lumcount_rows': 36, 'equal': True}, 'Wrong semantic smoke comparison')
+    return value
+
+
 def plan():
     return {'scope': SCOPE, 'default': 'OFF', 'compile_count': 1, 'smoke_modes': ['baseline', 'candidate'],
             'batch_processes': 0, 'performance_verdict': False, 'image_acquisition': False,
@@ -437,10 +444,7 @@ def execute(packet_path, grant_path, source, build, output, env=os.environ):
                 require(load(output / phase / 'adapter.json')['complete'] is True, 'Incomplete adapter receipt')
         if final:
             sys.path.insert(0, str(source / 'tests/reserved_lighting'))
-            from compare import compare
-            value = compare(output / 'baseline/states.jsonl', output / 'candidate/states.jsonl')
-            require(value == {'snapshots': 6, 'rows': 1350, 'equal': True}, 'Wrong smoke comparison')
-            return value
+            return compare_smokes(output / 'baseline/states.jsonl', output / 'candidate/states.jsonl')
         lease()  # hashing and filesystem observations consume lease time too
         budget.require(reserve)  # min monotonic outer and UTC grant AFTER hashing
     def phase(name):

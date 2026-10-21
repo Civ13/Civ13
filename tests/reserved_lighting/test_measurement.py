@@ -54,7 +54,7 @@ class Measurements(unittest.TestCase):
         for name in ('daemon','probe.dmb','probe.rsc','probe.dm'): (self.inputs/name).write_bytes(name.encode())
         (self.inputs/'probe.dm').write_bytes(Path(m.__file__).with_name('probe.dm').read_bytes())
         if not hasattr(type(self), 'runtime_fixture'):
-            type(self).runtime_fixture = m.runtime_inventory('2d4229c2ca3062e6c358aa21575f0c203282f995')
+            type(self).runtime_fixture = m.runtime_inventory('a93e490e9e05a4faace778dd8431abf0d6f10564')
         manifest, data = copy.deepcopy(type(self).runtime_fixture)
         manifest['head'] = 'a'*40
         staged = self.root/'runtime-inputs'
@@ -64,7 +64,7 @@ class Measurements(unittest.TestCase):
         shutil.copytree(staged, self.inputs, dirs_exist_ok=True)
         (self.inputs/'build.json').write_text('{}')
         self.packet={'schema':1,'head':'a'*40,'pairs':2,'interval':.1,'fixture_sha256':'b'*64,
-                     'parity_run':39347909747,'parity_head':'2d4229c2ca3062e6c358aa21575f0c203282f995',
+                     'parity_run':39679381491,'parity_head':'a93e490e9e05a4faace778dd8431abf0d6f10564',
                      'fixture':'probe.dm','daemon':'daemon','dmb':'probe.dmb','rsc':'probe.rsc',
                      'command_tail':['-close','-trusted','-log','runtime.log','-params'],
                      'files':{p.relative_to(self.inputs).as_posix():m.sha(p) for p in self.inputs.rglob('*') if p.is_file()},
@@ -76,7 +76,51 @@ class Measurements(unittest.TestCase):
 
     def execute(self, adapter, **kwargs):
         return m.run(self.packet,self.inputs,self.out,adapter,clock=lambda:0,pause=lambda _:None,
-                     accept=lambda *_:None,parity=lambda *_:{'snapshots':6,'rows':1350,'equal':True},**kwargs)
+                     accept=lambda *_:None,parity=lambda *_:{'snapshots': 6, 'rows': 1350, 'lumcount_rows': 1536, 'still_omitted_lumcount_rows': 36, 'equal': True},**kwargs)
+
+    def test_actual_measurement_uses_all_cell_semantics_and_rejects_incomplete_coverage(self):
+        import compare as semantic
+        states = [{'label':label, 'rows':[[x,y,'synthetic'] for x,y in sorted(semantic.coordinates(label))],
+                   'lumcounts':[[x,y,0.2,0.0] for x,y in sorted(semantic.ALL_CELLS)]} for label in semantic.LABELS]
+        for fault in ('valid', 'old-fallback', 'missing-coverage', 'wrong-omitted-count'):
+            with self.subTest(fault=fault):
+                self.out=self.root/('semantic-'+fault)
+                class NativeStandin(Fake):
+                    def launch(adapter, packet, root, work, mode):
+                        child=super().launch(packet,root,work,mode)
+                        rows=copy.deepcopy(states)
+                        if fault=='old-fallback' and mode=='candidate':
+                            row=next(row for row in rows[-1]['lumcounts'] if row[:2]==[9,6]);row[2]=0.5
+                        (work/'states.jsonl').write_text('\n'.join(json.dumps(row) for row in rows))
+                        return child
+                adapter=NativeStandin()
+                def parity(*paths):
+                    value=semantic.compare(*paths)
+                    if fault=='missing-coverage':value.pop('lumcount_rows')
+                    if fault=='wrong-omitted-count':value['still_omitted_lumcount_rows']=35
+                    return value
+                def run():return m.run(self.packet,self.inputs,self.out,adapter,clock=lambda:0,pause=lambda _:None,
+                                      accept=lambda *_:None,parity=parity)
+                if fault=='valid':
+                    try:result=run()
+                    except ValueError as failure:self.fail('Current semantic workload rejected: '+str(failure))
+                    self.assertTrue(result['complete'])
+                    self.assertTrue(all(row['parity']['lumcount_rows']==1536 for row in result['runs'] if 'parity' in row))
+                else:
+                    with self.assertRaisesRegex(ValueError, 'lumcount mismatch|Incomplete pair parity'):run()
+                    self.assertFalse(json.loads((self.out/'measurement.json').read_text())['complete'])
+                self.assertEqual(len(adapter.cleaned),len(adapter.launched))
+
+    def test_old_native_reference_cannot_authorize_changed_semantic_workload(self):
+        old={'parity_run':39347909747,'parity_head':'2d4229c2ca3062e6c358aa21575f0c203282f995'}
+        for index,changed in enumerate((old, {'parity_run':old['parity_run']}, {'parity_head':old['parity_head']})):
+            with self.subTest(changed=changed):
+                original=copy.deepcopy(self.packet);self.packet.update(changed);adapter=Fake()
+                self.out=self.root/('old-native-reference-'+str(index))
+                try:
+                    with self.assertRaisesRegex(ValueError,'Workload provenance'):self.execute(adapter)
+                    self.assertFalse(adapter.launched)
+                finally:self.packet=original
 
     def test_pairs_warmups_attribution_and_cleanup(self):
         fake=Fake()
@@ -321,7 +365,7 @@ class Measurements(unittest.TestCase):
                             now = self.packet['limits']['total_wall'] + 1
                         elif fault == 'input':
                             (self.inputs / 'probe.dmb').write_bytes(b'changed during final parity')
-                    return {'snapshots': 6, 'rows': 1350, 'equal': True}
+                    return {'snapshots': 6, 'rows': 1350, 'lumcount_rows': 1536, 'still_omitted_lumcount_rows': 36, 'equal': True}
 
                 def lease():
                     if expired:

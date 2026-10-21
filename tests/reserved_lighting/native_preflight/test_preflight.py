@@ -134,6 +134,30 @@ class SourceContracts(unittest.TestCase):
 
 
 class AdmissionContracts(unittest.TestCase):
+    def test_smoke_uses_real_semantic_comparator_and_rejects_old_summary(self):
+        semantic=load_module('preflight_real_semantic_compare',ROOT.parent/'compare.py')
+        states=[{'label':label,'rows':[[x,y,'synthetic'] for x,y in sorted(semantic.coordinates(label))],
+                 'lumcounts':[[x,y,0.2,0.0] for x,y in sorted(semantic.ALL_CELLS)]} for label in semantic.LABELS]
+        with tempfile.TemporaryDirectory() as folder, patch.dict(sys.modules,{'compare':semantic}):
+            left,right=Path(folder)/'baseline',Path(folder)/'candidate'
+            data='\n'.join(json.dumps(row) for row in states)
+            left.write_text(data);right.write_text(data)
+            result=r.compare_smokes(left,right)
+            self.assertEqual((result['snapshots'],result['rows'],result['lumcount_rows'],result['still_omitted_lumcount_rows']),
+                             (6,1350,1536,36))
+            changed=copy.deepcopy(states)
+            next(row for row in changed[-1]['lumcounts'] if row[:2]==[9,6])[3]=0.5
+            right.write_text('\n'.join(json.dumps(row) for row in changed))
+            with self.assertRaisesRegex(ValueError,'Native lumcount mismatch'):r.compare_smokes(left,right)
+            for field in ('lumcount_rows','still_omitted_lumcount_rows'):
+                for fault in ('missing','wrong'):
+                    with self.subTest(field=field,fault=fault):
+                        incomplete=copy.deepcopy(result)
+                        if fault=='missing':incomplete.pop(field)
+                        else:incomplete[field]-=1
+                        with patch.object(semantic,'compare',return_value=incomplete):
+                            with self.assertRaisesRegex(ValueError,'semantic smoke'):r.compare_smokes(left,right)
+
     def test_capacity_exclusive_collision_preserves_unowned_bytes(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
@@ -386,7 +410,7 @@ class OrchestrationContracts(unittest.TestCase):
                 calls.append(name)
                 return {'complete': name != failing}
             def verify(final=False):
-                return {'snapshots': 6, 'rows': 1350, 'equal': True} if final else None
+                return {'snapshots': 6, 'rows': 1350, 'lumcount_rows': 1536, 'still_omitted_lumcount_rows': 36, 'equal': True} if final else None
             result = r.sequence(phase, verify, lambda x: saved.append(copy.deepcopy(x)))
             expected = ['compile', 'baseline', 'candidate']
             if failing:

@@ -1,6 +1,7 @@
 """Compare actual paired native snapshots; never simulate lighting behavior."""
 import argparse
 import json
+import math
 from pathlib import Path
 
 LABELS = ('torch', 'night', 'carried', 'moved', 'opacity', 'activated')
@@ -11,6 +12,8 @@ ACTIVATED = frozenset((int(x), int(y)) for x, y in (
     '10,8 10,9 10,10 10,11 11,9 11,10 11,11'.split()))
 NORMAL = frozenset((x, y) for x in range(1, 17) for y in range(1, 17)
                    if not (6 <= x <= 11 and 6 <= y <= 11))
+ALL_CELLS = frozenset((x, y) for x in range(1, 17) for y in range(1, 17))
+STILL_OMITTED = frozenset(((9, 6), (10, 6), (10, 7), (11, 6), (11, 7), (11, 8)))
 
 
 def coordinates(label):
@@ -31,15 +34,31 @@ def read(path):
         # Creation order is not a lighting contract. Preserve all nested corner,
         # master and source ordering, while comparing the exact turf set.
         state['rows'] = sorted(rows, key=lambda row: (row[0], row[1]))
+        lumcounts = state.get('lumcounts', [])
+        if (type(lumcounts) is not list or len(lumcounts) != len(ALL_CELLS)
+                or any(type(row) is not list or len(row) != 4
+                       or type(row[0]) is not int or type(row[1]) is not int
+                       or any(type(value) not in (int, float) or not math.isfinite(value)
+                              or not 0 <= value <= 1 for value in row[2:])
+                       for row in lumcounts)
+                or {(row[0], row[1]) for row in lumcounts} != ALL_CELLS):
+            raise ValueError('Incorrect, missing or duplicate lumcount coordinates/values')
+        state['lumcounts'] = sorted(lumcounts, key=lambda row: (row[0], row[1]))
     return states
 
 
 def compare(baseline, candidate):
     left, right = read(baseline), read(candidate)
     for a, b in zip(left, right):
+        if a['rows'] != b['rows']:
+            raise ValueError('Native snapshot mismatch: ' + a['label'])
+        if a['lumcounts'] != b['lumcounts']:
+            raise ValueError('Native lumcount mismatch: ' + a['label'])
         if a != b:
             raise ValueError('Native snapshot mismatch: ' + a['label'])
-    return {'snapshots': len(left), 'rows': sum(len(state['rows']) for state in left), 'equal': True}
+    return {'snapshots': len(left), 'rows': sum(len(state['rows']) for state in left),
+            'lumcount_rows': sum(len(state['lumcounts']) for state in left),
+            'still_omitted_lumcount_rows': len(STILL_OMITTED) * len(left), 'equal': True}
 
 
 if __name__ == '__main__':

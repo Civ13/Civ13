@@ -36,6 +36,9 @@ var/reserved_startup_waiting_turf = null
 /proc/environment_sweep_pause(work)
 	if (reserved_startup_mode && lighting_startup_in_progress && !reserved_startup_triggered)
 		reserved_startup_triggered = TRUE
+		var/turf/omitted = locate(11,6,1)
+		if (omitted.omit_reserved_lighting_overlay())
+			reserved_assert(omitted.get_lumcount() == 0.5, "in-progress startup lumcount fallback")
 		var/turf/site = reserved_startup_waiting_turf
 		var/started = world.time
 		site.activate_reserved_lighting()
@@ -67,9 +70,25 @@ var/reserved_startup_waiting_turf = null
 	// import sites and their halos. Identical coordinates in both paired runs;
 	// never derive membership from the candidate's observed overlays.
 	var/static/list/activated_cells = list("6,6", "6,7", "6,8", "6,9", "6,10", "6,11", "7,6", "7,7", "7,8", "7,9", "7,10", "7,11", "8,6", "8,7", "8,8", "8,9", "8,10", "8,11", "9,7", "9,8", "9,9", "9,10", "9,11", "10,8", "10,9", "10,10", "10,11", "11,9", "11,10", "11,11")
+	// These six coordinates remain omitted even after the activation sequence.
+	// Membership is fixed independently of observed candidate overlays.
+	var/static/list/still_omitted = list("9,6", "10,6", "10,7", "11,6", "11,7", "11,8")
 	var/list/rows = list()
+	var/list/lumcounts = list()
 	var/activated_rows = 0
+	var/omitted_rows = 0
 	for (var/turf/T in world)
+		if ("[T.x],[T.y]" in still_omitted)
+			omitted_rows++
+			if (world.params["reserved"] == "1")
+				reserved_assert(T.omit_reserved_lighting_overlay() && !T.lighting_overlay, "fixed six remain omitted")
+			// Exercise dirty coefficients in both runs. The ordinary overlay
+			// refreshes its cache; the omitted turf must do so in get_lumcount.
+			T.window_coeff = 0.125
+			T.window_coeff_dirty = TRUE
+			if (T.lighting_overlay)
+				T.lighting_overlay.update_overlay()
+		lumcounts += list(list(T.x,T.y,T.get_lumcount(),T.get_lumcount(0.2,0.8)))
 		// Only the six still-unactivated interior coordinates remain omitted
 		// from the final snapshot. Earlier snapshots compare normal/halo cells.
 		if (T.x >= 6 && T.x <= 11 && T.y >= 6 && T.y <= 11)
@@ -93,7 +112,8 @@ var/reserved_startup_waiting_turf = null
 		rows += list(list(T.x,T.y,T.lighting_overlay.color,T.lighting_overlay.luminosity,T.lighting_overlay.TOD,T.lighting_overlay.invisibility,lums,turf_sources))
 	reserved_assert(activated_rows == (label == "activated" ? 30 : 0), "fixed activated snapshot coverage")
 	reserved_assert(rows.len == (label == "activated" ? 250 : 220), "fixed total snapshot coverage")
-	text2file(json_encode(list("label"=label,"rows"=rows)), "states.jsonl")
+	reserved_assert(lumcounts.len == 256 && omitted_rows == 6, "all-cell lumcount coverage including fixed six")
+	text2file(json_encode(list("label"=label,"rows"=rows,"lumcounts"=lumcounts)), "states.jsonl")
 /world/New()
 	OpenPort("none")
 	try
@@ -115,6 +135,7 @@ var/reserved_startup_waiting_turf = null
 		fixture_area.lighting_reserved_clearance_enabled = "unknown"
 		reserved_assert(!gate_site.omit_reserved_lighting_overlay(), "unknown clearance gate remains active")
 		fixture_area.lighting_reserved_clearance_enabled = TRUE
+		reserved_assert(gate_site.get_lumcount() == 0.5, "pre-startup lumcount fallback")
 		create_lighting("Midday")
 		var/overlays = 0
 		var/list/unique_corners = list()
@@ -125,7 +146,27 @@ var/reserved_startup_waiting_turf = null
 				unique_corners |= C
 		reserved_assert(overlays == (candidate ? 220 : 256), "overlay allocation count")
 		reserved_assert(unique_corners.len == 289, "unchanged full corner grid")
+		// Real corners do not opt an ordinary mask-free turf into reservation.
+		var/turf/ordinary_site = locate(2,2,1)
+		var/atom/movable/lighting_overlay/ordinary_owner = ordinary_site.lighting_overlay
+		ordinary_site.lighting_overlay = null
+		reserved_assert(ordinary_site.get_lumcount() == 0.5 && ordinary_site.get_lumcount(0.2,0.8) == 0.5, "ordinary no-overlay fallback")
+		ordinary_site.lighting_overlay = ordinary_owner
 		if (candidate)
+			var/turf/semantic_site = locate(11,6,1)
+			var/list/saved_corners = semantic_site.corners
+			semantic_site.corners = null
+			reserved_assert(semantic_site.get_lumcount() == 0.5, "missing omitted corner list fallback")
+			semantic_site.corners = list(saved_corners[1],saved_corners[2],saved_corners[3])
+			reserved_assert(semantic_site.get_lumcount() == 0.5, "short omitted corner list fallback")
+			semantic_site.corners = saved_corners
+			var/datum/lighting_corner/saved_corner = semantic_site.corners[1]
+			semantic_site.corners[1] = null
+			reserved_assert(semantic_site.get_lumcount() == 0.5, "incomplete omitted corner fallback")
+			semantic_site.corners[1] = saved_corner
+			fixture_area.lighting_reserved_clearance_enabled = FALSE
+			reserved_assert(semantic_site.get_lumcount() == 0.5, "disabled omission lumcount fallback")
+			fixture_area.lighting_reserved_clearance_enabled = TRUE
 			var/turf/refusal_site = locate(9,9,1)
 			var/atom/movable/lighting_overlay/refused = new(refusal_site)
 			reserved_assert(!refused.loc, "refused constructor detached before deferred deletion")
@@ -161,6 +202,8 @@ var/reserved_startup_waiting_turf = null
 		if (candidate)
 			var/turf/failure_site = reserved_startup_waiting_turf
 			reserved_assert(!failure_site.lighting_overlay, "failed startup must not refresh overlay")
+			var/turf/failed_semantic_site = locate(11,6,1)
+			reserved_assert(failed_semantic_site.get_lumcount() == 0.5, "failed startup lumcount fallback")
 		reserved_startup_mode = "success"
 		reserved_startup_triggered = FALSE
 		reserved_startup_waiting_turf = locate(6,10,1)

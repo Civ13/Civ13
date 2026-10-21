@@ -32,8 +32,9 @@ a hand-authored self-consistent manifest is not independent ancestry proof.
 job. It never pulls an image, builds it, installs dependencies, dispatches CI,
 retries a phase or expands limits. The native driver is distinct from the
 22-process measurement CLI. It proposes exactly one common-fixture compile and
-two fresh children, reserved=0/1, then the existing six-snapshot/1,350-row
-comparison. The fixture/probe/production code is unchanged. Compiler acceptance
+two fresh children, reserved=0/1, then the six-snapshot comparison with
+1,350 overlay rows and 1,536 all-cell lumcount rows, including 36 fixed-omitted
+rows. Missing or wrong semantic coverage fails before preflight completion. The fixture/probe/production code is unchanged. Compiler acceptance
 uses its real exit code plus exact 516.1681/zero-error/zero-warning log checks.
 The adapter retains the existing Linux PID/start-tick, smaps, wait4 CPU, fatal
 diagnostic and cleanup checks. Counter observations validate attribution only;
@@ -88,3 +89,9 @@ batch. No Gaia quiet window or #3220 merge/rebase is needed for a genuinely
 separate branch-relative hosted fixture; actual runtime assignment is still
 required. Failure or uncertain creation remains incomplete, retains the original
 cause, attempts cleanup only with verified owned CID/labels, and never retries.
+
+The base semantic fixture is now a93e490e9e05a4faace778dd8431abf0d6f10564;
+its separate native correctness CI39679381491 is not this preflight's platform,
+toolchain, counter or performance acceptance. Old 166c/a946 packets are historical.
+The compiler, fixture, runtime and controller provenance must be resealed for the
+new exact feature head before any future separately admitted native execution.

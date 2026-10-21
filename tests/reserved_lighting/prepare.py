@@ -21,6 +21,11 @@ CONTROLS = {
     'halo': (FILES[0], '\t\tif (!T.lighting_reserved)\n\t\t\treturn FALSE\n', ''),
     'refusal-owner': (FILES[3], 'isturf(reserved_turf) && reserved_turf.omit_reserved_lighting_overlay()', 'isturf(reserved_turf) && reserved_turf.z < 0'),
     'owner-identity': (FILES[3], 'istype(T) && T.lighting_overlay == src', 'istype(T)'),
+    # Restores the old unconditional 0.5 fallback for omitted cells while
+    # retaining compilable production code and all other reservation guards.
+    'lumcount-guard': (FILES[0],
+                      'if (lighting_startup_in_progress || !created_lighting_corners_and_overlays || !omit_reserved_lighting_overlay())',
+                      'if (!lighting_overlay)'),
 }
 
 
