@@ -221,3 +221,10 @@ each fatal message in runtime, stdout and stderr, with clean-log controls.
 If post-launch identity acquisition fails, cleanup terminates and reaps only the
 retained, unreaped direct child. It does not signal an unverified process group;
 the receipt remains incomplete and requires external containment cleanup.
+
+Batch completion rechecks lease/aggregate bounds and all bound inputs after
+the final parity comparison and summaries, then rechecks time after hashing.
+Expiry or input drift during final acceptance leaves the receipt incomplete,
+even when every process exited and each pair returned matching snapshots.
+Injected controls cover lease expiry during final comparison or rehashing,
+aggregate timeout and input drift without starting any native process.

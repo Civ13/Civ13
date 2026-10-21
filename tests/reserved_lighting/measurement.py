@@ -185,6 +185,10 @@ def run(packet, root, output, adapter, clock=time.monotonic, pause=time.sleep, a
             pairs.append({key: b[key]-a[key] for key in ('cpu', 'wall', 'sampled_private_peak')})
         report['paired_candidate_minus_baseline'] = pairs
         report['median_differences'] = {key: statistics.median(p[key] for p in pairs) for key in pairs[0]}
+        # Final parity and input hashing can outlive the last process/lease.
+        bound()
+        validate_packet(packet, root)
+        bound()
         report['complete'] = True
         report['interpretation'] = 'Raw fixture measurements only; significance, timer resolution and workload representativeness require review. No automatic speedup verdict.'
     except BaseException as error:

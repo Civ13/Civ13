@@ -286,5 +286,49 @@ class Measurements(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'No private memory sample'):self.execute(fake)
         self.assertEqual(len(fake.cleaned),1)
 
+    def test_final_parity_cannot_commit_expired_or_changed_batch(self):
+        for fault in ('lease', 'time', 'input', 'hashing'):
+            with self.subTest(fault=fault):
+                self.out = self.root / ('final-' + fault)
+                fake = Fake()
+                completed_parity = 0
+                expired = False
+                now = 0
+
+                def parity(*_):
+                    nonlocal completed_parity, expired, now
+                    completed_parity += 1
+                    if completed_parity == self.packet['pairs']:
+                        if fault == 'lease':
+                            expired = True
+                        elif fault == 'time':
+                            now = self.packet['limits']['total_wall'] + 1
+                        elif fault == 'input':
+                            (self.inputs / 'probe.dmb').write_bytes(b'changed during final parity')
+                    return {'snapshots': 6, 'rows': 1350, 'equal': True}
+
+                def lease():
+                    if expired:
+                        raise ValueError('Lease expired')
+
+                original = m.validate_packet
+
+                def validate(*args):
+                    nonlocal expired
+                    original(*args)
+                    if fault == 'hashing' and completed_parity == self.packet['pairs']:
+                        expired = True
+
+                reason = {'lease': 'Lease expired', 'time': 'Aggregate wall bound',
+                          'input': 'Input changed', 'hashing': 'Lease expired'}[fault]
+                with patch.object(m, 'validate_packet', side_effect=validate), self.assertRaisesRegex(ValueError, reason):
+                    m.run(self.packet, self.inputs, self.out, fake, clock=lambda: now,
+                          pause=lambda _: None, accept=lambda *_: None, parity=parity, lease=lease)
+                report = json.loads((self.out / 'measurement.json').read_text())
+                self.assertFalse(report['complete'])
+                self.assertEqual(completed_parity, self.packet['pairs'])
+                self.assertEqual(len(fake.cleaned), 2 + 2 * self.packet['pairs'])
+                (self.inputs / 'probe.dmb').write_bytes(b'probe.dmb')
+
 
 if __name__=='__main__':unittest.main()
