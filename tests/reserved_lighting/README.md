@@ -320,11 +320,13 @@ from staging, source tests, the successful pilot or these synchronized copies.
    Preserve raw measurements and limitations; no speedup or RAM claim exists.
 
 No native build packet, BYOND preflight, adapter execution or CPU/private-memory
-measurement is supplied by this PR. The accepted lighting base remains
-`2d4229c2ca3062e6c358aa21575f0c203282f995`, and this PR still targets
-`reserved-cell-lighting-overlays`. A branch-relative fixture build does not
-require resolving #3220's master conflicts or merging/deploying experimental
-lighting. Source acceptance and merge/deployment readiness remain separate.
+measurement is supplied by this PR. Historical parity evidence binds lighting
+source `2d4229c2ca3062e6c358aa21575f0c203282f995`; the reconciled current base is
+`a946fd0880ec545c4830a57509584d89c7764464`. Its ordinary master merge does not
+create native acceptance for the new tree. This PR still targets
+`reserved-cell-lighting-overlays`. A branch-relative fixture does not require
+merging/deploying experimental lighting. Source acceptance and merge readiness
+remain separate.
 
 ### Separate native preflight source (default OFF)
 
@@ -335,3 +337,17 @@ batch or the accepted pilot. Its toolchain identities remain unresolved; larger
 causal controls, engine contract, zero-cost handoff and explicit scoped admission
 are required before any acquisition, build or native execution. No workflow
 activates this source and no native result is supplied by it.
+
+
+### Official toolchain identity capture source (default OFF)
+
+The separate [hosted capture source](native_preflight/hosted/README.md) supplies
+real fixed-peer HTTPS, bounded ZIP/static-ELF inventories, a hard-tmpfs adapter
+and an inert systemd launcher. It captures candidate identities without
+extracting/installing/executing BYOND or building an image. Its independently
+reviewed offline controls do not establish actual platform/network/resource
+enforcement. Memory/PID/watchdog causal controls, registration, exact official
+peer/source/grant, one named executor and scoped approval remain prerequisites.
+No capture, image preparation, native preflight or measurement has run here.
+The public standard runner proposal uses no artifact upload or cache storage.
+The pinned image-acquisition controller's unresolved hashes remain strict.

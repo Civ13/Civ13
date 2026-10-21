@@ -105,8 +105,12 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
         run: python3 -B -m unittest discover -s tests/gameplay_bridge -v
       - name: Test inactive reserved lighting clearance and executor guards offline
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
-        run: python3 -B -m unittest discover -s tests/reserved_lighting -p 'test_*.py' -v
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'reserved-cell-lighting-overlays')
+        run: |
+          python3 -B -m unittest discover -s tests/reserved_lighting -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/reserved_lighting/native_preflight -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/reserved_lighting/native_preflight/acquisition -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/reserved_lighting/native_preflight/hosted -p 'test_*.py' -v
       - name: Test offline evidence checker
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_game_evidence.py')
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
