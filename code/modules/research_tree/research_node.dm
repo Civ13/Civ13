@@ -336,9 +336,8 @@ var/global/list/node_grid_col_cache = null
 	// Prototype: a pouch of black powder (gated on iron_smithing, its own
 	// direct prereq).
 	register_research_node(new /datum/research_node("gunpowder", "Gunpowder", "Military", 248, 2, RESEARCH_MODE_PROTOTYPE, list("iron_smithing"), 3, /obj/item/weapon/reagent_containers/food/drinks/gunpowder))
-	// Gunsmithing: the craft of building and maintaining firearms. Also gates the
-	// "dig a trench" shovel action -- see /turf/floor/dirt/attackby() and
-	// /turf/floor/beach/sand/attackby() in code/modules/1713/trench.dm.
+	// Gunsmithing: the craft of building and maintaining firearms. Trench digging
+	// uses Field Defenses, matching the trench shovel's unlock below.
 	register_research_node(new /datum/research_node("gunsmithing", "Gunsmithing", "Military", 200, 2, RESEARCH_MODE_ANALYSIS, list("gunpowder"), 3))
 	register_research_node(new /datum/research_node("rifling", "Rifling", "Military", 200, 3, RESEARCH_MODE_ANALYSIS, list("gunpowder","steelmaking"), 4))
 	// The three nodes below also gate the gunsmithing bench's part catalogue

@@ -1340,6 +1340,11 @@ var/list/coefflist = list()
 	. = ..()
 	if (loc != old_location)
 		reset_corpse_decay_age()
+	if (human_subtile_pulse)
+		return .
+	human_movement_completed()
+
+/mob/living/human/proc/human_movement_completed()
 	handle_looks_with_movement()
 
 	if (phosphor_dye_timer > 0)

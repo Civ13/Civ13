@@ -44,6 +44,10 @@ LOG_ADMIN
 ## log admin chat
 LOG_ADMINCHAT
 
+## Disabled until the bot supervisor/cgroup migration and host installation checks are complete.
+## See scripts/bot-service/README.md before enabling game-to-bot service control.
+BOT_SERVICE_CONTROL 0
+
 ## log client access (logon/logoff)
 LOG_ACCESS
 
@@ -229,3 +233,17 @@ PERSISTENCE_REBOOT_HOUR 9
 #WEBHOOK_KEY
 
 LANGUAGE english
+# Dynamic z allocation: optional examples (defaults shown; all lines commented).
+# decimal integer 0..1400000 total native cells (inclusive)
+# NEW_Z_CELL_BUDGET 1400000
+# decimal integer 0..1 roof-added planes
+# NEW_Z_ROOF_LEVELS 1
+# decimal integer 0..8 reserved whole planes
+# NEW_Z_INSTANCE_RESERVE 0
+# decimal integer 0..8 reserved whole planes
+# NEW_Z_SAFEHOUSE_RESERVE 0
+# Cell/roof ceilings cannot be raised; reservations still count toward limits.
+# These are uncalibrated arithmetic bounds, not measured memory safety.
+# Production refuses NEW growth as UNMEASURED until a reviewed memory profile exists.
+# No setting bypasses that refusal; existing planes remain usable.
+# See docs/new-z-budget.md.

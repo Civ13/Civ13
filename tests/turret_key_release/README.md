@@ -40,8 +40,14 @@ not real connected-client key dispatch or complete vehicle gameplay.
 The negative control uses the actual release code from immutable Civ13
 `cc03b199128f8afed58713912c551ad7556e6bc4`; it must compile/run successfully and
 then fail the named scheduled-stop assertion. Compile/runtime failures cannot
-count as a detected negative control. Preparation also proves that removing
-exactly the two additions reproduces the entire original movement source. The
+count as a detected negative control. Preparation accepts only two exact
+whole-file movement fingerprints: the original reviewed turret port, or pinned
+`4b77eab58979ca718faf1aebe9a879a631dcdedf` sub-tile movement with only the same
+two release additions. Every Move/SelfMove admission, context and dispatch byte
+remains covered; unknown movement edits fail closed. Metadata identifies the
+selected reference. The immutable `cc03b199` release control remains unchanged.
+Six offline controls reject altered dispatch, identity gates, drone behavior and
+missing, duplicated or relocated release stops. The
 collision, Move/forceMove, doors, trees, vehicles, multi-z, pathfinding, input
 cooldowns and save implementation are not replaced. No save/reload equivalence
 or native client presentation is claimed by this focused fixture.

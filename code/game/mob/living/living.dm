@@ -577,6 +577,14 @@ default behaviour is:
 		stop_pulling()
 		moved = ..()
 
+	if (ishuman(src))
+		var/mob/living/human/subtile_human = src
+		if (subtile_human.human_subtile_pulse)
+			return moved
+	living_movement_completed()
+	return moved
+
+/mob/living/proc/living_movement_completed()
 	if (s_active && !( s_active in contents ) && get_turf(s_active) != get_turf(src))	//check !( s_active in contents ) first so we hopefully don't have to call get_turf() so much.
 		s_active.close(src)
 
@@ -586,8 +594,6 @@ default behaviour is:
 		for(var/obj/chat_text/CT in client.stored_chat_text)
 			CT.glide_size = src.glide_size
 			CT.forceMove(src.loc)
-
-	return moved
 
 /mob/living/verb/resist()
 	set name = "Resist"

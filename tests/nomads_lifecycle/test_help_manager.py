@@ -50,7 +50,7 @@ class HelpManagerTests(unittest.TestCase):
         self.spawn.assert_called_once()
         argv = self.spawn.call_args.args[0]
         self.assertEqual(argv[:6], [str(self.files[0]), str(self.files[1]),
-            '--game-root', str(self.run), '--config', str(self.files[2])])
+            '--game-root', str(self.run.resolve()), '--config', str(self.files[2])])
         self.assertEqual(argv[6], '--stop-file')
         self.assertEqual(json.loads(self.manager.receipt.read_text())['worker']['creation'], 201)
 
