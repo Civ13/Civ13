@@ -33,7 +33,7 @@ public static class ServerCatalog {
 
     public static async Task<VerifiedGameServer> NativeEndpoint(GameServer server,
         Func<string, Task<System.Net.IPAddress[]>>? resolver = null, DateTimeOffset? now = null,
-        Func<System.Net.IPAddress, int, CancellationToken, Task<ReadOnlyMemory<byte>>>? statusProbe = null,
+        StatusProbe? statusProbe = null,
         Func<DateTimeOffset>? clock = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default) {
         var currentClock = clock ?? (() => now ?? DateTimeOffset.UtcNow);
         // Menu status may be old after a pause; the direct recheck is authoritative.

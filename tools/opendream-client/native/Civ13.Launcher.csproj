@@ -17,6 +17,7 @@
     <Compile Include="Updater.cs" />
     <Compile Include="Byond.cs" />
     <Compile Include="ByondStatus.cs" />
+    <Compile Include="TopicPacing.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ServerCatalog.cs" />
     <Compile Include="ServerStatus.cs" />

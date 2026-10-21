@@ -17,7 +17,7 @@ internal static class ByondStatusTests {
             try { await action(); } catch (IOException) { assertions++; return; }
             throw new Exception("Status negative control accepted: " + why);
         }
-        Task<ReadOnlyMemory<byte>> Valid(IPAddress _, int port, CancellationToken token) {
+        Task<ReadOnlyMemory<byte>> Valid(IPAddress _, int port, Action beforeWrite, CancellationToken token) {
             Require(port == server.Port && !token.IsCancellationRequested, "Unbound port or cancelled query");
             return Task.FromResult<ReadOnlyMemory<byte>>(Packet());
         }
@@ -25,7 +25,7 @@ internal static class ByondStatusTests {
         foreach (var addresses in new[] { new[] { desired, other }, new[] { other, desired } }) {
             foreach (var failure in new[] { "silent", "malformed", "incomplete", "wrong-world" }) {
                 var calls = new List<string>(); var dnsCalls = 0; var active = 0; var peak = 0;
-                async Task<ReadOnlyMemory<byte>> Probe(IPAddress ip, int port, CancellationToken token) {
+                async Task<ReadOnlyMemory<byte>> Probe(IPAddress ip, int port, Action beforeWrite, CancellationToken token) {
                     calls.Add(ip.ToString()); active++; peak = Math.Max(peak, active);
                     try {
                         Require(port == server.Port, "Changed candidate port");
@@ -47,24 +47,24 @@ internal static class ByondStatusTests {
             new[] { desired, IPAddress.Loopback }, new[] { IPAddress.Parse("192.0.2.1"), desired } }) {
             var calls = 0;
             await Reject(() => ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(answers), now,
-                (_, _, _) => { calls++; throw new Exception("Unsafe DNS reached status probe"); }), "whole-set bounds/safety");
+                (_, _, _, _) => { calls++; throw new Exception("Unsafe DNS reached status probe"); }), "whole-set bounds/safety");
             Require(calls == 0, "Unsafe member filtered instead of rejecting full set");
         }
         var duplicateCalls = 0;
         await ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { desired, desired }), now,
-            (_, _, _) => { duplicateCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); });
+            (_, _, _, _) => { duplicateCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); });
         Require(duplicateCalls == 1, "Duplicate address retried");
         var remainingCalls = 0;
         await ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { IPAddress.Parse("1.1.1.1"), desired }), now,
-            (_, _, _) => { remainingCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); });
+            (_, _, _, _) => { remainingCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); });
         Require(remainingCalls == 1, "Successful first candidate did not stop attempts");
         var elapsed = System.Diagnostics.Stopwatch.StartNew(); var failures = 0;
         await Reject(() => ServerCatalog.NativeEndpoint(server, _ => Task.FromResult(new[] { desired, other }), now,
-            async (_, _, token) => { failures++; await Task.Delay(Timeout.Infinite, token); return Packet(); }, timeout: TimeSpan.FromMilliseconds(100)), "all silent candidates");
+            async (_, _, _, token) => { failures++; await Task.Delay(Timeout.Infinite, token); return Packet(); }, timeout: TimeSpan.FromMilliseconds(100)), "all silent candidates");
         Require(failures == 2 && elapsed.Elapsed < TimeSpan.FromSeconds(1), "Per-address budgets multiplied total deadline");
         var afterDnsCalls = 0;
         await Reject(() => ServerCatalog.NativeEndpoint(server, async _ => { await Task.Delay(100); return new[] { desired }; }, now,
-            (_, _, _) => { afterDnsCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); }, timeout: TimeSpan.FromMilliseconds(20)), "DNS shares deadline");
+            (_, _, _, _) => { afterDnsCalls++; return Task.FromResult<ReadOnlyMemory<byte>>(Packet()); }, timeout: TimeSpan.FromMilliseconds(20)), "DNS shares deadline");
         await Task.Delay(110);
         Require(afterDnsCalls == 0, "Late DNS callback opened a game socket");
         using (var cancelled = new CancellationTokenSource()) {

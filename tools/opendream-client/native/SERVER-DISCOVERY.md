@@ -28,11 +28,60 @@ launcher update and prerequisite downloads keep their normal trust checks.
 (maximum two active sockets). `ByondStatus` resolves the approved hostname's A
 records anew for each candidate, validates every answer before opening a socket,
 and tries deduplicated public IPv4 literals sequentially. DNS/connect/write/read
-share one three-second deadline per candidate, so two parallel candidates take
-roughly three seconds plus local scheduling/parsing overhead. Each remaining
+share one three-second deadline per eligible candidate, so two parallel eligible
+candidates take roughly three seconds plus local scheduling/parsing overhead. Each remaining
 address receives a fair share of the remaining time; sockets close before the
 next attempt. No application DNS cache, startup IP pin or unchecked second DNS
 lookup is used. Back/Refresh are offered after the bounded sweep settles.
+Connection failure before a Topic write can try the next address. Once a Topic
+has been reserved/written, a failed or invalid response cannot cause another
+immediate Topic write to an alternative address.
+
+## Shared request spacing and responsive waiting
+
+Real network probes use `TopicPacer.Shared` at the fixed per-account directory
+`%LOCALAPPDATA%/Civ13/status-requests`, independent of installation root or
+`--root`. It is a cooperative limiter for this launcher's Windows account, not
+a security boundary against users editing their own files or other programs.
+Other computers behind shared NAT and unrelated monitoring cannot be coordinated
+by these local files.
+
+An exclusive local file lock protects at most four candidate records and their
+validated public IPv4 aliases. Canonical target and overlapping addresses on the
+same configured port share eligibility. Addresses are bookkeeping only; they
+never supply a connection destination or permanent IP pin. Before writing any
+Topic bytes, the request durably reserves 137 seconds: 130 seconds of spacing,
+the three-second IO window and the full four-second swing of permitted clock
+slew. A new pacer with recorded history also requires a 133-second monotonic
+startup guard, covering a prior instance's possible in-flight write. Restarting
+the launcher or changing --root cannot shorten that guard. Wall-clock steps
+outside the two-second monotonic comparison tolerance pause checks.
+
+State is bounded to 32 KiB, schema checked, flushed and replaced atomically in the
+same directory. Missing/inconsistent, corrupt, locked, inaccessible or linked
+state never resets the allowance. Contention returns a short local deferral;
+invalid storage pauses checks and is distinguished from remote unreachability.
+No ACL, account, credentials, firewall, DNS or server setting is changed.
+
+Spacing is checked before DNS and again immediately before a wire write to
+account for newly resolved aliases. A deferral exits and disposes the attempt;
+it never sleeps inside the three-second IO budget. Discovery reports waiting
+candidates separately. If a selected join is deferred, the menu retains only
+the selected identity for comparison, prints remaining seconds, and accepts J
+to explicitly recheck or B to cancel. No background timer or delayed send exists.
+An early J is a local check, not another Topic. An eligible J obtains fresh DNS,
+fresh status and a new literal token immediately before dispatch. Old snapshots
+or expired 15-second tokens never become permission to join.
+
+These conservative wall-time margins cannot prove 120 game seconds elapsed if
+the server pauses or lags. The checked-in game gate can retain an already banned
+raw address for the world instance. Pacing cannot clear that ban, and changing
+source ports/egress or deleting local timing state is not a recovery procedure.
+The matching Europe diary records bans, including the Desktop public source,
+without timestamps; exact launcher-event correlation and loaded-build provenance
+remain unverified. Do not query that source again until the runtime owner
+coordinates normal eligibility. Live prejoin and genuine join acceptance remain
+blocked; all pacing validation here is offline.
 
 The fixed read-only BYOND TCP Topic query is `?status=1&format=json`. A reachable
 TCP port alone is insufficient. The response must be a bounded BYOND string frame
@@ -83,8 +132,12 @@ empty/offline distinction, DNS safety/failover/deadlines, prejoin identity and
 literal/port retention, menu choices, update and actual executable replacement.
 Run `dotnet run --project tests/Launcher.Tests.csproj -- --discovery-only` for
 focused injected controls. `--probe-public` explicitly performs only the four
-configured read-only status queries and prints safe projected metadata; it never
+configured eligible read-only status queries and prints safe projected metadata; it never
 installs or launches a client. No live query runs in normal offline CI tests.
+The diagnostic does not perform an immediate prejoin recheck. Do not run it from
+a known blocked source. Pacing tests use injected clocks/transports, separate
+local processes, real lock/state files and supported symlink negative controls;
+unsupported link creation is reported as skipped without changing permissions.
 
 Build with the existing `Build.ps1` and run the complete tests against its EXE.
 Require exact-head Windows CI, independent review, current public status and a

@@ -47,7 +47,8 @@ public sealed class VerifiedGameServer {
     internal VerifiedGameServer(GameServer status, PublicEndpoint endpoint) { Status = status; Endpoint = endpoint; }
 }
 
-public sealed record ServerSnapshot(IReadOnlyList<GameServer> Servers, int Unverified);
+public sealed record DeferredTarget(GameTarget Target, int Seconds);
+public sealed record ServerSnapshot(IReadOnlyList<GameServer> Servers, int Unverified, IReadOnlyList<DeferredTarget>? Deferred = null, bool PacingPaused = false);
 
 public interface IServerDiscovery {
     Task<ServerSnapshot> Fetch(string provider);
@@ -62,10 +63,14 @@ public sealed class ServerDiscovery : IServerDiscovery {
     public async Task<ServerSnapshot> Fetch(string provider) {
         // Exactly two configured endpoints per provider, at most two active sockets.
         var results = await Task.WhenAll(ServerCatalog.Candidates(provider).Select(async target => {
-            try { return (await query(target)).Status; }
-            catch (IOException) { return null; }
+            try { return (Server: (GameServer?)(await query(target)).Status, Wait: (DeferredTarget?)null, Paused: false); }
+            catch (TopicWaitException wait) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds), Paused: false); }
+            catch (TopicPacingException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: true); }
+            catch (IOException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: false); }
         }));
-        return new ServerSnapshot(Array.AsReadOnly(results.OfType<GameServer>().ToArray()), results.Count(item => item == null));
+        return new ServerSnapshot(Array.AsReadOnly(results.Select(item => item.Server).OfType<GameServer>().ToArray()),
+            results.Count(item => item.Server == null && item.Wait == null && !item.Paused),
+            Array.AsReadOnly(results.Select(item => item.Wait).OfType<DeferredTarget>().ToArray()), results.Any(item => item.Paused));
     }
     public Task<VerifiedGameServer> Recheck(GameServer selected) => ServerCatalog.NativeEndpoint(selected);
 }

@@ -61,6 +61,16 @@ and launch only the verified BYOND client. Never add a permanent IP pin or reuse
 this query for OpenDream. Source merge does not activate the launcher feed;
 exact-head packaging/CI, independent review and a genuine public join gate release.
 See tools/opendream-client/native/SERVER-DISCOVERY.md.
+Public Topic writes use the fixed per-account status-requests lock/state,
+independent of --root. Reserve before writing, retain failed reservations and
+correlate validated IP aliases plus configured port. Spacing defers locally;
+never sleep inside the three-second IO budget or silently retry after a write.
+The 137-second reservation covers 130 seconds plus IO/clock margins; new instances
+with recorded history use a 133-second monotonic guard. Clock/state/link failures
+pause locally. J explicitly rechecks a deferred selection; B cancels with no
+background callback. Waiting requires new DNS/status, never extended old tokens.
+Wall time cannot prove game-time advancement or clear a server ban. Do not probe
+the known banned Desktop source until owner-coordinated normal eligibility.
 
 ## Language & toolchain
 Never use an em dash; use "-" instead.

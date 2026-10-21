@@ -7,17 +7,23 @@ using System.Text.Json;
 
 namespace Civ13.Launcher;
 
+public delegate Task<ReadOnlyMemory<byte>> StatusProbe(IPAddress address, int port, Action beforeWrite, CancellationToken token);
+
 // BYOND-specific availability selection. OpenDream keeps its separate operator path.
 public static class ByondStatus {
     public static readonly TimeSpan TotalTimeout = TimeSpan.FromSeconds(3);
     public const int MaxBytes = 65536;
     private static readonly UTF8Encoding StrictUtf8 = new(false, true);
     public static async Task<VerifiedGameServer> Query(GameTarget target, Func<string, Task<IPAddress[]>>? resolver = null,
-        Func<IPAddress, int, CancellationToken, Task<ReadOnlyMemory<byte>>>? probe = null, Func<DateTimeOffset>? clock = null,
-        TimeSpan? timeout = null, CancellationToken cancellationToken = default, GameServer? expected = null) {
+        StatusProbe? probe = null, Func<DateTimeOffset>? clock = null,
+        TimeSpan? timeout = null, CancellationToken cancellationToken = default, GameServer? expected = null, TopicPacer? pacer = null) {
         target.Validate();
         if (expected != null && expected.Target != target) throw new IOException("Selected game target changed.");
         clock ??= () => DateTimeOffset.UtcNow;
+        // Explicit injected probes are offline test seams. Every real transport uses Shared.
+        var spacing = pacer ?? (probe == null ? TopicPacer.Shared : null);
+        if (cancellationToken.IsCancellationRequested) throw new IOException("Public status check was cancelled.");
+        spacing?.Check(target); // A local deferral happens before DNS and the IO budget.
         var budget = timeout ?? TotalTimeout;
         if (budget <= TimeSpan.Zero || budget > TotalTimeout) throw new IOException("Invalid public status deadline.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -36,7 +42,8 @@ public static class ByondStatus {
                 try {
                     // Production Fetch honors cancellation and disposes its socket before
                     // this task settles; await settlement before starting the next address.
-                    var packet = await (probe ?? Fetch)(addresses[index], target.Port, attempt.Token);
+                    var packet = await (probe ?? Fetch)(addresses[index], target.Port,
+                        () => spacing?.Reserve(target, addresses), attempt.Token);
                     var status = ParsePacket(packet, target, clock());
                     if (expected != null && !expected.Matches(status))
                         throw new IOException("Game identity changed. Refresh and choose again.");
@@ -45,7 +52,8 @@ public static class ByondStatus {
                     status.Validate(clock());
                     endpoints[index].Validate(target.Host);
                     return new VerifiedGameServer(status, endpoints[index]);
-                } catch (Exception error) when (error is IOException or SocketException or OperationCanceledException) {
+                } catch (TopicPacingException) { throw; }
+                catch (Exception error) when (error is IOException or SocketException or OperationCanceledException) {
                     continue;
                 }
             }
@@ -55,7 +63,7 @@ public static class ByondStatus {
         throw new IOException("No public address returned valid matching BYOND status. Refresh and try again.");
     }
 
-    private static async Task<ReadOnlyMemory<byte>> Fetch(IPAddress address, int port, CancellationToken token) {
+    private static async Task<ReadOnlyMemory<byte>> Fetch(IPAddress address, int port, Action beforeWrite, CancellationToken token) {
         if (!Connection.IsPublicIPv4(address) || port is < 1 or > 65535) throw new IOException("Invalid public status endpoint.");
         using var client = new TcpClient(AddressFamily.InterNetwork);
         // Literal-only connection: no second DNS lookup.
@@ -67,6 +75,9 @@ public static class ByondStatus {
         var length = query.Length + 5;
         request[2] = (byte)(length >> 8); request[3] = (byte)length;
         query.CopyTo(request, 9);
+        token.ThrowIfCancellationRequested();
+        beforeWrite();
+        token.ThrowIfCancellationRequested();
         await stream.WriteAsync(request, token);
         return await ReadResponse(stream, token);
     }
@@ -127,7 +138,7 @@ public static class ByondStatus {
         }
         return string.IsNullOrWhiteSpace(text) ? "" : text;
     }
-    private static void RejectDuplicateProperties(JsonElement item) {
+    internal static void RejectDuplicateProperties(JsonElement item) {
         if (item.ValueKind == JsonValueKind.Object) {
             var names = new HashSet<string>(StringComparer.Ordinal);
             foreach (var property in item.EnumerateObject()) {

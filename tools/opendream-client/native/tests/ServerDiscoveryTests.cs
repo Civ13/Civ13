@@ -17,7 +17,7 @@ internal static class ServerDiscoveryTests {
         GameServer Parse(string json) => ByondStatus.ParsePacket(ByondStatusTests.Packet(json), target, now);
         Task<VerifiedGameServer> Query(GameTarget candidate, string? json = null, GameServer? expected = null,
             Func<DateTimeOffset>? clock = null) => ByondStatus.Query(candidate, _ => Task.FromResult(new[] { ip }),
-                (_, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet(json)), clock ?? (() => now), expected: expected);
+                (_, _, _, _) => Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet(json)), clock ?? (() => now), expected: expected);
         var server = Parse("{\"players\":0,\"map_name\":\"Europe\",\"map_gamemode\":\"Nomads\",\"game_id\":\"round-27\",\"round_duration_in_ticks\":0}");
         foreach (var provider in new[] { "Civ13.com", "ValZarGaming" }) {
             var configured = ServerCatalog.Candidates(provider);

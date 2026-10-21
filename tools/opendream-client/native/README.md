@@ -18,6 +18,18 @@ to the verified public IP literal and configured port. Public port overrides and
 arbitrary scans are rejected. BYOND 516.1681 prerequisite verification/installation
 remains unchanged; public native choices do not download OpenDream.
 
+Public status checks share conservative request spacing across launcher instances
+for this Windows account. A check can be deferred for up to 137 seconds after a
+request; a new instance with recorded request history also has a 133-second
+startup guard. The menu prints the remaining wait and stays responsive. For a
+deferred join, press **J** when ready to obtain fresh status, or **B** to cancel.
+No countdown silently sends a request or launches a game. Refresh uses the same
+limiter. Local timing-state problems are reported as paused checks, not an offline
+game. Timing state lives in `%LOCALAPPDATA%/Civ13/status-requests`, independent of
+`--root`; do not delete it to bypass spacing. Waiting cannot clear an existing
+server ban or prove server game time advanced during lag. Known blocked sources
+must wait for owner-coordinated normal eligibility before further public checks.
+
 The script ZIP and its existing shortcuts are legacy OpenDream entrypoints.
 New script-installed shortcuts include `OpenDream` in their names. They do not
 join native BYOND servers. Experimental OpenDream remains an explicit separate
