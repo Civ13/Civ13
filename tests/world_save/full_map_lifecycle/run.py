@@ -14,6 +14,11 @@ from query import request
 PROTECTED_PORTS = (18459, 18460, 18461, 18462)
 
 
+def daemon_arguments(byond_bin, binary, port):
+    return [str(byond_bin / 'dd.exe'), binary.name, str(port),
+            '-invisible', '-trusted', '-params', f'tested_commit={BASE}', '-log', 'native.log']
+
+
 def listener_identity(port, pid):
     # CIM initialization can exceed 30 seconds during full-map startup. This
     # read-only query has its own bounded deadline and still fails closed.
@@ -154,8 +159,7 @@ def run(args):
         raise RuntimeError('Pinned native compiler did not produce a clean build')
     binary = game / Path(manifest['entrypoint']).with_suffix('.dmb')
     token = (game / 'config/full-map-probe-token.txt').read_text(encoding='ascii').strip()
-    command = [str(args.byond_bin / 'dd.exe'), binary.name, str(args.port),
-               '-invisible', '-safe', '-params', f'tested_commit={BASE}', '-log', 'native.log']
+    command = daemon_arguments(args.byond_bin, binary, args.port)
     started = time.time()
     binary_hashes = {'dmb_sha256': digest(binary), 'rsc_sha256': digest(binary.with_suffix('.rsc'))}
     with (root / 'daemon.stdout.log').open('w') as out, (root / 'daemon.stderr.log').open('w') as err:

@@ -61,9 +61,14 @@ separate port 18463, exact clean compiler gate, new-process handle ownership,
 listener PID verification, authentication refusal controls and fail-closed
 recovery comparisons. It always stops only its own newly created process and
 preserves the entire output on failure. It never reloads a PID from disk to stop
-a process. The test host rejects all player connections and uses native safe
-mode, public exported config with hub/webclient/outbound settings removed, plus
-startup webhook/Tor guards. No live configuration or saves are copied.
+a process. The test host rejects all player connections and uses the supported
+native `-trusted` flag, public exported config with hub/webclient/outbound settings
+removed, plus startup webhook/Tor guards. No live configuration or saves are copied.
+
+Offline supervisor tests check the actual daemon command helper and its launch
+caller, including an old `-safe` flag mutation. This correction does not establish
+the cause or resolution of retained `nslookup` diagnostics; strict diagnostic
+rejection remains unchanged. Native acceptance still requires a separate window.
 
 The read-only Windows listener ownership query has a separate 120-second
 deadline because its earlier 30-second deadline expired after full-map startup.

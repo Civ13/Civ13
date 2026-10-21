@@ -1,4 +1,5 @@
 """Offline acceptance controls; these never compile or launch BYOND."""
+import ast
 import copy
 import hashlib
 import json
@@ -10,7 +11,7 @@ from unittest.mock import patch
 
 from prepare import BASE, HOOK, instrument_lifecycle, instrument_world, prepare
 from query import request
-from run import compare, diagnostic_failures, listener_identity, owned_daemon, verify_completed_files
+from run import compare, daemon_arguments, diagnostic_failures, listener_identity, owned_daemon, verify_completed_files
 from replay import replay
 
 
@@ -177,6 +178,31 @@ class Framing(unittest.TestCase):
 
 
 class ProcessAndDiagnosticControls(unittest.TestCase):
+    def test_actual_daemon_command_uses_supported_trusted_flag(self):
+        expected = [str(Path('byond') / 'dd.exe'), 'probe.dmb', '18463', '-invisible',
+                    '-trusted', '-params', f'tested_commit={BASE}', '-log', 'native.log']
+        self.assertEqual(daemon_arguments(Path('byond'), Path('probe.dmb'), 18463), expected)
+        source = Path(__file__).with_name('run.py').read_text(encoding='utf-8')
+        tree = ast.parse(source)
+        old_flag = source.replace("'-trusted'", "'-safe'")
+        self.assertNotEqual(old_flag, source)
+        helper = next(node for node in ast.parse(old_flag).body
+                      if isinstance(node, ast.FunctionDef) and node.name == 'daemon_arguments')
+        scope = {'BASE': BASE}
+        exec(compile(ast.Module(body=[helper], type_ignores=[]), '<old-daemon-command>', 'exec'), scope)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(scope['daemon_arguments'](Path('byond'), Path('probe.dmb'), 18463), expected)
+        assignments = [node for node in ast.walk(tree) if isinstance(node, ast.Assign)
+                       and any(isinstance(target, ast.Name) and target.id == 'command'
+                               for target in node.targets)]
+        self.assertEqual(len(assignments), 1)
+        self.assertEqual(ast.unparse(assignments[0].value),
+                         'daemon_arguments(args.byond_bin, binary, args.port)')
+        launches = [node for node in ast.walk(tree) if isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Name) and node.func.id == 'owned_daemon']
+        self.assertEqual(len(launches), 1)
+        self.assertEqual(ast.unparse(launches[0].args[0]), 'command')
+
     def test_listener_query_keeps_exclusive_ownership_and_bounded_timeout(self):
         for owners in ([123], [], [456], [123, 456]):
             response = subprocess.CompletedProcess([], 0, json.dumps(dict(owners=owners)))
