@@ -232,15 +232,22 @@
 		for (var/list/next in stash)
 			if (next["id"] == id) entry = next
 		if (!entry || !M.codec.validate(entry["equipment"])) return null
+		var/datum/extraction_session/claimant = H.extraction_session
+		var/turf/delivery_turf = get_turf(H)
+		if (!delivery_turf) return null
 		stash -= list(entry)
 		candidate["loot_state"] = "pending"
 		candidate["pending_item"] = entry
 		// Debit before exposing a live object. Interrupted delivery stays pending
 		// for reconciliation; restarting cannot replay it into another free copy.
 		if (!commit_container(M, candidate)) return null
-		var/obj/item/I = M.codec.decode(entry["equipment"], H)
+		// Constructors and acknowledgement must not expose unassigned inventory.
+		var/obj/effect/staging = new(null)
+		staging.should_save = FALSE
+		var/obj/item/I = M.codec.decode(entry["equipment"], staging)
 		if (!I || !M.track_loot(I))
 			if (I) qdel(I)
+			qdel(staging)
 			locked = TRUE
 			return null
 		candidate = json_decode(json_encode(profile))
@@ -251,7 +258,19 @@
 			store.test_fail_at = "intent"
 		if (!commit_container(M, candidate))
 			qdel(I)
+			qdel(staging)
 			return null
+		// Journal writes can yield. A changed body/session must not receive gear
+		// at a remote location; acknowledged loot stays at the original raid site.
+		var/was_throwing = I.throwing
+		if (istype(I, /obj/item/stack)) I.throwing = TRUE
+		if (M.owned(H) && H.extraction_session == claimant && H.stat == CONSCIOUS && claimant.profile["state"] == "raid" && get_turf(H) == delivery_turf && Adjacent(H))
+			H.put_in_hands(I)
+		else
+			I.forceMove(delivery_turf)
+			I.dropped()
+		I.throwing = was_throwing
+		qdel(staging)
 		return I
 	attack_hand(mob/user)
 		var/mob/living/human/H = user
