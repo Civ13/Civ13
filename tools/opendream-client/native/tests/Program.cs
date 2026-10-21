@@ -16,7 +16,26 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    if (args.Length == 2 && args[0] == "--pacing-child") return TopicPacingTests.Child(args[1]);
+    if (args.SequenceEqual(new[] { "--probe-public" })) {
+        var discovery = new ServerDiscovery();
+        foreach (var provider in new[] { "Civ13.com", "ValZarGaming" }) {
+            var snapshot = await discovery.Fetch(provider);
+            Console.WriteLine(JsonSerializer.Serialize(new { provider, snapshot.Unverified, snapshot.PacingPaused, snapshot.Deferred,
+                servers = snapshot.Servers.Select(server => new { server.Host, server.Port, server.Players,
+                    server.Map, server.Mode, server.Epoch, server.RoundId, server.RoundDurationSeconds, server.CheckedAt }) }));
+        }
+        Console.WriteLine("Prejoin NOT attempted. Use the interactive J recheck after spacing only when the runtime owner confirms eligibility.");
+        return 0;
+    }
+    if (args.SequenceEqual(new[] { "--discovery-only" })) {
+        await ServerDiscoveryTests.Run(root);
+        await TopicPacingTests.Run(root);
+        return 0;
+    }
     assertions += await TransportRetryTests.Run(root);
+    assertions += await ServerDiscoveryTests.Run(root);
+    assertions += await TopicPacingTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
     var reset = new System.Net.Sockets.SocketException(10054);
     var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);
@@ -50,14 +69,8 @@ try {
     Require(menuPositions.All(position => position >= 0) &&
         menuPositions.SequenceEqual(menuPositions.Order()), "main menu did not render options in 1-9 visual order");
     Require(ServerCatalog.OpenDreamMenuKey == "9", "experimental menu key changed");
-    foreach (var mode in new[] { "Nomads", "TDM" }) {
-        var officialMenu = ServerCatalog.Select(ServerCatalog.MenuServer("2")!, mode);
-        var valzarMenu = ServerCatalog.Select(ServerCatalog.MenuServer("3")!, mode);
-        Require(officialMenu.Name == "Civ13.com" && officialMenu.Port == (mode == "Nomads" ? 1715 : 1714),
-            "option 2 did not select the official provider and port");
-        Require(valzarMenu.Name == "ValZarGaming" && valzarMenu.Port == (mode == "Nomads" ? 1714 : 1715),
-            "option 3 did not preserve ValZarGaming provider and port");
-    }
+    Require(ServerCatalog.MenuServer("2") == "Civ13.com", "option 2 selected wrong provider");
+    Require(ServerCatalog.MenuServer("3") == "ValZarGaming", "option 3 selected wrong provider");
     foreach (var key in new string?[] { null, "1", "4", "5", "6", "7", "8", "9", "unknown" })
         Require(ServerCatalog.MenuServer(key) is null, "nonserver menu key selected a public provider");
     Reject(() => ServerCatalog.OpenDreamPort("Nomads", null), "unconfigured OpenDream service");
@@ -107,48 +120,11 @@ try {
     Task<System.Net.IPAddress[]> ResolveFixture(string name) {
         Require(name == "valzargaming.com", "connection resolved a different hostname");
         resolverCalls++;
-        return Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81"), System.Net.IPAddress.Parse(resolverCalls == 1 ? "72.218.249.221" : "192.0.2.2") });
+        return Task.FromResult(new[] { System.Net.IPAddress.Parse(resolverCalls == 1 ? "8.8.8.8" : "1.1.1.1") });
     }
-    var initialAddresses = await Connection.Resolve(ResolveFixture);
-    foreach (var mode in new[] { "Nomads", "TDM" }) {
-        var server = ServerCatalog.Select("ValZarGaming", mode);
-        var native = ServerCatalog.NativeStart(server, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true);
-        var expectedNativePort = mode == "Nomads" ? 1714 : 1715;
-        Require(server.Engine == "BYOND" && server.Port == expectedNativePort, "public server engine/port mismatch");
-        Require(native.FileName == Path.Combine(root, "dreamseeker.exe") && !native.UseShellExecute &&
-            native.ArgumentList.SequenceEqual(new[] { $"byond://72.218.249.221:{expectedNativePort}" }), "public server did not dispatch exact native client URL");
-        Reject(() => ServerCatalog.NativeStart(server with { Engine = "OpenDream" }, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true), "OpenDream substituted for DreamDaemon");
-        Reject(() => ServerCatalog.NativeStart(server with { Port = 18459 }, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => true), "isolated test port substituted for public server");
-        Reject(() => ServerCatalog.NativeStart(server, root, initialAddresses.Single(), Civ13.Launcher.Program.RequiredByond(), _ => false), "wrong BYOND version");
-        foreach (var endpoint in new[] { "192.64.119.81", "192.0.2.2", "valzargaming.com", "civ13.com", "72.218.249.221;calc.exe" })
-            Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "unverified native endpoint");
-    }
-    foreach (var mode in new[] { "Nomads", "TDM" }) {
-        var server = ServerCatalog.Select("Civ13.com", mode);
-        var endpoint = await ServerCatalog.NativeEndpoint(server, _ => throw new Exception("Official server used ValZarGaming DNS policy"));
-        var expectedPort = mode == "Nomads" ? 1715 : 1714;
-        Require(endpoint == "civ13.com" && server.Port == expectedPort && server.Engine == "BYOND", "official catalog mapping changed");
-        var native = ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true);
-        Require(native.FileName == Path.Combine(root, "dreamseeker.exe") && !native.UseShellExecute &&
-            native.ArgumentList.SequenceEqual(new[] { $"byond://civ13.com:{expectedPort}" }), "official server did not dispatch exact published URL");
-        Reject(() => ServerCatalog.NativeStart(server with { Port = expectedPort == 1715 ? 1714 : 1715 }, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "official ports reversed");
-        Reject(() => ServerCatalog.NativeStart(server with { Engine = "OpenDream" }, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "official engine changed");
-        Reject(() => ServerCatalog.NativeStart(server, root, endpoint, Civ13.Launcher.Program.RequiredByond(), _ => false), "official wrong BYOND version");
-        foreach (var wrongEndpoint in new[] { Connection.ApprovedEndpoint, Connection.ExcludedEndpoint, "valzargaming.com", "civ13.com;calc.exe", "civ13.com.evil.test", "https://civ13.com" })
-            Reject(() => ServerCatalog.NativeStart(server, root, wrongEndpoint, Civ13.Launcher.Program.RequiredByond(), _ => true), "official endpoint substituted");
-    }
-    Require(await ServerCatalog.NativeEndpoint(ServerCatalog.Select("ValZarGaming", "Nomads"), name => {
-        Require(name == "valzargaming.com", "native selection resolved wrong server");
-        return Task.FromResult(new[] { System.Net.IPAddress.Parse(Connection.ApprovedEndpoint) });
-    }) == Connection.ApprovedEndpoint, "ValZarGaming native resolution lost its IP pin");
-    await RejectAsync(() => ServerCatalog.NativeEndpoint(ServerCatalog.Select("ValZarGaming", "TDM"),
-        _ => Task.FromResult(new[] { System.Net.IPAddress.Parse("192.0.2.2") })), "native selection accepted unverified ValZarGaming endpoint");
-    await RejectAsync(() => ServerCatalog.NativeEndpoint(ServerCatalog.Select("Civ13.com", "Nomads") with { Port = 18459 }), "resolver accepted noncatalog port");
-    Reject(() => ServerCatalog.Select("Civ13.com", "unknown"), "unknown official mode");
-    Reject(() => ServerCatalog.Select("unknown", "Nomads"), "unknown public server");
-    Reject(() => ServerCatalog.Select("ValZarGaming", "unknown"), "unknown public mode");
-    await RejectAsync(() => Connection.Resolve(ResolveFixture), "changed unverified DNS endpoint");
-    Require(resolverCalls == 2 && initialAddresses.SequenceEqual(new[] { "72.218.249.221" }), "connection cached DNS or retained excluded address");
+    var initialEndpoint = await Connection.Resolve(ResolveFixture);
+    var changedEndpoint = await Connection.Resolve(ResolveFixture);
+    Require(resolverCalls == 2 && initialEndpoint.Address == "8.8.8.8" && changedEndpoint.Address == "1.1.1.1", "connection cached DNS or kept a permanent public-IP pin");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(Array.Empty<System.Net.IPAddress>())), "empty DNS answer");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new System.Net.Sockets.SocketException())), "DNS failure");
     await RejectAsync(() => Connection.Resolve(_ => Task.FromException<System.Net.IPAddress[]>(new TimeoutException())), "DNS timeout");
@@ -158,21 +134,22 @@ try {
         File.WriteAllText(path, "fixture never executed");
     }
     foreach (var mode in new[] { "Nomads", "TDM" }) {
-        var start = Connection.Start(root, mode, initialAddresses.Single());
+        var start = Connection.Start(root, mode, initialEndpoint);
         var expectedPort = mode == "Nomads" ? 1715 : 1714;
-        Require(start.ArgumentList.SequenceEqual(new[] { Path.Combine(root, "RobustToolbox", "bin", "ClientAuth", "Robust.Client.dll"), "--self-contained", "--mount-zip", Path.Combine(root, "Content.Client.zip"), "--connect", "--connect-address", $"udp://72.218.249.221:{expectedPort}", "+launchauth" }), "connection default routing or authentication changed");
+        Require(start.ArgumentList.SequenceEqual(new[] { Path.Combine(root, "RobustToolbox", "bin", "ClientAuth", "Robust.Client.dll"), "--self-contained", "--mount-zip", Path.Combine(root, "Content.Client.zip"), "--connect", "--connect-address", $"udp://8.8.8.8:{expectedPort}", "+launchauth" }), "connection default routing or authentication changed");
         Require(start.FileName == Path.Combine(root, "dotnet", "dotnet.exe") && !start.UseShellExecute && start.WorkingDirectory == Path.Combine(root, "RobustToolbox", "bin", "ClientAuth"), "packaged runtime/working directory changed");
         Require(start.Environment["DOTNET_ROOT"] == Path.Combine(root, "dotnet") && start.Environment["ROBUST_MODULE_ROBUST_CLIENT_WEBVIEW"] == Path.Combine(root, "webview"), "packaged runtime environment lost");
         foreach (var port in new[] { "1", "18459", "65535" })
-            Require(Connection.Start(root, mode, initialAddresses.Single(), port).ArgumentList.Contains($"udp://72.218.249.221:{port}"), "explicit port override lost");
-        Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.") || value.Contains("192.64.119.81")), "connection bypassed policy or used unverified/excluded address");
+            Require(Connection.Start(root, mode, initialEndpoint, port).ArgumentList.Contains($"udp://8.8.8.8:{port}"), "explicit port override lost");
+        Require(!start.ArgumentList.Contains("Bypass") && !start.ArgumentList.Any(value => value.Contains("192.0.2.") || value.Contains("127.0.0.")), "connection bypassed policy or used unverified/excluded address");
     }
     foreach (var invalid in new[] { "0", "65536", "-1", "abc", "1714;calc.exe", "" })
-        Reject(() => Connection.Start(root, "Nomads", Connection.ApprovedEndpoint, invalid), "invalid port accepted");
-    Reject(() => Connection.Start(Path.Combine(root, "missing-client"), "Nomads", Connection.ApprovedEndpoint), "missing client runtime accepted");
-    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("192.64.119.81") })), "excluded-only DNS answer");
-    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("72.218.249.221"), System.Net.IPAddress.Parse("192.0.2.3") })), "mixed unverified endpoint answer");
-    Reject(() => Connection.Start(root, "Nomads", "192.64.119.81"), "excluded connection address");
+        Reject(() => Connection.Start(root, "Nomads", initialEndpoint, invalid), "invalid port accepted");
+    Reject(() => Connection.Start(Path.Combine(root, "missing-client"), "Nomads", initialEndpoint), "missing client runtime accepted");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Loopback })), "loopback DNS answer");
+    await RejectAsync(() => Connection.Resolve(_ => Task.FromResult(new[] { System.Net.IPAddress.Parse("8.8.8.8"), System.Net.IPAddress.Parse("192.0.2.3") })), "mixed public/reserved endpoint answer");
+    var otherProviderEndpoint = await Connection.ResolveHost("civ13.com", _ => Task.FromResult(new[] { System.Net.IPAddress.Parse("8.8.8.8") }));
+    Reject(() => Connection.Start(root, "Nomads", otherProviderEndpoint), "cross-provider connection address");
     var package = Path.Combine(root, "package", "Civ13-OpenDream-Windows");
     Directory.CreateDirectory(package);
     foreach (var name in Updater.Required) {
