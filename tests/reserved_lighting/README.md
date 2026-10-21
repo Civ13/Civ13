@@ -228,3 +228,34 @@ Expiry or input drift during final acceptance leaves the receipt incomplete,
 even when every process exited and each pair returned matching snapshots.
 Injected controls cover lease expiry during final comparison or rehashing,
 aggregate timeout and input drift without starting any native process.
+
+
+### Public runtime inputs
+
+The unchanged full-source fixture initializes name lists through literal reads
+in `code/names.dm`. An empty working directory would emit missing-file errors;
+fatal diagnostics remain rejected. Before compiling/sealing, the source-only
+`--prepare-runtime <fresh-input-directory> --head <exact-source-sha>` operation
+reads only tracked `code/names.dm` and `config/names` Git blobs, derives the
+explicit literal allowlist, and writes only those public name files (currently
+146 files, 153,247 bytes) plus `runtime-inputs.json`. No settings/config tree,
+credentials, saves or live files are copied. The script also binds names.dm in
+its execution identity. Other newly discovered runtime reads require review;
+this staging is not a claim that a native run is clean.
+
+Place the exact prepared compiler outputs and daemon in that input directory.
+`build.json` additionally binds `runtime_inputs_sha256`, the SHA-256 of
+`runtime-inputs.json`. The runtime manifest records exact source head, source
+hash/Git blob and each public relative path, byte count, SHA-256 and Git blob.
+Sealing includes that manifest and every name file. Existing packets need to be
+resealed and independently accepted; this operation creates no execution grant.
+
+Every fresh per-run directory receives separate verified name-file copies before
+launch, outside the measured process interval. Traversal, absolute paths, links,
+unknown/missing/changed inputs and unexpected configuration files are rejected.
+Copies are checked again after the process outcome. The source directory never
+becomes a writable runtime/config symlink. These checks do not replace external
+filesystem/process/network containment or eliminate all concurrent-write races.
+
+Exact-head linkage comes from trusted Git-archive preparation and independent
+build review; a self-consistent hand-authored manifest alone does not prove it.

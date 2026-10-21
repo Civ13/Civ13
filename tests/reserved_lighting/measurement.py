@@ -16,13 +16,14 @@ import time
 
 from compare import compare
 
+NAMES_SOURCE = Path(__file__).resolve().parents[2]/'code/names.dm'
 HEX = re.compile(r'[0-9a-f]{64}')
 DIAGNOSTIC = re.compile(r'##\s*ERROR|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot (?:read|execute) null|Bad ref|Bad loc|PORT_OPEN|Unhandled exception|Out of memory|Assertion failed|Access violation', re.I)
 
 
 def execution_identity():
     return {str(path.resolve()): sha(path.resolve()) for path in
-            (Path(__file__), Path(__file__).with_name('compare.py'), Path(sys.executable))}
+            (Path(__file__), Path(__file__).with_name('compare.py'), Path(sys.executable), NAMES_SOURCE)}
 
 
 def require(value, message):
@@ -40,6 +41,115 @@ def sha(path):
         for chunk in iter(lambda: source.read(1024**2), b''):
             value.update(chunk)
     return value.hexdigest()
+
+
+
+def runtime_paths(text=None):
+    """Only literal public name-list reads in the unchanged production source."""
+    text = NAMES_SOURCE.read_text(encoding='utf-8') if text is None else text
+    paths = set(re.findall(r'file2list\s*\(\s*"([^"\n]+)"', text))
+    require(0 < len(paths) <= 200 and all(re.fullmatch(r'config/names/[a-z0-9_]+\.txt', p) for p in paths), 'Runtime allowlist')
+    return paths
+
+
+def runtime_inventory(head):
+    """Read exact tracked public inputs from Git, never a live/private config tree."""
+    import io
+    import subprocess
+    import tarfile
+    require(re.fullmatch('[0-9a-f]{40}', head or ''), 'Runtime source head')
+    repo = NAMES_SOURCE.parents[1]
+    archive = subprocess.check_output(['git', '-c', 'safe.directory='+repo.as_posix(), '-C', str(repo),
+                                       'archive', '--format=tar', head, 'code/names.dm', 'config/names'], timeout=20)
+    require(len(archive) <= 2*1024**2, 'Runtime archive bound')
+    data = {}
+    with tarfile.open(fileobj=io.BytesIO(archive), mode='r:') as source:
+        members = source.getmembers()
+        require(len(members) <= 512, 'Runtime archive inventory')
+        for member in members:
+            require(not member.issym() and not member.islnk(), 'Linked runtime input')
+            if member.isfile():
+                require(member.name not in data and member.size <= 1024**2, 'Runtime archive member')
+                data[member.name] = source.extractfile(member).read()
+    names = data['code/names.dm']
+    require(names.replace(b'\r\n', b'\n') == NAMES_SOURCE.read_bytes().replace(b'\r\n', b'\n'), 'Runtime source differs from head')
+    paths = runtime_paths(names.decode('utf-8'))
+    require(paths <= data.keys(), 'Missing tracked runtime input')
+    files = {name:data[name] for name in sorted(paths)}
+    manifest = {'head':head, 'source':'code/names.dm', 'source_sha256':sha(NAMES_SOURCE),
+                'source_git_blob':git_blob(names),
+                'files':{name:{'sha256':hashlib.sha256(value).hexdigest(), 'git_blob':git_blob(value), 'bytes':len(value)}
+                         for name,value in files.items()}}
+    return manifest, files
+
+
+def git_blob(data):
+    return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+
+
+def runtime_file(root, relative, existing=True):
+    require(type(relative) is str and re.fullmatch(r'config/names/[a-z0-9_]+\.txt', relative), 'Runtime path')
+    require(not root.is_symlink(), 'Linked runtime root')
+    path = root
+    for part in Path(relative).parts:
+        path = path/part
+        require(not path.is_symlink(), 'Linked runtime path')
+    require(path.resolve().is_relative_to(root.resolve()), 'Runtime path escape')
+    if existing:
+        require(path.is_file() and path.stat().st_size <= 1024**2, 'Missing/bounded runtime input')
+    return path
+
+
+def validate_runtime_manifest(manifest, head):
+    require(set(manifest) == {'head','source','source_sha256','source_git_blob','files'} and manifest['head'] == head
+            and manifest['source'] == 'code/names.dm' and manifest['source_sha256'] == sha(NAMES_SOURCE)
+            and manifest['source_git_blob'] == git_blob(NAMES_SOURCE.read_bytes().replace(b'\r\n', b'\n')), 'Runtime source provenance')
+    require(type(manifest['files']) is dict and set(manifest['files']) == runtime_paths(), 'Runtime allowlist mismatch')
+    require(all(set(meta) == {'sha256','git_blob','bytes'} and HEX.fullmatch(meta['sha256'])
+                and re.fullmatch('[0-9a-f]{40}', meta['git_blob']) and type(meta['bytes']) is int and 0 <= meta['bytes'] <= 1024**2
+                for meta in manifest['files'].values()), 'Runtime file provenance')
+    require(sum(meta['bytes'] for meta in manifest['files'].values()) <= 2*1024**2, 'Runtime total bound')
+
+
+def validate_runtime_files(manifest, root, exact=False):
+    if exact:
+        paths = list((root/'config').rglob('*'))
+        require(len(paths) <= 202 and not any(p.is_symlink() for p in paths), 'Runtime staged inventory')
+        require({p.relative_to(root).as_posix() for p in paths} == set(manifest['files']) | {'config/names'}, 'Unexpected/missing runtime files')
+    for name, meta in manifest['files'].items():
+        path = runtime_file(root, name)
+        data = path.read_bytes()
+        require(len(data) == meta['bytes'] and hashlib.sha256(data).hexdigest() == meta['sha256']
+                and git_blob(data) == meta['git_blob'], 'Runtime input changed: '+name)
+
+
+def prepare_runtime(root, head):
+    """Source-only staging from exact Git blobs, excluding config settings/secrets."""
+    manifest, files = runtime_inventory(head)
+    validate_runtime_manifest(manifest, head)
+    require(not root.exists(), 'Runtime preparation requires fresh directory')
+    root.mkdir(parents=True)
+    for name, data in files.items():
+        path = runtime_file(root, name, existing=False)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open('xb') as target:
+            target.write(data)
+    validate_runtime_files(manifest, root, exact=True)
+    (root/'runtime-inputs.json').write_text(json.dumps(manifest, indent=2)+'\n')
+    return manifest
+
+
+def stage_runtime(packet, root, work):
+    manifest = packet['runtime']
+    validate_runtime_manifest(manifest, packet['head'])
+    validate_runtime_files(manifest, root, exact=True)
+    require(not (work/'config').exists() and not (work/'config').is_symlink(), 'Runtime destination already exists')
+    for name in manifest['files']:
+        path = runtime_file(work, name, existing=False)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open('xb') as target:
+            target.write(runtime_file(root, name).read_bytes())
+    validate_runtime_files(manifest, work, exact=True)
 
 
 def validate_packet(packet, root):
@@ -63,6 +173,16 @@ def validate_packet(packet, root):
     require(packet['fixture'] in packet['files'] and packet['files'][packet['fixture']] == packet['fixture_sha256'], 'Unbound fixture source')
     require(packet['fixture_sha256'] == sha(Path(__file__).with_name('probe.dm')), 'Changed parity workload')
     require(Path(packet['dmb']).with_suffix('.rsc').as_posix() == packet['rsc'], 'Resource pairing')
+    validate_runtime_manifest(packet['runtime'], packet['head'])
+    require('runtime-inputs.json' in packet['files'] and (root/'runtime-inputs.json').stat().st_size <= 128*1024
+            and json.loads((root/'runtime-inputs.json').read_text()) == packet['runtime'], 'Unbound runtime manifest')
+    require(set(packet['files']) == {packet[key] for key in ('daemon','dmb','rsc','fixture')} | {'build.json','runtime-inputs.json'} | set(packet['runtime']['files']), 'Unexpected input inventory')
+    paths = list(root.rglob('*'))
+    require(len(paths) <= 260 and not any(p.is_symlink() for p in paths), 'Input tree inventory')
+    directories = {p.as_posix() for name in packet['files'] for p in Path(name).parents if p != Path('.')}
+    require({p.relative_to(root).as_posix() for p in paths} - {'measurement-packet.json','measurement-packet.used'} == set(packet['files']) | directories, 'Unexpected input files')
+    validate_runtime_files(packet['runtime'], root, exact=True)
+
 
 
 def validate_sample(sample, identity, previous, limits):
@@ -139,6 +259,7 @@ def run(packet, root, output, adapter, clock=time.monotonic, pause=time.sleep, a
             report['runs'].append(row)
             child = None
             try:
+                stage_runtime(packet, root, work)
                 bound()  # hashing/setup can consume the remaining lease
                 child = adapter.launch(packet, root, work, mode)
                 run_started = clock()
@@ -165,6 +286,7 @@ def run(packet, root, output, adapter, clock=time.monotonic, pause=time.sleep, a
                         break
                     pause(packet['interval'])
                 accept(work, packet['limits']['output'])
+                validate_runtime_files(packet['runtime'], work, exact=True)
             finally:
                 cleanup = adapter.cleanup(child)  # also handles failed/partial launch
                 row['cleanup'] = cleanup
@@ -333,8 +455,13 @@ def main():
     parser.add_argument('--grant', type=Path)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--seal', type=Path, help='Hash prepared daemon/probe.dmb/probe.rsc/probe.dm/build.json only; never launch')
+    parser.add_argument('--prepare-runtime', type=Path, help='Stage only exact tracked public name lists; no compiler/engine')
     parser.add_argument('--head', help='Immutable source commit for --seal')
     args = parser.parse_args()
+    if args.prepare_runtime:
+        require(not any((args.seal, args.packet, args.grant, args.output)), 'Exclusive runtime preparation')
+        prepare_runtime(args.prepare_runtime.resolve(), args.head)
+        return
     if args.seal:
         seal(args.seal, args.head)
         return
@@ -360,7 +487,7 @@ def seal(root, head):
     """
     root = root.resolve()
     require(re.fullmatch('[0-9a-f]{40}', head or ''), 'Seal head')
-    names = ('daemon', 'probe.dmb', 'probe.rsc', 'probe.dm', 'build.json')
+    names = ('daemon', 'probe.dmb', 'probe.rsc', 'probe.dm', 'build.json', 'runtime-inputs.json')
     for name in names:
         path = root/name
         require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 1024**3, 'Seal input bound')
@@ -370,11 +497,16 @@ def seal(root, head):
             and HEX.fullmatch(build['compiler_sha256']), 'Build provenance')
     for name in names[:4]:
         require(build['files'][name] == sha(root/name), 'Build input mismatch')
+    require(build['runtime_inputs_sha256'] == sha(root/'runtime-inputs.json'), 'Build runtime input mismatch')
+    require((root/'runtime-inputs.json').stat().st_size <= 128*1024, 'Runtime manifest bound')
+    runtime = json.loads((root/'runtime-inputs.json').read_text())
+    validate_runtime_manifest(runtime, head)
+    validate_runtime_files(runtime, root, exact=True)
     packet = {'schema':1, 'head':head, 'pairs':10, 'interval':.1, 'execution':execution_identity(),
               'parity_run':39347909747, 'parity_head':'2d4229c2ca3062e6c358aa21575f0c203282f995',
               'fixture':'probe.dm', 'fixture_sha256':sha(root/'probe.dm'),
               'daemon':'daemon', 'dmb':'probe.dmb', 'rsc':'probe.rsc',
-              'files':{name:sha(root/name) for name in names},
+              'files':{name:sha(root/name) for name in (*names, *runtime['files'])}, 'runtime':runtime,
               'command_tail':['-close','-trusted','-log','runtime.log','-params'],
               'limits':{'wall':30,'cpu':10,'private':512*1024**2,'output':16*1024**2,'total_wall':960}}
     validate_packet(packet, root)

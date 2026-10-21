@@ -49,11 +49,22 @@ class Measurements(unittest.TestCase):
         self.inputs.mkdir()
         for name in ('daemon','probe.dmb','probe.rsc','probe.dm'): (self.inputs/name).write_bytes(name.encode())
         (self.inputs/'probe.dm').write_bytes(Path(m.__file__).with_name('probe.dm').read_bytes())
+        if not hasattr(type(self), 'runtime_fixture'):
+            type(self).runtime_fixture = m.runtime_inventory('2d4229c2ca3062e6c358aa21575f0c203282f995')
+        manifest, data = copy.deepcopy(type(self).runtime_fixture)
+        manifest['head'] = 'a'*40
+        staged = self.root/'runtime-inputs'
+        with patch.object(m, 'runtime_inventory', return_value=(manifest, data)):
+            m.prepare_runtime(staged, manifest['head'])
+        import shutil
+        shutil.copytree(staged, self.inputs, dirs_exist_ok=True)
+        (self.inputs/'build.json').write_text('{}')
         self.packet={'schema':1,'head':'a'*40,'pairs':2,'interval':.1,'fixture_sha256':'b'*64,
                      'parity_run':39347909747,'parity_head':'2d4229c2ca3062e6c358aa21575f0c203282f995',
                      'fixture':'probe.dm','daemon':'daemon','dmb':'probe.dmb','rsc':'probe.rsc',
                      'command_tail':['-close','-trusted','-log','runtime.log','-params'],
-                     'files':{p.name:m.sha(p) for p in self.inputs.iterdir()},
+                     'files':{p.relative_to(self.inputs).as_posix():m.sha(p) for p in self.inputs.rglob('*') if p.is_file()},
+                     'runtime':manifest,
                      'limits':{'wall':30,'cpu':10,'private':512*1024**2,'output':16*1024**2,'total_wall':960}}
         self.packet['fixture_sha256']=m.sha(self.inputs/'probe.dm')
         self.packet['execution']=m.execution_identity()
@@ -218,7 +229,8 @@ class Measurements(unittest.TestCase):
 
     def test_sealer_is_inert_binds_artifacts_and_refuses_overwrite(self):
         build={'head':self.packet['head'],'byond_version':'516.1681','compiler_sha256':'c'*64,
-               'files':{p.name:m.sha(p) for p in self.inputs.iterdir()}}
+               'runtime_inputs_sha256':m.sha(self.inputs/'runtime-inputs.json'),
+               'files':{p.relative_to(self.inputs).as_posix():m.sha(p) for p in self.inputs.rglob('*') if p.is_file()}}
         (self.inputs/'build.json').write_text(json.dumps(build))
         with patch.object(m.LinuxAdapter,'launch',side_effect=AssertionError('Native launch forbidden')):
             packet=m.seal(self.inputs,self.packet['head'])
@@ -329,6 +341,80 @@ class Measurements(unittest.TestCase):
                 self.assertEqual(completed_parity, self.packet['pairs'])
                 self.assertEqual(len(fake.cleaned), 2 + 2 * self.packet['pairs'])
                 (self.inputs / 'probe.dmb').write_bytes(b'probe.dmb')
+
+    def test_public_runtime_inventory_and_exact_staging(self):
+        manifest, data = self.runtime_fixture
+        self.assertEqual(set(data), m.runtime_paths())
+        self.assertEqual(len(data), 146)
+        self.assertEqual(sum(map(len, data.values())), 153247)
+        self.assertNotIn('config/config.txt', data)
+        work = self.root/'runtime-work';work.mkdir()
+        m.stage_runtime(self.packet, self.inputs, work)
+        m.validate_runtime_files(self.packet['runtime'], work, exact=True)
+        first = next(iter(data))
+        (work/first).write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'Runtime input changed'):
+            m.validate_runtime_files(self.packet['runtime'], work, exact=True)
+        (work/first).write_bytes(data[first])
+        (work/'config/private.txt').write_text('injected unexpected file')
+        with self.assertRaisesRegex(ValueError, 'Unexpected/missing runtime files'):
+            m.validate_runtime_files(self.packet['runtime'], work, exact=True)
+        (work/'config/private.txt').unlink()
+        (work/first).unlink()
+        with self.assertRaisesRegex(ValueError, 'Unexpected/missing runtime files'):
+            m.validate_runtime_files(self.packet['runtime'], work, exact=True)
+
+    def test_runtime_paths_links_and_packet_input_drift_rejected(self):
+        for path in ('../private.txt','/config/names/public.txt','C:/private.txt',
+                     'config/names/../private.txt','config/config.txt'):
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, 'Runtime allowlist'):
+                m.runtime_paths('var/list/names = file2list("'+path+'")')
+        work=self.root/'linked-work';work.mkdir()
+        with patch.object(Path, 'is_symlink', return_value=True):
+            with self.assertRaisesRegex(ValueError, 'Linked runtime|Runtime staged inventory'):
+                m.stage_runtime(self.packet,self.inputs,work)
+        (self.inputs/'config/private.txt').write_text('unexpected')
+        with self.assertRaisesRegex(ValueError, 'Unexpected input files'):
+            self.execute(Fake())
+        (self.inputs/'config/private.txt').unlink()
+        name=next(iter(self.packet['runtime']['files']))
+        (self.inputs/name).write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'Input changed'):
+            self.execute(Fake())
+
+    def test_runtime_manifest_and_staged_mutation_abort_cleanly(self):
+        original=copy.deepcopy(self.packet)
+        for key,value in (('head','b'*40),('source','config/private.txt'),('source_sha256','0'*64),('source_git_blob','0'*40)):
+            self.packet=copy.deepcopy(original)
+            self.packet['runtime'][key]=value
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,'Runtime source provenance'):
+                self.execute(Fake())
+        self.packet=original
+        fake=Fake();sample=fake.sample
+        def mutate(child):
+            row=sample(child)
+            if row['exited']:
+                name=next(iter(self.packet['runtime']['files']))
+                (self.out/'0'/name).write_bytes(b'changed by injected process')
+            return row
+        fake.sample=mutate
+        with self.assertRaisesRegex(ValueError,'Runtime input changed'):
+            self.execute(fake)
+        report=json.loads((self.out/'measurement.json').read_text())
+        self.assertFalse(report['complete'])
+        self.assertEqual(len(fake.cleaned),1)
+        self.assertTrue(report['runs'][0]['cleanup']['all_exited'])
+
+    def test_runtime_preparation_inert_and_refuses_existing_destination(self):
+        manifest,data=copy.deepcopy(self.runtime_fixture)
+        target=self.root/'prepare-runtime-only'
+        with patch.object(m,'runtime_inventory',return_value=(manifest,data)), \
+             patch.object(m.LinuxAdapter,'launch',side_effect=AssertionError('Native forbidden')):
+            m.prepare_runtime(target,manifest['head'])
+            m.validate_runtime_files(manifest,target,exact=True)
+            with self.assertRaisesRegex(ValueError,'fresh directory'):
+                m.prepare_runtime(target,manifest['head'])
+
 
 
 if __name__=='__main__':unittest.main()
