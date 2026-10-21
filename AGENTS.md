@@ -63,7 +63,7 @@ exact-head packaging/CI, independent review and a genuine public join gate relea
 See tools/opendream-client/native/SERVER-DISCOVERY.md.
 
 ## Language & toolchain
-NEVER use "â€”": always use "-" instead.
+Never use an em dash; use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.

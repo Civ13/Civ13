@@ -4,6 +4,7 @@ This branch contains an unreleased direct-status candidate. It must not replace
 the working 1.0.4 release until exact-head packaging/CI, independent review and a
 genuine public BYOND join are verified. No HTTPS server directory or additional
 backend deployment is required. See [SERVER-DISCOVERY.md](SERVER-DISCOVERY.md).
+One successful status query alone does not establish prejoin or gameplay acceptance.
 
 For native play, open `Civ13.exe`, sign into BYOND Pager with your own account,
 then choose **Civ13.com servers** or **ValZarGaming.com servers**. The launcher
