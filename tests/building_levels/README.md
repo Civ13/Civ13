@@ -29,7 +29,7 @@ their own tile. Removing a support schedules the normal roof collapse check;
 removing either slab face removes its partner and exposes the floor opening.
 
 New levels are open air, with no broken-floor render registry. Expansion is
-bounded by the shared total-cell budget, default 600,000 cells and one roof-added
+bounded by the shared total-cell budget, default 1,400,000 cells and one roof-added
 plane, with lower-only host settings. Existing structural ceilings remain;
 see `docs/new-z-budget.md`. Native BYOND allocates the default turf synchronously;
 replacement is budgeted across ticks. These bounds do not establish low latency

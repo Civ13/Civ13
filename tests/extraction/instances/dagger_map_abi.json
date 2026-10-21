@@ -1,0 +1,98 @@
+{
+  "source_commit": "d1cdc2c426799687b98ccd2a846bcc045c1cb8fa",
+  "manifest_sha256": "6ee96be303d48e4c38dbeafe68ee9e456d9ba9e78b60da3407f3bed6e88e45a9",
+  "template_sha256": "ed44beafaf46b299215c94f8b9322787201d426dbd8a52cc94590c77c145d978",
+  "template": {
+    "schema": 1,
+    "template_id": "dagger_home_draft_v4",
+    "revision": 1,
+    "width": 30,
+    "height": 102,
+    "decks": [
+      {
+        "layer": 1,
+        "id": "ground"
+      },
+      {
+        "layer": 2,
+        "id": "upper_1"
+      },
+      {
+        "layer": 3,
+        "id": "upper_2"
+      },
+      {
+        "layer": 4,
+        "id": "roof"
+      }
+    ],
+    "berths": [
+      "raid_west",
+      "raid_east"
+    ]
+  },
+  "layout_contract": {
+    "schema_version": 2,
+    "template_id": "dagger_home_draft_v4",
+    "template_revision": 1,
+    "world": {
+      "width": 256,
+      "height": 256,
+      "levels": 8
+    },
+    "levels": [
+      {
+        "id": "ground",
+        "local_z": 0
+      },
+      {
+        "id": "upper_1",
+        "local_z": 1
+      },
+      {
+        "id": "upper_2",
+        "local_z": 2
+      },
+      {
+        "id": "roof",
+        "local_z": 3
+      }
+    ],
+    "footprint_bounds": [
+      0,
+      0,
+      29,
+      101
+    ],
+    "raid_berths": [
+      {
+        "id": "raid_west",
+        "origin": [
+          72,
+          72,
+          5
+        ],
+        "reserved_bounds": [
+          66,
+          66,
+          107,
+          179
+        ]
+      },
+      {
+        "id": "raid_east",
+        "origin": [
+          130,
+          72,
+          5
+        ],
+        "reserved_bounds": [
+          124,
+          66,
+          165,
+          179
+        ]
+      }
+    ]
+  }
+}
