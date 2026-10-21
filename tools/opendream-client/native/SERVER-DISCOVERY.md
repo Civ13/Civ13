@@ -56,6 +56,11 @@ slew. A new pacer with recorded history also requires a 133-second monotonic
 startup guard, covering a prior instance's possible in-flight write. Restarting
 the launcher or changing --root cannot shorten that guard. Wall-clock steps
 outside the two-second monotonic comparison tolerance pause checks.
+The comparison uses a fixed process-lifetime anchor: even gradual accumulated
+drift can pause a long session. Rebaselining on every early check would let small
+clock advances consume the spacing margin. If the system clock is stable again,
+close and reopen the launcher normally; retain its timing files and complete the
+133-second startup guard. This does not clear or authorize probing a server ban.
 
 State is bounded to 32 KiB, schema checked, flushed and replaced atomically in the
 same directory. Missing/inconsistent, corrupt, locked, inaccessible or linked
@@ -66,7 +71,13 @@ No ACL, account, credentials, firewall, DNS or server setting is changed.
 Spacing is checked before DNS and again immediately before a wire write to
 account for newly resolved aliases. A deferral exits and disposes the attempt;
 it never sleeps inside the three-second IO budget. Discovery reports waiting
-candidates separately. If a selected join is deferred, the menu retains only
+candidates separately.
+
+After a successful reservation, a malformed response, identity mismatch, read
+failure or cancellation ends verification immediately without dialing another
+address. The failed request retains its reservation and is reported as failed
+verification, rather than disguising the failure as a wait on the next address.
+If a selected join is deferred, the menu retains only
 the selected identity for comparison, prints remaining seconds, and accepts J
 to explicitly recheck or B to cancel. No background timer or delayed send exists.
 An early J is a local check, not another Topic. An eligible J obtains fresh DNS,

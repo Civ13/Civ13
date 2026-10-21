@@ -39,11 +39,12 @@ public static class ByondStatus {
                 using var attempt = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token);
                 // Sequential fair slices keep one active socket and leave time for later A records.
                 attempt.CancelAfter(remaining / (addresses.Length - index));
+                var reserved = false;
                 try {
                     // Production Fetch honors cancellation and disposes its socket before
                     // this task settles; await settlement before starting the next address.
                     var packet = await (probe ?? Fetch)(addresses[index], target.Port,
-                        () => spacing?.Reserve(target, addresses), attempt.Token);
+                        () => { spacing?.Reserve(target, addresses); reserved = true; }, attempt.Token);
                     var status = ParsePacket(packet, target, clock());
                     if (expected != null && !expected.Matches(status))
                         throw new IOException("Game identity changed. Refresh and choose again.");
@@ -54,6 +55,12 @@ public static class ByondStatus {
                     return new VerifiedGameServer(status, endpoints[index]);
                 } catch (TopicPacingException) { throw; }
                 catch (Exception error) when (error is IOException or SocketException or OperationCanceledException) {
+                    // Once reserved, another address cannot safely write. Preserve the
+                    // verification failure instead of replacing it with a pacing wait.
+                    if (reserved) {
+                        if (error is IOException) throw;
+                        throw new IOException("Public server verification failed after requesting status. Refresh and choose again.", error);
+                    }
                     continue;
                 }
             }

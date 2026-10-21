@@ -112,6 +112,8 @@ public sealed class TopicPacer {
     }
 
     private DateTimeOffset Clock() {
+        // Keep this anchor fixed: rebaselining on early checks could absorb many
+        // small wall-clock advances and prematurely expire a persisted reservation.
         var now = utc();
         var elapsed = monotonic() - startedTick;
         if (now.Offset != TimeSpan.Zero || elapsed < 0 || Math.Abs((now - startedUtc).TotalMilliseconds - elapsed) > 2000)

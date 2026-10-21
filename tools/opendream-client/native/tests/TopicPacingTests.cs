@@ -76,6 +76,16 @@ internal static class TopicPacingTests {
         driftClock.Tick = 132000; driftClock.Utc = Epoch.AddSeconds(134);
         Require(Wait(() => drift.Check(Target)) == 1, "Clock drift consumed the wire-spacing margin");
         driftClock.Tick = 133000; driftClock.Utc = Epoch.AddSeconds(135); drift.Check(Target); assertions++;
+        var cumulativePath = Scope(); var cumulativeClock = new Clock(); var cumulative = cumulativeClock.Pacer(cumulativePath);
+        cumulative.Reserve(Target, new[] { Address });
+        var cumulativeState = File.ReadAllText(Path.Combine(cumulativePath, "requests.json"));
+        for (var step = 1; step <= 2; step++) {
+            cumulativeClock.Utc = Epoch.AddSeconds(step);
+            Require(Wait(() => cumulative.Check(Target)) >= 135, "Early check absorbed cumulative clock drift");
+        }
+        cumulativeClock.Utc = Epoch.AddSeconds(3); Refuse(() => cumulative.Check(Target));
+        Require(File.ReadAllText(Path.Combine(cumulativePath, "requests.json")) == cumulativeState,
+            "Clock drift pause changed the persisted reservation");
 
         foreach (var corrupt in new[] { "", "{", new string('x', 32769), "{\"Schema\":1,\"Schema\":1,\"Entries\":[]}",
             "{\"Schema\":1,\"Entries\":[],\"Other\":1}", "{\"Schema\":2,\"Entries\":[]}" }) {
@@ -164,13 +174,49 @@ internal static class TopicPacingTests {
             (_, _, beforeWrite, _) => { beforeWrite(); writes++; return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet()); },
             () => wireClock.Utc, expected: verified.Status, pacer: wirePacer);
         Require(dns == 1 && writes == 2 && fresh.Status.CheckedAt == wireClock.Utc, "Eligible prejoin reused old status/DNS");
-        var badClock = new Clock(); var badPacer = badClock.Pacer(Scope()); var badWrites = 0;
-        try {
-            await ByondStatus.Query(Target, _ => Task.FromResult(new[] { Address, alternative }),
-                (_, _, beforeWrite, _) => { beforeWrite(); badWrites++; return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet("{}")); },
-                () => badClock.Utc, pacer: badPacer);
-            throw new Exception("Malformed status accepted");
-        } catch (TopicWaitException) { Require(badWrites == 1, "Written malformed response caused another Topic write"); }
+        foreach (var failure in new[] { "malformed", "identity", "read", "socket", "cancelled" }) {
+            var failedPath = Scope(); var failedClock = new Clock(); var failedPacer = failedClock.Pacer(failedPath);
+            var attemptsAfterFailure = 0; var writesAfterFailure = 0;
+            try {
+                await ByondStatus.Query(Target, _ => Task.FromResult(new[] { Address, alternative }),
+                    (_, _, beforeWrite, _) => {
+                        attemptsAfterFailure++; beforeWrite(); writesAfterFailure++;
+                        if (failure == "read") throw new IOException("Injected read failure");
+                        if (failure == "socket") throw new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.ConnectionReset);
+                        if (failure == "cancelled") throw new OperationCanceledException();
+                        return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet(failure == "malformed" ? "{}" :
+                            "{\"players\":0,\"map_name\":\"Other\",\"map_gamemode\":\"Nomads\",\"game_id\":\"round-27\"}"));
+                    }, () => failedClock.Utc, expected: verified.Status, pacer: failedPacer);
+                throw new Exception("Failed response accepted: " + failure);
+            } catch (IOException error) when (error is not TopicPacingException) {
+                Require(attemptsAfterFailure == 1 && writesAfterFailure == 1, "Post-reservation failure dialed another address: " + failure);
+            }
+            Require(Wait(() => failedPacer.Check(Target)) == 137, "Failed response lost its durable reservation: " + failure);
+        }
+        var invalidClock = new Clock(); var invalidPacer = invalidClock.Pacer(Scope()); var invalidAttempts = 0;
+        var invalidDiscovery = new ServerDiscovery(candidate => ByondStatus.Query(candidate,
+            _ => Task.FromResult(new[] { Address, alternative }), (_, _, beforeWrite, _) => {
+                invalidAttempts++; beforeWrite(); return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet("{}"));
+            }, () => invalidClock.Utc, pacer: invalidPacer));
+        var invalidSnapshot = await invalidDiscovery.Fetch("ValZarGaming");
+        Require(invalidSnapshot.Unverified == 2 && invalidSnapshot.Deferred?.Count == 0 && !invalidSnapshot.PacingPaused &&
+            invalidAttempts == 2, "Malformed responses were displayed as waiting or dialed a second address");
+        var identityClock = new Clock(); var identityPacer = identityClock.Pacer(Scope()); var identityChecks = 0; var identityAttempts = 0;
+        var changedIdentity = new DiscoveryFixture(_ => Task.FromResult(new ServerSnapshot(new[] { verified.Status }, 0)), selected => {
+            identityChecks++;
+            return ByondStatus.Query(selected.Target, _ => Task.FromResult(new[] { Address, alternative }),
+                (_, _, beforeWrite, _) => {
+                    identityAttempts++; beforeWrite();
+                    return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet("{\"players\":0,\"game_id\":\"changed\"}"));
+                }, () => identityClock.Utc, expected: selected, pacer: identityPacer);
+        });
+        using (var identityOutput = new StringWriter()) {
+            await ServerBrowser.Run("ValZarGaming", changedIdentity, new StringReader("1\nJ\n1\nB\n"), identityOutput,
+                _ => throw new Exception("Changed identity launched"));
+            Require(identityChecks == 1 && identityAttempts == 1 && identityOutput.ToString().Contains("could not be verified") &&
+                !identityOutput.ToString().Contains("Press J when ready"), "Changed identity retained a deferred/selectable prejoin");
+        }
+        var badClock = new Clock(); var badPacer = badClock.Pacer(Scope());
         using (var cancellation = new CancellationTokenSource()) {
             cancellation.Cancel(); var cancelledDns = 0;
             try {
