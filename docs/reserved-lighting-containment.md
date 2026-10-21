@@ -2,7 +2,7 @@
 
 `.github/workflows/reserved-lighting-containment.yml` prepares a separate
 manual pilot; container execution requires workflow_dispatch and confirmation defaults to false.
-A PR introducing this suite runs only eight injected offline tests through the
+A PR introducing this suite runs only nine injected offline tests through the
 existing change-selection policy. PR events cannot enter the container job. Its
 only runner is the standard `ubuntu-24.04` GitHub-hosted runner for this public
 repository. A live repository-ID/visibility check, exact reviewed SHA and manual
@@ -34,10 +34,22 @@ that stopped container. An uncertain create is reconciled by its fresh unique
 name and labels; it is never started/retried automatically. Every incomplete
 result is retained as incomplete. CLI calls are observed with a 1 MiB log
 detection threshold, which may overshoot between polls; it is not a hard host
-disk quota. Aggregate controller/cleanup deadlines are 240/30 seconds. Eight
+disk quota. Aggregate controller/cleanup deadlines are 240/30 seconds. Nine
 injected tests exercise these source contracts; they do not prove Docker or
 cgroup behavior. A successful future pilot would still not admit BYOND or the
 22-run measurement envelope.
+
+The single approved pilot at merge `7b5ce04d` failed before its first Python
+control started: Docker rejected default log compression with `max-file=1`.
+Its incomplete receipt confirmed only removal of the owned container, with zero
+descendant observations and no in-container enforcement acceptance. The local
+driver now explicitly requests `compress=false` while retaining `max-size=1m`
+and `max-file=1`; prestart inspection rejects any different logging settings.
+This source correction and its injected regression do not prove a successful
+start or any runtime control. That allocation is consumed; another execution
+requires fresh approval and an independently verified successor packet.
+Failed evidence: https://github.com/Civ13/Civ13/actions/runs/39633874487.
+Supported logging option: https://docs.docker.com/engine/logging/drivers/local/.
 
 The workflow must be present on master before GitHub permits manual dispatch.
 This independent registration contains no experimental lighting, BYOND runtime,

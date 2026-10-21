@@ -79,7 +79,7 @@ def container_args(name, owner, head, script, case, cidfile):
             '--mount','type=bind,src='+str(script)+',dst=/pilot.py,readonly',
             '--workdir','/work','--env','PYTHONDONTWRITEBYTECODE=1','--env','PYTHONUNBUFFERED=1',
             '--restart','no','--stop-timeout','1','--no-healthcheck',
-            '--log-driver','local','--log-opt','max-size=1m','--log-opt','max-file=1',
+            '--log-driver','local','--log-opt','max-size=1m','--log-opt','max-file=1','--log-opt','compress=false',
             '--entrypoint','/usr/local/bin/python3',IMAGE,'-B','/pilot.py','--inside',case]
 
 
@@ -99,6 +99,7 @@ def inspect_settings(info, script):
     require(host['CapDrop']==['ALL'] and 'no-new-privileges' in host['SecurityOpt']
             and not host.get('PortBindings') and not host.get('Devices') and not host.get('Binds'), 'Capability/port/device drift')
     require(host['Tmpfs']=={'/work':f'rw,noexec,nosuid,nodev,size={SCRATCH},mode=1777'} and host['ShmSize']==1048576, 'Scratch quota drift')
+    require(host.get('LogConfig')=={'Type':'local','Config':{'max-size':'1m','max-file':'1','compress':'false'}}, 'Logging settings drift')
     mounts=info['Mounts']
     require(len(mounts)==1 and mounts[0]['Type']=='bind' and mounts[0]['Source']==str(script)
             and mounts[0]['Destination']=='/pilot.py' and mounts[0]['RW'] is False, 'Unexpected writable/host mount')
