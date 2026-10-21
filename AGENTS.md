@@ -127,8 +127,12 @@ independent of --root. Reserve before writing, retain failed reservations and
 correlate validated IP aliases plus configured port. Spacing defers locally;
 never sleep inside the three-second IO budget or silently retry after a write.
 The 137-second reservation covers 130 seconds plus IO/clock margins; new instances
-with recorded history use a 133-second monotonic guard. Clock/state/link failures
-pause locally. J explicitly rechecks a deferred selection; B cancels with no
+reuse system-wide monotonic anchors and cached result/age without adding another
+startup wait. Legacy 1.0.5 wall-only history retains the 133-second migration guard
+for its matching endpoint until its next reservation. A lower uptime waits only
+through the new boot's first 133 seconds. Schema 2 caches bounded validated
+metadata, never launch tokens; late results are tied to reservation IDs. Older
+1.0.5 instances fail closed on schema 2. Clock/state/link failures pause locally. J explicitly rechecks a deferred selection; B cancels with no
 background callback. Waiting requires new DNS/status, never extended old tokens.
 Wall time cannot prove game-time advancement or clear a server ban. Do not probe
 the known banned Desktop source until owner-coordinated normal eligibility.

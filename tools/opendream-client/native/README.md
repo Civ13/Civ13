@@ -1,8 +1,8 @@
 # Single-file Windows launcher
 
-This branch contains an unreleased direct-status candidate. It must not replace
-the working 1.0.4 release until exact-head packaging/CI, independent review and a
-genuine public BYOND join are verified. No HTTPS server directory or additional
+The direct-status launcher is released as 1.0.5. This source adds an unreleased
+cache/pacing improvement; publishing it still requires exact-head packaging/CI,
+independent review and the applicable acceptance checks. No HTTPS server directory or additional
 backend deployment is required. See [SERVER-DISCOVERY.md](SERVER-DISCOVERY.md).
 One successful status query alone does not establish prejoin or gameplay acceptance.
 
@@ -20,8 +20,15 @@ remains unchanged; public native choices do not download OpenDream.
 
 Public status checks share conservative request spacing across launcher instances
 for this Windows account. A check can be deferred for up to 137 seconds after a
-request; a new instance with recorded request history also has a 133-second
-startup guard. The menu prints the remaining wait and stays responsive. For a
+request. Fresh history is checked immediately, and restarting keeps the actual
+remaining cooldown instead of adding another startup wait. During cooldown the
+menu displays cached results, their age and the remaining wait. A cached success
+is last verified status, not a claim that the server is still online; cached
+failures and checks with no result are distinguished. Cache entries expire after
+ten minutes and never contain a connection/launch token. Existing 1.0.5 history
+has no cache or monotonic timestamp, so its affected endpoint retains one
+conservative 133-second migration wait until a new reservation is recorded.
+The menu stays responsive. For a
 deferred join, press **J** when ready to obtain fresh status, or **B** to cancel.
 No countdown silently sends a request or launches a game. Refresh uses the same
 limiter. Local timing-state problems are reported as paused checks, not an offline
