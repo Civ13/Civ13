@@ -59,6 +59,14 @@ shoulder/back, then retained through do_after. Revalidate the exact item and sou
 before debit; consume only after successful stack.use and clear its actual slot.
 Do not recurse through storage or recreate handles on cancellation. Existing
 get_equipped_items omits shoulder; use the slot getter with equipment priority.
+<!-- 2026-10-21: digging tool and research admission -->
+Trench digging uses Field Defenses, matching the trench shovel unlock; ordinary
+non-harm dirt collection remains ungated. Rock mining accepts pickaxes only at
+both click dispatch and shared action admission. The utensil base includes wood
+knives; retain spoons for loose dirt/sand/snow collection, not rock mining.
+`tests/test_digging_tools.py` checks source-derived gates offline; it does not
+establish connected-client collision or native gameplay acceptance.
+
 <!-- 2026-10-19: collision mining ownership -->
 Dense mineable underground rock uses one shared click/bump mining action. Its
 explicit optional do_after context owns actor and turf reservations before any
