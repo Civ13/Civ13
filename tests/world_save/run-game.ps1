@@ -51,11 +51,11 @@ try {
     Push-Location -LiteralPath $testRun
     try {
         if ($Visual) {
-            & (Join-Path $ByondBin 'dd.exe') '.world_save_probe.dmb' -invisible -safe -params $parameters -log 'startup.log'
+            & (Join-Path $ByondBin 'dd.exe') '.world_save_probe.dmb' -invisible -trusted -params $parameters -log 'startup.log'
             if ($LASTEXITCODE -ne 0) { throw 'Full-game daemon failed' }
         } else {
             $runtimeWatch = [Diagnostics.Stopwatch]::StartNew()
-            $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('.world_save_probe.dmb','-invisible','-safe','-params',$parameters,'-log','startup.log') -WorkingDirectory $testRun -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $testRun 'daemon-stdout.log') -RedirectStandardError (Join-Path $testRun 'daemon-stderr.log')
+            $daemon = Start-Process -FilePath (Join-Path $ByondBin 'dd.exe') -ArgumentList @('.world_save_probe.dmb','-invisible','-trusted','-params',$parameters,'-log','startup.log') -WorkingDirectory $testRun -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $testRun 'daemon-stdout.log') -RedirectStandardError (Join-Path $testRun 'daemon-stderr.log')
             $timedOut = $false
             try {
                 if (-not $daemon.WaitForExit($TimeoutSeconds * 1000)) {

@@ -84,19 +84,19 @@
 
 /mob/living/simple_animal/bison/death()
 
-	bison_count &= src
+	bison_count -= src
 	..()
 /mob/living/simple_animal/bison/Destroy()
 
-	bison_count &= src
+	bison_count -= src
 	..()
 /mob/living/simple_animal/bisonbull/death()
 
-	bison_count &= src
+	bison_count -= src
 	..()
 /mob/living/simple_animal/bisonbull/Destroy()
 
-	bison_count &= src
+	bison_count -= src
 	..()
 /mob/living/simple_animal/bisonbull/New()
 	bison_count |= src

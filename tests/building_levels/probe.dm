@@ -1,7 +1,7 @@
 /world
 	maxx = 10
 	maxy = 10
-	maxz = 1
+	maxz = 7
 	turf = /turf/floor/plating
 	area = /area/caribbean
 	hub = ""
@@ -52,17 +52,22 @@
 		GLOB.stat_set_event = new
 		GLOB.name_set_event = new
 		map = new /obj/map_metadata/building_tester
+		// Support-tier tests use compiled planes; growth policy has its own fixture.
+		map_storage.record_compiled_dimensions()
+		for (var/turf/T in world)
+			if (T.z > 1)
+				new /turf/sky/building(T)
 		var/turf/site = locate(4,4,1)
 		building_assert(building_roof_error(site), "unsupported construction rejected")
 		var/obj/structure/roof_support/P = new(site)
 		var/obj/roof/R = building_construct_roof(site, /obj/roof/wood, null)
-		building_assert(world.maxz == 2 && R, "roof allocates upper level")
+		building_assert(world.maxz == 7 && R, "roof uses compiled upper level")
 		var/obj/covers/C = R.building_floor()
 		building_assert(C && C.building_roof() == R, "pair resolves both faces")
 		building_assert(istype(locate(10,10,2), /turf/sky/building), "new level is open air")
 		building_assert(!building_allocate_level(4), "nonadjacent allocation rejected")
 		persistence_save_in_progress = TRUE
-		building_assert(!building_allocate_level(3), "save excludes allocation")
+		building_assert(!building_allocate_level(8), "save excludes allocation")
 		persistence_save_in_progress = FALSE
 		var/obj/structure/roof_support/upper = new(get_turf(C))
 		var/obj/roof/R2 = building_construct_roof(get_turf(C), /obj/roof/wood, null)
@@ -170,4 +175,3 @@
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"
 		text2file("FAIL: [E.name]", "result.txt")
 	shutdown()
-

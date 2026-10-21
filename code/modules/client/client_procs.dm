@@ -274,8 +274,9 @@
 	movementMachine_clients += src
 
 /client/MouseEntered(atom/object, location, control, params)
-	mouse_x = object.x
-	mouse_y = object.y
+	mouse_x = object ? object.x : 0
+	mouse_y = object ? object.y : 0
+	update_hover_name(object)
 
 	//////////////
 	//DISCONNECT//
@@ -298,13 +299,16 @@
 
 /client/MouseMove(object, location, control, params)
 	UpdateMouseScreenLoc(params)
+	update_hover_name(object)
 	..()
 
 /client/MouseDrag(src_object,over_object,src_location,over_location,src_control,over_control,params)
 	UpdateMouseScreenLoc(params)
+	update_hover_name(over_object)
 	..()
 
 /client/Del()
+	clear_hover_name()
 	webhook_send_logout(ckey)
 
 	if (processes.client)

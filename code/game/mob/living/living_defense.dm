@@ -198,8 +198,8 @@
 		if (ismob(O.thrower) && M && M.client)
 			var/client/assailant = M.client
 			if (assailant)
-				attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>")
-				M.attack_log += text("\[[time_stamp()]\] <font color='red'>Hit [name] ([ckey])([stat]) with a thrown [O]</font>")
+				append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been hit with a [O], thrown by [M.name] ([assailant.ckey])</font>"))
+				M.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Hit [name] ([ckey])([stat]) with a thrown [O]</font>"))
 				if (!istype(src,/mob/living/simple_animal/mouse))
 					msg_admin_attack("[name] ([ckey]) was hit by a [O], thrown by [M.name] ([assailant.ckey]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)", assailant.ckey, ckey)
 		if (istype(O, /obj/item/weapon/snowball))
@@ -269,8 +269,8 @@
 		return
 
 	adjustBruteLoss(damage)
-	user.attack_log += text("\[[time_stamp()]\] <font color='red'>attacked [name] ([ckey])</font>")
-	attack_log += text("\[[time_stamp()]\] <font color='orange'>was attacked by [user.name] ([user.ckey])</font>")
+	user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>attacked [name] ([ckey])</font>"))
+	append_attack_log(text("\[[time_stamp()]\] <font color='orange'>was attacked by [user.name] ([user.ckey])</font>"))
 	visible_message("<span class='danger'>[user] has [attack_message] [src]!</span>")
 	user.do_attack_animation(src)
 	spawn(1) updatehealth()

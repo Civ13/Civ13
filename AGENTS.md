@@ -1,7 +1,140 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-20: passive production hang triage -->
+`scripts/hang-watchdog` observes Linux process identity and status-file metadata
+with monotonic deadlines. Its dedicated output is bounded and sanitized; it never
+starts/stops/restarts a game, saves/imports, elevates, or attaches a debugger.
+`tests/hang_watchdog` uses offline proc fixtures only. Keep the ordinary desktop
+test installation on approved master; PR worktrees are not runtime installations.
+Manual debugger/tracer examples require separate approval and confirmed detach;
+an i386 syscall 0 is restart_syscall, not the host's 64-bit read syscall.
+<!-- 2026-10-20: reviewed video upload boundary -->
+<!-- 2026-10-20: deferred control-read capability -->
+Deferred upload controls use a dedicated Variables/Environments/Metadata-read App,
+installed only for Civ13/Civ13, through eight named variable GETs. Its ephemeral
+token never substitutes for queue/actions GITHUB_TOKEN. Pinned create-github-app-token
+v3.3.0 lacks permission-variables; omit all permission inputs only while that
+installation retains exactly the three approved read permissions. Keep post-job
+revocation and feature OFF until separately approved storage/activation. Create
+and read back master-only youtube-controls before placing its key; a missing
+workflow environment otherwise auto-creates without branch protections.
+`docs/youtube-upload.md` defines the manual/default-off public YouTube uploader contract after explicit owner approval.
+Only trusted default-branch code receives environment credentials; PR media stays
+data, with decoder inspection in a secret-free job. Per-clip human approval binds
+media/metadata/destination; durable reservations block ambiguous retries. Never
+delete uncertain one-off receipts or create OAuth grants from source-PR approval.
+The user-run `tools/youtube/authorize.py` checks only project
+`calcium-circuit-384407`, uses manual Google PKCE consent and a separate stdin
+secret-placement confirmation. Setup requires explicitly disabled repository
+activation variables; uncertain secret writes require owner reconciliation even
+when immediate metadata reads show absence. Tests use fake services/local loopback.
+The owner selected sole required reviewer `valzargaming` (User ID `7202504`),
+with self-review allowed and administrator bypass disabled. Keep explicit manual
+environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
+
+<!-- 2026-10-19: protected sleep buckle ownership -->
+Protected sleep relocates the body between z-levels, so release only its matching
+reciprocal buckle before entry or wake. Keep return coordinates captured before
+unbuckling, reject mismatched occupants, and leave sleep protection active on a
+failed wake. Both delayed verbs retain the initiating client/body and recheck the
+persistence gate at transfer time. Per-level saves still reject cross-z object
+fields; never suppress that guard to hide a stale spatial relationship.
+`map_storage.last_save_reference_failure` is a bounded admin VV snapshot for
+cross-level and duplicate-entry failures, including direct Save_World calls.
+Keep only scalar identities/coordinates and at most eight schema-field frames;
+never pin live objects, retain values or print lookup refs in public reports.
+Preserve it through cleanup, clear it only at accepted save admission, and verify
+lookup type/location because native refs can be recycled after deletion.
+
+<!-- 2026-10-20: bronze Help retrieval -->
+Keep reviewed bronze production and availability evidence in one retrieval record;
+separate ranking let iron-ingot excerpts displace bronze research gates. The route
+uses copper/tin ore in fired blacksmith pots/jugs, then mold pouring and anvil work.
+Ovens fire clay molds; kilns alloy the loaded ores. Preserve map and actual node
+checks, and never infer a player's completed research from era metadata alone.
+
+<!-- 2026-10-18: private Help conversation boundary -->
+Help history belongs to an authenticated client session, never a saved mob.
+`conversation_probe.dm` is included by the existing isolated Help fixture;
+conversation generation and action-token negative controls check stale replies
+and copied links. The role-free worker contract derives only user/assistant
+turns, bounded by UTF-8 history and complete ASCII-JSON request bytes. Spool
+cleanup is not encryption or guaranteed crash-time erasure. Server and worker
+updates require separately coordinated restarts; offline checks do not prove them.
+<!-- 2026-10-19: consumed crafting handles -->
+Consumed wood handles are selected from hands and real equipment slots, including
+shoulder/back, then retained through do_after. Revalidate the exact item and source
+before debit; consume only after successful stack.use and clear its actual slot.
+Do not recurse through storage or recreate handles on cancellation. Existing
+get_equipped_items omits shoulder; use the slot getter with equipment priority.
+<!-- 2026-10-21: digging tool and research admission -->
+Trench digging uses Field Defenses, matching the trench shovel unlock; ordinary
+non-harm dirt collection remains ungated. Rock mining accepts pickaxes only at
+both click dispatch and shared action admission. The utensil base includes wood
+knives; retain spoons for loose dirt/sand/snow collection, not rock mining.
+`tests/test_digging_tools.py` checks source-derived gates offline; it does not
+establish connected-client collision or native gameplay acceptance.
+
+<!-- 2026-10-19: collision mining ownership -->
+Dense mineable underground rock uses one shared click/bump mining action. Its
+explicit optional do_after context owns actor and turf reservations before any
+spawn; never queue mining from deferred living.Bump work or switch the player's
+active hand. The custom saver must exclude both reservation pointers.
+
+<!-- 2026-10-18: native help spool format -->
+Native DM can interpolate world.realtime in scientific notation, and text2file
+adds LF/CRLF to ready markers. The help bridge validates bounded opaque IDs and
+removes exactly one native line ending at admission and completion. Run
+tests/player_help/run-spool-controls.py for the three old-defect controls;
+all model transports in these spool checks are injected and offline.
+
+<!-- 2026-10-18: native Help line endings -->
+BYOND 516.1681 rejects the DM string escape `\r`; use `ascii2text(13)` for
+carriage-return normalization. `\n` is supported. JSON-decoded CRLF test data
+must still exercise the actual native renderer, not only a Python equivalent.
+
+<!-- 2026-10-18: isolated fixture ports -->
+`world.OpenPort(0)` opens an available port; `OpenPort("none")` closes it.
+The Help fixture disables compile-time visibility, rejects clients and overrides
+OpenPort to prevent reopening. These controls do not replace external socket monitoring.
+
+<!-- 2026-10-18: restored input clocks and action locks -->
+The custom saver includes changed tmp fields. Mob next_click/next_move and
+may_do_after/may_do_mob are process-local deadlines/locks: exclude them on export
+and legacy import through persistence_runtime_var. Do not reset them on every
+Login or click, which would bypass live cooldowns/actions. The world-save
+runner's --input-runtime adapter checks disk-backed migration and the production
+early click gate; connected-client interaction remains separate evidence.
+
+<!-- 2026-10-21: direct BYOND status discovery -->
+Public native menus probe only the configured Civ13.com and ValZarGaming hostnames
+on ports 1714 and 1715. These are candidates, never an online assertion or a mode
+mapping. No HTTPS server directory, backend deployment, port ranges or arbitrary
+public --server-port override is involved. Resolve the entire A-answer set and
+reject any nonpublic member before opening sockets. Try literals sequentially
+within one three-second total deadline per candidate, with fair remaining slices.
+Each menu refresh checks only its provider's two candidates concurrently. Valid
+integer players=0 is online; optional metadata is unknown when absent and rejects
+the response when malformed. Recheck directly before joining; reject changed or
+missing previously observed nonempty map/mode/round identity. Bind verified
+status, literal and configured port together, validate freshness at dispatch,
+and launch only the verified BYOND client. Never add a permanent IP pin or reuse
+this query for OpenDream. Source merge does not activate the launcher feed;
+exact-head packaging/CI, independent review and a genuine public join gate release.
+See tools/opendream-client/native/SERVER-DISCOVERY.md.
+Public Topic writes use the fixed per-account status-requests lock/state,
+independent of --root. Reserve before writing, retain failed reservations and
+correlate validated IP aliases plus configured port. Spacing defers locally;
+never sleep inside the three-second IO budget or silently retry after a write.
+The 137-second reservation covers 130 seconds plus IO/clock margins; new instances
+with recorded history use a 133-second monotonic guard. Clock/state/link failures
+pause locally. J explicitly rechecks a deferred selection; B cancels with no
+background callback. Waiting requires new DNS/status, never extended old tokens.
+Wall time cannot prove game-time advancement or clear a server ban. Do not probe
+the known banned Desktop source until owner-coordinated normal eligibility.
+
 ## Language & toolchain
-NEVER use "—": always use "-" instead.
+Never use an em dash; use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
@@ -39,12 +172,26 @@ An experimental open-source BYOND reimplementation. `.vscode/launch.json` has an
 
 ## Maps
 
+<!-- 2026-10-18: centralized level admission -->
+Dynamic z growth must reserve its complete target through world_z_budget before
+the first native resize. The uncalibrated hard ceiling is 1,400,000 total grid cells,
+with one roof-added plane and lower-only host settings. Production additionally
+refuses new growth as UNMEASURED until a calibrated memory/headroom profile is
+reviewed; configuration cannot bypass this. Isolated tests select a tests-only
+subclass, never a production opt-out. This is not an OOM guarantee. Overcap saved expansion holds before mutation and blocks
+later save overwrite. See docs/new-z-budget.md and tests/new_z_budget/prepare.py;
+source preparation does not establish native acceptance.
+
 - Maps use lowercase names with `_` for spaces.
 - WIP maps go in `maps/WIP/`.
 - No second z-levels unless same size as main level.
 - Map backups should use Git, not saved copies in the repo.
 
 ### DMM format rules
+
+<!-- 2026-10-16: standalone map constants -->
+- Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
+  MapDiffBot's standalone map reader rejects unresolved variables in map values.
 
 - All tile keys within a map **must be the same length** (all 2-char or all 1-char). Mixing breaks BYOND's parser.
 - Every grid row must have exactly `world.maxx` tile keys. Different row widths cause load failures.
@@ -72,6 +219,27 @@ all three arguments in season overrides and honor `looping = FALSE` to avoid
 starting extra recurring cycles from the admin command.
 
 ### Player spawning
+
+<!-- 2026-10-17: lobby dispatch diagnosis -->
+The private own-Host snapshot reports bounded own-client and current-lobby Join entry/phase
+codes. Compiled verb visibility and a successful client menu action do not prove
+server dispatch; require the entry counter or a real human spawn. The cache is
+excluded from custom saves. Lobby phase disappears on mob replacement; the small
+client entry cache survives that transfer. The client-owned Join command forwards
+only its own invoking current lobby mob into the existing admission handler.
+
+<!-- 2026-10-17: invisible lobby verb accessibility -->
+Lobby mobs have invisibility 101. Native lobby verbs must explicitly use
+`set invisibility = 0`: BYOND otherwise inherits source invisibility for command
+accessibility, even when a native menu item is visible. Preserve mob invisibility
+and player vision; verify actual connected-client invocation.
+
+<!-- 2026-10-16: restored occupation capacity -->
+Active saved-round restoration skips fresh setup/autobalance. Initialize job
+position limits separately via `job_master.initialize_position_limits()` in
+current and owned-legacy restores; do not rerun faction/squad/map setup or reset
+current occupancy. The world-save round-state fixture extracts the actual
+fresh-join availability/assignment gates; its `jobs` omission control must fail.
 
 - Jobs define `spawn_location = "JoinLateXXX"` (a string key).
 - Maps place `/obj/effect/landmark{name = "JoinLateXXX"}` objects in the DMM at spawn turfs.
@@ -192,9 +360,43 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-20: extraction instance collateral -->
+The historical extraction instance fixture at b717ad2a6 shared registry state
+across assertions. Its overlap/generation mutants caused downstream failures as well as
+their named targets. Run 39140469088 preserves complete native results; keep its
+failed verdict intact. Explaining collateral is not approval to weaken the
+single-target oracle. See docs/extraction-instance-contract.md.
+
+<!-- 2026-10-17: maintainer rules -->
+- Art: reuse and transform existing art assets where possible. Never use image
+  generation tools (Stable Diffusion and similar). New art made from scratch must
+  use appropriate graphic tools such as vector-based graphics.
+- DreamDaemon must always run as trusted (`-trusted`), with maintainer approval.
+  All repository runners launch `-trusted`; never add `-safe`. Fixtures must still
+  disable outbound hooks/shell effects through their startup adapters.
+
 <!-- 2026-10-13: native catch variable scope -->
 BYOND 516.1681 treats catch variable declarations as proc-scoped. Use distinct
 names for separate catch blocks in one proc or compilation fails with duplicate definition.
+
+<!-- 2026-10-19: combined sub-tile mining acceptance -->
+`tests/human_subtile/run.py --suite mining` stages the full merged game and
+exercises native collision dispatch, mining snapshots and physical offset drift.
+Its mining-position control must fail the same-anchor drift oracle, not merely
+some assertion. Headless authority is adapted: only a separately attached real
+client can establish client.moving ownership through the optional client entry.
+Keep the production adapter disabled until that separate acceptance is met.
+
+<!-- 2026-10-19: opt-in physical human movement -->
+The experimental human adapter keeps the living Move third gameplay flag and
+uses one-use context at movable's native offset seam. Runtime ownership fields
+need explicit custom-save exclusion. Owned capsule presence is detected before
+loader assignments; no-capsule legacy humans retain their old offset policy.
+The minimal world-save stub rejects owned capsules instead of faking restoration.
+Use tests/human_subtile/run.py --prepare-only for offline exact-Git staging;
+native integration and connected-client timing are separate acceptance gates.
+DM reserves proc name run, and an if-local variable cannot be read afterward;
+offline text contracts do not replace the pinned native compiler.
 
 - Follow `docs/game-verification.md` for exact-commit build, isolated-fixture,
   graphical, season-memory, and save-round-trip evidence. Reuse probes present in
@@ -223,7 +425,7 @@ and the full metadata fixture audit inherited area defaults and placed areas.
   real constructors in temporary storage. New saves use version-2 typed values
   and sharded entries; retain legacy flat-entry reading. Never restore `loc`,
   `pixloc`, or client session fields as ordinary variables. Linux DreamDaemon
-  `-safe` requires a relative log path inside the isolated working directory.
+  needs a relative log path inside the isolated working directory.
 
 <!-- 2026-10-14: optional save fields and player reclaim -->
 - Reading an absent native savefile field can create a null directory entry.
@@ -254,6 +456,12 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
+
+<!-- 2026-10-15: Modern processor recipe validation -->
+The recipe catalog fixture defaults to era 0. New era-gated machine families
+must select their real supported era in tests/crafting/checks.dm; the reactor
+fuel processor is Modern despite not inheriting civ_generator. Keep separate
+locked-era/node tests so a fixture-era fix cannot bypass production gating.
 
 <!-- 2026-10-11: staged component workbench -->
 `scripts/check-component-tools.py` now checks staged bench cancellation,
@@ -286,6 +494,34 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-17: bounded own-host agent diagnostics -->
+`docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
+the existing loopback/token/R_HOST lifecycle transport. Pair/trace/bundle are
+offline and allowlist public summaries; raw query files remain private. Trace
+is bounded cached observations, not an engine event log or rendering evidence.
+The DM collector/status extension requires a rebuilt world restart.
+
+<!-- 2026-10-15: native graceful shutdown boundary -->
+Native BYOND `del(world)` can return before process exit. Yield before declaring
+shutdown failure, or transaction cleanup can erase the published recovery intent.
+The lifecycle disk fixture checks the intent after exit; its `shutdown-return`
+negative control reproduces the old immediate cleanup.
+
+<!-- 2026-10-15: archived combat histories -->
+Combat history writers use `append_attack_log`; ghosts share the body's list.
+Keep the mob history declared as `var/list` for native list method resolution.
+Retire rows in place only after the private archive write succeeds. Archive
+failure deliberately retains history, with scalar retry/warning cooldowns.
+`tests/attack_history` checks writer coverage and isolated production contracts;
+its row counts do not establish live process RAM or crash durability.
+
+<!-- 2026-10-15: hover name HUD -->
+`code/_onclick/hud/hover_name.dm` uses a weak target reference on a disposable
+human HUD screen object. Mouse events update it; the existing HUD process
+revalidates stationary targets. Keep masked names behind `get_visible_name()`,
+require a screen slot for inventory visibility, and forward runtime persistence
+exclusions. `tests/hover_name/run.py` exercises native production decisions with
+an injected client boundary, not real client mouse delivery or rendering.
 <!-- 2026-10-15: lighting persistence ownership -->
 Custom saves enumerate tmp lighting fields too. Exclude light/light_sources and
 derived light_source/lighting_corner/lighting_overlay graphs on export and import;
@@ -315,6 +551,14 @@ file/line identities are not bounded. `tests/error_history/run.py` checks real
 logging, viewer bodies and retirement in an isolated native world, with an
 immutable historical log_error control. `--prepare-only` runs no native tools.
 
+<!-- 2026-10-19: bounded launcher transport retries -->
+Launcher retry tests use injected HTTP handlers, never BYOND/accounts. Retry only
+classified resets/timeouts with finite attempts and an overall body-read budget;
+certificate/auth failures, untrusted redirects and bad hashes remain fail-closed.
+Delete only a failed attempt's newly created staged file, never a pre-existing
+path. Preserve TLS validation and redact errors. Proxy IsBypassed(false) alone
+does not prove traffic used a proxy. Source changes do not activate a release.
+
 <!-- 2026-10-14: native launcher packaging -->
 `tools/opendream-client/native/Build.ps1` builds the single-file self-contained
 Windows x64 launcher. Its offline console tests cover mock updates plus actual
@@ -330,6 +574,15 @@ The 769ae4911 baseline compiled cleanly but failed exporting runtime `slots`.
 Load_Entry replaces constructor contents even for an empty saved record; rack
 runtime pointers must be excluded and live internal storage rebound or rebuilt.
 Source-only preparation does not establish native candidate or control acceptance.
+
+<!-- 2026-10-17: yeast bread -->
+Dough bakes into a sliceable loaf only after yeast (5 `enzyme` units) is kneaded
+in and its 5-minute rise deadline passes; otherwise ovens produce flatbread.
+`rise_ready_at` is runtime-only and restarted by `after_load()`; `check_risen()`
+is lazy so a lost wait cannot strand dough. Oven `process()` ejects products onto
+its turf, so fixtures must inspect the turf, not oven contents. `map_storage.Load_Entry`
+does not call `after_load()`; isolated fixtures must call it like the world loader.
+`tests/yeast_bread/run.py` covers this with five generated-source controls.
 
 <!-- 2026-10-12: NPC cover decision parity -->
 `tests/npc_cover/run.py` compiles production cover scoring, LOS and line helpers
@@ -383,6 +636,14 @@ Missing/transparent defaults use a labeled actual paper DMI source symbol;
 constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
 
+<!-- 2026-10-15: atlas unlock and processing contracts -->
+`scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
+separate from catalog field 12's maximum allowed era. Parse research constructors
+with balanced arguments; the enclosing registration call adds another closing
+parenthesis. Processor tiers describe station construction, not use restrictions.
+`tests/crafting_atlas/run.py --compile-only` never starts DreamDaemon; runtime
+navigation and omission controls require the normal isolated runner or CI.
+
 <!-- 2026-10-11: bounded animal harvesting -->
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
 - `tests/animal_harvest/run.py --byond-bin <516.1681-bin>` executes production yields, cancellation/concurrency, binding conservation and object save/load in temporary offline storage. `preview.py` renders existing DMI states for PR sprite review; it is not a gameplay capture or full-server memory test.
@@ -430,6 +691,16 @@ Linux DreamDaemon safe mode rejects an absolute `-log` path. Use a relative
 log filename with the runtime working directory set to temporary storage.
 
 <!-- 2026-10-11: chemistry recipe acceptance -->
+<!-- 2026-10-17: chemical registration -->
+`initialize_chemical_reagents()` keys reagents by `id` and skips nameless types:
+a subtype without its own `id` silently replaces its parent (cafe latte once
+made `"coffee"` resolve to Cafe Latte). Give every concrete reagent an `id` and
+abstract parents `name = null`. A proc on a misspelled path creates a phantom
+registered type. Never redeclare `/datum/chemical_reaction/` with defaults: its
+`required_reagents` were inherited by `kevlar` and `wizard_boy_recipe`. Reactions
+only queue in `handle_reactions()`; fixtures call `process_reactions()`.
+`tests/chemical_registration/run.py` audits all of this natively.
+
 `tests/chemistry/run.py --probe biochemistry` checks production acquisition,
 construction, controlled reactions, heated polymers, gelatin separation and
 engine fuel in temporary storage. See docs/chemistry-recipes.md for game yields,
@@ -465,6 +736,12 @@ Tools under tools/comment-review provide an authenticated-gh local collector and
 Dormant comment-review listeners must be workflow_dispatch-only: GitHub can request approval before evaluating job guards. Keep automatic subscriptions in tools/comment-review/active-events.example.json until a separately reviewed activation.
 
 ## Train verification
+
+<!-- 2026-10-19: inactive Dagger compilation -->
+`tests/dagger_map/compile_map.py` compiles the inactive DMM with production types
+in a disposable root-local DME, plus a missing-type diagnostic control. CI's
+`dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
+compilation is not controller, instancing, protection or gameplay acceptance.
 
 <!-- 2026-10-11: firearm configuration verification -->
 Gun configuration is centralized in `code/modules/1713/gunsmithing/gun_configuration.dm`.
@@ -521,6 +798,15 @@ crash behavior. Do not replace required gameplay captures with fixture output.
 retained entries are distinct from OS private memory. `run-game.ps1 -ExerciseCapture`
 checks real forward/reverse/stop behavior. Its optional bounded `-Visual` mode
 requires the coordinator's exclusive screen turn; see tests/conveyor/README.md.
+<!-- 2026-10-15: player-facing changelog review -->
+Meaningful player-facing PRs must include exactly one reviewed `changelog: text`
+line in their opening description before being marked ready or merged, outside
+comments, quotes and fenced code. Use concise player-facing text compatible with
+tools/changelog/README.md so the existing GitHub Action can announce it to Discord.
+Use one announcement route per change; do not also add a manifest for that change.
+This requirement does not authorize manual posts, publisher settings changes,
+deployment or claims that the change is running on a server.
+
 <!-- 2026-10-11: shipped Discord changelog -->
 The standalone publisher in tools/changelog supports an explicit `Changelog: text`
 line in a PR opening description on merge into master. Missing or blank means no
@@ -696,6 +982,19 @@ custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
 inside the same lock. Isolated tests do not establish full-server latency.
 
 <!-- 2026-10-12: finite native probe completion -->
+<!-- 2026-10-17: native fixture gotchas found unblocking #3197/#3199/#3082 -->
+Native BYOND 516.1681 `OpenPort("none")` returns 0 even when it closes the port;
+assert the resulting `port == 0` and a refused reopen, not the return value.
+`new /atom` without a loc raises `bad loc`; use `/atom/movable` for atom-hook
+coverage. `underlays`/`overlays` hold appearances, not `/image` datums, so
+`for (var/image/I in D.underlays)` never matches; iterate untyped and read
+`U:icon_state`. Headless HUD fixtures need `makeDatumRefLists()` (fills
+`HUDdatums`) and an explicit `defaultHUD` (only `check_HUD()` sets it, for a
+client). A runner's "failed outside its intended assertion" can mean an earlier,
+equally valid assertion caught the mutation; `*_assert` procs report their own
+throw line, not the caller's. GitHub job logs are readable via the GitHub MCP
+`get_job_logs` when direct log downloads return 403.
+
 Native del(world) does not immediately stop the current procedure. Accumulate
 probe failures before emitting one final result, and return explicitly after
 world disposal so failure paths cannot continue into a passing receipt.
@@ -717,7 +1016,28 @@ ordinary prestartup direct calls. tests/lighting_startup checks production
 bodies, shared identity, late replacement and failed waiters against a baseline;
 its adapted rendering does not establish client lighting acceptance.
 
+<!-- 2026-10-18: building renderer gravity -->
+Building-sky entry must exempt /atom/movable/lighting_overlay explicitly; it is
+not an /obj/effect. Runtime level allocation and turf replacement can otherwise
+drop a black renderer onto lit ground. The building lighting probes separate
+replacement callbacks, explicit entry, and an adapted allocation interleave.
+They verify native lighting state, not connected-client rendering.
+
 <!-- 2026-10-12: lighting reinitialization -->
+<!-- 2026-10-17: restored-round lighting -->
+Turf luminosity is always 0; native tile visibility comes from lighting overlay
+`luminosity` (an overlay at 0 leaves its tile black). Invisible overlays still
+light their tile: `invisibility` 100 only stops shading being drawn. Pregame
+overlays are hidden (100) until daylight is applied, and corner activation does
+not queue overlay updates; only light sources and daylight do. Fresh rounds
+apply daylight through the roundstart hook, but restored rounds skip
+`ticker.setup()`, so `restore_round_state()` calls `apply_restored_lighting()`
+for every restored round, including legacy saves without durable metadata.
+`tests/core_boot/run.py --lighting-restart --map maps/nomads/nomads_europe.dmm`
+checks a real save, fresh-process import and sampled overlay luminosity; its
+`restored-lighting` control removes that application. Default Nomads cannot be
+saved (cross-level ladders), so use a single-level persistence map.
+
 Lighting startup must reconcile existing inactive shared corners after adding overlays, as well as activating fresh corners. Native largest-startup fixtures exercise a later overlay pass after standalone corner creation; use bounded overlay-master visits without retaining a corner registry.
 
 <!-- 2026-10-12: native population readiness -->
@@ -731,6 +1051,10 @@ logs and material wear. tests/animal_combat/run.py checks compiled inherited
 health defaults, native Life, single sharp/blunt attacks and wear across behavior
 branches, noncombat dispatch, healing/death and generated negative controls.
 
+<!-- 2026-10-19: injected Windows adapter CI -->
+The bounded-build test suite runs without Windows DLLs. Inject ctypes error
+state too: get_last_error does not exist on Linux. CI explicitly recognizes the
+two added bounded-build tests; passing them is not native containment evidence.
 <!-- 2026-10-14: chemical smoke source retirement -->
 Chemical smoke systems are single-use: their two reaction callers construct fresh
 systems. The hidden reagent source must survive every queued spawn callback, then
@@ -745,8 +1069,62 @@ with numeric keys and null associations. Collection codecs must handle `/alist`
 explicitly; isolated probes must import the production macro. Numeric alist
 indexing addresses keys, so iterate keys instead of positional indexes.
 
+<!-- 2026-10-15: paid wood residue and plant nitrary -->
+Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
+and factories; unknown legacy fuel earns no ash. The existing compost bin's
+optional nitrary mode stores paid feedstock and remaining active-server time,
+excluding its runtime clock. Feedstock uses stack.use without a human argument:
+Production religion otherwise discounts consumption and breaks conservation.
+See docs/wood-ash-compost.md and tests/wood_ash_compost/run.py for isolated
+production-path/native-save checks and generated-source mutation controls.
+
+<!-- 2026-10-15: save and continuous-round guard ordering -->
+Ticker save-in-progress gating precedes continuous persistence-round recovery.
+Do not clear a saved finished flag or change round state while serialization is
+yielding. tests/persistence_round/run.py --negative-control save removes that
+guard and must fail the production ticker/save interaction assertion.
 <!-- 2026-10-15: persistence runtime view helper -->
 ClearMap must preserve the global dview_mob identity. Retiring this runtime mob
 breaks FOR_DVIEW in post-import lighting processing after GC clears the global.
 The lighting recovery fixture runs production lighting_sources.fire(), not only
 light constructor/registration checks; lighting-view removes the preservation guard.
+<!-- 2026-10-18: lazy floor decal tracking -->
+Native nullable tracking lists do not auto-materialize on `|=`: omitting the
+initializer raises a type-mismatch exception. `tests/floor_decal_tracking` covers
+the writer, seasonal reader and native entry compatibility. Ordinary turf saves
+exclude this derived field through their existing saved-variable allowlist.
+
+<!-- 2026-10-19: bot helper contention -->
+Bot control uses nonblocking flock and returns busy (75) without systemctl or
+cooldown writes under contention. The draft unit remains disabled pending
+independent game supervision and native bot-restart/game-survival acceptance.
+<!-- 2026-10-19: serializer profile admission -->
+Test-only save profiling starts after save_world_contents accepts its operation
+token. Never wrap the public Save_World entry on current sources: busy/reentrant
+requests must not restart another serializer's clock. Source tests are offline;
+manual world_save_profile_regressions is separate native evidence.
+
+<!-- 2026-10-19: exclusion dispatch source contract -->
+Runtime-exclusion hooks can have early mining ownership guards before their
+terminal list-membership return. Preserve those guards when replacing only the
+list with switch dispatch; source fixtures must pin current inherited helpers
+and include all mining fields. Offline source parity is not native evidence.
+
+<!-- 2026-10-19: Linux exclusion parity lane -->
+Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
+parity and three controls, retaining receipts. It is separate from run.py's held
+Windows grant runner; neither an offline pass nor workflow addition proves native
+parity, and this lane makes no benchmark or listener-sampling claim.
+
+<!-- 2026-10-19: native bind versus host address -->
+Linux BYOND world.address can report the host interface even with -ip 127.0.0.1.
+Isolated exclusion CI verifies the engine's startup bind diagnostic plus closed
+port/refused reopen state; do not use world.address as the socket-bind oracle.
+
+<!-- 2026-10-19: independent typed wait contexts -->
+`do_after` keeps mining_context in its ninth argument; opt-in gameplay_context
+is tenth and forwarded by name. Reject simultaneous contexts before either
+claim. Preserve mining progress/owner cleanup and ordinary null callback order.
+The gather disabled-source hashes project reviewed master; refresh them only
+after verifying all four full-file projections. Idle-metabolism extraction must
+project the disabled helper before finding its conditional proc declaration.

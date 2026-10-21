@@ -1996,6 +1996,8 @@ RECIPE: /material/wood/soft/,small mill,/obj/structure/mill,4,90,1,1,economy & p
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,4,0,0,8,null
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,dew collector,/obj/structure/reagent_dispensers/dew_collector,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/soft/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
 RECIPE: /material/wood/soft/,oil deposit,/obj/structure/oil_deposits,6,100,1,1,economy & production,105,0,0,8,null
@@ -2585,3 +2587,5 @@ RECIPE: /material/electronics/,network landline telephone,/obj/item/weapon/telep
 RECIPE: /material/electronics/,cable network terminal,/obj/structure/telecom/terminal,8,150,1,1,none,160,0,0,8,null
 RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1,1,none,105,0,0,8,null
 RECIPE: /material/electronics/,solar array controller,/obj/structure/civ_generator/solar,20,200,1,1,none,105,0,0,8,null
+RECIPE: /material/electronics/,controlled reactor generator,/obj/structure/civ_generator/nuclear,40,300,1,1,none,105,0,0,8,null
+RECIPE: /material/steel/,reactor fuel processor,/obj/structure/reactor_fuel_processor,20,200,1,1,none,105,0,0,8,null

@@ -1,12 +1,35 @@
 # Crafting atlas
 
-The IC **Crafting Atlas** verb opens a searchable, paginated reference in the
-game browser. Its shared catalog contains recipe dependencies, quantities,
-catalog alternatives, research conditions and links to production source.
-Pages contain at most 12 recipes; requests are limited to once per second.
+The IC **Crafting Atlas** verb opens a local dependency diagram in the game
+browser. Craft menus link to the same default view. Search and unlock-era or
+processor filters narrow a sorted index of at most 150 matches; refine filters
+to reach additional records. Select a recipe to follow inputs, quantities and
+outputs. **Legacy paginated list** deliberately opens the older 12-record pages.
+Requests are limited to once per second.
 Icons are compiled from inherited defaults without constructing any items.
 The hosted searchable diagram is published alongside source documentation at
 https://civ13.github.io/Civ13/crafting/ by the existing Pages workflow.
+
+## Unlock eras and processors
+
+Era metadata comes from explicit minimum-era gates or the actual research node's
+`era_tier`, rather than the catalog's maximum allowed era. That upper bound
+remains in conditions and `maximum_era`. Research can be ahead of the map era;
+the filter does not claim that a faction currently has the research, resources,
+skill or map access. Multiple explicit tiers remain selectable individually or
+through **Multiple eras**. Unmapped and contextual routes stay **Unknown**.
+
+Nearby sawmills and grain mills expose **Processing Reference**. The processor
+views show the three sawmill variants (4/10/12 nominal planks per log, with
+skill-failure reductions) and manual/large grain conversions, including wheat
+to flour. Grain quantities count whole objects, not equal reagent volumes.
+Conditions describe anchoring, power, action completion, mood and stamina.
+Processor era annotations describe station construction research, not a new
+restriction on using an existing machine. Gameplay recipes are unchanged.
+
+`scripts/atlas/catalog_metadata.py` extracts these conversions from production
+code and rejects recognized source-contract changes for review. It does not
+assert that every processor in the game is covered.
 
 ## Obtaining resources
 

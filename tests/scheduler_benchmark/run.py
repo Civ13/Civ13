@@ -59,7 +59,7 @@ def main():
             if (source/('probe.'+suffix)).exists(): (folder/('probe.'+suffix)).write_bytes((source/('probe.'+suffix)).read_bytes())
         rows=[]; pending_seen=False; settled=[]; start=time.monotonic()
         with (folder/'daemon.log').open('wb') as log:
-            proc = subprocess.Popen([str(a.byond_bin/'dd.exe'),'probe.dmb','-invisible','-close','-safe','-log','runtime.log','-params',f'count={count}&healthy={int(healthy)}'],cwd=folder,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW)
+            proc = subprocess.Popen([str(a.byond_bin/'dd.exe'),'probe.dmb','-invisible','-close','-trusted','-log','runtime.log','-params',f'count={count}&healthy={int(healthy)}'],cwd=folder,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW)
             try:
                 while proc.poll() is None:
                     elapsed=time.monotonic()-start

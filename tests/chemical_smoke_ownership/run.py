@@ -102,7 +102,7 @@ def main():
         (a.output/'binary-hashes.json').write_text(json.dumps({name: hashlib.sha256((a.output/name).read_bytes()).hexdigest() for name in ('probe.dmb', 'probe.rsc')}, indent=2))
         shutil.copytree(ROOT/'config/names', a.output/'config/names')
         (a.output/'config/config.txt').write_text('tts_on 0\n')
-        run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-safe','-params',
+        run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-trusted','-params',
                               'historical='+str(int(a.negative_control)), '-log','runtime.log'],
                              cwd=a.output, capture_output=True, timeout=180, creationflags=flags)
         (a.output/'daemon.log').write_bytes(run.stdout+run.stderr)

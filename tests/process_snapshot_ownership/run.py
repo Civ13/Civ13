@@ -80,7 +80,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-' + SUITE + '-') as directory:
     print(result.stdout, end='')
     if result.returncode or 'DM compiler version 516.1681' not in result.stdout or '0 errors, 0 warnings' not in result.stdout:
         raise SystemExit('Fixture compilation failed: ' + result.stderr)
-    process = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-safe', '-log', 'runtime.log'],
+    process = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'],
                              cwd=temp, capture_output=True, timeout=20)
     log = (temp / 'runtime.log').read_text()
     print(log, end='')

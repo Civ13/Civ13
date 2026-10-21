@@ -238,6 +238,7 @@
 		var/datum/stack_recipe_list/srl = recipe_list[recipes_sublist]
 		recipe_list = srl.recipes
 	var/t1 = text("<HTML style='line-height: 1.8;'><HEAD>[common_browser_style]<title>Crafting</title></HEAD><body bgcolor='#392611' style='border-color: #392611;'><br><tt><center><strong><font color='white' size='4'>[]</font><br><font color='white' size='3'>Amount Left: []</strong></font><br><br><font color='white' size='2'>", src, amount)
+	t1 += "<a href='?src=\ref[crafting_atlas_reference];atlas_open=1'>Crafting Atlas: ingredients, products and unlock eras</a><br>"
 	for (var/i=1;i<=recipe_list.len;i++)
 		var/E = recipe_list[i]
 		if (isnull(E))
@@ -304,6 +305,9 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/human/H = user
+	var/needs_crafting_handle = FALSE
+	var/obj/item/weapon/material/handle/crafting_handle = null
+	var/atom/handle_crafting_source_loc = null
 	if (!civ_generation_can_build(H, recipe.result_type))
 		to_chat(user, "This generator requires Modern research and crafting skill 105.")
 		return
@@ -736,14 +740,13 @@
 	//Handle Craftin.
 	if (!findtext(recipe.title, "wood spear") && !findtext(recipe.title, "mold"))
 		if (findtext(recipe.title, "hatchet") || findtext(recipe.title, "shovel") || findtext(recipe.title, "pickaxe") || findtext(recipe.title, "spear") || findtext(recipe.title, "battle axe") || findtext(recipe.title, "stone sledgehammer") || findtext(recipe.title, "lead sledgehammer") || findtext(recipe.title, "bronze sledgehammer")|| findtext(recipe.title, "iron sledgehammer")|| findtext(recipe.title, "steel sledgehammer")|| findtext(recipe.title, "uranium sledgehammer"))
-			if (!istype(H.l_hand, /obj/item/weapon/material/handle) && !istype(H.r_hand, /obj/item/weapon/material/handle))
-				to_chat(user, "<span class = 'warning'>You need to have a wood handle in one of your hands in order to make this.</span>")
+			needs_crafting_handle = TRUE
+			crafting_handle = find_crafting_handle(H)
+			if (!crafting_stack_accessible(H) || !crafting_handle)
+				to_chat(user, SPAN_WARNING("You need an accessible wood handle in your hands or equipment to make this."))
 				return
-			else
-				if (istype(H.l_hand, /obj/item/weapon/material/handle))
-					qdelHandReturn(H.l_hand, H)
-				else if (istype(H.r_hand, /obj/item/weapon/material/handle))
-					qdelHandReturn(H.r_hand, H)
+			// Keep this exact item through the wait; cancellation must not recreate it.
+			handle_crafting_source_loc = loc
 
 	if (findtext(recipe.title, "carriage"))
 		if (!istype(H.l_hand, /obj/item/stack/material/rope) && !istype(H.r_hand, /obj/item/stack/material/rope))
@@ -1918,7 +1921,16 @@
 			to_chat(user, SPAN_WARNING(building_error))
 			return
 
+	if (needs_crafting_handle)
+		if (loc != handle_crafting_source_loc || !crafting_stack_accessible(H) || !crafting_handle_available(H, crafting_handle))
+			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
+			return
+
 	if (use(required,H))
+		if (needs_crafting_handle)
+			// No wait between revalidation and commit. Clear the actual equipment slot.
+			H.remove_from_mob(crafting_handle)
+			qdel(crafting_handle)
 		var/atom/O
 		if (recipe && recipe.use_material && recipe.result_type)
 			O = new recipe.result_type(user.loc, recipe.use_material)
@@ -2376,6 +2388,31 @@
 			interact(usr)
 			return
 	return
+
+// The normal menu requires a held stack. Preserve direct callers using a nearby
+// ground stack, while rejecting transferred, nested or remote source materials.
+/obj/item/stack/proc/crafting_stack_accessible(mob/living/human/H)
+	if (QDELETED(src) || QDELETED(H))
+		return FALSE
+	return (loc == H && H.item_is_in_hands(src)) || (isturf(loc) && H.Adjacent(src))
+
+// Consume only removable equipment owned directly by the actor. Do not recurse
+// into storage: return_inv/get_contents do not enforce container accessibility.
+/obj/item/stack/proc/crafting_handle_available(mob/living/human/H, obj/item/weapon/material/handle/handle)
+	if (QDELETED(H) || QDELETED(handle) || handle.loc != H || handle.nodrop || handle.nodrop_special_check())
+		return FALSE
+	var/slot = H.get_inventory_slot(handle)
+	return slot && handle.mob_can_unequip(H, slot, TRUE)
+
+/obj/item/stack/proc/find_crafting_handle(mob/living/human/H)
+	if (QDELETED(H))
+		return null
+	// Preserve left/right hand preference, then use the existing equipment order.
+	for (var/slot in (list(slot_l_hand, slot_r_hand) + slot_equipment_priority))
+		var/obj/item/weapon/material/handle/handle = H.get_equipped_item(slot)
+		if (istype(handle) && crafting_handle_available(H, handle))
+			return handle
+	return null
 
 // Circuit batches pay one iron per circuit, only after both inputs survive the wait.
 /obj/item/stack/proc/electronics_construction_iron(mob/living/human/H, quantity)

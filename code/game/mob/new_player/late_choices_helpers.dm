@@ -272,7 +272,30 @@
 			parts += "[alive_list.len] [display_name]"
 	return parts.Join(" ")
 
-/mob/new_player/proc/show_latechoices_window(list/dat)
+/mob/new_player/proc/show_latechoices_window(list/dat, list/join_jobs)
+	if (lobby_join_validation)
+		lobby_join_jobs = join_jobs
+		return TRUE
+	if (lobby_join_native)
+		if (!lobby_join_active || !lobby_join_current() || !join_jobs || !join_jobs.len)
+			return FALSE
+		if (lobby_join_selected)
+			var/selected_job = lobby_join_selected
+			lobby_join_selected = null
+			if (!(selected_job in join_jobs))
+				return FALSE
+			return process_lobby_join(list("SelectedJob" = selected_job))
+		var/selected_job = WWinput(src, "Choose an available role.", "Join", null, join_jobs)
+		if (!selected_job || !lobby_join_current() || !(selected_job in join_jobs))
+			return FALSE
+		var/join_mode = lobby_join_mode()
+		if (!join_mode)
+			return FALSE
+		// Rerun admission and rebuild the filtered titles after the yielding prompt.
+		lobby_join_selected = selected_job
+		var/list/join_request = list()
+		join_request[join_mode] = 1
+		return process_lobby_join(join_request)
 	var/data = ""
 	for (var/line in dat)
 		if (line != null)

@@ -191,6 +191,16 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	var/datum/human_subtile_pulse/subtile_pulse
+	var/mob/living/human/subtile_actor
+	if (ishuman(src))
+		subtile_actor = src
+		if (subtile_actor.human_subtile_pulse)
+			subtile_pulse = subtile_actor.human_subtile_take_pulse(newloc, direct)
+			if (!subtile_pulse)
+				return FALSE
+		else if (subtile_actor.human_subtile_offset_owned && (step_x || step_y))
+			return FALSE
 	if (direct & (direct - 1))
 		if (direct & TRUE)
 			if (direct & 4)
@@ -225,7 +235,19 @@
 		var/atom/A = loc
 
 		var/olddir = dir //we can't override this without sacrificing the rest of movable/New()
-		. = ..()
+		if (subtile_pulse)
+			. = ..(newloc, direct, subtile_pulse.sx, subtile_pulse.sy)
+			subtile_pulse.engine_return = .
+			if (!subtile_actor || isDeleted(subtile_actor))
+				return .
+			if (!subtile_pulse.restoring && subtile_actor.human_subtile_transaction)
+				var/dx = (x - subtile_pulse.before["x"]) * 32 + step_x - subtile_pulse.before["sx"]
+				var/dy = (y - subtile_pulse.before["y"]) * 32 + step_y - subtile_pulse.before["sy"]
+				subtile_actor.human_subtile_transaction.total_distance += abs(dx) + abs(dy)
+				if (dx || dy)
+					subtile_actor.human_subtile_offset_owned = TRUE
+		else
+			. = ..()
 		if (direct != olddir)
 			dir = olddir
 			set_dir(direct)
@@ -273,6 +295,10 @@
 
 	if (!mob)
 		return // Moved here to avoid nullrefs below
+	if (ishuman(mob))
+		var/mob/living/human/subtile_input_actor = mob
+		if (!subtile_input_actor.human_subtile_input_supported(direct))
+			return FALSE
 
 	if (!mob.next_change_dir)
 		mob.next_change_dir = list(
@@ -315,6 +341,8 @@
 	var/mob_is_living = istype(mob, /mob/living)
 	var/mob_is_human = istype(mob, /mob/living/human)
 	var/mob_loc = mob.loc
+	var/mob/input_actor = mob
+	var/subtile_deadline = null
 
 
 	// prevent passing the invisible wall: now supports diagonals :agony:
@@ -737,7 +765,14 @@
 			else if (mob.confused && prob(40))
 				step(mob, pick(cardinal))
 			else
-				. = mob.SelfMove(n, direct)
+				if (mob_is_human && H.human_subtile_eligible(direct))
+					subtile_deadline = H.human_subtile_deadline(move_delay, world.time)
+					. = H.SelfMove(n, direct, subtile_deadline)
+				else
+					. = mob.SelfMove(n, direct)
+			if (!isnull(subtile_deadline) && (mob != input_actor || input_actor.client != src))
+				moving = FALSE
+				return FALSE
 
 			skipgrab:
 
@@ -789,7 +824,12 @@
 
 		moving = FALSE
 
+		if (!isnull(subtile_deadline) && (mob != input_actor || !input_actor || input_actor.client != src))
+			return FALSE
 		mob.last_movement = world.time
+		if (!isnull(subtile_deadline))
+			move_delay = subtile_deadline
+			return .
 
 		var/t_movement_speed_multiplier = mob.movement_speed_multiplier
 		if (mob.find_trait("Slowness"))
@@ -1139,6 +1179,8 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == EAST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
 		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
@@ -1148,6 +1190,8 @@
 	set instant = TRUE
 	if (mob && mob.movement_eastwest == WEST)
 		mob.movement_eastwest = null
+		for(var/obj/item/turret_controls/C in mob)
+			C.stop_rotation()
 		for(var/obj/item/drone_controller/RC in mob.contents)
 			if(mob.using_drone)
 				RC.stop_move_drone()
