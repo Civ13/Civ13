@@ -102,8 +102,9 @@ class Adapter:
             raise c.WinError(c.get_last_error())
         return value
 
-    def open(self):
+    def open(self, *, creation_guard):
         from guard_config import LIMITS
+        creation_guard()
         self.job = self.check(self.k.CreateJobObjectW(None, None))
         limits = JobLimits()
         # Kill-on-close, one active process (no children), hard process memory cap.
@@ -131,7 +132,7 @@ class Adapter:
         if self.memory(self.k.GetCurrentProcess()) > limits['watcher_private_bytes']:
             raise RuntimeError('Watcher reserve unavailable')
 
-    def launch(self, argv, cwd, root, phase, visible=False):
+    def launch(self, argv, cwd, root, phase, visible=False, *, creation_guard):
         # No inherited handles except explicit log handles; no inherited user env.
         from guard_config import digest, BINARIES
         if digest(argv[0]) != BINARIES[Path(argv[0]).name.lower()]:
@@ -172,6 +173,7 @@ class Adapter:
                                LOCALAPPDATA=str(envroot), USERPROFILE=str(envroot))
             block = c.create_unicode_buffer('\0'.join(k + '=' + v for k, v in sorted(environment.items())) + '\0\0')
             command = c.create_unicode_buffer(subprocess.list2cmdline(argv))
+            creation_guard()
             self.check(self.k.CreateProcessW(argv[0], command, None, None, True,
                        0x4 | 0x400 | 0x80000, block, str(cwd),
                        c.cast(c.byref(startup), c.POINTER(Startup)), c.byref(process)))
@@ -182,6 +184,7 @@ class Adapter:
             self.check(self.k.IsProcessInJob(process.process, self.job, c.byref(member)))
             if not member.value:
                 raise RuntimeError('Suspended process Job ownership unverified')
+            creation_guard()
             if self.k.ResumeThread(process.thread) == 0xffffffff:
                 raise c.WinError(c.get_last_error())
             return process
