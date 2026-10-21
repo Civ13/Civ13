@@ -112,8 +112,19 @@
 	qdel(duplicate_owner)
 	M.test_owners[A] = SB.owner
 	equipment_assert(!M.owned(A) && !M.visit_hub(A) && !M.deploy(A) && SA.profile["revision"] == identity_revision, "changed client identity cannot operate original account session")
+	equipment_assert(!SA.house.interaction_current(A, SA), "yielded house choice rejects changed owner identity")
 	M.test_owners[A] = SA.owner
 	equipment_assert(M.owned(A) && M.owned(B), "original distinct identities retain their own sessions")
+	equipment_assert(SA.house.interaction_current(A, SA), "current home session accepts post-prompt action guard")
+	SA.transitioning = TRUE
+	equipment_assert(!SA.house.interaction_current(A, SA), "yielded house choice rejects a concurrent transition")
+	SA.transitioning = FALSE
+	SA.profile["state"] = "raid"
+	equipment_assert(!SA.house.interaction_current(A, SA), "yielded house choice rejects changed home phase")
+	SA.profile["state"] = "home"
+	A.stat = UNCONSCIOUS
+	equipment_assert(!SA.house.interaction_current(A, SA), "yielded house choice rejects unconscious actor")
+	A.stat = CONSCIOUS
 	var/turf/other = locate(SB.house.x + 1, SB.house.y, SB.house.z)
 	equipment_assert(!other.Enter(A, get_turf(A)), "other private room denies movement")
 	equipment_assert(extraction_hub_terminal && extraction_hub_terminal.z == 3, "original shared hub separate from private rooms")
@@ -129,6 +140,7 @@
 	equipment_assert(native_detail && json_encode(native_detail) == json_encode(extraction_ipc_detail_projection(SA.profile, G.extraction_item_id, 0)), "ordinary native stash view shares authoritative bot graph projection")
 	equipment_assert(!M.home_stash_detail(B, G.extraction_item_id, 0), "native stash view denies another account item ID")
 	A.forceMove(locate(SA.house.x + 4, SA.house.y + 4, SA.house.z))
+	equipment_assert(!SA.house.interaction_current(A, SA), "yielded house choice rejects lost terminal adjacency")
 	equipment_assert(!M.home_stash_detail(A, G.extraction_item_id, 0), "native stash view requires physical terminal access")
 	A.forceMove(get_turf(SA.house))
 	equipment_assert(!M.home_stash_detail(A, G.extraction_item_id, 32) && !M.home_stash_detail(A, G.extraction_item_id, -1), "native stash view rejects out-of-range detail pages")
@@ -246,11 +258,15 @@
 	equipment_assert(M.upgrade_house(SA), "physical upgrade consumes committed parts")
 	equipment_assert(SA.profile["level"] == 2 && M.home_roots(SA).len == 4, "upgrade durable and physical copies retired")
 	var/home = get_turf(SA.house)
+	var/obj/effect/extraction_house_marker/original_house = SA.house
+	var/datum/extraction_session/original_session = SA
 	equipment_assert(M.release(SA), "clean release checkpoints stash")
+	equipment_assert(!original_house.interaction_current(A, original_session), "yielded house choice safely rejects actual released session")
 	equipment_assert(!A.extraction_session && !length(M.home_roots(SA)), "release drops session ownership")
 	A.forceMove(locate(3,3,1))
 	equipment_assert(M.admit(A), "account reopens after room release")
 	SA = A.extraction_session
+	equipment_assert(!original_house.interaction_current(A, original_session) && SA.house.interaction_current(A, SA), "yielded old house choice rejects actual room rebind while current session works")
 	equipment_assert(SA.profile["level"] == 2 && M.home_roots(SA).len == 4 && home == get_turf(SA.house), "disk reload keeps upgrade and no second starter")
 	items = M.home_roots(SA)
 	G = null

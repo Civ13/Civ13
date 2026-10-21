@@ -239,7 +239,9 @@ var/global/extraction_identity_sequence = 0
 			if (!islist(fuel) || fuel.len > 3 || !(node["fuel_open"] in list(FALSE, TRUE))) return FALSE
 			var/total = 0
 			var/list/seen = list()
-			for (var/list/chemical in fuel)
+			// Typed iteration would silently skip malformed scalar fuel entries.
+			for (var/fuel_index in 1 to fuel.len)
+				var/list/chemical = fuel[fuel_index]
 				if (!islist(chemical) || !(chemical["id"] in list("gasoline", "diesel", "ethanol")) || !chemical_reagents_list[chemical["id"]] || seen[chemical["id"]] || !isnum(chemical["volume"]) || chemical["volume"] <= 0 || chemical["volume"] > 150) return FALSE
 				seen[chemical["id"]] = TRUE
 				total += chemical["volume"]

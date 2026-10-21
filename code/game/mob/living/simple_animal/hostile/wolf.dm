@@ -43,11 +43,11 @@
 
 /mob/living/simple_animal/hostile/wolf/death()
 
-	wolf_count &= src
+	wolf_count -= src
 	..()
 /mob/living/simple_animal/hostile/wolf/Destroy()
 
-	wolf_count &= src
+	wolf_count -= src
 	..()
 /mob/living/simple_animal/hostile/wolf/New()
 	wolf_count |= src

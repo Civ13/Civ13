@@ -81,6 +81,29 @@ var/equipment_completed = FALSE
 	var/obj/item/extraction_generator_kit/power_restored = C.decode(power_record, locate(1,1,1))
 	var/obj/item/weapon/reagent_containers/glass/barrel/jerrycan/restored_tank = power_restored?.tank()
 	equipment_assert(power_restored && power_restored.generator_broken && restored_tank?.reagents.get_reagent_amount("gasoline") == 17 && !power_restored.engine && !power_restored.cable, "generator reload preserves paid fuel and damage without restoring live supply or callbacks")
+	var/power_before = json_encode(power_record)
+	var/list/empty_fuel = json_decode(power_before)
+	empty_fuel["nodes"][2]["fuel"] = list()
+	equipment_assert(C.validate(empty_fuel), "empty fuel list remains a valid empty tank")
+	for (var/fuel_case in 1 to 3)
+		var/list/bad_fuel = json_decode(power_before)
+		var/list/fuel = bad_fuel["nodes"][2]["fuel"]
+		equipment_assert(fuel.len == 1 && fuel[1]["id"] == "gasoline", "fuel shape control retains the actual valid chemical")
+		// Increasing len creates an actual null slot, not an empty nested list.
+		fuel.len = 2
+		equipment_assert(isnull(fuel[2]), "fuel shape control contains a real null scalar")
+		if (fuel_case == 2) fuel[2] = "malformed"
+		if (fuel_case == 3) fuel[2] = 17
+		var/list/caller_profile = list("stash" = list(list("equipment" = bad_fuel)))
+		var/profile_before = json_encode(caller_profile)
+		var/turf/destination = locate(1,1,1)
+		var/list/contents_before = destination.contents.Copy()
+		equipment_assert(!C.validate(bad_fuel), "null text and numeric fuel scalars reject before construction [fuel_case]")
+		equipment_assert(!C.decode(bad_fuel, destination), "malformed fuel cannot materialize an equipment graph [fuel_case]")
+		equipment_assert(json_encode(caller_profile) == profile_before && json_encode(power_record) == power_before, "fuel rejection preserves caller profile and original graph [fuel_case]")
+		equipment_assert(destination.contents.len == contents_before.len, "fuel rejection creates no destination contents [fuel_case]")
+		for (var/atom/movable/A in contents_before)
+			equipment_assert(A.loc == destination, "fuel rejection preserves actual destination identities [fuel_case]")
 	var/list/bad_power = json_decode(json_encode(power_record))
 	bad_power["nodes"][1]["scalars"]["generator_broken"] = 100
 	equipment_assert(!C.validate(bad_power), "generator condition cannot become arbitrary supply state")
