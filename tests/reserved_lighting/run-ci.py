@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
             'halo': 'FAIL: assertion: overlay allocation count',
             'refusal-owner': 'FAIL: assertion: refused constructor detached before deferred deletion',
-            'owner-identity': 'FAIL: assertion: superseded cleanup preserves owner'}
+            'owner-identity': 'FAIL: assertion: superseded cleanup preserves owner',
+            'lumcount-guard': 'PASS'}
 DIAGNOSTIC = re.compile(r'runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
 
 
@@ -74,8 +75,15 @@ def main():
             raise
     else:
         raise RuntimeError('Virtual-master mutation survived the complete comparison')
+    try:
+        compare(out/'baseline/states.jsonl', out/'lumcount-guard/states.jsonl')
+    except ValueError as error:
+        if not str(error).startswith('Native lumcount mismatch:'):
+            raise
+    else:
+        raise RuntimeError('Old lumcount fallback mutation survived all-cell semantic comparison')
     (out/'parity.json').write_text(json.dumps(parity, indent=2))
-    print('PASS native reserved-lighting state parity and four causal controls', parity)
+    print('PASS native reserved-lighting state/lumcount parity and five causal controls', parity)
 
 
 if __name__ == '__main__':
