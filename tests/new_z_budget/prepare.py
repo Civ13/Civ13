@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MODULE = 'code/modules/multiz/world_z_budget.dm'
 CONTROLS = {
     'memory-admission': ('return "UNMEASURED: new levels are disabled until this map has a validated memory/headroom profile. Existing planes remain usable. Preserve saves and request a reviewed profile; no level was allocated."',
-                         'return null', 'default unmeasured roof preserves paid builder and grid'),
+                         'return null', 'default unmeasured allocation preserves grid'),
     'cell-limit': ('if (exceeds_budget)',
                    'if (FALSE)', 'one-over total-cell ceiling blocked'),
     'roof-ceiling': ('#define NEW_Z_ROOF_CEILING 1',
