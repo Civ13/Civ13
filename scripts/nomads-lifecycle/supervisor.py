@@ -325,13 +325,15 @@ class Supervisor:
             generation=generation, session=session, status=status,
             canonical_game_directory=self.config.get('canonical_game_directory'))
 
-    def stop_saved(self, operation):
+    def stop_saved(self, operation, expected_session=None):
         before = self.status()
         if not before.get('ready') or before.get('busy') or before.get('error') or before.get('clients') or before.get('restart_hold') or before.get('restart_intent'):
             raise RuntimeError('Current world is not ready for a safe update')
         session = before.get('session', '')
         if len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
             raise RuntimeError('Current world supplied no valid process session challenge')
+        if expected_session is not None and (session != expected_session or not self.alive()):
+            raise RuntimeError('Owned process session changed before save; no mutation sent')
         self.record('save_requested', operation=operation, revision=self.state['revision'])
         answer = query(self.config['port'], self.token, 'save_shutdown', operation, session)
         if answer.get('operation') != operation:
@@ -368,11 +370,13 @@ class Supervisor:
             shutil.copytree(backup, run / 'map_saves')
         self.launch_prepared(run, manifest, generation, operation, backup)
 
-    def launch_prepared(self, run, manifest, generation, operation, backup=None):
+    def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None):
         """Start a verified prepared run; the caller owns supervisor.lock.
 
         The bot consumer uses this existing lifecycle/startup path without a
         shell, binary replacement, or a second game-process implementation.
+        An optional readiness_check returns the final accepted status before
+        readiness publication; a failed check leaves this owned host starting.
         """
         c = self.config
         run = validate_prepared_directory(self.root, run, c.get('canonical_game_directory'))
@@ -411,6 +415,11 @@ class Supervisor:
                     raise RuntimeError('Startup process session changed')
                 if status.get('ready'):
                     self.accept_ready(status, generation)
+                    if readiness_check is not None:
+                        status = readiness_check(status)
+                        self.accept_ready(status, generation)
+                        if startup_session(status) != session or not self.alive():
+                            raise RuntimeError('Startup process changed during continuity acceptance')
                     self.publish_ready(status, generation, session)
                     public_status = {key: value for key, value in status.items() if key not in ('session', 'token')}
                     self.record('cycle_complete', revision=revision, generation=generation, operation=operation, status=public_status)

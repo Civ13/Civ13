@@ -98,7 +98,8 @@ class CanonicalUpdateTests(unittest.TestCase):
                         'maxx': 501 if self.wrong_dimensions else 500, 'maxy': 350, 'maxz': 1,
                         'debug': {'tick': 1 if self.frozen_heartbeat else self.tick, 'runtime': {'total': 0}}}
 
-            def stop_saved(self, operation):
+            def stop_saved(self, operation, expected_session=None):
+                owner.assertEqual(expected_session, 'e' * 32)
                 owner.events.append('save')
                 if self.fail_save:
                     raise RuntimeError('injected save failure')
@@ -130,23 +131,29 @@ class CanonicalUpdateTests(unittest.TestCase):
                     return '10 errors, 0 warnings' if self.bad_compile_summary else '0 errors, 0 warnings'
                 return owner.git(*arguments[1:])
 
-            def launch_prepared(self, run, manifest, generation, operation, backup=None):
+            def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None):
                 owner.events.append('load')
                 owner.assertFalse(self.running)
                 owner.assertEqual(run, owner.game)
-                m.core.verify_binaries(run, manifest, manifest['revision'], 'NOMADS_GAIA')
-                self.state = {'phase': 'starting', 'revision': manifest['revision'], 'map': 'NOMADS_GAIA',
-                    'host': {'pid': 789, 'creation_filetime': 987, 'workdir': str(run)},
-                    'generation': generation, 'backup': str(backup), 'operation': operation,
-                    'binaries': manifest['binaries']}
-                m.core.write_json(self.state_path, self.state)
-                status = dict(self.status(), generation=generation, restart_import_complete=1)
-                with patch.object(m.core, 'process_identity', return_value=987):
-                    self.publish_ready(status, generation, 'e' * 32)  # Actual publisher, no mock.
-                self.running = True
+
+                def spawn(*args, **kwargs):
+                    owner.assertEqual(kwargs['cwd'], owner.game)
+                    self.running = True
+                    return type('InertChild', (), {'pid': 789})()
+
+                # Exercise real startup/state/publication; only OS transports are inert.
+                with patch.object(m.core.subprocess, 'Popen', side_effect=spawn), \
+                     patch.object(m.core.socket, 'socket'), \
+                     patch.object(m.core, 'process_identity', return_value=987):
+                    return super().launch_prepared(run, manifest, generation, operation, backup,
+                                                   readiness_check=readiness_check)
 
         self.sup = InertSupervisor(self.config)
-        self.sup.sleep = lambda seconds: None
+        def observe_continuity_wait(seconds):
+            owner.assertEqual(self.sup.state['phase'], 'starting')
+            owner.assertNotIn('cycle_complete', (owner.root / 'events.jsonl').read_text())
+            owner.events.append('continuity-before-ready')
+        self.sup.sleep = observe_continuity_wait
         self.updater = m.CanonicalUpdater(self.config, supervisor=self.sup,
                                           guard=self.guard, quiet=self.quiet)
 
@@ -204,6 +211,8 @@ class CanonicalUpdateTests(unittest.TestCase):
         self.assertEqual(protected, self.updater.protected_config())
         self.assertEqual(originals, [(self.game / p).read_bytes() for p in ('civ13.dme', 'UI/crafting-atlas.json')])
         self.assertEqual(self.sup.state['phase'], 'ready')
+        self.assertIn('continuity-before-ready', self.events)
+        self.assertEqual((self.root / 'events.jsonl').read_text().count('cycle_complete'), 1)
         self.assertFalse((self.root / 'runs').exists())
         self.assertFalse((self.root / 'builds').exists())
         self.assertEqual(self.git('branch', '--show-current').strip(), 'master')
@@ -223,6 +232,13 @@ class CanonicalUpdateTests(unittest.TestCase):
             self.updater.run()
         self.assertNotIn('source-gate', self.events)
         self.assertNotIn('compile', self.events)
+
+    def test_session_changed_between_preflight_and_save_never_sends_mutation(self):
+        with patch.object(m.core, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'session changed'):
+                m.core.Supervisor.stop_saved(self.sup, 'd' * 32, expected_session='f' * 32)
+            query.assert_not_called()
+        self.assertTrue(self.sup.running)
 
     def test_compile_failure_keeps_backup_and_original_inputs_no_load(self):
         self.sup.fail_compile = True
@@ -294,12 +310,20 @@ class CanonicalUpdateTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'Canonical game directory'):
             m.core.validate_prepared_directory(self.root, outside, self.game)
 
+    def assert_no_ready_publication(self):
+        self.assertEqual(self.sup.state['phase'], 'starting')
+        self.assertEqual(json.loads(self.sup.state_path.read_text())['phase'], 'starting')
+        events = (self.root / 'events.jsonl').read_text()
+        self.assertNotIn('cycle_complete', events)
+        self.assertEqual(json.loads((self.root / 'update-state.json').read_text())['phase'], 'failed')
+
     def test_loaded_dimension_mismatch_keeps_owned_world_and_halts(self):
         self.sup.wrong_dimensions = True
         with self.assertRaisesRegex(RuntimeError, 'continuity'):
             self.updater.run()
         self.assertTrue(self.sup.running)
         self.assertTrue((self.root / 'HALTED.json').exists())
+        self.assert_no_ready_publication()
 
     def test_loaded_frozen_heartbeat_keeps_owned_world_and_halts(self):
         self.sup.frozen_heartbeat = True
@@ -307,6 +331,7 @@ class CanonicalUpdateTests(unittest.TestCase):
             self.updater.run()
         self.assertTrue(self.sup.running)
         self.assertTrue((self.root / 'HALTED.json').exists())
+        self.assert_no_ready_publication()
 
     def test_nonzero_compile_summary_cannot_match_zero_substring(self):
         self.sup.bad_compile_summary = True

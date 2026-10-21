@@ -223,7 +223,7 @@ class CanonicalUpdater:
         (self.root / 'updates').mkdir(exist_ok=True)
         self.phase('saving')
         try:
-            backup, generation = sup.stop_saved(self.transaction['operation'])
+            backup, generation = sup.stop_saved(self.transaction['operation'], expected_session=session)
             # stop_saved is not treated as proof by itself: independently recheck
             # exact exit and the acknowledged same-map generation before Git.
             self.quiet(self.game, old['host'], self.config['port'])
@@ -257,17 +257,22 @@ class CanonicalUpdater:
             self.phase('loading')
             require(core.digest(self.config['daemon']) == self.config['daemon_sha256'],
                     'Reviewed daemon identity changed before load')
-            sup.launch_prepared(self.game, manifest, generation, self.transaction['operation'], backup)
-            first = sup.status()
-            sup.sleep(1)
-            loaded = sup.status()
-            sup.accept_ready(loaded, generation)
-            require(sup.alive() and core.startup_session(first) == core.startup_session(loaded) and
-                    all(loaded.get(axis) == saved[axis] for axis in ('maxx', 'maxy', 'maxz')) and
-                    loaded.get('debug', {}).get('runtime', {}).get('total') == 0 and
-                    isinstance(first.get('debug', {}).get('tick'), (int, float)) and
-                    loaded.get('debug', {}).get('tick', -1) > first['debug']['tick'],
-                    'Loaded world continuity, heartbeat or runtime checks failed')
+            def accept_continuity(first):
+                # Keep state STARTING until the saved world and heartbeat pass.
+                sup.sleep(1)
+                loaded = sup.status()
+                sup.accept_ready(loaded, generation)
+                require(sup.alive() and core.startup_session(first) == core.startup_session(loaded) and
+                        all(loaded.get(axis) == saved[axis] for axis in ('maxx', 'maxy', 'maxz')) and
+                        loaded.get('debug', {}).get('runtime', {}).get('total') == 0 and
+                        type(first.get('debug', {}).get('tick')) in (int, float) and
+                        type(loaded.get('debug', {}).get('tick')) in (int, float) and
+                        loaded['debug']['tick'] > first['debug']['tick'],
+                        'Loaded world continuity, heartbeat or runtime checks failed')
+                return loaded
+
+            sup.launch_prepared(self.game, manifest, generation, self.transaction['operation'], backup,
+                                readiness_check=accept_continuity)
             self.phase('complete', host=sup.state['host'])
             return {'revision': revision, 'generation': generation, 'canonical_dmb': str(self.game / 'civ13.dmb'),
                     'phase': 'ready'}

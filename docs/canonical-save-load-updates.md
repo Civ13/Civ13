@@ -54,7 +54,10 @@ requires reconciliation; the updater never kills or adopts those processes.
    Update the lifecycle revision while stopped, then use existing
    `launch_prepared` and the **real shared** `publish_ready` path at the same
    canonical directory. Require intended generation imported, intent consumed,
-   exact revision/map/session/process and actual readiness. Save/load format
+   exact revision/map/session/process, saved dimensions, zero runtime errors and
+   an advancing heartbeat **before** publishing `ready` or `cycle_complete`.
+   Continuity failure retains the owned process in `starting` with `HALTED.json`;
+   it never publishes a successful cycle. Save/load format
    compatibility and native gameplay continuity remain actual-cycle acceptance.
 
 `update-state.json` and `updates/<operation>.json` record recovery phases.
