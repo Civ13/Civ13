@@ -598,6 +598,9 @@ The protected review-mode job has an 18-minute runner budget for setup, the
 120-second handoff and three existing API adapter calls of at most 240 seconds each.
 This does not extend the execution arm beyond 900 seconds; legacy upload jobs retain
 their eight-minute timeout and inspection jobs retain their five-minute timeout.
+Once a protected job has started, its native timeout governs processing/readback;
+hourly expiry cleanup cancels only unstarted requests and cannot cut that budget
+short. Fresh arm checks still precede media, including after receipt persistence.
 
 Before insertion, the worker revalidates provenance and owner approval, current
 master, exact artifact coverage, all six live controls, disabled controller and the

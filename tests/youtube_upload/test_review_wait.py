@@ -206,6 +206,13 @@ class ReviewTests(unittest.TestCase):
             cancel.assert_not_called()
             r.expire(self.gh, DEADLINE)
             cancel.assert_called_once_with(self.gh, 42)
+            cancel.reset_mock()
+            self.gh.objects["/actions/runs/42/jobs?per_page=100"]["jobs"][0]["steps"] = [
+                {"name": "Set up job", "started_at": "2026-10-21T19:59:59Z"}]
+            # The native18-minute job timeout governs started processing/readback;
+            # the former17-minute cleanup must not kill a valid approved job.
+            r.expire(self.gh, DEADLINE + r.HANDOFF_SECONDS + r.EXECUTION_SECONDS)
+            cancel.assert_not_called()
 
     def test_fresh_gate_failure_happens_before_reservation_or_media(self):
         _, manifest, clip, *_ = fixtures()

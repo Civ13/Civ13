@@ -133,7 +133,7 @@ def execution_gate(gh, reader, clock=time.time):
 
 
 def expire(gh, now):
-    """Cancel-only hourly cleanup; late admission independently fails at the deadline."""
+    """Cancel unstarted expired reviews; native job timeout bounds started work."""
     for status in ("queued", "in_progress", "waiting", "pending", "requested"):
         data = gh.repo(f"/actions/workflows/youtube-upload.yml/runs?branch=master&status={status}&per_page=100")
         u.require(data["total_count"] <= 100 and len(data["workflow_runs"]) == data["total_count"],
@@ -151,7 +151,10 @@ def expire(gh, now):
             u.require(jobs["total_count"] <= 100 and len(jobs["jobs"]) == jobs["total_count"],
                       "Review cleanup job inventory incomplete")
             started = any(j.get("steps") for j in jobs["jobs"] if j["name"].endswith("/ upload"))
-            if not started or now >= deadline + HANDOFF_SECONDS + EXECUTION_SECONDS:
+            # An approved job may be reading back a durable video ID within its
+            # native runner budget after the short media arm has closed. Do not
+            # truncate that safe readback with a competing cleanup deadline.
+            if not started:
                 cancel_overdue_run(gh, run["id"])
                 print(f'Expired eight-hour review run {run["id"]}; receipt reconciliation remains required')
 
