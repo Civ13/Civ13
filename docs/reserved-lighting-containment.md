@@ -2,7 +2,7 @@
 
 `.github/workflows/reserved-lighting-containment.yml` prepares a separate
 manual pilot; container execution requires workflow_dispatch and confirmation defaults to false.
-A PR introducing this suite runs only six injected offline tests through the
+A PR introducing this suite runs only eight injected offline tests through the
 existing change-selection policy. PR events cannot enter the container job. Its
 only runner is the standard `ubuntu-24.04` GitHub-hosted runner for this public
 repository. A live repository-ID/visibility check, exact reviewed SHA and manual
@@ -34,7 +34,7 @@ that stopped container. An uncertain create is reconciled by its fresh unique
 name and labels; it is never started/retried automatically. Every incomplete
 result is retained as incomplete. CLI calls are observed with a 1 MiB log
 detection threshold, which may overshoot between polls; it is not a hard host
-disk quota. Aggregate controller/cleanup deadlines are 240/30 seconds. Six
+disk quota. Aggregate controller/cleanup deadlines are 240/30 seconds. Eight
 injected tests exercise these source contracts; they do not prove Docker or
 cgroup behavior. A successful future pilot would still not admit BYOND or the
 22-run measurement envelope.

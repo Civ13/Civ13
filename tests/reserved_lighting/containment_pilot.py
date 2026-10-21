@@ -132,7 +132,8 @@ class Docker:
                 if child.poll() is None:
                     child.kill();child.wait(timeout=3)
         result=(child.returncode,paths[0].read_text(errors='replace'),paths[1].read_text(errors='replace'))
-        require(optional or result[0]==0,'Docker command failed: '+args[0])
+        require(optional or result[0]==0,
+                f'Docker command failed: {args[0]} rc={result[0]} stderr={result[2][-512:]!r}')
         return result
 
 
@@ -220,12 +221,21 @@ def execute(head,output):
                     created=docker.call(container_args(name,owner,head,Path(__file__).resolve(),case,cidfile))[1].strip()
                     require(re.fullmatch('[0-9a-f]{64}',created),'Invalid created ID')
                     cid=created
-                finally:
-                    if cid is None:
-                        candidate=inspect(docker,name,cleanup=True)
-                        candidate_id=candidate['Id']
-                        require(re.fullmatch('[0-9a-f]{64}',candidate_id),'Uncertain create identity')
-                        owned(candidate,candidate_id,name,owner,head);cid=candidate_id
+                except BaseException as create_error:
+                    row['create_error']=str(create_error)
+                    try:
+                        code,out,err=docker.call(['inspect',name],optional=True,cleanup=True)
+                        row['create_reconciliation']={'returncode':code}
+                        if code==0:
+                            candidate=json.loads(out)[0]
+                            candidate_id=candidate['Id']
+                            require(re.fullmatch('[0-9a-f]{64}',candidate_id),'Uncertain create identity')
+                            owned(candidate,candidate_id,name,owner,head);cid=candidate_id
+                        else:
+                            row['create_reconciliation']['error']=err[-512:]
+                    except BaseException as reconciliation_error:
+                        row['create_reconciliation']={'error':str(reconciliation_error)}
+                    raise
                 row['cid']=cid;save()
                 info=inspect(docker,cid);owned(info,cid,name,owner,head)
                 inspect_settings(info,Path(__file__).resolve());row['settings_verified']=True
