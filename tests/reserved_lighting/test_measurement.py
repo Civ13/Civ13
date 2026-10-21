@@ -1,4 +1,4 @@
-"""Injected fake processes only: no engine, subprocess, socket or live state."""
+"""Injected engine counters; Git reads exact public fixture inputs. No BYOND."""
 import copy
 import json
 from pathlib import Path

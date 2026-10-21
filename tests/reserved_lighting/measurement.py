@@ -454,9 +454,9 @@ def main():
     parser.add_argument('--packet', type=Path)
     parser.add_argument('--grant', type=Path)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--seal', type=Path, help='Hash prepared daemon/probe.dmb/probe.rsc/probe.dm/build.json only; never launch')
+    parser.add_argument('--seal', type=Path, help='Hash prepared artifacts and public runtime inputs; never launch')
     parser.add_argument('--prepare-runtime', type=Path, help='Stage only exact tracked public name lists; no compiler/engine')
-    parser.add_argument('--head', help='Immutable source commit for --seal')
+    parser.add_argument('--head', help='Immutable source commit for preparation/sealing')
     args = parser.parse_args()
     if args.prepare_runtime:
         require(not any((args.seal, args.packet, args.grant, args.output)), 'Exclusive runtime preparation')

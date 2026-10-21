@@ -1,0 +1,59 @@
+name: Reserved-lighting containment pilot (manual only)
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_containment_only:
+        description: 'Run only reviewed containment controls; no BYOND, compile or measurements'
+        type: boolean
+        required: true
+        default: false
+      expected_sha:
+        description: 'Exact reviewed 40-character commit for this containment-only pilot'
+        type: string
+        required: true
+permissions: {}
+concurrency:
+  group: reserved-lighting-containment-manual
+  cancel-in-progress: false
+jobs:
+  containment:
+    if: github.event_name == 'workflow_dispatch' && inputs.confirm_containment_only == true && github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - name: Require exact head and free public-repository eligibility
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$RUNNER_ENVIRONMENT" = github-hosted
+          test "$RUNNER_OS" = Linux
+          test "$RUNNER_ARCH" = X64
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$EXPECTED_SHA" = "$GITHUB_SHA"
+          test "$(gh api repos/Civ13/Civ13 --jq '[.id,.visibility] | @tsv')" = $'141349998\tpublic'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Offline wrapper contracts
+        run: python3 -B -m unittest discover -s tests/reserved_lighting -p test_containment_pilot.py -v
+      - name: Containment-only controls on the standard free hosted runner
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+          CIV13_REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
+          CIV13_CONTAINMENT_CONFIRMED: ${{ inputs.confirm_containment_only }}
+        run: |
+          python3 -B tests/reserved_lighting/containment_pilot.py --execute --expected-head "$EXPECTED_SHA" --output "$RUNNER_TEMP/reserved-containment-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+      - name: Report bounded pilot receipt
+        if: always()
+        run: |
+          receipt="$RUNNER_TEMP/reserved-containment-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/pilot.json"
+          if test -f "$receipt"; then
+            test "$(wc -c < "$receipt")" -le 131072
+            cat "$receipt"
+          fi
+      # No artifact upload/cache, paid runner, secrets, BYOND or native measurement step.
