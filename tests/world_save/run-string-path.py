@@ -11,12 +11,36 @@ import tempfile
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
 
 
+
+PUBLICATION_FAILURE = 'Chunk transfer publication did not detect late movement'
+PUBLICATION_ANCHOR = (
+    '\t\t\tdrain_save_transfers(frame)\n'
+    '\t\t\tsavefile.cd = entry_path(savefile, ref)\n'
+    '\t\t\tsavefile["content"] << content_value\n'
+)
+
+
+def omit_final_publication_check(source):
+    """Mutate only a generated saver, retaining the first transfer drain."""
+    if source.count(PUBLICATION_ANCHOR) != 1:
+        raise RuntimeError('Final publication mutation requires exactly one anchor')
+    return source.replace(PUBLICATION_ANCHOR,
+                          PUBLICATION_ANCHOR.split('\n', 1)[1], 1)
+
+
+def validate_publication_control(actual, failure):
+    if actual != 'FAIL: ' + PUBLICATION_FAILURE or failure != PUBLICATION_FAILURE:
+        raise RuntimeError(f'Wrong publication negative failure: {actual!r}, {failure!r}')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--expected-saving-sha256', required=True)
     parser.add_argument('--prepare-only', action='store_true', help='Generate hash-bound sources without compiling or launching')
     parser.add_argument('--negative-control', action='store_true')
+    parser.add_argument('--publication-negative-control', action='store_true',
+                        help='Omit only the generated final paid-child publication recheck')
     parser.add_argument('--datum-constructor-negative-control', action='store_true')
     parser.add_argument('--appearance-negative-control', action='store_true')
     parser.add_argument('--hud-negative-control', choices=('export', 'import', 'constructor'))
@@ -40,6 +64,11 @@ def main():
     parser.add_argument('--phase-profile-clock-contract', action='store_true')
     parser.add_argument('--phase-profile-attribution-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.publication_negative_control:
+        allowed = {'byond_bin', 'expected_saving_sha256', 'prepare_only',
+                   'publication_negative_control'}
+        if any(value for key, value in vars(args).items() if key not in allowed):
+            parser.error('Keep publication control separate from other adapters and mutations')
     if args.phase_profile and (not args.progress or args.progress_clock_probe or args.progress_fault_stage or args.progress_negative_control):
         parser.error('Phase profile requires --progress and separate clock/fault controls')
     if args.phase_profile_negative_control and not args.phase_profile:
@@ -305,6 +334,8 @@ def main():
                       '\t\tworld.log << "MATRIX_STATE [stage] ref=\\ref[world_save_matrix_trace_target] loc=[world_save_matrix_trace_target.x],[world_save_matrix_trace_target.y],[world_save_matrix_trace_target.z] coefficients=[current]"\n'
                       '\t\tworld_save_matrix_trace_last = current\n'
                       + ''.join(traced))
+        if original == production and args.publication_negative_control:
+            source = omit_final_publication_check(source)
         if original == production and progress_saving is not None:
             source = progress_saving
         if original == production and args.negative_control:
@@ -551,6 +582,8 @@ def main():
             raise RuntimeError(f'Wrong phase negative failure: {actual!r}, {failure!r}')
         if not (output / 'map_saves/save_complete.txt').exists():
             raise RuntimeError('Phase control changed completed save marker')
+    elif args.publication_negative_control:
+        validate_publication_control(actual, read(output / 'failure-name.txt').strip())
 
     elif args.input_runtime_negative_control:
         expected = {'export': 'runtime input field exported: next_click',
@@ -627,6 +660,7 @@ def main():
         raise RuntimeError(f'Positive regression failed: {actual!r}')
     (output / 'summary.json').write_text(json.dumps({
         'scope': __doc__, 'result': actual, 'negative_control': args.negative_control,
+        'publication_negative_control': args.publication_negative_control,
         'datum_constructor_negative_control': args.datum_constructor_negative_control,
         'appearance_negative_control': args.appearance_negative_control,
         'hud_negative_control': args.hud_negative_control,
@@ -648,7 +682,7 @@ def main():
         'sources_sha256': hashes, 'generated_sha256': generated, 'processes': processes,
         'opendream_verified': False, 'fresh_process_recovery_verified': False,
         'crash_rpo_verified': False, 'clean_shutdown_verified': False}, indent=2), encoding='utf-8')
-    control = (args.input_runtime_negative_control or args.round_state_negative_control or args.player_ui_negative_control or args.player_reclaim_negative_control
+    control = (args.publication_negative_control or args.input_runtime_negative_control or args.round_state_negative_control or args.player_ui_negative_control or args.player_reclaim_negative_control
                or args.hud_negative_control or args.progress_negative_control
                or args.appearance_negative_control or args.datum_constructor_negative_control
                or args.progress_clock_negative_control or args.phase_profile_negative_control or args.phase_profile_attribution_negative_control or args.negative_control)

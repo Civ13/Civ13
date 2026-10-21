@@ -1017,7 +1017,7 @@ jobs:
         shell: bash
       - name: Verify bounded admitted save traversal and backup recovery
         id: save_latency
-        if: inputs.save_latency_regressions || needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions
         timeout-minutes: 40
         shell: bash
         run: |
