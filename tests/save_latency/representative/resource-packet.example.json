@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "authorized": false,
+  "allocation_id": "OWNER-ALLOCATES-THIS-OUTSIDE-THE-SOURCE-TEST",
+  "expires_utc": "OWNER-SETS-CURRENT-EXPIRY-COVERING-THE-WHOLE-ENVELOPE",
+  "commits": ["61d9903d6b083fcc1a0bb597c05b34b4a393a10e", "0eac5f3b19b9c6d93d906045d9ef5bed78909ebb"],
+  "output": "ABSOLUTE-NEW-ISOLATED-OUTPUT-PATH",
+  "byond_bin": "ABSOLUTE-APPROVED-EXISTING-BYOND-516.1681-BIN",
+  "toolchain_sha256": {"dm.exe": "OWNER-VERIFIED-SHA256", "dd.exe": "OWNER-VERIFIED-SHA256"},
+  "port": 0,
+  "listener_addresses": [],
+  "setup_seconds": 0,
+  "core_seconds": 9810,
+  "minimum_free_bytes": 0,
+  "maximum_output_bytes": 0,
+  "maximum_private_bytes": 0,
+  "sampler_cadence_seconds": 0,
+  "query_timeout_seconds": 0,
+  "resource_cadence_seconds": 0,
+  "no_save_seconds": 0
+}
