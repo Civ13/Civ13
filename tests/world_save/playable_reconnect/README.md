@@ -17,7 +17,7 @@ external reputation settings before any native launch.
 
 After source review and exclusive native admission, compile playable-gaia.dme
 with BYOND516.1681 and require0errors/0warnings. Run the seed phase with
-`-params gaia_intent_seed=1`, `-close`, `-safe`, a relative log and the isolated
+`-params gaia_intent_seed=1`, `-close`, `-trusted`, a relative log and the isolated
 working directory. The entry diagnostic closes the port synchronously and writes seed-entry.json with the actual parameter and port values. The seed branch validates/allocates saved
 dimensions through production code, then uses actual current_identity/publish to
 create a new ordinary four-field intent. It writes seed-result.json and exits.
@@ -44,9 +44,13 @@ follows from this probe. Do not start it alongside another native host/compiler;
 only the newly owned handle may be stopped, and retain its evidence/storage.
 
 Offline checks: run test_prepare.py with the verified Python interpreter. These
-checks cover copy hash rejection, unique reversible startup/Topic insertions and
-pinned digest shape. They do not establish compilation, native seed correctness
+checks cover copy hash rejection, unique reversible startup/Topic insertions,
+pinned digest shape and the actual seed command's supported `-trusted` flag,
+including an old `-safe` flag mutation. They do not establish compilation,
+native seed correctness
 or real-client recovery. Tiny success alone does not establish full-world seed completion or client recovery.
+The command correction does not establish the cause or resolution of retained
+`nslookup` diagnostics; strict diagnostic rejection remains unchanged.
 
 Native port correction: the first seed attempt at94c20 was stopped after observing
 an unexpected listener. OpenPort(0) requests an available port; it does not close

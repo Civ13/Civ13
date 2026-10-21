@@ -11,6 +11,11 @@ import time
 from prepare import instrument_world
 
 
+def daemon_arguments(daemon):
+    return [str(daemon), 'probe.dmb', '-close', '-invisible', '-trusted',
+            '-params', 'gaia_intent_seed=1', '-log', 'native.log']
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--byond-bin', type=Path, required=True)
@@ -72,7 +77,7 @@ var/datum/probe_storage/map_storage = new
     if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
         raise RuntimeError('Port probe compile failed')
     with (root / 'stdout.log').open('w') as out, (root / 'stderr.log').open('w') as err:
-        child = subprocess.Popen([str(daemon), 'probe.dmb', '-close', '-invisible', '-safe', '-params', 'gaia_intent_seed=1', '-log', 'native.log'], cwd=root, stdout=out, stderr=err)
+        child = subprocess.Popen(daemon_arguments(daemon), cwd=root, stdout=out, stderr=err)
         try:
             deadline = time.monotonic() + 15
             while not (root / 'port-result.json').exists():

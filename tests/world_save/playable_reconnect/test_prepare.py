@@ -1,3 +1,4 @@
+import ast
 import hashlib
 import importlib.util
 from pathlib import Path
@@ -10,6 +11,34 @@ spec.loader.exec_module(m)
 
 
 class Preparation(unittest.TestCase):
+    def test_actual_seed_command_uses_supported_trusted_flag(self):
+        # Compile only the pure helper, never the native test_port.main entrypoint.
+        source = Path(__file__).with_name('test_port.py').read_text(encoding='utf-8')
+        tree = ast.parse(source)
+
+        def arguments(text):
+            helper = next(node for node in ast.parse(text).body
+                          if isinstance(node, ast.FunctionDef) and node.name == 'daemon_arguments')
+            scope = {}
+            exec(compile(ast.Module(body=[helper], type_ignores=[]), '<seed-command>', 'exec'), scope)
+            return scope['daemon_arguments'](Path('byond/dd.exe'))
+
+        expected = [str(Path('byond/dd.exe')), 'probe.dmb', '-close', '-invisible', '-trusted',
+                    '-params', 'gaia_intent_seed=1', '-log', 'native.log']
+        self.assertEqual(arguments(source), expected)
+        old_flag = source.replace("'-trusted'", "'-safe'")
+        self.assertNotEqual(old_flag, source)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(arguments(old_flag), expected)
+        launches = [node for node in ast.walk(tree) if isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
+                    and (node.func.value.id, node.func.attr) == ('subprocess', 'Popen')]
+        self.assertEqual(len(launches), 1)
+        command = launches[0].args[0]
+        self.assertIsInstance(command, ast.Call)
+        self.assertEqual(ast.unparse(command), 'daemon_arguments(daemon)')
+
     def test_hash_guard_rejects_changed_file(self):
         with tempfile.TemporaryDirectory() as root:
             folder = Path(root)
