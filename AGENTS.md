@@ -14,6 +14,14 @@ Modular car wheels are contained in their connected frames; the controller is
 also nested in a frame and steering in the driver seat. Use get_turf() for their
 coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
 it does not establish durable garage ownership or cargo/passenger extraction.
+<!-- 2026-10-20: passive production hang triage -->
+`scripts/hang-watchdog` observes Linux process identity and status-file metadata
+with monotonic deadlines. Its dedicated output is bounded and sanitized; it never
+starts/stops/restarts a game, saves/imports, elevates, or attaches a debugger.
+`tests/hang_watchdog` uses offline proc fixtures only. Keep the ordinary desktop
+test installation on approved master; PR worktrees are not runtime installations.
+Manual debugger/tracer examples require separate approval and confirmed detach;
+an i386 syscall 0 is restart_syscall, not the host's 64-bit read syscall.
 <!-- 2026-10-20: reviewed video upload boundary -->
 <!-- 2026-10-20: deferred control-read capability -->
 Deferred upload controls use a dedicated Variables/Environments/Metadata-read App,
