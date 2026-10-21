@@ -107,6 +107,7 @@ public static class Program {
             Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
+            var discovery = new ServerDiscovery();
             while (true) {
                 WriteMainMenu(Console.Out);
                 Console.Write("Choose a number: ");
@@ -115,17 +116,23 @@ public static class Program {
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
                 if (ServerCatalog.MenuServer(choice) is { } serverName) {
-                    Console.WriteLine($"{serverName} - 1: Nomads   2: TDM   3: Back");
-                    var modeChoice = Console.ReadLine();
-                    if (modeChoice is not ("1" or "2")) continue;
-                    try {
-                        if (serverPort != null) throw new IOException("Public server selections use their catalog port; omit --server-port.");
-                        var server = ServerCatalog.Select(serverName, modeChoice == "1" ? "Nomads" : "TDM");
-                        var endpoint = await ServerCatalog.NativeEndpoint(server);
-                        Console.WriteLine($"Connecting to {server.Name} {server.Mode} using BYOND {RequiredByond().Version} on port {server.Port}.");
-                        var desktop = new WindowsByondDesktop();
-                        Process.Start(ServerCatalog.NativeStart(server, byond, endpoint, RequiredByond(), path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())));
-                    } catch (IOException e) { Console.WriteLine(e.Message); }
+                    if (serverPort != null) {
+                        Console.WriteLine("Public server selections check the configured game ports; omit --server-port.");
+                        continue;
+                    }
+                    var desktop = new WindowsByondDesktop();
+                    await ServerBrowser.Run(serverName, discovery, Console.In, Console.Out, verified => {
+                        var server = verified.Status;
+                        Console.WriteLine($"Connecting to {server.Name} using BYOND {RequiredByond().Version} on port {server.Port}.");
+                        try {
+                            using var game = Process.Start(ServerCatalog.NativeStart(verified, byond, RequiredByond(),
+                                path => OperatingSystem.IsWindows() && desktop.Matches(path, RequiredByond())))
+                                ?? throw new IOException("BYOND client did not start.");
+                        } catch (System.ComponentModel.Win32Exception e) {
+                            throw new IOException("BYOND client could not start.", e);
+                        }
+                        return Task.CompletedTask;
+                    });
                 }
                 if (choice == ServerCatalog.OpenDreamMenuKey) {
                     try {
@@ -139,12 +146,11 @@ public static class Program {
                         if (engineChoice is not ("2" or "3")) continue;
                         var mode = engineChoice == "2" ? "Nomads" : "TDM";
                         var openDreamPort = ServerCatalog.OpenDreamPort(mode, serverPort);
-                        var addresses = await Connection.Resolve();
-                        Console.WriteLine(Connection.Host + " currently resolves to: " + string.Join(", ", addresses));
-                        // Pass only the approved address from this lookup, avoiding a second
-                        // unrestricted lookup that could select the explicitly excluded address.
+                        var endpoint = await Connection.Resolve();
+                        Console.WriteLine(Connection.Host + " verified public address for this attempt: " + endpoint.Address);
+                        // Pass this one validated DNS result, never ask the game client to resolve again.
                         Console.WriteLine($"Connecting to experimental OpenDream {mode} on operator port {openDreamPort}.");
-                        Process.Start(Connection.Start(destination, mode, addresses.Single(), serverPort));
+                        Process.Start(Connection.Start(destination, mode, endpoint, serverPort));
                     } catch (IOException e) { Console.WriteLine(e.Message); }
                 }
             }
