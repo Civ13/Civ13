@@ -2,8 +2,10 @@ import ast
 import hashlib
 import importlib.util
 from pathlib import Path
+import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('gaia_prepare', Path(__file__).with_name('prepare.py'))
 m = importlib.util.module_from_spec(spec)
@@ -11,6 +13,19 @@ spec.loader.exec_module(m)
 
 
 class Preparation(unittest.TestCase):
+    def test_unsupported_platform_refuses_before_native_or_staging(self):
+        port_spec = importlib.util.spec_from_file_location('gaia_port_guard', Path(__file__).with_name('test_port.py'))
+        port = importlib.util.module_from_spec(port_spec)
+        port_spec.loader.exec_module(port)
+        self.assertIsNone(port.require_census_platform('nt'))
+        with patch.object(port.os, 'name', 'posix'), \
+             patch.object(sys, 'argv', ['test_port.py', '--byond-bin', '.']), \
+             patch.object(port.tempfile, 'mkdtemp', side_effect=AssertionError('staging forbidden')), \
+             patch.object(port.subprocess, 'run', side_effect=AssertionError('compiler forbidden')), \
+             patch.object(port.subprocess, 'Popen', side_effect=AssertionError('daemon forbidden')):
+            with self.assertRaisesRegex(RuntimeError, 'OS census is implemented for Windows only'):
+                port.main()
+
     def test_actual_seed_command_uses_supported_trusted_flag(self):
         # Compile only the pure helper, never the native test_port.main entrypoint.
         source = Path(__file__).with_name('test_port.py').read_text(encoding='utf-8')

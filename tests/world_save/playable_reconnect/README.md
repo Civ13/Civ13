@@ -87,9 +87,15 @@ entered world/New immediately and is invalid for that comparison; it was removed
 The opt-in --compiled-hub condition copies the checkout hub metadata into the
 otherwise unchanged tiny fixture. The130second comparison also passed cleanly,
 so compiled hub metadata alone was insufficient to reproduce the full-world BUG.
-Both conditions use the same pinned engine, invisible/safe startup, seed parameter,
-actual port/admission guards and zero-listener census. No diagnostic is suppressed.
+Those historical conditions used the pinned engine and earlier invisible/safe
+command with the seed parameter, actual port/admission guards and zero-listener
+census. The current command uses invisible/trusted startup; those receipts are
+not a native run of that corrected command. No diagnostic is suppressed.
 This does not establish that the full-world diagnostic is harmless or fixed.
+
+The port runner refuses non-Windows platforms before argument parsing, toolchain
+discovery or process work. Its OS listener census is Windows-only; another
+platform needs an independently reviewed equivalent before it can report success.
 
 
 Terminal diagnostic functional recovery on BYOND516.1681 used frozen gameplay

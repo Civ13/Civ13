@@ -16,7 +16,13 @@ def daemon_arguments(daemon):
             '-params', 'gaia_intent_seed=1', '-log', 'native.log']
 
 
+def require_census_platform(platform):
+    if platform != 'nt':
+        raise RuntimeError('Zero-listener OS census is implemented for Windows only')
+
+
 def main():
+    require_census_platform(os.name)
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--byond-bin', type=Path, required=True)
     p.add_argument('--hold-seconds', type=int, default=5, help='Keep the closed fixture alive to observe delayed engine diagnostics (5-180 seconds)')
