@@ -33,6 +33,13 @@ class LightingCornerPreparation(unittest.TestCase):
         self.assertIn('A.smart_vis_update()', generated)
         self.assertNotIn('/datum/light_source/proc/recalc_corner', generated)
 
+    def test_export_control_preserves_switch_and_parent_dispatch(self):
+        original = (ROOT / 'code/modules/persistence/functions.dm').read_bytes()
+        generated = self.prepare('lighting-export')
+        self.assertIn('/atom/persistence_runtime_var(key)\n\tswitch(key)\n\t\tif ("appearance")\n\t\t\treturn TRUE\n\treturn ..()', generated)
+        self.assertNotIn('if ("appearance", "light", "light_sources")', generated)
+        self.assertEqual(original, (ROOT / 'code/modules/persistence/functions.dm').read_bytes())
+
     def test_eager_control_changes_only_generated_declaration(self):
         original = (ROOT / 'code/modules/lighting/lighting_corner.dm').read_bytes()
         generated = self.prepare('lighting-eager')

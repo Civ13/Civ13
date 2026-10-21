@@ -101,6 +101,16 @@ var/checks = 0
 				continue
 			Fsave[v] >> T.vars[v]
 		check(!T.mining_in_progress, "runtime_import_rejects_busy")
+#ifdef CIV13_GAMEPLAY_BRIDGE
+		H.stat = 0
+		var/datum/pickaxe_mining_action/unused = new
+		var/datum/gameplay_action_lease/gather = new
+		var/starts_before = H.starts
+		// The ninth positional slot remains mining, even with the feature enabled.
+		check(!do_after(H,0,T,FALSE,FALSE,INCAPACITATION_DEFAULT,FALSE,TRUE,unused) && H.starts == starts_before, "ninth_slot_remains_mining")
+		check(!do_after(H,0,T,progress=FALSE,mining_context=unused,gameplay_context=gather) && !unused.claimed && !gather.claims && H.starts == starts_before, "dual_context_denied_before_claims")
+		check(!M.progressbar && !M.wait_started && !M.actor && !M.wall && !T.pickaxe_mining_owner && !H.pickaxe_mining_action, "cancelled_mining_releases_only_owned_state")
+#endif
 		text2file(json_encode(list("head"=world.params["tested_commit"], "build"=world.byond_build, "checks"=checks, "failures"=failures)), "result.json")
 		del(world)
 		return

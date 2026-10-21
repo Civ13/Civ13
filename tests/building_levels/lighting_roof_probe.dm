@@ -64,6 +64,7 @@
 		GLOB.stat_set_event = new
 		GLOB.name_set_event = new
 		map = new /obj/map_metadata/roof_lighting_tester
+		world_z_budget = new /datum/world_z_budget/fixture_admission
 		create_lighting("Midday")
 		roof_lighting_assert(created_lighting_corners_and_overlays, "production lighting startup completed")
 		var/turf/site = locate(3,3,1)

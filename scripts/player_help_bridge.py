@@ -193,6 +193,90 @@ def recipe_context(path):
 
 
 
+def bronze_knowledge(root):
+    """Bounded, reviewed production and availability evidence for bronze questions."""
+    root = Path(root).resolve()
+    sources = {}
+
+    def read(relative):
+        path = (root / relative).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError('Gameplay source escaped root')
+        raw = path.read_bytes()
+        if len(raw) > 512000:
+            raise ValueError('Oversized gameplay source')
+        sources[relative] = hashlib.sha256(raw).hexdigest()
+        return raw.decode('utf-8')
+
+    def between(text, first, last):
+        if text.count(first) != 1 or (last is not None and text.count(last) != 1):
+            raise ValueError('Reviewed bronze source markers changed')
+        start = text.index(first)
+        end = len(text) if last is None else text.index(last, start + len(first))
+        return text[start:end]
+
+    refining = read('code/game/objects/structures/blacksmithing/refining.dm')
+    molds = read('code/game/objects/structures/blacksmithing/molds.dm')
+    anvil = read('code/game/objects/structures/blacksmithing/blacksmithing.dm')
+    oven = read('code/game/objects/structures/kitchen/oven.dm')
+    production = '\n'.join([
+        between(refining, '/obj/structure/furnace/attack_hand', '/obj/structure/furnace/process()'),
+        between(refining, '\t\tif (istype(I, /obj/item/weapon/clay/mold))', None),
+        between(molds, '/obj/item/weapon/clay/mold/attackby', '\telse if (istype(I, /obj/item/stack/ore)'),
+        between(molds, '\telse if (istype(I, /obj/item/stack/ore)', '\t\t\tif (istype(O, /obj/item/stack/ore/gold))'),
+        between(molds, '\t\t\telse if (istype(O, /obj/item/stack/ore/copper))', '\t\t\telse if (istype(O, /obj/item/stack/ore/lead))'),
+        between(molds, '\n/obj/item/weapon/clay/mold/claypot/fired\n', '\n/obj/item/weapon/clay/mold/key/fired\n'),
+        between(molds, '\n/obj/item/weapon/clay/mold/fired\n', '\n/obj/item/weapon/clay/mold/axehead/fired\n'),
+        'OVEN firing of unfired clay items:',
+        between(oven, '\t\telse if (istype(I, /obj/item/weapon/clay))', '\t\telse if (!istype(I, /obj/item/weapon/reagent_containers/food)'),
+        'ANVIL use gates:',
+        between(anvil, '/obj/structure/anvil/attackby', '\telse\n\t\tif (istype(P, /obj/item/stack/material))'),
+        between(anvil, '\t\telse if (istype(P, /obj/item/weapon/clay/mold))', '\t\t\t\t\t\t\t\t\tif ("tin")'),
+        between(anvil, '\n/obj/structure/anvil/stone\n', None),
+    ])
+    nodes = read('code/modules/research_tree/research_node.dm')
+    crafting = read('code/game/objects/items/stacks/civ_recipes.dm')
+    node_lines = []
+    for marker in ('register_research_node(new /datum/research_node("bronze_working",',
+                   'register_research_node(new /datum/research_node("pottery_storage",',
+                   '"/obj/item/weapon/clay/mold" =',
+                   '"/obj/structure/furnace/kiln" =',
+                   '"/obj/item/weapon/clay/mold/claypot" =',
+                   '"/obj/item/weapon/clay/mold/clayjug" =',
+                   '"/obj/item/weapon/clay/mold/axehead" =',
+                   '"/obj/structure/anvil/stone" ='):
+        matches = [line for line in nodes.splitlines() if line.strip().startswith(marker)]
+        if len(matches) != 1:
+            raise ValueError('Reviewed bronze research markers changed')
+        node_lines.extend(matches)
+    bench = read('code/modules/research_tree/research_bench.dm')
+    availability = '\n'.join(node_lines) + '\n' + between(
+        crafting, '\t\tvar/research_allowed\n', '\t\t\tvar/supmat = i[13]')
+    availability += '\n' + between(molds, '\n/obj/item/weapon/clay/mold/axehead\n', '\n/obj/item/weapon/clay/mold/sword\n')
+    availability += '\n' + between(bench,
+        '\tif (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))',
+        '\t// Study a SAMPLE:')
+    provenance = hashlib.sha256(json.dumps(sources, sort_keys=True).encode()).hexdigest()
+    result = []
+    for label, excerpt in (('production copper tin kiln fired blacksmith pot jug molds', production),
+                           ('availability unlock research Bronze Working Pottery Cookware', availability)):
+        if len(excerpt) > 11000:
+            raise ValueError('Reviewed bronze excerpt grew beyond budget')
+        text = ('CURRENT GAMEPLAY CODE (bronze ' + label + '):\n' + excerpt +
+                '\nAvailability is conditional on the selected map catalog and research state. '
+                'The server snapshot does not report completed research nodes. Do not claim the '
+                'player can craft these now or infer an unlock from era alone. '
+                'Missing retrieval is not evidence that the game has no bronze recipe.')
+        result.append({'topic': 'bronze ' + label, 'source': 'code', 'sha256': provenance,
+                       'source_hashes': dict(sources), 'text': text})
+    # Keep the availability gate and its production route inseparable during ranking.
+    result[0]['text'] = result[1]['text'] + '\n' + result[0]['text']
+    if len(result[0]['text']) > 14000:
+        raise ValueError('Combined bronze evidence grew beyond retrieval budget')
+    result[0]['topic'] += ' ingots availability unlock research'
+    return result[:1]
+
+
 def gameplay_knowledge(root, wiki_root=None):
     """Only reviewed gameplay excerpts, never arbitrary repository search or tools."""
     result = []
@@ -222,6 +306,7 @@ def gameplay_knowledge(root, wiki_root=None):
             excerpt = excerpt[:excerpt.index('\telse\n')] + excerpt[excerpt.index('\t\telse if (istype(P, /obj/item/stack/ore/iron_sponge))'):]
         # Each snippet carries provenance for diagnostics, not authority or instructions.
         result.append({'topic': topic, 'source': 'code', 'sha256': hashlib.sha256(raw).hexdigest(), 'text': 'CURRENT GAMEPLAY CODE (' + topic + '):\n' + excerpt})
+    result.extend(bronze_knowledge(root))
     if wiki_root:
         wiki = Path(wiki_root).resolve()
         for relative in ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md'):

@@ -38,7 +38,10 @@
 // The composite appearance is not a supported saved datum. Restoring its null
 // envelope resets independently restored fields such as transform and color.
 /atom/persistence_runtime_var(key)
-	return (key in list("appearance", "light", "light_sources")) || ..()
+	switch(key)
+		if ("appearance", "light", "light_sources")
+			return TRUE
+	return ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.
@@ -54,7 +57,10 @@
 /turf/persistence_runtime_var(key)
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
 		return TRUE
-	return (key in list("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")) || ..()
+	switch(key)
+		if ("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")
+			return TRUE
+	return ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
@@ -64,7 +70,10 @@
 /mob/persistence_runtime_var(key)
 	if (key == "pickaxe_mining_action")
 		return TRUE
-	return (key in list("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")) || ..()
+	switch(key)
+		if ("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")
+			return TRUE
+	return ..()
 
 /obj/screen
 	should_save = FALSE
@@ -152,6 +161,8 @@ map_storage
 		list/loaded_lists = list()
 		var/saving_z = 0
 		var/last_error = null
+		// Admin VV diagnostic snapshots only. Never retain live objects here.
+		var/list/last_save_reference_failure
 		var/round_restored = FALSE
 		var/per_pause = 200
 		var/so_far = 0
@@ -162,6 +173,39 @@ map_storage
 		if(ignore)
 			src.ignore_types = ignore
 		return
+
+/map_storage/persistence_runtime_var(key)
+	if(key == "last_save_reference_failure") return TRUE
+	return ..()
+
+// Native lookup references are process-local hints, not durable IDs. Operators
+// must compare type/location before acting: deletion can later recycle a ref.
+/map_storage/proc/reference_failure_snapshot(datum/value)
+	var/list/snapshot = list("type" = value ? "[value.type]" : "none", "lookup_ref" = value ? "\ref[value]" : null, "native_x" = 0, "native_y" = 0, "native_z" = 0, "turf_x" = 0, "turf_y" = 0, "turf_z" = 0)
+	if(istype(value, /atom))
+		var/atom/A = value
+		snapshot["native_x"] = A.x
+		snapshot["native_y"] = A.y
+		snapshot["native_z"] = A.z
+		var/turf/T = get_turf(A)
+		if(T)
+			snapshot["turf_x"] = T.x
+			snapshot["turf_y"] = T.y
+			snapshot["turf_z"] = T.z
+	return snapshot
+
+// Capture only bounded schema context, never values, names or client data. Keep
+// this record through failed-operation cleanup so one admin VV field is enough.
+/map_storage/proc/record_save_reference_failure(kind, datum/target, current_entry = 0, first_z = 0, first_entry = 0)
+	var/list/chain = list()
+	for(var/i = max(1, saving_export_stack.len - 7), i <= saving_export_stack.len, i++)
+		var/datum/save_export_frame/frame = saving_export_stack[i]
+		var/valid_frame = istype(frame, /datum/save_export_frame)
+		var/list/frame_snapshot = reference_failure_snapshot(valid_frame ? frame.source : null)
+		frame_snapshot["field"] = valid_frame ? (istext(frame.current_field) ? copytext(frame.current_field, 1, 81) : "contents") : "unavailable"
+		frame_snapshot["entry"] = valid_frame ? frame.entry : 0
+		chain += list(frame_snapshot)
+	last_save_reference_failure = list("schema_version" = 1, "kind" = kind, "captured_at" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss"), "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = current_entry, "first_z" = first_z, "first_entry" = first_entry, "source" = chain.len ? chain[chain.len] : reference_failure_snapshot(null), "target" = reference_failure_snapshot(target), "owner_chain" = chain, "owner_chain_truncated" = saving_export_stack.len > 8)
 
 // Drops the save/load bookkeeping references so qdel'd atoms can be garbage
 // collected - these lists otherwise pin every atom they touched until the next
@@ -246,7 +290,7 @@ var/global/persistence_load_recovery_required = FALSE
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
-	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required)
+	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || world_z_budget.active)
 		return null
 	if(transaction && transaction != persistence_restart) return null
 	var/restart_owner = transaction == persistence_restart && transaction
@@ -284,7 +328,7 @@ var/global/persistence_load_recovery_required = FALSE
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
 		persistence_active_operation = null
-		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || persistence_restart.startup_hold
+		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
 
 // Direct calls acquire their own operation. A wrapper explicitly passes its
@@ -293,6 +337,8 @@ var/global/persistence_load_recovery_required = FALSE
 	var/owns_operation = !operation
 	if(owns_operation) operation = begin_persistence_operation(src, kind)
 	if(!operation || !operation.enter_backend(src, kind)) return FALSE
+	// A busy/rejected request must not erase the active save's failure context.
+	if(kind == "save") last_save_reference_failure = null
 	var/success = FALSE
 	try
 		if(kind == "save") success = save_world_contents(operation)
@@ -324,9 +370,12 @@ var/global/persistence_load_recovery_required = FALSE
 	var/validation_maxz = 0
 	var/dimension_bootstrap_busy = FALSE
 	var/dimension_recovery_required = FALSE
+	var/dimension_budget_hold = FALSE
+	var/datum/new_z_reservation/dimension_reservation
 
 /map_storage/proc/record_compiled_dimensions()
 	if(!compiled_maxz) compiled_maxz = building_base_maxz()
+	world_z_budget.record_compiled_dimensions()
 
 /map_storage/proc/save_validation_maxz()
 	return validation_maxz ? validation_maxz : world.maxz
@@ -503,6 +552,7 @@ var/global/persistence_load_recovery_required = FALSE
 	var/savefile/file
 	var/datum/source
 	var/source_identity
+	var/current_field
 	var/entry
 	var/accepts_children = FALSE
 	var/active = TRUE
@@ -625,6 +675,7 @@ var/global/persistence_load_recovery_required = FALSE
 	frame.active = FALSE
 	frame.source = null
 	frame.source_identity = null
+	frame.current_field = null
 	frame.file = null
 	frame.exporter = null
 
@@ -648,9 +699,13 @@ var/global/persistence_load_recovery_required = FALSE
 	return z
 
 /map_storage/proc/allocate_saved_level(target_z)
-	return building_allocate_level(target_z, TRUE)
+	return building_allocate_level(target_z, TRUE, dimension_reservation)
 
 /map_storage/proc/prepare_saved_dimensions(list/expected_intent)
+	if(dimension_budget_hold)
+		// Admission failed before native growth. Preserve its original diagnostic;
+		// never let a failed automatic import later overwrite the saved world.
+		return FALSE
 	if(dimension_recovery_required)
 		last_error = "Saved level allocation previously failed; restart from the original map before retrying"
 		return FALSE
@@ -666,6 +721,11 @@ var/global/persistence_load_recovery_required = FALSE
 		if(target_z == world.maxz)
 			dimension_bootstrap_busy = FALSE
 			return TRUE
+		// Reserve the complete target before validation yields or any native growth.
+		dimension_reservation = world_z_budget.reserve(target_z, "restore")
+		if(!dimension_reservation)
+			dimension_budget_hold = TRUE
+			throw EXCEPTION("Saved world held without resizing or modifying files: [world_z_budget.last_error]")
 		validation_maxz = target_z
 		var/valid = validate_world_save()
 		validation_maxz = 0
@@ -678,10 +738,15 @@ var/global/persistence_load_recovery_required = FALSE
 				throw EXCEPTION("Saved level allocation failed; preserve files and restart before retrying")
 		if(!validate_world_save())
 			throw EXCEPTION("Allocated saved world failed exact validation: [last_error]")
+		if(!world_z_budget.finish(dimension_reservation, TRUE))
+			throw EXCEPTION("Saved level reservation could not complete; restart recovery")
+		dimension_reservation = null
 		dimension_recovery_required = FALSE
 		dimension_bootstrap_busy = FALSE
 		return TRUE
 	catch(var/exception/e)
+		world_z_budget.finish(dimension_reservation, FALSE)
+		dimension_reservation = null
 		validation_maxz = 0
 		dimension_bootstrap_busy = FALSE
 		release_durable_world()

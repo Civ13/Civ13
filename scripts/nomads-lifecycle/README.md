@@ -5,7 +5,34 @@ pair/trace/bundle commands, see [agent debug tools](../../docs/agent-debug-tools
 Their DM collector requires a reviewed rebuild/restart; discovery and offline
 processing do not install or activate a runtime.
 
-Windows supervisor for the native BYOND test server. It fetches the configured
+Normal native TEST1714 source is a clean checkout attached to master, tracking
+origin/master from https://github.com/Civ13/Civ13.git. The master guard checks
+both the cached and freshly advertised remote default branch, fetches master,
+and requires exact commit agreement before staging. Detached or feature branches,
+wrong upstream/origin, local changes (including untracked or hidden index state),
+offline verification, stale source, and ahead/diverged commits fail closed.
+Use `master_guard.py --repository ABSOLUTE_PATH --inspect-only` for local checks
+without a fetch or index refresh. Standalone `--update` refuses ungated writes;
+canonical hosting fetches and fast-forwards require the serialized save/load
+mutation guard described below. It never resets, stashes, cleans or switches
+branches. Experimental PR testing belongs in a separate checkout and explicit
+operator path. Source verification does not establish a current running binary.
+
+### Single canonical hosting directory
+
+See [canonical save/load updates](../../docs/canonical-save-load-updates.md) for
+the explicit, default-off one-shot updater. It confirms a successful same-map
+save and exact process exit **before** fetching, fast-forwarding or compiling
+inside the named-master checkout. It preserves one canonical DMB path and uses
+the existing generation-bound startup and real readiness publisher. Failure
+retains recovery; it does not start a fresh world, retry or force-kill. Native
+admission and actual-cycle acceptance remain separate from source preparation.
+
+The older cycle below is for separate noncanonical runtimes. Canonical configs
+are refused by that cycle and its builder, so it cannot compile before saving
+or create a detached build/run copy underneath canonical hosting.
+
+Windows supervisor for the separate native BYOND test server. It fetches the configured
 branch every 300 seconds by default, stages and compiles a separate Europe build,
 then requests the production authenticated save-and-shutdown operation. It never
 pulls into the running directory. An unchanged revision only checks health.

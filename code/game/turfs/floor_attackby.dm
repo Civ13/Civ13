@@ -4,18 +4,40 @@
 /turf/floor/proc/collapse_check()
 	return
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/turf/floor/grass/proc/grass_cutting_wait(mob/user, datum/gameplay_action_lease/gameplay_context = null)
+	return do_after(user, 30, src, gameplay_context = gameplay_context)
+#else
 /turf/floor/grass/proc/grass_cutting_wait(mob/user)
 	return do_after(user, 30, src)
+#endif
 
 /turf/floor/grass/proc/grass_cutting_actor_connected(mob/user)
 	return user && user.client
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool, datum/gameplay_action_lease/gameplay_context = null)
+#else
 /turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
+#endif
 	if (busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
 		return
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!isnull(gameplay_context))
+		if (!istype(gameplay_context, /datum/gameplay_action_lease))
+			return
+		if (!gameplay_context.matches_gather_wait(user, src) || gameplay_context.tool != tool || gameplay_context.wait_claimed)
+			return
+#endif
 	busy = TRUE
 	to_chat(user, SPAN_NOTICE("You start cutting grass fibres..."))
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	var/completed = grass_cutting_wait(user, gameplay_context)
+	if (!isnull(gameplay_context) && (!gameplay_context.wait_claimed || !gameplay_context.valid()))
+		completed = FALSE
+#else
 	var/completed = grass_cutting_wait(user)
+#endif
 	busy = FALSE
 	if (!completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
 		return
@@ -304,7 +326,7 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
-	else if (istype(C, /obj/item/weapon/material/pickaxe) || istype(C, /obj/item/weapon/material/kitchen/utensil))
+	else if (istype(C, /obj/item/weapon/material/pickaxe))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
@@ -662,10 +684,10 @@
 
 /mob/living/human/proc/held_mining_pickaxe()
 	var/obj/item/weapon/material/pickaxe/P = get_active_hand()
-	if (istype(P) && P.loc == src)
+	if (istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src)
 		return P
 	P = get_inactive_hand()
-	return istype(P) && P.loc == src ? P : null
+	return istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src ? P : null
 
 /mob/living/human/proc/pickaxe_mining_ready()
 	if (!isturf(loc) || (locate(/obj/structure/vehicleparts/frame) in loc))
@@ -684,7 +706,7 @@
 /turf/proc/start_pickaxe_mining(mob/living/human/H, obj/item/P, from_bump = FALSE)
 	if (!istype(H) || !istype(src, /turf/floor/dirt/underground) || !is_mineable || mining_in_progress || pickaxe_mining_owner || H.pickaxe_mining_action || !H.may_do_after || !H.pickaxe_mining_ready() || !H.canClick())
 		return FALSE
-	if ((!istype(P, /obj/item/weapon/material/pickaxe) && !istype(P, /obj/item/weapon/material/kitchen/utensil)) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
+	if (!istype(P, /obj/item/weapon/material/pickaxe) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
 		return FALSE
 	if (!isnum(P:usespeed) || P:usespeed <= 0 || H.getStatCoeff("strength") <= 0)
 		return FALSE
