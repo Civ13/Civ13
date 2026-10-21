@@ -14,6 +14,16 @@ var/global/mall_fixture_failed = FALSE
 		return fixture_owners[H]
 	wait_for_extraction(mob/living/human/H, obj/effect/extraction_exit/E)
 		return TRUE
+	// Deterministic client choices only; production account/physical debits remain.
+	choose_upgrade_parts(datum/extraction_session/S)
+		var/list/ids = list()
+		for (var/list/entry in S.profile["stash"])
+			if (entry["salvage"] && ids.len < S.profile["level"] * 5) ids += entry["id"]
+		return ids
+	confirm_house_upgrade(datum/extraction_session/S, list/ids)
+		return TRUE
+	confirm_car_purchase(mob/living/human/H)
+		return TRUE
 
 /world
 	hub = ""
@@ -375,3 +385,213 @@ var/global/mall_fixture_failed = FALSE
 	container_key_sprite_codec_probe()
 	mall_stage("after final foot extraction")
 	mall_assert(!parking.traverse(H) && world.port == 0, "home actor cannot enter stairs and daemon port closed")
+	// All seven existing omission controls reach their assertions before this case.
+	mall_vehicle_route_probe(M)
+
+// Actual default-map driving, not a relocated flat-fixture car or client-input claim.
+/proc/mall_car_budget(deadline)
+	mall_assert(world.realtime < deadline, "actual mall car case stays within shared 45 second deadline")
+
+// Model selecting the key for each click, then restore the prior active hand.
+// In the driver's seat this preserves the real wheel as the active input item.
+/proc/mall_car_use_key(mob/living/human/H, obj/structure/vehicleparts/frame/door, obj/item/weapon/key/extraction_room/key)
+	var/obj/item/prior_active = H.get_active_hand()
+	if (prior_active != key) H.swap_hand()
+	mall_assert(H.get_active_hand() == key && key.loc == H && H.Adjacent(door), "real door input uses the original held active key beside the car")
+	door.attackby(key, H)
+	if (prior_active != key) H.swap_hand()
+	mall_assert(H.get_active_hand() == prior_active, "real key input restores the prior active hand including the driver's wheel")
+
+// Explicit cardinal input adapter. Every step still executes production Move,
+// frame CanPass/CheckExit and turf callbacks; no actor/vehicle forceMove here.
+/proc/mall_car_walk(mob/living/human/H, turf/target, deadline, horizontal_first = TRUE)
+	mall_assert(target && H.z == target.z && get_dist(H, target) <= 16, "car walking waypoint is bounded on the actual map")
+	var/steps = 0
+	while (get_turf(H) != target)
+		mall_car_budget(deadline)
+		mall_assert(++steps <= 32, "car walking input has a bounded number of steps")
+		var/direction
+		if ((horizontal_first && H.x != target.x) || H.y == target.y)
+			direction = H.x < target.x ? EAST : WEST
+		else
+			direction = H.y < target.y ? NORTH : SOUTH
+		var/turf/before = get_turf(H)
+		mall_assert(step(H, direction) && get_turf(H) == get_step(before, direction), "car actor walks through real map callbacks without teleporting")
+		sleep(0)
+
+// Observe the real asynchronous wheel-started movement loop one tick at a time.
+// Turns legitimately move the axis anchor, so each straight leg starts afresh.
+/proc/mall_car_drive_leg(mob/living/human/H, obj/structure/vehicleparts/axis/A, direction, coordinate, deadline)
+	var/steps = 0
+	var/last_move = world.realtime
+	var/turf/previous = get_turf(A)
+	while ((direction == SOUTH ? A.y : A.x) != coordinate)
+		mall_car_budget(deadline)
+		mall_assert(A.dir == direction && A.moving && A.currentspeed > 0 && A.engine.on && A.driver == H && H.buckled == A.wheel.drivingchair && A.wheel.loc == H && H.get_active_hand() == A.wheel, "real driver engine active wheel and direction remain linked during mall travel")
+		mall_assert((direction == SOUTH ? A.y : A.x) > coordinate, "real movement cannot overshoot the mall route waypoint")
+		sleep(1)
+		var/turf/current = get_turf(A)
+		if (current != previous)
+			mall_assert(current == get_step(previous, direction), "actual mall driving advances exactly one production road tile")
+			mall_assert(++steps <= 110, "actual mall straight leg has a bounded translation count")
+			previous = current
+			last_move = world.realtime
+		mall_assert(world.realtime - last_move < 20, "actual mall car movement cannot silently stall")
+	return steps
+
+/proc/mall_vehicle_route_probe(obj/map_metadata/extraction_survival/mall/M)
+	var/started = world.realtime
+	var/deadline = started + 450
+	mall_stage("before actual mall car purchase and travel")
+	// Real turf Enter callbacks need this clock, not its client scheduler loop.
+	if (!movementMachine) movementMachine = new
+	mall_assert(movementMachine && movementMachine.ticks == 0, "actual mall walking has the production movement clock without scheduler startup")
+	var/mob/living/human/H = new(locate(4,4,1))
+	H.m_intent = "stealth"
+	M.fixture_owners[H] = "mallcarvisitor"
+	mall_assert(M.admit(H) && H.z == 2, "car visitor receives a real private account")
+	var/datum/extraction_session/S = H.extraction_session
+	for (var/i in 1 to 5) new /obj/item/extraction_salvage(get_turf(S.house))
+	mall_assert(M.upgrade_house(S) && S.profile["level"] == 2, "car visitor pays production house upgrade before dealer purchase")
+	for (var/i in 1 to EXTRACTION_CAR_PRICE) new /obj/item/extraction_salvage(get_turf(S.house))
+	mall_assert(M.save_home(S), "car purchase inputs receive durable equipment identities")
+	var/list/payment = list()
+	for (var/obj/item/extraction_salvage/I in M.home_roots(S)) payment += I
+	mall_assert(payment.len == EXTRACTION_CAR_PRICE && M.buy_car(H), "car visitor purchases with exactly the actual required workshop parts")
+	for (var/obj/item/I in payment)
+		mall_assert(QDELETED(I), "paid car purchase consumes every physical payment part")
+	var/obj/structure/vehicleparts/axis/A = S.garage_vehicle
+	mall_assert(A && S.profile["garage"].len == 1 && S.profile["garage_purchase"]["status"] == "complete" && !M.buy_car(H), "paid car is acknowledged once and cannot be bought into an occupied bay")
+	var/obj/structure/engine/internal/E = A.engine
+	var/obj/item/tank = E.fueltank
+	mall_assert(tank.reagents.total_volume == 0, "paid dealer car has no constructor fuel")
+	// Explicit fixture supply; no claim that buying a car grants gasoline or keys.
+	tank.reagents.add_reagent(E.fuels[1], 100, safety = TRUE)
+	mall_assert(tank.reagents.total_volume == 100, "car fixture supplies exactly its measured fuel input")
+	var/obj/structure/vehicleparts/frame/damaged = A.loc
+	damaged.w_front[5] = 0.05
+	var/obj/structure/table/carboot/boot
+	for (var/obj/structure/table/carboot/B in S.garage_parts) boot = B
+	mall_assert(boot, "dealer car provides an actual mapped boot component")
+	var/obj/item/weapon/storage/backpack/bag = new(get_turf(boot))
+	var/obj/item/extraction_salvage/child = new(bag)
+	child.health = 37
+	// Unlike cache tokens, this existing supported loot key opens legacy car doors.
+	var/obj/item/weapon/key/extraction_room/key = new(get_turf(H))
+	mall_assert(H.put_in_active_hand(key) && M.save_home(S), "car fixture owns a supported held door key and nested boot cargo before deployment")
+	var/list/initial_record = M.vehicle_codec.encode(A)
+	mall_assert(initial_record && M.vehicle_codec.validate(initial_record), "actual paid vehicle graph and cargo encode before deployment")
+	var/list/part_refs = M.vehicle_codec.objects.Copy()
+	var/list/part_ids = list()
+	var/list/wanted_ids = list()
+	for (var/obj/O in part_refs)
+		mall_assert(O.extraction_vehicle_part_id && !wanted_ids[O.extraction_vehicle_part_id], "initial vehicle part identities are nonempty and distinct")
+		part_ids[O] = O.extraction_vehicle_part_id
+		wanted_ids[O.extraction_vehicle_part_id] = TRUE
+	var/bag_id = bag.extraction_item_id
+	var/child_id = child.extraction_item_id
+	var/key_id = key.extraction_item_id
+	mall_assert(bag_id && child_id && key_id && bag_id != child_id && bag_id != key_id && child_id != key_id && !wanted_ids[bag_id] && !wanted_ids[child_id] && !wanted_ids[key_id], "car fixture cargo and held key have distinct durable identities disjoint from vehicle parts")
+	wanted_ids[bag_id] = TRUE
+	wanted_ids[child_id] = TRUE
+	wanted_ids[key_id] = TRUE
+	var/obj/effect/extraction_raid_marker/road/entry
+	for (var/obj/effect/extraction_raid_marker/road/R in extraction_raid_markers)
+		if (!entry || R.y < entry.y) entry = R
+	var/obj/effect/extraction_exit/highway/highway
+	for (var/obj/effect/extraction_exit/highway/X in world)
+		if (!highway || X.x < highway.x) highway = X
+	mall_assert(entry && entry.x == 89 && entry.y == 19 && entry.z == 1 && highway && highway.x == 15 && highway.y == 12 && highway.z == 1, "car route uses actual default mall south entry and west highway")
+	var/list/original_markers = extraction_raid_markers
+	var/deployed = FALSE
+	extraction_raid_markers = list(entry)
+	try
+		deployed = M.deploy_vehicle(H)
+	catch (var/exception/failure)
+		extraction_raid_markers = original_markers
+		throw failure
+	extraction_raid_markers = original_markers
+	mall_assert(deployed && S.raid_vehicle == A && !S.garage_vehicle && S.profile["state"] == "raid" && !S.profile["garage"].len && M.raid_vehicles[A], "production deployment debits the garage and moves the same actual owned car")
+	mall_assert(get_dist(A, entry) <= 4 && A.z == 1 && A.dir == SOUTH && A.maxdist == 3 && A.components.len == 9, "actual car arrives beside the real south road marker with its native turning footprint")
+	mall_assert(M.raid_items[bag] && M.raid_items[child] && M.raid_items[key], "deployed nested cargo and carried key enter actual raid custody")
+	var/obj/structure/bed/chair/drivers/car/seat = A.wheel.drivingchair
+	var/obj/structure/vehicleparts/frame/door = A.wheel.control
+	mall_assert(seat && door && door.axis == A && seat.axis == A, "paid car retains production driver and door links")
+	// Walk around the current SOUTH-facing three-square footprint to its east.
+	if (H.x <= A.x && H.y >= A.y && H.y <= A.y + 2)
+		mall_car_walk(H, locate(H.x, A.y - 1, 1), deadline, FALSE)
+	mall_car_walk(H, locate(A.x + 1, H.y, 1), deadline)
+	mall_car_walk(H, locate(seat.x + 1, seat.y, 1), deadline, FALSE)
+	mall_assert(H.Adjacent(door), "driver reaches the actual closed car door on foot")
+	if (!door.doorcode) mall_car_use_key(H, door, key)
+	if (!door.w_left[7]) mall_car_use_key(H, door, key)
+	mall_assert(door.doorcode == key.code && door.w_left[7], "existing supported key opens the real driver door through production attackby")
+	mall_car_walk(H, get_turf(seat), deadline)
+	H.swap_hand()
+	mall_assert(!H.get_active_hand() && H.get_inactive_hand() == key, "driver keeps the original key and frees the active hand for the wheel")
+	seat.user_buckle_mob(H, H)
+	mall_assert(H.buckled == seat && A.driver == H && H.get_active_hand() == A.wheel, "production buckling supplies the real steering wheel")
+	mall_car_use_key(H, door, key)
+	mall_assert(!door.w_left[7], "real driver closes the keyed door before travel")
+	A.wheel.attack_self(H)
+	mall_assert(E.on && !A.moving, "production steering input starts the actual engine")
+	A.wheel.attack_self(H)
+	var/south_steps = mall_car_drive_leg(H, A, SOUTH, highway.y + 1, deadline)
+	mall_assert(A.wheel.turndir(H, "right") && A.dir == WEST, "real steering turns from south into the mall highway ring")
+	for (var/i in 1 to 3) A.wheel.attack_self(H)
+	mall_assert(A.currentspeed == 4, "production steering input selects bounded native top gear")
+	var/west_steps = mall_car_drive_leg(H, A, WEST, highway.x + 1, deadline)
+	// The private bay is SOUTH-shaped. Preserve its production geometry check.
+	mall_assert(A.wheel.turndir(H, "left") && A.dir == SOUTH, "real steering returns the car to its private-bay orientation")
+	for (var/i in 1 to 4) A.wheel.secondary_attack_self(H)
+	A.wheel.secondary_attack_self(H)
+	while (A.movement_processes)
+		mall_car_budget(deadline)
+		sleep(1)
+	mall_assert(!A.moving && !A.currentspeed && !E.on && !A.transforming_vehicle && A.driver == H && M.vehicle_at_exit(A, highway), "actual driven car parks and stops next to the real highway")
+	mall_assert(south_steps + west_steps >= 60 && tank.reagents.total_volume > 0 && tank.reagents.total_volume < 100, "actual road travel moves the car and consumes its supplied fuel")
+	mall_car_use_key(H, door, key)
+	mall_assert(door.w_left[7] && seat.user_unbuckle_mob(H) == H && !H.buckled && !A.driver && A.wheel.loc == seat, "real driver opens the door and leaves the stopped car without duplicating its wheel")
+	mall_car_walk(H, get_step(get_turf(seat), EAST), deadline)
+	mall_car_use_key(H, door, key)
+	mall_assert(!door.w_left[7], "former driver closes the original real door after leaving")
+	mall_car_walk(H, locate(H.x, highway.y - 1, 1), deadline, FALSE)
+	mall_car_walk(H, locate(highway.x, highway.y - 1, 1), deadline)
+	mall_assert(highway.eligible(H), "former driver walks adjacent to the actual highway exit")
+	var/final_fuel = tank.reagents.total_volume
+	var/list/stopped_record = M.vehicle_codec.encode(A)
+	mall_assert(stopped_record && M.garage_record_fits(S, stopped_record), "actual post-drive graph fits the normal unchanged private bay")
+	var/sequence = S.profile["raid_sequence"]
+	mall_assert(M.extract_vehicle(H, highway, A) && S.profile["state"] == "home" && S.garage_vehicle == A && S.profile["garage"].len == 1 && !M.raid_vehicles[A] && !S.raid_vehicle, "production highway return banks the same actual driven car once")
+	mall_assert(A.engine == E && E.fueltank == tank && tank.reagents.total_volume == final_fuel && damaged.w_front[5] == 0.05 && bag.extraction_item_id == bag_id && child.extraction_item_id == child_id && child.loc == bag && child.health == 37 && key.extraction_item_id == key_id && key.code == 81732, "same engine tank fuel wear and nested cargo/key identities survive actual mall return")
+	for (var/obj/O in part_refs)
+		mall_assert(!QDELETED(O) && O.extraction_vehicle_part_id == part_ids[O], "actual mall return preserves each original vehicle part reference and identity")
+	// Production tick prunes nested raid references after they leave mission z.
+	// Immediate atomic registry emptiness is not the return transaction contract.
+	var/banked_sequence = S.profile["raid_sequence"]
+	var/banked_credits = S.profile["credits"]
+	var/banked_level = S.profile["level"]
+	M.tick()
+	mall_assert(!M.raid_items[bag] && !M.raid_items[child] && !M.raid_items[key] && S.profile["state"] == "home" && S.profile["raid_sequence"] == banked_sequence && S.profile["credits"] == banked_credits && S.profile["level"] == banked_level && S.garage_vehicle == A && tank.reagents.total_volume == final_fuel && child.loc == bag, "normal production tick releases returned nested raid references without changing banked gameplay state or custody")
+	mall_assert(json_encode(S.profile["garage"][1]) == json_encode(stopped_record) && json_encode(M.vehicle_codec.encode(A)) == json_encode(stopped_record), "garage credit matches the exact measured stopped graph without fuel recharge or cargo replacement")
+	var/datum/extraction_account_store/disk = new
+	disk.root = M.accounts.store.root
+	var/list/saved = disk.load_profile(S.owner)
+	var/list/owned_ids = disk.recovery_ids(saved)
+	mall_assert(saved && saved["state"] == "home" && saved["garage"].len == 1 && owned_ids && owned_ids[bag_id] && owned_ids[child_id] && owned_ids[key_id] && json_encode(saved["garage"][1]) == json_encode(stopped_record), "reopened account disk owns the exact returned car and cargo graph without duplicate custody")
+	var/list/physical_counts = list()
+	for (var/obj/O in world)
+		var/list/atom_ids = list()
+		if (wanted_ids[O.extraction_vehicle_part_id]) atom_ids[O.extraction_vehicle_part_id] = TRUE
+		if (istype(O, /obj/item))
+			var/obj/item/I = O
+			if (wanted_ids[I.extraction_item_id]) atom_ids[I.extraction_item_id] = TRUE
+		// An atom carrying both namespaces is counted once per identity, not twice.
+		for (var/id in atom_ids) physical_counts[id]++
+	for (var/id in wanted_ids)
+		mall_assert(physical_counts[id] == 1 && owned_ids[id], "returned mall part cargo and key identities each have one physical atom and one account owner")
+	var/revision = S.profile["revision"]
+	mall_assert(!S.credit_vehicle_extraction(sequence, list(), stopped_record) && S.profile["revision"] == revision, "actual mall vehicle return cannot credit the raid a second time")
+	mall_car_budget(deadline)
+	mall_assert(!world.port, "actual mall car case keeps the fixture network closed")
+	mall_stage("actual mall car receipt [json_encode(list("car_id" = A.extraction_vehicle_part_id, "bag_id" = bag_id, "child_id" = child_id, "key_id" = key_id, "south_steps" = south_steps, "west_steps" = west_steps, "fuel_before" = 100, "fuel_after" = final_fuel, "elapsed_deciseconds" = world.realtime - started, "garage_revision" = revision))]")
