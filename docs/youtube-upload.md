@@ -511,7 +511,8 @@ procedure. The helper does neither automatically and refuses to overwrite secret
 Only public-repository standard `ubuntu-24.04` runners are configured; no larger
 runners or paid services. The [deferred controller proposal](youtube-deferred.md)
 adds default-disabled hourly scheduling with separate activation blockers and
-owner approval. Upload jobs time out at 5/8 minutes. One clip
+owner approval. Inspection jobs time out at five minutes; upload jobs use eight
+minutes in legacy mode and 18 minutes in eight-hour review mode. One clip
 per dispatch, at most two reservations in a rolling 24 hours, max 1,000 receipt
 records and 1 MiB ledger/JSON are enforced. Reaching a cap stops for a reviewed
 maintenance plan; never prune dedup history to make room. Existing account-wide
@@ -562,8 +563,8 @@ dispatch watchdog cannot cancel a human waiting for this manual review.
 Keep all six upload controls OFF, `YOUTUBE_DEFERRED_ARMED_UNTIL=0` and
 `YOUTUBE_DEFERRED_ENABLED=false` throughout review. The secret-free inspection
 checks provenance, exact media and owner approval, plus artifact retention through
-run creation + eight hours + 120-second handoff + 900-second execution allowance
-+ 300-second margin. If coverage is insufficient, use the existing trusted
+run creation + eight hours + 120-second handoff + 900-second execution allowance +
+300-second margin. If coverage is insufficient, use the existing trusted
 importer to copy the **same approved immutable bytes** on the final master commit,
 inspect the resulting digest and then create a fresh request. Do not relabel an
 old artifact, regenerate gameplay, substitute footage in a waiting run, or delete
@@ -593,6 +594,10 @@ clip cannot dispatch in the interval before cleanup. No additional owner comment
 or second environment approval is required. The workflow cannot open controls;
 if the operator cannot attend this short handoff it refuses without sending media.
 It never sleeps on a runner for eight hours or transfers approval to another job.
+The protected review-mode job has an 18-minute runner budget for setup, the
+120-second handoff and three existing API adapter calls of at most 240 seconds each.
+This does not extend the execution arm beyond 900 seconds; legacy upload jobs retain
+their eight-minute timeout and inspection jobs retain their five-minute timeout.
 
 Before insertion, the worker revalidates provenance and owner approval, current
 master, exact artifact coverage, all six live controls, disabled controller and the

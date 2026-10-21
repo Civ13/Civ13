@@ -78,7 +78,9 @@ jobs:
       vars.YOUTUBE_ZERO_COST_CONFIRMED == 'true'))
     environment: youtube-unlisted
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    # Review handoff120 seconds + three240-second adapter calls + setup margin.
+    # The short execution arm remains <=900s; legacy budget stays unchanged.
+    timeout-minutes: ${{ inputs.review_hours == '8' && 18 || 8 }}
     permissions:
       contents: write
       actions: read
