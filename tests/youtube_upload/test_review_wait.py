@@ -36,7 +36,7 @@ class Reader:
         for scope in self.values:
             self.values[scope].update(YOUTUBE_UPLOAD_ENABLED="true", YOUTUBE_UPLOAD_STOP_USE="false",
                                       YOUTUBE_ZERO_COST_CONFIRMED="true")
-        self.values["repository"].update(YOUTUBE_DEFERRED_ENABLED="true", YOUTUBE_DEFERRED_ARMED_UNTIL=str(until))
+        self.values["repository"].update(YOUTUBE_DEFERRED_ARMED_UNTIL=str(until))
 
 
 class ReviewTests(unittest.TestCase):
@@ -138,6 +138,12 @@ class ReviewTests(unittest.TestCase):
         reader.values["environment"]["YOUTUBE_UPLOAD_STOP_USE"] = "true"
         with self.assertRaises(u.Refused):
             r.execution_gate(self.gh, reader, clock=lambda: DEADLINE + 51)
+
+    def test_manual_arm_cannot_enable_dispatcher_for_other_waiting_clips(self):
+        reader = self.execution()
+        reader.values["repository"]["YOUTUBE_DEFERRED_ENABLED"] = "true"
+        with self.assertRaises(u.Refused):
+            r.execution_gate(self.gh, reader, clock=lambda: DEADLINE)
 
     def test_execution_expiry_rearm_changed_source_or_missing_handoff_refused(self):
         reader = self.execution()

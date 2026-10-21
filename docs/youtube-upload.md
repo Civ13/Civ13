@@ -583,14 +583,16 @@ baseline and waits at most 120 seconds for the attended operator to arm executio
 This step receives only the workflow token and the existing read-only control App
 token, with no YouTube credentials bound. The operator must monitor that step,
 check cancellation/stop markers, cap, receipts and the original approval, then
-open only the approved six controls and controller feature with a fresh
-`YOUTUBE_DEFERRED_ARMED_UNTIL` at most 900 seconds away. No additional owner comment
+open only the approved six controls with a fresh
+`YOUTUBE_DEFERRED_ARMED_UNTIL` at most 900 seconds away. Keep the controller feature
+disabled throughout this manual request, including execution, so another queued
+clip cannot dispatch in the interval before cleanup. No additional owner comment
 or second environment approval is required. The workflow cannot open controls;
 if the operator cannot attend this short handoff it refuses without sending media.
 It never sleeps on a runner for eight hours or transfers approval to another job.
 
 Before insertion, the worker revalidates provenance and owner approval, current
-master, exact artifact coverage, all six live controls, controller feature and the
+master, exact artifact coverage, all six live controls, disabled controller and the
 same newly created arm. It does not rely on `vars` snapshots captured while gates
 were OFF. A replacement arm cannot extend that run. The existing ledger still
 reserves before media and enforces the unchanged inclusive rolling 24-hour cap,

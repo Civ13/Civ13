@@ -2,10 +2,11 @@
 from datetime import datetime, timezone
 import os
 from pathlib import Path
+import re
 import time
 
 import upload as u
-from deferred import ControlReader, controls, cancel_overdue_run
+from deferred import ControlReader, cancel_overdue_run
 
 REVIEW_SECONDS = 8 * 3600
 HANDOFF_SECONDS = 120
@@ -71,6 +72,17 @@ def closed_baseline(reader):
               "Review handoff requires all six controls OFF, arm zero and controller disabled")
 
 
+def execution_controls(now, reader):
+    # This manual request must not enable the dispatcher for another queued clip.
+    repo, env = reader.variables("repository"), reader.variables("environment")
+    u.require(repo.get("YOUTUBE_DEFERRED_ENABLED") == "false", "Manual review requires controller disabled")
+    until = repo.get("YOUTUBE_DEFERRED_ARMED_UNTIL", "")
+    return (all(values.get("YOUTUBE_UPLOAD_ENABLED") == "true" and
+                values.get("YOUTUBE_UPLOAD_STOP_USE") == "false" and
+                values.get("YOUTUBE_ZERO_COST_CONFIRMED") == "true" for values in (repo, env)) and
+            bool(re.fullmatch(r"[0-9]{1,12}", until)) and now < int(until) <= now + EXECUTION_SECONDS)
+
+
 def await_arm(gh, reader, clock=time.time, sleep=time.sleep):
     deadline = request(gh, int(clock()))
     closed_baseline(reader)
@@ -80,7 +92,7 @@ def await_arm(gh, reader, clock=time.time, sleep=time.sleep):
     while int(clock()) < started + HANDOFF_SECONDS:
         now = int(clock())
         # Expected closed gates may wait; service/auth/validation failures never retry.
-        if controls(now, reader) == "":
+        if execution_controls(now, reader):
             arm = reader.metadata("repository", "YOUTUBE_DEFERRED_ARMED_UNTIL")
             until = int(arm["value"])
             u.require(stamp(arm.get("updated_at")) >= started and now < until <= now + EXECUTION_SECONDS,
@@ -102,7 +114,7 @@ def execution_gate(gh, reader, clock=time.time):
     started, recorded_deadline, until = map(int, values)
     u.require(recorded_deadline == deadline and started < deadline and
               started <= now < until <= started + HANDOFF_SECONDS + EXECUTION_SECONDS and
-              controls(now, reader) == "", "Review execution expired or fresh stop controls closed")
+              execution_controls(now, reader), "Review execution expired or fresh stop controls closed")
     arm = reader.metadata("repository", "YOUTUBE_DEFERRED_ARMED_UNTIL")
     u.require(arm["value"] == str(until) and stamp(arm.get("updated_at")) >= started,
               "Execution arm changed; a later arm cannot extend this request")
