@@ -45,7 +45,7 @@ class ControlReader:
     def from_environment(cls):
         return cls(u.Transport(), os.environ.get("YOUTUBE_CONTROL_TOKEN", ""))
 
-    def read(self, scope, name):
+    def metadata(self, scope, name):
         u.require(scope in CONTROL_NAMES and name in CONTROL_NAMES[scope], "Control read outside allowlist")
         prefix = "/actions/variables/" if scope == "repository" else "/environments/youtube-unlisted/variables/"
         status, _, raw = self._transport.request("GET", f"https://api.github.com/repos/{u.REPO}{prefix}{name}",
@@ -55,7 +55,10 @@ class ControlReader:
         data = u.parse_json(raw)
         u.require(data.get("name") == name and isinstance(data.get("value"), str) and len(data["value"]) <= 8192,
                   "Dedicated control variable missing or malformed")
-        return data["value"]
+        return data
+
+    def read(self, scope, name):
+        return self.metadata(scope, name)["value"]
 
     def variables(self, scope):
         u.require(scope in CONTROL_NAMES, "Control scope outside allowlist")

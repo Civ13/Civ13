@@ -11,6 +11,9 @@ on:
       YOUTUBE_CONTROL_APP_PRIVATE_KEY:
         required: false
     inputs:
+      review_hours:
+        type: string
+        default: '0'
       manifest_id:
         required: true
         type: string
@@ -58,6 +61,7 @@ jobs:
           sparse-checkout: tools/youtube
       - name: Inspect approved provenance and media without channel secrets
         env:
+          REVIEW_HOURS: ${{ inputs.review_hours }}
           MANIFEST_ID: ${{ inputs.manifest_id }}
           VERIFY_ONLY: ${{ inputs.verify_only }}
           IMPORT_RUN_ID: ${{ inputs.import_run_id }}
@@ -69,11 +73,14 @@ jobs:
   upload:
     needs: inspect
     if: >-
-      inputs.execute_upload && vars.YOUTUBE_UPLOAD_ENABLED == 'true' &&
-      vars.YOUTUBE_UPLOAD_STOP_USE == 'false' && vars.YOUTUBE_ZERO_COST_CONFIRMED == 'true'
+      inputs.execute_upload && (inputs.review_hours == '8' ||
+      (vars.YOUTUBE_UPLOAD_ENABLED == 'true' && vars.YOUTUBE_UPLOAD_STOP_USE == 'false' &&
+      vars.YOUTUBE_ZERO_COST_CONFIRMED == 'true'))
     environment: youtube-unlisted
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    # Review handoff120 seconds + three240-second adapter calls + setup margin.
+    # The short execution arm remains <=900s; legacy budget stays unchanged.
+    timeout-minutes: ${{ inputs.review_hours == '8' && 18 || 8 }}
     permissions:
       contents: write
       actions: read
@@ -97,7 +104,7 @@ jobs:
       # No permission-* inputs: v3.3.0 lacks permission-variables (upstream #231).
       - name: Mint short-lived control-read token after environment review
         id: control-token
-        if: vars.YOUTUBE_DEFERRED_ENABLED == 'true' || inputs.deferred_id != '' || inputs.deferred_token != ''
+        if: inputs.review_hours == '8' || vars.YOUTUBE_DEFERRED_ENABLED == 'true' || inputs.deferred_id != '' || inputs.deferred_token != ''
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0, node24
         with:
           app-id: ${{ vars.YOUTUBE_CONTROL_APP_ID }}
@@ -105,11 +112,34 @@ jobs:
           owner: Civ13
           repositories: Civ13
           skip-token-revoke: false
+      - name: Admit reviewed request with controls closed
+        id: review-admit
+        if: inputs.review_hours == '8'
+        env:
+          REVIEW_OPERATION: admit
+          REVIEW_HOURS: ${{ inputs.review_hours }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}
+        run: /usr/bin/python3 -B tools/youtube/review_wait.py
+      - name: Await a fresh short operator arm after successful admission
+        id: review-arm
+        if: inputs.review_hours == '8'
+        env:
+          REVIEW_HOURS: ${{ inputs.review_hours }}
+          REVIEW_STARTED_AT: ${{ steps.review-admit.outputs.review_started_at }}
+          REVIEW_DEADLINE: ${{ steps.review-admit.outputs.review_deadline }}
+          GITHUB_TOKEN: ${{ github.token }}
+          YOUTUBE_CONTROL_TOKEN: ${{ steps.control-token.outputs.token }}
+        run: /usr/bin/python3 -B tools/youtube/review_wait.py
       # No PR checkout/scripts, decoder or input interpolation. The sole action
       # cleanup after upload is revocation of the short-lived control-read token.
       # Setup/install steps above have NO YouTube credentials in their environment.
       - name: Reserve, upload public, and verify destination and processing
         env:
+          REVIEW_HOURS: ${{ inputs.review_hours }}
+          REVIEW_STARTED_AT: ${{ steps.review-arm.outputs.review_started_at }}
+          REVIEW_DEADLINE: ${{ steps.review-arm.outputs.review_deadline }}
+          REVIEW_EXECUTION_UNTIL: ${{ steps.review-arm.outputs.execution_until }}
           MANIFEST_ID: ${{ inputs.manifest_id }}
           VERIFY_ONLY: ${{ inputs.verify_only }}
           IMPORT_RUN_ID: ${{ inputs.import_run_id }}

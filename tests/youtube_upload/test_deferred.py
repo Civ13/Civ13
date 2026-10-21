@@ -169,7 +169,7 @@ class ControlReaderTests(unittest.TestCase):
         inspect, upload = worker.split('\n  upload:\n')
         self.assertNotIn(pin, inspect)
         self.assertIn('environment: youtube-unlisted', upload)
-        self.assertIn("if: vars.YOUTUBE_DEFERRED_ENABLED == 'true' || inputs.deferred_id != '' || inputs.deferred_token != ''", upload)
+        self.assertIn("if: inputs.review_hours == '8' || vars.YOUTUBE_DEFERRED_ENABLED == 'true' || inputs.deferred_id != '' || inputs.deferred_token != ''", upload)
         controller = (root / '.github/workflows/youtube-deferred.yml').read_text()
         self.assertIn('environment: youtube-controls', controller)
         self.assertIn("if: contains(fromJSON('[\"tick\",\"control-probe\"]'), inputs.operation || 'tick')", controller)
