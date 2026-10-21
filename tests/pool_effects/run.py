@@ -89,7 +89,7 @@ try:
         created.append(compiled)
         shutil.copy2(compiled, a.output/('probe'+extension))
     shutil.copytree(root/'config', a.output/'config')
-    run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-safe','-log','runtime.log'], cwd=a.output, capture_output=True, timeout=60, creationflags=flags)
+    run = subprocess.run([str(daemon),'probe.dmb','-invisible','-close','-trusted','-log','runtime.log'], cwd=a.output, capture_output=True, timeout=60, creationflags=flags)
     runtime = (a.output/'runtime.log').read_text(encoding="utf-8")
     (a.output/'daemon.log').write_bytes(run.stdout+run.stderr)
     print(runtime[-3500:], flush=True)

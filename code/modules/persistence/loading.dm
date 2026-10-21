@@ -19,6 +19,10 @@
 		// their screen/datum objects without the live client owner they require.
 		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
 			return null
+		// Historical saves can retain derived lighting graphs through item vars.
+		// Their constructors require live owners/turfs; never import those graphs.
+		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))
+			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
 			return map
@@ -42,6 +46,10 @@
 			object = replacement
 		else if(ispath(type, /atom))
 			object = new type(starting_loc)
+		else if(ispath(type, /datum/wound/lost_limb))
+			// The lost limb is not a constructor input during graph recovery.
+			// Register an explicit shell before decoding cyclic organ references.
+			object = new type(null, null, null, TRUE)
 		else
 			// Non-atom datums have no location argument. In particular, matrix
 			// construction must use its no-argument identity initializer.
@@ -53,6 +61,8 @@
 		if(ishuman(object))
 			var/mob/living/human/restored_human = object
 			restored_human.persistence_restored = TRUE
+			savefile.cd = entry_path(savefile, ind)
+			restored_human.human_subtile_prepare_import(savefile)
 		all_loaded += object
 		existing_references["[ind]"] = object
 		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
@@ -112,6 +122,9 @@
 				object.vars[v] = savefile[v]
 			savefile.cd = entry_path(savefile, ind)
 			TICK_CHECK
+		if(istype(object, /datum/wound/lost_limb))
+			var/datum/wound/lost_limb/restored_wound = object
+			restored_wound.validate_restored_state()
 		savefile.cd = ".."
 		if (ishuman(object))
 			var/mob/living/human/H = object
@@ -165,6 +178,10 @@
 			return L
 	throw EXCEPTION("Unknown saved value kind: [value["kind"]]")
 /map_storage/proc/Load_World()
+	return run_world_operation("load")
+
+/map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)
+	if(!operation || !operation.enter_contents(src, "load")) return FALSE
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
@@ -217,6 +234,12 @@
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
+			// Constructors see defaults before saved fields/contents are restored.
+			// Rebuild obstruction caches before queuing any final source updates.
+			for(var/turf/light_turf in all_loaded)
+				light_turf.recalc_atom_opacity()
+			for(var/atom/light_owner in all_loaded)
+				light_owner.update_light()
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			last_error = "[e] on [e.file]:[e.line]"

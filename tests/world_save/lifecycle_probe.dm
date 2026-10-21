@@ -1,4 +1,30 @@
 var/list/clients = list()
+// Standalone lifecycle fixture: no live world operation or error collector.
+// These declarations let the production fixed-state snapshot report unavailable
+// diagnostics; they do not constitute diagnostic collection acceptance.
+var/datum/persistence_world_operation/persistence_active_operation
+/datum/persistence_world_operation
+	var/kind
+	var/backend_started = FALSE
+	var/contents_started = FALSE
+	var/mutation_started = FALSE
+	var/restoring_players = FALSE
+/map_storage
+	var/saving_z = 0
+	var/loading_z = 0
+var/datum/lifecycle_fixture_globals/GLOB
+/datum/lifecycle_fixture_globals
+	var/datum/error_viewer/error_cache/error_cache
+	var/total_runtimes
+	var/total_runtimes_skipped
+/datum/error_viewer/error_cache
+	var/list/error_sources = list()
+/datum/error_viewer/error_source
+	var/total_logged = 0
+	var/total_skipped = 0
+	var/total_retired = 0
+/datum/nomads_lifecycle_control/proc/diagnose(list/input)
+	return json_encode(snapshot(FALSE, "fixture_diagnostics_unavailable"))
 /obj/map_metadata/var/ID = "fixture"
 /datum/controller/gameticker/var/current_state = GAME_STATE_PLAYING
 var/shutdown_calls = 0

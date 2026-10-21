@@ -68,7 +68,7 @@
 		return id
 	throw EXCEPTION("Unsupported durable metadata value; explicit migration required")
 
-/datum/durable_save_graph/proc/bind_entry(datum/A, z, ref)
+/datum/durable_save_graph/proc/bind_entry(datum/A, z, ref, map_storage/exporter)
 	var/identity = "\ref[A]"
 	var/id = atom_ids[identity]
 	if(!id) return
@@ -76,7 +76,10 @@
 		throw EXCEPTION("Durable metadata atom identity changed during export")
 	var/list/node = nodes[id]
 	if(node["ref"] && (node["ref"] != ref || node["z"] != z))
-		throw EXCEPTION("Durable metadata atom was exported more than once")
+		if(exporter) exporter.record_save_reference_failure("duplicate_durable_entry", A, ref, node["z"], node["ref"])
+		var/atom/movable/movable = A
+		var/turf/location = get_turf(movable)
+		throw EXCEPTION("Durable metadata atom was exported more than once: type=[A.type] first_z=[node["z"]] first_ref=[node["ref"]] current_z=[z] current_ref=[ref] native_z=[movable.z] turf_z=[location ? location.z : 0]")
 	node["z"] = z
 	node["ref"] = ref
 

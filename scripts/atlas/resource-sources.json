@@ -12078,7 +12078,8 @@
       "line": 152,
       "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
       "inputs": [
-        "/obj/item/weapon/reagent_containers/food/snacks/dough"
+        "/obj/item/weapon/reagent_containers/food/snacks/dough",
+        "/obj/item/weapon/reagent_containers/food/condiment/enzyme"
       ],
       "outputs": [
         "/obj/item/weapon/reagent_containers/food/snacks/sliceable/bread"
@@ -12087,7 +12088,8 @@
         "/obj/structure/oven"
       ],
       "steps": [
-        "Place dough in a fueled oven and cook it into bread."
+        "Use yeast (5 units) on dough and wait about five minutes for it to rise.",
+        "Place the risen dough in a fueled oven and cook it into bread. Dough without risen yeast bakes into flatbread."
       ],
       "conditions": "fuel, cooking process; consume source",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",

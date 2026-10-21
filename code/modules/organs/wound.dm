@@ -390,7 +390,12 @@ datum/wound/cut/massive
 /** EXTERNAL ORGAN LOSS **/
 /datum/wound/lost_limb
 
-/datum/wound/lost_limb/New(var/obj/item/organ/external/lost_limb, var/losstype, var/clean)
+/datum/wound/lost_limb/New(var/obj/item/organ/external/lost_limb, var/losstype, var/clean, var/restore_shell = FALSE)
+	// Load_Entry registers this shell before decoding the saved organ/wound
+	// cycle. Its saved stages, helper lists and injury state replace these
+	// neutral base values; ordinary amputations still require their limb.
+	if(restore_shell)
+		return ..(0)
 	var/damage_amt = lost_limb.max_damage
 	if (clean) damage_amt /= 2
 
@@ -414,6 +419,21 @@ datum/wound/cut/massive
 				)
 
 	..(damage_amt)
+
+/datum/wound/lost_limb/proc/validate_restored_state()
+	// Missing dynamic stage tables cannot be reconstructed from subtype defaults.
+	// Reject incomplete historical data rather than silently healing the injury.
+	if(!islist(stages) || !stages.len || !islist(desc_list) || !islist(damage_list) || desc_list.len != stages.len || damage_list.len != stages.len)
+		throw EXCEPTION("Saved lost-limb wound is missing its stage tables")
+	if(!isnum(current_stage) || current_stage != round(current_stage) || current_stage < 1 || current_stage > stages.len || !isnum(amount) || amount <= 0)
+		throw EXCEPTION("Saved lost-limb wound has an invalid stage or amount")
+	for(var/i = 1, i <= stages.len, i++)
+		var/stage = stages[i]
+		if(desc_list[i] != stage || damage_list[i] != stages[stage])
+			throw EXCEPTION("Saved lost-limb wound has inconsistent stage tables")
+	if(desc != desc_list[current_stage] || min_damage != damage_list[current_stage])
+		throw EXCEPTION("Saved lost-limb wound has inconsistent current stage")
+	return TRUE
 
 /datum/wound/lost_limb/can_merge(var/datum/wound/other)
 	return FALSE //cannot be merged

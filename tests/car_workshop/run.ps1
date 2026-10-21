@@ -36,7 +36,7 @@ try {
     $dirty = git -C $repo status --porcelain -- code config tests/car_workshop civ13.dme
     if ($LASTEXITCODE -ne 0) { throw 'Git status failed' }
     @{commit=$commit;dirty=[bool]$dirty;byond='516.1681';scope='production construction/vehicle/serializer with startup and actor wait adapters';os=[Environment]::OSVersion.ToString()} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $temp 'metadata.json')
-    $launch = @{FilePath=(Join-Path $ByondBin $daemon);ArgumentList=@(('"' + (Join-Path $temp ($prefix + '.dmb')) + '"'),'-invisible','-safe','-log','startup.log');WorkingDirectory=$temp;PassThru=$true}
+    $launch = @{FilePath=(Join-Path $ByondBin $daemon);ArgumentList=@(('"' + (Join-Path $temp ($prefix + '.dmb')) + '"'),'-invisible','-trusted','-log','startup.log');WorkingDirectory=$temp;PassThru=$true}
     if ($IsWindows) { $launch.WindowStyle = 'Hidden' }
     $process = Start-Process @launch
     $timer = [Diagnostics.Stopwatch]::StartNew()

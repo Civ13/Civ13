@@ -43,6 +43,11 @@
 /obj/structure/pot/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
+	if (meal_cooking)
+		return TRUE
+	if (meal_portions)
+		serve_meal(I, H)
+		return TRUE
 	if (istype(I, /obj/item/weapon/wrench))
 		visible_message("<span class='warning'>[H] starts to [anchored ? "unsecure" : "secure"] the pot [anchored ? "from" : "to"] the ground.</span>")
 		playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
@@ -153,6 +158,8 @@
 			update_icon()
 
 /obj/structure/pot/attack_hand(var/mob/living/human/H)
+	if (meal_cooking)
+		return
 	if (!istype(H))
 		return
 	if (state != STATE_BOILING)
@@ -163,6 +170,8 @@
 		break
 
 /obj/structure/pot/process()
+	if (meal_cooking || meal_portions)
+		return
 
 	if (state == STATE_BOILING)
 		if (contents.len)
@@ -232,6 +241,9 @@
 
 /obj/structure/pot/examine(mob/user)
 	..(user)
+	to_chat(user, "Prepare meal: full water, potato or corn, and carrot, cabbage or tomato. Add meat or beans for hearty stew; two different vegetables and half a unit of salt make it seasoned. Keep a lit fire within one tile during preparation. Three bowls share the actual ingredients.")
+	if (meal_portions)
+		to_chat(user, "Prepared meal quality [meal_quality]/3: [meal_portions] portions remain.")
 	if (state == STATE_STEWING && stew_desc)
 		to_chat(user, "<span class = 'notice'>You can see a [lowertext(stew_desc)].</span>")
 	else if (state == STATE_EMPTY)
@@ -258,9 +270,16 @@
 	set src in range(1)
 	set name = "Empty"
 	set category = null
-	if (state == STATE_EMPTY)
+	if (state == STATE_EMPTY || meal_cooking)
 		return
 	visible_message("<span class = 'warning'>[usr] starts to empty the pot...</span>")
-	if (do_after(usr, 100, src))
+	if (do_after(usr, 100, src) && !meal_cooking)
 		visible_message("<span class = 'warning'>[usr] finishes emptying the pot.</span>")
 		state = STATE_EMPTY
+		if (meal_portions)
+			reagents.clear_reagents()
+			meal_portions = 0
+			meal_quality = 0
+			meal_has_meat = FALSE
+			fullness = 0
+		update_icon()

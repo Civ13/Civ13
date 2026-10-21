@@ -1,4 +1,11 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// Minimal serializer fixtures do not exercise wounds. Keep the loader's type
+// contract declared, but fail closed if one is introduced into these probes.
+// The --wounds full-source fixture tests actual constructor/state restoration.
+/datum/wound/lost_limb
+/datum/wound/lost_limb/proc/validate_restored_state()
+	throw EXCEPTION("Lost-limb restoration requires the production wound fixture")
+
 #ifndef BUILDING_MAX_Z
 #define BUILDING_MAX_Z 32
 #define BUILDING_EXTRA_LEVELS 8
@@ -20,6 +27,8 @@ var/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction/proc/exists()
 	return FALSE
 var/obj/map_metadata/map
+// ClearMap preserves the production view singleton; focused probes have none.
+var/mob/dview_mob
 var/list/errors = list()
 var/list/clients = list()
 var/game_id = "fixture-round"
@@ -31,11 +40,21 @@ var/next_duration_update_days = 0
 var/last_roundduration2text = 0
 var/last_roundduration2text_days = 0
 var/datum/controller/gameticker/ticker
+// Ordinary serializer fixtures exclude occupations. Round-state mode opts out
+// and supplies extracted production job-limit logic instead.
+#ifndef WORLD_SAVE_JOB_ADAPTER
+var/datum/world_save_fixture_jobs/job_master = new
+/datum/world_save_fixture_jobs/proc/initialize_position_limits()
+	return
+#endif
 var/datum/fixture_processes/processes = new
 /datum/fixture_processes
 	var/datum/fixture_ticker_process/ticker = new
 /datum/fixture_ticker_process
 	var/playtime_elapsed = 0
+// Production applies restored daylight in the lighting module; fixtures have no overlays.
+/proc/apply_restored_lighting()
+	return FALSE
 #ifndef WORLD_SAVE_MUSIC_ADAPTER
 /proc/TOD_loop()
 	return
@@ -80,6 +99,11 @@ var/list/mutate_on_tick = null
 /proc/ishuman(D)
 	return istype(D, /mob/living/human)
 /atom/movable/lighting_overlay
+/atom/proc/update_light()
+	// Focused serializer adapter; the lighting regression uses production lighting.
+	return
+/turf/proc/recalc_atom_opacity()
+	return
 /atom/movable
 	var/load_datums = FALSE
 /obj
@@ -111,6 +135,11 @@ var/list/mutate_on_tick = null
 	return
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0
+/mob/living/human/proc/human_subtile_prepare_import(savefile/F)
+	// This minimal fixture has no physical sub-tile movement implementation.
+	if ("human_subtile_position" in F.dir)
+		throw EXCEPTION("Sub-tile restoration requires the full-source human fixture")
+	return
 /mob/living/human/proc/rejuvenate()
 	rejuvenate_calls++
 	stat = CONSCIOUS
@@ -161,6 +190,12 @@ var/list/mutate_on_tick = null
 	return null
 /map_storage/proc/validate_durable_world(list/state, generation)
 	throw EXCEPTION("Unsupported fixture metadata profile")
+#ifndef WORLD_SAVE_REAL_DURABLE_IDLE
+// Serializer-only fixtures omit metadata transitions, like suspension below.
+// The operation probe opts out and includes the production predicate instead.
+/map_storage/proc/require_durable_world_idle()
+	return
+#endif
 /map_storage/proc/suspend_durable_world()
 	return
 /map_storage/proc/restore_durable_world()

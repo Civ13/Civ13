@@ -74,7 +74,7 @@ def main():
     print(log)
     if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError('Pinned clean compile failed')
-    cmd = [str(args.byond_bin/('dd.exe' if win else 'DreamDaemon')), 'probe.dmb', '-safe', '-log', 'runtime.log']
+    cmd = [str(args.byond_bin/('dd.exe' if win else 'DreamDaemon')), 'probe.dmb', '-trusted', '-log', 'runtime.log']
     if win:
         cmd += ['-invisible', '-close']
     with (out/'daemon.log').open('w') as stream:

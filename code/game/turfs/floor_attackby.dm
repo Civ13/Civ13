@@ -4,18 +4,40 @@
 /turf/floor/proc/collapse_check()
 	return
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/turf/floor/grass/proc/grass_cutting_wait(mob/user, datum/gameplay_action_lease/gameplay_context = null)
+	return do_after(user, 30, src, gameplay_context = gameplay_context)
+#else
 /turf/floor/grass/proc/grass_cutting_wait(mob/user)
 	return do_after(user, 30, src)
+#endif
 
 /turf/floor/grass/proc/grass_cutting_actor_connected(mob/user)
 	return user && user.client
 
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool, datum/gameplay_action_lease/gameplay_context = null)
+#else
 /turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
+#endif
 	if (busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
 		return
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!isnull(gameplay_context))
+		if (!istype(gameplay_context, /datum/gameplay_action_lease))
+			return
+		if (!gameplay_context.matches_gather_wait(user, src) || gameplay_context.tool != tool || gameplay_context.wait_claimed)
+			return
+#endif
 	busy = TRUE
 	to_chat(user, SPAN_NOTICE("You start cutting grass fibres..."))
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	var/completed = grass_cutting_wait(user, gameplay_context)
+	if (!isnull(gameplay_context) && (!gameplay_context.wait_claimed || !gameplay_context.valid()))
+		completed = FALSE
+#else
 	var/completed = grass_cutting_wait(user)
+#endif
 	busy = FALSE
 	if (!completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
 		return
@@ -304,29 +326,11 @@
 			user.drop_from_inventory(C)
 			qdel(C)
 			return
-	else if (istype(C, /obj/item/weapon/material/pickaxe) || istype(C, /obj/item/weapon/material/kitchen/utensil))
-		var/obj/item/weapon/material/pickaxe/SH = C
+	else if (istype(C, /obj/item/weapon/material/pickaxe))
 		var/turf/T = get_turf(src)
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
-			if (T.mining_in_progress)
-				to_chat(user, SPAN_WARNING("The rock is already being mined."))
-				return
-
-			// Set mining_in_progress to TRUE to indicate the process has started
-			T.mining_in_progress = TRUE
-			user.visible_message("<span class = 'notice'>[user] starts to break the rock with \the [C.name].</span>", "<span class = 'notice'>You start to break the rock with \the [C.name].</span>")
-			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			if (!do_after(user, (240/(H.getStatCoeff("strength"))/SH.usespeed)))
-				T.mining_in_progress = FALSE // In case we abort mid-way.
-				return
-			collapse_check()
-			if (istype(src, /turf/floor/dirt/underground/empty))
-				var/turf/floor/dirt/underground/empty/TT = src
-				TT.mining_clear_debris()
-			else if (!istype(src, /turf/floor/dirt/underground/empty))
-				mining_proc(H)
-			T.mining_in_progress = FALSE // Reset the variable to FALSE after the breaking process is complete
+			start_pickaxe_mining(H, C)
 			return
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
@@ -670,6 +674,121 @@
 		else
 			return ..(C, user)
 
+// Both click and collision use this one paid mining action. Reserve BEFORE any
+// spawn/yield; key repeat and movement substeps cannot queue another worker.
+/mob/var/tmp/datum/pickaxe_mining_action/pickaxe_mining_action
+/turf/var/tmp/datum/pickaxe_mining_action/pickaxe_mining_owner
+
+/mob/living/human/proc/bump_mining_authority()
+	return client && client.mob == src && client.canmove && client.moving
+
+/mob/living/human/proc/held_mining_pickaxe()
+	var/obj/item/weapon/material/pickaxe/P = get_active_hand()
+	if (istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src)
+		return P
+	P = get_inactive_hand()
+	return istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src ? P : null
+
+/mob/living/human/proc/pickaxe_mining_ready()
+	if (!isturf(loc) || (locate(/obj/structure/vehicleparts/frame) in loc))
+		return FALSE
+	return !gcDestroyed && !gc_destroyed && isturf(loc) && canmove && !incapacitated() && !restrained() && !lying && !prone && !resting && !sleeping && !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !using_object && !using_cannon && !football && !in_throw_mode
+
+/mob/living/human/proc/try_bump_mining(atom/A)
+	if (!istype(A, /turf/floor/dirt/underground) || !A.density || !bump_mining_authority() || world.time <= next_click)
+		return FALSE
+	var/obj/item/weapon/material/pickaxe/P = held_mining_pickaxe()
+	if (!P)
+		return FALSE
+	var/turf/floor/dirt/underground/T = A
+	return T.start_pickaxe_mining(src, P, TRUE)
+
+/turf/proc/start_pickaxe_mining(mob/living/human/H, obj/item/P, from_bump = FALSE)
+	if (!istype(H) || !istype(src, /turf/floor/dirt/underground) || !is_mineable || mining_in_progress || pickaxe_mining_owner || H.pickaxe_mining_action || !H.may_do_after || !H.pickaxe_mining_ready() || !H.canClick())
+		return FALSE
+	if (!istype(P, /obj/item/weapon/material/pickaxe) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
+		return FALSE
+	if (!isnum(P:usespeed) || P:usespeed <= 0 || H.getStatCoeff("strength") <= 0)
+		return FALSE
+	var/datum/pickaxe_mining_action/M = new
+	M.actor = H
+	M.wall = src
+	M.tool = P
+	M.origin = H.loc
+	M.sx = H.step_x
+	M.sy = H.step_y
+	M.active_tool = H.get_active_hand() == P
+	H.pickaxe_mining_action = M
+	pickaxe_mining_owner = M
+	mining_in_progress = TRUE
+	if (from_bump)
+		H.next_click = world.time + 1
+		spawn(0)
+			M.perform()
+	else
+		M.perform()
+	return TRUE
+
+/datum/pickaxe_mining_action
+	should_save = FALSE
+	var/mob/living/human/actor
+	var/turf/floor/dirt/underground/wall
+	var/obj/item/tool
+	var/atom/origin
+	var/sx
+	var/sy
+	var/active_tool
+	var/claimed = FALSE
+	var/committed = FALSE
+	var/wait_started = FALSE
+	var/datum/progressbar/progressbar
+
+/datum/pickaxe_mining_action/proc/valid(mob/user, atom/target)
+	return actor && user == actor && target == wall && wall && istype(wall, /turf/floor/dirt/underground) && locate(wall.x, wall.y, wall.z) == wall && wall.is_mineable && wall.pickaxe_mining_owner == src && wall.mining_in_progress && actor.pickaxe_mining_action == src && actor.pickaxe_mining_ready() && actor.loc == origin && actor.step_x == sx && actor.step_y == sy && tool && !tool.gcDestroyed && !tool.gc_destroyed && tool.loc == actor && (actor.l_hand == tool || actor.r_hand == tool) && (!active_tool || actor.get_active_hand() == tool) && wall.Adjacent(actor) && !committed
+
+/datum/pickaxe_mining_action/proc/claim(mob/user, atom/target)
+	if (claimed || !valid(user, target))
+		return FALSE
+	claimed = TRUE
+	return TRUE
+
+/datum/pickaxe_mining_action/proc/release()
+	if (progressbar)
+		qdel(progressbar)
+		progressbar = null
+	if (wait_started && actor && actor.pickaxe_mining_action == src)
+		wait_started = FALSE
+		actor.may_do_after = TRUE
+		actor.survival_action_finished()
+	if (actor && actor.pickaxe_mining_action == src)
+		actor.pickaxe_mining_action = null
+	if (wall && wall.pickaxe_mining_owner == src)
+		wall.pickaxe_mining_owner = null
+		wall.mining_in_progress = FALSE
+	actor = null
+	wall = null
+	tool = null
+	origin = null
+
+/datum/pickaxe_mining_action/proc/perform()
+	try
+		if (valid(actor, wall))
+			actor.visible_message("<span class = 'notice'>[actor] starts to break the rock with \the [tool.name].</span>", "<span class = 'notice'>You start to break the rock with \the [tool.name].</span>")
+			playsound(wall, 'sound/effects/pickaxe.ogg', 100, 1)
+			if (do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src) && valid(actor, wall))
+				committed = TRUE // Before mining_proc/collapse yields or replaces turf.
+				wall.collapse_check()
+				if (wall && locate(wall.x, wall.y, wall.z) == wall)
+					if (istype(wall, /turf/floor/dirt/underground/empty))
+						var/turf/floor/dirt/underground/empty/E = wall
+						E.mining_clear_debris()
+					else
+						wall.mining_proc(actor)
+	catch (var/exception/mining_error)
+		release()
+		throw mining_error
+	release()
+
 /turf/proc/extracting_proc(var/mob/living/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
 	if (!H || !src || !E)
 		return
@@ -791,6 +910,11 @@
 						H.adaptStat("strength", 1)
 			change_the_turf()
 			return
+	// Preserve common ore branches above; uranium uses only their fallback.
+	if (is_mineable && map.ordinal_age >= 8 && prob(5))
+		new /obj/item/stack/ore/uranium(src)
+		change_the_turf()
+		return
 	/*
 					else if (prob(10) && map.ordinal_age >= 6)
 						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)

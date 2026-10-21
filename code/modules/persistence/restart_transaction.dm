@@ -85,8 +85,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	return ticker.savemap(src)
 
 /datum/persistence_restart_transaction/proc/load_generation()
-	// Hand the same synchronous lock to loadmap before it can yield.
-	persistence_save_in_progress = FALSE
+	// Startup ownership is admitted explicitly; never clear another operation.
 	return ticker.loadmap(src)
 
 /datum/persistence_restart_transaction/proc/request_restart()
@@ -104,6 +103,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	// Native graceful world deletion lets the external supervisor preserve the
 	// completed generation and replace the binary before the next startup.
 	del(world)
+	// Native deletion can return until the current execution yields. Give BYOND
+	// that boundary before failure cleanup can consume the valid restart intent.
+	sleep(1)
 	throw EXCEPTION("Native shutdown returned without closing the world")
 
 /datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session)
