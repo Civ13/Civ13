@@ -353,7 +353,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         if wall:
             self.clock.utc += seconds
 
-    def invoke(self, hooks=None, module=run):
+    def invoke(self, hooks=None, module=run, budget=None):
         hooks = hooks or {}
         record = {'creations': [], 'argv': [], 'opened': [], 'cleanup': [], 'sockets': [], 'capture': 0}
         reviewed = self.write_packet()
@@ -440,7 +440,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
                 patch.object(module.socket, 'socket', fake_socket), \
                 patch.object(module, 'desktop_capture', side_effect=capture):
             try:
-                module.run(self.output, self.admission, reviewed)
+                module.run(self.output, self.admission, reviewed, **({'budget': budget} if budget is not None else {}))
             except BaseException as error:
                 record['error'] = error
         receipt = self.output / 'receipt.json'
@@ -498,6 +498,31 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         exec(compile(changed, module.__file__, 'exec'), module.__dict__)
         with self.assertRaisesRegex(AssertionError, 'dd.exe'):
             self.assert_console_daemon(module)
+
+    def assert_original_entry_preserved(self, module=run):
+        budget = run.Budget()
+        self.advance(117)
+        self.packet.update(issued_unix=self.clock.utc - 1, expires_unix=self.clock.utc + 120)
+        self.packet['resources']['measured_unix'] = self.clock.utc
+        record = self.invoke(module=module, budget=budget)
+        self.assertIs(record['context']['budget'], budget)
+        self.assertEqual(budget.started_monotonic, 0)
+        self.assertLessEqual(budget.remaining(work=True), 32)
+        self.assertEqual(str(record['error']), 'primary capture failure')
+
+    def test_actual_run_keeps_wrapper_original_entry(self):
+        self.assert_original_entry_preserved()
+
+    def test_actual_run_fresh_clock_mutant_is_detected(self):
+        import types
+        module = types.ModuleType('reset_budget_mutant')
+        module.__file__ = str(run.ROOT/'run.py')
+        source = (run.ROOT/'run.py').read_text()
+        changed = source.replace('budget = budget if budget is not None else Budget()', 'budget = Budget()')
+        self.assertNotEqual(changed, source)
+        exec(compile(changed, module.__file__, 'exec'), module.__dict__)
+        with self.assertRaises(AssertionError):
+            self.assert_original_entry_preserved(module)
 
     def test_expiry_during_free_prevents_job_and_process_creation(self):
         record = self.invoke({'free': lambda _: self.advance(151, wall=False)})

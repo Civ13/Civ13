@@ -17,6 +17,7 @@ import zipfile
 import PIL
 from PIL import Image, ImageGrab
 from guard_config import VENDOR, LIMITS, digest
+from entry_budget import Budget
 
 ROOT = Path(__file__).resolve().parent
 INSTALLED_MANIFEST_SHA256 = '1aa0306fade5defcdac743614bcc27a441b9f8f23c519a9a7cabc713007725c3'
@@ -24,40 +25,6 @@ LOCAL_RUNTIME_DLLS = ('mfc120u.dll', 'msvcp120.dll', 'msvcr120.dll')
 SHARED_EFFECTS = ['existing authentication may be used', 'registry/preferences may be shared',
                   'cache/recent connections may be written', 'shared screenshots may be written']
 
-
-class Budget:
-    """One entry-anchored cooperative envelope; blocking calls are not preempted."""
-    CLEANUP_RESERVE = 15
-    RECEIPT_RESERVE = 1
-
-    def __init__(self):
-        self.started_monotonic = time.monotonic()
-        self.started_utc = time.time()
-        self.full_end = self.started_monotonic + 165
-        self.utc_end = self.started_utc + 165
-        self.work_end = self.started_monotonic + 150
-
-    def bind(self, expires):
-        self.utc_end = min(self.utc_end, expires)
-        # Anchor the grant conversion to ENTRY, never to the end of preparation.
-        self.full_end = min(self.full_end, self.started_monotonic + expires - self.started_utc)
-        self.check()
-
-    def remaining(self, work=False):
-        mono, utc = time.monotonic(), time.time()
-        # A forward UTC jump permanently contracts the monotonic allowance;
-        # moving UTC backward later cannot replenish an observed grant.
-        self.full_end = min(self.full_end, mono + self.utc_end - utc)
-        end = self.full_end
-        if work:
-            end = min(self.work_end, end - self.CLEANUP_RESERVE - self.RECEIPT_RESERVE)
-        return max(0, end - mono)
-
-    def check(self, work=True):
-        require(self.remaining(work) > 0, 'Shared smoke work/cleanup budget exhausted')
-
-    def cleanup_wait(self):
-        return min(5, max(0, self.remaining() - self.RECEIPT_RESERVE))
 
 
 def source_identity():
@@ -327,8 +294,10 @@ def desktop_capture(pid):
     return ImageGrab.grab((point.x, point.y, point.x + width, point.y + height))
 
 
-def run(output, local_admission=None, reviewed_admission_sha256=None):
-    budget = Budget()
+def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=None):
+    budget = budget if budget is not None else Budget()
+    require(type(budget) is Budget, 'Original entry Budget required')
+    budget.check()
     require(local_admission is not None or reviewed_admission_sha256 is None,
             'Reviewed digest requires explicit local admission mode')
     local = load_local(local_admission, reviewed_admission_sha256, output, budget) if local_admission is not None else None

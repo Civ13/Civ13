@@ -242,3 +242,84 @@ orchestration regression checks the executable and complete server arguments;
 its GUI-selector mutant is rejected. Static entry-point evidence supports this
 selection but does not establish why the prior GUI server exited, native server
 readiness, or renderer acceptance. No environment or profile changes are made.
+
+## Same-command owner envelope (default OFF, source only)
+
+The opt-in `same_command.py` integration avoids an asynchronous message between
+resource measurement and native invocation. No runnable envelope or execution
+approval is supplied. A future attempt needs new applicable human authority and
+an independently reviewed owner-envelope file and SHA256, not any spent grant.
+Without `--execute` it refuses before sampling. There is no hosted workflow
+activation, automatic retry, background worker, or refresh path.
+
+The independently reviewed bounded JSON envelope has exactly `schema: 1`,
+`scope: dreamseeker-smoke-same-command-owner`, `enabled: true`, a nonempty external
+`authority_reference`, finite `not_before_unix` / `expires_unix` at most 300 seconds
+apart, `dynamic_fields: [issued_unix, expires_unix, resources]`, `sampling_policy`,
+and `admission`. The complete ordinary admission template is sealed, including
+source hashes for the wrapper, shared budget and tests; Python/runtime/BYOND,
+UUID, paths, profile, owners, review decisions and all limits. Only the three
+listed fields are null placeholders. The template also retains the sealed
+`dependency_record` path/SHA256 from static preparation. No owner, approval,
+threshold, identity, path or reference is generated dynamically.
+
+The exact sealed sampling policy requires one second, at least 2GiB available
+RAM and 1GiB disk, a finite explicit CPU busy threshold from 0 through 0.25, and
+a five-second maximum sample-to-invocation age. Its keys are `sample_seconds`,
+`min_free_ram_bytes`, `min_free_disk_bytes`, `max_cpu_busy_fraction`, and
+`max_sample_age_seconds`. One supported read-only Windows sample records actual
+host/account, RAM/disk, CPU fraction, unchanged input, foreground stability,
+input-desktop access and absence of the fixed conflicting process names. A NULL
+foreground is allowed when stable and access succeeds. Snapshot enumeration is
+bounded; failed, active or conflicting samples stop without another sample.
+`cpu_headroom_accepted` is computed true only when the sealed owner's CPU
+predicate and all resource/access/conflict predicates pass. It is never an
+executor-supplied approval override. The actual full sample is retained.
+
+A durable, exclusive, fsynced `<UUID>.entry.json` claim binds the owner envelope
+path/hash and original clocks before sampling. Refusal, collision, uncertain
+write or execution failure retains that entry; it cannot be deleted or reused.
+This entry differs from the existing native-launch claim, which is still consumed
+at its original admission boundary. A preflight entry proves neither a native
+start nor acceptance. Final admission, sample and provenance records also use
+exclusive names. The final packet SHA256 is DERIVED integrity under the sealed
+independent delegation, not independent review by the executor of its own output.
+
+The original shared Budget starts before argument parsing and heavy imports.
+Preparation, identity checks, entry claim, sampling, final writes/hashes, harness
+admission and owned cleanup all consume that SAME Budget. Its 165-second total,
+149-second effective work allowance, 15-second cleanup plus one-second receipt
+reserves, UTC contraction, and fixed 60-second admitted resource age are unchanged.
+Expiry is bounded by both the sealed owner interval and that original entry.
+Immutable-envelope/source checks, sample age and remaining reserves are rechecked
+after slow boundaries and immediately before calling the existing harness in the
+same interpreter. All per-phase runtime scans and native creation guards remain.
+
+Injected controls cover old 117-second handoff refusal, pre-sample time charging,
+actual harness budget reset, owner/source mutation, expiry, UTC rollback,
+resource/access/input refusal, uncertain writes, reuse and receipt overrun. These
+are offline contracts; they do not prove Windows availability, daemon readiness,
+rendering, hard OS preemption, global shared-resource locking or historical
+cleanup. Blocking OS calls and the existing sampled network/shared-profile limits
+remain. No real sampling, host query, envelope issuance or native execution is
+authorized by this source proposal.
+
+The source-only v2 review correction timestamps the EARLIEST component of the
+single sample, before process observations and the CPU/input interval. That
+immutable timestamp is never replaced by scan-completion time. Collection checks
+its five-second age after slow scans and snapshot cleanup as well as before
+handoff; an old observation cannot become fresh when a later scan finishes.
+The expected final serialized UTF-8 bytes and SHA256 are computed from the
+reviewed in-memory admission projection BEFORE writing. Exclusive binary writes
+retain those exact bytes; all later integrity checks and the harness receive
+that retained expected hash rather than establishing a new seal from a mutable
+file. A snapshot cleanup failure is attached to an existing primary refusal;
+cleanup-only failure is still fatal. Injected causal controls also run against
+the immutable v1 implementation, which must fail all three regressions.
+
+The v3 provenance correction also seals the exclusive entry claim's expected
+serialized bytes/hash from its reviewed in-memory projection BEFORE writing.
+Entry integrity checks before and after sampling and finalization compare with
+that retained expected seal. The first filesystem hash can never legitimize an
+altered owner-envelope binding. Its actual-execute rewrite control must fail
+against frozen v2 while leaving the owner envelope unchanged.
