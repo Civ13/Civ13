@@ -933,7 +933,18 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: reserved-lighting
-          path: ${{ runner.temp }}/reserved-lighting/
+          # Retain receipts and generated test sources, not linked game assets or binaries.
+          path: |
+            ${{ runner.temp }}/reserved-lighting/parity.json
+            ${{ runner.temp }}/reserved-lighting/*/manifest.json
+            ${{ runner.temp }}/reserved-lighting/*/*.log
+            ${{ runner.temp }}/reserved-lighting/*/result.txt
+            ${{ runner.temp }}/reserved-lighting/*/port-closed.txt
+            ${{ runner.temp }}/reserved-lighting/*/states.jsonl
+            ${{ runner.temp }}/reserved-lighting/*/*.dm
+            ${{ runner.temp }}/reserved-lighting/*/*.dme
+            ${{ runner.temp }}/reserved-lighting/*/code/**/*.dm
+          retention-days: 7
           if-no-files-found: error
       - name: Isolated save restart transaction regression
         id: restart_transaction
