@@ -62,7 +62,7 @@ class RuntimeContracts(unittest.TestCase):
         import tempfile
         value = self.observation()
         with tempfile.TemporaryDirectory() as folder:
-            path = Path(folder)/'runtime.json'
+            path = Path(folder).resolve()/'runtime.json'
             path.write_text(json.dumps(dict(layout={'injected': True}, observation=value)))
             contract = dict(manifest=str(path), sha256=runtime.digest(path))
             checks = []
@@ -118,7 +118,7 @@ class RuntimeContracts(unittest.TestCase):
         import tempfile
         import importlib.util
         with tempfile.TemporaryDirectory() as folder:
-            root = Path(folder)
+            root = Path(folder).resolve()
             venv, base = root/'venv', root/'base'
             site_root = venv/'Lib'/'site-packages'
             for path in (site_root/'PIL', site_root/'pillow-10.4.0.dist-info',
@@ -153,6 +153,8 @@ class RuntimeContracts(unittest.TestCase):
                 self.assertEqual(expected, previous.observe_runtime(layout, lambda: None))
                 self.assertGreaterEqual(len(callbacks), len(expected['files']))
                 self.assertIn(str(cache.resolve()), expected['files'])
+                self.assertEqual(expected['prefix'], str(venv.resolve()))
+                self.assertEqual(expected['executable'], str(venv/'Scripts'/'python.exe'))
                 runtime.validate_observation(expected, runtime.observe_runtime(layout, lambda: None))
                 cache.write_bytes(b'changed cache')
                 with self.assertRaisesRegex(RuntimeError, 'identity differs'):
