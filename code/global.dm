@@ -4,7 +4,6 @@
 //#endif
 
 var/bearcave_ticking = FALSE
-var/wolfcave_ticking = FALSE
 
 				//For single Mayor/Governor maps
 var/global_export_tax = 0	//Global Export Tax

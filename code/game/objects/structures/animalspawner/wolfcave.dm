@@ -10,10 +10,16 @@
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	src.empty = FALSE
 	src.set_cavetype()
-	if(!src.ticking) // ticks the tick if the tick havent been ticked yet
-		src.ticking = TRUE
-		Tick()
+	Tick()
 	..()
+
+/obj/structure/animalspawner/wolfcave/Destroy()
+	ticking = FALSE
+	return ..()
+
+/obj/structure/animalspawner/wolfcave/persistence_runtime_var(key)
+	// Constructors own their timer; saved flags must not stop or duplicate it.
+	return key == "ticking" || ..()
 
 /obj/structure/animalspawner/wolfcave/proc/set_cavetype()
 	var/area/A = get_area(src)
@@ -44,10 +50,13 @@
 				procreate_cooldown = FALSE
 
 /obj/structure/animalspawner/wolfcave/proc/Tick()
-	spawn while(1)
-		for(var/obj/structure/animalspawner/wolfcave/B in world)
-			B.total_population = B.males + B.females + B.cubs
-			B.Ticker()
+	if(ticking || gcDestroyed || gc_destroyed)
+		return
+	ticking = TRUE
+	// Each cave owns one chain and services only itself, including late creations.
+	spawn while(src && ticking && !gcDestroyed && !gc_destroyed)
+		total_population = males + females + cubs
+		Ticker()
 		sleep(50)
 
 /obj/structure/animalspawner/wolfcave/proc/Ticker()
@@ -197,7 +206,4 @@
 	src.females = 5
 	src.total_population = src.males + src.females + src.cubs //Initializes the local population
 	empty = FALSE
-	if(!wolfcave_ticking) //Checks if the wolfcave tick havent been started yet
-		wolfcave_ticking = TRUE	//Sets the global var to true, stopping any multiple tickings
-		Tick()
 	..()
