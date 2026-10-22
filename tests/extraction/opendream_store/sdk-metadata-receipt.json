@@ -1,0 +1,11 @@
+{
+  "status": "OFFICIAL_METADATA_RESEARCH_ONLY_NO_ARCHIVE_RETRIEVAL",
+  "source_url": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json",
+  "observed_date": "2026-10-21",
+  "sdk": "10.0.401",
+  "rid": "linux-x64",
+  "archive_url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-x64.tar.gz",
+  "checksum_algorithm": "SHA-512",
+  "archive_sha512": "51c8b999af9e8dd9998c9edc5944e19a90788862068acd38694e098889054ce8c23d4f0c5cccfa16bf187d044562359e5ee69a9f8ad0bbe913ba90311fbce25b",
+  "metadata_file_digest": null
+}

@@ -1,0 +1,84 @@
+{
+  "status": "OFFLINE_SOURCE_ONLY_V2_STARTUP_HASH_UPDATED_NO_COMPILE_OR_RUNTIME",
+  "game": "f5620b232b4fa159930b3b393c9794c05d4fb7b1",
+  "inputs": {
+    "tests/extraction/store_probe.dm": "69bc96e2475ed76658749a003cffcabcaa792669968efa2300911fd6be09620b",
+    "tests/extraction/journal_adapters.dm": "acf4b93c8cba383bbab29aec7431bb63a09ebb11847a539b0a92d31279df7f56",
+    "code/modules/1713/extraction/account_store.dm": "95e3bab184aab9e41f5da9154bc004fd95ab6bebd57cd438e7025ee23388efac",
+    "code/modules/1713/extraction/transactions.dm": "23a18be4637881d77bcbaf70f41425293c0978c09b49c64a963ad77ac727876f",
+    "code/modules/1713/extraction/settlement.dm": "cd42b63f9da9b7ee733f110005781c6df6f89780efbcc1c501a8cf6ac834239b",
+    "code/modules/1713/extraction/ipc_crypto.dm": "85e339c55e10379c92635a35514740de8a8d6766c19884d9eca09d01b89b2d26",
+    "code/modules/1713/extraction/ipc_wire.dm": "3e3f308d7e244f1b4293ea7f8f02196a85c764468427e669227d269c89588f53",
+    "code/modules/1713/extraction/ipc_request.dm": "b911af76c106fff74dc083b2b3c69198a2304b7cb5a0d88d3d60baf5639e74f0",
+    "code/modules/1713/extraction/insurance_mail.dm": "775c73d3c835e3a773522cc8671b53fce686cb2719231d7a050bdc6e9dfea55a"
+  },
+  "cases": {
+    "full-candidate": {
+      "tests/extraction/store_probe.dm": "8352e2d15b4e5bfce51cbc45c95af4dabfad75763d3a6ffde22516d440483c93",
+      "tests/extraction/journal_adapters.dm": "acf4b93c8cba383bbab29aec7431bb63a09ebb11847a539b0a92d31279df7f56",
+      "code/modules/1713/extraction/account_store.dm": "95e3bab184aab9e41f5da9154bc004fd95ab6bebd57cd438e7025ee23388efac",
+      "code/modules/1713/extraction/transactions.dm": "23a18be4637881d77bcbaf70f41425293c0978c09b49c64a963ad77ac727876f",
+      "code/modules/1713/extraction/settlement.dm": "cd42b63f9da9b7ee733f110005781c6df6f89780efbcc1c501a8cf6ac834239b",
+      "code/modules/1713/extraction/ipc_crypto.dm": "85e339c55e10379c92635a35514740de8a8d6766c19884d9eca09d01b89b2d26",
+      "code/modules/1713/extraction/ipc_wire.dm": "3e3f308d7e244f1b4293ea7f8f02196a85c764468427e669227d269c89588f53",
+      "code/modules/1713/extraction/ipc_request.dm": "b911af76c106fff74dc083b2b3c69198a2304b7cb5a0d88d3d60baf5639e74f0",
+      "code/modules/1713/extraction/insurance_mail.dm": "775c73d3c835e3a773522cc8671b53fce686cb2719231d7a050bdc6e9dfea55a",
+      "startup.dm": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e",
+      "probe.dme": "9464b058661673764e1b62a64bb8fef7e74327c35a6a13152b00896ced79644f"
+    },
+    "roots-candidate": {
+      "tests/extraction/store_probe.dm": "b2e4f0ab3df0745598453ce1e59adcbf20c8a1f1c1b62ab36d36bca4d525f061",
+      "tests/extraction/journal_adapters.dm": "acf4b93c8cba383bbab29aec7431bb63a09ebb11847a539b0a92d31279df7f56",
+      "code/modules/1713/extraction/account_store.dm": "95e3bab184aab9e41f5da9154bc004fd95ab6bebd57cd438e7025ee23388efac",
+      "code/modules/1713/extraction/transactions.dm": "23a18be4637881d77bcbaf70f41425293c0978c09b49c64a963ad77ac727876f",
+      "code/modules/1713/extraction/settlement.dm": "cd42b63f9da9b7ee733f110005781c6df6f89780efbcc1c501a8cf6ac834239b",
+      "code/modules/1713/extraction/ipc_crypto.dm": "85e339c55e10379c92635a35514740de8a8d6766c19884d9eca09d01b89b2d26",
+      "code/modules/1713/extraction/ipc_wire.dm": "3e3f308d7e244f1b4293ea7f8f02196a85c764468427e669227d269c89588f53",
+      "code/modules/1713/extraction/ipc_request.dm": "b911af76c106fff74dc083b2b3c69198a2304b7cb5a0d88d3d60baf5639e74f0",
+      "code/modules/1713/extraction/insurance_mail.dm": "775c73d3c835e3a773522cc8671b53fce686cb2719231d7a050bdc6e9dfea55a",
+      "startup.dm": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e",
+      "probe.dme": "9464b058661673764e1b62a64bb8fef7e74327c35a6a13152b00896ced79644f"
+    },
+    "nodes-candidate": {
+      "tests/extraction/store_probe.dm": "a243703e919a940cb03616468a4e8118d50644b536515c15c7edb8732d87afe7",
+      "tests/extraction/journal_adapters.dm": "acf4b93c8cba383bbab29aec7431bb63a09ebb11847a539b0a92d31279df7f56",
+      "code/modules/1713/extraction/account_store.dm": "95e3bab184aab9e41f5da9154bc004fd95ab6bebd57cd438e7025ee23388efac",
+      "code/modules/1713/extraction/transactions.dm": "23a18be4637881d77bcbaf70f41425293c0978c09b49c64a963ad77ac727876f",
+      "code/modules/1713/extraction/settlement.dm": "cd42b63f9da9b7ee733f110005781c6df6f89780efbcc1c501a8cf6ac834239b",
+      "code/modules/1713/extraction/ipc_crypto.dm": "85e339c55e10379c92635a35514740de8a8d6766c19884d9eca09d01b89b2d26",
+      "code/modules/1713/extraction/ipc_wire.dm": "3e3f308d7e244f1b4293ea7f8f02196a85c764468427e669227d269c89588f53",
+      "code/modules/1713/extraction/ipc_request.dm": "b911af76c106fff74dc083b2b3c69198a2304b7cb5a0d88d3d60baf5639e74f0",
+      "code/modules/1713/extraction/insurance_mail.dm": "775c73d3c835e3a773522cc8671b53fce686cb2719231d7a050bdc6e9dfea55a",
+      "startup.dm": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e",
+      "probe.dme": "9464b058661673764e1b62a64bb8fef7e74327c35a6a13152b00896ced79644f"
+    },
+    "roots-old-loops": {
+      "tests/extraction/store_probe.dm": "b2e4f0ab3df0745598453ce1e59adcbf20c8a1f1c1b62ab36d36bca4d525f061",
+      "tests/extraction/journal_adapters.dm": "acf4b93c8cba383bbab29aec7431bb63a09ebb11847a539b0a92d31279df7f56",
+      "code/modules/1713/extraction/account_store.dm": "95e3bab184aab9e41f5da9154bc004fd95ab6bebd57cd438e7025ee23388efac",
+      "code/modules/1713/extraction/transactions.dm": "a696535123e87aa51423bb916b03f945474ed2ffe5de45196134db079499f2f7",
+      "code/modules/1713/extraction/settlement.dm": "cd42b63f9da9b7ee733f110005781c6df6f89780efbcc1c501a8cf6ac834239b",
+      "code/modules/1713/extraction/ipc_crypto.dm": "85e339c55e10379c92635a35514740de8a8d6766c19884d9eca09d01b89b2d26",
+      "code/modules/1713/extraction/ipc_wire.dm": "3e3f308d7e244f1b4293ea7f8f02196a85c764468427e669227d269c89588f53",
+      "code/modules/1713/extraction/ipc_request.dm": "b911af76c106fff74dc083b2b3c69198a2304b7cb5a0d88d3d60baf5639e74f0",
+      "code/modules/1713/extraction/insurance_mail.dm": "775c73d3c835e3a773522cc8671b53fce686cb2719231d7a050bdc6e9dfea55a",
+      "startup.dm": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e",
+      "probe.dme": "9464b058661673764e1b62a64bb8fef7e74327c35a6a13152b00896ced79644f"
+    },
+    "nodes-old-loops": {
+      "tests/extraction/store_probe.dm": "a243703e919a940cb03616468a4e8118d50644b536515c15c7edb8732d87afe7",
+      "tests/extraction/journal_adapters.dm": "acf4b93c8cba383bbab29aec7431bb63a09ebb11847a539b0a92d31279df7f56",
+      "code/modules/1713/extraction/account_store.dm": "95e3bab184aab9e41f5da9154bc004fd95ab6bebd57cd438e7025ee23388efac",
+      "code/modules/1713/extraction/transactions.dm": "adf384bdcf6ae209add7c4fc54bb3a6d4781fea7174e53cc6f91b3b88075e822",
+      "code/modules/1713/extraction/settlement.dm": "cd42b63f9da9b7ee733f110005781c6df6f89780efbcc1c501a8cf6ac834239b",
+      "code/modules/1713/extraction/ipc_crypto.dm": "85e339c55e10379c92635a35514740de8a8d6766c19884d9eca09d01b89b2d26",
+      "code/modules/1713/extraction/ipc_wire.dm": "3e3f308d7e244f1b4293ea7f8f02196a85c764468427e669227d269c89588f53",
+      "code/modules/1713/extraction/ipc_request.dm": "b911af76c106fff74dc083b2b3c69198a2304b7cb5a0d88d3d60baf5639e74f0",
+      "code/modules/1713/extraction/insurance_mail.dm": "775c73d3c835e3a773522cc8671b53fce686cb2719231d7a050bdc6e9dfea55a",
+      "startup.dm": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e",
+      "probe.dme": "9464b058661673764e1b62a64bb8fef7e74327c35a6a13152b00896ced79644f"
+    }
+  },
+  "parent_receipt_sha256": "d968170031a1938d09b1533b5e715bfa0a278d09a378795e16d1c373e2ef6f95",
+  "reuse": "Production input and generated probe/control hashes reused unchanged from frozen V1; only startup.dm bytes changed. No new game staged."
+}

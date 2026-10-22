@@ -58,6 +58,23 @@ on:
         type: boolean
         default: false
 
+      opendream_store_only:
+        description: 'Opt in only to the allocated OpenDream extraction store recovery; no BYOND request'
+        type: boolean
+        default: false
+      opendream_store_policy_json:
+        description: 'Frozen allocated route policy JSON; run_id=bind-current-run and run_attempt=1'
+        type: string
+        default: '{"enabled":false}'
+      opendream_store_policy_sha256:
+        description: 'SHA256 of canonical allocated route policy JSON'
+        type: string
+        default: ''
+      opendream_store_selected_sha:
+        description: 'Exact reviewed workflow/driver commit SHA, matching dispatch ref'
+        type: string
+        default: ''
+
 permissions:
   contents: read
 
@@ -67,15 +84,53 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  opendream-store-admission:
+    if: github.event_name == 'workflow_dispatch' && inputs.opendream_store_only
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    outputs:
+      only: ${{ steps.admit.outputs.only }}
+    steps:
+      - name: Reject mixed inputs and bind the exact selected workflow head
+        id: admit
+        shell: python
+        env:
+          INPUTS_JSON: ${{ toJSON(inputs) }}
+          SELECTED_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          import hashlib, json, os, re
+          values = json.loads(os.environ['INPUTS_JSON'])
+          required_false = ('extensive_regressions', 'dagger_map_compile', 'rack_save_regressions', 'persistence_integration_regressions', 'restart_transaction_regressions', 'world_save_regressions', 'protected_sleep_regressions', 'world_save_profile_regressions', 'world_save_operation_regressions', 'lighting_recovery_regressions', 'extraction_instance_regressions')
+          if not (values.get('opendream_store_only') is True): raise ValueError('OpenDream-only selection required')
+          if not (all(values.get(k) is False for k in required_false)): raise ValueError('Mixed native opt-ins rejected')
+          selected = values.get('opendream_store_selected_sha', '')
+          if not (re.fullmatch('[0-9a-f]{40}', selected) and selected == os.environ['SELECTED_SHA']): raise ValueError('Selected head differs')
+          if not (os.environ['REPOSITORY'] == 'Civ13/Civ13' and os.environ['RUN_ATTEMPT'] == '1'): raise ValueError('Host/rerun rejected')
+          raw = values.get('opendream_store_policy_json', '')
+          if not (isinstance(raw, str) and len(raw.encode()) <= 1024**2): raise ValueError('Policy size/type')
+          policy = json.loads(raw)
+          if not (isinstance(policy, dict) and policy.get('enabled') is True and policy.get('allocated') is True): raise ValueError('Policy OFF/unallocated')
+          if not (policy.get('run_id') == 'bind-current-run' and policy.get('run_attempt') == '1'): raise ValueError('Policy run binding differs')
+          digest = hashlib.sha256(json.dumps(policy, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+          if not (digest == values.get('opendream_store_policy_sha256')): raise ValueError('Policy digest differs')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write('only=true\n')
+
   changes:
+    needs: opendream-store-admission
+    if: always() && !cancelled() && (needs.opendream-store-admission.result == 'skipped' || needs.opendream-store-admission.result == 'success')
     uses: ./.github/workflows/ci-selection.yml
     with:
+      selection_timeout_minutes: ${{ github.event_name == 'workflow_dispatch' && inputs.opendream_store_only && 3 || 360 }}
       build_prefix: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   evidence-checker:
     needs: changes
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ github.event_name == 'workflow_dispatch' && inputs.opendream_store_only && 3 || 360 }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -190,8 +245,8 @@ jobs:
 
   # Existing game compilation gate.
   build:
-    needs: changes
-    if: always() && !cancelled()
+    needs: [changes, opendream-store-admission]
+    if: always() && !cancelled() && !(github.event_name == 'workflow_dispatch' && inputs.opendream_store_only && needs.opendream-store-admission.outputs.only == 'true')
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -1739,3 +1794,64 @@ jobs:
           name: wood-ash-compost-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/wood-ash-compost/
           retention-days: 7
+
+  opendream-store-offline:
+    needs: opendream-store-admission
+    if: always() && !cancelled() && (github.event_name == 'push' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.opendream_store_only && needs.opendream-store-admission.result == 'success' && needs.opendream-store-admission.outputs.only == 'true'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Checkout the exact source for offline contracts
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Run injected contracts without native effects
+        timeout-minutes: 1
+        working-directory: tests/extraction/opendream_store
+        run: /usr/bin/python3 -B -m unittest -v test_run test_backend test_signals test_hosted test_preparation_receipts test_workflow_route
+
+  opendream-store-recovery:
+    needs: [opendream-store-admission, changes, opendream-store-offline]
+    if: github.event_name == 'workflow_dispatch' && inputs.opendream_store_only && needs.opendream-store-admission.outputs.only == 'true' && needs.opendream-store-offline.result == 'success'
+    concurrency:
+      group: extraction-store-opendream
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout reviewed workflow and driver
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: One monitored source-build and five-case allocation
+        timeout-minutes: 37
+        shell: bash
+        env:
+          ROUTE_JSON: ${{ inputs.opendream_store_policy_json }}
+          EXPECTED_ROUTE_SHA256: ${{ inputs.opendream_store_policy_sha256 }}
+        run: |
+          set -euo pipefail
+          exec /usr/bin/python3 -B tests/extraction/opendream_store/entry.py \
+            --route-json-env ROUTE_JSON \
+            --expected-route-sha256 "$EXPECTED_ROUTE_SHA256" \
+            --root "$RUNNER_TEMP/extraction-store-job" \
+            --claim-dir "$RUNNER_TEMP/extraction-store-claims"
+      - name: Retain synthetic probe evidence on failure or completion
+        if: always()
+        timeout-minutes: 2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: extraction-store-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/extraction-store-claims/
+            ${{ runner.temp }}/extraction-store-job/receipts/
+            ${{ runner.temp }}/extraction-store-job/logs/
+            ${{ runner.temp }}/extraction-store-job/cases/
+          if-no-files-found: warn
+          retention-days: 1

@@ -1,0 +1,11 @@
+{
+  "scope": "primary-source metadata only; no dispatch",
+  "observed_date": "2026-10-21",
+  "existing_workflow": ".github/workflows/test.yml",
+  "parent": "f5620b232b4fa159930b3b393c9794c05d4fb7b1",
+  "docs": "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow",
+  "cli_source": "https://raw.githubusercontent.com/cli/cli/trunk/pkg/cmd/workflow/run/run.go",
+  "source_observation": "ResolveWorkflow ID then optional GetWorkflowContent at ref, dispatch request body ref and inputs",
+  "platform_acceptance": false,
+  "on_validation_denial": "stop/report; no route bypass"
+}

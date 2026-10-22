@@ -2,6 +2,10 @@ name: CI change selection
 on:
   workflow_call:
     inputs:
+      selection_timeout_minutes:
+        description: Bound selection only for an explicitly selected OpenDream manual route
+        type: number
+        default: 360
       extensive:
         type: boolean
         default: false
@@ -24,6 +28,7 @@ permissions:
 jobs:
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.selection_timeout_minutes }}
     outputs:
       extensive: ${{ steps.select.outputs.extensive }}
       game: ${{ steps.select.outputs.game }}

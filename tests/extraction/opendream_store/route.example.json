@@ -1,0 +1,44 @@
+{
+  "enabled": false,
+  "allocated": false,
+  "owner": null,
+  "allocation_id": null,
+  "expires_utc": null,
+  "run_id": "bind-current-run",
+  "run_attempt": "1",
+  "game": "f5620b232b4fa159930b3b393c9794c05d4fb7b1",
+  "engine": "09f63000bab228a4bc792f3a2211e2d60a07de14",
+  "engine_tree": "210207129ce01fce6daf87f3a3c8f48085184db6",
+  "robust": "af2a7d0406b410c4d960f0f4b34513651c6dc742",
+  "sdk_url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-x64.tar.gz",
+  "sdk_sha512": "51c8b999af9e8dd9998c9edc5944e19a90788862068acd38694e098889054ce8c23d4f0c5cccfa16bf187d044562359e5ee69a9f8ad0bbe913ba90311fbce25b",
+  "executor_review_sha256": null,
+  "monitor_review": null,
+  "startup_sha256": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e",
+  "profile_sha256": "d7dd2ef8bd15d20ecb3f546b665dc210206c6a3973dcfb07884b13fcb1fab665",
+  "cvars": {
+    "opendream.world_params": "phase=store",
+    "net.bindto": "127.0.0.1",
+    "net.port": 19567,
+    "status.enabled": false,
+    "hub.advertise": false,
+    "auth.mode": 2,
+    "opendream.require_native_identity": false,
+    "opendream.topic_port": 0,
+    "opendream.enable_tracy": false,
+    "opendream.debug_adapter_launched": 0
+  },
+  "driver_files": {
+    "entry.py": "031b04eaaa5d2137434f6a6482b18347aa69278225d66570810b0b10f7a454e8",
+    "hosted.py": "03076ac5f951e8d35bceac1a06d4fb446e1134dbc29ae7a42361666a15236d0b",
+    "prepare.py": "d88400d965a55608c6409cf5e36ac8ccf4aac96d91964f1bbb095f2d6acee4fa",
+    "backend.py": "b16d6d1e6053b78e35d690db1d66ab39e5294e637b894971ffac1e91b109ad64",
+    "run.py": "6d8d966f4f508846e5f4e403a71fb030da0cc0eafabb70a29d34fffec3c7785c",
+    "startup.dm": "b9d5be0fa54fb10d7958bbca853a33eb0a76a51a2d023cea6736d88a27492a9e"
+  },
+  "resource_envelope": {
+    "runner_class": "standard-public-ubuntu",
+    "runner_cpus": 4,
+    "sample_interval_seconds": 0.25
+  }
+}
