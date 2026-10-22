@@ -59,24 +59,34 @@ def observe_runtime(layout, check):
         root = Path(row['path'])
         exclusions = row['exclude_names']
         require(exclusions == (['site-packages'] if index == 1 else []), 'unsupported tree exclusions')
-        require(root.is_dir() and not root.is_symlink() and not getattr(
-                root.stat(), 'st_file_attributes', 0) & 0x400, 'invalid runtime tree')
-        for directory, dirs, names in os.walk(root, followlinks=False):
+        root_stat = root.stat(follow_symlinks=False)
+        import stat
+        require(stat.S_ISDIR(root_stat.st_mode) and not stat.S_ISLNK(root_stat.st_mode)
+                and not getattr(root_stat, 'st_file_attributes', 0) & 0x400,
+                'invalid runtime tree')
+        # Resolve only the admitted root, never thousands of descendant paths.
+        # Every intervening entry is independently rejected if a link/reparse.
+        canonical_root = root.resolve(strict=True)
+        pending = [root]
+        while pending:
             check()
-            parent = Path(directory)
-            for name in dirs + names:
-                path = parent / name
-                if path.is_symlink() or getattr(path.stat(follow_symlinks=False),
-                                                'st_file_attributes', 0) & 0x400:
-                    raise RuntimeError('Local runtime: reparse/symlink present: ' + str(path))
-            dirs[:] = [name for name in dirs if name not in exclusions]
-            for name in names:
-                path = parent / name
-                if path.suffix.lower() == '.pth':
-                    raise RuntimeError('Local runtime: pth present: ' + str(path))
-                if path.is_file():
+            parent = pending.pop()
+            with os.scandir(parent) as entries:
+                for entry in entries:
                     check()
-                    files[str(path.resolve())] = digest(path)
+                    info = entry.stat(follow_symlinks=False)
+                    require(not stat.S_ISLNK(info.st_mode)
+                            and not getattr(info, 'st_file_attributes', 0) & 0x400,
+                            'reparse/symlink present: ' + entry.path)
+                    path = Path(entry.path)
+                    if stat.S_ISDIR(info.st_mode):
+                        if entry.name not in exclusions:
+                            pending.append(path)
+                    else:
+                        require(path.suffix.lower() != '.pth', 'pth present: ' + entry.path)
+                        require(stat.S_ISREG(info.st_mode), 'nonregular runtime entry: ' + entry.path)
+                        check()
+                        files[str(canonical_root / path.relative_to(root))] = digest(path)
     mandatory_base = {str(path) for path in Path(sys.base_prefix).iterdir()
                       if path.is_file() and path.suffix.lower() in {'.exe', '.dll', '.zip', '._pth'}}
     require(set(layout['base_files']) == mandatory_base, 'incomplete base executable/DLL/zip inventory')
