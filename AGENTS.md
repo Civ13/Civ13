@@ -222,6 +222,11 @@ source preparation does not establish native acceptance.
 
 ### DMM format rules
 
+<!-- 2026-10-12: extraction map parser compatibility -->
+- Emit numeric `0`/`1` for DMM boolean assignments. BYOND accepts `FALSE`/`TRUE`
+  in maps, but MapDiffBot2 rejects variable references in tile definitions.
+- Extraction container keys explicitly inherit `/obj/item`, despite their path
+  beneath `/obj/item/weapon/key`, to exclude generic keyslot and closet re-keying.
 <!-- 2026-10-16: standalone map constants -->
 - Emit literal DMM overrides such as `locked = 1`, not DM macros such as `TRUE`.
   MapDiffBot's standalone map reader rejects unresolved variables in map values.
@@ -305,6 +310,14 @@ after a normal tick and anchor `run_time_tick_usage` to `world.tick_usage`.
 - Object tiles stack: `(/obj/chair, /turf/floor, /area/room)` puts a chair on the floor.
 - Console/machinery objects use `density = TRUE` and `anchored = TRUE` - they block movement.
 - For maps with many objects, define tile keys systematically (e.g., "oa", "ob", "oc"...) to keep things manageable.
+
+<!-- 2026-10-12: fixed extraction scenery -->
+Native furniture can yield materials through damage and direct deconstruction
+callbacks even when generic disassembly is disabled. Mall raid placements use
+map-only variants in `extraction/mall.dm`; the generator preserves native atoms
+on protected home/hub floors. Keep the offline fixture catalog and compiled
+`mall_fixture_dressing_probe()` aligned when adding furnishings. A compiled
+probe is not evidence that its native tool/damage checks have executed.
 
 ## DMI (sprite sheet) file format
 
