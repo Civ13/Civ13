@@ -571,6 +571,7 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/light-plane-tools"
           "$RUNNER_TEMP/light-plane-tools/bin/python" -m pip install Pillow==11.3.0
           "$RUNNER_TEMP/light-plane-tools/bin/python" -B -m unittest discover -s tests/light_plane_composition -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_source.py' -v
           python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled
           python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control coverage
