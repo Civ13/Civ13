@@ -274,6 +274,12 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
 
+<!-- 2026-10-22: research snapshot resume -->
+Research consumes its retained current_list before each budget check, including
+deleted benches. tests/research_scheduler checks source-derived offline traces
+and the audited tail-loss control; native iteration/GC acceptance is still pending.
+Subclass post-loop aggregation must account for final-entry EARLY normalization.
+
 <!-- 2026-10-22: ping pass aggregation -->
 Ping retains per-pass sum/count across budget returns and publishes before the
 final-entry budget check. Every skipped client still consumes its snapshot entry.
