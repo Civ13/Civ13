@@ -2,6 +2,8 @@
 /turf/proc/ChangeTurf(var/path, var/tell_universe=1, var/force_lighting_update = FALSE)
 	if (!path)
 		return
+	// Construction/replacement is an explicit activation, including same-type use.
+	activate_reserved_lighting()
 	if(path == type)
 		return src
 
@@ -21,6 +23,9 @@
 	lighting_overlay = old_lighting_overlay
 	affecting_lights = old_affecting_lights
 	corners = old_lighting_corners
+	// A replacement subtype may itself have a map-authored reservation default.
+	// Restore graph ownership before activation can build any missing overlay.
+	W.activate_reserved_lighting()
 	rad_act(old_radiation)
 
 	for (var/atom/A in contents)

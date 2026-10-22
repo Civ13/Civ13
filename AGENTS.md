@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-18: inactive reserved lighting -->
+Reserved lighting omission requires the default-FALSE area clearance gate as well
+as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
+checks declared frozen full-frame geometry only, not map inventory completeness
+or runtime immutability. The separate Linux CI lane compares native state and
+causal controls; it does not prove client appearance or net RAM savings. Preserve
+frozen Windows helper bytes and require a fresh grant for that held runner.
+
 <!-- 2026-10-20: passive production hang triage -->
 `scripts/hang-watchdog` observes Linux process identity and status-file metadata
 with monotonic deadlines. Its dedicated output is bounded and sanitized; it never
