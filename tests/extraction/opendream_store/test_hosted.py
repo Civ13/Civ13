@@ -16,6 +16,8 @@ import run as r
 import test_backend as tb
 import test_run as tr
 import v3_launch_control as old_launch
+import v2_envelope_control as old_envelope
+from types import MethodType
 
 
 def fixture():
@@ -71,6 +73,50 @@ class HostedTests(unittest.TestCase):
         self.assertTrue(backend.install_claimed)
         self.assertEqual(len(backend.receipts),4)
         self.assertIn('/claims/TEST-ONLY.bootstrap-receipt.json',fx.mem)
+
+    def test_final_claim_crossing_either_clock_rejects_same_old_acceptance_oracle(self):
+        for which in ('monotonic', 'utc'):
+            for executor, accepted in ((old_envelope.execute_control, True), (h.execute, False)):
+                with self.subTest(clock=which, accepted=accepted):
+                    fx, a, data, backend = fixture(); original = fx.claim
+                    def slow_claim(path, raw):
+                        original(path, raw)
+                        if path.endswith('.bootstrap-receipt.json'):
+                            if which == 'monotonic': fx.now = backend.end + 1
+                            else: fx.wall = a['expires_utc'] + 1
+                    fx.claim = slow_claim
+                    with patch.object(r, 'INPUTS', {p:r.sha(raw) for p,raw in data.items()}):
+                        call = lambda: executor(a, r.sha(b.encoded(a)), backend, fx.clock, fx.utc)
+                        if accepted: self.assertEqual(len(call()), 5)
+                        else:
+                            with self.assertRaisesRegex(r.Rejected, 'final receipt budget/expiry'): call()
+                    row = json.loads(fx.mem['/claims/TEST-ONLY.bootstrap-receipt.json'])
+                    self.assertEqual(row['status'], 'PASS' if accepted else 'PENDING_FINAL_CHECK')
+
+    def test_successful_final_receipt_is_candidate_until_post_write_acceptance(self):
+        fx, a, data, backend = fixture()
+        self.assertEqual(len(self.execute(fx, a, data, backend)), 5)
+        row = json.loads(fx.mem['/claims/TEST-ONLY.bootstrap-receipt.json'])
+        self.assertEqual(row['status'], 'PENDING_FINAL_CHECK')
+        self.assertLess(fx.clock(), backend.end)
+        self.assertLess(fx.utc(), a['expires_utc'])
+
+    def test_retained_200mib_sdk_allows_compile_and_all_five_cases_old_method_rejects(self):
+        for old in (True, False):
+            with self.subTest(old=old):
+                fx, a, data, backend = fixture()
+                fx.mem['/job/sdk.tar.gz'] = b'injected archive size only'
+                sizes = fx.sizes
+                def sized(root, names):
+                    return [200*1024**2 if root+'/'+name == '/job/sdk.tar.gz' else size
+                            for name,size in zip(names, sizes(root, names))]
+                fx.sizes = sized
+                if old: backend._observe = MethodType(old_envelope.observe_control, backend)
+                if old:
+                    with self.assertRaisesRegex(r.Rejected, 'output threshold'):
+                        self.execute(fx, a, data, backend)
+                    self.assertFalse(any('--config-file' in e[1] for e in fx.events if e[0] == 'launch'))
+                else: self.assertEqual(len(self.execute(fx, a, data, backend)), 5)
 
     def test_wrong_source_preparation_never_builds(self):
         fx,a,data,backend=fixture(); fx.fault='wrong-preparation'

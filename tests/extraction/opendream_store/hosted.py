@@ -250,10 +250,14 @@ def execute(route,digest,backend,clock,utc,*,entered=None,entered_utc=None):
             r.need(clean and clock()<=clean_end,'bootstrap/final cleanup failed')
         except BaseException as error: secondary.append(str(error)[:512])
         try:
+            r.need(clock() < backend.end and utc() < route['expires_utc'], 'final receipt budget/expiry')
             backend.fx.claim(backend.claim_dir+'/'+b.relative(route['allocation_id'])+'.bootstrap-receipt.json',
-                b.encoded({'route':digest,'status':'FAIL' if primary or secondary else 'PASS',
+                b.encoded({'route':digest,'status':'FAIL' if primary or secondary else 'PENDING_FINAL_CHECK',
                 'primary':str(primary)[:1024] if primary else None,'secondary':secondary[:4],
                 'receipts':backend.receipts}))
+            # Immutable bytes cannot retrospectively assert a post-write verdict.
+            # Return success only after the actual slow write still fits both clocks.
+            r.need(clock() < backend.end and utc() < route['expires_utc'], 'final receipt budget/expiry')
         except BaseException as error: secondary.append('retention: '+str(error)[:400])
     if primary:
         if secondary: raise r.Rejected(str(primary)[:1024]+'; cleanup/receipt: '+'; '.join(secondary[:4])) from primary

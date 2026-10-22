@@ -390,9 +390,13 @@ class UbuntuBackend:
         tcp = [s for s in sockets if s['proto']=='tcp' and s['state']=='0A']
         udp = [s for s in sockets if s['proto']=='udp']
         if phase == 'runtime': unexpected |= len(tcp)>1 or len(udp)>1
-        runtime = phase == 'runtime'
-        # Runtime bytes are only its case, not source-build workspace contents.
-        if runtime:
+        case_phase = phase in ('compile', 'runtime')
+        # Retained setup bytes keep the 8GiB workspace cap in every phase.
+        r.need(sum(sizes) <= 8*1024**3 and len(names) <= 10000 and
+               max((len(PurePosixPath(p).parts) for p in names), default=0) <= 16,
+               'workspace output threshold')
+        # Compile/runtime both report only their active case to the 128MiB guard.
+        if case_phase:
             prefix = 'cases/'+self.current+'/'
             selected = [(p,n) for p,n in zip(names,sizes) if p.startswith(prefix)]
         else: selected = list(zip(names,sizes))

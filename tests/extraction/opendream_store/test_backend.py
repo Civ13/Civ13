@@ -12,6 +12,40 @@ import run as r
 import test_run as t
 
 
+class CaseOutputEnvelopeTests(unittest.TestCase):
+    def observation(self, phase, case_size=1, workspace_size=200*1024**2):
+        fx, a, data, backend = fixture()
+        backend.reserve(a)
+        backend.current = 'active'
+        fx.mem['/job/sdk.tar.gz'] = b'archive size injected'
+        fx.mem['/job/cases/other/result.txt'] = b'other case size injected'
+        fx.mem['/job/cases/active/probe.json'] = b'case size injected'
+        original = fx.sizes
+        def sizes(root, names):
+            result = original(root, names)
+            for index,name in enumerate(names):
+                if name == 'sdk.tar.gz': result[index] = workspace_size
+                elif name == 'cases/active/probe.json': result[index] = case_size
+                elif name == 'cases/other/result.txt': result[index] = 200*1024**2
+            return result
+        fx.sizes = sizes
+        return backend._observe(b.Owned('injected-only'), phase, backend.work_end), a
+
+    def test_compile_and_runtime_use_active_case_and_reject_its_oversize(self):
+        for phase in ('compile', 'runtime'):
+            with self.subTest(phase=phase):
+                sample, a = self.observation(phase)
+                self.assertEqual((sample['bytes'], sample['files'], sample['depth']), (1, 1, 3))
+                r.observe(sample, a)
+                sample, a = self.observation(phase, case_size=128*1024**2+1)
+                with self.assertRaisesRegex(r.Rejected, 'output threshold'): r.observe(sample, a)
+
+    def test_workspace_cap_remains_enforced_outside_active_case(self):
+        for phase in ('compile', 'runtime'):
+            with self.subTest(phase=phase), self.assertRaisesRegex(r.Rejected, 'workspace output threshold'):
+                self.observation(phase, workspace_size=8*1024**3+1)
+
+
 class FakeEffects:
     def __init__(self):
         self.now = 0; self.wall = 1000

@@ -1,7 +1,7 @@
-# Extraction store OpenDream registered-workflow route v2
+# Extraction store OpenDream registered-workflow route v3
 
-Source-only successor against exact game/workflow parent f5620b232b4fa159930b3b393c9794c05d4fb7b1. Default OFF, unallocated and unpublished. Frozen V4 remains unchanged and on whole-packet HOLD for its command stdout shadowing bug. Registered-route-v1 is also preserved unchanged.
-The 75 offline tests inject process, kernel, network and filesystem effects where
+Source-only successor against exact game/workflow parent f5620b232b4fa159930b3b393c9794c05d4fb7b1. Default OFF, unallocated and unpublished. Frozen V4 remains unchanged and on whole-packet HOLD for its command stdout shadowing bug. Registered-route-v1 and V2 are also preserved unchanged. V2 is on HOLD for final receipt deadline acceptance and compile output accounting defects.
+The 80 offline tests inject process, kernel, network and filesystem effects where
 those operations are under test. They establish source contracts, not successful
 OpenDream compilation, package viability, native cleanup or game acceptance.
 
@@ -87,7 +87,7 @@ parent. Evidence-checker adds only the conditional timeout described below. The
 selector remains unchanged; the reusable workflow adds only a numeric timeout input
 and its job timeout, with the original 360-minute default retained.
 
-A new two-minute secret-free offline job runs the complete 75 injected contracts
+A new two-minute secret-free offline job runs the complete 80 injected contracts
 on every automatic PR/push and admitted manual OpenDream run, including nonordinary
 helper PRs where the parent selector emits no introduced suites. Its explicit
 always/not-cancelled predicate permits automatic events despite the skipped manual
@@ -143,6 +143,40 @@ Official references:
 - [Microsoft .NET 10 release metadata](https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json)
 - [Official CLI workflow dispatch implementation](https://raw.githubusercontent.com/cli/cli/trunk/pkg/cmd/workflow/run/run.go)
 - [GitHub-hosted runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+
+## Finalization and output-envelope corrections
+
+The final bootstrap receipt is checked against both the original root monotonic
+end and the frozen policy UTC expiry immediately before and after its actual claim
+write. A slow write that crosses either clock rejects the run. Its immutable
+success-path bytes say `PENDING_FINAL_CHECK`, never PASS: bytes written before a
+post-write check cannot assert that later check passed. Acceptance requires the
+successful post-write check and a successful executor return. Case/orchestrator
+PASS receipts alone do not establish complete hosted finalization. Failed or late
+retention preserves the raised diagnosis; there is no rewrite/retry to create a
+new success receipt after expiry.
+
+Compile and runtime both report bytes/files/depth from their active `cases/<case>/`
+subtree to the existing 128 MiB case guard. Retained SDK/source/build/package and
+other cases do not consume that case's output budget. The entire owned workspace
+still has the unchanged setup envelope of 8 GiB, 10,000 files and depth 16 in every
+phase; RSS/socket/ownership checks and case/command log limits remain in force.
+Thus excluding retained archives from the case guard does not remove the overall
+workspace stop. Frozen V2 actual execute/observe methods are inert causal controls:
+old finalization accepts late writes, and old compile accounting rejects a legal
+200 MiB retained archive before runtime. The same injected oracles reject late
+writes and permit all five small cases with the fixed actual methods. Oversized
+active-case and entire-workspace negative controls still reject.
+
+Packaging remains a concrete unresolved preflight limitation. The exact server
+FullRelease packaging/Resources/Assemblies layout and executable wrapper dependency
+closure need engine-owner source/artifact confirmation before any build admission.
+The retained 128 MiB hex-JSON container cap implies less than 64 MiB aggregate raw
+output capacity after metadata overhead. A reported 331,740,529-byte source-layout
+inventory is a different layout and does not by itself prove the exact RID output
+will fail, but fit has not been established. No cap, recipe or dependency gate was
+weakened. No output hashes are invented. Keep execution blocked until the exact
+recipe/layout and resource envelope are reviewed.
 
 ## Offline review
 
