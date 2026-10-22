@@ -26,7 +26,7 @@ class SmokeContracts(unittest.TestCase):
         launches = [node for node in ast.walk(ast.parse(source))
                     if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
                     and node.func.id == 'launch' and node.args
-                    and isinstance(node.args[0], ast.Constant) and node.args[0].value == 'dreamdaemon.exe']
+                    and isinstance(node.args[0], ast.Constant) and node.args[0].value == 'dd.exe']
         self.assertEqual(len(launches), 1)
         self.assertEqual(ast.unparse(launches[0].args[1]), 'server_arguments(port)')
 
@@ -473,6 +473,31 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         exec(compile(changed, module.__file__, 'exec'), module.__dict__)
         with self.assertRaisesRegex(AssertionError, 'dm.exe'):
             self.assert_console_compiler(module)
+
+    def assert_console_daemon(self, module=run):
+        record = self.invoke(module=module)
+        self.assertEqual(record['argv'][1][0], 'server')
+        argv = record['argv'][1][1]
+        self.assertEqual(Path(argv[0]).name, 'dd.exe')
+        self.assertEqual(argv[1:], ['fixture.dmb', '1234', '-ip', '127.0.0.1',
+                                    '-invisible', '-trusted', '-nowebclient'])
+        self.assertEqual([phase for phase, _ in record['argv']], ['compile', 'server', 'client'])
+        self.assertEqual(str(record['error']), 'primary capture failure')
+
+    def test_actual_orchestration_selects_console_daemon(self):
+        self.assert_console_daemon()
+
+    def test_gui_daemon_selector_mutant_is_detected(self):
+        import types
+        module = types.ModuleType('gui_daemon_mutant')
+        module.__file__ = str(run.ROOT/'run.py')
+        source = (run.ROOT/'run.py').read_text()
+        changed = source.replace("launch('dd.exe', server_arguments(port)",
+                                 "launch('dreamdaemon.exe', server_arguments(port)")
+        self.assertNotEqual(changed, source)
+        exec(compile(changed, module.__file__, 'exec'), module.__dict__)
+        with self.assertRaisesRegex(AssertionError, 'dd.exe'):
+            self.assert_console_daemon(module)
 
     def test_expiry_during_free_prevents_job_and_process_creation(self):
         record = self.invoke({'free': lambda _: self.advance(151, wall=False)})

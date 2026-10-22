@@ -234,3 +234,11 @@ compiler must still exit zero, emit `0 errors, 0 warnings`, and produce the DMB.
 The GUI `dreammaker.exe` entry point is rejected by an injected orchestration
 regression. Static entry-point evidence and these tests do not establish the
 cause of a prior exit, native compilation, or environment compatibility.
+
+The standalone server phase selects the pinned console `dd.exe` entry point,
+matching the existing world-save runner. Loopback, trusted mode, readiness,
+listener checks, process ownership and cleanup remain required. An injected
+orchestration regression checks the executable and complete server arguments;
+its GUI-selector mutant is rejected. Static entry-point evidence supports this
+selection but does not establish why the prior GUI server exited, native server
+readiness, or renderer acceptance. No environment or profile changes are made.

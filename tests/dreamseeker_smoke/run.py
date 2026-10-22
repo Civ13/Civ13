@@ -432,7 +432,7 @@ def run(output, local_admission=None, reviewed_admission_sha256=None):
             check_work()
             port = probe.getsockname()[1]
         check_work()
-        server, serving = launch('dreamdaemon.exe', server_arguments(port), 'server')
+        server, serving = launch('dd.exe', server_arguments(port), 'server')
         while not (fixture/'ready.txt').exists():
             check_work()
             if server.exited(serving):
