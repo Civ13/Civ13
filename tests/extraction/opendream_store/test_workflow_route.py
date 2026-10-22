@@ -75,22 +75,60 @@ def policy_inputs():
             json.dumps(policy, sort_keys=True, separators=(',', ':')).encode()).hexdigest()}
 
 
-def admission(values, **overrides):
-    block = jobs(PROPOSED)['opendream-store-admission'].split('        run: |\n', 1)[1]
+def admission_result(values, *, workflow=PROPOSED, **overrides):
+    block = jobs(workflow)['opendream-store-admission'].split('        run: |\n', 1)[1]
     code = '\n'.join(line[10:] for line in block.splitlines())
-    env = {'INPUTS_JSON': json.dumps(values), 'SELECTED_SHA': SHA, 'REPOSITORY': 'Civ13/Civ13',
-           'RUN_ATTEMPT': '1', 'GITHUB_OUTPUT': '/injected-output'} | overrides
+    env = {'EVENT_NAME':'workflow_dispatch', 'INPUTS_JSON': json.dumps(values), 'SELECTED_SHA': SHA,
+           'REPOSITORY': 'Civ13/Civ13','RUN_ATTEMPT': '1','GITHUB_OUTPUT': '/injected-output'} | overrides
     output = io.StringIO()
     class Writer:
         def __enter__(self): return output
         def __exit__(self, *args): return False
+    result='success'
     with patch.dict(os.environ, env, clear=True), patch('builtins.open', return_value=Writer()):
         try:
             exec(compile(code, '<actual-admission-step>', 'exec'), {})
+        except SystemExit as error:
+            if error.code not in (None,0): result='failure'
         except (AssertionError, ValueError, TypeError):
-            assert output.getvalue() == '', 'Rejected admission must never publish only=true'
-            return False
-    return output.getvalue() == 'only=true\n'
+            result='failure'
+    raw=output.getvalue()
+    if result=='failure': assert raw=='', 'Rejected admission must never publish outputs'
+    return {'result':result,'only':{'only=true\n':'true','only=false\n':'false','':''}[raw]}
+
+
+def admission(values, **overrides):
+    return admission_result(values,**overrides)=={'result':'success','only':'true'}
+
+
+def topology(workflow,event,values,*,game=False,extensive=False,offline='success',cancelled=False):
+    # Model the documented status/ancestor gate, not just predicate truth. The
+    # frozen CI counterexample checks that skipped ancestors suppress ordinary
+    # default-success jobs even when their direct changes dependency succeeded.
+    blocks=jobs(workflow); statuses={}; ancestors={}; context={'github.event_name':event,'cancelled':cancelled}
+    context.update({'inputs.'+name:value for name,value in values.items()})
+    for name,block in blocks.items():
+        needs=re.search(r'^    needs: (.+)$',block,re.M)
+        parents=needs[1].strip('[]').replace(' ','').split(',') if needs else []
+        lineage=set(parents)
+        for parent in parents: lineage.update(ancestors[parent])
+        ancestors[name]=lineage
+        gate=re.search(r'^    if: (.+)$',block,re.M)
+        predicate=gate[1] if gate else 'true'
+        status_override=bool(re.search(r'\b(always|cancelled|success|failure)\(',predicate))
+        implicit_success=status_override or all(statuses[parent]=='success' for parent in lineage)
+        should_run=implicit_success and expression(predicate,context)
+        if name=='opendream-store-admission' and should_run and not cancelled:
+            admitted=admission_result(values,workflow=workflow,EVENT_NAME=event)
+            status=admitted['result']; context['needs.'+name+'.outputs.only']=admitted['only']
+        else:
+            status=('cancelled' if cancelled else offline if name=='opendream-store-offline' else 'success') if should_run else 'skipped'
+        statuses[name]=status; context['needs.'+name+'.result']=status
+        if name=='changes':
+            context.update({'needs.changes.outputs.game':str(game).lower() if status=='success' else '',
+                            'needs.changes.outputs.extensive':str(extensive).lower() if status=='success' else '',
+                            'needs.changes.outputs.new_tests':'[]' if status=='success' else '[]'})
+    return statuses
 
 
 class WorkflowRouteTests(unittest.TestCase):
@@ -133,8 +171,8 @@ class WorkflowRouteTests(unittest.TestCase):
                            'needs.changes.outputs.game': str(game).lower(),
                            'needs.changes.outputs.new_tests': json.dumps(selected),
                            'needs.changes.result': 'success',
-                           'needs.opendream-store-admission.result': 'skipped',
-                           'needs.opendream-store-admission.outputs.only': ''}
+                           'needs.opendream-store-admission.result': 'success',
+                           'needs.opendream-store-admission.outputs.only': 'false'}
                 context.update({'inputs.' + name: False for name in OLD_INPUTS})
                 context['inputs.opendream_store_only'] = False
                 for step in re.findall(r'^        id: ([\w_-]+)', PARENT, re.M):
@@ -145,6 +183,57 @@ class WorkflowRouteTests(unittest.TestCase):
                     self.assertIsInstance(expression(text, context), bool)
                 self.assertEqual(expression('always() && !cancelled()', context), expression(new_build, context))
                 self.assertEqual(expression(predicates(jobs(PROPOSED)['changes'])[0], context), not cancelled)
+
+    def test_ordinary_admission_is_checkout_free_success_with_false_output(self):
+        job=jobs(PROPOSED)['opendream-store-admission']
+        self.assertIsNone(re.search(r'^    if:',job,re.M))
+        self.assertNotIn('uses:',job)
+        for event in ('push','pull_request','workflow_dispatch'):
+            for bits in itertools.product((False,True),repeat=len(OLD_INPUTS)):
+                values=dict(zip(OLD_INPUTS,bits)) | {'opendream_store_only':False}
+                self.assertEqual(admission_result(values,EVENT_NAME=event),{'result':'success','only':'false'})
+        for event in ('push','pull_request'):
+            self.assertEqual(admission_result(policy_inputs(),EVENT_NAME=event),{'result':'success','only':'false'})
+        self.assertEqual(admission_result({},EVENT_NAME='unknown')['result'],'failure')
+        for invalid in (None,'true',1):
+            self.assertEqual(admission_result(policy_inputs() | {'opendream_store_only':invalid})['result'],'failure')
+
+    def test_actual_dependency_topology_reproduces_frozen_skips_and_preserves_ordinary_jobs(self):
+        frozen=(HERE/'fixtures/test.c25.yml').read_text(encoding='utf-8')
+        self.assertEqual(hashlib.sha256(frozen.encode()).hexdigest(),
+                         '4a9430b0fb3e5838803a67e42bac4a7c73f6c18e0f818ac0188478cda179ebdb')
+        ordinary=dict.fromkeys(OLD_INPUTS,False) | {'opendream_store_only':False}
+        for event in ('push','pull_request','workflow_dispatch'):
+            for game,extensive in itertools.product((False,True),repeat=2):
+                old=topology(frozen,event,ordinary,game=game,extensive=extensive)
+                new=topology(PROPOSED,event,ordinary,game=game,extensive=extensive)
+                self.assertEqual(old['opendream-store-admission'],'skipped')
+                self.assertEqual(old['changes'],'success')
+                self.assertEqual(old['evidence-checker'],'skipped')
+                self.assertEqual(new['opendream-store-admission'],'success')
+                self.assertEqual(new['changes'],'success')
+                self.assertEqual(new['evidence-checker'],'success')
+                self.assertEqual(new['build'],'success')
+                # Existing extraction selection must retain its actual predicate.
+                expected=expression(re.search(r'^    if: (.+)$',jobs(PARENT)['extraction-instances'],re.M)[1],
+                    {'github.event_name':event,'needs.changes.outputs.extensive':str(extensive).lower(),
+                     'needs.changes.outputs.new_tests':'[]','inputs.extraction_instance_regressions':False})
+                self.assertEqual(new['extraction-instances'],'success' if expected else 'skipped')
+                self.assertEqual(new['opendream-store-recovery'],'skipped')
+
+    def test_dependency_topology_keeps_manual_admission_failure_and_offline_failure_closed(self):
+        valid=policy_inputs()
+        good=topology(PROPOSED,'workflow_dispatch',valid)
+        self.assertEqual(good['opendream-store-recovery'],'success')
+        self.assertEqual(good['build'],'skipped')
+        for values in (valid | {'extensive_regressions':True},valid | {'opendream_store_selected_sha':'b'*40}):
+            result=topology(PROPOSED,'workflow_dispatch',values)
+            self.assertEqual(result['opendream-store-admission'],'failure')
+            for name in ('changes','evidence-checker','extraction-instances','opendream-store-offline','opendream-store-recovery'):
+                self.assertEqual(result[name],'skipped',name)
+        for outcome in ('failure','cancelled','skipped'):
+            self.assertEqual(topology(PROPOSED,'workflow_dispatch',valid,offline=outcome)['opendream-store-recovery'],'skipped')
+        self.assertEqual(topology(PROPOSED,'workflow_dispatch',valid,cancelled=True)['opendream-store-recovery'],'skipped')
 
     def test_actual_admission_accepts_only_pure_optin_all_2048_native_combinations(self):
         for bits in itertools.product((False, True), repeat=len(OLD_INPUTS)):

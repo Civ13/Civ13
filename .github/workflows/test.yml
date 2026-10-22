@@ -85,23 +85,29 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   opendream-store-admission:
-    if: github.event_name == 'workflow_dispatch' && inputs.opendream_store_only
     runs-on: ubuntu-24.04
     timeout-minutes: 1
     outputs:
       only: ${{ steps.admit.outputs.only }}
     steps:
-      - name: Reject mixed inputs and bind the exact selected workflow head
+      - name: Pass ordinary events or admit only the exact OpenDream-only head
         id: admit
         shell: python
         env:
+          EVENT_NAME: ${{ github.event_name }}
           INPUTS_JSON: ${{ toJSON(inputs) }}
           SELECTED_SHA: ${{ github.sha }}
           REPOSITORY: ${{ github.repository }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
         run: |
-          import hashlib, json, os, re
+          import hashlib, json, os, re, sys
           values = json.loads(os.environ['INPUTS_JSON'])
+          event = os.environ['EVENT_NAME']
+          if event in ('push', 'pull_request') or (event == 'workflow_dispatch' and values.get('opendream_store_only', False) is False):
+              with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+                  output.write('only=false\n')
+              sys.exit(0)
+          if event != 'workflow_dispatch': raise ValueError('Unsupported admission event')
           required_false = ('extensive_regressions', 'dagger_map_compile', 'rack_save_regressions', 'persistence_integration_regressions', 'restart_transaction_regressions', 'world_save_regressions', 'protected_sleep_regressions', 'world_save_profile_regressions', 'world_save_operation_regressions', 'lighting_recovery_regressions', 'extraction_instance_regressions')
           if not (values.get('opendream_store_only') is True): raise ValueError('OpenDream-only selection required')
           if not (all(values.get(k) is False for k in required_false)): raise ValueError('Mixed native opt-ins rejected')
@@ -120,7 +126,7 @@ jobs:
 
   changes:
     needs: opendream-store-admission
-    if: always() && !cancelled() && (needs.opendream-store-admission.result == 'skipped' || needs.opendream-store-admission.result == 'success')
+    if: always() && !cancelled() && needs.opendream-store-admission.result == 'success'
     uses: ./.github/workflows/ci-selection.yml
     with:
       selection_timeout_minutes: ${{ github.event_name == 'workflow_dispatch' && inputs.opendream_store_only && 3 || 360 }}

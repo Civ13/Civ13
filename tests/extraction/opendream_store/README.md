@@ -1,7 +1,7 @@
-# Extraction store OpenDream registered-workflow route v4
+# Extraction store OpenDream registered-workflow route v5
 
-Source-only successor against exact game/workflow parent f5620b232b4fa159930b3b393c9794c05d4fb7b1. Default OFF, unallocated and unpublished. Frozen V4 remains unchanged and on whole-packet HOLD for its command stdout shadowing bug. Registered-route-v1 and V2 are also preserved unchanged. V2 is on HOLD for final receipt deadline acceptance and compile output accounting defects.
-The 87 offline tests inject process, kernel, network and filesystem effects where
+Source-only successor against exact game/workflow parent f5620b232b4fa159930b3b393c9794c05d4fb7b1. Default OFF, unallocated and unactivated. Frozen V4 remains unchanged and on whole-packet HOLD for its command stdout shadowing bug. Registered-route-v1 and V2 are also preserved unchanged. V2 is on HOLD for final receipt deadline acceptance and compile output accounting defects.
+The 90 offline tests inject process, kernel, network and filesystem effects where
 those operations are under test. They establish source contracts, not successful
 OpenDream compilation, package viability, native cleanup or game acceptance.
 
@@ -70,8 +70,9 @@ through an alternate route or vendor bootstrap bypass is authorized.
 Four new default-disabled inputs are `opendream_store_only`,
 `opendream_store_policy_json`, `opendream_store_policy_sha256` and
 `opendream_store_selected_sha`. The selected SHA must match the exact dispatch ref
-commit. All eleven preexisting native opt-ins must be strictly false. A new
-one-minute admission job, without checkout or external acquisition, validates these
+commit. For OpenDream-only admission, all eleven preexisting native opt-ins must be strictly false. A new
+one-minute admission job, without checkout or external acquisition, returns success
+with `only=false` for ordinary events. For explicit OpenDream selection it validates these
 conditions, repository, first attempt, policy allocation/run binding and digest.
 Only successful admission publishes `only=true`. The actual entry then performs
 its full existing route/expiry/driver admission again before native effects.
@@ -87,11 +88,11 @@ parent. Evidence-checker adds only the conditional timeout described below. The
 selector remains unchanged; the reusable workflow adds only a numeric timeout input
 and its job timeout, with the original 360-minute default retained.
 
-A new two-minute secret-free offline job runs the complete 80 injected contracts
+A new two-minute secret-free offline job runs the complete 90 injected contracts
 on every automatic PR/push and admitted manual OpenDream run, including nonordinary
 helper PRs where the parent selector emits no introduced suites. Its explicit
-always/not-cancelled predicate permits automatic events despite the skipped manual
-admission dependency. It uses pinned checkout with credentials disabled, and one
+always/not-cancelled predicate remains unchanged; ordinary admission now succeeds
+without leaving a skipped ancestor for downstream jobs. It uses pinned checkout with credentials disabled, and one
 pure unittest invocation without vendor, compiler or game acquisition. Failed or
 skipped offline checks block recovery.
 
@@ -118,7 +119,8 @@ The full parent workflow/reusable fixtures are pinned by SHA256. Tests verify th
 old job bodies, inputs/defaults and all 163 parent predicates, evaluate them across
 48 event/resource/cancellation contexts, execute the actual admission script for
 all 2,048 native-opt-in combinations, and cover changed head/policy/repository/rerun rejection. Added tests exercise
-automatic events with skipped admission, manual failure/success, cancellation,
+automatic events with ordinary successful admission, historical skipped-state
+counterexamples, manual failure/success, cancellation,
 offline failure blocking recovery, both timeout expressions and full reusable
 parent projection with only the declared input/timeout changes removed. Exact-parent selector tests cover nonordinary helper push/PR, explicit
 build: requests, master events and manual selection with injected changed paths.
@@ -228,3 +230,29 @@ Some mocked entry tests print a simulated PASS line. Only the unittest verdict i
 the offline result; that line is not a real compiler/server receipt. Actionlint 1.7.12 passed both full proposed workflows with `-shellcheck= -pyflakes=`.
 No hosted CI job, SDK download, build, process/socket experiment or native BYOND test ran. Review packet hashes bind the source, tests, log and proposed patch.
 V1/V2/V3/V4 and the earlier Ubuntu route remain immutable historical packets.
+
+## Registered-route-v5 ordinary workflow topology repair
+
+Actual automatic PR/push runs on published head
+`c25c0e0c3b5d34ea59e79e3b81a15e190e54a979` exposed an ancestor-status gap:
+admission was skipped, changes succeeded through its explicit status predicate,
+but the unchanged legacy evidence-checker job was skipped by the ancestor gate.
+The previous predicate-only tests did not model that scheduling rule.
+
+Admission now runs without checkout on all supported events. Ordinary push/PR
+and non-OpenDream manual selection return success with `only=false`. The only
+true output still requires the exact manual OpenDream selection and all existing
+mixed-input, head, repository, attempt and policy guards. Malformed manual
+OpenDream selection rejects without outputs. Change selection now requires actual
+successful admission. No existing checker/native/extraction job body or predicate
+is weakened. Default-off inputs, resource bounds and runner source remain intact.
+
+The new injected scheduler regression evaluates actual job-level predicates and
+needs/ancestor results against the frozen published workflow. It reproduces the
+old skipped evidence checker despite successful changes and checks normal
+push/PR/manual paths plus valid/invalid OpenDream admission, failed offline job
+and cancellation. This is a bounded model and offline source evidence; GitHub's
+actual scheduler acceptance must be confirmed by the next exact-head automatic CI.
+The ordinary pass-through is also exercised across all 2,048 combinations of old
+native opt-ins for each supported event. Publication and exact-head CI remain
+owned by the integration coordinator. This packet does not dispatch a native run.
