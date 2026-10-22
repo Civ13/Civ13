@@ -337,7 +337,9 @@
 	if (islist(P["insurance_mailbox"]) && P["insurance_mailbox"].len && !islist(store.recovery_ids(P))) return FALSE
 	if (!isnull(P["garage"]) && !islist(store.recovery_ids(P))) return FALSE
 	if (claims)
-		for (var/list/claim in claims)
+		// Typed iteration would silently skip malformed scalar claims.
+		for (var/claim_index in 1 to claims.len)
+			var/list/claim = claims[claim_index]
 			if (!islist(claim) || !istext(claim["round"]) || !length(claim["round"]) || length(claim["round"]) > 64 || !isnum(claim["sequence"]) || claim["sequence"] < 1 || claim["sequence"] > P["raid_sequence"] || round(claim["sequence"]) != claim["sequence"]) return FALSE
 			var/list/entry = claim["entry"]
 			if (!validator.valid_entries(list(entry), 1) || entry["equipment"]["schema"] != 2) return FALSE

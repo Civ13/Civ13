@@ -491,6 +491,15 @@ var/equipment_completed = FALSE
 	S.insurance_busy = FALSE
 	var/list/projected = C.project_identities(next["issued"][1]["equipment"], list(root_id))
 	equipment_assert(projected && projected[1]["nodes"][1]["insurance_token"] == new_token, "partial return projection preserves exact issue-specific token")
+	// Scalar archive entries must refuse, not disappear in typed iteration.
+	for (var/scalar_case in 1 to 3)
+		var/list/malformed = A.copy_profile()
+		var/scalar = scalar_case == 1 ? "invalid claim" : (scalar_case == 2 ? 17 : null)
+		malformed["insurance_claims"] = list(scalar)
+		equipment_assert(malformed["insurance_claims"].len == 1 && !S.insurance_profile_valid(malformed), "scalar claim archive rejects case [scalar_case]")
+		malformed = A.copy_profile()
+		malformed["insurance_claims"] += list(scalar)
+		equipment_assert(!S.insurance_profile_valid(malformed), "mixed claim archive rejects scalar case [scalar_case]")
 	var/list/bounded = A.copy_profile()
 	bounded["raid_sequence"] = 65
 	bounded["insurance_claims"] = list()
