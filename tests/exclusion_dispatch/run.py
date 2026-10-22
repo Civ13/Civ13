@@ -11,7 +11,7 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import reconstruct_list_baseline, validate
+from source_contract import reconstruct_list_baseline, validate, project_reserved_policy
 
 BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
 PATH = 'code/modules/persistence/functions.dm'
@@ -27,9 +27,11 @@ p.add_argument('--calls', type=int, default=10000, choices=[10000, 20000, 40000]
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
 old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
-old = reconstruct_list_baseline(old)
 current = (repo / PATH).read_text()
+old = reconstruct_list_baseline(old)
 validate(old, current)
+# Compare dispatch under the SAME new policy, not historical semantic parity.
+old = project_reserved_policy(old)
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
@@ -46,7 +48,7 @@ for file, path in [
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob'])
+    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob', 'area'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
@@ -88,7 +90,7 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks; bounded additions projected for complete-file validation', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks plus explicit reserved-lighting exclusions and bounded-save additions', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version='516.1681', native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')

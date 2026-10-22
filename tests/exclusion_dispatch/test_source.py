@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 import resources
-from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate
+from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
@@ -18,7 +18,8 @@ PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
             'blackout_click_started', 'blackout_click_expires',
-            'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action')
+            'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
+            'lighting_reserved', 'lighting_reserved_clearance_enabled')
 
 
 class SourceContractTests(unittest.TestCase):
@@ -31,7 +32,7 @@ class SourceContractTests(unittest.TestCase):
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
-        for kind, count in [('atom', 3), ('turf', 8), ('mob', 22)]:
+        for kind, count in [('atom', 3), ('turf', 9), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
         self.assertIn('key == "weak_reference"', self.candidate)
@@ -94,6 +95,15 @@ class SourceContractTests(unittest.TestCase):
             with self.subTest(mutated=mutated[:40]), self.assertRaises(ValueError):
                 validate(self.baseline, mutated)
 
+    def test_reserved_projection_is_explicit_and_fails_closed(self):
+        projected = project_reserved_policy(self.baseline)
+        self.assertIn('list("lighting_reserved", "affecting_lights"', projected)
+        self.assertIn(AREA_POLICY, projected)
+        with self.assertRaises(ValueError):
+            project_reserved_policy(projected)
+        with self.assertRaises(ValueError):
+            validate(self.baseline, self.candidate.replace(AREA_POLICY, ''))
+
     def test_missing_baseline_hook_fails_closed(self):
         with self.assertRaises(ValueError):
             transform(self.baseline.replace('/mob/persistence_runtime_var(key)', '/mob/other(key)'))
@@ -123,7 +133,8 @@ class SourceContractTests(unittest.TestCase):
                 self.assertIn(f'"{key}"', probe)
                 for variant in ('baseline', 'candidate'):
                     kind = ('datum/proc' if key == 'weak_reference' else
-                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress') else 'mob')
+                            'area' if key == 'lighting_reserved_clearance_enabled' else
+                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved') else 'mob')
                     body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
                     self.assertIn(f'"{key}"', body)
             self.assertIn('source_contract.py', receipt['inputs'])

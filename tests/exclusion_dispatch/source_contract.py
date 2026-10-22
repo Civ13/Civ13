@@ -14,6 +14,11 @@ BOUNDED_BLOCKS = (
      '\t// Keep the first captured edge if a completed child later moves.\n\tvar/owner = saving_content_owners[key]\n\tif(owner && owner != frame.entry) return\n\tsaving_content_owners[key] = frame.entry\n'),
 )
 
+AREA_POLICY = ('// Author policy is not restored from an ordinary or historical area payload.\n'
+               '/area/persistence_runtime_var(key)\n'
+               '\treturn key == "lighting_reserved_clearance_enabled" || ..()\n\n')
+
+
 def reconstruct_list_baseline(master):
     """Reverse only the three reviewed switch hooks in pinned current master."""
     for kind in ('atom', 'turf', 'mob'):
@@ -37,8 +42,19 @@ def project_bounded_save(baseline):
     return baseline
 
 
+def project_reserved_policy(baseline):
+    """Apply only this PR's declared policy to the historical list baseline."""
+    anchor = '\treturn (key in list("affecting_lights", "lighting_overlay"'
+    insertion = '// HUD objects belong to a client session and are rebuilt by the normal HUD path.'
+    if baseline.count(anchor) != 1 or baseline.count(insertion) != 1:
+        raise ValueError('Historical reserved-policy projection anchors drifted')
+    if '"lighting_reserved"' in baseline or '/area/persistence_runtime_var(key)' in baseline:
+        raise ValueError('Historical baseline already contains reserved policy')
+    return baseline.replace(anchor, '\treturn (key in list("lighting_reserved", "affecting_lights", "lighting_overlay"', 1).replace(insertion, AREA_POLICY + insertion, 1)
+
+
 def transform(baseline):
-    expected = project_bounded_save(baseline)
+    expected = project_reserved_policy(project_bounded_save(baseline))
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -52,4 +68,4 @@ def transform(baseline):
 
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
-        raise ValueError('Only the three approved hook transformations may differ')
+        raise ValueError('Only approved dispatch and reserved-policy projections may differ')
