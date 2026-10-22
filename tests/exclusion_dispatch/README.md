@@ -9,6 +9,13 @@ bytes, including save-failure diagnostics, remain under whole-file equality;
 missing hooks and diagnostic mutations are rejected. This refresh changes the
 test reference only, not production behavior or the separate native hold.
 
+The area-change follow-up explicitly projects the runtime-only
+`turf.area_change_owner` exclusion into both comparison variants. Unique anchors
+reject duplicate projection or unrelated drift, and omission controls require
+the new exclusion. This compares dispatch under the same augmented policy; it
+does not claim unchanged historical serialization semantics or new native
+acceptance. The process-local transition token must not be exported or imported.
+
 ## Reserved-lighting integration policy
 
 The historical list baseline is explicitly projected with two new exclusions:

@@ -170,14 +170,15 @@
 		reconsider_lights()
 
 /turf/change_area(var/area/old_area, var/area/new_area)
-	if (new_area && old_area && new_area.location != old_area.location)
-		window_coeff_dirty = TRUE
-	if (new_area.dynamic_lighting != old_area.dynamic_lighting)
-		if (new_area.dynamic_lighting)
-			lighting_build_overlay()
-
-		else
-			lighting_clear_overlay()
+	// Earlier area notifications may have superseded an unapplied transition.
+	// Reconcile the destination policy, not the old area's presumed mask state.
+	window_coeff_dirty = TRUE
+	if (new_area.dynamic_lighting)
+		lighting_build_overlay()
+	// Building can wait for startup. Read the actual area again after that wait.
+	var/area/current_area = get_area(src)
+	if (current_area && !current_area.dynamic_lighting && lighting_overlay)
+		lighting_clear_overlay()
 
 	sync_fullbright_coverage()
 

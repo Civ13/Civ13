@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 import resources
-from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY, project_fullbright_exclusions
+from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY, project_fullbright_exclusions, project_area_change_owner
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
@@ -19,7 +19,7 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
             'blackout_click_started', 'blackout_click_expires',
             'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
-            'lighting_reserved', 'lighting_reserved_clearance_enabled')
+            'lighting_reserved', 'lighting_reserved_clearance_enabled', 'area_change_owner')
 
 
 class SourceContractTests(unittest.TestCase):
@@ -32,7 +32,7 @@ class SourceContractTests(unittest.TestCase):
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
-        for kind, count in [('atom', 3), ('turf', 9), ('mob', 22)]:
+        for kind, count in [('atom', 3), ('turf', 10), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
         self.assertIn('key == "weak_reference"', self.candidate)
@@ -113,6 +113,14 @@ class SourceContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             transform(self.baseline.replace('/mob/persistence_runtime_var(key)', '/mob/other(key)'))
 
+    def test_area_owner_projection_is_exact_and_fails_closed(self):
+        projected = project_area_change_owner(self.baseline)
+        self.assertEqual(projected, self.baseline.replace('/turf/persistence_runtime_var(key)\n', '/turf/persistence_runtime_var(key)\n\tif (key == "area_change_owner")\n\t\treturn TRUE\n', 1))
+        with self.assertRaises(ValueError):
+            project_area_change_owner(projected)
+        with self.assertRaises(ValueError):
+            project_area_change_owner(self.baseline.replace('/turf/persistence_runtime_var(key)', '/turf/other(key)'))
+
     def run_runner(self, arguments):
         with patch.object(sys, 'argv', ['run.py'] + arguments), \
              patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
@@ -139,7 +147,7 @@ class SourceContractTests(unittest.TestCase):
                 for variant in ('baseline', 'candidate'):
                     kind = ('datum/proc' if key == 'weak_reference' else
                             'area' if key == 'lighting_reserved_clearance_enabled' else
-                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved') else 'mob')
+                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved', 'area_change_owner') else 'mob')
                     body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
                     self.assertIn(f'"{key}"', body)
             self.assertIn('source_contract.py', receipt['inputs'])

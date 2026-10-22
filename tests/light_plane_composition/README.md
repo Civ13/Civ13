@@ -28,8 +28,36 @@ The existing native CI runner now checks both disabled legacy and enabled separa
 plane modes, explicit fullbright allocation/retirement, excluded-z policy,
 mask precedence and bypass cycles. Its coverage-omission mutation must fail at
 `explicit fullbright coverage`. These headless assertions cannot prove pixels.
-The small fixture's deletion and turf/area adapters are declared in `probe.dm`;
+The small fixture's deletion and turf/area adapters are declared in `probe.dm`
+and `area_probe.dm`;
 they do not constitute full production save/import or client HUD lifecycle proof.
+
+Area transitions now run the verbatim production `ChangeArea` entry point and
+lighting hook. The 2x1x1 fixture checks native area membership, existing occupant
+notification order, dynamic/fullbright transitions, location invalidation,
+same-area no-op behavior and rejection of an invalid destination. A one-shot
+`get_area` adapter supplies an absent old area, since native map turfs already
+have one. Overlay allocation/clear operations are counted adapters; build wait
+and eligibility logic and coverage use their production implementations. Each
+mode adds 64 assertions, including a yielding occupant notification that starts
+newer transitions, an away-and-back case,
+direct membership mutation and native turf replacement. A temporary request
+identity rejects stale outer dispatch even when the destination matches again;
+it is explicitly excluded from custom save export/import. The `area-owner`
+control removes only identity validation and must fail at
+`superseded away-and-back skips outer hook`. The `area-change`
+mutation removes only the helper's hook dispatch and must fail at
+`ChangeArea dispatches turf hook`, including with V2 disabled. This is headless
+fixture coverage, not production corner-graph or rendered-pixel acceptance.
+Same-fullbright supersession must clear an inherited dynamic overlay; its inverse
+must build the missing overlay despite matching intermediate/final area policy.
+Both invalidate the coefficient even when area location values match. Independent
+`area-policy` and `area-policy-dynamic` controls detect these stale-state cases.
+Startup waiters additionally exercise the real build procedure against a changed
+fullbright destination and two waiting dynamic requests sharing one final overlay.
+The current runner expects 287 enabled or eight disabled mode checks plus these
+64 transition checks. Local verification of this area-change fix is offline;
+its new native cases require exact-head CI results before being counted as passed.
 
 `verify_render.py` requires NEW source-bound native PNGs for nine explicit pixel
 cases: weather, intentional fullbright, both policy transitions, replacement,
@@ -77,7 +105,7 @@ Run offline preparation with:
 py -3 -B -m unittest discover -s tests/light_plane_composition -p "test_*.py" -v
 ```
 
-The automatic introduced-suite CI step compiles the exact production plane source and exercises 276 mode/cache/isolation assertions, plus two causal mutations (ordinary mode forced on or bypass forced off). It reuses `tests/lighting_startup/run.py`'s bounded subprocess seam. The native world closes/refuses its listener and rejects clients. These headless assertions do not establish rendered pixels; the separate client captures do.
+The original introduced-suite CI step compiled the exact production plane source and exercised 276 mode/cache/isolation assertions, plus two causal mutations (ordinary mode forced on or bypass forced off). It reused `tests/lighting_startup/run.py`'s bounded subprocess seam. Those historical headless assertions did not establish rendered pixels; the separate client captures described above apply only to that rejected prototype.
 
 ## Why this prototype is blocked
 

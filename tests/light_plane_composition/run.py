@@ -11,6 +11,13 @@ ROOT = Path(__file__).resolve().parents[2]
 PLANE = "code/_onclick/hud/plane_master.dm"
 
 
+def production_proc(path, signature):
+    source = (ROOT / path).read_text()
+    matches = re.findall(r"^" + re.escape(signature) + r"[\s\S]*?(?=^/(?!/)|\Z)", source, re.M)
+    assert len(matches) == 1, "Production proc anchor changed: " + signature
+    return matches[0]
+
+
 def prepare(control=None, enabled=True):
     source = (ROOT / PLANE).read_text()
     if control in ("bypass", "ordinary"):
@@ -20,15 +27,35 @@ def prepare(control=None, enabled=True):
     coverage = (ROOT / "code/modules/lighting/lighting_composition.dm").read_text()
     if control == "coverage":
         coverage = coverage.replace("\tif(needed && !retained)\n\t\tnew", "\tif(FALSE && !retained)\n\t\tnew")
+    area_change = production_proc("code/game/area/areas.dm", "/turf/var/tmp/list/area_change_owner")
+    area_change += production_proc("code/game/area/areas.dm", "/proc/ChangeArea(")
+    if control == "area-change":
+        anchor = "\t\tT.change_area(old_area, A)\n"
+        assert area_change.count(anchor) == 1
+        area_change = area_change.replace(anchor, "\t\treturn\n")
+    if control == "area-owner":
+        anchor = "if(!T || T.area_change_owner != request)"
+        assert area_change.count(anchor) == 1
+        area_change = area_change.replace(anchor, "if(!T)")
+    area_change += production_proc("code/modules/lighting/lighting_area.dm", "/atom/proc/change_area(")
+    area_change += production_proc("code/modules/lighting/lighting_turf.dm", "/turf/change_area(")
+    if control in ("area-policy", "area-policy-dynamic"):
+        anchor = "\twindow_coeff_dirty = TRUE\n\tif (new_area.dynamic_lighting)"
+        assert area_change.count(anchor) == 1
+        condition = "old_area && new_area.dynamic_lighting == old_area.dynamic_lighting" if control == "area-policy" else "old_area && new_area.dynamic_lighting && old_area.dynamic_lighting"
+        area_change = area_change.replace(anchor, "\twindow_coeff_dirty = TRUE\n\tif (" + condition + ")\n\t\treturn\n\tif (new_area.dynamic_lighting)")
     return {"production.dm": source, "coverage.dm": coverage,
+            "area_change.dm": area_change,
+            "build_overlay.dm": production_proc("code/modules/lighting/lighting_turf.dm", "/turf/proc/lighting_build_overlay("),
+            "area_probe.dm": (Path(__file__).parent / "area_probe.dm").read_text(),
             "probe.dm": (Path(__file__).parent / "probe.dm").read_text(),
-            "probe.dme": '#define LIGHTING_COMPOSITION_V2 ' + str(int(enabled)) + '\n#include "probe.dm"\n#include "production.dm"\n#include "coverage.dm"\n'}
+            "probe.dme": '#define LIGHTING_COMPOSITION_V2 ' + str(int(enabled)) + '\n#include "probe.dm"\n#include "production.dm"\n#include "coverage.dm"\n#include "area_change.dm"\n#include "build_overlay.dm"\n#include "area_probe.dm"\n'}
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--byond-bin", type=Path, required=True)
-    parser.add_argument("--negative-control", choices=("bypass", "ordinary", "coverage"))
+    parser.add_argument("--negative-control", choices=("bypass", "ordinary", "coverage", "area-change", "area-owner", "area-policy", "area-policy-dynamic"))
     parser.add_argument("--disabled", action="store_true")
     args = parser.parse_args()
     spec = importlib.util.spec_from_file_location("startup_runner", ROOT / "tests/lighting_startup/run.py")
@@ -56,11 +83,11 @@ def main():
         if result.returncode or re.search(r"runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null", logs, re.I):
             raise RuntimeError("Unexpected native diagnostic")
         if args.negative_control:
-            expected = {"bypass": "vision 45 coefficient 1", "ordinary": "vision 0 coefficient 1", "coverage": "explicit fullbright coverage"}[args.negative_control]
+            expected = {"bypass": "vision 45 coefficient 1", "ordinary": "vision 0 coefficient 1", "coverage": "explicit fullbright coverage", "area-change": "ChangeArea dispatches turf hook", "area-owner": "superseded away-and-back skips outer hook", "area-policy": "superseding same-fullbright policy clears actual overlay", "area-policy-dynamic": "superseding same-dynamic policy builds missing overlay"}[args.negative_control]
             if "FAIL checks=" not in logs or expected not in logs or "PASS checks=" in logs:
                 raise RuntimeError("Wrong negative-control outcome")
             print("PASS: expected " + args.negative_control + " control caught")
-        elif not re.search(r"^PASS checks=" + str(8 if args.disabled else 287) + r"\s*$", logs, re.M) or "FAIL checks=" in logs:
+        elif not re.search(r"^PASS checks=" + str(8 if args.disabled else 287) + r" area_change_checks=64\s*$", logs, re.M) or "FAIL checks=" in logs:
             raise RuntimeError("Plane fixture assertions failed")
 
 

@@ -55,6 +55,8 @@
 	should_save = FALSE
 
 /turf/persistence_runtime_var(key)
+	if (key == "area_change_owner")
+		return TRUE
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
 		return TRUE
 	switch(key)

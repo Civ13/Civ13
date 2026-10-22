@@ -48,8 +48,16 @@ def project_fullbright_exclusions(baseline):
     return baseline
 
 
+def project_area_change_owner(baseline):
+    """Exclude only the new process-local area transition identity."""
+    anchor = '/turf/persistence_runtime_var(key)\n'
+    if baseline.count(anchor) != 1 or '"area_change_owner"' in baseline:
+        raise ValueError('Area-change ownership projection anchor drifted')
+    return baseline.replace(anchor, anchor + '\tif (key == "area_change_owner")\n\t\treturn TRUE\n', 1)
+
+
 def transform(baseline):
-    expected = project_fullbright_exclusions(project_reserved_policy(baseline))
+    expected = project_area_change_owner(project_fullbright_exclusions(project_reserved_policy(baseline)))
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -63,4 +71,4 @@ def transform(baseline):
 
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
-        raise ValueError('Only approved dispatch, reserved-policy and fullbright-exclusion projections may differ')
+        raise ValueError('Only approved dispatch, reserved-policy, fullbright-exclusion and area-owner projections may differ')

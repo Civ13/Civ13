@@ -11,7 +11,7 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import reconstruct_list_baseline, validate, project_reserved_policy, project_fullbright_exclusions
+from source_contract import reconstruct_list_baseline, validate, project_reserved_policy, project_fullbright_exclusions, project_area_change_owner
 
 BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
 PATH = 'code/modules/persistence/functions.dm'
@@ -31,7 +31,7 @@ current = (repo / PATH).read_text()
 old = reconstruct_list_baseline(old)
 validate(old, current)
 # Compare dispatch under the SAME new policy, not historical semantic parity.
-old = project_fullbright_exclusions(project_reserved_policy(old))
+old = project_area_change_owner(project_fullbright_exclusions(project_reserved_policy(old)))
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
@@ -90,7 +90,7 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks plus explicit reserved-lighting and fullbright exclusions', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks plus explicit reserved-lighting, fullbright and area-owner exclusions', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version='516.1681', native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')
