@@ -274,6 +274,12 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
 
+<!-- 2026-10-22: cleanables phase ownership -->
+Cleanables installs pending location work before the final count budget check.
+Its retained content snapshot and survivor are released on completion/cancellation.
+tests/cleanables_scheduler is offline source-derived evidence; native list/GC
+handoff and iteration remain separate acceptance.
+
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
 including repeated nulls; a guarded front `Cut(1,2)` is not equivalent.
