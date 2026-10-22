@@ -32,6 +32,7 @@
 /obj/item/vehicleparts/wheel/modular/proc/turndir(var/mob/living/mob = null, var/newdir = "left")
 	if (!control || !control.axis || isnull(control.axis.turntimer))
 		return FALSE
+	if (!control.axis.key_access(mob)) return FALSE
 	if (world.time <= lastdirchange)
 		return FALSE
 	lastdirchange = world.time + control.axis.turntimer
@@ -82,6 +83,9 @@
 	if(!control)
 		return
 	if(!control.axis)
+		return
+	if (!control.axis.key_access(H))
+		to_chat(H, "A matching vehicle key is required; interrupted key service requires recovery.")
 		return
 	if (!(control.loc in range(1,loc)))
 		H.remove_from_mob(src)

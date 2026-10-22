@@ -77,7 +77,10 @@ var/failures = 0
 		fdel("map_saves/save_complete.txt")
 		text2file(identity["generation"], "map_saves/save_complete.txt")
 	return save_ok
-/datum/persistence_restart_transaction/probe/load_generation()
+/datum/persistence_restart_transaction/probe/load_generation(list/expected_intent)
+	// Adapter for the admitted production wrapper boundary.
+	if(!matches(expected_intent, current_identity())) throw EXCEPTION("fixture stale intent")
+	import_started = TRUE
 	loads++
 	return load_ok
 /datum/persistence_restart_transaction/probe/current_identity()

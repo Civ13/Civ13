@@ -188,6 +188,11 @@
 
 /map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)
 	if(!operation || !operation.enter_contents(src, "load")) return FALSE
+	var/datum/extraction_surface_service/surface_inventory
+	if (istype(map, /obj/map_metadata/extraction_survival))
+		var/obj/map_metadata/extraction_survival/M = map
+		surface_inventory = M.surface_service
+		if (surface_inventory && !surface_inventory.begin_world_inventory(world.maxz)) return FALSE
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
@@ -240,6 +245,7 @@
 					if(obbie.load_datums)
 						if(obbie.reagents)
 							obbie.reagents.my_atom = ob
+			if (surface_inventory && !surface_inventory.feed_loaded_level(B, all_loaded)) throw EXCEPTION("Surface world identity inventory requires recovery")
 			// Constructors see defaults before saved fields/contents are restored.
 			// Rebuild obstruction caches before queuing any final source updates.
 			for(var/turf/light_turf in all_loaded)
@@ -248,6 +254,7 @@
 				light_owner.update_light()
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
+			if (surface_inventory) surface_inventory.discovery_fail()
 			last_error = "[e] on [e.file]:[e.line]"
 			world.log << "World-save restoration failed: [last_error]"
 			message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
@@ -256,6 +263,10 @@
 			return FALSE
 	clear_bookkeeping()
 	saved_turfs = list()
+	if (surface_inventory)
+		while (!surface_inventory.world_inventory_complete)
+			if (!surface_inventory.finish_world_inventory()) return FALSE
+			TICK_CHECK
 	log_startup_progress("Finished loading.")
 	return TRUE
 

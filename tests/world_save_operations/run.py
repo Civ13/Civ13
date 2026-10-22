@@ -45,7 +45,7 @@ def main():
                 'stale': ('if(persistence_active_operation != src) return FALSE', 'if(FALSE) return FALSE'),
                 'recovery': ('if(!success && kind == "load" && mutation_started)', 'if(FALSE)'),
                 'player-ready': ('operation.restoring_players = TRUE', 'operation.restoring_players = FALSE'),
-                'busy-preflight': ('map_storage.require_durable_world_idle()', '// preflight moved for control'),
+                'busy-preflight': ('storage.require_durable_world_idle()', '// preflight moved for control'),
                 'busy-cleanup': ('if(operation.mutation_started)', 'if(TRUE)'),
             }
             before, after = controls[args.negative_control]
@@ -56,10 +56,10 @@ def main():
                 # Remove both old and new admission gates; tests must catch overlap.
                 source = source.replace('if(persistence_save_in_progress && !(restart_owner && persistence_restart.startup_hold)) return null', 'if(FALSE) return null')
             if args.negative_control == 'busy-preflight':
-                anchor = 'operation.mutation_started = TRUE'
+                anchor = '\t\toperation.mutation_started = TRUE\n\t\tif(transaction)'
                 if source.count(anchor) != 1:
                     raise RuntimeError('Mutation boundary anchor changed')
-                source = source.replace(anchor, anchor + '\n\t\tmap_storage.require_durable_world_idle()')
+                source = source.replace(anchor, '\t\toperation.mutation_started = TRUE\n\t\tstorage.require_durable_world_idle()\n\t\tif(transaction)')
         (output / target).write_text(source, encoding='utf-8')
     environment = '''#define TRUE 1
 #define FALSE 0
@@ -94,7 +94,7 @@ def main():
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     for name, command in [('compile', [str(compiler), '-max_errors', '0', 'probe.dme']),
-                          ('runtime', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])]:
+                          ('runtime', [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])]:
         completed = subprocess.run(command, cwd=output, capture_output=True, text=True, timeout=90)
         log = completed.stdout + completed.stderr
         (output / f'{name}.log').write_text(log, encoding='utf-8')

@@ -135,7 +135,7 @@ class CrossLevelSourceTests(unittest.TestCase):
         self.assertIn('frame_snapshot["entry"] = valid_frame ? frame.entry : 0', record)
         for forbidden in ('.name', '.ckey', '.key', '.client', '.vars'):
             self.assertNotIn(forbidden, snapshot + record)
-        self.assertIn('if(key == "last_save_reference_failure") return TRUE', source)
+        self.assertIn('if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE', source)
 
     def test_record_reset_follows_save_admission_and_precedes_contents(self):
         source = (ROOT / 'code/modules/persistence/functions.dm').read_text()

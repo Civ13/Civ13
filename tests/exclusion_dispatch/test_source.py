@@ -13,7 +13,7 @@ import resources
 from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
+BASE = 'a8d3950f08aaa55db59ec5f20777a475b2db95bb'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
@@ -63,7 +63,7 @@ class SourceContractTests(unittest.TestCase):
                 'saving_export_stack.len - 7', 'saving_export_stack.len - 8'))
         with self.assertRaises(ValueError):
             validate(self.baseline, self.candidate.replace(
-                'if(key == "last_save_reference_failure") return TRUE', 'return FALSE'))
+                'if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE', 'return FALSE'))
 
     def test_each_new_exclusion_omission_is_rejected(self):
         for key in NEW_KEYS:

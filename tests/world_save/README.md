@@ -209,6 +209,109 @@ Preflight detects structural damage but cannot predict arbitrary constructors or
 restoration has begun, restart from the original map before retrying. Restoration
 is not transactional and cannot roll back arbitrary game hooks.
 
+## Restore wrapper contract
+
+`restore_wrapper.dm` invokes the actual `gameticker.loadmap()` with injected
+storage and policy effects. Both normal and large round-trip runs include it.
+Metadata must return exactly TRUE; FALSE, other truthy values and exceptions
+fail restoration. The existing successful null-policy legacy/v2 path still runs
+against the actual saver/loader after the wrapper cases.
+
+The optional runtime `map_storage.restore_policy` must return an attempt bound to
+the selected storage and policy. Its recovery reservation must return exactly
+TRUE before ClearMap, with the binding rechecked after reservation. The default
+policy has no provider and rejects before clearing. Once mutation begins, the
+failure callback must return a typed, bound receipt confirming retained recovery.
+Transient release runs at most once; cleanup errors remain separate from the
+primary failure in `restore_cleanup_error`. Provider acquisition cleanup before
+a bound attempt is returned remains the provider's responsibility. These runtime
+handles are excluded from custom persistence, including inherited exclusions.
+
+The fixture checks callback order, preflight/binding rejection, conservative
+mutation-started status, clearing/world/metadata exceptions, metadata and world
+FALSE returns, cleanup exceptions, invalid recovery receipts, single release,
+and the busy gate. It proves wrapper invocation and receipt validation only.
+There is no production provider, durable reservation, immutable reader, rollback
+or complete restore admission proof. Transient release never authorizes recovery
+release or publication. A failed restore still needs the recovery procedure above.
+
+`run-wrapper.py` generates a temporary environment and changed source copy for
+each omission control. It requires BYOND 516.1681, a clean compile, no engine
+diagnostics and the intended failing fixture assertion. Production source stays
+unchanged. CI's existing selected world-save step runs both controls:
+
+```sh
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin --roundtrip
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin --negative-control metadata
+python3 tests/world_save/run-wrapper.py --byond-bin /path/to/byond/bin --negative-control recovery
+```
+
+On Windows use a verified full Python interpreter path with the same arguments.
+The compiler and daemon each have a 120-second subprocess timeout. `--roundtrip`
+includes the ordinary legacy/v2 disk checks after wrapper checks, within the same
+daemon timeout; it cannot be combined with an omission control. The ordinary-map
+fixture supplies fail-closed surface-service type adapters for compilation and
+throws if that unrelated service is activated. Extraction probes cover real
+surface-service behavior separately.
+All daemon storage and generated outputs remain in a unique temporary directory;
+the fixture closes its port and has no production startup or outbound adapters.
+Source addition is not test execution; record actual exact-head results separately.
+
+## Reader primitive experiment
+
+`reader_contract.dm` is a standalone two-world savefile API experiment.
+`run-reader-contract.py` uses pinned BYOND 516.1681, a unique temporary directory,
+60-second compiler timeout and 45-second shared runtime deadline with bounded
+owned-process cleanup. Positive and binding/close omission controls passed on
+Windows BYOND 516.1681 at `12de059fad3d593bc2a4891a6867d7d5a0c7e8f4` with
+zero compile errors/warnings. It never loads the production game or provides
+host immutability; the retained same-world reader observed a second handle's write.
+
+```sh
+python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin
+python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin --negative-control binding
+python3 tests/world_save/run-reader-contract.py --byond-bin /path/to/byond/bin --negative-control close
+```
+
+On Windows use a verified full Python interpreter path. See
+[the reader-contract probe](../../docs/extraction-reader-contract-probe.md) for
+the exact native stages, receipt gates, fixture adapter limits, omission assertions
+and unsupported outcomes. Same-world writes, other cooperating BYOND worlds and
+arbitrary host writers are separate boundaries. OpenDream is not tested here.
+
+## Windows read-only native-open candidate
+
+`readonly_open.dm` and `run-readonly-open.py` are source-only and uncompiled/unrun.
+They seed one synthetic savefile in a unique temporary directory, close the seed
+world, set its Windows read-only attribute, and require a Python write attempt to
+be refused before pinned BYOND 516.1681 opens and reads the original A value.
+This tests compatibility with that attribute only; it creates no OS identities or
+ACLs and cannot establish host ownership or immutable bytes.
+
+The `writable` control omits sealing and must hit WRITABLE_BACKING_REJECTED before
+a consumer starts. The `value` control changes one generated consumer expectation
+and must produce paired UNSUPPORTED: READ_VALUE_MATCH with clean exit and the
+actual seeded value `A` in the consumer receipt. Positive reads also require `A`. Seed
+failures, engine diagnostics, cancellation, missing/mismatched results and cleanup
+errors reject acceptance. Every compiler/daemon is recorded with PID, runner
+parent, command, launch-request timestamp, exit and cleanup status. A timestamp is
+not independently observed OS process-start attestation.
+
+Compiler timeout is 60 seconds; seed and consumer each have 15 seconds, with
+four-second terminate and two-second kill waits per owned process. There is at
+most one process at a time. Logs/receipts are capped at 1 MiB when read; the
+synthetic seed has a 1 MiB post-creation size guard. No OS memory or pre-write
+storage bound is established. Preserve files/logs for review and run only in a
+fresh bounded slot. Unsupported native read-only opens require consumer redesign,
+not relaxed permissions or mutable-path fallback.
+
+```powershell
+& '<verified-Python-path>' tests/world_save/run-readonly-open.py --byond-bin '<516.1681-bin>'
+& '<verified-Python-path>' tests/world_save/run-readonly-open.py --byond-bin '<516.1681-bin>' --negative-control writable
+& '<verified-Python-path>' tests/world_save/run-readonly-open.py --byond-bin '<516.1681-bin>' --negative-control value
+```
+
 ## Full game probe
 
 `run-game.ps1 -ByondBin 'C:/path/to/byond/bin'` builds a temporary root environment
@@ -693,3 +796,36 @@ It is disabled by default. Source preparation accepts an existing `--byond-bin`
 directory without installed native tools when `--prepare-only` is used.
 Native parity, instrumentation overhead and end-to-end timing remain unverified
 until those exact-source runs are actually completed and reviewed.
+
+### Extraction/master integration custody boundary
+
+The ordinary restore wrapper admits one world operation before asking an optional
+restore policy for custody. The same identity now encloses saved-dimension growth,
+restart intent validation, import, durable metadata and normal player restoration.
+Failed mutating imports retain the world-operation recovery hold independently of
+the provider's typed recovery receipt. Policy-free restores remain supported.
+
+`run-wrapper.py --prepare-only` prepares the focused wrapper and its `metadata`
+and `recovery` omission controls without compiling or launching BYOND. Its native
+fixture now enters the actual operation-aware contents backend and checks recovery
+hold retention instead of expecting the legacy busy flag to always clear.
+
+`run-durable-world.py --dimension-bootstrap` also runs three fresh-process combined
+startup cases against the actual round-v2 generation: custody success, reservation
+rejection before growth, and transient-release failure after growth/import. These
+call production `resume_startup`, `loadmap`, and `prepare_saved_dimensions`; only
+provider effects are injected. The provider asserts reservation occurs while the
+world still has its compiled dimensions. Success verifies the upper-level durable
+alias; failures preserve the matching intent and appropriate recovery holds.
+
+The durable runner generates invisible, no-client fixtures that permit only
+`OpenPort("none")`, reject client entry points, and reject world Topic except in
+the dedicated local lifecycle-dispatch fixture. No native validation is implied
+by prepare-only output or the accompanying source-structure checks. The cloud
+integration preparation did not run a compiler or daemon; full pinned 516.1681
+compilation and all relevant positive/negative controls remain required before
+this integration is accepted. Prepared integration runners explicitly bind
+127.0.0.1 and disable web clients. Native BYOND can open an ephemeral loopback
+listener before world/New, then the fixture closes it and refuses reopening;
+this is not a zero-initial-listener guarantee. Verify the actual startup bind
+and post-startup closure before interpreting native test results.

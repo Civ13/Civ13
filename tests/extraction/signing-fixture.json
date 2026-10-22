@@ -1,0 +1,12 @@
+{
+  "synthetic_key": "0123456789abcdef0123456789abcdef",
+  "direction": "request",
+  "exact_body": "{\"protocol\":\"civ13.safehouse.v1\",\"request_id\":\"fixture-1\",\"discord_id\":\"123\",\"action\":\"stash.inspect\",\"expected_account_revision\":null,\"payload\":{},\"request_digest\":\"synthetic-fixture-digest\"}",
+  "envelope": {
+    "protocol": "civ13.safehouse.ipc.v1",
+    "issued_at": 1000,
+    "expires_at": 1120,
+    "body": "eyJwcm90b2NvbCI6ImNpdjEzLnNhZmVob3VzZS52MSIsInJlcXVlc3RfaWQiOiJmaXh0dXJlLTEiLCJkaXNjb3JkX2lkIjoiMTIzIiwiYWN0aW9uIjoic3Rhc2guaW5zcGVjdCIsImV4cGVjdGVkX2FjY291bnRfcmV2aXNpb24iOm51bGwsInBheWxvYWQiOnt9LCJyZXF1ZXN0X2RpZ2VzdCI6InN5bnRoZXRpYy1maXh0dXJlLWRpZ2VzdCJ9",
+    "mac": "fddb71611d2a4732372e767fc8692ab8e756af399b63261f72e84b6c9f7bccfb"
+  }
+}

@@ -1,3 +1,7 @@
+## Extraction integration baseline
+
+The source oracle now pins extraction head `a8d3950f08aaa55db59ec5f20777a475b2db95bb` before its master integration. This preserves the already-reviewed restore-admission wrappers and cleanup exclusions while applying master's explicit reserved-lighting policy to both dispatch variants. It does not certify extraction recovery or restore performance. Historical native receipts and allocations remain historical; this change does not authorize the held native runner.
+
 ## Current-master integration (2026-10-20)
 
 The active baseline is pinned to master

@@ -15,7 +15,7 @@ def prepare(root, output, control=None):
     mutations = {
         'generation': ('if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")', '// Negative control: skip final validation.'),
         'consume': ('\t\tconsume(I)\n', '\t\t// Negative control: retain successful intent.\n'),
-        'import': ('if(!load_generation()) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")', 'load_generation() // Negative control: ignore import failure.'),
+        'import': ('if(!load_generation(I)) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")', 'load_generation(I) // Negative control: ignore import failure.'),
     }
     if control and control != 'deferred-reboot':
         before, after = mutations[control]
@@ -74,7 +74,7 @@ def main():
     (output / 'compile.log').write_text(build.stdout + build.stderr, encoding='utf-8')
     if build.returncode or '0 errors, 0 warnings' not in build.stdout:
         raise RuntimeError('Native fixture compile failed; see compile.log')
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'native.log'],
+    run = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'native.log'],
                          cwd=output, capture_output=True, text=True, timeout=60)
     log = (output / 'native.log').read_text(encoding='utf-8', errors='replace')
     (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')

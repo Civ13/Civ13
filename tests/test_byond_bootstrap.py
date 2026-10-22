@@ -1,5 +1,6 @@
 """Offline bootstrap command contract: stub sudo, never run apt or BYOND."""
 import os
+import shlex
 from pathlib import Path
 import subprocess
 import tempfile
@@ -50,6 +51,15 @@ exit 0
         self.assertEqual(result.returncode, 19)
         self.assertEqual(len(commands), 2)
         self.assertNotIn('Setting up BYOND.', result.stdout)
+
+    def test_download_is_bounded_without_source_or_tls_changes(self):
+        commands = [shlex.split(line) for line in SCRIPT.read_text().splitlines()
+                    if line.startswith('wget ')]
+        self.assertEqual(commands, [[
+            'wget', '--timeout=60', '--tries=3', '--waitretry=5',
+            '-O', '516.1681_byond_linux.zip',
+            'https://civ13.com/downloads/516.1681_byond_linux.zip',
+        ]])
 
     def test_shell_syntax_and_pinned_compiler_contract(self):
         subprocess.run(['/bin/bash', '-n', str(SCRIPT)], check=True, timeout=5)

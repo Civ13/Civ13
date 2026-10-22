@@ -160,7 +160,7 @@ def main():
     (output / 'compile.log').write_text(build.stdout + build.stderr, encoding='utf-8')
     if build.returncode or '0 errors, 0 warnings' not in build.stdout:
         raise RuntimeError('Native compilation failed; see retained compile.log')
-    run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'native.log'],
+    run = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-trusted', '-close', '-log', 'native.log'],
                          cwd=output, capture_output=True, text=True, timeout=60)
     (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
     result = json.loads((output / 'result.json').read_text(encoding='utf-8'))

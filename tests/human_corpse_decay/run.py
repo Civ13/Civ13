@@ -30,7 +30,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--byond-bin', type=Path, required=True)
     p.add_argument('--output', type=Path)
-    p.add_argument('--negative-control', nargs='?', const='nodrop', choices=('nodrop', 'restart', 'noop', 'runtime-parent'))
+    p.add_argument('--negative-control', nargs='?', const='nodrop', choices=('nodrop', 'restart', 'noop', 'icon-readiness', 'icon-callback', 'runtime-parent'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     out = a.output.resolve() if a.output else Path(tempfile.mkdtemp(prefix='civ13-corpse-decay-'))
@@ -38,7 +38,7 @@ def main():
         raise RuntimeError('Evidence output must be fresh')
     out.mkdir(parents=True, exist_ok=True)
     stem = '.human_corpse_decay_probe'
-    generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc')]
+    generated = [root / (stem + s) for s in ('.dme', '_world.dm', '_decay.dm', '.dmb', '.rsc', '_icons.dm', '_external.dm')]
     training_copy = root / (stem + '_training.dm')
     generated.append(training_copy)
     if any(x.exists() for x in generated):
@@ -56,7 +56,19 @@ def main():
         generated[1].write_text(world, encoding="utf-8")
         source = (root / 'civ13.dme').read_text(encoding="utf-8").replace('code\\world.dm', stem + '_world.dm')
         source = "\n".join(line for line in source.splitlines() if not line.strip().startswith('#include "maps\\'))
-        if a.negative_control == 'runtime-parent':
+        if a.negative_control == 'icon-readiness':
+            icons = (root / 'code/modules/organs/organ_icon.dm').read_text(encoding='utf-8')
+            guard = 'if (QDELETED(src) || !owner || !owner.species || !species || !owner.body_build)'
+            assert icons.count(guard) == 1
+            generated[5].write_text(icons.replace(guard, 'if (QDELETED(src) || !owner || !owner.species)', 1), encoding='utf-8')
+            source = source.replace('code\\modules\\organs\\organ_icon.dm', stem + '_icons.dm')
+        elif a.negative_control == 'icon-callback':
+            external = (root / 'code/modules/organs/organ_external.dm').read_text(encoding='utf-8')
+            guard = 'if (!QDELETED(src) && owner && owner.species && species && owner.body_build)'
+            assert external.count(guard) == 1
+            generated[6].write_text(external.replace(guard, 'if (TRUE)', 1), encoding='utf-8')
+            source = source.replace('code\\modules\\organs\\organ_external.dm', stem + '_external.dm')
+        elif a.negative_control == 'runtime-parent':
             training = (root / 'code/modules/1713/active_training.dm').read_text(encoding='utf-8')
             fixed = 'return (key in list("exercise_rest_epoch", "exercise_equipment")) || ..()'
             broken = 'return key in list("exercise_rest_epoch", "exercise_equipment") || ..()'
@@ -123,11 +135,15 @@ def main():
             log.close()
             (out / 'rss.json').write_text(json.dumps(samples))
         runtime_text = (out / 'runtime.log').read_text(encoding='utf-8', errors='replace')
-        if 'runtime error:' in runtime_text: raise RuntimeError('Uncaught runtime error in isolated log')
+        daemon_text = (out / 'daemon.log').read_text(encoding='utf-8', errors='replace')
+        if any(marker in (runtime_text + daemon_text).lower() for marker in ('runtime error:', 'bad ref', 'badref', '## bug:')):
+            print('Native runtime log:\n' + runtime_text, flush=True)
+            print('Native daemon output:\n' + daemon_text, flush=True)
+            raise RuntimeError('Uncaught runtime/engine diagnostic in isolated logs')
         result = (out / 'result.txt').read_text(encoding="utf-8").strip()
         print(result)
         if a.negative_control:
-            expected = {'nodrop': 'nodrop gear blocks retirement', 'restart': 'restart retains exposure', 'noop': 'noop movement retains exposure', 'runtime-parent': 'human inherits corpse runtime exclusion'}[a.negative_control]
+            expected = {'nodrop': 'nodrop gear blocks retirement', 'restart': 'restart retains exposure', 'noop': 'noop movement retains exposure', 'icon-readiness': 'partial head icon defers species lookup', 'icon-callback': 'partial organ constructor callback defers', 'runtime-parent': 'human inherits corpse runtime exclusion'}[a.negative_control]
             if not result.startswith('FAIL: ' + expected): raise RuntimeError('Negative control did not detect expected mutation')
             print(f'PASS: {a.negative_control} mutation detected')
         elif not result.startswith('PASS:') or proc.returncode:

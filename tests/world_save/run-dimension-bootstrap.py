@@ -21,6 +21,7 @@ from z_budget_evidence import DIAGNOSTIC, validate_compile
 CASES = ('positive', 'matching', 'fractional', 'negative', 'text', 'total-cap',
          'growth-cap', 'shrink', 'horizontal', 'missing', 'marker', 'metadata',
          'generation', 'grid', 'reference', 'area', 'json', 'intent',
+         'custody-positive', 'custody-denied', 'custody-binding',
          'allocation-failure', 'exact-post', 'budget', 'multi-budget', 'unmeasured', 'multi-unmeasured')
 
 
@@ -141,7 +142,7 @@ def main():
         if seed:
             shutil.copytree(seed / 'map_saves', cwd / 'map_saves')
         seed_hashes = {p.relative_to(cwd / 'map_saves').as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (cwd / 'map_saves').rglob('*') if p.is_file()} if seed else {}
-        owned(name, [str(daemon), 'dimension_bootstrap.dmb', '-invisible', '-close',
+        owned(name, [str(daemon), 'dimension_bootstrap.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close',
                      '-trusted', '-params', params, '-log', 'runtime.log'], cwd)
         if name in ('budget', 'multi-budget', 'unmeasured', 'multi-unmeasured') and not args.negative_control:
             after = {p.relative_to(cwd / 'map_saves').as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (cwd / 'map_saves').rglob('*') if p.is_file()}
@@ -173,10 +174,10 @@ def main():
             if native['allocations'] != control_allocations or native['maxz'] != control_z:
                 raise RuntimeError('Control failed for an unrelated allocation outcome')
         else:
-            expected_allocations = int(case in ('positive', 'allocation-failure', 'exact-post'))
+            expected_allocations = int(case in ('positive', 'custody-positive', 'allocation-failure', 'exact-post'))
             expected_z = 3 if expected_allocations else 2
             # Reject incomplete or truncated execution even when PASS was emitted.
-            minimum = 10 if case in ('positive', 'matching') else 5
+            minimum = 10 if case in ('positive', 'matching', 'custody-positive') else 5
             if native['allocations'] != expected_allocations or native['maxz'] != expected_z or native['checks'] < minimum:
                 raise RuntimeError(f'Unexpected native dimensions/check count: {case}: {native}')
     print(f'PASS: dimension bootstrap {args.negative_control or "positive and malformed controls"}')

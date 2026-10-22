@@ -43,7 +43,7 @@ jobs:
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX"
       - name: Selection regression tests
-        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_build_prefix.py')
+        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/persistence_admission') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_build_prefix.py')
         run: python3 -m unittest discover -s tests -p 'test_ci*.py' -v
       - name: Validate all workflow syntax
         run: |

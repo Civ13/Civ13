@@ -207,7 +207,9 @@
 		replaced(owner)
 		sync_colour_to_human(owner)
 	spawn(1)
-		get_icon()
+		// Native save hydration can yield before the owner/species links are ready.
+		if (!QDELETED(src) && owner && owner.species && species && owner.body_build)
+			get_icon()
 
 /obj/item/organ/external/replaced(var/mob/living/human/target)
 	owner = target

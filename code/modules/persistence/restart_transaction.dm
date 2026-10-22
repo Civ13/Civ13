@@ -84,9 +84,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction/proc/save_generation()
 	return ticker.savemap(src)
 
-/datum/persistence_restart_transaction/proc/load_generation()
+/datum/persistence_restart_transaction/proc/load_generation(list/expected_intent)
 	// Startup ownership is admitted explicitly; never clear another operation.
-	return ticker.loadmap(src)
+	return ticker.loadmap(src, expected_intent)
 
 /datum/persistence_restart_transaction/proc/request_restart()
 	world.Reboot(0, expected_generation)
@@ -160,14 +160,14 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		var/list/I = read_intent()
 		lifecycle_operation = I["lifecycle_operation"]
 		lifecycle_session = I["lifecycle_session"]
-		if(!map_storage.prepare_saved_dimensions(I)) throw EXCEPTION("Saved dimension bootstrap failed: [map_storage.last_error]")
-		if(!matches(I, current_identity())) throw EXCEPTION("Restart intent does not match the completed generation")
+		// Allocation is inside loadmap admission/custody, not before it. A
+		// consumption-only retry must still verify its completed generation.
+		if(import_complete && !matches(I, current_identity())) throw EXCEPTION("Restart intent does not match the completed generation")
 		expected_generation = I["generation"]
 		if(import_started && !import_complete)
 			throw EXCEPTION("An import already failed after it began; restart from the original map before retrying")
 		if(!import_complete)
-			import_started = TRUE
-			if(!load_generation()) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")
+			if(!load_generation(I)) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")
 			import_complete = TRUE
 		consume(I)
 		startup_hold = FALSE

@@ -97,6 +97,7 @@
 		M.r_hand.update_held_icon()
 
 /obj/item/Destroy()
+	if (extraction_surface_source?.service) extraction_surface_source.service.observe_disposal(src)
 	unregister_abandoned_item()
 	actions = list()
 	if (ismob(loc))
@@ -159,6 +160,11 @@
 	return ..(user, distance, "", "It is a [size] item.[decay_notice]")
 
 /obj/item/attack_hand(mob/user as mob)
+	if (extraction_surface_source)
+		var/obj/effect/extraction_surface_source/S = extraction_surface_source
+		var/mob/living/human/H = user
+		if (istype(H) && S.service) S.service.claim_root(S, H, src)
+		return
 	if (isturf(loc) && anchored) return
 	if (!user) return
 	if (istype(user, /mob/living/human))
@@ -223,6 +229,7 @@
 // Due to storage type consolidation this should get used more now.
 // I have cleaned it up a little, but it could probably use more.  -Sayu
 /obj/item/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (extraction_surface_source) return
 	if (istype(W,/obj/item/weapon/storage))
 		var/obj/item/weapon/storage/S = W
 		if (S.use_to_pickup)

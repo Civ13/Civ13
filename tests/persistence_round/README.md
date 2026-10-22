@@ -27,3 +27,11 @@ that production guard and must fail this exact assertion.
 This is a production-procedure integration test, not a full public-server test
 or a save/reboot proof. The separate restart-transaction suite checks the
 administrative save/restart contract with isolated external-effect adapters.
+
+The vote adapter acquires real generation-bound handles before simulating stale
+pending routes. It checks terminal cancellation, cleared callback ownership,
+repeat-resolution rejection and the production direct-application guard. A
+callback that enables persistence must prevent the resolved route from ending
+the round. Generic questions also cannot hide map/epoch transition callbacks.
+`python -m unittest discover -s tests/persistence_round -p 'test_*.py'` checks
+source integration contracts only; it is not native compiler or runtime proof.

@@ -23,7 +23,12 @@ var/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction
 	var/startup_hold = FALSE
 	var/busy = FALSE
+	var/import_started = FALSE
 	var/expected_generation
+/datum/persistence_restart_transaction/proc/current_identity()
+	return list()
+/datum/persistence_restart_transaction/proc/matches(list/A, list/B)
+	return FALSE
 /datum/persistence_restart_transaction/proc/exists()
 	return FALSE
 var/obj/map_metadata/map
@@ -178,6 +183,20 @@ var/list/mutate_on_tick = null
 	var/age6_done
 	var/age7_done
 	var/age8_done
+// Ordinary-map fixture only. Surface admission is tested by extraction probes;
+// accidental activation here must fail instead of supplying synthetic success.
+/obj/map_metadata/extraction_survival
+	var/datum/extraction_surface_service/surface_service
+/datum/extraction_surface_service
+	var/world_inventory_complete = FALSE
+	proc/begin_world_inventory(levels)
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/feed_loaded_level(level, list/objects)
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/discovery_fail()
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/finish_world_inventory()
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
 /turf/proc/ChangeTurf(path, tell_universe, force_lighting_update)
 	return new path(src)
 

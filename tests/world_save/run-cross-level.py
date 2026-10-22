@@ -194,7 +194,7 @@ def native(output, byond, cases, receipt, expected=None, compile_only=False):
             source = output / ('probe' + suffix)
             if source.exists():
                 (cwd / source.name).write_bytes(source.read_bytes())
-        logs = owned_process([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted',
+        logs = owned_process([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted',
                               '-ip', '127.0.0.1', '-params', f'case={case}', '-log', 'native.log'], cwd, 'daemon')
         logs += '\n' + read_bounded(cwd / 'native.log')
         result = json.loads(read_bounded(cwd / 'result.json'))

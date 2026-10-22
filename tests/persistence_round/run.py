@@ -57,9 +57,10 @@ def main():
         source = source.replace('code\\game\\gameticker.dm', generated[5].name)
         if args.negative_control == 'vote':
             body = (root / 'code/datums/vote.dm').read_text(encoding='utf-8')
-            old = 'if (persistence_blocks_vote(vote_type))'
-            assert body.count(old) == 1, 'Mutation anchor drift'
-            generated[4].write_text(body.replace(old, 'if (FALSE)', 1), encoding='utf-8')
+            # Remove admission and post-input revalidation together.
+            old = 'persistence_blocks_vote(vote_type, _callback)'
+            assert body.count(old) == 2, 'Mutation anchor drift'
+            generated[4].write_text(body.replace(old, 'FALSE'), encoding='utf-8')
             source = source.replace('code\\datums\\vote.dm', generated[4].name)
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
         generated[0].write_text(source + '\n#include "tests/persistence_round/probe.dm"\n', encoding='utf-8')
@@ -77,7 +78,7 @@ def main():
         shutil.copy2(generated[3], logs / generated[3].name)
         shutil.copytree(root / 'config/names', logs / 'config/names')
         (logs / 'config/config.txt').write_text('# Offline fixture\n', encoding='utf-8')
-        runtime = subprocess.run([str(daemon), str(logs / generated[2].name),
+        runtime = subprocess.run([str(daemon), str(logs / generated[2].name), '-ip', '127.0.0.1', '-nowebclient',
                                   *(['-invisible', '-close'] if os.name == 'nt' else []),
                                   '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'],
                                  cwd=logs, capture_output=True, text=True, timeout=60,

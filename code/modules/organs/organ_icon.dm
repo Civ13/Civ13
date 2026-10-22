@@ -37,7 +37,7 @@ var/global/list/limb_icon_cache = list()
 
 	..()
 	overlays.Cut()
-	if (!owner || !owner.species)
+	if (QDELETED(src) || !owner || !owner.species || !species || !owner.body_build)
 		return
 	if (owner.species.has_organ["eyes"])
 		var/icon/eyes_icon = new/icon('icons/mob/human_face.dmi', "eyes[owner.body_build.index]")
@@ -73,8 +73,12 @@ var/global/list/limb_icon_cache = list()
 	icon = mob_icon
 
 /obj/item/organ/external/update_icon(var/regenerate = FALSE)
+	if (QDELETED(src))
+		return
 	if (!owner)//special check
 		qdel(src)
+		return
+	if (!owner.species || !species || !owner.body_build)
 		return
 	var/gender = "_m"
 /*	if (!gendered_icon)
