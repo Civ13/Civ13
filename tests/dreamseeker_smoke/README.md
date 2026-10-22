@@ -217,3 +217,13 @@ not descriptor-pinned prevention of concurrent filesystem mutation. Keep runtime
 and base dependencies quiescent. No runtime preparer or native admission is
 issued by this source proposal; reviewed normal-venv preparation and offline PE
 dependency closure remain prerequisites for any concrete runtime manifest.
+
+Retained process identity is captured from the Job-owned suspended child before
+ResumeThread, including image, PID and creation time, and bound to the retained
+process/thread handles. Exit reporting uses that verified identity without a
+post-exit image query. Identity capture failure prevents resume. Cleanup records
+Job termination/close and retained wait/exit-code outcomes before identity/CPU
+enrichment. Thread/process handle-close outcomes are recorded afterward in
+finally, including when enrichment fails. Errors still fail cleanup acceptance
+without erasing successful primitive observations. This does not establish historical
+cleanup or rendering acceptance for earlier failed attempts.

@@ -186,6 +186,7 @@ class Adapter:
             self.check(self.k.IsProcessInJob(process.process, self.job, c.byref(member)))
             if not member.value:
                 raise RuntimeError('Suspended process Job ownership unverified')
+            self.capture_identity(process, argv[0])
             creation_guard()
             if self.k.ResumeThread(process.thread) == 0xffffffff:
                 raise c.WinError(c.get_last_error())
@@ -205,11 +206,24 @@ class Adapter:
         self.check(self.k.GetProcessTimes(process.process, *(c.byref(v) for v in values)))
         return values[0].value, (values[2].value + values[3].value) / 1e7
 
-    def identity(self, process):
+    def capture_identity(self, process, executable):
+        # Called exactly once while our retained, Job-owned child is suspended.
+        if not any(item is process for item in self.retained) or hasattr(process, '_identity'):
+            raise RuntimeError('Identity capture requires a new retained handle')
         image, length = c.create_unicode_buffer(32768), w.DWORD(32768)
         self.check(self.k.QueryFullProcessImageNameW(process.process, 0, image, c.byref(length)))
         created, _ = self.times(process)
-        return dict(pid=process.pid, creation_filetime=created, image=str(Path(image.value).resolve()))
+        canonical = str(Path(image.value).resolve())
+        if not process.pid or not created or Path(canonical) != Path(executable).resolve():
+            raise RuntimeError('Suspended process identity differs from admitted executable')
+        process._identity = (process.process, process.thread, process.pid, created, canonical)
+
+    def identity(self, process):
+        binding = getattr(process, '_identity', None)
+        if (not any(item is process for item in self.retained) or binding is None
+                or binding[:3] != (process.process, process.thread, process.pid)):
+            raise RuntimeError('Retained process identity binding unavailable or changed')
+        return dict(pid=binding[2], creation_filetime=binding[3], image=binding[4])
 
     def sample(self, process):
         return dict(private_bytes=self.memory(process.process), watcher_private_bytes=self.memory(self.k.GetCurrentProcess()),
@@ -282,23 +296,38 @@ class Adapter:
 
     def cleanup(self, process, seconds):
         deadline = self.now() + seconds
-        exits, errors = [], []
+        exits, errors, primitives = [], [], {}
         if self.job:
-            if not self.k.TerminateJobObject(self.job, 1):
+            primitives['terminate_job'] = bool(self.k.TerminateJobObject(self.job, 1))
+            if not primitives['terminate_job']:
                 errors.append('Job termination failed')
-            self.k.CloseHandle(self.job)  # kill-on-close fallback before retained waits
-            self.job = None
+            primitives['close_job'] = bool(self.k.CloseHandle(self.job))
+            if primitives['close_job']:
+                self.job = None
+            else:
+                errors.append('Job handle close failed')
         for retained in self.retained:
+            row = {}
+            exits.append(row)  # Publish primitive facts before optional enrichment.
             try:
                 wait = self.k.WaitForSingleObject(retained.process, max(0, int((deadline - self.now()) * 1000)))
+                row['wait_result'] = wait
+                row['wait_signaled'] = wait == 0
                 if wait != 0:
                     raise RuntimeError('Retained process final exit unconfirmed')
                 code = w.DWORD()
-                self.check(self.k.GetExitCodeProcess(retained.process, c.byref(code)))
-                exits.append(dict(identity=self.identity(retained), exit_code=code.value, cpu_seconds=self.times(retained)[1]))
+                row['exit_code_read'] = bool(self.k.GetExitCodeProcess(retained.process, c.byref(code)))
+                if not row['exit_code_read']:
+                    raise RuntimeError('Retained process exit code unavailable')
+                row['exit_code'] = code.value
+                row['identity'] = self.identity(retained)
+                row['cpu_seconds'] = self.times(retained)[1]
             except Exception as error:
+                row['error'] = str(error)
                 errors.append(str(error))
             finally:
-                self.k.CloseHandle(retained.thread)
-                self.k.CloseHandle(retained.process)
-        return dict(all_exited=not errors, exits=exits, errors=errors)
+                row['thread_handle_closed'] = bool(self.k.CloseHandle(retained.thread))
+                row['process_handle_closed'] = bool(self.k.CloseHandle(retained.process))
+                if not row['thread_handle_closed'] or not row['process_handle_closed']:
+                    errors.append('Retained handle close failed')
+        return dict(all_exited=not errors, exits=exits, errors=errors, primitives=primitives)

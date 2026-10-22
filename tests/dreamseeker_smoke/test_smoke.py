@@ -703,6 +703,123 @@ class WindowsCreationBoundaryContracts(unittest.TestCase):
             self.launch('hash')
 
 
+class RetainedIdentityContracts(unittest.TestCase):
+    setUp = WindowsCreationBoundaryContracts.setUp
+    guard = WindowsCreationBoundaryContracts.guard
+
+    def created_child(self, fail_identity=False, wrong_image=False):
+        self.folder = self.enterContext(tempfile.TemporaryDirectory())
+        root = Path(self.folder).resolve()
+        executable = root/'dreammaker.exe'
+        self.events = []
+        def created(*args):
+            process = args[-1]._obj
+            process.process, process.thread, process.pid = 501, 502, 503
+            self.events.append('created suspended')
+            return 1
+        def owned(handle, job, member):
+            member._obj.value = 1
+            return 1
+        def image(handle, flags, value, length):
+            self.events.append('image captured')
+            if fail_identity:
+                raise OSError('injected image31')
+            value.value = str(root/'unexpected.exe' if wrong_image else executable)
+            return 1
+        def times(handle, born, exited, kernel, user):
+            born._obj.value = 123456
+            kernel._obj.value = 100
+            user._obj.value = 200
+            return 1
+        def resume(handle):
+            self.events.append('resumed')
+            return 1
+        def exit_code(handle, code):
+            code._obj.value = 0
+            return 1
+        self.adapter.k.CreateFileW.return_value = 7
+        self.adapter.k.CreateProcessW.side_effect = created
+        self.adapter.k.IsProcessInJob.side_effect = owned
+        self.adapter.k.QueryFullProcessImageNameW.side_effect = image
+        self.adapter.k.GetProcessTimes.side_effect = times
+        self.adapter.k.ResumeThread.side_effect = resume
+        self.adapter.k.GetExitCodeProcess.side_effect = exit_code
+        self.adapter.k.WaitForSingleObject.return_value = 0
+        self.enterContext(patch('guard_config.digest', return_value='offline-digest'))
+        self.enterContext(patch('guard_config.BINARIES', {'dreammaker.exe': 'offline-digest'}))
+        self.enterContext(patch.dict(self.windows.os.environ, SystemRoot='OFFLINE-NO-NATIVE'))
+        return self.adapter.launch([str(executable)], root, root, 'compile', creation_guard=self.guard)
+
+    def test_fast_exit_uses_suspended_identity_without_postexit_image_query(self):
+        process = self.created_child()
+        self.assertEqual(self.events, ['created suspended', 'image captured', 'resumed'])
+        self.adapter.k.QueryFullProcessImageNameW.side_effect = OSError('postexit image31')
+        self.assertTrue(self.adapter.exited(process))
+        self.adapter.accounting = Mock(return_value=SimpleNamespace(active=0, total=1))
+        result = self.adapter.finish(process)
+        self.assertEqual(result['identity']['creation_filetime'], 123456)
+        self.assertEqual(result['identity']['pid'], 503)
+        cleanup = self.adapter.cleanup(process, 5)
+        self.assertTrue(cleanup['all_exited'])
+        self.assertEqual(cleanup['exits'][0]['exit_code'], 0)
+        self.assertTrue(cleanup['exits'][0]['wait_signaled'])
+        self.adapter.k.QueryFullProcessImageNameW.assert_called_once()
+
+    def test_identity_capture_failure_prevents_resume_and_retains_cleanup_facts(self):
+        with self.assertRaisesRegex(OSError, 'image31'):
+            self.created_child(fail_identity=True)
+        self.adapter.k.ResumeThread.assert_not_called()
+        self.assertEqual(len(self.adapter.retained), 1)
+        cleanup = self.adapter.cleanup(None, 5)
+        self.assertFalse(cleanup['all_exited'])
+        row = cleanup['exits'][0]
+        self.assertTrue(row['wait_signaled'])
+        self.assertEqual(row['exit_code'], 0)
+        self.assertTrue(row['thread_handle_closed'] and row['process_handle_closed'])
+        self.assertIn('identity binding', row['error'])
+
+    def test_wrong_suspended_image_prevents_resume(self):
+        with self.assertRaisesRegex(RuntimeError, 'identity differs'):
+            self.created_child(wrong_image=True)
+        self.adapter.k.ResumeThread.assert_not_called()
+        self.assertFalse(self.adapter.cleanup(None, 5)['all_exited'])
+
+    def test_cleanup_enrichment_error_does_not_erase_exit_facts(self):
+        process = self.created_child()
+        with patch.object(self.adapter, 'times', side_effect=OSError('CPU detail failed')):
+            result = self.adapter.cleanup(process, 5)
+        self.assertFalse(result['all_exited'])
+        row = result['exits'][0]
+        self.assertTrue(row['wait_signaled'] and row['exit_code_read'])
+        self.assertEqual(row['exit_code'], 0)
+        self.assertEqual(row['identity']['pid'], 503)
+        self.assertTrue(row['thread_handle_closed'] and row['process_handle_closed'])
+        self.assertIn('CPU detail failed', row['error'])
+
+    def test_changed_handle_binding_fails_without_numeric_pid_lookup(self):
+        process = self.created_child()
+        process.process = 999
+        with self.assertRaisesRegex(RuntimeError, 'identity binding'):
+            self.adapter.identity(process)
+        self.adapter.k.OpenProcess.assert_not_called()
+
+    def test_cleanup_wait_failure_keeps_job_and_handle_close_results(self):
+        process = self.created_child()
+        self.adapter.k.WaitForSingleObject.return_value = 258
+        result = self.adapter.cleanup(process, 0)
+        self.assertFalse(result['all_exited'])
+        self.assertFalse(result['exits'][0]['wait_signaled'])
+        self.assertTrue(result['primitives']['terminate_job'])
+        self.assertTrue(result['primitives']['close_job'])
+        self.assertTrue(result['exits'][0]['process_handle_closed'])
+
+    def test_unretained_cached_identity_is_rejected(self):
+        process = self.created_child()
+        self.adapter.retained = []
+        with self.assertRaisesRegex(RuntimeError, 'identity binding'):
+            self.adapter.identity(process)
+
+
 class WorkflowSelectionContracts(unittest.TestCase):
     # Evaluate this workflow's deliberately narrow conjunction, not general YAML
     # or the GitHub expression language. Actual Actions parsing remains CI evidence.
