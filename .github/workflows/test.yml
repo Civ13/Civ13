@@ -89,6 +89,9 @@ jobs:
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+      - name: Test research scheduler resume source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/research_scheduler')
+        run: python3 -B -m unittest discover -s tests/research_scheduler -v
       - name: Test cleanables scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cleanables_scheduler')
         run: python3 -B -m unittest discover -s tests/cleanables_scheduler -v
