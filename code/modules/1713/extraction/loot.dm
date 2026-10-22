@@ -27,7 +27,8 @@
 		if (!isnum(slots) || round(slots) != slots || slots < 1 || slots > 4 || !isnum(chance) || round(chance) != chance || chance < 0 || chance > 10000 || !islist(outcomes) || outcomes.len < 1 || outcomes.len > 16) return FALSE
 		var/datum/extraction_equipment_codec/C = new
 		var/total = 0
-		for (var/list/outcome in outcomes)
+		for (var/outcome_index in 1 to outcomes.len)
+			var/list/outcome = outcomes[outcome_index]
 			if (!islist(outcome) || !istext(outcome["type"]) || !C.supported(text2path(outcome["type"])) || !(outcome["rarity"] in list("common", "rare", "exceptional"))) return FALSE
 			var/weight = outcome["weight"]
 			var/quantity = outcome["quantity"]

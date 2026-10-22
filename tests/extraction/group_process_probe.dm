@@ -183,3 +183,9 @@
 			var/list/malformed = json_decode(json_encode(receipt["parts"]))
 			malformed[1]["vehicle"] = 0
 			equipment_assert(!J.valid_participants(malformed), "malformed passenger car cannot become an ordinary loot-only receipt")
+			equipment_assert(J.valid_participants(receipt["parts"]), "valid vehicle return participants remain accepted")
+			for (var/scalar_case in 1 to 3)
+				var/scalar = scalar_case == 1 ? "invalid" : (scalar_case == 2 ? 17 : null)
+				var/list/mixed = json_decode(json_encode(receipt["parts"]))
+				mixed += list(scalar)
+				equipment_assert(!J.valid_participants(mixed), "malformed vehicle return participant rejected [scalar_case]")

@@ -25,12 +25,16 @@
 		if (!configure(id)) return null
 		var/list/result = list()
 		var/list/receipts = profile["npc_receipts"]
-		if (!receipts) return result
+		if (isnull(receipts)) return result
 		if (!islist(receipts) || receipts.len > 128) return null
-		for (var/list/receipt in receipts)
+		for (var/receipt_index in 1 to receipts.len)
+			var/list/receipt = receipts[receipt_index]
+			if (!islist(receipt)) return null
 			var/list/graphs = receipt["graphs"]
-			if (!islist(graphs) || graphs.len > 8 || receipt["digest"] != md5(json_encode(graphs))) return null
-			for (var/list/graph in graphs)
+			if (!islist(graphs) || !graphs.len || graphs.len > 8 || receipt["digest"] != md5(json_encode(graphs))) return null
+			for (var/graph_index in 1 to graphs.len)
+				var/list/graph = graphs[graph_index]
+				if (!islist(graph)) return null
 				var/datum/extraction_equipment_codec/C = new
 				if (graph["schema"] != 2 || !C.validate(graph)) return null
 				for (var/list/node in graph["nodes"])

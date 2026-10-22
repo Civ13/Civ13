@@ -86,6 +86,27 @@
 	for (var/token in tokens) retired_ids[tokens[token]["id"]] = TRUE
 	equipment_assert(tokens && retired_ids[gun_id] && retired_ids[scope_id], "native disk reopening preserves gun and detached component insurance suppression")
 	equipment_assert(reopened.profile["npc_receipts"][1]["fee"] == 5, "NPC fee recorded in the same original-gear receipt")
+	var/list/original_receipts = json_decode(json_encode(reopened.profile))
+	for (var/scalar_case in 1 to 3)
+		var/scalar = scalar_case == 1 ? "invalid" : (scalar_case == 2 ? 17 : null)
+		reopened.profile = json_decode(json_encode(original_receipts))
+		reopened.profile["npc_receipts"] += list(scalar)
+		equipment_assert(isnull(reopened.recovered(M.round_id)), "malformed NPC receipt rejected [scalar_case]")
+		reopened.profile = json_decode(json_encode(original_receipts))
+		var/list/bad_receipt = reopened.profile["npc_receipts"][1]
+		bad_receipt["graphs"] += list(scalar)
+		bad_receipt["digest"] = md5(json_encode(bad_receipt["graphs"]))
+		equipment_assert(isnull(reopened.recovered(M.round_id)), "malformed NPC graph rejected despite matching digest [scalar_case]")
+	reopened.profile = json_decode(json_encode(original_receipts))
+	reopened.profile["npc_receipts"] = 0
+	equipment_assert(isnull(reopened.recovered(M.round_id)), "false scalar is not an absent NPC receipt list")
+	reopened.profile = json_decode(json_encode(original_receipts))
+	var/list/empty_receipt = reopened.profile["npc_receipts"][1]
+	empty_receipt["graphs"] = list()
+	empty_receipt["digest"] = md5(json_encode(empty_receipt["graphs"]))
+	equipment_assert(isnull(reopened.recovered(M.round_id)), "empty NPC graph receipt rejected")
+	reopened.profile = original_receipts
+	equipment_assert(json_encode(reopened.recovered(M.round_id)) == json_encode(tokens), "valid NPC receipts retain exact original tokens")
 	var/datum/extraction_insurance_inventory/index = new(M.accounts)
 	var/list/statuses = index.build(M.round_id)
 	equipment_assert(statuses && !statuses[historical_token] && tokens[historical_token], "historical NPC insured token does not block unrelated current-round claims")

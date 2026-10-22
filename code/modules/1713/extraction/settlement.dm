@@ -47,7 +47,8 @@
 		var/list/after_graphs = list()
 		var/before_money = 0
 		var/after_money = 0
-		for (var/list/part in parts)
+		for (var/part_index in 1 to parts.len)
+			var/list/part = parts[part_index]
 			if (!islist(part) || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
 			var/owner = part["owner"]
 			owners[owner] = TRUE
@@ -242,7 +243,8 @@
 		var/list/owners = list()
 		var/list/ids = list()
 		var/cars = 0
-		for (var/list/part in parts)
+		for (var/part_index in 1 to parts.len)
+			var/list/part = parts[part_index]
 			if (!islist(part) || part["operation"] != "vehicle_extract" || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
 			owners[part["owner"]] = TRUE
 			var/list/before = part["before"]
@@ -276,8 +278,9 @@
 		var/faction
 		var/insurance_round
 		var/vehicle_count = 0
-		for (var/list/part in parts)
-			if (!isnull(part["operation"])) return FALSE
+		for (var/part_index in 1 to parts.len)
+			var/list/part = parts[part_index]
+			if (!islist(part) || !isnull(part["operation"])) return FALSE
 			if (!islist(part) || !service.store.valid_owner(part["owner"]) || owners[part["owner"]]) return FALSE
 			owners[part["owner"]] = TRUE
 			var/list/before = part["before"]
