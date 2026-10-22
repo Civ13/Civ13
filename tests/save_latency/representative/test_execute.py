@@ -193,6 +193,22 @@ class ExecutorTests(unittest.TestCase):
         self.enterContext(patch.object(subprocess, 'Popen', side_effect=AssertionError('native process forbidden')))
         self.enterContext(patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')))
 
+    def test_caller_entry_deadline_stops_slow_setup_before_compile(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            packet = allocation(Path(temporary))
+            effect = FakeEffects(self.cache)
+            effect.now = 50
+            original = effect.export
+            def slow_export(*args):
+                result = original(*args)
+                effect.now = 301
+                return result
+            effect.export = slow_export
+            with self.assertRaises(TimeoutError):
+                execute.execute(self.repo, packet, effect, caller_deadline=300)
+            self.assertFalse(any(call[0] in ('compile', 'phase') for call in effect.calls))
+            self.assertTrue((Path(packet['output']) / 'failure.json').is_file())
+
     def test_actual_executor_all_seven_owned_phases_without_native_effects(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

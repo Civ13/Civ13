@@ -83,7 +83,8 @@ enforced memory quotas. Strict diagnostics run after owned exit; historical
 `nslookup` diagnostics are not suppressed.
 
 After source review and separate allocation an operator can explicitly request
-`--execute --repository <local-repo> --resource-packet <current-owner-packet>`.
+`--execute --repository <local-repo> --resource-packet <current-owner-packet>
+--admission <reviewed-admission> --admission-sha256 <independently-reviewed-digest>`.
 The deliberately invalid example packet grants nothing. Execution requires Windows,
 approved existing BYOND hashes, new unlinked output, an allocated unoccupied port,
 frozen expected listener addresses and measured storage/resource ceilings. Expiry
@@ -114,3 +115,45 @@ Use the task evidence proposal for the public-Europe matched workload and finite
 unallocated envelope. The 8192/20/80 candidate is an experimental duty-cycle change,
 not equal-budget optimization. Faster saves with worse service latency require an
 explicit tradeoff decision; no arbitrary numerical acceptance is introduced here.
+
+The CLI now enters through `admission.invoke()` before native execution. The
+admission example is deliberately unauthorized. A real reviewed packet binds a
+canonical SHA-256 of the entire resource packet (including output and port), exact
+host/account/Python path and executable hash, every actual driver `.py` file and
+`probe.dm`, source repository, executor thread, authority reference, resource owner
+and existing external reservation. Use `Operator.identity()` values for the exact
+account representation. These are operator claims checked for consistency, not a
+signature or evidence that a JSON boolean creates authority. The expected canonical
+digest must arrive from independent review, not be computed from an unreviewed
+file as an automatic approval step. Duplicate keys, oversized packets and linked
+paths refuse. Runtime inputs and prepared A/B source remain independently sealed
+by the executor.
+
+The resource sample names `measured_utc`, `host`,
+`output_volume_free_bytes` and `cpu_accepted_by_owner`. It must be at most 60 seconds
+old immediately before invocation and meet the existing disk floor. The user's
+override of available-memory admission is honored: reported free RAM is not a
+new admission gate. Allocated private-memory ceilings and sampled runtime stops
+remain unchanged. A claim is not a fresh host
+probe or continuous CPU/RAM guarantee. Actual storage preflight and existing
+sampled process/output checks still run; the caller does not supply hard quotas.
+
+`ledger_directory` must already exist outside source and run output, be the
+operator's shared durable reservation store, and be honored by every dispatcher
+using that allocation. The caller exclusively creates and fsyncs
+`<attempt_id>.json` before entering the executor. A collision, uncertain write or
+failed invocation is consumed and must never be deleted to retry. The record
+binds the independent admission digest and remains `CONSUMED_BEFORE_EXECUTION`;
+it does not advertise success. Driver imports, packet reads, hashing, claim writes
+and executor work share the script-entry monotonic/UTC limit, after only the
+minimal clock imports. Slow preparation cannot start a new
+9810-second budget. Source/identity and claim checks run again before return.
+Allocation release and native/performance acceptance remain separate reviewed
+facts, including when invocation returns without raising.
+
+This cooperative caller is not a security boundary against a hostile operator,
+concurrent source mutation or deletion of the external ledger. The Python API
+remains available for the existing injected tests; it must not be used to bypass
+the reviewed native invocation route. The reservation identifier does not itself
+lock a TCP port. Existing explicit loopback launch and actual listener ownership
+checks remain required; a conflicting listener stops the one-use attempt.

@@ -1,8 +1,14 @@
 """Explicit bounded native executor. Default CLI prints a plan and runs nothing."""
+import time
+from datetime import datetime, timedelta, timezone
+
+# Anchor script entry before driver imports or packet I/O. Imported callers take
+# their own anchor as the first main() action instead of reusing import time.
+CLI_ENTRY = (time.monotonic(), datetime.now(timezone.utc)) if __name__ == '__main__' else None
+
 import argparse
 from copy import deepcopy
 from contextlib import contextmanager
-from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -13,7 +19,6 @@ import socket
 import stat
 import subprocess
 import threading
-import time
 from types import MappingProxyType
 import zipfile
 
@@ -447,7 +452,7 @@ def run_phase(effect, game, commit, packet, helper_data, deadline, body, role, s
     return result
 
 
-def execute(repository, packet, effect=None):
+def execute(repository, packet, effect=None, *, caller_deadline=None):
     effect = effect or SystemEffects()
     native = isinstance(effect, SystemEffects)
     started, utc = effect.clock(), effect.utcnow()
@@ -456,6 +461,10 @@ def execute(repository, packet, effect=None):
     if os.name != 'nt' and native:
         raise ValueError('Existing native ownership helpers support Windows only')
     effect = AllocatedEffects(effect, packet, started, utc)
+    if caller_deadline is not None:
+        if type(caller_deadline) not in (int, float) or not started < caller_deadline < float('inf'):
+            raise ValueError('Caller deadline is exhausted or nonfinite')
+        effect.deadline = min(effect.deadline, caller_deadline)
     setup_deadline = min(effect.deadline, started + packet['setup_seconds'])
     toolchain = Path(packet['byond_bin'])
     if not toolchain.is_absolute():
@@ -670,18 +679,23 @@ SystemEffects.source = staticmethod(source.git_source)
 
 
 def main(argv=None):
+    anchor = CLI_ENTRY or (time.monotonic(), datetime.now(timezone.utc))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--resource-packet', type=Path)
     parser.add_argument('--repository', type=Path)
+    parser.add_argument('--admission', type=Path)
+    parser.add_argument('--admission-sha256')
     args = parser.parse_args(argv)
     if not args.execute:
         print(json.dumps({'plan_only': True, 'commits': [source.REFERENCE, source.CANDIDATE],
                           'core_seconds': CORE_SECONDS, 'native_executed': False}))
         return
-    if not args.resource_packet or not args.repository:
-        parser.error('Execution requires an explicit current resource packet and source repository')
-    execute(args.repository, json.loads(args.resource_packet.read_text(encoding='utf-8')))
+    if not all((args.resource_packet, args.repository, args.admission, args.admission_sha256)):
+        parser.error('Execution requires resource/repository and independently reviewed one-use admission')
+    import admission
+    admission.invoke(args.repository, admission.load(args.resource_packet),
+                     admission.load(args.admission), args.admission_sha256, anchor=anchor)
 
 
 if __name__ == '__main__':
