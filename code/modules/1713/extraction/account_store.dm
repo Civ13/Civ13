@@ -245,6 +245,8 @@ var/global/list/extraction_account_read_leases = list()
 	return check["profile"]
 
 /datum/extraction_account_store/proc/recovery_ids(list/P)
+	if (!islist(P) || !islist(P["stash"])) return null
+	if (!isnull(P["insurance_mailbox"]) && !islist(P["insurance_mailbox"])) return null
 	var/list/ids = list()
 	if (!isnull(P["garage"]))
 		if (!valid_garage(P["garage"])) return null
@@ -257,8 +259,11 @@ var/global/list/extraction_account_read_leases = list()
 		for (var/list/entry in vehicle["cargo"]) stash += list(entry)
 	if (islist(P["insurance_mailbox"]))
 		stash = stash.Copy()
-		for (var/list/entry in P["insurance_mailbox"]) stash += list(entry)
-	for (var/list/entry in stash)
+		var/list/mailbox = P["insurance_mailbox"]
+		for (var/mail_index in 1 to mailbox.len) stash += list(mailbox[mail_index])
+	// Inspect scalar entries too; typed iteration would omit corrupt records.
+	for (var/entry_index in 1 to stash.len)
+		var/list/entry = stash[entry_index]
 		if (!islist(entry) || !istext(entry["id"]) || !length(entry["id"]) || ids[entry["id"]]) return null
 		var/list/graph = entry["equipment"]
 		if (!islist(graph)) return null
@@ -267,7 +272,8 @@ var/global/list/extraction_account_read_leases = list()
 			if (!islist(nodes) || !nodes.len || nodes.len > 512) return null
 			var/list/root_node = nodes[1]
 			if (!islist(root_node) || root_node["id"] != entry["id"]) return null
-			for (var/list/node in nodes)
+			for (var/node_index in 1 to nodes.len)
+				var/list/node = nodes[node_index]
 				if (!islist(node) || !istext(node["id"]) || !length(node["id"]) || ids[node["id"]] || ids.len >= 2048) return null
 				ids[node["id"]] = TRUE
 				if (!isnull(node["packed_wheel"]))

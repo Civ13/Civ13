@@ -96,9 +96,33 @@ var/store_failures = 0
 	S.busy = TRUE
 	store_assert(!S.commit_profile("other", S.load_profile("other")), "concurrent writer rejected")
 	transaction_probe()
+	recovery_shape_probe()
 	recovery_ownership_probe()
 	text2file(store_failures ? "FAIL: [store_failures] journal assertions" : "PASS: account journal restart, isolation, bounds, crash and corruption", "result.txt")
 	shutdown()
+
+/proc/recovery_shape_probe()
+	var/datum/extraction_account_store/S = new
+	var/list/valid = list("stash" = list(list("id" = "root", "equipment" = list("schema" = 2, "nodes" = list(list("id" = "root"), list("id" = "child"))))))
+	var/list/ids = S.recovery_ids(valid)
+	store_assert(islist(ids) && ids.len == 2 && ids["root"] && ids["child"], "valid recovery identities remain intact")
+	for (var/scalar_case in 1 to 3)
+		var/scalar = scalar_case == 1 ? "invalid" : (scalar_case == 2 ? 17 : null)
+		var/list/bad = json_decode(json_encode(valid))
+		bad["stash"] += list(scalar)
+		var/before = json_encode(bad)
+		store_assert(isnull(S.recovery_ids(bad)) && json_encode(bad) == before, "scalar stash entry blocks recovery unchanged [scalar_case]")
+		bad = json_decode(json_encode(valid))
+		bad["stash"][1]["equipment"]["nodes"] += list(scalar)
+		before = json_encode(bad)
+		store_assert(isnull(S.recovery_ids(bad)) && json_encode(bad) == before, "scalar equipment node blocks recovery unchanged [scalar_case]")
+		bad = json_decode(json_encode(valid))
+		bad["insurance_mailbox"] = list(scalar)
+		before = json_encode(bad)
+		store_assert(isnull(S.recovery_ids(bad)) && json_encode(bad) == before, "scalar mailbox entry blocks recovery unchanged [scalar_case]")
+		if (!isnull(scalar))
+			bad["insurance_mailbox"] = scalar
+			store_assert(isnull(S.recovery_ids(bad)), "non-list mailbox blocks recovery [scalar_case]")
 
 /proc/recovery_ownership_probe()
 	var/datum/extraction_account_store/S = new
