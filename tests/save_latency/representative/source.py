@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import subprocess
 
-REFERENCE = '61d9903d6b083fcc1a0bb597c05b34b4a393a10e'
-CANDIDATE = '0eac5f3b19b9c6d93d906045d9ef5bed78909ebb'
+REFERENCE = '9db2b2f42a5fbbb0bdd49d50a2672da6111a7709'
+CANDIDATE = '069f88d0790bfc8772f7bee8b7b121569ef4a09f'
 HELPERS = 'c345c9b3ede9d437af39e1a9b2dce62dc23e6b16'
 MAP = 'maps/nomads/nomads_europe.dmm'
 PRODUCTION = ('code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',

@@ -10,8 +10,8 @@ subdirectory automatically; source checks can be invoked explicitly:
 <verified-python> -B tests/save_latency/representative/execute.py
 ```
 
-`source.prepare()` admits only reference `61d9903d6b083fcc1a0bb597c05b34b4a393a10e`
-and candidate `0eac5f3b19b9c6d93d906045d9ef5bed78909ebb`. It reads immutable Git
+`source.prepare()` admits only reference `9db2b2f42a5fbbb0bdd49d50a2672da6111a7709`
+and candidate `069f88d0790bfc8772f7bee8b7b121569ef4a09f`. It reads immutable Git
 objects and writes a new observer overlay packet, preserving serializer inputs.
 The pure observers come from full-map fixture commit
 `c345c9b3ede9d437af39e1a9b2dce62dc23e6b16`; the historical fixture is unchanged.
@@ -157,3 +157,12 @@ remains available for the existing injected tests; it must not be used to bypass
 the reviewed native invocation route. The reservation identifier does not itself
 lock a TCP port. Existing explicit loopback launch and actual listener ownership
 checks remain required; a conflicting listener stops the one-use attempt.
+
+## Post-merge comparison refresh
+
+The frozen comparison now includes the same merged master changes in both arms,
+including disabled reserved lighting. Their production diff is limited to the five
+bounded-save persistence files. Earlier 61d9903/0eac5f3 packets remain historical;
+regenerate source and admission packets before any representative execution.
+This pin refresh grants no execution and does not turn earlier fixture results
+into representative acceptance. The observer helper commit remains unchanged.
