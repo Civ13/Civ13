@@ -12,6 +12,7 @@ public sealed record GameTarget(string Provider, int Port) {
 
 // Only a valid direct BYOND response constructs selectable status.
 public sealed class GameServer {
+    public const int FreshSeconds = 60;
     public GameTarget Target { get; }
     public string Provider => Target.Provider;
     public string Host => Target.Host;
@@ -32,7 +33,7 @@ public sealed class GameServer {
     }
     public void Validate(DateTimeOffset now) {
         Target.Validate();
-        if (now < CheckedAt || now - CheckedAt > TimeSpan.FromSeconds(60))
+        if (now < CheckedAt || now - CheckedAt > TimeSpan.FromSeconds(FreshSeconds))
             throw new IOException("Game status expired. Refresh and choose again.");
     }
     internal bool Matches(GameServer current) => Target == current.Target &&
@@ -44,10 +45,26 @@ public sealed class GameServer {
 public sealed class VerifiedGameServer {
     public GameServer Status { get; }
     internal PublicEndpoint Endpoint { get; }
-    internal VerifiedGameServer(GameServer status, PublicEndpoint endpoint) { Status = status; Endpoint = endpoint; }
+    internal RecentGameStatus? Recent { get; }
+    internal VerifiedGameServer(GameServer status, PublicEndpoint endpoint, RecentGameStatus? recent = null) {
+        Status = status; Endpoint = endpoint; Recent = recent;
+    }
 }
 
-public sealed record DeferredTarget(GameTarget Target, int Seconds);
+// A process-local response proof cannot be reconstructed from persisted display metadata.
+internal sealed class RecentGameStatus(Guid requestId, GameServer status, System.Net.IPAddress address, Func<long> monotonic) {
+    internal Guid RequestId { get; } = requestId;
+    internal GameServer Status { get; } = status;
+    internal System.Net.IPAddress Address { get; } = address;
+    private readonly long observedTick = monotonic();
+    internal bool IsFresh(DateTimeOffset now) => now >= Status.CheckedAt && now - Status.CheckedAt <= TimeSpan.FromSeconds(GameServer.FreshSeconds) &&
+        monotonic() - observedTick is >= 0 and <= GameServer.FreshSeconds * 1000L;
+}
+
+public sealed record CachedStatus(GameServer? Server, DateTimeOffset CheckedAt, int AgeSeconds) {
+    internal RecentGameStatus? Recent { get; init; }
+}
+public sealed record DeferredTarget(GameTarget Target, int Seconds, CachedStatus? Cached = null);
 public sealed record ServerSnapshot(IReadOnlyList<GameServer> Servers, int Unverified, IReadOnlyList<DeferredTarget>? Deferred = null, bool PacingPaused = false);
 
 public interface IServerDiscovery {
@@ -64,7 +81,7 @@ public sealed class ServerDiscovery : IServerDiscovery {
         // Exactly two configured endpoints per provider, at most two active sockets.
         var results = await Task.WhenAll(ServerCatalog.Candidates(provider).Select(async target => {
             try { return (Server: (GameServer?)(await query(target)).Status, Wait: (DeferredTarget?)null, Paused: false); }
-            catch (TopicWaitException wait) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds), Paused: false); }
+            catch (TopicWaitException wait) { return (Server: wait.Cached?.Server, Wait: (DeferredTarget?)new DeferredTarget(target, wait.Seconds, wait.Cached), Paused: false); }
             catch (TopicPacingException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: true); }
             catch (IOException) { return (Server: (GameServer?)null, Wait: (DeferredTarget?)null, Paused: false); }
         }));

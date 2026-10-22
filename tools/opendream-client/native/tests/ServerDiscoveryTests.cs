@@ -83,7 +83,7 @@ internal static class ServerDiscoveryTests {
         }
         var chosen = await Browse("1\n"); Require(chosen.Launches == 1 && chosen.Checks == 1, "Menu omitted prejoin direct probe");
         var gone = await Browse("1\nB\n", fails: true); Require(gone.Launches == 0 && gone.Checks == 1 && gone.Output.Contains("could not be verified"), "Offline prejoin launched");
-        var empty = await Browse("1\nB\n", empty: true); Require(empty.Launches == 0 && empty.Checks == 0 && empty.Output.Contains("No verified online"), "No responders launched fallback");
+        var empty = await Browse("1\nB\n", empty: true); Require(empty.Launches == 0 && empty.Checks == 0 && empty.Output.Contains("No configured endpoint returned valid BYOND status"), "No responders launched fallback");
         foreach (var input in new[] { "B\n", "", "-1\n0\n999\n2;calc\nB\n" }) {
             var back = await Browse(input); Require(back.Launches == 0 && back.Checks == 0, "Back/EOF/invalid choice launched");
         }

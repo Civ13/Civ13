@@ -58,9 +58,13 @@
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
 		return TRUE
 	switch(key)
-		if ("affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")
+		if ("lighting_reserved", "affecting_lights", "lighting_overlay", "corners", "has_opaque_atom", "window_coeff_dirty", "next_calculate_window_coeff")
 			return TRUE
 	return ..()
+
+// Author policy is not restored from an ordinary or historical area payload.
+/area/persistence_runtime_var(key)
+	return key == "lighting_reserved_clearance_enabled" || ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.

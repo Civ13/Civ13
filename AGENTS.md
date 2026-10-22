@@ -14,6 +14,15 @@ Modular car wheels are contained in their connected frames; the controller is
 also nested in a frame and steering in the driver seat. Use get_turf() for their
 coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
 it does not establish durable garage ownership or cargo/passenger extraction.
+
+<!-- 2026-10-18: inactive reserved lighting -->
+Reserved lighting omission requires the default-FALSE area clearance gate as well
+as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
+checks declared frozen full-frame geometry only, not map inventory completeness
+or runtime immutability. The separate Linux CI lane compares native state and
+causal controls; it does not prove client appearance or net RAM savings. Preserve
+frozen Windows helper bytes and require a fresh grant for that held runner.
+
 <!-- 2026-10-20: passive production hang triage -->
 `scripts/hang-watchdog` observes Linux process identity and status-file metadata
 with monotonic deadlines. Its dedicated output is bounded and sanitized; it never
@@ -129,8 +138,11 @@ reject any nonpublic member before opening sockets. Try literals sequentially
 within one three-second total deadline per candidate, with fair remaining slices.
 Each menu refresh checks only its provider's two candidates concurrently. Valid
 integer players=0 is online; optional metadata is unknown when absent and rejects
-the response when malformed. Recheck directly before joining; reject changed or
-missing previously observed nonempty map/mode/round identity. Bind verified
+the response when malformed. Before joining, validate fresh DNS against the exact
+respondent. A <=60-second UTC/monotonic process-local response proof can avoid a
+duplicate Topic request during cooldown; never reconstruct it from disk cache.
+Reject changed or missing selected map/mode/round identity on new status queries;
+bounded response reuse cannot observe a round change during that short window. Bind verified
 status, literal and configured port together, validate freshness at dispatch,
 and launch only the verified BYOND client. Never add a permanent IP pin or reuse
 this query for OpenDream. Source merge does not activate the launcher feed;
@@ -141,9 +153,16 @@ independent of --root. Reserve before writing, retain failed reservations and
 correlate validated IP aliases plus configured port. Spacing defers locally;
 never sleep inside the three-second IO budget or silently retry after a write.
 The 137-second reservation covers 130 seconds plus IO/clock margins; new instances
-with recorded history use a 133-second monotonic guard. Clock/state/link failures
-pause locally. J explicitly rechecks a deferred selection; B cancels with no
-background callback. Waiting requires new DNS/status, never extended old tokens.
+reuse system-wide monotonic anchors and cached result/age without adding another
+startup wait. Legacy 1.0.5 wall-only history retains the 133-second migration guard
+for its matching endpoint until its next reservation. A lower uptime waits only
+through the new boot's first 133 seconds. Schema 2 caches bounded validated
+metadata, never launch tokens; late results are tied to reservation IDs. Older
+1.0.5 instances fail closed on schema 2. Clock/state/link failures pause locally. J explicitly rechecks a deferred selection; B cancels with no
+background callback. Joining needs fresh safe DNS and an original-age recent proof
+or one eligible new status response. Never extend status age or DNS token life;
+recheck original monotonic and UTC60-second expiry at dispatch. Persisted cache
+is display-only after process restart. See SERVER-DISCOVERY.md for join controls.
 Wall time cannot prove game-time advancement or clear a server ban. Do not probe
 the known banned Desktop source until owner-coordinated normal eligibility.
 
@@ -1203,6 +1222,12 @@ with numeric keys and null associations. Collection codecs must handle `/alist`
 explicitly; isolated probes must import the production macro. Numeric alist
 indexing addresses keys, so iterate keys instead of positional indexes.
 
+<!-- 2026-10-15: native seed port contract -->
+`world.OpenPort(0)` opens any available port; `world.OpenPort("none")` closes it.
+Do not infer offline isolation from `-close`: verify the critical phase has port0
+and an actual zero-listener OS census. The Gaia seed observer rejects reopening
+and denies all seed clients; `tests/world_save/playable_reconnect/test_port.py`
+checks its native516.1681 port contract separately from full recovery acceptance.
 <!-- 2026-10-15: paid wood residue and plant nitrary -->
 Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
 and factories; unknown legacy fuel earns no ash. The existing compost bin's

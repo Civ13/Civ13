@@ -10,30 +10,60 @@ import unittest
 from unittest.mock import patch
 
 import resources
-from source_contract import transform, validate
+from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019'
+BASE = 'a8d3950f08aaa55db59ec5f20777a475b2db95bb'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
             'blackout_click_started', 'blackout_click_expires',
-            'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action')
+            'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
+            'lighting_reserved', 'lighting_reserved_clearance_enabled')
 
 
 class SourceContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.master = cls.baseline
+        cls.baseline = reconstruct_list_baseline(cls.master)
         cls.candidate = (ROOT / PATH).read_text()
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
-        for kind, count in [('atom', 3), ('turf', 8), ('mob', 22)]:
+        for kind, count in [('atom', 3), ('turf', 9), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
         self.assertIn('key == "weak_reference"', self.candidate)
         self.assertEqual(self.candidate.count('apply_restored_lighting()'), self.baseline.count('apply_restored_lighting()'))
+
+    def test_reconstructed_hooks_match_reviewed_historical_hooks(self):
+        historical = subprocess.check_output(['git', 'show',
+            '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019:' + PATH], cwd=ROOT, text=True)
+        for kind in ('atom', 'turf', 'mob'):
+            pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
+            self.assertEqual(re.search(pattern, self.baseline, re.M).group(),
+                             re.search(pattern, historical, re.M).group())
+        for kind in ('atom', 'turf', 'mob'):
+            with self.assertRaises(ValueError):
+                reconstruct_list_baseline(self.master.replace(
+                    f'/{kind}/persistence_runtime_var(key)', f'/{kind}/missing(key)'))
+        with self.assertRaises(ValueError):
+            reconstruct_list_baseline(self.baseline)
+
+    def test_current_master_diagnostics_are_preserved_exactly(self):
+        start = '/map_storage/persistence_runtime_var(key)'
+        end = '// Drops the save/load bookkeeping references'
+        def diagnostics(source):
+            return source[source.index(start):source.index(end)]
+        self.assertEqual(diagnostics(self.master), diagnostics(self.candidate))
+        with self.assertRaises(ValueError):
+            validate(self.baseline, self.candidate.replace(
+                'saving_export_stack.len - 7', 'saving_export_stack.len - 8'))
+        with self.assertRaises(ValueError):
+            validate(self.baseline, self.candidate.replace(
+                'if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE', 'return FALSE'))
 
     def test_each_new_exclusion_omission_is_rejected(self):
         for key in NEW_KEYS:
@@ -52,6 +82,15 @@ class SourceContractTests(unittest.TestCase):
                         self.candidate.replace('\t\tapply_restored_lighting()\n', '', 1)):
             with self.subTest(mutated=mutated[:40]), self.assertRaises(ValueError):
                 validate(self.baseline, mutated)
+
+    def test_reserved_projection_is_explicit_and_fails_closed(self):
+        projected = project_reserved_policy(self.baseline)
+        self.assertIn('list("lighting_reserved", "affecting_lights"', projected)
+        self.assertIn(AREA_POLICY, projected)
+        with self.assertRaises(ValueError):
+            project_reserved_policy(projected)
+        with self.assertRaises(ValueError):
+            validate(self.baseline, self.candidate.replace(AREA_POLICY, ''))
 
     def test_missing_baseline_hook_fails_closed(self):
         with self.assertRaises(ValueError):
@@ -82,7 +121,8 @@ class SourceContractTests(unittest.TestCase):
                 self.assertIn(f'"{key}"', probe)
                 for variant in ('baseline', 'candidate'):
                     kind = ('datum/proc' if key == 'weak_reference' else
-                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress') else 'mob')
+                            'area' if key == 'lighting_reserved_clearance_enabled' else
+                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved') else 'mob')
                     body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
                     self.assertIn(f'"{key}"', body)
             self.assertIn('source_contract.py', receipt['inputs'])

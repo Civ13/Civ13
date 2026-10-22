@@ -109,6 +109,13 @@ var/list/mutate_on_tick = null
 	return
 /turf/proc/recalc_atom_opacity()
 	return
+/turf/var/tmp/lighting_reserved = FALSE
+/turf/proc/activate_reserved_lighting()
+	// Only ordinary turfs are supported by this serializer-only adapter.
+	// Reserved lighting tests compile the real module without these stubs.
+	if (lighting_reserved)
+		CRASH("Reserved lighting requires the production lighting fixture")
+	return
 /atom/movable
 	var/load_datums = FALSE
 /obj
