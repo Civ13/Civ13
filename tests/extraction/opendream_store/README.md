@@ -1,7 +1,7 @@
-# Extraction store OpenDream registered-workflow route v3
+# Extraction store OpenDream registered-workflow route v4
 
 Source-only successor against exact game/workflow parent f5620b232b4fa159930b3b393c9794c05d4fb7b1. Default OFF, unallocated and unpublished. Frozen V4 remains unchanged and on whole-packet HOLD for its command stdout shadowing bug. Registered-route-v1 and V2 are also preserved unchanged. V2 is on HOLD for final receipt deadline acceptance and compile output accounting defects.
-The 80 offline tests inject process, kernel, network and filesystem effects where
+The 87 offline tests inject process, kernel, network and filesystem effects where
 those operations are under test. They establish source contracts, not successful
 OpenDream compilation, package viability, native cleanup or game acceptance.
 
@@ -168,15 +168,53 @@ old finalization accepts late writes, and old compile accounting rejects a legal
 writes and permit all five small cases with the fixed actual methods. Oversized
 active-case and entire-workspace negative controls still reject.
 
-Packaging remains a concrete unresolved preflight limitation. The exact server
-FullRelease packaging/Resources/Assemblies layout and executable wrapper dependency
-closure need engine-owner source/artifact confirmation before any build admission.
-The retained 128 MiB hex-JSON container cap implies less than 64 MiB aggregate raw
-output capacity after metadata overhead. A reported 331,740,529-byte source-layout
-inventory is a different layout and does not by itself prove the exact RID output
-will fail, but fit has not been established. No cap, recipe or dependency gate was
-weakened. No output hashes are invented. Keep execution blocked until the exact
-recipe/layout and resource envelope are reviewed.
+## Registered-route-v4 package correction and remaining holds
+
+This intermediate source-only successor preserves the complete, unchanged
+`out-server/OpenDreamServer_linux-x64` tree under `package/server` and the full
+`out-compiler` publish under `package/compiler`. It launches
+`dotnet package/server/Robust.Server.dll` with cwd `package/server`; absolute
+case-local configuration/data/JSON arguments remain unchanged. It never adds the
+three `bin/Content.Server/OpenDreamServer` wrapper files. The server's Resources
+and Assemblies remain in the RID layout. Compiler deps/runtimeconfig/dependencies
+and DMStandard are retained; all pinned DMStandard sources must be present with
+matching source hashes. The scoped store profile disables native identity, so
+absence of the optional native BYOND identity bridge is not a blanket gate.
+
+Before reading completed output bytes or allocating hex strings, the runner
+measures both output trees and computes exact canonical JSON overhead plus twice
+the raw byte total. The existing 128 MiB container cap is unchanged. Each read
+must match its measured size, and final serialization must match the prediction.
+Oversize rejects before any fixture compiler or server launch. Injected tests
+cover missing metadata/standard files, complete extra dependency/resource
+retention, stale standard bytes, oversized measurement without output reads,
+post-measurement growth, and an exact JSON boundary including Unicode paths.
+
+Engine-owner assessment binds source layout and recipe evidence, not actual RID
+artifacts. Its digest is recorded in `package-assessment-receipt.json`. The reported
+331,740,529-byte source-layout inventory is not an exact RID measurement. Actual
+RID/compiler output fit remains unknown and may reject without changing caps.
+
+Dependency provenance is explicitly first-resolution scope. The pinned repositories
+have no committed NuGet lockfiles, so top-level `--locked-mode` does not establish
+a frozen nested FullRelease/RID graph. The receipt records every observed
+project.assets identity, configured public feeds, package versions/paths/content
+hash claims, complete target-graph digest and original asset-file hash. Compiler,
+content server, Robust server and package tool project receipts are required.
+Malformed graphs, missing package content identities or unsupported feeds reject.
+Generated resolution artifacts remain separate from authenticated Git/Robust
+transform identity. The resulting complete compiler/runtime output is measured
+and sealed once, before all fixture launches, with no later restore or rebuild.
+This establishes exact tested package bytes; deterministic transitive dependency
+reproduction is not claimed. Stronger generated-lock enforcement is optional
+future work, not a prerequisite invented for this first-resolution build.
+
+This packet still requires independent source review, root integration/exact-head
+CI, durable allocation and bounded runtime evidence. No restore, acquisition,
+build, dispatch or native test was performed.
+
+The accepted V3 finalization checks, active-case/global accounting, pidfd cleanup,
+launch guards, five-case oracles and manual workflow route remain intact.
 
 ## Offline review
 

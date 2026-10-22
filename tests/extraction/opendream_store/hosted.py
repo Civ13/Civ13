@@ -137,29 +137,50 @@ class SourceBuildBackend(b.UbuntuBackend):
             if index==0: r.need(''.join(report['streams']).strip()=='10.0.401','actual SDK differs')
         self._check(deadline)
         # One successful build's complete output closure, with actual origins.
-        outputs={}; origins={}
+        outputs={}; origins={}; measured={}
         for prefix,origin in [('compiler/','out-compiler/'),('server/','out-server/OpenDreamServer_linux-x64/')]:
-            for p in self.fx.files(self._path('build/'+origin.rstrip('/')),deadline):
-                self._check(deadline); target=prefix+b.relative(p)
-                outputs[target]=self.fx.read(self._path('build/'+origin+p)); self._check(deadline)
-                origins[target]=origin+p
-        for suffix in ('.dll','.deps.json','.runtimeconfig.json'):
-            target='server/OpenDreamServer'+suffix
-            source='bin/Content.Server/OpenDreamServer'+suffix
-            self._check(deadline); raw=self.fx.read(self._path('build/'+source)); self._check(deadline)
-            # Packager may already include an identical wrapper; differing duplicate rejects.
-            r.need(target not in outputs or outputs[target]==raw,'wrapper collision')
-            outputs[target]=raw; origins[target]=source
+            root=self._path('build/'+origin.rstrip('/'))
+            names=self.fx.files(root,deadline); self._check(deadline)
+            sizes=self.fx.sizes(root,names); self._check(deadline)
+            r.need(len(names)==len(sizes),'package measurement count differs')
+            for p,size in zip(names,sizes):
+                target=prefix+b.relative(p)
+                r.need(target not in origins,'duplicate package member')
+                origins[target]=origin+p; measured[target]=size
+        measurement=measure_outputs(measured)
+        # Reject the complete serialized size before reading/hex-allocating output
+        # bytes, and before any fixture compiler or server launch.
+        for target,origin in origins.items():
+            self._check(deadline); raw=self.fx.read(self._path('build/'+origin)); self._check(deadline)
+            r.need(len(raw)==measured[target],'package changed after measurement')
+            outputs[target]=raw
+        # Every standard-library source in the pinned compiler source is required.
+        for name in self.bundle['source_files']:
+            if name.startswith('DMCompiler/DMStandard/'):
+                target='compiler/'+name[len('DMCompiler/'):]
+                r.need(target in outputs,'compiler standard closure missing')
+                r.need(r.sha(outputs[target])==self.bundle['source_files'][name],'compiler standard source drift')
         pins=seal_outputs(outputs)
         # Retain dependency resolution receipts, not a claim that --locked-mode
         # invents lockfiles. Missing assets or a failed locked restore rejects.
-        dependencies={}
+        dependencies={}; resolutions={}
         for p in self.fx.files(self._path('build'),deadline):
             if p.endswith(('project.assets.json','packages.lock.json','nuget.config')):
-                self._check(deadline); dependencies[p]=r.sha(self.fx.read(self._path('build/'+p))); self._check(deadline)
-        r.need(any(p.endswith('project.assets.json') for p in dependencies),'missing dependency resolution receipt')
+                self._check(deadline); raw=self.fx.read(self._path('build/'+p)); self._check(deadline)
+                dependencies[p]=r.sha(raw)
+                if p.endswith('project.assets.json'): resolutions[p]=dependency_resolution(raw)
+        r.need(resolutions,'missing dependency resolution receipt')
+        required_projects={'DMCompiler.csproj','OpenDreamServer.csproj','Robust.Server.csproj','OpenDreamPackageTool.csproj'}
+        r.need(required_projects.issubset({row['project'] for row in resolutions.values()}),'incomplete dependency project receipts')
         self.bundle.update(package_files={p:r.sha(raw) for p,raw in outputs.items()},package_origins=origins)
         self._receipt('02-build',{'commands':commands,'origins':origins,'dependency_files':dependencies,
+                                'resolved_dependency_graphs':resolutions,
+                                'output_measurement':measurement,
+                                'restore_provenance':{'top_level_locked_mode_invoked':True,
+                                  'nested_packager_implicit_restore':True,
+                                  'complete_locked_dependency_closure_proven':False,
+                                  'scope':'first-resolution package sealed once; transitive reproducibility not established',
+                                  'later_build_or_restore':False},
                                 'source_sdk_receipt':self.receipts[-1]},deadline)
         for p,raw in outputs.items(): self._write('package/'+p,raw,deadline)
         archive=b.encoded({'profile':'independent-source-build','engine':r.ENGINE,
@@ -200,19 +221,70 @@ class SourceBuildBackend(b.UbuntuBackend):
 OUTPUT_KEYS=('archive_sha256','compiler_sha256','runtime_sha256','installed_manifest_sha256')
 
 
+PUBLIC_FEEDS={'https://api.nuget.org/v3/index.json',
+    'https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-eng/nuget/v3/index.json'}
+
+
+def dependency_resolution(raw):
+    # Actual NuGet-generated identity claims, not a pre-existing lock baseline.
+    import base64
+    try:
+        doc=json.loads(raw); restore=doc['project']['restore']
+        project=restore['projectPath'].replace('\\','/').rsplit('/',1)[-1]
+        sources=sorted(restore['sources'])
+        r.need(sources and set(sources)<=PUBLIC_FEEDS,'unsupported dependency feed')
+        libraries=doc['libraries']; targets=doc['targets']; packages={}
+        r.need(isinstance(libraries,dict) and isinstance(targets,dict) and targets,'invalid dependency graph')
+        for identity,row in libraries.items():
+            r.need(row.get('type') in ('package','project'),'unsupported dependency library')
+            if row['type']=='package':
+                digest=row['sha512']; decoded=base64.b64decode(digest,validate=True)
+                r.need(len(decoded)==64 and isinstance(row['path'],str),'invalid dependency content identity')
+                packages[identity]={'sha512':digest,'path':row['path']}
+        for target,rows in targets.items():
+            r.need(isinstance(rows,dict),'invalid dependency target')
+            for identity,row in rows.items():
+                r.need(identity in libraries,'unresolved dependency target')
+                if row.get('type')=='package': r.need(identity in packages,'missing dependency content identity')
+        return {'project':project,'sources':sources,'packages':packages,
+                'targets_sha256':r.sha(b.encoded(targets)),'assets_sha256':r.sha(raw)}
+    except (KeyError,TypeError,ValueError,AttributeError) as error:
+        raise r.Rejected('invalid dependency resolution receipt') from error
+
+
+PACKAGE_CAP=128*1024**2
+REQUIRED_OUTPUTS=('compiler/DMCompiler.dll','compiler/DMCompiler.deps.json',
+    'compiler/DMCompiler.runtimeconfig.json','compiler/DMStandard/_Standard.dm',
+    'server/Robust.Server.dll','server/Robust.Server.deps.json','server/Robust.Server.runtimeconfig.json',
+    'server/Resources/manifest.yml','server/Resources/Assemblies/OpenDreamServer.dll')
+
+
+def measure_outputs(sizes):
+    r.need(isinstance(sizes,dict) and sizes,'empty package')
+    for p,size in sizes.items():
+        b.relative(p)
+        r.need(p.startswith(('compiler/','server/')) and type(size) is int and 0<=size<=PACKAGE_CAP,
+               'bad package size')
+    for name in REQUIRED_OUTPUTS:
+        r.need(sizes.get(name,0)>0,'required package member missing')
+    overhead=len(b.encoded({'profile':'independent-source-build','engine':r.ENGINE,
+                           'files':{p:'' for p in sorted(sizes)}}))
+    raw_bytes=sum(sizes.values()); serialized_bytes=overhead+2*raw_bytes
+    r.need(serialized_bytes<=PACKAGE_CAP,'package container too large')
+    return {'raw_bytes':raw_bytes,'json_overhead_bytes':overhead,
+            'serialized_bytes':serialized_bytes,'cap_bytes':PACKAGE_CAP,'files':len(sizes)}
+
+
 def seal_outputs(outputs):
     r.need(isinstance(outputs,dict) and outputs,'empty package')
-    for p,raw in outputs.items():
-        b.relative(p); r.need(isinstance(raw,bytes) and len(raw)<=128*1024**2,'bad package bytes')
-    for name in ('compiler/DMCompiler.dll','server/OpenDreamServer.dll',
-                 'server/OpenDreamServer.deps.json','server/OpenDreamServer.runtimeconfig.json'):
-        r.need(name in outputs and outputs[name],'required package member missing')
+    r.need(all(isinstance(raw,bytes) for raw in outputs.values()),'bad package bytes')
+    measured=measure_outputs({p:len(raw) for p,raw in outputs.items()})
     pins={p:r.sha(raw) for p,raw in outputs.items()}
     archive=b.encoded({'profile':'independent-source-build','engine':r.ENGINE,
                        'files':{p:raw.hex() for p,raw in sorted(outputs.items())}})
-    r.need(len(archive)<=128*1024**2,'package container too large')
+    r.need(len(archive)==measured['serialized_bytes'],'package measurement differs')
     return {'archive_sha256':r.sha(archive),'compiler_sha256':pins['compiler/DMCompiler.dll'],
-            'runtime_sha256':pins['server/OpenDreamServer.dll'],
+            'runtime_sha256':pins['server/Robust.Server.dll'],
             'installed_manifest_sha256':r.sha(b.encoded(pins))}
 
 

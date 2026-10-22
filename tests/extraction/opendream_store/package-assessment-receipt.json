@@ -1,0 +1,12 @@
+{
+  "engine": "09f63000bab228a4bc792f3a2211e2d60a07de14",
+  "assessment_sha256": "f44f4a0e7546236c609ac85bc9a2274f4ec3dfef1779220a32d1265714a59bd8",
+  "source_only": true,
+  "actual_rid_fit_known": false,
+  "nested_dependency_enforcement_proven": false,
+  "entry": "server/Robust.Server.dll",
+  "cwd": "server",
+  "closure": "full unchanged RID plus complete compiler publish",
+  "native_identity_required": false,
+  "dependency_scope": "first-resolution measured package; deterministic transitive reproduction not claimed"
+}

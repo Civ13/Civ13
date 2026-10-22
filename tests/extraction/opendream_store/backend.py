@@ -541,24 +541,28 @@ class UbuntuBackend:
         for index, argv in enumerate(recipes):
             report = self._command(argv,self._path('build'),'setup',None,deadline,guard,boundary,lambda:self._base(deadline))
             if index == 0: r.need(''.join(report['streams']).strip() == '10.0.401', 'actual SDK differs')
-        wrapper = {'server/OpenDreamServer'+suffix:'bin/Content.Server/OpenDreamServer'+suffix
-                   for suffix in ('.dll','.deps.json','.runtimeconfig.json')}
-        r.need(all(b['package_origins'].get(p)==origin for p,origin in wrapper.items()), 'OpenDream wrapper origins unresolved')
         expected_origins={p:('out-compiler/'+p[len('compiler/'):] if p.startswith('compiler/') else
                             'out-server/OpenDreamServer_linux-x64/'+p[len('server/'):])
-                          for p in b['package_files'] if p not in wrapper}
-        expected_origins.update(wrapper)
+                          for p in b['package_files']}
         r.need(b['package_origins']==expected_origins, 'package origins differ')
         for prefix,output in (('compiler/','out-compiler'),('server/','out-server/OpenDreamServer_linux-x64')):
-            expected=sorted(p[len(prefix):] for p in b['package_files'] if p.startswith(prefix) and p not in wrapper)
+            expected=sorted(p[len(prefix):] for p in b['package_files'] if p.startswith(prefix))
             r.need(self.fx.files(self._path('build/'+output),deadline)==expected, 'incomplete packager/publish closure')
+        from hosted import measure_outputs
+        measured={}
+        for prefix,output in (('compiler/','out-compiler'),('server/','out-server/OpenDreamServer_linux-x64')):
+            names=sorted(p[len(prefix):] for p in b['package_files'] if p.startswith(prefix))
+            sizes=self.fx.sizes(self._path('build/'+output),names); self._check(deadline)
+            r.need(len(names)==len(sizes),'package measurement count differs')
+            measured.update({prefix+p:size for p,size in zip(names,sizes)})
+        measure_outputs(measured)
         # Predictive pins must be admitted separately; never derive accepted
         # expected package hashes from whatever this build happened to produce.
         for p,digest in b['package_files'].items():
             source = b['package_origins'][p]
             relative(source); self._check(deadline)
             raw = self.fx.read(self._path('build/'+source))
-            r.need(r.sha(raw) == digest, 'built package differs')
+            r.need(len(raw)==measured[p] and r.sha(raw) == digest, 'built package differs')
             boundary('copy', self._base(deadline)); self._write('package/'+p,raw,deadline)
         manifest = encoded(b['package_files'])
         # Honest deterministic source-built package container, not a downloaded
@@ -568,7 +572,7 @@ class UbuntuBackend:
         self._write('source-built-package.json',archive,deadline)
         r.need(r.sha(manifest) == a['installed_manifest_sha256'], 'installed manifest differs')
         r.need(b['package_files']['compiler/DMCompiler.dll'] == a['compiler_sha256'] and
-               b['package_files']['server/OpenDreamServer.dll'] == a['runtime_sha256'], 'package entry seals differ')
+               b['package_files']['server/Robust.Server.dll'] == a['runtime_sha256'], 'package entry seals differ')
         self.installed = True
         boundary('final', self._base(deadline))
         return dict(a, exited=True, descendants_empty=True)
@@ -596,7 +600,7 @@ class UbuntuBackend:
             r.need('result.txt' not in existing and 'store-startup.go' not in existing, 'preexisting result/readiness token')
             self._write('cases/'+case+'/server.toml',b'',deadline)
             self.fx.mkdir(cwd+'/data')
-            argv = [dotnet,self._path('package/server/OpenDreamServer.dll'),'--config-file',cwd+'/server.toml','--data-dir',cwd+'/data']
+            argv = [dotnet,self._path('package/server/Robust.Server.dll'),'--config-file',cwd+'/server.toml','--data-dir',cwd+'/data']
             for k,v in dict(r.CVARS, **{'opendream.json_path':cwd+'/probe.json'}).items():
                 argv.extend(['--cvar',k+'='+str(v).lower()])
             r.need(self.fx.vacant(19567), 'loopback port occupied at launch')

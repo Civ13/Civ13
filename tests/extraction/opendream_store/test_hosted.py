@@ -41,7 +41,11 @@ def fixture():
                 self.mem['/job/preparation.json']=b.encoded(prep)
             if self.fault=='seal-expiry' and 'publish' in argv: self.wall=4000
     fx=Effects(); fx.outputs=base.outputs.copy()
-    fx.outputs['obj/project.assets.json']=b'{"synthetic":true}'
+    for project in ('DMCompiler.csproj','OpenDreamServer.csproj','Robust.Server.csproj','OpenDreamPackageTool.csproj'):
+        fx.outputs['obj/'+project+'/project.assets.json']=b.encoded({'project':{'restore':{
+          'projectPath':'/job/build/'+project,'sources':{'https://api.nuget.org/v3/index.json':{}}}},
+          'libraries':{'Synthetic/1.0':{'type':'package','sha512':'A'*86+'==','path':'synthetic/1.0'}},
+          'targets':{'net10.0':{'Synthetic/1.0':{'type':'package'}}}})
     source={p[len('/source/'):]:raw for p,raw in base.mem.items() if p.startswith('/source/')}
     sdk={p[len('/sdk/'):]:raw for p,raw in base.mem.items() if p.startswith('/sdk/')}
     names=['entry.py','hosted.py','prepare.py','backend.py','run.py','startup.dm']
@@ -73,6 +77,102 @@ class HostedTests(unittest.TestCase):
         self.assertTrue(backend.install_claimed)
         self.assertEqual(len(backend.receipts),4)
         self.assertIn('/claims/TEST-ONLY.bootstrap-receipt.json',fx.mem)
+
+    def test_complete_rid_and_compiler_publish_preserved_without_root_wrapper(self):
+        fx,a,data,backend=fixture()
+        fx.outputs['out-server/OpenDreamServer_linux-x64/Resources/extra.bin']=b'content resource'
+        fx.outputs['out-compiler/extra-dependency.dll']=b'compiler dependency'
+        self.assertEqual(len(self.execute(fx,a,data,backend)),5)
+        self.assertEqual(fx.mem['/job/package/server/Resources/extra.bin'],b'content resource')
+        self.assertEqual(fx.mem['/job/package/compiler/extra-dependency.dll'],b'compiler dependency')
+        self.assertNotIn('/job/package/server/OpenDreamServer.dll',fx.mem)
+        runtime=[e[1] for e in fx.events if e[0]=='launch' and '--config-file' in e[1]]
+        self.assertEqual(len(runtime),5)
+        for argv in runtime:
+            self.assertEqual(argv[1],'/job/package/server/Robust.Server.dll')
+            self.assertTrue(argv[argv.index('--config-file')+1].startswith('/job/cases/'))
+        self.assertEqual(sum(e==('cwd','/job/package/server') for e in fx.events),5)
+        row=json.loads(fx.mem['/job/receipts/02-build.json'])['data']
+        self.assertFalse(row['restore_provenance']['complete_locked_dependency_closure_proven'])
+        self.assertTrue(row['restore_provenance']['nested_packager_implicit_restore'])
+        archive=fx.mem['/job/source-built-package.json']
+        self.assertEqual(row['output_measurement']['serialized_bytes'],len(archive))
+
+    def test_required_metadata_or_standard_missing_blocks_fixture_launch(self):
+        for missing in h.REQUIRED_OUTPUTS+('compiler/DMStandard/Defines.dm',):
+            with self.subTest(missing=missing):
+                fx,a,data,backend=fixture()
+                origin=('out-compiler/'+missing[len('compiler/'):] if missing.startswith('compiler/') else
+                        'out-server/OpenDreamServer_linux-x64/'+missing[len('server/'):])
+                del fx.outputs[origin]
+                with self.assertRaisesRegex(r.Rejected,'required package member|standard closure'):
+                    self.execute(fx,a,data,backend)
+                self.assertFalse(any('probe.dme' in e[1] or '--config-file' in e[1]
+                                     for e in fx.events if e[0]=='launch'))
+
+    def test_dependency_receipts_retain_actual_graph_identity_and_reject_gaps(self):
+        fx,a,data,backend=fixture()
+        self.assertEqual(len(self.execute(fx,a,data,backend)),5)
+        row=json.loads(fx.mem['/job/receipts/02-build.json'])['data']
+        self.assertEqual(len(row['resolved_dependency_graphs']),4)
+        for graph in row['resolved_dependency_graphs'].values():
+            self.assertIn('Synthetic/1.0',graph['packages'])
+            self.assertEqual(graph['sources'],['https://api.nuget.org/v3/index.json'])
+        for mutation in ('missing-project','missing-hash','unsupported-feed','unresolved-target'):
+            with self.subTest(mutation=mutation):
+                fx,a,data,backend=fixture(); path='obj/DMCompiler.csproj/project.assets.json'
+                doc=json.loads(fx.outputs[path])
+                if mutation=='missing-project': del fx.outputs[path]
+                else:
+                    if mutation=='missing-hash': del doc['libraries']['Synthetic/1.0']['sha512']
+                    if mutation=='unsupported-feed': doc['project']['restore']['sources']={'https://unknown.invalid':{}}
+                    if mutation=='unresolved-target': doc['libraries']={}
+                    fx.outputs[path]=b.encoded(doc)
+                with self.assertRaises(r.Rejected): self.execute(fx,a,data,backend)
+                self.assertFalse(any('probe.dme' in e[1] or '--config-file' in e[1] for e in fx.events if e[0]=='launch'))
+
+    def test_standard_publish_bytes_must_match_authenticated_source(self):
+        fx,a,data,backend=fixture()
+        fx.outputs['out-compiler/DMStandard/Defines.dm']=b'stale standard'
+        with self.assertRaisesRegex(r.Rejected,'compiler standard source drift'):
+            self.execute(fx,a,data,backend)
+        self.assertFalse(any('probe.dme' in e[1] or '--config-file' in e[1] for e in fx.events if e[0]=='launch'))
+
+    def test_oversized_measurement_blocks_output_read_and_fixture_launch(self):
+        fx,a,data,backend=fixture(); sizes=fx.sizes; read=fx.read; reads=[]
+        def sized(root,names):
+            actual=sizes(root,names)
+            if root=='/job/build/out-compiler':
+                return [64*1024**2 if name=='DMCompiler.dll' else n for name,n in zip(names,actual)]
+            return actual
+        def reading(path):
+            if path.startswith(('/job/build/out-compiler/','/job/build/out-server/')): reads.append(path)
+            return read(path)
+        fx.sizes=sized; fx.read=reading
+        with self.assertRaisesRegex(r.Rejected,'package container too large'): self.execute(fx,a,data,backend)
+        self.assertEqual(reads,[])
+        self.assertFalse(any('probe.dme' in e[1] or '--config-file' in e[1] for e in fx.events if e[0]=='launch'))
+
+    def test_output_growth_after_measurement_rejects_before_fixture_launch(self):
+        fx,a,data,backend=fixture(); read=fx.read
+        def reading(path):
+            raw=read(path)
+            return raw+b'growth' if path=='/job/build/out-compiler/DMCompiler.dll' else raw
+        fx.read=reading
+        with self.assertRaisesRegex(r.Rejected,'package changed after measurement'): self.execute(fx,a,data,backend)
+        self.assertFalse(any('probe.dme' in e[1] or '--config-file' in e[1] for e in fx.events if e[0]=='launch'))
+
+    def test_exact_json_overhead_including_unicode_paths_and_boundary(self):
+        outputs={name:b'x' for name in h.REQUIRED_OUTPUTS}
+        outputs['compiler/unicode-\u00e9.dll']=b'abc'
+        archive=b.encoded({'profile':'independent-source-build','engine':r.ENGINE,
+                          'files':{p:raw.hex() for p,raw in sorted(outputs.items())}})
+        sizes={p:len(raw) for p,raw in outputs.items()}
+        with patch.object(h,'PACKAGE_CAP',len(archive)):
+            self.assertEqual(h.measure_outputs(sizes)['serialized_bytes'],len(archive))
+            h.seal_outputs(outputs)
+        with patch.object(h,'PACKAGE_CAP',len(archive)-1), self.assertRaisesRegex(r.Rejected,'container too large'):
+            h.measure_outputs(sizes)
 
     def test_final_claim_crossing_either_clock_rejects_same_old_acceptance_oracle(self):
         for which in ('monotonic', 'utc'):

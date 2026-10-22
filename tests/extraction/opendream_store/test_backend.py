@@ -81,7 +81,7 @@ class FakeEffects:
     def sizes(self,root,names): return [len(self.mem[root+'/'+p]) for p in names]
     def launch(self,owned,argv,cwd,env,logroot,creation_guard):
         creation_guard()
-        self.starts += 1; self.events.append(('launch',tuple(argv)))
+        self.starts += 1; self.events.append(('launch',tuple(argv))); self.events.append(('cwd',cwd))
         owned.pid=self.starts; owned.birth='1'; owned.process=object()
         self.active[owned.pid]=True; self.polls[owned.pid]=0
         self.logroots[owned.pid]=logroot
@@ -148,14 +148,18 @@ class FakeEffects:
 
 def fixture():
     fx=FakeEffects(); a=t.admission(); data=t.inputs()
-    src={'OpenDream.slnx':b'inert pinned source', 'tools/civ13-provenance/robust-auth.patch':b'reviewed transform'}
+    src={'DMCompiler/DMStandard/_Standard.dm':b'standard','DMCompiler/DMStandard/Defines.dm':b'defines','OpenDream.slnx':b'inert pinned source', 'tools/civ13-provenance/robust-auth.patch':b'reviewed transform'}
     sdk={'dotnet':b'inert SDK','sdk/10.0.401/identity':b'10.0.401'}
-    package={'compiler/DMCompiler.dll':b'compiler', 'server/OpenDreamServer.dll':b'OpenDream entry',
-             'server/Robust.Server.dll':b'Robust loader','server/Resources/manifest.yml':b'resources',
-             'server/OpenDreamServer.deps.json':b'deps','server/OpenDreamServer.runtimeconfig.json':b'runtimeconfig'}
+    package={'compiler/DMCompiler.dll':b'compiler',
+             'compiler/DMCompiler.deps.json':b'deps','compiler/DMCompiler.runtimeconfig.json':b'runtimeconfig',
+             'compiler/DMStandard/_Standard.dm':b'standard','compiler/DMStandard/Defines.dm':b'defines',
+             'compiler/Robust.Shared.Maths.dll':b'maths',
+             'server/Robust.Server.dll':b'Robust loader',
+             'server/Robust.Server.deps.json':b'deps','server/Robust.Server.runtimeconfig.json':b'runtimeconfig',
+             'server/Resources/manifest.yml':b'assemblyPrefix: OpenDream',
+             'server/Resources/Assemblies/OpenDreamServer.dll':b'content',
+             'server/Resources/Assemblies/OpenDreamShared.dll':b'shared'}
     origins={p:('out-compiler/'+p[len('compiler/'):] if p.startswith('compiler/') else 'out-server/OpenDreamServer_linux-x64/'+p[len('server/'):]) for p in package}
-    for suffix in ('.dll','.deps.json','.runtimeconfig.json'):
-        origins['server/OpenDreamServer'+suffix]='bin/Content.Server/OpenDreamServer'+suffix
     fx.outputs={origins[p]:raw for p,raw in package.items()}
     for prefix,files in (('/source',src),('/sdk',sdk)):
         fx.mem.update({prefix+'/'+p:raw for p,raw in files.items()})
@@ -176,7 +180,7 @@ def fixture():
          effective_source_manifest_sha256=r.sha(b.encoded(bundle['source_files'])),
          robust_transform_sha256=r.sha(src['tools/civ13-provenance/robust-auth.patch']))
     a['compiler_sha256']=r.sha(package['compiler/DMCompiler.dll'])
-    a['runtime_sha256']=r.sha(package['server/OpenDreamServer.dll'])
+    a['runtime_sha256']=r.sha(package['server/Robust.Server.dll'])
     a['installed_manifest_sha256']=r.sha(b.encoded(bundle['package_files']))
     a['archive_sha256']=r.sha(b.encoded({'profile':'independent-source-build','engine':r.ENGINE,
                                       'files':{p:raw.hex() for p,raw in package.items()}}))
