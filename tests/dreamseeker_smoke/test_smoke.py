@@ -355,7 +355,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
 
     def invoke(self, hooks=None, module=run):
         hooks = hooks or {}
-        record = {'creations': [], 'opened': [], 'cleanup': [], 'sockets': [], 'capture': 0}
+        record = {'creations': [], 'argv': [], 'opened': [], 'cleanup': [], 'sockets': [], 'capture': 0}
         reviewed = self.write_packet()
 
         def hook(name, phase):
@@ -377,6 +377,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
             def launched(argv, fixture, output, actual_phase, visible=False, **kwargs):
                 if 'creation_guard' in kwargs:
                     kwargs['creation_guard']()
+                record['argv'].append((actual_phase, list(argv)))
                 record['creations'].append((phase, self.clock.mono, self.clock.utc))
                 hook('creation', phase)
                 if phase == 'compile':
@@ -449,6 +450,29 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
     def disk(self, hook):
         hook('disk', 'compile')
         return SimpleNamespace(free=2 * 1024**3)
+
+    def assert_console_compiler(self, module=run):
+        record = self.invoke(module=module)
+        self.assertEqual(record['argv'][0][0], 'compile')
+        argv = record['argv'][0][1]
+        self.assertEqual(Path(argv[0]).name, 'dm.exe')
+        self.assertEqual(argv[1:], ['-max_errors', '0', 'fixture.dme'])
+        self.assertEqual([phase for phase, _ in record['argv']], ['compile', 'server', 'client'])
+        self.assertEqual(str(record['error']), 'primary capture failure')
+
+    def test_actual_orchestration_selects_console_compiler(self):
+        self.assert_console_compiler()
+
+    def test_gui_compiler_selector_mutant_is_detected(self):
+        import types
+        module = types.ModuleType('gui_compiler_mutant')
+        module.__file__ = str(run.ROOT/'run.py')
+        source = (run.ROOT/'run.py').read_text()
+        changed = source.replace("launch('dm.exe', ['-max_errors'", "launch('dreammaker.exe', ['-max_errors'")
+        self.assertNotEqual(changed, source)
+        exec(compile(changed, module.__file__, 'exec'), module.__dict__)
+        with self.assertRaisesRegex(AssertionError, 'dm.exe'):
+            self.assert_console_compiler(module)
 
     def test_expiry_during_free_prevents_job_and_process_creation(self):
         record = self.invoke({'free': lambda _: self.advance(151, wall=False)})

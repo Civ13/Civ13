@@ -227,3 +227,10 @@ enrichment. Thread/process handle-close outcomes are recorded afterward in
 finally, including when enrichment fails. Errors still fail cleanup acceptance
 without erasing successful primitive observations. This does not establish historical
 cleanup or rendering acceptance for earlier failed attempts.
+
+The standalone compile phase selects the pinned console `dm.exe` entry point
+with `-max_errors 0 fixture.dme`, matching the existing world-save runner. The
+compiler must still exit zero, emit `0 errors, 0 warnings`, and produce the DMB.
+The GUI `dreammaker.exe` entry point is rejected by an injected orchestration
+regression. Static entry-point evidence and these tests do not establish the
+cause of a prior exit, native compilation, or environment compatibility.

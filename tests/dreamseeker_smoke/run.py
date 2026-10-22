@@ -414,7 +414,7 @@ def run(output, local_admission=None, reviewed_admission_sha256=None):
             check_work()
 
         port = None
-        compiler, compiled = launch('dreammaker.exe', ['-max_errors', '0', 'fixture.dme'], 'compile')
+        compiler, compiled = launch('dm.exe', ['-max_errors', '0', 'fixture.dme'], 'compile')
         while True:
             check_work()
             exited = compiler.exited(compiled)
