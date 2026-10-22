@@ -274,6 +274,11 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
 
+<!-- 2026-10-22: ping pass aggregation -->
+Ping retains per-pass sum/count across budget returns and publishes before the
+final-entry budget check. Every skipped client still consumes its snapshot entry.
+tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
+
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
 including repeated nulls; a guarded front `Cut(1,2)` is not equivalent.
