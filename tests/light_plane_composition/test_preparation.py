@@ -66,6 +66,7 @@ class Preparation(unittest.TestCase):
         entry = areas.split("/proc/ChangeArea(", 1)[1]
         owner = "/turf/var/tmp/list/area_change_owner" + areas.split("/turf/var/tmp/list/area_change_owner", 1)[1].split("/proc/ChangeArea(", 1)[0]
         base = (ROOT / "code/modules/lighting/lighting_area.dm").read_text().split("/atom/proc/change_area(", 1)[1]
+        base = base if base.endswith("\n") else base + "\n"
         hook = (ROOT / "code/modules/lighting/lighting_turf.dm").read_text().split("/turf/change_area(", 1)[1].split("/turf/proc/get_corners(", 1)[0]
         expected = owner + "/proc/ChangeArea(" + entry + "/atom/proc/change_area(" + base + "/turf/change_area(" + hook
         self.assertEqual(runner.prepare()["area_change.dm"], expected)
@@ -80,6 +81,13 @@ class Preparation(unittest.TestCase):
         self.assertIn("ChangeArea(T, dynamic)", fixture)
         self.assertIn("missing_old_area = TRUE", fixture)
         self.assertNotIn("T.change_area(", fixture)
+
+    def test_eof_proc_has_a_separator_before_next_declaration(self):
+        base = runner.production_proc("code/modules/lighting/lighting_area.dm", "/atom/proc/change_area(")
+        self.assertTrue(base.endswith("\n"))
+        generated = runner.prepare()["area_change.dm"]
+        self.assertIn("\treturn\n/turf/change_area(", generated)
+        self.assertNotIn("\treturn/turf/change_area(", generated)
 
     def test_area_change_omission_control_only_removes_dispatch(self):
         ordinary = runner.prepare()

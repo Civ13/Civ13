@@ -15,7 +15,7 @@ def production_proc(path, signature):
     source = (ROOT / path).read_text()
     matches = re.findall(r"^" + re.escape(signature) + r"[\s\S]*?(?=^/(?!/)|\Z)", source, re.M)
     assert len(matches) == 1, "Production proc anchor changed: " + signature
-    return matches[0]
+    return matches[0] if matches[0].endswith("\n") else matches[0] + "\n"
 
 
 def prepare(control=None, enabled=True):

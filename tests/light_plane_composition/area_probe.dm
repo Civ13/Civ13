@@ -164,7 +164,7 @@ var/created_lighting_corners_and_overlays = FALSE
 	try
 		ChangeArea(T, null)
 	catch(var/exception/invalid_area)
-		invalid_rejected = TRUE
+		invalid_rejected = invalid_area.name == "Area change attempt failed: invalid area supplied."
 	check(invalid_rejected, "invalid destination still rejected")
 	check(T.loc == dynamic && !T.hook_calls && !area_events.len, "invalid destination does not mutate")
 
