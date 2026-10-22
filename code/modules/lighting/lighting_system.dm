@@ -20,7 +20,7 @@
 	for (var/turf/T in block(locate(1, 1, zlevel), locate(world.maxx, world.maxy, zlevel)))
 		if (environment_sweep_pause(++work))
 			work = 0
-		if (T.supports_lighting_overlays())
+		if (T.supports_lighting_overlays() && !T.omit_reserved_lighting_overlay())
 
 			var/area/T_area = get_area(T)
 			if (T_area.is_void_area)
@@ -39,7 +39,7 @@
 /proc/create_startup_compatibility_overlays()
 	var/work = 0
 	for (var/turf/T in world)
-		if (!T.lighting_overlay)
+		if (!T.lighting_overlay && !T.omit_reserved_lighting_overlay())
 			var/area/A = get_area(T)
 			if (A && A.dynamic_lighting)
 				PoolOrNew(/atom/movable/lighting_overlay, T)

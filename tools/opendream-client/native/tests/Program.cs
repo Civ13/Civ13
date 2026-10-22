@@ -16,6 +16,7 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    if (args.Length == 2 && args[0] == "--pacing-cache-child") return TopicPacingTests.Child(args[1], cached: true);
     if (args.Length == 2 && args[0] == "--pacing-child") return TopicPacingTests.Child(args[1]);
     if (args.SequenceEqual(new[] { "--probe-public" })) {
         var discovery = new ServerDiscovery();
@@ -29,11 +30,13 @@ try {
         return 0;
     }
     if (args.SequenceEqual(new[] { "--discovery-only" })) {
+        await CachedJoinTests.Run(root);
         await ServerDiscoveryTests.Run(root);
         await TopicPacingTests.Run(root);
         return 0;
     }
     assertions += await TransportRetryTests.Run(root);
+    assertions += await CachedJoinTests.Run(root);
     assertions += await ServerDiscoveryTests.Run(root);
     assertions += await TopicPacingTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";

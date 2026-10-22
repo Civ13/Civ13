@@ -26,6 +26,12 @@
 	return FALSE
 
 /atom/movable/lighting_overlay/New(var/atom/loc, var/no_update = FALSE)
+	var/turf/reserved_turf = loc
+	if (isturf(reserved_turf) && reserved_turf.omit_reserved_lighting_overlay())
+		// Deferred cleanup must never clear an overlay activated after refusal.
+		src.loc = null
+		qdel(src)
+		return
 	. = ..()
 	#ifdef OPENDREAM
 	blend_mode = BLEND_ADD
@@ -62,7 +68,7 @@
 
 /atom/movable/lighting_overlay/Destroy()
 	var/turf/T   = loc
-	if (istype(T))
+	if (istype(T) && T.lighting_overlay == src)
 		T.lighting_overlay = null
 
 		T.luminosity = TRUE
