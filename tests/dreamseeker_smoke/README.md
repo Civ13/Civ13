@@ -184,3 +184,36 @@ the native guard/event restriction. Their expression evaluator deliberately
 supports only this small equality conjunction, not general YAML or all GitHub
 expressions. Actual Actions parsing/selection still requires reviewed publication
 and CI evidence. This draft has neither been pushed nor dispatched.
+
+## Proposed isolated local controller runtime
+
+Local admission additionally binds a complete `runtime` contract: normal task-local
+venv without system site packages, launched with `-E -s -B`; exact sys.path, prefix,
+base prefix, executable, pyvenv.cfg values, flags and site inventory. Only byte-verified
+Pillow 10.4.0 and its complete metadata/license closure are staged; optional NumPy
+is naturally absent. No import blocker or modified Pillow is used. The manifest
+binds every regular venv file, base Lib excluding unreachable site-packages (including bytecode caches),
+base DLLs, and all base-root executable/runtime DLL/zip files. -B disables writes, not cache reads. Reject .pth files,
+reparse/symlink entries, extra site packages, changed bytes or ambient paths.
+This is not a hermetic interpreter: reviewed base Python and OS DLL dependencies
+remain external and must be reported. An independent complete runtime observation
+and offline PE dependency review are required before any execution admission.
+Normal setup/diagnostics are separately bounded; this proposal stages nothing and
+does not renew the spent native attempt or change either memory cap.
+
+The small admission `runtime` field contains only absolute `manifest` and its
+independently reviewed `sha256`. A bounded separate JSON manifest contains the
+complete layout and expected observation. Its bytes and all runtime dependencies
+are reverified at admission and before each native phase; changes deny execution.
+This avoids exceeding the admission's existing 64 KiB bound. The manifest itself
+is limited to 16 MiB, rejects duplicate keys and symlink/reparse entries.
+
+The exact pinned base-prefix root is a legitimate normal-venv sys.path entry;
+arbitrary parents or other site directories are rejected. Validation occurs
+after Python startup/imports and cannot undo malicious startup .pth execution.
+It is an integrity/admission check, not a Python sandbox: trusted task-owned
+staging and prelaunch inventory review remain required. File checks are snapshots,
+not descriptor-pinned prevention of concurrent filesystem mutation. Keep runtime
+and base dependencies quiescent. No runtime preparer or native admission is
+issued by this source proposal; reviewed normal-venv preparation and offline PE
+dependency closure remain prerequisites for any concrete runtime manifest.

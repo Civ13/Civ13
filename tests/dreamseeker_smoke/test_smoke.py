@@ -75,6 +75,7 @@ class LocalAdmissionContracts(unittest.TestCase):
     """Invented admission data is used only with files/mocks, never Win32/native."""
 
     def setUp(self):
+        self.runtime_check = self.enterContext(patch('local_runtime.verify_runtime'))
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
@@ -102,7 +103,7 @@ class LocalAdmissionContracts(unittest.TestCase):
         hashes = {row['name']: row['sha256'] for row in rows}
         now = time.time()
         self.packet = dict(
-            schema=1, scope='dreamseeker-smoke-local-installed', one_use_id=str(uuid.uuid4()),
+            runtime={}, schema=1, scope='dreamseeker-smoke-local-installed', one_use_id=str(uuid.uuid4()),
             output=str(self.output), task_root=str(self.root), ledger=str(self.ledger),
             host='offline-test-host', account='offline-test-domain\\offline-test-user',
             source_sha256=run.source_identity(),
@@ -146,6 +147,13 @@ class LocalAdmissionContracts(unittest.TestCase):
         adapter.free.return_value = 4 * 1024**3
         with patch.object(run.shutil, 'disk_usage', return_value=Mock(free=2 * 1024**3)):
             run.admit_local_launch(context, binary, adapter, self.output)
+
+    def test_runtime_identity_scanned_once_at_admission_and_each_launch(self):
+        context = self.load()
+        self.assertEqual(self.runtime_check.call_count, 1)
+        for expected in range(2, 5):
+            run.local_fresh(context)
+            self.assertEqual(self.runtime_check.call_count, expected)
 
     def test_explicit_admission_required_before_adapter_or_download(self):
         self.write_packet()
@@ -584,6 +592,24 @@ class BudgetContracts(unittest.TestCase):
             self.assertEqual(budget.cleanup_wait(), 5)
 
 
+class StreamingDigestContracts(unittest.TestCase):
+    def test_digest_streams_bounded_reads_without_read_bytes(self):
+        import guard_config
+        import io
+        data = bytes(range(256)) * 1025
+        class BoundedReader(io.BytesIO):
+            def read(self, size=-1):
+                self_test.assertGreater(size, 0)
+                self_test.assertLessEqual(size, 64 * 1024)
+                return super().read(size)
+        self_test = self
+        for value in (b'', b'abc', data):
+            with self.subTest(size=len(value)), \
+                    patch.object(Path, 'read_bytes', side_effect=AssertionError('whole-file read forbidden')), \
+                    patch.object(Path, 'open', return_value=BoundedReader(value)):
+                self.assertEqual(guard_config.digest('synthetic'), hashlib.sha256(value).hexdigest())
+
+
 class WindowsCreationBoundaryContracts(unittest.TestCase):
     def setUp(self):
         spec = importlib.util.spec_from_file_location('smoke_windows_boundary', run.ROOT / 'windows.py')
@@ -598,6 +624,18 @@ class WindowsCreationBoundaryContracts(unittest.TestCase):
         self.enterContext(patch.object(run.time, 'monotonic', side_effect=lambda: self.clock.mono))
         self.enterContext(patch.object(run.time, 'time', side_effect=lambda: self.clock.utc))
         self.budget = run.Budget()
+
+    def test_watcher_limit_reports_actual_bytes_and_preserves_threshold(self):
+        cap = 128 * 1024**2
+        for measured in (cap - 1, cap, cap + 1):
+            with self.subTest(measured=measured), patch.object(self.adapter, 'memory', return_value=measured):
+                if measured > cap:
+                    with self.assertRaisesRegex(RuntimeError, f'private_bytes={measured}, cap_bytes={cap}'):
+                        self.adapter.preflight({'watcher_private_bytes': cap})
+                else:
+                    self.adapter.preflight({'watcher_private_bytes': cap})
+        self.adapter.k.CreateJobObjectW.assert_not_called()
+        self.adapter.k.CreateProcessW.assert_not_called()
 
     def guard(self):
         if self.expired:

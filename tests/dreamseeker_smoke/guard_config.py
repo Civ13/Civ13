@@ -8,4 +8,8 @@ BINARIES = VENDOR['binaries']
 LIMITS = {'process_private_bytes': 512 * 1024**2, 'watcher_private_bytes': 128 * 1024**2}
 
 def digest(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    result = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        while chunk := stream.read(64 * 1024):
+            result.update(chunk)
+    return result.hexdigest()

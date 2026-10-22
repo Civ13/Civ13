@@ -129,8 +129,10 @@ class Adapter:
         return status.values[1]
 
     def preflight(self, limits):
-        if self.memory(self.k.GetCurrentProcess()) > limits['watcher_private_bytes']:
-            raise RuntimeError('Watcher reserve unavailable')
+        measured = self.memory(self.k.GetCurrentProcess())
+        cap = limits['watcher_private_bytes']
+        if measured > cap:
+            raise RuntimeError(f'Watcher reserve unavailable: private_bytes={measured}, cap_bytes={cap}')
 
     def launch(self, argv, cwd, root, phase, visible=False, *, creation_guard):
         # No inherited handles except explicit log handles; no inherited user env.

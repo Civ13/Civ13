@@ -96,9 +96,11 @@ def load_local(admission, reviewed_sha256, output, budget=None):
     packet = read_json(admission)
     budget.check()
     require(digest(admission) == reviewed_sha256, 'Admission differs from reviewed packet')
-    budget.check()
     require(type(packet['expires_unix']) in (int, float), 'Invalid grant expiry')
     budget.bind(packet['expires_unix'])
+    from local_runtime import verify_runtime
+    verify_runtime(packet['runtime'], budget.check)
+    budget.check()
     require(packet['schema'] == 1 and packet['scope'] == 'dreamseeker-smoke-local-installed',
             'Wrong local admission scope')
     require(str(uuid.UUID(packet['one_use_id'])) == packet['one_use_id'], 'Noncanonical one-use ID')
@@ -158,7 +160,9 @@ def load_local(admission, reviewed_sha256, output, budget=None):
     context = dict(packet=packet, packet_sha256=reviewed_sha256, binary=binary,
                    hashes={name: hashes[name] for name in (*VENDOR['binaries'], *LOCAL_RUNTIME_DLLS)},
                    receipt=ledger / (packet['one_use_id'] + '.json'), consumed=False, budget=budget)
-    local_fresh(context)
+    # Runtime/source identity was checked above in this admission boundary.
+    # Retain deadline/resource validation without duplicating the full tree scan.
+    local_deadline(context)
     context['monotonic_expiry'] = budget.full_end
     require(not context['receipt'].exists(), 'One-use admission already consumed')
     return context
@@ -168,6 +172,8 @@ def local_fresh(context):
     local_deadline(context)
     packet = context['packet']
     require(packet['source_sha256'] == source_identity(), 'Source changed before native launch')
+    from local_runtime import verify_runtime
+    verify_runtime(packet['runtime'], context['budget'].check)
     context['budget'].check()
     require(packet['python'] == {'path': str(Path(sys.executable).resolve()), 'sha256': digest(sys.executable)}
             and packet['pillow_version'] == PIL.__version__
