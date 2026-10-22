@@ -182,6 +182,99 @@ class FakeEffects:
             execute.write(game / 'exit.json', {'pid': owned['pid'], 'owned_exit': True, 'injected': True})
 
 
+class PhaseDiagnosticsTests(unittest.TestCase):
+    def test_missing_each_required_log_refuses_success_and_preserves_original_failure(self):
+        names = ('daemon.stdout.log', 'daemon.stderr.log')
+        for missing in names:
+            for failed in (False, True):
+                with self.subTest(missing=missing, failed=failed), tempfile.TemporaryDirectory() as temporary:
+                    game = Path(temporary) / 'game'
+                    game.mkdir()
+                    retained = next(name for name in names if name != missing)
+                    (game / retained).write_bytes(b'original retained stream')
+                    upstream = ValueError('injected original failure') if failed else None
+                    diagnostic = [{'message': 'retained native diagnostic'}] if failed else []
+                    scans = []
+                    def scan(root):
+                        scans.append(root)
+                        self.assertEqual((root / retained).read_bytes(), b'original retained stream')
+                        return diagnostic
+                    with patch.object(subprocess, 'Popen', side_effect=AssertionError('process forbidden')), patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')):
+                        with self.assertRaises((RuntimeError, ValueError)) as raised:
+                            with execute.phase_diagnostics(game, scan):
+                                if upstream is not None:
+                                    raise upstream
+                    if failed:
+                        self.assertIs(raised.exception, upstream)
+                        self.assertIn('FileNotFoundError', str(upstream.__notes__))
+                        self.assertEqual(json.loads((game / 'diagnostics.json').read_text()), diagnostic)
+                    else:
+                        self.assertIn('Phase diagnostic retention failed', str(raised.exception))
+                        self.assertIsInstance(raised.exception.__cause__, FileNotFoundError)
+                    report = json.loads((game / 'diagnostic-retention-failure.json').read_text())
+                    self.assertEqual(len(report), 1)
+                    self.assertEqual(report[0]['type'], 'FileNotFoundError')
+                    self.assertTrue(report[0]['message'])
+                    self.assertEqual(scans, [game.parent])
+                    self.assertEqual((game / retained).read_bytes(), b'original retained stream')
+
+    def test_shutdown_output_is_closed_and_retained_before_scan_on_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            game = Path(temporary) / 'game'
+            game.mkdir()
+            failure = TimeoutError('injected frozen deadline')
+            process = FakeProcess()
+            streams = []
+            class Effect:
+                def launch(self, command, directory, stdout, stderr):
+                    streams.extend((stdout, stderr))
+                    stdout.write(b'before shutdown\n')
+                    return process
+            terminate = process.terminate
+            def shutdown():
+                streams[1].write(b'runtime error: shutdown diagnostic\n')
+                terminate()
+            process.terminate = shutdown
+            diagnostic = [{'message': 'shutdown diagnostic'}]
+            def scan(root):
+                self.assertTrue(all(stream.closed for stream in streams))
+                self.assertTrue(json.loads((game / 'exit.json').read_text())['owned_exit'])
+                self.assertEqual((root / 'daemon.stderr.log').read_bytes(),
+                                 b'runtime error: shutdown diagnostic\n')
+                return diagnostic
+            with patch.object(subprocess, 'Popen', side_effect=AssertionError('process forbidden')), patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')):
+                with self.assertRaises(TimeoutError) as raised:
+                    with execute.phase_diagnostics(game, scan):
+                        with execute.owned_process(Effect(), ['fake owned'], game):
+                            raise failure
+            self.assertIs(raised.exception, failure)
+            self.assertEqual(json.loads((game / 'diagnostics.json').read_text()), diagnostic)
+            self.assertEqual((game / 'daemon.stderr.log').read_bytes(),
+                             (game.parent / 'daemon.stderr.log').read_bytes())
+
+    def test_scan_failure_retains_original_error_and_streams_and_refuses_success(self):
+        for upstream in (None, ValueError('injected original failure')):
+            with self.subTest(upstream=upstream), tempfile.TemporaryDirectory() as temporary:
+                game = Path(temporary) / 'game'
+                game.mkdir()
+                for name in ('daemon.stdout.log', 'daemon.stderr.log'):
+                    (game / name).write_bytes(b'retained original bytes')
+                def scan(root):
+                    raise OSError('injected scan failure')
+                with self.assertRaises((ValueError, RuntimeError)) as raised:
+                    with execute.phase_diagnostics(game, scan):
+                        if upstream:
+                            raise upstream
+                if upstream:
+                    self.assertIs(raised.exception, upstream)
+                    self.assertIn('injected scan failure', str(upstream.__notes__))
+                else:
+                    self.assertIn('diagnostic retention failed', str(raised.exception))
+                self.assertIn('injected scan failure', (game / 'diagnostic-retention-failure.json').read_text())
+                for name in ('daemon.stdout.log', 'daemon.stderr.log'):
+                    self.assertEqual((game.parent / name).read_bytes(), b'retained original bytes')
+
+
 class ExecutorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -420,7 +513,8 @@ class ExecutorTests(unittest.TestCase):
     def test_actual_run_phase_admission_transport_body_owned_exit_and_diagnostics(self):
         helper_data = {name: self.cache[(source.HELPERS, 'tests/world_save/full_map_lifecycle/' + name)]
                        for name in ('query.py', 'run.py')}
-        for refusal in (None, 'listener', 'token', 'session', 'diagnostic', 'exitartifact'):
+        for refusal in (None, 'listener', 'token', 'session', 'diagnostic', 'exitartifact',
+                        'body', 'observer', 'deadline', 'cleanup', 'retention'):
             with self.subTest(refusal=refusal), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 packet = allocation(root)
@@ -430,7 +524,7 @@ class ExecutorTests(unittest.TestCase):
                 (game / 'representative.dmb').write_bytes(b'nonexecutable owned binary')
                 expected = execute.MappingProxyType({name: files.file_sha(game / name) for name in
                     ('representative.dmb', 'config/full-map-probe-token.txt')})
-                process, calls = FakeProcess(), []
+                process, calls = FakeProcess(fail_cleanup=refusal == 'cleanup'), []
                 sampled, body_done = threading.Event(), threading.Event()
                 state = {'phase': 'idle'}
 
@@ -463,8 +557,11 @@ class ExecutorTests(unittest.TestCase):
                     sleep = staticmethod(time.sleep)
                     def launch(self, command, cwd, stdout, stderr):
                         calls.append(('launch', command, cwd))
-                        if refusal == 'diagnostic':
+                        if refusal in ('diagnostic', 'body', 'observer', 'deadline', 'cleanup', 'retention'):
                             stdout.write(b'runtime error: injected strict failure\n')
+                        stderr.write(b'injected retained stderr\n')
+                        if refusal == 'retention':
+                            (cwd / 'native.log').write_text('runtime error: retained native diagnostic\n')
                         return process
                     def listener(self, port, pid, selected):
                         calls.append(('listener', port, pid))
@@ -486,6 +583,8 @@ class ExecutorTests(unittest.TestCase):
                     sampled.set()
                     if not body_done.wait(2):
                         raise AssertionError('injected body failed to finish')
+                    if refusal == 'observer':
+                        raise ValueError('injected observer failure')
                     return [row]
 
                 def body(host, initial, owned):
@@ -493,6 +592,10 @@ class ExecutorTests(unittest.TestCase):
                     try:
                         self.assertTrue(sampled.wait(2), 'actual observer did not query transport')
                         self.assertEqual(owned['pid'], process.pid)
+                        if refusal in ('body', 'retention'):
+                            raise ValueError('injected body failure')
+                        if refusal == 'deadline':
+                            execute.require_time(lambda: host.deadline, host.deadline)
                         host.query('first', initial['session'])
                         result = host.poll('first_complete', initial['session'], host.deadline)
                         if refusal == 'exitartifact':
@@ -501,24 +604,38 @@ class ExecutorTests(unittest.TestCase):
                     finally:
                         body_done.set()
 
-                with patch.object(execute.sampler, 'sample', side_effect=sample), patch.object(subprocess, 'Popen', side_effect=AssertionError('native process forbidden')), patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')):
+                copy = execute.shutil.copy2
+                def retain(src, dst):
+                    if refusal == 'retention' and src.name == 'daemon.stdout.log':
+                        raise OSError('injected copy failure')
+                    return copy(src, dst)
+                with patch.object(execute.sampler, 'sample', side_effect=sample), patch.object(execute.shutil, 'copy2', side_effect=retain), patch.object(subprocess, 'Popen', side_effect=AssertionError('native process forbidden')), patch.object(socket, 'socket', side_effect=AssertionError('socket forbidden')):
                     if refusal:
                         message = {'listener': 'Listener ownership', 'token': 'refusal control',
                                    'session': 'refusal control', 'diagnostic': 'Strict native diagnostics',
-                                   'exitartifact': 'Independent input seal'}[refusal]
-                        with self.assertRaisesRegex((ValueError, RuntimeError), message):
+                                   'exitartifact': 'Independent input seal', 'body': 'injected body failure',
+                                   'observer': 'injected observer failure', 'deadline': 'aggregate deadline',
+                                   'cleanup': 'injected cleanup failure', 'retention': 'injected body failure'}[refusal]
+                        with self.assertRaisesRegex((ValueError, RuntimeError, OSError), message):
                             execute.run_phase(NativeBoundary(), game, source.CANDIDATE, packet,
                                               helper_data, time.monotonic()+1000, body, 'writer', expected)
                     else:
                         result = execute.run_phase(NativeBoundary(), game, source.CANDIDATE, packet,
                                                    helper_data, time.monotonic()+1000, body, 'writer', expected)
                         self.assertEqual(result['representative']['phase'], 'first_complete')
-                self.assertTrue(json.loads((game / 'exit.json').read_text())['owned_exit'])
+                self.assertEqual(json.loads((game / 'exit.json').read_text())['owned_exit'], refusal != 'cleanup')
                 self.assertEqual(process.events[0], 'terminate')
-                self.assertFalse(process.alive)
+                self.assertEqual(process.alive, refusal == 'cleanup')
+                self.assertEqual((game.parent / 'daemon.stderr.log').read_bytes(), b'injected retained stderr\n')
+                if refusal == 'retention':
+                    self.assertIn('injected copy failure', (game / 'diagnostic-retention-failure.json').read_text())
+                    self.assertIn('retained native diagnostic', (game / 'diagnostics.json').read_text())
+                    self.assertTrue((game / 'daemon.stdout.log').is_file())
+                else:
+                    self.assertEqual((game.parent / 'daemon.stdout.log').read_bytes(), (game / 'daemon.stdout.log').read_bytes())
                 launch = next(call for call in calls if isinstance(call, tuple) and call[0] == 'launch')
                 self.assertEqual(launch[1][launch[1].index('-ip')+1], '127.0.0.1')
-                self.assertEqual(calls.count('body'), int(refusal in (None, 'diagnostic', 'exitartifact')))
+                self.assertEqual(calls.count('body'), int(refusal not in ('listener', 'token', 'session')))
                 if refusal in (None, 'diagnostic', 'exitartifact'):
                     requests = [call for call in calls if isinstance(call, dict)]
                     self.assertTrue(any(call['token'] == '0'*64 for call in requests))
@@ -526,7 +643,7 @@ class ExecutorTests(unittest.TestCase):
                     self.assertTrue((game / 'latency.jsonl').is_file())
                     self.assertTrue((game / 'resources.jsonl').is_file())
                     self.assertTrue((game / 'first_complete-receipt.json').is_file())
-                if refusal == 'diagnostic':
+                if refusal in ('diagnostic', 'body', 'observer', 'deadline', 'cleanup'):
                     self.assertIn('injected strict failure', (game / 'diagnostics.json').read_text())
 
     def test_stale_boot_reader_rejects_instead_of_claiming_import(self):

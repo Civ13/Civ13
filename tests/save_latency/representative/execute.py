@@ -367,10 +367,49 @@ def observe(effect, host, game, packet, process, process_receipt, deadline, stop
     sampler.sample(observation, effect.clock, stop.wait,
                    duration=deadline-effect.clock(), cadence=packet['sampler_cadence_seconds'],
                    max_samples=100000, stopped=stop.is_set, record=record, deadline=deadline)
-    if not stop.is_set():
-        stop.wait(max(0, deadline-effect.clock()))
-        if not stop.is_set():
+    while not stop.is_set():
+        remaining = deadline-effect.clock()
+        if remaining <= 0:
             raise TimeoutError('Independent observer exhausted aggregate budget')
+        stop.wait(remaining)
+
+
+@contextmanager
+def phase_diagnostics(game, scan):
+    """Retain output after owned cleanup, even when the phase or cleanup fails."""
+    failure = None
+    try:
+        yield
+    except BaseException as error:
+        failure = error
+        raise
+    finally:
+        retention_errors = []
+        for name in ('daemon.stdout.log', 'daemon.stderr.log'):
+            try:
+                shutil.copy2(game / name, game.parent / name)
+            except Exception as error:
+                retention_errors.append(error)
+        diagnostic = []
+        try:
+            diagnostic = scan(game.parent)
+            if diagnostic:
+                write(game / 'diagnostics.json', diagnostic)
+        except Exception as error:
+            retention_errors.append(error)
+        if retention_errors:
+            # A secondary retention error must not replace the original failure.
+            report = [{'type': type(error).__name__, 'message': str(error)} for error in retention_errors]
+            try:
+                write(game / 'diagnostic-retention-failure.json', report)
+            except Exception as error:
+                retention_errors.append(error)
+            if failure is None:
+                raise RuntimeError('Phase diagnostic retention failed') from retention_errors[0]
+            for error in retention_errors:
+                failure.add_note('Phase diagnostic retention failed: ' + repr(error))
+        if diagnostic and failure is None:
+            raise RuntimeError('Strict native diagnostics invalidate acceptance')
 
 
 def run_phase(effect, game, commit, packet, helper_data, deadline, body, role, seal=None, tools=None):
@@ -393,61 +432,55 @@ def run_phase(effect, game, commit, packet, helper_data, deadline, body, role, s
         raise ValueError('Unexpected inherited bind argument')
     command += ['-ip', '127.0.0.1']
     command[command.index('-params') + 1] += '&representative_role=' + role
-    with owned_process(effect, command, game, deadline=deadline, admit=admit) as process:
-        # A query is only observation until the sole listener owner is verified.
-        host = Host(effect, game, process, commit, packet, helper_data['query.py'], work_deadline, None)
-        initial = host.until(lambda row: row.get('state') == 1 or row.get('import_complete'))
-        require_time(effect.clock, work_deadline, 120)
-        listener = effect.listener(packet['port'], process.pid, selected['listener_identity'])
-        require_time(effect.clock, work_deadline)
-        if set(listener['owners']) != {process.pid} or set(listener['addresses']) != set(packet['listener_addresses']):
-            raise ValueError('Listener ownership/address allocation mismatch')
-        host.listener = listener
-        process_receipt = {'pid': process.pid, 'started_utc': listener['process_start_utc'],
-                           'binary_sha256': seal['representative.dmb']}
-        check_seal(game, seal, effect.clock, work_deadline)
-        write(game / 'owned-process.json', process_receipt)
-        # Preserve existing refusal oracles before any mutating command.
-        for token, action, session in (('0'*64 if host.token != '0'*64 else '1'*64, 'status', 'observe'),
-                                       (host.token, 'first', 'stale-session')):
+    with phase_diagnostics(game, selected['diagnostic_failures']):
+        with owned_process(effect, command, game, deadline=deadline, admit=admit) as process:
+            # A query is only observation until the sole listener owner is verified.
+            host = Host(effect, game, process, commit, packet, helper_data['query.py'], work_deadline, None)
+            initial = host.until(lambda row: row.get('state') == 1 or row.get('import_complete'))
+            require_time(effect.clock, work_deadline, 120)
+            listener = effect.listener(packet['port'], process.pid, selected['listener_identity'])
             require_time(effect.clock, work_deadline)
-            try:
-                helpers.query(helper_data['query.py'], effect.connect, effect.clock, packet['port'], token,
-                              action, session, min(packet['query_timeout_seconds'], work_deadline-effect.clock()))
-            except PermissionError:
+            if set(listener['owners']) != {process.pid} or set(listener['addresses']) != set(packet['listener_addresses']):
+                raise ValueError('Listener ownership/address allocation mismatch')
+            host.listener = listener
+            process_receipt = {'pid': process.pid, 'started_utc': listener['process_start_utc'],
+                               'binary_sha256': seal['representative.dmb']}
+            check_seal(game, seal, effect.clock, work_deadline)
+            write(game / 'owned-process.json', process_receipt)
+            # Preserve existing refusal oracles before any mutating command.
+            for token, action, session in (('0'*64 if host.token != '0'*64 else '1'*64, 'status', 'observe'),
+                                           (host.token, 'first', 'stale-session')):
                 require_time(effect.clock, work_deadline)
-                continue
-            raise ValueError('Authentication/session refusal control failed')
-        stop = threading.Event()
-        failures = []
-        host.monitor_failures = failures
-        def monitor_phase():
+                try:
+                    helpers.query(helper_data['query.py'], effect.connect, effect.clock, packet['port'], token,
+                                  action, session, min(packet['query_timeout_seconds'], work_deadline-effect.clock()))
+                except PermissionError:
+                    require_time(effect.clock, work_deadline)
+                    continue
+                raise ValueError('Authentication/session refusal control failed')
+            stop = threading.Event()
+            failures = []
+            host.monitor_failures = failures
+            def monitor_phase():
+                try:
+                    observe(effect, host, game, packet, process, process_receipt, work_deadline, stop)
+                except BaseException as error:
+                    failures.append(error)
+            monitor = threading.Thread(target=monitor_phase, name='representative-independent-observer', daemon=True)
+            monitor.start()
             try:
-                observe(effect, host, game, packet, process, process_receipt, work_deadline, stop)
-            except BaseException as error:
-                failures.append(error)
-        monitor = threading.Thread(target=monitor_phase, name='representative-independent-observer', daemon=True)
-        monitor.start()
-        try:
-            result = body(host, initial, process_receipt)
-        finally:
-            stop.set()
-            monitor.join(timeout=min(30, max(0, work_deadline-effect.clock())))
-            if monitor.is_alive():
-                raise RuntimeError('Observer exit unconfirmed')
-        if failures:
-            raise failures[0]
-        check_seal(Path(packet['byond_bin']), tools, effect.clock, work_deadline)
-        check_seal(game, seal, effect.clock, work_deadline)
-    check_seal(Path(packet['byond_bin']), tools, effect.clock, deadline)
-    check_seal(game, seal, effect.clock, deadline)
-    # Inspect complete output after owned exit, including shutdown diagnostics.
-    for name in ('daemon.stdout.log', 'daemon.stderr.log'):
-        shutil.copy2(game / name, game.parent / name)
-    diagnostic = selected['diagnostic_failures'](game.parent)
-    if diagnostic:
-        write(game / 'diagnostics.json', diagnostic)
-        raise RuntimeError('Strict native diagnostics invalidate acceptance')
+                result = body(host, initial, process_receipt)
+            finally:
+                stop.set()
+                monitor.join(timeout=min(30, max(0, work_deadline-effect.clock())))
+                if monitor.is_alive():
+                    raise RuntimeError('Observer exit unconfirmed')
+            if failures:
+                raise failures[0]
+            check_seal(Path(packet['byond_bin']), tools, effect.clock, work_deadline)
+            check_seal(game, seal, effect.clock, work_deadline)
+        check_seal(Path(packet['byond_bin']), tools, effect.clock, deadline)
+        check_seal(game, seal, effect.clock, deadline)
     require_time(effect.clock, deadline)
     return result
 

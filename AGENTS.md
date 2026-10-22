@@ -378,6 +378,12 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-22: representative observer failure retention -->
+Representative sampler and observer waits must recheck their existing monotonic
+targets after early wakes. `tests/save_latency/representative` covers this offline.
+Phase log/diagnostic retention runs after owned cleanup on failures too; secondary
+retention errors preserve the original exception and never establish acceptance.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as

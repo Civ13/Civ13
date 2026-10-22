@@ -59,6 +59,9 @@ samples and the existing absolute deadline. Response rows are retained before
 resource sampling, whose delays remain explicit missed slots rather than query
 latency. Stop-aware waits end on phase completion; windows never reset the cadence
 or queue catch-up requests. The full-phase sample bound is checked before launch.
+Early wakes recheck the same monotonic target and wait only its remaining time;
+cancellation and the original absolute deadline still stop observation. No timing
+tolerance permits an early request. The final observer wait follows the same rule.
 
 The source executor sequences seven non-overlapping game processes: one public
 format-2 seed producer; one writer and two separate fresh readers per revision.
@@ -81,6 +84,11 @@ samples process private/working bytes, CPU and aggregate output growth. Fragment
 transport obeys one total query deadline. Resource ceilings are sampled, not OS
 enforced memory quotas. Strict diagnostics run after owned exit; historical
 `nslookup` diagnostics are not suppressed.
+Log copying and diagnostic scanning also run after failed phase/cleanup attempts.
+Original logs stay in place, and shutdown output is included once streams close.
+Secondary retention errors are recorded in `diagnostic-retention-failure.json`
+when writable and attached to the original exception; they cannot turn failure
+into acceptance or hide its cause. Unconfirmed cleanup remains a failed attempt.
 
 After source review and separate allocation an operator can explicitly request
 `--execute --repository <local-repo> --resource-packet <current-owner-packet>

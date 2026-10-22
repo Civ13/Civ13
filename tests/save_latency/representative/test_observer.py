@@ -22,12 +22,14 @@ class ObserverTests(unittest.TestCase):
         self.now, self.sent, self.resource_calls = 0., [], []
 
     def observe(self, cadence, count, *, transport=None, resource_delay=0, stop_at=None, deadline=1000,
-                clock_jitter=0):
+                clock_jitter=0, early_wake_seconds=None):
         owner = self
         class Stop:
             def is_set(self):
                 return len(owner.sent) >= count or (stop_at is not None and owner.now >= stop_at)
             def wait(self, seconds):
+                if early_wake_seconds is not None:
+                    seconds = min(seconds, early_wake_seconds)
                 owner.now = min(owner.now+seconds, stop_at) if stop_at is not None else owner.now+seconds
                 return self.is_set()
         def request(action, session, budget):
@@ -105,6 +107,20 @@ class ObserverTests(unittest.TestCase):
         self.assertEqual(self.sent, list(range(40)))
         self.assertEqual(self.now, 40)
         self.assertEqual(len((self.game / 'latency.jsonl').read_text().splitlines()), 40)
+
+    def test_early_wakes_preserve_query_spacing_and_final_deadline_wait(self):
+        with self.assertRaisesRegex(TimeoutError, 'aggregate budget'):
+            self.observe(1, 100, deadline=31.25, early_wake_seconds=.2)
+        self.assertEqual(self.sent, list(range(32)))
+        self.assertEqual(self.now, 31.25)
+        rows = [json.loads(line) for line in (self.game / 'latency.jsonl').read_text().splitlines()]
+        self.assertEqual([row['sent'] for row in rows], self.sent)
+
+    def test_early_wakes_remain_interruptible_in_final_deadline_wait(self):
+        rows = self.observe(1, 100, deadline=31.75, early_wake_seconds=.2, stop_at=31.3)
+        self.assertEqual(self.sent, list(range(32)))
+        self.assertEqual(len(rows), 32)
+        self.assertEqual(self.now, 31.3)
 
     def test_actual_host_query_caps_caller_budget_by_allocation_and_phase_remainder(self):
         (self.game / 'config').mkdir()

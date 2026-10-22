@@ -35,15 +35,23 @@ def sample(request, clock, wait, *, duration, cadence, max_samples,
             target += missed_before*cadence
         if target >= end:
             break
-        if now < target:
+        # Event.wait may return before its timeout (including clock/timer
+        # resolution differences). Recheck the same target, never send early.
+        while now < target and not stopped():
             wait(target - now)
+            woke = clock()
+            if woke < now:
+                raise ValueError('Monotonic clock moved backwards')
+            now = woke
+            if now >= end:
+                break
         if stopped():
             break
         sent = clock()
         if sent >= end:
             break
-        if sent < max(target, last_time):
-            raise ValueError('Sampling wait did not reach its monotonic target')
+        if sent < max(target, now):
+            raise ValueError('Monotonic clock moved backwards')
         row = {'scheduled': target, 'sent': sent,
                'deadline_misses': missed_before + max(0, int((sent-target)//cadence))}
         try:

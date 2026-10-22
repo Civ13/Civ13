@@ -122,6 +122,68 @@ class SourceTests(unittest.TestCase):
 
 
 class SamplerTests(unittest.TestCase):
+    def test_repeated_early_wakes_wait_remaining_time_without_early_samples(self):
+        clock, waits, sent = Clock(), [], []
+        def wait(seconds):
+            waits.append(seconds)
+            # Include a wake with no observed clock progress, then two early
+            # wakes. The final wait reaches the original target exactly.
+            clock.now += (0, .25, .5)[len(waits)-1] if len(waits) <= 3 else seconds
+        def request(timeout):
+            sent.append(clock.now)
+            self.assertLessEqual(timeout, 1)
+            return 7
+        rows = sampler.sample(request, clock, wait, duration=3, cadence=1, max_samples=3)
+        self.assertEqual(waits, [1, 1, .75, .25, 1])
+        self.assertEqual(sent, [0, 1, 2])
+        self.assertEqual([row['scheduled'] for row in rows], sent)
+        self.assertTrue(all(row['heartbeat'] == 7 and row['deadline_misses'] == 0 for row in rows))
+
+    def test_cancellation_during_early_wake_sends_no_more_requests(self):
+        clock, sent = Clock(), []
+        cancelled = False
+        def wait(seconds):
+            nonlocal cancelled
+            clock.now += seconds / 2
+            cancelled = True
+        rows = sampler.sample(lambda timeout: sent.append(clock.now) or 7, clock, wait,
+                              duration=3, cadence=1, max_samples=3, stopped=lambda: cancelled)
+        self.assertEqual(sent, [0])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(clock.now, .5)
+
+    def test_early_wake_then_deadline_overrun_stops_without_request(self):
+        clock, waits, budgets = Clock(), [], []
+        def wait(seconds):
+            waits.append(seconds)
+            clock.now += .5 if len(waits) == 1 else 1
+        rows = sampler.sample(lambda timeout: budgets.append(timeout) or 7, clock, wait,
+                              duration=3, cadence=1, max_samples=3, deadline=1.25)
+        self.assertEqual(waits, [1, .5])
+        self.assertEqual(budgets, [1])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(clock.now, 1.5)
+
+    def test_clock_reversal_during_wait_refuses_and_retains_prior_rows(self):
+        clock, retained = Clock(), []
+        def wait(seconds):
+            clock.now -= .1
+        with self.assertRaisesRegex(ValueError, 'Monotonic clock moved backwards'):
+            sampler.sample(lambda timeout: 7, clock, wait, duration=3, cadence=1,
+                           max_samples=3, record=retained.append)
+        self.assertEqual([row['sent'] for row in retained], [0])
+
+    def test_wait_failure_propagates_and_retains_prior_rows(self):
+        clock, retained = Clock(), []
+        failure = OSError('injected wait failure')
+        def wait(seconds):
+            raise failure
+        with self.assertRaises(OSError) as raised:
+            sampler.sample(lambda timeout: 7, clock, wait, duration=3, cadence=1,
+                           max_samples=3, record=retained.append)
+        self.assertIs(raised.exception, failure)
+        self.assertEqual([row['sent'] for row in retained], [0])
+
     def test_observed_counter_stalls_and_timeout_are_not_filled(self):
         clock = Clock()
         def request(timeout):
