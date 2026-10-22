@@ -1,3 +1,30 @@
+## Extraction integration baseline
+
+The source oracle now pins extraction head `a8d3950f08aaa55db59ec5f20777a475b2db95bb` before its master integration. This preserves the already-reviewed restore-admission wrappers and cleanup exclusions while applying master's explicit reserved-lighting policy to both dispatch variants. It does not certify extraction recovery or restore performance. Historical native receipts and allocations remain historical; this change does not authorize the held native runner.
+
+## Current-master integration (2026-10-20)
+
+The active baseline is pinned to master
+`5bf351248de6050876fe5b53f91209a970cc5668`. Its three switch hooks are
+reconstructed as list dispatch before applying the same reserved policy to both
+variants. Offline tests require those reconstructed hooks to equal the historical
+`5ac2df3` hooks byte for byte, including mining guards. All other current-master
+bytes, including save-failure diagnostics, remain under whole-file equality;
+missing hooks and diagnostic mutations are rejected. This refresh changes the
+test reference only, not production behavior or the separate native hold.
+
+## Reserved-lighting integration policy
+
+The historical list baseline is explicitly projected with two new exclusions:
+`turf.lighting_reserved` and `area.lighting_reserved_clearance_enabled`. Strict,
+unique source anchors reject partial/duplicate projections and all unrelated
+file drift. Native comparison now checks list-versus-switch dispatch under this
+same new policy, NOT unchanged historical policy. The area hook is compiled in
+both variants; direct assertions require both new exclusions independently of
+parity. Mining ownership, root parent behavior and restored-lighting guards stay
+in the exact source contract. The reserved-lighting CI selection also runs this
+suite and its three causal controls.
+
 # Persistence exclusion dispatch
 
 Candidate: replace the atom, turf and mob runtime-exclusion temporary name lists

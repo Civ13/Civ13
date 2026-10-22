@@ -104,6 +104,9 @@ jobs:
       - name: Test disabled gameplay bridge contracts without native processes
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/gameplay_bridge')
         run: python3 -B -m unittest discover -s tests/gameplay_bridge -v
+      - name: Test inactive reserved lighting clearance and executor guards offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
+        run: python3 -B -m unittest discover -s tests/reserved_lighting -p 'test_*.py' -v
       - name: Test offline evidence checker
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_game_evidence.py')
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
@@ -686,19 +689,19 @@ jobs:
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
       - name: Check exclusion dispatch source while native execution is held
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
         run: |
           python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
           python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
       - name: Verify Linux exclusion dispatch parity and mutation controls
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
         timeout-minutes: 5
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/exclusion_dispatch/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/exclusion-native"
       - name: Retain Linux exclusion dispatch evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch'))
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}
@@ -1020,6 +1023,7 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/persistence-admission"
           export TMPDIR="$RUNNER_TEMP/persistence-admission"
+          python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_source.py' -v
           python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
           python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recheck
@@ -1030,6 +1034,31 @@ jobs:
         with:
           name: persistence-admission
           path: ${{ runner.temp }}/persistence-admission/
+          if-no-files-found: error
+      - name: Native reserved lighting parity and causal controls
+        shell: bash
+        timeout-minutes: 35
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/reserved_lighting/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/reserved-lighting"
+      - name: Retain reserved lighting parity evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reserved-lighting
+          # Retain receipts and generated test sources, not linked game assets or binaries.
+          path: |
+            ${{ runner.temp }}/reserved-lighting/parity.json
+            ${{ runner.temp }}/reserved-lighting/*/manifest.json
+            ${{ runner.temp }}/reserved-lighting/*/*.log
+            ${{ runner.temp }}/reserved-lighting/*/result.txt
+            ${{ runner.temp }}/reserved-lighting/*/port-closed.txt
+            ${{ runner.temp }}/reserved-lighting/*/states.jsonl
+            ${{ runner.temp }}/reserved-lighting/*/*.dm
+            ${{ runner.temp }}/reserved-lighting/*/*.dme
+            ${{ runner.temp }}/reserved-lighting/*/code/**/*.dm
+          retention-days: 7
           if-no-files-found: error
       - name: Isolated save restart transaction regression
         id: restart_transaction
