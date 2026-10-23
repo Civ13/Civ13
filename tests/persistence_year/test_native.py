@@ -35,6 +35,8 @@ class NativePacketTests(unittest.TestCase):
                 self.assertIn("persistence_year_disk(2)", probe)
                 self.assertIn("persistence_year_disk(1)", probe)
                 self.assertIn('global.game_id = "persistence-year-native-fixture"', probe)
+                self.assertIn('map.ensure_node_entry("A", "fixture-node")', probe)
+                self.assertIn('map.set_prototype_submitted("A", "fixture-node")', probe)
                 self.assertNotIn("/world/proc/unused_durable_startup", probe)
                 self.assertFalse(list(output.glob("*.dmb")))
                 self.assertFalse((output / "daemon.log").exists())

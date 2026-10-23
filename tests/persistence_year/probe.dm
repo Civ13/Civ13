@@ -29,8 +29,13 @@ var/persistence_year_imports = 0
 	for(var/i = 1, i <= 8, i++) map.vars["age[i]_done"] = i <= tier
 	map.default_research = 181.25
 	map.custom_civs = list("A" = list(40, 50, 60))
-	var/list/shared = list("points" = 123.5, "completed" = list("bronze", "iron"))
-	map.faction_research = list("A" = shared, "B" = shared)
+	map.faction_research = list()
+	// Use production node records, not a synthetic string-array record shape.
+	var/list/entry = map.ensure_node_entry("A", "fixture-node")
+	entry[RNODE_ENTRY_STATUS] = RNODE_IN_PROGRESS
+	entry[RNODE_ENTRY_TICKS] = 123.5
+	map.set_prototype_submitted("A", "fixture-node")
+	map.faction_research["B"] = map.faction_research["A"]
 	map.faction_baseline_era = list("A" = 1, "B" = 3)
 	// Activation must not start an unrelated sleeper in this isolated fixture.
 	map.autoresearch = TRUE
@@ -116,7 +121,13 @@ var/persistence_year_imports = 0
 				durable_world_check(map.age == expected, "saved date floor lost")
 				durable_world_check(map.persistence == persistent, "saved mode flag lost")
 				durable_world_check(map.ordinal_age == 8 && map.age8_done, "saved higher tier lost")
-				durable_world_check(persistence_year_research() == research, "saved research progress lost")
+				var/restored_research = persistence_year_research()
+				if(restored_research != research)
+					world.log << "Expected synthetic research: [research]"
+					world.log << "Restored synthetic research: [restored_research]"
+				durable_world_check(restored_research == research, "saved research progress lost")
+				var/list/node = map.get_node_entry("A", "fixture-node")
+				durable_world_check(node && node[RNODE_ENTRY_STATUS] == RNODE_IN_PROGRESS && node[RNODE_ENTRY_TICKS] == 123.5 && map.node_prototype_submitted("A", "fixture-node"), "restored research API changed")
 				if(version == 2)
 					durable_world_check(map.faction_research["A"] == map.faction_research["B"], "saved research alias lost")
 				durable_world_check(file2text("map_saves/round.json") == header && file2text("map_saves/map.txt") == metadata && file2text("map_saves/save_complete.txt") == marker, "load rewrote saved generation")

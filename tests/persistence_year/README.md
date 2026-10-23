@@ -51,6 +51,9 @@ before autoload dispatch, invokes the actual admin toggle, and performs 24 actua
 `ticker.loadmap()` imports (12 disk generations, each loaded twice). These cover
 1903/1943/2023 and persistence on/off in both v2 durable and v1 positional saves.
 V2 checks restore faction data and shared aliases after clearing live progress;
+node records are created/read through production research APIs and preserve
+status, paid ticks and submitted-prototype state. The positive case requires
+exactly 333 assertions and 24 imports, not only a success marker.
 v1 lacks those durable fields, so checks their live preservation while restoring
 the available date/tier/default-research header. The v1 fixture is a Gaia child
 outside the existing durable-profile allowlist; production admission is intact.

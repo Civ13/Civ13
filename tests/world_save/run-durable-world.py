@@ -349,7 +349,7 @@ def main():
             if args.negative_control:
                 if result.get('done') or result.get('error') != expected_date_failure[args.negative_control]:
                     raise RuntimeError('Date control did not reach its named assertion: ' + str(result))
-            elif not result.get('done') or result.get('imports') != 24 or result.get('checks') != 309:
+            elif not result.get('done') or result.get('imports') != 24 or result.get('checks') != 333:
                 raise RuntimeError('Native date/import coverage incomplete: ' + str(result))
             receipt['result'] = result
             receipt['expected_failure_caught'] = bool(args.negative_control)
