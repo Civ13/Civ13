@@ -1,6 +1,7 @@
 # Ordered movement discovery candidate
 
-Pinned master: `978a13d526ecc891fd7e755b7d6d6add2ca720ec`.
+Audited source oracle: `978a13d526ecc891fd7e755b7d6d6add2ca720ec`.
+Integrated master: `9154b274a33cf3baab9939ed5b920fd24a485b72` by normal merge.
 Issue: https://github.com/Civ13/Civ13/issues/3267 (movement discovery only).
 
 Run offline with a verified Python executable:
@@ -14,8 +15,10 @@ ordered complex-animal subset. They do not infer membership from stat, remove
 duplicates, use dog_mob_list, filter z, or prune geometry. All surrounding caller
 guards and the full movement files are projected against immutable Git source.
 The animal body intentionally retains its existing `abs(x - C.y)` calculation.
-No existing feature branch is imported. This is an uncommitted local candidate;
-publication and acceptance belong to the parent review.
+No existing feature branch is imported. The parent reviewed the production diff
+and authorized draft publication. Native and final acceptance remain pending.
+The master merge retained both independent guarded movement and ping CI steps;
+there was no production-code conflict or change to the reviewed movement diff.
 
 ## Complete production mutation audit
 
