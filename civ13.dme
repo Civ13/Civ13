@@ -1109,6 +1109,7 @@
 #include "code\modules\organs\subtypes\standard.dm"
 #include "code\modules\organs\subtypes\unbreakable.dm"
 #include "code\modules\persistence\admin.dm"
+#include "code\modules\persistence\variable_observability.dm"
 #include "code\modules\persistence\functions.dm"
 #include "code\modules\persistence\restart_transaction.dm"
 #include "code\modules\persistence\nomads_lifecycle.dm"

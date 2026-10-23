@@ -75,6 +75,9 @@
 		for(var/v in savefile.dir)
 			savefile.cd = entry_path(savefile, ind)
 			if(object.persistence_runtime_var(v))
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+				variable_observability_skipped(null, TRUE)
+#endif
 				continue
 			if(v == "type")
 				continue

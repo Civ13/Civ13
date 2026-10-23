@@ -534,6 +534,68 @@ adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
 
+<!-- 2026-10-23: private variable observability -->
+Before asking an operator to manipulate native BYOND variables, inspect the
+implemented structured paths in `docs/variable-observability.md`. Run
+`scripts/nomads-lifecycle/agent_debug.py discover` offline first. For an already
+authorized installed runtime, `agent_debug.py recovery --root <private-root>
+--revision <installed-40-hex>` returns `data.variable_identity`; use its exact
+session/round with `variable_observability.py --root <private-root> --revision
+<installed-40-hex> --session <observed-32-hex> --round-id <observed-round>`.
+Use a verified full Python executable. Each runtime command makes one existing
+authenticated loopback status read with a 15-second/32-KiB limit and no retry.
+The schema-1 status field is `debug.variables`; reader evidence is
+`data.failure`, with active/last save/load ownership alongside it. There is no
+generic runtime variable MCP tool or arbitrary ref lookup.
+Check `data.failure_error`: stale, mismatched, partial or malformed retained
+failure evidence is withheld without hiding independently valid current/last
+operation ownership. `ok:true` is not acceptance of a rejected retained capture.
+Null scalar throw fields mean unknown and remain distinct from numeric zero;
+the reader does not invent a never-thrown default.
+
+Collection/exposure and automatic local output remain default-off until a
+separately authorized exact-build deployment/restart and local opt-in using
+`config/variable-observability.txt` containing `enabled`, existing lifecycle
+credentials/revision, and an operator-private runtime `data/` directory. Do not
+activate them from source/PR approval or claim this tooling is already live.
+The automatic path is runtime-relative
+`data/variable-observability-last-failure.json`; the reader's `--input <file>`
+mode is offline and requires independently obtained expected revision/session/
+round. Keep raw captures private. Unknown fields are stripped, but refs/types/
+coordinates remain operational data requiring review before public sharing.
+
+For an `original_target` save rejection, inspect source type/field/entry,
+source/target physical turf z, fixed throw links, throwing flag, thrown-list
+prefix membership, destruction flags and operation ID/stage together. A
+truncated registry miss is unknown. `rejected_by_persistence_guard` describes
+the rejection, while saturated runtime skip-decision counts observe the existing
+`persistence_runtime_var` policy; neither authorizes nulling links or proves live
+cleanup. The separate persistence fix owns that policy. Preserve guard failures.
+
+Default reads expire after 60 UTC seconds and must match build, boot,
+round and, for status failures, current/last operation plus tick bounds and a
+realtime reversal check.
+UTC uses the finer `world.timeofday` input with explicit UTC formatting and a
+midnight rollover rejection. Epoch `world.realtime` is coarse metadata; only
+reversal is checked there, while UTC and ticks enforce bounded age. Never relax
+future-time rejection to hide epoch floating-point rounding.
+Re-reading retained evidence does not refresh it. Explicit `--historical` is
+allowed only with offline `--input` and
+labels evidence `historical_only`; it cannot refresh or query live identities.
+Native refs and pooled objects can be reused;
+`capture_only`/`generation: unavailable` must never be treated as
+durable or current identity, even when type/location match. Depth is eight,
+owner frames eight, registry prefixes 256, output 32 KiB; missing, partial and
+stale data are explicit unknown/error states. No eval, generic proc invocation,
+mutation, credentials, relaxed protections or listener is introduced.
+Offline synthetic reader/source checks and native-packet preparation are covered.
+The `df639b1` tiny native attempt emitted 22 successful checks but failed overall
+reader/ownership acceptance and logged a startup loopback bind; preserve that
+failed verdict. The source UTC correction is not native-verified. Topic and full
+save/load/gameplay acceptance remain unverified. Compilation CI is separate
+evidence bound to its tested head. Observation
+does not authorize save/load, restart, cleanup or other live mutation.
+
 <!-- 2026-10-17: bounded own-host agent diagnostics -->
 `docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
 the existing loopback/token/R_HOST lifecycle transport. Pair/trace/bundle are
