@@ -300,7 +300,7 @@ def main():
         diagnostics = (log + run.stdout + run.stderr).lower()
         if re.search(r'\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b', diagnostics, re.I):
             raise RuntimeError('Fatal native diagnostic invalidated fixture')
-        if (args.lighting or args.wounds) and re.search(r'\bbug:', diagnostics):
+        if (args.lighting or args.wounds or args.persistence_year) and re.search(r'\bbug:', diagnostics):
             raise RuntimeError('Native lighting/wound engine diagnostic invalidated fixture')
         if (re.search(r'##\s*error\s*:', diagnostics) or
                 any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error', 'segmentation', 'assertion failed'))):
@@ -349,7 +349,7 @@ def main():
             if args.negative_control:
                 if result.get('done') or result.get('error') != expected_date_failure[args.negative_control]:
                     raise RuntimeError('Date control did not reach its named assertion: ' + str(result))
-            elif not result.get('done') or result.get('imports') != 24 or result.get('checks', 0) < 100:
+            elif not result.get('done') or result.get('imports') != 24 or result.get('checks') != 309:
                 raise RuntimeError('Native date/import coverage incomplete: ' + str(result))
             receipt['result'] = result
             receipt['expected_failure_caught'] = bool(args.negative_control)

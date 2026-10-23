@@ -259,6 +259,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: persistence-year-${{ github.event.pull_request.head.sha || github.sha }}
+          include-hidden-files: true
           path: |
             ${{ runner.temp }}/persistence-year/**/*.json
             ${{ runner.temp }}/persistence-year/**/*.log

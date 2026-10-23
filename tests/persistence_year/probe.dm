@@ -138,6 +138,7 @@ var/persistence_year_imports = 0
 		config.ToRban = FALSE
 		ticker = new
 		ticker.current_state = GAME_STATE_PREGAME
+		global.game_id = "persistence-year-native-fixture"
 		processes.time_of_day = new
 		processes.weather = new
 		map_storage.record_compiled_dimensions()

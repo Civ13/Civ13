@@ -34,6 +34,7 @@ class NativePacketTests(unittest.TestCase):
                 self.assertIn("ticker.loadmap()", probe)
                 self.assertIn("persistence_year_disk(2)", probe)
                 self.assertIn("persistence_year_disk(1)", probe)
+                self.assertIn('global.game_id = "persistence-year-native-fixture"', probe)
                 self.assertNotIn("/world/proc/unused_durable_startup", probe)
                 self.assertFalse(list(output.glob("*.dmb")))
                 self.assertFalse((output / "daemon.log").exists())
