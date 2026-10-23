@@ -29,7 +29,7 @@ Reference: https://www.byond.com/docs/ref/info.html#/area
 ## Offline preparation
 
 ```
-<verified-python> -B tests/roof_area_recovery/test_preparation.py -v
+<verified-python> -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
 <verified-python> -B tests/world_save/run-durable-world.py --roof-areas --prepare-only
 <verified-python> -B tests/world_save/run-durable-world.py --roof-areas --prepare-only --roof-control projection
 <verified-python> -B tests/world_save/run-durable-world.py --roof-areas --prepare-only --roof-control cleanup-namespace
@@ -45,6 +45,42 @@ compile or execute the new fixture. Offline passes do not establish recovery.
 
 Use a separately reviewed immutable packet and normal resource admission.
 No native execution is requested by this document or enabled by the preparer.
+The separately prepared `run_linux.py` runner is not invoked by any workflow.
+Its execution gate requires isolated Linux PR CI for Civ13/Civ13, the existing
+installed BYOND516.1681 engine, a new output under RUNNER_TEMP, exact source head,
+an external request SHA256 and the fixed packet contract. It denies Desktop
+execution before reading the packet or creating output.
+
+It reuses the accepted collector runner's retained-leader WNOWAIT identity,
+process-group cleanup, native census and owned-socket inspection functions.
+Engine hashes are pinned to the accepted CI40019637842/artifact12530610922
+manifest: DreamMaker `b9f175ac9a24662a9ba6fa64652b669aff77ff4787b81b84497dff544f166677`,
+DreamDaemon `112b3f4e74b95d82b7e117de35fae70f773e4b770a3302f8c0c33758f9e2f4e1`.
+Child environments contain only engine paths, isolated HOME/TMPDIR and locale.
+No GitHub credentials or native user session variables are inherited.
+Each synthetic case receives only the tracked public `config/tips.txt` and
+`config/names` inputs. Token, admin and operator configuration is never staged.
+
+Offline packet preparation, one new directory per variant:
+
+```
+<verified-python> -I -B tests/roof_area_recovery/run_linux.py --prepare-only --packet-dir <new-path> --expected-head <reviewed-commit> --variant main
+```
+
+Repeat for variants `projection` and `cleanup-namespace`. Preparation records
+all canonical Git-blob source hashes, deterministic public crafting-catalog
+output, every prepared input hash, engine pins, caps and exact phase sequence.
+It never invokes the compiler or daemon. Source and resource review is required
+before using the separate CI-only execution entry; packet creation is not a grant.
+After that review, its fixed execution command is:
+
+```
+python3 -I -B tests/roof_area_recovery/run_linux.py --packet-dir <frozen-packet> --expected-head <same-reviewed-commit> --request-sha256 <reviewed-request-sha256> --output <new-RUNNER_TEMP-child> --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+```
+
+This command is documentation, not authorization or an enabled CI step. Run the
+three variants sequentially with fresh output directories. The caller never
+rewrites a request or retries a failed native invocation.
 Proposed limits: one compiler at a time (180s), then one child at a time (60s
 per mode), 30s total cleanup allowance, 1024 MiB per compiler/daemon process,
 120 MiB aggregate generated-artifact budget, logs capped at 1 MiB per phase,
@@ -54,14 +90,23 @@ compiled old-defect or cleanup-namespace control has its own 330s outer cap
 sequentially, with no shared grant or automatic retry. Any cap failure
 rejects acceptance and retains evidence. Ownership, child exit and absence of
 remaining listeners must be checked externally; in-world port closure alone is
-not enough. Startup uses a single fixed reviewed loopback port, then the
+not enough. Startup uses only `127.0.0.1:19327`, then the
 fixture closes it, rejects reopening and rejects every client. No public probes.
+Before any fixture body runs, a ten-second file handshake requires external
+owned-socket closure acknowledgement. Failure or missing acknowledgement rejects
+the phase. Every child has hard address-space/CPU/file/core limits, observed
+single-child membership and file/log/controller budgets. The native source and
+compiled pair are rehashed, writer payloads are preserved, and owned cleanup plus
+the final native census must succeed. Logs and failed fixture copies are retained.
 
 1. Compile full production sources with the synthetic fixture on BYOND516.1681.
 2. Fresh `roof_mode=write` creates real supported roofs on two levels and a
    disabled-roof subtype, ordinary object area
    references, nested list aliases/area keys and a durable metadata area edge.
    It exports a real generation and validates the writer's still-roofed world.
+   It then clears bookkeeping, destroys a roof through the real Destroy path,
+   checks the restored base area, and validates the unchanged disk generation
+   against that altered topology. `write-covered` does the same.
 3. Retain and hash those synthetic payloads. Copy them separately for each mode.
 4. Fresh `roof_mode=read` starts unroofed, preflights without world mutation,
    then imports and checks exact area/roof aliases, roof location/settings,
@@ -78,18 +123,20 @@ fixture closes it, rejects reopening and rejects every client. No public probes.
    predicate with equal numeric refs on different z-levels, including the
    positive same-z retention case, and verifies disabled-roof settings/topology.
 7. Old-defect control: `--roof-control projection` prepares a source copy with
-   only the projection call removed. Run `write` then `old-defect`. The writer must still succeed; the fresh
+   only the projection call removed. Run `write-roofed` then `old-defect`. This
+   writer validates before AND after bookkeeping cleanup without removing its
+   roof, so it cannot fail solely because the projection is absent. The fresh
    reader must reproduce the exact area-reference rejection before import.
    Do not call an unrelated crash a pass.
 8. Cleanup-namespace control: `--roof-control cleanup-namespace` replaces only
    `is_loaded_validated_roof` in a source copy with the old unscoped coordinate/ref predicate. Run
-   `write` then `read`; it must reach and fail the named cross-z collision check.
+   `write-roofed` then `read`; it must reach and fail the named cross-z collision check.
    The original candidate must pass that same check. This control must not be
    accepted based on any other exception.
 
 Retain source/DME/patch hashes, compiler output, per-mode result/log hashes,
 process birth/exit identities, external socket observations and cleanup receipts.
-The proposed limits and fixtures are not a grant or an executable runner.
+The proposed limits, fixtures and offline packets are not an execution grant.
 
 ## Private generation acceptance
 

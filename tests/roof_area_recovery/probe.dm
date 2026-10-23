@@ -10,15 +10,24 @@
 
 /world
 	visibility = 0
+	sleep_offline = FALSE
 
 /world/OpenPort(port)
 	return ..("none")
 /client/New()
 	del(src)
+/world/Topic()
+	return null
 
 /world/New()
 	OpenPort("none")
 	try
+		OpenPort(19327) // The fixture override must refuse reopening.
+		durable_world_check(!world.port, "Fixture listener did not close")
+		text2file("closed", "probe-port-closed.txt")
+		var/closure_deadline = world.realtime + 100
+		while(!fexists("probe-port-closed.ack") && world.realtime < closure_deadline) sleep(1)
+		durable_world_check(fexists("probe-port-closed.ack") && findtext(file2text("probe-port-closed.ack"), "closed") == 1, "External listener closure was not acknowledged")
 		config = new
 		config.webhook_can_fire = FALSE
 		config.ToRban = FALSE
@@ -34,8 +43,8 @@
 		var/area/caribbean/nomads/semiarid/base = locate(/area/caribbean/nomads/semiarid)
 		for(var/turf/T in world) ChangeArea(T, base)
 		var/mode = world.params["roof_mode"]
-		durable_world_check(mode in list("write", "write-covered", "read", "read-covered", "missing-roof", "wrong-base", "missing-scalar", "disabled-roof", "unrelated-area", "duplicate-area", "duplicate-placement", "empty-instance", "postflight-empty", "old-defect"), "Unknown roof fixture mode")
-		if(mode in list("write", "write-covered"))
+		durable_world_check(mode in list("write", "write-roofed", "write-covered", "read", "read-covered", "missing-roof", "wrong-base", "missing-scalar", "disabled-roof", "unrelated-area", "duplicate-area", "duplicate-placement", "empty-instance", "postflight-empty", "old-defect"), "Unknown roof fixture mode")
+		if(mode in list("write", "write-roofed", "write-covered"))
 			// This item is visited before its referenced roof turf. Nested list
 			// keys/values and aliases must resolve to the SAME reconstructed area.
 			var/obj/item/roof_area_fixture/item = new(locate(1,1,1))
@@ -64,6 +73,16 @@
 			durable_world_check(op && map_storage.run_world_operation("save", op), "Synthetic roof export failed")
 			durable_world_check(op.finish(TRUE), "Synthetic save admission not released")
 			durable_world_check(map_storage.validate_world_save(), "Saved roof writer validation failed: [map_storage.last_error]")
+			map_storage.clear_bookkeeping()
+			if(mode != "write-roofed")
+				qdel(roof)
+				sleep(1)
+				durable_world_check(get_area(locate(3,3,1)) == base, "Writer roof destruction did not restore base area")
+				durable_world_check(map_storage.validate_world_save(), "Writer could not validate disk topology after roof destruction and cleanup")
+			else
+				// The omission control must not fail its writer just because its
+				// projection is disabled. This world is still physically roofed.
+				durable_world_check(map_storage.validate_world_save(), "Already-roofed control writer failed after bookkeeping cleanup")
 		else
 			var/area/before_area = get_area(locate(3,3,1))
 			var/list/state = map_storage.read_round_state()
