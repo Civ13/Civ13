@@ -400,6 +400,20 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-23: footwear water composition -->
+Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
+clothing dirtyness only supplies examine text. Water filters must group the
+footwear image with its nested stain (KEEP_TOGETHER only while masked), and
+new update_inv_shoes images need the current mask before publication. Keep
+durable stain data intact. tests/footwear_water_mask checks source contracts
+and prepares a tiny production-proc fixture; compilation/source checks do not
+establish native client clipping, stance, movement or lighting acceptance.
+The pinned native image getter returned lowercase #RRGGBB text for the tested
+blood/mud inputs. The fixture comparator first requires text of exactly seven
+characters matching #RRGGBB, then ignores hexadecimal case. Never coerce nulls,
+named colors or matrices. Keep wrong-channel/missing-stain controls and preserve
+the earlier failed raw-text comparison receipts; diagnostics are not pixels.
+
 <!-- 2026-10-23: persistence minimum date -->
 Persistence activation, configured startup and completed metadata restoration use
 apply_persistence_age_floor(). age is the displayed date/epoch; ordinal_age is a
