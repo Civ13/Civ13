@@ -2,6 +2,8 @@
 /process/ping_track
 	var/avg = 0
 	var/client_ckey_check[1000]
+	var/tmp/ping_total = 0
+	var/tmp/clients_checked = 0
 
 /process/ping_track/setup()
 	name = "Ping Tracking"
@@ -15,34 +17,43 @@
 	if (!current_list.len)
 		return
 
-	avg = 0
 	if (world && world.time > 864000)
+		avg = 0
+		ping_total = 0
+		clients_checked = 0
 		disabled = TRUE
 		return
-	var/clients_checked = 0
 
-	for (var/client/C in current_list)
-		if (!C)
-			continue
-
-		// this nasty code if else block fixes the "Unrecognized or inaccessible verb: .update_ping" error - Kachnov
-		if (!hascall(C, ".update_ping")) // BYOND treats "update_ping" and ".update_ping" the same here, for reference
-			continue
-		if (!client_ckey_check[C.ckey])
-			client_ckey_check[C.ckey] = world.time+100
-			continue
-		if (world.time < client_ckey_check[C.ckey])
-			continue
-
-		winset(C, null, "command=.update_ping+[world.time+world.tick_lag*world.tick_usage/100]")
-		if (C)
-			avg += C.last_ping
-		++clients_checked
-
+	for (current in current_list)
+		var/client/C = current
+		track_client(C)
+		PROCESS_LIST_CHECK
+		// Publish before the final budget check can return from fire().
+		if (!current_list.len)
+			avg = clients_checked ? ping_total / clients_checked : 0
+			ping_total = 0
+			clients_checked = 0
 		PROCESS_TICK_CHECK
 
-	if (clients_checked)
-		avg /= clients_checked
+/process/ping_track/proc/track_client(client/C)
+	if (!C)
+		return
+
+	// BYOND treats "update_ping" and ".update_ping" the same for hascall.
+	if (!hascall(C, ".update_ping"))
+		return
+	if (!client_ckey_check[C.ckey])
+		client_ckey_check[C.ckey] = world.time+100
+		return
+	if (world.time < client_ckey_check[C.ckey])
+		return
+
+	winset(C, null, "command=.update_ping+[world.time+world.tick_lag*world.tick_usage/100]")
+	if (C)
+		ping_total += C.last_ping
+	++clients_checked
 
 /process/ping_track/reset_current_list()
+	ping_total = 0
+	clients_checked = 0
 	PROCESS_USE_FASTEST_LIST(clients)

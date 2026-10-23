@@ -286,6 +286,11 @@ deleted benches. tests/research_scheduler checks source-derived offline traces
 and the audited tail-loss control; native iteration/GC acceptance is still pending.
 Subclass post-loop aggregation must account for final-entry EARLY normalization.
 
+<!-- 2026-10-22: ping pass aggregation -->
+Ping retains per-pass sum/count across budget returns and publishes before the
+final-entry budget check. Every skipped client still consumes its snapshot entry.
+tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
+
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
 including repeated nulls; a guarded front `Cut(1,2)` is not equivalent.
