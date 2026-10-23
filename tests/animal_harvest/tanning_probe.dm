@@ -343,9 +343,13 @@
 	tanning_liquid_regressions(site)
 	tanning_vessel_regressions(site)
 	tanning_rack_regressions(site)
+	tanning_rack_transfer_regressions(site)
+	tanning_recipe_regressions()
 	tanning_timer_regressions(site)
 	tanning_save_regressions(site)
 	tanning_turkey_regressions(site)
 	world.log << "PASS: tanning preparation/washing/tannin, bounded stack accounting, rack cancellation/epochs/destruction/save recovery, turkey anatomy and yields"
 
 #include "vessel_probe.dm"
+#include "rack_transfer_probe.dm"
+#include "hide_recipe_probe.dm"

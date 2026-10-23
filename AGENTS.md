@@ -766,6 +766,22 @@ see the whole holder volume. The rack preserves actual contents and excludes its
 runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.py`
 is offline evidence; `tanning_probe.dm` requires separate native acceptance.
 
+Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
+not stage stacks through a turf. Legacy human `drop_from_inventory` overrides
+discard the parent's return: a null result can follow a successful floor drop.
+Use the production human subtype in transfer tests, not just a `/mob/living` stub.
+Production `stack/Crossed` merges floor pieces
+into the arriving stack; clear hand/HUD ownership only after destination admission,
+check actual location, and restore the hand on rejection/redirect. Keep nodrop and
+persistence movement checks. [Rack transfer regressions](tests/animal_harvest/rack_transfer_probe.dm) cover
+human inventory, floor-merge controls, bags, and explicit movement-failure adapters;
+those adapters do not establish the exact trigger of an unobserved live failure.
+Raw, prepared, wet and dry hides are `processing_only` materials: softness is not
+a crafting permission. Clear cached recipes before that guard and mirror it in
+Atlas export. [Hide recipe regressions](tests/animal_harvest/hide_recipe_probe.dm) use the actual global catalog plus explicit
+research admission; it rejects intermediate utensils while retaining leather/pelt
+recipes. [Atlas contracts](tests/test_tanning_atlas.py) check the exported processing-only boundary.
+
 <!-- 2026-10-11: finite fracking verification -->
 - `tests/hydraulic_fracturing/probe.dm` checks finite terrain conversion, batch
   costs, replacement cancellation and native contained-input disk saves through
