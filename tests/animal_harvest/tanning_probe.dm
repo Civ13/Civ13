@@ -8,6 +8,12 @@
 /mob/living/harvest_tester/tanning/hide_worker_connected()
 	return tanning_action != "disconnected"
 
+/mob/living/harvest_tester/tanning/drop_from_inventory(obj/item/W, atom/Target = null, ignore_nodrop = FALSE)
+	. = ..()
+	if (istype(Target, /obj/structure/converter/tanning))
+		world.log << "TANNING production drop: result=[.] inside=[W.loc == Target] nodrop=[W.nodrop] special=[W.nodrop_special_check()]"
+	return .
+
 /mob/living/harvest_tester/tanning/hide_preparation_wait(atom/target)
 	var/obj/item/stack/material/hide = target
 	if (tanning_action == "cancel")
@@ -66,7 +72,7 @@
 	var/obj/structure/converter/tanning/rack = new(site)
 	wet.forceMove(worker)
 	worker.l_hand = wet
-	world.log << "TANNING rack admission: valid=[hide_worker_can_reach(worker, wet)] held=[worker.item_is_in_hands(wet)] inventory=[wet.loc == worker] turf=[isturf(rack.loc)] adjacent=[worker.Adjacent(rack)] contents=[rack.contents.len] amount=[wet.amount]"
+	world.log << "TANNING rack admission: valid=[hide_worker_can_reach(worker, wet)] held=[worker.item_is_in_hands(wet)] inventory=[wet.loc == worker] turf=[isturf(rack.loc)] adjacent=[worker.Adjacent(rack)] contents=[rack.contents.len] amount=[wet.amount] max=[wet.max_amount] type=[wet.type] rack_deleted=[QDELETED(rack)]"
 	rack.attackby(wet, worker)
 	world.log << "TANNING rack loaded: inside=[wet.loc == rack] filled=[rack.filled] epoch=[rack.drying_epoch] same_site=[rack.loc == site] deleted=[QDELETED(wet)] amount=[wet.amount]"
 	harvest_assert(wet.loc == rack, "Pipeline wet hide was not admitted to rack")
