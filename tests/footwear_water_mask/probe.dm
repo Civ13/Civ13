@@ -84,10 +84,14 @@ var/global/color_control_applied = 0
 		return 0
 	if (length(actual) != 7 || length(expected) != 7)
 		return 0
-	var/regex/rgb_pattern = regex("^#[0-9A-Fa-f]{6}$")
-	if (!rgb_pattern.Find(actual) || !rgb_pattern.Find(expected))
+	var/actual_lower = lowertext(actual)
+	var/expected_lower = lowertext(expected)
+	if (copytext(actual_lower,1,2) != "#" || copytext(expected_lower,1,2) != "#")
 		return 0
-	return lowertext(actual) == lowertext(expected)
+	for (var/position = 2, position <= 7, position++)
+		if (!findtext("0123456789abcdef",copytext(actual_lower,position,position+1)) || !findtext("0123456789abcdef",copytext(expected_lower,position,position+1)))
+			return 0
+	return actual_lower == expected_lower
 
 var/global/color_scene_id = "unset"
 var/global/list/color_rows = list()

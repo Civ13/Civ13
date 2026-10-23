@@ -38,18 +38,22 @@ class FootwearMaskContracts(unittest.TestCase):
         body = probe[probe.index('/proc/footwear_rgb_equal('):probe.index('var/global/color_scene_id')]
         self.assertIn('if (!istext(actual) || !istext(expected))\n\t\treturn 0', body)
         self.assertIn('if (length(actual) != 7 || length(expected) != 7)\n\t\treturn 0', body)
-        pattern = re.search(r'regex\("([^"\n]+)"\)', body)[1]
-        self.assertEqual(pattern, '^#[0-9A-Fa-f]{6}$')
-        self.assertIn('if (!rgb_pattern.Find(actual) || !rgb_pattern.Find(expected))\n\t\treturn 0', body)
-        self.assertIn('return lowertext(actual) == lowertext(expected)', body)
+        self.assertNotIn('regex', body)
+        self.assertIn('var/actual_lower = lowertext(actual)', body)
+        self.assertIn('var/expected_lower = lowertext(expected)', body)
+        self.assertIn('if (copytext(actual_lower,1,2) != "#" || copytext(expected_lower,1,2) != "#")\n\t\treturn 0', body)
+        self.assertIn('for (var/position = 2, position <= 7, position++)', body)
+        for variable in ('actual_lower', 'expected_lower'):
+            self.assertIn(f'!findtext("0123456789abcdef",copytext({variable},position,position+1))', body)
+        self.assertIn('return actual_lower == expected_lower', body)
         cases = json.loads(source('tests/footwear_water_mask/rgb_cases.json'))
         self.assertEqual(len(cases), 32)
         for case in cases:
             actual, expected = case['actual'], case['expected']
             accepted = (type(actual) is str and type(expected) is str and
                         len(actual) == len(expected) == 7 and
-                        re.fullmatch(pattern, actual) is not None and
-                        re.fullmatch(pattern, expected) is not None and actual.lower() == expected.lower())
+                        re.fullmatch(r'#[0-9A-Fa-f]{6}', actual) is not None and
+                        re.fullmatch(r'#[0-9A-Fa-f]{6}', expected) is not None and actual.lower() == expected.lower())
             self.assertEqual(accepted, bool(case['equal']), case['name'])
         self.assertTrue(any(isinstance(c['actual'], list) for c in cases))
         self.assertTrue(any(c['actual'] is None for c in cases))

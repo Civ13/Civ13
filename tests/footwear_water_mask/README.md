@@ -75,11 +75,21 @@ Retained evidence hashes:
 - Diagnostic receipt: `0ee1123384c7f3300187fd83cd1f0c6f2e751040113a2759c9079a0ba9085db5`.
 - Complete diagnostics: `51ad55273ea7cf0a0d6c027d1f03ac2411879c5c9a9599954158a0d23cd7fcf4`.
 
-The corrected comparator accepts only text of length seven matching
-`^#[0-9A-Fa-f]{6}$`, then compares lowercase text. It rejects named/arbitrary
+The corrected comparator accepts only text of length seven with first character
+`#`, then checks all six remaining lowercase characters against
+`0123456789abcdef` using `copytext`/`findtext`, and compares the lowercase texts.
+It uses no regex or embedded-expression parsing. It rejects named/arbitrary
 colors, whitespace, alpha suffixes, nulls, numbers and matrices. The authored
 32-case JSON corpus exercises both operands and a changed RGB channel; it is
 used by both offline policy checks and the proposed native fixture.
+
+The first corrected three-case packet at `bb252fe` failed its initial native
+compile (`probe.dm:87:error: bad embedded expression [0-9A]`, 1 error, 0 warnings).
+No daemon or assertions ran. Preserve receipt
+`77671f2db40547d5bac938c093fcbe8711a433d96480c5d2baacde09a4aa736b`
+and compiler log `470cce628fa5689a44ddec3275c777cabe44f7acbd6b46ee8f067d4f17e94e55`.
+The fixed-length character validator replaces that fixture regex only; it does
+not change production, the 32-case corpus, assertions, native controls or runner.
 
 ## Native packet preparation, no implicit execution
 
