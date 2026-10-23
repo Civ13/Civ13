@@ -103,7 +103,7 @@
 	var/initial_prepared = action == "full" ? 50 : 49
 	var/obj/item/stack/material/hairlesshide/existing = new(site, initial_prepared, FALSE)
 	var/result = source.prepare_hide(worker, tool)
-	var/completed = action in list("complete", "concurrent", "full", "pelt", "realwait_complete")
+	var/completed = (action in list("complete", "concurrent", "full", "pelt", "realwait_complete"))
 	if (completed)
 		harvest_assert(result && source.amount == 1 && !source.preparing_hide, "Preparation did not pay exactly one hide: [action]")
 		harvest_assert(tanning_amount(site, /obj/item/stack/material/hairlesshide) == initial_prepared + 1, "Preparation duplicated/lost output on stocked turf: [action]")
