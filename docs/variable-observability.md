@@ -231,9 +231,12 @@ with source hashes and declares
 probe has minimal data/auth adapters and is not full serializer/transport evidence.
 The preparer's `--publication-mode` selects `writable` (default), `missing`,
 `obstructed` or `unwritable`. The missing case leaves the fixed private directory absent. The
-obstructed case creates a directory at the fixed output filename, then requires
+obstructed case creates a nonempty directory at the fixed output filename, then requires
 both a direct native file-write refusal and failed collector publication while
-preserving that directory and the in-memory capture. This changes no ACLs and
+preserving its sentinel file, that directory and the in-memory capture. The
+empty-directory version was rejected by hosted testing: publication replaced
+the empty directory, so it was not a durable obstruction. No assertion was removed.
+This changes no ACLs and
 is **not** evidence of an access-denied condition. The collector may reject at
 its deletion guard before reaching its write exception handler.
 The

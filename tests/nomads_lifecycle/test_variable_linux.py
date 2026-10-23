@@ -233,6 +233,13 @@ class LinuxCollector(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             m.native_log_path(compiled, '../outside')
 
+    def test_native_obstruction_keeps_refusal_and_marker_assertions(self):
+        source = Path(__file__).with_name('variable_probe.dm').read_text()
+        for assertion in ('real file-versus-directory write refusal', 'unavailable private output refused',
+                          'output obstruction remains a directory', 'nonempty output obstruction prepared',
+                          'direct write refusal preserves obstruction marker', 'collector refusal preserves obstruction marker'):
+            self.assertIn('"' + assertion + '"', source)
+
     def test_workflow_runs_only_introduced_tests_without_security_changes(self):
         source = (m.ROOT / '.github/workflows/test.yml').read_text()
         block = source.split('      - name: Verify private collector native publication', 1)[1].split('      - name: Verify bounded lighting startup ordering', 1)[0]

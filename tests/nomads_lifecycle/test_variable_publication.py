@@ -64,6 +64,8 @@ class Publication(unittest.TestCase):
                 self.assertEqual(receipt['unwritable_fixture_permissions_required'], mode == 'unwritable')
                 self.assertEqual((output / 'data/desktop-supervisor/variable-observability').is_dir(), mode != 'missing')
                 self.assertEqual((output / 'data/desktop-supervisor/variable-observability/last-failure.json').is_dir(), mode == 'obstructed')
+                if mode == 'obstructed':
+                    self.assertEqual((output / 'data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt').read_text(), 'retained obstruction')
                 self.assertFalse((output / 'config/variable-observability.txt').exists())
                 self.assertEqual((output / 'config/variable-probe-mode.txt').read_text(), mode)
             with self.assertRaises(ValueError):

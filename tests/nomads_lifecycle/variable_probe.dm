@@ -75,17 +75,20 @@ var/global/probe_failures = 0
 	var/publication_mode = trim(file2text("config/variable-probe-mode.txt"))
 	if(publication_mode == "missing" || publication_mode == "unwritable" || publication_mode == "obstructed")
 		if(publication_mode == "obstructed")
+			check(file2text("data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt") == "retained obstruction", "nonempty output obstruction prepared")
 			var/write_refused = FALSE
 			try
 				write_refused = !text2file("must not replace a directory", "data/desktop-supervisor/variable-observability/last-failure.json")
 			catch
 				write_refused = TRUE
 			check(write_refused, "real file-versus-directory write refusal")
+			check(file2text("data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt") == "retained obstruction", "direct write refusal preserves obstruction marker")
 		var/list/unpublished = list("probe_publication" = publication_mode)
 		check(!map_storage.variable_observability_publish(unpublished), "unavailable private output refused")
 		check(map_storage.last_variable_failure == unpublished, "unavailable output retains in-memory evidence")
 		if(publication_mode == "obstructed")
 			check("last-failure.json/" in flist("data/desktop-supervisor/variable-observability/last-failure.json"), "output obstruction remains a directory")
+			check(file2text("data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt") == "retained obstruction", "collector refusal preserves obstruction marker")
 		else
 			check(!fexists("data/desktop-supervisor/variable-observability/last-failure.json"), "unavailable output produced no file")
 		check(!fexists("data/variable-observability-last-failure.json"), "no legacy public-path fallback")

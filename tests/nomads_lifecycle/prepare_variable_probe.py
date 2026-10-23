@@ -35,8 +35,11 @@ def prepare(output, publication_mode='writable'):
     if publication_mode != 'missing':
         private_output.mkdir(parents=True)
     if publication_mode == 'obstructed':
-        # A directory where the fixed output file belongs, without ACL changes.
-        (private_output / 'last-failure.json').mkdir()
+        # Keep this nonempty: the publisher can replace an empty directory.
+        # No trailing slash is added to its production file-deletion target.
+        obstruction = private_output / 'last-failure.json'
+        obstruction.mkdir()
+        (obstruction / 'retained-control.txt').write_text('retained obstruction', encoding='ascii')
     # Preparation never sets permissions. The unwritable case needs a separately
     # reviewed fixture-only denial before native execution can prove anything.
     (output / 'config/variable-probe-mode.txt').write_text(publication_mode, encoding='ascii')
