@@ -58,17 +58,20 @@ Mature trees use the unchanged world-tree serializer and seasonal behavior.
 `tests/tree_planting` executes the production scheduler body through explicit
 synthetic engine adapters and checks admission, art, seed supply and save hooks
 offline. It includes generated source controls for stopped clocks, import work
-and seasonal growth. The prepared native fixture uses the real planting dispatch,
+and seasonal growth. The native fixture uses the real planting dispatch,
 watering, saver/loader, repeated `after_load`, mature tree construction and wood
-drop. Its scheduler calls are direct, so even a passing native fixture would not
-establish natural scheduler dispatch or connected-client presentation.
+drop. A separate writer and fresh reader additionally exercise production object
+dispatch and saved partial-duration resume. Fixture-owned durations are shortened;
+the natural scheduler cadence and connected-client presentation remain separate.
 
-Local native compile/runtime, real disk round-trip execution and client captures
-are deferred to avoid competing with the higher-priority tanning and Gaia cycle
-work. No OpenDream or live server was started. Remaining acceptance is a clean
-516.1681 build, the authorized isolated native fixture and screenshots of actual
-planting/maturation (timed video if needed), followed by a fresh-process save/load
-in a controlled game. Preparation and offline checks do not establish those passes.
+The follow-up integrates master including #3286's processing-only hide guards.
+Native fixture compilation succeeded under BYOND 516.1681, with zero errors and
+warnings. Runtime acceptance is blocked by an initial localhost listener caught
+by the unchanged Windows supervisor, including after an earlier-global port close.
+Native assertions, real disk round-trip execution, fresh-process recovery and
+client captures remain unverified. See [the attempted-run evidence and remaining
+acceptance](tree-planting-native-validation.md). No OpenDream or live Gaia changes
+were made, and no guard was bypassed after its rejection.
 
 This branch has no dependency on the Atlas variant, animal retaliation or saved
 year changes. It changes one curated Atlas acquisition record and its generated

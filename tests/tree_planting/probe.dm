@@ -35,7 +35,7 @@
 	P.last_growth_tick = world.time - 20
 	return P.process_interval(2)
 
-/proc/tree_fixture()
+/proc/tree_fixture_setup()
 	world.OpenPort("none")
 	tree_check(!world.port, "fixture has no open port")
 	if (config)
@@ -47,6 +47,22 @@
 	GLOB.stat_set_event = new /decl/observ/stat_set
 	map = new /obj/map_metadata/tree_tester
 	season = "SUMMER"
+	var/area/A = get_area(locate(2,2,1))
+	A.location = AREA_OUTSIDE
+	A.climate = "temperate"
+	// Production object dispatch, with the rest of normal startup disabled.
+	processes.obj = new
+	processes.obj.setup()
+
+/proc/tree_dispatch()
+	processes.obj.reset_current_list()
+	processes.obj.run_time_tick_usage = world.tick_usage
+	processes.obj.run_time_tick_usage_allowance = 100
+	processes.obj.fire()
+	tree_check(!length(processes.obj.current_list) && !length(processes.obj.exceptions), "production object dispatch finishes without exceptions")
+
+/proc/tree_fixture()
+	tree_fixture_setup()
 	var/turf/floor/dirt/ploughed/T = new(locate(2,2,1))
 	T.soil_nutrition = 150
 	var/area/A = get_area(T)
@@ -68,7 +84,7 @@
 	var/obj/structure/plant_pot/blocker = new(T)
 	tree_pulse(P)
 	tree_check(P.stage == 3 && P.growth_time_left == 277, "late dense obstruction pauses growth")
-	del(blocker)
+	qdel(blocker)
 	A.location = AREA_INSIDE
 	tree_pulse(P)
 	tree_check(P.growth_time_left == 277, "indoor plot pauses growth")
@@ -83,7 +99,7 @@
 	tree_check(!("last_growth_tick" in F.dir), "runtime clock is absent on disk")
 	F.Flush()
 	F = null
-	del(P)
+	qdel(P)
 	F = new("tree.sav")
 	map_storage.clear_bookkeeping()
 	P = map_storage.Load_Entry(F, id, starting_loc = T)
@@ -120,16 +136,103 @@
 	dry.water = 1
 	dry.growth_time_left = 1
 	tree_check(tree_pulse(dry) == PROCESS_KILL && dry.stage == 11, "drought kills seedling before maturation")
-	del(dry)
+	qdel(dry)
 	A.location = AREA_INSIDE
 	var/before = S.amount
 	T.attackby(S, H)
 	tree_check(S.amount == before && !(locate(/obj/structure/farming/plant/tree) in T), "indoor planting rejected before seed debit")
 	text2file("PASS: tree planting production paths and disk round trip", "result.txt")
 
+/proc/tree_restart_writer()
+	tree_fixture_setup()
+	var/turf/floor/dirt/ploughed/T = new(locate(2,2,1))
+	var/obj/structure/farming/plant/tree/P = new(T)
+	P.stage = 4
+	P.water = 42
+	P.plant_nutrition = 87
+	P.growth_time_left = 277
+	P.last_growth_tick = 123456
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/savefile/F = new("tree-restart.sav")
+	F["/format_version"] << 2
+	var/id = map_storage.BuildVarDirectory(F, P, 1)
+	tree_check(id, "fresh-process writer exports tree")
+	F.cd = map_storage.entry_path(F, id)
+	tree_check(!("last_growth_tick" in F.dir), "fresh-process writer omits runtime clock")
+	// Reproduce a historical runtime field without changing the durable payload.
+	F["last_growth_tick"] << list("kind" = "value", "value" = 123456)
+	F.Flush()
+	text2file("[id]", "tree-restart-entry.txt")
+	text2file("PASS: tree restart writer", "result.txt")
+
+/proc/tree_restart_reader()
+	tree_fixture_setup()
+	var/turf/floor/dirt/ploughed/T = new(locate(2,2,1))
+	T.soil_nutrition = 150
+	new /turf/floor/beach/water(locate(3,2,1))
+	var/savefile/F = new("tree-restart.sav")
+	var/id = trim(file2text("tree-restart-entry.txt"))
+	map_storage.clear_bookkeeping()
+	var/obj/structure/farming/plant/tree/P = map_storage.Load_Entry(F, id, starting_loc = T)
+	tree_check(P && P.stage == 4 && P.water == 42 && P.plant_nutrition == 87 && P.growth_time_left == 277, "fresh process restores scalar tree growth")
+	P.after_load()
+	P.after_load()
+	tree_check(P.last_growth_tick == world.time && P.last_growth_tick != 123456, "legacy process clock ignored and reanchored")
+	var/membership = 0
+	for (var/obj/O in processing_objects)
+		if (O == P)
+			membership++
+	tree_check(membership == 1, "fresh process has one tree registration")
+	tree_dispatch()
+	tree_check(P.stage == 4 && P.growth_time_left == 277 && P.water == 42, "first object service does not reset or charge growth")
+	sleep(2)
+	var/elapsed = world.time - P.last_growth_tick
+	tree_dispatch()
+	tree_check(P.growth_time_left == 277 - min(20, elapsed) && P.stage == 4, "production dispatch resumes saved partial duration")
+	var/time_left = P.growth_time_left
+	tree_dispatch()
+	tree_check(P.growth_time_left == time_left, "same-tick dispatch cannot double-charge tree")
+	var/datum/persistence_world_operation/operation = new
+	operation.kind = "load"
+	persistence_active_operation = operation
+	P.growth_time_left = 1
+	P.last_growth_tick = world.time - 20
+	tree_dispatch()
+	tree_check(P.stage == 4 && P.growth_time_left == 1 && P.water == 42, "active load blocks native tree service")
+	operation.kind = "save"
+	tree_dispatch()
+	tree_check(P.stage == 4 && P.growth_time_left == 1, "active save blocks native tree service")
+	persistence_active_operation = null
+	qdel(operation)
+	// Accelerate only fixture-owned stage durations; production code is verbatim.
+	for (var/expected_stage = 5, expected_stage <= 6, expected_stage++)
+		P.growth_time_left = 1
+		P.last_growth_tick = world.time - 20
+		tree_dispatch()
+		tree_check(P.stage == expected_stage && P.growth_time_left == 600, "restored seedling advances one native stage")
+	P.growth_time_left = 1
+	P.last_growth_tick = world.time - 20
+	tree_dispatch()
+	var/obj/structure/wild/tree/live_tree/mature = locate() in T
+	tree_check(mature && !(P in processing_objects) && !(locate(/obj/structure/farming/plant/tree) in T), "fresh-process restored tree matures once through production dispatch")
+	var/tree_count = 0
+	for (var/obj/structure/wild/tree/live_tree/tree in T)
+		tree_count++
+	tree_check(tree_count == 1, "one mature tree after restart")
+	tree_dispatch()
+	tree_check((locate(/obj/structure/wild/tree/live_tree) in T) == mature, "later object pass preserves mature tree identity")
+	text2file("PASS: tree restart reader and production object dispatch", "result.txt")
+
 /world/New()
 	try
-		tree_fixture()
+		switch (world.params["tree_phase"])
+			if ("writer")
+				tree_restart_writer()
+			if ("reader")
+				tree_restart_reader()
+			else
+				tree_fixture()
 	catch(var/exception/tree_error)
 		text2file("FAIL: [tree_error]", "result.txt")
 	del(world)

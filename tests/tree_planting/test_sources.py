@@ -81,6 +81,32 @@ def seedling(**overrides):
 
 
 class Trees(unittest.TestCase):
+    def test_native_controls_mutate_generated_source_only(self):
+        spec = importlib.util.spec_from_file_location('tree_native_runner', ROOT / 'tests/tree_planting/run.py')
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        for name, (relative, old, new, expected) in runner.CONTROLS.items():
+            original = (ROOT / relative).read_bytes()
+            generated = runner.prepare('.tree_offline_probe', name)
+            self.assertIn(new, generated['_control.dm'])
+            self.assertNotEqual(generated['_control.dm'], original.decode('utf-8').replace('\r\n', '\n'))
+            self.assertEqual((ROOT / relative).read_bytes(), original)
+            self.assertIn('.tree_offline_probe_control.dm', generated['.dme'])
+            self.assertTrue(expected.startswith('FAIL: '))
+
+    def test_native_restart_scope_and_runtime_supervision(self):
+        probe = (ROOT / 'tests/tree_planting/probe.dm').read_text()
+        self.assertNotRegex(probe, r'\bdel\((?:blocker|P|dry)\)')
+        for marker in ('map_storage.BuildVarDirectory', 'map_storage.Load_Entry',
+                       'processes.obj.fire()', 'P.after_load()',
+                       'fresh-process restored tree matures once through production dispatch',
+                       'same-tick dispatch cannot double-charge tree'):
+            self.assertIn(marker, probe)
+        runner = (ROOT / 'tests/tree_planting/run.py').read_text()
+        self.assertIn('from native_fixture import Session, no_port_args, read_bounded, run_native', runner)
+        self.assertNotIn('subprocess.run(', runner)
+        self.assertIn("('reader', 'PASS: tree restart reader and production object dispatch')", runner)
+
     def test_atlas_uses_mature_tree_route_without_seed_refund(self):
         source = json.loads((ROOT / 'scripts/atlas/resource-sources.json').read_text())
         routes = source['mechanisms']

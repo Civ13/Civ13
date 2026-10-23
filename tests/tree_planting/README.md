@@ -16,13 +16,38 @@ After higher-priority native work is finished and native execution is approved:
 
 ```text
 <python> -B tests/tree_planting/run.py --native --byond-bin <516.1681-bin> --output <new-empty-evidence-directory>
+<python> -B tests/tree_planting/run.py --native --compile-only --byond-bin <516.1681-bin> --output <new-empty-evidence-directory>
 ```
 
 The native fixture disables normal/global startup, rejects clients and port
-opening, uses temporary runtime files and the actual production serializer.
+reopening, uses isolated runtime files and the actual production serializer.
 It asserts one-seed debit, occupancy rejection, partial-duration save/load,
 runtime-clock exclusion, repeated restoration registration, winter pause,
-irrigation, mature tree conversion, seven-log yield and drought death. This
-native lane has been prepared but not executed for this change. Native direct
-callback evidence, natural scheduler service, fresh-process world restoration and
-connected-client appearance are separate acceptance scopes.
+irrigation, mature tree conversion, seven-log yield and drought death. The normal
+runner compiles once, then runs a round trip, a restart writer and a fresh restart
+reader sequentially. The reader exercises the real object-process dispatch,
+legacy clock exclusion, one registration, partial-stage resume, same-tick service,
+active save/load pauses and maturation. Durations are shortened only by fixture
+assignments; production helpers and processing code are unchanged. Three optional
+`--negative-control clock|duration|payment` modes mutate generated source only and
+require their exact named failed assertion. Saves, binaries, logs, source hashes,
+and process receipts are retained in the supplied evidence directory.
+
+Windows uses the existing `scripts/native_fixture.py` Session unchanged: four
+serial phases maximum, retained one-process Jobs, resource/deadline limits and
+rejection of every sampled socket, including startup. Runtime argv includes the
+existing loopback/no-webclient arguments. An earliest-global close and another
+close before assertions do not establish the absence of an initial engine bind.
+
+**Current blocker:** BYOND 516.1681 opened a localhost listener before fixture
+startup in both supervised attempts, including the earlier-close variant. The
+guard rejected the runtime and confirmed cleanup. No passing native tree/save
+result or native mutation-control result is claimed. A prior uncontained attempt
+compiled cleanly but failed fixture cleanup because of direct `del()` calls;
+those calls now use production `qdel()`. Keep the failed evidence unchanged.
+See [validation status](../../docs/tree-planting-native-validation.md).
+
+The compile-only mode performs the same contained production-source fixture
+build and launches no runtime. It can complete independently of the runtime
+startup blocker. Native direct dispatch, natural scheduler cadence, full-world
+fresh-process recovery and connected-client appearance are separate scopes.
