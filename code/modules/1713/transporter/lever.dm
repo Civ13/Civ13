@@ -33,16 +33,18 @@
 			spawn (5)
 				icon_state = none_state // Reset lever
 			spawn (200)
+				while (persistence_active_operation && persistence_active_operation.kind == "save")
+					sleep(1)
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
-						M.z = 2
+						M.persistence_set_z(2)
 					else if (M.z == 2)
-						M.z = 1
+						M.persistence_set_z(1)
 				for (var/obj/O in range(5, src))
 					if (O.z == 1)
-						O.z = 2
+						O.persistence_set_z(2)
 					else if (O.z == 2)
-						O.z = 1
+						O.persistence_set_z(1)
 				visible_message("The Landing Craft has arrived.</span>")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
@@ -53,18 +55,20 @@
 						visible_message("The Landing Craft is returning!</span>")
 						for (var/mob/M in range(14, src))
 							M.playsound_local(get_turf(M), 'sound/landing_craft.ogg', 100 - get_dist(M, src))
+						while (persistence_active_operation && persistence_active_operation.kind == "save")
+							sleep(1)
 						for (var/mob/M in range(5, src))
 							if (M.z == 1)
-								M.z = 2
+								M.persistence_set_z(2)
 							else if (M.z == 1)
-								M.z = 2
+								M.persistence_set_z(2)
 						for (var/obj/O in range(5, src))
 							if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 								if (O.z == 1)
-									O.z = 2
+									O.persistence_set_z(2)
 								else if (O.z == 1)
-									O.z = 2
-						z = 2
+									O.persistence_set_z(2)
+						persistence_set_z(2)
 					spawn(5)
 						for (var/turf/floor/plating/concrete/T in range(10, src))
 							T.opacity = FALSE
@@ -82,17 +86,19 @@
 			spawn (5)
 				icon_state = none_state
 			spawn (200)
+				while (persistence_active_operation && persistence_active_operation.kind == "save")
+					sleep(1)
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
-						M.z = 2
+						M.persistence_set_z(2)
 					else if (M.z == 2)
-						M.z = 1
+						M.persistence_set_z(1)
 				for (var/obj/O in range(5, src))
 					if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 						if (O.z == 1)
-							O.z = 2
+							O.persistence_set_z(2)
 						else if (O.z == 2)
-							O.z = 1
+							O.persistence_set_z(1)
 				visible_message("The Landing Craft has arrived.</span>")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
@@ -103,18 +109,20 @@
 						visible_message("The Landing Craft is returning!</span>")
 						for (var/mob/M in range(14, src))
 							M.playsound_local(get_turf(M), 'sound/landing_craft.ogg', 100 - get_dist(M, src))
+						while (persistence_active_operation && persistence_active_operation.kind == "save")
+							sleep(1)
 						for (var/mob/M in range(5, src))
 							if (M.z == 1)
-								M.z = 2
+								M.persistence_set_z(2)
 							else if (M.z == 1)
-								M.z = 2
+								M.persistence_set_z(2)
 						for (var/obj/O in range(5, src))
 							if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 								if (O.z == 1)
-									O.z = 2
+									O.persistence_set_z(2)
 								else if (O.z == 1)
-									O.z = 2
-						z = 2
+									O.persistence_set_z(2)
+						persistence_set_z(2)
 					spawn(5)
 						for (var/turf/floor/plating/concrete/T in range(10, src))
 							T.opacity = FALSE

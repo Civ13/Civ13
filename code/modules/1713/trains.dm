@@ -320,14 +320,14 @@
 	dir = fdir
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
-			buckled_mob.loc = loc
+			buckled_mob.persistence_set_loc(loc)
 		else
 			buckled_mob = null
 	for (var/mob/living/L in oldloc)
-		L.loc = loc
+		L.persistence_set_loc(loc)
 	for (var/obj/O in oldloc)
 		if (O.anchored && (O in transporting))
-			O.loc = loc
+			O.persistence_set_loc(loc)
 	if (connected)
 		connected.Move(oldloc, dir)
 
@@ -576,7 +576,8 @@
 		var/mob/living/affecting = G.affecting
 		user.visible_message("<span class='notice'>[user] attempts to buckle [affecting] into \the [src]!</span>")
 		if (do_after(user, 20, src))
-			affecting.loc = loc
+			if (!affecting.persistence_set_loc(loc))
+				return FALSE
 			spawn(0)
 				if (buckle_mob(affecting))
 					affecting.visible_message(\

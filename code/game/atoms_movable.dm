@@ -1,3 +1,19 @@
+// Save admission owns this restriction, including preparation and cleanup.
+// Imports must be free to reconstruct locations. Same-z save hooks (for
+// example paid rack transfers) remain valid; never wait inside the serializer.
+/proc/persistence_movement_allowed(atom/movable/mover, atom/destination)
+	if (!persistence_active_operation || persistence_active_operation.kind != "save")
+		return TRUE
+	var/turf/origin = get_turf(mover)
+	var/turf/target = get_turf(destination)
+	if (!origin)
+		return TRUE
+	if (!target)
+		// Retirement must still detach deleted atoms. Ordinary nullspace hops
+		// cannot be used to evade the cross-z restriction in a second move.
+		return !destination && (mover.gcDestroyed || mover.gc_destroyed)
+	return origin.z == target.z
+
 /atom/movable
 	layer = 3
 	plane = GAME_PLANE
@@ -114,6 +130,8 @@
 	return
 
 /atom/movable/proc/forceMove(atom/destination, var/special_event)
+	if (!persistence_movement_allowed(src, destination))
+		return FALSE
 	if (loc == destination)
 		return FALSE
 
@@ -144,6 +162,23 @@
 			if (is_new_area && is_destination_turf)
 				destination.loc.Entered(src, origin)
 	return TRUE
+
+// Preserve raw loc-assignment semantics at legacy teleport sites: adding
+// forceMove callbacks there changes collision/Entered behavior and can recurse.
+/atom/movable/proc/persistence_set_loc(atom/destination)
+	if (!persistence_movement_allowed(src, destination))
+		return FALSE
+	loc = destination
+	return TRUE
+
+/atom/movable/proc/persistence_set_z(target_z)
+	var/turf/T = get_turf(src)
+	if (!T)
+		return FALSE
+	var/turf/destination = locate(T.x, T.y, target_z)
+	if (!destination)
+		return FALSE
+	return persistence_set_loc(destination)
 
 /atom/movable/proc/forceMove_nondenseturf(atom/destination, var/special_event)
 	if (isturf(destination))

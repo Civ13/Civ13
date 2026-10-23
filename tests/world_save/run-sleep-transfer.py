@@ -14,6 +14,7 @@ HELPERS = (
     '/mob/living/human/proc/enter_protected_sleep',
     '/mob/living/human/proc/complete_protected_wakeup',
 )
+MOVEMENT_HELPERS = ('/proc/persistence_movement_allowed', '/atom/movable/proc/forceMove')
 BUCKLING = ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')
 CASES = ('normal', 'legacy-wake', 'unrelated-occupant', 'refused-unbuckle', 'busy',
          'busy-recheck', 'moved-origin', 'refused-move', 'invalid-return',
@@ -41,11 +42,14 @@ def mutate(source, control):
         return BASE.replace_once(source, 'inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf',
                                  'inducedSSD || !return_turf || !sleep_turf || get_turf(src) != return_turf', 'old-bed revalidation control')
     if control == 'persistence-gate':
-        # Both pre-hook and post-hook gates are removed, only in this projection.
+        # All six pre-hook and post-hook gates are removed only in this projection.
         before = 'persistence_save_in_progress || '
         if source.count(before) != 5:
             raise RuntimeError('Persistence control requires all five exact source gates')
-        return source.replace(before, '')
+        after_transfer = ' || persistence_save_in_progress)\n'
+        if source.count(after_transfer) != 1:
+            raise RuntimeError('Persistence control requires one exact post-transfer gate')
+        return source.replace(before, '').replace(after_transfer, ')\n')
     before, after = {
         'other-occupant': ('\tif (seat.buckled_mob != src)\n\t\treturn FALSE\n', ''),
         'wake-actor': ('\tforceMove(return_turf)\n', '\tsleep_decoy.forceMove(return_turf)\n'),
@@ -74,7 +78,7 @@ def prepare(output, control=None, root=ROOT):
     for relative, target, paths in (
         ('code/game/mob/living/carbon/human/human_helpers.dm', 'sleep_helpers.dm', HELPERS),
         ('code/game/objects/buckling.dm', 'buckling.dm', BUCKLING),
-        ('code/game/atoms_movable.dm', 'force_move.dm', ('/atom/movable/proc/forceMove',)),
+        ('code/game/atoms_movable.dm', 'force_move.dm', MOVEMENT_HELPERS),
     ):
         raw = (root / relative).read_bytes()
         projected = '\n'.join(BASE.extract_proc(raw.decode('utf-8-sig'), path) for path in paths)
@@ -83,6 +87,9 @@ def prepare(output, control=None, root=ROOT):
                                                  'unmodified_sha256': BASE.sha(projected.encode())}
         if target == 'sleep_helpers.dm':
             projected = mutate(projected, control)
+            # Physical-zone helper is a production projection, outside the
+            # existing three-helper mutation/control contract.
+            projected += BASE.extract_proc(raw.decode('utf-8-sig'), '/proc/is_protected_sleep_location')
         (output / target).write_text(projected, encoding='utf-8')
     cross = (output / 'cross_level_probe.dm').read_text(encoding='utf-8')
     if cross.count('/world/New()\n') != 1:

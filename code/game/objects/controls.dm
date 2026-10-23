@@ -574,18 +574,20 @@
 		spawn(5)
 			visible_message("The elevator is departing!")
 			spawn(10)
+				while (persistence_active_operation && persistence_active_operation.kind == "save")
+					sleep(1)
 				for (var/mob/M in range(1, src))
 					if (M.z == 1)
-						M.z = 2
+						M.persistence_set_z(2)
 					else if (M.z == 2)
-						M.z = 1
+						M.persistence_set_z(1)
 					to_chat(M, "The elevator has arrived!")
 				for (var/obj/O in range(1, src))
 					if (!istype(O, /obj/structure/elevator_button/) && !istype (O, /obj/covers/))
 						if (O.z == 1)
-							O.z = 2
+							O.persistence_set_z(2)
 						else if (O.z == 2)
-							O.z = 1
+							O.persistence_set_z(1)
 				spawn(5)
 					var/destination_upper = locate(src.x, src.y, src.z+1)
 					var/destination_lower = locate(src.x, src.y, src.z-1)

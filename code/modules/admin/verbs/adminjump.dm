@@ -13,7 +13,7 @@
 		log_admin("[key_name(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]")
 		message_admins("[key_name_admin(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]", key_name_admin(usr))
 		usr.on_mob_jump()
-		usr.loc = T
+		usr.persistence_set_loc(T)
 
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
@@ -34,7 +34,7 @@
 			if (T && isturf(T))
 
 				A.on_mob_jump()
-				A.loc = T
+				A.persistence_set_loc(T)
 			else
 				to_chat(A, "This mob is not located in the game world.")
 	else
@@ -51,9 +51,7 @@
 		if (mob)
 			var/mob/A = mob
 			A.on_mob_jump()
-			A.x = tx
-			A.y = ty
-			A.z = tz
+			A.persistence_set_loc(locate(tx, ty, tz))
 
 		message_admins("[key_name_admin(usr)] jumped to coordinates [tx], [ty], [tz]", key_name_admin(usr))
 
@@ -79,7 +77,7 @@
 		log_admin("[key_name(usr)] jumped to [key_name(M)]")
 		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", key_name_admin(usr))
 		usr.on_mob_jump()
-		usr.loc = M.loc
+		usr.persistence_set_loc(M.loc)
 
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
@@ -94,7 +92,7 @@
 		log_admin("[key_name(usr)] teleported [key_name(M)]")
 		message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)]", key_name_admin(usr))
 		M.on_mob_jump()
-		M.loc = get_turf(usr)
+		M.persistence_set_loc(get_turf(usr))
 
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
@@ -124,7 +122,7 @@ var/turf/default_adminzone_turf = null
 	if (default_adminzone_turf)
 		var/area/A = get_area(default_adminzone_turf)
 		if (A.type == /area/caribbean/admin)
-			mob.loc = default_adminzone_turf
+			mob.persistence_set_loc(default_adminzone_turf)
 			return TRUE
 
 	var/area/caribbean/admin/admin_zone = locate() in area_list
@@ -133,7 +131,7 @@ var/turf/default_adminzone_turf = null
 		return FALSE
 	for (var/turf/T in admin_zone.contents)
 		if (!T.density && !locate(/obj/structure) in T)
-			mob.loc = T
+			mob.persistence_set_loc(T)
 			break
 
 	return FALSE
@@ -162,7 +160,7 @@ var/turf/default_adminzone_turf = null
 		message_admins("[key_name_admin(usr)] teleported [key_name(M)]", key_name_admin(usr))
 		if (M)
 			M.on_mob_jump()
-			M.loc = get_turf(usr)
+			M.persistence_set_loc(get_turf(usr))
 
 	else
 		WWalert(src, "Admin jumping is disabled", "Admin Jump")
@@ -176,7 +174,7 @@ var/turf/default_adminzone_turf = null
 	if (A)
 		if (config.allow_admin_jump)
 			M.on_mob_jump()
-			M.loc = pick(get_area_turfs(A))
+			M.persistence_set_loc(pick(get_area_turfs(A)))
 
 
 			log_admin("[key_name(usr)] teleported [key_name(M)] to [A]")

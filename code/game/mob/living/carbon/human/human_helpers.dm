@@ -75,6 +75,12 @@
 				equipment_see_invis = G.see_invisible
 
 
+// Protected sleep uses (1,1,1); existing maps also identify the sleep area as
+// the admin zone. Test the physical location, including enclosing containers.
+/proc/is_protected_sleep_location(atom/location)
+	var/turf/T = get_turf(location)
+	return T && (T == locate(1,1,1) || istype(T.loc, /area/caribbean/admin))
+
 // Protected sleep moves the body off-map; buckling is a spatial relationship,
 // not a bed claim. Release only this body's reciprocal seat before teleporting.
 /mob/living/human/proc/release_protected_sleep_buckle()
@@ -124,14 +130,14 @@
 	if (persistence_save_in_progress || !inducedSSD)
 		return FALSE
 	var/turf/return_turf = locate(lastx,lasty,lastz)
-	if (!return_turf)
+	if (!return_turf || is_protected_sleep_location(return_turf))
 		return FALSE
 	// Also repairs the reciprocal, distant bed link made by older sleep code.
 	// Never release a different occupant through an inconsistent stale pointer.
 	if (!release_protected_sleep_buckle() || persistence_save_in_progress || !return_turf || locate(lastx,lasty,lastz) != return_turf)
 		return FALSE
 	forceMove(return_turf)
-	if (!return_turf || get_turf(src) != return_turf)
+	if (!return_turf || get_turf(src) != return_turf || is_protected_sleep_location(src) || persistence_save_in_progress)
 		return FALSE
 	sleeping = 0
 	inducedSSD = FALSE
