@@ -25,8 +25,8 @@
 		OpenPort(19327) // The fixture override must refuse reopening.
 		durable_world_check(!world.port, "Fixture listener did not close")
 		text2file("closed", "probe-port-closed.txt")
-		var/closure_deadline = world.realtime + 100
-		while(!fexists("probe-port-closed.ack") && world.realtime < closure_deadline) sleep(1)
+		var/closure_deadline = world.time + 100
+		while(!fexists("probe-port-closed.ack") && world.time < closure_deadline) sleep(1)
 		durable_world_check(fexists("probe-port-closed.ack") && findtext(file2text("probe-port-closed.ack"), "closed") == 1, "External listener closure was not acknowledged")
 		config = new
 		config.webhook_can_fire = FALSE

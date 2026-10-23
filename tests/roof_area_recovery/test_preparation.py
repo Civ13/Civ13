@@ -1,6 +1,7 @@
 """Offline preparation/admission checks. These do not establish native recovery."""
 import hashlib
 import json
+import struct
 from pathlib import Path
 import subprocess
 import sys
@@ -11,6 +12,21 @@ RUNNER = ROOT / 'tests/world_save/run-durable-world.py'
 
 
 class RoofAreaPreparation(unittest.TestCase):
+    def test_closure_interval_uses_small_world_clock_without_epoch_precision_loss(self):
+        probe=(ROOT/'tests/roof_area_recovery/probe.dm').read_text()
+        handshake=probe.split('var/closure_deadline = ',1)[1].split('\n\t\tconfig = new',1)[0]
+        self.assertTrue(handshake.startswith('world.time + 100\n'))
+        self.assertIn('world.time < closure_deadline) sleep(1)',handshake)
+        self.assertNotIn('world.realtime',handshake)
+        self.assertIn('External listener closure was not acknowledged',handshake)
+        f32=lambda value:struct.unpack('f',struct.pack('f',value))[0]
+        # The failed CI epoch loses a 100-decisecond addition; a fresh world's
+        # small clock preserves that exact ten-second interval.
+        epoch=f32(8461133900)
+        self.assertEqual(f32(epoch+100),epoch)
+        for start in (0,1,10,600):
+            self.assertEqual(f32(f32(start)+100)-f32(start),100)
+
     def test_native_execution_is_refused_before_preparation(self):
         result = subprocess.run([sys.executable, str(RUNNER), '--roof-areas'],
                                 cwd=ROOT, capture_output=True, text=True, timeout=20)
