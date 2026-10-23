@@ -1,5 +1,10 @@
 # Crafting atlas verification
 
+`tests/test_atlas_variants.py` and `node tests/crafting_atlas/variants.test.mjs`
+check grouping and selected-source accuracy offline. The added native variant
+cases in `navigation.dm` are authored but unrun while execution is deferred for
+the tanning/Gaia priority. Do not treat DOM/source evidence as native acceptance.
+
 Use pinned BYOND 516.1681. `run.py --byond-bin <bin>` compiles and executes
 production reference rendering in temporary storage with startup and ports
 disabled. No clients or gameplay constructors are used. `--full-catalog` also

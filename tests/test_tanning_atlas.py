@@ -78,7 +78,8 @@ class TanningAtlasTests(unittest.TestCase):
         self.assertEqual([(x['id'], x['quantity']) for x in rack['inputs']],
                          [('/material/wethide', 'n pieces'), (tanning.STATION, 'station; not consumed')])
         self.assertEqual(rack['outputs'][0]['quantity'], 'n pieces')
-        build = next(r for r in self.recipes if r['name'] == 'tanning rack' and r['file'].endswith('material_recipes_global.txt'))
+        build = next(r for r in self.recipes if r['name'] == 'tanning rack' and
+                     any(v['file'].endswith('material_recipes_global.txt') for v in r.get('variants', [r])))
         self.assertEqual([(x['id'], x['quantity']) for x in build['inputs']], [('/material/wood', '8')])
         self.assertEqual(build['unlock_eras'], [1])
 

@@ -739,6 +739,14 @@ constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
+<!-- 2026-10-23: atlas catalog variants -->
+`scripts/atlas/variants.py` groups only identical explicit 13-field material rows
+with equal extracted semantics. Catalog identity/source IDs stay as variants;
+never group by name, canonical ingredients or outputs alone. Counts and legacy
+pages use groups; search/system filters must match the same variant and selected
+details must use its source. Native variant cases remain unrun during the
+tanning/Gaia resource priority; use the offline Python/template controls first.
+
 `scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
 separate from catalog field 12's maximum allowed era. Parse research constructors
 with balanced arguments; the enclosing registration call adds another closing
