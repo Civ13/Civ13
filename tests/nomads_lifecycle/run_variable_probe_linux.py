@@ -259,17 +259,21 @@ def run_child(argv, case, phase, root, inputs, binary_hashes, receipt, budget, s
                 need(len(members) == 1 and members[0]['pid'] == child.pid, 'Unexpected owned descendant')
                 try:
                     rows = owned_sockets(child.pid, birth['start_ticks'])
-                except FileNotFoundError:
-                    # /proc/net can disappear at exit even while the unreaped
-                    # birth identity remains. Accept only an observed child exit;
-                    # the mandatory closure acknowledgement still applies below.
-                    need(exited_unreaped(child), 'Socket census disappeared before child exit')
+                except (FileNotFoundError, PermissionError) as error:
+                    # Linux can remove /proc/net or deny /proc/fd during exit.
+                    # Never retry a denied read or change permissions. Only the
+                    # independent WNOWAIT exit observation can end sampling;
+                    # the earlier external closure acknowledgement remains mandatory.
+                    if not exited_unreaped(child):
+                        raise
+                    row['exit_observation'] = dict(kind=type(error).__name__, closure_previously_verified=closed)
                     break
                 validate_sockets(rows, runtime=phase != 'compile', closed=closed)
                 if not closed:
                     need(time.monotonic() - started < CAPS['socket_close_seconds'], 'Startup closure deadline')
                     if (case / 'probe-port-closed.txt').exists():
                         acknowledge(case, rows); closed = True
+                        row['closed'] = True
                         row['closure_seconds'] = time.monotonic() - started
                 watcher = identity(os.getpid())['resident_pages'] * os.sysconf('SC_PAGE_SIZE')
                 resident = current['resident_pages'] * os.sysconf('SC_PAGE_SIZE')

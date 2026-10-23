@@ -152,6 +152,56 @@ class LinuxCollector(unittest.TestCase):
                             dict(children=[]), budget, mock.Mock())
             cleanup.assert_called_once()
 
+    def test_denied_socket_read_after_ack_requires_independent_child_exit(self):
+        process = mock.Mock(pid=123, returncode=0)
+        birth = dict(pid=123, start_ticks=99, pgrp=123, session=123, resident_pages=1)
+        usage = types.SimpleNamespace(ru_utime=0, ru_stime=0)
+        fake_resource = types.SimpleNamespace(RUSAGE_CHILDREN=1, getrusage=lambda _: usage)
+        for exited in (True, False):
+            with self.subTest(exited=exited), tempfile.TemporaryDirectory() as folder, \
+                    mock.patch.dict('sys.modules', resource=fake_resource), \
+                    mock.patch.object(m, 'sha', return_value='a'), mock.patch.object(m, 'identity', return_value=birth), \
+                    mock.patch.object(m.subprocess, 'Popen', return_value=process), \
+                    mock.patch.object(m, 'exited_unreaped', side_effect=[False, False, exited]), \
+                    mock.patch.object(m, 'group_members', return_value=[birth]), \
+                    mock.patch.object(m, 'owned_sockets', side_effect=[[], PermissionError('fd denied')]) as sockets, \
+                    mock.patch.object(m.os, 'sysconf', return_value=4096, create=True), \
+                    mock.patch.object(m.time, 'sleep'), mock.patch.object(m, 'artifacts'), \
+                    mock.patch.object(m, 'cleanup', return_value=dict(exit_code=0, group_empty=True, errors=[])):
+                root = Path(folder); (root / 'probe-port-closed.txt').write_text('closed\n')
+                receipt = dict(children=[])
+                call = lambda: m.run_child(['DreamDaemon'], root, 'writable', root, {}, {'DreamDaemon': 'a'},
+                    receipt, types.SimpleNamespace(start=m.time.monotonic(), check=mock.Mock()), mock.Mock())
+                if exited:
+                    call()
+                    self.assertEqual(receipt['children'][0]['exit_observation'],
+                        dict(kind='PermissionError', closure_previously_verified=True))
+                else:
+                    with self.assertRaises(PermissionError):
+                        call()
+                self.assertEqual(sockets.call_count, 2)  # No alternative read or retry.
+                self.assertTrue(receipt['children'][0]['closed'])
+                process.poll.assert_not_called()
+
+    def test_denied_socket_read_before_ack_still_cannot_pass_on_exit(self):
+        process = mock.Mock(pid=123, returncode=0)
+        birth = dict(pid=123, start_ticks=99, pgrp=123, session=123)
+        usage = types.SimpleNamespace(ru_utime=0, ru_stime=0)
+        fake_resource = types.SimpleNamespace(RUSAGE_CHILDREN=1, getrusage=lambda _: usage)
+        with tempfile.TemporaryDirectory() as folder, mock.patch.dict('sys.modules', resource=fake_resource), \
+                mock.patch.object(m, 'sha', return_value='a'), mock.patch.object(m, 'identity', return_value=birth), \
+                mock.patch.object(m.subprocess, 'Popen', return_value=process), \
+                mock.patch.object(m, 'exited_unreaped', side_effect=[False, True]), \
+                mock.patch.object(m, 'group_members', return_value=[birth]), \
+                mock.patch.object(m, 'owned_sockets', side_effect=PermissionError('fd denied')) as sockets, \
+                mock.patch.object(m, 'cleanup', return_value=dict(exit_code=0, group_empty=True, errors=[])):
+            root = Path(folder)
+            with self.assertRaisesRegex(RuntimeError, 'socket acknowledgement'):
+                m.run_child(['DreamDaemon'], root, 'writable', root, {}, {'DreamDaemon': 'a'},
+                    dict(children=[]), types.SimpleNamespace(start=m.time.monotonic(), check=mock.Mock()), mock.Mock())
+            self.assertEqual(sockets.call_count, 1)
+            self.assertFalse((root / 'probe-port-closed.ack').exists())
+
     def test_reader_failure_is_retained_and_freshness_not_overridden(self):
         reader = mock.Mock(); reader.run.return_value = dict(ok=False, error='stale_snapshot')
         receipt = {}; budget = mock.Mock()
