@@ -6,6 +6,7 @@ import unittest
 import zlib
 from types import SimpleNamespace as State
 import importlib.util
+import json
 
 ROOT = Path(__file__).resolve().parents[2]
 FARM = (ROOT / 'code/game/objects/farming.dm').read_text(encoding='utf-8')
@@ -80,6 +81,19 @@ def seedling(**overrides):
 
 
 class Trees(unittest.TestCase):
+    def test_atlas_uses_mature_tree_route_without_seed_refund(self):
+        source = json.loads((ROOT / 'scripts/atlas/resource-sources.json').read_text())
+        routes = source['mechanisms']
+        route = next(route for route in routes if route['name'] == 'Grow a timber tree')
+        self.assertIn('/obj/structure/wild/tree/live_tree', route['outputs'])
+        self.assertNotIn('/obj/item/stack/farming/seeds/tree', route['outputs'])
+        self.assertFalse(any(route['name'] == 'Harvest tree' for route in routes))
+        game = json.loads((ROOT / 'UI/crafting-atlas.json').read_text())
+        seed_routes = game['acquisition']['/obj/item/stack/farming/seeds/tree']
+        self.assertTrue(any(route['name'] == 'Forage random seeds from small bushes' or
+                            'small bush' in ' '.join(route['steps']).lower() for route in seed_routes))
+        self.assertTrue(any(route['name'] == 'Grow a timber tree' for route in seed_routes))
+
     def test_declared_climate_and_season_together(self):
         body = proc(FARM, TREE + 'proc/growing_season()')
         expression = body.split('\treturn ', 1)[1].replace('&&', ' and ')
