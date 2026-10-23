@@ -614,6 +614,34 @@ jobs:
       - name: Verify Nomads lifecycle supervisor offline contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
         run: python3 -m unittest discover -s tests/nomads_lifecycle -v
+      - name: Verify private collector native publication
+        id: collector_native
+        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
+        timeout-minutes: 3
+        shell: bash
+        env:
+          COLLECTOR_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          set +u
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          set -u
+          /usr/bin/python3 -I -B tests/nomads_lifecycle/run_variable_probe_linux.py --byond-bin "$PWD/BYOND/byond/bin" --expected-head "$COLLECTOR_HEAD" --output "$RUNNER_TEMP/private-collector"
+      - name: Retain private collector fixture evidence
+        if: always() && steps.collector_native.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: private-collector-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/private-collector/source-manifest.json
+            ${{ runner.temp }}/private-collector/result.json
+            ${{ runner.temp }}/private-collector/failure.json
+            ${{ runner.temp }}/private-collector/*.log
+            ${{ runner.temp }}/private-collector/prepared/writable/native-*.log
+            ${{ runner.temp }}/private-collector/prepared/**/data/**/*.json
+          retention-days: 7
+          if-no-files-found: error
       - name: Verify bounded lighting startup ordering
         id: lighting_startup
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup')

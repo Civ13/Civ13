@@ -16,8 +16,13 @@ requires `config/variable-observability.txt` containing `enabled` (at most 16
 bytes including a native line ending), plus the existing valid lifecycle token
 and installed revision files. No activation file, credential or runtime change
 is supplied here; `config/variable-observability.example.txt` contains only
-`disabled`. The actual activation filename is Git-ignored. Restrict the runtime `data/` directory and captured output to
-the authorized operator before opting in; file privacy depends on host ACLs.
+`disabled`. The actual activation filename is Git-ignored. Before opting in,
+separately provision the fixed runtime directory
+`data/desktop-supervisor/variable-observability/` with private inherited file
+permissions for the actual engine/operator account and administrator recovery.
+Protect the opt-in file too. This does not require changing all of `data/` or
+`config/`. The collector never creates directories, configures ACLs or attests
+that existing ACLs are private; those remain the operator's responsibility.
 
 No listener, Topic action, parameter or credential is added. The new status data
 is reached only after existing IPv4 loopback/token/revision authentication.
@@ -65,17 +70,31 @@ current/last ownership remains available. Existing or disabled builds return
 ## Automatic local failure file
 
 When enabled, reference rejections and failed save/load completion replace the
-single runtime-relative file `data/variable-observability-last-failure.json`.
+single runtime-relative file
+`data/desktop-supervisor/variable-observability/last-failure.json`.
 It contains the capture itself, not the status wrapper. It contains no live
 objects and remains historical after cleanup or deletion. A later accepted save
 clears the in-memory reference record; the disk file remains historical until
 another failure replaces it. File publication is best effort, is not atomic and
-does not prove this is the newest failure. A failed file replacement never alters
-the serializer's rejection or operation release. Prefer the authenticated status
-record when available. No append-only incident history or public log is added.
+does not prove this is the newest failure. The fixed directory must already
+exist. Its guard uses BYOND's [prefix directory listing semantics](https://www.byond.com/docs/ref/info.html#/proc/flist)
+before any deletion or write. Missing storage, a refused deletion/write, or a
+filesystem exception returns failure while preserving the in-memory capture;
+none may replace the serializer's own rejection or strand operation release.
+There is no fallback to the old path or a publicly inherited directory. A
+replacement that deletes the old file and then cannot write can leave no disk
+file; the authenticated in-memory status remains preferred. No append-only
+incident history or public log is added.
+
+The previous `data/variable-observability-last-failure.json` file is neither
+moved nor deleted. Explicit offline `--input` reads remain path-independent, so
+operators can still inspect an old private capture with the same identity,
+freshness and optional `--historical` checks. Do not discover or expose old files
+automatically. A file-only ACL under a broadly accessible parent is insufficient:
+replacement recreates the file, inheriting the provisioned directory's ACL.
 
 ```text
-<python> -B scripts/nomads-lifecycle/variable_observability.py --input <runtime>/data/variable-observability-last-failure.json --revision <installed-40-hex> --session <observed-32-hex> --round-id <observed-round>
+<python> -B scripts/nomads-lifecycle/variable_observability.py --input <runtime>/data/desktop-supervisor/variable-observability/last-failure.json --revision <installed-40-hex> --session <observed-32-hex> --round-id <observed-round>
 ```
 
 This is offline and returns the capture in `data` directly. It needs independently
@@ -197,6 +216,7 @@ not export this private failure schema.
 
 ```text
 <python> -B -m unittest discover -s tests/nomads_lifecycle -p test_variable_observability.py -v
+<python> -B -m unittest discover -s tests/nomads_lifecycle -p test_variable_publication.py -v
 <python> -B tests/world_save/test_cross_level_sources.py -v
 <python> -B tests/nomads_lifecycle/prepare_variable_probe.py --output <new-temporary-packet-directory>
 ```
@@ -209,6 +229,82 @@ copies the production collector, named base movable declarations and trim helper
 with source hashes and declares
 `native_verified:false`. It does not compile or run BYOND. The native collector
 probe has minimal data/auth adapters and is not full serializer/transport evidence.
+The preparer's `--publication-mode` selects `writable` (default), `missing`,
+`obstructed` or `unwritable`. The missing case leaves the fixed private directory absent. The
+obstructed case creates a nonempty directory at the fixed output filename, then requires
+both a direct native file-write refusal and failed collector publication while
+preserving its sentinel file, that directory and the in-memory capture. The
+empty-directory version was rejected by hosted testing: publication replaced
+the empty directory, so it was not a durable obstruction. No assertion was removed.
+This changes no ACLs and
+is **not** evidence of an access-denied condition. The collector may reject at
+its deletion guard before reaching its write exception handler.
+The
+unwritable case only prepares the directory and declares
+`unwritable_fixture_permissions_required:true`; it does not change permissions.
+Before a separately approved native run, that case needs a reviewed temporary
+fixture-only write/deletion denial. Without it the negative control must fail.
+Do not apply that denial to a live directory. The writable probe retains
+`native-reference.json` and `native-operation-failure.json` inside its private
+fixture directory before its oversized negative control replaces the final file.
+Read those native captures with the actual reader and independently fixed
+build/session/round expectations; a DM-only assertion count is insufficient.
+Offline source controls and preparation tests do not establish native I/O or
+Windows ACL behavior. The new publication cases remain unexecuted until a
+bounded native packet is reviewed and admitted.
+
+`tests/nomads_lifecycle/run_variable_probe.py` is an offline-importable,
+grant-gated Windows runner proposal. It creates no grant or reservation. Its
+sealed packet must contain the reviewed Job adapter, an exact compiler/engine
+identity, and the actual reader. A missing grant refuses before host queries,
+native imports, output creation or a consumed marker. A future run requires a
+fresh matching coordinator slot and allocator-consumed single-use claim. The
+native baseline must be empty; the runner never stops Gaia to make it empty.
+
+The proposed phases are preflight 10 seconds, compile 20, writable 15,
+immediate retained-capture reads 10, missing-directory 10, obstructed-file 10,
+and final verification 5. They share a 90-second work deadline, with up to 30
+seconds for owned cleanup and 120 seconds overall. The four sequential children
+are one compiler and three fixture daemons, with at most one active child.
+Process memory is capped by the existing Windows Job at 512 MiB; watcher memory
+is checked against 128 MiB, aggregate private memory against 768 MiB, and owned
+CPU against 60 seconds. Wall/CPU/artifact checks are cooperative observations,
+not new OS quotas. All packet files, compiled artifacts, isolated environment,
+logs, captures and receipts count toward 32 MiB and 256 entries; non-binary
+generated evidence shares 1 MiB. Cap failures retain evidence and cannot pass.
+
+Each daemon starts only on fixed IPv4 loopback port 59474. The fixture closes
+it immediately, writes a marker, and waits for the runner to confirm no owned
+TCP or UDP sockets in either address family before acknowledging closure. The
+closure deadline is five seconds; only that single startup listener is allowed
+before acknowledgement, and no socket is allowed afterward. There is no client,
+public probe or Topic request. Final owned cleanup must verify retained process
+exits, empty Job membership and accounting, and port vacancy. The actual reader
+validates both retained native captures immediately after the writable child,
+before later negative modes, using unchanged 60-second freshness checks. The
+ACL-denial, authenticated Topic and full serializer gaps remain open.
+
+The separate `run_variable_probe_linux.py` wrapper selects this same tiny
+fixture only on normal pull-request hosted Linux CI, using the existing
+introduced-test selector. It never consumes or weakens the Desktop packet's
+grant or empty-baseline restrictions. CI uses the existing installed 516.1681
+engine, no account/session inputs and only fresh directories under RUNNER_TEMP.
+Child environments exclude GitHub credentials.
+Linux daemon logs use distinct fixed relative basenames `native-writable.log`,
+`native-missing.log` and `native-obstructed.log`, respecting the engine's
+absolute-log-path refusal. The engine anchors them to the compiled DMB directory;
+data/config isolation still uses the separate fixture cwd/-cd directories.
+Process ownership follows the
+existing extraction wrapper: a new session/group, WNOWAIT observation, owned
+group cleanup before reaping the leader, and recorded birth ticks and exits.
+Socket inspection extends the durable-world /proc approach to all owned TCP
+and UDP sockets in both address families. A native-empty baseline is mandatory.
+The same phase, artifact and socket-closure budgets apply; Linux enforces
+512 MiB address space, 15 CPU seconds and 1 MiB per file per child, with core
+dumps disabled. Watcher/combined memory checks use observed RSS, not Windows
+private bytes. Evidence upload excludes config files and compiled binaries.
+Successful hosted execution proves only this collector/file-reader fixture,
+not Windows ACL behavior, authenticated Topic access or full save/load behavior.
 
 The preserved native attempt at `df639b1` compiled cleanly and its tiny collector
 reported 22 checks with zero failures. The overall run was **rejected**: its reader

@@ -109,10 +109,15 @@ var/global/variable_observability_operation_sequence = 0
 		evidence["error"] = "snapshot_size_limit"
 		encoded = json_encode(evidence)
 	last_variable_failure = evidence
-	// One fixed local private output, replaced rather than appended. Never log raw
-	// errors/refs publicly. No spool consumer, configurable path or world scan.
-	if(fexists("data/variable-observability-last-failure.json") && !fdel("data/variable-observability-last-failure.json")) return
-	text2file(encoded, "data/variable-observability-last-failure.json")
+	// Provision this private directory separately. Never create it, fall back to
+	// data/, or let failed diagnostic I/O replace the serializer's own result.
+	try
+		if(!("variable-observability/" in flist("data/desktop-supervisor/variable-observability"))) return FALSE
+		var/path = "data/desktop-supervisor/variable-observability/last-failure.json"
+		if(fexists(path) && !fdel(path)) return FALSE
+		return text2file(encoded, path)
+	catch
+		return FALSE
 
 /map_storage/proc/variable_observability_finish(datum/persistence_world_operation/P, success)
 	if(!variable_observability_enabled()) return

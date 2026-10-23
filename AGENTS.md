@@ -580,10 +580,14 @@ the reader does not invent a never-thrown default.
 Collection/exposure and automatic local output remain default-off until a
 separately authorized exact-build deployment/restart and local opt-in using
 `config/variable-observability.txt` containing `enabled`, existing lifecycle
-credentials/revision, and an operator-private runtime `data/` directory. Do not
+credentials/revision, and a separately provisioned operator-private runtime
+`data/desktop-supervisor/variable-observability/` directory. Do not
 activate them from source/PR approval or claim this tooling is already live.
 The automatic path is runtime-relative
-`data/variable-observability-last-failure.json`; the reader's `--input <file>`
+`data/desktop-supervisor/variable-observability/last-failure.json`; publication
+must fail harmlessly if that fixed directory is missing or unwritable, with no
+legacy-path fallback or automatic ACL/directory creation. Explicit old-file
+reads remain supported. The reader's `--input <file>`
 mode is offline and requires independently obtained expected revision/session/
 round. Keep raw captures private. Unknown fields are stripped, but refs/types/
 coordinates remain operational data requiring review before public sharing.
