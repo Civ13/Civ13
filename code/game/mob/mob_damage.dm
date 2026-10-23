@@ -49,16 +49,19 @@
 
 /mob/proc/Sleeping(amount)
 	facing_dir = null
-	sleeping = max(max(sleeping,amount),0)
+	sleeping = max(max(sleeping,amount), in_protected_sleep_zone() ? 2 : 0)
 	return
 
 /mob/proc/SetSleeping(amount)
-	sleeping = max(amount,0)
+	sleeping = max(amount, in_protected_sleep_zone() ? 2 : 0)
 	return
 
 /mob/proc/AdjustSleeping(amount)
-	sleeping = max(sleeping + amount,0)
+	sleeping = max(sleeping + amount, in_protected_sleep_zone() ? 2 : 0)
 	return
+
+/mob/proc/in_protected_sleep_zone()
+	return ishuman(src) && is_protected_sleep_location(src)
 
 /mob/proc/Resting(amount)
 	facing_dir = null

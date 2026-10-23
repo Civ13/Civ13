@@ -79,9 +79,9 @@
 	visible_message("<span class = 'danger'>[hangman] starts to hang [target == hangman ? "themselves" : target]...</span>")
 	if (do_after(hangman, 50, target))
 		if (src)
+			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] hangs [target == hangman ? "themselves" : target]!</span>")
 			hanging = target
-			target.loc = get_turf(src)
 			target.dir = SOUTH
 			fire()
 			target.anchored = TRUE
@@ -199,9 +199,9 @@
 		visible_message("<span class = 'danger'>[hangman] starts to hang [target == hangman ? "themselves" : target]...</span>")
 		if (do_after(hangman, 50, target))
 			if (src)
+				if (!target.persistence_set_loc(get_turf(src))) return FALSE
 				visible_message("<span class = 'danger'>[hangman] hangs [target == hangman ? "themselves" : target]!</span>")
 				hanging = target
-				target.loc = get_turf(src)
 				target.dir = SOUTH
 				fire()
 				spawn(10)
@@ -337,9 +337,9 @@
 	visible_message("<span class = 'danger'>[hangman] starts to nail [target == hangman ? "themselves" : target] to the cross...</span>")
 	if (do_after(hangman, 80, target))
 		if (src)
+			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] nails [target == hangman ? "themselves" : target] to the cross!</span>")
 			hanging = target
-			target.loc = get_turf(src)
 			target.dir = SOUTH
 			var/dam_zone = list("l_foot", "r_foot", "l_hand", "r_hand")
 			for (var/organ_p in dam_zone)
@@ -433,9 +433,9 @@
 	visible_message("<span class = 'danger'>[hangman] starts to place [target == hangman ? "themselves" : target] in the pillory...</span>")
 	if (do_after(hangman, 60, target))
 		if (src)
+			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] places [target == hangman ? "themselves" : target] in the pollory!</span>")
 			hanging = target
-			target.loc = get_turf(src)
 			target.dir = SOUTH
 			spawn(10)
 				target.update_icons()
@@ -549,9 +549,9 @@
 	visible_message("<span class = 'danger'>[hangman] starts to tie [target == hangman ? "themselves" : target] to the post...</span>")
 	if (do_after(hangman, 60, target))
 		if (src)
+			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] ties [target == hangman ? "themselves" : target] to the post!</span>")
 			hanging = target
-			target.loc = get_turf(src)
 			target.dir = NORTH
 			spawn(10)
 				target.update_icons()

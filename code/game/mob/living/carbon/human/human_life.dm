@@ -662,6 +662,11 @@
 	return //TODO: DEFERRED
 
 /mob/living/human/handle_regular_status_updates()
+	// This applies without a save or inducedSSD flag, including contained bodies.
+	if (in_protected_sleep_zone())
+		Sleeping(2)
+		if (stat != DEAD)
+			set_stat(UNCONSCIOUS)
 	if (!handle_some_updates())
 		return FALSE
 
@@ -709,7 +714,7 @@
 					emote("snore")
 		//CONSCIOUS
 		else
-			stat = CONSCIOUS
+			set_stat(CONSCIOUS)
 
 		// Check everything else.
 

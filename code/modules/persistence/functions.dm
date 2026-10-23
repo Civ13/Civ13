@@ -291,6 +291,14 @@ var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
 
+/proc/persistence_save_active()
+	return persistence_active_operation && persistence_active_operation.kind == "save"
+
+// Sleep transfers are forbidden even on the same z during owned preparation,
+// serialization and cleanup. Retain the legacy load/recovery admission hold.
+/proc/persistence_sleep_transfer_blocked()
+	return persistence_save_in_progress || persistence_save_active()
+
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
@@ -306,6 +314,8 @@ var/global/persistence_load_recovery_required = FALSE
 	operation.kind = kind
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
+	if(kind == "save")
+		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
 	return operation
 
 /datum/persistence_world_operation
@@ -406,7 +416,6 @@ var/global/persistence_load_recovery_required = FALSE
 	if(!operation) return FALSE
 	try
 		var/watch = start_watch()
-		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
 		sleep(5)
 		if(!map_storage.run_world_operation("save", operation))
 			throw EXCEPTION("Save_World did not complete")

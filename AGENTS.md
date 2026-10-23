@@ -41,6 +41,17 @@ with self-review allowed and administrator bypass disabled. Keep explicit manual
 environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
+<!-- 2026-10-23: save movement and physical sleep guards -->
+Cross-z movement admission reads persistence_active_operation.kind == "save";
+load reconstruction and same-z serialization hooks must remain nonblocking.
+Resolve physical turfs through containers, and allow qdel's gc_destroyed mark
+to detach atoms before gcDestroyed is assigned. Raw loc/z assignment bypasses
+Move/forceMove; explicit transport paths use persistence_set_loc/set_z.
+tests/save_movement is offline source-flow evidence, not native acceptance or
+proof that all remaining raw location writers are covered. Protected sleep's
+physical predicate includes (1,1,1) and the existing admin sleep area; stale
+return coordinates inside that area must keep protection and refuse waking.
+
 Protected sleep relocates the body between z-levels, so release only its matching
 reciprocal buckle before entry or wake. Keep return coordinates captured before
 unbuckling, reject mismatched occupants, and leave sleep protection active on a

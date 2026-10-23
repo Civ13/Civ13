@@ -49,10 +49,11 @@
 
 /obj/item/weapon/storage/ww2/german/proc/handle_item_insertion1(obj/item/W as obj, prevent_warning = FALSE)
 	if (!istype(W)) return FALSE
+	if (!persistence_movement_allowed(W, src)) return FALSE
 	if (usr)
 		usr.remove_from_mob(W)
 		usr.update_icons()	//update our overlays
-	W.loc = src
+	if (!W.persistence_set_loc(src)) return FALSE
 	W.on_enter_storage(src)
 	if (usr)
 		if (usr.client && usr.s_active != src)
@@ -79,6 +80,7 @@
 //Call this proc to handle the removal of an item from the storage item. The item will be moved to the atom sent as new_target
 /obj/item/weapon/storage/ww2/german/proc/remove_from_storage1(obj/item/W as obj, atom/new_location)
 	if (!istype(W)) return FALSE
+	if (!persistence_movement_allowed(W, new_location ? new_location : get_turf(src))) return FALSE
 
 
 	for (var/mob/M in range(1, loc))
@@ -95,9 +97,9 @@
 		else
 			W.layer = initial(W.layer)
 			W.plane = GAME_PLANE
-		W.loc = new_location
+		if (!W.persistence_set_loc(new_location)) return FALSE
 	else
-		W.loc = get_turf(src)
+		if (!W.persistence_set_loc(get_turf(src))) return FALSE
 
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/german_kit_lid))
 		icon_state = "gerkit_open"
