@@ -142,13 +142,17 @@ This hosted route is broader than the four local native launches; it must not be
 reported as that bounded local packet. Linux runners keep their existing subprocess
 timeouts; this proposal does not claim Windows Job limits apply on Linux.
 
-The current head deliberately retains `[skip ci]`. A later reviewed normal PR
-synchronization with a non-skipped head can use the existing pipeline without
-workflow edits. A `build:` title on an edited event requests compilation only and
+The preparation commits retain `[skip ci]`. The user subsequently approved a
+normal non-skipped publication to use this existing public, standard GitHub-hosted
+pipeline, with no extensive-regression opt-in or workflow/security changes. Its
+ordinary PR synchronization selects the full build and introduced tanning/Atlas
+suites. This approval covers hosted CI only; local BYOND and Gaia remain untouched.
+A `build:` title on an edited event requests compilation only and
 does not select introduced native suites. `workflow_dispatch` with default inputs
 also does not select those suites; `extensive_regressions=true` selects all suites
-and is unnecessarily broad for this acceptance. No CI dispatch, skip removal,
-workflow edit, merge or deployment has been performed here.
+and is unnecessarily broad for this acceptance. No manual CI dispatch, workflow
+edit, merge or deployment is part of the validation request. Exact-head hosted
+results must be inspected before accepting compilation or fixtures as passing.
 
 ## Verification performed
 
