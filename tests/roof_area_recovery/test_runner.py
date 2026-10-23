@@ -3,6 +3,7 @@ import ast
 import copy
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -168,6 +169,23 @@ class RunnerTests(unittest.TestCase):
                        dict(mode='read',done=True,checks=23)):
             with self.assertRaises(RuntimeError): runner.adjudicate('read','cleanup-namespace',result)
         with self.assertRaises(RuntimeError): runner.adjudicate('read','main',dict(mode='read',done=False,checks=23))
+
+    def test_retained_byond_numeric_flags_preserve_success_and_named_failure(self):
+        # Exact non-private writer result retained from CI40040804351.
+        actual=json.loads('{"done":1,"checks":10,"mode":"write"}')
+        runner.adjudicate('write','main',actual)
+        failure=dict(mode='read',done=0,error='Cross-z equal numeric roof ref was retained',checks=9)
+        runner.adjudicate('read','cleanup-namespace',failure)
+        for changed in (dict(actual,done=0),dict(actual,checks=9),dict(actual,error='unexpected'),
+                        dict(failure,done=1),dict(failure,checks=8),dict(failure,error='different')):
+            with self.assertRaises(RuntimeError):
+                runner.adjudicate(changed['mode'],'main' if changed['mode']=='write' else 'cleanup-namespace',changed)
+
+    def test_native_flag_rejects_noncanonical_numbers_strings_and_null(self):
+        for value in (True,1): self.assertIs(runner.native_flag(value),True)
+        for value in (False,0): self.assertIs(runner.native_flag(value),False)
+        for value in (None,-1,2,0.0,1.0,float('nan'),'0','1','true','false','',[],{}):
+            with self.subTest(value=value), self.assertRaises(RuntimeError): runner.native_flag(value)
 
     def test_git_blob_inventory_is_streamed_and_complete(self):
         head = runner.git('rev-parse','HEAD').decode().strip()

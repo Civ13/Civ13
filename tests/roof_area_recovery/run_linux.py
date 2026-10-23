@@ -178,14 +178,22 @@ def socket_contract(rows, runtime, closed):
              and r['address'] == '127.0.0.1' and r['port'] == PORT for r in rows), 'Unexpected startup socket')
 
 
+def native_flag(value):
+    # BYOND json_encode emits numeric 0/1. Accept only that exact integer
+    # domain or JSON booleans, never general truthiness or numeric coercion.
+    need(type(value) in (bool,int) and value in (0,1), 'Native flag must be boolean or integer 0/1')
+    return bool(value)
+
+
 def adjudicate(mode, variant, result):
     need(result.get('mode') == mode, 'Native mode receipt differs')
+    done = native_flag(result.get('done'))
     if variant == 'cleanup-namespace' and mode == 'read':
-        need(result.get('done') is False and result.get('error') == 'Cross-z equal numeric roof ref was retained'
+        need(not done and result.get('error') == 'Cross-z equal numeric roof ref was retained'
              and result.get('checks') == 9, 'Cleanup control failed outside its named assertion')
         return
     minimum = {'write': 10, 'write-covered': 10, 'write-roofed': 9, 'read': 23, 'read-covered': 20}.get(mode, 6)
-    need(result.get('done') is True and result.get('checks', 0) >= minimum and 'error' not in result,
+    need(done and result.get('checks', 0) >= minimum and 'error' not in result,
          'Native roof assertions incomplete or failed')
 
 
