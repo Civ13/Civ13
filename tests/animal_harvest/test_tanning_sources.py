@@ -240,6 +240,7 @@ class TanningSourceContracts(unittest.TestCase):
             self.assertEqual(bool(gate(valid, context)), mode in ('held', 'ground'), mode)
         self.assertEqual(predicate(text, '/obj/proc/tanning_liquid_accessible'), 'is_open_container()')
         self.assertEqual(predicate(text, '/obj/structure/reagent_dispensers/tanning_liquid_accessible'), '!locked')
+        self.assertEqual(predicate(text, '/obj/structure/pot/tanning_liquid_accessible'), 'is_open_container() && !meal_cooking && !meal_portions')
         for stage in ('/obj/item/stack/bark', '/obj/item/stack/material/hairlesshide', '/obj/item/stack/material/dryhide'):
             dispatch = block(text, stage + '/resolve_attackby')
             self.assertIn('isobj(A) && A.reagents', dispatch)

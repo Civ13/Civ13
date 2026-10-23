@@ -106,6 +106,9 @@
 /obj/structure/reagent_dispensers/tanning_liquid_accessible()
 	return !locked
 
+/obj/structure/pot/tanning_liquid_accessible()
+	return is_open_container() && !meal_cooking && !meal_portions
+
 /proc/hide_liquid_valid(mob/living/user, obj/item/source, obj/vessel, reagent_id, cost)
 	return hide_worker_can_reach(user, source) && !QDELETED(vessel) && vessel.tanning_liquid_accessible() && ((vessel.loc == user && user.item_is_in_hands(vessel)) || (isturf(vessel.loc) && user.Adjacent(vessel) && source.loc == user && user.item_is_in_hands(source))) && vessel.reagents && vessel.reagents.has_reagent(reagent_id, cost)
 

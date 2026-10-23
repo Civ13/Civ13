@@ -72,6 +72,16 @@
 	mug.reagents.add_reagent("water", 10)
 	prepared.resolve_attackby(mug, worker)
 	harvest_assert(prepared.amount == 1 && mug.reagents.get_reagent_amount("water") == 10, "Nested vessel bypassed accessibility")
+	var/obj/structure/pot/pot = new(site)
+	pot.reagents.add_reagent("water", 10)
+	pot.meal_cooking = TRUE
+	prepared.resolve_attackby(pot, worker)
+	harvest_assert(prepared.amount == 1 && pot.reagents.get_reagent_amount("water") == 10 && !pot.contents.len, "Cooking pot accepted tanning input")
+	pot.meal_cooking = FALSE
+	pot.meal_portions = 1
+	prepared.resolve_attackby(pot, worker)
+	harvest_assert(prepared.amount == 1 && pot.reagents.get_reagent_amount("water") == 10, "Ready meal pot accepted tanning input")
+	qdel(pot)
 	qdel(mug)
 	qdel(impostor)
 	qdel(barrel)
