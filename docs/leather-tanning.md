@@ -13,24 +13,36 @@ still yields the existing species pelts for fur clothing and other pelt recipes.
    no mammalian bones, sinew, fat, or organs from this change.
 2. Apply a held sharp tool to a nearby raw hide or pelt. Scraping takes 50 ticks
    and consumes one piece only after successful completion and revalidation.
-3. Apply an open held glass vessel containing at least 5 units of water to the
+3. Apply an open held liquid container containing at least 5 units of water to the
    prepared hairless hide. This consumes 5 water and one prepared piece, producing
    one wet hide. Existing saved hairless hides enter at this stage.
 4. Put a held wet-hide stack on the existing tanning rack. A batch takes
    300 ticks, normally 30 seconds. Click the rack with an empty hand to retrieve
    its contents; removing wet hides cancels that batch and preserves the pieces.
    Completed dry hides must be retrieved before another batch can be loaded.
-5. Apply an open held vessel containing at least 5 units of tannin to a dry hide.
+   Hold the wet-hide stack itself; remove it from a storage bag first. Loading
+   transfers that batch directly, leaving unrelated loose hides on the ground.
+5. Apply an open held liquid container containing at least 5 units of tannin to a dry hide.
    One dry hide and 5 tannin produce one ordinary leather sheet.
 
 Cutting logs into planks also yields one bark piece per paid log unit. Existing
 hatchet cutting costs two log units for one plank and now also yields two bark;
 existing saw cutting costs one log for four planks and also yields one bark.
 The tool, log location, remaining stock, and actor are rechecked after the wait.
-Use an open held vessel with 10 units of water on one bark piece to replace that
+Use an open held liquid container with 10 units of water on one bark piece to replace that
 water with 10 units of tannin. The equal liquid volumes fit even in a full vessel.
 All liquid interactions process one hide or bark piece at a time; a splash alone
 does not turn a whole stack into leather.
+
+Wood mugs, canteens and glass vessels work through the same open-container API.
+You can also hold the bark, prepared hide or dry hide and click a nearby open
+liquid container or unlocked barrel on the ground. This reverse interaction
+processes one piece and the same liquid costs, without pouring or splashing.
+Keep the ingredient in hand and both objects within reach. Sealed containers,
+locked barrels, another person's inventory, nested storage and insufficient
+liquid are rejected. The vessel must have an actual accessible reagent holder;
+terrain water and a cooking pot's separate cooking-water counter are not reagent
+vessels. Use an ordinary reagent vessel for tanning instead.
 
 These processing actions add no map, era, faction, or research restrictions.
 Rack construction continues to use the existing wood recipe (8 logs in the global
@@ -57,6 +69,10 @@ Conversions call `use(n)` without a human argument, avoiding crafting discounts,
 and pass final counts into constructors before any automatic merging occurs.
 Preparation no longer falls through into a second output when a destination
 stack already exists.
+
+Intermediate hide materials expose processing interactions, not generic utensil
+or other material crafting recipes. Finished leather and species-pelt recipes
+retain their existing crafting uses.
 
 The rack stores actual wet/dry stack objects in its saved contents. Its runtime
 epoch and derived busy flag are excluded from both save export and legacy import.

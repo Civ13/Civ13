@@ -58,7 +58,7 @@ crafting recipes connect to that finished resource. Fur recipes remain connected
 to the original species pelts, before the optional scraping step.
 
 Hatchet cutting shows 2 logs to 1 plank plus 2 bark; saw cutting shows 1 log to
-4 planks plus 1 bark. Applying an open held glass vessel with 10 water to one bark
+4 planks plus 1 bark. Wood mugs and other open liquid containers work; hold the ingredient and click a nearby open container or unlocked barrel for stationary processing. Applying an open held liquid container with 10 water to one bark
 produces 10 tannin in the vessel. These are explicit paid item interactions,
 rather than chemistry recipes. Conditions show the required held tools/vessel.
 
@@ -158,9 +158,11 @@ definitions, unique retained IDs and actual catalog source rows.
 `node tests/crafting_atlas/variants.test.mjs` runs the production web template
 through repeated selections, combined catalog/path searches, era/processor
 changes, empty results, reset and resource navigation, with source-selection and
-sibling-search omission controls. The native navigation fixture includes grouped
-selection, old variant IDs and legacy page boundaries; those added cases remain
-unrun while native execution is deferred for the tanning/Gaia priority.
+sibling-search omission controls. The native `tests/crafting_atlas/variants.dm`
+fixture includes grouped selection, old variant IDs, selected provenance and
+legacy page boundaries. The existing hosted Atlas workflow runs it through the
+bounded renderer, together with real sprite/site generation and the existing
+pagination/navigation controls. Results must be checked for the exact PR head.
 
 `tests/test_tanning_atlas.py` checks exact quantities, station research, all
 processing-stage and acquisition links, the lack of direct animal leather, and

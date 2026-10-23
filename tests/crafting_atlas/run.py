@@ -62,7 +62,7 @@ def main(argv=None, session=None):
         probe=(ROOT / 'tests/crafting_atlas/probe.dm').read_text(encoding='utf-8')
         if args.full_catalog:
             probe=probe.split('/world/New()')[0]+(ROOT/'tests/crafting_atlas/full_probe.dm').read_text()
-        fixture = "#define PAPER_ICON 'paper.dmi'\n#define ATLAS_EXPECTED_RECIPES "+str(len(catalog['recipes']))+"\n#include \"atlas.dm\"\n" + probe + (ROOT/'tests/crafting_atlas/navigation.dm').read_text()
+        fixture = "#define PAPER_ICON 'paper.dmi'\n#define ATLAS_EXPECTED_RECIPES "+str(len(catalog['recipes']))+"\n#include \"atlas.dm\"\n" + probe + (ROOT/'tests/crafting_atlas/navigation.dm').read_text() + (ROOT/'tests/crafting_atlas/variants.dm').read_text()
         (tmp / 'probe.dme').write_text(fixture, encoding='utf-8')
         compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')

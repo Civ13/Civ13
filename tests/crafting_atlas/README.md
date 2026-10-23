@@ -1,9 +1,13 @@
 # Crafting atlas verification
 
 `tests/test_atlas_variants.py` and `node tests/crafting_atlas/variants.test.mjs`
-check grouping and selected-source accuracy offline. The added native variant
-cases in `navigation.dm` are authored but unrun while execution is deferred for
-the tanning/Gaia priority. Do not treat DOM/source evidence as native acceptance.
+check grouping and selected-source accuracy offline. `variants.dm` exercises
+grouped counts, repeated old-ID selection, selected source/transformation,
+filter changes, nonmutation and legacy page boundaries through `run.py`.
+The existing hosted Atlas step generates real sprite/site output and runs the
+basic/full-catalog renderer plus pagination and four navigation controls. Keep
+the exact tested head and results in the PR; DOM checks alone are not native
+acceptance.
 
 Use pinned BYOND 516.1681. `run.py --byond-bin <bin>` compiles and executes
 production reference rendering in temporary storage with startup and ports

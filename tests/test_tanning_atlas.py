@@ -28,6 +28,15 @@ class TanningAtlasTests(unittest.TestCase):
         self.assertEqual(len(matches), 1, name)
         return matches[0]
 
+    def test_processing_materials_do_not_offer_generic_crafting(self):
+        intermediate = {'/material/'+s for s in ('rawhide','hairlesshide','wethide','dryhide')}
+        for recipe in self.recipes:
+            if recipe['kind'].startswith('Material / '):
+                self.assertFalse(intermediate.intersection(x['id'] for x in recipe['inputs']), recipe['name'])
+        for resource in ('/material/leather', '/material/cowpelt'):
+            self.assertTrue(any(r['kind'].startswith('Material / ') and
+                                resource in [x['id'] for x in r['inputs']] for r in self.recipes))
+
     def test_paid_quantities_and_log_co_products(self):
         expected = {
             'Wash a prepared hide': ([('/material/hairlesshide', '1'), ('water', '5')], [('/material/wethide', '1')]),

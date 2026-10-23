@@ -96,6 +96,8 @@
 /material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global", research_faction = null)
 
 	recipes = list()
+	if (processing_only)
+		return recipes
 	var/chosen_list = craftlist_lists[faction]
 	if (hardness>=40 && current_res[1] > 8 && (map && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13))
 		recipes += new/datum/stack_recipe("[display_name] fork", /obj/item/weapon/material/kitchen/utensil/fork, TRUE, _on_floor = TRUE, _supplied_material = "[name]")

@@ -80,11 +80,17 @@ class AtlasVariantTests(unittest.TestCase):
                     self.assertEqual(fields[1], recipe['name'])
                     self.assertEqual(fields[3], recipe['inputs'][0]['quantity'])
         self.assertEqual(len(identities), len(set(identities)))
+        # Production explicitly excludes these intermediate hides from generic
+        # recipes. They remain resources for the separately extracted processing
+        # routes. Catalog-row completeness must respect that admission boundary.
+        processing_inputs = {prefix+stage for prefix in ('/material/', '/obj/item/stack/material/')
+                             for stage in ('rawhide', 'hairlesshide', 'wethide', 'dryhide')}
         expected_rows = {(p.relative_to(ROOT).as_posix(), line)
                          for p in (ROOT/'config/crafting').rglob('*') if p.is_file()
                          for line, row in enumerate(p.read_text().splitlines(), 1)
                          if 'RECIPE: ' in row and '//' not in row and
-                         len(row.split('RECIPE: ', 1)[1].strip().split(',')) == 13}
+                         len(row.split('RECIPE: ', 1)[1].strip().split(',')) == 13 and
+                         row.split('RECIPE: ', 1)[1].strip().split(',')[0] not in processing_inputs}
         self.assertEqual(catalog_rows, expected_rows, 'every loader row survives grouping')
 
 
