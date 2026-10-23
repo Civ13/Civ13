@@ -70,8 +70,12 @@ production hand/item provocation, actual knockdown and active-hand drop, nodrop,
 single incoming damage/wear, zero retaliation damage, both cooldowns and their
 expiry, herd protection, invalid targets, adult/juvenile coverage, noncombat
 dispatch and unaffected animals. The existing health/duplicate-hit controls
-remain available. Native compilation/runtime have not yet been run for this
-change; source preparation does not establish native acceptance.
+remain available. Source preparation does not establish native acceptance.
+The first remote run on `54a273d` compiled with zero errors/warnings, then failed
+the feeding assertion because the fixture ram was already full. The fixture now
+sets its hunger before feeding; the failed verdict is preserved in CI run
+`39992944285`. That correction needs a fresh native result. Local native and
+connected-client execution remain deferred for the prioritized tanning work.
 
 For a later authorized isolated client check, place an adult ram beside an awake
 human with a removable item held. Pet it, then use harm/disarm/grab intent or a

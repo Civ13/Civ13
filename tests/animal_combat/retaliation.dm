@@ -136,6 +136,7 @@
 	R.attackby(L, U)
 	combat_assert(L.S1 == R && !U.weakened && !R.next_animal_retaliation, "Leashing provoked retaliation")
 	R.granivore = TRUE
+	R.simplehunger = 100
 	var/obj/item/stack/farming/seeds/combat_food/F = new(U)
 	F.amount = 2
 	R.attackby(F, U)
