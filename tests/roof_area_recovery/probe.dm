@@ -158,7 +158,9 @@
 				map_storage.restore_durable_world()
 				durable_world_check(op.finish(TRUE), "Synthetic load admission not released")
 				var/obj/item/roof_area_fixture/item = locate()
-				var/obj/roof/wood/roof = locate()
+				// qdel detaches retired roofs before native GC. Select the loaded
+				// graph owner, never an older detached instance of the same type.
+				var/obj/roof/wood/roof = item ? item.saved_roof : null
 				var/area/A = get_area(locate(3,3,1))
 				durable_world_check(item && roof && roof.loc == locate(3,3,1), "Recursive roof owner lost or duplicated")
 				durable_world_check(istype(A, /area/caribbean/roofed/semiarid) && item.saved_area == A && map.faction_research["roof_area"] == A, "Saved area references diverged")
@@ -175,7 +177,8 @@
 				// must restore the recorded base rather than the roofed area.
 				durable_world_check(roof.roof_overlay && (roof.roof_overlay in roofs_list), "Real roof constructor overlay was not registered")
 				var/roof_count = 0
-				for(var/obj/roof/R in world) roof_count++
+				for(var/obj/roof/R in world)
+					if(get_turf(R) && !R.gc_destroyed && !R.gcDestroyed) roof_count++
 				durable_world_check(roof_count == (mode == "read-covered" ? world.maxx * world.maxy * world.maxz : 4), "Roof constructors lost or duplicated owners")
 				qdel(roof)
 				sleep(1)
