@@ -241,6 +241,32 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Verify native persistence date and disk restoration
+        id: persistence_year
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_year')
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/persistence-year"
+          export TMPDIR="$RUNNER_TEMP/persistence-year"
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --persistence-year
+          for control in year-helper year-load year-order; do
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --persistence-year --negative-control "$control"
+          done
+      - name: Retain native persistence date evidence
+        if: always() && steps.persistence_year.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: persistence-year-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/persistence-year/**/*.json
+            ${{ runner.temp }}/persistence-year/**/*.log
+            ${{ runner.temp }}/persistence-year/**/*.dm
+            ${{ runner.temp }}/persistence-year/**/*.dme
+            ${{ runner.temp }}/persistence-year/**/tested.patch
+          retention-days: 7
+          if-no-files-found: error
       - name: Run native HUD appearance and preservation fixture
         id: hud_visual
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hud_visual')

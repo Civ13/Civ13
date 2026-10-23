@@ -31,8 +31,42 @@ saves receive the floor in memory; no save format or original save is rewritten
 by loading. Persistence Chad Mode + and the Nations RP persistence map are
 separate existing modes and are not newly enabled or otherwise reconfigured.
 
-Native compilation, native save round trips and an isolated connected-client
-Persistence interaction remain separate verification. Reproduce by enabling
+Native acceptance uses the existing full-source durable-world runner:
+
+```
+python3 tests/world_save/run-durable-world.py --persistence-year --byond-bin <516.1681-bin>
+```
+
+The guarded public CI build job executes this case and `--negative-control`
+`year-helper`, `year-load`, and `year-order` independently. They respectively
+disable the helper, omit the post-import call and move it before durable restore.
+Controls must fail at `earlier date not raised` or `saved date floor lost` after
+clean native compilation; engine errors, timeouts and unrelated assertions fail
+acceptance. Generated sources, hashes, logs and receipts are retained for 7 days
+in the exact-head `persistence-year-<SHA>` artifact, including failed attempts.
+
+The fixture compiles actual production helper/admin/save/load procedures using
+existing startup adapters. It extracts the configured startup activation block
+before autoload dispatch, invokes the actual admin toggle, and performs 24 actual
+`ticker.loadmap()` imports (12 disk generations, each loaded twice). These cover
+1903/1943/2023 and persistence on/off in both v2 durable and v1 positional saves.
+V2 checks restore faction data and shared aliases after clearing live progress;
+v1 lacks those durable fields, so checks their live preservation while restoring
+the available date/tier/default-research header. The v1 fixture is a Gaia child
+outside the existing durable-profile allowlist; production admission is intact.
+Every case checks unchanged saved header/metadata/marker bytes and released load
+ownership. Earlier/equal/later dates, BC epochs, repeated activation, independently
+advanced tiers and unrelated modes also execute natively.
+
+The world rejects clients, Topic and port reopen, disables visibility and uses
+the existing runner's native-port and OS zero-listener census handshake. Maps,
+SQL, normal world/global startup and external hooks remain disabled. This is an
+8x8x2 inert-turf fixture, not a live map, fresh-process recovery, or connected
+client acceptance. Local `--prepare-only --persistence-year` stages packets with
+no native execution; the offline packet test checks all three mutation anchors.
+
+An isolated connected-client Persistence interaction remains separate graphical
+verification. Reproduce by enabling
 Persistence at `1903`, `1943`, then `2023`: expect `1943`, `1943`, `2023`.
 Disable/re-enable each time and repeat with fresh configured startup and isolated
 legacy/current-format saves, checking tier/flags and faction research too.
