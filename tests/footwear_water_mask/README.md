@@ -43,7 +43,7 @@ hiding, clean equipment and bare-foot branches retain their original behavior.
 Other nested clothing overlays may have the same general filtering limitation;
 this footwear fix deliberately does not change those compositions.
 
-## Checks
+## Checks and recorded evidence
 
 Run offline with a verified Python executable (no BYOND, network or game):
 
@@ -51,32 +51,84 @@ Run offline with a verified Python executable (no BYOND, network or game):
 & '<verified-python>' -B -m unittest discover -s tests/footwear_water_mask -v
 ```
 
-These source contracts compare the unchanged shoe construction and mask
-selection against deployed commit `77c14940584bedfa6241ecf1e0642a53ca6df0c7`.
-The baseline must already exist in Git; tests never fetch it. They reject the
-historical ungrouped path and five generated-source omissions, check both
-refresh boundaries and ensure the helpers do not write stain data or geometry.
-This is source evidence, not DM execution or rendered-pixel verification.
+The source contracts retain comparison of unchanged production shoe construction
+and mask selection with deployed `77c14940584bedfa6241ecf1e0642a53ca6df0c7`.
+They reject the ungrouped path and five source omission controls. The new pure
+result-parser tests require the exact intended control failure, complete check
+counts and control admission; collateral failures, absent controls and partial
+results are rejected. These tests do not execute DM or establish rendered pixels.
 
-Prepare an independent, fresh directory and compile its tiny fixture:
+At original patch head `86bbbb2cb8da8bcd12dfc1300e08d71c205480c6`, full-game
+BYOND 516.1681 CI compiled with zero errors/warnings in run `40004369529`.
+Two later reviewed headless packets completed 6,090 checks but FAILED 505 raw
+color-text comparisons. Preserve both failed verdicts. The diagnostic packet
+captured all 505 unique scene IDs with no dropped/truncated rows: native cached
+child and detached direct/copy controls returned text `#a10808` (252 rows) and
+`#70543e` (253), while the source fields retained `#A10808` and `#70543E`.
+These measured getter representations justify a fixture-only comparison change,
+not a production color change or graphical acceptance.
+
+Retained evidence hashes:
+
+- Both failed result files: `c61e59ed6a560eff77bc7d605425d891bf87aced3280717f06d1f44bf614db49`.
+- First reviewed receipt: `70d9531ad3b0fff72140b412146a0e3eff0e0fde64987e7d7d3530029c6f1181`.
+- Diagnostic receipt: `0ee1123384c7f3300187fd83cd1f0c6f2e751040113a2759c9079a0ba9085db5`.
+- Complete diagnostics: `51ad55273ea7cf0a0d6c027d1f03ac2411879c5c9a9599954158a0d23cd7fcf4`.
+
+The corrected comparator accepts only text of length seven matching
+`^#[0-9A-Fa-f]{6}$`, then compares lowercase text. It rejects named/arbitrary
+colors, whitespace, alpha suffixes, nulls, numbers and matrices. The authored
+32-case JSON corpus exercises both operands and a changed RGB channel; it is
+used by both offline policy checks and the proposed native fixture.
+
+## Native packet preparation, no implicit execution
 
 ```powershell
-& '<verified-python>' -B tests/footwear_water_mask/prepare.py --output '<fresh-absolute-directory>'
-& '<BYOND-516.1681-bin>\dm.exe' -max_errors 0 '<fresh-absolute-directory>\probe.dme'
+& '<verified-python>' -B tests/footwear_water_mask/prepare.py --output '<fresh-absolute-directory>' --control fixed
 ```
 
-The packet copies the exact production procs and real DMI resources, recording
-hashes, checkout HEAD and dirty diff. Its `probe.dm` uses adapted inert types
-in a 3x3x1 world, with client rejection and a refused OpenPort override. Preparation
-does not start a compiler or runtime; compiling does not run the assertions.
-There is no automatic DreamDaemon launcher. A separately approved native run
-must use `-trusted`, offline temporary storage and an external zero-listener
-census; it must inspect runtime diagnostics and `result.json` (no failures).
-Headless assertions cover composition/refresh state, blood/brown mud, all four
-directions, standing/lying/prone, repeated depth boundaries, deferred shoe
-refresh, overrides, clean replacement, suit hiding and bare feet. The adapted
-fixture does not exercise production equipment dispatch, persistence saves,
-environment eligibility or client rendering.
+Other preparation-only variants are `wrong-rgb` and `missing-stain`. All copy
+exact production procs and real DMI resources, recording hashes, HEAD and dirty
+diff in an adapted 3x3x1 packet. Preparation never starts a compiler or daemon.
+
+The test-only entry closes native startup port 59474 and verifies closure and
+refused reopening. Every client is rejected. Native execution requires review of
+the complete frozen packet and a fresh, time-bounded, single-use exact-packet
+grant. `run-contained.py` is a domain adapter of the existing floor-decal runner;
+its Windows/socket/Job helpers are staged byte-identically from that suite.
+Never use the rejected zero-socket supervisor or reuse a consumed grant.
+
+The proposed final run is three serial cases, each one compiler followed by one
+daemon under retained-handle, kill-on-close one-active-process Jobs. Existing
+limits remain: compile 60 wall/30 CPU seconds and 1 GiB process-private memory;
+runtime 15 wall/10 CPU seconds and 512 MiB; watcher 128 MiB; aggregate 240 seconds
+including a 10-second cleanup reserve. Socket admission is TCP only: LISTEN
+exactly 127.0.0.1:59474 before the closure marker, none after; existing loopback
+states 5-12 only. Sampling cannot prove absence of transient sockets, trusted
+BYOND is not OS-network-sandboxed, and inherited CloseHandle return values are
+unchecked. Require exact retained-root/cumulative Job reconciliation and record
+cleanup errors. No client attachment or live game access is permitted.
+
+Expected case results, all currently UNRUN for this corrected fixture:
+
+| Case | Checks | Exact failures | Diagnostic rows |
+| --- | ---: | --- | ---: |
+| fixed | 6122 | none | 505 |
+| wrong-rgb | 6122 | `blood or brown mud color retained` exactly once | 505 |
+| missing-stain | 6119 | `nested stain retained` exactly once | 504 |
+
+Controls affect only the first stained assertion view and restore its original
+appearance list before later snapshots. Wrong-rgb changes a real channel to
+`#A10809`; missing-stain removes the child, and the guard avoids dereferencing
+an absent appearance. Any other failure, runtime diagnostic, count mismatch or
+missing control fails acceptance. The three skipped checks in missing-stain are
+its unavailable child's state, color and plane checks.
+
+Diagnostics retain raw text equality plus the corrected RGB result and detached
+copy controls. Bounds remain 512 rows, 4,096 JSON characters per row, 128 text
+characters, 20 matrix entries and 3 MiB serialized text; drops/truncation emit a
+failure. Actual pixels remain explicitly unverified. Do not relabel historical
+failures even if a later corrected fixture passes.
 
 ## Native visual acceptance still required
 
@@ -98,6 +150,7 @@ another branch's captures. Use `/obj/item/clothing/shoes/leatherboots`
 5. Check ordinary lighting against the same scene; this patch does not touch
    lighting planes or the separate oversized-sprite lighting investigation.
 
-No full-game launch, DreamDaemon run, native client capture, live change, merge
-or deployment is part of the recorded local verification. OpenDream remains
-paused. Passing offline checks or compilation leaves these visual gates open.
+Historical headless runs are recorded above; the corrected three-case packet
+remains unexecuted pending review. No full-game/client capture, live change, merge
+or deployment is established. OpenDream remains paused. Passing source, compiler
+or headless state checks leaves all actual-pixel acceptance gates open.

@@ -408,6 +408,11 @@ new update_inv_shoes images need the current mask before publication. Keep
 durable stain data intact. tests/footwear_water_mask checks source contracts
 and prepares a tiny production-proc fixture; compilation/source checks do not
 establish native client clipping, stance, movement or lighting acceptance.
+The pinned native image getter returned lowercase #RRGGBB text for the tested
+blood/mud inputs. The fixture comparator first requires text of exactly seven
+characters matching #RRGGBB, then ignores hexadecimal case. Never coerce nulls,
+named colors or matrices. Keep wrong-channel/missing-stain controls and preserve
+the earlier failed raw-text comparison receipts; diagnostics are not pixels.
 
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state

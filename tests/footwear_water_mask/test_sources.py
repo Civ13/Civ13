@@ -1,5 +1,7 @@
 """Offline composition/refresh contracts. These do not establish rendered pixels."""
 from pathlib import Path
+import ast
+import json
 import re
 import subprocess
 import tempfile
@@ -31,6 +33,76 @@ def composition_contract(text):
 
 
 class FootwearMaskContracts(unittest.TestCase):
+    def test_rgb_comparison_is_exact_hex_text_before_casefold(self):
+        probe = source('tests/footwear_water_mask/probe.dm')
+        body = probe[probe.index('/proc/footwear_rgb_equal('):probe.index('var/global/color_scene_id')]
+        self.assertIn('if (!istext(actual) || !istext(expected))\n\t\treturn 0', body)
+        self.assertIn('if (length(actual) != 7 || length(expected) != 7)\n\t\treturn 0', body)
+        pattern = re.search(r'regex\("([^"\n]+)"\)', body)[1]
+        self.assertEqual(pattern, '^#[0-9A-Fa-f]{6}$')
+        self.assertIn('if (!rgb_pattern.Find(actual) || !rgb_pattern.Find(expected))\n\t\treturn 0', body)
+        self.assertIn('return lowertext(actual) == lowertext(expected)', body)
+        cases = json.loads(source('tests/footwear_water_mask/rgb_cases.json'))
+        self.assertEqual(len(cases), 32)
+        for case in cases:
+            actual, expected = case['actual'], case['expected']
+            accepted = (type(actual) is str and type(expected) is str and
+                        len(actual) == len(expected) == 7 and
+                        re.fullmatch(pattern, actual) is not None and
+                        re.fullmatch(pattern, expected) is not None and actual.lower() == expected.lower())
+            self.assertEqual(accepted, bool(case['equal']), case['name'])
+        self.assertTrue(any(isinstance(c['actual'], list) for c in cases))
+        self.assertTrue(any(c['actual'] is None for c in cases))
+
+    def test_native_color_controls_restore_one_assertion_view(self):
+        probe = source('tests/footwear_water_mask/probe.dm')
+        self.assertIn('stained && !color_control_applied && FOOTWEAR_COLOR_CONTROL', probe)
+        self.assertIn('control_overlays = I.overlays.Copy()', probe)
+        self.assertIn('wrong_rgb.color = "#A10809"', probe)
+        self.assertNotEqual(int('A10809', 16), int('A10808', 16))
+        self.assertIn('else if (FOOTWEAR_COLOR_CONTROL == 2)\n\t\t\tI.overlays.Cut()', probe)
+        self.assertIn('if (stained && I.overlays.len)', probe)
+        self.assertIn('if (control_overlays)\n\t\tI.overlays = control_overlays', probe)
+        self.assertIn('row["strict_equal"] = (stain:color == H.shoes.blood_color)', probe)
+        self.assertIn('check(footwear_rgb_equal(stain:color, H.shoes.blood_color)', probe)
+
+    def test_preparation_stages_only_declared_control_and_case_bytes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            for control in (0, 1, 2):
+                output = Path(temp) / str(control)
+                manifest = stage(output, control)
+                self.assertEqual(manifest['control'], control)
+                self.assertTrue((output / 'probe.dme').read_text().startswith(f'#define FOOTWEAR_COLOR_CONTROL {control}\n'))
+                self.assertEqual((output / 'rgb_cases.json').read_bytes(), (ROOT / 'tests/footwear_water_mask/rgb_cases.json').read_bytes())
+            with self.assertRaises(ValueError):
+                stage(Path(temp) / 'invalid', 3)
+
+    def test_native_result_parser_requires_each_exact_control_failure(self):
+        tree = ast.parse(source('tests/footwear_water_mask/run-contained.py'))
+        # Execute only the pure result parser, never imports/admission/native APIs.
+        selected = [node for node in tree.body if isinstance(node, ast.FunctionDef)
+                    and node.name in ('require', 'validate_native')]
+        namespace = {'json': json, 'DIAGNOSTIC': re.compile('runtime error', re.I)}
+        exec(compile(ast.Module(body=selected, type_ignores=[]), '<pure result parser>', 'exec'), namespace)
+        validate = namespace['validate_native']
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'result.json'
+            for name, control, count, failures in (
+                ('footwear', 0, 6122, []),
+                ('wrong-rgb', 1, 6122, ['blood or brown mud color retained']),
+                ('missing-stain', 2, 6119, ['nested stain retained']),
+            ):
+                result = dict(checks=count, failures=failures, scope='adapted appearance state, no client pixels',
+                              control=control, control_applied=int(control != 0))
+                expected = failures[0] if failures else None
+                path.write_text(json.dumps(result))
+                validate('', expected, profile=name, result_path=path)
+                for field, value in (('checks', count-1), ('failures', failures+['collateral']),
+                                     ('control_applied', 1-int(control != 0))):
+                    with self.subTest(case=name, changed=field), self.assertRaises(RuntimeError):
+                        path.write_text(json.dumps({**result, field:value}))
+                        validate('', expected, profile=name, result_path=path)
+
     def test_composite_mask_and_both_refresh_boundaries(self):
         composition_contract(source(SOURCE))
 
