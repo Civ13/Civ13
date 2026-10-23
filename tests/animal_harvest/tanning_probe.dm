@@ -66,8 +66,11 @@
 	var/obj/structure/converter/tanning/rack = new(site)
 	wet.forceMove(worker)
 	worker.l_hand = wet
+	world.log << "TANNING rack admission: valid=[hide_worker_can_reach(worker, wet)] held=[worker.item_is_in_hands(wet)] inventory=[wet.loc == worker] turf=[isturf(rack.loc)] adjacent=[worker.Adjacent(rack)] contents=[rack.contents.len] amount=[wet.amount]"
 	rack.attackby(wet, worker)
-	harvest_assert(wet.loc == rack && rack.finish_hide_drying(wet, 1, rack.drying_epoch, site), "Pipeline paid hide did not dry")
+	world.log << "TANNING rack loaded: inside=[wet.loc == rack] filled=[rack.filled] epoch=[rack.drying_epoch] same_site=[rack.loc == site] deleted=[QDELETED(wet)] amount=[wet.amount]"
+	harvest_assert(wet.loc == rack, "Pipeline wet hide was not admitted to rack")
+	harvest_assert(rack.finish_hide_drying(wet, 1, rack.drying_epoch, site), "Pipeline admitted hide did not dry")
 	rack.attack_hand(worker)
 	var/obj/item/stack/material/dryhide/dry = locate() in site
 	harvest_assert(dry && dry.amount == 1, "Pipeline dried hide could not be removed")
