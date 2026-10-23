@@ -24,6 +24,57 @@ def actual_phase():
 
 
 class RunnerTests(unittest.TestCase):
+    def test_request_claim_is_exclusive_across_outputs_and_packet_copies(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); digest='b'*64
+            claim=runner.claim_request(digest,'a'*40,root/'first',root)
+            original=claim.read_bytes()
+            # A copied packet has the same request bytes/hash; changing its
+            # path or output does not change the atomic consumption key.
+            for output in (root/'first',root/'second',root/'copied-packet'/'output'):
+                with self.assertRaisesRegex(RuntimeError,'already consumed'):
+                    runner.claim_request(digest,'a'*40,output,root)
+                self.assertFalse(output.exists())
+                self.assertEqual(claim.read_bytes(),original)
+            # An interrupted empty claim is uncertain, hence also retained.
+            claim.write_bytes(b'')
+            with self.assertRaisesRegex(RuntimeError,'already consumed'):
+                runner.claim_request(digest,'a'*40,root/'third',root)
+            self.assertEqual(claim.read_bytes(),b'')
+
+    def test_request_claim_rejects_outside_output_and_invalid_digest(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            for output,digest in ((root.parent/'outside','b'*64),(root,'b'*64),(root/'ok','../bad')):
+                with self.assertRaises(RuntimeError):
+                    runner.claim_request(digest,'a'*40,output,root)
+            self.assertFalse((root/'roof-area-request-claims').exists())
+
+    def test_contract_is_uuid_and_line_ending_independent_but_binds_code_and_limits(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            def packet(name,prefix,newline):
+                folder=root/name; prepared=folder/'generated'; prepared.mkdir(parents=True)
+                (prepared/(prefix+'_probe.dm')).write_bytes(b'/world/New()\n    return\n')
+                (prepared/(prefix+'_0.dm')).write_bytes(b'var/example = 1\n')
+                (prepared/'probe.dme').write_bytes(('#include "'+prefix+'_probe.dm"\n#include "'+prefix+'_0.dm"\n').replace('\n',newline).encode())
+                (folder/'expected-crafting-atlas.json').write_bytes(b'{}\n')
+                request=dict(prepared_directory='generated',head='a'*40,variant='main',caps=dict(runner.CAPS),
+                    modes=list(runner.PHASES['main']),port=runner.PORT,outer_seconds=990,
+                    binary_sha256=runner.ENGINE,source_sha256={'example.dm':'c'*64})
+                return request,folder
+            first,a=packet('first','.durable_world_'+'1'*32,'\r\n')
+            second,b=packet('second','.durable_world_'+'2'*32,'\n')
+            expected=runner.execution_contract(first,a)
+            self.assertEqual(expected,runner.execution_contract(second,b))
+            for field,value in (('head','d'*40),('outer_seconds',991),('port',19328),
+                                ('caps',dict(runner.CAPS,child_seconds=61))):
+                changed=copy.deepcopy(second); changed[field]=value
+                self.assertNotEqual(expected,runner.execution_contract(changed,b))
+            probe=next((b/'generated').glob('*_probe.dm'))
+            probe.write_bytes(probe.read_bytes()+b'// changed code\n')
+            self.assertNotEqual(expected,runner.execution_contract(second,b))
+
     def phase(self, fault=None):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary); case = output/'cases/read'; case.mkdir(parents=True)

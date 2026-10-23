@@ -66,6 +66,40 @@ def atlas_command(output):
             '--catalog-only','--game-catalog',str(output)]
 
 
+def execution_contract(request, packet_dir):
+    """Stable code/resource identity; UUID filenames are not an authorization."""
+    prepared = packet_dir/request['prepared_directory']
+    probe = next(prepared.glob('*_probe.dm'))
+    prefix = probe.name.removesuffix('_probe.dm')
+    roles = {p.name.removeprefix(prefix):sha(p) for p in prepared.glob('*.dm')}
+    dme = (prepared/'probe.dme').read_text(encoding='utf-8').replace(prefix,'<generated-source>')
+    contract = dict(head=request['head'],variant=request['variant'],caps=request['caps'],
+        modes=request['modes'],port=request['port'],outer_seconds=request['outer_seconds'],
+        binary_sha256=request['binary_sha256'],source_sha256=request['source_sha256'],
+        code_roles_sha256=roles,dme_sha256=hashlib.sha256(dme.encode()).hexdigest(),
+        atlas_sha256=sha(packet_dir/'expected-crafting-atlas.json'))
+    return hashlib.sha256(json.dumps(contract,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+
+def claim_request(request_sha256, head, output, temporary):
+    """One attempt per request hash on this CI runner, even across outputs/copies."""
+    need(len(request_sha256)==64 and all(c in '0123456789abcdef' for c in request_sha256), 'Claim hash required')
+    temporary=temporary.resolve(strict=True); output=output.resolve()
+    need(output.is_relative_to(temporary) and output!=temporary, 'Claim output outside runner temp')
+    folder=temporary/'roof-area-request-claims'
+    need(not folder.is_symlink(), 'Claim directory symlink refused')
+    folder.mkdir(exist_ok=True)
+    need(folder.resolve().parent==temporary, 'Claim directory escaped runner temp')
+    path=folder/(request_sha256+'.json')
+    payload=dict(request_sha256=request_sha256,head=head,output=str(output),not_a_grant=True,
+        github_run_id=os.environ.get('GITHUB_RUN_ID'),github_run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'))
+    try:
+        with path.open('x',encoding='utf-8') as stream: json.dump(payload,stream,sort_keys=True)
+    except FileExistsError as error:
+        raise RuntimeError('Request already consumed on this runner; preserve the claim and reconcile outcome') from error
+    return path
+
+
 def tree_hashes(head):
     """Hash canonical Git blobs in bounded chunks, portable across checkout EOLs."""
     rows = git('ls-tree', '-rz', '--full-tree', head).split(b'\0')
@@ -131,6 +165,7 @@ def prepare(packet_dir, head, variant):
         modes=list(PHASES[variant]), outer_seconds=990 if variant == 'main' else 330,
         native_executed=False, grant_created=False,
         engine_pin_evidence='Civ13/Civ13 CI40019637842 artifact12530610922 source-manifest.json')
+    request['execution_contract_sha256']=execution_contract(request,packet_dir)
     (packet_dir/'request.json').write_text(json.dumps(request, indent=2), encoding='utf-8')
     return request
 
@@ -212,16 +247,20 @@ def run(output, byond, packet_dir, head, request_sha256):
         path = (packet_dir/name).resolve(strict=True)
         need(path.is_relative_to(packet_dir) and not path.is_symlink(), 'Prepared path escaped packet')
         need(sha(path) == digest, 'Prepared input changed')
+    need(execution_contract(request,packet_dir)==request['execution_contract_sha256'], 'Prepared code contract differs')
     fixed_inputs = request_path.stat().st_size + sum((packet_dir/name).stat().st_size for name in request['prepared'])
     need(fixed_inputs <= 8388608, 'Frozen packet input byte bound')
     for name, digest in ENGINE.items(): need(sha(byond/name) == digest, 'Accepted engine changed')
     source_pin(request); need(not old.native_census(), 'Empty participating native baseline required')
     with __import__('socket').socket() as probe: probe.bind(('127.0.0.1', PORT))
     need(shutil.disk_usage(output.parent).free >= CAPS['disk_free_bytes'], 'Disk floor')
+    claim=claim_request(request_sha256,head,output,Path(os.environ['RUNNER_TEMP']))
+    fixed_inputs += claim.stat().st_size
     output.mkdir(parents=True, exist_ok=False)
     started = time.monotonic(); end = started + request['outer_seconds']; work_end = end - CAPS['cleanup_seconds']
     owned = []; owned_source_sha = {}
     receipt = dict(head=head, variant=variant, request_sha256=sha(request_path), success=False, children=[],
+                   execution_contract_sha256=request['execution_contract_sha256'],claim_path=str(claim),claim_sha256=sha(claim),
                    scope='Synthetic roof recovery/controls only; no private save or production acceptance')
 
     def check(): need(time.monotonic() < work_end, 'Aggregate work deadline')
@@ -398,7 +437,8 @@ def main():
     if args.prepare_only:
         request = prepare(args.packet_dir.resolve(), args.expected_head, args.variant)
         print(json.dumps(dict(prepared=True,native_executed=False,packet=str(args.packet_dir),
-            request_sha256=sha(args.packet_dir/'request.json'),runner_sha256=request['caller_sha256'],variant=args.variant)))
+            request_sha256=sha(args.packet_dir/'request.json'),runner_sha256=request['caller_sha256'],
+            execution_contract_sha256=request['execution_contract_sha256'],variant=args.variant)))
         return 0
     if not args.output or not args.byond_bin or not args.request_sha256:
         cli.error('Execution requires --output, --byond-bin and --request-sha256 in reviewed Linux PR CI')

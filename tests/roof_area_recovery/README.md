@@ -46,6 +46,46 @@ compile or execute the new fixture. Offline passes do not establish recovery.
 Use a separately reviewed immutable packet and normal resource admission.
 No native execution is requested by this document or enabled by the preparer.
 The separately prepared `run_linux.py` runner is not invoked by any workflow.
+The exact proposed insertion is `ci-steps.yml.example`; it is review-only and
+is not an active workflow. It reuses the existing Linux build job after its
+BYOND bootstrap/full-game compile, `contents: read`, exact PR-head checkout and
+disabled credential persistence. It selects only introduced roof tests on
+opened/synchronize/reopened PR events, never body edits, push or manual dispatch.
+The three packets run sequentially and stop on the first failure, without retries.
+The enclosing step is bounded to 40 minutes; native work plus cleanup remains
+990 + 330 + 330 seconds. Preparation and input verification precede those native
+deadlines. No change to production/private data or native session is involved.
+
+Windows-prepared request hashes are review records, not portable execution
+requests. CI regenerates each packet using the exact reviewed Git commit and
+generator, then freezes and passes its actual Linux `request.json` SHA256 to the
+executor. Every raw generated-input hash remains enforced. The request also
+records `execution_contract_sha256`: head, source Git-blob hashes, engine pins,
+variant, modes, caps, port, generated DM code roles, deterministic catalog and DME.
+Only the generated UUID filename prefix in the DME and its text line endings are
+normalized in this additional contract fingerprint. Generated DM bytes themselves
+are hashed unchanged (the preparer writes LF). Preparation timestamps, local paths
+and log metadata are excluded from that fingerprint but remain raw-hash sealed
+where included in the actual request. This is explicit source-contract execution,
+not substitution of a Linux request under an approved Windows request hash.
+
+`NATIVE_USED` inside a new exclusive output directory alone only prevents reuse
+of that output. Before creating any output or native child the runner now creates
+`$RUNNER_TEMP/roof-area-request-claims/<actual-request-SHA256>.json` with exclusive
+file creation. The claim is retained on success, failure or uncertain interruption;
+another output or copied packet with the same request hash is rejected on that
+runner. The claim binds head, output and GitHub run/attempt identifiers. This is
+not a global replay registry across disposable GitHub VMs: a fresh CI run prepares
+a new request, records run/attempt provenance and must be reviewed as a distinct
+invocation. Neither a claim nor packet preparation is an execution grant.
+
+Artifact retention covers only the fresh synthetic packet/output directories and
+these dedicated request claims, including hidden generated DM files, compiled
+pair, logs, per-mode synthetic saves and receipts. Each invocation enforces its
+120 MiB generated-artifact budget (at most 360 MiB across three successful packets,
+including each packet's accounted frozen inputs); retention is seven days. No
+repository config directory, environment dump, token or production save is uploaded.
+
 Its execution gate requires isolated Linux PR CI for Civ13/Civ13, the existing
 installed BYOND516.1681 engine, a new output under RUNNER_TEMP, exact source head,
 an external request SHA256 and the fixed packet contract. It denies Desktop
