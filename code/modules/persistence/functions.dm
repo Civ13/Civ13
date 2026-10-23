@@ -498,6 +498,9 @@ var/global/persistence_load_recovery_required = FALSE
 		if(!map_storage.load_map_metadata())
 			throw EXCEPTION("Saved world metadata restoration failed")
 		map_storage.restore_durable_world()
+		// Both legacy metadata and durable fields are now authoritative. Apply
+		// the mode's minimum without replacing a later saved date or research.
+		map.apply_persistence_age_floor()
 		map_storage.restore_round_state(src, saved_round)
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 		// Client restoration can dispatch callbacks too. Keep this operation's
