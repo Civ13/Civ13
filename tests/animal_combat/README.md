@@ -21,3 +21,10 @@ Evidence is retained under ignored `data/animal-combat-tests/`.
 This is offline native interaction evidence, not graphical or live-server proof.
 No capture is needed for these deterministic contracts. No production restart,
 save read or deployment occurs.
+
+`test_retaliation.py` checks defensive-retaliation source contracts offline.
+`run.py --prepare-only` runs those tests and stages sources without native
+processes. The native runner also includes `retaliation.dm`; its new gameplay
+assertions still require native acceptance. See
+[`docs/animal-retaliation.md`](../../docs/animal-retaliation.md) for species scope,
+triggers, cooldowns, timing limits and client reproduction steps.
