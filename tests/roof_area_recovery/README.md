@@ -45,9 +45,9 @@ compile or execute the new fixture. Offline passes do not establish recovery.
 
 Use a separately reviewed immutable packet and normal resource admission.
 No native execution is requested by this document or enabled by the preparer.
-The separately prepared `run_linux.py` runner is not invoked by any workflow.
-The exact proposed insertion is `ci-steps.yml.example`; it is review-only and
-is not an active workflow. It reuses the existing Linux build job after its
+The reviewed `run_linux.py` invocation is now wired into the existing Linux PR
+build job. `ci-steps.yml.example` retains the exact reviewed step template; the
+active copy is in `.github/workflows/test.yml`. It reuses that build job after its
 BYOND bootstrap/full-game compile, `contents: read`, exact PR-head checkout and
 disabled credential persistence. It selects only introduced roof tests on
 opened/synchronize/reopened PR events, never body edits, push or manual dispatch.
