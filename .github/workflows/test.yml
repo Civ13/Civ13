@@ -95,6 +95,9 @@ jobs:
       - name: Test ping scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')
         run: python3 -B -m unittest discover -s tests/ping_scheduler -v
+      - name: Test local discovery source parity offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/local_discovery')
+        run: python3 -B -m unittest discover -s tests/local_discovery -v
       - name: Test optional roof upper-floor source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
