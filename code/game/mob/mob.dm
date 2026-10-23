@@ -1,7 +1,7 @@
 /mob/Destroy()//This makes sure that mobs with clients/keys are not just deleted from the game.
 	mob_list -= src
 	dead_mob_list -= src
-	living_mob_list -= src
+	unregister_living_mob(src)
 	unset_using_object()
 	qdel(hud_used)
 
@@ -30,7 +30,7 @@
 	if (stat == DEAD)
 		dead_mob_list += src
 	else
-		living_mob_list += src
+		register_living_mob(src)
 	..()
 
 	if (!isnewplayer(src) && !istype(src, /mob/dview) && src.client)

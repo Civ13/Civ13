@@ -806,7 +806,7 @@
 
 			// make animals acknowledge us
 			if (mob_is_human)
-				for (var/mob/living/simple_animal/complex_animal/C in living_mob_list) // living_mob_list fails here
+				for (var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list)
 					var/dist_x = abs(mob.x - C.x)
 					var/dist_y = abs(mob.y - C.y)
 					if (dist_x <= 10 && dist_y <= 10)
