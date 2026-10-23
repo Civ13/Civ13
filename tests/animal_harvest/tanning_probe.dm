@@ -215,6 +215,10 @@
 	rack.attackby(wet, worker)
 	harvest_assert(wet.loc == worker && wet.amount == 3 && !rack.contents.len, "Rack bypassed nodrop input")
 	wet.nodrop = FALSE
+	// Causal control: an ordinary drop into an atom is redirected to its turf.
+	harvest_assert(worker.drop_from_inventory(wet, rack) && wet.loc == site && wet.amount == 3 && !rack.contents.len, "MOVED_DROP control no longer reproduces redirected rack entry")
+	wet.forceMove(worker)
+	worker.l_hand = wet
 	rack.attackby(wet, worker)
 	harvest_assert(wet.loc == rack && wet.amount == 3 && rack.filled && !worker.item_is_in_hands(wet), "Rack failed to preserve the actual paid stack")
 	var/old_epoch = rack.drying_epoch

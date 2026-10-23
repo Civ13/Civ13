@@ -98,8 +98,11 @@
 		if (hide.amount < 1 || hide.amount > hide.max_amount)
 			return TRUE
 		// Preserve the actual stack, rather than consuming input into a timer.
-		user.drop_from_inventory(hide, src)
-		if (hide.loc == src)
+		// MOVED_DROP redirects container entry to its turf. Pay the ordinary
+		// inventory/nodrop checks first, then use a storage transfer event.
+		if (!user.drop_from_inventory(hide))
+			return TRUE
+		if (!QDELETED(hide) && hide.forceMove(src) && hide.loc == src)
 			start_hide_drying(hide)
 		return TRUE
 	if (istype(W, /obj/item/weapon/hammer) || istype(W, /obj/item/weapon/wrench))
