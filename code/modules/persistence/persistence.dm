@@ -24,28 +24,6 @@
 		to_chat(world, "<big><b>The current round is no longer a Persistent Round.</b></big>")
 	return
 
-// age is the displayed epoch/date, not ordinal_age's technology tier. Only
-// recognized BC epochs and canonical numeric years can be ordered here.
-/obj/map_metadata/proc/apply_persistence_age_floor()
-	if (!persistence)
-		return
-	if (age != "5000 B.C." && age != "313 B.C.")
-		if (!istext(age))
-			return
-		var/year = text2num(age)
-		if (isnull(year) || "[year]" != age || year >= 1943)
-			return
-	age = "1943"
-	// Keep any independently advanced research tier. Mark the skipped epochs
-	// complete so legacy research cannot send the displayed date backward.
-	ordinal_age = max(ordinal_age, 6)
-	age1_done = TRUE
-	age2_done = TRUE
-	age3_done = TRUE
-	age4_done = TRUE
-	age5_done = TRUE
-	age6_done = TRUE
-
 /datum/admins/proc/persistent_chad()
 	set category = "Nomads"
 	set desc = "Set the current round as persistent Chad Mode +."

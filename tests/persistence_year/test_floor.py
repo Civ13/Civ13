@@ -104,7 +104,7 @@ def wiring(mode, setup, load):
 
 class FloorTests(unittest.TestCase):
     def setUp(self):
-        self.source = read(MODE)
+        self.source = read(LOAD)
         self.apply = translate(self.source)
 
     def test_earlier_epochs_and_numeric_years(self):
@@ -144,8 +144,17 @@ class FloorTests(unittest.TestCase):
             self.assertEqual(vars(ctx), before)
 
     def test_activation_startup_and_completed_restore_wiring(self):
-        wiring(self.source, read(SETUP), read(LOAD))
+        wiring(read(MODE), read(SETUP), self.source)
         self.assertEqual(sum(read(p).count(CALL) for p in (MODE, SETUP, LOAD)), 3)
+
+    def test_minimal_save_fixture_includes_the_real_helper(self):
+        environment = read("tests/world_save/roundtrip.dme")
+        self.assertIn('#include "../../code/modules/persistence/functions.dm"', environment)
+        self.assertIn(SIGNATURE, read(LOAD))
+        self.assertNotIn(SIGNATURE, read(MODE))
+        stubs = read("tests/world_save/stubs.dm")
+        for field in ("age", "ordinal_age", "persistence", *(f"age{i}_done" for i in range(1, 7))):
+            self.assertRegex(stubs, r"\bvar/" + field + r"\b")
 
     def test_save_contract_and_restore_adapters(self):
         saving = read("code/modules/persistence/saving.dm")
