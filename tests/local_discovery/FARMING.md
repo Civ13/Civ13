@@ -9,6 +9,11 @@ Run with Python 3.10+ (use a verified absolute executable on Windows):
 python -B -m unittest discover -s tests/local_discovery -p test_farming.py -v
 ```
 
+The existing CI evidence-checker runs `tests/local_discovery` when this PR
+introduces the suite or an extensive-regressions run is explicitly selected.
+The guarded group discovers both farming and temperature tests when both exist.
+Existing-test/source edits retain the repository's opt-in regression policy.
+
 The test reads the immutable base with local `git show`, translates the complete
 production `water_proc`, and compares synthetic water/stage/death results.
 It covers 10,240 type/flag/radius/z/climate/heat/water combinations, 24 mixed-source
