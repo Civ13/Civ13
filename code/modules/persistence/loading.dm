@@ -5,6 +5,7 @@
 	var/list/validated_roof_entries = list()
 	var/list/validated_roof_types = list()
 	var/list/validated_roof_instances = list()
+	var/list/validated_roof_absent = list()
 	var/restoring_roof_areas = FALSE
 
 /map_storage/proc/clear_saved_roof_areas()
@@ -12,22 +13,31 @@
 	validated_roof_entries = list()
 	validated_roof_types = list()
 	validated_roof_instances = list()
+	validated_roof_absent = list()
 	restoring_roof_areas = FALSE
 
 /map_storage/proc/saved_roof_area_type(climate)
 	if(!(climate in list("tundra", "taiga", "temperate", "sea", "semiarid", "desert", "savanna", "jungle"))) return null
 	return text2path("/area/caribbean/roofed/[climate]")
 
-/map_storage/proc/unique_saved_roof_area(type, recheck = FALSE)
-	var/area/cached = validated_roof_instances["[type]"]
-	if(cached && !recheck) return cached
+/map_storage/proc/find_saved_roof_area(type)
 	var/area/found
-	for(var/area/A in world)
+	// New() registers empty explicit areas too; world enumeration alone need
+	// not contain a destination which currently owns no turfs.
+	var/list/candidates = area_list.Copy()
+	for(var/area/A in world) candidates |= A
+	for(var/area/A in candidates)
 		// Empty explicit instances are ambiguous too. A later locate(type)
 		// must never silently select a different instance from preflight.
 		if(A.type != type) continue
 		if(found) throw EXCEPTION("Ambiguous current roof area identity")
 		found = A
+	return found
+
+/map_storage/proc/unique_saved_roof_area(type, recheck = FALSE)
+	var/area/cached = validated_roof_instances["[type]"]
+	if(cached && !recheck) return cached
+	var/area/found = find_saved_roof_area(type)
 	if(!found || (cached && cached != found)) throw EXCEPTION("Validated roof area instance changed")
 	validated_roof_instances["[type]"] = found
 	return found
@@ -84,7 +94,14 @@
 					if(target_type) validated_roof_types["[target_type]"] = target_type
 				TICK_CHECK
 	for(var/key in validated_roof_types)
-		unique_saved_roof_area(validated_roof_types[key])
+		var/type = validated_roof_types[key]
+		var/area/A = find_saved_roof_area(type)
+		if(A || (key in validated_roof_instances))
+			unique_saved_roof_area(type, TRUE)
+		else
+			// Only the destination derived from a proven saved roof may be
+			// prospective. Base areas above remain required exact instances.
+			validated_roof_absent[key] = type
 
 /map_storage/proc/materialize_saved_roof_areas()
 	// Recheck every retained identity, including empty base/roof instances,
@@ -93,6 +110,19 @@
 		var/area/A = validated_roof_instances[key]
 		if(!A) throw EXCEPTION("Validated roof area instance disappeared")
 		unique_saved_roof_area(A.type, TRUE)
+	// Check every planned absence before creating anything or moving a turf.
+	for(var/key in validated_roof_absent)
+		var/type = validated_roof_absent[key]
+		if(!ispath(type, /area/caribbean/roofed) || validated_roof_types[key] != type || (key in validated_roof_instances) || find_saved_roof_area(type))
+			throw EXCEPTION("Planned roof area absence changed")
+	for(var/key in validated_roof_absent)
+		var/type = validated_roof_absent[key]
+		if(find_saved_roof_area(type)) throw EXCEPTION("Planned roof area absence changed")
+		var/area/A = new type()
+		if(!A || A.type != type) throw EXCEPTION("Could not create validated roof destination")
+		validated_roof_instances[key] = A
+		unique_saved_roof_area(type, TRUE)
+	validated_roof_absent = list()
 	for(var/key in validated_roof_areas)
 		var/list/row = validated_roof_areas[key]
 		if(!row["area"]) continue

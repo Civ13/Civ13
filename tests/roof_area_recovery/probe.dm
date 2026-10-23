@@ -21,6 +21,7 @@
 
 /world/New()
 	OpenPort("none")
+	var/mode = world.params["roof_mode"]
 	try
 		OpenPort(19327) // The fixture override must refuse reopening.
 		durable_world_check(!world.port, "Fixture listener did not close")
@@ -42,7 +43,6 @@
 		global.game_id = "synthetic-roof-area-generation"
 		var/area/caribbean/nomads/semiarid/base = locate(/area/caribbean/nomads/semiarid)
 		for(var/turf/T in world) ChangeArea(T, base)
-		var/mode = world.params["roof_mode"]
 		durable_world_check(mode in list("write", "write-roofed", "write-covered", "read", "read-covered", "missing-roof", "wrong-base", "missing-scalar", "disabled-roof", "unrelated-area", "duplicate-area", "duplicate-placement", "empty-instance", "postflight-empty", "old-defect"), "Unknown roof fixture mode")
 		if(mode in list("write", "write-roofed", "write-covered"))
 			// This item is visited before its referenced roof turf. Nested list
@@ -97,7 +97,17 @@
 				if(ispath(F["[map_storage.entry_path(F, ref)]/type"], /obj/roof)) roof_ref = ref
 			durable_world_check(roof_ref, "Synthetic saved roof absent")
 			var/roof_path = map_storage.entry_path(F, roof_ref)
-			if(mode == "empty-instance") new /area/caribbean/roofed/semiarid()
+			if(mode in list("read", "read-covered", "postflight-empty"))
+				// Force the absent-destination case even if the engine supplied
+				// an empty default instance. No mapped area may be removed.
+				var/area/startup = map_storage.find_saved_roof_area(/area/caribbean/roofed/semiarid)
+				if(startup)
+					if(locate(/turf) in startup) throw EXCEPTION("Fixture roof destination already owns startup turfs")
+					del(startup)
+			if(mode == "empty-instance")
+				new /area/caribbean/roofed/semiarid()
+				new /area/caribbean/roofed/semiarid()
+			if(mode == "postflight-empty") new /area/caribbean/roofed/semiarid()
 			if(mode == "missing-roof") F["[turf_path]/content"] << ""
 			if(mode == "wrong-base") F["[roof_path]/current_area_type"] << list("kind" = "value", "value" = /area/caribbean/nomads/desert)
 			if(mode == "missing-scalar") F["[roof_path]/switch_area"] << list("kind" = "entry", "ref" = roof_ref)
@@ -120,19 +130,37 @@
 			else if(mode == "postflight-empty")
 				durable_world_check(accepted, "Valid preflight failed before postflight instance control")
 				var/area/retained = map_storage.validated_roof_instances["/area/caribbean/roofed/semiarid"]
-				new /area/caribbean/roofed/semiarid()
+				var/area/extra = new /area/caribbean/roofed/semiarid()
 				var/rejected = FALSE
 				try
 					map_storage.materialize_saved_roof_areas()
 				catch(var/exception/e)
 					rejected = findtext("[e]", "Ambiguous current roof area identity") > 0
 				durable_world_check(rejected && map_storage.validated_roof_instances["/area/caribbean/roofed/semiarid"] == retained && get_area(locate(3,3,1)) == before_area, "Postflight empty area was reselected or mutated world")
+				del(extra)
+				del(retained)
+				var/area/replacement = new /area/caribbean/roofed/semiarid()
+				rejected = FALSE
+				try
+					map_storage.materialize_saved_roof_areas()
+				catch(var/exception/e)
+					rejected = findtext("[e]", "Validated roof area instance disappeared") > 0
+				durable_world_check(rejected && get_area(locate(3,3,1)) == before_area, "Changed retained roof identity was accepted")
+				del(replacement)
+				durable_world_check(map_storage.validate_world_save() && map_storage.validated_roof_absent["/area/caribbean/roofed/semiarid"], "Absent roof destination was not planned without mutation")
+				new /area/caribbean/roofed/semiarid()
+				rejected = FALSE
+				try
+					map_storage.materialize_saved_roof_areas()
+				catch(var/exception/e)
+					rejected = findtext("[e]", "Planned roof area absence changed") > 0
+				durable_world_check(rejected && get_area(locate(3,3,1)) == before_area, "Changed planned roof absence was accepted")
 			else if(!(mode in list("read", "read-covered")))
 				durable_world_check(!accepted, "Malformed roof generation accepted")
 				durable_world_check(get_area(locate(3,3,1)) == before_area && !locate(/obj/roof), "Rejected preflight mutated the startup world")
 			else
-				durable_world_check(accepted, "Fresh reader rejected roof area: [map_storage.last_error]")
-				durable_world_check(get_area(locate(3,3,1)) == before_area && !locate(/obj/roof), "Accepted preflight mutated the startup world")
+				durable_world_check(accepted && map_storage.validated_roof_absent["/area/caribbean/roofed/semiarid"] && !map_storage.validated_roof_instances["/area/caribbean/roofed/semiarid"], "Fresh reader rejected absent roof destination: [map_storage.last_error]")
+				durable_world_check(get_area(locate(3,3,1)) == before_area && !locate(/obj/roof) && !map_storage.find_saved_roof_area(/area/caribbean/roofed/semiarid), "Accepted preflight mutated the startup world")
 				var/datum/persistence_world_operation/op = begin_persistence_operation(map_storage, "load")
 				durable_world_check(op, "Synthetic load admission failed")
 				if(mode == "read")
@@ -163,7 +191,7 @@
 				var/obj/roof/wood/roof = item ? item.saved_roof : null
 				var/area/A = get_area(locate(3,3,1))
 				durable_world_check(item && roof && roof.loc == locate(3,3,1), "Recursive roof owner lost or duplicated")
-				durable_world_check(istype(A, /area/caribbean/roofed/semiarid) && item.saved_area == A && map.faction_research["roof_area"] == A, "Saved area references diverged")
+				durable_world_check(istype(A, /area/caribbean/roofed/semiarid) && map_storage.find_saved_roof_area(A.type) == A && item.saved_area == A && map.faction_research["roof_area"] == A, "Saved area references diverged")
 				durable_world_check(item.area_alias[1] == A && item.area_alias[A] == "area-key", "Saved list area key/alias diverged")
 				var/list/nested = item.area_alias["nested"]
 				durable_world_check(nested[1] == A && item.saved_roof == roof, "Nested area or roof alias lost")
@@ -187,5 +215,5 @@
 				durable_world_check(restored_state["generation"] == generation, "Synthetic saved generation changed")
 		text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks, "mode" = mode)), "roof-result.json")
 	catch(var/exception/e)
-		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "error" = "[e]")), "roof-result.json")
+		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "mode" = mode, "error" = "[e]")), "roof-result.json")
 	del(world)

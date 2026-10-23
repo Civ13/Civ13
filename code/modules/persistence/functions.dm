@@ -213,7 +213,7 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
-	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "restoring_roof_areas")) return TRUE
+	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key == "last_save_reference_failure") return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE

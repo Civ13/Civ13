@@ -43,6 +43,24 @@ compile or execute the new fixture. Offline passes do not establish recovery.
 
 ## Native validation required before merge/deployment
 
+The latest local production correction is pending review and native execution.
+Preflight scans the existing area registry plus world membership, rejects
+multiple instances including empty ones, and records either an exact retained
+destination or a proven absent supported destination. Required base areas are
+never prospective. Materialization rechecks all retained identities and planned
+absences before mutation, creates exactly one area only for each still-absent
+destination, records/rechecks its identity, then assigns validated turf membership.
+The temporary absence plan is excluded from serialization and cleared with the
+other validation state. No area is created or selected afresh during preflight.
+
+The synthetic readers now explicitly exercise a missing destination. The empty
+instance control uses two explicit instances; the postflight control separately
+rejects an added duplicate, replacement of a retained identity and appearance of
+an area after its absence was validated. Failure receipts include their mode so
+the existing strict named-error adjudication can inspect them. These added cases
+are prepared coverage, not claimed native passes. Failed CI40041250028 remains
+retained; no new run is authorized merely by this documentation.
+
 Use a separately reviewed immutable packet and normal resource admission.
 No native execution is requested by this document or enabled by the preparer.
 The reviewed `run_linux.py` invocation is now wired into the existing Linux PR

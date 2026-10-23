@@ -125,18 +125,42 @@ class RoofAreaPreparation(unittest.TestCase):
 
     def test_exact_retained_instance_and_scoped_cleanup_contract(self):
         source = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+        lookup = source.split('/map_storage/proc/find_saved_roof_area(', 1)[1].split('/map_storage/proc/unique_saved_roof_area(', 1)[0]
+        self.assertIn('area_list.Copy()', lookup)
+        self.assertIn('for(var/area/A in world) candidates |= A', lookup)
+        self.assertIn('if(A.type != type) continue', lookup)
+        self.assertNotIn('locate(/turf)', lookup)
         unique = source.split('/map_storage/proc/unique_saved_roof_area(', 1)[1].split('/map_storage/proc/prepare_saved_roof_areas(', 1)[0]
-        self.assertIn('if(A.type != type) continue', unique)
-        self.assertNotIn('locate(/turf)', unique)
+        self.assertIn('find_saved_roof_area(type)', unique)
         self.assertIn('cached != found', unique)
         materialize = source.split('/map_storage/proc/materialize_saved_roof_areas()', 1)[1].split('/map_storage/proc/restore_validated_roof(', 1)[0]
         self.assertNotIn('locate(type)', materialize)
-        self.assertNotIn('new type', materialize)
-        self.assertLess(materialize.index('unique_saved_roof_area(A.type, TRUE)'), materialize.index('A.contents += T'))
+        self.assertEqual(materialize.count('new type()'),1)
+        self.assertLess(materialize.index('unique_saved_roof_area(A.type, TRUE)'),materialize.index('new type()'))
+        self.assertLess(materialize.index('Planned roof area absence changed'),materialize.index('new type()'))
+        self.assertLess(materialize.index('new type()'),materialize.index('validated_roof_instances[key] = A'))
+        self.assertLess(materialize.index('validated_roof_absent = list()'),materialize.index('A.contents += T'))
         cleanup = source.split('/map_storage/proc/is_loaded_validated_roof(', 1)[1].split('/map_storage/proc/verify_restored_roof_areas()', 1)[0]
         self.assertIn('roof.z != loading_z', cleanup)
         self.assertIn('row["z"] == loading_z', cleanup)
         self.assertIn('validated_roof_entries["[loading_z]:[row["entry"]]"] == row', cleanup)
+
+    def test_only_proven_destinations_are_prospective_and_base_identity_stays_required(self):
+        source=(ROOT/'code/modules/persistence/loading.dm').read_text()
+        plan=source.split('/map_storage/proc/prepare_saved_roof_areas(',1)[1].split('/map_storage/proc/materialize_saved_roof_areas()',1)[0]
+        self.assertIn('var/area/base = unique_saved_roof_area(base_type)',plan)
+        self.assertIn('target_type = saved_roof_area_type(base.vars["climate"])',plan)
+        self.assertIn('for(var/key in validated_roof_types)',plan)
+        self.assertIn('if(A || (key in validated_roof_instances))',plan)
+        self.assertIn('validated_roof_absent[key] = type',plan)
+        self.assertNotIn('new type',plan)
+        self.assertNotIn('contents +=',plan)
+        self.assertIn('validated_roof_types[key] != type',source)
+        self.assertIn('!ispath(type, /area/caribbean/roofed)',source)
+        runtime=(ROOT/'code/modules/persistence/functions.dm').read_text().split('/map_storage/persistence_runtime_var(key)',1)[1].split('// Native lookup',1)[0]
+        self.assertIn('"validated_roof_absent"',runtime)
+        reset=source.split('/map_storage/proc/clear_saved_roof_areas()',1)[1].split('/map_storage/proc/saved_roof_area_type(',1)[0]
+        self.assertIn('validated_roof_absent = list()',reset)
 
     def test_native_fixture_has_real_alias_and_fail_closed_controls(self):
         probe = (ROOT / 'tests/roof_area_recovery/probe.dm').read_text()
@@ -149,8 +173,11 @@ class RoofAreaPreparation(unittest.TestCase):
                       'Actual roofs do not share the canonical climate area',
                       'Disabled roof changed topology', 'Fully roofed base area still has turfs',
                       'Cross-z equal numeric roof ref was retained', 'Postflight empty area was reselected',
+                      'Changed retained roof identity was accepted', 'Changed planned roof absence was accepted',
+                      'Absent roof destination was not planned without mutation', 'Fresh reader rejected absent roof destination',
                       'Real roof constructor overlay was not registered', 'Roof destruction did not restore'):
             self.assertIn(check, probe)
+        self.assertIn('"mode" = mode, "error" = "[e]"',probe)
 
 
 if __name__ == '__main__':
