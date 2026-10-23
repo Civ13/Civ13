@@ -275,6 +275,9 @@ save export/import. Removing world-scanning duplicate calls reduces eligible
 wanderer/flavor rolls; it is a scheduling correction with changed RNG frequency.
 tests/wolf_cave_ownership has offline contracts and prepared native controls;
 preparation does not compile/launch BYOND or establish native acceptance.
+The dedicated cave executor has an offline-only CLI; real backend invocation
+requires separate review. Native -close exits after world shutdown, not network
+isolation; socket samples cannot prove continuous absence. See its EXECUTOR.md.
 
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.

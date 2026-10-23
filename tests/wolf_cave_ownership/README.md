@@ -1,5 +1,10 @@
 # Wolf cave timer ownership
 
+The dedicated Windows executor is now implemented for source/offline review;
+see [EXECUTOR.md](EXECUTOR.md). It has no native CLI entry point and has not been
+invoked against real compiler/daemon processes. Existing preparation hashes and
+native-unrun status below remain unchanged.
+
 Related to #3267; pinned audited base:
 `9db2b2f42a5fbbb0bdd49d50a2672da6111a7709`.
 
