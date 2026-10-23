@@ -29,6 +29,9 @@
 	else
 		for (var/key in src.vars)
 			if (persistence_runtime_var(key))
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+				variable_observability_skipped(src.vars[key])
+#endif
 				continue
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
 				to_save |= key
@@ -180,6 +183,9 @@ map_storage
 
 /map_storage/persistence_runtime_var(key)
 	if(key == "last_save_reference_failure") return TRUE
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
+#endif
 	return ..()
 
 // Native lookup references are process-local hints, not durable IDs. Operators
@@ -191,7 +197,15 @@ map_storage
 		snapshot["native_x"] = A.x
 		snapshot["native_y"] = A.y
 		snapshot["native_z"] = A.z
-		var/turf/T = get_turf(A)
+		// A malformed containment cycle must not hang failure reporting.
+		var/turf/T
+		var/atom/location = A
+		for(var/i = 1 to 8)
+			if(!location) break
+			if(isturf(location))
+				T = location
+				break
+			location = location.loc
 		if(T)
 			snapshot["turf_x"] = T.x
 			snapshot["turf_y"] = T.y
@@ -210,6 +224,13 @@ map_storage
 		frame_snapshot["entry"] = valid_frame ? frame.entry : 0
 		chain += list(frame_snapshot)
 	last_save_reference_failure = list("schema_version" = 1, "kind" = kind, "captured_at" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss"), "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = current_entry, "first_z" = first_z, "first_entry" = first_entry, "source" = chain.len ? chain[chain.len] : reference_failure_snapshot(null), "target" = reference_failure_snapshot(target), "owner_chain" = chain, "owner_chain_truncated" = saving_export_stack.len > 8)
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	// Diagnostics cannot replace the serializer's original rejection.
+	try
+		variable_observability_capture(target)
+	catch
+		last_variable_failure = list("schema" = 1, "partial" = TRUE, "error" = "capture_failed")
+#endif
 
 // Drops the save/load bookkeeping references so qdel'd atoms can be garbage
 // collected - these lists otherwise pin every atom they touched until the next
@@ -312,6 +333,11 @@ var/global/persistence_load_recovery_required = FALSE
 	var/datum/persistence_world_operation/operation = new
 	operation.storage = storage
 	operation.kind = kind
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	operation.observability_id = "operation-[++variable_observability_operation_sequence]"
+	operation.observability_started = world.time
+	operation.observability_collecting = variable_observability_enabled()
+#endif
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
 	if(kind == "save")
@@ -339,6 +365,13 @@ var/global/persistence_load_recovery_required = FALSE
 		return TRUE
 	proc/finish(success)
 		if(persistence_active_operation != src) return FALSE
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+		try
+			storage.variable_observability_finish(src, success)
+		catch
+			// Observability must never strand operation ownership.
+			storage.last_variable_operation = null
+#endif
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
 		persistence_active_operation = null
@@ -353,6 +386,9 @@ var/global/persistence_load_recovery_required = FALSE
 	if(!operation || !operation.enter_backend(src, kind)) return FALSE
 	// A busy/rejected request must not erase the active save's failure context.
 	if(kind == "save") last_save_reference_failure = null
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	if(kind == "save") last_variable_failure = null
+#endif
 	var/success = FALSE
 	try
 		if(kind == "save") success = save_world_contents(operation)

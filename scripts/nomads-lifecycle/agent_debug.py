@@ -12,6 +12,7 @@ import re
 import sys
 
 import read_blackout as reader
+import variable_observability as variables
 
 TOOLS = {
     'recovery': 'Read readiness, recovery hold and classified import failure; no client required.',
@@ -51,6 +52,10 @@ def discover():
                     atoms_per_tile=64, registry_prefix=256),
         offline_commands=[offline_command('pair', 1, 1), offline_command('trace', 2, 8),
                           offline_command('bundle', 1, 8)],
+        variable_observability=dict(entrypoint='variable_observability.py', schema=1,
+            required=['revision', 'session', 'round_id'], sources=['root', 'input'],
+            source_rule='Exactly one source; root uses one existing authenticated status query; input is offline',
+            max_age_seconds=60, object_lookup=False, default_enabled=False),
         authorization='Existing loopback token; vision/tiles additionally require the connected Host.',
         unavailable=['arbitrary coordinates', 'raw logs or stack traces', 'save completion percentage',
                      'eval', 'repair', 'other players'],
@@ -142,7 +147,10 @@ def recovery(root, revision, transport):
         raise ValueError('error')
     return dict(revision=revision, session=status['session'],
                 **{key: bool(status[key]) for key in flags}, error_code=classify(error),
-                debug=debug_state(status.get('debug')))
+                debug=debug_state(status.get('debug')),
+                variable_identity=variables.identity_header(
+                    status.get('debug', {}).get('variables') if isinstance(status.get('debug'), dict) else None,
+                    revision, status['session']))
 
 
 def run(tool, root=None, revision=None, *, transport=reader.exchange, nonce=None):
