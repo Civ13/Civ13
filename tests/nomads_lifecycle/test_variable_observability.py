@@ -166,6 +166,26 @@ class Reader(unittest.TestCase):
         self.assertNotIn('operation', result)
         self.assertEqual(m.identity_header(None, REVISION, SESSION)['reason'], 'unavailable')
 
+    def test_historical_offline_inspection_is_explicit_never_current_or_future(self):
+        value = failure()
+        value['utc'] = '2026-10-22 04:00:00'
+        with self.assertRaisesRegex(m.Rejected, 'stale_snapshot'):
+            self.inspect(value, status=False)
+        observed = self.inspect(value, status=False, historical=True)
+        self.assertEqual(observed['freshness'], 'historical_only')
+        self.assertEqual(observed['age_seconds'], 86400)
+        self.assertEqual(observed['identity_validity'], 'capture_only')
+        with self.assertRaisesRegex(m.Rejected, 'invalid_input'):
+            self.inspect(status(), historical=True)
+        value['utc'] = '2026-10-23 04:00:01'
+        with self.assertRaisesRegex(m.Rejected, 'stale_snapshot'):
+            self.inspect(value, status=False, historical=True)
+
+    def test_historical_live_query_refused_before_transport(self):
+        result = m.run(root='unused', revision=REVISION, session=SESSION, round_id=ROUND,
+            historical=True, transport=lambda _: self.fail('historical mode queried runtime'))
+        self.assertEqual(result['error_code'], 'invalid_input')
+
     def test_strips_unknown_fields_at_each_copied_level(self):
         value = status()
         for row in (value, value['failure'], value['failure']['source'], value['failure']['target'],
@@ -206,6 +226,11 @@ class Reader(unittest.TestCase):
             path = root / 'failure.json'
             path.write_text(json.dumps(failure()))
             self.assertTrue(m.run(input_path=path, **args)['ok'])
+            historical = failure()
+            historical['utc'] = '2026-10-22 04:00:00'
+            path.write_text(json.dumps(historical))
+            self.assertEqual(m.run(input_path=path, **args)['error_code'], 'stale_snapshot')
+            self.assertEqual(m.run(input_path=path, historical=True, **args)['data']['freshness'], 'historical_only')
             path.write_text('x' * 32769)
             self.assertEqual(m.run(input_path=path, **args)['error_code'], 'schema_rejected')
             response['secret'] = credential

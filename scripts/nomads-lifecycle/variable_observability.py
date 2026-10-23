@@ -143,7 +143,7 @@ def operation(value):
     return result
 
 
-def envelope(value, revision, session, round_id, now):
+def envelope(value, revision, session, round_id, now, *, historical=False):
     if not isinstance(value, dict) or type(value.get('schema')) is not int or value['schema'] != 1:
         reject('schema_rejected')
     if value.get('revision') != revision or value.get('session') != session or value.get('round_id') != round_id:
@@ -151,17 +151,18 @@ def envelope(value, revision, session, round_id, now):
     utc = token(value['utc'], r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', 19)
     captured = datetime.strptime(utc, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
     age = (now - captured).total_seconds()
-    if not 0 <= age <= MAX_AGE_SECONDS:
+    if age < 0 or (not historical and age > MAX_AGE_SECONDS):
         reject('stale_snapshot')
     return dict(schema=1, revision=revision, session=session, round_id=round_id,
                 tick=number(value['tick']), realtime=number(value['realtime']), utc=utc,
-                age_seconds=age, identity_validity='capture_only', live_resolution='unsupported')
+                age_seconds=age, freshness='historical_only' if historical else 'within_60_seconds',
+                identity_validity='capture_only', live_resolution='unsupported')
 
 
-def failure(value, revision, session, round_id, now):
+def failure(value, revision, session, round_id, now, *, historical=False):
     if flag(value.get('partial', True)):
         reject('partial_snapshot')
-    result = envelope(value, revision, session, round_id, now)
+    result = envelope(value, revision, session, round_id, now, historical=historical)
     result['snapshot_id'] = token(value['snapshot_id'], r'failure-[1-9][0-9]*')
     result['historical'] = flag(value['historical'])
     if not result['historical'] or value['live_resolution'] != 'unsupported':
@@ -196,10 +197,12 @@ def failure(value, revision, session, round_id, now):
     return result
 
 
-def inspect(value, revision, session, round_id, *, now=None, status=True):
+def inspect(value, revision, session, round_id, *, now=None, status=True, historical=False):
     now = now or datetime.now(timezone.utc)
     if not status:
-        return failure(value, revision, session, round_id, now)
+        return failure(value, revision, session, round_id, now, historical=historical)
+    if historical:
+        reject('invalid_input')
     if not isinstance(value, dict) or value.get('schema') != 1:
         reject('unavailable')
     if not flag(value.get('enabled', False)):
@@ -232,19 +235,21 @@ def identity_header(value, revision, session, *, now=None):
                                          now or datetime.now(timezone.utc)))
 
 
-def run(*, revision, session, round_id, root=None, input_path=None, transport=reader.exchange, now=None):
+def run(*, revision, session, round_id, root=None, input_path=None, transport=reader.exchange, now=None, historical=False):
     try:
         token(revision, r'[0-9a-f]{40}')
         token(session, r'[0-9a-f]{32}')
         token(round_id, r'[A-Za-z0-9_-]{1,160}')
         if (root is None) == (input_path is None):
             reject('invalid_input')
+        if historical and input_path is None:
+            reject('invalid_input')
         if input_path is not None:
             raw = reader.bounded_text(input_path, LIMIT + 2)
             if len(raw.encode('utf-8')) > LIMIT:
                 reject('schema_rejected')
             value = json.loads(raw)
-            data = inspect(value, revision, session, round_id, now=now, status=False)
+            data = inspect(value, revision, session, round_id, now=now, status=False, historical=historical)
         else:
             config = json.loads(reader.bounded_text(Path(root) / 'supervisor.json', 16384))
             if config.get('port') != 1714:
@@ -278,9 +283,10 @@ def main():
     parser.add_argument('--revision', required=True)
     parser.add_argument('--session', required=True)
     parser.add_argument('--round-id', required=True)
+    parser.add_argument('--historical', action='store_true', help='Offline --input only; explicitly inspect old capture-time evidence')
     args = parser.parse_args()
     result = run(revision=args.revision, session=args.session, round_id=args.round_id,
-                 root=args.root, input_path=args.input)
+                 root=args.root, input_path=args.input, historical=args.historical)
     print(json.dumps(result, allow_nan=False))
     return 0 if result['ok'] else 1
 

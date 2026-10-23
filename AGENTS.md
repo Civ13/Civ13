@@ -567,10 +567,13 @@ the rejection, while saturated runtime skip-decision counts observe the existing
 `persistence_runtime_var` policy; neither authorizes nulling links or proves live
 cleanup. The separate persistence fix owns that policy. Preserve guard failures.
 
-Captures expire after 60 UTC seconds in the reader and must match build, boot,
+Default reads expire after 60 UTC seconds and must match build, boot,
 round and, for status failures, current/last operation plus tick/realtime bounds.
-Re-reading retained evidence does not refresh it. Native refs and pooled objects
-can be reused; `capture_only`/`generation: unavailable` must never be treated as
+Re-reading retained evidence does not refresh it. Explicit `--historical` is
+allowed only with offline `--input` and
+labels evidence `historical_only`; it cannot refresh or query live identities.
+Native refs and pooled objects can be reused;
+`capture_only`/`generation: unavailable` must never be treated as
 durable or current identity, even when type/location match. Depth is eight,
 owner frames eight, registry prefixes 256, output 32 KiB; missing, partial and
 stale data are explicit unknown/error states. No eval, generic proc invocation,

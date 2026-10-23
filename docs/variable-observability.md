@@ -38,7 +38,7 @@ the repository root. Keep output private; nothing uploads or publishes it.
 
 `recovery` makes one existing status request. Its `data.variable_identity` gives
 the current header only: `available`, `revision`, `session`, `round_id`, `tick`,
-`realtime`, `utc`, `age_seconds`, `identity_validity`, `live_resolution`, `schema`.
+`realtime`, `utc`, `age_seconds`, `freshness`, `identity_validity`, `live_resolution`, `schema`.
 Use its exact session and round in the next explicit read:
 
 ```text
@@ -79,6 +79,13 @@ This is offline and returns the capture in `data` directly. It needs independent
 obtained expected build/session/round identifiers; do not derive those expectations
 from the file being checked. A file cannot establish the current live operation.
 Neither mode resolves a native ref, even when a capture is recent.
+
+The default reader rejects captures older than 60 seconds. To inspect an older
+incident explicitly, add `--historical` to the `--input` command. The result is
+always labeled `freshness: historical_only`, with its actual age; build/boot/round
+pins, size/schema checks and future-clock rejection still apply. This option is
+refused for `--root` before any query. It grants no live lookup or refreshed
+identity and is never evidence that the captured state still exists.
 
 ## Interpret a reference failure
 
@@ -125,7 +132,8 @@ operation or cleanup receipt and cannot erase another save's failure.
 Snapshots bind the configured build, per-boot `session`, global `game_id` as
 `round_id`, `snapshot_id`, operation ID, game tick, native realtime and UTC.
 The reader rejects build/boot/round mismatches, partial/oversized captures,
-clock reversal and captures outside a fixed 60-second UTC window. Status reads
+clock reversal and, by default, captures outside a fixed 60-second UTC window.
+Explicit offline historical inspection retains the capture-only restrictions. Status reads
 also require capture-to-status tick/realtime differences in `0..600` and a
 matching active or last operation ID. `stale_snapshot`, `correlation_mismatch`,
 `partial_snapshot`, `schema_rejected`, `disabled`, `unavailable`, `invalid_input`
