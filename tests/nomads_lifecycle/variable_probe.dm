@@ -56,17 +56,38 @@ var/global/probe_failures = 0
 /world/New()
 	OpenPort("none")
 	check(port == 0, "closed native port")
+	if(port != 0)
+		del(world)
+		return
+	text2file("closed", "probe-port-closed.txt")
+	var/closure_deadline = world.time + 50
+	while(!fexists("probe-port-closed.ack") && world.time < closure_deadline)
+		sleep(1)
+	check(trim(file2text("probe-port-closed.ack")) == "closed", "external socket closure acknowledged")
+	if(trim(file2text("probe-port-closed.ack")) != "closed")
+		del(world)
+		return
 	check(!variable_observability_enabled(), "default off")
 	text2file("enabled", "config/variable-observability.txt")
 	text2file(nomads_lifecycle.read_token(), "config/lifecycle-token.txt")
 	text2file(nomads_lifecycle.read_revision(), "config/lifecycle-revision.txt")
 	check(variable_observability_enabled(), "explicit local opt-in")
 	var/publication_mode = trim(file2text("config/variable-probe-mode.txt"))
-	if(publication_mode == "missing" || publication_mode == "unwritable")
+	if(publication_mode == "missing" || publication_mode == "unwritable" || publication_mode == "obstructed")
+		if(publication_mode == "obstructed")
+			var/write_refused = FALSE
+			try
+				write_refused = !text2file("must not replace a directory", "data/desktop-supervisor/variable-observability/last-failure.json")
+			catch
+				write_refused = TRUE
+			check(write_refused, "real file-versus-directory write refusal")
 		var/list/unpublished = list("probe_publication" = publication_mode)
 		check(!map_storage.variable_observability_publish(unpublished), "unavailable private output refused")
 		check(map_storage.last_variable_failure == unpublished, "unavailable output retains in-memory evidence")
-		check(!fexists("data/desktop-supervisor/variable-observability/last-failure.json"), "unavailable output produced no file")
+		if(publication_mode == "obstructed")
+			check("last-failure.json/" in flist("data/desktop-supervisor/variable-observability/last-failure.json"), "output obstruction remains a directory")
+		else
+			check(!fexists("data/desktop-supervisor/variable-observability/last-failure.json"), "unavailable output produced no file")
 		check(!fexists("data/variable-observability-last-failure.json"), "no legacy public-path fallback")
 		world.log << "VARIABLE_OBSERVABILITY publication=[publication_mode] failures=[probe_failures] native_collector_only=1"
 		del(world)

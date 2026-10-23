@@ -55,7 +55,7 @@ class Publication(unittest.TestCase):
         prepare = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(prepare)
         with tempfile.TemporaryDirectory() as folder:
-            for mode in ('writable', 'missing', 'unwritable'):
+            for mode in ('writable', 'missing', 'unwritable', 'obstructed'):
                 output = Path(folder) / mode
                 receipt = prepare.prepare(output, mode)
                 self.assertTrue(receipt['prepared_only'])
@@ -63,6 +63,7 @@ class Publication(unittest.TestCase):
                 self.assertEqual(receipt['publication_mode'], mode)
                 self.assertEqual(receipt['unwritable_fixture_permissions_required'], mode == 'unwritable')
                 self.assertEqual((output / 'data/desktop-supervisor/variable-observability').is_dir(), mode != 'missing')
+                self.assertEqual((output / 'data/desktop-supervisor/variable-observability/last-failure.json').is_dir(), mode == 'obstructed')
                 self.assertFalse((output / 'config/variable-observability.txt').exists())
                 self.assertEqual((output / 'config/variable-probe-mode.txt').read_text(), mode)
             with self.assertRaises(ValueError):

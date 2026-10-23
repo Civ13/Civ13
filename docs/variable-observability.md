@@ -229,8 +229,14 @@ copies the production collector, named base movable declarations and trim helper
 with source hashes and declares
 `native_verified:false`. It does not compile or run BYOND. The native collector
 probe has minimal data/auth adapters and is not full serializer/transport evidence.
-The preparer's `--publication-mode` selects `writable` (default), `missing` or
-`unwritable`. The missing case leaves the fixed private directory absent. The
+The preparer's `--publication-mode` selects `writable` (default), `missing`,
+`obstructed` or `unwritable`. The missing case leaves the fixed private directory absent. The
+obstructed case creates a directory at the fixed output filename, then requires
+both a direct native file-write refusal and failed collector publication while
+preserving that directory and the in-memory capture. This changes no ACLs and
+is **not** evidence of an access-denied condition. The collector may reject at
+its deletion guard before reaching its write exception handler.
+The
 unwritable case only prepares the directory and declares
 `unwritable_fixture_permissions_required:true`; it does not change permissions.
 Before a separately approved native run, that case needs a reviewed temporary
@@ -243,6 +249,37 @@ build/session/round expectations; a DM-only assertion count is insufficient.
 Offline source controls and preparation tests do not establish native I/O or
 Windows ACL behavior. The new publication cases remain unexecuted until a
 bounded native packet is reviewed and admitted.
+
+`tests/nomads_lifecycle/run_variable_probe.py` is an offline-importable,
+grant-gated Windows runner proposal. It creates no grant or reservation. Its
+sealed packet must contain the reviewed Job adapter, an exact compiler/engine
+identity, and the actual reader. A missing grant refuses before host queries,
+native imports, output creation or a consumed marker. A future run requires a
+fresh matching coordinator slot and allocator-consumed single-use claim. The
+native baseline must be empty; the runner never stops Gaia to make it empty.
+
+The proposed phases are preflight 10 seconds, compile 20, writable 15,
+immediate retained-capture reads 10, missing-directory 10, obstructed-file 10,
+and final verification 5. They share a 90-second work deadline, with up to 30
+seconds for owned cleanup and 120 seconds overall. The four sequential children
+are one compiler and three fixture daemons, with at most one active child.
+Process memory is capped by the existing Windows Job at 512 MiB; watcher memory
+is checked against 128 MiB, aggregate private memory against 768 MiB, and owned
+CPU against 60 seconds. Wall/CPU/artifact checks are cooperative observations,
+not new OS quotas. All packet files, compiled artifacts, isolated environment,
+logs, captures and receipts count toward 32 MiB and 256 entries; non-binary
+generated evidence shares 1 MiB. Cap failures retain evidence and cannot pass.
+
+Each daemon starts only on fixed IPv4 loopback port 59474. The fixture closes
+it immediately, writes a marker, and waits for the runner to confirm no owned
+TCP or UDP sockets in either address family before acknowledging closure. The
+closure deadline is five seconds; only that single startup listener is allowed
+before acknowledgement, and no socket is allowed afterward. There is no client,
+public probe or Topic request. Final owned cleanup must verify retained process
+exits, empty Job membership and accounting, and port vacancy. The actual reader
+validates both retained native captures immediately after the writable child,
+before later negative modes, using unchanged 60-second freshness checks. The
+ACL-denial, authenticated Topic and full serializer gaps remain open.
 
 The preserved native attempt at `df639b1` compiled cleanly and its tiny collector
 reported 22 checks with zero failures. The overall run was **rejected**: its reader

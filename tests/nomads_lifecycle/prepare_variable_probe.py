@@ -25,7 +25,7 @@ def movable_declarations(source):
 
 
 def prepare(output, publication_mode='writable'):
-    if publication_mode not in ('writable', 'missing', 'unwritable'):
+    if publication_mode not in ('writable', 'missing', 'unwritable', 'obstructed'):
         raise ValueError('Unknown publication mode')
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
@@ -34,6 +34,9 @@ def prepare(output, publication_mode='writable'):
     private_output = output / 'data/desktop-supervisor/variable-observability'
     if publication_mode != 'missing':
         private_output.mkdir(parents=True)
+    if publication_mode == 'obstructed':
+        # A directory where the fixed output file belongs, without ACL changes.
+        (private_output / 'last-failure.json').mkdir()
     # Preparation never sets permissions. The unwritable case needs a separately
     # reviewed fixture-only denial before native execution can prove anything.
     (output / 'config/variable-probe-mode.txt').write_text(publication_mode, encoding='ascii')
@@ -73,6 +76,6 @@ def prepare(output, publication_mode='writable'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True, help='New temporary packet directory')
-    parser.add_argument('--publication-mode', choices=('writable', 'missing', 'unwritable'), default='writable')
+    parser.add_argument('--publication-mode', choices=('writable', 'missing', 'unwritable', 'obstructed'), default='writable')
     args = parser.parse_args()
     print(json.dumps(prepare(args.output, args.publication_mode)))
