@@ -161,6 +161,15 @@ class LinuxCollector(unittest.TestCase):
         self.assertFalse(receipt['reader']['native-reference.json']['ok'])
         self.assertNotIn('historical', reader.run.call_args.kwargs)
 
+    def test_linux_log_restriction_keeps_fixed_relative_basename(self):
+        case = Path('isolated-case')
+        argv = m.daemon_argv(Path('pinned-bin'), Path('compiled/probe.dmb'), case)
+        self.assertEqual(argv[-2:], ['-log', 'native.log'])
+        self.assertFalse(Path(argv[-1]).is_absolute())
+        self.assertEqual(argv[argv.index('-cd') + 1], str(case))
+        self.assertEqual(argv[2:5], ['59474', '-ip', '127.0.0.1'])
+        self.assertIn('-trusted', argv)
+
     def test_workflow_runs_only_introduced_tests_without_security_changes(self):
         source = (m.ROOT / '.github/workflows/test.yml').read_text()
         block = source.split('      - name: Verify private collector native publication', 1)[1].split('      - name: Verify bounded lighting startup ordering', 1)[0]

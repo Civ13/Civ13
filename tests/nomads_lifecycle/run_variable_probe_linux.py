@@ -220,6 +220,13 @@ def read_captures(case, receipt, budget):
         need(result.get('ok') is True, 'Actual reader rejected retained native capture')
 
 
+def daemon_argv(byond, compiled, case):
+    # Linux DreamDaemon permits a relative log basename, rejecting absolute
+    # log paths even in trusted mode. Keep the existing fixture cwd/-cd scope.
+    return [str(byond / 'DreamDaemon'), str(compiled), str(PORT), '-ip', '127.0.0.1',
+            '-trusted', '-close', '-cd', str(case), '-log', 'native.log']
+
+
 def run_child(argv, case, phase, root, inputs, binary_hashes, receipt, budget, save):
     import resource
     budget.check(); need(sha(argv[0]) == binary_hashes[Path(argv[0]).name], 'Engine changed before launch')
@@ -326,8 +333,7 @@ def main(output, byond, head):
         for mode in MODES:
             case = output / 'prepared' / mode
             with budget.phase(mode, receipt['phases']):
-                argv = [str(byond / 'DreamDaemon'), str(writable / 'probe.dmb'), str(PORT), '-ip', '127.0.0.1',
-                        '-trusted', '-close', '-cd', str(case), '-log', str(case / 'native.log')]
+                argv = daemon_argv(byond, writable / 'probe.dmb', case)
                 run_child(argv, case, mode, output, inputs, binaries, receipt, budget, save)
                 text = (case / 'native.log').read_text(errors='replace')
                 console = ''.join((output / (mode + '.' + stream + '.log')).read_text(errors='replace') for stream in ('stdout', 'stderr'))
