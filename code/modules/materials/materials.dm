@@ -923,6 +923,27 @@ var/list/material/name_to_material
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
 
+/material/rawhide
+	name = "rawhide"
+	use_name = "raw hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/rawhide
+
+/material/wethide
+	name = "wethide"
+	use_name = "wet hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/wethide
+
+/material/dryhide
+	name = "dryhide"
+	use_name = "dry hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/dryhide
+
 /*/material/scalelesshide //deactivated for now, prepped up for skinned gatorpelts
 	name = "scalelesshide"
 	use_name = "scaleless hide"

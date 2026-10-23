@@ -23,7 +23,7 @@
 
 /obj/structure/converter/attackby(obj/item/M as obj, mob/user as mob)
 	if(!filled)
-		if(istype(M, input) || istype(M, input1))
+		if(istype(M, input) || (input1 && istype(M, input1)))
 			if(M.amount >= inputamount)
 				M.amount -= inputamount
 				if(M.amount <= 0)
@@ -72,18 +72,96 @@
 
 /obj/structure/converter/tanning
 	name = "tanning rack"
-	desc = "Turns hide into leather"
+	desc = "Dries a stack of washed hides in 30 seconds. Remove it by hand to cancel; apply bark tannin to the dried hides afterward."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "drying_rack_empty"
 	idlesprite = "drying_rack_empty"
 	activesprite = "drying_rack_full"
 	delay = 300
-	input = /obj/item/stack/material/hairlesshide
+	input = /obj/item/stack/material/wethide
+	input1 = null
 	inputamount = 1
-	output = /obj/item/stack/material/leather
-	outputamount = 3
-	actiontext = "tann"
+	output = /obj/item/stack/material/dryhide
+	outputamount = 1
+	actiontext = "dry"
 	overlayed = FALSE
+	var/tmp/drying_epoch = 0
+
+/obj/structure/converter/tanning/persistence_runtime_var(key)
+	return (key in list("drying_epoch", "filled")) || ..()
+
+/obj/structure/converter/tanning/attackby(obj/item/W, mob/living/user)
+	if (istype(W, /obj/item/stack/material/wethide))
+		if (QDELETED(src) || contents.len || !hide_worker_can_reach(user, W) || W.loc != user || !user.item_is_in_hands(W) || !isturf(loc) || !user.Adjacent(src))
+			return TRUE
+		var/obj/item/stack/material/wethide/hide = W
+		if (hide.amount < 1 || hide.amount > hide.max_amount)
+			return TRUE
+		// Preserve the actual stack, rather than consuming input into a timer.
+		user.drop_from_inventory(hide, src)
+		if (hide.loc == src)
+			start_hide_drying(hide)
+		return TRUE
+	if (istype(W, /obj/item/weapon/hammer) || istype(W, /obj/item/weapon/wrench))
+		return ..()
+	to_chat(user, SPAN_WARNING("Only washed wet hides go on this rack."))
+	return TRUE
+
+/obj/structure/converter/tanning/proc/start_hide_drying(obj/item/stack/material/wethide/hide)
+	if (QDELETED(src) || QDELETED(hide) || hide.loc != src || !isturf(loc))
+		return FALSE
+	drying_epoch++
+	var/epoch = drying_epoch
+	var/turf/site = loc
+	var/count = hide.amount
+	filled = TRUE
+	icon_state = activesprite
+	spawn(delay)
+		finish_hide_drying(hide, count, epoch, site)
+	return TRUE
+
+/obj/structure/converter/tanning/proc/finish_hide_drying(obj/item/stack/material/wethide/hide, count, epoch, turf/site)
+	if (QDELETED(src) || epoch != drying_epoch || !filled || loc != site || QDELETED(hide) || hide.loc != src || hide.amount != count || count < 1 || count > hide.max_amount)
+		return FALSE
+	filled = FALSE
+	// No yield between payment and output. Each piece stays one piece.
+	if (!hide.use(count))
+		return FALSE
+	new /obj/item/stack/material/dryhide(src, count, FALSE)
+	icon_state = activesprite
+	visible_message(SPAN_NOTICE("The hides on [src] have dried. Remove them and apply tannin."))
+	return TRUE
+
+/obj/structure/converter/tanning/attack_hand(mob/living/user)
+	if (QDELETED(user) || user.stat != CONSCIOUS || !user.hide_worker_connected() || !user.Adjacent(src) || !isturf(loc))
+		return
+	release_hides()
+
+/obj/structure/converter/tanning/proc/release_hides()
+	drying_epoch++
+	filled = FALSE
+	icon_state = idlesprite
+	var/turf/site = get_turf(src)
+	if (site)
+		for (var/obj/item/I in contents.Copy())
+			I.forceMove(site)
+
+/obj/structure/converter/tanning/after_load()
+	..()
+	filled = FALSE
+	icon_state = contents.len ? activesprite : idlesprite
+	// Saved contents are durable. A restored wet batch gets a fresh full delay.
+	var/obj/item/stack/material/wethide/hide = locate() in contents
+	if (hide)
+		start_hide_drying(hide)
+
+/obj/structure/converter/tanning/Destroy()
+	release_hides()
+	return ..()
+
+/obj/structure/converter/tanning/Del()
+	release_hides()
+	return ..()
 
 /obj/structure/converter/retting_trough
 	name = "retting trough"

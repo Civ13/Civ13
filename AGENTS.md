@@ -750,6 +750,15 @@ navigation and omission controls require the normal isolated runner or CI.
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
 - `tests/animal_harvest/run.py --byond-bin <516.1681-bin>` executes production yields, cancellation/concurrency, binding conservation and object save/load in temporary offline storage. `preview.py` renders existing DMI states for PR sprite review; it is not a gameplay capture or full-server memory test.
 
+<!-- 2026-10-23: leather tanning accounting -->
+Leather processing in `stacks/sheets/leather.dm` uses one eventual leather sheet
+per stack unit, with distinct raw/prepared/wet/dry material identities. Never add
+unpropagated per-object yield fields: splitting and merging must conserve yield.
+Tanning uses explicit paid vessel interactions, since reagent touch callbacks can
+see the whole holder volume. The rack preserves actual contents and excludes its
+runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.py`
+is offline evidence; `tanning_probe.dm` requires separate native acceptance.
+
 <!-- 2026-10-11: finite fracking verification -->
 - `tests/hydraulic_fracturing/probe.dm` checks finite terrain conversion, batch
   costs, replacement cancellation and native contained-input disk saves through
