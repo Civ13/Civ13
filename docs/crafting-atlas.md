@@ -170,9 +170,10 @@ fur crafting continuity. Removing any essential stage breaks the turkey-to-leath
 reachability control. `node tests/crafting_atlas/tanning.test.mjs` executes the
 actual website template with the committed game catalog, including processor
 filtering, construction links and every tanning resource's producers and uses.
-These are offline catalog/DOM checks. The new full native renderer cases are
-authored but have not run while native validation is held; no browser appearance,
-engine-exported new previews or in-game client acceptance is claimed.
+These are offline catalog/DOM checks. The full-catalog native renderer separately
+checks those routes and quantities; the hosted Atlas step also exports actual
+engine sprite previews. Neither establishes connected-client appearance or
+gameplay acceptance. Verify results against the exact source head.
 The sprite harness's existing `--negative-control` rejects a deliberately wrong
 inherited icon resource. Runtime constructor/overlay graphics need separate
 focused evidence when their appearance matters.
