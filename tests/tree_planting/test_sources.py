@@ -92,7 +92,8 @@ class Trees(unittest.TestCase):
         seed_routes = game['acquisition']['/obj/item/stack/farming/seeds/tree']
         self.assertTrue(any(route['name'] == 'Forage random seeds from small bushes' or
                             'small bush' in ' '.join(route['steps']).lower() for route in seed_routes))
-        self.assertTrue(any(route['name'] == 'Grow a timber tree' for route in seed_routes))
+        tree_routes = game['acquisition']['/obj/structure/wild/tree/live_tree']
+        self.assertTrue(any(route['name'] == 'Grow a timber tree' for route in tree_routes))
 
     def test_declared_climate_and_season_together(self):
         body = proc(FARM, TREE + 'proc/growing_season()')
