@@ -599,7 +599,7 @@ jobs:
             ${{ runner.temp }}/private-collector/result.json
             ${{ runner.temp }}/private-collector/failure.json
             ${{ runner.temp }}/private-collector/*.log
-            ${{ runner.temp }}/private-collector/prepared/**/native.log
+            ${{ runner.temp }}/private-collector/prepared/writable/native-*.log
             ${{ runner.temp }}/private-collector/prepared/**/data/**/*.json
           retention-days: 7
           if-no-files-found: error

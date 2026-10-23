@@ -162,13 +162,26 @@ class LinuxCollector(unittest.TestCase):
         self.assertNotIn('historical', reader.run.call_args.kwargs)
 
     def test_linux_log_restriction_keeps_fixed_relative_basename(self):
-        case = Path('isolated-case')
+        case = Path('writable')
         argv = m.daemon_argv(Path('pinned-bin'), Path('compiled/probe.dmb'), case)
-        self.assertEqual(argv[-2:], ['-log', 'native.log'])
+        self.assertEqual(argv[-2:], ['-log', 'native-writable.log'])
         self.assertFalse(Path(argv[-1]).is_absolute())
         self.assertEqual(argv[argv.index('-cd') + 1], str(case))
         self.assertEqual(argv[2:5], ['59474', '-ip', '127.0.0.1'])
         self.assertIn('-trusted', argv)
+
+    def test_each_mode_log_is_distinct_and_dmb_relative(self):
+        compiled = Path('prepared/writable/probe.dmb')
+        for mode in m.MODES:
+            case = Path('prepared') / mode
+            expected = Path('prepared/writable') / ('native-' + mode + '.log')
+            self.assertEqual(m.native_log_path(compiled, mode), expected)
+            argv = m.daemon_argv(Path('pinned-bin'), compiled, case)
+            self.assertEqual(argv[-1], expected.name)
+            self.assertEqual(argv[argv.index('-cd') + 1], str(case))
+            self.assertIn(expected.as_posix(), m.generated())
+        with self.assertRaises(RuntimeError):
+            m.native_log_path(compiled, '../outside')
 
     def test_workflow_runs_only_introduced_tests_without_security_changes(self):
         source = (m.ROOT / '.github/workflows/test.yml').read_text()

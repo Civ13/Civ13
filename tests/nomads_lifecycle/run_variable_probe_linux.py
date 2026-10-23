@@ -139,11 +139,12 @@ def generated():
     for phase in ('compile', *MODES):
         names.update(f'{phase}.{stream}.log' for stream in ('stdout', 'stderr'))
     for mode in MODES:
-        names.update(f'prepared/{mode}/{name}' for name in ('native.log', 'probe-port-closed.txt',
+        names.update(f'prepared/{mode}/{name}' for name in ('probe-port-closed.txt',
             'probe-port-closed.ack', 'config/variable-observability.txt', 'config/lifecycle-token.txt',
             'config/lifecycle-revision.txt'))
     names.update('prepared/writable/data/desktop-supervisor/variable-observability/' + name for name in (
         'last-failure.json', 'native-reference.json', 'native-operation-failure.json'))
+    names.update('prepared/writable/native-' + mode + '.log' for mode in MODES)
     return names
 
 
@@ -220,11 +221,17 @@ def read_captures(case, receipt, budget):
         need(result.get('ok') is True, 'Actual reader rejected retained native capture')
 
 
+def native_log_path(compiled, mode):
+    need(mode in MODES, 'Fixed publication mode required')
+    return compiled.parent / ('native-' + mode + '.log')
+
+
 def daemon_argv(byond, compiled, case):
     # Linux DreamDaemon permits a relative log basename, rejecting absolute
-    # log paths even in trusted mode. Keep the existing fixture cwd/-cd scope.
+    # log paths even in trusted mode. Logs are anchored to the DMB directory,
+    # while fixture data/config still use the explicit cwd/-cd directory.
     return [str(byond / 'DreamDaemon'), str(compiled), str(PORT), '-ip', '127.0.0.1',
-            '-trusted', '-close', '-cd', str(case), '-log', 'native.log']
+            '-trusted', '-close', '-cd', str(case), '-log', native_log_path(compiled, case.name).name]
 
 
 def run_child(argv, case, phase, root, inputs, binary_hashes, receipt, budget, save):
@@ -335,11 +342,13 @@ def main(output, byond, head):
             with budget.phase(mode, receipt['phases']):
                 argv = daemon_argv(byond, writable / 'probe.dmb', case)
                 run_child(argv, case, mode, output, inputs, binaries, receipt, budget, save)
-                text = (case / 'native.log').read_text(errors='replace')
+                log_path = native_log_path(writable / 'probe.dmb', mode)
+                text = log_path.read_text(errors='replace')
                 console = ''.join((output / (mode + '.' + stream + '.log')).read_text(errors='replace') for stream in ('stdout', 'stderr'))
                 footer = ('VARIABLE_OBSERVABILITY failures=0 native_collector_only=1' if mode == 'writable'
                     else f'VARIABLE_OBSERVABILITY publication={mode} failures=0 native_collector_only=1')
                 need(text.splitlines().count(footer) == 1 and not DIAGNOSTIC.search(text + console), 'Native assertion/diagnostic failed')
+                receipt.setdefault('native_logs', {})[mode] = dict(path=log_path.relative_to(output).as_posix(), sha256=sha(log_path))
                 need(not (case / 'data/variable-observability-last-failure.json').exists(), 'Legacy output appeared')
                 if mode == 'missing':
                     need(not (case / 'data/desktop-supervisor/variable-observability').exists(), 'Missing output directory created')
@@ -350,6 +359,8 @@ def main(output, byond, head):
                     read_captures(case, receipt, budget)
         with budget.phase('final', receipt['phases']):
             need(sha(output / 'source-manifest.json') == receipt['manifest_sha256'], 'Source manifest changed')
+            need(all(sha(output / item['path']) == item['sha256'] for item in receipt['native_logs'].values()),
+                 'Native log changed after its checked phase')
             need(all(sha(ROOT / name) == value for name, value in originals.items()), 'Source input changed')
             need(all(sha(output / name) == value for name, value in inputs.items()), 'Prepared input changed')
             need(all(sha(byond / name) == value for name, value in binaries.items()), 'Engine identity changed')

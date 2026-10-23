@@ -287,8 +287,10 @@ introduced-test selector. It never consumes or weakens the Desktop packet's
 grant or empty-baseline restrictions. CI uses the existing installed 516.1681
 engine, no account/session inputs and only fresh directories under RUNNER_TEMP.
 Child environments exclude GitHub credentials.
-Linux daemon logs use the fixed relative basename `native.log` within each
-fixture working directory, respecting the engine's absolute-log-path refusal.
+Linux daemon logs use distinct fixed relative basenames `native-writable.log`,
+`native-missing.log` and `native-obstructed.log`, respecting the engine's
+absolute-log-path refusal. The engine anchors them to the compiled DMB directory;
+data/config isolation still uses the separate fixture cwd/-cd directories.
 Process ownership follows the
 existing extraction wrapper: a new session/group, WNOWAIT observation, owned
 group cleanup before reaping the leader, and recorded birth ticks and exits.
