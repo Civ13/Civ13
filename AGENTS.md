@@ -41,6 +41,17 @@ with self-review allowed and administrator bypass disabled. Keep explicit manual
 environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
+<!-- 2026-10-23: save movement and physical sleep guards -->
+Cross-z movement admission reads persistence_active_operation.kind == "save";
+load reconstruction and same-z serialization hooks must remain nonblocking.
+Resolve physical turfs through containers, and allow qdel's gc_destroyed mark
+to detach atoms before gcDestroyed is assigned. Raw loc/z assignment bypasses
+Move/forceMove; explicit transport paths use persistence_set_loc/set_z.
+tests/save_movement is offline source-flow evidence, not native acceptance or
+proof that all remaining raw location writers are covered. Protected sleep's
+physical predicate includes (1,1,1) and the existing admin sleep area; stale
+return coordinates inside that area must keep protection and refuse waking.
+
 Protected sleep relocates the body between z-levels, so release only its matching
 reciprocal buckle before entry or wake. Keep return coordinates captured before
 unbuckling, reject mismatched occupants, and leave sleep protection active on a
@@ -278,12 +289,27 @@ preparation does not compile/launch BYOND or establish native acceptance.
 The dedicated cave executor has an offline-only CLI; real backend invocation
 requires separate review. Native -close exits after world shutdown, not network
 isolation; socket samples cannot prove continuous absence. See its EXECUTOR.md.
+The resource-free cave fixture must declare Civ13's inherited movable anchored
+field. Three held Windows attempts stopped at the strict one-member Job guard;
+the third identified an owned conhost and logged the former missing declaration.
+They establish no cave runtime result; preserve their original frozen packets.
 
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.
 - Register the process var in `code/processes/__processes.dm`.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
+
+<!-- 2026-10-22: research snapshot resume -->
+Research consumes its retained current_list before each budget check, including
+deleted benches. tests/research_scheduler checks source-derived offline traces
+and the audited tail-loss control; native iteration/GC acceptance is still pending.
+Subclass post-loop aggregation must account for final-entry EARLY normalization.
+
+<!-- 2026-10-22: ping pass aggregation -->
+Ping retains per-pass sum/count across budget returns and publishes before the
+final-entry budget check. Every skipped client still consumes its snapshot entry.
+tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
 
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,

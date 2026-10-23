@@ -92,6 +92,15 @@ jobs:
       - name: Test wolf cave ownership source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wolf_cave_ownership')
         run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
+      - name: Test research scheduler resume source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/research_scheduler')
+        run: python3 -B -m unittest discover -s tests/research_scheduler -v
+      - name: Test ping scheduler resume source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')
+        run: python3 -B -m unittest discover -s tests/ping_scheduler -v
+      - name: Test local discovery source parity offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/local_discovery')
+        run: python3 -B -m unittest discover -s tests/local_discovery -v
       - name: Test optional roof upper-floor source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
@@ -101,6 +110,9 @@ jobs:
           python3 -B tests/world_save/test_sleep_transfer_sources.py -v
           python3 -B tests/world_save/test_cross_level_sources.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
+      - name: Test save movement and physical sleep guards offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_movement')
+        run: python3 -B -m unittest discover -s tests/save_movement -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v

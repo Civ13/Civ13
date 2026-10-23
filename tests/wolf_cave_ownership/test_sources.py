@@ -103,6 +103,12 @@ class SourceTests(unittest.TestCase):
                 for name, expected in files.items():
                     self.assertEqual(hashlib.sha256((output / case / name).read_bytes()).hexdigest(), expected)
                 generated = (output / case / 'production.dm').read_text()
+                fixture = (output / case / 'probe.dm').read_text()
+                parent = (output / case / 'parent.dm').read_text()
+                # The real movable base is not included in this isolated DME.
+                # Keep its inherited declaration and the production override.
+                self.assertIn('/atom/movable\n\tvar/anchored = FALSE\n', fixture)
+                self.assertIn('\tanchored = TRUE\n', parent)
                 self.assertIn('sleep(2)', generated)
                 self.assertNotIn('sleep(50)', generated)
                 self.assertIn('spawn(procreate_holder)', generated)

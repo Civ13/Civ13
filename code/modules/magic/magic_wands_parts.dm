@@ -76,8 +76,9 @@
 			to_chat(user, "<span class='notice'>This bench only assembles wand parts.</span>")
 			return
 
+		if (!persistence_movement_allowed(W, src)) return FALSE
 		user.drop_item()
-		W.loc = src
+		if (!W.persistence_set_loc(src)) return FALSE
 		to_chat(user, "<span class='notice'>You place [W] on the wand assembly bench.</span>")
 		do_html(user)
 		return
@@ -90,10 +91,11 @@
 		if (href_list["eject_wood"])
 			var/obj/item/wand_part/wood_part = get_bench_wood_part()
 			if (wood_part)
+				if (!persistence_movement_allowed(wood_part, user)) return FALSE
 				if (!user.get_active_hand() && user.put_in_active_hand(wood_part))
 					to_chat(user, "<span class='notice'>You take [wood_part] from the bench.</span>")
 				else
-					wood_part.loc = get_turf(user)
+					if (!wood_part.persistence_set_loc(get_turf(user))) return FALSE
 					to_chat(user, "<span class='notice'>You remove [wood_part] from the bench.</span>")
 			else
 				to_chat(user, "<span class='notice'>There is no wood part on the bench.</span>")
@@ -103,10 +105,11 @@
 		if (href_list["eject_core"])
 			var/obj/item/wand_part/core_part = get_bench_core_part()
 			if (core_part)
+				if (!persistence_movement_allowed(core_part, user)) return FALSE
 				if (!user.get_active_hand() && user.put_in_active_hand(core_part))
 					to_chat(user, "<span class='notice'>You take [core_part] from the bench.</span>")
 				else
-					core_part.loc = get_turf(user)
+					if (!core_part.persistence_set_loc(get_turf(user))) return FALSE
 					to_chat(user, "<span class='notice'>You remove [core_part] from the bench.</span>")
 			else
 				to_chat(user, "<span class='notice'>There is no core part on the bench.</span>")

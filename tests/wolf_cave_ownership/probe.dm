@@ -13,6 +13,10 @@ var/fixture_services = 0
 /datum/proc/persistence_runtime_var(key)
 	return key == "fixture_parent_runtime"
 
+// Civ13 declares anchored on /atom/movable, outside the extracted cave parent.
+/atom/movable
+	var/anchored = FALSE
+
 /area
 	var/climate = "sea"
 /area/caribbean/void/caves/special

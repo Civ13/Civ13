@@ -28,7 +28,12 @@ Owned-Job termination and existing cleanup remain the sole termination mechanism
 These rights are sufficient for both
 [IsProcessInJob](https://learn.microsoft.com/en-us/windows/win32/api/jobapi/nf-jobapi-isprocessinjob)
 and [GetProcessTimes](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes).
-The addition has not been invoked against native processes. Its tests inject
+Invocation 3 recorded PID 629456 as `C:\WINDOWS\System32\conhost.exe`, creation
+FILETIME 134371900026432798, with all three membership checks true and its query
+handle closed. The unchanged guard rejected the two-member census; cleanup
+reported zero active Job members. This records identity, not harmlessness or
+parentage. A subsequent read-only inspection found that recorded PID absent.
+Its tests inject
 read-only handles, access denial, PID reuse, membership loss, close failure and
 after-cleanup refusal; they do not identify historical PID 641196.
 

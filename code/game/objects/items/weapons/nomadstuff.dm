@@ -73,7 +73,7 @@
 		var/mob/living/affecting = G.affecting
 		user.visible_message("<span class='notice'>[user] attempts to tuck [affecting] into \the [src]!</span>")
 		if (do_after(user, 20, src))
-			affecting.loc = loc
+			if (!affecting || !affecting.persistence_set_loc(loc)) return FALSE
 			spawn(0)
 				if (buckle_mob(affecting))
 					affecting.visible_message(\

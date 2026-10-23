@@ -311,8 +311,8 @@
 				var/obj/structure/cannon/modern/tank/C = weapons[selected_weapon]
 				if(C.loaded.len > 0)
 					var/obj/item/cannon_ball/S = C.loaded[1]
+					if (!S.persistence_set_loc(get_turf(user))) return FALSE
 					C.loaded -= S
-					S.loc = get_turf(user)
 					to_chat(user, SPAN_NOTICE("You unload \the [src]."))
 				if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank/autoloader))
 					var/obj/structure/cannon/modern/tank/autoloader/A = weapons[selected_weapon]
@@ -339,7 +339,9 @@
 							chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
 							if (!chosen || chosen == "")
 								return
-							chosen.loc = src
+							if (!chosen.persistence_set_loc(src))
+								A.is_loading = FALSE
+								return FALSE
 							A.loaded += chosen
 							to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
 							A.is_loading = FALSE

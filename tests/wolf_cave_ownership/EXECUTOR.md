@@ -1,8 +1,10 @@
 # Dedicated cave executor: source/offline review only
 
 This executor is dedicated to the existing seven cave cases. It imports no
-floor-decal, OpenDream, benchmark, grant or lease code. No native invocation has
-been performed. All executor tests use fake processes and injected DLL functions;
+floor-decal, OpenDream, benchmark, grant or lease code. Three separately reviewed
+native invocations stopped in the first fixed compile at the strict member guard;
+no daemon ran. See README.md for the fixture error and pending revised build.
+All executor tests use fake processes and injected DLL functions;
 a WinDLL tripwire makes accidental native binding fail the tests.
 
 `executor.py` has an **offline preparation CLI only**. `run_packet` is a library
@@ -48,12 +50,12 @@ client launcher, public port parameter or arbitrary case selector.
   output above **16 MiB** stops the phase without truncating existing diagnostics.
   This sampled check is not a hard filesystem quota. No filesystem cleanup runs.
 
-The Windows backend is implemented but **not exercised against the real OS**.
-Injected API tests establish call order, layout and failure-path behavior only;
-native Job enforcement and real process exit remain unverified until parent-approved
-invocation. Python 64-bit Windows is the intended executor environment.
+The three native receipts report rejection and cleanup to zero active Job members,
+with no cave runtime acceptance. Injected API tests establish call order, layout
+and failure-path behavior only; they do not replace native evidence. Python 64-bit
+Windows is the intended executor environment. Any further invocation needs review.
 
-The source-only unexpected-member addition is described in
+The unexpected-member addition is described in
 [MEMBER_DIAGNOSTIC.md](MEMBER_DIAGNOSTIC.md). It rechecks exact Job membership
 before each image/creation-time read and afterward, closes the query handle
 immediately, refuses opens after cleanup starts, and retains all existing rejection

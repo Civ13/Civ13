@@ -22,7 +22,7 @@ EXPECTED = {'fixed': None, 'world-scan': 'one initial service count=3 full=0',
 PINNED = {'dm.exe': '8ad7537fc1329ada04e8e1e8835ec9cf205f3e5029461a3ead1f8f4ced7b0bb8',
           'dd.exe': '7b148eceaaae483395b636fab817609b37f8fb852f1d5aad12d29bbcaf1585ae',
           'byondcore.dll': '55cf268a4f054f02d556d2ed3c26ab01b7b0318bb3c5419e85f88e4e3b9e5898'}
-FIXTURE_SHA256 = '0e12d73018de7548f3f5283262654ef39ea18f8a88493ea6316a741a718115c9'
+FIXTURE_SHA256 = '41d2729a1be979778d6f58be5b673437b597a62fa28d10c748b3c0d7ac018abc'
 POLICY = {'child_bytes': 256 * 1024**2, 'compile_seconds': 60, 'runtime_seconds': 20,
           'cleanup_seconds': 5, 'max_cells': 144, 'sample_seconds': .05,
           'min_free_bytes': 1024**3, 'max_output_bytes': 16 * 1024**2}

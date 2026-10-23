@@ -1,9 +1,13 @@
 # Wolf cave timer ownership
 
 The dedicated Windows executor is now implemented for source/offline review;
-see [EXECUTOR.md](EXECUTOR.md). It has no native CLI entry point and has not been
-invoked against real compiler/daemon processes. Existing preparation hashes and
-native-unrun status below remain unchanged.
+see [EXECUTOR.md](EXECUTOR.md). It has no native CLI entry point. Three separately
+reviewed Windows invocations stopped during the first fixed-case compile at the
+unchanged one-member Job guard; no daemon or cave runtime case ran. The third
+captured an owned conhost identity and a compiler error for the fixture's missing
+inherited `anchored` declaration. That declaration is now supplied on the fixture
+movable base; this revised fixture has not been compiled. Prior frozen packets and
+failed receipts remain unchanged. This update authorizes no native retry.
 
 Related to #3267; pinned audited base:
 `9db2b2f42a5fbbb0bdd49d50a2672da6111a7709`.
@@ -71,11 +75,12 @@ are bounded Git object/ref reads; it has no native launcher. It refuses to repla
 an existing output directory. Commit/head and source hashes together identify a
 dirty candidate; preparation alone is not exact-commit runtime acceptance.
 
-## Native controls prepared for parent review; NOT RUN
+## Native controls prepared for parent review; runtime pending
 
 The generated fixture extracts the actual cave constructors, Tick, Destroy,
 persistence hook, Ticker, reproduction, climate and wolf emission procedures.
-Adapters replace the parent environment, area lookup and wolf mobs;
+Adapters replace the parent environment, area lookup and wolf mobs, including
+Civ13's inherited `/atom/movable` declaration of `var/anchored = FALSE`;
 there is no normal game startup, map import, serializer, AI, client or external
 service. Only cadence (`sleep(50)` to `sleep(2)`), cub wait (4,500 to 6) and RNG
 delivery are adapted. Test-only subtype cooldown holders are 6; production holder
@@ -100,7 +105,9 @@ round trip. Six negative cases share the fixed oracle. Expected first failures:
 | missing-recount | `population recount` after counters change |
 | baseline | duplicate initial/recurring callbacks (full single cave already duplicates) |
 
-All cases are **uncompiled and unexecuted**. Source-control rejection is separate
+The revised cases are **uncompiled and unexecuted**. The three earlier attempts
+establish neither a successful fixture build nor a cave runtime result.
+Source-control rejection is separate
 from native negative-control detection. Check native mutation collateral and
 record actual first failures before claiming targeted causal evidence.
 
