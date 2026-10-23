@@ -642,6 +642,7 @@
 /obj/structure/functions/clean_arena1/attack_hand(mob/living/user)
 	clean_proc(user)
 /obj/structure/functions/clean_arena1/proc/clean_proc(mob/living/user)
+	if (persistence_save_active()) return FALSE
 	if (user)
 		if (!istype(user, /mob/living/human))
 			return
@@ -675,6 +676,7 @@
 		to_chat(user, "[arena] cleared.")
 	return
 /obj/structure/functions/clean_arena1/proc/clean_proc_nomob()
+	if (persistence_save_active()) return FALSE
 	var/area/A = get_area(src.loc)
 	for (var/mob/living/human/H in A)
 		if (H.stat == DEAD)

@@ -314,6 +314,8 @@ var/global/persistence_load_recovery_required = FALSE
 	operation.kind = kind
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
+	if(kind == "save")
+		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
 	return operation
 
 /datum/persistence_world_operation
@@ -414,7 +416,6 @@ var/global/persistence_load_recovery_required = FALSE
 	if(!operation) return FALSE
 	try
 		var/watch = start_watch()
-		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
 		sleep(5)
 		if(!map_storage.run_world_operation("save", operation))
 			throw EXCEPTION("Save_World did not complete")

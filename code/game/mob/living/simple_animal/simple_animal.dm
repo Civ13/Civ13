@@ -674,8 +674,7 @@
 	return verb
 
 /mob/living/simple_animal/put_in_hands(var/obj/item/W) // No hands.
-	W.loc = get_turf(src)
-	return TRUE
+	return W && W.persistence_set_loc(get_turf(src))
 
 /mob/living/simple_animal/handle_fire()
 	return

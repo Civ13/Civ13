@@ -36,6 +36,8 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'inducedSSD', 'buckled', 'storage', 'kind', 'backend_started',
           'contents_started', 'mutation_started', 'restoring_players',
           'current', 'enter_backend', 'enter_contents', 'finish',
+          'contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
+          'l_hand', 'r_hand', 'equipped', 'update_inv_l_hand', 'update_inv_r_hand', 'equip_to_slot',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
@@ -66,6 +68,8 @@ def project(source, declaration, args, env, method=False):
         code = re.sub(r'\bnull\b', 'None', code)
         code = re.sub(r'= new$', '= new_operation()', code)
         code = re.sub(r'^\. = ', 'result = ', code)
+        code = re.sub(r'^([\w.]+)\+\+$', r'\1 += 1', code)
+        code = re.sub(r'^([\w.]+)--$', r'\1 -= 1', code)
         code = code.replace('return .', 'return result')
         if method:
             # Never rewrite a string literal or an already qualified member.

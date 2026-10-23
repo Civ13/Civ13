@@ -1075,7 +1075,7 @@
 		else
 			for (var/obj/item/ITS in packed_items)
 				if (ITS.name == choice1)
-					ITS.loc = locate(usr.x,usr.y,usr.z)
+					if (!ITS.persistence_set_loc(get_turf(usr))) return FALSE
 					packed_items -= ITS
 					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
 					content_size -= ITS.w_class

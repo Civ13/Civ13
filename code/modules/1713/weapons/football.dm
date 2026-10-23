@@ -602,7 +602,7 @@ function startTeam(uniform_type) {
 		if(G.state<2)
 			to_chat(user, "<span class='warning'>You need a better grip to do that!</span>")
 			return
-		G.affecting.loc = src.loc
+		if (!G.affecting.persistence_set_loc(src.loc)) return FALSE
 		G.affecting.Weaken(5)
 		visible_message("<span class='warning'>[G.assailant] dunks [G.affecting] into the [src]!</span>", 3)
 		qdel(W)

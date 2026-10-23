@@ -563,7 +563,14 @@
 	crushable = FALSE
 	var/next_activation = -1
 
+/obj/structure/elevator_button/proc/cancel_save_transfer()
+	next_activation = world.time
+	for (var/obj/structure/gate/elevator_door/D in range(4, src.loc))
+		if (!D.open) D.toggle()
+	return FALSE
+
 /obj/structure/elevator_button/attack_hand(var/mob/user as mob)
+	if (persistence_save_active()) return FALSE
 	if (world.time < next_activation)
 		next_activation = world.time + 5 SECONDS
 	else
@@ -574,20 +581,20 @@
 		spawn(5)
 			visible_message("The elevator is departing!")
 			spawn(10)
-				while (persistence_active_operation && persistence_active_operation.kind == "save")
-					sleep(1)
+				if (gcDestroyed || gc_destroyed) return FALSE
+				if (persistence_save_active()) return cancel_save_transfer()
 				for (var/mob/M in range(1, src))
 					if (M.z == 1)
-						M.persistence_set_z(2)
+						if (!M.persistence_set_z(2)) return cancel_save_transfer()
 					else if (M.z == 2)
-						M.persistence_set_z(1)
+						if (!M.persistence_set_z(1)) return cancel_save_transfer()
 					to_chat(M, "The elevator has arrived!")
 				for (var/obj/O in range(1, src))
 					if (!istype(O, /obj/structure/elevator_button/) && !istype (O, /obj/covers/))
 						if (O.z == 1)
-							O.persistence_set_z(2)
+							if (!O.persistence_set_z(2)) return cancel_save_transfer()
 						else if (O.z == 2)
-							O.persistence_set_z(1)
+							if (!O.persistence_set_z(1)) return cancel_save_transfer()
 				spawn(5)
 					var/destination_upper = locate(src.x, src.y, src.z+1)
 					var/destination_lower = locate(src.x, src.y, src.z-1)

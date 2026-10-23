@@ -22,7 +22,7 @@ inducedSSD flag, natural sleep decrements, forced sleeping/stat setters and safe
 
 Source checks also inspect Move/turf admission, callback-time stairs, elevators,
 landing craft, area/bump teleporters, both ladder families, sky/broken-floor falls,
-ghost/admin jumps, generic storage APIs and delayed client identity checks. These
+ghost jumps, generic storage APIs and delayed client identity checks. These
 are source assertions, not execution of every entire transport procedure. Removing
 the cross-z predicate or identity-owned release produces the demonstrated defects
 in generated-source controls; production files are never mutated by the tests.
@@ -37,7 +37,10 @@ in generated-source controls; production files are never mutated by the tests.
   identified objective spawner have since received focused corrections. Run
   `audit_writers.py --output <review-report.json>` to inventory residual statements.
   Their safety requires call-path review; the inventory makes no benign-type claim.
-  Arbitrary administrator variable/procedure editing remains a bypass surface.
+  Administrator-only jumps, variable editing and arbitrary procedure invocation
+  are explicitly outside the requested coverage after the user scope clarification;
+  they are not acceptance blockers for normal gameplay. The save announcement
+  warns admins to avoid changing levels until completion.
 - The physical sleep area is `(1,1,1)` plus `/area/caribbean/admin`, matching the
   existing sleep destination and zombie exclusion. Humans visiting that admin
   area also stay asleep. Gaia's source map has exactly four such black-wall cells
@@ -51,7 +54,9 @@ in generated-source controls; production files are never mutated by the tests.
   new atoms may be placed; creation is not a whole-world snapshot freeze.
 - Same-z movement remains available, including serializer-owned paid rack transfers.
   Existing same-z serialization consistency limitations are not repaired here.
-- Spawned elevator/landing-craft batches defer while the owned save exists. Simple
+- Elevator/landing-craft activation rejects active saves. Spawned transfers cancel
+  at callback time if saving, release controls and require a normal retry. There
+  are no unbounded save waits or success announcements after a refused move. Simple
   blocked teleports/falls cancel that attempt and require their ordinary retrigger;
   protected sleep explicitly offers a safe user retry. No wait was added inside a
   serializer or synchronous movement helper.
@@ -66,3 +71,18 @@ in generated-source controls; production files are never mutated by the tests.
 
 The feature branch is a sparse source checkout. It is not a second runtime
 installation and contains no hosted server or compiled game artifacts.
+
+The current local revision also guards remote wand-bench ejection, inventory
+slot assignment/refusal results, post-prompt construction, camel pack removal,
+vehicle cargo installation/removal, tank autoloader selection/unloading and
+projectile launch placement. Active plastique planting rejects an admitted save
+before dropping equipment and rechecks after drop callbacks; it preserves the
+normal nullspace placement outside saving. Terminal projectile-impact null writes
+retain their immediate qdel/callback ordering rather than being treated as launches.
+
+Deletion tests execute the production qdel ownership prefix to its post-Destroy
+profiling boundary, the complete movable Destroy body, and closet dump_contents.
+Queueing/hard deletion and native list iteration remain adapted boundaries. No
+movable subtype was found returning LETMELIVE; the repository occurrence belongs
+to weak references. Arbitrary runtime errors or unsupported subtype changes still
+require native acceptance.

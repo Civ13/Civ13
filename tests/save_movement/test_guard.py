@@ -90,7 +90,8 @@ class Fixture:
                         typed_iter=lambda values, kind: [a for a in values if kind == '/atom/movable' or
                                                         (kind == '/obj' and not a.human) or
                                                         (kind == '/mob' and a.human)],
-                        CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2)
+                        CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2, world=NS(time=42, timeofday=42),
+                        to_chat=lambda *args: None)
         self.area, self.admin = Area(), Area(True)
         self.sleep = Atom(self.admin, turf=True, xyz=(1, 1, 1))
         self.home = Atom(self.area, turf=True, xyz=(3, 2, 2))
@@ -141,6 +142,135 @@ class Fixture:
 
 
 class GuardTests(unittest.TestCase):
+    def test_actual_movable_destroy_retires_nested_contents_before_detaching(self):
+        f = Fixture()
+        f.env.update(parent=lambda: 0, istype=lambda value: isinstance(value, Atom),
+                     GC_CURRENTLY_BEING_QDELETED=-1)
+        # Execute qdel's production ownership prefix up to its post-Destroy profiler
+        # boundary. Queueing/hard deletion after this boundary is an engine adapter.
+        source = read('code/processes/garbage.dm')
+        start = source.index('/proc/qdel(')
+        end = source.index('\n\tif (processes.garbage)\n\t\tprocesses.garbage.profile_cost', start)
+        retire = project(source[start:end], '/proc/qdel', 'A', f.env)
+        f.env['qdel'] = retire
+        destroy = project(read(MOVABLE).replace('..()', 'parent()'), '/atom/movable/Destroy', 'src', f.env, True)
+        box = f.actor(human=False)
+        inner, human = f.actor(box, human=False), f.actor(box)
+        item = f.actor(inner, human=False)
+        for atom in (box, inner, human, item):
+            atom.pulledby = None
+            atom.Destroy = MethodType(destroy, atom)
+        f.begin(f.store, 'save')
+        retire(box)
+        for atom in (box, inner, human, item):
+            self.assertEqual(atom.gc_destroyed, -1)
+            self.assertIsNone(atom.loc)
+            self.assertEqual(atom.contents, [])
+        self.assertLess(source.index('A.gc_destroyed = GC_CURRENTLY_BEING_QDELETED', start),
+                        source.index('var/hint = A.Destroy()', start))
+
+    def test_closet_dump_keeps_live_contents_on_original_level_while_saving(self):
+        f = Fixture()
+        box, human = f.actor(human=False), f.actor()
+        human.loc = box
+        human.client = None
+        item = f.actor(box, human=False)
+        dump = project(read('code/game/objects/structures/crates_lockers/closets.dm'),
+                       '/obj/structure/closet/proc/dump_contents', 'src', f.env, True)
+        f.begin(f.store, 'save')
+        box.gc_destroyed = -1
+        dump(box)
+        self.assertIs(human.loc, f.home)
+        self.assertIs(item.loc, f.home)
+        self.assertEqual(box.contents, [])
+        self.assertTrue(box.forceMove(None))
+
+    def test_transport_cancellation_releases_controls_without_waiting(self):
+        f = Fixture()
+        floor = NS(opacity=True, density=True)
+        f.env.update(range=lambda distance, source: [floor], typed_iter=lambda values, kind: values)
+        lever = NS(position='launched', icon_state='lever_pulled', none_state='lever_none', next_activation=400)
+        cancel = project(read('code/modules/1713/transporter/lever.dm'),
+                         '/obj/structure/transport_lever/proc/cancel_save_transfer', 'src, previous_position', f.env, True)
+        self.assertFalse(cancel(lever, 'docked'))
+        self.assertEqual((lever.position, lever.icon_state, lever.next_activation), ('docked', 'lever_none', 42))
+        self.assertEqual((floor.opacity, floor.density), (False, False))
+
+    def test_warning_is_once_per_admitted_save_including_direct_api(self):
+        f = Fixture()
+        messages = []
+        f.env['to_chat'] = lambda target, message: messages.append(message)
+        first = f.begin(f.store, 'save')
+        self.assertIn('Do not move between z-levels until saving finishes.', messages[0])
+        self.assertIsNone(f.begin(f.store, 'save'))
+        self.assertEqual(len(messages), 1)
+        first.finish(False)
+        f.begin(f.store, 'load').finish(True)
+        self.assertEqual(len(messages), 1)
+        f.begin(f.store, 'save')
+        self.assertEqual(len(messages), 2)
+        ticker = extract(read(FUNCTIONS), '/datum/controller/gameticker/proc/savemap')
+        self.assertNotIn('SAVING THE MAP!', ticker)
+
+    def test_hands_refuse_before_slot_changes_and_accept_already_contained_items(self):
+        for side in ('l', 'r'):
+            f = Fixture()
+            human, item = f.actor(), f.actor(f.other, human=False)
+            events = []
+            setattr(human, side + '_hand', None)
+            setattr(human, 'update_inv_' + side + '_hand', lambda: events.append('hud'))
+            item.equipped = item.add_fingerprint = item.on_changed_slot = lambda *args: events.append('equipped')
+            f.env.update(parent=lambda: True, **{'slot_' + side + '_hand': side})
+            # Parent dispatch is an explicit engine boundary; the entire child body runs.
+            source = read('code/game/mob/living/carbon/human/human.dm').replace('..()', 'parent()')
+            put = project(source, '/mob/living/human/put_in_' + side + '_hand', 'src, W', f.env, True)
+            op = f.begin(f.store, 'save')
+            self.assertFalse(put(human, item))
+            self.assertIsNone(getattr(human, side + '_hand'))
+            self.assertEqual(events, [])
+            self.assertIs(item.loc, f.other)
+            op.finish(True)
+            self.assertTrue(put(human, item))
+            self.assertIs(getattr(human, side + '_hand'), item)
+            setattr(human, side + '_hand', None)
+            self.assertTrue(put(human, item))  # forceMove itself reports FALSE for no-op
+
+    def test_safe_equip_refusal_does_not_delete_and_propagates_actual_result(self):
+        f = Fixture()
+        human, item = f.actor(), f.actor(f.other, human=False)
+        events = []
+        f.env.update(istype=lambda value: isinstance(value, Atom), qdel=lambda value: events.append('delete'),
+                     to_chat=lambda *args: events.append('message'))
+        item.mob_can_equip = lambda *args: events.append('equip-check') or True
+        human.equip_to_slot = lambda *args: events.append('equip') or False
+        equip = project(read('code/game/mob/inventory.dm'), '/mob/proc/equip_to_slot_if_possible',
+                        'src, W, slot, del_on_fail=False, disable_warning=False, redraw_mob=True', f.env, True)
+        op = f.begin(f.store, 'save')
+        events.clear()  # admission itself emits the required save warning
+        self.assertFalse(equip(human, item, 1, True))
+        self.assertEqual(events, [])
+        op.finish(False)
+        self.assertFalse(equip(human, item, 1))
+        self.assertEqual(events, ['equip-check', 'equip'])
+
+    def test_active_explosive_nullspace_commit_refuses_save_and_retries(self):
+        f = Fixture()
+        human, charge = f.actor(), f.actor(human=False)
+        commit = project(read('code/game/objects/items/weapons/explosives.dm'),
+                         '/obj/item/weapon/plastique/proc/commit_planting', 'src, user', f.env, True)
+        op = f.begin(f.store, 'save')
+        self.assertFalse(commit(charge, human))
+        self.assertEqual(human.drop_calls, 0)
+        self.assertIs(charge.loc, f.home)
+        op.finish(False)
+        human.on_drop = lambda: f.begin(f.store, 'save')
+        self.assertFalse(commit(charge, human))
+        self.assertIs(charge.loc, f.home)
+        f.env['persistence_active_operation'].finish(True)
+        human.on_drop = None
+        self.assertTrue(commit(charge, human))
+        self.assertIsNone(charge.loc)
+
     def test_operating_table_refuses_before_resting_or_announcing(self):
         f = Fixture()
         human, table = f.actor(), f.actor(f.other, human=False)
@@ -187,6 +317,7 @@ class GuardTests(unittest.TestCase):
         reset = project(read('code/game/objects/map_metadata/football.dm'), '/obj/map_metadata/football/proc/reset_ball', 'src', f.env, True)
         metadata = NS(stopped=False, stopped_until=0)
         f.begin(f.store, 'save')
+        events.clear()  # distinguish match effects from the save announcement
         self.assertFalse(reset(metadata))
         self.assertEqual((metadata.stopped, metadata.stopped_until), (False, 0))
         self.assertEqual(events, [])
@@ -199,24 +330,6 @@ class GuardTests(unittest.TestCase):
         self.assertIsNone(ball.owner)
         self.assertIsNone(human.football)
         self.assertTrue(metadata.stopped)
-
-    def test_admin_jump_refusal_has_no_success_log_or_follow_reset(self):
-        f = Fixture()
-        human = f.actor()
-        events = []
-        human.on_mob_jump = lambda: events.append('follow-reset')
-        f.env.update(usr=human, config=NS(allow_admin_jump=True), R_ADMIN=1, R_MOD=2, R_DEBUG=4,
-                     check_rights=lambda rights: True, log_admin=lambda message: events.append('log'),
-                     message_admins=lambda *args: events.append('announcement'), key_name_admin=lambda user: 'fixture')
-        jump = project(read('code/modules/admin/verbs/adminjump.dm'), '/client/proc/jumptoturf', 'src, T', f.env, True)
-        operation = f.begin(f.store, 'save')
-        self.assertFalse(jump(NS(), f.other))
-        self.assertEqual(events, [])
-        self.assertIs(human.loc, f.home)
-        operation.finish(False)
-        jump(NS(), f.other)
-        self.assertIs(human.loc, f.other)
-        self.assertEqual(events, ['log', 'announcement', 'follow-reset'])
 
     def test_area_callback_refusal_does_not_update_covers_and_can_retry(self):
         f = Fixture()
@@ -506,6 +619,45 @@ class GuardTests(unittest.TestCase):
 
 
 class SourcePathTests(unittest.TestCase):
+    def test_remaining_modal_and_timed_gameplay_commits_admit_before_ownership(self):
+        camel = extract(read('code/game/mob/living/simple_animal/friendly/farm_animals.dm'),
+                        '/mob/living/simple_animal/camel/verb/remove_from_storage')
+        self.assertLess(camel.index('if (!ITS.persistence_set_loc(get_turf(usr))) return FALSE'), camel.index('packed_items -= ITS'))
+        transport = read('code/game/objects/structures/transports.dm')
+        self.assertEqual(transport.count('if (!O.persistence_set_loc(get_turf(src))) return FALSE'), 2)
+        self.assertEqual(transport.count('if (!O.persistence_set_loc(get_turf(user))) return FALSE'), 2)
+        self.assertNotRegex(transport, re.compile(r'^\s+O.loc\s*=', re.M))
+        for path, list_name, loading in (('code/modules/1713/siege/piece.dm', 'loaded', 'is_loading'),
+                                         ('code/modules/1713/siege/turret.dm', 'A.loaded', 'A.is_loading')):
+            body = read(path).split('chosen = WWinput')[1]
+            self.assertLess(body.index('if (!chosen.persistence_set_loc(src))'), body.index(list_name + ' += chosen'))
+            refusal = body.split('if (!chosen.persistence_set_loc(src))')[1].split(list_name + ' += chosen')[0]
+            self.assertIn(loading + ' = FALSE', refusal)
+            self.assertIn('return FALSE', refusal)
+        shots = read('code/modules/projectiles/projectile.dm')
+        self.assertNotRegex(shots, re.compile(r'^\s+loc = (curloc|get_turf\(user\))', re.M))
+        self.assertEqual(shots.count('if (!persistence_set_loc(curloc)) return TRUE'), 2)
+        self.assertIn('if (!persistence_set_loc(get_turf(user))) return TRUE', shots)
+        self.assertIn('if (!persistence_set_loc(curloc)) return TRUE', read('code/modules/projectiles/projectile/cannon.dm'))
+        self.assertIn('if (!G.affecting.persistence_set_loc(src.loc)) return FALSE', read('code/modules/1713/weapons/football.dm'))
+
+    def test_remote_bench_and_post_prompt_construction_commit_guards(self):
+        bench = read('code/modules/magic/magic_wands_parts.dm')
+        for part in ('wood_part', 'core_part'):
+            self.assertLess(bench.index('if (!persistence_movement_allowed(' + part + ', user)) return FALSE'),
+                            bench.index('user.put_in_active_hand(' + part + ')'))
+            self.assertIn('if (!' + part + '.persistence_set_loc(get_turf(user))) return FALSE', bench)
+        self.assertNotRegex(bench, r'\b(?:W|wood_part|core_part)\.loc\s*=')
+        construction = read('code/game/objects/items/stacks/stack.dm')
+        self.assertNotRegex(construction, re.compile(r'^\s+\w+\.loc\s*=', re.M))
+        mailbox = construction.split('var/obj/structure/closet/crate/wall_mailbox/M = O')[1]
+        self.assertLess(mailbox.index('if (!M.persistence_set_loc(get_step(user, user.dir))) return FALSE'),
+                        mailbox.index('M.mailbox_color = input'))
+        explosive = extract(read('code/game/objects/items/weapons/explosives.dm'), '/obj/item/weapon/plastique/afterattack')
+        self.assertLess(explosive.index('if (!commit_planting(user)) return FALSE'), explosive.index('add_logs('))
+        equipment = extract(read('code/game/mob/living/carbon/human/inventory.dm'), '/mob/living/human/equip_to_slot')
+        self.assertLess(equipment.index('if (W.loc != src) return FALSE'), equipment.index('switch(slot)'))
+
     def test_delayed_attachments_admit_before_recording_relationships(self):
         source = read('code/modules/1713/punishment.dm')
         for family in ('noose', 'gallows', 'cross', 'pillory', 'post_execution'):
@@ -520,9 +672,6 @@ class SourcePathTests(unittest.TestCase):
         jobs = read('code/game/jobs/job_controller.dm')
         self.assertIn('if (!H.persistence_set_loc(spawnpoint)) return FALSE', jobs)
         self.assertIn('if (!H.persistence_set_loc(null)) return FALSE', jobs)
-        admin = read('code/modules/admin/topic.dm')
-        self.assertNotRegex(admin, re.compile(r'^\s+H.loc =', re.M))
-        self.assertLess(admin.index('if (persistence_save_active()) return FALSE'), admin.index('job_master.EquipRank(H, J)'))
         objective = extract(read('code/game/objects/effects/spawner.dm'), '/obj/effect/spawner/objective_spawner/proc/spawnerproc')
         self.assertIn('new/obj/item/cursedtreasure(locationtomove)', objective)
         self.assertNotIn('targetobjective.loc =', objective)
@@ -555,7 +704,7 @@ class SourcePathTests(unittest.TestCase):
         for path in ('code/modules/multiz/structures.dm', 'code/modules/multiz/movement.dm',
                      'code/modules/multiz/open_space.dm', 'code/modules/multiz/area_teleporter.dm',
                      'code/game/objects/effects/step_triggers.dm', 'code/game/objects/controls.dm',
-                     'code/modules/1713/transporter/lever.dm', 'code/modules/admin/verbs/adminjump.dm',
+                     'code/modules/1713/transporter/lever.dm',
                      'code/game/objects/effects/bump_teleporter.dm'):
             source = '\n'.join(line.split('//')[0] for line in read(path).splitlines())
             self.assertNotRegex(source, r'(?:\.|\b)z\s*(?:=(?!=)|[+-]=)')
@@ -570,8 +719,10 @@ class SourcePathTests(unittest.TestCase):
             self.assertLess(source.index('spawn'), source.index('persistence_set_'))
         stairs = read('code/game/objects/effects/step_triggers.dm').split('/obj/effect/step_trigger/teleporter/stairs\n')[1]
         self.assertLess(stairs.index('spawn(timer)'), stairs.index('persistence_set_loc'))
-        for path, minimum in (('code/game/objects/controls.dm', 1), ('code/modules/1713/transporter/lever.dm', 4)):
-            self.assertGreaterEqual(read(path).count('while (persistence_active_operation && persistence_active_operation.kind == "save")'), minimum)
+        for path in ('code/game/objects/controls.dm', 'code/modules/1713/transporter/lever.dm'):
+            self.assertNotIn('while (persistence_active_operation', read(path))
+            self.assertIn('if (persistence_save_active()) return cancel_save_transfer(', read(path))
+            self.assertIn('if (gcDestroyed || gc_destroyed) return FALSE', read(path))
 
     def test_status_and_forced_writers_use_zone_guards(self):
         body = extract(read('code/game/mob/living/carbon/human/human_life.dm'), '/mob/living/human/handle_regular_status_updates')
