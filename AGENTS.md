@@ -547,6 +547,11 @@ authenticated loopback status read with a 15-second/32-KiB limit and no retry.
 The schema-1 status field is `debug.variables`; reader evidence is
 `data.failure`, with active/last save/load ownership alongside it. There is no
 generic runtime variable MCP tool or arbitrary ref lookup.
+Check `data.failure_error`: stale, mismatched, partial or malformed retained
+failure evidence is withheld without hiding independently valid current/last
+operation ownership. `ok:true` is not acceptance of a rejected retained capture.
+Null scalar throw fields mean unknown and remain distinct from numeric zero;
+the reader does not invent a never-thrown default.
 
 Collection/exposure and automatic local output remain default-off until a
 separately authorized exact-build deployment/restart and local opt-in using
@@ -579,8 +584,9 @@ owner frames eight, registry prefixes 256, output 32 KiB; missing, partial and
 stale data are explicit unknown/error states. No eval, generic proc invocation,
 mutation, credentials, relaxed protections or listener is introduced.
 Offline synthetic reader/source checks and native-packet preparation are covered;
-native compilation, collector/Topic execution, actual deletion behavior and
-full save/load/gameplay acceptance remain unrun pending authorization. Observation
+native collector/Topic execution, actual deletion behavior and full save/load/
+gameplay acceptance remain unrun pending authorization. Compilation CI is separate
+evidence bound to its tested head. Observation
 does not authorize save/load, restart, cleanup or other live mutation.
 
 <!-- 2026-10-17: bounded own-host agent diagnostics -->

@@ -6,6 +6,22 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+MOVABLE_FIELDS = ('throwing', 'throwmode', 'speed', 'range', 'dist_travelled',
+                  'throw_speed', 'throw_range', 'original_target', 'thrower', 'throw_source')
+
+
+def movable_declarations(source):
+    """Project only the named base fields, preserving production initializers."""
+    block = re.search(r'^/atom/movable\n((?:\t[^\n]*\n|\n)+)', source, re.M)
+    if not block:
+        raise ValueError('Production movable declaration changed')
+    rows = []
+    for field in MOVABLE_FIELDS:
+        matches = re.findall(r'^\tvar/(?:[A-Za-z_/]+/)?' + field + r'(?:\s*=.*)?$', block.group(1), re.M)
+        if len(matches) != 1:
+            raise ValueError('Production movable field declaration changed: ' + field)
+        rows.append(matches[0])
+    return '/atom/movable\n' + '\n'.join(rows) + '\n'
 
 
 def prepare(output):
@@ -22,6 +38,10 @@ def prepare(output):
         raw = path.read_bytes()
         (output / name).write_bytes(raw)
         hashes[str(path.relative_to(ROOT))] = hashlib.sha256(raw).hexdigest()
+    movable_path = ROOT / 'code/game/atoms_movable.dm'
+    raw = movable_path.read_bytes()
+    (output / 'movable_defaults.dm').write_text(movable_declarations(raw.decode('utf-8-sig')), encoding='utf-8')
+    hashes[str(movable_path.relative_to(ROOT))] = hashlib.sha256(raw).hexdigest()
     text_path = ROOT / 'code/_helpers/text.dm'
     raw = text_path.read_bytes()
     text = raw.decode('utf-8-sig')

@@ -55,8 +55,11 @@ These read commands do not establish that the source checkout is deployed.
 The native status extension is `debug.variables` (nested schema 1). The reader
 returns `{schema:1, ok:true, read_only:true, data:{...}}`; runtime reads place the
 retained capture in `data.failure`, active operation in `data.operation` and last
-completed operation in `data.last_operation`. No failure is `null`, which does
-not prove every subsystem is healthy. Existing or disabled builds return
+completed operation in `data.last_operation`. Inspect `data.failure_error` too:
+`failure:null` with `failure_error:null` means no retained failure, which does not
+prove every subsystem is healthy. A rejected retained failure instead returns
+`failure:null` and its structured `failure_error`, while independently validated
+current/last ownership remains available. Existing or disabled builds return
 `unavailable` or `disabled`, not invented empty state.
 
 ## Automatic local failure file
@@ -102,6 +105,15 @@ For a synthetic `original_target` rejection, inspect these fields together:
 | `operation.id`, `operation.stage`, `operation.owns_storage` | Save/load operation ownership when captured; not a completion percentage |
 | `owner_chain`, `owner_chain_truncated` | At most eight schema frames that led to this field |
 
+The raw scalar throw fields (`speed`, `range`, `dist_travelled`, `throwmode`,
+`throw_speed`, `throw_range`) preserve JSON `null` as unknown, separately from
+numeric zero. On this source's base `/atom/movable`, the first four default to 0,
+`throw_speed` to 2 and `throw_range` to 7. Subtypes can override defaults and
+runtime/imported state can differ. The reader does not manufacture defaults;
+strings, booleans, containers and nonfinite values in these scalar slots reject
+the failure evidence. The separate `throwing` flag is the producer's normalized
+boolean observation.
+
 `duplicate_durable_entry` additionally reports `first_z`, `first_entry` and
 `current_entry`. An invalid or absent frame reports `unavailable` or a missing
 source rather than inventing a field owner. `operation_failed` without a
@@ -138,6 +150,13 @@ also require capture-to-status tick/realtime differences in `0..600` and a
 matching active or last operation ID. `stale_snapshot`, `correlation_mismatch`,
 `partial_snapshot`, `schema_rejected`, `disabled`, `unavailable`, `invalid_input`
 and `transport_or_file_unavailable` are structured errors without raw exceptions.
+If only retained failure evidence is stale, mismatched, partial or malformed,
+status returns `ok:true` with valid current ownership and `data.failure_error`;
+it withholds the rejected capture and never rewrites its timestamp or identity.
+An invalid/stale current status header or invalid current operation still rejects
+the entire read. Whole-packet framing, valid-JSON, size and credential-safety
+checks also remain strict before partitioning. Default offline `--input` inspection has no independent current
+status and continues to reject an invalid or stale capture as a command error.
 UTC freshness assumes a trustworthy local clock. A frozen game clock, matching
 round or identical type/coordinates does not prove current object identity.
 
@@ -174,16 +193,19 @@ not export this private failure schema.
 <python> -B tests/nomads_lifecycle/prepare_variable_probe.py --output <new-temporary-packet-directory>
 ```
 
-The offline tests exercise the actual Python reader with synthetic packets,
+The offline tests exercise the actual Python reader with synthetic packets and
+scalar defaults read from the production movable declaration,
 source guard omission controls, redaction, stale/reused-ref refusal, deleted/cycle/
 depth markers, throw states, operation failures and bounded output. Preparation
-copies the production collector and trim helpers with source hashes and declares
+copies the production collector, named base movable declarations and trim helpers
+with source hashes and declares
 `native_verified:false`. It does not compile or run BYOND. The native collector
 probe has minimal data/auth adapters and is not full serializer/transport evidence.
 
-Native BYOND 516.1681 compilation, collector execution, filesystem behavior,
-authenticated Topic integration, actual engine deletion/cycle behavior, complete
-save/load round trips and full-game performance have **not been run for this
-change**. They remain acceptance work after explicit authorization. Existing CI
-is separate evidence if it runs; do not relabel source tests as native acceptance.
+Native collector execution, filesystem behavior, authenticated Topic integration,
+actual engine deletion/cycle behavior, complete save/load round trips and full-game
+performance have **not been run for this change**. They remain acceptance work
+after explicit authorization. Full-game BYOND 516.1681 compilation in CI is
+separate, exact-head evidence; a passing build does not establish collector
+execution or validate a later head. Do not relabel source tests as native acceptance.
 No live world, save, native client or OpenDream process was used to develop this.

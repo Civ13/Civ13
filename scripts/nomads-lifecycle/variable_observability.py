@@ -107,7 +107,9 @@ def object_state(value, *, frame=False):
         throw = value['throw']
         result['throw'] = dict(throwing=flag(throw['throwing']))
         for key in ('throwmode', 'speed', 'range', 'dist_travelled', 'throw_speed', 'throw_range'):
-            result['throw'][key] = number(throw[key], minimum=-1e16)
+            # Raw runtime fields can be null (including imported state). Do not
+            # silently reinterpret an unknown value as a measured zero.
+            result['throw'][key] = None if throw[key] is None else number(throw[key], minimum=-1e16)
         for key in ('original_target', 'thrower', 'throw_source'):
             result['throw'][key] = identity(throw[key])
     if frame:
@@ -211,14 +213,23 @@ def inspect(value, revision, session, round_id, *, now=None, status=True, histor
     result['operation'] = operation(value['operation'])
     result['last_operation'] = operation(value['last_operation'])
     result['failure'] = None
+    result['failure_error'] = None
     if value['failure'] is not None:
-        result['failure'] = failure(value['failure'], revision, session, round_id, now)
-        old = result['failure']
-        if not 0 <= result['tick'] - old['tick'] <= 600 or not 0 <= result['realtime'] - old['realtime'] <= 600:
-            reject('stale_snapshot')
-        owner = result['operation'] or result['last_operation']
-        if not owner or owner['id'] != old['operation']['id']:
-            reject('correlation_mismatch')
+        # Current ownership has its own fresh, correlated header. An old or
+        # rejected retained record must not hide that independently valid state.
+        try:
+            old = failure(value['failure'], revision, session, round_id, now)
+            if not 0 <= result['tick'] - old['tick'] <= 600 or not 0 <= result['realtime'] - old['realtime'] <= 600:
+                reject('stale_snapshot')
+            owner = result['operation'] or result['last_operation']
+            if not owner or owner['id'] != old['operation']['id']:
+                reject('correlation_mismatch')
+        except Rejected as error:
+            result['failure_error'] = str(error)
+        except (ValueError, KeyError, TypeError, OverflowError, AttributeError, RecursionError):
+            result['failure_error'] = 'schema_rejected'
+        else:
+            result['failure'] = old
     return result
 
 

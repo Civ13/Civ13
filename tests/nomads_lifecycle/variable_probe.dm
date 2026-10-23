@@ -5,17 +5,7 @@
 /datum
 	var/gc_destroyed
 	var/gcDestroyed = 0
-/atom/movable
-	var/throwing = FALSE
-	var/throwmode = 0
-	var/speed = 0
-	var/range = 7
-	var/dist_travelled = 0
-	var/throw_speed = 2
-	var/throw_range = 7
-	var/atom/original_target
-	var/atom/thrower
-	var/turf/throw_source
+#include "movable_defaults.dm"
 /datum/persistence_world_operation
 	var/kind = "save"
 	var/map_storage/storage

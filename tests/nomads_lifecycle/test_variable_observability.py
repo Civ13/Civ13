@@ -37,11 +37,32 @@ def registry(present=False):
                 complete=True, membership='present' if present else 'absent')
 
 
+THROW_SCALARS = ('throwmode', 'speed', 'range', 'dist_travelled', 'throw_speed', 'throw_range')
+
+
+def production_throw_defaults():
+    source = (ROOT / 'code/game/atoms_movable.dm').read_text()
+    block = source.split('/atom/movable\n', 1)[1].split('/atom/movable/New()', 1)[0]
+    defaults = {}
+    for line in block.splitlines():
+        line = line.split('//', 1)[0].strip()
+        if not line.startswith('var/'):
+            continue
+        declaration, assignment, expression = line.partition('=')
+        key = declaration.strip().rsplit('/', 1)[-1]
+        if key not in (*THROW_SCALARS, 'throwing'):
+            continue
+        expression = expression.strip() if assignment else 'null'
+        defaults[key] = {'TRUE': 1, 'FALSE': 0}[expression] if expression in ('TRUE', 'FALSE') else json.loads(expression)
+    if set(defaults) != {*THROW_SCALARS, 'throwing'}:
+        raise AssertionError('Production throw field declarations changed')
+    return defaults
+
+
 def obj(z=1, frame=False):
     value = identity(z=z)
     value.update(thrown_list=registry(), processing_objects=registry(),
-                 throw=dict(throwing=False, throwmode=0, speed=0, range=7, dist_travelled=0,
-                            throw_speed=2, throw_range=7, original_target=identity(z=2),
+                 throw=dict(**production_throw_defaults(), original_target=identity(z=2),
                             thrower=identity(False), throw_source=identity(False)))
     if frame:
         value.update(field='original_target', entry=3)
@@ -88,6 +109,29 @@ class Reader(unittest.TestCase):
         self.assertEqual(value['identity_validity'], 'capture_only')
         self.assertEqual(value['live_resolution'], 'unsupported')
 
+    def test_reader_accepts_actual_production_base_throw_defaults(self):
+        defaults = production_throw_defaults()
+        self.assertEqual(defaults, dict(throwing=0, throwmode=0, speed=0, range=0,
+                                       dist_travelled=0, throw_speed=2, throw_range=7))
+        observed = self.inspect(status())['failure']['source']['throw']
+        self.assertEqual({key: observed[key] for key in defaults}, defaults)
+
+    def test_nullable_raw_throw_fields_preserve_unknown_separately_from_zero(self):
+        producer = (ROOT / 'code/modules/persistence/variable_observability.dm').read_text()
+        loader = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+        self.assertIn('object.vars[v] = null', loader)
+        for key in THROW_SCALARS:
+            self.assertIn(f'"{key}" = M.{key}', producer)
+            with self.subTest(field=key):
+                value = obj()
+                value['throw'][key] = None
+                self.assertIsNone(m.object_state(value)['throw'][key])
+                value['throw'][key] = 0
+                self.assertEqual(m.object_state(value)['throw'][key], 0)
+                for invalid in ('null', {}, [], True, float('inf')):
+                    value['throw'][key] = invalid
+                    with self.assertRaises(m.Rejected): m.object_state(value)
+
     def test_active_inactive_and_unknown_throw_membership_remain_distinct(self):
         for throwing, member in ((False, False), (False, True), (True, True), (True, False)):
             value = status()
@@ -119,23 +163,60 @@ class Reader(unittest.TestCase):
         self.assertFalse(self.inspect(value)['failure']['target']['present'])
         # A reused native ref cannot refresh an old capture. It is never located.
         value['failure']['utc'] = '2026-10-23 03:58:59'
+        self.assertEqual(self.inspect(value)['failure_error'], 'stale_snapshot')
         with self.assertRaisesRegex(m.Rejected, 'stale_snapshot'):
-            self.inspect(value)
+            self.inspect(value['failure'], status=False)
 
     def test_build_boot_round_operation_and_clock_changes_reject(self):
         for field, change in (('revision', 'd' * 40), ('session', 'd' * 32), ('round_id', 'new-round')):
             for where in ('status', 'failure'):
                 value = status()
                 (value if where == 'status' else value['failure'])[field] = change
-                with self.subTest(field=field, where=where), self.assertRaisesRegex(m.Rejected, 'correlation_mismatch'):
-                    self.inspect(value)
+                with self.subTest(field=field, where=where):
+                    if where == 'status':
+                        with self.assertRaisesRegex(m.Rejected, 'correlation_mismatch'):
+                            self.inspect(value)
+                    else:
+                        self.assertEqual(self.inspect(value)['failure_error'], 'correlation_mismatch')
         for change in ('operation', 'tick', 'realtime', 'future'):
             value = status()
             if change == 'operation': value['last_operation']['id'] = 'operation-2'
             elif change == 'future': value['utc'] = '2026-10-23 04:00:01'
             else: value[change] += 601
-            with self.subTest(change=change), self.assertRaises(m.Rejected):
-                self.inspect(value)
+            with self.subTest(change=change):
+                if change == 'future':
+                    with self.assertRaisesRegex(m.Rejected, 'stale_snapshot'):
+                        self.inspect(value)
+                else:
+                    self.assertIn(self.inspect(value)['failure_error'], ('stale_snapshot', 'correlation_mismatch'))
+
+    def test_rejected_retained_failure_does_not_hide_current_ownership(self):
+        for rejected, expected in (('utc', 'stale_snapshot'), ('tick', 'stale_snapshot'),
+                                   ('operation', 'correlation_mismatch'), ('partial', 'partial_snapshot'),
+                                   ('malformed', 'schema_rejected')):
+            value = status()
+            value['operation'] = operation()
+            value['operation']['kind'] = 'load'
+            value['operation']['id'] = 'operation-2'
+            if rejected == 'utc': value['failure']['utc'] = '2026-10-22 04:00:00'
+            elif rejected == 'tick': value['tick'] += 601
+            elif rejected == 'partial': value['failure']['partial'] = True
+            elif rejected == 'malformed': value['failure'] = dict(partial=False)
+            original = copy.deepcopy(value)
+            with self.subTest(rejected=rejected):
+                result = self.inspect(value)
+                self.assertEqual(result['operation'], m.operation(original['operation']))
+                self.assertEqual(result['last_operation'], m.operation(original['last_operation']))
+                self.assertEqual(result['failure_error'], expected)
+                self.assertIsNone(result['failure'])
+                self.assertEqual(value, original, 'inspection refreshed or changed retained evidence')
+        self.assertIsNone(self.inspect(status())['failure_error'])
+        invalid_current = status()
+        invalid_current['operation'] = operation()
+        invalid_current['operation']['id'] = 'invalid-current-owner'
+        invalid_current['failure']['utc'] = '2026-10-22 04:00:00'
+        with self.assertRaisesRegex(m.Rejected, 'schema_rejected'):
+            self.inspect(invalid_current)
 
     def test_failed_save_load_without_reference_context(self):
         for kind in ('save', 'load'):
@@ -206,7 +287,10 @@ class Reader(unittest.TestCase):
         value = status(); value['failure']['source']['field'] = 'secret bad field'; variants.append(value)
         value = status(); value['failure']['target']['thrown_list']['scanned'] = 257; variants.append(value)
         for value in variants:
-            with self.assertRaises(m.Rejected): self.inspect(value)
+            result = self.inspect(value)
+            self.assertIn(result['failure_error'], ('partial_snapshot', 'schema_rejected', 'correlation_mismatch'))
+            self.assertIsNone(result['failure'])
+            with self.assertRaises(m.Rejected): self.inspect(value['failure'], status=False)
 
     def test_one_existing_status_query_offline_file_and_sanitized_errors(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -223,6 +307,12 @@ class Reader(unittest.TestCase):
             args = dict(revision=REVISION, session=SESSION, round_id=ROUND, now=NOW)
             self.assertTrue(m.run(root=root, transport=transport, **args)['ok'])
             self.assertEqual(len(calls), 1)
+            response['debug']['variables']['failure']['utc'] = '2026-10-22 04:00:00'
+            observed = m.run(root=root, transport=transport, **args)
+            self.assertTrue(observed['ok'])
+            self.assertEqual(observed['data']['failure_error'], 'stale_snapshot')
+            self.assertIsNone(observed['data']['failure'])
+            self.assertEqual(observed['data']['last_operation']['id'], 'operation-1')
             path = root / 'failure.json'
             path.write_text(json.dumps(failure()))
             self.assertTrue(m.run(input_path=path, **args)['ok'])
@@ -312,6 +402,11 @@ class ProducerSource(unittest.TestCase):
             self.assertEqual((output / 'variable_observability.dm').read_bytes(),
                              (ROOT / 'code/modules/persistence/variable_observability.dm').read_bytes())
             self.assertIn('/proc/trim(text)', (output / 'trim.dm').read_text())
+            defaults = (output / 'movable_defaults.dm').read_text()
+            self.assertIn('\tvar/range = 0', defaults)
+            self.assertIn('code\\game\\atoms_movable.dm' if sys.platform == 'win32' else 'code/game/atoms_movable.dm', receipt['source_sha256'])
+            for key in (*THROW_SCALARS, 'throwing'):
+                self.assertIn(f'\tvar/{key} = ', defaults)
             self.assertIn('OpenPort("none")', (output / 'probe.dm').read_text())
             self.assertIn('return FALSE', (output / 'probe.dm').read_text())
 
