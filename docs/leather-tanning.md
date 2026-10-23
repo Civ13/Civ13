@@ -38,6 +38,10 @@ catalog) and its Resource Processing research requirement where research applies
 Water and appropriate vessels retain their existing acquisition routes; the
 change does not add free supplies or bypass a map's crafting gates.
 
+The [Crafting Atlas](crafting-atlas.md#leather-processing) includes all stages,
+paid quantities, bark/tannin acquisition and existing leather/fur uses. The rack's
+**Processing Reference** opens its drying route and links to rack construction.
+
 ## Accounting and saves
 
 Each stack unit is one eventual leather sheet. New mammalian raw-hide output is
@@ -96,3 +100,16 @@ BYOND compilation, fixture execution, production save round trips, and graphical
 gameplay acceptance are explicitly **not run** while resource review is held.
 The draft PR uses `[skip ci]` to respect the no-compilation instruction. No live
 Gaia process, settings, saves, or canonical checkout files are changed.
+
+Atlas checks run without BYOND:
+
+```powershell
+& '<verified-python-executable>' -B -m unittest discover -s tests -p '*atlas*.py' -v
+node tests/crafting_atlas/navigation.test.mjs
+node tests/crafting_atlas/tanning.test.mjs
+```
+
+The catalog checks verify prices and source drift, mandatory intermediate stages,
+turkey eligibility, fur/finished-leather continuity, resource acquisition links and
+the rack construction research tier. The DOM checks exercise production website
+navigation; they do not prove image exports, browser appearance or native clients.

@@ -22,6 +22,12 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	set src in view(1)
 	crafting_atlas_reference.show(usr, processor = "grain_mill")
 
+/obj/structure/converter/tanning/verb/processing_reference()
+	set name = "Processing Reference"
+	set category = "IC"
+	set src in view(1)
+	crafting_atlas_reference.show(usr, processor = "tanning_rack")
+
 /datum/crafting_atlas_reference
 	var/list/catalog
 	var/list/recipes
@@ -146,7 +152,7 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	var/controls = "<form action='byond://?' method='get'><input type='hidden' name='src' value='\ref[src]'><input type='hidden' name='atlas_open' value='1'><input name='atlas_query' maxlength='64' value='[query_html]' aria-label='Search'><select name='atlas_era' aria-label='Unlock era'><option value=''>All unlock eras</option>"
 	for (var/i in 1 to era_names.len)
 		controls += "<option value='[i-1]'[era == "[i-1]" ? " selected" : ""]>[era_names[i]]</option>"
-	controls += "<option value='multiple'[era == "multiple" ? " selected" : ""]>Multiple eras</option><option value='unknown'[era == "unknown" ? " selected" : ""]>Unknown / context dependent</option></select><select name='atlas_processor' aria-label='Processor'><option value=''>All processors and recipes</option><option value='sawmill'[processor == "sawmill" ? " selected" : ""]>Sawmills</option><option value='grain_mill'[processor == "grain_mill" ? " selected" : ""]>Grain mills</option></select><input type='submit' value='Filter'></form>"
+	controls += "<option value='multiple'[era == "multiple" ? " selected" : ""]>Multiple eras</option><option value='unknown'[era == "unknown" ? " selected" : ""]>Unknown / context dependent</option></select><select name='atlas_processor' aria-label='Processor'><option value=''>All processors and recipes</option><option value='sawmill'[processor == "sawmill" ? " selected" : ""]>Sawmills</option><option value='grain_mill'[processor == "grain_mill" ? " selected" : ""]>Grain mills</option><option value='tanning_rack'[processor == "tanning_rack" ? " selected" : ""]>Tanning racks</option></select><input type='submit' value='Filter'></form>"
 	var/diagram = "<p>No matching recipes. Clear filters or search for an ingredient.</p>"
 	if (selected)
 		var/list/inputs = list()

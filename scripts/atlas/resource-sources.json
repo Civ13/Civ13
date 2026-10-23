@@ -14341,8 +14341,8 @@
     {
       "name": "Butcher large mammals",
       "file": "code/modules/1713/animal_harvest.dm",
-      "line": 148,
-      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "line": 156,
+      "source_commit": "02449628a1359c709f3fd298f4d3468902c6b161",
       "inputs": [
         "/mob/living/simple_animal"
       ],
@@ -14350,7 +14350,7 @@
         "/obj/item/weapon/reagent_containers/food/snacks/meat",
         "/obj/item/stack/sinew",
         "/obj/item/stack/material/bone",
-        "/obj/item/stack/material/leather",
+        "/obj/item/stack/material/rawhide",
         "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/heart",
         "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/liver",
         "/obj/item/weapon/reagent_containers/food/snacks/meat/offal/kidneys",
@@ -14363,9 +14363,9 @@
       ],
       "steps": [
         "Place a dead eligible mammal corpse on a turf. Use a sharp held tool and choose butcher.",
-        "Remain adjacent until harvesting finishes. Collect meat, organs, bones, sinew and leather according to species and size."
+        "Remain adjacent until harvesting finishes. Collect meat, organs, bones, sinew and untanned raw hides according to species and size."
       ],
-      "conditions": "Only harvest_mammal-listed species; size >= 3 required for sinew and named organs. Pig species yield pig legs instead of ordinary meat; chicken, crab and poisonous frog have separate products. Corpse can be claimed only once; zombie meat is unsafe.",
+      "conditions": "Only harvest_mammal-listed species; size >= 3 required for sinew and named organs. Pig species yield pig legs instead of ordinary meat; chicken, crab and poisonous frog have separate products. Corpse can be claimed only once; zombie meat is unsafe. Raw hides yield min(6, max(1, butcher_yield() - 2)); finished leather requires scraping, washing, rack drying and tannin.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
