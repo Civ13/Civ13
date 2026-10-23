@@ -73,6 +73,46 @@ in generated-source controls; production files are never mutated by the tests.
 The feature branch is a sparse source checkout. It is not a second runtime
 installation and contains no hosted server or compiled game artifacts.
 
+## Transient throw target follow-up
+
+`test_throw_target.py` executes the production runtime policy, changed-variable
+selection and complete throw completion body through explicit engine adapters.
+It covers a stale foreign target, preserved amount/location, unchanged active
+throw state, inherited exclusions, and impact/Entered callbacks setting a newer
+target. Loader source checks verify that the runtime gate precedes both historical
+decoding branches; these are not native disk-import results.
+
+`prepare_throw_target.py --prepare-only` stages the real serializer/loader and
+complete throw procedures in the existing 3x2x2 isolated world. The prospective
+disk fixture exports a 731-unit marble stack, injects an invalid historical target
+envelope, checks both typed and flat historical imports, saves/loads the roofbuilder
+independently, and checks active export plus reentrant target preservation. Stack
+type declarations and rendering/impact effects are minimal adapters; full material
+constructors and gameplay are not exercised. Preparation has no native launch mode.
+Native compilation/runtime remain unrun while live recovery is in progress.
+
+Saving automatically omits the known process-local `original_target` field through
+the existing `persistence_runtime_var` policy, on export and historical import.
+The bug is the retained throwing pointer, not the roofbuilder it references. Saving
+does not clear that live pointer, interrupt an active throw, change stack amounts
+or locations, or delete the target; the roofbuilder remains independently saved.
+Only normal throw completion clears its old pointer before callbacks can start a
+newer throw.
+
+This is a field-specific policy, not generic repair by deleting relationships.
+Valid saved relationships still reach the serializer. Unknown or authoritative
+cross-level links remain selected and fail the existing integrity check, with a
+bounded `last_save_reference_failure` diagnostic and no completed-save marker.
+They require diagnosis rather than silent data loss. Offline tests exercise
+changed-field selection and pin the rejection/diagnostic source ordering. The
+prospective native fixture also contains same-level relationship alias round trips
+and an actual full-save rejection/cleanup case for an unknown foreign relationship;
+these disk and failed-save cases have been prepared but have not run.
+
+The repair excludes only `original_target`; cross-level validation remains active.
+Target cleanup runs before callbacks. Existing later throw bookkeeping is unchanged;
+this follow-up does not establish general reentrant throw scheduling correctness.
+
 The current local revision also guards remote wand-bench ejection, inventory
 slot assignment/refusal results, post-prompt construction, camel pack removal,
 vehicle cargo installation/removal, tank autoloader selection/unloading and
