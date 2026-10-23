@@ -760,7 +760,10 @@ runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.p
 is offline evidence; `tanning_probe.dm` requires separate native acceptance.
 
 Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
-not stage stacks through a turf. Production `stack/Crossed` merges floor pieces
+not stage stacks through a turf. Legacy human `drop_from_inventory` overrides
+discard the parent's return: a null result can follow a successful floor drop.
+Use the production human subtype in transfer tests, not just a `/mob/living` stub.
+Production `stack/Crossed` merges floor pieces
 into the arriving stack; clear hand/HUD ownership only after destination admission,
 check actual location, and restore the hand on rejection/redirect. Keep nodrop and
 persistence movement checks. [Rack transfer regressions](tests/animal_harvest/rack_transfer_probe.dm) cover

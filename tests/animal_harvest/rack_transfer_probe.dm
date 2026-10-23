@@ -20,18 +20,20 @@
 /proc/tanning_rack_transfer_regressions(turf/site)
 	var/mob/living/human/rack_transfer_tester/worker = new(site)
 	var/turf/rack_site = locate(4,3,1)
-	// The old ordinary transfer succeeds on a clear floor in this fixture.
+	// Human drop overrides discard the parent result: old rack code stops here.
 	var/obj/structure/converter/tanning/clear_rack = new(rack_site)
 	var/obj/item/stack/material/wethide/clear_batch = new(worker, 3, FALSE)
 	worker.r_hand = clear_batch
-	harvest_assert(worker.drop_from_inventory(clear_batch) && clear_batch.forceMove(clear_rack) && clear_batch.loc == clear_rack, "Clear-floor legacy human transfer failed")
+	var/drop_result = worker.drop_from_inventory(clear_batch)
+	harvest_assert(!drop_result && clear_batch.loc == site && !worker.item_is_in_hands(clear_batch), "Legacy human drop did not reproduce false result after floor drop")
+	harvest_assert(clear_batch.forceMove(clear_rack) && clear_batch.loc == clear_rack, "Storage transfer after human drop failed")
 	qdel(clear_batch)
 	qdel(clear_rack)
 	// Source control: old floor staging changes the held batch via real Crossed().
 	var/obj/item/stack/material/wethide/floor_hide = new(site, 2, FALSE)
 	var/obj/item/stack/material/wethide/held = new(worker, 3, FALSE)
 	worker.r_hand = held
-	harvest_assert(worker.drop_from_inventory(held), "Production floor-drop control failed")
+	worker.drop_from_inventory(held)
 	harvest_assert(held.amount == 5 && QDELETED(floor_hide), "Floor-drop control did not reproduce Crossed batch contamination")
 	qdel(held)
 	// Adjacent and same-tile racks, both hands, occupied/full floor stacks.
@@ -63,7 +65,8 @@
 	// Old sequence loses inventory ownership before destination rejection.
 	var/obj/item/stack/material/wethide/rack_blocked/blocked = new(worker, 4, FALSE)
 	worker.r_hand = blocked
-	harvest_assert(worker.drop_from_inventory(blocked) && !blocked.forceMove(rack) && blocked.loc == site, "Legacy rejected-transfer control did not reproduce floor stranding")
+	worker.drop_from_inventory(blocked)
+	harvest_assert(!blocked.forceMove(rack) && blocked.loc == site, "Legacy rejected-transfer control did not reproduce floor stranding")
 	blocked.forceMove(worker)
 	worker.r_hand = blocked
 	blocked.resolve_attackby(rack, worker)
