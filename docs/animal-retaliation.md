@@ -64,18 +64,28 @@ records the source commit plus working-tree diff without launching native tools.
 The runner also runs the offline source tests. Its existing registered CI suite
 is selected on a PR introducing `retaliation.dm`/`test_retaliation.py`.
 
-When native execution is scheduled, use the existing runner with BYOND 516.1681:
+To reproduce the native checks, use the existing runner with BYOND 516.1681:
 `run.py --byond-bin <516.1681-bin>`. The 8x8x1 synthetic plating fixture checks
 production hand/item provocation, actual knockdown and active-hand drop, nodrop,
 single incoming damage/wear, zero retaliation damage, both cooldowns and their
 expiry, herd protection, invalid targets, adult/juvenile coverage, noncombat
 dispatch and unaffected animals. The existing health/duplicate-hit controls
 remain available. Source preparation does not establish native acceptance.
-The first remote run on `54a273d` compiled with zero errors/warnings, then failed
-the feeding assertion because the fixture ram was already full. The fixture now
-sets its hunger before feeding; the failed verdict is preserved in CI run
-`39992944285`. That correction needs a fresh native result. Local native and
-connected-client execution remain deferred for the prioritized tanning work.
+
+[CI run 39993427940](https://github.com/Civ13/Civ13/actions/runs/39993427940)
+passed on `88d013f63ff719d51f44f701ccd9251767000d0a`: BYOND 516.1681 game and
+fixture compilation produced zero errors and zero warnings; the native fixture
+passed the retaliation checks above and all four existing health, chick,
+duplicate and Kenobi negative controls were detected as expected. The actor's
+strength coefficient and animation are adapted in this headless fixture.
+
+The earlier [CI run 39992944285](https://github.com/Civ13/Civ13/actions/runs/39992944285)
+on `54a273d50b4ef23b27a73d8b5a1c3d50c682f068` compiled cleanly but failed the
+feeding assertion because the fixture ram was already full. That failed verdict
+is preserved; `88d013f` sets hunger before feeding and is the passed native
+result above. Local native execution stayed deferred for the prioritized tanning
+work. The runner logs an initial network port before closing it; no zero-listener
+census or stronger isolation acceptance is claimed.
 
 For a later authorized isolated client check, place an adult ram beside an awake
 human with a removable item held. Pet it, then use harm/disarm/grab intent or a
