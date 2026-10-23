@@ -73,7 +73,7 @@
 
 /obj/item/stack/material/hairlesshide/update_strings()
 	..()
-	desc = "A scraped hide. Apply an open vessel containing at least 5 units of water to wash one piece."
+	desc = "A scraped hide. Apply an open liquid container with 5 water, or hold this hide and use it on a nearby accessible vessel, to wash one piece."
 
 /obj/item/stack/material/wethide
 	name = "wet hide"
@@ -97,12 +97,19 @@
 
 /obj/item/stack/material/dryhide/update_strings()
 	..()
-	desc = "A dried hide. Apply an open vessel containing at least 5 units of bark tannin to tan one piece into leather."
+	desc = "A dried hide. Use an open liquid container with 5 bark tannin to tan one piece. For a nearby stationary vessel, hold this hide and click the vessel."
 
-/proc/hide_liquid_valid(mob/living/user, obj/item/source, obj/item/weapon/reagent_containers/glass/vessel, reagent_id, cost)
-	return hide_worker_can_reach(user, source) && !QDELETED(vessel) && vessel.loc == user && user.item_is_in_hands(vessel) && vessel.is_open_container() && vessel.reagents && vessel.reagents.has_reagent(reagent_id, cost)
+/obj/proc/tanning_liquid_accessible()
+	return is_open_container()
 
-/obj/item/stack/material/proc/apply_hide_liquid(mob/living/user, obj/item/weapon/reagent_containers/glass/vessel, reagent_id, output_type)
+// Barrels expose a controlled spout rather than OPENCONTAINER. Never bypass locks.
+/obj/structure/reagent_dispensers/tanning_liquid_accessible()
+	return !locked
+
+/proc/hide_liquid_valid(mob/living/user, obj/item/source, obj/vessel, reagent_id, cost)
+	return hide_worker_can_reach(user, source) && !QDELETED(vessel) && vessel.tanning_liquid_accessible() && ((vessel.loc == user && user.item_is_in_hands(vessel)) || (isturf(vessel.loc) && user.Adjacent(vessel) && source.loc == user && user.item_is_in_hands(source))) && vessel.reagents && vessel.reagents.has_reagent(reagent_id, cost)
+
+/obj/item/stack/material/proc/apply_hide_liquid(mob/living/user, obj/vessel, reagent_id, output_type)
 	// Explicit paid interactions avoid touch_obj's whole-holder-volume semantics.
 	if (!istype(vessel) || amount < 1 || !hide_liquid_valid(user, src, vessel, reagent_id, 5))
 		return FALSE
@@ -113,23 +120,33 @@
 	new output_type(site, 1)
 	return TRUE
 
-/obj/item/stack/material/hairlesshide/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/reagent_containers/glass))
+/obj/item/stack/material/hairlesshide/attackby(obj/W, mob/user)
+	if (W.reagents)
 		if (!apply_hide_liquid(user, W, "water", /obj/item/stack/material/wethide))
-			to_chat(user, SPAN_WARNING("Hold an open vessel with at least 5 units of water."))
+			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 5 units of water. Hold the hide when using a vessel on the ground."))
 		return TRUE
 	return ..()
 
-/obj/item/stack/material/dryhide/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/reagent_containers/glass))
+/obj/item/stack/material/hairlesshide/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
+	if (isobj(A) && A.reagents)
+		return attackby(A, user) // Resolve before pot insertion, pouring or splashing.
+	return ..()
+
+/obj/item/stack/material/dryhide/attackby(obj/W, mob/user)
+	if (W.reagents)
 		if (!apply_hide_liquid(user, W, "tannin", /obj/item/stack/material/leather))
-			to_chat(user, SPAN_WARNING("Hold an open vessel with at least 5 units of tannin."))
+			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 5 units of tannin. Hold the hide when using a vessel on the ground."))
 		return TRUE
+	return ..()
+
+/obj/item/stack/material/dryhide/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
+	if (isobj(A) && A.reagents)
+		return attackby(A, user)
 	return ..()
 
 /obj/item/stack/bark
 	name = "tree bark"
-	desc = "Bark from cutting logs into planks. Apply an open vessel with 10 units of water to extract 10 units of tanning solution from one piece."
+	desc = "Bark from cutting logs into planks. Use an open liquid container with 10 water to extract 10 tannin from one piece. For a nearby stationary vessel, hold the bark and click the vessel."
 	icon = 'icons/obj/bark.dmi'
 	icon_state = "bark"
 	singular_name = "piece of bark"
@@ -138,11 +155,11 @@
 	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE
 
-/obj/item/stack/bark/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/reagent_containers/glass))
-		var/obj/item/weapon/reagent_containers/glass/vessel = W
+/obj/item/stack/bark/attackby(obj/W, mob/user)
+	if (W.reagents)
+		var/obj/vessel = W
 		if (amount < 1 || !hide_liquid_valid(user, src, vessel, "water", 10))
-			to_chat(user, SPAN_WARNING("Hold an open vessel with at least 10 units of water."))
+			to_chat(user, SPAN_WARNING("Use an accessible open vessel with at least 10 units of water. Hold the bark when using a vessel on the ground."))
 			return TRUE
 		if (!use(1))
 			return TRUE
@@ -151,6 +168,11 @@
 		vessel.reagents.add_reagent("tannin", 10)
 		to_chat(user, SPAN_NOTICE("You soak the bark to extract tannin."))
 		return TRUE
+	return ..()
+
+/obj/item/stack/bark/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
+	if (isobj(A) && A.reagents)
+		return attackby(A, user)
 	return ..()
 
 /datum/reagent/tannin
