@@ -241,11 +241,13 @@ var/list/slot_equipment_priority = list( \
 
 // Transfer a held item without staging it on the floor or using MOVED_DROP.
 /mob/living/proc/transfer_held_item_to(obj/item/I, atom/target)
-	if (QDELETED(I) || QDELETED(target) || I.loc != src || !item_is_in_hands(I) || I.nodrop || I.nodrop_special_check())
+	if (QDELETED(src) || QDELETED(I) || QDELETED(target) || I.loc != src || !item_is_in_hands(I) || I.nodrop || I.nodrop_special_check())
 		return FALSE
 	// Move before clearing ownership: admission failure must leave the hand intact.
 	// No intermediate turf: Crossed() can merge unrelated floor stacks into I.
 	var/moved = I.forceMove(target) && !QDELETED(I) && I.loc == target
+	if (QDELETED(src))
+		return FALSE
 	if (!moved && !QDELETED(I))
 		if (I.loc != src)
 			I.forceMove(src)

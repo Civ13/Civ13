@@ -20,6 +20,13 @@
 /proc/tanning_rack_transfer_regressions(turf/site)
 	var/mob/living/human/rack_transfer_tester/worker = new(site)
 	var/turf/rack_site = locate(4,3,1)
+	// The old ordinary transfer succeeds on a clear floor in this fixture.
+	var/obj/structure/converter/tanning/clear_rack = new(rack_site)
+	var/obj/item/stack/material/wethide/clear_batch = new(worker, 3, FALSE)
+	worker.r_hand = clear_batch
+	harvest_assert(worker.drop_from_inventory(clear_batch) && clear_batch.forceMove(clear_rack) && clear_batch.loc == clear_rack, "Clear-floor legacy human transfer failed")
+	qdel(clear_batch)
+	qdel(clear_rack)
 	// Source control: old floor staging changes the held batch via real Crossed().
 	var/obj/item/stack/material/wethide/floor_hide = new(site, 2, FALSE)
 	var/obj/item/stack/material/wethide/held = new(worker, 3, FALSE)

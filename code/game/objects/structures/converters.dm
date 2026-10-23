@@ -105,9 +105,12 @@
 			return TRUE
 		if (QDELETED(src) || QDELETED(hide))
 			return TRUE
-		if (loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
+		if (QDELETED(user) || loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
 			if (hide.loc == src)
-				user.put_in_hands(hide) // Normal inventory API falls back to a safe turf.
+				if (!QDELETED(user))
+					user.put_in_hands(hide) // Normal inventory API falls back to a safe turf.
+				else
+					hide.forceMove(site)
 			return TRUE
 		start_hide_drying(hide)
 		return TRUE
