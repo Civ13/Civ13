@@ -5,6 +5,28 @@
 ///PERSISTENCE STUFF/////////////
 /////////////////////////////////
 
+// age is the displayed epoch/date, not ordinal_age's technology tier. Only
+// recognized BC epochs and canonical numeric years can be ordered here.
+/obj/map_metadata/proc/apply_persistence_age_floor()
+	if (!persistence)
+		return
+	if (age != "5000 B.C." && age != "313 B.C.")
+		if (!istext(age))
+			return
+		var/year = text2num(age)
+		if (isnull(year) || "[year]" != age || year >= 1943)
+			return
+	age = "1943"
+	// Keep any independently advanced research tier. Mark the skipped epochs
+	// complete so legacy research cannot send the displayed date backward.
+	ordinal_age = max(ordinal_age, 6)
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
+	age5_done = TRUE
+	age6_done = TRUE
+
 //needs to be defined for some atoms
 /datum/proc/after_load()
 	return
@@ -498,6 +520,9 @@ var/global/persistence_load_recovery_required = FALSE
 		if(!map_storage.load_map_metadata())
 			throw EXCEPTION("Saved world metadata restoration failed")
 		map_storage.restore_durable_world()
+		// Both legacy metadata and durable fields are now authoritative. Apply
+		// the mode's minimum without replacing a later saved date or research.
+		map.apply_persistence_age_floor()
 		map_storage.restore_round_state(src, saved_round)
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 		// Client restoration can dispatch callbacks too. Keep this operation's

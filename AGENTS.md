@@ -400,6 +400,16 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-23: persistence minimum date -->
+Persistence activation, configured startup and completed metadata restoration use
+apply_persistence_age_floor(). age is the displayed date/epoch; ordinal_age is a
+separate research tier, and prototype research can advance it independently.
+The 1943 floor preserves later dates and research data; unknown epoch labels are
+not converted. tests/persistence_year checks source-derived offline traces;
+run-durable-world.py --persistence-year separately exercises the real helper,
+admin toggle, extracted configured activation and 24 v1/v2 ticker disk imports
+in an isolated 8x8x2 world. Its three controls must reach their named assertions.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as
