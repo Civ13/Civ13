@@ -199,7 +199,7 @@ class TanningSourceContracts(unittest.TestCase):
             for opened in (False,True):
                 site,user,item,tool = scenario()
                 vessel = NS(type='/obj/item/weapon/reagent_containers/glass', deleted=False,loc=user)
-                vessel.is_open_container = lambda: opened
+                vessel.tanning_liquid_accessible = lambda: opened
                 vessel.reagents = NS(has_reagent=lambda rid,cost: rid == 'water' and dose >= cost)
                 user.hands = [vessel]
                 context = {'user':user, 'source':item, 'vessel':vessel, 'reagent_id':'water', 'cost':5,
@@ -214,6 +214,37 @@ class TanningSourceContracts(unittest.TestCase):
         self.assertLess(bark.index('if (!use(1))'), bark.index('remove_reagent'))
         self.assertNotIn('/touch_obj', text)
         self.assertIn('id = "tannin"', block(text, '/datum/reagent/tannin'))
+
+    def test_generic_vessel_access_requires_hands_or_direct_reachable_ground(self):
+        text = source(LEATHER)
+        reach = predicate(text, '/proc/hide_worker_can_reach')
+        valid = predicate(text, '/proc/hide_liquid_valid')
+        self.assertNotIn('reagent_containers/glass', text)
+        for mode in ('held', 'ground', 'closed', 'locked', 'nested', 'other_actor', 'unheld_source', 'remote', 'empty', 'disconnected'):
+            site,user,item,tool = scenario()
+            item.loc = user
+            vessel = NS(type='/obj/arbitrary_future_container', deleted=False, loc=site)
+            vessel.tanning_liquid_accessible = lambda: mode not in ('closed', 'locked')
+            vessel.reagents = NS(has_reagent=lambda rid,cost: mode != 'empty')
+            user.hands = [item]
+            if mode == 'held':
+                vessel.loc = user
+                user.hands = [vessel]
+                item.loc = site
+            if mode in ('nested', 'other_actor'): vessel.loc = NS(type='/obj/storage')
+            if mode == 'unheld_source': user.hands = []
+            if mode == 'remote': user.Adjacent = lambda obj: obj is not vessel
+            if mode == 'disconnected': user.connected = False
+            context = {'user':user, 'source':item, 'vessel':vessel, 'reagent_id':'water', 'cost':5,
+                       'hide_worker_can_reach':lambda u,s:gate(reach,{'user':u,'source':s})}
+            self.assertEqual(bool(gate(valid, context)), mode in ('held', 'ground'), mode)
+        self.assertEqual(predicate(text, '/obj/proc/tanning_liquid_accessible'), 'is_open_container()')
+        self.assertEqual(predicate(text, '/obj/structure/reagent_dispensers/tanning_liquid_accessible'), '!locked')
+        self.assertEqual(predicate(text, '/obj/structure/pot/tanning_liquid_accessible'), 'is_open_container() && !meal_cooking && !meal_portions')
+        for stage in ('/obj/item/stack/bark', '/obj/item/stack/material/hairlesshide', '/obj/item/stack/material/dryhide'):
+            dispatch = block(text, stage + '/resolve_attackby')
+            self.assertIn('isobj(A) && A.reagents', dispatch)
+            self.assertIn('return attackby(A, user)', dispatch)
 
     def test_rack_accepts_only_wet_hide_not_inherited_lead_or_prepared_hide(self):
         def accepted(text):
