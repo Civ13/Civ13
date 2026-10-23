@@ -56,6 +56,16 @@ def git(*args):
                                    cwd=ROOT, timeout=30)
 
 
+def atlas_command(output):
+    # -I deliberately omits script-directory imports. Add only this reviewed
+    # repository scripts directory, rather than inheriting PYTHONPATH or HOME.
+    bootstrap = ('import pathlib,runpy,sys;'
+                 'sys.path.insert(0,str(pathlib.Path(sys.argv[1]).resolve().parent));'
+                 'sys.argv=sys.argv[1:];runpy.run_path(sys.argv[0],run_name="__main__")')
+    return [sys.executable,'-I','-B','-c',bootstrap,str(ROOT/'scripts/build-crafting-atlas.py'),
+            '--catalog-only','--game-catalog',str(output)]
+
+
 def tree_hashes(head):
     """Hash canonical Git blobs in bounded chunks, portable across checkout EOLs."""
     rows = git('ls-tree', '-rz', '--full-tree', head).split(b'\0')
@@ -106,12 +116,15 @@ def prepare(packet_dir, head, variant):
     # The normal CI bootstrap derives this public resource. Reproduce the same
     # deterministic output separately, never overwrite the source checkout.
     atlas = packet_dir/'expected-crafting-atlas.json'
-    subprocess.run([sys.executable, '-I', '-B', str(ROOT/'scripts/build-crafting-atlas.py'),
-                    '--catalog-only', '--game-catalog', str(atlas)], cwd=ROOT,
-                   capture_output=True, text=True, timeout=40, check=True)
+    atlas_result = subprocess.run(atlas_command(atlas), cwd=ROOT,capture_output=True,text=True,timeout=40)
+    (packet_dir/'atlas-preparation.stdout.log').write_text(atlas_result.stdout,encoding='utf-8')
+    (packet_dir/'atlas-preparation.stderr.log').write_text(atlas_result.stderr,encoding='utf-8')
+    need(atlas_result.returncode == 0, 'Public catalog preparation failed; retained logs explain the failure')
     atlas.write_text(atlas.read_text(encoding='utf-8'), encoding='utf-8', newline='\n')
     expected['UI/crafting-atlas.json'] = sha(atlas)
     prepared[atlas.name] = sha(atlas)
+    for name in ('atlas-preparation.stdout.log','atlas-preparation.stderr.log'):
+        prepared[name] = sha(packet_dir/name)
     request = dict(kind='review-only-synthetic-roof-request-v1', head=head, variant=variant,
         caller_sha256=expected[Path(__file__).relative_to(ROOT).as_posix()], prepared=prepared, prepared_directory=source.relative_to(packet_dir).as_posix(),
         source_sha256=expected, binary_sha256=ENGINE, port=PORT, caps=CAPS,
@@ -223,7 +236,7 @@ def run(output, byond, packet_dir, head, request_sha256):
         need(sha(argv[0]) == ENGINE[Path(argv[0]).name], 'Engine changed at creation')
         runtime = mode is not None; phase_start = time.monotonic()
         phase_end = min(work_end, phase_start + (CAPS['child_seconds'] if runtime else CAPS['compiler_seconds']))
-        row = dict(phase=label, samples=[], cleanup=None); receipt['children'].append(row)
+        row = dict(phase=label, argv=argv, cwd=str(cwd), samples=[], cleanup=None); receipt['children'].append(row)
         before_cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
         environment = output/'environment'; environment.mkdir(exist_ok=True)
         env = dict(PATH=str(byond)+':/usr/bin:/bin', LD_LIBRARY_PATH=str(byond), HOME=str(environment),

@@ -126,6 +126,16 @@ class RunnerTests(unittest.TestCase):
         expected = hashlib.sha256(runner.git('show',head+':'+name)).hexdigest()
         self.assertEqual(hashes[name],expected)
 
+    def test_public_catalog_preparer_keeps_isolation_and_resolves_only_reviewed_siblings(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)/'atlas.json'
+            command = runner.atlas_command(output)
+            self.assertEqual(command[1:3],['-I','-B'])
+            result = subprocess.run(command,cwd=runner.ROOT,capture_output=True,text=True,timeout=40)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.assertTrue(output.is_file())
+            self.assertIn('without starting gameplay',result.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()
