@@ -239,6 +239,33 @@ var/list/slot_equipment_priority = list( \
 		return TRUE
 	return FALSE
 
+// Transfer a held item without staging it on the floor or using MOVED_DROP.
+/mob/living/proc/transfer_held_item_to(obj/item/I, atom/target)
+	if (QDELETED(I) || QDELETED(target) || I.loc != src || !item_is_in_hands(I) || I.nodrop || I.nodrop_special_check())
+		return FALSE
+	// Move before clearing ownership: admission failure must leave the hand intact.
+	// No intermediate turf: Crossed() can merge unrelated floor stacks into I.
+	var/moved = I.forceMove(target) && !QDELETED(I) && I.loc == target
+	if (!moved && !QDELETED(I))
+		if (I.loc != src)
+			I.forceMove(src)
+		if (I.loc == src)
+			return FALSE
+	// Successful transfer, or an unrecoverable move/deletion: clear stale UI slots.
+	u_equip(I)
+	if (client)
+		client.screen -= I
+	if (!QDELETED(I))
+		I.layer = initial(I.layer)
+		I.plane = GAME_PLANE
+		I.screen_loc = null
+		if (I.scoped_invisible)
+			I.invisibility = 0
+			I.scoped_invisible = FALSE
+		I.dropped(src)
+	update_icons()
+	return moved && !QDELETED(I) && I.loc == target
+
 //removes all in a mob to the Target (or loc if no target). Ignores nodrop flags by default.
 /mob/proc/strip(var/atom/Target = null, var/ignore_nodrop = FALSE)
 	if (!Target)

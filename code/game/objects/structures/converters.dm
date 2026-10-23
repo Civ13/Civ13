@@ -97,13 +97,19 @@
 		var/obj/item/stack/material/wethide/hide = W
 		if (hide.amount < 1 || hide.amount > hide.max_amount)
 			return TRUE
-		// Preserve the actual stack, rather than consuming input into a timer.
-		// MOVED_DROP redirects container entry to its turf. Pay the ordinary
-		// inventory/nodrop checks first, then use a storage transfer event.
-		if (!user.drop_from_inventory(hide))
+		var/count = hide.amount
+		var/turf/site = loc
+		// Preserve the actual stack without exposing it to floor Crossed/merge hooks.
+		if (!user.transfer_held_item_to(hide, src))
+			to_chat(user, SPAN_WARNING("The hides could not be placed on the rack."))
 			return TRUE
-		if (!QDELETED(hide) && hide.forceMove(src) && hide.loc == src)
-			start_hide_drying(hide)
+		if (QDELETED(src) || QDELETED(hide))
+			return TRUE
+		if (loc != site || !user.Adjacent(src) || user.stat != CONSCIOUS || !user.hide_worker_connected() || contents.len != 1 || hide.loc != src || hide.amount != count)
+			if (hide.loc == src)
+				user.put_in_hands(hide) // Normal inventory API falls back to a safe turf.
+			return TRUE
+		start_hide_drying(hide)
 		return TRUE
 	if (istype(W, /obj/item/weapon/hammer) || istype(W, /obj/item/weapon/wrench))
 		return ..()

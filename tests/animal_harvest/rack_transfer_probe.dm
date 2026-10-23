@@ -1,0 +1,77 @@
+// Human startup/connection adapters only. Inventory, slot updates, movement,
+// Crossed/merge, rack admission and drying below use production code.
+/mob/living/human/rack_transfer_tester/New()
+	species = new /datum/species/human
+	body_build = new /datum/body_build
+
+/mob/living/human/rack_transfer_tester/hide_worker_connected()
+	return TRUE
+
+// Failure injection at the movement seam; not a claim about the live trigger.
+/obj/item/stack/material/wethide/rack_blocked/forceMove(atom/destination, special_event)
+	if (istype(destination, /obj/structure/converter/tanning))
+		return FALSE
+	return ..()
+
+/obj/structure/converter/tanning/rack_redirect/Entered(atom/movable/AM, atom/old_loc, special_event)
+	AM.forceMove(loc)
+	return CANCEL_MOVE_EVENT
+
+/proc/tanning_rack_transfer_regressions(turf/site)
+	var/mob/living/human/rack_transfer_tester/worker = new(site)
+	var/turf/rack_site = locate(4,3,1)
+	// Source control: old floor staging changes the held batch via real Crossed().
+	var/obj/item/stack/material/wethide/floor_hide = new(site, 2, FALSE)
+	var/obj/item/stack/material/wethide/held = new(worker, 3, FALSE)
+	worker.r_hand = held
+	harvest_assert(worker.drop_from_inventory(held), "Production floor-drop control failed")
+	harvest_assert(held.amount == 5 && QDELETED(floor_hide), "Floor-drop control did not reproduce Crossed batch contamination")
+	qdel(held)
+	// Adjacent and same-tile racks, both hands, occupied/full floor stacks.
+	for (var/same_tile in list(FALSE, TRUE))
+		for (var/left_hand in list(FALSE, TRUE))
+			for (var/floor_count in list(2, 49, 50))
+				var/obj/structure/converter/tanning/rack = new(same_tile ? site : rack_site)
+				floor_hide = new(site, floor_count, FALSE)
+				held = new(worker, 3, FALSE)
+				if (left_hand)
+					worker.l_hand = held
+				else
+					worker.r_hand = held
+				harvest_assert(held.resolve_attackby(rack, worker), "Rack click did not resolve")
+				harvest_assert(held.loc == rack && held.amount == 3 && rack.filled && !worker.item_is_in_hands(held), "Rack did not own exact held batch")
+				harvest_assert(!QDELETED(floor_hide) && floor_hide.loc == site && floor_hide.amount == floor_count, "Rack touched unrelated floor hides")
+				harvest_assert(rack.finish_hide_drying(held, 3, rack.drying_epoch, get_turf(rack)) && tanning_amount(rack, /obj/item/stack/material/dryhide) == 3, "Transferred batch lost drying yield")
+				qdel(rack)
+				harvest_clear(rack_site)
+				harvest_clear(site)
+	// An actual storage bag is not a held wet-hide stack; never empty it implicitly.
+	var/obj/item/weapon/storage/backpack/bag = new(worker)
+	worker.r_hand = bag
+	held = new(bag, 3, FALSE)
+	var/obj/structure/converter/tanning/rack = new(rack_site)
+	harvest_assert(bag.resolve_attackby(rack, worker), "Bag/rack click did not resolve")
+	harvest_assert(bag.loc == worker && held.loc == bag && held.amount == 3 && !rack.contents.len, "Rack silently unpacked/dropped storage contents")
+	qdel(bag)
+	// Old sequence loses inventory ownership before destination rejection.
+	var/obj/item/stack/material/wethide/rack_blocked/blocked = new(worker, 4, FALSE)
+	worker.r_hand = blocked
+	harvest_assert(worker.drop_from_inventory(blocked) && !blocked.forceMove(rack) && blocked.loc == site, "Legacy rejected-transfer control did not reproduce floor stranding")
+	blocked.forceMove(worker)
+	worker.r_hand = blocked
+	blocked.resolve_attackby(rack, worker)
+	harvest_assert(blocked.loc == worker && worker.r_hand == blocked && blocked.amount == 4 && !rack.contents.len && !rack.filled, "Rejected rack transfer did not retain held ownership")
+	qdel(blocked)
+	// A redirecting Entered callback must roll back the actual location, not trust TRUE.
+	var/obj/structure/converter/tanning/rack_redirect/redirect = new(rack_site)
+	held = new(worker, 5, FALSE)
+	worker.r_hand = held
+	held.resolve_attackby(redirect, worker)
+	harvest_assert(held.loc == worker && worker.r_hand == held && held.amount == 5 && !redirect.contents.len && !redirect.filled, "Redirected transfer did not roll back safely")
+	qdel(held)
+	qdel(redirect)
+	qdel(rack)
+	qdel(worker)
+	harvest_clear(site)
+	harvest_clear(rack_site)
+	world.log << "PASS: production human rack transfer, floor-merge control, storage rejection and denied/redirected move recovery"
