@@ -154,6 +154,12 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p test_atlas_navigation.py -v
           node tests/crafting_atlas/navigation.test.mjs
+      - name: Test atlas variant equivalence and selector navigation offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_atlas_variants.py')
+        run: |
+          python3 scripts/build-crafting-atlas.py --catalog-only --check-game-catalog UI/crafting-atlas.json
+          python3 -m unittest discover -s tests -p test_atlas_variants.py -v
+          node tests/crafting_atlas/variants.test.mjs
       - name: Test and inventory placed outdoor bootstrap resources
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_outdoor_bootstrap.py')
         run: |

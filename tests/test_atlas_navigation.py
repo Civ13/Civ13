@@ -75,7 +75,7 @@ class AtlasNavigationTests(unittest.TestCase):
         verb = source.split('/mob/verb/crafting_atlas()')[1].split('/obj/')[0]
         self.assertIn('crafting_atlas_reference.show(src)', verb)
         self.assertIn('legacy = FALSE', source)
-        self.assertIn('legacy ? page_html(viewer, query, page) : graph_html', source)
+        self.assertIn('legacy ? page_html(viewer, query, page, recipe_id) : graph_html', source)
         self.assertIn('legacy = TRUE', source.split('else if (href_list["atlas_page"])')[1])
         self.assertIn('atlas_open=1', (ROOT/'code/game/objects/items/stacks/stack.dm').read_text())
         for processor in ('sawmill', 'grain_mill'):
