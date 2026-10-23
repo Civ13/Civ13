@@ -77,6 +77,16 @@ again before child creation and while still suspended; staged sources and compil
 artifacts are checked before/after use. As with ordinary file hashes, this does not
 provide a hostile-filesystem locking guarantee between checks and OS loading.
 
+Offline tests supply the host interpreter's strictly resolved canonical path as
+fixture input, so Ubuntu's symlinked `python3` does not fail simulated packets.
+This test-only substitution neither starts another interpreter nor establishes
+Windows native provenance. Resolution errors still fail; production freeze and
+verification retain their exact interpreter path/hash and linked-ancestor checks.
+Use the actual canonical, nonlinked Python executable for a real freeze/invocation.
+Resolver/link tests use injected filesystem results; they require no Windows
+symlink privilege. Changed paths (even with identical bytes), changed bytes and
+linked interpreter files/ancestors must reject before any fake child is created.
+
 The output path is restricted to the fresh `execution` sibling of the packet.
 An existing output is an error: the executor never retries a consumed run directory.
 There is no new lease/grant mechanism and no authority inferred from packet metadata.

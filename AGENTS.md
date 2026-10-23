@@ -293,6 +293,8 @@ The resource-free cave fixture must declare Civ13's inherited movable anchored
 field. Three held Windows attempts stopped at the strict one-member Job guard;
 the third identified an owned conhost and logged the former missing declaration.
 They establish no cave runtime result; preserve their original frozen packets.
+Offline cave executor tests supply a canonical interpreter fixture path because
+Ubuntu python3 is a symlink; native packet path/hash/link checks stay unchanged.
 
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.

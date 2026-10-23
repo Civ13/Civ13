@@ -77,6 +77,13 @@ class ExecutorTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.tripwire = patch.object(C, 'WinDLL', side_effect=AssertionError('Native binding forbidden'), create=True)
         self.tripwire.start(); self.addCleanup(self.tripwire.stop)
+        self.use_test_interpreter(ex.sys.executable)
+
+    def use_test_interpreter(self, invoked):
+        # Ubuntu's python3 is a symlink. Supply its canonical file to the offline
+        # fixture, without changing the real executor's path/hash/link checks.
+        interpreter = patch.object(ex.sys, 'executable', str(Path(invoked).resolve(strict=True)))
+        interpreter.start(); self.addCleanup(interpreter.stop)
 
     def packet(self):
         prepared = self.root / 'prepared'; prepare.prepare(prepared)
@@ -86,6 +93,55 @@ class ExecutorTests(unittest.TestCase):
         pin.start(); self.addCleanup(pin.stop)
         result = ex.freeze(prepared, tools, self.root / 'frozen')
         return Path(result['packet']), result['packet_sha256']
+
+    def test_offline_fixture_resolves_host_alias_before_freezing(self):
+        canonical = self.root / 'canonical-python.exe'
+        canonical.write_bytes(b'Offline interpreter identity fixture; never executed')
+        alias = self.root / 'python3'
+        # Inject only resolution: no Windows symlink privilege or native launch.
+        with patch.object(Path, 'resolve', autospec=True, return_value=canonical) as resolve:
+            self.use_test_interpreter(alias)
+            resolve.assert_called_once_with(alias, strict=True)
+        path, sha = self.packet()
+        self.assertEqual(ex.verify_packet(path, sha)['python'],
+                         {'path': str(canonical), 'sha256': ex.digest(canonical)})
+        self.assertFalse(alias.exists())
+
+    def test_changed_interpreter_path_and_bytes_reject_before_child_creation(self):
+        interpreter = self.root / 'python.exe'
+        interpreter.write_bytes(b'Offline identity fixture; never executed')
+        self.use_test_interpreter(interpreter)
+        path, sha = self.packet(); adapter = FakeBackend()
+        other = self.root / 'other-python.exe'; other.write_bytes(interpreter.read_bytes())
+        with patch.object(ex.sys, 'executable', str(other)), self.assertRaisesRegex(RuntimeError, 'Interpreter changed'):
+            ex.run_packet(path, sha, path.parent / 'execution', adapter)
+        interpreter.write_bytes(b'Changed offline identity fixture')
+        with self.assertRaisesRegex(RuntimeError, 'Interpreter changed'):
+            ex.run_packet(path, sha, path.parent / 'execution', adapter)
+        self.assertEqual(adapter.children, 0)
+        self.assertFalse((path.parent / 'execution').exists())
+
+    def test_linked_interpreter_or_ancestor_rejects_before_child_creation(self):
+        directory = self.root / 'python-bin'; directory.mkdir()
+        interpreter = directory / 'python.exe'
+        interpreter.write_bytes(b'Offline identity fixture; never executed')
+        self.use_test_interpreter(interpreter)
+        path, sha = self.packet(); adapter = FakeBackend()
+        original = Path.is_symlink
+        for linked in (interpreter, directory):
+            with self.subTest(linked=linked), patch.object(Path, 'is_symlink', autospec=True,
+                    side_effect=lambda value: value == linked or original(value)):
+                with self.assertRaisesRegex(RuntimeError, 'Linked input/output path'):
+                    ex.run_packet(path, sha, path.parent / 'execution', adapter)
+        self.assertEqual(adapter.children, 0)
+        self.assertFalse((path.parent / 'execution').exists())
+
+    def test_invalid_host_resolution_stops_fixture_preparation(self):
+        for error in (FileNotFoundError('broken alias'), OSError('resolution loop')):
+            with self.subTest(error=error), patch.object(Path, 'resolve', side_effect=error):
+                with self.assertRaises(type(error)):
+                    self.use_test_interpreter(self.root / 'invalid-python')
+        self.assertFalse((self.root / 'prepared').exists())
 
     def test_freeze_validates_all_seven_cases_and_each_mutation_is_rejected(self):
         path, sha = self.packet()
