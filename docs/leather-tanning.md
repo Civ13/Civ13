@@ -97,9 +97,15 @@ as well as named states so every displayed cell matches its actual state offset.
 `tests/animal_harvest/tanning_probe.dm` extends the existing isolated harvest
 fixture with production conversion/cancellation/stack/rack/turkey/save cases.
 BYOND compilation, fixture execution, production save round trips, and graphical
-gameplay acceptance are explicitly **not run** while resource review is held.
+gameplay acceptance are explicitly **not run** during the parent's preparation
+review. This is a preparation gate, not an evidenced indefinite external hold.
 The draft PR uses `[skip ci]` to respect the no-compilation instruction. No live
 Gaia process, settings, saves, or canonical checkout files are changed.
+
+The [native validation proposal](leather-tanning-native-validation.md) describes
+the four-launch Windows driver, source-only containment changes, port limitations,
+retained evidence, and the existing hosted CI alternative. No new approval-file
+protocol is required.
 
 Atlas checks run without BYOND:
 

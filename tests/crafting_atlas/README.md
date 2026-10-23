@@ -7,6 +7,10 @@ checks all generated records and real sawmill/grain processing views.
 It also checks the tanning rack's research/conversion view, turkey skin search,
 bark tannin quantities and the absence of a direct animal leather route. Those
 new native cases are authored but unrun while native execution is held.
+The current gate is parent review of preparation, rather than an identified
+external resource hold. On Windows, runners now use the shared retained-Job
+supervisor; `tests/animal_harvest/validate_tanning.py` supervises the four serial
+Atlas/harvest phases together. See `docs/leather-tanning-native-validation.md`.
 
 `--negative-control` breaks the legacy pagination bound.
 `--navigation-negative-control default|era|processor|output` separately breaks

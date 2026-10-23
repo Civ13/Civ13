@@ -4,6 +4,11 @@
 	maxz = 1
 	turf = /turf/floor/plating
 
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+
 // No human startup, network, inventory UI or skill side effects in this adapter.
 /mob/living/harvest_tester/New()
 	return
@@ -66,9 +71,12 @@ var/global/harvest_duplicate_result = null
 		qdel(O)
 
 /world/New()
+	OpenPort("none")
 	// Exercise object cleanup after the first world tick.
 	sleep(1)
 	try
+		harvest_assert(!world.port && !OpenPort(12345), "Fixture refuses listening ports")
+		text2file("closed", "port-closed.txt")
 		new /obj/map_metadata/harvest_fixture
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy)), "metadata.json")
 		var/turf/site = locate(3,3,1)

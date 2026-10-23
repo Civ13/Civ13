@@ -1,5 +1,7 @@
 /world/New()
 	OpenPort("none")
+	check_atlas(!world.port && !OpenPort(12345), "fixture refuses listening ports")
+	text2file("closed", "port-closed.txt")
 	var/mob/viewer = new
 	check_navigation(viewer)
 	check_atlas(crafting_atlas_reference.load_catalog(), "full production catalog load")
