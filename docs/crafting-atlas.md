@@ -6,6 +6,21 @@ processor filters narrow a sorted index of at most 150 matches; refine filters
 to reach additional records. Select a recipe to follow inputs, quantities and
 outputs. **Legacy paginated list** deliberately opens the older 12-record pages.
 Requests are limited to once per second.
+Identical material definitions repeated in alternative catalogs share one index
+entry and one dependency node. **Transformation / catalog variant** selects the
+catalog and its exact source row; the in-game selector uses **Show variant**.
+Search and the website's recipe-system filter apply to the same variant, so a
+catalog-specific match shows that catalog's details. Counts, bounded indexes,
+resource relations and legacy pagination count recipe entries, not catalog copies.
+Existing recipe IDs for every catalog row remain valid variant selections.
+
+Grouping is limited to explicit material-loader rows with all 13 original fields
+equal and all extracted semantic metadata equal. Ingredients, quantities, outputs,
+research, era limits, timing, category, placement and supplied material must agree.
+Catalog/map/faction identity remains in the variants; it is not an availability
+promise. Non-material callbacks and recipes with different requirements stay
+separate. Structured catalogs retain every variant's ID, catalog, file and line;
+the website also retains each exact raw source row.
 Icons are compiled from inherited defaults without constructing any items.
 The hosted searchable diagram is published alongside source documentation at
 https://civ13.github.io/Civ13/crafting/ by the existing Pages workflow.
@@ -138,15 +153,27 @@ detection plus regeneration, restoring the original source in `finally`.
 `scripts/atlas/check.mjs` checks search/navigation and graph consistency using a
 DOM contract. Neither establishes client rendering or gameplay reachability.
 
+`tests/test_atlas_variants.py` covers conservative equivalence, non-equivalent
+definitions, unique retained IDs and actual catalog source rows.
+`node tests/crafting_atlas/variants.test.mjs` runs the production web template
+through repeated selections, combined catalog/path searches, era/processor
+changes, empty results, reset and resource navigation, with source-selection and
+sibling-search omission controls. The native `tests/crafting_atlas/variants.dm`
+fixture includes grouped selection, old variant IDs, selected provenance and
+legacy page boundaries. The existing hosted Atlas workflow runs it through the
+bounded renderer, together with real sprite/site generation and the existing
+pagination/navigation controls. Results must be checked for the exact PR head.
+
 `tests/test_tanning_atlas.py` checks exact quantities, station research, all
 processing-stage and acquisition links, the lack of direct animal leather, and
 fur crafting continuity. Removing any essential stage breaks the turkey-to-leather
 reachability control. `node tests/crafting_atlas/tanning.test.mjs` executes the
 actual website template with the committed game catalog, including processor
 filtering, construction links and every tanning resource's producers and uses.
-These are offline catalog/DOM checks. The new full native renderer cases are
-authored but have not run while native validation is held; no browser appearance,
-engine-exported new previews or in-game client acceptance is claimed.
+These are offline catalog/DOM checks. The full-catalog native renderer separately
+checks those routes and quantities; the hosted Atlas step also exports actual
+engine sprite previews. Neither establishes connected-client appearance or
+gameplay acceptance. Verify results against the exact source head.
 The sprite harness's existing `--negative-control` rejects a deliberately wrong
 inherited icon resource. Runtime constructor/overlay graphics need separate
 focused evidence when their appearance matters.

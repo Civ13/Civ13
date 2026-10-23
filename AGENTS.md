@@ -414,6 +414,16 @@ characters matching #RRGGBB, then ignores hexadecimal case. Never coerce nulls,
 named colors or matrices. Keep wrong-channel/missing-stain controls and preserve
 the earlier failed raw-text comparison receipts; diagnostics are not pixels.
 
+<!-- 2026-10-23: persistence minimum date -->
+Persistence activation, configured startup and completed metadata restoration use
+apply_persistence_age_floor(). age is the displayed date/epoch; ordinal_age is a
+separate research tier, and prototype research can advance it independently.
+The 1943 floor preserves later dates and research data; unknown epoch labels are
+not converted. tests/persistence_year checks source-derived offline traces;
+run-durable-world.py --persistence-year separately exercises the real helper,
+admin toggle, extracted configured activation and 24 v1/v2 ticker disk imports
+in an isolated 8x8x2 world. Its three controls must reach their named assertions.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as
@@ -753,6 +763,15 @@ constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
+<!-- 2026-10-23: atlas catalog variants -->
+`scripts/atlas/variants.py` groups only identical explicit 13-field material rows
+with equal extracted semantics. Catalog identity/source IDs stay as variants;
+never group by name, canonical ingredients or outputs alone. Counts and legacy
+pages use groups; search/system filters must match the same variant and selected
+details must use its source. `tests/crafting_atlas/variants.dm` executes selected
+source, old-ID, filter and legacy page contracts through the existing bounded
+Atlas runner. Verify exact-head hosted renderer/assets results before acceptance.
+
 `scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
 separate from catalog field 12's maximum allowed era. Parse research constructors
 with balanced arguments; the enclosing registration call adds another closing
@@ -1185,6 +1204,14 @@ Lighting startup must reconcile existing inactive shared corners after adding ov
 Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
 
 <!-- 2026-10-12: animal health and combat dispatch -->
+<!-- 2026-10-23: domestic defensive retaliation -->
+Adult domestic sheep/goats/pigs/cattle, horses and camels explicitly opt into
+zero-damage immediate retaliation. `Weaken(2)` counts Life updates, not ds;
+ten-second runtime deadlines on both participants prevent herd stun chains.
+Keep juvenile and larger-attacker escape gates, husbandry dispatch and custom
+save exclusions. tests/animal_combat has offline source checks and a prepared
+native fixture; native/client acceptance remains separate.
+
 Simple-animal starting health and maxHealth must match unless an explicit policy
 is documented: Life clamps health and updatehealth recomputes it from maxHealth.
 Do not call parent attackby after an explicit item attack; that repeats damage,
