@@ -573,7 +573,12 @@ the rejection, while saturated runtime skip-decision counts observe the existing
 cleanup. The separate persistence fix owns that policy. Preserve guard failures.
 
 Default reads expire after 60 UTC seconds and must match build, boot,
-round and, for status failures, current/last operation plus tick/realtime bounds.
+round and, for status failures, current/last operation plus tick bounds and a
+realtime reversal check.
+UTC uses the finer `world.timeofday` input with explicit UTC formatting and a
+midnight rollover rejection. Epoch `world.realtime` is coarse metadata; only
+reversal is checked there, while UTC and ticks enforce bounded age. Never relax
+future-time rejection to hide epoch floating-point rounding.
 Re-reading retained evidence does not refresh it. Explicit `--historical` is
 allowed only with offline `--input` and
 labels evidence `historical_only`; it cannot refresh or query live identities.
@@ -583,9 +588,11 @@ durable or current identity, even when type/location match. Depth is eight,
 owner frames eight, registry prefixes 256, output 32 KiB; missing, partial and
 stale data are explicit unknown/error states. No eval, generic proc invocation,
 mutation, credentials, relaxed protections or listener is introduced.
-Offline synthetic reader/source checks and native-packet preparation are covered;
-native collector/Topic execution, actual deletion behavior and full save/load/
-gameplay acceptance remain unrun pending authorization. Compilation CI is separate
+Offline synthetic reader/source checks and native-packet preparation are covered.
+The `df639b1` tiny native attempt emitted 22 successful checks but failed overall
+reader/ownership acceptance and logged a startup loopback bind; preserve that
+failed verdict. The source UTC correction is not native-verified. Topic and full
+save/load/gameplay acceptance remain unverified. Compilation CI is separate
 evidence bound to its tested head. Observation
 does not authorize save/load, restart, cleanup or other live mutation.
 

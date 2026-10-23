@@ -219,7 +219,9 @@ def inspect(value, revision, session, round_id, *, now=None, status=True, histor
         # rejected retained record must not hide that independently valid state.
         try:
             old = failure(value['failure'], revision, session, round_id, now)
-            if not 0 <= result['tick'] - old['tick'] <= 600 or not 0 <= result['realtime'] - old['realtime'] <= 600:
+            # Realtime is coarse floating-point metadata (including native JSON
+            # formatting). UTC and game ticks provide the bounded age checks.
+            if not 0 <= result['tick'] - old['tick'] <= 600 or result['realtime'] < old['realtime']:
                 reject('stale_snapshot')
             owner = result['operation'] or result['last_operation']
             if not owner or owner['id'] != old['operation']['id']:

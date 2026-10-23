@@ -87,8 +87,18 @@ var/global/variable_observability_operation_sequence = 0
 	var/stage = P.restoring_players ? "restoring_players" : (P.contents_started ? "contents" : (P.backend_started ? "backend" : "admitted"))
 	return list("id" = P.observability_id, "kind" = P.kind, "started_tick" = P.observability_started, "stage" = stage, "backend_started" = !!P.backend_started, "contents_started" = !!P.contents_started, "mutation_started" = !!P.mutation_started, "restoring_players" = !!P.restoring_players, "owns_storage" = P.storage == map_storage, "active" = P == persistence_active_operation, "skip_counts_available" = P.observability_collecting, "runtime_field_skip_decisions" = P.observability_fields_skipped, "runtime_reference_skip_decisions" = P.observability_references_skipped, "legacy_runtime_field_skip_decisions" = P.observability_legacy_fields_skipped, "skip_count_limit" = 1000000000)
 
+/proc/variable_observability_utc()
+	// Absolute realtime is a large 32-bit float and can round into the future.
+	// time2text interprets timeofday as today's UTC date with finer precision.
+	var/before = world.timeofday
+	var/stamp = time2text(before, "YYYY-MM-DD hh:mm:ss", 0)
+	// A midnight rollover during formatting must fail closed rather than attach
+	// yesterday's time-of-day to today's date. No sleep, clock mutation or retry.
+	if(world.timeofday < before) return null
+	return stamp
+
 /proc/variable_observability_envelope()
-	return list("schema" = 1, "revision" = nomads_lifecycle.read_revision(), "session" = nomads_lifecycle.boot_session(), "round_id" = istext(game_id) ? copytext(game_id, 1, 161) : "unavailable", "tick" = world.time, "realtime" = world.realtime, "utc" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss", 0))
+	return list("schema" = 1, "revision" = nomads_lifecycle.read_revision(), "session" = nomads_lifecycle.boot_session(), "round_id" = istext(game_id) ? copytext(game_id, 1, 161) : "unavailable", "tick" = world.time, "realtime" = world.realtime, "utc" = variable_observability_utc())
 
 /map_storage/proc/variable_observability_publish(list/evidence)
 	var/encoded = json_encode(evidence)

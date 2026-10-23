@@ -3,7 +3,9 @@ import copy
 import importlib.util
 from datetime import datetime, timedelta, timezone
 import json
+import math
 from pathlib import Path
+import struct
 import sys
 import tempfile
 import unittest
@@ -178,10 +180,11 @@ class Reader(unittest.TestCase):
                             self.inspect(value)
                     else:
                         self.assertEqual(self.inspect(value)['failure_error'], 'correlation_mismatch')
-        for change in ('operation', 'tick', 'realtime', 'future'):
+        for change in ('operation', 'tick', 'realtime_reversal', 'future'):
             value = status()
             if change == 'operation': value['last_operation']['id'] = 'operation-2'
             elif change == 'future': value['utc'] = '2026-10-23 04:00:01'
+            elif change == 'realtime_reversal': value['realtime'] -= 1
             else: value[change] += 601
             with self.subTest(change=change):
                 if change == 'future':
@@ -189,6 +192,32 @@ class Reader(unittest.TestCase):
                         self.inspect(value)
                 else:
                     self.assertIn(self.inspect(value)['failure_error'], ('stale_snapshot', 'correlation_mismatch'))
+
+    def test_epoch_float_rounding_explains_preserved_future_stamp(self):
+        epoch = datetime(2000, 1, 1, tzinfo=timezone.utc)
+        rounded = []
+        for text in ('2026-10-23T04:38:01.034802+00:00', '2026-10-23T04:38:06.876286+00:00'):
+            actual = datetime.fromisoformat(text)
+            ticks = (actual - epoch).total_seconds() * 10
+            native_float = struct.unpack('f', struct.pack('f', ticks))[0]
+            self.assertEqual(2 ** (math.floor(math.log2(ticks)) - 23), 512)
+            stamp = epoch + timedelta(seconds=native_float / 10)
+            self.assertGreater(stamp, actual)
+            self.assertEqual(stamp.strftime('%Y-%m-%d %H:%M:%S'), '2026-10-23 04:38:11')
+            rounded.append(native_float)
+        self.assertEqual(rounded, [8460454912, 8460454912])
+
+    def test_coarse_realtime_step_is_not_a_freshness_clock(self):
+        value = status()
+        value['failure']['realtime'] = 8460450000
+        value['realtime'] = 8460460000
+        self.assertIsNotNone(self.inspect(value)['failure'])
+        # UTC expiry and future rejection remain strict, regardless of realtime.
+        value['failure']['utc'] = '2026-10-23 03:58:59'
+        self.assertEqual(self.inspect(value)['failure_error'], 'stale_snapshot')
+        value['utc'] = '2026-10-23 04:00:01'
+        with self.assertRaisesRegex(m.Rejected, 'stale_snapshot'):
+            self.inspect(value)
 
     def test_rejected_retained_failure_does_not_hide_current_ownership(self):
         for rejected, expected in (('utc', 'stale_snapshot'), ('tick', 'stale_snapshot'),
@@ -389,6 +418,15 @@ class ProducerSource(unittest.TestCase):
         self.assertLess(skip, continuation)
         self.assertNotIn('persistence_runtime_var(', self.source)
         self.assertIn('variable_observability_skipped(null, TRUE)', (ROOT / 'code/modules/persistence/loading.dm').read_text())
+
+    def test_precise_utc_source_and_midnight_fail_closed(self):
+        helper = self.source.split('/proc/variable_observability_utc()\n', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('var/before = world.timeofday', helper)
+        self.assertIn('time2text(before, "YYYY-MM-DD hh:mm:ss", 0)', helper)
+        self.assertIn('if(world.timeofday < before) return null', helper)
+        self.assertNotIn('time2text(world.realtime', self.source)
+        self.assertNotIn('world.timeofday =', self.source)
+        self.assertNotIn('world.realtime =', self.source)
 
     def test_native_packet_preparation_has_actual_collector_and_no_execution(self):
         spec = importlib.util.spec_from_file_location('prepare_variable_probe', Path(__file__).with_name('prepare_variable_probe.py'))

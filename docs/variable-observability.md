@@ -157,6 +157,14 @@ An invalid/stale current status header or invalid current operation still reject
 the entire read. Whole-packet framing, valid-JSON, size and credential-safety
 checks also remain strict before partitioning. Default offline `--input` inspection has no independent current
 status and continues to reject an invalid or stale capture as a command error.
+The producer formats UTC from `world.timeofday`, with an explicit zero timezone
+offset; a midnight rollover during formatting returns unavailable. Absolute
+`world.realtime` is coarse floating-point metadata and native JSON can round it
+further. It is checked for reversal, not used as a 60-second age clock. UTC and
+game-tick limits remain in force, including strict future-time rejection.
+BYOND documents the epoch precision limit and recommends `world.timeofday` for
+more accurate readings; `time2text` accepts it as the current date and uses the
+explicit third argument for the timezone. See the [BYOND reference](https://www.byond.com/docs/ref/info.html#/proc/time2text).
 UTC freshness assumes a trustworthy local clock. A frozen game clock, matching
 round or identical type/coordinates does not prove current object identity.
 
@@ -202,10 +210,14 @@ with source hashes and declares
 `native_verified:false`. It does not compile or run BYOND. The native collector
 probe has minimal data/auth adapters and is not full serializer/transport evidence.
 
-Native collector execution, filesystem behavior, authenticated Topic integration,
-actual engine deletion/cycle behavior, complete save/load round trips and full-game
-performance have **not been run for this change**. They remain acceptance work
-after explicit authorization. Full-game BYOND 516.1681 compilation in CI is
+The preserved native attempt at `df639b1` compiled cleanly and its tiny collector
+reported 22 checks with zero failures. The overall run was **rejected**: its reader
+rejected a future-rounded UTC stamp, child accounting was incomplete, and startup
+logged a loopback bind before closure. This is not a passing round trip or
+zero-listener run. The subsequent source clock correction is not native-verified.
+Authenticated Topic integration, complete save/load round trips, full-game
+performance and the other stated integration limits remain unverified.
+Full-game BYOND 516.1681 compilation in CI is
 separate, exact-head evidence; a passing build does not establish collector
 execution or validate a later head. Do not relabel source tests as native acceptance.
 No live world, save, native client or OpenDream process was used to develop this.
