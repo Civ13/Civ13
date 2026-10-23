@@ -40,7 +40,7 @@ Keep the ingredient in hand and both objects within reach. Sealed containers,
 locked barrels, another person's inventory, nested storage and insufficient
 liquid are rejected. The vessel must have an actual accessible reagent holder;
 terrain water and a cooking pot's separate cooking-water counter are not reagent
-vessels. Transfer that water to an ordinary container first.
+vessels. Use an ordinary reagent vessel for tanning instead.
 
 These processing actions add no map, era, faction, or research restrictions.
 Rack construction continues to use the existing wood recipe (8 logs in the global
