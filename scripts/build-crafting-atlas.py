@@ -25,11 +25,14 @@ def label(s):
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
+processing_materials={}
 material_source=uncomment(files.get('code/modules/materials/materials.dm',''))
 for match in re.finditer(r'^(/material/[^\s(]+)\s*\n((?:\t[^\n]*\n|\n)*)',material_source,re.M):
     typepath,body=match.groups()
     stack=re.search(r'\bstack_type\s*=\s*(/[^\s]+)',body)
     name=re.search(r'\bname\s*=\s*"([^"]+)"',body)
+    processing=re.search(r'\bprocessing_only\s*=\s*(TRUE|FALSE)',body)
+    if processing:processing_materials[typepath]=processing[1]=='TRUE'
     if stack:
         material_stacks[typepath]=stack[1]
         material_aliases[stack[1]]=typepath
@@ -49,6 +52,13 @@ def canon(s):
     if s.startswith('/obj/item/stack/material/'):
         return '/material/'+s.split('/obj/item/stack/material/')[1]
     return s
+
+def processing_only_material(typepath):
+    typepath=canon(typepath)
+    while typepath.startswith('/material/'):
+        if typepath in processing_materials:return processing_materials[typepath]
+        typepath=typepath.rsplit('/',1)[0]
+    return False
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -69,6 +79,7 @@ for p,s in files.items():
             cols=row.split('RECIPE: ',1)[1].strip().split(',')
             if len(cols)!=13: issues.append(dict(file=p,line=ln,reason='Expected 13 fields',raw=row));continue
             a,n,b,c,t,one,floor,category,ind,mil,med,age,mat=cols
+            if processing_only_material(a):continue
             add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),[(a,c)],[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.',row)
 
 def splitargs(s):
