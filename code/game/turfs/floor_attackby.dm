@@ -493,6 +493,12 @@
 			if (locate(/obj/structure/farming/plant) in src)
 				to_chat(user, SPAN_WARNING("There already is something planted here."))
 				return
+			if (istype(C, /obj/item/stack/farming/seeds))
+				TS = C
+				var/planting_error = TS.planting_error(src)
+				if (planting_error)
+					to_chat(user, SPAN_WARNING(planting_error))
+					return
 			if (ishuman(user))
 				H.adaptStat("farming", 1)
 			H.visible_message("<span class='notice'>[user] places some of \the [C] in the ploughed field.</span>",
