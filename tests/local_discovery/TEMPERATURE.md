@@ -9,6 +9,11 @@ Run with Python 3.10+ (use a verified absolute executable on Windows):
 python -B -m unittest discover -s tests/local_discovery -p test_temperature.py -v
 ```
 
+The existing CI evidence-checker runs `tests/local_discovery` when this PR
+introduces the suite or an extensive-regressions run is explicitly selected.
+The guarded group discovers both farming and temperature tests when both exist.
+Existing-test/source edits retain the repository's opt-in regression policy.
+
 Tests translate the complete production `get_temp` from the local immutable Git
 base and candidate. They compare 18,522 environmental combinations and 12,636
 heater-state/threshold combinations, plus radius/z/subtype/order cases. The
