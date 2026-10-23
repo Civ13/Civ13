@@ -90,6 +90,37 @@ class ThrowTargetTests(unittest.TestCase):
         self.assertIn('original_target = target', throw)
         self.assertIn('thrown_list += src', throw)
 
+    def test_valid_relationship_is_selected_and_preserves_live_identity(self):
+        partner = NS(loc=(2, 1, 1), name='durable partner')
+        marble = self.stack(NS(loc=(2, 1, 2)))
+        marble.vars['payload'] = partner
+        marble.defaults['payload'] = None
+        fields = saved_fields(marble, policy())
+        self.assertIn('payload', fields)
+        self.assertIs({key: marble.vars[key] for key in fields}['payload'], partner)
+        self.assertEqual((marble.loc, partner.loc), ((1, 1, 1), (2, 1, 1)))
+
+    def test_unknown_foreign_relationship_is_not_silently_filtered(self):
+        target = NS(loc=(2, 1, 2), name='independent roofbuilder')
+        marble = self.stack(target)
+        marble.vars['payload'] = target
+        marble.defaults['payload'] = None
+        before = marble.vars.copy()
+        fields = saved_fields(marble, policy())
+        self.assertNotIn('original_target', fields)
+        self.assertIn('payload', fields)
+        self.assertEqual(marble.vars, before)
+        # Source contracts only: actual failed-save/disk assertions are staged below.
+        saving = extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory')
+        guard = saving.index('if(movable.z && movable.z != saving_z)')
+        diagnostic = saving.index('record_save_reference_failure("cross_level_object", A)', guard)
+        rejection = saving.index('throw EXCEPTION("Cross-level object reference', diagnostic)
+        self.assertLess(rejection, saving.index('var/ind = saving_references'))
+        self.assertLess(diagnostic, rejection)
+        field = saving.index('frame.current_field = v')
+        self.assertLess(field, saving.index('encode_saved_value(savefile, A.vars[v])', field))
+        self.assertIs(marble.vars['payload'], target)
+
     def test_export_and_both_historical_import_branches_filter_before_decoding(self):
         saving = extract(read('code/modules/persistence/saving.dm'), '/map_storage/proc/BuildVarDirectory')
         self.assertLess(saving.index('if(A.persistence_runtime_var(v))'), saving.index('encode_saved_value(savefile, A.vars[v])'))
@@ -145,7 +176,9 @@ class ThrowTargetTests(unittest.TestCase):
             self.assertIn('throw_target_probe.dm', result['generated_sha256'])
             from pathlib import Path
             fixture = (Path(directory) / 'throw_target_probe.dm').read_text()
-            for text in ('BuildVarDirectory(', 'Load_Entry(', 'original_target', 'amount == 731', 'independent roof'):
+            for text in ('BuildVarDirectory(', 'Load_Entry(', 'original_target', 'amount == 731', 'independent roof',
+                         'valid relationship lost', 'cross_assert_failed_save(', 'last_save_reference_failure',
+                         'unknown relationship was cleared'):
                 self.assertIn(text, fixture)
 
 

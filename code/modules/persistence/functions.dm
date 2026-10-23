@@ -12,6 +12,9 @@
 	return
 
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
+// Omit only known process-local state, on export and historical import, without
+// mutating the live value. Unknown object links still require integrity validation;
+// never drop a relationship merely because it points to another z-level.
 /datum/proc/persistence_runtime_var(key)
 	// Weak handles cache native references from this process, never durable IDs.
 	return key == "persistence_export_frame" || key == "weak_reference"
@@ -45,6 +48,7 @@
 
 // A throw's target belongs to the live throwing processor, not the saved world.
 // Apply on import too so historical references cannot recreate a foreign owner.
+// The target atom (including a roofbuilder) remains independently saveable.
 /atom/movable/persistence_runtime_var(key)
 	return key == "original_target" || ..()
 

@@ -42,6 +42,44 @@ var/throw_callback_saw_old_target = FALSE
 /obj/item/stack/material/marble
 	var/amount = 1
 /obj/item/weapon/roofbuilder/glass
+/obj/item/throw_relationship_fixture
+	var/atom/relationship
+	var/atom/alias
+
+/proc/check_valid_relationship()
+	var/obj/item/throw_relationship_fixture/H = new(locate(1,1,1))
+	var/obj/item/weapon/roofbuilder/glass/R = new(locate(2,1,1))
+	R.name = "durable relationship target"
+	H.relationship = R
+	H.alias = R
+	var/savefile/F = new("valid-relationship.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, H, 1)
+	var/target_ref = map_storage.saving_references["\ref[R]"]
+	cross_check(target_ref && H.relationship == R && H.alias == R, "valid export changed relationship")
+	F = null
+	F = new("valid-relationship.sav")
+	map_storage.clear_bookkeeping()
+	var/obj/item/throw_relationship_fixture/restored = map_storage.Load_Entry(F, ref, starting_loc = locate(3,1,1))
+	cross_check(restored && restored.relationship && restored.relationship == restored.alias, "valid relationship lost")
+	var/obj/item/weapon/roofbuilder/glass/roof = map_storage.Load_Entry(F, target_ref, starting_loc = locate(2,2,1))
+	cross_check(roof == restored.relationship && roof.name == R.name && roof.loc == locate(2,2,1), "valid target identity or location lost")
+
+/proc/check_unknown_foreign_relationship()
+	cross_capture_target = FALSE
+	var/obj/item/throw_relationship_fixture/H = new(locate(1,1,1))
+	var/obj/item/weapon/roofbuilder/glass/R = new(locate(2,1,2))
+	H.relationship = R
+	var/reason = cross_try_save()
+	cross_assert_failed_save(reason, "Cross-level object reference cannot be represented", "unknown foreign relationship accepted")
+	var/list/failure = map_storage.last_save_reference_failure
+	cross_check(failure && failure["kind"] == "cross_level_object", "structured reference failure missing")
+	var/list/source = failure["source"]
+	var/list/target = failure["target"]
+	cross_check(source["field"] == "relationship" && target["type"] == "[R.type]", "structured source/target diagnostic lost")
+	cross_check(H.relationship == R && H.loc == locate(1,1,1) && R.loc == locate(2,1,2), "unknown relationship was cleared or target moved")
 
 /proc/check_throw_roundtrip()
 	var/obj/item/stack/material/marble/M = new(locate(1,1,1))
@@ -125,6 +163,8 @@ var/throw_callback_saw_old_target = FALSE
 		map_storage = new /map_storage/cross_level("throw-target-fixture")
 		check_throw_roundtrip()
 		check_active_throw_and_cleanup()
+		check_valid_relationship()
+		check_unknown_foreign_relationship()
 	catch(var/exception/probe_error)
 		result = "FAIL: [probe_error.name]"
 	text2file(json_encode(list("done" = TRUE, "result" = result, "checks" = cross_checks,

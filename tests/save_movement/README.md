@@ -91,6 +91,24 @@ type declarations and rendering/impact effects are minimal adapters; full materi
 constructors and gameplay are not exercised. Preparation has no native launch mode.
 Native compilation/runtime remain unrun while live recovery is in progress.
 
+Saving automatically omits the known process-local `original_target` field through
+the existing `persistence_runtime_var` policy, on export and historical import.
+The bug is the retained throwing pointer, not the roofbuilder it references. Saving
+does not clear that live pointer, interrupt an active throw, change stack amounts
+or locations, or delete the target; the roofbuilder remains independently saved.
+Only normal throw completion clears its old pointer before callbacks can start a
+newer throw.
+
+This is a field-specific policy, not generic repair by deleting relationships.
+Valid saved relationships still reach the serializer. Unknown or authoritative
+cross-level links remain selected and fail the existing integrity check, with a
+bounded `last_save_reference_failure` diagnostic and no completed-save marker.
+They require diagnosis rather than silent data loss. Offline tests exercise
+changed-field selection and pin the rejection/diagnostic source ordering. The
+prospective native fixture also contains same-level relationship alias round trips
+and an actual full-save rejection/cleanup case for an unknown foreign relationship;
+these disk and failed-save cases have been prepared but have not run.
+
 The repair excludes only `original_target`; cross-level validation remains active.
 Target cleanup runs before callbacks. Existing later throw bookkeeping is unchanged;
 this follow-up does not establish general reentrant throw scheduling correctness.
