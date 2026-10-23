@@ -250,22 +250,59 @@ class WindowsJob:
         return code.value
 
     def sample(self, child):
+        diagnostic = dict(stage='limits', identity=child.identity,
+                          layout=dict(buffer_bytes=C.sizeof(Members), alignment=C.alignment(Members),
+                                      pid_offset=Members.pids.offset, pointer_bytes=C.sizeof(C.c_size_t),
+                                      offsets={name: getattr(Members, name).offset for name, _ in Members._fields_}))
+
+        def error_info(error):
+            return dict(type=type(error).__name__, message=str(error), winerror=getattr(error, 'winerror', None))
+
+        def wait_state():
+            status = self.k.WaitForSingleObject(child.info.process, 0)
+            return dict(result=int(status), error=error_info(self.error()) if status not in (0, 258) else None)
+
+        try:
+            return self._sample(child, diagnostic, error_info, wait_state)
+        except BaseException as error:
+            error.sample_diagnostic = diagnostic
+            raise
+
+    def _sample(self, child, diagnostic, error_info, wait_state):
         self.verify_limits(child.job)
+        diagnostic['stage'] = 'accounting'
         accounting = Accounting()
         self.check(self.k.QueryInformationJobObject(child.job, 1, C.byref(accounting), C.sizeof(accounting), None))
+        diagnostic['accounting'] = {name: getattr(accounting, name) for name, _ in accounting._fields_}
+        diagnostic['stage'] = 'pid_list'
+        diagnostic['wait_before'] = wait_state()
         members, length = Members(), U32()
-        self.check(self.k.QueryInformationJobObject(child.job, 3, C.byref(members), C.sizeof(members), C.byref(length)))
+        result = self.k.QueryInformationJobObject(child.job, 3, C.byref(members), C.sizeof(members), C.byref(length))
+        query_error = self.error() if not result else None  # Capture before another API changes LastError.
+        diagnostic['pid_list'] = dict(query_result=int(result), error=error_info(query_error) if query_error else None,
+                                      assigned=members.assigned, count=members.count, return_length=length.value,
+                                      buffer_prefix=list(members.pids[:min(members.count, 2)]))
+        diagnostic['wait_after'] = wait_state()
+        if diagnostic['wait_after']['result'] == 0:
+            code = U32(); code_result = self.k.GetExitCodeProcess(child.info.process, C.byref(code))
+            diagnostic['exit_after'] = dict(query_result=int(code_result), exit_code=code.value if code_result else None,
+                                            error=error_info(self.error()) if not code_result else None)
+        if query_error:
+            raise query_error
+        # Diagnostic waits/exit state never bypass the existing rejection rules.
         if not (members.assigned == members.count <= 1 and
                 Members.pids.offset + members.count * C.sizeof(C.c_size_t) <= length.value <= C.sizeof(members)):
             raise RuntimeError('Owned Job membership unavailable or unexpected descendant')
         pids = list(members.pids[:members.count])
         if any(pid != child.info.pid for pid in pids) or accounting.total != 1 or accounting.terminated:
             raise RuntimeError('Unexpected owned Job process or resource termination')
+        diagnostic['stage'] = 'memory'
         memory = Memory(); memory.size = C.sizeof(memory)
         if not self.exited(child):
             self.check(self.ps.GetProcessMemoryInfo(child.info.process, C.byref(memory), memory.size))
+        diagnostic['stage'] = 'complete'
         return dict(private_bytes=memory.private, pids=pids, active=accounting.active,
-                    cpu_seconds=(accounting.user + accounting.kernel) / 1e7)
+                    cpu_seconds=(accounting.user + accounting.kernel) / 1e7, diagnostic=diagnostic)
 
     def sockets(self, child):
         """Spot-check owned PID with retained-handle liveness checks; never continuous proof."""

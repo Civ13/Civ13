@@ -183,9 +183,10 @@ class WallWatchdog:
         require(not self.errors, 'Wall watchdog error: ' + str(self.errors))
 
 
-def phase(adapter, argv, work, receipt, verify, seconds, now=time.monotonic, pause=time.sleep, watchdog_factory=WallWatchdog):
+def phase(adapter, argv, work, receipt, verify, seconds, now=time.monotonic, pause=time.sleep, watchdog_factory=WallWatchdog,
+          persist=lambda: None):
     """Own before resume, bounded monitor, cleanup and diagnostics on every exit path."""
-    child, watchdog = None, None
+    child, watchdog, primary_error = None, None, None
     receipt.update(argv=argv, seconds=seconds, samples=[], result='failed')
     try:
         verify()
@@ -219,17 +220,36 @@ def phase(adapter, argv, work, receipt, verify, seconds, now=time.monotonic, pau
         receipt['elapsed'] = now() - started
         receipt['result'] = 'exited'
     except BaseException as error:
+        primary_error = error
         receipt['error'] = str(error)
+        receipt['error_type'] = type(error).__name__
+        if hasattr(error, 'sample_diagnostic'):
+            receipt['failed_sample'] = error.sample_diagnostic
+        try: persist()  # Save the failed sample BEFORE stopping watchdog or cleaning the child.
+        except BaseException as save_error:
+            receipt['persistence_error'] = dict(type=type(save_error).__name__, message=str(save_error))
         raise
     finally:
+        teardown_errors = []
         try:
             if watchdog:
                 try: watchdog.stop()
+                except BaseException as error: teardown_errors.append(dict(stage='watchdog', type=type(error).__name__, message=str(error)))
                 finally: receipt['watchdog'] = dict(fired=watchdog.fired, errors=watchdog.errors)
         finally:
             if child:
-                receipt['cleanup'] = adapter.cleanup(child)
-                require(receipt['cleanup']['all_exited'], 'Owned cleanup unconfirmed: ' + str(receipt['cleanup']))
+                try:
+                    receipt['cleanup'] = adapter.cleanup(child)
+                    require(receipt['cleanup']['all_exited'], 'Owned cleanup unconfirmed: ' + str(receipt['cleanup']))
+                except BaseException as error:
+                    receipt.setdefault('cleanup', dict(all_exited=False, errors=[str(error)], exception_type=type(error).__name__))
+                    teardown_errors.append(dict(stage='cleanup', type=type(error).__name__, message=str(error)))
+        if teardown_errors:
+            receipt['teardown_errors'] = teardown_errors
+            if primary_error is None:
+                raise RuntimeError('Owned teardown failed: ' + str(teardown_errors))
+            if hasattr(primary_error, 'add_note'):
+                primary_error.add_note('Separate teardown errors: ' + str(teardown_errors))
 
 
 def run_packet(packet_path, expected_sha, output, adapter, *, now=time.monotonic, pause=time.sleep, watchdog_factory=WallWatchdog):
@@ -268,9 +288,11 @@ def run_packet(packet_path, expected_sha, output, adapter, *, now=time.monotonic
                     for name, sha in phase_inputs.items():
                         require(digest(ordinary_file(phase_work / name)) == sha, 'Phase input changed')
                 receipt = dict(phase=label); row['phases'].append(receipt)
+                def persist():
+                    (output / 'receipt.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
                 try:
                     phase(adapter, [str(Path(packet['bin']) / exe), *arguments], phase_work, receipt, verify_phase,
-                          POLICY[label + '_seconds'], now, pause, watchdog_factory)
+                          POLICY[label + '_seconds'], now, pause, watchdog_factory, persist=persist)
                     verify_phase()
                 finally:
                     (output / 'receipt.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')

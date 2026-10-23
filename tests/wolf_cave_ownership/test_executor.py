@@ -223,6 +223,65 @@ class ExecutorTests(unittest.TestCase):
         self.assertTrue(watchdog.fired)
         self.assertEqual(adapter.actions, ['duplicate-watchdog', ('watchdog-terminate',987), ('watchdog-close',987)])
 
+    def test_failed_sample_is_on_disk_before_teardown_and_primary_error_survives(self):
+        path,sha=self.packet();clock=Clock();saved=path.parent/'execution/receipt.json'
+        primary=RuntimeError('membership sentinel')
+        primary.sample_diagnostic={'pid_list':{'assigned':2,'count':1,'return_length':16},'wait_after':{'result':0}}
+        observed=[]
+        class Backend(FakeBackend):
+            def sample(self,child): raise primary
+            def cleanup(self,child):
+                # This executes BEFORE cleanup: evidence must already be on disk.
+                before=json.loads(saved.read_text())['cases'][0]['phases'][0]
+                observed.append(before)
+                super().cleanup(child)
+                raise RuntimeError('cleanup sentinel')
+        class Watchdog(FakeWatchdog):
+            def stop(self): raise RuntimeError('watchdog sentinel')
+        backend=Backend()
+        with self.assertRaises(RuntimeError) as caught:
+            ex.run_packet(path,sha,path.parent/'execution',backend,now=clock.now,pause=clock.pause,watchdog_factory=Watchdog)
+        self.assertIs(caught.exception,primary)
+        self.assertEqual(observed[0]['failed_sample'],primary.sample_diagnostic)
+        self.assertEqual(observed[0]['error'],'membership sentinel')
+        self.assertNotIn('cleanup',observed[0])
+        final=json.loads(saved.read_text())
+        phase=final['cases'][0]['phases'][0]
+        self.assertEqual(final['error'],'membership sentinel')
+        self.assertEqual(phase['error'],'membership sentinel')
+        self.assertEqual([error['stage'] for error in phase['teardown_errors']],['watchdog','cleanup'])
+        self.assertFalse(phase['cleanup']['all_exited'])
+        self.assertFalse(backend.active)
+
+    def test_persistence_failure_does_not_skip_cleanup_or_replace_primary(self):
+        work=self.root/'phase';work.mkdir();backend=FakeBackend('sample');receipt={}
+        def persist(): raise OSError('disk sentinel')
+        with self.assertRaisesRegex(RuntimeError,'sample fault'):
+            ex.phase(backend,['dm.exe'],work,receipt,lambda:None,60,
+                     watchdog_factory=FakeWatchdog,persist=persist)
+        self.assertEqual(receipt['persistence_error']['message'],'disk sentinel')
+        self.assertTrue(receipt['cleanup']['all_exited'])
+        self.assertFalse(backend.active)
+
+    def test_unannotated_adapter_exception_is_also_saved_before_cleanup(self):
+        path,sha=self.packet();saved=path.parent/'execution/receipt.json';observed=[]
+        class Backend(FakeBackend):
+            def cleanup(self,child):
+                before=json.loads(saved.read_text())['cases'][0]['phases'][0]
+                observed.append(before['error'])
+                return super().cleanup(child)
+        backend=Backend('sample')
+        with self.assertRaisesRegex(RuntimeError,'sample fault'):
+            ex.run_packet(path,sha,path.parent/'execution',backend,watchdog_factory=FakeWatchdog)
+        self.assertEqual(observed,['sample fault'])
+        self.assertFalse(backend.active)
+
+    def test_reviewed_limits_are_unchanged_by_diagnostics(self):
+        self.assertEqual(ex.POLICY,{'child_bytes':268435456,'compile_seconds':60,'runtime_seconds':20,
+                                   'cleanup_seconds':5,'max_cells':144,'sample_seconds':.05,
+                                   'min_free_bytes':1073741824,'max_output_bytes':16777216})
+        self.assertEqual((win.CAP,win.FLAGS,win.CREATE_FLAGS),(268435456,0x2308,0x08080404))
+
 
 class Function:
     def __init__(self, callback): self.callback=callback
@@ -305,6 +364,70 @@ class WindowsTests(unittest.TestCase):
         return win.WindowsJob(library,library,library,error=lambda:OSError('injected Win32 failure'))
     def create(self,native):
         return self.backend(native).start_suspended([str(self.root/'dm.exe'),'probe.dme'],self.root,self.root)
+
+    def pid_variant(self,work,assigned,count,length,result=1,exit_after=False):
+        native=Native();adapter=self.backend(native)
+        child=adapter.start_suspended([str(work/'dm.exe')],work,work)
+        original=native.call
+        def call(name,args):
+            value=original(name,args)
+            if name=='QueryInformationJobObject' and args[1]==3:
+                members=C.cast(args[2],C.POINTER(win.Members)).contents
+                members.assigned,members.count=assigned,count
+                C.cast(args[4],C.POINTER(win.U32)).contents.value=length
+                if exit_after:native.dead=True
+                return result
+            return value
+        native.call=call
+        return adapter,child,native
+
+    def test_short_successful_and_empty_pid_lists_keep_original_acceptance(self):
+        for assigned,count,length,ended in ((1,1,16,False),(1,1,24,False),(0,0,8,True),(0,0,16,True)):
+            with self.subTest(values=(assigned,count,length,ended)), tempfile.TemporaryDirectory() as directory:
+                adapter,child,_=self.pid_variant(Path(directory),assigned,count,length,exit_after=ended)
+                sample=adapter.sample(child);raw=sample['diagnostic']
+                self.assertEqual(raw['pid_list']['assigned'],assigned)
+                self.assertEqual(raw['pid_list']['count'],count)
+                self.assertEqual(raw['pid_list']['return_length'],length)
+                self.assertEqual(raw['wait_before']['result'],258)
+                self.assertEqual(raw['wait_after']['result'],0 if ended else 258)
+                if ended:self.assertEqual(raw['exit_after']['exit_code'],0)
+                self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_rejected_counts_lengths_and_truncation_keep_raw_snapshot(self):
+        for assigned,count,length in ((1,1,8),(1,1,25),(1,0,8),(2,2,24),(3,3,32)):
+            with self.subTest(values=(assigned,count,length)), tempfile.TemporaryDirectory() as directory:
+                adapter,child,_=self.pid_variant(Path(directory),assigned,count,length)
+                with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+                raw=caught.exception.sample_diagnostic
+                self.assertEqual((raw['pid_list']['assigned'],raw['pid_list']['count'],raw['pid_list']['return_length']),
+                                 (assigned,count,length))
+                self.assertLessEqual(len(raw['pid_list']['buffer_prefix']),2)
+                self.assertEqual(raw['layout'],{'buffer_bytes':24,'alignment':8,'pid_offset':8,'pointer_bytes':8,
+                                               'offsets':{'assigned':0,'count':4,'pids':8}})
+                self.assertEqual(raw['pid_list']['query_result'],1)
+                self.assertEqual(raw['accounting']['total'],1)
+                self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_exit_race_is_recorded_without_bypassing_truncated_list_rejection(self):
+        adapter,child,_=self.pid_variant(self.root,1,0,8,exit_after=True)
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+        raw=caught.exception.sample_diagnostic
+        self.assertEqual(raw['wait_before']['result'],258)
+        self.assertEqual(raw['wait_after']['result'],0)
+        self.assertEqual(raw['exit_after']['exit_code'],0)
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_failed_query_keeps_original_api_exception_and_partial_buffer(self):
+        adapter,child,_=self.pid_variant(self.root,2,1,16,result=0)
+        primary=OSError('query sentinel');adapter.error=lambda:primary
+        with self.assertRaises(OSError) as caught:adapter.sample(child)
+        self.assertIs(caught.exception,primary)
+        raw=primary.sample_diagnostic
+        self.assertEqual(raw['pid_list']['query_result'],0)
+        self.assertEqual((raw['pid_list']['assigned'],raw['pid_list']['count'],raw['pid_list']['return_length']),(2,1,16))
+        self.assertEqual(raw['pid_list']['error']['message'],'query sentinel')
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
 
     def test_suspended_creation_exact_job_limits_membership_and_resume_order(self):
         native=Native();adapter=self.backend(native)
