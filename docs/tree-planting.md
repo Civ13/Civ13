@@ -73,7 +73,8 @@ client captures remain unverified. See [the attempted-run evidence and remaining
 acceptance](tree-planting-native-validation.md). No OpenDream or live Gaia changes
 were made, and no guard was bypassed after its rejection.
 
-This branch has no dependency on the Atlas variant, animal retaliation or saved
-year changes. It changes one curated Atlas acquisition record and its generated
-catalog; concurrent Atlas work must regenerate the catalog after combining work.
-It does not modify persistence core code, year state or animal interactions.
+This branch integrates the reviewed Atlas variant grouping from #3282 and retains
+#3286's processing-only hide exclusions. It changes one curated tree acquisition
+record; the grouped catalog is regenerated through the existing generator.
+Tree planting does not change grouping logic, persistence core behavior, year
+state or animal interactions.

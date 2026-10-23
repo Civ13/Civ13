@@ -1,12 +1,14 @@
 # Tree planting native validation status
 
 The follow-up to draft #3283 integrates master
-`a7467b2e73543e2da034bfe5f4b62f9ea57b2714`, including #3286's rack inventory and
+`5528a46823ba264d934ff54b188d65b1e5ed540f`, including #3286's rack inventory and
 processing-only hide fixes at `580a7399d3060c5ba38c8782da8e87411d2650ab` and the
 subsequent #3281 animal changes without editing their implementation.
-The Atlas catalog was regenerated from combined
-sources; this branch adds no further generator behavior and retains the tree
-acquisition annotation. Parent review with #3282 remains sequential.
+The grouped Atlas catalog from #3282 was regenerated through the combined
+generator, preserving tree acquisition routes and processing-only hide exclusions.
+This branch adds no further grouping or generator behavior and does not manually
+combine generated JSON. Atlas variant, navigation and tanning checks are separate
+from the blocked native tree gameplay scope below.
 
 ## Attempted Windows native evidence
 
