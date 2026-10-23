@@ -1171,6 +1171,14 @@ Lighting startup must reconcile existing inactive shared corners after adding ov
 Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
 
 <!-- 2026-10-12: animal health and combat dispatch -->
+<!-- 2026-10-23: domestic defensive retaliation -->
+Adult domestic sheep/goats/pigs/cattle, horses and camels explicitly opt into
+zero-damage immediate retaliation. `Weaken(2)` counts Life updates, not ds;
+ten-second runtime deadlines on both participants prevent herd stun chains.
+Keep juvenile and larger-attacker escape gates, husbandry dispatch and custom
+save exclusions. tests/animal_combat has offline source checks and a prepared
+native fixture; native/client acceptance remains separate.
+
 Simple-animal starting health and maxHealth must match unless an explicit policy
 is documented: Life clamps health and updatehealth recomputes it from maxHealth.
 Do not call parent attackby after an explicit item attack; that repeats damage,
