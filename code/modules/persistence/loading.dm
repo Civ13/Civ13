@@ -4,17 +4,33 @@
 	var/list/validated_roof_areas = list()
 	var/list/validated_roof_entries = list()
 	var/list/validated_roof_types = list()
+	var/list/validated_roof_instances = list()
 	var/restoring_roof_areas = FALSE
 
 /map_storage/proc/clear_saved_roof_areas()
 	validated_roof_areas = list()
 	validated_roof_entries = list()
 	validated_roof_types = list()
+	validated_roof_instances = list()
 	restoring_roof_areas = FALSE
 
 /map_storage/proc/saved_roof_area_type(climate)
 	if(!(climate in list("tundra", "taiga", "temperate", "sea", "semiarid", "desert", "savanna", "jungle"))) return null
 	return text2path("/area/caribbean/roofed/[climate]")
+
+/map_storage/proc/unique_saved_roof_area(type, recheck = FALSE)
+	var/area/cached = validated_roof_instances["[type]"]
+	if(cached && !recheck) return cached
+	var/area/found
+	for(var/area/A in world)
+		// Empty explicit instances are ambiguous too. A later locate(type)
+		// must never silently select a different instance from preflight.
+		if(A.type != type) continue
+		if(found) throw EXCEPTION("Ambiguous current roof area identity")
+		found = A
+	if(!found || (cached && cached != found)) throw EXCEPTION("Validated roof area instance changed")
+	validated_roof_instances["[type]"] = found
+	return found
 
 /map_storage/proc/prepare_saved_roof_areas(generation)
 	var/roof_root = text2path("/obj/roof")
@@ -46,45 +62,42 @@
 					if(!islist(switch_value) || switch_value["kind"] != "value" || !isnum(switch_value["value"]) || !(switch_value["value"] in list(TRUE, FALSE)) || !islist(base_value) || base_value["kind"] != "value" || !ispath(base_value["value"], /area))
 						throw EXCEPTION("Saved roof lacks scalar area metadata")
 					var/base_type = base_value["value"]
-					var/area/base = locate(base_type)
 					var/turf/T = z <= world.maxz ? locate(x, y, z) : null
 					var/current_type = T ? T.loc.type : world.area
-					var/target_type = base ? saved_roof_area_type(base.vars["climate"]) : null
-					if(!base || (current_type != base_type && current_type != target_type))
-						throw EXCEPTION("Saved roof base area differs from the current map")
-					if(!switch_value["value"])
-						target_type = null
-						if(current_type != base_type) throw EXCEPTION("Disabled saved roof changes area")
-					else if(!ispath(target_type, /area))
-						throw EXCEPTION("Unsupported saved roof climate")
-					var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "area" = target_type, "switch" = switch_value["value"])
+					var/target_type
+					var/underlying_type = current_type
+					if(switch_value["value"])
+						var/area/base = unique_saved_roof_area(base_type)
+						target_type = saved_roof_area_type(base.vars["climate"])
+						if(!ispath(target_type, /area)) throw EXCEPTION("Unsupported saved roof climate")
+						if(current_type != base_type && current_type != target_type)
+							throw EXCEPTION("Saved roof base area differs from the current map")
+						underlying_type = base_type
+					else
+						// Disabled roofs never used current_area_type to choose their
+						// turf's area. Preserve that saved field without treating it
+						// as evidence for a transformation which did not occur.
+						unique_saved_roof_area(current_type)
+					var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "unroofed" = underlying_type, "area" = target_type, "switch" = switch_value["value"])
 					validated_roof_areas[key] = row
 					validated_roof_entries["[z]:[child]"] = row
 					if(target_type) validated_roof_types["[target_type]"] = target_type
 				TICK_CHECK
-	// This compatibility path represents one shared roof area per climate.
-	// Multiple existing instances of the same type cannot be reconstructed
-	// faithfully from the historical anchor/type format, so refuse them.
 	for(var/key in validated_roof_types)
-		var/type = validated_roof_types[key]
-		var/area/found
-		for(var/area/A in world)
-			if(A.type == type && (locate(/turf) in A))
-				if(found) throw EXCEPTION("Ambiguous current roof area identity")
-				found = A
+		unique_saved_roof_area(validated_roof_types[key])
 
 /map_storage/proc/materialize_saved_roof_areas()
-	var/list/areas = list()
-	for(var/key in validated_roof_types)
-		var/type = validated_roof_types[key]
-		var/area/A = locate(type)
-		if(!A) A = new type
-		areas[key] = A
+	// Recheck every retained identity, including empty base/roof instances,
+	// before the first membership assignment. Never create or reselect by type.
+	for(var/key in validated_roof_instances)
+		var/area/A = validated_roof_instances[key]
+		if(!A) throw EXCEPTION("Validated roof area instance disappeared")
+		unique_saved_roof_area(A.type, TRUE)
 	for(var/key in validated_roof_areas)
 		var/list/row = validated_roof_areas[key]
 		if(!row["area"]) continue
 		var/turf/T = locate(row["x"], row["y"], row["z"])
-		var/area/A = areas["[row["area"]]"]
+		var/area/A = validated_roof_instances["[row["area"]]"]
 		if(!T || !A) throw EXCEPTION("Validated roof area destination disappeared")
 		A.contents += T
 		TICK_CHECK
@@ -95,18 +108,23 @@
 	var/list/row = validated_roof_areas["[roof.x],[roof.y],[roof.z]"]
 	if(!row || roof.type != row["type"]) throw EXCEPTION("Unvalidated roof constructor during import")
 	var/turf/T = get_turf(roof)
-	var/expected = row["area"] ? row["area"] : row["base"]
-	if(!T || T.loc.type != expected) throw EXCEPTION("Validated roof topology changed during import")
+	var/expected = row["area"] ? row["area"] : row["unroofed"]
+	if(!T || T.loc != validated_roof_instances["[expected]"]) throw EXCEPTION("Validated roof topology changed during import")
 	roof.vars["current_area_type"] = row["base"]
 	roof.vars["switch_area"] = row["switch"]
 	return TRUE
+
+/map_storage/proc/is_loaded_validated_roof(atom/roof)
+	if(!restoring_roof_areas || roof.z != loading_z) return FALSE
+	var/list/row = validated_roof_areas["[roof.x],[roof.y],[roof.z]"]
+	return row && row["z"] == loading_z && roof.type == row["type"] && validated_roof_entries["[loading_z]:[row["entry"]]"] == row && existing_references[row["entry"]] == roof
 
 /map_storage/proc/verify_restored_roof_areas()
 	for(var/key in validated_roof_areas)
 		var/list/row = validated_roof_areas[key]
 		var/turf/T = locate(row["x"], row["y"], row["z"])
-		var/expected = row["area"] ? row["area"] : row["base"]
-		if(!T || T.loc.type != expected) throw EXCEPTION("Restored roof area differs from validated topology")
+		var/expected = row["area"] ? row["area"] : row["unroofed"]
+		if(!T || T.loc != validated_roof_instances["[expected]"]) throw EXCEPTION("Restored roof area differs from validated topology")
 		var/count = 0
 		for(var/atom/roof in T.contents)
 			if(roof.type != row["type"]) continue
@@ -219,8 +237,7 @@
 								continue
 							// A recursive field may have already imported this roof.
 							// Do not delete the validated owner before reusing its ref.
-							var/list/roof = validated_roof_areas["[ob.x],[ob.y],[ob.z]"]
-							if(restoring_roof_areas && roof && existing_references[roof["entry"]] == ob)
+							if(is_loaded_validated_roof(ob))
 								continue
 							if(ob.loc == container)
 								qdel(ob)
