@@ -63,8 +63,8 @@ def add_tanning(files, add, records, variants):
                'Scraping a pelt sacrifices that piece for leather; unprocessed fur remains usable in pelt recipes.'), ['Held sharp tool'])
     route('Wash a prepared hide', [(STACK+'hairlesshide', 1), ('water', 5)], [(STACK+'wethide', 1)],
           LEATHER, '/obj/item/stack/material/hairlesshide/attackby(',
-          ('Apply a held open glass vessel containing at least 5 units of water to a nearby prepared hide.',
-           'Each use consumes one hide and 5 water; saved hairless hides enter here.'), ['Held open glass vessel'])
+          ('Apply a held open liquid container containing at least 5 units of water to a nearby prepared hide.',
+           'Or hold the hide and click a nearby open container or unlocked barrel. Each use consumes one hide and 5 water; saved hairless hides enter here.'), ['Accessible liquid container'])
     route('Rack-dry washed hides', [(STACK+'wethide', 'n pieces'), (STATION, 'station; not consumed')],
           [(STACK+'dryhide', 'n pieces')], RACK, '/obj/structure/converter/tanning\n',
           ('Put a held wet-hide stack on an empty nearby tanning rack; drying takes 300 ticks, normally 30 seconds.',
@@ -73,13 +73,13 @@ def add_tanning(files, add, records, variants):
            'A restored wet batch restarts its full delay. One input piece remains one output piece.'), processor=True)
     route('Tan a dry hide into leather', [(STACK+'dryhide', 1), ('tannin', 5)], [(STACK+'leather', 1)],
           LEATHER, '/obj/item/stack/material/dryhide/attackby(',
-          ('Apply a held open glass vessel containing at least 5 units of tannin to a nearby dry hide.',
-           'Each use consumes one dry hide and 5 tannin, producing one ordinary leather sheet for existing recipes.'), ['Held open glass vessel'])
+          ('Apply a held open liquid container containing at least 5 units of tannin to a nearby dry hide.',
+           'Or hold the hide and click a nearby open container or unlocked barrel. Each use consumes one dry hide and 5 tannin, producing one ordinary leather sheet for existing recipes.'), ['Accessible liquid container'])
     route('Extract bark tannin', [(BARK, 1), ('water', 10)], [('tannin', 10)],
           LEATHER, '/obj/item/stack/bark/attackby(',
-          ('Apply a held open glass vessel with at least 10 water to a nearby piece of tree bark.',
+          ('Apply a held open liquid container with at least 10 water to a nearby piece of tree bark.',
            'One bark and 10 water become 10 tannin in that vessel; a full vessel works because liquid volume is unchanged.',
-           'This is an explicit item interaction, not a chemistry mixing recipe or a whole-stack splash.'), ['Held open glass vessel'])
+           'Or hold the bark and click a nearby open container or unlocked barrel. Wood mugs and other open liquid containers work; sealed or inaccessible holders do not. This is an explicit paid interaction, not a splash.'), ['Accessible liquid container'])
     for tool, cost, planks in [('hatchet', 2, 1), ('saw', 1, 4)]:
         route('Cut logs with a '+tool+' for bark', [(STACK+'wood', cost)],
               [(STACK+'woodplank', planks), (BARK, cost)], LOGS, '/obj/item/stack/material/wood/proc/cut_logs(',
