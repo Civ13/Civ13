@@ -281,6 +281,23 @@ validates both retained native captures immediately after the writable child,
 before later negative modes, using unchanged 60-second freshness checks. The
 ACL-denial, authenticated Topic and full serializer gaps remain open.
 
+The separate `run_variable_probe_linux.py` wrapper selects this same tiny
+fixture only on normal pull-request hosted Linux CI, using the existing
+introduced-test selector. It never consumes or weakens the Desktop packet's
+grant or empty-baseline restrictions. CI uses the existing installed 516.1681
+engine, no account/session inputs and only fresh directories under RUNNER_TEMP.
+Child environments exclude GitHub credentials. Process ownership follows the
+existing extraction wrapper: a new session/group, WNOWAIT observation, owned
+group cleanup before reaping the leader, and recorded birth ticks and exits.
+Socket inspection extends the durable-world /proc approach to all owned TCP
+and UDP sockets in both address families. A native-empty baseline is mandatory.
+The same phase, artifact and socket-closure budgets apply; Linux enforces
+512 MiB address space, 15 CPU seconds and 1 MiB per file per child, with core
+dumps disabled. Watcher/combined memory checks use observed RSS, not Windows
+private bytes. Evidence upload excludes config files and compiled binaries.
+Successful hosted execution proves only this collector/file-reader fixture,
+not Windows ACL behavior, authenticated Topic access or full save/load behavior.
+
 The preserved native attempt at `df639b1` compiled cleanly and its tiny collector
 reported 22 checks with zero failures. The overall run was **rejected**: its reader
 rejected a future-rounded UTC stamp, child accounting was incomplete, and startup
