@@ -328,9 +328,12 @@ class Native:
             value=C.cast(args[-1],C.POINTER(win.ProcessInfo)).contents
             value.process,value.thread,value.pid,value.tid=300,400,500,600;return 1
         if name=='AssignProcessToJobObject': self.member=True;return 1
+        if name=='OpenProcess':
+            assert args[0]==0x1000 and args[1] is False
+            return 900
         if name=='IsProcessInJob': C.cast(args[2],C.POINTER(win.BOOL)).contents.value=self.member;return 1
-        if name=='QueryFullProcessImageNameW': args[2].value=self.image;return 1
-        if name=='GetProcessTimes': C.cast(args[1],C.POINTER(C.c_uint64)).contents.value=123;return 1
+        if name=='QueryFullProcessImageNameW': args[2].value='C:/diagnostic/secondary.exe' if args[0]==900 else self.image;return 1
+        if name=='GetProcessTimes': C.cast(args[1],C.POINTER(C.c_uint64)).contents.value=456 if args[0]==900 else 123;return 1
         if name=='ResumeThread': return 1
         if name in ('TerminateJobObject','TerminateProcess'): self.dead=True;return 1
         if name=='WaitForSingleObject': return 0 if self.dead else 258
@@ -427,6 +430,96 @@ class WindowsTests(unittest.TestCase):
         self.assertEqual(raw['pid_list']['query_result'],0)
         self.assertEqual((raw['pid_list']['assigned'],raw['pid_list']['count'],raw['pid_list']['return_length']),(2,1,16))
         self.assertEqual(raw['pid_list']['error']['message'],'query sentinel')
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def second_member(self,work):
+        adapter,child,native=self.pid_variant(work,2,2,24)
+        original=native.call
+        def call(name,args):
+            value=original(name,args)
+            if name=='QueryInformationJobObject' and args[1]==3:
+                C.cast(args[2],C.POINTER(win.Members)).contents.pids[1]=501
+            return value
+        native.call=call
+        return adapter,child,native
+
+    def test_unexpected_member_identity_is_read_only_rechecked_and_still_rejected(self):
+        adapter,child,native=self.second_member(self.root)
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+        row=caught.exception.sample_diagnostic['unexpected_members'][0]
+        self.assertEqual(row['identity'],{'pid':501,'image':'C:/diagnostic/secondary.exe','creation_filetime':456})
+        self.assertEqual(row['status'],'verified-owned');self.assertTrue(row['handle_closed'])
+        self.assertEqual(row['memberships'],[{'point':p,'member':True} for p in ('before_image','before_creation_time','after_identity')])
+        opens=[args for name,args in native.calls if name=='OpenProcess']
+        self.assertEqual(opens,[(0x1000,False,501)])
+        self.assertIn(900,native.closed)
+        relevant=[name for name,args in native.calls if args and args[0]==900 and name in ('IsProcessInJob','QueryFullProcessImageNameW','GetProcessTimes')]
+        self.assertEqual(relevant,['IsProcessInJob','QueryFullProcessImageNameW','IsProcessInJob','GetProcessTimes','IsProcessInJob'])
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+        self.assertFalse(any(name=='TerminateProcess' and args[0]==900 for name,args in native.calls))
+
+    def test_reused_foreign_pid_is_not_read_when_membership_check_fails(self):
+        adapter,child,native=self.second_member(self.root);original=native.call
+        def call(name,args):
+            value=original(name,args)
+            if name=='IsProcessInJob' and args[0]==900:C.cast(args[2],C.POINTER(win.BOOL)).contents.value=0
+            return value
+        native.call=call
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+        row=caught.exception.sample_diagnostic['unexpected_members'][0]
+        self.assertNotIn('identity',row);self.assertTrue(row['handle_closed'])
+        self.assertFalse(any(name in ('QueryFullProcessImageNameW','GetProcessTimes') and args[0]==900 for name,args in native.calls))
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_membership_loss_between_identity_reads_never_publishes_verified_identity(self):
+        for fail_at in (2,3):
+            with self.subTest(fail_at=fail_at), tempfile.TemporaryDirectory() as directory:
+                adapter,child,native=self.second_member(Path(directory));original=native.call;checks=[]
+                def call(name,args):
+                    value=original(name,args)
+                    if name=='IsProcessInJob' and args[0]==900:
+                        checks.append(1)
+                        if len(checks)==fail_at:C.cast(args[2],C.POINTER(win.BOOL)).contents.value=0
+                    return value
+                native.call=call
+                with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+                row=caught.exception.sample_diagnostic['unexpected_members'][0]
+                self.assertNotIn('identity',row);self.assertTrue(row['handle_closed'])
+                if fail_at==2:self.assertFalse(any(name=='GetProcessTimes' and args[0]==900 for name,args in native.calls))
+                self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_access_denied_is_recorded_without_escalation_or_acceptance(self):
+        adapter,child,native=self.second_member(self.root);native.fault='OpenProcess'
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+        row=caught.exception.sample_diagnostic['unexpected_members'][0]
+        self.assertEqual(row['status'],'unavailable');self.assertNotIn('identity',row)
+        self.assertEqual(len([n for n,_ in native.calls if n=='OpenProcess']),1)
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_identity_open_is_refused_after_cleanup_without_any_native_call(self):
+        adapter,child,native=self.second_member(self.root)
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+        before=len(native.calls)
+        row=adapter.unexpected_member(child,501)
+        self.assertEqual(row['status'],'refused')
+        self.assertEqual(len(native.calls),before)
+
+    def test_incomplete_census_does_not_authorize_identity_reads(self):
+        adapter,child,native=self.pid_variant(self.root,2,1,16)
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+        self.assertNotIn('unexpected_members',caught.exception.sample_diagnostic)
+        self.assertNotIn('OpenProcess',[n for n,_ in native.calls])
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+
+    def test_diagnostic_handle_close_failure_is_retained_and_does_not_bypass_rejection(self):
+        adapter,child,native=self.second_member(self.root);original=native.call
+        def call(name,args):
+            if name=='CloseHandle' and args[0]==900:return 0
+            return original(name,args)
+        native.call=call
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:adapter.sample(child)
+        row=caught.exception.sample_diagnostic['unexpected_members'][0]
+        self.assertFalse(row['handle_closed']);self.assertIn('close_error',row)
         self.assertTrue(adapter.cleanup(child)['all_exited'])
 
     def test_suspended_creation_exact_job_limits_membership_and_resume_order(self):

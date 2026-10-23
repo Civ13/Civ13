@@ -21,7 +21,9 @@ client launcher, public port parameter or arbitrary case selector.
 - `CreateProcessW` creates the exact hashed executable **suspended**, hidden and
   without breakaway. Before resume, assignment and membership are checked, the
   image and creation FILETIME are retained, and all packet/tool/input hashes are
-  rechecked. No `OpenProcess`, PID-based attachment or named shared Job is used.
+  rechecked. No named shared Job or PID-based termination is used. The optional
+  unexpected-member diagnostic opens limited-query handles only while the exact
+  owned Job remains open; it grants no additional execution allowance.
 - An explicit inherited-handle list contains only newly created stdout/stderr
   files and NUL stdin. Child environment paths point into the phase's fresh
   storage. The environment omits account credentials and normal user configuration.
@@ -50,6 +52,13 @@ The Windows backend is implemented but **not exercised against the real OS**.
 Injected API tests establish call order, layout and failure-path behavior only;
 native Job enforcement and real process exit remain unverified until parent-approved
 invocation. Python 64-bit Windows is the intended executor environment.
+
+The source-only unexpected-member addition is described in
+[MEMBER_DIAGNOSTIC.md](MEMBER_DIAGNOSTIC.md). It rechecks exact Job membership
+before each image/creation-time read and afterward, closes the query handle
+immediately, refuses opens after cleanup starts, and retains all existing rejection
+rules. A diagnostic or handle-close failure is retained and cannot turn an
+unexpected member into an accepted run.
 
 ## Immutable inputs
 

@@ -1,6 +1,7 @@
 """Dedicated cave-fixture Win32 backend. Inert on import; injectable DLLs for tests.
 
-No process attachment, shell, security changes, breakaway, or prior-suite grant.
+Only census-derived, membership-checked read-only diagnostic process handles.
+No shell, security changes, breakaway, or prior-suite grant.
 The caller must have separate approval before constructing the native backend.
 """
 import ctypes as C
@@ -73,6 +74,7 @@ class Child:
     info: ProcessInfo
     job: object
     identity: dict
+    cleanup_started: bool = False
 
 
 class WindowsJob:
@@ -92,6 +94,7 @@ class WindowsJob:
             'QueryInformationJobObject': ([HANDLE, C.c_int, HANDLE, U32, HANDLE], BOOL),
             'AssignProcessToJobObject': ([HANDLE, HANDLE], BOOL),
             'IsProcessInJob': ([HANDLE, HANDLE, C.POINTER(BOOL)], BOOL),
+            'OpenProcess': ([U32, BOOL, U32], HANDLE),
             'TerminateJobObject': ([HANDLE, U32], BOOL),
             'TerminateProcess': ([HANDLE, U32], BOOL),
             'CloseHandle': ([HANDLE], BOOL), 'ResumeThread': ([HANDLE], U32),
@@ -249,6 +252,49 @@ class WindowsJob:
         code = U32(); self.check(self.k.GetExitCodeProcess(child.info.process, C.byref(code)))
         return code.value
 
+    def unexpected_member(self, child, pid):
+        """Read only a current census candidate; never act on a PID after cleanup."""
+        row = dict(pid=pid, status='unavailable', memberships=[], handle_closed=None)
+        if child.cleanup_started or type(pid) is not int or not 0 < pid <= 0xffffffff:
+            row['status'] = 'refused'
+            return row
+        handle = None
+        try:
+            # PROCESS_QUERY_LIMITED_INFORMATION only; no terminate, VM or debug rights.
+            handle = self.check(self.k.OpenProcess(0x1000, False, pid))
+
+            def belongs(point):
+                if child.cleanup_started:
+                    raise RuntimeError('Cleanup began; diagnostic read refused')
+                member = BOOL()
+                self.check(self.k.IsProcessInJob(handle, child.job, C.byref(member)))
+                row['memberships'].append(dict(point=point, member=bool(member.value)))
+                if not member.value:
+                    raise RuntimeError('Candidate is not in the exact owned Job')
+
+            belongs('before_image')
+            image, length = C.create_unicode_buffer(32768), U32(32768)
+            self.check(self.k.QueryFullProcessImageNameW(handle, 0, image, C.byref(length)))
+            belongs('before_creation_time')
+            clocks = [C.c_uint64() for _ in range(4)]
+            self.check(self.k.GetProcessTimes(handle, *(C.byref(v) for v in clocks)))
+            belongs('after_identity')
+            if not image.value or not clocks[0].value:
+                raise RuntimeError('Candidate creation identity unavailable')
+            row.update(status='verified-owned', identity=dict(pid=pid, image=image.value,
+                                                             creation_filetime=clocks[0].value))
+        except Exception as error:
+            row['error'] = dict(type=type(error).__name__, message=str(error), winerror=getattr(error, 'winerror', None))
+        finally:
+            if handle:
+                try:
+                    self.check(self.k.CloseHandle(handle))
+                    row['handle_closed'] = True
+                except Exception as error:
+                    row['handle_closed'] = False
+                    row['close_error'] = dict(type=type(error).__name__, message=str(error))
+        return row
+
     def sample(self, child):
         diagnostic = dict(stage='limits', identity=child.identity,
                           layout=dict(buffer_bytes=C.sizeof(Members), alignment=C.alignment(Members),
@@ -289,6 +335,11 @@ class WindowsJob:
                                             error=error_info(self.error()) if not code_result else None)
         if query_error:
             raise query_error
+        # Read identities only from a complete, structurally valid bounded list.
+        # An observed second member remains a rejection regardless of its image.
+        if members.assigned == members.count <= 2 and Members.pids.offset + members.count * C.sizeof(C.c_size_t) <= length.value <= C.sizeof(members):
+            diagnostic['unexpected_members'] = [self.unexpected_member(child, pid)
+                for pid in dict.fromkeys(members.pids[:members.count]) if pid != child.info.pid]
         # Diagnostic waits/exit state never bypass the existing rejection rules.
         if not (members.assigned == members.count <= 1 and
                 Members.pids.offset + members.count * C.sizeof(C.c_size_t) <= length.value <= C.sizeof(members)):
@@ -346,6 +397,7 @@ class WindowsJob:
 
     def cleanup(self, child):
         """Always close Job (kill-on-close), wait retained child, close all handles."""
+        child.cleanup_started = True
         errors = []
         deadline = time.monotonic() + 5
         # Terminate only this fresh owned Job, including any unexpected member.
