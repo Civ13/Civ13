@@ -1471,6 +1471,27 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify admin item cleaning and rejection controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_clean')
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/admin_clean/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/admin-clean/positive"
+          for control in rights target refresh; do
+            python3 tests/admin_clean/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/admin-clean/$control" --control "$control"
+          done
+      - name: Retain admin item cleaning evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_clean'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: admin-clean-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/admin-clean/
+            !${{ runner.temp }}/admin-clean/**/*.dmb
+            !${{ runner.temp }}/admin-clean/**/*.rsc
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify archived admin history and loss alias and batch controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_history')
         shell: bash
