@@ -39,7 +39,7 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
-          'clear_bookkeeping', 'release_durable_world')
+          'clear_bookkeeping', 'release_durable_world', 'movement_location', 'stopped', 'stopped_until')
 
 
 def project(source, declaration, args, env, method=False):
@@ -51,6 +51,11 @@ def project(source, declaration, args, env, method=False):
             continue
         indent = len(code) - len(code.lstrip('\t'))
         code = code.strip()
+        # DM article macros are opaque message text at the fake output boundary.
+        code = code.replace('\\The', '\\\\The').replace('\\the', '\\\\the')
+        typed_loop = re.fullmatch(r'for\s*\(var/([\w/]+)/(\w+) in (.*)\)', code)
+        if typed_loop:
+            code = f'for ({typed_loop[2]} in typed_iter({typed_loop[3]}, "/{typed_loop[1]}"))'
         code = re.sub(r'\bvar/(?:\w+/)*(\w+)\b', r'\1', code)
         code = code.replace('/area/caribbean/admin', 'ADMIN_AREA')
         code = code.replace('in_protected_sleep_zone() ? 2 : 0', '(2 if in_protected_sleep_zone() else 0)')
@@ -70,7 +75,11 @@ def project(source, declaration, args, env, method=False):
                 for name in set(FIELDS) - parameters:
                     pieces[i] = re.sub(r'(?<![\w.])' + name + r'\b', 'src.' + name, pieces[i])
             code = ''.join(pieces)
-        if code == 'try':
+        if re.match(r'^set (name|category|desc|hidden) = ', code):
+            code = 'pass'  # compile-time verb metadata, not an executable action
+        elif code.startswith('spawn('):
+            code = 'if deferred' + code[5:] + ':'  # injected timer callback boundary
+        elif code == 'try':
             code = 'try:'
         elif code.startswith('catch('):
             code = 'except Exception as ' + code[6:-1] + ':'
@@ -90,8 +99,8 @@ def project(source, declaration, args, env, method=False):
                 closing += 1
                 depth += (code[closing] == '(') - (code[closing] == ')')
             code = 'if ' + code[opening + 1:closing] + ':' + code[closing + 1:]
-        elif code.startswith('for '):
-            code = code[4:].strip()
+        elif code.startswith('for ') or code.startswith('for('):
+            code = code[3:].strip()
             if not (code.startswith('(') and code.endswith(')')):
                 raise AssertionError('Unsupported loop: ' + code)
             code = 'for ' + code[1:-1] + ':'

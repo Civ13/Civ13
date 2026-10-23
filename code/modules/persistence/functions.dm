@@ -291,6 +291,14 @@ var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
 
+/proc/persistence_save_active()
+	return persistence_active_operation && persistence_active_operation.kind == "save"
+
+// Sleep transfers are forbidden even on the same z during owned preparation,
+// serialization and cleanup. Retain the legacy load/recovery admission hold.
+/proc/persistence_sleep_transfer_blocked()
+	return persistence_save_in_progress || persistence_save_active()
+
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)

@@ -1,0 +1,26 @@
+# Focused classification of the original direct-writer inventory
+
+The original 325 statements are not 325 demonstrated cross-z transfers. The
+inventory does not establish runtime type, physical ownership, included-map
+reachability, or safety of callbacks. This is an incomplete call-path review;
+unclassified statements remain an acceptance blocker.
+
+| Risk class | Actual source evidence | Current disposition |
+| --- | --- | --- |
+| Arbitrary destination or saved location across input | occupations.relocate selects latejoin landmarks; admin Topic retains H_oloc/H_jobloc across input and spawn; SpawnAtFob previously detached H before prompting | Identified actual location commits now use guarded helpers. Admin job selection checks save ownership before EquipRank. Refused delayed admin commits restore the client eye. Broader occupation/caller retry acceptance remains pending. |
+| Timed relationship/attachment | punishment handlers retain target while waiting; tablepush confirms a grab; bedroll completion; drone payload installation; vehicle-axis attachment | Admission precedes hanging/resting/weakening/payload links or axis state, and actual commits recheck. Source checks cover these paths; native and broader callback behavior remain pending. |
+| Multi-object relocation | football reset selects per-player/ball landmarks; arena cleanup uses another area's loot turfs | Football preflights the complete batch before match/ownership changes and returns success to its caller; same-z resets remain available. Arena moves are guarded and wrestling preflights strips. Arena cleanup can partially finish independent work before a later refusal; caller retry behavior remains a limitation. |
+| Construction followed by relocation | objective spawner creates cursed treasure on src.loc and then selects a landmark | It now constructs directly at the final turf. This uses the explicit empty/new-object exception rather than moving a placed atom between z-levels. |
+| Proven coordinate-local target | living.near_wall advances get_step from get_turf(src); both hitby paths use its returned turf. Tesco bag scatter uses center.z and iterates the bag's contents after removal to center | These are not arbitrary landmark teleports. Snapshot/ownership effects of unusual callbacks are not proven by target coordinates alone. |
+| Checked physical containment | folder Topic requires loc == usr and P.loc == src; clipboard pen/remove paths require loc == usr and the selected item's loc == src | The selected item, container and user share physical ancestry at those immediate transfers. This is stronger evidence than an inventory-looking filename. |
+| Confirmed remote UI risk, still uncovered | wand assembly bench Topic only rejects absent/lying user before eject_wood/eject_core. Its fallback directly assigns a bench part to get_turf(user), with no final proximity/z check | A previously opened bench UI can outlive movement between levels. This is a concrete remaining blocker, not a benign local writer. Hand-equipment wrappers must also reject before assigning slots if forceMove refuses. |
+| Modal construction/layout risk, still uncovered | stack.dm mailbox color selection calls WWinput, then relocates the constructed mailbox to get_step(user,user.dir) without a final z admission check | Actor and constructed object can be on different levels when the prompt returns. No full family migration or blanket safety claim has been made. |
+| Active nullspace placement, still uncovered | plastique.afterattack sets loc = null after planting; projectile lifecycle has direct null assignments | Planting is an active attachment, not qdel retirement. Projectile branches must be separated into creation, impact/deletion and possible reuse. A raw null count cannot justify an exception. |
+| Creation/retirement/pooling | New constructors, Destroy/qdel, and datum_pool Prepare/ResetVars | Pool entry uses a reviewed type whitelist and cleanup; arbitrary contained players are not a legitimate new-object exception. The shared guard now rejects live contents in retired/nullspace carriers. Remaining raw pool/lifecycle writes still need their own review. |
+| Non-movable data | vector_loc is a datum carrying a turf result; sound.z is a sound positioning field; image.ResetVars changes an appearance location | These do not move a player or an atom/movable between world levels. |
+| Internal visibility helper | dview_mob is anchored, simulated=FALSE, removed from ordinary mob lists, and temporarily placed by dview/FOR_DVIEW | It is a runtime visibility helper, not a player transfer. Serializer/lighting use and cleanup must remain available. This is an explicit internal exception requiring review, not a global movement bypass grant. |
+| Dynamic debug assignments | administrator vars/list modification and arbitrary proc invocation | Outside the direct-statement inventory and not made safe by Move/forceMove. No credential or security changes were made. |
+
+No code is ready for deployment as universal coverage. The classified residual
+risks above need review or fixes before that claim; native BYOND compilation and
+engine acceptance are also still pending under the offline-only scope.

@@ -32,24 +32,32 @@ in generated-source controls; production files are never mutated by the tests.
 - **This patch does not establish universal direct-assignment coverage.** BYOND
   raw `loc`, `z`, `pixloc`, `vars` and contents edits do not dispatch the shared
   movement methods. Audited transport paths now use guarded helpers, but legacy
-  direct location writers still exist, including job/admin relocation, spawner,
-  magic and many inventory/constructor/local/nullspace paths. Run
+  direct location writers still exist in magic and many
+  inventory/constructor/local/nullspace paths. Job/admin location commits and the
+  identified objective spawner have since received focused corrections. Run
   `audit_writers.py --output <review-report.json>` to inventory residual statements.
   Their safety requires call-path review; the inventory makes no benign-type claim.
   Arbitrary administrator variable/procedure editing remains a bypass surface.
 - The physical sleep area is `(1,1,1)` plus `/area/caribbean/admin`, matching the
   existing sleep destination and zombie exclusion. Humans visiting that admin
-  area also stay asleep. Other maps or a narrower admin sub-area need an explicit
-  map contract before changing this definition.
+  area also stay asleep. Gaia's source map has exactly four such black-wall cells
+  at (1..2,1..2,1). An admin-jumped human without inducedSSD receives no invented
+  return coordinates: Wake Up refuses it; authorized movement can take it outside
+  the area after saving, where normal waking resumes. Other maps or a narrower
+  admin sub-area need an explicit map contract before changing this definition.
 - Ordinary placed-to-null movement is refused while saving to prevent a two-step
-  nullspace detour. qdel retirement is allowed. Already unplaced/new atoms can be
-  constructed/placed; this is not an object-creation or whole-world snapshot freeze.
+  nullspace detour. Empty retired atoms may detach but cannot re-enter a level
+  during saving. Nullspace carriers with live contents cannot be placed. Empty
+  new atoms may be placed; creation is not a whole-world snapshot freeze.
 - Same-z movement remains available, including serializer-owned paid rack transfers.
   Existing same-z serialization consistency limitations are not repaired here.
 - Spawned elevator/landing-craft batches defer while the owned save exists. Simple
   blocked teleports/falls cancel that attempt and require their ordinary retrigger;
   protected sleep explicitly offers a safe user retry. No wait was added inside a
   serializer or synchronous movement helper.
+- Sleep transfer admission checks both the active save owner and the existing
+  legacy load/recovery hold. It rejects same-z sleep transfers too, even if the
+  compatibility flag is false while the owned operation is still present.
 - No native compilation, gameplay, CI dispatch, live checkout change or server
   action has been performed. Before deployment, review the residual writers and
   compile the exact reviewed commit with BYOND 516.1681; the existing isolated

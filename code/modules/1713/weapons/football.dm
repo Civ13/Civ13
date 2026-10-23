@@ -338,7 +338,7 @@
 	if (istype(A, /obj/item/football) && team)
 		if (istype(map, /obj/map_metadata/football))
 			var/obj/map_metadata/football/MF = map
-			MF.reset_ball()
+			if (!MF.reset_ball()) return FALSE
 			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
 			to_chat(world, "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>")

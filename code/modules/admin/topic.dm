@@ -318,7 +318,11 @@
 				var/mob/living/human/H = New
 				var/H_oloc = H.loc
 				var/H_jobloc = null
-				H.loc = H_oloc
+				if (!H.persistence_set_loc(H_oloc))
+					if (H.client)
+						H.client.eye = H
+						H.client.perspective = MOB_PERSPECTIVE
+					return FALSE
 				if (H.client)
 					H.client.eye = H_oloc
 					H.client.perspective = EYE_PERSPECTIVE
@@ -333,24 +337,41 @@
 					var/datum/job/J = input(usr_client, "Which job?") in (list("Cancel") | job_master_occupation_names)
 
 					if (J != "Cancel")
+						if (persistence_save_active()) return FALSE
 						job_master.EquipRank(H, J)
 						H.original_job = job_master_occupation_names[J]
 						H_jobloc = H.loc
-						H.loc = H_oloc
+						if (!H.persistence_set_loc(H_oloc))
+							if (H.client)
+								H.client.eye = H
+								H.client.perspective = MOB_PERSPECTIVE
+							return FALSE
 						var/msg = "[key_name(usr)] assigned the new mob [H] the job '[J]'."
 						message_admins(msg, key_name(usr))
 						log_admin(msg)
 						spawn (0.1)
-							H.loc = null // fixes a bug where H is relocated even after we set H.loc = null
+							if (!H.persistence_set_loc(null))
+								if (H.client)
+									H.client.eye = H
+									H.client.perspective = MOB_PERSPECTIVE
+								return FALSE
 							if (H.client)
 								H.client.eye = H_oloc
 								H.client.perspective = EYE_PERSPECTIVE
 							var/send2spawn = (M_area && istype(M_area, /area/caribbean/admin)) ? "No" : input(usr_client, "Send [H] to their spawnpoint?") in list("Yes", "No")
 							switch (send2spawn)
 								if ("Yes")
-									H.loc = H_jobloc
+									if (!H.persistence_set_loc(H_jobloc))
+										if (H.client)
+											H.client.eye = H
+											H.client.perspective = MOB_PERSPECTIVE
+										return FALSE
 								if ("No")
-									H.loc = H_oloc
+									if (!H.persistence_set_loc(H_oloc))
+										if (H.client)
+											H.client.eye = H
+											H.client.perspective = MOB_PERSPECTIVE
+										return FALSE
 
 							if (H.client)
 								H.client.eye = H
@@ -400,7 +421,11 @@
 										H.name = H.species.get_random_name(H.gender)
 										H.real_name = H.name
 				else
-					H.loc = H_oloc
+					if (!H.persistence_set_loc(H_oloc))
+						if (H.client)
+							H.client.eye = H
+							H.client.perspective = MOB_PERSPECTIVE
+						return FALSE
 					if (H.client)
 						H.client.eye = H
 						H.client.perspective = MOB_PERSPECTIVE

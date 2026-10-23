@@ -176,6 +176,7 @@
 /obj/item/weapon/grab/proc/adjust_position()
 	if (!affecting)
 		return
+	if ((state == GRAB_NECK || state == GRAB_UPGRADING || state == GRAB_KILL) && (!assailant || !persistence_movement_allowed(affecting, assailant.loc))) return FALSE
 	if (affecting.buckled)
 		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
 		return

@@ -14,7 +14,7 @@ HELPERS = (
     '/mob/living/human/proc/enter_protected_sleep',
     '/mob/living/human/proc/complete_protected_wakeup',
 )
-MOVEMENT_HELPERS = ('/proc/persistence_movement_allowed', '/atom/movable/proc/forceMove')
+MOVEMENT_HELPERS = ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed', '/atom/movable/proc/forceMove')
 BUCKLING = ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')
 CASES = ('normal', 'legacy-wake', 'unrelated-occupant', 'refused-unbuckle', 'busy',
          'busy-recheck', 'moved-origin', 'refused-move', 'invalid-return',
@@ -43,10 +43,10 @@ def mutate(source, control):
                                  'inducedSSD || !return_turf || !sleep_turf || get_turf(src) != return_turf', 'old-bed revalidation control')
     if control == 'persistence-gate':
         # All six pre-hook and post-hook gates are removed only in this projection.
-        before = 'persistence_save_in_progress || '
+        before = 'persistence_sleep_transfer_blocked() || '
         if source.count(before) != 5:
             raise RuntimeError('Persistence control requires all five exact source gates')
-        after_transfer = ' || persistence_save_in_progress)\n'
+        after_transfer = ' || persistence_sleep_transfer_blocked())\n'
         if source.count(after_transfer) != 1:
             raise RuntimeError('Persistence control requires one exact post-transfer gate')
         return source.replace(before, '').replace(after_transfer, ')\n')
@@ -56,7 +56,7 @@ def mutate(source, control):
         # Keep rollback locals referenced: constant FALSE is optimized away and
         # correctly rejected by the zero-warning native compiler contract.
         'move-rollback': ('\tif (!sleep_turf || get_turf(src) != sleep_turf)\n', '\tif (cross_case == "never-selected")\n'),
-        'inventory-gate': ('\tif (persistence_save_in_progress || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)\n', '\tif (FALSE)\n'),
+        'inventory-gate': ('\tif (persistence_sleep_transfer_blocked() || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)\n', '\tif (FALSE)\n'),
     }[control]
     return BASE.replace_once(source, before, after, 'sleep mutation control')
 

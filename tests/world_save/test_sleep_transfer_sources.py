@@ -86,9 +86,9 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.assertIn('return !buckled && (!seat || seat.buckled_mob != src)', changed)
 
     def test_persistence_control_omits_all_six_gates_only(self):
-        self.assertEqual(self.helpers.count('persistence_save_in_progress'), 6)
+        self.assertEqual(self.helpers.count('persistence_sleep_transfer_blocked()'), 6)
         changed = RUNNER.mutate(self.helpers, 'persistence-gate')
-        self.assertNotIn('persistence_save_in_progress', changed)
+        self.assertNotIn('persistence_sleep_transfer_blocked()', changed)
         self.assertIn('release_protected_sleep_buckle()', changed)
         self.assertIn('!return_turf || !sleep_turf', changed)
         self.assertIn('inducedSSD || buckled ||', changed)

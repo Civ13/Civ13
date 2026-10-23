@@ -87,15 +87,22 @@ class Fixture:
                         ishuman=lambda a: a.human, ADMIN_AREA='admin',
                         istype=lambda a, kind: isinstance(a, Area) and a.admin,
                         list=lambda *args: args, EXCEPTION=RuntimeError,
+                        typed_iter=lambda values, kind: [a for a in values if kind == '/atom/movable' or
+                                                        (kind == '/obj' and not a.human) or
+                                                        (kind == '/mob' and a.human)],
                         CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2)
         self.area, self.admin = Area(), Area(True)
         self.sleep = Atom(self.admin, turf=True, xyz=(1, 1, 1))
         self.home = Atom(self.area, turf=True, xyz=(3, 2, 2))
         self.same = Atom(self.area, turf=True, xyz=(4, 2, 2))
         self.other = Atom(self.area, turf=True, xyz=(3, 2, 3))
-        self.env['locate'] = lambda x, y, z: next((t for t in (self.sleep, self.home, self.same, self.other) if t.xyz == (x, y, z)), None)
+        self.same_plane = Atom(self.area, turf=True, xyz=(3, 2, 1))
+        self.env['locate'] = lambda x, y, z: next((t for t in (self.sleep, self.home, self.same, self.other, self.same_plane) if t.xyz == (x, y, z)), None)
         movable = movable_source or read(MOVABLE)
         functions = operation_source or read(FUNCTIONS)
+        self.env['persistence_save_active'] = project(functions, '/proc/persistence_save_active', '', self.env)
+        self.env['persistence_sleep_transfer_blocked'] = project(functions, '/proc/persistence_sleep_transfer_blocked', '', self.env)
+        self.env['persistence_live_contents'] = project(movable, '/proc/persistence_live_contents', 'container', self.env)
         self.allow = project(movable, '/proc/persistence_movement_allowed', 'mover, destination', self.env)
         self.env['persistence_movement_allowed'] = self.allow
         self.env['is_protected_sleep_location'] = project(read(HELPERS), '/proc/is_protected_sleep_location', 'location', self.env)
@@ -134,6 +141,171 @@ class Fixture:
 
 
 class GuardTests(unittest.TestCase):
+    def test_operating_table_refuses_before_resting_or_announcing(self):
+        f = Fixture()
+        human, table = f.actor(), f.actor(f.other, human=False)
+        events = []
+        human.resting = False
+        human.visible_message = lambda *args: events.append('message')
+        f.env.update(visible_message=lambda *args: events.append('message'),
+                     add_fingerprint=lambda *args: events.append('fingerprint'))
+        take = project(read('code/game/objects/structures/optable.dm'), '/obj/structure/optable/proc/take_victim', 'src, C, user', f.env, True)
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(take(table, human, human))
+        self.assertFalse(human.resting)
+        self.assertEqual(events, [])
+        self.assertIs(human.loc, f.home)
+        operation.finish(True)
+        take(table, human, human)
+        self.assertTrue(human.resting)
+        self.assertIs(human.loc, f.other)
+
+    def test_football_preflight_is_noop_for_cross_z_but_allows_same_z_save_reset(self):
+        f = Fixture()
+        human, ball = f.actor(), f.actor(human=False)
+        human.original_job = NS(spawn_location='player-spawn')
+        human.football = ball
+        events = []
+        class Client:
+            def __lshift__(self, value):
+                events.append('sound')
+        human.client = Client()
+        ball.owner, ball.last_owner = human, None
+        class World:
+            time = 42
+            def __iter__(self):
+                return iter([ball])
+        def typed(values, kind):
+            return [a for a in values if kind == '/atom/movable' or
+                    (kind.startswith('/mob') and a.human) or
+                    (kind.startswith('/obj') and not a.human)]
+        f.env.update(world=World(), player_list=[human], typed_iter=typed,
+                     latejoin_turfs={'player-spawn': [f.same], 'football': [f.other]},
+                     list=lambda *args: tuple(args) if args else {}, pick=lambda values: values[0],
+                     sound=lambda *args, **kwargs: 'whistle', to_chat=lambda *args: events.append('message'),
+                     deferred=lambda delay: False)
+        reset = project(read('code/game/objects/map_metadata/football.dm'), '/obj/map_metadata/football/proc/reset_ball', 'src', f.env, True)
+        metadata = NS(stopped=False, stopped_until=0)
+        f.begin(f.store, 'save')
+        self.assertFalse(reset(metadata))
+        self.assertEqual((metadata.stopped, metadata.stopped_until), (False, 0))
+        self.assertEqual(events, [])
+        self.assertIs(ball.owner, human)
+        self.assertIs(human.loc, f.home)
+        f.env['latejoin_turfs']['football'] = [f.same]
+        self.assertTrue(reset(metadata))
+        self.assertIs(human.loc, f.same)
+        self.assertIs(ball.loc, f.same)
+        self.assertIsNone(ball.owner)
+        self.assertIsNone(human.football)
+        self.assertTrue(metadata.stopped)
+
+    def test_admin_jump_refusal_has_no_success_log_or_follow_reset(self):
+        f = Fixture()
+        human = f.actor()
+        events = []
+        human.on_mob_jump = lambda: events.append('follow-reset')
+        f.env.update(usr=human, config=NS(allow_admin_jump=True), R_ADMIN=1, R_MOD=2, R_DEBUG=4,
+                     check_rights=lambda rights: True, log_admin=lambda message: events.append('log'),
+                     message_admins=lambda *args: events.append('announcement'), key_name_admin=lambda user: 'fixture')
+        jump = project(read('code/modules/admin/verbs/adminjump.dm'), '/client/proc/jumptoturf', 'src, T', f.env, True)
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(jump(NS(), f.other))
+        self.assertEqual(events, [])
+        self.assertIs(human.loc, f.home)
+        operation.finish(False)
+        jump(NS(), f.other)
+        self.assertIs(human.loc, f.other)
+        self.assertEqual(events, ['log', 'announcement', 'follow-reset'])
+
+    def test_area_callback_refusal_does_not_update_covers_and_can_retry(self):
+        f = Fixture()
+        cover, human = f.actor(human=False), f.actor()
+        cover.is_cover = True
+        events = []
+        cover.updateturf = lambda: events.append('cover-update')
+        teleporter = NS(movement_location='DOWN', scope=[cover, human])
+        f.env.update(get_area=lambda source: source.scope, deferred=lambda ticks: True)
+        callback = project(read('code/modules/multiz/area_teleporter.dm'), '/obj/effect/area_teleporter/proc/Simple_Up', 'src', f.env, True)
+        operation = f.begin(f.store, 'save')
+        callback(teleporter)
+        self.assertEqual(events, [])
+        self.assertIs(cover.loc, f.home)
+        self.assertIs(human.loc, f.home)
+        operation.finish(True)
+        callback(teleporter)
+        self.assertEqual(events, ['cover-update'])
+        self.assertIs(cover.loc, f.other)
+        self.assertIs(human.loc, f.other)
+
+    def test_nonregistered_admin_visitor_requires_exit_without_fake_return(self):
+        f = Fixture()
+        visitor = f.actor(f.sleep)
+        visitor.SetSleeping(0)
+        visitor.set_stat(0)
+        self.assertEqual((visitor.sleeping, visitor.stat), (2, 1))
+        self.assertFalse(f.wake(visitor))
+        self.assertEqual((visitor.lastx, visitor.lasty, visitor.lastz), (0, 0, 0))
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(visitor.forceMove(f.home))
+        operation.finish(True)
+        self.assertTrue(visitor.forceMove(f.home))
+        visitor.SetSleeping(0)
+        visitor.set_stat(0)
+        self.assertEqual((visitor.sleeping, visitor.stat), (0, 0))
+
+    def test_same_z_sleep_transfers_use_owner_through_all_save_phases(self):
+        f = Fixture()
+        human = f.actor(f.same_plane)
+        for phase in ('preparation', 'backend', 'contents', 'cleanup'):
+            with self.subTest(phase=phase):
+                operation = f.begin(f.store, 'save')
+                if phase != 'preparation':
+                    operation.enter_backend(f.store, 'save')
+                if phase in ('contents', 'cleanup'):
+                    operation.enter_contents(f.store, 'save')
+                # Prove helpers are not relying on the compatibility flag.
+                f.env['persistence_save_in_progress'] = False
+                self.assertTrue(f.allow(human, f.sleep))  # generic same-z motion
+                before = human.drop_calls
+                self.assertFalse(f.enter(human))
+                self.assertEqual(human.drop_calls, before)
+                self.assertFalse(human.inducedSSD)
+                operation.finish(False)
+        self.assertTrue(f.enter(human))
+        operation = f.begin(f.store, 'save')
+        f.env['persistence_save_in_progress'] = False
+        self.assertFalse(f.wake(human))
+        self.assertIs(human.loc, f.sleep)
+        self.assertTrue(human.inducedSSD)
+        operation.finish(True)
+        self.assertTrue(f.wake(human))
+        self.assertIs(human.loc, f.same_plane)
+
+    def test_retired_and_nullspace_carriers_cannot_launder_live_contents(self):
+        f = Fixture()
+        box = f.actor(human=False)
+        retired_inner = f.actor(box, human=False)
+        human = f.actor(retired_inner)
+        box.gc_destroyed = retired_inner.gc_destroyed = -1
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(box.forceMove(None))
+        self.assertIs(get_turf(human), f.home)
+        self.assertFalse(box.forceMove(f.other))
+        operation.finish(False)
+        box.loc = None  # already unplaced carrier at next admission
+        f.begin(f.store, 'save')
+        self.assertFalse(box.forceMove(f.other))
+        box.gc_destroyed = retired_inner.gc_destroyed = False
+        self.assertFalse(box.persistence_set_loc(f.other))
+        self.assertIs(human.loc, retired_inner)
+        fresh = Atom()
+        fresh.forceMove = MethodType(f.move, fresh)
+        self.assertTrue(fresh.forceMove(f.other))  # empty creation exception
+        fresh.gc_destroyed = -1
+        self.assertTrue(fresh.forceMove(None))  # empty deletion exception
+        self.assertFalse(fresh.forceMove(f.home))
+
     def test_success_false_and_exception_keep_guard_through_backend_and_cleanup(self):
         for outcome in (True, False, RuntimeError('cancelled/failing writer')):
             with self.subTest(outcome=outcome):
@@ -334,6 +506,35 @@ class GuardTests(unittest.TestCase):
 
 
 class SourcePathTests(unittest.TestCase):
+    def test_delayed_attachments_admit_before_recording_relationships(self):
+        source = read('code/modules/1713/punishment.dm')
+        for family in ('noose', 'gallows', 'cross', 'pillory', 'post_execution'):
+            body = extract(source, '/obj/structure/' + family + '/MouseDrop_T')
+            self.assertLess(body.index('if (!target.persistence_set_loc(get_turf(src))) return FALSE'), body.index('hanging = target'))
+            self.assertNotIn('target.loc =', body)
+        devour = extract(read('code/game/mob/mob_grab_specials.dm'), '/obj/item/weapon/grab/proc/devour')
+        self.assertLess(devour.index('if (!target.persistence_set_loc(user)) return FALSE'), devour.index('admin_attack_log'))
+        self.assertLess(devour.index('persistence_set_loc(user)'), devour.index('stomach_contents.Add(target)'))
+
+    def test_confirmed_remote_writers_have_actual_commit_guards(self):
+        jobs = read('code/game/jobs/job_controller.dm')
+        self.assertIn('if (!H.persistence_set_loc(spawnpoint)) return FALSE', jobs)
+        self.assertIn('if (!H.persistence_set_loc(null)) return FALSE', jobs)
+        admin = read('code/modules/admin/topic.dm')
+        self.assertNotRegex(admin, re.compile(r'^\s+H.loc =', re.M))
+        self.assertLess(admin.index('if (persistence_save_active()) return FALSE'), admin.index('job_master.EquipRank(H, J)'))
+        objective = extract(read('code/game/objects/effects/spawner.dm'), '/obj/effect/spawner/objective_spawner/proc/spawnerproc')
+        self.assertIn('new/obj/item/cursedtreasure(locationtomove)', objective)
+        self.assertNotIn('targetobjective.loc =', objective)
+        goals = extract(read('code/modules/1713/weapons/football.dm'), '/obj/effect/step_trigger/goal/Trigger')
+        self.assertLess(goals.index('if (!MF.reset_ball()) return FALSE'), goals.index('MF.teams[team][2] += 1'))
+        table = extract(read('code/game/objects/structures/table.dm'), '/obj/structure/table/proc/tablepush')
+        self.assertLess(table.index('if (!G.affecting.persistence_set_loc(loc)) return FALSE'), table.index('G.affecting.Weaken(2)'))
+        drone = read('code/game/objects/items/devices/drone.dm')
+        self.assertLess(drone.index('if (!I || !persistence_movement_allowed(I, src)) return FALSE'), drone.index('user.remove_from_mob(I)'))
+        self.assertIn('if (!I.persistence_set_loc(src)) return FALSE', drone)
+        self.assertIn('if (!payload.persistence_set_loc(T)) return FALSE', drone)
+
     def test_generic_storage_admits_before_hooks_and_guards_the_actual_assignment(self):
         for path in ('code/game/objects/items/weapons/storage/storage.dm', 'code/game/objects/items/weapons/storage/misc.dm'):
             source = read(path)

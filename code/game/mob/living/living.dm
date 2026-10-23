@@ -500,6 +500,8 @@ default behaviour is:
 	return
 
 /mob/living/Move(a, b, flag)
+	if (!persistence_movement_allowed(src, a))
+		return FALSE
 	if (buckled)
 		return FALSE
 	if (using_drone)

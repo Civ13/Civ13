@@ -1,17 +1,31 @@
 // Save admission owns this restriction, including preparation and cleanup.
 // Imports must be free to reconstruct locations. Same-z save hooks (for
 // example paid rack transfers) remain valid; never wait inside the serializer.
+/proc/persistence_live_contents(atom/movable/container)
+	for (var/atom/movable/child in container)
+		if (!child.gcDestroyed && !child.gc_destroyed)
+			return TRUE
+		if (persistence_live_contents(child))
+			return TRUE
+	return FALSE
+
 /proc/persistence_movement_allowed(atom/movable/mover, atom/destination)
-	if (!persistence_active_operation || persistence_active_operation.kind != "save")
+	if (!persistence_save_active())
 		return TRUE
+	if (!mover)
+		return FALSE
 	var/turf/origin = get_turf(mover)
 	var/turf/target = get_turf(destination)
+	// Retirement is a deletion exception, never permission to re-enter a level.
+	if (target && (mover.gcDestroyed || mover.gc_destroyed))
+		return FALSE
 	if (!origin)
-		return TRUE
+		// Permit empty new atoms, not a nullspace carrier of existing live atoms.
+		return !persistence_live_contents(mover)
 	if (!target)
 		// Retirement must still detach deleted atoms. Ordinary nullspace hops
 		// cannot be used to evade the cross-z restriction in a second move.
-		return !destination && (mover.gcDestroyed || mover.gc_destroyed)
+		return !destination && (mover.gcDestroyed || mover.gc_destroyed) && !persistence_live_contents(mover)
 	return origin.z == target.z
 
 /atom/movable

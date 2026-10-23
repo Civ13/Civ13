@@ -10,6 +10,7 @@
 	if (!check_rights(R_ADMIN|R_MOD|R_DEBUG))
 		return
 	if (config.allow_admin_jump)
+		if (!persistence_movement_allowed(usr, T)) return FALSE
 		log_admin("[key_name(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]")
 		message_admins("[key_name_admin(usr)] jumped to [T.x],[T.y],[T.z] in [T.loc]", key_name_admin(usr))
 		usr.on_mob_jump()
@@ -26,6 +27,7 @@
 		return
 
 	if (config.allow_admin_jump)
+		if (!persistence_movement_allowed(mob, get_turf(M))) return FALSE
 		log_admin("[key_name(usr)] jumped to [key_name(M)]")
 		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", key_name_admin(usr))
 		if (mob)
@@ -50,6 +52,7 @@
 	if (config.allow_admin_jump)
 		if (mob)
 			var/mob/A = mob
+			if (!persistence_movement_allowed(A, locate(tx, ty, tz))) return FALSE
 			A.on_mob_jump()
 			A.persistence_set_loc(locate(tx, ty, tz))
 
@@ -74,6 +77,7 @@
 			to_chat(src, "No keys found.")
 			return
 		var/mob/M = selection:mob
+		if (!M || !persistence_movement_allowed(usr, M.loc)) return FALSE
 		log_admin("[key_name(usr)] jumped to [key_name(M)]")
 		message_admins("[key_name_admin(usr)] jumped to [key_name_admin(M)]", key_name_admin(usr))
 		usr.on_mob_jump()
@@ -89,6 +93,7 @@
 	if (!check_rights(R_ADMIN|R_MOD|R_DEBUG))
 		return
 	if (config.allow_admin_jump)
+		if (!persistence_movement_allowed(M, get_turf(usr))) return FALSE
 		log_admin("[key_name(usr)] teleported [key_name(M)]")
 		message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)]", key_name_admin(usr))
 		M.on_mob_jump()
@@ -113,28 +118,29 @@ var/turf/default_adminzone_turf = null
 		if ((input(src, "Are you sure?") in list("Yes", "No")) == "No")
 			return
 
-	log_admin("[key_name(usr)] went to the admin zone")
-	message_admins("[key_name_admin(usr)] went to the admin zone", key_name_admin(usr))
-
 	if (!default_adminzone_turf)
 		default_adminzone_turf = locate(90, 92, 3)
 
+	var/turf/destination
 	if (default_adminzone_turf)
 		var/area/A = get_area(default_adminzone_turf)
 		if (A.type == /area/caribbean/admin)
-			mob.persistence_set_loc(default_adminzone_turf)
-			return TRUE
+			destination = default_adminzone_turf
 
-	var/area/caribbean/admin/admin_zone = locate() in area_list
-	if (!admin_zone)
-		to_chat(src, "There is no admin zone in this map!")
-		return FALSE
-	for (var/turf/T in admin_zone.contents)
-		if (!T.density && !locate(/obj/structure) in T)
-			mob.persistence_set_loc(T)
-			break
+	if (!destination)
+		var/area/caribbean/admin/admin_zone = locate() in area_list
+		if (!admin_zone)
+			to_chat(src, "There is no admin zone in this map!")
+			return FALSE
+		for (var/turf/T in admin_zone.contents)
+			if (!T.density && !locate(/obj/structure) in T)
+				destination = T
+				break
 
-	return FALSE
+	if (!destination || !mob.persistence_set_loc(destination)) return FALSE
+	log_admin("[key_name(usr)] went to the admin zone")
+	message_admins("[key_name_admin(usr)] went to the admin zone", key_name_admin(usr))
+	return TRUE
 
 
 /client/proc/Getkey()
@@ -156,6 +162,7 @@ var/turf/default_adminzone_turf = null
 
 		if (!M)
 			return
+		if (!persistence_movement_allowed(M, get_turf(usr))) return FALSE
 		log_admin("[key_name(usr)] teleported [key_name(M)]")
 		message_admins("[key_name_admin(usr)] teleported [key_name(M)]", key_name_admin(usr))
 		if (M)
@@ -173,8 +180,10 @@ var/turf/default_adminzone_turf = null
 	var/area/A = input(usr, "Pick an area.", "Pick an area") in return_sorted_areas()
 	if (A)
 		if (config.allow_admin_jump)
+			var/turf/destination = pick(get_area_turfs(A))
+			if (!destination || !persistence_movement_allowed(M, destination)) return FALSE
 			M.on_mob_jump()
-			M.persistence_set_loc(pick(get_area_turfs(A)))
+			if (!M.persistence_set_loc(destination)) return FALSE
 
 
 			log_admin("[key_name(usr)] teleported [key_name(M)] to [A]")

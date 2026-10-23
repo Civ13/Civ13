@@ -558,6 +558,13 @@
 	var/area/A = get_area_name(arena)
 	var/area/B = get_area_name("Arena IV outer ring")
 	var/turf/TGT = pick_area_turf(/area/caribbean/roman/armory/loot2)
+	// Strip sends paid equipment to TGT too; admit before changing inventories.
+	for (var/mob/living/human/actor in A)
+		if (!persistence_movement_allowed(actor, TGT)) return FALSE
+	for (var/obj/item/item in A)
+		if (!persistence_movement_allowed(item, TGT)) return FALSE
+	for (var/obj/item/item in B)
+		if (!persistence_movement_allowed(item, TGT)) return FALSE
 	var/mob/living/human/WINNER
 	var/count = 0
 	for(var/mob/living/human/GLAD in A)
@@ -568,9 +575,9 @@
 			else if (current_style == "unarmed")
 				count++
 	for(var/obj/item/I in A)
-		I.loc = TGT
+		if (!I.persistence_set_loc(TGT)) return FALSE
 	for(var/obj/item/II in B)
-		II.loc = TGT
+		if (!II.persistence_set_loc(TGT)) return FALSE
 	if (current_style == "unarmed")
 		for(var/mob/living/human/GLAD in B)
 			if (GLAD.original_job_title == "Gladiator" && GLAD.stat == CONSCIOUS && !GLAD.surrendered)
@@ -648,7 +655,7 @@
 				if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 					qdel(I)
 				else
-					I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+					if (!I.persistence_set_loc(pick_area_turf(/area/caribbean/roman/armory/loot))) return FALSE
 			for (var/obj/effect/decal/cleanable/C in A)
 				qdel(C)
 			if (A.name == "Arena IV")
@@ -661,7 +668,7 @@
 					if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 						qdel(I)
 					else
-						I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+						if (!I.persistence_set_loc(pick_area_turf(/area/caribbean/roman/armory/loot))) return FALSE
 				for (var/obj/effect/decal/cleanable/C in B)
 					qdel(C)
 	if (user)
@@ -677,7 +684,7 @@
 		if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food))
 			qdel(I)
 		else
-			I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+			if (!I.persistence_set_loc(pick_area_turf(/area/caribbean/roman/armory/loot))) return FALSE
 	for (var/obj/effect/decal/cleanable/C in A)
 		qdel(C)
 	if (A.name == "Arena IV")
@@ -690,7 +697,7 @@
 			if (istype(I, /obj/item/organ) || istype(I,/obj/item/weapon/material/shard) || istype(I, /obj/item/weapon/reagent_containers/food) || istype(I,/obj/item/clothing/shoes/roman) || istype(I,/obj/item/clothing/under/celtic_green) || istype(I,/obj/item/clothing/under/celtic_red) || istype(I,/obj/item/clothing/under/celtic_blue))
 				qdel(I)
 			else
-				I.loc = pick_area_turf(/area/caribbean/roman/armory/loot)
+				if (!I.persistence_set_loc(pick_area_turf(/area/caribbean/roman/armory/loot))) return FALSE
 		for (var/obj/effect/decal/cleanable/C in B)
 			qdel(C)
 	return
