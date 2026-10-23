@@ -43,6 +43,11 @@
 			return TRUE
 	return ..()
 
+// A throw's target belongs to the live throwing processor, not the saved world.
+// Apply on import too so historical references cannot recreate a foreign owner.
+/atom/movable/persistence_runtime_var(key)
+	return key == "original_target" || ..()
+
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.
 /datum/light_source
