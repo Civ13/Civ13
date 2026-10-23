@@ -20,6 +20,8 @@ still yields the existing species pelts for fur clothing and other pelt recipes.
    300 ticks, normally 30 seconds. Click the rack with an empty hand to retrieve
    its contents; removing wet hides cancels that batch and preserves the pieces.
    Completed dry hides must be retrieved before another batch can be loaded.
+   Hold the wet-hide stack itself; remove it from a storage bag first. Loading
+   transfers that batch directly, leaving unrelated loose hides on the ground.
 5. Apply an open held liquid container containing at least 5 units of tannin to a dry hide.
    One dry hide and 5 tannin produce one ordinary leather sheet.
 
@@ -67,6 +69,10 @@ Conversions call `use(n)` without a human argument, avoiding crafting discounts,
 and pass final counts into constructors before any automatic merging occurs.
 Preparation no longer falls through into a second output when a destination
 stack already exists.
+
+Intermediate hide materials expose processing interactions, not generic utensil
+or other material crafting recipes. Finished leather and species-pelt recipes
+retain their existing crafting uses.
 
 The rack stores actual wet/dry stack objects in its saved contents. Its runtime
 epoch and derived busy flag are excluded from both save export and legacy import.
