@@ -15,7 +15,7 @@ def read(path):
 
 
 def extract(source, declaration):
-    matches = list(re.finditer(r'^(\t*)' + re.escape(declaration) + r'\([^\n]*\)\n', source, re.M))
+    matches = list(re.finditer(r'^(\t*)' + re.escape(declaration) + r'\([^\n]*\)[ \t]*(?://[^\n]*)?\n', source, re.M))
     if len(matches) != 1:
         raise AssertionError(f'Expected exactly one {declaration}')
     match = matches[0]
@@ -36,7 +36,7 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'inducedSSD', 'buckled', 'storage', 'kind', 'backend_started',
           'contents_started', 'mutation_started', 'restoring_players',
           'current', 'enter_backend', 'enter_contents', 'finish',
-          'contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
+          'contents', 'stomach_contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
           'l_hand', 'r_hand', 'equipped', 'update_inv_l_hand', 'update_inv_r_hand', 'equip_to_slot',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',

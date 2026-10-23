@@ -142,6 +142,26 @@ class Fixture:
 
 
 class GuardTests(unittest.TestCase):
+    def test_stomach_release_cannot_recall_a_protected_sleeper_from_stale_ownership(self):
+        f = Fixture()
+        host = f.actor()
+        sleeper, contained = f.actor(host), f.actor(host)
+        class Contents(list):
+            def Copy(self):
+                return Contents(self)
+            def Remove(self, value):
+                self.remove(value)
+        host.stomach_contents = Contents([sleeper, contained])
+        self.assertTrue(f.enter(sleeper))
+        release = project(read('code/game/mob/living/carbon/carbon.dm'),
+                          '/mob/living/human/proc/release_stomach_contents', 'src', f.env, True)
+        f.begin(f.store, 'save')
+        self.assertTrue(release(host))
+        self.assertIs(sleeper.loc, f.sleep)
+        self.assertTrue(sleeper.inducedSSD)
+        self.assertIs(contained.loc, f.home)
+        self.assertEqual(host.stomach_contents, [])
+
     def test_actual_movable_destroy_retires_nested_contents_before_detaching(self):
         f = Fixture()
         f.env.update(parent=lambda: 0, istype=lambda value: isinstance(value, Atom),
@@ -619,6 +639,23 @@ class GuardTests(unittest.TestCase):
 
 
 class SourcePathTests(unittest.TestCase):
+    def test_finite_remaining_relationship_paths_have_source_ownership_evidence(self):
+        carbon = read('code/game/mob/living/carbon/carbon.dm')
+        relay = extract(carbon, '/mob/living/human/relaymove')
+        self.assertLess(relay.index('if (!release_stomach_contents()) return FALSE'), relay.index('gib()'))
+        self.assertNotIn('A.loc = loc', relay)
+        stationary = read('code/modules/1713/weapons/guns/mg/_stationary.dm')
+        self.assertEqual(extract(stationary, '/obj/item/weapon/gun/projectile/automatic/stationary/proc/can_climb').strip(), 'return FALSE')
+        climb = extract(stationary, '/obj/item/weapon/gun/projectile/automatic/stationary/proc/do_climb')
+        self.assertTrue(climb.lstrip().startswith('if (!can_climb(user))'))
+        cannons = read('code/modules/1713/siege/piece.dm')
+        for direction in ('left', 'right'):
+            body = extract(cannons, '/obj/structure/cannon/verb/rotate_' + direction)
+            self.assertIn('for (var/obj/structure/bed/chair/chair in behind)', body)
+            self.assertEqual(len(re.findall(r'behind = locate\([^\n]+src.z\)', body)), 8)
+            until_commit = body.split('chair_found.buckled_mob.loc = new_behind')[0]
+            self.assertNotRegex(until_commit, r'\b(?:sleep|spawn|do_after|WWinput|input)\s*\(')
+
     def test_remaining_modal_and_timed_gameplay_commits_admit_before_ownership(self):
         camel = extract(read('code/game/mob/living/simple_animal/friendly/farm_animals.dm'),
                         '/mob/living/simple_animal/camel/verb/remove_from_storage')

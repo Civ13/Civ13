@@ -33,10 +33,11 @@ in generated-source controls; production files are never mutated by the tests.
   raw `loc`, `z`, `pixloc`, `vars` and contents edits do not dispatch the shared
   movement methods. Audited transport paths now use guarded helpers, but legacy
   direct location writers still exist in magic and many
-  inventory/constructor/local/nullspace paths. Job/admin location commits and the
+  inventory/constructor/local/nullspace paths. Occupation location commits and the
   identified objective spawner have since received focused corrections. Run
   `audit_writers.py --output <review-report.json>` to inventory residual statements.
-  Their safety requires call-path review; the inventory makes no benign-type claim.
+  The inventory makes no blanket benign-type claim or open-ended acceptance gate;
+  concrete findings and finite pending acceptance are recorded in WRITER-REVIEW.md.
   Administrator-only jumps, variable editing and arbitrary procedure invocation
   are explicitly outside the requested coverage after the user scope clarification;
   they are not acceptance blockers for normal gameplay. The save announcement

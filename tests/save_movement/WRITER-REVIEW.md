@@ -2,8 +2,9 @@
 
 The original 325 statements are not 325 demonstrated cross-z transfers. The
 inventory does not establish runtime type, physical ownership, included-map
-reachability, or safety of callbacks. This is an incomplete call-path review;
-unclassified statements remain an acceptance blocker.
+reachability, or safety of callbacks. The raw inventory count is not an acceptance
+gate. A concrete reachable gameplay transfer or cleanup regression is a blocker;
+arbitrary privileged edits are excluded by the clarified user scope.
 
 | Risk class | Actual source evidence | Current disposition |
 | --- | --- | --- |
@@ -21,9 +22,11 @@ unclassified statements remain an acceptance blocker.
 | Internal visibility helper | dview_mob is anchored, simulated=FALSE, removed from ordinary mob lists, and temporarily placed by dview/FOR_DVIEW | It is a runtime visibility helper, not a player transfer. Serializer/lighting use and cleanup must remain available. This is an explicit internal exception requiring review, not a global movement bypass grant. |
 | Privileged admin operations | admin-only jumps, vars/list modification and arbitrary proc invocation | Explicitly excluded from required coverage by the user. The shared guard naturally affects normal movement APIs, and the admitted-save announcement warns against cross-z movement. No credential or security changes were made. |
 
-No code is ready for deployment as universal coverage. The classified residual
-risks above need review or fixes before that claim; native BYOND compilation and
-engine acceptance are also still pending under the offline-only scope.
+Universal interception of arbitrary direct assignments is not claimed. The finite
+acceptance gates for this patch are parent source review, final-head compilation,
+and bounded native save/sleep/movement cleanup acceptance. They remain pending
+under the offline-only scope; the raw inventory does not add a separate open-ended
+audit milestone.
 
 Additional concrete gameplay paths corrected locally: camel removal retains selected
 items across WWinput; vehicle cargo methods retain objects across do_after; tank
@@ -39,3 +42,29 @@ the clarified scope.
 The published 57f59c3e snapshot passed CI build and offline checks as verified by
 the parent (run 39889062764). This newer local revision has no native compilation
 evidence yet. Native gameplay fixture jobs were skipped on the published snapshot.
+
+The final concrete stale-list finding was carbon.relaymove's stomach_contents
+release: a swallowed human can leave through protected sleep while the old list
+entry survives. The new release helper removes stale ownership without recalling
+the sleeper, and moves only physically contained atoms through save admission.
+The production-body regression enters protected sleep before starting the save,
+then releases both a stale sleeper and a still-contained human.
+
+Two suspected player paths were classified without additional production edits:
+stationary-gun do_climb is unreachable through its sole can_climb implementation,
+which always returns FALSE; naval cannon rotation selects chair_found from a
+current-z behind turf and computes new_behind on that same z without a wait or
+input between selection and location commits. Native engine acceptance remains
+distinct from this source evidence.
+
+Finite remaining acceptance list:
+1. Parent reviews the local deltas, including warning, ownership release and
+   cancellation/refusal semantics, before another publication.
+2. CI compiles the exact final candidate; the earlier published build is not
+   evidence for newer bytes.
+3. Authorized isolated native operation/sleep probes exercise success, false
+   cancellation, exceptions/cleanup, overlap, same-z sleep admission, natural and
+   forced waking, and safe return/retry.
+4. Authorized isolated native movement checks cover nested containers, live
+   contents during qdel/closet dump, and transport callback cancellation. No live
+   server or duplicate hosted installation is needed for these acceptance cases.
