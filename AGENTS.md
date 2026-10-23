@@ -400,6 +400,15 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-23: footwear water composition -->
+Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
+clothing dirtyness only supplies examine text. Water filters must group the
+footwear image with its nested stain (KEEP_TOGETHER only while masked), and
+new update_inv_shoes images need the current mask before publication. Keep
+durable stain data intact. tests/footwear_water_mask checks source contracts
+and prepares a tiny production-proc fixture; compilation/source checks do not
+establish native client clipping, stance, movement or lighting acceptance.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as
