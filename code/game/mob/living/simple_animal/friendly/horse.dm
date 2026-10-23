@@ -1,4 +1,5 @@
 /mob/living/simple_animal/horse
+	defensive_retaliation = TRUE
 	name = "horse"
 	desc = "A friendly horse. Seems to be tamed."
 	icon = 'icons/mob/animal_64.dmi'

@@ -126,7 +126,9 @@
 		I.hits = 0
 		H.attackby(I, U)
 		combat_assert(I.attacks == 1 && I.hits == 1 && H.health == 140, "Sharp hostage fallback changed")
-		text2file("PASS: production health/Life, sharp/blunt clicks, damage, material wear, healing and death; [mismatches] audited default mismatches", "result.txt")
+		combat_retaliation_checks()
+		text2file("PASS: production health/Life, sharp/blunt clicks, damage, material wear, healing, death and defensive retaliation; [mismatches] audited default mismatches", "result.txt")
 	catch (var/exception/E)
 		text2file("FAIL: [E]", "result.txt")
 	del(world)
+	return
