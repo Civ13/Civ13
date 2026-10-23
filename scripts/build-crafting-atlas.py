@@ -2,6 +2,7 @@
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
+from atlas.tanning import add_tanning
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
@@ -194,6 +195,7 @@ if bench:
     for name,result in re.findall(r'"(Pickaxe|Shovel|Hatchet)"\s*=\s*(/obj/item/weapon/material/\w+)',bench):
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
+tanning_routes=add_tanning(files, add, records, sprite_variants)
 for recipe in records:
     for resource in recipe['inputs']+recipe['outputs']:
         if resource['id'] in sprite_variants:
@@ -232,6 +234,9 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
+for route in tanning_routes:
+    for resource in route['outputs']:
+        acquisition.setdefault(resource,[]).append(route)
 add_processors(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
 data['limitations'].append('Unlock eras use explicit minimum gates or mapped research tiers; processor eras describe station construction research. Research can be ahead of the map era. Unknown entries are not assigned an era from their maximum expiry. No filter guarantees current faction availability.')

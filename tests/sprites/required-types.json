@@ -1,4 +1,10 @@
 [
+  "/obj/item/stack/bark",
+  "/obj/item/stack/material/rawhide",
+  "/obj/item/stack/material/hairlesshide",
+  "/obj/item/stack/material/wethide",
+  "/obj/item/stack/material/dryhide",
+  "/obj/structure/converter/tanning",
   "/obj/item/flax_bundle",
   "/obj/item/flax_work",
   "/obj/item/stack/rotten_flax",
