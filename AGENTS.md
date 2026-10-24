@@ -262,8 +262,9 @@ areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
 does not alter temperature or precipitation. The optional round.json snapshot
 is validated before mutation and installed before replacement constructors;
 missing legacy snapshots restore flat zero, overriding newer author defaults.
-See docs/elevation.md and tests/elevation. Native fixture preparation is source
-only while local native execution remains held.
+See docs/elevation.md and tests/elevation. Native fixture preparation does not
+establish native acceptance; run only under the repository's normal
+authorization/admission rules.
 
 - Each map has a `/obj/map_metadata` subtype that handles game mode logic.
 - The metadata object is placed in the DMM at a consistent position (conventionally `(1,1,1)`) on any turf.
