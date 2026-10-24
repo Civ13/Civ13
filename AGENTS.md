@@ -279,6 +279,26 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 
 ### Process scheduler integration
 
+<!-- 2026-10-22: wolf cave timer ownership -->
+Wolf caves own one guarded self-processing five-second chain; /full delegates
+startup to the parent. Destroy stops the chain and ticking is excluded on custom
+save export/import. Removing world-scanning duplicate calls reduces eligible
+wanderer/flavor rolls; it is a scheduling correction with changed RNG frequency.
+tests/wolf_cave_ownership has offline contracts and prepared native controls;
+preparation does not compile/launch BYOND or establish native acceptance.
+The dedicated cave executor has an offline-only CLI; real backend invocation
+requires separate review. Native -close exits after world shutdown, not network
+isolation; socket samples cannot prove continuous absence. See its EXECUTOR.md.
+The resource-free cave fixture must declare Civ13's inherited movable anchored
+field. Three held Windows attempts stopped at the strict one-member Job guard;
+the third identified an owned conhost and logged the former missing declaration.
+They establish no cave runtime result; preserve their original frozen packets.
+Offline cave executor tests supply a canonical interpreter fixture path because
+Ubuntu python3 is a symlink; native packet path/hash/link checks stay unchanged.
+The proposed cave backend uses DETACHED_PROCESS instead of CREATE_NO_WINDOW to
+avoid startup console attachment. Its conhost hypothesis is native-unverified;
+all extra Job members still reject. See tests/wolf_cave_ownership/CONSOLE_STARTUP.md.
+
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.
 - Register the process var in `code/processes/__processes.dm`.
@@ -295,6 +315,12 @@ Subclass post-loop aggregation must account for final-entry EARLY normalization.
 Ping retains per-pass sum/count across budget returns and publishes before the
 final-entry budget check. Every skipped client still consumes its snapshot entry.
 tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
+
+<!-- 2026-10-22: cleanables phase ownership -->
+Cleanables installs pending location work before the final count budget check.
+Its retained content snapshot and survivor are released on completion/cancellation.
+tests/cleanables_scheduler is offline source-derived evidence; native list/GC
+handoff and iteration remain separate acceptance.
 
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
