@@ -476,6 +476,22 @@ offline text contracts do not replace the pinned native compiler.
 
 ## Agent self-maintenance
 
+<!-- 2026-10-24: area topology and persistence review -->
+Area references are anchor coordinates plus type, not independently recreated
+area objects. Reconstruct only proven saved roof topology before field decoding;
+retain/recheck exact base/destination identities, including empty instances, and
+scope entry IDs by z. Never fabricate unrelated areas or weaken mismatch checks.
+World-preserving preflight is separate from input-file byte immutability: absent
+native savefile fields need presence checks and copy-only tests. Honor refused
+movement before landing effects or ownership/success changes. Offline source
+adapters must reject unhandled preprocessor directives, not silently truncate
+procedures. Cross-z guards do not make a yielding save atomic. See
+`docs/zone-persistence-audit.md` for #3290, known gaps and the regression matrix.
+Future atmospheric rooms/networks need logical identities separate from area
+types/objects, versioned topology and authoritative gas/thermal stores. Rebuild
+derived caches and admit workers only after full restore/conservation checks;
+see `docs/atmosphere-persistence-readiness.md`. This plan does not activate atmos.
+
 <!-- 2026-10-15: durable invulnerable areas -->
 Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
 Durable JSON uses the exact `positive_infinity` sentinel only for that field;
