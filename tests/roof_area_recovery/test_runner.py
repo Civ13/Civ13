@@ -76,15 +76,19 @@ class RunnerTests(unittest.TestCase):
             probe.write_bytes(probe.read_bytes()+b'// changed code\n')
             self.assertNotEqual(expected,runner.execution_contract(second,b))
 
-    def phase(self, fault=None):
+    def phase(self, fault=None, *, denied_exit=None, work_end=960, end=990, second_sample_at=.1):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary); case = output/'cases/read'; case.mkdir(parents=True)
             if fault != 'early-exit': (case/'probe-port-closed.txt').write_bytes(b'closed\n')
-            calls = dict(cleanup=0, sockets=0, exit=0, popen=0)
+            calls = dict(cleanup=0, sockets=0, exit=0, popen=0, sleeps=[])
             clock = SimpleNamespace(value=0)
             process = SimpleNamespace(pid=123)
             def exited(_):
                 calls['exit'] += 1
+                if denied_exit:
+                    if calls['sockets'] < 2: return False
+                    if denied_exit == 'terminal': return True
+                    return denied_exit == 'late' and clock.value >= second_sample_at+.03
                 if fault == 'early-exit': return True
                 if fault == 'deadline': clock.value = 61
                 return calls['exit'] > 1
@@ -92,13 +96,15 @@ class RunnerTests(unittest.TestCase):
                 return dict(pid=pid,start_ticks=7,pgrp=pid,session=pid,resident_pages=1,cpu_ticks=0)
             def sockets(*args):
                 calls['sockets'] += 1
+                if denied_exit and calls['sockets'] == 2:
+                    raise PermissionError('injected post-closure denial')
                 if fault == 'denied-read': raise PermissionError('injected read denial')
                 if fault == 'public-socket':
                     return [dict(protocol='tcp',state='listen',address='0.0.0.0',port=runner.PORT)]
                 return []
             def cleanup(*args):
                 calls['cleanup'] += 1
-                return dict(exit_code=0,group_empty=fault != 'cleanup',errors=['injected'] if fault == 'cleanup' else [])
+                return dict(exit_code=-9 if denied_exit == 'live' else 0,group_empty=fault != 'cleanup',errors=['injected'] if fault == 'cleanup' else [])
             def popen(*args, **kwargs):
                 calls['popen'] += 1; calls['environment'] = kwargs['env']; return process
             old = SimpleNamespace(native_census=lambda:[],identity=identity,exited_unreaped=exited,
@@ -109,11 +115,14 @@ class RunnerTests(unittest.TestCase):
                 usage_calls.append(1)
                 return SimpleNamespace(ru_utime=61 if fault == 'cpu' and len(usage_calls) > 1 else 0,ru_stime=0)
             resource = SimpleNamespace(RUSAGE_CHILDREN=0,getrusage=usage)
+            def sleep(seconds):
+                calls['sleeps'].append(seconds); clock.value += seconds
+                if denied_exit and len(calls['sleeps']) == 1: clock.value = second_sample_at
             receipt = {'children':[]}
             namespace = dict(runner.__dict__, old=old,output=output,byond=Path('/test-engine'),
-                work_end=960,end=990,owned=[],fixed_inputs=0,receipt=receipt,check=lambda:None,save=lambda:None,
+                work_end=work_end,end=end,owned=[],fixed_inputs=0,receipt=receipt,check=lambda:None,save=lambda:None,
                 sha=lambda _:runner.ENGINE['DreamDaemon'],subprocess=SimpleNamespace(Popen=popen,DEVNULL=-3),
-                time=SimpleNamespace(monotonic=lambda:clock.value,sleep=lambda seconds:setattr(clock,'value',clock.value+seconds)))
+                time=SimpleNamespace(monotonic=lambda:clock.value,sleep=sleep))
             unit = ast.fix_missing_locations(ast.Module(body=[actual_phase()],type_ignores=[]))
             exec(compile(unit,str(PATH),'exec'),namespace)
             error = None
@@ -145,6 +154,39 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(calls['sockets'],1)
         self.assertEqual(calls['cleanup'],1)
         self.assertFalse(ack)
+
+    def test_live_denial_stays_rejected_even_when_diagnostic_wait_observes_exit(self):
+        calls,receipt,error,ack=self.phase(denied_exit='late')
+        observation=receipt['children'][0]['socket_observation_denial']
+        self.assertIsInstance(error,PermissionError)
+        self.assertTrue(ack)
+        self.assertFalse(observation['terminal_at_first_waitid'])
+        self.assertTrue(observation['terminal_after_wait'])
+        self.assertLessEqual(observation['wait_seconds'],.25)
+        self.assertEqual((calls['popen'],calls['sockets'],calls['cleanup']),(1,2,1))
+        self.assertEqual(receipt['children'][0]['cleanup']['exit_code'],0)
+
+    def test_immediate_terminal_denial_keeps_existing_acceptance_without_wait(self):
+        calls,receipt,error,ack=self.phase(denied_exit='terminal')
+        observation=receipt['children'][0]['socket_observation_denial']
+        self.assertIsNone(error)
+        self.assertTrue(ack)
+        self.assertTrue(observation['terminal_at_first_waitid'])
+        self.assertNotIn('terminal_after_wait',observation)
+        self.assertEqual(calls['sleeps'],[.1])
+        self.assertEqual((calls['popen'],calls['sockets'],calls['cleanup']),(1,2,1))
+
+    def test_live_denial_diagnostics_respect_window_phase_work_and_outer_caps(self):
+        for work,end,second,expected in ((960,990,.1,.25),(960,990,59.9,.1),
+                                        (.15,30.15,.1,.05),(960,.12,.1,.02),(960,.1,.1,0)):
+            with self.subTest(work=work,end=end,second=second):
+                calls,receipt,error,ack=self.phase(denied_exit='live',work_end=work,end=end,second_sample_at=second)
+                observation=receipt['children'][0]['socket_observation_denial']
+                self.assertIsInstance(error,PermissionError)
+                self.assertFalse(observation['terminal_at_first_waitid'])
+                self.assertFalse(observation['terminal_after_wait'])
+                self.assertAlmostEqual(observation['wait_seconds'],expected)
+                self.assertEqual((calls['popen'],calls['sockets'],calls['cleanup']),(1,2,1))
 
     def test_socket_contract_rejects_wrong_port_and_reopening(self):
         good = dict(protocol='tcp',state='listen',address='127.0.0.1',port=runner.PORT)

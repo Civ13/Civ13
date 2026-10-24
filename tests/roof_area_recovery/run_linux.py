@@ -302,9 +302,27 @@ def run(output, byond, packet_dir, head, request_sha256):
                     members = old.group_members(process.pid)
                     need(len(members) == 1 and members[0]['pid'] == process.pid, 'Unexpected owned descendant')
                     try: sockets = old.owned_sockets(process.pid, birth['start_ticks'])
-                    except (FileNotFoundError, PermissionError):
-                        if not old.exited_unreaped(process): raise
-                        break  # Never retry a denied read; earlier closure is still required.
+                    except (FileNotFoundError, PermissionError) as error:
+                        terminal = old.exited_unreaped(process)
+                        if isinstance(error, PermissionError):
+                            denied_at = time.monotonic()
+                            observation = dict(pid=process.pid, start_ticks=birth['start_ticks'],
+                                error=str(error)[:4096], seconds=denied_at-phase_start,
+                                closed=closed, terminal_at_first_waitid=terminal,
+                                last_socket_sample_seconds=row['samples'][-1]['seconds'] if row['samples'] else None)
+                            row['socket_observation_denial'] = observation
+                            if not terminal:
+                                # Diagnostic only: never retry the denied read or
+                                # convert a live-child denial into acceptance.
+                                wait_until = min(denied_at+.25, phase_end, work_end, end)
+                                while not terminal and time.monotonic() < wait_until:
+                                    time.sleep(min(.01,max(0,wait_until-time.monotonic())))
+                                    terminal = old.exited_unreaped(process)
+                                observation.update(terminal_after_wait=terminal,
+                                    wait_seconds=time.monotonic()-denied_at)
+                                raise
+                        if not terminal: raise
+                        break  # Existing terminal classification; earlier closure still required.
                     socket_contract(sockets, runtime, closed)
                     if runtime and not closed:
                         need(time.monotonic()-phase_start < CAPS['closure_seconds'], 'Closure deadline')
