@@ -67,9 +67,16 @@ The reviewed `run_linux.py` invocation is now wired into the existing Linux PR
 build job. `ci-steps.yml.example` retains the exact reviewed step template; the
 active copy is in `.github/workflows/test.yml`. It reuses that build job after its
 BYOND bootstrap/full-game compile, `contents: read`, exact PR-head checkout and
-disabled credential persistence. It selects only introduced roof tests on
+disabled credential persistence. It selects introduced roof tests on
 opened/synchronize/reopened PR events, never body edits, push or manual dispatch.
 The three packets run sequentially and stop on the first failure, without retries.
+An existing-suite request can instead use PR label `roof-ci:<full-head-SHA>`.
+After source/resource review, an authorized maintainer sets that 48-character
+label for the exact reviewed commit before publishing it. The ordinary PR
+synchronize event then selects both offline roof contracts and this native step.
+The label does not change `new_tests`, grant resources or permit manual/edited
+events; adding it alone triggers no run. A later source head needs a new matching
+label and review. Do not create an artificial introduced test to select the suite.
 The enclosing step is bounded to 40 minutes; native work plus cleanup remains
 990 + 330 + 330 seconds. Preparation and input verification precede those native
 deadlines. No change to production/private data or native session is involved.

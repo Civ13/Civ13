@@ -94,7 +94,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions == true
         run: python3 -B -m unittest discover -s tests/save_latency/representative -v
       - name: Prepare roof-area recovery fixture offline
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || (github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')
@@ -268,7 +268,7 @@ jobs:
 
       - name: Verify synthetic saved-roof recovery and two defect controls
         id: roof_native
-        if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && (contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 40
         shell: bash
         env:
