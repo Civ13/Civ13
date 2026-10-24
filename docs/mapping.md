@@ -30,6 +30,15 @@ official [BYOND Guide](https://www.byond.com/docs/guide/) and
   biome, nation and room are not independent native layers.
 - Check native location/climate plus map season/weather policies separately.
   Mountain uses indoor cave areas and Wet/Dry seasons; it does not provide altitude.
+- Identify the playable ground surface explicitly from authored metadata/layout.
+  The default may be above z-level `1`: [Gaia](../maps/nomads/nomads_gaia.dmm) uses
+  `2` for its outdoor playfield; [Europe](../maps/nomads/nomads_europe.dmm) uses `1`.
+  Do not globally renumber maps or infer surface from `z = 1`, `world.maxz` or a
+  controller object's z-level. Native surface z is a grid-plane identity, separate
+  from physical elevation in metres and connected-level traversal.
+- For variable-height maps, record an explicit region/coordinate-to-surface mapping
+  where one default plane is insufficient. This is a conceptual authoring standard;
+  a general variable-surface API and automatic enforcement are not implemented.
 - Inspect the exact ladder/transfer subtype in
   [`multiz`](../code/modules/multiz/structures.dm). Generic helpers use a connection
   bitmask; the `map_data.height` initializer is commented out in
@@ -57,6 +66,9 @@ official [BYOND Guide](https://www.byond.com/docs/guide/) and
   `z = 1` or the maximum z-level. This is an authoring rule; automatic enforcement
   is not implemented. Default-arrival changes must preserve existing saved character
   locations and durable custom arrivals.
+- At each arrival candidate, resolve the intended surface and verify actual
+  supporting ground, the correct area, clearance and safe access. A matching z
+  number alone does not make an arrival safe.
 - Review a reachable water/food/tool/shelter/progression chain for each start and
   faction. The [outdoor bootstrap trace](outdoor-crop-bootstrap.md) and
   [`check-outdoor-bootstrap.py`](../scripts/check-outdoor-bootstrap.py) help with
