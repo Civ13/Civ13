@@ -56,11 +56,46 @@ var/global/probe_failures = 0
 /world/New()
 	OpenPort("none")
 	check(port == 0, "closed native port")
+	if(port != 0)
+		del(world)
+		return
+	text2file("closed", "probe-port-closed.txt")
+	var/closure_deadline = world.time + 50
+	while(!fexists("probe-port-closed.ack") && world.time < closure_deadline)
+		sleep(1)
+	check(trim(file2text("probe-port-closed.ack")) == "closed", "external socket closure acknowledged")
+	if(trim(file2text("probe-port-closed.ack")) != "closed")
+		del(world)
+		return
 	check(!variable_observability_enabled(), "default off")
 	text2file("enabled", "config/variable-observability.txt")
 	text2file(nomads_lifecycle.read_token(), "config/lifecycle-token.txt")
 	text2file(nomads_lifecycle.read_revision(), "config/lifecycle-revision.txt")
 	check(variable_observability_enabled(), "explicit local opt-in")
+	var/publication_mode = trim(file2text("config/variable-probe-mode.txt"))
+	if(publication_mode == "missing" || publication_mode == "unwritable" || publication_mode == "obstructed")
+		if(publication_mode == "obstructed")
+			check(file2text("data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt") == "retained obstruction", "nonempty output obstruction prepared")
+			var/write_refused = FALSE
+			try
+				write_refused = !text2file("must not replace a directory", "data/desktop-supervisor/variable-observability/last-failure.json")
+			catch
+				write_refused = TRUE
+			check(write_refused, "real file-versus-directory write refusal")
+			check(file2text("data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt") == "retained obstruction", "direct write refusal preserves obstruction marker")
+		var/list/unpublished = list("probe_publication" = publication_mode)
+		check(!map_storage.variable_observability_publish(unpublished), "unavailable private output refused")
+		check(map_storage.last_variable_failure == unpublished, "unavailable output retains in-memory evidence")
+		if(publication_mode == "obstructed")
+			check("last-failure.json/" in flist("data/desktop-supervisor/variable-observability/last-failure.json"), "output obstruction remains a directory")
+			check(file2text("data/desktop-supervisor/variable-observability/last-failure.json/retained-control.txt") == "retained obstruction", "collector refusal preserves obstruction marker")
+		else
+			check(!fexists("data/desktop-supervisor/variable-observability/last-failure.json"), "unavailable output produced no file")
+		check(!fexists("data/variable-observability-last-failure.json"), "no legacy public-path fallback")
+		world.log << "VARIABLE_OBSERVABILITY publication=[publication_mode] failures=[probe_failures] native_collector_only=1"
+		del(world)
+		return
+	check(publication_mode == "writable", "known publication mode")
 	var/atom/movable/source = new(locate(1,1,1))
 	var/atom/movable/target = new(locate(1,1,2))
 	source.original_target = target
@@ -94,10 +129,13 @@ var/global/probe_failures = 0
 	map_storage.variable_observability_capture(target)
 	var/list/captured_source = map_storage.last_variable_failure["source"]
 	check(captured_source["field"] == "original_target", "exact field captured")
-	check(fexists("data/variable-observability-last-failure.json"), "automatic local failure file")
+	check(fexists("data/desktop-supervisor/variable-observability/last-failure.json"), "automatic private failure file")
+	check(!fexists("data/variable-observability-last-failure.json"), "no legacy public-path output")
+	check(fcopy("data/desktop-supervisor/variable-observability/last-failure.json", "data/desktop-supervisor/variable-observability/native-reference.json"), "reference capture retained for actual reader")
 	map_storage.last_variable_failure = null
 	map_storage.variable_observability_finish(persistence_active_operation, FALSE)
 	check(map_storage.last_variable_failure["kind"] == "operation_failed", "failed operation snapshot")
+	check(fcopy("data/desktop-supervisor/variable-observability/last-failure.json", "data/desktop-supervisor/variable-observability/native-operation-failure.json"), "operation capture retained for actual reader")
 	var/atom/movable/container = source
 	for(var/i = 1 to 9)
 		container = new /atom/movable(container)
@@ -115,7 +153,7 @@ var/global/probe_failures = 0
 	var/list/deleted_identity = variable_observability_identity(source.original_target)
 	check(!deleted_identity["present"], "deleted reference not resolved")
 	map_storage.variable_observability_publish(list("huge" = repeat_string(40000)))
-	check(length(file2text("data/variable-observability-last-failure.json")) <= 32768 + 2, "bounded disk output")
+	check(length(file2text("data/desktop-supervisor/variable-observability/last-failure.json")) <= 32768 + 2, "bounded disk output")
 	world.log << "VARIABLE_OBSERVABILITY failures=[probe_failures] native_collector_only=1"
 	del(world)
 	return

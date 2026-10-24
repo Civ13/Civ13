@@ -400,6 +400,30 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-23: footwear water composition -->
+Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
+clothing dirtyness only supplies examine text. Water filters must group the
+footwear image with its nested stain (KEEP_TOGETHER only while masked), and
+new update_inv_shoes images need the current mask before publication. Keep
+durable stain data intact. tests/footwear_water_mask checks source contracts
+and prepares a tiny production-proc fixture; compilation/source checks do not
+establish native client clipping, stance, movement or lighting acceptance.
+The pinned native image getter returned lowercase #RRGGBB text for the tested
+blood/mud inputs. The fixture comparator first requires text of exactly seven
+characters matching #RRGGBB, then ignores hexadecimal case. Never coerce nulls,
+named colors or matrices. Keep wrong-channel/missing-stain controls and preserve
+the earlier failed raw-text comparison receipts; diagnostics are not pixels.
+
+<!-- 2026-10-23: persistence minimum date -->
+Persistence activation, configured startup and completed metadata restoration use
+apply_persistence_age_floor(). age is the displayed date/epoch; ordinal_age is a
+separate research tier, and prototype research can advance it independently.
+The 1943 floor preserves later dates and research data; unknown epoch labels are
+not converted. tests/persistence_year checks source-derived offline traces;
+run-durable-world.py --persistence-year separately exercises the real helper,
+admin toggle, extracted configured activation and 24 v1/v2 ticker disk imports
+in an isolated 8x8x2 world. Its three controls must reach their named assertions.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as
@@ -451,6 +475,22 @@ offline text contracts do not replace the pinned native compiler.
   production restarts, live season transitions/imports, or publishing captures.
 
 ## Agent self-maintenance
+
+<!-- 2026-10-24: area topology and persistence review -->
+Area references are anchor coordinates plus type, not independently recreated
+area objects. Reconstruct only proven saved roof topology before field decoding;
+retain/recheck exact base/destination identities, including empty instances, and
+scope entry IDs by z. Never fabricate unrelated areas or weaken mismatch checks.
+World-preserving preflight is separate from input-file byte immutability: absent
+native savefile fields need presence checks and copy-only tests. Honor refused
+movement before landing effects or ownership/success changes. Offline source
+adapters must reject unhandled preprocessor directives, not silently truncate
+procedures. Cross-z guards do not make a yielding save atomic. See
+`docs/zone-persistence-audit.md` for #3290, known gaps and the regression matrix.
+Future atmospheric rooms/networks need logical identities separate from area
+types/objects, versioned topology and authoritative gas/thermal stores. Rebuild
+derived caches and admit workers only after full restore/conservation checks;
+see `docs/atmosphere-persistence-readiness.md`. This plan does not activate atmos.
 
 <!-- 2026-10-15: durable invulnerable areas -->
 Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
@@ -567,10 +607,14 @@ the reader does not invent a never-thrown default.
 Collection/exposure and automatic local output remain default-off until a
 separately authorized exact-build deployment/restart and local opt-in using
 `config/variable-observability.txt` containing `enabled`, existing lifecycle
-credentials/revision, and an operator-private runtime `data/` directory. Do not
+credentials/revision, and a separately provisioned operator-private runtime
+`data/desktop-supervisor/variable-observability/` directory. Do not
 activate them from source/PR approval or claim this tooling is already live.
 The automatic path is runtime-relative
-`data/variable-observability-last-failure.json`; the reader's `--input <file>`
+`data/desktop-supervisor/variable-observability/last-failure.json`; publication
+must fail harmlessly if that fixed directory is missing or unwritable, with no
+legacy-path fallback or automatic ACL/directory creation. Explicit old-file
+reads remain supported. The reader's `--input <file>`
 mode is offline and requires independently obtained expected revision/session/
 round. Keep raw captures private. Unknown fields are stripped, but refs/types/
 coordinates remain operational data requiring review before public sharing.

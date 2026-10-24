@@ -380,7 +380,7 @@ class ProducerSource(unittest.TestCase):
     def test_default_off_auth_fixed_paths_and_no_generic_access(self):
         for text in ('config/variable-observability.txt', '!= "enabled"', 'nomads_lifecycle_hex(nomads_lifecycle.read_token(), 32)',
                      'nomads_lifecycle_hex(nomads_lifecycle.read_revision(), 40)',
-                     'data/variable-observability-last-failure.json'):
+                     'data/desktop-supervisor/variable-observability/last-failure.json'):
             self.assertIn(text, self.source)
         for forbidden in ('.vars', 'call(', 'locate(', 'for(var/atom/A in world)', 'world.Export', 'shell(', 'world.log', '.name', '.ckey'):
             self.assertNotIn(forbidden, self.source)

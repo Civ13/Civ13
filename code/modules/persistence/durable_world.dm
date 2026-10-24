@@ -94,11 +94,20 @@
 		if(!area_key || "[save_validation_area_type(row["x"], row["y"], row["z"])]" != row["type"] || seen[area_key]) throw EXCEPTION("Invalid or duplicate durable area")
 		seen[area_key] = TRUE
 		durable_metadata_validate_fields(row["fields"], durable_metadata_area_schema())
-	for(var/area/A in world)
-		var/turf/T = locate(/turf) in A
-		if(T && !seen["\ref[A]"]) throw EXCEPTION("Missing durable area")
-	if(save_validation_maxz() > world.maxz && !seen[save_validation_area_key(1, 1, save_validation_maxz())])
-		throw EXCEPTION("Missing prospective durable area")
+	if(validated_roof_areas.len)
+		// A base area can lose its last turf to saved roofs. Validate the
+		// prospective inventory, including every uncovered base-map turf.
+		for(var/z = 1, z <= save_validation_maxz(), z++)
+			for(var/y = 1, y <= world.maxy, y++)
+				for(var/x = 1, x <= world.maxx, x++)
+					if(!seen[save_validation_area_key(x, y, z)]) throw EXCEPTION("Missing prospective durable area")
+					TICK_CHECK
+	else
+		for(var/area/A in world)
+			var/turf/T = locate(/turf) in A
+			if(T && !seen["\ref[A]"]) throw EXCEPTION("Missing durable area")
+		if(save_validation_maxz() > world.maxz && !seen[save_validation_area_key(1, 1, save_validation_maxz())])
+			throw EXCEPTION("Missing prospective durable area")
 	var/list/symbols = state["symbols"]
 	if(!islist(symbols) || symbols.len > 1024) throw EXCEPTION("Invalid durable faction symbols")
 	for(var/faction in symbols)
