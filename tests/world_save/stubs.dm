@@ -1,4 +1,9 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// Compile dependencies for the production loader's roof helpers. These minimal
+// stubs declare no /obj/roof; full-source roof tests own recovery acceptance.
+var/list/area_list = list()
+/area/caribbean/roofed
+
 // Minimal serializer fixtures do not exercise wounds. Keep the loader's type
 // contract declared, but fail closed if one is introduced into these probes.
 // The --wounds full-source fixture tests actual constructor/state restoration.
