@@ -239,12 +239,14 @@ def compile_receipt(plan, outcome, output):
         status = 'failed'
     requirement = None
     toolchain_error = None
+    acquisition = None
     try:
         requirement = toolchain.load()
         if selected and outcome == 'success':
             if (directory / 'byond-version.txt').read_text().strip() != requirement['version']:
                 raise ValueError('Installed compiler version receipt differs from active requirement')
             toolchain.compiler_log((directory / 'compiler.log').read_text(), requirement['version'])
+            acquisition = toolchain.read_download_receipt(directory / 'byond-download.json', requirement, 'linux')
     except (OSError, ValueError) as error:
         status = 'failed'
         toolchain_error = str(error)[:300]
@@ -254,6 +256,7 @@ def compile_receipt(plan, outcome, output):
                    reason=plan['compile']['reason'],
                    toolchain='BYOND ' + requirement['version'] if requirement else None,
                    toolchain_error=toolchain_error,
+                   acquisition=acquisition,
                    archive_authenticity=requirement['integritySource'] if requirement else 'Unavailable')
     write_json(output, receipt)
     return 1 if status == 'failed' else 0
@@ -265,6 +268,10 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected):
         requirement = toolchain.load()
         if compile_run.get('toolchain') != 'BYOND ' + requirement['version'] or compile_run.get('toolchain_error') is not None:
             errors.append('Compiler receipt differs from active BYOND requirement')
+        try:
+            toolchain.validate_download_receipt(compile_run.get('acquisition'), requirement, 'linux')
+        except ValueError:
+            errors.append('Missing/invalid exact-source BYOND acquisition receipt')
     required = {'changes', 'baseline', 'evidence-checker', 'build'}
     if extraction_selected:
         required.add('extraction-instances')

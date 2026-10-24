@@ -178,13 +178,19 @@ does not expand or independently certify each legacy native fixture's oracle;
 inspect those existing runner artifacts when admitted. Branch protection is
 unchanged; adopting this aggregate as a required protection is an owner decision.
 
-The hosted bootstrap keeps BYOND 516.1681, resolves paths from its own script,
+The hosted bootstrap reads the active BYOND target from the central manifest,
+resolves paths from its own script,
 uses `pipefail` plus the zero-error/zero-warning summary, and bounds package,
 download, install, catalog and compiler stages. The compiler step has a 15-minute
 limit. It uses `libgcc-s1:i386`, matching the existing hosted standalone lane.
-The mirror archive's observed SHA-256 is retained for diagnostics only. There is
-no independently trusted checksum in this patch, so download authenticity remains
-unverified. Do not promote an observed mirror digest into a trusted pin.
+The active job explicitly selects the reviewed community mirror and verifies its
+archive against the unchanged previously observed official hash/size. Archive-only
+cache keys include OS/version/hash, without prefix restores. Hits are verified
+before fresh extraction and still require actual compilation. Cache metadata
+preserves official/community upstream provenance and is not authenticated history.
+Compiler and aggregate receipts reject missing/mismatched acquisition records.
+Observed official hashes establish exact bytes, not vendor-authenticated checksums.
+Historical manual native fixture lanes keep their explicit 516.1681 contract.
 
 Cloud-only workers run the inspected offline tests and syntax checks available
 to them, recording unavailable local native checks as `not_run`. After review and

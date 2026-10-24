@@ -56,7 +56,11 @@ if "$legacy_fixture"; then
     # Preserve the historical fixture download; no independent checksum is claimed.
     timeout -k 5 65 wget --timeout=30 --tries=1 --no-verbose -O pinned.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
 else
-    timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download --platform linux --output pinned.zip > "$repo_root/.ci/compile/byond-download.json"
+    archive_args=(--platform linux --output pinned.zip --source "${BYOND_ARCHIVE_SOURCE:-official}")
+    if [ -n "${BYOND_ARCHIVE_CACHE:-}" ]; then
+        archive_args+=(--cache-dir "$BYOND_ARCHIVE_CACHE")
+    fi
+    timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download "${archive_args[@]}" > "$repo_root/.ci/compile/byond-download.json"
 fi
 sha256sum pinned.zip > "$repo_root/.ci/compile/byond-archive.sha256"
 printf '%s\n' "$byond_version" > "$repo_root/.ci/compile/byond-version.txt"

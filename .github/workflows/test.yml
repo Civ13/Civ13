@@ -305,14 +305,36 @@ jobs:
         with:
           name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: .ci/selection
+      - name: Read reviewed BYOND archive cache identity
+        id: byond_archive
+        if: needs.changes.outputs.game == 'true'
+        run: echo "key=$(python3 -B scripts/byond_toolchain.py field linux-cache-key)" >> "$GITHUB_OUTPUT"
+      - name: Restore exact BYOND archive only
+        id: byond_cache
+        if: needs.changes.outputs.game == 'true'
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/civ13-byond-archives
+          key: ${{ steps.byond_archive.outputs.key }}
+          # No restore prefixes or shared installed-tree cache.
       - name: Compile selected exact-head game
         id: compile
         if: needs.changes.outputs.game == 'true'
         timeout-minutes: 15
+        env:
+          BYOND_ARCHIVE_SOURCE: community-mirror
+          BYOND_ARCHIVE_CACHE: ${{ runner.temp }}/civ13-byond-archives
         run: |
           mkdir -p .ci/compile
           bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
+
+      - name: Save verified BYOND archive after successful compilation
+        if: needs.changes.outputs.game == 'true' && steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/civ13-byond-archives
+          key: ${{ steps.byond_archive.outputs.key }}
 
       - name: Record compilation outcome and source receipts
         if: always()

@@ -6,6 +6,7 @@
   "bytes": 7264990,
   "linux": {
     "url": "https://www.byond.com/download/build/516/516.1688_byond_linux.zip",
+    "communityMirrorUrl": "https://byond-builds.dm-lang.org/516/516.1688_byond_linux.zip",
     "sha256": "16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9",
     "bytes": 4887281
   },

@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import urllib.error
 from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
@@ -140,7 +141,9 @@ class ByondToolchainTests(unittest.TestCase):
                 pin.download('linux', output, opener=lambda *_a, **_k: response,
                              clock=(lambda: next(ticks)) if ticks else lambda: 0)
             self.assertFalse(output.exists())
-            self.assertTrue(output.with_suffix('.zip.part').exists())
+            # Rejected response metadata never starts a body/partial; failed
+            # byte/deadline verification retains its exclusive partial evidence.
+            self.assertEqual(output.with_suffix('.zip.part').exists(), bad not in {'status', 'url', 'length'})
 
     def test_preexisting_output_and_partial_are_preserved_without_fetch(self):
         for suffix in ('.zip', '.zip.part'):
@@ -174,6 +177,7 @@ class ByondToolchainTests(unittest.TestCase):
             if actual is not None:
                 (folder / 'byond-version.txt').write_text(actual + '\n')
             (folder / 'compiler.log').write_text('DM compiler version 516.1688\nciv13.dmb - 0 errors, 0 warnings\n')
+            (folder / 'byond-download.json').write_text(json.dumps(self.receipt(self.value)))
             with self.subTest(actual=actual), patch.object(ci, 'git', return_value='tree'), patch.object(ci.subprocess, 'check_output', return_value=b''):
                 status = ci.compile_receipt(plan, 'success', folder / 'receipt.json')
             receipt = json.loads((folder / 'receipt.json').read_text())
@@ -214,6 +218,181 @@ class ByondToolchainTests(unittest.TestCase):
             values[key] = int(matches[0])
         self.assertEqual((values['BYOND_MAJOR'], values['BYOND_MINOR']), pin.version(self.value['version']),
                          'Global CI version literals differ from tools/byond/version.json')
+
+    def receipt(self, value, source='official', cache_status='disabled'):
+        archive = value['linux']
+        url = pin.source_url(value, 'linux', source)
+        return dict(version=value['version'], platform='linux', url=url, sha256=archive['sha256'],
+                    bytes=archive['bytes'], integritySource=value['integritySource'], source=source,
+                    requested_source=source, upstream_source=source, upstream_url=url,
+                    cache_key=pin.cache_key(value, 'linux'), cache_status=cache_status)
+
+    def test_reviewed_mirror_url_is_exact_and_original_official_bytes_stay_pinned(self):
+        self.assertEqual(self.value['linux']['sha256'], '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9')
+        self.assertEqual(self.value['linux']['bytes'], 4887281)
+        url = self.value['linux']['communityMirrorUrl']
+        self.assertEqual(url, 'https://byond-builds.dm-lang.org/516/516.1688_byond_linux.zip')
+        for bad in (url.replace('1688', '1681'), url.replace('1688', 'latest'), url+'?x=1', url+'#part',
+                    url.replace('https:', 'http:'), url.replace('dm-lang.org', 'dm-lang.org:443'),
+                    url.replace('byond-builds.dm-lang.org', 'example.com'), url.replace('/516/', '/515/')):
+            value = deepcopy(self.value)
+            value['linux']['communityMirrorUrl'] = bad
+            with self.subTest(url=bad), self.assertRaises(ValueError):
+                self.read_value(value)
+
+    def test_cold_and_warm_archive_cache_are_verified_with_exact_source_receipts(self):
+        metadata, _ = self.fixture_download()
+        url = metadata['linux']['communityMirrorUrl']
+        calls = []
+        def fetch(actual, **kwargs):
+            calls.append((actual, kwargs))
+            return Response(b'offline archive fixture', url, metadata['linux']['bytes'])
+        cache = self.root/'cache'
+        with patch.object(pin, 'load', return_value=metadata):
+            cold = pin.download('linux', self.root/'cold.zip', source='community-mirror', cache_dir=cache, opener=fetch)
+            warm = pin.download('linux', self.root/'warm.zip', source='community-mirror', cache_dir=cache,
+                                opener=lambda *_a, **_k:self.fail('Warm cache must not fetch'))
+        self.assertEqual(calls, [(url, {'timeout':15})])
+        self.assertEqual(cold, self.receipt(metadata, 'community-mirror', 'miss'))
+        self.assertEqual(warm, dict(cold, source='cache', url=None, cache_status='hit'))
+        self.assertEqual((self.root/'warm.zip').read_bytes(), b'offline archive fixture')
+        self.assertIn('-linux-516.1688-'+metadata['linux']['sha256'], warm['cache_key'])
+        self.assertEqual({p.name for p in cache.iterdir()}, {cold['cache_key']+'.zip', cold['cache_key']+'.json'})
+
+    def test_cache_key_changes_with_platform_version_and_expected_hash(self):
+        original = pin.cache_key(self.value, 'linux')
+        for change in ('version', 'hash', 'platform'):
+            metadata = deepcopy(self.value)
+            platform = 'linux'
+            if change == 'version': metadata['version'] = '516.1689'
+            if change == 'hash': metadata['linux']['sha256'] = '1'*64
+            if change == 'platform': platform = 'windows'
+            self.assertNotEqual(original, pin.cache_key(metadata, platform))
+
+    def test_corrupt_cache_is_preserved_and_never_falls_back_to_network(self):
+        metadata, _ = self.fixture_download()
+        for bad in ('hash', 'size', 'receipt', 'missing-receipt', 'origin'):
+            cache = self.root/bad
+            cache.mkdir()
+            archive = cache/(pin.cache_key(metadata, 'linux')+'.zip')
+            body = b'X'*metadata['linux']['bytes'] if bad == 'hash' else b'offline archive fixture'
+            if bad == 'size': body += b'X'
+            archive.write_bytes(body)
+            receipt = self.receipt(metadata, 'community-mirror', 'miss')
+            if bad == 'receipt': receipt['version'] = '516.1681'
+            if bad == 'origin': receipt['upstream_url'] = 'https://example.com/archive.zip'
+            if bad != 'missing-receipt': archive.with_suffix('.json').write_text(json.dumps(receipt))
+            with self.subTest(bad=bad), patch.object(pin, 'load', return_value=metadata), self.assertRaises((ValueError, OSError)):
+                pin.download('linux', self.root/(bad+'.zip'), source='community-mirror', cache_dir=cache,
+                             opener=lambda *_a, **_k:self.fail('No corrupt-cache network fallback'))
+            self.assertEqual(archive.read_bytes(), body)
+            self.assertFalse((self.root/(bad+'.zip')).exists())
+
+    def test_mirror_wrong_version_origin_hash_and_size_never_publish_or_cache(self):
+        for bad in ('version', 'origin', 'redirect', 'length', 'short', 'long', 'hash'):
+            metadata, _ = self.fixture_download()
+            url = metadata['linux']['communityMirrorUrl']
+            response = Response(b'offline archive fixture', url, metadata['linux']['bytes'])
+            if bad == 'version': response.url = url.replace('1688', '1681')
+            if bad == 'origin': response.url = 'https://example.com/archive.zip'
+            if bad == 'redirect': response.status = 302
+            if bad == 'length': response.headers['Content-Length'] = '999'
+            if bad == 'short': metadata['linux']['bytes'] += 1; response.headers = {}
+            if bad == 'long': metadata['linux']['bytes'] -= 1; response.headers = {}
+            if bad == 'hash': metadata['linux']['sha256'] = '0'*64
+            cache, output = self.root/('cache-'+bad), self.root/(bad+'.zip')
+            calls = []
+            def fetch(actual, **_kwargs): calls.append(actual); return response
+            with self.subTest(bad=bad), patch.object(pin, 'load', return_value=metadata), self.assertRaises(ValueError):
+                pin.download('linux', output, source='community-mirror', cache_dir=cache, opener=fetch)
+            self.assertEqual(calls, [url])
+            self.assertFalse(output.exists())
+            self.assertEqual(list(cache.iterdir()), [])
+
+    def test_network_failure_has_no_automatic_official_or_arbitrary_fallback(self):
+        calls = []
+        def fail(url, **_kwargs):
+            calls.append(url)
+            raise urllib.error.HTTPError(url, 403, 'offline denied fixture', {}, None)
+        with self.assertRaises(urllib.error.HTTPError):
+            pin.download('linux', self.root/'unavailable.zip', source='community-mirror', opener=fail)
+        self.assertEqual(calls, [self.value['linux']['communityMirrorUrl']])
+        for source, platform in (('https://example.com', 'linux'), ('community-mirror', 'windows'), ('fallback', 'linux')):
+            with self.subTest(source=source, platform=platform), self.assertRaises(ValueError):
+                pin.download(platform, self.root/'no.zip', source=source, opener=lambda *_a, **_k:self.fail('Unreviewed source fetched'))
+
+    def test_cache_receipt_metadata_is_bounded_duplicate_free_and_exact_source(self):
+        valid = self.receipt(self.value, 'community-mirror', 'miss')
+        pin.validate_download_receipt(valid, self.value, 'linux')
+        for key, bad in (('version','516.1681'), ('platform','windows'), ('sha256','0'*64), ('bytes',True),
+                         ('cache_key','byond-latest'), ('source','cache'), ('url','https://example.com'),
+                         ('upstream_source','unknown'), ('upstream_url',valid['url']+'?x=1'),
+                         ('integritySource','vendor authenticated'), ('cache_status',[])):
+            broken = dict(valid, **{key:bad})
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                pin.validate_download_receipt(broken, self.value, 'linux')
+        path = self.root/'receipt.json'
+        for text in ('{}', ' '*32769, '{"source":"official","source":"cache"}'):
+            path.write_text(text)
+            with self.assertRaises(ValueError): pin.read_download_receipt(path, self.value, 'linux')
+
+    def test_workflow_uses_archive_only_exact_cache_and_never_skips_target_compile_on_hit(self):
+        text = (ROOT/'.github/workflows/test.yml').read_text().split('\n  build:\n')[1]
+        self.assertIn('field linux-cache-key', text)
+        self.assertIn('actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684', text)
+        self.assertIn('actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684', text)
+        self.assertNotIn('restore-keys:', text)
+        self.assertIn('BYOND_ARCHIVE_SOURCE: community-mirror', text)
+        compile_step = text.split('- name: Compile selected exact-head game')[1].split('\n      - name:')[0]
+        self.assertIn("if: needs.changes.outputs.game == 'true'", compile_step)
+        self.assertNotIn('cache-hit', compile_step)
+        self.assertIn('bash ./scripts/travis_pre_byond.sh', compile_step)
+
+    def test_warm_cache_deadline_preserves_cache_and_never_publishes_output(self):
+        metadata, _ = self.fixture_download()
+        cache = self.root/'deadline-cache'
+        cache.mkdir()
+        archive = cache/(pin.cache_key(metadata,'linux')+'.zip')
+        archive.write_bytes(b'offline archive fixture')
+        archive.with_suffix('.json').write_text(json.dumps(self.receipt(metadata,'community-mirror','miss')))
+        ticks = iter((0,61))
+        with patch.object(pin,'load',return_value=metadata), self.assertRaisesRegex(ValueError,'deadline'):
+            pin.download('linux',self.root/'deadline.zip',source='community-mirror',cache_dir=cache,
+                         clock=lambda:next(ticks),opener=lambda *_a,**_k:self.fail('Warm deadline triggered network'))
+        self.assertEqual(archive.read_bytes(),b'offline archive fixture')
+        self.assertFalse((self.root/'deadline.zip').exists())
+
+    def test_incomplete_cache_partial_refuses_network_and_preserves_evidence(self):
+        cache=self.root/'incomplete-cache'
+        cache.mkdir()
+        partial=cache/(pin.cache_key(self.value,'linux')+'.zip.part')
+        partial.write_bytes(b'failed cached transfer')
+        with self.assertRaisesRegex(ValueError,'Incomplete cached'):
+            pin.download('linux',self.root/'incomplete.zip',source='community-mirror',cache_dir=cache,
+                         opener=lambda *_a,**_k:self.fail('Incomplete cache caused network fallback'))
+        self.assertEqual(partial.read_bytes(),b'failed cached transfer')
+
+    def test_compile_receipt_requires_valid_acquisition_despite_clean_mock_compiler_log(self):
+        spec = importlib.util.spec_from_file_location('acquisition_receipt_test',ROOT/'scripts/ci_baseline.py')
+        ci = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(ci)
+        plan=dict(head='a'*40,base='b'*40,requested_base='b'*40,run_id='1',run_attempt='1',compile={'selected':True,'reason':'changed source'})
+        for bad in ('missing','malformed','wrong-version','mirror','cache'):
+            directory=self.root/bad
+            directory.mkdir()
+            (directory/'byond-version.txt').write_text('516.1688\n')
+            (directory/'compiler.log').write_text('DM compiler version 516.1688\nciv13.dmb - 0 errors, 0 warnings\n')
+            receipt=self.receipt(self.value,'community-mirror','miss')
+            if bad=='wrong-version': receipt['version']='516.1681'
+            if bad=='cache': receipt.update(source='cache',url=None,cache_status='hit')
+            if bad!='missing': (directory/'byond-download.json').write_text('{' if bad=='malformed' else json.dumps(receipt))
+            with self.subTest(case=bad),patch.object(ci,'git',return_value='tree'),patch.object(ci.subprocess,'check_output',return_value=b''):
+                result=ci.compile_receipt(plan,'success',directory/'compile.json')
+            expected=bad in {'mirror','cache'}
+            self.assertEqual(result,0 if expected else 1)
+            actual=json.loads((directory/'compile.json').read_text())
+            self.assertEqual(actual['status'],'passed' if expected else 'failed')
+            if expected: self.assertEqual(actual['acquisition'],receipt)
 
 
 if __name__ == '__main__':

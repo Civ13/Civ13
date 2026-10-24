@@ -35,6 +35,12 @@ def fixtures(paths=('README.md',)):
                     step_outcome='skipped', reason='Documentation only', **source,
                     toolchain='BYOND ' + ci.toolchain.load()['version'], toolchain_error=None,
                     selection_sha256=ci.digest(plan))
+    requirement = ci.toolchain.load()
+    archive = requirement['linux']
+    compiler['acquisition'] = dict(version=requirement['version'], platform='linux', url=archive['communityMirrorUrl'],
+        sha256=archive['sha256'], bytes=archive['bytes'], integritySource=requirement['integritySource'],
+        source='community-mirror', requested_source='community-mirror', upstream_source='community-mirror',
+        upstream_url=archive['communityMirrorUrl'], cache_key=ci.toolchain.cache_key(requirement, 'linux'), cache_status='miss')
     jobs = {name: {'result': 'success'} for name in ('changes', 'baseline', 'evidence-checker', 'build')}
     jobs['extraction-instances'] = {'result': 'skipped'}
     return plan, baseline, compiler, jobs
@@ -266,6 +272,15 @@ class BaselinePolicyTests(unittest.TestCase):
 
 
 class AggregateTests(unittest.TestCase):
+    def test_selected_compilation_rejects_missing_or_wrong_archive_provenance(self):
+        for bad in (None, {}, {'source':'cache'}, {'url':'https://example.com'}):
+            plan, baseline, compiler, jobs = fixtures()
+            plan['compile']['selected'] = True
+            baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+            compiler.update(selected=True, status='passed', step_outcome='success', acquisition=bad)
+            with self.subTest(acquisition=bad):
+                self.assertIn('Missing/invalid exact-source BYOND acquisition receipt', ci.aggregate(plan, baseline, compiler, jobs, False))
+
     def test_selected_compilation_rejects_missing_or_wrong_toolchain_metadata(self):
         for label in (None, 'BYOND 516.1681', 'BYOND 516.1689'):
             plan, baseline, compiler, jobs = fixtures()
