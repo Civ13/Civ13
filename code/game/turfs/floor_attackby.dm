@@ -20,7 +20,7 @@
 #else
 /turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
 #endif
-	if (busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
+	if (has_snow_cover() || busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
 		return
 #ifdef CIV13_GAMEPLAY_BRIDGE
 	if (!isnull(gameplay_context))
@@ -39,7 +39,7 @@
 	var/completed = grass_cutting_wait(user)
 #endif
 	busy = FALSE
-	if (!completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
+	if (has_snow_cover() || !completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
 		return
 	change_the_turf()
 	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
@@ -219,12 +219,13 @@
 
 	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
 		var/turf/T = get_turf(src)
+		var/snow_generation = T.snowfall_ground_generation
 		var/mob/living/human/H = user
 		var/obj/item/weapon/material/shovel/SH = C
 		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
-				if (T.icon == 'icons/turf/snow.dmi' && istype(H))
-					if (T.available_snow <= 0)
+				if (T.has_snow_cover() && istype(H))
+					if (T.snow_units() <= 0)
 						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
 						return
 					H.shoveling = TRUE
@@ -233,15 +234,16 @@
 					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
 						H.shoveling = FALSE
 						return
-					if (!T || T.available_snow <= 0)
+					if (!T || T.snow_units() <= 0)
 						H.shoveling = FALSE
 						return
 					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
 					H.shoveling = FALSE
 					H.adaptStat("strength", 1)
-					T.available_snow -= 1
+					if (!T.take_snow(snow_generation))
+						return
 					new /obj/item/weapon/snowwall(T)
-					if (T.available_snow <= 0)
+					if (T.snow_units() <= 0)
 						if (istype(T, /turf/floor/winter/grass))
 							T.ChangeTurf(/turf/floor/grass)
 						else if (istype(T, /turf/floor/dirt/winter))
@@ -516,6 +518,9 @@
 	else if (istype(C, /obj/item/weapon/plough))
 		var/obj/item/weapon/plough/PL = C
 		var/turf/T = get_turf(src)
+		if (T.weather_snow > 0)
+			to_chat(user, SPAN_WARNING("Clear the snow before working the ground."))
+			return
 		if (user.a_intent == I_DISARM)
 			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach/sand) || istype(T, /turf/floor/winter))
 				for(var/obj/covers/CV in T)
@@ -523,6 +528,8 @@
 					return
 				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
 				if (do_after(user, 50/PL.usespeed, user.loc))
+					if (!T || T.weather_snow > 0)
+						return
 					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
 					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
 					if (user.dir == NORTH || user.dir == SOUTH)
@@ -546,11 +553,15 @@
 				return
 			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
 				if (do_after(user, 50/PL.usespeed, user.loc))
+					if (!T || T.weather_snow > 0)
+						return
 					ChangeTurf(/turf/floor/dirt)
 					return
 			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 				var/mob/living/human/H = user
 				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
+					if (!T || T.weather_snow > 0)
+						return
 					if (istype(T, /turf/floor/dirt/flooded))
 						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
 						if (ishuman(user))
@@ -1072,12 +1083,13 @@
 /turf/floor/attack_hand(mob/user)
 	if (!istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && ishuman(user))
 		var/turf/floor/T = src
+		var/snow_generation = T.snowfall_ground_generation
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			if (H.shoveling)
 				..()
-			if (T.icon == 'icons/turf/snow.dmi' && istype(H))
-				if (T.available_snow <= 0)
+			if (T.has_snow_cover() && istype(H))
+				if (T.snow_units() <= 0)
 					to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
 					return
 				H.shoveling = TRUE
@@ -1085,12 +1097,14 @@
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
 				if (!do_after(user, rand(25,30)))
 					H.shoveling = FALSE
+					return
 				user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
 				H.shoveling = FALSE
 				H.adaptStat("strength", 1)
-				T.available_snow -= 1
+				if (!T.take_snow(snow_generation))
+					return
 				new /obj/item/weapon/snowwall(T)
-				if (T.available_snow <= 0)
+				if (T.snow_units() <= 0)
 					if (istype(T, /turf/floor/winter/grass))
 						T.ChangeTurf(/turf/floor/grass)
 					else if (istype(T, /turf/floor/dirt/winter))
