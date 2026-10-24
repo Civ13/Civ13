@@ -10,10 +10,12 @@ import unittest
 from unittest.mock import patch
 
 import resources
-from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY
+from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY, dispatch_transform, validate_current_master
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
+BASE = 'd6b06c638517bb4100beeca6a90d09adc3629fb7'
+HISTORICAL_BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
+HISTORICAL_CANDIDATE = 'a93e490e9e05a4faace778dd8431abf0d6f10564'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
@@ -25,12 +27,12 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
 class SourceContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.baseline = subprocess.check_output(['git', 'show', HISTORICAL_BASE + ':' + PATH], cwd=ROOT, text=True)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
-        cls.candidate = (ROOT / PATH).read_text()
+        cls.candidate = subprocess.check_output(['git', 'show', HISTORICAL_CANDIDATE + ':' + PATH], cwd=ROOT, text=True)
 
-    def test_exact_transform_preserves_current_master(self):
+    def test_exact_transform_preserves_historical_reference(self):
         validate(self.baseline, self.candidate)
         for kind, count in [('atom', 3), ('turf', 9), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
@@ -52,7 +54,7 @@ class SourceContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             reconstruct_list_baseline(self.baseline)
 
-    def test_current_master_diagnostics_are_preserved_exactly(self):
+    def test_historical_diagnostics_are_preserved_exactly(self):
         start = '/map_storage/persistence_runtime_var(key)'
         end = '// Drops the save/load bookkeeping references'
         def diagnostics(source):
@@ -126,6 +128,8 @@ class SourceContractTests(unittest.TestCase):
                     body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
                     self.assertIn(f'"{key}"', body)
             self.assertIn('source_contract.py', receipt['inputs'])
+            self.assertEqual(receipt['baseline_sha'], BASE)
+            self.assertIn('no policy projection', receipt['baseline_policy'])
 
     def test_native_probe_uses_postclose_state_and_constructible_atom(self):
         probe = (ROOT / 'tests/exclusion_dispatch/probe.dm').read_text()
@@ -149,6 +153,49 @@ class SourceContractTests(unittest.TestCase):
                                     '--lease-receipt', str(Path(directory) / 'old-grant.json')])
             self.assertIn('Native execution held', code)
             self.assertIn('old leases invalid', code)
+
+
+class CurrentMasterSourceContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.master = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.baseline = reconstruct_list_baseline(cls.master)
+        cls.candidate = (ROOT / PATH).read_text()
+
+    def test_current_master_is_exact_and_needs_no_policy_projection(self):
+        self.assertEqual(self.candidate, self.master)
+        with patch('source_contract.project_reserved_policy', side_effect=AssertionError('Unexpected policy projection')):
+            self.assertEqual(dispatch_transform(self.baseline), self.master)
+            validate_current_master(self.baseline, self.candidate)
+        self.assertIn(AREA_POLICY, self.baseline)
+        for kind, count in [('atom', 3), ('turf', 9), ('mob', 23)]:
+            pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
+            body = re.search(pattern, self.candidate, re.M).group()
+            self.assertEqual(len(re.findall(r'"[^\"]+"', body)), count)
+
+    def test_current_whole_file_and_all_runtime_ownership_drifts_fail(self):
+        mutations = [(self.candidate + '// unrelated\n'),
+                     self.candidate.replace('1943', '1944', 1),
+                     self.candidate.replace('variable_observability_skipped(src.vars[key])', 'variable_observability_skipped(null)', 1),
+                     self.candidate.replace('"validated_roof_types"', '"missing_roof_type_cache"', 1),
+                     self.candidate.replace('"original_target"', '"missing_throw_owner"', 1),
+                     self.candidate.replace('"next_animal_retaliation"', '"missing_retaliation_owner"', 1),
+                     self.candidate.replace('saving_export_stack.len - 7', 'saving_export_stack.len - 8', 1),
+                     self.candidate.replace(' || key == "weak_reference"', '', 1),
+                     self.candidate.replace('\treturn ..()', '\treturn FALSE', 1)]
+        for key in NEW_KEYS:
+            mutations.append(self.candidate.replace(f'"{key}"', '"omitted_runtime_key"', 1))
+        for value in mutations:
+            with self.subTest(mutation=value[:40]):
+                self.assertNotEqual(value, self.candidate)
+                with self.assertRaises(ValueError): validate_current_master(self.baseline, value)
+
+    def test_historical_reserved_delta_is_not_silently_allowed_in_current_mode(self):
+        historical = subprocess.check_output(['git', 'show', HISTORICAL_BASE + ':' + PATH], cwd=ROOT, text=True)
+        baseline = reconstruct_list_baseline(historical)
+        projected = transform(baseline)
+        validate(baseline, projected)
+        with self.assertRaises(ValueError): validate_current_master(baseline, projected)
 
 
 if __name__ == '__main__':

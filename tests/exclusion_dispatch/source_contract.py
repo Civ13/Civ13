@@ -21,7 +21,7 @@ def reconstruct_list_baseline(master):
 
 
 def project_reserved_policy(baseline):
-    """Apply only this PR's declared policy to the historical list baseline."""
+    """Apply only the historical declared policy to its list baseline."""
     anchor = '\treturn (key in list("affecting_lights", "lighting_overlay"'
     insertion = '// HUD objects belong to a client session and are rebuilt by the normal HUD path.'
     if baseline.count(anchor) != 1 or baseline.count(insertion) != 1:
@@ -31,8 +31,9 @@ def project_reserved_policy(baseline):
     return baseline.replace(anchor, '\treturn (key in list("lighting_reserved", "affecting_lights", "lighting_overlay"', 1).replace(insertion, AREA_POLICY + insertion, 1)
 
 
-def transform(baseline):
-    expected = project_reserved_policy(baseline)
+def dispatch_transform(baseline):
+    """Change only the three dispatch forms; preserve every other byte."""
+    expected = baseline
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -42,6 +43,16 @@ def transform(baseline):
         replacement = f'/{kind}/persistence_runtime_var(key)\n{match["prefix"]}\tswitch(key)\n\t\tif ({match[2]})\n\t\t\treturn TRUE\n\treturn ..()'
         expected = expected[:match.start()] + replacement + expected[match.end():]
     return expected
+
+
+def transform(baseline):
+    """Historical reserved-policy projection, kept for its pinned controls."""
+    return dispatch_transform(project_reserved_policy(baseline))
+
+
+def validate_current_master(baseline, candidate):
+    if dispatch_transform(baseline) != candidate:
+        raise ValueError('Only reconstructed current-master dispatch hooks may differ')
 
 
 def validate(baseline, candidate):
