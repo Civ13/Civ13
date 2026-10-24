@@ -134,8 +134,8 @@
 				var/rejected = FALSE
 				try
 					map_storage.materialize_saved_roof_areas()
-				catch(var/exception/e)
-					rejected = findtext("[e]", "Ambiguous current roof area identity") > 0
+				catch(var/exception/duplicate_error)
+					rejected = findtext("[duplicate_error]", "Ambiguous current roof area identity") > 0
 				durable_world_check(rejected && map_storage.validated_roof_instances["/area/caribbean/roofed/semiarid"] == retained && get_area(locate(3,3,1)) == before_area, "Postflight empty area was reselected or mutated world")
 				del(extra)
 				del(retained)
@@ -143,8 +143,8 @@
 				rejected = FALSE
 				try
 					map_storage.materialize_saved_roof_areas()
-				catch(var/exception/e)
-					rejected = findtext("[e]", "Validated roof area instance disappeared") > 0
+				catch(var/exception/identity_error)
+					rejected = findtext("[identity_error]", "Validated roof area instance disappeared") > 0
 				durable_world_check(rejected && get_area(locate(3,3,1)) == before_area, "Changed retained roof identity was accepted")
 				del(replacement)
 				durable_world_check(map_storage.validate_world_save() && map_storage.validated_roof_absent["/area/caribbean/roofed/semiarid"], "Absent roof destination was not planned without mutation")
@@ -152,8 +152,8 @@
 				rejected = FALSE
 				try
 					map_storage.materialize_saved_roof_areas()
-				catch(var/exception/e)
-					rejected = findtext("[e]", "Planned roof area absence changed") > 0
+				catch(var/exception/absence_error)
+					rejected = findtext("[absence_error]", "Planned roof area absence changed") > 0
 				durable_world_check(rejected && get_area(locate(3,3,1)) == before_area, "Changed planned roof absence was accepted")
 			else if(!(mode in list("read", "read-covered")))
 				durable_world_check(!accepted, "Malformed roof generation accepted")

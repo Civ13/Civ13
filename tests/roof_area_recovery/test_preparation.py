@@ -1,6 +1,7 @@
 """Offline preparation/admission checks. These do not establish native recovery."""
 import hashlib
 import json
+import re
 import struct
 from pathlib import Path
 import subprocess
@@ -12,6 +13,13 @@ RUNNER = ROOT / 'tests/world_save/run-durable-world.py'
 
 
 class RoofAreaPreparation(unittest.TestCase):
+    def test_postflight_control_exception_names_are_distinct_in_shared_dm_scope(self):
+        probe=(ROOT/'tests/roof_area_recovery/probe.dm').read_text()
+        block=probe.split('else if(mode == "postflight-empty")',1)[1].split('else if(!(mode in',1)[0]
+        names=re.findall(r'catch\(var/exception/(\w+)\)',block)
+        self.assertEqual(len(names),3)
+        self.assertEqual(len(set(names)),3)
+
     def test_closure_interval_uses_small_world_clock_without_epoch_precision_loss(self):
         probe=(ROOT/'tests/roof_area_recovery/probe.dm').read_text()
         handshake=probe.split('var/closure_deadline = ',1)[1].split('\n\t\tconfig = new',1)[0]
