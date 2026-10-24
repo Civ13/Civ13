@@ -41,6 +41,25 @@ def require(condition, message):
         raise RuntimeError(message)
 
 
+def exit_observations(roles):
+    """Failure-time samples from retained handles, before cleanup Job termination."""
+    rows = []
+    for phase, adapter, process in roles:
+        row = dict(phase=phase, observed_monotonic=None,
+                   exited=None, exit_code=None, identity=None)
+        for field, read in (
+                ('observed_monotonic', time.monotonic),
+                ('exited', lambda: adapter.exited(process)),
+                ('identity', lambda: adapter.identity(process)),
+                ('exit_code', lambda: adapter.finish(process)['exit_code'] if row['exited'] else None)):
+            try:
+                row[field] = read()
+            except Exception as error:
+                row.setdefault('diagnostic_errors', []).append(f'{field}: {error}'[:1024])
+        rows.append(row)
+    return rows
+
+
 def read_json(path):
     require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 65536,
             'Admission/manifest must be a bounded regular file')
@@ -420,6 +439,8 @@ def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=
             while True:
                 watch()
                 if client.exited(playing) or server.exited(serving):
+                    evidence['pre_cleanup_exits'] = exit_observations((
+                        ('client', client, playing), ('server', server, serving)))
                     raise RuntimeError('Client/server exited before capture')
                 check_work()
                 image = desktop_capture(playing.pid)

@@ -353,7 +353,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         if wall:
             self.clock.utc += seconds
 
-    def invoke(self, hooks=None, module=run, budget=None):
+    def invoke(self, hooks=None, module=run, budget=None, exit_phases=()):
         hooks = hooks or {}
         record = {'creations': [], 'argv': [], 'opened': [], 'cleanup': [], 'sockets': [], 'capture': 0}
         reviewed = self.write_packet()
@@ -406,8 +406,17 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
             adapter.launch.side_effect = launched
             adapter.cleanup.side_effect = cleanup
             adapter.free.side_effect = free
-            adapter.exited.return_value = phase == 'compile'
-            adapter.finish.return_value = {'exit_code': 0}
+            adapter.exited.side_effect = lambda _: phase == 'compile' or (
+                phase in exit_phases and len(record['creations']) == 3)
+            def finished(_):
+                hook('finish', phase)
+                return {'exit_code': 7 if phase == 'server' else 0}
+            def identity(_):
+                hook('identity', phase)
+                return dict(pid=process.pid, creation_filetime=10000 + index,
+                            image=phase + '.exe')
+            adapter.finish.side_effect = finished
+            adapter.identity.side_effect = identity
             adapter.memory.return_value = 1
             adapter.times.return_value = (0, 0)
             adapter.accounting.return_value = SimpleNamespace(total=1)
@@ -604,6 +613,62 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         self.assertEqual(budget.started_monotonic, 0)
         self.assertLessEqual(budget.full_end, 165)
         self.assertEqual(budget.work_end, 150)
+
+    def assert_exit_roles(self, exit_phases):
+        events = []
+        hooks = {name: lambda phase, name=name: events.append((name, phase))
+                 for name in ('identity', 'finish', 'cleanup')}
+        record = self.invoke(hooks, exit_phases=exit_phases)
+        message = 'Client/server exited before capture'
+        self.assertIsInstance(record['error'], RuntimeError)
+        self.assertEqual(str(record['error']), message)
+        self.assertEqual(record['receipt']['error'], message)
+        self.assertEqual(record['receipt']['result'], 'FAIL; no native acceptance')
+        self.assertEqual(record['capture'], 0)
+        rows = record['receipt']['pre_cleanup_exits']
+        self.assertEqual([row['phase'] for row in rows], ['client', 'server'])
+        first_cleanup = events.index(('cleanup', 'client'))
+        for row, index in zip(rows, (2, 1)):
+            phase = row['phase']
+            self.assertIs(row['exited'], phase in exit_phases)
+            self.assertEqual(row['exit_code'], (7 if phase == 'server' else 0)
+                             if phase in exit_phases else None)
+            self.assertEqual(row['identity'], dict(pid=index + 1, creation_filetime=10000 + index,
+                                                   image=phase + '.exe'))
+            self.assertGreaterEqual(row['observed_monotonic'], record['creations'][-1][1])
+            self.assertLessEqual(row['observed_monotonic'], self.clock.mono)
+            self.assertNotIn('diagnostic_errors', row)
+            self.assertLess(events.index(('identity', phase)), first_cleanup)
+            if phase in exit_phases:
+                self.assertLess(events.index(('finish', phase)), first_cleanup)
+            else:
+                self.assertNotIn(('finish', phase), events)
+        self.assertEqual([phase for phase, _ in record['cleanup']], ['client', 'server', 'compile'])
+
+    def test_client_only_exit_observed_before_cleanup(self):
+        self.assert_exit_roles(('client',))
+
+    def test_server_only_exit_observed_before_cleanup(self):
+        self.assert_exit_roles(('server',))
+
+    def test_both_exits_observed_before_cleanup(self):
+        self.assert_exit_roles(('client', 'server'))
+
+    def test_exit_diagnostic_and_cleanup_errors_preserve_original_failure(self):
+        def fail(phase):
+            if phase == 'client':
+                raise OSError('injected diagnostic/cleanup failure')
+        record = self.invoke({'identity': fail, 'finish': fail, 'cleanup': fail},
+                             exit_phases=('client',))
+        self.assertEqual(str(record['error']), 'Client/server exited before capture')
+        self.assertEqual(record['receipt']['error'], str(record['error']))
+        client, server = record['receipt']['pre_cleanup_exits']
+        self.assertIsNone(client['identity'])
+        self.assertIsNone(client['exit_code'])
+        self.assertEqual(len(client['diagnostic_errors']), 2)
+        self.assertEqual(server['identity']['pid'], 2)
+        self.assertEqual(len(record['receipt']['secondary_errors']), 1)
+        self.assertEqual([phase for phase, _ in record['cleanup']], ['client', 'server', 'compile'])
 
     def test_cleanup_exception_preserves_primary_and_attempts_every_owner(self):
         def fail(phase):

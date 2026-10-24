@@ -323,3 +323,12 @@ Entry integrity checks before and after sampling and finalization compare with
 that retained expected seal. The first filesystem hash can never legitimize an
 altered owner-envelope binding. Its actual-execute rewrite control must fail
 against frozen v2 while leaving the owner envelope unchanged.
+
+Premature client/server exit retains the original failure and samples both roles
+before cleanup: monotonic observation time, exited status, exit code when
+exited, and retained PID/birth/image identity. Diagnostic read errors remain
+bounded and cannot replace that failure or skip cleanup. These are failure-time
+samples, not exact exit times or proof of first-exit ordering. Historical cleanup
+codes remain ambiguous because Job termination assigns exit code1. Mocked
+client-only, server-only and both-exit controls provide no new native acceptance;
+the existing native hold, capture ownership and one-use admission remain in force.
