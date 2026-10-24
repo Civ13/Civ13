@@ -8,6 +8,14 @@ Mountain and Ice Age retain initial30-minute shared timers and their explicit
 recurrence. Independent calendars and literal startup delays stay separate.
 tests/season_duration is source-only; native timer/reload acceptance stays pending.
 
+<!-- 2026-10-24: per-map random weather policy -->
+weather_timing/weather_transitions are optional author fields for existing random
+weather. Null keeps old rolls, season pools and process timings; configured rows
+intersect seasonal/map eligibility, and empty choices hold current weather.
+Invalid policy stops random helpers before mutations. Direct event calls retain
+their behavior. Fields are excluded from imports; no saved cursor or event callback.
+tests/weather_policy is offline projection/parity evidence, not native acceptance.
+
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
