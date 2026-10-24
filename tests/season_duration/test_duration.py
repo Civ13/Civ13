@@ -75,10 +75,9 @@ class DurationTests(unittest.TestCase):
 
     def test_request_queue_force_controls_and_gameplay_bodies_unchanged(self):
         old = subprocess.check_output(["git", "show", BASE + ":" + META], cwd=ROOT, text=True)
-        for signature in ("/obj/map_metadata/proc/seasons(var/looping = TRUE, var/force = FALSE, var/advance_decay = null)",
-                          "/obj/map_metadata/proc/season_run_queue()",
-                          "/obj/map_metadata/proc/season_apply(var/force, var/advance_decay, var/epoch)"):
-            self.assertEqual(body(self.source, signature), body(old, signature))
+        # Flow owns default destination/queue parity; duration owns request cadence.
+        signature = "/obj/map_metadata/proc/seasons(var/looping = TRUE, var/force = FALSE, var/advance_decay = null)"
+        self.assertEqual(body(self.source, signature), body(old, signature))
         for relative in ("code/modules/admin/verbs/weather.dm", "code/processes/abandoned_items.dm",
                          "code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm",
                          "code/modules/persistence/durable_world.dm",

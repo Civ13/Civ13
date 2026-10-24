@@ -117,7 +117,10 @@ jobs:
           python3 -B -m unittest discover -s tests/season_duration -v
       - name: Test configurable base season flow offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_flow')
-        run: python3 -B -m unittest discover -s tests/season_flow -v
+        run: |
+          python3 -B -m unittest discover -s tests/season_flow -v
+          python3 -B -m unittest discover -s tests/season_duration -v
+          python3 -B tests/abandoned_items/run.py --check-season-wiring
       - name: Test ping scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')
         run: python3 -B -m unittest discover -s tests/ping_scheduler -v

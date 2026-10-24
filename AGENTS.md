@@ -17,12 +17,12 @@ their behavior. Fields are excluded from imports; no saved cursor or event callb
 tests/weather_policy is offline projection/parity evidence, not native acceptance.
 
 <!-- 2026-10-24: configured base season flow -->
-season_cycle is author policy for the serialized base worker: null keeps ordinary
-order; 2-4 unique implemented seasons may reorder/skip. Invalid/current-absent
-cycles are consumed without epoch/phase/climate mutation. Destination payloads
-are unchanged; each actual transition keeps the explicit advance_decay choice.
-No persisted cursor or event callbacks; custom subtype calendars stay separate.
-tests/season_flow is offline source evidence, not native ecological acceptance.
+season_cycle is author policy for the serialized base worker. Whole-cycle validation
+rejects Spring/Summer->Winter before mutation; default edges retain legacy payloads.
+Six supported nondefault edges reconcile warm ground/snow structures/wet-dry state
+inside the existing epoch/lock, before the unchanged subtype completion hook.
+No synthetic seasons, extra decay charges, new phase timers or saved cursor.
+tests/season_flow projects source/queue/ecology paths; native acceptance stays held.
 
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
