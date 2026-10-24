@@ -13,6 +13,7 @@
 	return FALSE
 
 /mob/living/simple_animal/cattle
+	defensive_retaliation = TRUE
 	var/plough = FALSE
 	var/plough_raised = TRUE		//Lets make people access the Cattle Pulled Plough menu at first to familiarize
 	var/plough_material
@@ -21,6 +22,9 @@
 	var/calf = FALSE  //Each gender was taking this var
 	fat_penalty = 1 //For ballance reasons
 	icon_state = "cow_random"
+
+/mob/living/simple_animal/cattle/uses_defensive_retaliation()
+	return !calf && ..()
 
 /mob/living/simple_animal/cattle/New()
 	..()
@@ -369,6 +373,7 @@
 
 //pig
 /mob/living/simple_animal/pig_boar
+	defensive_retaliation = TRUE
 	name = "pig boar"
 	desc = "A small Mammal, with a stocky Body, Flat snout and small eyes they are a member of the Suidae Family."
 	icon_state = "pig_boar"
@@ -401,6 +406,7 @@
 	fat_extra = 2
 
 /mob/living/simple_animal/pig_gilt
+	defensive_retaliation = TRUE
 	name = "pig gilt"
 	desc = "A small Mammal, with a stocky Body, Flat snout and small eyes they are a member of the Suidae Family."
 	icon_state = "pig_gilt"
@@ -431,6 +437,12 @@
 	carnivore = 1 //if it will be attracted to meat and dead bodies. Wont attack living animals by default.
 	wandersounds = list('sound/animals/pig/pig_1.ogg','sound/animals/pig/pig_2.ogg')
 	fat_extra = 2
+
+/mob/living/simple_animal/pig_boar/uses_defensive_retaliation()
+	return !piglet && ..()
+
+/mob/living/simple_animal/pig_gilt/uses_defensive_retaliation()
+	return !piglet && ..()
 
 /mob/living/simple_animal/pig_gilt/death()
 
@@ -689,6 +701,7 @@
 
 //goat
 /mob/living/simple_animal/goat
+	defensive_retaliation = TRUE
 	name = "goat ram"
 	desc = "A male goat. Not known for their pleasant disposition."
 	icon_state = "goat_ram"
@@ -719,6 +732,9 @@
 	var/lamb = FALSE
 	herbivore = 1
 	wandersounds = list('sound/animals/goat/goat_1.ogg','sound/animals/goat/goat_2.ogg','sound/animals/goat/goat_3.ogg')
+
+/mob/living/simple_animal/goat/uses_defensive_retaliation()
+	return !lamb && ..()
 
 /mob/living/simple_animal/goat/New()
 	goat_count |= src
@@ -824,6 +840,7 @@
 
 //sheep
 /mob/living/simple_animal/sheep
+	defensive_retaliation = TRUE
 	name = "sheep ram"
 	desc = "A male sheep. Good for wool."
 	icon_state = "sheep_ram"
@@ -855,6 +872,9 @@
 	herbivore = 1
 	var/sheared = FALSE
 	wandersounds = list('sound/animals/sheep/sheep_1.ogg','sound/animals/sheep/sheep_2.ogg')
+
+/mob/living/simple_animal/sheep/uses_defensive_retaliation()
+	return !lamb && ..()
 
 /mob/living/simple_animal/sheep/update_icons()
 	..()
@@ -1006,6 +1026,7 @@
 				B.lamb = TRUE
 			visible_message("A sheep lamb has been born!")
 /mob/living/simple_animal/camel
+	defensive_retaliation = TRUE
 	name = "camel"
 	desc = "Good for meat."
 	icon = 'icons/mob/animal_64.dmi'
@@ -1075,7 +1096,7 @@
 		else
 			for (var/obj/item/ITS in packed_items)
 				if (ITS.name == choice1)
-					ITS.loc = locate(usr.x,usr.y,usr.z)
+					if (!ITS.persistence_set_loc(get_turf(usr))) return FALSE
 					packed_items -= ITS
 					visible_message("[usr] removes \the [ITS] from the camel's back.","You remove \the [ITS] from the camel's back.")
 					content_size -= ITS.w_class

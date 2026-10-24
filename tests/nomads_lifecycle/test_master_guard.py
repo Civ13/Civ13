@@ -6,7 +6,13 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'scripts/nomads-lifecycle'))
-from master_guard import verified_master
+from master_guard import verified_master as real_verified_master
+
+
+def verified_master(*args, **kwargs):
+    # These repositories contain only inert Git fixture files, no runtime.
+    kwargs.setdefault('mutation_guard', lambda: None)
+    return real_verified_master(*args, **kwargs)
 
 
 class MasterGuardTests(unittest.TestCase):

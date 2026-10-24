@@ -90,7 +90,7 @@
 			layer = 11
 
 	original = target
-	loc = curloc
+	if (!persistence_set_loc(curloc)) return TRUE
 	starting = curloc
 
 	yo = targloc.y - curloc.y

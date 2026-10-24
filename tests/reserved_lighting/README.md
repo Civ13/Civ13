@@ -323,12 +323,13 @@ from staging, source tests, the successful pilot or these synchronized copies.
 
 No native build packet, BYOND preflight, adapter execution or CPU/private-memory
 measurement is supplied by this PR. Historical parity evidence binds lighting
-source `2d4229c2ca3062e6c358aa21575f0c203282f995`; the reconciled current base is
-`a93e490e9e05a4faace778dd8431abf0d6f10564`. Its semantic correction does not
-create native acceptance for the new tree. This PR still targets
-`reserved-cell-lighting-overlays`. A branch-relative fixture does not require
-merging/deploying experimental lighting. Source acceptance and merge readiness
-remain separate.
+source `2d4229c2ca3062e6c358aa21575f0c203282f995`; the later semantic correctness
+reference is `a93e490e9e05a4faace778dd8431abf0d6f10564`. The October 24 source
+candidate reconciles master `d6b06c638517bb4100beeca6a90d09adc3629fb7`; this PR
+now targets master. Historical correctness is not native acceptance of the
+reconciled tree. All source/runtime manifests and any future compiled packet
+must bind the new exact candidate, with fresh platform/executor admission.
+Source acceptance and merge readiness remain separate.
 
 ### Separate native preflight source (default OFF)
 
@@ -356,7 +357,9 @@ The pinned image-acquisition controller's unresolved hashes remain strict.
 
 ### Semantic base reconciliation
 
-The current base is `a93e490e9e05a4faace778dd8431abf0d6f10564`.
+The pinned semantic correctness reference is
+`a93e490e9e05a4faace778dd8431abf0d6f10564`, not acceptance of a later master
+reconciliation.
 Its [native correctness run39679381491](https://github.com/Civ13/Civ13/actions/runs/39679381491)
 compiled with zero errors/warnings and passed six snapshots, 1,350 overlay rows,
 1,536 all-cell lumcount rows, 36 fixed-omitted-cell rows and five causal controls.

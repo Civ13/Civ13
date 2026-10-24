@@ -90,8 +90,10 @@ separate branch-relative hosted fixture; actual runtime assignment is still
 required. Failure or uncertain creation remains incomplete, retains the original
 cause, attempts cleanup only with verified owned CID/labels, and never retries.
 
-The base semantic fixture is now a93e490e9e05a4faace778dd8431abf0d6f10564;
+The semantic correctness reference remains a93e490e9e05a4faace778dd8431abf0d6f10564;
 its separate native correctness CI39679381491 is not this preflight's platform,
-toolchain, counter or performance acceptance. Old 166c/a946 packets are historical.
+toolchain, counter or performance acceptance. The October 24 source candidate
+reconciles master d6b06c638517bb4100beeca6a90d09adc3629fb7. Prior 166c/a946 and
+9293137d source/runtime packets are historical for that changed source tree.
 The compiler, fixture, runtime and controller provenance must be resealed for the
 new exact feature head before any future separately admitted native execution.

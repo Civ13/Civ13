@@ -14,20 +14,24 @@ internal static class TopicPacingTests {
         public void Advance(int seconds) { Utc = Utc.AddSeconds(seconds); Tick += seconds * 1000L; }
         public TopicPacer Pacer(string path) => new(path, () => Utc, () => Tick);
     }
-    public static int Child(string path) {
-        var clock = new Clock { Utc = Epoch.AddSeconds(137) };
+    public static int Child(string path, bool cached = false) {
+        var clock = new Clock { Utc = Epoch.AddSeconds(137), Tick = 137000 };
+        if (cached) { clock.Utc = Epoch.AddSeconds(15); clock.Tick = 15000; }
         var pacer = clock.Pacer(path);
-        clock.Advance(133); // Satisfy this new process's monotonic startup guard.
+        if (cached) {
+            try { pacer.Check(Target); throw new Exception("Child did not retain cooldown"); }
+            catch (TopicWaitException wait) { Console.WriteLine($"CACHED:{wait.Cached?.Server?.Players}:{wait.Cached?.AgeSeconds}:{wait.Seconds}"); return 0; }
+        }
         try { pacer.Reserve(Target, new[] { Address }); Console.WriteLine("GRANTED"); return 0; }
         catch (TopicWaitException) { Console.WriteLine("WAIT"); return 0; }
     }
-    private static Process StartChild(string path) {
+    private static Process StartChild(string path, bool cached = false) {
         var start = new ProcessStartInfo(Environment.ProcessPath!) {
             UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true
         };
         if (Path.GetFileNameWithoutExtension(start.FileName).Equals("dotnet", StringComparison.OrdinalIgnoreCase))
             start.ArgumentList.Add(Assembly.GetExecutingAssembly().Location);
-        start.ArgumentList.Add("--pacing-child"); start.ArgumentList.Add(path);
+        start.ArgumentList.Add(cached ? "--pacing-cache-child" : "--pacing-child"); start.ArgumentList.Add(path);
         return Process.Start(start) ?? throw new Exception("Pacing child did not start");
     }
     private static string FinishChild(Process child) {
@@ -60,8 +64,51 @@ internal static class TopicPacingTests {
         clock.Advance(136); Require(Wait(() => pacer.Check(Target)) == 1, "Boundary opened early");
         clock.Advance(1); pacer.Check(Target); assertions++;
         var restarted = clock.Pacer(path);
-        Require(Wait(() => restarted.Check(Target)) == 133, "Restart lost monotonic quarantine");
-        clock.Advance(133); restarted.Reserve(Target, new[] { Address }); assertions++;
+        restarted.Check(Target); assertions++;
+        restarted.Reserve(Target, new[] { Address });
+        var restartedAgain = clock.Pacer(path);
+        Require(Wait(() => restartedAgain.Check(Target)) == 137, "Restart shortened an active reservation");
+        clock.Advance(100);
+        Require(Wait(() => clock.Pacer(path).Check(Target)) == 37, "Restart added a new full startup wait");
+        clock.Advance(37); clock.Pacer(path).Check(Target); assertions++;
+        var emptyPath = Scope(); new Clock().Pacer(emptyPath).Check(Target);
+        new Clock().Pacer(emptyPath).Reserve(Target, new[] { Address }); assertions++;
+        var unrelated = new Clock(); var unrelatedPacer = unrelated.Pacer(Scope());
+        unrelatedPacer.Reserve(Target, new[] { Address });
+        unrelatedPacer.Check(otherProvider); assertions++;
+        var rebootPath = Scope(); var beforeReboot = new Clock { Tick = 900000 };
+        beforeReboot.Pacer(rebootPath).Reserve(Target, new[] { Address });
+        var afterReboot = new Clock { Utc = Epoch.AddSeconds(10), Tick = 1000 };
+        var rebooted = afterReboot.Pacer(rebootPath);
+        Require(Wait(() => rebooted.Check(Target)) == 132, "Lower post-reboot uptime skipped conservative fallback");
+        afterReboot.Advance(100);
+        Require(Wait(() => afterReboot.Pacer(rebootPath).Check(Target)) == 32, "Restart extended the boot recovery wait");
+        afterReboot.Advance(32); afterReboot.Pacer(rebootPath).Check(Target); assertions++;
+        var largerUptime = new Clock { Utc = Epoch.AddSeconds(2000), Tick = 2000000 };
+        largerUptime.Pacer(rebootPath).Check(Target); assertions++;
+        var legacyPath = Scope(); var legacyClock = new Clock(); var legacyPacer = legacyClock.Pacer(legacyPath);
+        legacyPacer.Reserve(Target, new[] { Address });
+        var legacyStatePath = Path.Combine(legacyPath, "requests.json");
+        var legacyState = JsonNode.Parse(File.ReadAllText(legacyStatePath))!.AsObject(); legacyState["Schema"] = 1;
+        foreach (var legacyEntry in legacyState["Entries"]!.AsArray()) {
+            legacyEntry!.AsObject().Remove("ReservedTick"); legacyEntry.AsObject().Remove("RequestId"); legacyEntry.AsObject().Remove("Result");
+        }
+        File.WriteAllText(legacyStatePath, legacyState.ToJsonString());
+        legacyClock.Advance(1000); var migrated = legacyClock.Pacer(legacyPath);
+        Require(Wait(() => migrated.Check(Target)) == 133, "Legacy wall-only history bypassed migration guard");
+        migrated.Check(otherProvider); assertions++;
+        Require(Wait(() => migrated.Reserve(otherProvider, new[] { Address })) == 133, "DNS alias bypassed the legacy migration wait");
+        migrated.Reserve(Target with { Port = 1715 }, new[] { Address });
+        var mixedState = JsonNode.Parse(File.ReadAllText(legacyStatePath))!;
+        Require(mixedState["Schema"]!.GetValue<int>() == 2 && mixedState["Entries"]!.AsArray().Any(item => item!["ReservedTick"] == null),
+            "New unrelated request discarded legacy history during mixed-schema migration");
+        Require(Wait(() => legacyClock.Pacer(legacyPath).Check(Target with { Port = 1715 })) == 137,
+            "Mixed legacy history altered the anchored endpoint's real cooldown");
+        legacyClock.Advance(133); migrated.Reserve(Target, new[] { Address });
+        Require(JsonNode.Parse(File.ReadAllText(legacyStatePath))!["Schema"]!.GetValue<int>() == 2, "Legacy reservation was not migrated safely");
+        var forwardRestartPath = Scope(); var restartClock = new Clock(); restartClock.Pacer(forwardRestartPath).Reserve(Target, new[] { Address });
+        restartClock.Utc = Epoch.AddDays(1);
+        Require(Wait(() => restartClock.Pacer(forwardRestartPath).Check(Target)) == 137, "Between-process wall step bypassed monotonic history");
 
         var rollbackClock = new Clock(); var rollback = rollbackClock.Pacer(Scope()); rollback.Reserve(Target, new[] { Address });
         rollbackClock.Utc = rollbackClock.Utc.AddSeconds(-3); Refuse(() => rollback.Check(Target));
@@ -74,8 +121,8 @@ internal static class TopicPacingTests {
         var driftClock = new Clock(); var drift = driftClock.Pacer(Scope());
         driftClock.Utc = Epoch.AddSeconds(-2); drift.Reserve(Target, new[] { Address });
         driftClock.Tick = 132000; driftClock.Utc = Epoch.AddSeconds(134);
-        Require(Wait(() => drift.Check(Target)) == 1, "Clock drift consumed the wire-spacing margin");
-        driftClock.Tick = 133000; driftClock.Utc = Epoch.AddSeconds(135); drift.Check(Target); assertions++;
+        Require(Wait(() => drift.Check(Target)) == 5, "Clock drift consumed the wire-spacing margin");
+        driftClock.Tick = 137000; driftClock.Utc = Epoch.AddSeconds(139); drift.Check(Target); assertions++;
         var cumulativePath = Scope(); var cumulativeClock = new Clock(); var cumulative = cumulativeClock.Pacer(cumulativePath);
         cumulative.Reserve(Target, new[] { Address });
         var cumulativeState = File.ReadAllText(Path.Combine(cumulativePath, "requests.json"));
@@ -88,7 +135,7 @@ internal static class TopicPacingTests {
             "Clock drift pause changed the persisted reservation");
 
         foreach (var corrupt in new[] { "", "{", new string('x', 32769), "{\"Schema\":1,\"Schema\":1,\"Entries\":[]}",
-            "{\"Schema\":1,\"Entries\":[],\"Other\":1}", "{\"Schema\":2,\"Entries\":[]}" }) {
+            "{\"Schema\":1,\"Entries\":[],\"Other\":1}", "{\"Schema\":3,\"Entries\":[]}" }) {
             var brokenPath = Scope(); var broken = new Clock().Pacer(brokenPath); broken.Check(Target);
             File.WriteAllText(Path.Combine(brokenPath, "requests.json"), corrupt);
             Refuse(() => broken.Check(Target));
@@ -104,6 +151,9 @@ internal static class TopicPacingTests {
         var original = File.ReadAllText(statePath);
         foreach (var mutation in new Action<JsonObject>[] {
             entry => entry["Port"] = 1716,
+            entry => entry["ReservedTick"] = -1,
+            entry => entry["RequestId"] = null,
+            entry => entry["Result"] = new JsonObject { ["CheckedAt"] = Epoch.ToString("O"), ["Json"] = "{\"players\":-1}" },
             entry => entry["Addresses"] = new JsonArray("127.0.0.1"),
             entry => entry["NotBefore"] = Epoch.AddSeconds(1).ToString("O"),
             entry => entry["ReservedAt"] = Epoch.ToOffset(TimeSpan.FromHours(1)).ToString("O") }) {
@@ -193,6 +243,37 @@ internal static class TopicPacingTests {
             }
             Require(Wait(() => failedPacer.Check(Target)) == 137, "Failed response lost its durable reservation: " + failure);
         }
+        var contentionPath = Scope(); var contentionClock = new Clock(); var contentionPacer = contentionClock.Pacer(contentionPath);
+        FileStream? competingOwner = null; var contendedWrites = 0;
+        var contendedUi = new DiscoveryFixture(_ => Task.FromResult(new ServerSnapshot(new[] { verified.Status }, 0)), selected =>
+            ByondStatus.Query(selected.Target, _ => Task.FromResult(new[] { Address, alternative }),
+                (_, _, beforeWrite, _) => {
+                    beforeWrite(); contendedWrites++;
+                    competingOwner = new FileStream(Path.Combine(contentionPath, "requests.lock"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                    return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet("{}"));
+                }, () => contentionClock.Utc, expected: selected, pacer: contentionPacer));
+        try {
+            using var contendedOutput = new StringWriter();
+            await ServerBrowser.Run("ValZarGaming", contendedUi, new StringReader("1\nJ\n1\nB\n"), contendedOutput,
+                _ => throw new Exception("Malformed contended result launched"));
+            Require(contendedWrites == 1 && contendedOutput.ToString().Contains("could not be verified") &&
+                !contendedOutput.ToString().Contains("Press J when ready"), "Failure cache contention hid verification failure or retained selection");
+        } finally { competingOwner?.Dispose(); }
+        Require(Wait(() => contentionPacer.Check(Target)) == 137, "Failure cache contention lost the durable reservation");
+
+        var successPath = Scope(); var successClock = new Clock(); var successPacer = successClock.Pacer(successPath);
+        FileStream? cacheOwner = null;
+        try {
+            var uncachedSuccess = await ByondStatus.Query(Target, _ => Task.FromResult(new[] { Address }),
+                (_, _, beforeWrite, _) => {
+                    beforeWrite();
+                    cacheOwner = new FileStream(Path.Combine(successPath, "requests.lock"), FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                    return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet());
+                }, () => successClock.Utc, pacer: successPacer);
+            Require(uncachedSuccess.Status.Players == 0, "Display cache contention invalidated a fresh successful verification");
+        } finally { cacheOwner?.Dispose(); }
+        Require(Wait(() => successPacer.Check(Target)) == 137, "Successful cache contention lost its reservation");
+
         var invalidClock = new Clock(); var invalidPacer = invalidClock.Pacer(Scope()); var invalidAttempts = 0;
         var invalidDiscovery = new ServerDiscovery(candidate => ByondStatus.Query(candidate,
             _ => Task.FromResult(new[] { Address, alternative }), (_, _, beforeWrite, _) => {
@@ -201,6 +282,9 @@ internal static class TopicPacingTests {
         var invalidSnapshot = await invalidDiscovery.Fetch("ValZarGaming");
         Require(invalidSnapshot.Unverified == 2 && invalidSnapshot.Deferred?.Count == 0 && !invalidSnapshot.PacingPaused &&
             invalidAttempts == 2, "Malformed responses were displayed as waiting or dialed a second address");
+        var cachedInvalid = await invalidDiscovery.Fetch("ValZarGaming");
+        Require(invalidAttempts == 2 && cachedInvalid.Deferred?.Count == 2 && cachedInvalid.Deferred.All(item => item.Cached is { Server: null }),
+            "Failed query result was not retained without another request");
         var identityClock = new Clock(); var identityPacer = identityClock.Pacer(Scope()); var identityChecks = 0; var identityAttempts = 0;
         var changedIdentity = new DiscoveryFixture(_ => Task.FromResult(new ServerSnapshot(new[] { verified.Status }, 0)), selected => {
             identityChecks++;
@@ -227,6 +311,76 @@ internal static class TopicPacingTests {
             } catch (IOException) { Require(cancelledDns == 0, "Cancellation opened DNS/work"); }
         }
 
+        var metadataPath = Scope(); var metadataClock = new Clock(); var metadataPacer = metadataClock.Pacer(metadataPath);
+        var maximumMap = new string('é', 64); var maximumMode = new string('m', 80);
+        var metadataJson = System.Text.Json.JsonSerializer.Serialize(new { players = 10000, map_name = maximumMap,
+            map_gamemode = maximumMode, map_age = new string('e', 32), game_id = new string('i', 80), round_duration_in_ticks = int.MaxValue });
+        await ByondStatus.Query(Target, _ => Task.FromResult(new[] { Address }),
+            (_, _, beforeWrite, _) => { beforeWrite(); return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet(metadataJson)); },
+            () => metadataClock.Utc, pacer: metadataPacer);
+        try { metadataClock.Pacer(metadataPath).Check(Target); } catch (TopicWaitException wait) {
+            Require(wait.Cached?.Server is { Players: 10000, RoundDurationSeconds: 214748364 } maximum &&
+                maximum.Map == maximumMap && maximum.Mode == maximumMode && maximum.Epoch.Length == 32 && maximum.RoundId.Length == 80,
+                "Maximum valid metadata was lost or changed in cache serialization");
+        }
+        Require(new FileInfo(Path.Combine(metadataPath, "requests.json")).Length < 32768, "Cache exceeded bounded state size");
+
+        // Actual restart: cached valid zero-player status is displayed without DNS or Topic.
+        var cachePath = Scope(); var cacheClock = new Clock(); var cachePacer = cacheClock.Pacer(cachePath);
+        var cacheWrites = 0; var cacheDns = 0;
+        async Task<VerifiedGameServer> CachedQuery(TopicPacer pacing, GameTarget candidate, GameServer? expected = null, string? packetJson = null) =>
+            await ByondStatus.Query(candidate, _ => { cacheDns++; return Task.FromResult(new[] { Address }); },
+                (_, _, beforeWrite, _) => { beforeWrite(); cacheWrites++; return Task.FromResult<ReadOnlyMemory<byte>>(ByondStatusTests.Packet(packetJson)); },
+                () => cacheClock.Utc, expected: expected, pacer: pacing);
+        var cachedValid = await CachedQuery(cachePacer, Target);
+        using (var cachedChild = StartChild(cachePath, cached: true))
+            Require(FinishChild(cachedChild) == "CACHED:0:15:122", "Separate process could not reuse the persisted result and remaining cooldown");
+        cacheClock.Advance(15);
+        var newProcess = cacheClock.Pacer(cachePath);
+        TopicWaitException cachedWait;
+        try { newProcess.Check(Target); throw new Exception("Restart ignored cooldown"); }
+        catch (TopicWaitException wait) { cachedWait = wait; }
+        Require(cachedWait.Seconds == 122 && cachedWait.Cached?.Server?.Players == 0 && cachedWait.Cached.AgeSeconds == 15,
+            "Restart did not retain exact cooldown and cached zero-player status/age");
+        var cachedDiscovery = new ServerDiscovery(candidate => CachedQuery(newProcess, candidate));
+        var cachedSnapshot = await cachedDiscovery.Fetch("ValZarGaming");
+        Require(cachedSnapshot.Servers.Any(item => item.Target == Target && item.Players == 0) && cacheWrites == 2 && cacheDns == 2,
+            "Cached restart performed another request on its cooling-down endpoint");
+        using (var cacheOutput = new StringWriter()) {
+            ServerBrowser.WriteServers(cacheOutput, "ValZarGaming", cachedSnapshot);
+            Require(cacheOutput.ToString().Contains("Cached last verified status (15 seconds old)") && cacheOutput.ToString().Contains("Players: 0") &&
+                cacheOutput.ToString().Contains("next eligible status check required"), "Cache menu hid age or implied current verification");
+        }
+        cacheClock.Advance(122);
+        var freshAfterCache = await CachedQuery(cacheClock.Pacer(cachePath), Target, cachedValid.Status);
+        Require(freshAfterCache.Status.CheckedAt == cacheClock.Utc && cacheWrites == 3, "Expired cache cooldown added startup guard or reused old dispatch token");
+        cacheClock.Advance(15);
+        var staleRequestId = cachePacer.Reserve(Target with { Port = 1715 }, new[] { Address });
+        cacheClock.Advance(137);
+        var newestRequestId = cachePacer.Reserve(Target with { Port = 1715 }, new[] { Address });
+        cachePacer.Record(Target with { Port = 1715 }, staleRequestId, null);
+        try { cachePacer.Check(Target with { Port = 1715 }); } catch (TopicWaitException wait) {
+            Require(wait.Cached == null, "Late prior completion overwrote a newer reservation");
+        }
+        cachePacer.Record(Target with { Port = 1715 }, newestRequestId, null);
+        try { cacheClock.Pacer(cachePath).Check(Target with { Port = 1715 }); } catch (TopicWaitException wait) {
+            Require(wait.Cached is { Server: null, AgeSeconds: 0 }, "Failed request did not retain bounded failure result");
+        }
+        // No cached address or VerifiedGameServer exists; fresh mismatched identity still fails closed.
+        cacheClock.Advance(137);
+        try {
+            await CachedQuery(cacheClock.Pacer(cachePath), Target, cachedValid.Status, "{\"players\":0,\"game_id\":\"different\"}");
+            throw new Exception("Cached identity bypassed prejoin");
+        } catch (IOException error) when (error is not TopicPacingException) { assertions++; }
+        cacheClock.Advance(601);
+        // Legacy fallback can defer an old record, but stale results are never shown.
+        var staleState = JsonNode.Parse(File.ReadAllText(Path.Combine(cachePath, "requests.json")))!.AsObject();
+        foreach (var entry in staleState["Entries"]!.AsArray()) entry!["ReservedTick"] = cacheClock.Tick + 1000000;
+        File.WriteAllText(Path.Combine(cachePath, "requests.json"), staleState.ToJsonString());
+        try { cacheClock.Pacer(cachePath).Check(Target); } catch (TopicWaitException wait) {
+            Require(wait.Cached == null, "Expired cached result was displayed");
+        }
+
         var checks = 0; var launches = 0;
         var ui = new DiscoveryFixture(_ => Task.FromResult(new ServerSnapshot(new[] { verified.Status }, 0)), _ => {
             checks++; throw new TopicWaitException(TimeSpan.FromSeconds(130));
@@ -240,11 +394,32 @@ internal static class TopicPacingTests {
         using (var pausedOutput = new StringWriter()) {
             ServerBrowser.WriteServers(pausedOutput, "ValZarGaming", paused);
             Require(paused.PacingPaused && paused.Unverified == 0 && pausedOutput.ToString().Contains("local timing state needs review") &&
-                !pausedOutput.ToString().Contains("unreachable"), "Local pacing failure was mislabeled remote offline");
+                !pausedOutput.ToString().Contains("unreachable") && !pausedOutput.ToString().Contains("No verified online"), "Local pacing failure was mislabeled remote offline");
         }
         var deferred = await new ServerDiscovery(_ => throw new TopicWaitException(TimeSpan.FromSeconds(137))).Fetch("ValZarGaming");
         Require(deferred.Deferred?.Count == 2 && deferred.Unverified == 0 && !deferred.PacingPaused,
             "Locally deferred candidates were mislabeled unreachable");
+        using (var deferredOutput = new StringWriter()) {
+            ServerBrowser.WriteServers(deferredOutput, "ValZarGaming", deferred);
+            Require(deferredOutput.ToString().Contains("Current status unknown; no cached result") &&
+                !deferredOutput.ToString().Contains("No verified online") && !deferredOutput.ToString().Contains("unreachable"),
+                "Deferred unknown endpoints were described as unavailable/offline");
+        }
+        var failedCache = new CachedStatus(null, Epoch, 12);
+        var failedSnapshot = await new ServerDiscovery(_ => throw new TopicWaitException(TimeSpan.FromSeconds(125), failedCache)).Fetch("ValZarGaming");
+        using (var failedOutput = new StringWriter()) {
+            ServerBrowser.WriteServers(failedOutput, "ValZarGaming", failedSnapshot);
+            Require(failedSnapshot.Servers.Count == 0 && failedSnapshot.Unverified == 0 && failedOutput.ToString().Contains("12 seconds ago") &&
+                failedOutput.ToString().Contains("current status unknown"), "Cached failed check was shown as current offline or zero-player status");
+        }
+        var cachedJoins = 0; var cachedRechecks = 0;
+        var cachedMenu = new DiscoveryFixture(_ => Task.FromResult(cachedSnapshot), _ => {
+            cachedRechecks++; throw new TopicWaitException(TimeSpan.FromSeconds(122));
+        });
+        await ServerBrowser.Run("ValZarGaming", cachedMenu, new StringReader("1\nB\n"), TextWriter.Null,
+            _ => { cachedJoins++; return Task.CompletedTask; });
+        Require(cachedRechecks == 1 && cachedJoins == 0, "Cached selectable status bypassed the prejoin cooldown");
+        wireClock.Advance(61); // Expire the in-process response proof while genuine spacing remains.
         var inputCount = 0; var freshDns = 0; var dispatched = "";
         var changingInput = new SteppedInput(() => {
             inputCount++;

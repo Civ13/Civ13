@@ -127,9 +127,10 @@
 	if(istype(I, /obj/item/weapon/grenade) && !payload && special && !flying)
 		visible_message("[user] starts attaching the [I] to \the [src]...")
 		if (do_after(user, 100, src))
+			if (!I || !persistence_movement_allowed(I, src)) return FALSE
 			visible_message("[user] attaches the [I] to \the [src].")
 			user.remove_from_mob(I)
-			I.loc = src
+			if (!I.persistence_set_loc(src)) return FALSE
 			payload = I
 	else
 		..()
@@ -332,9 +333,10 @@
 /obj/structure/drone/flying/do_special()
 	if (payload)
 		var/turf/T = get_turf(src)
+		if (!persistence_movement_allowed(payload, T)) return FALSE
 		payload.pixel_x = pixel_x
 		payload.pixel_y = pixel_y
-		payload.loc = T
+		if (!payload.persistence_set_loc(T)) return FALSE
 		payload.activate()
 		if (flying)
 			animate(payload, pixel_y = 0, time = 5, easing = LINEAR_EASING)

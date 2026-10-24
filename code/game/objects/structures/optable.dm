@@ -72,12 +72,13 @@
 	check_victim()
 
 /obj/structure/optable/proc/take_victim(mob/living/human/C, mob/living/human/user as mob)
+	if (!C || !persistence_movement_allowed(C, loc)) return FALSE
 	if (C == user)
 		user.visible_message("[user] climbs on \the [src].","You climb on \the [src].")
 	else
 		visible_message("<span class='notice'>\The [C] has been laid on \the [src] by [user].</span>", 3)
 	C.resting = TRUE
-	C.loc = loc
+	if (!C.persistence_set_loc(loc)) return FALSE
 	for (var/obj/O in src)
 		O.loc = loc
 	add_fingerprint(user)
