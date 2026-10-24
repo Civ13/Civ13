@@ -37,8 +37,9 @@ def old_reader_helpers(loading, existing):
 
 
 def require_old_reader_preflight(result, log):
-    refusal = r'World-save preflight rejected: Unsupported save version 3 on code[/\\]modules[/\\]persistence[/\\]loading\.dm:\d+\b'
-    if result != 'FAIL: save preflight failed' or not re.search(refusal, log):
+    refusal = 'World-save preflight rejected: Unsupported save version 3 on :'
+    refusals = [line for line in log.splitlines() if 'World-save preflight rejected' in line]
+    if result != 'FAIL: save preflight failed' or refusals != [refusal]:
         raise RuntimeError('Old reader did not reject format 3 during historical preflight')
 
 

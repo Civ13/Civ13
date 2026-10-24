@@ -102,6 +102,10 @@ class PreparationTests(unittest.TestCase):
         combined = reader + '\n' + functions.decode('utf-8')
         for name in procs(roof + codec):
             self.assertEqual(procs(combined).count(name), 1)
+        refusal = b'throw EXCEPTION("Unsupported save version '
+        sites = {relative: (output / relative).read_bytes().count(refusal)
+                 for relative in metadata['sources'] if refusal in (output / relative).read_bytes()}
+        self.assertEqual(sites, {'code/modules/persistence/loading.dm': 1})
 
     def test_compatibility_rejects_changed_or_repeated_boundaries(self):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
@@ -134,16 +138,27 @@ class PreparationTests(unittest.TestCase):
         end = next(i for i in range(begin, len(main.body)) if isinstance(main.body[i], ast.If)
                    and isinstance(main.body[i].test, ast.Attribute) and main.body[i].test.attr == 'verify_backup')
         guard = compile(ast.Module(body=main.body[begin:end], type_ignores=[]), '<actual-native-adjudication>', 'exec')
-        good = 'World-save preflight rejected: Unsupported save version 3 on code/modules/persistence/loading.dm:625\n'
+        good = 'World-save preflight rejected: Unsupported save version 3 on :\n'
         cases = [('FAIL: save preflight failed', good, 0, False),
                  ('PASS', good, 0, True), ('FAIL: save preflight failed for another reason', good, 0, True),
                  ('FAIL: save preflight failed', 'error: undefined proc clear_saved_roof_areas', 0, True),
                  ('FAIL: save preflight failed', good.replace('version 3', 'version 2'), 0, True),
-                 ('FAIL: save preflight failed', good.replace('loading.dm', 'other.dm'), 0, True),
+                 ('FAIL: save preflight failed', good.replace('version 3', 'version 30'), 0, True),
+                 ('FAIL: save preflight failed', good.replace('on :', 'on code/modules/persistence/loading.dm:625'), 0, True),
                  ('FAIL: save preflight failed', 'World-save preflight rejected: Missing saved turf', 0, True),
-                 ('FAIL: save preflight failed', good + 'runtime error: undefined proc', 0, True),
-                 ('FAIL: save preflight failed', good + 'BUG: engine diagnostic', 0, True),
+                 ('FAIL: save preflight failed', good * 2, 0, True),
+                 ('FAIL: save preflight failed', 'prefix ' + good, 0, True),
+                 ('FAIL: save preflight failed', good.rstrip() + ' suffix\n', 0, True),
+                 ('FAIL: save preflight failed', ' ' + good, 0, True),
+                 ('FAIL: save preflight failed', good.rstrip() + ' \n', 0, True),
+                 ('FAIL: save preflight failed', good.replace('rejected:', 'rejected'), 0, True),
+                 ('FAIL: save preflight failed', good + good.replace('version 3', 'version 2'), 0, True),
+                 ('FAIL: save preflight failed', good + 'World-save preflight rejected: Missing saved turf\n', 0, True),
+                 ('FAIL: save preflight failed', good + good.replace('rejected:', 'rejected'), 0, True),
                  ('FAIL: save preflight failed', good, 1, True)]
+        cases += [('FAIL: save preflight failed', good + diagnostic, 0, True)
+                  for diagnostic in ('runtime error: undefined proc', 'bad ref', 'BUG: engine diagnostic',
+                                     'RUNTIME: engine diagnostic', 'infinite loop', 'fatal error')]
         output = Path(self.enterContext(tempfile.TemporaryDirectory()))
         for result, log, status, rejected in cases:
             with self.subTest(result=result, log=log, status=status):
