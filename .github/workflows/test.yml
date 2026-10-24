@@ -110,6 +110,9 @@ jobs:
       - name: Test configurable shared season duration offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/season_duration')
         run: python3 -B -m unittest discover -s tests/season_duration -v
+      - name: Test optional per-map weather policy offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/weather_policy')
+        run: python3 -B -m unittest discover -s tests/weather_policy -v
       - name: Test ping scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')
         run: python3 -B -m unittest discover -s tests/ping_scheduler -v
