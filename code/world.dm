@@ -72,6 +72,7 @@ var/world_is_open = TRUE
 
 #define RECOMMENDED_VERSION 516
 /world/New()
+	initialize_persistence_zones()
 	map_storage.record_compiled_dimensions()
 	// Detect before any startup yield, ticker setup or admission can run.
 	persistence_restart.detect_startup()
@@ -104,10 +105,17 @@ var/world_is_open = TRUE
 	build_research_tree()
 	processScheduler = new
 
+	var/datum/persistence_area_startup/area_startup = new
+	persistence_area_startup_token = area_startup
 	spawn(1)
-		processScheduler.deferSetupFor (/process/ticker)
-		processScheduler.setup()
-		setup_everything()
+		try
+			processScheduler.deferSetupFor (/process/ticker)
+			processScheduler.setup()
+			setup_everything(area_startup)
+		catch(var/exception/E)
+			area_startup.close()
+			throw E
+		area_startup.close()
 //		master_controller.setup()
 #ifdef UNIT_TEST
 		initialize_unit_tests()

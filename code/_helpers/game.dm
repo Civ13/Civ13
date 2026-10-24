@@ -16,6 +16,9 @@
 	return null*/
 
 /proc/get_area_name(N) //get area by its name
+#ifdef CIV13_ZONE_PERSISTENCE
+	require_persistence_area_registry()
+#endif
 	for (var/area/A in area_list)
 		if (A.name == N)
 			return A

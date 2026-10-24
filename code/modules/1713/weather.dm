@@ -25,6 +25,9 @@
 	return global_pollution
 
 /proc/change_weather(_weather = WEATHER_NONE, var/bypass_same_weather_check = FALSE)
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(persistence_area_registry_blocked()) return FALSE
+#endif
 
 	if (_weather == null)
 		return
@@ -51,10 +54,19 @@
 		while (TRUE)
 			var/revision = environment_weather_revision
 			var/work = 0
+#ifdef CIV13_ZONE_PERSISTENCE
+			var/datum/persistence_area_registry_epoch/registry_epoch = persistence_area_epoch
+#endif
 			for (var/area/caribbean/A in area_list)
+#ifdef CIV13_ZONE_PERSISTENCE
+				if(persistence_area_registry_blocked()) throw EXCEPTION("Weather registry became unavailable during load")
+#endif
 				apply_area_weather(A)
 				if (environment_sweep_pause(++work))
 					work = 0
+#ifdef CIV13_ZONE_PERSISTENCE
+					require_persistence_area_snapshot(registry_epoch)
+#endif
 					if (revision != environment_weather_revision)
 						break
 			if (revision == environment_weather_revision)
@@ -65,6 +77,9 @@
 	environment_weather_running = FALSE
 
 /proc/apply_area_weather(var/area/caribbean/A)
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(persistence_area_registry_blocked()) return
+#endif
 	if (!istype(A) || A.location != AREA_OUTSIDE)
 		return
 	switch (A.climate)
