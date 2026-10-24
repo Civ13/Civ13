@@ -19,6 +19,8 @@ on:
         value: ${{ jobs.changes.outputs.new_tests }}
       game:
         value: ${{ jobs.changes.outputs.game }}
+      gating:
+        value: ${{ jobs.changes.outputs.gating }}
 permissions:
   contents: read
 jobs:
@@ -29,6 +31,7 @@ jobs:
       extensive: ${{ steps.select.outputs.extensive }}
       game: ${{ steps.select.outputs.game }}
       new_tests: ${{ steps.select.outputs.new_tests }}
+      gating: ${{ steps.select.outputs.gating }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
