@@ -411,7 +411,8 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (!istype(W)) return
 	if (!has_organ_for_slot(slot)) return
 	if (!species || !species.hud || !(slot in species.hud.equip_slots)) return
-	W.forceMove(src)
+	if (W.loc != src && !W.forceMove(src)) return FALSE
+	if (W.loc != src) return FALSE
 	switch(slot)
 		if (slot_back)
 			back = W

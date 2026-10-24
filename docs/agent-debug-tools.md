@@ -1,5 +1,12 @@
 # Bounded agent debug commands (schema 1)
 
+For default-off private save/load variable evidence and automatic sanitized local
+failure snapshots, see [variable observability](variable-observability.md).
+`recovery` additionally discovers its current header as `data.variable_identity`;
+it does not resolve or export retained object evidence. The separate reader pins
+the expected build/session/round and rejects stale data. No runtime MCP capability
+or deployment is implied.
+
 These commands investigate the configured Host's own current view through the
 existing lifecycle transport. They provide cached state, not rendered pixels or
 a lighting repair. There is no eval, arbitrary variable/coordinate/target access,
