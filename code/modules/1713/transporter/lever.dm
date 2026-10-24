@@ -13,7 +13,17 @@
 	var/position = "docked" // Where the transport is
 	var/next_activation = -1;
 
+/obj/structure/transport_lever/proc/cancel_save_transfer(previous_position)
+	position = previous_position
+	icon_state = none_state
+	next_activation = world.time
+	for (var/turf/floor/plating/concrete/T in range(10, src))
+		T.opacity = FALSE
+		T.density = FALSE
+	return FALSE
+
 /obj/structure/transport_lever/attack_hand(var/mob/user as mob)
+	if (persistence_save_active()) return FALSE
 	if (world.time < next_activation)
 		next_activation = world.time + 5 SECONDS
 		visible_message("This Landing Craft isn't ready to depart yet.</span>")
@@ -33,38 +43,42 @@
 			spawn (5)
 				icon_state = none_state // Reset lever
 			spawn (200)
+				if (gcDestroyed || gc_destroyed) return FALSE
+				if (persistence_save_active()) return cancel_save_transfer("docked")
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
-						M.z = 2
+						if (!M.persistence_set_z(2)) return cancel_save_transfer("docked")
 					else if (M.z == 2)
-						M.z = 1
+						if (!M.persistence_set_z(1)) return cancel_save_transfer("docked")
 				for (var/obj/O in range(5, src))
 					if (O.z == 1)
-						O.z = 2
+						if (!O.persistence_set_z(2)) return cancel_save_transfer("docked")
 					else if (O.z == 2)
-						O.z = 1
+						if (!O.persistence_set_z(1)) return cancel_save_transfer("docked")
 				visible_message("The Landing Craft has arrived.</span>")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
 						T.opacity = FALSE
 						T.density = FALSE
 				spawn (400)
+					if (gcDestroyed || gc_destroyed) return FALSE
+					if (persistence_save_active()) return cancel_save_transfer(position)
 					if (z == 1)
 						visible_message("The Landing Craft is returning!</span>")
 						for (var/mob/M in range(14, src))
 							M.playsound_local(get_turf(M), 'sound/landing_craft.ogg', 100 - get_dist(M, src))
 						for (var/mob/M in range(5, src))
 							if (M.z == 1)
-								M.z = 2
+								if (!M.persistence_set_z(2)) return cancel_save_transfer(position)
 							else if (M.z == 1)
-								M.z = 2
+								if (!M.persistence_set_z(2)) return cancel_save_transfer(position)
 						for (var/obj/O in range(5, src))
 							if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 								if (O.z == 1)
-									O.z = 2
+									if (!O.persistence_set_z(2)) return cancel_save_transfer(position)
 								else if (O.z == 1)
-									O.z = 2
-						z = 2
+									if (!O.persistence_set_z(2)) return cancel_save_transfer(position)
+						if (!persistence_set_z(2)) return cancel_save_transfer(position)
 					spawn(5)
 						for (var/turf/floor/plating/concrete/T in range(10, src))
 							T.opacity = FALSE
@@ -82,39 +96,43 @@
 			spawn (5)
 				icon_state = none_state
 			spawn (200)
+				if (gcDestroyed || gc_destroyed) return FALSE
+				if (persistence_save_active()) return cancel_save_transfer("launched")
 				for (var/mob/M in range(5, src))
 					if (M.z == 1)
-						M.z = 2
+						if (!M.persistence_set_z(2)) return cancel_save_transfer("launched")
 					else if (M.z == 2)
-						M.z = 1
+						if (!M.persistence_set_z(1)) return cancel_save_transfer("launched")
 				for (var/obj/O in range(5, src))
 					if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 						if (O.z == 1)
-							O.z = 2
+							if (!O.persistence_set_z(2)) return cancel_save_transfer("launched")
 						else if (O.z == 2)
-							O.z = 1
+							if (!O.persistence_set_z(1)) return cancel_save_transfer("launched")
 				visible_message("The Landing Craft has arrived.</span>")
 				spawn(5)
 					for (var/turf/floor/plating/concrete/T in range(10, src))
 						T.opacity = FALSE
 						T.density = FALSE
 				spawn (400)
+					if (gcDestroyed || gc_destroyed) return FALSE
+					if (persistence_save_active()) return cancel_save_transfer(position)
 					if (z == 1)
 						visible_message("The Landing Craft is returning!</span>")
 						for (var/mob/M in range(14, src))
 							M.playsound_local(get_turf(M), 'sound/landing_craft.ogg', 100 - get_dist(M, src))
 						for (var/mob/M in range(5, src))
 							if (M.z == 1)
-								M.z = 2
+								if (!M.persistence_set_z(2)) return cancel_save_transfer(position)
 							else if (M.z == 1)
-								M.z = 2
+								if (!M.persistence_set_z(2)) return cancel_save_transfer(position)
 						for (var/obj/O in range(5, src))
 							if ((O.anchored == FALSE) || istype(O, /obj/structure/transport_lever))
 								if (O.z == 1)
-									O.z = 2
+									if (!O.persistence_set_z(2)) return cancel_save_transfer(position)
 								else if (O.z == 1)
-									O.z = 2
-						z = 2
+									if (!O.persistence_set_z(2)) return cancel_save_transfer(position)
+						if (!persistence_set_z(2)) return cancel_save_transfer(position)
 					spawn(5)
 						for (var/turf/floor/plating/concrete/T in range(10, src))
 							T.opacity = FALSE

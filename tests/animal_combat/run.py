@@ -1,5 +1,7 @@
 """Compile production animal combat in a small offline world, with temporary storage."""
 import argparse
+import hashlib
+import json
 import os
 from pathlib import Path
 import re
@@ -10,11 +12,15 @@ import tempfile
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--prepare-only', action='store_true', help='Stage source evidence without launching compiler or runtime')
     parser.add_argument('--negative-control', choices=('health', 'duplicate', 'chick', 'kenobi'))
     args = parser.parse_args()
+    if not args.prepare_only and not args.byond_bin:
+        parser.error('--byond-bin is required unless --prepare-only is selected')
     root = Path(__file__).resolve().parents[2]
-    binary = args.byond_bin.resolve()
+    subprocess.run([os.sys.executable, '-B', str(root / 'tests/animal_combat/test_retaliation.py')], check=True, cwd=root)
+    binary = args.byond_bin.resolve() if args.byond_bin else Path('.')
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     prefix = '.animal_combat_ci'
@@ -55,9 +61,21 @@ def main():
             generated[4].write_text(mutated, encoding='utf-8')
             source = source.replace(str(original.relative_to(root)).replace('/', '\\'), generated[4].name)
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
-        generated[0].write_text(source + '\n#include "tests/animal_combat/probe.dm"\n', encoding='utf-8')
+        generated[0].write_text(source + '\n#include "tests/animal_combat/probe.dm"\n#include "tests/animal_combat/retaliation.dm"\n', encoding='utf-8')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         print(f'Commit: {commit}', flush=True)
+        diff = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=root)
+        (logs / 'working-tree.patch').write_bytes(diff)
+        if args.prepare_only:
+            for path in generated:
+                if path.exists():
+                    shutil.copy2(path, logs / path.name)
+            packet = {'commit': commit, 'patch_sha256': hashlib.sha256(diff).hexdigest(),
+                      'scope': 'source preparation only; native compiler/runtime not run',
+                      'map': 'synthetic plating 8x8x1', 'negative_control': args.negative_control}
+            (logs / 'prepared.json').write_text(json.dumps(packet, indent=2) + '\n', encoding='utf-8')
+            print('PREPARED: native compilation and runtime were not run', flush=True)
+            return
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=root, capture_output=True, text=True, timeout=120,
                                creationflags=flags)

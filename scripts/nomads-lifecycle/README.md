@@ -5,6 +5,11 @@ pair/trace/bundle commands, see [agent debug tools](../../docs/agent-debug-tools
 Their DM collector requires a reviewed rebuild/restart; discovery and offline
 processing do not install or activate a runtime.
 
+Default-off save/load variable evidence extends that same protected status path;
+see [variable observability](../../docs/variable-observability.md) for the reader,
+automatic runtime-relative failure file, explicit activation prerequisites and
+unrun native acceptance. No new listener or generic variable access is added.
+
 Normal native TEST1714 source is a clean checkout attached to master, tracking
 origin/master from https://github.com/Civ13/Civ13.git. The master guard checks
 both the cached and freshly advertised remote default branch, fetches master,

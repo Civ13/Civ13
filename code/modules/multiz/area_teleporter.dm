@@ -81,11 +81,10 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 			if (BT.id == id_target)
 				for(var/obj/O in get_area(src))
 					if (!O.is_teleporter)
-						O.z = BT.z	//Teleport to destination's z level.
-						if (O.is_cover == TRUE)
+						if (O.persistence_set_z(BT.z) && O.is_cover == TRUE)
 							O.updateturf()
 				for(var/mob/M in get_area(src))
-					M.z = BT.z	//Teleport to destination's z level.
+					M.persistence_set_z(BT.z)
 
 /obj/effect/area_teleporter/proc/Simple_Up()
 	if (movement_location == "UP")
@@ -93,11 +92,10 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	else
 		spawn(20)
 			for(var/obj/O in get_area(src))
-				O.z = O.z+1	//Teleport to destination's z level.
-				if (O.is_cover == TRUE)
+				if (O.persistence_set_z(O.z+1) && O.is_cover == TRUE)
 					O.updateturf()
 			for(var/mob/M in get_area(src))
-				M.z = M.z+1	//Teleport to destination's z level.
+				M.persistence_set_z(M.z+1)
 		return
 
 /obj/effect/area_teleporter/proc/Simple_Down()
@@ -106,9 +104,8 @@ var/list/obj/effect/area_teleporter/AREA_TELEPORTERS = list()
 	else
 		spawn(20)
 			for(var/obj/O in get_area(src))
-				O.z = O.z-1	//Teleport to destination's z level.
-				if (O.is_cover == TRUE)
+				if (O.persistence_set_z(O.z-1) && O.is_cover == TRUE)
 					O.updateturf()
 			for(var/mob/M in get_area(src))
-				M.z = M.z-1	//Teleport to destination's z level.
+				M.persistence_set_z(M.z-1)
 		return

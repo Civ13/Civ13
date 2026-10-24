@@ -29,10 +29,10 @@ class SleepTransferSourceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             receipt = RUNNER.prepare(output)
-            self.assertEqual((output / 'sleep_helpers.dm').read_text(), self.helpers)
+            self.assertEqual((output / 'sleep_helpers.dm').read_text(), self.helpers + RUNNER.BASE.extract_proc(self.source, '/proc/is_protected_sleep_location'))
             for relative, target, paths in (
                 ('code/game/objects/buckling.dm', 'buckling.dm', RUNNER.BUCKLING),
-                ('code/game/atoms_movable.dm', 'force_move.dm', ('/atom/movable/proc/forceMove',)),
+                ('code/game/atoms_movable.dm', 'force_move.dm', RUNNER.MOVEMENT_HELPERS),
             ):
                 expected = '\n'.join(RUNNER.BASE.extract_proc((ROOT / relative).read_text(), path) for path in paths)
                 self.assertEqual((output / target).read_text(), expected)
@@ -58,7 +58,7 @@ class SleepTransferSourceTests(unittest.TestCase):
             with self.subTest(control=control), tempfile.TemporaryDirectory() as directory:
                 output = Path(directory)
                 RUNNER.prepare(output, control)
-                self.assertEqual((output / 'sleep_helpers.dm').read_text(), RUNNER.mutate(self.helpers, control))
+                self.assertEqual((output / 'sleep_helpers.dm').read_text(), RUNNER.mutate(self.helpers, control) + RUNNER.BASE.extract_proc(self.source, '/proc/is_protected_sleep_location'))
                 if control != 'diagnostic-record':
                     self.assertNotEqual((output / 'sleep_helpers.dm').read_text(), self.helpers)
                 for relative in RUNNER.BASE.PRODUCTION:
@@ -94,10 +94,10 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.assertIn('seat.unbuckle_mob()', changed)
         self.assertIn('return !buckled && (!seat || seat.buckled_mob != src)', changed)
 
-    def test_persistence_control_omits_all_five_gates_only(self):
-        self.assertEqual(self.helpers.count('persistence_save_in_progress'), 5)
+    def test_persistence_control_omits_all_six_gates_only(self):
+        self.assertEqual(self.helpers.count('persistence_sleep_transfer_blocked()'), 6)
         changed = RUNNER.mutate(self.helpers, 'persistence-gate')
-        self.assertNotIn('persistence_save_in_progress', changed)
+        self.assertNotIn('persistence_sleep_transfer_blocked()', changed)
         self.assertIn('release_protected_sleep_buckle()', changed)
         self.assertIn('!return_turf || !sleep_turf', changed)
         self.assertIn('inducedSSD || buckled ||', changed)

@@ -7,6 +7,9 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 
 /atom/movable
 	var/anchored = FALSE // Production atoms_movable.dm default used by unbuckle.
+	var/gcDestroyed = FALSE
+	var/gc_destroyed = FALSE
+/area/caribbean/admin
 /mob/living
 	var/obj/buckled
 	var/list/pinned = list()

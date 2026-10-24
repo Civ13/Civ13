@@ -1,6 +1,8 @@
 """Fail-closed source contract; no compiler or runtime execution."""
 import re
 
+CURRENT_BASE = '13a47adfc7400d95d10539dea4b2fd6cd7314e50'
+
 
 # Reviewed bounded-save integration adds only these non-hook blocks to the
 # pinned 5bf351 baseline. Keep complete-file equality after this projection;
@@ -69,3 +71,9 @@ def transform(baseline):
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
         raise ValueError('Only approved dispatch and reserved-policy projections may differ')
+
+
+def validate_current_master(master, candidate):
+    """Master already owns dispatch/policy; only the bounded blocks may differ."""
+    if project_bounded_save(master) != candidate:
+        raise ValueError('Only approved bounded-save additions may differ from pinned current master')

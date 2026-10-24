@@ -65,7 +65,11 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 			if(!istype(S)) continue
 			sources += list(list("file" = path, "line" = line_number, "logged" = S.total_logged, "skipped" = S.total_skipped, "retired" = S.total_retired))
 	var/list/runtime = list("total" = GLOB ? GLOB.total_runtimes : null, "skipped" = GLOB ? GLOB.total_runtimes_skipped : null, "cache_available" = !!cache, "source_total" = cache ? cache.error_sources.len : null, "prefix_limit" = 8, "sources" = sources, "stack_available" = FALSE, "proc_available" = FALSE)
-	return list("schema" = 1, "tick" = world.time, "progress" = progress, "runtime" = runtime)
+	var/list/state = list("schema" = 1, "tick" = world.time, "progress" = progress, "runtime" = runtime)
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	state["variables"] = variable_observability_status()
+#endif
+	return state
 
 /datum/nomads_lifecycle_control/proc/handle(list/input, addr)
 	// BYOND supplies IPv4 peers as 127.0.0.1:port. IPv6 is deliberately not

@@ -145,6 +145,14 @@
 		F.name = "[name] [F.name]"
 	return F
 
+/mob/living/simple_animal/proc/harvest_skin_yield()
+	// Skin eligibility is independent of mammalian organs. Chicks yield no skin.
+	if (istype(src, /mob/living/simple_animal/turkey_f) || istype(src, /mob/living/simple_animal/turkey_m))
+		return 1
+	if (harvest_mammal())
+		return min(6, max(1, butcher_yield()-2))
+	return 0
+
 /mob/living/simple_animal/proc/harvest_products(turf/site, skin)
 	var/size = min(8, max(1, butcher_yield()))
 	var/mammal = harvest_mammal()
@@ -191,12 +199,14 @@
 			for (var/i = 1, i <= min(2, max(0, size-2+fat_extra-fat_penalty)), i++)
 				harvest_food(/obj/item/weapon/reagent_containers/food/snacks/animalfat, site)
 		new /obj/item/stack/material/bone(site, max(1, size-2))
-		if (!skin)
-			new /obj/item/stack/material/leather(site, max(1, size-2))
 	else if (chicken)
 		harvest_food(/obj/item/weapon/reagent_containers/food/snacks/meat/offal, site)
 	if (skin)
 		harvest_hide(site)
+	else
+		var/skin_units = harvest_skin_yield()
+		if (skin_units > 0)
+			new /obj/item/stack/material/rawhide(site, skin_units)
 	if (map && map.ID == MAP_WIZARD_BOY && istype(src, /mob/living/simple_animal/pigeon))
 		new /obj/item/wand_part/pigeon_feather(site)
 
@@ -206,8 +216,6 @@
 	rotten_icon_state = "stomach-x"
 
 /mob/living/simple_animal/proc/harvest_hide(turf/site)
-	if (istype(src, /mob/living/simple_animal/hostile/bear)) //all bears on the inheritance path drop leather to compensate for improper types.
-		new /obj/item/stack/material/leather(site, 1)
 	if (istype(src, /mob/living/simple_animal/hostile/bear/boar/black))
 		new /obj/item/stack/material/pelt/bearpelt/black(site, 6)
 	else if (istype(src, /mob/living/simple_animal/hostile/bear/sow/black))
@@ -264,5 +272,7 @@
 		new /obj/item/stack/material/pelt/bisonpelt(site, 3)
 	else if (istype(src, /mob/living/simple_animal/bisonbull))
 		new /obj/item/stack/material/pelt/bisonpelt(site, 4)
-	else if (harvest_mammal() && !istype(src, /mob/living/simple_animal/hostile/bear))
-		new /obj/item/stack/material/leather(site, max(1, butcher_yield()-2))
+	else
+		var/skin_units = harvest_skin_yield()
+		if (skin_units > 0)
+			new /obj/item/stack/material/rawhide(site, skin_units)

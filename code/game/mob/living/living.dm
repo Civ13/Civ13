@@ -75,7 +75,7 @@ default behaviour is:
 
 			//Leaping mobs just land on the tile, no pushing, no anything.
 			if (status_flags & LEAPING)
-				loc = tmob.loc
+				persistence_set_loc(tmob.loc)
 				status_flags &= ~LEAPING
 				now_pushing = FALSE
 				return
@@ -89,7 +89,7 @@ default behaviour is:
 							var/t = get_dir(H, tmob)
 							step(tmob, t)
 						if (HR.loc != H.loc)
-							HR.loc = H.loc
+							HR.persistence_set_loc(H.loc)
 							HR.forceMove(H.loc)
 							HR.trample(tmob)
 						H.riding_mob.update_icons()
@@ -489,7 +489,7 @@ default behaviour is:
 		timeofdeath = FALSE
 
 	// restore us to conciousness
-	stat = CONSCIOUS
+	set_stat(CONSCIOUS)
 
 	// make the icons look correct
 	regenerate_icons()
@@ -500,6 +500,8 @@ default behaviour is:
 	return
 
 /mob/living/Move(a, b, flag)
+	if (!persistence_movement_allowed(src, a))
+		return FALSE
 	if (buckled)
 		return FALSE
 	if (using_drone)

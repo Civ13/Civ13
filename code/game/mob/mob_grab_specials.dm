@@ -159,8 +159,8 @@
 			if (!do_mob(user, target, 30)) return
 		else
 			if (!do_mob(user, target, 100)) return
+		if (!target.persistence_set_loc(user)) return FALSE
 		user.visible_message(SPAN_DANGER("[user] devours [target]!"))
 		admin_attack_log(attacker, target, "Devoured.", "Was devoured by.", "devoured")
-		target.loc = user
 		attacker.stomach_contents.Add(target)
 		qdel(src)
