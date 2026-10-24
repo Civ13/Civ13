@@ -58,10 +58,12 @@ event state machines or a way to bypass their climate rules.
 
 Unknown keys/identifiers, wrong types, out-of-range timing values, duplicate targets,
 associated targets or malformed rows reject the whole policy. The automatic
-weather process returns before RNG, intensity changes or deadline updates; random
-selection and intensity helpers also refuse invalid policy. No partial timing
-override is applied. Repair the installed map policy to resume normal scheduling.
-This does not block explicit direct weather/event calls.
+weather process skips its random RNG/intensity/deadline block; random selection
+and intensity helpers also refuse invalid policy. The existing durable/legacy
+event-service tail still runs. Independent end callbacks remain owned by their
+timer queues/sleepers and retain the save hold; invalid random policy cannot cancel
+them. No partial timing override is applied. Repair the installed policy to resume
+random scheduling. Direct weather/event behavior is unchanged.
 
 Fields are author policy, excluded from historical imports and absent from the
 durable metadata schema. On reload, installed policy is evaluated against the
@@ -80,3 +82,10 @@ does not grant or extend testing. A time-window extension does not release the
 native hold or change ownership/admission/resource limits. Review balancing and run
 native regressions only after the parent resolves the hold and reviews containment.
 Existing sealed packets are not changed by this documentation.
+
+Event-service controls project the production fire prefix/durable dispatch and
+event end bodies. An explicit independent timer adapter checks active blizzard,
+heatwave and sandstorm cleanup with invalid policy and the unchanged save hold.
+The published early-return control loses tail service; independent expiry still
+works, so it is not mislabeled as a timer-cancellation defect. Native callback
+ownership/expiry remains unrun. Existing event-specific RNG behavior is unchanged.

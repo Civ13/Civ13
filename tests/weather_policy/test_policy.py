@@ -98,11 +98,15 @@ class Map:
         self.weather_policy_choices = lambda values: choices(self, state, possibilities=values)
 
 
-def process(source):
-    prefix = body(source, "/process/weather/fire()").split("\tif(map && map.uses_durable_metadata())", 1)[0]
+def process(source, include_durable=False):
+    full = body(source, "/process/weather/fire()")
+    prefix = full.split("\tif ((season ==", 1)[0] if include_durable else full.split("\tif(map && map.uses_durable_metadata())", 1)[0]
     instructions = {
         "if(persistence_save_in_progress) return": "if state.saving: return",
         "if (map && !map.weather_policy_valid())": "if state.map and not state.map.weather_policy_valid():",
+        "if (!map || map.weather_policy_valid())": "if not state.map or state.map.weather_policy_valid():",
+        "if(map && map.uses_durable_metadata())": "if state.map and state.map.uses_durable_metadata():",
+        "map.durable_weather_events()": "state.map.durable_weather_events()",
         "return": "return",
         'var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval': 'mod_interval = state.map.weather_timing_value("mod_interval", self.mod_weather_interval) if state.map else self.mod_weather_interval',
         'var/change_interval = map ? map.weather_timing_value("change_interval", change_weather_interval) : change_weather_interval': 'change_interval = state.map.weather_timing_value("change_interval", self.change_weather_interval) if state.map else self.change_weather_interval',
@@ -127,7 +131,7 @@ def process(source):
     }
     lines = ["def projected(self, state):"]
     for raw in prefix.splitlines():
-        if raw.strip():
+        if raw.strip() and not raw.strip().startswith("//"):
             depth = len(raw) - len(raw.lstrip("\t"))
             lines.append("    " * depth + instructions[raw.strip()])
     env = {}
