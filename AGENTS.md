@@ -284,6 +284,9 @@ Use register_living_mob/unregister_living_mob for living-list writes. The derive
 living_complex_animal_list mirrors order and duplicate/last-match removal; it is
 not dog_mob_list or a stat/z/spatial filter. tests/movement_discovery checks
 source-derived offline lifecycle/callback/RNG traces; native parity is pending.
+prepare_native.py stages a tiny paired legacy/candidate iterator fixture only;
+it has no execution option. Native mutation/yield/reentry and lifecycle oracles
+remain uncompiled/unrun and require separate reviewed admission.
 
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.
