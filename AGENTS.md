@@ -256,6 +256,15 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-24: optional geographic elevation -->
+Elevation is a bounded coordinate profile on map metadata, independent of native
+areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
+does not alter temperature or precipitation. The optional round.json snapshot
+is validated before mutation and installed before replacement constructors;
+missing legacy snapshots restore flat zero, overriding newer author defaults.
+See docs/elevation.md and tests/elevation. Native fixture preparation is source
+only while local native execution remains held.
+
 - Each map has a `/obj/map_metadata` subtype that handles game mode logic.
 - The metadata object is placed in the DMM at a consistent position (conventionally `(1,1,1)`) on any turf.
 - `New()` on the base `/obj/map_metadata` sets `map = src`, clears icon, copies faction lists, and starts background timers.
