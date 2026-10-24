@@ -55,10 +55,19 @@
 				user.visible_message("<span class='danger'>[user] attacks [src]'s stomach wall with the [I.name]!</span>")
 
 				if (prob(getBruteLoss() - 50))
-					for (var/atom/movable/A in stomach_contents)
-						A.loc = loc
-						stomach_contents.Remove(A)
+					if (!release_stomach_contents()) return FALSE
 					gib()
+
+// A swallowed body may have left through protected sleep or another transfer.
+// A stale list entry grants no ownership to teleport it back during release.
+/mob/living/human/proc/release_stomach_contents()
+	for (var/atom/movable/A in stomach_contents.Copy())
+		if (A.loc != src)
+			stomach_contents.Remove(A)
+			continue
+		if (!A.persistence_set_loc(loc)) return FALSE
+		stomach_contents.Remove(A)
+	return TRUE
 
 /mob/living/human/gib()
 	for (var/mob/M in src)
@@ -196,7 +205,7 @@
 				M.visible_message("<span class='notice'>[M] shakes \the [src] trying to wake [t_him] up!</span>", \
 									"<span class='notice'>You shake \the [src], but they do not respond... Maybe they have shell shock?</span>")
 			else if (lying || sleeping)
-				sleeping = max(0,sleeping-5)
+				AdjustSleeping(-5)
 				if (!sleeping)
 					resting = 0
 				M.visible_message("<span class='notice'>[M] shakes \the [src] trying to wake [t_him] up!</span>", \

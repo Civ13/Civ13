@@ -4,6 +4,11 @@
 	maxz = 1
 	turf = /turf/floor/plating
 
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+
 // No human startup, network, inventory UI or skill side effects in this adapter.
 /mob/living/harvest_tester/New()
 	return
@@ -66,9 +71,12 @@ var/global/harvest_duplicate_result = null
 		qdel(O)
 
 /world/New()
+	OpenPort("none")
 	// Exercise object cleanup after the first world tick.
 	sleep(1)
 	try
+		harvest_assert(!world.port && !OpenPort(12345), "Fixture refuses listening ports")
+		text2file("closed", "port-closed.txt")
 		new /obj/map_metadata/harvest_fixture
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy)), "metadata.json")
 		var/turf/site = locate(3,3,1)
@@ -82,6 +90,7 @@ var/global/harvest_duplicate_result = null
 			var/result = C.harvest_animal(U, K, TRUE)
 			if (action == "complete" || action == "concurrent" || action == "realwait_complete")
 				harvest_assert(QDELETED(C), "Completed corpse not deleted")
+				harvest_assert(!harvest_count(site, /obj/item/stack/material/leather), "Harvest emitted tanned leather")
 				harvest_assert(harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/meat/offal) == 6, "Cow organs missing or duplicated")
 				harvest_assert(harvest_count(site, /obj/item/stack/sinew) == 1, "Sinew stack missing or duplicated")
 				harvest_assert(harvest_count(site, /obj/item/stack/material/pelt/cowpelt) == 1, "Cow hide missing")
@@ -107,9 +116,10 @@ var/global/harvest_duplicate_result = null
 				if (!istype(M, /obj/item/weapon/reagent_containers/food/snacks/meat/offal))
 					slabs++
 			var/obj/item/stack/material/bone/bone = locate() in site
-			var/obj/item/stack/material/leather/hide = locate() in site
+			var/obj/item/stack/material/rawhide/hide = locate() in site
 			var/obj/item/stack/sinew/tendons = locate() in site
 			harvest_assert(slabs == yield_count && bone.amount == max(1, yield_count-2) && hide.amount == max(1, yield_count-2), "Size portions/stacks incorrect")
+			harvest_assert(!harvest_count(site, /obj/item/stack/material/leather), "Size-based harvest bypassed tanning")
 			harvest_assert(yield_count >= 3 ? tendons && tendons.amount == min(4, max(1, yield_count-2)) : !tendons, "Sinew quantity incorrect")
 			qdel(C)
 			harvest_clear(site)
@@ -118,6 +128,7 @@ var/global/harvest_duplicate_result = null
 			var/mob/living/simple_animal/A = new path(site)
 			A.radiation = 8
 			A.harvest_products(site, TRUE)
+			harvest_assert(!harvest_count(site, /obj/item/stack/material/leather), "Species harvest bypassed tanning: [path]")
 			harvest_assert(harvest_count(site, /obj/item) <= 24, "Unbounded output: [path]")
 			if (istype(A, /mob/living/simple_animal/pig_gilt))
 				harvest_assert(harvest_count(site, /obj/item/weapon/pigleg) == 1 && harvest_count(site, /obj/item/weapon/reagent_containers/food/snacks/pig/stomach) == 1, "Pig routes lost")
@@ -175,6 +186,7 @@ var/global/harvest_duplicate_result = null
 			var/obj/item/stack/material/pelt/lionpelt/pelt = locate() in site
 			var/expected = path == /mob/living/simple_animal/hostile/sabertooth/lion/gladiator ? 0 : (path == /mob/living/simple_animal/hostile/sabertooth/lion ? 3 : 6)
 			harvest_assert(expected ? pelt && pelt.amount == expected : !pelt, "Lion hide subtype yield: [path]")
+			harvest_assert(!harvest_count(site, /obj/item/stack/material/leather), "Lion skinning emitted leather")
 			qdel(A)
 			harvest_clear(site)
 		for (var/action in list("cancel", "drop", "move_branch", "empty", "disconnect", "concurrent", "complete", "ground"))
@@ -232,6 +244,7 @@ var/global/harvest_duplicate_result = null
 			qdel(H)
 			harvest_clear(site)
 		harvest_tall_grass_regressions(site, U, K)
+		harvest_tanning_regressions(site)
 		var/obj/structure/oven/oven = new(site)
 		var/obj/item/weapon/reagent_containers/food/snacks/meat/offal/heart/heart = new(oven)
 		oven.process()
@@ -239,7 +252,7 @@ var/global/harvest_duplicate_result = null
 		heart.rot()
 		harvest_assert(heart.rotten && heart.icon_state == "heart-x" && heart.reagents.get_reagent_amount("food_poisoning") == 1, "Production offal rot failed")
 		harvest_clear(site)
-		text2file("PASS: bounded production products, species anatomy, cancellation and post-wait validity, concurrent/repeated claims, cord and axe conservation, decay/nutrition/radiation and production save/load", "result.txt")
+		text2file("PASS: bounded production products, species anatomy, cancellation and post-wait validity, concurrent/repeated claims, cord and axe conservation, paid tanning stages and rack recovery, decay/nutrition/radiation and production save/load", "result.txt")
 	catch (var/exception/error)
 		text2file("FAIL: [error]", "result.txt")
 	del(world)
@@ -287,3 +300,4 @@ var/global/harvest_duplicate_result = null
 	return TRUE
 
 #include "tall_grass_probe.dm"
+#include "tanning_probe.dm"
