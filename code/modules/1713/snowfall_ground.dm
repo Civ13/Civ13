@@ -19,22 +19,30 @@ var/global/next_snowfall_ground_generation = 0
 /turf/proc/has_snow_cover()
 	return weather_snow > 0 || icon == 'icons/turf/snow.dmi'
 
-/turf/proc/snow_units()
-	return weather_snow > 0 ? weather_snow : available_snow
+/turf/proc/snow_units(generated_source = null)
+	if (isnull(generated_source))
+		generated_source = weather_snow > 0
+	if (generated_source)
+		return weather_snow
+	return icon == 'icons/turf/snow.dmi' ? available_snow : 0
 
-/turf/proc/take_snow(expected_generation = null)
+/turf/proc/take_snow(expected_generation = null, generated_source = null)
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || locate(x, y, z) != src)
 		return FALSE
-	if (!isnull(expected_generation) && expected_generation != snowfall_ground_generation)
+	if (isnull(expected_generation) || isnull(generated_source) || expected_generation != snowfall_ground_generation)
 		return FALSE
-	if (weather_snow > 0)
+	if (generated_source)
+		if (weather_snow <= 0)
+			return FALSE
 		snowfall_ground_check(FALSE) // A newly lit heater can melt cover during the action wait.
 		if (weather_snow <= 0)
 			return FALSE
 		weather_snow--
+		if (weather_snow <= 0)
+			snowfall_ground_generation = ++next_snowfall_ground_generation
 		snowfall_ground_icon()
 		return TRUE
-	if (available_snow <= 0)
+	if (weather_snow > 0 || icon != 'icons/turf/snow.dmi' || available_snow <= 0)
 		return FALSE
 	available_snow--
 	return TRUE
@@ -75,11 +83,14 @@ var/global/next_snowfall_ground_generation = 0
 	var/snowing = (A.weather == WEATHER_WET || A.weather == WEATHER_EXTREME) && A.weather_intensity > 0 && (precipitation in list("snow1", "snow2", "snow_storm"))
 	if (weather_snow <= 0 && !snowing)
 		return // Clear ground in dry/rain weather needs no heat or exposure query.
+	var/had_snow = weather_snow > 0
 	var/local_c = get_temp(src) // Existing climate, weather and nearby active heat sources.
 	if (local_c > SNOWFALL_MELT_C)
 		weather_snow = 0
 	else if (accumulate && snowing && local_c <= SNOWFALL_STICK_C && snowfall_ground_exposed())
 		weather_snow = min(SNOWFALL_MAX_UNITS, weather_snow + 1)
+	if (had_snow != (weather_snow > 0))
+		snowfall_ground_generation = ++next_snowfall_ground_generation
 	snowfall_ground_icon()
 
 /turf/proc/snowfall_ground_register()

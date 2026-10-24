@@ -220,12 +220,13 @@
 	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
 		var/turf/T = get_turf(src)
 		var/snow_generation = T.snowfall_ground_generation
+		var/generated_source = T.weather_snow > 0
 		var/mob/living/human/H = user
 		var/obj/item/weapon/material/shovel/SH = C
 		if (H.a_intent != I_HARM)
 			if (!H.shoveling)
 				if (T.has_snow_cover() && istype(H))
-					if (T.snow_units() <= 0)
+					if (T.snow_units(generated_source) <= 0)
 						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
 						return
 					H.shoveling = TRUE
@@ -234,16 +235,16 @@
 					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
 						H.shoveling = FALSE
 						return
-					if (!T || T.snow_units() <= 0)
+					if (!T || T.snow_units(generated_source) <= 0)
 						H.shoveling = FALSE
 						return
-					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
 					H.shoveling = FALSE
-					H.adaptStat("strength", 1)
-					if (!T.take_snow(snow_generation))
+					if (!T.take_snow(snow_generation, generated_source))
 						return
+					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+					H.adaptStat("strength", 1)
 					new /obj/item/weapon/snowwall(T)
-					if (T.snow_units() <= 0)
+					if (T.snow_units(generated_source) <= 0)
 						if (istype(T, /turf/floor/winter/grass))
 							T.ChangeTurf(/turf/floor/grass)
 						else if (istype(T, /turf/floor/dirt/winter))
@@ -1084,12 +1085,13 @@
 	if (!istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && ishuman(user))
 		var/turf/floor/T = src
 		var/snow_generation = T.snowfall_ground_generation
+		var/generated_source = T.weather_snow > 0
 		var/mob/living/human/H = user
 		if (H.ant && H.a_intent == I_GRAB)
 			if (H.shoveling)
 				..()
 			if (T.has_snow_cover() && istype(H))
-				if (T.snow_units() <= 0)
+				if (T.snow_units(generated_source) <= 0)
 					to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
 					return
 				H.shoveling = TRUE
@@ -1098,13 +1100,13 @@
 				if (!do_after(user, rand(25,30)))
 					H.shoveling = FALSE
 					return
-				user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
 				H.shoveling = FALSE
-				H.adaptStat("strength", 1)
-				if (!T.take_snow(snow_generation))
+				if (!T.take_snow(snow_generation, generated_source))
 					return
+				user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
+				H.adaptStat("strength", 1)
 				new /obj/item/weapon/snowwall(T)
-				if (T.snow_units() <= 0)
+				if (T.snow_units(generated_source) <= 0)
 					if (istype(T, /turf/floor/winter/grass))
 						T.ChangeTurf(/turf/floor/grass)
 					else if (istype(T, /turf/floor/dirt/winter))

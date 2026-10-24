@@ -30,16 +30,22 @@
 	var/old_soil = T.soil_nutrition
 	var/old_dirt = T.available_dirt
 	var/old_contents = T.contents.len
+	var/old_legacy_snow = T.available_snow
 	var/generation = T.snowfall_ground_generation
 	T.weather_snow = 2
+	T.available_snow = 2 // Injected control; ordinary dirt's default is zero.
 	var/list/results = list()
-	results["first_unit"] = T.take_snow(generation) && T.weather_snow == 1
-	results["last_unit"] = T.take_snow(generation) && !T.has_snow_cover()
-	results["no_repeat_yield"] = !T.take_snow(generation)
+	results["first_unit"] = T.take_snow(generation, TRUE) && T.weather_snow == 1
+	results["same_layer_after_first"] = T.snowfall_ground_generation == generation
+	results["last_unit"] = T.take_snow(generation, TRUE) && !T.has_snow_cover()
+	results["layer_retired"] = T.snowfall_ground_generation != generation
+	results["no_repeat_yield"] = !T.take_snow(generation, TRUE)
+	results["no_legacy_fallback"] = T.available_snow == 2
 	results["same_substrate"] = T.type == /turf/floor/dirt && T.soil_nutrition == old_soil && T.available_dirt == old_dirt && T.contents.len == old_contents
 	T.weather_snow = 1
 	T.after_load()
-	results["old_wait_rejected"] = !T.take_snow(generation) && T.weather_snow == 1
+	results["old_wait_rejected"] = !T.take_snow(generation, TRUE) && T.weather_snow == 1
 	T.weather_snow = old_units
+	T.available_snow = old_legacy_snow
 	T.snowfall_ground_icon()
 	return results

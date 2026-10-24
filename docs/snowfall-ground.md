@@ -45,7 +45,12 @@ eligible snowfall accumulates. Interrupted actions yield nothing. Authored snow
 retains its explicit existing collection/trench terrain changes; the feature does
 not invent hidden dirt underneath an authored permanent snow biome.
 Completion rechecks current tile/savehold/available units and local melting before
-minting a pile. Snow-covered grass cannot produce grass cuttings, and plough/road
+minting a pile. Collection captures generated versus authored source before waiting;
+generated collection cannot fall back to legacy stock. The generation changes when
+cover starts/disappears, not on positive-to-positive unit changes: two collectors
+can each take one of two units, while clear-and-reaccumulate cancels old waits.
+Success text and strength rewards follow a successful debit in both handlers.
+Snow-covered grass cannot produce grass cuttings, and plough/road
 work requires clearing cover first. Seed planting still requires excluded ploughed
 soil. Blood footprints remain their existing mechanic; there is no dedicated snow
 footprint system. Underlying radiation/soil/vegetation logic is unchanged; foliage
@@ -89,8 +94,11 @@ cover no-snow cold, warm snowfall, roofs/upper floors, nearby active heat, thres
 hysteresis, repeated fire, stale tiles, finite harvest and scalar reload. Historical
 source controls verify the exact removed snow-only loops and retention of unrelated
 calendar/water/weather work. These do not execute BYOND savefiles, callbacks,
-constructors, clients or performance. `tests/snowfall_ground/native_probe.dm` is an
-uncompiled source probe for a future separately admitted isolated full-game harness.
+constructors, clients or performance. The race control's nonzero legacy stock on ordinary dirt
+is injected (ordinary dirt/grass defaults to zero); the former reward-before-debit
+ordering could report success even with default stock when final melting rejected.
+`tests/snowfall_ground/native_probe.dm` is uncompiled source for a future separately
+admitted isolated full-game harness.
 No local native launch is permitted under the uncertain movement-launch/process-
 inventory hold. Parent owns admission and the testing deadline; no sealed packet,
 live save/server/config or Gaia cycle is changed by this draft.

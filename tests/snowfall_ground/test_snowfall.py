@@ -24,8 +24,17 @@ def project(signature):
         'if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || locate(x, y, z) != src)':
             'if self.blocked or not self.current:',
         'return': 'return', 'return FALSE': 'return False', 'return TRUE': 'return True',
-        'if (!isnull(expected_generation) && expected_generation != snowfall_ground_generation)':
-            'if expected_generation is not None and expected_generation != self.generation:',
+        'if (isnull(expected_generation) || isnull(generated_source) || expected_generation != snowfall_ground_generation)':
+            'if expected_generation is None or generated_source is None or expected_generation != self.generation:',
+        'if (isnull(generated_source))': 'if generated_source is None:',
+        'generated_source = weather_snow > 0': 'generated_source = self.weather_snow > 0',
+        'if (generated_source)': 'if generated_source:',
+        'return weather_snow': 'return self.weather_snow',
+        'return icon == \'icons/turf/snow.dmi\' ? available_snow : 0': 'return self.available_snow if self.native_snow else 0',
+        'if (weather_snow > 0 || icon != \'icons/turf/snow.dmi\' || available_snow <= 0)':
+            'if self.weather_snow > 0 or not self.native_snow or self.available_snow <= 0:',
+        'var/had_snow = weather_snow > 0': 'had_snow = self.weather_snow > 0',
+        'if (had_snow != (weather_snow > 0))': 'if had_snow != (self.weather_snow > 0):',
         'var/local_c = get_temp(src)': 'local_c = self.temperature()',
         'if (local_c > SNOWFALL_MELT_C)': 'if local_c > 2:',
         'weather_snow = 0': 'self.weather_snow = 0',
@@ -63,7 +72,7 @@ def project(signature):
         'if (snowfall_ground_eligible())': 'if self.eligible():',
         'snowfall_ground_generation = ++next_snowfall_ground_generation': 'self.generation += 1',
     }
-    lines = ['def execute(self, accumulate=True, expected_generation=None):']
+    lines = ['def execute(self, accumulate=True, expected_generation=None, generated_source=None):']
     for raw in body(SOURCE, signature).splitlines():
         raw = raw.split('//', 1)[0].rstrip()
         if not raw.strip():
@@ -81,8 +90,8 @@ class Tile:
         'eligible': '/turf/proc/snowfall_ground_eligible()',
         'exposed': '/turf/proc/snowfall_ground_exposed()',
         'has_snow': '/turf/proc/has_snow_cover()',
-        'units': '/turf/proc/snow_units()',
-        'take': '/turf/proc/take_snow(expected_generation = null)',
+        'units': '/turf/proc/snow_units(generated_source = null)',
+        'take': '/turf/proc/take_snow(expected_generation = null, generated_source = null)',
         'load': '/turf/floor/after_load()',
     }.items()}
 
@@ -100,7 +109,9 @@ class Tile:
     def __getattr__(self, key):
         if key in self.funcs:
             if key == 'take':
-                return lambda expected_generation=None: self.funcs[key](self, expected_generation=expected_generation)
+                return lambda expected_generation=None, generated_source=None: self.funcs[key](self, expected_generation=expected_generation, generated_source=generated_source)
+            if key == 'units':
+                return lambda generated_source=None: self.funcs[key](self, generated_source=generated_source)
             return lambda *args: self.funcs[key](self, *args)
         raise AttributeError(key)
 
@@ -132,32 +143,38 @@ class Tile:
         return c
 
 
-def shovel_action():
+def shovel_action(hand=False):
     """Execute the actual normal-intent snow branch with an injected wait/actor."""
     text = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text()
-    start = text.index('\t\t\t\tif (T.has_snow_cover() && istype(H))')
-    end = text.index('\n\t\t\t\telse if ', start)
+    indentation = '\t' * (3 if hand else 4)
+    start = re.search('^' + indentation + re.escape('if (T.has_snow_cover() && istype(H))'), text, re.M).start()
+    end = text.index('\n' + indentation + 'else if ', start)
     operations = {
         'if (T.has_snow_cover() && istype(H))': 'if T.has_snow():',
-        'if (T.snow_units() <= 0)': 'if T.units() <= 0:',
+        'if (T.snow_units(generated_source) <= 0)': 'if T.units(generated_source) <= 0:',
         'return': 'return',
         'H.shoveling = TRUE': 'H.shoveling = True', 'H.shoveling = FALSE': 'H.shoveling = False',
         'if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))': 'if not wait(T):',
-        'if (!T || T.snow_units() <= 0)': 'if T is None or T.units() <= 0:',
-        'if (!T.take_snow(snow_generation))': 'if not T.take(snow_generation):',
+        'if (!do_after(user, rand(25,30)))': 'if not wait(T):',
+        'if (!T || T.snow_units(generated_source) <= 0)': 'if T is None or T.units(generated_source) <= 0:',
+        'if (!T.take_snow(snow_generation, generated_source))': 'if not T.take(snow_generation, generated_source):',
         'new /obj/item/weapon/snowwall(T)': 'piles.append(T)',
         'if (istype(T, /turf/floor/winter/grass))': 'if T.kind == "winter/grass":',
         'T.ChangeTurf(/turf/floor/grass)': 'T.replace("grass")',
         'else if (istype(T, /turf/floor/dirt/winter))': 'elif T.kind == "dirt/winter":',
         'T.ChangeTurf(/turf/floor/dirt)': 'T.replace("dirt")',
     }
-    lines = ['def execute(T, H, wait, piles):', '    snow_generation = T.generation']
+    lines = ['def execute(T, H, wait, piles):', '    snow_generation = T.generation', '    generated_source = T.weather_snow > 0']
     for raw in text[start:end].splitlines():
         if not raw.strip(): continue
-        depth = len(raw) - len(raw.lstrip('\t')) - 3
+        depth = len(raw) - len(raw.lstrip('\t')) - (len(indentation) - 1)
         code = raw.strip()
-        if code.startswith(('to_chat(', 'user.visible_message(', 'playsound(', 'H.adaptStat(')):
-            translated = 'pass' # Transport/actor-stat adapters; no resource/terrain work.
+        if code.startswith('H.adaptStat('):
+            translated = 'H.strength = getattr(H, "strength", 0) + 1'
+        elif code.startswith('user.visible_message(') and (' shovels snow into a pile.' in code or ' collects the snow into a pile.' in code):
+            translated = 'H.success = getattr(H, "success", 0) + 1'
+        elif code.startswith(('to_chat(', 'user.visible_message(', 'playsound(')):
+            translated = 'pass' # Transport adapters only; success/stat effects are tracked.
         else: translated = operations[code]
         lines.append('    ' * depth + translated)
     env = {}; exec('\n'.join(lines), env)
@@ -165,6 +182,61 @@ def shovel_action():
 
 
 class SnowTests(unittest.TestCase):
+    def test_generated_wait_cannot_fall_back_after_clear_or_melt_and_never_rewards_rejection(self):
+        # Ordinary dirt defaults to legacy stock zero. Two is an injected control.
+        for hand in (False, True):
+            run = shovel_action(hand)
+            for stock in (0, 2):
+                for event in ('cleared', 'melted', 'warms_inside_debit'):
+                    t = Tile(kind='dirt'); t.weather_snow = 1; t.available_snow = stock
+                    actor, piles = NS(shoveling=False, strength=0, success=0), []
+                    def wait(tile):
+                        if event == 'cleared': self.assertTrue(tile.take(tile.generation, True))
+                        else:
+                            tile.c = 22
+                            if event == 'melted': tile.check()
+                        return True
+                    run(t, actor, wait, piles)
+                    self.assertEqual((piles, actor.strength, actor.success), ([], 0, 0), (hand, stock, event))
+                    self.assertEqual((t.weather_snow, t.available_snow, t.soil, t.loose_dirt), (0, stock, 83, 3))
+
+    def test_two_legitimate_collectors_can_each_take_one_unit_with_one_cover_lifetime(self):
+        for hand in (False, True):
+            t = Tile(kind='dirt'); t.check(); generation = t.generation
+            t.check(); self.assertEqual(t.generation, generation, 'positive unit increase changed lifetime')
+            run = shovel_action(hand)
+            a, b, piles = NS(shoveling=False), NS(shoveling=False), []
+            def wait(tile):
+                run(tile, b, lambda target: True, piles)
+                self.assertEqual((tile.weather_snow, tile.generation), (1, generation))
+                return True
+            run(t, a, wait, piles)
+            self.assertEqual((len(piles), t.weather_snow), (2, 0))
+            self.assertNotEqual(t.generation, generation)
+            self.assertEqual((a.strength, a.success, b.strength, b.success), (1, 1, 1, 1))
+
+    def test_clear_and_reaccumulate_invalidates_the_old_wait_in_both_handlers(self):
+        for hand in (False, True):
+            t = Tile(kind='dirt'); t.check()
+            a, b, piles = NS(shoveling=False, strength=0, success=0), NS(shoveling=False), []
+            run = shovel_action(hand)
+            def wait(tile):
+                run(tile, b, lambda target: True, piles)
+                self.assertEqual(tile.weather_snow, 0)
+                tile.check() # Actual eligible snowfall starts a new layer.
+                return True
+            run(t, a, wait, piles)
+            self.assertEqual((len(piles), t.weather_snow, a.strength, a.success), (1, 1, 0, 0))
+
+    def test_source_identity_is_required_and_bare_ground_hides_injected_legacy_stock(self):
+        t = Tile(kind='dirt'); t.available_snow = 2
+        self.assertEqual((t.units(), t.units(True), t.units(False)), (0, 0, 0))
+        self.assertFalse(t.take(t.generation, False)); self.assertEqual(t.available_snow, 2)
+        t.check()
+        self.assertFalse(t.take(t.generation))
+        self.assertFalse(t.take(None, True))
+        self.assertEqual(t.weather_snow, 1)
+
     def test_actual_shovel_branch_clears_generated_cover_to_same_dirt_without_repeat_yields(self):
         run = shovel_action()
         t = Tile(kind='dirt'); t.check(); t.check()
@@ -285,12 +357,12 @@ class SnowTests(unittest.TestCase):
             self.assertTrue(t.has_snow())
 
     def test_harvest_uses_generated_units_without_soil_debit_or_overdraw(self):
-        t = Tile(); t.check(); self.assertTrue(t.has_snow()); self.assertTrue(t.take())
-        self.assertFalse(t.take()); self.assertFalse(t.has_snow())
+        t = Tile(); t.check(); self.assertTrue(t.has_snow()); self.assertTrue(t.take(t.generation, True))
+        self.assertFalse(t.take(t.generation, True)); self.assertFalse(t.has_snow())
         self.assertEqual((t.kind, t.soil, t.loose_dirt), ('grass', 83, 3))
-        t.check(); t.c = 30; self.assertFalse(t.take()); self.assertEqual(t.weather_snow, 0)
+        t.check(); t.c = 30; self.assertFalse(t.take(t.generation, True)); self.assertEqual(t.weather_snow, 0)
         old = Tile(kind='winter'); old.native_snow = True; old.available_snow = 2
-        self.assertTrue(old.take()); self.assertEqual(old.available_snow, 1)
+        self.assertTrue(old.take(old.generation, False)); self.assertEqual(old.available_snow, 1)
 
     def test_save_load_rebuilds_only_generated_cover_and_never_samples_weather(self):
         t = Tile(); t.check(); payload = {'weather_snow': t.weather_snow}
@@ -309,17 +381,17 @@ class SnowTests(unittest.TestCase):
     def test_stale_tiles_and_persistence_hold_do_not_mutate_or_debit(self):
         for field in ('blocked', 'current'):
             t = Tile(); t.weather_snow = 2; setattr(t, field, field == 'blocked')
-            t.check(); self.assertFalse(t.take()); self.assertEqual((t.weather_snow, t.calls), (2, 0))
+            t.check(); self.assertFalse(t.take(t.generation, True)); self.assertEqual((t.weather_snow, t.calls), (2, 0))
         self.assertIn('persistence_active_operation', SOURCE)
         self.assertIn('persistence_load_recovery_required', SOURCE)
 
     def test_pre_wait_generation_cannot_consume_replacement_or_restored_layer(self):
         t = Tile(); t.check(); generation = t.generation
         t.generation += 1
-        self.assertFalse(t.take(generation)); self.assertEqual(t.weather_snow, 1)
+        self.assertFalse(t.take(generation, True)); self.assertEqual(t.weather_snow, 1)
         generation = t.generation; t.load()
-        self.assertFalse(t.take(generation)); self.assertEqual(t.weather_snow, 1)
-        self.assertTrue(t.take(t.generation)); self.assertEqual(t.weather_snow, 0)
+        self.assertFalse(t.take(generation, True)); self.assertEqual(t.weather_snow, 1)
+        self.assertTrue(t.take(t.generation, True)); self.assertEqual(t.weather_snow, 0)
 
     def test_no_season_or_weather_callback_accrual_and_existing_weather_is_unchanged(self):
         for file in ('code/modules/1713/weather.dm', 'code/processes/weather.dm', 'code/modules/persistence/durable_environment.dm'):
@@ -335,7 +407,7 @@ class SnowTests(unittest.TestCase):
         for file in ('code/game/mob/mob_movement.dm', 'code/game/mob/living/carbon/human/species/species.dm', 'code/game/turfs/turf.dm'):
             self.assertIn('has_snow_cover()', (ROOT / file).read_text())
         attacks = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text()
-        self.assertEqual(attacks.count('if (!T.take_snow(snow_generation))'), 2)
+        self.assertEqual(attacks.count('if (!T.take_snow(snow_generation, generated_source))'), 2)
         self.assertEqual(attacks.count('var/snow_generation = T.snowfall_ground_generation'), 2)
         self.assertEqual(attacks.count('if (!T || T.weather_snow > 0)'), 3)
         self.assertEqual(attacks.count('T.has_snow_cover()'), 2)
