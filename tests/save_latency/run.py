@@ -2,6 +2,46 @@
 import argparse, hashlib, json, os, re, shutil, subprocess, tempfile, time
 from pathlib import Path
 
+OLD_READER_COMMIT = '75890d883190355e430f9958fd102864ee88429a'
+
+
+def old_reader_helpers(loading, existing):
+    """Current compile dependencies for a historical refusal control, not an old build."""
+    start = ('// Only roof transformations backed by direct saved turf contents are projected.\n'
+             '// No save bytes or world areas change during this preflight.\n/map_storage\n')
+    end = '\n/map_storage/proc/Load_Entry('
+    if not loading.startswith(start) or loading.count(start) != 1 or loading.count(end) != 1:
+        raise RuntimeError('Old-reader roof compatibility anchors changed')
+    roof = loading[:loading.index(end)]
+    procedures = ('clear_saved_roof_areas', 'saved_roof_area_type', 'find_saved_roof_area',
+                  'unique_saved_roof_area', 'prepare_saved_roof_areas',
+                  'materialize_saved_roof_areas', 'restore_validated_roof',
+                  'is_loaded_validated_roof', 'verify_restored_roof_areas')
+    members = ('validated_roof_areas', 'validated_roof_entries', 'validated_roof_types',
+               'validated_roof_instances', 'validated_roof_absent', 'restoring_roof_areas')
+    if re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M) != list(procedures):
+        raise RuntimeError('Old-reader roof compatibility procedures changed')
+    declarations = roof.split('\n/map_storage/proc/', 1)[0]
+    if re.findall(r'^\tvar/(?:list/)?(\w+) = ', declarations, re.M) != list(members):
+        raise RuntimeError('Old-reader roof compatibility members changed')
+    patterns = [r'^/map_storage/proc/' + name + r'\(' for name in procedures]
+    patterns += [r'^\tvar/(?:list/)?' + name + r'\b' for name in members]
+    marker = '/map_storage/proc/saved_content_refs(value, version)\n'
+    if loading.count(marker) != 1 or marker in existing:
+        raise RuntimeError('Old-reader content compatibility anchor changed or duplicated')
+    if any(re.search(pattern, existing, re.M) for pattern in patterns):
+        raise RuntimeError('Old-reader roof compatibility dependencies duplicated')
+    begin = loading.index(marker)
+    finish = loading.find('\n/map_storage/proc/', begin + len(marker))
+    return roof, loading[begin:finish if finish >= 0 else len(loading)]
+
+
+def require_old_reader_preflight(result, log):
+    refusal = r'World-save preflight rejected: Unsupported save version 3 on code[/\\]modules[/\\]persistence[/\\]loading\.dm:\d+\b'
+    if result != 'FAIL: save preflight failed' or not re.search(refusal, log):
+        raise RuntimeError('Old reader did not reject format 3 during historical preflight')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
@@ -29,11 +69,24 @@ def main():
     print(f'Evidence: {output}', flush=True)
     files = ['code/predefines.dm', 'tests/world_save/stubs.dm', 'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
              'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'tests/save_latency/probe.dm']
+    old_reader = None
+    compatibility = {}
+    if args.negative_control == 'old-reader':
+        old_reader = subprocess.check_output(['git', 'show', OLD_READER_COMMIT + ':code/modules/persistence/loading.dm'], cwd=root)
+        compatibility = {'commit': OLD_READER_COMMIT, 'loader_sha256': hashlib.sha256(old_reader).hexdigest()}
     hashes = {}
     for relative in files:
         data = (root / relative).read_bytes()
-        if args.negative_control == 'old-reader' and relative.endswith('loading.dm'):
-            data = subprocess.check_output(['git', 'show', '75890d883190355e430f9958fd102864ee88429a:' + relative], cwd=root)
+        if old_reader is not None and relative.endswith('loading.dm'):
+            data = old_reader
+        if old_reader is not None and relative.endswith('functions.dm'):
+            # Keep the immutable loader/refusal intact; add only current roof
+            # compile dependencies to this mixed fixture's functions copy.
+            loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+            roof, codec = old_reader_helpers(loading, data.decode('utf-8') + '\n' + old_reader.decode('utf-8'))
+            data += ('\n' + roof + '\n' + codec).encode('utf-8')
+            compatibility.update(roof_helpers_sha256=hashlib.sha256(roof.encode()).hexdigest(),
+                                 content_helper_sha256=hashlib.sha256(codec.encode()).hexdigest())
         if relative.endswith('stubs.dm'):
             data += b'\n/proc/latency_copy(source, destination)\n\tvar/start = world.timeofday\n\t. = fcopy(source, destination)\n\tworld.log << "IO_METRICS copy=[source] ticks=[(world.timeofday-start+864000)%864000]"\n/proc/latency_flush(savefile/F)\n\tvar/start = world.timeofday\n\tF.Flush()\n\tworld.log << "IO_METRICS flush ticks=[(world.timeofday-start+864000)%864000]"\n'
         if relative.endswith('saving.dm'):
@@ -53,7 +106,8 @@ def main():
     source += ''.join(f'#include "{path}"\n' for path in files[2:])
     (output / 'probe.dme').write_text(source)
     (output / 'metadata.json').write_text(json.dumps({ 'large':args.large, 'dense':args.dense, 'scenario':args.scenario, 'interrupt':args.interrupt, 'benchmark_only':args.benchmark_only, 'negative_control':args.negative_control,  'timeout_seconds':args.timeout_seconds, 'verify_backup':args.verify_backup, 'dimension':args.dimension,
-        'head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip(), 'sources':hashes}, indent=2))
+        'head': subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip(), 'sources':hashes,
+        'old_reader_compatibility':compatibility}, indent=2))
     (output / 'checkout.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
     if args.prepare_only: return
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
@@ -118,6 +172,8 @@ def main():
                 'FAIL: save preflight failed' if args.negative_control == 'old-reader' else 'PASS')
     if result.returncode or not (output/'result.txt').read_text().strip().startswith(expected) or re.search(r'runtime error:|bad ref|BUG:|RUNTIME:|infinite loop|fatal error',log,re.I):
         raise RuntimeError('Native save probe failed')
+    if args.negative_control == 'old-reader':
+        require_old_reader_preflight((output/'result.txt').read_text().strip(), log)
     if args.verify_backup:
         shutil.copy2(output/'runtime.log', output/'active-roundtrip.log')
         (output/'result.txt').unlink()
