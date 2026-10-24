@@ -92,6 +92,9 @@ jobs:
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+      - name: Test wolf cave ownership source contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wolf_cave_ownership')
+        run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
       - name: Test footwear water mask composition and refresh contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/footwear_water_mask')
         run: python3 -B -m unittest discover -s tests/footwear_water_mask -v
