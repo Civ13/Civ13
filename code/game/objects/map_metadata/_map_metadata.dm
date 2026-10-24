@@ -1140,7 +1140,7 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/season_edge_supported(previous_phase, next_phase)
 	if (!(previous_phase in list("SPRING", "SUMMER", "FALL", "WINTER")) || !(next_phase in list("SPRING", "SUMMER", "FALL", "WINTER")) || previous_phase == next_phase)
 		return FALSE
-	// Winter's probabilistic freeze assumes Fall's existing earlier cold work.
+	// Retain the reviewed flow admission; new cold-entry edges need separate review.
 	return next_phase != "WINTER" || previous_phase == "FALL"
 
 /obj/map_metadata/proc/season_edge_is_default(previous_phase, next_phase)
@@ -1167,14 +1167,6 @@ var/civmax_research = list(230,230,230)
 	return season_worker_valid(epoch)
 
 /obj/map_metadata/proc/season_reconcile_warm(epoch)
-	var/list/changes = list(
-		list(/area/caribbean/nomads/forest, /turf/floor/dirt/winter, /turf/floor/dirt, "temperate"),
-		list(/area/caribbean/nomads/forest, /turf/floor/winter/grass, /turf/floor/grass, "temperate"),
-		list(/area/caribbean/roofed, /turf/floor/winter, /turf/floor/dirt, null),
-		list(/area/caribbean/roofed, /turf/floor/dirt/winter, /turf/floor/dirt, null))
-	for (var/list/change in changes)
-		if (!season_replace_terrain(change[1], change[2], change[3], epoch, change[4]))
-			return FALSE
 	var/season_work = 0
 	for (var/snow_type in list(/obj/structure/window/barrier/snowwall, /obj/covers/snow_wall, /obj/item/weapon/snowwall))
 		for (var/obj/S in season_world_candidates(snow_type, epoch))
@@ -1222,7 +1214,7 @@ var/civmax_research = list(230,230,230)
 	if (!season_worker_valid(epoch) || !season_edge_supported(previous_phase, next_phase))
 		return FALSE
 	if (season_edge_is_default(previous_phase, next_phase))
-		return TRUE // Default cycle retains its exact payloads and delayed cleanup.
+		return TRUE // No additional cleanup on canonical edges.
 	if (!season_reconcile_warm(epoch))
 		return FALSE
 	return season_reconcile_water(next_phase, epoch)
@@ -1388,43 +1380,6 @@ var/civmax_research = list(230,230,230)
 					continue
 				if (prob(75))
 					BDD2.ChangeTurf(/turf/floor/dirt/jungledirt)
-			for (var/turf/floor/dirt/DT in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/dirt, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(DT, /turf/floor/dirt))
-					continue
-				if (!istype(DT, /turf/floor/dirt/underground))
-					var/area/A = get_area(DT)
-					if (A.climate == "temperate")
-						if (prob(75))
-							DT.ChangeTurf(/turf/floor/dirt/winter)
-					else if (A.climate == "tundra" || A.climate == "taiga")
-						DT.ChangeTurf(/turf/floor/dirt/winter)
-			for (var/turf/floor/grass/GT in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/grass, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(GT, /turf/floor/grass))
-					continue
-				var/area/A = get_area(GT)
-				if (A.climate == "temperate")
-					if (prob(80))
-						GT.ChangeTurf(/turf/floor/winter/grass)
-				else if (A.climate == "tundra" || A.climate == "taiga")
-					GT.ChangeTurf(/turf/floor/winter/grass)
-			for (var/turf/floor/dirt/DTT in get_area_turfs(/area/caribbean/nomads/snow, null, /turf/floor/dirt, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(DTT, /turf/floor/dirt))
-					continue
-				if (!istype(DTT, /turf/floor/dirt/underground))
-					DTT.ChangeTurf(/turf/floor/dirt/winter)
-			for (var/turf/floor/grass/GTT in get_area_turfs(/area/caribbean/nomads/snow, null, /turf/floor/grass, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(GTT, /turf/floor/grass))
-					continue
-				GTT.ChangeTurf(/turf/floor/winter/grass)
-
 		else if (next_phase == "SUMMER")
 			season = "SUMMER"
 			record_abandonment_season_change(advance_decay)
@@ -1460,60 +1415,11 @@ var/civmax_research = list(230,230,230)
 					continue
 				if (DF.z > 1)
 					DF.ChangeTurf(/turf/floor/dirt/flooded)
-			for (var/turf/floor/dirt/winter/DT in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/dirt/winter, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(DT, /turf/floor/dirt/winter))
-					continue
-				var/area/A = get_area(DT)
-				if (A.climate == "temperate")
-					DT.ChangeTurf(/turf/floor/dirt)
-			for (var/turf/floor/winter/grass/GT in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/winter/grass, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(GT, /turf/floor/winter/grass))
-					continue
-				var/area/A = get_area(GT)
-				if (A.climate == "temperate")
-					GT.ChangeTurf(/turf/floor/grass)
-			for (var/turf/floor/winter/WT in get_area_turfs(/area/caribbean/roofed, null, /turf/floor/winter, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(WT, /turf/floor/winter))
-					continue
-				WT.ChangeTurf(/turf/floor/dirt)
-			for (var/turf/floor/dirt/winter/WT in get_area_turfs(/area/caribbean/roofed, null, /turf/floor/dirt/winter, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(WT, /turf/floor/dirt/winter))
-					continue
-				WT.ChangeTurf(/turf/floor/dirt)
 		else if (next_phase == "SPRING")
 			season = "SPRING"
 			record_abandonment_season_change(advance_decay)
 			to_chat(world, "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>")
 			season_schedule_phase(900, "season_phase_3", epoch)
-			for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/dirt/winter, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(D, /turf/floor/dirt/winter))
-					continue
-				var/area/A = get_area(D)
-				if (A.climate == "temperate")
-					if (prob(60))
-						if (prob(40))
-							D.ChangeTurf(/turf/floor/grass)
-						else
-							D.ChangeTurf(/turf/floor/dirt)
-			for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/winter/grass, src, epoch))
-				if (!season_work_pause(epoch, ++season_work))
-					return
-				if (!season_candidate_valid(G, /turf/floor/winter/grass))
-					continue
-				var/area/A = get_area(G)
-				if (A.climate == "temperate")
-					if (prob(60))
-						G.ChangeTurf(/turf/floor/grass)
 			season_schedule_phase(150, "season_phase_4", epoch)
 			season_schedule_phase(3000, "season_phase_5", epoch)
 		else if (next_phase == "FALL")
@@ -1610,25 +1516,6 @@ var/civmax_research = list(230,230,230)
 	if (!season_worker_valid(epoch))
 		return
 	var/season_work = 0
-	for (var/turf/floor/dirt/winter/D in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/dirt/winter, src, epoch))
-		if (!season_work_pause(epoch, ++season_work))
-			return
-		if (!season_candidate_valid(D, /turf/floor/dirt/winter))
-			continue
-		var/area/A = get_area(D)
-		if (A.climate == "temperate")
-			if (prob(40))
-				D.ChangeTurf(/turf/floor/grass)
-			else
-				D.ChangeTurf(/turf/floor/dirt)
-	for (var/turf/floor/winter/grass/G in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/winter/grass, src, epoch))
-		if (!season_work_pause(epoch, ++season_work))
-			return
-		if (!season_candidate_valid(G, /turf/floor/winter/grass))
-			continue
-		var/area/A = get_area(G)
-		if (A.climate == "temperate")
-			G.ChangeTurf(/turf/floor/grass)
 	for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/semiarid, null, /turf/floor/dirt, src, epoch))
 		if (!season_work_pause(epoch, ++season_work))
 			return
@@ -1683,50 +1570,12 @@ var/civmax_research = list(230,230,230)
 /obj/map_metadata/proc/season_phase_8(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	var/season_work = 0
 	change_weather(WEATHER_WET)
-	for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/dirt, src, epoch))
-		if (!season_work_pause(epoch, ++season_work))
-			return
-		if (!season_candidate_valid(D, /turf/floor/dirt))
-			continue
-		var/area/A = get_area(D)
-		if (z == world.maxz && prob(40) && !istype(D, /turf/floor/dirt/underground) && !istype(D, /turf/floor/dirt/dust) && !(A.climate == "jungle"))
-			D.ChangeTurf(/turf/floor/dirt/winter)
-	for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/grass, src, epoch))
-		if (!season_work_pause(epoch, ++season_work))
-			return
-		if (!season_candidate_valid(G, /turf/floor/grass))
-			continue
-		var/area/A = get_area(G)
-		if (A.climate == "temperate")
-			if (prob(40))
-				G.ChangeTurf(/turf/floor/winter/grass)
 	season_schedule_phase(1200, "season_phase_9", epoch)
 
 /obj/map_metadata/proc/season_phase_9(var/epoch)
 	if (!season_worker_valid(epoch))
 		return
-	var/season_work = 0
-	for (var/turf/floor/dirt/D in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/dirt, src, epoch))
-		if (!season_work_pause(epoch, ++season_work))
-			return
-		if (!season_candidate_valid(D, /turf/floor/dirt))
-			continue
-		var/area/A = get_area(D)
-		if (!istype(D,/turf/floor/dirt/winter) && (A.climate == "temperate"))
-			if (D.z == world.maxz && prob(50) && !istype(D,/turf/floor/dirt/underground))
-				D.ChangeTurf(/turf/floor/dirt/winter)
-	for (var/turf/floor/grass/G in get_area_turfs(/area/caribbean/nomads/forest, null, /turf/floor/grass, src, epoch))
-		if (!season_work_pause(epoch, ++season_work))
-			return
-		if (!season_candidate_valid(G, /turf/floor/grass))
-			continue
-		var/area/A = get_area(G)
-		if (A.climate == "temperate")
-			if (prob(50))
-				G.ChangeTurf(/turf/floor/winter/grass)
-
 //loads faction-specific recipes, if called on /New()
 
 /obj/map_metadata/proc/load_new_recipes(F3)

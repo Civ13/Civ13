@@ -300,7 +300,7 @@ class EcologyTests(unittest.TestCase):
             queue_proc(m.source)(m)
             self.assertEqual((m.season, w.clock, m.cancellations, m.completions), ("SPRING", 17 + int(advance), 1, 1))
             self.assertEqual((m.busy, m.queue), (False, []))
-            self.assertEqual(w.get("winter dirt").kind, DIRT)
+            self.assertEqual(w.get("winter dirt").kind, DIRT + "/winter")
             self.assertFalse(w.get("well").dry)
 
     def test_queued_reentry_stays_serialized_and_stale_phase_is_cancelled(self):
@@ -336,15 +336,15 @@ class EcologyTests(unittest.TestCase):
             self.assertEqual(w.snapshot(), before)
         self.assertEqual((w.queries, w.operations, m.pauses, w.clock), ([], [], [], 17))
 
-    def test_each_six_nondefault_supported_edges_reconciles_warm_ground_snow_and_water(self):
+    def test_each_six_nondefault_edges_preserves_unmarked_ground_and_reconciles_structures_water(self):
         for previous, target in (("SPRING", "FALL"), ("SUMMER", "SPRING"), ("FALL", "SPRING"),
                                  ("FALL", "SUMMER"), ("WINTER", "SUMMER"), ("WINTER", "FALL")):
             with self.subTest(edge=(previous, target)):
                 w, m = fixture()
                 self.assertTrue(m.edge(previous, target))
-                self.assertEqual(w.get("winter dirt").kind, DIRT)
-                self.assertEqual(w.get("winter grass").kind, GRASS)
-                self.assertEqual(w.get("roof snow").kind, DIRT)
+                self.assertEqual(w.get("winter dirt").kind, DIRT + "/winter")
+                self.assertEqual(w.get("winter grass").kind, "/turf/floor/winter/grass")
+                self.assertEqual(w.get("roof snow").kind, "/turf/floor/winter")
                 self.assertEqual(w.get("cold dirt").kind, DIRT + "/winter")
                 for i in range(3):
                     self.assertIsNone(w.get("warm wall" + str(i)))
@@ -402,13 +402,13 @@ class EcologyTests(unittest.TestCase):
 
     def test_stale_candidate_is_rechecked_after_budget_pause(self):
         w, m = fixture()
-        target = w.get("winter dirt")
+        target = w.get("warm wall0")
         def retire_candidate(owner):
             target.dead = True
             owner.on_pause = None
         m.on_pause = retire_candidate
         self.assertTrue(m.edge("WINTER", "FALL"))
-        self.assertNotIn(("replace", "winter dirt", DIRT), w.operations)
+        self.assertNotIn(("qdel", "warm wall0"), w.operations)
 
     def test_repeated_reconciliation_is_state_idempotent_without_new_age_or_retirements(self):
         w, m = fixture()
