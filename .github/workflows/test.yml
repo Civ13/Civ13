@@ -61,9 +61,12 @@ on:
 permissions:
   contents: read
 
+# Deliberate literal projection of tools/byond/version.json: top-level env cannot
+# read a checkout file. The always-run offline pin test rejects manifest drift.
+# This does not select or expand any native fixture coverage.
 env:
   BYOND_MAJOR: "516"
-  BYOND_MINOR: "1681"
+  BYOND_MINOR: "1688"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -220,6 +223,10 @@ jobs:
           python3 scripts/check-outdoor-bootstrap.py
 
   extraction-instances:
+    # Historical native fixture contract; not 516.1688 runtime acceptance.
+    env:
+      BYOND_MAJOR: "516"
+      BYOND_MINOR: "1681"
     needs: changes
     if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)
     runs-on: ubuntu-22.04
