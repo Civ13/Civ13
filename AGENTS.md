@@ -400,6 +400,14 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-24: complete conditional offline projections -->
+The save_movement adapter selects the explicitly declared collector-disabled
+branch; it is not a general DM preprocessor. Proc-local column-zero #ifdef lines
+must not truncate ownership/return tails. Unknown symbols/directives and malformed
+conditional scope fail even in inactive branches. Preserve both-branch/sentinel
+and historical-defect controls. These are offline models, not collector or native
+gameplay acceptance; do not change production code to make an adapter pass.
+
 <!-- 2026-10-23: footwear water composition -->
 Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
 clothing dirtyness only supplies examine text. Water filters must group the

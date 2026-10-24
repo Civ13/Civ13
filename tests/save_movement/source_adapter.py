@@ -1,34 +1,78 @@
 """Offline execution of a small audited DM subset, with fake engine boundaries.
 
 This is source control-flow evidence, not DM compilation or engine acceptance.
-Every executable line in an extracted procedure is translated; unsupported
-syntax fails Python compilation. No native executables or game are launched.
+Every executable line in the explicitly selected branch is translated;
+unsupported syntax fails preparation. No native executables or game are launched.
 """
 from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[2]
 
+# This offline fixture models gameplay without collector instrumentation.
+# Unknown symbols/directives must not acquire an implicit disabled meaning.
+DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False}
+
 
 def read(path):
     return (ROOT / path).read_text(encoding='utf-8-sig')
 
 
-def extract(source, declaration):
+def extract(source, declaration, *, defines=None):
+    """Select declared proc-local ifdef branches without truncating the body.
+
+    This is deliberately not a DM preprocessor. Only ifdef/ifndef, else and
+    endif with explicitly known Boolean symbols are supported. Directives in
+    inactive branches are checked too; ambiguous scope or syntax fails closed.
+    """
+    defines = dict(DEFAULT_DEFINES if defines is None else defines)
+    if any(not isinstance(key, str) or not re.fullmatch(r'[A-Za-z_]\w*', key) or type(value) is not bool
+           for key, value in defines.items()):
+        raise AssertionError('Conditional symbols require names and explicit Boolean values')
     matches = list(re.finditer(r'^(\t*)' + re.escape(declaration) + r'\([^\n]*\)[ \t]*(?://[^\n]*)?\n', source, re.M))
     if len(matches) != 1:
         raise AssertionError(f'Expected exactly one {declaration}')
     match = matches[0]
     base = len(match[1])
     result = []
+    branches = []
+    active = True
     for line in source[match.end():].splitlines():
         stripped = line.strip()
         depth = len(line) - len(line.lstrip('\t'))
         if stripped.startswith('//'):
             continue
-        if stripped and not stripped.startswith('//') and depth <= base:
+        if stripped.startswith('#'):
+            directive = stripped.split('//', 1)[0].rstrip()
+            conditional = re.fullmatch(r'#(ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
+            if conditional:
+                operation, symbol = conditional.groups()
+                if symbol not in defines:
+                    raise AssertionError('Unknown conditional symbol: ' + symbol)
+                selected = defines[symbol] if operation == 'ifdef' else not defines[symbol]
+                branches.append((active, selected, False))
+                active = active and selected
+            elif directive == '#else':
+                if not branches or branches[-1][2]:
+                    raise AssertionError('Unmatched or duplicate #else')
+                parent, selected, _ = branches[-1]
+                branches[-1] = (parent, selected, True)
+                active = parent and not selected
+            elif directive == '#endif':
+                if not branches:
+                    raise AssertionError('Unmatched #endif')
+                active = branches.pop()[0]
+            else:
+                raise AssertionError('Unsupported preprocessor directive: ' + directive)
+            continue
+        if stripped and depth <= base:
+            if branches:
+                raise AssertionError('Conditional crosses procedure boundary')
             break
-        result.append(line[base:])
+        if active:
+            result.append(line[base:])
+    if branches:
+        raise AssertionError('Unterminated conditional in procedure')
     return '\n'.join(result)
 
 
@@ -41,13 +85,14 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
-          'clear_bookkeeping', 'release_durable_world', 'movement_location', 'stopped', 'stopped_until')
+          'clear_saved_roof_areas', 'clear_bookkeeping', 'release_durable_world',
+          'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until')
 
 
-def project(source, declaration, args, env, method=False):
+def project(source, declaration, args, env, method=False, *, defines=None):
     """Project complete selected bodies; only engine effects are supplied by tests."""
     lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required']
-    for raw in extract(source, declaration).splitlines():
+    for raw in extract(source, declaration, defines=defines).splitlines():
         code = raw.split('//', 1)[0].rstrip()
         if not code.strip():
             continue

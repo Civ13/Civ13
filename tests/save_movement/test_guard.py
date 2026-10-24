@@ -501,15 +501,37 @@ class GuardTests(unittest.TestCase):
                 attempts.append(label)
                 raise RuntimeError(label)
             return callback
+        def roof_cleanup():
+            self.assertIsNotNone(f.env['persistence_active_operation'])
+            attempts.append('roof')
+        f.store.clear_saved_roof_areas = roof_cleanup
         f.store.clear_bookkeeping = failing_cleanup('bookkeeping')
         f.store.release_durable_world = failing_cleanup('durable')
         f.store.cleanup_world_operation = lambda: cleanup(f.store)
         f.store.save_world_contents = lambda operation: False
         self.assertFalse(f.backend(f.store, 'save'))
-        self.assertEqual(attempts, ['bookkeeping', 'durable'])
+        self.assertEqual(attempts, ['roof', 'bookkeeping', 'durable'])
         self.assertEqual(len(logs), 2)
         self.assertIsNone(f.env['persistence_active_operation'])
         self.assertFalse(f.env['persistence_save_in_progress'])
+
+    def test_failure_context_reset_only_for_accepted_save_not_busy_or_load(self):
+        f = Fixture()
+        prior = object()
+        f.store.last_save_reference_failure = prior
+        owner = f.begin(f.store, 'save')
+        self.assertFalse(f.backend(f.store, 'save'))
+        self.assertIs(f.store.last_save_reference_failure, prior)
+        owner.finish(True)
+        seen = []
+        f.store.save_world_contents = lambda operation: seen.append(f.store.last_save_reference_failure) or True
+        self.assertTrue(f.backend(f.store, 'save'))
+        self.assertEqual(seen, [None])
+        self.assertIsNone(f.store.last_save_reference_failure)
+        f.store.last_save_reference_failure = prior
+        f.store.load_world_contents = lambda operation: True
+        self.assertTrue(f.backend(f.store, 'load'))
+        self.assertIs(f.store.last_save_reference_failure, prior)
 
     def test_legacy_z_setter_uses_physical_container_turf_and_rejects_invalid_target(self):
         f = Fixture()
