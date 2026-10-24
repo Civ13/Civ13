@@ -133,7 +133,7 @@ class BuildPrefixTests(unittest.TestCase):
         self.assertNotIn('pull_request_target', workflow)
         self.assertIn('contents: read', workflow)
         self.assertIn('build_prefix: true', workflow)
-        self.assertEqual(workflow.count('sudo bash ./scripts/travis_pre_byond.sh'), 1)
+        self.assertEqual(workflow.count('bash ./scripts/travis_pre_byond.sh'), 1)
         reusable = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
         self.assertIn("--build-prefix \"$BUILD_PREFIX\"", reusable)
         self.assertNotIn('github.event.pull_request.title', reusable)
