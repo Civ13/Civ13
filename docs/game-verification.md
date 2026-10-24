@@ -46,6 +46,10 @@ unverified production conditions separately.
 
 ## Save import/export investigations
 
+For area topology, level transitions, preflight boundaries and known fixture
+gaps, use the [zone/persistence audit and regression matrix](zone-persistence-audit.md).
+It distinguishes the recovered #3290 case from unverified follow-up risks.
+
 Exercise the actual serializer with isolated adapters. Check nested objects,
 datums and lists, supported aliases/cycles, metadata, object location fields,
 edge turfs and multiple levels. Reject missing/duplicate/malformed turf grids
