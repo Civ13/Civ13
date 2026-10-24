@@ -267,6 +267,7 @@ jobs:
 
   # Existing game compilation gate.
   build:
+    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational build' || 'build' }}
     needs: changes
     if: always() && !cancelled()
     # The type of runner that the job will run on
@@ -279,10 +280,12 @@ jobs:
           SELECTION_RESULT: ${{ needs.changes.result }}
           GAME_SELECTION: ${{ needs.changes.outputs.game }}
           EXTENSIVE_SELECTION: ${{ needs.changes.outputs.extensive }}
+          GATING_SELECTION: ${{ needs.changes.outputs.gating }}
         run: |
           test "$SELECTION_RESULT" = success
           case "$GAME_SELECTION" in true|false) ;; *) exit 1 ;; esac
           case "$EXTENSIVE_SELECTION" in true|false) ;; *) exit 1 ;; esac
+          case "$GATING_SELECTION" in 0|1) ;; *) exit 1 ;; esac
       - name: Explain compilation skip
         if: needs.changes.outputs.game != 'true'
         run: echo 'Game compilation skipped by change and build-prefix selection.'
@@ -1863,7 +1866,7 @@ jobs:
 
 
   ci-required:
-    name: CI required aggregate
+    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}
     if: always()
     needs: [changes, baseline, evidence-checker, build, extraction-instances]
     runs-on: ubuntu-latest
@@ -1898,6 +1901,7 @@ jobs:
           CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
           CI_NEEDS: ${{ toJSON(needs) }}
           EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
+          GATING_SELECTION: ${{ needs.changes.outputs.gating }}
         run: python3 -B scripts/ci_baseline.py aggregate --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --baseline .ci/baseline/baseline.json --compile-receipt .ci/compile/compile.json --output .ci/aggregate/aggregate.json
       - name: Summarize explicit execution and skip meanings
         if: always()
