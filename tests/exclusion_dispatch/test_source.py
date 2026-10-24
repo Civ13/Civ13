@@ -139,6 +139,56 @@ class SourceContractTests(unittest.TestCase):
         self.assertIn('list(/datum,/atom/movable,/obj', probe)
         self.assertNotIn('list(/datum,/atom,/obj', probe)
 
+    def test_generated_movable_hooks_follow_production_include_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'source.json'
+            self.assertEqual(self.run_runner(['--source-only', '--output', str(output)]), 0)
+            generated = output.with_suffix('.sources')
+            production = (generated / 'production.dm').read_text()
+            current = (ROOT / PATH).read_text()
+            sources = [(PATH, current),
+                       ('code/processes/abandoned_items.dm', (ROOT / 'code/processes/abandoned_items.dm').read_text()),
+                       ('code/processes/human_corpse_decay.dm', (ROOT / 'code/processes/human_corpse_decay.dm').read_text()),
+                       ('code/modules/1713/active_training.dm', (ROOT / 'code/modules/1713/active_training.dm').read_text())]
+            includes = (ROOT / 'civ13.dme').read_text()
+            positions = [includes.index('#include "' + name.replace('/', '\\') + '"') for name, _ in sources]
+            self.assertEqual(positions, sorted(positions))
+            movable = '/atom/movable/persistence_runtime_var(key)'
+            def fragment(text, path):
+                return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
+            for variant in ('baseline', 'candidate'):
+                for suffix in ('runtime', 'traced'):
+                    name = variant + '_' + suffix
+                    hooks = re.findall(r'^/atom/movable/' + name + r'\(key\)\n(?:\t[^\n]*\n)+', production, re.M)
+                    expected = [fragment(text, movable).replace('persistence_runtime_var', name)
+                                for _, text in (sources[0], sources[2])]
+                    self.assertEqual(hooks, expected)
+                    fragments = [fragment(text, path).replace('persistence_runtime_var', name)
+                                 for (_, text), path in zip(sources[1:],
+                                     ('/obj/item/persistence_runtime_var(key)', movable,
+                                      '/mob/living/human/persistence_runtime_var(key)'))]
+                    offsets = [production.index(value) for value in fragments]
+                    self.assertEqual(offsets, sorted(offsets))
+                    mob = fragment(production, '/mob/' + name + '(key)')
+                    self.assertIn('if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")', mob)
+            probe = (generated / 'probe.dm').read_text()
+            for key in ('original_target', 'next_animal_retaliation'):
+                self.assertIn('"' + key + '"', probe)
+
+    def test_generated_saved_selection_keeps_conditional_and_complete_tail(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'source.json'
+            self.assertEqual(self.run_runner(['--source-only', '--output', str(output)]), 0)
+            production = (output.with_suffix('.sources') / 'production.dm').read_text()
+            current = (ROOT / PATH).read_text()
+            pattern = r'^/datum/proc/get_saved_vars\(\)\n[\s\S]*?(?=^// The composite)'
+            saved = re.search(pattern, current, re.M).group()
+            self.assertIn('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t\tvariable_observability_skipped(src.vars[key])\n#endif\n\t\t\t\tcontinue\n', saved)
+            self.assertTrue(saved.endswith('\t\t\tto_save |= "name"\n\treturn to_save\n\n'))
+            for variant in ('baseline', 'candidate'):
+                adapted = saved.replace('get_saved_vars', variant + '_saved').replace('persistence_runtime_var', variant + '_runtime')
+                self.assertEqual(production.count(adapted), 1)
+
     def test_early_mining_exclusions_are_preserved_before_switch(self):
         for kind, guard in (('turf', 'if (key == "pickaxe_mining_owner" || key == "mining_in_progress")'),
                             ('mob', 'if (key == "pickaxe_mining_action")')):

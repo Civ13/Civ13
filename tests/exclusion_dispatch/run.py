@@ -38,8 +38,8 @@ def proc(text, path):
 
 inherited = ''
 for file, path in [
-    ('code/processes/human_corpse_decay.dm', '/atom/movable/persistence_runtime_var(key)'),
     ('code/processes/abandoned_items.dm', '/obj/item/persistence_runtime_var(key)'),
+    ('code/processes/human_corpse_decay.dm', '/atom/movable/persistence_runtime_var(key)'),
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 ]:
     helper = (repo / file).read_text()
@@ -48,7 +48,7 @@ for file, path in [
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob', 'area'])
+    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'atom/movable', 'turf', 'area', 'mob'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
