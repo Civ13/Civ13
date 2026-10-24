@@ -213,6 +213,7 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
+	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key == "last_save_reference_failure") return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
@@ -437,6 +438,7 @@ var/global/persistence_load_recovery_required = FALSE
 // Cleanup can dispatch subtype code. Keep admission until every attempted
 // cleanup finishes, and contain cleanup exceptions so release still occurs.
 /map_storage/proc/cleanup_world_operation()
+	clear_saved_roof_areas()
 	try
 		clear_bookkeeping()
 	catch(var/exception/e)
@@ -466,12 +468,16 @@ var/global/persistence_load_recovery_required = FALSE
 
 /map_storage/proc/save_validation_area_type(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	var/list/roof = validated_roof_areas["[x],[y],[z]"]
+	if(roof && roof["area"]) return roof["area"]
 	if(z > world.maxz) return world.area
 	var/turf/T = locate(x, y, z)
 	return T ? T.loc.type : null
 
 /map_storage/proc/save_validation_area_key(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	var/area_type = save_validation_area_type(x, y, z)
+	if(validated_roof_types["[area_type]"]) return "roof:[area_type]"
 	if(z <= world.maxz)
 		var/turf/T = locate(x, y, z)
 		return T ? "\ref[T.loc]" : null

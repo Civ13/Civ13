@@ -20,6 +20,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--roof-areas', action='store_true',
+                        help='Prepare only the synthetic fresh-process roof-area fixture; native execution is held')
+    parser.add_argument('--roof-control', choices=('projection', 'cleanup-namespace'),
+                        help='Prepare a named immutable roof-source omission control; no native execution')
     parser.add_argument('--persistence-year', action='store_true',
                         help='Run native minimum-date activation and v1/v2 disk import checks')
     parser.add_argument('--lighting', action='store_true',
@@ -37,6 +41,14 @@ def main():
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
     parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore', 'year-helper', 'year-load', 'year-order'))
     args = parser.parse_args()
+    if args.roof_control and not args.roof_areas:
+        parser.error('Roof controls require --roof-areas')
+    if args.roof_areas:
+        if not args.prepare_only:
+            parser.error('Roof-area native execution requires a separately reviewed bounded runner/admission')
+        if any((args.persistence_year, args.wounds, args.lighting, args.dimension_bootstrap,
+                args.recovery_reconnect, args.lifecycle_shutdown, args.startup_only, args.negative_control)):
+            parser.error('Roof-area preparation cannot combine with other fixture modes')
     year_control = bool(args.negative_control and args.negative_control.startswith('year-'))
     if args.persistence_year and (args.wounds or args.lighting or args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not year_control)):
         parser.error('Persistence date acceptance runs separately from other fixture modes')
@@ -70,7 +82,7 @@ def main():
     prefix = '.durable_world_' + uuid.uuid4().hex
     dme = root / (prefix + '.dme')
     generated = []
-    receipt = {'persistence_year': args.persistence_year, 'profile': args.profile, 'negative_control': args.negative_control,
+    receipt = {'roof_areas': args.roof_areas, 'roof_control': args.roof_control, 'persistence_year': args.persistence_year, 'profile': args.profile, 'negative_control': args.negative_control,
                'wounds': args.wounds,
                'lighting': args.lighting,
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
@@ -109,7 +121,24 @@ def main():
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
             'shutdown-return': ('code/modules/persistence/restart_transaction.dm', '\tdel(world)\n\t// Native deletion can return until the current execution yields. Give BYOND\n\t// that boundary before failure cleanup can consume the valid restart intent.\n\tsleep(1)\n', '\tdel(world)\n'),
         }
-        if year_control:
+        if args.roof_control:
+            relative = 'code/modules/persistence/loading.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            if args.roof_control == 'projection':
+                before = '\t\tprepare_saved_roof_areas(round_state["generation"])\n'
+                if text.count(before) != 1:
+                    raise RuntimeError('Roof projection control anchor changed')
+                text = text.replace(before, '\t\t// Old-defect control: validate against startup areas only.\n', 1)
+            else:
+                start = text.index('/map_storage/proc/is_loaded_validated_roof(')
+                end = text.index('/map_storage/proc/verify_restored_roof_areas()', start)
+                old_predicate = ('/map_storage/proc/is_loaded_validated_roof(atom/roof)\n'
+                    '\tif(!restoring_roof_areas) return FALSE\n'
+                    '\tvar/list/row = validated_roof_areas["[roof.x],[roof.y],[roof.z]"]\n'
+                    '\treturn row && existing_references[row["entry"]] == roof\n\n')
+                text = text[:start] + old_predicate + text[end:]
+            replacements[relative] = text
+        elif year_control:
             relative = 'code/modules/persistence/functions.dm'
             text = (root / relative).read_text(encoding='utf-8')
             before, after = {
@@ -182,6 +211,10 @@ def main():
             if args.negative_control == 'wound-restore' and relative == 'code/modules/organs/wound.dm':
                 receipt['wound_control_source'] = generated_path.name
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.roof_areas:
+            roof_probe = root / 'tests/roof_area_recovery/probe.dm'
+            probe = probe[:probe.index('/world/New()')] + roof_probe.read_text(encoding='utf-8')
+            receipt['roof_probe_hash'] = hashlib.sha256(roof_probe.read_bytes()).hexdigest()
         if args.persistence_year:
             year_probe = root / 'tests/persistence_year/probe.dm'
             setup = (root / 'code/setup.dm').read_text(encoding='utf-8')

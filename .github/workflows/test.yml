@@ -86,6 +86,9 @@ jobs:
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
+      - name: Prepare roof-area recovery fixture offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
@@ -249,6 +252,45 @@ jobs:
         if: needs.changes.outputs.game == 'true'
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
+
+      - name: Verify synthetic saved-roof recovery and two defect controls
+        id: roof_native
+        if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        timeout-minutes: 40
+        shell: bash
+        env:
+          ROOF_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$ROOF_HEAD"
+          test ! -e "$RUNNER_TEMP/roof-area-review"
+          mkdir "$RUNNER_TEMP/roof-area-review"
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          for variant in main projection cleanup-namespace; do
+            packet="$RUNNER_TEMP/roof-area-review/$variant-packet"
+            output="$RUNNER_TEMP/roof-area-review/$variant-output"
+            /usr/bin/python3 -I -B tests/roof_area_recovery/run_linux.py \
+              --prepare-only --packet-dir "$packet" --expected-head "$ROOF_HEAD" \
+              --variant "$variant" > "$RUNNER_TEMP/roof-area-review/$variant-preparation.json"
+            request_sha="$(sha256sum "$packet/request.json" | cut -d ' ' -f 1)"
+            printf '%s  %s\n' "$request_sha" "$variant-packet/request.json" \
+              >> "$RUNNER_TEMP/roof-area-review/request-hashes.txt"
+            /usr/bin/python3 -I -B tests/roof_area_recovery/run_linux.py \
+              --packet-dir "$packet" --expected-head "$ROOF_HEAD" \
+              --request-sha256 "$request_sha" --output "$output" \
+              --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          done
+      - name: Retain synthetic roof requests, claims, sources and native outcomes
+        if: always() && steps.roof_native.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: roof-recovery-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/roof-area-review
+            ${{ runner.temp }}/roof-area-request-claims
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Verify native persistence date and disk restoration
         id: persistence_year
