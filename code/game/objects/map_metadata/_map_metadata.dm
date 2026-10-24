@@ -24,6 +24,7 @@ var/civmax_research = list(230,230,230)
 	var/tmp/season_epoch = 0
 	var/tmp/list/season_queue = list()
 	var/tmp/season_loop_scheduled = FALSE
+	var/list/season_cycle = null // Null uses the ordinary four-season order; author policy, not saved state.
 	name = "control"
 	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
@@ -1109,6 +1110,20 @@ var/civmax_research = list(230,230,230)
 		season_queue += list(phase, epoch, FALSE, FALSE)
 		season_run_queue()
 
+/obj/map_metadata/proc/season_next_phase()
+	var/list/cycle = isnull(season_cycle) ? list("SPRING", "SUMMER", "FALL", "WINTER") : season_cycle
+	if (!islist(cycle) || cycle.len < 2 || cycle.len > 4)
+		return null
+	var/list/seen = list()
+	for (var/phase in cycle)
+		if (!(phase in list("SPRING", "SUMMER", "FALL", "WINTER")) || (phase in seen) || !isnull(cycle[phase]))
+			return null
+		seen += phase
+	var/position = cycle.Find(season)
+	if (!position)
+		return null
+	return cycle[(position % cycle.len) + 1]
+
 /obj/map_metadata/proc/season_schedule_loop()
 	if (season_retired || season_loop_scheduled || map != src)
 		return
@@ -1148,6 +1163,9 @@ var/civmax_research = list(230,230,230)
 			var/advance_decay = season_queue[4]
 			season_queue.Cut(1, 5)
 			if (kind == "transition")
+				// Reject author policy before retiring delayed work or touching climate.
+				if (!isnull(season_cycle) && !season_next_phase())
+					continue
 				var/epoch = season_epoch
 				if ((force || config.seasons_on) && (season in list("FALL", "WINTER", "SPRING", "SUMMER")))
 					season_epoch++
@@ -1171,7 +1189,7 @@ var/civmax_research = list(230,230,230)
 	return
 
 /obj/map_metadata/persistence_runtime_var(var/key)
-	if (key in list("durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
+	if (key in list("season_cycle", "durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)
 
@@ -1179,8 +1197,11 @@ var/civmax_research = list(230,230,230)
 	if (!season_worker_valid(epoch))
 		return
 	var/season_work = 0
+	var/next_phase = season_next_phase()
+	if (!next_phase)
+		return
 	if (force || config.seasons_on)
-		if (season == "FALL")
+		if (next_phase == "WINTER")
 			season = "WINTER"
 			record_abandonment_season_change(advance_decay)
 			to_chat(world, "<big>The <b>Winter</b> has started. In the hot climates, the wet season has started.</big>")
@@ -1297,7 +1318,7 @@ var/civmax_research = list(230,230,230)
 					continue
 				GTT.ChangeTurf(/turf/floor/winter/grass)
 
-		else if (season == "SPRING")
+		else if (next_phase == "SUMMER")
 			season = "SUMMER"
 			record_abandonment_season_change(advance_decay)
 			to_chat(world, "<big>The <b>Summer</b> has started. In the hot climates, the dry season has started.</big>")
@@ -1360,7 +1381,7 @@ var/civmax_research = list(230,230,230)
 				if (!season_candidate_valid(WT, /turf/floor/dirt/winter))
 					continue
 				WT.ChangeTurf(/turf/floor/dirt)
-		else if (season == "WINTER")
+		else if (next_phase == "SPRING")
 			season = "SPRING"
 			record_abandonment_season_change(advance_decay)
 			to_chat(world, "<big>The weather is getting warmer. It is now <b>Spring</b>. In the hot climates, the wet season continues.</big>")
@@ -1388,7 +1409,7 @@ var/civmax_research = list(230,230,230)
 						G.ChangeTurf(/turf/floor/grass)
 			season_schedule_phase(150, "season_phase_4", epoch)
 			season_schedule_phase(3000, "season_phase_5", epoch)
-		else if (season == "SUMMER")
+		else if (next_phase == "FALL")
 			season = "FALL"
 			record_abandonment_season_change(advance_decay)
 			to_chat(world, "<big>The leaves start to fall and the weather gets colder. It is now <b>Fall</b>. In the hot climates, the dry season continues.</big>")

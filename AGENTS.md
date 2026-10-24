@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: configured base season flow -->
+season_cycle is author policy for the serialized base worker: null keeps ordinary
+order; 2-4 unique implemented seasons may reorder/skip. Invalid/current-absent
+cycles are consumed without epoch/phase/climate mutation. Destination payloads
+are unchanged; each actual transition keeps the explicit advance_decay choice.
+No persisted cursor or event callbacks; custom subtype calendars stay separate.
+tests/season_flow is offline source evidence, not native ecological acceptance.
+
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
