@@ -185,8 +185,7 @@
 		if("entry") return json_encode(list("entry", node["z"], node["ref"]))
 		if("turf") return json_encode(list("turf", node["x"], node["y"], node["z"]))
 		if("area")
-			var/turf/T = locate(node["x"], node["y"], node["z"])
-			return "area:\ref[T.loc]"
+			return "area:[map_storage.save_validation_area_key(node["x"], node["y"], node["z"])]"
 		if("list", "alist") return "collection:[id]"
 	throw EXCEPTION("Invalid durable metadata associative key")
 

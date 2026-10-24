@@ -307,6 +307,8 @@
 /atom/movable/proc/finished_throwing()
 	thrown_list -= src
 	var/turf/new_loc = get_turf(src)
+	// Clear the completed target before impact/Entered can start a newer throw.
+	original_target = null
 	if (isobj(src)) throw_impact(new_loc,speed)
 	if (src && new_loc)
 		new_loc.Entered(src)

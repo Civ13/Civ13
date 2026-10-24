@@ -5,6 +5,7 @@
 
 	if (map && !map.persistence)
 		map.persistence = TRUE
+		map.apply_persistence_age_floor()
 		map.research_active = FALSE
 		if (!map.autoresearch)
 			map.autoresearch = TRUE

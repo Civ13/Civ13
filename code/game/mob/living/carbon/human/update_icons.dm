@@ -877,6 +877,8 @@ var/global/list/damage_icon_parts = list()
 			overlays_standing[SHOES_LAYER] = bloodsies
 		else
 			overlays_standing[SHOES_LAYER] = null
+	// Equipment/stain refreshes can replace this image between water updates.
+	apply_footwear_water_mask(get_water_mask_icon())
 	if (update_icons)   update_icons()
 
 /mob/living/human/update_inv_head(var/update_icons=1)
@@ -1370,6 +1372,25 @@ var/global/list/damage_icon_parts = list()
 	if (on_fire)
 		overlays_standing[FIRE_LAYER] = image("icon"='icons/mob/OnFire.dmi', "icon_state"="Standing", "layer"=FIRE_LAYER)
 
+	var/icon/mask_icon = get_water_mask_icon()
+	if (mask_icon)
+		filters = null
+		filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+		for(var/over in overlays_standing)
+			var/image/img = over
+			if(img)
+				img.filters = null
+				img.filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+	else
+		filters = null
+		clear_overlay_filters()
+		if (plane==FLOOR_PLANE)
+			plane=GAME_PLANE
+	apply_footwear_water_mask(mask_icon)
+	if (update_icons)
+		update_icons()
+
+/mob/living/human/proc/get_water_mask_icon()
 	if (drowning || water_overlay)
 		var/turf/D = get_turf(src)
 		// Determine mask state based on water type and depth
@@ -1383,30 +1404,24 @@ var/global/list/damage_icon_parts = list()
 				else if(sub_turf.water_depth >= 30)
 					mask_state = "seashallow_over2"
 			else
-				filters = null
-				clear_overlay_filters()
-				if (plane == FLOOR_PLANE)
-					plane = GAME_PLANE
-				if (update_icons)
-					update_icons()
-				return
+				return null
 		else if (drowning)
 			mask_state = "seashallow_over3"  // Deep water - fully submerged
-		var/icon/mask_icon = icon('icons/turf/beach.dmi', mask_state)
-		filters = null
-		filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
-		for(var/over in overlays_standing)
-			var/image/img = over
-			if(img)
-				img.filters = null
-				img.filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+		return icon('icons/turf/beach.dmi', mask_state)
+	return null
+
+/mob/living/human/proc/apply_footwear_water_mask(var/icon/mask_icon)
+	var/image/footwear = overlays_standing[SHOES_LAYER]
+	if (!footwear)
+		return
+	footwear.filters = null
+	if (mask_icon)
+		// Filter the boot and its nested shoeblood (also used for brown mud)
+		// as one composite. Filtering the parent alone leaves the stain visible.
+		footwear.appearance_flags |= KEEP_TOGETHER
+		footwear.filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
 	else
-		filters = null
-		clear_overlay_filters()
-		if (plane==FLOOR_PLANE)
-			plane=GAME_PLANE
-	if (update_icons)
-		update_icons()
+		footwear.appearance_flags &= ~KEEP_TOGETHER
 
 /mob/living/human/proc/clear_overlay_filters()
 	for(var/over in overlays_standing)
