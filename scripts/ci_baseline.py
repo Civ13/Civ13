@@ -38,6 +38,11 @@ SUITES = {
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
 TIMEOUT = 30  # per reviewed suite; enclosing job also has a wall-clock limit
+# Reviewed prose/presentation formats only. Script/config suffixes deliberately
+# fall back even below docs/; compilation retains its separate existing policy.
+DOC_SUFFIXES = {'.md', '.rst', '.html', '.css', '.png', '.jpg', '.jpeg', '.gif',
+                '.webp', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.pdf'}
+DOC_ASSETS = {'docs/api/search.js', 'docs/api/baseline-diagnostics.txt'}
 
 
 def git(*args):
@@ -75,11 +80,10 @@ def provenance(head, base):
 
 
 def documentation(path):
-    return PurePosixPath(path).suffix.lower() not in {'.dm', '.dme', '.dmm', '.dmi', '.rsc'} and (
-        path.startswith('docs/') or
-        (len(PurePosixPath(path).parts) == 1 and path.endswith('.md')) or
-        path == 'scripts/build-api-docs.py' or
-        path in {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'})
+    relative = PurePosixPath(path)
+    return (path in DOC_ASSETS or
+            (path.startswith('docs/') and relative.suffix.lower() in DOC_SUFFIXES) or
+            (len(relative.parts) == 1 and relative.suffix.lower() == '.md'))
 
 
 def matches(path, pattern):
@@ -175,9 +179,11 @@ def execute(plan, output):
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
                    selection_sha256=digest(plan), suites={})
     (output / 'source-tree.txt').write_text(git('ls-tree', '-r', 'HEAD') + '\n', encoding='utf-8')
+    observed_head_before = revision('HEAD')
     tracked_patch = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=ROOT, timeout=15)
     (output / 'tested.patch').write_bytes(tracked_patch)
     receipt['tracked_dirty'] = bool(tracked_patch)
+    receipt['observed_head_before'] = observed_head_before
     write_json(output / 'baseline.json', receipt)
     for name, selected in plan['baseline']['suites'].items():
         row = dict(selected, status='skipped')
@@ -203,8 +209,16 @@ def execute(plan, output):
                     row.update(status='failed', reason=['Offline suite deadline exceeded'])
             row['duration_seconds'] = round(time.monotonic() - started, 3)
         write_json(output / 'baseline.json', receipt)
-    receipt['status'] = 'passed' if all(row['status'] == ('passed' if row['selected'] else 'skipped')
-                                        for row in receipt['suites'].values()) else 'failed'
+    observed_head_after = revision('HEAD')
+    after_patch = subprocess.check_output(['git', 'diff', '--binary', 'HEAD'], cwd=ROOT, timeout=15)
+    (output / 'tested-after.patch').write_bytes(after_patch)
+    receipt.update(observed_head_after=observed_head_after, tracked_dirty_after=bool(after_patch),
+                   source_unchanged=(observed_head_before == observed_head_after == plan['head']
+                                     and tracked_patch == after_patch))
+    source_ok = receipt['source_unchanged'] and not tracked_patch and not after_patch
+    receipt['status'] = 'passed' if source_ok and all(
+        row['status'] == ('passed' if row['selected'] else 'skipped')
+        for row in receipt['suites'].values()) else 'failed'
     write_json(output / 'baseline.json', receipt)
     print(json.dumps(receipt, indent=2))
     return 0 if receipt['status'] == 'passed' else 1
@@ -251,6 +265,10 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected):
         errors.append('Baseline did not pass')
     if baseline.get('tracked_dirty') is not False:
         errors.append('Baseline is not evidence from a clean committed head')
+    if (baseline.get('tracked_dirty_after') is not False or baseline.get('source_unchanged') is not True
+            or baseline.get('observed_head_before') != plan['head']
+            or baseline.get('observed_head_after') != plan['head']):
+        errors.append('Baseline source changed during tests or post-test source evidence is missing')
     actual = baseline.get('suites', {})
     if set(actual) != set(SUITES):
         errors.append('Baseline suite set differs from selection')

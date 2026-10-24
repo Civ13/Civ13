@@ -130,6 +130,19 @@ If an executable/shared path has no mapping, or the comparison is unavailable,
 the receipt lists the reason and selects all seven reviewed suites. It still
 does not select unreviewed/native tests. Prose-only changes retain the three
 mandatory suites and skip game compilation unless `build:` requests it.
+The offline prose exemption is limited to reviewed documentation formats
+(`.md`, `.rst`, `.html`, `.css`, listed image/font formats and `.pdf`) plus the
+exact existing search-script and diagnostic-text assets. Other scripts/configs
+under `docs/`, including `.py`, `.sh`, arbitrary `.js`, `.json`, `.yaml`, `.toml`
+and dependency `.txt` files, use the visible unknown-impact fallback. The existing
+compiler selector's documentation/generator optimization is unchanged.
+
+Ping's registered test reads only current `ping_track.dm`, shared `_process.dm`
+and an immutable historical ping source through Git. Its dispatch is a Python
+adapter; it does not consume `__processScheduler.dm`. That production scheduler
+is read by the research suite's wiring checks, so its mapping selects research
+without claiming ping scheduler coverage. The policy tests audit these direct
+ping source inputs; native scheduler behavior remains separate acceptance.
 
 When registering another automatic suite, inspect every import/helper and
 subprocess, document its cost/effects, name exact files, map production inputs
@@ -144,7 +157,10 @@ Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-
 They retain exact checked-out head, resolved base (or null plus requested base),
 run/attempt, selection digest, changed paths, fallback/skip reasons, suite commands,
 deadlines, exit codes, counts and logs. Baseline receipts include the committed
-Git source tree and tested patch; the aggregate requires a clean committed head.
+Git source tree and before/after tested patches. The runner and aggregate require
+the same clean committed head before and after tests; a tracked mutation, changed
+HEAD (even an empty commit), or missing post-test evidence fails. These boundary
+snapshots do not establish that no temporary mutation was restored mid-run.
 Compiler diagnostics include setup output, combined stdout/stderr, Git source
 tree and before/after patches (the atlas catalog is generated before compilation).
 Uploads use `always()` including failures/skips; runner loss or cancellation can

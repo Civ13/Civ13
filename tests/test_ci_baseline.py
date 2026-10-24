@@ -1,5 +1,6 @@
 """Offline policy/receipt controls. No compiler, runtime, inventory or network."""
 from copy import deepcopy
+import ast
 import importlib.util
 import json
 import os
@@ -22,7 +23,9 @@ def fixtures(paths=('README.md',)):
     plan = dict(schema_version=1, kind='selection', status='passed', **source,
                 baseline=ci.impact(paths), compile={'selected': False, 'reason': 'Documentation only'})
     baseline = dict(schema_version=1, kind='baseline', status='passed', **source,
-                    selection_sha256=ci.digest(plan), tracked_dirty=False, suites={})
+                    selection_sha256=ci.digest(plan), tracked_dirty=False,
+                    tracked_dirty_after=False, source_unchanged=True,
+                    observed_head_before=source['head'], observed_head_after=source['head'], suites={})
     for name, selected in plan['baseline']['suites'].items():
         baseline['suites'][name] = dict(selected, status='passed' if selected['selected'] else 'skipped')
         if selected['selected']:
@@ -46,12 +49,56 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertFalse(ci.documentation('docs/new.dm'))
         self.assertEqual(self.selected(['docs/new.dm']), set(ci.SUITES))
 
+    def test_docs_scripts_and_config_cannot_evade_unknown_impact_fallback(self):
+        for path in ('docs/helper.py', 'docs/tool.sh', 'docs/helper.js', 'docs/helper.ps1',
+                     'docs/config.json', 'docs/config.yaml', 'docs/config.toml',
+                     'docs/requirements.txt', 'scripts/build-api-docs.py',
+                     '.github/workflows/api-docs.yml'):
+            with self.subTest(path=path):
+                result = ci.impact([path])
+                self.assertFalse(ci.documentation(path))
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+                self.assertIn('Unmapped impact: ' + path, result['fallback_reasons'])
+        # The offline fallback does not change the separately reviewed compiler
+        # selection, including its existing docs/ and generator optimization.
+        selection_spec = importlib.util.spec_from_file_location('compile_policy', ROOT / 'scripts/select-ci.py')
+        selection = importlib.util.module_from_spec(selection_spec)
+        selection_spec.loader.exec_module(selection)
+        self.assertFalse(selection.needs_game(['docs/helper.py', 'docs/tool.sh',
+                                              'scripts/build-api-docs.py']))
+
+    def test_reviewed_documentation_formats_and_exact_assets_remain_cheap(self):
+        for path in ('docs/guide.md', 'docs/guide.rst', 'docs/api/index.html',
+                     'docs/api/search.css', 'docs/api/search.js', 'docs/api/baseline-diagnostics.txt',
+                     'docs/images/example.png', 'docs/images/example.svg', 'docs/guide.pdf'):
+            with self.subTest(path=path):
+                self.assertTrue(ci.documentation(path))
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress'})
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+
     def test_production_inputs_select_existing_affected_offline_tests(self):
         self.assertEqual(self.selected(['code/processes/research_tree.dm']),
                          {'policy', 'bootstrap', 'progress', 'research'})
         self.assertEqual(self.selected(['code/processes/_process.dm']),
                          {'policy', 'bootstrap', 'progress', 'research', 'ping'})
         self.assertIn('year', self.selected(['code/setup.dm']))
+
+    def test_ping_source_dependencies_match_its_actual_registered_test_reads(self):
+        # Ping uses a Python dispatch adapter, not the production scheduler.
+        # Audit the exact direct ROOT-relative source reads in its registered
+        # file so adding a new direct source input requires updating this list.
+        source = (ROOT / ci.SUITES['ping']['files'][0]).read_text()
+        tree = ast.parse(source)
+        reads = {node.right.value for node in ast.walk(tree)
+                 if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div)
+                 and isinstance(node.left, ast.Name) and node.left.id == 'ROOT'
+                 and isinstance(node.right, ast.Constant) and isinstance(node.right.value, str)}
+        self.assertEqual(reads, {'code/processes/ping_track.dm', 'code/processes/_process.dm'})
+        self.assertTrue(reads.issubset(set(ci.SUITES['ping']['paths'])))
+        self.assertNotIn('__processScheduler.dm', source)
+        self.assertIn('"git", "show", BASE + ":code/processes/ping_track.dm"', source)
+        self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
+                         {'policy', 'bootstrap', 'progress', 'research'})
 
     def test_modified_tests_and_helpers_are_affected_without_introduced_test_admission(self):
         for path, name in (('tests/ping_scheduler/test_resume.py', 'ping'),
@@ -152,6 +199,51 @@ class BaselinePolicyTests(unittest.TestCase):
                 side_effect=no_counts):
             self.assertEqual(ci.execute(plan, temporary), 1)
 
+    def test_post_test_tracked_mutation_or_head_change_invalidates_baseline(self):
+        for change in ('tracked-file', 'head'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                def git(*args):
+                    return subprocess.check_output(['git', '-C', temporary, *args],
+                                                   stderr=subprocess.PIPE, timeout=10).decode().strip()
+                git('init')
+                git('config', 'user.name', 'Post-test source fixture')
+                git('config', 'user.email', 'ci@example.invalid')
+                tracked = root / 'tracked.py'
+                tracked.write_text('# original\n')
+                git('add', '.')
+                git('commit', '-qm', 'base')
+                head = git('rev-parse', 'HEAD')
+                plan, _, _, _ = fixtures()
+                plan['head'] = head
+                mutated = False
+                real_run = ci.subprocess.run
+                def run(command, **kwargs):
+                    nonlocal mutated
+                    if 'unit' not in command:
+                        return real_run(command, **kwargs)
+                    ci.write_json(command[command.index('--output') + 1], dict(
+                        status='passed', tests=1, errors=0, failures=0, skipped=0))
+                    if not mutated:
+                        mutated = True
+                        if change == 'tracked-file':
+                            tracked.write_text('# changed during synthetic test\n')
+                        else:
+                            git('commit', '--allow-empty', '-qm', 'unexpected test commit')
+                    return subprocess.CompletedProcess(command, 0)
+                with patch.object(ci, 'ROOT', root), patch.object(ci.subprocess, 'run', side_effect=run), patch('builtins.print'):
+                    self.assertEqual(ci.execute(plan, root / 'evidence'), 1)
+                result = json.loads((root / 'evidence/baseline.json').read_text())
+                self.assertFalse(result['tracked_dirty'])
+                self.assertFalse(result['source_unchanged'])
+                self.assertEqual(result['status'], 'failed')
+                self.assertTrue(all(row['status'] == 'passed' for row in result['suites'].values() if row['selected']))
+                if change == 'tracked-file':
+                    self.assertTrue(result['tracked_dirty_after'])
+                    self.assertIn('changed during synthetic test', (root / 'evidence/tested-after.patch').read_text())
+                else:
+                    self.assertFalse(result['tracked_dirty_after'])
+                    self.assertNotEqual(result['observed_head_after'], head)
     def test_selection_loader_rejects_disabled_mandatory_tests_and_stale_source(self):
         plan, _, _, _ = fixtures()
         with tempfile.TemporaryDirectory() as temporary:
@@ -201,6 +293,10 @@ class AggregateTests(unittest.TestCase):
     def test_unexpected_suite_skip_empty_tests_or_missing_receipts_fail(self):
         for change in (
                 lambda b: b.update(tracked_dirty=True),
+                lambda b: b.update(tracked_dirty_after=True),
+                lambda b: b.update(source_unchanged=False),
+                lambda b: b.update(observed_head_after='changed'),
+                lambda b: b.pop('tracked_dirty_after'),
                 lambda b: b['suites']['policy'].update(status='skipped'),
                 lambda b: b['suites']['policy']['counts'].update(tests=0),
                 lambda b: b['suites']['policy']['counts'].update(skipped=1),
