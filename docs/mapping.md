@@ -51,6 +51,12 @@ official [BYOND Guide](https://www.byond.com/docs/guide/) and
   `JoinLateCiv` from [jobs](../code/modules/1713/jobs/nomads.dm) through
   [relocation](../code/game/jobs/job_controller.dm). Check exact case and clear
   destinations; an area label does not create a spawn or delivery registry.
+- Author initial persistence arrivals on safe, walkable ground at the playable map
+  boundary whenever possible. If the edge is water or blocked, choose the nearest
+  suitable ground fallback. Identify the surface from the authored layout, not
+  `z = 1` or the maximum z-level. This is an authoring rule; automatic enforcement
+  is not implemented. Default-arrival changes must preserve existing saved character
+  locations and durable custom arrivals.
 - Review a reachable water/food/tool/shelter/progression chain for each start and
   faction. The [outdoor bootstrap trace](outdoor-crop-bootstrap.md) and
   [`check-outdoor-bootstrap.py`](../scripts/check-outdoor-bootstrap.py) help with
@@ -83,3 +89,6 @@ Elevation, logical geography, durable zone/spawn-registry changes, seasonal gene
 snow, saved-world export and sharded travel require their own accepted implementation
 and version prerequisites. This checklist supplies no pending API or automatic
 save-to-compiled-map workflow. Keep proposals out of required map dependencies.
+
+Future configurable default arrival routes are planned to use immigration as their
+lore framing; this does not describe an existing automatic relocation feature.
