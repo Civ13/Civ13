@@ -545,6 +545,17 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-23: timber seedling ownership -->
+Timber seedlings reuse crop soil/water/stage helpers through processing_objects;
+their growth override registers without sleeping. Save growth_time_left but exclude
+last_growth_tick, and anchor it in after_load without resetting durable progress.
+Maturation rechecks open outdoor ploughed space, climate and season before creating
+the existing live_tree. See docs/tree-planting.md and tests/tree_planting; offline
+source execution and fixture preparation are not native or client acceptance.
+The tree native runner now uses the unchanged native_fixture Session and keeps
+fresh-process reader/writer probes. Windows startup-listener rejections remain
+failures; do not route around the no-socket guard. See the native-validation doc.
+
 <!-- 2026-10-15: Modern processor recipe validation -->
 The recipe catalog fixture defaults to era 0. New era-gated machine families
 must select their real supported era in tests/crafting/checks.dm; the reactor
