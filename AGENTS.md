@@ -186,6 +186,16 @@ is display-only after process restart. See SERVER-DISCOVERY.md for join controls
 Wall time cannot prove game-time advancement or clear a server ban. Do not probe
 the known banned Desktop source until owner-coordinated normal eligibility.
 
+<!-- 2026-10-24: offline launcher social contracts -->
+tools/opendream-client/native/Social is inert; production Main stays unwired.
+tests/SocialContracts runs injected adapters/clocks/discovery/dispatch only,
+separate from updater replacement tests. Reuse NativeStart and existing proofs;
+dispatch is not connected gameplay or shard-travel evidence. See its README.
+Keep player presence/native callbacks separate from DiscordPHP backend APIs.
+SDK access/linking/distribution and application selection remain future gates.
+Before an isolated .NET CLI home's first use, set
+DOTNET_GENERATE_ASPNET_CERTIFICATE=false to avoid automatic development-cert setup.
+
 ## Language & toolchain
 Never use an em dash; use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
