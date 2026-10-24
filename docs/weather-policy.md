@@ -74,6 +74,8 @@ immutable master; climate application and direct special-event bodies are checke
 unchanged. These are source/algorithm checks with Python adapters for native lists,
 RNG outcomes and world time. They do not prove native timer/list behavior, rendering,
 fresh-process recovery or connected-client acceptance. Native tests remain held
-because the movement launch outcome is uncertain and process inventory was denied;
-the test deadline remains 2026-10-24 14:48:30 UTC. Review balancing and run native
-regressions only after the parent resolves the hold and reviews containment.
+because the movement launch outcome is uncertain and process inventory was denied.
+The user extended testing through 2026-10-25 02:27:29 UTC; that extension does not
+release the native hold or change ownership/admission/resource limits. Review
+balancing and run native regressions only after the parent resolves the hold and
+reviews containment. Existing sealed packets are not changed by this documentation.
