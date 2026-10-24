@@ -1,7 +1,7 @@
 # Single-file Windows launcher
 
-The cache/pacing launcher is released as 1.0.6. This source contains an unreleased
-join-flow fix; publishing it requires exact-head packaging/CI, independent review
+The stable feed references launcher 1.0.7 with BYOND 516.1681. This source
+prepares unreleased launcher 1.0.8 with BYOND 516.1688; publishing it requires exact-head packaging/CI, independent review
 and the applicable acceptance checks. No HTTPS server directory or additional
 backend deployment is required. See [SERVER-DISCOVERY.md](SERVER-DISCOVERY.md).
 One successful status query alone does not establish prejoin or gameplay acceptance.
@@ -19,7 +19,7 @@ does not send a duplicate rate-limited status request. The exact responding IP
 must still be in the complete safe DNS answer set. DreamSeeker connects to that
 verified literal and configured port. Status reuse cannot detect a round change
 within its short freshness window. Public port overrides and
-arbitrary scans are rejected. BYOND 516.1681 prerequisite verification/installation
+arbitrary scans are rejected. BYOND 516.1688 prerequisite verification/installation
 remains unchanged; public native choices do not download OpenDream.
 
 Public status checks share conservative request spacing across launcher instances
@@ -58,7 +58,7 @@ It reads and checks the host receipt before updater, client setup or menu work.
 The receipt has schema 1, `port`, `pid`, `startTimeUtcTicks`, absolute `daemon`
 and `world` paths, `worldSha256`, 40-character `sourceCommit` and `map`.
 The trusted host owner supplies it after starting the isolated host. The launcher
-checks the live PID/start time, executable path and 516.1681 PE version, and world
+checks the live PID/start time, executable path and the embedded requirement's exact 516.1688 PE version, and world
 hash, then constructs only `byond://127.0.0.1:<port>` for the verified installed
 Dream Seeker. This operator-configured test path is not automatic engine detection.
 Source/map labels belong to the trusted host receipt; they are not inferred from
@@ -174,11 +174,14 @@ without creating a live release or feed.
 
 ## BYOND prerequisite
 
-`byond.json` embeds the project-required **516.1681**, from the repository's
-explicit BYOND toolchain requirement, rather than the newest available version.
+`../../byond/version.json` is the shared compiler/server/client requirement, embedded
+as the resource `byond.json`. It targets **516.1688**, separately from the minimum
+compiler 516.1681 and the savefile major 516. A source upgrade is not runtime or
+client compatibility acceptance; see [the upgrade matrix](../../../docs/byond-5161688.md).
 The official [BYOND build archive](https://www.byond.com/download/build/516/)
-provides `516.1681_byond.exe`. Its SHA-256 is pinned from a read-only official HTTPS
-download on 2026-10-14, not represented as a checksum published by BYOND. The
+provides `516.1688_byond.exe`. Its SHA-256 and size were observed from an official
+HTTPS download on 2026-10-24. They provide exact-byte reproducibility, not a
+BYOND-published or independently authenticated checksum. The
 installer's PE version and NSIS format were checked without executing it.
 
 Detection checks both BYOND and DreamSeeker PE versions through the managed
@@ -186,7 +189,7 @@ install receipt, 32/64-bit HKLM/HKCU Dantom registry locations, known program
 folders and BYOND_BIN. Users can identify another existing portable folder.
 Missing/wrong versions offer a verified official installer, with no silent switch
 or license/Windows prompt bypass. NSIS's [documented /D option](https://nsis.sourceforge.io/Docs/Chapter3.html#installerusage)
-suggests a separate `%LOCALAPPDATA%/Civ13/BYOND/516.1681` directory; incomplete
+suggests a separate `%LOCALAPPDATA%/Civ13/BYOND/516.1688` directory; incomplete
 existing directories cause a new suffix rather than being overwritten. User
 changes to the installer's directory remain under their control. Installed PE
 versions are checked again before recording success; failure/cancellation can be

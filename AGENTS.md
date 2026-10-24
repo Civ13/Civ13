@@ -1,5 +1,15 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: target BYOND version and historical fixture boundary -->
+tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
+bytes; it is embedded directly into source launcher 1.0.8 and consumed by the
+default compiler bootstrap/receipts and WSL setup. This does not establish native
+compatibility or publish the launcher. Compiler minimum/savefile major remain
+516.1681/516. Frozen 1681 fixture helpers, CID offsets and historical evidence stay
+unchanged. Manual component/train workflows explicitly select the legacy 1681
+bootstrap; other strict 1681 runtime harnesses must fail on a mismatched engine,
+not be relabeled. See docs/byond-5161688.md before selecting native coverage.
+
 <!-- 2026-10-24: shared season duration -->
 Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
 an optional map.season_duration_minutes override. Pending durable remainders are
@@ -202,8 +212,8 @@ Never use an em dash; use "-" instead.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
-- **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. A separate evidence-checker job runs synthetic Python tests without executing the game. The MCP protocol workflow separately tests local tooling on Windows and Linux; it does not run gameplay.
+- **Target BYOND version**: 516.1688 from `tools/byond/version.json`; minimum compiler remains 516.1681. No `.vscode/tasks.json` is tracked at this base.
+- **CI** (`.github/workflows/test.yml`): the default Ubuntu compiler bootstrap targets the manifest version, runs `DreamMaker -max_errors 0 civ13.dme`, and requires the exact version banner plus zero errors/warnings. Exact-head hosted 516.1688 acceptance is pending. The separate evidence-checker and MCP protocol workflows do not establish gameplay or rendering.
 
 ## Code structure
 
@@ -856,8 +866,9 @@ run/attempt and selection-bound offline/compile receipts. Missing, failed,
 unexpectedly skipped or empty required execution fails. Documentation-only
 compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
 and docs/ci-selection.md; a job-level green alone does not describe what ran.
-Hosted DreamMaker 516.1681 is real compilation; Python projections, compiled
-core_boot variants and native runtime/gameplay acceptance are separate evidence.
+Hosted DreamMaker results must identify the actually executed manifest version;
+Python projections, compiled core_boot variants and native runtime/gameplay
+acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
 Cloud-only workers must keep unavailable local native checks as not_run. After
 owner review and authorized push, obtain hosted validation for the current head
 and inspect its outcomes/artifacts; never substitute local tool absence or an

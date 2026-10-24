@@ -33,6 +33,7 @@ def fixtures(paths=('README.md',)):
                 status='passed', tests=1, errors=0, failures=0, skipped=0))
     compiler = dict(schema_version=1, kind='compile', status='skipped', selected=False,
                     step_outcome='skipped', reason='Documentation only', **source,
+                    toolchain='BYOND ' + ci.toolchain.load()['version'], toolchain_error=None,
                     selection_sha256=ci.digest(plan))
     jobs = {name: {'result': 'success'} for name in ('changes', 'baseline', 'evidence-checker', 'build')}
     jobs['extraction-instances'] = {'result': 'skipped'}
@@ -265,6 +266,15 @@ class BaselinePolicyTests(unittest.TestCase):
 
 
 class AggregateTests(unittest.TestCase):
+    def test_selected_compilation_rejects_missing_or_wrong_toolchain_metadata(self):
+        for label in (None, 'BYOND 516.1681', 'BYOND 516.1689'):
+            plan, baseline, compiler, jobs = fixtures()
+            plan['compile']['selected'] = True
+            baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+            compiler.update(selected=True, status='passed', step_outcome='success', toolchain=label)
+            with self.subTest(label=label):
+                self.assertIn('Compiler receipt differs from active BYOND requirement', ci.aggregate(plan, baseline, compiler, jobs, False))
+
     def test_docs_compile_skip_is_explicit_and_accepted_after_real_baseline(self):
         self.assertEqual(ci.aggregate(*fixtures(), False), [])
 

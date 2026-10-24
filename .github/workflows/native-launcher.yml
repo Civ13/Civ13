@@ -4,6 +4,7 @@ on:
     branches: [master]
     paths:
       - tools/opendream-client/native/**
+      - tools/byond/version.json
       - tools/opendream-client/channel.json
       - .github/workflows/native-launcher.yml
       - .github/workflows/native-launcher-release.yml
@@ -16,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
         with:
@@ -40,6 +42,6 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: Civ13-Windows-launcher
+          name: Civ13-Windows-launcher-${{ github.event.pull_request.head.sha || github.sha }}
           path: tools/opendream-client/native/publish/Civ13.exe
           if-no-files-found: error
