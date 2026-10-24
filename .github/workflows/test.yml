@@ -84,6 +84,9 @@ jobs:
           persist-credentials: false
       - name: Verify noninteractive BYOND bootstrap commands offline
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
+      - name: Test synthetic static-source export core offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_to_map')
+        run: python3 -I -B -m unittest discover -s tests/save_to_map -p 'test_*.py' -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
       - name: Prepare roof-area recovery fixture offline

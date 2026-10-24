@@ -256,6 +256,16 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-24: save-to-map design boundary -->
+`tools/save_to_map` is a synthetic static-source validator/writer/reporting proof,
+not a native save converter. Its exact-type policy must not imply broad coverage.
+`docs/save-to-map-export.md` describes the broader design and remaining limits.
+Saves lack a complete area membership grid and startup landmarks can self-delete;
+require pinned source topology/spawn provenance rather than guessing from saves.
+DMM Suite comments describe writing, but this checkout includes only its reader
+and utilities. Never export changed vars wholesale or reconstruct a game to
+extract map source. The accompanying examples are synthetic, not native evidence.
+
 - Each map has a `/obj/map_metadata` subtype that handles game mode logic.
 - The metadata object is placed in the DMM at a consistent position (conventionally `(1,1,1)`) on any turf.
 - `New()` on the base `/obj/map_metadata` sets `map = src`, clears icon, copies faction lists, and starts background timers.
