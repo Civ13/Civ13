@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: persistence construction weathering -->
+Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
+gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired
+roof/floor slabs are exempt because generic wood roofs can underlie modern floors.
+Save hooks accrue unpaid debt without destruction; roofs explicitly save debt,
+and after_load rebases excluded runtime clocks/indexes. Terminal qdel waits for
+empty contents. tests/seasonal_construction is offline; prepare.py only prepares
+an uncompiled native packet. Keep native/graphical acceptance and balancing pending.
+
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`

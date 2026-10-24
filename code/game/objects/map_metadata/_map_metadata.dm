@@ -1171,7 +1171,7 @@ var/civmax_research = list(230,230,230)
 	return
 
 /obj/map_metadata/persistence_runtime_var(var/key)
-	if (key in list("durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
+	if (key in list("construction_last_season", "durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)
 
