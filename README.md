@@ -108,3 +108,8 @@ Or use the interactive selector:
 
 ## Contributor API reference
 See [source documentation generation and comment conventions](docs/api/README.md).
+
+## Designing maps
+
+See the [Civ13 mapping checklist](docs/mapping.md) for map registration, areas,
+travel, spawns, resource readiness and saved-world compatibility.
