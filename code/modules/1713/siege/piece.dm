@@ -439,7 +439,9 @@
 						chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
 						if (!chosen || chosen == "")
 							return
-						chosen.loc = src
+						if (!chosen.persistence_set_loc(src))
+							is_loading = FALSE
+							return FALSE
 						loaded += chosen
 						to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
 						is_loading = FALSE
@@ -452,8 +454,8 @@
 			var/unloadtime = caliber/8
 			if (do_after(user, unloadtime, src, can_move = TRUE))
 				if (user && (locate(user) in range(1,src)))
+					if (!M.persistence_set_loc(get_turf(user))) return FALSE
 					loaded -= M
-					M.loc = get_turf(user)
 					user.put_in_active_hand(M)
 					to_chat(user, SPAN_NOTICE("You unload \the [src]."))
 					if (istype(src, /obj/structure/cannon/modern/tank))

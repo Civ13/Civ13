@@ -40,9 +40,8 @@
 	user.do_attack_animation(target)
 
 	if (do_after(user, 50, target) && in_range(user, target))
-		user.drop_item()
+		if (!commit_planting(user)) return FALSE
 		target = target
-		loc = null
 
 		if (ismob(target))
 			add_logs(user, target, "planted [name] on")
@@ -58,6 +57,13 @@
 		to_chat(user, "Bomb has been planted. Timer counting down from [timer].")
 		spawn(timer*10)
 			explode(get_turf(target))
+
+// Planting intentionally hides an active charge in nullspace. Reject before
+// inventory changes during a save, and recheck after drop callbacks.
+/obj/item/weapon/plastique/proc/commit_planting(mob/user)
+	if (persistence_save_active()) return FALSE
+	user.drop_item()
+	return persistence_set_loc(null)
 
 /obj/item/weapon/plastique/proc/explode(var/turf/location)
 	var/original_mobs = list()

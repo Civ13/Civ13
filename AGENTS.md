@@ -61,6 +61,17 @@ with self-review allowed and administrator bypass disabled. Keep explicit manual
 environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
+<!-- 2026-10-23: save movement and physical sleep guards -->
+Cross-z movement admission reads persistence_active_operation.kind == "save";
+load reconstruction and same-z serialization hooks must remain nonblocking.
+Resolve physical turfs through containers, and allow qdel's gc_destroyed mark
+to detach atoms before gcDestroyed is assigned. Raw loc/z assignment bypasses
+Move/forceMove; explicit transport paths use persistence_set_loc/set_z.
+tests/save_movement is offline source-flow evidence, not native acceptance or
+proof that all remaining raw location writers are covered. Protected sleep's
+physical predicate includes (1,1,1) and the existing admin sleep area; stale
+return coordinates inside that area must keep protection and refuse waking.
+
 Protected sleep relocates the body between z-levels, so release only its matching
 reciprocal buckle before entry or wake. Keep return coordinates captured before
 unbuckling, reject mismatched occupants, and leave sleep protection active on a
@@ -288,11 +299,48 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 
 ### Process scheduler integration
 
+<!-- 2026-10-22: wolf cave timer ownership -->
+Wolf caves own one guarded self-processing five-second chain; /full delegates
+startup to the parent. Destroy stops the chain and ticking is excluded on custom
+save export/import. Removing world-scanning duplicate calls reduces eligible
+wanderer/flavor rolls; it is a scheduling correction with changed RNG frequency.
+tests/wolf_cave_ownership has offline contracts and prepared native controls;
+preparation does not compile/launch BYOND or establish native acceptance.
+The dedicated cave executor has an offline-only CLI; real backend invocation
+requires separate review. Native -close exits after world shutdown, not network
+isolation; socket samples cannot prove continuous absence. See its EXECUTOR.md.
+The resource-free cave fixture must declare Civ13's inherited movable anchored
+field. Three held Windows attempts stopped at the strict one-member Job guard;
+the third identified an owned conhost and logged the former missing declaration.
+They establish no cave runtime result; preserve their original frozen packets.
+Offline cave executor tests supply a canonical interpreter fixture path because
+Ubuntu python3 is a symlink; native packet path/hash/link checks stay unchanged.
+The proposed cave backend uses DETACHED_PROCESS instead of CREATE_NO_WINDOW to
+avoid startup console attachment. Its conhost hypothesis is native-unverified;
+all extra Job members still reject. See tests/wolf_cave_ownership/CONSOLE_STARTUP.md.
+
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.
 - Register the process var in `code/processes/__processes.dm`.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
+
+<!-- 2026-10-22: research snapshot resume -->
+Research consumes its retained current_list before each budget check, including
+deleted benches. tests/research_scheduler checks source-derived offline traces
+and the audited tail-loss control; native iteration/GC acceptance is still pending.
+Subclass post-loop aggregation must account for final-entry EARLY normalization.
+
+<!-- 2026-10-22: ping pass aggregation -->
+Ping retains per-pass sum/count across budget returns and publishes before the
+final-entry budget check. Every skipped client still consumes its snapshot entry.
+tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
+
+<!-- 2026-10-22: cleanables phase ownership -->
+Cleanables installs pending location work before the final count budget check.
+Its retained content snapshot and survivor are released on completion/cancellation.
+tests/cleanables_scheduler is offline source-derived evidence; native list/GC
+handoff and iteration remain separate acceptance.
 
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
@@ -398,6 +446,38 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-24: complete conditional offline projections -->
+The save_movement adapter selects the explicitly declared collector-disabled
+branch; it is not a general DM preprocessor. Proc-local column-zero #ifdef lines
+must not truncate ownership/return tails. Unknown symbols/directives and malformed
+conditional scope fail even in inactive branches. Preserve both-branch/sentinel
+and historical-defect controls. These are offline models, not collector or native
+gameplay acceptance; do not change production code to make an adapter pass.
+
+<!-- 2026-10-23: footwear water composition -->
+Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
+clothing dirtyness only supplies examine text. Water filters must group the
+footwear image with its nested stain (KEEP_TOGETHER only while masked), and
+new update_inv_shoes images need the current mask before publication. Keep
+durable stain data intact. tests/footwear_water_mask checks source contracts
+and prepares a tiny production-proc fixture; compilation/source checks do not
+establish native client clipping, stance, movement or lighting acceptance.
+The pinned native image getter returned lowercase #RRGGBB text for the tested
+blood/mud inputs. The fixture comparator first requires text of exactly seven
+characters matching #RRGGBB, then ignores hexadecimal case. Never coerce nulls,
+named colors or matrices. Keep wrong-channel/missing-stain controls and preserve
+the earlier failed raw-text comparison receipts; diagnostics are not pixels.
+
+<!-- 2026-10-23: persistence minimum date -->
+Persistence activation, configured startup and completed metadata restoration use
+apply_persistence_age_floor(). age is the displayed date/epoch; ordinal_age is a
+separate research tier, and prototype research can advance it independently.
+The 1943 floor preserves later dates and research data; unknown epoch labels are
+not converted. tests/persistence_year checks source-derived offline traces;
+run-durable-world.py --persistence-year separately exercises the real helper,
+admin toggle, extracted configured activation and 24 v1/v2 ticker disk imports
+in an isolated 8x8x2 world. Its three controls must reach their named assertions.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as
@@ -449,6 +529,22 @@ offline text contracts do not replace the pinned native compiler.
   production restarts, live season transitions/imports, or publishing captures.
 
 ## Agent self-maintenance
+
+<!-- 2026-10-24: area topology and persistence review -->
+Area references are anchor coordinates plus type, not independently recreated
+area objects. Reconstruct only proven saved roof topology before field decoding;
+retain/recheck exact base/destination identities, including empty instances, and
+scope entry IDs by z. Never fabricate unrelated areas or weaken mismatch checks.
+World-preserving preflight is separate from input-file byte immutability: absent
+native savefile fields need presence checks and copy-only tests. Honor refused
+movement before landing effects or ownership/success changes. Offline source
+adapters must reject unhandled preprocessor directives, not silently truncate
+procedures. Cross-z guards do not make a yielding save atomic. See
+`docs/zone-persistence-audit.md` for #3290, known gaps and the regression matrix.
+Future atmospheric rooms/networks need logical identities separate from area
+types/objects, versioned topology and authoritative gas/thermal stores. Rebuild
+derived caches and admit workers only after full restore/conservation checks;
+see `docs/atmosphere-persistence-readiness.md`. This plan does not activate atmos.
 
 <!-- 2026-10-15: durable invulnerable areas -->
 Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
@@ -531,6 +627,72 @@ tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 
 ## Local MCP tooling
+
+<!-- 2026-10-23: private variable observability -->
+Before asking an operator to manipulate native BYOND variables, inspect the
+implemented structured paths in `docs/variable-observability.md`. Run
+`scripts/nomads-lifecycle/agent_debug.py discover` offline first. For an already
+authorized installed runtime, `agent_debug.py recovery --root <private-root>
+--revision <installed-40-hex>` returns `data.variable_identity`; use its exact
+session/round with `variable_observability.py --root <private-root> --revision
+<installed-40-hex> --session <observed-32-hex> --round-id <observed-round>`.
+Use a verified full Python executable. Each runtime command makes one existing
+authenticated loopback status read with a 15-second/32-KiB limit and no retry.
+The schema-1 status field is `debug.variables`; reader evidence is
+`data.failure`, with active/last save/load ownership alongside it. There is no
+generic runtime variable MCP tool or arbitrary ref lookup.
+Check `data.failure_error`: stale, mismatched, partial or malformed retained
+failure evidence is withheld without hiding independently valid current/last
+operation ownership. `ok:true` is not acceptance of a rejected retained capture.
+Null scalar throw fields mean unknown and remain distinct from numeric zero;
+the reader does not invent a never-thrown default.
+
+Collection/exposure and automatic local output remain default-off until a
+separately authorized exact-build deployment/restart and local opt-in using
+`config/variable-observability.txt` containing `enabled`, existing lifecycle
+credentials/revision, and a separately provisioned operator-private runtime
+`data/desktop-supervisor/variable-observability/` directory. Do not
+activate them from source/PR approval or claim this tooling is already live.
+The automatic path is runtime-relative
+`data/desktop-supervisor/variable-observability/last-failure.json`; publication
+must fail harmlessly if that fixed directory is missing or unwritable, with no
+legacy-path fallback or automatic ACL/directory creation. Explicit old-file
+reads remain supported. The reader's `--input <file>`
+mode is offline and requires independently obtained expected revision/session/
+round. Keep raw captures private. Unknown fields are stripped, but refs/types/
+coordinates remain operational data requiring review before public sharing.
+
+For an `original_target` save rejection, inspect source type/field/entry,
+source/target physical turf z, fixed throw links, throwing flag, thrown-list
+prefix membership, destruction flags and operation ID/stage together. A
+truncated registry miss is unknown. `rejected_by_persistence_guard` describes
+the rejection, while saturated runtime skip-decision counts observe the existing
+`persistence_runtime_var` policy; neither authorizes nulling links or proves live
+cleanup. The separate persistence fix owns that policy. Preserve guard failures.
+
+Default reads expire after 60 UTC seconds and must match build, boot,
+round and, for status failures, current/last operation plus tick bounds and a
+realtime reversal check.
+UTC uses the finer `world.timeofday` input with explicit UTC formatting and a
+midnight rollover rejection. Epoch `world.realtime` is coarse metadata; only
+reversal is checked there, while UTC and ticks enforce bounded age. Never relax
+future-time rejection to hide epoch floating-point rounding.
+Re-reading retained evidence does not refresh it. Explicit `--historical` is
+allowed only with offline `--input` and
+labels evidence `historical_only`; it cannot refresh or query live identities.
+Native refs and pooled objects can be reused;
+`capture_only`/`generation: unavailable` must never be treated as
+durable or current identity, even when type/location match. Depth is eight,
+owner frames eight, registry prefixes 256, output 32 KiB; missing, partial and
+stale data are explicit unknown/error states. No eval, generic proc invocation,
+mutation, credentials, relaxed protections or listener is introduced.
+Offline synthetic reader/source checks and native-packet preparation are covered.
+The `df639b1` tiny native attempt emitted 22 successful checks but failed overall
+reader/ownership acceptance and logged a startup loopback bind; preserve that
+failed verdict. The source UTC correction is not native-verified. Topic and full
+save/load/gameplay acceptance remain unverified. Compilation CI is separate
+evidence bound to its tested head. Observation
+does not authorize save/load, restart, cleanup or other live mutation.
 
 <!-- 2026-10-17: bounded own-host agent diagnostics -->
 `docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
@@ -675,6 +837,15 @@ constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
+<!-- 2026-10-23: atlas catalog variants -->
+`scripts/atlas/variants.py` groups only identical explicit 13-field material rows
+with equal extracted semantics. Catalog identity/source IDs stay as variants;
+never group by name, canonical ingredients or outputs alone. Counts and legacy
+pages use groups; search/system filters must match the same variant and selected
+details must use its source. `tests/crafting_atlas/variants.dm` executes selected
+source, old-ID, filter and legacy page contracts through the existing bounded
+Atlas runner. Verify exact-head hosted renderer/assets results before acceptance.
+
 `scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
 separate from catalog field 12's maximum allowed era. Parse research constructors
 with balanced arguments; the enclosing registration call adds another closing
@@ -685,6 +856,31 @@ navigation and omission controls require the normal isolated runner or CI.
 <!-- 2026-10-11: bounded animal harvesting -->
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
 - `tests/animal_harvest/run.py --byond-bin <516.1681-bin>` executes production yields, cancellation/concurrency, binding conservation and object save/load in temporary offline storage. `preview.py` renders existing DMI states for PR sprite review; it is not a gameplay capture or full-server memory test.
+
+<!-- 2026-10-23: leather tanning accounting -->
+Leather processing in `stacks/sheets/leather.dm` uses one eventual leather sheet
+per stack unit, with distinct raw/prepared/wet/dry material identities. Never add
+unpropagated per-object yield fields: splitting and merging must conserve yield.
+Tanning uses explicit paid vessel interactions, since reagent touch callbacks can
+see the whole holder volume. The rack preserves actual contents and excludes its
+runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.py`
+is offline evidence; `tanning_probe.dm` requires separate native acceptance.
+
+Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
+not stage stacks through a turf. Legacy human `drop_from_inventory` overrides
+discard the parent's return: a null result can follow a successful floor drop.
+Use the production human subtype in transfer tests, not just a `/mob/living` stub.
+Production `stack/Crossed` merges floor pieces
+into the arriving stack; clear hand/HUD ownership only after destination admission,
+check actual location, and restore the hand on rejection/redirect. Keep nodrop and
+persistence movement checks. [Rack transfer regressions](tests/animal_harvest/rack_transfer_probe.dm) cover
+human inventory, floor-merge controls, bags, and explicit movement-failure adapters;
+those adapters do not establish the exact trigger of an unobserved live failure.
+Raw, prepared, wet and dry hides are `processing_only` materials: softness is not
+a crafting permission. Clear cached recipes before that guard and mirror it in
+Atlas export. [Hide recipe regressions](tests/animal_harvest/hide_recipe_probe.dm) use the actual global catalog plus explicit
+research admission; it rejects intermediate utensils while retaining leather/pelt
+recipes. [Atlas contracts](tests/test_tanning_atlas.py) check the exported processing-only boundary.
 
 <!-- 2026-10-11: finite fracking verification -->
 - `tests/hydraulic_fracturing/probe.dm` checks finite terrain conversion, batch
@@ -1082,6 +1278,14 @@ Lighting startup must reconcile existing inactive shared corners after adding ov
 Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
 
 <!-- 2026-10-12: animal health and combat dispatch -->
+<!-- 2026-10-23: domestic defensive retaliation -->
+Adult domestic sheep/goats/pigs/cattle, horses and camels explicitly opt into
+zero-damage immediate retaliation. `Weaken(2)` counts Life updates, not ds;
+ten-second runtime deadlines on both participants prevent herd stun chains.
+Keep juvenile and larger-attacker escape gates, husbandry dispatch and custom
+save exclusions. tests/animal_combat has offline source checks and a prepared
+native fixture; native/client acceptance remains separate.
+
 Simple-animal starting health and maxHealth must match unless an explicit policy
 is documented: Life clamps health and updatehealth recomputes it from maxHealth.
 Do not call parent attackby after an explicit item attack; that repeats damage,

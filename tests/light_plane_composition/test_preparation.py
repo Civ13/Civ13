@@ -2,6 +2,9 @@ import hashlib
 import json
 import importlib.util
 from pathlib import Path
+import re
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -11,6 +14,25 @@ spec.loader.exec_module(runner)
 
 
 class Preparation(unittest.TestCase):
+    def test_legacy_graph_control_prepares_against_complete_current_guard(self):
+        loader = ROOT / "code/modules/persistence/loading.dm"
+        before = loader.read_bytes()
+        prepared = subprocess.run([
+            sys.executable, "-B", "tests/world_save/run-durable-world.py",
+            "--lighting", "--negative-control", "lighting-legacy", "--prepare-only",
+        ], cwd=ROOT, capture_output=True, text=True, timeout=45)
+        self.assertEqual(prepared.returncode, 0, prepared.stdout + prepared.stderr)
+        output = Path(re.search(r"Retained evidence: (.+)", prepared.stdout).group(1).strip())
+        guard = "if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay) || ispath(type, /atom/movable/lighting_fullbright))"
+        self.assertEqual(before.decode().count(guard), 1)
+        expected = before.decode().replace("\r\n", "\n").replace(guard, "if(FALSE)", 1)
+        matches = [path for path in output.glob("*.dm") if path.read_text(encoding="utf-8") == expected]
+        self.assertEqual(len(matches), 1)
+        self.assertIn('#include "' + matches[0].name + '"', (output / "probe.dme").read_text(encoding="utf-8"))
+        self.assertEqual(loader.read_bytes(), before)
+        self.assertFalse(list(output.glob("*.dmb")))
+        self.assertFalse(list(output.glob("*.rsc")))
+
     def test_exact_source_and_controls(self):
         expected = (ROOT / runner.PLANE).read_text()
         self.assertEqual(runner.prepare()["production.dm"], expected)

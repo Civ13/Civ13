@@ -93,17 +93,15 @@ var/list/sky_drop_map = list()
 				for (AA in area_list)
 					if (istype(AA, A.landing_area))
 						var/turf/newloc = pick((AA.get_turfs()))
-						mover.x = newloc.x
-						mover.y = newloc.y
-						mover.z = newloc.z
+						if (!mover.persistence_set_loc(newloc))
+							return
 						sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 						break
 			else
 				var/area/AA = A.landing_area
 				var/turf/newloc = pick((AA.get_turfs()))
-				mover.x = newloc.x
-				mover.y = newloc.y
-				mover.z = newloc.z
+				if (!mover.persistence_set_loc(newloc))
+					return
 				sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 
 		if (isliving(mover))
@@ -201,7 +199,8 @@ var/list/sky_drop_map = list()
 			if(push_dir)
 				A.forceMove(get_step(src,push_dir))
 				return
-			A.z -= 1
+			if (!A.persistence_set_z(A.z - 1))
+				return
 			A.visible_message("[A] falls from the level above and slams into the floor!", "You land on the floor.", "You hear a soft whoosh and a crunch.")
 			if (istype(A, /mob/living/human))
 				playsound(A.loc, 'sound/effects/gore/fallsmash.ogg', 50, TRUE)
@@ -223,7 +222,8 @@ var/list/sky_drop_map = list()
 				if(push_dir)
 					A.forceMove(get_step(src,push_dir))
 					return
-				A.z -= 1
+				if (!A.persistence_set_z(A.z - 1))
+					return
 				A.visible_message("\The [A] falls from the level above and slams into the floor!", "You hear something slam into the deck.")
 
 /turf/floor/broken_floor/attackby(mob/user)

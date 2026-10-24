@@ -86,9 +86,33 @@ jobs:
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
+      - name: Prepare roof-area recovery fixture offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')
         run: python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+      - name: Test wolf cave ownership source contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/wolf_cave_ownership')
+        run: python3 -B -m unittest discover -s tests/wolf_cave_ownership -p 'test_*.py' -v
+      - name: Test footwear water mask composition and refresh contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/footwear_water_mask')
+        run: python3 -B -m unittest discover -s tests/footwear_water_mask -v
+      - name: Test research scheduler resume source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/research_scheduler')
+        run: python3 -B -m unittest discover -s tests/research_scheduler -v
+      - name: Test cleanables scheduler resume source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cleanables_scheduler')
+        run: python3 -B -m unittest discover -s tests/cleanables_scheduler -v
+      - name: Test persistence minimum date offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_year')
+        run: python3 -B -m unittest discover -s tests/persistence_year -v
+      - name: Test ping scheduler resume source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')
+        run: python3 -B -m unittest discover -s tests/ping_scheduler -v
+      - name: Test local discovery source parity offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/local_discovery')
+        run: python3 -B -m unittest discover -s tests/local_discovery -v
       - name: Test optional roof upper-floor source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
@@ -98,6 +122,9 @@ jobs:
           python3 -B tests/world_save/test_sleep_transfer_sources.py -v
           python3 -B tests/world_save/test_cross_level_sources.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
+      - name: Test save movement and physical sleep guards offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_movement')
+        run: python3 -B -m unittest discover -s tests/save_movement -v
       - name: Test floor decal tracking source and offline native evidence contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/floor_decal_tracking')
         run: python3 -B -m unittest discover -s tests/floor_decal_tracking -p 'test_*.py' -v
@@ -139,6 +166,12 @@ jobs:
         run: |
           python3 -m unittest discover -s tests -p test_atlas_navigation.py -v
           node tests/crafting_atlas/navigation.test.mjs
+      - name: Test atlas variant equivalence and selector navigation offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_atlas_variants.py')
+        run: |
+          python3 scripts/build-crafting-atlas.py --catalog-only --check-game-catalog UI/crafting-atlas.json
+          python3 -m unittest discover -s tests -p test_atlas_variants.py -v
+          node tests/crafting_atlas/variants.test.mjs
       - name: Test and inventory placed outdoor bootstrap resources
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_outdoor_bootstrap.py')
         run: |
@@ -226,6 +259,72 @@ jobs:
         run: sudo bash ./scripts/travis_pre_byond.sh
         shell: bash
 
+      - name: Verify synthetic saved-roof recovery and two defect controls
+        id: roof_native
+        if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        timeout-minutes: 40
+        shell: bash
+        env:
+          ROOF_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$ROOF_HEAD"
+          test ! -e "$RUNNER_TEMP/roof-area-review"
+          mkdir "$RUNNER_TEMP/roof-area-review"
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          for variant in main projection cleanup-namespace; do
+            packet="$RUNNER_TEMP/roof-area-review/$variant-packet"
+            output="$RUNNER_TEMP/roof-area-review/$variant-output"
+            /usr/bin/python3 -I -B tests/roof_area_recovery/run_linux.py \
+              --prepare-only --packet-dir "$packet" --expected-head "$ROOF_HEAD" \
+              --variant "$variant" > "$RUNNER_TEMP/roof-area-review/$variant-preparation.json"
+            request_sha="$(sha256sum "$packet/request.json" | cut -d ' ' -f 1)"
+            printf '%s  %s\n' "$request_sha" "$variant-packet/request.json" \
+              >> "$RUNNER_TEMP/roof-area-review/request-hashes.txt"
+            /usr/bin/python3 -I -B tests/roof_area_recovery/run_linux.py \
+              --packet-dir "$packet" --expected-head "$ROOF_HEAD" \
+              --request-sha256 "$request_sha" --output "$output" \
+              --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          done
+      - name: Retain synthetic roof requests, claims, sources and native outcomes
+        if: always() && steps.roof_native.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: roof-recovery-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/roof-area-review
+            ${{ runner.temp }}/roof-area-request-claims
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Verify native persistence date and disk restoration
+        id: persistence_year
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_year')
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/persistence-year"
+          export TMPDIR="$RUNNER_TEMP/persistence-year"
+          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --persistence-year
+          for control in year-helper year-load year-order; do
+            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --persistence-year --negative-control "$control"
+          done
+      - name: Retain native persistence date evidence
+        if: always() && steps.persistence_year.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: persistence-year-${{ github.event.pull_request.head.sha || github.sha }}
+          include-hidden-files: true
+          path: |
+            ${{ runner.temp }}/persistence-year/**/*.json
+            ${{ runner.temp }}/persistence-year/**/*.log
+            ${{ runner.temp }}/persistence-year/**/*.dm
+            ${{ runner.temp }}/persistence-year/**/*.dme
+            ${{ runner.temp }}/persistence-year/**/tested.patch
+          retention-days: 7
+          if-no-files-found: error
       - name: Run native HUD appearance and preservation fixture
         id: hud_visual
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/hud_visual')
@@ -586,6 +685,34 @@ jobs:
           python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control bypass
           python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ordinary
 
+      - name: Verify private collector native publication
+        id: collector_native
+        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
+        timeout-minutes: 3
+        shell: bash
+        env:
+          COLLECTOR_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          set +u
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          set -u
+          /usr/bin/python3 -I -B tests/nomads_lifecycle/run_variable_probe_linux.py --byond-bin "$PWD/BYOND/byond/bin" --expected-head "$COLLECTOR_HEAD" --output "$RUNNER_TEMP/private-collector"
+      - name: Retain private collector fixture evidence
+        if: always() && steps.collector_native.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: private-collector-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/private-collector/source-manifest.json
+            ${{ runner.temp }}/private-collector/result.json
+            ${{ runner.temp }}/private-collector/failure.json
+            ${{ runner.temp }}/private-collector/*.log
+            ${{ runner.temp }}/private-collector/prepared/writable/native-*.log
+            ${{ runner.temp }}/private-collector/prepared/**/data/**/*.json
+          retention-days: 7
+          if-no-files-found: error
       - name: Verify bounded lighting startup ordering
         id: lighting_startup
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/lighting_startup')
@@ -1482,6 +1609,27 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify admin item cleaning and rejection controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_clean')
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/admin_clean/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/admin-clean/positive"
+          for control in rights target refresh; do
+            python3 tests/admin_clean/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/admin-clean/$control" --control "$control"
+          done
+      - name: Retain admin item cleaning evidence
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_clean'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: admin-clean-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/admin-clean/
+            !${{ runner.temp }}/admin-clean/**/*.dmb
+            !${{ runner.temp }}/admin-clean/**/*.rsc
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify archived admin history and loss alias and batch controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/admin_history')
         shell: bash

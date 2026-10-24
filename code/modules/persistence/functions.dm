@@ -5,6 +5,28 @@
 ///PERSISTENCE STUFF/////////////
 /////////////////////////////////
 
+// age is the displayed epoch/date, not ordinal_age's technology tier. Only
+// recognized BC epochs and canonical numeric years can be ordered here.
+/obj/map_metadata/proc/apply_persistence_age_floor()
+	if (!persistence)
+		return
+	if (age != "5000 B.C." && age != "313 B.C.")
+		if (!istext(age))
+			return
+		var/year = text2num(age)
+		if (isnull(year) || "[year]" != age || year >= 1943)
+			return
+	age = "1943"
+	// Keep any independently advanced research tier. Mark the skipped epochs
+	// complete so legacy research cannot send the displayed date backward.
+	ordinal_age = max(ordinal_age, 6)
+	age1_done = TRUE
+	age2_done = TRUE
+	age3_done = TRUE
+	age4_done = TRUE
+	age5_done = TRUE
+	age6_done = TRUE
+
 //needs to be defined for some atoms
 /datum/proc/after_load()
 	return
@@ -12,6 +34,9 @@
 	return
 
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
+// Omit only known process-local state, on export and historical import, without
+// mutating the live value. Unknown object links still require integrity validation;
+// never drop a relationship merely because it points to another z-level.
 /datum/proc/persistence_runtime_var(key)
 	// Weak handles cache native references from this process, never durable IDs.
 	return key == "persistence_export_frame" || key == "weak_reference"
@@ -29,6 +54,9 @@
 	else
 		for (var/key in src.vars)
 			if (persistence_runtime_var(key))
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+				variable_observability_skipped(src.vars[key])
+#endif
 				continue
 			if (src.vars[key] != initial(src.vars[key]) && key != "verbs" && key != "locs" && key != "group")
 				to_save |= key
@@ -42,6 +70,12 @@
 		if ("appearance", "light", "light_sources")
 			return TRUE
 	return ..()
+
+// A throw's target belongs to the live throwing processor, not the saved world.
+// Apply on import too so historical references cannot recreate a foreign owner.
+// The target atom (including a roofbuilder) remains independently saveable.
+/atom/movable/persistence_runtime_var(key)
+	return key == "original_target" || ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.
@@ -74,7 +108,7 @@
 // Ignoring historical values during import leaves new mobs at their defaults,
 // without resetting cooldowns or active actions on an existing live mob.
 /mob/persistence_runtime_var(key)
-	if (key == "pickaxe_mining_action")
+	if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")
 		return TRUE
 	switch(key)
 		if ("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")
@@ -181,7 +215,11 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
+	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key == "last_save_reference_failure") return TRUE
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
+#endif
 	return ..()
 
 // Native lookup references are process-local hints, not durable IDs. Operators
@@ -193,7 +231,15 @@ map_storage
 		snapshot["native_x"] = A.x
 		snapshot["native_y"] = A.y
 		snapshot["native_z"] = A.z
-		var/turf/T = get_turf(A)
+		// A malformed containment cycle must not hang failure reporting.
+		var/turf/T
+		var/atom/location = A
+		for(var/i = 1 to 8)
+			if(!location) break
+			if(isturf(location))
+				T = location
+				break
+			location = location.loc
 		if(T)
 			snapshot["turf_x"] = T.x
 			snapshot["turf_y"] = T.y
@@ -212,6 +258,13 @@ map_storage
 		frame_snapshot["entry"] = valid_frame ? frame.entry : 0
 		chain += list(frame_snapshot)
 	last_save_reference_failure = list("schema_version" = 1, "kind" = kind, "captured_at" = time2text(world.realtime, "YYYY-MM-DD hh:mm:ss"), "captured_realtime" = world.realtime, "captured_world_time" = world.time, "saved_z" = saving_z, "current_entry" = current_entry, "first_z" = first_z, "first_entry" = first_entry, "source" = chain.len ? chain[chain.len] : reference_failure_snapshot(null), "target" = reference_failure_snapshot(target), "owner_chain" = chain, "owner_chain_truncated" = saving_export_stack.len > 8)
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	// Diagnostics cannot replace the serializer's original rejection.
+	try
+		variable_observability_capture(target)
+	catch
+		last_variable_failure = list("schema" = 1, "partial" = TRUE, "error" = "capture_failed")
+#endif
 
 // Drops the save/load bookkeeping references so qdel'd atoms can be garbage
 // collected - these lists otherwise pin every atom they touched until the next
@@ -293,6 +346,14 @@ var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
 
+/proc/persistence_save_active()
+	return persistence_active_operation && persistence_active_operation.kind == "save"
+
+// Sleep transfers are forbidden even on the same z during owned preparation,
+// serialization and cleanup. Retain the legacy load/recovery admission hold.
+/proc/persistence_sleep_transfer_blocked()
+	return persistence_save_in_progress || persistence_save_active()
+
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
@@ -306,8 +367,15 @@ var/global/persistence_load_recovery_required = FALSE
 	var/datum/persistence_world_operation/operation = new
 	operation.storage = storage
 	operation.kind = kind
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	operation.observability_id = "operation-[++variable_observability_operation_sequence]"
+	operation.observability_started = world.time
+	operation.observability_collecting = variable_observability_enabled()
+#endif
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
+	if(kind == "save")
+		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
 	return operation
 
 /datum/persistence_world_operation
@@ -331,6 +399,13 @@ var/global/persistence_load_recovery_required = FALSE
 		return TRUE
 	proc/finish(success)
 		if(persistence_active_operation != src) return FALSE
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+		try
+			storage.variable_observability_finish(src, success)
+		catch
+			// Observability must never strand operation ownership.
+			storage.last_variable_operation = null
+#endif
 		if(!success && kind == "load" && mutation_started)
 			persistence_load_recovery_required = TRUE
 		persistence_active_operation = null
@@ -345,6 +420,9 @@ var/global/persistence_load_recovery_required = FALSE
 	if(!operation || !operation.enter_backend(src, kind)) return FALSE
 	// A busy/rejected request must not erase the active save's failure context.
 	if(kind == "save") last_save_reference_failure = null
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+	if(kind == "save") last_variable_failure = null
+#endif
 	var/success = FALSE
 	try
 		if(kind == "save") success = save_world_contents(operation)
@@ -362,6 +440,7 @@ var/global/persistence_load_recovery_required = FALSE
 // Cleanup can dispatch subtype code. Keep admission until every attempted
 // cleanup finishes, and contain cleanup exceptions so release still occurs.
 /map_storage/proc/cleanup_world_operation()
+	clear_saved_roof_areas()
 	try
 		clear_bookkeeping()
 	catch(var/exception/e)
@@ -391,12 +470,16 @@ var/global/persistence_load_recovery_required = FALSE
 
 /map_storage/proc/save_validation_area_type(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	var/list/roof = validated_roof_areas["[x],[y],[z]"]
+	if(roof && roof["area"]) return roof["area"]
 	if(z > world.maxz) return world.area
 	var/turf/T = locate(x, y, z)
 	return T ? T.loc.type : null
 
 /map_storage/proc/save_validation_area_key(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	var/area_type = save_validation_area_type(x, y, z)
+	if(validated_roof_types["[area_type]"]) return "roof:[area_type]"
 	if(z <= world.maxz)
 		var/turf/T = locate(x, y, z)
 		return T ? "\ref[T.loc]" : null
@@ -408,7 +491,6 @@ var/global/persistence_load_recovery_required = FALSE
 	if(!operation) return FALSE
 	try
 		var/watch = start_watch()
-		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP! THIS USUALLY TAKES UNDER A MINUTE</B></FONT>")
 		sleep(5)
 		if(!map_storage.run_world_operation("save", operation))
 			throw EXCEPTION("Save_World did not complete")
@@ -446,6 +528,9 @@ var/global/persistence_load_recovery_required = FALSE
 		if(!map_storage.load_map_metadata())
 			throw EXCEPTION("Saved world metadata restoration failed")
 		map_storage.restore_durable_world()
+		// Both legacy metadata and durable fields are now authoritative. Apply
+		// the mode's minimum without replacing a later saved date or research.
+		map.apply_persistence_age_floor()
 		map_storage.restore_round_state(src, saved_round)
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 		// Client restoration can dispatch callbacks too. Keep this operation's

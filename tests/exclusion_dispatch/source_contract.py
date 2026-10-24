@@ -57,7 +57,8 @@ def project_area_change_owner(baseline):
 
 
 def transform(baseline):
-    expected = project_area_change_owner(project_fullbright_exclusions(project_reserved_policy(baseline)))
+    # Current master already owns reserved policy. Project only this PR's delta.
+    expected = project_area_change_owner(project_fullbright_exclusions(baseline))
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -71,4 +72,4 @@ def transform(baseline):
 
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
-        raise ValueError('Only approved dispatch, reserved-policy, fullbright-exclusion and area-owner projections may differ')
+        raise ValueError('Only approved dispatch, fullbright-exclusion and area-owner projections may differ from pinned master')

@@ -17,6 +17,7 @@ serverdata.txt
 config/host.txt
 config/lifecycle-token.txt
 config/lifecycle-revision.txt
+config/variable-observability.txt
 recipes.txt
 .vscode/
 cfg/admin.txt

@@ -1,3 +1,33 @@
+// Save admission owns this restriction, including preparation and cleanup.
+// Imports must be free to reconstruct locations. Same-z save hooks (for
+// example paid rack transfers) remain valid; never wait inside the serializer.
+/proc/persistence_live_contents(atom/movable/container)
+	for (var/atom/movable/child in container)
+		if (!child.gcDestroyed && !child.gc_destroyed)
+			return TRUE
+		if (persistence_live_contents(child))
+			return TRUE
+	return FALSE
+
+/proc/persistence_movement_allowed(atom/movable/mover, atom/destination)
+	if (!persistence_save_active())
+		return TRUE
+	if (!mover)
+		return FALSE
+	var/turf/origin = get_turf(mover)
+	var/turf/target = get_turf(destination)
+	// Retirement is a deletion exception, never permission to re-enter a level.
+	if (target && (mover.gcDestroyed || mover.gc_destroyed))
+		return FALSE
+	if (!origin)
+		// Permit empty new atoms, not a nullspace carrier of existing live atoms.
+		return !persistence_live_contents(mover)
+	if (!target)
+		// Retirement must still detach deleted atoms. Ordinary nullspace hops
+		// cannot be used to evade the cross-z restriction in a second move.
+		return !destination && (mover.gcDestroyed || mover.gc_destroyed) && !persistence_live_contents(mover)
+	return origin.z == target.z
+
 /atom/movable
 	layer = 3
 	plane = GAME_PLANE
@@ -114,6 +144,8 @@
 	return
 
 /atom/movable/proc/forceMove(atom/destination, var/special_event)
+	if (!persistence_movement_allowed(src, destination))
+		return FALSE
 	if (loc == destination)
 		return FALSE
 
@@ -144,6 +176,23 @@
 			if (is_new_area && is_destination_turf)
 				destination.loc.Entered(src, origin)
 	return TRUE
+
+// Preserve raw loc-assignment semantics at legacy teleport sites: adding
+// forceMove callbacks there changes collision/Entered behavior and can recurse.
+/atom/movable/proc/persistence_set_loc(atom/destination)
+	if (!persistence_movement_allowed(src, destination))
+		return FALSE
+	loc = destination
+	return TRUE
+
+/atom/movable/proc/persistence_set_z(target_z)
+	var/turf/T = get_turf(src)
+	if (!T)
+		return FALSE
+	var/turf/destination = locate(T.x, T.y, target_z)
+	if (!destination)
+		return FALSE
+	return persistence_set_loc(destination)
 
 /atom/movable/proc/forceMove_nondenseturf(atom/destination, var/special_event)
 	if (isturf(destination))
@@ -258,6 +307,8 @@
 /atom/movable/proc/finished_throwing()
 	thrown_list -= src
 	var/turf/new_loc = get_turf(src)
+	// Clear the completed target before impact/Entered can start a newer throw.
+	original_target = null
 	if (isobj(src)) throw_impact(new_loc,speed)
 	if (src && new_loc)
 		new_loc.Entered(src)

@@ -137,7 +137,7 @@
 		else if (status_flags & FAKEDEATH)
 			stat = UNCONSCIOUS
 		else
-			stat = CONSCIOUS
+			set_stat(CONSCIOUS)
 		return TRUE
 
 //this updates all special effects: stunned, sleeping, weakened, druggy, stuttering, etc..

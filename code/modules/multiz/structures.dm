@@ -112,6 +112,9 @@
 	)
 
 	if (do_after(M, 10, src))
+		var/turf/destination = locate(src.x, src.y, M.z + (istop ? -1 : 1))
+		if (!destination || !persistence_movement_allowed(M, destination) || (M.pulling && !persistence_movement_allowed(M.pulling, destination)))
+			return
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
 			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",
@@ -121,10 +124,10 @@
 		// pulling/grabbing people with you
 		if (istop)
 			if (M.pulling != null)
-				M.pulling.z = M.pulling.z-1
+				M.pulling.persistence_set_z(M.pulling.z-1)
 				M.pulling.x = src.x
 				M.pulling.y = src.y
-			M.z = M.z-1
+			M.persistence_set_z(M.z-1)
 			M.x = src.x
 			M.y = src.y
 			for (var/obj/item/I in M)
@@ -132,10 +135,10 @@
 			return
 		else
 			if (M.pulling != null)
-				M.pulling.z = M.pulling.z+1
+				M.pulling.persistence_set_z(M.pulling.z+1)
 				M.pulling.x = src.x
 				M.pulling.y = src.y
-			M.z = M.z+1
+			M.persistence_set_z(M.z+1)
 			M.x = src.x
 			M.y = src.y
 			for (var/obj/item/I in M)
@@ -202,11 +205,13 @@
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
 			var/obj/item/I = AM
 			if (I.w_class <= ITEM_SIZE_SMALL) // fixes maxim bug and probably some others - Kachnov
-				I.z = I.z-1
+				if (!I.persistence_set_z(I.z-1))
+					return
 				visible_message("\The [I] falls down the ladder.")
 		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
 			visible_message("\The [AM] falls down the ladder.")
-			AM.z = AM.z-1
+			if (!AM.persistence_set_z(AM.z-1))
+				return
 
 /obj/structure/multiz/ladder/ww2/find_target()
 	for (var/obj/structure/multiz/ladder/ww2/ladder in ladder_list)
@@ -365,11 +370,12 @@
 		if (!AM.pulledby && isitem(AM) && !istype(AM, /obj/item/projectile))
 			var/obj/item/I = AM
 			if (I.w_class <= 2.0) // fixes maxim bug and probably some others - Kachnov
-				I.loc = target.loc
+				if (!I.persistence_set_loc(target.loc))
+					return
 				visible_message("\The [I] falls down the ladder.")
 		else if (!AM.pulledby && istype(AM, /obj/structure/closet))
 			visible_message("\The [AM] falls down the ladder.")
-			AM.loc = target.loc
+			AM.persistence_set_loc(target.loc)
 /obj/structure/multiz/ladder/ww2/teleporter/attack_hand(var/mob/M)
 
 	if (M.restrained())
@@ -388,11 +394,13 @@
 	)
 
 	if (do_after(M, 10, src))
+		if (!target || !target.loc || !persistence_movement_allowed(M, target.loc) || (M.pulling && !persistence_movement_allowed(M.pulling, target.loc)))
+			return
 		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
 		// pulling/grabbing people with you
 		if (M.pulling != null)
-			M.pulling.loc = target.loc
-		M.loc = target.loc
+			M.pulling.persistence_set_loc(target.loc)
+		M.persistence_set_loc(target.loc)
 		M.visible_message(
 			"<span class='notice'>\A [M] climbs [istop ? "down" : "up"] \a [src].</span>",
 			"<span class='notice'>You climb [istop ? "down" : "up"] \the [src].</span>",

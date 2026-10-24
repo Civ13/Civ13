@@ -13,13 +13,15 @@ import resources
 from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY, project_fullbright_exclusions, project_area_change_owner
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
+BASE = 'd6b06c638517bb4100beeca6a90d09adc3629fb7'
+HISTORICAL_BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
             'blackout_click_started', 'blackout_click_expires',
             'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
-            'lighting_reserved', 'lighting_reserved_clearance_enabled', 'area_change_owner')
+            'lighting_reserved', 'lighting_reserved_clearance_enabled', 'area_change_owner',
+            'original_target', 'next_animal_retaliation')
 
 
 class SourceContractTests(unittest.TestCase):
@@ -28,11 +30,13 @@ class SourceContractTests(unittest.TestCase):
         cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
+        cls.historical_baseline = reconstruct_list_baseline(subprocess.check_output(
+            ['git', 'show', HISTORICAL_BASE + ':' + PATH], cwd=ROOT, text=True))
         cls.candidate = (ROOT / PATH).read_text()
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
-        for kind, count in [('atom', 3), ('turf', 10), ('mob', 22)]:
+        for kind, count in [('atom', 3), ('turf', 10), ('mob', 23)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
         self.assertIn('key == "weak_reference"', self.candidate)
@@ -41,10 +45,15 @@ class SourceContractTests(unittest.TestCase):
     def test_reconstructed_hooks_match_reviewed_historical_hooks(self):
         historical = subprocess.check_output(['git', 'show',
             '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019:' + PATH], cwd=ROOT, text=True)
+        current_expected = project_reserved_policy(self.historical_baseline).replace(
+            'if (key == "pickaxe_mining_action")',
+            'if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")', 1)
         for kind in ('atom', 'turf', 'mob'):
             pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
-            self.assertEqual(re.search(pattern, self.baseline, re.M).group(),
+            self.assertEqual(re.search(pattern, self.historical_baseline, re.M).group(),
                              re.search(pattern, historical, re.M).group())
+            self.assertEqual(re.search(pattern, self.baseline, re.M).group(),
+                             re.search(pattern, current_expected, re.M).group())
         for kind in ('atom', 'turf', 'mob'):
             with self.assertRaises(ValueError):
                 reconstruct_list_baseline(self.master.replace(
@@ -84,11 +93,13 @@ class SourceContractTests(unittest.TestCase):
                 validate(self.baseline, mutated)
 
     def test_reserved_projection_is_explicit_and_fails_closed(self):
-        projected = project_reserved_policy(self.baseline)
+        projected = project_reserved_policy(self.historical_baseline)
         self.assertIn('list("lighting_reserved", "affecting_lights"', projected)
         self.assertIn(AREA_POLICY, projected)
         with self.assertRaises(ValueError):
             project_reserved_policy(projected)
+        with self.assertRaises(ValueError):
+            project_reserved_policy(self.baseline)
         with self.assertRaises(ValueError):
             validate(self.baseline, self.candidate.replace(AREA_POLICY, ''))
 
@@ -146,11 +157,21 @@ class SourceContractTests(unittest.TestCase):
                 self.assertIn(f'"{key}"', probe)
                 for variant in ('baseline', 'candidate'):
                     kind = ('datum/proc' if key == 'weak_reference' else
+                            'atom/movable' if key == 'original_target' else
                             'area' if key == 'lighting_reserved_clearance_enabled' else
                             'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved', 'area_change_owner') else 'mob')
-                    body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
-                    self.assertIn(f'"{key}"', body)
+                    # Multiple native same-type overrides retain the functions
+                    # guard followed by the production process hook.
+                    bodies = re.findall(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M)
+                    self.assertTrue(any(f'"{key}"' in body for body in bodies))
             self.assertIn('source_contract.py', receipt['inputs'])
+            for variant in ('baseline', 'candidate'):
+                selected = production.split(f'/datum/proc/{variant}_saved()', 1)[1].split('/turf/floor/dirt/', 1)[0]
+                self.assertIn('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t\tvariable_observability_skipped(src.vars[key])\n#endif\n\t\t\t\tcontinue', selected)
+                self.assertIn('\n\treturn to_save\n', selected)
+                self.assertLess(production.index(f'/atom/movable/{variant}_runtime(key)\n\treturn key == "original_target"'),
+                                production.index(f'/atom/movable/{variant}_runtime(key)\n\tif (key == "corpse_decay_record")'))
+            self.assertNotIn('#define CIV13_VARIABLE_OBSERVABILITY', (generated / 'probe.dme').read_text())
 
     def test_native_probe_uses_postclose_state_and_constructible_atom(self):
         probe = (ROOT / 'tests/exclusion_dispatch/probe.dm').read_text()
@@ -162,7 +183,7 @@ class SourceContractTests(unittest.TestCase):
 
     def test_early_mining_exclusions_are_preserved_before_switch(self):
         for kind, guard in (('turf', 'if (key == "pickaxe_mining_owner" || key == "mining_in_progress")'),
-                            ('mob', 'if (key == "pickaxe_mining_action")')):
+                            ('mob', 'if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")')):
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertLess(body.index(guard), body.index('switch(key)'))
             with self.assertRaises(ValueError):

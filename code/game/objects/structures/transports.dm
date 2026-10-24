@@ -166,8 +166,8 @@
 		if (O != src && ontop_o.len < storagecapacity && !(O.anchored) && !(O in ontop_o))
 			user.visible_message(SPAN_NOTICE("[user] starts putting \the [O] on \the [src]..."), SPAN_NOTICE("You start putting \the [O] on \the [src]..."))
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
+				if (!O.persistence_set_loc(get_turf(src))) return FALSE
 				user.visible_message(SPAN_NOTICE("[user] sucessfully puts \the [O] on \the [src]."), SPAN_NOTICE("You sucessfully put \the [O] on \the [src]."))
-				O.loc = get_turf(src)
 				O.pixel_x = pixel_x + 16
 				O.pixel_y = pixel_y + 16
 				ontop_o += O
@@ -212,6 +212,7 @@
 	else if (ontop_o.len > 0)
 		for (var/obj/O in ontop_o)
 			if (do_after(user, 15, src))
+				if (!O.persistence_set_loc(get_turf(user))) return FALSE
 				O.anchored = FALSE
 				if (initial(O.density))
 					O.density = TRUE
@@ -219,7 +220,6 @@
 				O.pixel_x = 0
 				O.pixel_y = 0
 				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
-				O.loc = get_turf(user)
 		return
 
 /obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
@@ -602,8 +602,8 @@
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
 			user.visible_message(SPAN_NOTICE("[user] starts putting \the [O] on \the [src]..."), SPAN_NOTICE("You start putting \the [O] on \the [src]..."))
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
+				if (!O.persistence_set_loc(get_turf(src))) return FALSE
 				user.visible_message(SPAN_NOTICE("[user] sucessfully puts \the [O] on \the [src]."), SPAN_NOTICE("You sucessfully put \the [O] on \the [src]."))
-				O.loc = get_turf(src)
 				O.pixel_x = pixel_x + 16
 				O.pixel_y = pixel_y + 16
 				ontop_o += O
@@ -657,6 +657,7 @@
 	else if (ontop_o.len > 0)
 		for (var/obj/O in ontop_o)
 			if (do_after(user, 15, src))
+				if (!O.persistence_set_loc(get_turf(user))) return FALSE
 				O.anchored = FALSE
 				if (initial(O.density))
 					O.density = TRUE
@@ -666,7 +667,6 @@
 				O.pixel_y = 0
 				O.dir = dir
 				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
-				O.loc = get_turf(user)
 		return
 
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)

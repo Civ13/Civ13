@@ -6,20 +6,33 @@ from pathlib import Path
 import subprocess
 import shutil
 import tempfile
+import sys
+from contextlib import nullcontext
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT/'scripts'))
+from native_fixture import Session, no_port_args, read_bounded, run_native
 
 
-def main():
+def main(argv=None, session=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--negative-control', action='store_true')
     parser.add_argument('--full-catalog', action='store_true')
     parser.add_argument('--compile-only', action='store_true')
     parser.add_argument('--navigation-negative-control', choices=('default', 'era', 'processor', 'output'))
-    args = parser.parse_args()
-    flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-    with tempfile.TemporaryDirectory(prefix='atlas-renderer-') as folder:
+    parser.add_argument('--evidence-dir', type=Path)
+    args = parser.parse_args(argv)
+    storage = ROOT/'data/atlas-renderer-tests'
+    storage.mkdir(parents=True, exist_ok=True)
+    evidence = args.evidence_dir.resolve() if args.evidence_dir else Path(tempfile.mkdtemp(prefix='run-', dir=storage))
+    if args.evidence_dir:
+        evidence.mkdir(parents=True, exist_ok=False)
+    print(f'Evidence retained: {evidence}', flush=True)
+    if os.name == 'nt' and session is None:
+        commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True, timeout=10).strip()
+        session = Session(evidence/'supervisor', commit)
+    with nullcontext(evidence) as folder:
         tmp = Path(folder)
         records = [{'name': f'Recipe {i}', 'kind': 'Fixture',
                     'inputs': [{'id': 'fixture', 'name': 'Needle' if i == 13 else '<script>alert</script>', 'quantity': '1'}],
@@ -49,18 +62,23 @@ def main():
         probe=(ROOT / 'tests/crafting_atlas/probe.dm').read_text(encoding='utf-8')
         if args.full_catalog:
             probe=probe.split('/world/New()')[0]+(ROOT/'tests/crafting_atlas/full_probe.dm').read_text()
-        fixture = "#define PAPER_ICON 'paper.dmi'\n#define ATLAS_EXPECTED_RECIPES "+str(len(catalog['recipes']))+"\n#include \"atlas.dm\"\n" + probe + (ROOT/'tests/crafting_atlas/navigation.dm').read_text()
+        fixture = "#define PAPER_ICON 'paper.dmi'\n#define ATLAS_EXPECTED_RECIPES "+str(len(catalog['recipes']))+"\n#include \"atlas.dm\"\n" + probe + (ROOT/'tests/crafting_atlas/navigation.dm').read_text() + (ROOT/'tests/crafting_atlas/variants.dm').read_text()
         (tmp / 'probe.dme').write_text(fixture, encoding='utf-8')
         compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-        build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=tmp, text=True, capture_output=True, timeout=120, creationflags=flags)
+        build = run_native(session, [str(compiler), '-max_errors', '0', 'probe.dme'], cwd=tmp,
+                           phase='atlas-compile', timeout=120, artifacts=[tmp/'probe.dmb', tmp/'probe.rsc'])
         if build.returncode or '0 errors, 0 warnings' not in build.stdout + build.stderr:
             raise RuntimeError(build.stdout + build.stderr)
         if args.compile_only:
             print('PASS: Compile only, 0 errors/warnings; no runtime launched')
             return
-        run = subprocess.run([str(daemon), 'probe.dmb', *(['-invisible', '-close'] if os.name == 'nt' else []), '-trusted', '-log', 'runtime.log'], cwd=tmp, text=True, capture_output=True, timeout=30, creationflags=flags)
-        logs = (tmp / 'runtime.log').read_text(errors='replace') if (tmp / 'runtime.log').exists() else ''
+        run = run_native(session, [str(daemon), 'probe.dmb', *(['-invisible', '-close'] if os.name == 'nt' else []),
+                                  *no_port_args(), '-trusted', '-log', 'runtime.log'],
+                         cwd=tmp, phase='atlas-runtime', timeout=30, state_directory=tmp)
+        logs = read_bounded(tmp/'runtime.log') if (tmp/'runtime.log').exists() else ''
+        if read_bounded(tmp/'port-closed.txt', 16).strip() != 'closed':
+            raise RuntimeError('Native no-port assertion did not complete')
         if run.returncode or any(marker in logs.lower() for marker in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError(str(run.returncode) + logs + run.stdout + run.stderr)
         failed = (tmp / 'failed.txt').exists()

@@ -1,0 +1,236 @@
+[
+  {
+    "name": "identical",
+    "actual": "#A10808",
+    "expected": "#A10808",
+    "equal": 1
+  },
+  {
+    "name": "blood-hex-case",
+    "actual": "#a10808",
+    "expected": "#A10808",
+    "equal": 1
+  },
+  {
+    "name": "mud-hex-case",
+    "actual": "#70543e",
+    "expected": "#70543E",
+    "equal": 1
+  },
+  {
+    "name": "different-channel",
+    "actual": "#a10809",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "null-actual",
+    "actual": null,
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "null-expected",
+    "actual": "#A10808",
+    "expected": null,
+    "equal": 0
+  },
+  {
+    "name": "zero-actual",
+    "actual": 0,
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "zero-expected",
+    "actual": "#A10808",
+    "expected": 0,
+    "equal": 0
+  },
+  {
+    "name": "number-actual",
+    "actual": 1,
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "number-expected",
+    "actual": "#A10808",
+    "expected": 1,
+    "equal": 0
+  },
+  {
+    "name": "empty-actual",
+    "actual": "",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "empty-expected",
+    "actual": "#A10808",
+    "expected": "",
+    "equal": 0
+  },
+  {
+    "name": "named-actual",
+    "actual": "red",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "named-expected",
+    "actual": "#A10808",
+    "expected": "red",
+    "equal": 0
+  },
+  {
+    "name": "short-actual",
+    "actual": "#A1080",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "short-expected",
+    "actual": "#A10808",
+    "expected": "#A1080",
+    "equal": 0
+  },
+  {
+    "name": "long-actual",
+    "actual": "#A108080",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "long-expected",
+    "actual": "#A10808",
+    "expected": "#A108080",
+    "equal": 0
+  },
+  {
+    "name": "alpha-actual",
+    "actual": "#A10808ff",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "alpha-expected",
+    "actual": "#A10808",
+    "expected": "#A10808ff",
+    "equal": 0
+  },
+  {
+    "name": "leading-space-actual",
+    "actual": " #A10808",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "leading-space-expected",
+    "actual": "#A10808",
+    "expected": " #A10808",
+    "equal": 0
+  },
+  {
+    "name": "trailing-space-actual",
+    "actual": "#A10808 ",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "trailing-space-expected",
+    "actual": "#A10808",
+    "expected": "#A10808 ",
+    "equal": 0
+  },
+  {
+    "name": "nonhex-actual",
+    "actual": "#A1080G",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "nonhex-expected",
+    "actual": "#A10808",
+    "expected": "#A1080G",
+    "equal": 0
+  },
+  {
+    "name": "missing-prefix-actual",
+    "actual": "A10808",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "missing-prefix-expected",
+    "actual": "#A10808",
+    "expected": "A10808",
+    "equal": 0
+  },
+  {
+    "name": "newline-actual",
+    "actual": "#A10808\n",
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "newline-expected",
+    "actual": "#A10808",
+    "expected": "#A10808\n",
+    "equal": 0
+  },
+  {
+    "name": "matrix-actual",
+    "actual": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "expected": "#A10808",
+    "equal": 0
+  },
+  {
+    "name": "matrix-expected",
+    "actual": "#A10808",
+    "expected": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "equal": 0
+  }
+]

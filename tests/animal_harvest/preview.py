@@ -11,13 +11,13 @@ def state(path, name):
     width = int(re.search(r'width = (\d+)', description)[1])
     height = int(re.search(r'height = (\d+)', description)[1])
     offset = 0
-    for match in re.finditer(r'state = "([^"]+)"(.*?)(?=\nstate =|\Z)', description, re.S):
+    for match in re.finditer(r'state = "([^"]*)"(.*?)(?=\nstate =|\Z)', description, re.S):
         body = match[2]
         if match[1] == name:
             x = offset % (sheet.width // width) * width
             y = offset // (sheet.width // width) * height
             sprite = sheet.convert('RGBA').crop((x, y, x + width, y + height))
-            assert sprite.getbbox(), f'Blank state: {path}:{name}'
+            assert sprite.getchannel('A').getbbox(), f'Blank state: {path}:{name}'
             return sprite
         dirs = re.search(r'dirs = (\d+)', body)
         frames = re.search(r'frames = (\d+)', body)

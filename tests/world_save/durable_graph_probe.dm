@@ -30,6 +30,10 @@ var/map_storage/map_storage = new
 /map_storage/proc/save_validation_area_type(x, y, z)
 	var/turf/T = save_validation_coordinate(x, y, z) ? locate(x, y, z) : null
 	return T ? T.loc.type : null
+/map_storage/proc/save_validation_area_key(x, y, z)
+	// This graph-only adapter has no roof projection or production startup.
+	var/turf/T = save_validation_coordinate(x, y, z) ? locate(x, y, z) : null
+	return T ? "\ref[T.loc]" : null
 var/obj/map_metadata/map
 var/fixture_checks = 0
 var/fixture_failures = 0
