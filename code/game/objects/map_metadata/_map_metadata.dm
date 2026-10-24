@@ -24,6 +24,7 @@ var/civmax_research = list(230,230,230)
 	var/tmp/season_epoch = 0
 	var/tmp/list/season_queue = list()
 	var/tmp/season_loop_scheduled = FALSE
+	var/season_duration_minutes = null // Null inherits server config; map-specific calendars may override.
 	name = "control"
 	icon = 'icons/mob/screen/effects.dmi'
 	icon_state = "x2"
@@ -1109,12 +1110,21 @@ var/civmax_research = list(230,230,230)
 		season_queue += list(phase, epoch, FALSE, FALSE)
 		season_run_queue()
 
+/obj/map_metadata/proc/season_loop_delay()
+	var/minutes = season_duration_minutes
+	if (isnull(minutes))
+		minutes = config ? config.season_duration_minutes : 60
+	if (!isnum(minutes) || minutes < 1 || minutes > 1440)
+		minutes = 60
+	return minutes * 600
+
 /obj/map_metadata/proc/season_schedule_loop()
 	if (season_retired || season_loop_scheduled || map != src)
 		return
 	season_loop_scheduled = TRUE
-	if(durable_schedule("season_loop", 18000)) return
-	spawn(18000)
+	var/delay = season_loop_delay()
+	if(durable_schedule("season_loop", delay)) return
+	spawn(delay)
 		season_loop_scheduled = FALSE
 		if (!season_retired && map == src)
 			seasons()
@@ -1171,7 +1181,7 @@ var/civmax_research = list(230,230,230)
 	return
 
 /obj/map_metadata/persistence_runtime_var(var/key)
-	if (key in list("durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
+	if (key in list("season_duration_minutes", "durable_callbacks", "research_clock_offset", "season_retired", "season_busy", "season_epoch", "season_queue", "season_loop_scheduled"))
 		return TRUE
 	return ..(key)
 

@@ -32,6 +32,10 @@ LOBBY_COUNTDOWN 90
 # Round End Time: This is the amount of time after the round ends that players have to murder death kill each other.
 ROUND_END_COUNTDOWN 90
 
+## Shared season length in minutes (1-1440, fractions allowed). Map-specific
+## calendars keep their explicit timing; already pending saved timers keep their remainder.
+SEASON_DURATION_MINUTES 60
+
 ## log OOC channel
 LOG_OOC
 

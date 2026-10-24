@@ -140,6 +140,7 @@ var/list/gamemode_cache = list()
 
 	var/daynight_on = TRUE
 	var/seasons_on = TRUE
+	var/season_duration_minutes = 60 // Shared season loop only; explicit map calendars retain their timing.
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
 	// Mirrors the accepted allocator settings; the controller enforces hard bounds.
@@ -184,6 +185,10 @@ var/list/gamemode_cache = list()
 
 		if (type == "config")
 			switch (name)
+				if ("season_duration_minutes")
+					var/minutes = text2num(value)
+					if (isnum(minutes) && minutes >= 1 && minutes <= 1440 && "[minutes]" == trim(value))
+						season_duration_minutes = minutes
 
 				if ("allowed_gamemodes")
 					allowedgamemodes = value
