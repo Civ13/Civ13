@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: shared season duration -->
+Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
+an optional map.season_duration_minutes override. Pending durable remainders are
+unchanged; map overrides are author policy, excluded from historical imports.
+Mountain and Ice Age retain initial30-minute shared timers and their explicit
+recurrence. Independent calendars and literal startup delays stay separate.
+tests/season_duration is source-only; native timer/reload acceptance stays pending.
+
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
