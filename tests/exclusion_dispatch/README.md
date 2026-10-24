@@ -194,3 +194,29 @@ host address remains audit data. Offline controls reject absent, wildcard,
 nonloopback and IPv6 bind diagnostics. This corrects the earlier README statement
 that the pre-close-address assertion was unchanged; the Windows listener monitor
 and unconditional grant hold are unchanged. Native parity still awaits a rerun.
+
+## Current-master source contract correction
+
+The source-only fixture now pins master
+`d6b06c638517bb4100beeca6a90d09adc3629fb7`. PR #3243 has no production delta in
+`functions.dm` against that master. Reconstruct only its three list dispatch
+hooks, then require exact whole-file equality after restoring switch dispatch.
+All current policy, collector, roof-cache, diagnostic, age-floor and ownership
+changes remain unchanged in both variants. No additional policy projection is
+admitted, and no fullbright/area-owner delta from another PR is imported.
+
+The historical `5bf35124` to `a93e490e` reserved-policy projection and reviewed
+`5ac2df33` list-hook controls remain separate pinned tests. New negative controls
+reject unrelated whole-file drift, current ownership/diagnostic mutations and
+historical policy insertion in current-master mode. Source-only preparation and
+these offline controls grant no native, platform or performance acceptance.
+Failed CI40097894261 remains failed evidence; later metadata-event green skipped
+the failed source check/native coverage and does not supersede that result.
+
+The generated fixture also retains master's `atom/movable` `original_target`
+hook before the later corpse-decay hook, with inherited helpers in `civ13.dme`
+include order. Probe keys cover `original_target` and `next_animal_retaliation`.
+Offline contracts compare both runtime/traced movable definitions and the full
+saved-variable selection block, including `CIV13_VARIABLE_OBSERVABILITY`, its
+matching `#endif`, the subsequent selection logic and final return. Preserving
+that conditional source does not establish enabled-observability native parity.

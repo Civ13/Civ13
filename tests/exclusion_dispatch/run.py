@@ -11,9 +11,9 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import reconstruct_list_baseline, validate, project_reserved_policy
+from source_contract import reconstruct_list_baseline, validate_current_master
 
-BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
+BASE = 'd6b06c638517bb4100beeca6a90d09adc3629fb7'
 PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--byond-bin', type=Path)
@@ -29,17 +29,17 @@ repo = Path(__file__).resolve().parents[2]
 old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
 current = (repo / PATH).read_text()
 old = reconstruct_list_baseline(old)
-validate(old, current)
-# Compare dispatch under the SAME new policy, not historical semantic parity.
-old = project_reserved_policy(old)
+# This PR has no production delta against the pinned current master.
+# Both variants retain its policy/diagnostics; only dispatch form differs.
+validate_current_master(old, current)
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
 
 inherited = ''
 for file, path in [
-    ('code/processes/human_corpse_decay.dm', '/atom/movable/persistence_runtime_var(key)'),
     ('code/processes/abandoned_items.dm', '/obj/item/persistence_runtime_var(key)'),
+    ('code/processes/human_corpse_decay.dm', '/atom/movable/persistence_runtime_var(key)'),
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 ]:
     helper = (repo / file).read_text()
@@ -48,7 +48,7 @@ for file, path in [
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob', 'area'])
+    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'atom/movable', 'turf', 'area', 'mob'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
@@ -90,7 +90,7 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks plus explicit reserved-lighting exclusions', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, baseline_policy='exact pinned current master with only three reconstructed list dispatch hooks; no policy projection', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version='516.1681', native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')
