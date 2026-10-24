@@ -80,7 +80,7 @@
 /mob/living/proc/updatehealth()
     if (status_flags & GODMODE)
         health = 100
-        stat = CONSCIOUS
+        set_stat(CONSCIOUS)
     else
         health = maxHealth - getOxyLoss() - getToxLoss() - getBurnLoss() - getBruteLoss() - getCloneLoss() - halloss
     

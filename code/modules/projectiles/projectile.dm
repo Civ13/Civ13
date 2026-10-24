@@ -181,6 +181,8 @@
 		qdel(src)
 		return TRUE
 
+	if (!persistence_movement_allowed(src, curloc)) return TRUE
+
 	if (istype(curloc, /turf/floor/trench))
 		launch_from_trench = TRUE
 
@@ -219,7 +221,7 @@
 		return FALSE
 
 	original = target
-	loc = curloc
+	if (!persistence_set_loc(curloc)) return TRUE
 	starting = curloc
 
 	yo = targloc.y - curloc.y + y_offset
@@ -260,7 +262,7 @@
 		return FALSE
 
 	original = target
-	loc = curloc
+	if (!persistence_set_loc(curloc)) return TRUE
 	starting = curloc
 	current = curloc
 
@@ -281,7 +283,7 @@
 		qdel(src)
 		return FALSE
 
-	loc = get_turf(user) //move the projectile out into the world
+	if (!persistence_set_loc(get_turf(user))) return TRUE // move out into the world
 
 	firer = user
 	firer_original_dir = firer.dir

@@ -71,6 +71,7 @@ var/list/material/name_to_material
 	var/shard_icon							// Related to above.
 	var/shard_can_repair = TRUE			  	// Can shards be turned into sheets with a welder?
 	var/list/recipes						// Holder for all recipes usable with a sheet of this material.
+	var/processing_only = FALSE // Intermediate feedstock, not a generic crafting material.
 	var/destruction_desc = "breaks apart"	// Fancy string for barricades/tables/objects exploding.
 
 	// Icons
@@ -915,6 +916,7 @@ var/list/material/name_to_material
 	stack_type = /obj/item/stack/material/pelt/bisonpelt
 
 /material/hairlesshide
+	processing_only = TRUE
 	name = "hairlesshide"
 	use_name = "hairless hide"
 	icon_colour = "#8C7E6E"
@@ -922,6 +924,30 @@ var/list/material/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
+
+/material/rawhide
+	processing_only = TRUE
+	name = "rawhide"
+	use_name = "raw hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/rawhide
+
+/material/wethide
+	processing_only = TRUE
+	name = "wethide"
+	use_name = "wet hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/wethide
+
+/material/dryhide
+	processing_only = TRUE
+	name = "dryhide"
+	use_name = "dry hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/dryhide
 
 /*/material/scalelesshide //deactivated for now, prepped up for skinned gatorpelts
 	name = "scalelesshide"

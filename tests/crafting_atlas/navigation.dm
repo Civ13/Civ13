@@ -34,3 +34,4 @@
 	check_atlas(findtext(reference.graph_html(viewer, "missing"), "No matching recipes"), "navigation empty search")
 	var/unsafe_query = reference.graph_html(viewer, "'><script>")
 	check_atlas(!findtext(unsafe_query, "'><script>") && findtext(unsafe_query, "&#39;"), "navigation query attribute escaping")
+	check_variants(viewer, reference)

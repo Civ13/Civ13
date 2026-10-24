@@ -94,11 +94,8 @@
 	var/teleport_z = FALSE
 
 	Trigger(var/atom/movable/A)
-		if (teleport_x && teleport_y && teleport_z)
-
-			A.x = teleport_x
-			A.y = teleport_y
-			A.z = teleport_z
+		if (teleport_x && teleport_y && teleport_z && A)
+			A.persistence_set_loc(locate(teleport_x, teleport_y, teleport_z))
 
 /* Random teleporter, teleports atoms to locations ranging from teleport_x - teleport_x_offset, etc */
 
@@ -108,12 +105,9 @@
 	var/teleport_z_offset = FALSE
 
 	Trigger(var/atom/movable/A)
-		if (teleport_x && teleport_y && teleport_z)
+		if (teleport_x && teleport_y && teleport_z && A)
 			if (teleport_x_offset && teleport_y_offset && teleport_z_offset)
-
-				A.x = rand(teleport_x, teleport_x_offset)
-				A.y = rand(teleport_y, teleport_y_offset)
-				A.z = rand(teleport_z, teleport_z_offset)
+				A.persistence_set_loc(locate(rand(teleport_x, teleport_x_offset), rand(teleport_y, teleport_y_offset), rand(teleport_z, teleport_z_offset)))
 
 //////////////////////////////////////TELEPORTER///////////////////////////////////////////
 /obj/effect/step_trigger/teleporter/stairs
@@ -125,21 +119,11 @@
 
 	Trigger(var/atom/movable/A)
 		spawn(timer)
-			if (teleport_x && teleport_y && teleport_z)
-				if (teleport_x_offset)
-					A.x = rand(teleport_x, teleport_x_offset)
-				else
-					A.x = teleport_x
-
-				if (teleport_y_offset)
-					A.y = rand(teleport_y, teleport_y_offset)
-				else
-					A.y = teleport_y
-
-				if (teleport_z_offset)
-					A.z = rand(teleport_z, teleport_z_offset)
-				else
-					A.z = teleport_z
+			if (teleport_x && teleport_y && teleport_z && A)
+				var/target_x = teleport_x_offset ? rand(teleport_x, teleport_x_offset) : teleport_x
+				var/target_y = teleport_y_offset ? rand(teleport_y, teleport_y_offset) : teleport_y
+				var/target_z = teleport_z_offset ? rand(teleport_z, teleport_z_offset) : teleport_z
+				A.persistence_set_loc(locate(target_x, target_y, target_z))
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 /* Step trigger to display message if *TRIGGERED* */

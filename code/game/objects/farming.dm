@@ -1054,16 +1054,10 @@
 
 	// Check for nearby sources of water
 	// Water within 2 tiles means no need to manually water the plants.
-	for (var/turf/floor/beach/water/WT in range(2, src))
-		if (!WT.salty)
-			water = max_water
-			return
-	for (var/turf/floor/trench/flooded/TR in range(2, src))
-		if (TR.flooded && !TR.salty)
-			water = max_water
-			return
-	for (var/turf/floor/IR in range(2, src))
-		if (IR.irrigation && IR.flooded && !IR.salty)
+	for (var/turf/floor/WT in range(2, src))
+		if (WT.salty)
+			continue
+		if (istype(WT, /turf/floor/beach/water) || (WT.flooded && (istype(WT, /turf/floor/trench/flooded) || WT.irrigation)))
 			water = max_water
 			return
 

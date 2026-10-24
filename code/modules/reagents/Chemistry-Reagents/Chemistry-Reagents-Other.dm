@@ -138,7 +138,7 @@
 	M.drowsyness = FALSE
 	M.stuttering = FALSE
 	M.confused = FALSE
-	M.sleeping = FALSE
+	M.SetSleeping(0)
 	M.jitteriness = FALSE
 
 

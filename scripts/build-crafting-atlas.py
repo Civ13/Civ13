@@ -2,6 +2,8 @@
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
+from atlas.tanning import add_tanning
+from atlas.variants import consolidate_variants, game_recipes
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
@@ -24,11 +26,14 @@ def label(s):
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
+processing_materials={}
 material_source=uncomment(files.get('code/modules/materials/materials.dm',''))
 for match in re.finditer(r'^(/material/[^\s(]+)\s*\n((?:\t[^\n]*\n|\n)*)',material_source,re.M):
     typepath,body=match.groups()
     stack=re.search(r'\bstack_type\s*=\s*(/[^\s]+)',body)
     name=re.search(r'\bname\s*=\s*"([^"]+)"',body)
+    processing=re.search(r'\bprocessing_only\s*=\s*(TRUE|FALSE)',body)
+    if processing:processing_materials[typepath]=processing[1]=='TRUE'
     if stack:
         material_stacks[typepath]=stack[1]
         material_aliases[stack[1]]=typepath
@@ -48,6 +53,13 @@ def canon(s):
     if s.startswith('/obj/item/stack/material/'):
         return '/material/'+s.split('/obj/item/stack/material/')[1]
     return s
+
+def processing_only_material(typepath):
+    typepath=canon(typepath)
+    while typepath.startswith('/material/'):
+        if typepath in processing_materials:return processing_materials[typepath]
+        typepath=typepath.rsplit('/',1)[0]
+    return False
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -68,6 +80,7 @@ for p,s in files.items():
             cols=row.split('RECIPE: ',1)[1].strip().split(',')
             if len(cols)!=13: issues.append(dict(file=p,line=ln,reason='Expected 13 fields',raw=row));continue
             a,n,b,c,t,one,floor,category,ind,mil,med,age,mat=cols
+            if processing_only_material(a):continue
             add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),[(a,c)],[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.',row)
 
 def splitargs(s):
@@ -194,6 +207,7 @@ if bench:
     for name,result in re.findall(r'"(Pickaxe|Shovel|Hatchet)"\s*=\s*(/obj/item/weapon/material/\w+)',bench):
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
+tanning_routes=add_tanning(files, add, records, sprite_variants)
 for recipe in records:
     for resource in recipe['inputs']+recipe['outputs']:
         if resource['id'] in sprite_variants:
@@ -232,13 +246,18 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
+for route in tanning_routes:
+    for resource in route['outputs']:
+        acquisition.setdefault(resource,[]).append(route)
 add_processors(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
+records=consolidate_variants(records)
+data['recipes']=records
 data['limitations'].append('Unlock eras use explicit minimum gates or mapped research tiers; processor eras describe station construction research. Research can be ahead of the map era. Unknown entries are not assigned an era from their maximum expiry. No filter guarantees current faction availability.')
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 if options.catalog_only:
-    game=dict(acquisition=acquisition,recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+    game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
     game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
@@ -268,7 +287,7 @@ for resource in resource_ids:
     row=rows[typepath.split('#')[0]]
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
-game=dict(acquisition=acquisition,recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
 game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)

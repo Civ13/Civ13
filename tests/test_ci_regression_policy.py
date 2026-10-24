@@ -102,6 +102,15 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.rack_save_regressions\n", block)
                     self.assertRegex(workflow, r'rack_save_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
                     continue
+                if block.startswith('      - name: Verify private collector native publication\n'):
+                    # This narrower hosted fixture has no manual/extensive
+                    # entry. Keep its introduced-PR-only gate explicit.
+                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')\n", block)
+                    self.assertIn('timeout-minutes: 3\n', block)
+                    self.assertIn('tests/nomads_lifecycle/run_variable_probe_linux.py', block)
+                    self.assertNotIn('workflow_dispatch', block)
+                    self.assertNotIn('secrets.', block)
+                    continue
                 self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
 

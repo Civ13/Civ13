@@ -34,7 +34,9 @@ var/list/obj/effect/bump_teleporter/BUMP_TELEPORTERS = list()
 		if (BT.id == id_target)
 			if (active)
 				spawn(timer)
-					usr.loc = BT.loc	//Teleport to location with correct id.
+					if (user && BT)
+						var/atom/movable/traveller = user
+						traveller.persistence_set_loc(BT.loc)
 			return
 
 /obj/effect/step_trigger/Crossed(H as mob|obj)

@@ -6,6 +6,21 @@ processor filters narrow a sorted index of at most 150 matches; refine filters
 to reach additional records. Select a recipe to follow inputs, quantities and
 outputs. **Legacy paginated list** deliberately opens the older 12-record pages.
 Requests are limited to once per second.
+Identical material definitions repeated in alternative catalogs share one index
+entry and one dependency node. **Transformation / catalog variant** selects the
+catalog and its exact source row; the in-game selector uses **Show variant**.
+Search and the website's recipe-system filter apply to the same variant, so a
+catalog-specific match shows that catalog's details. Counts, bounded indexes,
+resource relations and legacy pagination count recipe entries, not catalog copies.
+Existing recipe IDs for every catalog row remain valid variant selections.
+
+Grouping is limited to explicit material-loader rows with all 13 original fields
+equal and all extracted semantic metadata equal. Ingredients, quantities, outputs,
+research, era limits, timing, category, placement and supplied material must agree.
+Catalog/map/faction identity remains in the variants; it is not an availability
+promise. Non-material callbacks and recipes with different requirements stay
+separate. Structured catalogs retain every variant's ID, catalog, file and line;
+the website also retains each exact raw source row.
 Icons are compiled from inherited defaults without constructing any items.
 The hosted searchable diagram is published alongside source documentation at
 https://civ13.github.io/Civ13/crafting/ by the existing Pages workflow.
@@ -19,17 +34,46 @@ the filter does not claim that a faction currently has the research, resources,
 skill or map access. Multiple explicit tiers remain selectable individually or
 through **Multiple eras**. Unmapped and contextual routes stay **Unknown**.
 
-Nearby sawmills and grain mills expose **Processing Reference**. The processor
+Nearby sawmills, grain mills and tanning racks expose **Processing Reference**. The processor
 views show the three sawmill variants (4/10/12 nominal planks per log, with
 skill-failure reductions) and manual/large grain conversions, including wheat
 to flour. Grain quantities count whole objects, not equal reagent volumes.
 Conditions describe anchoring, power, action completion, mood and stamina.
 Processor era annotations describe station construction research, not a new
-restriction on using an existing machine. Gameplay recipes are unchanged.
+restriction on using an existing machine.
 
 `scripts/atlas/catalog_metadata.py` extracts these conversions from production
 code and rejects recognized source-contract changes for review. It does not
 assert that every processor in the game is covered.
+
+## Leather processing
+
+Search for **raw hide**, **prepared hairless hide**, **wet hide**, **dry hide**,
+**tree bark** or **tannin** to follow the complete [leather process](leather-tanning.md).
+The adult turkey hen/tom acquisition routes each yield one raw hide; chicks yield
+none. Scraping consumes one raw hide or fur pelt, washing consumes 5 water,
+rack drying preserves the whole stack count after 300 ticks, and tanning consumes
+5 tannin per dry hide to make one ordinary leather sheet. Existing leather
+crafting recipes connect to that finished resource. Fur recipes remain connected
+to the original species pelts, before the optional scraping step.
+
+Hatchet cutting shows 2 logs to 1 plank plus 2 bark; saw cutting shows 1 log to
+4 planks plus 1 bark. Wood mugs and other open liquid containers work; hold the ingredient and click a nearby open container or unlocked barrel for stationary processing. Applying an open held liquid container with 10 water to one bark
+produces 10 tannin in the vessel. These are explicit paid item interactions,
+rather than chemistry recipes. Conditions show the required held tools/vessel.
+
+The **Tanning racks** processor filter shows the drying conversion. Its station
+resource links to the existing rack construction recipe (8 logs in the global
+catalog) and Resource Processing research. The rack is labeled **not consumed**.
+The displayed Bronze Age tier belongs to station construction research; using
+an existing rack has no new era gate. Resource acquisition links retain the
+reviewed production source revision. The old direct animal-to-leather route is
+removed from the reviewed acquisition annotations.
+
+`scripts/atlas/tanning.py` documents the procedural conversions, guarded by the
+four reviewed source digests in `scripts/atlas/tanning-contracts.json`. Review the
+routes and digests together when those callbacks change. Catalog generation
+fails on source drift, rather than silently publishing stale costs or stages.
 
 ## Obtaining resources
 
@@ -108,6 +152,28 @@ Ordinary catalog additions regenerate automatically without that manual review.
 detection plus regeneration, restoring the original source in `finally`.
 `scripts/atlas/check.mjs` checks search/navigation and graph consistency using a
 DOM contract. Neither establishes client rendering or gameplay reachability.
+
+`tests/test_atlas_variants.py` covers conservative equivalence, non-equivalent
+definitions, unique retained IDs and actual catalog source rows.
+`node tests/crafting_atlas/variants.test.mjs` runs the production web template
+through repeated selections, combined catalog/path searches, era/processor
+changes, empty results, reset and resource navigation, with source-selection and
+sibling-search omission controls. The native `tests/crafting_atlas/variants.dm`
+fixture includes grouped selection, old variant IDs, selected provenance and
+legacy page boundaries. The existing hosted Atlas workflow runs it through the
+bounded renderer, together with real sprite/site generation and the existing
+pagination/navigation controls. Results must be checked for the exact PR head.
+
+`tests/test_tanning_atlas.py` checks exact quantities, station research, all
+processing-stage and acquisition links, the lack of direct animal leather, and
+fur crafting continuity. Removing any essential stage breaks the turkey-to-leather
+reachability control. `node tests/crafting_atlas/tanning.test.mjs` executes the
+actual website template with the committed game catalog, including processor
+filtering, construction links and every tanning resource's producers and uses.
+These are offline catalog/DOM checks. The full-catalog native renderer separately
+checks those routes and quantities; the hosted Atlas step also exports actual
+engine sprite previews. Neither establishes connected-client appearance or
+gameplay acceptance. Verify results against the exact source head.
 The sprite harness's existing `--negative-control` rejects a deliberately wrong
 inherited icon resource. Runtime constructor/overlay graphics need separate
 focused evidence when their appearance matters.
