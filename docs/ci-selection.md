@@ -1,4 +1,4 @@
-# Game CI and opt-in regressions
+# Game CI, bounded offline baseline and opt-in regressions
 
 On pushes to `master` and opened/reopened/synchronized PRs targeting `master` or
 `help-markdown-byond-html`, game compilation remains automatic for source, maps,
@@ -16,9 +16,9 @@ a build. `Build:`, leading whitespace and `build:` in a commit body do not match
 PR events use the PR title; push events use the pushed commit messages.
 
 The request uses the existing Ubuntu BYOND compiler job on a fresh hosted
-checkout, with the existing logs/artifact behavior. It does not deploy or replace
+checkout, with diagnostic/source receipts retained even on failure. It does not deploy or replace
 a running server. Outside the ordinary subscriptions above, the request selects
-compilation only, with no introduced-test or extensive/native regression suites.
+compilation plus the bounded offline baseline, with no introduced-test or extensive/native regression suites.
 Other PR edits and unprefixed feature-branch pushes skip compilation. Ordinary
 PRs still select newly introduced suites according to the policy below.
 
@@ -29,8 +29,9 @@ compilation conservatively, with no extra regression admission. GitHub caps the
 a list reaching that cap or a reported size exceeding the list triggers this
 fallback. No workflow can act on an event GitHub does not deliver.
 
-Existing regression suites are opt-in, including game runtime, offline evidence,
-atlas, resource inventory, MCP protocol, comment collector and changelog tests.
+The cheap offline baseline below runs on every CI invocation. Other existing
+regression suites remain opt-in, including game runtime, atlas, resource
+inventory, MCP protocol, comment collector and changelog tests.
 In Actions, select **CI**, **Run workflow**, and enable **extensive_regressions**
 to run all game/offline suites. The option defaults to false. For MCP, comment
 review, changelog, environment sweeps, component tools or trains, manually run
@@ -79,10 +80,12 @@ A PR introducing executable integration tests runs the corresponding registered
 suite automatically. `scripts/select-ci.py` compares the PR base and exact head,
 using added files with rename detection. New `.dm`, `.py`, `.ps1` or `.sh` files
 under `tests/<suite>/`, standalone `tests/test_*.py`, or `.test.mjs`/`.test.js`
-files under `tools/<tool>/` select only their corresponding suite. README edits,
-existing test edits, moved tests, ordinary game edits, pushes and missing/failed
-comparisons do not auto-select regressions. After merge, that coverage becomes
-opt-in on subsequent PRs. Adding a helper alongside new coverage selects its
+files under `tools/<tool>/` select only their corresponding suite. This legacy
+admission does not expand native/costly coverage for README edits, existing test
+edits, moved tests, ordinary game edits, pushes or missing comparisons. The
+reviewed offline impact registry separately covers affected existing tests and
+helpers. After merge, other coverage becomes opt-in on subsequent PRs.
+Adding a helper alongside new coverage selects its
 suite too; this is file-based selection, not a claim about a PR's intent.
 
 The explicitly registered `scripts/opendream/bounded_build/test_guard.py` and
@@ -101,10 +104,99 @@ introduced-test guard on their test job. The detector does not execute arbitrary
 new tests: a reviewed workflow step must register the suite runner. Grouped
 runners execute the registered group when one member introduces coverage.
 
+## Reviewed offline baseline
+
+`scripts/ci_baseline.py` owns the exact unittest file allowlist, impact mapping,
+30-second per-suite deadline, execution counts and receipt validation. Selector
+policy tests run unconditionally in the reusable selector and again as part of
+the baseline. The baseline job has a six-minute wall-clock limit. No wildcard
+discovery admits future test files automatically.
+
+| ID | Reviewed files/effects | Admission |
+|---|---|---|
+| policy | Four named `test_ci_*.py` files; temporary Git repos, mocked outcomes, source reads | Always |
+| bootstrap | `test_byond_bootstrap.py`; Bash syntax, stub sudo and compiler shell functions only | Always |
+| progress | `world_save/test_progress_sources.py`; AST dispatch, source preparation and temporary files | Always |
+| research | `research_scheduler/test_resume.py`; restricted source traces and one immutable `git show` | Research source/shared scheduler or suite/helper edits |
+| ping | `ping_scheduler/test_resume.py`; restricted source traces and one immutable `git show` | Ping/shared process source or suite/helper edits |
+| year | `persistence_year/test_floor.py`; source projections, save-schema/fixture text only | Persistence/setup source or persistence-year/world-save helper edits |
+| evidence | `test_game_evidence.py`; synthetic temporary bundles and two offline checker Python subprocesses | Evidence checker or its tests |
+
+All imports/call paths of these files were inspected before registration. They
+do not launch BYOND, .NET, clients, process inventories or live services. In
+particular, the year entry does **not** discover `test_native.py`. Direct mappings
+include modified/deleted production inputs and modified tests, not just additions.
+If an executable/shared path has no mapping, or the comparison is unavailable,
+the receipt lists the reason and selects all seven reviewed suites. It still
+does not select unreviewed/native tests. Prose-only changes retain the three
+mandatory suites and skip game compilation unless `build:` requests it.
+The offline prose exemption is limited to reviewed documentation formats
+(`.md`, `.rst`, `.html`, `.css`, listed image/font formats and `.pdf`) plus the
+exact existing search-script and diagnostic-text assets. Other scripts/configs
+under `docs/`, including `.py`, `.sh`, arbitrary `.js`, `.json`, `.yaml`, `.toml`
+and dependency `.txt` files, use the visible unknown-impact fallback. The existing
+compiler selector's documentation/generator optimization is unchanged.
+
+Ping's registered test reads only current `ping_track.dm`, shared `_process.dm`
+and an immutable historical ping source through Git. Its dispatch is a Python
+adapter; it does not consume `__processScheduler.dm`. That production scheduler
+is read by the research suite's wiring checks, so its mapping selects research
+without claiming ping scheduler coverage. The policy tests audit these direct
+ping source inputs; native scheduler behavior remains separate acceptance.
+
+When registering another automatic suite, inspect every import/helper and
+subprocess, document its cost/effects, name exact files, map production inputs
+and helper/test directories, and add impact/failure controls. Unknown dependencies
+use the same visible bounded fallback. Native smoke remains a proposal until
+its separate admission/resource holds are resolved; compiled core_boot variants
+are not a native smoke pass.
+
+## Receipts and required aggregate
+
+Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-<attempt>`.
+They retain exact checked-out head, resolved base (or null plus requested base),
+run/attempt, selection digest, changed paths, fallback/skip reasons, suite commands,
+deadlines, exit codes, counts and logs. Baseline receipts include the committed
+Git source tree and before/after tested patches. The runner and aggregate require
+the same clean committed head before and after tests; a tracked mutation, changed
+HEAD (even an empty commit), or missing post-test evidence fails. These boundary
+snapshots do not establish that no temporary mutation was restored mid-run.
+Compiler diagnostics include setup output, combined stdout/stderr, Git source
+tree and before/after patches (the atlas catalog is generated before compilation).
+Uploads use `always()` including failures/skips; runner loss or cancellation can
+still prevent artifact delivery, which cannot become a passing aggregate.
+
+`CI required aggregate` runs with `always()`. It requires successful selection,
+baseline, evidence-checker and build jobs, and extraction when that job is
+selected. It verifies baseline/compile receipt source/run/selection identity,
+required suite rows and nonzero test counts, and rejects missing receipts,
+failed/cancelled/skipped required jobs and unittest skips. A selected compiler
+step must actually succeed even when the build job would otherwise be green.
+An intentional documentation compilation skip has a reason and `status: skipped`;
+that is neither a compiler pass nor native/runtime acceptance. The aggregate
+does not expand or independently certify each legacy native fixture's oracle;
+inspect those existing runner artifacts when admitted. Branch protection is
+unchanged; adopting this aggregate as a required protection is an owner decision.
+
+The hosted bootstrap keeps BYOND 516.1681, resolves paths from its own script,
+uses `pipefail` plus the zero-error/zero-warning summary, and bounds package,
+download, install, catalog and compiler stages. The compiler step has a 15-minute
+limit. It uses `libgcc-s1:i386`, matching the existing hosted standalone lane.
+The mirror archive's observed SHA-256 is retained for diagnostics only. There is
+no independently trusted checksum in this patch, so download authenticity remains
+unverified. Do not promote an observed mirror digest into a trusted pin.
+
+Cloud-only workers run the inspected offline tests and syntax checks available
+to them, recording unavailable local native checks as `not_run`. After review and
+an authorized branch push, inspect the exact current-head hosted aggregate and
+its compiler/test artifacts. A previous green SHA or a missing local compiler is
+not acceptance. Do not install native tools or run held smoke just to fill this
+gap. Publication, deployment and merge remain separate authorization decisions.
+
 Local policy acceptance:
 
 ```powershell
-& '<verified-python-path>' -m unittest discover -s tests -p 'test_ci*.py' -v
+& '<verified-python-path>' -B scripts/ci_baseline.py unit --suite policy --output .ci/local-policy.json
 ```
 
 These checks cover real Git additions, edits, renames, post-merge comparisons,

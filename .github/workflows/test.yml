@@ -73,6 +73,34 @@ jobs:
       build_prefix: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+  baseline:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/selection
+      - name: Run required bounded offline baseline
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+        run: python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --output .ci/baseline
+      - name: Retain offline commands, counts, logs and skips
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/baseline/
+          retention-days: 7
+          if-no-files-found: error
   evidence-checker:
     needs: changes
     runs-on: ubuntu-latest
@@ -82,13 +110,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Verify noninteractive BYOND bootstrap commands offline
-        run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test synthetic static-source export core offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_to_map')
         run: python3 -I -B -m unittest discover -s tests/save_to_map -p 'test_*.py' -v
-      - name: Test serializer profiling source contracts
-        run: python3 -B tests/world_save/test_progress_sources.py -v
       - name: Prepare roof-area recovery fixture offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
         run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
@@ -264,17 +288,41 @@ jobs:
         run: echo 'Game compilation skipped by change and build-prefix selection.'
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        if: needs.changes.outputs.game == 'true'
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/selection
+      - name: Compile selected exact-head game
+        id: compile
         if: needs.changes.outputs.game == 'true'
-        run: sudo bash ./scripts/travis_pre_byond.sh
+        timeout-minutes: 15
+        run: |
+          mkdir -p .ci/compile
+          bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
+
+      - name: Record compilation outcome and source receipts
+        if: always()
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          COMPILE_OUTCOME: ${{ steps.compile.outcome }}
+        run: python3 -B scripts/ci_baseline.py compile --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --outcome "$COMPILE_OUTCOME" --output .ci/compile/compile.json
+      - name: Retain compiler diagnostics and source receipts including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/compile/
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Verify synthetic saved-roof recovery and two defect controls
         id: roof_native
@@ -1812,3 +1860,55 @@ jobs:
           name: wood-ash-compost-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/wood-ash-compost/
           retention-days: 7
+
+
+  ci-required:
+    name: CI required aggregate
+    if: always()
+    needs: [changes, baseline, evidence-checker, build, extraction-instances]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Retain dependency job outcomes before validating artifacts
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: |
+          mkdir -p .ci/aggregate
+          python3 -c 'import json,os; from pathlib import Path; Path(".ci/aggregate/jobs.json").write_text(json.dumps(json.loads(os.environ["CI_NEEDS"]), indent=2))'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/selection
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/baseline
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/compile
+      - name: Require selected jobs and exact-source execution receipts
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_NEEDS: ${{ toJSON(needs) }}
+          EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
+        run: python3 -B scripts/ci_baseline.py aggregate --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --baseline .ci/baseline/baseline.json --compile-receipt .ci/compile/compile.json --output .ci/aggregate/aggregate.json
+      - name: Summarize explicit execution and skip meanings
+        if: always()
+        run: |
+          echo 'The aggregate requires successful selection, offline execution receipts, and selected compiler/job outcomes. A documentation compile skip is not a compiler or native runtime pass. Inspect the ci-* artifacts for exact head/base, commands, counts, fallback and skip reasons.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain aggregate verdict and dependency outcomes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-aggregate-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/aggregate/
+          retention-days: 7
+          if-no-files-found: error

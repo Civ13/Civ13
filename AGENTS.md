@@ -839,11 +839,30 @@ and bounded opt-in owner-field inspection; outcome rows share deletion profiling
 forced-call buckets, not exact distinct types after saturation.
 
 <!-- 2026-10-12: opt-in regression CI -->
-Existing game and tooling regression suites are manual opt-in. PRs adding
-executable integration tests select their registered suite only for that PR;
-ordinary game edits and edits to existing tests do not auto-select regressions.
-Keep compilation, workflow validation and publication checks separate. Register
-new suite guards through ci-selection.yml; see docs/ci-selection.md.
+<!-- 2026-10-24: bounded offline CI baseline and exact-source receipts -->
+CI always runs selector-policy, stubbed bootstrap and serializer-source tests.
+scripts/ci_baseline.py registers exact reviewed offline files and bounded impact
+paths for research/ping scheduling, persistence-year projections and synthetic
+evidence validation. Affected production, existing-test and helper edits select
+those files; unknown impact or missing comparisons explicitly selects the whole
+small offline registry. Do not add broad Python discovery or native launchers to
+this registry without inspecting imports, subprocesses, dependencies and cost.
+Other existing regressions retain manual opt-in and introduced-test admission;
+ordinary edits do not expand native/costly admission. Register those suite guards
+through ci-selection.yml. Preserve all separate execution/resource holds.
+
+CI required aggregate requires successful selected jobs and exact head/base,
+run/attempt and selection-bound offline/compile receipts. Missing, failed,
+unexpectedly skipped or empty required execution fails. Documentation-only
+compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
+and docs/ci-selection.md; a job-level green alone does not describe what ran.
+Hosted DreamMaker 516.1681 is real compilation; Python projections, compiled
+core_boot variants and native runtime/gameplay acceptance are separate evidence.
+Cloud-only workers must keep unavailable local native checks as not_run. After
+owner review and authorized push, obtain hosted validation for the current head
+and inspect its outcomes/artifacts; never substitute local tool absence or an
+older green run. This policy does not authorize installing native tools, running
+held probes, deployment, publication, branch-protection changes or merging.
 
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual

@@ -1,4 +1,4 @@
-"""Fail-closed selection for expensive game checks; unknown paths compile; regressions require opt-in or new tests."""
+"""Fail-closed compilation selection and bounded reviewed offline impact selection."""
 import argparse
 import os
 import json
@@ -82,8 +82,8 @@ def select(base, head):
     try:
         paths = subprocess.check_output(
             ['git', 'diff', '--name-only', '--no-renames', '-z', base, head],
-            stderr=subprocess.PIPE).decode('utf-8').split('\0')
-    except (subprocess.CalledProcessError, UnicodeError):
+            stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
+    except (subprocess.SubprocessError, UnicodeError):
         return True, 'Comparison unavailable; compile game'
     paths = [path for path in paths if path]
     game = needs_game(paths)
@@ -103,8 +103,8 @@ def introduced_tests(base, head, event):
     try:
         paths = subprocess.check_output(
             ['git', 'diff', '--name-only', '--diff-filter=A', '-M', '-z', base, head],
-            stderr=subprocess.PIPE).decode('utf-8').split('\0')
-    except (subprocess.CalledProcessError, UnicodeError):
+            stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
+    except (subprocess.SubprocessError, UnicodeError):
         return []
     suites = set()
     for path in paths:
@@ -128,10 +128,15 @@ def main():
     parser.add_argument('--event', default='')
     parser.add_argument('--extensive', choices=('true', 'false'), default='false')
     parser.add_argument('--build-prefix', choices=('true', 'false'), default='false')
+    parser.add_argument('--receipt', help='Exact-source machine-readable selection receipt')
     args = parser.parse_args()
     game, extensive, new_tests, reason = selections(
         args.base, args.head, args.event, args.extensive == 'true',
         args.build_prefix == 'true', load_event(os.environ.get('GITHUB_EVENT_PATH')))
+    if args.receipt:
+        from ci_baseline import selection_receipt, write_json
+        write_json(args.receipt, selection_receipt(args.base, args.head, game, extensive,
+                                                   new_tests, reason, args.event))
     with open(args.output, 'a', encoding='utf-8') as output:
         output.write('new_tests=' + json.dumps(new_tests, separators=(',', ':')) + '\n')
         output.write(f'game={str(game).lower()}\nextensive={str(extensive).lower()}\n')
