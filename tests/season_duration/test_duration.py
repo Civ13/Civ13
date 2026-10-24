@@ -81,11 +81,18 @@ class DurationTests(unittest.TestCase):
             self.assertEqual(body(self.source, signature), body(old, signature))
         for relative in ("code/modules/admin/verbs/weather.dm", "code/processes/abandoned_items.dm",
                          "code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm",
-                         "code/modules/persistence/durable_world.dm", "code/processes/weather.dm",
+                         "code/modules/persistence/durable_world.dm",
                          "code/game/objects/map_metadata/nomads/nomads.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT)
             self.assertEqual((ROOT / relative).read_bytes(), before, relative)
+        # Weather selection can evolve independently. Keep this duration check
+        # scoped to its startup cadence/defaults; weather_policy checks RNG parity.
+        relative = "code/processes/weather.dm"
+        before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
+        current = (ROOT / relative).read_text()
+        self.assertEqual(current.split("/process/weather/fire()", 1)[0],
+                         before.split("/process/weather/fire()", 1)[0])
 
     def test_independent_special_maps_keep_original_timers_and_initial_thirty(self):
         for name in ("mountain", "ice_age"):
