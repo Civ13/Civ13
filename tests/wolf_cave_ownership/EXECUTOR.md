@@ -20,8 +20,11 @@ client launcher, public port parameter or arbitrary case selector.
   **256 MiB**. Both breakaway flags are absent. Limits are queried after setting,
   after assignment, before resume, and at each monitor sample. A denied child
   process or assignment is a failure; there is no privilege or fallback path.
-- `CreateProcessW` creates the exact hashed executable **suspended**, hidden and
-  without breakaway. Before resume, assignment and membership are checked, the
+- `CreateProcessW` creates the exact hashed executable **suspended**, with
+  `DETACHED_PROCESS` and without breakaway. The proposed flags request no console
+  attachment; `CREATE_NO_WINDOW` is removed. See [CONSOLE_STARTUP.md](CONSOLE_STARTUP.md)
+  for rationale and the unverified native result. Before resume, assignment and
+  membership are checked, the
   image and creation FILETIME are retained, and all packet/tool/input hashes are
   rechecked. No named shared Job or PID-based termination is used. The optional
   unexpected-member diagnostic opens limited-query handles only while the exact

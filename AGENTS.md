@@ -295,6 +295,9 @@ the third identified an owned conhost and logged the former missing declaration.
 They establish no cave runtime result; preserve their original frozen packets.
 Offline cave executor tests supply a canonical interpreter fixture path because
 Ubuntu python3 is a symlink; native packet path/hash/link checks stay unchanged.
+The proposed cave backend uses DETACHED_PROCESS instead of CREATE_NO_WINDOW to
+avoid startup console attachment. Its conhost hypothesis is native-unverified;
+all extra Job members still reject. See tests/wolf_cave_ownership/CONSOLE_STARTUP.md.
 
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.

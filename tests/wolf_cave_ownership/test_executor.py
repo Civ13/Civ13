@@ -336,7 +336,7 @@ class ExecutorTests(unittest.TestCase):
         self.assertEqual(ex.POLICY,{'child_bytes':268435456,'compile_seconds':60,'runtime_seconds':20,
                                    'cleanup_seconds':5,'max_cells':144,'sample_seconds':.05,
                                    'min_free_bytes':1073741824,'max_output_bytes':16777216})
-        self.assertEqual((win.CAP,win.FLAGS,win.CREATE_FLAGS),(268435456,0x2308,0x08080404))
+        self.assertEqual((win.CAP,win.FLAGS),(268435456,0x2308))
 
 
 class Function:
@@ -513,6 +513,28 @@ class WindowsTests(unittest.TestCase):
         self.assertEqual(relevant,['IsProcessInJob','QueryFullProcessImageNameW','IsProcessInJob','GetProcessTimes','IsProcessInJob'])
         self.assertTrue(adapter.cleanup(child)['all_exited'])
         self.assertFalse(any(name=='TerminateProcess' and args[0]==900 for name,args in native.calls))
+
+    def test_detached_creation_preserves_redirects_and_rejects_console_host(self):
+        adapter,child,native=self.second_member(self.root)
+        self.assertEqual(native.creation_flags,0x0008040c)
+        self.assertFalse(native.creation_flags & (0x08000000 | 0x10 | 0x01000000))
+        self.assertEqual(native.inherited,[11,12,13])
+        self.assertEqual((native.startup.stdin,native.startup.stdout,native.startup.stderr),(13,11,12))
+        self.assertEqual((native.startup.flags,native.startup.show),(0x101,0))
+        original=native.call
+        def call(name,args):
+            result=original(name,args)
+            if name=='QueryFullProcessImageNameW' and args[0]==900:
+                args[2].value='C:/Windows/System32/conhost.exe'
+            return result
+        native.call=call
+        with self.assertRaisesRegex(RuntimeError,'membership unavailable') as caught:
+            adapter.sample(child)
+        row=caught.exception.sample_diagnostic['unexpected_members'][0]
+        self.assertEqual(row['identity']['image'],'C:/Windows/System32/conhost.exe')
+        self.assertEqual(row['status'],'verified-owned');self.assertTrue(row['handle_closed'])
+        self.assertTrue(adapter.cleanup(child)['all_exited'])
+        self.assertTrue(all(handle in native.closed for handle in (100,300,400,900)))
 
     def test_reused_foreign_pid_is_not_read_when_membership_check_fails(self):
         adapter,child,native=self.second_member(self.root);original=native.call

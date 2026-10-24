@@ -16,7 +16,9 @@ import time
 U32, BOOL, HANDLE = C.c_uint32, C.c_int32, C.c_void_p
 CAP = 256 * 1024**2
 FLAGS = 0x2000 | 0x8 | 0x100 | 0x200  # kill-on-close, active=1, process+job memory
-CREATE_FLAGS = 0x4 | 0x400 | 0x80000 | 0x08000000
+# Suspended, DETACHED_PROCESS (no console attachment), Unicode, extended startup.
+# Do not combine with CREATE_NO_WINDOW, which is ignored for detached processes.
+CREATE_FLAGS = 0x4 | 0x8 | 0x400 | 0x80000
 
 
 class Basic(C.Structure):
