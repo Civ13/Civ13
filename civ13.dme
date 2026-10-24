@@ -1257,6 +1257,7 @@
 #include "code\processes\time_track.dm"
 #include "code\processes\vote.dm"
 #include "code\processes\weather.dm"
+#include "code\processes\snowfall_ground.dm"
 #include "code\processes\lighting\overlays.dm"
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"

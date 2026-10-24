@@ -1,5 +1,6 @@
 """Event service/end-body traces with an explicit independent timer adapter."""
 from pathlib import Path
+import hashlib
 import subprocess
 from types import SimpleNamespace as NS
 import unittest
@@ -9,6 +10,16 @@ from test_policy import ROOT, DMList, body, process, state
 EVENTS = ROOT / "code/modules/persistence/durable_environment.dm"
 QUEUE = ROOT / "code/modules/persistence/durable_timers.dm"
 PUBLISHED = "8bf59bd57d3b160dbb624c79063be596a60d1a0b"
+MAIN_BASE = "97bb071f3b73447d01365fd76ccac4a97b7f0bcf"
+
+
+def early_return_control():
+    # Exact published process bytes; keep the counterfactual after squash merge
+    # without depending on a superseded PR branch being fetched in clean CI.
+    data = (Path(__file__).parent / 'fixtures/early_return_weather.dm').read_bytes()
+    if hashlib.sha256(data).hexdigest() != 'c71cc1bd5ebf7e4e1e590d9685b08bb221c0ff54038175e59782145d51f0fb41':
+        raise ValueError('immutable published early-return control changed')
+    return data.decode().replace('\r\n', '\n')
 
 
 def event_proc(source, signature):
@@ -121,7 +132,7 @@ class EventTests(unittest.TestCase):
         self.assertEqual(s.probabilities, [])
 
     def test_published_early_return_control_skips_service_but_does_not_cancel_independent_expiry(self):
-        old = subprocess.check_output(["git", "show", PUBLISHED + ":code/processes/weather.dm"], cwd=ROOT, text=True)
+        old = early_return_control()
         s, p, expire = active("blizzard")
         process(old, include_durable=True)(p, s)
         self.assertEqual(s.service_calls, 0, "published defect did not suppress tail service")
@@ -131,12 +142,12 @@ class EventTests(unittest.TestCase):
         self.assertEqual(s.probabilities, [])
 
     def test_legacy_tail_and_timer_ownership_are_unchanged(self):
-        old = subprocess.check_output(["git", "show", PUBLISHED + ":code/processes/weather.dm"], cwd=ROOT, text=True)
+        old = early_return_control()
         marker = "\tif(map && map.uses_durable_metadata())"
         self.assertEqual(self.source.split(marker, 1)[1], old.split(marker, 1)[1])
         for file in (EVENTS, QUEUE):
             relative = file.relative_to(ROOT).as_posix()
-            self.assertEqual(file.read_bytes(), subprocess.check_output(["git", "show", PUBLISHED + ":" + relative], cwd=ROOT))
+            self.assertEqual(file.read_bytes(), subprocess.check_output(["git", "show", MAIN_BASE + ":" + relative], cwd=ROOT))
 
 
 if __name__ == "__main__":

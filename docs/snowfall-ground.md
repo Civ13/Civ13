@@ -38,6 +38,12 @@ image has no new depth/edge artwork; native appearance/clipping remains unverifi
 `has_snow_cover()` supplies the existing snow movement slowdown, foot cold check,
 footstep sounds and shovel/spoon/ant snow collection. Generated units are consumed
 separately from authored `available_snow`; the final unit reveals the same soil.
+With the initial two-unit cap, up to two successful shovel collections clear a
+full generated layer. Dirt turf identity, fertility, loose dirt and contents are
+preserved, not reconstructed. A cleared layer yields nothing again until actual
+eligible snowfall accumulates. Interrupted actions yield nothing. Authored snow
+retains its explicit existing collection/trench terrain changes; the feature does
+not invent hidden dirt underneath an authored permanent snow biome.
 Completion rechecks current tile/savehold/available units and local melting before
 minting a pile. Snow-covered grass cannot produce grass cuttings, and plough/road
 work requires clearing cover first. Seed planting still requires excluded ploughed

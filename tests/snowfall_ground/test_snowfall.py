@@ -9,7 +9,7 @@ from source_contract import without_season_snow
 
 ROOT = Path(__file__).resolve().parents[2]
 FILE = ROOT / 'code/modules/1713/snowfall_ground.dm'
-SOURCE = FILE.read_text()
+SOURCE = FILE.read_text() + (ROOT / 'code/processes/snowfall_ground.dm').read_text()
 BASE = 'fa363b8a01ed7d936c10a6303ce1be4c26d82ab0'
 
 
@@ -95,6 +95,7 @@ class Tile:
         self.soil, self.loose_dirt, self.contents = 83, 3, ['well', 'player']
         self.heat = []
         self.generation = 1
+        self.replacements = []
 
     def __getattr__(self, key):
         if key in self.funcs:
@@ -110,6 +111,10 @@ class Tile:
 
     def register(self):
         self.registered = self.eligible()
+
+    def replace(self, kind):
+        self.replacements.append(kind)
+        self.kind = kind
 
     def temperature(self):
         # Project the actual shared heat-source tail. Climate prefix is injected.
@@ -127,7 +132,73 @@ class Tile:
         return c
 
 
+def shovel_action():
+    """Execute the actual normal-intent snow branch with an injected wait/actor."""
+    text = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text()
+    start = text.index('\t\t\t\tif (T.has_snow_cover() && istype(H))')
+    end = text.index('\n\t\t\t\telse if ', start)
+    operations = {
+        'if (T.has_snow_cover() && istype(H))': 'if T.has_snow():',
+        'if (T.snow_units() <= 0)': 'if T.units() <= 0:',
+        'return': 'return',
+        'H.shoveling = TRUE': 'H.shoveling = True', 'H.shoveling = FALSE': 'H.shoveling = False',
+        'if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))': 'if not wait(T):',
+        'if (!T || T.snow_units() <= 0)': 'if T is None or T.units() <= 0:',
+        'if (!T.take_snow(snow_generation))': 'if not T.take(snow_generation):',
+        'new /obj/item/weapon/snowwall(T)': 'piles.append(T)',
+        'if (istype(T, /turf/floor/winter/grass))': 'if T.kind == "winter/grass":',
+        'T.ChangeTurf(/turf/floor/grass)': 'T.replace("grass")',
+        'else if (istype(T, /turf/floor/dirt/winter))': 'elif T.kind == "dirt/winter":',
+        'T.ChangeTurf(/turf/floor/dirt)': 'T.replace("dirt")',
+    }
+    lines = ['def execute(T, H, wait, piles):', '    snow_generation = T.generation']
+    for raw in text[start:end].splitlines():
+        if not raw.strip(): continue
+        depth = len(raw) - len(raw.lstrip('\t')) - 3
+        code = raw.strip()
+        if code.startswith(('to_chat(', 'user.visible_message(', 'playsound(', 'H.adaptStat(')):
+            translated = 'pass' # Transport/actor-stat adapters; no resource/terrain work.
+        else: translated = operations[code]
+        lines.append('    ' * depth + translated)
+    env = {}; exec('\n'.join(lines), env)
+    return env['execute']
+
+
 class SnowTests(unittest.TestCase):
+    def test_actual_shovel_branch_clears_generated_cover_to_same_dirt_without_repeat_yields(self):
+        run = shovel_action()
+        t = Tile(kind='dirt'); t.check(); t.check()
+        before = (id(t), t.kind, t.soil, t.loose_dirt, t.contents.copy())
+        actor, piles = NS(shoveling=False), []
+        for _ in range(3): run(t, actor, lambda tile: True, piles)
+        self.assertEqual((t.weather_snow, len(piles), t.replacements), (0, 2, []))
+        self.assertEqual((id(t), t.kind, t.soil, t.loose_dirt, t.contents), before)
+        t.area.icon_state = ''; t.check(); run(t, actor, lambda tile: True, piles)
+        self.assertEqual(len(piles), 2, 'cleared cover regenerated without snowfall')
+        t.area.icon_state = 'snow2'; t.check(); run(t, actor, lambda tile: True, piles)
+        self.assertEqual(len(piles), 3)
+
+    def test_actual_shovel_wait_interruption_replacement_and_reload_cannot_yield(self):
+        run = shovel_action()
+        for change in ('interrupted', 'replacement', 'reload', 'heat', 'savehold'):
+            t = Tile(kind='dirt'); t.weather_snow = 2
+            actor, piles = NS(shoveling=False), []
+            def wait(tile):
+                if change == 'replacement': tile.generation += 1
+                if change == 'reload': tile.load()
+                if change == 'heat': tile.c = 22
+                if change == 'savehold': tile.blocked = True
+                return change != 'interrupted'
+            run(t, actor, wait, piles)
+            self.assertEqual((piles, t.replacements, actor.shoveling), ([], [], False), change)
+            self.assertEqual((t.kind, t.soil, t.loose_dirt, t.contents), ('dirt', 83, 3, ['well', 'player']))
+            self.assertEqual(t.weather_snow, 0 if change == 'heat' else 2)
+
+    def test_actual_shovel_authored_snow_retains_existing_explicit_terrain_behavior(self):
+        t = Tile(kind='dirt/winter'); t.native_snow = True; t.available_snow = 1
+        piles = []; shovel_action()(t, NS(shoveling=False), lambda tile: True, piles)
+        self.assertEqual((len(piles), t.replacements), (1, ['dirt']))
+
     def test_actual_process_batch_deadline_tick_budget_and_replaced_candidate(self):
         operations = {
             'if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || world.time < snowfall_ground_next)': 'if g.blocked or g.now < g.next:',

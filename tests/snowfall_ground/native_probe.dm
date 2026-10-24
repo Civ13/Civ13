@@ -20,3 +20,26 @@
 	T.weather_snow = old_units
 	T.snowfall_ground_icon()
 	return results
+
+// Future harness supplies an isolated exact dirt turf with get_temp(T) <= 0,
+// no persistence operation, and owns cleanup. This is not a player wait test.
+/proc/snowfall_generated_shovel_native_probe(turf/floor/dirt/T)
+	if (!T || T.type != /turf/floor/dirt || get_temp(T) > 0 || persistence_active_operation || persistence_save_in_progress)
+		return list("rejected_fixture" = TRUE)
+	var/old_units = T.weather_snow
+	var/old_soil = T.soil_nutrition
+	var/old_dirt = T.available_dirt
+	var/old_contents = T.contents.len
+	var/generation = T.snowfall_ground_generation
+	T.weather_snow = 2
+	var/list/results = list()
+	results["first_unit"] = T.take_snow(generation) && T.weather_snow == 1
+	results["last_unit"] = T.take_snow(generation) && !T.has_snow_cover()
+	results["no_repeat_yield"] = !T.take_snow(generation)
+	results["same_substrate"] = T.type == /turf/floor/dirt && T.soil_nutrition == old_soil && T.available_dirt == old_dirt && T.contents.len == old_contents
+	T.weather_snow = 1
+	T.after_load()
+	results["old_wait_rejected"] = !T.take_snow(generation) && T.weather_snow == 1
+	T.weather_snow = old_units
+	T.snowfall_ground_icon()
+	return results

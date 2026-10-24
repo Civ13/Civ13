@@ -176,6 +176,8 @@
 		spawn(15000)
 			change_weather(WEATHER_WET)
 			spawn(1200)
+				return
+
 /obj/map_metadata/colonia/cross_message(faction)
 	return "<font size = 3><span class = 'notice'><b>The grace wall has been lifted.</b></font></span>"
 

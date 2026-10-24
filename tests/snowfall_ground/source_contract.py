@@ -19,4 +19,15 @@ def without_season_snow(text):
                 continue
         result.append(line)
         i += 1
-    return ''.join(result), removed
+    projected = ''.join(result)
+    # Keep callbacks/deadlines but remove locals made unused by snow-only loops.
+    for phase in (8, 9):
+        signature = '/obj/map_metadata/proc/season_phase_' + str(phase) + '(var/epoch)'
+        if signature in projected:
+            start = projected.index(signature)
+            end = projected.find('\n/', start + 1)
+            block = projected[start:end]
+            projected = projected[:start] + block.replace('\n\tvar/season_work = 0', '') + projected[end:]
+    projected = projected.replace('\t\t\tspawn(1200)\n/obj/map_metadata/colonia/cross_message',
+                                  '\t\t\tspawn(1200)\n\t\t\t\treturn\n\n/obj/map_metadata/colonia/cross_message')
+    return projected, removed
