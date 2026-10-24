@@ -336,6 +336,8 @@
 	return FALSE
 
 /proc/modify_weather_somehow()
+	if (map && !map.weather_policy_valid())
+		return
 	if (weather == WEATHER_NONE)
 		return
 
@@ -373,7 +375,9 @@
 			if (map.nomads || map.civilizations )
 				possibilities += WEATHER_SMOG
 	*/
-	if (possibilities.len)
+	if (map)
+		possibilities = map.weather_policy_choices(possibilities)
+	if (possibilities && possibilities.len)
 		change_weather(pick(possibilities))
 
 /proc/get_temp(var/atom/A) //gets the local (area-based) temperature

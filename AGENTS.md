@@ -1,5 +1,21 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: shared season duration -->
+Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
+an optional map.season_duration_minutes override. Pending durable remainders are
+unchanged; map overrides are author policy, excluded from historical imports.
+Mountain and Ice Age retain initial30-minute shared timers and their explicit
+recurrence. Independent calendars and literal startup delays stay separate.
+tests/season_duration is source-only; native timer/reload acceptance stays pending.
+
+<!-- 2026-10-24: per-map random weather policy -->
+weather_timing/weather_transitions are optional author fields for existing random
+weather. Null keeps old rolls, season pools and process timings; configured rows
+intersect seasonal/map eligibility, and empty choices hold current weather.
+Invalid policy stops random helpers before mutations. Direct event calls retain
+their behavior. Fields are excluded from imports; no saved cursor or event callback.
+tests/weather_policy is offline projection/parity evidence, not native acceptance.
+
 <!-- 2026-10-24: configured base season flow -->
 season_cycle is author policy for the serialized base worker: null keeps ordinary
 order; 2-4 unique implemented seasons may reorder/skip. Invalid/current-absent

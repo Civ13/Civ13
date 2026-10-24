@@ -1,5 +1,6 @@
 
 /obj/map_metadata/nomads/ice_age
+	season_duration_minutes = 30 // Preserve initial loop before its asymmetric 15/45-minute cycle.
 	abandonment_season_cycle = TRUE
 	abandonment_season_autonomous = TRUE
 	ID = MAP_NOMADS_ICE_AGE
