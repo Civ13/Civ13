@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: authoritative zones and spawn registries -->
+Durable schema 2/topology 2 captures native area IDs in per-level zone_capture
+records at turf-frame admission. IDs use lineage counters, not new RNG calls.
+Validate candidate files with yields; do not restore a full-world no-yield JSON
+comparison. Area registration is operation-staged, retirement precedes publication,
+and load/recovery readers require admission. No rollback exists after ClearMap.
+Schema 1 keeps its legacy reader; tests/zone_persistence is offline/preparation
+evidence only. Local IDs are not shard/custody IDs or logical geographic layers.
+
 <!-- 2026-10-24: shared season duration -->
 Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
 an optional map.season_duration_minutes override. Pending durable remainders are

@@ -1,4 +1,4 @@
-/proc/setup_everything()
+/proc/setup_everything(datum/persistence_area_startup/startup)
 
 	// job_master
 	if (!job_master)
@@ -25,8 +25,13 @@
 
 	admin_notice("<span class='danger'>Initializing areas...</span>", R_DEBUG)
 	sleep(-1)
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(!startup) throw EXCEPTION("Initial area pass capability missing")
+	startup.initialize_areas()
+#else
 	for (var/area/area in area_list)
 		area.initialize()
+#endif
 
 	admin_notice("<span class='danger'>Initializing approved list...</span>", R_DEBUG)
 	sleep(-1)

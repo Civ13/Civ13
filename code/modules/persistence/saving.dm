@@ -14,9 +14,13 @@
 	if(building_allocating_z || dimension_recovery_required)
 		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
 	prepare_player_ownership()
+	var/generation_nonce = md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]")
+	var/generation = "round-v2:[generation_nonce]"
+	if(map.uses_durable_metadata()) begin_zone_export(generation)
 	var/list/world_state = capture_durable_world()
 	var/prefix = world_state ? "round-v2" : "round-v1"
-	var/generation = "[prefix]:[md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]")]"
+	generation = "[prefix]:[generation_nonce]"
+	if(zone_export_state && !world_state) throw EXCEPTION("Admitted zone capture lost its metadata profile")
 	var/list/round_state = capture_round_state(generation)
 	if(world_state)
 		round_state["version"] = 2
@@ -77,11 +81,18 @@
 				savefile.cd = "/map/[turf.z]/[turf.y]"
 				savefile["[turf.x]"] << ref
 				TICK_CHECK
+		savefile = null // Close the candidate level before consistency validation.
 		log_startup_progress("	Saved z-level [A].")
 	clear_bookkeeping()
 	if(world_state)
+		if(zone_export_state) finalize_zone_export(world_state)
 		world_state["nodes"] = durable_export.finish_export()
 		durable_export = null
+		if(zone_export_state)
+			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained")
+			clear_saved_zones()
+			release_durable_world()
+			clear_zone_export()
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
 	if(!text2file(json_encode(round_state), "map_saves/round.json"))
@@ -136,6 +147,7 @@
 		for(var/datum/save_transfer/ticket in frame.tickets)
 			if(!ticket.committed)
 				throw EXCEPTION("Save hook left a prepared transfer uncommitted")
+		capture_zone_turf(savefile, frame)
 		savefile.cd = entry_path(savefile, ref)
 		savefile["type"] << A.type
 		if(frame.accepts_children)
@@ -187,6 +199,7 @@
 		return list("kind" = "map")
 	if(istype(value, /area))
 		var/area/AR = value
+		if(zone_export_state) return encode_zone_reference(AR)
 		var/turf/T = locate(/turf) in AR
 		if(!T)
 			throw EXCEPTION("Referenced area has no world turf: [AR.type]")

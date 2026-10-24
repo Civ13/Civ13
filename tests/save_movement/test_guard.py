@@ -505,12 +505,14 @@ class GuardTests(unittest.TestCase):
             self.assertIsNotNone(f.env['persistence_active_operation'])
             attempts.append('roof')
         f.store.clear_saved_roof_areas = roof_cleanup
+        f.store.clear_saved_zones = lambda: attempts.append('zones')
+        f.store.clear_zone_export = lambda: attempts.append('zone-export')
         f.store.clear_bookkeeping = failing_cleanup('bookkeeping')
         f.store.release_durable_world = failing_cleanup('durable')
         f.store.cleanup_world_operation = lambda: cleanup(f.store)
         f.store.save_world_contents = lambda operation: False
         self.assertFalse(f.backend(f.store, 'save'))
-        self.assertEqual(attempts, ['roof', 'bookkeeping', 'durable'])
+        self.assertEqual(attempts, ['zones', 'zone-export', 'roof', 'bookkeeping', 'durable'])
         self.assertEqual(len(logs), 2)
         self.assertIsNone(f.env['persistence_active_operation'])
         self.assertFalse(f.env['persistence_save_in_progress'])
