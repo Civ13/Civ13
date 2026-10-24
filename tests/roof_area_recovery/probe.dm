@@ -218,4 +218,12 @@
 		text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks, "mode" = mode)), "roof-result.json")
 	catch(var/exception/e)
 		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "mode" = mode, "error" = "[e]")), "roof-result.json")
+	// Optional fixture-only post-assertion park. The controller still judges the
+	// unchanged result, observes this live child and owns termination/cleanup.
+	var/completion_session = file2text("roof-session.txt")
+	if(completion_session)
+		for(var/completion_pulse = 1, completion_pulse <= 50, completion_pulse++)
+			text2file(json_encode(list("session" = completion_session, "mode" = mode, "result_md5" = md5(file("roof-result.json")), "checks" = durable_probe_checks, "pulse" = completion_pulse)), "roof-quiet-[completion_pulse].json")
+			text2file(completion_session, "roof-quiet-[completion_pulse].ready")
+			sleep(1)
 	del(world)

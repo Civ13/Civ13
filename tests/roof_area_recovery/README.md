@@ -203,6 +203,21 @@ Retain source/DME/patch hashes, compiler output, per-mode result/log hashes,
 process birth/exit identities, external socket observations and cleanup receipts.
 The proposed limits, fixtures and offline packets are not an execution grant.
 
+The completion proposal gives each runtime a fresh controller session. After all
+existing assertions/result publication, the probe emits at most 50 numbered
+pulses separated by sleep(1), then exits. Each pulse binds session, mode, result
+file MD5 and assertion counter; the controller independently freezes SHA256.
+This is a bounded post-assertion park, not proof that every engine callback is
+quiescent. The controller requires pulse progress across at least 0.1 seconds of
+successful live checks, stable result/counter/logs and at most 0.05 observed CPU
+seconds before recording and sending SIGKILL to the owned child group. Only that
+explicit contract admits exit -9, with successful normal owned cleanup and empty
+final census. Compile/legacy natural paths retain exit0. Every observation denial
+fails immediately in the completion path; no delayed-terminal exception applies.
+All existing deadlines, resource/socket/output bounds and assertion oracles stay.
+Failed CI40103757399 and its consumed request retain their failed verdicts. This
+source-only proposal has not been compiled or executed natively.
+
 ## Private generation acceptance
 
 Original saved payloads and backups remain untouched. After reviewed synthetic
