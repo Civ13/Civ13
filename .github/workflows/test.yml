@@ -33,6 +33,10 @@ on:
         description: 'Opt in only to isolated save restart transaction checks'
         type: boolean
         default: false
+      save_latency_regressions:
+        description: 'Opt in to bounded save, compatibility, admission and current persistence probes'
+        type: boolean
+        default: false
       world_save_regressions:
         description: 'Opt in only to isolated world-save and expanded-level recovery checks'
         type: boolean
@@ -86,8 +90,11 @@ jobs:
         run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
       - name: Test serializer profiling source contracts
         run: python3 -B tests/world_save/test_progress_sources.py -v
+      - name: Test representative save executor contracts without native effects
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions == true
+        run: python3 -B -m unittest discover -s tests/save_latency/representative -v
       - name: Prepare roof-area recovery fixture offline
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || (github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
       - name: Test digging tool and research admission offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')
@@ -125,7 +132,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
       - name: Test protected sleep source and fixture contracts
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true || inputs.save_latency_regressions == true
         run: |
           python3 -B tests/world_save/test_sleep_transfer_sources.py -v
           python3 -B tests/world_save/test_cross_level_sources.py -v
@@ -269,7 +276,7 @@ jobs:
 
       - name: Verify synthetic saved-roof recovery and two defect controls
         id: roof_native
-        if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+        if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && (contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
         timeout-minutes: 40
         shell: bash
         env:
@@ -732,19 +739,19 @@ jobs:
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --baseline --output "$RUNNER_TEMP/lighting-baseline.json"
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
       - name: Check exclusion dispatch source while native execution is held
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
         run: |
           python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
           python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
       - name: Verify Linux exclusion dispatch parity and mutation controls
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
         timeout-minutes: 5
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/exclusion_dispatch/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/exclusion-native"
       - name: Retain Linux exclusion dispatch evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting'))
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}
@@ -977,7 +984,7 @@ jobs:
           path: ${{ runner.temp }}/yeast-bread/
           retention-days: 7
       - name: Verify centralized z admission and unmeasured controls
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true || inputs.save_latency_regressions == true
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -996,7 +1003,7 @@ jobs:
           done
           python3 tests/world_save/run-durable-world.py --dimension-bootstrap --profile europe --byond-bin "$PWD/BYOND/byond/bin"
       - name: Upload z admission evidence
-        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true)
+        if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_z_budget') || inputs.persistence_integration_regressions == true || inputs.save_latency_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: new-z-budget-${{ github.event.pull_request.head.sha || github.sha }}
@@ -1126,7 +1133,7 @@ jobs:
           if-no-files-found: error
       - name: Save/load operation admission regression
         id: world_save_operations
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save_operations') || (github.event_name == 'workflow_dispatch' && inputs.world_save_operation_regressions)
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save_operations') || (github.event_name == 'workflow_dispatch' && (inputs.world_save_operation_regressions || inputs.save_latency_regressions))
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/world-save-operations"
@@ -1171,9 +1178,9 @@ jobs:
           name: world-save-profile
           path: ${{ runner.temp }}/world-save-profile/
 
-      - name: Verify protected sleep transfers and version-2 saves
+      - name: Verify protected sleep transfers and bounded save compatibility
         id: protected_sleep
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.protected_sleep_regressions == true || inputs.save_latency_regressions == true
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -1184,7 +1191,8 @@ jobs:
             python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
           python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case field-direct
-          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case move-direct --expect-current-defects
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case move-direct
+          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control first-capture
           # Synthetic writer/reader only. No private save path or staging upload.
           if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"; then
             # These two compiler logs contain only fixed synthetic source, never
@@ -1212,7 +1220,7 @@ jobs:
 
       - name: Offline world-save round-trip regression
         id: world_save
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || inputs.world_save_regressions == true
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/world_save') || inputs.persistence_integration_regressions == true || (inputs.world_save_regressions || inputs.save_latency_regressions) == true
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/world-save"
@@ -1250,6 +1258,39 @@ jobs:
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
         shell: bash
+      - name: Verify bounded admitted save traversal and backup recovery
+        id: save_latency
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions
+        timeout-minutes: 40
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/save-latency"
+          export TMPDIR="$RUNNER_TEMP/save-latency"
+          python3 -B -m unittest discover -s tests/save_latency -v
+          python3 -B -m unittest discover -s tests/world_save -p 'test_*.py' -v
+          saving_sha=$(sha256sum code/modules/persistence/saving.dm | cut -d ' ' -f 1)
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha"
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --publication-negative-control
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --progress --progress-clock-probe
+          python3 tests/world_save/run-string-path.py --byond-bin "$PWD/BYOND/byond/bin" --expected-saving-sha256 "$saving_sha" --progress --progress-fault-stage level_serialized --progress-fault-operation write
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --verify-backup
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --dense --verify-backup
+          for scenario in concurrent movement parent-deletion; do
+            python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --scenario "$scenario"
+          done
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --interrupt
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control yield
+          python3 tests/save_latency/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control old-reader
+      - name: Retain bounded save source and native evidence
+        if: always() && steps.save_latency.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: save-latency-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/save-latency/
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Retain ordinary world-save evidence
         if: always() && steps.world_save.outcome != 'skipped'
         uses: actions/upload-artifact@v4

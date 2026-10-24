@@ -1,4 +1,4 @@
-"""Characterize existing cross-level saver failures; this suite does not claim repair."""
+"""Exercise bounded cross-level captures and retain strict historical-defect controls."""
 import argparse
 import hashlib
 import json
@@ -36,6 +36,10 @@ BASELINE_DEFECTS = {
     'unplaced': 'FAIL: unplaced first capture was silently skipped or duplicated',
 }
 CONTROLS = {
+    'first-capture': ('saving.dm',
+                      'if(previous && previous["atom"] == A && previous["z"] != saving_z)',
+                      'if(previous && previous["atom"] == A && previous["z"] < 0)',
+                      'move-direct', BASELINE_DEFECTS['move-direct']),
     'binder': ('durable_graph.dm',
                'if(node["ref"] && (node["ref"] != ref || node["z"] != z))',
                'if(FALSE)', 'binder', 'FAIL: original graph binder accepted a true duplicate'),

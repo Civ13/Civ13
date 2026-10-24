@@ -16,6 +16,32 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 
 
+def historical_wound_roof_helpers(loading, existing):
+    """Keep the historical defect sources intact; add explicit current dependencies."""
+    start = ('// Only roof transformations backed by direct saved turf contents are projected.\n'
+             '// No save bytes or world areas change during this preflight.\n/map_storage\n')
+    end = '\n/map_storage/proc/Load_Entry('
+    if not loading.startswith(start) or loading.count(start) != 1 or loading.count(end) != 1:
+        raise RuntimeError('Historical wound roof compatibility anchors changed')
+    roof = loading[:loading.index(end)]
+    procedures = ('clear_saved_roof_areas', 'saved_roof_area_type', 'find_saved_roof_area',
+                  'unique_saved_roof_area', 'prepare_saved_roof_areas',
+                  'materialize_saved_roof_areas', 'restore_validated_roof',
+                  'is_loaded_validated_roof', 'verify_restored_roof_areas')
+    members = ('validated_roof_areas', 'validated_roof_entries', 'validated_roof_types',
+               'validated_roof_instances', 'validated_roof_absent', 'restoring_roof_areas')
+    if re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M) != list(procedures):
+        raise RuntimeError('Historical wound roof compatibility procedures changed')
+    declarations = roof.split('\n/map_storage/proc/', 1)[0]
+    if re.findall(r'^\tvar/(?:list/)?(\w+) = ', declarations, re.M) != list(members):
+        raise RuntimeError('Historical wound roof compatibility members changed')
+    patterns = [r'^/map_storage/proc/' + name + r'\(' for name in procedures]
+    patterns += [r'^\tvar/(?:list/)?' + name + r'\b' for name in members]
+    if any(re.search(pattern, existing, re.M) for pattern in patterns):
+        raise RuntimeError('Historical wound roof compatibility dependencies duplicated')
+    return roof
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
@@ -158,6 +184,26 @@ def main():
                 replacements[relative] = subprocess.check_output(
                     ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
             receipt['wound_control_commit'] = baseline
+            # Historical defect control with explicit current dependencies,
+            # not a reproduction of an entire historical game build. Keep both
+            # historical files byte-for-byte; supply the current roof API and
+            # content codec only in the fixture's functions copy.
+            loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
+            if loading.count(marker) != 1:
+                raise RuntimeError('Historical wound compatibility helper anchor changed')
+            start = loading.index(marker)
+            end = loading.find('\n/map_storage/proc/', start + len(marker))
+            helper = loading[start:end if end >= 0 else len(loading)]
+            relative = 'code/modules/persistence/functions.dm'
+            functions = (root / relative).read_text(encoding='utf-8')
+            existing = '\n'.join([functions, *replacements.values()])
+            if marker in existing:
+                raise RuntimeError('Historical wound content compatibility helper duplicated')
+            roof = historical_wound_roof_helpers(loading, existing)
+            replacements[relative] = functions + '\n' + roof + '\n' + helper
+            receipt['wound_control_compatibility_helper_sha256'] = hashlib.sha256(helper.encode()).hexdigest()
+            receipt['wound_control_roof_helpers_sha256'] = hashlib.sha256(roof.encode()).hexdigest()
         elif args.negative_control == 'lighting-shared':
             relative = 'code/modules/lighting/lighting_source.dm'
             text = (root / relative).read_text(encoding='utf-8')

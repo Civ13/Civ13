@@ -442,6 +442,17 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
 
+<!-- 2026-10-22: representative observer failure retention -->
+Representative sampler and observer waits must recheck their existing monotonic
+targets after early wakes. `tests/save_latency/representative` covers this offline.
+Phase log/diagnostic retention runs after owned cleanup on failures too; secondary
+retention errors preserve the original exception and never establish acceptance.
+
+<!-- 2026-10-24: bounded-save roof compatibility -->
+Roof preflight must use the shared versioned content decoder for typed formats
+2 and 3. A format-2-only plan skips chunked roof contents before area validation.
+Offline source checks do not establish native format-3 roof recovery.
+
 <!-- 2026-10-24: complete conditional offline projections -->
 The save_movement adapter selects the explicitly declared collector-disabled
 branch; it is not a general DM preprocessor. Proc-local column-zero #ifdef lines
@@ -1338,6 +1349,16 @@ initializer raises a type-mismatch exception. `tests/floor_decal_tracking` cover
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
 
+<!-- 2026-10-19: bounded admitted saver draft -->
+World-save traversal retains operation admission, durable state/player ownership,
+and active before_save_context transfer frames. Invalidated active parents fail
+closed with backup recovery; do not restore the old detached-parent exporter.
+Level format 3 adds bounded content chunks; keep version-2 and legacy readers,
+including durable reachability and ownership decoding. Round-state versioning is
+independent. Old readers reject version 3, so downgrade needs retained old files.
+The sleep(0)-below-80% policy increases effective duty cycle and is experimental.
+Dispatch save_latency_regressions for native dense/backup/heartbeat/refusal and
+current persistence checks; preparation alone is not acceptance or deployment.
 <!-- 2026-10-19: bot helper contention -->
 Bot control uses nonblocking flock and returns busy (75) without systemctl or
 cooldown writes under contention. The draft unit remains disabled pending

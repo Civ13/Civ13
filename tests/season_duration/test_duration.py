@@ -7,7 +7,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 META = "code/game/objects/map_metadata/_map_metadata.dm"
-BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
+# Accepted pre-timing PR tree, including its separately reviewed save codec.
+BASE = "093d661bc7de575f8145d94b24049fb2a6c14e83"
 
 
 def body(source, signature):

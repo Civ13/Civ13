@@ -190,6 +190,10 @@ map_storage
 		list/saving_references = list()
 		list/saving_export_frames = list()
 		list/saving_export_stack = list()
+		list/saving_content_owners = list()
+		list/saving_world_movables = list()
+		var/saving_work = 0
+		var/saving_slice_start = 0
 		list/all_loaded = list()
 		list/found_types = list()
 		list/saved_turfs = list()
@@ -272,6 +276,10 @@ map_storage
 		release_export_frame(frame)
 	saving_export_frames = list()
 	saving_export_stack = list()
+	saving_content_owners = list()
+	saving_world_movables = list()
+	saving_work = 0
+	saving_slice_start = world.tick_usage
 	saving_references = list()
 	existing_references = list()
 	found_types = list()
@@ -723,6 +731,10 @@ var/global/persistence_load_recovery_required = FALSE
 /map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)
 	if(!ref) return
 	var/key = "[ref]"
+	// Keep the first captured edge if a completed child later moves.
+	var/owner = saving_content_owners[key]
+	if(owner && owner != frame.entry) return
+	saving_content_owners[key] = frame.entry
 	if(!frame.content_seen[key])
 		frame.content_seen[key] = TRUE
 		frame.content_refs += key

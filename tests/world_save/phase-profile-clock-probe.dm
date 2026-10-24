@@ -30,6 +30,27 @@
 	var/list/totals = row["phase_wall_ds"]
 	check(totals["value"] == 10 && totals["object"] == 30 && totals["yield"] == 30 && totals["other"] == 20, "phase category attribution failed")
 	check(row["elapsed_real_ds"] == 90, "phase sample elapsed mismatch")
+	// Sub-ds transitions must telescope at the declared 0.1-second resolution.
+	world_save_progress_test_clock = 1100.75
+	world_save_progress_begin()
+	world_save_progress_test_clock = 1101.25
+	world_save_profile_phase("object")
+	world_save_progress_test_clock = 1101.75
+	world_save_profile_phase("value")
+	world_save_progress_test_clock = 1102.25
+	world_save_profile_row(row)
+	totals = row["phase_wall_ds"]
+	check(totals["other"] == 1 && totals["object"] == 0 && totals["value"] == 1 && row["elapsed_real_ds"] == 2, "fractional phase endpoints lost time")
+	world_save_progress_test_clock = 863999.75
+	world_save_progress_begin()
+	world_save_progress_test_clock = 0.25
+	world_save_profile_phase("object")
+	world_save_progress_test_clock = 0.75
+	world_save_profile_phase("value")
+	world_save_progress_test_clock = 1.25
+	world_save_profile_row(row)
+	totals = row["phase_wall_ds"]
+	check(totals["other"] == 1 && totals["object"] == 0 && totals["value"] == 1 && row["elapsed_real_ds"] == 2, "fractional midnight endpoints lost time")
 	world_save_progress_test_clock = 2000
 	world_save_progress_begin()
 	world_save_profile_phase("traversal")
