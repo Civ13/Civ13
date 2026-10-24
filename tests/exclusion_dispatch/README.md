@@ -1,4 +1,18 @@
-## Current-master integration (2026-10-20)
+## Current-master reconciliation (2026-10-24)
+
+The comparison now pins master `d6b06c638517bb4100beeca6a90d09adc3629fb7`.
+Reserved policy is already present, so only the two fullbright exclusions and
+the transient area-change owner are projected onto its reconstructed list
+baseline. Whole-file equality retains the roof recovery bookkeeping, collector
+instrumentation, date floor and all other current persistence behavior.
+The generated chain includes master's movable `original_target` guard before
+the later process hook, and retains the `next_animal_retaliation` mob exclusion.
+Historical reconstructed-hook checks and omission/parent controls remain.
+The complete collector conditional and selection tail are copied unchanged;
+the isolated fixture leaves the collector symbol undefined. This is source-only
+reconciliation; earlier native evidence does not verify this new candidate.
+
+## Historical master integration (2026-10-20)
 
 The active baseline is pinned to master
 `5bf351248de6050876fe5b53f91209a970cc5668`. Its three switch hooks are
@@ -8,6 +22,13 @@ variants. Offline tests require those reconstructed hooks to equal the historica
 bytes, including save-failure diagnostics, remain under whole-file equality;
 missing hooks and diagnostic mutations are rejected. This refresh changes the
 test reference only, not production behavior or the separate native hold.
+
+The area-change follow-up explicitly projects the runtime-only
+`turf.area_change_owner` exclusion into both comparison variants. Unique anchors
+reject duplicate projection or unrelated drift, and omission controls require
+the new exclusion. This compares dispatch under the same augmented policy; it
+does not claim unchanged historical serialization semantics or new native
+acceptance. The process-local transition token must not be exported or imported.
 
 ## Reserved-lighting integration policy
 

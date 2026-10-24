@@ -662,6 +662,29 @@ jobs:
       - name: Verify Nomads lifecycle supervisor offline contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
         run: python3 -m unittest discover -s tests/nomads_lifecycle -v
+      - name: Verify lighting plane composition modes
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/light_plane_composition')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -m venv "$RUNNER_TEMP/light-plane-tools"
+          "$RUNNER_TEMP/light-plane-tools/bin/python" -m pip install Pillow==11.3.0
+          "$RUNNER_TEMP/light-plane-tools/bin/python" -B -m unittest discover -s tests/light_plane_composition -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-change
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-change
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-owner
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-owner
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy-dynamic
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy-dynamic
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control coverage
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control bypass
+          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ordinary
+
       - name: Verify private collector native publication
         id: collector_native
         if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')

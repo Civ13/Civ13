@@ -211,3 +211,8 @@ var/list/mutate_on_tick = null
 	durable_export = null
 	durable_import = null
 	loading_z = 0
+
+// Disabled renderer coverage is runtime-only; minimal serializer fixtures have none.
+/atom/movable/lighting_fullbright
+/turf/proc/sync_fullbright_coverage()
+	return

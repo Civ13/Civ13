@@ -73,7 +73,7 @@ var/list/network_receipt = list()
 		else D.baseline_saved()
 	return (world.timeofday - start + 864000) % 864000
 /proc/run_probe()
-	var/list/keys = list("lighting_reserved","lighting_reserved_clearance_enabled","appearance","light","light_sources","affecting_lights","lighting_overlay","corners","has_opaque_atom","window_coeff_dirty","next_calculate_window_coeff","hud_used","HUDneed","HUDinventory","HUDfrippery","HUDprocess","HUDtech","hands","pullin","purged","i_select","m_select","zone_sel","persistence_export_frame","next_click","next_move","may_do_after","may_do_mob","blackout_click_owner","blackout_click_client_ref","blackout_click_counts","blackout_click_started","blackout_click_expires","weak_reference","pickaxe_mining_owner","mining_in_progress","pickaxe_mining_action","corpse_decay_record","abandonment_index","exercise_equipment","name","Appearance","hudneed","",0,1,2.5,null,/obj,list("appearance"),new/datum)
+	var/list/keys = list("original_target","next_animal_retaliation","area_change_owner","lighting_reserved","lighting_reserved_clearance_enabled","appearance","light","light_sources","affecting_lights","lighting_overlay","corners","has_opaque_atom","window_coeff_dirty","next_calculate_window_coeff","hud_used","HUDneed","HUDinventory","HUDfrippery","HUDprocess","HUDtech","hands","pullin","purged","i_select","m_select","zone_sel","persistence_export_frame","next_click","next_move","may_do_after","may_do_mob","blackout_click_owner","blackout_click_client_ref","blackout_click_counts","blackout_click_started","blackout_click_expires","weak_reference","pickaxe_mining_owner","mining_in_progress","pickaxe_mining_action","corpse_decay_record","abandonment_index","exercise_equipment","name","Appearance","hudneed","",0,1,2.5,null,/obj,list("appearance"),new/datum)
 	for(var/path in list(/datum,/atom/movable,/obj,/obj/item,/mob,/mob/living/human,/area,/turf/floor/dirt))
 		var/datum/D = ispath(path,/turf) ? new path(locate(2,2,1)) : new path
 		for(var/i = 1 to keys.len)
@@ -92,6 +92,7 @@ var/list/network_receipt = list()
 		mutate_parent = FALSE
 		if(isturf(D))
 			assert_equal(D.candidate_runtime("lighting_reserved"),TRUE,"new turf reserved policy")
+			assert_equal(D.candidate_runtime("area_change_owner"),TRUE,"area request owner is runtime-only")
 		if(isarea(D))
 			assert_equal(D.candidate_runtime("lighting_reserved_clearance_enabled"),TRUE,"new area clearance policy")
 		for(var/text in list("name;dir","name;name;dir","name=x;dir=y","name%3Bdir;name","","light;appearance;name"))

@@ -1,5 +1,25 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-19: disabled lighting composition V2 -->
+Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.
+V2 separates weather from tile RGB and explicitly represents visible fullbright
+coverage. Historical render receipts bind only tests/light_plane_composition/rejected;
+never relabel their failed weather/fullbright counterexamples as V2 evidence.
+Headless mode/coverage checks and synthetic pixel-oracle tests cannot prove rendering.
+
+<!-- 2026-10-22: area change lighting dispatch -->
+`ChangeArea` owns turf membership, existing area notifications and the final
+`T.change_area` hook. A temporary per-request identity rejects stale dispatch
+after yielding callbacks, reentry (including away/back), or turf replacement;
+the final destination is checked too. Exclude that identity from custom saves.
+Same-area calls return before ownership changes; a missing old area still
+initializes lighting. Valid hooks reconcile actual overlay state to destination
+policy, since the old area's lighting may never have been applied; read current
+area after the build startup wait and invalidate coefficients on real changes.
+`tests/light_plane_composition` extracts both real
+procedures and checks helper dispatch with counted overlay adapters, separate
+from native corner graphs and client rendering. Keep V2 disabled.
+
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`

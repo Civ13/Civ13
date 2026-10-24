@@ -31,8 +31,34 @@ def project_reserved_policy(baseline):
     return baseline.replace(anchor, '\treturn (key in list("lighting_reserved", "affecting_lights", "lighting_overlay"', 1).replace(insertion, AREA_POLICY + insertion, 1)
 
 
+def project_fullbright_exclusions(baseline):
+    """Apply exactly the two runtime-only fullbright serialization exclusions."""
+    pairs = (
+        ('list(/mob/new_player, /atom/movable/lighting_overlay)',
+         'list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)'),
+        ('if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay))',
+         'if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))'),
+    )
+    if '/atom/movable/lighting_fullbright' in baseline:
+        raise ValueError('Historical baseline already contains fullbright exclusions')
+    for before, after in pairs:
+        if baseline.count(before) != 1:
+            raise ValueError('Historical fullbright exclusion anchor drifted')
+        baseline = baseline.replace(before, after, 1)
+    return baseline
+
+
+def project_area_change_owner(baseline):
+    """Exclude only the new process-local area transition identity."""
+    anchor = '/turf/persistence_runtime_var(key)\n'
+    if baseline.count(anchor) != 1 or '"area_change_owner"' in baseline:
+        raise ValueError('Area-change ownership projection anchor drifted')
+    return baseline.replace(anchor, anchor + '\tif (key == "area_change_owner")\n\t\treturn TRUE\n', 1)
+
+
 def transform(baseline):
-    expected = project_reserved_policy(baseline)
+    # Current master already owns reserved policy. Project only this PR's delta.
+    expected = project_area_change_owner(project_fullbright_exclusions(baseline))
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -46,4 +72,4 @@ def transform(baseline):
 
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
-        raise ValueError('Only approved dispatch and reserved-policy projections may differ')
+        raise ValueError('Only approved dispatch, fullbright-exclusion and area-owner projections may differ from pinned master')
