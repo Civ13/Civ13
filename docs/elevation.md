@@ -52,9 +52,30 @@ constructors. It overrides newer map authoring defaults. An absent elevation
 field, including a legacy generation without a round header, restores flat zero.
 A present null, malformed or unsupported snapshot rejects the load. A failed
 preflight retains the running world and its effective profile. Existing durable
-metadata inventories and per-turf saves are unchanged. Older game versions do
-not understand the new round-header field; this is forward migration, not a claim
-that new saves load in an older binary. Retain original generations/backups.
+metadata inventories and per-turf saves are unchanged. Backward reading of old
+saves is supported. Forward loading of new saves into old builds is not: the old
+reader requires exactly 11 round-v1 or 12 round-v2 header fields and rejects the
+extra elevation field. Offline checks execute the immutable old reader against
+both old and new headers. Retain original generations/backups before upgrading.
+
+The effective cache is written only by its lazy initializer and validated
+restore. Restore installs it before clearing/reconstruction. Later changes to
+author fields cannot replace that non-null cache. Ordinary map-metadata entries
+are not reconstructed by Load_Entry, and neither the legacy metadata loader nor
+the durable field inventory assigns these author fields or the cache. The single
+existing map persistence exclusion hook excludes all three elevation fields.
+
+Profiles are plain, unregistered datums containing only numeric scalars and copied
+lists of scalar rows. They have no timers, callbacks, New/Destroy overrides,
+observer registration, resources, backreferences or cycles. Ignored validation
+results and failed-build locals become eligible for ordinary native datum
+collection when their last references leave the call stack. A snapshot's
+temporary profile can be collected independently while its returned rows remain
+owned by the snapshot. The effective profile lives as long as the map cache or
+an active reader references it; replacing the cache releases that owner.
+Repository datum documentation describes automatic collection without remaining
+references; registering these temporary values with the custom qdel queue is
+unnecessary. This is a source/lifetime argument, not a measured native GC result.
 
 ## Scope and verification
 

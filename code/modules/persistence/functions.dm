@@ -40,9 +40,6 @@
 	var/list/elevation_regions = null
 	var/tmp/datum/elevation_profile/elevation_profile_cache
 
-/obj/map_metadata/persistence_runtime_var(key)
-	return key == "elevation_profile_cache" || ..()
-
 /proc/elevation_metres_valid(value)
 	return isnum(value) && value >= -12000 && value <= 12000
 
