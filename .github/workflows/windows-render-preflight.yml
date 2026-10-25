@@ -1,0 +1,48 @@
+name: One-shot owned Windows screen preflight
+on:
+  push:
+    branches: [ci/windows-render-preflight-20261025]
+    paths:
+      - .github/workflows/windows-render-preflight.yml
+      - tools/windows-render-preflight/**
+permissions:
+  contents: read
+jobs:
+  owned-screen:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'ci: one-shot owned Windows screen preflight (2026-10-25)'
+    runs-on: windows-2022
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Admit only the initial reviewed source commit
+        shell: powershell
+        env:
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $base = '3f3dd47f614f4659031a793dc590346f5e4de3e6'
+          $parents = (git rev-list --parents -n 1 HEAD).Trim().Split(' ')
+          if ($LASTEXITCODE -ne 0 -or $parents.Count -ne 2 -or $parents[0] -ne $env:GITHUB_SHA -or $parents[1] -ne $base) {
+            throw 'Probe requires exactly one reviewed source commit on the pinned base.'
+          }
+          if ($env:EVENT_BEFORE -ne $base -and $env:EVENT_BEFORE -ne ('0' * 40)) { throw 'Not the initial branch publication.' }
+      - name: Compile installed APIs, run controls and capture only owned pixels
+        id: probe
+        timeout-minutes: 2
+        shell: powershell
+        run: ./tools/windows-render-preflight/Run.ps1
+      - name: Retain bounded diagnostic evidence only
+        if: ${{ always() && steps.probe.outputs.evidence_ready == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: owned-screen-preflight-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/owned-desktop-preflight/
+          retention-days: 7
+          if-no-files-found: error
