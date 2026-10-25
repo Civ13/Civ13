@@ -7,10 +7,12 @@ import zlib
 from types import SimpleNamespace as State
 import importlib.util
 import json
+import random
 
 ROOT = Path(__file__).resolve().parents[2]
 FARM = (ROOT / 'code/game/objects/farming.dm').read_text(encoding='utf-8')
 TREE = '/obj/structure/farming/plant/tree/'
+WILD = (ROOT / 'code/game/objects/structures/wild.dm').read_text(encoding='utf-8')
 
 
 def proc(source, signature):
@@ -20,7 +22,30 @@ def proc(source, signature):
     return source[start:end].rstrip()
 
 
-def scheduler(source=FARM):
+def mature_tree_adapter(loc, randint):
+    """Model only pixel defaults/randomization; not the native constructor.
+
+    DM atom pixel defaults are zero. Apply the source-declared inherited tree
+    defaults, then the actual parent constructor's random ranges. Other native
+    construction and seasonal behavior remain injected boundaries.
+    """
+    defaults = dict(pixel_x=0, pixel_y=0)
+    for path in ('/obj/structure/wild', '/obj/structure/wild/tree',
+                 '/obj/structure/wild/tree/live_tree'):
+        declaration = proc(WILD, path + '\n')
+        for field, value in re.findall(r'^\t(pixel_[xy]) = (-?\d+)\s*$', declaration, re.M):
+            defaults[field] = int(value)
+    tree = State(loc=loc, initial_pixels=defaults, change_season=lambda: None, **defaults)
+    constructor = proc(WILD, '/obj/structure/wild/tree/New()')
+    assignments = re.findall(r'^\t\t(pixel_[xy]) = rand\((-?\d+),\s*(-?\d+)\)', constructor, re.M)
+    if {field for field, _, _ in assignments} != {'pixel_x', 'pixel_y'}:
+        raise AssertionError('Unsupported wild-tree pixel constructor')
+    for field, lower, upper in assignments:
+        setattr(tree, field, randint(int(lower), int(upper)))
+    return tree
+
+
+def scheduler(source=FARM, randint=None):
     """Translate the actual scheduler body; reject unsupported statements.
 
     Resource methods, spatial admission, native constructor and GC are injected.
@@ -46,6 +71,7 @@ def scheduler(source=FARM):
         if text.startswith('icon_state = '):
             text = 'icon_state = "tree-grow" + str(min(stage, readyStageMin - 1))'
         text = text.replace('||', ' or ').replace('&&', ' and ')
+        text = re.sub(r'initial\(T\.(pixel_[xy])\)', r'T.initial_pixels["\1"]', text)
         text = re.sub(r'!(?!=)', 'not ', text)
         # Only unquoted tokens are fields/methods; T.radiation is a different owner.
         pieces = re.split(r'("[^"\n]*")', text)
@@ -58,7 +84,8 @@ def scheduler(source=FARM):
                PROCESS_KILL='kill', isturf=lambda loc: loc == 'soil',
                tree_planting_error=lambda loc, plant: plant.blocked,
                SPAN_NOTICE=lambda text: text)
-    env['mature'] = lambda loc: env.setdefault('trees', []).append(State(loc=loc, change_season=lambda: None)) or env['trees'][-1]
+    rng = randint if randint is not None else random.Random(0).randint
+    env['mature'] = lambda loc: env.setdefault('trees', []).append(mature_tree_adapter(loc, rng)) or env['trees'][-1]
     env['retire'] = lambda plant: setattr(plant, 'retired', True)
     exec(compile('\n'.join(lines), '<production-tree-scheduler>', 'exec'), env)
     return env['tick'], env
@@ -81,6 +108,48 @@ def seedling(**overrides):
 
 
 class Trees(unittest.TestCase):
+    def test_planted_maturation_removes_each_possible_wild_offset(self):
+        for x in range(-24, -7):
+            for y in range(17):
+                with self.subTest(x=x, y=y):
+                    rolls = iter((x, y))
+                    def roll(lower, upper):
+                        value = next(rolls)
+                        self.assertLessEqual(lower, value)
+                        self.assertLessEqual(value, upper)
+                        return value
+                    tick, env = scheduler(randint=roll)
+                    plant = seedling(stage=6, growth_time_left=1)
+                    tick(plant)
+                    tree = env['trees'][0]
+                    self.assertEqual((tree.pixel_x, tree.pixel_y), (-16, 0))
+                    self.assertEqual(tree.loc, plant.loc)
+
+    def test_offset_reset_mutants_are_observable(self):
+        for field in ('pixel_x', 'pixel_y'):
+            line = '\t\tT.' + field + ' = initial(T.' + field + ')\n'
+            self.assertEqual(FARM.count(line), 1)
+            mutant = FARM.replace(line, '')
+            tick, env = scheduler(mutant, randint=lambda lower, upper: upper)
+            tick(seedling(stage=6, growth_time_left=1))
+            tree = env['trees'][0]
+            self.assertNotEqual((tree.pixel_x, tree.pixel_y), (-16, 0))
+
+    def test_wild_adapter_retains_constructor_randomization(self):
+        low = mature_tree_adapter('wild soil', lambda lower, upper: lower)
+        high = mature_tree_adapter('wild soil', lambda lower, upper: upper)
+        self.assertEqual((low.pixel_x, low.pixel_y), (-24, 0))
+        self.assertEqual((high.pixel_x, high.pixel_y), (-8, 16))
+        self.assertEqual(low.initial_pixels, dict(pixel_x=-16, pixel_y=0))
+
+    def test_partial_wild_save_includes_initial_valued_offsets(self):
+        persistence = (ROOT / 'code/modules/persistence/functions.dm').read_text(encoding='utf-8')
+        saved = proc(persistence, '/datum/proc/get_saved_vars()')
+        self.assertIn('istype(src, /obj/structure/wild)', saved)
+        self.assertIn('if (partial)\n\t\tto_save |= params2list(map_storage_saved_vars)', saved)
+        fields = re.search(r'^atom\n\tmap_storage_saved_vars = "([^"]+)"', persistence, re.M)[1].split(';')
+        self.assertTrue({'pixel_x', 'pixel_y'} <= set(fields))
+
     def test_native_controls_mutate_generated_source_only(self):
         spec = importlib.util.spec_from_file_location('tree_native_runner', ROOT / 'tests/tree_planting/run.py')
         runner = importlib.util.module_from_spec(spec)

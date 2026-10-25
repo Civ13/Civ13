@@ -54,6 +54,18 @@ duration defaults to one minute; a living stage 7-10 crop becomes a world tree
 after its next eligible minute. Stage 11 corpses and static props stay terminal.
 Mature trees use the unchanged world-tree serializer and seasonal behavior.
 
+Newly matured planted trees retain the mature sprite's initial pixel anchor
+(`pixel_x = -16`, `pixel_y = 0`) instead of the wild constructor's random visual
+offset. Their turf and ordinary mature-tree type are unchanged. Wild/map-created
+trees still use their existing constructor offsets, and sprite/season variation
+is unchanged. The wild-object save whitelist always includes both pixel fields,
+even at their initial values, so save/load restores this alignment. Saved
+seedlings receive the alignment when they mature. Existing mature trees are not
+realigned: their saved type does not distinguish planted trees from wild ones.
+Offline tests model constructor pixel defaults/random ranges and execute the
+production maturation body; they do not establish native save/load or rendering
+acceptance for this alignment change.
+
 ## Verification and remaining acceptance
 
 `tests/tree_planting` executes the production scheduler body through explicit
