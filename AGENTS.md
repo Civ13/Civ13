@@ -286,6 +286,16 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-24: optional geographic elevation -->
+Elevation is a bounded coordinate profile on map metadata, independent of native
+areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
+does not alter temperature or precipitation. The optional round.json snapshot
+is validated before mutation and installed before replacement constructors;
+missing legacy snapshots restore flat zero, overriding newer author defaults.
+See docs/elevation.md and tests/elevation. Native fixture preparation does not
+establish native acceptance; run only under the repository's normal
+authorization/admission rules.
+
 <!-- 2026-10-24: save-to-map design boundary -->
 `tools/save_to_map` is a synthetic static-source validator/writer/reporting proof,
 not a native save converter. Its exact-type policy must not imply broad coverage.
