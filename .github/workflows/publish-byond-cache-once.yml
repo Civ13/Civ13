@@ -1,0 +1,36 @@
+name: Publish fixed BYOND 516.1688 archive once
+on:
+  push:
+    branches: [automation/publish-byond-516.1688-16278f318cde-v2]
+permissions: {}
+concurrency:
+  group: publish-byond-516.1688-16278f318cde-v2
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: >-
+      github.repository == 'Civ13/Civ13' &&
+      github.event.created == true && github.event.deleted == false &&
+      github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: tools/byond
+      - name: Run offline publisher controls
+        run: python3 -m unittest discover -s tools/byond -p test_publish_cache_once.py -v
+      - name: Publish only the fixed verified archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/byond/publish_cache_once.py
+      - name: Retain sanitized receipt in run summary
+        if: always()
+        run: |
+          if [ -f cache-publication-receipt.json ]; then
+            cat cache-publication-receipt.json >> "$GITHUB_STEP_SUMMARY"
+          fi
