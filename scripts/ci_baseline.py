@@ -118,9 +118,11 @@ def impact(paths, comparison='available'):
                        for name, why in reasons.items()}, 'fallback_reasons': unknown}
 
 
-def selection_receipt(base, head, game, extensive, new_tests, reason, event):
+def selection_receipt(base, head, game, extensive, new_tests, reason, event, eligibility=None):
     receipt = dict(schema_version=1, kind='selection', status='passed',
                    **provenance(head, base), event=event)
+    if eligibility is not None:
+        receipt.update(action=eligibility['action'], eligibility=eligibility)
     paths = []
     comparison = 'unavailable'
     if receipt['base']:
@@ -140,6 +142,19 @@ def selection_receipt(base, head, game, extensive, new_tests, reason, event):
     return receipt
 
 
+def selection_eligibility(plan):
+    policy = plan.get('eligibility', {})
+    if policy.get('metadata_valid') is not True or plan.get('action') != policy.get('action'):
+        raise ValueError('Missing/invalid event scope evidence')
+    for name in ('compile', 'native', 'gating'):
+        row = policy.get(name, {})
+        if type(row.get('eligible')) is not bool or not row.get('reason'):
+            raise ValueError('Missing/invalid eligibility: ' + name)
+    if policy['gating']['eligible'] and not policy['native']['eligible']:
+        raise ValueError('Incomplete native admission cannot publish a gating verdict')
+    return policy
+
+
 def load_selection(path, head, base):
     plan = json.loads(Path(path).read_text(encoding='utf-8'))
     expected = provenance(head, base)
@@ -155,6 +170,7 @@ def load_selection(path, head, base):
         raise ValueError('Always-required suite omitted')
     if type(plan['compile']['selected']) is not bool:
         raise ValueError('Invalid compilation selection')
+    selection_eligibility(plan)
     return plan
 
 
@@ -264,6 +280,10 @@ def compile_receipt(plan, outcome, output):
 
 def aggregate(plan, baseline, compile_run, jobs, extraction_selected):
     errors = []
+    try:
+        selection_eligibility(plan)
+    except ValueError as error:
+        errors.append(str(error))
     if plan['compile']['selected']:
         requirement = toolchain.load()
         if compile_run.get('toolchain') != 'BYOND ' + requirement['version'] or compile_run.get('toolchain_error') is not None:
@@ -339,6 +359,9 @@ def main():
     if args.mode == 'compile':
         return compile_receipt(plan, args.outcome, args.output)
     jobs = json.loads(os.environ['CI_NEEDS'])
+    gating = os.environ['GATING_SELECTION']
+    if gating not in {'1', '0'} or (gating == '1') != plan['eligibility']['gating']['eligible']:
+        raise ValueError('Gating output differs from selection receipt')
     extraction = os.environ['EXTRACTION_SELECTED']
     if extraction not in {'true', 'false'}:
         raise ValueError('Missing extraction selection')
@@ -347,7 +370,9 @@ def main():
                        jobs, extraction == 'true')
     receipt = dict(schema_version=1, kind='aggregate', status='failed' if errors else 'passed',
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
-                   selection_sha256=digest(plan), jobs=jobs, errors=errors)
+                   selection_sha256=digest(plan), jobs=jobs, errors=errors,
+                   action=plan['action'], eligibility=plan['eligibility'],
+                   coverage='gating' if gating == '1' else 'informational')
     write_json(args.output, receipt)
     print(json.dumps(receipt, indent=2))
     return 1 if errors else 0

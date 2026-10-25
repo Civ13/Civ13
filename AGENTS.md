@@ -872,6 +872,14 @@ run/attempt and selection-bound offline/compile receipts. Missing, failed,
 unexpectedly skipped or empty required execution fails. Documentation-only
 compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
 and docs/ci-selection.md; a job-level green alone does not describe what ran.
+<!-- 2026-10-24: event coverage and check identity -->
+Supported edited PRs evaluate the base/head diff for compilation but keep native
+admission off. Edited/other-base PRs, feature pushes and manual runs use the
+informational build/aggregate names even when a real compile passes. Only ordinary
+opened/synchronize/reopened PR scopes and master pushes retain gating names.
+Selector failures or missing outputs retain failed gating names. Inspect receipt
+action and compile/native/gating reasons; an informational success cannot certify
+omitted native coverage. Preserve existing native opt-ins and toolchain ownership.
 Hosted DreamMaker results must identify the actually executed manifest version;
 Python projections, compiled core_boot variants and native runtime/gameplay
 acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.

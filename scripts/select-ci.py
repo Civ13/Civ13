@@ -6,6 +6,8 @@ from pathlib import PurePosixPath
 import subprocess
 
 DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'}
+CI_BASES = {'master', 'help-markdown-byond-html'}
+ORDINARY_PR_ACTIONS = {'opened', 'synchronize', 'reopened'}
 
 
 def starts_build(message):
@@ -52,19 +54,74 @@ def build_policy(event, payload):
             return False, True
         base = pr.get('base', {})
         ordinary = (isinstance(base, dict)
-                    and base.get('ref') in {'master', 'help-markdown-byond-html'}
-                    and payload.get('action') in {'opened', 'synchronize', 'reopened'})
+                    and base.get('ref') in CI_BASES
+                    and payload.get('action') in ORDINARY_PR_ACTIONS)
         return ordinary, starts_build(pr['title'])
     return False, False
 
 
+def eligibility(event, payload, build_prefix):
+    """Separate compiler work, unchanged native admission and check identity.
+
+    A compile-only event cannot replace a full ordinary scope's native verdict.
+    Missing scope metadata is not evidence for an informational classification.
+    """
+    ordinary, forced = build_policy(event, payload) if build_prefix else (True, False)
+    action = payload.get('action')
+    base_ref = None
+    metadata_valid, supported_edit, gating = True, False, False
+    scope_reason = 'Event outside full ordinary CI scope'
+    if event == 'pull_request':
+        pr = payload.get('pull_request')
+        base = pr.get('base') if isinstance(pr, dict) else None
+        base_ref = base.get('ref') if isinstance(base, dict) else None
+        metadata_valid = (isinstance(pr, dict) and isinstance(pr.get('title'), str)
+                          and isinstance(base, dict) and isinstance(base.get('ref'), str) and bool(base['ref'])
+                          and isinstance(action, str) and bool(action))
+        supported = metadata_valid and base['ref'] in CI_BASES
+        supported_edit = supported and action == 'edited'
+        gating = supported and action in ORDINARY_PR_ACTIONS
+        scope_reason = ('Full ordinary PR admission' if gating else
+                        'Edited PR omits introduced/native admission' if supported_edit else
+                        'PR outside full ordinary base/action scope')
+    elif event == 'push':
+        metadata_valid = isinstance(payload.get('ref'), str) and bool(payload.get('ref'))
+        gating = (metadata_valid and payload['ref'] == 'refs/heads/master'
+                  and payload.get('deleted') is not True)
+        scope_reason = 'Full ordinary master-push scope' if gating else 'Non-master/deleted push omits full PR coverage'
+    elif event == 'workflow_dispatch':
+        scope_reason = 'Manual opt-ins do not replace ordinary PR coverage'
+    if not build_prefix:
+        # Other reusable callers keep their pre-existing selection behavior.
+        metadata_valid = True
+    elif not metadata_valid:
+        scope_reason = 'Missing event scope metadata; selection must fail closed'
+    compile_eligible = ordinary or supported_edit or forced
+    compile_reason = ('Explicit build: request or incomplete metadata requires compilation' if forced else
+                      'Supported edited PR: evaluate exact base/head diff' if supported_edit else
+                      'Ordinary/legacy event: evaluate exact base/head diff' if ordinary else
+                      'Outside automatic compilation scope')
+    native_reason = ('Legacy reusable caller retains its existing admission' if not build_prefix else
+                     'Existing ordinary PR introduced-suite admission' if ordinary and event == 'pull_request' else
+                     'Existing master-push policy; introduced PR suites remain off' if ordinary and event == 'push' else
+                     'Manual extensive admission still requires its explicit input' if ordinary else
+                     'No introduced/native or extensive admission for this event')
+    return dict(action=action if isinstance(action, str) else None,
+                base_ref=base_ref if isinstance(base_ref, str) else None,
+                ref=payload.get('ref') if isinstance(payload.get('ref'), str) else None,
+                metadata_valid=metadata_valid,
+                compile=dict(eligible=compile_eligible, reason=compile_reason),
+                native=dict(eligible=ordinary, reason=native_reason),
+                gating=dict(eligible=bool(gating), reason=scope_reason), forced=forced)
+
+
 def selections(base, head, event, opted_in, build_prefix=False, payload=None):
-    ordinary, forced = build_policy(event, payload or {}) if build_prefix else (True, False)
-    game, reason = select(base, head) if ordinary else (False, 'Outside ordinary CI subscription')
-    if forced:
+    policy = eligibility(event, payload or {}, build_prefix)
+    game, reason = select(base, head) if policy['compile']['eligible'] else (False, 'Outside ordinary CI subscription')
+    if policy['forced']:
         game, reason = True, 'build: request or incomplete event metadata; compile game'
-    new_tests = introduced_tests(base, head, event) if ordinary else []
-    extensive = ordinary and game and needs_extensive(event, opted_in)
+    new_tests = introduced_tests(base, head, event) if policy['native']['eligible'] else []
+    extensive = policy['native']['eligible'] and game and needs_extensive(event, opted_in)
     return game, extensive, new_tests, reason
 
 def needs_game(paths):
@@ -130,21 +187,30 @@ def main():
     parser.add_argument('--build-prefix', choices=('true', 'false'), default='false')
     parser.add_argument('--receipt', help='Exact-source machine-readable selection receipt')
     args = parser.parse_args()
+    payload = load_event(os.environ.get('GITHUB_EVENT_PATH'))
+    policy = eligibility(args.event, payload, args.build_prefix == 'true')
     game, extensive, new_tests, reason = selections(
         args.base, args.head, args.event, args.extensive == 'true',
-        args.build_prefix == 'true', load_event(os.environ.get('GITHUB_EVENT_PATH')))
+        args.build_prefix == 'true', payload)
     if args.receipt:
         from ci_baseline import selection_receipt, write_json
-        write_json(args.receipt, selection_receipt(args.base, args.head, game, extensive,
-                                                   new_tests, reason, args.event))
+        receipt = selection_receipt(args.base, args.head, game, extensive,
+                                    new_tests, reason, args.event, policy)
+        if not policy['metadata_valid']:
+            receipt['status'] = 'failed'
+        write_json(args.receipt, receipt)
+    if not policy['metadata_valid']:
+        parser.error('Missing event scope metadata; refusing to publish informational success')
     with open(args.output, 'a', encoding='utf-8') as output:
         output.write('new_tests=' + json.dumps(new_tests, separators=(',', ':')) + '\n')
         output.write(f'game={str(game).lower()}\nextensive={str(extensive).lower()}\n')
+        output.write(f'gating={int(policy["gating"]["eligible"])}\n')
     print(f'game={str(game).lower()}, extensive={str(extensive).lower()}, introduced suites={new_tests}: {reason}')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as output:
             output.write(f'Game compilation selected: **{game}**. Extensive regressions opted in: **{extensive}**. {reason}. New test suites selected: `{new_tests}`.\n')
+            output.write(f'Gating context eligible: **{policy["gating"]["eligible"]}**. {policy["gating"]["reason"]}.\n')
 
 if __name__ == '__main__':
     main()

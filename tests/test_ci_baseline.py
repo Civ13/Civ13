@@ -21,6 +21,10 @@ def fixtures(paths=('README.md',)):
     source = dict(head='a' * 40, base='b' * 40, requested_base='b' * 40,
                   run_id='123', run_attempt='1')
     plan = dict(schema_version=1, kind='selection', status='passed', **source,
+                event='pull_request', action='opened', eligibility=dict(action='opened', metadata_valid=True,
+                    compile=dict(eligible=True, reason='Ordinary diff selection'),
+                    native=dict(eligible=True, reason='Ordinary PR admission'),
+                    gating=dict(eligible=True, reason='Full ordinary PR scope')),
                 baseline=ci.impact(paths), compile={'selected': False, 'reason': 'Documentation only'})
     baseline = dict(schema_version=1, kind='baseline', status='passed', **source,
                     selection_sha256=ci.digest(plan), tracked_dirty=False,
@@ -333,6 +337,53 @@ class AggregateTests(unittest.TestCase):
             self.assertTrue(ci.aggregate(plan, baseline, compiler, jobs, False))
         plan, baseline, _, jobs = fixtures()
         self.assertTrue(ci.aggregate(plan, baseline, {}, jobs, False))
+
+    def test_missing_or_incomplete_eligibility_cannot_claim_a_gating_verdict(self):
+        for change in (lambda p: p.pop('eligibility'),
+                       lambda p: p['eligibility'].update(metadata_valid=False),
+                       lambda p: p['eligibility']['native'].update(eligible=False),
+                       lambda p: p['eligibility']['gating'].update(reason='')):
+            plan, baseline, compiler, jobs = fixtures()
+            change(plan)
+            baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+            self.assertTrue(ci.aggregate(plan, baseline, compiler, jobs, False))
+
+    def test_compiler_success_cannot_certify_an_omitted_native_failure(self):
+        for compiler_failed in (True, False):
+            with self.subTest(compiler_failed=compiler_failed):
+                plan, baseline, compiler, jobs = fixtures()
+                plan['compile']['selected'] = True
+                compiler.update(selected=True, status='failed' if compiler_failed else 'passed',
+                                step_outcome='failure' if compiler_failed else 'success')
+                jobs['build']['result'] = 'failure'  # Compiler or later native fixture failed.
+                baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+                self.assertIn('Required job did not succeed: build', ci.aggregate(
+                    plan, baseline, compiler, jobs, False))
+                # A later edited event can pass only its admitted work; its
+                # eligibility remains informational even after a real compile.
+                plan['action'] = plan['eligibility']['action'] = 'edited'
+                plan['eligibility']['native'].update(eligible=False, reason='Edited native coverage omitted')
+                plan['eligibility']['gating'].update(eligible=False, reason='Edited event is informational')
+                compiler.update(status='passed', step_outcome='success')
+                jobs['build']['result'] = 'success'
+                baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+                self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
+                self.assertFalse(ci.selection_eligibility(plan)['gating']['eligible'])
+
+    def test_informational_compile_still_requires_exact_byond_acquisition(self):
+        plan, baseline, compiler, jobs = fixtures()
+        plan['action'] = plan['eligibility']['action'] = 'edited'
+        plan['eligibility']['native'].update(eligible=False, reason='Edited native coverage omitted')
+        plan['eligibility']['gating'].update(eligible=False, reason='Edited event is informational')
+        plan['compile']['selected'] = True
+        compiler.update(selected=True, status='passed', step_outcome='success')
+        baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+        self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
+        for acquisition in (None, dict(compiler['acquisition'], sha256='0' * 64)):
+            with self.subTest(acquisition=acquisition):
+                invalid = dict(compiler, acquisition=acquisition)
+                self.assertIn('Missing/invalid exact-source BYOND acquisition receipt',
+                              ci.aggregate(plan, baseline, invalid, jobs, False))
 
     def test_stale_head_base_run_attempt_and_changed_selection_fail(self):
         for kind in (1, 2):

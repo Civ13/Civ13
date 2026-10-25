@@ -1,6 +1,6 @@
 # Game CI, bounded offline baseline and opt-in regressions
 
-On pushes to `master` and opened/reopened/synchronized PRs targeting `master` or
+On pushes to `master` and opened/reopened/synchronized/edited PRs targeting `master` or
 `help-markdown-byond-html`, game compilation remains automatic for source, maps,
 assets, config, shared CI and unknown changes. Documentation-only PRs skip compilation. Missing comparisons
 still compile; failed selection fails the build rather than silently skipping.
@@ -19,8 +19,10 @@ The request uses the existing Ubuntu BYOND compiler job on a fresh hosted
 checkout, with diagnostic/source receipts retained even on failure. It does not deploy or replace
 a running server. Outside the ordinary subscriptions above, the request selects
 compilation plus the bounded offline baseline, with no introduced-test or extensive/native regression suites.
-Other PR edits and unprefixed feature-branch pushes skip compilation. Ordinary
-PRs still select newly introduced suites according to the policy below.
+Supported-base metadata edits evaluate the same base/head diff for compilation;
+they do not admit introduced/native suites. Other-base edits still need `build:`;
+unprefixed feature-branch pushes skip compilation. Ordinary PRs still select newly
+introduced suites according to the policy below.
 
 The selector reads titles/messages as JSON data from `GITHUB_EVENT_PATH`, never
 as shell code. Missing, malformed or potentially truncated push metadata selects
@@ -28,6 +30,8 @@ compilation conservatively, with no extra regression admission. GitHub caps the
 [push commit list at 2048](https://docs.github.com/en/webhooks/webhook-events-and-payloads#push);
 a list reaching that cap or a reported size exceeding the list triggers this
 fallback. No workflow can act on an event GitHub does not deliver.
+Missing PR action/base/title or push ref cannot classify the event's check scope:
+the selector fails without publishing outputs, retaining failed gating contexts.
 
 The cheap offline baseline below runs on every CI invocation. Other existing
 regression suites remain opt-in, including game runtime, atlas, resource
@@ -153,9 +157,30 @@ are not a native smoke pass.
 
 ## Receipts and required aggregate
 
+`build` and `CI required aggregate` are reserved for the existing full ordinary
+PR scopes (opened/synchronize/reopened against the two CI bases) and master pushes.
+Edited PRs, other-base PRs, feature pushes and manual runs use `CI informational
+build` and `CI informational aggregate`, even if `build:` forces a real compile.
+Their native/introduced admission is unchanged, so their success cannot replace
+an earlier compiler or native failure under the gating names. This keeps the
+original gating names without changing branch protections or Actions permissions.
+
+Job identity depends on a successful selector and its nonempty, explicit `gating=0`
+output, not on compilation selection or success. A selector failure, missing
+output or invalid output falls back to the gating names and fails validation;
+it must not turn into a harmless informational success. Job IDs and aggregate
+dependency checks remain unchanged. Informational outcomes still require their
+own selected tests/compile receipts to succeed; they certify only that event's
+admitted work. Metadata success is not acceptance of omitted native coverage.
+The workflow output uses `1` for gating and `0` for informational (the receipt
+keeps JSON booleans). Numeric tokens avoid
+[case-folded string comparison in GitHub expressions](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#operators);
+values such as `false`, `False` or `00` are invalid and fail.
+
 Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-<attempt>`.
 They retain exact checked-out head, resolved base (or null plus requested base),
-run/attempt, selection digest, changed paths, fallback/skip reasons, suite commands,
+run/attempt, event action/ref, separate compile/native/gating eligibility reasons,
+selection digest, changed paths, fallback/skip reasons, suite commands,
 deadlines, exit codes, counts and logs. Baseline receipts include the committed
 Git source tree and before/after tested patches. The runner and aggregate require
 the same clean committed head before and after tests; a tracked mutation, changed
@@ -166,7 +191,7 @@ tree and before/after patches (the atlas catalog is generated before compilation
 Uploads use `always()` including failures/skips; runner loss or cancellation can
 still prevent artifact delivery, which cannot become a passing aggregate.
 
-`CI required aggregate` runs with `always()`. It requires successful selection,
+The gating or informational aggregate runs with `always()`. It requires successful selection,
 baseline, evidence-checker and build jobs, and extraction when that job is
 selected. It verifies baseline/compile receipt source/run/selection identity,
 required suite rows and nonzero test counts, and rejects missing receipts,
