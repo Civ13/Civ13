@@ -1,0 +1,153 @@
+# Source proposal only. Do not publish this activation branch until parent review.
+name: Winter crop native 516.1688 one-shot
+on:
+  push:
+    branches:
+      - codex/winter-native-1688-8070d5-attempt1
+permissions:
+  contents: read
+concurrency:
+  group: winter-native-1688-8070d5-attempt1
+  cancel-in-progress: false
+jobs:
+  fixture:
+    if: >-
+      github.repository == 'Civ13/Civ13' &&
+      github.event.created == true &&
+      github.run_attempt == 1 &&
+      github.ref == 'refs/heads/codex/winter-native-1688-8070d5-attempt1'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - name: Check out one-shot controller proposal
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          path: runner
+          persist-credentials: false
+      - name: Check out exact winter candidate independently
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8070d5cbe26c39c42d6bf5ce132d16f7cc3768e0
+          fetch-depth: 1
+          path: source
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify initial branch parent and clean exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C runner rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C runner rev-parse HEAD^)" = 8070d5cbe26c39c42d6bf5ce132d16f7cc3768e0
+          test "$(git -C runner rev-list --parents -n 1 HEAD | wc -w)" -eq 2
+          git -C runner diff --name-only HEAD^ HEAD > "$RUNNER_TEMP/winter-controller-paths.txt"
+          test -s "$RUNNER_TEMP/winter-controller-paths.txt"
+          if grep -Ev '^(\.github/workflows/winter-native-1688-once\.yml|tools/winter_native_1688/[A-Za-z0-9_./-]+)$' "$RUNNER_TEMP/winter-controller-paths.txt"; then
+            echo 'Unexpected controller commit changes' >&2
+            exit 1
+          fi
+          test "$(git -C source rev-parse HEAD)" = 8070d5cbe26c39c42d6bf5ce132d16f7cc3768e0
+          test "$(git -C source rev-parse 'HEAD^{tree}')" = c26a26bf55518defa4f63f19f00695882183aae7
+          test -z "$(git -C source status --porcelain --untracked-files=normal)"
+          test "$(git -C source hash-object scripts/byond_toolchain.py)" = 58e60ef0263cba1f1af04c0a135d1a14f486d799
+          test "$(git -C source hash-object tools/byond/version.json)" = 738fecfaf195bfbe31ed68fa4f0e4d05b9912248
+          mkdir "$RUNNER_TEMP/winter-1688-acquisition"
+          git -C source rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/winter-1688-acquisition/source-identity.txt"
+          git -C runner rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/winter-1688-acquisition/controller-identity.txt"
+          cp "$RUNNER_TEMP/winter-controller-paths.txt" "$RUNNER_TEMP/winter-1688-acquisition/controller-paths.txt"
+      - name: Verify pure offline preparation and controller controls
+        timeout-minutes: 2
+        shell: bash
+        env:
+          WINTER_TEST_SOURCE: ${{ github.workspace }}/source
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -s "$GITHUB_WORKSPACE/runner/tools/winter_native_1688" -p 'test_*.py' -v
+      - name: Run unchanged exact-source winter and Atlas regressions
+        timeout-minutes: 4
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          # Independent bounded logs; both exact commands run, either failure stops native work.
+          status=0
+          (ulimit -f 4096; timeout -k 5 110 python -I -S -B -m unittest discover -s tests/winter_crops -v) > "$RUNNER_TEMP/winter-1688-acquisition/winter-source-tests.log" 2>&1 || status=$?
+          (ulimit -f 4096; timeout -k 5 110 python -B scripts/build-crafting-atlas.py --catalog-only --check-game-catalog UI/crafting-atlas.json) > "$RUNNER_TEMP/winter-1688-acquisition/atlas-source-freshness.log" 2>&1 || status=$?
+          exit "$status"
+      - name: Install reviewed Ubuntu i386 runtime dependencies only
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo timeout -k 5 30 dpkg --add-architecture i386
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip
+      - name: Acquire exact pinned repository-release archive
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/winter-1688-toolchain"
+          timeout -k 5 65 python3 "$GITHUB_WORKSPACE/source/scripts/byond_toolchain.py" download --platform linux --source repository-release --output "$RUNNER_TEMP/winter-1688-toolchain/516.1688_byond_linux.zip" > "$RUNNER_TEMP/winter-1688-acquisition/download.json"
+          echo '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9  516.1688_byond_linux.zip' > "$RUNNER_TEMP/winter-1688-acquisition/archive.sha256"
+          cd "$RUNNER_TEMP/winter-1688-toolchain"
+          sha256sum --check "$RUNNER_TEMP/winter-1688-acquisition/archive.sha256"
+          timeout -k 5 30 unzip -q 516.1688_byond_linux.zip
+          # No fallback, proxy/TLS change, global BYOND install or byondsetup.
+      - name: Bind reviewed controller and create the single attempt grant
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PYGRANT'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path(os.environ['GITHUB_WORKSPACE']) / 'runner/tools/winter_native_1688'))
+          from audit_offline import install
+          install()
+          from backend_proposal import controller_hashes, ARCHIVE
+          from prepare import ADAPTER, HEAD, TREE, CANDIDATE_INVENTORY_SHA256, canonical, digest
+          seal = digest(canonical(controller_hashes()))
+          if seal != 'cedc5f6fc09dcc4eb0f067e076ba032a0352e49ee54d7c1e62119a0e82cb7124':
+              raise ValueError('Controller differs from reviewed exact proposal')
+          grant = dict(schema=1, adapter=ADAPTER, head=HEAD, tree=TREE,
+              candidate_manifest_sha256=CANDIDATE_INVENTORY_SHA256,
+              controller_sha256=seal, archive_sha256=ARCHIVE,
+              phases=12, compiler_phases=5, daemon_phases=7, aggregate_wall_seconds=1200,
+              grant_id='winter-8070d5-' + os.environ['GITHUB_RUN_ID'])
+          with (Path(os.environ['RUNNER_TEMP']) / 'winter-1688-grant.json').open('xb') as stream:
+              stream.write(canonical(grant))
+          PYGRANT
+      - name: Execute reviewed winter roundtrip, frozen restart and four causal controls once
+        timeout-minutes: 21
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/winter_native_1688/run.py" \
+            --source "$GITHUB_WORKSPACE/source" \
+            --output "$RUNNER_TEMP/winter-1688" \
+            --byond-bin "$RUNNER_TEMP/winter-1688-toolchain/byond/bin" \
+            --byond-archive "$RUNNER_TEMP/winter-1688-toolchain/516.1688_byond_linux.zip" \
+            --grant "$RUNNER_TEMP/winter-1688-grant.json" \
+            --reviewed-native
+      - name: Stage bounded allowlisted source diagnostics and receipts
+        if: always()
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/winter_native_1688/collect_evidence.py" \
+            --evidence "$RUNNER_TEMP/winter-1688" \
+            --acquisition "$RUNNER_TEMP/winter-1688-acquisition" \
+            --tooling "$GITHUB_WORKSPACE/runner/tools/winter_native_1688" \
+            --output "$RUNNER_TEMP/winter-1688-retained"
+      - name: Retain bounded fixture evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: winter-1688-8070d5-attempt1-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/winter-1688-retained/
