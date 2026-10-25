@@ -385,7 +385,8 @@ frozen historical Windows and native-correctness runners retain their original
 1681 contracts. This does not rerun or relabel correctness evidence. Exact-head
 CI40099748074 at `ab10a6362d3e79bce498695f0c402409d0c07048` already ran and passed
 native exclusion and reserved-lighting parity plus controls under that old tree.
-The earlier 403 was a separate acquisition run, not that correctness result.
+The separately cited old mall 403 is not that correctness result. Historical
+acquisition failures also remain separate evidence; no download was retried here.
 
 The already retained 1688 Linux archive is 4,887,281 bytes, SHA256
 `16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9`, matching

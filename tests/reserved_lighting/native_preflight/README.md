@@ -27,6 +27,10 @@ config. No private config, production checkout copy, saves or installed runtime
 is staged. The 4 GiB source ceiling is a proposal, not permission to stage a
 large resource bundle. Git-archive provenance originates at this trusted step;
 a hand-authored self-consistent manifest is not independent ancestry proof.
+Current source has exactly 157 literal reads of those 146 distinct files.
+Staging disables host EOL conversion before checking each canonical Git blob;
+it preserves stored bytes, including legitimate CRLF. An actual read-only Git
+control reproduces the previous CRLF-host mismatch and verifies canonical output.
 
 `run.py --execute` requires a future exact packet/grant and public hosted manual
 job. It never pulls an image, builds it, installs dependencies, dispatches CI,

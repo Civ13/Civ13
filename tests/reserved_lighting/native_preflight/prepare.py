@@ -51,7 +51,8 @@ def name_paths(source):
     # Match the existing strict runtime manifest contract, without importing code
     # from an unverified staging tree. No other config subtree is admitted.
     values = re.findall(r'file2list\s*\(\s*"([^"\r\n]+)"', source.decode('utf-8'))
-    require(len(values) == 146 and len(set(values)) == 146, 'Expected exact 146 literal public names')
+    require(len(values) == 157 and len(set(values)) == 146,
+            'Expected exact 157 literal reads of 146 public names')
     for value in values:
         require(re.fullmatch(r'config/names/[a-z0-9_]+\.txt', relative(value)), 'Public name path')
     return set(values)
@@ -68,6 +69,13 @@ def tree_entries(data):
         require(path not in entries, 'Duplicate Git path')
         entries[path] = (mode, kind, blob)
     return entries
+
+
+def git_command(repo, *args):
+    # Git archive otherwise applies host EOL conversion before the blob check.
+    # Keep canonical blobs, including legitimate stored CRLF, across platforms.
+    return ['git', '-c', 'safe.directory=' + repo.as_posix(), '-c', 'core.autocrlf=false',
+            '-c', 'core.eol=lf', '-C', str(repo), *args]
 
 
 def extract(archive, entries, destination, head, names):
@@ -145,13 +153,13 @@ def validate(root, manifest):
 def prepare(repo, destination, head):
     require(re.fullmatch('[0-9a-f]{40}', head or ''), 'Exact head required')
     def git(*args):
-        return subprocess.check_output(['git', '-C', str(repo), *args], timeout=30)
+        return subprocess.check_output(git_command(repo, *args), timeout=30)
     require(git('rev-parse', head + '^{commit}').decode().strip() == head, 'Head resolution changed')
     entries = tree_entries(git('ls-tree', '-r', '-z', head))
     names = name_paths(git('show', head + ':code/names.dm'))
     paths = sorted(p for p in entries if public(p, names))
     # Archive stdout is consumed incrementally and stopped on extraction error.
-    child = subprocess.Popen(['git', '-C', str(repo), 'archive', '--format=tar', head, '--', *paths],
+    child = subprocess.Popen(git_command(repo, 'archive', '--format=tar', head, '--', *paths),
                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     try:
         result = extract(child.stdout, entries, destination, head, names)

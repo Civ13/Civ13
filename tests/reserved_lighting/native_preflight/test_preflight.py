@@ -1,4 +1,4 @@
-"""Injected contracts only. No Docker, Git subprocess, compiler or daemon runs."""
+"""Injected effects and one bounded read-only Git archive control; no engine/Docker."""
 import copy
 import hashlib
 import importlib.util
@@ -6,6 +6,7 @@ import io
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 import tarfile
@@ -65,7 +66,7 @@ class SourceContracts(unittest.TestCase):
     def source(self):
         names = {'config/names/n' + str(i) + '.txt' for i in range(146)}
         data = {'civ13.dme': b'#include "code/names.dm"\n',
-                'code/names.dm': '\n'.join('file2list("' + x + '")' for x in sorted(names)).encode()}
+                'code/names.dm': '\n'.join('file2list("' + x + '")' for x in sorted(names) + sorted(names)[:11]).encode()}
         data['tools/byond/version.json'] = b'{\"version\":\"516.1688\"}\n'
         data.update({name: b'public\n' for name in names})
         return names, data
@@ -95,6 +96,34 @@ class SourceContracts(unittest.TestCase):
             (root / next(iter(names))).write_bytes(b'drift')
             with self.assertRaisesRegex(ValueError, 'changed'):
                 p.validate(root, manifest)
+
+    def test_actual_names_source_has_repeated_reads_without_extra_file_admission(self):
+        source = (ROOT.parents[2] / 'code/names.dm').read_bytes()
+        values = p.name_paths(source)
+        self.assertEqual(len(values), 146)
+        self.assertEqual(len(re.findall(rb'file2list\s*\(\s*"', source)), 157)
+        first = sorted(values)[0].encode()
+        for suffix in (b'\nfile2list("' + first + b'")',
+                       b'\nfile2list("config/private.txt")'):
+            with self.assertRaisesRegex(ValueError, '157 literal reads'):
+                p.name_paths(source + suffix)
+
+    def test_actual_git_archive_preserves_canonical_bytes_under_crlf_host_settings(self):
+        repo = ROOT.parents[2]
+        path = 'tools/byond/version.json'
+        canonical = subprocess.check_output(p.git_command(repo, 'show', 'HEAD:' + path), timeout=10)
+        old = ['git', '-c', 'safe.directory=' + repo.as_posix(), '-c', 'core.autocrlf=true',
+               '-c', 'core.eol=crlf', '-C', str(repo), 'archive', '--format=tar', 'HEAD', '--', path]
+        current = p.git_command(repo, 'archive', '--format=tar', 'HEAD', '--', path)
+        current[1:1] = ['-c', 'core.autocrlf=true', '-c', 'core.eol=crlf']
+        values = []
+        for command in (old, current):
+            archive = subprocess.check_output(command, timeout=10)
+            self.assertLessEqual(len(archive), 64 * 1024)
+            with tarfile.open(fileobj=io.BytesIO(archive)) as stream:
+                values.append(stream.extractfile(path).read())
+        self.assertNotEqual(values[0], canonical)
+        self.assertEqual(values[1], canonical)
 
     def test_archive_links_traversal_missing_blob_fail_closed(self):
         names, data = self.source()

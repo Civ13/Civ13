@@ -38,7 +38,10 @@
       "central_manifest_sha256": "9701c4011cab496295bb8b57cb74a570a6ffe90f191c18ddd3c0c9e48606d84f",
       "source_master": "704ebe205bf06c07bcf6460cfa1c3a2e9254a152",
       "network_requests": 0,
-      "extracted_or_executed": false
+      "extracted_or_executed": false,
+      "central_manifest_git_sha256": "662acc3d771988e91de44b7be6f648c256aee7b2173e42a64956b8aca3bad95d",
+      "central_manifest_git_blob": "738fecfaf195bfbe31ed68fa4f0e4d05b9912248",
+      "central_manifest_hash_role": "central_manifest_sha256 records Windows checkout bytes; canonical Git binding is separate and Linux staging must be regenerated"
     }
   },
   "dependencies": [],
