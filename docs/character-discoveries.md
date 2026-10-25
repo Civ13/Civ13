@@ -101,7 +101,9 @@ mind graph. Legacy minds with no field remain empty. Durable metadata already
 saves `berryeffects`, so restoring the same configuration preserves the context.
 No save schema, map policy, ownership/admission rule, or reclaim fallback changes.
 
-These are audited source contracts, not a claim of a native save round-trip.
+The reconnect, respawn and full saved-body reclaim descriptions above are
+audited source contracts. The narrower native mind-graph round-trip described
+below has now passed; it does not establish full-body reclaim or live reconnect.
 
 ## Verification and remaining acceptance
 
@@ -119,11 +121,49 @@ changes, a future category, repeated renames, field boundaries, both capacity li
 malformed imported keys/rows, bounded escaped output and no-eviction behavior. The JSON round-trip checks only record data
 shape; it is **not** BYOND JSON parity, native savefile persistence, browser UI,
 or full gameplay acceptance. Unknown projected statements fail rather than being
-ignored. No native server or compiler was launched for this source proposal.
+ignored. This offline suite does not launch a native server or compiler.
 
-Before gameplay acceptance, an approved isolated native run must establish:
+### Recorded native evidence
 
-1. Full target-version compilation with zero errors/warnings.
+A one-shot hosted test passed against feature head
+`9c54e1b57097035d51c35e4ea9cb755e7aa12a92`, using controller commit
+`f13308820a5a9d95a564b2f49575ef9a20fbc61b`:
+[run 40215733119](https://github.com/Civ13/Civ13/actions/runs/40215733119).
+The controller is isolated test tooling, not a production gameplay change.
+
+- BYOND **516.1688**: five fixture variants compiled with zero errors/warnings;
+  seven daemon phases completed, with verified owned-process cleanup for all
+  twelve compiler/daemon invocations.
+- Baseline: **43** ordered round-trip assertions, **4** writer assertions and
+  **11** assertions in a separate fresh reader process. Production berry
+  `smell_for()` and the explicit-actor secondary action exercised actual reagent
+  descriptions, observation-before-learning, hidden-configuration non-disclosure,
+  private Notes ownership/escaping, deduplication and capacity/input bounds.
+- Four causal controls each failed its exact expected assertion: disabled smell
+  recording, disabled learned-label escaping, removed overall capacity check,
+  and omitted discoveries from the production generic serializer.
+- Production `mind_initialize()`/`transfer_to()` retained knowledge; fresh minds
+  stayed empty. Production generic mind/list serialization preserved learned
+  records and private notes across writer/reader processes. Restart file hashes
+  matched after verified writer cleanup.
+- Independent offline replay verified **226 retained files**, the pinned
+  source/controller hashes, generated overlays, exact ordered native oracles,
+  restart receipts and cleanup. Owned readiness listener snapshots were empty;
+  this is not a continuous global no-listener claim.
+
+This fixture is deliberately headless. Only the chat/Notes output sinks and
+Notes client-presence check were adapted; real connected-client rendering and
+`usr` verb routing were not exercised. Inert human construction skips normal
+physiology. The saved mind graph deliberately detaches body references, so this
+is **not** full-human save/reclaim, live reconnect, or real lobby respawn
+acceptance. No production smell calculation or hidden berry effect was changed.
+
+### Remaining gameplay acceptance
+
+The recorded run does not close the following broader checks:
+
+1. Full production startup and gameplay behavior beyond the isolated compiled
+   fixture; normal physiology and connected-client routing remain untested.
 2. Actual Smell and secondary-click behavior, including 15%/just-over-15%,
    zero-strength, missing reagents and indescribable output. Compare chat and
    Notes using plain, mixed and injected samples without revealing hidden rows.
@@ -139,5 +179,5 @@ Before gameplay acceptance, an approved isolated native run must establish:
 6. A real connected client's Notes window displays escaped malicious labels and
    descriptors as text, never markup, and does not show another mind's records.
 
-No new runtime launch, publication, merge, account/security change, or Gaia
-change is part of this source-only proposal.
+The recorded evidence does not authorize another native run or merge. No
+account/security or Gaia changes are part of this feature.
