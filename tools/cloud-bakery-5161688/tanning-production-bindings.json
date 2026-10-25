@@ -1,0 +1,55 @@
+{
+  "revision": "9683866a89d2bdc12f8dc7d25444e350583c5483",
+  "unchanged_production": [
+    {
+      "path": "code/game/objects/items/stacks/sheets/leather.dm",
+      "git_blob": "95af42c51805663aafda35efd14e1f5f07b903cd",
+      "sha256": "478d2689bd69a4fcb3e02b5c7bcf430e1695daff92f5896de5cef0dadcf153dd"
+    },
+    {
+      "path": "code/game/objects/structures/converters.dm",
+      "git_blob": "c91c6159f55dc99805f0940987df171fd637163c",
+      "sha256": "d4600844a91d2a8b38248a4daed84a82a13ae1ef72d194a276aafd7b965dd3d5"
+    },
+    {
+      "path": "code/modules/materials/material_sheets.dm",
+      "git_blob": "f8cd8b60270b5da2fc234c5387217ca38a357c6d",
+      "sha256": "dec45b08388f369e4c48336e48d9a2d18bd8dd9f51b347552695601a401ed4fa"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "git_blob": "9ed3f1ce83c2af7fda32ff102743b9e7a9aaf4c2",
+      "sha256": "cf5d6f471719f689dcdaa68468a231d5636a3576f81092b9868812de0e4c3c35"
+    },
+    {
+      "path": "code/datums/progressbar.dm",
+      "git_blob": "c45ce1d5351b9dec55752eac803f469f085a1efd",
+      "sha256": "3b9f9920d3f46b06f50fd02d99800c0cf9ddfd25beb70e2cb7ed11eeebbc53fc"
+    },
+    {
+      "path": "code/modules/client/preferencesSQLite/preferences.dm",
+      "git_blob": "c37487f1266dd95dcd00d928efc83c1d5e9003fb",
+      "sha256": "1de7dd3613f696440620730abbefba866a21af972353c45f59a7b73bb971fa7f"
+    },
+    {
+      "path": "code/modules/client/preferencesSQLite/preference_setup/global/setting_datums.dm",
+      "git_blob": "3aa0f8b95ac0b3e0e7e6aee5f10b71fb04623cc6",
+      "sha256": "0d07ecd78f01660287634686bf4d8c9e4e249eb333e61e24aa8c6a658b5c3ea1"
+    },
+    {
+      "path": "code/_onclick/adjacent.dm",
+      "git_blob": "d77ad013fe4a37f665b24a53ecc48e94471f6fea",
+      "sha256": "0926b97d63a1cb2f5989330f9ccb566a3dc9cbb705b79f64d2f2fafe6b0612e2"
+    },
+    {
+      "path": "code/game/mob/inventory.dm",
+      "git_blob": "bbe49d1f423c4e35dc8a8792427d42ca2b45f1cd",
+      "sha256": "3693722788a02736764bd39ab60e06672f2c776a6647d218ffbbb8f1615ecf99"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/update_icons.dm",
+      "git_blob": "546a7b8c495037e53f2210956bdef1515a9b649f",
+      "sha256": "9bb29b940b00fd7cf37dd3dce700b4c4e9f7284a01b13c9a70a5b68c5cad19f9"
+    }
+  ]
+}

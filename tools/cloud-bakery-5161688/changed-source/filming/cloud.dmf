@@ -1,0 +1,16 @@
+window "cloud"
+    elem "cloud"
+        type = MAIN
+        statusbar = false
+        pos = 80,80
+        size = 480x480
+        title = "Civ13 tanning process showcase"
+        can-resize = false
+    elem "map"
+        type = MAP
+        pos = 0,0
+        size = 480x480
+        zoom = 3
+        zoom-mode = normal
+        letterbox = true
+        is-default = true

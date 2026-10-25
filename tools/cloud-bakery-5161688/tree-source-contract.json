@@ -1,0 +1,582 @@
+{
+  "revision": "9683866a89d2bdc12f8dc7d25444e350583c5483",
+  "unchanged_guard_sha256": {
+    "recording.py": "7b1ea4c5c58fd0316bfaaafa544adaa9e5c564b1dd6147fbb28ed440ded023cb",
+    "windows.py": "0b92b22ec090170015b6de3203bbfde0caeba06396e88d42c8dc6f57f4c1c6de",
+    "acquire.py": "aa675b74f184ade853358e46eb5ac059234e26d5604ab1db7cc9a38fb5705c29",
+    "guard_config.py": "c069a18b6e7839540b37c0463fbc9274e1e29164c19ea2afcc9f56c4fead1d6e",
+    "materialize.py": "b7870eb002e0da2a9e95d8c8d34d7678c67c78731f3d7c0631c4b04bc7697061",
+    "owned_crash.py": "f2507d1325c9775073d4a10a7691b196e0f7cfa32fe8a5a956011d9ded0a51f8",
+    "inspect_package.py": "9dbb3eb0a5e3de48c5330cb791c4aa2d4f6362368c15595087731fb30fcb1a0e",
+    "vendor.json": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9"
+  },
+  "source_rebase": {
+    "old_revision": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+    "current_revision": "9683866a89d2bdc12f8dc7d25444e350583c5483",
+    "current_tree": "5bf50ccc8ea318f15a1a19be34ef4eab77a6749c",
+    "method": "Current bytes outside mapped reviewed isolation intervals preserved verbatim; only removed world/New and client/Move absorb upstream changes. No native execution.",
+    "files": [
+      {
+        "path": "code/controllers/mc/globals.dm",
+        "old_base_git_blob": "1fbb47ff4caf23ea712e2dffd4af6a462ad5c599",
+        "current_base_git_blob": "1fbb47ff4caf23ea712e2dffd4af6a462ad5c599",
+        "old_derived_sha256": "a66b66a8b5571aa7b3a87aef65c8eac9af6fb761236b7fab6b391debc7cc40cd",
+        "rebased_sha256": "a66b66a8b5571aa7b3a87aef65c8eac9af6fb761236b7fab6b391debc7cc40cd",
+        "rebased_git_blob": "2a9331bddcbdb9a91a834d8edd002358b299947e",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_controllers_mc_globals.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              15,
+              25
+            ],
+            "current_lines": [
+              15,
+              25
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/game/mob/living/chat_overlay.dm",
+        "old_base_git_blob": "e5f98effec8aa28d55bfe359ed6f6eec7bb746db",
+        "current_base_git_blob": "e5f98effec8aa28d55bfe359ed6f6eec7bb746db",
+        "old_derived_sha256": "b7a792ba0c27a42f13068b9b7e0614174d9912ce96c7967c6e13242edfe9444f",
+        "rebased_sha256": "b7a792ba0c27a42f13068b9b7e0614174d9912ce96c7967c6e13242edfe9444f",
+        "rebased_git_blob": "437650fbe7ff34f64b4ff70345babdd2b7eac1ef",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_game_mob_living_chat_overlay.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              122,
+              122
+            ],
+            "current_lines": [
+              122,
+              122
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              124,
+              124
+            ],
+            "current_lines": [
+              124,
+              124
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/game/mob/mob_movement.dm",
+        "old_base_git_blob": "7e645e8215450667fc0b5cb9ea00bb02a08d27e4",
+        "current_base_git_blob": "cf4063513308eded0e69218218e3d26900083e83",
+        "old_derived_sha256": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b",
+        "rebased_sha256": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b",
+        "rebased_git_blob": "68849968744696637f9047717fd6a7427ed8b15c",
+        "current_base_changed": true,
+        "rebased_diff": "rebased-code_game_mob_mob_movement.dm.diff",
+        "operations": [
+          {
+            "kind": "delete",
+            "old_lines": [
+              285,
+              861
+            ],
+            "current_lines": [
+              285,
+              861
+            ],
+            "absorbed_upstream_changes": [
+              {
+                "kind": "replace",
+                "old_lines": [
+                  520,
+                  520
+                ],
+                "current_lines": [
+                  520,
+                  520
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "code/modules/admin/ToRban.dm",
+        "old_base_git_blob": "a7381b6896c9aa2c8ff7af8897e854fa66374ce2",
+        "current_base_git_blob": "a7381b6896c9aa2c8ff7af8897e854fa66374ce2",
+        "old_derived_sha256": "1026edab8e3ffdf3b402d3bbb73ec327ea76d14b723922eb4e56fbb82e04fe48",
+        "rebased_sha256": "1026edab8e3ffdf3b402d3bbb73ec327ea76d14b723922eb4e56fbb82e04fe48",
+        "rebased_git_blob": "f53e695c0e2c30fba9a6bc586d4c3e97cd8baa45",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_admin_ToRban.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              21,
+              21
+            ],
+            "current_lines": [
+              21,
+              21
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/modules/admin/verbs/bot_service.dm",
+        "old_base_git_blob": "8549f5dc8fb5f4f3cffe2df156b7a422d41d4aaf",
+        "current_base_git_blob": "8549f5dc8fb5f4f3cffe2df156b7a422d41d4aaf",
+        "old_derived_sha256": "c6075be86aea81ff7ba72965eb14a3d39bb92b9379a5436d8be9234a164c8676",
+        "rebased_sha256": "c6075be86aea81ff7ba72965eb14a3d39bb92b9379a5436d8be9234a164c8676",
+        "rebased_git_blob": "2ad9d3d9895a9952ae0f5d7d829a4227a957dec5",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_admin_verbs_bot_service.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              10,
+              10
+            ],
+            "current_lines": [
+              10,
+              10
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              26,
+              26
+            ],
+            "current_lines": [
+              26,
+              26
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              28,
+              28
+            ],
+            "current_lines": [
+              28,
+              28
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              30,
+              30
+            ],
+            "current_lines": [
+              30,
+              30
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/modules/client/client_procs.dm",
+        "old_base_git_blob": "c7f61f18d2454e0fdfc6375933f71c8c85f29d6f",
+        "current_base_git_blob": "c7f61f18d2454e0fdfc6375933f71c8c85f29d6f",
+        "old_derived_sha256": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba",
+        "rebased_sha256": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba",
+        "rebased_git_blob": "461d2b1ce2317e22c62750624d75fa7ed93a5477",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_client_client_procs.dm.diff",
+        "operations": [
+          {
+            "kind": "delete",
+            "old_lines": [
+              23,
+              95
+            ],
+            "current_lines": [
+              23,
+              95
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "delete",
+            "old_lines": [
+              128,
+              275
+            ],
+            "current_lines": [
+              128,
+              275
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "delete",
+            "old_lines": [
+              309,
+              328
+            ],
+            "current_lines": [
+              309,
+              328
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/modules/client/movement.dm",
+        "old_base_git_blob": "5deac729f38724c40cfcbf018f9bfdefcfb42db0",
+        "current_base_git_blob": "5deac729f38724c40cfcbf018f9bfdefcfb42db0",
+        "old_derived_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "rebased_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "rebased_git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_client_movement.dm.diff",
+        "operations": [
+          {
+            "kind": "delete",
+            "old_lines": [
+              2,
+              4
+            ],
+            "current_lines": [
+              2,
+              4
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/modules/error_handler/error_handler.dm",
+        "old_base_git_blob": "1697d922954289b5e534a45788fcc3fec9636ebc",
+        "current_base_git_blob": "1697d922954289b5e534a45788fcc3fec9636ebc",
+        "old_derived_sha256": "673092be98d43a15db38228d6b3035e05f22f505706869e288b956f533ed5085",
+        "rebased_sha256": "673092be98d43a15db38228d6b3035e05f22f505706869e288b956f533ed5085",
+        "rebased_git_blob": "dd60eb2283a5ce39e2717e4f6d9074ae54400aca",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_error_handler_error_handler.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              4,
+              92
+            ],
+            "current_lines": [
+              4,
+              92
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/modules/statpanel/statpanel.dm",
+        "old_base_git_blob": "3134dce00ab596e37be365d616fe24a6b639fe40",
+        "current_base_git_blob": "3134dce00ab596e37be365d616fe24a6b639fe40",
+        "old_derived_sha256": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db",
+        "rebased_sha256": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db",
+        "rebased_git_blob": "8f15f38f4c6cfd1dd388a69c8c40c8a3383649e6",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_statpanel_statpanel.dm.diff",
+        "operations": [
+          {
+            "kind": "delete",
+            "old_lines": [
+              138,
+              180
+            ],
+            "current_lines": [
+              138,
+              180
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/modules/webhooks/webhooks.dm",
+        "old_base_git_blob": "a1ef4b3f697418b9042152eaa04519e4f2ebe8b2",
+        "current_base_git_blob": "a1ef4b3f697418b9042152eaa04519e4f2ebe8b2",
+        "old_derived_sha256": "028f3eb8826ece60d9196e52ea5bea4368da5c180f773401b5de5857fa397cd1",
+        "rebased_sha256": "028f3eb8826ece60d9196e52ea5bea4368da5c180f773401b5de5857fa397cd1",
+        "rebased_git_blob": "5646d1265cd77f18a320ebff26a0af6e90e6e9d9",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_modules_webhooks_webhooks.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              49,
+              49
+            ],
+            "current_lines": [
+              49,
+              49
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/processes/python.dm",
+        "old_base_git_blob": "7dd6550ad744dd9df46b76a3bfd89d701f2f3899",
+        "current_base_git_blob": "7dd6550ad744dd9df46b76a3bfd89d701f2f3899",
+        "old_derived_sha256": "1185e881817874efe28313e59b2060d6ca13bebc01dd017ad45d68a08ed2f9e8",
+        "rebased_sha256": "1185e881817874efe28313e59b2060d6ca13bebc01dd017ad45d68a08ed2f9e8",
+        "rebased_git_blob": "a0d1ba33451f55d4cec815bf7165a5e0a96347c8",
+        "current_base_changed": false,
+        "rebased_diff": "rebased-code_processes_python.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              21,
+              21
+            ],
+            "current_lines": [
+              21,
+              21
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              33,
+              34
+            ],
+            "current_lines": [
+              33,
+              34
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              40,
+              40
+            ],
+            "current_lines": [
+              40,
+              40
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/setup.dm",
+        "old_base_git_blob": "33f6c0d49ad8294436830238f21c63c354c7f995",
+        "current_base_git_blob": "a0a0f869fc3b08ed19dd8729a761c3976b297bdc",
+        "old_derived_sha256": "a24fad3e840bf0b3f2cc06319a17d2cc64c5228ba241f82988da88835788eb57",
+        "rebased_sha256": "e2bce7ee45d6764c4c39b7e06d73b4d64d904976d6721a388b152596cd6b1ade",
+        "rebased_git_blob": "2b97c5435b84af05c0a34040882ef685890b3fa3",
+        "current_base_changed": true,
+        "rebased_diff": "rebased-code_setup.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              118,
+              118
+            ],
+            "current_lines": [
+              123,
+              123
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              120,
+              120
+            ],
+            "current_lines": [
+              125,
+              125
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      },
+      {
+        "path": "code/world.dm",
+        "old_base_git_blob": "0fc12d9661895b645096e3f74fb5e5a0da5c4d76",
+        "current_base_git_blob": "a549e3e0c90868e3c21660605d899ca56415af62",
+        "old_derived_sha256": "54bcc1539942b228588a7e1ab256205673239244cb33acd276485161f2c694c9",
+        "rebased_sha256": "54bcc1539942b228588a7e1ab256205673239244cb33acd276485161f2c694c9",
+        "rebased_git_blob": "79bc7355ffcf4a129bff58aa7804e15072ab6f23",
+        "current_base_changed": true,
+        "rebased_diff": "rebased-code_world.dm.diff",
+        "operations": [
+          {
+            "kind": "replace",
+            "old_lines": [
+              31,
+              39
+            ],
+            "current_lines": [
+              31,
+              39
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "delete",
+            "old_lines": [
+              74,
+              148
+            ],
+            "current_lines": [
+              74,
+              156
+            ],
+            "absorbed_upstream_changes": [
+              {
+                "kind": "insert",
+                "old_lines": [
+                  75,
+                  74
+                ],
+                "current_lines": [
+                  75,
+                  75
+                ]
+              },
+              {
+                "kind": "insert",
+                "old_lines": [
+                  107,
+                  106
+                ],
+                "current_lines": [
+                  108,
+                  109
+                ]
+              },
+              {
+                "kind": "replace",
+                "old_lines": [
+                  108,
+                  110
+                ],
+                "current_lines": [
+                  111,
+                  118
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "delete",
+            "old_lines": [
+              183,
+              271
+            ],
+            "current_lines": [
+              191,
+              279
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              285,
+              286
+            ],
+            "current_lines": [
+              293,
+              294
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              349,
+              354
+            ],
+            "current_lines": [
+              357,
+              362
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              359,
+              381
+            ],
+            "current_lines": [
+              367,
+              389
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              401,
+              470
+            ],
+            "current_lines": [
+              409,
+              478
+            ],
+            "absorbed_upstream_changes": []
+          },
+          {
+            "kind": "replace",
+            "old_lines": [
+              473,
+              502
+            ],
+            "current_lines": [
+              481,
+              510
+            ],
+            "absorbed_upstream_changes": []
+          }
+        ]
+      }
+    ]
+  },
+  "activation_only_guard": {
+    "file": "directx_setup.py",
+    "prior_sha256": "a6095067f5607f92a1b47af3c056229e999e2c9db29c0e2783455beb9f13d115",
+    "old_branch": "refs/heads/ci/cloud-bakery-5161688-pixel-bulk-v29-20261025",
+    "new_branch": "refs/heads/ci/cloud-tanning-5161688-process-v38-20261025"
+  },
+  "diagnostic_capture_delta": {
+    "previous_sha256": "7dd09b73105a092488c53ffdc98765095f4774922a6b1914d9ef2010b7a4c34d",
+    "current_sha256": "923c2ff69d2ec168abb83da04336bc7423e6226aa6c5bfbe1a02727a33f3f390",
+    "scope": "owned numeric selection diagnostics and bounded5s/20-observation zero-visible readiness; no pixel retries, exact capture admission unchanged"
+  }
+}
