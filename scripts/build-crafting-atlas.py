@@ -9,6 +9,8 @@ ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, default=ROOT/'data/atlas-preview')
 parser.add_argument('--byond-bin', type=Path)
+parser.add_argument('--byond-archive', type=Path)
+parser.add_argument('--legacy-fixture-5161681', action='store_true')
 parser.add_argument('--catalog-only', action='store_true')
 parser.add_argument('--game-catalog', type=Path)
 parser.add_argument('--check-game-catalog', type=Path)
@@ -273,7 +275,13 @@ assets=OUT/'sprites';assets.mkdir(exist_ok=True)
 representatives={x:(sprite_variants[x]['type']+'#'+sprite_variants[x]['state'] if x in sprite_variants and 'state' in sprite_variants[x] else sprite_variants[x]['type'] if x in sprite_variants else material_stack(x) if x.startswith('/material/') else x) for x in resource_ids}
 fallback='/obj/item/weapon/paper'
 (assets/'requests.json').write_text(json.dumps(sorted(set(representatives.values())|{fallback})),encoding='utf-8')
-subprocess.run([sys.executable,str(ROOT/'tests/sprites/run.py'),'--byond-bin',str(options.byond_bin),'--output',str(OUT/'compiled-sprites.json'),'--atlas-assets',str(assets)],check=True,cwd=ROOT)
+runtime_args = (['--byond-archive', str(options.byond_archive)] if options.byond_archive else [])
+if options.legacy_fixture_5161681:
+    runtime_args.append('--legacy-fixture-5161681')
+subprocess.run([sys.executable,str(ROOT/'tests/sprites/run.py'),'--byond-bin',str(options.byond_bin),'--output',str(OUT/'compiled-sprites.json'),'--atlas-assets',str(assets),*runtime_args],check=True,cwd=ROOT)
+data['sprite_evidence'] = json.loads((OUT/'compiled-sprites.evidence.json').read_text())
+if data['sprite_evidence']['head_sha'] != SHA:
+    raise RuntimeError('Sprite evidence and atlas source revision differ')
 rows={r['type']:r for r in json.loads((OUT/'compiled-sprites.json').read_text())}
 exports=json.loads((assets/'exports.json').read_text())
 from PIL import Image
