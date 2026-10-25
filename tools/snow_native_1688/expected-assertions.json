@@ -1,0 +1,93 @@
+{
+  "baseline": [
+    "appearance_setup",
+    "appearance_present",
+    "appearance_sentinel_preserved",
+    "warm_debit_setup",
+    "warm_debit_rejects",
+    "stale_reaccumulation_setup",
+    "stale_after_reaccumulation",
+    "fresh_wait_reload_setup",
+    "fresh_wait_invalidated_by_reload",
+    "reload_no_accrual_setup",
+    "reload_zero_no_accrual",
+    "replacement_setup",
+    "replacement_registry_exact",
+    "exact_ground_eligible",
+    "constructor_registers_null_flooring",
+    "subtype_and_authored_terrain_excluded",
+    "wet_extreme_snow_icons_accrue",
+    "clear_rain_zero_intensity_no_accrual",
+    "positive_temperature_no_stick",
+    "zero_temperature_creates_generation",
+    "accrual_caps_without_new_generation",
+    "two_c_preserves_existing_cover",
+    "above_two_c_retires_cover",
+    "clear_cold_cannot_regenerate",
+    "nonaccumulating_check_still_melts",
+    "weather_persistence_holds_no_sampling",
+    "take_persistence_holds_no_mutation",
+    "topology_adapter_acyclic",
+    "outdoor_multihop_sky_exposed",
+    "indoor_noncaribbean_excluded",
+    "source_roof_cover_no_accrual",
+    "cold_covered_persists_warm_covered_melts",
+    "connected_constructed_floor_blocks",
+    "sky_broken_space_pass_exposure",
+    "upper_roof_cover_blocks_open_types",
+    "connected_top_blocks_unconnected_top_irrelevant",
+    "positive_icon_reuses_owned_image_once",
+    "helper_rebuild_restores_owned_appearance",
+    "melt_clears_only_snow_appearance",
+    "last_harvest_clears_only_snow_appearance",
+    "cover_preserves_exact_substrate_contents",
+    "first_take_preserves_live_generation",
+    "last_take_retires_generation",
+    "finite_generated_stock_no_legacy_fallback",
+    "missing_generation_source_reject_without_debit",
+    "authored_predicate_and_stock_preserved",
+    "duplicate_register_idempotent",
+    "first_removal_index_repaired",
+    "middle_removal_index_repaired",
+    "last_repeated_unregister_idempotent",
+    "reload_values_native_round_clamp",
+    "reload_values_rebuild_owned_icon",
+    "reload_values_do_not_sample_weather",
+    "reload_ineligible_zeroes_cover",
+    "save_hook_units_only_when_positive_once",
+    "runtime_hook_excludes_three_snow_fields",
+    "runtime_hook_preserves_other_exclusions",
+    "process_setup_metadata",
+    "process_does_not_copy_registry",
+    "process_persistence_holds_no_progress",
+    "process_batch_exact_256",
+    "process_duplicate_fire_before_deadline_no_work",
+    "process_visits_match_distinct_units",
+    "process_second_batch_wraps_registry"
+  ],
+  "overlay-omission": [
+    "appearance_setup",
+    "appearance_present",
+    "appearance_sentinel_preserved"
+  ],
+  "melt-omission": [
+    "warm_debit_setup",
+    "warm_debit_rejects"
+  ],
+  "generation-omission": [
+    "stale_reaccumulation_setup",
+    "stale_after_reaccumulation"
+  ],
+  "reload-generation-omission": [
+    "fresh_wait_reload_setup",
+    "fresh_wait_invalidated_by_reload"
+  ],
+  "reload-sampling": [
+    "reload_no_accrual_setup",
+    "reload_zero_no_accrual"
+  ],
+  "del-unregister-omission": [
+    "replacement_setup",
+    "replacement_registry_exact"
+  ]
+}
