@@ -1,5 +1,10 @@
 # Tree planting native validation status
 
+> Historical Windows attempt record. The failures below remain failures.
+> Newer exact-source Linux BYOND 516.1688 checks passed on 2026-10-25; see
+> [the separate Linux evidence and remaining coverage limits](tree-planting-linux-validation.md).
+> That result does not satisfy or alter this Windows startup no-socket guard.
+
 The follow-up to draft #3283 integrates master
 `5528a46823ba264d934ff54b188d65b1e5ed540f`, including #3286's rack inventory and
 processing-only hide fixes at `580a7399d3060c5ba38c8782da8e87411d2650ab` and the
@@ -42,7 +47,7 @@ establish continuous absence of short-lived sockets between samples; a sampled
 socket is always a failure. Final-head compile-only execution is recorded
 separately in the PR and local receipt and launches no runtime.
 
-## Prepared checks and remaining acceptance
+## Prepared checks and remaining acceptance at the Windows attempt boundary
 
 The bounded runner compiles once and has three sequential runtime phases:
 
@@ -61,11 +66,13 @@ The bounded runner compiles once and has three sequential runtime phases:
 Optional generated-source controls target seed debit, runtime-clock serialization
 and duration reset. They require an exact named assertion, and do not accept a
 compiler error, runtime error, guard failure or timeout as control detection.
-The controls and new runtime phases remain **unrun** because of the startup guard.
+At this Windows attempt boundary, the controls and new runtime phases remained
+**unrun** because of the startup guard.
 Source preparation and native compilation do not validate their runtime result.
 
-This PR remains blocked on a supported execution path that satisfies the existing
-runtime guard. After that, require the positive native phases and all three
-controls, then assess natural scheduler cadence and controlled full-world
-fresh-process recovery. Genuine connected-client planting/maturation screenshots
-and timing evidence remain outstanding; no synthetic image is a substitute.
+These attempts left Windows native acceptance blocked on an execution path that
+satisfies its existing runtime guard. The later Linux lane separately passed its
+positive native phases and all three controls; it did not change the Windows
+contract. Natural scheduler cadence, controlled full-world fresh-process recovery
+and genuine connected-client planting/maturation captures remain outside the
+accepted synthetic Linux scope. No synthetic image is a substitute.

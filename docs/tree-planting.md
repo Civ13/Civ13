@@ -64,14 +64,27 @@ drop. A separate writer and fresh reader additionally exercise production object
 dispatch and saved partial-duration resume. Fixture-owned durations are shortened;
 the natural scheduler cadence and connected-client presentation remain separate.
 
-The follow-up integrates master including #3286's processing-only hide guards.
-Native fixture compilation succeeded under BYOND 516.1681, with zero errors and
-warnings. Runtime acceptance is blocked by an initial localhost listener caught
-by the unchanged Windows supervisor, including after an earlier-global port close.
-Native assertions, real disk round-trip execution, fresh-process recovery and
-client captures remain unverified. See [the attempted-run evidence and remaining
-acceptance](tree-planting-native-validation.md). No OpenDream or live Gaia changes
-were made, and no guard was bypassed after its rejection.
+The current integrated source, commit
+`e773c2fae4b196ad6c7afc025235e90f488f7db8`, passed a separate Linux BYOND
+516.1688 native lane: four clean fixture compilations, 48 baseline assertions
+(20 round-trip, 3 writer, 25 fresh reader), all three exact causal controls and
+verified cleanup for all ten compiler/runtime phases. This establishes the
+bounded synthetic planting/growth, real entry-save disk round trip and
+fresh-process entry restoration checks described above. Ordinary exact-source CI
+also passed full-game compilation with zero errors/warnings and the 14 tree tests.
+See [the Linux evidence, exact identities and coverage limits](tree-planting-linux-validation.md).
+
+The four native appearance checks inspect engine icon states and resource-state
+membership, not rendered player pixels. Fixture-owned durations and direct object
+dispatch do not establish natural scheduler cadence, full-world fresh-process
+recovery, connected-client presentation or performance. No live Gaia, production
+save or OpenDream changes were made.
+
+Earlier BYOND 516.1681 Windows attempts remain failed at the unchanged supervisor's
+startup-listener guard; they were not retried or reclassified by the Linux result.
+Their [historical receipts and scope](tree-planting-native-validation.md) remain
+preserved. The Linux closure gate is a different, separately reviewed contract,
+not evidence that the Windows startup guard passed.
 
 This branch integrates the reviewed Atlas variant grouping from #3282 and retains
 #3286's processing-only hide exclusions. It changes one curated tree acquisition
