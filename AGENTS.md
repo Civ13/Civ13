@@ -9,12 +9,16 @@ compatibility or publish the launcher. Compiler minimum/savefile major remain
 unchanged. Manual component/train workflows explicitly select the legacy 1681
 bootstrap; other strict 1681 runtime harnesses must fail on a mismatched engine,
 not be relabeled. See docs/byond-5161688.md before selecting native coverage.
-Active hosted compilation explicitly selects the reviewed community mirror at
-byond-builds.dm-lang.org, checked against the unchanged official-observed Linux
-archive bytes/hash. Only that versioned archive and acquisition metadata are
-cached by OS/version/hash; every cache hit is verified before fresh extraction
-and still runs target compilation. No arbitrary-host fallback or mutable install
-cache. Compiler/aggregate success also requires exact-source acquisition receipts.
+Active hosted compilation explicitly selects the user-approved Civ13/Civ13
+repository-release asset pinned in the Linux manifest. Only its exact public URL
+may redirect once to its reviewed release-assets.githubusercontent.com path;
+no credentials, signed-query receipts, source fallback or broad redirect rule.
+Official/community choices retain NoRedirect. Only the versioned archive and
+acquisition metadata are cached by OS/version/hash; each hit verifies every byte
+before fresh extraction and actual compilation. Preserve original cache-origin
+provenance, fail closed on corrupt caches, and require exact-source receipts.
+BYOND cache prereleases are excluded from launcher publication by both the
+workflow and release planner; this archive route does not change the stable feed.
 
 <!-- 2026-10-24: shared season duration -->
 Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with

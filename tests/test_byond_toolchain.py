@@ -3,12 +3,15 @@ from copy import deepcopy
 import hashlib
 import importlib.util
 import io
+import http.client
+from email.message import Message
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
 import tempfile
+import traceback
 import unittest
 import urllib.error
 from unittest.mock import patch
@@ -225,7 +228,8 @@ class ByondToolchainTests(unittest.TestCase):
         return dict(version=value['version'], platform='linux', url=url, sha256=archive['sha256'],
                     bytes=archive['bytes'], integritySource=value['integritySource'], source=source,
                     requested_source=source, upstream_source=source, upstream_url=url,
-                    cache_key=pin.cache_key(value, 'linux'), cache_status=cache_status)
+                    cache_key=pin.cache_key(value, 'linux'), cache_status=cache_status,
+                    **({'repository_release': deepcopy(archive['repositoryRelease'])} if source == 'repository-release' else {}))
 
     def test_reviewed_mirror_url_is_exact_and_original_official_bytes_stay_pinned(self):
         self.assertEqual(self.value['linux']['sha256'], '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9')
@@ -317,7 +321,8 @@ class ByondToolchainTests(unittest.TestCase):
         with self.assertRaises(urllib.error.HTTPError):
             pin.download('linux', self.root/'unavailable.zip', source='community-mirror', opener=fail)
         self.assertEqual(calls, [self.value['linux']['communityMirrorUrl']])
-        for source, platform in (('https://example.com', 'linux'), ('community-mirror', 'windows'), ('fallback', 'linux')):
+        for source, platform in (('https://example.com', 'linux'), ('community-mirror', 'windows'),
+                                 ('repository-release', 'windows'), ('fallback', 'linux')):
             with self.subTest(source=source, platform=platform), self.assertRaises(ValueError):
                 pin.download(platform, self.root/'no.zip', source=source, opener=lambda *_a, **_k:self.fail('Unreviewed source fetched'))
 
@@ -342,7 +347,7 @@ class ByondToolchainTests(unittest.TestCase):
         self.assertIn('actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684', text)
         self.assertIn('actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684', text)
         self.assertNotIn('restore-keys:', text)
-        self.assertIn('BYOND_ARCHIVE_SOURCE: community-mirror', text)
+        self.assertIn('BYOND_ARCHIVE_SOURCE: repository-release', text)
         compile_step = text.split('- name: Compile selected exact-head game')[1].split('\n      - name:')[0]
         self.assertIn("if: needs.changes.outputs.game == 'true'", compile_step)
         self.assertNotIn('cache-hit', compile_step)
@@ -377,22 +382,278 @@ class ByondToolchainTests(unittest.TestCase):
         ci = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(ci)
         plan=dict(head='a'*40,base='b'*40,requested_base='b'*40,run_id='1',run_attempt='1',compile={'selected':True,'reason':'changed source'})
-        for bad in ('missing','malformed','wrong-version','mirror','cache'):
+        for bad in ('missing','malformed','wrong-version','mirror','cache','repository-release','repository-identity','repository-missing'):
             directory=self.root/bad
             directory.mkdir()
             (directory/'byond-version.txt').write_text('516.1688\n')
             (directory/'compiler.log').write_text('DM compiler version 516.1688\nciv13.dmb - 0 errors, 0 warnings\n')
-            receipt=self.receipt(self.value,'community-mirror','miss')
+            receipt=self.receipt(self.value,'repository-release' if bad.startswith('repository-') else 'community-mirror','miss')
+            if bad=='repository-identity': receipt['repository_release']['assetId'] += 1
+            if bad=='repository-missing': del receipt['repository_release']
             if bad=='wrong-version': receipt['version']='516.1681'
             if bad=='cache': receipt.update(source='cache',url=None,cache_status='hit')
             if bad!='missing': (directory/'byond-download.json').write_text('{' if bad=='malformed' else json.dumps(receipt))
             with self.subTest(case=bad),patch.object(ci,'git',return_value='tree'),patch.object(ci.subprocess,'check_output',return_value=b''):
                 result=ci.compile_receipt(plan,'success',directory/'compile.json')
-            expected=bad in {'mirror','cache'}
+            expected=bad in {'mirror','cache','repository-release'}
             self.assertEqual(result,0 if expected else 1)
             actual=json.loads((directory/'compile.json').read_text())
             self.assertEqual(actual['status'],'passed' if expected else 'failed')
             if expected: self.assertEqual(actual['acquisition'],receipt)
+
+
+    def release_responses(self, metadata, body=b'offline archive fixture'):
+        binding = metadata['linux']['repositoryRelease']
+        target = binding['redirectUrl'] + '?signature=offline-sentinel'
+        redirect = Response(b'', binding['url'])
+        redirect.status = 302
+        redirect.headers = {'Location': target, 'Set-Cookie': 'never-forward=fixture'}
+        return redirect, Response(body, target, len(body))
+
+    def test_repository_manifest_requires_exact_release_asset_and_archive_identity(self):
+        binding = self.value['linux']['repositoryRelease']
+        self.assertEqual(binding['repositoryId'], 141349998)
+        self.assertEqual(binding['releaseId'], 423087014)
+        self.assertEqual(binding['assetId'], 673801489)
+        self.assertEqual(binding['tagTarget'], '3f3dd47f614f4659031a793dc590346f5e4de3e6')
+        self.assertEqual(binding['url'], 'https://github.com/Civ13/Civ13/releases/download/'
+                         'byond-toolchain-cache-516.1688-linux-16278f318cde/516.1688_byond_linux.zip')
+        self.assertEqual(binding['redirectUrl'], 'https://release-assets.githubusercontent.com/'
+                         'github-production-release-asset/141349998/2c92a741-bfd1-4b43-8ec3-8c3813669b82')
+        for key in binding:
+            for bad in (None, True, 'different', float(binding[key]) if type(binding[key]) is int else binding[key]+'?query=bad'):
+                value = deepcopy(self.value)
+                value['linux']['repositoryRelease'][key] = bad
+                with self.subTest(key=key, bad=bad), self.assertRaises(ValueError):
+                    self.read_value(value)
+        for change in ('repo', 'tag', 'filename', 'hash', 'size', 'version', 'missing', 'extra'):
+            value = deepcopy(self.value)
+            release = value['linux']['repositoryRelease']
+            if change == 'repo': release['url'] = release['url'].replace('Civ13/Civ13', 'Civ13/Other')
+            if change == 'tag': release['url'] = release['url'].replace('linux-16278f318cde', 'linux-000000000000')
+            if change == 'filename': release['url'] = release['url'].replace('/516.1688_byond', '/516.1681_byond')
+            if change == 'hash': value['linux']['sha256'] = '0'*64
+            if change == 'size': value['linux']['bytes'] += 1
+            if change == 'version':
+                value = json.loads(json.dumps(value).replace('516.1688', '516.1689'))
+            if change == 'missing': del release['assetId']
+            if change == 'extra': release['token'] = 'not-allowed'
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.read_value(value)
+
+    def test_repository_cold_and_warm_cache_keep_exact_binding_without_signed_queries(self):
+        metadata, _ = self.fixture_download()
+        responses = self.release_responses(metadata)
+        pending = iter(responses)
+        calls = []
+        def fetch(request, **kwargs):
+            calls.append((request, kwargs))
+            return next(pending)
+        with patch.object(pin, 'load', return_value=metadata):
+            cold = pin.download('linux', self.root/'release-cold.zip', source='repository-release',
+                                cache_dir=self.root/'release-cache', opener=fetch)
+            warm = pin.download('linux', self.root/'release-warm.zip', source='repository-release',
+                                cache_dir=self.root/'release-cache', opener=lambda *_a, **_k:self.fail('Warm network'))
+            reused = pin.download('linux', self.root/'release-reused.zip', source='official',
+                                  cache_dir=self.root/'release-cache', opener=lambda *_a, **_k:self.fail('Reuse network'))
+        self.assertEqual(cold, self.receipt(metadata, 'repository-release', 'miss'))
+        self.assertEqual(warm, dict(cold, source='cache', url=None, cache_status='hit'))
+        self.assertEqual(reused, dict(warm, requested_source='official'))
+        self.assertEqual(reused['repository_release'], cold['repository_release'])
+        self.assertEqual([call[0].full_url for call in calls], [response.url for response in responses])
+        for request, kwargs in calls:
+            self.assertEqual(request.get_method(), 'GET')
+            self.assertIsNone(request.data)
+            self.assertEqual(request.header_items(), [])
+            self.assertEqual(kwargs, {'timeout': 15})
+        for path in (self.root/'release-cache').glob('*.json'):
+            self.assertNotIn('offline-sentinel', path.read_text())
+            self.assertNotIn('signature=', path.read_text())
+        self.assertNotIn('offline-sentinel', json.dumps([cold, warm]))
+        self.assertEqual((self.root/'release-cold.zip').read_bytes(), (self.root/'release-warm.zip').read_bytes())
+        self.assertEqual({p.suffix for p in (self.root/'release-cache').iterdir()}, {'.zip', '.json'})
+
+    def test_repository_transport_keeps_proxy_policy_without_auth_cookies_or_automatic_redirects(self):
+        metadata, _ = self.fixture_download()
+        responses = iter(self.release_responses(metadata))
+        calls, observed_handlers, observed_proxies = [], [], []
+        class OfflineHttps(pin.urllib.request.BaseHandler):
+            handler_order = 100
+            def https_open(self, request):
+                calls.append(request)
+                result = next(responses)
+                result.code, result.msg = result.status, 'offline fixture'
+                result.info = lambda:result.headers
+                return result
+        real_builder = pin.urllib.request.build_opener
+        def builder(*handlers):
+            observed_handlers.extend(handlers)
+            result = real_builder(*handlers, OfflineHttps())
+            observed_proxies.extend(handler.proxies for handler in result.handlers if isinstance(handler, pin.urllib.request.ProxyHandler))
+            return result
+        proxy_policy = {'https': 'http://configured-proxy.invalid:8080'}
+        with patch.object(pin, 'load', return_value=metadata), patch.object(pin.urllib.request, 'getproxies', return_value=proxy_policy), patch.object(pin.urllib.request, 'build_opener', side_effect=builder):
+            result = pin.download('linux', self.root/'urllib-release.zip', source='repository-release')
+        self.assertEqual(result['source'], 'repository-release')
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(len(observed_handlers), 1)
+        self.assertIsInstance(observed_handlers[0], pin.ReleaseResponseOnly)
+        self.assertEqual(observed_proxies, [proxy_policy])
+        for request in calls:
+            self.assertFalse({'authorization', 'proxy-authorization', 'cookie'} & {key.lower() for key, _ in request.header_items()})
+        for code in (301, 303, 307, 308):
+            with self.subTest(code=code), self.assertRaises(ValueError):
+                getattr(pin.ReleaseResponseOnly(), 'http_error_'+str(code))(
+                    pin.urllib.request.Request(metadata['linux']['repositoryRelease']['url']), None, code,
+                    'offline', {'location': 'https://example.com/not-allowed'})
+        for source in ('official', 'community-mirror'):
+            with self.subTest(source=source), patch.object(pin.urllib.request, 'build_opener') as builder:
+                response = Response(b'', pin.source_url(self.value, 'linux', source), 0)
+                builder.return_value.open.return_value = response
+                with self.assertRaises(ValueError):
+                    pin.download('linux', self.root/(source+'-no-redirect.zip'), source=source)
+                self.assertIs(type(builder.call_args.args[0]), pin.NoRedirect)
+
+    def test_repository_redirect_rejects_wrong_origin_path_asset_query_and_duplicate_locations(self):
+        binding = self.value['linux']['repositoryRelease']
+        good = binding['redirectUrl'] + '?signature=offline-sentinel'
+        invalid = [None, '', binding['redirectUrl'], good+'#', good+'#fragment', good+'\n', ' '+good,
+                   good.replace('https:', 'http:'), good.replace('141349998', '141349999'),
+                   good.replace('2c92a741', '00000000'), good.replace('.com/', '.com:443/'),
+                   good.replace('release-assets.', 'user@release-assets.'), good.replace('.com/', '.com.evil/'),
+                   good.replace('/github-', '//github-'), good.replace('/141349998/', '/141349998/../'),
+                   good.replace('https://', '//'), good.replace('2c92a741', '%32c92a741'), good+'x'*8192]
+        for index, target in enumerate(invalid):
+            response = Response(b'', binding['url']); response.status = 302
+            response.headers = {'Location': target}
+            calls = []
+            def fetch(request, **_kwargs): calls.append(request); return response
+            output = self.root/('redirect-'+str(index)+'.zip')
+            with self.subTest(target=target), self.assertRaises(ValueError):
+                pin.download('linux', output, source='repository-release', opener=fetch)
+            self.assertEqual(len(calls), 1)
+            self.assertFalse(output.exists())
+        duplicate = Response(b'', binding['url']); duplicate.status = 302
+        duplicate.headers = Message()
+        duplicate.headers.add_header('Location', good)
+        duplicate.headers.add_header('Location', good)
+        with self.assertRaises(ValueError):
+            pin.download('linux', self.root/'duplicate.zip', source='repository-release', opener=lambda *_a, **_k:duplicate)
+
+    def test_repository_bad_status_extra_hop_bytes_and_deadline_never_publish_or_cache(self):
+        cases = ('direct-200', 'first-url', 'extra-hop', 'final-url', 'final-status', 'length', 'short', 'long', 'hash', 'deadline')
+        for bad in cases:
+            metadata, _ = self.fixture_download()
+            responses = self.release_responses(metadata)
+            if bad == 'direct-200': responses[0].status = 200
+            if bad == 'first-url': responses[0].url += '?unexpected=1'
+            if bad == 'extra-hop': responses[1].status = 302; responses[1].headers['Location'] = responses[1].url
+            if bad == 'final-url': responses[1].url += '&unexpected=1'
+            if bad == 'final-status': responses[1].status = 206
+            if bad == 'length': responses[1].headers['Content-Length'] = '999'
+            if bad == 'short': metadata['linux']['bytes'] += 1; responses[1].headers = {}
+            if bad == 'long': metadata['linux']['bytes'] -= 1; responses[1].headers = {}
+            if bad == 'hash': metadata['linux']['sha256'] = '0'*64
+            ticks = iter((0, 0, 61)) if bad == 'deadline' else None
+            remaining, calls = iter(responses), []
+            def fetch(request, **_kwargs): calls.append(request); return next(remaining)
+            output, cache = self.root/(bad+'.zip'), self.root/(bad+'-cache')
+            with self.subTest(bad=bad), patch.object(pin, 'load', return_value=metadata), self.assertRaises(ValueError):
+                pin.download('linux', output, source='repository-release', cache_dir=cache, opener=fetch,
+                             clock=(lambda:next(ticks)) if ticks else lambda:0)
+            self.assertLessEqual(len(calls), 2)
+            self.assertFalse(output.exists())
+            self.assertEqual(list(cache.iterdir()), [])
+
+    def test_repository_network_and_body_errors_never_log_signed_queries_or_fallback(self):
+        for phase in ('initial', 'asset', 'read'):
+            metadata, _ = self.fixture_download()
+            responses = self.release_responses(metadata)
+            target, calls = responses[1].url, []
+            def fetch(request, **_kwargs):
+                calls.append(request)
+                if phase == 'initial' or phase == 'asset' and len(calls) == 2:
+                    raise pin.urllib.error.HTTPError(target, 403, target, {}, None)
+                if phase == 'read' and len(calls) == 2:
+                    def fail(_size): raise http.client.HTTPException(target)
+                    responses[1].read = fail
+                return responses[len(calls)-1]
+            with patch.object(pin, 'load', return_value=metadata):
+                try:
+                    pin.download('linux', self.root/(phase+'.zip'), source='repository-release', opener=fetch)
+                except ValueError:
+                    diagnostic = traceback.format_exc()
+                else:
+                    self.fail('Unsuccessful release request passed')
+            self.assertNotIn(target, diagnostic)
+            self.assertNotIn('offline-sentinel', diagnostic)
+            self.assertEqual(len(calls), 1 if phase == 'initial' else 2)
+
+    def test_repository_receipts_bind_identity_and_never_mislabel_prior_cache_origin(self):
+        valid = self.receipt(self.value, 'repository-release', 'miss')
+        pin.validate_download_receipt(valid, self.value, 'linux')
+        for key in valid['repository_release']:
+            invalid = deepcopy(valid)
+            invalid['repository_release'][key] = 'wrong'
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                pin.validate_download_receipt(invalid, self.value, 'linux')
+        for mutate in ('missing', 'query', 'official-extra', 'version', 'size', 'hash', 'upstream', 'float-id'):
+            invalid = deepcopy(valid)
+            if mutate == 'missing': del invalid['repository_release']
+            if mutate == 'query': invalid['repository_release']['redirectUrl'] += '?signature=offline-sentinel'
+            if mutate == 'official-extra': invalid.update(source='official', requested_source='official', upstream_source='official',
+                                                           url=self.value['linux']['url'], upstream_url=self.value['linux']['url'])
+            if mutate == 'version': invalid['version'] = '516.1681'
+            if mutate == 'size': invalid['bytes'] += 1
+            if mutate == 'hash': invalid['sha256'] = '0'*64
+            if mutate == 'upstream': invalid['upstream_url'] = self.value['linux']['communityMirrorUrl']
+            if mutate == 'float-id': invalid['repository_release']['assetId'] = float(invalid['repository_release']['assetId'])
+            with self.subTest(mutate=mutate), self.assertRaises(ValueError):
+                pin.validate_download_receipt(invalid, self.value, 'linux')
+        metadata, _ = self.fixture_download()
+        cache = self.root/'prior-community-cache'; cache.mkdir()
+        archive = cache/(pin.cache_key(metadata, 'linux')+'.zip')
+        archive.write_bytes(b'offline archive fixture')
+        prior = self.receipt(metadata, 'community-mirror', 'miss')
+        archive.with_suffix('.json').write_text(json.dumps(prior))
+        with patch.object(pin, 'load', return_value=metadata):
+            result = pin.download('linux', self.root/'prior-community.zip', source='repository-release', cache_dir=cache,
+                                  opener=lambda *_a, **_k:self.fail('Verified identical archive caused a network fallback'))
+        self.assertEqual(result, dict(prior, source='cache', url=None, requested_source='repository-release', cache_status='hit'))
+        self.assertNotIn('repository_release', result)
+
+    def test_repository_corrupt_or_incomplete_cache_never_redownloads(self):
+        for bad in ('hash', 'size', 'identity', 'partial', 'missing-receipt'):
+            metadata, _ = self.fixture_download()
+            cache = self.root/('release-corrupt-'+bad); cache.mkdir()
+            archive = cache/(pin.cache_key(metadata, 'linux')+'.zip')
+            body = b'offline archive fixture'
+            if bad == 'hash': body = b'X'*len(body)
+            if bad == 'size': body += b'X'
+            archive.write_bytes(body)
+            receipt = self.receipt(metadata, 'repository-release', 'miss')
+            if bad == 'identity': receipt['repository_release']['assetId'] += 1
+            if bad != 'missing-receipt': archive.with_suffix('.json').write_text(json.dumps(receipt))
+            if bad == 'partial': archive.with_suffix('.zip.part').write_bytes(b'preserve partial')
+            output = self.root/('release-rejected-'+bad+'.zip')
+            with self.subTest(bad=bad), patch.object(pin, 'load', return_value=metadata), self.assertRaises((ValueError, OSError)):
+                pin.download('linux', output, source='repository-release', cache_dir=cache,
+                             opener=lambda *_a, **_k:self.fail('Corrupt release cache fetched'))
+            self.assertEqual(archive.read_bytes(), body)
+            self.assertFalse(output.exists())
+
+    def test_repository_cli_is_explicit_and_fresh_extraction_compile_contract_is_unchanged(self):
+        result = subprocess.run([sys.executable, '-B', str(ROOT/'scripts/byond_toolchain.py'), 'download', '--help'],
+                                capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('{official,community-mirror,repository-release}', result.stdout)
+        source = (ROOT/'scripts/travis_pre_byond.sh').read_text()
+        self.assertIn('mkdir BYOND\ncd BYOND\n', source)
+        self.assertIn('timeout -k 5 30 unzip -q pinned.zip\ncd byond\ntimeout -k 5 60 make here', source)
+        self.assertNotIn('cache-hit', source)
+        self.assertIn('compile_game\n', source)
+        workflow = (ROOT/'.github/workflows/test.yml').read_text()
+        self.assertIn("steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'", workflow)
 
 
 if __name__ == '__main__':

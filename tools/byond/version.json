@@ -8,7 +8,16 @@
     "url": "https://www.byond.com/download/build/516/516.1688_byond_linux.zip",
     "communityMirrorUrl": "https://byond-builds.dm-lang.org/516/516.1688_byond_linux.zip",
     "sha256": "16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9",
-    "bytes": 4887281
+    "bytes": 4887281,
+    "repositoryRelease": {
+      "url": "https://github.com/Civ13/Civ13/releases/download/byond-toolchain-cache-516.1688-linux-16278f318cde/516.1688_byond_linux.zip",
+      "repositoryId": 141349998,
+      "releaseId": 423087014,
+      "assetId": 673801489,
+      "redirectUrl": "https://release-assets.githubusercontent.com/github-production-release-asset/141349998/2c92a741-bfd1-4b43-8ec3-8c3813669b82",
+      "tagTarget": "3f3dd47f614f4659031a793dc590346f5e4de3e6",
+      "provenance": "Complete unchanged official-observed Linux archive and bundled notices; user-approved repository mirror, not a vendor-authenticated checksum"
+    }
   },
   "minimumCompiler": "516.1681",
   "savefileMajor": 516,

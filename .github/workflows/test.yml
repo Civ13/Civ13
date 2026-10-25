@@ -325,7 +325,7 @@ jobs:
         if: needs.changes.outputs.game == 'true'
         timeout-minutes: 15
         env:
-          BYOND_ARCHIVE_SOURCE: community-mirror
+          BYOND_ARCHIVE_SOURCE: repository-release
           BYOND_ARCHIVE_CACHE: ${{ runner.temp }}/civ13-byond-archives
         run: |
           mkdir -p .ci/compile

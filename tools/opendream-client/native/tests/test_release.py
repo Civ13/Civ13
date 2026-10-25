@@ -119,6 +119,18 @@ class ReleaseTests(unittest.TestCase):
         self.api.feeds[self.api.parent] = {'schema': 1, 'version': '0.9.0',
             'url': 'https://github.com/Civ13/Civ13/releases/download/old/Civ13.exe', 'sha256': '0' * 64}
 
+    def test_toolchain_cache_namespace_never_produces_a_launcher_plan(self):
+        workflow = Path(release.__file__).resolve().parents[3] / '.github/workflows/native-launcher-release.yml'
+        self.assertIn("if: ${{ !startsWith(github.event.release.tag_name, 'byond-toolchain-cache-') }}", workflow.read_text())
+        for prerelease in (False, True):
+            for tag in ('byond-toolchain-cache-516.1688-linux-16278f318cde',
+                        'BYOND-TOOLCHAIN-CACHE-516.1688-linux-16278f318cde'):
+                payload = event(prerelease)
+                payload['release']['tag_name'] = tag
+                with self.subTest(tag=tag, prerelease=prerelease), self.assertRaisesRegex(
+                        ValueError, 'not launcher releases'):
+                    release.make_plan(payload, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD)
+
     def test_success_readback_then_feed_and_idempotent_repeat(self):
         result = self.publish()
         self.assertEqual(result['feed'], 'activated')
