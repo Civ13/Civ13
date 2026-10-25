@@ -1,0 +1,105 @@
+name: Elevation native 516.1688 one-shot
+on:
+  push:
+    branches:
+      - codex/elevation-native-1688-20261025-attempt1
+permissions:
+  contents: read
+concurrency:
+  group: elevation-native-1688-20261025-attempt1
+  cancel-in-progress: false
+jobs:
+  fixture:
+    if: >-
+      github.repository == 'Civ13/Civ13' &&
+      github.event.created == true &&
+      github.run_attempt == 1 &&
+      github.ref == 'refs/heads/codex/elevation-native-1688-20261025-attempt1'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 12
+    steps:
+      - name: Check out one-shot controller proposal
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          path: runner
+          persist-credentials: false
+      - name: Check out exact elevation source independently
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 6abda09ce48cc858c244bfddf69eca69845d44a8
+          fetch-depth: 1
+          path: source
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify one-shot base and clean source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C runner rev-parse HEAD^)" = f3d8d4369a7c7aee1e823e5ae125f61697231578
+          test "$(git -C source rev-parse HEAD)" = 6abda09ce48cc858c244bfddf69eca69845d44a8
+          test -z "$(git -C source status --porcelain --untracked-files=no)"
+          test "$(git -C source hash-object scripts/byond_toolchain.py)" = 58e60ef0263cba1f1af04c0a135d1a14f486d799
+          test "$(git -C source hash-object tools/byond/version.json)" = 738fecfaf195bfbe31ed68fa4f0e4d05b9912248
+          mkdir "$RUNNER_TEMP/elevation-1688-acquisition"
+          git -C source rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/elevation-1688-acquisition/source-identity.txt"
+          git -C runner rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/elevation-1688-acquisition/controller-identity.txt"
+      - name: Install reviewed Ubuntu i386 runtime dependencies only
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo timeout -k 5 30 dpkg --add-architecture i386
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip
+      - name: Acquire exact pinned repository-release archive
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/elevation-1688-toolchain"
+          timeout -k 5 65 python3 "$GITHUB_WORKSPACE/source/scripts/byond_toolchain.py" download --platform linux --source repository-release --output "$RUNNER_TEMP/elevation-1688-toolchain/516.1688_byond_linux.zip" > "$RUNNER_TEMP/elevation-1688-acquisition/download.json"
+          echo '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9  516.1688_byond_linux.zip' > "$RUNNER_TEMP/elevation-1688-acquisition/archive.sha256"
+          cd "$RUNNER_TEMP/elevation-1688-toolchain"
+          sha256sum --check "$RUNNER_TEMP/elevation-1688-acquisition/archive.sha256"
+          timeout -k 5 30 unzip -q 516.1688_byond_linux.zip
+          # No make, global install, byondsetup, atlas generation or full-game compile.
+      - name: Execute isolated reviewed elevation fixture once
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/elevation_native_1688/run_1688.py" \
+            --source "$GITHUB_WORKSPACE/source" \
+            --expected-commit 6abda09ce48cc858c244bfddf69eca69845d44a8 \
+            --output "$RUNNER_TEMP/elevation-1688" \
+            --byond-bin "$RUNNER_TEMP/elevation-1688-toolchain/byond/bin" \
+            --byond-archive "$RUNNER_TEMP/elevation-1688-toolchain/516.1688_byond_linux.zip" \
+            --reviewed-native
+      - name: Retain allowlisted bounded fixture evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: elevation-1688-6abda09-attempt1-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/elevation-1688-acquisition/source-identity.txt
+            ${{ runner.temp }}/elevation-1688-acquisition/controller-identity.txt
+            ${{ runner.temp }}/elevation-1688-acquisition/download.json
+            ${{ runner.temp }}/elevation-1688-acquisition/archive.sha256
+            ${{ runner.temp }}/elevation-1688/preparation.json
+            ${{ runner.temp }}/elevation-1688/adapter-1688.json
+            ${{ runner.temp }}/elevation-1688/controller-result.json
+            ${{ runner.temp }}/elevation-1688/compile-process.json
+            ${{ runner.temp }}/elevation-1688/daemon-process.json
+            ${{ runner.temp }}/elevation-1688/elevation-result.json
+            ${{ runner.temp }}/elevation-1688/compile.log
+            ${{ runner.temp }}/elevation-1688/daemon.log
+            ${{ runner.temp }}/elevation-1688/runtime.log
+            ${{ runner.temp }}/elevation-1688/*.dm
+            ${{ runner.temp }}/elevation-1688/elevation.dme
+            runner/tools/elevation_native_1688/*.py
