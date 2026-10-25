@@ -293,6 +293,46 @@ var/world_topic_spam_protect_time = world.timeofday
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
 
+// Escape literal listing text and attributes without BYOND's URL auto-detection.
+/proc/hub_status_text(value)
+	var/text = "[value]"
+	text = replacetext(text, "&", "&amp;")
+	text = replacetext(text, "<", "&lt;")
+	text = replacetext(text, ">", "&gt;")
+	text = replacetext(text, "\"", "&quot;")
+	text = replacetext(text, "'", "&#39;")
+	return text
+
+// Only absolute HTTP(S) links with a conservative ASCII URL alphabet belong here.
+/proc/hub_status_link(url, label, open_new_window = FALSE)
+	if (!istext(url))
+		return ""
+	var/authority_start
+	if (copytext(url, 1, 9) == "https://")
+		authority_start = 9
+	else if (copytext(url, 1, 8) == "http://")
+		authority_start = 8
+	else
+		return ""
+	var/authority_end = length(url) + 1
+	for (var/delimiter in list("/", "?", "#"))
+		var/delimiter_position = findtext(url, delimiter, authority_start)
+		if (delimiter_position && delimiter_position < authority_end)
+			authority_end = delimiter_position
+	if (authority_start == authority_end)
+		return ""
+	for (var/i = 1, i <= length(url), i++)
+		var/character = lowertext(copytext(url, i, i + 1))
+		if (!findtext("abcdefghijklmnopqrstuvwxyz0123456789-._~:/?#@!$&()*+,;=%", character))
+			return ""
+		if (i >= authority_start && i < authority_end)
+			if (!findtext("abcdefghijklmnopqrstuvwxyz0123456789.-:", character))
+				return ""
+	var/target = ""
+	if (open_new_window)
+		target = " target=\"_blank\" rel=\"noopener noreferrer\""
+	return "<a href=\"[hub_status_text(url)]\"[target]>[hub_status_text(label)]</a>"
+
 /world/proc/update_status()
 
 	if (world.port == config.testing_port)
@@ -300,20 +340,30 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/s = ""
 
-	if (config.open_hub_discord_in_new_window)
-		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[customserver_name()]</b></a></center><br>"
-	else
-		s += "<center><a href=\"[config.discordurl]\"><b>[customserver_name()]</b></a></center><br>"
+	var/server_title = hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)
+	if (!server_title)
+		server_title = hub_status_text(customserver_name())
+	s += "<center><b>[server_title]</b></center><br>"
+
+	var/list/community_links = list()
+	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
+	var/website_link = hub_status_link(config.websiteurl, "Website")
+	if (discord_link)
+		community_links += discord_link
+	if (website_link)
+		community_links += website_link
+	if (community_links.len)
+		s += "[jointext(community_links, " | ")]<br>"
 
 	if (config.hub_banner_url)
 		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
 	if (map)
-		s += "<b>Map:</b> [map.title] ([roundduration2text()])<br>"
+		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (map)
-		s += "<b>Gamemode:</b> [map.gamemode]"
+		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (config.hub_body)
 		s += config.hub_body
 
