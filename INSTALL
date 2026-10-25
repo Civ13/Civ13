@@ -1,13 +1,11 @@
 #!/bin/bash
-
-echo WELCOME TO CIV13!
-echo -----------------
-echo Prepairing the system...
-sudo dpkg --add-architecture i386
-sudo apt update
-sudo apt upgrade
-sudo apt install python3 wget git unzip make sudo
-sudo apt install libstdc++6:i386 libgcc1:i386 libcurl4:i386 libc6-i386 lib32z1 libncurses6 libncurses6:i386
-sudo rm INSTALL.py
-sudo wget https://raw.githubusercontent.com/Civ13/Civ13/master/INSTALL.py
-sudo python3 INSTALL.py 516 1681
+# Retired entrypoint: deliberately no sudo, package upgrades, downloads or runtime.
+printf '%s\n' 'The legacy Civ13 INSTALL/INSTALL.py provisioner is retired; no changes were made.
+It does not install the BYOND version pinned in tools/byond/version.json.
+Use the reviewed local setup/build/start instructions in docs/local-wsl.md:
+- Windows/WSL: the local-wsl.ps1 Prepare, Build and Start flow.
+- Debian-compatible Linux: the direct Linux commands in that document.
+These create separate local test runtimes, not a production-server migration.
+Legacy scripts/launch.py and scripts/updateserver.py are NOT upgraded.
+Do not use them to migrate an existing server; retain saves and coordinate its stop.' >&2
+exit 2
