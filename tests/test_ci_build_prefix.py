@@ -236,29 +236,65 @@ class BuildPrefixTests(unittest.TestCase):
                 self.assertFalse(saved['eligibility']['metadata_valid'])
 
     def test_cli_receipt_records_action_and_independent_eligibility_reasons(self):
-        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-        base = subprocess.check_output(['git', 'rev-parse', 'HEAD^'], cwd=ROOT, text=True).strip()
         with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'repo'
+            (root / 'scripts').mkdir(parents=True)
+            # Receipt provenance is rooted at the scripts' location. Use their
+            # unchanged bytes in a real test-only repository, never the caller's
+            # latest commit, which may legitimately contain only documentation.
+            for name in ('select-ci.py', 'ci_baseline.py', 'byond_toolchain.py'):
+                (root / 'scripts' / name).write_bytes((ROOT / 'scripts' / name).read_bytes())
+            def git(*args):
+                return subprocess.check_output(['git', '-c', 'user.name=CI receipt fixture',
+                    '-c', 'user.email=ci@example.invalid', '-c', 'commit.gpgsign=false', *args],
+                    cwd=root, stderr=subprocess.PIPE, timeout=10, text=True).strip()
+            git('init', '-q')
+            (root / 'world.dm').write_text('// initial fixture source\n', encoding='utf-8')
+            (root / 'README.md').write_text('Initial fixture documentation.\n', encoding='utf-8')
+            git('add', '.')
+            git('commit', '-qm', 'test fixture base')
             event_file = Path(directory) / 'event.json'
             output = Path(directory) / 'output'
             receipt = Path(directory) / 'selection.json'
-            event_file.write_text(json.dumps(pr('ci: metadata edit', 'master', 'edited')))
+            event_file.write_text(json.dumps(pr('ci: metadata edit', 'master', 'edited')), encoding='utf-8')
             env = dict(os.environ, GITHUB_EVENT_PATH=str(event_file))
             env.pop('GITHUB_STEP_SUMMARY', None)
-            subprocess.run([sys.executable, '-B', str(ROOT / 'scripts/select-ci.py'),
-                '--base', base, '--head', head, '--event', 'pull_request', '--build-prefix', 'true',
-                '--output', str(output), '--receipt', str(receipt)], cwd=ROOT,
-                env=env, capture_output=True, timeout=10, check=True)
-            saved = json.loads(receipt.read_text())
-            self.assertEqual(saved['action'], 'edited')
-            self.assertEqual(saved['eligibility']['base_ref'], 'master')
-            self.assertTrue(saved['compile']['selected'])
-            self.assertTrue(saved['eligibility']['compile']['eligible'])
-            self.assertFalse(saved['eligibility']['native']['eligible'])
-            self.assertFalse(saved['eligibility']['gating']['eligible'])
-            self.assertEqual(saved['new_tests'], [])
-            self.assertTrue(all(saved['eligibility'][key]['reason'] for key in ('compile', 'native', 'gating')))
-            self.assertIn('gating=0\n', output.read_text())
+            for paths, compile_needed in ((('world.dm', 'tests/new_suite/probe.dm'), True),
+                                          (('README.md',), False)):
+                with self.subTest(paths=paths):
+                    base = git('rev-parse', 'HEAD')
+                    for relative in paths:
+                        path = root / relative
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_text('Updated fixture input.\n', encoding='utf-8')
+                    git('add', '.')
+                    git('commit', '-qm', 'test fixture change')
+                    head = git('rev-parse', 'HEAD')
+                    output.write_text('', encoding='utf-8')
+                    subprocess.run([sys.executable, '-B', str(root / 'scripts/select-ci.py'),
+                        '--base', base, '--head', head, '--event', 'pull_request', '--build-prefix', 'true',
+                        '--extensive', 'true', '--output', str(output), '--receipt', str(receipt)], cwd=root,
+                        env=env, capture_output=True, timeout=10, check=True)
+                    saved = json.loads(receipt.read_text(encoding='utf-8'))
+                    self.assertEqual(saved['status'], 'passed')
+                    self.assertEqual(saved['head'], head)
+                    self.assertEqual(saved['base'], base)
+                    self.assertEqual(saved['requested_base'], base)
+                    self.assertEqual(saved['comparison']['status'], 'available')
+                    self.assertEqual(saved['comparison']['paths'], sorted(paths))
+                    self.assertEqual(saved['action'], 'edited')
+                    self.assertEqual(saved['eligibility']['base_ref'], 'master')
+                    self.assertEqual(saved['compile']['selected'], compile_needed)
+                    self.assertTrue(saved['eligibility']['compile']['eligible'])
+                    self.assertFalse(saved['eligibility']['native']['eligible'])
+                    self.assertFalse(saved['eligibility']['gating']['eligible'])
+                    self.assertFalse(saved['extensive'])
+                    self.assertEqual(saved['new_tests'], [])
+                    self.assertTrue(all(saved['eligibility'][key]['reason'] for key in ('compile', 'native', 'gating')))
+                    self.assertEqual(output.read_text(encoding='utf-8'),
+                        f'new_tests=[]\ngame={str(compile_needed).lower()}\nextensive=false\ngating=0\n')
+                    self.assertEqual(workflow_contexts('success', '0'),
+                                     ('CI informational build', 'CI informational aggregate'))
 
     def test_workflow_intake_and_single_existing_compiler(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')

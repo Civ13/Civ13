@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: precipitation-driven generated snow -->
+Ground snow uses weather_snow units on exact ordinary dirt/grass, actual snowfall,
+exposure and get_temp (stick <=0C, melt >2C). Existing winter/snow/ice stays unmarked.
+No seasonal snow-ground replacement/thaw; retain water/ice/calendar/weather logic.
+One bounded swap-remove worker owns sampling. Save only units, never image/index;
+legacy same-type load resets units before decode. docs/snowfall-ground.md lists
+gameplay predicates, exclusions and source/native acceptance limits.
+
 <!-- 2026-10-24: authoritative zones and spawn registries -->
 Durable schema 2/topology 2 captures native area IDs in per-level zone_capture
 records at turf-frame admission. IDs use lineage counters, not new RNG calls.
@@ -48,7 +56,7 @@ tests/weather_policy is offline projection/parity evidence, not native acceptanc
 <!-- 2026-10-24: configured base season flow -->
 season_cycle is author policy for the serialized base worker. Whole-cycle validation
 rejects Spring/Summer->Winter before mutation; default edges retain legacy payloads.
-Six supported nondefault edges reconcile warm ground/snow structures/wet-dry state
+Six supported nondefault edges preserve unmarked ground and reconcile snow structures/wet-dry state
 inside the existing epoch/lock, before the unchanged subtype completion hook.
 No synthetic seasons, extra decay charges, new phase timers or saved cursor.
 tests/season_flow projects source/queue/ecology paths; native acceptance stays held.

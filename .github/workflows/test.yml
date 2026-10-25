@@ -157,6 +157,15 @@ jobs:
           python3 -B -m unittest discover -s tests/season_flow -v
           python3 -B -m unittest discover -s tests/season_duration -v
           python3 -B tests/abandoned_items/run.py --check-season-wiring
+      - name: Test snowfall ground cover offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/snowfall_ground')
+        run: |
+          python3 -B -m unittest discover -s tests/snowfall_ground -v
+          python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+          python3 -B -m unittest discover -s tests/season_flow -v
+          python3 -B -m unittest discover -s tests/season_duration -v
+          python3 -B -m unittest discover -s tests/weather_policy -v
+          python3 -B tests/abandoned_items/run.py --check-season-wiring
       - name: Test ping scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')
         run: python3 -B -m unittest discover -s tests/ping_scheduler -v

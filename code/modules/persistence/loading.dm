@@ -227,6 +227,9 @@
 			object = locate(xa,ya,za)
 			var/turf/restored_turf = object
 			restored_turf.activate_reserved_lighting()
+			// Missing fields in legacy/clear-ground saves mean no generated snow.
+			restored_turf.weather_snow = 0
+			restored_turf.snowfall_ground_icon()
 		else if(replacement)
 			object = replacement
 		else if(ispath(type, /atom))
