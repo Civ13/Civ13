@@ -2,7 +2,8 @@
 
 Native topology persistence supports the existing Gaia and Nomads Europe
 durable profiles. It records native area membership and the five spawn
-registries; it does not implement sharding, transfer custody or elevation.
+registries; it does not implement sharding or transfer custody. The separately
+merged optional geographic elevation component is independent of native zones.
 
 ## Representations and format
 
@@ -115,7 +116,9 @@ or changed membership prevent publication.
 There is no rollback after ClearMap. Engine/callback failure leaves the recovery
 hold active and requires recovery from the original disk generation. The old
 registry is not advertised as a usable snapshot of the partially mutated world.
-Native constructor, retirement, lighting and client behavior remain unverified.
+Native constructor-surprise and retirement-failure injection, lighting/weather
+correctness and connected-client behavior remain unverified. Successful synthetic
+restores do not establish those dedicated acceptance cases.
 Public callbacks deliberately bypassing admission are unsupported. The existing
 pure-predicate contract for get_area_turfs remains required.
 
@@ -127,17 +130,37 @@ format; earlier roof-format results do not establish acceptance for topology sav
 ## Verification and integration seam
 
 tests/zone_persistence contains independent Python models, source omission controls
-and a prepared 8x8x2 native writer/reader. These are not native results. The writer
-saves baseline, changed and deleted generations: all five registries move/add/drop
-points; an existing zone moves across z, another is created, then both previously
-saved zones are deleted. The reader repeats each generation and checks aliases,
-IDs, memberships and authoritative empty/absent groups. Negatives retain a spawn
-and scalar membership referencing the exact removed zone ID.
+and an 8x8x2 native writer/reader. The models remain offline evidence; the frozen
+fixtures are unchanged. A separately versioned `zone-native-516.1688-v2-jobmaster`
+adapter now has bounded native Linux BYOND 516.1688 acceptance on source
+`8144be445fa0492a515b6bb47b9692e0edc1830b`.
 
-The prepare-only runner refuses native zone execution. It rejects fixture clients,
-Topic and port reopening and requires external listener-closure acknowledgement.
-Native compilation, round trips, connected-client behavior and scale remain
-unverified for this topology format.
+[Hosted attempt 2](https://github.com/Civ13/Civ13/actions/runs/40165392581),
+controller `6895f1079ee0ea2fcc98c16fcdecb2b261a2d881`, compiled the synthetic
+fixture with zero errors/warnings and passed all 14 modes: write/read,
+write-sequence/read-sequence, legacy-write/legacy-read and eight malformed-input
+modes. The retained per-mode results total 313 assertions with zero failures.
+This is actual native execution, not the earlier QEMU compile preparation.
+
+The successive-generation reader checks baseline, changed and deleted generations
+twice each, including all five spawn registries, cross-z membership changes,
+created/deleted areas, aliases, stable IDs and authoritative empty/absent groups.
+Malformed-input controls check rejection before ClearMap with sentinel/index
+preservation. Expected rejection diagnostics are retained and phase-scoped, not
+blanket-suppressed. See tests/zone_persistence/README.md for evidence bindings,
+adapter corrections and the preserved failed first attempt.
+
+The canonical world-save prepare-only runner still refuses native zone execution;
+this result belongs to the reviewed hosted adapter/controller, not a change to
+that guard. The synthetic metadata subtype overrides New and loads no Gaia map.
+No production saves, players or connected clients participated. Listener closure
+and owned-process cleanup receipts were retained for every mode.
+
+Native roof-format/omission controls, constructor-surprise and retirement-failure
+injection, lighting/weather correctness, connected-client behavior and scale/latency
+remain open. Ordinary synthetic area creation/deletion and successful round restore
+do not substitute for those dedicated controls. No production-scale or full-map
+acceptance is claimed.
 
 The serializer integration seam is inside BuildVarDirectory after
 before_save_context/require_export_frame/ticket checks and before child traversal.
@@ -239,12 +262,14 @@ and wake-request path; a stopped port cannot accept a direct join. That fallback
 path is a future interface requirement, not a service implemented here.
 
 Logical geographic layers such as biome and elevation are independent of the
-native room/roof area and engine z. A future versioned component can bind them to
-validated coordinates and survive turf replacement. Native topology schema/version
-dispatch is the extension seam; unknown component versions must reject before
-mutation, not silently disappear. This format does not claim to encode all future
-zone layers. A future elevation component can default to zero without becoming
-a dependency of native topology persistence.
+native room/roof area and engine z. The separately merged optional geographic
+elevation component binds elevation to coordinates, survives turf replacement and
+defaults to zero when absent; it is not a dependency of native topology persistence.
+See docs/elevation.md for its own format and acceptance limits. Native topology and
+optional geographic components retain separate version/validation contracts; unknown
+component versions must reject before mutation, not silently disappear. This format
+does not claim to encode all future zone layers, and the native zone fixture does
+not establish combined nonzero-elevation/topology acceptance.
 
 Future ocean voyages, offshore rigs, submarines and pressurized bases, and later
 satellite/station/Moon/Mars modes remain roadmap scope. Physical depth/elevation
@@ -259,4 +284,8 @@ and weather_intensity; it does not reapply global weather policy or radiation.
 This avoids ambiguous reconstruction (for example, snow1 versus snow2 can share
 local wet weather). Legacy schema-1 imports retain their original path; the new
 appearance guarantee is for topology generations. There is no rollback after
-ClearMap and no native validation claim.
+ClearMap. The native round trips above do not establish dedicated weather or
+lighting correctness acceptance.
+
+Remaining native acceptance is tracked in [#3311](https://github.com/Civ13/Civ13/issues/3311).
+Source merge is distinct from deployment or approval to use production saves.
