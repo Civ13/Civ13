@@ -985,6 +985,10 @@ The #3286 discarded-return control now uses an explicit legacy wrapper adapter
 alongside a production-human success assertion. Offline checks and the remaining
 native acceptance proposal are in `tests/flax_processing/test_drop_return.py`
 and `tests/flax_processing/drop-return-acceptance.md`.
+The selected Linux flax runner follows the current manifest and verifies archive
+members before each launch; old/mismatched banners fail offline runner contracts.
+Its historical 1681 CI rejection is preserved. Existing tanning-fixture edits do
+not select the harvest suite; its frozen version gate needs separate admission.
 Use the production human subtype in transfer tests, not just a `/mob/living` stub.
 Production `stack/Crossed` merges floor pieces
 into the arriving stack; clear hand/HUD ownership only after destination admission,

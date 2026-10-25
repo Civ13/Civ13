@@ -61,9 +61,11 @@ After independent review and a separately authorized exact-head native grant:
 
 1. Compile the full game and relevant fixtures with the approved pinned BYOND
    version; retain complete diagnostics. The failed V46 scene used 516.1688,
-   which is also the current manifest target, while this historical fixture
-   runner still pins 516.1681. Main must choose and record the admitted version
-   rather than silently treating those as equivalent.
+   which is also the current manifest target. The selected Linux flax runner
+   verifies that target through the reviewed archive/member identities and one
+   exact compiler banner. The unselected historical harvest runner remains at
+   516.1681; its amended tanning fixture still requires separate admission and
+   version reconciliation before native execution.
 2. Use an isolated awake, live production human with real pickup, inventory slot
    updates and drop dispatch. Do not use `flax_tester`: it overrides the drop
    result and its existing direct `B.soak` calls bypass the failed entry path.
@@ -100,3 +102,22 @@ Python source/contract models cannot prove DM dispatch, implicit argument
 semantics, movement callbacks, native inventory/HUD cleanup, or genuine wait
 entry. The amended DM regression is prepared source and remains uncompiled and
 unrun until the separately admitted native phase.
+
+## Preserved CI failure and selected-runner correction
+
+At head `45c9e9c77286c12af94b47b3e505a32134ea4ba2`, ordinary PR CI run
+`40238731403` compiled the full game successfully with 516.1688. Its flax fixture
+also compiled with zero errors/warnings, but the runner rejected that clean result
+because it still searched for 516.1681. This is a runner version-contract failure;
+the original failed run stays failed. The selector admitted only
+`tests/flax_processing`, with `extensive=false`; editing the existing tanning
+fixture did not admit `tests/animal_harvest`.
+
+The flax runner now reads the reviewed manifest, checks a single exact compiler
+banner and clean summary, and passively verifies the pinned Linux archive and its
+four installed runtime members immediately before each existing compiler/daemon
+launch. Offline tests inject these launch seams; they never launch BYOND. Existing
+180-second compile/45-second runtime bounds, isolation, output preservation,
+cleanup and payment/replay/persistence controls remain. No other frozen runner or
+native selection rule is changed. Ordinary PR CI may verify the prepared flax
+fixture; it still cannot establish production-human afterattack/HUD acceptance.
