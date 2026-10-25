@@ -977,8 +977,14 @@ runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.p
 is offline evidence; `tanning_probe.dm` requires separate native acceptance.
 
 Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
-not stage stacks through a turf. Legacy human `drop_from_inventory` overrides
-discard the parent's return: a null result can follow a successful floor drop.
+not stage stacks through a turf. Human `drop_from_inventory` definitions must
+forward the parent's result with `return ..()`; keep both organ guards and the
+implicit arguments. The parent can still report TRUE after refused/redirected
+movement, so destination-sensitive callers must check actual location too.
+The #3286 discarded-return control now uses an explicit legacy wrapper adapter
+alongside a production-human success assertion. Offline checks and the remaining
+native acceptance proposal are in `tests/flax_processing/test_drop_return.py`
+and `tests/flax_processing/drop-return-acceptance.md`.
 Use the production human subtype in transfer tests, not just a `/mob/living` stub.
 Production `stack/Crossed` merges floor pieces
 into the arriving stack; clear hand/HUD ownership only after destination admission,
