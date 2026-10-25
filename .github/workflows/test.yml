@@ -143,6 +143,9 @@ jobs:
       - name: Test tree planting scheduler and save contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/tree_planting')
         run: python3 -B -m unittest discover -s tests/tree_planting -v
+      - name: Test character discoveries and berry smell contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/character_discoveries')
+        run: python3 -I -B -m unittest discover -s tests/character_discoveries -p 'test_*.py' -v
       - name: Test persistence minimum date offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_year')
         run: python3 -B -m unittest discover -s tests/persistence_year -v
