@@ -55,7 +55,7 @@ def route(url):
     value = urlsplit(url)
     require(value.scheme == 'https' and value.port in (None, 443) and not value.username and not value.password
             and not value.query and not value.fragment and value.netloc == value.hostname, 'Public HTTPS route required')
-    allowed = (url == 'https://www.byond.com/download/build/516/516.1681_byond_linux.zip'
+    allowed = (url == 'https://www.byond.com/download/build/516/516.1688_byond_linux.zip'
                or value.hostname == 'deb.debian.org' and value.path.startswith('/debian/pool/') and value.path.endswith('.deb'))
     require(allowed and all(part not in ('.', '..') for part in value.path.split('/')) and '%' not in value.path, 'Acquisition route not admitted')
 
@@ -76,7 +76,7 @@ def validate(plan):
     require(plan.get('schema') == 1 and plan.get('status') == 'INDEPENDENTLY_REVIEWED' and plan.get('scope') == SCOPE,
             'Unresolved acquisition plan')
     require(re.fullmatch('[0-9a-f]{40}', plan.get('head') or '') and plan.get('executor'), 'Exact head/executor')
-    require(plan.get('byond_version') == '516.1681' and plan.get('limits') == LIMITS
+    require(plan.get('byond_version') == '516.1688' and plan.get('limits') == LIMITS
             and plan.get('base_image') == BASE and plan.get('base_image_id') == BASE_ID, 'Scope/bounds/base drift')
     require(re.fullmatch('[0-9a-f]{64}', plan.get('recipe_sha256') or '')
             and plan.get('image_output_mode') == 'CAPTURE_CANDIDATE_FOR_INDEPENDENT_REVIEW', 'Unresolved recipe/output contract')

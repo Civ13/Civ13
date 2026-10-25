@@ -34,7 +34,7 @@ CID = 'c' * 64
 
 def admitted():
     toolchain = json.loads((ROOT / 'toolchain.json').read_text())
-    toolchain.update(status='INDEPENDENTLY_REVIEWED', archive_sha256=DIGEST,
+    toolchain.update(status='INDEPENDENTLY_REVIEWED', archive_sha256=r.ARCHIVE_SHA256,
                      image='example.invalid/admitted@sha256:' + DIGEST, image_id='sha256:' + DIGEST,
                      rootfs_provenance='INJECTED; not an acquired toolchain', independent_review='INJECTED')
     for key in ('compiler', 'daemon', 'python'):
@@ -66,6 +66,7 @@ class SourceContracts(unittest.TestCase):
         names = {'config/names/n' + str(i) + '.txt' for i in range(146)}
         data = {'civ13.dme': b'#include "code/names.dm"\n',
                 'code/names.dm': '\n'.join('file2list("' + x + '")' for x in sorted(names)).encode()}
+        data['tools/byond/version.json'] = b'{\"version\":\"516.1688\"}\n'
         data.update({name: b'public\n' for name in names})
         return names, data
 
@@ -208,9 +209,10 @@ class AdmissionContracts(unittest.TestCase):
             self.assertEqual(calls, ['reaped'])
 
     def test_real_compiler_exit_and_fatal_diagnostics_not_pipeline_success(self):
-        log = 'DM compiler version 516.1681\nprobe.dmb - 0 errors, 0 warnings (1.0s)\n'
+        log = 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings (1.0s)\n'
         r.compiler_result(0, log, re.compile('## ERROR'))
         for code, text in ((1, log), (0, log.replace('0 warnings', '1 warnings')),
+                           (0, log.replace('516.1688', '516.1681')), (0, log + log),
                            (0, log + '## ERROR'), (0, log + 'Cannot open config/missing.txt')):
             with self.assertRaisesRegex(ValueError, 'Compiler failed'):
                 r.compiler_result(code, text, re.compile('## ERROR'))
@@ -258,6 +260,29 @@ class AdmissionContracts(unittest.TestCase):
         self.assertEqual(r.plan()['compile_count'], 1)
         self.assertEqual(r.plan()['smoke_modes'], ['baseline', 'candidate'])
         self.assertFalse(r.plan()['image_acquisition'])
+
+    def test_current_version_archive_and_staged_central_pin_fail_closed(self):
+        pin = json.loads((ROOT.parents[2] / 'tools/byond/version.json').read_text())
+        template = json.loads((ROOT / 'toolchain.json').read_text())
+        self.assertEqual((r.BYOND_VERSION, template['version']), (pin['version'], pin['version']))
+        self.assertEqual((r.ARCHIVE_SHA256, template['archive_sha256']),
+                         (pin['linux']['sha256'], pin['linux']['sha256']))
+        self.assertEqual(template['archive_reference'], pin['linux']['url'])
+        packet, _ = admitted()
+        for field, value in (('version', '516.1681'), ('version', '516.16880'),
+                             ('archive_sha256', 'f' * 64)):
+            mutated = copy.deepcopy(packet['toolchain'])
+            mutated[field] = value
+            with self.assertRaises(ValueError):
+                r.toolchain(mutated)
+        self.assertTrue(p.public('tools/byond/version.json', set()))
+        self.assertFalse(p.public('tools/byond/private.json', set()))
+        fixtures = SourceContracts()
+        names, data = fixtures.source()
+        del data['tools/byond/version.json']
+        archive, entries = fixtures.archive(data)
+        with tempfile.TemporaryDirectory() as folder, self.assertRaisesRegex(ValueError, 'Missing source'):
+            p.extract(archive, entries, Path(folder) / 'source', HEAD, names)
 
     def test_lease_packet_executor_controls_and_toolchain_before_external_effect(self):
         packet, grant = admitted()

@@ -298,6 +298,9 @@ var/global/datum/controller/occupations/job_master
 		var/turf/spawnpoint = null
 		var/list/turfs = latejoin_turfs[spawn_location]
 		if (!latejoin_turfs[spawn_location] || !latejoin_turfs[spawn_location].len)
+			if(persistence_spawns_authoritative)
+				to_chat(H, SPAN_WARNING("No saved spawn destination exists for this job. Ask an administrator to place one."))
+				return FALSE
 			spawnpoint = locate(48,50,1)
 		else
 			spawnpoint = pick(turfs)

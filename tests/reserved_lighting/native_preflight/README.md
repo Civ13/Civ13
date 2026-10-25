@@ -3,12 +3,12 @@
 This is source preparation for PR #3243. No workflow calls this entry. Default
 `run.py` prints a plan. No image, toolchain, compiler or daemon was acquired or
 executed while preparing it. The shipped `toolchain.json` is deliberately
-unresolved and fails admission. Its official archive SHA256 and compiler/daemon
-member hashes now come from retained authenticated official HTTPS bytes and
-bounded static inspection. This observed origin identity is not a publisher-signed
-checksum. The original collector EOF bookkeeping error is retained and completion
-was reconciled offline using exact Content-Length and independent hash readers.
-No duplicate identity download is needed. The expired-TLS mirror is excluded.
+unresolved and fails admission. The active proposal targets 516.1688, matching
+`tools/byond/version.json`. Its archive/compiler/daemon hashes come from reading
+the already retained 1688 archive and bounded static inspection. They match the
+central official-observed pin and repository-release metadata; neither is a
+publisher-signed checksum. No download, extraction or member execution was needed.
+Historical 1681 inventories and consumed pilots remain separate evidence.
 Never invoke the old CI bootstrap as the bounded executor.
 
 The Dockerfile is an inert recipe: a digest-pinned Python base plus a separately
@@ -35,7 +35,8 @@ retries a phase or expands limits. The native driver is distinct from the
 two fresh children, reserved=0/1, then the six-snapshot comparison with
 1,350 overlay rows and 1,536 all-cell lumcount rows, including 36 fixed-omitted
 rows. Missing or wrong semantic coverage fails before preflight completion. The fixture/probe/production code is unchanged. Compiler acceptance
-uses its real exit code plus exact 516.1681/zero-error/zero-warning log checks.
+uses its real exit code plus one exact 516.1688 banner and zero-error/zero-warning
+log checks. Old, mixed or repeated compiler banners fail closed.
 The adapter retains the existing Linux PID/start-tick, smaps, wait4 CPU, fatal
 diagnostic and cleanup checks. Counter observations validate attribution only;
 they are not comparative performance evidence.

@@ -300,7 +300,7 @@ from staging, source tests, the successful pilot or these synchronized copies.
 
 ### Remaining native measurement prerequisites
 
-1. Review a bounded, isolated Linux BYOND 516.1681 build/preflight plan and its
+1. Review a bounded, isolated Linux BYOND 516.1688 build/preflight plan and its
    executor. The accepted Python image does not contain BYOND or establish the
    larger compiler/runtime envelope. Use a free standard public hosted runner,
    verified image/tool identities and external hard process/network/memory/swap/
@@ -375,3 +375,31 @@ exercise an omitted-cell lumcount mutation and missing/wrong coverage counts.
 Fresh source/runtime manifests must bind the resulting feature head; regenerate
 them again on any future accepted Linux executor. This source reconciliation
 provides no native preflight, platform, measurement, acquisition or runtime grant.
+
+### October 25 source-only toolchain migration
+
+The unpublished reconciliation uses master
+`704ebe205bf06c07bcf6460cfa1c3a2e9254a152` without a production-policy delta.
+Measurement sealing and the separate preflight now require 516.1688, while the
+frozen historical Windows and native-correctness runners retain their original
+1681 contracts. This does not rerun or relabel correctness evidence. Exact-head
+CI40099748074 at `ab10a6362d3e79bce498695f0c402409d0c07048` already ran and passed
+native exclusion and reserved-lighting parity plus controls under that old tree.
+The earlier 403 was a separate acquisition run, not that correctness result.
+
+The already retained 1688 Linux archive is 4,887,281 bytes, SHA256
+`16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9`, matching
+the central version manifest and repository mirror's advertised asset digest.
+Static inspection found 61 regular files, 14,626,448 expanded bytes and the i386
+interpreter `/lib/ld-linux.so.2`. Compiler, daemon and bundled libraries are
+hash-bound in the unresolved templates. No duplicate acquisition is needed.
+
+This Windows preparation does not supply actual i386 loader/transitive-library
+hashes, Python/rootfs/final-image identity, accepted larger-profile storage and
+containment, an engine/account/socket contract, or an admitted Linux executor.
+The exact central version manifest is now explicitly required in public source
+staging; no other tools/config subtree is admitted. Regenerate all source/runtime
+and eventual compiled packets at the reviewed candidate, then again with actual
+Linux executor paths. Preflight remains one compile and exactly two attribution
+smokes, with the 22-process comparison separately held. No restart, installation,
+image build/pull, dispatch, cgroup change or native execution is authorized here.

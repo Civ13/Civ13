@@ -16,6 +16,8 @@ import time
 
 from compare import compare
 
+BYOND_VERSION = '516.1688'
+
 PARITY_HEAD = 'a93e490e9e05a4faace778dd8431abf0d6f10564'
 PARITY_RUN = 39679381491
 PARITY_SUMMARY = {'snapshots': 6, 'rows': 1350, 'lumcount_rows': 1536, 'still_omitted_lumcount_rows': 36, 'equal': True}
@@ -515,7 +517,7 @@ def seal(root, head):
         require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 1024**3, 'Seal input bound')
     require((root/'build.json').stat().st_size <= 16384, 'Build provenance bound')
     build = json.loads((root/'build.json').read_text())
-    require(build['head'] == head and build['byond_version'] == '516.1681'
+    require(build['head'] == head and build['byond_version'] == BYOND_VERSION
             and HEX.fullmatch(build['compiler_sha256']), 'Build provenance')
     for name in names[:4]:
         require(build['files'][name] == sha(root/name), 'Build input mismatch')

@@ -4,21 +4,21 @@
   "scope": "civ13-reserved-toolchain-acquisition-only",
   "head": null,
   "executor": null,
-  "byond_version": "516.1681",
+  "byond_version": "516.1688",
   "archive": {
-    "url": "https://www.byond.com/download/build/516/516.1681_byond_linux.zip",
-    "sha256": "614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3",
-    "bytes": 4884042,
+    "url": "https://www.byond.com/download/build/516/516.1688_byond_linux.zip",
+    "sha256": "16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9",
+    "bytes": 4887281,
     "kind": "zip",
     "members": {
       "byond/bin/DreamMaker": {
         "path": "opt/byond/bin/DreamMaker",
-        "sha256": "b9f175ac9a24662a9ba6fa64652b669aff77ff4787b81b84497dff544f166677",
+        "sha256": "5c7d95f6a5f6f6b096409794446416e006503005996ef37dd52f48fdcf59bfa9",
         "bytes": 43552
       },
       "byond/bin/DreamDaemon": {
         "path": "opt/byond/bin/DreamDaemon",
-        "sha256": "112b3f4e74b95d82b7e117de35fae70f773e4b770a3302f8c0c33758f9e2f4e1",
+        "sha256": "0047b52e042647ea3a496b368ab829672917052a130cb67646c515a01c20188a",
         "bytes": 72288
       },
       "byond/bin/libext.so": {
@@ -28,19 +28,17 @@
       },
       "byond/bin/libbyond.so": {
         "path": "opt/byond/bin/libbyond.so",
-        "sha256": "2f651ba1de12a0687d2095faaf33db2b5af65b44f93420f4d9578a0e548ddfb8",
-        "bytes": 8332872
+        "sha256": "bcee0bdbc5e3bd96da1eef99ec71de97a5143fc3a54893c97e4806ac88b2a33a",
+        "bytes": 8341064
       }
     },
     "provenance": {
-      "role": "Observed official-origin HTTPS identity; not publisher-signed or separately published checksum",
-      "observed_utc": "2026-10-21T20:13:59.325352+00:00",
-      "bytes": 4884042,
-      "static_inventory_sha256": "186487765c4e34ce8f304963cc8335ea246409ef0483d81e7acad13a7655a64d",
-      "retained_archive_reread": true,
-      "archive_extracted_or_executed": false,
-      "collector_reconciliation": "Original EOF bookkeeping AttributeError retained; exact response Content-Length and two independent hash readers reconcile completion offline. No request retry.",
-      "mirror": "Expired TLS certificate; no mirror bytes or equality proof. No trust bypass or fallback."
+      "role": "Retained bytes match current central official-observed archive pin and user-approved repository mirror; not publisher-signed",
+      "static_inventory_sha256": "015f9eaa9f2cf2310cc7d89360266c0478ff2afa4d8d7653782167682e16348f",
+      "central_manifest_sha256": "9701c4011cab496295bb8b57cb74a570a6ffe90f191c18ddd3c0c9e48606d84f",
+      "source_master": "704ebe205bf06c07bcf6460cfa1c3a2e9254a152",
+      "network_requests": 0,
+      "extracted_or_executed": false
     }
   },
   "dependencies": [],
@@ -50,7 +48,7 @@
   "recipe_sha256": "696987f7bdf46b1ec503097b9d973d0cacf94c342c375318ad633ee80d573232",
   "image_output_mode": "CAPTURE_CANDIDATE_FOR_INDEPENDENT_REVIEW",
   "routes": [
-    "https://www.byond.com/download/build/516/516.1681_byond_linux.zip"
+    "https://www.byond.com/download/build/516/516.1688_byond_linux.zip"
   ],
   "registry_hosts": [
     "registry-1.docker.io",
@@ -76,5 +74,5 @@
   "native_compile_count": 0,
   "native_daemon_count": 0,
   "dispatch_count": 0,
-  "notes": "Archive and four selected member identities now come from retained official HTTPS bytes and bounded static inspection. No dependency closure, final image, real private-image/storage backend or execution admission is supplied. Plan remains UNRESOLVED and fails before effects. No duplicate identity-capture download is needed."
+  "notes": "UNRESOLVED and inert. Current 1688 archive/member identities are read from already retained bytes; no new identity download is needed. Dependency closure, final image, real bounded storage/backend and fresh admission are still absent. Repository-mirror acquisition needs the separately reviewed route/redirect/identity contract; it is not an implicit fallback."
 }

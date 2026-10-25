@@ -220,3 +220,10 @@ Offline contracts compare both runtime/traced movable definitions and the full
 saved-variable selection block, including `CIV13_VARIABLE_OBSERVABILITY`, its
 matching `#endif`, the subsequent selection logic and final return. Preserving
 that conditional source does not establish enabled-observability native parity.
+
+The October 25 source-only reconciliation advances this whole-file baseline pin
+to master `704ebe205bf06c07bcf6460cfa1c3a2e9254a152`. Its snowfall ownership and
+persistence-zone exclusions remain in both variants; no policy projection or
+unrelated-file exception is added. The historical policy tests and held 1681
+native runner remain unchanged in scope. CI40099748074's actual native pass
+belongs to earlier `ab10a636`, not native acceptance of this later source tree.

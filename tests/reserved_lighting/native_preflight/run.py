@@ -17,6 +17,9 @@ import sys
 import time
 import uuid
 
+BYOND_VERSION = '516.1688'
+ARCHIVE_SHA256 = '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9'
+
 MEMORY = 1536 * 1024**2
 SCRATCH = 128 * 1024**2
 BUILD = 1024**3
@@ -71,9 +74,9 @@ def plan():
 
 
 def toolchain(value):
-    require(value.get('status') == 'INDEPENDENTLY_REVIEWED' and value.get('version') == '516.1681'
+    require(value.get('status') == 'INDEPENDENTLY_REVIEWED' and value.get('version') == BYOND_VERSION
             and value.get('platform') == 'linux/amd64', 'Unresolved toolchain')
-    require(re.fullmatch('[0-9a-f]{64}', value.get('archive_sha256') or '')
+    require(value.get('archive_sha256') == ARCHIVE_SHA256
             and re.fullmatch(r'[^\s]+@sha256:[0-9a-f]{64}', value.get('image') or '')
             and re.fullmatch('sha256:[0-9a-f]{64}', value.get('image_id') or ''), 'Missing archive/image identity')
     for key, expected in [('compiler', 'byond/bin/DreamMaker'), ('daemon', 'byond/bin/DreamDaemon'),
@@ -299,7 +302,7 @@ def save(path, value):
 
 
 def compiler_result(code, log, diagnostic):
-    require(code == 0 and 'DM compiler version 516.1681' in log
+    require(code == 0 and re.findall(r'^DM compiler version ([^\r\n]+)$', log, re.M) == [BYOND_VERSION]
             and re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M)
             and not diagnostic.search(log) and not MISSING_FILE.search(log),
             'Compiler failed/diagnostic (real exit status required)')

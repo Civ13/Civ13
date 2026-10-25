@@ -1,12 +1,13 @@
 # Acquisition-only source packet and adapter wrapper
 
-This prepares a separate, future BYOND 516.1681 toolchain acquisition proposal for
+This prepares a separate, future BYOND 516.1688 toolchain acquisition proposal for
 PR #3243. It does not activate a workflow. The command line prints the unresolved
 plan; there is no execution switch or implicit host/network/Docker fallback.
 No download is performed by this source update. It reuses the already-retained
 official archive and its independently checked HTTPS-origin receipt.
 No package script, compiler, DreamDaemon, game or measurement runs in this scope.
-The accepted parent preflight source is unchanged.
+The parent preflight's source-only version contract advances with the central
+manifest; prior platform and pilot allocations do not authorize this version.
 
 The reuse review found:
 
@@ -18,8 +19,8 @@ The reuse review found:
 * The accepted parent `Dockerfile` and Python base digest/ID are exact inputs.
   The existing Python pilot proves neither acquisition nor a BYOND image.
 
-`plan.json` now binds the official Linux archive (4,884,042 bytes, SHA256
-`614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3`)
+`plan.json` now binds the retained 1688 Linux archive (4,887,281 bytes, SHA256
+`16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9`)
 and four selected compiler/daemon/bundled-library members. A bounded static read
 validated all 61 regular files, 14,618,256 expanded bytes and five i386 ELFs.
 These are observed official-origin HTTPS identities, not publisher signatures.

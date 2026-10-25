@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "status": "UNRESOLVED_SOURCE_RECIPE_ONLY",
-  "version": "516.1681",
+  "version": "516.1688",
   "platform": "linux/amd64",
-  "archive_reference": "https://www.byond.com/download/build/516/516.1681_byond_linux.zip",
-  "archive_sha256": "614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3",
+  "archive_reference": "https://www.byond.com/download/build/516/516.1688_byond_linux.zip",
+  "archive_sha256": "16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9",
   "image": null,
   "image_id": null,
   "compiler": {
     "path": "byond/bin/DreamMaker",
-    "sha256": "b9f175ac9a24662a9ba6fa64652b669aff77ff4787b81b84497dff544f166677"
+    "sha256": "5c7d95f6a5f6f6b096409794446416e006503005996ef37dd52f48fdcf59bfa9"
   },
   "daemon": {
     "path": "byond/bin/DreamDaemon",
-    "sha256": "112b3f4e74b95d82b7e117de35fae70f773e4b770a3302f8c0c33758f9e2f4e1"
+    "sha256": "0047b52e042647ea3a496b368ab829672917052a130cb67646c515a01c20188a"
   },
   "python": {
     "path": "/usr/local/bin/python3.12",
@@ -33,13 +33,20 @@
   "rootfs_provenance": null,
   "independent_review": null,
   "archive_provenance": {
-    "role": "Observed official-origin HTTPS identity; not publisher-signed or separately published checksum",
-    "observed_utc": "2026-10-21T20:13:59.325352+00:00",
-    "bytes": 4884042,
-    "static_inventory_sha256": "186487765c4e34ce8f304963cc8335ea246409ef0483d81e7acad13a7655a64d",
-    "retained_archive_reread": true,
-    "archive_extracted_or_executed": false,
-    "collector_reconciliation": "Original EOF bookkeeping AttributeError retained; exact response Content-Length and two independent hash readers reconcile completion offline. No request retry.",
-    "mirror": "Expired TLS certificate; no mirror bytes or equality proof. No trust bypass or fallback."
+    "role": "Retained bytes match current central official-observed archive pin and user-approved repository mirror; not publisher-signed",
+    "static_inventory_sha256": "015f9eaa9f2cf2310cc7d89360266c0478ff2afa4d8d7653782167682e16348f",
+    "central_manifest_sha256": "9701c4011cab496295bb8b57cb74a570a6ffe90f191c18ddd3c0c9e48606d84f",
+    "source_master": "704ebe205bf06c07bcf6460cfa1c3a2e9254a152",
+    "network_requests": 0,
+    "extracted_or_executed": false
+  },
+  "archive_repository_release": {
+    "url": "https://github.com/Civ13/Civ13/releases/download/byond-toolchain-cache-516.1688-linux-16278f318cde/516.1688_byond_linux.zip",
+    "repositoryId": 141349998,
+    "releaseId": 423087014,
+    "assetId": 673801489,
+    "redirectUrl": "https://release-assets.githubusercontent.com/github-production-release-asset/141349998/2c92a741-bfd1-4b43-8ec3-8c3813669b82",
+    "tagTarget": "3f3dd47f614f4659031a793dc590346f5e4de3e6",
+    "provenance": "Complete unchanged official-observed Linux archive and bundled notices; user-approved repository mirror, not a vendor-authenticated checksum"
   }
 }

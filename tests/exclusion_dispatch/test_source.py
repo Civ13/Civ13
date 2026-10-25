@@ -13,7 +13,7 @@ import resources
 from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY, dispatch_transform, validate_current_master
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = 'd6b06c638517bb4100beeca6a90d09adc3629fb7'
+BASE = '704ebe205bf06c07bcf6460cfa1c3a2e9254a152'
 HISTORICAL_BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
 HISTORICAL_CANDIDATE = 'a93e490e9e05a4faace778dd8431abf0d6f10564'
 PATH = 'code/modules/persistence/functions.dm'
@@ -22,6 +22,8 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_started', 'blackout_click_expires',
             'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
             'lighting_reserved', 'lighting_reserved_clearance_enabled')
+CURRENT_KEYS = ('snowfall_ground_index', 'snowfall_ground_generation',
+                'weather_snow_overlay', 'persistence_zone_id')
 
 
 class SourceContractTests(unittest.TestCase):
@@ -119,12 +121,12 @@ class SourceContractTests(unittest.TestCase):
             generated = output.with_suffix('.sources')
             production = (generated / 'production.dm').read_text()
             probe = (generated / 'probe.dm').read_text()
-            for key in (*NEW_KEYS, 'weak_reference'):
+            for key in (*NEW_KEYS, *CURRENT_KEYS, 'weak_reference'):
                 self.assertIn(f'"{key}"', probe)
                 for variant in ('baseline', 'candidate'):
                     kind = ('datum/proc' if key == 'weak_reference' else
-                            'area' if key == 'lighting_reserved_clearance_enabled' else
-                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved') else 'mob')
+                            'area' if key in ('lighting_reserved_clearance_enabled', 'persistence_zone_id') else
+                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved', *CURRENT_KEYS[:3]) else 'mob')
                     body = re.search(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M).group()
                     self.assertIn(f'"{key}"', body)
             self.assertIn('source_contract.py', receipt['inputs'])
@@ -217,8 +219,8 @@ class CurrentMasterSourceContractTests(unittest.TestCase):
         with patch('source_contract.project_reserved_policy', side_effect=AssertionError('Unexpected policy projection')):
             self.assertEqual(dispatch_transform(self.baseline), self.master)
             validate_current_master(self.baseline, self.candidate)
-        self.assertIn(AREA_POLICY, self.baseline)
-        for kind, count in [('atom', 3), ('turf', 9), ('mob', 23)]:
+        self.assertIn('return key == "lighting_reserved_clearance_enabled" || key == "persistence_zone_id" || ..()', self.baseline)
+        for kind, count in [('atom', 3), ('turf', 12), ('mob', 23)]:
             pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
             body = re.search(pattern, self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^\"]+"', body)), count)
@@ -233,7 +235,7 @@ class CurrentMasterSourceContractTests(unittest.TestCase):
                      self.candidate.replace('saving_export_stack.len - 7', 'saving_export_stack.len - 8', 1),
                      self.candidate.replace(' || key == "weak_reference"', '', 1),
                      self.candidate.replace('\treturn ..()', '\treturn FALSE', 1)]
-        for key in NEW_KEYS:
+        for key in (*NEW_KEYS, *CURRENT_KEYS):
             mutations.append(self.candidate.replace(f'"{key}"', '"omitted_runtime_key"', 1))
         for value in mutations:
             with self.subTest(mutation=value[:40]):

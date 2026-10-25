@@ -51,6 +51,9 @@
 	if(istype(value, /obj/map_metadata))
 		if(value != map) throw EXCEPTION("Durable metadata references another map controller")
 		return add_node(list("kind" = "map"))
+	if(isarea(value) && map_storage.zone_export_state)
+		var/area/A = value
+		return add_node(list("kind" = "zone", "id" = map_storage.capture_zone_descriptor(A), "type" = "[A.type]"))
 	if(isturf(value) || isarea(value))
 		var/turf/T = isturf(value) ? value : (locate(/turf) in value)
 		if(!T) throw EXCEPTION("Durable metadata references an unplaced area")
@@ -140,6 +143,9 @@
 				for(var/i = 1, i <= keys.len, i++)
 					check_index(keys[i])
 					check_index(values[i])
+			if("zone")
+				check_fields(node, list("kind", "id", "type"))
+				map_storage.validate_zone_reference(node["id"], istext(node["type"]) ? text2path(node["type"]) : null)
 			if("turf", "area")
 				check_fields(node, list("kind", "x", "y", "z", "type"))
 				for(var/axis in list("x", "y", "z"))
@@ -184,6 +190,7 @@
 		if("map") return "map"
 		if("entry") return json_encode(list("entry", node["z"], node["ref"]))
 		if("turf") return json_encode(list("turf", node["x"], node["y"], node["z"]))
+		if("zone") return "area:zone:[node["id"]]"
 		if("area")
 			return "area:[map_storage.save_validation_area_key(node["x"], node["y"], node["z"])]"
 		if("list", "alist") return "collection:[id]"
@@ -205,6 +212,11 @@
 			if("map") restored[i] = map
 			if("list") restored[i] = list()
 			if("alist") restored[i] = alist()
+			if("zone")
+				map_storage.validate_zone_reference(node["id"], text2path(node["type"]))
+				var/area/A = map_storage.restored_zones[node["id"]]
+				if(!A || "[A.type]" != node["type"] || A.persistence_zone_id != node["id"]) throw EXCEPTION("Durable zone reference was not restored")
+				restored[i] = A
 			if("turf") restored[i] = locate(node["x"], node["y"], node["z"])
 			if("area")
 				var/turf/T = locate(node["x"], node["y"], node["z"])

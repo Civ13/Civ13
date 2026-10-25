@@ -1,0 +1,87 @@
+/process/weather
+	var/mod_weather_interval = 3500
+	var/change_weather_interval = 3500
+
+	var/minimum_mod_weather_delay = 1000
+	var/minimum_change_weather_delay = 1000
+
+	var/next_can_mod_weather = -1
+	var/next_can_change_weather = -1
+
+	var/enabled = TRUE
+
+/process/weather/setup()
+	name = "weather"
+	schedule_interval = 10 SECONDS
+	start_delay = 2 SECONDS
+	next_can_mod_weather = world.realtime + 100
+	next_can_change_weather = world.realtime + 12000
+	fires_at_gamestates = list(GAME_STATE_PLAYING)
+	priority = PROCESS_PRIORITY_IRRELEVANT
+	processes.weather = src
+
+/process/weather/fire()
+	if(persistence_save_in_progress) return
+	if (map && !map.weather_policy_valid())
+		return
+	var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval
+	var/change_interval = map ? map.weather_timing_value("change_interval", change_weather_interval) : change_weather_interval
+	var/mod_delay = map ? map.weather_timing_value("minimum_mod_delay", minimum_mod_weather_delay) : minimum_mod_weather_delay
+	var/change_delay = map ? map.weather_timing_value("minimum_change_delay", minimum_change_weather_delay) : minimum_change_weather_delay
+	var/prob_of_weather_mod = (25*schedule_interval)/mod_interval
+	var/prob_of_weather_change = (25*schedule_interval)/change_interval
+	if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
+		prob_of_weather_change = (prob_of_weather_change*3)
+	if (prob(prob_of_weather_mod))
+		if (world.realtime >= next_can_mod_weather)
+			modify_weather_somehow()
+			next_can_mod_weather = world.realtime + mod_delay
+	else if (prob(prob_of_weather_change))
+		if (world.realtime >= next_can_change_weather)
+			change_weather_somehow()
+		next_can_change_weather = world.realtime + change_delay
+	if(map && map.uses_durable_metadata())
+		map.durable_weather_events()
+		return
+	if ((season == "WINTER" && map.triggered_blizzard) && !map.blizzard)
+		if (prob(1) || map.triggered_blizzard)
+			if(prob(50) || map.triggered_blizzard)
+				to_chat(world, "<big>A huge blizzard is approaching!</big>")
+				map.triggered_blizzard = FALSE
+				spawn(600)
+					map.blizzard = TRUE
+					change_weather(WEATHER_EXTREME)
+					spawn(rand(2400,3600))
+						map.blizzard = FALSE
+						change_weather(WEATHER_NONE)
+	if (map && (season == "SUMMER" || map.triggered_heatwave) && !map.heat_wave)
+		if (prob(1) || map.triggered_heatwave)
+			if(prob(50)|| map.triggered_heatwave)
+				to_chat(world, "<big>The weather starts to get hotter than normal...</big>")
+				map.triggered_heatwave = FALSE
+				spawn(600)
+					map.heat_wave = TRUE
+					change_weather(WEATHER_NONE)
+					to_chat(world, "<big>A heat wave has arrived in this area!</big>")
+					for(var/obj/structure/sink/S)
+						if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
+							S.dry = TRUE
+							S.update_icon()
+					spawn(rand(3000,3600))
+						map.heat_wave = FALSE
+						to_chat(world, "<big>The heat wave has subsided.</big>")
+						for(var/obj/structure/sink/S)
+							if (istype(S, /obj/structure/sink/well) || istype(S, /obj/structure/sink/puddle))
+								S.dry = FALSE
+								S.update_icon()
+	if ((season == "Dry Season" && map.triggered_sandstorm) && !map.sandstorm)
+		if (prob(1) || map.triggered_sandstorm)
+			if(prob(50)|| map.triggered_sandstorm)
+				to_chat(world, "<big>You start seeing dark clouds in the horizon...</big>")
+				map.triggered_sandstorm = FALSE
+				spawn(600)
+					map.sandstorm = TRUE
+					change_weather(WEATHER_EXTREME)
+					spawn(rand(3000,3600))
+						map.sandstorm = FALSE
+						change_weather(WEATHER_NONE)

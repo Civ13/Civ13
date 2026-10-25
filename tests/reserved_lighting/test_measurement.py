@@ -276,11 +276,19 @@ class Measurements(unittest.TestCase):
         self.assertFalse(json.loads((self.out/'measurement.json').read_text())['complete'])
 
     def test_sealer_is_inert_binds_artifacts_and_refuses_overwrite(self):
-        build={'head':self.packet['head'],'byond_version':'516.1681','compiler_sha256':'c'*64,
+        build={'head':self.packet['head'],'byond_version':m.BYOND_VERSION,'compiler_sha256':'c'*64,
                'runtime_inputs_sha256':m.sha(self.inputs/'runtime-inputs.json'),
                'files':{p.relative_to(self.inputs).as_posix():m.sha(p) for p in self.inputs.rglob('*') if p.is_file()}}
         (self.inputs/'build.json').write_text(json.dumps(build))
         with patch.object(m.LinuxAdapter,'launch',side_effect=AssertionError('Native launch forbidden')):
+            for version in ('516.1681', '516.16880'):
+                build['byond_version'] = version
+                (self.inputs/'build.json').write_text(json.dumps(build))
+                with self.assertRaisesRegex(ValueError, 'Build provenance'):
+                    m.seal(self.inputs,self.packet['head'])
+                self.assertFalse((self.inputs/'measurement-packet.json').exists())
+            build['byond_version'] = m.BYOND_VERSION
+            (self.inputs/'build.json').write_text(json.dumps(build))
             packet=m.seal(self.inputs,self.packet['head'])
         m.validate_packet(packet,self.inputs)
         self.assertEqual(packet['pairs'],10)

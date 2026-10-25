@@ -41,7 +41,7 @@ def public(path, names):
     relative(path)
     if path.endswith(('.dmb', '.rsc', '.dll', '.so', '.exe', '.zip')):
         return False
-    return (path == 'civ13.dme' or path in names or path.startswith('code/')
+    return (path in {'civ13.dme', 'tools/byond/version.json'} or path in names or path.startswith('code/')
             or any(path.startswith(part + '/') for part in RESOURCE_DIRS)
             or path in {'tests/reserved_lighting/' + x for x in TOOLS}
             or path in {'tests/reserved_lighting/native_preflight/' + x for x in NATIVE})
@@ -73,7 +73,7 @@ def tree_entries(data):
 def extract(archive, entries, destination, head, names):
     require(re.fullmatch('[0-9a-f]{40}', head or ''), 'Exact Git head required')
     allowed = {p: meta for p, meta in entries.items() if public(p, names)}
-    require(names <= allowed.keys() and 'civ13.dme' in allowed and 'code/names.dm' in allowed, 'Missing source inputs')
+    require(names <= allowed.keys() and 'civ13.dme' in allowed and 'code/names.dm' in allowed and 'tools/byond/version.json' in allowed, 'Missing source inputs')
     require(0 < len(allowed) <= MAX_FILES, 'Source count bound')
     require(all(mode in ('100644', '100755') and kind == 'blob'
                 and re.fullmatch('[0-9a-f]{40}', blob) for mode, kind, blob in allowed.values()),
@@ -119,7 +119,8 @@ def extract(archive, entries, destination, head, names):
 def validate(root, manifest):
     require(re.fullmatch('[0-9a-f]{40}', manifest.get('head') or ''), 'Source head')
     names = name_paths((root / 'code/names.dm').read_bytes())
-    require(names <= manifest['files'].keys() and 0 < len(manifest['files']) <= MAX_FILES
+    require(names <= manifest['files'].keys() and 'tools/byond/version.json' in manifest['files']
+            and 0 < len(manifest['files']) <= MAX_FILES
             and all(public(path, names) for path in manifest['files']), 'Staged allowlist')
     require(sum(info['bytes'] for info in manifest['files'].values()) == manifest['total_bytes'] <= MAX_BYTES, 'Staged aggregate bound')
     expected = set(manifest['files']) | {'source.json'}
