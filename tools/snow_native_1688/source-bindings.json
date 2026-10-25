@@ -1,0 +1,70 @@
+{
+  "head": "e87eae1d411e276ce2ae3f0b871829a1911c114c",
+  "tree": "cb0db4de48f271ca3a694583b17904c410d7dce1",
+  "inputs": [
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da1f55caedb02cbb3fefb367829fac05dc70b0b8",
+      "size": 101617,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/da1f55caedb02cbb3fefb367829fac05dc70b0b8"
+    },
+    {
+      "path": "code/game/turfs/floor_icon.dm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d38510bcf355aff0b8cc3e4426febb22d818f93",
+      "size": 13598,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/9d38510bcf355aff0b8cc3e4426febb22d818f93"
+    },
+    {
+      "path": "code/game/turfs/turf.dm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cb6f32a24560e02e729ac18ccc12fee5f30a3541",
+      "size": 21232,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/cb6f32a24560e02e729ac18ccc12fee5f30a3541"
+    },
+    {
+      "path": "code/modules/1713/snowfall_ground.dm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7783c6b84bf36f70545bccc026f749cca1af96a5",
+      "size": 4991,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/7783c6b84bf36f70545bccc026f749cca1af96a5"
+    },
+    {
+      "path": "code/modules/persistence/functions.dm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f311d0c9f1d1b6e07444e31ec08ee2886f39d133",
+      "size": 42871,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/f311d0c9f1d1b6e07444e31ec08ee2886f39d133"
+    },
+    {
+      "path": "code/processes/snowfall_ground.dm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "707f04fb3bf1937f421a57b3999c93619eeaf715",
+      "size": 1011,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/707f04fb3bf1937f421a57b3999c93619eeaf715"
+    },
+    {
+      "path": "icons/turf/snow.dmi",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4005151997de452a1f5762d461c08ca51bd57afe",
+      "size": 5819,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/4005151997de452a1f5762d461c08ca51bd57afe"
+    },
+    {
+      "path": "tests/snowfall_ground/native_probe.dm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "14a85418cf034d2617420e423aaba1d58212aef1",
+      "size": 2582,
+      "url": "https://api.github.com/repos/Civ13/Civ13/git/blobs/14a85418cf034d2617420e423aaba1d58212aef1"
+    }
+  ]
+}
