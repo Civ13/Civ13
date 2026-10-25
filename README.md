@@ -67,52 +67,30 @@ You will need a windows machine or a virtual machine running it from another OS.
 
 ## Setting up a Server
 
-Disclaimer:
-Python scripts will not function appropriately when Hosting within a Windows or WSL environment and support for such usage will not be provided.
-Most scripts are called externally by our [Discord bot](https://github.com/Valgorithms/Civilizationbot) which will be required for a proper installation.
+The legacy `INSTALL` and `INSTALL.py` provisioners are retired. They exit with
+status 2 without installing or changing anything. Do not use the old
+`sudo bash INSTALL` instructions.
 
-### Windows
-1. Install both [BYOND](https://www.byond.com/download/) and [Python 3](https://www.python.org/downloads/windows/)
+### Windows/WSL
 
-2. Download this repository, preferably with GitHub or another git program if you want to keep it updated.
-
-3. Open civ13.dme with BYOND DreamMaker and compile.
-
-4. Open civ13.dmb with BYOND DreamSeeker to launch the server.
-
-#### Running a specific map (local dev)
-```
-scripts\launch_map.bat nomads
-scripts\launch_map.bat SUBCOM13
-```
-Or use the interactive selector:
-```
-scripts\select_map.bat
-```
-
+See [the local Windows/WSL setup instructions](docs/local-wsl.md#windowswsl)
+for the existing Prepare, Build, Start, Stop and Status flow.
 
 ### Linux
-1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
- 
-The following `INSTALL`/`INSTALL.py` instructions preserve the legacy 516.1681
-provisioning path. It is unmigrated and is not the recommended 516.1688 setup;
-see [the upgrade disposition](docs/byond-5161688.md) before choosing a setup path.
 
-2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install wget*** first.
+See [the direct Linux local-test instructions](docs/local-wsl.md#direct-linux-local-test-runtime)
+for the existing Debian-compatible setup and controller.
 
-3. Use **sudo bash INSTALL** and it should install everything you need.
+These paths prepare separate local test servers using the BYOND target in
+`tools/byond/version.json`; they are not a production migration procedure or an
+integrated cross-platform launcher installer. Setup/build and server startup
+are separate actions. Review the [compatibility acceptance matrix](docs/byond-5161688.md)
+before replacing an existing runtime.
 
-4. You're all set! Run the **launch.py** file inside the **scripts/** folder. Use ***python3 launch.py***.
-
-#### Running a specific map (local dev)
-```bash
-./scripts/launch_map.sh nomads
-./scripts/launch_map.sh SUBCOM13
-```
-Or use the interactive selector:
-```bash
-./scripts/select_map.sh
-```
+Legacy `scripts/launch.py` and `scripts/updateserver.py` are not upgraded.
+Preserve existing saves, configuration and binaries, and coordinate shutdown
+with the server owner before any migration. These tools do not configure
+firewall rules, router forwarding or DNS.
 
 ## Contributor API reference
 See [source documentation generation and comment conventions](docs/api/README.md).
