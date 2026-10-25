@@ -564,6 +564,9 @@
 		stageGrowth()
 	if (growing_season() && stage >= readyStageMin)
 		var/obj/structure/wild/tree/live_tree/T = new(loc)
+		// Keep the sprite anchor, but not the random offset used by wild trees.
+		T.pixel_x = initial(T.pixel_x)
+		T.pixel_y = initial(T.pixel_y)
 		T.radiation = radiation
 		T.change_season()
 		visible_message(SPAN_NOTICE("The young tree has matured."))
