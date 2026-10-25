@@ -188,7 +188,7 @@
 
 // Author policy is not restored from an ordinary or historical area payload.
 /area/persistence_runtime_var(key)
-	return key == "lighting_reserved_clearance_enabled" || ..()
+	return key == "lighting_reserved_clearance_enabled" || key == "persistence_zone_id" || ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
@@ -304,6 +304,7 @@ map_storage
 
 /map_storage/persistence_runtime_var(key)
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
+	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
 	if(key == "last_save_reference_failure") return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
@@ -444,6 +445,8 @@ var/global/persistence_load_recovery_required = FALSE
 
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
+// Future custody-changing transfers must share this exclusion and durable-state
+// reconciliation. This local patch still admits save/load only.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
 	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || world_z_budget.active)
 		return null
@@ -528,6 +531,8 @@ var/global/persistence_load_recovery_required = FALSE
 // Cleanup can dispatch subtype code. Keep admission until every attempted
 // cleanup finishes, and contain cleanup exceptions so release still occurs.
 /map_storage/proc/cleanup_world_operation()
+	clear_saved_zones()
+	clear_zone_export()
 	clear_saved_roof_areas()
 	try
 		clear_bookkeeping()
@@ -558,6 +563,9 @@ var/global/persistence_load_recovery_required = FALSE
 
 /map_storage/proc/save_validation_area_type(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	if(validated_zone_state)
+		var/list/zone = validated_zones[saved_zone_id(x, y, z)]
+		return text2path(zone["type"])
 	var/list/roof = validated_roof_areas["[x],[y],[z]"]
 	if(roof && roof["area"]) return roof["area"]
 	if(z > world.maxz) return world.area
@@ -566,6 +574,7 @@ var/global/persistence_load_recovery_required = FALSE
 
 /map_storage/proc/save_validation_area_key(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	if(validated_zone_state) return "zone:[saved_zone_id(x, y, z)]"
 	var/area_type = save_validation_area_type(x, y, z)
 	if(validated_roof_types["[area_type]"]) return "roof:[area_type]"
 	if(z <= world.maxz)
@@ -610,8 +619,10 @@ var/global/persistence_load_recovery_required = FALSE
 		operation.mutation_started = TRUE
 		// Validated geography must be authoritative before replacement constructors.
 		map.restore_elevation_snapshot(saved_round, world.maxx, world.maxy, map_storage.save_validation_maxz())
+		map_storage.begin_zone_restore(operation)
 		map_storage.reset_player_restoration()
 		map_storage.suspend_durable_world()
+		invalidate_persistence_area_snapshots()
 		map_storage.ClearMap()
 		if(!map_storage.run_world_operation("load", operation))
 			throw EXCEPTION("Load_World did not complete")
@@ -622,11 +633,14 @@ var/global/persistence_load_recovery_required = FALSE
 		// the mode's minimum without replacing a later saved date or research.
 		map.apply_persistence_age_floor()
 		map_storage.restore_round_state(src, saved_round)
+		map_storage.restore_zone_spawns()
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 		// Client restoration can dispatch callbacks too. Keep this operation's
 		// identity until normal import completion, including those callbacks.
 		if(!transaction)
 			operation.restoring_players = TRUE
+			// Future custody-enabled deployments must reconcile authoritative
+			// ownership here even for older generations before activating a body.
 			map_storage.finish_player_restoration()
 	catch(var/exception/e)
 		map_storage.cleanup_world_operation()

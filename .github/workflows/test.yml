@@ -119,6 +119,9 @@ jobs:
       - name: Test optional geographic elevation offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/elevation')
         run: python3 -B -m unittest discover -s tests/elevation -v
+      - name: Check zone and spawn persistence contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/zone_persistence')
+        run: python3 -B -m unittest discover -s tests/zone_persistence -v
       - name: Prepare roof-area recovery fixture offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
         run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v

@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: authoritative zones and spawn registries -->
+Durable schema 2/topology 2 captures native area IDs in per-level zone_capture
+records at turf-frame admission. IDs use lineage counters, not new RNG calls.
+Validate candidate files with yields; do not restore a full-world no-yield JSON
+comparison. Area registration is operation-staged, retirement precedes publication,
+and load/recovery readers require admission. No rollback exists after ClearMap.
+Schema 1 keeps its legacy reader; tests/zone_persistence is offline/preparation
+evidence only. Local IDs are not shard/custody IDs or logical geographic layers.
+
 <!-- 2026-10-24: target BYOND version and historical fixture boundary -->
 tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
 bytes; it is embedded directly into source launcher 1.0.8 and consumed by the

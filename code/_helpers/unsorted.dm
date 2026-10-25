@@ -376,6 +376,9 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 
 //Returns: all the areas in the world
 /proc/return_areas()
+#ifdef CIV13_ZONE_PERSISTENCE
+	require_persistence_area_registry()
+#endif
 	var/list/area/areas = list()
 	for (var/area/A in area_list)
 		areas += A
@@ -388,6 +391,9 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 //Takes: Area type as text string or as typepath OR an instance of the area.
 //Returns: A list of all atoms	(objs, turfs, mobs) in areas of that type of that type in the world.
 /proc/get_area_all_atoms(var/areatype)
+#ifdef CIV13_ZONE_PERSISTENCE
+	require_persistence_area_registry()
+#endif
 	if (!areatype) return null
 	if (istext(areatype)) areatype = text2path(areatype)
 	if (isarea(areatype))
