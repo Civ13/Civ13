@@ -1,0 +1,128 @@
+name: Tree shovel uprooting native 516.1688 one-shot
+on:
+  push:
+    branches:
+      - codex/tree-native-1688-shovel-attempt1
+permissions:
+  contents: read
+concurrency:
+  group: tree-native-1688-shovel-attempt1
+  cancel-in-progress: false
+jobs:
+  fixture:
+    if: >-
+      github.repository == 'Civ13/Civ13' &&
+      github.event.created == true &&
+      github.run_attempt == 1 &&
+      github.ref == 'refs/heads/codex/tree-native-1688-shovel-attempt1'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - name: Check out one-shot controller proposal
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          path: runner
+          persist-credentials: false
+      - name: Check out exact shovel candidate independently
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ef4ebf0c6e648f2c5ae330973c8bf8a55899a20f
+          fetch-depth: 1
+          path: source
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify initial branch parent and clean exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C runner rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C runner rev-parse HEAD^)" = ef4ebf0c6e648f2c5ae330973c8bf8a55899a20f
+          test "$(git -C runner rev-list --parents -n 1 HEAD | wc -w)" -eq 2
+          git -C runner diff --name-only HEAD^ HEAD > "$RUNNER_TEMP/tree-controller-paths.txt"
+          test -s "$RUNNER_TEMP/tree-controller-paths.txt"
+          if grep -Ev '^(\.github/workflows/tree-native-1688-once\.yml|tools/tree_native_1688/[A-Za-z0-9_./-]+)$' "$RUNNER_TEMP/tree-controller-paths.txt"; then
+            echo 'Unexpected controller commit changes' >&2
+            exit 1
+          fi
+          test "$(git -C source rev-parse HEAD)" = ef4ebf0c6e648f2c5ae330973c8bf8a55899a20f
+          test "$(git -C source rev-parse 'HEAD^{tree}')" = 7053ffa0194dd1ae0c021218139af7247419870e
+          test -z "$(git -C source status --porcelain --untracked-files=normal)"
+          test "$(git -C source hash-object scripts/byond_toolchain.py)" = 58e60ef0263cba1f1af04c0a135d1a14f486d799
+          test "$(git -C source hash-object tools/byond/version.json)" = 738fecfaf195bfbe31ed68fa4f0e4d05b9912248
+          mkdir "$RUNNER_TEMP/tree-1688-acquisition"
+          git -C source rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/tree-1688-acquisition/source-identity.txt"
+          git -C runner rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/tree-1688-acquisition/controller-identity.txt"
+          cp "$RUNNER_TEMP/tree-controller-paths.txt" "$RUNNER_TEMP/tree-1688-acquisition/controller-paths.txt"
+      - name: Verify pure offline preparation and controller controls
+        timeout-minutes: 2
+        shell: bash
+        env:
+          TREE_TEST_SOURCE: ${{ github.workspace }}/source
+        run: |
+          set -euo pipefail
+          python3 -B -m unittest discover -s "$GITHUB_WORKSPACE/runner/tools/tree_native_1688" -p 'test_*.py' -v
+      - name: Run unchanged exact-source tree and Atlas regressions
+        timeout-minutes: 4
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          # Independent bounded logs; both exact commands run, either failure stops native work.
+          status=0
+          (ulimit -f 4096; timeout -k 5 110 python -B -m unittest discover -s tests/tree_planting -v) > "$RUNNER_TEMP/tree-1688-acquisition/tree-source-tests.log" 2>&1 || status=$?
+          (ulimit -f 4096; timeout -k 5 110 python -B scripts/build-crafting-atlas.py --catalog-only --check-game-catalog UI/crafting-atlas.json) > "$RUNNER_TEMP/tree-1688-acquisition/atlas-source-freshness.log" 2>&1 || status=$?
+          exit "$status"
+      - name: Install reviewed Ubuntu i386 runtime dependencies only
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo timeout -k 5 30 dpkg --add-architecture i386
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip
+      - name: Acquire exact pinned repository-release archive
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/tree-1688-toolchain"
+          timeout -k 5 65 python3 "$GITHUB_WORKSPACE/source/scripts/byond_toolchain.py" download --platform linux --source repository-release --output "$RUNNER_TEMP/tree-1688-toolchain/516.1688_byond_linux.zip" > "$RUNNER_TEMP/tree-1688-acquisition/download.json"
+          echo '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9  516.1688_byond_linux.zip' > "$RUNNER_TEMP/tree-1688-acquisition/archive.sha256"
+          cd "$RUNNER_TEMP/tree-1688-toolchain"
+          sha256sum --check "$RUNNER_TEMP/tree-1688-acquisition/archive.sha256"
+          timeout -k 5 30 unzip -q 516.1688_byond_linux.zip
+          # No fallback, proxy/TLS change, global BYOND install or byondsetup.
+      - name: Execute reviewed tree roundtrip, fresh restart and four causal controls once
+        timeout-minutes: 21
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/tree_native_1688/run.py" \
+            --source "$GITHUB_WORKSPACE/source" \
+            --output "$RUNNER_TEMP/tree-1688" \
+            --byond-bin "$RUNNER_TEMP/tree-1688-toolchain/byond/bin" \
+            --byond-archive "$RUNNER_TEMP/tree-1688-toolchain/516.1688_byond_linux.zip" \
+            --reviewed-native
+      - name: Stage bounded allowlisted source diagnostics and receipts
+        if: always()
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/tree_native_1688/collect_evidence.py" \
+            --evidence "$RUNNER_TEMP/tree-1688" \
+            --acquisition "$RUNNER_TEMP/tree-1688-acquisition" \
+            --tooling "$GITHUB_WORKSPACE/runner/tools/tree_native_1688" \
+            --output "$RUNNER_TEMP/tree-1688-retained"
+      - name: Retain bounded fixture evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: tree-1688-shovel-attempt1-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/tree-1688-retained/
