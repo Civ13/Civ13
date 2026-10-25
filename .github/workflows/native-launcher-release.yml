@@ -9,6 +9,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
+    # BYOND archive caches are not launcher releases.
+    if: ${{ !startsWith(github.event.release.tag_name, 'byond-toolchain-cache-') }}
     runs-on: windows-latest
     permissions:
       contents: write

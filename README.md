@@ -36,21 +36,25 @@ launcher as administrator. Clients are kept under `%LOCALAPPDATA%\Civ13`; update
 keep older client versions and your account settings. The launcher checks verified
 updates at startup and can use an already installed client when offline.
 
-The next generated launcher download will be a single **Civ13.exe** on the
-[GitHub releases page](https://github.com/Civ13/Civ13/releases). Once that file is
-published, download it and double-click it to use the same menu. The EXE also checks
-its own updates. There is no public EXE download yet; use the package above until
-one appears. The executable is unsigned, so Windows may show a publisher warning.
-The EXE checks for the project's required BYOND **516.1681** and offers the official
-installer if it is missing. Review the installer license and any Windows prompts;
-its suggested separate folder keeps other BYOND versions. Installing BYOND does
-not log you into an account.
+The stable native launcher feed references **1.0.7**, whose embedded BYOND
+requirement is **516.1681**. This source prepares **1.0.8** with an exact **516.1688**
+client requirement, aligned with the default compiler/server target in
+`tools/byond/version.json`. Source merge does not update an installed launcher or
+advance the stable feed. The new executable needs separate build, compatibility
+review and release approval; see [the acceptance matrix](docs/byond-5161688.md).
+
+The native launcher verifies both BYOND and DreamSeeker file versions and offers
+the pinned official installer if missing. Review its license and Windows prompts;
+a separate versioned folder preserves older installations. Installing BYOND does
+not log you into an account. The client requires Windows 10/11, 32-bit WebView2 and
+the Visual C++ runtimes listed on the official download page.
 
 ### BYOND client
 
 You will need a windows machine or a virtual machine running it from another OS.
 
-1. Download the latest BYOND distribution from http://www.byond.com/download/
+1. Download the intended BYOND **516.1688** distribution from https://www.byond.com/download/
+   Compatibility acceptance is pending; do not replace an existing playtest installation without owner approval.
 
 2. Register a BYOND account at https://secure.byond.com/Join
 
@@ -90,6 +94,10 @@ scripts\select_map.bat
 ### Linux
 1. You will need a linux machine for the automated install, preferably Ubuntu. Open the command line.
  
+The following `INSTALL`/`INSTALL.py` instructions preserve the legacy 516.1681
+provisioning path. It is unmigrated and is not the recommended 516.1688 setup;
+see [the upgrade disposition](docs/byond-5161688.md) before choosing a setup path.
+
 2. Download the INSTALL file. You can use ***wget https://raw.githubusercontent.com/Civ13/Civ13/master/INSTALL*** for it. If you don't have wget installed, use ***sudo apt install wget*** first.
 
 3. Use **sudo bash INSTALL** and it should install everything you need.
@@ -108,3 +116,8 @@ Or use the interactive selector:
 
 ## Contributor API reference
 See [source documentation generation and comment conventions](docs/api/README.md).
+
+## Designing maps
+
+See the [Civ13 mapping checklist](docs/mapping.md) for map registration, areas,
+travel, spawns, resource readiness and saved-world compatibility.

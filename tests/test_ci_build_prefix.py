@@ -1,5 +1,6 @@
 """Build requests change compilation selection, never native suite admission."""
 import importlib.util
+import ast
 import json
 import os
 from pathlib import Path
@@ -22,6 +23,28 @@ def push(*messages, ref='refs/heads/feature'):
 
 def pr(title, base='feature-base', action='opened'):
     return {'action': action, 'pull_request': {'title': title, 'base': {'ref': base}}}
+
+
+def workflow_contexts(selection_result, gating):
+    """Evaluate the actual two job-name expressions using a closed vocabulary."""
+    workflow = (ROOT / '.github/workflows/test.yml').read_text()
+    names = []
+    for job in ('build', 'ci-required'):
+        expression = workflow.split('\n  ' + job + ':\n', 1)[1].splitlines()[0]
+        assert expression.startswith('    name: ${{ ') and expression.endswith(' }}')
+        expression = expression[len('    name: ${{ '):-len(' }}')]
+        expression = expression.replace('needs.changes.result', 'selection_result').replace(
+            'needs.changes.outputs.gating', 'gating').replace('&&', ' and ').replace('||', ' or ')
+        tree = ast.parse(expression, mode='eval')
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.Compare,
+                                     ast.Eq, ast.Name, ast.Load, ast.Constant)):
+                raise AssertionError('Unexpected check-name expression syntax')
+            if isinstance(node, ast.Name) and node.id not in {'selection_result', 'gating'}:
+                raise AssertionError('Check identity must not depend on compiler success or native omission')
+        names.append(eval(compile(tree, '<workflow check identity>', 'eval'),
+                          {'__builtins__': {}}, dict(selection_result=selection_result, gating=gating)))
+    return tuple(names)
 
 
 class BuildPrefixTests(unittest.TestCase):
@@ -48,10 +71,75 @@ class BuildPrefixTests(unittest.TestCase):
         for action in ('opened', 'synchronize', 'reopened', 'edited'):
             self.assertEqual(self.choose('pull_request', pr('build: docs', action=action)),
                              (True, False, []))
-        # A body edit or removal of build: does not compile even a source diff.
-        for base in ('master', 'feature-base'):
+        # Removing build: cannot turn a supported code diff into a compiler skip.
+        for base, expected in (('master', True), ('feature-base', False)):
             self.assertEqual(self.choose('pull_request', pr('docs: x', base, 'edited'), b'world.dm\0'),
-                             (False, False, []))
+                             (expected, False, []))
+
+    def test_edited_code_docs_and_forcing_stay_informational_without_native_admission(self):
+        for base in ('master', 'help-markdown-byond-html'):
+            for title, paths, compile_needed in (
+                    ('docs: edited body', b'world.dm\0', True),
+                    ('docs: edited body', b'README.md\0', False),
+                    ('build: docs', b'README.md\0', True)):
+                payload = pr(title, base, 'edited')
+                with self.subTest(base=base, title=title, paths=paths), patch.object(
+                        selection, 'introduced_tests', side_effect=AssertionError('native expansion')):
+                    self.assertEqual(self.choose('pull_request', payload, paths), (compile_needed, False, []))
+                policy = selection.eligibility('pull_request', payload, True)
+                self.assertTrue(policy['compile']['eligible'])
+                self.assertFalse(policy['native']['eligible'])
+                self.assertFalse(policy['gating']['eligible'])
+                self.assertEqual(workflow_contexts('success', '0'),
+                                 ('CI informational build', 'CI informational aggregate'))
+
+    def test_full_ordinary_scopes_retain_gating_names_and_admission(self):
+        for base in ('master', 'help-markdown-byond-html'):
+            for action in ('opened', 'synchronize', 'reopened'):
+                policy = selection.eligibility('pull_request', pr('source', base, action), True)
+                self.assertTrue(policy['native']['eligible'])
+                self.assertTrue(policy['gating']['eligible'])
+                self.assertEqual(workflow_contexts('success', '1'), ('build', 'CI required aggregate'))
+        self.assertTrue(selection.eligibility('push', push('source', ref='refs/heads/master'), True)['gating']['eligible'])
+
+    def test_incomplete_scopes_cannot_collide_even_when_compilation_is_forced(self):
+        for event, payload in (('push', push('source')), ('push', push('build: source')),
+                               ('pull_request', pr('build: source')),
+                               ('workflow_dispatch', {})):
+            with self.subTest(event=event, payload=payload):
+                policy = selection.eligibility(event, payload, True)
+                self.assertFalse(policy['gating']['eligible'])
+                self.assertEqual(workflow_contexts('success', '0'),
+                                 ('CI informational build', 'CI informational aggregate'))
+
+    def test_later_edited_success_preserves_both_compiler_and_native_failure_contexts(self):
+        for prior_failure in ('compiler acquisition', 'native fixture'):
+            with self.subTest(prior_failure=prior_failure):
+                history = dict(zip(workflow_contexts('success', '1'), ('failure', 'failure')))
+                # An edited run may really compile successfully, but cannot
+                # certify an earlier omitted native fixture or replace its name.
+                history.update(zip(workflow_contexts('success', '0'), ('success', 'success')))
+                self.assertEqual(history['build'], 'failure')
+                self.assertEqual(history['CI required aggregate'], 'failure')
+
+    def test_selector_failure_missing_or_invalid_output_retains_failing_gating_names(self):
+        for result, gating in (('failure', '0'), ('cancelled', '0'),
+                               ('skipped', ''), ('success', ''), ('success', 'invalid'),
+                               ('success', 'false'), ('success', 'False'), ('success', '00'),
+                               ('success', None), ('success', False), ('success', 0)):
+            self.assertEqual(workflow_contexts(result, gating), ('build', 'CI required aggregate'))
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        self.assertEqual(workflow.count('needs.changes.outputs.gating &&'), 2)
+        self.assertIn('case "$GATING_SELECTION" in 0|1) ;; *) exit 1 ;; esac', workflow)
+
+    def test_missing_comparison_compiles_conservatively_without_edited_native_admission(self):
+        payload = pr('source', 'master', 'edited')
+        for base in ('', '0' * 40, 'missing-base'):
+            with self.subTest(base=base), patch.object(selection.subprocess, 'check_output',
+                    side_effect=subprocess.CalledProcessError(1, 'git')), patch.object(
+                    selection, 'introduced_tests', side_effect=AssertionError('native expansion')):
+                self.assertEqual(selection.selections(base, 'head', 'pull_request', True, True, payload)[:3],
+                                 (True, False, []))
 
     def test_ordinary_subscription_behavior_is_retained(self):
         self.assertEqual(self.choose('push', push('docs', ref='refs/heads/master')),
@@ -118,11 +206,59 @@ class BuildPrefixTests(unittest.TestCase):
                 event_path.write_text(json.dumps(push(*messages)), encoding='utf-8')
                 subprocess.run(command, cwd=root, env=env, check=True, capture_output=True)
                 self.assertEqual(output.read_text(encoding='utf-8'),
-                    f'new_tests=[]\ngame={str(expected).lower()}\nextensive=false\n')
+                    f'new_tests=[]\ngame={str(expected).lower()}\nextensive=false\ngating=0\n')
                 self.assertFalse((root / 'INJECTED').exists())
             event_path.write_text('{invalid', encoding='utf-8')
             self.assertEqual(selection.load_event(event_path), {})
             self.assertEqual(selection.load_event(root / 'missing'), {})
+
+    def test_cli_missing_scope_metadata_fails_before_outputs(self):
+        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+        for event, payload in (('pull_request', {}),
+                ('pull_request', {'action': 'edited', 'pull_request': {'title': 'source'}}),
+                ('pull_request', {'pull_request': {'title': 'source', 'base': {'ref': 'master'}}}),
+                ('push', {'commits': [{'message': 'source'}]})):
+            with self.subTest(event=event, payload=payload), tempfile.TemporaryDirectory() as directory:
+                event_file = Path(directory) / 'event.json'
+                output = Path(directory) / 'output'
+                receipt = Path(directory) / 'selection.json'
+                event_file.write_text(json.dumps(payload))
+                env = dict(os.environ, GITHUB_EVENT_PATH=str(event_file))
+                env.pop('GITHUB_STEP_SUMMARY', None)
+                result = subprocess.run([sys.executable, '-B', str(ROOT / 'scripts/select-ci.py'),
+                    '--base', head, '--head', head, '--event', event, '--build-prefix', 'true',
+                    '--output', str(output), '--receipt', str(receipt)], cwd=ROOT,
+                    env=env, capture_output=True, timeout=10)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(output.exists())
+                saved = json.loads(receipt.read_text())
+                self.assertEqual(saved['status'], 'failed')
+                self.assertFalse(saved['eligibility']['metadata_valid'])
+
+    def test_cli_receipt_records_action_and_independent_eligibility_reasons(self):
+        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+        base = subprocess.check_output(['git', 'rev-parse', 'HEAD^'], cwd=ROOT, text=True).strip()
+        with tempfile.TemporaryDirectory() as directory:
+            event_file = Path(directory) / 'event.json'
+            output = Path(directory) / 'output'
+            receipt = Path(directory) / 'selection.json'
+            event_file.write_text(json.dumps(pr('ci: metadata edit', 'master', 'edited')))
+            env = dict(os.environ, GITHUB_EVENT_PATH=str(event_file))
+            env.pop('GITHUB_STEP_SUMMARY', None)
+            subprocess.run([sys.executable, '-B', str(ROOT / 'scripts/select-ci.py'),
+                '--base', base, '--head', head, '--event', 'pull_request', '--build-prefix', 'true',
+                '--output', str(output), '--receipt', str(receipt)], cwd=ROOT,
+                env=env, capture_output=True, timeout=10, check=True)
+            saved = json.loads(receipt.read_text())
+            self.assertEqual(saved['action'], 'edited')
+            self.assertEqual(saved['eligibility']['base_ref'], 'master')
+            self.assertTrue(saved['compile']['selected'])
+            self.assertTrue(saved['eligibility']['compile']['eligible'])
+            self.assertFalse(saved['eligibility']['native']['eligible'])
+            self.assertFalse(saved['eligibility']['gating']['eligible'])
+            self.assertEqual(saved['new_tests'], [])
+            self.assertTrue(all(saved['eligibility'][key]['reason'] for key in ('compile', 'native', 'gating')))
+            self.assertIn('gating=0\n', output.read_text())
 
     def test_workflow_intake_and_single_existing_compiler(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
@@ -133,7 +269,7 @@ class BuildPrefixTests(unittest.TestCase):
         self.assertNotIn('pull_request_target', workflow)
         self.assertIn('contents: read', workflow)
         self.assertIn('build_prefix: true', workflow)
-        self.assertEqual(workflow.count('sudo bash ./scripts/travis_pre_byond.sh'), 1)
+        self.assertEqual(workflow.count('bash ./scripts/travis_pre_byond.sh'), 1)
         reusable = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
         self.assertIn("--build-prefix \"$BUILD_PREFIX\"", reusable)
         self.assertNotIn('github.event.pull_request.title', reusable)

@@ -52,16 +52,18 @@ public static class LocalDreamDaemon {
             throw new IOException("Invalid local host identity/source/map binding.");
         root = strictDOutput ? RequireDPath(root) : RequirePath(root);
         var world = RequirePath(receipt.World);
+        var requirement = Program.RequiredByond();
         var host = (inspectHost ?? InspectHost)(receipt.Pid);
         var hostName = Path.GetFileName(host.Executable);
+        if (!requirement.MatchesPeVersion(host.Version))
+            throw new IOException("Local DreamDaemon requires BYOND " + requirement.Version + ". Missing, malformed or different version metadata is incompatible; request a matching isolated host.");
         if (host.StartTimeUtcTicks != receipt.StartTimeUtcTicks ||
             !string.Equals(Path.GetFullPath(host.Executable), Path.GetFullPath(receipt.Daemon), StringComparison.OrdinalIgnoreCase) ||
-            host.Version != "5.0.516.1681" ||
             !(hostName.Equals("DreamDaemon.exe", StringComparison.OrdinalIgnoreCase) || hostName.Equals("dd.exe", StringComparison.OrdinalIgnoreCase)) ||
             (hash ?? Updater.Hash)(world) != receipt.WorldSha256)
             throw new IOException("Local DreamDaemon process identity or world file hash changed. Ask the host owner for a fresh receipt.");
         if (!(matchesClient ?? MatchesClient)(byondBin))
-            throw new IOException("Verified BYOND 516.1681 client is unavailable.");
+            throw new IOException("Verified BYOND " + requirement.Version + " client is unavailable.");
         // No proven per-process BYOND user-directory override is available yet.
         // Do not equate a receipt assertion, working directory or TEMP with its real cache location.
         if (strictDOutput) {
