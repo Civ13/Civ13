@@ -193,6 +193,9 @@ separate from updater replacement tests. Reuse NativeStart and existing proofs;
 dispatch is not connected gameplay or shard-travel evidence. See its README.
 Keep player presence/native callbacks separate from DiscordPHP backend APIs.
 SDK access/linking/distribution and application selection remain future gates.
+PumpedSocialClient needs one explicit worker pump; Accepted/ClearIssued are local
+evidence, not Discord UI/remote cleanup proof. No native transport is supplied;
+see SOCIAL-SDK-ADAPTER.md in the native launcher directory for missing inputs.
 Before an isolated .NET CLI home's first use, set
 DOTNET_GENERATE_ASPNET_CERTIFICATE=false to avoid automatic development-cert setup.
 

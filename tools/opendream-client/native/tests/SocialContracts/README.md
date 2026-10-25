@@ -59,3 +59,9 @@ throwing dispatcher is treated as possibly acted, consumed and never retried.
 Manual ServerBrowser joining is tested independently after a social adapter
 failure. Authentication, application selection, SDK access/licensing, native
 adapters, deep-link registration and actual joining remain future review gates.
+
+The next adapter milestone adds PumpedSocialClient and fake-driven tests for its
+single-thread transport pump, coalescing, operation deadlines, expiry cleanup,
+opt-out/stop ordering and quarantined failure behavior. No native transport is
+provided or loaded. See [the adapter boundary](../../SOCIAL-SDK-ADAPTER.md) for
+actual behavior and the exact missing package/application inputs.

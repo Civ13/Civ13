@@ -304,6 +304,13 @@ internal static class Program {
         session.Enable();
         try { await session.SetPresenceAsync(LauncherPhase.Browsing); throw new InvalidOperationException("Fake did not fail."); }
         catch (IOException) { assertions++; }
+        var unavailable = new PumpedSocialClient(() => throw new FileNotFoundException("Mock missing binding"), clock);
+        var optional = new SocialSession(unavailable, clock); optional.Enable();
+        var update = optional.SetPresenceAsync(LauncherPhase.Browsing); unavailable.PumpOnce();
+        Require(update.IsCompleted && unavailable.Snapshot.State == PresenceAdapterState.Unavailable,
+            "Optional transport failure blocked its caller");
+        var stop = unavailable.StopAsync(); unavailable.PumpOnce();
+        Require(stop.IsCompleted, "Unavailable optional transport left work running");
         var scene = new Scene(); var launches = 0;
         await ServerBrowser.Run("Civ13.com", scene.Discovery, new StringReader("1\n"), TextWriter.Null, verified => {
             var command = ServerCatalog.NativeStart(verified, "fixture-client", Requirement(), _ => true, scene.Clock.Utc);
@@ -324,6 +331,7 @@ internal static class Program {
             await Races(); Console.WriteLine("PASS cancellation/supersession/in-flight settlement");
             await Verification(); Console.WriteLine("PASS existing status/DNS/native preparation guards");
             await ManualFallback(); Console.WriteLine("PASS manual fallback with social transport failure");
+            assertions += PresenceAdapterTests.Run(); Console.WriteLine("PASS serial presence adapter lifetime/cleanup/failure isolation");
             Console.WriteLine($"PASS {assertions} offline assertions; no processes, sockets or SDK calls.");
             return 0;
         } catch (Exception error) { Console.Error.WriteLine(error); return 1; }
