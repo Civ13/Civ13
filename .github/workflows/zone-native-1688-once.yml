@@ -1,0 +1,109 @@
+name: Zone persistence native 516.1688 one-shot
+on:
+  push:
+    branches:
+      - codex/zone-native-1688-20261025-attempt1
+permissions:
+  contents: read
+concurrency:
+  group: zone-native-1688-20261025-attempt1
+  cancel-in-progress: false
+jobs:
+  fixture:
+    if: >-
+      github.repository == 'Civ13/Civ13' &&
+      github.event.created == true &&
+      github.run_attempt == 1 &&
+      github.ref == 'refs/heads/codex/zone-native-1688-20261025-attempt1'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out one-shot controller proposal
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          path: runner
+          persist-credentials: false
+      - name: Check out exact zone integration independently
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8144be445fa0492a515b6bb47b9692e0edc1830b
+          fetch-depth: 1
+          path: source
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify initial branch parent and exact clean source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C runner rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$(git -C runner rev-parse HEAD^)" = 281fb2e8b236fc814dbf1d88f41c318fc66099fb
+          test "$(git -C runner rev-list --parents -n 1 HEAD | wc -w)" -eq 2
+          git -C runner diff --name-only HEAD^ HEAD > "$RUNNER_TEMP/zone-controller-paths.txt"
+          test -s "$RUNNER_TEMP/zone-controller-paths.txt"
+          if grep -Ev '^(\.github/workflows/zone-native-1688-once\.yml|tools/zone_native_1688/[A-Za-z0-9_./-]+)$' "$RUNNER_TEMP/zone-controller-paths.txt"; then
+            echo 'Unexpected controller commit changes' >&2
+            exit 1
+          fi
+          test "$(git -C source rev-parse HEAD)" = 8144be445fa0492a515b6bb47b9692e0edc1830b
+          test "$(git -C source rev-parse 'HEAD^{tree}')" = 508e7e0677a8cdc45ab6eed100bcbb0d1fb283f3
+          test -z "$(git -C source status --porcelain --untracked-files=no)"
+          test "$(git -C source hash-object scripts/byond_toolchain.py)" = 58e60ef0263cba1f1af04c0a135d1a14f486d799
+          test "$(git -C source hash-object tools/byond/version.json)" = 738fecfaf195bfbe31ed68fa4f0e4d05b9912248
+          mkdir "$RUNNER_TEMP/zone-1688-acquisition"
+          git -C source rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/zone-1688-acquisition/source-identity.txt"
+          git -C runner rev-parse HEAD 'HEAD^{tree}' > "$RUNNER_TEMP/zone-1688-acquisition/controller-identity.txt"
+          cp "$RUNNER_TEMP/zone-controller-paths.txt" "$RUNNER_TEMP/zone-1688-acquisition/controller-paths.txt"
+      - name: Install reviewed Ubuntu i386 runtime dependencies only
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo timeout -k 5 30 dpkg --add-architecture i386
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y --no-install-recommends libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6:i386 unzip
+      - name: Acquire exact pinned repository-release archive
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/zone-1688-toolchain"
+          timeout -k 5 65 python3 "$GITHUB_WORKSPACE/source/scripts/byond_toolchain.py" download --platform linux --source repository-release --output "$RUNNER_TEMP/zone-1688-toolchain/516.1688_byond_linux.zip" > "$RUNNER_TEMP/zone-1688-acquisition/download.json"
+          echo '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9  516.1688_byond_linux.zip' > "$RUNNER_TEMP/zone-1688-acquisition/archive.sha256"
+          cd "$RUNNER_TEMP/zone-1688-toolchain"
+          sha256sum --check "$RUNNER_TEMP/zone-1688-acquisition/archive.sha256"
+          timeout -k 5 30 unzip -q 516.1688_byond_linux.zip
+          # No fallback, proxy/TLS change, make, global BYOND install or byondsetup.
+      - name: Execute reviewed synthetic zone fixture once
+        timeout-minutes: 21
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/zone_native_1688/run.py" \
+            --source "$GITHUB_WORKSPACE/source" \
+            --output "$RUNNER_TEMP/zone-1688" \
+            --byond-bin "$RUNNER_TEMP/zone-1688-toolchain/byond/bin" \
+            --byond-archive "$RUNNER_TEMP/zone-1688-toolchain/516.1688_byond_linux.zip" \
+            --reviewed-native
+      - name: Stage bounded allowlisted diagnostics and receipts
+        if: always()
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$GITHUB_WORKSPACE/runner/tools/zone_native_1688/collect_evidence.py" \
+            --evidence "$RUNNER_TEMP/zone-1688" \
+            --acquisition "$RUNNER_TEMP/zone-1688-acquisition" \
+            --tooling "$GITHUB_WORKSPACE/runner/tools/zone_native_1688" \
+            --output "$RUNNER_TEMP/zone-1688-retained"
+      - name: Retain staged bounded fixture evidence only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: zone-1688-8144be4-attempt1-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/zone-1688-retained/
