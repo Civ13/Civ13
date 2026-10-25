@@ -418,6 +418,13 @@ class SnowTests(unittest.TestCase):
         self.assertNotIn('overlays.Cut', image)
         self.assertIn("image('icons/turf/snow.dmi'", image)
 
+    def test_process_setup_registers_its_typed_global_slot(self):
+        registry = body((ROOT / 'code/processes/__processes.dm').read_text(), '/datum/process_list')
+        self.assertRegex(registry, r'(?m)^\tvar/process/snowfall_ground/snowfall_ground = null$')
+        setup = body(SOURCE, '/process/snowfall_ground/setup()')
+        self.assertEqual(re.findall(r'(?m)^\tprocesses\.snowfall_ground = src$', setup),
+                         ['\tprocesses.snowfall_ground = src'])
+
     def test_registry_lifecycle_and_bounded_process_source_contract(self):
         fire = body(SOURCE, '/process/snowfall_ground/fire()')
         self.assertIn('min(SNOWFALL_GROUND_BATCH, snowfall_ground.len)', fire)

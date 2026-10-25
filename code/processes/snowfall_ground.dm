@@ -4,6 +4,7 @@
 	start_delay = 10 SECONDS
 	priority = PROCESS_PRIORITY_LOW
 	fires_at_gamestates = list(GAME_STATE_PLAYING)
+	processes.snowfall_ground = src
 
 /process/snowfall_ground/fire()
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || world.time < snowfall_ground_next)
