@@ -34,6 +34,8 @@ LINK = proc("hub_status_link")
 STATUS = proc("update_status")
 LITERALS = re.findall(r'"(?:\\.|[^"\\])*"', LINK)
 ALPHABETS = [dm_string(s) for s in LITERALS if s.startswith('"abcdefghijklmnopqrstuvwxyz')]
+DELIMITERS = [dm_string(s) for s in re.findall(r'"(?:\\.|[^"\\])*"',
+    re.search(r'for \(var/delimiter in list\((.*?)\)\)', LINK)[1])]
 LINK_TEMPLATE = dm_string(re.search(r'return ("(?:\\.|[^"\\])*")', LINK[LINK.index("var/target"):])[1])
 TARGET = dm_string(re.search(r'target = ("(?:\\.|[^"\\])*")', LINK[LINK.index("if (open_new_window)"):])[1])
 
@@ -55,9 +57,8 @@ def link(url, label, new_window=False):
     if not starts:
         return ""
     start = starts[0]
-    end = url.find("/", start)
-    if end < 0:
-        end = len(url)
+    end = min((position for delimiter in DELIMITERS
+               if (position := url.find(delimiter, start)) >= 0), default=len(url))
     if start == end:
         return ""
     if any(c.lower() not in ALPHABETS[0] for c in url):
@@ -133,11 +134,15 @@ class HubStatusTests(unittest.TestCase):
     def test_literal_encoding_and_url_guard_contract(self):
         self.assertIn('var/text = "[value]"', TEXT)
         self.assertIn("return text", TEXT)
-        for expected in ("if (!istext(url))", "if (!authority_end)", "if (authority_start == authority_end)",
+        for expected in ("if (!istext(url))", "var/authority_end = length(url) + 1",
+                         "findtext(url, delimiter, authority_start)",
+                         "if (delimiter_position && delimiter_position < authority_end)",
+                         "authority_end = delimiter_position", "if (authority_start == authority_end)",
                          "i <= length(url)", "lowertext(copytext(url, i, i + 1))",
                          "if (i >= authority_start && i < authority_end)"):
             self.assertIn(expected, LINK)
         self.assertEqual(2, len(ALPHABETS))
+        self.assertEqual(DELIMITERS, ["/", "?", "#"])
         self.assertEqual(encode('&<>"\''), "&amp;&lt;&gt;&quot;&#39;")
         self.assertEqual(encode(None), "")
 
@@ -176,6 +181,8 @@ class HubStatusTests(unittest.TestCase):
     def test_reject_unsafe_and_malformed_configured_urls(self):
         bad = (None, 123, "", "javascript:alert(1)", "data:text/html,bad", "//discord.gg/hBEtg4x",
                "https://", "https:///empty-host", "https://user@civ13.com/",
+               "https://?source=hub", "https://#help", "https://?next=/guide", "https://#help/details",
+               "https://user@civ13.com?source=hub", "https://user@civ13.com#help",
                "https://civ13.com/\nnext", "https://civ13.com/\rnext", "https://civ13.com/\tnext",
                'https://civ13.com/" onclick="bad', "https://civ13.com/'", "https://civ13.com/<script>",
                "https://civ13.com/\\bad", " https://civ13.com/", "https://civ13.com/ space")
@@ -201,6 +208,18 @@ class HubStatusTests(unittest.TestCase):
         parsed = Anchors(fragments(new_window=True))
         self.assertEqual([item.get("target") for item in parsed.links], ["_blank", "_blank", None])
         self.assertTrue(all("target" not in item for item in Anchors(fragments(new_window=False)).links))
+
+    def test_query_and_fragment_authority_boundaries(self):
+        urls = ("https://civ13.com?source=hub", "https://civ13.com#help",
+                "https://civ13.com?next=/guide", "https://civ13.com#help/details",
+                "https://civ13.com?source=hub&next=/guide#help",
+                "http://civ13.com?source=hub", "http://civ13.com#help")
+        for url in urls:
+            with self.subTest(url=url):
+                parsed = Anchors(link(url, "Website"))
+                self.assertEqual([item["href"] for item in parsed.links], [url])
+                listing = Anchors(fragments(discord=url, website=url, map_title=None))
+                self.assertEqual([item["href"] for item in listing.links], [url, url, url])
 
 
 if __name__ == "__main__":

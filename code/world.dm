@@ -314,9 +314,11 @@ var/world_topic_spam_protect_time = world.timeofday
 		authority_start = 8
 	else
 		return ""
-	var/authority_end = findtext(url, "/", authority_start)
-	if (!authority_end)
-		authority_end = length(url) + 1
+	var/authority_end = length(url) + 1
+	for (var/delimiter in list("/", "?", "#"))
+		var/delimiter_position = findtext(url, delimiter, authority_start)
+		if (delimiter_position && delimiter_position < authority_end)
+			authority_end = delimiter_position
 	if (authority_start == authority_end)
 		return ""
 	for (var/i = 1, i <= length(url), i++)
