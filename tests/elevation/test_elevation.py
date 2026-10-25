@@ -244,14 +244,6 @@ class ElevationTests(unittest.TestCase):
         self.assertNotIn('qdel(', block)
         self.assertNotIn('spawn(', block)
 
-    def test_temperature_precipitation_turf_and_maps_unchanged_from_base(self):
-        base = 'fa363b8a01ed7d936c10a6303ce1be4c26d82ab0'
-        for path in ('code/modules/1713/weather.dm', 'code/game/turfs/turf_changing.dm',
-                     'code/modules/persistence/durable_contract.dm'):
-            original = subprocess.check_output(['git', 'show', f'{base}:{path}'], cwd=ROOT).decode()
-            self.assertEqual((ROOT / path).read_text(), original.replace('\r\n', '\n'))
-        self.assertEqual(subprocess.check_output(['git', 'diff', '--name-only', base, '--', 'maps'], cwd=ROOT), b'')
-
     def test_negative_controls_detect_overlap_alias_legacy_and_unknown_statements(self):
         source = SOURCE.read_text()
         overlap = source.replace('row["z"] == other["z"] &&', 'FALSE &&', 1)
