@@ -77,6 +77,13 @@ fails on source drift, rather than silently publishing stale costs or stages.
 
 ## Obtaining resources
 
+Search for **tree seeds** or **wood** to follow [timber tree planting](tree-planting.md).
+The reviewed route covers existing bush seed foraging, an empty outdoor ploughed
+plot, watering and six successful growth stages, then ordinary tree chopping.
+Seedlings mature into existing world trees; cutting a seedling no longer returns
+logs or seeds. Winter pauses development and obstructions pause the stage clock.
+The route is a source-reviewed procedure, not a guarantee of a map-placed crate.
+
 Select an ingredient or product to see reviewed gathering and processing routes,
 including steps, tools or stations, restrictions and conditional outcomes. The
 same route data appears in the in-game reference, with at most 12 routes per
