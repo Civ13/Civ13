@@ -1,6 +1,7 @@
 """PC-only game runtimes, invoked through local-wsl.ps1. No production scripts."""
 import argparse
 import fcntl
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -9,7 +10,11 @@ import subprocess
 import tempfile
 import time
 
-BIN = Path('/opt/civ13-byond-516.1681/byond/bin')
+_pin_spec = importlib.util.spec_from_file_location('wsl_byond_pin', Path(__file__).with_name('byond_toolchain.py'))
+_pin = importlib.util.module_from_spec(_pin_spec)
+_pin_spec.loader.exec_module(_pin)
+REQUIREMENT = _pin.load()
+BIN = Path('/opt/civ13-byond-' + REQUIREMENT['version'] + '/byond/bin')
 PORTS = {'nomads': 1715, 'tdm': 1714}
 
 
@@ -53,6 +58,7 @@ def build(source, runtime, env):
         print(result.stdout)
         if result.returncode or '0 errors, 0 warnings' not in result.stdout:
             raise RuntimeError('Build must report zero errors and warnings')
+        _pin.compiler_log(result.stdout, REQUIREMENT['version'])
         import shutil
         for name in ('civ13.dmb', 'civ13.rsc'):
             shutil.copyfile(stage / name, runtime / name)
@@ -68,6 +74,7 @@ def build(source, runtime, env):
             else:
                 shutil.copytree(stage / name, runtime / name, dirs_exist_ok=True)
         (runtime / 'source-sha.txt').write_text(sha + '\n')
+        (runtime / 'byond-version.txt').write_text(REQUIREMENT['version'] + '\n')
 
 
 def main():
@@ -84,6 +91,8 @@ def main():
         fcntl.flock(lock, fcntl.LOCK_EX)
         state = runtime / 'process.json'
         record = json.loads(state.read_text()) if state.exists() else {}
+        if not isinstance(record, dict) or (record and record.get('byond') != REQUIREMENT['version']):
+            raise RuntimeError('Existing runtime identity belongs to an older or unknown BYOND version; retain its record and request an owner-coordinated stop before rebuilding')
         alive = process_matches(record, runtime)
         env = os.environ.copy()
         env['LD_LIBRARY_PATH'] = str(BIN) + (':' + env['LD_LIBRARY_PATH'] if env.get('LD_LIBRARY_PATH') else '')
@@ -110,11 +119,13 @@ def main():
                 return
             if not (runtime / 'source-sha.txt').exists():
                 raise RuntimeError('Run Build first')
+            if not (runtime / 'byond-version.txt').exists() or (runtime / 'byond-version.txt').read_text().strip() != REQUIREMENT['version']:
+                raise RuntimeError('Run Build with BYOND ' + REQUIREMENT['version'] + ' before starting this runtime')
             with (runtime / 'logs/daemon.log').open('ab') as log:
                 process = subprocess.Popen([str(BIN / 'DreamDaemon'), str(runtime / 'civ13.dmb'), str(PORTS[args.server]), '-trusted', '-log', 'logs/world.log'], cwd=runtime, env=env, stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
                 try:
                     fields = Path(f'/proc/{process.pid}/stat').read_text().rsplit(')', 1)[1].split()
-                    state.write_text(json.dumps({'pid': process.pid, 'started': fields[19]}))
+                    state.write_text(json.dumps({'pid': process.pid, 'started': fields[19], 'byond': REQUIREMENT['version']}))
                     time.sleep(2)
                     if process.poll() is not None:
                         raise RuntimeError('Daemon exited; inspect local logs')

@@ -1,5 +1,66 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-24: precipitation-driven generated snow -->
+Ground snow uses weather_snow units on exact ordinary dirt/grass, actual snowfall,
+exposure and get_temp (stick <=0C, melt >2C). Existing winter/snow/ice stays unmarked.
+No seasonal snow-ground replacement/thaw; retain water/ice/calendar/weather logic.
+One bounded swap-remove worker owns sampling. Save only units, never image/index;
+legacy same-type load resets units before decode. docs/snowfall-ground.md lists
+gameplay predicates, exclusions and source/native acceptance limits.
+
+<!-- 2026-10-24: authoritative zones and spawn registries -->
+Durable schema 2/topology 2 captures native area IDs in per-level zone_capture
+records at turf-frame admission. IDs use lineage counters, not new RNG calls.
+Validate candidate files with yields; do not restore a full-world no-yield JSON
+comparison. Area registration is operation-staged, retirement precedes publication,
+and load/recovery readers require admission. No rollback exists after ClearMap.
+Schema 1 keeps its legacy reader; tests/zone_persistence is offline/preparation
+evidence only. Local IDs are not shard/custody IDs or logical geographic layers.
+
+<!-- 2026-10-24: target BYOND version and historical fixture boundary -->
+tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
+bytes; it is embedded directly into source launcher 1.0.8 and consumed by the
+default compiler bootstrap/receipts and WSL setup. This does not establish native
+compatibility or publish the launcher. Compiler minimum/savefile major remain
+516.1681/516. Frozen 1681 fixture helpers, CID offsets and historical evidence stay
+unchanged. Manual component/train workflows explicitly select the legacy 1681
+bootstrap; other strict 1681 runtime harnesses must fail on a mismatched engine,
+not be relabeled. See docs/byond-5161688.md before selecting native coverage.
+Active hosted compilation explicitly selects the user-approved Civ13/Civ13
+repository-release asset pinned in the Linux manifest. Only its exact public URL
+may redirect once to its reviewed release-assets.githubusercontent.com path;
+no credentials, signed-query receipts, source fallback or broad redirect rule.
+Official/community choices retain NoRedirect. Only the versioned archive and
+acquisition metadata are cached by OS/version/hash; each hit verifies every byte
+before fresh extraction and actual compilation. Preserve original cache-origin
+provenance, fail closed on corrupt caches, and require exact-source receipts.
+BYOND cache prereleases are excluded from launcher publication by both the
+workflow and release planner; this archive route does not change the stable feed.
+
+<!-- 2026-10-24: shared season duration -->
+Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
+an optional map.season_duration_minutes override. Pending durable remainders are
+unchanged; map overrides are author policy, excluded from historical imports.
+Mountain and Ice Age retain initial30-minute shared timers and their explicit
+recurrence. Independent calendars and literal startup delays stay separate.
+tests/season_duration is source-only; native timer/reload acceptance stays pending.
+
+<!-- 2026-10-24: per-map random weather policy -->
+weather_timing/weather_transitions are optional author fields for existing random
+weather. Null keeps old rolls, season pools and process timings; configured rows
+intersect seasonal/map eligibility, and empty choices hold current weather.
+Invalid policy stops random helpers before mutations. Direct event calls retain
+their behavior. Fields are excluded from imports; no saved cursor or event callback.
+tests/weather_policy is offline projection/parity evidence, not native acceptance.
+
+<!-- 2026-10-24: configured base season flow -->
+season_cycle is author policy for the serialized base worker. Whole-cycle validation
+rejects Spring/Summer->Winter before mutation; default edges retain legacy payloads.
+Six supported nondefault edges preserve unmarked ground and reconcile snow structures/wet-dry state
+inside the existing epoch/lock, before the unchanged subtype completion hook.
+No synthetic seasons, extra decay charges, new phase timers or saved cursor.
+tests/season_flow projects source/queue/ecology paths; native acceptance stays held.
+
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
 as reserved turf markers. No map opts in. `tests/reserved_lighting/clearance.py`
@@ -162,14 +223,24 @@ is display-only after process restart. See SERVER-DISCOVERY.md for join controls
 Wall time cannot prove game-time advancement or clear a server ban. Do not probe
 the known banned Desktop source until owner-coordinated normal eligibility.
 
+<!-- 2026-10-24: offline launcher social contracts -->
+tools/opendream-client/native/Social is inert; production Main stays unwired.
+tests/SocialContracts runs injected adapters/clocks/discovery/dispatch only,
+separate from updater replacement tests. Reuse NativeStart and existing proofs;
+dispatch is not connected gameplay or shard-travel evidence. See its README.
+Keep player presence/native callbacks separate from DiscordPHP backend APIs.
+SDK access/linking/distribution and application selection remain future gates.
+Before an isolated .NET CLI home's first use, set
+DOTNET_GENERATE_ASPNET_CERTIFICATE=false to avoid automatic development-cert setup.
+
 ## Language & toolchain
 Never use an em dash; use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
-- **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. A separate evidence-checker job runs synthetic Python tests without executing the game. The MCP protocol workflow separately tests local tooling on Windows and Linux; it does not run gameplay.
+- **Target BYOND version**: 516.1688 from `tools/byond/version.json`; minimum compiler remains 516.1681. No `.vscode/tasks.json` is tracked at this base.
+- **CI** (`.github/workflows/test.yml`): the default Ubuntu compiler bootstrap targets the manifest version, runs `DreamMaker -max_errors 0 civ13.dme`, and requires the exact version banner plus zero errors/warnings. Exact-head hosted 516.1688 acceptance is pending. The separate evidence-checker and MCP protocol workflows do not establish gameplay or rendering.
 
 ## Code structure
 
@@ -232,6 +303,26 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-24: optional geographic elevation -->
+Elevation is a bounded coordinate profile on map metadata, independent of native
+areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
+does not alter temperature or precipitation. The optional round.json snapshot
+is validated before mutation and installed before replacement constructors;
+missing legacy snapshots restore flat zero, overriding newer author defaults.
+See docs/elevation.md and tests/elevation. Native fixture preparation does not
+establish native acceptance; run only under the repository's normal
+authorization/admission rules.
+
+<!-- 2026-10-24: save-to-map design boundary -->
+`tools/save_to_map` is a synthetic static-source validator/writer/reporting proof,
+not a native save converter. Its exact-type policy must not imply broad coverage.
+`docs/save-to-map-export.md` describes the broader design and remaining limits.
+Saves lack a complete area membership grid and startup landmarks can self-delete;
+require pinned source topology/spawn provenance rather than guessing from saves.
+DMM Suite comments describe writing, but this checkout includes only its reader
+and utilities. Never export changed vars wholesale or reconstruct a game to
+extract map source. The accompanying examples are synthetic, not native evidence.
+
 - Each map has a `/obj/map_metadata` subtype that handles game mode logic.
 - The metadata object is placed in the DMM at a consistent position (conventionally `(1,1,1)`) on any turf.
 - `New()` on the base `/obj/map_metadata` sets `map = src`, clears icon, copies faction lists, and starts background timers.
@@ -279,6 +370,26 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 
 ### Process scheduler integration
 
+<!-- 2026-10-22: wolf cave timer ownership -->
+Wolf caves own one guarded self-processing five-second chain; /full delegates
+startup to the parent. Destroy stops the chain and ticking is excluded on custom
+save export/import. Removing world-scanning duplicate calls reduces eligible
+wanderer/flavor rolls; it is a scheduling correction with changed RNG frequency.
+tests/wolf_cave_ownership has offline contracts and prepared native controls;
+preparation does not compile/launch BYOND or establish native acceptance.
+The dedicated cave executor has an offline-only CLI; real backend invocation
+requires separate review. Native -close exits after world shutdown, not network
+isolation; socket samples cannot prove continuous absence. See its EXECUTOR.md.
+The resource-free cave fixture must declare Civ13's inherited movable anchored
+field. Three held Windows attempts stopped at the strict one-member Job guard;
+the third identified an owned conhost and logged the former missing declaration.
+They establish no cave runtime result; preserve their original frozen packets.
+Offline cave executor tests supply a canonical interpreter fixture path because
+Ubuntu python3 is a symlink; native packet path/hash/link checks stay unchanged.
+The proposed cave backend uses DETACHED_PROCESS instead of CREATE_NO_WINDOW to
+avoid startup console attachment. Its conhost hypothesis is native-unverified;
+all extra Job members still reject. See tests/wolf_cave_ownership/CONSOLE_STARTUP.md.
+
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.
 - Register the process var in `code/processes/__processes.dm`.
@@ -295,6 +406,12 @@ Subclass post-loop aggregation must account for final-entry EARLY normalization.
 Ping retains per-pass sum/count across budget returns and publishes before the
 final-entry budget check. Every skipped client still consumes its snapshot entry.
 tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
+
+<!-- 2026-10-22: cleanables phase ownership -->
+Cleanables installs pending location work before the final count budget check.
+Its retained content snapshot and survivor are released on completion/cancellation.
+tests/cleanables_scheduler is offline source-derived evidence; native list/GC
+handoff and iteration remain separate acceptance.
 
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
@@ -399,6 +516,14 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
+
+<!-- 2026-10-24: complete conditional offline projections -->
+The save_movement adapter selects the explicitly declared collector-disabled
+branch; it is not a general DM preprocessor. Proc-local column-zero #ifdef lines
+must not truncate ownership/return tails. Unknown symbols/directives and malformed
+conditional scope fail even in inactive branches. Preserve both-branch/sentinel
+and historical-defect controls. These are offline models, not collector or native
+gameplay acceptance; do not change production code to make an adapter pass.
 
 <!-- 2026-10-23: footwear water composition -->
 Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
@@ -772,11 +897,39 @@ and bounded opt-in owner-field inspection; outcome rows share deletion profiling
 forced-call buckets, not exact distinct types after saturation.
 
 <!-- 2026-10-12: opt-in regression CI -->
-Existing game and tooling regression suites are manual opt-in. PRs adding
-executable integration tests select their registered suite only for that PR;
-ordinary game edits and edits to existing tests do not auto-select regressions.
-Keep compilation, workflow validation and publication checks separate. Register
-new suite guards through ci-selection.yml; see docs/ci-selection.md.
+<!-- 2026-10-24: bounded offline CI baseline and exact-source receipts -->
+CI always runs selector-policy, stubbed bootstrap and serializer-source tests.
+scripts/ci_baseline.py registers exact reviewed offline files and bounded impact
+paths for research/ping scheduling, persistence-year projections and synthetic
+evidence validation. Affected production, existing-test and helper edits select
+those files; unknown impact or missing comparisons explicitly selects the whole
+small offline registry. Do not add broad Python discovery or native launchers to
+this registry without inspecting imports, subprocesses, dependencies and cost.
+Other existing regressions retain manual opt-in and introduced-test admission;
+ordinary edits do not expand native/costly admission. Register those suite guards
+through ci-selection.yml. Preserve all separate execution/resource holds.
+
+CI required aggregate requires successful selected jobs and exact head/base,
+run/attempt and selection-bound offline/compile receipts. Missing, failed,
+unexpectedly skipped or empty required execution fails. Documentation-only
+compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
+and docs/ci-selection.md; a job-level green alone does not describe what ran.
+<!-- 2026-10-24: event coverage and check identity -->
+Supported edited PRs evaluate the base/head diff for compilation but keep native
+admission off. Edited/other-base PRs, feature pushes and manual runs use the
+informational build/aggregate names even when a real compile passes. Only ordinary
+opened/synchronize/reopened PR scopes and master pushes retain gating names.
+Selector failures or missing outputs retain failed gating names. Inspect receipt
+action and compile/native/gating reasons; an informational success cannot certify
+omitted native coverage. Preserve existing native opt-ins and toolchain ownership.
+Hosted DreamMaker results must identify the actually executed manifest version;
+Python projections, compiled core_boot variants and native runtime/gameplay
+acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
+Cloud-only workers must keep unavailable local native checks as not_run. After
+owner review and authorized push, obtain hosted validation for the current head
+and inspect its outcomes/artifacts; never substitute local tool absence or an
+older green run. This policy does not authorize installing native tools, running
+held probes, deployment, publication, branch-protection changes or merging.
 
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual

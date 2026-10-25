@@ -11,6 +11,36 @@ audited DM-to-Python projection. Engine location ancestry, contents and callback
 are injected boundaries. Unsupported syntax fails preparation. This establishes
 source control flow, not DM compilation, native physics or connected-client behavior.
 
+## Conditional source selection
+
+The adapter explicitly selects the collector-disabled branch through
+`DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False}`. This is an offline
+fixture policy, not a change to game compilation or local collector settings.
+`extract` and `project` accept a keyword-only `defines` mapping of explicit
+Boolean symbol values. Only proc-local #ifdef/#ifndef, #else and #endif are
+supported. Unknown symbols/directives, duplicate/unmatched branches and a
+conditional crossing a procedure boundary fail, including in inactive branches.
+This is not a general DM preprocessor or macro expander.
+
+Column-zero directives inside a proc must not terminate extraction. Regression
+controls execute both selected synthetic branches and a post-#endif sentinel,
+retain the historical truncation counterexample, and inspect real admission and
+finish tails in both declared collector branches. Enabled collector runtime
+behavior is not exercised by these source checks. Unsupported selected executable
+syntax still fails projection rather than being dropped.
+
+On baseline `58404f5b`, the old extractor caused 21 failure records and 11 errors
+in 46 tests, including subtests; those failed results remain retained. The first
+repair exposed a separate missing fixture dependency on clear_saved_roof_areas.
+The cleanup test now injects that boundary and asserts its ordering while the
+operation still owns admission. Backend projection also tracks the actual
+last_save_reference_failure member, testing reset after accepted save admission
+and preservation for a busy request or load. No production code was modified.
+
+The repaired offline suite passes 58 tests. Native disk/gameplay and enabled
+collector integration remain separate, unrun acceptance; a harness repair does
+not establish a gameplay fix or close the unrelated zone-audit findings.
+
 The regression cases cover the actual save admission/owner/finish/backend and
 cleanup bodies, success, false-return cancellation, exceptions including cleanup
 exceptions, overlap/reentry, stale completion, and load recovery. Movement uses

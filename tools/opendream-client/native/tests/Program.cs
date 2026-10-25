@@ -91,7 +91,7 @@ try {
     Require(linkError.ToString().Contains("Could not open Discord") && linkError.ToString().Contains(expectedLinks[2]), "browser failure omitted usable destination");
     var localHost = new LocalHostReceipt(1, 18459, 123, 456, @"C:\verified\DreamDaemon.exe",
         @"D:\isolated\civ13.dmb", new string('a', 64), new string('b', 40), "Gaia Nomads");
-    LocalHostIdentity InspectLocal(int pid) => new(456, localHost.Daemon, "5.0.516.1681");
+    LocalHostIdentity InspectLocal(int pid) => new(456, localHost.Daemon, "5.0.516.1688");
     ProcessStartInfo LocalStart(LocalHostReceipt receipt, Func<string?> userData, Func<int, LocalHostIdentity>? inspector = null,
         Func<string, string>? worldHash = null, Func<string, bool>? client = null) =>
         LocalDreamDaemon.Prepare(receipt, @"C:\verified", @"D:\isolated", inspector ?? InspectLocal,
@@ -101,10 +101,10 @@ try {
     Require(normalLocalStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "normal BYOND cache policy blocked local dispatch");
     var consoleHost = localHost with { Daemon = @"C:\verified\dd.exe" };
     var consoleStart = LocalDreamDaemon.Prepare(consoleHost, @"C:\verified", @"D:\isolated",
-        _ => new(456, consoleHost.Daemon, "5.0.516.1681"), hash: _ => new string('a', 64), matchesClient: _ => true);
+        _ => new(456, consoleHost.Daemon, "5.0.516.1688"), hash: _ => new string('a', 64), matchesClient: _ => true);
     Require(consoleStart.ArgumentList.Single() == "byond://127.0.0.1:18459", "official console daemon rejected");
     Reject(() => LocalDreamDaemon.Prepare(consoleHost with { Daemon = @"C:\verified\other.exe" }, @"C:\verified", @"D:\isolated",
-        _ => new(456, @"C:\verified\other.exe", "5.0.516.1681"), hash: _ => new string('a', 64)), "unrecognized daemon executable");
+        _ => new(456, @"C:\verified\other.exe", "5.0.516.1688"), hash: _ => new string('a', 64)), "unrecognized daemon executable");
     var localStart = LocalStart(localHost, () => @"D:\BYOND-user");
     Require(localStart.ArgumentList.Single() == "byond://127.0.0.1:18459" && !localStart.UseShellExecute,
         "isolated DD endpoint escaped loopback or used URI association");
@@ -113,8 +113,16 @@ try {
         "isolated DD temporary output not on D");
     Reject(() => LocalStart(localHost, () => null), "unverified BYOND user cache");
     Reject(() => LocalStart(localHost, () => @"C:\BYOND-user"), "C BYOND user cache");
-    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(999, localHost.Daemon, "5.0.516.1681")), "reused host PID");
+    Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(999, localHost.Daemon, "5.0.516.1688")), "reused host PID");
     Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", _ => new(456, localHost.Daemon, "5.0.516.1669")), "wrong native host version");
+    foreach (var bad in new[] { "", "516.1688", "5.0.516", "5.0.516.1681", "5.0.516.1689", "5.0.516.1688 extra" }) {
+        try {
+            LocalStart(localHost, () => @"D:\BYOND-user", _ => new(456, localHost.Daemon, bad));
+            throw new Exception("Incompatible local host metadata accepted");
+        } catch (IOException error) {
+            Require(error.Message.Contains("requires BYOND 516.1688") && error.Message.Contains("metadata"), "compatibility failure omitted required version or metadata context");
+        }
+    }
     Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", worldHash: _ => new string('0', 64)), "changed host world");
     Reject(() => LocalStart(localHost, () => @"D:\BYOND-user", client: _ => false), "missing BYOND client");
     Reject(() => LocalDreamDaemon.RequireDPath(@"C:\isolated"), "C launcher root");
@@ -222,8 +230,15 @@ try {
     Require(second != first && File.ReadAllText(Path.Combine(first, "Sign-In.cmd")) == "fixture never executed", "side-by-side install changed previous client");
     Require(File.ReadAllText(settings) == "preserve me", "new version changed account settings");
     var officialRequirement = Civ13.Launcher.Program.RequiredByond();
-    Require(officialRequirement.Version == "516.1681" && officialRequirement.Matches(5, 0, 516, 1681) && !officialRequirement.Matches(5, 0, 516, 1688), "BYOND requirement does not match exact game pin");
+    Require(officialRequirement.Version == "516.1688" && officialRequirement.Matches(5, 0, 516, 1688) && !officialRequirement.Matches(5, 0, 516, 1681), "BYOND requirement does not match exact game pin");
     Reject(() => (officialRequirement with { Url = "https://example.com/byond.exe" }).Validate(), "nonofficial BYOND origin");
+    Require(officialRequirement.MatchesPeVersion("5.0.516.1688"), "exact PE version rejected");
+    foreach (var bad in new string?[] { null, "", "516.1688", "5.0.516", "5.0.516.1681", "5.0.516.1689", "5.0.516.1688 extra", " 5.0.516.1688", "5.0.516.01688" })
+        Require(!officialRequirement.MatchesPeVersion(bad), "malformed or different PE metadata accepted");
+    foreach (var bad in new[] { "", "516", "516.01688", " 516.1688", "516.1688.1", "65535.1688" })
+        Reject(() => (officialRequirement with { Version = bad }).Validate(), "invalid requirement version");
+    foreach (var bad in new[] { "", "null", "[]", "{}", "{\"schema\":1}", "{\"version\":516.1688}", "{\"version\":\"516.1688\",\"Version\":\"516.1681\"}" })
+        Reject(() => ByondRequirement.Read(bad), "missing or malformed embedded metadata");
     var byondFixture = Path.Combine(root, "byond-fixture.exe");
     File.WriteAllText(byondFixture, "fixture never executed");
     var byondRequirement = officialRequirement with { Sha256 = Updater.Hash(byondFixture) };
