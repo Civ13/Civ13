@@ -53,7 +53,7 @@ and cached in memory for 15 minutes. Only one download can run at a time;
 cancellation aborts it. HTTP errors, unexpected content and unrecognized topics
 fail explicitly. No manual is vendored or written to disk. Offline calls work
 only while an existing cache is fresh. The live reference may document features
-newer than Civ13's pinned BYOND 516.1681; lookup is not compiler verification.
+newer than Civ13's target BYOND 516.1688; lookup is not compiler verification.
 Start a fresh MCP session after updating the server to discover these tools.
 
 ## Verification

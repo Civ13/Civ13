@@ -30,7 +30,13 @@ the selected Linux user also owns and runs the local game processes.
 No interactive Linux terminal is required. Windows UAC elevation and a restart
 are still needed when the virtualization components are absent.
 
-BYOND is pinned to 516.1681. Builds fetch the selected local commit into an
+BYOND targets 516.1688 from `tools/byond/version.json`, installed separately under
+`/opt/civ13-byond-516.1688`. Setup verifies observed official HTTPS archive bytes
+before extraction. This is source preparation; native acceptance is pending.
+Existing runtime records without the matching version fail closed and require an
+owner-coordinated stop using their original toolchain before rebuilding. Never
+delete the record to bypass that check. Compiled-world version receipts also
+prevent starting an old build with the new daemon. Builds fetch the selected local commit into an
 independent temporary Git repository, check it out detached and reject tracked
 local edits. The temporary HEAD and index support the real crafting catalog
 generator without switching the operator's checkout or registering a worktree.
@@ -43,7 +49,7 @@ Each server has its own Linux-home `.local/share/civ13-local/<server>` directory
 SQL files, data, logs and PID/start-time record. Nomads uses PERSISTENCE catalog
 selection, TDM uses TDM; ports are 1715/1714. Generated configuration disables
 hub advertisement, TTS and script hooks and supplies no webhooks or official
-bot credentials. Daemons use safe mode. Saves remain through rebuilds.
+bot credentials. Daemons retain the existing trusted mode; execution requires maintainer approval. Saves remain through rebuilds.
 The launcher does not configure firewall rules, router forwarding or DNS.
 Check port conflicts before launch; public access requires separate network
 verification. `Status` checks owned process identity, not successful player login.
