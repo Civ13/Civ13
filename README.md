@@ -121,3 +121,8 @@ See [source documentation generation and comment conventions](docs/api/README.md
 
 See the [Civ13 mapping checklist](docs/mapping.md) for map registration, areas,
 travel, spawns, resource readiness and saved-world compatibility.
+
+## Cloud-rendered scene capture
+
+See [reproducing native cloud-rendered stills](docs/cloud-rendering.md) for the
+isolated Windows bakery capture, source pins, bounded workflow and evidence limits.
