@@ -377,3 +377,23 @@
 	New()
 		..()
 		reagents.add_reagent("honey", 10)
+// Art adapted from Pocket Stronghold 13; see icons/farming/ATTRIBUTION.md.
+/obj/item/weapon/reagent_containers/food/snacks/grown/turnip
+	name = "turnip"
+	desc = "A crisp, edible winter root. Store it off the floor for a longer shelf life."
+	icon = 'icons/farming/pocket_stronghold_turnip.dmi'
+	icon_state = "turnip"
+	nutriment_amt = 2
+	nutriment_desc = list("turnip" = 1)
+	satisfaction = 4
+	decay = 90*600
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/plump_helmet
+	name = "plump helmet"
+	desc = "A substantial edible cave fungus with a purple cap."
+	icon = 'icons/farming/pocket_stronghold_plump_helmet.dmi'
+	icon_state = "plump_helmet"
+	nutriment_amt = 2
+	nutriment_desc = list("mushroom" = 1)
+	satisfaction = 4
+	decay = 60*600

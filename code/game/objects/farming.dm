@@ -25,6 +25,13 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")
 
+/obj/item/stack/farming/seeds/plump_helmet
+	name = "plump helmet spores"
+	desc = "Spores of a slow-growing, substantial edible cave fungus. Sow in ploughed soil."
+	plant = "plump_helmet"
+	icon = 'icons/farming/pocket_stronghold_plump_helmet.dmi'
+	icon_state = "plump_helmet-seeds"
+
 /obj/item/stack/farming/seeds/mushroompsy
 	name = "strange mushroom spores"
 	plant = "mushroompsy"
@@ -162,6 +169,18 @@
 * Organic
 
 */
+
+/obj/item/stack/farming/seeds/turnip
+	name = "turnip seeds"
+	desc = "Seeds of a winter-hardy root crop. Plant outdoors in ploughed soil and keep watered."
+	plant = "turnip"
+	icon = 'icons/farming/pocket_stronghold_turnip.dmi'
+	icon_state = "turnip-seeds"
+	biomes = list("temperate", "sea", "tundra", "taiga")
+	seasons = list("WINTER", "SPRING", "SUMMER", "FALL")
+
+/obj/item/stack/farming/seeds/turnip/planting_error(turf/T)
+	return winter_crop_plot_error(T)
 
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
@@ -394,6 +413,8 @@
 	var/max_water = 60
 	var/plant_nutrition = 100
 	var/max_plant_nutrition = 150
+	// Seasonal crop policy, not a Celsius survival threshold. Ordinary crops stay unchanged.
+	var/winter_hardy = FALSE
 
 /obj/structure/farming/plant/New()
 	..()
@@ -609,6 +630,37 @@
 	biomes = list("jungle", "savanna")
 	max_water = 75
 
+// Turnips use the existing soil, watering and finite harvest lifecycle.
+// Hardiness affects snowstorm damage only, not drought, sandstorms or old age.
+/obj/structure/farming/plant/turnip
+	name = "turnip"
+	desc = "A winter-hardy root crop. Needs open sky, ploughed soil and water."
+	plant = "turnip"
+	icon = 'icons/farming/pocket_stronghold_turnip.dmi'
+	icon_state = "turnip-grow1"
+	biomes = list("temperate", "sea", "tundra", "taiga")
+	seasons = list("WINTER", "SPRING", "SUMMER", "FALL")
+	max_water = 90
+	winter_hardy = TRUE
+
+/obj/structure/farming/plant/turnip/stageGrowth()
+	// Recheck shelter before maturity; shelter must not stop a ripe crop aging.
+	if (stage < readyStageMin && winter_crop_plot_error(get_turf(src)))
+		return
+	return ..()
+
+/obj/structure/farming/plant/turnip/examine(mob/user)
+	..(user)
+	to_chat(user, SPAN_NOTICE("Turnips tolerate winter snowstorms, but still need water and an outdoor plot with open sky. Clear snow before ploughing."))
+
+/proc/winter_crop_plot_error(turf/T)
+	if (!istype(T, /turf/floor/dirt/ploughed) || !T.is_plowed || T.density)
+		return "Turnips need a ploughed plot."
+	var/area/A = get_area(T)
+	if (!A || A.location != AREA_OUTSIDE || A.is_void_area || (locate(/obj/roof) in T))
+		return "Turnips need an outdoor plot with open sky, not an underground farm."
+	return null
+
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"
 	desc = "A bunch of mushrooms. Can be grown inside and underground."
@@ -618,6 +670,25 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")
 	max_water = 0
+
+// Explicit mushroom ancestry preserves existing indoor growth and water exemptions.
+/obj/structure/farming/plant/plump_helmet
+	parent_type = /obj/structure/farming/plant/mushroom
+	name = "plump helmet"
+	desc = "A slow-growing edible cave fungus. Needs ploughed soil, but no sunlight or watering."
+	plant = "plump_helmet"
+	icon = 'icons/farming/pocket_stronghold_plump_helmet.dmi'
+	icon_state = "plump_helmet-grow1"
+
+/obj/structure/farming/plant/plump_helmet/stageGrowth()
+	// Twice the food per bunch is paid for by slower growth and more soil consumption.
+	// The same probability applies while ripe, retaining eventual overmaturity.
+	if (prob(50))
+		return ..()
+
+/obj/structure/farming/plant/plump_helmet/examine(mob/user)
+	..(user)
+	to_chat(user, SPAN_NOTICE("Plump helmets grow slowly on ploughed soil indoors or underground without watering. Harvest with a knife and save some spores for replanting."))
 
 /obj/structure/farming/plant/mushroompsy
 	//yes it have equal icon... for fun and roleplay, enjoy
@@ -1144,7 +1215,7 @@
 		return
 
 	// Check for snow storm or sandstorm and set plant to dead
-	if (findtext(A.icon_state, "snow_storm"))
+	if (findtext(A.icon_state, "snow_storm") && !winter_hardy)
 		set_dead("frozen")
 		return
 	if (findtext(A.icon_state, "sandstorm"))

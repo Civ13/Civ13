@@ -15057,6 +15057,102 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Forage turnip starter stock",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 600,
+      "source_commit": "6b075397bd6efab6ad2e6ffcbd7240b865fcc72e",
+      "inputs": [
+        "/obj/structure/wild/smallbush"
+      ],
+      "outputs": [
+        "/obj/item/stack/farming/seeds/turnip"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a kitchen knife in Help intent on a small bush with seed stock. The random seed pool includes this crop."
+      ],
+      "conditions": "Turnip seeds occur in temperate, sea, tundra and taiga forage pools. Existing ten-minute bush cooldown; selection is random, not guaranteed.",
+      "map_notes": "Requires an accessible bush or traded seed; no cave/spawn placement guarantee.",
+      "era": "Foraging has no new era gate; farming needs existing tools/research.",
+      "status": "Source-reviewed proposed extension of pinned base; native/map reachability unverified"
+    },
+    {
+      "name": "Grow and harvest turnip",
+      "file": "code/game/objects/farming.dm",
+      "line": 635,
+      "source_commit": "6b075397bd6efab6ad2e6ffcbd7240b865fcc72e",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/turnip"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/turnip",
+        "/obj/item/stack/farming/seeds/turnip"
+      ],
+      "tools": [
+        "/obj/item/weapon/plough",
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Sow one seed in a prepared ploughed plot.",
+        "Keep the crop alive until harvest-ready, then harvest with a suitable sharp tool.",
+        "Keep spores/seeds for another planting; eat the produce or store it off the floor."
+      ],
+      "conditions": "temperate, sea, tundra or taiga outdoor/open-sky ploughed soil; all four ordinary seasons including winter. Each harvest retires the crop and returns two seeds/spores plus one to three food items depending on fertility; each food has two nutriment. Snowstorm protection does not remove water/soil costs, drought or sandstorm death. Normal stage progression.",
+      "map_notes": "Rock must be cleared then suitable dirt ploughed. Jungle dirt and Desert-map dust remain unsuitable.",
+      "era": "Plough: four wood planks, Basic Agriculture research rules (node tier 1); no new era gate for seed or food.",
+      "status": "Source-reviewed proposed extension of pinned base; native harvest/consumption/save acceptance unverified"
+    },
+    {
+      "name": "Forage plump helmet starter stock",
+      "file": "code/game/objects/structures/wild.dm",
+      "line": 600,
+      "source_commit": "6b075397bd6efab6ad2e6ffcbd7240b865fcc72e",
+      "inputs": [
+        "/obj/structure/wild/smallbush"
+      ],
+      "outputs": [
+        "/obj/item/stack/farming/seeds/plump_helmet"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Use a kitchen knife in Help intent on a small bush with seed stock. The random seed pool includes this crop."
+      ],
+      "conditions": "Plump helmet spores occur in all eight default biome forage pools. Existing ten-minute bush cooldown; selection is random, not guaranteed.",
+      "map_notes": "Requires an accessible bush or traded seed; no cave/spawn placement guarantee.",
+      "era": "Foraging has no new era gate; farming needs existing tools/research.",
+      "status": "Source-reviewed proposed extension of pinned base; native/map reachability unverified"
+    },
+    {
+      "name": "Grow and harvest plump helmet",
+      "file": "code/game/objects/farming.dm",
+      "line": 675,
+      "source_commit": "6b075397bd6efab6ad2e6ffcbd7240b865fcc72e",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/plump_helmet"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/plump_helmet",
+        "/obj/item/stack/farming/seeds/plump_helmet"
+      ],
+      "tools": [
+        "/obj/item/weapon/plough",
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Sow one seed in a prepared ploughed plot.",
+        "Keep the crop alive until harvest-ready, then harvest with a suitable sharp tool.",
+        "Keep spores/seeds for another planting; eat the produce or store it off the floor."
+      ],
+      "conditions": "ploughed soil; indoors/underground bypasses season and biome using mushroom ancestry. Each harvest retires the crop and returns two seeds/spores plus one to three food items depending on fertility; each food has two nutriment. No watering/light requirement; half of normal stage attempts, normal soil debit and eventual overmaturity. This is not a higher guaranteed calories-per-minute route.",
+      "map_notes": "Rock must be cleared then suitable dirt ploughed. Jungle dirt and Desert-map dust remain unsuitable.",
+      "era": "Plough: four wood planks, Basic Agriculture research rules (node tier 1); no new era gate for seed or food.",
+      "status": "Source-reviewed proposed extension of pinned base; native harvest/consumption/save acceptance unverified"
     }
   ],
   "mechanism_overview": [
