@@ -39,7 +39,7 @@ claim a current archive identity; its evidence is labeled historical/unverified
 members. It is not a workaround for failing current-version checks. Existing
 historical receipts are unchanged. Current Windows sprite acceptance is not added.
 
-## Proposed artifact-only Pages acceptance
+## Artifact-only Pages acceptance
 
 Do not merge the Pages migration merely to make its native check available:
 master pushes retain their existing publication behavior. The proposal extends
@@ -59,10 +59,49 @@ receipts and retained artifacts before a deployment-triggering merge. A green
 offline/ordinary-PR build does not substitute for that native extraction evidence.
 
 GitHub documents dispatch by ref and inputs; its CLI reads the chosen ref's
-workflow definition for input collection. This supports the proposed branch route
-but does not prove this repository's service accepts inputs absent from the old
-default-branch definition. If it rejects admission, stop and report that blocker;
+workflow definition for input collection. The acceptance below also demonstrated
+that this repository's workflow UI loaded and accepted the feature branch's inputs
+while they were absent from the default-branch definition. If a future attempt
+rejects admission, stop and report that blocker;
 never retry on master/default, omit the artifact flag, or merge a controller to
-get around it. No activation attempt or native workload has run for this proposal.
+get around it.
 See [GitHub manual-run guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)
 and [the CLI implementation](https://github.com/cli/cli/blob/trunk/pkg/cmd/workflow/run/run.go).
+
+### Reviewed 516.1688 acceptance receipt
+
+The separately authorized [run 40228475523](https://github.com/Civ13/Civ13/actions/runs/40228475523)
+passed on 2026-10-25 at exact tested head
+`c60f77f2c4a89e7b25920aff92fa366eaa191e58` (source tree
+`759196b1f858a800e8f904f6fe8d759ee1e4d423`). This receipt does not claim execution
+of later documentation commits or authorize another native attempt.
+
+- The admitted inputs were `artifact_only=true` and `expected_head` equal to that
+  tested head. The build token had contents-read permission; Configure Pages,
+  Pages artifact upload and the deploy job were all skipped.
+- Both actual fixture compilations reported 516.1688 and zero errors/warnings.
+  Positive extraction passed all 52 required inherited-default/DMI/pixel checks
+  with 10,538 inventoried types. The named wrong-resource control detected the
+  injected inherited-icon mistake with 8,780 inventoried types.
+- Both receipts recorded unchanged, clean tracked source at that head/tree.
+  Acquisition and DreamMaker/DreamDaemon/libbyond.so/libext.so identities matched
+  the pinned Linux archive SHA256
+  `16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9`.
+  Receipt-bound compiler/runtime logs and inventories were independently hashed;
+  all 1,763 exported PNGs plus `exports.json` matched their receipt hashes.
+  Crafting JSON embedded the identical sprite receipt; API and crafting outputs
+  identified the exact tested source head.
+- Retained acceptance artifact **12612526852** has ZIP SHA256
+  `955bec1d2100987849a94fc30d6ebf09dc35e14edabf064ef5c92f9d0cf5c2e5`;
+  evidence artifact **12612720948** has ZIP SHA256
+  `eac7b9ab41938bfdf2269c24ff062c0d93ba1ac64fbfd166a6fc778f4767b903`.
+  Both are attached to the linked run and subject to artifact retention.
+
+Limits: the inventories still contained 580 positive / 411 negative unresolved
+defaults outside the required assertions. Each daemon briefly opened an ephemeral
+runner listener before closing new-user admission; this is not a no-listen proof.
+Bundled-member identity is not full dynamic-dependency verification, and neither
+gameplay nor browser visual acceptance was established. Cleanup returned through
+the runner's `finally` unlink path, and the second run's generated-file preflight
+confirmed the first run's files were absent; no separate post-negative filesystem
+listing was retained. These limits are not waived by a green workflow.
