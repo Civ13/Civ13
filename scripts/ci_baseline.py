@@ -25,7 +25,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
-    'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py'), 'always': True, 'paths': ()},
+    'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
+                            'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
     'research': {'files': ('tests/research_scheduler/test_resume.py',), 'paths': (
         'tests/research_scheduler/', 'code/processes/research_tree.dm',
