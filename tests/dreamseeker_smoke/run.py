@@ -20,8 +20,13 @@ from guard_config import VENDOR, LIMITS, digest
 from entry_budget import Budget
 
 ROOT = Path(__file__).resolve().parent
-INSTALLED_MANIFEST_SHA256 = '1aa0306fade5defcdac743614bcc27a441b9f8f23c519a9a7cabc713007725c3'
-LOCAL_RUNTIME_DLLS = ('mfc120u.dll', 'msvcp120.dll', 'msvcr120.dll')
+INSTALLED_MANIFEST_SHA256 = None  # Fresh 1688 installed-runtime review is pending.
+INSTALLED_MANIFEST_SHAPE = None
+LOCAL_RUNTIME_DLLS = ('mfc140u.dll', 'msvcp140.dll', 'vcruntime140.dll')
+DIRECTX = {
+    'd3dx9_43.dll': (1998168, '0b28546be22c71834501f7d7185ede5d79742457331c7ee09efc14490dd64f5f'),
+    'D3DCompiler_43.dll': (2106216, '2f23182ec6f4889397ac4bf03d62536136c5bdba825c7d2c4ef08c827f3a8a1c'),
+}
 SHARED_EFFECTS = ['existing authentication may be used', 'registry/preferences may be shared',
                   'cache/recent connections may be written', 'shared screenshots may be written']
 
@@ -124,6 +129,8 @@ def load_local(admission, reviewed_sha256, output, budget=None):
             or (profile['decision'] == 'shared_effects_explicitly_accepted'
                 and profile['accepted_effects'] == SHARED_EFFECTS), 'Unresolved profile/account decision')
     manifest_path = Path(packet['installed_manifest'])
+    require(INSTALLED_MANIFEST_SHA256 is not None and INSTALLED_MANIFEST_SHAPE is not None,
+            '516.1688 installed runtime has not been reviewed; native hold remains')
     manifest = read_json(manifest_path)
     budget.check()
     require(digest(manifest_path) == INSTALLED_MANIFEST_SHA256, 'Unknown installed identity record')
@@ -131,7 +138,8 @@ def load_local(admission, reviewed_sha256, output, budget=None):
     binary = Path(manifest['bin']).resolve(strict=True)
     rows = manifest['files']
     names = [row['name'] for row in rows]
-    require(len(names) == len(set(names)) == 18 and sum(row['bytes'] for row in rows) == 20678208,
+    require((len(names), sum(row['bytes'] for row in rows)) == INSTALLED_MANIFEST_SHAPE
+            and len(names) == len(set(names)),
             'Installed manifest shape changed')
     require({p.name for p in binary.iterdir()} == set(names), 'Unexpected installed bin entries')
     budget.check()
@@ -231,11 +239,42 @@ def server_arguments(port):
 
 
 def pixel_contract(image, phase):
-    counts = image.convert('RGB').getcolors(image.width * image.height)
-    counts = {rgb: count for count, rgb in counts}
+    if phase not in ('red', 'blue') or image.size != (224, 224):
+        return False
+    if image.mode == 'RGBA' and image.getchannel('A').getextrema() != (255, 255):
+        return False
     wanted = (255, 0, 0) if phase == 'red' else (0, 0, 255)
-    other = (0, 0, 255) if phase == 'red' else (255, 0, 0)
-    return counts.get(wanted, 0) >= 4096 and counts.get((0, 255, 0), 0) >= 256 and counts.get(other, 0) == 0
+    expected = Image.new('RGB', (224, 224), wanted)
+    expected.paste((0, 255, 0), (96, 96, 128, 128))
+    return image.convert('RGB').tobytes() == expected.tobytes()
+
+
+def windows_directory():
+    kernel = c.WinDLL('kernel32', use_last_error=True)
+    kernel.GetWindowsDirectoryW.argtypes = [w.LPWSTR, w.UINT]
+    kernel.GetWindowsDirectoryW.restype = w.UINT
+    value = c.create_unicode_buffer(32768)
+    length = kernel.GetWindowsDirectoryW(value, len(value))
+    require(0 < length < len(value), 'Windows directory unavailable')
+    return Path(value.value)
+
+
+def graphics_prerequisites():
+    """Read existing x86 system DLLs only; never install or substitute a DLL."""
+    system = windows_directory() / 'SysWOW64'
+    for parent in (system, *system.parents):
+        require(parent.is_dir() and not parent.is_symlink()
+                and not getattr(parent.stat(), 'st_file_attributes', 0) & 0x400,
+                'Reviewed x86 system directory unavailable')
+    rows = {}
+    for name, (size, expected) in DIRECTX.items():
+        path = system / name
+        require(path.is_file() and not path.is_symlink()
+                and not getattr(path.stat(), 'st_file_attributes', 0) & 0x400
+                and path.stat().st_size == size and digest(path) == expected,
+                'Reviewed x86 DirectX prerequisite missing or changed: ' + name)
+        rows[name] = dict(bytes=size, sha256=expected, location='windows-x86-system')
+    return rows
 
 
 def socket_contract(rows, server=False, port=None):
@@ -250,12 +289,15 @@ def socket_contract(rows, server=False, port=None):
 
 def install(destination):
     archive = destination / 'vendor.zip'
-    # Exact bytes pinned from the official vendor archive, not a mirror.
-    with urllib.request.urlopen(VENDOR['url'], timeout=30) as response:
-        if not response.url.startswith('https://www.byond.com/'):
+    # Exact reference-observed mirror bytes; no alternate source or redirect.
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *args, **kwargs):
+            raise RuntimeError('Unexpected vendor redirect')
+    with urllib.request.build_opener(NoRedirect()).open(VENDOR['url'], timeout=30) as response:
+        if response.url != VENDOR['url']:
             raise RuntimeError('Unexpected vendor redirect')
         data = response.read(16 * 1024**2 + 1)
-    if len(data) > 16 * 1024**2:
+    if len(data) != VENDOR['bytes']:
         raise RuntimeError('Vendor archive exceeds bound')
     archive.write_bytes(data)
     if digest(archive) != VENDOR['sha256']:
@@ -273,11 +315,23 @@ def install(destination):
     return binary
 
 
-def desktop_capture(pid):
+def desktop_capture(adapter, process):
+    require(not adapter.exited(process), 'Retained client exited before capture')
+    identity = adapter.identity(process)
+    require(identity['pid'] == process.pid, 'Retained client identity mismatch')
+    pid = process.pid
     u = c.WinDLL('user32', use_last_error=True)
     u.GetForegroundWindow.restype = w.HWND
     u.GetWindowThreadProcessId.argtypes = [w.HWND, c.POINTER(w.DWORD)]
     u.IsWindowVisible.argtypes = [w.HWND]
+    u.IsIconic.argtypes = [w.HWND]
+    u.GetDpiForWindow.argtypes = [w.HWND]
+    u.GetDpiForWindow.restype = w.UINT
+    u.GetSystemMetrics.argtypes = [c.c_int]
+    u.WindowFromPoint.argtypes = [w.POINT]
+    u.WindowFromPoint.restype = w.HWND
+    u.GetAncestor.argtypes = [w.HWND, w.UINT]
+    u.GetAncestor.restype = w.HWND
     u.GetWindowTextLengthW.argtypes = [w.HWND]
     u.GetWindowTextW.argtypes = [w.HWND, w.LPWSTR, c.c_int]
     u.SetForegroundWindow.argtypes = [w.HWND]
@@ -285,32 +339,58 @@ def desktop_capture(pid):
     u.ClientToScreen.argtypes = [w.HWND, c.POINTER(w.POINT)]
     callback_type = c.WINFUNCTYPE(w.BOOL, w.HWND, w.LPARAM)
     u.EnumWindows.argtypes = [callback_type, w.LPARAM]
-    owned = []
+    owned, visited = [], 0
     @callback_type
     def visit(hwnd, _):
+        nonlocal visited
+        visited += 1
+        if visited > 512:
+            return False
         owner = w.DWORD()
         u.GetWindowThreadProcessId(hwnd, c.byref(owner))
         if owner.value == pid and u.IsWindowVisible(hwnd):
-            title = c.create_unicode_buffer(u.GetWindowTextLengthW(hwnd) + 1)
+            title = c.create_unicode_buffer(min(256, u.GetWindowTextLengthW(hwnd)) + 1)
             u.GetWindowTextW(hwnd, title, len(title))
             owned.append((hwnd, title.value))
         return True
     u.EnumWindows(visit, 0)
+    require(visited <= 512, 'Window enumeration bound exceeded')
     if not owned:
         return None
-    if len(owned) != 1 or 'Civ13 DreamSeeker smoke' not in owned[0][1]:
+    if len(owned) != 1 or owned[0][1] != 'Civ13 DreamSeeker smoke':
         raise RuntimeError('Unexpected client window/prompt; no interaction attempted: ' + repr(owned))
     hwnd = owned[0][0]
     u.SetForegroundWindow(hwnd)
     if u.GetForegroundWindow() != hwnd:
         raise RuntimeError('Owned window cannot acquire foreground on this runner')
-    rect, point = w.RECT(), w.POINT()
-    if not u.GetClientRect(hwnd, c.byref(rect)) or not u.ClientToScreen(hwnd, c.byref(point)):
-        raise RuntimeError('Owned client geometry unavailable')
-    width, height = rect.right, rect.bottom
-    if not (128 <= width <= 1024 and 128 <= height <= 1024):
-        raise RuntimeError('Unexpected client dimensions')
-    return ImageGrab.grab((point.x, point.y, point.x + width, point.y + height))
+    def rectangle():
+        owner = w.DWORD()
+        u.GetWindowThreadProcessId(hwnd, c.byref(owner))
+        require(owner.value == pid, 'Owned client window identity changed')
+        require(u.IsWindowVisible(hwnd) and not u.IsIconic(hwnd)
+                and u.GetForegroundWindow() == hwnd and u.GetDpiForWindow(hwnd) == 96,
+                'Owned visible foreground window at96DPI required')
+        rect, point = w.RECT(), w.POINT()
+        require(u.GetClientRect(hwnd, c.byref(rect)) and u.ClientToScreen(hwnd, c.byref(point)),
+                'Owned client geometry unavailable')
+        require((rect.left, rect.top, rect.right, rect.bottom) == (0, 0, 224, 224),
+                'Exact224x224 client rectangle required')
+        x, y, width, height = (u.GetSystemMetrics(n) for n in (76, 77, 78, 79))
+        require(x <= point.x and y <= point.y
+                and point.x + 224 <= x + width and point.y + 224 <= y + height,
+                'Owned client rectangle is offscreen')
+        for row in range(9):
+            for column in range(9):
+                hit = u.WindowFromPoint(w.POINT(point.x + column * 223 // 8,
+                                              point.y + row * 223 // 8))
+                require(hit and u.GetAncestor(hit, 2) == hwnd, 'Owned client rectangle is obscured')
+        return (point.x, point.y, point.x + 224, point.y + 224)
+    before = rectangle()
+    image = ImageGrab.grab(before)
+    require(rectangle() == before and not adapter.exited(process)
+            and adapter.identity(process) == identity and image.size == (224, 224),
+            'Owned client identity or geometry changed during capture')
+    return image
 
 
 def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=None):
@@ -347,6 +427,8 @@ def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=
         evidence['source_sha256'] = source_identity()
         check_work()
         binary = install(work) if local is None else stage_local(local, work)
+        check_work()
+        evidence['graphics_prerequisites'] = graphics_prerequisites()
         check_work()
         fixture = work / 'fixture'
         fixture.mkdir()
@@ -411,7 +493,8 @@ def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=
                 break
             watch()
         logs = ''.join(p.read_text(errors='replace') for p in output.glob('compile.*.log'))
-        if compiler.finish(compiled)['exit_code'] != 0 or '0 errors, 0 warnings' not in logs or not (fixture/'fixture.dmb').is_file():
+        if (compiler.finish(compiled)['exit_code'] != 0 or '0 errors, 0 warnings' not in logs
+                or logs.count('DM compiler version 516.1688') != 1 or not (fixture/'fixture.dmb').is_file()):
             raise RuntimeError('Fixture compilation failed')
         check_work()
         with socket.socket() as probe:
@@ -443,12 +526,12 @@ def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=
                         ('client', client, playing), ('server', server, serving)))
                     raise RuntimeError('Client/server exited before capture')
                 check_work()
-                image = desktop_capture(playing.pid)
+                image = desktop_capture(client, playing)
                 check_work()
                 if not (fixture/'client.txt').exists():
                     continue
                 receipt = (fixture/'client.txt').read_text().strip()
-                if receipt != 'guest=1;version=516;build=1681':
+                if receipt != 'guest=1;version=516;build=1688':
                     raise RuntimeError('Non-guest or wrong-build client')
                 if not (fixture/'phase.txt').exists() or (fixture/'phase.txt').read_text().strip() != phase:
                     continue

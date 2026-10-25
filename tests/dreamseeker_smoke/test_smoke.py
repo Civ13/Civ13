@@ -120,6 +120,8 @@ class LocalAdmissionContracts(unittest.TestCase):
             resources=dict(measured_unix=now, free_ram_bytes=4 * 1024**3,
                            free_disk_bytes=2 * 1024**3, cpu_headroom_accepted=True))
         self.enterContext(patch.object(run, 'INSTALLED_MANIFEST_SHA256', run.digest(self.manifest)))
+        self.enterContext(patch.object(run, 'INSTALLED_MANIFEST_SHAPE', (18, 20678208)))
+        self.enterContext(patch.object(run, 'graphics_prerequisites', return_value={'offline': True}))
         self.enterContext(patch.object(run, 'VENDOR', {'binaries': {n: hashes[n] for n in run.VENDOR['binaries']}}))
         self.enterContext(patch.object(run.sys, 'platform', 'win32'))
         self.enterContext(patch.dict(run.os.environ, COMPUTERNAME='offline-test-host',
@@ -134,6 +136,14 @@ class LocalAdmissionContracts(unittest.TestCase):
 
     def load(self):
         return run.load_local(self.admission, self.write_packet(), self.output)
+
+    def test_1688_local_runtime_requires_new_review_before_consumption(self):
+        with patch.object(run, 'INSTALLED_MANIFEST_SHA256', None), \
+                patch.object(run, 'INSTALLED_MANIFEST_SHAPE', None):
+            with self.assertRaisesRegex(RuntimeError, '1688 installed runtime has not been reviewed'):
+                self.load()
+        self.assertEqual(list(self.ledger.iterdir()), [])
+        self.download.assert_not_called()
 
     def stage(self):
         context = self.load()
@@ -382,7 +392,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
                 hook('creation', phase)
                 if phase == 'compile':
                     (fixture / 'fixture.dmb').write_bytes(b'offline stub, not compiled')
-                    (output / 'compile.stdout.log').write_text('0 errors, 0 warnings')
+                    (output / 'compile.stdout.log').write_text('DM compiler version 516.1688\n0 errors, 0 warnings')
                 if phase == 'server':
                     (fixture / 'ready.txt').write_text('ready')
                 return process
@@ -423,7 +433,7 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
             adapter.sockets.side_effect = sockets
             return adapter
 
-        def capture(_):
+        def capture(*_):
             record['capture'] += 1
             hook('capture', 'client')
             raise ValueError('primary capture failure')
@@ -442,6 +452,8 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
 
         with patch.object(module, 'ROOT', run.ROOT), patch.object(module, 'VENDOR', run.VENDOR), \
                 patch.object(module, 'INSTALLED_MANIFEST_SHA256', run.INSTALLED_MANIFEST_SHA256), \
+                patch.object(module, 'INSTALLED_MANIFEST_SHAPE', run.INSTALLED_MANIFEST_SHAPE), \
+                patch.object(module, 'graphics_prerequisites', side_effect=lambda: hook('graphics', 'compile') or {'offline': True}), \
                 patch.object(module, 'load_local', side_effect=loaded), \
                 patch.object(module, 'install', side_effect=AssertionError('download forbidden')), \
                 patch.object(module.shutil, 'disk_usage', side_effect=lambda _: self.disk(hook)), \
@@ -613,6 +625,27 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         self.assertEqual(budget.started_monotonic, 0)
         self.assertLessEqual(budget.full_end, 165)
         self.assertEqual(budget.work_end, 150)
+
+    def test_missing_graphics_prerequisite_prevents_every_native_creation(self):
+        def refused(_):
+            raise RuntimeError('Reviewed x86 DirectX prerequisite missing')
+        record = self.invoke({'graphics': refused})
+        self.assertEqual(record['creations'], [])
+        self.assertEqual(record['opened'], [])
+        self.assertEqual(record['cleanup'], [])
+        self.assertEqual(list(self.ledger.iterdir()), [])
+        self.assertIn('DirectX prerequisite missing', record['receipt']['error'])
+
+    def test_wrong_compiler_version_fails_and_still_cleans_owned_compiler(self):
+        original = Path.read_text
+        def wrong_banner(path, *args, **kwargs):
+            text = original(path, *args, **kwargs)
+            return text.replace('516.1688', '516.1681') if path.name == 'compile.stdout.log' else text
+        with patch.object(Path, 'read_text', wrong_banner):
+            record = self.invoke()
+        self.assertEqual([phase for phase, *_ in record['creations']], ['compile'])
+        self.assertEqual([phase for phase, _ in record['cleanup']], ['compile'])
+        self.assertEqual(record['receipt']['error'], 'Fixture compilation failed')
 
     def assert_exit_roles(self, exit_phases):
         events = []

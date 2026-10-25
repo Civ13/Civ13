@@ -1,12 +1,12 @@
 # Guest renderer feasibility only
 
 This separate Windows CI experiment asks whether the hosted x64 desktop can show
-and capture actual DreamSeeker 516.1681 map pixels. It does NOT test the Civ13
+and capture actual DreamSeeker 516.1688 map pixels. It does NOT test the Civ13
 compositor, oversized trees, native visibility, weather or persistence. No smoke
 receipt may satisfy `light_plane_composition/verify_render.py`.
 
-The official portable archive and all executable/DLL bytes are SHA256 pinned in
-`vendor.json`. The workflow uses a disposable windows-2022 runner, read-only token,
+The exact reference-observed 516.1688 mirror archive and executable/DLL bytes
+are SHA256 pinned in `vendor.json`; this is not a vendor-authenticated checksum. The workflow uses a disposable windows-2022 runner, read-only token,
 no checkout credentials, no user secrets, no account/pager startup, no firewall,
 registry, security-policy or display-driver changes. The guest URL uses the
 vendor-documented `##guest` option. A login/permission dialog is never accepted.
@@ -48,9 +48,10 @@ firewall changes or RDP to make the hosted smoke pass.
 
 ## Explicit local-installed mode (source draft, no execution admitted)
 
-The hosted path and its official archive request are unchanged. Its recorded
-HTTP 403 remains failed. This separate mode uses existing installed files only;
-it does not retry, mirror or replace that request or the consumed Linux attempt.
+The historical 1681 HTTP403 and all five later spent attempts remain failed
+evidence. The active 1688 migration is described in MIGRATION-1688.md; neither
+reference capture run accepts this fixture. Local mode uses existing installed
+files only and is held until a fresh1688 identity record is independently reviewed.
 Never set `GITHUB_ACTIONS` to evade the hosted restriction.
 
 Local mode requires both `--local-admission PATH` and
@@ -72,7 +73,7 @@ The packet is a bounded JSON object with these required contracts:
 | `source_sha256` | Exact `source_identity()` map of every regular fixture-directory file, including this README and tests |
 | `python` | Exact resolved interpreter `path` and executable `sha256` |
 | `pillow_version`, `pillow_sha256` | Installed Pillow version and `pillow_identity()` map for package initializer, Image, ImageGrab and compiled Image core; not an entire OS/dependency attestation |
-| `installed_manifest` | Existing read-only installed identity record, SHA256 `1aa0306fade5defcdac743614bcc27a441b9f8f23c519a9a7cabc713007725c3` |
+| `installed_manifest` | Fresh1688 installed hash and count/size contract pending review; active constants are `None` |
 | `issued_unix`, `expires_unix` | Numeric UTC seconds, current admission, at most 300 seconds apart |
 | `limits` | `run_seconds:150`, `cleanup_seconds_per_job:5`, `cpu_seconds_per_process:60`, `process_private_bytes:536870912`, `watcher_private_bytes:134217728` |
 | `review` | Nonempty `reference`, `reviewer`, `resource_owner`, `executor`, `desktop_owner`; true `native_execution_approved`, `exclusive_desktop_approved`, `socket_polling_limitation_accepted` |
@@ -95,14 +96,17 @@ The packet is a bounded JSON object with these required contracts:
 Existing-session permission permits use of an existing profile when admitted;
 it does not make an arbitrary running client fixture-owned. This adapter still
 creates and retains its own guest client process and verifies the exact
-`guest=1;version=516;build=1681` receipt. It does not attach/control an unrelated
+`guest=1;version=516;build=1688` receipt. It does not attach/control an unrelated
 client or relax the hosted guest oracle. Whether guest startup works with that
 profile remains a native acceptance question; an unexpected prompt is a stop.
 
-Before launch, verify all 18 installed names, sizes and hashes against the pinned
-identity record. Stage only the 12 existing vendor-manifest files plus the three
-recorded VC120 runtime DLLs (`mfc120u`, `msvcp120`, `msvcr120`) into a new private
-bin directory. This conservative set is not proven minimal dependency closure.
+Before local admission can resume, review the new installed manifest hash and
+its exact file count/total size. The previous1681 record hash
+`1aa0306fade5defcdac743614bcc27a441b9f8f23c519a9a7cabc713007725c3` remains historical.
+Stage only the12 vendor files and reviewed VC140 DLLs (`mfc140u`, `msvcp140`,
+`vcruntime140`) into a fresh private bin directory. Read-only checks require the
+two pinned x86 DirectX DLLs in the actual Windows system directory before any
+native process; no installer or app-local DLL fallback is invoked. This conservative set is not proven minimal dependency closure.
 No downloader or fallback is called in local mode. Extra installed/staged files,
 changed bytes, duplicate JSON keys, stale resources, changed source/interpreter
 or dependency identities deny admission. Live free RAM and disk are also checked
@@ -332,3 +336,17 @@ samples, not exact exit times or proof of first-exit ordering. Historical cleanu
 codes remain ambiguous because Job termination assigns exit code1. Mocked
 client-only, server-only and both-exit controls provide no new native acceptance;
 the existing native hold, capture ownership and one-use admission remain in force.
+
+
+## 516.1688 migration preparation
+
+See MIGRATION-1688.md for immutable references, changed oracles and proposed
+one-shot bounds. Window capture now requires exact224x224,96DPI, visible/nonminimized
+foreground ownership, on-screen geometry, sampled9x9 hit ownership and matching
+retained identity/geometry before and after the genuine screen read. It never
+crops/resizes the captured image or changes DPI/display settings. Pixel equality
+checks the complete known7x7 scene, including its centered32x32 green actor.
+The fixture fixes native view3/zoom1 and has no production HUD; the tanning HUD
+correction is reference context only. No synthetic test pixels are evidence of
+rendering. Sampling cannot atomically exclude a transient overlay. Native startup,
+DirectX closure, screenshot mapping and exact pixels are unrun for this source.

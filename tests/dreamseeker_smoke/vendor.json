@@ -1,18 +1,28 @@
 {
-  "url": "https://www.byond.com/download/build/516/516.1681_byond.zip",
-  "sha256": "01b94d52dfe6d6bce6b6560cfe12e2ef1c92fa69b8ae6bb20d58287ad4d9bd98",
+  "url": "https://cmss13-devs.github.io/byond-build-mirror/download/build/516/516.1688_byond.zip",
+  "sha256": "9079f29b0747719233715dfeff223641e6fb69bd16b8ba9676d5cd42cfcd0148",
+  "bytes": 8602470,
+  "version": "516.1688",
   "binaries": {
-    "byond.exe": "4e30bb2ac8d1c0e321e4cd86cbd98e0b75c8455ffeff0475a84abbbba655db1b",
-    "byondcore.dll": "55cf268a4f054f02d556d2ed3c26ab01b7b0318bb3c5419e85f88e4e3b9e5898",
-    "byondext.dll": "994f53aea778b7e13e8fd1b626de945aee4c2d83316f66aaa89033dd65ffd18f",
-    "byondwin.dll": "44fdd8ef52d9289900bbd7ca4baa1dc7b8f84fb2b3a1bc7d37fddda6704e7f17",
-    "dd.exe": "7b148eceaaae483395b636fab817609b37f8fb852f1d5aad12d29bbcaf1585ae",
-    "dm.exe": "8ad7537fc1329ada04e8e1e8835ec9cf205f3e5029461a3ead1f8f4ced7b0bb8",
-    "dreamdaemon.exe": "970b096468fc3b77a711f82726a7a0d76a883c7f7583f6d3874183f80c2743a9",
-    "dreamdeploy.exe": "b26a3583d9713d61d588a2063beef57c1be13c4b3caab395c80af2206cadae23",
-    "dreammaker.exe": "cee8494af3b10e4a48accb5dfae81387fc75f247ebee160745127a6c222a0535",
-    "dreamseeker.exe": "e0ca7afe8d84e91fa8e8e4db00a5dd13d91a6a86e401ca8e9dfb11514bffa35c",
+    "byond.exe": "a2a44d56cfdc0e8bae17b5134f74a18a0be4747b087365c6bd60b5be959f1a4e",
+    "byondcore.dll": "fd3855446a094ac57e4cf7189d7249be29c3f45b0cf620fd96104d93d901c29c",
+    "byondext.dll": "7d8d115728059d48a2c9134f08ef010d59dd4d9e1c2df47e63aa9c33e87cdf79",
+    "byondwin.dll": "160181fed9699847d9ec39dfb38e066540bc7a68378f0cd9c8ce2dff05530d69",
+    "dd.exe": "abb21de26047724bf64411e17da5e17cacc74221817c3e049a79626156b44866",
+    "dm.exe": "f29b3041c46df453b3f999583bef0bb0ff79fe2b53ee1b8686bb46ce18c7df77",
+    "dreamdaemon.exe": "3fed7fae084c90ed42bfa7436572862e6d0080618bdafc32bca0d91ce592ad57",
+    "dreamdeploy.exe": "acf86e5324b9278a1b78f1ffaec8aa3e214458aa3d06c9b6bc680e0937161781",
+    "dreammaker.exe": "25e3b9744d11d2a5e85260e759b8d79c73f6dbdf783451027491d704c1e068ec",
+    "dreamseeker.exe": "dde2893d7d6721eb8cb73d9e6b9f8cb28d86d1e432b42edaad10b066800a97e4",
     "fmodex.dll": "70d2fb7c17820dd3671f4481dc37b4bc386313a9d8ec5fa73cd2dac375b27312",
     "WebView2Loader.dll": "93894609e3365b62fbb4d5b4219b4199a271888160669c33dbaadbbaf5aff087"
+  },
+  "provenance": {
+    "reference_commit": "209e852bb81c25aaba53fa06ecf125ea532c7bc4",
+    "reference_runs": [
+      40223669267,
+      40228533562
+    ],
+    "limitations": "Observed exact bytes; not vendor-authenticated checksums or acceptance for this fixture."
   }
 }

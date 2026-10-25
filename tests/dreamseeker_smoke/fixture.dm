@@ -30,11 +30,15 @@
     text2file("ready", "ready.txt")
 
 /client/New()
-    if(address != "127.0.0.1" || !(copytext(key, 1, 7) == "Guest-") || clients_present)
-        return null
+    if(address != "127.0.0.1" || !(copytext(key, 1, 7) == "Guest-") || clients_present || byond_version != 516 || byond_build != 1688)
+        del(src)
+        return
     . = ..()
     clients_present++
     mob.loc = locate(4,4,1)
+    eye = mob
+    perspective = MOB_PERSPECTIVE
+    view = 3
     var/is_guest = (copytext(key, 1, 7) == "Guest-")
     text2file("guest=[is_guest];version=[byond_version];build=[byond_build]", "client.txt")
     spawn(10)
