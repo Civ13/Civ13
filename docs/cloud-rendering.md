@@ -25,9 +25,16 @@ Read the pinned [workflow][workflow] and [controller source directory][source].
 The directory's old README describes earlier experiments and contains superseded
 setup/activation instructions; use this guide and the executable source at the
 successful commit instead. Artifacts have seven-day retention and may expire.
-This guide does not include or republish the captured images.
+The original after screenshot is retained below; the before screenshot is not
+included in this guide.
 
 ### What the native output established
+
+![Native cloud-rendered bakery after the scripted cooking and transfer](images/cloud-rendering/bakery-after.png)
+
+*Original 480 x 480 DreamSeeker capture from the reference run above. Two scripted
+native actors are visible after cooking and transfer; this is a staged still,
+not video, ordinary-player acceptance or evidence of public-server hosting.*
 
 The first still showed the authored bakery before scripted actors and recipe
 preparation. Existing map props are not evidence of newly cooked food. The second
