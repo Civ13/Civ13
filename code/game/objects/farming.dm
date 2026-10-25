@@ -573,15 +573,18 @@
 
 // Seedlings are uprooted, never harvested as the old renewable log crop.
 /obj/structure/farming/plant/tree/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe))
-		to_chat(user, SPAN_WARNING("You uproot the [name]."))
+	if (istype(W, /obj/item/weapon/material/shovel))
+		to_chat(user, SPAN_WARNING("You uproot the [name] with the [W.name]."))
 		qdel(src)
+		return
+	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe) || istype(W, /obj/item/weapon/foldable_shovel))
+		to_chat(user, SPAN_WARNING("You need an unfolded shovel to uproot the [name]."))
 
 /obj/structure/farming/plant/tree/farming_diagnostics(farming_skill)
 	. = ..()
 	. -= "The plant is well nourished and may give extra crops."
 	if (!vstatic && stage <= readyStageMax && farming_skill >= 1.3)
-		. += "This seedling will grow into a full tree. Cutting it now only uproots it."
+		. += "This seedling will grow into a full tree. Uproot it with a shovel for no logs or seeds."
 		var/site_error = tree_planting_error(get_turf(src), src)
 		if (site_error)
 			. += site_error

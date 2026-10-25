@@ -51,3 +51,15 @@ The compile-only mode performs the same contained production-source fixture
 build and launches no runtime. It can complete independently of the runtime
 startup blocker. Native direct dispatch, natural scheduler cadence, full-world
 fresh-process recovery and connected-client appearance are separate scopes.
+
+## Shovel-only uprooting follow-up
+
+The round-trip probe now additionally exercises every declared open shovel subtype
+on living and dead seedlings, rejected cutters/folded shovels/nonshovels, native
+processing retirement and no wood/seed/mature-tree output. These new assertions
+have only been prepared, not compiled or executed. The historical Linux e773
+48-assertion run predates this handler; do not relabel it or reuse its fixed
+assertion inventory. Use a newly reviewed exact-head Linux adapter and a causal
+control restoring the old cutting-tool gate (`--negative-control uprooting`
+is prepared in the existing runner). The Windows Session and its
+startup-listener rule are unchanged.

@@ -19,7 +19,8 @@ a world tree. Fruit crops and decorative pots keep their existing behavior.
 3. Tend the seedling using existing crop watering and fertilizer interactions.
    Nearby fresh water or flooded irrigation within two tiles supplies water;
    salt water does not. Rain also helps. Drought, snowstorms and sandstorms can
-   kill it. Uproot a dead seedling with a knife, bayonet, scythe or hatchet.
+   kill it. Uproot a living or dead seedling with a shovel or spade; unfold a folding
+   shovel first. Knives, bayonets, scythes and hatchets cannot uproot seedlings.
 4. Allow six successful one-minute growth stages. Poor soil can delay stages.
    All inherited tree biomes are supported; winter is excluded by the existing
    tree season list. Development pauses outside that list while watering and
@@ -27,8 +28,8 @@ a world tree. Fruit crops and decorative pots keep their existing behavior.
    entire stage clock until cleared. Server downtime adds no growth.
 5. The seedling becomes an ordinary seasonal broadleaf tree. It uses existing
    branches, leaves, chopping, collision and art. Chop it with a suitable tool
-   for the normal seven logs. Cutting a seedling only uproots it and returns no
-   logs or seeds. Forage bushes again for replacement seeds.
+   for the normal seven logs. Uprooting a seedling with a shovel returns no
+   logs or seeds and does not refund the planted seed. Forage bushes again for replacement seeds.
 
 ## Implementation and compatibility
 
@@ -91,3 +92,11 @@ This branch integrates the reviewed Atlas variant grouping from #3282 and retain
 record; the grouped catalog is regenerated through the existing generator.
 Tree planting does not change grouping logic, persistence core behavior, year
 state or animal interactions.
+
+### Shovel-only uprooting follow-up
+
+The later shovel-only tool admission has offline source checks and prepared native
+probe assertions. The historical e773 Linux pass above did not exercise this new
+handler and is not native acceptance for it. Require new exact-source tool-family,
+rejection, no-refund and processing-cleanup checks before claiming that coverage.
+Mature-tree chopping and unrelated crop harvesting are unchanged.
