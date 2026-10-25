@@ -1,0 +1,130 @@
+name: One-shot native Civ13 bakery cloud render
+on:
+  push:
+    branches: [ci/cloud-bakery-5161688-directx-diag-v15-20261025]
+    paths:
+      - .github/workflows/cloud-bakery-5161688.yml
+      - tools/cloud-bakery-5161688/**
+permissions:
+  contents: read
+jobs:
+  bakery:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'ci: one-shot bundled DirectX socket diagnostic v15 (2026-10-25)'
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Admit only initial reviewed source publication
+        shell: powershell
+        env:
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          $base = '3f3dd47f614f4659031a793dc590346f5e4de3e6'
+          $parents = (git rev-list --parents -n 1 HEAD).Trim().Split(' ')
+          if ($LASTEXITCODE -ne 0 -or $parents.Count -ne 2 -or $parents[0] -ne $env:GITHUB_SHA -or $parents[1] -ne $base) { throw 'Wrong source ancestry.' }
+          if ($env:EVENT_BEFORE -ne $base -and $env:EVENT_BEFORE -ne ('0' * 40)) { throw 'Not initial branch publication.' }
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 58404f5bd16e3fed80f1d9844c5db3edd144942c
+          path: source-checkout
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Materialize exact committed tooling bytes without Git conversions
+        timeout-minutes: 1
+        shell: powershell
+        run: |
+          python -B tools/cloud-bakery-5161688/materialize.py --repository "$env:GITHUB_WORKSPACE" --revision "$env:GITHUB_SHA" --destination "$env:RUNNER_TEMP/bakery-tooling"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Offline acquisition, capture and source controls
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 1
+        shell: powershell
+        run: |
+          python -B -m unittest discover -s tools/cloud-bakery-5161688 -p 'test_*.py' -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -B -m unittest discover -s tools/cloud-bakery-5161688/tests -p 'test_capture.py' -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Stage only exact committed Civ13 source and authored assets
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 2
+        shell: powershell
+        run: |
+          python -B tools/cloud-bakery-5161688/stage.py --repository "$env:GITHUB_WORKSPACE/source-checkout" --destination "$env:RUNNER_TEMP/bakery-source"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Extract verified package data without running an installer
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 2
+        shell: powershell
+        run: |
+          $engine = Join-Path $env:RUNNER_TEMP 'bakery-engine'
+          if (Test-Path -LiteralPath $engine) { throw 'Fresh engine directory required.' }
+          New-Item -ItemType Directory -Path $engine -ErrorAction Stop | Out-Null
+          python -B tools/cloud-bakery-5161688/acquire.py --root "$engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install exact bundled Microsoft DirectX runtime after explicit terms approval
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 2
+        shell: powershell
+        run: |
+          python -B tools/cloud-bakery-5161688/directx_setup.py --root "$env:RUNNER_TEMP/bakery-engine" --output "$env:RUNNER_TEMP/bakery-engine/directx-evidence" --accept-bundled-microsoft-directx-terms
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile and render one genuine isolated bakery scene
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 4
+        shell: powershell
+        run: |
+          python -B tools/cloud-bakery-5161688/run_scene.py --binary "$env:RUNNER_TEMP/bakery-engine/byond/bin" --source "$env:RUNNER_TEMP/bakery-source" --output "$env:RUNNER_TEMP/bakery-evidence" --execute-reviewed-scene
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Admit bounded diagnostic artifacts only
+        id: evidence
+        if: always()
+        shell: powershell
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'bakery-evidence'
+          $allowed = @('receipt.json','source-receipt.json','filming-take.json','filming-checks.txt','filming-stop.txt','bakery-before.png','bakery-after.png','compiler.stdout.log','compiler.stderr.log','server.stdout.log','server.stderr.log','client.stdout.log','client.stderr.log')
+          $files = @()
+          if (Test-Path -LiteralPath $root) { $files = @(Get-ChildItem -LiteralPath $root -Force) }
+          # The private environment directory is not an artifact and is never uploaded.
+          $files = @($files | Where-Object { $_.Name -ne 'environment' })
+          $engine = Join-Path $env:RUNNER_TEMP 'bakery-engine'
+          foreach ($name in @('acquisition-receipt.json','dependency-receipt.json','acquisition-failure.json')) {
+            $path = Join-Path $engine $name
+            if (Test-Path -LiteralPath $path) { $files += Get-Item -LiteralPath $path }
+          }
+          $allowed += @('acquisition-receipt.json','dependency-receipt.json','acquisition-failure.json')
+          $setup = Join-Path $engine 'directx-evidence'
+          if (Test-Path -LiteralPath $setup) {
+            $setupFiles = @(Get-ChildItem -LiteralPath $setup -Force | Where-Object { $_.Name -ne 'environment' })
+            $files += $setupFiles
+          }
+          $allowed += @('directx-setup-receipt.json','directx.stdout.log','directx.stderr.log')
+          if ($files.Count -eq 0) { exit 0 }
+          $total = 0
+          foreach ($file in $files) {
+            if ($file.PSIsContainer -or $file.Name -notin $allowed -or $file.Length -gt 1048576 -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Unexpected artifact data.' }
+            $total += $file.Length
+          }
+          if ($files.Count -gt 19 -or $total -gt 5242880) { throw 'Artifact size/count bound.' }
+          $out = Join-Path $env:RUNNER_TEMP 'bakery-artifact'
+          if (Test-Path -LiteralPath $out) { throw 'Artifact staging already exists.' }
+          New-Item -ItemType Directory -Path $out | Out-Null
+          foreach ($file in $files) { Copy-Item -LiteralPath $file.FullName -Destination $out }
+          Add-Content -LiteralPath $env:GITHUB_OUTPUT -Value 'ready=true' -Encoding utf8
+      - name: Retain native scene evidence
+        if: ${{ always() && steps.evidence.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-bakery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/bakery-artifact/
+          retention-days: 7
+          if-no-files-found: error
