@@ -33,7 +33,7 @@ soil fertility, underlying resource counters or contents. One runtime image uses
 the artist-made `icons/turf/snow.dmi` snow state, on the tile's plane. Melting and
 harvesting remove only that owned image; the original substrate needs no guessed
 restoration. Normal floor-icon rebuilding reapplies cover. An opaque full snow
-image has no new depth/edge artwork; native appearance/clipping remains unverified.
+image has no new depth/edge artwork; client rendering/clipping remains unverified.
 
 `has_snow_cover()` supplies the existing snow movement slowdown, foot cold check,
 footstep sounds and shovel/spoon/ant snow collection. Generated units are consumed
@@ -99,6 +99,47 @@ is injected (ordinary dirt/grass defaults to zero); the former reward-before-deb
 ordering could report success even with default stock when final melting rejected.
 `tests/snowfall_ground/native_probe.dm` is uncompiled source for a future separately
 admitted isolated full-game harness.
+
+## Native module evidence (2026-10-25)
+
+The hosted Linux BYOND **516.1688** [attempt3 run](https://github.com/Civ13/Civ13/actions/runs/40169744620)
+passed against source `47d788a306ae6b7e19327a0bdf7d388972d07b94`, tree
+`f2393bd7264b5d3b8aae553f80add05fa67e9bf7`. Controller:
+`c0d52f9f0f693aad9acb20360f5d14421be407e1`. Verified artifact `12589527408`
+has SHA-256 `2436b91622972dc1aea87b88bdb74ccedfc829caf13fc2f242a8bc85b7b72065`.
+
+The baseline in this isolated 18 x 18 x 3 fixture compiled the unchanged production
+snow module/process, exact floor `New` and turf runtime-exclusion hooks, and
+original snow DMI. Temperature and connected-level topology were explicitly
+injected; other game services used minimal stubs. It admitted no clients and
+used no real saves or full custom serializer. The original
+`tests/snowfall_ground/native_probe.dm` remained unchanged and uncompiled.
+
+All **64 baseline assertions** passed. Six separately compiled causal variants
+each failed exactly its intended assertion, covering omitted overlay publication,
+melt, debit generation comparison, reload generation invalidation, sampling during
+reload, and native `Del` unregistration. All seven compiler/daemon pairs completed
+with **14 verified owned-process cleanup receipts** and seven listener-closure
+censuses before semantic checks. Native appearance properties/ownership, core
+`take_snow`, selected reload hooks and a 300-candidate/256-per-batch fixture now
+have bounded native evidence; these are not client-pixel or server-scale results.
+
+Earlier failed attempts remain part of the record:
+- [Attempt1](https://github.com/Civ13/Civ13/actions/runs/40168306589) stopped after
+  compiler start on engine-created private `home/.byond`; no daemon was attempted.
+  Its exception path lost final cleanup observations, so cleanup remains unproven.
+- [Attempt2](https://github.com/Civ13/Civ13/actions/runs/40169405056) failed an
+  overbroad `/home` test sentinel before toolchain acquisition or native execution.
+  Attempt3 corrected that test's fixture-root scope without changing the reviewed
+  native controller or DM fixture.
+
+[Acceptance follow-up #3312](https://github.com/Civ13/Civ13/issues/3312) retains
+real climate/heater and connected-z integration, full serializer/legacy-import
+round trips, actual shovel/spoon/ant action handlers and rewards, client rendering,
+seasonal map execution, full floor-icon/qdel/Destroy behavior, and largest-map
+memory/latency under the real scheduler. This module pass establishes none of
+those broader acceptance results and does not relax existing local holds.
+
 No local native launch is permitted under the uncertain movement-launch/process-
 inventory hold. Parent owns admission and the testing deadline; no sealed packet,
 live save/server/config or Gaia cycle is changed by this draft.
