@@ -1,0 +1,98 @@
+"""Synthetic owned-row tests only; no sockets, Windows APIs or native processes."""
+import json
+from itertools import product
+import unittest
+from run_scene import OwnedSocketViolation, socket_contract, checked_owned_sockets
+
+
+def row(**changes):
+    value = dict(protocol='tcp', address='127.0.0.1', port=54321, state='5', remote='127.0.0.1')
+    value.update(changes)
+    return value
+
+
+class Adapter:
+    def __init__(self, rows, exited=False):
+        self.rows, self.has_exited = rows, exited
+    def sockets(self, process):
+        return self.rows
+    def identity(self, process):
+        return dict(pid=1234, creation_filetime=123456789, image='not retained')
+    def exited(self, process):
+        return self.has_exited
+
+
+class SocketDiagnostics(unittest.TestCase):
+    def test_existing_loopback_connections_and_intended_listener_pass(self):
+        socket_contract([row()])
+        socket_contract([row(state='listen', port=6000, remote='0.0.0.0')], True, 6000)
+
+    def test_same_policy_rejects_udp_wildcard_ipv6_external_and_wrong_listener(self):
+        cases = [row(protocol='udp', remote=None, state='None'), row(address='0.0.0.0'),
+                 row(address='::1', remote='::1'), row(remote='203.0.113.10'),
+                 row(state='listen'), row(state='listen', port=6001)]
+        for value in cases:
+            with self.subTest(row=value), self.assertRaises(OwnedSocketViolation):
+                socket_contract([value], True, 6000)
+
+    def test_acceptance_predicate_is_identical_to_original_guard(self):
+        # Complete small cross-product, including legitimate-looking bindings
+        # which the deliberately narrow original policy still must reject.
+        for protocol, address, remote, state, server, port in product(
+                ('tcp', 'udp'), ('127.0.0.1', '0.0.0.0', '::1'),
+                ('127.0.0.1', '0.0.0.0', '203.0.113.10', None),
+                ('5', 'listen', 'None'), (False, True), (6000, 6001)):
+            value = row(protocol=protocol, address=address, remote=remote, state=state, port=port)
+            expected = (protocol == 'tcp' and address == '127.0.0.1' and
+                        remote in ('0.0.0.0', '127.0.0.1') and
+                        (state != 'listen' or (server and port == 6000)))
+            try:
+                socket_contract([value], server, 6000)
+                accepted = True
+            except OwnedSocketViolation:
+                accepted = False
+            self.assertEqual(accepted, expected, value)
+
+    def test_exact_first_owned_violation_and_bound_identity_retained(self):
+        first = row(protocol='udp', address='0.0.0.0', remote=None, state='None', port=23456)
+        adapter = Adapter([row(), first, row(remote='203.0.113.10')])
+        with self.assertRaises(OwnedSocketViolation) as caught:
+            checked_owned_sockets('client', adapter, object())
+        evidence = caught.exception.evidence
+        self.assertEqual(evidence['socket'], first)
+        self.assertEqual(evidence['role'], 'client')
+        self.assertEqual(evidence['pid'], 1234)
+        self.assertEqual(evidence['creation_filetime'], 123456789)
+        self.assertTrue(evidence['retained_handle_live_after_query'])
+        self.assertLessEqual(len(json.dumps(evidence)), 1024)
+        self.assertNotIn('203.0.113.10', json.dumps(evidence))
+        self.assertNotIn('not retained', json.dumps(evidence))
+
+    def test_extra_unreviewed_row_fields_are_not_retained(self):
+        value = row(protocol='udp', remote=None, state='None', unrelated_data='must not retain')
+        with self.assertRaises(OwnedSocketViolation) as caught:
+            checked_owned_sockets('client', Adapter([value]), object())
+        self.assertEqual(set(caught.exception.evidence['socket']), {'protocol','address','port','state','remote'})
+        self.assertNotIn('must not retain', json.dumps(caught.exception.evidence))
+
+    def test_exit_after_query_prevents_attribution_without_passing_guard(self):
+        with self.assertRaisesRegex(RuntimeError, 'attribution unavailable') as caught:
+            checked_owned_sockets('client', Adapter([row(address='0.0.0.0')], exited=True), object())
+        self.assertNotIsInstance(caught.exception, OwnedSocketViolation)
+
+    def test_unbound_role_is_rejected(self):
+        with self.assertRaisesRegex(RuntimeError, 'retained identity unavailable'):
+            checked_owned_sockets('unowned', Adapter([row(address='0.0.0.0')]), object())
+
+    def test_malformed_or_oversized_diagnostics_stop(self):
+        for value in [row(address='x'*46), row(address='0.0.0.0', port=-1), row(address='0.0.0.0', state='x'*17)]:
+            with self.subTest(row=value), self.assertRaises(RuntimeError):
+                socket_contract([value])
+
+    def test_success_returns_only_supplied_owned_rows(self):
+        values = [row()]
+        self.assertIs(checked_owned_sockets('client', Adapter(values), object()), values)
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
