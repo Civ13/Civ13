@@ -84,7 +84,13 @@ python tests/winter_crops/assets.py --crop plump_helmet --preview /tmp/plump-pre
 
 The tests execute narrowly translated production water/site predicates and inspect
 source/asset contracts; they do not substitute for DreamMaker or native gameplay.
-The existing extracted outdoor/lifecycle fixtures are updated for the new default
-field and seed art, but remain native unrun. Before gameplay acceptance, verify
-seed foraging, sowing/blocked sowing, watering, full winter/storm growth, harvesting,
-edible consumption, soil exhaustion, overmaturity, storage decay and save/load.
+The older extracted outdoor/lifecycle fixtures remain native unrun. A separate
+Linux BYOND 516.1688 one-shot tested exact crop commit
+`8070d5cbe26c39c42d6bf5ce132d16f7cc3768e0`: five clean compilations and seven
+native phases passed, including direct crop/food paths, frozen scalar and partial
+food persistence, and four causal controls. See the
+[exact-source evidence and limits](../tests/winter_crops/README.md#exact-source-native-acceptance).
+
+This does not establish ordinary crop callback restoration, natural growth/decay
+cadence, full winter food balance, connected-client interaction or full-world
+save/load. Those remain gameplay acceptance work, not implied by this result.
