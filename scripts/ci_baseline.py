@@ -38,6 +38,8 @@ SUITES = {
         'tests/persistence_year/', 'tests/world_save/', 'code/modules/persistence/', 'code/setup.dm')},
     'evidence': {'files': ('tests/test_game_evidence.py',), 'paths': (
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
+    'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
+        'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

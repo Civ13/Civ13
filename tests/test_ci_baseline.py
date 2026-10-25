@@ -112,6 +112,13 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
                          {'policy', 'bootstrap', 'progress', 'research'})
 
+    def test_hub_status_inputs_select_only_reviewed_offline_contracts(self):
+        self.assertEqual(ci.SUITES['hub_status']['files'], ('tests/test_hub_status.py',))
+        for path in ('code/world.dm', 'config/config.txt', 'tests/test_hub_status.py'):
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'hub_status'})
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+
     def test_modified_tests_and_helpers_are_affected_without_introduced_test_admission(self):
         for path, name in (('tests/ping_scheduler/test_resume.py', 'ping'),
                            ('tests/ping_scheduler/helper.py', 'ping'),
