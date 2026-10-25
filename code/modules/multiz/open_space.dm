@@ -66,12 +66,19 @@ var/process/open_space/OS_controller = null
 var/list/sky_drop_map = list()
 
 /turf/sky/Entered(var/atom/movable/mover)
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(persistence_area_registry_blocked()) return
+	var/datum/persistence_area_registry_epoch/registry_epoch = persistence_area_epoch
+#endif
 	if (isobserver(mover))
 		return
 	if (locate_dense_type(contents, /obj/structure))
 		return ..(mover)
 	else
 		..(mover)
+#ifdef CIV13_ZONE_PERSISTENCE
+		require_persistence_area_snapshot(registry_epoch)
+#endif
 		if (locate(/obj/covers) in contents)
 			return
 		var/area/caribbean/no_mans_land/sky/A = get_area(src)
@@ -87,21 +94,42 @@ var/list/sky_drop_map = list()
 					if (locate_dense_type(contents, /obj/structure/wild/tree) in T)
 						continue
 					mover.forceMove(T)
+#ifdef CIV13_ZONE_PERSISTENCE
+					require_persistence_area_snapshot(registry_epoch)
+#endif
 		else
+
+#ifdef CIV13_ZONE_PERSISTENCE
+			require_persistence_area_snapshot(registry_epoch)
+#endif
 			if (A.allow_area_subtypes)
 				var/area/AA = A.landing_area
 				for (AA in area_list)
 					if (istype(AA, A.landing_area))
-						var/turf/newloc = pick((AA.get_turfs()))
+						var/list/landing_turfs = AA.get_turfs()
+#ifdef CIV13_ZONE_PERSISTENCE
+						require_persistence_area_snapshot(registry_epoch)
+#endif
+						var/turf/newloc = pick(landing_turfs)
 						if (!mover.persistence_set_loc(newloc))
 							return
+#ifdef CIV13_ZONE_PERSISTENCE
+						require_persistence_area_snapshot(registry_epoch)
+#endif
 						sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 						break
 			else
 				var/area/AA = A.landing_area
-				var/turf/newloc = pick((AA.get_turfs()))
+				var/list/landing_turfs = AA.get_turfs()
+#ifdef CIV13_ZONE_PERSISTENCE
+				require_persistence_area_snapshot(registry_epoch)
+#endif
+				var/turf/newloc = pick(landing_turfs)
 				if (!mover.persistence_set_loc(newloc))
 					return
+#ifdef CIV13_ZONE_PERSISTENCE
+				require_persistence_area_snapshot(registry_epoch)
+#endif
 				sky_drop_map["[mover.x],[mover.y],[mover.z]"] = get_turf(mover)
 
 		if (isliving(mover))

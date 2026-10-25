@@ -42,6 +42,8 @@ def make_plan(event, configured, head, tagged_head):
             or not isinstance(tag, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._/-]{0,199}', tag)
             or '..' in tag or not SHA.fullmatch(head) or tagged_head != head):
         raise ValueError('Release identity, publication state or exact tag commit is invalid.')
+    if tag.lower().startswith('byond-toolchain-cache-'):
+        raise ValueError('BYOND toolchain cache releases are not launcher releases.')
     configured_version = configured.get('version')
     if configured.get('schema') != 1:
         raise ValueError('Invalid launcher version configuration.')

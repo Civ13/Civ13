@@ -16,7 +16,8 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
       - name: Compile full game with pinned BYOND
-        run: sudo bash scripts/travis_pre_byond.sh
+        # This held legacy fixture is intentionally independent of the active pin.
+        run: sudo bash scripts/travis_pre_byond.sh --legacy-fixture-5161681
       - name: Run bounded train regressions
         shell: bash
         run: |

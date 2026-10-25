@@ -66,7 +66,7 @@ public static class Program {
                     bin = candidate;
                     break;
                 }
-                if (bin == null) throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
+                if (bin == null) throw new IOException("Existing verified BYOND " + RequiredByond().Version + " client missing; this local path never installs it.");
                 var start = LocalDreamDaemon.Prepare(receipt, bin, root);
                 Directory.CreateDirectory(root);
                 using var process = Process.Start(start) ?? throw new IOException("BYOND client did not start.");

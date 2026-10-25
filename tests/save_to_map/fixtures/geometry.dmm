@@ -1,0 +1,15 @@
+"aa" = (/obj/effect/landmark{name = "JoinLateCivilian"},/turf/floor/wood,/area/caribbean/dark)
+"ab" = (/obj/structure/bed/chair{dir = 1; pixel_x = -2; pixel_y = 3},/obj/structure/bed/chair{dir = 8; pixel_x = 2; pixel_y = -3},/turf/floor/wood,/area/caribbean/dark)
+"ac" = (/obj/structure/bed/chair{dir = 4; pixel_x = 0; pixel_y = 0},/turf/floor/wood,/area/caribbean/dark)
+"ad" = (/turf/floor/wood,/area/caribbean/dark)
+"ae" = (/turf/wall/iron,/area/caribbean/dark)
+
+(1,1,1) = {"
+aeadac
+aaadad
+"}
+
+(1,1,2) = {"
+adaeab
+adadad
+"}

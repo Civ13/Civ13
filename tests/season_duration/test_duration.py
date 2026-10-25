@@ -83,11 +83,16 @@ class DurationTests(unittest.TestCase):
         self.assertEqual(body(self.source, signature), body(old, signature))
         for relative in ("code/modules/admin/verbs/weather.dm", "code/processes/abandoned_items.dm",
                          "code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm",
-                         "code/modules/persistence/durable_world.dm",
                          "code/game/objects/map_metadata/nomads/nomads.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT)
             self.assertEqual((ROOT / relative).read_text(), without_season_snow(before.decode())[0], relative)
+        # Durable topology may evolve; duration owns only the saved timer schema.
+        relative = "code/modules/persistence/durable_world.dm"
+        old_world = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
+        current_world = (ROOT / relative).read_text()
+        self.assertEqual(body(current_world, "/proc/durable_weather_schema()"),
+                         body(old_world, "/proc/durable_weather_schema()"))
         # Weather selection can evolve independently. Keep this duration check
         # scoped to its startup cadence/defaults; weather_policy checks RNG parity.
         relative = "code/processes/weather.dm"

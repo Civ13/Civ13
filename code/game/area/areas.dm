@@ -51,7 +51,11 @@
 
 	..()
 
-	area_list |= src
+	persistence_register_area(src)
+
+/area/Destroy()
+	persistence_unregister_area(src)
+	return ..()
 
 /area/proc/get_turfs()
 	. = contents.Copy()

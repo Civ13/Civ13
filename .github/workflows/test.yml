@@ -61,9 +61,12 @@ on:
 permissions:
   contents: read
 
+# Deliberate literal projection of tools/byond/version.json: top-level env cannot
+# read a checkout file. The always-run offline pin test rejects manifest drift.
+# This does not select or expand any native fixture coverage.
 env:
   BYOND_MAJOR: "516"
-  BYOND_MINOR: "1681"
+  BYOND_MINOR: "1688"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -73,6 +76,34 @@ jobs:
       build_prefix: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+  baseline:
+    needs: changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/selection
+      - name: Run required bounded offline baseline
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+        run: python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --output .ci/baseline
+      - name: Retain offline commands, counts, logs and skips
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/baseline/
+          retention-days: 7
+          if-no-files-found: error
   evidence-checker:
     needs: changes
     runs-on: ubuntu-latest
@@ -82,10 +113,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Verify noninteractive BYOND bootstrap commands offline
-        run: python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v
-      - name: Test serializer profiling source contracts
-        run: python3 -B tests/world_save/test_progress_sources.py -v
+      - name: Test synthetic static-source export core offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_to_map')
+        run: python3 -I -B -m unittest discover -s tests/save_to_map -p 'test_*.py' -v
+      - name: Test optional geographic elevation offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/elevation')
+        run: python3 -B -m unittest discover -s tests/elevation -v
+      - name: Check zone and spawn persistence contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/zone_persistence')
+        run: python3 -B -m unittest discover -s tests/zone_persistence -v
       - name: Prepare roof-area recovery fixture offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
         run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
@@ -202,6 +238,10 @@ jobs:
           python3 scripts/check-outdoor-bootstrap.py
 
   extraction-instances:
+    # Historical native fixture contract; not 516.1688 runtime acceptance.
+    env:
+      BYOND_MAJOR: "516"
+      BYOND_MINOR: "1681"
     needs: changes
     if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)
     runs-on: ubuntu-22.04
@@ -249,6 +289,7 @@ jobs:
 
   # Existing game compilation gate.
   build:
+    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational build' || 'build' }}
     needs: changes
     if: always() && !cancelled()
     # The type of runner that the job will run on
@@ -261,26 +302,74 @@ jobs:
           SELECTION_RESULT: ${{ needs.changes.result }}
           GAME_SELECTION: ${{ needs.changes.outputs.game }}
           EXTENSIVE_SELECTION: ${{ needs.changes.outputs.extensive }}
+          GATING_SELECTION: ${{ needs.changes.outputs.gating }}
         run: |
           test "$SELECTION_RESULT" = success
           case "$GAME_SELECTION" in true|false) ;; *) exit 1 ;; esac
           case "$EXTENSIVE_SELECTION" in true|false) ;; *) exit 1 ;; esac
+          case "$GATING_SELECTION" in 0|1) ;; *) exit 1 ;; esac
       - name: Explain compilation skip
         if: needs.changes.outputs.game != 'true'
         run: echo 'Game compilation skipped by change and build-prefix selection.'
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        if: needs.changes.outputs.game == 'true'
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/selection
+      - name: Read reviewed BYOND archive cache identity
+        id: byond_archive
         if: needs.changes.outputs.game == 'true'
-        run: sudo bash ./scripts/travis_pre_byond.sh
+        run: echo "key=$(python3 -B scripts/byond_toolchain.py field linux-cache-key)" >> "$GITHUB_OUTPUT"
+      - name: Restore exact BYOND archive only
+        id: byond_cache
+        if: needs.changes.outputs.game == 'true'
+        uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/civ13-byond-archives
+          key: ${{ steps.byond_archive.outputs.key }}
+          # No restore prefixes or shared installed-tree cache.
+      - name: Compile selected exact-head game
+        id: compile
+        if: needs.changes.outputs.game == 'true'
+        timeout-minutes: 15
+        env:
+          BYOND_ARCHIVE_SOURCE: repository-release
+          BYOND_ARCHIVE_CACHE: ${{ runner.temp }}/civ13-byond-archives
+        run: |
+          mkdir -p .ci/compile
+          bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
+
+      - name: Save verified BYOND archive after successful compilation
+        if: needs.changes.outputs.game == 'true' && steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ${{ runner.temp }}/civ13-byond-archives
+          key: ${{ steps.byond_archive.outputs.key }}
+
+      - name: Record compilation outcome and source receipts
+        if: always()
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          COMPILE_OUTCOME: ${{ steps.compile.outcome }}
+        run: python3 -B scripts/ci_baseline.py compile --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --outcome "$COMPILE_OUTCOME" --output .ci/compile/compile.json
+      - name: Retain compiler diagnostics and source receipts including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/compile/
+          retention-days: 7
+          if-no-files-found: error
 
       - name: Verify synthetic saved-roof recovery and two defect controls
         id: roof_native
@@ -1818,3 +1907,56 @@ jobs:
           name: wood-ash-compost-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/wood-ash-compost/
           retention-days: 7
+
+
+  ci-required:
+    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}
+    if: always()
+    needs: [changes, baseline, evidence-checker, build, extraction-instances]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Retain dependency job outcomes before validating artifacts
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: |
+          mkdir -p .ci/aggregate
+          python3 -c 'import json,os; from pathlib import Path; Path(".ci/aggregate/jobs.json").write_text(json.dumps(json.loads(os.environ["CI_NEEDS"]), indent=2))'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/selection
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/baseline
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .ci/compile
+      - name: Require selected jobs and exact-source execution receipts
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_NEEDS: ${{ toJSON(needs) }}
+          EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
+          GATING_SELECTION: ${{ needs.changes.outputs.gating }}
+        run: python3 -B scripts/ci_baseline.py aggregate --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --baseline .ci/baseline/baseline.json --compile-receipt .ci/compile/compile.json --output .ci/aggregate/aggregate.json
+      - name: Summarize explicit execution and skip meanings
+        if: always()
+        run: |
+          echo 'The aggregate requires successful selection, offline execution receipts, and selected compiler/job outcomes. A documentation compile skip is not a compiler or native runtime pass. Inspect the ci-* artifacts for exact head/base, commands, counts, fallback and skip reasons.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain aggregate verdict and dependency outcomes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-aggregate-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/aggregate/
+          retention-days: 7
+          if-no-files-found: error

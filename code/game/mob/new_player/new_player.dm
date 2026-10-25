@@ -1181,6 +1181,15 @@ var/global/redirect_all_players = null
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
 	lobby_join_trace("spawn_entered", "none")
+	// Durable Nomads maps use the job's named registry. Deny before body/mind
+	// creation if an authoritative restore deliberately removed that group.
+	if(persistence_spawns_authoritative && map && map.uses_durable_metadata())
+		var/datum/job/saved_job = job_master.GetJob(rank)
+		var/list/saved_destinations = saved_job ? latejoin_turfs[saved_job.spawn_location] : null
+		if(!saved_destinations || !saved_destinations.len)
+			lobby_join_trace("spawn_denied", "saved_spawn_missing")
+			to_chat(src, SPAN_WARNING("No saved spawn destination exists for this job. Ask an administrator to place one."))
+			return FALSE
 	if (lobby_join_active && !lobby_join_admission_current())
 		lobby_join_trace("spawn_denied", "admission_changed")
 		return FALSE
