@@ -119,7 +119,7 @@ discovery admits future test files automatically.
 | ID | Reviewed files/effects | Admission |
 |---|---|---|
 | policy | Four named `test_ci_*.py` files; temporary Git repos, mocked outcomes, source reads | Always |
-| bootstrap | `test_byond_bootstrap.py`; Bash syntax, stub sudo and compiler shell functions only | Always |
+| bootstrap | `test_byond_bootstrap.py` and `test_byond_toolchain.py`; Bash syntax, stub commands, strict pin validation and injected archive/receipt controls only | Always |
 | progress | `world_save/test_progress_sources.py`; AST dispatch, source preparation and temporary files | Always |
 | research | `research_scheduler/test_resume.py`; restricted source traces and one immutable `git show` | Research source/shared scheduler or suite/helper edits |
 | ping | `ping_scheduler/test_resume.py`; restricted source traces and one immutable `git show` | Ping/shared process source or suite/helper edits |
@@ -203,13 +203,19 @@ does not expand or independently certify each legacy native fixture's oracle;
 inspect those existing runner artifacts when admitted. Branch protection is
 unchanged; adopting this aggregate as a required protection is an owner decision.
 
-The hosted bootstrap keeps BYOND 516.1681, resolves paths from its own script,
+The hosted bootstrap reads the active BYOND target from the central manifest,
+resolves paths from its own script,
 uses `pipefail` plus the zero-error/zero-warning summary, and bounds package,
 download, install, catalog and compiler stages. The compiler step has a 15-minute
 limit. It uses `libgcc-s1:i386`, matching the existing hosted standalone lane.
-The mirror archive's observed SHA-256 is retained for diagnostics only. There is
-no independently trusted checksum in this patch, so download authenticity remains
-unverified. Do not promote an observed mirror digest into a trusted pin.
+The active job explicitly selects the reviewed community mirror and verifies its
+archive against the unchanged previously observed official hash/size. Archive-only
+cache keys include OS/version/hash, without prefix restores. Hits are verified
+before fresh extraction and still require actual compilation. Cache metadata
+preserves official/community upstream provenance and is not authenticated history.
+Compiler and aggregate receipts reject missing/mismatched acquisition records.
+Observed official hashes establish exact bytes, not vendor-authenticated checksums.
+Historical manual native fixture lanes keep their explicit 516.1681 contract.
 
 Cloud-only workers run the inspected offline tests and syntax checks available
 to them, recording unavailable local native checks as `not_run`. After review and
@@ -234,3 +240,8 @@ world-save, restart-transaction, lighting recovery, linked-building and continuo
 suites together, including their mutation controls. It does not select unrelated extensive regressions. The suites
 retain native logs as artifacts; fixture success is separate from full-map
 save/reboot/recovery and public supervisor acceptance.
+
+The default compiler target now comes from `tools/byond/version.json` (516.1688);
+selected success receipts require the matching installed-version record and clean
+compiler banner. Historical native fixture lanes remain explicit 516.1681
+exceptions. See [the upgrade disposition and acceptance matrix](byond-5161688.md).

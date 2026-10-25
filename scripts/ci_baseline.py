@@ -15,6 +15,9 @@ import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+_toolchain_spec = importlib.util.spec_from_file_location('ci_byond_toolchain', ROOT / 'scripts/byond_toolchain.py')
+toolchain = importlib.util.module_from_spec(_toolchain_spec)
+_toolchain_spec.loader.exec_module(toolchain)
 POLICY_FILES = tuple('tests/' + name for name in (
     'test_ci_selection.py', 'test_ci_regression_policy.py',
     'test_ci_build_prefix.py', 'test_ci_baseline.py'))
@@ -22,7 +25,7 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
-    'bootstrap': {'files': ('tests/test_byond_bootstrap.py',), 'always': True, 'paths': ()},
+    'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
     'research': {'files': ('tests/research_scheduler/test_resume.py',), 'paths': (
         'tests/research_scheduler/', 'code/processes/research_tree.dm',
@@ -250,11 +253,27 @@ def compile_receipt(plan, outcome, output):
     status = 'passed' if outcome == 'success' and selected else 'failed' if selected else 'skipped'
     if not selected and outcome != 'skipped':
         status = 'failed'
+    requirement = None
+    toolchain_error = None
+    acquisition = None
+    try:
+        requirement = toolchain.load()
+        if selected and outcome == 'success':
+            if (directory / 'byond-version.txt').read_text().strip() != requirement['version']:
+                raise ValueError('Installed compiler version receipt differs from active requirement')
+            toolchain.compiler_log((directory / 'compiler.log').read_text(), requirement['version'])
+            acquisition = toolchain.read_download_receipt(directory / 'byond-download.json', requirement, 'linux')
+    except (OSError, ValueError) as error:
+        status = 'failed'
+        toolchain_error = str(error)[:300]
     receipt = dict(schema_version=1, kind='compile', status=status, selected=selected,
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
                    selection_sha256=digest(plan), step_outcome=outcome,
-                   reason=plan['compile']['reason'], toolchain='BYOND 516.1681',
-                   archive_authenticity='Unverified: observed digest is diagnostic provenance only')
+                   reason=plan['compile']['reason'],
+                   toolchain='BYOND ' + requirement['version'] if requirement else None,
+                   toolchain_error=toolchain_error,
+                   acquisition=acquisition,
+                   archive_authenticity=requirement['integritySource'] if requirement else 'Unavailable')
     write_json(output, receipt)
     return 1 if status == 'failed' else 0
 
@@ -265,6 +284,14 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected):
         selection_eligibility(plan)
     except ValueError as error:
         errors.append(str(error))
+    if plan['compile']['selected']:
+        requirement = toolchain.load()
+        if compile_run.get('toolchain') != 'BYOND ' + requirement['version'] or compile_run.get('toolchain_error') is not None:
+            errors.append('Compiler receipt differs from active BYOND requirement')
+        try:
+            toolchain.validate_download_receipt(compile_run.get('acquisition'), requirement, 'linux')
+        except ValueError:
+            errors.append('Missing/invalid exact-source BYOND acquisition receipt')
     required = {'changes', 'baseline', 'evidence-checker', 'build'}
     if extraction_selected:
         required.add('extraction-instances')

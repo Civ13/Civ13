@@ -37,7 +37,15 @@ def fixtures(paths=('README.md',)):
                 status='passed', tests=1, errors=0, failures=0, skipped=0))
     compiler = dict(schema_version=1, kind='compile', status='skipped', selected=False,
                     step_outcome='skipped', reason='Documentation only', **source,
+                    toolchain='BYOND ' + ci.toolchain.load()['version'], toolchain_error=None,
                     selection_sha256=ci.digest(plan))
+    requirement = ci.toolchain.load()
+    archive = requirement['linux']
+    compiler['acquisition'] = dict(version=requirement['version'], platform='linux', url=archive['repositoryRelease']['url'],
+        sha256=archive['sha256'], bytes=archive['bytes'], integritySource=requirement['integritySource'],
+        source='repository-release', requested_source='repository-release', upstream_source='repository-release',
+        upstream_url=archive['repositoryRelease']['url'], cache_key=ci.toolchain.cache_key(requirement, 'linux'), cache_status='miss',
+        repository_release=deepcopy(archive['repositoryRelease']))
     jobs = {name: {'result': 'success'} for name in ('changes', 'baseline', 'evidence-checker', 'build')}
     jobs['extraction-instances'] = {'result': 'skipped'}
     return plan, baseline, compiler, jobs
@@ -269,6 +277,41 @@ class BaselinePolicyTests(unittest.TestCase):
 
 
 class AggregateTests(unittest.TestCase):
+    def test_selected_compilation_rejects_missing_or_wrong_archive_provenance(self):
+        for bad in (None, {}, {'source':'cache'}, {'url':'https://example.com'}):
+            plan, baseline, compiler, jobs = fixtures()
+            plan['compile']['selected'] = True
+            baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+            compiler.update(selected=True, status='passed', step_outcome='success', acquisition=bad)
+            with self.subTest(acquisition=bad):
+                self.assertIn('Missing/invalid exact-source BYOND acquisition receipt', ci.aggregate(plan, baseline, compiler, jobs, False))
+
+    def test_selected_compilation_binds_release_identity_even_with_valid_compiler_outcome(self):
+        plan, baseline, compiler, jobs = fixtures()
+        plan['compile']['selected'] = True
+        compiler.update(selected=True, status='passed', step_outcome='success')
+        baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+        self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
+        for key in compiler['acquisition']['repository_release']:
+            invalid = deepcopy(compiler)
+            invalid['acquisition']['repository_release'][key] = None
+            with self.subTest(key=key):
+                self.assertIn('Missing/invalid exact-source BYOND acquisition receipt',
+                              ci.aggregate(plan, baseline, invalid, jobs, False))
+        invalid = deepcopy(compiler)
+        del invalid['acquisition']['repository_release']
+        self.assertIn('Missing/invalid exact-source BYOND acquisition receipt',
+                      ci.aggregate(plan, baseline, invalid, jobs, False))
+
+    def test_selected_compilation_rejects_missing_or_wrong_toolchain_metadata(self):
+        for label in (None, 'BYOND 516.1681', 'BYOND 516.1689'):
+            plan, baseline, compiler, jobs = fixtures()
+            plan['compile']['selected'] = True
+            baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+            compiler.update(selected=True, status='passed', step_outcome='success', toolchain=label)
+            with self.subTest(label=label):
+                self.assertIn('Compiler receipt differs from active BYOND requirement', ci.aggregate(plan, baseline, compiler, jobs, False))
+
     def test_docs_compile_skip_is_explicit_and_accepted_after_real_baseline(self):
         self.assertEqual(ci.aggregate(*fixtures(), False), [])
 
@@ -344,6 +387,21 @@ class AggregateTests(unittest.TestCase):
                 baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
                 self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
                 self.assertFalse(ci.selection_eligibility(plan)['gating']['eligible'])
+
+    def test_informational_compile_still_requires_exact_byond_acquisition(self):
+        plan, baseline, compiler, jobs = fixtures()
+        plan['action'] = plan['eligibility']['action'] = 'edited'
+        plan['eligibility']['native'].update(eligible=False, reason='Edited native coverage omitted')
+        plan['eligibility']['gating'].update(eligible=False, reason='Edited event is informational')
+        plan['compile']['selected'] = True
+        compiler.update(selected=True, status='passed', step_outcome='success')
+        baseline['selection_sha256'] = compiler['selection_sha256'] = ci.digest(plan)
+        self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
+        for acquisition in (None, dict(compiler['acquisition'], sha256='0' * 64)):
+            with self.subTest(acquisition=acquisition):
+                invalid = dict(compiler, acquisition=acquisition)
+                self.assertIn('Missing/invalid exact-source BYOND acquisition receipt',
+                              ci.aggregate(plan, baseline, invalid, jobs, False))
 
     def test_stale_head_base_run_attempt_and_changed_selection_fail(self):
         for kind in (1, 2):

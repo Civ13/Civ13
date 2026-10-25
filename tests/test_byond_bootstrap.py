@@ -15,11 +15,18 @@ def shell_path(path):
     return '/' + text[0].lower() + text[2:] if os.name == 'nt' else text
 
 class ByondBootstrapTests(unittest.TestCase):
+    def test_unknown_option_exits_before_setup(self):
+        result = subprocess.run([BASH, '--noprofile', '--norc', shell_path(SCRIPT), '--unreviewed-version'],
+                                capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('Unsupported BYOND bootstrap option', result.stderr)
+        self.assertNotIn('Setting up', result.stdout)
+
     def run_package_prefix(self, fail_update=False):
         source = SCRIPT.read_text()
         marker = 'echo "Setting up BYOND."'
         self.assertEqual(source.count(marker), 1)
-        prefix = source.split(marker)[0]
+        prefix = 'set -eo pipefail\n' + source.split('# BEGIN package setup\n')[1].split('# END package setup')[0]
         with tempfile.TemporaryDirectory(prefix='byond-bootstrap-stubs-') as temporary:
             root = Path(temporary)
             # PATH contains only this stub. No sudo, env, apt, dpkg, network or
@@ -60,6 +67,12 @@ exit 0
         subprocess.run([BASH, '-n', shell_path(SCRIPT)], check=True, timeout=5)
         source = SCRIPT.read_text()
         self.assertIn('https://civ13.com/downloads/516.1681_byond_linux.zip', source)
+        self.assertIn('--legacy-fixture-5161681', source)
+        self.assertIn('archive_args=(--platform linux --output pinned.zip --source "${BYOND_ARCHIVE_SOURCE:-official}")', source)
+        self.assertIn('byond_toolchain.py" download "${archive_args[@]}"', source)
+        self.assertIn('--cache-dir "$BYOND_ARCHIVE_CACHE"', source)
+        self.assertIn('byond-download.json', source)
+        self.assertIn('DM compiler version $byond_version', source)
         self.assertIn('timeout -k 5 300 DreamMaker -max_errors 0 civ13.dme 2>&1 | tee result.log', source)
         self.assertIn("grep -q -- '- 0 errors, 0 warnings' result.log", source)
         self.assertNotIn('/home/runner/work/', source)
@@ -80,8 +93,8 @@ exit 0
             with self.subTest(compiler_status=compiler_status, line=line, tee_status=tee_status):
                 # Neither timeout nor a compiler executable is invoked. These
                 # shell functions emit fixed synthetic text and return statuses.
-                stub = ('timeout() { shift 3; "$@"; }\n'
-                        f'DreamMaker() {{ printf "%s\\n" "{line}"; return {compiler_status}; }}\n')
+                stub = ('byond_version=516.1688\ntimeout() { shift 3; "$@"; }\n'
+                        f'DreamMaker() {{ printf "%s\\n" "DM compiler version 516.1688" "{line}"; return {compiler_status}; }}\n')
                 if tee_status:
                     stub += f'tee() {{ cat > /dev/null; return {tee_status}; }}\n'
                 with tempfile.TemporaryDirectory() as temporary:
