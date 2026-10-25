@@ -1,11 +1,10 @@
 """Bounded Linux CI parity; separate from the held Windows grant runner."""
 import argparse
-import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
-import resource
 import signal
 import subprocess
 import sys
@@ -14,9 +13,39 @@ import time
 HERE = Path(__file__).resolve().parent
 DIAGNOSTIC = re.compile(r'\bBUG\b|runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|segmentation|fatal error|infinite loop', re.I)
 MODES = ('parity', 'omit', 'parent', 'eager')
+VERSION = '516.1688'
+
+
+def runtime_module():
+    path = HERE.parents[1] / 'scripts/byond_runtime.py'
+    spec = importlib.util.spec_from_file_location('exclusion_runtime_pin', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def verify_runtime(byond, archive, expected=None):
+    identity = runtime_module().verify_linux(byond, archive)
+    if identity['version'] != VERSION or expected is not None and identity != expected:
+        raise RuntimeError('Pinned 516.1688 runtime identity required; drift refused')
+    return identity
+
+
+def validate_compiler(code, log):
+    if (code or re.findall(r'^DM compiler version[^\r\n]*', log, re.M) != ['DM compiler version ' + VERSION]
+            or not re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M)
+            or DIAGNOSTIC.search(log)):
+        raise RuntimeError('Pinned clean generated-source compilation required')
+
+
+def validate_runtime_banner(log):
+    banners = re.findall(r'^Welcome BYOND![^\r\n]*', log, re.M)
+    if not banners or any(value != 'Welcome BYOND! (5.0 Public Version ' + VERSION + ')' for value in banners):
+        raise RuntimeError('Pinned native runtime banner required')
 
 
 def limits():
+    import resource
     resource.setrlimit(resource.RLIMIT_CPU, (40, 40))
     resource.setrlimit(resource.RLIMIT_AS, (512 * 1024**2, 512 * 1024**2))
     resource.setrlimit(resource.RLIMIT_FSIZE, (16 * 1024**2, 16 * 1024**2))
@@ -56,7 +85,8 @@ def run(command, work, role, deadline):
             receipt.update(returncode=child.returncode, reaped=True)
         receipt['wall_seconds'] = time.monotonic() - started
         (work / (role + '-process.json')).write_text(json.dumps(receipt, indent=2))
-    return (work / (role + '.stdout')).read_text(errors='replace') + (work / (role + '.stderr')).read_text(errors='replace')
+    out = (work / (role + '.stdout')).read_text(errors='replace')
+    return out + ('\n' if out and not out.endswith('\n') else '') + (work / (role + '.stderr')).read_text(errors='replace')
 
 
 def validate_result(mode, result, log):
@@ -84,17 +114,19 @@ def validate_result(mode, result, log):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-archive', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if sys.platform != 'linux':
         parser.error('This separate runner supports Linux only')
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    byond = args.byond_bin.resolve(strict=True)
+    byond = args.byond_bin.absolute()
     compiler, daemon = byond / 'DreamMaker', byond / 'DreamDaemon'
-    binaries = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (compiler, daemon)}
+    identity = verify_runtime(byond, args.byond_archive.absolute())
+    binaries = {name: identity['members'][name]['sha256'] for name in ('DreamMaker', 'DreamDaemon')}
     deadline = time.monotonic() + 180
-    summary = dict(status='incomplete', binaries=binaries, native_execution=False,
+    summary = dict(status='incomplete', binaries=binaries, runtime_identity=identity, native_execution=False,
                    scope='isolated Linux hook parity and controls; no benchmark or deployment', modes={})
     try:
         for mode in MODES:
@@ -104,15 +136,16 @@ def main():
                 command += ['--negative-control', mode]
             run(command, output, mode + '-prepare', deadline)
             work = packet.with_suffix('.sources')
+            verify_runtime(byond, args.byond_archive.absolute(), identity)
             build = run([str(compiler), '-max_errors', '0', 'probe.dme'], work, 'compile', deadline)
-            if '516.1681' not in build or '0 errors, 0 warnings' not in build or DIAGNOSTIC.search(build):
-                raise RuntimeError('Pinned clean generated-source compilation required')
+            validate_compiler(0, build)
+            verify_runtime(byond, args.byond_archive.absolute(), identity)
             summary['native_execution'] = True
             log = run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close',
                        '-trusted', '-log', 'runtime.log'], work, 'daemon', deadline)
             log += (work / 'runtime.log').read_text(errors='replace')
-            if '516.1681' not in log:
-                raise RuntimeError('Pinned native runtime banner required')
+            verify_runtime(byond, args.byond_archive.absolute(), identity)
+            validate_runtime_banner(log)
             if DIAGNOSTIC.search(log):
                 raise RuntimeError('Unexpected native diagnostic; see retained runtime.log')
             result = json.loads((work / 'result.json').read_text())

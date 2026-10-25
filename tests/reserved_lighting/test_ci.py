@@ -28,7 +28,7 @@ class CIAdmission(unittest.TestCase):
     def test_each_control_requires_its_exact_outcome(self):
         with tempfile.TemporaryDirectory() as temp:
             work = Path(temp)
-            (work/'runtime.log').write_text('')
+            (work/'runtime.log').write_text('Welcome BYOND! (5.0 Public Version 516.1688)\n')
             (work/'port-closed.txt').write_text('closed\n')
             result = SimpleNamespace(returncode=0, stdout='', stderr='')
             for name, expected in runner.EXPECTED.items():

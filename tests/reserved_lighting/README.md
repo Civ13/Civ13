@@ -380,9 +380,9 @@ provides no native preflight, platform, measurement, acquisition or runtime gran
 
 The unpublished reconciliation uses master
 `704ebe205bf06c07bcf6460cfa1c3a2e9254a152` without a production-policy delta.
-Measurement sealing and the separate preflight now require 516.1688, while the
-frozen historical Windows and native-correctness runners retain their original
-1681 contracts. This does not rerun or relabel correctness evidence. Exact-head
+Measurement sealing, the separate preflight and the two ordinary Linux CI
+correctness lanes now require 516.1688. The frozen Windows runner retains its
+original 1681 contract. This does not relabel historical correctness evidence. Exact-head
 CI40099748074 at `ab10a6362d3e79bce498695f0c402409d0c07048` already ran and passed
 native exclusion and reserved-lighting parity plus controls under that old tree.
 The separately cited old mall 403 is not that correctness result. Historical
@@ -404,3 +404,13 @@ and eventual compiled packets at the reviewed candidate, then again with actual
 Linux executor paths. Preflight remains one compile and exactly two attribution
 smokes, with the 22-process comparison separately held. No restart, installation,
 image build/pull, dispatch, cgroup change or native execution is authorized here.
+
+The established Linux correctness lanes take the already checked
+`BYOND/pinned.zip` via `--byond-archive` and reuse the central passive verifier.
+They recheck the compiler, daemon and bundled libraries before every native
+launch and after each runtime, reject identity drift and old/mixed banners,
+and retain exact runtime identity metadata. Their fixture/control sets, process
+limits, deadlines, port guards and cleanup are unchanged. Ordinary PR CI may run
+these two lanes; the manual pilot, attribution preflight and 22-process batch
+remain separately held. Archive hashes establish reproducibility, not publisher
+authentication or full i386 dependency/platform acceptance.

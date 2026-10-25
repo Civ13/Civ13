@@ -225,5 +225,15 @@ The October 25 source-only reconciliation advances this whole-file baseline pin
 to master `704ebe205bf06c07bcf6460cfa1c3a2e9254a152`. Its snowfall ownership and
 persistence-zone exclusions remain in both variants; no policy projection or
 unrelated-file exception is added. The historical policy tests and held 1681
-native runner remain unchanged in scope. CI40099748074's actual native pass
+Windows grant runner remain unchanged in scope. CI40099748074's actual native pass
 belongs to earlier `ab10a636`, not native acceptance of this later source tree.
+
+The separate Linux CI runner now requires the central 516.1688 archive through
+`--byond-archive`. It checks all four installed archive members before each
+compiler/daemon launch and after runtime completion, retaining that binding in
+`native-ci.json`. One exact current compiler banner and clean counts are required;
+runtime banners may be duplicated across captured streams but must all match.
+Old/mixed versions, archive/member drift and rewritten identity are rejected.
+The four modes, 180-second aggregate deadline, 40-second child limits, resource
+ceilings, process-group cleanup and result/network/benchmark guards are unchanged.
+Offline metadata/hash tests do not establish native or performance acceptance.
