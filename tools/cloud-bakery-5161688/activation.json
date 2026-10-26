@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "branch": "ci/cloud-native-cadence-5161688-v52-20261026",
+  "message": "ci: one-shot native cadence diagnostic v52 (2026-10-26)",
+  "sole_parent": "3f3dd47f614f4659031a793dc590346f5e4de3e6",
+  "run_attempt": 1
+}

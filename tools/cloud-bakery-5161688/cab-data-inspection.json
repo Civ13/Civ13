@@ -1,0 +1,32 @@
+{
+  "method": "Installed libarchive CAB parser, memory-only data inspection; no inspected binary executed",
+  "cab_bytes": 768036,
+  "cab_sha256": "fcc6cf0966b4853d6fa3d32ab299cde5a9824feaecb0d4f34ea452fb9fd1c867",
+  "files": [
+    {
+      "path": "d3dx9_43.dll",
+      "bytes": 1998168,
+      "sha256": "0b28546be22c71834501f7d7185ede5d79742457331c7ee09efc14490dd64f5f"
+    },
+    {
+      "path": "d3dx9_43_x86.cat",
+      "bytes": 6796,
+      "sha256": "70dcb8f80d45d878003ce58c438ead8c97bb5c5d93b94f6dbd0116b8b8a73ce4"
+    },
+    {
+      "path": "d3dx9_43_x86.inf",
+      "bytes": 779,
+      "sha256": "d125f988976274cbbe55a4c5933dd78346654d91066dd97eced75aa4be53a85e"
+    },
+    {
+      "path": "d3dx9_43_x86_xp.inf",
+      "bytes": 556,
+      "sha256": "673c70ac772c9d0a9aec86efca3c761c1b082295ac1df07a3507d8ac819657f7"
+    },
+    {
+      "path": "JUN2010_d3dx9_43_x86.inf",
+      "bytes": 1628,
+      "sha256": "6b33d32da02f664092d44b05237990f825b4062c105a063badcf978648b5e95b"
+    }
+  ]
+}

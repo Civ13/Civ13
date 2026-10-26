@@ -1,0 +1,37 @@
+      - name: Admit bounded diagnostic artifacts only
+        id: evidence
+        if: always()
+        shell: powershell
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'bakery-evidence'
+          $allowed = @('receipt.json','source-receipt.json','filming-take.json','filming-checks.txt','filming-viewport.txt','filming-stop.txt','bakery-before.png','bakery-after.png','bakery-before.failed-diagnostic.png','bakery-after.failed-diagnostic.png','compiler.stdout.log','compiler.stderr.log','server.stdout.log','server.stderr.log','client.stdout.log','client.stderr.log')
+          $allowed += @('cadence-recording.json','cadence-movement.json')
+          $allowed += @(0..19 | ForEach-Object { 'cadence-{0:D3}.png' -f $_ })
+          $files = @()
+          if (Test-Path -LiteralPath $root) { $files = @(Get-ChildItem -LiteralPath $root -Force) }
+          # The private environment directory is not an artifact and is never uploaded.
+          $files = @($files | Where-Object { $_.Name -ne 'environment' })
+          $engine = Join-Path $env:RUNNER_TEMP 'bakery-engine'
+          foreach ($name in @('acquisition-receipt.json','dependency-receipt.json','acquisition-failure.json')) {
+            $path = Join-Path $engine $name
+            if (Test-Path -LiteralPath $path) { $files += Get-Item -LiteralPath $path }
+          }
+          $allowed += @('acquisition-receipt.json','dependency-receipt.json','acquisition-failure.json')
+          $setup = Join-Path $engine 'directx-evidence'
+          if (Test-Path -LiteralPath $setup) {
+            $setupFiles = @(Get-ChildItem -LiteralPath $setup -Force | Where-Object { $_.Name -ne 'environment' })
+            $files += $setupFiles
+          }
+          $allowed += @('directx-setup-receipt.json','directx.stdout.log','directx.stderr.log')
+          if ($files.Count -eq 0) { exit 0 }
+          $total = 0
+          foreach ($file in $files) {
+            if ($file.PSIsContainer -or $file.Name -notin $allowed -or $file.Length -gt 1048576 -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Unexpected artifact data.' }
+            $total += $file.Length
+          }
+          if ($files.Count -gt 100 -or $total -gt 16777216) { throw 'Artifact size/count bound.' }
+          $out = Join-Path $env:RUNNER_TEMP 'bakery-artifact'
+          if (Test-Path -LiteralPath $out) { throw 'Artifact staging already exists.' }
+          New-Item -ItemType Directory -Path $out | Out-Null
+          foreach ($file in $files) { Copy-Item -LiteralPath $file.FullName -Destination $out }
+          Add-Content -LiteralPath $env:GITHUB_OUTPUT -Value 'ready=true' -Encoding utf8
