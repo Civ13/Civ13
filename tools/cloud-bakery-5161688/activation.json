@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "branch": "ci/cloud-flax-5161688-chapter-a-v48-20261025",
+  "message": "ci: one-shot native flax chapter a v48 (2026-10-25)",
+  "sole_parent": "3f3dd47f614f4659031a793dc590346f5e4de3e6",
+  "run_attempt": 1
+}

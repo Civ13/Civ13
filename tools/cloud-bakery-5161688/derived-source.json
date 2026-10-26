@@ -1,0 +1,25 @@
+{
+  "scope": "source_only_flax_bounded_poll_receipts_and_atomic_terminal_persistence_v48_pending_review",
+  "scene_revision": "9683866a89d2bdc12f8dc7d25444e350583c5483",
+  "engine": "516.1688",
+  "base_adapter_sha256": "4be6d91fe7182eb34c72e9bf9e0c354a88fe5a6bf2a1fcbcf480afd3ef0d3cdc",
+  "changes": {
+    "civ13.dme": "69fa6201b8078d2f41a0598b1b67d37d6e03a16f767c6bd0b988746426a93b0d",
+    "code/controllers/mc/globals.dm": "a66b66a8b5571aa7b3a87aef65c8eac9af6fb761236b7fab6b391debc7cc40cd",
+    "code/game/mob/living/chat_overlay.dm": "b7a792ba0c27a42f13068b9b7e0614174d9912ce96c7967c6e13242edfe9444f",
+    "code/game/mob/mob_movement.dm": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b",
+    "code/modules/admin/ToRban.dm": "1026edab8e3ffdf3b402d3bbb73ec327ea76d14b723922eb4e56fbb82e04fe48",
+    "code/modules/admin/verbs/bot_service.dm": "c6075be86aea81ff7ba72965eb14a3d39bb92b9379a5436d8be9234a164c8676",
+    "code/modules/client/client_procs.dm": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba",
+    "code/modules/client/movement.dm": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "code/modules/error_handler/error_handler.dm": "673092be98d43a15db38228d6b3035e05f22f505706869e288b956f533ed5085",
+    "code/modules/statpanel/statpanel.dm": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db",
+    "code/modules/webhooks/webhooks.dm": "028f3eb8826ece60d9196e52ea5bea4368da5c180f773401b5de5857fa397cd1",
+    "code/processes/python.dm": "1185e881817874efe28313e59b2060d6ca13bebc01dd017ad45d68a08ed2f9e8",
+    "code/setup.dm": "e2bce7ee45d6764c4c39b7e06d73b4d64d904976d6721a388b152596cd6b1ade",
+    "code/world.dm": "54bcc1539942b228588a7e1ab256205673239244cb33acd276485161f2c694c9",
+    "filming/cloud.dmf": "1246aa8a58150af3ff0dad28c01c74819b21a2591f95464483ba27f05a0c22a5",
+    "filming/scene.dm": "ce60df12740625cb3e8d63ba5b3797e29e174194c1a1ba21ca918a74e97d1001",
+    "filming/tree.dmm": "4c6cb319b1bc645b16c038b84a965719accffaa12dc2fff4cd42031807a80bf4"
+  }
+}

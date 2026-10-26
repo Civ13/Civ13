@@ -1,0 +1,20 @@
+"a" = (/turf/floor/dirt,/area/caribbean/forest)
+"b" = (/turf/floor/beach/water,/area/caribbean/forest)
+"c" = (/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/forest)
+"d" = (/turf/floor/grass,/area/caribbean/forest)
+
+(1,1,1) = {"
+ddddddddddddddd
+ddddddddddddddd
+ddddddddddddddd
+ddddddddddddddd
+ddddddddddddddd
+ddddaaaaddddddd
+ddddaabaddddddd
+ddddaaaaddddddd
+ddddddddcdddddd
+ddddddddddddddd
+ddddddddddddddd
+ddddddddddddddd
+ddddddddddddddd
+"}
