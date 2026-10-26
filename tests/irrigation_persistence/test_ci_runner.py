@@ -18,6 +18,33 @@ PIN = '067478b82c7ad9f1b83759a221e6f22080ba865a'
 
 
 class CIRunner(unittest.TestCase):
+    def assert_round_identity_before_save(self, source):
+        startup = source.split('/world/New()\n', 1)[1]
+        identity = '\tgenerate_gameid()\n'
+        self.assertEqual(startup.count(identity), 1)
+        self.assertLess(startup.index(identity), startup.index('\tmap = new'))
+        self.assertLess(startup.index(identity), startup.index('map_storage.Save_World()'))
+        self.assertNotRegex(startup, r'(?m)^\s*(?:global\.)?game_id\s*=')
+
+    def test_fixture_restores_the_bypassed_round_identity_prerequisite(self):
+        source = (ROOT / 'tests/trench_save/probe.dm').read_text(encoding='utf-8')
+        self.assert_round_identity_before_save(source)
+        world = (ROOT / 'code/world.dm').read_text(encoding='utf-8')
+        self.assertIn('/datum/global_init/New()\n\tgenerate_gameid()', world)
+        runner_source = (ROOT / 'tests/trench_save/run.py').read_text(encoding='utf-8')
+        self.assertIn("'/datum/global_init/New()\\n\\treturn\\n'", runner_source)
+
+    def test_round_identity_regression_rejects_omitted_literal_and_late_init(self):
+        source = (ROOT / 'tests/trench_save/probe.dm').read_text(encoding='utf-8')
+        identity = '\tgenerate_gameid()\n'
+        mutants = [source.replace(identity, ''),
+                   source.replace(identity, '\tglobal.game_id = "fake-round-id"\n'),
+                   source.replace(identity, '').replace('\tmap_storage.ClearMap()',
+                                                        identity + '\tmap_storage.ClearMap()')]
+        for mutant in mutants:
+            with self.subTest(source=mutant[:80]), self.assertRaises(AssertionError):
+                self.assert_round_identity_before_save(mutant)
+
     def test_ci_fetches_only_the_exact_baseline_before_tests(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         start = workflow.index('      - name: Verify immutable irrigation baseline and offline contracts')

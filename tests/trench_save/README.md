@@ -49,3 +49,11 @@ Compiler/runtime deadlines remain 120/60 seconds, startup isolation and old
 controls are unchanged, and temporary generated checkout files still retire in
 `finally`. The outer hosted step has a ten-minute limit and retains only its
 synthetic metadata/logs/results, not binaries or savefiles.
+
+The fixture calls the production `generate_gameid()` before map creation and
+saving because the isolated runner bypasses `/datum/global_init/New()`. The
+first 1688 hosted run (40381402743, head 6c7fc425) compiled and started but failed
+the saved-round identity preflight before restoration. That failure is retained;
+it does not establish a channel restoration failure. Offline preparation checks
+reject omitted, literal or late identity initialization. Production saved-world
+identity validation and historical omission controls remain unchanged.

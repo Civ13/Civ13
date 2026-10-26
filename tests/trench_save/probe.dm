@@ -26,6 +26,8 @@
 	del(world)
 	sleep(1)
 /world/New()
+	// The isolated runner bypasses global_init/New(), including round identity.
+	generate_gameid()
 	if(config)
 		config.webhook_can_fire = FALSE
 		config.ToRban = FALSE
