@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- Offline procedural geography -->
+`tools/procedural_maps` generates new offline IR/DMM/sidecar bundles only.
+Run `python3 -I -B tests/procedural_maps/run.py` with a verified interpreter.
+Keep source pins, versioned configs, graph/raster invariants and old golden hashes.
+Abstract supplies and the frozen resource proposal are not native playability;
+no live map, saved world or native engine is read/applied/launched by this tool.
+
 <!-- 2026-10-25: shared hub community links -->
 `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
 WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.

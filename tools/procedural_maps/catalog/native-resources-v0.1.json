@@ -1,0 +1,169 @@
+{
+  "schema": "civ13-native-resource-proposal/1",
+  "proposal_id": "native-resources-v0.1",
+  "source_commit": "067478b82c7ad9f1b83759a221e6f22080ba865a",
+  "status": "FROZEN_SOURCE_BACKED_PROPOSAL_NOT_ADMITTED",
+  "native_interactions_implemented": false,
+  "automatic_abstract_to_native_mapping": false,
+  "entries": [
+    {
+      "abstract": "WOOD",
+      "candidate_native_type": "/obj/structure/wild/tree/live_tree",
+      "declared_density": true,
+      "interaction": "destruction at health <= 0; HARM branch gathering is a distinct operation",
+      "observed_output_references": [
+        {
+          "type": "/obj/item/stack/material/wood",
+          "amount": 7
+        }
+      ],
+      "evidence": [
+        {
+          "path": "code/game/objects/structures/wild.dm",
+          "git_blob": "066f593f429133376970ac98fe9928e6e8cdba4d",
+          "anchor": "/obj/structure/wild/tree/live_tree/try_destroy()",
+          "line": 350,
+          "required_source_fragments": [
+            "if (health <= 0)",
+            "dropwood.amount = 7"
+          ]
+        },
+        {
+          "path": "code/game/objects/structures/wild.dm",
+          "git_blob": "066f593f429133376970ac98fe9928e6e8cdba4d",
+          "anchor": "/obj/structure/wild/tree",
+          "line": 218,
+          "required_source_fragments": [
+            "density = TRUE"
+          ]
+        }
+      ],
+      "unresolved": [
+        "starting-era tools and damage path",
+        "native reach/footprints and tool consumption",
+        "regeneration/season/save behavior",
+        "resource quantity sufficiency for a survival route"
+      ],
+      "native_placement_admitted": false
+    },
+    {
+      "abstract": "STONE",
+      "candidate_native_type": "/obj/structure/wild/rock",
+      "declared_density": false,
+      "interaction": "GRAB intent, do_after 50, flint_amount > 0",
+      "observed_initial_stock": {
+        "flint_amount": 5
+      },
+      "observed_output_references": [
+        {
+          "type": "/obj/item/weapon/flint",
+          "amount_per_success": 1
+        }
+      ],
+      "evidence": [
+        {
+          "path": "code/game/objects/structures/rocks.dm",
+          "git_blob": "99aefaf8164df5a551fa89b06b158256e88b0823",
+          "anchor": "/obj/structure/wild/rock",
+          "line": 2,
+          "required_source_fragments": [
+            "density = FALSE",
+            "var/flint_amount = 5"
+          ]
+        },
+        {
+          "path": "code/game/objects/structures/rocks.dm",
+          "git_blob": "99aefaf8164df5a551fa89b06b158256e88b0823",
+          "anchor": "/obj/structure/wild/rock/attack_hand(var/mob/living/human/H)",
+          "line": 24,
+          "required_source_fragments": [
+            "H.a_intent == I_GRAB",
+            "flint_amount--"
+          ]
+        }
+      ],
+      "unresolved": [
+        "flint is not a generic stone-block resource",
+        "actor reach and exact native quantity/regrowth",
+        "starting-era crafting dependency graph"
+      ],
+      "native_placement_admitted": false
+    },
+    {
+      "abstract": "FOOD",
+      "candidate_native_type": "/obj/structure/wild/junglebush",
+      "declared_density": false,
+      "interaction": "candidate leaf foraging only; not yet a verified common-human food source",
+      "observed_initial_stock": {
+        "leaves": 2
+      },
+      "observed_output_references": [
+        {
+          "type": "/obj/item/stack/material/leaf/fern",
+          "constructor_calls_per_success": 2
+        }
+      ],
+      "evidence": [
+        {
+          "path": "code/game/objects/structures/wild.dm",
+          "git_blob": "066f593f429133376970ac98fe9928e6e8cdba4d",
+          "anchor": "/obj/structure/wild/junglebush",
+          "line": 569,
+          "required_source_fragments": [
+            "density = FALSE",
+            "edible = TRUE",
+            "leaves = 2"
+          ]
+        },
+        {
+          "path": "code/game/objects/structures/wild.dm",
+          "git_blob": "066f593f429133376970ac98fe9928e6e8cdba4d",
+          "anchor": "/obj/structure/wild/junglebush/attackby(obj/item/W as obj, mob/user as mob)",
+          "line": 786,
+          "required_source_fragments": [
+            "new /obj/item/stack/material/leaf/fern(get_turf(src))",
+            "do_after(user, 80, src)"
+          ]
+        }
+      ],
+      "unresolved": [
+        "actual edible item/nutrition and toxicity semantics for starting actor",
+        "attackby/hand/intent dispatch and reach",
+        "sustainable quantity versus abstract FOOD labels"
+      ],
+      "native_placement_admitted": false
+    },
+    {
+      "abstract": "FRESH_WATER_BANK",
+      "candidate_native_type": "/turf/floor/beach/water",
+      "declared_depth_cm": 30,
+      "declared_salty": false,
+      "evidence": [
+        {
+          "path": "code/game/turfs/floor_types.dm",
+          "git_blob": "3b3c83d2082f4f840a598d0fbb54cb3b3132eee8",
+          "anchor": "/turf/floor/beach/water",
+          "line": 275,
+          "required_source_fragments": [
+            "water_level = 30",
+            "salty = FALSE"
+          ]
+        }
+      ],
+      "unresolved": [
+        "drinking safety and vessel/container interaction",
+        "sickness and salinity do not imply potable water",
+        "native movement/reach from bank"
+      ],
+      "native_placement_admitted": false
+    }
+  ],
+  "mandatory_review_gates": [
+    "pinned declarations and inherited fields",
+    "usable actor interaction sites and footprint-aware paths",
+    "tool/intent/era prerequisites",
+    "quantities/regrowth/season/toxicity",
+    "exact native fixture and persistence acceptance before any live use"
+  ],
+  "abstract_scope": "FOOD/WOOD/STONE remain synthetic accessible labels in IR and sidecar; emitter still emits no native supplies"
+}

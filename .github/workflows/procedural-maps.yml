@@ -1,0 +1,36 @@
+name: Offline procedural maps
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - tools/procedural_maps/**
+      - tests/procedural_maps/**
+      - docs/procedural-maps.md
+      - .github/workflows/procedural-maps.yml
+  push:
+    branches: [master]
+    paths:
+      - tools/procedural_maps/**
+      - tests/procedural_maps/**
+      - .github/workflows/procedural-maps.yml
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run explicit offline contracts and CLI round trips
+        run: python -I -B tests/procedural_maps/run.py --report .ci/procedural-maps.json
