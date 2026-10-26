@@ -16,6 +16,10 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    if (args.Length is 1 or 2 && args[0] == "--byond-only") {
+        await ByondDetectionTests.Run(root, args.Length == 2 ? args[1] : null);
+        return 0;
+    }
     if (args.Length == 2 && args[0] == "--pacing-cache-child") return TopicPacingTests.Child(args[1], cached: true);
     if (args.Length == 2 && args[0] == "--pacing-child") return TopicPacingTests.Child(args[1]);
     if (args.SequenceEqual(new[] { "--probe-public" })) {
@@ -35,6 +39,7 @@ try {
         await TopicPacingTests.Run(root);
         return 0;
     }
+    assertions += await ByondDetectionTests.Run(root);
     assertions += await TransportRetryTests.Run(root);
     assertions += await CachedJoinTests.Run(root);
     assertions += await ServerDiscoveryTests.Run(root);
