@@ -227,6 +227,9 @@
 			object = locate(xa,ya,za)
 			var/turf/restored_turf = object
 			restored_turf.activate_reserved_lighting()
+			if (istype(restored_turf, /turf/floor))
+				var/turf/floor/restored_floor = restored_turf
+				restored_floor.irrigation_prepare_load()
 			// Missing fields in legacy/clear-ground saves mean no generated snow.
 			restored_turf.weather_snow = 0
 			restored_turf.snowfall_ground_icon()
@@ -524,6 +527,8 @@
 					var/type = F["type"]
 					if(!ispath(type, /turf))
 						throw EXCEPTION("Invalid turf type at [x],[y],[z]")
+					if(ispath(type, /turf/floor))
+						validate_saved_irrigation(F, version)
 					TICK_CHECK
 			F.cd = "/entries"
 			var/list/entries = F.dir.Copy()
