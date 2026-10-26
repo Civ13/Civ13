@@ -18,12 +18,13 @@ public static class Program {
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
-    public static ByondRequirement RequiredByond() {
+    public static string BundledByond() {
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("byond.json")
             ?? throw new InvalidOperationException("Bundled BYOND requirement missing.");
         using var reader = new StreamReader(stream);
-        return ByondRequirement.Read(reader.ReadToEnd());
+        return reader.ReadToEnd();
     }
+    public static ByondRequirement RequiredByond() => ByondRequirement.Read(BundledByond());
     public static async Task<int> Main(string[] args) {
         try {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
@@ -35,6 +36,11 @@ public static class Program {
                 Channel.Read(BundledChannel()).Validate();
                 RequiredByond().Validate();
                 Console.WriteLine("PASS: embedded client/BYOND manifests and native launcher entrypoint.");
+                return 0;
+            }
+            if (args.SequenceEqual(["--byond-contract"])) {
+                RequiredByond().Validate();
+                Console.WriteLine(BundledByond());
                 return 0;
             }
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
