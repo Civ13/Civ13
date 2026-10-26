@@ -28,6 +28,7 @@ var/human_subtile_diagonal_checks = 0
 			last_x = next_x
 			last_y = next_y
 		human_subtile_diagonal_assert(world.time <= start + 4 + world.tick_lag && H.fixture_human_completions == 1 && H.fixture_living_completions == 1 && !H.human_subtile_transaction && !H.human_subtile_pulse, "diagonal_interval_hooks_cleanup")
+		human_subtile_diagonal_assert(abs(H.glide_size - 4 * ROOT2_FAST) < 0.001 && H.human_subtile_glide_owned, "diagonal_interpolation_matches_physical_interval")
 		human_subtile_fixture_rows += list(list("scene" = "diagonal_[direction]", "rows" = H.fixture_rows))
 		qdel(H)
 
@@ -51,7 +52,7 @@ var/human_subtile_diagonal_checks = 0
 	C.fixture_authorized = TRUE
 	C.fixture_cancel_after = 0
 	C.SelfMove(get_step(C, SOUTH), SOUTH, world.time + 4)
-	// Offset remains 4px modulo a tile; use the actual capsule seam to place at
+	// Offset remains 2px modulo a tile; use the actual capsule seam to place at
 	// alignment for opt-out, just as the existing restoration fixture does.
 	human_subtile_fixture_place(C, 0, 0)
 	human_subtile_diagonal_assert(C.set_human_subtile(FALSE) && C.human_subtile_input_supported(NORTHEAST) && !C.human_subtile_enabled && !C.human_subtile_default_pending, "explicit_optout_survives_input")

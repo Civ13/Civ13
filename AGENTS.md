@@ -1,5 +1,17 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-26: diagonal human movement candidate -->
+The human adapter uses sixteen native 2px pulses per admitted input, bitmask
+diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
+for an eligible input and calls the safe setter; an explicit aligned opt-out
+clears pending initialization. Owned restored offsets may resume; arbitrary
+legacy offsets are not adopted. Native glide/client FPS ownership is runtime-only
+and restored on opt-out, restricted input, logout, body handoff and death.
+tests/human_subtile/run-diagonal.py targets 516.1688 with exact-Git staging and
+a separate executable allowlist; historical helpers remain frozen. Preserve the
+Windows startup-socket rejection rather than weakening its no-socket policy.
+Headless displacement/compile checks never prove DreamSeeker visual smoothness.
+
 <!-- 2026-10-25: shared hub community links -->
 `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
 WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.

@@ -57,6 +57,7 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--compile-only', action='store_true')
     parser.add_argument('--control', choices=('none', 'legacy-split', 'cardinal-arithmetic'), default='none')
     args = parser.parse_args()
     require(args.prepare_only or args.byond_bin, 'Select --prepare-only or --byond-bin')
@@ -96,6 +97,11 @@ def main():
     require(build.returncode == 0 and log.count('DM compiler version 516.1688') == 1 and
             re.search(r'human_subtile.dmb - 0 errors, 0 warnings', log) and not legacy.DIAGNOSTICS.search(log),
             'Current-engine clean compile failed')
+    if args.compile_only:
+        (out / 'compile-accepted.json').write_text(json.dumps(dict(head=manifest['head'], engine='516.1688',
+            compile_passed=True, runtime_executed=False, control=args.control)) + '\n')
+        print('PASS current-engine compile; no runtime launched: ' + manifest['head'])
+        return
     work, binary, artifacts = legacy.prepare_runtime(out, manifest)
     rows = []
     for suite in (('diagonal',) if args.control != 'none' else ('diagonal', 'mining')):
@@ -123,7 +129,7 @@ def main():
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
             require(receipt['checks'] == 42, 'Incomplete existing human regression checks')
-            require(receipt['diagonal_checks'] == (4 if expected_error else 97), 'Incomplete diagonal checks')
+            require(receipt['diagonal_checks'] == (4 if expected_error else 101), 'Incomplete diagonal checks')
         else:
             require(receipt['mining_checks'] == 52, 'Incomplete mining assertions')
             mining = receipt['mining_rows']
