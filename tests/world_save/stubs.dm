@@ -275,6 +275,8 @@ var/list/mutate_on_tick = null
 /map_storage/proc/validate_zone_reference(id, type)
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)
+	// Legacy fixtures have null state; all topology or malformed values stay held.
+	if(isnull(validated_zone_state)) return
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_captured_world_save(list/candidate)
 	throw EXCEPTION("Topology needs the full-source fixture")

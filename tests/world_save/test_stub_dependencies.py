@@ -46,12 +46,53 @@ class StubDependencies(unittest.TestCase):
     def check_dependencies(self, sources, roof_free=True):
         text = '\n'.join(sources)
         self.check_clear_ground(text)
+        self.project_zone_restore(text)
         self.assertEqual(len(re.findall(r'^var/(?:global/)?list/area_list\s*=', text, re.M)), 1)
         self.assertEqual(len(re.findall(r'^/area/caribbean/roofed\s*$', text, re.M)), 1)
         if roof_free:
             self.assertNotRegex(text, r'(?m)^/obj/roof(?:/|\s|$)')
         self.assertIn('if(!ispath(roof_root)) return // Serializer-only fixtures can omit roofs.', text)
         self.assertIn('throw EXCEPTION("Ambiguous current roof area identity")', text)
+
+    def project_zone_restore(self, text):
+        signature = '/map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)\n'
+        self.assertEqual(text.count(signature), 1)
+        body = text.split(signature,1)[1].split('\n/',1)[0]
+        instructions = [line for line in body.splitlines() if line.strip() and not line.lstrip().startswith('//')]
+        translations = {
+            '\tif(isnull(validated_zone_state)) return': '    if state is None: return',
+            '\tthrow EXCEPTION("Topology needs the full-source fixture")':
+                '    raise RuntimeError("Topology needs the full-source fixture")'}
+        self.assertEqual(len(instructions), 2)
+        self.assertEqual(instructions[0], next(iter(translations)))
+        namespace = {}
+        exec('def restore(state):\n'+'\n'.join(translations[line] for line in instructions), namespace)
+        return namespace['restore']
+
+    def test_zone_restore_null_branch_matches_production_without_admitting_topology(self):
+        production = (ROOT/'code/modules/persistence/zone_topology.dm').read_text()
+        body = production.split('/map_storage/proc/begin_zone_restore(',1)[1].split('\n/map_storage/proc/',1)[0]
+        self.assertIn('\n\tif(!validated_zone_state) return\n', body)
+        self.assertLess(body.index('if(!validated_zone_state) return'), body.index('operation.current(src, "load")'))
+        restore = self.project_zone_restore((FIXTURE/'stubs.dm').read_text())
+        self.assertIsNone(restore(None))
+        for state in ({'schema':2,'zones':[{'id':'zone:fixture:1'}]}, [], {}, [None], {'schema':'bad'}, 0, False, '', 'malformed', object()):
+            with self.subTest(state=repr(state)), self.assertRaisesRegex(RuntimeError, '^Topology needs the full-source fixture$'):
+                restore(state)
+        self.spawn.assert_not_called()
+
+    def test_zone_adapter_missing_guard_unconditional_success_and_missing_refusal_are_rejected(self):
+        text = (FIXTURE/'stubs.dm').read_text()
+        signature = '/map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)\n'
+        head, rest = text.split(signature,1)
+        body, tail = rest.split('\n/',1)
+        for changed in (body.replace('\tif(isnull(validated_zone_state)) return\n',''),
+                        body.replace('isnull(validated_zone_state)','!validated_zone_state'),
+                        body.replace('\tthrow EXCEPTION("Topology needs the full-source fixture")','\treturn'),
+                        body+'\n\treturn'):
+            with self.subTest(), self.assertRaises((AssertionError,KeyError)):
+                self.project_zone_restore(head+signature+changed+'\n/'+tail)
+        self.spawn.assert_not_called()
 
     def check_clear_ground(self, text):
         self.assertEqual(text.count('/turf/var/weather_snow = 0\n'), 1)
