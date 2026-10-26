@@ -14,6 +14,23 @@
 	set name = "Smell"
 	set category = null
 	set src in range(0)
+	smell_for(usr)
+
+// Keep the explicit actor when invoked by the secondary action, not ambient usr.
+/obj/item/weapon/reagent_containers/proc/smell_for(mob/user)
+	if (!user || !get_turf(user) || get_turf(user) != get_turf(src))
+		return
+	var/observation = smell_description()
+	if (isnull(observation))
+		return
+	to_chat(user, "<span class='notice'>You can smell [html_encode(observation)].</span>")
+	record_smell_discovery(user, observation)
+
+// Subtypes opt in only for information the Smell action actually disclosed.
+/obj/item/weapon/reagent_containers/proc/record_smell_discovery(mob/user, observation)
+	return
+
+/obj/item/weapon/reagent_containers/proc/smell_description()
 	var/list/tastes = list() //descriptor = strength
 	var/list/out = list()
 	var/total_taste = FALSE
@@ -49,7 +66,7 @@
 			else if (percent <= 15)
 				continue
 			out.Add("[size][tastes[i]]")
-	to_chat(usr, "<span class='notice'>You can smell [english_list(out,"something indescribable")].</span>") //no taste means there are too many tastes and not enough flavor.)
+	return english_list(out, "something indescribable")
 
 /obj/item/weapon/reagent_containers/secondary_attack_self(mob/living/human/user)
 	if(user.a_intent == I_HARM)
@@ -70,7 +87,7 @@
 			playsound(src,'sound/effects/Splash_Small_01_mono.ogg',50,1)
 			to_chat(user, "<span class='notice'>You spill \the [src] into the tile in front of you.</span>")
 	else
-		smell()
+		smell_for(user)
 
 /obj/item/weapon/reagent_containers/verb/set_APTFT() //set amount_per_transfer_from_this
 	set name = "Set transfer amount"

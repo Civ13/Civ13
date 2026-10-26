@@ -12758,7 +12758,7 @@
       "name": "Grow a timber tree",
       "file": "code/game/objects/farming.dm",
       "line": 501,
-      "source_commit": "5ab3007a3fd06dcccdee8249e19ec65a7e09064c",
+      "source_commit": "6b075397bd6efab6ad2e6ffcbd7240b865fcc72e",
       "inputs": [
         "/obj/item/stack/farming/seeds/tree"
       ],
@@ -12774,12 +12774,12 @@
         "Forage small bushes with a kitchen knife on Help intent for a chance of tree seeds, or obtain a map-placed tree-seed crate.",
         "Stand beside an empty outdoor ploughed plot under open sky and use one tree-seed portion on it.",
         "Water and feed the seedling through six successful minute-long growth stages. Clear obstructions and wait for a suitable climate and season.",
-        "The seedling becomes an ordinary seasonal tree. Chop the mature tree for seven logs; cutting a seedling only uproots it and returns no logs or seeds."
+        "The seedling becomes an ordinary seasonal tree. Chop the mature tree for seven logs. Uprooting a living or dead seedling requires a shovel or spade (unfold folding tools first) and returns no logs or seeds; knives and hatchets cannot uproot it."
       ],
       "conditions": "One seed portion per successful planting. Outdoor ploughed space must stay clear of roofs, dense objects, living occupants and other crops. Drought and storms can kill seedlings; poor soil may delay growth. Winter pauses development but not water use. Growth progress survives saves; downtime adds no growth.",
       "map_notes": "Seed foraging is random and map-placed crates are not guaranteed. Tree growth requires both a declared biome and season on every map. Existing tree biomes are inherited; seasons are SUMMER, SPRING, FALL, Wet Season and Dry Season.",
       "era": "No additional era restriction established by this procedure.",
-      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+      "status": "source-reviewed proposed shovel-only update; changed uprooting native acceptance pending"
     },
     {
       "name": "Harvest bamboo",

@@ -61,6 +61,29 @@
 	processes.obj.fire()
 	tree_check(!length(processes.obj.current_list) && !length(processes.obj.exceptions), "production object dispatch finishes without exceptions")
 
+/proc/tree_uproot_fixture(mob/living/human/H)
+	var/turf/floor/dirt/ploughed/T = new(locate(6,3,1))
+	var/list/rejected_tools = list(/obj/item/weapon/material/hatchet, /obj/item/weapon/attachment/bayonet, /obj/item/weapon/material/kitchen/utensil/knife, /obj/item/weapon/material/scythe, /obj/item/weapon/foldable_shovel, /obj/item/weapon/foldable_shovel/trench/etool, /obj/item/weapon/material/pickaxe, /obj/item/weapon/material/kitchen/utensil/spoon, /obj/item/weapon/material/part/shovel, /obj/item/weapon/clay/mold/shovel)
+	for (var/test_stage in list(1, 11))
+		for (var/tool_path in rejected_tools)
+			var/obj/structure/farming/plant/tree/P = new(T)
+			P.stage = test_stage
+			P.water = 42
+			P.growth_time_left = 277
+			var/obj/item/weapon/W = new tool_path(H)
+			P.attackby(W, H)
+			tree_check(P && P.loc == T && !P.gc_destroyed && P.stage == test_stage && P.water == 42 && P.growth_time_left == 277 && (P in processing_objects), "nonshovel tool preserves seedling state")
+			qdel(P)
+			qdel(W)
+		for (var/shovel_path in typesof(/obj/item/weapon/material/shovel))
+			var/obj/structure/farming/plant/tree/seedling = new(T)
+			seedling.stage = test_stage
+			var/obj/item/weapon/shovel = new shovel_path(H)
+			seedling.attackby(shovel, H)
+			tree_check((!seedling || (seedling.gc_destroyed && !seedling.loc)) && !(seedling in processing_objects) && !(locate(/obj/structure/farming/plant/tree) in T), "shovel uprooting retires tree processing")
+			tree_check(!(locate(/obj/item/stack/material/wood) in T) && !(locate(/obj/item/stack/material/wood) in H) && !(locate(/obj/item/stack/farming/seeds) in T) && !(locate(/obj/item/stack/farming/seeds) in H) && !(locate(/obj/structure/wild/tree/live_tree) in T), "uprooting returns no wood or seeds")
+			qdel(shovel)
+
 /proc/tree_fixture()
 	tree_fixture_setup()
 	var/turf/floor/dirt/ploughed/T = new(locate(2,2,1))
@@ -70,6 +93,7 @@
 	A.climate = "temperate"
 	new /turf/floor/beach/water(locate(3,2,1))
 	var/mob/living/human/H = new /mob/living/human/tree_tester(locate(1,2,1))
+	tree_uproot_fixture(H)
 	var/obj/item/stack/farming/seeds/tree/S = new(H, 3)
 	T.attackby(S, H)
 	var/obj/structure/farming/plant/tree/P = locate() in T

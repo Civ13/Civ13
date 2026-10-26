@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-25: shared hub community links -->
+`code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
+WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.
+The `hub_status` CI baseline suite tests source-derived HTML offline, not native
+DM execution or public hub rendering. Installing new procedures requires a
+rebuilt world and separately authorized restart; source approval does not activate it.
+
 <!-- 2026-10-24: precipitation-driven generated snow -->
 Ground snow uses weather_snow units on exact ordinary dirt/grass, actual snowfall,
 exposure and get_temp (stick <=0C, melt >2C). Existing winter/snow/ice stays unmarked.

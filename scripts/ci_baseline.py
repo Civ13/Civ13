@@ -25,7 +25,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
-    'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py'), 'always': True, 'paths': ()},
+    'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
+                            'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
     'research': {'files': ('tests/research_scheduler/test_resume.py',), 'paths': (
         'tests/research_scheduler/', 'code/processes/research_tree.dm',
@@ -37,6 +38,8 @@ SUITES = {
         'tests/persistence_year/', 'tests/world_save/', 'code/modules/persistence/', 'code/setup.dm')},
     'evidence': {'files': ('tests/test_game_evidence.py',), 'paths': (
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
+    'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
+        'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

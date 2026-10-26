@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -102,6 +103,34 @@ exit 0
                                              'set -eo pipefail\n' + stub + function + '\ncompile_game'],
                                             cwd=temporary, capture_output=True, text=True, timeout=5)
                 self.assertEqual(result.returncode, expected, result.stderr)
+
+class RetiredInstallerTests(unittest.TestCase):
+    def check_retired(self, command):
+        for arguments in ([], ['516', '1681'], ['516', '1688'], ['--help']):
+            with self.subTest(arguments=arguments), tempfile.TemporaryDirectory(prefix='retired installer ') as temporary:
+                root = Path(temporary)
+                sentinel = root / 'existing-save'
+                sentinel.write_bytes(b'preserve existing data')
+                # No external setup command can be resolved through PATH.
+                # Both retired entrypoints need only their interpreter/builtins.
+                result = subprocess.run([*command, *arguments], cwd=root,
+                                        env={'PATH': '', 'SYSTEMROOT': os.environ.get('SYSTEMROOT', '')},
+                                        capture_output=True, text=True, timeout=5)
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertEqual(result.stdout, '')
+                for text in ('retired; no changes were made', 'tools/byond/version.json',
+                             'docs/local-wsl.md', 'Windows/WSL', 'Debian-compatible Linux',
+                             'not a production-server migration', 'NOT upgraded'):
+                    self.assertIn(text, result.stderr)
+                self.assertEqual(list(root.iterdir()), [sentinel])
+                self.assertEqual(sentinel.read_bytes(), b'preserve existing data')
+
+    def test_shell_entrypoint_fails_without_provisioning_from_other_directory(self):
+        self.check_retired([BASH, '--noprofile', '--norc', shell_path(ROOT / 'INSTALL')])
+
+    def test_python_entrypoint_fails_without_provisioning_from_other_directory(self):
+        self.check_retired([sys.executable, '-I', '-B', str(ROOT / 'INSTALL.py')])
+
 
 if __name__ == '__main__':
     unittest.main()
