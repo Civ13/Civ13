@@ -1,6 +1,7 @@
 """Run production world/metadata persistence on a tiny isolated native world."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,13 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None  # Frozen historical fixtures keep 1681.
+    spec = importlib.util.spec_from_file_location('lighting_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
 
 
 def historical_wound_roof_helpers(loading, existing):
@@ -45,6 +53,7 @@ def historical_wound_roof_helpers(loading, existing):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path, help='Current Linux identity for the selected lighting fixture only')
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--zone-topology', action='store_true',
                         help='Prepare synthetic zone/spawn positive and negative fixtures; native execution is held')
@@ -112,7 +121,10 @@ def main():
         parser.error('Startup diagnostics cannot run persistence mutation controls')
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
+    if args.byond_archive and (args.prepare_only or not args.lighting):
+        parser.error('--byond-archive currently admits only native lighting fixtures')
     root = Path(__file__).resolve().parents[2]
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-durable-world-'))
     prefix = '.durable_world_' + uuid.uuid4().hex
     dme = root / (prefix + '.dme')
@@ -330,15 +342,19 @@ def main():
         (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
         if args.prepare_only:
             return
-        byond = args.byond_bin.resolve(strict=True)
+        byond = args.byond_bin.absolute() if runtime else args.byond_bin.resolve(strict=True)
         compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        if runtime: runtime.before_launch('compile', output)
         build = subprocess.run([str(compiler), '-max_errors', '0', dme.name], cwd=root,
                                capture_output=True, text=True, timeout=180, creationflags=flags)
         build_log = build.stdout + build.stderr
         (output / 'compile.log').write_text(build_log, encoding='utf-8')
-        validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
+        if runtime:
+            runtime.validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
+        else:
+            validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
         (output / 'config').mkdir()
@@ -379,6 +395,7 @@ def main():
             return
         command = [str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
                    '-params', 'profile=' + args.profile, '-log', 'runtime.log']
+        if runtime: runtime.before_launch('daemon', output)
         if args.lighting or args.persistence_year:
             run = run_lighting(command, output, flags)
         else:
