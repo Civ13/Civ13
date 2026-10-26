@@ -101,12 +101,32 @@ closed/refused ports and rejected clients. Packets contain source hashes and
 depend on the retained checkout/assets. Preparation is not compilation or a native
 pass. There is deliberately no execution mode in that tool.
 
-Local native tests are held due to an uncertain movement launch and denied process
-inventory. The existing authorization deadline is 2026-10-24 14:48:30 UTC, and this
-patch does not extend it. After the parent resolves that hold and reviews source
-and containment, native acceptance still needs warning-free BYOND 516.1681
-compilation, the prepared fixture and controls, an independently reviewed bounded
+The original 2026-10-24 packet was prepared under the then-current 14:48:30 UTC
+deadline and a local native hold caused by an uncertain movement launch and denied
+process inventory. That historical packet and its receipts remain unchanged.
+Reconciliation does not lift any native/resource/access or activation hold.
+Current ordinary CI targets BYOND 516.1688; the historical fixture is still unrun
+and must receive a separately reviewed engine/containment adapter before execution.
+Native acceptance still needs the prepared fixture and controls, an independently reviewed bounded
 runner with zero-listener/exit evidence, fresh-process whole-world saves for
 round-v1 and round-v2, actual season-queue transitions, normal wall/roof/support
 destruction, and player screenshots/reproduction steps. No native or graphical
 result is claimed here. Keep balancing in draft review.
+
+## Pinned-master reconciliation (2026-10-26)
+
+The draft incorporates master `99647037c70786a3c3944fcf5ae51b570b377f08`
+without changing construction rates, opt-ins, mode admission or destruction.
+Conflicts retain both the construction and existing season/weather/snow offline
+CI lanes, contributor guidance and all metadata runtime exclusions, including
+elevation and authored weather/season configuration. Existing source and CI
+safeguards remain; no native suite is newly admitted.
+
+Three adjacent season-duration/flow/weather parity tests used whole-file debris
+baselines. They now require and project out only the exact construction observer
+after the unchanged debris increment, then retain their original full-file
+comparison against the same historical revisions. Missing, duplicate, moved or
+changed clock hooks are rejected; unrelated changes remain visible to parity.
+No failing method or historical control was removed. Original failed reconciliation
+logs are retained separately from the repaired checks. See the PR for exact-head
+offline/ordinary-CI receipts; older results do not establish current acceptance.

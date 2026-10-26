@@ -32,3 +32,11 @@ historical runtime fields. It does not yet cover full season queue/terrain work,
 fresh-process world recovery, representative populations or connected clients.
 Those remain explicit parent-review acceptance work. The fixture's direct
 transition helper is an adapted boundary; it does not claim full-game seasons.
+
+`construction_contract.py` permits only the exact observer addition in legacy
+debris-file parity tests. It verifies the original clock body and one unconditional
+construction call before removing that call for comparison; omission/duplication,
+movement and changed-debris controls reject. Historical revisions stay fixed.
+The 2026-10-26 master reconciliation does not run or rewrite the original native
+packet. Current ordinary compilation targets 516.1688; a native adapter and
+separate admission review are still required before running the prepared fixture.

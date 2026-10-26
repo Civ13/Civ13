@@ -7,6 +7,7 @@ import tempfile
 import unittest
 
 from test_decay import ROOT, SOURCE, State, Construction, body
+from construction_contract import CLOCK, HOOK, without_construction_hook
 
 SPEC = importlib.util.spec_from_file_location("construction_prepare", Path(__file__).with_name("prepare.py"))
 PREPARE = importlib.util.module_from_spec(SPEC)
@@ -14,6 +15,17 @@ SPEC.loader.exec_module(PREPARE)
 
 
 class SourceTests(unittest.TestCase):
+    def test_legacy_parity_projection_rejects_missing_duplicate_moved_and_changed_hooks(self):
+        source = (ROOT / "code/processes/abandoned_items.dm").read_text()
+        legacy = without_construction_hook(source)
+        for altered in (source.replace(HOOK, ''), source + HOOK,
+                        source.replace(CLOCK + HOOK, HOOK + CLOCK),
+                        source.replace('abandonment_season_changes++', 'abandonment_season_changes += 2')):
+            with self.subTest(altered=altered[:40]), self.assertRaises(ValueError):
+                without_construction_hook(altered)
+        # Unrelated changes remain visible to the original full-file oracle.
+        self.assertNotEqual(without_construction_hook(source + '// unrelated change\n'), legacy)
+
     def test_main_include_and_scheduler_registration(self):
         self.assertEqual((ROOT / "civ13.dme").read_text().count('code\\processes\\seasonal_construction.dm'), 1)
         self.assertIn("var/process/seasonal_construction/seasonal_construction = null",
