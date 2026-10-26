@@ -111,7 +111,8 @@ class SelectedToolchains(unittest.TestCase):
         self.assertEqual(hashlib.sha256((HERE/'current_runtime.py').read_text().encode()).hexdigest(), REVIEWED_HELPER_SHA256)
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
         normalized = workflow
-        for module in ('test_selected_toolchains.py', 'test_graph_fixture_dependencies.py'):
+        for module in ('test_selected_toolchains.py', 'test_graph_fixture_dependencies.py',
+                       'test_wound_compatibility.py'):
             command = f'          python3 -B -m unittest discover -s tests/world_save -p {module} -v\n'
             self.assertEqual(normalized.count(command), 1)
             normalized = normalized.replace(command, '')
