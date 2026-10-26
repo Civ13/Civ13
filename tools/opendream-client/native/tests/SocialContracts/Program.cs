@@ -83,8 +83,7 @@ internal static class Program {
             Require(Controller.Receive(Envelope(json: json)), "Valid intent was rejected.");
         }
     }
-    private static ByondRequirement Requirement() => new(1, "516.1681",
-        "https://www.byond.com/download/build/516/516.1681_byond.exe", new string('0', 64));
+    private static ByondRequirement Requirement() => Civ13.Launcher.Program.RequiredByond();
 
     private static void Parser() {
         foreach (var key in new[] { "official-1714", "official-1715", "vzg-1714", "vzg-1715" }) {

@@ -205,8 +205,8 @@ Never use an em dash; use "-" instead.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
-- **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. A separate evidence-checker job runs synthetic Python tests without executing the game. The MCP protocol workflow separately tests local tooling on Windows and Linux; it does not run gameplay.
+- **Source BYOND target**: 516.1688 from `tools/byond/version.json`; minimum compiler/save major remain 516.1681/516. The launcher source is 1.0.8; this does not publish its feed or establish native acceptance.
+- **CI** (`.github/workflows/test.yml`): exact-head selection requires the bounded offline baseline and source/acquisition receipts. The default compiler consumes the shared manifest; historical fixture workflows explicitly select 516.1681. No held native runner is authorized by source approval. See `docs/ci-selection.md` and `docs/byond-5161688.md`.
 
 ## Code structure
 
