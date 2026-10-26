@@ -5,6 +5,10 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 
 def main():
@@ -54,17 +58,17 @@ def main():
     byond = args.byond_bin.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-    build = subprocess.run([str(compiler), '-max_errors', '0', 'wrapper.dme'], cwd=output,
+    build = current.run_compiler([str(compiler), '-max_errors', '0', 'wrapper.dme'], cwd=output,
                            capture_output=True, text=True, timeout=120, creationflags=flags)
     compile_log = build.stdout + build.stderr
     (output / 'compile.log').write_text(compile_log, encoding='utf-8')
-    if build.returncode or '0 errors, 0 warnings' not in compile_log or '516.1681' not in compile_log:
+    if build.returncode or '0 errors, 0 warnings' not in compile_log or current.VERSION not in compile_log:
         print(compile_log)
         raise RuntimeError(f'Wrapper compile failed; see {output / "compile.log"}')
     daemon_args = [str(daemon), 'wrapper.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log']
     if not args.roundtrip:
         daemon_args += ['-params', 'wrapper_only=1']
-    runtime = subprocess.run(daemon_args,
+    runtime = current.run_daemon(daemon_args,
                              cwd=output, capture_output=True, text=True, timeout=120,
                              creationflags=flags)
     (output / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')

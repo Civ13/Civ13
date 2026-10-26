@@ -15,9 +15,57 @@ IPC_RUNNER = importlib.util.module_from_spec(IPC_SPEC)
 IPC_SPEC.loader.exec_module(IPC_RUNNER)
 
 
+class CurrentToolchainIdentity(unittest.TestCase):
+    def test_current_runtime_is_bound_to_the_adjacent_reviewed_archive(self):
+        binary = Path('fixture/BYOND/byond/bin/DreamMaker').absolute()
+        with patch.object(RUNNER.current.runtime, 'verify_linux', return_value={'version': '516.1688'}) as verify:
+            RUNNER.current.verify(binary)
+        verify.assert_called_once_with(binary.parent, binary.parent.parents[1] / 'pinned.zip')
+        with patch.object(RUNNER.current.runtime, 'verify_linux', return_value={'version': '516.1681'}):
+            with self.assertRaisesRegex(RuntimeError, 'current manifest'):
+                RUNNER.current.verify(binary)
+
+
 class CompileOnlyBoundary(unittest.TestCase):
+    def setUp(self):
+        identity = patch.object(RUNNER.current, 'verify', return_value={'version': '516.1688'})
+        identity.start()
+        self.addCleanup(identity.stop)
+
+    def test_current_banner_is_exact_unique_and_cannot_accept_historical_evidence(self):
+        clean = 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n'
+        for text in (clean.replace('516.1688', '516.1681'),
+                     clean.replace('516.1688', '516.16880'),
+                     clean + 'DM compiler version 516.1688\n',
+                     clean + 'DM compiler version 516.1681\n',
+                     clean + 'prefix DM compiler version 516.1688\n',
+                     clean + 'warning: hidden\n', clean.replace('0 errors', '1 errors')):
+            with self.subTest(text=text), self.assertRaises(RuntimeError):
+                RUNNER.current.validate_compiler(subprocess.CompletedProcess([], 0, text, ''))
+        with self.assertRaises(RuntimeError):
+            RUNNER.current.validate_compiler(subprocess.CompletedProcess([], 0, clean, 'DM compiler version 516.1688\n'))
+        RUNNER.current.validate_compiler(subprocess.CompletedProcess([], 0, clean, ''))
+
+    def test_current_identity_failure_prevents_any_engine_launch(self):
+        with patch.object(RUNNER.current, 'verify', side_effect=ValueError('wrong archive')):
+            with patch.object(RUNNER.current.subprocess, 'run') as launch:
+                for operation in (RUNNER.current.run_compiler, RUNNER.current.run_daemon):
+                    with self.assertRaisesRegex(ValueError, 'wrong archive'):
+                        operation(['engine'])
+                launch.assert_not_called()
+
+    def test_current_identity_is_rechecked_before_each_engine_phase(self):
+        clean = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings', '')
+        with patch.object(RUNNER.current, 'verify') as identity, patch.object(RUNNER.current.subprocess, 'run', return_value=clean):
+            RUNNER.current.run_compiler(['compiler'])
+            RUNNER.current.run_daemon(['daemon'])
+        self.assertEqual(identity.call_args_list, [unittest.mock.call('compiler'), unittest.mock.call('daemon')])
+
+
+
+
     def test_ipc_returns_before_runtime_and_export(self):
-        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1688\n0 errors, 0 warnings', '')
         with patch.object(sys, 'argv', ['run_ipc.py', '--byond-bin', '.', '--compile-only']):
             with patch.object(IPC_RUNNER.subprocess, 'run', return_value=result) as execute:
                 IPC_RUNNER.main()
@@ -36,7 +84,7 @@ class CompileOnlyBoundary(unittest.TestCase):
 
     def test_mode_returns_before_runtime_and_artifact_copy(self):
         root = Path(__file__).resolve().parents[2]
-        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1688\n0 errors, 0 warnings', '')
         with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:
             RUNNER.equipment(root, Path('compiler'), Path('daemon'), 0, 'mode', compile_only=True)
         self.assertEqual(execute.call_count, 1)
@@ -75,7 +123,7 @@ class CompileOnlyBoundary(unittest.TestCase):
             with self.subTest(log=log, stdout=stdout, stderr=stderr, code=code, result=result):
                 def execute(command, **kwargs):
                     if command[0] == 'compiler':
-                        return subprocess.CompletedProcess(command, 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+                        return subprocess.CompletedProcess(command, 0, 'DM compiler version 516.1688\n0 errors, 0 warnings', '')
                     target = Path(kwargs['cwd'])
                     (target / 'runtime.log').write_text(log)
                     (target / 'result.txt').write_text(result)
@@ -88,7 +136,7 @@ class CompileOnlyBoundary(unittest.TestCase):
                             RUNNER.equipment(root, Path('compiler'), Path('daemon'), 0, 'mode', corpse_release_control=True)
 
     def test_store_returns_before_runtime(self):
-        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1688\n0 errors, 0 warnings', '')
         with patch.object(sys, 'argv', ['run.py', '--byond-bin', '.', '--probe', 'store', '--compile-only']):
             with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:
                 RUNNER.main()
@@ -96,7 +144,7 @@ class CompileOnlyBoundary(unittest.TestCase):
         self.assertIn(execute.call_args.args[0][0].split('/')[-1].split('\\')[-1], ('dm.exe', 'DreamMaker'))
 
     def test_city_pursuit_control_cli_compiles_without_runtime(self):
-        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1688\n0 errors, 0 warnings', '')
         with patch.object(sys, 'argv', ['run.py', '--byond-bin', '.', '--probe', 'city', '--compile-only', '--city-pursuit-negative-control']):
             with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:
                 RUNNER.main()
@@ -105,7 +153,7 @@ class CompileOnlyBoundary(unittest.TestCase):
 
     def test_auxiliary_controls_compile_without_runtime(self):
         root = Path(__file__).resolve().parents[2]
-        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1681\n0 errors, 0 warnings', '')
+        result = subprocess.CompletedProcess([], 0, 'DM compiler version 516.1688\n0 errors, 0 warnings', '')
         for control in ('escrow', 'mail_binding', 'auxiliary_pending', 'home_owner', 'home_graph', 'home_placement', 'home_revision', 'world_stale', 'fresh_incomplete', 'home_admission', 'marker_save', 'home_retire_owner', 'home_retire_partial', 'home_retire_graph', 'home_retire_remove', 'home_retire_restart', 'home_retire_prepare'):
             with self.subTest(control=control):
                 with patch.object(RUNNER.subprocess, 'run', return_value=result) as execute:

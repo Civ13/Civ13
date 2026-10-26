@@ -1,4 +1,4 @@
-"""Offline source sensitivity checks; these do not establish native DM parity."""
+"""Historical packet and reviewed-current-source checks; no native DM parity."""
 import json
 from pathlib import Path
 import re
@@ -22,15 +22,19 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'lighting_reserved', 'lighting_reserved_clearance_enabled')
 
 
-class SourceContractTests(unittest.TestCase):
+class HistoricalSourceContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
-        cls.candidate = (ROOT / PATH).read_text()
+        # Preserve this packet's exact historical semantics and mutation oracles.
+        # Current merged source is independently checked below, never projected
+        # back into this historical packet or described as its native evidence.
+        cls.candidate = subprocess.check_output(['git', 'show',
+            '5aaed0a172aa3baa3fe604096cbbb8a00f519aac:' + PATH], cwd=ROOT, text=True)
 
-    def test_exact_transform_preserves_current_master(self):
+    def test_exact_transform_preserves_historical_master(self):
         validate(self.baseline, self.candidate)
         for kind, count in [('atom', 3), ('turf', 9), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
@@ -52,7 +56,7 @@ class SourceContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             reconstruct_list_baseline(self.baseline)
 
-    def test_current_master_diagnostics_are_preserved_exactly(self):
+    def test_historical_master_diagnostics_are_preserved_exactly(self):
         start = '/map_storage/persistence_runtime_var(key)'
         end = '// Drops the save/load bookkeeping references'
         def diagnostics(source):
@@ -97,7 +101,13 @@ class SourceContractTests(unittest.TestCase):
             transform(self.baseline.replace('/mob/persistence_runtime_var(key)', '/mob/other(key)'))
 
     def run_runner(self, arguments):
+        read_text = Path.read_text
+        def historical_input(path, *args, **kwargs):
+            if path == ROOT / PATH:
+                return self.candidate
+            return read_text(path, *args, **kwargs)
         with patch.object(sys, 'argv', ['run.py'] + arguments), \
+             patch.object(Path, 'read_text', historical_input), \
              patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
              patch.object(resources, 'binary_info', side_effect=AssertionError('Binary query attempted')):
             with self.assertRaises(SystemExit) as exited:
@@ -149,6 +159,48 @@ class SourceContractTests(unittest.TestCase):
                                     '--lease-receipt', str(Path(directory) / 'old-grant.json')])
             self.assertIn('Native execution held', code)
             self.assertIn('old leases invalid', code)
+
+
+class ReviewedCurrentSource(unittest.TestCase):
+    REVIEWED = 'c4585fabaf81e1357054b4527d71d4f3a2d8a0b2'
+
+    @classmethod
+    def setUpClass(cls):
+        cls.reviewed = subprocess.check_output(['git', 'show', cls.REVIEWED + ':' + PATH], cwd=ROOT, text=True)
+        cls.current = (ROOT / PATH).read_text()
+
+    def validate_current(self, source):
+        # Full-file equality includes admitted custody, roof/zone cleanup and
+        # diagnostics. A future production change needs a newly reviewed pin.
+        if source != self.reviewed:
+            raise ValueError('Current runtime exclusions differ from reviewed reconciliation')
+
+    def test_complete_reviewed_source_and_all_exclusion_omissions(self):
+        self.validate_current(self.current)
+        hooks = re.findall(r'^/(?:atom|turf|mob|area|map_storage)/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n|#(?:if[^\n]*|endif)\n)+', self.current, re.M)
+        self.assertEqual(len(hooks), 5)
+        keys = set(re.findall(r'"([a-z_]+)"', '\n'.join(hooks)))
+        for key in (*NEW_KEYS, 'next_animal_retaliation', 'weather_snow_overlay',
+                    'snowfall_ground_index', 'persistence_zone_id', 'restore_policy',
+                    'validated_roof_areas', 'validated_zone_state'):
+            self.assertIn(key, keys)
+        for key in keys:
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.validate_current(self.current.replace('"' + key + '"', '"omitted_runtime_key"', 1))
+
+    def test_complete_guards_parent_order_and_diagnostics_cannot_drift(self):
+        for guard in ('key == "pickaxe_mining_owner" || key == "mining_in_progress"',
+                      'key == "pickaxe_mining_action" || key == "next_animal_retaliation"',
+                      'saving_export_stack.len - 7', 'return ..()'):
+            with self.subTest(guard=guard), self.assertRaises(ValueError):
+                self.validate_current(self.current.replace(guard, 'omitted_guard', 1))
+
+    def test_frozen_historical_helpers_remain_byte_identical(self):
+        for name in ('run.py', 'source_contract.py', 'resources.py', 'probe.dm'):
+            relative = 'tests/exclusion_dispatch/' + name
+            expected = subprocess.check_output(['git', 'show',
+                '5aaed0a172aa3baa3fe604096cbbb8a00f519aac:' + relative], cwd=ROOT)
+            self.assertEqual((ROOT / relative).read_bytes().replace(b'\r\n', b'\n'), expected)
 
 
 if __name__ == '__main__':

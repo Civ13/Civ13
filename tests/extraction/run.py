@@ -7,6 +7,10 @@ import subprocess
 import tempfile
 import re
 import uuid
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 
 def intended_assertion_only(log, expected):
@@ -115,10 +119,10 @@ def main():
                     '#include "tests/extraction/journal_adapters.dm"']
         includes.extend(f'#include "code/modules/1713/extraction/{name}.dm"' for name in shared_sources)
         (target / 'probe.dme').write_text('\n'.join(includes) + '\n', encoding='utf-8')
-        built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
+        built = current.run_compiler([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
                                capture_output=True, text=True, timeout=60, creationflags=flags)
         print(built.stdout + built.stderr)
-        if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
+        if built.returncode or current.VERSION not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
             raise RuntimeError('Pinned compile failed')
         if args.compile_only:
             print('COMPILE ONLY: native assertions and negative controls were not executed')
@@ -128,7 +132,7 @@ def main():
         for phase in phases:
             (target / 'result.txt').unlink(missing_ok=True)
             try:
-                ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'],
+                ran = current.run_daemon([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'],
                                      cwd=target, capture_output=True, text=True, timeout=45, creationflags=flags)
             except subprocess.TimeoutExpired:
                 log_path = target / 'runtime.log'
@@ -409,10 +413,10 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
         generated[0].write_text(source, encoding='utf-8')
         with tempfile.TemporaryDirectory(prefix='civ13-extraction-equipment-') as temp:
             target = Path(temp)
-            built = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])], cwd=root,
+            built = current.run_compiler([str(compiler), '-max_errors', '0', str(generated[0])], cwd=root,
                                    capture_output=True, text=True, timeout=90, creationflags=flags)
             print(built.stdout + built.stderr)
-            if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
+            if built.returncode or current.VERSION not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
                 raise RuntimeError('Pinned equipment compile failed')
             if compile_only:
                 print('COMPILE ONLY: native assertions and negative controls were not executed')
@@ -429,7 +433,7 @@ def equipment(root, compiler, daemon, flags, probe, provenance_control=False, vo
             for phase in phases:
                 (target / 'result.txt').unlink(missing_ok=True)
                 try:
-                    ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
+                    ran = current.run_daemon([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', f'phase={phase}', '-log', 'runtime.log'], cwd=target,
                                          capture_output=True, text=True, timeout=120 if probe in ('mode', 'equipment') else 60, creationflags=flags)
                 except subprocess.TimeoutExpired:
                     log_path = target / 'runtime.log'

@@ -5,6 +5,10 @@ import os
 from pathlib import Path
 import subprocess
 import uuid
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 
 def main():
@@ -21,11 +25,11 @@ def main():
         prefix = root / ('.extraction_catalog_' + uuid.uuid4().hex)
         try:
             prefix.with_suffix('.dme').write_text(module.select_map(source, selection), encoding='utf-8')
-            result = subprocess.run([str(compiler), '-max_errors', '0', prefix.name + '.dme'],
+            result = current.run_compiler([str(compiler), '-max_errors', '0', prefix.name + '.dme'],
                                     cwd=root, capture_output=True, text=True, timeout=90,
                                     creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
             output = result.stdout + result.stderr
-            if result.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
+            if result.returncode or current.VERSION not in output or '0 errors, 0 warnings' not in output:
                 print(output)
                 raise RuntimeError('Catalog compile failed: ' + selection)
             print('PASS: pinned catalog compile ' + selection)

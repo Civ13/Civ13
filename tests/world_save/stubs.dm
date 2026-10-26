@@ -36,6 +36,17 @@ var/obj/map_metadata/map
 var/mob/dview_mob
 var/list/errors = list()
 var/list/clients = list()
+// Minimal serializer worlds have no roof/season workers. Reject use of those
+// unsupported effects instead of pretending to establish their native behavior.
+var/list/area_list = list()
+/area/caribbean/roofed
+	New()
+		throw EXCEPTION("Roof topology requires the production roof fixture")
+/turf/var/weather_snow = 0
+/turf/proc/snowfall_ground_icon()
+	if(weather_snow)
+		throw EXCEPTION("Generated snow requires the production snowfall fixture")
+	return
 var/game_id = "fixture-round"
 var/round_start_time = 0
 var/round_elapsed_offset = 0
@@ -275,6 +286,7 @@ var/list/mutate_on_tick = null
 /map_storage/proc/validate_zone_reference(id, type)
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)
+	if(!validated_zone_state) return
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_captured_world_save(list/candidate)
 	throw EXCEPTION("Topology needs the full-source fixture")
