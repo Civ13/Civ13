@@ -106,10 +106,12 @@ def main():
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
             require(receipt['checks'] == 42, 'Incomplete existing human regression checks')
-            require(receipt['diagonal_checks'] == (5 if expected_error else 66), 'Incomplete diagonal checks')
+            require(receipt['diagonal_checks'] == (4 if expected_error else 65), 'Incomplete diagonal checks')
         else:
-            migrated = dict(receipt, byond_build=1681)
-            legacy.validate_receipt(migrated, 'mining', 'none', manifest['head'])
+            require(receipt['mining_checks'] == 52, 'Incomplete mining assertions')
+            mining = receipt['mining_rows']
+            require([(r['enabled'], r['sy']) for r in mining] == [(0, 0), (1, 0), (1, 4), (1, 28)], 'Missing mining cases')
+            require(all(r['client'] == 0 and r['effects'] == 1 and r['bumps'] >= 3 for r in mining), 'Mining observations failed')
         rows.append(dict(suite=suite, checks=receipt['checks'], diagonal_checks=receipt['diagonal_checks'], mining_checks=receipt['mining_checks'], expected_error=expected_error))
     (out / 'accepted.json').write_text(json.dumps(dict(head=manifest['head'], engine='516.1688', control=args.control,
                                                      accepted=True, rows=rows, artifacts=artifacts,

@@ -79,8 +79,23 @@ var/human_subtile_diagonal_checks = 0
 	qdel(G)
 	var/mob/living/human/subtile_fixture/L = human_subtile_fixture_actor(8, 7)
 	human_subtile_fixture_place(L, 4, 4)
-	human_subtile_diagonal_assert(L.human_subtile_input_supported(SOUTHWEST) && L.human_subtile_enabled && L.step_x == 4 && L.step_y == 4, "owned_restore_default_without_snap")
+	var/savefile/F = new("diagonal-roundtrip.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, L, 1)
+	F.cd = map_storage.entry_path(F, ref)
+	human_subtile_diagonal_assert(!("human_subtile_default_pending" in F.dir), "default_initialization_is_runtime_only")
+	F.Flush()
+	F = null
 	qdel(L)
+	F = new("diagonal-roundtrip.sav")
+	map_storage.clear_bookkeeping()
+	var/mob/living/human/subtile_fixture/loaded = map_storage.Load_Entry(F, ref, starting_loc = locate(8, 7, 1))
+	loaded.after_load()
+	human_subtile_diagonal_assert(!loaded.human_subtile_enabled && loaded.human_subtile_default_pending && loaded.step_x == 4 && loaded.step_y == 4 && !loaded.human_subtile_transaction, "diagonal_codec_restores_both_axes_without_worker")
+	human_subtile_diagonal_assert(loaded.human_subtile_input_supported(SOUTHWEST) && loaded.human_subtile_enabled && loaded.step_x == 4 && loaded.step_y == 4, "owned_restore_default_without_snap")
+	qdel(loaded)
 	var/mob/living/human/subtile_fixture/O = human_subtile_fixture_actor(8, 7)
 	O.bound_width = 16
 	O.human_subtile_input_supported(NORTHEAST)
