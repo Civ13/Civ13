@@ -1,4 +1,9 @@
-"""Production ordinary world-save round trips and strict round-mode omission controls."""
+"""Ordinary world-save controls: historical 516.1681 by default, current Linux CI by opt-in.
+
+The default retains Windows dm.exe/dd.exe support without claiming archive
+identity. --current-linux-toolchain requires Linux and the existing CI layout:
+BYOND/byond/bin/{DreamMaker,DreamDaemon} with BYOND/pinned.zip.
+"""
 import argparse
 import hashlib
 import json
@@ -7,6 +12,12 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
+from z_budget_evidence import validate_compile as validate_historical_compile
 
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
 
@@ -15,12 +26,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--negative-control', choices=('restore', 'preflight', 'integrity'))
+    parser.add_argument('--current-linux-toolchain', action='store_true',
+                        help='Use the central current pin and BYOND/pinned.zip; Linux only. Default retains historical 516.1681.')
     args = parser.parse_args()
+    if args.current_linux_toolchain and sys.platform != 'linux':
+        parser.error('--current-linux-toolchain requires Linux; omit it for the historical 516.1681 runner')
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
     byond = args.byond_bin.resolve(strict=True)
-    compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+    windows = os.name == 'nt' and not args.current_linux_toolchain
+    compiler = byond / ('dm.exe' if windows else 'DreamMaker')
+    daemon = byond / ('dd.exe' if windows else 'DreamDaemon')
     if not compiler.is_file() or not daemon.is_file():
         raise RuntimeError('Missing configured compiler or daemon')
     output = Path(tempfile.mkdtemp(prefix='civ13-round-metadata-'))
@@ -72,8 +88,10 @@ def main():
         process = None
         try:
             with (output / f'{role}-stdio.log').open('w', encoding='utf-8') as stream:
+                if args.current_linux_toolchain:
+                    row['runtime_identity'] = current.verify(command[0])
                 process = subprocess.Popen(command, cwd=output, stdout=stream, stderr=subprocess.STDOUT,
-                                           creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+                                           creationflags=subprocess.CREATE_NO_WINDOW if windows else 0)
                 row['pid'] = process.pid
                 try:
                     process.wait(timeout=120)
@@ -97,14 +115,18 @@ def main():
         return logs
 
     build = owned('compile', [str(compiler), '-max_errors', '0', 'roundtrip.dme'])
-    if '516.1681' not in build or '0 errors, 0 warnings' not in build:
-        raise RuntimeError(f'Pinned clean compilation required: {build}')
+    if args.current_linux_toolchain:
+        current.validate_compiler(subprocess.CompletedProcess([], 0, build, ''))
+    else:
+        validate_historical_compile(0, build, 'roundtrip.dmb')
     owned('daemon', [str(daemon), 'roundtrip.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if actual != expected:
         raise RuntimeError(f'Unexpected round metadata result: {actual!r}; expected {expected!r}')
     (output / 'summary.json').write_text(json.dumps({'scope': __doc__, 'result': actual,
         'negative_control': args.negative_control, 'sources_sha256': hashes, 'processes': processes,
+        'toolchain_mode': 'current-linux' if args.current_linux_toolchain else 'historical-516.1681',
+        'archive_identity_verified': args.current_linux_toolchain,
         'opendream_verified': False, 'rpo_verified': False}, indent=2), encoding='utf-8')
     print(f'PASS: ordinary round metadata {args.negative_control or "positive"}')
 
