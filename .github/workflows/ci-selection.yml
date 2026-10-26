@@ -13,6 +13,8 @@ on:
         type: boolean
         default: false
     outputs:
+      artifact_attempt:
+        value: ${{ jobs.changes.outputs.artifact_attempt }}
       extensive:
         value: ${{ jobs.changes.outputs.extensive }}
       new_tests:
@@ -28,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
+      artifact_attempt: ${{ github.run_attempt }}
       extensive: ${{ steps.select.outputs.extensive }}
       game: ${{ steps.select.outputs.game }}
       new_tests: ${{ steps.select.outputs.new_tests }}

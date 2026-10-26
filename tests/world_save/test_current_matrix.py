@@ -121,17 +121,15 @@ class CurrentMatrix(unittest.TestCase):
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
         archive = ' --byond-archive "$PWD/BYOND/pinned.zip"'
         old = self.old_workflow
-        # Removing arguments only from the three reviewed blocks recovers all old bytes.
-        restored = workflow
+        # This contract owns the persistence blocks, including their guards/bounds.
+        # CI artifact provenance outside them has separate CI-policy regressions.
         for step in STEPS:
             marker='      - name: '+step+'\n'
             before=old.split(marker,1)[1].split('      - name:',1)[0]
-            after=restored.split(marker,1)[1].split('      - name:',1)[0]
+            after=workflow.split(marker,1)[1].split('      - name:',1)[0]
             # Round-metadata already had the reviewed argument before this change.
             lines=[line if 'run-round-metadata.py' in line else line.replace(archive,'') for line in after.splitlines(keepends=True)]
             self.assertEqual(''.join(lines), before)
-            restored=restored.replace(marker+after,marker+before,1)
-        self.assertEqual(restored,old)
         calls=selected_calls(workflow)
         self.assertEqual(len(calls),58)
         for path,args in calls:

@@ -27,6 +27,7 @@ def fixtures(paths=('README.md',)):
                     gating=dict(eligible=True, reason='Full ordinary PR scope')),
                 baseline=ci.impact(paths), compile={'selected': False, 'reason': 'Documentation only'})
     baseline = dict(schema_version=1, kind='baseline', status='passed', **source,
+                    selection_run_attempt=source['run_attempt'],
                     selection_sha256=ci.digest(plan), tracked_dirty=False,
                     tracked_dirty_after=False, source_unchanged=True,
                     observed_head_before=source['head'], observed_head_after=source['head'], suites={})
@@ -36,6 +37,7 @@ def fixtures(paths=('README.md',)):
             baseline['suites'][name].update(exit_code=0, counts=dict(
                 status='passed', tests=1, errors=0, failures=0, skipped=0))
     compiler = dict(schema_version=1, kind='compile', status='skipped', selected=False,
+                    selection_run_attempt=source['run_attempt'],
                     step_outcome='skipped', reason='Documentation only', **source,
                     toolchain='BYOND ' + ci.toolchain.load()['version'], toolchain_error=None,
                     selection_sha256=ci.digest(plan))
@@ -430,6 +432,123 @@ class AggregateTests(unittest.TestCase):
         policy = reusable.split('- name: Selection regression tests on every invocation\n')[1].split('- name:', 1)[0]
         self.assertNotIn('if:', policy)
         self.assertIn('--suite policy', policy)
+
+
+class ProducerAttemptTests(unittest.TestCase):
+    """Partial reruns reuse exact dependency receipts, never a latest-artifact guess."""
+    def mixed(self, selection='1', baseline='1', compiler='2'):
+        plan, offline, build, jobs = fixtures()
+        plan['run_attempt'] = selection
+        offline.update(run_attempt=baseline, selection_run_attempt=selection, selection_sha256=ci.digest(plan))
+        build.update(run_attempt=compiler, selection_run_attempt=selection, selection_sha256=ci.digest(plan))
+        for job, attempt in (('changes',selection),('baseline',baseline),('build',compiler)):
+            jobs[job]['outputs'] = {'artifact_attempt': attempt}
+        return plan, offline, build, jobs
+
+    def test_loader_requires_explicit_earlier_selection_binding_and_keeps_source_checks(self):
+        plan, _, _, _ = self.mixed()
+        expected={key:plan[key] for key in ('head','base','requested_base','run_id','run_attempt')}
+        expected['run_attempt']='2'
+        with tempfile.TemporaryDirectory() as temporary, patch.object(ci,'provenance',return_value=expected):
+            path=Path(temporary)/'selection.json'; ci.write_json(path,plan)
+            with self.assertRaisesRegex(ValueError,'run_attempt'): ci.load_selection(path,plan['head'],plan['base'])
+            self.assertEqual(ci.load_selection(path,plan['head'],plan['base'],'1'),plan)
+            for key in ('head','base','requested_base','run_id','run_attempt'):
+                bad=dict(plan,**{key:'wrong'});ci.write_json(path,bad)
+                with self.subTest(key=key), self.assertRaisesRegex(ValueError,'provenance'):
+                    ci.load_selection(path,plan['head'],plan['base'],'1')
+
+    def test_new_execution_stamps_own_attempt_without_relabelling_selection(self):
+        plan, _, _, _ = self.mixed()
+        before=deepcopy(plan)
+        with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ,GITHUB_RUN_ATTEMPT='2'), \
+                patch.object(ci,'git',return_value='source tree'), patch.object(ci.subprocess,'check_output',return_value=b''):
+            output=Path(temporary)/'compile.json'
+            self.assertEqual(ci.compile_receipt(plan,'skipped',output),0)
+            receipt=json.loads(output.read_text())
+            self.assertEqual(receipt['run_attempt'],'2')
+            self.assertEqual(receipt['selection_run_attempt'],'1')
+            self.assertEqual(receipt['selection_sha256'],ci.digest(plan))
+        self.assertEqual(plan,before)
+
+    def test_failed_build_baseline_and_aggregate_only_reruns_and_full_rerun(self):
+        for current, selection, baseline, compiler in (('2','1','1','2'),('2','1','2','1'),
+                                                       ('3','1','1','2'),('2','2','2','2')):
+            data=self.mixed(selection,baseline,compiler)
+            attempts=dict(selection=selection,baseline=baseline,compile=compiler)
+            with self.subTest(attempts=attempts,current=current), patch.dict(os.environ,GITHUB_RUN_ATTEMPT=current):
+                self.assertEqual(ci.aggregate(*data,False,attempts),[])
+                if compiler != selection or baseline != selection:
+                    self.assertTrue(ci.aggregate(*data,False))  # No implicit cross-attempt acceptance.
+                data[3]['build']['result']='failure'
+                self.assertIn('Required job did not succeed: build',ci.aggregate(*data,False,attempts))
+
+    def test_invalid_future_missing_and_wrong_producer_bindings_fail_closed(self):
+        data=self.mixed();good=dict(selection='1',baseline='1',compile='2')
+        with patch.dict(os.environ,GITHUB_RUN_ATTEMPT='2'):
+            for bad in ('',None,True,1,'0','-1','01',' 1','1.0','x','3','١','9'*30):
+                for kind in good:
+                    with self.subTest(kind=kind,bad=bad):
+                        self.assertTrue(ci.aggregate(*data,False,dict(good,**{kind:bad})))
+            self.assertTrue(ci.aggregate(*data,False,dict(selection='1',baseline='1')))
+            self.assertTrue(ci.aggregate(*data,False,dict(good,compile='1')))
+            self.assertTrue(ci.aggregate(*data,False,dict(good,selection='2')))
+            with patch.dict(os.environ,GITHUB_RUN_ATTEMPT=''):
+                self.assertTrue(ci.aggregate(*data,False,good))
+
+    def test_bound_attempts_do_not_accept_stale_receipts_or_changed_selection(self):
+        attempts=dict(selection='1',baseline='1',compile='2')
+        with patch.dict(os.environ,GITHUB_RUN_ATTEMPT='2'):
+            for index in (1,2):
+                for key in ('head','base','requested_base','run_id','run_attempt','selection_run_attempt','selection_sha256'):
+                    data=list(self.mixed());data[index][key]='stale'
+                    with self.subTest(index=index,key=key): self.assertTrue(ci.aggregate(*data,False,attempts))
+            data=self.mixed();data[1]['tracked_dirty_after']=True
+            self.assertTrue(ci.aggregate(*data,False,attempts))
+            data=self.mixed();data[1]['suites']['policy']['counts']['tests']=0
+            self.assertTrue(ci.aggregate(*data,False,attempts))
+
+    def test_cli_aggregate_records_consumer_and_each_producer_without_fabricating_a_rerun(self):
+        plan, offline, build, jobs=self.mixed()
+        plan['action']=plan['eligibility']['action']='edited'
+        for key in ('native','gating'): plan['eligibility'][key].update(eligible=False,reason='Edited informational scope')
+        offline['selection_sha256']=build['selection_sha256']=ci.digest(plan)
+        expected={key:plan[key] for key in ('head','base','requested_base','run_id','run_attempt')};expected['run_attempt']='2'
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            for name,value in (('selection',plan),('baseline',offline),('compile',build)):ci.write_json(root/(name+'.json'),value)
+            args=['ci','aggregate','--selection',str(root/'selection.json'),'--selection-attempt','1',
+                  '--head',plan['head'],'--base',plan['base'],'--baseline',str(root/'baseline.json'),
+                  '--compile-receipt',str(root/'compile.json'),'--output',str(root/'aggregate.json')]
+            env=dict(GITHUB_RUN_ATTEMPT='2',CI_NEEDS=json.dumps(jobs),GATING_SELECTION='0',EXTRACTION_SELECTED='false')
+            with patch.object(sys,'argv',args),patch.dict(os.environ,env),patch.object(ci,'provenance',return_value=expected), \
+                    patch.object(ci.subprocess,'Popen',side_effect=AssertionError('No process allowed')),patch('builtins.print'):
+                self.assertEqual(ci.main(),0)
+            result=json.loads((root/'aggregate.json').read_text())
+            self.assertEqual(result['run_attempt'],'2');self.assertEqual(result['selection_run_attempt'],'1')
+            self.assertEqual(result['producer_attempts'],dict(selection='1',baseline='1',compile='2'))
+            self.assertEqual(result['coverage'],'informational')
+
+    def test_workflow_downloads_exact_producer_attempts_and_keeps_own_upload_names(self):
+        workflow=(ROOT/'.github/workflows/test.yml').read_text()
+        reusable=(ROOT/'.github/workflows/ci-selection.yml').read_text()
+        self.assertIn('value: ${{ jobs.changes.outputs.artifact_attempt }}',reusable)
+        self.assertIn('artifact_attempt: ${{ github.run_attempt }}',reusable)
+        self.assertEqual(workflow.count('artifact_attempt: ${{ github.run_attempt }}'),2)
+        self.assertEqual(workflow.count('--selection-attempt "$CI_SELECTION_ATTEMPT"'),3)
+        downloads=workflow.split('uses: actions/download-artifact@')[1:]
+        names=[block.split('\n      - ',1)[0] for block in downloads]
+        bindings=[block for block in names if 'name: ci-' in block]
+        self.assertEqual(len(bindings),5)
+        for block in bindings:
+            self.assertNotIn('${{ github.run_attempt }}',block)
+            self.assertNotIn('pattern:',block)
+            self.assertNotIn('continue-on-error:',block)
+        self.assertEqual(sum('needs.changes.outputs.artifact_attempt' in b for b in bindings),3)
+        self.assertEqual(sum('needs.baseline.outputs.artifact_attempt' in b for b in bindings),1)
+        self.assertEqual(sum('needs.build.outputs.artifact_attempt' in b for b in bindings),1)
+        for prefix in ('ci-baseline','ci-compile','ci-aggregate'):
+            self.assertIn('name: '+prefix+'-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}',workflow)
 
 
 if __name__ == '__main__':
