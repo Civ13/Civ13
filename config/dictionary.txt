@@ -1,3 +1,4 @@
+# Optional era selectors are documented in docs/dictionary.md
 ;(,urgh
 ;),haha
 :(,ugh
