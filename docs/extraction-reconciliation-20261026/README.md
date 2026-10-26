@@ -2,6 +2,11 @@
 
 PR: https://github.com/Civ13/Civ13/pull/3082 (draft).
 
+The initial reconciliation and its CI failures below are historical evidence at
+`8a0bdc36b3c4907a26d9634445a7a75770866247`. See
+[the focused harness follow-up](harness-followup.md) for the subsequent corrections
+and their separate offline evidence. The original resolution patch is preserved.
+
 Source merge: `c4585fabaf81e1357054b4527d71d4f3a2d8a0b2`.
 Its first parent is the previous extraction head
 `5aaed0a172aa3baa3fe604096cbbb8a00f519aac`; its second parent is pinned master

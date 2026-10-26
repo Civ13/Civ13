@@ -1,0 +1,71 @@
+{
+  "source_commit": "1fb818120a6437b925f268575f77cb88f0ca56ef",
+  "scope": "Offline only; injected native boundaries and source contracts",
+  "tests": 182,
+  "all_passed": true,
+  "suites": [
+    {
+      "directory": "tests/extraction",
+      "pattern": "test_*.py",
+      "exit": 0,
+      "tests": 29,
+      "log": "tests_extraction-test_all.py.log"
+    },
+    {
+      "directory": "tests/extraction/instances",
+      "pattern": "test_*.py",
+      "exit": 0,
+      "tests": 26,
+      "log": "tests_extraction_instances-test_all.py.log"
+    },
+    {
+      "directory": "tests/exclusion_dispatch",
+      "pattern": "test_source.py",
+      "exit": 0,
+      "tests": 15,
+      "log": "tests_exclusion_dispatch-test_source.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_immutable_capture_runner.py",
+      "exit": 0,
+      "tests": 5,
+      "log": "tests_world_save-test_immutable_capture_runner.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_restore_integration_sources.py",
+      "exit": 0,
+      "tests": 11,
+      "log": "tests_world_save-test_restore_integration_sources.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_sleep_transfer_sources.py",
+      "exit": 0,
+      "tests": 14,
+      "log": "tests_world_save-test_sleep_transfer_sources.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_cross_level_sources.py",
+      "exit": 0,
+      "tests": 15,
+      "log": "tests_world_save-test_cross_level_sources.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_progress_sources.py",
+      "exit": 0,
+      "tests": 6,
+      "log": "tests_world_save-test_progress_sources.py.log"
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_ci*.py",
+      "exit": 0,
+      "tests": 61,
+      "log": "tests-test_ciall.py.log"
+    }
+  ]
+}
