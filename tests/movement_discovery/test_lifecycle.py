@@ -6,7 +6,7 @@ import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '5bd242bedd45494b53e2c07a4cfd0c0a1d6ce010'
+BASE = '99647037c70786a3c3944fcf5ae51b570b377f08'
 HELPERS = 'code/_helpers/mobs.dm'
 GLOBAL = 'code/_helpers/global_lists.dm'
 HUMAN = 'code/game/mob/mob_movement.dm'

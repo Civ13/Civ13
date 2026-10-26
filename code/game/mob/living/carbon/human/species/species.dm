@@ -237,7 +237,7 @@
 			if (FP.on == TRUE)
 				return
 		var/turf/T = get_turf(H)
-		if (istype(T) && T.icon == 'icons/turf/snow.dmi' && H.shoes)
+		if (istype(T) && T.has_snow_cover() && H.shoes)
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
 					to_chat(H, SPAN_DANGER("Your feet are freezing!"))

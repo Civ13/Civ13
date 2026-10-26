@@ -517,7 +517,7 @@
 			var/snow_message = ""
 			var/snow_span = "warning"
 
-			if (F.icon == 'icons/turf/snow.dmi' && snow && !H.lizard)
+			if (F.has_snow_cover() && snow && !H.lizard)
 				standing_on_snow = 1
 				if (prob(50))
 					standing_on_snow = 1.25

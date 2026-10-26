@@ -21,6 +21,8 @@ var/list/flooring_cache = list()
 					icon_state = "[icon_state][rand(0,flooring.has_base_range)]"
 					flooring_override = icon_state
 
+	snowfall_ground_register()
+
 /turf/floor/update_icon(var/update_neighbors)
 	if (flooring)
 		// Clear all overlays and rebuild from scratch
@@ -304,6 +306,8 @@ var/list/flooring_cache = list()
 					overlays += icon(icon,"seashallow_swamp_overlay")
 			else
 				name = replacetext(name, "irradiated ", "")
+	snowfall_ground_icon()
+
 /turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE, var/edge_icon)
 	if (!flooring_cache[cache_key])
 		var/icon/use_icon = edge_icon ? edge_icon : flooring.icon
