@@ -179,7 +179,10 @@
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	var/oldclimate = CURRENTAREA.climate
 
-	if (CURRENTAREA.type && src.switch_area)
+	// Import has already reconstructed and validated this roof's area before
+	// graph fields decode. Do not replace that shared area during construction.
+	var/restored_area = map_storage && map_storage.restore_validated_roof(src)
+	if (!restored_area && CURRENTAREA.type && src.switch_area)
 		current_area_type = CURRENTAREA.type
 		switch(oldclimate)
 			if ("tundra")

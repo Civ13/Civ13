@@ -25,6 +25,9 @@
 	return global_pollution
 
 /proc/change_weather(_weather = WEATHER_NONE, var/bypass_same_weather_check = FALSE)
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(persistence_area_registry_blocked()) return FALSE
+#endif
 
 	if (_weather == null)
 		return
@@ -51,10 +54,19 @@
 		while (TRUE)
 			var/revision = environment_weather_revision
 			var/work = 0
+#ifdef CIV13_ZONE_PERSISTENCE
+			var/datum/persistence_area_registry_epoch/registry_epoch = persistence_area_epoch
+#endif
 			for (var/area/caribbean/A in area_list)
+#ifdef CIV13_ZONE_PERSISTENCE
+				if(persistence_area_registry_blocked()) throw EXCEPTION("Weather registry became unavailable during load")
+#endif
 				apply_area_weather(A)
 				if (environment_sweep_pause(++work))
 					work = 0
+#ifdef CIV13_ZONE_PERSISTENCE
+					require_persistence_area_snapshot(registry_epoch)
+#endif
 					if (revision != environment_weather_revision)
 						break
 			if (revision == environment_weather_revision)
@@ -65,6 +77,9 @@
 	environment_weather_running = FALSE
 
 /proc/apply_area_weather(var/area/caribbean/A)
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(persistence_area_registry_blocked()) return
+#endif
 	if (!istype(A) || A.location != AREA_OUTSIDE)
 		return
 	switch (A.climate)
@@ -336,6 +351,8 @@
 	return FALSE
 
 /proc/modify_weather_somehow()
+	if (map && !map.weather_policy_valid())
+		return
 	if (weather == WEATHER_NONE)
 		return
 
@@ -373,7 +390,9 @@
 			if (map.nomads || map.civilizations )
 				possibilities += WEATHER_SMOG
 	*/
-	if (possibilities.len)
+	if (map)
+		possibilities = map.weather_policy_choices(possibilities)
+	if (possibilities && possibilities.len)
 		change_weather(pick(possibilities))
 
 /proc/get_temp(var/atom/A) //gets the local (area-based) temperature
@@ -507,30 +526,30 @@
 			loc_temp = (min(10,loc_temp+40))
 		if (mob_area.weather == WEATHER_EXTREME && season == "WINTER" && (mob_area.climate == "temperate" || mob_area.climate == "taiga" || mob_area.climate == "tundra"))
 			loc_temp = -10
-		if (map && map.ID == MAP_ANTARCTICA)
+		if (loc_temp < 19 && map && map.ID == MAP_ANTARCTICA)
 			for (var/obj/structure/oven/big/FN in range(5, A))
 				if (FN.on)
 					if (loc_temp < 19)
 						loc_temp = 19
 						break
-	for (var/obj/structure/brazier/BR in range(3, A))
-		if (BR.on)
-			if (loc_temp < 22)
+	if (loc_temp < 22)
+		for (var/obj/structure/brazier/BR in range(3, A))
+			if (BR.on)
 				loc_temp = 22
 				break
-	for (var/obj/structure/heatsource/HS in range(3, A))
-		if (HS.on)
-			if (loc_temp < 22)
+	if (loc_temp < 22)
+		for (var/obj/structure/heatsource/HS in range(3, A))
+			if (HS.on)
 				loc_temp = 22
 				break
-	for (var/obj/structure/oven/fireplace/FP in range(1, A))
-		if (FP.on)
-			if (loc_temp < 22)
+	if (loc_temp < 22)
+		for (var/obj/structure/oven/fireplace/FP in range(1, A))
+			if (FP.on)
 				loc_temp = 22
 				break
-	for (var/obj/structure/engine/EN in range(1, A))
-		if (EN.on)
-			if (loc_temp < 22)
+	if (loc_temp < 22)
+		for (var/obj/structure/engine/EN in range(1, A))
+			if (EN.on)
 				loc_temp = 22
 				break
 

@@ -20,6 +20,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--zone-topology', action='store_true',
+                        help='Prepare synthetic zone/spawn positive and negative fixtures; native execution is held')
+    parser.add_argument('--roof-areas', action='store_true',
+                        help='Prepare only the synthetic fresh-process roof-area fixture; native execution is held')
+    parser.add_argument('--roof-control', choices=('projection', 'cleanup-namespace'),
+                        help='Prepare a named immutable roof-source omission control; no native execution')
+    parser.add_argument('--persistence-year', action='store_true',
+                        help='Run native minimum-date activation and v1/v2 disk import checks')
     parser.add_argument('--lighting', action='store_true',
                         help='Run real lighting constructors and legacy runtime graph recovery')
     parser.add_argument('--wounds', action='store_true',
@@ -33,8 +41,28 @@ def main():
     parser.add_argument('--startup-only', action='store_true',
                         help='Diagnose production initialization without running any persistence assertions')
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
-    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore'))
+    parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore', 'year-helper', 'year-load', 'year-order'))
     args = parser.parse_args()
+    if args.zone_topology:
+        if not args.prepare_only:
+            parser.error('zone native execution remains held; use --prepare-only')
+        if any((args.roof_areas, args.roof_control, args.persistence_year, args.wounds,
+                args.lighting, args.dimension_bootstrap, args.recovery_reconnect,
+                args.lifecycle_shutdown, args.startup_only, args.negative_control)):
+            parser.error('Zone preparation cannot combine with other fixture modes')
+    if args.roof_control and not args.roof_areas:
+        parser.error('Roof controls require --roof-areas')
+    if args.roof_areas:
+        if not args.prepare_only:
+            parser.error('Roof-area native execution requires a separately reviewed bounded runner/admission')
+        if any((args.persistence_year, args.wounds, args.lighting, args.dimension_bootstrap,
+                args.recovery_reconnect, args.lifecycle_shutdown, args.startup_only, args.negative_control)):
+            parser.error('Roof-area preparation cannot combine with other fixture modes')
+    year_control = bool(args.negative_control and args.negative_control.startswith('year-'))
+    if args.persistence_year and (args.wounds or args.lighting or args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or (args.negative_control and not year_control)):
+        parser.error('Persistence date acceptance runs separately from other fixture modes')
+    if year_control and not args.persistence_year:
+        parser.error('Date controls require --persistence-year')
     if args.wounds and (args.lighting or args.dimension_bootstrap or args.recovery_reconnect or args.lifecycle_shutdown or args.startup_only or args.negative_control not in (None, 'wound-restore')):
         parser.error('Wound recovery runs separately from other fixture modes')
     if args.negative_control == 'wound-restore' and not args.wounds:
@@ -63,13 +91,13 @@ def main():
     prefix = '.durable_world_' + uuid.uuid4().hex
     dme = root / (prefix + '.dme')
     generated = []
-    receipt = {'profile': args.profile, 'negative_control': args.negative_control,
+    receipt = {'zone_topology': args.zone_topology, 'roof_areas': args.roof_areas, 'roof_control': args.roof_control, 'persistence_year': args.persistence_year, 'profile': args.profile, 'negative_control': args.negative_control,
                'wounds': args.wounds,
                'lighting': args.lighting,
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
                'lifecycle_shutdown': args.lifecycle_shutdown,
                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
-               'production_hashes': {}}
+               'production_hashes': {}, 'generated_sources': {}}
     print(f'Retained evidence: {output}', flush=True)
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
@@ -114,7 +142,37 @@ def main():
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
             'shutdown-return': ('code/modules/persistence/restart_transaction.dm', '\tdel(world)\n\t// Native deletion can return until the current execution yields. Give BYOND\n\t// that boundary before failure cleanup can consume the valid restart intent.\n\tsleep(1)\n', '\tdel(world)\n'),
         }
-        if args.negative_control == 'wound-restore':
+        if args.roof_control:
+            relative = 'code/modules/persistence/loading.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            if args.roof_control == 'projection':
+                before = '\t\tprepare_saved_roof_areas(round_state["generation"])\n'
+                if text.count(before) != 1:
+                    raise RuntimeError('Roof projection control anchor changed')
+                text = text.replace(before, '\t\t// Old-defect control: validate against startup areas only.\n', 1)
+            else:
+                start = text.index('/map_storage/proc/is_loaded_validated_roof(')
+                end = text.index('/map_storage/proc/verify_restored_roof_areas()', start)
+                old_predicate = ('/map_storage/proc/is_loaded_validated_roof(atom/roof)\n'
+                    '\tif(!restoring_roof_areas) return FALSE\n'
+                    '\tvar/list/row = validated_roof_areas["[roof.x],[roof.y],[roof.z]"]\n'
+                    '\treturn row && existing_references[row["entry"]] == roof\n\n')
+                text = text[:start] + old_predicate + text[end:]
+            replacements[relative] = text
+        elif year_control:
+            relative = 'code/modules/persistence/functions.dm'
+            text = (root / relative).read_text(encoding='utf-8')
+            before, after = {
+                'year-helper': ('if (!persistence)\n', 'if (TRUE)\n'),
+                'year-load': ('\t\tmap.apply_persistence_age_floor()\n', ''),
+                'year-order': ('\t\tstorage.restore_durable_world()\n', '\t\tmap.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()\n'),
+            }[args.negative_control]
+            if text.count(before) != 1:
+                raise RuntimeError('Date control anchor changed')
+            if args.negative_control == 'year-order':
+                text = text.replace('\t\tmap.apply_persistence_age_floor()\n', '', 1)
+            replacements[relative] = text.replace(before, after, 1)
+        elif args.negative_control == 'wound-restore':
             # Immutable source of the actual failed import, not an invented null model.
             baseline = 'd0ffbfb2335eb735756b998f3f2ff617c28f144b'
             for relative in ('code/modules/organs/wound.dm', 'code/modules/persistence/loading.dm'):
@@ -166,6 +224,7 @@ def main():
             generated_path = root / (prefix + f'_{index}.dm')
             generated_path.write_text(text, encoding='utf-8', newline='\n')
             generated.append(generated_path)
+            receipt['generated_sources'][relative] = generated_path.name
             original_include = relative.replace('/', chr(92))
             if source.count(original_include) != 1:
                 raise RuntimeError('Production include anchor changed')
@@ -174,6 +233,23 @@ def main():
             if args.negative_control == 'wound-restore' and relative == 'code/modules/organs/wound.dm':
                 receipt['wound_control_source'] = generated_path.name
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.zone_topology:
+            zone_probe = root / 'tests/zone_persistence/probe.dm'
+            probe = probe[:probe.index('/world/New()')] + zone_probe.read_text(encoding='utf-8')
+            receipt['zone_probe_hash'] = hashlib.sha256(zone_probe.read_bytes()).hexdigest()
+        if args.roof_areas:
+            roof_probe = root / 'tests/roof_area_recovery/probe.dm'
+            probe = probe[:probe.index('/world/New()')] + roof_probe.read_text(encoding='utf-8')
+            receipt['roof_probe_hash'] = hashlib.sha256(roof_probe.read_bytes()).hexdigest()
+        if args.persistence_year:
+            year_probe = root / 'tests/persistence_year/probe.dm'
+            setup = (root / 'code/setup.dm').read_text(encoding='utf-8')
+            start = setup.index('\tif (config.allowedgamemodes == "PERSISTENCE")')
+            end = setup.index('\n\t\t// Resume from the last completed save', start)
+            activation = '/proc/persistence_year_startup()\n' + setup[start:end] + '\n'
+            probe = probe[:probe.index('/world/New()')] + activation + year_probe.read_text(encoding='utf-8')
+            receipt['production_hashes']['code/setup.dm'] = hashlib.sha256(setup.encode()).hexdigest()
+            receipt['year_probe_hash'] = hashlib.sha256(year_probe.read_bytes()).hexdigest()
         if args.wounds:
             wound_probe = root / 'tests/world_save/wound_restore_probe.dm'
             probe = probe[:probe.index('/world/New()')] + wound_probe.read_text(encoding='utf-8')
@@ -282,7 +358,7 @@ def main():
             return
         command = [str(daemon), dme.with_suffix('.dmb').name, '-ip', '127.0.0.1', '-nowebclient', *platform_flags, '-trusted',
                    '-params', 'profile=' + args.profile, '-log', 'runtime.log']
-        if args.lighting:
+        if args.lighting or args.persistence_year:
             run = run_lighting(command, output, flags)
         else:
             run = subprocess.run(command, cwd=output, capture_output=True, text=True,
@@ -295,7 +371,7 @@ def main():
         diagnostics = (log + run.stdout + run.stderr).lower()
         if re.search(r'\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b', diagnostics, re.I):
             raise RuntimeError('Fatal native diagnostic invalidated fixture')
-        if (args.lighting or args.wounds) and re.search(r'\bbug:', diagnostics):
+        if (args.lighting or args.wounds or args.persistence_year) and re.search(r'\bbug:', diagnostics):
             raise RuntimeError('Native lighting/wound engine diagnostic invalidated fixture')
         if (re.search(r'##\s*error\s*:', diagnostics) or
                 any(word in diagnostics for word in ('unexpected runtime', 'bad ref', 'runtime error:', 'infinite loop', 'fatal error', 'segmentation', 'assertion failed'))):
@@ -337,6 +413,18 @@ def main():
                 receipt['post_exit_intent_preserved'] = True
                 receipt['expected_failure_caught'] = False
             receipt['result'] = result
+            (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
+            print(json.dumps(receipt, indent=2))
+            return
+        if args.persistence_year:
+            expected_date_failure = {'year-helper': 'earlier date not raised', 'year-load': 'saved date floor lost', 'year-order': 'saved date floor lost'}
+            if args.negative_control:
+                if result.get('done') or result.get('error') != expected_date_failure[args.negative_control]:
+                    raise RuntimeError('Date control did not reach its named assertion: ' + str(result))
+            elif not result.get('done') or result.get('imports') != 24 or result.get('checks') != 333:
+                raise RuntimeError('Native date/import coverage incomplete: ' + str(result))
+            receipt['result'] = result
+            receipt['expected_failure_caught'] = bool(args.negative_control)
             (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
             print(json.dumps(receipt, indent=2))
             return

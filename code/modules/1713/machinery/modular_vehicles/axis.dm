@@ -426,13 +426,14 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 
 /obj/structure/vehicleparts/axis/MouseDrop(var/obj/structure/vehicleparts/frame/VP)
 	if (istype(VP, /obj/structure/vehicleparts/frame) && !VP.axis)
+		if (!persistence_movement_allowed(src, VP)) return FALSE
 		playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
 		to_chat(usr, "You connect \the [src] to \the [VP].")
 		VP.axis = src
 		VP.anchored = TRUE
 		components += VP
 		VP.name = "[name] axis"
-		loc = VP
+		if (!persistence_set_loc(VP)) return FALSE
 		return
 
 //basically, a matrix works like this:

@@ -12,6 +12,10 @@ import shutil
 import subprocess
 import tempfile
 import time
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 
 def main():
@@ -183,14 +187,14 @@ def main():
 ''')
         compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-        built = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
+        built = current.run_compiler([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=target,
                                capture_output=True, text=True, timeout=60, creationflags=flags)
         print(built.stdout + built.stderr)
-        if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
+        if built.returncode or current.VERSION not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
             raise RuntimeError('Pinned compiler failed')
         platform = ['-invisible', '-close'] if os.name == 'nt' else []
         (target / 'clock.txt').write_text(str(int(time.time())))
-        ran = subprocess.run([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-log', 'runtime.log'],
+        ran = current.run_daemon([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-log', 'runtime.log'],
                              cwd=target, capture_output=True, text=True, timeout=60, creationflags=flags)
         result = (target / 'result.txt').read_text().strip() if (target / 'result.txt').exists() else 'MISSING'
         log = (target / 'runtime.log').read_text(errors='replace') if (target / 'runtime.log').exists() else ''

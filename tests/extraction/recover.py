@@ -7,6 +7,10 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 
 def main():
@@ -58,14 +62,14 @@ def main():
             shutil.copy2(root / 'tests/extraction/recovery_operator.dm', target / 'tests/extraction/recovery_operator.dm')
             shutil.copy2(root / 'code/modules/1713/extraction/account_store.dm', target / 'code/modules/1713/extraction/account_store.dm')
             (target / 'recovery.dme').write_text('#include "tests/extraction/recovery_operator.dm"\n', encoding='utf-8')
-            built = subprocess.run([str(compiler), '-max_errors', '0', 'recovery.dme'], cwd=target, capture_output=True, text=True, timeout=60, creationflags=flags)
-            if built.returncode or '516.1681' not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
+            built = current.run_compiler([str(compiler), '-max_errors', '0', 'recovery.dme'], cwd=target, capture_output=True, text=True, timeout=60, creationflags=flags)
+            if built.returncode or current.VERSION not in built.stdout or '0 errors, 0 warnings' not in built.stdout:
                 raise RuntimeError('Pinned recovery compile failed: ' + built.stdout + built.stderr)
             # DreamDaemon uses the DMB directory as its runtime directory. A
             # unique temporary binary beside the store keeps fixture paths local.
             shutil.copy2(target / 'recovery.dmb', store / binary_name)
             platform = ['-invisible', '-close'] if os.name == 'nt' else []
-            ran = subprocess.run([str(daemon), binary_name, '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', '&'.join(f'{k}={v}' for k, v in params.items()), '-log', log_name], cwd=store, capture_output=True, text=True, timeout=30, creationflags=flags)
+            ran = current.run_daemon([str(daemon), binary_name, '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', '&'.join(f'{k}={v}' for k, v in params.items()), '-log', log_name], cwd=store, capture_output=True, text=True, timeout=30, creationflags=flags)
             log = (store / log_name).read_text(errors='replace') if (store / log_name).exists() else ''
             if ran.returncode or any(marker in log.lower() for marker in ('runtime error', 'bad ref', '## error')):
                 raise RuntimeError('Native recovery diagnostics: ' + log + ran.stdout + ran.stderr)

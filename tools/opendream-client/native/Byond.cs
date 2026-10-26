@@ -1,27 +1,41 @@
 using System.Diagnostics;
 using System.Runtime.Versioning;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
 namespace Civ13.Launcher;
 
 public sealed record ByondRequirement(int Schema, string Version, string Url, string Sha256) {
     public static ByondRequirement Read(string json) {
-        var requirement = JsonSerializer.Deserialize<ByondRequirement>(json,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? throw new InvalidDataException("BYOND requirement missing.");
-        requirement.Validate();
-        return requirement;
+        try {
+            using var document = JsonDocument.Parse(json);
+            if (document.RootElement.ValueKind != JsonValueKind.Object ||
+                document.RootElement.EnumerateObject().Select(p => p.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() != document.RootElement.EnumerateObject().Count())
+                throw new InvalidDataException("Invalid or duplicate BYOND requirement fields.");
+            var requirement = JsonSerializer.Deserialize<ByondRequirement>(json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? throw new InvalidDataException("BYOND requirement missing.");
+            requirement.Validate();
+            return requirement;
+        } catch (JsonException) {
+            throw new InvalidDataException("Missing or malformed BYOND requirement metadata.");
+        }
     }
     public void Validate() {
-        if (Schema != 1 || !System.Version.TryParse(Version, out var version) || version.Build != -1 ||
-            version.Major <= 0 || version.Minor <= 0 || Sha256 is null || Sha256.Length != 64 || !Sha256.All(Uri.IsHexDigit) ||
+        if (Schema != 1 || !Regex.IsMatch(Version ?? "", @"\A[1-9][0-9]{0,4}\.[1-9][0-9]{0,4}\z") ||
+            !System.Version.TryParse(Version, out var version) || version.Major > 65534 || version.Minor > 65534 ||
+            Sha256 is null || Sha256.Length != 64 || !Sha256.All(Uri.IsHexDigit) ||
             Url != $"https://www.byond.com/download/build/{version.Major}/{Version}_byond.exe")
             throw new InvalidDataException("Invalid pinned official BYOND requirement.");
     }
     public bool Matches(int major, int minor, int build, int revision) {
+        Validate();
         var expected = System.Version.Parse(Version);
         return major == 5 && minor == 0 && build == expected.Major && revision == expected.Minor;
     }
+    public bool MatchesPeVersion(string? value) => System.Version.TryParse(value, out var actual) &&
+        actual.Build >= 0 && actual.Revision >= 0 && actual.ToString(4) == value &&
+        Matches(actual.Major, actual.Minor, actual.Build, actual.Revision);
 }
 
 public interface IByondDesktop {

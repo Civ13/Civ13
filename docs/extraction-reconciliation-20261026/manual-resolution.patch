@@ -1,0 +1,649 @@
+commit c4585fabaf81e1357054b4527d71d4f3a2d8a0b2
+Merge: 5aaed0a172aa3baa3fe604096cbbb8a00f519aac 99647037c70786a3c3944fcf5ae51b570b377f08
+Author:     Valithor Obsidion <valithor@discordphp.org>
+AuthorDate: Sun Oct 25 20:37:53 2026 -0400
+Commit:     Valithor Obsidion <valithor@discordphp.org>
+CommitDate: Sun Oct 25 20:37:53 2026 -0400
+
+    Reconcile extraction survival with pinned master 99647037
+    
+    Preserve admitted restore custody alongside zone, roof, elevation and age restoration. Retain extraction and save-movement guards, both CI contracts, runtime exclusions and sprite requirements. Adapt offline source/control fixtures to the merged declarations without running local native acceptance.
+
+diff --git a/.github/workflows/ci-selection.yml b/.github/workflows/ci-selection.yml
+remerge CONFLICT (content): Merge conflict in .github/workflows/ci-selection.yml
+index 2862dd2152a2f494cac5d8510740b36f170ddd73..8efc95764d93b2e696f4e4a4f26ec2e45d5a34a2 100644
+--- a/.github/workflows/ci-selection.yml
++++ b/.github/workflows/ci-selection.yml
+@@ -47,14 +47,7 @@ jobs:
+           BUILD_PREFIX: ${{ inputs.build_prefix }}
+           BASE_REF: ${{ inputs.base }}
+           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+-        run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX"
+-      - name: Selection regression tests
+-        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/persistence_admission') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_build_prefix.py')
+-        run: python3 -m unittest discover -s tests -p 'test_ci*.py' -v
+-=======
+         run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX" --receipt .ci/selection/selection.json
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+       - name: Validate all workflow syntax
+         run: |
+           curl -fsSL --connect-timeout 10 --max-time 60 --retry 0 https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
+diff --git a/.github/workflows/test.yml b/.github/workflows/test.yml
+remerge CONFLICT (content): Merge conflict in .github/workflows/test.yml
+index d6da28e86a3389aff4c269ee01453c2e688f68af..d5271e3f667d283af41b28a3c150cfcf46e22d21 100644
+--- a/.github/workflows/test.yml
++++ b/.github/workflows/test.yml
+@@ -325,17 +325,12 @@ jobs:
+           persist-credentials: false
+ 
+       # Runs a single command using the runners shell
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+-      - name: Run a one-line script
+-        id: byond_setup
+-=======
+       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+         with:
+           name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+           path: .ci/selection
+       - name: Read reviewed BYOND archive cache identity
+         id: byond_archive
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+         if: needs.changes.outputs.game == 'true'
+         run: echo "key=$(python3 -B scripts/byond_toolchain.py field linux-cache-key)" >> "$GITHUB_OUTPUT"
+       - name: Restore exact BYOND archive only
+@@ -805,35 +800,35 @@ jobs:
+           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --workshop-negative-control cleanup
+ 
+       - name: Diagnose extraction vehicle custody positive
+-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
++        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+         shell: bash
+         run: |
+           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles
+ 
+       - name: Diagnose extraction vehicle custody roster omission
+-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
++        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+         shell: bash
+         run: |
+           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control roster
+ 
+       - name: Diagnose extraction vehicle custody reservation omission
+-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
++        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+         shell: bash
+         run: |
+           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control reservation
+ 
+       - name: Diagnose extraction vehicle custody issuance omission
+-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
++        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+         shell: bash
+         run: |
+           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+           /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control issuance
+ 
+       - name: Diagnose extraction vehicle custody persistence omission
+-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
++        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+         shell: bash
+         run: |
+           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+@@ -1266,7 +1261,7 @@ jobs:
+           if-no-files-found: warn
+       - name: Verify persistence admission adapter and ordinary restore compatibility
+         id: persistence_admission
+-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.byond_setup.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission')) }}
++        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission')) }}
+         shell: bash
+         run: |
+           source "$PWD/BYOND/byond/bin/byondsetup"
+diff --git a/AGENTS.md b/AGENTS.md
+remerge CONFLICT (content): Merge conflict in AGENTS.md
+index e5122a1cc650a4b5a43dc3b9834859fc8213fc9e..222aeee6255554f293a6cf69a97d82e2f96f3968 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -1,6 +1,5 @@
+ # Civ13 - Agent guide
+ 
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ <!-- 2026-10-13: extraction census and receipt boundaries -->
+ Extraction census read leases guard account_store.write_phase across store
+ instances and child journals, not external processes or runtime world movement.
+@@ -15,7 +14,6 @@ Modular car wheels are contained in their connected frames; the controller is
+ also nested in a frame and steering in the driver seat. Use get_turf() for their
+ coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
+ it does not establish durable garage ownership or cargo/passenger extraction.
+-=======
+ <!-- 2026-10-25: shared hub community links -->
+ `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
+ WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.
+@@ -83,7 +81,6 @@ Six supported nondefault edges preserve unmarked ground and reconcile snow struc
+ inside the existing epoch/lock, before the unchanged subtype completion hook.
+ No synthetic seasons, extra decay charges, new phase timers or saved cursor.
+ tests/season_flow projects source/queue/ecology paths; native acceptance stays held.
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 
+ <!-- 2026-10-18: inactive reserved lighting -->
+ Reserved lighting omission requires the default-FALSE area clearance gate as well
+@@ -541,7 +538,6 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
+ <!-- 2026-10-11: repeatable game verification -->
+ ## Game verification evidence
+ 
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ <!-- 2026-10-20: extraction corpse-release oracle -->
+ The mode fixture catches corpse-release assertion failures as `FAIL:` records,
+ not engine `Runtime error:` records. Its omission control first reaches the
+@@ -553,7 +549,6 @@ do not reuse the superseded bones-transition message as the oracle.
+ When an NPC's own procedure qdels that actor, its caller can observe a null
+ return even after the durable retirement receipt commits. Assert receipt state
+ and original-object retirement, and stop subsequent AI when loc is null.
+-=======
+ <!-- 2026-10-24: complete conditional offline projections -->
+ The save_movement adapter selects the explicitly declared collector-disabled
+ branch; it is not a general DM preprocessor. Proc-local column-zero #ifdef lines
+@@ -586,7 +581,6 @@ run-durable-world.py --persistence-year separately exercises the real helper,
+ admin toggle, extracted configured activation and 24 v1/v2 ticker disk imports
+ in an isolated 8x8x2 world. Its three controls must reach their named assertions.
+ 
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ <!-- 2026-10-20: extraction instance collateral -->
+ The historical extraction instance fixture at b717ad2a6 shared registry state
+ across assertions. Its overlap/generation mutants caused downstream failures as well as
+@@ -639,12 +633,10 @@ offline text contracts do not replace the pinned native compiler.
+ 
+ ## Agent self-maintenance
+ 
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ <!-- 2026-10-12: extraction material restoration -->
+ Extraction material stacks must construct at null before relocation: native
+ stack constructors can otherwise merge into an existing stack. Serialize
+ `!!is_open_container()` for boolean lid state; its native return is a flag mask.
+-=======
+ <!-- 2026-10-24: area topology and persistence review -->
+ Area references are anchor coordinates plus type, not independently recreated
+ area objects. Reconstruct only proven saved roof topology before field decoding;
+@@ -661,7 +653,6 @@ types/objects, versioned topology and authoritative gas/thermal stores. Rebuild
+ derived caches and admit workers only after full restore/conservation checks;
+ see `docs/atmosphere-persistence-readiness.md`. This plan does not activate atmos.
+ 
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ <!-- 2026-10-15: durable invulnerable areas -->
+ Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
+ Durable JSON uses the exact `positive_infinity` sentinel only for that field;
+@@ -755,7 +746,6 @@ adapters and omission controls, without launching OpenDream or real scripts.
+ 
+ ## Local MCP tooling
+ 
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ <!-- 2026-10-13: extraction auxiliary census -->
+ Extraction surface ownership reads actual auxiliary journal records through
+ `surface_inventory.dm`, never recovery/repair readers. Market listings bind the
+@@ -820,7 +810,6 @@ Group deployment reuses the shared journal under `_settlement/groups/`; exact
+ home-to-raid projections come from the solo raid planner. Never move members
+ before all account debits commit. `--probe groups` checks three-process recovery
+ across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
+-=======
+ <!-- 2026-10-23: private variable observability -->
+ Before asking an operator to manipulate native BYOND variables, inspect the
+ implemented structured paths in `docs/variable-observability.md`. Run
+@@ -887,7 +876,6 @@ save/load/gameplay acceptance remain unverified. Compilation CI is separate
+ evidence bound to its tested head. Observation
+ does not authorize save/load, restart, cleanup or other live mutation.
+ 
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ <!-- 2026-10-17: bounded own-host agent diagnostics -->
+ `docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
+ the existing loopback/token/R_HOST lifecycle transport. Pair/trace/bundle are
+diff --git a/code/game/objects/items/weapons/storage/storage.dm b/code/game/objects/items/weapons/storage/storage.dm
+remerge CONFLICT (content): Merge conflict in code/game/objects/items/weapons/storage/storage.dm
+index dd455f184ffb3b6305a69db5001d0f2a34fef0f8..acad3e5ea922331d73da3cded5df0f9a843b4d29 100644
+--- a/code/game/objects/items/weapons/storage/storage.dm
++++ b/code/game/objects/items/weapons/storage/storage.dm
+@@ -419,11 +419,8 @@
+ //such as when picking up all the items on a tile with one click.
+ /obj/item/weapon/storage/proc/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
+ 	if (!istype(W)) return FALSE
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ 	if (W.extraction_surface_source) return FALSE
+-=======
+ 	if (!persistence_movement_allowed(W, src)) return FALSE
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 	if (usr)
+ 		usr.remove_from_mob(W)
+ 		usr.update_icons()	//update our overlays
+@@ -462,11 +459,8 @@
+ //Call this proc to handle the removal of an item from the storage item. The item will be moved to the atom sent as new_target
+ /obj/item/weapon/storage/proc/remove_from_storage(obj/item/W as obj, atom/new_location)
+ 	if (!istype(W)) return FALSE
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ 	if (W?.extraction_surface_source) return FALSE
+-=======
+ 	if (!persistence_movement_allowed(W, new_location ? new_location : get_turf(src))) return FALSE
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 
+ 
+ 	for (var/mob/M in range(1, loc))
+diff --git a/code/modules/persistence/functions.dm b/code/modules/persistence/functions.dm
+remerge CONFLICT (content): Merge conflict in code/modules/persistence/functions.dm
+index b28ef2530e2efa792f44b4e798da642d56f4f2a4..dc732e9527887872335ee3601fb827999f67d9e8 100644
+--- a/code/modules/persistence/functions.dm
++++ b/code/modules/persistence/functions.dm
+@@ -305,16 +305,12 @@ map_storage
+ 		return
+ 
+ /map_storage/persistence_runtime_var(key)
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+-	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE
+-=======
+ 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
+ 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
+-	if(key == "last_save_reference_failure") return TRUE
++	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE
+ #ifdef CIV13_VARIABLE_OBSERVABILITY
+ 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
+ #endif
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 	return ..()
+ 
+ // Native lookup references are process-local hints, not durable IDs. Operators
+@@ -693,10 +689,13 @@ var/global/persistence_load_recovery_required = FALSE
+ 		operation.authorize_restore_mutation(storage)
+ 		phase = "clear"
+ 		operation.mutation_started = TRUE
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ 		if(transaction) transaction.import_started = TRUE
++		// Validated geography must be authoritative before replacement constructors.
++		map.restore_elevation_snapshot(saved_round, world.maxx, world.maxy, storage.save_validation_maxz())
++		storage.begin_zone_restore(operation)
+ 		storage.reset_player_restoration()
+ 		storage.suspend_durable_world()
++		invalidate_persistence_area_snapshots()
+ 		storage.ClearMap()
+ 		phase = "world"
+ 		if(!storage.run_world_operation("load", operation))
+@@ -705,7 +704,10 @@ var/global/persistence_load_recovery_required = FALSE
+ 		if(storage.load_map_metadata() != TRUE)
+ 			throw EXCEPTION("World metadata restoration rejected")
+ 		storage.restore_durable_world()
++		// Apply the date floor after both legacy and durable metadata restoration.
++		map.apply_persistence_age_floor()
+ 		storage.restore_round_state(src, saved_round)
++		storage.restore_zone_spawns()
+ 		if(!transaction)
+ 			operation.restoring_players = TRUE
+ 			storage.finish_player_restoration()
+@@ -715,33 +717,6 @@ var/global/persistence_load_recovery_required = FALSE
+ 			if(attempt.release_transients() != TRUE)
+ 				throw EXCEPTION("Restore transient release rejected")
+ 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
+-=======
+-		// Validated geography must be authoritative before replacement constructors.
+-		map.restore_elevation_snapshot(saved_round, world.maxx, world.maxy, map_storage.save_validation_maxz())
+-		map_storage.begin_zone_restore(operation)
+-		map_storage.reset_player_restoration()
+-		map_storage.suspend_durable_world()
+-		invalidate_persistence_area_snapshots()
+-		map_storage.ClearMap()
+-		if(!map_storage.run_world_operation("load", operation))
+-			throw EXCEPTION("Load_World did not complete")
+-		if(!map_storage.load_map_metadata())
+-			throw EXCEPTION("Saved world metadata restoration failed")
+-		map_storage.restore_durable_world()
+-		// Both legacy metadata and durable fields are now authoritative. Apply
+-		// the mode's minimum without replacing a later saved date or research.
+-		map.apply_persistence_age_floor()
+-		map_storage.restore_round_state(src, saved_round)
+-		map_storage.restore_zone_spawns()
+-		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
+-		// Client restoration can dispatch callbacks too. Keep this operation's
+-		// identity until normal import completion, including those callbacks.
+-		if(!transaction)
+-			operation.restoring_players = TRUE
+-			// Future custody-enabled deployments must reconcile authoritative
+-			// ownership here even for older generations before activating a body.
+-			map_storage.finish_player_restoration()
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 	catch(var/exception/e)
+ 		var/primary_failure = "[e] on [e.file]:[e.line]"
+ 		if(attempt_owned)
+diff --git a/code/modules/persistence/loading.dm b/code/modules/persistence/loading.dm
+remerge CONFLICT (content): Merge conflict in code/modules/persistence/loading.dm
+index 8dd08d229db3925ab0bf5e0dc0db4c99b00cd1f0..ee599067c3fd8f6fb29f81d05ae8b8358417f6a5 100644
+--- a/code/modules/persistence/loading.dm
++++ b/code/modules/persistence/loading.dm
+@@ -390,17 +390,14 @@
+ 
+ /map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)
+ 	if(!operation || !operation.enter_contents(src, "load")) return FALSE
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ 	var/datum/extraction_surface_service/surface_inventory
+ 	if (istype(map, /obj/map_metadata/extraction_survival))
+ 		var/obj/map_metadata/extraction_survival/M = map
+ 		surface_inventory = M.surface_service
+ 		if (surface_inventory && !surface_inventory.begin_world_inventory(world.maxz)) return FALSE
+-=======
+ 	if(validated_zone_state)
+ 		if(!operation.zone_restore) begin_zone_restore(operation)
+ 		operation.zone_restore.clearing_old_world = FALSE
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 	// Allocate all levels first so references to turfs on later levels stay valid.
+ 	for(var/z = 1, z <= world.maxz, z++)
+ 		var/savefile/F = new("map_saves/[z].sav")
+@@ -465,11 +462,8 @@
+ 				light_owner.update_light()
+ 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
+ 		catch(var/exception/e)
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+ 			if (surface_inventory) surface_inventory.discovery_fail()
+-=======
+ 			clear_saved_roof_areas()
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 			last_error = "[e] on [e.file]:[e.line]"
+ 			world.log << "World-save restoration failed: [last_error]"
+ 			message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
+diff --git a/scripts/travis_pre_byond.sh b/scripts/travis_pre_byond.sh
+remerge CONFLICT (content): Merge conflict in scripts/travis_pre_byond.sh
+index f9f6b618a1df33c9fe7c073734c14949fadebada..de92192341a92d36731f2817cf89b92adf850293 100644
+--- a/scripts/travis_pre_byond.sh
++++ b/scripts/travis_pre_byond.sh
+@@ -44,15 +44,6 @@ sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y pyth
+ # END package setup
+ 
+ echo "Setting up BYOND."
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+-rm -rf "BYOND"
+-mkdir -p "BYOND"
+-cd "BYOND"
+-# Bound transient download failures without weakening TLS or changing source/version.
+-wget --timeout=60 --tries=3 --waitretry=5 -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
+-ls
+-unzip -o 516.1681_byond_linux.zip
+-=======
+ mkdir -p .ci/compile
+ git rev-parse HEAD 'HEAD^{tree}' > .ci/compile/checkout-commit-tree.txt
+ git ls-tree -r HEAD > .ci/compile/source-tree.txt
+@@ -74,7 +65,6 @@ fi
+ sha256sum pinned.zip > "$repo_root/.ci/compile/byond-archive.sha256"
+ printf '%s\n' "$byond_version" > "$repo_root/.ci/compile/byond-version.txt"
+ timeout -k 5 30 unzip -q pinned.zip
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ cd byond
+ timeout -k 5 60 make here
+ source "$repo_root/BYOND/byond/bin/byondsetup"
+diff --git a/tests/elevation/test_elevation.py b/tests/elevation/test_elevation.py
+index f1ac327fcf6b73b526fd266ef13f0ab355e36c05..a44ba501c242adbb955632094d0d1bbedbdba758 100644
+--- a/tests/elevation/test_elevation.py
++++ b/tests/elevation/test_elevation.py
+@@ -216,10 +216,10 @@ class ElevationTests(unittest.TestCase):
+         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+         save = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+         preflight = body(loading, '/map_storage/proc/validate_world_save()')
+-        loadmap = body(source, '/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)')
++        loadmap = body(source, '/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)')
+         self.assertLess(preflight.index('read_round_state()'), preflight.index('prepare_saved_roof_areas('))
+         self.assertLess(loadmap.index('read_round_state()'), loadmap.index('operation.mutation_started = TRUE'))
+-        self.assertLess(loadmap.index('map.restore_elevation_snapshot('), loadmap.index('map_storage.ClearMap()'))
++        self.assertLess(loadmap.index('map.restore_elevation_snapshot('), loadmap.index('storage.ClearMap()'))
+         self.assertLess(loadmap.index('map.restore_elevation_snapshot('), loadmap.index('run_world_operation("load"'))
+         self.assertLess(save.index('capture_round_state(generation)'), save.index('fdel("map_saves/save_complete.txt")'))
+         block = source[source.index('// Geographic metres'):source.index('// Custom persistence iterates vars')]
+diff --git a/tests/persistence_year/test_floor.py b/tests/persistence_year/test_floor.py
+index 2a36021cb2a66a87ee9b37c11e6681226b455e29..f774a4ed90b4d20094209e039d42bc9f1029883c 100644
+--- a/tests/persistence_year/test_floor.py
++++ b/tests/persistence_year/test_floor.py
+@@ -96,9 +96,9 @@ def wiring(mode, setup, load):
+     setup = uncomment(setup)
+     assert setup.count(CALL) == 1
+     assert '\tif (config.allowedgamemodes == "PERSISTENCE")\n\t\tmap.persistence = TRUE\n\t\t' + CALL in setup
+-    restore = uncomment(proc(load, "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)"))
++    restore = uncomment(proc(load, "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)"))
+     assert restore.count(CALL) == 1
+-    assert restore.index("map_storage.load_map_metadata()") < restore.index("map_storage.restore_durable_world()") < restore.index(CALL) < restore.index("map_storage.restore_round_state(src, saved_round)")
++    assert restore.index("storage.load_map_metadata()") < restore.index("storage.restore_durable_world()") < restore.index(CALL) < restore.index("storage.restore_round_state(src, saved_round)")
+     assert "\n\t\t" + CALL + "\n" in restore
+ 
+ 
+diff --git a/tests/persistence_year/test_native.py b/tests/persistence_year/test_native.py
+index b8b1d52aaa33cefe008272cf6b155222dcc4c4b7..8d8007a1e5855414b992a9a3d983b41f898fd781 100644
+--- a/tests/persistence_year/test_native.py
++++ b/tests/persistence_year/test_native.py
+@@ -41,8 +41,9 @@ class NativePacketTests(unittest.TestCase):
+                 self.assertFalse(list(output.glob("*.dmb")))
+                 self.assertFalse((output / "daemon.log").exists())
+                 self.assertEqual(production.read_bytes(), original)
+-                copies = list(output.glob("*_2.dm"))
+-                self.assertEqual(len(copies), int(control is not None))
++                generated = receipt['generated_sources']
++                copies = [output / generated['code/modules/persistence/functions.dm']] if control else []
++                self.assertEqual('code/modules/persistence/functions.dm' in generated, control is not None)
+                 if copies:
+                     source = copies[0].read_text()
+                     if control == "year-helper":
+@@ -50,7 +51,7 @@ class NativePacketTests(unittest.TestCase):
+                     elif control == "year-load":
+                         self.assertNotIn("map.apply_persistence_age_floor()", source)
+                     else:
+-                        self.assertIn("map.apply_persistence_age_floor()\n\t\tmap_storage.restore_durable_world()", source)
++                        self.assertIn("map.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()", source)
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/tests/reserved_lighting/test_ci.py b/tests/reserved_lighting/test_ci.py
+index 96c62149fc1dae0c102ebb9670b6ae50eba06aa0..1c9c315f18a073dc07fdd7d5ddd54c1e5ac562b3 100644
+--- a/tests/reserved_lighting/test_ci.py
++++ b/tests/reserved_lighting/test_ci.py
+@@ -52,7 +52,7 @@ class CIAdmission(unittest.TestCase):
+         source = (runner.ROOT/'code/modules/persistence/functions.dm').read_text()
+         self.assertIn('key == "pickaxe_mining_owner" || key == "mining_in_progress"', source)
+         self.assertIn('switch(key)\n\t\tif ("lighting_reserved", "affecting_lights"', source)
+-        self.assertIn('return key == "lighting_reserved_clearance_enabled" || ..()', source)
++        self.assertIn('return key == "lighting_reserved_clearance_enabled" || key == "persistence_zone_id" || ..()', source)
+         corner = (runner.ROOT/'code/modules/lighting/lighting_corner.dm').read_text()
+         self.assertIn('T.lighting_overlay || T.omit_reserved_lighting_overlay()', corner)
+ 
+diff --git a/tests/roof_area_recovery/test_preparation.py b/tests/roof_area_recovery/test_preparation.py
+index e35b7d687c7c2d17ba3640e49bf033a13f0fff3e..5a5093f3a9dded9d2df5aaac268cc80da715ea47 100644
+--- a/tests/roof_area_recovery/test_preparation.py
++++ b/tests/roof_area_recovery/test_preparation.py
+@@ -62,7 +62,7 @@ class RoofAreaPreparation(unittest.TestCase):
+                 output = Path(result.stdout.split('Retained evidence: ', 1)[1].splitlines()[0])
+                 receipt = json.loads((output / 'receipt.json').read_text())
+                 self.assertEqual(receipt['roof_control'], control)
+-                changed = (output / next(output.glob('*_2.dm')).name).read_text()
++                changed = (output / receipt['generated_sources']['code/modules/persistence/loading.dm']).read_text()
+                 if control == 'projection':
+                     self.assertNotIn('\t\tprepare_saved_roof_areas(round_state["generation"])', changed)
+                     self.assertIn('Old-defect control', changed)
+diff --git a/tests/save_movement/source_adapter.py b/tests/save_movement/source_adapter.py
+index 7b237c2c4818bc323fea45a6361c4029fd5a2e7a..5930ee72e0797fa937e1a59f3f68b7be845485fd 100644
+--- a/tests/save_movement/source_adapter.py
++++ b/tests/save_movement/source_adapter.py
+@@ -104,6 +104,9 @@ def project(source, declaration, args, env, method=False, *, defines=None):
+         if typed_loop:
+             code = f'for ({typed_loop[2]} in typed_iter({typed_loop[3]}, "/{typed_loop[1]}"))'
+         code = re.sub(r'\bvar/(?:\w+/)*(\w+)\b', r'\1', code)
++        # The merged extraction hand/equipment guards use one optional lookup.
++        # Model its null result explicitly; never omit the guarded instruction.
++        code = re.sub(r'\b(\w+)\?\.(\w+)\b', r'getattr(\1, "\2", None)', code)
+         code = code.replace('/area/caribbean/admin', 'ADMIN_AREA')
+         code = code.replace('in_protected_sleep_zone() ? 2 : 0', '(2 if in_protected_sleep_zone() else 0)')
+         code = code.replace('&&', ' and ').replace('||', ' or ')
+diff --git a/tests/save_movement/test_guard.py b/tests/save_movement/test_guard.py
+index d2759ad6a33740fc2fbf96429333cbfdae835cdb..3d941d90635efa613322988025b1119dc6a25f6d 100644
+--- a/tests/save_movement/test_guard.py
++++ b/tests/save_movement/test_guard.py
+@@ -273,6 +273,24 @@ class GuardTests(unittest.TestCase):
+         self.assertFalse(equip(human, item, 1))
+         self.assertEqual(events, ['equip-check', 'equip'])
+ 
++    def test_extraction_hand_guard_survives_save_movement_projection(self):
++        f = Fixture()
++        human, item = f.actor(), f.actor(f.other, human=False)
++        calls = []
++        human.l_hand = None
++        human.update_inv_l_hand = lambda: None
++        item.equipped = item.add_fingerprint = item.on_changed_slot = lambda *args: None
++        item.extraction_surface_source = NS(service=None)
++        f.env.update(parent=lambda: True, slot_l_hand='l')
++        source = read('code/game/mob/living/carbon/human/human.dm').replace('..()', 'parent()')
++        put = project(source, '/mob/living/human/put_in_l_hand', 'src, W', f.env, True)
++        self.assertFalse(put(human, item))
++        item.extraction_surface_source.service = NS(movement_allowed=lambda *args: calls.append(args) or False)
++        self.assertFalse(put(human, item))
++        self.assertEqual(calls, [(item, human)])
++        self.assertIs(item.loc, f.other)
++        self.assertIsNone(human.l_hand)
++
+     def test_active_explosive_nullspace_commit_refuses_save_and_retries(self):
+         f = Fixture()
+         human, charge = f.actor(), f.actor(human=False)
+diff --git a/tests/sprites/required-types.json b/tests/sprites/required-types.json
+remerge CONFLICT (content): Merge conflict in tests/sprites/required-types.json
+index 3c756a74bff797b04992023cd08084b27f96cf81..b7531accceacd57763f5969c9245ad3f0a5260e2 100644
+--- a/tests/sprites/required-types.json
++++ b/tests/sprites/required-types.json
+@@ -1,15 +1,12 @@
+ [
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+   "/obj/item/vehicle_key",
+   "/obj/item/extraction_wheel_crate",
+-=======
+   "/obj/item/stack/bark",
+   "/obj/item/stack/material/rawhide",
+   "/obj/item/stack/material/hairlesshide",
+   "/obj/item/stack/material/wethide",
+   "/obj/item/stack/material/dryhide",
+   "/obj/structure/converter/tanning",
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+   "/obj/item/flax_bundle",
+   "/obj/item/flax_work",
+   "/obj/item/stack/rotten_flax",
+diff --git a/tests/test_byond_bootstrap.py b/tests/test_byond_bootstrap.py
+index 15060e6000dcbfdff3cb0101e9d3d24a1bf2ead1..7720e426d9d5c1954905286226d475fa46cd16b0 100644
+--- a/tests/test_byond_bootstrap.py
++++ b/tests/test_byond_bootstrap.py
+@@ -66,11 +66,11 @@ exit 0
+         self.assertNotIn('Setting up BYOND.', result.stdout)
+ 
+     def test_download_is_bounded_without_source_or_tls_changes(self):
+-        commands = [shlex.split(line) for line in SCRIPT.read_text().splitlines()
+-                    if line.startswith('wget ')]
++        commands = [shlex.split(line.strip()) for line in SCRIPT.read_text().splitlines()
++                    if line.strip().startswith('timeout -k 5 65 wget ')]
+         self.assertEqual(commands, [[
+-            'wget', '--timeout=60', '--tries=3', '--waitretry=5',
+-            '-O', '516.1681_byond_linux.zip',
++            'timeout', '-k', '5', '65', 'wget', '--timeout=30', '--tries=1', '--no-verbose',
++            '-O', 'pinned.zip',
+             'https://civ13.com/downloads/516.1681_byond_linux.zip',
+         ]])
+ 
+diff --git a/tests/test_ci_regression_policy.py b/tests/test_ci_regression_policy.py
+remerge CONFLICT (content): Merge conflict in tests/test_ci_regression_policy.py
+index bc9ef5fc915b4e1abe54b5809132833f7bd21008..9a9d01080ec9e4cc7e7fe781c7af0c1a554c5ba3 100644
+--- a/tests/test_ci_regression_policy.py
++++ b/tests/test_ci_regression_policy.py
+@@ -22,7 +22,7 @@ class RegressionPolicyTests(unittest.TestCase):
+     ADMISSION_STEP = 'Verify persistence admission adapter and ordinary restore compatibility'
+     ADMISSION_GATES = (
+         '!cancelled()', "needs.changes.result == 'success'",
+-        "steps.byond_setup.outcome == 'success'",
++        "steps.compile.outcome == 'success'",
+         "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission'))",
+     )
+     VEHICLE_DIAGNOSTICS = {
+@@ -32,7 +32,7 @@ class RegressionPolicyTests(unittest.TestCase):
+     }
+     VEHICLE_GATES = (
+         '!cancelled()', "needs.changes.result == 'success'",
+-        "steps.byond_setup.outcome == 'success'",
++        "steps.compile.outcome == 'success'",
+         "needs.changes.outputs.extensive == 'true'",
+     )
+ 
+@@ -187,12 +187,8 @@ class RegressionPolicyTests(unittest.TestCase):
+                     self.assertNotIn('secrets.', block)
+                     continue
+                 self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
+-<<<<<<< 5aaed0a172aa3baa3fe604096cbbb8a00f519aac (Validate every settlement, NPC receipt and loot outcome before accepting lists)
+         self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
+         self.assertEqual(admission_steps, 1)
+-        self.assertIn("id: byond_setup\n        if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
+-        self.assertIn("if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
+-=======
+         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
+         self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
+ 
+@@ -229,7 +225,6 @@ class RegressionPolicyTests(unittest.TestCase):
+                               ('        if: ' + ROOF_NATIVE_GUARD + '\n', '')):
+             with self.subTest(before=before, after=after), self.assertRaises(AssertionError):
+                 self.assert_explicit_suite_guards(workflow.replace(block, block.replace(before, after), 1))
+->>>>>>> 99647037c70786a3c3944fcf5ae51b570b377f08 (Add Discord and Website links to BYOND hub listings (#3326))
+ 
+ 
+ if __name__ == '__main__':
+diff --git a/tests/world_save/run-durable-world.py b/tests/world_save/run-durable-world.py
+index c84c43392f9e035d379b16b67fc52fa7cb456284..baf2cc7ba291381f94eae5e17c4241d9d7c83e67 100644
+--- a/tests/world_save/run-durable-world.py
++++ b/tests/world_save/run-durable-world.py
+@@ -97,7 +97,7 @@ def main():
+                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
+                'lifecycle_shutdown': args.lifecycle_shutdown,
+                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
+-               'production_hashes': {}}
++               'production_hashes': {}, 'generated_sources': {}}
+     print(f'Retained evidence: {output}', flush=True)
+     try:
+         source = (root / 'civ13.dme').read_text(encoding='utf-8')
+@@ -165,7 +165,7 @@ def main():
+             before, after = {
+                 'year-helper': ('if (!persistence)\n', 'if (TRUE)\n'),
+                 'year-load': ('\t\tmap.apply_persistence_age_floor()\n', ''),
+-                'year-order': ('\t\tmap_storage.restore_durable_world()\n', '\t\tmap.apply_persistence_age_floor()\n\t\tmap_storage.restore_durable_world()\n'),
++                'year-order': ('\t\tstorage.restore_durable_world()\n', '\t\tmap.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()\n'),
+             }[args.negative_control]
+             if text.count(before) != 1:
+                 raise RuntimeError('Date control anchor changed')
+@@ -224,6 +224,7 @@ def main():
+             generated_path = root / (prefix + f'_{index}.dm')
+             generated_path.write_text(text, encoding='utf-8', newline='\n')
+             generated.append(generated_path)
++            receipt['generated_sources'][relative] = generated_path.name
+             original_include = relative.replace('/', chr(92))
+             if source.count(original_include) != 1:
+                 raise RuntimeError('Production include anchor changed')
+diff --git a/tests/world_save/test_restore_integration_sources.py b/tests/world_save/test_restore_integration_sources.py
+index 39b65de9c9fa80e39f2d8833c897350abfcd165a..123a5dfe5f7b00c5742f1fc9a9c33df0f34af202 100644
+--- a/tests/world_save/test_restore_integration_sources.py
++++ b/tests/world_save/test_restore_integration_sources.py
+@@ -25,6 +25,25 @@ class RestoreIntegrationSources(unittest.TestCase):
+         self.assertLess(dimensions.index('operation.mutation_started = TRUE'), dimensions.index('allocate_saved_level(z)'))
+         self.assertIn('prepare_saved_dimensions(expected_intent, operation)', self.wrapper)
+ 
++    def test_master_geography_and_player_restore_remain_inside_custody(self):
++        ordered = ('operation.authorize_restore_mutation(storage)',
++                   'operation.mutation_started = TRUE',
++                   'transaction.import_started = TRUE',
++                   'map.restore_elevation_snapshot(', 'storage.begin_zone_restore(operation)',
++                   'storage.suspend_durable_world()', 'invalidate_persistence_area_snapshots()',
++                   'storage.ClearMap()', 'storage.run_world_operation("load", operation)',
++                   'storage.load_map_metadata()', 'storage.restore_durable_world()',
++                   'map.apply_persistence_age_floor()', 'storage.restore_round_state(src, saved_round)',
++                   'storage.restore_zone_spawns()', 'storage.finish_player_restoration()',
++                   'attempt.release_transients()')
++        offsets = [self.wrapper.index(call) for call in ordered]
++        self.assertEqual(offsets, sorted(offsets))
++        # Neither the optional provider nor native callbacks may leak into saves.
++        runtime = self.functions.split('/map_storage/persistence_runtime_var(key)', 1)[1].split('return ..()', 1)[0]
++        for field in ('restore_policy', 'restore_cleanup_error', 'validated_roof_areas',
++                      'validated_zone_state', 'zone_export_state', 'last_save_reference_failure'):
++            self.assertIn('"' + field + '"', runtime)
++
+     def test_startup_cannot_allocate_outside_admitted_wrapper(self):
+         source = (ROOT / 'code/modules/persistence/restart_transaction.dm').read_text()
+         self.assertNotIn('prepare_saved_dimensions(', source)

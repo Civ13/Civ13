@@ -1,90 +1,74 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
-# No user URL/hash arguments: only the dedicated, fixed mall opt-in is accepted.
-case "$#:$1" in
-  0:) official_pinned_mall=false ;;
-  1:--official-pinned-mall) official_pinned_mall=true ;;
-  *) echo 'Expected no argument or --official-pinned-mall' >&2; exit 64 ;;
+# Only the two reviewed manual fixture workflows use this historical toolchain.
+case "${1:-}" in
+    '') legacy_fixture=false ;;
+    --legacy-fixture-5161681) legacy_fixture=true ;;
+    *) echo 'Unsupported BYOND bootstrap option' >&2; exit 2 ;;
 esac
-if [[ "$official_pinned_mall" == true ]]; then
-  # Check before package installation or any source/toolchain filesystem effect.
-  command -v curl >/dev/null || { echo 'Official mall bootstrap requires existing curl' >&2; exit 69; }
+test "$#" -le 1 || exit 2
+
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+cd "$script_dir/.."
+repo_root="$PWD"
+if "$legacy_fixture"; then
+    byond_version=516.1681
+else
+    byond_version="$(python3 "$script_dir/byond_toolchain.py" field version)"
+fi
+if [ -n "${BYOND_MAJOR:-}" ] && [ "$BYOND_MAJOR" != "${byond_version%.*}" ]; then
+    echo 'BYOND major differs from selected toolchain' >&2; exit 2
+fi
+if [ -n "${BYOND_MINOR:-}" ] && [ "$BYOND_MINOR" != "${byond_version#*.}" ]; then
+    echo 'BYOND build differs from selected toolchain' >&2; exit 2
 fi
 
-# BEGIN FIXED OFFICIAL MALL DOWNLOAD
-download_official_pinned_mall() {
-  local archive='516.1681_byond_linux.zip'
-  local expected_bytes=4884042
-  local expected_sha256='614c126b9d0073c67558172c2c2fcb92c31298cf36092208ed55a416326bede3'
-  local url='https://www.byond.com/download/build/516/516.1681_byond_linux.zip'
-  local status bytes
-  # Observed official-origin HTTPS identity captured 2026-10-21: HTTP200,
-  # 4884042 bytes, independently read-back SHA256 above. This is a reviewed
-  # byte pin, not a publisher-signed checksum or a permanent release guarantee.
-  if [[ -e "$archive" || -L "$archive" ]]; then
-    echo 'Refusing pre-existing official archive output' >&2
-    return 1
-  fi
-  # --disable is first: ignore curlrc. No proxy, redirects, retries or fallback;
-  # retain normal certificate/hostname verification and permit HTTPS only.
-  if ! status=$(curl --disable --proxy '' --noproxy '*' --proto '=https' \
-      --tlsv1.2 --fail --silent --show-error --request GET \
-      --connect-timeout 10 --max-time 60 --max-filesize 8388608 \
-      --retry 0 --max-redirs 0 --output "$archive" --write-out '%{http_code}' "$url"); then
-    echo 'Official archive transport/TLS/size/time failure; no fallback' >&2
-    return 1
-  fi
-  if [[ "$status" != 200 ]]; then
-    echo 'Official archive requires exact HTTP200; no redirect/fallback' >&2
-    return 1
-  fi
-  bytes=$(wc -c < "$archive")
-  bytes=${bytes//[[:space:]]/}
-  if [[ ! "$bytes" =~ ^[0-9]+$ || "$bytes" -ne "$expected_bytes" || "$bytes" -gt 8388608 ]]; then
-    echo 'Official archive byte count mismatch' >&2
-    return 1
-  fi
-  if ! printf '%s  %s\n' "$expected_sha256" "$archive" | sha256sum --check --status; then
-    echo 'Official archive SHA256 mismatch' >&2
-    return 1
-  fi
-  printf 'Verified observed official-origin BYOND archive: bytes=%s sha256=%s url=%s\n' "$bytes" "$expected_sha256" "$url"
+# BEGIN compiler status contract
+compile_game() {
+    timeout -k 5 300 DreamMaker -max_errors 0 civ13.dme 2>&1 | tee result.log
+    # pipefail rejects a failing compiler even if it prints a zero-warning line.
+    grep -q -- '- 0 errors, 0 warnings' result.log
+    test "$(grep -c '^DM compiler version' result.log)" = 1
+    grep -Fx -- "DM compiler version $byond_version" result.log
 }
-# END FIXED OFFICIAL MALL DOWNLOAD
+# END compiler status contract
 
+# BEGIN package setup
 echo "Setting up the system for BYOND compilation."
-sudo dpkg --add-architecture i386
-# Install the build dependencies only. Upgrading the entire hosted image can
-# trigger unrelated Firefox/snap provisioning and fail before BYOND is installed.
-sudo env DEBIAN_FRONTEND=noninteractive apt-get update
-sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y python3 wget git unzip make sudo
-sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y libstdc++6:i386 libgcc1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+sudo timeout -k 5 30 dpkg --add-architecture i386
+# Install dependencies only; never upgrade the hosted image.
+sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update
+sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+
+# END package setup
 
 echo "Setting up BYOND."
-rm -rf "BYOND"
-mkdir -p "BYOND"
-cd "BYOND"
-if [[ "$official_pinned_mall" == true ]]; then
-  download_official_pinned_mall
+mkdir -p .ci/compile
+git rev-parse HEAD 'HEAD^{tree}' > .ci/compile/checkout-commit-tree.txt
+git ls-tree -r HEAD > .ci/compile/source-tree.txt
+git diff --binary HEAD > .ci/compile/source-before.patch
+trap 'status=$?; cd "$repo_root"; cp result.log .ci/compile/compiler.log 2>/dev/null || true; git diff --binary HEAD > .ci/compile/source-after.patch; exit "$status"' EXIT
+# Fresh hosted checkout only. Refuse an existing install rather than deleting it.
+mkdir BYOND
+cd BYOND
+if "$legacy_fixture"; then
+    # Preserve the historical fixture download; no independent checksum is claimed.
+    timeout -k 5 65 wget --timeout=30 --tries=1 --no-verbose -O pinned.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
 else
-# Bound transient download failures without weakening TLS or changing source/version.
-wget --timeout=60 --tries=3 --waitretry=5 -O 516.1681_byond_linux.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
+    archive_args=(--platform linux --output pinned.zip --source "${BYOND_ARCHIVE_SOURCE:-official}")
+    if [ -n "${BYOND_ARCHIVE_CACHE:-}" ]; then
+        archive_args+=(--cache-dir "$BYOND_ARCHIVE_CACHE")
+    fi
+    timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download "${archive_args[@]}" > "$repo_root/.ci/compile/byond-download.json"
 fi
-ls
-unzip -o 516.1681_byond_linux.zip
+sha256sum pinned.zip > "$repo_root/.ci/compile/byond-archive.sha256"
+printf '%s\n' "$byond_version" > "$repo_root/.ci/compile/byond-version.txt"
+timeout -k 5 30 unzip -q pinned.zip
 cd byond
-make here
+timeout -k 5 60 make here
+source "$repo_root/BYOND/byond/bin/byondsetup"
+cd "$repo_root"
 echo "Compiling the dme..."
-retval=1
-source /home/runner/work/Civ13/Civ13/BYOND/byond/bin/byondsetup
-cd /home/runner/work/Civ13/Civ13/
-python3 scripts/build-crafting-atlas.py --catalog-only --game-catalog UI/crafting-atlas.json
-DreamMaker -max_errors 0 civ13.dme | tee result.log
-retval=$?
-if ! grep '\- 0 errors, 0 warnings' result.log
-then
-	retval=1 #hard fail, due to warnings or errors
-	echo "Failed to compile!"
-	exit 1
-	fi
+timeout -k 5 60 python3 scripts/build-crafting-atlas.py --catalog-only --game-catalog UI/crafting-atlas.json
+compile_game

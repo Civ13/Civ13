@@ -149,7 +149,9 @@ def main(argv=None, *, root=None, run_factory=OwnedRun):
         files[0].write_text(source, encoding='utf-8')
         compiled = owned.run('compile', [str(compiler), '-max_errors', '0', files[0].name], root, 120, creationflags=flags)
         output = compiled.stdout + compiled.stderr
-        if compiled.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
+        banners = re.findall(r'^DM compiler version[^\r\n]*', output, re.MULTILINE)
+        if (compiled.returncode or banners != ['DM compiler version 516.1688']
+                or '0 errors, 0 warnings' not in output):
             raise RuntimeError('Pinned mall fixture compilation failed:\n' + output)
         if args.compile_only:
             accepted = 'PASS: pinned mall fixture compile'

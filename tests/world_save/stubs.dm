@@ -36,6 +36,17 @@ var/obj/map_metadata/map
 var/mob/dview_mob
 var/list/errors = list()
 var/list/clients = list()
+// Minimal serializer worlds have no roof/season workers. Reject use of those
+// unsupported effects instead of pretending to establish their native behavior.
+var/list/area_list = list()
+/area/caribbean/roofed
+	New()
+		throw EXCEPTION("Roof topology requires the production roof fixture")
+/turf/var/weather_snow = 0
+/turf/proc/snowfall_ground_icon()
+	if(weather_snow)
+		throw EXCEPTION("Generated snow requires the production snowfall fixture")
+	return
 var/game_id = "fixture-round"
 var/round_start_time = 0
 var/round_elapsed_offset = 0
@@ -230,3 +241,55 @@ var/list/mutate_on_tick = null
 	durable_export = null
 	durable_import = null
 	loading_z = 0
+
+// These serializer-only worlds cannot import topology. Full-source prepared
+// zone fixtures compile the production implementation instead.
+/area/var/tmp/persistence_zone_id
+/map_storage
+	var/list/validated_zone_state
+	var/list/validated_zones = list()
+	var/list/restored_zones = list()
+/map_storage/proc/clear_saved_zones()
+	validated_zone_state = null
+/map_storage/proc/saved_zone_id(x, y, z)
+	return null
+/map_storage/proc/capture_zone_topology(yielding = TRUE)
+	return null
+/map_storage/proc/prepare_saved_zones(list/state, generation)
+	if(islist(state) && state["schema"] == 2) throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/prepare_zone_roof(savefile/F, x, y, z, child, type)
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/restore_zone_topology()
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/restore_zone_spawns()
+	return
+
+/obj/map_metadata/proc/uses_durable_metadata()
+	return FALSE
+/datum/persistence_world_operation/var/datum/persistence_zone_restore/zone_restore
+/datum/persistence_zone_restore
+	var/clearing_old_world = FALSE
+/map_storage
+	var/list/zone_export_state
+	var/zone_export_generation
+	var/list/zone_candidate_validation
+/map_storage/proc/clear_zone_export()
+	return
+/map_storage/proc/begin_zone_export(generation)
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/finalize_zone_export(list/state)
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/capture_zone_turf(savefile/F, datum/save_export_frame/frame)
+	return
+/map_storage/proc/encode_zone_reference(area/A)
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/validate_zone_reference(id, type)
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)
+	if(!validated_zone_state) return
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/validate_captured_world_save(list/candidate)
+	throw EXCEPTION("Topology needs the full-source fixture")
+
+/proc/invalidate_persistence_area_snapshots()
+	return

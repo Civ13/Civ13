@@ -218,7 +218,7 @@ class NativeOracleTests(unittest.TestCase):
         self.assertIn('\tNew()\n\t\tworld.OpenPort("none")\n', source)
         self.assertIn('mall_assert(!world.port && !world.visibility', source)
         self.assertIn('mall_assert(!world.OpenPort(0) && !world.port', source)
-        self.assertIn('world.byond_version == 516 && world.byond_build == 1681', source)
+        self.assertIn('world.byond_version == 516 && world.byond_build == 1688', source)
         self.assertLess(source.index('try\n'), source.index('mall_assert(!world.port'))
         self.assertLess(source.index('mall_stage("' + run_mall.NETWORK_STAGE + '")'),
                         source.index('\t\t\t\tmall_probe()'))
@@ -660,7 +660,7 @@ class MainTests(unittest.TestCase):
     def invoke(self, *, git_code=0, compile_code=0, compile_error=None,
                daemon_code=0, daemon_error=None, diagnostic='', compile_only=False,
                unlink=None, writer=None, git_output=b'a' * 40 + b'\n',
-               compile_output=b'516.1681\n0 errors, 0 warnings\n',
+               compile_output=b'DM compiler version 516.1688\n0 errors, 0 warnings\n',
                negative_control=None):
         clock = Clock()
         children = [Child(clock, [(0, git_code)]),
@@ -721,6 +721,19 @@ class MainTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     self.invoke(**options)
                 self.assertEqual(len(self.spawn.calls), launches)
+                self.assertNotIn('PASS:', self.stdout.getvalue())
+
+    def test_compiler_target_banner_is_exact_and_unique(self):
+        for banner in (b'DM compiler version 516.1681',
+                       b'DM compiler version 516.16880',
+                       b'DM compiler version 516.1688 extra',
+                       b'prefix DM compiler version 516.1688',
+                       b'DM compiler version 516.1688\nDM compiler version 516.1688',
+                       b'DM compiler version 516.1688\nDM compiler version 516.1681'):
+            with self.subTest(banner=banner):
+                with self.assertRaises(RuntimeError):
+                    self.invoke(compile_output=banner + b'\n0 errors, 0 warnings\n')
+                self.assertEqual(len(self.spawn.calls), 2)
                 self.assertNotIn('PASS:', self.stdout.getvalue())
 
     def test_compiler_failure_or_timeout_never_launches_daemon(self):

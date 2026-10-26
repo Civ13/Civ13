@@ -25,6 +25,34 @@ class RestoreIntegrationSources(unittest.TestCase):
         self.assertLess(dimensions.index('operation.mutation_started = TRUE'), dimensions.index('allocate_saved_level(z)'))
         self.assertIn('prepare_saved_dimensions(expected_intent, operation)', self.wrapper)
 
+    def test_wrapper_cases_own_metadata_before_geographic_restore(self):
+        source = (ROOT / 'tests/world_save/restore_wrapper.dm').read_text()
+        case = source.split('/proc/wrapper_case(', 1)[1].split('/proc/check_restore_wrapper()', 1)[0]
+        self.assertLess(case.index('fixture_map = new'), case.index('result = ticker.loadmap()'))
+        self.assertEqual(case.count('map = original_map'), 2)
+        self.assertEqual(case.count('if(fixture_map) qdel(fixture_map)'), 2)
+        self.assertIn('check(result == expected', case)
+        self.assertNotIn('/obj/map_metadata/proc/restore_elevation_snapshot', source)
+
+    def test_master_geography_and_player_restore_remain_inside_custody(self):
+        ordered = ('operation.authorize_restore_mutation(storage)',
+                   'operation.mutation_started = TRUE',
+                   'transaction.import_started = TRUE',
+                   'map.restore_elevation_snapshot(', 'storage.begin_zone_restore(operation)',
+                   'storage.suspend_durable_world()', 'invalidate_persistence_area_snapshots()',
+                   'storage.ClearMap()', 'storage.run_world_operation("load", operation)',
+                   'storage.load_map_metadata()', 'storage.restore_durable_world()',
+                   'map.apply_persistence_age_floor()', 'storage.restore_round_state(src, saved_round)',
+                   'storage.restore_zone_spawns()', 'storage.finish_player_restoration()',
+                   'attempt.release_transients()')
+        offsets = [self.wrapper.index(call) for call in ordered]
+        self.assertEqual(offsets, sorted(offsets))
+        # Neither the optional provider nor native callbacks may leak into saves.
+        runtime = self.functions.split('/map_storage/persistence_runtime_var(key)', 1)[1].split('return ..()', 1)[0]
+        for field in ('restore_policy', 'restore_cleanup_error', 'validated_roof_areas',
+                      'validated_zone_state', 'zone_export_state', 'last_save_reference_failure'):
+            self.assertIn('"' + field + '"', runtime)
+
     def test_startup_cannot_allocate_outside_admitted_wrapper(self):
         source = (ROOT / 'code/modules/persistence/restart_transaction.dm').read_text()
         self.assertNotIn('prepare_saved_dimensions(', source)

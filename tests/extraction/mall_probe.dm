@@ -47,7 +47,7 @@ var/global/mall_fixture_failed = FALSE
 			try
 				mall_assert(!world.port && !world.visibility, "daemon closes listening port and hides fixture")
 				mall_assert(!world.OpenPort(0) && !world.port, "daemon rejects reopening listening port")
-				mall_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")
+				mall_assert(world.byond_version == 516 && world.byond_build == 1688, "pinned native runtime")
 				mall_stage("network closed and reopen refused")
 				mall_probe()
 				if (!mall_fixture_failed)

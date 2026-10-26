@@ -17,6 +17,7 @@ serverdata.txt
 config/host.txt
 config/lifecycle-token.txt
 config/lifecycle-revision.txt
+config/variable-observability.txt
 recipes.txt
 .vscode/
 cfg/admin.txt
@@ -52,5 +53,7 @@ __pycache__/
 # Generated API reference and downloaded tools
 /dmdoc/
 /.cache/
+# Machine-readable CI receipts and diagnostic logs are generated artifacts.
+/.ci/
 # Generated runtime evidence belongs in PR attachments, not source control
 /docs/evidence/memory-runtime-*/

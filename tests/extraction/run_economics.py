@@ -9,6 +9,10 @@ import shutil
 import subprocess
 import tempfile
 import uuid
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 
 def main():
@@ -22,8 +26,9 @@ def main():
     root = Path(__file__).resolve().parents[2]
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
 
-    def command(argv, cwd=None):
-        result = subprocess.run([str(x) for x in argv], cwd=cwd,
+    def command(argv, cwd=None, native_role=None):
+        execute = current.run_compiler if native_role == 'compiler' else current.run_daemon if native_role == 'daemon' else subprocess.run
+        result = execute([str(x) for x in argv], cwd=cwd,
                                 capture_output=True, text=True, timeout=120, creationflags=flags)
         if result.returncode:
             raise RuntimeError(result.stdout + result.stderr)
@@ -71,9 +76,9 @@ def main():
             source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
             source += '\n#include "tests/extraction/economic_spool_probe.dm"\n'
             generated[0].write_text(source, encoding='utf-8')
-            build = command([compiler, '-max_errors', '0', generated[0]], root)
+            build = command([compiler, '-max_errors', '0', generated[0]], root, native_role='compiler')
             (target / 'compile.log').write_text(build + '\n', encoding='utf-8')
-            if '516.1681' not in build or '0 errors, 0 warnings' not in build:
+            if current.VERSION not in build or '0 errors, 0 warnings' not in build:
                 raise RuntimeError('Pinned native compile failed: ' + build)
             shutil.copy2(generated[3], target / 'probe.dmb')
             shutil.copy2(generated[4], target / 'probe.rsc')
@@ -84,7 +89,7 @@ def main():
                 (target / 'result.txt').unlink(missing_ok=True)
                 platform = ['-invisible', '-close'] if os.name == 'nt' else []
                 output = command([daemon, 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', *platform, '-trusted', '-params', 'phase=' + phase,
-                                  '-log', 'runtime.log'], target)
+                                  '-log', 'runtime.log'], target, native_role='daemon')
                 log = (target / 'runtime.log').read_text(errors='replace')
                 result = (target / 'result.txt').read_text().strip()
                 phases.append({'phase': phase, 'result': result})

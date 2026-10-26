@@ -1060,7 +1060,8 @@ var/list/coefflist = list()
 	if (W?.extraction_surface_source && (!W.extraction_surface_source.service || !W.extraction_surface_source.service.movement_allowed(W, src))) return FALSE
 	if (!..() || l_hand)
 		return FALSE
-	W.forceMove(src)
+	if (W.loc != src && !W.forceMove(src)) return FALSE
+	if (W.loc != src) return FALSE
 	l_hand = W
 	W.equipped(src,slot_l_hand)
 	W.add_fingerprint(src)
@@ -1072,7 +1073,8 @@ var/list/coefflist = list()
 	if (W?.extraction_surface_source && (!W.extraction_surface_source.service || !W.extraction_surface_source.service.movement_allowed(W, src))) return FALSE
 	if (!..() || r_hand)
 		return FALSE
-	W.forceMove(src)
+	if (W.loc != src && !W.forceMove(src)) return FALSE
+	if (W.loc != src) return FALSE
 	r_hand = W
 	W.equipped(src,slot_r_hand)
 	W.add_fingerprint(src)

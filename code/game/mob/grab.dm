@@ -176,6 +176,7 @@
 /obj/item/weapon/grab/proc/adjust_position()
 	if (!affecting)
 		return
+	if ((state == GRAB_NECK || state == GRAB_UPGRADING || state == GRAB_KILL) && (!assailant || !persistence_movement_allowed(affecting, assailant.loc))) return FALSE
 	if (affecting.buckled)
 		animate(affecting, pixel_x = FALSE, pixel_y = FALSE, 4, TRUE, LINEAR_EASING)
 		return
@@ -199,12 +200,12 @@
 			shift = -10
 			adir = assailant.dir
 			affecting.set_dir(assailant.dir)
-			affecting.loc = assailant.loc
+			affecting.persistence_set_loc(assailant.loc)
 		if (GRAB_KILL)
 			shift = FALSE
 			adir = TRUE
 			affecting.set_dir(SOUTH) //face up
-			affecting.loc = assailant.loc
+			affecting.persistence_set_loc(assailant.loc)
 
 	switch(adir)
 		if (NORTH)

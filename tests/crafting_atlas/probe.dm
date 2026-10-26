@@ -15,6 +15,8 @@ var/atlas_failed = FALSE
 		text2file(message, "failed.txt")
 /world/New()
 	OpenPort("none")
+	check_atlas(!world.port && !OpenPort(12345), "fixture refuses listening ports")
+	text2file("closed", "port-closed.txt")
 	var/datum/crafting_atlas_reference/cold_reference = new
 	check_atlas(cold_reference.resource_exists("fixture"), "cold resource navigation loads catalog")
 	check_atlas(!cold_reference.resource_exists("absent"), "unknown resource rejected")

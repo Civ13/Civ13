@@ -7,6 +7,10 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+import fixture_toolchain as current
+
 
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
 
@@ -58,6 +62,7 @@ def main():
         process = None
         try:
             with (output / f'{role}-stdio.log').open('w', encoding='utf-8') as stream:
+                current.verify(command[0])
                 process = subprocess.Popen(command, cwd=output, stdout=stream, stderr=subprocess.STDOUT,
                                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
                 row['pid'] = process.pid
@@ -88,7 +93,8 @@ def main():
         return logs
 
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'], 60)
-    if '516.1681' not in build or '0 errors, 0 warnings' not in build:
+    current.validate_compiler(subprocess.CompletedProcess([], 0, build, ''))
+    if current.VERSION not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError(f'Pinned clean compilation required: {build}')
     owned('daemon', [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log'], 30)
     actual = text(output / 'result.txt').strip()

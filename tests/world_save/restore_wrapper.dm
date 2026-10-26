@@ -106,6 +106,13 @@
 
 /proc/wrapper_case(stage, provider_mode, metadata_result, expected)
 	var/map_storage/original_storage = map_storage
+	var/obj/map_metadata/original_map = map
+	var/obj/map_metadata/fixture_map
+	// The production wrapper now restores geographic metadata before ClearMap.
+	// These cases run before roundtrip.dm creates its ordinary saved-map actor.
+	if(!map)
+		fixture_map = new
+		map = fixture_map
 	var/map_storage/wrapper_fixture/S = new("WRAPPER")
 	S.failure_stage = stage
 	S.metadata_result = metadata_result
@@ -124,9 +131,13 @@
 		result = ticker.loadmap()
 	catch(var/exception/e)
 		map_storage = original_storage
+		map = original_map
+		if(fixture_map) qdel(fixture_map)
 		persistence_save_in_progress = FALSE
 		throw e
 	map_storage = original_storage
+	map = original_map
+	if(fixture_map) qdel(fixture_map)
 	check(result == expected, (stage == "" && isnull(provider_mode) && metadata_result != TRUE) ? "metadata exact TRUE required" : "wrapper result [stage]/[provider_mode]/[metadata_result]")
 	check(!persistence_active_operation, "wrapper releases only operation identity")
 	var/mutated = ("clear" in S.events) || ("world" in S.events)

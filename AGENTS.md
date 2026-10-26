@@ -14,6 +14,73 @@ Modular car wheels are contained in their connected frames; the controller is
 also nested in a frame and steering in the driver seat. Use get_turf() for their
 coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
 it does not establish durable garage ownership or cargo/passenger extraction.
+<!-- 2026-10-25: shared hub community links -->
+`code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
+WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.
+The `hub_status` CI baseline suite tests source-derived HTML offline, not native
+DM execution or public hub rendering. Installing new procedures requires a
+rebuilt world and separately authorized restart; source approval does not activate it.
+
+<!-- 2026-10-24: precipitation-driven generated snow -->
+Ground snow uses weather_snow units on exact ordinary dirt/grass, actual snowfall,
+exposure and get_temp (stick <=0C, melt >2C). Existing winter/snow/ice stays unmarked.
+No seasonal snow-ground replacement/thaw; retain water/ice/calendar/weather logic.
+One bounded swap-remove worker owns sampling. Save only units, never image/index;
+legacy same-type load resets units before decode. docs/snowfall-ground.md lists
+gameplay predicates, exclusions and source/native acceptance limits.
+
+<!-- 2026-10-24: authoritative zones and spawn registries -->
+Durable schema 2/topology 2 captures native area IDs in per-level zone_capture
+records at turf-frame admission. IDs use lineage counters, not new RNG calls.
+Validate candidate files with yields; do not restore a full-world no-yield JSON
+comparison. Area registration is operation-staged, retirement precedes publication,
+and load/recovery readers require admission. No rollback exists after ClearMap.
+Schema 1 keeps its legacy reader; tests/zone_persistence is offline/preparation
+evidence only. Local IDs are not shard/custody IDs or logical geographic layers.
+
+<!-- 2026-10-24: target BYOND version and historical fixture boundary -->
+tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
+bytes; it is embedded directly into source launcher 1.0.8 and consumed by the
+default compiler bootstrap/receipts and WSL setup. This does not establish native
+compatibility or publish the launcher. Compiler minimum/savefile major remain
+516.1681/516. Frozen 1681 fixture helpers, CID offsets and historical evidence stay
+unchanged. Manual component/train workflows explicitly select the legacy 1681
+bootstrap; other strict 1681 runtime harnesses must fail on a mismatched engine,
+not be relabeled. See docs/byond-5161688.md before selecting native coverage.
+Active hosted compilation explicitly selects the user-approved Civ13/Civ13
+repository-release asset pinned in the Linux manifest. Only its exact public URL
+may redirect once to its reviewed release-assets.githubusercontent.com path;
+no credentials, signed-query receipts, source fallback or broad redirect rule.
+Official/community choices retain NoRedirect. Only the versioned archive and
+acquisition metadata are cached by OS/version/hash; each hit verifies every byte
+before fresh extraction and actual compilation. Preserve original cache-origin
+provenance, fail closed on corrupt caches, and require exact-source receipts.
+BYOND cache prereleases are excluded from launcher publication by both the
+workflow and release planner; this archive route does not change the stable feed.
+
+<!-- 2026-10-24: shared season duration -->
+Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
+an optional map.season_duration_minutes override. Pending durable remainders are
+unchanged; map overrides are author policy, excluded from historical imports.
+Mountain and Ice Age retain initial30-minute shared timers and their explicit
+recurrence. Independent calendars and literal startup delays stay separate.
+tests/season_duration is source-only; native timer/reload acceptance stays pending.
+
+<!-- 2026-10-24: per-map random weather policy -->
+weather_timing/weather_transitions are optional author fields for existing random
+weather. Null keeps old rolls, season pools and process timings; configured rows
+intersect seasonal/map eligibility, and empty choices hold current weather.
+Invalid policy stops random helpers before mutations. Direct event calls retain
+their behavior. Fields are excluded from imports; no saved cursor or event callback.
+tests/weather_policy is offline projection/parity evidence, not native acceptance.
+
+<!-- 2026-10-24: configured base season flow -->
+season_cycle is author policy for the serialized base worker. Whole-cycle validation
+rejects Spring/Summer->Winter before mutation; default edges retain legacy payloads.
+Six supported nondefault edges preserve unmarked ground and reconcile snow structures/wet-dry state
+inside the existing epoch/lock, before the unchanged subtype completion hook.
+No synthetic seasons, extra decay charges, new phase timers or saved cursor.
+tests/season_flow projects source/queue/ecology paths; native acceptance stays held.
 
 <!-- 2026-10-18: inactive reserved lighting -->
 Reserved lighting omission requires the default-FALSE area clearance gate as well
@@ -56,6 +123,17 @@ with self-review allowed and administrator bypass disabled. Keep explicit manual
 environment approval; setup approval does not activate uploads or merge this PR. The exact PR3031 historical pilot has a pinned owner-approved material digest; original CI is never relabeled as its packager. Public uploads retain notifications off and cannot change old videos. Keep historical import parsing credential-free.
 
 <!-- 2026-10-19: protected sleep buckle ownership -->
+<!-- 2026-10-23: save movement and physical sleep guards -->
+Cross-z movement admission reads persistence_active_operation.kind == "save";
+load reconstruction and same-z serialization hooks must remain nonblocking.
+Resolve physical turfs through containers, and allow qdel's gc_destroyed mark
+to detach atoms before gcDestroyed is assigned. Raw loc/z assignment bypasses
+Move/forceMove; explicit transport paths use persistence_set_loc/set_z.
+tests/save_movement is offline source-flow evidence, not native acceptance or
+proof that all remaining raw location writers are covered. Protected sleep's
+physical predicate includes (1,1,1) and the existing admin sleep area; stale
+return coordinates inside that area must keep protection and refuse waking.
+
 Protected sleep relocates the body between z-levels, so release only its matching
 reciprocal buckle before entry or wake. Keep return coordinates captured before
 unbuckling, reject mismatched occupants, and leave sleep protection active on a
@@ -166,14 +244,24 @@ is display-only after process restart. See SERVER-DISCOVERY.md for join controls
 Wall time cannot prove game-time advancement or clear a server ban. Do not probe
 the known banned Desktop source until owner-coordinated normal eligibility.
 
+<!-- 2026-10-24: offline launcher social contracts -->
+tools/opendream-client/native/Social is inert; production Main stays unwired.
+tests/SocialContracts runs injected adapters/clocks/discovery/dispatch only,
+separate from updater replacement tests. Reuse NativeStart and existing proofs;
+dispatch is not connected gameplay or shard-travel evidence. See its README.
+Keep player presence/native callbacks separate from DiscordPHP backend APIs.
+SDK access/linking/distribution and application selection remain future gates.
+Before an isolated .NET CLI home's first use, set
+DOTNET_GENERATE_ASPNET_CERTIFICATE=false to avoid automatic development-cert setup.
+
 ## Language & toolchain
 Never use an em dash; use "-" instead.
 - **DM** (DreamMaker) - BYOND's proprietary language. Sources have `.dm` extension.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
-- **Required BYOND version**: 516.1681 (enforced in CI and `.vscode/tasks.json`).
-- **CI** (`.github/workflows/test.yml`): installs BYOND 516.1681 on Ubuntu, runs `DreamMaker -max_errors 0 civ13.dme`, fails on any errors or warnings. A separate evidence-checker job runs synthetic Python tests without executing the game. The MCP protocol workflow separately tests local tooling on Windows and Linux; it does not run gameplay.
+- **Target BYOND version**: 516.1688 from `tools/byond/version.json`; minimum compiler remains 516.1681. No `.vscode/tasks.json` is tracked at this base.
+- **CI** (`.github/workflows/test.yml`): the default Ubuntu compiler bootstrap targets the manifest version, runs `DreamMaker -max_errors 0 civ13.dme`, and requires the exact version banner plus zero errors/warnings. Exact-head hosted 516.1688 acceptance is pending. The separate evidence-checker and MCP protocol workflows do not establish gameplay or rendering.
 
 ## Code structure
 
@@ -241,6 +329,26 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-24: optional geographic elevation -->
+Elevation is a bounded coordinate profile on map metadata, independent of native
+areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
+does not alter temperature or precipitation. The optional round.json snapshot
+is validated before mutation and installed before replacement constructors;
+missing legacy snapshots restore flat zero, overriding newer author defaults.
+See docs/elevation.md and tests/elevation. Native fixture preparation does not
+establish native acceptance; run only under the repository's normal
+authorization/admission rules.
+
+<!-- 2026-10-24: save-to-map design boundary -->
+`tools/save_to_map` is a synthetic static-source validator/writer/reporting proof,
+not a native save converter. Its exact-type policy must not imply broad coverage.
+`docs/save-to-map-export.md` describes the broader design and remaining limits.
+Saves lack a complete area membership grid and startup landmarks can self-delete;
+require pinned source topology/spawn provenance rather than guessing from saves.
+DMM Suite comments describe writing, but this checkout includes only its reader
+and utilities. Never export changed vars wholesale or reconstruct a game to
+extract map source. The accompanying examples are synthetic, not native evidence.
+
 - Each map has a `/obj/map_metadata` subtype that handles game mode logic.
 - The metadata object is placed in the DMM at a consistent position (conventionally `(1,1,1)`) on any turf.
 - `New()` on the base `/obj/map_metadata` sets `map = src`, clears icon, copies faction lists, and starts background timers.
@@ -288,11 +396,48 @@ fresh-join availability/assignment gates; its `jobs` omission control must fail.
 
 ### Process scheduler integration
 
+<!-- 2026-10-22: wolf cave timer ownership -->
+Wolf caves own one guarded self-processing five-second chain; /full delegates
+startup to the parent. Destroy stops the chain and ticking is excluded on custom
+save export/import. Removing world-scanning duplicate calls reduces eligible
+wanderer/flavor rolls; it is a scheduling correction with changed RNG frequency.
+tests/wolf_cave_ownership has offline contracts and prepared native controls;
+preparation does not compile/launch BYOND or establish native acceptance.
+The dedicated cave executor has an offline-only CLI; real backend invocation
+requires separate review. Native -close exits after world shutdown, not network
+isolation; socket samples cannot prove continuous absence. See its EXECUTOR.md.
+The resource-free cave fixture must declare Civ13's inherited movable anchored
+field. Three held Windows attempts stopped at the strict one-member Job guard;
+the third identified an owned conhost and logged the former missing declaration.
+They establish no cave runtime result; preserve their original frozen packets.
+Offline cave executor tests supply a canonical interpreter fixture path because
+Ubuntu python3 is a symlink; native packet path/hash/link checks stay unchanged.
+The proposed cave backend uses DETACHED_PROCESS instead of CREATE_NO_WINDOW to
+avoid startup console attachment. Its conhost hypothesis is native-unverified;
+all extra Job members still reject. See tests/wolf_cave_ownership/CONSOLE_STARTUP.md.
+
 - Codebase uses legacy `/process/` system, not subsystems.
 - Create a `/process/subtype` in `code/processes/`, set `name`, `schedule_interval`, `fires_at_gamestates`.
 - Register the process var in `code/processes/__processes.dm`.
 - `fire()` is called each tick; do your per-tick work there.
 - Global singletons should be accessed via `global.xxx` or a `var/xxx` on a global datum.
+
+<!-- 2026-10-22: research snapshot resume -->
+Research consumes its retained current_list before each budget check, including
+deleted benches. tests/research_scheduler checks source-derived offline traces
+and the audited tail-loss control; native iteration/GC acceptance is still pending.
+Subclass post-loop aggregation must account for final-entry EARLY normalization.
+
+<!-- 2026-10-22: ping pass aggregation -->
+Ping retains per-pass sum/count across budget returns and publishes before the
+final-entry budget check. Every skipped client still consumes its snapshot entry.
+tests/ping_scheduler is offline source-derived evidence; native clients remain untested.
+
+<!-- 2026-10-22: cleanables phase ownership -->
+Cleanables installs pending location work before the final count budget check.
+Its retained content snapshot and survivor are released on completion/cancellation.
+tests/cleanables_scheduler is offline source-derived evidence; native list/GC
+handoff and iteration remain separate acceptance.
 
 <!-- 2026-10-12: copied processing-list removal -->
 Native BYOND `-=` and `Remove(value)` remove the last matching occurrence,
@@ -417,6 +562,38 @@ do not reuse the superseded bones-transition message as the oracle.
 When an NPC's own procedure qdels that actor, its caller can observe a null
 return even after the durable retirement receipt commits. Assert receipt state
 and original-object retirement, and stop subsequent AI when loc is null.
+<!-- 2026-10-24: complete conditional offline projections -->
+The save_movement adapter selects the explicitly declared collector-disabled
+branch; it is not a general DM preprocessor. Proc-local column-zero #ifdef lines
+must not truncate ownership/return tails. Unknown symbols/directives and malformed
+conditional scope fail even in inactive branches. Preserve both-branch/sentinel
+and historical-defect controls. These are offline models, not collector or native
+gameplay acceptance; do not change production code to make an adapter pass.
+
+<!-- 2026-10-23: footwear water composition -->
+Mud stains use brown blood_color/blood_DNA and the worn shoeblood overlay;
+clothing dirtyness only supplies examine text. Water filters must group the
+footwear image with its nested stain (KEEP_TOGETHER only while masked), and
+new update_inv_shoes images need the current mask before publication. Keep
+durable stain data intact. tests/footwear_water_mask checks source contracts
+and prepares a tiny production-proc fixture; compilation/source checks do not
+establish native client clipping, stance, movement or lighting acceptance.
+The pinned native image getter returned lowercase #RRGGBB text for the tested
+blood/mud inputs. The fixture comparator first requires text of exactly seven
+characters matching #RRGGBB, then ignores hexadecimal case. Never coerce nulls,
+named colors or matrices. Keep wrong-channel/missing-stain controls and preserve
+the earlier failed raw-text comparison receipts; diagnostics are not pixels.
+
+<!-- 2026-10-23: persistence minimum date -->
+Persistence activation, configured startup and completed metadata restoration use
+apply_persistence_age_floor(). age is the displayed date/epoch; ordinal_age is a
+separate research tier, and prototype research can advance it independently.
+The 1943 floor preserves later dates and research data; unknown epoch labels are
+not converted. tests/persistence_year checks source-derived offline traces;
+run-durable-world.py --persistence-year separately exercises the real helper,
+admin toggle, extracted configured activation and 24 v1/v2 ticker disk imports
+in an isolated 8x8x2 world. Its three controls must reach their named assertions.
+
 <!-- 2026-10-20: extraction instance collateral -->
 The historical extraction instance fixture at b717ad2a6 shared registry state
 across assertions. Its overlap/generation mutants caused downstream failures as well as
@@ -473,6 +650,22 @@ offline text contracts do not replace the pinned native compiler.
 Extraction material stacks must construct at null before relocation: native
 stack constructors can otherwise merge into an existing stack. Serialize
 `!!is_open_container()` for boolean lid state; its native return is a flag mask.
+<!-- 2026-10-24: area topology and persistence review -->
+Area references are anchor coordinates plus type, not independently recreated
+area objects. Reconstruct only proven saved roof topology before field decoding;
+retain/recheck exact base/destination identities, including empty instances, and
+scope entry IDs by z. Never fabricate unrelated areas or weaken mismatch checks.
+World-preserving preflight is separate from input-file byte immutability: absent
+native savefile fields need presence checks and copy-only tests. Honor refused
+movement before landing effects or ownership/success changes. Offline source
+adapters must reject unhandled preprocessor directives, not silently truncate
+procedures. Cross-z guards do not make a yielding save atomic. See
+`docs/zone-persistence-audit.md` for #3290, known gaps and the regression matrix.
+Future atmospheric rooms/networks need logical identities separate from area
+types/objects, versioned topology and authoritative gas/thermal stores. Rebuild
+derived caches and admit workers only after full restore/conservation checks;
+see `docs/atmosphere-persistence-readiness.md`. This plan does not activate atmos.
+
 <!-- 2026-10-15: durable invulnerable areas -->
 Placed admin/sewer areas use native `INFINITY` for `artillery_integrity`.
 Durable JSON uses the exact `positive_infinity` sentinel only for that field;
@@ -517,6 +710,17 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
+
+<!-- 2026-10-23: timber seedling ownership -->
+Timber seedlings reuse crop soil/water/stage helpers through processing_objects;
+their growth override registers without sleeping. Save growth_time_left but exclude
+last_growth_tick, and anchor it in after_load without resetting durable progress.
+Maturation rechecks open outdoor ploughed space, climate and season before creating
+the existing live_tree. See docs/tree-planting.md and tests/tree_planting; offline
+source execution and fixture preparation are not native or client acceptance.
+The tree native runner now uses the unchanged native_fixture Session and keeps
+fresh-process reader/writer probes. Windows startup-listener rejections remain
+failures; do not route around the no-socket guard. See the native-validation doc.
 
 <!-- 2026-10-15: Modern processor recipe validation -->
 The recipe catalog fixture defaults to era 0. New era-gated machine families
@@ -619,6 +823,72 @@ Group deployment reuses the shared journal under `_settlement/groups/`; exact
 home-to-raid projections come from the solo raid planner. Never move members
 before all account debits commit. `--probe groups` checks three-process recovery
 across eleven cuts; mode fixtures exercise consent/readiness and original atoms.
+<!-- 2026-10-23: private variable observability -->
+Before asking an operator to manipulate native BYOND variables, inspect the
+implemented structured paths in `docs/variable-observability.md`. Run
+`scripts/nomads-lifecycle/agent_debug.py discover` offline first. For an already
+authorized installed runtime, `agent_debug.py recovery --root <private-root>
+--revision <installed-40-hex>` returns `data.variable_identity`; use its exact
+session/round with `variable_observability.py --root <private-root> --revision
+<installed-40-hex> --session <observed-32-hex> --round-id <observed-round>`.
+Use a verified full Python executable. Each runtime command makes one existing
+authenticated loopback status read with a 15-second/32-KiB limit and no retry.
+The schema-1 status field is `debug.variables`; reader evidence is
+`data.failure`, with active/last save/load ownership alongside it. There is no
+generic runtime variable MCP tool or arbitrary ref lookup.
+Check `data.failure_error`: stale, mismatched, partial or malformed retained
+failure evidence is withheld without hiding independently valid current/last
+operation ownership. `ok:true` is not acceptance of a rejected retained capture.
+Null scalar throw fields mean unknown and remain distinct from numeric zero;
+the reader does not invent a never-thrown default.
+
+Collection/exposure and automatic local output remain default-off until a
+separately authorized exact-build deployment/restart and local opt-in using
+`config/variable-observability.txt` containing `enabled`, existing lifecycle
+credentials/revision, and a separately provisioned operator-private runtime
+`data/desktop-supervisor/variable-observability/` directory. Do not
+activate them from source/PR approval or claim this tooling is already live.
+The automatic path is runtime-relative
+`data/desktop-supervisor/variable-observability/last-failure.json`; publication
+must fail harmlessly if that fixed directory is missing or unwritable, with no
+legacy-path fallback or automatic ACL/directory creation. Explicit old-file
+reads remain supported. The reader's `--input <file>`
+mode is offline and requires independently obtained expected revision/session/
+round. Keep raw captures private. Unknown fields are stripped, but refs/types/
+coordinates remain operational data requiring review before public sharing.
+
+For an `original_target` save rejection, inspect source type/field/entry,
+source/target physical turf z, fixed throw links, throwing flag, thrown-list
+prefix membership, destruction flags and operation ID/stage together. A
+truncated registry miss is unknown. `rejected_by_persistence_guard` describes
+the rejection, while saturated runtime skip-decision counts observe the existing
+`persistence_runtime_var` policy; neither authorizes nulling links or proves live
+cleanup. The separate persistence fix owns that policy. Preserve guard failures.
+
+Default reads expire after 60 UTC seconds and must match build, boot,
+round and, for status failures, current/last operation plus tick bounds and a
+realtime reversal check.
+UTC uses the finer `world.timeofday` input with explicit UTC formatting and a
+midnight rollover rejection. Epoch `world.realtime` is coarse metadata; only
+reversal is checked there, while UTC and ticks enforce bounded age. Never relax
+future-time rejection to hide epoch floating-point rounding.
+Re-reading retained evidence does not refresh it. Explicit `--historical` is
+allowed only with offline `--input` and
+labels evidence `historical_only`; it cannot refresh or query live identities.
+Native refs and pooled objects can be reused;
+`capture_only`/`generation: unavailable` must never be treated as
+durable or current identity, even when type/location match. Depth is eight,
+owner frames eight, registry prefixes 256, output 32 KiB; missing, partial and
+stale data are explicit unknown/error states. No eval, generic proc invocation,
+mutation, credentials, relaxed protections or listener is introduced.
+Offline synthetic reader/source checks and native-packet preparation are covered.
+The `df639b1` tiny native attempt emitted 22 successful checks but failed overall
+reader/ownership acceptance and logged a startup loopback bind; preserve that
+failed verdict. The source UTC correction is not native-verified. Topic and full
+save/load/gameplay acceptance remain unverified. Compilation CI is separate
+evidence bound to its tested head. Observation
+does not authorize save/load, restart, cleanup or other live mutation.
+
 <!-- 2026-10-17: bounded own-host agent diagnostics -->
 `docs/agent-debug-tools.md` documents schema-1 recovery/vision/3x3 tile reads on
 the existing loopback/token/R_HOST lifecycle transport. Pair/trace/bundle are
@@ -740,11 +1010,39 @@ and bounded opt-in owner-field inspection; outcome rows share deletion profiling
 forced-call buckets, not exact distinct types after saturation.
 
 <!-- 2026-10-12: opt-in regression CI -->
-Existing game and tooling regression suites are manual opt-in. PRs adding
-executable integration tests select their registered suite only for that PR;
-ordinary game edits and edits to existing tests do not auto-select regressions.
-Keep compilation, workflow validation and publication checks separate. Register
-new suite guards through ci-selection.yml; see docs/ci-selection.md.
+<!-- 2026-10-24: bounded offline CI baseline and exact-source receipts -->
+CI always runs selector-policy, stubbed bootstrap and serializer-source tests.
+scripts/ci_baseline.py registers exact reviewed offline files and bounded impact
+paths for research/ping scheduling, persistence-year projections and synthetic
+evidence validation. Affected production, existing-test and helper edits select
+those files; unknown impact or missing comparisons explicitly selects the whole
+small offline registry. Do not add broad Python discovery or native launchers to
+this registry without inspecting imports, subprocesses, dependencies and cost.
+Other existing regressions retain manual opt-in and introduced-test admission;
+ordinary edits do not expand native/costly admission. Register those suite guards
+through ci-selection.yml. Preserve all separate execution/resource holds.
+
+CI required aggregate requires successful selected jobs and exact head/base,
+run/attempt and selection-bound offline/compile receipts. Missing, failed,
+unexpectedly skipped or empty required execution fails. Documentation-only
+compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
+and docs/ci-selection.md; a job-level green alone does not describe what ran.
+<!-- 2026-10-24: event coverage and check identity -->
+Supported edited PRs evaluate the base/head diff for compilation but keep native
+admission off. Edited/other-base PRs, feature pushes and manual runs use the
+informational build/aggregate names even when a real compile passes. Only ordinary
+opened/synchronize/reopened PR scopes and master pushes retain gating names.
+Selector failures or missing outputs retain failed gating names. Inspect receipt
+action and compile/native/gating reasons; an informational success cannot certify
+omitted native coverage. Preserve existing native opt-ins and toolchain ownership.
+Hosted DreamMaker results must identify the actually executed manifest version;
+Python projections, compiled core_boot variants and native runtime/gameplay
+acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
+Cloud-only workers must keep unavailable local native checks as not_run. After
+owner review and authorized push, obtain hosted validation for the current head
+and inspect its outcomes/artifacts; never substitute local tool absence or an
+older green run. This policy does not authorize installing native tools, running
+held probes, deployment, publication, branch-protection changes or merging.
 
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual
@@ -762,6 +1060,15 @@ constructor graphics and material recoloring remain dynamic. See
 docs/crafting-atlas.md; acquisition annotations retain their historical audit SHA.
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
+<!-- 2026-10-23: atlas catalog variants -->
+`scripts/atlas/variants.py` groups only identical explicit 13-field material rows
+with equal extracted semantics. Catalog identity/source IDs stay as variants;
+never group by name, canonical ingredients or outputs alone. Counts and legacy
+pages use groups; search/system filters must match the same variant and selected
+details must use its source. `tests/crafting_atlas/variants.dm` executes selected
+source, old-ID, filter and legacy page contracts through the existing bounded
+Atlas runner. Verify exact-head hosted renderer/assets results before acceptance.
+
 `scripts/atlas/catalog_metadata.py` keeps unlock research tiers/minimum gates
 separate from catalog field 12's maximum allowed era. Parse research constructors
 with balanced arguments; the enclosing registration call adds another closing
@@ -772,6 +1079,31 @@ navigation and omission controls require the normal isolated runner or CI.
 <!-- 2026-10-11: bounded animal harvesting -->
 - `code/modules/1713/animal_harvest.dm` centralizes corpse claims and bounded species products. The custom saver enumerates `tmp` fields, so in-progress harvesting/axe locks explicitly opt out via `persistence_runtime_var`.
 - `tests/animal_harvest/run.py --byond-bin <516.1681-bin>` executes production yields, cancellation/concurrency, binding conservation and object save/load in temporary offline storage. `preview.py` renders existing DMI states for PR sprite review; it is not a gameplay capture or full-server memory test.
+
+<!-- 2026-10-23: leather tanning accounting -->
+Leather processing in `stacks/sheets/leather.dm` uses one eventual leather sheet
+per stack unit, with distinct raw/prepared/wet/dry material identities. Never add
+unpropagated per-object yield fields: splitting and merging must conserve yield.
+Tanning uses explicit paid vessel interactions, since reagent touch callbacks can
+see the whole holder volume. The rack preserves actual contents and excludes its
+runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.py`
+is offline evidence; `tanning_probe.dm` requires separate native acceptance.
+
+Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
+not stage stacks through a turf. Legacy human `drop_from_inventory` overrides
+discard the parent's return: a null result can follow a successful floor drop.
+Use the production human subtype in transfer tests, not just a `/mob/living` stub.
+Production `stack/Crossed` merges floor pieces
+into the arriving stack; clear hand/HUD ownership only after destination admission,
+check actual location, and restore the hand on rejection/redirect. Keep nodrop and
+persistence movement checks. [Rack transfer regressions](tests/animal_harvest/rack_transfer_probe.dm) cover
+human inventory, floor-merge controls, bags, and explicit movement-failure adapters;
+those adapters do not establish the exact trigger of an unobserved live failure.
+Raw, prepared, wet and dry hides are `processing_only` materials: softness is not
+a crafting permission. Clear cached recipes before that guard and mirror it in
+Atlas export. [Hide recipe regressions](tests/animal_harvest/hide_recipe_probe.dm) use the actual global catalog plus explicit
+research admission; it rejects intermediate utensils while retaining leather/pelt
+recipes. [Atlas contracts](tests/test_tanning_atlas.py) check the exported processing-only boundary.
 
 <!-- 2026-10-11: finite fracking verification -->
 - `tests/hydraulic_fracturing/probe.dm` checks finite terrain conversion, batch
@@ -1197,6 +1529,14 @@ Lighting startup must reconcile existing inactive shared corners after adding ov
 Mob processing retains unfinished copied population snapshots across budget returns. A fixed schedule interval does not guarantee newly constructed humans received Life. The full seasonal constructor fixture waits at most 30 real seconds for natural first service while checking actor identity/location/death; its service control excludes one retained actor from both live membership and the pending snapshot. Never invoke Life directly to satisfy scheduler evidence.
 
 <!-- 2026-10-12: animal health and combat dispatch -->
+<!-- 2026-10-23: domestic defensive retaliation -->
+Adult domestic sheep/goats/pigs/cattle, horses and camels explicitly opt into
+zero-damage immediate retaliation. `Weaken(2)` counts Life updates, not ds;
+ten-second runtime deadlines on both participants prevent herd stun chains.
+Keep juvenile and larger-attacker escape gates, husbandry dispatch and custom
+save exclusions. tests/animal_combat has offline source checks and a prepared
+native fixture; native/client acceptance remains separate.
+
 Simple-animal starting health and maxHealth must match unless an explicit policy
 is documented: Life clamps health and updatehealth recomputes it from maxHealth.
 Do not call parent attackby after an explicit item attack; that repeats damage,

@@ -420,10 +420,11 @@
 /obj/item/weapon/storage/proc/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
 	if (!istype(W)) return FALSE
 	if (W.extraction_surface_source) return FALSE
+	if (!persistence_movement_allowed(W, src)) return FALSE
 	if (usr)
 		usr.remove_from_mob(W)
 		usr.update_icons()	//update our overlays
-	W.loc = src
+	if (!W.persistence_set_loc(src)) return FALSE
 	W.on_enter_storage(src)
 	if (usr)
 		if (usr.client && usr.s_active != src)
@@ -459,6 +460,7 @@
 /obj/item/weapon/storage/proc/remove_from_storage(obj/item/W as obj, atom/new_location)
 	if (!istype(W)) return FALSE
 	if (W?.extraction_surface_source) return FALSE
+	if (!persistence_movement_allowed(W, new_location ? new_location : get_turf(src))) return FALSE
 
 
 	for (var/mob/M in range(1, loc))
@@ -475,9 +477,9 @@
 		else
 			W.layer = initial(W.layer)
 			W.plane = GAME_PLANE
-		W.loc = new_location
+		if (!W.persistence_set_loc(new_location)) return FALSE
 	else
-		W.loc = get_turf(src)
+		if (!W.persistence_set_loc(get_turf(src))) return FALSE
 
 	if (istype(W, /obj/item/weapon/bedroll))
 		icon_state = "[base_icon]"
