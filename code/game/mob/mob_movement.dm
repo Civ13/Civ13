@@ -300,7 +300,12 @@
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
 		if (!subtile_input_actor.human_subtile_input_supported(direct))
+			human_subtile_release_visuals()
 			return FALSE
+		if (!subtile_input_actor.human_subtile_eligible(direct))
+			human_subtile_release_visuals()
+	else
+		human_subtile_release_visuals()
 
 	if (!mob.next_change_dir)
 		mob.next_change_dir = list(

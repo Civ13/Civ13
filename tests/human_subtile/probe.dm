@@ -162,12 +162,12 @@ var/human_subtile_fixture_phase = "initializing"
 	var/entries = next.fixture_entries
 	var/start = world.time
 	H.SelfMove(get_step(H, EAST), EAST, start + 4)
-	human_subtile_fixture_assert(H.x == 3 && H.step_x == 0 && H.fixture_pulses == 8, "actual_human_eight_pulses_32px")
+	human_subtile_fixture_assert(H.x == 3 && H.step_x == 0 && H.fixture_pulses == 16, "actual_human_sixteen_pulses_32px")
 	human_subtile_fixture_assert(world.time - start <= 4 + world.tick_lag, "absolute_schedule_tick_bound")
 	human_subtile_fixture_assert(next.fixture_entries - entries == 1, "native_turf_entry_once")
 	human_subtile_fixture_assert(shoes.fixture_steps == 1 && H.next_footstep_sound_at_movement_tick > 0, "production_shoe_step_and_footstep_gate_once")
 	var/list/first = H.fixture_rows[1]
-	human_subtile_fixture_assert(first["sx"] == 4 && first["locs"] == 2 && first["native"] == 4, "actual_human_physical_offset_and_overlap")
+	human_subtile_fixture_assert(first["sx"] == 2 && first["locs"] == 2 && first["native"] == 2, "actual_human_physical_offset_and_overlap")
 	human_subtile_fixture_assert(H.fixture_human_completions == 1 && H.fixture_living_completions == 1, "completion_once_per_logical_admission")
 	human_subtile_fixture_assert(!H.human_subtile_pulse && !H.human_subtile_transaction, "success_releases_context")
 	human_subtile_fixture_rows += list(list("scene" = "normal", "elapsed" = world.time - start, "rows" = H.fixture_rows))
@@ -187,9 +187,9 @@ var/human_subtile_fixture_phase = "initializing"
 	var/turf/partial_wall = locate(8, 5, 1)
 	partial_wall.density = TRUE
 	P.SelfMove(get_step(P, EAST), EAST, world.time + 4)
-	human_subtile_fixture_assert(P.fixture_rows.len == 1, "partial_one_native_attempt")
+	human_subtile_fixture_assert(P.fixture_rows.len == 2, "partial_then_blocked_native_attempts")
 	var/list/partial = P.fixture_rows[1]
-	human_subtile_fixture_assert(P.x == 7 && P.step_x == 0 && partial["native"] == 2 && P.fixture_pulses == 1, "actual_human_partial_two_pixels")
+	human_subtile_fixture_assert(P.x == 7 && P.step_x == 0 && partial["native"] == 2 && P.fixture_pulses == 2, "actual_human_partial_two_pixels")
 	human_subtile_fixture_assert(P.fixture_human_completions == 1 && P.fixture_living_completions == 1, "partial_completion_once")
 	partial_wall.density = FALSE
 
@@ -197,7 +197,7 @@ var/human_subtile_fixture_phase = "initializing"
 	C.set_human_subtile(TRUE)
 	C.fixture_cancel_after = 1
 	C.SelfMove(get_step(C, EAST), EAST, world.time + 4)
-	human_subtile_fixture_assert(C.step_x == 4 && C.fixture_pulses == 1 && C.fixture_human_completions == 1 && C.fixture_living_completions == 1, "cancel_after_displacement_completes_once")
+	human_subtile_fixture_assert(C.step_x == 2 && C.fixture_pulses == 1 && C.fixture_human_completions == 1 && C.fixture_living_completions == 1, "cancel_after_displacement_completes_once")
 	human_subtile_fixture_assert(!C.human_subtile_transaction && !C.human_subtile_pulse, "cancel_releases_context")
 	var/list/cancelled_position = C.human_subtile_snapshot()
 	C.prone = TRUE
@@ -207,7 +207,7 @@ var/human_subtile_fixture_phase = "initializing"
 	R.set_human_subtile(TRUE)
 	R.fixture_reenter = TRUE
 	R.SelfMove(get_step(R, EAST), EAST, world.time + 4)
-	human_subtile_fixture_assert(R.step_x == 4 && R.y == 8 && R.fixture_pulses == 1 && !R.human_subtile_transaction, "reentrant_context_cannot_move_or_fallback")
+	human_subtile_fixture_assert(R.step_x == 2 && R.y == 8 && R.fixture_pulses == 1 && !R.human_subtile_transaction, "reentrant_context_cannot_move_or_fallback")
 	var/mob/living/human/subtile_fixture/D = human_subtile_fixture_actor(8, 8)
 	D.set_human_subtile(TRUE)
 	D.fixture_delete_after = 1
@@ -248,7 +248,7 @@ var/human_subtile_fixture_phase = "initializing"
 	map_storage.clear_bookkeeping()
 	var/mob/living/human/subtile_fixture/L = map_storage.Load_Entry(F, ref, starting_loc = locate(2, 8, 1))
 	L.after_load()
-	human_subtile_fixture_assert(L.x == 2 && L.y == 8 && L.step_x == 4 && L.step_y == 0 && L.dir == SOUTH, "actual_codec_anchor_offset_facing_roundtrip")
+	human_subtile_fixture_assert(L.x == 2 && L.y == 8 && L.step_x == 2 && L.step_y == 0 && L.dir == SOUTH, "actual_codec_anchor_offset_facing_roundtrip")
 	human_subtile_fixture_assert(!L.human_subtile_enabled && !L.human_subtile_transaction && !L.human_subtile_pulse && L.human_subtile_default_pending, "import_never_replays_worker_or_snaps_offset")
 	var/obj/item/subtile_fixture_paid/LI = locate() in L.contents
 	var/obj/item/subtile_fixture_paid/LC

@@ -7,7 +7,45 @@
 	var/tmp/datum/human_subtile_pulse/human_subtile_pulse
 	var/tmp/human_subtile_import_owned = FALSE
 	var/tmp/human_subtile_offset_owned = FALSE
+	var/tmp/human_subtile_glide_owned = FALSE
+	var/tmp/human_subtile_previous_glide = 0
 	var/list/human_subtile_position
+
+/client
+	var/tmp/mob/living/human/human_subtile_visual_actor
+	var/tmp/human_subtile_previous_fps
+	var/tmp/human_subtile_previous_glide
+
+/client/proc/human_subtile_release_visuals()
+	if (!human_subtile_visual_actor)
+		return
+	human_subtile_visual_actor.human_subtile_release_glide()
+	human_subtile_visual_actor = null
+	fps = human_subtile_previous_fps
+	glide_size = human_subtile_previous_glide
+
+/mob/living/human/proc/human_subtile_release_glide()
+	if (human_subtile_glide_owned)
+		glide_size = human_subtile_previous_glide
+		human_subtile_glide_owned = FALSE
+
+/mob/living/human/proc/human_subtile_update_visuals(duration, direction, client/owner)
+	if (!human_subtile_glide_owned)
+		human_subtile_previous_glide = glide_size
+		human_subtile_glide_owned = TRUE
+	// Native interpolation follows physical motion, including normalization at
+	// tile edges. Legacy pixel movement needs client FPS above server FPS.
+	glide_size = 32 * world.tick_lag / max(duration, world.tick_lag)
+	if ((direction & (direction - 1)) && !(appearance_flags & LONG_GLIDE))
+		glide_size *= ROOT2_FAST
+	if (owner)
+		if (owner.human_subtile_visual_actor != src)
+			owner.human_subtile_release_visuals()
+			owner.human_subtile_previous_fps = owner.fps
+			owner.human_subtile_previous_glide = owner.glide_size
+			owner.human_subtile_visual_actor = src
+		owner.fps = max(owner.fps, world.fps + 1, 60)
+		owner.glide_size = glide_size
 
 /datum/human_subtile_pulse
 	should_save = FALSE
@@ -83,6 +121,9 @@
 	human_subtile_default_pending = FALSE
 	if (!enabled)
 		human_subtile_offset_owned = FALSE
+		human_subtile_release_glide()
+		if (client && client.human_subtile_visual_actor == src)
+			client.human_subtile_release_visuals()
 	return TRUE
 
 // This narrow hook is adapted explicitly by the headless fixture. Production
@@ -121,6 +162,7 @@
 	T.start_time = world.time
 	T.end_time = deadline
 	T.expected = human_subtile_snapshot()
+	human_subtile_update_visuals(deadline - world.time, direct, client)
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
@@ -147,14 +189,14 @@
 /datum/human_subtile_transaction/proc/perform(direction)
 	total_distance = 0
 	var/duration = end_time - start_time
-	for (var/i = 1, i <= 8, i++)
-		var/due = start_time + (i - 1) * duration / 8
+	for (var/i = 1, i <= 16, i++)
+		var/due = start_time + (i - 1) * duration / 16
 		if (due > world.time)
 			sleep(due - world.time)
 		if (!valid(direction))
 			break
-		var/dx = (direction & EAST) ? 4 : (direction & WEST) ? -4 : 0
-		var/dy = (direction & NORTH) ? 4 : (direction & SOUTH) ? -4 : 0
+		var/dx = (direction & EAST) ? 2 : (direction & WEST) ? -2 : 0
+		var/dy = (direction & NORTH) ? 2 : (direction & SOUTH) ? -2 : 0
 		var/tx = actor.x
 		var/ty = actor.y
 		var/sx = actor.step_x + dx
@@ -248,9 +290,11 @@
 	return P
 
 /mob/living/human/persistence_runtime_var(key)
+	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
+		return TRUE
 	if ((key == "step_x" || key == "step_y") && (human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_import_owned", "human_subtile_offset_owned")) || ..()
+	return (key in list("human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_import_owned", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)

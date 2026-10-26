@@ -15,7 +15,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from native_fixture import Session, no_port_args, read_bounded, run_native
+from native_fixture import Session, WindowsBackend, no_port_args, read_bounded, run_native
 
 spec = importlib.util.spec_from_file_location('historical_subtile', Path(__file__).with_name('run.py'))
 legacy = importlib.util.module_from_spec(spec)
@@ -25,6 +25,23 @@ spec.loader.exec_module(legacy)
 def require(ok, message):
     if not ok:
         raise RuntimeError(message)
+
+
+def current_backend():
+    # Separate current-engine allowlist; historical adapters remain unchanged.
+    directory = Path(__file__).with_name('native_1688').resolve()
+    sys.path.insert(0, str(directory))
+    try:
+        import windows
+        import guard_config
+        import owned_job
+    finally:
+        sys.path.pop(0)
+    for module in (windows, guard_config, owned_job):
+        require(Path(module.__file__).resolve() == directory / (module.__name__ + '.py'), 'Wrong current-engine native helper')
+    for name in ('windows.py', 'owned_job.py'):
+        require((directory / name).read_bytes() == (ROOT / 'tests/floor_decal_tracking' / name).read_bytes(), 'Containment adapter drift')
+    return WindowsBackend(adapter=windows.Adapter(), windows=windows, owned=owned_job)
 
 
 def adapt(out, manifest, relative, old, new):
@@ -63,14 +80,14 @@ def main():
               'if (!subtile_pulse && (direct & (direct - 1)))', 'if (direct & (direct - 1))')
     if args.control == 'cardinal-arithmetic':
         adapt(out, manifest, 'code/game/mob/living/carbon/human/subtile_movement.dm',
-              '(direction & EAST) ? 4 : (direction & WEST) ? -4 : 0',
-              'direction == EAST ? 4 : direction == WEST ? -4 : 0')
+              '(direction & EAST) ? 2 : (direction & WEST) ? -2 : 0',
+              'direction == EAST ? 2 : direction == WEST ? -2 : 0')
     (out / 'diagonal-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     if args.prepare_only:
         print('Prepared exact Git ' + manifest['head'] + '; no native execution')
         return
     byond = args.byond_bin.resolve()
-    session = Session(out / 'supervisor', manifest['head']) if os.name == 'nt' else None
+    session = Session(out / 'supervisor', manifest['head'], backend_factory=current_backend) if os.name == 'nt' else None
     build = run_native(session, [str(byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')),
                                  '-max_errors', '0', str(dme)], cwd=out / 'stage',
                        phase='compile', timeout=120, artifacts=[dme.with_suffix('.dmb'), dme.with_suffix('.rsc')])
@@ -106,7 +123,7 @@ def main():
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
             require(receipt['checks'] == 42, 'Incomplete existing human regression checks')
-            require(receipt['diagonal_checks'] == (4 if expected_error else 65), 'Incomplete diagonal checks')
+            require(receipt['diagonal_checks'] == (4 if expected_error else 97), 'Incomplete diagonal checks')
         else:
             require(receipt['mining_checks'] == 52, 'Incomplete mining assertions')
             mining = receipt['mining_rows']
