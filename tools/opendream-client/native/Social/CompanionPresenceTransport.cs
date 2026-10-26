@@ -79,10 +79,19 @@ public sealed class CompanionPresenceTransport : IDiscordPresenceTransport {
     }
     public void Clear() {
         Owner(); if (closed || !started) return;
+        // A physical publication cannot be cancelled by a local flag. Close its
+        // session so a late result cannot revive it or overlap newer work.
+        if (completion != null && publishId != 0 && activity == null) {
+            Close(PresenceTransportResult.Unavailable); return;
+        }
+        // During negotiation nothing was published. Discard the queued activity
+        // synchronously; late Ready may negotiate, but cannot send that activity.
+        var cancelled = completion; completion = null; activity = null;
         try {
             if (!Write(CompanionOp.Clear, Next(), [])) Close(PresenceTransportResult.Unavailable);
             else cleared = true;
         } catch (Exception e) when (e is not OutOfMemoryException) { Close(PresenceTransportResult.Failed); }
+        finally { cancelled?.Invoke(PresenceTransportResult.Unavailable); }
     }
     // Clear/Stop are requests only. EOF/lease cleanup is the peer's obligation;
     // closing this channel cannot acknowledge that remote/native cleanup happened.

@@ -62,6 +62,14 @@ is rejected. Only one publication callback is retained, with no transport queue.
 The outer adapter supplies publication deadlines and generation fences. A
 successful Result means a local SDK callback, not Discord UI evidence.
 
+The public transport fences Clear itself: during negotiation it synchronously
+discards the queued activity and settles its callback as unavailable. Late Ready
+can complete negotiation, but cannot publish that discarded activity; a later
+explicit Publish is fresh work. During an outstanding physical Publish, Clear
+closes the session with Clear/Stop and settles unavailable. Late Result/Ready
+cannot revive it; another transport needs a fresh channel. After a settled
+publication, Clear keeps the negotiated channel available for explicit new work.
+
 Golden empty Stop frame, request ID 1:
 `4331335301070000010000000000000000000000`
 

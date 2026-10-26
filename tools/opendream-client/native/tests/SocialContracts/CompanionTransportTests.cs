@@ -220,8 +220,38 @@ internal static class CompanionTransportTests {
         Check(disable.IsCompleted && peer.Disposed && peer.Drops == 1, "Existing generation cleanup did not close the peer.");
         var stop = pump.StopAsync(); pump.PumpOnce(); Check(stop.IsCompleted, "Existing Stop did not settle.");
     }
+    private static void ClearFencesPublicTransport() {
+        var channel = new Channel(); var clock = new Clock(); var peer = new Peer(channel, clock) { Ready = false };
+        using var transport = new CompanionPresenceTransport(Profile(), channel, clock); var oldCalls = 0;
+        transport.Publish(Activity(), r => { oldCalls++; Check(r == PresenceTransportResult.Unavailable, "Clear accepted the cancelled activity."); });
+        var hello = channel.Sent.Single(f => f.Op == CompanionOp.Hello);
+        transport.Clear();
+        Check(oldCalls == 1, "Clear during negotiation left the old callback pending.");
+        channel.Reply(CompanionOp.Ready, hello.Id, hello.Payload);
+        channel.Reply(CompanionOp.Result, hello.Id, [0]); transport.RunCallbacks();
+        Check(peer.Publications == 0 && oldCalls == 1, "Late Ready published cancelled negotiation activity.");
+        var freshCalls = 0;
+        transport.Publish(new("Fresh launcher activity", "Launcher"), _ => freshCalls++); transport.RunCallbacks();
+        Check(freshCalls == 1 && peer.Publications == 1 && oldCalls == 1, "Explicit fresh activity after negotiated Clear failed.");
+
+        var pendingChannel = new Channel(); var pendingClock = new Clock(); var pendingPeer = new Peer(pendingChannel, pendingClock) { ReplyImmediately = false };
+        var pending = new CompanionPresenceTransport(Profile(), pendingChannel, pendingClock); var cancelled = 0;
+        pending.Publish(Activity(), r => { cancelled++; Check(r == PresenceTransportResult.Unavailable, "Clear accepted an in-flight activity."); });
+        pending.RunCallbacks();
+        var publication = pendingChannel.Sent.Single(f => f.Op == CompanionOp.Publish);
+        var pendingHello = pendingChannel.Sent.Single(f => f.Op == CompanionOp.Hello);
+        pending.Clear();
+        Check(cancelled == 1 && pendingPeer.Disposed && pendingPeer.Pending == 0, "In-flight Clear did not close the physical session.");
+        pendingChannel.Reply(CompanionOp.Result, publication.Id, [0]);
+        pendingChannel.Reply(CompanionOp.Ready, pendingHello.Id, pendingHello.Payload);
+        pendingPeer.Complete(0); pending.RunCallbacks(); pending.Clear(); pending.Dispose();
+        Check(cancelled == 1 && pendingPeer.Publications == 1 && pendingPeer.Drops == 1, "Late Result/Ready escaped the Clear fence.");
+        var sent = pendingChannel.Sent.Count;
+        pending.Publish(Activity(), r => Check(r == PresenceTransportResult.Unavailable, "Cleared physical session reopened."));
+        Check(pendingChannel.Sent.Count == sent && pendingChannel.Disposals == 1, "Cleared physical session retried I/O.");
+    }
     internal static int Run() {
-        assertions = 0; ProfilesAndWire(); FragmentationAndCleanup(); FaultsAndBounds(); PendingAndPeerLease(); ExistingPumpIntegration();
+        assertions = 0; ProfilesAndWire(); FragmentationAndCleanup(); FaultsAndBounds(); PendingAndPeerLease(); ExistingPumpIntegration(); ClearFencesPublicTransport();
         return assertions;
     }
 }
