@@ -88,9 +88,14 @@ public sealed record TransferChannelFence(string Source, string Destination, str
         return this with { ActiveTransferId = manifest.TransferId, ActiveManifestHash = manifest.Digest() };
     }
     public TransferChannelFence Settle(TransferState state) {
+        Validate();
+        TransferRules.Require(SettledSequence < TransferRules.MaximumInteger, "channel-sequence-limit");
+        var nextSequence = SettledSequence + 1;
+        TransferRules.Require(ActiveTransferId == TransferCanonical.Id(Source, Destination, GroupId, Epoch, nextSequence),
+            "channel-active-id-mismatch");
         TransferRules.Require(state.TransferId == ActiveTransferId && state.ManifestHash == ActiveManifestHash &&
             state.Phase is CustodyPhase.Committed or CustodyPhase.Aborted, "channel-not-settled");
-        return this with { SettledSequence = SettledSequence + 1, ActiveTransferId = null, ActiveManifestHash = null };
+        return this with { SettledSequence = nextSequence, ActiveTransferId = null, ActiveManifestHash = null };
     }
     public TransferChannelFence SettleDestinationFromSourceCheckpoint(TransferManifest manifest, TransferState state,
         string localServerId, SignedCheckpoint signed, TrustSnapshot trust, ITransferSignatureVerifier signatures, long now) {

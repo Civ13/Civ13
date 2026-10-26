@@ -214,6 +214,15 @@ internal static class TransferContractTests {
             neverEscrowed.SourceCreditOperations == 0 && neverEscrowed.TrackedUnits == 7,
             "retry of a no-escrow return cannot credit or mint inventory");
         Check(Apply(store.Durable, escrow).Code == "stale-step-no-effects", "old receipt history is not retained or replayed");
+        foreach (var rebound in new[] {
+            channel with { Source = C }, channel with { Destination = C },
+            channel with { GroupId = "other-group" }, channel with { Epoch = 2 },
+            channel with { SettledSequence = 1 }, channel with { SettledSequence = -1 },
+            channel with { SettledSequence = 9_007_199_254_740_991 }, channel with { SettledSequence = long.MaxValue },
+            channel with { Source = B }, channel with { GroupId = "" }, channel with { Epoch = 0 },
+            channel with { ActiveTransferId = null, ActiveManifestHash = null },
+            channel with { ActiveManifestHash = "invalid" }
+        }) Reject(() => rebound.Settle(store.Durable), "terminal state cannot settle a rebound/invalid channel fence");
         var settled = channel.Settle(store.Durable);
         var inventoryBoundary = new InventoryTransferBoundary("inventory-generation-a", 10, channel, store.Durable);
         inventoryBoundary.ValidateAgainst("inventory-generation-a", 10);
@@ -267,6 +276,22 @@ internal static class TransferContractTests {
             settled = active.Settle(state); // old active record is discarded, not appended to history
         }
         Check(settled.SettledSequence == 25 && settled.ActiveTransferId is null, "bounded per-peer watermark after many transfers");
+        const long maximumSequence = 9_007_199_254_740_991;
+        var lastManifest = Manifest(sequence: maximumSequence);
+        var lastChannel = new TransferChannelFence(A, B, "approved-group", 1, maximumSequence - 1).Reserve(lastManifest);
+        var lastState = TransferState.Begin(lastManifest);
+        foreach (var kind in new[] { ReceiptKind.Abort, ReceiptKind.Tombstone, ReceiptKind.Return }) {
+            var envelope = signatures.Issue(lastManifest, lastState, kind);
+            var result = TransferTransitions.Apply(lastState, lastManifest, envelope, lastState.Version, lastChannel, trust, sp, dp,
+                signatures, new MockProvenance(lastManifest), 110);
+            Check(result.Disposition == ApplyDisposition.Accepted, "final safe channel sequence cleanup transition");
+            lastState = result.State;
+        }
+        var exhausted = lastChannel.Settle(lastState);
+        Check(exhausted.SettledSequence == maximumSequence && exhausted.ActiveTransferId is null,
+            "last safe channel sequence settles without overflow or retained history");
+        Reject(() => (exhausted with { ActiveTransferId = lastState.TransferId, ActiveManifestHash = lastState.ManifestHash }).Settle(lastState),
+            "sequence exhaustion refuses another increment");
         Reject(() => Manifest(items: [m.Items[0], m.Items[0]]), "duplicate asset rejected");
         Reject(() => Manifest(items: [m.Items[0] with { Quantity = 0 }]), "invalid quantity rejected");
         Reject(() => Trust(epoch: long.MaxValue), "non-interoperable JSON integer rejected");
