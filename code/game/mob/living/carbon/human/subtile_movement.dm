@@ -1,7 +1,8 @@
-// Compatibility-first opt-in: one client admission/cost interval, native pulses.
+// One client admission/cost interval, native cardinal or diagonal pulses.
 // Runtime ownership is explicitly excluded from the custom saver below.
 /mob/living/human
 	var/tmp/human_subtile_enabled = FALSE
+	var/tmp/human_subtile_default_pending = TRUE
 	var/tmp/datum/human_subtile_transaction/human_subtile_transaction
 	var/tmp/datum/human_subtile_pulse/human_subtile_pulse
 	var/tmp/human_subtile_import_owned = FALSE
@@ -48,12 +49,23 @@
 	return isturf(loc) && world.icon_size == 32 && bound_x == 0 && bound_y == 0 && bound_width == 32 && bound_height == 32 && isnum(step_x) && isnum(step_y) && step_x >= 0 && step_x < 32 && step_y >= 0 && step_y < 32 && step_x == round(step_x) && step_y == round(step_y)
 
 /mob/living/human/proc/human_subtile_eligible(direction)
-	return human_subtile_enabled && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
+	return human_subtile_enabled && human_subtile_ready(direction)
+
+/mob/living/human/proc/human_subtile_ready(direction)
+	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
+
+/mob/living/human/proc/human_subtile_initialize_default(direction)
+	// Wait for an eligible input, after construction/placement/load. Do not adopt
+	// arbitrary legacy offsets, replay workers, or bypass the setter's safety.
+	if (human_subtile_default_pending && human_subtile_ready(direction) && ((!step_x && !step_y) || human_subtile_offset_owned))
+		return set_human_subtile(TRUE)
+	return FALSE
 
 /mob/living/human/proc/human_subtile_unlinked()
 	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulling && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !using_object && !using_cannon && !football
 
 /mob/living/human/proc/human_subtile_input_supported(direction)
+	human_subtile_initialize_default(direction)
 	// Unsupported transitions keep the legacy path only when tile-aligned.
 	// A restored capsule also owns a physical offset while the opt-in is off.
 	if (!human_subtile_enabled && !human_subtile_offset_owned)
@@ -68,6 +80,7 @@
 	if (!enabled && (step_x || step_y))
 		return FALSE
 	human_subtile_enabled = !!enabled
+	human_subtile_default_pending = FALSE
 	if (!enabled)
 		human_subtile_offset_owned = FALSE
 	return TRUE
@@ -79,7 +92,7 @@
 
 // Same arithmetic as the existing cardinal client.Move epilogue, captured BEFORE
 // sleeping. The disabled path still executes the original epilogue unchanged.
-/mob/living/human/proc/human_subtile_deadline(raw_deadline, now)
+/mob/living/human/proc/human_subtile_deadline(raw_deadline, now, ordinal = FALSE)
 	var/multiplier = movement_speed_multiplier
 	if (find_trait("Slowness"))
 		multiplier *= 0.85
@@ -92,7 +105,10 @@
 	var/delay = raw_deadline
 	if (delay > now)
 		delay -= now
-	return now + delay / multiplier
+	delay /= multiplier
+	if (ordinal)
+		delay *= ROOT2_FAST
+	return now + delay
 
 /mob/living/human/SelfMove(turf/n, direct, deadline = null)
 	if (isnull(deadline))
@@ -137,8 +153,8 @@
 			sleep(due - world.time)
 		if (!valid(direction))
 			break
-		var/dx = direction == EAST ? 4 : direction == WEST ? -4 : 0
-		var/dy = direction == NORTH ? 4 : direction == SOUTH ? -4 : 0
+		var/dx = (direction & EAST) ? 4 : (direction & WEST) ? -4 : 0
+		var/dy = (direction & NORTH) ? 4 : (direction & SOUTH) ? -4 : 0
 		var/tx = actor.x
 		var/ty = actor.y
 		var/sx = actor.step_x + dx
@@ -159,8 +175,14 @@
 		if (!destination)
 			break
 		// Admission rules for grace walls and hanging apply to every fresh pulse.
-		var/turf/front = locate(actor.x + (direction == EAST ? 1 : direction == WEST ? -1 : 0), actor.y + (direction == NORTH ? 1 : direction == SOUTH ? -1 : 0), actor.z)
-		if (map && front && map.check_caribbean_block(actor, front))
+		var/grace_blocked = FALSE
+		for (var/front_direction in list(direction, direction & (NORTH | SOUTH), direction & (EAST | WEST)))
+			if (!front_direction)
+				continue
+			var/turf/front = get_step(actor, front_direction)
+			if (map && front && map.check_caribbean_block(actor, front))
+				grace_blocked = TRUE
+		if (grace_blocked)
 			break
 		var/hanging = FALSE
 		for (var/obj/structure/noose/N in actor.loc)
@@ -228,7 +250,7 @@
 /mob/living/human/persistence_runtime_var(key)
 	if ((key == "step_x" || key == "step_y") && (human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_enabled", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_import_owned", "human_subtile_offset_owned")) || ..()
+	return (key in list("human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_import_owned", "human_subtile_offset_owned")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)

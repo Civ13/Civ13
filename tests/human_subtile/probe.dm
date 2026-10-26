@@ -200,7 +200,9 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_assert(C.step_x == 4 && C.fixture_pulses == 1 && C.fixture_human_completions == 1 && C.fixture_living_completions == 1, "cancel_after_displacement_completes_once")
 	human_subtile_fixture_assert(!C.human_subtile_transaction && !C.human_subtile_pulse, "cancel_releases_context")
 	var/list/cancelled_position = C.human_subtile_snapshot()
+	C.prone = TRUE
 	human_subtile_fixture_assert(!C.set_human_subtile(FALSE) && !C.human_subtile_input_supported(NORTHEAST) && human_subtile_same(cancelled_position, C.human_subtile_snapshot()), "unsupported_handoff_retains_position")
+	C.prone = FALSE
 	var/mob/living/human/subtile_fixture/R = human_subtile_fixture_actor(5, 8)
 	R.set_human_subtile(TRUE)
 	R.fixture_reenter = TRUE
@@ -247,7 +249,7 @@ var/human_subtile_fixture_phase = "initializing"
 	var/mob/living/human/subtile_fixture/L = map_storage.Load_Entry(F, ref, starting_loc = locate(2, 8, 1))
 	L.after_load()
 	human_subtile_fixture_assert(L.x == 2 && L.y == 8 && L.step_x == 4 && L.step_y == 0 && L.dir == SOUTH, "actual_codec_anchor_offset_facing_roundtrip")
-	human_subtile_fixture_assert(!L.human_subtile_enabled && !L.human_subtile_transaction && !L.human_subtile_pulse && !L.human_subtile_input_supported(EAST), "import_never_replays_worker_or_snaps_offset")
+	human_subtile_fixture_assert(!L.human_subtile_enabled && !L.human_subtile_transaction && !L.human_subtile_pulse && L.human_subtile_default_pending, "import_never_replays_worker_or_snaps_offset")
 	var/obj/item/subtile_fixture_paid/LI = locate() in L.contents
 	var/obj/item/subtile_fixture_paid/LC
 	if (LI)

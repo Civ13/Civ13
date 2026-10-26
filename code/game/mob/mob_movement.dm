@@ -203,7 +203,7 @@
 				return FALSE
 		else if (subtile_actor.human_subtile_offset_owned && (step_x || step_y))
 			return FALSE
-	if (direct & (direct - 1))
+	if (!subtile_pulse && (direct & (direct - 1)))
 		if (direct & TRUE)
 			if (direct & 4)
 				if (step(src, NORTH))
@@ -768,7 +768,7 @@
 				step(mob, pick(cardinal))
 			else
 				if (mob_is_human && H.human_subtile_eligible(direct))
-					subtile_deadline = H.human_subtile_deadline(move_delay, world.time)
+					subtile_deadline = H.human_subtile_deadline(move_delay, world.time, ordinal)
 					. = H.SelfMove(n, direct, subtile_deadline)
 				else
 					. = mob.SelfMove(n, direct)
