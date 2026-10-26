@@ -1,8 +1,10 @@
 # Winter crops: turnips and plump helmets
 
-Source preparation based on Civ13 master `6b075397bd6efab6ad2e6ffcbd7240b865fcc72e`.
-Native compilation, connected gameplay, rendered world appearance and save/load
-acceptance have not been run for this change. Asset previews are not gameplay captures.
+Originally prepared against Civ13 master `6b075397bd6efab6ad2e6ffcbd7240b865fcc72e`;
+merged through PR #3314 as `a1f08b3d3ac366cd85a08eaf2fd4f9e734faa9a6`.
+Exact-source native crop/food and focused writer/reload evidence is recorded below.
+Connected gameplay and rendered world appearance remain untested; asset previews
+are not gameplay captures.
 
 ## Two different food routes
 
@@ -99,6 +101,18 @@ native phases passed, including direct crop/food paths, frozen scalar and partia
 food persistence, and four causal controls. See the
 [exact-source evidence and limits](../tests/winter_crops/README.md#exact-source-native-acceptance).
 
-This does not establish ordinary crop callback restoration, natural growth/decay
-cadence, full winter food balance, connected-client interaction or full-world
-save/load. Those remain gameplay acceptance work, not implied by this result.
+A later [natural writer/reload test](../tests/winter_crops/README.md#natural-writerreload-at-ae99e2b)
+passed on exact head `ae99e2b07c3ba9a2dd191ba07b6dba27a4bfda3e` using ordinary
+constructors, growth waits, real Save_World/Load_World and after-load callbacks.
+Both writer and fresh reader observed two ordinary crop intervals, 80 soil payments
+and four food-aging events, with tracked seed/crop/partial-food state conserved.
+Reload starts a full new growth wait; the partial pre-save wait is not restored.
+
+The later seed-admission-only commit `379875cabaec0be86ac86f8e9de36a9cb0d7815f`
+compiled with zero errors/warnings and passed 17 winter source tests. It changes no
+growth/save code, but the native result remains bound to ae99e2b rather than being
+relabeled for the final commit or squash merge. Post-merge ordinary CI also passed.
+
+These results do not establish a complete player forage-to-harvest-to-meal journey,
+full harvest timing or winter food balance, connected-client interaction, full-round
+restoration through ticker.loadmap, or full-world save/load acceptance.
