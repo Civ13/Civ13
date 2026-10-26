@@ -135,7 +135,9 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_dictionary_inputs_select_only_the_reviewed_offline_file(self):
         self.assertEqual(ci.SUITES['dictionary']['files'],
-                         ('tests/dictionary_era/test_sources.py',))
+                         ('tests/dictionary_era/test_sources.py',
+                          'tests/dictionary_era/test_slang_content.py',
+                          'tests/dictionary_era/test_phrase_mode.py'))
         for path in ('code/_helpers/dictionary.dm', 'config/dictionary.txt',
                      'code/game/mob/living/carbon/human/say.dm',
                      'code/game/mob/living/carbon/human/whisper.dm',

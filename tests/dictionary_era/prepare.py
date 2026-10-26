@@ -45,7 +45,8 @@ def prepare(output, root=ROOT):
     output.mkdir(parents=True, exist_ok=False)
     paths = [HELPER, SAY, WHISPER, 'code/_helpers/text.dm', 'code/setup.dm',
              'code/__defines/__game.dm', 'civ13.dme', 'tools/byond/version.json',
-             'config/dictionary.txt', 'tests/dictionary_era/probe.dm']
+             'config/dictionary.txt', 'tests/dictionary_era/probe.dm',
+             'tests/dictionary_era/wiki_slang.json']
     sources = {path: read(path, root) for path in paths}
     text = sources['code/_helpers/text.dm']
     helpers = '\n'.join(proc(text, name) for name in

@@ -40,7 +40,9 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
-    'dictionary': {'files': ('tests/dictionary_era/test_sources.py',), 'paths': (
+    'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
+                             'tests/dictionary_era/test_slang_content.py',
+                             'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
         'tests/dictionary_era/', 'code/_helpers/dictionary.dm', 'code/_helpers/text.dm',
         'code/setup.dm', 'code/world.dm', 'code/__defines/__game.dm', 'civ13.dme',
         'code/game/mob/living/carbon/human/say.dm',

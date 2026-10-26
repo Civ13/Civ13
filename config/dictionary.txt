@@ -65,3 +65,62 @@ unga,barbarian
 we live in a society,we reside in a human community
 wdym,what do you mean
 wtf,what the fuck
+
+# Wiki slang opts in to phrase matching; see docs/wiki-slang.md
+# Era 2 - 1013 AD
+a minor court fine,an amercement,2,phrase
+the lord's steward,the bailiff,2,phrase
+a royal charter town,a borough,2,phrase
+the right to gather wood,estovers,2,phrase
+an oath of loyalty to my lord,fealty,2,phrase
+a tenth for the church,a tithe,2,phrase
+# Era 3 - 1713 AD
+stop!,avast!,3,phrase
+rainy weather,blashy weather,3,phrase
+hard to pronounce words,break-teeth words,3,phrase
+a potato,an Irish apricot,3,phrase
+play cards,study the history of the four kings,3,phrase
+dead and buried,gone to the Diet of Worms,3,phrase
+getting drunk,going to Jerusalem,3,phrase
+to be hanged,to go up a ladder to bed,3,phrase
+# Era 4 - 1873 AD
+sausages,bags o' mystery,4,phrase
+brave,bricky,4,phrase
+fearless,bricky,4,phrase
+a talkative lady,a church-bell,4,phrase
+damned if i know,damfino,4,phrase
+excuse me,mind the grease,4,phrase
+a police officer,a mutton shunter,4,phrase
+excitable,mad as hops,4,phrase
+to fail,to shoot into the brown,4,phrase
+# Era 5 - wiki 1896 AD approximated to engine 1903
+an excellent thing,a corker,5,phrase
+deceitful trickery,jiggery-pokery,5,phrase
+electricity,juice,5,phrase
+a foolish person,a lunkhead,5,phrase
+an energetic person,a live wire,5,phrase
+a left-hander,a port-sider,5,phrase
+the telephone,the tube,5,phrase
+in prison,up the river,5,phrase
+in jail,up the river,5,phrase
+a dollar,a simoleon,5,phrase
+# Era 6 - 1940's AD
+an expert,an ace,6,phrase
+a boring person,a cold fish,6,phrase
+nonsensical talk,gobbledygook,6,phrase
+paper money,greenbacks,6,phrase
+some sleep,some shuteye,6,phrase
+a person who drinks alcohol,a swigger,6,phrase
+# Era 7 - 1969 AD
+a fun time,a gas,7,phrase
+to leave,to bug out,7,phrase
+shake my hand,gimme some skin,7,phrase
+beyond explanation,way out,7,phrase
+really great,really twitchin',7,phrase
+# Era 8 - wiki 1984 AD approximated to engine 2013
+really good,really bitchin,8,phrase
+my home,my crib,8,phrase
+a foolish fellow,a dufus,8,phrase
+looking stylish,looking fly,8,phrase
+that's gross,gag me with a spoon,8,phrase
+goodbye and good luck,later days and better lays,8,phrase
