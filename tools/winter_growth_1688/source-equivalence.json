@@ -1,0 +1,19 @@
+{
+  "head": "ae99e2b07c3ba9a2dd191ba07b6dba27a4bfda3e",
+  "tree": "3fedd061d42235af0d7699d9eb39135d41c25fd5",
+  "baseline": "11e5a26e0c3d53889a5330c9085a7d582e07e50e",
+  "common_procedures_equal": {
+    "/obj/structure/farming/plant/proc/growth()": true,
+    "/obj/structure/farming/plant/proc/stageGrowth()": true,
+    "/obj/structure/farming/plant/proc/soil_nutrition_proc()": true
+  },
+  "persistence_and_food_identical": {
+    "code/modules/persistence/loading.dm": "1b509d0d8377427a8f96f9716ffd4be8880952eb",
+    "code/modules/persistence/saving.dm": "19e54f5051f9d750555129ca0bc4833fa56e1116",
+    "code/modules/persistence/functions.dm": "f311d0c9f1d1b6e07444e31ec08ee2886f39d133",
+    "code/modules/reagents/reagent_containers/food.dm": "242b48e456c9299a6bf95c162664ac394aa24b1f"
+  },
+  "minimum_first_crop_callback_seconds": 60,
+  "existing_daemon_cap_seconds": 45,
+  "native_executed": false
+}
