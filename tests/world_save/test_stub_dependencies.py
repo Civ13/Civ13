@@ -69,6 +69,65 @@ class StubDependencies(unittest.TestCase):
         exec('def restore(state):\n'+'\n'.join(translations[line] for line in instructions), namespace)
         return namespace['restore']
 
+    def check_zone_graph_dependencies(self, text, complete=False):
+        for signature in ('/map_storage/proc/capture_zone_descriptor(area/A)',
+                          '/map_storage/proc/validate_zone_reference(id, type)'):
+            self.assertEqual(text.count(signature+'\n'), 1)
+            body = text.split(signature+'\n', 1)[1].split('\n/', 1)[0]
+            self.assertEqual(body.strip(), 'throw EXCEPTION("Topology needs the full-source fixture")')
+        for name in ('zone_export_state', 'restored_zones', 'persistence_zone_id'):
+            self.assertEqual(len(re.findall(r'(?m)^(?:/map_storage/|/area/|\t)var/(?:list/|tmp/)?'
+                                             + name + r'(?:\s|$)', text)), 1)
+        graph = (ROOT/'code/modules/persistence/durable_graph.dm').read_text()
+        self.assertIn('if(isarea(value) && map_storage.zone_export_state)', graph)
+        self.assertIn('map_storage.capture_zone_descriptor(A)', graph)
+        self.assertIn('map_storage.validate_zone_reference(node["id"]', graph)
+        self.assertIn('map_storage.restored_zones[node["id"]]', graph)
+        self.assertIn('A.persistence_zone_id != node["id"]', graph)
+        if complete:
+            calls = set(re.findall(r'\bmap_storage\.(\w+)\(', graph))
+            declared = set(re.findall(r'^/map_storage/(?:proc/)?(\w+)\(', text, re.M))
+            self.assertFalse(calls - declared, f'Graph storage procedures absent: {calls - declared}')
+
+    def test_graph_dependencies_refuse_topology_in_shared_and_standalone_packets(self):
+        for name in ('stubs.dm', 'durable_graph_probe.dm'):
+            text = (FIXTURE/name).read_text()
+            self.check_zone_graph_dependencies(text, complete=name == 'durable_graph_probe.dm')
+            for changed in (text.replace('/map_storage/proc/capture_zone_descriptor(area/A)', '/map_storage/proc/absent'),
+                            text.replace('/map_storage/proc/validate_zone_reference(id, type)', '/map_storage/proc/absent'),
+                            text.replace('throw EXCEPTION("Topology needs the full-source fixture")', 'return'),
+                            text.replace('var/list/zone_export_state', 'var/list/absent'),
+                            text.replace('var/list/restored_zones', 'var/list/absent'),
+                            text.replace('var/tmp/persistence_zone_id', 'var/tmp/absent')):
+                with self.subTest(name=name), self.assertRaises(AssertionError):
+                    self.check_zone_graph_dependencies(changed)
+        self.spawn.assert_not_called()
+
+    def test_selected_graph_and_sleep_preparations_keep_current_dependencies_without_launch(self):
+        graph = module('stub_graph', FIXTURE/'run-durable-graph.py')
+        sleep = module('stub_sleep', FIXTURE/'run-sleep-transfer.py')
+        graph_modes = ((), ('--alist',), ('--contracts',))
+        graph_modes += tuple(('--negative-control', control) for control in
+                             ('generation','alias','binding','alist-values','alist-kind','alist-alias',
+                              'alist-binding','clock','omission','timer','infinity'))
+        for flags in graph_modes:
+            with self.subTest(graph=flags), tempfile.TemporaryDirectory() as directory, \
+                    patch.object(sys, 'argv', ['graph','--prepare-only',*flags]), \
+                    patch.object(graph.tempfile,'mkdtemp',return_value=directory), patch('builtins.print'):
+                graph.main()
+                self.check_zone_graph_dependencies('\n'.join(closure(Path(directory)/'probe.dme')), complete=True)
+        def git_read(command, **kwargs):
+            self.assertEqual(command[0], 'git')
+            return 'offline-identity\n' if kwargs.get('text') else b''
+        for control in (None, *sleep.CONTROLS):
+            with self.subTest(sleep=control), tempfile.TemporaryDirectory() as directory, \
+                    patch.object(sleep.BASE.subprocess,'check_output',side_effect=git_read):
+                receipt = sleep.prepare(Path(directory), control)
+                self.check_zone_graph_dependencies('\n'.join(closure(Path(directory)/'probe.dme')), complete=True)
+                self.assertTrue(receipt['prepared_only'])
+                self.assertFalse(receipt['native_verified'])
+        self.spawn.assert_not_called()
+
     def test_zone_restore_null_branch_matches_production_without_admitting_topology(self):
         production = (ROOT/'code/modules/persistence/zone_topology.dm').read_text()
         body = production.split('/map_storage/proc/begin_zone_restore(',1)[1].split('\n/map_storage/proc/',1)[0]
@@ -190,6 +249,7 @@ class StubDependencies(unittest.TestCase):
             output = Path(directory)
             receipt = runner.prepare(output)
             self.check_dependencies(closure(output / 'probe.dme'))
+            self.check_zone_graph_dependencies('\n'.join(closure(output / 'probe.dme')), complete=True)
             self.assertTrue(receipt['prepared_only'])
             self.assertFalse(receipt['native_verified'])
         self.spawn.assert_not_called()
