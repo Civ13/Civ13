@@ -188,6 +188,7 @@ jobs:
           python3 -B tests/world_save/test_cross_level_sources.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_round_metadata_toolchain.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
       - name: Test save movement and physical sleep guards offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_movement')
         run: python3 -B -m unittest discover -s tests/save_movement -v
@@ -1336,9 +1337,9 @@ jobs:
           export TMPDIR="$RUNNER_TEMP/lighting-recovery"
           python3 tests/world_save/test_lighting_corner_allocation.py
           python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin"
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --lighting
           for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view lighting-eager lighting-shared; do
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
           done
         shell: bash
       - name: Retain lighting recovery evidence
@@ -1403,14 +1404,14 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           mkdir -p "$RUNNER_TEMP/protected-sleep"
           export TMPDIR="$RUNNER_TEMP/protected-sleep"
-          python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-sleep-transfer.py --run-native --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
           for control in old-bed persistence-gate other-occupant wake-actor move-rollback inventory-gate diagnostic-record; do
-            python3 tests/world_save/run-sleep-transfer.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+            python3 tests/world_save/run-sleep-transfer.py --run-native --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
-          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case field-direct
-          python3 tests/world_save/run-cross-level.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --case move-direct --expect-current-defects
+          python3 tests/world_save/run-cross-level.py --run-native --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --case field-direct
+          python3 tests/world_save/run-cross-level.py --run-native --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --case move-direct --expect-current-defects
           # Synthetic writer/reader only. No private save path or staging upload.
-          if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-bin "$PWD/BYOND/byond/bin"; then
+          if ! python3 tests/world_save/partial_save_inspector/inspect-partial-save.py --self-test-only --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"; then
             # These two compiler logs contain only fixed synthetic source, never
             # a source save or runtime input. Bound diagnostics; do not upload logs.
             for log in "$HOME"/civ13-save-inspect-*/{writer,reader}-compile.log; do
@@ -1444,13 +1445,13 @@ jobs:
           bash tests/world_save/run.sh
           python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control metadata
           python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recovery
-          python3 tests/world_save/run-reader-contract.py --byond-bin "$PWD/BYOND/byond/bin"
-          python3 tests/world_save/run-reader-contract.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
-          python3 tests/world_save/run-reader-contract.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control close
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --wounds
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --wounds --negative-control wound-restore
-          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin"
-          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
+          python3 tests/world_save/run-reader-contract.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-reader-contract.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
+          python3 tests/world_save/run-reader-contract.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control close
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --wounds
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --wounds --negative-control wound-restore
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
           python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
           python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
           python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin" --negative-control integrity
@@ -1466,17 +1467,17 @@ jobs:
           for control in clock omission timer infinity; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --startup-only
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --startup-only
           for profile in gaia europe; do
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile"
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --dimension-bootstrap
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --recovery-reconnect
-              python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --lifecycle-shutdown
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile"
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --dimension-bootstrap
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --recovery-reconnect
+              python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --lifecycle-shutdown
           done
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --profile europe --lifecycle-shutdown --negative-control shutdown-return
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --recovery-reconnect --negative-control reclaim-order
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile europe --lifecycle-shutdown --negative-control shutdown-return
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --recovery-reconnect --negative-control reclaim-order
           for control in season preflight reachability callback timer-restore; do
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
         shell: bash
       - name: Retain ordinary world-save evidence

@@ -1,6 +1,7 @@
 """Characterize existing cross-level saver failures; this suite does not claim repair."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,13 @@ ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / 'tests/world_save'
 sys.path.insert(0, str(ROOT / 'tests/new_z_budget'))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('cross_current_runtime', FIXTURE/'current_runtime.py')
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
 
 CASES = ('move-direct', 'move-nested', 'same-level', 'field-direct', 'field-nested',
          'field-backward-direct', 'field-backward-nested', 'unplaced',
@@ -171,13 +179,15 @@ def adjudicate(result, log, case, expected='PASS', minimum=3):
         raise RuntimeError(f'Wrong assertion for {case}: {result.get("result")!r}; expected {expected!r}')
 
 
-def native(output, byond, cases, receipt, expected=None, compile_only=False):
-    byond = byond.resolve(strict=True)
+def native(output, byond, cases, receipt, expected=None, compile_only=False, runtime=None):
+    byond = byond.absolute() if runtime else byond.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     if not compiler.is_file():
         raise RuntimeError('Configured pinned native compiler missing')
+    if runtime: runtime.before_launch('compile', output)
     build = owned_process([str(compiler), '-max_errors', '0', 'probe.dme'], output, 'compile')
-    validate_compile(0, build)
+    if runtime: runtime.validate_compile(0, build, 'probe.dmb')
+    else: validate_compile(0, build)
     receipt['compiled'] = True
     receipt['prepared_only'] = False
     refresh_receipt(output, receipt)
@@ -194,6 +204,7 @@ def native(output, byond, cases, receipt, expected=None, compile_only=False):
             source = output / ('probe' + suffix)
             if source.exists():
                 (cwd / source.name).write_bytes(source.read_bytes())
+        if runtime: runtime.before_launch('daemon:'+case, output)
         logs = owned_process([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted',
                               '-ip', '127.0.0.1', '-params', f'case={case}', '-log', 'native.log'], cwd, 'daemon')
         logs += '\n' + read_bounded(cwd / 'native.log')
@@ -213,6 +224,7 @@ def main():
     mode.add_argument('--compile-only', action='store_true')
     mode.add_argument('--run-native', action='store_true', help='Requires maintainer approval; launches trusted DreamDaemon')
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--case', choices=CASES, action='append')
     parser.add_argument('--expect-current-defects', action='store_true', help='Characterize the unchanged saver; does not claim a fix')
     parser.add_argument('--negative-control', choices=tuple(CONTROLS))
@@ -221,6 +233,10 @@ def main():
         parser.error('--byond-bin is required for native compilation/execution')
     if args.negative_control and (args.expect_current_defects or args.case):
         parser.error('Mutation controls select one exact case and cannot combine with other modes')
+    if args.byond_archive and (not args.run_native or args.negative_control or
+            (args.case, args.expect_current_defects) not in ((['field-direct'], False), (['move-direct'], True))):
+        parser.error('Current runtime admits only the selected cross-level CI cases')
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-cross-level-'))
     receipt = prepare(output, args.negative_control)
     cases = args.case or CASES
@@ -233,7 +249,8 @@ def main():
     refresh_receipt(output, receipt)
     print(f'Retained evidence: {output}', flush=True)
     if not args.prepare_only:
-        native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
+        if runtime: native(output, args.byond_bin, cases, receipt, expected, args.compile_only, runtime=runtime)
+        else: native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
 
 
 if __name__ == '__main__':

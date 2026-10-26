@@ -5,6 +5,7 @@ All native processes and saves are isolated and retained for inspection.
 """
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -18,6 +19,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 
 
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('dimension_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def current_probe(source):
+    """Project only the expected build; retain the frozen historical input."""
+    original = hashlib.sha256(source.encode()).hexdigest()
+    anchor = 'check(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")'
+    if original != 'a2b377da7baa6fff05aea3f9c6f0e10a4f6451b68786f3708898845040e0ac0b' or source.count(anchor) != 1:
+        raise RuntimeError('Historical dimension probe hash or runtime assertion anchor changed')
+    projected = source.replace(anchor, anchor.replace('1681', '1688'), 1)
+    return projected, {'contract': 'current-516.1688', 'original_sha256': original,
+                       'projected_sha256': hashlib.sha256(projected.encode()).hexdigest(),
+                       'adaptation': 'Only the exact expected native build changes from 1681 to 1688'}
+
+
 CASES = ('positive', 'matching', 'fractional', 'negative', 'text', 'total-cap',
          'growth-cap', 'shrink', 'horizontal', 'missing', 'marker', 'metadata',
          'generation', 'grid', 'reference', 'area', 'json', 'intent',
@@ -28,24 +48,33 @@ CASES = ('positive', 'matching', 'fractional', 'negative', 'text', 'total-cap',
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--negative-control', choices=('preflight', 'memory-admission', 'budget-hold'))
     args = parser.parse_args()
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
+    if args.byond_archive and (args.prepare_only or args.negative_control not in (None, 'preflight')):
+        parser.error('Current runtime admits only the selected dimension CI cases')
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
+    expected_build = int(runtime.identity['version'].split('.')[1]) if runtime else 1681
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
     output = Path(tempfile.mkdtemp(prefix='civ13-dimension-bootstrap-'))
     print(f'Retained evidence: {output}', flush=True)
     hashes = {}
     allocator_hash = None
+    projection = None
     environment = (fixture / 'dimension_bootstrap.dme').read_text(encoding='utf-8')
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
 
     def include(match):
-        nonlocal allocator_hash
+        nonlocal allocator_hash, projection
         original = (fixture / match.group(1)).resolve(strict=True)
         text = original.read_text(encoding='utf-8')
+        if original.name == 'dimension_bootstrap_probe.dm' and runtime:
+            text, projection = current_probe(text)
+            projection['source_bytes_sha256'] = hashlib.sha256(original.read_bytes()).hexdigest()
         if original.name == 'building_levels.dm':
             allocator_hash = hashlib.sha256(text.encode()).hexdigest()
             # Compile the complete allocator and sky definition verbatim. The
@@ -78,6 +107,7 @@ def main():
     (output / 'dimension_bootstrap.dme').write_text(environment, encoding='utf-8', newline='\n')
     receipt = {'prepared_only': args.prepare_only, 'negative_control': args.negative_control,
                'sources_sha256': hashes, 'cases': {}, 'processes': [],
+               'runtime_projection': projection,
                'allocator': 'production shared allocator, verbatim prefix',
                'allocator_full_source_sha256': allocator_hash, 'full_game_verified': False}
 
@@ -88,7 +118,7 @@ def main():
     if args.prepare_only:
         print('Prepared source only; no compiler or runtime was executed.')
         return
-    byond = args.byond_bin.resolve(strict=True)
+    byond = args.byond_bin.absolute() if runtime else args.byond_bin.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     if not compiler.is_file() or not daemon.is_file():
@@ -100,6 +130,7 @@ def main():
         process = None
         try:
             with (cwd / 'stdio.log').open('w', encoding='utf-8') as stream:
+                if runtime: runtime.before_launch(role, output)
                 process = subprocess.Popen(command, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
                     creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
                 row['pid'] = process.pid
@@ -130,7 +161,8 @@ def main():
         return text
 
     build = owned('compile', [str(compiler), '-max_errors', '0', 'dimension_bootstrap.dme'], output)
-    validate_compile(0, build, 'dimension_bootstrap.dmb')
+    if runtime: runtime.validate_compile(0, build, 'dimension_bootstrap.dmb')
+    else: validate_compile(0, build, 'dimension_bootstrap.dmb')
 
     def run(name, params, seed=None):
         cwd = output / name
@@ -150,7 +182,7 @@ def main():
                 raise RuntimeError('Admission refusal modified or removed an original generation file')
         result = (cwd / 'result.txt').read_text(encoding='utf-8').strip()
         native = json.loads((cwd / 'receipt.json').read_text(encoding='utf-8'))
-        if native.get('byond_version') != 516 or native.get('byond_build') != 1681:
+        if native.get('byond_version') != 516 or native.get('byond_build') != expected_build:
             raise RuntimeError('Pinned runtime required')
         receipt['cases'][name] = {'result': result, **native}
         persist()
@@ -159,7 +191,7 @@ def main():
     seeds = {}
     for count in (2, 3, 4):
         cwd, result, native = run(f'write{count}', f'mode=write{count}')
-        if result != 'PASS' or native != {'checks': 4, 'maxz': count, 'allocations': 0, 'byond_version': 516, 'byond_build': 1681}:
+        if result != 'PASS' or native != {'checks': 4, 'maxz': count, 'allocations': 0, 'byond_version': 516, 'byond_build': expected_build}:
             raise RuntimeError(f'Writer did not produce the intended generation: {result}, {native}')
         seeds[count] = cwd
     selected = ('missing',) if args.negative_control == 'preflight' else ('unmeasured',) if args.negative_control else CASES

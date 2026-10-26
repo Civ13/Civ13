@@ -1,12 +1,20 @@
 """Pinned savefile primitive observations in two isolated cooperating worlds."""
 import argparse
 import json
+import importlib.util
 import os
 from pathlib import Path
 import re
 import subprocess
 import tempfile
 import time
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('reader_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
 
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|infinite loop|segmentation|assertion failed|fatal error', re.IGNORECASE)
 
@@ -20,10 +28,14 @@ def bounded_text(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--negative-control', choices=('binding', 'close'))
     args = parser.parse_args()
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
+    expected_version = runtime.identity['version'] if runtime else '516.1681'
+    expected_major, expected_build = map(int, expected_version.split('.'))
     root = Path(__file__).resolve().parents[2]
-    byond = args.byond_bin.resolve(strict=True)
+    byond = args.byond_bin.absolute() if runtime else args.byond_bin.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     for executable in (compiler, daemon):
@@ -49,11 +61,13 @@ def main():
         source = source.replace(before, after, 1)
     (output / 'probe.dm').write_text(source, encoding='utf-8')
     (output / 'probe.dme').write_text('#include "probe.dm"\n', encoding='utf-8')
+    if runtime: runtime.before_launch('compile', output)
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=output,
                            capture_output=True, text=True, timeout=60, creationflags=flags)
     compile_log = build.stdout + build.stderr
     (output / 'compile.log').write_text(compile_log, encoding='utf-8')
-    if build.returncode or '516.1681' not in compile_log or '0 errors, 0 warnings' not in compile_log:
+    if runtime: runtime.validate_compile(build.returncode, compile_log, 'probe.dmb')
+    if build.returncode or expected_version not in compile_log or '0 errors, 0 warnings' not in compile_log:
         print(compile_log)
         raise RuntimeError('Reader-contract compilation failed')
     processes = {}
@@ -65,6 +79,7 @@ def main():
     def launch(role):
         stream = (output / f'{role}-stdio.log').open('w', encoding='utf-8')
         streams[role] = stream
+        if runtime: runtime.before_launch('daemon:'+role, output)
         processes[role] = subprocess.Popen(
             [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log',
              f'{role}-runtime.log', '-params', f'role={role}'], cwd=output,
@@ -130,8 +145,8 @@ def main():
         receipt = output / f'{role}.json'
         if receipt.exists():
             receipts[role] = json.loads(bounded_text(receipt))
-            if receipts[role].get('byond_version') != 516 or receipts[role].get('byond_build') != 1681:
-                raise RuntimeError('Runtime receipt is not BYOND 516.1681')
+            if receipts[role].get('byond_version') != expected_major or receipts[role].get('byond_build') != expected_build:
+                raise RuntimeError('Runtime receipt is not BYOND '+expected_version)
     if intended:
         receipt = receipts.get(intended_role, {})
         result_file = output / f'{intended_role}.result'

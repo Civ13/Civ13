@@ -113,6 +113,7 @@ def main():
     mode.add_argument('--compile-only', action='store_true')
     mode.add_argument('--run-native', action='store_true', help='Requires maintainer approval; launches trusted DreamDaemon')
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--case', choices=CASES, action='append')
     parser.add_argument('--negative-control', choices=tuple(CONTROLS))
     args = parser.parse_args()
@@ -120,6 +121,9 @@ def main():
         parser.error('--byond-bin is required for native compilation/execution')
     if args.negative_control and args.case:
         parser.error('Each control selects its exact intended assertion')
+    if args.byond_archive and (not args.run_native or args.case):
+        parser.error('Current runtime admits only the selected sleep CI cases')
+    runtime = BASE.selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-sleep-transfer-'))
     receipt = prepare(output, args.negative_control)
     cases, expected = args.case or CASES, {}
@@ -135,7 +139,8 @@ def main():
     BASE.refresh_receipt(output, receipt)
     print(f'Retained evidence: {output}', flush=True)
     if not args.prepare_only:
-        BASE.native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
+        if runtime: BASE.native(output, args.byond_bin, cases, receipt, expected, args.compile_only, runtime=runtime)
+        else: BASE.native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
 
 
 if __name__ == '__main__':
