@@ -62,7 +62,7 @@ export function createReference(fetcher = fetch) {
       } finally { controller.abort(); loading = false; clearTimeout(timer); signal?.removeEventListener('abort', cancel); }
     }
     const provenance = { source: referenceUrl, fetchedAt: new Date(cache.loaded).toISOString(), sha256: cache.sha256,
-      versionNote: 'Live official reference; may describe features newer than Civ13 BYOND 516.1681. Not compiler verification.' };
+      versionNote: 'Live official reference; may describe features newer than Civ13 target BYOND 516.1688. Not compiler verification.' };
     if (args.topic !== undefined) {
       const text = cache.entries.get(args.topic);
       if (text === undefined) throw Error('Unknown topic; use dm_reference_search to find an exact topic');

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "fixture": "hand_authored_synthetic_canonical_geometry_not_native_save",
+  "policy_id": "static-map-v0",
+  "dimensions": [3, 2, 2],
+  "area": "/area/caribbean/dark",
+  "source_provenance": "synthetic_profile_not_a_real_map",
+  "constructor_defaults": "fixture_assumption_requires_native_acceptance",
+  "palette": {
+    "aa": {"turf": "/turf/floor/wood", "objects": []},
+    "ab": {"turf": "/turf/wall/iron", "objects": []},
+    "ac": {"turf": "/turf/floor/wood", "objects": [{"type": "/obj/structure/bed/chair", "vars": {"dir": 4, "pixel_x": 0, "pixel_y": 0}}]},
+    "ad": {"turf": "/turf/floor/wood", "objects": [{"type": "/obj/effect/landmark", "vars": {"name": "JoinLateCivilian"}}]},
+    "ae": {"turf": "/turf/floor/wood", "objects": [{"type": "/obj/structure/bed/chair", "vars": {"dir": 1, "pixel_x": -2, "pixel_y": 3}}, {"type": "/obj/structure/bed/chair", "vars": {"dir": 8, "pixel_x": 2, "pixel_y": -3}}]}
+  },
+  "levels": [
+    {"z": 1, "rows_maxy_first": [["ab", "aa", "ac"], ["ad", "aa", "aa"]]},
+    {"z": 2, "rows_maxy_first": [["aa", "ab", "ae"], ["aa", "aa", "aa"]]}
+  ],
+  "expected": {"cells": 12, "chairs": 3, "landmarks": 1, "metadata_objects": 0, "compile_status": "not_run", "playability_status": "missing_companion_metadata_and_job_profile"}
+}

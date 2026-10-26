@@ -86,6 +86,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	return l
 
 /turf/Destroy()
+	snowfall_ground_unregister()
 	turfs -= src
 	turf_registry_members -= src
 	for (var/obj/o in contents)
@@ -341,6 +342,8 @@ var/const/enterloopsanity = 100
 			//Shoe sounds
 			if (type == /turf/floor/plating)
 				footstepsound = "erikafootsteps"
+			else if (has_snow_cover())
+				footstepsound = "snowfootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
 			else if (istype(src, /turf/floor/winter))

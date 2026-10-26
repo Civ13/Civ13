@@ -499,8 +499,8 @@
 	max_water = 50
 
 /obj/structure/farming/plant/tree
-	name = "tree"
-	desc = "A tree, grown for wood."
+	name = "tree seedling"
+	desc = "A young tree. Keep its outdoor plot watered and clear until it matures."
 	icon_state = "tree-grow1"
 	plant = "tree"
 	stack = "material/wood"
@@ -508,6 +508,91 @@
 	harvest_verb = "cut some logs from"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	max_water = 80
+	var/growth_time_left = 600 // Remaining active-server ticks in this stage.
+	var/tmp/last_growth_tick = 0
+
+/obj/structure/farming/plant/tree/New()
+	..()
+	water = max_water
+	last_growth_tick = world.time
+
+// The inherited constructor calls growth virtually. Register once instead of
+// starting the ordinary crop's sleeping recursion, including during import.
+/obj/structure/farming/plant/tree/growth()
+	processing_objects |= src
+
+/obj/structure/farming/plant/tree/persistence_runtime_var(key)
+	return key == "last_growth_tick" || ..()
+
+/obj/structure/farming/plant/tree/after_load()
+	..()
+	last_growth_tick = world.time
+	growth()
+
+/obj/structure/farming/plant/tree/Destroy()
+	processing_objects -= src
+	return ..()
+
+/obj/structure/farming/plant/tree/Del()
+	processing_objects -= src
+	..()
+
+/obj/structure/farming/plant/tree/proc/growing_season()
+	var/area/A = get_area(src)
+	return A && (A.climate in biomes) && (season in seasons)
+
+/obj/structure/farming/plant/tree/process_interval(configured_seconds = 2)
+	var/elapsed = min(max(0, configured_seconds * 10), max(0, world.time - last_growth_tick))
+	last_growth_tick = world.time
+	// Import/export can yield. Never mature a constructor shell or mutate the
+// crop graph while the serializer owns it; offline time earns no growth.
+	if (persistence_active_operation)
+		return
+	if (gc_destroyed || gcDestroyed || vstatic || stage > readyStageMax)
+		return PROCESS_KILL
+	if (!isturf(loc) || tree_planting_error(loc, src))
+		return
+	growth_time_left = max(0, growth_time_left - elapsed)
+	if (growth_time_left > 0)
+		return
+	growth_time_left = 600
+	soil_nutrition_proc()
+	water_proc()
+	if (stage > readyStageMax)
+		return PROCESS_KILL
+	if (growing_season() && stage < readyStageMin)
+		stageGrowth()
+	if (growing_season() && stage >= readyStageMin)
+		var/obj/structure/wild/tree/live_tree/T = new(loc)
+		// Keep the sprite anchor, but not the random offset used by wild trees.
+		T.pixel_x = initial(T.pixel_x)
+		T.pixel_y = initial(T.pixel_y)
+		T.radiation = radiation
+		T.change_season()
+		visible_message(SPAN_NOTICE("The young tree has matured."))
+		qdel(src)
+		return PROCESS_KILL
+	icon_state = "tree-grow[min(stage, readyStageMin - 1)]"
+
+// Seedlings are uprooted, never harvested as the old renewable log crop.
+/obj/structure/farming/plant/tree/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/shovel))
+		to_chat(user, SPAN_WARNING("You uproot the [name] with the [W.name]."))
+		qdel(src)
+		return
+	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe) || istype(W, /obj/item/weapon/foldable_shovel))
+		to_chat(user, SPAN_WARNING("You need an unfolded shovel to uproot the [name]."))
+
+/obj/structure/farming/plant/tree/farming_diagnostics(farming_skill)
+	. = ..()
+	. -= "The plant is well nourished and may give extra crops."
+	if (!vstatic && stage <= readyStageMax && farming_skill >= 1.3)
+		. += "This seedling will grow into a full tree. Uproot it with a shovel for no logs or seeds."
+		var/site_error = tree_planting_error(get_turf(src), src)
+		if (site_error)
+			. += site_error
+		else if (!growing_season())
+			. += "Growth is paused by the current climate or season. Keep the seedling watered."
 
 /obj/structure/farming/plant/bamboo
 	name = "bamboo"
@@ -890,6 +975,26 @@
 		new plantpath(loc_to_plant)
 	else
 		new plantpath(loc)
+
+// Ordinary crops retain their existing planting admission.
+/obj/item/stack/farming/seeds/proc/planting_error(turf/T)
+	return null
+
+/obj/item/stack/farming/seeds/tree/planting_error(turf/T)
+	return tree_planting_error(T)
+
+// Shared by seed admission and maturation: a tree must not grow inside a roof,
+// wall, building or occupant that arrived after the seed was planted.
+/proc/tree_planting_error(turf/T, obj/structure/farming/plant/tree/seedling = null)
+	if (!istype(T, /turf/floor/dirt/ploughed) || !T.is_plowed || T.density)
+		return "Trees need a ploughed plot."
+	var/area/A = get_area(T)
+	if (!A || A.location != AREA_OUTSIDE || A.is_void_area || (locate(/obj/roof) in T))
+		return "Trees need an outdoor plot with open sky."
+	for (var/atom/movable/blocker in T)
+		if (blocker != seedling && (blocker.density || istype(blocker, /mob/living) || istype(blocker, /obj/structure/farming/plant)))
+			return "Clear the plot before growing a tree here."
+	return null
 
 /obj/structure/farming/plant/proc/spawn_seeds()
 	if (istype(src, /obj/structure/farming/plant/herbs))

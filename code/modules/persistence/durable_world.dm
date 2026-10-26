@@ -19,6 +19,8 @@
 		throw EXCEPTION("World metadata is transitioning; retry saving after it settles")
 	if(!processes.time_of_day || !processes.weather)
 		throw EXCEPTION("World metadata processes are unavailable")
+	var/list/topology = zone_export_state
+	if(!topology) throw EXCEPTION("Zone capture was not admitted")
 	durable_export = new
 	var/list/fields = durable_metadata_snapshot_fields(map, durable_metadata_map_schema())
 	var/list/encoded_fields = list()
@@ -26,10 +28,6 @@
 	var/list/environment = list("season" = season, "game_hour" = game_hour, "time_of_day" = time_of_day, "weather" = weather, "weather_intensity" = weather_intensity, "global_radiation" = global_radiation, "global_pollution" = global_pollution, "global_export_tax" = global_export_tax, "global_import_tax" = global_import_tax, "abandonment_season_changes" = abandonment_season_changes, "round_progressing" = round_progressing, "allow_vote_restart" = config.allow_vote_restart, "daynight_on" = config.daynight_on, "seasons_on" = config.seasons_on, "tod_ticks" = processes.time_of_day.TOD_ticks, "tod_gate" = TOD_may_automatically_change, "research_clock" = map.research_time(), "win_hash" = map.win_condition ? map.win_condition.hash : null)
 	durable_metadata_validate_fields(environment, durable_environment_schema())
 	var/list/areas = list()
-	for(var/area/A in world)
-		var/turf/T = locate(/turf) in A
-		if(!T) continue
-		areas += list(list("x" = T.x, "y" = T.y, "z" = T.z, "type" = "[A.type]", "fields" = durable_metadata_snapshot_fields(A, durable_metadata_area_schema())))
 	var/list/symbols = list()
 	for(var/faction in map.faction_symbol_icon)
 		var/icon/I = map.faction_symbol_icon[faction]
@@ -41,7 +39,7 @@
 			for(var/x = 1, x <= 32, x++) pixels += list(I.GetPixel(x, y))
 		symbols[faction] = pixels
 	var/datum/durable_timer_queue/Q = map.durable_timer_queue()
-	return list("schema" = 1, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
+	return list("schema" = 2, "topology" = topology, "map_type" = "[map.type]", "fields" = encoded_fields, "environment" = environment, "times" = durable_export.encode(times_of_day), "areas" = areas, "symbols" = symbols, "weather_process" = durable_metadata_snapshot_fields(processes.weather, durable_weather_schema()), "timers" = Q.snapshot(), "nodes" = null)
 
 // Inspect encoded field roots without decoding references to atoms which have
 // not been loaded yet. All graph edges and entry identities are checked first.
@@ -51,8 +49,10 @@
 	if(!map.uses_durable_metadata() || !islist(state))
 		throw EXCEPTION("Unsupported durable world profile")
 	var/datum/durable_save_graph/G = new
-	G.check_fields(state, list("schema", "map_type", "fields", "environment", "times", "areas", "symbols", "weather_process", "timers", "nodes"))
-	if(state["schema"] != 1 || state["map_type"] != "[map.type]")
+	var/list/keys = list("schema", "map_type", "fields", "environment", "times", "areas", "symbols", "weather_process", "timers", "nodes")
+	if(state["schema"] == 2) keys += "topology"
+	G.check_fields(state, keys)
+	if(!(state["schema"] in list(1, 2)) || state["map_type"] != "[map.type]")
 		throw EXCEPTION("Durable world profile differs")
 	G.validate(state["nodes"], generation)
 	var/list/fields = state["fields"]
@@ -94,7 +94,13 @@
 		if(!area_key || "[save_validation_area_type(row["x"], row["y"], row["z"])]" != row["type"] || seen[area_key]) throw EXCEPTION("Invalid or duplicate durable area")
 		seen[area_key] = TRUE
 		durable_metadata_validate_fields(row["fields"], durable_metadata_area_schema())
-	if(validated_roof_areas.len)
+		if(validated_zone_state)
+			var/list/zone = validated_zones[saved_zone_id(row["x"], row["y"], row["z"])]
+			var/list/zone_fields = zone["fields"]
+			var/list/area_fields = row["fields"]
+			for(var/key in area_fields)
+				if(area_fields[key] != zone_fields[key]) throw EXCEPTION("Durable area fields differ from topology")
+	if(validated_roof_areas.len || validated_zone_state)
 		// A base area can lose its last turf to saved roofs. Validate the
 		// prospective inventory, including every uncovered base-map turf.
 		for(var/z = 1, z <= save_validation_maxz(), z++)

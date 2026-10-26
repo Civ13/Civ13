@@ -1,3 +1,4 @@
+#define CIV13_ZONE_PERSISTENCE
 // DM Environment file for 1713.dme.
 // All manual changes should be made outside the BEGIN_ and END_ blocks.
  // New source code should be placed in .dm files: choose File/New --> Code File.
@@ -802,6 +803,8 @@
 #include "code\modules\1713\vending.dm"
 #include "code\modules\1713\voting.dm"
 #include "code\modules\1713\weather.dm"
+#include "code\modules\1713\weather_policy.dm"
+#include "code\modules\1713\snowfall_ground.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"
@@ -1119,6 +1122,7 @@
 #include "code\modules\persistence\durable_timers.dm"
 #include "code\modules\persistence\durable_environment.dm"
 #include "code\modules\persistence\durable_world.dm"
+#include "code\modules\persistence\zone_topology.dm"
 #include "code\modules\persistence\player_reclaim.dm"
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"
@@ -1256,6 +1260,7 @@
 #include "code\processes\time_track.dm"
 #include "code\processes\vote.dm"
 #include "code\processes\weather.dm"
+#include "code\processes\snowfall_ground.dm"
 #include "code\processes\lighting\overlays.dm"
 #include "code\processes\lighting\sources.dm"
 #include "interface\interface.dm"
