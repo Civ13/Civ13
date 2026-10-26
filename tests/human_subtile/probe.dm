@@ -200,9 +200,9 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_assert(C.step_x == 2 && C.fixture_pulses == 1 && C.fixture_human_completions == 1 && C.fixture_living_completions == 1, "cancel_after_displacement_completes_once")
 	human_subtile_fixture_assert(!C.human_subtile_transaction && !C.human_subtile_pulse, "cancel_releases_context")
 	var/list/cancelled_position = C.human_subtile_snapshot()
-	C.prone = TRUE
+	C.crouching = TRUE
 	human_subtile_fixture_assert(!C.set_human_subtile(FALSE) && !C.human_subtile_input_supported(NORTHEAST) && human_subtile_same(cancelled_position, C.human_subtile_snapshot()), "unsupported_handoff_retains_position")
-	C.prone = FALSE
+	C.crouching = FALSE
 	var/mob/living/human/subtile_fixture/R = human_subtile_fixture_actor(5, 8)
 	R.set_human_subtile(TRUE)
 	R.fixture_reenter = TRUE
@@ -410,12 +410,15 @@ var/human_subtile_fixture_phase = "initializing"
 	return rows
 
 /world/New()
+	var/initial_native_port = port
 	OpenPort("none")
 	if (port)
 		return
 	text2file("closed", "port-closed.txt")
 	var/error = null
 	try
+		if (OpenPort(0) || port || OpenPort(59474) || port)
+			throw EXCEPTION("fixture_port_reopened")
 		human_subtile_fixture_initialize()
 		if (world.params["mining_integration"])
 			human_subtile_fixture_mining()
@@ -424,6 +427,6 @@ var/human_subtile_fixture_phase = "initializing"
 	catch (var/exception/fixture_error)
 		error = fixture_error.name
 	text2file(error ? "FAIL [error]" : "PASS", "result.txt")
-	text2file(json_encode(list("head" = world.params["tested_commit"], "byond_version" = byond_version, "byond_build" = byond_build, "checks" = human_subtile_fixture_checks, "error" = error, "rows" = human_subtile_fixture_rows, "mining_checks" = human_subtile_mining_checks, "mining_rows" = human_subtile_mining_rows, "scope" = "actual human/codec; headless authority adapter")), "receipt.json")
+	text2file(json_encode(list("head" = world.params["tested_commit"], "byond_version" = byond_version, "byond_build" = byond_build, "initial_native_port" = initial_native_port, "port" = port, "checks" = human_subtile_fixture_checks, "error" = error, "rows" = human_subtile_fixture_rows, "mining_checks" = human_subtile_mining_checks, "mining_rows" = human_subtile_mining_rows, "scope" = "actual human/codec; headless authority adapter")), "receipt.json")
 	del(world)
 	return

@@ -7,6 +7,7 @@ var/human_subtile_diagonal_checks = 0
 		throw EXCEPTION(label)
 
 /proc/human_subtile_fixture_diagonal()
+	human_subtile_fixture_phase = "diagonal acceptance"
 	human_subtile_diagonal_assert(world.byond_version == 516 && world.byond_build == 1688, "diagonal_current_engine")
 	for (var/direction in list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST))
 		var/mob/living/human/subtile_fixture/H = human_subtile_fixture_actor(8, 7)
@@ -66,10 +67,32 @@ var/human_subtile_diagonal_checks = 0
 	human_subtile_diagonal_assert(C.x == 8 && C.y == 8 && !C.step_x && !C.step_y && C.fixture_pulses == 1, "reverse_diagonal_realigns_both_axes")
 	human_subtile_diagonal_assert(C.set_human_subtile(FALSE) && C.human_subtile_input_supported(NORTHEAST) && !C.human_subtile_enabled && !C.human_subtile_default_pending, "explicit_optout_survives_input")
 	qdel(C)
+	for (var/posture in list("prone", "lying"))
+		var/mob/living/human/subtile_fixture/P = human_subtile_fixture_actor(8, 7)
+		P.human_subtile_input_supported(EAST)
+		P.fixture_cancel_after = 1
+		P.SelfMove(get_step(P, EAST), EAST, world.time + 4)
+		P.fixture_authorized = TRUE
+		P.fixture_cancel_after = 0
+		if (posture == "prone")
+			P.prone = TRUE
+		else
+			P.lying = TRUE
+		human_subtile_diagonal_assert(P.human_subtile_input_supported(WEST) && !P.human_subtile_eligible(WEST), "owned_offset_can_enter_paid_[posture]_path")
+		human_subtile_fixture_reset(P)
+		var/started = world.time
+		var/delay = posture == "prone" ? P.get_prone_delay() : 9
+		if (posture == "prone")
+			P.proning(get_step(P, WEST))
+		else
+			P.scramble(get_step(P, WEST))
+		human_subtile_diagonal_assert(P.x == 8 && !P.step_x && !P.step_y && P.fixture_pulses == 1 && P.lying && !P.scrambling, "actual_[posture]_path_realigns_without_forced_standing")
+		human_subtile_diagonal_assert(world.time - started >= delay - world.tick_lag && P.fixture_human_completions == 1 && P.fixture_living_completions == 1, "[posture]_retains_paid_wait_and_once_only_hooks")
+		qdel(P)
 
 	// Normal state release followed by an ordinary admitted reverse input.
 	// No capsule/forceMove/direct offset write participates in recovery.
-	for (var/state in list("prone", "pulling", "restrained"))
+	for (var/state in list("pulling", "restrained"))
 		var/mob/living/human/subtile_fixture/R = human_subtile_fixture_actor(8, 7)
 		R.human_subtile_input_supported(EAST)
 		R.fixture_cancel_after = 1

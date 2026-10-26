@@ -1,6 +1,9 @@
 # Human sub-tile movement: diagonal/default candidate
 
-The current candidate extends the adapter to all eight directions. Every
+The current candidate extends the adapter to all eight directions. This remains
+fixed-tile-intent movement: key release prevents later queued intents but does
+not cancel the current admitted intent. It is not free pixel locomotion or a
+new key-up stopping scheme. Every
 admitted 32px intent uses at most sixteen native 2px pulses on the same absolute
 cooldown interval. Diagonal pulses advance both axes together through the native
 offset seam, bypassing the legacy immediate cardinal decomposition only for an
@@ -11,14 +14,15 @@ remain physical. The 32x32 footprint and global simulation rate are unchanged.
 Ordinary eligible human input initializes the default through
 `set_human_subtile(TRUE)` after placement/construction/load. The stored enable
 flag remains false until that safe admission. Explicit `set_human_subtile(FALSE)`
-at alignment clears pending initialization and preserves legacy movement for the
+(also exposed as IC > Toggle Smooth Movement) at alignment clears pending initialization and preserves legacy movement for the
 body's runtime lifetime. Disabling at an owned offset still refuses without
 snapping. An interrupted intent now stops each moving axis at its next native
 grid alignment instead of preserving the offset indefinitely. Reverse movement
 can realign a 2px interruption with a 2px collision-checked move, while consuming
-the usual full admission cost/cooldown. Restricted states remain restricted;
-stand up, stop pulling, or release cuffs through ordinary controls, then reverse
-or move to the next alignment. A blocked reverse can align in the other direction.
+the usual full admission cost/cooldown. The existing paid prone/scramble paths can realign an owned offset after their
+normal wait, without forcing an injured player to stand. Pulling and restraints
+retain their normal restrictions; stop pulling or release cuffs through ordinary
+controls, then reverse or move to the next alignment. A blocked reverse can align in the other direction.
 No admin placement participates in the recovery regression. Owned save capsules can initialize on the first eligible input;
 arbitrary raw legacy offsets are never silently adopted. Runtime choices are not
 saved as account preferences. New/revived eligible bodies initialize on input.
@@ -51,18 +55,22 @@ py -3 tests/human_subtile/run-diagonal.py --output <fresh-evidence-directory> --
 
 `--prepare-only` stages exact committed Git sources. `--compile-only` compiles
 without starting a daemon. The current fixtures and strict receipt oracles target 1688 and run the 42 existing human
-assertions plus 113 diagonal/default/interpolation/recovery assertions, and separately
+assertions plus 117 diagonal/default/interpolation/recovery assertions, and separately
 the 52 existing mining assertions. These are expected counts until a complete
 native receipt confirms them. `--control legacy-split` and
 `--control cardinal-arithmetic` must each reach exactly
-`diagonal_32px_per_axis` after four new assertions. Complete failures are retained.
+`diagonal_32px_per_axis` after four new assertions. The offset-recovery control must fail exactly
+`cancel_stop_reverse_realigns_without_snap` at new assertion 86. Complete failures
+are retained. The optional `human_subtile_fixture_client_visuals(C)` entry tests
+actual body handoff and intervening client/body preference changes; it requires
+a separately authorized real client and is not called by headless CI.
 
 Windows uses the unchanged `scripts/native_fixture.py` Session and byte-identical
 copies of its frozen launch/accounting helpers, with a separate observed 1688
 binary-hash allowlist. One process per Job, memory/CPU/time/output limits,
 retained cleanup and the no-sampled-sockets policy remain intact. The 1681 hash
 refusal and the later 1688 startup-loopback socket rejection are preserved; the
-latter prevents runtime acceptance. No connected-client input or capture has
+latter prevents local Windows runtime acceptance; see [the bounded runtime proposal](RUNTIME-ISOLATION.md). No connected-client input or capture has
 been performed for this candidate. Before default-on deployment, acceptance
 still needs permitted native fixture completion, actual client admission/cost
 parity and genuine DreamSeeker observation at cardinal/diagonal transitions,

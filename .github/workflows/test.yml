@@ -929,6 +929,7 @@ jobs:
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/current"
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control legacy-split --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/legacy-split"
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control cardinal-arithmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cardinal-arithmetic"
+          /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control offset-recovery --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/offset-recovery"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --control mining-position --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining-position"
 

@@ -70,7 +70,7 @@ def main():
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--compile-only', action='store_true')
-    parser.add_argument('--control', choices=('none', 'legacy-split', 'cardinal-arithmetic'), default='none')
+    parser.add_argument('--control', choices=('none', 'legacy-split', 'cardinal-arithmetic', 'offset-recovery'), default='none')
     args = parser.parse_args()
     require(args.prepare_only or args.byond_bin, 'Select --prepare-only or --byond-bin')
     out = args.output.resolve()
@@ -93,6 +93,10 @@ def main():
         adapt(out, manifest, 'code/game/mob/living/carbon/human/subtile_movement.dm',
               '(direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0',
               'direction == EAST ? min(2, remaining_x) : direction == WEST ? -min(2, remaining_x) : 0')
+    if args.control == 'offset-recovery':
+        anchor = '\tvar/remaining_x = (direction & EAST) ? 32 - actor.step_x : (direction & WEST) ? (actor.step_x ? actor.step_x : 32) : 0'
+        adapt(out, manifest, 'code/game/mob/living/carbon/human/subtile_movement.dm', anchor,
+              anchor + '\n\tif (human_subtile_fixture_phase == "diagonal acceptance")\n\t\tremaining_x = (direction & (EAST | WEST)) ? 32 : 0')
     (out / 'diagonal-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     if args.prepare_only:
         print('Prepared exact Git ' + manifest['head'] + '; no native execution')
@@ -130,15 +134,17 @@ def main():
         receipt = json.loads(read_bounded(work / 'receipt.json'))
         (out / (suite + '-receipt.json')).write_text(json.dumps(receipt, indent=2) + '\n')
         require(result.returncode == 0 and not legacy.DIAGNOSTICS.search(diagnostics), 'Native runtime diagnostic/exit failure')
-        require(receipt['head'] == manifest['head'] and (receipt['byond_version'], receipt['byond_build']) == (516, 1688), 'Wrong native source/engine')
+        require(receipt['head'] == manifest['head'] and receipt.get('port') == 0 and (receipt['byond_version'], receipt['byond_build']) == (516, 1688), 'Wrong native source/engine')
         require((work / 'port-closed.txt').read_bytes() == (b'closed\r\n' if os.name == 'nt' else b'closed\n'), 'No closed-port witness')
-        expected_error = 'diagonal_32px_per_axis' if args.control != 'none' else None
+        expected_error = ('cancel_stop_reverse_realigns_without_snap' if args.control == 'offset-recovery'
+                          else 'diagonal_32px_per_axis' if args.control != 'none' else None)
         require(receipt['error'] == expected_error, 'Unexpected native assertion: ' + str(receipt['error']))
         expected_result = ('FAIL ' + expected_error if expected_error else 'PASS') + ('\r\n' if os.name == 'nt' else '\n')
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
             require(receipt['checks'] == 42, 'Incomplete existing human regression checks')
-            require(receipt['diagonal_checks'] == (4 if expected_error else 113), 'Incomplete diagonal checks')
+            expected_checks = 86 if args.control == 'offset-recovery' else 4 if expected_error else 117
+            require(receipt['diagonal_checks'] == expected_checks, 'Incomplete diagonal checks')
         else:
             require(receipt['mining_checks'] == 52, 'Incomplete mining assertions')
             mining = receipt['mining_rows']
