@@ -113,6 +113,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
+      - name: Check Art of the Deal map regressions offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/aotd_map')
+        run: python3 -B -m unittest discover -s tests/aotd_map -p 'test_*.py' -v
       - name: Test synthetic static-source export core offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_to_map')
         run: python3 -I -B -m unittest discover -s tests/save_to_map -p 'test_*.py' -v
@@ -356,6 +359,22 @@ jobs:
           bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
 
+      - name: Compile Art of the Deal with current game declarations
+        id: aotd_compile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/aotd_map')
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B tests/aotd_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/aotd-compile"
+      - name: Retain Art of the Deal compiler evidence
+        if: always() && steps.aotd_compile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aotd-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/aotd-compile/
+          retention-days: 7
+          if-no-files-found: error
       - name: Save verified BYOND archive after successful compilation
         if: needs.changes.outputs.game == 'true' && steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
