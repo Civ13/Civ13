@@ -13,14 +13,17 @@
 
 /client
 	var/tmp/mob/living/human/human_subtile_visual_actor
+	var/tmp/human_subtile_visual_owned = FALSE
 	var/tmp/human_subtile_previous_fps
 	var/tmp/human_subtile_previous_glide
 
 /client/proc/human_subtile_release_visuals()
-	if (!human_subtile_visual_actor)
+	if (!human_subtile_visual_owned)
 		return
-	human_subtile_visual_actor.human_subtile_release_glide()
+	if (human_subtile_visual_actor)
+		human_subtile_visual_actor.human_subtile_release_glide()
 	human_subtile_visual_actor = null
+	human_subtile_visual_owned = FALSE
 	fps = human_subtile_previous_fps
 	glide_size = human_subtile_previous_glide
 
@@ -44,6 +47,7 @@
 			owner.human_subtile_previous_fps = owner.fps
 			owner.human_subtile_previous_glide = owner.glide_size
 			owner.human_subtile_visual_actor = src
+			owner.human_subtile_visual_owned = TRUE
 		owner.fps = max(owner.fps, world.fps + 1, 60)
 		owner.glide_size = glide_size
 
@@ -218,9 +222,11 @@
 			break
 		// Admission rules for grace walls and hanging apply to every fresh pulse.
 		var/grace_blocked = FALSE
-		for (var/front_direction in list(direction, direction & (NORTH | SOUTH), direction & (EAST | WEST)))
-			if (!front_direction)
-				continue
+		var/list/front_directions = list(direction)
+		if (direction & (direction - 1))
+			front_directions += direction & (NORTH | SOUTH)
+			front_directions += direction & (EAST | WEST)
+		for (var/front_direction in front_directions)
 			var/turf/front = get_step(actor, front_direction)
 			if (map && front && map.check_caribbean_block(actor, front))
 				grace_blocked = TRUE
