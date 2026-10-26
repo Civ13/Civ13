@@ -109,6 +109,20 @@ var/list/mutate_on_tick = null
 	return
 /turf/proc/recalc_atom_opacity()
 	return
+// These relocatable serializer fixtures own clear ground, not generated snow.
+// Production icon rebuilding needs snow assets/overlays; never substitute this
+// adapter for snowfall acceptance. Reject snow state on both export and import.
+/turf/var/weather_snow = 0
+/turf/proc/snowfall_ground_icon()
+	if(!isnum(weather_snow) || weather_snow != 0)
+		throw EXCEPTION("Generated snow requires the production snowfall fixture")
+	return
+/turf/before_save()
+	snowfall_ground_icon()
+	return ..()
+/turf/after_load()
+	..()
+	snowfall_ground_icon()
 /turf/var/tmp/lighting_reserved = FALSE
 /turf/proc/activate_reserved_lighting()
 	// Only ordinary turfs are supported by this serializer-only adapter.

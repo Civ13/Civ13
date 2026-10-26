@@ -45,12 +45,50 @@ class StubDependencies(unittest.TestCase):
 
     def check_dependencies(self, sources, roof_free=True):
         text = '\n'.join(sources)
+        self.check_clear_ground(text)
         self.assertEqual(len(re.findall(r'^var/(?:global/)?list/area_list\s*=', text, re.M)), 1)
         self.assertEqual(len(re.findall(r'^/area/caribbean/roofed\s*$', text, re.M)), 1)
         if roof_free:
             self.assertNotRegex(text, r'(?m)^/obj/roof(?:/|\s|$)')
         self.assertIn('if(!ispath(roof_root)) return // Serializer-only fixtures can omit roofs.', text)
         self.assertIn('throw EXCEPTION("Ambiguous current roof area identity")', text)
+
+    def check_clear_ground(self, text):
+        self.assertEqual(text.count('/turf/var/weather_snow = 0\n'), 1)
+        self.assertEqual(text.count('/turf/proc/snowfall_ground_icon()\n'), 1)
+        self.assertIn('if(!isnum(weather_snow) || weather_snow != 0)\n'
+                      '\t\tthrow EXCEPTION("Generated snow requires the production snowfall fixture")', text)
+        self.assertEqual(text.count('/turf/before_save()\n\tsnowfall_ground_icon()\n\treturn ..()'), 1)
+        self.assertEqual(text.count('/turf/after_load()\n\t..()\n\tsnowfall_ground_icon()'), 1)
+        self.assertNotIn('/turf/proc/snowfall_ground_check(', text)
+        self.assertNotIn('var/tmp/image/weather_snow_overlay', text)
+        self.assertNotIn("'icons/turf/snow.dmi'", text)
+
+    def test_snow_adapter_guard_matches_clear_only_production_branch_and_rejects_other_states(self):
+        text = (FIXTURE/'stubs.dm').read_text()
+        condition, = re.findall(r'^\tif\(([^\n]+)\)\n\t\tthrow EXCEPTION\("Generated snow requires', text, re.M)
+        expression = condition.replace('!isnum(weather_snow)', 'not isnum(value)').replace('weather_snow', 'value').replace('||', 'or')
+        for value in (0, 0.0, 1, -1, None, '0', [], {}):
+            rejected = eval(expression, {'__builtins__': {}}, dict(value=value, isnum=lambda x: type(x) in (int,float)))
+            self.assertEqual(rejected, value not in (0, 0.0), repr(value))
+        production = (ROOT/'code/modules/1713/snowfall_ground.dm').read_text()
+        body = production.split('/turf/proc/snowfall_ground_icon()\n',1)[1].split('\n/turf/proc/',1)[0]
+        self.assertIn('if (weather_snow_overlay)\n\t\toverlays -= weather_snow_overlay', body)
+        self.assertTrue(body.rstrip().endswith('else\n\t\tweather_snow_overlay = null'))
+        loader = (ROOT/'code/modules/persistence/loading.dm').read_text()
+        self.assertIn('restored_turf.weather_snow = 0\n\t\t\trestored_turf.snowfall_ground_icon()', loader)
+        self.spawn.assert_not_called()
+
+    def test_snow_adapter_missing_duplicate_and_silent_acceptance_controls_are_rejected(self):
+        text = '\n'.join(closure(FIXTURE/'roundtrip.dme'))
+        for changed in (text.replace('/turf/var/weather_snow = 0\n', ''),
+                        text+'\n/turf/var/weather_snow = 0\n',
+                        text.replace('weather_snow != 0', 'FALSE'),
+                        text.replace('/turf/before_save()\n\tsnowfall_ground_icon()', '/turf/before_save()\n\treturn'),
+                        text.replace('/turf/after_load()\n\t..()\n\tsnowfall_ground_icon()', '/turf/after_load()\n\t..()')):
+            with self.subTest(), self.assertRaises(AssertionError):
+                self.check_clear_ground(changed)
+        self.spawn.assert_not_called()
 
     def test_direct_include_consumers_have_unique_dependencies_and_remain_roof_free(self):
         for name in ('roundtrip.dme', 'string_path_roundtrip.dme', 'immutable_capture.dme'):
