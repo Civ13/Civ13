@@ -331,6 +331,7 @@ internal static class Program {
             await Verification(); Console.WriteLine("PASS existing status/DNS/native preparation guards");
             await ManualFallback(); Console.WriteLine("PASS manual fallback with social transport failure");
             assertions += PresenceAdapterTests.Run(); Console.WriteLine("PASS serial presence adapter lifetime/cleanup/failure isolation");
+            assertions += CompanionTransportTests.Run(); Console.WriteLine("PASS bounded companion protocol/negotiation/lifetime contracts");
             Console.WriteLine($"PASS {assertions} offline assertions; no processes, sockets or SDK calls.");
             return 0;
         } catch (Exception error) { Console.Error.WriteLine(error); return 1; }

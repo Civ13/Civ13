@@ -192,10 +192,13 @@ tests/SocialContracts runs injected adapters/clocks/discovery/dispatch only,
 separate from updater replacement tests. Reuse NativeStart and existing proofs;
 dispatch is not connected gameplay or shard-travel evidence. See its README.
 Keep player presence/native callbacks separate from DiscordPHP backend APIs.
-SDK access/linking/distribution and application selection remain future gates.
+SDK linking/distribution and native acceptance remain separate gates. Application
+profiles are explicit per host; no application ID is a universal default.
 PumpedSocialClient needs one explicit worker pump; Accepted/ClearIssued are local
 evidence, not Discord UI/remote cleanup proof. No native transport is supplied;
-see SOCIAL-SDK-ADAPTER.md in the native launcher directory for missing inputs.
+CompanionPresenceTransport adds original bounded framing over an injected channel;
+no helper, OS pipe, SDK loader or startup composition is supplied. See
+SOCIAL-SDK-COMPANION.md in the native launcher directory for the peer obligations.
 Before an isolated .NET CLI home's first use, set
 DOTNET_GENERATE_ASPNET_CERTIFICATE=false to avoid automatic development-cert setup.
 

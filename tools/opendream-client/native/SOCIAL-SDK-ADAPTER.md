@@ -52,26 +52,34 @@ failed/uncertain clear is not retried. Native timeouts cannot prove remote clean
 Pump scheduling cannot preempt a blocking DLL call or contain a native crash;
 that remains a reason to evaluate a narrowly scoped companion process.
 
-## Native binding prerequisites remain missing
+## Native binding and release gates
 
 IDiscordPresenceTransport is an application seam, not an official managed binding
-or a declaration of native exports. There is no default implementation, dynamic
-loader, P/Invoke, application ID, token flow, provisional account or native SDK
-dependency in this patch. The transport used by tests is an in-memory fake.
+or a declaration of native exports. The follow-up CompanionPresenceTransport
+implements an original bounded protocol over an injected channel; it supplies no
+OS channel, process or SDK binding. There is no default composition, dynamic
+loader, P/Invoke, token flow, provisional account or vendor dependency. See
+[the companion contract](SOCIAL-SDK-COMPANION.md).
 
-The next native slice requires all of:
+Read-only package inspection now verified standalone SDK 1.10.19337, its C/C++
+headers and Windows-x64 DLL/import library. The owner-confirmed application
+string `1562126764849897544` is VZGCivilizationbot for ValZarGaming hosts, with
+owner/UI SDK-enablement evidence. It is not a universal Civ13 default or proof
+of production communications approval. Vendor code is not distributed here.
 
-- An already approved official Windows-x64 package, with exact version, hashes,
-  headers/bindings, matching libraries and applicable license/notices.
+The next native slice still requires:
+
+- A reviewed use/packaging record for the pinned package, matching release
+  headers/libraries and notices; no SDK payload is bundled in this patch.
 - A reviewed binding path for the .NET 8 x64 launcher: approved compatible managed
   bindings or a small C++20 bridge/companion built against those exact headers.
-- The actual approved Civ13 Discord application ID and Social SDK enablement.
-  An existing bot identity is not evidence of that application's ownership/access.
+- Explicit per-host application configuration, never inferred from bot presence.
 - A licensing/distribution decision for the SDK alongside this repository's
   license, and separate authorization before native loading or live calls.
 
-Those inputs were not available to this milestone. It does not substitute an
-unofficial legacy RPC package for the Social SDK or invent ABI declarations.
+The initial adapter milestone lacked package/application inputs; those findings
+are superseded above. No unofficial legacy RPC package or invented native ABI
+is substituted by the companion protocol.
 The launcher/companion is x64; a BYOND 516.1688 DreamDaemon is x86. No SDK DLL is
 loaded into DreamDaemon and no cross-bitness in-process call is proposed. Any
 later game-context bridge must be small, versioned and validated, carrying only
