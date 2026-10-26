@@ -13,7 +13,13 @@ Ordinary eligible human input initializes the default through
 flag remains false until that safe admission. Explicit `set_human_subtile(FALSE)`
 at alignment clears pending initialization and preserves legacy movement for the
 body's runtime lifetime. Disabling at an owned offset still refuses without
-snapping. Owned save capsules can initialize on the first eligible input;
+snapping. An interrupted intent now stops each moving axis at its next native
+grid alignment instead of preserving the offset indefinitely. Reverse movement
+can realign a 2px interruption with a 2px collision-checked move, while consuming
+the usual full admission cost/cooldown. Restricted states remain restricted;
+stand up, stop pulling, or release cuffs through ordinary controls, then reverse
+or move to the next alignment. A blocked reverse can align in the other direction.
+No admin placement participates in the recovery regression. Owned save capsules can initialize on the first eligible input;
 arbitrary raw legacy offsets are never silently adopted. Runtime choices are not
 saved as account preferences. New/revived eligible bodies initialize on input.
 
@@ -21,7 +27,7 @@ Native interpolation uses the actual admitted distance/time to set `glide_size`,
 including Euclidean diagonal scaling unless `LONG_GLIDE` already applies. The
 owning client's frame rate is raised to at least 60 and above server FPS while
 this mode owns its visual settings. Prior client FPS, camera glide and body glide
-are restored on opt-out, restricted input, logout, death or body handoff. No
+are restored only while still owned; intervening preference changes are retained. Settings are restored on opt-out, restricted input, logout, death or body handoff. No
 `pixel_x/y` offsets, simulated screenshots or global FPS changes are involved.
 The installed official BYOND reference's [gliding documentation](https://www.byond.com/docs/ref/#/{notes}/gliding)
 explains that legacy pixel movement interpolates only when client FPS exceeds
@@ -44,9 +50,8 @@ py -3 tests/human_subtile/run-diagonal.py --output <fresh-evidence-directory> --
 ```
 
 `--prepare-only` stages exact committed Git sources. `--compile-only` compiles
-without starting a daemon. The new profile records its explicit migration of
-the historical fixture's build assertion to 1688, runs the 42 existing human
-assertions plus 101 diagonal/default/interpolation assertions, and separately
+without starting a daemon. The current fixtures and strict receipt oracles target 1688 and run the 42 existing human
+assertions plus 113 diagonal/default/interpolation/recovery assertions, and separately
 the 52 existing mining assertions. These are expected counts until a complete
 native receipt confirms them. `--control legacy-split` and
 `--control cardinal-arithmetic` must each reach exactly
@@ -67,8 +72,7 @@ coordinated server restart are required after merge.
 ## Historical cardinal prototype and evidence
 
 The following records the older 4px/1681 prototype. Its assertion counts and
-connected-client results do not validate the current candidate. The historical
-`run.py` and strict 1681 oracles are retained; use `run-diagonal.py` for this head.
+connected-client results do not validate the current candidate. Historical source/oracles remain in Git at `bef0ba6534d56ca6395057fd8508d037afeedec0`; current runners and fixtures now target 1688.
 
 Opt-in integration stacked from the separately verified native primitive
 at `c605363a11050dbf67fe4820cc8cc4587c9cf97c` (Civ13 base `cc03b199`).

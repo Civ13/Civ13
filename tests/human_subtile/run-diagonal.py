@@ -1,7 +1,7 @@
 """Exact-Git 516.1688 diagonal/default fixture; bounded serial native phases.
 
-Preserves the historical 1681 runner and its oracle. Explicitly records the
-current-engine fixture migration and added diagonal entry as staging adapters.
+Uses the current 1688 fixture and records the added diagonal entry adapter.
+Historical 1681 source/evidence remains in Git and preserved failed receipts.
 Windows uses the unchanged native_fixture owned-Job and socket policy.
 """
 import argparse
@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,6 +53,17 @@ def adapt(out, manifest, relative, old, new):
     manifest.setdefault('diagonal_adaptations', {})[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def run_phase(session, argv, *, cwd, phase, timeout, artifacts=(), state_directory=None):
+    if os.name == 'nt':
+        return run_native(session, argv, cwd=cwd, phase=phase, timeout=timeout,
+                          artifacts=artifacts, state_directory=state_directory)
+    # Existing hosted Linux process-group/deadline/log policy. This is not the
+    # Windows zero-socket envelope and makes no OS socket-isolation claim.
+    legacy.run_process(argv, cwd, phase, timeout)
+    return subprocess.CompletedProcess(argv, 0,
+        read_bounded(cwd / (phase + '-stdout.log')), read_bounded(cwd / (phase + '-stderr.log')))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
@@ -66,8 +78,6 @@ def main():
     manifest['target_engine'] = '516.1688'
     manifest['diagonal_control'] = args.control
     adapt(out, manifest, 'tests/human_subtile/probe.dm',
-          'world.byond_build == 1681', 'world.byond_build == 1688')
-    adapt(out, manifest, 'tests/human_subtile/probe.dm',
           '\t\t\thuman_subtile_fixture_headless()',
           '\t\t\thuman_subtile_fixture_headless()\n\t\t\thuman_subtile_fixture_diagonal()')
     adapt(out, manifest, 'tests/human_subtile/probe.dm',
@@ -81,22 +91,21 @@ def main():
               'if (!subtile_pulse && (direct & (direct - 1)))', 'if (direct & (direct - 1))')
     if args.control == 'cardinal-arithmetic':
         adapt(out, manifest, 'code/game/mob/living/carbon/human/subtile_movement.dm',
-              '(direction & EAST) ? 2 : (direction & WEST) ? -2 : 0',
-              'direction == EAST ? 2 : direction == WEST ? -2 : 0')
+              '(direction & EAST) ? min(2, remaining_x) : (direction & WEST) ? -min(2, remaining_x) : 0',
+              'direction == EAST ? min(2, remaining_x) : direction == WEST ? -min(2, remaining_x) : 0')
     (out / 'diagonal-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     if args.prepare_only:
         print('Prepared exact Git ' + manifest['head'] + '; no native execution')
         return
     byond = args.byond_bin.resolve()
     session = Session(out / 'supervisor', manifest['head'], backend_factory=current_backend) if os.name == 'nt' else None
-    build = run_native(session, [str(byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')),
+    build = run_phase(session, [str(byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')),
                                  '-max_errors', '0', str(dme)], cwd=out / 'stage',
                        phase='compile', timeout=120, artifacts=[dme.with_suffix('.dmb'), dme.with_suffix('.rsc')])
     log = build.stdout + build.stderr
     (out / 'compile.log').write_text(log)
-    require(build.returncode == 0 and log.count('DM compiler version 516.1688') == 1 and
-            re.search(r'human_subtile.dmb - 0 errors, 0 warnings', log) and not legacy.DIAGNOSTICS.search(log),
-            'Current-engine clean compile failed')
+    require(build.returncode == 0, 'Current-engine compile exit failed')
+    legacy.validate_compile(log, dme.with_suffix('.dmb').name)
     if args.compile_only:
         (out / 'compile-accepted.json').write_text(json.dumps(dict(head=manifest['head'], engine='516.1688',
             compile_passed=True, runtime_executed=False, control=args.control)) + '\n')
@@ -110,8 +119,8 @@ def main():
         params = 'tested_commit=' + manifest['head']
         if suite == 'mining':
             params += ';mining_integration=1'
-        result = run_native(session, [str(byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')),
-                                     str(binary), *(['-invisible', '-close'] if os.name == 'nt' else []),
+        result = run_phase(session, [str(byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')),
+                                     str(binary), *(['-invisible', '-close'] if os.name == 'nt' else ['59474']),
                                      *no_port_args(), '-trusted', '-params', params, '-log', 'runtime.log'],
                             cwd=work, phase=suite, timeout=90, state_directory=work)
         diagnostics = result.stdout + result.stderr
@@ -129,7 +138,7 @@ def main():
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
             require(receipt['checks'] == 42, 'Incomplete existing human regression checks')
-            require(receipt['diagonal_checks'] == (4 if expected_error else 101), 'Incomplete diagonal checks')
+            require(receipt['diagonal_checks'] == (4 if expected_error else 113), 'Incomplete diagonal checks')
         else:
             require(receipt['mining_checks'] == 52, 'Incomplete mining assertions')
             mining = receipt['mining_rows']

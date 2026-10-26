@@ -151,7 +151,7 @@ var/human_subtile_fixture_phase = "initializing"
 	human_subtile_fixture_reset(H)
 
 /proc/human_subtile_fixture_headless()
-	human_subtile_fixture_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned_native_engine")
+	human_subtile_fixture_assert(world.byond_version == 516 && world.byond_build == 1688, "pinned_native_engine")
 	human_subtile_fixture_phase = "headless normal"
 	var/mob/living/human/subtile_fixture/H = human_subtile_fixture_actor(2, 2)
 	human_subtile_fixture_assert(!H.human_subtile_enabled, "optin_default_disabled")
@@ -187,9 +187,9 @@ var/human_subtile_fixture_phase = "initializing"
 	var/turf/partial_wall = locate(8, 5, 1)
 	partial_wall.density = TRUE
 	P.SelfMove(get_step(P, EAST), EAST, world.time + 4)
-	human_subtile_fixture_assert(P.fixture_rows.len == 2, "partial_then_blocked_native_attempts")
+	human_subtile_fixture_assert(P.fixture_rows.len == 1, "partial_reaches_next_alignment")
 	var/list/partial = P.fixture_rows[1]
-	human_subtile_fixture_assert(P.x == 7 && P.step_x == 0 && partial["native"] == 2 && P.fixture_pulses == 2, "actual_human_partial_two_pixels")
+	human_subtile_fixture_assert(P.x == 7 && P.step_x == 0 && partial["native"] == 2 && P.fixture_pulses == 1, "actual_human_partial_two_pixels")
 	human_subtile_fixture_assert(P.fixture_human_completions == 1 && P.fixture_living_completions == 1, "partial_completion_once")
 	partial_wall.density = FALSE
 

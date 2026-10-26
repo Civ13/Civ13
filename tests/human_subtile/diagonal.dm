@@ -39,24 +39,85 @@ var/human_subtile_diagonal_checks = 0
 	C.fixture_authorized = TRUE
 	C.fixture_cancel_after = 0
 	human_subtile_fixture_reset(C)
+	C.SelfMove(get_step(C, WEST), WEST, world.time + 4)
+	human_subtile_diagonal_assert(C.x == 8 && C.y == 7 && !C.step_x && !C.step_y && C.fixture_pulses == 1, "cancel_stop_reverse_realigns_without_snap")
+	human_subtile_diagonal_assert(C.set_human_subtile(FALSE) && !C.human_subtile_enabled, "recovered_player_can_opt_out")
+	C.set_human_subtile(TRUE)
+	C.fixture_cancel_after = 1
+	human_subtile_fixture_reset(C)
+	C.SelfMove(get_step(C, EAST), EAST, world.time + 4)
+	C.fixture_authorized = TRUE
+	C.fixture_cancel_after = 0
+	human_subtile_fixture_reset(C)
 	C.SelfMove(get_step(C, NORTHEAST), NORTHEAST, world.time + 4)
-	human_subtile_diagonal_assert(C.x == 9 && C.y == 8 && C.step_x == 2 && C.step_y == 0 && C.fixture_pulses == 16, "cardinal_offset_to_diagonal")
+	human_subtile_diagonal_assert(C.x == 9 && C.y == 8 && !C.step_x && !C.step_y && C.fixture_pulses == 16, "cardinal_offset_to_diagonal")
 	human_subtile_fixture_reset(C)
 	C.SelfMove(get_step(C, WEST), WEST, world.time + 4)
-	human_subtile_diagonal_assert(C.x == 8 && C.y == 8 && C.step_x == 2 && C.fixture_pulses == 16, "diagonal_offset_to_cardinal")
-	human_subtile_diagonal_assert(!C.set_human_subtile(FALSE), "offset_optout_refused_without_snapping")
+	human_subtile_diagonal_assert(C.x == 8 && C.y == 8 && !C.step_x && C.fixture_pulses == 16, "diagonal_offset_to_cardinal")
 	C.fixture_cancel_after = 1
 	human_subtile_fixture_reset(C)
 	C.SelfMove(get_step(C, NORTHWEST), NORTHWEST, world.time + 4)
-	human_subtile_diagonal_assert(C.x == 8 && C.y == 8 && C.step_x == 0 && C.step_y == 2 && C.fixture_pulses == 1 && !C.human_subtile_transaction && !C.human_subtile_pulse, "diagonal_cancel_retains_physical_position")
+	human_subtile_diagonal_assert(C.x == 7 && C.y == 8 && C.step_x == 30 && C.step_y == 2 && C.fixture_pulses == 1 && !C.human_subtile_transaction && !C.human_subtile_pulse, "diagonal_cancel_retains_physical_position")
+	human_subtile_diagonal_assert(!C.set_human_subtile(FALSE), "offset_optout_refused_without_snapping")
 	C.fixture_authorized = TRUE
 	C.fixture_cancel_after = 0
-	C.SelfMove(get_step(C, SOUTH), SOUTH, world.time + 4)
-	// Offset remains 2px modulo a tile; use the actual capsule seam to place at
-	// alignment for opt-out, just as the existing restoration fixture does.
-	human_subtile_fixture_place(C, 0, 0)
+	human_subtile_fixture_reset(C)
+	C.SelfMove(get_step(C, SOUTHEAST), SOUTHEAST, world.time + 4)
+	human_subtile_diagonal_assert(C.x == 8 && C.y == 8 && !C.step_x && !C.step_y && C.fixture_pulses == 1, "reverse_diagonal_realigns_both_axes")
 	human_subtile_diagonal_assert(C.set_human_subtile(FALSE) && C.human_subtile_input_supported(NORTHEAST) && !C.human_subtile_enabled && !C.human_subtile_default_pending, "explicit_optout_survives_input")
 	qdel(C)
+
+	// Normal state release followed by an ordinary admitted reverse input.
+	// No capsule/forceMove/direct offset write participates in recovery.
+	for (var/state in list("prone", "pulling", "restrained"))
+		var/mob/living/human/subtile_fixture/R = human_subtile_fixture_actor(8, 7)
+		R.human_subtile_input_supported(EAST)
+		R.fixture_cancel_after = 1
+		R.SelfMove(get_step(R, EAST), EAST, world.time + 4)
+		R.fixture_authorized = TRUE
+		R.fixture_cancel_after = 0
+		var/obj/item/weapon/handcuffs/cuffs
+		var/obj/held
+		if (state == "prone")
+			R.prone = TRUE
+		else if (state == "pulling")
+			held = new(R.loc)
+			R.pulling = held
+			held.pulledby = R
+		else
+			cuffs = new(R)
+			R.handcuffed = cuffs
+		var/list/stopped = R.human_subtile_snapshot()
+		human_subtile_diagonal_assert(!R.human_subtile_input_supported(WEST) && !R.SelfMove(get_step(R, WEST), WEST, world.time + 4) && human_subtile_same(stopped, R.human_subtile_snapshot()), "restricted_offset_does_not_bypass_[state]")
+		if (state == "prone")
+			R.prone = FALSE
+		else if (state == "pulling")
+			R.stop_pulling()
+		else
+			R.u_equip(cuffs)
+		human_subtile_fixture_reset(R)
+		R.SelfMove(get_step(R, WEST), WEST, world.time + 4)
+		human_subtile_diagonal_assert(!R.step_x && !R.step_y && R.fixture_pulses == 1 && R.set_human_subtile(FALSE), "state_release_then_reverse_recovers_[state]")
+		if (cuffs)
+			qdel(cuffs)
+		if (held)
+			qdel(held)
+		qdel(R)
+	var/mob/living/human/subtile_fixture/B = human_subtile_fixture_actor(8, 7)
+	B.human_subtile_input_supported(EAST)
+	B.fixture_cancel_after = 1
+	B.SelfMove(get_step(B, EAST), EAST, world.time + 4)
+	B.fixture_authorized = TRUE
+	B.fixture_cancel_after = 0
+	var/obj/obstacle = new(B.loc)
+	obstacle.density = TRUE
+	obstacle.bound_width = 1
+	B.SelfMove(get_step(B, WEST), WEST, world.time + 4)
+	human_subtile_diagonal_assert(B.x == 8 && B.step_x >= 1 && B.step_x <= 2 && !B.set_human_subtile(FALSE), "realignment_cannot_push_through_obstacle")
+	B.SelfMove(get_step(B, EAST), EAST, world.time + 4)
+	human_subtile_diagonal_assert(B.x == 9 && !B.step_x && B.set_human_subtile(FALSE), "blocked_reverse_can_realign_away_from_obstacle")
+	qdel(obstacle)
+	qdel(B)
 
 	// Native footprint collision must stop both-axis corner penetration. A
 	// partial native slide is permitted, but cannot continue as a tile fallback.
@@ -106,5 +167,39 @@ var/human_subtile_diagonal_checks = 0
 	human_subtile_diagonal_assert(!O.human_subtile_initialize_default(NORTHEAST) && O.human_subtile_default_pending, "default_cannot_bypass_busy_setter")
 	O.human_subtile_transaction = null
 	human_subtile_diagonal_assert(O.human_subtile_deadline(104, 100, TRUE) == 100 + 4 * ROOT2_FAST && O.human_subtile_deadline(104, 100, FALSE) == 104, "diagonal_legacy_ordinal_cooldown")
+	O.human_subtile_update_visuals(4, EAST, null)
+	O.glide_size = 7
+	O.human_subtile_release_glide()
+	human_subtile_diagonal_assert(O.glide_size == 7 && !O.human_subtile_glide_owned, "external_body_glide_preference_survives_release")
 	qdel(O)
+	return TRUE
+
+// Optional real-client acceptance entry. It is never called by headless CI.
+// Requires explicit authorization and a separately attached fixture client.
+/proc/human_subtile_fixture_client_visuals(client/C)
+	var/mob/living/human/subtile_fixture/H = C.mob
+	human_subtile_fixture_assert(istype(H) && H.client == C && !C.moving, "visual_real_client_required")
+	var/original_fps = C.fps
+	var/original_client_glide = C.glide_size
+	var/original_body_glide = H.glide_size
+	H.human_subtile_update_visuals(4, EAST, C)
+	human_subtile_fixture_assert(C.fps >= 60 && C.human_subtile_visual_actor == H && C.human_subtile_visual_owned && H.human_subtile_glide_owned, "visual_settings_acquired_for_exact_body")
+	C.fps = 72
+	C.glide_size = 3.25
+	H.glide_size = 5
+	C.human_subtile_release_visuals()
+	human_subtile_fixture_assert(C.fps == 72 && C.glide_size == 3.25 && H.glide_size == 5 && !C.human_subtile_visual_owned, "external_preferences_survive_release")
+	H.human_subtile_update_visuals(4, NORTHEAST, C)
+	var/mob/living/human/subtile_fixture/replacement = human_subtile_fixture_actor(12, 7)
+	C.mob = replacement
+	human_subtile_fixture_assert(C.mob == replacement && !C.human_subtile_visual_owned && C.fps == 72 && C.glide_size == 3.25 && H.glide_size == 5 && !H.human_subtile_glide_owned, "native_body_handoff_releases_previous_owner")
+	replacement.human_subtile_update_visuals(4, EAST, C)
+	human_subtile_fixture_assert(C.human_subtile_visual_actor == replacement && C.human_subtile_visual_owned, "replacement_body_acquires_own_visual_settings")
+	replacement.set_human_subtile(FALSE)
+	human_subtile_fixture_assert(!C.human_subtile_visual_owned && C.fps == 72 && C.glide_size == 3.25, "replacement_optout_restores_external_preferences")
+	C.mob = H
+	qdel(replacement)
+	C.fps = original_fps
+	C.glide_size = original_client_glide
+	H.glide_size = original_body_glide
 	return TRUE
