@@ -1,4 +1,4 @@
-"""Policy acceptance: new PR tests run once; existing regressions stay opt-in."""
+"""Legacy/native admission remains guarded; reviewed offline baseline is separate."""
 import importlib.util
 from pathlib import Path
 import subprocess
@@ -94,16 +94,12 @@ class RegressionPolicyTests(unittest.TestCase):
         for block in re.split(r'(?=      - name:)', workflow):
             if 'uses: actions/upload-artifact' in block:
                 continue
+            if block.startswith('      - name: Require selected jobs and exact-source execution receipts\n'):
+                # This reads the selected suite ID as data; it cannot launch it.
+                self.assertIn('scripts/ci_baseline.py aggregate ', block)
+                self.assertNotIn('unittest', block)
+                continue
             if re.search(r'(tests/|unittest discover|scripts/(check-recipes|test-power|test-batteries|check-battery-items))', block):
-                # These two cheap source-only checks intentionally run on every PR.
-                always_on = {
-                    'Verify noninteractive BYOND bootstrap commands offline': 'python3 -B -m unittest discover -s tests -p test_byond_bootstrap.py -v',
-                    'Test serializer profiling source contracts': 'python3 -B tests/world_save/test_progress_sources.py -v',
-                }
-                if any(block.startswith('      - name: ' + name + '\n') for name in always_on):
-                    name = block.splitlines()[0].removeprefix('      - name: ')
-                    self.assertEqual(block, f'      - name: {name}\n        run: {always_on[name]}\n')
-                    continue
                 if block.startswith('      - name: Opt-in serializer phase profiling\n'):
                     self.assertIn("        if: github.event_name == 'workflow_dispatch' && inputs.world_save_profile_regressions\n", block)
                     self.assertRegex(workflow, r'world_save_profile_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
@@ -133,7 +129,8 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('secrets.', block)
                     continue
                 self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
-        self.assertIn("if: needs.changes.outputs.game == 'true'\n        run: sudo bash", workflow)
+        self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
+        self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
 
     def test_roof_native_guard_rejects_each_missing_or_weakened_clause(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()

@@ -7,8 +7,10 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 META = "code/game/objects/map_metadata/_map_metadata.dm"
-# Accepted pre-timing PR tree, including its separately reviewed save codec.
-BASE = "093d661bc7de575f8145d94b24049fb2a6c14e83"
+BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
+import sys
+sys.path.insert(0, str(ROOT / "tests/snowfall_ground"))
+from source_contract import without_season_snow
 
 
 def body(source, signature):
@@ -76,17 +78,28 @@ class DurationTests(unittest.TestCase):
 
     def test_request_queue_force_controls_and_gameplay_bodies_unchanged(self):
         old = subprocess.check_output(["git", "show", BASE + ":" + META], cwd=ROOT, text=True)
-        for signature in ("/obj/map_metadata/proc/seasons(var/looping = TRUE, var/force = FALSE, var/advance_decay = null)",
-                          "/obj/map_metadata/proc/season_run_queue()",
-                          "/obj/map_metadata/proc/season_apply(var/force, var/advance_decay, var/epoch)"):
-            self.assertEqual(body(self.source, signature), body(old, signature))
+        # Flow owns default destination/queue parity; duration owns request cadence.
+        signature = "/obj/map_metadata/proc/seasons(var/looping = TRUE, var/force = FALSE, var/advance_decay = null)"
+        self.assertEqual(body(self.source, signature), body(old, signature))
         for relative in ("code/modules/admin/verbs/weather.dm", "code/processes/abandoned_items.dm",
                          "code/modules/persistence/durable_environment.dm", "code/modules/persistence/durable_timers.dm",
-                         "code/modules/persistence/durable_world.dm", "code/processes/weather.dm",
                          "code/game/objects/map_metadata/nomads/nomads.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT)
-            self.assertEqual((ROOT / relative).read_bytes(), before, relative)
+            self.assertEqual((ROOT / relative).read_text(), without_season_snow(before.decode())[0], relative)
+        # Durable topology may evolve; duration owns only the saved timer schema.
+        relative = "code/modules/persistence/durable_world.dm"
+        old_world = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
+        current_world = (ROOT / relative).read_text()
+        self.assertEqual(body(current_world, "/proc/durable_weather_schema()"),
+                         body(old_world, "/proc/durable_weather_schema()"))
+        # Weather selection can evolve independently. Keep this duration check
+        # scoped to its startup cadence/defaults; weather_policy checks RNG parity.
+        relative = "code/processes/weather.dm"
+        before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
+        current = (ROOT / relative).read_text()
+        self.assertEqual(current.split("/process/weather/fire()", 1)[0],
+                         before.split("/process/weather/fire()", 1)[0])
 
     def test_independent_special_maps_keep_original_timers_and_initial_thirty(self):
         for name in ("mountain", "ice_age"):
@@ -95,7 +108,7 @@ class DurationTests(unittest.TestCase):
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
             self.assertIn("season_duration_minutes = 30", current)
             projected = re.sub(r'^\tseason_duration_minutes = 30[^\n]*\n', "", current, flags=re.M)
-            self.assertEqual(projected, before)
+            self.assertEqual(projected, without_season_snow(before)[0])
 
     def test_duration_is_author_policy_and_old_pending_remainders_are_untouched(self):
         runtime = body(self.source, "/obj/map_metadata/persistence_runtime_var(var/key)")

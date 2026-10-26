@@ -1,7 +1,7 @@
 """Fail-closed source contract; no compiler or runtime execution."""
 import re
 
-CURRENT_BASE = '13a47adfc7400d95d10539dea4b2fd6cd7314e50'
+CURRENT_BASE = '99647037c70786a3c3944fcf5ae51b570b377f08'
 
 
 # Reviewed bounded-save integration adds only these non-hook blocks to the

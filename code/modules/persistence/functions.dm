@@ -33,6 +33,96 @@
 /datum/proc/before_save()
 	return
 
+// Geographic metres, independent of native areas, climate and z-level height.
+// Author fields are read once; the effective profile owns only copied scalars.
+/obj/map_metadata
+	var/elevation_default_metres = 0
+	var/list/elevation_regions = null
+	var/tmp/datum/elevation_profile/elevation_profile_cache
+
+/proc/elevation_metres_valid(value)
+	return isnum(value) && value >= -12000 && value <= 12000
+
+/proc/elevation_coordinate_valid(value, limit)
+	return isnum(value) && value >= 1 && value <= limit && value == round(value)
+
+// Admission is O(R^2), with R <= 256; it never visits world turfs.
+/proc/build_elevation_profile(default_metres, list/source_regions, maxx, maxy, maxz)
+	if(!elevation_metres_valid(default_metres) || !islist(source_regions) || source_regions.len > 256)
+		throw EXCEPTION("Invalid elevation profile")
+	for(var/limit in list(maxx, maxy, maxz))
+		if(!elevation_coordinate_valid(limit, 32767))
+			throw EXCEPTION("Invalid elevation dimensions")
+	var/datum/elevation_profile/profile = new
+	profile.default_metres = default_metres
+	for(var/entry in source_regions)
+		if(!islist(entry) || !isnull(source_regions[entry]))
+			throw EXCEPTION("Invalid elevation region record")
+		var/list/row = entry
+		if(row.len != 6)
+			throw EXCEPTION("Invalid elevation region fields")
+		for(var/key in list("x1", "x2", "y1", "y2", "z", "metres"))
+			if(!(key in row))
+				throw EXCEPTION("Missing elevation region field")
+		if(!elevation_coordinate_valid(row["x1"], maxx) || !elevation_coordinate_valid(row["x2"], maxx) || !elevation_coordinate_valid(row["y1"], maxy) || !elevation_coordinate_valid(row["y2"], maxy) || !elevation_coordinate_valid(row["z"], maxz) || !elevation_metres_valid(row["metres"]) || row["x1"] > row["x2"] || row["y1"] > row["y2"])
+			throw EXCEPTION("Invalid elevation region bounds")
+		for(var/list/other in profile.regions)
+			if(row["z"] == other["z"] && row["x1"] <= other["x2"] && row["x2"] >= other["x1"] && row["y1"] <= other["y2"] && row["y2"] >= other["y1"])
+				throw EXCEPTION("Overlapping elevation regions")
+		profile.regions += list(row.Copy())
+	return profile
+
+/datum/elevation_profile
+	var/default_metres = 0
+	var/list/regions = list()
+	should_save = FALSE
+
+// Bounded O(R) lookup, including edges. z selects a plane, never a height.
+/datum/elevation_profile/proc/at(x, y, z)
+	for(var/list/row in regions)
+		if(z == row["z"] && x >= row["x1"] && x <= row["x2"] && y >= row["y1"] && y <= row["y2"])
+			return row["metres"]
+	return default_metres
+
+/obj/map_metadata/proc/effective_elevation_profile()
+	if(!elevation_profile_cache)
+		elevation_profile_cache = build_elevation_profile(elevation_default_metres, isnull(elevation_regions) ? list() : elevation_regions, world.maxx, world.maxy, world.maxz)
+	return elevation_profile_cache
+
+/proc/get_elevation(atom/location)
+	var/turf/T = get_turf(location)
+	if(!T || !map)
+		return 0
+	var/datum/elevation_profile/profile = map.effective_elevation_profile()
+	return profile.at(T.x, T.y, T.z)
+
+/obj/map_metadata/proc/elevation_snapshot()
+	var/datum/elevation_profile/profile = effective_elevation_profile()
+	// Revalidate against current dimensions, and detach every row from live state.
+	var/datum/elevation_profile/copy = build_elevation_profile(profile.default_metres, profile.regions, world.maxx, world.maxy, world.maxz)
+	return list("version" = 1, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "default_metres" = copy.default_metres, "regions" = copy.regions)
+
+/proc/elevation_profile_from_snapshot(list/snapshot, maxx, maxy, maxz)
+	if(!islist(snapshot) || snapshot.len != 6)
+		throw EXCEPTION("Invalid saved elevation snapshot")
+	var/list/state = snapshot
+	for(var/key in list("version", "maxx", "maxy", "maxz", "default_metres", "regions"))
+		if(!(key in state))
+			throw EXCEPTION("Missing saved elevation field")
+	if(state["version"] != 1 || state["maxx"] != maxx || state["maxy"] != maxy || state["maxz"] != maxz)
+		throw EXCEPTION("Saved elevation dimensions or version differ")
+	return build_elevation_profile(state["default_metres"], state["regions"], maxx, maxy, maxz)
+
+/obj/map_metadata/proc/restore_elevation_snapshot(list/round_state, maxx, maxy, maxz)
+	var/datum/elevation_profile/profile
+	if("elevation" in round_state)
+		profile = elevation_profile_from_snapshot(round_state["elevation"], maxx, maxy, maxz)
+	else
+		// Legacy saves predate elevation, even if newer map defaults add it.
+		profile = build_elevation_profile(0, list(), maxx, maxy, maxz)
+	// Replace the effective profile only after the complete snapshot is valid.
+	elevation_profile_cache = profile
+
 // Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
 // Omit only known process-local state, on export and historical import, without
 // mutating the live value. Unknown object links still require integrity validation;
@@ -89,6 +179,8 @@
 	should_save = FALSE
 
 /turf/persistence_runtime_var(key)
+	if (key == "snowfall_ground_index" || key == "snowfall_ground_generation" || key == "weather_snow_overlay")
+		return TRUE
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
 		return TRUE
 	switch(key)
@@ -98,7 +190,7 @@
 
 // Author policy is not restored from an ordinary or historical area payload.
 /area/persistence_runtime_var(key)
-	return key == "lighting_reserved_clearance_enabled" || ..()
+	return key == "lighting_reserved_clearance_enabled" || key == "persistence_zone_id" || ..()
 
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
@@ -218,6 +310,7 @@ map_storage
 
 /map_storage/persistence_runtime_var(key)
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
+	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
 	if(key == "last_save_reference_failure") return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
@@ -362,6 +455,8 @@ var/global/persistence_load_recovery_required = FALSE
 
 // One admission point for verbs, automatic saves, lifecycle recovery and direct
 // lower-level calls. The identity, not the legacy busy flag, owns release.
+// Future custody-changing transfers must share this exclusion and durable-state
+// reconciliation. This local patch still admits save/load only.
 /proc/begin_persistence_operation(map_storage/storage, kind, datum/persistence_restart_transaction/transaction)
 	if(!storage || !(kind in list("save", "load")) || persistence_active_operation || persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || world_z_budget.active)
 		return null
@@ -446,6 +541,8 @@ var/global/persistence_load_recovery_required = FALSE
 // Cleanup can dispatch subtype code. Keep admission until every attempted
 // cleanup finishes, and contain cleanup exceptions so release still occurs.
 /map_storage/proc/cleanup_world_operation()
+	clear_saved_zones()
+	clear_zone_export()
 	clear_saved_roof_areas()
 	try
 		clear_bookkeeping()
@@ -476,6 +573,9 @@ var/global/persistence_load_recovery_required = FALSE
 
 /map_storage/proc/save_validation_area_type(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	if(validated_zone_state)
+		var/list/zone = validated_zones[saved_zone_id(x, y, z)]
+		return text2path(zone["type"])
 	var/list/roof = validated_roof_areas["[x],[y],[z]"]
 	if(roof && roof["area"]) return roof["area"]
 	if(z > world.maxz) return world.area
@@ -484,6 +584,7 @@ var/global/persistence_load_recovery_required = FALSE
 
 /map_storage/proc/save_validation_area_key(x, y, z)
 	if(!save_validation_coordinate(x, y, z)) return null
+	if(validated_zone_state) return "zone:[saved_zone_id(x, y, z)]"
 	var/area_type = save_validation_area_type(x, y, z)
 	if(validated_roof_types["[area_type]"]) return "roof:[area_type]"
 	if(z <= world.maxz)
@@ -526,8 +627,12 @@ var/global/persistence_load_recovery_required = FALSE
 			throw EXCEPTION("Restart generation changed before import")
 		map_storage.require_durable_world_idle()
 		operation.mutation_started = TRUE
+		// Validated geography must be authoritative before replacement constructors.
+		map.restore_elevation_snapshot(saved_round, world.maxx, world.maxy, map_storage.save_validation_maxz())
+		map_storage.begin_zone_restore(operation)
 		map_storage.reset_player_restoration()
 		map_storage.suspend_durable_world()
+		invalidate_persistence_area_snapshots()
 		map_storage.ClearMap()
 		if(!map_storage.run_world_operation("load", operation))
 			throw EXCEPTION("Load_World did not complete")
@@ -538,11 +643,14 @@ var/global/persistence_load_recovery_required = FALSE
 		// the mode's minimum without replacing a later saved date or research.
 		map.apply_persistence_age_floor()
 		map_storage.restore_round_state(src, saved_round)
+		map_storage.restore_zone_spawns()
 		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
 		// Client restoration can dispatch callbacks too. Keep this operation's
 		// identity until normal import completion, including those callbacks.
 		if(!transaction)
 			operation.restoring_players = TRUE
+			// Future custody-enabled deployments must reconcile authoritative
+			// ownership here even for older generations before activating a body.
 			map_storage.finish_player_restoration()
 	catch(var/exception/e)
 		map_storage.cleanup_world_operation()
@@ -568,7 +676,7 @@ var/global/persistence_load_recovery_required = FALSE
 		throw EXCEPTION("Cannot save during fresh round setup")
 	var/elapsed = (round_start_time || round_elapsed_offset) ? max(0, world.time - round_start_time) + round_elapsed_offset : 0
 	var/phase = ticker ? ticker.current_state : GAME_STATE_PREGAME
-	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = phase, "elapsed" = phase == GAME_STATE_PREGAME ? 0 : elapsed, "roundstart_time" = phase == GAME_STATE_PREGAME ? 0 : roundstart_time)
+	return list("version" = 1, "generation" = generation, "map" = map.ID, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "game_id" = global.game_id, "state" = phase, "elapsed" = phase == GAME_STATE_PREGAME ? 0 : elapsed, "roundstart_time" = phase == GAME_STATE_PREGAME ? 0 : roundstart_time, "elevation" = map.elevation_snapshot())
 
 /map_storage/proc/read_round_state()
 	var/marker = trim(file2text("map_saves/save_complete.txt"))
@@ -577,8 +685,11 @@ var/global/persistence_load_recovery_required = FALSE
 	if(!fexists("map_saves/round.json"))
 		throw EXCEPTION("Completed generation is missing round state")
 	var/list/state = json_decode(file2text("map_saves/round.json"))
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_elevation = islist(state) && ("elevation" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
+	if(has_elevation)
+		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
 	if(version == 2 && !islist(state["world_state"]))
 		throw EXCEPTION("Completed generation is missing durable world state")
 	if(!istext(state["game_id"]) || !length(state["game_id"]) || length(state["game_id"]) > 128)

@@ -85,7 +85,7 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
-          'clear_saved_roof_areas', 'clear_bookkeeping', 'release_durable_world',
+          'clear_saved_zones', 'clear_zone_export', 'clear_saved_roof_areas', 'clear_bookkeeping', 'release_durable_world',
           'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until')
 
 

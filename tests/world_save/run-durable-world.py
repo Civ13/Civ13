@@ -46,6 +46,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--zone-topology', action='store_true',
+                        help='Prepare synthetic zone/spawn positive and negative fixtures; native execution is held')
     parser.add_argument('--roof-areas', action='store_true',
                         help='Prepare only the synthetic fresh-process roof-area fixture; native execution is held')
     parser.add_argument('--roof-control', choices=('projection', 'cleanup-namespace'),
@@ -67,6 +69,13 @@ def main():
     parser.add_argument('--profile', choices=('gaia', 'europe'), default='gaia')
     parser.add_argument('--negative-control', choices=('season', 'preflight', 'reachability', 'callback', 'timer-restore', 'reclaim-order', 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity', 'lighting-view', 'lighting-eager', 'lighting-shared', 'shutdown-return', 'wound-restore', 'year-helper', 'year-load', 'year-order'))
     args = parser.parse_args()
+    if args.zone_topology:
+        if not args.prepare_only:
+            parser.error('zone native execution remains held; use --prepare-only')
+        if any((args.roof_areas, args.roof_control, args.persistence_year, args.wounds,
+                args.lighting, args.dimension_bootstrap, args.recovery_reconnect,
+                args.lifecycle_shutdown, args.startup_only, args.negative_control)):
+            parser.error('Zone preparation cannot combine with other fixture modes')
     if args.roof_control and not args.roof_areas:
         parser.error('Roof controls require --roof-areas')
     if args.roof_areas:
@@ -108,7 +117,7 @@ def main():
     prefix = '.durable_world_' + uuid.uuid4().hex
     dme = root / (prefix + '.dme')
     generated = []
-    receipt = {'roof_areas': args.roof_areas, 'roof_control': args.roof_control, 'persistence_year': args.persistence_year, 'profile': args.profile, 'negative_control': args.negative_control,
+    receipt = {'zone_topology': args.zone_topology, 'roof_areas': args.roof_areas, 'roof_control': args.roof_control, 'persistence_year': args.persistence_year, 'profile': args.profile, 'negative_control': args.negative_control,
                'wounds': args.wounds,
                'lighting': args.lighting,
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
@@ -257,6 +266,10 @@ def main():
             if args.negative_control == 'wound-restore' and relative == 'code/modules/organs/wound.dm':
                 receipt['wound_control_source'] = generated_path.name
         probe = (root / 'tests/world_save/durable_world_probe.dm').read_text(encoding='utf-8')
+        if args.zone_topology:
+            zone_probe = root / 'tests/zone_persistence/probe.dm'
+            probe = probe[:probe.index('/world/New()')] + zone_probe.read_text(encoding='utf-8')
+            receipt['zone_probe_hash'] = hashlib.sha256(zone_probe.read_bytes()).hexdigest()
         if args.roof_areas:
             roof_probe = root / 'tests/roof_area_recovery/probe.dm'
             probe = probe[:probe.index('/world/New()')] + roof_probe.read_text(encoding='utf-8')
