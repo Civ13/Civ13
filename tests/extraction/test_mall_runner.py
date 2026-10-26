@@ -736,6 +736,40 @@ class MainTests(unittest.TestCase):
                 self.assertEqual(len(self.spawn.calls), 2)
                 self.assertNotIn('PASS:', self.stdout.getvalue())
 
+    def test_secondary_prefixed_or_case_variant_banner_prevents_daemon(self):
+        clean = b'DM compiler version 516.1688\n0 errors, 0 warnings\n'
+        for extra in (b'prefix DM compiler version 516.1681\n',
+                      b'dm compiler version 516.1688\n',
+                      b'\tDM compiler version 516.1688\n'):
+            with self.subTest(extra=extra):
+                with self.assertRaises(RuntimeError):
+                    self.invoke(compile_output=clean + extra)
+                self.assertEqual(len(self.spawn.calls), 2)
+                self.assertNotIn('PASS:', self.stdout.getvalue())
+
+    def test_compiler_summary_is_single_clean_and_after_banner(self):
+        banner = b'DM compiler version 516.1688\n'
+        clean = b'0 errors, 0 warnings\n'
+        for output in (banner + b'10 errors, 0 warnings\n',
+                       banner + clean + b'1 warning\n',
+                       banner + b'0 errors, 0 warnings unexpected suffix\n',
+                       banner + clean + clean,
+                       clean + banner,
+                       banner + clean + b'FATAL ERROR: collateral failure\n'):
+            with self.subTest(output=output):
+                with self.assertRaises(RuntimeError):
+                    self.invoke(compile_output=output)
+                self.assertEqual(len(self.spawn.calls), 2)
+                self.assertNotIn('PASS:', self.stdout.getvalue())
+
+    def test_clean_compiler_summary_accepts_native_filename_and_crlf(self):
+        for output in (b'DM compiler version 516.1688\r\nprobe.dmb - 0 errors, 0 warnings (10/26/26)\r\n',
+                       b'DM compiler version 516.1688\n0 errors, 0 warnings\n'):
+            with self.subTest(output=output):
+                self.invoke(compile_output=output, compile_only=True)
+                self.assertEqual(len(self.spawn.calls), 2)
+                self.assertIn('PASS: pinned mall fixture compile', self.stdout.getvalue())
+
     def test_compiler_failure_or_timeout_never_launches_daemon(self):
         for failure in (7, subprocess.TimeoutExpired(['fake-compiler'], 120)):
             with self.subTest(failure=type(failure).__name__):

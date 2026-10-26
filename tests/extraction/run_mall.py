@@ -5,7 +5,11 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import uuid
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts'))
+import fixture_toolchain as current
 
 from mall_run_support import OwnedRun
 
@@ -148,11 +152,7 @@ def main(argv=None, *, root=None, run_factory=OwnedRun):
         source += '\n#include "tests/extraction/container_keys_probe.dm"\n#include "tests/extraction/mall_probe.dm"\n#include "maps/extraction/interchange_mall.dmm"\n'
         files[0].write_text(source, encoding='utf-8')
         compiled = owned.run('compile', [str(compiler), '-max_errors', '0', files[0].name], root, 120, creationflags=flags)
-        output = compiled.stdout + compiled.stderr
-        banners = re.findall(r'^DM compiler version[^\r\n]*', output, re.MULTILINE)
-        if (compiled.returncode or banners != ['DM compiler version 516.1688']
-                or '0 errors, 0 warnings' not in output):
-            raise RuntimeError('Pinned mall fixture compilation failed:\n' + output)
+        current.validate_compiler(compiled)
         if args.compile_only:
             accepted = 'PASS: pinned mall fixture compile'
         else:
