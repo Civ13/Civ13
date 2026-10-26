@@ -16,6 +16,8 @@ $commands = @('@echo off', "call `"$dev`" -no_logo -arch=x64 -host_arch=x64 >nul
 $flags = '/nologo /std:c++20 /EHsc /W4 /WX /MT'
 $commands += "cl $flags /Fe:`"$build/peer-tests.exe`" `"$root/peer.cpp`" `"$root/tests/peer_tests.cpp`""
 $commands += 'if errorlevel 1 exit /b 1'
+$commands += "cl $flags /Fe:`"$build/host-tests.exe`" `"$root/peer.cpp`" `"$root/host.cpp`" `"$root/tests/host_tests.cpp`""
+$commands += 'if errorlevel 1 exit /b 1'
 if ($SdkInclude) {
     $SdkInclude = (Resolve-Path -LiteralPath $SdkInclude).Path
     if (!(Test-Path -LiteralPath (Join-Path $SdkInclude 'cdiscord.h'))) { throw 'Explicit official cdiscord.h directory required.' }
@@ -42,4 +44,5 @@ function Invoke-Bounded([string]$executable, [string]$arguments, [string]$name) 
 }
 Invoke-Bounded $env:ComSpec ('/d /s /c ""' + $batch + '""') 'compile'
 Invoke-Bounded (Join-Path $build 'peer-tests.exe') '' 'peer-tests'
+Invoke-Bounded (Join-Path $build 'host-tests.exe') '' 'host-tests'
 if ($SdkInclude) { Invoke-Bounded (Join-Path $build 'sdk-tests.exe') '' 'sdk-tests' }
