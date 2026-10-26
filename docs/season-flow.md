@@ -17,13 +17,12 @@ configuration and existing pending timer remainders remain unchanged.
 | Fall | reconcile | reconcile | reject duplicate | legacy |
 | Winter | legacy | reconcile | reconcile | reject duplicate |
 
-The four legacy edges keep their exact existing main payloads, probabilities,
-delayed cleanup and phase timing. The reconciliation helper is a no-op on those
-edges. `SPRING -> WINTER` and `SUMMER -> WINTER` are rejected: Winter's existing
-probabilistic freeze assumes Fall's earlier cold work. A new explicit cold-entry
-profile is required before accepting those edges. Even the legacy Fall-to-Winter
-edge retains its historical partial/probabilistic behavior; it is not a guarantee
-that every ground tile freezes before a forced admin transition.
+The four canonical edges retain non-snow payloads, weather work and phase timing.
+Ground snow now follows [precipitation and local temperature](snowfall-ground.md),
+including on default edges: season labels no longer replace ground with snow or
+thaw unmarked winter terrain. Reconciliation remains a no-op on canonical edges.
+`SPRING -> WINTER` and `SUMMER -> WINTER` retain the previously reviewed rejection;
+this snow feature does not broaden cold-entry/calendar admission.
 
 Validation examines **every edge in the whole configured cycle before admitting
 any transition**. It requires 2-4 unique implemented identifiers, plain
@@ -45,11 +44,9 @@ synthetic season requests, weather changes or random draws in reconciliation.
 
 All six nondefault edges reconcile:
 
-- **Warm ground:** temperate forest winter dirt becomes ordinary dirt; temperate
-  winter grass becomes ordinary grass. Roofed winter ground becomes dirt, using
-  the same ground classes as Summer's existing cleanup. Taiga/tundra forest and
-  permanent cold-biome ground are not globally melted. This does not claim a new
-  water-ice model; only the worker's existing winter-ground classes are reconciled.
+- **Ground snow:** unmarked winter terrain is preserved. Generated cover has its
+  own temperature/snowfall worker and keeps its underlying soil. Neither skipped
+  nor canonical season edges guess whether an old snow tile was authored.
 - **Snow structures:** the three existing snow-wall/barrier/item classes retire
   through normal qdel outside tundra/taiga. Skipping Spring therefore cannot omit
   this worker's completed warm-season snow-wall cleanup.
@@ -63,7 +60,7 @@ All six nondefault edges reconcile:
 The new dry profile enumerates actual sinks and checks their area. The unchanged
 legacy Summer body attempts to iterate a turf snapshot as sinks; this candidate
 does not repair or relabel that legacy path. Nondefault edges have the explicit
-dry-state contract above, while default-cycle behavior remains unchanged.
+dry-state contract above, while the unrelated default sink-loop behavior remains unchanged.
 
 Asia's existing completion hook then dries flooded water in Summer/Fall and wets
 flooded dirt in Spring/Winter, including z1. Its production body is unchanged and
@@ -88,7 +85,7 @@ that omits a restored current season intentionally holds the next transition.
 
 Offline checks execute restricted projections of production validation, queue,
 reconciliation and Asia completion bodies. They cover all twelve directed pairs,
-both rejected edges before mutation, each of the six newly supported paths, thaw,
+both rejected edges before mutation, each of the six supported paths, legacy-snow preservation,
 snow retirement, wet/dry state, z/climate exclusions, stale candidates, epoch
 cancellation, idempotence, queue reentry, stale phases, single age charging and
 admin keep-age. The destination-prefix boundary adapts legacy terrain/RNG work;

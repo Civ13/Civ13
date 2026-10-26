@@ -26,7 +26,7 @@ def state(*, climate="temperate", weather="", water=60, max_water=60,
     plant = entity("/obj/structure/farming/plant" + mushroom)
     return dict(src=plant, loc=plant, area=Record(icon_state=weather, climate=climate)
                 if area else None, water=water, max_water=max_water,
-                map=Record(heat_wave=heat), stage=4, death=None)
+                map=Record(heat_wave=heat), winter_hardy=False, stage=4, death=None)
 
 
 def run(code, objects=(), **options):
@@ -35,8 +35,14 @@ def run(code, objects=(), **options):
 
 class FarmingDiscovery(unittest.TestCase):
     def test_only_discovery_changes(self):
-        # Covers unchanged growth, RNG, soil, harvesting, weather and death code.
-        self.assertEqual(without_discovery(BEFORE), without_discovery(AFTER))
+        # Pin the audited water helper outside its discovery loop. Other farming
+        # features (such as timber seedlings) may evolve independently.
+        # Explicitly project the new opt-in policy disabled for these ordinary crops.
+        # The winter suite separately tests opt-in protection and omission controls.
+        guard = 'findtext(A.icon_state, "snow_storm") && !winter_hardy'
+        self.assertEqual(NEW.count(guard), 1)
+        normal = NEW.replace(guard, 'findtext(A.icon_state, "snow_storm")')
+        self.assertEqual(without_discovery(OLD), without_discovery(normal))
         self.assertEqual(OLD.count("range(2, src)"), 3)
         self.assertEqual(NEW.count("range(2, src)"), 1)
 

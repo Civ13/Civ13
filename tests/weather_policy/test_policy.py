@@ -249,13 +249,24 @@ class WeatherPolicyTests(unittest.TestCase):
         current = (ROOT / "code/modules/1713/weather.dm").read_text()
         for signature in ("/proc/change_weather(_weather = WEATHER_NONE, var/bypass_same_weather_check = FALSE)",
                           "/proc/apply_area_weather(var/area/caribbean/A)"):
-            self.assertEqual(body(current, signature), body(before, signature))
+            current_body = body(current, signature)
+            rejection = "FALSE" if signature.startswith("/proc/change_weather(") else ""
+            guard = "#ifdef CIV13_ZONE_PERSISTENCE\n\tif(persistence_area_registry_blocked()) return" + (" " + rejection if rejection else "") + "\n#endif\n"
+            self.assertTrue(current_body.startswith(guard), "Missing integrated zone admission guard")
+            self.assertEqual(current_body[len(guard):], body(before, signature))
         old_process = subprocess.check_output(["git", "show", BASE + ":code/processes/weather.dm"], cwd=ROOT, text=True)
         marker = "\tif(map && map.uses_durable_metadata())"
         self.assertEqual(self.source.split(marker)[1], old_process.split(marker)[1])
         for relative in ("code/processes/abandoned_items.dm", "code/modules/persistence/durable_environment.dm",
-                         "code/modules/persistence/durable_timers.dm", "code/modules/persistence/durable_world.dm"):
+                         "code/modules/persistence/durable_timers.dm"):
             self.assertEqual((ROOT / relative).read_bytes(), subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT))
+
+    def test_durable_weather_schema_preserves_deadline_ownership(self):
+        relative = "code/modules/persistence/durable_world.dm"
+        old = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)
+        current = (ROOT / relative).read_text()
+        self.assertEqual(body(current, "/proc/durable_weather_schema()"),
+                         body(old, "/proc/durable_weather_schema()"))
 
     def test_random_selector_only_filters_immediately_before_pick_and_no_native_configuration_import(self):
         source = (ROOT / "code/modules/1713/weather.dm").read_text()

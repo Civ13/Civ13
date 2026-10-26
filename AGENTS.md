@@ -1,5 +1,49 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-25: shared hub community links -->
+`code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
+WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.
+The `hub_status` CI baseline suite tests source-derived HTML offline, not native
+DM execution or public hub rendering. Installing new procedures requires a
+rebuilt world and separately authorized restart; source approval does not activate it.
+
+<!-- 2026-10-24: precipitation-driven generated snow -->
+Ground snow uses weather_snow units on exact ordinary dirt/grass, actual snowfall,
+exposure and get_temp (stick <=0C, melt >2C). Existing winter/snow/ice stays unmarked.
+No seasonal snow-ground replacement/thaw; retain water/ice/calendar/weather logic.
+One bounded swap-remove worker owns sampling. Save only units, never image/index;
+legacy same-type load resets units before decode. docs/snowfall-ground.md lists
+gameplay predicates, exclusions and source/native acceptance limits.
+
+<!-- 2026-10-24: authoritative zones and spawn registries -->
+Durable schema 2/topology 2 captures native area IDs in per-level zone_capture
+records at turf-frame admission. IDs use lineage counters, not new RNG calls.
+Validate candidate files with yields; do not restore a full-world no-yield JSON
+comparison. Area registration is operation-staged, retirement precedes publication,
+and load/recovery readers require admission. No rollback exists after ClearMap.
+Schema 1 keeps its legacy reader; tests/zone_persistence is offline/preparation
+evidence only. Local IDs are not shard/custody IDs or logical geographic layers.
+
+<!-- 2026-10-24: target BYOND version and historical fixture boundary -->
+tools/byond/version.json pins target 516.1688 and observed official HTTPS archive
+bytes; it is embedded directly into source launcher 1.0.8 and consumed by the
+default compiler bootstrap/receipts and WSL setup. This does not establish native
+compatibility or publish the launcher. Compiler minimum/savefile major remain
+516.1681/516. Frozen 1681 fixture helpers, CID offsets and historical evidence stay
+unchanged. Manual component/train workflows explicitly select the legacy 1681
+bootstrap; other strict 1681 runtime harnesses must fail on a mismatched engine,
+not be relabeled. See docs/byond-5161688.md before selecting native coverage.
+Active hosted compilation explicitly selects the user-approved Civ13/Civ13
+repository-release asset pinned in the Linux manifest. Only its exact public URL
+may redirect once to its reviewed release-assets.githubusercontent.com path;
+no credentials, signed-query receipts, source fallback or broad redirect rule.
+Official/community choices retain NoRedirect. Only the versioned archive and
+acquisition metadata are cached by OS/version/hash; each hit verifies every byte
+before fresh extraction and actual compilation. Preserve original cache-origin
+provenance, fail closed on corrupt caches, and require exact-source receipts.
+BYOND cache prereleases are excluded from launcher publication by both the
+workflow and release planner; this archive route does not change the stable feed.
+
 <!-- 2026-10-24: shared season duration -->
 Shared season_loop timers use validated SEASON_DURATION_MINUTES (default60) with
 an optional map.season_duration_minutes override. Pending durable remainders are
@@ -19,7 +63,7 @@ tests/weather_policy is offline projection/parity evidence, not native acceptanc
 <!-- 2026-10-24: configured base season flow -->
 season_cycle is author policy for the serialized base worker. Whole-cycle validation
 rejects Spring/Summer->Winter before mutation; default edges retain legacy payloads.
-Six supported nondefault edges reconcile warm ground/snow structures/wet-dry state
+Six supported nondefault edges preserve unmarked ground and reconcile snow structures/wet-dry state
 inside the existing epoch/lock, before the unchanged subtype completion hook.
 No synthetic seasons, extra decay charges, new phase timers or saved cursor.
 tests/season_flow projects source/queue/ecology paths; native acceptance stays held.
@@ -208,8 +252,8 @@ Never use an em dash; use "-" instead.
 - **Entry point**: `civ13.dme` - the DM Environment file.
 - **Build**: `dm civ13.dme` (Windows) or `DreamMaker civ13.dme` (Linux). Outputs `civ13.dmb` + `civ13.rsc`.
 - **Lint**: `./dreamchecker.exe` (SpacemanDMM static analyzer). Config in `SpacemanDMM.toml` (sets `dreamchecker = true` for the langserver).
-- **Source BYOND target**: 516.1688 from `tools/byond/version.json`; minimum compiler/save major remain 516.1681/516. The launcher source is 1.0.8; this does not publish its feed or establish native acceptance.
-- **CI** (`.github/workflows/test.yml`): exact-head selection requires the bounded offline baseline and source/acquisition receipts. The default compiler consumes the shared manifest; historical fixture workflows explicitly select 516.1681. No held native runner is authorized by source approval. See `docs/ci-selection.md` and `docs/byond-5161688.md`.
+- **Target BYOND version**: 516.1688 from `tools/byond/version.json`; minimum compiler remains 516.1681. No `.vscode/tasks.json` is tracked at this base.
+- **CI** (`.github/workflows/test.yml`): the default Ubuntu compiler bootstrap targets the manifest version, runs `DreamMaker -max_errors 0 civ13.dme`, and requires the exact version banner plus zero errors/warnings. Exact-head hosted 516.1688 acceptance is pending. The separate evidence-checker and MCP protocol workflows do not establish gameplay or rendering.
 
 ## Code structure
 
@@ -271,6 +315,16 @@ source preparation does not establish native acceptance.
 - Object placement: to put an object on a floor tile, define a new tile key that includes the object + the floor turf + the area, then use that key in the grid at the desired position.
 
 ### Map metadata
+
+<!-- 2026-10-24: optional geographic elevation -->
+Elevation is a bounded coordinate profile on map metadata, independent of native
+areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
+does not alter temperature or precipitation. The optional round.json snapshot
+is validated before mutation and installed before replacement constructors;
+missing legacy snapshots restore flat zero, overriding newer author defaults.
+See docs/elevation.md and tests/elevation. Native fixture preparation does not
+establish native acceptance; run only under the repository's normal
+authorization/admission rules.
 
 <!-- 2026-10-24: save-to-map design boundary -->
 `tools/save_to_map` is a synthetic static-source validator/writer/reporting proof,
@@ -621,6 +675,17 @@ a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10:
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-23: timber seedling ownership -->
+Timber seedlings reuse crop soil/water/stage helpers through processing_objects;
+their growth override registers without sleeping. Save growth_time_left but exclude
+last_growth_tick, and anchor it in after_load without resetting durable progress.
+Maturation rechecks open outdoor ploughed space, climate and season before creating
+the existing live_tree. See docs/tree-planting.md and tests/tree_planting; offline
+source execution and fixture preparation are not native or client acceptance.
+The tree native runner now uses the unchanged native_fixture Session and keeps
+fresh-process reader/writer probes. Windows startup-listener rejections remain
+failures; do not route around the no-socket guard. See the native-validation doc.
+
 <!-- 2026-10-15: Modern processor recipe validation -->
 The recipe catalog fixture defaults to era 0. New era-gated machine families
 must select their real supported era in tests/crafting/checks.dm; the reactor
@@ -845,11 +910,39 @@ and bounded opt-in owner-field inspection; outcome rows share deletion profiling
 forced-call buckets, not exact distinct types after saturation.
 
 <!-- 2026-10-12: opt-in regression CI -->
-Existing game and tooling regression suites are manual opt-in. PRs adding
-executable integration tests select their registered suite only for that PR;
-ordinary game edits and edits to existing tests do not auto-select regressions.
-Keep compilation, workflow validation and publication checks separate. Register
-new suite guards through ci-selection.yml; see docs/ci-selection.md.
+<!-- 2026-10-24: bounded offline CI baseline and exact-source receipts -->
+CI always runs selector-policy, stubbed bootstrap and serializer-source tests.
+scripts/ci_baseline.py registers exact reviewed offline files and bounded impact
+paths for research/ping scheduling, persistence-year projections and synthetic
+evidence validation. Affected production, existing-test and helper edits select
+those files; unknown impact or missing comparisons explicitly selects the whole
+small offline registry. Do not add broad Python discovery or native launchers to
+this registry without inspecting imports, subprocesses, dependencies and cost.
+Other existing regressions retain manual opt-in and introduced-test admission;
+ordinary edits do not expand native/costly admission. Register those suite guards
+through ci-selection.yml. Preserve all separate execution/resource holds.
+
+CI required aggregate requires successful selected jobs and exact head/base,
+run/attempt and selection-bound offline/compile receipts. Missing, failed,
+unexpectedly skipped or empty required execution fails. Documentation-only
+compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
+and docs/ci-selection.md; a job-level green alone does not describe what ran.
+<!-- 2026-10-24: event coverage and check identity -->
+Supported edited PRs evaluate the base/head diff for compilation but keep native
+admission off. Edited/other-base PRs, feature pushes and manual runs use the
+informational build/aggregate names even when a real compile passes. Only ordinary
+opened/synchronize/reopened PR scopes and master pushes retain gating names.
+Selector failures or missing outputs retain failed gating names. Inspect receipt
+action and compile/native/gating reasons; an informational success cannot certify
+omitted native coverage. Preserve existing native opt-ins and toolchain ownership.
+Hosted DreamMaker results must identify the actually executed manifest version;
+Python projections, compiled core_boot variants and native runtime/gameplay
+acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
+Cloud-only workers must keep unavailable local native checks as not_run. After
+owner review and authorized push, obtain hosted validation for the current head
+and inspect its outcomes/artifacts; never substitute local tool absence or an
+older green run. This policy does not authorize installing native tools, running
+held probes, deployment, publication, branch-protection changes or merging.
 
 <!-- 2026-10-12: official DM reference -->
 `dm_reference_search` and `dm_reference_read` fetch only the official BYOND manual

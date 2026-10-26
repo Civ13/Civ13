@@ -25,6 +25,30 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")
 
+/obj/item/stack/farming/seeds/plump_helmet
+	name = "plump helmet spores"
+	desc = "Spores of a slow-growing, substantial edible cave fungus. Sow in ploughed soil."
+	plant = "plump_helmet"
+	icon = 'icons/farming/pocket_stronghold_plump_helmet.dmi'
+	icon_state = "plump_helmet-seeds"
+
+// Forage remains available in every biome for cave farms. Reject only sites
+// where inherited mushroom growth cannot advance, before planting pays resources.
+/obj/item/stack/farming/seeds/plump_helmet/planting_error(turf/T)
+	var/area/A = get_area(T)
+	if (!A)
+		return "Plump helmets need a plot in a suitable area."
+	if (A.location == 0)
+		return null
+	if (!(map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA)))
+		return null
+	// Keep these lists aligned with the inherited mushroom crop, not forage seeds.
+	if (!(A.climate in list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")))
+		return "Plump helmets cannot grow outdoors in this climate. Try an indoor or underground plot."
+	if (!(A.climate in list("jungle", "desert", "savanna")) && !(season in list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")))
+		return "Plump helmets cannot grow outdoors in this season. Try an indoor or underground plot."
+	return null
+
 /obj/item/stack/farming/seeds/mushroompsy
 	name = "strange mushroom spores"
 	plant = "mushroompsy"
@@ -162,6 +186,18 @@
 * Organic
 
 */
+
+/obj/item/stack/farming/seeds/turnip
+	name = "turnip seeds"
+	desc = "Seeds of a winter-hardy root crop. Plant outdoors in ploughed soil and keep watered."
+	plant = "turnip"
+	icon = 'icons/farming/pocket_stronghold_turnip.dmi'
+	icon_state = "turnip-seeds"
+	biomes = list("temperate", "sea", "tundra", "taiga")
+	seasons = list("WINTER", "SPRING", "SUMMER", "FALL")
+
+/obj/item/stack/farming/seeds/turnip/planting_error(turf/T)
+	return winter_crop_plot_error(T)
 
 /obj/item/stack/farming/seeds/tomato
 	name = "tomato seeds"
@@ -394,6 +430,8 @@
 	var/max_water = 60
 	var/plant_nutrition = 100
 	var/max_plant_nutrition = 150
+	// Seasonal crop policy, not a Celsius survival threshold. Ordinary crops stay unchanged.
+	var/winter_hardy = FALSE
 
 /obj/structure/farming/plant/New()
 	..()
@@ -499,8 +537,8 @@
 	max_water = 50
 
 /obj/structure/farming/plant/tree
-	name = "tree"
-	desc = "A tree, grown for wood."
+	name = "tree seedling"
+	desc = "A young tree. Keep its outdoor plot watered and clear until it matures."
 	icon_state = "tree-grow1"
 	plant = "tree"
 	stack = "material/wood"
@@ -508,6 +546,91 @@
 	harvest_verb = "cut some logs from"
 	seasons = list( "SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	max_water = 80
+	var/growth_time_left = 600 // Remaining active-server ticks in this stage.
+	var/tmp/last_growth_tick = 0
+
+/obj/structure/farming/plant/tree/New()
+	..()
+	water = max_water
+	last_growth_tick = world.time
+
+// The inherited constructor calls growth virtually. Register once instead of
+// starting the ordinary crop's sleeping recursion, including during import.
+/obj/structure/farming/plant/tree/growth()
+	processing_objects |= src
+
+/obj/structure/farming/plant/tree/persistence_runtime_var(key)
+	return key == "last_growth_tick" || ..()
+
+/obj/structure/farming/plant/tree/after_load()
+	..()
+	last_growth_tick = world.time
+	growth()
+
+/obj/structure/farming/plant/tree/Destroy()
+	processing_objects -= src
+	return ..()
+
+/obj/structure/farming/plant/tree/Del()
+	processing_objects -= src
+	..()
+
+/obj/structure/farming/plant/tree/proc/growing_season()
+	var/area/A = get_area(src)
+	return A && (A.climate in biomes) && (season in seasons)
+
+/obj/structure/farming/plant/tree/process_interval(configured_seconds = 2)
+	var/elapsed = min(max(0, configured_seconds * 10), max(0, world.time - last_growth_tick))
+	last_growth_tick = world.time
+	// Import/export can yield. Never mature a constructor shell or mutate the
+// crop graph while the serializer owns it; offline time earns no growth.
+	if (persistence_active_operation)
+		return
+	if (gc_destroyed || gcDestroyed || vstatic || stage > readyStageMax)
+		return PROCESS_KILL
+	if (!isturf(loc) || tree_planting_error(loc, src))
+		return
+	growth_time_left = max(0, growth_time_left - elapsed)
+	if (growth_time_left > 0)
+		return
+	growth_time_left = 600
+	soil_nutrition_proc()
+	water_proc()
+	if (stage > readyStageMax)
+		return PROCESS_KILL
+	if (growing_season() && stage < readyStageMin)
+		stageGrowth()
+	if (growing_season() && stage >= readyStageMin)
+		var/obj/structure/wild/tree/live_tree/T = new(loc)
+		// Keep the sprite anchor, but not the random offset used by wild trees.
+		T.pixel_x = initial(T.pixel_x)
+		T.pixel_y = initial(T.pixel_y)
+		T.radiation = radiation
+		T.change_season()
+		visible_message(SPAN_NOTICE("The young tree has matured."))
+		qdel(src)
+		return PROCESS_KILL
+	icon_state = "tree-grow[min(stage, readyStageMin - 1)]"
+
+// Seedlings are uprooted, never harvested as the old renewable log crop.
+/obj/structure/farming/plant/tree/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/material/shovel))
+		to_chat(user, SPAN_WARNING("You uproot the [name] with the [W.name]."))
+		qdel(src)
+		return
+	if (istype(W, /obj/item/weapon/material/hatchet) || istype(W, /obj/item/weapon/attachment/bayonet) || istype(W, /obj/item/weapon/material/kitchen/utensil/knife) || istype(W, /obj/item/weapon/material/scythe) || istype(W, /obj/item/weapon/foldable_shovel))
+		to_chat(user, SPAN_WARNING("You need an unfolded shovel to uproot the [name]."))
+
+/obj/structure/farming/plant/tree/farming_diagnostics(farming_skill)
+	. = ..()
+	. -= "The plant is well nourished and may give extra crops."
+	if (!vstatic && stage <= readyStageMax && farming_skill >= 1.3)
+		. += "This seedling will grow into a full tree. Uproot it with a shovel for no logs or seeds."
+		var/site_error = tree_planting_error(get_turf(src), src)
+		if (site_error)
+			. += site_error
+		else if (!growing_season())
+			. += "Growth is paused by the current climate or season. Keep the seedling watered."
 
 /obj/structure/farming/plant/bamboo
 	name = "bamboo"
@@ -530,6 +653,37 @@
 	biomes = list("jungle", "savanna")
 	max_water = 75
 
+// Turnips use the existing soil, watering and finite harvest lifecycle.
+// Hardiness affects snowstorm damage only, not drought, sandstorms or old age.
+/obj/structure/farming/plant/turnip
+	name = "turnip"
+	desc = "A winter-hardy root crop. Needs open sky, ploughed soil and water."
+	plant = "turnip"
+	icon = 'icons/farming/pocket_stronghold_turnip.dmi'
+	icon_state = "turnip-grow1"
+	biomes = list("temperate", "sea", "tundra", "taiga")
+	seasons = list("WINTER", "SPRING", "SUMMER", "FALL")
+	max_water = 90
+	winter_hardy = TRUE
+
+/obj/structure/farming/plant/turnip/stageGrowth()
+	// Recheck shelter before maturity; shelter must not stop a ripe crop aging.
+	if (stage < readyStageMin && winter_crop_plot_error(get_turf(src)))
+		return
+	return ..()
+
+/obj/structure/farming/plant/turnip/examine(mob/user)
+	..(user)
+	to_chat(user, SPAN_NOTICE("Turnips tolerate winter snowstorms, but still need water and an outdoor plot with open sky. Clear snow before ploughing."))
+
+/proc/winter_crop_plot_error(turf/T)
+	if (!istype(T, /turf/floor/dirt/ploughed) || !T.is_plowed || T.density)
+		return "Turnips need a ploughed plot."
+	var/area/A = get_area(T)
+	if (!A || A.location != AREA_OUTSIDE || A.is_void_area || (locate(/obj/roof) in T))
+		return "Turnips need an outdoor plot with open sky, not an underground farm."
+	return null
+
 /obj/structure/farming/plant/mushroom
 	name = "mushroom"
 	desc = "A bunch of mushrooms. Can be grown inside and underground."
@@ -539,6 +693,25 @@
 	seasons = list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")
 	biomes = list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")
 	max_water = 0
+
+// Explicit mushroom ancestry preserves existing indoor growth and water exemptions.
+/obj/structure/farming/plant/plump_helmet
+	parent_type = /obj/structure/farming/plant/mushroom
+	name = "plump helmet"
+	desc = "A slow-growing edible cave fungus. Needs ploughed soil, but no sunlight or watering."
+	plant = "plump_helmet"
+	icon = 'icons/farming/pocket_stronghold_plump_helmet.dmi'
+	icon_state = "plump_helmet-grow1"
+
+/obj/structure/farming/plant/plump_helmet/stageGrowth()
+	// Twice the food per bunch is paid for by slower growth and more soil consumption.
+	// The same probability applies while ripe, retaining eventual overmaturity.
+	if (prob(50))
+		return ..()
+
+/obj/structure/farming/plant/plump_helmet/examine(mob/user)
+	..(user)
+	to_chat(user, SPAN_NOTICE("Plump helmets grow slowly on ploughed soil indoors or underground without watering. Harvest with a knife and save some spores for replanting."))
 
 /obj/structure/farming/plant/mushroompsy
 	//yes it have equal icon... for fun and roleplay, enjoy
@@ -891,6 +1064,26 @@
 	else
 		new plantpath(loc)
 
+// Ordinary crops retain their existing planting admission.
+/obj/item/stack/farming/seeds/proc/planting_error(turf/T)
+	return null
+
+/obj/item/stack/farming/seeds/tree/planting_error(turf/T)
+	return tree_planting_error(T)
+
+// Shared by seed admission and maturation: a tree must not grow inside a roof,
+// wall, building or occupant that arrived after the seed was planted.
+/proc/tree_planting_error(turf/T, obj/structure/farming/plant/tree/seedling = null)
+	if (!istype(T, /turf/floor/dirt/ploughed) || !T.is_plowed || T.density)
+		return "Trees need a ploughed plot."
+	var/area/A = get_area(T)
+	if (!A || A.location != AREA_OUTSIDE || A.is_void_area || (locate(/obj/roof) in T))
+		return "Trees need an outdoor plot with open sky."
+	for (var/atom/movable/blocker in T)
+		if (blocker != seedling && (blocker.density || istype(blocker, /mob/living) || istype(blocker, /obj/structure/farming/plant)))
+			return "Clear the plot before growing a tree here."
+	return null
+
 /obj/structure/farming/plant/proc/spawn_seeds()
 	if (istype(src, /obj/structure/farming/plant/herbs))
 		return
@@ -1045,7 +1238,7 @@
 		return
 
 	// Check for snow storm or sandstorm and set plant to dead
-	if (findtext(A.icon_state, "snow_storm"))
+	if (findtext(A.icon_state, "snow_storm") && !winter_hardy)
 		set_dead("frozen")
 		return
 	if (findtext(A.icon_state, "sandstorm"))

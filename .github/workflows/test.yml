@@ -116,6 +116,12 @@ jobs:
       - name: Test synthetic static-source export core offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_to_map')
         run: python3 -I -B -m unittest discover -s tests/save_to_map -p 'test_*.py' -v
+      - name: Test optional geographic elevation offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/elevation')
+        run: python3 -B -m unittest discover -s tests/elevation -v
+      - name: Check zone and spawn persistence contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/zone_persistence')
+        run: python3 -B -m unittest discover -s tests/zone_persistence -v
       - name: Prepare roof-area recovery fixture offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
         run: python3 -B -m unittest discover -s tests/roof_area_recovery -p 'test_*.py' -v
@@ -134,6 +140,15 @@ jobs:
       - name: Test cleanables scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/cleanables_scheduler')
         run: python3 -B -m unittest discover -s tests/cleanables_scheduler -v
+      - name: Test tree planting scheduler and save contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/tree_planting')
+        run: python3 -B -m unittest discover -s tests/tree_planting -v
+      - name: Test character discoveries and berry smell contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/character_discoveries')
+        run: python3 -I -B -m unittest discover -s tests/character_discoveries -p 'test_*.py' -v
+      - name: Test winter crops and attributed sprite contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/winter_crops')
+        run: python3 -I -S -B -m unittest discover -s tests/winter_crops -p 'test_*.py' -v
       - name: Test persistence minimum date offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_year')
         run: python3 -B -m unittest discover -s tests/persistence_year -v
@@ -150,6 +165,15 @@ jobs:
         run: |
           python3 -B -m unittest discover -s tests/season_flow -v
           python3 -B -m unittest discover -s tests/season_duration -v
+          python3 -B tests/abandoned_items/run.py --check-season-wiring
+      - name: Test snowfall ground cover offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/snowfall_ground')
+        run: |
+          python3 -B -m unittest discover -s tests/snowfall_ground -v
+          python3 -B -m unittest discover -s tests -p test_digging_tools.py -v
+          python3 -B -m unittest discover -s tests/season_flow -v
+          python3 -B -m unittest discover -s tests/season_duration -v
+          python3 -B -m unittest discover -s tests/weather_policy -v
           python3 -B tests/abandoned_items/run.py --check-season-wiring
       - name: Test ping scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/ping_scheduler')

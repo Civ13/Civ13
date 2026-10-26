@@ -8,6 +8,9 @@ ROOT = Path(__file__).resolve().parents[2]
 META = "code/game/objects/map_metadata/_map_metadata.dm"
 BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
 MASTER = "e30ecf95b0cef8fe223f1075418bdc96b1ce3428"
+import sys
+sys.path.insert(0, str(ROOT / "tests/snowfall_ground"))
+from source_contract import without_season_snow
 
 
 def body(source, signature):
@@ -122,7 +125,7 @@ class FlowTests(unittest.TestCase):
     def test_transition_payloads_and_counting_are_byte_for_byte_preserved_after_dispatch_projection(self):
         signature = "/obj/map_metadata/proc/season_apply(var/force, var/advance_decay, var/epoch)"
         before = subprocess.check_output(["git", "show", BASE + ":" + META], cwd=ROOT, text=True)
-        old = body(before, signature)
+        old = without_season_snow(body(before, signature))[0]
         current = body(self.source, signature)
         current = current.replace("\tvar/next_phase = season_next_phase()\n\tif (!next_phase)\n\t\treturn\n", "")
         for target, prior in (("WINTER", "FALL"), ("SUMMER", "SPRING"), ("SPRING", "WINTER"), ("FALL", "SUMMER")):
@@ -139,7 +142,8 @@ class FlowTests(unittest.TestCase):
                          "code/game/objects/map_metadata/nomads/nomads_mountain.dm",
                          "code/game/objects/map_metadata/nomads/nomads_ice_age.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
-            self.assertEqual((ROOT / relative).read_bytes(), subprocess.check_output(["git", "show", MASTER + ":" + relative], cwd=ROOT))
+            before = subprocess.check_output(["git", "show", MASTER + ":" + relative], cwd=ROOT, text=True)
+            self.assertEqual((ROOT / relative).read_text(), without_season_snow(before)[0])
 
     def test_all_twelve_edges_and_entire_cycle_rejection_before_mutation(self):
         allows = supported(self.source)

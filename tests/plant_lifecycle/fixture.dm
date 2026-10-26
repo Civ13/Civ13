@@ -24,6 +24,7 @@ var/global/datum/map_fixture/map = new
 /turf/floor/beach/water
 /turf/floor/trench/flooded
 /obj/structure/farming/plant
+    var/winter_hardy = FALSE
     var/stage = 1
     var/readyStageMin = 7
     var/readyStageMax = 10
