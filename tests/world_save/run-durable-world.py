@@ -24,6 +24,22 @@ def selected_runtime(bin_dir, archive):
     return module.select(bin_dir, archive)
 
 
+def current_ci_case(args):
+    if args.prepare_only or args.zone_topology or args.roof_areas or args.roof_control or args.persistence_year:
+        return False
+    if args.lighting: return True  # Preserve the already reviewed current lighting path.
+    mode = next((name for name in ('wounds', 'dimension_bootstrap', 'recovery_reconnect',
+                                  'lifecycle_shutdown', 'startup_only') if getattr(args, name)), 'roundtrip')
+    cases = {(profile, name, None) for profile in ('gaia', 'europe')
+             for name in ('roundtrip', 'dimension_bootstrap', 'recovery_reconnect', 'lifecycle_shutdown')}
+    cases.update({('gaia', 'wounds', None), ('gaia', 'wounds', 'wound-restore'),
+                  ('gaia', 'startup_only', None), ('gaia', 'recovery_reconnect', 'reclaim-order'),
+                  ('europe', 'lifecycle_shutdown', 'shutdown-return')})
+    cases.update(('gaia', 'roundtrip', control) for control in
+                 ('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
+    return (args.profile, mode, args.negative_control) in cases
+
+
 def historical_wound_roof_helpers(loading, existing):
     """Keep the historical defect sources intact; add explicit current dependencies."""
     start = ('// Only roof transformations backed by direct saved turf contents are projected.\n'
@@ -53,7 +69,7 @@ def historical_wound_roof_helpers(loading, existing):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
-    parser.add_argument('--byond-archive', type=Path, help='Current Linux identity for the selected lighting fixture only')
+    parser.add_argument('--byond-archive', type=Path, help='Exact current Linux identity for the selected persistence CI matrix')
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--zone-topology', action='store_true',
                         help='Prepare synthetic zone/spawn positive and negative fixtures; native execution is held')
@@ -121,8 +137,8 @@ def main():
         parser.error('Startup diagnostics cannot run persistence mutation controls')
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
-    if args.byond_archive and (args.prepare_only or not args.lighting):
-        parser.error('--byond-archive currently admits only native lighting fixtures')
+    if args.byond_archive and not current_ci_case(args):
+        parser.error('--byond-archive admits only the selected persistence CI matrix')
     root = Path(__file__).resolve().parents[2]
     runtime = selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-durable-world-'))
@@ -367,6 +383,7 @@ def main():
             # Include operation admission, nested-call rejection and release.
             for mode, minimum_checks in (('write', 6), ('unmeasured', 7), ('read', 15)):
                 before_files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (output / 'map_saves').iterdir() if p.is_file()} if mode == 'unmeasured' else {}
+                if runtime: runtime.before_launch('daemon:'+mode, output)
                 run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
                     '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
                     cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)

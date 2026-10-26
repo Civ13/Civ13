@@ -23,6 +23,8 @@ class CurrentRuntime:
         self.verifier = load('fixture_runtime_identity', ROOT/'scripts/byond_runtime.py')
         self.compiler = load('fixture_compile_contract', ROOT/'tests/new_z_budget/z_budget_evidence.py')
         self.identity = json.loads(json.dumps(self.verifier.verify_linux(self.bin_dir, self.archive)))
+        if self.identity['version'] != '516.1688':
+            raise ValueError('Current fixture mode requires exactly 516.1688')
         self.checks = []
 
     def before_launch(self, role, output):

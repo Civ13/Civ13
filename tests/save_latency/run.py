@@ -1,8 +1,25 @@
 """Native isolated saver heartbeat and dense graph round-trip probe."""
 import argparse, hashlib, json, os, re, shutil, subprocess, tempfile, time
+import importlib.util
 from pathlib import Path
 
 OLD_READER_COMMIT = '75890d883190355e430f9958fd102864ee88429a'
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('latency_current_runtime', Path(__file__).parents[1]/'world_save/current_runtime.py')
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def current_ci_case(args):
+    options = {key: value for key, value in vars(args).items() if value and
+               key not in ('byond_bin', 'byond_archive')}
+    cases = [{'verify_backup': True}, {'verify_backup': True, 'dense': True}, {'interrupt': True},
+             {'negative_control': 'yield', 'dense': True}, {'negative_control': 'old-reader'}]
+    cases += [{'scenario': name} for name in ('movement', 'concurrent', 'parent-deletion')]
+    return options in cases
 
 
 def old_reader_helpers(loading, existing):
@@ -46,6 +63,7 @@ def require_old_reader_preflight(result, log):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--large', action='store_true')
     parser.add_argument('--dimension', type=int, help='Bounded scaled large fixture side length')
     parser.add_argument('--timeout-seconds', type=int, help='Native runtime limit for a bounded offline lease')
@@ -64,6 +82,9 @@ def main():
     if args.dimension is not None and (not args.large or not 2 <= args.dimension <= 500):
         parser.error('--dimension requires --large and a value from 2 to 500')
     if args.negative_control == 'yield': args.dense = True
+    if args.byond_archive and not current_ci_case(args):
+        parser.error('Current runtime admits only the selected bounded save CI cases')
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
     root = Path(__file__).resolve().parents[2]
     output = Path(tempfile.mkdtemp(prefix='civ13-save-latency-'))
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -111,13 +132,16 @@ def main():
         'old_reader_compatibility':compatibility}, indent=2))
     (output / 'checkout.patch').write_text(subprocess.check_output(['git','diff','HEAD'],cwd=root,text=True))
     if args.prepare_only: return
-    compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+    byond = args.byond_bin.absolute() if runtime else args.byond_bin
+    compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
+    daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+    if runtime: runtime.before_launch('compile', output)
     build = subprocess.run([str(compiler), '-max_errors','0','probe.dme'], cwd=output, capture_output=True,text=True,timeout=120,creationflags=flags)
     log = build.stdout+build.stderr
     (output / 'compile.log').write_text(log)
     print(log,flush=True)
-    if build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
+    if runtime: runtime.validate_compile(build.returncode, log, 'probe.dmb')
+    elif build.returncode or '516.1681' not in log or '0 errors, 0 warnings' not in log:
         raise RuntimeError('Pinned compilation failed')
     command=[str(daemon),'probe.dmb']+(['-invisible','-close'] if os.name=='nt' else [])+['-trusted','-log','runtime.log']
     parameters = ([] if not args.large else ['large=1']) + ([] if not args.scenario else ['scenario='+args.scenario])
@@ -129,6 +153,7 @@ def main():
     parameters += ['bounded=1']
     if parameters: command += ['-params','&'.join(parameters)]
     if args.interrupt:
+        if runtime: runtime.before_launch('daemon:interrupted-writer', output)
         with (output/'daemon.log').open('w') as daemon_log:
             process = subprocess.Popen(command,cwd=output,stdout=daemon_log,stderr=subprocess.STDOUT,creationflags=flags)
             try:
@@ -155,6 +180,7 @@ def main():
                     raise RuntimeError('Recovery paths escape task temporary storage')
                 active.rename(interrupted)
                 shutil.copytree(output/'map_backups',active)
+            if runtime: runtime.before_launch('daemon:recovery-'+phase, output)
             recovery=subprocess.run(base_command+['-params','recovery='+phase],cwd=output,
                 capture_output=True,text=True,timeout=120,creationflags=flags)
             log=(output/'runtime.log').read_text(errors='replace')
@@ -165,7 +191,12 @@ def main():
         return
     runtime_limit=args.timeout_seconds or (3600 if args.large else 1800)
     runtime_started=time.monotonic()
-    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=runtime_limit,creationflags=flags)
+    run_timeout=runtime_limit
+    if runtime:
+        runtime.before_launch('daemon', output)
+        run_timeout=runtime_limit-(time.monotonic()-runtime_started)
+        if run_timeout <= 0: raise RuntimeError('Save runtime budget exhausted before launch')
+    result=subprocess.run(command,cwd=output,capture_output=True,text=True,timeout=run_timeout,creationflags=flags)
     (output / 'daemon.log').write_text(result.stdout+result.stderr)
     log=(output/'runtime.log').read_text(errors='replace')
     print(log,flush=True)
@@ -186,6 +217,7 @@ def main():
             raise RuntimeError('Backup verification paths escape temporary storage')
         active.rename(completed)
         shutil.copytree(backup,active)
+        if runtime: runtime.before_launch('daemon:backup', output)
         remaining=runtime_limit-(time.monotonic()-runtime_started)
         if remaining <= 0:
             raise RuntimeError('Backup verification runtime budget exhausted')

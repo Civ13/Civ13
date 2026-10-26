@@ -146,7 +146,7 @@ class CurrentRuntimeTests(unittest.TestCase):
         self.assertEqual(function(self.old_durable,'run_lighting'),function((HERE/'run-durable-world.py').read_text(),'run_lighting'))
         marker = "        result_path = output / 'metadata-result.json'"
         self.assertEqual(self.old_durable.split(marker,1)[1],(HERE/'run-durable-world.py').read_text().split(marker,1)[1])
-        for flags in (['--roof-areas'],['--zone-topology'],['--prepare-only'],['--wounds']):
+        for flags in (['--roof-areas'],['--zone-topology'],['--prepare-only'],['--persistence-year']):
             with self.subTest(flags=flags), patch.object(sys,'argv',['durable','--byond-bin','unused','--byond-archive','unused.zip',*flags]), \
                     patch.object(runner,'selected_runtime') as selected, patch('sys.stderr'), self.assertRaises(SystemExit):
                 runner.main()

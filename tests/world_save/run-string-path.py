@@ -1,6 +1,7 @@
 """Bounded native semantic-adapter regression; not OpenDream recovery acceptance."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -20,6 +21,22 @@ PUBLICATION_ANCHOR = (
 )
 
 
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('string_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def current_ci_case(args):
+    options = {key: value for key, value in vars(args).items() if value and
+               key not in ('byond_bin', 'byond_archive', 'expected_saving_sha256')}
+    return options in ({}, {'publication_negative_control': True},
+                       {'progress': True, 'progress_clock_probe': True},
+                       {'progress': True, 'progress_fault_stage': 'level_serialized',
+                        'progress_fault_operation': 'write'})
+
+
 def omit_final_publication_check(source):
     """Mutate only a generated saver, retaining the first transfer drain."""
     if source.count(PUBLICATION_ANCHOR) != 1:
@@ -36,6 +53,7 @@ def validate_publication_control(actual, failure):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--expected-saving-sha256', required=True)
     parser.add_argument('--prepare-only', action='store_true', help='Generate hash-bound sources without compiling or launching')
     parser.add_argument('--negative-control', action='store_true')
@@ -64,9 +82,11 @@ def main():
     parser.add_argument('--phase-profile-clock-contract', action='store_true')
     parser.add_argument('--phase-profile-attribution-negative-control', action='store_true')
     args = parser.parse_args()
+    if args.byond_archive and not current_ci_case(args):
+        parser.error('Current runtime admits only the selected bounded string-path CI cases')
     if args.publication_negative_control:
         allowed = {'byond_bin', 'expected_saving_sha256', 'prepare_only',
-                   'publication_negative_control'}
+                   'publication_negative_control', 'byond_archive'}
         if any(value for key, value in vars(args).items() if key not in allowed):
             parser.error('Keep publication control separate from other adapters and mutations')
     if args.phase_profile and (not args.progress or args.progress_clock_probe or args.progress_fault_stage or args.progress_negative_control):
@@ -125,7 +145,8 @@ def main():
                                               args.appearance_negative_control, args.progress, args.matrix_trace)):
         parser.error('Keep UI controls separate from other mutations')
     fixture = root / 'tests/world_save'
-    byond = args.byond_bin.resolve(strict=True)
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
+    byond = args.byond_bin.absolute() if runtime else args.byond_bin.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     if not args.prepare_only and (not compiler.is_file() or not daemon.is_file()):
@@ -565,9 +586,12 @@ def main():
     if args.prepare_only:
         print('PREPARED ONLY: native compilation and runtime checks were not run')
         return
+    if runtime: runtime.before_launch('compile', output)
     build = owned('compile', [str(compiler), '-max_errors', '0', 'probe.dme'])
-    if '516.1681' not in build or '0 errors, 0 warnings' not in build:
+    if runtime: runtime.validate_compile(0, build, 'probe.dmb')
+    elif '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError('Pinned clean compilation required')
+    if runtime: runtime.before_launch('daemon', output)
     owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if args.phase_profile_attribution_negative_control:

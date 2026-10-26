@@ -30,7 +30,8 @@ class PublicationControlTests(unittest.TestCase):
         commands = [shlex.split(line) for line in lines
                     if line.startswith('python3 tests/world_save/run-string-path.py ')]
         positive = ['python3', 'tests/world_save/run-string-path.py', '--byond-bin',
-                    '$PWD/BYOND/byond/bin', '--expected-saving-sha256', '$saving_sha']
+                    '$PWD/BYOND/byond/bin', '--byond-archive', '$PWD/BYOND/pinned.zip',
+                    '--expected-saving-sha256', '$saving_sha']
         self.assertEqual(commands[:2], [positive, positive + ['--publication-negative-control']])
         self.assertEqual(step.count('--publication-negative-control'), 1)
         positive_line = next(index for index, line in enumerate(lines)
