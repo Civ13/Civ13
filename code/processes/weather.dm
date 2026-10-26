@@ -22,18 +22,24 @@
 
 /process/weather/fire()
 	if(persistence_save_in_progress) return
-	var/prob_of_weather_mod = (25*schedule_interval)/mod_weather_interval
-	var/prob_of_weather_change = (25*schedule_interval)/change_weather_interval
-	if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
-		prob_of_weather_change = (prob_of_weather_change*3)
-	if (prob(prob_of_weather_mod))
-		if (world.realtime >= next_can_mod_weather)
-			modify_weather_somehow()
-			next_can_mod_weather = world.realtime + minimum_mod_weather_delay
-	else if (prob(prob_of_weather_change))
-		if (world.realtime >= next_can_change_weather)
-			change_weather_somehow()
-		next_can_change_weather = world.realtime + minimum_change_weather_delay
+	// Author policy gates random selection only, not independent event service.
+	if (!map || map.weather_policy_valid())
+		var/mod_interval = map ? map.weather_timing_value("mod_interval", mod_weather_interval) : mod_weather_interval
+		var/change_interval = map ? map.weather_timing_value("change_interval", change_weather_interval) : change_weather_interval
+		var/mod_delay = map ? map.weather_timing_value("minimum_mod_delay", minimum_mod_weather_delay) : minimum_mod_weather_delay
+		var/change_delay = map ? map.weather_timing_value("minimum_change_delay", minimum_change_weather_delay) : minimum_change_weather_delay
+		var/prob_of_weather_mod = (25*schedule_interval)/mod_interval
+		var/prob_of_weather_change = (25*schedule_interval)/change_interval
+		if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
+			prob_of_weather_change = (prob_of_weather_change*3)
+		if (prob(prob_of_weather_mod))
+			if (world.realtime >= next_can_mod_weather)
+				modify_weather_somehow()
+				next_can_mod_weather = world.realtime + mod_delay
+		else if (prob(prob_of_weather_change))
+			if (world.realtime >= next_can_change_weather)
+				change_weather_somehow()
+			next_can_change_weather = world.realtime + change_delay
 	if(map && map.uses_durable_metadata())
 		map.durable_weather_events()
 		return

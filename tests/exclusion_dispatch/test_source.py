@@ -13,7 +13,7 @@ import resources
 from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY, project_fullbright_exclusions, project_area_change_owner
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = 'd6b06c638517bb4100beeca6a90d09adc3629fb7'
+BASE = '99647037c70786a3c3944fcf5ae51b570b377f08'
 HISTORICAL_BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
 PATH = 'code/modules/persistence/functions.dm'
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
@@ -21,7 +21,11 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_started', 'blackout_click_expires',
             'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
             'lighting_reserved', 'lighting_reserved_clearance_enabled', 'area_change_owner',
-            'original_target', 'next_animal_retaliation')
+            'original_target', 'next_animal_retaliation', 'snowfall_ground_index',
+            'snowfall_ground_generation', 'weather_snow_overlay', 'persistence_zone_id')
+CURRENT_AREA_POLICY = AREA_POLICY.replace(' || ..()', ' || key == "persistence_zone_id" || ..()')
+SNOW_GUARD = ('\tif (key == "snowfall_ground_index" || key == "snowfall_ground_generation"'
+              ' || key == "weather_snow_overlay")\n\t\treturn TRUE\n')
 
 
 class SourceContractTests(unittest.TestCase):
@@ -36,7 +40,7 @@ class SourceContractTests(unittest.TestCase):
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
-        for kind, count in [('atom', 3), ('turf', 10), ('mob', 23)]:
+        for kind, count in [('atom', 3), ('turf', 13), ('mob', 23)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
         self.assertIn('key == "weak_reference"', self.candidate)
@@ -48,6 +52,8 @@ class SourceContractTests(unittest.TestCase):
         current_expected = project_reserved_policy(self.historical_baseline).replace(
             'if (key == "pickaxe_mining_action")',
             'if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")', 1)
+        current_expected = current_expected.replace('/turf/persistence_runtime_var(key)\n',
+            '/turf/persistence_runtime_var(key)\n' + SNOW_GUARD, 1)
         for kind in ('atom', 'turf', 'mob'):
             pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
             self.assertEqual(re.search(pattern, self.historical_baseline, re.M).group(),
@@ -101,7 +107,16 @@ class SourceContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             project_reserved_policy(self.baseline)
         with self.assertRaises(ValueError):
-            validate(self.baseline, self.candidate.replace(AREA_POLICY, ''))
+            validate(self.baseline, self.candidate.replace(CURRENT_AREA_POLICY, ''))
+
+    def test_current_snow_and_zone_exclusions_remain_independently_required(self):
+        self.assertIn(SNOW_GUARD, self.master)
+        self.assertIn(SNOW_GUARD, self.candidate)
+        self.assertIn(CURRENT_AREA_POLICY, self.master)
+        self.assertIn(CURRENT_AREA_POLICY, self.candidate)
+        for anchor in (SNOW_GUARD, ' || key == "persistence_zone_id"'):
+            with self.subTest(anchor=anchor), self.assertRaises(ValueError):
+                validate(self.baseline, self.candidate.replace(anchor, '', 1))
 
     def test_fullbright_projection_is_exact_and_fails_closed(self):
         projected = project_fullbright_exclusions(self.baseline)
@@ -158,8 +173,9 @@ class SourceContractTests(unittest.TestCase):
                 for variant in ('baseline', 'candidate'):
                     kind = ('datum/proc' if key == 'weak_reference' else
                             'atom/movable' if key == 'original_target' else
-                            'area' if key == 'lighting_reserved_clearance_enabled' else
-                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved', 'area_change_owner') else 'mob')
+                            'area' if key in ('lighting_reserved_clearance_enabled', 'persistence_zone_id') else
+                            'turf' if key in ('pickaxe_mining_owner', 'mining_in_progress', 'lighting_reserved', 'area_change_owner',
+                                             'snowfall_ground_index', 'snowfall_ground_generation', 'weather_snow_overlay') else 'mob')
                     # Multiple native same-type overrides retain the functions
                     # guard followed by the production process hook.
                     bodies = re.findall(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M)

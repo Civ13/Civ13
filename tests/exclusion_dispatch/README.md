@@ -1,4 +1,18 @@
-## Current-master reconciliation (2026-10-24)
+## Pinned-master reconciliation (2026-10-26)
+
+The active reference is master `99647037c70786a3c3944fcf5ae51b570b377f08`.
+Only the feature's fullbright exclusions and transient area-change owner are
+projected onto that complete master file. Snow runtime fields, authoritative
+zone IDs, collector conditionals, topology validation and inherited hooks remain
+under whole-file equality. The probe corpus now covers the three snow runtime
+fields and persistence_zone_id; omission controls require each independently.
+Historical list/switch comparisons and previous rejected evidence remain.
+The exclusion and lighting native runners still require 516.1681; current master defaults to 516.1688.
+Do not weaken that version guard or relabel historical native results. The
+lighting CI step needs separately reviewed toolchain reconciliation before its
+native result can be accepted. Offline source checks are not native acceptance.
+
+## Historical master reconciliation (2026-10-24)
 
 The comparison now pins master `d6b06c638517bb4100beeca6a90d09adc3629fb7`.
 Reserved policy is already present, so only the two fullbright exclusions and

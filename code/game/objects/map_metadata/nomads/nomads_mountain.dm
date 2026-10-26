@@ -1,5 +1,6 @@
 
 /obj/map_metadata/nomads/mountain
+	season_duration_minutes = 30 // Preserve this map's independent wet/dry calendar.
 	abandonment_season_cycle = TRUE
 	abandonment_season_autonomous = TRUE
 	

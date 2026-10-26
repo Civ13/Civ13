@@ -40,6 +40,10 @@
 
 	var/list/notes = list()
 
+	// IC knowledge, not account preferences or editable player notes.
+	// Null until first learning so the generic datum saver includes the list.
+	var/list/learned_discoveries
+
 	var/assigned_role
 	var/special_role
 
@@ -95,11 +99,74 @@
 		qdel_list(notes[title])
 		notes -= title
 
+// Reject whole overlong fields: truncating an observation could change its meaning.
+/datum/mind/proc/discovery_fields_valid(category, identity, context, label, observation)
+	if (!istext(category) || !length(category) || length(category) > 64 || !istext(identity) || !length(identity) || length(identity) > 256)
+		return FALSE
+	if (!istext(context) || !length(context) || length(context) > 128 || !istext(label) || !length(label) || length(label) > 96 || !istext(observation) || !length(observation) || length(observation) > 256)
+		return FALSE
+	return TRUE
+
+// Call only after an actual observation. No hidden effects, truncation or eviction.
+// A rename is not new knowledge: keep the first label for this observation.
+/datum/mind/proc/learn_discovery(category, identity, context, label, observation)
+	if (!discovery_fields_valid(category, identity, context, label, observation))
+		return FALSE
+	var/discovery_key = md5(json_encode(list(category, identity, context, observation)))
+	if (!islist(learned_discoveries))
+		learned_discoveries = list()
+	if (learned_discoveries[discovery_key] || learned_discoveries.len >= 256)
+		return FALSE
+	if (category == "berry_smell")
+		var/berry_records = 0
+		for (var/existing_key in learned_discoveries)
+			if (!istext(existing_key) || length(existing_key) > 32)
+				continue
+			var/list/existing_record = learned_discoveries[existing_key]
+			if (islist(existing_record) && existing_record["category"] == "berry_smell")
+				berry_records++
+		if (berry_records >= 64)
+			return FALSE
+	learned_discoveries[discovery_key] = list("category" = category, "identity" = identity, "context" = context, "label" = label, "observation" = observation)
+	return TRUE
+
+/datum/mind/proc/discoveries_html()
+	var/output = "<br><br><b>Discoveries</b><br><br>"
+	if (!islist(learned_discoveries) || !learned_discoveries.len)
+		return output + "<i>No discoveries recorded.</i>"
+	var/berry_context = berry_discovery_context()
+	var/omitted = learned_discoveries.len > 256
+	var/berry_records = 0
+	// Bound inspected slots, not just valid output rows; imported lists may be bad.
+	for (var/record_index = 1, record_index <= min(learned_discoveries.len, 256), record_index++)
+		var/discovery_key = learned_discoveries[record_index]
+		if (!istext(discovery_key) || length(discovery_key) > 32)
+			omitted = TRUE
+			continue
+		var/list/record = learned_discoveries[discovery_key]
+		if (!islist(record) || !discovery_fields_valid(record["category"], record["identity"], record["context"], record["label"], record["observation"]))
+			omitted = TRUE
+			continue
+		output += "<b>[html_encode(record["label"])]</b>: [html_encode(record["observation"])]"
+		if (record["category"] == "berry_smell")
+			berry_records++
+			output += "<br><i>Observation of a sample, not proof that these berries are safe to eat.</i>"
+			if (!berry_context || record["context"] != berry_context)
+				output += "<br><i>Historical observation: the world's berry configuration has changed or is unavailable.</i>"
+		output += "<br><br>"
+	if (learned_discoveries.len >= 256)
+		output += "<i>Discovery notes are full (256 records). Existing knowledge is kept; new observations are not added. Personal notes remain available.</i><br>"
+	if (berry_records >= 64)
+		output += "<i>Berry smell notes are full (64 records). Existing observations are kept; other categories remain subject to the overall limit.</i><br>"
+	if (omitted)
+		output += "<i>Some stored discoveries exceed display limits or are invalid and are not shown. Stored records have not been changed.</i>"
+	return output
+
 /datum/mind/proc/store_memory(new_text)
 	memory += "[new_text]<BR>"
 
 /datum/mind/proc/show_memory(mob/recipient)
-	if (!recipient)
+	if (!recipient || recipient.mind != src)
 		return
 	var/client/C = recipient.client
 	if(!C)
@@ -123,6 +190,8 @@
 		output += "<i>[memory]</i>"
 	else
 		output += "<i>No memories stored.</i>"
+
+	output += discoveries_html()
 
 	var/memory_stylized = {"
 	<br>
