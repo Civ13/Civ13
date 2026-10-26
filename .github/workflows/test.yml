@@ -191,6 +191,9 @@ jobs:
           python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_graph_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_wound_compatibility.py -v
+      - name: Test continuous persistence round contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round') || inputs.persistence_integration_regressions == true
+        run: python3 -B -m unittest discover -s tests/persistence_round -v
       - name: Test save movement and physical sleep guards offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_movement')
         run: python3 -B -m unittest discover -s tests/save_movement -v
@@ -1951,12 +1954,12 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin"
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control vote
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control deferred
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control startup
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control vote
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control deferred
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control startup
       - name: Retain continuous-round integration evidence
         if: always() && steps.persistence_round.outcome != 'skipped'
         uses: actions/upload-artifact@v4

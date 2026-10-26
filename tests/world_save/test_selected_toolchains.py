@@ -117,6 +117,11 @@ class SelectedToolchains(unittest.TestCase):
             self.assertEqual(normalized.count(command), 1)
             normalized = normalized.replace(command, '')
         normalized = normalized.replace(' --byond-archive "$PWD/BYOND/pinned.zip"', '')
+        round_step = ('      - name: Test continuous persistence round contracts offline\n'
+            "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round') || inputs.persistence_integration_regressions == true\n"
+            '        run: python3 -B -m unittest discover -s tests/persistence_round -v\n')
+        self.assertEqual(normalized.count(round_step), 1)
+        normalized = normalized.replace(round_step, '')
         self.assertEqual(normalized, self.before['.github/workflows/test.yml'])
         selected = calls(workflow)
         self.assertEqual(len(selected), 42)
