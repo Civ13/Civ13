@@ -4,6 +4,15 @@ Source commit: `1fb818120a6437b925f268575f77cb88f0ca56ef`.
 Parent: `8a0bdc36b3c4907a26d9634445a7a75770866247`.
 No additional master integration is included.
 
+At published head `1245e155194dedf3438c4b307dd1b6cfedfeaae4`, ordinary
+[CI40252373259](https://github.com/Civ13/Civ13/actions/runs/40252373259) passed
+the complete extraction sequence, the current/historical exclusion oracle and
+all three native admission-adapter cases. The separate inactive capture
+[CI40252373207](https://github.com/Civ13/Civ13/actions/runs/40252373207) passed its
+positive and four exact controls. The ordinary run failed later in the save
+wrapper because its cases run before the round-trip fixture constructs map
+metadata. See [the additional fixture bootstrap correction](wrapper-bootstrap.md).
+
 [harness-followup.patch](harness-followup.patch) contains the complete 13-file
 source follow-up. SHA-256:
 `12990af9dc96cddbbd03dffc9284957c40bd4cca83cf5a960825455c40c9db1c`

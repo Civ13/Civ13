@@ -1,0 +1,72 @@
+{
+  "tested_parent": "1245e155194dedf3438c4b307dd1b6cfedfeaae4",
+  "tested_delta_sha256": "976f3a8defa0e4b1ba3badbcfb62bf741185ddc0195e0eea9be027798612a76a",
+  "scope": "Offline source check added; prior passing unchanged suites reused; no local native execution",
+  "tests": 183,
+  "all_passed": true,
+  "suites": [
+    {
+      "directory": "tests/extraction",
+      "pattern": "test_*.py",
+      "exit": 0,
+      "tests": 29,
+      "log": "tests_extraction-test_all.py.log"
+    },
+    {
+      "directory": "tests/extraction/instances",
+      "pattern": "test_*.py",
+      "exit": 0,
+      "tests": 26,
+      "log": "tests_extraction_instances-test_all.py.log"
+    },
+    {
+      "directory": "tests/exclusion_dispatch",
+      "pattern": "test_source.py",
+      "exit": 0,
+      "tests": 15,
+      "log": "tests_exclusion_dispatch-test_source.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_immutable_capture_runner.py",
+      "exit": 0,
+      "tests": 5,
+      "log": "tests_world_save-test_immutable_capture_runner.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_restore_integration_sources.py",
+      "exit": 0,
+      "tests": 12,
+      "log": "tests_world_save-test_restore_integration_sources.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_sleep_transfer_sources.py",
+      "exit": 0,
+      "tests": 14,
+      "log": "tests_world_save-test_sleep_transfer_sources.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_cross_level_sources.py",
+      "exit": 0,
+      "tests": 15,
+      "log": "tests_world_save-test_cross_level_sources.py.log"
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_progress_sources.py",
+      "exit": 0,
+      "tests": 6,
+      "log": "tests_world_save-test_progress_sources.py.log"
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_ci*.py",
+      "exit": 0,
+      "tests": 61,
+      "log": "tests-test_ciall.py.log"
+    }
+  ]
+}
