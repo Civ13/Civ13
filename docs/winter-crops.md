@@ -37,6 +37,14 @@ of a particular seed or a bush near every player spawn. Bush seed stock has the
 existing ten-minute cooldown. Seeds can also be traded and each successful
 harvest returns two, while planting consumes one.
 
+Plump spores remain forageable in every biome for cave farming. Sowing now rejects
+outdoor plots where inherited mushroom growth cannot advance, before consuming a
+spore or starting soil payments. On the six Nomads maps, outdoor planting needs a
+mushroom-compatible biome and season; jungle and savanna bypass season restrictions.
+Desert and semiarid outdoor plots are rejected. Indoor/underground areas (location 0)
+remain eligible in every climate, and non-Nomads maps retain their climate/season
+bypass. A suitable ploughed soil turf is still required in every case.
+
 A plough costs four wood planks under Basic Agriculture. Existing research-tree
 and map rules apply; neither the recipe nor its legacy zero thresholds bypass
 research admission. The node is era tier 1. Underground rock debris must first

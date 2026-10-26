@@ -49,3 +49,15 @@ RNG samples do not prove natural cadence, exact long-run yields or complete wint
 survival. Oral chemistry is not connected-client eating. No rendered gameplay,
 map-spawn reachability, multiplayer interaction or full-world save/load acceptance
 is claimed. The older native fixture evidence is not relabeled for this source.
+
+## Plump-spore admission boundaries
+
+`test_plump_admission.py` projects the new seed-only admission override and compares
+all six Nomads IDs plus a non-Nomads control, indoor/outdoor/other locations, all
+inherited mushroom biomes plus desert/semiarid/unknown, and supported/unsupported
+seasons. Source parity pins inherited biome/season lists and tropical/map bypasses.
+The unchanged floor early-return contract is checked before skill, constructor and
+seed debit; omission and premature-spawn controls must fail. Its resource sentinel
+is a source-order model, not a native player interaction test. Existing growth and
+forage behavior are unchanged. Native evidence for ae99e2b remains bound to that
+head and does not automatically cover this later admission correction.

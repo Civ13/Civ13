@@ -32,6 +32,23 @@
 	icon = 'icons/farming/pocket_stronghold_plump_helmet.dmi'
 	icon_state = "plump_helmet-seeds"
 
+// Forage remains available in every biome for cave farms. Reject only sites
+// where inherited mushroom growth cannot advance, before planting pays resources.
+/obj/item/stack/farming/seeds/plump_helmet/planting_error(turf/T)
+	var/area/A = get_area(T)
+	if (!A)
+		return "Plump helmets need a plot in a suitable area."
+	if (A.location == 0)
+		return null
+	if (!(map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA)))
+		return null
+	// Keep these lists aligned with the inherited mushroom crop, not forage seeds.
+	if (!(A.climate in list("temperate", "sea", "tundra", "taiga", "jungle", "savanna")))
+		return "Plump helmets cannot grow outdoors in this climate. Try an indoor or underground plot."
+	if (!(A.climate in list("jungle", "desert", "savanna")) && !(season in list("WINTER", "SUMMER", "SPRING", "FALL", "Wet Season")))
+		return "Plump helmets cannot grow outdoors in this season. Try an indoor or underground plot."
+	return null
+
 /obj/item/stack/farming/seeds/mushroompsy
 	name = "strange mushroom spores"
 	plant = "mushroompsy"
