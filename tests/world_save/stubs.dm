@@ -283,6 +283,8 @@ var/list/mutate_on_tick = null
 	return
 /map_storage/proc/encode_zone_reference(area/A)
 	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/capture_zone_descriptor(area/A)
+	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_zone_reference(id, type)
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)

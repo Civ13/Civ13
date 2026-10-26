@@ -110,8 +110,12 @@ class SelectedToolchains(unittest.TestCase):
     def test_reviewed_helper_is_verbatim_and_workflow_changes_only_thread_identity_and_offline_test(self):
         self.assertEqual(hashlib.sha256((HERE/'current_runtime.py').read_text().encode()).hexdigest(), REVIEWED_HELPER_SHA256)
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
-        command = '          python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v\n'
-        normalized = workflow.replace(command, '').replace(' --byond-archive "$PWD/BYOND/pinned.zip"', '')
+        normalized = workflow
+        for module in ('test_selected_toolchains.py', 'test_graph_fixture_dependencies.py'):
+            command = f'          python3 -B -m unittest discover -s tests/world_save -p {module} -v\n'
+            self.assertEqual(normalized.count(command), 1)
+            normalized = normalized.replace(command, '')
+        normalized = normalized.replace(' --byond-archive "$PWD/BYOND/pinned.zip"', '')
         self.assertEqual(normalized, self.before['.github/workflows/test.yml'])
         selected = calls(workflow)
         self.assertEqual(len(selected), 42)
