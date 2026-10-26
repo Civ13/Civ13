@@ -1,0 +1,443 @@
+{
+  "schema": 1,
+  "scope": "ONE_NATIVE_ACQUISITION_DIAGNOSTIC_NO_EXPORT",
+  "activation": {
+    "schema": 1,
+    "branch": "ci/cloud-native-cadence-5161688-v49-20261026",
+    "message": "ci: one-shot native cadence diagnostic v49 (2026-10-26)",
+    "sole_parent": "3f3dd47f614f4659031a793dc590346f5e4de3e6",
+    "run_attempt": 1
+  },
+  "files": [
+    {
+      "path": ".github/workflows/cloud-bakery-5161688.yml",
+      "bytes": 7911,
+      "sha256": "05a3e9ac069a48f2083732aea11039295d298b32cde47d79f3aa2ef0018db792"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/FLAX-STORYBOARD.md",
+      "bytes": 6806,
+      "sha256": "dd57d595f2d9e19eb0390a8c2726cd3de13905a3e1e43653bbf7135b0ce86879"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/README.md",
+      "bytes": 7470,
+      "sha256": "abdcd24cfc4ce75fa2397e004ba4778321f2a1c1d7389ec77d1e4678bf0225a2"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/acquire.py",
+      "bytes": 27253,
+      "sha256": "aa675b74f184ade853358e46eb5ac059234e26d5604ab1db7cc9a38fb5705c29"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/activation.json",
+      "bytes": 231,
+      "sha256": "e666a2dd4ac862ce91c94350be2b4e798c48bdcb522bda458b08d696fa769ba4"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/activation.py",
+      "bytes": 3286,
+      "sha256": "91a4d91d292a7e12701c0219c939729fbadd6cfff4d10fdcaef06b9a7ab10d08"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/cab-data-inspection.json",
+      "bytes": 996,
+      "sha256": "2402c767bf71b302b7594ad56d4c31548c24e46e16ec96e6d972184e62fe51f8"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/cadence_schema.py",
+      "bytes": 10022,
+      "sha256": "5f550d6d63cc19e8f4d326bc8d11e5e61b3b0a9a409a9d8f5c1fc3cc04ea4ae7"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/capture.py",
+      "bytes": 45042,
+      "sha256": "2c1e7befd78289715fc030157aef7ac3aeba9d7b9995e3e0c7077256baf1df47"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/capture_v48_reference_testonly.py",
+      "bytes": 42931,
+      "sha256": "fb4ae1b15eecb3c7bd0ce556c1a13725f054f6ad82ac62582ef38b3adb2caa51"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/civ13.dme",
+      "bytes": 65795,
+      "sha256": "69fa6201b8078d2f41a0598b1b67d37d6e03a16f767c6bd0b988746426a93b0d"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/controllers/mc/globals.dm",
+      "bytes": 1771,
+      "sha256": "a66b66a8b5571aa7b3a87aef65c8eac9af6fb761236b7fab6b391debc7cc40cd"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/game/mob/living/chat_overlay.dm",
+      "bytes": 5179,
+      "sha256": "b7a792ba0c27a42f13068b9b7e0614174d9912ce96c7967c6e13242edfe9444f"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/game/mob/mob_movement.dm",
+      "bytes": 17256,
+      "sha256": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/admin/ToRban.dm",
+      "bytes": 1204,
+      "sha256": "1026edab8e3ffdf3b402d3bbb73ec327ea76d14b723922eb4e56fbb82e04fe48"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/admin/verbs/bot_service.dm",
+      "bytes": 1876,
+      "sha256": "c6075be86aea81ff7ba72965eb14a3d39bb92b9379a5436d8be9234a164c8676"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/client/client_procs.dm",
+      "bytes": 9291,
+      "sha256": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/client/movement.dm",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/error_handler/error_handler.dm",
+      "bytes": 145,
+      "sha256": "673092be98d43a15db38228d6b3035e05f22f505706869e288b956f533ed5085"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/statpanel/statpanel.dm",
+      "bytes": 3912,
+      "sha256": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/modules/webhooks/webhooks.dm",
+      "bytes": 1787,
+      "sha256": "028f3eb8826ece60d9196e52ea5bea4368da5c180f773401b5de5857fa397cd1"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/processes/python.dm",
+      "bytes": 1994,
+      "sha256": "1185e881817874efe28313e59b2060d6ca13bebc01dd017ad45d68a08ed2f9e8"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/setup.dm",
+      "bytes": 6906,
+      "sha256": "e2bce7ee45d6764c4c39b7e06d73b4d64d904976d6721a388b152596cd6b1ade"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/code/world.dm",
+      "bytes": 7854,
+      "sha256": "54bcc1539942b228588a7e1ab256205673239244cb33acd276485161f2c694c9"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/filming/cloud.dmf",
+      "bytes": 366,
+      "sha256": "1246aa8a58150af3ff0dad28c01c74819b21a2591f95464483ba27f05a0c22a5"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/filming/scene.dm",
+      "bytes": 28789,
+      "sha256": "680941b9bc8a7cc22a22460c220af73c12166a9eb486e9ab7f9ff5ac5487a822"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/changed-source/filming/tree.dmm",
+      "bytes": 452,
+      "sha256": "4c6cb319b1bc645b16c038b84a965719accffaa12dc2fff4cd42031807a80bf4"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/deferred_recording.py",
+      "bytes": 9215,
+      "sha256": "357b425d93258f08e9a45c09e5524311c5539bfaf8f44be27f0e0ba2fbea8793"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/derived-source.json",
+      "bytes": 2022,
+      "sha256": "6af18964dca358f0d6ec891f786c40140d77c1e82efb9f605c489dc8bcb83c4e"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/directx_setup.py",
+      "bytes": 14092,
+      "sha256": "2e014a461894a25464f5b218a23c9f3ac5c0142fb8022f6b9ae912a2f272a2f5"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/encode_local.py",
+      "bytes": 9916,
+      "sha256": "42ca260ec023211e8c24825c2b36eafa68cfa89e37b455fd560392378d6107ad"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/flax-production-bindings.json",
+      "bytes": 343,
+      "sha256": "4da04a6df2128a50b56e65ac6fbc30ef905073ef2597b031e75137666f41fa21"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/guard_config.py",
+      "bytes": 644,
+      "sha256": "c069a18b6e7839540b37c0463fbc9274e1e29164c19ea2afcc9f56c4fead1d6e"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/inspect_package.py",
+      "bytes": 3622,
+      "sha256": "9dbb3eb0a5e3de48c5330cb791c4aa2d4f6362368c15595087731fb30fcb1a0e"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/materialize.py",
+      "bytes": 5693,
+      "sha256": "b7870eb002e0da2a9e95d8c8d34d7678c67c78731f3d7c0631c4b04bc7697061"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/owned_crash.py",
+      "bytes": 10085,
+      "sha256": "f2507d1325c9775073d4a10a7691b196e0f7cfa32fe8a5a956011d9ded0a51f8"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/pixel_reference_testonly.py",
+      "bytes": 1896,
+      "sha256": "f4837dcaeed818181bf4bd4fc91f070f9f20e7a59ab8bb939a77515b16a7e3a0"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/receipt_persistence.py",
+      "bytes": 11952,
+      "sha256": "946f759d3e25a2c994f002b2756626b4b5943952558ba76f1f2e6c89f643ff97"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/recording.py",
+      "bytes": 5803,
+      "sha256": "45677b1d39382f16bbbe9fd1890cafffd8449e95f62c511db6b08cfdad94c96f"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/run_scene.py",
+      "bytes": 23325,
+      "sha256": "4be2251abcbe439e1152a32b5c18c74223fca502db215df856acf45d74745a13"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/stage.py",
+      "bytes": 3565,
+      "sha256": "dc690b9394c9aa3e63b04b4a0f2059ce64684a678727536ce954805eb45e4678"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_acquire.py",
+      "bytes": 16958,
+      "sha256": "7c4631964b30d05dc5b176b9c7cead1db93acba230775d259e9345d15ff85b53"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_activation.py",
+      "bytes": 4139,
+      "sha256": "8eab1cfaf644dbb8c376924435619dbdb81e545618e329a0a9cc31acae6555d1"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_cadence_schema.py",
+      "bytes": 6451,
+      "sha256": "9f72a73073ba16ad5a65ea66ae4e24b3815d97b87fbe301794bfdc4cbfd44e4d"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_capture_refactor.py",
+      "bytes": 1821,
+      "sha256": "bae8d7055a3d0a2e4e89d1c5f6eaba822c8f71a76aceb1b0d11b4087ee974264"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_child_geometry.py",
+      "bytes": 3459,
+      "sha256": "bece57c32bfad92e579c08ea938a687e077c743718c535ba7725153f67470ce9"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_controller_integration.py",
+      "bytes": 2709,
+      "sha256": "8797031e0205b26764ee68a0edc27a80ef34fa841c38b52e31a7eb1e3f3ac7db"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_deferred_recording.py",
+      "bytes": 5922,
+      "sha256": "fdcbec062dc712e85e16cfc8f52bd3c974c7160b0b3e43e617ab16b3962a2a05"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_diagnostic_pins.py",
+      "bytes": 961,
+      "sha256": "7062b84e116121b9ad89a522c79af1177b4b16cbd57dcdc34674f0529139f886"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_directx_diagnostic.py",
+      "bytes": 4446,
+      "sha256": "6bbb2d4c524b1917b1d7fe53d1271ae7daf70f37ca16db21cecb3507a17f276c"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_directx_integration.py",
+      "bytes": 1525,
+      "sha256": "e50fbc823acbf10f38e488990767f9f440bf143e183613716d24e81c9a7f800f"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_directx_setup.py",
+      "bytes": 8948,
+      "sha256": "e8c6096f047181750edb039f387777cdadfb02787052dbe7789c9a2672278cb9"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_encode_local.py",
+      "bytes": 4642,
+      "sha256": "924b5a1d22578a6019048f734627103299f8bcbdf3d6fb051706b09f901ad8a9"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_failed_frame.py",
+      "bytes": 4075,
+      "sha256": "2235110c62ffc81eed66ca6c33167bd3b7872824c8574e6c3039fc344df10399"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_fixture_verbs.py",
+      "bytes": 4618,
+      "sha256": "a852da2adac8eda540d2e9608fb61e248ee5ed3a237f155f7f9319b23b981da3"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_fixture_viewport.py",
+      "bytes": 7546,
+      "sha256": "aa27463ec8437c7db71d252e7999f4b1e8c71cf3fd33f6bc47f75f874fbe63ff"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_flax_showcase.py",
+      "bytes": 9500,
+      "sha256": "1f161f77c09164490335d17a4bd6f123fcdf9fcf150dc8a5453e3ebafafb9222"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_map_origin.py",
+      "bytes": 1327,
+      "sha256": "09e20bb43ff77709504d159751d4e7fb180c62dcbb54df75c206331375a11800"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_map_readiness.py",
+      "bytes": 3211,
+      "sha256": "bd81a9698978f16800ef1e1385e549c048bec4812b8abb06289ce1572ee484b1"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_materialize.py",
+      "bytes": 12386,
+      "sha256": "86738d81330ddd61004a9cde6be14cb7d9d7d0a201fab56d7832b3117638b8f8"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_native_admission.py",
+      "bytes": 1994,
+      "sha256": "e30c1ae1e8dc748a5e061ee9a24702ebbe3bcd0df7b51981907963be7d4c0bf7"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_owned_crash.py",
+      "bytes": 10518,
+      "sha256": "e0ab01a32a5324302ccd4953fc1664c66ffef1dc3466eda226c200853c87b5dd"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_pixel_equivalence.py",
+      "bytes": 2839,
+      "sha256": "2cf50efe38d7a91c7c5a3524061cec6089b51da2863e630f28d9bd32a79a2a72"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_poll_receipts.py",
+      "bytes": 1737,
+      "sha256": "f1ea2572afb41c5f8b1e12d267c66877f9731fadf86468642eeafe73daafd9a7"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_receipt_persistence.py",
+      "bytes": 11726,
+      "sha256": "fe242eb68e7961e340203f16ab8b5880b9febee4ac7ae37dcd6a1914c7d5d8b3"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_recording.py",
+      "bytes": 5319,
+      "sha256": "d2defe7f265e0cda9271cebb4925d3852ed6853c16af4d73cd9acf0c69bbf876"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_recording_timing.py",
+      "bytes": 2903,
+      "sha256": "ba87db7bfe1c24234a701d60e9d42e3eb9696b46fd44e2d5355efb335009870d"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_rectangle_diagnostic.py",
+      "bytes": 4790,
+      "sha256": "ece2d43c9cd411a195a16dfedcb176c62d80daa43fa2b4ed71496d34b528f5a2"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_scene.py",
+      "bytes": 15941,
+      "sha256": "aab28a67e9be39d1e0c0e729021bec495b433022e1a0288985e51e18570d8e35"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_setup_tcp_policy.py",
+      "bytes": 4318,
+      "sha256": "47a74bc1e09a8ecb872a5ee4c0bd21c5f4296914b15d425458ecffd3f34a4161"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_skin_statusbar.py",
+      "bytes": 1227,
+      "sha256": "5eeb6627cb0e2343eb85f2b813071d90de70934fd241339c2f13bd3f925f5108"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_socket_diagnostics.py",
+      "bytes": 13151,
+      "sha256": "613f00408a972a28c7a8dd2b10a9b5cdb38df336c77f25ce460bb955cd6803d2"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_terminal_persistence_order.py",
+      "bytes": 1760,
+      "sha256": "93ecdec1c7826e20acddc86a7b3a1addadb7f4aa5cde8af089fb04659eab26b8"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_tree_showcase.py",
+      "bytes": 1594,
+      "sha256": "179c626bf3b7b0e17000775d51a13c321f432a9c6663ebd502af74d1c1f0a50c"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_viewport_border.py",
+      "bytes": 3938,
+      "sha256": "66896ada5e759360847d26395153a324e05b0c925bdf87e7c3716dfb5b423718"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_window_readiness.py",
+      "bytes": 3463,
+      "sha256": "e9047c541dd76eff35e676c61da9fc2f344e42cd0bd581fb679b44fa31ae5d8e"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_window_selection_diagnostic.py",
+      "bytes": 4105,
+      "sha256": "f1bc84c365bdb7d98cb44b3f7fe19b879f643bd0e4496e9ab39c025e44f93ca1"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/test_z2_witness.py",
+      "bytes": 1980,
+      "sha256": "5ca0941fb0b9fa83a56bb21c90c2d75cb78f473e959dc88937fa448f95aed211"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/tests/test_capture.py",
+      "bytes": 20696,
+      "sha256": "38e0cfb1de2d3c46458cd814c2a3c9d25b134ffa8a77134da1ad79aca492d7f3"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/tree-source-contract.json",
+      "bytes": 19895,
+      "sha256": "d318701784a86ce6f90ef743308b43c8c1d016fa961438217341f32fa3061145"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/v4-source-manifest.json",
+      "bytes": 460771,
+      "sha256": "87586c9744693392908a85a9e596907b8a6d3cee420b6c839bb6e89ef35ad897"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/vendor.json",
+      "bytes": 18905,
+      "sha256": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/verify_diagnostic.py",
+      "bytes": 1271,
+      "sha256": "a360948f123a434951f55056dfdc1b76a2fa00470ceec0386f16642a9b981173"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/viewport_border.py",
+      "bytes": 2154,
+      "sha256": "091bf9006939210eeeb9b3053a3305b6abaa3dde5ed59d3e757540f4c71845ca"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/windows.py",
+      "bytes": 17790,
+      "sha256": "0b92b22ec090170015b6de3203bbfde0caeba06396e88d42c8dc6f57f4c1c6de"
+    },
+    {
+      "path": "tools/cloud-bakery-5161688/workflow-artifact-admission-fragment.txt",
+      "bytes": 2626,
+      "sha256": "c18dd8fa8ef33b9c8ff3cee8e53a16c28b2ae7abedb3d1d0db007c701e763bef"
+    }
+  ]
+}
