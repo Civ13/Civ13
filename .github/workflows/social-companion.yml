@@ -1,0 +1,29 @@
+name: Offline native social companion
+on:
+  pull_request:
+    branches: [master, codex/civ13-discord-presence-adapter]
+    paths:
+      - tools/opendream-client/native/companion/**
+      - .github/workflows/social-companion.yml
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: windows-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Compile and run original native peer with fake backend
+        shell: pwsh
+        run: ./tools/opendream-client/native/companion/Build-Offline.ps1
+      - name: Retain bounded offline logs without executables or vendor SDK
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-companion-offline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: tools/opendream-client/native/companion/build/*.log
+          retention-days: 7
+          if-no-files-found: error
