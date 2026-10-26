@@ -7,10 +7,11 @@ zone IDs, collector conditionals, topology validation and inherited hooks remain
 under whole-file equality. The probe corpus now covers the three snow runtime
 fields and persistence_zone_id; omission controls require each independently.
 Historical list/switch comparisons and previous rejected evidence remain.
-The exclusion and lighting native runners still require 516.1681; current master defaults to 516.1688.
-Do not weaken that version guard or relabel historical native results. The
-lighting CI step needs separately reviewed toolchain reconciliation before its
-native result can be accepted. Offline source checks are not native acceptance.
+Historical exclusion, startup and lighting runners retain their strict 516.1681
+contracts; current master defaults to 516.1688. The selected lighting CI lane now
+uses a separate archive/member-verified current runner. This does not migrate the
+exclusion native lane or accept historical results for new source. Offline source
+checks are not native acceptance.
 
 ## Historical master reconciliation (2026-10-24)
 

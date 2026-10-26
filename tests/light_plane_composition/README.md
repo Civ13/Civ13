@@ -1,3 +1,28 @@
+## Current Linux headless runner (516.1688)
+
+The selected ordinary CI lane uses `run_current.py --byond-bin ...
+--byond-archive ... --output <fresh-directory>`. It verifies the central pinned
+Linux archive and all four installed members at admission, immediately before
+compiler/daemon launches and after execution. Only the exact 516.1688 banner is
+accepted. Child loader paths point to the verified installation; LD_PRELOAD and
+LD_AUDIT are refused. This follows the existing sprite/runtime verification
+contract and does not claim complete system dependency closure.
+
+The historical `run.py`, startup runner, pixel checker, rejected source and old
+receipts remain unchanged. Source preparation and the complete 13-case CI matrix
+are reused verbatim, including all four area causal controls in both modes.
+Compiler/daemon deadlines remain 60/20 seconds, with the same flags and runtime
+diagnostic checks. Fresh per-case receipts retain source/tree/generated hashes,
+archive/member identity and partial execution logs on failure; temporary compiled
+worlds are cleaned. CI uploads the receipts for seven days. Existing output is
+never overwritten. Offline tests mock every child; they do not establish native
+acceptance. The prior 5b0c1e9 CI banner failure remains historical evidence.
+
+This migration covers only the selected headless lighting lane. Historical
+startup/exclusion native runners and the renderer receipt keep their 1681
+contracts. No client pixels or full production lifecycle are accepted by this
+change; V2 remains disabled and the PR remains draft.
+
 # Disabled second-generation composition candidate
 
 Production now defaults to the legacy compositor (`LIGHTING_COMPOSITION_V2=0`).

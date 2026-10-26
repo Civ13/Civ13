@@ -781,6 +781,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
         run: python3 -m unittest discover -s tests/nomads_lifecycle -v
       - name: Verify lighting plane composition modes
+        id: lighting_composition
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/light_plane_composition')
         shell: bash
         run: |
@@ -789,19 +790,28 @@ jobs:
           "$RUNNER_TEMP/light-plane-tools/bin/python" -m pip install Pillow==11.3.0
           "$RUNNER_TEMP/light-plane-tools/bin/python" -B -m unittest discover -s tests/light_plane_composition -p 'test_*.py' -v
           python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin"
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-change
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-change
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-owner
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-owner
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy-dynamic
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy-dynamic
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control coverage
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control bypass
-          python3 tests/light_plane_composition/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ordinary
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/enabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-change --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-change"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-change --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-change-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-owner --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-owner"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-owner --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-owner-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy-dynamic --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy-dynamic"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy-dynamic --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy-dynamic-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control coverage --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/coverage"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control bypass --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/bypass"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ordinary --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/ordinary"
+
+      - name: Retain current lighting fixture evidence
+        if: always() && steps.lighting_composition.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lighting-fixture-1688-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/light-plane-1688
+          retention-days: 7
+          if-no-files-found: warn
 
       - name: Verify private collector native publication
         id: collector_native
