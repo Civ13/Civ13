@@ -12,6 +12,10 @@
 
 /obj/effect/landmark/New()
 	..()
+	// Completed topology is authoritative; import constructors cannot append defaults.
+	if(map_storage && map_storage.validated_zone_state && name != "landmark" && !istype(src, /obj/effect/landmark/npctarget))
+		qdel(src)
+		return TRUE
 	tag = text("landmark*[]", name)
 	if (name != "landmark" && !istype(src,/obj/effect/landmark/npctarget) && !istype(src,/obj/effect/landmark/npctarget/squad_spawner))
 		if (name == "supplydrop")

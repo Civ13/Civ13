@@ -75,6 +75,12 @@
 				equipment_see_invis = G.see_invisible
 
 
+// Protected sleep uses (1,1,1); existing maps also identify the sleep area as
+// the admin zone. Test the physical location, including enclosing containers.
+/proc/is_protected_sleep_location(atom/location)
+	var/turf/T = get_turf(location)
+	return T && (T == locate(1,1,1) || istype(T.loc, /area/caribbean/admin))
+
 // Protected sleep moves the body off-map; buckling is a spatial relationship,
 // not a bed claim. Release only this body's reciprocal seat before teleporting.
 /mob/living/human/proc/release_protected_sleep_buckle()
@@ -87,18 +93,18 @@
 	return !buckled && (!seat || seat.buckled_mob != src)
 
 /mob/living/human/proc/enter_protected_sleep()
-	if (persistence_save_in_progress || inducedSSD)
+	if (persistence_sleep_transfer_blocked() || inducedSSD)
 		return FALSE
 	var/turf/return_turf = get_turf(src)
 	var/turf/sleep_turf = locate(1,1,1)
 	if (!return_turf || !sleep_turf)
 		return FALSE
 	// Retain the return point before unbuckling; hooks must not change it.
-	if (!release_protected_sleep_buckle() || persistence_save_in_progress || get_turf(src) != return_turf)
+	if (!release_protected_sleep_buckle() || persistence_sleep_transfer_blocked() || get_turf(src) != return_turf)
 		return FALSE
 	drop_item()
 	// Inventory hooks may yield or move/rebuckle the body; recheck before transfer.
-	if (persistence_save_in_progress || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)
+	if (persistence_sleep_transfer_blocked() || inducedSSD || buckled || !return_turf || !sleep_turf || get_turf(src) != return_turf)
 		return FALSE
 	var/previous_lastx = lastx
 	var/previous_lasty = lasty
@@ -121,17 +127,17 @@
 	return TRUE
 
 /mob/living/human/proc/complete_protected_wakeup()
-	if (persistence_save_in_progress || !inducedSSD)
+	if (persistence_sleep_transfer_blocked() || !inducedSSD)
 		return FALSE
 	var/turf/return_turf = locate(lastx,lasty,lastz)
-	if (!return_turf)
+	if (!return_turf || is_protected_sleep_location(return_turf))
 		return FALSE
 	// Also repairs the reciprocal, distant bed link made by older sleep code.
 	// Never release a different occupant through an inconsistent stale pointer.
-	if (!release_protected_sleep_buckle() || persistence_save_in_progress || !return_turf || locate(lastx,lasty,lastz) != return_turf)
+	if (!release_protected_sleep_buckle() || persistence_sleep_transfer_blocked() || !return_turf || locate(lastx,lasty,lastz) != return_turf)
 		return FALSE
 	forceMove(return_turf)
-	if (!return_turf || get_turf(src) != return_turf)
+	if (!return_turf || get_turf(src) != return_turf || is_protected_sleep_location(src) || persistence_sleep_transfer_blocked())
 		return FALSE
 	sleeping = 0
 	inducedSSD = FALSE
@@ -144,7 +150,7 @@
 	if (usr != src || !client || client.mob != src)
 		return
 	var/client/sleeping_client = client
-	if (persistence_save_in_progress)
+	if (persistence_sleep_transfer_blocked())
 		to_chat(src, SPAN_RED("Wait for the world save or load to finish before sleeping."))
 		return
 
@@ -209,7 +215,7 @@
 	if (!inducedSSD)
 		to_chat(src, SPAN_RED("You aren't asleep that deeply, just wait."))
 		return
-	if (persistence_save_in_progress)
+	if (persistence_sleep_transfer_blocked())
 		to_chat(src, SPAN_RED("Wait for the world save or load to finish before waking up."))
 		return
 	var/client/waking_client = client

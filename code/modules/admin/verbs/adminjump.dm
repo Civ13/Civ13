@@ -104,6 +104,10 @@ var/turf/default_adminzone_turf = null
 /client/proc/goto_adminzone()
 	set category = "Admin"
 	set name = "Go To The Admin Zone"
+#ifdef CIV13_ZONE_PERSISTENCE
+	if(persistence_area_registry_blocked()) return FALSE
+	var/datum/persistence_area_registry_epoch/registry_epoch = persistence_area_epoch
+#endif
 
 	if (!check_rights(R_MOD))
 		return
@@ -115,6 +119,9 @@ var/turf/default_adminzone_turf = null
 		if ((input(src, "Are you sure?") in list("Yes", "No")) == "No")
 			return
 
+#ifdef CIV13_ZONE_PERSISTENCE
+	require_persistence_area_snapshot(registry_epoch)
+#endif
 	log_admin("[key_name(usr)] went to the admin zone")
 	message_admins("[key_name_admin(usr)] went to the admin zone", key_name_admin(usr))
 

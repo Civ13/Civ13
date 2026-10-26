@@ -191,6 +191,8 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	if (!persistence_movement_allowed(src, newloc))
+		return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
 	if (ishuman(src))
@@ -515,7 +517,7 @@
 			var/snow_message = ""
 			var/snow_span = "warning"
 
-			if (F.icon == 'icons/turf/snow.dmi' && snow && !H.lizard)
+			if (F.has_snow_cover() && snow && !H.lizard)
 				standing_on_snow = 1
 				if (prob(50))
 					standing_on_snow = 1.25

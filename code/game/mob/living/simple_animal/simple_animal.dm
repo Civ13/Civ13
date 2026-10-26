@@ -49,6 +49,8 @@
 	var/response_disarm = "tries to disarm"
 	var/response_harm   = "tries to hurt"
 	var/harm_intent_damage = 3
+	// Explicit species opt-in; peaceful animals never acquire a pursuit target.
+	var/defensive_retaliation = FALSE
 
 	//Temperature effect
 	var/minbodytemp = 250
@@ -271,6 +273,32 @@
 	proj.on_hit(src, FALSE)
 	return FALSE
 
+/mob/living/var/tmp/next_animal_retaliation = 0
+
+/mob/living/simple_animal/proc/uses_defensive_retaliation()
+	return defensive_retaliation && (behaviour == "wander" || behaviour == "defends")
+
+// One immediate, zero-damage shove. Weaken is measured in Life updates, not ds.
+// Both participants share a ten-second deadline, preventing herd stun chains too.
+/mob/living/simple_animal/proc/try_defensive_retaliation(mob/living/attacker)
+	if (!uses_defensive_retaliation() || QDELETED(src) || stat != CONSCIOUS || health <= 0 || incapacitated() || lying || prone || resting || buckled || !canmove || !isturf(loc))
+		return FALSE
+	if (!istype(attacker) || attacker == src || QDELETED(attacker) || attacker.stat != CONSCIOUS || attacker.health <= 0 || !isturf(attacker.loc) || !Adjacent(attacker))
+		return FALSE
+	if (behaviour == "wander" && mob_size < attacker.mob_size)
+		return FALSE
+	if (!(attacker.status_flags & CANWEAKEN) || attacker.incapacitated() || attacker.lying || attacker.prone || attacker.buckled)
+		return FALSE
+	if (world.time < next_animal_retaliation || world.time < attacker.next_animal_retaliation)
+		return FALSE
+	next_animal_retaliation = world.time + 10 SECONDS
+	attacker.next_animal_retaliation = world.time + 10 SECONDS
+	attacker.Weaken(2)
+	attacker.drop_from_inventory(attacker.get_active_hand())
+	visible_message(SPAN_WARNING("\The [src] knocks [attacker] off balance!"))
+	do_attack_animation(attacker)
+	return TRUE
+
 /mob/living/simple_animal/attack_hand(mob/living/human/M as mob)
 	..()
 	if (M)
@@ -302,7 +330,7 @@
 					M.visible_message("<span class = 'notice'>[M] [response_help] \the [src].</span>")
 
 		if (I_DISARM)
-			if (behaviour == "defends")
+			if (behaviour == "defends" && !uses_defensive_retaliation())
 				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 					if (prob(75))
 						target_mob = M
@@ -316,7 +344,7 @@
 			//TODO: Push the mob away or something
 
 		if (I_GRAB)
-			if (behaviour == "defends")
+			if (behaviour == "defends" && !uses_defensive_retaliation())
 				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 					if (prob(75))
 						target_mob = M
@@ -341,7 +369,7 @@
 			M.do_attack_animation(src)
 
 		if (I_HARM)
-			if (behaviour == "defends")
+			if (behaviour == "defends" && !uses_defensive_retaliation())
 				if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != M)
 					if (prob(75))
 						target_mob = M
@@ -354,6 +382,8 @@
 			M.do_attack_animation(src)
 			playsound(get_turf(M), "punch", 50, TRUE, -1)
 
+	if (M.a_intent == I_HARM || M.a_intent == I_DISARM || M.a_intent == I_GRAB)
+		try_defensive_retaliation(M)
 	return
 
 /mob/living/simple_animal/proc/feed(var/obj/item/O as obj, var/mob/user as mob)
@@ -477,6 +507,7 @@
 
 /mob/living/simple_animal/attackby(var/obj/item/O, var/mob/user)
 	var/attack_result = FALSE
+	var/health_before_attack = health
 	if (ishuman(user))
 		var/mob/living/human/H = user
 		if ((H.a_intent == I_DISARM || H.a_intent == I_HARM) && (istype(src, /mob/living/simple_animal/hostile/human/voyage) || istype(src, /mob/living/simple_animal/hostile/human/voyage/pirate/friendly)) && src.behaviour != "Hostile")
@@ -535,6 +566,11 @@
 			if (user.targeted_organ == "random")
 				tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 			attack_result = O.attack(src, user, tgt)
+	if (uses_defensive_retaliation() && (behaviour == "defends" || mob_size >= user.mob_size))
+		// Healing, food, husbandry and harmless taps must not provoke a shove.
+		if (health < health_before_attack)
+			try_defensive_retaliation(user)
+		return attack_result
 	if (behaviour == "defends" || behaviour == "hunt" || behaviour == "hostile")
 		if (stance == HOSTILE_STANCE_ATTACK && target_mob && target_mob != user)
 			if (prob(75))
@@ -674,8 +710,7 @@
 	return verb
 
 /mob/living/simple_animal/put_in_hands(var/obj/item/W) // No hands.
-	W.loc = get_turf(src)
-	return TRUE
+	return W && W.persistence_set_loc(get_turf(src))
 
 /mob/living/simple_animal/handle_fire()
 	return

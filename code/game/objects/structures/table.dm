@@ -451,7 +451,7 @@
 			return FALSE
 		if (!G.confirm())
 			return FALSE
-		G.affecting.loc = loc
+		if (!G.affecting.persistence_set_loc(loc)) return FALSE
 		G.affecting.Weaken(2)
 		G.affecting.visible_message("<span class='danger'>[G.assailant] pushes [G.affecting] onto [src].</span>", \
 									"<span class='userdanger'>[G.assailant] pushes [G.affecting] onto [src].</span>")

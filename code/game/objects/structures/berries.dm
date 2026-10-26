@@ -185,3 +185,20 @@
 	name = "corcairghorm berries"
 	icon_state = "corcairghormberry"
 	randeffect = "corcairghorm"
+
+// Version the meaning as well as the randomized world configuration. This is an
+// opaque context, never a display label or a source of inferred poison knowledge.
+// Durable metadata already preserves berryeffects; equal restored configurations
+// retain their context. Entries always describe a smelled sample, not all berries.
+/proc/berry_discovery_context()
+	if (!map || !islist(map.berryeffects))
+		return null
+	return md5(json_encode(list("berry-smell-v1", "[map.type]", map.berryeffects)))
+
+/obj/item/weapon/reagent_containers/food/snacks/grown/berries/record_smell_discovery(mob/user, observation)
+	if (!istype(user, /mob/living) || user.stat != CONSCIOUS || !user.mind || user.mind.current != user)
+		return
+	var/context = berry_discovery_context()
+	if (!context)
+		return
+	user.mind.learn_discovery("berry_smell", "[type]|[randeffect]", context, name, "I smelled a sample and noticed [observation].")

@@ -322,6 +322,31 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	set name = "Create Command Report"
 	return FALSE
 
+/client/proc/cmd_admin_clean_item(obj/item/I as obj in world)
+	set category = "Admin"
+	set name = "Clean"
+	set desc = "Wash this item."
+
+	// Verb registration controls visibility; never rely on it for authorization.
+	if (!check_rights(R_ADMIN, TRUE, src))
+		return
+	if (!istype(I) || QDELETED(I) || I.gcDestroyed || !I.loc)
+		return
+
+	// Match sink washing without splashing reagents into the item or its contents.
+	if (istype(I, /obj/item/clothing))
+		var/obj/item/clothing/C = I
+		C.radiation = 0
+		C.dirtyness = 0
+		C.fleas = FALSE
+	I.clean_blood()
+	if (ismob(I.loc))
+		var/mob/M = I.loc
+		M.regenerate_icons()
+
+	log_admin("[key_name(src)] cleaned [I] at [get_turf(I)]")
+	message_admins("[key_name_admin(src)] cleaned [I] at [get_turf(I)]", key_name_admin(src))
+
 /client/proc/cmd_admin_delete(atom/O as obj|mob|turf in range(7))
 	set category = "Admin"
 	set name = "Delete"

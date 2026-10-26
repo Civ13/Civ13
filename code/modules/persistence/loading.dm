@@ -1,3 +1,182 @@
+// Only roof transformations backed by direct saved turf contents are projected.
+// No save bytes or world areas change during this preflight.
+/map_storage
+	var/list/validated_roof_areas = list()
+	var/list/validated_roof_entries = list()
+	var/list/validated_roof_types = list()
+	var/list/validated_roof_instances = list()
+	var/list/validated_roof_absent = list()
+	var/restoring_roof_areas = FALSE
+
+/map_storage/proc/clear_saved_roof_areas()
+	validated_roof_areas = list()
+	validated_roof_entries = list()
+	validated_roof_types = list()
+	validated_roof_instances = list()
+	validated_roof_absent = list()
+	restoring_roof_areas = FALSE
+
+/map_storage/proc/saved_roof_area_type(climate)
+	if(!(climate in list("tundra", "taiga", "temperate", "sea", "semiarid", "desert", "savanna", "jungle"))) return null
+	return text2path("/area/caribbean/roofed/[climate]")
+
+/map_storage/proc/find_saved_roof_area(type)
+	var/area/found
+	// New() registers empty explicit areas too; world enumeration alone need
+	// not contain a destination which currently owns no turfs.
+	var/list/candidates = area_list.Copy()
+	for(var/area/A in world) candidates |= A
+	for(var/area/A in candidates)
+		// Empty explicit instances are ambiguous too. A later locate(type)
+		// must never silently select a different instance from preflight.
+		if(A.type != type) continue
+		if(found) throw EXCEPTION("Ambiguous current roof area identity")
+		found = A
+	return found
+
+/map_storage/proc/unique_saved_roof_area(type, recheck = FALSE)
+	var/area/cached = validated_roof_instances["[type]"]
+	if(cached && !recheck) return cached
+	var/area/found = find_saved_roof_area(type)
+	if(!found || (cached && cached != found)) throw EXCEPTION("Validated roof area instance changed")
+	validated_roof_instances["[type]"] = found
+	return found
+
+/map_storage/proc/prepare_saved_roof_areas(generation)
+	var/roof_root = text2path("/obj/roof")
+	if(!ispath(roof_root)) return // Serializer-only fixtures can omit roofs.
+	for(var/z = 1, z <= save_validation_maxz(), z++)
+		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing saved roof level [z]")
+		var/savefile/F = new("map_saves/[z].sav")
+		if(F["/format_version"] != 2) continue
+		if((generation && F["/generation"] != generation) || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz())
+			throw EXCEPTION("Saved roof generation or dimensions differ")
+		for(var/y = 1, y <= world.maxy, y++)
+			for(var/x = 1, x <= world.maxx, x++)
+				var/ref = F["/map/[z]/[y]/[x]"]
+				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Missing roof-validation turf")
+				var/turf_path = entry_path(F, ref)
+				if(!ispath(F["[turf_path]/type"], /turf)) throw EXCEPTION("Invalid roof-validation turf")
+				var/list/contents = params2list(F["[turf_path]/content"])
+				for(var/child in contents)
+					var/path = entry_path(F, child)
+					var/type = F["[path]/type"]
+					if(!ispath(type, roof_root)) continue
+					var/key = "[x],[y],[z]"
+					if(validated_roof_areas[key] || validated_roof_entries["[z]:[child]"])
+						throw EXCEPTION("Ambiguous or multiply placed saved roof")
+					if(validated_zone_state)
+						prepare_zone_roof(F, x, y, z, child, type)
+						continue
+					// These fields are explicitly emitted by /obj/roof/get_saved_vars.
+					// Do not guess missing legacy settings or decode an object graph here.
+					var/list/switch_value = F["[path]/switch_area"]
+					var/list/base_value = F["[path]/current_area_type"]
+					if(!islist(switch_value) || switch_value["kind"] != "value" || !isnum(switch_value["value"]) || !(switch_value["value"] in list(TRUE, FALSE)) || !islist(base_value) || base_value["kind"] != "value" || !ispath(base_value["value"], /area))
+						throw EXCEPTION("Saved roof lacks scalar area metadata")
+					var/base_type = base_value["value"]
+					var/turf/T = z <= world.maxz ? locate(x, y, z) : null
+					var/current_type = T ? T.loc.type : world.area
+					var/target_type
+					var/underlying_type = current_type
+					if(switch_value["value"])
+						var/area/base = unique_saved_roof_area(base_type)
+						target_type = saved_roof_area_type(base.vars["climate"])
+						if(!ispath(target_type, /area)) throw EXCEPTION("Unsupported saved roof climate")
+						if(current_type != base_type && current_type != target_type)
+							throw EXCEPTION("Saved roof base area differs from the current map")
+						underlying_type = base_type
+					else
+						// Disabled roofs never used current_area_type to choose their
+						// turf's area. Preserve that saved field without treating it
+						// as evidence for a transformation which did not occur.
+						unique_saved_roof_area(current_type)
+					var/list/row = list("x" = x, "y" = y, "z" = z, "entry" = "[child]", "type" = type, "base" = base_type, "unroofed" = underlying_type, "area" = target_type, "switch" = switch_value["value"])
+					validated_roof_areas[key] = row
+					validated_roof_entries["[z]:[child]"] = row
+					if(target_type) validated_roof_types["[target_type]"] = target_type
+				TICK_CHECK
+	for(var/key in validated_roof_types)
+		var/type = validated_roof_types[key]
+		var/area/A = find_saved_roof_area(type)
+		if(A || (key in validated_roof_instances))
+			unique_saved_roof_area(type, TRUE)
+		else
+			// Only the destination derived from a proven saved roof may be
+			// prospective. Base areas above remain required exact instances.
+			validated_roof_absent[key] = type
+
+/map_storage/proc/materialize_saved_roof_areas()
+	if(validated_zone_state)
+		restore_zone_topology()
+		restoring_roof_areas = !!validated_roof_areas.len
+		return
+	// Recheck every retained identity, including empty base/roof instances,
+	// before the first membership assignment. Never create or reselect by type.
+	for(var/key in validated_roof_instances)
+		var/area/A = validated_roof_instances[key]
+		if(!A) throw EXCEPTION("Validated roof area instance disappeared")
+		unique_saved_roof_area(A.type, TRUE)
+	// Check every planned absence before creating anything or moving a turf.
+	for(var/key in validated_roof_absent)
+		var/type = validated_roof_absent[key]
+		if(!ispath(type, /area/caribbean/roofed) || validated_roof_types[key] != type || (key in validated_roof_instances) || find_saved_roof_area(type))
+			throw EXCEPTION("Planned roof area absence changed")
+	for(var/key in validated_roof_absent)
+		var/type = validated_roof_absent[key]
+		if(find_saved_roof_area(type)) throw EXCEPTION("Planned roof area absence changed")
+		var/area/A = new type()
+		if(!A || A.type != type) throw EXCEPTION("Could not create validated roof destination")
+		validated_roof_instances[key] = A
+		unique_saved_roof_area(type, TRUE)
+	validated_roof_absent = list()
+	for(var/key in validated_roof_areas)
+		var/list/row = validated_roof_areas[key]
+		if(!row["area"]) continue
+		var/turf/T = locate(row["x"], row["y"], row["z"])
+		var/area/A = validated_roof_instances["[row["area"]]"]
+		if(!T || !A) throw EXCEPTION("Validated roof area destination disappeared")
+		A.contents += T
+		TICK_CHECK
+	restoring_roof_areas = !!validated_roof_areas.len
+
+/map_storage/proc/restore_validated_roof(atom/roof)
+	if(!restoring_roof_areas) return FALSE
+	var/list/row = validated_roof_areas["[roof.x],[roof.y],[roof.z]"]
+	if(!row || roof.type != row["type"]) throw EXCEPTION("Unvalidated roof constructor during import")
+	if(validated_zone_state)
+		if(roof.loc != locate(row["x"], row["y"], row["z"]) || roof.loc.loc != restored_zones[row["zone"]]) throw EXCEPTION("Restored roof zone changed")
+		roof.vars["current_area_type"] = row["base"]
+		roof.vars["switch_area"] = row["switch"]
+		return TRUE
+	var/turf/T = get_turf(roof)
+	var/expected = row["area"] ? row["area"] : row["unroofed"]
+	if(!T || T.loc != validated_roof_instances["[expected]"]) throw EXCEPTION("Validated roof topology changed during import")
+	roof.vars["current_area_type"] = row["base"]
+	roof.vars["switch_area"] = row["switch"]
+	return TRUE
+
+/map_storage/proc/is_loaded_validated_roof(atom/roof)
+	if(!restoring_roof_areas || roof.z != loading_z) return FALSE
+	var/list/row = validated_roof_areas["[roof.x],[roof.y],[roof.z]"]
+	return row && row["z"] == loading_z && roof.type == row["type"] && validated_roof_entries["[loading_z]:[row["entry"]]"] == row && existing_references[row["entry"]] == roof
+
+/map_storage/proc/verify_restored_roof_areas()
+	for(var/key in validated_roof_areas)
+		var/list/row = validated_roof_areas[key]
+		var/turf/T = locate(row["x"], row["y"], row["z"])
+		var/expected = row["area"] ? row["area"] : row["unroofed"]
+		var/area/expected_area = validated_zone_state ? restored_zones[row["zone"]] : validated_roof_instances["[expected]"]
+		if(!T || T.loc != expected_area) throw EXCEPTION("Restored roof area differs from validated topology")
+		var/count = 0
+		for(var/atom/roof in T.contents)
+			if(roof.type != row["type"]) continue
+			count++
+			if(roof.vars["current_area_type"] != row["base"] || roof.vars["switch_area"] != row["switch"])
+				throw EXCEPTION("Restored roof settings differ from validated payload")
+		if(count != 1) throw EXCEPTION("Restored roof owner missing or duplicated")
+		TICK_CHECK
+
 /map_storage/proc/Load_Entry(savefile/savefile, var/ind, var/turf/old_turf, var/atom/starting_loc, var/atom/replacement, var/nocontents = 0, var/lag_fix = 0)
 	try
 		TICK_CHECK
@@ -48,9 +227,20 @@
 			object = locate(xa,ya,za)
 			var/turf/restored_turf = object
 			restored_turf.activate_reserved_lighting()
+			// Missing fields in legacy/clear-ground saves mean no generated snow.
+			restored_turf.weather_snow = 0
+			restored_turf.snowfall_ground_icon()
 		else if(replacement)
 			object = replacement
 		else if(ispath(type, /atom))
+			// A recursive field can reach a roof before its containing turf.
+			// Only the already validated direct-content location is authoritative.
+			var/list/roof = validated_roof_entries["[loading_z]:[ind]"]
+			if(roof)
+				var/turf/roof_turf = locate(roof["x"], roof["y"], roof["z"])
+				if(starting_loc && starting_loc != roof_turf)
+					throw EXCEPTION("Saved roof location changed during import")
+				starting_loc = roof_turf
 			object = new type(starting_loc)
 		else if(ispath(type, /datum/wound/lost_limb))
 			// The lost limb is not a constructor input during graph recovery.
@@ -75,6 +265,9 @@
 		for(var/v in savefile.dir)
 			savefile.cd = entry_path(savefile, ind)
 			if(object.persistence_runtime_var(v))
+#ifdef CIV13_VARIABLE_OBSERVABILITY
+				variable_observability_skipped(null, TRUE)
+#endif
 				continue
 			if(v == "type")
 				continue
@@ -87,6 +280,10 @@
 					if(container)
 						for(var/obj/ob in container.contents.Copy())
 							if(istype(ob, /obj/map_metadata) || istype(ob, /atom/movable/lighting_overlay))
+								continue
+							// A recursive field may have already imported this roof.
+							// Do not delete the validated owner before reusing its ref.
+							if(is_loaded_validated_roof(ob))
 								continue
 							if(ob.loc == container)
 								qdel(ob)
@@ -149,6 +346,11 @@
 	switch(value["kind"])
 		if("map")
 			return map
+		if("zone")
+			validate_zone_reference(value["id"], value["type"])
+			var/area/A = restored_zones[value["id"]]
+			if(!A || A.persistence_zone_id != value["id"] || A.type != value["type"]) throw EXCEPTION("Zone reference was not restored")
+			return A
 		if("area")
 			var/turf/T = locate(value["x"], value["y"], value["z"])
 			if(!T || !istype(T.loc, value["type"]))
@@ -193,6 +395,9 @@
 		var/obj/map_metadata/extraction_survival/M = map
 		surface_inventory = M.surface_service
 		if (surface_inventory && !surface_inventory.begin_world_inventory(world.maxz)) return FALSE
+	if(validated_zone_state)
+		if(!operation.zone_restore) begin_zone_restore(operation)
+		operation.zone_restore.clearing_old_world = FALSE
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
@@ -203,6 +408,9 @@
 				var/turf/T = locate(x,y,z)
 				T.ChangeTurf(type, FALSE, FALSE)
 				TICK_CHECK
+	// References may precede the roof object in the saved graph. Rebuild only
+	// the roof topology proven by preflight, before any object fields decode.
+	materialize_saved_roof_areas()
 	for(var/B = 1, B <= world.maxz, B++)
 		loading_z = B
 		try
@@ -255,13 +463,16 @@
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			if (surface_inventory) surface_inventory.discovery_fail()
+			clear_saved_roof_areas()
 			last_error = "[e] on [e.file]:[e.line]"
 			world.log << "World-save restoration failed: [last_error]"
 			message_admins("EXCEPTION IN MAP LOADING!! [e] on [e.file]:[e.line]")
 			clear_bookkeeping()
 			saved_turfs = list()
 			return FALSE
+	verify_restored_roof_areas()
 	clear_bookkeeping()
+	clear_saved_roof_areas()
 	saved_turfs = list()
 	if (surface_inventory)
 		while (!surface_inventory.world_inventory_complete)
@@ -273,18 +484,24 @@
 // A failed preflight must leave the running world untouched. Historical saves
 // use the same grid; the completion marker is required by the startup contract.
 /map_storage/proc/validate_world_save()
+	var/list/candidate = zone_candidate_validation
 	last_error = null
+	clear_saved_roof_areas()
 	release_durable_world()
+	clear_saved_zones()
 	try
-		if(!fexists("map_saves/save_complete.txt") || !fexists("map_saves/map.txt"))
+		if(candidate && (!persistence_active_operation || !persistence_active_operation.current(src, "save") || candidate["generation"] != zone_export_generation)) throw EXCEPTION("Unowned candidate validation")
+		if((!candidate && !fexists("map_saves/save_complete.txt")) || !fexists("map_saves/map.txt"))
 			throw EXCEPTION("Save is incomplete: metadata or completion marker missing")
 		var/list/meta = splittext(file2text("map_saves/map.txt"), "\n")
 		if(meta.len < 9 || meta[1] != map.ID)
 			throw EXCEPTION("Save metadata does not match the current map")
-		var/list/round_state = read_round_state()
+		var/list/round_state = candidate ? candidate : read_round_state()
 		var/list/player_owners = list()
 		if(isnull(round_mode_metadata(meta)))
 			throw EXCEPTION("Save round-mode metadata is malformed")
+		prepare_saved_zones(round_state["world_state"], round_state["generation"])
+		prepare_saved_roof_areas(round_state["generation"])
 		for(var/z = 1, z <= save_validation_maxz(), z++)
 			if(!fexists("map_saves/[z].sav"))
 				throw EXCEPTION("Missing saved z-level [z]")
@@ -364,6 +581,8 @@
 		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
 		return TRUE
 	catch(var/exception/e)
+		clear_saved_roof_areas()
+		clear_saved_zones()
 		release_durable_world()
 		last_error = "[e] on [e.file]:[e.line]"
 		world.log << "World-save preflight rejected: [last_error]"
@@ -376,6 +595,8 @@
 	switch(value["kind"])
 		if("map")
 			return TRUE
+		if("zone")
+			return validate_zone_reference(value["id"], value["type"])
 		if("area")
 			if(!ispath(value["type"], /area))
 				throw EXCEPTION("Invalid saved area type")

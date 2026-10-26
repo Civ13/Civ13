@@ -86,6 +86,7 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	return l
 
 /turf/Destroy()
+	snowfall_ground_unregister()
 	turfs -= src
 	turf_registry_members -= src
 	for (var/obj/o in contents)
@@ -145,6 +146,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 	return TRUE
 
 /turf/Enter(atom/movable/mover as mob|obj, atom/forget as mob|obj|turf|area)
+	if (!persistence_movement_allowed(mover, src))
+		return FALSE
 	if (vehicle_transforming && !QDELETED(vehicle_transforming) && !isobserver(mover))
 		return FALSE
 	if (movement_disabled && usr.ckey != movement_disabled_exception)
@@ -188,7 +191,8 @@ var/list/interior_areas = list(/area/caribbean/houses,
 			if (!obstacle.CanPass(mover, mover.loc, TRUE, FALSE) && (forget != obstacle))
 				mover.Bump(obstacle, TRUE)
 				return FALSE
-	return TRUE //Nothing found to block so return success!
+	// Collision callbacks can yield or start saving; recheck at admission.
+	return persistence_movement_allowed(mover, src)
 
 var/const/enterloopsanity = 100
 /turf/Entered(atom/atom as mob|obj)
@@ -338,6 +342,8 @@ var/const/enterloopsanity = 100
 			//Shoe sounds
 			if (type == /turf/floor/plating)
 				footstepsound = "erikafootsteps"
+			else if (has_snow_cover())
+				footstepsound = "snowfootsteps"
 			else if (istype(src, /turf/floor/grass))
 				footstepsound = "grassfootsteps"
 			else if (istype(src, /turf/floor/winter))
