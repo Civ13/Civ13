@@ -3,3 +3,4 @@
 *.md text eol=lf
 *.sha256 text eol=lf
 *.png binary
+catalog/native-resources-v0.1.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
