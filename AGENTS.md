@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: staged pull-pair ownership kernel -->
+pull_pair_ownership.dm is a bounded live-only lease/capability foundation with no
+movement producer wired. Do not remove unlinked guards to activate it. The first
+profile is aligned straight cardinal pulling of an empty leaf object; no turns,
+living targets or assemblies. Native collision, once-only costs/hooks, partial
+recovery, lifecycle cleanup and coherent saves remain integration gates. Offline
+tests project only displacement arithmetic and source contracts, not DM authority
+or physical collision. Keep crafting/prone/NPC branches separate during review.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
