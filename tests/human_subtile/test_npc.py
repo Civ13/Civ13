@@ -81,7 +81,7 @@ class NpcContracts(unittest.TestCase):
         path = 'code/game/mob/living/simple_animal/simple_ai.dm'
         source = read(path).replace('ai_step(get_step(src, moving_to), move_to_delay)', 'Move(get_step(src, moving_to))')
         self.assertEqual(source.rstrip(), baseline(path).rstrip())
-        worker = section(read(MODULE), '/datum/npc_subtile_transaction/proc/run(', '/datum/npc_subtile_transaction/proc/finish()')
+        worker = section(read(MODULE), '/datum/npc_subtile_transaction/proc/perform_rest(', '/datum/npc_subtile_transaction/proc/finish()')
         for forbidden in ('get_path(', 'cirrAstar(', 'FindTarget(', 'do_behaviour(', 'pick(', 'rand(', 'walk('):
             self.assertNotIn(forbidden, worker)
         self.assertIn('i <= 16', worker)
@@ -114,7 +114,7 @@ class NpcContracts(unittest.TestCase):
 
     def test_zero_partial_and_blocked_attempts_have_once_only_hooks(self):
         source = read(MODULE)
-        advance = section(source, '/datum/npc_subtile_transaction/proc/advance()', '/datum/npc_subtile_transaction/proc/run(')
+        advance = section(source, '/datum/npc_subtile_transaction/proc/advance()', '/datum/npc_subtile_transaction/proc/perform_rest(')
         finish = section(source, '/datum/npc_subtile_transaction/proc/finish()', '/mob/living/simple_animal/proc/npc_subtile_take_pulse')
         self.assertNotIn('living_movement_completed()', advance)
         self.assertIn('!completed', finish)

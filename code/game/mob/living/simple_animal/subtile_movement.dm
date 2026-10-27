@@ -80,7 +80,7 @@
 		return FALSE
 	npc_subtile_until = T.end_time
 	spawn(0)
-		T.run(continue_pulses)
+		T.perform_rest(continue_pulses)
 	return TRUE
 
 /datum/npc_subtile_pulse
@@ -183,7 +183,7 @@
 	remaining_y -= min(remaining_y, abs(actual_y))
 	return !P.armed && actual_x == dx && actual_y == dy
 
-/datum/npc_subtile_transaction/proc/run(continue_pulses)
+/datum/npc_subtile_transaction/proc/perform_rest(continue_pulses)
 	try
 		for (var/i = 2, i <= 16, i++)
 			if (!continue_pulses || (!remaining_x && !remaining_y))
