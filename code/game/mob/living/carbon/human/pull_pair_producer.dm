@@ -226,8 +226,13 @@
 /atom/movable/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	var/datum/subtile_pull_pair/P = subtile_pull_ownership.owners[src]
 	if (P)
+		if (P.issued)
+			P.cancel("save_inflight")
+			P.restore_follower_glide()
+			throw EXCEPTION("Cannot snapshot an in-flight pull pulse")
 		P.cancel("save_checkpoint")
-		P.restore_follower_glide()
-		if (!P.release())
+		// Complete admitted hooks before release can clear participant refs.
+		P.finish_intent()
+		if (!P.released)
 			throw EXCEPTION("Pull pair requires an aligned save checkpoint")
 	return ..()

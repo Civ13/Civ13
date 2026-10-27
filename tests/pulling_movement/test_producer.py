@@ -100,8 +100,9 @@ class PullProducerContracts(unittest.TestCase):
 
     def test_partial_save_is_refused_before_original_hooks_and_no_state_replays(self):
         text=PRODUCER.read_text();save=text[text.index('/atom/movable/before_save_context'):]
-        self.assertLess(save.index('P.cancel("save_checkpoint")'),save.index('if (!P.release())'))
-        self.assertLess(save.index('P.restore_follower_glide()'),save.index('if (!P.release())'))
+        self.assertLess(save.index('P.cancel("save_checkpoint")'),save.index('P.finish_intent()'))
+        self.assertLess(save.index('P.finish_intent()'),save.index('if (!P.released)'))
+        self.assertIn('Cannot snapshot an in-flight pull pulse',save)
         self.assertIn('throw EXCEPTION("Pull pair requires an aligned save checkpoint")',save)
         self.assertIn('return ..()',save)
         human=read('code/game/mob/living/carbon/human/subtile_movement.dm')
