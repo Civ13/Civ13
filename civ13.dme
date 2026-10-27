@@ -256,6 +256,7 @@
 #include "code\game\mob\living\simple_animal\riding.dm"
 #include "code\game\mob\living\simple_animal\simple_ai.dm"
 #include "code\game\mob\living\simple_animal\simple_animal.dm"
+#include "code\game\mob\living\simple_animal\subtile_movement.dm"
 #include "code\game\mob\living\simple_animal\friendly\bats.dm"
 #include "code\game\mob\living\simple_animal\friendly\birds.dm"
 #include "code\game\mob\living\simple_animal\friendly\cat.dm"

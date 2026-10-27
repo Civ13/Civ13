@@ -259,6 +259,10 @@
 			restored_human.persistence_restored = TRUE
 			savefile.cd = entry_path(savefile, ind)
 			restored_human.human_subtile_prepare_import(savefile)
+		if (istype(object, /mob/living/simple_animal))
+			var/mob/living/simple_animal/restored_npc = object
+			savefile.cd = entry_path(savefile, ind)
+			restored_npc.npc_subtile_prepare_import(savefile)
 		all_loaded += object
 		existing_references["[ind]"] = object
 		if(durable_import) durable_import.accept_entry(loading_z, ind, object)

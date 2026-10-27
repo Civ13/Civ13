@@ -9,6 +9,7 @@
 	health = 200
 	speak_chance = 1
 	move_to_delay = 4
+	npc_subtile_enabled = TRUE
 	wander = FALSE
 	stop_automated_movement = FALSE
 	response_help = "nudges"

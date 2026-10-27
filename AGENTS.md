@@ -1,5 +1,18 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: vendor AI sub-tile candidate -->
+NPC vendors opt into simple_animal ai_step physical pulses. Admission belongs to
+the unowned AI body, never a fake client or the human authority hook. Wandering
+and explicit smart-step callers choose once, then one worker performs at most 16
+native 2px pulses during the supplied interval; AI throttles and pathfinding stay
+outside it. Other animal families and native walk/walk_to stay legacy. Owned
+partial offsets refuse legacy movement and opt-out until collision-safe AI
+realignment; unsupported linked states must not snap. NPC save capsules exclude
+runtime workers/glide and restore through an authenticated native placement.
+tests/human_subtile/run-npc.py has prepare/compile-only modes: its prepared NPC
+runtime fixture and actual rendered appearance remain unexecuted until reviewed.
+This candidate does not change prone movement, JIT path scoring or live TDM.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits

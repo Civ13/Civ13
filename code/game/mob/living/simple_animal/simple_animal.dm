@@ -637,7 +637,7 @@
 /mob/living/simple_animal/proc/smart_step_towards(atom/target)
 	var/turf/next = get_step_towards2(src, target)
 	if (isturf(next) && next != loc)
-		return step(src, get_dir(src, next))
+		return ai_step(next, move_to_delay)
 	return FALSE
 
 /mob/living/simple_animal/proc/unregisterSpawner()
