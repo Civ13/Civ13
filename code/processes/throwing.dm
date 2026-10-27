@@ -45,10 +45,11 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
+										advanced = AM.forceMove_nondenseturf(step)
 
-									AM.hit_check(AM.speed)
+									AM.hit_check(AM.speed, advanced)
 									AM.error += AM.dist_x
 									AM.dist_travelled++
 								else
@@ -74,9 +75,10 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
-									AM.hit_check(AM.speed)
+										advanced = AM.forceMove_nondenseturf(step)
+									AM.hit_check(AM.speed, advanced)
 									AM.error -= AM.dist_y
 									AM.dist_travelled++
 								AM.a = get_area(AM.loc)
@@ -108,9 +110,10 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
-									AM.hit_check(AM.speed)
+										advanced = AM.forceMove_nondenseturf(step)
+									AM.hit_check(AM.speed, advanced)
 									AM.error += AM.dist_y
 									AM.dist_travelled++
 								else
@@ -136,9 +139,10 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
-									AM.hit_check(AM.speed)
+										advanced = AM.forceMove_nondenseturf(step)
+									AM.hit_check(AM.speed, advanced)
 									AM.error -= AM.dist_x
 									AM.dist_travelled++
 

@@ -12,7 +12,20 @@ var/throw_callback_saw_old_target = FALSE
 /proc/get_area(atom/A)
 	var/turf/T = get_turf(A)
 	return T ? T.loc : null
+// Engine/type boundaries of this serializer-only adapter. No human flight is
+// exercised here; full-source launch gameplay uses the human_subtile fixture.
+/proc/isitem(atom/A)
+	return istype(A, /obj/item)
+/proc/ishuman(atom/A)
+	return istype(A, /mob/living/human)
+/proc/isDeleted(datum/A)
+	return !A
 /atom/movable
+	var/tmp/mob/living/human/throw_launch_source
+	var/tmp/throw_launch_dx
+	var/tmp/throw_launch_dy
+	var/tmp/throw_launch_x
+	var/tmp/throw_launch_y
 	var/throwing = FALSE
 	var/thrower
 	var/speed = 0

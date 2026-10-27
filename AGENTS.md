@@ -1,5 +1,13 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: initial thrown-item overlap -->
+Initial launch clearance belongs only to a human's physically overlapping item
+and successful adjacent outbound hops. Sample separation even on empty turfs;
+never turn it into permanent source immunity or first-hop-only immunity.
+Reset on redirection, failed hop and lifecycle boundaries; custom saves exclude
+all five launch fields despite tmp. tests/throw_launch_clearance executes source
+flow offline and prepares a full-source native fixture; compile is not gameplay.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits

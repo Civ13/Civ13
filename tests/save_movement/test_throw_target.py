@@ -63,7 +63,7 @@ class ThrowTargetTests(unittest.TestCase):
         self.assertIs(roof, before['original_target'])  # independent world atom retained
 
     def test_omitted_policy_negative_control_exposes_the_original_foreign_edge(self):
-        source = read(FUNCTIONS).replace('return key == "original_target" || ..()', 'return ..()')
+        source = read(FUNCTIONS).replace('return key == "original_target" || ', 'return ', 1)
         roof = NS(loc=(2, 1, 2))
         marble = self.stack(roof)
         self.assertIn('original_target', saved_fields(marble, policy(source=source)))
@@ -145,10 +145,17 @@ class ThrowTargetTests(unittest.TestCase):
         env = dict(thrown_list=Thrown(), get_turf=lambda actor: floor,
                    isobj=lambda actor: True, istype=lambda *args: False, BOTTLE='bottle')
         source = read(MOVABLE).replace('/obj/item/weapon/reagent_containers/food/drinks/bottle', '/BOTTLE')
-        fields = (*adapter.FIELDS, 'original_target', 'throwing', 'thrower', 'throw_source', 'speed', 'throw_impact')
+        launch_fields = ('throw_launch_source', 'throw_launch_dx', 'throw_launch_dy', 'throw_launch_x', 'throw_launch_y')
+        for key in launch_fields:
+            setattr(atom, key, object())
+        fields = (*adapter.FIELDS, 'original_target', 'throwing', 'thrower', 'throw_source', 'speed', 'throw_impact',
+                  'clear_throw_launch', *launch_fields)
         with patch.object(adapter, 'FIELDS', fields):
+            clear = project(source, '/atom/movable/proc/clear_throw_launch', 'src', {}, True)
+            atom.clear_throw_launch = lambda: clear(atom)
             finish = project(source, '/atom/movable/proc/finished_throwing', 'src, thrown_list', env, True)
         finish(atom, env['thrown_list'])
+        self.assertTrue(all(getattr(atom, key) is None for key in launch_fields))
         return atom, new, observed
 
     def test_normal_finish_clears_target_before_both_callback_boundaries(self):

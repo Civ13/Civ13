@@ -40,6 +40,13 @@
 	var/range = 0
 	var/turf/throw_source = null
 	var/turf/last_throw_source = null // when we need a longterm reference
+	// Only the initial, uninterrupted overlap of a human's released item.
+	// The custom saver enumerates tmp fields; see persistence_runtime_var.
+	var/tmp/mob/living/human/throw_launch_source = null
+	var/tmp/throw_launch_dx = null
+	var/tmp/throw_launch_dy = null
+	var/tmp/throw_launch_x = null
+	var/tmp/throw_launch_y = null
 	var/atom/original_target = null
 	var/throw_speed = 2
 	var/throw_range = 7
@@ -78,6 +85,7 @@
 	..()
 
 /atom/movable/Destroy()
+	clear_throw_launch()
 	. = ..()
 	for (var/atom/movable/AM in contents)
 		qdel(AM)
@@ -131,6 +139,7 @@
 /atom/movable/Bump(var/atom/A, yes)
 
 	if (throwing)
+		clear_throw_launch()
 		throw_impact(A)
 		throwing = FALSE
 
@@ -151,6 +160,8 @@
 
 	var/is_origin_turf = isturf(loc)
 	var/is_destination_turf = isturf(destination)
+	if (!is_destination_turf || (is_origin_turf && z != destination.z))
+		clear_throw_launch()
 	// It is a new area if:
 	//  Both the origin and destination are turfs with different areas.
 	//  When either origin or destination is a turf and the other is not.
@@ -236,13 +247,54 @@
 			spawn(6)
 				qdel(SB)
 			return
-//decided whether a movable atom being thrown can pass through the turf it is in.
-/atom/movable/proc/hit_check(var/speed)
+
+/atom/movable/proc/clear_throw_launch()
+	throw_launch_source = null
+	throw_launch_dx = null
+	throw_launch_dy = null
+	throw_launch_x = null
+	throw_launch_y = null
+
+/atom/movable/proc/begin_throw_launch()
+	clear_throw_launch()
+	if (!isitem(src) || !ishuman(thrower) || !isturf(loc))
+		return
+	var/mob/living/human/source = thrower
+	if (!isturf(source.loc) || source.loc != loc || source.z != z || bounds_dist(src, source) >= 0)
+		return
+	throw_launch_source = source
+	throw_launch_dx = dx
+	throw_launch_dy = dy
+	throw_launch_x = x
+	throw_launch_y = y
+
+// Sample AFTER each attempted hop, including an empty destination. Movement of
+// the human across an anchor before the first hop must not reopen the launch race.
+/atom/movable/proc/update_throw_launch(advanced)
+	if (!throw_launch_source)
+		return
+	if (!advanced || !throwing || thrower != throw_launch_source || isDeleted(throw_launch_source) || !isturf(loc) || !isturf(throw_launch_source.loc) || z != throw_launch_source.z || dx != throw_launch_dx || dy != throw_launch_dy)
+		clear_throw_launch()
+		return
+	var/hop_x = x - throw_launch_x
+	var/hop_y = y - throw_launch_y
+	// Forced relocations, reverse hops and changed flight directions end the
+	// initial outbound segment even if the item never cleared its source.
+	if (abs(hop_x) + abs(hop_y) != 1 || (hop_x && ((hop_x > 0 ? EAST : WEST) != throw_launch_dx)) || (hop_y && ((hop_y > 0 ? NORTH : SOUTH) != throw_launch_dy)) || bounds_dist(src, throw_launch_source) >= 0)
+		clear_throw_launch()
+		return
+	throw_launch_x = x
+	throw_launch_y = y
+
+// Decide whether a movable atom being thrown can pass through its current turf.
+/atom/movable/proc/hit_check(var/speed, advanced = FALSE)
+	update_throw_launch(advanced)
 	if (throwing)
 		for (var/atom/movable/A in get_turf(src))
 			if (A == src) continue
 			if (istype(A,/mob/living))
 				if (A:lying) continue
+				if (A == throw_launch_source) continue
 				if (A == thrower)
 					if (locate(/obj/structure/window/barrier) in get_turf(src))
 						continue
@@ -292,6 +344,7 @@
 	else
 		error = dist_y/2 - dist_x
 		throwmode = 1
+	begin_throw_launch()
 	thrown_list += src
 
 /atom/movable/proc/throw_at_random(var/include_own_turf, var/maxrange, var/speed)
@@ -305,6 +358,7 @@
 		throw_at(pick(turfs), maxrange, speed)
 
 /atom/movable/proc/finished_throwing()
+	clear_throw_launch()
 	thrown_list -= src
 	var/turf/new_loc = get_turf(src)
 	// Clear the completed target before impact/Entered can start a newer throw.
