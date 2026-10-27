@@ -508,11 +508,11 @@
 
 /mob/living/simple_animal/turkey_m/death()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_m/Destroy()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_f/New()
 	..()
@@ -520,19 +520,19 @@
 
 /mob/living/simple_animal/turkey_f/death()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_f/Destroy()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkeychick/death()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkeychick/Destroy()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_f/Life()
 	. =..()

@@ -17,8 +17,12 @@ HOOKS = {
        for species in ('goat', 'sheep') for hook in ('death', 'Destroy')},
 }
 POULTRY_SOURCE = 'code/game/mob/living/simple_animal/friendly/birds.dm'
-POULTRY_HOOKS = {f'{kind}/{hook}': 'chicken_count'
-                 for kind in ('chick', 'chicken', 'rooster') for hook in ('death', 'Destroy')}
+POULTRY_HOOKS = {
+    **{f'{kind}/{hook}': 'chicken_count'
+       for kind in ('chick', 'chicken', 'rooster') for hook in ('death', 'Destroy')},
+    **{f'{kind}/{hook}': 'turkey_count'
+       for kind in ('turkeychick', 'turkey_m', 'turkey_f') for hook in ('death', 'Destroy')},
+}
 SUITES = {'farm': (SOURCE, HOOKS), 'poultry': (POULTRY_SOURCE, POULTRY_HOOKS)}
 
 

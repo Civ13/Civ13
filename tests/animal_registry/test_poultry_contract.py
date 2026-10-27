@@ -23,30 +23,35 @@ class PoultrySourceTests(unittest.TestCase):
     def setUpClass(cls):
         cls.source = (ROOT / POULTRY_SOURCE).read_text()
 
-    def test_all_six_hooks_remove_only_the_owner_before_parent(self):
-        self.assertEqual(len(POULTRY_HOOKS), 6)
-        self.assertEqual(set(POULTRY_HOOKS.values()), {'chicken_count'})
+    def test_all_twelve_hooks_remove_only_the_owner_before_parent(self):
+        self.assertEqual(len(POULTRY_HOOKS), 12)
+        self.assertEqual(set(POULTRY_HOOKS.values()), {'chicken_count', 'turkey_count'})
         self.assertEqual(violations(self.source, POULTRY_HOOKS), [])
 
     def test_historical_intersection_is_rejected_for_every_hook(self):
-        historical = self.source.replace('chicken_count -= src', 'chicken_count &= src')
+        historical = self.source
+        for registry in ('chicken_count', 'turkey_count'):
+            historical = historical.replace(registry + ' -= src', registry + ' &= src')
         self.assertEqual(set(violations(historical, POULTRY_HOOKS)), set(POULTRY_HOOKS))
 
     def test_each_single_reversion_is_detected(self):
-        for hook in POULTRY_HOOKS:
+        for hook, registry in POULTRY_HOOKS.items():
             with self.subTest(hook=hook):
                 start = self.source.index(f'/mob/living/simple_animal/{hook}()')
                 mutated = (self.source[:start] +
-                           self.source[start:].replace('chicken_count -= src', 'chicken_count &= src', 1))
+                           self.source[start:].replace(registry + ' -= src', registry + ' &= src', 1))
                 self.assertEqual(violations(mutated, POULTRY_HOOKS), [hook])
 
-    def test_registration_and_hatch_cap_remain_on_the_shared_registry(self):
-        for kind in ('chick', 'chicken', 'rooster'):
+    def test_registration_and_hatch_caps_remain_on_the_shared_registries(self):
+        for kind, registry in (('chick', 'chicken_count'), ('chicken', 'chicken_count'),
+                               ('rooster', 'chicken_count'), ('turkeychick', 'turkey_count'),
+                               ('turkey_m', 'turkey_count'), ('turkey_f', 'turkey_count')):
             with self.subTest(kind=kind):
                 start = self.source.index(f'/mob/living/simple_animal/{kind}/New()')
                 end = self.source.index('\n/', start + 1)
-                self.assertIn('chicken_count |= src', self.source[start:end])
+                self.assertIn(registry + ' |= src', self.source[start:end])
         self.assertIn('chicken_count.len < 50', self.source)
+        self.assertIn('turkey_count.len < 35', self.source)
 
 
 class PoultryNativePreparationTests(unittest.TestCase):
@@ -58,17 +63,18 @@ class PoultryNativePreparationTests(unittest.TestCase):
         for body in native.extract(self.source, POULTRY_HOOKS).values():
             self.assertIn(body, generated['hooks.dm'])
         self.assertIn('var/list/chicken_count = list()', generated['hooks.dm'])
+        self.assertIn('var/list/turkey_count = list()', generated['hooks.dm'])
         self.assertNotIn('civ13.dme', generated['probe.dme'])
         # Three cases per hook plus one death-then-Destroy pair per bird type.
-        self.assertEqual(len(native.case_names(POULTRY_HOOKS)), 6 * 3 + 3)
+        self.assertEqual(len(native.case_names(POULTRY_HOOKS)), 12 * 3 + 6)
 
     def test_each_control_changes_only_its_exact_production_hook(self):
         baseline = native.prepare(self.source, hooks=POULTRY_HOOKS)
-        for hook in POULTRY_HOOKS:
+        for hook, registry in POULTRY_HOOKS.items():
             with self.subTest(hook=hook):
                 changed = native.prepare(self.source, hook, POULTRY_HOOKS)
                 old = native.extract(self.source, POULTRY_HOOKS)[hook]
-                expected = old.replace('chicken_count -= src', 'chicken_count &= src', 1)
+                expected = old.replace(registry + ' -= src', registry + ' &= src', 1)
                 self.assertEqual(changed['hooks.dm'], baseline['hooks.dm'].replace(old, expected, 1))
                 self.assertEqual(changed['fixture.dm'], baseline['fixture.dm'])
 
@@ -110,7 +116,7 @@ class PoultryNativePreparationTests(unittest.TestCase):
             result = native.execute(args, runner=forbidden)
             self.assertEqual((result['status'], result['suite'], result['source']),
                              ('prepared-only', 'poultry', POULTRY_SOURCE))
-            self.assertEqual(len(result['modes']), 7)
+            self.assertEqual(len(result['modes']), 13)
             summary = json.loads((args.output/'summary.json').read_text())
             self.assertFalse(summary['native_execution'])
 
