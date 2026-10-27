@@ -86,7 +86,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	return istype(controller, /client) && istype(leader, /mob/living/human) && leader.client == controller && controller.mob == leader && controller.canmove && controller.moving
 
 /datum/subtile_pull_pair/proc/prepare(datum/subtile_pull_ownership/manager, mob/living/human/L, obj/F, client/C, direct, end_time)
-	if (claimed || released || registry || !istype(manager, /datum/subtile_pull_ownership) || !istype(L, /mob/living/human) || !istype(F, /obj) || !(direct in list(NORTH, SOUTH, EAST, WEST)) || !isnum(end_time) || end_time < world.time + world.tick_lag || end_time > world.time + 100)
+	if (claimed || released || registry || !istype(manager, /datum/subtile_pull_ownership) || !istype(L, /mob/living/human) || !istype(F, /obj) || !(direct in list(NORTH, SOUTH, EAST, WEST)) || !isnum(end_time) || !(end_time >= world.time + world.tick_lag && end_time <= world.time + 100))
 		return FALSE
 	leader = L
 	follower = F
@@ -173,6 +173,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	// would make an ordinary legacy Move snap. Integration is held until that
 	// resolver and coherent pair save/load are implemented and tested.
 	if ((leader && !isDeleted(leader) && (leader.step_x || leader.step_y)) || (follower && !isDeleted(follower) && (follower.step_x || follower.step_y)))
+		cancel("release_requires_recovery")
 		recovery_required = TRUE
 		return FALSE
 	cancel("released")

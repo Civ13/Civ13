@@ -127,6 +127,7 @@ class PullOwnershipContracts(unittest.TestCase):
                       '!(direct in list(NORTH, SOUTH, EAST, WEST))'):
             self.assertIn(guard, text)
         self.assertIn('leader.can_pull_size >= follower.w_class', text)
+        self.assertIn('end_time >= world.time + world.tick_lag && end_time <= world.time + 100', text)
 
     def test_capabilities_bind_member_position_destination_direction_and_clock(self):
         text = source()[source().index('/datum/subtile_pull_capability/proc/consume'):]
@@ -156,6 +157,7 @@ class PullOwnershipContracts(unittest.TestCase):
         self.assertIn('issued.armed = FALSE', text)
         self.assertIn('issued.pair = null', text)
         self.assertIn('recovery_required = TRUE', text)
+        self.assertIn('cancel("release_requires_recovery")\n\t\trecovery_required = TRUE', text)
         self.assertLess(text.index('recovery_required = TRUE'), text.index('registry.owners -= leader'))
         self.assertIn('if (registry.owners[leader] == src)', text)
         self.assertIn('if (registry.owners[follower] == src)', text)
