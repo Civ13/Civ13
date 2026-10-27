@@ -16,8 +16,6 @@ var/throw_callback_saw_old_target = FALSE
 // exercised here; full-source launch gameplay uses the human_subtile fixture.
 /proc/isitem(atom/A)
 	return istype(A, /obj/item)
-/proc/ishuman(atom/A)
-	return istype(A, /mob/living/human)
 /proc/isDeleted(datum/A)
 	return !A
 /atom/movable
