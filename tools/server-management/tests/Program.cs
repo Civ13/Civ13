@@ -118,4 +118,5 @@ foreach (var context in new[] { (Scope: "", Now: 0L, Age: 1L), (Scope: "collecto
     Reject(() => StatusProjection.Project(manifest, identity, present, context.Scope, context.Now, context.Age), "invalid clock context refused");
 Check(StatusProjection.Project(manifest, identity with { BootId = "" }, null, "collector-a", 1050, 100).Reason == "invalid-expected-identity", "invalid receipt refused");
 Reject(() => StatusProjection.Project(null!, identity, present, "collector-a", 1050, 100), "null manifest refused");
+assertions += LocalProcessObservationTests.Run();
 Console.WriteLine($"PASS {assertions} offline server-management assertions; synthetic manifests and evidence only.");
