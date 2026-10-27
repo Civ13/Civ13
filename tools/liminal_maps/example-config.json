@@ -1,0 +1,21 @@
+{
+  "schema": "civ13-liminal-config/1",
+  "profile": "INDOOR_LIMINAL",
+  "seed": "liminal-0",
+  "catalog_version": "liminal-authored-rooms/0.1.0",
+  "catalog_sha256": "7ee6647de885a921746f9ac9d0ec5fa9e5140a30a8c06294cd4ff16c3d37c95b",
+  "hub_allowlist": [
+    "acoustic_atrium",
+    "archive_stacks",
+    "cubicle_repetition",
+    "office_columns",
+    "offset_office"
+  ],
+  "branch_alcove": true,
+  "actor_radius_tiles": 1,
+  "min_spawn_exit_tiles": 16,
+  "max_rooms": 6,
+  "max_blueprint_tiles": 4096,
+  "max_candidates": 3,
+  "max_search_states": 20000
+}

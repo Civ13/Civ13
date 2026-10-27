@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- Finite authored indoor preparation -->
+`tools/liminal_maps` assembles/validates original indoor topology only; run the
+explicit `tests/liminal_maps/run.py` offline suite. Preserve catalog/helper pins,
+typed sockets, clearance/progression guards and design docs. It does not emit
+native DMMs, register a mode or prove native lighting/audio/gameplay. Keep native
+catalog/mode integration and third-party asset ports separately reviewed.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
