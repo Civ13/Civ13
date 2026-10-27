@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: liminal static visual proposal -->
+docs/liminal/ROOM-PREVIEWS.md links ten exact-mask DMI room previews and the
+unapproved preview-palette-v1.json. The docs-local renderer reuses the existing
+animal_harvest DMI reader, keeps sockets sealed and marks conditional spans and
+empty anchors editorially. Wall smoothing, functional props and native collision
+remain unverified; this palette must not silently become generator approval.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits

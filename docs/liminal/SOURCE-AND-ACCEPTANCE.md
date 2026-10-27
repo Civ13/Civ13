@@ -48,6 +48,12 @@ wall, dense prop, doorway, light, marker, extraction area and optional portal
 types/vars with exact source and asset references. Source presence is necessary
 but does not prove constructor behavior, licensing, collision or appearance.
 
+The [first static visual proposal](ROOM-PREVIEWS.md) now supplies ten actual-asset
+room previews, a reusable source/type/state palette and a per-cell mapping with
+hash-bound provenance. It preserves the design catalog and stays explicitly
+unapproved for native export. Doorways, lights, functional anchors, extraction
+area and portals remain unmapped; it does not advance native acceptance.
+
 ## DMM export contract
 
 The target is a finite static DMM loaded before the round, with an explicit

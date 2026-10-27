@@ -11,6 +11,8 @@ Dimensions below are abstract collision cells; row zero is south. Every family
 has an original authored mask, role/zone, anchors, typed sockets and light/sound/
 rarity/material intent. No game/show room raster or third-party sprite is used.
 Masks are collision plans, not an image or a native visual acceptance result.
+The [ten static asset/layout previews](ROOM-PREVIEWS.md) apply a proposed existing
+Civ13 palette without changing masks, sealed sockets, solid cells or anchors.
 
 | Family | Cells | Role/zone | Human sockets | Spatial purpose |
 | --- | --- | --- | --- | --- |
