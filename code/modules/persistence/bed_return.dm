@@ -55,8 +55,13 @@
 /map_storage/proc/prepare_character_return(mob/living/human/H)
 	if(!persistence_bed_return_enabled()) return TRUE
 	if(character_recovery_unready()) return FALSE
-	// An ordinary reconnect to a live runtime body is not a bed teleport.
-	if(!H.persistence_restored && !H.inducedSSD) return TRUE
+	// The restored-body claim is consumed only after successful key handoff.
+	// Keep persistence_restored for delayed customization suppression; it does
+	// not mean that this body's first return is still pending. Ordinary bed sleep
+	// is not a teleport request either. Legacy physical zone residents must exit.
+	var/list/registered = persistence_restored_bodies[H.persistence_owner_ckey]
+	var/pending_return = registered && (H in registered)
+	if(!pending_return && !is_protected_sleep_location(H)) return TRUE
 	// Do not extract a saved passenger/driver from an external spatial owner.
 	// Those relationships require their ordinary dismount/unload reconciliation.
 	if(!isturf(H.loc) || H.riding || H.driver || H.driver_vehicle || H.riding_mob) return FALSE

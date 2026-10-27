@@ -32,6 +32,11 @@ disk save or invulnerability; only a completed world generation is durable.
   account cannot silently take it. Chairs, carried/rolling beds, protected cells,
   blocked locations and another occupant are not return destinations.
 - A saved body's first lobby reclaim prefers its unique valid assigned bed.
+  The existing restored-body registry claim is consumed after successful key
+  handoff; later lobby reconnects do not repeat bed placement. Keep the separate
+  persistence_restored marker set to suppress delayed fresh-body customization.
+  Ordinary induced bed sleep is not a pending imported return. Physical legacy
+  zone residents still take the safe exit path even without an import claim.
   Missing/ambiguous/unsafe bed falls back to the body's safe saved location.
   A legacy protected sleeper may instead use its validated saved return point.
   If neither is safe, retain body/claim and hold in the lobby, with an explanation.

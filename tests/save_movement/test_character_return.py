@@ -317,6 +317,12 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertFalse(f.claims)
         self.assertTrue(f.registered['account'])
         self.assertFalse(f.lobby.spawning)
+        self.assertTrue(f.body.inducedSSD)
+        f.body.refuse_key = False
+        f.body.loc = f.home
+        self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.body.loc, f.bed_turf, 'failed key handoff consumed pending bed return')
+        self.assertTrue(f.body.persistence_restored)
 
     def test_corrupt_missing_and_in_progress_generation_never_create_fresh(self):
         for case in ('error', 'partial', 'complete_not_loaded', 'save', 'load_recovery', 'dimension_hold'):
@@ -370,9 +376,55 @@ class CharacterReturnTests(unittest.TestCase):
 
     def test_runtime_body_reconnect_does_not_teleport(self):
         f = ReturnFixture()
+        f.registered.clear()
         f.body.persistence_restored = f.body.inducedSSD = False
         self.assertTrue(f.store.reclaim_saved_player(f.lobby))
         self.assertIs(f.body.loc, f.home)
+
+    def test_imported_body_first_return_is_consumed_before_later_lobby_reclaim(self):
+        f = ReturnFixture()
+        self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.body.loc, f.bed_turf)
+        self.assertTrue(f.body.persistence_restored)
+        self.assertFalse(f.registered)
+        # Explicit engine boundaries: walk away, disconnect, enter a new lobby.
+        # Both returns below still execute the complete production reclaim flow.
+        f.body.loc = f.home
+        f.body.client, f.body._key = None, None
+        second_lobby = NS(client=f.client, spawning=False, close_spawn_windows=lambda: None)
+        f.client.mob = second_lobby
+        self.assertTrue(f.store.reclaim_saved_player(second_lobby))
+        self.assertIs(f.client.mob, f.body)
+        self.assertIs(f.body.loc, f.home, 'consumed first return teleported to bed twice')
+        self.assertTrue(f.body.persistence_restored, 'customization suppression marker was cleared')
+
+    def test_pending_import_and_ordinary_induced_sleep_have_distinct_return_admission(self):
+        for pending in (True, False):
+            for sleeping in (True, False):
+                f = ReturnFixture()
+                f.body.inducedSSD = sleeping
+                if not pending: f.registered.clear()
+                with self.subTest(pending=pending, sleeping=sleeping):
+                    self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+                    self.assertIs(f.body.loc, f.bed_turf if pending else f.home)
+                    self.assertFalse(f.body.inducedSSD)
+                    self.assertTrue(f.body.persistence_restored)
+
+    def test_legacy_physical_zone_return_is_not_disabled_by_consumed_import_claim(self):
+        f = ReturnFixture()
+        f.registered.clear()
+        f.body.loc = f.zone
+        self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.body.loc, f.bed_turf)
+        self.assertFalse(f.body.inducedSSD)
+
+    def test_reclaim_leaves_delayed_customization_suppression_intact(self):
+        nomads = adapter.extract(adapter.read('code/game/mob/living/carbon/human/nomads_spawn.dm'),
+                                 '/mob/living/human/proc/nomads_spawn')
+        self.assertRegex(nomads, r'if\(persistence_restored\)\n\s+return')
+        reclaim = adapter.extract(SOURCE, '/map_storage/proc/reclaim_saved_player')
+        self.assertNotIn('persistence_restored =', reclaim)
+        self.assertLess(reclaim.index('if(C.mob != H)'), reclaim.index('persistence_restored_bodies.Remove(C.ckey)'))
 
     def test_saved_container_and_vehicle_relationships_hold_without_extraction(self):
         for case in ('container', 'riding', 'driver', 'driver_vehicle', 'riding_mob'):
