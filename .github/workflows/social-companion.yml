@@ -20,7 +20,6 @@ jobs:
       DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE: 'true'
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
       DOTNET_NOLOGO: '1'
-      DOTNET_CLI_HOME: ${{ runner.temp }}/civ13-provider-cli
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -30,6 +29,7 @@ jobs:
         shell: pwsh
         working-directory: tools/opendream-client/native/tests/SocialContracts
         run: |
+          $env:DOTNET_CLI_HOME = Join-Path $env:RUNNER_TEMP 'civ13-provider-cli'
           $dotnet = (Get-Command dotnet -ErrorAction Stop).Source
           & $dotnet restore SocialContracts.csproj --configfile NuGet.Config -p:NuGetAudit=false --disable-parallel
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
