@@ -69,6 +69,18 @@ class CrawlContracts(unittest.TestCase):
         self.assertIn("'late-start'", runner)
         self.assertIn("'lost-lock'", runner)
 
+    def test_dynamic_blocker_retains_stop_oracle_and_existing_overlap_regression(self):
+        source = (ROOT / 'tests/human_subtile/crawl.dm').read_text()
+        self.assertIn('C.fixture_pulses == (change == "blocker" ? 5 : 4)', source)
+        self.assertIn('C.x == 8 && C.step_x == 8', source)
+        self.assertIn('C.fixture_inserted["bounds_distance"] == 0', source)
+        self.assertIn('I.fixture_inserted["bounds_distance"] == -8', source)
+        self.assertIn('"crawl_existing_overlap_preserves_native_motion_and_paid_interval"', source)
+        boundary = source[source.index('/obj/subtile_crawl_boundary/Cross'):source.index('/mob/living/human/subtile_fixture/crawl\n')]
+        self.assertIn('. = ..()', boundary)
+        self.assertNotIn('return FALSE', boundary)
+        self.assertLess(source.index('human_subtile_crawl_changes += list(change_row)'), source.index('human_subtile_crawl_assert(C.fixture_pulses'))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

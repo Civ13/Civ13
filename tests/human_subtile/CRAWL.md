@@ -19,7 +19,7 @@ an interrupted partial crawl also completes once. Native turf/Move callbacks
 still occur at their physical boundaries.
 
 This intentionally changes intermediate gameplay: physical overlap and distance
-change during the old stationary wait. Collision changes, posture exit, lost
+change during the old stationary wait. Newly encountered collision boundaries, posture exit, lost
 authority, disabling the adapter, new restraint/links/incapacitation/limb loss,
 saving, grace walls and hanging stop later pulses. The already-paid partial
 position is retained, without snapping back or continuing from an external
@@ -47,6 +47,17 @@ recovery. `run-crawl.py` stages exact Git objects and verifies compiler/runtime
 516.1688, closed port, diagnostics, bounded processes and assertion counts.
 `late-start` must fail the intermediate-progress oracle; `lost-lock` must fail the
 cancelled-attempt paid-interval oracle. Failed evidence is retained.
+
+The initial dynamic-blocker fixture was invalid: it created a full-tile object
+eight pixels inside the body after that turf had already been entered. Native
+516.1688 trace at `86c72a7d3237b5129d6adba8b4986330694bedbc` shows insertion
+distance -8, then sixteen native 2px results and the full 9ds paid interval.
+Legacy Enter/Cross admission does not retroactively re-enter that overlapping
+turf. The corrected collision case introduces a 24px-wide obstacle starting at
+the body's leading edge (bound_x 8), requires native Cross denial, and retains
+the original five-attempt/eight-pixel-stop/full-cooldown assertions. The old
+overlapped insertion remains an explicit separate native semantics regression;
+production collision behavior is unchanged. Traces are saved before assertions.
 
 ```
 # Offline staging; no native executable resolution or launch:

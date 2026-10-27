@@ -9,6 +9,9 @@ posture/restriction/ownership changes stop subsequent pulses. Keep the crawl
 transaction, scrambling lock and client deadline after early blockage/cancel.
 Floor clicks dispatch scramble even while prone: retain both initiating posture
 flags rather than assuming scramble means prone is false.
+Dynamic collision fixtures must place a new boundary ahead of the full physical
+footprint. A full-tile object created eight pixels inside an already-overlapped
+turf does not re-trigger legacy Enter/Cross; keep that native case separate.
 tests/human_subtile/run-crawl.py retains full-source headless checks and timing
 controls; compile/offline evidence does not establish native or visual acceptance.
 The prior Windows no-socket runtime hold remains unchanged.

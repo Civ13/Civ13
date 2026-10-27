@@ -8,6 +8,20 @@ var/list/human_subtile_crawl_changes = list()
 	if (!ok)
 		throw EXCEPTION(label)
 
+// At pulse four the body's leading edge is eight pixels into the next turf.
+// A new obstacle must start at that edge, rather than inside the body. Keep
+// native Cross behavior intact and record its actual return for the oracle.
+/obj/subtile_crawl_boundary
+	bound_x = 8
+	bound_width = 24
+	var/list/fixture_crosses = list()
+
+/obj/subtile_crawl_boundary/Cross(atom/movable/mover)
+	. = ..()
+	if (istype(mover, /mob/living/human/subtile_fixture/crawl))
+		var/mob/living/human/H = mover
+		fixture_crosses += list(list("at" = world.time, "position" = H.human_subtile_snapshot(), "mover_density" = mover.density, "blocker_density" = density, "permitted" = .))
+
 /mob/living/human/subtile_fixture/crawl
 	var/fixture_change
 	var/fixture_change_after = 4
@@ -56,10 +70,13 @@ var/list/human_subtile_crawl_changes = list()
 		if ("displaced")
 			forceMove(locate(12, 10, 1))
 			fixture_displaced = human_subtile_snapshot()
-		if ("blocker")
-			fixture_blocker = new(get_step(src, EAST))
+		if ("blocker", "overlap-blocker")
+			if (fixture_change == "blocker")
+				fixture_blocker = new /obj/subtile_crawl_boundary(get_step(src, EAST))
+			else
+				fixture_blocker = new(get_step(src, EAST))
 			fixture_blocker.density = TRUE
-			fixture_inserted = list("at" = world.time, "actor" = human_subtile_snapshot(), "blocker_x" = fixture_blocker.x, "blocker_y" = fixture_blocker.y, "blocker_width" = fixture_blocker.bound_width, "blocker_height" = fixture_blocker.bound_height, "blocker_density" = fixture_blocker.density, "bounds_distance" = bounds_dist(src, fixture_blocker), "already_overlapped_turf" = (fixture_blocker.loc in locs))
+			fixture_inserted = list("at" = world.time, "actor" = human_subtile_snapshot(), "actor_density" = density, "blocker_x" = fixture_blocker.x, "blocker_y" = fixture_blocker.y, "blocker_bound_x" = fixture_blocker.bound_x, "blocker_width" = fixture_blocker.bound_width, "blocker_height" = fixture_blocker.bound_height, "blocker_density" = fixture_blocker.density, "bounds_distance" = bounds_dist(src, fixture_blocker), "already_overlapped_turf" = (fixture_blocker.loc in locs))
 	return
 
 /proc/human_subtile_crawl_actor()
@@ -131,6 +148,10 @@ var/list/human_subtile_crawl_changes = list()
 		var/list/change_row = list("change" = change, "started" = started, "finished" = world.time, "pulses" = C.fixture_pulses, "position" = C.human_subtile_snapshot(), "inserted" = C.fixture_inserted, "rows" = C.fixture_rows)
 		human_subtile_crawl_changes += list(change_row)
 		text2file(json_encode(change_row), "crawl-changes.log")
+		if (change == "blocker")
+			var/obj/subtile_crawl_boundary/edge = C.fixture_blocker
+			change_row["crosses"] = edge.fixture_crosses
+			human_subtile_crawl_assert(C.fixture_inserted["bounds_distance"] == 0 && edge.fixture_crosses.len > 0 && !edge.fixture_crosses[1]["permitted"], "crawl_new_boundary_does_not_spawn_inside_body_and_native_cross_denies")
 		human_subtile_crawl_assert(C.fixture_pulses == (change == "blocker" ? 5 : 4), "crawl_dynamic_cancellation_or_collision_stops_pulses")
 		human_subtile_crawl_assert(world.time >= started + 9 && world.time <= started + 9 + world.tick_lag && !C.scrambling && !C.human_subtile_transaction && !C.human_subtile_pulse && !C.human_subtile_glide_owned, "crawl_cancel_retains_deadline_cleans_visuals")
 		if (change == "displaced")
@@ -141,6 +162,27 @@ var/list/human_subtile_crawl_changes = list()
 		C.pulling = null
 		qdel(C.fixture_blocker)
 		qdel(C)
+
+	// Preserve the original failed setup as a separate engine-semantics check.
+	// This object is created inside the already-entered turf/body, so its
+	// insertion does not retroactively cause Enter/Cross on subsequent pulses.
+	var/mob/living/human/subtile_fixture/crawl/I = human_subtile_crawl_actor()
+	I.lying = TRUE
+	I.fixture_change = "overlap-blocker"
+	var/overlap_started = world.time
+	human_subtile_crawl_action(I, "scramble", EAST)
+	var/list/overlap_row = list("change" = "overlap-blocker", "started" = overlap_started, "finished" = world.time, "pulses" = I.fixture_pulses, "position" = I.human_subtile_snapshot(), "inserted" = I.fixture_inserted, "rows" = I.fixture_rows)
+	human_subtile_crawl_changes += list(overlap_row)
+	text2file(json_encode(overlap_row), "crawl-changes.log")
+	human_subtile_crawl_assert(I.fixture_inserted["bounds_distance"] == -8 && I.fixture_inserted["already_overlapped_turf"], "crawl_original_blocker_setup_is_existing_eight_pixel_overlap")
+	human_subtile_crawl_assert(I.fixture_pulses == 16 && I.x == 9 && !I.step_x && world.time >= overlap_started + 9 && world.time <= overlap_started + 9 + world.tick_lag, "crawl_existing_overlap_preserves_native_motion_and_paid_interval")
+	var/all_native_two = TRUE
+	for (var/list/overlap_pulse in I.fixture_rows)
+		if (overlap_pulse["native"] != 2)
+			all_native_two = FALSE
+	human_subtile_crawl_assert(all_native_two && I.fixture_human_completions == 1 && I.fixture_living_completions == 1, "crawl_existing_overlap_keeps_native_two_pixel_pulses_once_only_hooks")
+	qdel(I.fixture_blocker)
+	qdel(I)
 
 	var/mob/living/human/subtile_fixture/crawl/B = human_subtile_crawl_actor()
 	B.lying = TRUE
