@@ -38,7 +38,7 @@ def prepare(out, control='none'):
                        'due = start_time + pulse_count * duration / pulse_count')
     if control == 'lost-lock':
         diagonal.adapt(out, manifest, module, 'while (world.time < end_time)',
-                       'while (FALSE)')
+                       'while (world.time < start_time)')
     (out / 'crawl-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     return manifest
 
