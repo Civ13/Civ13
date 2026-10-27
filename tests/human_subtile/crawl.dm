@@ -1,6 +1,7 @@
 // Full production proning/scramble entry, native collision and timing. Explicit
 // headless client-authority adapter: no client/rendering claim is made here.
 var/human_subtile_crawl_checks = 0
+var/list/human_subtile_crawl_changes = list()
 
 /proc/human_subtile_crawl_assert(ok, label)
 	human_subtile_crawl_checks++
@@ -16,6 +17,7 @@ var/human_subtile_crawl_checks = 0
 	var/fixture_reach_during
 	var/fixture_reentry_refused = FALSE
 	var/list/fixture_displaced
+	var/list/fixture_inserted
 
 /mob/living/human/subtile_fixture/crawl/human_subtile_crawl_authority(client/owner)
 	if (client)
@@ -57,6 +59,7 @@ var/human_subtile_crawl_checks = 0
 		if ("blocker")
 			fixture_blocker = new(get_step(src, EAST))
 			fixture_blocker.density = TRUE
+			fixture_inserted = list("at" = world.time, "actor" = human_subtile_snapshot(), "blocker_x" = fixture_blocker.x, "blocker_y" = fixture_blocker.y, "blocker_width" = fixture_blocker.bound_width, "blocker_height" = fixture_blocker.bound_height, "blocker_density" = fixture_blocker.density, "bounds_distance" = bounds_dist(src, fixture_blocker), "already_overlapped_turf" = (fixture_blocker.loc in locs))
 	return
 
 /proc/human_subtile_crawl_actor()
@@ -123,6 +126,11 @@ var/human_subtile_crawl_checks = 0
 		C.fixture_change = change
 		var/started = world.time
 		human_subtile_crawl_action(C, "scramble", EAST)
+		// Record before asserting, so failed native expectations retain the
+		// physical trace and insertion geometry rather than only a check label.
+		var/list/change_row = list("change" = change, "started" = started, "finished" = world.time, "pulses" = C.fixture_pulses, "position" = C.human_subtile_snapshot(), "inserted" = C.fixture_inserted, "rows" = C.fixture_rows)
+		human_subtile_crawl_changes += list(change_row)
+		text2file(json_encode(change_row), "crawl-changes.log")
 		human_subtile_crawl_assert(C.fixture_pulses == (change == "blocker" ? 5 : 4), "crawl_dynamic_cancellation_or_collision_stops_pulses")
 		human_subtile_crawl_assert(world.time >= started + 9 && world.time <= started + 9 + world.tick_lag && !C.scrambling && !C.human_subtile_transaction && !C.human_subtile_pulse && !C.human_subtile_glide_owned, "crawl_cancel_retains_deadline_cleans_visuals")
 		if (change == "displaced")

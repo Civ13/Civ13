@@ -28,7 +28,7 @@ def prepare(out, control='none'):
                    '\t\t\thuman_subtile_fixture_headless()\n\t\t\thuman_subtile_fixture_crawl()')
     diagonal.adapt(out, manifest, 'tests/human_subtile/probe.dm',
                    '"checks" = human_subtile_fixture_checks,',
-                   '"checks" = human_subtile_fixture_checks, "crawl_checks" = human_subtile_crawl_checks,')
+                   '"checks" = human_subtile_fixture_checks, "crawl_checks" = human_subtile_crawl_checks, "crawl_changes" = human_subtile_crawl_changes,')
     with (out / manifest['dme']).open('a', encoding='utf-8') as stream:
         stream.write('\n#include "tests\\human_subtile\\crawl.dm"\n')
     module = 'code/game/mob/living/carbon/human/subtile_movement.dm'
