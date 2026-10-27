@@ -40,7 +40,8 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
-    'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',), 'paths': (
+    'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
+                              'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
         'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},

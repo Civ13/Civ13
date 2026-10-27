@@ -47,6 +47,8 @@
 	var/tmp/throw_launch_dy = null
 	var/tmp/throw_launch_x = null
 	var/tmp/throw_launch_y = null
+	// Identity of one accepted flight, never a reusable permission flag.
+	var/tmp/list/throw_flight_token = null
 	var/atom/original_target = null
 	var/throw_speed = 2
 	var/throw_range = 7
@@ -86,6 +88,7 @@
 
 /atom/movable/Destroy()
 	clear_throw_launch()
+	throw_flight_token = null
 	. = ..()
 	for (var/atom/movable/AM in contents)
 		qdel(AM)
@@ -140,8 +143,10 @@
 
 	if (throwing)
 		clear_throw_launch()
+		throw_flight_token = null
 		throw_impact(A)
-		throwing = FALSE
+		if (isnull(throw_flight_token))
+			throwing = FALSE
 
 	spawn(0)
 		if (A && yes)
@@ -152,16 +157,23 @@
 	..()
 	return
 
-/atom/movable/proc/forceMove(atom/destination, var/special_event)
+/atom/movable/proc/forceMove(atom/destination, var/special_event, list/throw_hop_token = null)
+	if (!isnull(throw_hop_token) && throw_hop_token != throw_flight_token)
+		return FALSE
 	if (!persistence_movement_allowed(src, destination))
 		return FALSE
 	if (loc == destination)
 		return FALSE
+	// Only this flight's processor-owned hop may preserve initial overlap.
+	// Nested callbacks use their own default null; a newer throw has a new token.
+	if (throw_launch_source && isnull(throw_hop_token))
+		clear_throw_launch()
 
 	var/is_origin_turf = isturf(loc)
 	var/is_destination_turf = isturf(destination)
 	if (!is_destination_turf || (is_origin_turf && z != destination.z))
 		clear_throw_launch()
+		throw_flight_token = null
 	// It is a new area if:
 	//  Both the origin and destination are turfs with different areas.
 	//  When either origin or destination is a turf and the other is not.
@@ -205,12 +217,12 @@
 		return FALSE
 	return persistence_set_loc(destination)
 
-/atom/movable/proc/forceMove_nondenseturf(atom/destination, var/special_event)
+/atom/movable/proc/forceMove_nondenseturf(atom/destination, var/special_event, list/throw_hop_token = null)
 	if (isturf(destination))
 		var/turf/T = destination
 		if (T.density)
 			return FALSE
-	return forceMove(destination, special_event)
+	return forceMove(destination, special_event, throw_hop_token)
 
 
 //called when src is thrown into hit_atom
@@ -289,6 +301,7 @@
 // Decide whether a movable atom being thrown can pass through its current turf.
 /atom/movable/proc/hit_check(var/speed, advanced = FALSE)
 	update_throw_launch(advanced)
+	var/list/flight_token = throw_flight_token
 	if (throwing)
 		for (var/atom/movable/A in get_turf(src))
 			if (A == src) continue
@@ -299,17 +312,22 @@
 					if (locate(/obj/structure/window/barrier) in get_turf(src))
 						continue
 				throw_impact(A,speed)
+				if (throw_flight_token != flight_token)
+					return
 			else if (isobj(A))
 				var/obj/structure/window/barrier/S = A
 				if (istype(S) && S.CanPass(src, get_turf(src)))
 					continue
 				else if (A.density && !A.throwpass)	// **TODO: Better behaviour for windows which are dense, but shouldn't always stop movement
 					throw_impact(A,speed)
+					if (throw_flight_token != flight_token)
+						return
 
 /atom/movable/proc/throw_at(atom/target, _range, _speed, _thrower)
 	. = TRUE
 	if (!target || !src)	return FALSE
 
+	throw_flight_token = list()
 	original_target = target
 
 	//use a modified version of Bresenham's algorithm to get from the atom's current position to that of the target
@@ -359,13 +377,18 @@
 
 /atom/movable/proc/finished_throwing()
 	clear_throw_launch()
+	throw_flight_token = null
 	thrown_list -= src
 	var/turf/new_loc = get_turf(src)
 	// Clear the completed target before impact/Entered can start a newer throw.
 	original_target = null
 	if (isobj(src)) throw_impact(new_loc,speed)
+	if (!isnull(throw_flight_token))
+		return // A callback started a newer flight; old cleanup must not cancel it.
 	if (src && new_loc)
 		new_loc.Entered(src)
+		if (!isnull(throw_flight_token))
+			return
 		throwing = FALSE
 		thrower = null
 		throw_source = null

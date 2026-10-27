@@ -137,19 +137,20 @@ class ThrowTargetTests(unittest.TestCase):
         old, new = object(), object()
         observed = []
         atom = NS(original_target=old, speed=2, throwing=True, thrower=object(), throw_source=object())
+        atom.throw_flight_token = object()
         floor = NS(Entered=lambda actor: callback('entered', actor, new, observed))
         atom.throw_impact = lambda where, speed: callback('impact', atom, new, observed)
         class Thrown:
             def __isub__(self, value):
                 return self
         env = dict(thrown_list=Thrown(), get_turf=lambda actor: floor,
-                   isobj=lambda actor: True, istype=lambda *args: False, BOTTLE='bottle')
+                   isobj=lambda actor: True, istype=lambda *args: False, isnull=lambda value: value is None, BOTTLE='bottle')
         source = read(MOVABLE).replace('/obj/item/weapon/reagent_containers/food/drinks/bottle', '/BOTTLE')
         launch_fields = ('throw_launch_source', 'throw_launch_dx', 'throw_launch_dy', 'throw_launch_x', 'throw_launch_y')
         for key in launch_fields:
             setattr(atom, key, object())
         fields = (*adapter.FIELDS, 'original_target', 'throwing', 'thrower', 'throw_source', 'speed', 'throw_impact',
-                  'clear_throw_launch', *launch_fields)
+                  'clear_throw_launch', 'throw_flight_token', *launch_fields)
         with patch.object(adapter, 'FIELDS', fields):
             clear = project(source, '/atom/movable/proc/clear_throw_launch', 'src', {}, True)
             atom.clear_throw_launch = lambda: clear(atom)

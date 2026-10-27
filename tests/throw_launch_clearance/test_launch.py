@@ -19,13 +19,24 @@ FIELDS = ('throw_launch_source', 'throw_launch_dx', 'throw_launch_dy', 'throw_la
           'clear_throw_launch', 'begin_throw_launch', 'update_throw_launch', 'throw_impact',
           'thrower', 'throwing', 'dx', 'dy', 'x', 'y', 'z', 'original_target', 'allow_spin',
           'speed', 'range', 'throw_source', 'last_throw_source', 'dist_x', 'dist_y',
-          'dist_travelled', 'a', 'error', 'throwmode')
+          'dist_travelled', 'a', 'error', 'throwmode', 'throw_flight_token',
+          'forceMove', 'forceMove_nondenseturf')
 
 
 class Turf:
     def __init__(self, world, x, y, z=1):
         self.world, self.x, self.y, self.z = world, x, y, z
         self.allow_spin = False
+        self.density = False
+        self.loc = world.area
+        self.on_enter = None
+
+    def Entered(self, actor, origin=None, special_event=None):
+        if self.on_enter:
+            self.on_enter(actor, origin)
+
+    def Exited(self, *args):
+        pass
 
     def __iter__(self):
         return iter([a for a in self.world.atoms if a.z == self.z and
@@ -36,6 +47,8 @@ class Turf:
 class World:
     def __init__(self):
         self.tiles, self.atoms, self.registered = {}, [], []
+        self.area = type('Area', (), {'Entered': lambda *args: None, 'Exited': lambda *args: None})()
+        self.movement_allowed = True
 
     def tile(self, x, y, z=1):
         return self.tiles.setdefault((x, y, z), Turf(self, x, y, z))
@@ -54,6 +67,8 @@ class Atom:
         self.throwing = True
         self.thrower = None
         self.dx, self.dy = 4, 1
+        self.throw_flight_token = None
+        self.detached = False
         for name in FIELDS[:5]:
             setattr(self, name, None)
         world.atoms.append(self)
@@ -68,7 +83,22 @@ class Atom:
 
     @property
     def loc(self):
-        return self.container or self.world.tile(self.x, self.y, self.z)
+        return None if self.detached else self.container or self.world.tile(self.x, self.y, self.z)
+
+    @loc.setter
+    def loc(self, destination):
+        self.detached = destination is None
+        if isinstance(destination, Turf):
+            self.px, self.py, self.z = destination.x * 32, destination.y * 32, destination.z
+            self.container = None
+        else:
+            self.container = destination
+
+    def Crossed(self, *args):
+        pass
+
+    def Uncrossed(self, *args):
+        pass
 
     def throw_impact(self, target, speed):
         self.impacts.append(target)
@@ -91,11 +121,16 @@ def project(declaration, args, world, source=MOVABLE):
     source = source.replace('istype(A,/mob/living)', 'isliving(A)')
     source = source.replace('locate(/obj/structure/window/barrier) in get_turf(src)', 'has_barrier(get_turf(src))')
     source = source.replace('thrown_list += src', 'register_throw(src)')
+    source = source.replace('thrown_list -= src', 'unregister_throw(src)')
+    source = source.replace('..()', 'parent()')
     env = dict(EAST=4, WEST=8, NORTH=1, SOUTH=2, abs=abs,
+               isnull=lambda a: a is None, list=lambda: object(),
+               persistence_movement_allowed=lambda actor, destination: world.movement_allowed,
                isitem=lambda a: a.kind == 'item', ishuman=lambda a: bool(a) and a.kind == 'human',
                isDeleted=lambda a: a.deleted, isturf=lambda a: isinstance(a, Turf),
                bounds_dist=bounds_dist, get_turf=lambda a: a.loc,
                get_area=lambda a: None, register_throw=world.registered.append,
+               unregister_throw=lambda actor: None, parent=lambda: None, deferred=lambda delay: False,
                typed_iter=lambda where, kind: list(where),
                isliving=lambda a: a.kind in ('human', 'living'),
                isobj=lambda a: a.kind in ('item', 'structure', 'barrier'),
@@ -111,10 +146,13 @@ def project(declaration, args, world, source=MOVABLE):
 def bind(atom, source=MOVABLE):
     for name, args in (('clear_throw_launch', 'src'), ('begin_throw_launch', 'src'),
                        ('update_throw_launch', 'src, advanced'), ('hit_check', 'src, speed, advanced=False'),
-                       ('throw_at', 'src, target, _range, _speed, _thrower')):
+                       ('throw_at', 'src, target, _range, _speed, _thrower'),
+                       ('forceMove', 'src, destination, special_event=None, throw_hop_token=None'),
+                       ('forceMove_nondenseturf', 'src, destination, special_event=None, throw_hop_token=None'),
+                       ('finished_throwing', 'src')):
         declaration = '/atom/movable/proc/' + name
         fn = project(declaration, args, atom.world, source)
-        setattr(atom, name, lambda *values, fn=fn: fn(atom, *values))
+        setattr(atom, name, lambda *values, fn=fn, **keywords: fn(atom, *values, **keywords))
     return atom
 
 
@@ -127,10 +165,17 @@ def launch(world, direction='N', source_position=(96, 98), *, thrower_kind='huma
 
 
 def hop(item, dx, dy, advanced=True):
-    if advanced:
-        item.px += dx * 32
-        item.py += dy * 32
-    item.hit_check(2, advanced)
+    # Execute the actual common processor block, not a copy of its guard logic.
+    fire = (ROOT / 'code/processes/throwing.dm').read_text()
+    matches = re.findall(r'(?m)^\t{9}var/advanced = FALSE\n.*?^\t{9}AM.dist_travelled\+\+\n', fire, re.S)
+    assert len(matches) == 4
+    body = '\n'.join('\t\t' + line[9:] for line in matches[0].splitlines())
+    projected = ('/proc/processor_hop()\n\tfor (var/atom/movable/AM in candidates)\n'
+                 '\t\tvar/list/flight_token = AM.throw_flight_token\n' + body + '\n')
+    env = dict(candidates=[item], canMove=advanced,
+               step=item.world.tile(item.x + dx, item.y + dy, item.z),
+               typed_iter=lambda values, kind: iter(values))
+    ADAPTER.project(projected, '/proc/processor_hop', '', env)()
 
 
 class LaunchTests(unittest.TestCase):
@@ -296,11 +341,11 @@ class LaunchTests(unittest.TestCase):
 
     def test_actual_process_consumes_move_result_in_all_four_branches(self):
         fire = (ROOT / 'code/processes/throwing.dm').read_text()
-        expected = ('var/advanced = FALSE', 'advanced = AM.forceMove_nondenseturf(step)',
+        expected = ('var/advanced = FALSE', 'advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)',
                     'AM.hit_check(AM.speed, advanced)')
         for text in expected:
             self.assertEqual(fire.count(text), 4)
-        pattern = r'var/advanced = FALSE\s+if \(canMove\)\s+advanced = AM.forceMove_nondenseturf\(step\)\s+AM.hit_check\(AM.speed, advanced\)\s+AM.error'
+        pattern = r'var/advanced = FALSE\s+if \(canMove\)\s+advanced = AM.forceMove_nondenseturf\(step, throw_hop_token = flight_token\)\s+if \(!AM \|\| AM.throw_flight_token != flight_token\)\s+continue[^\n]*\s+AM.hit_check\(AM.speed, advanced\)\s+if \(!AM \|\| AM.throw_flight_token != flight_token\)\s+continue[^\n]*\s+AM.error'
         self.assertEqual(len(re.findall(pattern, fire)), 4)
 
     def test_lifecycle_and_custom_save_policy(self):
@@ -316,8 +361,127 @@ class LaunchTests(unittest.TestCase):
         policy = (ROOT / 'code/modules/persistence/functions.dm').read_text()
         fn = ADAPTER.project(policy.replace('..()', 'parent(key)'), '/atom/movable/persistence_runtime_var',
                              'src, key', {'parent': lambda key: False}, method=True)
-        for key in FIELDS[:5]: self.assertTrue(fn(None, key), key)
+        for key in (*FIELDS[:5], 'throw_flight_token'): self.assertTrue(fn(None, key), key)
         for key in ('amount', 'loc', 'thrower', 'speed', 'range'): self.assertFalse(fn(None, key), key)
+
+    def test_unrelated_same_z_round_trip_revokes_clearance_immediately(self):
+        actor, item = launch(World())
+        origin = item.loc
+        self.assertTrue(item.forceMove(item.world.tile(item.x + 1, item.y)))
+        self.assertIsNone(item.throw_launch_source)
+        self.assertTrue(item.forceMove(origin))
+        hop(item, 0, 1)
+        self.assertIn(actor, item.impacts)
+
+    def test_same_turf_noop_and_rejected_move_preserve_uninterrupted_state(self):
+        actor, item = launch(World())
+        token = item.throw_flight_token
+        self.assertFalse(item.forceMove(item.loc))
+        self.assertIs(item.throw_launch_source, actor)
+        self.assertEqual(item.dist_travelled, 0)
+        item.world.movement_allowed = False
+        self.assertFalse(item.forceMove(item.world.tile(item.x + 1, item.y)))
+        self.assertIs(item.throw_launch_source, actor)
+        item.world.movement_allowed = True
+        hop(item, 0, 1)
+        self.assertIs(item.throw_flight_token, token)
+        self.assertNotIn(actor, item.impacts)
+
+    def test_nested_relocation_does_not_inherit_outer_hop_permission(self):
+        actor, item = launch(World())
+        target = item.world.tile(item.x, item.y + 1)
+        def entered(mover, origin):
+            target.on_enter = None
+            mover.forceMove(origin)
+            mover.forceMove(target)
+        target.on_enter = entered
+        hop(item, 0, 1)
+        self.assertIsNone(item.throw_launch_source)
+        self.assertIn(actor, item.impacts)
+
+    def test_callback_new_throw_skips_old_hit_and_progress_and_stale_token(self):
+        w = World()
+        actor, item = launch(w)
+        old_token = item.throw_flight_token
+        target = w.tile(item.x, item.y + 1)
+        other = Atom(w, target.x * 32, target.y * 32, kind='human')
+        def entered(mover, origin):
+            target.on_enter = None
+            mover.throw_at(w.tile(target.x, target.y + 4), 9, 3, other)
+        target.on_enter = entered
+        hop(item, 0, 1)
+        self.assertIsNot(item.throw_flight_token, old_token)
+        self.assertIs(item.throw_launch_source, other)
+        self.assertEqual(item.dist_travelled, 0)
+        self.assertEqual(item.impacts, [])
+        position = (item.px, item.py)
+        self.assertFalse(item.forceMove(w.tile(item.x, item.y + 1), throw_hop_token=old_token))
+        self.assertEqual((item.px, item.py), position)
+        hop(item, 0, 1)
+        self.assertEqual(item.dist_travelled, 1)
+        self.assertNotIn(other, item.impacts)
+
+    def test_callback_exception_cannot_leak_call_local_permission(self):
+        actor, item = launch(World())
+        target = item.world.tile(item.x, item.y + 1)
+        def entered(mover, origin):
+            target.on_enter = None
+            raise RuntimeError('fixture callback')
+        target.on_enter = entered
+        with self.assertRaisesRegex(RuntimeError, 'fixture callback'):
+            hop(item, 0, 1)
+        self.assertTrue(item.forceMove(item.world.tile(item.x + 1, item.y)))
+        self.assertIsNone(item.throw_launch_source)
+
+    def test_impact_rethrow_stops_old_collision_loop_and_progress(self):
+        w = World()
+        actor, item = launch(w)
+        target = w.tile(item.x, item.y + 1)
+        other = Atom(w, target.x * 32, target.y * 32, kind='human')
+        Atom(w, target.x * 32, target.y * 32, kind='human')
+        previous = item.throw_flight_token
+        def impact(hit, speed):
+            item.impacts.append(hit)
+            item.throw_at(w.tile(target.x, target.y + 4), 9, 3, other)
+        item.throw_impact = impact
+        hop(item, 0, 1)
+        self.assertEqual(item.impacts, [other])
+        self.assertIsNot(item.throw_flight_token, previous)
+        self.assertIs(item.throw_launch_source, other)
+        self.assertEqual(item.dist_travelled, 0)
+
+    def test_old_same_z_boundary_control_loses_relocation_revocation(self):
+        control = MOVABLE.replace('if (throw_launch_source && isnull(throw_hop_token))', 'if (FALSE)')
+        actor, item = launch(World(), source=control)
+        origin = item.loc
+        item.forceMove(item.world.tile(item.x + 1, item.y))
+        self.assertIs(item.throw_launch_source, actor)  # Rejected old behavior.
+        item.forceMove(origin)
+        hop(item, 0, 1)
+        self.assertNotIn(actor, item.impacts)
+
+    def test_completion_callback_rethrow_keeps_new_flight_state(self):
+        w = World()
+        actor, item = launch(w)
+        previous = item.throw_flight_token
+        item.throw_impact = lambda *args: item.throw_at(w.tile(3, 8), 5, 4, actor)
+        item.finished_throwing()
+        self.assertIsNot(item.throw_flight_token, previous)
+        self.assertTrue(item.throwing)
+        self.assertIs(item.thrower, actor)
+        self.assertIs(item.throw_launch_source, actor)
+        self.assertEqual(item.dist_travelled, 0)
+
+    def test_bump_callback_rethrow_keeps_new_flight_state(self):
+        w = World()
+        actor, item = launch(w)
+        previous = item.throw_flight_token
+        item.throw_impact = lambda *args: item.throw_at(w.tile(3, 8), 5, 4, actor)
+        bump = project('/atom/movable/Bump', 'src, A, yes', w)
+        bump(item, item.loc, False)
+        self.assertIsNot(item.throw_flight_token, previous)
+        self.assertTrue(item.throwing)
+        self.assertIs(item.thrower, actor)
 
 
 if __name__ == '__main__':

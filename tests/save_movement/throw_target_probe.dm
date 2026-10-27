@@ -24,6 +24,7 @@ var/throw_callback_saw_old_target = FALSE
 	var/tmp/throw_launch_dy
 	var/tmp/throw_launch_x
 	var/tmp/throw_launch_y
+	var/tmp/list/throw_flight_token
 	var/throwing = FALSE
 	var/thrower
 	var/speed = 0

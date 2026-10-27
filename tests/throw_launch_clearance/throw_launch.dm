@@ -2,6 +2,24 @@
 // Uses native footprint membership, actual throwing.fire and real hitby dispatch
 // into a harmless fixture override. Runtime execution is a separate approval.
 var/throw_launch_fixture_checks = 0
+#define THROW_LAUNCH_EXPECTED_CHECKS 242
+
+/turf/floor/plating/subtile_fixture
+	var/fixture_throw_action
+	var/mob/living/human/fixture_throw_source
+	var/turf/fixture_throw_target
+
+/turf/floor/plating/subtile_fixture/Entered(atom/A, atom/old)
+	. = ..()
+	if (!istype(A, /obj/item/throw_launch_fixture) || !fixture_throw_action)
+		return
+	var/action = fixture_throw_action
+	fixture_throw_action = null
+	if (action == "relocate")
+		A:forceMove(old)
+		A:forceMove(src)
+	else if (action == "rethrow")
+		A:throw_at(fixture_throw_target, 12, 2, fixture_throw_source)
 
 /mob/living/human/subtile_fixture
 	var/fixture_throw_hits = 0
@@ -15,9 +33,16 @@ var/throw_launch_fixture_checks = 0
 
 /obj/item/throw_launch_fixture
 	var/list/fixture_impacts = list()
+	var/mob/living/human/fixture_rethrow_source
+	var/turf/fixture_rethrow_target
 
 /obj/item/throw_launch_fixture/throw_impact(atom/hit_atom, speed)
 	fixture_impacts += hit_atom
+	if (fixture_rethrow_source)
+		var/mob/living/human/source = fixture_rethrow_source
+		fixture_rethrow_source = null
+		throw_at(fixture_rethrow_target, 12, 2, source)
+		return
 	if (isliving(hit_atom))
 		return ..()
 
@@ -80,6 +105,17 @@ var/throw_launch_fixture_checks = 0
 		throw_launch_fixture_assert(!M.fixture_throw_hits, "moving_release_no_self_hit_[direction]")
 		qdel(J)
 		qdel(M)
+		// The opposite deterministic ordering: real human pulse before release.
+		var/mob/living/human/subtile_fixture/U = throw_launch_fixture_actor(direction, 0)
+		U.set_human_subtile(TRUE)
+		U.fixture_cancel_after = 1
+		U.SelfMove(get_step(U, direction), direction, world.time + 4)
+		throw_launch_fixture_assert(U.fixture_pulses == 1, "pulse_before_release_actual_[direction]")
+		var/obj/item/throw_launch_fixture/UI = throw_launch_fixture_item(U, direction)
+		throw_launch_fixture_step(P, UI)
+		throw_launch_fixture_assert(!U.fixture_throw_hits, "pulse_before_release_no_self_hit_[direction]")
+		qdel(UI)
+		qdel(U)
 	// A diagonal initially overlaps across BOTH of its first cardinal hops.
 	var/mob/living/human/subtile_fixture/D = throw_launch_fixture_actor(NORTHEAST, 2)
 	var/obj/item/throw_launch_fixture/DI = throw_launch_fixture_item(D, NORTHEAST)
@@ -148,8 +184,101 @@ var/throw_launch_fixture_checks = 0
 	CI.throw_at(get_step(C, NORTH), 1, 2, C)
 	CI.Bump(get_turf(C), FALSE)
 	throw_launch_fixture_assert(!CI.throw_launch_source && !CI.throwing, "bump_ends_launch_segment")
-	for (var/key in list("throw_launch_source", "throw_launch_dx", "throw_launch_dy", "throw_launch_x", "throw_launch_y"))
+	for (var/key in list("throw_launch_source", "throw_launch_dx", "throw_launch_dy", "throw_launch_x", "throw_launch_y", "throw_flight_token"))
 		throw_launch_fixture_assert(CI.persistence_runtime_var(key), "runtime_exclusion_[key]")
 	qdel(CI)
 	qdel(C)
+	// A literal same-turf request is an unchanged no-op, not a flight hop.
+	var/mob/living/human/subtile_fixture/F = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/FI = throw_launch_fixture_item(F, NORTH)
+	var/turf/origin = get_turf(FI)
+	var/noop = FI.forceMove(origin)
+	throw_launch_fixture_assert(!noop && FI.loc == origin && !FI.dist_travelled, "same_turf_force_move_does_not_advance")
+	throw_launch_fixture_assert(FI.throw_launch_source == F, "same_turf_noop_keeps_uninterrupted_initial_state")
+	throw_launch_fixture_step(P, FI)
+	throw_launch_fixture_assert(!F.fixture_throw_hits, "same_turf_noop_then_normal_launch_stays_safe")
+	qdel(FI)
+	qdel(F)
+	// A genuine same-z relocation away and back must not look uninterrupted.
+	var/mob/living/human/subtile_fixture/V = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/VI = throw_launch_fixture_item(V, NORTH)
+	var/turf/start = get_turf(VI)
+	var/away = VI.forceMove(get_step(VI, EAST))
+	throw_launch_fixture_assert(away && !VI.throw_launch_source, "same_z_away_revokes_clearance_immediately")
+	var/back = VI.forceMove(start)
+	throw_launch_fixture_assert(back && !VI.throw_launch_source, "same_z_return_cannot_rearm_clearance")
+	throw_launch_fixture_step(P, VI)
+	throw_launch_fixture_assert(V.fixture_throw_hits == 1, "same_z_return_followed_by_hop_hits_source")
+	qdel(VI)
+	qdel(V)
+	// Return the projectile itself after a verified separated flight sample.
+	var/mob/living/human/subtile_fixture/Q = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/QI = throw_launch_fixture_item(Q, NORTH)
+	throw_launch_fixture_step(P, QI)
+	throw_launch_fixture_step(P, QI)
+	throw_launch_fixture_assert(!QI.throw_launch_source, "projectile_return_starts_after_separation")
+	QI.dy = SOUTH
+	QI.original_target = locate(QI.x, QI.y - 4, 1)
+	throw_launch_fixture_step(P, QI)
+	throw_launch_fixture_assert(Q.fixture_throw_hits == 1, "returning_projectile_after_separation_hits_source")
+	qdel(QI)
+	qdel(Q)
+	// Real Entered callback relocation must not inherit the outer hop token.
+	var/mob/living/human/subtile_fixture/N = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/NI = throw_launch_fixture_item(N, NORTH)
+	var/turf/floor/plating/subtile_fixture/nested_tile = get_step(NI, NORTH)
+	nested_tile.fixture_throw_action = "relocate"
+	throw_launch_fixture_step(P, NI)
+	throw_launch_fixture_assert(!NI.throw_launch_source && N.fixture_throw_hits == 1, "entered_relocation_revokes_outer_permission")
+	qdel(NI)
+	qdel(N)
+	// A callback-started new flight must not consume the old frame's hit/progress.
+	var/mob/living/human/subtile_fixture/E = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/EI = throw_launch_fixture_item(E, NORTH)
+	var/turf/floor/plating/subtile_fixture/rethrow_tile = get_step(EI, NORTH)
+	var/mob/living/human/subtile_fixture/EO = human_subtile_fixture_actor(rethrow_tile.x, rethrow_tile.y)
+	var/list/old_token = EI.throw_flight_token
+	rethrow_tile.fixture_throw_action = "rethrow"
+	rethrow_tile.fixture_throw_source = EO
+	rethrow_tile.fixture_throw_target = get_step(EO, NORTH)
+	throw_launch_fixture_step(P, EI)
+	throw_launch_fixture_assert(EI.throw_flight_token != old_token && EI.throw_launch_source == EO && !EI.dist_travelled && !E.fixture_throw_hits && !EO.fixture_throw_hits, "entered_rethrow_skips_old_frame")
+	throw_launch_fixture_step(P, EI)
+	throw_launch_fixture_assert(EI.dist_travelled == 1 && !EO.fixture_throw_hits, "replacement_flight_owns_next_hop")
+	rethrow_tile.fixture_throw_source = null
+	rethrow_tile.fixture_throw_target = null
+	qdel(EI)
+	qdel(EO)
+	qdel(E)
+	// Impact callbacks must also stop the old collision loop and progress work.
+	var/mob/living/human/subtile_fixture/J = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/JI = throw_launch_fixture_item(J, NORTH)
+	var/turf/impact_tile = get_step(JI, NORTH)
+	var/mob/living/human/subtile_fixture/JO = human_subtile_fixture_actor(impact_tile.x, impact_tile.y)
+	var/mob/living/human/subtile_fixture/JX = human_subtile_fixture_actor(impact_tile.x, impact_tile.y)
+	JI.fixture_rethrow_source = JO
+	JI.fixture_rethrow_target = get_step(JO, NORTH)
+	throw_launch_fixture_step(P, JI)
+	throw_launch_fixture_assert(JI.throw_launch_source == JO && !JI.dist_travelled && JI.fixture_impacts.len == 1 && !JO.fixture_throw_hits && !JX.fixture_throw_hits, "impact_rethrow_skips_old_collision_loop_and_progress")
+	qdel(JI)
+	qdel(JX)
+	qdel(JO)
+	qdel(J)
+	// Completion/Bump callbacks must not cancel the newer flight's fields.
+	var/mob/living/human/subtile_fixture/K = throw_launch_fixture_actor(NORTH, 2)
+	var/obj/item/throw_launch_fixture/KI = throw_launch_fixture_item(K, NORTH)
+	KI.fixture_rethrow_source = K
+	KI.fixture_rethrow_target = get_step(K, NORTH)
+	KI.finished_throwing()
+	throw_launch_fixture_assert(KI.throwing && KI.throw_flight_token && KI.throw_launch_source == K && !KI.dist_travelled, "completion_rethrow_keeps_new_flight")
+	throw_launch_fixture_step(P, KI)
+	throw_launch_fixture_assert(KI.dist_travelled == 1 && !K.fixture_throw_hits, "completion_rethrow_next_hop")
+	KI.forceMove(get_turf(K))
+	KI.throw_at(get_step(K, NORTH), 12, 2, K)
+	KI.fixture_rethrow_source = K
+	KI.fixture_rethrow_target = get_step(K, NORTH)
+	KI.Bump(get_turf(K), FALSE)
+	throw_launch_fixture_assert(KI.throwing && KI.throw_flight_token && KI.throw_launch_source == K, "bump_rethrow_keeps_new_flight")
+	qdel(KI)
+	qdel(K)
 	qdel(P)
