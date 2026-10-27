@@ -1,0 +1,13 @@
+{
+  "code/game/objects/farming.dm": "4047aa0377d6b4be0290ffb55008af2856101e20d83bb00261d20da6042924d8",
+  "code/game/turfs/flooring/flooring_premade.dm": "31a43b27dba32d875d33263d074c1d3290a0e3c27853bd09a7bfd4f8859f94f1",
+  "code/game/objects/random.dm": "3def2120a54b7f0bd78a20713a2c71f4389d946dd150959508463c821d8e0a45",
+  "code/modules/1713/roundstart_etc.dm": "338cd5e7f6e5b50bcc103704da23e9b6eaca8da25333c480f0f9b1124aa09587",
+  "code/modules/1713/radiation.dm": "b36177bd3e08c9da797e0aecd7336d1538f8c5bf4f28c08a6a52f69b9b81ca42",
+  "code/modules/persistence/functions.dm": "9b78f233b4aca79231cf9b2704a5d705ba58cc7830acad1aebe4871d86d3b9c6",
+  "code/modules/persistence/loading.dm": "0d3499cc50d330f0cb89bbf6bab14a8701bd2d469e850cdc5250db8d0a36c546",
+  "code/modules/persistence/saving.dm": "ff67609762ac01940197d34237e07ee576a8eb46fb28e322abe5490000127a3b",
+  "code/game/objects/objs.dm": "d4d652b88c74d0dfdf03aead8c2357b10049b0659fba5e00bda0b3fee7e47974",
+  "code/game/objects/items/weapons/material/misc.dm": "310732628f6e1dac8f527006ac5a71bca2345ab5d700db6008b2ad00a011e9d9",
+  "civ13.dme": "bf7fd90ff710fadd342b852574d71391df91ad1ce55a2ed275b8d68216ffee94"
+}
