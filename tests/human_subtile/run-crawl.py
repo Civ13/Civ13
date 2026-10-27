@@ -89,7 +89,7 @@ def main():
     require(receipt['head'] == manifest['head'] and receipt['port'] == 0 and (receipt['byond_version'], receipt['byond_build']) == (516, 1688), 'Wrong source/engine/port')
     ending = '\r\n' if os.name == 'nt' else '\n'
     require((work / 'port-closed.txt').read_bytes() == ('closed' + ending).encode(), 'No closed-port witness')
-    expected = {'none': (None, 198), 'late-start': ('crawl_progress_during_wait_final_arrival_paid', 4),
+    expected = {'none': (None, 199), 'late-start': ('crawl_progress_during_wait_final_arrival_paid', 4),
                 'lost-lock': ('crawl_cancel_retains_deadline_cleans_visuals', 150)}[args.control]
     require((receipt['error'], receipt['crawl_checks']) == expected and receipt['checks'] == 42,
             'Unexpected/incomplete native assertion: ' + str((receipt['error'], receipt['crawl_checks'], receipt['checks'])))

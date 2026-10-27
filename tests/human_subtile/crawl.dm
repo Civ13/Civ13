@@ -190,10 +190,22 @@ var/list/human_subtile_crawl_changes = list()
 	blocker.density = TRUE
 	var/blocked_started = world.time
 	var/lock_observed = FALSE
+	var/list/lock_witness = list()
 	spawn(2)
 		lock_observed = B.scrambling && B.human_subtile_transaction && !B.human_subtile_crawl_move(get_step(B, EAST), 9, "scramble") && !B.human_subtile_glide_owned
+		// spawn copies scalar locals. Share the observation through a list;
+		// retain the scalar as a native negative control for the old witness.
+		lock_witness["observed"] = lock_observed
+		lock_witness["at"] = world.time
+		lock_witness["scrambling"] = B.scrambling
+		lock_witness["transaction_owned"] = !!B.human_subtile_transaction
+		lock_witness["visuals_released"] = !B.human_subtile_glide_owned
 	human_subtile_crawl_action(B, "scramble", EAST)
-	human_subtile_crawl_assert(world.time >= blocked_started + 9 && lock_observed && B.x == 8 && !B.step_x && B.fixture_pulses == 1, "crawl_blocked_attempt_retains_lock_entire_interval")
+	var/list/blocked_row = list("change" = "initial-blocker", "started" = blocked_started, "finished" = world.time, "pulses" = B.fixture_pulses, "position" = B.human_subtile_snapshot(), "scalar_parent_observed" = lock_observed, "shared_witness" = lock_witness, "rows" = B.fixture_rows)
+	human_subtile_crawl_changes += list(blocked_row)
+	text2file(json_encode(blocked_row), "crawl-changes.log")
+	human_subtile_crawl_assert(lock_witness["observed"] && !lock_observed, "crawl_spawn_witness_shares_list_not_copied_scalar")
+	human_subtile_crawl_assert(world.time >= blocked_started + 9 && lock_witness["observed"] && B.x == 8 && !B.step_x && B.fixture_pulses == 1, "crawl_blocked_attempt_retains_lock_entire_interval")
 	human_subtile_crawl_assert(B.fixture_human_completions == 1 && B.fixture_living_completions == 1, "crawl_blocked_attempt_legacy_hooks_once")
 	qdel(blocker)
 	qdel(B)

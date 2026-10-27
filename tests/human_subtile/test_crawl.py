@@ -81,6 +81,13 @@ class CrawlContracts(unittest.TestCase):
         self.assertNotIn('return FALSE', boundary)
         self.assertLess(source.index('human_subtile_crawl_changes += list(change_row)'), source.index('human_subtile_crawl_assert(C.fixture_pulses'))
 
+    def test_async_lock_witness_uses_shared_list_and_preserves_scalar_control(self):
+        source = (ROOT / 'tests/human_subtile/crawl.dm').read_text()
+        self.assertIn('var/list/lock_witness = list()', source)
+        self.assertIn('lock_witness["observed"] = lock_observed', source)
+        self.assertIn('lock_witness["observed"] && !lock_observed', source)
+        self.assertIn('world.time >= blocked_started + 9 && lock_witness["observed"] && B.x == 8 && !B.step_x && B.fixture_pulses == 1', source)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

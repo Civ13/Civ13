@@ -58,6 +58,10 @@ the body's leading edge (bound_x 8), requires native Cross denial, and retains
 the original five-attempt/eight-pixel-stop/full-cooldown assertions. The old
 overlapped insertion remains an explicit separate native semantics regression;
 production collision behavior is unchanged. Traces are saved before assertions.
+The blocked-attempt asynchronous witness uses a shared list: BYOND spawn copies
+scalar locals, so a scalar assigned by its worker remains unchanged in the
+parent. A retained scalar negative control and both worker/parent observations
+make that distinction explicit without weakening lock or cooldown assertions.
 
 ```
 # Offline staging; no native executable resolution or launch:
