@@ -1,4 +1,12 @@
-# Ten original rooms: static asset/layout previews
+# Rejected historical asset-mask previews (version 1)
+
+**Rejected as room-layout examples.** These images were judged visually
+insufficient: isolated capped wall sprites, sealed labeled sockets and sparse
+collision-mask presentation do not establish convincing room interiors. Preserve
+the files and hashes as historical evidence only. They are not accepted design,
+an approved palette, or a roadmap milestone. The [renderer fidelity study](RENDERER-FIDELITY-STUDY.md)
+addresses the rendering defects separately while catalog redesign remains with
+the design owner.
 
 These are **static asset/layout previews**, not in-game screenshots, a working
 mode, native appearance acceptance or an approved native palette. They composite

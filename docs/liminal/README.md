@@ -4,8 +4,10 @@ Read [mode loop and decisions](MODE-DESIGN.md), [authored room contracts](ROOM-G
 and [source, export and acceptance plan](SOURCE-AND-ACCEPTANCE.md).
 The [early-1990s and shared-level policy](ERA-AND-SCENARIOS.md) separates the
 escape scenario from the independently designed powered-gateway expedition.
-See [all ten static asset/layout previews and the palette proposal](ROOM-PREVIEWS.md)
-for actual Civ13 sprite examples, exact room mappings and explicit native limits.
+The [version-1 previews](ROOM-PREVIEWS.md) are rejected historical evidence,
+not accepted room designs. The separate [renderer fidelity study](RENDERER-FIDELITY-STUDY.md)
+audits connected walls, open hall context and semantic furniture without revising
+the catalog or claiming native acceptance.
 The original [room catalog](room-archetypes-v1.json) and
 [bounded example config](liminal-example-config.json) freeze the small topology
 proof's design inputs. They contain no copied art or native mode registration.

@@ -1,11 +1,12 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-27: liminal static visual proposal -->
-docs/liminal/ROOM-PREVIEWS.md links ten exact-mask DMI room previews and the
-unapproved preview-palette-v1.json. The docs-local renderer reuses the existing
-animal_harvest DMI reader, keeps sockets sealed and marks conditional spans and
-empty anchors editorially. Wall smoothing, functional props and native collision
-remain unverified; this palette must not silently become generator approval.
+Version-1 docs/liminal/ROOM-PREVIEWS.md images are rejected historical evidence,
+not accepted layouts. RENDERER-FIDELITY-STUDY.md separates source-backed wall
+junction/door state and semantic furnishing audits from catalog redesign. Do not
+stretch a single-tile door across a three-cell socket or treat every dense prop
+as a partition/machine. Generic computer ibm_off and officechair_dark_over are
+absent in their DMIs at the audited source; do not invent their pixels.
 
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask

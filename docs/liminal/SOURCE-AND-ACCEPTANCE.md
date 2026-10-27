@@ -48,11 +48,12 @@ wall, dense prop, doorway, light, marker, extraction area and optional portal
 types/vars with exact source and asset references. Source presence is necessary
 but does not prove constructor behavior, licensing, collision or appearance.
 
-The [first static visual proposal](ROOM-PREVIEWS.md) now supplies ten actual-asset
-room previews, a reusable source/type/state palette and a per-cell mapping with
-hash-bound provenance. It preserves the design catalog and stays explicitly
-unapproved for native export. Doorways, lights, functional anchors, extraction
-area and portals remain unmapped; it does not advance native acceptance.
+The [version-1 asset-mask previews](ROOM-PREVIEWS.md) are rejected historical
+evidence. Their hashes/mappings are retained but must not be promoted to accepted
+room design or native export approval. The [renderer fidelity study](RENDERER-FIDELITY-STUDY.md)
+separately audits connected wall junctions, real open hall context, correct
+directional furniture, and the width/state limits of native doors. Revised
+catalog geometry stays with the design owner. This advances no native acceptance.
 
 ## DMM export contract
 
