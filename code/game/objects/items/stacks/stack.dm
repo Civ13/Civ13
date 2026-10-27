@@ -227,6 +227,11 @@
 /obj/item/stack/attack_self(mob/user as mob)
 	list_recipes(user)
 
+/obj/item/stack/allows_smooth_movement_ui(mob/living/human/user)
+	// Browsing held recipes is passive. Topic still owns crafting admission,
+	// do_after interruption and once-only material/handle consumption.
+	return user && !QDELETED(user) && !QDELETED(src) && recipes && amount > 0 && loc == user && user.get_active_hand() == src && user.using_object == src
+
 /obj/item/stack/proc/list_recipes(mob/user as mob, recipes_sublist)
 	if (!recipes)
 		return

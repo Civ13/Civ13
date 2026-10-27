@@ -127,7 +127,29 @@
 	return FALSE
 
 /mob/living/human/proc/human_subtile_unlinked()
-	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulling && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !using_object && !using_cannon && !football
+	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulling && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && human_subtile_object_use_supported() && !using_cannon && !football
+
+/mob/living/human/proc/human_subtile_object_use_supported()
+	if (!using_object)
+		return TRUE
+	// Only the object's explicit passive-UI contract can admit this exception.
+	// Keep machine, instrument and mounted-weapon use restricted, including
+	// malformed legacy using_object values. Client authority stays unchanged.
+	return istype(using_object, /atom/movable) && using_object.allows_smooth_movement_ui(src)
+
+/atom/movable/proc/allows_smooth_movement_ui(mob/living/human/user)
+	return FALSE
+
+/mob/living/human/proc/human_subtile_prepare_ui_movement()
+	if (!(human_subtile_enabled || human_subtile_default_pending || human_subtile_offset_owned))
+		return
+	if (!istype(using_object, /obj/item/stack) || using_object.allows_smooth_movement_ui(src))
+		return
+	// An invalid recipe view must not strand a physical offset after a hand
+	// switch, drop, transfer or depleted stack. Other object-use links stay put.
+	unset_using_object()
+	if (client)
+		client << browse(null, "window=stack")
 
 /mob/living/human/proc/human_subtile_input_supported(direction)
 	human_subtile_initialize_default(direction)

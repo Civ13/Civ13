@@ -1,5 +1,15 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: passive crafting view movement candidate -->
+Human sub-tile admission permits only an object's explicit passive-UI contract;
+the default denies and held active-hand recipe stacks opt in. Other using_object
+links remain restricted. Before supported movement input, stale stack views close
+without snapping offsets. Stationary do_after checks include step_x/step_y at the
+existing poll; can_move waits, context slots, timers and costs stay unchanged.
+tests/human_subtile/test_crafting_ui.py is offline evidence only; prepared native
+crafting_ui.dm is not automatically launched and real-client focus is unverified.
+Coordinate human_subtile_unlinked/object-use seams with separate prone/pair work.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits

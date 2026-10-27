@@ -299,6 +299,7 @@
 		return // Moved here to avoid nullrefs below
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
+		subtile_input_actor.human_subtile_prepare_ui_movement()
 		if (!subtile_input_actor.human_subtile_input_supported(direct))
 			human_subtile_release_visuals()
 			return FALSE
