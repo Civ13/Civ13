@@ -12,13 +12,13 @@ source remains at its own reviewed commits; cavern work remains separately priva
 | code/game/objects/map_metadata/lights_out.dm | Survivor/extraction foundation; increment-per-spawn(10) timer toward 300 conflicts with 30-second comment | Do not inherit jungle constructor effects or copy timing blindly |
 | code/modules/1713/lantern.dm | Unlimited flashlight variants and darknight light range/color fields; separate fuel-based variants | No assumed battery scarcity or new asset/visibility proof |
 | code/game/objects/effects/bump_teleporter.dm | Target-ID lookup, delayed movement and persistence_set_loc | Not proof of unique/safe paired indoor portals |
-| code/game/mob/living/simple_animal/hostile/monsters.dm | Root audit verified echofiend sound investigation | Door/pixel-pathing, spawn safety and pacing unproved |
-| code/game/sound.dm | Root audit verified sound integration | No measured acoustic occlusion from authored tags |
+| code/game/mob/living/simple_animal/hostile/monsters.dm | Source audit verified echofiend sound investigation | Door/pixel-pathing, spawn safety and pacing unproved |
+| code/game/sound.dm | Source audit verified sound integration | No measured acoustic occlusion from authored tags |
 | Existing carpet floors, footsteps and ambience | Root audit identified reusable hooks | Exact per-file native palette/appearance remains a mapping task |
 
-The first three files were independently read at the pinned baseline while
-preparing these documents. Echofiend/sound/carpet findings reuse the root audit
-rather than duplicating its ownership. Primary links are in MODE-DESIGN.md.
+The source audit covers the pinned files and the echofiend, sound and carpet
+capabilities listed above. These references do not establish native gameplay
+acceptance for the new mode. Primary links are in MODE-DESIGN.md.
 
 Offline shared helpers are copied verbatim from
 tools/procedural_maps/validator.py and io.py at
@@ -95,7 +95,7 @@ Tunable controls: allowed family mix/weights, optional detour, finite scale/caps
 grace/round/extraction duration proposals, approved steady light/ambience choices
 and later threat eligibility. Tuning cannot disable the invariants.
 
-The private small proof currently passes 45 explicit tests on Python 3.11 and 3.13.
+The initial small offline proof passed 45 explicit tests on Python 3.11 and 3.13.
 Its default 6-room layout has 1060 blueprint cells, 152 navigable footprint centers,
 393 explored progression states and a 60-step completed route. Default topology
 SHA-256 is 6e4e1946ee62525bad82681d6b7cb5b0d2b8d8c03472b8856009108a93bcad40.
@@ -136,4 +136,4 @@ Keep design changes separate from implementation commits and drafts.
 No design decision currently blocks slices 1-2. Choosing/validating the native
 indoor catalog and mode handlers is necessary for slices 3-4. Native runtime,
 visual/audio acceptance and host capacity cannot be established by the private
-topology proof. Root retains design/source review and all merge decisions.
+topology proof. Maintainer review is required for design/source changes and all merges.

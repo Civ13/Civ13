@@ -1,6 +1,6 @@
 # Early-1990s policy and a shared generated-level contract
 
-The escape mode and the separately owned powered-gateway expedition/colonization
+The escape mode and the separate powered-gateway expedition/colonization
 scenario are distinct. They may consume the same authored-room generator and
 finite level template. Gateway power, ownership and persistence mechanics belong
 to that scenario's design; they are not a replacement for escape objectives or
@@ -108,7 +108,7 @@ bindings in a scenario manifest separate from geometry. The default is 1990.
 Changing the year changes the scenario identity, not the immutable template.
 Native DMM/type/era mapping and actual objectives/timers remain distinct gates.
 
-Root will coordinate the exact consumer fields with the gateway task before a
-shared runtime interface is admitted. The independent source slice can implement
+Shared runtime admission requires schema agreement between the escape and
+gateway adapters. The first source slice can implement
 template identity and the escape specification now, with explicit PENDING native
 catalogs, without duplicating gateway power/persistence or changing terrain work.
