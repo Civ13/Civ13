@@ -805,6 +805,7 @@
 #include "code\modules\1713\weather.dm"
 #include "code\modules\1713\weather_policy.dm"
 #include "code\modules\1713\snowfall_ground.dm"
+#include "code\modules\ecology\activity_heatmap.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"
@@ -1273,3 +1274,4 @@
 #include "code\modules\1713\modern_telecom.dm"
 #include "code\modules\1713\modern_telephone.dm"
 #include "code\modules\1713\modern_terminal.dm"
+

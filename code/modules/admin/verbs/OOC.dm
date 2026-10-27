@@ -1,1 +1,0 @@
-/client/var/pingability = TRUE

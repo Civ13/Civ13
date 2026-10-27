@@ -1,8 +1,0 @@
-{
-  "body": "Genuine native local firearm footage at merged commit 60b8cf9937617d62c4cc01f82bf32401559b84f4, BYOND 516.1681. Conventional cuts, captions, focus enlargement and highlights; retained actions play at 1x. Captures empty SVD check, PSO-1 removal with screwdriver, rail/red-dot installation and native Examine. The 60% condition assignment is explicitly artificial setup, not a repair. Cleaning/bench actions were separately observed in an earlier session but lack readable captured outcomes; this clip does not verify completed cleaning, bench repair or firing. Normal startup logged Bad ref in DecRefCount(DM New) and unexpected nslookup diagnostics, so this is not clean full-game runtime acceptance. Existing isolated production regression passed 99 assertions; local video and source recordings are retained.\r\n\r\nhttps://github.com/user-attachments/assets/6066fc4f-464e-424f-9960-2935b357afac",
-  "issue_url": "https://api.github.com/repos/Civ13/Civ13/issues/3081",
-  "user": {
-    "login": "valzargaming",
-    "type": "User"
-  }
-}

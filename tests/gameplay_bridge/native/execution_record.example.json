@@ -1,9 +1,0 @@
-{
-  "status": "NOT_RUN_TEMPLATE_ONLY",
-  "commit": "REPLACE_WITH_FROZEN_FULL_COMMIT",
-  "profile": "REPLACE_WITH_APPROVED_PROFILE",
-  "compiler": {"pid": null, "created_utc": null, "executable": null, "argv": [], "cwd": null, "exit_code": null, "elapsed_seconds": null, "log_sha256": null},
-  "daemon": {"pid": null, "created_utc": null, "executable": null, "argv": [], "cwd": null, "exit_code": null, "elapsed_seconds": null, "log_sha256": null},
-  "artifacts_sha256": {},
-  "cleanup": "REPLACE_WITH_ACTUAL_TASK_OWNED_PROCESS_AND_TEMPORARY_CONFIG_RELEASE_RECORD; retain evidence"
-}

@@ -1,4 +1,0 @@
-// Standalone feasibility proof only. Not included by civ13.dme.
-#define SUBTILE_FEASIBILITY
-#include "kernel.dm"
-#include "fixture.dm"

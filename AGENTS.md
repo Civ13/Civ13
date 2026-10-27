@@ -1,5 +1,16 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: inactive ecology activity heatmap -->
+The data-only ecology_activity_heatmap datum has no singleton, process or player
+hooks. Samples/queries bind caller-captured epochs before touching clock/coverage;
+missing, stale or incomplete inputs never authorize spawning. At most 256 input
+rows and 4096 stored cells; caller supplies anonymous active occupancy and time.
+should_save is FALSE and all runtime fields explicitly exclude custom persistence.
+Source contracts are bounded offline CI only, not DM/native behavior proof.
+DME inclusion permits exact-revision compile coverage; activation, warm-up and
+activity/visibility adapters remain separate work. No animal mutation is added.
+
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
@@ -1514,3 +1525,4 @@ claim. Preserve mining progress/owner cleanup and ordinary null callback order.
 The gather disabled-source hashes project reviewed master; refresh them only
 after verifying all four full-file projections. Idle-metabolism extraction must
 project the disabled helper before finding its conditional proc declaration.
+
