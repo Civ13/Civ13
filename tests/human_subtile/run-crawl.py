@@ -35,7 +35,7 @@ def prepare(out, control='none'):
     if control == 'late-start':
         diagonal.adapt(out, manifest, module,
                        'due = start_time + i * duration / pulse_count',
-                       'due = start_time + duration')
+                       'due = start_time + pulse_count * duration / pulse_count')
     if control == 'lost-lock':
         diagonal.adapt(out, manifest, module, 'while (world.time < end_time)',
                        'while (FALSE)')
