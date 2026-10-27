@@ -308,6 +308,8 @@
 	..()
 
 /client/Del()
+	if (CIV13_GEOMETRIC_LOS_CORE && los_context)
+		los_context.retire()
 	human_subtile_release_visuals()
 	clear_hover_name()
 	webhook_send_logout(ckey)

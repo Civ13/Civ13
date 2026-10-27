@@ -52,6 +52,11 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_visibility_selects_only_explicit_offline_file(self):
+        self.assertEqual(ci.SUITES['los_context']['files'], ('tests/los_context/test_offline.py',))
+        self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
+        self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))
+
     def selected(self, paths, comparison='available'):
         return {name for name, row in ci.impact(paths, comparison)['suites'].items() if row['selected']}
 

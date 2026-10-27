@@ -40,6 +40,10 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
+        'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
+        'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
+        'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
