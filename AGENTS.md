@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: disabled Backrooms expedition foundation -->
+`docs/backrooms-expedition` separates powered colonization from finite escape.
+`gateway_core.dm` contains uninstantiated finite-charge/lifecycle/identity datums,
+not a teleporter or world-save adapter. Template hashes never replace mutable
+instance identity. `tests/backrooms_gateway` projects pure source guards offline
+and prepares native savefile/lifecycle assertions without launching. Native runs
+require the bounded plan review; compilation does not prove movement or rescue.
+Use the console `dm.exe`, not the GUI `dreammaker.exe`, for Windows compilation.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
