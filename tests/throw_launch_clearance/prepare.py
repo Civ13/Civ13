@@ -18,6 +18,15 @@ SPEC.loader.exec_module(CURRENT)
 
 def prepare(out):
     manifest = CURRENT.legacy.prepare(ROOT, out, 'human')
+    # Keep the opt-in probe outside tests/human_subtile so source publication
+    # does not implicitly select that directory's automatic native CI lane.
+    relative = 'tests/throw_launch_clearance/throw_launch.dm'
+    raw = CURRENT.legacy.git(ROOT, 'show', manifest['head'] + ':' + relative)
+    fixture = out / 'stage' / relative
+    fixture.parent.mkdir(parents=True, exist_ok=True)
+    fixture.write_bytes(raw)
+    manifest['launch_fixture_source'] = dict(path=relative, head=manifest['head'],
+                                           sha256=hashlib.sha256(raw).hexdigest())
     CURRENT.adapt(out, manifest, 'tests/human_subtile/probe.dm',
                   '\t\t\thuman_subtile_fixture_headless()', '\t\t\tthrow_launch_fixture_run()')
     CURRENT.adapt(out, manifest, 'tests/human_subtile/probe.dm',
@@ -25,7 +34,7 @@ def prepare(out):
                   '"checks" = human_subtile_fixture_checks, "launch_checks" = throw_launch_fixture_checks,')
     dme = out / manifest['dme']
     with dme.open('a', encoding='utf-8') as stream:
-        stream.write('\n#include "tests\\human_subtile\\throw_launch.dm"\n')
+        stream.write('\n#include "tests\\throw_launch_clearance\\throw_launch.dm"\n')
     manifest['scope'] = '18x14x1 full-source throw launch probe; harmless human hitby adapter'
     manifest['native_executed'] = False
     manifest['target_engine'] = '516.1688'

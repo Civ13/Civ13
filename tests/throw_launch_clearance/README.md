@@ -50,6 +50,8 @@ partial-offset cases use the existing explicit fixture placement adapter.
 
 The compile mode uses the unchanged current-engine compiler Session and frozen
 containment helpers. It has no daemon execution option and never runs a game.
+The probe stays in this directory so adding it does not implicitly select the
+existing human_subtile native CI lane. Preparation copies its exact Git bytes.
 Native execution is separate and must retain the existing closed port/rejected
 clients/external-effect/owned-process requirements. Inspect its complete receipt
 and `launch_checks` before claiming gameplay acceptance; compilation alone is
