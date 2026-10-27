@@ -53,6 +53,49 @@ class ArtPortTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Source hash mismatch'):
             art.sources(source)
 
+    def test_manifest_requires_every_selected_source(self):
+        for filename in ('yarrow.png', 'milk_thistle.png', 'elderflower.png',
+                         'comfrey.png', 'meta.json', 'meta.original.json'):
+            with self.subTest(filename=filename):
+                source = self.path / filename
+                shutil.copytree(art.SOURCE, source)
+                manifest = json.loads((source / 'manifest.json').read_text())
+                del manifest['files'][filename]
+                (source / 'manifest.json').write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, 'Manifest source entries'):
+                    art.sources(source)
+
+    def test_manifest_rejects_extra_source(self):
+        source = self.source_copy()
+        manifest = json.loads((source / 'manifest.json').read_text())
+        shutil.copyfile(source / 'yarrow.png', source / 'unselected.png')
+        manifest['files']['unselected.png'] = dict(manifest['files']['yarrow.png'])
+        (source / 'manifest.json').write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, 'Manifest source entries'):
+            art.sources(source)
+
+    def test_manifest_omission_cannot_bypass_origin_credit_validation(self):
+        source = self.source_copy()
+        manifest = json.loads((source / 'manifest.json').read_text())
+        del manifest['files']['meta.original.json']
+        (source / 'manifest.json').write_text(json.dumps(manifest))
+        meta = json.loads((source / 'meta.original.json').read_text())
+        meta['copyright'] = 'Altered origin attribution'
+        (source / 'meta.original.json').write_text(json.dumps(meta))
+
+        def upstream_bytes(repo, command, spec):
+            self.assertEqual(command, 'show')
+            revision, path = spec.split(':', 1)
+            filename = Path(path).name
+            if filename == 'meta.json' and revision == manifest['art_origin_revision']:
+                filename = 'meta.original.json'
+            return (art.SOURCE / filename).read_bytes()
+
+        with patch.object(art, 'git', side_effect=upstream_bytes) as upstream:
+            with self.assertRaisesRegex(ValueError, 'Manifest source entries'):
+                art.sources(source, upstream=self.path)
+            upstream.assert_not_called()
+
     def test_changed_license_rejected_even_with_updated_file_hash(self):
         source = self.source_copy()
         meta = json.loads((source / 'meta.json').read_text())

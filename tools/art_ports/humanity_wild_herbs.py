@@ -36,6 +36,9 @@ def sources(directory=SOURCE, upstream=None):
             or manifest['directions'] != 1 or manifest['frames'] != 1
             or manifest['license'] != 'CC0-1.0'):
         raise ValueError('Unsupported batch contract')
+    expected_files = {f'{name}.png' for name in STATES} | {'meta.json', 'meta.original.json'}
+    if set(manifest['files']) != expected_files:
+        raise ValueError('Manifest source entries must be exactly the six selected files')
     for filename, entry in manifest['files'].items():
         data = (directory / filename).read_bytes()
         if sha256(data) != entry['sha256'] or git_blob(data) != entry['git_blob']:
