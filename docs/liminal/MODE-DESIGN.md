@@ -2,7 +2,7 @@
 
 Status: design milestone for review. Working name and original room layouts;
 inspired by familiar-but-wrong indoor horror, without copying proprietary rooms,
-art, characters or scenes. The private topology proof is not a playable mode.
+art, characters or scenes. The offline topology proof is not a playable mode.
 Source audit baseline: Civ13 commit
 `10d264e5896221b34949ee4b67c0fd2b94bde249`. Implementation is staged below;
 this document does not activate a server mode or authorize native runs.

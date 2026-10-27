@@ -5,7 +5,7 @@
 The native design audit baseline is Civ13 commit
 `10d264e5896221b34949ee4b67c0fd2b94bde249`. Read-only source references are
 capability evidence, not new-mode gameplay acceptance. Existing surface/oceanic
-source remains at its own reviewed commits; cavern work remains separately private.
+source retains its own reviewed versions and acceptance boundaries.
 
 | Reference | Established observation | Reuse limit |
 | --- | --- | --- |
@@ -14,7 +14,7 @@ source remains at its own reviewed commits; cavern work remains separately priva
 | code/game/objects/effects/bump_teleporter.dm | Target-ID lookup, delayed movement and persistence_set_loc | Not proof of unique/safe paired indoor portals |
 | code/game/mob/living/simple_animal/hostile/monsters.dm | Source audit verified echofiend sound investigation | Door/pixel-pathing, spawn safety and pacing unproved |
 | code/game/sound.dm | Source audit verified sound integration | No measured acoustic occlusion from authored tags |
-| Existing carpet floors, footsteps and ambience | Root audit identified reusable hooks | Exact per-file native palette/appearance remains a mapping task |
+| Existing carpet floors, footsteps and ambience | Source audit identified reusable hooks | Exact per-file native palette/appearance remains a mapping task |
 
 The source audit covers the pinned files and the echofiend, sound and carpet
 capabilities listed above. These references do not establish native gameplay
@@ -108,7 +108,7 @@ blocked anchors, output tampering and hard candidate/state limits are covered.
 
 Keep design changes separate from implementation commits and drafts.
 
-1. **Design milestone:** publish these coherent documents for root review; freeze
+1. **Design milestone:** submit these documents for maintainer review; freeze
    initial decisions, room vocabulary, finite map boundary and source caveats.
    Preserve existing terrain profiles and their branch/history/evidence.
 2. **Small independent authored-room tool:** source-backed deterministic catalog,
@@ -135,5 +135,21 @@ Keep design changes separate from implementation commits and drafts.
 
 No design decision currently blocks slices 1-2. Choosing/validating the native
 indoor catalog and mode handlers is necessary for slices 3-4. Native runtime,
-visual/audio acceptance and host capacity cannot be established by the private
+visual/audio acceptance and host capacity cannot be established by the offline
 topology proof. Maintainer review is required for design/source changes and all merges.
+
+## Static room-study palette interface
+
+An example render of an individual family is a static layout study. Its manifest
+must identify the exact canonical catalog/mask hash, row orientation, socket
+display policy, palette source revision, selected DMI/icon states, file hashes
+and any placeholder mapping. Raw catalog masks have sealed boundaries; a study
+that opens all socket apertures must label that policy rather than imply an
+assembled level. A generated chapter instead uses exactly its linked sockets
+and keeps every unused socket sealed.
+
+The palette study supplies visual candidates. Native export separately verifies
+type/var declarations, density, collision footprints, source includes and static
+parse-back. Shared palette identity links those records; a convincing image does
+not establish native collision, door locks, timing, lighting or mode acceptance.
+No room art or image is required for the deterministic topology tests.
