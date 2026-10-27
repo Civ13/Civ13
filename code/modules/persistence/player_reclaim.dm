@@ -7,6 +7,7 @@
 
 var/global/list/persistence_restored_bodies = list()
 var/global/persistence_player_restore_ready = FALSE
+var/global/list/persistence_player_claims = list()
 
 /proc/persistence_guest_account(account)
 	if(!istext(account) || copytext(account, 1, 6) != "guest") return FALSE
@@ -88,14 +89,32 @@ var/global/persistence_player_restore_ready = FALSE
 	if(IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
 		return FALSE
 	var/mob/living/human/H = find_restored_player(C.ckey)
+	if(persistence_bed_return_enabled())
+		if(persistence_player_claims[C.ckey] || character_recovery_unready()) return FALSE
+		var/list/bodies = local_character_bodies(C.ckey)
+		if(length(bodies) != 1) return FALSE
+		H = bodies[1]
+		if(!return_player_eligible(H, C.ckey)) return FALSE
 	if(!H) return FALSE
-	// No waits between eligibility, reservation and the normal Login path.
-	persistence_restored_bodies.Remove(C.ckey)
-	lobby.spawning = TRUE
-	lobby.close_spawn_windows()
-	H.key = C.key
-	if(C.mob != H)
-		throw EXCEPTION("Saved player body did not receive its authenticated client")
+	// Reserve before movement/Entered/Login hooks can reenter or yield. A failed
+	// return retains the original body claim; release only this lobby's reservation.
+	persistence_player_claims[C.ckey] = lobby
+	try
+		if(!prepare_character_return(H) || !H || persistence_player_claims[C.ckey] != lobby || lobby.client != C || C.mob != lobby || H.persistence_owner_ckey != C.ckey || H.client || H.key || H.stat == DEAD || player_restoration_blocked() || (persistence_bed_return_enabled() && !return_player_eligible(H, C.ckey)))
+			if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+			return FALSE
+		lobby.spawning = TRUE
+		lobby.close_spawn_windows()
+		H.key = C.key
+		if(C.mob != H)
+			throw EXCEPTION("Saved player body did not receive its authenticated client")
+		finish_character_return(H)
+		persistence_restored_bodies.Remove(C.ckey)
+	catch(var/exception/reclaim_error)
+		if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+		if(lobby && lobby.client == C && C.mob == lobby) lobby.spawning = FALSE
+		throw reclaim_error
+	if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
 	qdel(lobby)
 	return TRUE
 

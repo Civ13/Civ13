@@ -1124,6 +1124,7 @@
 #include "code\modules\persistence\durable_world.dm"
 #include "code\modules\persistence\zone_topology.dm"
 #include "code\modules\persistence\player_reclaim.dm"
+#include "code\modules\persistence\bed_return.dm"
 #include "code\modules\persistence\loading.dm"
 #include "code\modules\persistence\persistence.dm"
 #include "code\modules\persistence\saving.dm"

@@ -36,6 +36,8 @@ disk save or invulnerability; only a completed world generation is durable.
   A legacy protected sleeper may instead use its validated saved return point.
   If neither is safe, retain body/claim and hold in the lobby, with an explanation.
   Never invent coordinates or send a returning body to an initial-arrival spawn.
+  Contained saved bodies and saved riders/drivers hold for ordinary dismount/unload
+  reconciliation instead of being extracted with dangling vehicle relationships.
 - Native reconnect to a still-existing body preserves its current position;
   reconnect is not a free bed teleport. Retain the legacy wake path for old
   sleepers and do not remove physical sleep-zone safety checks.
@@ -60,10 +62,27 @@ this local admission before activation. Local ckey ownership is not shard custod
 
 ## Acceptance and deployment
 
-Add offline source-flow tests for bed validity, ownership, fallback, legacy return,
+Offline source-flow tests cover bed validity, ownership, fallback, legacy return,
 same body/inventory, two competing clients/reentrant callbacks, failed movement,
 save/load/recovery holds, dead-body policy and final new-body admission. Retain
 existing ownership, sleep, movement and topology regressions. Offline projections
 are not native Login/Entered/HUD acceptance. No live save, configuration, native
 world, deployment or restart is part of this task. Runtime paths/configurations
 remain unchanged on D:; this C: checkout contains temporary source work only.
+
+Implementation lives in `code/modules/persistence/bed_return.dm`, extending the
+existing `reclaim_saved_player` handoff. `tests/save_movement/test_character_return.py`
+executes complete selected production bodies with explicit native-list, location,
+callback and key-transfer adapters. Generated source omission controls expose
+reservation theft and unsafe fallthrough to fresh creation. Medical objects,
+health, nutrition and water remain unchanged during the projected return. Another
+check executes the actual changed-var selector against nondefault nutrition/water
+using defaults read from carbon_defines.dm. Neither is a native disk round trip.
+
+The existing minimal serializer fixtures explicitly leave the bed profile disabled
+through adapters in stubs.dm. Their native results cannot establish bed return.
+Before activation, exact-source native compilation, bed-claim disk export/import,
+real Login/HUD/reconnect, refused/redirected movement, destroyed/occupied beds and
+representative character medical/nutrition/water state need native acceptance.
+No body deletion, independent character-file import, offline immunity, automatic
+logout save or shared-custody activation is implemented by this local migration.

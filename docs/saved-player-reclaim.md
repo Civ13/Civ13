@@ -1,5 +1,9 @@
 # Saved player bodies
 
+The durable Nomads bed-return migration is described in
+[character-bed-return.md](character-bed-return.md). It reuses this graph and
+account reclaim path; preferences slots are not full character-state saves.
+
 World persistence excludes `client`, `key`, `ckey` and HUD objects. A connected
 human instead records a canonical `persistence_owner_ckey`. Normal human Login
 and save preparation retain one body claim per authenticated account and clear
