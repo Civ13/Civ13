@@ -7,6 +7,8 @@ deadline. It does not use walking costs or its diagonal cooldown multiplier.
 Partial progress changes physical overlap/reach before the former tile move;
 posture/restriction/ownership changes stop subsequent pulses. Keep the crawl
 transaction, scrambling lock and client deadline after early blockage/cancel.
+Floor clicks dispatch scramble even while prone: retain both initiating posture
+flags rather than assuming scramble means prone is false.
 tests/human_subtile/run-crawl.py retains full-source headless checks and timing
 controls; compile/offline evidence does not establish native or visual acceptance.
 The prior Windows no-socket runtime hold remains unchanged.

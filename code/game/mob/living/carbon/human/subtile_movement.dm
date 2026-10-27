@@ -99,6 +99,8 @@
 	var/completed = FALSE
 	var/legacy_posture = FALSE
 	var/paid_posture
+	var/initial_prone
+	var/initial_lying
 	var/attempted = FALSE
 
 /mob/living/human/proc/human_subtile_snapshot()
@@ -248,6 +250,8 @@
 	T.expected = human_subtile_snapshot()
 	T.legacy_posture = legacy_posture
 	T.paid_posture = paid_posture
+	T.initial_prone = prone
+	T.initial_lying = lying
 	if (!legacy_posture && !paid_posture)
 		human_subtile_update_visuals(deadline - world.time, direct, client)
 	human_subtile_transaction = T
@@ -255,6 +259,7 @@
 	try
 		moved = T.perform(direct)
 	catch (var/exception/subtile_error)
+		T.wait_paid_interval()
 		T.finish()
 		throw subtile_error
 	T.finish()
@@ -280,7 +285,7 @@
 	if (cancelled || !actor || isDeleted(actor) || actor.human_subtile_transaction != src || persistence_save_in_progress || world.time > end_time + world.tick_lag)
 		return FALSE
 	if (paid_posture)
-		if (!actor.scrambling || !actor.human_subtile_enabled || !actor.human_subtile_crawl_ready(direction) || !actor.human_subtile_crawl_authority(owner) || (paid_posture == "prone" ? !actor.prone : !actor.lying || actor.prone))
+		if (!actor.scrambling || !actor.human_subtile_enabled || !actor.human_subtile_crawl_ready(direction) || !actor.human_subtile_crawl_authority(owner) || actor.prone != initial_prone || actor.lying != initial_lying)
 			return FALSE
 		if (map && map.check_caribbean_block(actor, get_turf(actor)))
 			return FALSE
@@ -384,13 +389,18 @@
 			break
 		remaining_x -= abs(actual_x)
 		remaining_y -= abs(actual_y)
+	wait_paid_interval()
+	return total_distance > 0
+
+/datum/human_subtile_transaction/proc/wait_paid_interval()
 	if (paid_posture)
 		// Restore visuals as soon as travel stops, but retain admission ownership
-		// until the captured deadline. Posture exit cannot start free walking.
+		// until the captured deadline, including a failed native call.
+		if (actor && actor.human_subtile_transaction == src)
+			actor.human_subtile_pulse = null
 		release_visuals()
 		while (world.time < end_time)
 			sleep(world.tick_lag)
-	return total_distance > 0
 
 /datum/human_subtile_transaction/proc/complete()
 	if (!completed && actor && !isDeleted(actor) && (total_distance > 0 || (paid_posture && attempted)))

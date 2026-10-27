@@ -41,7 +41,7 @@ class CrawlContracts(unittest.TestCase):
         valid = source[source.index('/datum/human_subtile_transaction/proc/valid'):source.index('/datum/human_subtile_transaction/proc/perform')]
         for guard in ('persistence_save_in_progress', '!actor.scrambling', '!actor.human_subtile_enabled',
                       '!actor.human_subtile_crawl_ready(direction)', '!actor.human_subtile_crawl_authority(owner)',
-                      '!actor.prone', '!actor.lying || actor.prone', 'human_subtile_same(expected, actor.human_subtile_snapshot())'):
+                      'actor.prone != initial_prone', 'actor.lying != initial_lying', 'human_subtile_same(expected, actor.human_subtile_snapshot())'):
             self.assertIn(guard, valid)
         self.assertIn('(paid_posture && attempted)', source)
         movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()

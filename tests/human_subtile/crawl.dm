@@ -36,6 +36,8 @@ var/human_subtile_crawl_checks = 0
 		if ("posture")
 			prone = FALSE
 			lying = FALSE
+		if ("switch-prone")
+			prone = TRUE
 		if ("paralysis")
 			paralysis = 1
 		if ("limbs")
@@ -115,7 +117,7 @@ var/human_subtile_crawl_checks = 0
 			qdel(H.fixture_reach_target)
 			qdel(H)
 
-	for (var/change in list("posture", "paralysis", "limbs", "authority", "optout", "save", "linked", "displaced", "blocker"))
+	for (var/change in list("posture", "switch-prone", "paralysis", "limbs", "authority", "optout", "save", "linked", "displaced", "blocker"))
 		var/mob/living/human/subtile_fixture/crawl/C = human_subtile_crawl_actor()
 		C.lying = TRUE
 		C.fixture_change = change
@@ -159,4 +161,13 @@ var/human_subtile_crawl_checks = 0
 	human_subtile_crawl_action(R, "scramble", WEST)
 	human_subtile_crawl_assert(R.x == 8 && !R.step_x && R.fixture_pulses == 1 && world.time >= recovery_started + 9, "crawl_owned_short_recovery_spans_paid_interval")
 	qdel(R)
+	// Adjacent floor clicks dispatch scramble even when deliberate prone is set.
+	var/mob/living/human/subtile_fixture/crawl/P = human_subtile_crawl_actor()
+	P.lying = TRUE
+	P.prone = TRUE
+	var/click_started = world.time
+	P.scramble(get_step(P, EAST))
+	human_subtile_crawl_assert(P.x == 9 && P.fixture_pulses == 16 && P.prone && P.lying, "crawl_prone_adjacent_click_uses_scramble_without_posture_change")
+	human_subtile_crawl_assert(world.time >= click_started + 9 && world.time <= click_started + 9 + world.tick_lag, "crawl_prone_click_preserves_scramble_delay")
+	qdel(P)
 	return TRUE
