@@ -1,11 +1,13 @@
 # Private host/channel preparation
 
-This unpublished slice adds concrete bounded stream handling, an injected
+This source slice adds concrete bounded stream handling, an injected
 process-lifecycle owner and a native pipe-loop owner on top of the reviewed
 version-one transport/native core. Production Main and all game/server code stay
 unchanged. No process, stream, OS pipe, listener, DLL, credentials or account flow
 is opened by constructing these components. Tests use fake streams/process leases
-and in-memory native I/O. Concrete OS spawning and pipe adapters are not supplied.
+and in-memory native I/O. The [Windows provider](SOCIAL-SDK-WINDOWS-PROVIDER.md)
+now supplies concrete parent-side process/pipe source behind fixed-off factories;
+no actual OS operations or production startup are enabled.
 
 ## Managed lifecycle
 
@@ -50,8 +52,9 @@ Actual worker lifetime/OS provider integration requires review before wiring.
 `BoundedStreamCompanionChannel` owns two already-created, exclusive, vetted
 asynchronous streams. It cannot turn a synchronous/blocking Stream implementation
 into asynchronous I/O, prove pipe provenance, or bound a blocking Dispose. The
-future provider must guarantee prompt asynchronous admission/cancellation/close
-and must not supply a buffered or network stream. No source here opens one.
+provider must guarantee prompt asynchronous admission/cancellation/close and
+must not supply a buffered or network stream. The concrete parent provider stays
+inactive pending separate OS acceptance.
 
 There is one fixed 276-byte input buffer, one output buffer, at most one pending
 read and one pending write. Polling an idle read does not create additional reads
@@ -104,8 +107,8 @@ child/channel failure, clock reversal and reconnect after I/O quiescence. Native
 host tests cover fragmented input, read budgets, Ready delivery, stuck/failed
 writes, expiry before input, Clear/Stop/EOF and late results with fake backends.
 
-These are executable contracts, not physical process/pipe isolation or vendor
-SDK acceptance. Root must review the factory/lease obligations and the explicit
-250ms/750ms/3s budgets before concrete OS adapters/startup composition. Vendor
+These are executable contracts and inactive parent-provider source, not physical
+process/pipe isolation or vendor SDK acceptance. Root must review the factory/lease
+obligations and explicit 250ms/750ms/3s budgets before OS activation/startup composition. Vendor
 loading/linking, live authentication/presence, licensing/distribution, installed
 launcher changes and server/game actions remain disabled or outside this slice.

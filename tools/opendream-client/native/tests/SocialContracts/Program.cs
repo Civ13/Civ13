@@ -333,6 +333,7 @@ internal static class Program {
             assertions += PresenceAdapterTests.Run(); Console.WriteLine("PASS serial presence adapter lifetime/cleanup/failure isolation");
             assertions += CompanionTransportTests.Run(); Console.WriteLine("PASS bounded companion protocol/negotiation/lifetime contracts");
             assertions += CompanionHostTests.Run(); Console.WriteLine("PASS private channel/process startup and settlement contracts");
+            assertions += WindowsProviderTests.Run(); Console.WriteLine("PASS inactive concrete Windows provider with injected OS lifecycle");
             Console.WriteLine($"PASS {assertions} offline assertions; no processes, sockets or SDK calls.");
             return 0;
         } catch (Exception error) { Console.Error.WriteLine(error); return 1; }

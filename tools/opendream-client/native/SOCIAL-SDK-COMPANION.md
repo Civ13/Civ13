@@ -2,7 +2,7 @@
 
 `CompanionPresenceTransport` implements the existing `IDiscordPresenceTransport`
 over an injected nonblocking channel. Production startup remains unwired. No
-OS channel/process factory, network listener, DLL loader,
+active OS channel/process factory, network listener, DLL loader,
 credentials, authentication or live native execution is supplied here. The
 [native companion core](companion/README.md) now implements the peer protocol and
 an SDK C-ABI backend, compiled/tested using original fake SDK functions.
@@ -94,6 +94,8 @@ real binding with fake SDK functions. No production worker/process host exists.
 The [private hosting contracts](SOCIAL-SDK-HOSTING.md) additionally supply a
 bounded injected-stream channel, managed lease owner and native I/O loop; they
 do not create OS processes/pipes or connect production startup.
+The concrete [Windows parent provider](SOCIAL-SDK-WINDOWS-PROVIDER.md) is supplied
+behind fixed-off source gates and exercised only through an injected fake platform.
 
 The inspected SDK 1.10.19337 supplies C/C++ headers and x64 libraries, not a
 standalone managed binding. The original C++20 backend now maps Publish to
