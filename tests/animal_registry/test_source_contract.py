@@ -16,11 +16,15 @@ HOOKS = {
     **{f'{species}/{hook}': f'{species}_count'
        for species in ('goat', 'sheep') for hook in ('death', 'Destroy')},
 }
+POULTRY_SOURCE = 'code/game/mob/living/simple_animal/friendly/birds.dm'
+POULTRY_HOOKS = {f'{kind}/{hook}': 'chicken_count'
+                 for kind in ('chick', 'chicken', 'rooster') for hook in ('death', 'Destroy')}
+SUITES = {'farm': (SOURCE, HOOKS), 'poultry': (POULTRY_SOURCE, POULTRY_HOOKS)}
 
 
-def violations(source):
+def violations(source, hooks=HOOKS):
     errors = []
-    for hook, registry in HOOKS.items():
+    for hook, registry in hooks.items():
         header = f'/mob/living/simple_animal/{hook}()'
         matches = re.findall(r'^' + re.escape(header) + r'\n(.*?)(?=^/|\Z)',
                              source, re.M | re.S)

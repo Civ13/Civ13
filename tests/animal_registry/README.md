@@ -123,3 +123,29 @@ injected runners, and bounded Python child processes only. Passing them or
 `--prepare-only` does not establish native compilation/list semantics, game
 startup, save/load, reproduction, visual acceptance or performance. Native
 acceptance remains pending until this runner actually succeeds on BYOND.
+
+## Poultry suite (2026-10-27)
+
+`birds.dm` had the same defect in six hooks: chick, chicken and rooster death and
+Destroy each ran `chicken_count &= src`. All three types register in `New()` and
+share `chicken_count`, whose length gates egg hatching (`chicken_count.len < 50`).
+The first poultry death or chick-to-hen growth (which qdels the chick) therefore
+collapsed the registry to at most the retiring bird, so the 50-bird hatching cap
+stopped limiting hatching. Only those six operators become `-=`; turkeys, ducks and
+other birds have no registry and are unchanged. The hatch cap value, the 5-bird
+local check, egg laying, growth and saves are untouched.
+
+`test_source_contract.py` exposes `POULTRY_SOURCE`/`POULTRY_HOOKS` and a `SUITES`
+map; `violations()` takes an optional hook map. `test_poultry_contract.py` holds
+the poultry source contracts and offline preparation/verdict tests. The native
+runner takes `--suite farm|poultry` (default `farm`, so existing commands keep
+their meaning); a poultry run has 21 cases (three per hook plus three
+death-then-Destroy pairs) and six single-hook controls:
+
+    python tests/animal_registry/run_native.py --suite poultry --byond-bin /path/to/byond/bin --all-controls --output /tmp/poultry-registry-native
+
+CI runs both suites in the existing registry step. On Windows the existing
+`test_injected_compiler_runtime_and_diagnostics` errors because the runner is
+Linux-only; master's copy fails identically there, so it is not a regression.
+Isolated hook evidence does not establish hatching rates, population balance,
+save/load or connected-client gameplay.

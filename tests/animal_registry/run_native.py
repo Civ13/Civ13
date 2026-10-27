@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-from test_source_contract import HOOKS, ROOT, SOURCE, violations
+from test_source_contract import HOOKS, ROOT, SOURCE, SUITES, violations
 
 VERSION = '516.1681'
 LIMIT = 2 * 1024 * 1024
@@ -18,7 +18,7 @@ DIAGNOSTIC = re.compile(r'\bwarning:|\berror:|runtime error|\bRUNTIME\b|\bBUG\b|
 
 
 def extract(source, hooks=HOOKS):
-    if violations(source):
+    if violations(source, hooks):
         raise ValueError('Production hook contract changed')
     result = {}
     for hook in hooks:
@@ -234,9 +234,13 @@ def execute(args, runner=run):
         raise ValueError('Native execution supports Linux only')
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    source = (ROOT / SOURCE).read_text()
-    modes = [None, *HOOKS] if args.all_controls else [args.negative_control]
+    source_path, hooks = SUITES[args.suite]
+    if args.negative_control is not None and args.negative_control not in hooks:
+        raise ValueError('Control is not part of the selected suite')
+    source = (ROOT / source_path).read_text()
+    modes = [None, *hooks] if args.all_controls else [args.negative_control]
     summary = {'status': 'incomplete', 'native_execution': False, 'version': VERSION,
+               'suite': args.suite, 'source': source_path,
                'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'modes': {}}
     deadline = time.monotonic() + 600
     try:
@@ -247,7 +251,7 @@ def execute(args, runner=run):
         for index, control in enumerate(modes):
             work = output / ('baseline' if control is None else 'control-' + str(index))
             work.mkdir()
-            sources = prepare(source, control)
+            sources = prepare(source, control, hooks)
             for name, content in sources.items():
                 (work / name).write_text(content, newline='\n')
             mode = {'control': control, 'native_execution': False, 'status': 'prepared',
@@ -263,10 +267,10 @@ def execute(args, runner=run):
             runtime_log = read_bounded(work / 'runtime.log')
             log += '\n' + runtime_log
             result = json.loads(read_bounded(work / 'result.json'))
-            verify(result, log, control, runtime_log=runtime_log)
+            verify(result, log, control, hooks, runtime_log=runtime_log)
             mode.update(status='passed', result=result)
             print(json.dumps(dict(control=control, status='passed', cases=len(result['cases']),
-                                  expected_failures=expected_failures(control),
+                                  expected_failures=expected_failures(control, hooks),
                                   source_sha256=summary['source_sha256'],
                                   generated_sha256=mode['source_sha256'],
                                   binary_sha256=summary['binary_sha256'])), flush=True)
@@ -291,8 +295,9 @@ def main():
     p.add_argument('--byond-bin', type=Path)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--prepare-only', action='store_true')
+    p.add_argument('--suite', choices=list(SUITES), default='farm')
     modes = p.add_mutually_exclusive_group()
-    modes.add_argument('--negative-control', choices=list(HOOKS))
+    modes.add_argument('--negative-control', choices=sorted({h for _, hooks in SUITES.values() for h in hooks}))
     modes.add_argument('--all-controls', action='store_true')
     args = p.parse_args()
     if not args.prepare_only and args.byond_bin is None:
