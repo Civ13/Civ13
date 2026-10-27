@@ -49,8 +49,8 @@ def verify_catalog(catalog_root=None):
 def project(doc):
     errors=validate(doc)
     if errors:raise ValueError("IR_REJECTED: "+json.dumps(errors))
-    if doc["profile"]!="SURFACE" or set(doc["layers"])!={"SURFACE","UNDERGROUND"}:
-        raise ValueError("EXPORT_PROFILE: two-plane SURFACE only")
+    if doc["profile"] not in {"SURFACE","OCEANIC"} or set(doc["layers"])!={"SURFACE","UNDERGROUND"}:
+        raise ValueError("EXPORT_PROFILE: two-plane SURFACE or OCEANIC only")
     starts={tuple(p) for p in doc["starts"]};result={}
     for layer,level in doc["layers"].items():
         z=level["native_z"]

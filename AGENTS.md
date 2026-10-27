@@ -4,6 +4,9 @@
 `tools/procedural_maps` generates new offline IR/DMM/sidecar bundles only.
 Run `python3 -I -B tests/procedural_maps/run.py` with a verified interpreter.
 Keep source pins, versioned configs, graph/raster invariants and old golden hashes.
+OCEANIC schema 3 has separate island/lake/sea and ship-clearance rules; preserve
+its per-island starts and bounded fresh/coast routes. Do not silently substitute
+surface edge-inlet rivers for deferred island river endpoints or cavern generation.
 Abstract supplies and the frozen resource proposal are not native playability;
 no live map, saved world or native engine is read/applied/launched by this tool.
 

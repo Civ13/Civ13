@@ -1,7 +1,7 @@
 name: Offline procedural maps
 on:
   pull_request:
-    branches: [master]
+    branches: [master, codex/procedural-map-generator]
     paths:
       - tools/procedural_maps/**
       - tests/procedural_maps/**

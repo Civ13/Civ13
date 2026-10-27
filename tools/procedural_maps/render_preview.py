@@ -26,7 +26,7 @@ FONT={
 '-':'00000/00000/00000/11111/00000/00000/00000',':':'00000/00100/00100/00000/00100/00100/00000',
 '.':'00000/00000/00000/00000/00000/00100/00100','/':'00001/00010/00010/00100/01000/01000/10000',
 ' ':'00000/00000/00000/00000/00000/00000/00000'}
-COLORS={"TEMPERATE":(121,162,93),"LUSH":(69,143,76),"STEPPE":(177,177,98),"ARID":(206,173,110),
+COLORS={"TEMPERATE":(121,162,93),"COAST":(134,174,117),"LUSH":(69,143,76),"STEPPE":(177,177,98),"ARID":(206,173,110),
         "DESERT":(222,196,139),"HILL":(170,143,105),"MOUNTAIN":(72,77,71),"BEACH":(227,210,159),
         "RIVER":(48,140,210),"LAKE":(45,110,176),"SEA":(24,66,112),"SWAMP":(96,146,143),
         "TREE":(25,69,47),"START":(255,219,72),"RESOURCE":(239,242,221),"PORT":(255,153,66),"JUNCTION":(221,109,255)}
@@ -35,7 +35,8 @@ COLORS={"TEMPERATE":(121,162,93),"LUSH":(69,143,76),"STEPPE":(177,177,98),"ARID"
 def render(doc,path):
     tile=4 if doc["width"]>100 else 6
     mw,mh=doc["width"]*tile,doc["height"]*tile
-    width=max(900,mw+320);height=max(700 if doc.get('junctions') else 640,mh+150)
+    ocean=doc['profile']=='OCEANIC'
+    width=max(900,mw+320);height=max(700 if doc.get('junctions') or ocean else 640,mh+150)
     pixels=bytearray(bytes((18,29,36))*(width*height))
     def rect(x,y,w,h,color):
         for yy in range(max(0,y),min(height,y+h)):
@@ -71,7 +72,11 @@ def render(doc,path):
                 x,y=(value,doc['height']-1) if port['side']=='N' else (value,0) if port['side']=='S' else (0,value) if port['side']=='W' else (doc['width']-1,value)
                 rect(ox+x*tile,oy+(doc['height']-1-y)*tile,tile,tile,COLORS['PORT'])
     lx=ox+mw+25;text(lx,oy,'TYPED IR LEGEND',scale=2)
-    for i,label in enumerate(['TEMPERATE','LUSH','STEPPE','ARID','DESERT','RIVER','LAKE','SEA','SWAMP','MOUNTAIN','HILL','BEACH','TREE','START','RESOURCE']):
+    if ocean:
+        for port in doc['ports']:
+            x,y,_=port['at'];rect(ox+x*tile,oy+(doc['height']-1-y)*tile,tile,tile,COLORS['PORT'])
+    labels=['TEMPERATE','LUSH','STEPPE','ARID','DESERT']+(['COAST'] if ocean else [])+['RIVER','LAKE','SEA','SWAMP','MOUNTAIN','HILL','BEACH','TREE','START','RESOURCE']
+    for i,label in enumerate(labels):
         yy=oy+35+i*25;rect(lx,yy,15,15,COLORS[label]);text(lx+24,yy+1,label,scale=1)
     text(lx,oy+440,'ABSTRACT SUPPLIES',scale=1)
     text(lx,oy+458,'ARE SIDECAR LABELS',scale=1)
@@ -80,6 +85,8 @@ def render(doc,path):
     if doc.get('junctions'):
         rect(lx,oy+532,15,15,COLORS['PORT']);text(lx+24,oy+535,'EDGE PORT SPAN',scale=1)
         rect(lx,oy+557,15,15,COLORS['JUNCTION']);text(lx+24,oy+560,'GRAPH CONFLUENCE',scale=1)
+    elif ocean:
+        rect(lx,oy+532,15,15,COLORS['PORT']);text(lx+24,oy+535,'OCEAN EDGE PORT',scale=1)
     text(24,oy+mh+20,'GENERATED DATA ONLY - MOUNTAINS ARE EXPLICIT IR TERRAIN',scale=1)
     def chunk(kind,data):return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
     raw=b''.join(b'\0'+pixels[y*width*3:(y+1)*width*3] for y in range(height))

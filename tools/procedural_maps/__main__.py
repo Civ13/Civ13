@@ -4,10 +4,10 @@ import json
 from pathlib import Path
 import sys
 from .bundle import write_bundle,verify_bundle
-from .configuration import preset,port_surface_preset,validate_config
+from .configuration import preset,port_surface_preset,oceanic_preset,validate_config
 from .io import read_json,new_output,json_text
 from .source_audit import audit
-from .surface_generator import generate
+from .generator import generate
 from .validator import validate
 
 
@@ -16,7 +16,7 @@ def main(argv=None):
     commands=parser.add_subparsers(dest='command',required=True)
     p=commands.add_parser('preset',help='write a complete versioned config to a new JSON file')
     p.add_argument('--profile',choices=['SURFACE','OCEANIC','UNDERGROUND_CAVERN'],default='SURFACE')
-    p.add_argument('--legacy',action='store_true');p.add_argument('--coast',choices=['N','S','E','W'],default='S')
+    p.add_argument('--legacy',action='store_true');p.add_argument('--coast',choices=['N','S','E','W'])
     p.add_argument('--seed',default='ports-0');p.add_argument('--width',type=int,default=64);p.add_argument('--height',type=int,default=80)
     p.add_argument('--out',required=True,type=Path)
     p=commands.add_parser('generate',help='one candidate, with DMM and sidecar; rejects explicitly')
@@ -38,7 +38,9 @@ def main(argv=None):
     a=parser.parse_args(argv)
     try:
         if a.command=='preset':
-            c=port_surface_preset(a.seed,a.width,a.height,sea_side=a.coast) if a.profile=='SURFACE' and not a.legacy else preset(a.profile,a.seed)
+            if a.profile!='SURFACE' and a.coast is not None:raise ValueError('--coast is a SURFACE-only control')
+            c=port_surface_preset(a.seed,a.width,a.height,sea_side=a.coast or 'S') if a.profile=='SURFACE' and not a.legacy else preset(a.profile,a.seed)
+            if a.profile=='OCEANIC' and not a.legacy:c=oceanic_preset(a.seed,a.width,a.height)
             if a.profile!='SURFACE' or a.legacy:c['dimensions'].update(width=a.width,height=a.height)
             errors=validate_config(c)
             if errors:print(json_text(dict(accepted=False,errors=errors)));return 1

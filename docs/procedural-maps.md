@@ -5,7 +5,8 @@ It runs locally with Python and does not start the game or change installed maps
 The current SURFACE backend supports configurable coast/edge-port sides and
 spans, a confluence, a lake, connected mountain ranges, climate regions,
 vegetation and abstract start/resource routes. It does not yet produce a verified
-playable native round.
+playable native round. A separate OCEANIC backend now generates islands with
+inland fresh lakes and connected navigable salt sea; see the profile section below.
 
 ## Prerequisites
 
@@ -138,9 +139,68 @@ IR grid row zero is south; the writer reverses rows for DMM and adds one to x/y.
 Native z-levels are layer IDs, not geographic elevation.
 
 Legacy schema 1 and `--legacy` preserve the earlier north-inlet/south-coast
-surface algorithm and golden hashes. OCEANIC and UNDERGROUND_CAVERN presets and
-validators exist, but their generation backends are **not implemented**; they
-reject explicitly. The reserve underground plane is not a playable cavern.
+surface algorithm and golden hashes. Legacy oceanic schema 1 and cavern
+generation reject explicitly. The reserve underground plane is not a playable cavern.
+
+## Oceanic islands (configuration and IR schema 3)
+
+Run from the same repository root with the same Python prerequisites:
+
+```sh
+python3 -m tools.procedural_maps preset --profile OCEANIC --seed ocean-0 --out data/procedural_maps/ocean.json
+python3 -m tools.procedural_maps validate-config data/procedural_maps/ocean.json
+python3 -m tools.procedural_maps generate --config data/procedural_maps/ocean.json --out data/procedural_maps/ocean-map
+python3 -m tools.procedural_maps verify data/procedural_maps/ocean-map
+```
+
+In PowerShell use `& $Python` in place of `python3`. For reference dimensions,
+add `--width 155 --height 225` to `preset`. A new seed or tighter settings can
+reject; this is one bounded candidate, with the same rejection log and new-path
+rules as SURFACE. `--coast` is rejected for OCEANIC; oceanic coasts surround
+each island and four ocean edge ports are declared automatically.
+
+| Profile | Mandatory topology and start rules | Implemented generation |
+| --- | --- | --- |
+| SURFACE | Explicit river edge ports, graph/raster confluences, valid lake/sea endings; clear abstract survival routes | Config schemas 1 and 2 |
+| OCEANIC | Majority salt sea, separate inland islands, connected deep sea and eroded ship-clear core, ocean edge access, inland fresh basin and start on every island, bounded fresh/coast/resource routes | Config schema 3 |
+| UNDERGROUND_CAVERN | Connected usable chambers/passages, paired safe layer entrances/exits, start/resource/exit routes | Validators/fixtures only; generator rejects |
+
+`ocean_layout` is required in schema 3. These are provisional offline caps:
+
+| Control | Meaning and bounds |
+| --- | --- |
+| `island_count` | Inclusive interval, 2..6; one count is selected per candidate. |
+| `island_min_area` | Minimum dry cells per island after lake carving, 32..8192. |
+| `island_gap_tiles` | Minimum cardinal sea gap, 4..24; must be at least `2 * ship_radius + 2`. |
+| `ship_radius` | Square footprint radius 1..3; the deep-water core after erosion must remain connected. This is abstract clearance, not a native boat test. |
+| `coast_width_tiles` | Sand beach depth in cardinal tiles, 1..4; shore moisture does not become desert. |
+| `climate_axis` | Nonzero integer vector with components -4..4 for the interior climate gradient. |
+
+Existing water, mountain, vegetation, resource and start controls still apply.
+This slice requires `river_networks: [0,0]` and `swamp_pct: [0,0]`; positive
+requests reject before generation. `lake_count` must equal the island-count
+interval. Each island has exactly one positive-area **terminal inland lake**,
+wholly surrounded by dry land. It has no inferred flow or invented spring.
+Island lake-to-sea rivers need a new explicit endpoint grammar and are deferred;
+they must not borrow the SURFACE rule requiring map-edge river inlets.
+
+Start count must cover the maximum island count. Starts rotate between islands,
+respect cardinal spacing and retain tree-free witnesses to fresh-water banks,
+navigable coasts and synthetic FOOD/WOOD/STONE sites. No native supplies are
+emitted. Mountains are connected elongated components, at most one requested
+range per island in this version. Unsupported packing rejects explicitly.
+
+The implementation recursively partitions the longer extent, reserves sea
+channels, and grows islands by a seeded radial priority. Inland lakes and ranges
+also use bounded connected growth. Shape variety is currently limited by this
+partition/radial family. The sidecar records realized counts, component water
+coverage, eligible tree density, route witnesses and growth expansion counts.
+Climate fractions are targets with coastal relabelling, not exact biome areas;
+shared gradient, ecotone and habitat checks remain mandatory. A COAST biome label
+retains its underlying climate; the physical sand strip is distance-based.
+Every candidate gets independent graph/raster validation; there is no repair,
+hidden retry, image input or large seed search. No native boat or gameplay
+acceptance is established by the offline water-connectivity check.
 
 ## Source catalog and Dream Maker viewing
 
@@ -209,7 +269,7 @@ and sidecars, and the emitter adds no playable native supply objects.
 
 Full hydraulic bed/head/capacity simulation, arbitrary river graphs, naturalistic
 channel curvature, minimum ecotone width, native actor/resource behavior,
-runtime climate/elevation, persistence and oceanic/cavern generation remain
+runtime climate/elevation, persistence and cavern generation remain
 future work. The prototype cannot approve production host capacity or a live
 map replacement. It never opens or overwrites saved player worlds.
 

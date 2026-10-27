@@ -9,6 +9,7 @@ from pathlib import Path
 
 VERSION = "civ13-geography-ir/1"
 PORT_VERSION = "civ13-geography-ir/2"
+OCEAN_VERSION = "civ13-geography-ir/3"
 PROFILES = {"SURFACE", "OCEANIC", "UNDERGROUND_CAVERN"}
 TERRAINS = {"PLAIN", "HILL", "MOUNTAIN", "BEACH", "CAVE_FLOOR", "ROCK", "WATER"}
 BIOMES = {"TEMPERATE", "LUSH", "STEPPE", "ARID", "DESERT", "ALPINE", "CAVERN", "COAST"}
@@ -65,8 +66,14 @@ def validate(d: object) -> list[dict]:
 
     try:
         v2=type(d) is dict and d.get("schema")==PORT_VERSION
-        exact(d, ROOT_KEYS|({"junctions"} if v2 else set()), "root keys")
-        require(d["schema"] in {VERSION,PORT_VERSION} and d["profile"] in PROFILES, "schema/profile")
+        ocean=type(d) is dict and d.get('schema')==OCEAN_VERSION
+        exact(d, ROOT_KEYS|({"junctions"} if v2 else set())|({'ocean_policy'} if ocean else set()), "root keys")
+        require(d["schema"] in {VERSION,PORT_VERSION,OCEAN_VERSION} and d["profile"] in PROFILES, "schema/profile")
+        if ocean:
+            require(d['profile']=='OCEANIC','ocean schema profile')
+            exact(d['ocean_policy'],{'island_count','island_min_area','island_gap_tiles','start_min_spacing','coast_route_max'},'ocean policy')
+            require(integer(d['ocean_policy']['island_count'],2,6) and integer(d['ocean_policy']['island_min_area'],32,8192) and integer(d['ocean_policy']['island_gap_tiles'],4,24),'ocean policy bounds')
+            require(integer(d['ocean_policy']['start_min_spacing'],3,64) and integer(d['ocean_policy']['coast_route_max'],8,256),'ocean start policy bounds')
         for k in ("seed", "algorithm_version", "content_version", "profile_version"):
             require(type(d[k]) is str and 0 < len(d[k]) <= 128, k)
         require(d["seed"].isascii(), "seed must be ASCII")
@@ -96,6 +103,7 @@ def validate(d: object) -> list[dict]:
                     require(type(c["body"]) is str and len(c["body"]) <= 64, "body")
                     require(type(c["resource"]) is str and c["resource"] in {"NONE", "FOOD", "WOOD", "STONE"}, "resource")
                     require(type(c["blocked"]) is bool and type(c["hazard"]) is bool, "bool flags")
+        if ocean:require(set(d['layers'])=={'SURFACE','UNDERGROUND'} and d['active_layer']=='SURFACE','ocean two-plane surface mapping')
         for name in ("ports", "rivers", "lakes", "starts", "portals"):
             require(type(d[name]) is list and len(d[name]) <= 2048, name)
         def coord(p):
@@ -378,6 +386,9 @@ def validate(d: object) -> list[dict]:
     if v2:
         from .ports_validation import validate_port_geometry
         errors.extend(validate_port_geometry(d))
+    if ocean:
+        from .ocean_validation import validate_archipelago
+        errors.extend(validate_archipelago(d))
     return sorted(errors,key=lambda e:(e["code"],str(e.get("at",[])),e["detail"]))
 
 

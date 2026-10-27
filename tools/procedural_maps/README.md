@@ -18,8 +18,10 @@ shows PowerShell commands. No pip dependencies or engine installation are
 required for generation/validation.
 
 SURFACE generation is implemented, with N/S/E/W edge spans, one confluence and a
-through-lake. Oceanic/cavern configs and validators exist; their generation
-backends are not implemented and reject explicitly. Native resource, hydraulic,
+through-lake. OCEANIC schema 3 generates separated islands, enclosed fresh lakes,
+connected deep sea and ship-clear routes. Use `preset --profile OCEANIC` for its
+versioned configuration. Cavern generation and legacy oceanic schema 1 reject
+explicitly. Native resource, hydraulic,
 climate/elevation and persistence integration remain incomplete. FOOD/WOOD/STONE
 are abstract sidecar labels, not playable supplies. No reference-matching seed
 has been demonstrated. A static parse-back check is not native gameplay or
