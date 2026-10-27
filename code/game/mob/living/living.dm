@@ -506,6 +506,13 @@ default behaviour is:
 		return FALSE
 	if (using_drone)
 		return FALSE
+	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
+	if (paired_move)
+		// The pair owns follow planning. Never run this full-tile drag subtree
+		// or its completion hook once for each physical pulse.
+		if (!paired_move.issued || paired_move.issued.member != src)
+			return FALSE
+		return ..()
 
 	if (restrained())
 		stop_pulling()
@@ -752,6 +759,9 @@ default behaviour is:
 	set category = "IC"
 
 
+	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
+	if (paired_move)
+		paired_move.cancel("pull_stopped")
 	if (pulling)
 		pulling.pulledby = null
 		pulling = null
@@ -765,6 +775,14 @@ default behaviour is:
 
 	if ( !AM || !usr || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
+	if (subtile_pull_ownership.owners[src] || subtile_pull_ownership.owners[AM])
+		to_chat(src, SPAN_NOTICE("Reverse an interrupted smooth pull to alignment before starting another pull."))
+		return FALSE
+	if (ishuman(src))
+		var/mob/living/human/pull_actor = src
+		if (pull_actor.human_subtile_pull_enabled && (pull_actor.human_subtile_transaction || pull_actor.step_x || pull_actor.step_y))
+			to_chat(src, SPAN_NOTICE("Finish the current smooth step before starting a pull."))
+			return FALSE
 
 	if (AM.anchored || istype(AM, /obj/item/football))
 		to_chat(src, SPAN_WARNING("It won't budge!"))

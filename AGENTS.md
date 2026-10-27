@@ -1,13 +1,15 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-27: staged pull-pair ownership kernel -->
-pull_pair_ownership.dm is a bounded live-only lease/capability foundation with no
-movement producer wired. Do not remove unlinked guards to activate it. The first
-profile is aligned straight cardinal pulling of an empty leaf object; no turns,
-living targets or assemblies. Native collision, once-only costs/hooks, partial
-recovery, lifecycle cleanup and coherent saves remain integration gates. Offline
-tests project only displacement arithmetic and source contracts, not DM authority
-or physical collision. Keep crafting/prone/NPC branches separate during review.
+pull_pair_ownership.dm now has an explicit default-OFF pull_pair_producer.dm
+caller. Only aligned straight cardinal pulls of whitelisted empty leaf stacks or
+base crates are admitted; no turns, living targets or assemblies. Client costs
+and deadlines are captured once; both bodies use authenticated native pulses,
+with consolidated actor hooks and reverse recovery. Partial pair exports refuse
+before normal save hooks; only aligned checkpoints export. Native collision,
+lifecycle cleanup, partial-save support and default activation remain gates.
+Offline projections are not native authority/collision evidence. Keep the shared
+ready/posture exclusivity guards when integrating crafting/prone/NPC work.
 
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask

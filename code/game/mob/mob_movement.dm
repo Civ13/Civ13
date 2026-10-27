@@ -193,6 +193,23 @@
 /atom/movable/Move(newloc, direct)
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
+	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
+	if (paired_move)
+		var/datum/subtile_pull_capability/P = paired_move.issued
+		if (!P || !P.consume(src, newloc, direct, P.after["sx"], P.after["sy"]))
+			return FALSE
+		var/atom/previous_location = loc
+		var/previous_direction = dir
+		. = ..(newloc, direct, P.after["sx"], P.after["sy"])
+		if (!src || isDeleted(src))
+			return .
+		if (direct != previous_direction)
+			dir = previous_direction
+			set_dir(direct)
+		l_move_time = world.time
+		if (previous_location != loc && previous_location && previous_location.z == z)
+			last_move = get_dir(previous_location, loc)
+		return .
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
 	if (ishuman(src))
@@ -302,7 +319,7 @@
 		if (!subtile_input_actor.human_subtile_input_supported(direct))
 			human_subtile_release_visuals()
 			return FALSE
-		if (!subtile_input_actor.human_subtile_eligible(direct))
+		if (!subtile_input_actor.human_subtile_eligible(direct) && !subtile_input_actor.human_subtile_pull_ready(direct))
 			human_subtile_release_visuals()
 	else
 		human_subtile_release_visuals()
@@ -772,7 +789,7 @@
 			else if (mob.confused && prob(40))
 				step(mob, pick(cardinal))
 			else
-				if (mob_is_human && H.human_subtile_eligible(direct))
+				if (mob_is_human && (H.human_subtile_eligible(direct) || H.human_subtile_pull_ready(direct)))
 					subtile_deadline = H.human_subtile_deadline(move_delay, world.time, ordinal)
 					. = H.SelfMove(n, direct, subtile_deadline)
 				else

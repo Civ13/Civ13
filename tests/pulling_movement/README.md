@@ -1,8 +1,10 @@
 # Pull-pair ownership foundation
 
-This stage implements the bounded ownership/capability kernel, not smooth dragging
-in gameplay. No client, AI, living.Move or native collision producer calls it yet.
-The existing `human_subtile_unlinked` pulling guards remain byte-identical.
+The bounded ownership/capability kernel now has a default-OFF experimental
+straight-leaf producer; see [PRODUCER.md](PRODUCER.md). Client input and an exact
+native seam call it only after explicit opt-in. The existing
+`human_subtile_unlinked` pulling guards remain byte-identical. This is not yet
+approved for normal gameplay or default activation.
 
 The first profile reserves a real-input human and an aligned, empty leaf item or
 empty closet directly behind a straight cardinal intent. It rechecks reciprocal
@@ -33,16 +35,14 @@ Next implementation gates, in order:
 1. Review/compile this kernel and prepare bounded positive/negative native lease
    scenarios with explicitly labeled fixture authority; retain the production
    real-client predicate. Runtime tests require separate reviewed scope.
-2. Add a producer-owned once-per-input plan from the legacy pull follow decision,
-   preserving the original slowdown/cooldown/cost/RNG/hook boundary. Only then
-   connect an authenticated native pulse seam, leaving unrelated Move checks.
-3. Implement leader/follower partial-failure recovery and safe start/stop/deletion,
-   death, handoff, expiry and map-reset cleanup before any producer can claim a
-   lease. Current partial-offset release intentionally refuses until a resolver
-   exists; this stage cannot be safely enabled by adding a single caller.
-4. Provide coherent pair-position serialization or a validated quiescent export
-   checkpoint. Existing linked-offset saver guards must remain until that works.
-   No runtime registry/lease may replay after load.
+2. Review the new producer's preserved slowdown/cooldown/cost/hook boundary and
+   authenticated native seam before enabling its experimental profile.
+3. Native-test the straight reverse resolver and complete deletion, transport,
+   death, handoff, expiry and map-reset cleanup. No default activation with those
+   lifecycle gaps. Partial offsets retain exclusive ownership and cannot snap.
+4. Validate the fail-closed aligned-export checkpoint and implement partial pair
+   serialization if arbitrary-time saves are required. Existing linked-offset
+   saver guards stay intact; no runtime registry/lease may replay after load.
 5. Test actual straight dragging before default enablement. Expand to living
    targets and turning only with reviewed native collision/authority contracts.
    Straight-line interpolation of both bodies during a 90-degree turn can overlap

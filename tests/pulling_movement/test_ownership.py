@@ -86,12 +86,15 @@ class PullOwnershipContracts(unittest.TestCase):
             self.assertEqual((leader['x'],leader['y'],leader['sx'],leader['sy']), (6+dx,6+dy,0,0))
             self.assertEqual((follower['x'],follower['y'],follower['sx'],follower['sy']), (6,6,0,0))
 
-    def test_no_producer_or_native_collision_path_is_wired(self):
-        for path in ('code/game/mob/mob_movement.dm', 'code/game/mob/living/living.dm',
-                     'code/game/mob/living/carbon/human/subtile_movement.dm',
-                     'code/_onclick/click.dm', 'code/pathfinding.dm', 'code/_helpers/mobs.dm'):
+    def test_other_producers_and_unlinked_guard_are_not_broadly_enabled(self):
+        for path in ('code/_onclick/click.dm', 'code/pathfinding.dm', 'code/_helpers/mobs.dm'):
             old = subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT).decode().replace('\r\n','\n')
             self.assertEqual((ROOT/path).read_text(encoding='utf-8'), old, path)
+        human = (ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
+        old = subprocess.check_output(['git','show',BASE+':code/game/mob/living/carbon/human/subtile_movement.dm'],cwd=ROOT).decode().replace('\r\n','\n')
+        start='/mob/living/human/proc/human_subtile_unlinked()'
+        end='/mob/living/human/proc/human_subtile_input_supported'
+        self.assertEqual(human[human.index(start):human.index(end)], old[old.index(start):old.index(end)])
         text = source()
         for forbidden in ('.Move(', 'forceMove(', 'pixel_x =', 'pixel_y =',
                           'living_movement_completed(', 'human_movement_completed(', 'sleep(', 'spawn(',
@@ -132,12 +135,13 @@ class PullOwnershipContracts(unittest.TestCase):
     def test_capabilities_bind_member_position_destination_direction_and_clock(self):
         text = source()[source().index('/datum/subtile_pull_capability/proc/consume'):]
         for guard in ('!armed', 'pair.issued != src', 'member != actor', 'direct != direction',
-                      'ordinal != pair.ordinal', '!pair.valid()',
+                      'ordinal != (recovery ? pair.recovery_ordinal : pair.ordinal)', '!pair.valid()',
                       'human_subtile_same(before, subtile_pull_snapshot(actor))',
                       'destination != locate(after["x"], after["y"], after["z"])',
                       'sx != after["sx"] || sy != after["sy"]', 'armed = FALSE'):
             self.assertIn(guard, text)
-        self.assertIn('(ordinal - 1) * (pair.deadline - pair.start_time) / 16', text)
+        self.assertIn('world.time < due', text)
+        self.assertIn('(ordinal - 1) * (deadline - start_time) / 16', source())
 
     def test_member_phase_requires_observed_leader_before_follower(self):
         issue = block('/datum/subtile_pull_pair/proc/issue', '/datum/subtile_pull_pair/proc/observe')

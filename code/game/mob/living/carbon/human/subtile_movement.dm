@@ -117,7 +117,7 @@
 	return human_subtile_enabled && human_subtile_ready(direction)
 
 /mob/living/human/proc/human_subtile_ready(direction)
-	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
+	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
 
 /mob/living/human/proc/human_subtile_initialize_default(direction)
 	// Wait for an eligible input, after construction/placement/load. Do not adopt
@@ -137,12 +137,12 @@
 		return TRUE
 	if (!step_x && !step_y)
 		return TRUE
-	return human_subtile_eligible(direction) || human_subtile_posture_ready(direction)
+	return human_subtile_eligible(direction) || human_subtile_posture_ready(direction) || human_subtile_pull_ready(direction)
 
 // Crawling has its own legacy wait and admission. Let that paid path recover
 // an owned offset without making unconscious/restrained/linked bodies eligible.
 /mob/living/human/proc/human_subtile_posture_ready(direction)
-	return human_subtile_offset_owned && (step_x || step_y) && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked()
+	return !subtile_pull_ownership.owners[src] && human_subtile_offset_owned && (step_x || step_y) && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked()
 
 /mob/living/human/proc/human_subtile_posture_authority(client/owner)
 	return client == owner && (!owner || (owner.mob == src && owner.canmove))
@@ -157,7 +157,7 @@
 	return human_subtile_travel(n, direct, world.time, TRUE)
 
 /mob/living/human/proc/set_human_subtile(enabled)
-	if (human_subtile_transaction || human_subtile_pulse || !human_subtile_shape())
+	if (human_subtile_transaction || human_subtile_pulse || subtile_pull_ownership.owners[src] || !human_subtile_shape())
 		return FALSE
 	if (!enabled && (step_x || step_y))
 		return FALSE
@@ -208,6 +208,8 @@
 /mob/living/human/SelfMove(turf/n, direct, deadline = null)
 	if (isnull(deadline))
 		return ..()
+	if (human_subtile_pull_ready(direct))
+		return human_subtile_pull_travel(n, direct, deadline)
 	if (!human_subtile_eligible(direct) || !human_subtile_authority(client) || human_subtile_transaction || n != get_step(src, direct) || !isnum(deadline) || deadline < world.time || deadline >= INFINITY)
 		return FALSE
 	return human_subtile_travel(n, direct, deadline)
@@ -367,6 +369,8 @@
 	return P
 
 /mob/living/human/persistence_runtime_var(key)
+	if (key == "human_subtile_pull_enabled")
+		return TRUE
 	if (key == "glide_size" && (human_subtile_glide_owned || human_subtile_import_owned || human_subtile_position))
 		return TRUE
 	if ((key == "step_x" || key == "step_y") && (human_subtile_import_owned || human_subtile_position))

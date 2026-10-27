@@ -1,6 +1,6 @@
-// Stage1: ownership and pulse planning only. No movement producer calls this
-// kernel yet. Do not enable pulling by removing human_subtile_unlinked guards.
-// First profile is a straight cardinal pull of an aligned, empty leaf object.
+// Ownership kernel for the explicit default-off straight-leaf producer.
+// Do not enable pulling by removing human_subtile_unlinked guards. Native and
+// lifecycle/save acceptance remain required before gameplay default activation.
 var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 
 /datum/subtile_pull_ownership
@@ -69,12 +69,16 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	var/ordinal = 0
 	var/distance = 0
 	var/failure
+	var/list/leader_origin
+	var/list/follower_origin
+	var/recovering = FALSE
+	var/recovery_ordinal = 0
 
 /datum/subtile_pull_pair/proc/leader_allowed()
 	return istype(leader, /mob/living/human) && !isDeleted(leader) && leader.human_subtile_enabled && !leader.human_subtile_transaction && !leader.human_subtile_pulse && !leader.stat && leader.canmove && !leader.transforming && !leader.lying && !leader.prone && !leader.crouching && !leader.restrained() && (!leader.pinned || !leader.pinned.len) && !leader.pulledby && !leader.buckled && !leader.riding && !leader.riding_mob && !leader.using_drone && !leader.control_object && !leader.incorporeal_move && !leader.using_object && !leader.using_cannon && !leader.football && (!leader.grab_list || !leader.grab_list.len) && (!leader.grabbed_by || !leader.grabbed_by.len)
 
 /datum/subtile_pull_pair/proc/leaf_allowed()
-	if (!istype(follower, /obj) || isDeleted(follower) || follower.anchored || follower.throwing || follower.contents.len || !(istype(follower, /obj/item) || istype(follower, /obj/structure/closet)))
+	if (!istype(follower, /obj) || isDeleted(follower) || follower.anchored || follower.throwing || follower.contents.len || !follower.subtile_pull_pulses_allowed() || !(istype(follower, /obj/item) || istype(follower, /obj/structure/closet)))
 		return FALSE
 	if (istype(follower, /obj/item/vehicleparts) || istype(follower, /obj/item/football) || istype(follower, /obj/item/weapon/gun/projectile/automatic/stationary))
 		return FALSE
@@ -102,6 +106,8 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	deadline = end_time
 	leader_expected = subtile_pull_snapshot(L)
 	follower_expected = subtile_pull_snapshot(F)
+	leader_origin = leader_expected.Copy()
+	follower_origin = follower_expected.Copy()
 	return TRUE
 
 /datum/subtile_pull_pair/proc/authority_valid()
@@ -111,7 +117,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	return authority_valid() && human_subtile_same(leader_expected, subtile_pull_snapshot(leader)) && human_subtile_same(follower_expected, subtile_pull_snapshot(follower))
 
 /datum/subtile_pull_pair/proc/issue(atom/movable/member)
-	if (!valid() || issued || distance >= 32)
+	if (recovering || !valid() || issued || distance >= 32)
 		return null
 	if (phase == "idle" && member == leader)
 		if (ordinal >= 16)
@@ -131,6 +137,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	P.after = (member == leader) ? leader_planned.Copy() : follower_planned.Copy()
 	P.direction = direction
 	P.ordinal = ordinal
+	P.due = start_time + (ordinal - 1) * (deadline - start_time) / 16
 	issued = P
 	return P
 
@@ -158,6 +165,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 
 /datum/subtile_pull_pair/proc/cancel(reason)
 	cancelled = TRUE
+	recovering = FALSE
 	failure = reason
 	phase = "cancelled"
 	if (issued)
@@ -198,11 +206,13 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	var/direction
 	var/ordinal
 	var/armed = TRUE
+	var/recovery = FALSE
+	var/due
 
 /datum/subtile_pull_capability/proc/consume(atom/movable/actor, turf/destination, direct, sx, sy)
-	if (!armed || !pair || pair.issued != src || member != actor || direct != direction || ordinal != pair.ordinal || !pair.valid() || !human_subtile_same(before, subtile_pull_snapshot(actor)))
+	if (!armed || !pair || pair.issued != src || member != actor || direct != direction || ordinal != (recovery ? pair.recovery_ordinal : pair.ordinal) || (recovery ? !pair.recovery_valid() : !pair.valid()) || !human_subtile_same(before, subtile_pull_snapshot(actor)))
 		return FALSE
-	if (world.time < pair.start_time + (ordinal - 1) * (pair.deadline - pair.start_time) / 16 || destination != locate(after["x"], after["y"], after["z"]) || !destination || sx != after["sx"] || sy != after["sy"])
+	if (world.time < due || destination != locate(after["x"], after["y"], after["z"]) || !destination || sx != after["sx"] || sy != after["sy"])
 		return FALSE
 	armed = FALSE
 	return TRUE
