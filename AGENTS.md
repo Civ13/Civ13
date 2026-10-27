@@ -967,6 +967,15 @@ docs/crafting-atlas.md; acquisition annotations retain their historical audit SH
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
 <!-- 2026-10-23: atlas catalog variants -->
+<!-- 2026-10-27: direct atlas resource search -->
+Atlas search has separate bounded Resource and Recipe results. Resource matching
+uses catalog names and canonical IDs, with case/whitespace/underscore normalization;
+IDs and labels stay unchanged. Recipe filters do not hide resource matches; direct
+resource navigation reuses atlas_resource/resource(id) and clears recipe filters.
+Empty input browses recipes. tests/crafting_atlas/resource-search.test.mjs checks
+the production template offline; resource_search.dm is a hosted renderer fixture,
+not connected-client or live-server acceptance. Do not add guessed reagent aliases.
+
 `scripts/atlas/variants.py` groups only identical explicit 13-field material rows
 with equal extracted semantics. Catalog identity/source IDs stay as variants;
 never group by name, canonical ingredients or outputs alone. Counts and legacy
