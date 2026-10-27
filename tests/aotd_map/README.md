@@ -1,5 +1,16 @@
 # Art of the Deal map checks
 
+`test_coded_loc.py` projects the production helper's arithmetic and switch cases
+offline. It enumerates every tile in the default 220x220, campaign 150x100 and
+Falcon 400x400 ten-cell coordinate frames, checks all edges/corners and boundaries,
+both reported AOTD positions, every other declared map ID, and two defect controls.
+Falcon's authored 390x390x2 map fits its fixed 40x40 cells. The campaign DMMs have
+larger/irregular extents (241x109, 251x197, 359x159 and 89x153); their legacy
+15x10 cells and fixed ten-row frame are preserved, including overflow outside
+that frame. This does not redesign those minimaps or prove native HUD rendering.
+Numeric HUD coordinates remain unchanged. The shared campaign macro and its
+other callers are intentionally outside this narrow grid correction.
+
 ```sh
 python3 -B -m unittest discover -s tests/aotd_map -p 'test_*.py' -v
 python3 -B tests/aotd_map/compile_map.py --byond-bin /path/to/byond/bin --evidence-dir /new/evidence/directory

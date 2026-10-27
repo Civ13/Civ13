@@ -322,6 +322,15 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-27: coded minimap grid boundaries -->
+get_coded_loc uses one-based tiles with fixed 22x22 default, 15x10 campaign and
+40x40 Falcon cells. CAMPAIGN_MAP_LIST_MAPID_OR starts with a bare map constant;
+its comparison-prefix callers differ from standalone Boolean callers. Keep the
+grid's explicit ID selection local rather than globally changing that macro.
+tests/aotd_map/test_coded_loc.py projects the helper offline; it is not native
+HUD acceptance. Campaign DMM extents exceed the legacy ten-row/column frame;
+this correction preserves those cell sizes rather than rescaling their maps.
+
 <!-- 2026-10-24: optional geographic elevation -->
 Elevation is a bounded coordinate profile on map metadata, independent of native
 areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
