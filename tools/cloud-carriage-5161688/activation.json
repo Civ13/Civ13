@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-carriage-5161688-held-20261027-r2",
+  "message": "ci: held native carriage eight-second proof r2",
+  "deadline_utc": "2026-10-30T12:00:00Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "8dc01ef91cbdd46126655c621ab0834b24d9c93224165aa0627ed5cca0201602",
+  "approval": "One hosted replacement carriage scene proof; no production deployment or public video publication."
+}
