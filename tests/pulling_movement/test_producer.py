@@ -93,16 +93,14 @@ class PullProducerContracts(unittest.TestCase):
         self.assertLess(living.index('return ..()',begin),living.index('var/moved = FALSE',begin))
         self.assertIn('if (subtile_pull_ownership.owners[src])\n\t\treturn .',read('code/game/mob/living/carbon/human/human.dm'))
         text=PRODUCER.read_text();finish=text[text.index('/datum/subtile_pull_pair/proc/finish_intent'):]
-        self.assertIn('if (intent_completed)\n\t\treturn',finish)
+        self.assertIn('if (intent_running || native_inflight || completion_running || intent_completed)\n\t\treturn',finish)
         self.assertEqual(finish.count('leader.living_movement_completed()'),1)
         self.assertEqual(finish.count('leader.human_movement_completed()'),1)
         self.assertNotIn('prob(',text)
 
     def test_partial_save_is_refused_before_original_hooks_and_no_state_replays(self):
         text=PRODUCER.read_text();save=text[text.index('/atom/movable/before_save_context'):]
-        self.assertLess(save.index('P.cancel("save_checkpoint")'),save.index('P.finish_intent()'))
-        self.assertLess(save.index('P.finish_intent()'),save.index('if (!P.released)'))
-        self.assertIn('Cannot snapshot an in-flight pull pulse',save)
+        self.assertIn('if (!P.save_checkpoint())',save)
         self.assertIn('throw EXCEPTION("Pull pair requires an aligned save checkpoint")',save)
         self.assertIn('return ..()',save)
         human=read('code/game/mob/living/carbon/human/subtile_movement.dm')
@@ -110,7 +108,7 @@ class PullProducerContracts(unittest.TestCase):
 
     def test_stop_and_handoff_revoke_old_work_without_borrowing_authority(self):
         living=read('code/game/mob/living/living.dm')
-        self.assertIn('paired_move.cancel("pull_stopped")',living)
+        self.assertIn('paired_move.lifecycle_stop("pull_stopped")',living)
         self.assertIn('subtile_pull_ownership.owners[src] || subtile_pull_ownership.owners[AM]',living)
         text=PRODUCER.read_text()
         self.assertIn('!human_subtile_authority(client)',text)

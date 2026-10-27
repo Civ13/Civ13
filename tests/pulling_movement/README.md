@@ -37,12 +37,16 @@ Next implementation gates, in order:
    real-client predicate. Runtime tests require separate reviewed scope.
 2. Review the new producer's preserved slowdown/cooldown/cost/hook boundary and
    authenticated native seam before enabling its experimental profile.
-3. Native-test the straight reverse resolver and complete deletion, transport,
-   death, handoff, expiry and map-reset cleanup. No default activation with those
-   lifecycle gaps. Partial offsets retain exclusive ownership and cannot snap.
-4. Validate the fail-closed aligned-export checkpoint and implement partial pair
-   serialization if arbitrary-time saves are required. Existing linked-offset
-   saver guards stay intact; no runtime registry/lease may replay after load.
+3. Native-test the straight reverse resolver and the source lifecycle follow-up:
+   deletion removes the retiring actor's keys/references, logout/handoff revokes
+   the old controller, and callbacks unwind before completion/release. Partial
+   orphans retain exclusive ownership and an explicit save hold. Automatic orphan,
+   foreign transport, death/expiry/map-reset recovery remain default-enable gates.
+4. Validate global save admission plus the direct participant checkpoint guard.
+   Both require valid aligned live survivors and no active native/intent/completion
+   work. Partial pairs/orphans hold saves before backend preparation; no half-pair
+   capsule or runtime lease replays after load. Arbitrary-time partial saves remain
+   unsupported rather than silently exporting one participant.
 5. Test actual straight dragging before default enablement. Expand to living
    targets and turning only with reviewed native collision/authority contracts.
    Straight-line interpolation of both bodies during a 90-degree turn can overlap

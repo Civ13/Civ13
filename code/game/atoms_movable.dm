@@ -78,6 +78,7 @@
 	..()
 
 /atom/movable/Destroy()
+	subtile_pull_ownership.retire_member(src)
 	. = ..()
 	for (var/atom/movable/AM in contents)
 		qdel(AM)

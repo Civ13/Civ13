@@ -73,6 +73,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	var/list/follower_origin
 	var/recovering = FALSE
 	var/recovery_ordinal = 0
+	var/orphaned = FALSE
 
 /datum/subtile_pull_pair/proc/leader_allowed()
 	return istype(leader, /mob/living/human) && !isDeleted(leader) && leader.human_subtile_enabled && !leader.human_subtile_transaction && !leader.human_subtile_pulse && !leader.stat && leader.canmove && !leader.transforming && !leader.lying && !leader.prone && !leader.crouching && !leader.restrained() && (!leader.pinned || !leader.pinned.len) && !leader.pulledby && !leader.buckled && !leader.riding && !leader.riding_mob && !leader.using_drone && !leader.control_object && !leader.incorporeal_move && !leader.using_object && !leader.using_cannon && !leader.football && (!leader.grab_list || !leader.grab_list.len) && (!leader.grabbed_by || !leader.grabbed_by.len)
@@ -177,18 +178,20 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 /datum/subtile_pull_pair/proc/release()
 	if (released)
 		return TRUE
-	// Releasing ownership at an offset without a physical recovery/capsule
-	// would make an ordinary legacy Move snap. Integration is held until that
-	// resolver and coherent pair save/load are implemented and tested.
-	if ((leader && !isDeleted(leader) && (leader.step_x || leader.step_y)) || (follower && !isDeleted(follower) && (follower.step_x || follower.step_y)))
+	if (intent_running || native_inflight || completion_running || issued)
+		return FALSE
+	// Releasing a live offset/unsupported shape would let a legacy Move snap.
+	// Deleted members are retired separately; survivors still require a valid
+	// native aligned checkpoint. This never moves or adopts a foreign offset.
+	if ((leader && !isDeleted(leader) && !subtile_pull_shape(leader, TRUE)) || (follower && !isDeleted(follower) && !subtile_pull_shape(follower, TRUE)))
 		cancel("release_requires_recovery")
 		recovery_required = TRUE
 		return FALSE
 	cancel("released")
 	if (registry)
-		if (registry.owners[leader] == src)
+		if (leader && registry.owners[leader] == src)
 			registry.owners -= leader
-		if (registry.owners[follower] == src)
+		if (follower && registry.owners[follower] == src)
 			registry.owners -= follower
 	released = TRUE
 	leader = null

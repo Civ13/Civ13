@@ -761,7 +761,7 @@ default behaviour is:
 
 	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
 	if (paired_move)
-		paired_move.cancel("pull_stopped")
+		paired_move.lifecycle_stop("pull_stopped")
 	if (pulling)
 		pulling.pulledby = null
 		pulling = null

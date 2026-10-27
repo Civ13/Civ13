@@ -457,6 +457,11 @@ var/global/persistence_load_recovery_required = FALSE
 	if(kind == "save" && persistence_restart.startup_hold) return null
 	if(persistence_save_in_progress && !(restart_owner && persistence_restart.startup_hold)) return null
 	if((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && !restart_owner) return null
+	// Never begin save preparation while a coupled native intent, interrupted
+	// pair or orphaned partial survivor still owns physical positions.
+	if(kind == "save" && !subtile_pull_ownership.save_ready())
+		to_chat(world, SPAN_WARNING("Map save held: a smooth pull requires an aligned checkpoint."))
+		return null
 	var/datum/persistence_world_operation/operation = new
 	operation.storage = storage
 	operation.kind = kind

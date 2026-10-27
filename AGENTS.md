@@ -7,9 +7,16 @@ base crates are admitted; no turns, living targets or assemblies. Client costs
 and deadlines are captured once; both bodies use authenticated native pulses,
 with consolidated actor hooks and reverse recovery. Partial pair exports refuse
 before normal save hooks; only aligned checkpoints export. Native collision,
-lifecycle cleanup, partial-save support and default activation remain gates.
+lifecycle acceptance, partial-save support and default activation remain gates.
 Offline projections are not native authority/collision evidence. Keep the shared
 ready/posture exclusivity guards when integrating crafting/prone/NPC work.
+pull_pair_lifecycle.dm revokes logout/stop/deletion capabilities and restores the
+target glide. Deleted actors leave no registry key/member/controller reference;
+partial survivors remain exclusively held, with no automatic orphan movement.
+Save admission reads every bounded lease before creating the operation: native
+calls/intents must unwind, hooks must complete, and live survivors must have valid
+aligned shapes. Partial orphans can intentionally hold saves until resolved.
+Never serialize a half-applied pair or release an offset to legacy movement.
 
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask

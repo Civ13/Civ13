@@ -53,12 +53,15 @@
 	P.follower_glide_applied = glide_size
 	P.follower.glide_size = glide_size
 	P.follower_glide_owned = TRUE
+	P.intent_running = TRUE
 	try
 		P.perform_intent()
 	catch (var/exception/pull_producer_error)
+		P.intent_running = FALSE
 		P.cancel("producer_error")
 		P.finish_intent()
 		throw pull_producer_error
+	P.intent_running = FALSE
 	var/moved = P.intent_moved
 	P.finish_intent()
 	return moved
@@ -70,6 +73,9 @@
 	var/follower_glide_before
 	var/follower_glide_applied
 	var/follower_glide_owned = FALSE
+	var/intent_running = FALSE
+	var/native_inflight = FALSE
+	var/completion_running = FALSE
 
 /datum/subtile_pull_pair/proc/progress_of(atom/movable/A, list/origin)
 	var/list/current = subtile_pull_snapshot(A)
@@ -83,7 +89,7 @@
 	return (progress >= 0 && progress <= 32) ? progress : -1
 
 /datum/subtile_pull_pair/proc/recovery_ready(mob/living/human/actor)
-	if (!claimed || released || actor != leader || registry.owners[leader] != src || registry.owners[follower] != src || !leader_allowed() || !leaf_allowed() || !subtile_pull_shape(leader) || !subtile_pull_shape(follower) || !human_subtile_same(leader_expected, subtile_pull_snapshot(leader)) || !human_subtile_same(follower_expected, subtile_pull_snapshot(follower)))
+	if (orphaned || !registry || !claimed || released || actor != leader || registry.owners[leader] != src || registry.owners[follower] != src || !leader_allowed() || !leaf_allowed() || !subtile_pull_shape(leader) || !subtile_pull_shape(follower) || !human_subtile_same(leader_expected, subtile_pull_snapshot(leader)) || !human_subtile_same(follower_expected, subtile_pull_snapshot(follower)))
 		return FALSE
 	if ((leader.pulling && leader.pulling != follower) || (follower.pulledby && follower.pulledby != leader))
 		return FALSE
@@ -131,12 +137,25 @@
 		cancel("front_blocked")
 		return FALSE
 	intent_attempted = TRUE
-	member.Move(destination, P.direction)
+	native_inflight = TRUE
+	try
+		member.Move(destination, P.direction)
+	catch (var/exception/pull_native_error)
+		native_inflight = FALSE
+		record_interrupted_pulse(member, P)
+		throw pull_native_error
+	native_inflight = FALSE
 	var/list/after = subtile_pull_snapshot(member)
 	if (!human_subtile_same(P.before, after))
 		intent_moved = TRUE
 		if (member == leader)
 			leader.human_subtile_offset_owned = TRUE
+	// Logout/deletion/save hooks can revoke a capability during native callbacks.
+	// Observe only its exact before/after positions; this grants no new movement.
+	if (P.pair != src || (P.recovery ? !recovering || !controller_allowed() : !authority_valid()))
+		record_interrupted_pulse(member, P)
+		cancel("pulse_interrupted")
+		return FALSE
 	if (P.recovery)
 		if (!recovery_valid_after(member, P))
 			cancel("recovery_blocked")
@@ -199,23 +218,27 @@
 	return plan
 
 /datum/subtile_pull_pair/proc/finish_intent()
-	if (intent_completed)
+	if (intent_running || native_inflight || completion_running || intent_completed)
 		return
 	intent_completed = TRUE
 	restore_follower_glide()
+	completion_running = TRUE
 	try
 		if (intent_attempted && leader && !isDeleted(leader))
 			leader.living_movement_completed()
-			leader.human_movement_completed()
+			if (leader && !isDeleted(leader))
+				leader.human_movement_completed()
 	catch (var/exception/pull_hook_error)
+		completion_running = FALSE
 		settle_intent()
 		throw pull_hook_error
+	completion_running = FALSE
 	settle_intent()
 
 /datum/subtile_pull_pair/proc/settle_intent()
 	if (!release())
 		recovery_required = TRUE
-		cancel("reverse_to_recover")
+		cancel(orphaned ? "orphan_checkpoint_required" : "reverse_to_recover")
 
 /datum/subtile_pull_pair/proc/restore_follower_glide()
 	if (follower_glide_owned)
@@ -226,13 +249,6 @@
 /atom/movable/before_save_context(map_storage/exporter, datum/save_export_frame/frame)
 	var/datum/subtile_pull_pair/P = subtile_pull_ownership.owners[src]
 	if (P)
-		if (P.issued)
-			P.cancel("save_inflight")
-			P.restore_follower_glide()
-			throw EXCEPTION("Cannot snapshot an in-flight pull pulse")
-		P.cancel("save_checkpoint")
-		// Complete admitted hooks before release can clear participant refs.
-		P.finish_intent()
-		if (!P.released)
+		if (!P.save_checkpoint())
 			throw EXCEPTION("Pull pair requires an aligned save checkpoint")
 	return ..()
