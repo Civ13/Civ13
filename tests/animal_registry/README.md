@@ -149,3 +149,14 @@ CI runs both suites in the existing registry step. On Windows the existing
 Linux-only; master's copy fails identically there, so it is not a regression.
 Isolated hook evidence does not establish hatching rates, population balance,
 save/load or connected-client gameplay.
+
+## Engine version selection (2026-10-27)
+
+The runner was written for 516.1681, but the main workflow's compiler now targets
+516.1688 (docs/byond-5161688.md). Its first CI run since then (this PR) compiled the
+farm baseline cleanly on 1688 and then failed closed at the pinned-version check.
+Following that doc's rule against relabeling, the default stays strict 516.1681.
+`--expected-byond-version 516.1688` must be passed explicitly; it then pins the
+compiler banner, the in-fixture `byond_build` check and the result version together.
+CI passes it for both suites. 1688 native results are separate from the historical
+1681 run 39363090396 and do not retroactively re-verify it.

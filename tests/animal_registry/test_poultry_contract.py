@@ -80,17 +80,31 @@ class PoultryNativePreparationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 native.verify(broken, LOG, control, POULTRY_HOOKS)
 
+    def test_engine_version_is_strict_and_explicit(self):
+        default = native.prepare(self.source, hooks=POULTRY_HOOKS)['fixture.dm']
+        self.assertIn('byond_build != 1681', default)
+        self.assertIn('"version" = "516.1681"', default)
+        current = native.prepare(self.source, hooks=POULTRY_HOOKS, version='516.1688')['fixture.dm']
+        self.assertIn('byond_build != 1688', current)
+        self.assertIn('"version" = "516.1688"', current)
+        self.assertNotIn('@', current)
+        result = result_for()
+        result['version'] = '516.1688'
+        native.verify(result, LOG, hooks=POULTRY_HOOKS, version='516.1688')
+        with self.assertRaises(ValueError):
+            native.verify(result, LOG, hooks=POULTRY_HOOKS)
+
     def test_farm_controls_are_rejected_for_the_poultry_suite(self):
         with tempfile.TemporaryDirectory() as directory:
             args = argparse.Namespace(output=Path(directory)/'out', byond_bin=None, prepare_only=True,
-                                      all_controls=False, negative_control='goat/death', suite='poultry')
+                                      all_controls=False, negative_control='goat/death', suite='poultry', expected_byond_version=native.VERSION)
             with self.assertRaises(ValueError):
                 native.execute(args, runner=None)
 
     def test_prepare_only_poultry_suite_never_invokes_runner(self):
         with tempfile.TemporaryDirectory() as directory:
             args = argparse.Namespace(output=Path(directory)/'out', byond_bin=None, prepare_only=True,
-                                      all_controls=True, negative_control=None, suite='poultry')
+                                      all_controls=True, negative_control=None, suite='poultry', expected_byond_version=native.VERSION)
             def forbidden(*args):
                 self.fail('prepare-only invoked a process')
             result = native.execute(args, runner=forbidden)
