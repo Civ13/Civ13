@@ -1,0 +1,1 @@
+D:\GitHub\OpenDream\bin\Content.Server\OpenDreamServer.exe --cvar opendream.json_path=D:\GitHub\Civ13\civ13.json

@@ -1,0 +1,1258 @@
+/turf/floor
+	var/busy = FALSE
+
+/turf/floor/proc/collapse_check()
+	return
+
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/turf/floor/grass/proc/grass_cutting_wait(mob/user, datum/gameplay_action_lease/gameplay_context = null)
+	return do_after(user, 30, src, gameplay_context = gameplay_context)
+#else
+/turf/floor/grass/proc/grass_cutting_wait(mob/user)
+	return do_after(user, 30, src)
+#endif
+
+/turf/floor/grass/proc/grass_cutting_actor_connected(mob/user)
+	return user && user.client
+
+#ifdef CIV13_GAMEPLAY_BRIDGE
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool, datum/gameplay_action_lease/gameplay_context = null)
+#else
+/turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
+#endif
+	if (has_snow_cover() || busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
+		return
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	if (!isnull(gameplay_context))
+		if (!istype(gameplay_context, /datum/gameplay_action_lease))
+			return
+		if (!gameplay_context.matches_gather_wait(user, src) || gameplay_context.tool != tool || gameplay_context.wait_claimed)
+			return
+#endif
+	busy = TRUE
+	to_chat(user, SPAN_NOTICE("You start cutting grass fibres..."))
+#ifdef CIV13_GAMEPLAY_BRIDGE
+	var/completed = grass_cutting_wait(user, gameplay_context)
+	if (!isnull(gameplay_context) && (!gameplay_context.wait_claimed || !gameplay_context.valid()))
+		completed = FALSE
+#else
+	var/completed = grass_cutting_wait(user)
+#endif
+	busy = FALSE
+	if (has_snow_cover() || !completed || !grass_cutting_actor_connected(user) || user.stat != CONSCIOUS || QDELETED(tool) || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1 || !istype(src, /turf/floor/grass))
+		return
+	change_the_turf()
+	new /obj/item/stack/grass_cuttings(get_turf(user), 2)
+	to_chat(user, SPAN_NOTICE("You gather two portions of grass cuttings."))
+
+/turf/floor/dirt/underground/collapse_check()
+	spawn(50)
+		var/area/A = get_area(src)
+		if (A.location == AREA_INSIDE)
+			//check for supports
+			var/supportfound = FALSE
+			var/supportcount = 0
+
+			for (var/obj/structure/mine_support/RS in range(2))
+				supportfound = TRUE
+
+			for (var/turf/wall/W in range(1))
+				supportfound = TRUE
+
+			for (var/turf/TT in range(1))
+				var/area/AA = get_area(TT)
+				if (AA.location == AREA_OUTSIDE)
+					supportfound = TRUE
+
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))
+				supportcount++
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))
+				supportcount++
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))
+				supportcount++
+			for (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))
+				supportcount++
+			if (supportcount >= 3 && !supportfound)
+				supportfound = TRUE
+
+			//if no support >> cave starts to fall
+			if (!supportfound)
+				if (prob(80))
+					visible_message("The mine is unstable! Some rocks get loose and fall around!")
+					playsound(src,'sound/effects/rocksfalling.ogg',75,0,2)
+					for (var/mob/living/human/M in range(1, src))
+						M.adjustBruteLoss(rand(9,21))
+						M.Weaken(12)
+					var/turf/floor/dirt/underground/DT = get_turf(src)
+					if (!istype(DT, /turf/floor/dirt/underground))
+						DT.ChangeTurf(/turf/floor/dirt/underground/empty)
+				else
+					visible_message("The mine starts to cave in!")
+					playsound(src,'sound/effects/rocksfalling.ogg',100,0,6)
+					for (var/mob/living/human/M in range(2, src))
+						M.adjustBruteLoss(rand(28,39))
+						M.Weaken(23)
+					for (var/turf/floor/UT in range (1))
+						if (!istype(UT, /turf/floor/dirt/underground))
+							UT.ChangeTurf(/turf/floor/dirt/underground/empty)
+					new/obj/effect/effect/smoke(src)
+			/*var/area/A = get_area(src) //Removed this, caused a very big glitch, this code seems unnecessary.
+			if (supportfound)
+				if(map.ID == MAP_NOMADS_DESERT)
+					ChangeTurf(/turf/floor/dirt/dust)
+				else if (A.climate == "jungle" || A.climate == "savanna")
+					ChangeTurf(/turf/floor/dirt/jungledirt)
+				else
+					ChangeTurf(/turf/floor/dirt)*/
+
+/turf/floor/attackby(obj/item/C as obj, mob/user as mob)
+
+	if (!C || !user)
+		return FALSE
+	if (istype(src, /turf/floor/grass) && istype(C, /obj/item/weapon/flint))
+		var/obj/item/weapon/flint/F = C
+		if (F.sharpened)
+			var/turf/floor/grass/G = src
+			G.gather_grass_cuttings(user, F)
+			return TRUE
+
+	if (istype(src, /turf/floor/beach/water))
+		var/turf/floor/beach/water/WT = src
+		if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+			var/obj/item/weapon/reagent_containers/RG = C
+			if (istype(RG) && RG.is_open_container() && !(istype(RG,/obj/item/weapon/reagent_containers/glass/fire_extinguisher)))
+				if (do_after(user, 15, src, check_for_repeats = FALSE))
+					var/sumex = 0
+					if (WT.sickness > 0)
+						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05))
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*(WT.sickness*0.05)
+					if (WT.salty)
+						RG.reagents.add_reagent("sodiumchloride", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04)
+						sumex += min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.04
+					var/watertype = "water"
+					if (radiation > 0)
+						watertype = "irradiated_water"
+					RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)-sumex)
+					user.visible_message(SPAN_NOTICE("[user] fills \the [RG] with water."), SPAN_NOTICE("You fill \the [RG] with water."))
+					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
+					user.setClickCooldown(5)
+				return
+		if (istype(C, /obj/item/clothing) && !busy)
+			var/obj/item/clothing/CL = C
+			to_chat(usr, SPAN_NOTICE("You start washing \the [C]."))
+			var/turf/location = user.loc
+
+			busy = TRUE
+			sleep(40)
+			busy = FALSE
+
+			if (user.loc != location) return				//User has moved
+			if (!C) return 								//Item's been destroyed while washing
+			if (user.get_active_hand() != C) return		//Person has switched hands or the item in their hands
+
+			CL.clean_blood()
+			CL.radiation = 0
+			CL.dirtyness = 0
+			CL.fleas = FALSE
+			user.visible_message( \
+				SPAN_NOTICE("[user] washes \a [C] using \the [src]."), \
+				SPAN_NOTICE("You wash \a [C] using \the [src]."))
+
+	if (istype(src, /turf/floor/dirt))
+		if (C.fertilizer_value > 0)
+			to_chat(user,"You start fertilizing the dirt...")
+			var/mob/living/human/H = user
+			var/turf/floor/dirt/D = src
+			if (do_after(user, 60/H.getStatCoeff("farming"), src))
+				to_chat(user,"You fertilize the dirt around this plot.")
+				for (D in range(1,src))
+					if(D.soil_nutrition + C.fertilizer_value <= D.max_soil_nutrition) // Do not let players over fertilize the dirt
+						D.soil_nutrition += C.fertilizer_value
+					else
+						D.soil_nutrition = D.max_soil_nutrition // Capped at max soil nutrition
+				if (istype(C, /obj/item/stack/dung))
+					C.amount--
+					if (C.amount <= 0)
+						qdel(C)
+				else
+					qdel(C)
+				if (ishuman(user))
+					H.adaptStat("farming", 1)
+				return
+
+	if ((flooring && istype(C, /obj/item/stack/rods)))
+		return ..(C, user)
+
+	else if (istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+		if (user.a_intent == I_HARM)
+			if (istype(C, /obj/item/weapon/reagent_containers/food/drinks/bottle))
+				var/obj/item/weapon/reagent_containers/food/drinks/bottle/B = C
+				if (B.rag)
+					return
+			if (C.reagents && C.reagents.total_volume > 0)
+				visible_message(SPAN_NOTICE("\The [user] tips the contents of \the [C] on \the [src]."))
+				if (C.reagents.has_reagent("petroleum", 5))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("gasoline", 5))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("diesel", 10))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("biodiesel", 10))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("olive_oil", 15))
+					new/obj/effect/decal/cleanable/blood/oil(user.loc)
+				if (C.reagents.has_reagent("water", 75))
+					new/obj/effect/flooding(user.loc)
+				if (C.reagents.has_reagent("water", 50))
+					new/obj/effect/flooding(user.loc)
+				if (C.reagents.has_reagent("water", 25))
+					new/obj/effect/flooding(user.loc)
+				var/obj/item/weapon/reagent_containers/food/drinks/DK = C
+				DK.proper_spill(src, DK.reagents.total_volume)
+				C.reagents.clear_reagents()
+				C.update_icon()
+				C.reagents.del_reagent("cholera")
+			else
+				to_chat(usr, SPAN_WARNING("\The [C] is empty."))
+		return
+
+
+	else if (istype(C, /obj/item/weapon/material/shovel) || istype(C, /obj/item/weapon/material/kitchen/utensil/spoon))
+		var/turf/T = get_turf(src)
+		var/snow_generation = T.snowfall_ground_generation
+		var/generated_source = T.weather_snow > 0
+		var/mob/living/human/H = user
+		var/obj/item/weapon/material/shovel/SH = C
+		if (H.a_intent != I_HARM)
+			if (!H.shoveling)
+				if (T.has_snow_cover() && istype(H))
+					if (T.snow_units(generated_source) <= 0)
+						to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
+						return
+					H.shoveling = TRUE
+					user.visible_message(SPAN_NOTICE("[user] starts to shovel snow into a pile."), SPAN_NOTICE("You start to shovel snow into a pile."))
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+						H.shoveling = FALSE
+						return
+					if (!T || T.snow_units(generated_source) <= 0)
+						H.shoveling = FALSE
+						return
+					H.shoveling = FALSE
+					if (!T.take_snow(snow_generation, generated_source))
+						return
+					user.visible_message("<span class = 'notice'>[user] shovels snow into a pile.</span>", "<span class = 'notice'>You shovel snow into a pile.</span>")
+					H.adaptStat("strength", 1)
+					new /obj/item/weapon/snowwall(T)
+					if (T.snow_units(generated_source) <= 0)
+						if (istype(T, /turf/floor/winter/grass))
+							T.ChangeTurf(/turf/floor/grass)
+						else if (istype(T, /turf/floor/dirt/winter))
+							T.ChangeTurf(/turf/floor/dirt)
+
+				else if (istype(T, /turf/floor/dirt) && istype(H))
+					if (T.available_dirt > 0)
+						H.shoveling = TRUE
+						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
+						playsound(src,'sound/effects/shovelling.ogg',100,1)
+						if (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+							if (!T || T.available_dirt <= 0)
+								H.shoveling = FALSE
+								return
+							user.visible_message("<span class = 'notice'>[user] shovels dirt into a pile.</span>", "<span class = 'notice'>You shovel dirt into a pile.</span>")
+							H.shoveling = FALSE
+							H.adaptStat("strength", 1)
+							T.available_dirt -= 1
+							new /obj/item/weapon/barrier(T)
+						else
+							H.shoveling = FALSE
+					else
+						to_chat(user, "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>")
+				else if (istype(T, /turf/floor/beach/sand) && istype(H))
+					if (T.available_sand > 0)
+						H.shoveling = TRUE
+						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
+						playsound(src,'sound/effects/shovelling.ogg',100,1)
+						if (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))
+							if (!T || T.available_sand <= 0)
+								H.shoveling = FALSE
+								return
+							user.visible_message("<span class = 'notice'>[user] shovels sand into a pile.</span>", "<span class = 'notice'>You shovel sand into a pile.</span>")
+							H.shoveling = FALSE
+							H.adaptStat("strength", 1)
+							T.available_sand -= 1
+							new /obj/item/stack/ore/glass(T)
+						else
+							H.shoveling = FALSE
+				else
+					return ..(C, user)
+
+		else
+			if (radiation > 0 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
+				user.visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
+					user.visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
+					H.adaptStat("strength", 1)
+					radiation *= 0.1
+					if (istype(src, /turf/floor/grass/jungle))
+						src.ChangeTurf(/turf/floor/dirt/jungledirt)
+					else
+						src.ChangeTurf(/turf/floor/dirt)
+					rad_act(0.01)
+					update_icon()
+			else
+				return ..(C, user)
+	else if (istype(C, /obj/item/weapon/poster/religious) && istype(get_turf(src), /turf/floor/dirt/underground))
+		user.visible_message("<span class='notice'>[user] starts placing the [C] on the [src]...</span>", "<span class='notice'>You start placing the [C] on the [src]...</span>")
+		if (do_after(user, 70, src))
+			user.visible_message("<span class='notice'>[user] places the [C] on the [src].</span>", "<span class='notice'>You place the [C] on the [src].</span>")
+			var/obj/structure/poster/religious/RP = new/obj/structure/poster/religious(get_turf(src))
+			var/obj/item/weapon/poster/religious/P = C
+			RP.religion = P.religion
+			RP.symbol = P.symbol
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(C)
+			qdel(C)
+			return
+	else if (istype(C, /obj/item/weapon/poster/faction) && istype(get_turf(src), /turf/floor/dirt/underground))
+		user.visible_message("<span class='notice'>[user] starts placing the [C] on the [src]...</span>", "<span class='notice'>You start placing the [C] on the [src]...</span>")
+		if (do_after(user, 70, src))
+			user.visible_message("<span class='notice'>[user] places the [C] on the [src].</span>", "<span class='notice'>You place the [C] on the [src].</span>")
+			var/obj/structure/poster/faction/RP = new/obj/structure/poster/faction(get_turf(src))
+			var/obj/item/weapon/poster/faction/P = C
+			RP.faction = P.faction
+			RP.bstyle = P.bstyle
+			RP.color1 = P.color1
+			RP.color2 = P.color2
+			user.drop_from_inventory(C)
+			qdel(C)
+			return
+	else if (istype(C, /obj/item/weapon/material/pickaxe))
+		var/turf/T = get_turf(src)
+		var/mob/living/human/H = user
+		if (istype(T, /turf/floor/dirt/underground) && istype(H))
+			start_pickaxe_mining(H, C)
+			return
+
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+		var/mob/living/human/H = user
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
+		if (ET.reagents.total_volume > 0)
+			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
+			return
+		if (istype(H))
+			user.visible_message(SPAN_NOTICE("[user] carefully examines \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			var/timera = 110/(H.getStatCoeff("dexterity"))
+			if (do_after(user, timera))
+				extracting_proc(H, C)
+		else
+			return ..(C, user)
+
+	else if (istype(C, /obj/item/weapon/barrier/sandbag))
+		var/obj/item/weapon/barrier/sandbag/bag = C
+		if (bag.sand_amount <= 0)
+			to_chat(user, SPAN_NOTICE("You need to fill the sandbag with sand first!"))
+
+		var/sandbag_time = 50
+
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			sandbag_time /= H.getStatCoeff("strength")
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+		// Store the initial direction of the user
+		var/initial_direction = user.dir
+
+		if (src == get_step(user, initial_direction))
+			// Adjust direction to cardinal directions if intermediate directions are given
+			if (initial_direction & EAST)
+				initial_direction = EAST
+			else if (initial_direction & WEST)
+				initial_direction = WEST
+			// Check for objects in the same direction as the user
+			for (var/obj/O in src) // Checking if there's another dense object
+				if (O.density && O.flags & ON_BORDER && O.dir == initial_direction)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
+			user.visible_message("<span class='danger'>[user] starts constructing the base of a sandbag wall.</span>", "<span class='danger'>You start constructing the base of a sandbag wall.</span>")
+			if (do_after(user, sandbag_time, user.loc))
+				var/current_direction = user.dir
+				if (current_direction & EAST)
+					current_direction = EAST
+				else if (current_direction & WEST)
+					current_direction = WEST
+				// Recheck user's direction before creating the sandbag/incomplete
+				for (var/obj/O in src) // Checking user's direction again
+					if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+						to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+						return
+				var/progress = bag.sand_amount
+				qdel(C)
+				var/obj/structure/window/barrier/sandbag/incomplete/sb = new/obj/structure/window/barrier/sandbag/incomplete(src, user, current_direction)
+				sb.progress = progress
+				user.visible_message("<span class='danger'>[user] finishes constructing the base of a sandbag wall. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a sandbag wall. Anyone can now add to it.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 3)
+			return
+
+	else if (istype(C, /obj/item/weapon/barrier))
+		var/sandbag_time = 50
+
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			sandbag_time /= H.getStatCoeff("strength")
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+		// Store the initial direction of the user
+		var/initial_direction = user.dir
+
+		if (src == get_step(user, initial_direction))
+			// Adjust direction to cardinal directions if intermediate directions are given
+			if (initial_direction & EAST)
+				initial_direction = EAST
+			else if (initial_direction & WEST)
+				initial_direction = WEST
+			// Check for objects in the same direction as the user
+			for (var/obj/O in src) // Checking if there's another dense object
+				if (O.density && O.flags & ON_BORDER && O.dir == initial_direction)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
+			user.visible_message("<span class='danger'>[user] starts constructing the base of a dirt barricade.</span>", "<span class='danger'>You start constructing the base of a dirt barricade.</span>")
+			if (do_after(user, sandbag_time, user.loc))
+				// Recheck user's direction before creating the barrier
+				var/current_direction = user.dir
+				if (current_direction & EAST)
+					current_direction = EAST
+				else if (current_direction & WEST)
+					current_direction = WEST
+				for (var/obj/O in src) // Checking user's direction again
+					if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+						to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+						return
+				var/obj/item/weapon/barrier/bag = C
+				var/progress = bag.sand_amount
+				qdel(C)
+				var/obj/structure/window/barrier/incomplete/sandbag = new/obj/structure/window/barrier/incomplete(src, user, current_direction)
+				sandbag.progress = progress
+				user.visible_message("<span class='danger'>[user] finishes constructing the base of a dirt barricade. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a dirt barricade. Anyone can now add to it.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 3)
+			return
+
+	else if (istype(C, /obj/item/weapon/snowwall))
+		var/sandbag_time = 50
+
+		if (ishuman(user))
+			var/mob/living/human/H = user
+			sandbag_time /= H.getStatCoeff("strength")
+			sandbag_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+
+		// Store the initial direction of the user
+		var/initial_direction = user.dir
+
+		if (src == get_step(user, initial_direction))
+			// Adjust direction to cardinal directions if intermediate directions are given
+			if (initial_direction & EAST)
+				initial_direction = EAST
+			else if (initial_direction & WEST)
+				initial_direction = WEST
+			// Check for objects in the same direction as the user
+			for (var/obj/O in src) // Checking if there's another dense object
+				if (O.density && O.flags & ON_BORDER && O.dir == initial_direction)
+					to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+					return
+			user.visible_message("<span class='danger'>[user] starts constructing the base of a snow barricade.</span>", "<span class='danger'>You start constructing the base of a snow barricade.</span>")
+			if (do_after(user, sandbag_time, user.loc))
+				// Recheck user's direction before creating the snowwall
+				var/current_direction = user.dir
+				if (current_direction & EAST)
+					current_direction = EAST
+				else if (current_direction & WEST)
+					current_direction = WEST
+				for (var/obj/O in src) // Checking user's direction again
+					if (O.density && O.flags & ON_BORDER && O.dir == current_direction)
+						to_chat(user, SPAN_WARNING("There is already \a [O.name] in this direction!"))
+						return
+				var/obj/item/weapon/snowwall/bag = C
+				var/progress = bag.sand_amount
+				qdel(C)
+				var/obj/structure/window/barrier/snowwall/sandbag = new/obj/structure/window/barrier/snowwall/incomplete(src, user, current_direction)
+				sandbag.progress = progress
+				user.visible_message("<span class='danger'>[user] finishes constructing the base of a snow barricade. Anyone can now add to it.</span>", "<span class='notice'>You finish constructing the base of a snow barricade. Anyone can now add to it.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 3)
+			return
+
+	else if (istype(C, /obj/item/stack/farming/seeds) || istype(C, /obj/item/stack/medical/advanced/herbs))
+		var/mob/living/human/H = user
+		var/obj/item/stack/farming/seeds/TS
+		if (istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE)
+			if (locate(/obj/structure/farming/plant) in src)
+				to_chat(user, SPAN_WARNING("There already is something planted here."))
+				return
+			if (istype(C, /obj/item/stack/farming/seeds))
+				TS = C
+				var/planting_error = TS.planting_error(src)
+				if (planting_error)
+					to_chat(user, SPAN_WARNING(planting_error))
+					return
+			if (ishuman(user))
+				H.adaptStat("farming", 1)
+			H.visible_message("<span class='notice'>[user] places some of \the [C] in the ploughed field.</span>",
+								"<span class='notice'>You place [C] in the ploughed field.</span>",
+								"<span class='notice'>Your hear something poking around in dirt.</span>")
+			if (istype(C, /obj/item/stack/medical/advanced/herbs))
+				TS = new /obj/item/stack/farming/seeds/herbs
+				TS.spawn_plant(src)
+				qdel(TS)
+			else
+				TS = C
+				TS.spawn_plant(src)
+			if (C.amount>1)
+				C.amount -= 1
+			else
+				qdel(C)
+			return
+		else
+			to_chat(user, SPAN_WARNING("You can't plant here. Find a ploughed plot."))
+			return
+	else if (istype(C, /obj/item/weapon/plough))
+		var/obj/item/weapon/plough/PL = C
+		var/turf/T = get_turf(src)
+		if (T.weather_snow > 0)
+			to_chat(user, SPAN_WARNING("Clear the snow before working the ground."))
+			return
+		if (user.a_intent == I_DISARM)
+			if (istype(T, /turf/floor/grass) || istype(T, /turf/floor/dirt) || istype(T, /turf/floor/beach/sand) || istype(T, /turf/floor/winter))
+				for(var/obj/covers/CV in T)
+					to_chat(user, SPAN_WARNING("You can't make a dirt road here."))
+					return
+				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
+				if (do_after(user, 50/PL.usespeed, user.loc))
+					if (!T || T.weather_snow > 0)
+						return
+					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
+					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
+					if (user.dir == NORTH || user.dir == SOUTH)
+						DR.vertical = TRUE
+						DR.dir = 1
+						DR.icon_state = "d_roadvr"
+					else
+						DR.vertical = FALSE
+						DR.dir = 4
+						DR.icon_state = "d_roadhr"
+					return
+		else
+			if (istype(T, /turf/floor/grass/jungle)) //whyyyyyyy????? don't know, seriously...
+				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
+				return
+			else if (istype(T, /turf/floor/dirt/burned))
+				to_chat(user, SPAN_DANGER("This floor is burned! Wait for it to recover first."))
+				return
+			else if (istype(T, /turf/floor/dirt/jungledirt))
+				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
+				return
+			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
+				if (do_after(user, 50/PL.usespeed, user.loc))
+					if (!T || T.weather_snow > 0)
+						return
+					ChangeTurf(/turf/floor/dirt)
+					return
+			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
+				var/mob/living/human/H = user
+				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
+					if (!T || T.weather_snow > 0)
+						return
+					if (istype(T, /turf/floor/dirt/flooded))
+						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+						if (ishuman(user))
+							H.adaptStat("farming", 2)
+						return
+					else if (istype(T, /turf/floor/dirt/underground))
+						to_chat(user, SPAN_DANGER("You can't plough this type of terrain."))
+						return
+					else
+						ChangeTurf(/turf/floor/dirt/ploughed)
+						if (ishuman(user))
+							H.adaptStat("farming", 2)
+						return
+
+			else
+				to_chat(user, SPAN_DANGER("You can't plough this type of terrain."))
+				return
+
+	else if (istype(C, /obj/item/weapon/covers))
+		if (src == get_step(user, user.dir))
+			C.attack_self(user)
+		return
+
+
+	if (flooring)
+		if (istype(C, /obj/item/weapon/crowbar))
+			if (broken || burnt)
+				to_chat(user, SPAN_NOTICE("You remove the broken [flooring.descriptor]."))
+				make_grass()
+			else if (flooring.flags & TURF_IS_FRAGILE)
+				to_chat(user, SPAN_NOTICE("You forcefully pry off the [flooring.descriptor], destroying them in the process."))
+				make_grass()
+			else if (flooring.flags & TURF_REMOVE_CROWBAR)
+				to_chat(user, SPAN_NOTICE("You lever off the [flooring.descriptor]."))
+				make_grass()
+			else
+				return
+			playsound(src, 'sound/items/Crowbar.ogg', 80, TRUE)
+			return
+		else if (istype(C, /obj/item/weapon/hammer) && (flooring.flags & TURF_REMOVE_SCREWDRIVER))
+			if (broken || burnt || src.z > 1)
+				return
+			to_chat(user, SPAN_NOTICE("You unscrew and remove the [flooring.descriptor]."))
+			make_grass()
+			playsound(src, 'sound/items/Screwdriver.ogg', 80, TRUE)
+			return
+		else if (istype(C, /obj/item/weapon/wrench) && (flooring.flags & TURF_REMOVE_WRENCH))
+			if (src.z > 1)
+				return
+			to_chat(user, SPAN_NOTICE("You unwrench and remove the [flooring.descriptor]."))
+			make_grass()
+			playsound(src, 'sound/items/Ratchet.ogg', 80, TRUE)
+			return
+		else if (istype(C, /obj/item/weapon/material/shovel) && (flooring.flags & TURF_REMOVE_SHOVEL))
+			to_chat(user, SPAN_NOTICE("You shovel off the [flooring.descriptor]."))
+			make_grass()
+			playsound(src, 'sound/items/Deconstruct.ogg', 80, TRUE)
+			return
+	else
+		if (istype(C, /obj/item/stack))
+			if (broken || burnt)
+				to_chat(user, SPAN_WARNING("This section is too damaged to support anything. Use a welder to fix the damage."))
+				return
+			var/obj/item/stack/S = C
+			var/decl/flooring/use_flooring
+			for (var/flooring_type in flooring_types)
+				var/decl/flooring/F = flooring_types[flooring_type]
+				if (!F.build_type)
+					continue
+				if ((ispath(S.type, F.build_type) || ispath(S.build_type, F.build_type)) && ((S.type == F.build_type) || (S.build_type == F.build_type)))
+					use_flooring = F
+					break
+			if (!use_flooring)
+				return
+			// Do we have enough?
+			if (use_flooring.build_cost && S.amount < use_flooring.build_cost)
+				to_chat(user, SPAN_WARNING("You require at least [use_flooring.build_cost] [S.name] to complete the [use_flooring.descriptor]."))
+				return
+			// Stay still and focus...
+			if (use_flooring.build_time && !do_after(user, use_flooring.build_time, src))
+				return
+			if (flooring || !S || !user || !use_flooring)
+				return
+			if (S.use(use_flooring.build_cost))
+				set_flooring(use_flooring)
+				playsound(src, 'sound/items/Deconstruct.ogg', 80, TRUE)
+				return
+		// Repairs.
+	return ..()
+
+/turf/floor/mining/attackby(obj/item/C as obj, mob/user as mob)
+	if (istype(C, /obj/item/weapon/material/pickaxe))
+		var/mob/living/human/H = user
+		if (istype(H))
+			if(src.mining_in_progress)
+				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor with \the [C.name]."))
+				return
+			// Set mining_in_progress to TRUE to indicate the process has started.
+			src.mining_in_progress = TRUE
+			user.visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			var/timera = 320/(H.getStatCoeff("strength"))
+			if (do_after(user, timera))
+				mining_proc(H)
+				src.mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
+			else
+				src.mining_in_progress = FALSE // In case we abort mid-way.
+			return ..(C, user)
+	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
+		var/mob/living/human/H = user
+		var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = C
+		if (ET.reagents.total_volume > 0)
+			to_chat(H, SPAN_NOTICE("Empty \the [ET] first."))
+			return
+		if (istype(H))
+			user.visible_message(SPAN_NOTICE("[user] starts to carefully examine \the [src] with \the [C.name]..."), SPAN_NOTICE("You start to carefully examine \the [src] with \the [C.name]."))
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			var/timera = 110/(H.getStatCoeff("dexterity"))
+			if (do_after(user, timera))
+				extracting_proc(H, C)
+		else
+			return ..(C, user)
+
+// Both click and collision use this one paid mining action. Reserve BEFORE any
+// spawn/yield; key repeat and movement substeps cannot queue another worker.
+/mob/var/tmp/datum/pickaxe_mining_action/pickaxe_mining_action
+/turf/var/tmp/datum/pickaxe_mining_action/pickaxe_mining_owner
+
+/mob/living/human/proc/bump_mining_authority()
+	return client && client.mob == src && client.canmove && client.moving
+
+/mob/living/human/proc/held_mining_pickaxe()
+	var/obj/item/weapon/material/pickaxe/P = get_active_hand()
+	if (istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src)
+		return P
+	P = get_inactive_hand()
+	return istype(P, /obj/item/weapon/material/pickaxe) && P.loc == src ? P : null
+
+/mob/living/human/proc/pickaxe_mining_ready()
+	if (!isturf(loc) || (locate(/obj/structure/vehicleparts/frame) in loc))
+		return FALSE
+	return !gcDestroyed && !gc_destroyed && isturf(loc) && canmove && !incapacitated() && !restrained() && !lying && !prone && !resting && !sleeping && !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !using_object && !using_cannon && !football && !in_throw_mode
+
+/mob/living/human/proc/try_bump_mining(atom/A)
+	if (!istype(A, /turf/floor/dirt/underground) || !A.density || !bump_mining_authority() || world.time <= next_click)
+		return FALSE
+	var/obj/item/weapon/material/pickaxe/P = held_mining_pickaxe()
+	if (!P)
+		return FALSE
+	var/turf/floor/dirt/underground/T = A
+	return T.start_pickaxe_mining(src, P, TRUE)
+
+/turf/proc/start_pickaxe_mining(mob/living/human/H, obj/item/P, from_bump = FALSE)
+	if (!istype(H) || !istype(src, /turf/floor/dirt/underground) || !is_mineable || mining_in_progress || pickaxe_mining_owner || H.pickaxe_mining_action || !H.may_do_after || !H.pickaxe_mining_ready() || !H.canClick())
+		return FALSE
+	if (!istype(P, /obj/item/weapon/material/pickaxe) || P.loc != H || (H.l_hand != P && H.r_hand != P) || z != H.z || src != get_step(H, get_dir(H, src)) || !Adjacent(H))
+		return FALSE
+	if (!isnum(P:usespeed) || P:usespeed <= 0 || H.getStatCoeff("strength") <= 0)
+		return FALSE
+	var/datum/pickaxe_mining_action/M = new
+	M.actor = H
+	M.wall = src
+	M.tool = P
+	M.origin = H.loc
+	M.sx = H.step_x
+	M.sy = H.step_y
+	M.active_tool = H.get_active_hand() == P
+	H.pickaxe_mining_action = M
+	pickaxe_mining_owner = M
+	mining_in_progress = TRUE
+	if (from_bump)
+		H.next_click = world.time + 1
+		spawn(0)
+			M.perform()
+	else
+		M.perform()
+	return TRUE
+
+/datum/pickaxe_mining_action
+	should_save = FALSE
+	var/mob/living/human/actor
+	var/turf/floor/dirt/underground/wall
+	var/obj/item/tool
+	var/atom/origin
+	var/sx
+	var/sy
+	var/active_tool
+	var/claimed = FALSE
+	var/committed = FALSE
+	var/wait_started = FALSE
+	var/datum/progressbar/progressbar
+
+/datum/pickaxe_mining_action/proc/valid(mob/user, atom/target)
+	return actor && user == actor && target == wall && wall && istype(wall, /turf/floor/dirt/underground) && locate(wall.x, wall.y, wall.z) == wall && wall.is_mineable && wall.pickaxe_mining_owner == src && wall.mining_in_progress && actor.pickaxe_mining_action == src && actor.pickaxe_mining_ready() && actor.loc == origin && actor.step_x == sx && actor.step_y == sy && tool && !tool.gcDestroyed && !tool.gc_destroyed && tool.loc == actor && (actor.l_hand == tool || actor.r_hand == tool) && (!active_tool || actor.get_active_hand() == tool) && wall.Adjacent(actor) && !committed
+
+/datum/pickaxe_mining_action/proc/claim(mob/user, atom/target)
+	if (claimed || !valid(user, target))
+		return FALSE
+	claimed = TRUE
+	return TRUE
+
+/datum/pickaxe_mining_action/proc/release()
+	if (progressbar)
+		qdel(progressbar)
+		progressbar = null
+	if (wait_started && actor && actor.pickaxe_mining_action == src)
+		wait_started = FALSE
+		actor.may_do_after = TRUE
+		actor.survival_action_finished()
+	if (actor && actor.pickaxe_mining_action == src)
+		actor.pickaxe_mining_action = null
+	if (wall && wall.pickaxe_mining_owner == src)
+		wall.pickaxe_mining_owner = null
+		wall.mining_in_progress = FALSE
+	actor = null
+	wall = null
+	tool = null
+	origin = null
+
+/datum/pickaxe_mining_action/proc/perform()
+	try
+		if (valid(actor, wall))
+			actor.visible_message("<span class = 'notice'>[actor] starts to break the rock with \the [tool.name].</span>", "<span class = 'notice'>You start to break the rock with \the [tool.name].</span>")
+			playsound(wall, 'sound/effects/pickaxe.ogg', 100, 1)
+			if (do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src) && valid(actor, wall))
+				committed = TRUE // Before mining_proc/collapse yields or replaces turf.
+				wall.collapse_check()
+				if (wall && locate(wall.x, wall.y, wall.z) == wall)
+					if (istype(wall, /turf/floor/dirt/underground/empty))
+						var/turf/floor/dirt/underground/empty/E = wall
+						E.mining_clear_debris()
+					else
+						wall.mining_proc(actor)
+	catch (var/exception/mining_error)
+		release()
+		throw mining_error
+	release()
+
+/turf/proc/extracting_proc(var/mob/living/human/H, var/obj/item/weapon/reagent_containers/glass/extraction_kit/E)
+	if (!H || !src || !E)
+		return
+	var/list/elements = list("hydrogen","oxygen","helium", "lithium", "nitrogen", "fluorine", "sodium", "magnesium", "aluminum", "silicon", "phosphorus", "chlorine", "potassium", "calcium", "arsenic", "iodine", "tungsten", "radium", "thorium", "bromine")
+	var/list/elements1 = list("nitrogen", "phosphorus", "chlorine", "potassium", "iodine")
+	var/list/elements2 = list("lithium", "fluorine", "magnesium", "aluminum", "calcium", "arsenic", "tungsten", "bromine")
+
+	var/randreg = pick(elements)
+	if (prob(70))
+		randreg = pick(elements1)
+	else
+		randreg = pick(elements2)
+	if (E.reagents.total_volume <= 0)
+		E.reagents.add_reagent(randreg,5)
+		E.update_icon()
+
+/turf/proc/change_the_turf()
+	var/area/A = get_area(src)
+	if(map.ID == MAP_NOMADS_DESERT)
+		ChangeTurf(/turf/floor/dirt/dust)
+	else if (A.climate == "jungle" || A.climate == "savanna")
+		ChangeTurf(/turf/floor/dirt/jungledirt)
+	else
+		ChangeTurf(/turf/floor/dirt)
+	is_mineable = FALSE
+
+/turf/proc/mining_proc(var/mob/living/human/H = null)
+	if (!src)
+		return
+	var/turf/T = get_turf(src)
+	var/area/area_above = null
+	if (z==1 && world.maxz>=2)
+		area_above = get_area(get_turf(locate(x,y,z+1)))
+	if (prob(20))
+		if (prob(60))
+			var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
+			var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+			bonusstone.amount = rand(8,12)
+			mineral.amount = rand(12,24)
+			if (istype(get_area(src), /area/caribbean/void/caves/special))
+				mineral.amount *= 2
+			if (H)
+				var/material/M = get_material_by_name("copper")
+				var/ore_colour = M ? M.icon_colour : "#b87333"
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
+				H.adaptStat("strength", 1)
+		else
+			var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
+			var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+			bonusstone.amount = rand(8,12)
+			mineral.amount = rand(12,24)
+			if (istype(get_area(src), /area/caribbean/void/caves/special))
+				mineral.amount *= 2
+			if (H)
+				var/material/M = get_material_by_name("tin")
+				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>tin</font></b> ore!"))
+				H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	if (prob(40) && map.ordinal_age >= 1)
+		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
+		mineral.amount = rand(12,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("iron")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>iron</font></b> ore!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	if (prob(25) && map.ID != MAP_ANTARCTICA)
+		if (map.ordinal_age >= 2)
+			var/pickperc = pick(1,2,3,4)
+			switch (pickperc)
+				if (1)
+					var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
+					mineral.amount = rand(24,32)
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					if (H)
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
+						H.adaptStat("strength", 1)
+				if (2)
+					var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
+					mineral.amount = 8
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					if (H)
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
+						H.adaptStat("strength", 1)
+				if (3)
+					var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
+					mineral.amount = 8
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					if (mineral && mineral.get_material())
+						if (H)
+							to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
+							H.adaptStat("strength", 1)
+				if (4)
+					// if (prob(50))
+					var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
+					var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+					bonusstone.amount = rand(8,12)
+					mineral.amount = 8
+					if (istype(get_area(src), /area/caribbean/void/caves/special))
+						mineral.amount *= 2
+					if (H)
+						var/material/M = get_material_by_name("lead")
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>lead</font> ore</b>!"))
+						H.adaptStat("strength", 1)
+			change_the_turf()
+			return
+	// Preserve common ore branches above; uranium uses only their fallback.
+	if (is_mineable && map.ordinal_age >= 8 && prob(5))
+		new /obj/item/stack/ore/uranium(src)
+		change_the_turf()
+		return
+	/*
+					else if (prob(10) && map.ordinal_age >= 6)
+						var/obj/item/stack/ore/uranium/mineral = new/obj/item/stack/ore/uranium(src)
+						mineral.amount = rand(4,12)
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
+						if (H)
+							to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#325202><b>uranium</font></b>! Better clear the mine."))
+						change_the_turf()
+						if (H)
+							H.adaptStat("strength", 3)
+						return
+
+					else
+						var/obj/item/stack/ore/mercury/mineral = new/obj/item/stack/ore/mercury(src)
+						mineral.amount = 4
+						if (istype(get_area(src), /area/caribbean/void/caves/special))
+							mineral.amount *= 2
+						to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#882c1d><b>mercury</font></b>!"))// no material
+						change_the_turf()
+						H.adaptStat("strength", 1)
+						return
+	*/
+	if (prob(5))
+		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
+		mineral.amount = 4
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("silver")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>silver</font> ore</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	if (prob(2))
+		var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
+		mineral.amount = 4
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("gold")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>gold</font> ore</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	if (prob(1))
+		var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
+		mineral.amount = 4
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("diamond")
+			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[M.icon_colour]><b>diamonds</b></font>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	if (istype(T, /turf/floor/dirt/underground/icy))
+		if (prob(2))
+			var/obj/item/stack/material/fossil/mineral = new/obj/item/stack/material/fossil(src)
+			mineral.amount = 1
+			if (istype(get_area(src), /area/caribbean/void/caves/special))
+				new/obj/item/stack/material/fossil(src)
+			if (H)
+				var/material/M = get_material_by_name("bone")
+				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[M.icon_colour]><b>fossil</font></b>!"))
+				H.adaptStat("strength", 1)
+			change_the_turf()
+			return
+	if(istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
+		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
+		mineral.amount = rand(16,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("sandstone")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>sandstone</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	if(prob(20) && (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1)
+		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
+		mineral.amount = rand(16,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("marble")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	else if(prob(20) && (area_above && area_above.climate == "jungle") && map.ordinal_age >=1 && map.ordinal_age <= 3)
+		var/obj/item/stack/ore/obsidian/mineral = new/obj/item/stack/ore/obsidian(src)
+		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		bonusstone.amount = rand(8,12)
+		mineral.amount = rand(16,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#060606><b>obsidian</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	else if(prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1)
+		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
+		mineral.amount = rand(16,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("marble")
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>marble</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+		change_the_turf()
+		return
+	else
+		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+		mineral.amount = rand(16,24)
+		if (istype(get_area(src), /area/caribbean/void/caves/special))
+			mineral.amount *= 2
+		if (H)
+			var/material/M = get_material_by_name("stone")
+			to_chat(H, SPAN_GREEN_BOLD("You found some usable <font color=[M.icon_colour]><b>stone</font> rocks</b>!"))
+			H.adaptStat("strength", 1)
+	change_the_turf()
+	return
+
+/turf/floor/dirt/underground/attack_hand(mob/user)
+	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
+		var/turf/floor/dirt/underground/U = src
+		var/mob/living/human/H = user
+		if (H.ant && H.a_intent == I_GRAB)
+			if(src.mining_in_progress)
+				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
+				return
+			src.mining_in_progress = TRUE
+			visible_message(SPAN_NOTICE("[user] starts to break the rock with their hands..."), SPAN_NOTICE("You start to break the rock with the your hands..."))
+			playsound(src,'sound/effects/pickaxe.ogg',100,1)
+			if (!do_after(user, (320/(H.getStatCoeff("strength"))/1.5)))
+				src.mining_in_progress = FALSE // In case we abort mid-way.
+				return
+			U.collapse_check()
+			if (istype(src, /turf/floor/dirt/underground/empty))
+				var/turf/floor/dirt/underground/empty/T = src
+				T.mining_clear_debris()
+			else if (!istype(src, /turf/floor/dirt/underground/empty))
+				mining_proc(H)
+				src.mining_in_progress = FALSE // Reset the mining_in_progress variable after the process has finished.
+			return TRUE
+		else
+			..()
+	else
+		..()
+
+/turf/floor/attack_hand(mob/user)
+	if (!istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && ishuman(user))
+		var/turf/floor/T = src
+		var/snow_generation = T.snowfall_ground_generation
+		var/generated_source = T.weather_snow > 0
+		var/mob/living/human/H = user
+		if (H.ant && H.a_intent == I_GRAB)
+			if (H.shoveling)
+				..()
+			if (T.has_snow_cover() && istype(H))
+				if (T.snow_units(generated_source) <= 0)
+					to_chat(user, SPAN_NOTICE("All the loose snow has been shoveled out of this spot already."))
+					return
+				H.shoveling = TRUE
+				user.visible_message("<span class = 'notice'>[user] starts to collect snow into a pile.</span>", "<span class = 'notice'>You start to collect snow into a pile.</span>")
+				playsound(src,'sound/effects/shovelling.ogg',100,1)
+				if (!do_after(user, rand(25,30)))
+					H.shoveling = FALSE
+					return
+				H.shoveling = FALSE
+				if (!T.take_snow(snow_generation, generated_source))
+					return
+				user.visible_message("<span class = 'notice'>[user] collects the snow into a pile.</span>", "<span class = 'notice'>You collect the snow into a pile.</span>")
+				H.adaptStat("strength", 1)
+				new /obj/item/weapon/snowwall(T)
+				if (T.snow_units(generated_source) <= 0)
+					if (istype(T, /turf/floor/winter/grass))
+						T.ChangeTurf(/turf/floor/grass)
+					else if (istype(T, /turf/floor/dirt/winter))
+						T.ChangeTurf(/turf/floor/dirt)
+
+			else if (istype(T, /turf/floor/dirt) && istype(H) && !H.shoveling)
+				if (T.available_dirt > 0)
+					H.shoveling = TRUE
+					user.visible_message("<span class = 'notice'>[user] starts to collect dirt into a pile.</span>", "<span class = 'notice'>You start to collect dirt into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(25,30)))
+						user.visible_message("<span class = 'notice'>[user] collects the dirt into a pile.</span>", "<span class = 'notice'>You collect the dirt into a pile.</span>")
+						H.shoveling = FALSE
+						H.adaptStat("strength", 1)
+						T.available_dirt -= 1
+						new /obj/item/weapon/barrier(T)
+					else
+						H.shoveling = FALSE
+				else
+					to_chat(user, "<span class='notice'>All the loose dirt has been shoveled out of this spot already.</span>")
+			else if (istype(T, /turf/floor/beach/sand) && istype(H) && !H.shoveling)
+				if (T.available_sand > 0)
+					H.shoveling = TRUE
+					user.visible_message("<span class = 'notice'>[user] starts to collect sand into a pile.</span>", "<span class = 'notice'>You start to collect sand into a pile.</span>")
+					playsound(src,'sound/effects/shovelling.ogg',100,1)
+					if (do_after(user, rand(45,60)))
+						user.visible_message("<span class = 'notice'>[user] collects the sand into a pile.</span>", "<span class = 'notice'>You collect the sand into a pile.</span>")
+						H.shoveling = FALSE
+						H.adaptStat("strength", 1)
+						T.available_sand -= 1
+						new /obj/item/stack/ore/glass(T)
+					else
+						H.shoveling = FALSE
+			else
+				..()
+		else
+			..()
+	else
+		..()
+
+/turf/floor/verb/Dig()
+	set category = null
+	set src in range(1)
+
+	var/mob/living/human/user
+
+	if (ishuman(usr))
+		user = usr
+	else
+		return
+	var/turf/floor/TO = get_turf(src)
+	if (TO && user.ant && (TO.is_diggable) && !(locate(/obj/structure/multiz/) in user.loc))
+		if (user.z == 1)
+			var/turf/TB = locate(user.x,user.y,user.z+1)
+			for (var/obj/OB in TB)
+				if (istype(OB, /obj/covers) || OB.density == TRUE || istype(OB, /obj/structure/multiz) || istype(OB, /obj/structure/rails))
+					to_chat(user, SPAN_NOTICE("You can't dig up here, there is something blocking the way!"))
+					return
+			if (istype(TB, /turf/floor/beach/water) || istype(TB, /turf/floor/lava))
+				to_chat(user, SPAN_NOTICE("You can't dig down here, there is something blocking the way!"))
+				return
+			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
+				to_chat(user, SPAN_NOTICE("You can't dig up on that type of floor!"))
+				return
+			var/digging_tunnel_time = 400
+			digging_tunnel_time /= user.getStatCoeff("strength")
+			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
+			user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+			if (do_after(user, digging_tunnel_time, user.loc))
+				if (!TB.is_diggable)
+					return
+				new/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))
+				new/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)
+				user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 1)
+					H.adaptStat("strength", 1)
+			return
+		else
+			if (user.z <= 1)
+				to_chat(user, "<span class='notice'>You can't dig a tunnel here, the bedrock is right below.</span>")
+				return
+			var/digging_tunnel_time = 200
+			digging_tunnel_time /= user.getStatCoeff("strength")
+			digging_tunnel_time /= (user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
+			user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
+			if (do_after(user, digging_tunnel_time, user.loc))
+				if (!TO.is_diggable)
+					return
+				new/obj/structure/multiz/ladder/ww2/tunneltop(user.loc)
+				new/obj/structure/multiz/ladder/ww2/tunnelbottom(locate(user.x, user.y, user.z-1))
+				var/turf/BL = get_turf(locate(user.x, user.y, user.z-1))
+				if (istype(BL, /turf/floor/dirt/underground))
+					BL.ChangeTurf(/turf/floor/dirt)
+				user.visible_message("<span class='danger'>[user] finishes digging the tunnel entrance.</span>", "<span class='danger'>You finish digging the tunnel entrance.</span>")
+				if (ishuman(user))
+					var/mob/living/human/H = user
+					H.adaptStat("crafting", 1)
+					H.adaptStat("strength", 1)
+			return
+	else if (locate(/obj/structure/multiz/) in user.loc)
+		to_chat(user, "<span class='warning'>There already is something here.</span>")
+		return
+	else if (!TO.is_diggable)
+		to_chat(user, "<span class='warning'>You cannot dig a hole here!</span>")
+		return
+
+/turf/floor/beach/water/attack_hand(var/mob/living/human/H)
+	if (!ishuman(H))
+		return
+	if (H.a_intent == I_GRAB)
+		if (salty)
+			to_chat(H, SPAN_WARNING("It's probably not a good idea to drink saltwater."))
+			return
+		to_chat(H, SPAN_NOTICE("You start drinking some water from the ground..."))
+		if (!do_after(H,50,src))
+			return
+		var/watertype = "water"
+		if (radiation > 0)
+			watertype = "irradiated_water"
+		if (watertype == "irradiated_water")
+			H.rad_act(5)
+		else
+			var/dmod = 1
+			if (H.find_trait("Weak Immune System"))
+				dmod = 2
+			if (H.find_trait("Strong Immune System"))
+				dmod = 0.2
+			if (prob(sickness*15*dmod) && !H.orc && !H.crab)
+				if (H.disease == 0)
+					H.disease_progression = 0
+					H.disease_type ="cholera"
+					H.disease = 1
+		if (H.water < 0)
+			H.water += rand(40,50)
+		H.water += 75
+		H.bladder += 25
+		to_chat(H, SPAN_NOTICE("You drink some water from \the [src]."))
+		playsound(H.loc, "drink", rand(10, 50), TRUE)
+		return
+	else
+		..()

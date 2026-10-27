@@ -1,0 +1,107 @@
+"a" = (/obj/covers/road/whiteline{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"b" = (/obj/covers/steelplating,/obj/structure/props/random/container,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"c" = (/obj/structure/railing/steel{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"d" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"e" = (/obj/covers/steelplating,/obj/structure/shelf/palette{anchored = 1},/obj/structure/closet/crate{anchored = 1; pixel_y = 6},/obj/structure/railing/steel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"g" = (/obj/covers/road/whiteline{dir = 10},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"i" = (/obj/covers/road/whiteline,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"j" = (/obj/covers/road/whiteline{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"l" = (/obj/covers/steelplating,/obj/structure/props/random/container/four,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"n" = (/obj/covers/steelplating,/obj/structure/railing/steel{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"o" = (/obj/structure/railing/steel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"q" = (/obj/covers/steelplating,/obj/structure/grille/chainlinkfence/door,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"r" = (/obj/covers/road/whiteline{dir = 5},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"s" = (/obj/covers/steelplating,/obj/structure/shelf/palette{anchored = 1},/obj/structure/railing/steel{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"u" = (/obj/covers/steelplating,/obj/structure/cell_tower,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"v" = (/obj/covers/steelplating,/obj/structure/props/random/container/two,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"w" = (/obj/covers/steelplating,/obj/structure/props/random/container/five,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"x" = (/obj/covers/steelplating,/obj/structure/shelf/palette{anchored = 1},/obj/structure/closet/crate{anchored = 1; pixel_y = 6},/obj/structure/railing/steel{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"y" = (/obj/covers/road/whiteline{dir = 9},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"z" = (/obj/covers/road/whiteline{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"B" = (/turf/wall/rockwall,/area/caribbean/sea/middle)
+"C" = (/obj/covers/road/whiteline{dir = 6},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"F" = (/obj/covers/steelplating,/obj/covers/cement_wall,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"G" = (/obj/covers/steelplating,/obj/structure/props/random/container/three,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"H" = (/obj/covers/steelplating,/obj/structure/machinery/construction_crane{dir = 4},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"I" = (/obj/covers/steelplating,/obj/structure/railing/steel,/obj/structure/shelf/palette{anchored = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"J" = (/obj/covers/cobblestone/stairs{pixel_y = 16; layer = 1.98},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"K" = (/obj/structure/railing/steel{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"L" = (/obj/structure/railing/steel{dir = 8},/obj/structure/railing/steel{dir = 8},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"N" = (/obj/covers/steelplating,/obj/structure/shelf/palette{anchored = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"O" = (/obj/covers/steelplating,/obj/structure/railing/steel{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"Q" = (/obj/structure/railing/steel{dir = 1},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"R" = (/obj/covers/steelplating,/obj/structure/railing/steel,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"S" = (/obj/covers/cobblestone/stairs{pixel_y = -16; dir = 1; layer = 1.98},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"T" = (/obj/covers/steelplating,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"U" = (/obj/covers/steelplating,/obj/structure/shelf/palette{anchored = 1},/obj/structure/closet/crate{anchored = 1; pixel_y = 6},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"X" = (/obj/covers/steelplating,/obj/structure/grille/chainlinkfence,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+"Z" = (/obj/covers/road,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/middle)
+
+(1,1,1) = {"
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+"}
+(1,1,2) = {"
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddooSSSoooooodddooooooSSSoodddddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddFFFOOTTTOOOOOOFFFxsOOOOTTTOOFFFddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddFFFTTTTTTTTTTTFFFTTTTTTTTTTTFFFddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddFFFTTTTTTTTTTuFFFwTTTTTNlTTTFFFddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnTTTTTTTTTTTTTTqTTTTTTTTTTTTTTTKdddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnTZZZZZZTTTTTTTXTTTTTGTTTTTTbTTKdddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnZiiiiiiZTTTTTTXTbTTTTTTTGTTTTTddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnZjjryjjZTTTTTTXTTTTTTTTTTTTTHTddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnZZZazZZZTTTTTTXGTTlTTTTNTTTTTUddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnZiiCgiiZTTTTTTqTTTTTTTUUTTvTTTddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnZjjjjjjZTTTTTTXTTTTTTTTTTTTTTTddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnTZZZZZZTTTTTTTXlTTTvTTbTTTTTHTKdddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddcnTTTTTTTTTTTTTTqTTTTTTTTTTTTNUULdddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddFFFTTTTTTTTTTuFFFTTTTTTTTTTTFFFddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddFFFTTTTTTTTTTTFFFGTTTwTTTlTTFFFddddddddddddddddddddddddddddddddddd
+ddddddddddddddddddddddddddddddddddFFFRRTTTRRRRRRFFFeeIRRRTTTRRFFFddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddQQJJJQQQQQQdddQQQQQQJJJQQdddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+"}

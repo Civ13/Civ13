@@ -1,0 +1,89 @@
+/obj/map_metadata/alleyway
+	ID = MAP_ALLEYWAY
+	title = "Alleyway"
+	description = "The Yamaguchi-Gumi Clan and Ichiwa-Kai Clan are facing each other the streets of Kobe!"
+	lobby_icon = "icons/lobby/alleyway.png"
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/jungle, /area/caribbean/no_mans_land/invisible_wall/inside, /area/caribbean/no_mans_land/invisible_wall/inside/one, /area/caribbean/no_mans_land/invisible_wall/inside/two)
+	respawn_delay = 300
+	no_winner ="The fighting for the street is still going on."
+	faction_organization = list(
+		JAPANESE,)
+
+	roundend_condition_sides = list(
+		list(JAPANESE) = /area/caribbean/colonies/british
+		)
+	age = "1989"
+	ordinal_age = 8
+	faction_distribution_coeffs = list(JAPANESE = 1)
+	battle_name = "Yama-ichi gang fight"
+	mission_start_message = "<font size=4>The <b>Yamaguchi-Gumi Clan</b> and <b>Ichiwa-Kai Clan</b> are facing each other the streets of Kobe!</font>"
+	faction1 = JAPANESE
+	valid_weather_types = list(WEATHER_WET, WEATHER_NONE, WEATHER_EXTREME)
+	songs = list(
+		"Akira:1" = "sound/music/akira.ogg",)
+	is_singlefaction = TRUE
+	gamemode_vote = FALSE
+	scores = list(
+		"Yamaguchi-Gumi" = 0,
+		"Ichiwa-Kai" = 0,
+	)
+	New()
+		..()
+		spawn(600) // 1 minute 
+			points_check()
+/obj/map_metadata/alleyway/faction1_can_cross_blocks()
+	return (processes.ticker.playtime_elapsed >= 1200 || admin_ended_all_grace_periods)
+
+/obj/map_metadata/alleyway/check_caribbean_block(var/mob/living/human/H, var/turf/T)
+	if (!istype(H) || !istype(T))
+		return FALSE
+	var/area/A = get_area(T)
+	if (istype(A, /area/caribbean/no_mans_land/invisible_wall))
+		if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/one))
+			if (H.original_job.is_yama == TRUE && !H.original_job.is_ichi == TRUE)
+				return TRUE
+		else if (istype(A, /area/caribbean/no_mans_land/invisible_wall/inside/two))
+			if (H.original_job.is_ichi == TRUE && !H.original_job.is_yama == TRUE)
+				return TRUE
+		else
+			return !faction1_can_cross_blocks()
+	return FALSE
+
+/obj/map_metadata/alleyway/proc/points_check()
+	to_chat(world, "<big><b>Current Points:</b></big>")
+	to_chat(world, "<big>Yamaguchi-Gumi: [scores["Yamaguchi-Gumi"]]</big>")
+	to_chat(world, "<big>Ichiwa-Kai: [scores["Ichiwa-Kai"]]</big>")
+	spawn(300)
+		points_check()
+
+/obj/map_metadata/alleyway/update_win_condition()
+
+	if (processes.ticker.playtime_elapsed >= 12000 || world.time >= next_win && next_win != -1)
+		if (win_condition_spam_check)
+			return FALSE
+		ticker.finished = TRUE
+		var/message = ""
+		message = "The round has ended!"
+		if (scores["Ichiwa-Kai"] > scores["Yamaguchi-Gumi"])
+			message = "The battle is over! The <b>Ichiwa-Kai</b> were victorious over the <b>Yamaguchi-Gumi</b>!"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
+			win_condition_spam_check = TRUE
+			return FALSE
+		else if (scores["Yamaguchi-Gumi"] > scores["Ichiwa-Kai"])
+			message = "The battle is over! The <b>Yamaguchi-Gumi</b> were victorious over the <b>Ichiwa-Kai</b>!"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
+			win_condition_spam_check = TRUE
+			return FALSE
+		else
+			message = "The battle has ended in a <b>stalemate</b>!"
+			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
+			win_condition_spam_check = TRUE
+			return FALSE
+	last_win_condition = win_condition.hash
+	return TRUE
+
+/obj/map_metadata/alleyway/cross_message(faction)
+	return "<font size = 4>The grace wall is lifted!</font>"
+
+/obj/map_metadata/alleyway/reverse_cross_message(faction)
+	return ""

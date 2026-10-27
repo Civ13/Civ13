@@ -1,0 +1,416 @@
+/* Research tree - parchment-over-wood theme (Phase 4 visual pass) */
+
+/* This UI uses NanoUI's "basic" layout (no stock SS13 chrome), but shared.css
+   and layout_basic.css still load around this sheet -- layout_basic.css AFTER
+   it -- and paint the page dark grey + pad #uiContent. The extra `html`
+   specificity beats their plain `body`/`#uiContent` rules regardless of load
+   order, so none of the stock look bleeds in around the parchment. */
+html body {
+	margin: 0;
+	padding: 0;
+	background: #4d3320;
+}
+html body #uiContent {
+	padding: 0;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Italic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-BoldItalic.ttf') format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Black.ttf') format('truetype');
+	font-weight: 900;
+	font-style: normal;
+}
+
+#rt-root {
+	font-family: 'Civ13Custom', Georgia, serif;
+	color: #3a2c1a;
+	padding: 14px;
+	/* A block's width:auto fills its container but does NOT grow to
+	   accommodate an overflowing descendant (the tree grid can run far wider
+	   than the window) -- the content would just spill past this box's right
+	   edge onto the raw, unstyled page background below. max-content lets
+	   this box (and the ones nested below, all the way down to .rt-grid)
+	   grow to match; min-width keeps it filling the window when the tree is
+	   narrow enough not to need the extra room. */
+	width: max-content;
+	min-width: 100%;
+	background:
+		repeating-linear-gradient(115deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 2px, transparent 2px, transparent 5px),
+		repeating-linear-gradient(115deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 9px),
+		linear-gradient(100deg, #5a3d24, #6e4b2a 45%, #4d3320 100%);
+}
+
+#rt-parchment {
+	width: max-content;
+	min-width: 100%;
+	background:
+		radial-gradient(ellipse at 15% 20%, rgba(255,250,230,0.55), transparent 55%),
+		radial-gradient(ellipse at 85% 75%, rgba(120,90,50,0.18), transparent 60%),
+		radial-gradient(ellipse at 50% 100%, rgba(90,65,35,0.18), transparent 65%),
+		#e9dcb8;
+	border: 1px solid #a98c5c;
+	border-radius: 4px;
+	box-shadow: inset 0 0 22px rgba(90,60,20,0.28);
+	padding: 14px 18px;
+}
+
+#rt-root h2 {
+	font-family: 'Civ13Custom', Georgia, serif;
+	font-weight: bold;
+	font-size: 16px;
+	color: #4a3418;
+	border-bottom: 1px solid #a98c5c;
+	padding-bottom: 3px;
+	margin: 14px 0 8px;
+	letter-spacing: 0.02em;
+}
+
+#rt-root .item {
+	margin-bottom: 4px;
+}
+
+#rt-root .itemLabel {
+	color: #6b5230;
+}
+
+#rt-root .itemContent {
+	color: #3a2c1a;
+}
+
+#rt-root .rt-done { color: #2f6b32; font-weight: bold; }
+#rt-root .rt-progress { color: #96660f; font-weight: bold; }
+#rt-root .rt-locked { color: #8a7a5c; }
+
+/* --- tree grid --- */
+
+/* --- tree tabs --- */
+
+#rt-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	/* No flex "gap": BYOND's Trident engine ignores it -- spacing comes from
+	   the margins on .rt-tab instead. */
+	border-bottom: 2px solid #a98c5c;
+	margin: 6px 0 10px;
+}
+
+.rt-tab {
+	margin-right: 4px;
+	font-family: 'Civ13Custom', Georgia, serif;
+	font-weight: bold;
+	font-size: 13px;
+	color: #6b5230;
+	background: #ddcba0;
+	border: 1px solid #a98c5c;
+	border-bottom: none;
+	border-radius: 4px 4px 0 0;
+	padding: 4px 12px;
+	cursor: pointer;
+	position: relative;
+	top: 2px;
+}
+
+.rt-tab:hover {
+	background: #ecdcb4;
+	color: #4a3418;
+}
+
+.rt-tab-active {
+	background: #f4ecd2;
+	color: #2f2211;
+	border-bottom: 2px solid #f4ecd2;
+}
+
+.rt-tree-panel {
+	display: none;
+}
+
+.rt-tree-panel-active {
+	display: block;
+}
+
+.rt-tree-wrap {
+	position: relative;
+	margin-top: 6px;
+	/* inline-block shrink-wraps to the tree's true width (the IE-safe stand-in
+	   for width: max-content, which Trident doesn't support), and min-width
+	   keeps it filling the panel when the tree is narrower than the window. */
+	display: inline-block;
+	min-width: 100%;
+}
+
+.rt-lines {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	pointer-events: none;
+}
+
+.rt-layer-section {
+	margin-bottom: 10px;
+	width: max-content;
+	min-width: 100%;
+}
+
+.rt-layer-title {
+	font-family: 'Civ13Custom', Georgia, serif;
+	font-weight: bold;
+	font-size: 14px;
+	color: #4a3418;
+	margin: 0 0 6px;
+}
+
+.rt-grid {
+	display: grid;
+	/* Fixed width, not 1fr/minmax -- the tree does not need to be squeezed to
+	   fit inside the window's fixed size. It's free to run wider than the
+	   viewport; the browser's own scrollbars handle the rest. Columns are now
+	   era-blocks (see build_tree_grid_columns() in research_node.dm): each
+	   era's nodes plus one column per era-changing capstone in between. The
+	   current tree tops out at column 21; 26 leaves room to grow. */
+	grid-template-columns: repeat(26, 130px);
+	grid-auto-rows: min-content;
+	gap: 8px 10px;
+	position: relative;
+	width: max-content;
+}
+
+.rt-node {
+	position: relative;
+	background: #f4ecd2;
+	border: 1px solid #a98c5c;
+	border-left: 4px solid #8a7a5c;
+	border-radius: 3px;
+	padding: 6px 8px;
+	cursor: pointer;
+	font-size: 11px;
+	line-height: 1.35;
+}
+
+.rt-node:hover {
+	border-color: #7a5a2c;
+	background: #f8f1da;
+}
+
+.rt-node.rt-layer-industrial { border-left-color: #2e4d6b; }
+.rt-node.rt-layer-military { border-left-color: #6b2620; }
+.rt-node.rt-layer-health { border-left-color: #2c5c3a; }
+.rt-node.rt-layer-agriculture { border-left-color: #5c7a2c; }
+.rt-node.rt-layer-textiles { border-left-color: #6b4a7a; }
+.rt-node.rt-layer-armour { border-left-color: #5a5a6b; }
+
+.rt-node.rt-status-locked {
+	/* Solid, not translucent: opacity affects the WHOLE element (background
+	   included), which is what let the connector lines show through locked
+	   squares. grayscale() alone dims the colors without introducing any
+	   transparency, so the card stays fully opaque. */
+	background: #dcd3b8;
+	border-color: #9a8a68;
+	filter: grayscale(65%);
+}
+
+.rt-node.rt-status-locked .rt-node-name,
+.rt-node.rt-status-locked .rt-node-sub {
+	color: #8a7a5c;
+}
+
+.rt-node.rt-status-done {
+	background: #e6f0da;
+}
+
+/* Lit up when the opened node needs this one researched first (directly or
+   transitively). Overrides the dimmed rt-status-locked look so the whole
+   outstanding chain stands out clearly against the rest of the tree. */
+.rt-node.rt-ancestor-highlight {
+	opacity: 1;
+	filter: none;
+	background: #f8ecc4;
+	border-color: #c98a1d;
+	border-left-color: #c98a1d;
+	box-shadow: 0 0 0 1px #c98a1d;
+}
+
+.rt-node-name {
+	font-weight: bold;
+	color: #2f2211;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.rt-node-sub {
+	color: #6b5230;
+	font-size: 10px;
+	font-style: italic;
+}
+
+/* Marks a node that advances the era on completion (Prototype-mode capstones). */
+.rt-star {
+	color: #c98a1d;
+	font-style: normal;
+}
+
+.rt-node-bar {
+	height: 4px;
+	background: rgba(0,0,0,0.12);
+	border-radius: 2px;
+	margin-top: 4px;
+	overflow: hidden;
+}
+
+.rt-node-bar-fill {
+	height: 100%;
+	background: #96660f;
+}
+
+.rt-node.rt-status-done .rt-node-bar-fill { background: #2f6b32; }
+
+/* --- assign / staff links (reuse the framework's linkActive markup) --- */
+
+#rt-root .link, #rt-root .linkActive, #rt-modal .link, #rt-modal .linkActive {
+	font-family: 'Civ13Custom', Georgia, serif;
+	background: #e9dcb8;
+	border: 1px solid #a98c5c;
+	color: #3a2c1a;
+	border-radius: 3px;
+	padding: 3px 8px;
+	display: inline-block;
+	margin: 2px 4px 2px 0;
+	cursor: pointer;
+}
+
+#rt-root .linkActive:hover, #rt-modal .linkActive:hover {
+	background: #f8f1da;
+	border-color: #7a5a2c;
+}
+
+/* --- detail modal --- */
+
+#rt-modal-backdrop {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(30, 20, 10, 0.45);
+	z-index: 500;
+	align-items: center;
+	justify-content: center;
+}
+
+#rt-modal-backdrop.rt-open {
+	display: flex;
+}
+
+#rt-modal {
+	background:
+		radial-gradient(ellipse at 20% 15%, rgba(255,250,230,0.5), transparent 55%),
+		#efe3c2;
+	border: 1px solid #8a6d3f;
+	border-radius: 5px;
+	box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+	width: 360px;
+	max-width: 86%;
+	padding: 14px 16px;
+	font-size: 12px;
+	font-family: 'Civ13Custom', Georgia, serif;
+	/* The modal lives outside #rt-root in the DOM (it's a sibling shell, not
+	   a descendant), so it never inherits the parchment root's dark ink
+	   color -- without this it falls back to the base NanoUI theme's white
+	   body text, invisible against this cream background. */
+	color: #3a2c1a;
+	/* #rt-modal-backdrop is position:fixed covering the whole viewport with
+	   no scroll of its own, so with no cap here a node that unlocks a lot of
+	   recipes (Stone Masonry: 100+) grows the modal taller than the window --
+	   its top AND bottom both land outside the fixed backdrop with nothing to
+	   scroll, permanently hiding the Assign link. Cap the modal itself and
+	   let #rt-modal-body scroll internally instead, so the close button stays
+	   put and every row (assign link included) is always reachable. */
+	max-height: 84vh;
+	display: flex;
+	flex-direction: column;
+}
+
+#rt-modal-close {
+	/* float is ignored on flex items (see #rt-modal above) -- align-self
+	   reproduces the same top-right placement within the column flex. */
+	align-self: flex-end;
+	flex: 0 0 auto;
+	cursor: pointer;
+	color: #6b5230;
+	font-weight: bold;
+	border: 1px solid #a98c5c;
+	border-radius: 3px;
+	padding: 0px 6px;
+	background: #e9dcb8;
+}
+
+#rt-modal-body {
+	overflow-y: auto;
+}
+
+.rt-modal-title {
+	font-family: 'Civ13Custom', Georgia, serif;
+	font-weight: 900;
+	font-size: 17px;
+	color: #2f2211;
+	margin: 0 0 2px;
+}
+
+.rt-modal-sub {
+	color: #6b5230;
+	font-size: 11px;
+	font-style: italic;
+	margin-bottom: 10px;
+}
+
+.rt-modal-row {
+	margin-bottom: 8px;
+}
+
+.rt-modal-label {
+	font-weight: bold;
+	color: #4a3418;
+	font-size: 11px;
+	margin-bottom: 2px;
+}
+
+.rt-recipe-tag {
+	display: inline-block;
+	background: #e9dcb8;
+	border: 1px solid #a98c5c;
+	border-radius: 3px;
+	padding: 1px 6px;
+	margin: 2px 3px 0 0;
+	font-size: 10px;
+	color: #4a3418;
+}

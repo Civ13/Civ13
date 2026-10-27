@@ -1,0 +1,255 @@
+"aa" = (/turf/floor/grass,/area/caribbean)
+"ab" = (/turf/floor/dirt/dust,/area/caribbean)
+"ac" = (/turf/floor/trench,/area/caribbean)
+"ad" = (/obj/structure/barricade/vertical,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"ae" = (/obj/structure/window/barrier,/turf/floor/grass,/area/caribbean)
+"af" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/obj/structure/window/barrier,/turf/floor/grass,/area/caribbean)
+"ag" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass,/area/caribbean)
+"ah" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/barrier,/turf/floor/grass,/area/caribbean)
+"ai" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/grass,/area/caribbean)
+"aj" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/dirt/dust,/area/caribbean)
+"ak" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/turf/floor/dirt/dust,/area/caribbean)
+"al" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass,/area/caribbean)
+"am" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass,/area/caribbean)
+"an" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass,/area/caribbean)
+"ao" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean)
+"ap" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/grass,/area/caribbean)
+"aq" = (/obj/structure/table/wood,/turf/floor/grass,/area/caribbean)
+"ar" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"as" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/grass,/area/caribbean)
+"at" = (/obj/structure/barricade/wood_pole,/turf/floor/grass,/area/caribbean)
+"au" = (/obj/covers/tatami,/turf/floor/grass,/area/caribbean/roofed)
+"av" = (/obj/structure/sink/well,/turf/floor/grass,/area/caribbean)
+"aw" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"ax" = (/obj/covers/tatami,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"ay" = (/obj/covers/tatami_vertical,/turf/floor/grass,/area/caribbean/roofed)
+"az" = (/obj/covers/wood_wall/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"aA" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/structure/window_frame/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"aB" = (/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/turf/floor/grass,/area/caribbean)
+"aC" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/table/wood,/obj/structure/cutting_board,/turf/floor/grass,/area/caribbean/roofed)
+"aD" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"aE" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean)
+"aF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/grass,/area/caribbean/roofed)
+"aG" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/full,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"aH" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/oven,/turf/floor/grass,/area/caribbean/roofed)
+"aI" = (/obj/structure/oven,/turf/floor/grass,/area/caribbean)
+"aJ" = (/obj/structure/pot,/turf/floor/grass,/area/caribbean)
+"aK" = (/obj/item/weapon/reagent_containers/glass/barrel/tea,/turf/floor/grass,/area/caribbean)
+"aL" = (/obj/covers/tatami,/obj/structure/railing{icon_state = "railing0"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"aM" = (/obj/structure/farming/plant/rice{icon_state = "rice-harvest"; vstatic = 1},/obj/effect/floor_decal/dirtwall/inc33{step_y = 0},/turf/floor/beach/water/jungle,/area/caribbean)
+"aN" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/glass/rag,/turf/floor/grass,/area/caribbean/roofed)
+"aO" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/turf/floor/grass,/area/caribbean/roofed)
+"aP" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/turf/floor/grass,/area/caribbean/roofed)
+"aQ" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean)
+"aR" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/turf/floor/grass,/area/caribbean/roofed)
+"aS" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean)
+"aT" = (/turf/floor/beach/water/jungle,/area/caribbean)
+"aU" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
+"aV" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/turf/floor/grass,/area/caribbean/roofed)
+"aW" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami,/turf/floor/grass,/area/caribbean/roofed)
+"aX" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/turf/floor/grass,/area/caribbean/roofed)
+"aY" = (/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"aZ" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/turf/floor/grass,/area/caribbean/roofed)
+"ba" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/turf/floor/grass,/area/caribbean/roofed)
+"bb" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/window_frame/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"bc" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/turf/floor/grass,/area/caribbean/roofed)
+"bd" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/turf/floor/grass,/area/caribbean/roofed)
+"be" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/roofed)
+"bf" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/obj/item/weapon/reagent_containers/food/snacks/boiledrice,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/grass,/area/caribbean/roofed)
+"bg" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/cee,/obj/structure/window_frame/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"bh" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/dirt/dust,/area/caribbean)
+"bi" = (/obj/covers/wood_wall/shoji,/turf/floor/dirt,/area/caribbean/roofed)
+"bj" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/turf/floor/dirt,/area/caribbean/roofed)
+"bk" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/turf/floor/dirt,/area/caribbean/roofed)
+"bl" = (/obj/covers/wood_wall/shoji_divider,/turf/floor/grass,/area/caribbean/roofed)
+"bm" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/full,/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"bn" = (/obj/structure/sink/puddle,/turf/floor/dirt/dust,/area/caribbean)
+"bo" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 8},/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean)
+"bp" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 4},/obj/structure/sink/puddle,/turf/floor/grass,/area/caribbean)
+"bq" = (/mob/living/simple_animal/horse,/turf/floor/grass,/area/caribbean)
+"br" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/turf/floor/grass,/area/caribbean)
+"bs" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/material/sword/wakazashi,/turf/floor/grass,/area/caribbean)
+"bt" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/turf/floor/grass,/area/caribbean)
+"bu" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/turf/floor/grass,/area/caribbean)
+"bv" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/obj/item/weapon/gun/projectile/ancient/tanegashima,/turf/floor/grass,/area/caribbean)
+"bw" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateJP"},/turf/floor/grass,/area/caribbean)
+"bx" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/obj/item/weapon/reagent_containers/food/drinks/gunpowder/full,/turf/floor/grass,/area/caribbean)
+"by" = (/obj/structure/closet/cabinet,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/grass,/area/caribbean)
+"bz" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateJPCap"},/turf/floor/dirt/dust,/area/caribbean)
+"bA" = (/obj/structure/closet/cabinet,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/obj/item/flashlight/torch,/turf/floor/dirt/dust,/area/caribbean)
+"bB" = (/obj/structure/closet/crate/empty,/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/turf/floor/dirt/dust,/area/caribbean)
+"bC" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on/anchored,/turf/floor/dirt/dust,/area/caribbean)
+"bD" = (/obj/structure/wild/tree/live_tree,/turf/floor/dirt/dust,/area/caribbean)
+"bE" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/obj/item/weapon/material/naginata/steel,/turf/floor/dirt/dust,/area/caribbean)
+"bF" = (/obj/structure/closet/crate/empty,/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/obj/item/stack/ammopart/stoneball{amount = 5},/turf/floor/grass,/area/caribbean)
+"bG" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/material/sword/wakazashi,/obj/item/weapon/material/sword/wakazashi,/turf/floor/dirt/dust,/area/caribbean)
+"bH" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/obj/item/weapon/material/sword/katana,/turf/floor/dirt/dust,/area/caribbean)
+"bI" = (/obj/structure/closet/cabinet,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/obj/item/weapon/material/kitchen/utensil/knife/tanto,/turf/floor/dirt/dust,/area/caribbean)
+"bJ" = (/obj/covers/tatami,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"bK" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"bL" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 1},/obj/structure/simple_door/key_door/anyone/shoji,/turf/floor/grass,/area/caribbean/roofed)
+"bM" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/bed/bedroll,/turf/floor/grass,/area/caribbean/roofed)
+"bN" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 4},/obj/structure/reagent_dispensers/largebarrel,/turf/floor/grass,/area/caribbean/roofed)
+"bO" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/corner{icon_state = "tatami_frame_corner"; dir = 1},/obj/effect/floor_decal/tatami/corner{icon_state = "tatami_frame_corner"; dir = 4},/obj/effect/floor_decal/tatami,/turf/floor/grass,/area/caribbean/roofed)
+"bP" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/grass,/area/caribbean/roofed)
+"bQ" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/grass,/area/caribbean/roofed)
+"bR" = (/mob/living/simple_animal/horse,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/one)
+"bS" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/bed/bedroll,/turf/floor/grass,/area/caribbean/roofed)
+"bT" = (/obj/structure/table/wood,/turf/floor/dirt/dust,/area/caribbean)
+"bU" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/turf/floor/grass,/area/caribbean/roofed)
+"bV" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/turf/floor/grass,/area/caribbean/roofed)
+"bW" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/closet/cabinet,/obj/item/weapon/material/scythe,/turf/floor/grass,/area/caribbean/roofed)
+"bX" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/dirt/dust,/area/caribbean)
+"bY" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/dirt/dust,/area/caribbean)
+"bZ" = (/obj/structure/bed/bedroll,/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/dirt/dust,/area/caribbean)
+"ca" = (/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/turf/floor/dirt/dust,/area/caribbean)
+"cb" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/dirt/dust,/area/caribbean)
+"cc" = (/obj/structure/oven,/turf/floor/dirt/dust,/area/caribbean)
+"cd" = (/obj/structure/pot,/turf/floor/dirt/dust,/area/caribbean)
+"ce" = (/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/item/weapon/reagent_containers/pill/opium,/obj/structure/table/wood,/turf/floor/dirt/dust,/area/caribbean)
+"cf" = (/obj/effect/landmark{name = "JoinLateJPDoc"},/turf/floor/dirt/dust,/area/caribbean)
+"cg" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/ointment,/turf/floor/dirt/dust,/area/caribbean)
+"ch" = (/obj/structure/table/wood,/obj/item/stack/medical/advanced/bruise_pack,/obj/item/stack/medical/advanced/bruise_pack,/turf/floor/dirt/dust,/area/caribbean)
+"ci" = (/obj/structure/table/wood,/obj/item/weapon/storage/firstaid/surgery,/turf/floor/dirt/dust,/area/caribbean)
+"cj" = (/obj/structure/bed/wood,/turf/floor/dirt/dust,/area/caribbean)
+"ck" = (/obj/effect/landmark{name = "JoinLateRNDoc"},/turf/floor/dirt/dust,/area/caribbean)
+"cl" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami,/obj/structure/closet/cabinet,/obj/item/weapon/plough,/turf/floor/grass,/area/caribbean/roofed)
+"cm" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 8},/obj/structure/closet/cabinet,/obj/item/weapon/storage/produce_basket,/obj/item/weapon/storage/produce_basket,/turf/floor/grass,/area/caribbean/roofed)
+"cn" = (/turf/floor/beach/water,/area/caribbean)
+"co" = (/obj/structure/window/barrier,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cp" = (/obj/structure/farming/plant/rice{icon_state = "rice-harvest"; vstatic = 1},/obj/effect/floor_decal/dirtwall/inc33{step_y = 0},/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"cq" = (/obj/structure/wild/tree/live_tree,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cr" = (/turf/floor/beach/water/jungle,/area/caribbean/no_mans_land/invisible_wall)
+"cs" = (/obj/structure/window/barrier{icon_state = "dirt_wall"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"ct" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+"cu" = (/obj/covers/wood/stairs{icon_state = "wood2_stairs"; dir = 1},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cv" = (/obj/map_metadata/sekigahara,/turf/floor/grass,/area/caribbean)
+"cw" = (/obj/structure/barricade/vertical,/turf/floor/grass,/area/caribbean)
+"cx" = (/obj/structure/barricade/vertical,/turf/floor/dirt/dust,/area/caribbean)
+"cy" = (/obj/covers/tatami,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cz" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/structure/table/wood,/turf/floor/grass,/area/caribbean/roofed)
+"cA" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/grass,/area/caribbean/roofed)
+"cB" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/structure/pot,/turf/floor/grass,/area/caribbean/roofed)
+"cC" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle,/obj/structure/closet/cabinet/ceiling{layer = 4.011; pixel_y = -16; step_x = 0; step_y = 0},/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/material/kitchen/utensil/chopsticks,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/obj/item/weapon/reagent_containers/food/drinks/clay/claycup,/turf/floor/dirt,/area/caribbean/roofed)
+"cD" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/obj/structure/roof_support,/turf/floor/grass,/area/caribbean/roofed)
+"cE" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/obj/structure/roof_support,/turf/floor/grass,/area/caribbean/roofed)
+"cF" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/obj/structure/roof_support,/turf/floor/grass,/area/caribbean/roofed)
+"cG" = (/obj/covers/tatami,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/structure/railing{icon_state = "railing0"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cH" = (/obj/covers/tatami_vertical,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cI" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/obj/structure/roof_support,/turf/floor/grass,/area/caribbean/roofed)
+"cJ" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 1},/obj/item/flashlight/lantern/on/anchored,/obj/structure/roof_support,/turf/floor/grass,/area/caribbean/roofed)
+"cK" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle{icon_state = "tatami_frame_angle"; dir = 1},/obj/structure/closet/cabinet/ceiling{layer = 4.011; pixel_y = -16; step_x = 0; step_y = 0},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/obj/item/weapon/reagent_containers/food/snacks/noodles,/turf/floor/grass,/area/caribbean/roofed)
+"cL" = (/obj/covers/tatami_vertical,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cM" = (/obj/covers/tatami,/obj/effect/floor_decal/tatami/angle,/obj/structure/closet/cabinet/ceiling{layer = 4.011; pixel_y = -16; step_x = 0; step_y = 0},/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/obj/item/weapon/reagent_containers/food/snacks/rice,/turf/floor/grass,/area/caribbean/roofed)
+"cN" = (/obj/covers/tatami_vertical,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 8},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cO" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
+"cP" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami/cee{icon_state = "tatami_frame_cee"; dir = 8},/obj/structure/closet/crate/rations/sake,/turf/floor/grass,/area/caribbean/roofed)
+"cQ" = (/mob/living/simple_animal/horse,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall/two)
+"cR" = (/obj/covers/tatami_vertical,/obj/effect/floor_decal/tatami{icon_state = "tatami_frame"; dir = 4},/obj/item/clothing/head/rice_hat,/obj/item/clothing/head/rice_hat,/obj/item/weapon/gun/projectile/bow/longbow,/obj/item/weapon/storage/backpack/quiver/medieval,/obj/structure/closet/cabinet,/turf/floor/grass,/area/caribbean/roofed)
+"cS" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall/two)
+"cT" = (/obj/covers/tatami_vertical,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 4},/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cU" = (/obj/covers/tatami_vertical,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 8},/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"cV" = (/obj/covers/tatami_vertical,/obj/structure/roof_support,/obj/structure/railing{icon_state = "railing0"; dir = 4},/obj/item/flashlight/lantern/on/anchored,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTaTaT
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaDaDaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaacqaDaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaTaTaT
+aaaaaaaaaQaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaTaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaTaT
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaDaDaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaT
+aaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaTaaaaaaaDcqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaSaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaSaaaaaaaaaaaQaaaaaa
+aaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaDaDaSaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaeaeaeaeaeaecocoaeaeaeaeaeaeaeaeaeaeaaaaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaaaaaa
+aaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaQaDaDaaaaaaaQaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaQaa
+abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaQaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+ababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaTaTaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+ababababababababababababababaaababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaQaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+abababababababababababbnabababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaQaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMboaaaa
+abababababababababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaSaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+abababababababababababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaibpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaSaa
+ababababaaabaaaaaaababababababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaQaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+ababaaaaaaababaaaaabaaaaababaaababababababababababababababababaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaTaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaabababaaaaaaaaaaaaabababababababababababababaaaaaaaaaaaaaaaaaaaaaDaDaQaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababaaaaaaaaaaaQaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaQaa
+aaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababababaaaaaaaaaaaaaaaaaDaDaaaaaaaTaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+aaaaaaaaaaaaaTaTaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaabaaabababababababababaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaQaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaa
+aaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMcpcpaMaMaMaMaMaMaMaMaMaMaiagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMboaaaa
+aaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaababababababaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaamamamaaaaamcscsamamamamamaaaaamamamaaaaamamaaaaamamamamamamamamamamaaaaamamaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababaaaaaaaaaDaDaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaSaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaabababababababaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaDcoaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaaaaaaaaaaaaaaaaaaaaaaaTaaaQaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaQaa
+aaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaSaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaabababbnabababaDaDaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaQaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaababababababctaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaaaaaaaaaSaaaaaaaaaaaQaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababctctaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababctctabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaQaaaaaaaaaQaaaaaQaaaTaaaaaaaaaa
+aaaaaaaaaQaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababctctababaaaaabaaaaabaaaaaaaaaaaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaa
+aaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacwaQaaaaaaaaaaaaababctctababababaTaaaaababaaaaaaaTaTaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaTaaaTaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaacwaaaaaaaaaaaaaaaaaactctababababababaaaaaaaaaaaaaTaaaaaQaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacwaaaaaaaaaaaaaaaaaaaDctababababababaaaaaaaaaaaaaaaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaa
+aaaaaaaaaaaSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacwaaaaaaaaaaaaaaaaaaaDaDaaabababbnabababaaaaaaaaaaaaaaaaaaaaaaarcpaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacwaaaaaaaaaaaaaaaaaaaDaDaaaaaaabababababababababaaaaaaaaaaaaaaaDcsamamaaamamamamamamamamaaamamamaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaababababababaaaaaaaaaaaaaaaaaQaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaDaDaaaaaaaaaaababababababaaaaaaabaaaaaaaaaDaDaaaaaQaaaaaaaabqaaaaaaaacOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcO
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaSaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaDaDaQaaaaaaaaaaababababababababababaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaacQcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcO
+aaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaababababababababababaaaaaDaDaaaaaaaaaabqaaaaaabqcOcOcOcOaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaQaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaDaDaTaaaaaaaaaaaaaaaaabababababababababaaaDaDaaaaaaaaaaaaaaaaaScOcOcOcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaQaaaaaaaaaaabababababababctaDaaaaaaaaaaaabqaaaacOcOcOaaaaaaaaaaaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeae
+aaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaQaaaaaaaaaaaaaaaQaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaababababababctaDabaaaaaaaaaaaTaaaacOcQaaaabqaaaaafacacacacacacacacacacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaTaaaaaaaaabababababctctcxaaaaaaaaaaaabqaacOcOaaaaaaaaafacacacacacacacacacacacacacacacacac
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababctctcxabaaaaaaaaaaaaaacOcQaaaaaaagacacacacacacacacacacacacacacacacacac
+bKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaQaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaabababctctcxababaaaaaaaaaaaacOcOaaaaaaagacacacacaaaaaaaaaaaabrbsbtbubvaaaaap
+bKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaSaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababctctcxababababaaaaaaaacQcOaaaaaaagacacacaaaoaaaQaaaaaaaaaaababaaaaaaap
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaacraDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaactctcxabababababaaaaaacOcOaaaaaaagacacacaaaaaaaqaqaaaabwabbhabbzaaaaap
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacraDaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDctcxabababababababaacOcOaaaaaaagacacacaaasaaaaaqaaaaabababababaaaaap
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaDaDabababababababababcOcOaaaaaaagacacacaBaEaaaaaqaaaabhabbhabbzaaaaap
+aeaeaeaeaaaaaaaeaeaeaeaeaeaeaeaeaeaaaaaaaaaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaactctabababababababababcScOabaaaaagacacacaBaaaaaaaqaaaaabababababaaaaap
+acacacacacacacacacacacacacacacacacahaeaeaeaeaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaacqaDaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaDaDaaaaaaababababababcScSaaaaabagacacacaBaaaIaJaqaaaabhabbhabbhaaaabx
+acacacacacacacacacacacacacacacacacacacacacacaiaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaQaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaabababababcScSabajakabacacacabababbTbTabababababababababbA
+acacacacacacacacacacacacacacacacacacacacacacahaaaaaaaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDcqaaaaaaaaabababababcScSabajakabacacacababababababababababababababbB
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacacahaaaaaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaSaaaaaaaaaaaaaQaaaaaaaaaDaDaaaaaaaaaaababababcScSabajakabacacacababababababbCabababababababbB
+bvaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaacacacacacahaaaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaababcScSabajakabacacacabbDabaaaaaaaaabababababaaaabF
+bxaaaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaacacacacacahaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaQadaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaabcScSabababagacacacabaaabaaaaaaaaababababaaaaaaaa
+byaaaaaaabababababaaaoaaabbEbGbHbIababaaaoaaacacacacaiaaaaaabKbKaaaaaaaaaaaQaaaaaaaaaaaaadaDaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaQaaaaaaaaaaaaaacScSabababagacacacaaaaaaaaaaababababababababaaaa
+apaaababababbTbTabababababababababababaaaaaaacacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaadaDaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaabcScSabababagacacacaaaaaaaaaaabceababcfabceabaaaa
+apaaababbXababbTabababababbYabbYabbZababaaaaaaacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaTaaaaaaadaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaDaDaaaaaaaaaaaaabababcScSabababagacacacaaaaaaaQaaabcgababababcgabaaas
+apaaabcacbababbTababababababababababababaaaaaaacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaadaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaabababcScSabaaabagacacacaaaaaaaaaaabchababababchabaaas
+apaaabcaabababbTabababababbYabbYabbYababaaaaaaacacacahaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaadcqaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaQaaaaaaaaababababcScSababaaagacacacaaaaaaaaaaabcicjababcjciabaaaK
+apaaabcaabcccdbTababababababababababababaaaaaaacacacacaiaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaabababababcScSaaaaaaagacacacaaaaaaaaaaababababababababaaaK
+apaaababababbTbTabababababbYabbYabbYabaaaaaaaoacacacacaiaaaabKbKaaaaaaaaaaaaaaaaaaaSaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaababababababcOcOaaaaaaagacacacaaaoaaaaaaaaaaabababaaaaaaaaaa
+bFaaaaaaaaabababababaoaaabababababababaaataaaaacacacacaiaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaQaaaaaaaQaaaaaaaaaaaaaaaDaDcwabababababababaacOcOaQaaaaagacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bFaaaaaaaaaaaaaaaaaaaaaaaaaaaaababaaaaaaaaaaaaacacacacaiaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDctcxabababababaaaaaacOcOaaaaaaagacacacacacacacacacacacacacacacacacac
+bFaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaoacacacacaiaaaabKbKaaaaaaaaaaaaaQaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaactctcxababababaaaaaaaacOcOaaaaaaaaalacacacacacacacacacacacacacacacacac
+aaaaaaaaaaaaaoababababababaoaaaaaaaaaaaaaaaaaaacacacacaiaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaTaTaaaaaaaaaaaaaaaaaaaaaaaaabctctcxababaaaaaaaaaaaacOcOaaaaaaaaaaalacacacacacacacacacacacacacacacac
+asaaaaaaaaaaabceababababceabaaaaaaaaaaaaaaaaaaacacacacaiaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaTaaaaaaaaaQaaaaaaaaaaaaaaababctctcxabaaaaaaaaaaaaaacOcOcOaaaaaaaaaaamamamamamamamamamamamamamamamam
+asaaaaaaaaaaabcgabckababcgabaaaaaaaaaaaaaaaaaaacacacanaaaaaabKbKaaaaaaaaaaaaaaaaaTaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababctctcxaaaaaaaaaaaaaQaaaacOcOcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aKaaaaaaaaaaabchababababchabaaaaaaaaaaaaaaaaaaacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaababababctctaaaaaaaaaaaaaaaaaaaaaacOaUcOaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aKaaaaaaaaaaabcicjababcjciabaaaaaaaaaaaaaaaaaaacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaababababctaDaaaaaaaaaaaaaaaaaaaaaaaacOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcO
+aaaaaaaaaaaaaoababababababaoaaaaaaaaaaaaaaaaacacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaababababababaDaDaaaaaaaaaaaaaaaaaaaaaaaaaacOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcOcO
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacaiaaaaaabKbKaaaaaaaaaaaaaaaaaQaaaaaaaDawaaaaaaaaaaaaaaaaaaaaaaaaababababababaaaDaDaaaaaSaaaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacanaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaQaaaaaaaaaaaaabababababaaaactaDaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaa
+acacacacacacacacacacacacacacacacacacacacacacacacanaaaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaabababababaaababaDaDaaaaaTaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaQaaaaaaaaaQaaaaaaaaaSaaaa
+acacacacacacacacacacacacacacacacacacacacacacanamaaaaaaaaaaaabKbKaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaababababababababaaaDaDaaaaaTaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaQaaaaaaaa
+acacacacacacacacacacacacacacacacacacacacacacaiaaaaaaaaaaaabKbKbKaaaQaaaaaaaaaaaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaababababababababaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaSaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaa
+amamamamamaaaaaaamamamamamamamamamamamamamamaaaaaaaaaaaaaaaYbKaaaaaaaaaaaQaaaaaaaaaaaQcwaDaDaaaaaaaaaaaaaaabababababababaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaQaaaaaaaaaaaa
+aaaaaaaaaaaabqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaaaacwaDaDaQaaaaaaaaababababababababaaaaaaaaaaaaaDcqaaaaaaaaaaaaaaaQaaaaaaaeaeaeaeaeaeaaaeaeaeaeaeaeaeaaaeaeaeaeaeaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaabqaaaaaaaaaaaaaaaaaaaaaaaaaabKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaacwaDaDaaaaaaaaababababababababaaaaaaavaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaabqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabKbKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaacwaDaDaaaaaaaaabababababababaaaaaaaaaaaaaaaaaDaDaaaaaaaQaaaaaaaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+bKbKbKbKbRbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKbKaaaaaaaaaaaaaaaaaaaQaaaaaaaaaacwaDaDaaaaabababababababaaaaaaaDaDaDaDaDaDcucucucuaDaDaDaDaDaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+bKbKbKbKbKbKbKbKbKbKbKbKbRbKbKbKbKbKbKbKbKbKbKbKbKbKbKaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaDaDaaaaababababababaaaaaSaaaDaxaLaLaLbJaLcycyaLbJaLaLaLcGaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaabqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaababababababaaaaaaaaaaaDcHauauauauauauauauauauauaucLaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaabqaaaaaaaaaaaaaQaaaaaaaTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDaDaaabababababaaaaaaaaaaaaaDcHayazazaAaAazazaGazazazaycLaDaaaQaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaDctababababababaaaaaaaaaaaaaDcHayazaHaCczcBaOaPaFaNazaycLaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaabqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaQaaaaaaaDctabababababaaaaaaaQaaaaaaaDcNayazaVaWaWaXaVaWaWbeazaycTaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaQaQaaaaaabqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaabctctbnababababaaaaaaaaaTaaaaaDcHayazaZcDaZbaaZbacEbaazaycLaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababctctabababaaaaaaaaaaaaaaaaaaaDcHaybbbcbdbcbfbPbdbcbdbbaycLaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaTaTaaaaaaaaaaaaaaaaaaabababctctabababaaaaaaaaaaaaaaaQaaaDcHaybgbcbdbcbQcAbdbcbdbgaycLaDaaaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaQaaaaaaaaaQaaaaaaaaaaaaaaaSaaaaaaaaaaaaaaaaaTaaaaaaaaaaaaaaaaaaababababctctababaaaaaaaQaaaaaaaaaQaaaDcNaybicCbkbjbkbjbkbjbkbiaycTaDaQaaaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababctctaaaaaaaaaaaaaaaaaTaaaaaaaDcHayazcKcFaPaRaOaPcFaRazaycLaDaaaTaaagaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaMaiaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaababababababababaDaDaaaaaaaaaaaaaaaaaaaaaaaaaDcHayazcMaWaWaXaVaWaWaXazaycLaDaaaaaaaaamamamamamamamamamamamamamamamamamamamamaaaa
+aaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaDcHayazblblbmblblblbLblazaycLaDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaabababababababaaaaaaaDaDaaaaaaaaaSaaaaaaaaaaaaaaaDcUayazbMbaaZbablbNbOcPazaycVaDaaaaaaaaaaaaaaaQaaaSaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabababababababababaaaaaaaacqaDaaaaaaaaaaaaaaaaaaaaaaaaaDcHayazbcbdcIcRblaZcJbaazaycLaDaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababababaaaaaaaaaaaDaDaaaaaaaaaaaaaaaaaQaaaaaaaDcHayazbSbUbVbUblbWclcmazaycLaDaaaaaaaaaQaacnaaaaaaaaaaaaaaaaaaaaaaaaaaaTaaaQaaaaaa
+cvaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaababababababababababababaaaaaaaaaDaDaaaaaaaaaaaaaaaaaaaaaaaaaDcHayazazazazazazazazazazaycLaDaaaaaaaaaaaaaaaaaaaaaaaaaaaQaaaaaaaaaaaaaaaaaaaaaaaa
+"}

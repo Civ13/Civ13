@@ -1,0 +1,81 @@
+# Disabled bridge and typed gather verification
+
+Base: reviewed master 75890d883190355e430f9958fd102864ee88429a.
+Original aeaf checkout/evidence is preserved separately. Production DME excludes
+this bridge and defines no feature macro. No deployment or ordinary-client acceptance.
+
+Run offline only, with a verified Python executable:
+
+```text
+<python> -B -m unittest discover -s tests/gameplay_bridge -v
+```
+
+Python mailbox/transport tests use synthetic values and inert transports, no
+listener/model/client/daemon/compiler. The gather source tests check full disabled
+file projection hashes, calibrated restricted conditional projection, explicit
+worker forwarding/type/identity/one-use claim and omission controls. Abstract
+Python models distinguish ordinary overlapping waits from new lease interference;
+they are not a DM interpreter or native evidence. No private Git object is needed.
+
+CI compile_check.py separately prepares stock/disabled/enabled1x1 closures from an
+exact clean frozen tracked head, with no server config. Enabled readiness admits
+only timed gather; water/craft waits remain unsupported. Pinned516.1681 compiler
+logs must show0errors/0warnings for the three module and three fixture targets.
+Each compiler is bounded to180sec; CI step ceiling22min. Compile results do not establish
+runtime behavior. Six ff8 CI compiler profiles passed; the separate first ff8
+stock runtime failed missing public global-preload dictionaries before any gather
+oracle was accepted. Those failed results are preserved.
+The repaired462eae029 headless matrix later passed20 serial phases, six exact
+omission oracles,100 strict log checks and cleanup active0. This isolated native
+evidence retains constructor/client/visibility seams; it does not verify normal
+Join, natural Life, real HTTP transport or ordinary-client E2E.
+
+wait_overlay.py prints/validates the current explicit helper diff. It does not
+apply source. do_after.guard.patch matches the actual helper. Disabled full-file
+projections match reviewed master, including survival callbacks and stock overlap rules.
+
+Historical native probes are retained for provenance only. prepare_native.py
+refuses their obsolete ambient lease/craft profiles. prepare_gather.py builds
+the dedicated concrete typed gather packet without execution. Its human subtype
+New returns without a parent call, so no production human constructor/anatomy/Life
+is tested. Real survival callbacks and canonical grass code are retained, with
+explicit headless client-predicate/active/visible seams. Preparation now stages
+the exact frozen public code/names.dm dictionary closure and native library,
+with missing/altered/omitted/extra-config negative controls. Fresh packet compiler
+and runtime states remain not_run. See docs/gameplay-gather-acceptance.md for packet validation and the
+separate required ordinary non-admin consent/bootstrap layer.
+
+test_deterministic_client.py adds22 mocked tests for the no-model controller
+client: one frozen v3 submission, same-ID status/cancel, unknown/late completion,
+cancel/completion races, strict loopback/framing/deadlines, scope/affordance/schema
+denials and credential/error redaction. Tests bind the actual same-directory
+bridge/catalog/observation modules and create no socket, game, client or token.
+No private wrapper/reference files are needed. The offline CLI reads no token
+without --send. Real E2E needs both a consenting ordinary client and a separate
+local R_ADMIN client using the native assignment verb; machine tokens cannot
+assign, create an account or substitute for either client role.
+
+test_client_gather.py exercises the separate normal-startup ordinary-client source
+candidate: fixed9x9 Testing/Nomad-role DMM, unmodified production startup/client/
+human/Life/lighting bindings, passive own-actor observer, frozen source archive,
+strict result/late-effect/cancel-ACK horizon controls and compiler-only CI policy.
+All result/transport examples here are synthetic. prepare_client_gather.py never
+stages runtime config or credentials and leaves runtime_ready false. The separate
+compile_client_gather.py CI target does not alter/run any of the six accepted
+headless profiles. Genuine two-client consent/native assignment, natural pickup,
+full startup geometry and ordinary E2E/cleanup remain not_run. See the normal-
+startup candidate section in docs/gameplay-gather-acceptance.md.
+
+## Mining integration refresh
+
+The optional ninth `do_after` argument remains `mining_context`; opt-in gather
+adds `gameplay_context` in the tenth slot and uses named forwarding. Supplying
+both is rejected before either one-use claim or any survival callback. The
+four disabled projections match reviewed master, including tall-grass dispatch.
+Enabled gather remains deliberately limited to its reviewed turf handler.
+
+CI runs the actual headless gather fixture and all six omission controls with
+stock/disabled/enabled-null parity, then the mining fixture with the bridge both
+disabled and enabled. Mining covers cancellation, one-use claims, positional
+compatibility, dual-context rejection and owned progress cleanup. Those tests
+use inert client/authority boundaries, not connected-client acceptance.

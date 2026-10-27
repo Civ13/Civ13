@@ -1,0 +1,208 @@
+/**
+ * The absolute base class for everything
+ *
+ * A datum instantiated has no physical world prescence, use an atom if you want something
+ * that actually lives in the world
+ *
+ * Be very mindful about adding variables to this class, they are inherited by every single
+ * thing in the entire game, and so you can easily cause memory usage to rise a lot with careless
+ * use of variables at this level
+ */
+/datum
+	/**
+	  * Tick count time when this object was destroyed.
+	  *
+	  * If this is non zero then the object has been garbage collected and is awaiting either
+	  * a hard del by the GC subsystme, or to be autocollected (if it has no references)
+	  */
+	var/gc_destroyed
+
+	/// Active timers with this datum as the target
+	var/list/active_timers
+	var/interaction_flags = NONE //Defined at the datum level since some can be interacted with.
+
+	/**
+	  * Components attached to this datum
+	  *
+	  * Lazy associated list in the structure of `type:component/list of components`
+	  */
+	/**
+	  * Any datum registered to receive signals from this datum is in this list
+	  *
+	  * Lazy associated list in the structure of `signal:registree/list of registrees`
+	  */
+	var/list/_listen_lookup
+	/// Lazy associated list in the structure of `target -> list(signal -> proctype)` that are run when the datum receives that signal
+	var/list/list/_signal_procs
+
+	/// Datum level flags
+	var/datum_flags = NONE
+
+	/// A weak reference to another datum
+	var/datum/weakref/weak_reference
+	/**
+	 * Lazy associative list of currently active cooldowns.
+	 *
+	 * cooldowns [ COOLDOWN_INDEX ] = add_timer()
+	 * add_timer() returns the truthy value of -1 when not stoppable, and else a truthy numeric index
+	 */
+	var/list/cooldowns
+
+#ifdef DATUMVAR_DEBUGGING_MODE
+	var/list/cached_vars
+#endif
+
+#ifdef REFERENCE_TRACKING
+	var/running_find_references
+	var/last_find_references = 0
+	#ifdef REFERENCE_TRACKING_DEBUG
+	///Stores info about where refs are found, used for sanity checks and testing
+	var/list/found_refs
+	#endif
+#endif
+
+/// Stub for the SEND_SIGNAL macro - never called since nothing registers signals
+/datum/proc/_SendSignal(sigtype, list/arguments)
+	return NONE
+
+/**
+ * Called when a href for this datum is clicked
+ *
+ * Sends a [COMSIG_TOPIC] signal
+ */
+/datum/Topic(href, href_list[])
+	..()
+	SEND_SIGNAL(src, COMSIG_TOPIC, usr, href_list)
+
+/**
+ * Default implementation of clean-up code.
+ *
+ * This should be overridden to remove all references pointing to the object being destroyed, if
+ * you do override it, make sure to call the parent and return it's return value by default
+ *
+ * Return an appropriate [QDEL_HINT][QDEL_HINT_QUEUE] to modify handling of your deletion;
+ * in most cases this is [QDEL_HINT_QUEUE].
+ *
+ * The base case is responsible for doing the following
+ * * Erasing timers pointing to this datum
+ * * Erasing compenents on this datum
+ * * Notifying datums listening to signals from this datum that we are going away
+ *
+ * Returns [QDEL_HINT_QUEUE]
+ */
+/datum/proc/Destroy(force=FALSE)
+	SHOULD_CALL_PARENT(TRUE)
+	if (GLOB.nanomanager)
+		GLOB.nanomanager.close_uis(src) // In the future, we will remove this, as will the replacement of nanoui with tgui
+	tag = null
+	datum_flags &= ~DF_USE_TAG //In case something tries to REF us
+	weak_reference = null	//ensure prompt GCing of weakref.
+
+	cooldowns = null
+
+	var/list/timers = active_timers
+	active_timers = null
+	for(var/datum/timedevent/timer as anything in timers)
+		if(timer.spent && !(timer.flags & TIMER_DELETE_ME))
+			continue
+		qdel(timer)
+
+	return QDEL_HINT_QUEUE
+
+#ifdef DATUMVAR_DEBUGGING_MODE
+/datum/proc/save_vars()
+	cached_vars = list()
+	for(var/i in vars)
+		if(i == "cached_vars")
+			continue
+		cached_vars[i] = vars[i]
+
+/datum/proc/check_changed_vars()
+	. = list()
+	for(var/i in vars)
+		if(i == "cached_vars")
+			continue
+		if(cached_vars[i] != vars[i])
+			.[i] = list(cached_vars[i], vars[i])
+
+/datum/proc/txt_changed_vars()
+	var/list/l = check_changed_vars()
+	var/t = "[src]([REF(src)]) changed vars:"
+	for(var/i in l)
+		t += "\"[i]\" \[[l[i][1]]\] --> \[[l[i][2]]\] "
+	t += "."
+
+/datum/proc/to_chat_check_changed_vars(target = world)
+	to_chat(target, txt_changed_vars())
+#endif
+
+///Return a LIST for serialize_datum to encode! Not the actual json!
+/datum/proc/serialize_list(list/options)
+	CRASH("Attempted to serialize datum [src] of type [type] without serialize_list being implemented!")
+
+///Accepts a LIST from deserialize_datum. Should return src or another datum.
+/datum/proc/deserialize_list(json, list/options)
+	CRASH("Attempted to deserialize datum [src] of type [type] without deserialize_list being implemented!")
+
+///Serializes into JSON. Does not encode type.
+/datum/proc/serialize_json(list/options)
+	. = serialize_list(options)
+	if(!islist(.))
+		. = null
+	else
+		. = json_encode(.)
+
+///Deserializes from JSON. Does not parse type.
+/datum/proc/deserialize_json(list/input, list/options)
+	var/list/jsonlist = json_decode(input)
+	. = deserialize_list(jsonlist)
+	if(!istype(., /datum))
+		. = null
+
+/**
+ * Called when a href for this datum is clicked
+ *
+ * Sends a [COMSIG_TOPIC] signal
+ */
+/datum/Topic(href, list/href_list)
+	. = ..()
+	if(.)
+		return
+
+	if(!can_interact(usr))
+		return TRUE
+
+	SEND_SIGNAL(src, COMSIG_TOPIC, usr, href_list)
+
+/datum/proc/can_interact(mob/user)
+// Пока нет ИИшки не раскоменчивать
+//	if(!user.can_interact_with(src))
+//		return FALSE
+	return TRUE
+
+/datum/proc/on_set_interaction(mob/user)
+	return
+
+
+/datum/proc/on_unset_interaction(mob/user)
+	return
+
+//return flags that should be added to the viewer's sight var.
+//Otherwise return a negative number to indicate that the view should be cancelled.
+/atom/proc/check_eye(user as mob)
+	return -1
+
+/obj/proc/interact(mob/user)
+	return
+/*
+/datum/proc/interact(mob/user) //Return value = handled (same as attack_hand)
+	user.set_interaction(src)
+	if(interaction_flags & INTERACT_UI_INTERACT)
+		return ui_interact(user)
+	return FALSE
+*/
+
+/proc/end_cooldown(datum/source, index)
+	if(QDELETED(source))
+		return
+	TIMER_COOLDOWN_END(source, index)

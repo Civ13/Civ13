@@ -1,0 +1,21 @@
+<div class="item_list">
+	<h3>Warehouse Inventory</h3>
+	{{if data.items.length}}
+		<table style="width:100%">
+			<tr>
+				<th style="text-align:left; width:70%;">Item Name</th>
+				<th style="text-align:right; width:30%;">Quantity</th>
+			</tr>
+			{{for data.items}}
+			<tr style="border-bottom: 1px solid #555;">
+				<td style="padding:4px;">{{:value.name}}</td>
+				<td style="text-align:right; padding:4px;"><strong>{{:value.amount}}</strong></td>
+			</tr>
+			{{/for}}
+		</table>
+	{{else}}
+		<div style="text-align:center; color:#999; padding:20px;">
+			<em>The warehouse is currently empty.</em>
+		</div>
+	{{/if}}
+</div>

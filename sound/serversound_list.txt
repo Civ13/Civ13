@@ -1,0 +1,11 @@
+sound/music/nassau_shores.ogg
+sound/music/bosanska_artiljerija.ogg
+sound/music/katyusha.ogg
+sound/music/fortunate_son.ogg
+sound/music/de_bom.ogg
+sound/music/murderer.ogg
+sound/music/forever_blowing_bubbles.ogg
+sound/music/just_dont_tell_mom_im_in_chechnya.ogg
+sound/music/little_green_bag.ogg
+sound/music/uranium_fever.ogg
+sound/music/papers_please.ogg

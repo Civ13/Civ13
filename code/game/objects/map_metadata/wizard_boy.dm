@@ -1,0 +1,828 @@
+
+/obj/map_metadata/wizard_boy
+	ID = MAP_WIZARD_BOY
+	title = "Wizard Boy"
+	description = "Raise through the ranks of the Llanboarwart Academy of Magical Education, craft wands and potions, and fight Moldywart's minions!"
+	no_winner ="The round is proceeding normally."
+	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall/)
+	respawn_delay = 0
+	lobby_icon = "icons/lobby/wizard_boy.png"
+	faction_organization = list(CIVILIAN)
+
+	roundend_condition_sides = list(list(CIVILIAN) = /area/caribbean/british)
+	age = "2013"
+
+	faction_distribution_coeffs = list(CIVILIAN = 1)
+	battle_name = "Llanboarwart Academy of Magical Education"
+	mission_start_message = "<font size=6 class='wizard'>Welcome to <b>L.A.M.E.</b>, the <span style='color:grey'>Llanboarwart Academy of Magical Education</span>! Get sorted into a house and duel your fellow wizards!</font>"
+	ambience = list("sound/ambience/desert.ogg")
+	faction1 = CIVILIAN
+	is_singlefaction = TRUE
+	songs = list(
+		"Magistar by Kevin MacLeod:1" = "sound/music/magistar.ogg",)
+	gamemode = "Wizarding Shenanigans"
+	ordinal_age = 8
+	default_research = 230
+	research_active = FALSE
+	gamemode_vote = FALSE
+	var/list/list/house_info = list()
+	var/list/list/house_points = list(
+		"Mustardweasel" = 0,
+		"Mintysnek" = 0,
+		"Slatepie" = 0,
+		"Rubywyrm" = 0,
+	)
+	var/moldy_invasion = FALSE
+	var/list/player_stats = list()
+	var/stats_loaded = FALSE
+	var/stats_dirty = FALSE
+	var/saving_stats = FALSE
+	var/list/moldy_men = list()
+	var/list/round_sticker_packs_given = list()
+	var/list/round_wands_given = list()
+	var/datum/moldy_sabotage/sabotage
+	New()
+		..()
+		sabotage = new /datum/moldy_sabotage(src)
+		spawn(30)
+			load_houses()
+		spawn(35)
+			load_stats()
+		spawn(100)
+		load_new_recipes("config/crafting/material_recipes_camp.txt")
+		override_global_recipes = "camp"
+
+/obj/map_metadata/wizard_boy/proc/give_sticker_pack(mob/living/human/H)
+	if(!H || !H.ckey)
+		return
+	if(H.ckey in round_sticker_packs_given)
+		return
+	if(!length(GLOB.sticker_registry))
+		return
+	round_sticker_packs_given += H.ckey
+	var/obj/item/sticker_pack/special/SP = new /obj/item/sticker_pack/special(get_turf(H))
+	H.equip_to_slot_if_possible(SP, slot_l_hand, FALSE, TRUE)
+	to_chat(H, "<span class='notice' style='font-size:2em'><b>A mysterious package appears in your hands - a Civ Cards sticker pack!</b></span>")
+
+/obj/map_metadata/wizard_boy/update_win_condition()
+	return
+/obj/map_metadata/wizard_boy/show_map_report()
+	var/leading_house = "None"
+	var/max_score = -9999
+	var/leading_house_color = "#FFFFFF" // Default white for "None"
+	for(var/house in list("Rubywyrm", "Mintysnek", "Slatepie", "Mustardweasel")) // Iterate to find the leading house
+		var/score = house_points[house]
+		if (score > max_score)
+			max_score = score
+			leading_house = house
+			switch(house) // Determine color for the leading house
+				if("Rubywyrm")
+					leading_house_color = "#CF0000"
+				if("Mintysnek")
+					leading_house_color = "#00CF00"
+				if("Slatepie")
+					leading_house_color = "#0000CF"
+				if("Mustardweasel")
+					leading_house_color = "#FFD700"
+	to_world("<font size=4 class='wizard'>Current Leading House: <span style='color:[leading_house_color]'><b>[leading_house]</b></span></font>")
+	for(var/house in list("Rubywyrm", "Mintysnek", "Slatepie", "Mustardweasel")) // Iterate to display all house scores
+		var/score = house_points[house]
+		if (house == "Rubywyrm")
+			to_world("<font size=4 class='wizard' style='color:#CF0000'>Rubywyrm: [score]</font>")
+		else if (house == "Mintysnek")
+			to_world("<font size=4 class='wizard' style='color:#00CF00'>Mintysnek: [score]</font>")
+		else if (house == "Slatepie")
+			to_world("<font size=4 class='wizard' style='color:#0000CF'>Slatepie: [score]</font>")
+		else if (house == "Mustardweasel")
+			to_world("<font size=4 class='wizard' style='color:#FFD700'>Mustardweasel: [score]</font>")
+	if (moldy_men.len)
+		to_world("<font size=4 class='wizard'>--- Moldy Men ---</font>")
+		for (var/mob/living/human/H in player_list)
+			if (H.ckey && (H.ckey in moldy_men))
+				var/status = "Alive"
+				if (H.stat == DEAD)
+					status = "DEAD"
+				else if (H.stat == UNCONSCIOUS)
+					status = "Unconscious"
+				to_world("<font size=3 class='wizard'>[H.ckey] ([H.real_name]) - [status]</font>")
+	return
+/obj/map_metadata/wizard_boy/proc/load_houses()
+	if (fexists("SQL/houses.txt"))
+		house_info = list()
+		//load a txt file from config/houses.txt, format is ckey;housename;level
+		var/list/houses = file2list("SQL/houses.txt")
+		for(var/i = 1, i <= length(houses), i++)
+			var/list/parts = splittext(houses[i], ";")
+			if(length(parts) < 3)
+				continue
+			var/ckey = parts[1]
+			var/housename = parts[2]
+			var/levels = parts[3]
+			var/wand_data = (parts.len >= 4) ? parts[4] : ""
+			house_info[ckey] = list(housename, levels, wand_data)
+
+/obj/map_metadata/wizard_boy/proc/save_houses()
+	if (fexists("SQL/houses.txt"))
+		if (fexists("SQL/houses_backup.txt"))
+			fdel("SQL/houses_backup.txt")
+		fcopy("SQL/houses.txt", "SQL/houses_backup.txt")
+		fdel("SQL/houses.txt")
+
+	for (var/ckey in house_info)
+		var/list/data = house_info[ckey]
+		if (islist(data) && data.len >= 2)
+			var/wand_data = (data.len >= 3) ? data[3] : ""
+			text2file("[ckey];[data[1]];[data[2]];[wand_data]", "SQL/houses.txt")
+
+/obj/map_metadata/wizard_boy/proc/load_stats()
+	if (stats_loaded)
+		return
+	stats_loaded = TRUE
+	if (fexists("SQL/wizard_boy_stats.txt"))
+		player_stats = list()
+		var/file_content = file2text("SQL/wizard_boy_stats.txt")
+		var/list/lines = splittext(file_content, "\n")
+		for (var/line in lines)
+			if (!line)
+				continue
+			var/list/parts = splittext(line, ";")
+			if (parts.len < 3)
+				continue
+			var/ckey = parts[1]
+			var/wins = text2num(parts[2])
+			var/losses = text2num(parts[3])
+			var/list/kills = list()
+			for (var/i = 4 to parts.len)
+				var/list/kill_data = splittext(parts[i], ",")
+				if (kill_data.len == 2)
+					kills[kill_data[1]] = text2num(kill_data[2])
+			player_stats[ckey] = list(wins, losses, kills)
+
+/obj/map_metadata/wizard_boy/proc/save_stats()
+	if (saving_stats)
+		stats_dirty = TRUE
+		return
+	saving_stats = TRUE
+	stats_dirty = FALSE
+
+	if (fexists("SQL/wizard_boy_stats.txt"))
+		if (fexists("SQL/wizard_boy_stats_backup.txt"))
+			fdel("SQL/wizard_boy_stats_backup.txt")
+		fcopy("SQL/wizard_boy_stats.txt", "SQL/wizard_boy_stats_backup.txt")
+		fdel("SQL/wizard_boy_stats.txt")
+
+	for (var/ckey in player_stats)
+		var/list/data = player_stats[ckey]
+		if (!islist(data) || data.len < 2)
+			continue
+		var/line = "[ckey];[data[1]];[data[2]]"
+		if (data.len >= 3 && islist(data[3]))
+			var/list/kills = data[3]
+			for(var/enemy in kills)
+				line += ";[enemy],[kills[enemy]]"
+		text2file(line, "SQL/wizard_boy_stats.txt")
+
+	spawn(100) // 10-second cooldown to prevent disk thrashing
+		saving_stats = FALSE
+		if (stats_dirty)
+			save_stats()
+
+/obj/map_metadata/wizard_boy/proc/ensure_stats_loaded(ckey)
+	if(!stats_loaded)
+		load_stats()
+	if(!player_stats[ckey])
+		player_stats[ckey] = list(0, 0, list())
+
+/obj/map_metadata/wizard_boy/proc/record_pvp_win(winner_ckey, loser_ckey)
+	ensure_stats_loaded(winner_ckey)
+	ensure_stats_loaded(loser_ckey)
+
+	var/list/winner_data = player_stats[winner_ckey]
+	winner_data[1]++
+	if (winner_data.len < 3)
+		winner_data.len = 3
+	if (!islist(winner_data[3]))
+		winner_data[3] = list()
+	var/list/winner_kills = winner_data[3]
+	winner_kills[loser_ckey] = (winner_kills[loser_ckey] || 0) + 1
+	var/list/loser_data = player_stats[loser_ckey]
+	loser_data[2]++
+
+	save_stats()
+
+/obj/map_metadata/wizard_boy/proc/record_npc_kill(killer_ckey, enemy_name)
+	ensure_stats_loaded(killer_ckey)
+
+	var/list/killer_data = player_stats[killer_ckey]
+	if (killer_data.len < 3)
+		killer_data.len = 3
+	if (!islist(killer_data[3]))
+		killer_data[3] = list()
+	var/list/kills = killer_data[3]
+	var/sanitized_enemy = replacetext(enemy_name, ";", "_")
+	sanitized_enemy = replacetext(sanitized_enemy, ",", "_")
+	kills[sanitized_enemy] = (kills[sanitized_enemy] || 0) + 1
+	save_stats()
+
+/obj/map_metadata/wizard_boy/proc/change_level(ckey, new_level = "0")
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
+		house_info[ckey][2] = new_level
+		var/house = house_info[ckey][1]
+		save_houses()
+		for (var/mob/living/human/H in player_list)
+			if (H.client && H.client.ckey == ckey)
+				H.nationality = new_level
+				H.never_set_faction_huds = TRUE
+				H.handle_hud_list()
+				var/robe_type = /obj/item/clothing/suit/storage/jacket/wizard
+				var/grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe
+				switch(house)
+					if("Rubywyrm")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/red
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/red
+					if("Mintysnek")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/green
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/green
+					if("Slatepie")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/blue
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/blue
+					if("Mustardweasel")
+						robe_type = /obj/item/clothing/suit/storage/jacket/wizard/yellow
+						grey_robe_type = /obj/item/clothing/suit/storage/jacket/wizard/greyrobe/yellow
+				switch(new_level)
+					if("R") // loser
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.wear_suit) qdel(H.wear_suit)
+						if(H.head) qdel(H.head)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/loser(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/jacket/wizard/pinkrobe(H), slot_wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/dunce_cap(H), slot_head)
+						H.setStat("magic", 10)
+						H.refresh_spells()
+					if("0") // idiot
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/idiot(H), slot_wear_id)
+						H.equip_to_slot_or_del(new grey_robe_type(H), slot_wear_suit)
+						H.setStat("magic", 0)
+						H.refresh_spells()
+					if("1") // unga
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/unga(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
+						H.setStat("magic", 10)
+						H.refresh_spells()
+					if("2") // coal
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/coal(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
+						H.setStat("magic", 20)
+						H.refresh_spells()
+					if("3") // slate
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/slate(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/regular/circle(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
+						H.setStat("magic", 40)
+						H.refresh_spells()
+					if("4") // based
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/based(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
+						H.setStat("magic", 70)
+						H.refresh_spells()
+					if("5") // chad
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.eyes) qdel(H.eyes)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id/chad(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(H), slot_eyes)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
+						H.setStat("magic", 100)
+						H.refresh_spells()
+					if("T") // teacher/professor
+						if(H.wear_id) qdel(H.wear_id)
+						if(H.head) qdel(H.head)
+						if(H.wear_suit) qdel(H.wear_suit)
+						H.equip_to_slot_or_del(new /obj/item/weapon/magic_id(H), slot_wear_id)
+						H.equip_to_slot_or_del(new /obj/item/clothing/head/wizard(H), slot_head)
+						H.equip_to_slot_or_del(new robe_type(H), slot_wear_suit)
+						H.setStat("magic", 100)
+						H.refresh_spells()
+				H.update_icons()
+		return TRUE
+	return FALSE
+
+/mob/living/human/proc/refresh_spells()
+	hud_used.remove_wizard_hud(src)
+	hud_used.add_wizard_hud(src)
+
+/obj/map_metadata/wizard_boy/proc/check_house(ckey)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return "Unknown"
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 1)
+		return house_info[ckey][1]
+	return "Unknown"
+
+/obj/map_metadata/wizard_boy/proc/check_level(ckey)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return "0" //return I.D.I.O.T. level by default
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
+		return house_info[ckey][2]
+	return "0" //return I.D.I.O.T. level by default
+
+/obj/map_metadata/wizard_boy/proc/remove_from_house(ckey)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	house_info.Remove(ckey)
+	save_houses()
+	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/is_moldy_man(ckey)
+	return (ckey in moldy_men)
+
+/obj/map_metadata/wizard_boy/proc/make_moldy_man(ckey)
+	if (ckey in moldy_men)
+		return FALSE
+	for (var/mob/living/human/H in player_list)
+		if (H.client && H.client.ckey == ckey)
+			if (!H.mind)
+				H.mind = new
+				H.mind.current = H
+				H.mind.key = H.key
+			H.mind.special_role = "Moldy Man"
+			moldy_men += ckey
+			if (sabotage)
+				sabotage.add_member(ckey)
+			to_chat(H, "<span class='danger'>A dark presence fills you... You are now a <b>Moldy Man</b>, an agent of Lord Moldywart! Survive until the round ends to claim victory. Other Moldy Men can recognise you by examining you. Sabotage the school to earn points for the Grand Ritual!</span>")
+			log_admin("[ckey] has been made a Moldy Man.")
+			return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/remove_moldy_man(ckey)
+	if (!(ckey in moldy_men))
+		return FALSE
+	moldy_men -= ckey
+	if (sabotage)
+		sabotage.remove_member(ckey)
+	for (var/mob/living/human/H in player_list)
+		if (H.client && H.client.ckey == ckey)
+			if (H.mind)
+				H.mind.special_role = null
+			to_chat(H, "<span class='notice'>The dark presence leaves you. You are no longer a Moldy Man.</span>")
+	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/get_moldy_man_info()
+	. = list()
+	for (var/mob/living/human/H in player_list)
+		if (H.ckey && (H.ckey in moldy_men))
+			var/status = "Alive"
+			if (H.stat == DEAD)
+				status = "DEAD"
+			else if (H.stat == UNCONSCIOUS)
+				status = "Unconscious"
+			. += "[H.ckey] ([H.real_name]) - [status]"
+
+/obj/map_metadata/wizard_boy/proc/change_house(ckey, new_house)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 2)
+		house_info[ckey][1] = new_house
+		save_houses()
+		return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/level_to_text(level)
+	switch(level)
+		if ("0")
+			return "I.D.I.O.T."
+		if("1")
+			return "U.N.G.A."
+		if("2")
+			return "C.O.A.L."
+		if("3")
+			return "G.E.M."
+		if("4")
+			return "B.A.S.E.D."
+		if("5")
+			return "C.H.A.D."
+		if ("R")
+			return "L.O.S.E.R."
+		if ("T")
+			return "Professor of Magical Arts"
+	return "Unknown"
+
+/obj/map_metadata/wizard_boy/proc/level_to_formatted_text(level)
+	switch(level)
+		if ("0")
+			return "<b>I.D.I.O.T. - <span style='color:#b1b1b1'><i>Inept & Deficient Individual's Ordinary Test</i></span> (qualification level 0)"
+		if ("1")
+			return "<b>U.N.G.A. - <span style='color:#818181'><i>Underperforming Numpty General Assessment</i></span> (qualification level 1)"
+		if ("2")
+			return "<b>C.O.A.L. - <span style='color:#5c5c5c'><i>Community Ordinary Amateur License</i></span> (qualification level 2)"
+		if ("3")
+			return "<b>G.E.M. - <span style='color:#ff966c'><i>Gravity & Elemental Manipulation</i></span> (qualification level 3)"
+		if ("4")
+			return "<b>B.A.S.E.D. - <span style='color: #5c5c5c'><i>Boarwart Advanced Sorcery & Experimental Deeds</i></span> (qualification level 4)"
+		if ("5")
+			return "<b>C.H.A.D. - <span style='color:#EFBF04'><i>Classified High-level Arcane Destruction</i></span> (qualification level 5)"
+		if ("R")
+			return "<b>L.O.S.E.R.</b> - <span style='color:#FF8DA1'><i>Llanboarwart Outcast & Sub-standard Educational Reject</i></span>"
+		if ("T")
+			return "<b><i>Professor of Magical Arts</i></b>"
+	return "Unknown"
+
+/obj/map_metadata/wizard_boy/proc/add_to_house(ckey, house)
+	if (house_info[ckey])
+		return FALSE
+	//sanitise first
+	if (house == "Rubywyrm" || house == "Mintysnek" || house == "Slatepie" || house == "Mustardweasel")
+		house_info[ckey] = list(house, "0", "")
+		save_houses()
+		return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/save_wand(ckey, wand_data)
+	if(!house_info[ckey])
+		load_houses()
+		if(!house_info[ckey])
+			return FALSE
+	if (islist(house_info[ckey]) && house_info[ckey].len >= 3)
+		house_info[ckey][3] = wand_data
+		save_houses()
+		return TRUE
+	return FALSE
+
+/obj/map_metadata/wizard_boy/proc/load_wand(mob/living/human/H)
+	if (!H || !H.client)
+		return null
+	if (!house_info[H.client.ckey])
+		load_houses()
+	if (!house_info[H.client.ckey])
+		return null
+	if(H.ckey in round_wands_given) //only spawn wand once per round
+		return null
+	var/list/data = house_info[H.client.ckey]
+	if (data.len < 3 || !data[3])
+		return null
+	var/list/parts = splittext(data[3], ",")
+	if (parts.len < 3)
+		return null
+	var/obj/item/weapon/material/magic/wand/crafted/W = new /obj/item/weapon/material/magic/wand/crafted(H)
+	W.wand_wood = parts[1]
+	W.wand_core = parts[2]
+	W.wand_length = parts[3]
+	W.apply_wood_stats()
+	W.apply_core_stats()
+	W.apply_length_stats()
+	W.update_name_and_desc()
+	H.equip_to_slot_or_del(W, slot_belt)
+	round_wands_given += H.ckey
+	return W
+
+/obj/map_metadata/wizard_boy/proc/save_wand_mob(mob/living/human/H)
+	if (!H || !ishuman(H) || !H.client)
+		return
+	var/obj/item/weapon/material/magic/wand/crafted/W = null
+	if (istype(H.get_active_hand(), /obj/item/weapon/material/magic/wand/crafted))
+		W = H.get_active_hand()
+	else if (istype(H.get_inactive_hand(), /obj/item/weapon/material/magic/wand/crafted))
+		W = H.get_inactive_hand()
+	
+	if (!W)
+		return
+	
+	var/wand_data = "[W.wand_wood],[W.wand_core],[W.wand_length]"
+	save_wand(H.client.ckey, wand_data)
+var/wizard_style = {"
+<style>
+	@font-face {
+		font-family: 'Civ13Custom';
+		src: url('Alegreya-Regular.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	}
+	@font-face {
+		font-family: 'Civ13Custom';
+		src: url('Alegreya-Bold.ttf') format('truetype');
+		font-weight: bold;
+		font-style: normal;
+	}
+	@font-face {
+		font-family: 'Civ13Custom';
+		src: url('Alegreya-Italic.ttf') format('truetype');
+		font-weight: normal;
+		font-style: italic;
+	}
+	@font-face {
+		font-family: 'Wizard';
+		src: url('Wizard.ttf') format('truetype');
+		font-weight: normal;
+		font-style: normal;
+	}
+	body {
+		background-color: #392611;
+		color: #e1e1d7;
+		font-family: "Civ13Custom", "Book Antiqua", "Bookman Old Style", serif;
+		font-size: 14px;
+		padding: 20px;
+		margin: 0;
+		text-align: center;
+	}
+	.container {
+		max-width: 600px;
+		margin: 40px auto;
+		background: #271a0c;
+		border: 2px solid #a68b7d;
+		border-radius: 12px;
+		padding: 30px;
+		box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+	}
+	h1, h2 {
+		color: #E1E1FF;
+		font-family: "Civ13Custom", "Book Antiqua", serif;
+		font-weight: bold;
+		margin-top: 0;
+	}
+	.wizard {
+		font-family: "Wizard", "Civ13Custom", serif;
+	}
+	.btn {
+		display: block;
+		width: 100%;
+		padding: 14px;
+		margin: 12px 0;
+		background: #392611;
+		border: 1px solid #a68b7d;
+		border-radius: 8px;
+		color: #e1e1d7;
+		text-decoration: none;
+		font-size: 15px;
+		transition: all 0.2s ease-in-out;
+		cursor: pointer;
+		text-align: left;
+		box-sizing: border-box;
+	}
+	.btn:hover {
+		background: #a68b7d;
+		color: #271a0c;
+	}
+	.btn-start {
+		text-align: center;
+		background: #5a6d8d;
+		border-color: #E1E1FF;
+	}
+	.btn-start:hover {
+		background: #E1E1FF;
+		color: #271a0c;
+	}
+	.progress {
+		font-size: 12px;
+		color: #a68b7d;
+		margin-bottom: 20px;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+</style>
+"}
+
+/datum/wizard_sorting
+	var/client/owner
+	var/done = FALSE
+	var/result = null
+	var/stage = 0
+	var/list/scores = list("Rubywyrm" = 0, "Slatepie" = 0, "Mintysnek" = 0, "Mustardweasel" = 0)
+	var/list/questions
+	var/list/current_question_keys
+
+	New(client/C)
+		..()
+		owner = C
+		questions = list(
+			list(
+				"q" = "Question 1: You find a locked wooden door blocking your path. How do you bypass it?",
+				"choices" = list(
+					"Cast Explodus! directly at the hinges. Who cares if the wall collapses?" = "Rubywyrm",
+					"Examine the wood grain, find the keyhole, and use Pullus! to slide the key under the door from the inside." = "Slatepie",
+					"Lie to a first-year student and convince them that picking the lock is part of their exam." = "Mintysnek",
+					"Knock politely. If that fails, sit down and wait outside with a thermos of tea." = "Mustardweasel"
+				)
+			),
+			list(
+				"q" = "Question 2: Franco Badfaith challenges you to a midnight Mop Ball duel. What is your strategy?",
+				"choices" = list(
+					"Show up with a modified O-Cedar Master-Sweep and immediately challenge him to a fistfight instead." = "Rubywyrm",
+					"Study his previous flight patterns and calculate the exact angle to deflect his next spell." = "Slatepie",
+					"Sneak into the stables and grease his mop-handle with lard before the match starts." = "Mintysnek",
+					"Offer him a Choco-Toad and ask if he wants to just play cards in the common room." = "Mustardweasel"
+				)
+			),
+			list(
+				"q" = "Question 3: It is a rainy Tuesday in the Welsh valleys (again). What are you doing?",
+				"choices" = list(
+					"Running bare-chested through the mud to build \"character\" and immunity to frostbite." = "Rubywyrm",
+					"Sitting in the draftiest corner of the library, quietly sighing and reading about ancient runes." = "Slatepie",
+					"Selling watered-down Taffia rum behind the greenhouse to the older students." = "Mintysnek",
+					"Helping Hagrag clean out the giant badger cages because they looked lonely." = "Mustardweasel"
+				)
+			),
+			list(
+				"q" = "Question 4: Choose your ideal magical companion:",
+				"choices" = list(
+					"A miniature red dragon that accidentally sets your homework on fire." = "Rubywyrm",
+					"A cynical magpie that steals shiny objects and corrects people's spelling." = "Slatepie",
+					"A venomous garden lizard that you keep hidden in your sock." = "Mintysnek",
+					"A very long, chaotic ferret that sleeps in your sleeve and steals everyone's pens." = "Mustardweasel"
+				)
+			),
+			list(
+				"q" = "Question 5: What is the true meaning of magic?",
+				"choices" = list(
+					"Blowing things up in a spectacular fashion to show off." = "Rubywyrm",
+					"The systematic study of universal laws, logic, and ancient lore." = "Slatepie",
+					"A tool to get rich, skip chores, and outsmart the people in charge." = "Mintysnek",
+					"Making cool glowing lights and helping your friends survive." = "Mustardweasel"
+				)
+			)
+		)
+		show_window()
+
+	proc/show_window()
+		if (!owner)
+			done = TRUE
+			return
+
+		var/html = {"
+<html>
+<head>
+<title>The Placing Fedora</title>
+[wizard_style]
+</head>
+<body>
+<div class="container">
+"}
+
+		if (stage == 0)
+			html += {"
+	<h1 class='wizard'>The Placing Fedora</h1>
+	<p style='font-size: 16px; line-height: 1.5; margin-bottom: 30px;'>Hold your horses, lad. You have not been sorted into a house yet! How would you like to proceed?</p>
+	<a class="btn btn-start" href="?src=\ref[src];action=start">I'll take the 5 question sorting test!</a>
+	<a class="btn" style="text-align: center;" href="?src=\ref[src];action=random">Just randomly assign me</a>
+"}
+		else if (stage >= 1 && stage <= 5)
+			var/list/qdata = questions[stage]
+			var/q_text = qdata["q"]
+			if (!current_question_keys)
+				var/list/choices_assoc = qdata["choices"]
+				var/list/q_keys = list()
+				for (var/key in choices_assoc)
+					q_keys += key
+				current_question_keys = shuffle(q_keys)
+
+			html += {"
+	<div class="progress">Question [stage] of 5</div>
+	<h2>[q_text]</h2>
+"}
+			for (var/i = 1, i <= current_question_keys.len, i++)
+				var/choice = current_question_keys[i]
+				html += "<a class=\"btn\" href=\"?src=\ref[src];action=answer;index=[i]\">[choice]</a>"
+
+		html += {"
+</div>
+</body>
+</html>
+"}
+		owner << browse(html, "window=wizard_sorting;size=600x800;can_close=0;can_resize=0")
+
+	Topic(href, href_list[])
+		if (usr.client != owner)
+			return
+
+		var/action = href_list["action"]
+		if (action == "start")
+			stage = 1
+			current_question_keys = null
+			show_window()
+		else if (action == "random")
+			result = pick("Mustardweasel", "Mintysnek", "Rubywyrm", "Slatepie")
+			done = TRUE
+			owner << browse(null, "window=wizard_sorting")
+		else if (action == "answer")
+			var/idx = text2num(href_list["index"])
+			if (current_question_keys && idx >= 1 && idx <= current_question_keys.len)
+				var/selected_choice = current_question_keys[idx]
+				var/list/qdata = questions[stage]
+				var/list/choices_assoc = qdata["choices"]
+				var/house = choices_assoc[selected_choice]
+				if (house)
+					scores[house]++
+				stage++
+				current_question_keys = null
+				if (stage > 5)
+					var/winning_house = pick("Mustardweasel", "Mintysnek", "Rubywyrm", "Slatepie")
+					var/max_score = -1
+					for (var/h in scores)
+						if (scores[h] > max_score)
+							max_score = scores[h]
+							winning_house = h
+					result = winning_house
+					done = TRUE
+					owner << browse(null, "window=wizard_sorting")
+				else
+					show_window()
+
+/obj/map_metadata/wizard_boy/proc/house_test(client/C)
+	if (!C || !istype(C))
+		return FALSE
+	if (check_house(C.ckey) != "Unknown")
+		return FALSE
+
+	var/datum/wizard_sorting/WS = new(C)
+	var/timeout = 600 // 2 minutes max timeout
+	while (WS && !WS.done && timeout > 0)
+		if (!C)
+			break
+		timeout--
+		sleep(2)
+
+	if (!C || !WS || !WS.result)
+		if (WS)
+			qdel(WS)
+		return FALSE
+
+	var/winning_house = WS.result
+	qdel(WS)
+
+	add_to_house(C.ckey, winning_house)
+	var/color = "#FFFFFF"
+	switch(winning_house)
+		if("Rubywyrm")
+			color = "#CF0000"
+		if("Mintysnek")
+			color = "#00CF00"
+		if("Slatepie")
+			color = "#0000CF"
+		if("Mustardweasel")
+			color = "#FFD700"
+	to_chat(C, "<font size=4>You have been sorted into <b><span style='color:[color];'>[winning_house]</span></b>!</font>")
+	return TRUE
+
+/obj/map_metadata/wizard_boy/proc/process_arest(mob/living/target, time = 5)
+	if (!target || !target.client)
+		return
+	
+	to_chat(target, "<span class='danger'>You have been sentenced to [time] minutes in the magical slammer!</span>")
+	
+	spawn(0)
+		var/remaining = time
+		while (remaining > 0)
+			sleep(1 MINUTE)
+			remaining--
+			
+			if (!target || !target.client)
+				break
+			
+			if (remaining > 0)
+				to_chat(target, "<span class='notice'>You have [remaining] minutes remaining in your sentence.</span>")
+		
+		if (target && target.client)
+			var/list/release_turfs = latejoin_turfs["PoliceTeleporterRelease"]
+			if (release_turfs && length(release_turfs))
+				var/turf/release_point = pick(release_turfs)
+				if (isturf(release_point))
+					target.forceMove(release_point)
+			
+			to_chat(target, "<span class='notice'>Your sentence is complete. You have been released from the magical slammer.</span>")

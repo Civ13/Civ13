@@ -1,0 +1,8 @@
+config/tips.txt
+config/admin_ranks.txt
+config/dictionary.txt
+scripts/copiedconfigpaths.txt
+scripts/copiedfolderpaths.txt
+scripts/copyconfigfiles.py
+scripts/launch.py
+scripts/mapswap.py

@@ -1,0 +1,173 @@
+<!--
+	Interface for research benches
+	See: code/modules/research_tree/research_bench.dm
+-->
+<div id='rt-root'>
+<div id='rt-parchment'>
+
+<div class='item'>
+	<div class='itemLabel'>Bench tier:</div>
+	<div class='itemContent'>{{:data.bench_tier}} / {{:data.max_tier}}
+		{{if data.tier_upgrade_cost}} (upgrade progress: {{:data.tier_progress}}/{{:data.tier_upgrade_cost}} silver in coins fed){{/if}}
+		{{if data.era_capped}} <span class='rt-locked'>(capped at tier {{:data.era_max_tier}} until your civilization reaches the next era)</span>{{/if}}
+	</div>
+	<div class='itemLabel'>Owned by:</div>
+	<div class='itemContent'>{{:data.bench_faction ? data.bench_faction : "Unclaimed"}}</div>
+	{{if data.has_faction}}
+	<div class='itemLabel'>You are viewing as:</div>
+	<div class='itemContent'>{{:data.viewer_role}} of the {{:data.viewer_faction}}</div>
+	<div class='itemLabel'>Your faction's benches:</div>
+	<div class='itemContent'>{{:data.viewer_bench_count}} / {{:data.viewer_cap}}</div>
+	{{/if}}
+	{{if data.can_claim}}
+	<div class='item'>The owning faction has died out.
+		{{:helper.link('Claim this bench for your faction', 'circle-plus', {'claim' : 1})}}
+	</div>
+	{{else data.bench_faction && !data.owns_bench}}
+	<div class='item rt-locked'>This bench belongs to another faction. You can only observe it.</div>
+	{{/if}}
+</div>
+
+{{if data.owns_bench && (data.is_leader || data.is_director)}}
+<h2>Research staff</h2>
+<div class='item'>
+	{{if data.is_leader}}
+	<div class='item'>
+		{{if data.has_director}}
+		{{:helper.link('Reassign ' + data.director_title, 'person', {'appoint_director' : 1})}}
+		{{:helper.link('Rename role', 'pencil', {'set_director_title' : 1})}}
+		{{:helper.link('Dismiss ' + data.director_title, 'trash', {'dismiss_director' : 1})}}
+		{{else}}
+		{{:helper.link('Appoint a Research Director', 'person', {'appoint_director' : 1})}}
+		{{/if}}
+	</div>
+	{{/if}}
+	<div class='item'>
+		{{:helper.link('Appoint a Researcher', 'circle-plus', {'appoint_researcher' : 1})}}
+		{{:helper.link('Dismiss a Researcher', 'circle-minus', {'dismiss_researcher' : 1})}}
+	</div>
+</div>
+{{/if}}
+
+{{if data.assigned_name}}
+<h2>Currently researching: {{:data.assigned_name}}</h2>
+<div class='item'>
+	{{if data.assigned_done}}
+	<div class='itemContent rt-done'>Completed! Open any completed tech below to write research notes or a book on it.</div>
+	{{else}}
+	<div class='itemContent rt-progress'>{{:data.assigned_status_text}}</div>
+	{{/if}}
+</div>
+{{/if}}
+
+{{if data.queue_names && data.queue_names.length}}
+<div class='item'>
+	<div class='itemLabel'>Queued next:</div>
+	<div class='itemContent'>
+		{{for data.queue_names}}<span class='rt-recipe-tag'>{{:value}}</span> {{/for}}
+		{{if data.can_queue}} {{:helper.link('Clear queue', 'trash', {'clear_queue' : 1})}}{{/if}}
+	</div>
+</div>
+{{/if}}
+
+<h2>Research trees</h2>
+<div id='rt-tabs'>
+	{{for data.trees :tree}}
+	<div class='rt-tab{{if tree.idx === 0}} rt-tab-active{{/if}}' data-tree-idx='{{:tree.idx}}'>{{:tree.tree_name}}</div>
+	{{/for}}
+</div>
+{{for data.trees :tree}}
+<div class='rt-tree-panel{{if tree.idx === 0}} rt-tree-panel-active{{/if}}' data-tree-idx='{{:tree.idx}}'>
+	<div class='rt-tree-wrap'>
+		<svg class='rt-lines'></svg>
+		{{for tree.layers :layer:li}}
+		<div class='rt-layer-section'>
+			<div class='rt-layer-title'>{{:layer.layer_name}}</div>
+			<div class='rt-grid'>
+				{{for layer.nodes :node:ni}}
+				<div class='rt-node rt-layer-{{:layer.layer_name.toLowerCase()}} {{:node.status_text === "Done" ? "rt-status-done" : (node.status_text === "Locked" ? "rt-status-locked" : "rt-status-active")}}'
+					data-id='{{:node.id}}'
+					data-prereqs='{{:node.prereq_ids}}'
+					style='grid-column: {{:node.grid_col}};'>
+					<span class='rt-node-name'>{{:node.name}}{{if node.is_era_changing}} <span class='rt-star' title='Advances the era'>&#9733;</span>{{/if}}</span>
+					<span class='rt-node-sub'>{{:node.mode_text === "Book only" ? "Book only" : node.cost_ticks + " ticks" + (node.mode_text === "Prototype" ? " + prototype" : "")}}</span>
+					<div class='rt-node-bar'><div class='rt-node-bar-fill' style='width: {{:node.progress_percent}}%;'></div></div>
+				</div>
+				{{/for}}
+			</div>
+		</div>
+		{{/for}}
+	</div>
+</div>
+{{/for}}
+
+</div>
+</div>
+
+<!-- Hidden per-node detail content, copied into the modal on click (see research_tree.js) -->
+<div style='display:none;'>
+	{{for data.trees :tree:ti}}
+	{{for tree.layers :layer:li}}
+	{{for layer.nodes :node:ni}}
+	<div id='rt-detail-{{:node.id}}'>
+		<div class='rt-modal-title'>{{:node.name}}{{if node.is_era_changing}} <span class='rt-star' title='Advances the era'>&#9733;</span>{{/if}}</div>
+		<div class='rt-modal-sub'>{{:layer.layer_name}} - era {{:node.era_tier}} - {{:node.mode_text}}{{if node.is_era_changing}} - advances the era{{/if}}</div>
+
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Status</div>
+			<div>{{:node.status_text}} - {{:node.detail}}</div>
+		</div>
+
+		{{if node.mode_text !== "Book only"}}
+		<div class='rt-modal-row'>
+			<div class='rt-node-bar'><div class='rt-node-bar-fill' style='width: {{:node.progress_percent}}%;'></div></div>
+			{{if node.mode_text === "Prototype"}}<div class='rt-node-sub'>Also requires a working {{:node.prototype_name ? node.prototype_name : "prototype"}} fed to the bench -- the full study alone won't finish it.</div>{{/if}}
+		</div>
+		{{/if}}
+
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Minimum bench tier</div>
+			<div>{{:node.min_bench_tier}}</div>
+		</div>
+
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Requires</div>
+			<div>{{:node.prereq_names}}</div>
+		</div>
+
+		<div class='rt-modal-row'>
+			<div class='rt-modal-label'>Unlocks {{:node.recipe_names.length}} recipe{{:node.recipe_names.length === 1 ? "" : "s"}}</div>
+			<div>
+				{{for node.recipe_names :value:ri}}
+				<span class='rt-recipe-tag'>{{:value}}</span>
+				{{empty}}
+				<span class='rt-recipe-tag'>None yet</span>
+				{{/for}}
+			</div>
+		</div>
+
+		{{if node.assignable}}
+		<div class='rt-modal-row'>{{:helper.link('Assign this bench', 'circle-arrow-s', { "assign" : node.id })}}</div>
+		{{/if}}
+		{{if node.can_write_notes}}
+		<div class='rt-modal-row'>{{:helper.link('Write Research Notes (quick, boosts a buyer)', 'pencil', { "write_notes" : node.id })}}</div>
+		{{/if}}
+		{{if node.can_write_book}}
+		<div class='rt-modal-row'>{{:helper.link('Write Research Book (slow, completes for a buyer)', 'copy', { "write_book" : node.id })}}</div>
+		{{/if}}
+		{{if node.queueable}}
+		<div class='rt-modal-row'>{{:helper.link('Add to research queue', 'circle-arrow-e', { "queue" : node.id })}}</div>
+		{{/if}}
+	</div>
+	{{/for}}
+	{{/for}}
+	{{/for}}
+</div>
+
+<!-- Detail modal shell -->
+<div id='rt-modal-backdrop'>
+	<div id='rt-modal'>
+		<span id='rt-modal-close'>x</span>
+		<div id='rt-modal-body'></div>
+	</div>
+</div>

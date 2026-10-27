@@ -1,0 +1,30 @@
+name: MCP protocol checks
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  changes:
+    uses: ./.github/workflows/ci-selection.yml
+    with:
+      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+  mcp:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || contains(fromJSON(needs.changes.outputs.new_tests), 'tools/mcp')
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: tools/mcp/package-lock.json
+      - run: npm ci --prefix tools/mcp
+      - run: npm test --prefix tools/mcp

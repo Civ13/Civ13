@@ -1,0 +1,35 @@
+///////////////////////////// AGES ///////////////////////
+0-15 Stone Age (?-3000 B.C.)
+15-20 Copper Age (3000 BC to 500 B.C.)
+20-30 Bronze Age (500 B.C. to 400 A.D.)
+30-45 Dark Ages (400 to 700)
+45-60 Middle Ages (700 to 1450)
+60-80 Renaissance (1450 to 1650)
+80-90 Imperial Age (1650 to 1780)
+90-100 Napoleonic Age (1780 to 1850)
+100-120 Industrial Age (1850 to 1895)
+120-147 Early Modern Era (1896 to 1933)
+145-175 World War II (1934 to 1957)
+175-210 Cold War (1958 to 1984)
+210- Modern Era (1985 to 2020)
+//////////////////////////////////////////////////////////
+
+format:
+material, name, path, cost, building time, only one per turf?, on the floor?, category, industrial research needed, military research needed, health research needed, max ordinal age (inclusive), material name (optional - use null if not necessary)
+
+// Research //
+
+1 - Industrial
+2 - Military
+3 - Medicine
+
+// Ordinal Aages //
+0 stone age
+1 bronze
+2 medieval
+3 imperial
+4 industrial
+5 ww1
+6 ww2
+7 cold war
+8 modern

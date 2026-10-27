@@ -1,0 +1,15 @@
+config/tips.txt
+config/motd.txt
+config/admin_ranks.txt
+config/dictionary.txt
+scripts/copiedconfigpaths.txt
+scripts/copiedfolderpaths.txt
+scripts/copyconfigfiles.py
+scripts/launch.py
+scripts/updateserver.py
+scripts/mapswap.py
+scripts/restartinactiveserver.py
+scripts/updateserverabspaths.py
+scripts/updateserverabspathsnogitpull.py
+scripts/killciv13.py
+scripts/killsudos.py

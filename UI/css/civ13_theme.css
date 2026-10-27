@@ -1,0 +1,129 @@
+/* Civ13 shared UI theme -- parchment-over-wood, Alegreya display font.
+   Extracted from research_tree.css's original one-off styling so any new
+   custom NanoUI (this symbol editor, and future ones) can match the same
+   look without redefining it. research_tree.css is left untouched and
+   keeps its own copy of the @font-face block -- identical @font-face rules
+   loaded from multiple stylesheets simply de-duplicate in the browser, so
+   there's no conflict, and the already-shipped research tree UI isn't put
+   at any risk by this file's existence. */
+
+/* UIs using this theme take NanoUI's "basic" layout (no stock SS13 chrome),
+   but shared.css and layout_basic.css still load around this sheet --
+   layout_basic.css AFTER it -- and paint the page dark grey + pad #uiContent.
+   The extra `html` specificity beats their plain `body`/`#uiContent` rules
+   regardless of load order, so none of the stock look bleeds in around the
+   parchment. */
+html body {
+	margin: 0;
+	padding: 0;
+	background: #4d3320;
+}
+html body #uiContent {
+	padding: 0;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Bold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Italic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-BoldItalic.ttf') format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Civ13Custom';
+	src: url('Alegreya-Black.ttf') format('truetype');
+	font-weight: 900;
+	font-style: normal;
+}
+
+.civ-root {
+	font-family: 'Civ13Custom', Georgia, serif;
+	color: #3a2c1a;
+	padding: 14px;
+	background:
+		repeating-linear-gradient(115deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 2px, transparent 2px, transparent 5px),
+		repeating-linear-gradient(115deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 9px),
+		linear-gradient(100deg, #5a3d24, #6e4b2a 45%, #4d3320 100%);
+}
+
+.civ-panel {
+	background:
+		radial-gradient(ellipse at 15% 20%, rgba(255,250,230,0.55), transparent 55%),
+		radial-gradient(ellipse at 85% 75%, rgba(120,90,50,0.18), transparent 60%),
+		radial-gradient(ellipse at 50% 100%, rgba(90,65,35,0.18), transparent 65%),
+		#e9dcb8;
+	border: 1px solid #a98c5c;
+	border-radius: 4px;
+	box-shadow: inset 0 0 22px rgba(90,60,20,0.28);
+	padding: 14px 18px;
+}
+
+.civ-root h2 {
+	font-family: 'Civ13Custom', Georgia, serif;
+	font-weight: bold;
+	font-size: 16px;
+	color: #4a3418;
+	border-bottom: 1px solid #a98c5c;
+	padding-bottom: 3px;
+	margin: 14px 0 8px;
+	letter-spacing: 0.02em;
+}
+
+.civ-root .item {
+	margin-bottom: 4px;
+}
+
+.civ-root .itemLabel {
+	color: #6b5230;
+}
+
+.civ-root .itemContent {
+	color: #3a2c1a;
+}
+
+/* Reuses the framework's linkActive markup (see helper.link() in
+   nano_base_helpers.js), restyled to match the theme instead of the bare
+   default NanoUI look. */
+.civ-root .link, .civ-root .linkActive {
+	font-family: 'Civ13Custom', Georgia, serif;
+	background: #e9dcb8;
+	border: 1px solid #a98c5c;
+	color: #3a2c1a;
+	border-radius: 3px;
+	padding: 3px 8px;
+	display: inline-block;
+	margin: 2px 4px 2px 0;
+	cursor: pointer;
+}
+
+.civ-root .linkActive:hover {
+	background: #f8f1da;
+	border-color: #7a5a2c;
+}
+
+.civ-root .linkActive.civ-active {
+	background: #f8ecc4;
+	border-color: #c98a1d;
+	box-shadow: 0 0 0 1px #c98a1d;
+}

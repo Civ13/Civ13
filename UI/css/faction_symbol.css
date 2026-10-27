@@ -1,0 +1,59 @@
+/* Faction symbol editor -- 32x32 pixel canvas (matches icons/obj/banners.dmi's
+   "b_*" symbol states exactly, so a saved drawing drops into the same banner
+   overlay slot with no scaling). Builds on civ13_theme.css for fonts/panel/
+   button styling. */
+
+#fs-toolbar {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 10px;
+}
+
+#fs-swatch {
+	width: 22px;
+	height: 22px;
+	border: 1px solid #3a2c1a;
+	border-radius: 3px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+#fs-canvas-wrap {
+	display: inline-block;
+	background: #ffffff;
+	border: 2px solid #6b5230;
+	box-shadow: 0 0 0 1px #a98c5c;
+	padding: 0;
+	line-height: 0;
+}
+
+#fs-canvas {
+	display: grid;
+	grid-template-columns: repeat(32, 14px);
+	grid-template-rows: repeat(32, 14px);
+}
+
+.fs-cell {
+	width: 14px;
+	height: 14px;
+	box-sizing: border-box;
+	border: 1px solid rgba(0,0,0,0.08);
+	cursor: crosshair;
+	padding: 0;
+	margin: 0;
+	display: block;
+}
+
+.fs-cell:hover {
+	box-shadow: inset 0 0 0 1px #c98a1d;
+}
+
+#fs-hint {
+	color: #6b5230;
+	font-size: 11px;
+	font-style: italic;
+	margin-top: 8px;
+}

@@ -1,0 +1,60 @@
+<!--
+	Interface for the faction creation wizard: naming the faction and drawing
+	its symbol in one window.
+	See: code/game/mob/groups/faction_creation.dm
+	Canvas markup/styling/behavior shared with faction_symbol.tmpl (the
+	post-creation Modify editor) via faction_symbol.css + faction_symbol.js.
+-->
+<div class='civ-root'>
+<div class='civ-panel'>
+
+<h2>Found a new faction</h2>
+<div class='item'>
+	<div class='itemContent'><b>{{:data.name ? data.name : "(no name chosen yet)"}}</b> {{:helper.link('Choose a name...', 'pencil', { 'set_name' : 1 })}}</div>
+</div>
+
+<h2>Words of the faction</h2>
+<div class='item'>
+	<div class='itemContent'>Both optional. Shown in the server's Faction List: the motto next to your faction's name, the flavour text below it.</div>
+</div>
+<div class='item'>
+	<div class='itemLabel'>Motto:</div>
+	<div class='itemContent'><i>{{:data.motto ? data.motto : "(none)"}}</i> {{:helper.link('Set motto...', 'pencil', { 'set_motto' : 1 })}}</div>
+</div>
+<div class='item'>
+	<div class='itemLabel'>Flavour text:</div>
+	<div class='itemContent'>{{:data.flavour ? data.flavour : "(none)"}} {{:helper.link('Set flavour text...', 'pencil', { 'set_flavour' : 1 })}}</div>
+</div>
+
+<h2>Draw your faction's symbol</h2>
+<div class='item'>
+	<div class='itemContent'>32x32 pixels, shown on your faction's banners. Your faction's two colors (used on posters and official paper) are taken from what you draw here.</div>
+</div>
+
+<div id='fs-toolbar'>
+	<span id='fs-swatch' style='background-color: {{:data.color}};'></span>
+	{{:helper.link('Pick color', 'pencil', { 'pick_color' : 1 })}}
+	<span class='linkActive {{:data.tool === "paint" ? "civ-active" : ""}}' data-href='{{:NanoUtility.generateHref({ "set_tool" : "paint" })}}'>Paint</span>
+	<span class='linkActive {{:data.tool === "bucket" ? "civ-active" : ""}}' data-href='{{:NanoUtility.generateHref({ "set_tool" : "bucket" })}}'>Bucket fill</span>
+	{{:helper.link('Stamp a shape...', 'copy', { 'stamp' : 1 })}}
+	{{:helper.link('Undo', 'arrowreturnthick-1-w', { 'undo' : 1 })}}
+	{{:helper.link('Clear to blank', 'trash', { 'clear' : 1 })}}
+</div>
+
+<div id='fs-canvas-wrap'>
+	<div id='fs-canvas' data-tool='{{:data.tool}}' data-color='{{:data.color}}'>
+		{{for data.grid :px:idx}}
+		<div class='fs-cell' data-x='{{:(idx % 32) + 1}}' data-y='{{:Math.floor(idx / 32) + 1}}' style='background-color: {{:px}};'></div>
+		{{/for}}
+	</div>
+</div>
+
+<div id='fs-hint'>Click -- or click and drag to draw a line -- with the brush; Undo takes back the last change (a whole drag counts as one change). "Stamp a shape" seeds the canvas with one of the classic shapes as an editable starting point. If you leave the canvas blank, your banner will show the plain stamped shape instead. As Leader you can modify the symbol later from the Faction menu -- but the faction itself is founded only once.</div>
+
+<h2>Found it</h2>
+<div class='item'>
+	<div class='itemContent'>{{:helper.link('Found the faction', 'circle-check', { 'found' : 1 })}} You become its Leader. Closing this window instead abandons the draft.</div>
+</div>
+
+</div>
+</div>

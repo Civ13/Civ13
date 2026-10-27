@@ -1,0 +1,211 @@
+diff --git a/OpenDreamClient/Rendering/AtomGlideSystem.cs b/OpenDreamClient/Rendering/AtomGlideSystem.cs
+index db5e273b..3e699d80 100644
+--- a/OpenDreamClient/Rendering/AtomGlideSystem.cs
++++ b/OpenDreamClient/Rendering/AtomGlideSystem.cs
+@@ -2,6 +2,7 @@
+ using Robust.Client.GameObjects;
+ using Robust.Client.Graphics;
+ using Robust.Shared.Utility;
++using Robust.Shared.Timing;
+ 
+ namespace OpenDreamClient.Rendering;
+ 
+@@ -14,8 +15,12 @@ public sealed partial class AtomGlideSystem : EntitySystem {
+         public readonly TransformComponent Transform = transform;
+         public readonly DMISpriteComponent Sprite = sprite;
+         public Vector2 EndPos;
++        public Vector2 RenderedPos;
++        public float Elapsed = -1;
++        public float AutomaticSpeed;
+     }
+ 
++    [Dependency] private IGameTiming _gameTiming = default!;
+     [Dependency] private TransformSystem _transformSystem = default!;
+     [Dependency] private IEntityManager _entityManager = default!;
+     [Dependency] private IDreamInterfaceManager _interfaceManager = default!;
+@@ -59,7 +64,8 @@ public sealed partial class AtomGlideSystem : EntitySystem {
+ 
+             var currentPos = glide.Transform.LocalPosition;
+             var newPos = currentPos;
+-            var movementSpeed = CalculateMovementSpeed(_interfaceManager.IconSize, glide.Sprite.Icon.Appearance.GlideSize);
++            glide.Elapsed += frameTime;
++            var movementSpeed = GlideTiming.Speed(_interfaceManager.IconSize, glide.Sprite.Icon.Appearance.GlideSize, _gameTiming.TickRate, glide.AutomaticSpeed);
+             var movement = movementSpeed * frameTime;
+ 
+             // Move X towards the end position at a constant speed
+@@ -85,6 +91,7 @@ public sealed partial class AtomGlideSystem : EntitySystem {
+             }
+ 
+             _ignoreMoveEvent = true;
++            glide.RenderedPos = newPos;
+             _transformSystem.SetLocalPositionNoLerp(glide.Uid, newPos, glide.Transform);
+             _ignoreMoveEvent = false;
+         }
+@@ -111,12 +118,13 @@ public sealed partial class AtomGlideSystem : EntitySystem {
+             break;
+         }
+ 
+-        var startingFrom = glide?.EndPos ?? e.OldPosition.Position;
++        var previousDestination = glide?.EndPos ?? e.OldPosition.Position;
++        var startingFrom = glide?.RenderedPos ?? e.OldPosition.Position;
+         var glidingTo = e.NewPosition.Position;
+ 
+         // Moving a greater distance than 2 tiles. Don't glide.
+         // TODO: Support step_size values (I think that's what decides whether or not to glide?)
+-        if ((glidingTo - startingFrom).Length() > 2f) {
++        if ((glidingTo - previousDestination).Length() > 2f) {
+             // Stop the current glide if there is one
+             if (glide != null)
+                 _currentGlides.Remove(glide);
+@@ -133,16 +141,12 @@ public sealed partial class AtomGlideSystem : EntitySystem {
+         // Move the transform to our starting point
+         _transformSystem.SetLocalPositionNoLerp(e.Sender, startingFrom, e.Component);
+ 
++        var remaining = glidingTo - startingFrom;
++        glide.AutomaticSpeed = GlideTiming.AutomaticSpeed(_interfaceManager.IconSize, _gameTiming.TickRate, Math.Max(Math.Abs(remaining.X), Math.Abs(remaining.Y)), glide.Elapsed);
++        glide.Elapsed = 0;
++        glide.RenderedPos = startingFrom;
+         glide.EndPos = glidingTo;
+         _ignoreMoveEvent = false;
+     }
+ 
+-    private static float CalculateMovementSpeed(int iconSize, float glideSize) {
+-        if (glideSize == 0)
+-            glideSize = 4; // TODO: 0 gives us "automated control" over this value, not just setting it to 4
+-
+-        // Assume a 20 TPS server
+-        // TODO: Support other TPS
+-        return glideSize / iconSize * 20f;
+-    }
+ }
+diff --git a/OpenDreamClient/Rendering/GlideTiming.cs b/OpenDreamClient/Rendering/GlideTiming.cs
+new file mode 100644
+index 00000000..283c01bd
+--- /dev/null
++++ b/OpenDreamClient/Rendering/GlideTiming.cs
+@@ -0,0 +1,15 @@
++namespace OpenDreamClient.Rendering;
++
++/// <summary>Movement cadence controls automatic gliding; explicit glide sizes keep their configured speed.</summary>
++public static class GlideTiming {
++    public static float Speed(int iconSize, float glideSize, float tickRate, float automaticSpeed) =>
++        glideSize == 0 ? automaticSpeed : glideSize / iconSize * tickRate;
++
++    public static float AutomaticSpeed(int iconSize, float tickRate, float remaining, float elapsed) {
++        var baseline = 4f / iconSize * tickRate;
++        // A repeated step must cover the remaining rendered distance within the observed interval.
++        // Same-tick updates use one tick, avoiding division by zero or an unbounded speed.
++        var interval = Math.Max(elapsed, 1f / tickRate);
++        return elapsed >= 0 ? Math.Max(baseline, remaining / interval) : baseline;
++    }
++}
+diff --git a/tests/glide/GlideProbe.csproj b/tests/glide/GlideProbe.csproj
+new file mode 100644
+index 00000000..107c38d4
+--- /dev/null
++++ b/tests/glide/GlideProbe.csproj
+@@ -0,0 +1,7 @@
++<Project Sdk="Microsoft.NET.Sdk">
++  <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
++  <ItemGroup>
++    <Compile Include="../../OpenDreamClient/Rendering/AtomGlideSystem.cs" Link="AtomGlideSystem.cs" />
++    <Compile Include="../../OpenDreamClient/Rendering/GlideTiming.cs" Link="GlideTiming.cs" />
++  </ItemGroup>
++</Project>
+diff --git a/tests/glide/Program.cs b/tests/glide/Program.cs
+new file mode 100644
+index 00000000..a74c6eed
+--- /dev/null
++++ b/tests/glide/Program.cs
+@@ -0,0 +1,39 @@
++using System.Reflection;
++using OpenDreamClient.Rendering;
++using OpenDreamClient.Interface;
++using Robust.Client.Graphics;
++using Robust.Client.GameObjects;
++using Robust.Shared.Timing;
++
++var checks = 0;
++void Check(bool result, string label) { if (!result) throw new Exception(label); checks++; }
++(AtomGlideSystem System, TransformSystem Transport, TransformComponent Transform, DMISpriteComponent Sprite) Setup(ushort rate=20) {
++    var system=new AtomGlideSystem(); var transport=new TransformSystem(); var transform=new TransformComponent(); var sprite=new DMISpriteComponent();
++    foreach (var (name,value) in new (string,object)[] {("_transformSystem",transport),("_entityManager",new Manager()),("_interfaceManager",new Interface()),("_gameTiming",new Timing(rate))})
++        typeof(AtomGlideSystem).GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(system,value);
++    EntitySystem.QueryValue=sprite; system.Initialize(); return (system,transport,transform,sprite);
++}
++foreach (ushort rate in new ushort[] {10,20,30,60}) {
++    var p=Setup(rate); p.Transport.Receive(p.Transform,new(1,0));
++    for (int step=2;step<=50;step++) {
++        for (int f=0;f<6;f++) p.System.FrameUpdate(1f/60);
++        var before=p.Transform.LocalPosition;
++        p.Transport.Receive(p.Transform,new(step,0));
++        Check(Vector2.Distance(before,p.Transform.LocalPosition)<0.00001f,"consecutive update must never snap");
++    }
++    for (int f=0;f<12;f++) p.System.FrameUpdate(1f/60);
++    Check(Vector2.Distance(p.Transform.LocalPosition,new(50,0))<0.0001f,"automatic speed catches up to held-key cadence");
++    p.Transport.Receive(p.Transform,new(70,0)); Check(p.Transform.LocalPosition.X==70,"teleports remain immediate");
++    p.System.FrameUpdate(1f/60); Check(p.Transform.LocalPosition.X==70,"teleport cancels glide");
++}
++var explicitGlide=Setup(30); explicitGlide.Sprite.Icon.Appearance!.GlideSize=8;
++explicitGlide.Transport.Receive(explicitGlide.Transform,new(1,0)); explicitGlide.System.FrameUpdate(0.05f);
++Check(Math.Abs(explicitGlide.Transform.LocalPosition.X-0.375f)<0.00001f,"explicit glide uses actual tick rate");
++var turn=Setup();turn.Transport.Receive(turn.Transform,new(1,0));turn.System.FrameUpdate(0.1f);
++var pos=turn.Transform.LocalPosition;turn.Transport.Receive(turn.Transform,new(1,1));Check(pos==turn.Transform.LocalPosition,"turn continues rendered position");
++for(int i=0;i<12;i++)turn.System.FrameUpdate(1f/60);
++Check(Vector2.Distance(turn.Transform.LocalPosition,new(1,1))<0.0001f,"turn completes without overshoot");
++Console.WriteLine($"PASS {checks} production glide assertions");
++class Manager:IEntityManager {public bool Deleted(EntityUid uid)=>false;}
++class Interface:IDreamInterfaceManager {public int IconSize=>32;}
++class Timing(ushort rate):IGameTiming {public ushort TickRate=>rate;}
+diff --git a/tests/glide/Stubs.cs b/tests/glide/Stubs.cs
+new file mode 100644
+index 00000000..009e3146
+--- /dev/null
++++ b/tests/glide/Stubs.cs
+@@ -0,0 +1,46 @@
++global using System.Numerics;
++global using Robust.Shared.GameObjects;
++global using Robust.Shared.IoC;
++global using Robust.Shared.Maths;
++namespace Robust.Shared.IoC { public class DependencyAttribute : Attribute {} }
++namespace Robust.Shared.Maths {
++    public static class MathHelper { public static bool CloseTo(float a, float b) => Math.Abs(a-b) < 0.00001f; }
++    public static class VectorExtensions { public static bool EqualsApprox(this Vector2 a, Vector2 b) => Vector2.Distance(a,b) < 0.00001f; }
++}
++namespace Robust.Shared.Utility {
++    public static class ListExtensions { public static void RemoveSwap<T>(this List<T> list, int i) { list[i]=list[^1]; list.RemoveAt(list.Count-1); } }
++}
++namespace Robust.Shared.Timing { public interface IGameTiming { ushort TickRate {get;} } }
++namespace Robust.Shared.GameObjects {
++    public record struct EntityUid(int Value);
++    public class TransformComponent { public Vector2 LocalPosition; }
++    public record struct Coordinates(Vector2 PositionValue) { public Vector2 Position => PositionValue; }
++    public struct MoveEvent { public bool ParentChanged; public EntityUid Sender; public TransformComponent Component; public Coordinates OldPosition; public Coordinates NewPosition; }
++    public delegate void MoveHandler(ref MoveEvent e);
++    public class SharedTransformSystem {}
++    public interface IEntityManager { bool Deleted(EntityUid uid); EntityQuery<T> GetEntityQuery<T>() => new() {Value=(T)EntitySystem.QueryValue}; }
++    public struct EntityQuery<T> { public T Value; public bool TryGetComponent(EntityUid uid, out T value) {value=Value; return true;} }
++    public class EntitySystem {
++        public List<Type> UpdatesBefore = new();
++        public static object QueryValue = null!;
++        protected EntityQuery<T> GetEntityQuery<T>() => new() { Value=(T)QueryValue };
++        public virtual void Initialize() {} public virtual void Shutdown() {} public virtual void FrameUpdate(float dt) {}
++    }
++}
++namespace Robust.Client.Graphics {
++    public class Appearance { public float GlideSize; }
++    public class Icon { public Appearance? Appearance = new(); }
++    public class DMISpriteComponent { public Icon Icon = new(); }
++}
++namespace OpenDreamClient.Interface { public interface IDreamInterfaceManager { int IconSize {get;} } }
++namespace Robust.Client.GameObjects {
++    public class TransformSystem {
++        public event MoveHandler? OnGlobalMoveEvent;
++        public void Reset() {}
++        public void SetLocalPositionNoLerp(EntityUid uid, Vector2 pos, TransformComponent transform) {transform.LocalPosition=pos;}
++        public void Receive(TransformComponent transform, Vector2 target) {
++            var e=new MoveEvent { Sender=new(1), Component=transform, OldPosition=new(transform.LocalPosition), NewPosition=new(target) };
++            transform.LocalPosition=target; OnGlobalMoveEvent?.Invoke(ref e);
++        }
++    }
++}

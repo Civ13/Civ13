@@ -1,0 +1,96 @@
+"a" = (/obj/covers/roads/cobble,/turf/floor/plating/concrete,/area/caribbean)
+"b" = (/obj/covers/roads/cobble,/obj/structure/lamp/lamp_big/alwayson/white{dir = 1},/turf/floor/plating/concrete,/area/caribbean)
+"c" = (/obj/structure/barricade/tires,/turf/floor/plating/concrete,/area/caribbean)
+"d" = (/obj/structure/barricade/antitank,/turf/floor/plating/concrete,/area/caribbean)
+"e" = (/turf/floor/plating/concrete,/area/caribbean)
+"f" = (/obj/covers/roads/cobble,/obj/structure/lamp/lamp_big/alwayson/white{dir = 4},/turf/floor/plating/concrete,/area/caribbean)
+"g" = (/turf/floor/plating/road,/area/caribbean)
+"h" = (/obj/covers/roads/cobble,/obj/structure/lamp/lamp_big/alwayson/white{cooldownw = 4; dir = 8},/turf/floor/plating/concrete,/area/caribbean)
+"i" = (/turf/wall/cement,/area/caribbean)
+"j" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 9},/turf/floor/plating/road,/area/caribbean)
+"k" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 1},/turf/floor/plating/road,/area/caribbean)
+"l" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 5},/turf/floor/plating/road,/area/caribbean)
+"m" = (/obj/structure/sign/custom{name = "1st: Build the frames. Maximum 5x5, keep it square or rectangular. If you want to add the walls during this step, you should fix the frames in place with a wrench first."},/turf/wall/cement,/area/caribbean)
+"n" = (/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
+"o" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 8},/turf/floor/plating/road,/area/caribbean)
+"p" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 4; icon_state = "warning_dust"; layer = 3},/turf/floor/plating/road,/area/caribbean)
+"q" = (/obj/structure/sign/custom{name = "2nd: Place the drivers chair, engine, fueltank"},/turf/wall/cement,/area/caribbean)
+"r" = (/obj/structure/vending/sales/food,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
+"s" = (/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/obj/item/stack/material/steel{amount = 1000},/turf/floor/plating/concrete,/area/caribbean)
+"t" = (/obj/structure/sign/custom{name = "3rd: Create 4 wheels/tracks and place each one on top of each corner."},/turf/wall/cement,/area/caribbean)
+"u" = (/obj/structure/vending/sales/food/hot,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
+"v" = (/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/weldingtool,/obj/item/weapon/storage/toolbox,/turf/floor/plating/concrete,/area/caribbean)
+"w" = (/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/obj/item/stack/material/iron{amount = 100},/turf/floor/plating/concrete,/area/caribbean)
+"x" = (/obj/structure/sign/custom{name = "4th: Make an axis and move it to the TOP LEFT frame. Click on it to finish the vehicle."},/turf/wall/cement,/area/caribbean)
+"y" = (/obj/structure/vending/sales/drinks/hot,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
+"z" = (/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/obj/item/weapon/wrench,/turf/floor/plating/concrete,/area/caribbean)
+"A" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 10},/turf/floor/plating/road,/area/caribbean)
+"B" = (/obj/effect/floor_decal/industrial/warning/dust,/turf/floor/plating/road,/area/caribbean)
+"C" = (/obj/effect/floor_decal/industrial/warning/dust{icon_state = "warning_dust"; dir = 6},/turf/floor/plating/road,/area/caribbean)
+"D" = (/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/obj/item/stack/material/copper{amount = 100},/turf/floor/plating/concrete,/area/caribbean)
+"E" = (/obj/structure/sign/custom{name = "5th: Test the vehicle. If it doesnt work, try manually assemblying any mising parts: drag and drop them to a connected frame."},/turf/wall/cement,/area/caribbean)
+"F" = (/obj/structure/vending/sales/food/snacks,/obj/item/stack/money/bitcoin,/turf/floor/plating/concrete,/area/caribbean)
+"G" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/plating/concrete,/area/caribbean)
+"H" = (/obj/structure/table/modern/retable,/obj/item/weapon/storage/toolbox/electrical,/obj/item/weapon/storage/toolbox/emergency,/obj/item/weapon/storage/toolbox/mechanical,/turf/floor/plating/concrete,/area/caribbean)
+"I" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/obj/item/weapon/reagent_containers/glass/barrel/modern/diesel,/turf/floor/plating/concrete,/area/caribbean)
+"J" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/plating/concrete,/area/caribbean)
+"K" = (/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/fueledgasoline,/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/concrete,/area/caribbean)
+"L" = (/obj/structure/toilet/pit_latrine,/obj/structure/curtain/open/shower/security,/obj/structure/shower{icon_state = "shower"; dir = 1},/turf/floor/plating/concrete,/area/caribbean)
+"M" = (/obj/structure/engine/internal/gasoline{enginesize = 5000},/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/concrete,/area/caribbean)
+"N" = (/obj/structure/table/modern/retable,/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/obj/item/weapon/reagent_containers/glass/barrel/modern/gasoline,/turf/floor/plating/concrete,/area/caribbean)
+"O" = (/turf/wall/indestructable/black,/area/caribbean/admin)
+"P" = (/obj/map_metadata/testing,/turf/wall/indestructable/black,/area/caribbean/admin)
+"Q" = (/obj/covers/roads/cobble,/obj/structure/lamp/lamp_big/alwayson/white,/turf/floor/plating/concrete,/area/caribbean)
+
+(1,1,1) = {"
+aaaabaaaaaabaaaaaabaaaaaabaaaaaabaaaaaabaaaaaabaaaaaabaaaaaabaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aacccccccccdedcccccccccccccccccdedcccccccccccccccccdedcccccccccaa
+aaceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeecaf
+aacegggggggggggggggggggggggggggggggggggggggggggggggggggggggggecaa
+hadegggggggggggggggggggggggggggggggggggggggggggggggggggggggggedaa
+aaeegggggggggggggggggggggggggggggggggggggggggggggggggggggggggeeaa
+aadegggggggggggggggggggggggggggggggggggggggggggggggggggggggggedaa
+aacegggggggggggggggggggggggggggggggggggggggggggggggggggggggggecaa
+aaceeeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aaceeeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeecaf
+aacedeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aaceeeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeecaa
+hacedeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aaceeeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeedaa
+aaceeeeeeeeeeeeggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggeeeeeeeaa
+aaceeeeeeggggggggggggggggggggggggeeeeeeeeeeeeeeeegggggggeeeeeedaa
+aaceeeeegggggggggggggggggggggggggeeeeeeeeeeeeeeeegggggggeeeeeecaf
+aadeeeeggggggggggggggggggggggggggeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aaeeeegggggggggggggggggggggggggggeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aadeeggggggggggggggggggggggggggggeeeeeeeeeeeeeeeegggggggeeeeeecaa
+haceggggggggggeeeeeeeeeeeeeggggggeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aacegggggggggeeeeeeeeeeeeeeggggggeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aaceggggggggeeeeeeeeeeeeeeeggggggeeeeeeeeeeeeeeeegggggggeeeeeecaa
+aacegggggggeeeeeeeeeeeeeeeggggggggggggggggggggggggggggggeeeeeecaf
+aaceggggggeeeeeeeeeeeeeeeeggggggggggggggggggggggggggggggeeeeeecaa
+aacegggggeeeeeeeeeeeeeeeeeggggggggggggggggggggggggggggggeeeeeecaa
+aacegggggeeeeeeeeeeeeeeeeeggggggggggggggggggggggggggggggeeeeeedaa
+aadegggggeeeeeeeeeeeeeeeeeggggggggggggggggggggggggggggggeeeeeeeaa
+haeegggggeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeedaa
+aadeggggggggggggggggggggggggggggggggggggggggggggggggggggggggggcaa
+aaceggggggggggggggggggggggggggggggggggggggggggggggggggggggggggcaf
+aaceggggggggggggggggggggggggggggggggggggggggggggggggggggggggggcaa
+aaceggggggggggggggggggggggggggggggggggggggggggggggggggggggggggcaa
+aaceggggggggggggggggggggggggggggggggggggggggggggggggggggggggggcaa
+aaceeegggggeeegggggeeegggggeeegggggeeegggggeeegggggeeegggggeeecaa
+aacecegggggecegggggecegggggecegggggecegggggecegggggecegggggececaa
+hacecegggggecegggggecegggggecegggggecegggggecegggggecegggggececaa
+aacecegggggecegggggecegggggecegggggecegggggecegggggecegggggececaf
+aaeeiejkkklemejkkklemejkkklemejkkklemejkkklemejkkklemejkkklemeeaa
+aaenieogggpeqeogggpeqeogggpeqeogggpeqeogggpeqeogggpeqeogggpeqeeaa
+aaerieogggpsteogggpsteogggpsteogggpsteogggpsteogggpsteogggpsteeaa
+aaeuivogggpwxvogggpwxvogggpwxvogggpwxvogggpwxvogggpwxvogggpwxneaa
+aaeyizABBBCDEzABBBCDEzABBBCDEzABBBCDEzABBBCDEzABBBCDEzABBBCDEreaa
+aaeFieeGGGeeieeGGGeeieeGGGeeieeGGGeeieeGGGeeieeGGGeeieeGGGeeiueaa
+haeeiHeeeeeIiHeeeeeIiHeeeeeIiHeeeeeIiHeeeeeIiHeeeeeIiHeeeeeIiyeaf
+aaaaiJKeLeMNiJKeLeMNiJKeLeMNiJKeLeMNiJKeLeMNiJKeLeMNiJKeLeMNiFeaa
+aaaaiiieieiiiiieieiiiiieieiiiiieieiiiiieieiiiiieieiiiiieieiiieeaa
+OPaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+POaaQaaaaaaaQaaaaaaaQaaaaaaaQaaaaaaaQaaaaaaaQaaaaaaaQaaaaaaaQaaaa
+"}

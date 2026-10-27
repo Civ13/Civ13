@@ -1,0 +1,22 @@
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 1
+	maxy = 1
+	maxz = 1
+
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+
+/world/New()
+	OpenPort("none")
+	var/list/rows = list()
+	for(var/T in typesof(/obj/item, /obj/structure, /obj/machinery))
+		var/I = initial(T:icon)
+		var/S = initial(T:icon_state)
+		var/list/states = I ? icon_states(I) : list()
+		rows += list(list("type" = "[T]", "name" = initial(T:name), "icon" = "[I]", "state" = S, "valid" = (S in states), "states" = states, "invisibility" = initial(T:invisibility)))
+	text2file(json_encode(rows), "sprites.json")
+	shutdown()

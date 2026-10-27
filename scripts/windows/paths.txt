@@ -1,0 +1,5 @@
+////define your master folder (the one with "civ13-git" in it) here. The second line is the name of this copy's folder (e.g., "civ13"). Byond_dir is where your byond is installed.
+mdir:C:/
+cdir:civ13/
+port:1714
+byond_dir:C:\Program Files (x86)\BYOND

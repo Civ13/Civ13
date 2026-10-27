@@ -1,0 +1,4 @@
+
+/client/New()
+	..()
+	dir = NORTH

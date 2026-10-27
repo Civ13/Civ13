@@ -1,0 +1,588 @@
+"aa" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
+"ab" = (/turf/wall/wood,/area/caribbean/pirates/ship/main_deck)
+"ac" = (/turf/wall/wood{opacity = 0},/area/caribbean/pirates/ship/main_deck)
+"ad" = (/obj/structure/cannon{dir = 1},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ae" = (/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"af" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"ag" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ah" = (/turf/wall/wood,/area/caribbean/pirates/ship/office)
+"ai" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"aj" = (/obj/structure/closet/cabinet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"ak" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"al" = (/turf/wall/wood{name = "mast"},/area/caribbean/pirates/ship/main_deck)
+"am" = (/obj/effect/landmark{name = "JoinLatePirate"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"an" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/pirates/ship/main_deck)
+"ao" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/no_mans_land/invisible_wall)
+"ap" = (/turf/wall/wood,/area/caribbean/no_mans_land/invisible_wall)
+"aq" = (/turf/wall/wood,/area/caribbean/british/ship/main_deck)
+"ar" = (/turf/wall/wood{opacity = 0},/area/caribbean/british/ship/main_deck)
+"as" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/british/ship/main_deck)
+"at" = (/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"au" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"av" = (/obj/structure/cannon{dir = 1},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"aw" = (/obj/structure/sign/flag/medical,/turf/wall/wood,/area/caribbean/pirates/ship/lower)
+"ax" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"ay" = (/obj/structure/multiz/ladder/ww2/up{area_id = "p3"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"az" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/knife,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"aA" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"aB" = (/turf/wall/wood{name = "mast"},/area/caribbean/british/ship/main_deck)
+"aC" = (/obj/structure/cannon,/turf/wall/wood{opacity = 0},/area/caribbean/british/ship/main_deck)
+"aD" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"aE" = (/obj/item/flashlight/lantern,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aF" = (/obj/structure/bed,/obj/item/weapon/bedsheet/rd,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aG" = (/obj/structure/bed,/obj/item/weapon/bedsheet/brown,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aH" = (/obj/structure/bed,/obj/item/weapon/bedsheet/captain,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aI" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"aJ" = (/obj/structure/bed,/obj/item/weapon/bedsheet/red,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aK" = (/obj/structure/bed,/obj/item/weapon/bedsheet/green,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aL" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aM" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"aN" = (/obj/structure/bed/chair/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"aO" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"aP" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"aQ" = (/obj/structure/closet/crate/musketball,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"aR" = (/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"aS" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"aT" = (/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"aU" = (/obj/structure/vending/flintlock,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"aV" = (/turf/wall/wood,/area/caribbean/british/ship/office)
+"aW" = (/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"aX" = (/obj/structure/table/wood,/obj/item/weapon/pen,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"aY" = (/obj/structure/bookcase,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"aZ" = (/obj/structure/closet/cabinet,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"ba" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bb" = (/obj/structure/table/wood,/obj/item/weapon/book,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bc" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bd" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"be" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bf" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bg" = (/obj/structure/bed{material = "wood"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bh" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bi" = (/obj/structure/flag/pirates,/turf/wall/wood,/area/caribbean/pirates/ship/office)
+"bj" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bk" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bl" = (/obj/effect/landmark{name = "JoinLatePirateSurgeon"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bm" = (/obj/item/weapon/reagent_containers/glass/barrel/beer,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bn" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bo" = (/obj/structure/bed,/obj/item/weapon/bedsheet/yellow,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bp" = (/obj/structure/bed,/obj/item/weapon/bedsheet/orange,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bq" = (/obj/effect/landmark{name = "JoinLatePirateMidshipman"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"br" = (/obj/effect/landmark{name = "JoinLatePirateCarpenter"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"bs" = (/obj/effect/landmark{name = "JoinLatePirateBoatswain"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"bt" = (/obj/effect/landmark{name = "JoinLatePirateCap"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"bu" = (/obj/effect/landmark{name = "JoinLatePirateQM"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"bv" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bw" = (/obj/effect/landmark{name = "JoinLateRN"},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"bx" = (/obj/effect/landmark{name = "JoinLateRNMidshipman"},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"by" = (/obj/effect/landmark{name = "JoinLateRNBoatswain"},/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bz" = (/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/smallsword,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"bA" = (/obj/effect/landmark{name = "JoinLateRNCap"},/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bB" = (/obj/item/weapon/surgery/scalpel,/obj/item/weapon/surgery/retractor,/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bC" = (/obj/effect/landmark{name = "JoinLateRNCarpenter"},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"bD" = (/obj/effect/landmark{name = "JoinLateRNQM"},/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"bE" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"bF" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
+"bG" = (/turf/wall/wood,/area/caribbean/pirates/ship/lower)
+"bH" = (/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"bI" = (/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bJ" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"bK" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b3"},/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"bL" = (/turf/wall/wood{name = "mast"},/area/caribbean/pirates/ship/lower)
+"bM" = (/turf/wall/wood,/area/caribbean/british/ship/lower)
+"bN" = (/obj/structure/multiz/ladder/ww2{area_id = "p3"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"bO" = (/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"bP" = (/obj/structure/multiz/ladder/ww2/up{area_id = "p2"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"bQ" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"bR" = (/turf/wall/wood{name = "mast"},/area/caribbean/british/ship/lower)
+"bS" = (/turf/wall/wood,/area/caribbean/pirates/ship/orlop)
+"bT" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b2"},/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"bU" = (/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"bV" = (/obj/structure/multiz/ladder/ww2{area_id = "b3"},/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"bW" = (/turf/wall/wood{name = "mast"},/area/caribbean/pirates/ship/orlop)
+"bX" = (/turf/wall/wood,/area/caribbean/british/ship/orlop)
+"bY" = (/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"bZ" = (/obj/structure/multiz/ladder/ww2{area_id = "p2"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"ca" = (/obj/structure/multiz/ladder/ww2/up{area_id = "p1"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cb" = (/turf/wall/wood{name = "mast"},/area/caribbean/british/ship/orlop)
+"cc" = (/turf/wall/wood,/area/caribbean/pirates/ship/hold)
+"cd" = (/obj/effect/decal/cleanable/cobweb,/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"ce" = (/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"cf" = (/turf/floor/beach/water,/area/caribbean/pirates/ship/hold)
+"cg" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"ch" = (/obj/structure/multiz/ladder/ww2/up{area_id = "b1"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"ci" = (/mob/living/simple_animal/mouse/brown,/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"cj" = (/mob/living/simple_animal/mouse/gray,/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"ck" = (/mob/living/simple_animal/mouse/white,/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"cl" = (/obj/effect/decal/cleanable/ash,/turf/floor/wood/ship,/area/caribbean/pirates/ship/hold)
+"cm" = (/turf/wall/wood{name = "mast"},/area/caribbean/pirates/ship/hold)
+"cn" = (/turf/wall/wood,/area/caribbean/british/ship/hold)
+"co" = (/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cp" = (/turf/floor/beach/water,/area/caribbean/british/ship/hold)
+"cq" = (/obj/effect/decal/cleanable/cobweb2,/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cr" = (/obj/effect/decal/cleanable/cobweb,/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cs" = (/obj/structure/multiz/ladder/ww2{area_id = "b2"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"ct" = (/mob/living/simple_animal/mouse/white,/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cu" = (/obj/effect/decal/cleanable/ash,/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cv" = (/mob/living/simple_animal/mouse/gray,/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cw" = (/mob/living/simple_animal/mouse/brown,/turf/floor/wood/ship,/area/caribbean/british/ship/hold)
+"cx" = (/turf/wall/wood{name = "mast"},/area/caribbean/british/ship/hold)
+"cy" = (/obj/structure/table/wood,/obj/item/weapon/matchbox,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cz" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cA" = (/obj/structure/table/wood,/obj/item/weapon/storage/fancy/candle_box,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cB" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cC" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cD" = (/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cE" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cF" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cG" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cH" = (/obj/item/stack/medical/splint,/obj/item/stack/medical/splint,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cI" = (/obj/structure/table/wood,/obj/item/trash/candle,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cJ" = (/obj/effect/landmark{name = "JoinLatePirateCook"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cK" = (/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cL" = (/obj/structure/pot,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cM" = (/obj/structure/oven,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cN" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cO" = (/obj/structure/bookcase,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cP" = (/obj/item/flashlight/lantern,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cQ" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cR" = (/obj/structure/bed/chair/wood{dir = 8},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cS" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cT" = (/obj/structure/bed,/obj/item/weapon/bedsheet/blue,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cU" = (/obj/item/weapon/matchbox,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cV" = (/obj/item/weapon/storage/fancy/candle_box,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cW" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/obj/item/weapon/material/kitchen/utensil/spoon,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cX" = (/obj/structure/bed/chair/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"cY" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"cZ" = (/obj/structure/table/wood,/obj/item/trash/candle,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"da" = (/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"db" = (/obj/structure/table/modern,/obj/item/weapon/paper,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dc" = (/obj/structure/table/modern,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dd" = (/obj/structure/table/modern,/obj/item/weapon/book,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"de" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"df" = (/obj/structure/bed/chair/wood{dir = 4},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dg" = (/obj/item/weapon/surgery/scalpel,/obj/item/weapon/surgery/retractor,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dh" = (/obj/structure/table/modern,/obj/item/weapon/pen,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"di" = (/obj/item/stack/medical/splint,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dj" = (/obj/effect/landmark{name = "JoinLateRNCook"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dk" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dl" = (/obj/structure/pot,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dm" = (/obj/structure/oven,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dn" = (/obj/effect/landmark{name = "JoinLateRNSurgeon"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"do" = (/obj/item/stack/medical/bruise_pack/bint,/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dp" = (/obj/item/weapon/reagent_containers/glass/bucket,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dq" = (/obj/item/stack/medical/bruise_pack/bint,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dr" = (/obj/structure/bed{material = "wood"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"ds" = (/obj/effect/decal/cleanable/blood,/obj/structure/bed{material = "wood"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dt" = (/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/sword/sabre,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"du" = (/obj/structure/vending/piratesapparel,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"dv" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/kitchen/wood_bowl,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dw" = (/obj/effect/decal/cleanable/blood/splatter,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dx" = (/obj/effect/decal/cleanable/blood/drip,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dy" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/material/kitchen/utensil/spoon,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dz" = (/obj/structure/table/wood,/obj/item/weapon/flame/candle,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dA" = (/obj/effect/decal/cleanable/blood/drip,/obj/structure/bed{material = "wood"},/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dB" = (/obj/effect/decal/cleanable/blood,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"dC" = (/obj/structure/sign/flag/medical,/turf/wall/wood,/area/caribbean/british/ship/lower)
+"dD" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dE" = (/obj/structure/closet/crate/empty,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dF" = (/obj/item/flashlight/lantern,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dG" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dH" = (/obj/structure/closet/crate/rations/fruits,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dI" = (/obj/structure/closet/crate/wood,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dJ" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dK" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dL" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dM" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dN" = (/obj/structure/closet/crate/musketball,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dO" = (/obj/structure/closet/crate/rations/meat,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dP" = (/obj/structure/closet/crate/empty,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dQ" = (/obj/item/flashlight/lantern,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dR" = (/obj/item/flashlight/lantern,/obj/item/flashlight/lantern,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dS" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dT" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dU" = (/obj/structure/closet/crate/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dV" = (/obj/structure/closet/crate/cannonball,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dW" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"dX" = (/obj/structure/closet/crate/rations/meat,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dY" = (/obj/item/weapon/reagent_containers/glass/barrel/gunpowder,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"dZ" = (/obj/structure/closet/crate/musketball,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"ea" = (/obj/structure/vending/muskets,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"eb" = (/obj/structure/vending/muskets,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"ec" = (/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/longsword,/obj/item/weapon/material/sword/longsword,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"ed" = (/obj/structure/multiz/ladder/ww2{area_id = "p1"},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ee" = (/obj/structure/multiz/ladder/ww2{area_id = "b1"},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"ef" = (/obj/effect/landmark{name = "Observer-Start"},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eg" = (/obj/structure/flag/pirates,/turf/wall/wood,/area/caribbean/pirates/ship/main_deck)
+"eh" = (/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"ei" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ej" = (/obj/item/weapon/shield,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"ek" = (/obj/item/weapon/grenade/bomb,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"el" = (/obj/item/weapon/shield,/obj/item/weapon/shield,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"em" = (/obj/item/weapon/grenade/old_grenade,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"en" = (/obj/item/weapon/grenade/old_grenade,/obj/item/weapon/grenade/old_grenade,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"eo" = (/obj/item/weapon/material/sword/cutlass,/obj/item/weapon/material/sword/cutlass,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"ep" = (/obj/item/weapon/material/sword/smallsword,/obj/item/weapon/material/sword/smallsword,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eq" = (/obj/item/weapon/material/sword/spadroon,/obj/item/weapon/material/sword/spadroon,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"er" = (/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
+"es" = (/obj/item/weapon/grenade/bomb,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"et" = (/obj/structure/flag/pirates,/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
+"eu" = (/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/obj/item/weapon/material/sword/rapier,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"ev" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ew" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ex" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"ey" = (/obj/structure/flag/french,/turf/wall/wood,/area/caribbean/british/ship/office)
+"ez" = (/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/item/weapon/reagent_containers/food/drinks/tea,/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eA" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/teapot/filled,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eB" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood/ship,/area/caribbean/pirates/ship/lower)
+"eC" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/obj/item/weapon/gun/projectile/flintlock/pistol,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"eD" = (/obj/structure/table/modern,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"eE" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/storage/fancy/picklejar,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"eF" = (/obj/map_metadata/naval,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/sea)
+"eG" = (/obj/structure/closet/crate/blunderbuss_ammo,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eH" = (/obj/structure/closet/cabinet,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"eI" = (/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"eJ" = (/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"eK" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/hardtack,/turf/floor/wood/ship,/area/caribbean/british/ship/office)
+"eL" = (/obj/structure/closet/crate/musketball,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eM" = (/obj/structure/closet/crate/musketball_pistol,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eN" = (/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/sword/sabre,/obj/item/weapon/material/sword/sabre,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eO" = (/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/obj/item/weapon/reagent_containers/food/snacks/grown/orange,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eP" = (/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eQ" = (/obj/item/weapon/reagent_containers/glass/barrel/rum,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eR" = (/obj/structure/sink/kitchen,/turf/floor/wood/ship,/area/caribbean/british/ship/lower)
+"eS" = (/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/obj/item/weapon/reagent_containers/food/snacks/grown/lime,/obj/item/weapon/reagent_containers/food/snacks/grown/banana,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/obj/item/weapon/reagent_containers/food/snacks/grown/apple,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eT" = (/obj/structure/closet/crate/webbings,/turf/floor/wood/ship,/area/caribbean/pirates/ship/office)
+"eU" = (/obj/structure/closet/crate/webbings,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eV" = (/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/obj/item/weapon/attachment/bayonet,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"eW" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood/ship,/area/caribbean/pirates/ship/orlop)
+"eX" = (/obj/structure/closet/crate/rations/fruits,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"eY" = (/obj/structure/closet/crate/rations/vegetables,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"eZ" = (/obj/structure/closet/crate/rations/biscuits,/turf/floor/wood/ship,/area/caribbean/british/ship/orlop)
+"fa" = (/obj/structure/vending/muskets,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fb" = (/obj/structure/closet/crate/chest,/obj/item/clothing/under/french_sailor1,/obj/item/clothing/under/french_sailor1,/obj/item/clothing/under/french_sailor1,/obj/item/clothing/under/french_sailor1,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fc" = (/obj/structure/closet/crate/chest,/obj/item/clothing/under/french_sailor2,/obj/item/clothing/under/french_sailor2,/obj/item/clothing/under/french_sailor2,/obj/item/clothing/under/french_sailor2,/obj/item/clothing/under/french_sailor2,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fd" = (/obj/structure/closet/crate/chest,/obj/item/clothing/under/french_sailor3,/obj/item/clothing/under/french_sailor3,/obj/item/clothing/under/french_sailor3,/obj/item/clothing/under/french_sailor3,/obj/item/clothing/under/french_sailor3,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fe" = (/obj/structure/flag/french,/turf/wall/wood,/area/caribbean/british/ship/main_deck)
+"ff" = (/obj/structure/closet/crate/chest,/obj/item/clothing/head/red_sailorberet,/obj/item/clothing/head/red_sailorberet,/obj/item/clothing/head/red_sailorberet,/obj/item/clothing/head/red_sailorberet,/obj/item/clothing/head/red_sailorberet,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fg" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fh" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/obj/item/weapon/reagent_containers/food/snacks/sliceable/baguette,/obj/item/weapon/reagent_containers/food/drinks/bottle/wine{name = "Vin Francais"},/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wine,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fi" = (/obj/item/weapon/shield,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fj" = (/obj/item/weapon/shield,/obj/item/weapon/shield,/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fk" = (/obj/item/stack/material/rope{amount = 10},/turf/floor/wood/ship,/area/caribbean/pirates/ship/main_deck)
+"fl" = (/obj/item/stack/material/rope{amount = 10},/turf/floor/wood/ship,/area/caribbean/british/ship/main_deck)
+"fm" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/no_mans_land/invisible_wall)
+"fn" = (/obj/structure/railing{dir = 4},/obj/structure/railing{dir = 8},/turf/floor/wood,/area/caribbean/sea/sea)
+"fo" = (/obj/structure/cannon,/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
+"fp" = (/obj/structure/flag/french,/turf/wall/wood{opacity = 0},/area/caribbean/no_mans_land/invisible_wall)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccccccccccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccccccccccccccccccccccccccccccccccccdcecececfcececececccccgccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccaycecccecccecccecececfcccccfcccccecececfcecccecccececcccciceayccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccecececececececececicecccccecccccjcececececececkceclcecececececcccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccccecccecccecccecccccecececececececccccececccecccecececccccececccecgccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccececececececlcecmcmcecececececececmcmcececececececececmcmcdcececececcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccccecccjcccecccecccccecececececececccccececccecccecececccccececccececcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccecececececececececececcccckcccccecicecececececlcecececececececcccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccaycecccecccecccececececccccecccccecececececccecccececcccceceayccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacccccccccccccccccccccccccccccccccccccdcecececececececfccccceccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccccccccccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncococococpcococqcncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncrcocococococncncocococococococncncncocncocncpcncocncncococococococococqcncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacnbKcocococtcococucocncncocncncucococococococpcococvcwcocococncocncocncocobKcnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncocococococococococtcocococococococococococococococococococncocncocncoctcocnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncococococococxcxcocococococococxcxcxcocncocncocncocxcxcocococucococococococnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncococococococxcxcococococwcococxcxcxcocnctcncocncocxcxcococococococococococnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncocococococococococvcococococococococococococococococococococvcococococpcocnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacnbKcococococococococncncocncncococococococococucococococococncocncocncocobKcnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncococococococncncocococococococncncncocncocncocncocncncococncocncocncococncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncncncncncncncncncncncncncncncncncncncococococococococncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacncncncncncncncncncncncnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}
+
+(1,1,2) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbUbUbUbUdDdDdDdDbUbUdEdEbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUdFdFbUdGdEdEdEdGeaeaeabUbUbUbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUdFdFbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdOdOdOdOdHbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUdWdWeWeWeWbUbUdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbWbWbUbUbUdLdLdLdLbWbWbUbUbUbUbUbUbUbUbWbWdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSdJbUbUbUdKdKbUbUbPbPbUbUbUdLdLdLdLdMdMbUbUdIdIdIdIdIbUbUdNdNbUbUbUdObSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUbUdIdIdIdIdIbUbUbUbUbUbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbNbUbUbUbUdGdEdEdEdGeaeaeabUbUbUbUbPbPbUbUbUbUbUbUbUbUbUbUbUbNbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbSbUbUbUbUdDdDdDdDbUbUdEdEbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabSbSbSbSbSbSbSbSbSbSbSbSbSbSaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXdPdPdPbYbYbYbYbYbTbTbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYdQdRbYbYdSdSbYdTdTdTdTebebebbYbYdUdUdUdUbYbYbYbYbYbYbYbYbYbYbYbYbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbVbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYdVdVdVdVdVbYbYbVbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbbYbYbYbYbYbYbYcbcbbYbYeXeXeYeYeYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYcbcbdXbYbYdYdYdYdYcbcbcbbYbYbYbYbYbYbYcbcbbYbYeZeZdXdXdXbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYbYbTbTbYbYbYbYbYbYbYdPdPdPbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbVbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYbYdVdVdVdVdVbYbYbVbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbYbYbYbYbYdQbYbYdSdSbYdZdZdZdZebebebbYbYdUdUdUdUbYbYbYbYbYbYbYbYbYbYbYbYbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXbXdPdPdPbYbYbYbYbYbTbTbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabXbXbXbXbXbXbXbXbXbXbXbXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}
+
+(1,1,3) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbGbGbGbGbGbGbGbGbGbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbGbGbGbGbGbGbGbGbGbGbGawbGawbGbGbGbGaGbIaEaFbIaGbIaHbIaJbIaKbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGaLaNbIaNaNbIbIbJbfbgaLbgbIbgaLbgbIbJbIbIaEbIbIbIbIbIbIbIbIbIbIbIbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIbhcFbjbkbIbIbGbIblbIbfblbnblbnbIbGbZbZbIbobIaGbIaKbIaGbIbpbIbIbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIcCcCcCcCbIbIbGbBbgblbgbIbgblbgbIbGbIbIbIbIbIbIbIbIbIbIbIbIbIbIcyczcAbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIaNaNbIaNbIcabGbIbZbZcBbnbIbfbIbIbGaHaLbIbIbIbIbIbIbIbIaLcabIbIcCcCbIbIcCbcbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIcEcGcGcFbIbIbGcHbLbLbIbIbIbIbIbIbGbLbLbIbobIaGbIaGbIaJbLbLbIbIbIbIbIbIbIbIbIaLbGbGbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIbIcCcCcCbIcabGbIbZbZbIbIbIbIbIbIbGaGaLbIbIbIbIbIbIbIbIaLcabIbIbIbIaNbIcCcDbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIaNbIaNbIbIbIbGbIbIbIbIbIbIbIbIbIbGaEaEbIbIbIbIbIbIbIbIbIbIbIbIbvcIcYbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbIcGeBaxeBbIbIbGbIbIcJcJcJcJbIcKbIbGbZbZbIaFbIaGbIaGbIaGbIbpbIbIbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGaLcCcCbIcCbIbIbJbIbIaLcLcMcMaLcNbIbJbIbIbIbIbIbIbIbIbIbIbIbIbIbIbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbGbpbIbIbobIaHbIaKbIaGbIaJbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabGbGbGbGbGbGbGbGbGbGbGbGbGbGaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMbMbMbMbMbMbMbMbMbMbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMchchcOcOcPcPcPbOcOcObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQcRbObObObObOcScRchcheRbMcTbOcTbOcTbOcTbOcTcUcTcVcTbMbObObObObObObObObOcscsbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcWcRbOcXcXbOdfcZcRbObObObQbObObObObObObObObObObObOdabMbObObObObOdbdcddcRbObOcObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdecRcSdeazbOdfaAbObObObObQbObOcTbOcTbOcTbOcTbOcTbObObQbObObObOdfdcdfeDbOdgbObObObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdabOdfdfbObObObObOcscsdabMdabObObObObObObObObObObOdabMbOdacUcUdfdbbOdhbOdibObOdabMbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQcRbOdjdkdldjbOdmbRbRbMbMcTbOcTbOcTbRbRbRcTbOcTbOcTbMbMbRbRcVbObObOdnbOdobObObObMbMbMbMbMbMbMaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcQbObOdjdpdldjbOdmbRbRbMbMcTbOcTbOcTbRbRbRcTbOcTbOcTbMbMbRbRcVbOdnbObObOdqbObObObMbMbMbMbMbMbMaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdabOcXcXbObObObObOcscsdabMdabObObObObObObObObObObOdabMbOdadrbOdrbOdsbObObObObOdabMbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMeEcRcQazaSbOdfdvcRbObObObQbObOcTbOcTbOcTbOcTbOcTbObObQbObObObOdnbOdwdndxbObObObObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMdybObOdfbObObOdzcRbObObObQbObObObObObObObObObObObOdabMbObOdrbOdAbOdrbObOdwbOcObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMcScRbObObObOdfdycRchchbObMcTbOcTbOcTbOcTbOcTbOcTbOcTbMbObObOdwbObOcPdBbOcscsbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMbMchchdrbOdrcPdrbOcOcObMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabMbMbMbMbMbMbMdCbMdCbMbMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}
+
+(1,1,4) = {"
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahaaaaaaaaaaaaaaaaaaaaaaaaacacacacacacacacacacacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahahahacacacacacacacacacacacacadaeagaDaeadaeaDagaeadaeagacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabiahaiajameHaiahaeaeeIeJakaQeiagevewexagaeaeaeaeaeaeaeaeaeaeaeaeaeacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahaTbzbHdteTahagaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahduaRamaRaRafaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaebqbqbqbqaeaeaeaeaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahduaRaRamaRahedaeaefkaeaeaeaeaeaeaeekfkaeaeaeaeaeaeaeaeaebredaeaebsaeaeaeaeaeacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahecaRamaRaRahaeaeaealalagaeaeaeaeaeekalalagaeaeaeaeaeaeaealalagaeaeaebtaeaeaeaeaeacababababegaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahehamaRamaRahedaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeedaeaebuaeaeaeaeaeacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahejamaRaRaRafaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeekekekaeaeaeaeaeaeaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahelaRaRamaRahagaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeaeacacacacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabiahaieTaUaUaiahaeaeemenaeaeanagaeaDaDagaeaeaeaeaeaeaeaDaDaeaeaeagaoacaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaahahahahahapaperereretereraoererereretaeaOaganaeaeaeaeagaOaeaeacaoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaafmfmfmfmfmfmfmapapapapapaaaaaaaaaaaaaafnaaaaaaaaerfoereraoerfoeretererfoereraofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmaaaaaaaaaaaaaaaaaaaaaa
+fmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfm
+fmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmaofmfmfmfmbFfmfmfmaofmfmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfm
+fmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmaofmfmfmbFfmfmfmfmfmaofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfm
+fmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmfmaofmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfmfm
+aaaaaaaaaaaaaaaaaaaafmfmfmfmfmfmfmfmapapapapapapapapapfmaafnaaaaaaaaaaaaaaaafnaaaaaaaaaaererereraoapapapapapapapfmfmfmfmfmfmfmfmaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVfperaoerererererfpereraoerererererfpeeeeauasaqaqeueoepeqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeyaVaWaXaWbmaYaYaYaZaVeeeeasauavauataPauavauasatauavauaPatatatatataqaqatatatateNaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbabbaWaWaWaWaWaWaVatatatatatatatatatatatatatatatatatatatatatataqatbwatbwatatfaaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWeKaWaWaWaWaWaWbdatatatatatatatatatatatbxatatatatatatatatatatbEatatatatatatatfbaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWbyaWbeaVauatatatatefatateGatatflatatbxatatatesaIaIflaqauatbwatbwatatfcaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbAaWaWaWaWaWaWaWaVaBaBatatatatatatauaBaBaBauatatezeAatesaBaBauaqatatatatatatatfdaqaqaqaqaqaqfeaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWaWaWaWaVaBaBatatatbxatateLaBaBaBeMatatatatatesaBaBauaqatatatatbwatatffaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWaWaWaWaWaWaWbeaVauatatatatatatatatfgfhfhatatatbxatatatePaMeQaqaubwatatatatatfiaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVbaeCaWaWaWaWaWaWbdatatatatatbxatatatatatatbxatatatatatatbCatatbEatatatbwatbwatfjaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaWeCaWaWaWaWbDaWaVatatatatatatatatatatatatatatatatatatatatatataqatatatatatatfaaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaeyaVaWeCaWaWaWaWaWaWaVeeeeatauatauatatauatauatatauatauatatatatateOaqaqatbwatatataqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaVararararaCararararaCararararaCararareeeeaueSaqaqeVeVeUeUaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaVaVaVaVaVaVaVaVaVaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarararararaqaqaqaqaqaqaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+eFaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+"}

@@ -1,0 +1,63 @@
+
+/mob/living/simple_animal/hostile/alligator
+	name = "alligator"
+	desc = "probably not safe to get close to it..."
+	icon = 'icons/mob/animal_big.dmi'
+	icon_state = "alligator"
+	icon_living = "alligator"
+	icon_dead = "alligator_dead"
+	icon_gib = "alligator_gib"
+	speak = list("hisss","rrrww!","FFFF!","krrrr")
+	speak_emote = list("bellow", "hiss")
+	emote_hear = list("bellows","hisses","snaps")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	move_to_delay = 12
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "pokes"
+	stop_automated_movement_when_pulled = FALSE
+	maxHealth = 120
+	health = 120
+	melee_damage_lower = 20
+	melee_damage_upper = 30
+	mob_size = MOB_LARGE
+	predatory_carnivore = 1
+	carnivore = 1
+	can_bite_limbs_off = TRUE
+	faction = "neutral"
+	hostilesounds = list('sound/animals/alligator/alligator_grunt.ogg')
+	has_fat = FALSE
+
+
+/mob/living/simple_animal/hostile/mirelurk
+	name = "mirelurk"
+	desc = "Looks like a huge crab."
+	icon = 'icons/mob/animal.dmi'
+	icon_state = "mirelurk"
+	icon_living = "mirelurk"
+	icon_dead = "mirelurk_dead"
+	icon_gib = "alligator_gib"
+	speak = list("click","crick!","click!","click")
+	speak_emote = list("snaps", "hiss")
+	emote_hear = list("bellows","hisses","snaps")
+	emote_see = list("stares ferociously", "stomps")
+	speak_chance = TRUE
+	move_to_delay = 12
+	see_in_dark = 6
+	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	response_help  = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm   = "pokes"
+	stop_automated_movement_when_pulled = FALSE
+	maxHealth = 2000
+	health = 2000
+	melee_damage_lower = 20
+	melee_damage_upper = 30
+	mob_size = MOB_LARGE
+	predatory_carnivore = 1
+	carnivore = 1
+	can_bite_limbs_off = TRUE
+	faction = "neutral"

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "repository": "Civ13/Civ13",
+  "channel_id": "UCFRx_n3Mh3FfvL9yOUfG-yw",
+  "channel_handle": "@valzartech8995",
+  "privacy": "public",
+  "source": {
+    "run_id": 1,
+    "run_attempt": 1,
+    "workflow_id": 1,
+    "workflow_path": ".github/workflows/gameplay-capture.yml",
+    "event": "pull_request",
+    "head_branch": "replace-with-reviewed-source-branch",
+    "commit": "0000000000000000000000000000000000000000",
+    "pr": 1,
+    "owner": "replace-with-source-owner"
+  },
+  "artifact": {
+    "id": 1,
+    "name": "gameplay-video-replace-with-exact-artifact-name",
+    "archive_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "bytes": 1
+  },
+  "clip": {
+    "path": "gameplay.mp4",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "bytes": 1024,
+    "duration_seconds": 20,
+    "content_type": "video/mp4"
+  },
+  "metadata": {
+    "title": "Replace with factual Civ13 change title",
+    "description": "Replace with the demonstrated change, exact tested commit, PR and known limitations. Review the complete clip first.",
+    "made_for_kids": false,
+    "contains_synthetic_media": false
+  },
+  "review": {
+    "classification": "genuine-gameplay",
+    "reproduction": "Replace with actual recorded reproduction steps.",
+    "capture_context": "Replace with actual client, map, capture context and evidence owner.",
+    "known_limits": "Replace with fixture adaptations and untested behavior; synthetic footage is ineligible.",
+    "content_review": "Replace with a full-clip privacy, audience and rights review; include what the clip actually demonstrates."
+  },
+  "approval": {
+    "issue_number": 1,
+    "comment_id": 1
+  }
+}

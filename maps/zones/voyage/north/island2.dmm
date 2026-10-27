@@ -1,0 +1,128 @@
+"aa" = (/mob/living/simple_animal/hostile/dinosaur/trex,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"ab" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/hostile/dinosaur/trex,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"ac" = (/obj/item/stack/material/hemp,/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"aM" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/tallgrass,/obj/structure/wild/rock,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"aO" = (/obj/item/stack/material/hemp,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"bh" = (/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"bN" = (/mob/living/simple_animal/hostile/dinosaur/dimetrodon,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"ce" = (/obj/item/stack/material/hemp,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"cS" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/top)
+"ed" = (/obj/structure/wild/smallbush,/obj/item/stack/material/hemp,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"ex" = (/obj/structure/wild/jungle/acacia,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"eO" = (/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/underground,/area/caribbean/sea/top)
+"gI" = (/obj/item/stack/material/hemp,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"jG" = (/obj/structure/wild/jungle/acacia,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"kS" = (/obj/structure/wild/bush,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"kW" = (/obj/structure/wild/junglebush,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"ly" = (/turf/floor/dirt/underground,/area/caribbean/sea/top)
+"mH" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"mR" = (/obj/structure/wild/jungle/acacia,/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"nf" = (/obj/structure/wild/rock,/mob/living/simple_animal/hostile/dinosaur/dimetrodon,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"oj" = (/obj/structure/wild/flowers,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"ok" = (/obj/structure/wild/jungle/acacia,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"oE" = (/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/flooded,/area/caribbean/sea/top)
+"oY" = (/obj/structure/wild/tallgrass,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"pF" = (/obj/structure/wild/tallgrass,/obj/structure/wild/flowers,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"qb" = (/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"qm" = (/mob/living/simple_animal/hostile/dinosaur/dimetrodon,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"sy" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/dirt/flooded,/area/caribbean/sea/top)
+"sH" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/smallbush,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"tY" = (/turf/floor/dirt/flooded,/area/caribbean/sea/top)
+"ux" = (/obj/structure/wild/jungle/acacia,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"vk" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"vM" = (/obj/structure/wild/bush,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"vO" = (/obj/structure/wild/flowers,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"vP" = (/obj/structure/wild/largejungle,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"wT" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"wW" = (/obj/structure/wild/bush,/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"xf" = (/obj/structure/wild/bush,/obj/item/stack/material/hemp,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"yN" = (/obj/structure/wild/flowers,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"zz" = (/turf/floor/beach/water/shallowsaltwater,/area/caribbean/sea/top)
+"zF" = (/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"zU" = (/obj/structure/wild/tallgrass,/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"Ab" = (/obj/structure/wild/rock,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"Ae" = (/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"Ag" = (/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"AN" = (/obj/structure/wild/tallgrass,/obj/structure/wild/smallbush,/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"AY" = (/obj/structure/wild/junglebush,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"Bp" = (/obj/structure/wild/rock,/turf/floor/dirt/underground,/area/caribbean/sea/top)
+"BV" = (/obj/item/stack/material/hemp,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"CD" = (/obj/structure/wild/smallbush,/obj/item/stack/material/hemp,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"Em" = (/obj/structure/wild/smallbush,/mob/living/simple_animal/hostile/dinosaur/compsognathus,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"EW" = (/obj/structure/wild/flowers,/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"GG" = (/obj/structure/wild/rock,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"GQ" = (/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"IB" = (/obj/structure/wild/largejungle,/obj/structure/wild/flowers,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"LR" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/flowers,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"OW" = (/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"OY" = (/obj/structure/wild/largejungle,/turf/floor/beach/water/swamp,/area/caribbean/sea/top)
+"PN" = (/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"Sw" = (/mob/living/simple_animal/hostile/dinosaur/velociraptor,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"TT" = (/obj/structure/wild/jungle/acacia,/obj/structure/wild/largejungle,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"TU" = (/obj/structure/wild/largejungle,/obj/structure/wild/smallbush,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"Ua" = (/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"UH" = (/obj/structure/wild/smallbush,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"Wa" = (/turf/floor/grass/jungle/savanna,/area/caribbean/sea/top)
+"WK" = (/obj/structure/wild/smallbush,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"WQ" = (/mob/living/simple_animal/hostile/dinosaur/pachycephalosaurus,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"XH" = (/obj/structure/wild/rock,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+"YA" = (/obj/effect/landmark{name = "Grappling Hook area - do not block"},/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"YE" = (/obj/structure/wild/tallgrass,/turf/floor/dirt/jungledirt,/area/caribbean/sea/top)
+"YF" = (/obj/map_metadata/voyage,/turf/floor/beach/water/deep/saltwater,/area/caribbean/sea/top)
+"YJ" = (/obj/structure/wild/tallgrass,/obj/structure/wild/flowers,/turf/floor/grass/jungle,/area/caribbean/sea/top)
+
+(1,1,1) = {"
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+YFOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+"}
+
+(1,1,2) = {"
+GQUaGQGQWKqbGQlylyGQUaUauxUaGQGQGQGQGQGQGQUaBVUaUaGQGQGQGQGQGQGQGQGQGQGQGQGQUaUaUaqbGQUaUaWaGQAeGQUaGQjGGQGQGQGQWKGQjGGQqbqbqbOYqbUaGQGQGQGQUaGQGQGQGQ
+GQjGGQGQaOqbGQGQGQUaBVPNUaUaGQGQokqbGQGQUaGQUaUaGQvPUaUaUaUHvOUaUaGQjGGQUaUaGQGQGQqbYEYEGQWaWaGQGQUaUajGGQqbGQGQGQGQGQWKGQqbqbqbGQUaGQGQGQGQBVAeqbokqb
+UaGQUaqbyNqbqbjGUaUaUaUaUaUaGQGQGQqbqbUaUaCDGQGQGQGQGQAbGQGQGQUaUaUaGQaOGQUaWKGQqbqbIByNGQGQlylylyUajGGQUaqbqbqbqbaOGQGQGQGQGQGQUaGQaaGQjGGQqbvkqbqbqm
+UaabUaqbGQGQlylyWKGQojYEYEUaGQGQGQGQqbqbGQGQYEYEGQjGGQGQWaaOGQlylylyGQYEGQGQlyGQmRqbqbqbqbqbGQGQGQGQUaGQGQGQgIqbqbGGGQGQjGGQGQYEoYUaUaGQGQojqbqbedGQqm
+GQUaGQUaGQaOAbGQaOGQYEkSGQGQGQGQPNGQqbGQGQGQGQGQGQaOGQGQWaSwqbqbqblyGQYEGQGQlylylylyGQGQjGGQUaUazFGQWKYEYEYEGQGQokqbGQGQGQWaGQGQUaUaUHoYANojqbGQGQaOGQ
+GQvPUaAgGQGQWaWaGQWaGQWalylyGQGQGQWaWalyUaUajGUaojGQGQUaGQqbqbGQGQAbojWaWaaOGQGQlylyGQaOGQGQGQUaUaGQGQlylylyGQkSUaPNPNGQWaojGQGQUaGQUaGQaOGQokqbGQWaGQ
+GQGQGQGGqbqbqbGQGQWaWaWaGQlyBpGQWaEWWalyUaBVUaUaGQTUGQUaqbqbGQqbWaGQexmHWaGQGQUaUaWQGQGQGQWaWaWaoYWaGQlylyUaUaUaUaqmGQWaWaWaWaUaUaGQGQqbGQqbqbUaUaexWa
+GQlylyqbqbGQqbaOGQGQWajGGQaclyGQWaWaGQGQUaUaBVUalyGQGQYEYEYEqbqbqbWaWaWaWaGQexUaUaWaGQUauxEWWaqbqbWaGQWaGQGQUaGQGQGQGQWaGQWaGQUaGQGQGQqbqbqbqbUaGQxfGQ
+ojGQlylyqbOYGQUaGQWaWaGQGQGQlylyWaWaaOYEUaUabNGQlyUaUaqbqbqbqbUaUaWaGQWaGQGQexWaUaGQGQUaUaGQGQqbqbqbqbGQjGGQUaGQGQGQAYWaAbXHUaWKGQTTGQlylyWaUaUaGQGQGQ
+GQwTGQWaWaGQGQUaUaGQGQUaGQqbqbGQaMWaGQUaXHGQGQUaUaWKGQqbojUaBVUaUaGQWaWaPNWaWaGQBVGQUaUaqbqbqbGQqbGQqbGQGQSwUaGQGQjGkWGQGQUaYEaOUaGQlylyGQUaWaWaWaqbGQ
+GQGQceWaceWaWaWKGQkWUaGQOYqbSwGQlylyWKGQPNUaqbGQGQGQWaEWUaUaUaGQYJGQjGWaWaWaGQUaGQGQYEGQGQGQGQaOUaUaUHUaGQzUGQaOGQGQUaUavOojYEWaGQGQUavMWaGQWaGQGQGQqb
+GQojWaGQGQGQWalyGQUaaOqbqbqbWQGQlylylylyUaqbqbGQWaWaWasHUaWaGQGQoYUaGQUaGQUaUaoYGQGQaOGQWaWaUaUaWaWaGQexWaGQGQUaqbGQGQGQqbGQYEGQlyGQbhWaWaojjGGQvkOYqb
+PNojGQjGGQUalylyYEUaGQqbqbGQUaUalyGQGQGQvkvkGQGQGQWaWaWaWajGGQGQGQGQaOGQqbwWvkGQWKWaGQojUaUaGQWaGQWaGQWaGQGQqbqbGQlylyUaqbqbqbGQGQlylyWaGQojlylylyqbGQ
+GQqbqbGQUaUaGQGQUavOGQqbGQUaUaUaUaPNGQGQqbUaGQjGGQWazFGQGQlylyPNGQGQqbqbqbqbqbqbqbqbkWUaUaGQGQjGGQGQGQGQqbqbOYqbqbWKlyGQUaUaqbjGGQlylynfqbGQlyEmUaqbGQ
+qbqbqbGQUaUaUaUaUaLRGQGQGQUauxUaBVGQUaGQGQUaGQqbqbojGQUaUaUaUaGQGQqbGQGQqbqbUaGQlylyUaUaGQUaGQUaGQGQGQGQGQqbGQGQGQpFlyeOGQUaUaGQGQUaUaqbqbGQGQaOUaUaGQ
+qbqblyGQuxUaUaGQUaGQGQGQaOWKUaUaUaGQGQqbqbGQGQGQGQGQUaUaGQUaUaUajGGQjGGQGQqbUalylyGQUaGQGQUaUauxUaGQWKGQUaGQGQjGGQUaGQGQUaGQjGGQGQGQqbGQvPYEoYUaGQGQWa
+GQGQAbGQGQGQGQaOGQGQGQGQGQGQGQAbGQWaWaGQGQGQGQaOGQGQUaGQWaWaUaGQGQGQGQGQGQGQGQGQWKGQGQjGUaUaUaGQGQGQGQUaWaWaGQWaGQGQGQaOGQSwGQGQWaWaWaWaUaGQGQGQWaWaGQ
+WaWaWaWaGQWaWaWaGQWaWaGQWaWaWaGQGQGQWaWaWaWaAeGQWaWaWaWaWatYtYtYtYtYWaWaWaWaUaWaWaGQAbGQGQGQGQWaWaGQGQGQjGGQGQGQWaWaGQWaWaWaWaWaWaGQGQGQWaWaWaWaexWaWa
+WaWaWaWaWaWaWaGQWaWatYtYtYWaWatYtYtYtYtYWatYtYtYtYtYtYWaGQtYtYtYtYtYWatYtYtYtYtYWaWaWatYtYoEWaWatYtYtYtYWaWatYtYtYWatYtYtYtYtYWaWaexWaWaWaGQWaWaWaWaWa
+tYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYzztYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYWaWatYtYtYtYtYtYtYtY
+tYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYzztYtYzztYtYtYtYtYtYtYsytYtYzzzztYtYsytYtYtYtYtYtYtYzzzztYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYtYzzzztYtY
+zzzzzzzzzztYtYzztYtYzztYzzzzzzzzzzzzzzzzzzzzzzzzzztYtYtYcSzzzzzzzzzztYsytYzzzztYtYtYtYzzzzzzzzzztYtYtYtYtYzztYtYzzzzzzzztYzzzzzztYzzzzzzzzzzzzzzzzzzzz
+zzzzOWzztYzzzzzzzzzzzzzzOWOWOWzzOWOWzzzzOWOWOWOWzzzzzzzzcSOWzzzzzzzzzzcSzzzzzzzzzzzzzzzzzzOWOWzzzzzzzzzzzzzzzzzzzzzzzzOWzzzzzzzzzzzzOWOWOWzzzzzzOWOWOW
+OWOWOWzzzzzzOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWzzOWOWYAOWOWOWOWOWOWYAOWOWOWzzOWOWOWOWOWOWOWOWOWzzOWOWOWOWzzzzzzzzOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+OWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWYAOWOWOWOWOWOWYAOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOWOW
+"}

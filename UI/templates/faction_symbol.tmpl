@@ -1,0 +1,35 @@
+<!--
+	Interface for the faction symbol editor
+	See: code/game/mob/groups/faction_symbol.dm
+-->
+<div class='civ-root'>
+<div class='civ-panel'>
+
+<h2>Design your faction's symbol</h2>
+<div class='item'>
+	<div class='itemContent'>32x32 pixels -- the exact size the fixed shapes already use on your banner, so this drops straight into the same slot.</div>
+</div>
+
+<div id='fs-toolbar'>
+	<span id='fs-swatch' style='background-color: {{:data.color}};'></span>
+	{{:helper.link('Pick color', 'pencil', { 'pick_color' : 1 })}}
+	<span class='linkActive {{:data.tool === "paint" ? "civ-active" : ""}}' data-href='{{:NanoUtility.generateHref({ "set_tool" : "paint" })}}'>Paint</span>
+	<span class='linkActive {{:data.tool === "bucket" ? "civ-active" : ""}}' data-href='{{:NanoUtility.generateHref({ "set_tool" : "bucket" })}}'>Bucket fill</span>
+	{{:helper.link('Stamp a shape...', 'copy', { 'stamp' : 1 })}}
+	{{:helper.link('Undo', 'arrowreturnthick-1-w', { 'undo' : 1 })}}
+	{{:helper.link('Clear to blank', 'trash', { 'clear' : 1 })}}
+	{{:helper.link('Save', 'circle-check', { 'save' : 1 })}}
+</div>
+
+<div id='fs-canvas-wrap'>
+	<div id='fs-canvas' data-tool='{{:data.tool}}' data-color='{{:data.color}}'>
+		{{for data.grid :px:idx}}
+		<div class='fs-cell' data-x='{{:(idx % 32) + 1}}' data-y='{{:Math.floor(idx / 32) + 1}}' style='background-color: {{:px}};'></div>
+		{{/for}}
+	</div>
+</div>
+
+<div id='fs-hint'>Click -- or click and drag to draw a line -- with the brush; Undo takes back the last change (a whole drag counts as one change). "Stamp a shape" seeds the canvas with one of the original 6 shapes as an editable starting point -- it's not locked, you can keep drawing over it. Nothing is visible on your banner until you Save.</div>
+
+</div>
+</div>
