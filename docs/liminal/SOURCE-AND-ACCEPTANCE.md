@@ -122,6 +122,8 @@ Keep design changes separate from implementation commits and drafts.
    original marker/service interactions, shared idempotent progress, gate/escape
    registry and elapsed-time extraction/failure state. Do not inherit Lights Out
    jungle constructor hazards or unreviewed timing. Keep live map selection off.
+   Enforce the 1990-default equipment/prop/recipe/research policy from
+   ERA-AND-SCENARIOS.md; do not substitute a year label for native filtering.
 5. **Threat/light/audio pass:** use only approved existing capabilities; prove
    real sound investigation, door/collision behavior, safe threat sites, light
    visibility and action pacing. No new battery system or imported assets.

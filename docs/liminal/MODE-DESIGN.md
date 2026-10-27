@@ -26,6 +26,12 @@ this document does not activate a server mode or authorize native runs.
 - Start with steady approved lights and existing handheld flashlights. Their
   audited unlimited-power behavior means battery scarcity is not a design input.
   Fuel-burning lantern/torch mechanics are distinct; no battery system is added.
+- Use configurable scenario year 1990 by default, within the initial 1990-1993
+  policy. Period equipment, props, recipes and research need explicit allowlists;
+  a map title or broad modern era is insufficient. See ERA-AND-SCENARIOS.md.
+- The powered-gateway expedition/colonization scenario is separately owned.
+  Share an immutable level template contract, not escape objectives, gateway
+  power logic or an inhabited world's mutable state. Never reseed/reset it.
 
 ## Mode loop and state
 

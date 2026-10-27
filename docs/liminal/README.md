@@ -2,6 +2,8 @@
 
 Read [mode loop and decisions](MODE-DESIGN.md), [authored room contracts](ROOM-GENERATION.md)
 and [source, export and acceptance plan](SOURCE-AND-ACCEPTANCE.md).
+The [early-1990s and shared-level policy](ERA-AND-SCENARIOS.md) separates the
+escape scenario from the independently designed powered-gateway expedition.
 The original [room catalog](room-archetypes-v1.json) and
 [bounded example config](liminal-example-config.json) freeze the small topology
 proof's design inputs. They contain no copied art or native mode registration.
