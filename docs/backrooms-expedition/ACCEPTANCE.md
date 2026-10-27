@@ -63,6 +63,15 @@ Later separate source slices require these tests before activation:
   oxygen mechanic is assumed. Initial rooms need none of those hazards.
 - Shared generator export replay/parse-back, no escape flags required for return,
   unreachable branch/blocked egress rejection and no duplicate generator code.
+- Functional room dressing: against-wall equipment retains a usable front
+  approach; open-floor features preserve construction plots and connected
+  walking clearance; narrow passages cannot receive dense blockers. Validate
+  dressed geometry, deterministic manifest replay and rejection of a prop in a
+  gateway/rescue/socket reserve. Save/outage recovery must preserve removed or
+  built furnishings without regenerating the template's initial dressing.
+  Review office desk/chair/filing/computer groupings against their actual room
+  purpose and 1990 palette, including a deliberately unfurnished-room case;
+  verify source prop placement is not mistaken for interactive machinery.
 - Bounded two-plane lighting, weather/temperature policy, ordinary hunger and
   inventory, save/import memory headroom; population/capacity remains a design
   target until measured at the exact footprint and body count.

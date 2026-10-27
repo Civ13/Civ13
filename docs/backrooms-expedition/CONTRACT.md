@@ -34,6 +34,10 @@ Required producer contract, to be supplied through a separately pinned dependenc
 5. Reject unsupported LEVEL_PORTAL sockets. They are unsupported in the current
    room proof; this scenario binds explicit anchors at its native gateway seam
    only after reviewed export. Room connection metadata is not an actual portal.
+6. Provide semantic against-wall/open-floor/narrow-passage furnishing slots,
+   functional room themes and deterministic initial placement records. Preserve
+   construction plots and every arrival, return, rescue, socket and work approach;
+   validate the dressed geometry, not just its previously empty room graph.
 
 Do not assume native z2, room IDs or current catalog digest remain constant in a
 new producer version. The colony binding is immutable and rejects mismatches.
@@ -141,9 +145,38 @@ Baseline `10d264e5896221b34949ee4b67c0fd2b94bde249` observations:
 | code/modules/1713/radio.dm | Existing frequency/radio types; cross-z availability/occlusion needs native testing and policy |
 | code/modules/1713/lantern.dm | Existing flashlights; do not invent battery scarcity from their appearance |
 | code/modules/1713/modern_terminal.dm | Powered local cable text terminal; not an Internet/email system |
+| code/game/objects/structures/table.dm, filingcabinet.dm; code/modules/1713/structures.dm | Wooden table work surfaces, functional paper cabinets and the 1980_computer_on prop are candidates for purposeful office dressing; type presence does not admit a desk assembly, working computer or worn/native visual result |
 | docs/new-z-budget.md, tests/new_z_budget | Dynamic allocation is held UNMEASURED; no new production bypass |
 | docs/liminal/ROOM-GENERATION.md on generator-owner branch | Shared abstract authored rooms; native teleporting explicitly unsupported |
 
 Use in-repository doorway/computer/light/material art only after exact state and
 constructor audits. No new image generation or third-party asset transfer.
 Full-game acceptance needs actual captures, never topology diagrams as gameplay.
+The Art of the Deal may inform office composition and environment-appropriate
+asset use; its room raster, object coordinates and generic modern loadouts are
+not inputs copied into the expedition template.
+
+## External code references and import limits
+
+These pinned source files were read as design references. No external code,
+layout, sprite or audio is copied into this scenario:
+
+| Reference | Useful observation | Boundary for this scenario |
+| --- | --- | --- |
+| [BackroomStation modular loader](https://github.com/Posshum/backroomstation/blob/6c247ffb57193e2e550eb8ea9f3112eedbad795c/code/modules/mapping/modular_map_loader/modular_map_loader.dm) | Selects an authored DMM module from a configuration key and offsets its load origin using a connector marker | Marker alignment is not a multi-socket topology solver, collision proof or progression validator. Do not inherit its asynchronous live-loading lifecycle or random selection as our generation contract. |
+| [Yogstation maintenance dressing](https://github.com/yogstation13/Yogstation/blob/ae2886be95c234202212a3090ee7637173ea2c1d/code/datums/mapgen/dungeon_generators/maintenance_generator/maintenance_generator.dm) | Separates against-wall, open-floor and narrow-hallway feature lists; its Backrooms theme supplies floor/wall/feature choices | Reuse the semantic distinction in our own profile requirements. Independent pick/weighted selection is not deterministic replay or a return-route proof. Its Backrooms subclass disables APC/firedoor generation; do not import a station power system with the dressing idea. |
+
+Other researched lifecycle/teleporter patterns remain candidates for a separately
+pinned source audit: distinguishing a template key from an allocated round-level
+does not establish durable colony identity, and checking powered/engaged state
+does not make sequential movement of buckled entities atomic. Keep explicit
+instance lineage and the single-actor crossing transaction in this contract.
+
+Before proposing any code or asset port, record the exact repository revision,
+file path/hash, applicable per-file license and notices, dependencies and planned
+modifications, then review compatibility with Civ13 distribution. A repository's
+AGPL or MIT label is not blanket clearance for its artwork/audio or every file.
+Maintrooms-BG's NC-licensed candidates, mixed Goon artwork and unattributed audio
+remain held; consideration is not import approval. Existing Civ13 art and our own
+authored layouts remain the first implementation choice. This reference audit
+does not clear any third-party file for copying or native execution.

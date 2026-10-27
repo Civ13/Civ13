@@ -133,6 +133,59 @@ Never regenerate from seed over saved construction or reconstruct consumed loot.
 No offline survival simulation is added: stopped-server time spends no food,
 fuel or injury time. Online disconnected bodies follow existing body rules.
 
+## Purposeful furnishings within shared room profiles
+
+Room function determines dressing before decorative variety. Arrival/orientation
+rooms need readable route information and clear staging space; utility/store
+rooms need reachable paid supply and repair sites; colony rooms need genuinely
+empty construction plots. Shelves, tables and repeated office props should make
+those roles legible rather than populate every free tile with interchangeable
+clutter. Exact Civ13 types and visual states still require the native palette
+audit; these are semantic placement rules, not new available furniture.
+
+Office and archive rooms should read as workplaces: wooden work desks with a
+usable chair/standing approach, filing cabinets with reachable drawer fronts,
+and period computer positions where the room's function calls for them. Keep
+records/storage next to plausible work areas; do not scatter desks and terminals
+through bare service corridors or use industrial machinery as generic office
+decoration. A utility room may contain repair equipment and supply racks; an
+empty liminal room or reserved colony plot should remain intentionally empty.
+Room themes determine whether furniture is appropriate at all.
+
+An office arrangement in [The Art of the Deal](https://github.com/Civ13/Civ13/blob/10d264e5896221b34949ee4b67c0fd2b94bde249/maps/special/the_art_of_the_deal.dmm)
+can inform proportions, work groupings and asset purpose without copying its
+coordinates or floor plan. Source-backed Civ13 palette candidates include
+`/obj/structure/table/wood` as a wooden work surface,
+`/obj/structure/filingcabinet` for records, and
+`/obj/structure/props/computerprops` with `1980_computer_on` for a period computer
+prop. A table is not automatically a desk assembly, and a computer sprite is not
+a working powered terminal: native chair/interaction/appearance selection and
+the 1990 equipment policy still require review. These candidates do not alter
+the room generator, gateway supply or initial item grants.
+
+Use three placement classes in the shared room-profile contract:
+
+| Class | Placement intent | Mandatory exclusion |
+| --- | --- | --- |
+| Against wall | Shelving, wall-facing repair/storage sites and route information, with an accessible front approach | Door/socket apertures, pad footprints and equipment-use reserves |
+| Open floor | Approved freestanding tables/columns or deliberate survey features in sufficiently large rooms | Connected walking clearance, colony construction plots and rescue staging |
+| Narrow passage | Sparse approved nonblocking markings or wall-mounted details; an empty passage is valid | Dense props, loose supply piles and any reduction of return-route clearance |
+
+The shared generator owner supplies these semantic slots and deterministic
+dressing choices; the expedition adapter does not implement another room
+generator. Bind choices to the immutable template's room/slot IDs, exact seed,
+configuration, catalog and palette version. Record initial placements and item
+quantities in the manifest, validate collision/reachability after dressing, and
+reject blocked approaches rather than silently deleting mandatory content.
+Survey/utility sites cannot be hidden behind furniture or an escape-only flag.
+
+This distinction is informed by Yogstation's pinned maintenance dressing pass,
+linked in CONTRACT.md. Its independent random selections and any random door
+passes are not our seed/replay or progression proof. Native adapter clearance,
+our own authored layouts and validated instance/return contracts remain
+authoritative. Player-built furniture, removed props and spent stores become
+mutable instance state; neither an outage nor save restoration reruns dressing.
+
 ## Power and doorway
 
 Gateway energy uses integer **scenario charge units**, not watts, PU, cable
