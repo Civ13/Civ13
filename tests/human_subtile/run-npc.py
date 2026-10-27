@@ -4,10 +4,14 @@ NPC runtime admission and real-client rendering require separate scope review.
 Reuses the existing 516.1688 compiler allowlist, owned Job and zero-socket guard.
 """
 import argparse
+import hashlib
 import importlib.util
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import os
+import re
+import subprocess
+import tarfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -16,8 +20,74 @@ current = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(current)
 
 
+def prepare_source(root, out):
+    """NPC staging uses a bounded on-disk tar, avoiding Windows pipe-tail stalls.
+
+    Historical preparers remain unchanged. Only exact Git objects enter the tar;
+    retain its hash and the same per-file/aggregate extraction bounds.
+    """
+    current.require(not out.exists(), 'Evidence output must not already exist')
+    head = current.legacy.git(root, 'rev-parse', 'HEAD').decode().strip()
+    current.require(re.fullmatch('[0-9a-f]{40}', head), 'Expected exact Git commit')
+    wanted = ('civ13.dme', 'code', 'icons', 'sound', 'UI', 'interface', 'config', 'tests/human_subtile')
+    out.mkdir(parents=True)
+    archive = out / 'source.tar'
+    command = ['git', '-C', str(root), 'archive', '--format=tar', '--output=' + str(archive), head, '--', *wanted]
+    subprocess.run(command, check=True, capture_output=True, timeout=30)
+    current.require(archive.stat().st_size <= current.legacy.LIMIT_BYTES + 16 * 1024**2, 'Source archive byte bound')
+    stage = out / 'stage'
+    stage.mkdir()
+    originals = {}
+    total = 0
+    with tarfile.open(archive, 'r:') as source:
+        for member in source:
+            if member.isdir():
+                continue
+            name = PurePosixPath(member.name)
+            current.require(member.isfile() and not name.is_absolute() and '..' not in name.parts and
+                            member.size <= 256 * 1024**2, 'Unsafe NPC archive member')
+            total += member.size
+            current.require(total <= current.legacy.LIMIT_BYTES and len(originals) < current.legacy.LIMIT_FILES,
+                            'NPC source extraction budget')
+            target = stage.joinpath(*name.parts)
+            current.require(target.resolve().is_relative_to(stage), 'NPC source escaped stage')
+            current.require(member.name not in originals, 'Duplicate NPC archive member')
+            raw = source.extractfile(member).read()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+            originals[member.name] = dict(bytes=len(raw), sha256=current.legacy.digest(raw))
+    adaptations = {}
+    for relative in ('code/world.dm', 'code/controllers/mc/globals.dm'):
+        path = stage / relative
+        text = current.legacy.isolate_startup(relative, path.read_text(encoding='utf-8'))
+        path.write_text(text, encoding='utf-8', newline='\n')
+        adaptations[relative] = dict(original_sha256=originals[relative]['sha256'],
+                                     adapted_sha256=current.legacy.digest(path.read_bytes()))
+    text = (stage / 'civ13.dme').read_text(encoding='utf-8')
+    text = re.sub(r'^#include ".*\.dmm"\s*$', '', text, flags=re.M)
+    text += '\n#include "tests\\human_subtile\\mining.dm"\n#include "tests\\human_subtile\\probe.dm"\n'
+    dme = stage / 'human_subtile.dme'
+    dme.write_text(text, encoding='utf-8', newline='\n')
+    if not (stage / 'config/config.txt').exists():
+        (stage / 'config').mkdir(exist_ok=True)
+        (stage / 'config/config.txt').write_bytes(b'')
+    manifest = dict(head=head, suite='human', control='none', prepared_only=True,
+                    native_executed=False, original_bytes=total, original_git_files=originals,
+                    adaptations=adaptations, dme=dme.relative_to(out).as_posix(),
+                    archive=dict(bytes=archive.stat().st_size, sha256=file_digest(archive)),
+                    stage_files={p.relative_to(stage).as_posix(): dict(bytes=p.stat().st_size,
+                        sha256=current.legacy.digest(p.read_bytes())) for p in stage.rglob('*') if p.is_file()})
+    (out / 'source-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    return manifest
+
+
+def file_digest(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
 def prepare(out):
-    manifest = current.legacy.prepare(ROOT, out, 'human')
+    manifest = prepare_source(ROOT, out)
     current.adapt(out, manifest, 'tests/human_subtile/probe.dm',
                   '\t\t\thuman_subtile_fixture_headless()', '\t\t\tnpc_subtile_fixture()')
     current.adapt(out, manifest, 'tests/human_subtile/probe.dm',
@@ -26,6 +96,9 @@ def prepare(out):
     dme = out / manifest['dme']
     with dme.open('a', encoding='utf-8') as stream:
         stream.write('\n#include "tests\\human_subtile\\npc.dm"\n')
+    for relative in ('tests/human_subtile/probe.dm', 'human_subtile.dme'):
+        path = out / 'stage' / relative
+        manifest['stage_files'][relative] = dict(bytes=path.stat().st_size, sha256=file_digest(path))
     manifest['npc_scope'] = 'unowned vendor AI; no client authority adapter'
     manifest['runtime_executed'] = False
     (out / 'npc-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
@@ -80,8 +153,14 @@ def main():
     (out / 'compile.log').write_text(log)
     current.require(built.returncode == 0, 'NPC fixture compiler exit failed')
     current.legacy.validate_compile(log, dme.with_suffix('.dmb').name)
+    for relative, expected in manifest['stage_files'].items():
+        path = out / 'stage' / relative
+        current.require(path.stat().st_size == expected['bytes'] and file_digest(path) == expected['sha256'],
+                        'Compiler altered staged input: ' + relative)
     receipt = dict(head=manifest['head'], engine='516.1688', compile_passed=True,
-                   runtime_executed=False, native_client=False)
+                   runtime_executed=False, native_client=False, input_hashes_verified=len(manifest['stage_files']),
+                   artifacts={p.name: dict(bytes=p.stat().st_size, sha256=file_digest(p))
+                              for p in (dme.with_suffix('.dmb'), dme.with_suffix('.rsc'))})
     (out / 'compile-accepted.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps(receipt))
 

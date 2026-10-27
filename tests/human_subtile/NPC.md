@@ -59,6 +59,10 @@ roundtrip. It does not override NPC authority or attach fake clients.
 `--compile-only --byond-bin <directory>` uses the existing 516.1688 compiler and
 unchanged resource/socket/owned-process guard. There is deliberately no runtime
 launch mode. Compiling those scenarios does not establish their assertions pass.
+Its separate preparer writes a bounded local Git tar before extraction, avoiding
+the historical stream producer's Windows pipe-tail wait. It retains archive and
+input hashes, uses the same extraction/startup limits and checks every staged
+input again after compilation. Historical preparers and native guards are unchanged.
 
 NPC native execution, diagonal/corner interaction, pulling/client-handoff behavior,
 rendered smoothness, tile-boundary camera behavior and representative-load cost

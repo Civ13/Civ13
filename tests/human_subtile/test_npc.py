@@ -5,6 +5,7 @@ import importlib.util
 import math
 import re
 import subprocess
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -25,6 +26,39 @@ def section(text, start, end):
 
 
 class NpcContracts(unittest.TestCase):
+    def test_disk_archive_preparer_preserves_exact_git_and_historical_helpers(self):
+        spec = importlib.util.spec_from_file_location('npc_stage_runner', ROOT / 'tests/human_subtile/run-npc.py')
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'repo'
+            root.mkdir()
+            files = {'civ13.dme': '#include "maps/removed.dmm"\n',
+                     'code/world.dm': '/datum/global_init/New()\n\tinitialize()\n/world/New()\n\t..()\n\tstartup()\n',
+                     'code/controllers/mc/globals.dm': '/datum/controller/global_vars/New()\n\tinitialize()\n',
+                     'tests/human_subtile/probe.dm': '// committed probe\n'}
+            for name in ('icons', 'sound', 'UI', 'interface', 'config'):
+                files[name + '/fixture.txt'] = name + '\n'
+            for name, value in files.items():
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(value)
+            for argv in (['init', '-q'], ['add', '.'], ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-qm', 'fixture']):
+                subprocess.run(['git', '-C', str(root), *argv], check=True, capture_output=True, timeout=10)
+            (root / 'tests/human_subtile/probe.dm').write_text('// dirty probe must stay out\n')
+            (root / 'private.txt').write_text('not an input\n')
+            out = Path(directory) / 'prepared'
+            manifest = runner.prepare_source(root, out)
+            self.assertEqual((out / 'stage/tests/human_subtile/probe.dm').read_text(), '// committed probe\n')
+            self.assertFalse((out / 'stage/private.txt').exists())
+            self.assertEqual(manifest['archive']['sha256'], runner.file_digest(out / 'source.tar'))
+            self.assertNotIn('.dmm', (out / manifest['dme']).read_text())
+            self.assertIn('\treturn\n', (out / 'stage/code/world.dm').read_text())
+            with self.assertRaises(RuntimeError):
+                runner.prepare_source(root, out)
+        path = 'tests/human_subtile/run.py'
+        self.assertEqual(read(path), baseline(path))
+
     def test_prepared_runtime_oracle_rejects_false_green_receipts(self):
         spec = importlib.util.spec_from_file_location('npc_compile_runner', ROOT / 'tests/human_subtile/run-npc.py')
         runner = importlib.util.module_from_spec(spec)
