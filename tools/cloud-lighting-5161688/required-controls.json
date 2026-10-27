@@ -1,0 +1,24 @@
+{
+  "required": [
+    "occluded_oversize",
+    "clear_root",
+    "ordinary_lit",
+    "weather",
+    "intentional_fullbright",
+    "dynamic_to_fullbright",
+    "fullbright_to_dynamic",
+    "turf_replacement",
+    "save_import",
+    "sight_bypass",
+    "sight_restore",
+    "hud_lifecycle",
+    "fully_covered_warm",
+    "view_edge",
+    "other_oversized_assets"
+  ],
+  "prepared_in_this_pair": [
+    "occluded_oversize",
+    "clear_root"
+  ],
+  "native_acceptance": false
+}

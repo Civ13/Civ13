@@ -1,0 +1,26 @@
+{
+  "scene_revision": "ff67d89241336d55f456967ec596d5cd10358df6",
+  "reference_controller": "209e852bb81c25aaba53fa06ecf125ea532c7bc4",
+  "native_released": true,
+  "changes": {
+    "code/setup.dm": "e2bce7ee45d6764c4c39b7e06d73b4d64d904976d6721a388b152596cd6b1ade",
+    "code/world.dm": "8832d32c871cdfc607c3a0aed09dc57797b58c12c620405eff017d9f6ac42c30",
+    "code/processes/python.dm": "1185e881817874efe28313e59b2060d6ca13bebc01dd017ad45d68a08ed2f9e8",
+    "code/controllers/mc/globals.dm": "a66b66a8b5571aa7b3a87aef65c8eac9af6fb761236b7fab6b391debc7cc40cd",
+    "code/game/mob/mob_movement.dm": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b",
+    "code/game/mob/living/chat_overlay.dm": "b7a792ba0c27a42f13068b9b7e0614174d9912ce96c7967c6e13242edfe9444f",
+    "code/modules/admin/ToRban.dm": "1026edab8e3ffdf3b402d3bbb73ec327ea76d14b723922eb4e56fbb82e04fe48",
+    "code/modules/client/client_procs.dm": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba",
+    "code/modules/client/movement.dm": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "code/modules/error_handler/error_handler.dm": "673092be98d43a15db38228d6b3035e05f22f505706869e288b956f533ed5085",
+    "code/modules/statpanel/statpanel.dm": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db",
+    "code/modules/webhooks/webhooks.dm": "028f3eb8826ece60d9196e52ea5bea4368da5c180f773401b5de5857fa397cd1",
+    "code/modules/admin/verbs/bot_service.dm": "c6075be86aea81ff7ba72965eb14a3d39bb92b9379a5436d8be9234a164c8676",
+    "civ13.dme": "19670933186779826794682ad4d1e24c00caca2c7ca249b832a60fd360a49878",
+    "filming/capture_scene.dm": "37c783dd82ca3032a96fc028d9f0eba40ffe0dc582324ff1acc73442407e145c",
+    "filming/canopy.dmm": "ee276d5791e3d6e9ccadb7e5d3997b0a932341b9e65f3884c736c38a5c48bd72",
+    "filming/cloud.dmf": "bcbeb33a97520d8bcac69f3667b57a2238c08d267541508bf9a0b759d1330ce9",
+    "filming/scene.dm": "dd5f88186a1b33d2ba010c6005b89ccc5c6e6e185fbc0a752fb8f776d54e668c"
+  },
+  "mode_difference": "leading LIGHTING_COMPOSITION_V2 define only"
+}

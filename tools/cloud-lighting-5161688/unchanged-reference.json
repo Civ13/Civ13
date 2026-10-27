@@ -1,0 +1,41 @@
+{
+  "controller": "209e852bb81c25aaba53fa06ecf125ea532c7bc4",
+  "files": {
+    "acquire.py": "aa675b74f184ade853358e46eb5ac059234e26d5604ab1db7cc9a38fb5705c29",
+    "vendor.json": "c8900f77f5db139dde7dc964e8667da330681688869e4fb2db42bc6b1df690f9",
+    "cab-data-inspection.json": "2402c767bf71b302b7594ad56d4c31548c24e46e16ec96e6d972184e62fe51f8",
+    "inspect_package.py": "9dbb3eb0a5e3de48c5330cb791c4aa2d4f6362368c15595087731fb30fcb1a0e",
+    "guard_config.py": "c069a18b6e7839540b37c0463fbc9274e1e29164c19ea2afcc9f56c4fead1d6e",
+    "windows.py": "0b92b22ec090170015b6de3203bbfde0caeba06396e88d42c8dc6f57f4c1c6de",
+    "capture.py": "fb4ae1b15eecb3c7bd0ce556c1a13725f054f6ad82ac62582ef38b3adb2caa51",
+    "viewport_border.py": "091bf9006939210eeeb9b3053a3305b6abaa3dde5ed59d3e757540f4c71845ca",
+    "owned_crash.py": "f2507d1325c9775073d4a10a7691b196e0f7cfa32fe8a5a956011d9ded0a51f8",
+    "pixel_reference_testonly.py": "f4837dcaeed818181bf4bd4fc91f070f9f20e7a59ab8bb939a77515b16a7e3a0",
+    "test_acquire.py": "7c4631964b30d05dc5b176b9c7cead1db93acba230775d259e9345d15ff85b53",
+    "test_materialize.py": "86738d81330ddd61004a9cde6be14cb7d9d7d0a201fab56d7832b3117638b8f8",
+    "test_setup_tcp_policy.py": "47a74bc1e09a8ecb872a5ee4c0bd21c5f4296914b15d425458ecffd3f34a4161",
+    "test_directx_diagnostic.py": "6bbb2d4c524b1917b1d7fe53d1271ae7daf70f37ca16db21cecb3507a17f276c",
+    "test_owned_crash.py": "e0ab01a32a5324302ccd4953fc1664c66ffef1dc3466eda226c200853c87b5dd",
+    "test_child_geometry.py": "bece57c32bfad92e579c08ea938a687e077c743718c535ba7725153f67470ce9",
+    "test_pixel_equivalence.py": "2cf50efe38d7a91c7c5a3524061cec6089b51da2863e630f28d9bd32a79a2a72",
+    "test_rectangle_diagnostic.py": "ece2d43c9cd411a195a16dfedcb176c62d80daa43fa2b4ed71496d34b528f5a2",
+    "test_viewport_border.py": "66896ada5e759360847d26395153a324e05b0c925bdf87e7c3716dfb5b423718",
+    "test_window_readiness.py": "e9047c541dd76eff35e676c61da9fc2f344e42cd0bd581fb679b44fa31ae5d8e",
+    "test_window_selection_diagnostic.py": "f1bc84c365bdb7d98cb44b3f7fe19b879f643bd0e4496e9ab39c025e44f93ca1",
+    "tests/test_capture.py": "38e0cfb1de2d3c46458cd814c2a3c9d25b134ffa8a77134da1ad79aca492d7f3"
+  },
+  "test_binding_only_changes": {
+    "test_directx_setup.py": {
+      "reference_sha256": "e8c6096f047181750edb039f387777cdadfb02787052dbe7789c9a2672278cb9",
+      "candidate_sha256": "9bd054883ca974f80c58449cd06a6fadc132ddcae836d607db883088980d12c1"
+    },
+    "test_failed_frame.py": {
+      "reference_sha256": "2235110c62ffc81eed66ca6c33167bd3b7872824c8574e6c3039fc344df10399",
+      "candidate_sha256": "909bda5b7676a22eeacd2a3eee00b7ac16bbd1207414c453f1071331baf1df12"
+    },
+    "test_socket_diagnostics.py": {
+      "reference_sha256": "35d538a50fbb5a85fdfe3f75b29c65018f2ee97e153e9b706d1c267ac4c90c30",
+      "candidate_sha256": "626a4f610df80c3cefee5066eec3ac0cf8146f1e59e144b64599f00e106a697c"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": 2,
+  "released": true,
+  "branch": "ci/cloud-lighting-v2-pair-5161688-20261027-r1",
+  "message": "ci: held lighting V2 off-on native pair r1 (2026-10-27)",
+  "sole_parent": "ff67d89241336d55f456967ec596d5cd10358df6",
+  "run_attempt": 1,
+  "deadline_utc": "2026-10-27T12:00:00Z",
+  "jobs": {
+    "lighting_off": 0,
+    "lighting_on": 1
+  },
+  "run_id": null,
+  "approval": "Reviewed two-job lighting comparison; authorization retained privately; no production deployment."
+}

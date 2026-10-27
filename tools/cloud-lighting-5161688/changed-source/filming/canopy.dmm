@@ -1,0 +1,20 @@
+"a" = (/turf/floor/grass,/area/caribbean/forest)
+"p" = (/obj/structure/wild/tree/live_tree/pine/lighting_capture,/turf/floor/grass,/area/caribbean/forest)
+"h" = (/obj/effect/lighting_capture_marker,/turf/floor/grass,/area/caribbean/forest)
+"v" = (/obj/effect/lighting_capture_marker,/turf/floor/grass,/area/caribbean/forest)
+
+(1,1,1) = {"
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaahaaaaaaa
+aaaaaaapaaaaaaa
+aaaaaavaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaa
+"}

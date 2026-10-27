@@ -1,5 +1,12 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: held hosted lighting pair -->
+tools/cloud-lighting-5161688 reuses the 516.1688 owned-window capture guards in
+a held two-job source candidate. Its real plane-master HUD differs from the
+tanning fixture's empty HUD. Keep the dark-scene pixel heuristics fail-closed;
+a retained failed diagnostic is not an accepted screenshot. The initial
+opaque/clear-root pair does not replace the other thirteen pixel/lifecycle gates.
+
 <!-- 2026-10-19: disabled lighting composition V2 -->
 Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.
 V2 separates weather from tile RGB and explicitly represents visible fullbright
