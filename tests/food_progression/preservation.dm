@@ -142,6 +142,11 @@
 	var/limit = text2num(copytext(product.name, offset, offset + 8))
 	food_check(limit == 600000 && abs(product.decaytimer / limit - 2400 / 18000) < 0.0001, "salted dried meat lasts four times longer and retains age")
 	rack.before_save()
+	// before_save drops rack contents but leaves their encoded limit and paused decay.
+	food_check(product.decay == 0 && product.salted_meat && abs(product.decaytimer - 80000) < 0.01, "dried input remains paused with paid salt and age during save")
+	var/saved_name = product.name
+	var/list/dried_fields = product.get_saved_vars()
+	food_check(("decay" in dried_fields) && ("decaytimer" in dried_fields) && ("salted_meat" in dried_fields) && ("name" in dried_fields), "dried save includes paused decay, age, salt and rack metadata")
 	var/savefile/dried_save = new("salted-dried-meat.sav")
 	dried_save["/format_version"] << 2
 	map_storage.clear_bookkeeping()
@@ -149,10 +154,17 @@
 	var/dried_ref = map_storage.BuildVarDirectory(dried_save, product, 1)
 	map_storage.clear_bookkeeping()
 	var/obj/item/weapon/reagent_containers/food/snacks/driedmeat/restored_dried = map_storage.Load_Entry(dried_save, dried_ref, starting_loc = T)
+	food_check(restored_dried && restored_dried.name == saved_name && restored_dried.decay == 0 && restored_dried.salted_meat && abs(restored_dried.decaytimer - 80000) < 0.01, "dried save retains encoded rack state and age")
+	var/position_offset = findtext(restored_dried.name, "POS_") + 4
+	var/list/position = rack.split_size(text2num(copytext(restored_dried.name, position_offset, position_offset + 1), 16))
+	qdel(product) // Only the saved copy is available for refill.
+	rack.refill()
+	food_check(restored_dried.loc == rack.storage && rack.slots[position[1]][position[2]] == restored_dried, "saved dried product returns to its rack slot")
+	var/obj/item/weapon/reagent_containers/food/snacks/driedmeat/released = rack.take_product_by_x_y(9 + (position[2] - 1) * 5, 4 + (4 - position[1]) * 6, T)
+	food_check(released == restored_dried && released.loc == T, "rack removal returns the saved dried product")
 	food_check(restored_dried.salted_meat && restored_dried.decay == 600000 && abs(restored_dried.decaytimer - 80000) < 0.01, "dried save retains salt, lifetime and age")
 	food_check(restored_dried.nutriments_value() == 0, "dried save does not restore depleted nutrition")
 	qdel(restored_dried)
-	qdel(product)
 	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/spoiled = new(T)
 	spoiled.rotten = TRUE
 	var/obj/item/weapon/reagent_containers/food/condiment/saltshaker/full_shaker = new(T)

@@ -20,6 +20,12 @@ offline model of restored spoiled inputs, thresholds, missing legacy fields and
 zero decay limits. The preservation fixture also prepares a real encoded-input
 save/refill case and salted/unsalted thresholds; it must be run separately to
 establish native behavior. Rejected inputs remain on the rack for removal.
+For dried products, the save hook drops the item with a zero live decay limit
+and the original limit encoded in its name. The fixture checks that paused state
+after load, then refills the rack and removes the product through its normal
+interaction before checking its active limit, paid salt, age and depleted food.
+`test_dried_rack_save_contract.py` checks that sequence offline; it does not run
+the native serializer or rack.
 
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
 Both food runners default to the historical 516.1681 compiler. Select the
