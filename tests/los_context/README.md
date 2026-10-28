@@ -2,7 +2,9 @@
 
 `CIV13_GEOMETRIC_LOS_CORE` is **0** in production source. There is no caller
 constructing a context, activation verb, configuration switch, map opt-in,
-renderer, client mask or transport change. Keep it disabled and this PR draft.
+renderer, client mask or transport change. The disabled foundation can be
+reviewed and merged independently; keep the flag at 0 until the activation gates
+below are met.
 
 The first core provides synchronous hover/examine decisions from fresh bounded
 raw opacity, closed-cell ray/convex-footprint geometry, unique first-hit wall/door
