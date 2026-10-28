@@ -702,6 +702,9 @@ var/list/seed_list_jungle
 			restore_fixed_flower_appearance()
 		else
 			icon_state = "flower[rand(1,14)]"
+			// The original sheet has no flower3; reuse existing art without another roll.
+			if (icon_state == "flower3")
+				icon_state = "flower2"
 
 /obj/structure/wild/flowers/proc/restore_fixed_flower_appearance()
 	if (!fixed_flower_appearance)

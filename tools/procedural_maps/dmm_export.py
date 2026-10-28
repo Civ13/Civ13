@@ -12,9 +12,11 @@ from .validator import validate,canonical_hash
 from .repo_source import read_pinned
 
 HISTORICAL_COMMIT="067478b82c7ad9f1b83759a221e6f22080ba865a"
-COMMIT="eedc9862fcb7b2b7c3617c6972965fafa650e51a"
+INTERMEDIATE_COMMIT="eedc9862fcb7b2b7c3617c6972965fafa650e51a"
+COMMIT="c39f4d6846c8882df0097a6bba021cc5288a9229"
 HISTORICAL_VERSION="civ13-static-layout/1"
-CATALOG_VERSION="civ13-static-layout/2"
+INTERMEDIATE_VERSION="civ13-static-layout/2"
+CATALOG_VERSION="civ13-static-layout/3"
 HISTORICAL_CATALOG={
  "code/game/turfs/floor_types.dm":"3b3c83d2082f4f840a598d0fbb54cb3b3132eee8",
  "code/game/turfs/flooring/flooring_premade.dm":"cf0dcd8da162773fe9c44837b57dc188c339b25e",
@@ -25,10 +27,13 @@ HISTORICAL_CATALOG={
  "code/game/objects/map_metadata/nomads/nomads.dm":"7d44d40584567fafcddfeb79056a0a4da24acb08",
  "civ13.dme":"b2bef805c76f6b14ead026cc7756d9d3eb0b2f53",
 }
-CATALOG={**HISTORICAL_CATALOG,
+INTERMEDIATE_CATALOG={**HISTORICAL_CATALOG,
  "code/game/objects/structures/wild.dm":"37d613e825c791c4cbe3369a1c159a874aac1aa5",
  "civ13.dme":"e3f9ed942fc1f60cc82a0a5699b155c953cb9719"}
+CATALOG={**INTERMEDIATE_CATALOG,
+ "code/game/objects/structures/wild.dm":"c66b86cf4618676c5a2b0986eca677977d9ae764"}
 CATALOGS={HISTORICAL_VERSION:(HISTORICAL_COMMIT,HISTORICAL_CATALOG),
+          INTERMEDIATE_VERSION:(INTERMEDIATE_COMMIT,INTERMEDIATE_CATALOG),
           CATALOG_VERSION:(COMMIT,CATALOG)}
 TREES={"BROADLEAF":"/obj/structure/wild/tree/live_tree","PINE":"/obj/structure/wild/tree/live_tree/pine",
        "PALM":"/obj/structure/wild/palm","CACTUS":"/obj/structure/wild/tree/cactus"}
@@ -58,7 +63,7 @@ def verify_catalog(catalog_root=None,version=CATALOG_VERSION):
 
 def select_catalog(catalog_root=None):
     # Match one complete catalog, never mix pins from different versions.
-    for version in (CATALOG_VERSION,HISTORICAL_VERSION):
+    for version in (CATALOG_VERSION,INTERMEDIATE_VERSION,HISTORICAL_VERSION):
         try:
             verify_catalog(catalog_root,version)
             return version

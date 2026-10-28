@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from tools.procedural_maps.dmm_export import emit,project,verify_roundtrip,verify_catalog,CATALOG_VERSION,HISTORICAL_VERSION,COMMIT,HISTORICAL_COMMIT
+from tools.procedural_maps.dmm_export import emit,project,verify_roundtrip,verify_catalog,CATALOG_VERSION,HISTORICAL_VERSION,INTERMEDIATE_VERSION,COMMIT,HISTORICAL_COMMIT,INTERMEDIATE_COMMIT
 from tools.procedural_maps.bundle import write_bundle,verify_bundle
 from tools.procedural_maps.io import json_text
 from test_surface_generator import small
@@ -48,6 +48,32 @@ class ExportTests(unittest.TestCase):
         oldside['catalog_version']=CATALOG_VERSION;oldside['source_commit']=COMMIT
         oldside['manifest']['catalog_binding']=dict(catalog_version=CATALOG_VERSION,source_commit=COMMIT)
         self.assertEqual(self.sidecar,oldside)
+    def test_v2_to_v3_source_delta_is_only_generic_flower_alias(self):
+        from tools.procedural_maps.dmm_export import CATALOG,INTERMEDIATE_CATALOG
+        from tools.procedural_maps.repo_source import read_pinned
+        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT'])
+        self.assertTrue(verify_catalog(v2root,INTERMEDIATE_VERSION))
+        path='code/game/objects/structures/wild.dm'
+        old=read_pinned(path,INTERMEDIATE_CATALOG[path],v2root).decode()
+        new=read_pinned(path,CATALOG[path]).decode()
+        before='\t\t\ticon_state = "flower[rand(1,14)]"\n'
+        after=before+'\t\t\t// The original sheet has no flower3; reuse existing art without another roll.\n\t\t\tif (icon_state == "flower3")\n\t\t\t\ticon_state = "flower2"\n'
+        self.assertEqual(1,old.count(before));self.assertEqual(new,old.replace(before,after))
+        self.assertEqual({k:v for k,v in INTERMEDIATE_CATALOG.items() if k!=path},{k:v for k,v in CATALOG.items() if k!=path})
+    def test_v2_bundle_preserves_binding_and_matches_v3_static_layout(self):
+        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT'])
+        text,side=emit(self.doc,self.manifest,v2root,INTERMEDIATE_VERSION)
+        self.assertEqual(self.text,text)
+        self.assertEqual((INTERMEDIATE_VERSION,INTERMEDIATE_COMMIT),(side['catalog_version'],side['source_commit']))
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,v2root,preview=False,catalog_version=INTERMEDIATE_VERSION)
+            self.assertEqual('VERIFIED_OFFLINE_ONLY',verify_bundle(folder,v2root)['status'])
+            with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder)
+    def test_v3_bundle_rejects_v2_checkout(self):
+        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT'])
+        with tempfile.TemporaryDirectory() as tmp:
+            folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,preview=False,catalog_version=CATALOG_VERSION)
+            with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder,v2root)
     def test_historical_bundle_requires_its_matching_catalog(self):
         oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])
         with tempfile.TemporaryDirectory() as tmp:

@@ -28,7 +28,7 @@ def main(argv=None):
     p=commands.add_parser('export',help='export existing IR and its manifest to a new bundle')
     p.add_argument('--ir',required=True,type=Path);p.add_argument('--manifest',required=True,type=Path)
     p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path);p.add_argument('--no-preview',action='store_true')
-    p.add_argument('--catalog-version',choices=['civ13-static-layout/1','civ13-static-layout/2'],help='explicit catalog for a historical unbound manifest')
+    p.add_argument('--catalog-version',choices=['civ13-static-layout/1','civ13-static-layout/2','civ13-static-layout/3'],help='explicit catalog for a historical unbound manifest')
     p=commands.add_parser('verify',help='verify bundle hashes, sidecar binding, layout and catalog')
     p.add_argument('directory',type=Path);p.add_argument('--catalog-root',type=Path)
     p=commands.add_parser('audit-source',help='read-only classic map/source audit')

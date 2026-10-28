@@ -35,7 +35,7 @@ class PublicCLITests(unittest.TestCase):
             old_manifest=root/'old-manifest.json';old_manifest.write_text(json.dumps(manifest))
             code,r=self.invoke('export','--ir',bundle/'map.ir.json','--manifest',old_manifest,'--out',root/'unbound')
             self.assertEqual(2,code);self.assertIn('UNBOUND_MANIFEST_REQUIRES_CATALOG_VERSION',str(r))
-            code,r=self.invoke('export','--ir',bundle/'map.ir.json','--manifest',old_manifest,'--out',root/'explicit','--catalog-version','civ13-static-layout/2')
+            code,r=self.invoke('export','--ir',bundle/'map.ir.json','--manifest',old_manifest,'--out',root/'explicit','--catalog-version','civ13-static-layout/3')
             self.assertEqual(0,code,r)
     def test_existing_output_is_preserved(self):
         with tempfile.TemporaryDirectory() as tmp:
