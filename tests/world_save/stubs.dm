@@ -1,4 +1,9 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// Compile dependencies for the production loader's roof helpers. These minimal
+// stubs declare no /obj/roof; full-source roof tests own recovery acceptance.
+var/list/area_list = list()
+/area/caribbean/roofed
+
 // Minimal serializer fixtures do not exercise wounds. Keep the loader's type
 // contract declared, but fail closed if one is introduced into these probes.
 // The --wounds full-source fixture tests actual constructor/state restoration.
@@ -17,6 +22,8 @@ var/building_allocating_z = 0
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
 var/TimeOfGame = 0
+// Declared with the save vote in code/datums/vote.dm, which fixtures omit.
+var/last_persistence_save_time = 0
 // Ordinary serializer probes do not execute reboot effects. Transaction tests
 // compile the complete production state machine with their own adapters.
 var/datum/persistence_restart_transaction/persistence_restart = new
@@ -104,6 +111,20 @@ var/list/mutate_on_tick = null
 	return
 /turf/proc/recalc_atom_opacity()
 	return
+// These relocatable serializer fixtures own clear ground, not generated snow.
+// Production icon rebuilding needs snow assets/overlays; never substitute this
+// adapter for snowfall acceptance. Reject snow state on both export and import.
+/turf/var/weather_snow = 0
+/turf/proc/snowfall_ground_icon()
+	if(!isnum(weather_snow) || weather_snow != 0)
+		throw EXCEPTION("Generated snow requires the production snowfall fixture")
+	return
+/turf/before_save()
+	snowfall_ground_icon()
+	return ..()
+/turf/after_load()
+	..()
+	snowfall_ground_icon()
 /turf/var/tmp/lighting_reserved = FALSE
 /turf/proc/activate_reserved_lighting()
 	// Only ordinary turfs are supported by this serializer-only adapter.
@@ -151,7 +172,8 @@ var/list/mutate_on_tick = null
 	rejuvenate_calls++
 	stat = CONSCIOUS
 /datum/controller/gameticker
-	var/current_state = GAME_STATE_PREGAME
+	// Fixture saves model a running round; savemap refuses lobby/setup states.
+	var/current_state = GAME_STATE_PLAYING
 	var/finished = FALSE
 	var/list/minds = list()
 /datum/controller/gameticker/proc/collect_minds()
@@ -253,9 +275,13 @@ var/list/mutate_on_tick = null
 	return
 /map_storage/proc/encode_zone_reference(area/A)
 	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/capture_zone_descriptor(area/A)
+	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_zone_reference(id, type)
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)
+	// Legacy fixtures have null state; all topology or malformed values stay held.
+	if(isnull(validated_zone_state)) return
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_captured_world_save(list/candidate)
 	throw EXCEPTION("Topology needs the full-source fixture")

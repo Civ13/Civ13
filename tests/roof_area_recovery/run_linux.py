@@ -10,7 +10,9 @@ import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
+import secrets
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -29,6 +31,8 @@ CAPS = dict(compiler_seconds=180, child_seconds=60, cleanup_seconds=30,
             process_bytes=1073741824, watcher_bytes=134217728, artifact_bytes=125829120,
             log_bytes=1048576, receipt_bytes=2097152, inventory_entries=8192,
             cpu_seconds=60, closure_seconds=10, disk_free_bytes=6442450944)
+COMPLETION = dict(kind='controller-terminated-v1', pulses=50, quiet_seconds=.1,
+                  observed_cpu_seconds=.05, requested_signal=9, expected_exit=-9)
 
 
 def need(value, message):
@@ -74,6 +78,7 @@ def execution_contract(request, packet_dir):
     roles = {p.name.removeprefix(prefix):sha(p) for p in prepared.glob('*.dm')}
     dme = (prepared/'probe.dme').read_text(encoding='utf-8').replace(prefix,'<generated-source>')
     contract = dict(head=request['head'],variant=request['variant'],caps=request['caps'],
+        completion_contract=request['completion_contract'],
         modes=request['modes'],port=request['port'],outer_seconds=request['outer_seconds'],
         binary_sha256=request['binary_sha256'],source_sha256=request['source_sha256'],
         code_roles_sha256=roles,dme_sha256=hashlib.sha256(dme.encode()).hexdigest(),
@@ -159,7 +164,8 @@ def prepare(packet_dir, head, variant):
     prepared[atlas.name] = sha(atlas)
     for name in ('atlas-preparation.stdout.log','atlas-preparation.stderr.log'):
         prepared[name] = sha(packet_dir/name)
-    request = dict(kind='review-only-synthetic-roof-request-v1', head=head, variant=variant,
+    request = dict(kind='review-only-synthetic-roof-request-v2', head=head, variant=variant,
+        completion_contract=COMPLETION,
         caller_sha256=expected[Path(__file__).relative_to(ROOT).as_posix()], prepared=prepared, prepared_directory=source.relative_to(packet_dir).as_posix(),
         source_sha256=expected, binary_sha256=ENGINE, port=PORT, caps=CAPS,
         modes=list(PHASES[variant]), outer_seconds=990 if variant == 'main' else 330,
@@ -204,6 +210,33 @@ def child_limits():
         resource.setrlimit(kind, (value, value))
 
 
+def completion(cwd, session, mode, variant):
+    """Bounded fixture pulse evidence, not proof of global engine quiescence."""
+    need(not (cwd/'roof-session.txt').is_symlink() and
+         (cwd/'roof-session.txt').read_bytes() == session.encode('ascii'), 'Completion session changed')
+    ready = list(cwd.glob('roof-quiet-*.ready'))
+    need(len(ready) <= COMPLETION['pulses'], 'Completion pulse bound')
+    if not ready: return None
+    numbers = sorted(int(p.stem.removeprefix('roof-quiet-')) for p in ready)
+    need(numbers == list(range(1, len(ready)+1)), 'Completion pulse sequence differs')
+    result_path = cwd/'roof-result.json'
+    need(not result_path.is_symlink() and result_path.stat().st_size <= 65536, 'Native result bound')
+    raw = result_path.read_bytes(); result = json.loads(raw)
+    adjudicate(mode, variant, result)
+    need(type(result['checks']) is int, 'Completion counter must be an integer')
+    digest = hashlib.md5(raw, usedforsecurity=False).hexdigest()  # BYOND file-digest bridge only.
+    for number in numbers:
+        marker = cwd/('roof-quiet-'+str(number)+'.ready')
+        pulse = marker.with_suffix('.json')
+        need(not marker.is_symlink() and marker.stat().st_size <= 66 and marker.read_text().strip() == session, 'Completion marker differs')
+        need(not pulse.is_symlink() and pulse.stat().st_size <= 1024, 'Completion pulse byte bound')
+        data = json.loads(pulse.read_bytes())
+        need(type(data.get('pulse')) is int and type(data.get('checks')) is int, 'Completion pulse integers required')
+        need(data == dict(session=session, mode=mode,
+             result_md5=digest, checks=result['checks'], pulse=number), 'Completion pulse differs')
+    return dict(pulse=numbers[-1], checks=result['checks'], result_sha256=hashlib.sha256(raw).hexdigest())
+
+
 def artifacts(output, owned, pending=0, fixed_inputs=0):
     total = entries = 0
     for path in output.rglob('*'):
@@ -220,7 +253,8 @@ def artifacts(output, owned, pending=0, fixed_inputs=0):
             if parts[0] == 'cases' and len(parts) >= 3:
                 tail = parts[2:]
                 allowed = parts[1] in set(sum((list(v) for v in PHASES.values()),[])) and (
-                    tail in [('roof-result.json',),('probe-port-closed.txt',),('probe-port-closed.ack',),('config','tips.txt')] or
+                    tail in [('roof-result.json',),('roof-session.txt',),('probe-port-closed.txt',),('probe-port-closed.ack',),('config','tips.txt')] or
+                    len(tail) == 1 and any(tail[0] == 'roof-quiet-'+str(n)+suffix for n in range(1,51) for suffix in ('.json','.ready')) or
                     len(tail) == 2 and tail[0] == 'map_saves' and tail[1] in ('1.sav','2.sav','map.txt','round.json','save_complete.txt') or
                     len(tail) >= 3 and tail[:2] == ('config','names'))
             need(allowed, 'Unexpected generated file: '+path.relative_to(output).as_posix())
@@ -245,7 +279,8 @@ def run(output, byond, packet_dir, head, request_sha256):
     request_path = packet_dir/'request.json'
     need(sha(request_path) == request_sha256, 'External immutable request hash differs')
     request = json.loads(request_path.read_text())
-    need(request['kind'] == 'review-only-synthetic-roof-request-v1', 'Fixed synthetic request scope')
+    need(request['kind'] == 'review-only-synthetic-roof-request-v2' and
+         request['completion_contract'] == COMPLETION, 'Fixed synthetic request/completion scope')
     need(request['head'] == head and request['caller_sha256'] == sha(__file__), 'Exact request/caller required')
     variant = request['variant']
     need(variant in PHASES and request['modes'] == list(PHASES[variant]) and request['caps'] == CAPS
@@ -276,7 +311,7 @@ def run(output, byond, packet_dir, head, request_sha256):
         payload = json.dumps(receipt, indent=2).encode(); need(len(payload) <= CAPS['receipt_bytes'], 'Receipt bound')
         artifacts(output, owned, pending=len(payload),fixed_inputs=fixed_inputs); (output/'result.json').write_bytes(payload)
 
-    def phase(argv, cwd, label, mode=None):
+    def phase(argv, cwd, label, mode=None, completion_session=None):
         import resource
         check(); need(not old.native_census(), 'Native overlap before phase')
         need(receipt.get('cleanup_seconds_used',0) < CAPS['cleanup_seconds'], 'Cleanup reserve exhausted')
@@ -303,6 +338,10 @@ def run(output, byond, packet_dir, head, request_sha256):
                     need(len(members) == 1 and members[0]['pid'] == process.pid, 'Unexpected owned descendant')
                     try: sockets = old.owned_sockets(process.pid, birth['start_ticks'])
                     except (FileNotFoundError, PermissionError) as error:
+                        if completion_session:
+                            row['socket_observation_denial'] = dict(pid=process.pid,
+                                start_ticks=birth['start_ticks'], error=str(error), completion_contract=True)
+                            raise  # No denied read or terminal classification is retried.
                         terminal = old.exited_unreaped(process)
                         if isinstance(error, PermissionError):
                             denied_at = time.monotonic()
@@ -338,8 +377,31 @@ def run(output, byond, packet_dir, head, request_sha256):
                     need(cpu <= CAPS['cpu_seconds'], 'Observed owned CPU bound')
                     row['samples'].append(dict(seconds=time.monotonic()-phase_start, sockets=sockets, closed=closed,
                         resident_bytes=current['resident_pages']*os.sysconf('SC_PAGE_SIZE'), cpu_seconds=cpu))
-                    need(len(row['samples']) <= 4000, 'Sample bound'); artifacts(output, owned,fixed_inputs=fixed_inputs); save(); time.sleep(.1)
+                    need(len(row['samples']) <= 4000, 'Sample bound')
+                    if completion_session:
+                        state = completion(cwd, completion_session, mode, variant)
+                        if state:
+                            need(closed, 'Completion before external closure')
+                            logs = {str(p.relative_to(output)): sha(p) for p in
+                                (output/(label+'.stdout.log'), output/(label+'.stderr.log'), output/'program'/('native-'+mode+'.log'))}
+                            first = row.setdefault('completion', dict(session=completion_session,
+                                first_seconds=row['samples'][-1]['seconds'], first_cpu=cpu,
+                                first_pulse=state['pulse'], checks=state['checks'], result_sha256=state['result_sha256'], logs_sha256=logs, quiet_samples=[]))
+                            need(state['checks'] == first['checks'] and state['result_sha256'] == first['result_sha256']
+                                 and logs == first['logs_sha256'], 'Completion result/counter/logs changed')
+                            need(cpu-first['first_cpu'] <= COMPLETION['observed_cpu_seconds'], 'Observed post-completion CPU bound')
+                            first['quiet_samples'].append(dict(seconds=row['samples'][-1]['seconds'], cpu_seconds=cpu, pulse=state['pulse']))
+                            if row['samples'][-1]['seconds']-first['first_seconds'] >= COMPLETION['quiet_seconds'] and state['pulse'] > first['first_pulse']:
+                                artifacts(output, owned, fixed_inputs=fixed_inputs); check(); save()
+                                need(time.monotonic() < phase_end, 'Phase deadline before shutdown')
+                                need(not old.exited_unreaped(process), 'Child exited before controller shutdown')
+                                row['shutdown'] = dict(signal=int(signal.SIGKILL), pid=process.pid, start_ticks=birth['start_ticks'], sent=False)
+                                os.killpg(process.pid, signal.SIGKILL)
+                                row['shutdown']['sent'] = True
+                                break
+                    artifacts(output, owned,fixed_inputs=fixed_inputs); save(); time.sleep(.1)
                 need(closed, 'Child exited before external closure acknowledgement')
+                need(not completion_session or row.get('shutdown',{}).get('sent'), 'Child exited before verified completion/shutdown')
             finally:
                 cleanup_start = time.monotonic()
                 if process is not None:
@@ -351,7 +413,9 @@ def run(output, byond, packet_dir, head, request_sha256):
                 after_cpu = resource.getrusage(resource.RUSAGE_CHILDREN)
                 row['cpu_seconds'] = after_cpu.ru_utime + after_cpu.ru_stime - before_cpu.ru_utime - before_cpu.ru_stime
                 row['seconds'] = time.monotonic()-phase_start; save()
-        need(row['cleanup'] and row['cleanup'].get('exit_code') == 0 and row['cleanup'].get('group_empty')
+        expected_exit = -int(signal.SIGKILL) if completion_session and row.get('shutdown',{}).get('sent') else 0
+        row['exit_contract'] = 'controller-terminated-completion' if completion_session else 'natural-exit'
+        need(row['cleanup'] and row['cleanup'].get('exit_code') == expected_exit and row['cleanup'].get('group_empty')
              and not row['cleanup']['errors'], 'Owned phase exit/cleanup failed')
         need(row['cpu_seconds'] <= CAPS['cpu_seconds'], 'Final owned CPU bound')
         need(receipt['cleanup_seconds_used'] <= CAPS['cleanup_seconds'], 'Aggregate cleanup reserve exceeded')
@@ -400,11 +464,14 @@ def run(output, byond, packet_dir, head, request_sha256):
             for name,digest in pair.items(): need(sha(program/name) == digest, 'Compiled pair changed')
             argv = [str(byond/'DreamDaemon'), str(compiled), str(PORT), '-ip','127.0.0.1','-trusted','-close',
                     '-cd',str(case),'-log','native-'+mode+'.log','-params','roof_mode='+mode]
-            phase(argv, case, mode, mode)
+            session = secrets.token_hex(32)
+            with (case/'roof-session.txt').open('xb') as stream: stream.write(session.encode('ascii'))
+            child = phase(argv, case, mode, mode, completion_session=session)
             log = program/('native-'+mode+'.log')
             console = ''.join((output/(mode+'.'+s+'.log')).read_text(errors='replace') for s in ('stdout','stderr'))
             need(log.is_file() and not evidence.DIAGNOSTIC.search(log.read_text(errors='replace')+console), 'Native engine diagnostic')
             result_path = case/'roof-result.json'; need(result_path.stat().st_size <= 65536, 'Native result bound')
+            need(sha(result_path) == child['completion']['result_sha256'], 'Completed result changed during shutdown')
             result = json.loads(result_path.read_text()); adjudicate(mode, variant, result)
             receipt.setdefault('native_results',{})[mode] = dict(result=result, result_sha256=sha(result_path), log_sha256=sha(log))
             if writer:
