@@ -39,19 +39,31 @@
 		return FALSE
 	var/material/working = woodwork_tool_material(tool)
 	// get_material() describes the working head, not a wooden handle's material.
-	return working && !istype(working, /material/wood)
+	if (working)
+		return !istype(working, /material/wood)
+	return woodwork_legacy_nonwood(tool)
 
 /proc/woodwork_tool_material(obj/item/tool)
 	if (QDELETED(tool))
 		return null
-	var/material/working = tool.get_material()
-	if (working)
-		return working
-	// This exact legacy type is named/crafted as bronze but predates material tools.
-	// Unknown subclasses/material-less tools are not presumed to be metal.
-	if (tool.type == /obj/item/weapon/surgery/scalpel/bronze)
-		return get_material_by_name("bronze")
-	return null
+	return tool.get_material()
+
+/proc/woodwork_legacy_nonwood(obj/item/tool)
+	// Exact reviewed types only. Recipe/working-blade evidence is recorded in
+	// tests/primitive_woodworking/legacy-working-materials.json. This establishes
+	// non-wood for flattening, not an instance's alloy, hardness or get_material().
+	// Unknown subtypes, including future wooden variants, do not inherit approval.
+	if (QDELETED(tool))
+		return FALSE
+	if (tool.type == /obj/item/weapon/surgery/scalpel/bronze || tool.type == /obj/item/weapon/surgery/bone_saw/bronze)
+		return TRUE
+	if (tool.type == /obj/item/weapon/surgery/scalpel || tool.type == /obj/item/weapon/surgery/bone_saw)
+		return TRUE
+	if (tool.type == /obj/item/weapon/wirecutters || tool.type == /obj/item/weapon/plough/iron)
+		return TRUE
+	if (tool.type == /obj/item/weapon/reagent_containers/syringe || tool.type == /obj/item/weapon/attachment/bayonet || tool.type == /obj/item/weapon/gun/projectile/ancient/firelance)
+		return TRUE
+	return tool.type == /obj/item/weapon/broken_bottle || tool.type == /obj/item/weapon/macuahuitl
 
 /proc/woodwork_knife(obj/item/tool)
 	return istype(tool, /obj/item/weapon/material/kitchen/utensil/knife) || istype(tool, /obj/item/weapon/material/thrown/throwing_knife) || istype(tool, /obj/item/weapon/material/thrown/throwing_knife1)

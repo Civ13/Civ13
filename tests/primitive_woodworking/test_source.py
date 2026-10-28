@@ -77,13 +77,11 @@ class Fixture:
                       get_turf=lambda obj:obj.site,
                       hide_worker_can_reach=lambda user,source:user.connected and user.reachable and user.stat==0 and not source.deleted and (source.loc is self.site or source.loc is user),
                       woodwork_spec=lambda mode:SPECS.get(mode), persistence_admission_identity=object(),
-                      get_material_by_name=lambda name:self.bronze if name=='bronze' else None,
                       persistence_save_in_progress=False,persistence_active_operation=None,persistence_load_recovery_required=False,
                       construct=construct,qdel=lambda obj:setattr(obj,'deleted',True),parent_new=lambda:None,
                       round=round,
                       do_after=lambda *args:self.wait_hook(),SPAN_NOTICE=lambda value:value,to_chat=lambda *args:None)
-        self.bronze=NS(type='/material/bronze',name='bronze',hardness=60)
-        for name,args in [('woodwork_tool_material','tool'),('woodwork_knife','tool'),('woodwork_shaping_tool','tool, workpiece'),('woodwork_wooden_hammer','tool'),('woodwork_wedge','tool'),('woodwork_flattening_tool','tool')]:
+        for name,args in [('woodwork_tool_material','tool'),('woodwork_legacy_nonwood','tool'),('woodwork_knife','tool'),('woodwork_shaping_tool','tool, workpiece'),('woodwork_wooden_hammer','tool'),('woodwork_wedge','tool'),('woodwork_flattening_tool','tool')]:
             func,ns=compile_body(text,'/proc/'+name+'(',args,self.env)
             self.env[name]=func
             self.namespaces.append(ns)
@@ -374,7 +372,7 @@ class WoodworkingContracts(unittest.TestCase):
         self.assertTrue(split)
         self.assertTrue(flattened)
         self.assertTrue(all('before finished-plank recipes' in row['text'] for row in split))
-        self.assertTrue(all('Sharpened flint and the verified bronze scalpel qualify' in row['text'] for row in flattened))
+        self.assertTrue(all('including bronze scalpels and bone saws' in row['text'] for row in flattened))
         data=json.loads(path.read_text())
         crude='/material/wood/crude_plank'
         finished='/material/wood/soft'
@@ -406,26 +404,68 @@ class WoodworkingContracts(unittest.TestCase):
             states=re.findall(r'^state = "([^"]*)"','\n'.join(descriptions),re.M)
             self.assertIn(state,states,(path,state))
 
-    def test_legacy_bronze_scalpel_has_explicit_material_evidence_for_flattening_only(self):
-        surgery=(ROOT/'code/game/objects/items/weapons/surgery_tools.dm').read_text()
-        self.assertIn('name = "bronze scalpel"',block(surgery,'/obj/item/weapon/surgery/scalpel/bronze\n'))
-        self.assertIn('sharp = TRUE',block(surgery,'/obj/item/weapon/surgery/scalpel\n'))
-        recipes=(ROOT/'config/crafting/material_recipes_global.txt').read_text()
-        self.assertIn('/material/bronze/,bronze scalpel,/obj/item/weapon/surgery/scalpel/bronze,',recipes)
-        f=Fixture('flatten')
-        f.tool.type='/obj/item/weapon/surgery/scalpel/bronze'
-        f.blade=None
-        self.assertTrue(f.next_action().perform())
-        self.assertEqual(f.tool.health,4)
-        for kind in ('/obj/item/weapon/surgery/scalpel','/obj/item/weapon/surgery/scalpel/bronze/unknown'):
+    def test_audited_legacy_actual_types_have_nonwood_evidence_without_invented_hardness(self):
+        audit=json.loads((ROOT/'tests/primitive_woodworking/legacy-working-materials.json').read_text())
+        declared=set(re.findall(r'tool.type == (/[\w/]+)',block(TEXT,'/proc/woodwork_legacy_nonwood(')))
+        self.assertEqual(declared,{row['type'] for row in audit['accepted']})
+        self.assertIn('/obj/item/weapon/surgery/bone_saw/bronze',declared)
+        def body(text,kind):
+            match=re.search(r'^/?'+re.escape(kind.lstrip('/'))+r'\n',text,re.M)
+            self.assertIsNotNone(match,kind)
+            tail=text[match.end():]
+            end=re.search(r'^/?(?:obj|mob|datum)/',tail,re.M)
+            return tail[:end.start()] if end else tail
+        for row in audit['accepted']:
+            with self.subTest(actual_type=row['type']):
+                source=(ROOT/row['file']).read_text()
+                self.assertIn('sharp = TRUE',body(source,row['sharp_type']))
+                evidence=(ROOT/row['evidence_file']).read_text()
+                if row['evidence'].startswith('RECIPE:'):
+                    self.assertIn(row['evidence']+row['type']+',',evidence)
+                else:
+                    self.assertIn(row['evidence'],body(evidence,row['type']))
+                f=Fixture('flatten')
+                f.tool.type=row['type']
+                f.blade=None
+                f.tool.check_health=lambda:self.fail('legacy flattening must not charge wear')
+                self.assertIsNone(f.env['woodwork_tool_material'](f.tool))
+                self.assertTrue(f.next_action().perform())
+                self.assertEqual(f.tool.health,4)
+                f=Fixture('flatten')
+                f.tool.type=row['type']+'/unreviewed'
+                f.blade=None
+                self.assertFalse(f.next_action().valid())
+                f=Fixture('flatten')
+                f.tool.type=row['type']
+                f.blade=f.wood
+                self.assertFalse(f.next_action().valid())  # Actual wooden material wins.
+                f=Fixture('flatten')
+                f.tool.type=row['type']
+                f.blade=None
+                f.wait_hook=lambda:setattr(f.tool,'sharp',False) or True
+                self.assertFalse(f.next_action().perform())
+                self.assertEqual(f.use_calls,[])
+                f=Fixture('pieces')
+                f.tool.type=row['type']
+                f.blade=None
+                self.assertFalse(f.next_action().valid())  # No whittling expansion.
+        for kind in audit['rejected_examples']:
             f=Fixture('flatten')
             f.tool.type=kind
             f.blade=None
-            self.assertFalse(f.next_action().valid())
-        f=Fixture('pieces')
-        f.tool.type='/obj/item/weapon/surgery/scalpel/bronze'
-        f.blade=None
-        self.assertFalse(f.next_action().valid())
+            self.assertFalse(f.next_action().valid(),kind)
+
+    def test_all_current_materialless_sharp_types_have_explicit_admission_results(self):
+        audit=json.loads((ROOT/'tests/primitive_woodworking/legacy-working-materials.json').read_text())
+        admitted={row['type'] for row in audit['accepted']} | {'/obj/item/weapon/flint/sharpened'}
+        self.assertEqual(len(audit['audited_static_types']),142)
+        self.assertTrue(admitted.issubset(audit['audited_static_types']))
+        for kind in audit['audited_static_types']:
+            with self.subTest(audited_actual_type=kind):
+                f=Fixture('flatten')
+                f.tool.type=kind
+                f.blade=None
+                self.assertEqual(bool(f.next_action().valid()),kind in admitted)
 
     def test_material_backed_throwing_knives_whittle_but_axes_and_wood_do_not(self):
         thrown=(ROOT/'code/game/objects/items/weapons/material/thrown.dm').read_text()

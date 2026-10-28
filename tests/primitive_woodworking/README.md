@@ -29,11 +29,17 @@ library chunk parsing and zlib; no dependency installation or generated art is u
 The current product contract includes separate small wood pieces and crude planks,
 and zero-tool-wear flattening by sharpened flint or a sharp non-wood working material.
 Whittling remains the separately specified flint-or-harder-knife operation.
-The integration adds the source-identified legacy bronze scalpel to flattening
-and material throwing knives to whittling, while unknown material-less tools,
+The integration adds source-identified exact legacy non-wood working types to
+flattening (including bronze scalpels/bone saws) and material throwing knives to
+whittling, while unknown material-less tools,
 wooden flattening tools and hard non-knives remain negative controls. The bounded
 CI baseline registers this suite for later production and modified-test changes;
 shared source dependencies retain their all-suite fallback.
+The woodworking baseline includes the complete regenerated Atlas freshness check
+from `tests/test_atlas_navigation.py`; production/projector-only selector cases
+verify this independently of the sawmill suite. The legacy JSON evidence table
+binds each admitted actual type to a sharp declaration and recipe/blade evidence;
+alloy/hardness remains unknown when the actual material API supplies none.
 Woodworking consumes the water owner's shared persistence admission identity;
 there is no duplicate operation constructor or woodworking save authority.
 Earlier direct finished-plank draft output was

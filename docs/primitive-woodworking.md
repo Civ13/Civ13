@@ -32,10 +32,12 @@ reuse is confirmed by Civ13 source, not by the video.
    **Flattening does not debit tool durability or call its wear helper.**
    A metal axe with a wooden handle qualifies: `get_material()` describes its
    working head. Wooden working materials (including hardwood/plank subtypes),
-   unsharpened flint and unverified/unknown materials reject. The exact legacy
-   bronze scalpel also qualifies: its existing bronze recipe identifies the
-   working material despite its absent material API. Generic scalpels and unknown
-   subclasses receive no guessed material. Crude planks are not subclasses of finished planks and have
+   unsharpened flint and unverified/unknown materials reject. Reviewed exact legacy
+   types, including bronze scalpels and bone saws, use source-supported non-wood
+   declarations for flattening only. No alloy/hardness or material API is invented
+   for them, and unknown subclasses receive no inherited approval. See the
+   [working-material audit](primitive-woodworking-material-audit.md). Actual wooden
+   material data always overrides a legacy declaration. Crude planks are not subclasses of finished planks and have
    `processing_only = TRUE`, so existing plank recipes cannot use them.
 6. Existing recipes still make a wood handle from one finished plank, or a plank
    handle from two. They remain reusable hot-stone tools under that separate
@@ -125,6 +127,9 @@ The focused hosted command is wired into the existing evidence-checker job.
 The bounded baseline also selects woodworking on production or modified-test
 changes. Shared material/Atlas dependencies retain the conservative all-suite
 fallback; selector regression cases prevent narrowing that coverage.
+Every woodworking baseline run also loads `tests/test_atlas_navigation.py`, whose
+full regenerated-catalog comparison runs for production-only and projector-only
+changes without an extensive/new-test condition.
 
 The Atlas exporter reads quantities from `woodwork_spec`, supplies the same
 acquisition steps to Help, and registers genuine reused sprite states. Tanning
