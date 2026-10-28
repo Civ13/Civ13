@@ -12293,7 +12293,7 @@
       "steps": [
         "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12315,7 +12315,7 @@
       "steps": [
         "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12337,7 +12337,7 @@
       "steps": [
         "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12359,7 +12359,7 @@
       "steps": [
         "Secure the Loom in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12381,7 +12381,7 @@
       "steps": [
         "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12403,7 +12403,7 @@
       "steps": [
         "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12425,7 +12425,7 @@
       "steps": [
         "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12447,7 +12447,7 @@
       "steps": [
         "Secure the Mill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
@@ -12455,8 +12455,8 @@
     {
       "name": "Sawmill processing",
       "file": "code/modules/1713/production.dm",
-      "line": 2225,
-      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "line": 2216,
+      "source_commit": "d228a3ec507660d79d14019e800af5f5310ce685",
       "inputs": [
         "/obj/item/stack/material/wood"
       ],
@@ -12469,7 +12469,7 @@
       "steps": [
         "Secure the Sawmill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine; worker mood, stamina, skill and wait conditions apply. Powered sawmill also requires power; plank yields are 4 per log (primitive), 10 (large), or 12 (powered).",
+      "conditions": "Anchored machine and completed work required. The primitive mill needs sharpened flint, cuts one ordinary log into one plank and one bark, and wears its blade. Large and powered mills use their existing stack, skill and interruption rules; the powered mill needs power.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
