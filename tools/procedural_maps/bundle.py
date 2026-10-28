@@ -1,8 +1,9 @@
 """Bound IR, config/version manifest, DMM and sidecar. No live-map application."""
 import hashlib
+from copy import deepcopy
 from pathlib import Path
 from .configuration import validate_config
-from .dmm_export import emit,verify_roundtrip,verify_catalog
+from .dmm_export import emit,verify_roundtrip,verify_catalog,select_catalog,CATALOGS,HISTORICAL_VERSION
 from .io import json_text,read_json
 from .render_preview import render
 from .validator import validate,canonical_hash
@@ -18,9 +19,15 @@ def check_manifest(doc,manifest):
     if manifest.get('generation_result',{}).get('ir_sha256')!=canonical_hash(doc):raise ValueError('IR_BINDING_MISMATCH')
 
 
-def write_bundle(folder,doc,manifest,catalog_root=None,preview=True):
+def write_bundle(folder,doc,manifest,catalog_root=None,preview=True,catalog_version=None,fresh=False):
     check_manifest(doc,manifest)
-    dmm,sidecar=emit(doc,manifest,catalog_root)
+    manifest=deepcopy(manifest)
+    if 'catalog_binding' not in manifest:
+        if catalog_version is None and not fresh:raise ValueError('UNBOUND_MANIFEST_REQUIRES_CATALOG_VERSION')
+        version=catalog_version or select_catalog(catalog_root)
+        if version not in CATALOGS:raise ValueError('CATALOG_VERSION_UNSUPPORTED')
+        manifest['catalog_binding']=dict(catalog_version=version,source_commit=CATALOGS[version][0])
+    dmm,sidecar=emit(doc,manifest,catalog_root,catalog_version)
     proof=verify_roundtrip(dmm,sidecar)
     files={'map.ir.json':json_text(doc,True),'seed.manifest.json':json_text(manifest),
            'map.dmm':dmm,'map.dmm.sidecar.json':json_text(sidecar,True),'roundtrip.json':json_text(proof)}
@@ -44,8 +51,13 @@ def verify_bundle(folder,catalog_root=None):
     doc=read_json(folder/'map.ir.json');manifest=read_json(folder/'seed.manifest.json');sidecar=read_json(folder/'map.dmm.sidecar.json')
     check_manifest(doc,manifest)
     if sidecar.get('semantic_ir')!=doc or sidecar.get('manifest')!=manifest:raise ValueError('SIDECAR_BINDING_MISMATCH')
+    binding=manifest.get('catalog_binding')
+    if binding is None:
+        if sidecar.get('catalog_version')!=HISTORICAL_VERSION:raise ValueError('UNBOUND_MANIFEST_REQUIRES_HISTORICAL_CATALOG')
+    elif binding!={'catalog_version':sidecar.get('catalog_version'),'source_commit':sidecar.get('source_commit')}:
+        raise ValueError('CATALOG_BINDING_MISMATCH')
     if complete.get('ir_sha256')!=canonical_hash(doc):raise ValueError('BUNDLE_IR_MISMATCH')
-    verify_catalog(catalog_root)
+    verify_catalog(catalog_root,sidecar.get('catalog_version'))
     proof=verify_roundtrip((folder/'map.dmm').read_text(encoding='utf-8'),sidecar)
     if read_json(folder/'roundtrip.json')!=proof:raise ValueError('ROUNDTRIP_REPORT_MISMATCH')
     return dict(status='VERIFIED_OFFLINE_ONLY',native_ready=False,**proof)

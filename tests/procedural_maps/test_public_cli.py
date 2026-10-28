@@ -31,6 +31,12 @@ class PublicCLITests(unittest.TestCase):
             code,r=self.invoke('verify',bundle);self.assertEqual(0,code,r);self.assertFalse(r['dmm_alone_full_ir_semantics'])
             code,r=self.invoke('export','--ir',bundle/'map.ir.json','--manifest',bundle/'seed.manifest.json','--out',again)
             self.assertEqual(0,code,r);self.assertEqual((bundle/'map.dmm').read_bytes(),(again/'map.dmm').read_bytes())
+            manifest=json.loads((bundle/'seed.manifest.json').read_text());manifest.pop('catalog_binding')
+            old_manifest=root/'old-manifest.json';old_manifest.write_text(json.dumps(manifest))
+            code,r=self.invoke('export','--ir',bundle/'map.ir.json','--manifest',old_manifest,'--out',root/'unbound')
+            self.assertEqual(2,code);self.assertIn('UNBOUND_MANIFEST_REQUIRES_CATALOG_VERSION',str(r))
+            code,r=self.invoke('export','--ir',bundle/'map.ir.json','--manifest',old_manifest,'--out',root/'explicit','--catalog-version','civ13-static-layout/2')
+            self.assertEqual(0,code,r)
     def test_existing_output_is_preserved(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);config=root/'config.json';bundle=root/'existing';bundle.mkdir();(bundle/'keep.txt').write_text('player edits')
