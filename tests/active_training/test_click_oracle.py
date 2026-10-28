@@ -273,7 +273,7 @@ class ClickOracleTests(unittest.TestCase):
             os.chdir(previous)
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         block = workflow.split('      - name: Verify finite active training and post-wait negative control\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/active_training')", block)
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/active_training')", block)
         calls = [line for line in block.splitlines() if '-File tests/active_training/run.ps1 ' in line]
         self.assertEqual(len(calls), 4)
         self.assertEqual(sum('-ClickFeedback' in line for line in calls), 2)
@@ -281,7 +281,7 @@ class ClickOracleTests(unittest.TestCase):
         self.assertEqual(sum('-NegativeControl' in line for line in calls), 1)
         self.assertIn("-p 'test_click*.py'", block)
         retain = workflow.split('      - name: Retain active training click feedback evidence\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn("always() && steps.active_training.outputs.started == 'true'", retain)
+        self.assertIn("always() && needs.changes.result == 'success' && steps.active_training.outputs.started == 'true'", retain)
         self.assertIn('actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02', retain)
         self.assertNotIn('/config', retain)
         self.assertNotIn('.dmb', retain)

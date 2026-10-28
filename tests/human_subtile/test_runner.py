@@ -262,7 +262,7 @@ class RunnerContracts(unittest.TestCase):
         self.assertEqual(workflow.count('- name: Verify opt-in human and primitive sub-tile movement'), 1)
         block = workflow.split('- name: Verify opt-in human and primitive sub-tile movement', 1)[1].split('      - name:', 1)[0]
         for suite in ('tests/human_subtile', 'tests/subtile_movement'):
-            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", block)
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), '" + suite + "')", block)
         self.assertIn('--suite primitive --control cosmetic', block)
         self.assertIn('run-diagonal.py --byond-bin', block)
         self.assertIn('run-diagonal.py --control legacy-split', block)

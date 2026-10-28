@@ -126,6 +126,8 @@
 		else
 			set_light(2)
 		spawn (cooking_time)
+			if (QDELETED(src))
+				return
 			if (!looping)
 				on = FALSE
 				set_light(0)
@@ -263,14 +265,24 @@
 	cooking_time = 300
 	light_power = 0.75
 	light_color = "#E38F46"
+	var/tmp/stone_boil_busy = FALSE
+	var/tmp/stone_boil_epoch = 0
+	var/tmp/stone_upgrade_busy = FALSE
+
+/obj/structure/oven/fireplace/persistence_runtime_var(key)
+	return key == "stone_boil_busy" || key == "stone_boil_epoch" || key == "stone_upgrade_busy" || ..()
 
 /obj/structure/oven/fireplace/proc/keep_sound_on()
+	if (QDELETED(src))
+		return
 	if (on && looping && fuel > 0)
 		playsound(get_turf(src), "sound/effects/fireplace-[rand(1, 6)].ogg", 75, TRUE, -1)
 		spawn(50) // 6 seconds
 			keep_sound_on()
 
 /obj/structure/oven/fireplace/proc/keep_fire_on()
+	if (QDELETED(src))
+		return
 	if (on && looping && fuel > 0)
 		set_light(5)
 		update_icon()
@@ -283,6 +295,7 @@
 		return
 
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
+	stone_boil_epoch++ // Even an extinguish and relight invalidates a pending boil.
 	if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
@@ -316,6 +329,11 @@
 				to_chat(HH, "<b>You see some smoke signals [currdir] of you...</b>")
 
 /obj/structure/oven/fireplace/attackby(var/obj/item/I, var/mob/living/human/H)
+	if (type == /obj/structure/oven/fireplace && istype(I, /obj/item/stack/material/stone) && istype(H) && H.a_intent == I_HELP)
+		upgrade_to_stone_kiln(I, H)
+		return TRUE
+	if (stone_upgrade_busy)
+		return TRUE
 	if (on && (istype(I, /obj/item/stack/material/leather) || istype(I, /obj/item/stack/material/cloth)))
 		to_chat(H, "You produce some smoke signals.")
 		smoke_signals()
