@@ -1,4 +1,6 @@
 /mob/Logout()
+	if (CIV13_GEOMETRIC_LOS_CORE && client && client.los_context)
+		client.los_context.retire()
 	client?.clear_hover_name()
 	GLOB.nanomanager.user_logout(src) // this is used to clean up (remove) this user's Nano UIs
 	player_list -= src

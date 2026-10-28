@@ -35,9 +35,11 @@
 		overlays += image(icon = 'icons/turf/walls.dmi', icon_state = "cracks[cracked]", layer = src.layer+0.01)
 /obj/covers/New()
 	..()
+	register_seasonal_construction()
 	check_relatives(1,1)
 
 /obj/covers/Destroy()
+	unregister_seasonal_construction()
 	if (wall)
 		for (var/obj/roof/R in range(2, src))
 			R.collapse_check()

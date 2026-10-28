@@ -23,7 +23,8 @@
     <Compile Include="ServerStatus.cs" />
     <Compile Include="ServerBrowser.cs" />
     <Compile Include="CommunityLinks.cs" />
-    <Compile Include="LocalDreamDaemon.cs" />
+    <Compile Include="LocalDreamDaemon.cs" />
+    <Compile Include="LocalHosting.cs" />
     <Compile Include="Social/*.cs" />
     <Compile Include="Management/*.cs" />
     <ProjectReference Include="../../server-management/Core/Civ13.ServerManagement.csproj" />

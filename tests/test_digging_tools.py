@@ -160,7 +160,7 @@ class DiggingToolRules(unittest.TestCase):
     def test_ci_runs_only_offline_admission_tests(self):
         workflow = source('.github/workflows/test.yml')
         step = workflow.split('- name: Test digging tool and research admission offline', 1)[1].split('- name:', 1)[0]
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')", step)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_digging_tools.py')", step)
         self.assertIn('python3 -B -m unittest discover -s tests -p test_digging_tools.py -v', step)
         self.assertNotIn('byond', step.lower())
 

@@ -5,7 +5,7 @@
 # No separate installation, secrets, service, privilege or manual dispatch.
 - name: Verify synthetic saved-roof recovery and two defect controls
   id: roof_native
-  if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')
+  if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && (contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery') || contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
   timeout-minutes: 40
   shell: bash
   env:
