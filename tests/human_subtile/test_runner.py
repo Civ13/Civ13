@@ -76,7 +76,7 @@ class RunnerContracts(unittest.TestCase):
     def test_mining_receipt_rejects_missing_cases_checks_and_unrelated_failure(self):
         rows = [dict(enabled=enabled, sy=sy, client=0, effects=1, bumps=3)
                 for enabled, sy in ((0, 0), (1, 0), (1, 4), (1, 28))]
-        receipt = dict(head='abc', byond_version=516, byond_build=1681,
+        receipt = dict(head='abc', byond_version=516, byond_build=1688,
                        error=None, mining_checks=52, mining_rows=rows)
         runner.validate_receipt(receipt, 'mining', 'none', 'abc')
         for key, value in [('head', 'wrong'), ('mining_checks', 51),
@@ -120,12 +120,12 @@ class RunnerContracts(unittest.TestCase):
             runner.isolate_startup('unknown.dm', '')
 
     def test_exact_human_receipt_and_omission_controls(self):
-        row = {'head': 'a' * 40, 'byond_version': 516, 'byond_build': 1681,
+        row = {'head': 'a' * 40, 'byond_version': 516, 'byond_build': 1688,
                'checks': 42, 'error': None, 'rows': [{'scene': 'normal', 'rows':
-                [{'sx': 4, 'locs': 2, 'native': 4}] + [{'native': 4}] * 7}]}
+                [{'sx': 2, 'locs': 2, 'native': 2}] + [{'native': 2}] * 15}]}
         runner.validate_receipt(row, 'human', 'none', 'a' * 40)
         for key, value in (('head', 'b' * 40), ('checks', 41), ('error', 'failed'),
-                           ('byond_build', 1688), ('rows', [])):
+                           ('byond_build', 1681), ('rows', [])):
             with self.assertRaises(ValueError):
                 runner.validate_receipt(dict(row, **{key: value}), 'human', 'none', 'a' * 40)
         for field, value in (('sx', 0), ('locs', 1), ('native', 1)):
@@ -136,7 +136,7 @@ class RunnerContracts(unittest.TestCase):
 
     def test_primitive_control_requires_exact_physical_failure(self):
         before = dict(x=2, y=2, z=1, sx=0, sy=0)
-        row = dict(byond_version=516, byond_build=1681, port=0, checks=3,
+        row = dict(byond_version=516, byond_build=1688, port=0, checks=3,
                    failed=['physical_east_four_pixels'], control='cosmetic',
                    error='physical_east_four_pixels', observations=[dict(name='first_east', before=before, after=dict(before))])
         runner.validate_receipt(row, 'primitive', 'cosmetic', 'a' * 40)
@@ -203,7 +203,7 @@ class RunnerContracts(unittest.TestCase):
             def phase(command, cwd, name, deadline):
                 calls.append((command, cwd, name))
                 if name == 'compile':
-                    (stage / 'compile-stdout.log').write_text('DM compiler version 516.1681\nprototype.dmb - 0 errors, 0 warnings\n')
+                    (stage / 'compile-stdout.log').write_text('DM compiler version 516.1688\nprototype.dmb - 0 errors, 0 warnings\n')
                     (stage / 'compile-stderr.log').write_text('')
                 else:
                     self.assertEqual(command[1], str(cwd / 'prototype.dmb'))
@@ -239,12 +239,12 @@ class RunnerContracts(unittest.TestCase):
                 runner.inspect_logs(work, check_diagnostics=False)
 
     def test_compile_requires_one_clean_pinned_result_without_warning_noise(self):
-        good = 'DM compiler version 516.1681\nprototype.dmb - 0 errors, 0 warnings (10/19/26 1:05 pm)\n'
+        good = 'DM compiler version 516.1688\nprototype.dmb - 0 errors, 0 warnings (10/19/26 1:05 pm)\n'
         runner.validate_compile(good, 'prototype.dmb')
-        for bad in (good + good, good.replace('1681', '1688'),
+        for bad in (good + good, good.replace('1688', '1681'),
                     good + 'warning: invalid file\n', good + 'warning: unrelated\n',
                     good.replace('0 errors, 0 warnings', '0 errors, 1 warning'),
-                    'prototype.dmb - 0 errors, 0 warnings\nDM compiler version 516.1681\n'):
+                    'prototype.dmb - 0 errors, 0 warnings\nDM compiler version 516.1688\n'):
             with self.assertRaises(RuntimeError):
                 runner.validate_compile(bad, 'prototype.dmb')
 
@@ -264,7 +264,9 @@ class RunnerContracts(unittest.TestCase):
         for suite in ('tests/human_subtile', 'tests/subtile_movement'):
             self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", block)
         self.assertIn('--suite primitive --control cosmetic', block)
-        self.assertIn('--suite human', block)
+        self.assertIn('run-diagonal.py --byond-bin', block)
+        self.assertIn('run-diagonal.py --control legacy-split', block)
+        self.assertIn('run-diagonal.py --control cardinal-arithmetic', block)
         self.assertIn('steps.human_subtile.outputs.started', workflow)
 
 

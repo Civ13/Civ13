@@ -8,8 +8,8 @@ import hashlib
 import importlib.util
 import json
 import os
-import re
 from pathlib import Path, PurePosixPath
+import re
 import subprocess
 import sys
 import time
@@ -41,6 +41,12 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    # Keep mixed production static.dm unmapped: its existing all-suite fallback
+    # must still cover changes to fish, piranhas and ants, not just fishing.
+    'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
+                                'tests/fishing_stock/test_preparation.py',
+                                'tests/fishing_stock/test_native_runner.py'), 'paths': (
+        'tests/fishing_stock/',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
@@ -84,22 +90,6 @@ def provenance(head, base):
     return dict(head=actual, base=resolved_base, requested_base=base,
                 run_id=os.environ.get('GITHUB_RUN_ID'),
                 run_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'))
-
-
-def producer_attempt(value, current):
-    """An explicit dependency binding, never a search for the latest artifact."""
-    if any(type(v) is not str or not re.fullmatch(r'[1-9][0-9]{0,18}', v)
-           for v in (value, current)) or int(value) > int(current):
-        raise ValueError('Invalid/future producer attempt')
-    return value
-
-
-def execution_source(plan):
-    source = {key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')}
-    current = os.environ.get('GITHUB_RUN_ATTEMPT', plan['run_attempt'])
-    if current is not None: producer_attempt(plan['run_attempt'], current)
-    source.update(run_attempt=current, selection_run_attempt=plan['run_attempt'])
-    return source
 
 
 def documentation(path):
@@ -175,14 +165,27 @@ def selection_eligibility(plan):
     return policy
 
 
+def attempt_number(value):
+    if type(value) is not str or not re.fullmatch(r'[1-9][0-9]{0,5}', value):
+        raise ValueError('Invalid run attempt: ' + repr(value))
+    return int(value)
+
+
 def load_selection(path, head, base, selection_attempt=None):
+    """A re-run of failed jobs reuses earlier successful jobs and their artifacts,
+    so the selection may come from an earlier attempt of this same run. The
+    caller names that attempt from the selection job's own output."""
     plan = json.loads(Path(path).read_text(encoding='utf-8'))
-    expected = provenance(head, base).copy()
-    if selection_attempt is not None:
-        expected['run_attempt'] = producer_attempt(selection_attempt, expected['run_attempt'])
-    for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt'):
+    expected = provenance(head, base)
+    for key in ('head', 'base', 'requested_base', 'run_id'):
         if plan.get(key) != expected[key]:
             raise ValueError('Selection provenance mismatch: ' + key)
+    if selection_attempt is None:
+        if plan.get('run_attempt') != expected['run_attempt']:
+            raise ValueError('Selection provenance mismatch: run_attempt')
+    elif (plan.get('run_attempt') != selection_attempt
+          or attempt_number(selection_attempt) > attempt_number(expected['run_attempt'])):
+        raise ValueError('Selection provenance mismatch: run_attempt')
     if plan.get('schema_version') != 1 or plan.get('kind') != 'selection' or plan.get('status') != 'passed':
         raise ValueError('Missing or failed selection receipt')
     suites = plan['baseline']['suites']
@@ -217,7 +220,8 @@ def execute(plan, output):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     receipt = dict(schema_version=1, kind='baseline', status='running',
-                   **execution_source(plan),
+                   **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
+                   job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
                    selection_sha256=digest(plan), suites={})
     (output / 'source-tree.txt').write_text(git('ls-tree', '-r', 'HEAD') + '\n', encoding='utf-8')
     observed_head_before = revision('HEAD')
@@ -289,7 +293,8 @@ def compile_receipt(plan, outcome, output):
         status = 'failed'
         toolchain_error = str(error)[:300]
     receipt = dict(schema_version=1, kind='compile', status=status, selected=selected,
-                   **execution_source(plan),
+                   **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
+                   job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
                    selection_sha256=digest(plan), step_outcome=outcome,
                    reason=plan['compile']['reason'],
                    toolchain='BYOND ' + requirement['version'] if requirement else None,
@@ -300,17 +305,12 @@ def compile_receipt(plan, outcome, output):
     return 1 if status == 'failed' else 0
 
 
-def aggregate(plan, baseline, compile_run, jobs, extraction_selected, producer_attempts=None):
+def aggregate(plan, baseline, compile_run, jobs, extraction_selected, attempts=None):
+    """attempts names the attempt each reused or re-run job actually executed in,
+    plus the aggregate's own current attempt; by default all equal the selection's."""
     errors = []
-    attempts = {kind: plan['run_attempt'] for kind in ('selection', 'baseline', 'compile')}
-    if producer_attempts is not None:
-        try:
-            if set(producer_attempts) != set(attempts): raise ValueError('Missing producer attempt binding')
-            attempts = {kind: producer_attempt(value, os.environ.get('GITHUB_RUN_ATTEMPT'))
-                        for kind, value in producer_attempts.items()}
-            if attempts['selection'] != plan['run_attempt']: raise ValueError('Selection producer attempt mismatch')
-        except ValueError as error:
-            return [str(error)]
+    if attempts is None:
+        attempts = dict.fromkeys(('baseline', 'compile', 'current'), plan.get('run_attempt'))
     try:
         selection_eligibility(plan)
     except ValueError as error:
@@ -334,15 +334,18 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected, producer_a
     for receipt, kind in ((baseline, 'baseline'), (compile_run, 'compile')):
         if receipt.get('schema_version') != 1 or receipt.get('kind') != kind:
             errors.append('Missing/invalid ' + kind + ' receipt')
-        for key in ('head', 'base', 'requested_base', 'run_id'):
+        for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt'):
             if receipt.get(key) != plan.get(key):
                 errors.append(kind + ' provenance mismatch: ' + key)
-        if receipt.get('run_attempt') != attempts[kind]:
-            errors.append(kind + ' provenance mismatch: run_attempt')
-        if receipt.get('selection_run_attempt') != plan['run_attempt']:
-            errors.append(kind + ' selection producer attempt mismatch')
         if receipt.get('selection_sha256') != digest(plan):
             errors.append(kind + ' selection digest mismatch')
+        try:
+            if receipt.get('job_attempt') != attempts[kind] or not (
+                    attempt_number(plan.get('run_attempt')) <= attempt_number(attempts[kind])
+                    <= attempt_number(attempts['current'])):
+                raise ValueError('order')
+        except ValueError:
+            errors.append(kind + ' job attempt mismatch')
     if baseline.get('status') != 'passed':
         errors.append('Baseline did not pass')
     if baseline.get('tracked_dirty') is not False:
@@ -379,13 +382,15 @@ def main():
     parser.add_argument('mode', choices=('unit', 'run', 'compile', 'aggregate'))
     parser.add_argument('--suite', choices=SUITES)
     parser.add_argument('--selection')
-    parser.add_argument('--selection-attempt')
     parser.add_argument('--head')
     parser.add_argument('--base', default='')
     parser.add_argument('--output', required=True)
     parser.add_argument('--outcome')
     parser.add_argument('--baseline')
     parser.add_argument('--compile-receipt')
+    parser.add_argument('--selection-attempt')
+    parser.add_argument('--baseline-attempt')
+    parser.add_argument('--compile-attempt')
     args = parser.parse_args()
     if args.mode == 'unit':
         return run_unit(args.suite, args.output)
@@ -401,14 +406,14 @@ def main():
     extraction = os.environ['EXTRACTION_SELECTED']
     if extraction not in {'true', 'false'}:
         raise ValueError('Missing extraction selection')
-    attempts = None if args.selection_attempt is None else {
-        kind: jobs.get(job, {}).get('outputs', {}).get('artifact_attempt')
-        for kind, job in (('selection', 'changes'), ('baseline', 'baseline'), ('compile', 'build'))}
+    attempts = dict(baseline=args.baseline_attempt, compile=args.compile_attempt,
+                    current=os.environ.get('GITHUB_RUN_ATTEMPT'))
     errors = aggregate(plan, json.loads(Path(args.baseline).read_text(encoding='utf-8')),
                        json.loads(Path(args.compile_receipt).read_text(encoding='utf-8')),
                        jobs, extraction == 'true', attempts)
     receipt = dict(schema_version=1, kind='aggregate', status='failed' if errors else 'passed',
-                   **execution_source(plan), producer_attempts=attempts,
+                   **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
+                   job_attempt=attempts['current'], receipt_attempts=attempts,
                    selection_sha256=digest(plan), jobs=jobs, errors=errors,
                    action=plan['action'], eligibility=plan['eligibility'],
                    coverage='gating' if gating == '1' else 'informational')

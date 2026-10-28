@@ -82,10 +82,12 @@ jobs:
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   baseline:
     needs: changes
-    outputs:
-      artifact_attempt: ${{ github.run_attempt }}
     runs-on: ubuntu-latest
     timeout-minutes: 6
+    # Reused by a re-run of failed jobs, a job keeps its original attempt and
+    # artifact names; consumers download by these outputs, not their own attempt.
+    outputs:
+      attempt: ${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -94,14 +96,14 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.artifact_attempt }}
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
           path: .ci/selection
       - name: Run required bounded offline baseline
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
-          CI_SELECTION_ATTEMPT: ${{ needs.changes.outputs.artifact_attempt }}
-        run: python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$CI_SELECTION_ATTEMPT" --output .ci/baseline
+          SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
+        run: python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/baseline
       - name: Retain offline commands, counts, logs and skips
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -123,6 +125,9 @@ jobs:
       - name: Test representative save executor contracts without native effects
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions == true
         run: python3 -B -m unittest discover -s tests/save_latency/representative -v
+      - name: Check Art of the Deal map regressions offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/aotd_map')
+        run: python3 -B -m unittest discover -s tests/aotd_map -p 'test_*.py' -v
       - name: Test synthetic static-source export core offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_to_map')
         run: python3 -I -B -m unittest discover -s tests/save_to_map -p 'test_*.py' -v
@@ -156,6 +161,9 @@ jobs:
       - name: Test character discoveries and berry smell contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/character_discoveries')
         run: python3 -I -B -m unittest discover -s tests/character_discoveries -p 'test_*.py' -v
+      - name: Test winter crops and attributed sprite contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/winter_crops')
+        run: python3 -I -S -B -m unittest discover -s tests/winter_crops -p 'test_*.py' -v
       - name: Test persistence minimum date offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_year')
         run: python3 -B -m unittest discover -s tests/persistence_year -v
@@ -307,11 +315,11 @@ jobs:
   build:
     name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational build' || 'build' }}
     needs: changes
-    outputs:
-      artifact_attempt: ${{ github.run_attempt }}
     if: always() && !cancelled()
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    outputs:
+      attempt: ${{ github.run_attempt }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -339,7 +347,7 @@ jobs:
       # Runs a single command using the runners shell
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.artifact_attempt }}
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
           path: .ci/selection
       - name: Read reviewed BYOND archive cache identity
         id: byond_archive
@@ -365,6 +373,22 @@ jobs:
           bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
 
+      - name: Compile Art of the Deal with current game declarations
+        id: aotd_compile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/aotd_map')
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B tests/aotd_map/compile_map.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/aotd-compile"
+      - name: Retain Art of the Deal compiler evidence
+        if: always() && steps.aotd_compile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aotd-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/aotd-compile/
+          retention-days: 7
+          if-no-files-found: error
       - name: Save verified BYOND archive after successful compilation
         if: needs.changes.outputs.game == 'true' && steps.compile.outcome == 'success' && steps.byond_cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
@@ -377,9 +401,9 @@ jobs:
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
-          CI_SELECTION_ATTEMPT: ${{ needs.changes.outputs.artifact_attempt }}
           COMPILE_OUTCOME: ${{ steps.compile.outcome }}
-        run: python3 -B scripts/ci_baseline.py compile --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$CI_SELECTION_ATTEMPT" --outcome "$COMPILE_OUTCOME" --output .ci/compile/compile.json
+          SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
+        run: python3 -B scripts/ci_baseline.py compile --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --outcome "$COMPILE_OUTCOME" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/compile/compile.json
       - name: Retain compiler diagnostics and source receipts including failures
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -602,14 +626,33 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -B -m unittest discover -s tests/wildlife_registry -v
           python3 tests/wildlife_registry/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/wildlife_registry-native" --all-controls
-      - name: Verify farm registry production hooks and native controls
+      - name: Verify farm and poultry registry production hooks and native controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_registry')
         timeout-minutes: 10
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -B -m unittest discover -s tests/animal_registry -v
-          python3 tests/animal_registry/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/animal_registry-native" --all-controls
+          python3 tests/animal_registry/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/animal_registry-native" --expected-byond-version 516.1688 --all-controls
+          python3 tests/animal_registry/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/animal_registry-poultry-native" --suite poultry --expected-byond-version 516.1688 --all-controls
+
+      - name: Verify isolated fishing completion and native omission controls
+        id: fishing_stock_native
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/fishing_stock')
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          echo "started=true" >> "$GITHUB_OUTPUT"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B tests/fishing_stock/run_native.py --execute --expected-byond-version 516.1688 --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --acquisition-receipt "$PWD/.ci/compile/byond-download.json" --output "$RUNNER_TEMP/fishing-stock-native"
+      - name: Preserve isolated fishing native evidence including failures
+        if: always() && steps.fishing_stock_native.outputs.started == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fishing-stock-native-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/fishing-stock-native/**
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Verify accessory removal actor and native controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/accessory_removal')
@@ -764,6 +807,7 @@ jobs:
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           /usr/bin/python3 scripts/build-crafting-atlas.py --output "$RUNNER_TEMP/crafting" --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --byond-archive "$GITHUB_WORKSPACE/BYOND/pinned.zip" --check-game-catalog UI/crafting-atlas.json
           node scripts/atlas/check.mjs "$RUNNER_TEMP/crafting"
+          node tests/crafting_atlas/resource-search.test.mjs
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
           /usr/bin/python3 tests/crafting_atlas/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --full-catalog
@@ -936,7 +980,10 @@ jobs:
           /usr/bin/python3 -B tests/subtile_movement/test_oracle.py
           /usr/bin/python3 -B tests/human_subtile/run.py --suite primitive --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/primitive"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite primitive --control cosmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cosmetic"
-          /usr/bin/python3 -B tests/human_subtile/run.py --suite human --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/human"
+          /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/current"
+          /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control legacy-split --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/legacy-split"
+          /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control cardinal-arithmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cardinal-arithmetic"
+          /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control offset-recovery --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/offset-recovery"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --control mining-position --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining-position"
 
@@ -949,6 +996,9 @@ jobs:
           path: |
             ${{ runner.temp }}/human-subtile/**/source-manifest.json
             ${{ runner.temp }}/human-subtile/**/runner-receipt.json
+            ${{ runner.temp }}/human-subtile/**/diagonal-manifest.json
+            ${{ runner.temp }}/human-subtile/**/accepted.json
+            ${{ runner.temp }}/human-subtile/*/*-receipt.json
             ${{ runner.temp }}/human-subtile/**/*.log
             ${{ runner.temp }}/human-subtile/**/data/logs/runtime/*.txt
             ${{ runner.temp }}/human-subtile/**/receipt.json
@@ -1982,15 +2032,15 @@ jobs:
           python3 -c 'import json,os; from pathlib import Path; Path(".ci/aggregate/jobs.json").write_text(json.dumps(json.loads(os.environ["CI_NEEDS"]), indent=2))'
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.artifact_attempt }}
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
           path: .ci/selection
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.artifact_attempt }}
+          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}
           path: .ci/baseline
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.artifact_attempt }}
+          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}
           path: .ci/compile
       - name: Require selected jobs and exact-source execution receipts
         env:
@@ -1999,8 +2049,10 @@ jobs:
           CI_NEEDS: ${{ toJSON(needs) }}
           EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
           GATING_SELECTION: ${{ needs.changes.outputs.gating }}
-          CI_SELECTION_ATTEMPT: ${{ needs.changes.outputs.artifact_attempt }}
-        run: python3 -B scripts/ci_baseline.py aggregate --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$CI_SELECTION_ATTEMPT" --baseline .ci/baseline/baseline.json --compile-receipt .ci/compile/compile.json --output .ci/aggregate/aggregate.json
+          SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
+          BASELINE_ATTEMPT: ${{ needs.baseline.outputs.attempt }}
+          COMPILE_ATTEMPT: ${{ needs.build.outputs.attempt }}
+        run: python3 -B scripts/ci_baseline.py aggregate --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$SELECTION_ATTEMPT" --baseline .ci/baseline/baseline.json --baseline-attempt "$BASELINE_ATTEMPT" --compile-receipt .ci/compile/compile.json --compile-attempt "$COMPILE_ATTEMPT" --output .ci/aggregate/aggregate.json
       - name: Summarize explicit execution and skip meanings
         if: always()
         run: |
