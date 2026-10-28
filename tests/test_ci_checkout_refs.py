@@ -1,4 +1,5 @@
 """Exact-event shallow preparation and failed-selection regression controls."""
+import ast
 import importlib.util
 import os
 from pathlib import Path
@@ -19,6 +20,67 @@ spec.loader.exec_module(baseline)
 
 
 class CheckoutRefsTests(unittest.TestCase):
+    def test_build_checkout_conditions_partition_simple_and_fixture_events(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
+        expressions = []
+        for name in ('Check out simple compilation source', 'Check out history for selected or manual fixtures'):
+            block = build.split('      - name: ' + name + '\n', 1)[1].split('\n      - ', 1)[0]
+            expressions.append(next(line.strip()[4:] for line in block.splitlines() if line.startswith('        if: ')))
+        self.assertIn('fetch-depth: 1', build)
+        self.assertIn('fetch-depth: 0', build)
+        self.assertIn('Prepare simple compilation comparison commit', build)
+        receipt = build.split('      - name: Record compilation outcome and source receipts\n', 1)[1].split('\n      - ', 1)[0]
+        self.assertIn("steps.simple_checkout.outcome == 'success' && steps.simple_prepare.outcome == 'success' || steps.history_checkout.outcome == 'success'", receipt)
+        self.assertIn('Compilation receipt did not complete', receipt)
+        upload = build.split('      - name: Retain compiler diagnostics and source receipts including failures\n', 1)[1].split('\n      - ', 1)[0]
+        self.assertIn("steps.compile_receipt.outcome != 'skipped' && steps.compile_receipt.outcome != ''", upload)
+        for event, extensive, new_tests, labels, expected in (
+                ('pull_request', 'false', '[]', '[]', 'shallow'),
+                ('push', 'false', '[]', 'null', 'shallow'),
+                ('pull_request', 'false', '[]', '["roof-ci:head"]', 'history'),
+                ('pull_request', 'false', '["tests/fixture"]', '[]', 'history'),
+                ('pull_request', 'true', '[]', '[]', 'history'),
+                ('workflow_dispatch', 'false', '[]', 'null', 'history'),
+                ('pull_request', 'false', '', '[]', 'history'),
+                ('pull_request', 'false', '[]', 'null', 'history')):
+            values = dict(event=event, extensive=extensive, new_tests=new_tests, labels=labels)
+            outcomes = []
+            for expression in expressions:
+                for old, new in (('toJSON(github.event.pull_request.labels)', 'labels'),
+                                 ('github.event_name', 'event'),
+                                 ('needs.changes.outputs.extensive', 'extensive'),
+                                 ('needs.changes.outputs.new_tests', 'new_tests'),
+                                 ('&&', ' and '), ('||', ' or ')):
+                    expression = expression.replace(old, new)
+                parsed = ast.parse(expression, mode='eval')
+                for node in ast.walk(parsed):
+                    self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or,
+                                                 ast.Compare, ast.Eq, ast.NotEq, ast.Name,
+                                                 ast.Load, ast.Constant))
+                    if isinstance(node, ast.Name):
+                        self.assertIn(node.id, values)
+                outcomes.append(bool(eval(compile(parsed, '<checkout admission>', 'eval'), {'__builtins__': {}}, values)))
+            with self.subTest(values=values):
+                self.assertEqual(outcomes, [expected == 'shallow', expected == 'history'])
+
+    def test_build_rejects_missing_and_invalid_suite_output(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
+        block = build.split('      - name: Require successful change selection\n', 1)[1].split('\n      - ', 1)[0]
+        script = '\n'.join(line[10:] for line in block.split('        run: |\n', 1)[1].splitlines())
+        bash = r'C:\Program Files\Git\bin\bash.exe' if os.name == 'nt' else shutil.which('bash')
+        self.assertTrue(bash and Path(bash).is_file(), 'Git Bash or bash is required')
+        if os.name == 'nt':
+            import sys
+            script = script.replace('python3 -c ', "'" + Path(sys.executable).as_posix() + "' -c ")
+        for value, expected in (('[]', 0), ('["tests/sawmill"]', 0), ('', 1), ('null', 1), ('[1]', 1), ('[""]', 1)):
+            env = dict(os.environ, SELECTION_RESULT='success', GAME_SELECTION='true',
+                       EXTENSIVE_SELECTION='false', GATING_SELECTION='1', NEW_TEST_SELECTION=value)
+            result = subprocess.run([bash, '-e', '-c', script], env=env, capture_output=True, text=True, timeout=10)
+            with self.subTest(value=value):
+                self.assertEqual(result.returncode == 0, expected == 0)
+
     def test_real_depth_one_checkout_fetches_exact_base_and_preserves_head(self):
         with tempfile.TemporaryDirectory(prefix='ci-refs-') as directory:
             origin, clone = Path(directory) / 'origin', Path(directory) / 'clone'
@@ -93,6 +155,26 @@ class CheckoutRefsTests(unittest.TestCase):
             result = subprocess.run([bash, '-c', script], cwd=directory, env=env, capture_output=True, text=True, timeout=10)
             self.assertNotEqual(result.returncode, 0)
             verdict = json.loads((Path(directory) / '.ci/aggregate/baseline-failed.json').read_text())
+            self.assertEqual(verdict['result'], 'unknown')
+
+    def test_failed_build_step_writes_verdict_and_fails(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        block = workflow.split('      - name: Record failed build verdict\n', 1)[1].split('\n      - ', 1)[0]
+        self.assertIn("if: always() && needs.changes.result == 'success' && needs.baseline.result == 'success' && needs.build.result != 'success'", block)
+        script = '\n'.join(line[10:] for line in block.split('        run: |\n', 1)[1].splitlines())
+        bash = r'C:\Program Files\Git\bin\bash.exe' if os.name == 'nt' else shutil.which('bash')
+        self.assertTrue(bash and Path(bash).is_file(), 'Git Bash or bash is required')
+        with tempfile.TemporaryDirectory(prefix='ci-build-failed-') as directory:
+            env = dict(os.environ, BUILD_RESULT='failure')
+            result = subprocess.run([bash, '-c', script], cwd=directory, env=env, capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            import json
+            verdict = json.loads((Path(directory) / '.ci/aggregate/build-failed.json').read_text())
+            self.assertEqual(verdict, {'status': 'failed', 'reason': 'build job did not succeed', 'result': 'failure'})
+            env['BUILD_RESULT'] = 'unexpected"value'
+            result = subprocess.run([bash, '-c', script], cwd=directory, env=env, capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            verdict = json.loads((Path(directory) / '.ci/aggregate/build-failed.json').read_text())
             self.assertEqual(verdict['result'], 'unknown')
 
     def test_workflow_preserves_failed_verdict_and_guarded_downloads(self):
