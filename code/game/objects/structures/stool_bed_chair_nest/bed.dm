@@ -37,6 +37,7 @@
 /obj/structure/bed/hammock
 	name = "hammock"
 	desc = "A rope bed, hanging from the ceiling."
+	not_disassemblable = TRUE // Generic structure hammer recovery would turn rope into wood.
 	applies_material_colour = FALSE
 	material = "rope"
 	icon_state = "hammockf"

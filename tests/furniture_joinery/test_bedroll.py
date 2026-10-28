@@ -158,4 +158,32 @@ class BedrollContracts(unittest.TestCase):
         for state in ('bedroll_r','bedroll_o','bedroll_w'):self.assertIn('state = "'+state+'"',metadata)
 
 
+class HammockContracts(unittest.TestCase):
+    def test_paid_route_research_and_catalog_are_consistent(self):
+        path='/obj/structure/bed/hammock'
+        lines=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()
+        rows=[x.split('RECIPE: ',1)[1].split(',') for x in lines if x.startswith('RECIPE: ') and ','+path+',' in x]
+        self.assertEqual(rows,[['/material/rope/','rope hammock',path,'6','180','1','1','furniture','0','0','0','8','rope']])
+        self.assertIn('"'+path+'" = "weaving"',(ROOT/'code/modules/research_tree/research_node.dm').read_text())
+        data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+        row=next(r for r in data['recipes'] if r['name']=='rope hammock')
+        self.assertEqual(row['inputs'],[dict(id='/material/rope',name='rope',quantity='6')])
+        self.assertEqual(row['outputs'],[dict(id=path,name='hammock',quantity='1')])
+        self.assertEqual(row['unlock_eras'],[0]);self.assertIn('weaving',row['conditions'])
+
+    def test_hammock_refuses_real_generic_wood_refund_with_old_default_control(self):
+        f=Bedding()
+        values=defaults('/obj/structure/bed') | defaults('/obj/structure/bed/hammock')
+        bed=NS(**values,type='/obj/structure/bed/hammock',loc='floor',contents=[],deleted=False)
+        f.objects.append(bed)
+        hammer=NS(type='/obj/item/weapon/hammer')
+        procedure('',f.env,hammer=True)(bed,None,hammer)
+        self.assertFalse(bed.deleted);self.assertEqual(f.objects,[bed])
+        bed.not_disassemblable=False
+        procedure('',f.env,hammer=True)(bed,None,hammer)
+        self.assertTrue(bed.deleted);self.assertEqual(f.objects[-1].type,'/obj/item/stack/material/wood')
+        # Ordinary wooden beds retain their existing dispatch policy.
+        self.assertFalse(defaults('/obj/structure/bed')['not_disassemblable'])
+
+
 if __name__=='__main__':unittest.main()
