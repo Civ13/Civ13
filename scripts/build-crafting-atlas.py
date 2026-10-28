@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
 from atlas.tanning import add_tanning
+from atlas.woodworking import add_woodworking
 from atlas.variants import consolidate_variants, game_recipes
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -212,6 +213,16 @@ if bench:
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
 tanning_routes=add_tanning(files, add, records, sprite_variants)
+woodwork_path='code/modules/1713/primitive_woodworking.dm'
+woodwork_revision=git('log','-1','--format=%H','--',woodwork_path).decode().strip()
+if not woodwork_revision or git('show',woodwork_revision+':'+woodwork_path).decode().replace('\r\n','\n') != files[woodwork_path]:
+    woodwork_revision='uncommitted'
+woodworking_routes=add_woodworking(files, add, records, sprite_variants, woodwork_revision)
+for route in woodworking_routes:
+    for field in ('inputs','outputs'):
+        route[field]=[canon(resource) for resource in route[field]]
+for resource in ('/obj/item/stack/material/wood_piece','/obj/item/stack/material/crude_plank'):
+    sprite_variants[canon(resource)]=sprite_variants[resource]
 for recipe in records:
     for resource in recipe['inputs']+recipe['outputs']:
         if resource['id'] in sprite_variants:
@@ -253,9 +264,9 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
-for route in tanning_routes:
+for route in tanning_routes + woodworking_routes:
     for resource in route['outputs']:
-        acquisition.setdefault(resource,[]).append(route)
+        acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)

@@ -1,5 +1,17 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-28: gathered manual woodworking -->
+Manual woodworking in primitive_woodworking.dm keeps pieces and crude planks
+distinct from finished planks. Whittling admits sharpened flint or an actual knife
+whose working material is harder than the wood; flattening admits sharpened flint
+or sharp verified non-wood working material and charges no tool wear. Wooden
+handles on metal blades do not make those blades wooden. Hammer/wedge splitting
+is axe-free; the existing plank-to-handle recipes remain unchanged. Ownership is
+runtime-only and the admitted persistence-operation constructor invalidates waits.
+The offline source projections and hosted wiring do not establish native gameplay
+or savefile acceptance. Keep the sawmill owner's one-finished-plank-per-log contract
+separate; no spawn kit, map cache, peg joinery or respawn resource grant is added.
+
 <!-- 2026-10-28: public lighting/exclusion reconciliation -->
 The exclusion runner requires immutable event base/head SHAs and verifies the
 checked-out head, event metadata in Actions and committed fixture inputs. Never

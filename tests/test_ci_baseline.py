@@ -52,6 +52,28 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_woodworking_runs_on_production_or_modified_test_changes_without_extensive(self):
+        self.assertEqual(ci.SUITES['woodworking']['files'],('tests/primitive_woodworking/test_source.py',))
+        dedicated=('code/modules/1713/primitive_woodworking.dm',
+                   'scripts/atlas/woodworking.py',
+                   'tests/primitive_woodworking/test_source.py',
+                   'tests/primitive_woodworking/source_adapter.py')
+        for path in dedicated:
+            with self.subTest(path=path):
+                result=ci.impact([path])
+                self.assertTrue(result['suites']['woodworking']['selected'])
+                self.assertFalse(result['fallback_reasons'])
+        self.assertIn('woodworking',self.selected(['code/modules/persistence/functions.dm']))
+        shared=('code/modules/materials/material_sheets.dm','code/modules/materials/materials.dm',
+                'code/game/objects/items/weapons/material/kitchen.dm',
+                'code/game/objects/items/weapons/material/thrown.dm',
+                'code/game/objects/items/weapons/surgery_tools.dm',
+                'scripts/build-crafting-atlas.py','scripts/player_help_bridge.py','UI/crafting-atlas.json')
+        for path in shared:
+            with self.subTest(shared=path):
+                self.assertEqual(self.selected([path]),set(ci.SUITES))
+                self.assertIn('Unmapped impact: '+path,ci.impact([path])['fallback_reasons'])
+
     def selected(self, paths, comparison='available'):
         return {name for name, row in ci.impact(paths, comparison)['suites'].items() if row['selected']}
 
