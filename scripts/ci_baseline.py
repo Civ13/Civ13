@@ -51,6 +51,14 @@ SUITES = {
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
+                             'tests/dictionary_era/test_slang_content.py',
+                             'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
+        'tests/dictionary_era/', 'code/_helpers/dictionary.dm', 'code/_helpers/text.dm',
+        'code/setup.dm', 'code/world.dm', 'code/__defines/__game.dm', 'civ13.dme',
+        'code/game/mob/living/carbon/human/say.dm',
+        'code/game/mob/living/carbon/human/whisper.dm',
+        'config/dictionary.txt', 'tools/byond/version.json')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

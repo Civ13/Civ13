@@ -10,6 +10,16 @@ Source contracts are bounded offline CI only, not DM/native behavior proof.
 DME inclusion permits exact-revision compile coverage; activation, warm-up and
 activity/visibility adapters remain separate work. No animal mutation is added.
 
+<!-- 2026-10-27: disabled Backrooms expedition foundation -->
+`docs/backrooms-expedition` separates powered colonization from finite escape.
+`gateway_core.dm` contains uninstantiated finite-charge/lifecycle/identity datums,
+not a teleporter or world-save adapter. Template hashes never replace mutable
+instance identity. `tests/backrooms_gateway` projects pure source guards offline
+and prepares native savefile/lifecycle assertions without launching. Native runs
+require the bounded plan review; compilation does not prove movement or rescue.
+Use the console `dm.exe`, not the GUI `dreammaker.exe`, for Windows compilation.
+
+
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired

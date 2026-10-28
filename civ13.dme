@@ -91,6 +91,7 @@
 #include "code\_helpers\sorts.dm"
 #include "code\_helpers\spawn_sync.dm"
 #include "code\_helpers\text.dm"
+#include "code\_helpers\dictionary.dm"
 #include "code\_helpers\time.dm"
 #include "code\_helpers\turfs.dm"
 #include "code\_helpers\type2type.dm"
@@ -1276,4 +1277,4 @@
 #include "code\modules\1713\modern_telecom.dm"
 #include "code\modules\1713\modern_telephone.dm"
 #include "code\modules\1713\modern_terminal.dm"
-
+#include "code\modules\1713\backrooms\gateway_core.dm"

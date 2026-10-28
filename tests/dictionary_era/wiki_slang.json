@@ -1,0 +1,491 @@
+{
+  "schema": 1,
+  "source": {
+    "repository": "Civ13/civ13-wiki",
+    "commit": "8c361bc28cb5cfae3b215800622d509d534b7370",
+    "path": "src/guides/Guide_to_Slang.md",
+    "blob": "966a476eb352c0a445c19192688b62d64aaf1437",
+    "url": "https://github.com/Civ13/civ13-wiki/blob/8c361bc28cb5cfae3b215800622d509d534b7370/src/guides/Guide_to_Slang.md",
+    "license": "MIT",
+    "license_blob": "3d2e0e30179f7703e46c4f0f8c5df42428604a2b",
+    "notice": "docs/third-party/civ13-wiki-MIT.txt",
+    "selected_terms": {
+      "1013 AD": [
+        "Amercement",
+        "Bailiff",
+        "Borough",
+        "Estovers",
+        "Fealty",
+        "Tithe"
+      ],
+      "1713 AD": [
+        "Avast!",
+        "Blashy",
+        "Break-teeth words",
+        "Irish apricot",
+        "Study the history of the four kings",
+        "Gone to the Diet of Worms",
+        "Going to Jerusalem",
+        "To go up a ladder to bed"
+      ],
+      "1873 AD": [
+        "Bags o' Mystery",
+        "Bricky",
+        "Church-bell",
+        "Damfino",
+        "Mind the Grease",
+        "Mutton Shunter",
+        "Mad as Hops",
+        "Shoot into the brown"
+      ],
+      "1940's AD": [
+        "Ace",
+        "Cold fish",
+        "Gobbledygook",
+        "Greenbacks",
+        "Shuteye",
+        "Swigger"
+      ],
+      "1969 AD": [
+        "A gas",
+        "Bug out",
+        "Gimme some skin",
+        "Way out",
+        "Twitchin'"
+      ],
+      "1896 AD": [
+        "Corker",
+        "Jiggery-pokery",
+        "Juice",
+        "Lunkhead",
+        "Live wire",
+        "Port-sider",
+        "Tube",
+        "Up the river",
+        "Simoleon"
+      ],
+      "1984 AD": [
+        "Bitchin",
+        "Crib",
+        "Dufus",
+        "Fly",
+        "Gag me with a spoon",
+        "Later Days and Better Lays"
+      ]
+    }
+  },
+  "entries": [
+    {
+      "era": 2,
+      "period": "1013 AD",
+      "term": "Amercement",
+      "source": "a minor court fine",
+      "replacement": "an amercement",
+      "mode": "phrase"
+    },
+    {
+      "era": 2,
+      "period": "1013 AD",
+      "term": "Bailiff",
+      "source": "the lord's steward",
+      "replacement": "the bailiff",
+      "mode": "phrase"
+    },
+    {
+      "era": 2,
+      "period": "1013 AD",
+      "term": "Borough",
+      "source": "a royal charter town",
+      "replacement": "a borough",
+      "mode": "phrase"
+    },
+    {
+      "era": 2,
+      "period": "1013 AD",
+      "term": "Estovers",
+      "source": "the right to gather wood",
+      "replacement": "estovers",
+      "mode": "phrase"
+    },
+    {
+      "era": 2,
+      "period": "1013 AD",
+      "term": "Fealty",
+      "source": "an oath of loyalty to my lord",
+      "replacement": "fealty",
+      "mode": "phrase"
+    },
+    {
+      "era": 2,
+      "period": "1013 AD",
+      "term": "Tithe",
+      "source": "a tenth for the church",
+      "replacement": "a tithe",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Avast!",
+      "source": "stop!",
+      "replacement": "avast!",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Blashy",
+      "source": "rainy weather",
+      "replacement": "blashy weather",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Break-teeth words",
+      "source": "hard to pronounce words",
+      "replacement": "break-teeth words",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Irish apricot",
+      "source": "a potato",
+      "replacement": "an Irish apricot",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Study the history of the four kings",
+      "source": "play cards",
+      "replacement": "study the history of the four kings",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Gone to the Diet of Worms",
+      "source": "dead and buried",
+      "replacement": "gone to the Diet of Worms",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "Going to Jerusalem",
+      "source": "getting drunk",
+      "replacement": "going to Jerusalem",
+      "mode": "phrase"
+    },
+    {
+      "era": 3,
+      "period": "1713 AD",
+      "term": "To go up a ladder to bed",
+      "source": "to be hanged",
+      "replacement": "to go up a ladder to bed",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Bags o' Mystery",
+      "source": "sausages",
+      "replacement": "bags o' mystery",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Bricky",
+      "source": "brave",
+      "replacement": "bricky",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Bricky",
+      "source": "fearless",
+      "replacement": "bricky",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Church-bell",
+      "source": "a talkative lady",
+      "replacement": "a church-bell",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Damfino",
+      "source": "damned if i know",
+      "replacement": "damfino",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Mind the Grease",
+      "source": "excuse me",
+      "replacement": "mind the grease",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Mutton Shunter",
+      "source": "a police officer",
+      "replacement": "a mutton shunter",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Mad as Hops",
+      "source": "excitable",
+      "replacement": "mad as hops",
+      "mode": "phrase"
+    },
+    {
+      "era": 4,
+      "period": "1873 AD",
+      "term": "Shoot into the brown",
+      "source": "to fail",
+      "replacement": "to shoot into the brown",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Corker",
+      "source": "an excellent thing",
+      "replacement": "a corker",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Jiggery-pokery",
+      "source": "deceitful trickery",
+      "replacement": "jiggery-pokery",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Juice",
+      "source": "electricity",
+      "replacement": "juice",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Lunkhead",
+      "source": "a foolish person",
+      "replacement": "a lunkhead",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Live wire",
+      "source": "an energetic person",
+      "replacement": "a live wire",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Port-sider",
+      "source": "a left-hander",
+      "replacement": "a port-sider",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Tube",
+      "source": "the telephone",
+      "replacement": "the tube",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Up the river",
+      "source": "in prison",
+      "replacement": "up the river",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Up the river",
+      "source": "in jail",
+      "replacement": "up the river",
+      "mode": "phrase"
+    },
+    {
+      "era": 5,
+      "period": "1896 AD",
+      "term": "Simoleon",
+      "source": "a dollar",
+      "replacement": "a simoleon",
+      "mode": "phrase"
+    },
+    {
+      "era": 6,
+      "period": "1940's AD",
+      "term": "Ace",
+      "source": "an expert",
+      "replacement": "an ace",
+      "mode": "phrase"
+    },
+    {
+      "era": 6,
+      "period": "1940's AD",
+      "term": "Cold fish",
+      "source": "a boring person",
+      "replacement": "a cold fish",
+      "mode": "phrase"
+    },
+    {
+      "era": 6,
+      "period": "1940's AD",
+      "term": "Gobbledygook",
+      "source": "nonsensical talk",
+      "replacement": "gobbledygook",
+      "mode": "phrase"
+    },
+    {
+      "era": 6,
+      "period": "1940's AD",
+      "term": "Greenbacks",
+      "source": "paper money",
+      "replacement": "greenbacks",
+      "mode": "phrase"
+    },
+    {
+      "era": 6,
+      "period": "1940's AD",
+      "term": "Shuteye",
+      "source": "some sleep",
+      "replacement": "some shuteye",
+      "mode": "phrase"
+    },
+    {
+      "era": 6,
+      "period": "1940's AD",
+      "term": "Swigger",
+      "source": "a person who drinks alcohol",
+      "replacement": "a swigger",
+      "mode": "phrase"
+    },
+    {
+      "era": 7,
+      "period": "1969 AD",
+      "term": "A gas",
+      "source": "a fun time",
+      "replacement": "a gas",
+      "mode": "phrase"
+    },
+    {
+      "era": 7,
+      "period": "1969 AD",
+      "term": "Bug out",
+      "source": "to leave",
+      "replacement": "to bug out",
+      "mode": "phrase"
+    },
+    {
+      "era": 7,
+      "period": "1969 AD",
+      "term": "Gimme some skin",
+      "source": "shake my hand",
+      "replacement": "gimme some skin",
+      "mode": "phrase"
+    },
+    {
+      "era": 7,
+      "period": "1969 AD",
+      "term": "Way out",
+      "source": "beyond explanation",
+      "replacement": "way out",
+      "mode": "phrase"
+    },
+    {
+      "era": 7,
+      "period": "1969 AD",
+      "term": "Twitchin'",
+      "source": "really great",
+      "replacement": "really twitchin'",
+      "mode": "phrase"
+    },
+    {
+      "era": 8,
+      "period": "1984 AD",
+      "term": "Bitchin",
+      "source": "really good",
+      "replacement": "really bitchin",
+      "mode": "phrase"
+    },
+    {
+      "era": 8,
+      "period": "1984 AD",
+      "term": "Crib",
+      "source": "my home",
+      "replacement": "my crib",
+      "mode": "phrase"
+    },
+    {
+      "era": 8,
+      "period": "1984 AD",
+      "term": "Dufus",
+      "source": "a foolish fellow",
+      "replacement": "a dufus",
+      "mode": "phrase"
+    },
+    {
+      "era": 8,
+      "period": "1984 AD",
+      "term": "Fly",
+      "source": "looking stylish",
+      "replacement": "looking fly",
+      "mode": "phrase"
+    },
+    {
+      "era": 8,
+      "period": "1984 AD",
+      "term": "Gag me with a spoon",
+      "source": "that's gross",
+      "replacement": "gag me with a spoon",
+      "mode": "phrase"
+    },
+    {
+      "era": 8,
+      "period": "1984 AD",
+      "term": "Later Days and Better Lays",
+      "source": "goodbye and good luck",
+      "replacement": "later days and better lays",
+      "mode": "phrase"
+    }
+  ],
+  "period_approximations": {
+    "1896 AD": {
+      "ordinal": 5,
+      "engine_epoch": "1903",
+      "basis": "User-approved editorial approximation; not an exact historical match"
+    },
+    "1984 AD": {
+      "ordinal": 8,
+      "engine_epoch": "2013",
+      "basis": "User-approved editorial approximation; not an exact historical match"
+    }
+  }
+}
