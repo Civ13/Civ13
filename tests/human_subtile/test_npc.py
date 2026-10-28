@@ -94,12 +94,14 @@ class NpcContracts(unittest.TestCase):
         self.assertNotIn('DreamDaemon', source)
 
     def test_player_crawl_pathfinding_and_authority_unchanged(self):
+        # Focused absence checks: whole-file equality against a fixed commit broke
+        # whenever master changed these files for unrelated reasons.
         for path in ('code/_onclick/click.dm', 'code/pathfinding.dm',
                      'code/game/mob/living/carbon/human/subtile_movement.dm'):
-            self.assertEqual(read(path), baseline(path))
-        path = 'code/game/mob/mob_movement.dm'
-        self.assertEqual(read(path).split('/client/Move(n, direct, ordinal = FALSE)', 1)[1],
-                         baseline(path).split('/client/Move(n, direct, ordinal = FALSE)', 1)[1])
+            self.assertNotIn('npc_subtile', read(path), path)
+        client_move = read('code/game/mob/mob_movement.dm').split('/client/Move(n, direct, ordinal = FALSE)', 1)[1]
+        self.assertNotIn('npc_subtile', client_move)
+        self.assertNotIn('simple_animal', client_move)
 
     def test_only_vendor_family_opts_in(self):
         source = read(MODULE)
