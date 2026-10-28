@@ -51,6 +51,10 @@ In Actions, select **CI**, **Run workflow**, and enable **extensive_regressions*
 to run all game/offline suites. The option defaults to false. For MCP, comment
 review, changelog, environment sweeps, component tools or trains, manually run
 that named workflow to opt in to its tests. No production game is launched.
+Manual CI runs compile and prepare the BYOND toolchain even when their explicit
+comparison base differs only in documentation, so extensive and individually
+requested native fixtures retain their prerequisites. Ordinary PR path filtering
+is unchanged.
 
 For the isolated world serializer, durable graph and expanded-level restart
 fixtures, enable **world_save_regressions** on **CI** with
