@@ -88,3 +88,25 @@ injected runners, and bounded Python child processes only. Passing them or
 `--prepare-only` does not establish native compilation/list semantics, game
 startup, save/load, reproduction, visual acceptance or performance. Native
 acceptance remains pending until this runner actually succeeds on BYOND.
+
+## Deer and engine selection (2026-10-28)
+
+`friendly/deer.dm` had the same defect: base deer `death()`/`Destroy()` ran
+`deer_count &= src`. Base deer and dik-dik constructors register in `deer_count`,
+and both Life paths gate conception on `deer_count.len < 30`, so the first deer
+death collapsed the registry and stopped that cap from limiting pregnancies.
+Only those two operators become `-=`. The suite now has ten hooks and 35 cases
+per run (ten hooks x three, plus five death-then-Destroy pairs) and ten single-hook
+controls. `SOURCES` keys are now paths below `simple_animal/` (for example
+`hostile/bear`, `friendly/deer`); hook names and `--negative-control` values,
+such as `hostile/bear/death` and `deer/death`, are unchanged in form.
+
+The runner was pinned to 516.1681 while the main workflow's compiler now targets
+516.1688 (docs/byond-5161688.md), so its next CI run would have compiled cleanly
+and then failed closed at the version check, as the farm suite did in #3358.
+Following that doc's rule against relabeling, the default stays strict 516.1681.
+`--expected-byond-version 516.1688` must be passed explicitly; it pins the compiler
+banner, the in-fixture `byond_build` check and the result version together. CI
+passes it. `test_deer_contract.py` holds the deer and engine-selection contracts.
+1688 results do not retroactively re-verify earlier 1681 runs, and isolated hook
+evidence does not establish deer population balance, save/load or gameplay.
