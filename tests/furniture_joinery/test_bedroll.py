@@ -17,7 +17,7 @@ import zlib
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tests/primitive_woodworking'))
-from source_adapter import block,expr
+from source_adapter import block,expr,compile_body
 SOURCE=(ROOT/'code/game/objects/items/weapons/nomadstuff.dm').read_text()
 BED=(ROOT/'code/game/objects/structures/stool_bed_chair_nest/bed.dm').read_text()
 STRUCTURE=(ROOT/'code/game/objects/structures.dm').read_text()
@@ -159,6 +159,29 @@ class BedrollContracts(unittest.TestCase):
 
 
 class HammockContracts(unittest.TestCase):
+    def test_occupancy_changed_during_wait_rejects_before_payment(self):
+        source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
+        production=block(source,'/obj/item/stack/proc/produce_recipe(')
+        start=production.index('\t\tif (recipe.one_per_turf')
+        end=production.index('\t\tif (!exercise_can_build',start)
+        self.assertLess(production.index('if (!do_after(user, buildtime))'),start)
+        self.assertLess(start,production.index('H.adaptStat("crafting"'))
+        self.assertLess(start,production.index('\tif (use(required,'))
+        body='\n'.join(line[1:] for line in production[start:end].splitlines())
+        guard,_=compile_body('/proc/completion_occupancy()\n'+body+'\n\treturn TRUE\n',
+                             '/proc/completion_occupancy()', 'recipe,user',
+                             dict(locate=lambda path:path,to_chat=lambda *args:None))
+        path='/obj/structure/bed/hammock'
+        for one_per,late_output,paid in ((True,path,False),(True,None,True),
+                                        (True,'/obj/structure/bed/wood',True),(False,path,True)):
+            recipe=NS(one_per_turf=one_per,result_type=path)
+            user=NS(loc=[]);stock=12;own_output=0
+            self.assertTrue(guard(recipe,user))
+            # The wait starts clear, then a competitor may commit its output.
+            if late_output:user.loc.append(late_output)
+            if guard(recipe,user):stock-=6;own_output+=1
+            self.assertEqual((stock,own_output),(6,1) if paid else (12,0))
+
     def test_paid_route_research_and_catalog_are_consistent(self):
         path='/obj/structure/bed/hammock'
         lines=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()

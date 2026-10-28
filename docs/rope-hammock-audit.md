@@ -11,6 +11,11 @@ from the separately merged rope-making work is unchanged. Atlas and Player Help
 index the material row normally. No special tool or powered station is invented.
 Six coils and the wait are gameplay costs, not historical measurements.
 
+Availability follows the existing catalog selector: this row is in `global`
+only. Nomads (Africa) players assigned the separate `pygmy` catalog do not
+receive it merely by unlocking Weaving. New routes remain global-only under
+the current scoped guidance; faction catalogs and their selection are unchanged.
+
 The [Library of Congress 1492 exhibition](https://www.loc.gov/exhibits/1492/america.html)
 records Indigenous Caribbean cotton hammocks encountered in 1492 and reproduces
 Oviedo's 1535 description of a woven sleeping sling with henequen suspension
@@ -20,8 +25,10 @@ an engineering abstraction, not a reconstruction of a cotton Taíno hammock or
 evidence of its use in every early culture. The existing era-0 Weaving tier is
 a technical/gameplay gate; it does not establish Stone Age hammock chronology.
 
-The existing ceiling-hanging description and visual model are reused. Construction
-retains the game's ordinary clear-turf placement rule; it does not simulate roof
+This is the existing stationary hammock, directly derived from `bed`, without
+the bedroll's portable type or folding verb. The ceiling-hanging description
+and visual model are reused. Construction retains the game's ordinary clear-turf
+placement rule; it does not simulate roof
 anchors, rope tension, tree supports or load ratings. No suspension physics,
 buckling, occupied animation or padding behavior is changed.
 
@@ -40,6 +47,14 @@ production, short-stock and occupied-turf refusal, existing unoccupied processin
 and a hammer in a legal hand slot. Report actual execution separately from fixture
 compilation. Connected play, natural resource reachability, suspended/occupied
 animation and real saved-world round trips remain unverified.
+
+The shared material craft completion now rechecks `one_per_turf` after its action
+wait, before awarding XP or consuming materials. Another craft completing during
+the wait therefore cannot create a duplicate on that tile. This preserves the
+existing same-output-type predicate and recipes whose flag is disabled. Offline
+regressions change occupancy across the completion boundary; the native fixture
+places a competing hammock during the real wait and checks unchanged stock and
+only the competitor's output. This is not a new global reservation or support rule.
 
 ## Broader audit stopping point
 

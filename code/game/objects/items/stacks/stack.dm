@@ -1835,6 +1835,11 @@
 				handReturnMap.Remove(H.key)
 			return
 
+		// Another craft can occupy this turf while the action yields. Reject
+		// before XP, material debit or construction, using the admission rule.
+		if (recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
+			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
+			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
 		if (H && !joinery)

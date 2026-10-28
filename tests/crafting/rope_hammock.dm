@@ -31,4 +31,14 @@
 		qdel(hammer)
 	qdel(stock)
 	shelf_ci_clear()
+	// Simulate a competing craft finishing on the clear tile during do_after.
+	stock = new(H, 12, FALSE)
+	H.r_hand = stock
+	R.time = 4
+	spawn(1)
+		new /obj/structure/bed/hammock(locate(2,1,1))
+	stock.produce_recipe(R, 1, H)
+	joinery_ci_expect(stock.amount == 12 && shelf_ci_count(/obj/structure/bed/hammock) == 1, "late hammock occupancy rejects debit and duplicate output")
+	qdel(stock)
+	shelf_ci_clear()
 	qdel(H)
