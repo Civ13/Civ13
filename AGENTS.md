@@ -953,6 +953,11 @@ omitted native coverage. Preserve existing native opt-ins and toolchain ownershi
 Hosted DreamMaker results must identify the actually executed manifest version;
 Python projections, compiled core_boot variants and native runtime/gameplay
 acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
+<!-- 2026-10-28: re-run of failed jobs -->
+CI receipt consumers download ci-selection/baseline/compile by the producing
+job's `attempt` output: a re-run of failed jobs reuses earlier jobs whose
+artifacts keep their original attempt. Receipts record `job_attempt`; keep the
+attempt ordering checks in scripts/ci_baseline.py when changing these jobs.
 Cloud-only workers must keep unavailable local native checks as not_run. After
 owner review and authorized push, obtain hosted validation for the current head
 and inspect its outcomes/artifacts; never substitute local tool absence or an
