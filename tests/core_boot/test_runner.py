@@ -345,7 +345,7 @@ class CompileOnlyTests(unittest.TestCase):
         spec.loader.exec_module(selection)
         workflow = (root / '.github/workflows/test.yml').read_text(encoding='utf-8')
         step = workflow.split('      - name: Check core-boot runner offline and compile generated variants\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/core_boot')", step)
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/core_boot')", step)
         self.assertIn('timeout-minutes: 32', step)
         commands = [line.strip() for line in step.splitlines() if 'tests/core_boot/run.py ' in line]
         self.assertEqual(len(commands), 3)
@@ -374,7 +374,7 @@ class CompileOnlyTests(unittest.TestCase):
         self.assertIn('git rev-parse HEAD HEAD^{tree}', compile_step)
         self.assertIn('CORE_BOOT_CI_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}', compile_step)
         retain = workflow.split('      - name: Retain core-boot compile-only evidence\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn("if: always() && steps.core_boot_compile.outputs.started == 'true'", retain)
+        self.assertIn("if: always() && needs.changes.result == 'success' && steps.core_boot_compile.outputs.started == 'true'", retain)
         self.assertIn('uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02', retain)
         self.assertIn('retention-days: 7', retain)
         self.assertIn('if-no-files-found: error', retain)

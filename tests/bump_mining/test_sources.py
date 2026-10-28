@@ -80,7 +80,7 @@ class Sources(unittest.TestCase):
 
     def test_ci_selects_new_suite_on_PR_and_retains_diagnostics(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/bump_mining')", workflow)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/bump_mining')", workflow)
         for control in ('dispatch', 'reservation', 'position', 'persistence'):
             self.assertIn('--negative-control ' + control, workflow)
         runner = Path(__file__).with_name('run.py').read_text()

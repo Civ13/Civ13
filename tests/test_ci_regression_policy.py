@@ -15,13 +15,32 @@ spec.loader.exec_module(selection)
 
 ROOF_NATIVE_NAME = 'Verify synthetic saved-roof recovery and two defect controls'
 ROOF_HEAD_REQUEST = "contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))"
-ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || "
+ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery') || "
                        + ROOF_HEAD_REQUEST + ')')
 ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action != 'edited' && "
                      "needs.changes.outputs.game == 'true' && " + ROOF_SUITE_SELECTION)
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    def test_changelog_validation_runs_on_pr_description_edits_without_a_second_selector(self):
+        workflow = (ROOT / '.github/workflows/changelog-checks.yml').read_text(encoding='utf-8')
+        selection = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
+        self.assertIn('types: [opened, synchronize, reopened, edited]', workflow)
+        self.assertIn('      - name: Validate the PR description\n'
+                      "        if: github.event_name == 'pull_request'\n"
+                      '        run: node tools/changelog/check-pr.mjs\n', workflow)
+        self.assertIn('node --test tools/changelog/*.test.mjs', workflow)
+        self.assertIn('node tools/changelog/publish.mjs --validate', workflow)
+        self.assertNotIn('./.github/workflows/ci-selection.yml', workflow)
+        self.assertNotIn('needs: changes', workflow)
+        self.assertIn("      - name: Validate changelog workflow syntax for standalone manual runs\n"
+                      "        if: github.event_name == 'workflow_dispatch'\n", workflow)
+        # The ordinary CI selector continues to lint all workflow files.
+        ci = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        self.assertIn('      lint_workflows: true\n', ci)
+        self.assertIn('actionlint" -shellcheck=', selection)
+        self.assertIn('.github/workflows/*.yml', selection)
+
     def test_only_added_executable_tests_select_their_suite(self):
         with patch.object(selection.subprocess, 'check_output', return_value=
                           b'tests/weather/new_probe.dm\0tests/weather/README.md\0'
@@ -129,7 +148,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 os.chdir(previous)
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
-            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", workflow)
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), '" + suite + "')", workflow)
 
     def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
         payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
@@ -197,7 +216,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 if block.startswith('      - name: Verify private collector native publication\n'):
                     # This narrower hosted fixture has no manual/extensive
                     # entry. Keep its introduced-PR-only gate explicit.
-                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')\n", block)
+                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/nomads_lifecycle')\n", block)
                     self.assertIn('timeout-minutes: 3\n', block)
                     self.assertIn('tests/nomads_lifecycle/run_variable_probe_linux.py', block)
                     self.assertNotIn('workflow_dispatch', block)
@@ -214,7 +233,7 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('workflow_dispatch', block)
                     self.assertNotIn('secrets.', block)
                     continue
-                self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
+                self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
         self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
 
@@ -249,7 +268,7 @@ class RegressionPolicyTests(unittest.TestCase):
         for text, variable in (("github.event_name == 'pull_request'", 'pr_event'),
                                ("github.event.action != 'edited'", 'not_edited'),
                                ("needs.changes.outputs.game == 'true'", 'game'),
-                               ("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')", 'introduced'),
+                               ("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery')", 'introduced'),
                                (ROOF_HEAD_REQUEST, 'requested')):
             self.assertEqual(translated.count(text), 1)
             translated = translated.replace(text, variable)

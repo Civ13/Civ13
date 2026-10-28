@@ -9,10 +9,13 @@ import subprocess
 import tempfile
 import uuid
 
+from compiler_contract import HISTORICAL_VERSION, VERSIONS, compiler_is_clean
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--expected-byond-version', choices=VERSIONS, default=HISTORICAL_VERSION)
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--negative-control', action='store_true')
     control.add_argument('--soil-negative-control', action='store_true')
@@ -86,7 +89,7 @@ def main():
         probe = root / 'tests/food_progression' / ('storage.dm' if args.probe == 'storage' else 'probe.dm')
         generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
+        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'expected_byond_version': args.expected_byond_version, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
             'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
@@ -100,7 +103,7 @@ def main():
         text = build.stdout + build.stderr
         (output / 'compile.log').write_text(text, encoding='utf-8')
         print(text, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
+        if not compiler_is_clean(build.returncode, text, args.expected_byond_version):
             raise RuntimeError('Pinned production-source compilation failed')
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(generated[suffix], output / generated[suffix].name)
