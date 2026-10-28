@@ -1,6 +1,6 @@
 # Game CI, bounded offline baseline and opt-in regressions
 
-On pushes to `master` and opened/reopened/synchronized/edited PRs targeting `master` or
+On pushes to `master` and opened/reopened/synchronized PRs targeting `master` or
 `help-markdown-byond-html`, game compilation remains automatic for source, maps,
 assets, config, shared CI and unknown changes. Documentation-only PRs skip compilation. Missing comparisons
 still compile; failed selection fails the build rather than silently skipping.
@@ -19,10 +19,20 @@ The request uses the existing Ubuntu BYOND compiler job on a fresh hosted
 checkout, with diagnostic/source receipts retained even on failure. It does not deploy or replace
 a running server. Outside the ordinary subscriptions above, the request selects
 compilation plus the bounded offline baseline, with no introduced-test or extensive/native regression suites.
-Supported-base metadata edits evaluate the same base/head diff for compilation;
-they do not admit introduced/native suites. Other-base edits still need `build:`;
-unprefixed feature-branch pushes skip compilation. Ordinary PRs still select newly
+PR title or description edits requesting `build:` evaluate the base/head diff
+without admitting introduced/native suites. Other recognized title or description
+edits reuse existing checks, and the separate changelog workflow still validates
+the PR description. A base retarget fails the required context until an ordinary
+PR run validates the new base, because existing native gates exclude edited events.
+Unrecognized edit metadata also fails selection. Unprefixed feature-branch pushes skip compilation and the
+CI baseline/evidence jobs. Ordinary PRs still select newly
 introduced suites according to the policy below.
+
+The selector publishes `skip_duplicate=true` only after validating an edited
+event's title/body change and matching its head and base SHAs to the workflow
+inputs. Missing or unrecognized metadata cannot produce this skip. Workflow
+syntax is linted once by the main CI caller for admitted work; the standalone
+changelog manual run retains its own syntax check.
 
 The selector reads titles/messages as JSON data from `GITHUB_EVENT_PATH`, never
 as shell code. Missing, malformed or potentially truncated push metadata selects
@@ -33,7 +43,8 @@ fallback. No workflow can act on an event GitHub does not deliver.
 Missing PR action/base/title or push ref cannot classify the event's check scope:
 the selector fails without publishing outputs, retaining failed gating contexts.
 
-The cheap offline baseline below runs on every CI invocation. Other existing
+The cheap offline baseline below runs on ordinary PR and master-push CI, explicit
+build requests and manual CI runs. Unforced feature pushes skip it. Other existing
 regression suites remain opt-in, including game runtime, atlas, resource
 inventory, MCP protocol, comment collector and changelog tests.
 In Actions, select **CI**, **Run workflow**, and enable **extensive_regressions**
@@ -165,7 +176,9 @@ are not a native smoke pass.
 PR scopes (opened/synchronize/reopened against the two CI bases) and master pushes.
 Edited PRs, other-base PRs, feature pushes and manual runs use `CI informational
 build` and `CI informational aggregate`, even if `build:` forces a real compile.
-Their native/introduced admission is unchanged, so their success cannot replace
+Unforced title or description edits that leave the base unchanged skip these
+informational jobs; they do not create a replacement gating result. Their
+native/introduced admission is unchanged, so their success cannot replace
 an earlier compiler or native failure under the gating names. This keeps the
 original gating names without changing branch protections or Actions permissions.
 
@@ -182,6 +195,11 @@ keeps JSON booleans). Numeric tokens avoid
 values such as `false`, `False` or `00` are invalid and fail.
 
 Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-<attempt>`.
+The selector, baseline and aggregate use depth-one exact-head checkouts and
+fetch only the exact event comparison commit when needed. The ping and research
+historical negative controls use checked-in, hash-verified source fixtures, so
+the baseline does not need unrelated repository history. Build and evidence
+checkouts retain their separate history requirements.
 Each producer names its artifact with the attempt it actually ran in. A re-run
 of failed jobs reuses earlier successful jobs, so baseline, build and the
 aggregate download by the producing job's `attempt` output, not their own
@@ -199,10 +217,13 @@ HEAD (even an empty commit), or missing post-test evidence fails. These boundary
 snapshots do not establish that no temporary mutation was restored mid-run.
 Compiler diagnostics include setup output, combined stdout/stderr, Git source
 tree and before/after patches (the atlas catalog is generated before compilation).
-Uploads use `always()` including failures/skips; runner loss or cancellation can
-still prevent artifact delivery, which cannot become a passing aggregate.
+Baseline uploads run after an attempted baseline step; a cancelled or failed
+checkout has no baseline artifact. The aggregate records an explicit failed
+baseline verdict instead of treating that absence as the primary failure.
+Runner loss or cancellation can still prevent artifact delivery, which cannot
+become a passing aggregate.
 
-The gating or informational aggregate runs with `always()`. It requires successful selection,
+The admitted gating or informational aggregate runs with `always()`. It requires successful selection,
 baseline, evidence-checker and build jobs, and extraction when that job is
 selected. It verifies baseline/compile receipt source/run/selection identity,
 required suite rows and nonzero test counts, and rejects missing receipts,

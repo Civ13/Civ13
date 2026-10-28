@@ -394,7 +394,7 @@ class WinterCrops(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         marker = '      - name: Test winter crops and attributed sprite contracts offline'
         step = workflow.split(marker, 1)[1].split('      - name:', 1)[0]
-        self.assertIn("needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/winter_crops')", step)
+        self.assertIn("needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/winter_crops')", step)
         self.assertIn("python3 -I -S -B -m unittest discover -s tests/winter_crops -p 'test_*.py' -v", step)
         self.assertNotRegex(step, r'DreamMaker|DreamDaemon|--native|pip install')
 

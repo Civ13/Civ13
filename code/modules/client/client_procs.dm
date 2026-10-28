@@ -310,6 +310,8 @@
 /client/Del()
 	if (CIV13_GEOMETRIC_LOS_CORE && los_context)
 		los_context.retire()
+	if (player_help_service)
+		player_help_service.reset_conversation(src)
 	human_subtile_release_visuals()
 	clear_hover_name()
 	webhook_send_logout(ckey)
