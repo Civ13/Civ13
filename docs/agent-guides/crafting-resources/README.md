@@ -40,6 +40,9 @@ invalid when a save/load is admitted, even if it finishes before the wait return
 The offline source projections and hosted wiring do not establish native gameplay
 or savefile acceptance. Keep the sawmill owner's one-finished-plank-per-log contract
 separate; no spawn kit, map cache, peg joinery or respawn resource grant is added.
+Woodworking Atlas provenance uses `scripts/atlas/woodworking-contract.json` and
+the normalized source hash, not Git history. Refresh that reviewed contract when
+production source changes; depth-one CI must regenerate the same catalog.
 
 <!-- 2026-10-19: consumed crafting handles -->
 Consumed wood handles are selected from hands and real equipment slots, including

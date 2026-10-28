@@ -15,9 +15,11 @@ identity tokens, matching DM reference identity. No production move guard was
 weakened. Retain this failure as projection-development evidence, not gameplay.
 
 The first broader Atlas check also rejected missing audit provenance on the new
-acquisition rows. Rows now carry a source digest and the last matching committed
-source revision (or explicitly `uncommitted` before a checkpoint); the assertion
-was retained. The final generated catalog must bind the committed source.
+acquisition rows. Rows carry a source digest and reviewed revision from
+`scripts/atlas/woodworking-contract.json`; source changes require that reviewed
+contract to be refreshed. This produces identical provenance in full/depth-one
+checkouts. The complete catalog regression also refuses Git log/show calls;
+source drift or malformed provenance fails closed before export.
 The new end-to-end Help check then exposed raw item acquisition keys that did not
 match the Atlas's canonical material keys, hiding the flattening route from Help.
 The exporter now canonicalizes the route keys and variants. Both the existing

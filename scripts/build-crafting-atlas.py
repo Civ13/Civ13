@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
 from atlas.tanning import add_tanning
-from atlas.woodworking import add_woodworking
+from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -230,9 +230,8 @@ if bench:
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
 tanning_routes=add_tanning(files, add, records, sprite_variants)
 woodwork_path='code/modules/1713/primitive_woodworking.dm'
-woodwork_revision=git('log','-1','--format=%H','--',woodwork_path).decode().strip()
-if not woodwork_revision or git('show',woodwork_revision+':'+woodwork_path).decode().replace('\r\n','\n') != files[woodwork_path]:
-    woodwork_revision='uncommitted'
+woodwork_contract=json.loads((ROOT/'scripts/atlas/woodworking-contract.json').read_text(encoding='utf-8'))
+woodwork_revision=reviewed_source_revision(files[woodwork_path],woodwork_contract)
 woodworking_routes=add_woodworking(files, add, records, sprite_variants, woodwork_revision)
 for route in woodworking_routes:
     for field in ('inputs','outputs'):
