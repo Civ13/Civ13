@@ -44,6 +44,7 @@ try {
     assertions += await CachedJoinTests.Run(root);
     assertions += await ServerDiscoveryTests.Run(root);
     assertions += await TopicPacingTests.Run(root);
+    assertions += LocalHostingTests.Run(root);
     const string privateFailure = "PRIVATE https://name:password@example.test/private?token=secret\r\nINJECTED";
     var reset = new System.Net.Sockets.SocketException(10054);
     var tls = new System.Security.Authentication.AuthenticationException(privateFailure, reset);

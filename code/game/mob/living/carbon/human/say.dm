@@ -22,8 +22,7 @@
 				animalistic = TRUE
 	message = capitalize(sanitize(message))
 
-	for (var/i in dictionary_list)
-		message = replacetext(message,i[1],i[2])
+	message = apply_dictionary_replacements(message)
 
 	var/message_without_html = message
 
