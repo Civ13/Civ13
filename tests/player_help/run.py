@@ -39,8 +39,12 @@ var/time_of_day = "Night"
 var/list/probe_clients = list()
 /datum/proc/persistence_runtime_var(key)
     return FALSE
+/datum/probe_chat
+    var/is_ready = TRUE
+    var/mob/probe_client/client
 /mob/probe_client
     var/mob/mob
+    var/datum/probe_chat/chat
 /mob/probe_help
     parent_type = /mob/probe_client
 /proc/IsGuestKey(key)

@@ -14,8 +14,27 @@
     D.record_observed_injury(injury_client, injury_first, "environmental_damage")
     D.record_observed_injury(injury_client, injury_first, "self_weapon_hit<script>secret</script>")
     check(D.injury_context(injury_client, injury_first).len == 1, "unreviewed attack categories and injected labels are rejected")
+    injury_client.chat = new
+    injury_client.chat.client = injury_client
+    injury_client.chat.is_ready = FALSE
+    D.record_observed_injury(injury_client, injury_first, "reported_projectile_hit")
+    check(D.injury_context(injury_client, injury_first).len == 1, "queued chat is not recorded as a received message")
+    injury_client.chat.is_ready = TRUE
+    injury_client.chat.client = null
+    D.record_observed_injury(injury_client, injury_first, "reported_projectile_hit")
+    check(D.injury_context(injury_client, injury_first).len == 1, "unbound chat cannot establish delivery")
+    injury_client.chat.client = injury_client
+    D.record_observed_injury(injury_client, injury_second, "reported_projectile_hit")
+    check(D.injury_context(injury_client, injury_first).len == 1, "wrong body cannot record a message")
+    D.record_observed_injury(injury_client, injury_first, "reported_projectile_hit")
+    D.record_observed_injury(injury_client, injury_first, "reported_shrapnel_hit")
+    D.record_observed_injury(injury_client, injury_first, "reported_hot_ground")
+    D.record_observed_injury(injury_client, injury_first, "reported_freezing_feet")
+    check(D.injury_context(injury_client, injury_first).len == 5, "four ready-chat reported observations are accepted")
+    injury_client.player_help_injuries.Cut(2)
     injury_first.stat = 1
     D.record_observed_injury(injury_client, injury_first, "self_weapon_hit")
+    D.record_observed_injury(injury_client, injury_first, "reported_projectile_hit")
     injury_first.stat = 0
     injury_first.sleeping = 1
     D.record_observed_injury(injury_client, injury_first, "self_weapon_hit")

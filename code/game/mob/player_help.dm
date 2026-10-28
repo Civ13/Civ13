@@ -278,10 +278,15 @@ var/global/datum/player_help_service/player_help_service = new
 						queue += list(list("item" = child, "place" = copytext(html_decode("[I.name]"), 1, 81), "depth" = entry["depth"] + 1))
 	return list("items" = items, "truncated" = truncated)
 
-// Only server-controlled categories enter this temporary per-client record.
-// This first hook covers a conscious player's own successful weapon strike.
+// Fixed server-controlled categories only; reported categories are invoked at
+// the corresponding direct victim message, never at a generic damage hook.
 /datum/player_help_service/proc/record_observed_injury(client/C, mob/living/human/H, kind)
-	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || H.stat != CONSCIOUS || H.sleeping > 0 || kind != "self_weapon_hit")
+	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || H.stat != CONSCIOUS || H.sleeping > 0)
+		return
+	if (!(kind in list("self_weapon_hit", "reported_projectile_hit", "reported_shrapnel_hit", "reported_hot_ground", "reported_freezing_feet")))
+		return
+	// Queued chat can be dropped before it becomes visible; do not record it.
+	if (kind != "self_weapon_hit" && (!C.chat || !C.chat.is_ready || C.chat.client != C))
 		return
 	bind_body(C, H)
 	if (!(C in conversation_clients))
@@ -290,7 +295,7 @@ var/global/datum/player_help_service/player_help_service = new
 		// Track an injury-only session, without extending an existing conversation.
 		C.player_help_touched = limit_time()
 		conversation_clients |= C
-	C.player_help_injuries += list(list("kind" = "self_weapon_hit", "time" = limit_time()))
+	C.player_help_injuries += list(list("kind" = kind, "time" = limit_time()))
 	while (C.player_help_injuries.len > 6)
 		C.player_help_injuries.Cut(1, 2)
 
@@ -300,9 +305,9 @@ var/global/datum/player_help_service/player_help_service = new
 		return results
 	var/now = limit_time()
 	for (var/list/event in C.player_help_injuries)
-		if (event["kind"] != "self_weapon_hit" || !isnum(event["time"]) || event["time"] > now || now - event["time"] >= 6000)
+		if (!(event["kind"] in list("self_weapon_hit", "reported_projectile_hit", "reported_shrapnel_hit", "reported_hot_ground", "reported_freezing_feet")) || !isnum(event["time"]) || event["time"] > now || now - event["time"] >= 6000)
 			continue
-		results += list(list("kind" = "self_weapon_hit", "certainty" = "observed", "age_seconds" = round((now - event["time"]) / 10)))
+		results += list(list("kind" = event["kind"], "certainty" = "observed", "age_seconds" = round((now - event["time"]) / 10)))
 	return results
 
 // Read public map metadata directly; never accept player text as server state.
