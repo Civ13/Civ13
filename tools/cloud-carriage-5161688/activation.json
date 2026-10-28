@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "5260b60f0efef2c0af70fae204b1180106ef50b3",
+  "branch": "ci/cloud-carriage-5161688-fast-collision-20261028-r3",
+  "message": "ci: held native carriage eight-second fast collision r3",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "9864fc31e9e00be823068e73384564adc0f869456d23508ddc446226cffbc6ef",
+  "approval": "Root reviewed and approved one positive fast-gear/collision diagnostic under the existing user 24-hour bounded native/capture grant. Same 8 seconds,20 FPS,160 frames,15 minutes,192 MiB and cutoff2026-10-29T03:19:44Z; unchanged software/network/owned cleanup scope. No source omission or connected-driver invocation. Invisible diagnostic barrier: never marketing footage. No production action or merge."
+}
