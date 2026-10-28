@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import os
 import unittest
@@ -14,13 +15,32 @@ spec.loader.exec_module(selection)
 
 ROOF_NATIVE_NAME = 'Verify synthetic saved-roof recovery and two defect controls'
 ROOF_HEAD_REQUEST = "contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))"
-ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || "
+ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery') || "
                        + ROOF_HEAD_REQUEST + ')')
 ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action != 'edited' && "
                      "needs.changes.outputs.game == 'true' && " + ROOF_SUITE_SELECTION)
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    def test_changelog_validation_runs_on_pr_description_edits_without_a_second_selector(self):
+        workflow = (ROOT / '.github/workflows/changelog-checks.yml').read_text(encoding='utf-8')
+        selection = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
+        self.assertIn('types: [opened, synchronize, reopened, edited]', workflow)
+        self.assertIn('      - name: Validate the PR description\n'
+                      "        if: github.event_name == 'pull_request'\n"
+                      '        run: node tools/changelog/check-pr.mjs\n', workflow)
+        self.assertIn('node --test tools/changelog/*.test.mjs', workflow)
+        self.assertIn('node tools/changelog/publish.mjs --validate', workflow)
+        self.assertNotIn('./.github/workflows/ci-selection.yml', workflow)
+        self.assertNotIn('needs: changes', workflow)
+        self.assertIn("      - name: Validate changelog workflow syntax for standalone manual runs\n"
+                      "        if: github.event_name == 'workflow_dispatch'\n", workflow)
+        # The ordinary CI selector continues to lint all workflow files.
+        ci = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        self.assertIn('      lint_workflows: true\n', ci)
+        self.assertIn('actionlint" -shellcheck=', selection)
+        self.assertIn('.github/workflows/*.yml', selection)
+
     def test_only_added_executable_tests_select_their_suite(self):
         with patch.object(selection.subprocess, 'check_output', return_value=
                           b'tests/weather/new_probe.dm\0tests/weather/README.md\0'
@@ -85,6 +105,91 @@ class RegressionPolicyTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
+    def test_reviewed_atlas_test_edits_select_only_their_suite_on_ordinary_prs(self):
+        # Exercise the actual Git comparison and admission, not a copied selector.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', directory, *args],
+                                               stderr=subprocess.PIPE).decode().strip()
+            git('init')
+            git('config', 'user.name', 'CI policy test')
+            git('config', 'user.email', 'ci@example.invalid')
+            atlas_inputs = {'tests/test_crafting_atlas.py': 'tests/test_crafting_atlas.py',
+                            'tests/crafting_atlas/probe.dm': 'tests/crafting_atlas',
+                            'tests/crafting_atlas/resource-search.test.mjs': 'tests/crafting_atlas'}
+            paths = tuple(atlas_inputs) + ('tests/crafting_atlas/unrelated.dm',)
+            for name in paths:
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('original\n')
+            git('add', '.')
+            git('commit', '-m', 'base')
+            base = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                os.chdir(root)
+                for name in paths:
+                    with self.subTest(path=name):
+                        (root / name).write_text('changed\n')
+                        git('add', name)
+                        git('commit', '-m', 'edit test')
+                        head = git('rev-parse', 'HEAD')
+                        expected = [atlas_inputs[name]] if name in atlas_inputs else []
+                        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+                        self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], expected)
+                        for action, branch in (('edited', 'master'), ('opened', 'other')):
+                            payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': branch}}}
+                            self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], [])
+                        self.assertEqual(selection.selections(base, head, 'push', False, True,
+                            {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]})[2], [])
+                        base = head
+            finally:
+                os.chdir(previous)
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), '" + suite + "')", workflow)
+
+    def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
+        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+        faults = (
+            ('timeout', subprocess.TimeoutExpired('git', 15)),
+            ('git failure', subprocess.CalledProcessError(1, 'git')),
+            ('invalid UTF-8', b'\xff'),
+        )
+        for label, fault in faults:
+            with self.subTest(fault=label), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory) / 'output.txt'
+                receipt = Path(directory) / 'receipt.json'
+                argv = ['select-ci.py', '--base', 'base', '--head', 'head',
+                        '--event', 'pull_request', '--build-prefix', 'true',
+                        '--output', str(output), '--receipt', str(receipt)]
+                kwargs = {'return_value': fault} if isinstance(fault, bytes) else {'side_effect': fault}
+                with patch.object(sys, 'argv', argv), patch.object(selection, 'load_event', return_value=payload), \
+                        patch.object(selection, 'select', return_value=(True, 'selected')), \
+                        patch.object(selection, 'introduced_tests', return_value=[]), \
+                        patch.object(selection.subprocess, 'check_output', **kwargs):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.main()
+                self.assertFalse(output.exists())
+                self.assertFalse(receipt.exists())
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]):
+            for base, head in (('', 'head'), ('0' * 40, 'head'), ('base', '')):
+                with self.subTest(base=base, head=head):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.selections(base, head, 'pull_request', False, True, payload)
+
+    def test_atlas_comparison_does_not_expand_ineligible_event_admission(self):
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]), \
+                patch.object(selection.subprocess, 'check_output', side_effect=AssertionError('unexpected Atlas comparison')):
+            for action, base in (('edited', 'master'), ('opened', 'unrelated')):
+                payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': base}}}
+                self.assertEqual(selection.selections('base', 'head', 'pull_request', False, True, payload)[2], [])
+            payload = {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]}
+            self.assertEqual(selection.selections('base', 'head', 'push', False, True, payload)[2], [])
+
     def test_offline_and_game_regressions_have_explicit_suite_guards(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         self.assert_explicit_suite_guards(workflow)
@@ -111,7 +216,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 if block.startswith('      - name: Verify private collector native publication\n'):
                     # This narrower hosted fixture has no manual/extensive
                     # entry. Keep its introduced-PR-only gate explicit.
-                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')\n", block)
+                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/nomads_lifecycle')\n", block)
                     self.assertIn('timeout-minutes: 3\n', block)
                     self.assertIn('tests/nomads_lifecycle/run_variable_probe_linux.py', block)
                     self.assertNotIn('workflow_dispatch', block)
@@ -128,7 +233,7 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('workflow_dispatch', block)
                     self.assertNotIn('secrets.', block)
                     continue
-                self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
+                self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
         self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
 
@@ -163,7 +268,7 @@ class RegressionPolicyTests(unittest.TestCase):
         for text, variable in (("github.event_name == 'pull_request'", 'pr_event'),
                                ("github.event.action != 'edited'", 'not_edited'),
                                ("needs.changes.outputs.game == 'true'", 'game'),
-                               ("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')", 'introduced'),
+                               ("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery')", 'introduced'),
                                (ROOF_HEAD_REQUEST, 'requested')):
             self.assertEqual(translated.count(text), 1)
             translated = translated.replace(text, variable)

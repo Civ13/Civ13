@@ -209,6 +209,8 @@
 /proc/has_gravity(atom/AT, turf/T)
 	return TRUE
 
+/turf/var/tmp/list/area_change_owner
+
 // Changes the area of T to A. Do not do this manually.
 // Area is expected to be a non-null instance.
 /proc/ChangeArea(var/turf/T, var/area/A)
@@ -217,6 +219,10 @@
 	var/area/old_area = get_area(T)
 	if(old_area == A)
 		return
+	// Notifications can yield or start a newer transition, including away/back.
+	// Turf replacement resets this field instead of inheriting the old request.
+	var/list/request = list()
+	T.area_change_owner = request
 	A.contents.Add(T)
 	if(old_area)
 		old_area.Exited(T, A)
@@ -225,3 +231,8 @@
 	A.Entered(T, old_area)
 	for(var/atom/movable/AM in T)
 		A.Entered(AM, old_area) // Note: this will _not_ raise moved or entered events. If you change this, you must also change everything which uses them.
+	if(!T || T.area_change_owner != request)
+		return
+	T.area_change_owner = null
+	if(get_area(T) == A)
+		T.change_area(old_area, A)

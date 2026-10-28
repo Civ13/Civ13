@@ -1,0 +1,34 @@
+{
+  "source_sha256": "7c658529aec5e8dda99f3ab0f8d7840aaa5bc75a006b0cc923b8bd44abfecbd6",
+  "icon_sha256": "a0ce626ec96c107df0df9eb1deaec997c224b313bf7873382fe4088eb8499f67",
+  "outcomes_by_original_roll": [
+    "flower1",
+    "flower2",
+    "flower3",
+    "flower4",
+    "flower5",
+    "flower6",
+    "flower7",
+    "flower8",
+    "flower9",
+    "flower10",
+    "flower11",
+    "flower12",
+    "flower13",
+    "flower14"
+  ],
+  "missing_states": [
+    "flower3"
+  ],
+  "invalid_states": [],
+  "status": "failed",
+  "scope": "Exhaustive offline constructor-outcome / actual DMI pixel audit; not native gameplay",
+  "revision": "10d264e5896221b34949ee4b67c0fd2b94bde249",
+  "source_path": "code/game/objects/structures/wild.dm",
+  "source_git_blob": "066f593f429133376970ac98fe9928e6e8cdba4d",
+  "source_git_sha256": "7c658529aec5e8dda99f3ab0f8d7840aaa5bc75a006b0cc923b8bd44abfecbd6",
+  "worktree_text_matches_git": true,
+  "icon_path": "icons/obj/flora/ausflora.dmi",
+  "icon_git_blob": "00fa1355fa54ea19f4e81aac247c7510c655830a",
+  "observed_exit_code": 1
+}

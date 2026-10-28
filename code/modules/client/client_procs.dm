@@ -308,6 +308,8 @@
 	..()
 
 /client/Del()
+	if (player_help_service)
+		player_help_service.reset_conversation(src)
 	human_subtile_release_visuals()
 	clear_hover_name()
 	webhook_send_logout(ckey)

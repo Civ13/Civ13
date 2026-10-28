@@ -47,6 +47,15 @@ active transaction or unresolved intent. Existing persistence-mode autoload skip
 its ordinary path when an intent owns startup. OpenDream is rejected before saving;
 its supervisor protocol is outside this native transaction's acceptance.
 
+The round-start webhook and OOC log entry wait for the startup decision. Fresh
+rounds use the generated ID; an automatic, manual or intent-driven recovery sends
+only after successful import and validation that the saved ID matches the active
+ID. A process sends at most one notice. Failed or incomplete recovery, including
+unreadable or different-map save metadata, sends no notice; a later successful
+manual recovery can send it. Legacy saves without a
+historical ID cannot supply an authoritative ID, so their notice is suppressed.
+Webhook transport remains asynchronous and does not guarantee delivery.
+
 ## Verification boundary
 
 `tests/world_save/run-restart-transaction.py` compiles the production state machine

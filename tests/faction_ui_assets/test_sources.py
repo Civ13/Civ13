@@ -15,7 +15,7 @@ class FactionAssets(unittest.TestCase):
         title = '      - name: Verify restored faction UI assets and registration omission control\n'
         self.assertEqual(workflow.count(title), 1)
         step = workflow.split(title, 1)[1].split('      - name:', 1)[0]
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/faction_ui_assets')", step)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/faction_ui_assets')", step)
         self.assertIn('unittest discover -s tests/faction_ui_assets', step)
         self.assertIn('node tests/faction_ui_assets/check_templates.mjs', step)
         self.assertEqual(step.count('tests/faction_ui_assets/run.py'), 2)
@@ -23,7 +23,7 @@ class FactionAssets(unittest.TestCase):
         self.assertIn('id: faction_ui_assets', step)
         self.assertIn('echo "started=true" >> "$GITHUB_OUTPUT"', step)
         upload = workflow.split('      - name: Upload focused faction UI asset evidence\n', 1)[1].split('      - name:', 1)[0]
-        self.assertIn("if: always() && steps.faction_ui_assets.outputs.started == 'true'", upload)
+        self.assertIn("if: always() && needs.changes.result == 'success' && steps.faction_ui_assets.outputs.started == 'true'", upload)
         self.assertIn('retention-days: 7', upload)
         self.assertIn('if-no-files-found: error', upload)
         self.assertNotIn('.dmb', upload)

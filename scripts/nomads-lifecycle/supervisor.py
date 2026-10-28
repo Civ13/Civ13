@@ -325,9 +325,11 @@ class Supervisor:
             generation=generation, session=session, status=status,
             canonical_game_directory=self.config.get('canonical_game_directory'))
 
-    def stop_saved(self, operation, expected_session=None):
+    def stop_saved(self, operation, expected_session=None, admin_operation=False):
         before = self.status()
-        if not before.get('ready') or before.get('busy') or before.get('error') or before.get('clients') or before.get('restart_hold') or before.get('restart_intent'):
+        if admin_operation and before.get('maintenance_operation') != operation:
+            raise RuntimeError('Admin maintenance request changed before save')
+        if not before.get('ready') or before.get('busy') or before.get('error') or (before.get('clients') and not admin_operation) or before.get('restart_hold') or before.get('restart_intent'):
             raise RuntimeError('Current world is not ready for a safe update')
         session = before.get('session', '')
         if len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
@@ -335,7 +337,8 @@ class Supervisor:
         if expected_session is not None and (session != expected_session or not self.alive()):
             raise RuntimeError('Owned process session changed before save; no mutation sent')
         self.record('save_requested', operation=operation, revision=self.state['revision'])
-        answer = query(self.config['port'], self.token, 'save_shutdown', operation, session)
+        action = 'maintenance_save_shutdown' if admin_operation else 'save_shutdown'
+        answer = query(self.config['port'], self.token, action, operation, session)
         if answer.get('operation') != operation:
             raise RuntimeError('Save operation identity not acknowledged')
         deadline = self.clock() + self.config.get('save_timeout_seconds', 1800)

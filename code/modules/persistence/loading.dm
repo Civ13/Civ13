@@ -201,7 +201,7 @@
 			return null
 		// Historical saves can retain derived lighting graphs through item vars.
 		// Their constructors require live owners/turfs; never import those graphs.
-		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))
+		if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay) || ispath(type, /atom/movable/lighting_fullbright))
 			return null
 		if(ispath(type, /obj/map_metadata))
 			existing_references["[ind]"] = map
@@ -283,7 +283,7 @@
 					var/atom/container = object
 					if(container)
 						for(var/obj/ob in container.contents.Copy())
-							if(istype(ob, /obj/map_metadata) || istype(ob, /atom/movable/lighting_overlay))
+							if(istype(ob, /obj/map_metadata) || istype(ob, /atom/movable/lighting_overlay) || istype(ob, /atom/movable/lighting_fullbright))
 								continue
 							// A recursive field may have already imported this roof.
 							// Do not delete the validated owner before reusing its ref.
@@ -340,6 +340,9 @@
 				H.rejuvenate()
 			if (!H.name && savefile["name"])
 				H.name = savefile["name"]
+		if(isturf(object))
+			var/turf/coverage_turf = object
+			coverage_turf.sync_fullbright_coverage()
 		return object
 	catch(var/exception/e)
 		throw e

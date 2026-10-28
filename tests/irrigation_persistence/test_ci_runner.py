@@ -50,7 +50,7 @@ class CIRunner(unittest.TestCase):
         start = workflow.index('      - name: Verify immutable irrigation baseline and offline contracts')
         stop = workflow.index('\n      - name:', start + 1)
         step = workflow[start:stop]
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/irrigation_persistence')", step)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/irrigation_persistence')", step)
         self.assertIn('git cat-file -e ' + PIN + '^{commit}', step)
         self.assertIn('git fetch --no-tags --depth=1 origin ' + PIN, step)
         self.assertLess(step.index('git fetch'), step.index('python3 -B -m unittest'))

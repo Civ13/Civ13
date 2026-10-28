@@ -47,12 +47,11 @@ color/overlay code remain inherited. These are not indestructible props. No new
 worker, timer, regrowth or per-world vegetation registry is added. Source art,
 credit, metadata and hashes remain exactly as imported in frozen PR #3332.
 
-The separate pre-existing `flower3` constructor mismatch is deliberately not fixed
-by this branch. The independent correction maps that original draw to existing
-`flower2` art and can be reviewed separately.
-Both patches touch the flower constructor. If root accepts the standalone fix
-first, rebase/reconcile this dependent patch and update its generic-baseline test
-before combining them; neither draft claims combined acceptance.
+This local combined review reconciles the independently prepared `flower3` fix
+inside the ordinary-flower else branch only. Roll 3 reuses existing `flower2`;
+fixed scenery retains its chosen state without a draw. Both original commits and
+the original failing evidence remain unchanged on their separate branches.
+Combined offline checks do not establish native acceptance.
 
 ## Validation and limits
 
@@ -63,9 +62,9 @@ From the repository root, using a verified Python 3 executable and Pillow:
 & $PythonPath -B -m unittest discover -s tools/art_ports -p test_humanity_wild_herbs.py -v
 ```
 
-Twelve new offline tests execute the selected production constructor, normalization,
+Thirteen offline tests execute the selected production constructor, normalization,
 radiation and load-hook source bodies through a small fail-closed scalar adapter.
-They check the four original assets and required-type manifest, all 14 unchanged
+They check the four original assets and required-type manifest, all 14 reconciled
 generic draw outcomes, 96 radiation starting-state/dose combinations, repeated
 and nonpositive doses, generic-parent parity and the actual allowlist's projected
 round trip. Omission controls expose overwritten constructor states, a missing
@@ -74,6 +73,9 @@ the damage suppression caused by setting the parent's dead image equal to the li
 image. Unknown source syntax is rejected. Protected-source hashes guard eleven
 shared placement, farming, radiation, persistence, interaction and DME files.
 The nine unchanged conversion/source-hash tests are also retained.
+Four standalone pool-audit tests additionally pass. A combined check compares the
+source projection with the independent pool/DMI audit and every fixed type under
+all 14 injected ordinary-flower rolls. No random sampling is used.
 
 These are **offline source projections**, not DM execution. Parent construction,
 parent loading, native icon-resource identity and JSON primitive round trips are
