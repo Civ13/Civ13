@@ -22,7 +22,11 @@ def push(*messages, ref='refs/heads/feature'):
 
 
 def pr(title, base='feature-base', action='opened'):
-    return {'action': action, 'pull_request': {'title': title, 'base': {'ref': base}}}
+    payload = {'action': action, 'pull_request': {'title': title, 'body': 'new description',
+               'head': {'sha': '1' * 40}, 'base': {'ref': base, 'sha': '2' * 40}}}
+    if action == 'edited':
+        payload['changes'] = {'body': {'from': 'old description'}}
+    return payload
 
 
 def workflow_contexts(selection_result, gating):
@@ -48,6 +52,86 @@ def workflow_contexts(selection_result, gating):
 
 
 class BuildPrefixTests(unittest.TestCase):
+    def test_only_valid_text_edits_skip_and_retargets_fail_closed(self):
+        for field, old in (('title', 'old title'), ('body', None)):
+            payload = pr('ordinary', 'master', 'edited')
+            payload['changes'] = {field: {'from': old}}
+            policy = selection.eligibility('pull_request', payload, True)
+            self.assertTrue(policy['metadata_valid'])
+            self.assertTrue(policy['skip_duplicate'])
+            self.assertFalse(policy['gating']['eligible'])
+        payload = pr('ordinary', 'master', 'edited')
+        payload['changes'] = {'base': {'ref': {'from': 'previous-base'}}}
+        policy = selection.eligibility('pull_request', payload, True)
+        self.assertFalse(policy['metadata_valid'])
+        self.assertFalse(policy['skip_duplicate'])
+        self.assertFalse(policy['native']['eligible'])
+        payload['pull_request']['base']['ref'] = 'unsupported'
+        self.assertFalse(selection.eligibility('pull_request', payload, True)['metadata_valid'])
+
+    def test_edited_unknown_metadata_never_skips_or_emits_selector_outputs(self):
+        bad = (None, {}, {'unknown': {'from': 'x'}}, {'body': {}},
+               {'title': {'from': None}}, {'base': {}}, {'base': {'ref': {'from': ''}}})
+        for changes in bad:
+            payload = pr('ordinary', 'master', 'edited')
+            if changes is None:
+                payload.pop('changes')
+            else:
+                payload['changes'] = changes
+            with self.subTest(changes=changes):
+                policy = selection.eligibility('pull_request', payload, True)
+                self.assertFalse(policy['metadata_valid'])
+                self.assertFalse(policy['skip_duplicate'])
+        for field in ('body', 'head'):
+            payload = pr('ordinary', 'master', 'edited')
+            payload['pull_request'].pop(field)
+            with self.subTest(missing_field=field):
+                self.assertFalse(selection.eligibility('pull_request', payload, True)['metadata_valid'])
+        self.assertEqual(workflow_contexts('failure', ''), ('build', 'CI required aggregate'))
+        self.assertEqual(workflow_contexts('skipped', ''), ('build', 'CI required aggregate'))
+
+    def test_job_and_lint_admission_uses_only_validated_selector_outputs(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        reusable = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
+        changes = workflow.split('\n  changes:\n', 1)[1].split('\n  baseline:\n', 1)[0]
+        self.assertNotIn('    if:', changes)
+        self.assertIn('      lint_workflows: true', changes)
+        self.assertIn('skip_duplicate: ${{ steps.select.outputs.skip_duplicate }}', reusable)
+        for name in ('build', 'ci-required'):
+            block = workflow.split('\n  ' + name + ':\n', 1)[1]
+            self.assertIn("needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", block)
+            expression = next(line.strip()[4:] for line in block.splitlines() if line.startswith('    if: '))
+            for before, after in (('always()', 'True'), ('!cancelled()', 'True'),
+                                  ('needs.changes.result', 'result'),
+                                  ('needs.changes.outputs.skip_duplicate', 'duplicate'),
+                                  ('needs.changes.outputs.gating', 'gating'),
+                                  ('needs.changes.outputs.game', 'game'),
+                                  ('github.event_name', 'event'), ('&&', ' and '), ('||', ' or ')):
+                expression = expression.replace(before, after)
+            parsed = ast.parse(expression, mode='eval')
+            for node in ast.walk(parsed):
+                self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or,
+                                             ast.Compare, ast.Eq, ast.NotEq, ast.Name,
+                                             ast.Load, ast.Constant))
+                if isinstance(node, ast.Name):
+                    self.assertIn(node.id, ('result', 'duplicate', 'gating', 'game', 'event'))
+            for result, duplicate, gating, game, event, expected in (
+                    ('failure', '', '', '', 'pull_request', True),
+                    ('skipped', '', '', '', 'pull_request', True),
+                    ('success', 'true', '0', 'false', 'pull_request', False),
+                    ('success', 'false', '1', 'false', 'pull_request', True),
+                    ('success', 'false', '0', 'true', 'push', True),
+                    ('success', 'false', '0', 'false', 'push', False),
+                    ('success', 'false', '0', 'false', 'workflow_dispatch', True)):
+                with self.subTest(job=name, result=result, event=event):
+                    actual = eval(compile(parsed, '<job admission>', 'eval'), {'__builtins__': {}},
+                                  dict(result=result, duplicate=duplicate, gating=gating, game=game, event=event))
+                    self.assertEqual(actual, expected)
+        for name in ('baseline', 'evidence-checker'):
+            block = workflow.split('\n  ' + name + ':\n', 1)[1]
+            self.assertIn("needs.changes.outputs.skip_duplicate != 'true' &&", block)
+        self.assertIn("if: inputs.lint_workflows && (steps.select.outputs.gating == '1' || steps.select.outputs.game == 'true' || github.event_name == 'workflow_dispatch')", reusable)
+
     def choose(self, event, payload, paths=b'README.md\0'):
         with patch.object(selection.subprocess, 'check_output', return_value=paths):
             return selection.selections('base', 'head', event, True, True, payload)[:3]
@@ -71,15 +155,15 @@ class BuildPrefixTests(unittest.TestCase):
         for action in ('opened', 'synchronize', 'reopened', 'edited'):
             self.assertEqual(self.choose('pull_request', pr('build: docs', action=action)),
                              (True, False, []))
-        # Removing build: cannot turn a supported code diff into a compiler skip.
-        for base, expected in (('master', True), ('feature-base', False)):
+        # A recognized title/body edit reuses the unchanged head's earlier check.
+        for base, expected in (('master', False), ('feature-base', False)):
             self.assertEqual(self.choose('pull_request', pr('docs: x', base, 'edited'), b'world.dm\0'),
                              (expected, False, []))
 
     def test_edited_code_docs_and_forcing_stay_informational_without_native_admission(self):
         for base in ('master', 'help-markdown-byond-html'):
             for title, paths, compile_needed in (
-                    ('docs: edited body', b'world.dm\0', True),
+                    ('docs: edited body', b'world.dm\0', False),
                     ('docs: edited body', b'README.md\0', False),
                     ('build: docs', b'README.md\0', True)):
                 payload = pr(title, base, 'edited')
@@ -87,7 +171,7 @@ class BuildPrefixTests(unittest.TestCase):
                         selection, 'introduced_tests', side_effect=AssertionError('native expansion')):
                     self.assertEqual(self.choose('pull_request', payload, paths), (compile_needed, False, []))
                 policy = selection.eligibility('pull_request', payload, True)
-                self.assertTrue(policy['compile']['eligible'])
+                self.assertEqual(policy['compile']['eligible'], title.startswith('build:'))
                 self.assertFalse(policy['native']['eligible'])
                 self.assertFalse(policy['gating']['eligible'])
                 self.assertEqual(workflow_contexts('success', '0'),
@@ -133,7 +217,7 @@ class BuildPrefixTests(unittest.TestCase):
         self.assertIn('case "$GATING_SELECTION" in 0|1) ;; *) exit 1 ;; esac', workflow)
 
     def test_missing_comparison_compiles_conservatively_without_edited_native_admission(self):
-        payload = pr('source', 'master', 'edited')
+        payload = pr('build: source', 'master', 'edited')
         for base in ('', '0' * 40, 'missing-base'):
             with self.subTest(base=base), patch.object(selection.subprocess, 'check_output',
                     side_effect=subprocess.CalledProcessError(1, 'git')), patch.object(
@@ -206,7 +290,7 @@ class BuildPrefixTests(unittest.TestCase):
                 event_path.write_text(json.dumps(push(*messages)), encoding='utf-8')
                 subprocess.run(command, cwd=root, env=env, check=True, capture_output=True)
                 self.assertEqual(output.read_text(encoding='utf-8'),
-                    f'new_tests=[]\ngame={str(expected).lower()}\nextensive=false\ngating=0\n')
+                    f'new_tests=[]\ngame={str(expected).lower()}\nextensive=false\ngating=0\nskip_duplicate=false\n')
                 self.assertFalse((root / 'INJECTED').exists())
             event_path.write_text('{invalid', encoding='utf-8')
             self.assertEqual(selection.load_event(event_path), {})
@@ -216,6 +300,11 @@ class BuildPrefixTests(unittest.TestCase):
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
         for event, payload in (('pull_request', {}),
                 ('pull_request', {'action': 'edited', 'pull_request': {'title': 'source'}}),
+                ('pull_request', {'action': 'edited', 'pull_request': {'title': 'source', 'base': {'ref': 'master'}}}),
+                ('pull_request', pr('source', 'master', 'edited')),
+                ('pull_request', dict(pr('source', 'master', 'edited'), changes={'unknown': {'from': 'x'}})),
+                ('pull_request', dict(pr('source', 'master', 'edited'), changes={'base': {'ref': {'from': 'feature-base'}}})),
+                ('pull_request', dict(pr('source', 'feature-base', 'edited'), changes={'base': {'ref': {'from': 'master'}}})),
                 ('pull_request', {'pull_request': {'title': 'source', 'base': {'ref': 'master'}}}),
                 ('push', {'commits': [{'message': 'source'}]})):
             with self.subTest(event=event, payload=payload), tempfile.TemporaryDirectory() as directory:
@@ -259,7 +348,7 @@ class BuildPrefixTests(unittest.TestCase):
             event_file.write_text(json.dumps(pr('ci: metadata edit', 'master', 'edited')), encoding='utf-8')
             env = dict(os.environ, GITHUB_EVENT_PATH=str(event_file))
             env.pop('GITHUB_STEP_SUMMARY', None)
-            for paths, compile_needed in ((('world.dm', 'tests/new_suite/probe.dm'), True),
+            for paths, compile_needed in ((('world.dm', 'tests/new_suite/probe.dm'), False),
                                           (('README.md',), False)):
                 with self.subTest(paths=paths):
                     base = git('rev-parse', 'HEAD')
@@ -270,6 +359,10 @@ class BuildPrefixTests(unittest.TestCase):
                     git('add', '.')
                     git('commit', '-qm', 'test fixture change')
                     head = git('rev-parse', 'HEAD')
+                    event = pr('ci: metadata edit', 'master', 'edited')
+                    event['pull_request']['head']['sha'] = head
+                    event['pull_request']['base']['sha'] = base
+                    event_file.write_text(json.dumps(event), encoding='utf-8')
                     output.write_text('', encoding='utf-8')
                     subprocess.run([sys.executable, '-B', str(root / 'scripts/select-ci.py'),
                         '--base', base, '--head', head, '--event', 'pull_request', '--build-prefix', 'true',
@@ -285,14 +378,14 @@ class BuildPrefixTests(unittest.TestCase):
                     self.assertEqual(saved['action'], 'edited')
                     self.assertEqual(saved['eligibility']['base_ref'], 'master')
                     self.assertEqual(saved['compile']['selected'], compile_needed)
-                    self.assertTrue(saved['eligibility']['compile']['eligible'])
+                    self.assertFalse(saved['eligibility']['compile']['eligible'])
                     self.assertFalse(saved['eligibility']['native']['eligible'])
                     self.assertFalse(saved['eligibility']['gating']['eligible'])
                     self.assertFalse(saved['extensive'])
                     self.assertEqual(saved['new_tests'], [])
                     self.assertTrue(all(saved['eligibility'][key]['reason'] for key in ('compile', 'native', 'gating')))
                     self.assertEqual(output.read_text(encoding='utf-8'),
-                        f'new_tests=[]\ngame={str(compile_needed).lower()}\nextensive=false\ngating=0\n')
+                        f'new_tests=[]\ngame={str(compile_needed).lower()}\nextensive=false\ngating=0\nskip_duplicate=true\n')
                     self.assertEqual(workflow_contexts('success', '0'),
                                      ('CI informational build', 'CI informational aggregate'))
 

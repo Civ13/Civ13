@@ -100,6 +100,7 @@ def assert_workflow_contract(workflow):
     for fragment in (
         '    uses: ./.github/workflows/ci-selection.yml\n',
         '      build_prefix: true\n',
+        '      lint_workflows: true\n',
         "      extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}\n",
         "      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}\n",
     ):
@@ -133,6 +134,10 @@ def assert_workflow_contract(workflow):
         for fragment in required:
             if section.count(fragment) != 1:
                 raise AssertionError('Missing or duplicate ' + job + ' identity/provenance: ' + fragment.strip())
+        selection_gate = ("    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')\n" if job == 'baseline' else
+                          "    if: always() && !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))\n")
+        if section.count(selection_gate) != 1:
+            raise AssertionError('Changed ' + job + ' selection or failure gate')
 
     # The aggregate downloads each producer's attempt, not its own attempt on
     # a failed-job rerun. Bind names, paths, actions and the dependency graph.
@@ -143,7 +148,7 @@ def assert_workflow_contract(workflow):
                          maxsplit=1, flags=re.M)[0]
     for fragment in (
         "    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}\n",
-        '    if: always()\n',
+        "    if: always() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))\n",
         '    needs: [changes, baseline, evidence-checker, build, extraction-instances]\n',
         '    runs-on: ubuntu-latest\n',
         '    timeout-minutes: 5\n',

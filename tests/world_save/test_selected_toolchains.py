@@ -189,6 +189,8 @@ class SelectedToolchains(unittest.TestCase):
         for old, new in (('  BYOND_MINOR: "1688"', '  BYOND_MINOR: "1681"'),
                          ('          fetch-depth: 0', '          fetch-depth: 1'),
                          ('      build_prefix: true', '      build_prefix: false'),
+                         ('      lint_workflows: true', '      lint_workflows: false'),
+                         ("needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", "needs.changes.outputs.skip_duplicate != 'true'"),
                          ('      exclusion_comparison_base:', '      renamed_comparison_base:')):
             with self.subTest(old=old):
                 self.assertIn(old, workflow)
@@ -206,6 +208,7 @@ class SelectedToolchains(unittest.TestCase):
              'name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}'),
             ('path: .ci/compile', 'path: .ci/wrong-compile'),
             ('fetch-depth: 1', 'fetch-depth: 0'),
+            ("needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", "needs.changes.outputs.skip_duplicate != 'true'"),
             ('scripts/ci_checkout_refs.py --head', 'scripts/ci_checkout_refs.py --wrong-head'),
             ('BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || \'\' }}',
              'BASE_REF: ${{ github.sha }}'),

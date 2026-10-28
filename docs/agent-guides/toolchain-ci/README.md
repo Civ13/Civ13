@@ -119,10 +119,14 @@ unexpectedly skipped or empty required execution fails. Documentation-only
 compilation is an explicit skip, never compiler acceptance. Inspect ci-* artifacts
 and docs/ci-selection.md; a job-level green alone does not describe what ran.
 <!-- 2026-10-24: event coverage and check identity -->
-Supported edited PRs evaluate the base/head diff for compilation but keep native
-admission off. Edited/other-base PRs, feature pushes and manual runs use the
+PR text edits requesting `build:` evaluate compilation but keep native admission
+off. Recognized unforced title/description edits skip duplicate builds while
+the separate changelog workflow validates PR descriptions. Edited/other-base PRs,
+feature pushes and manual runs use the
 informational build/aggregate names even when a real compile passes. Only ordinary
 opened/synchronize/reopened PR scopes and master pushes retain gating names.
+Base retargets fail the required context until an ordinary PR run can validate
+the new base; unrecognized edit metadata also fails closed.
 Selector failures or missing outputs retain failed gating names. Inspect receipt
 action and compile/native/gating reasons; an informational success cannot certify
 omitted native coverage. Preserve existing native opt-ins and toolchain ownership.
@@ -147,7 +151,7 @@ Returned source hashes identify reference content, not compiler compatibility;
 the live manual can describe features newer than pinned BYOND 516.1681.
 
 <!-- 2026-10-11: documentation-only CI selection -->
-The always-running ci-selection.yml selects compilation conservatively and skips it for documentation-only changes. Extensive runtime suites require CI workflow_dispatch with extensive_regressions enabled; train tests are workflow_dispatch-only. Skips do not prove gameplay; see docs/ci-selection.md.
+Admitted ci-selection.yml runs select compilation conservatively and skip it for documentation-only changes unless requested. Extensive runtime suites require CI workflow_dispatch with extensive_regressions enabled; train tests are workflow_dispatch-only. Skips do not prove gameplay; see docs/ci-selection.md.
 
 <!-- 2026-10-19: injected Windows adapter CI -->
 The bounded-build test suite runs without Windows DLLs. Inject ctypes error
