@@ -67,5 +67,7 @@
   "/obj/structure/wild/flowers/comfrey_scenery",
   "/obj/item/stack/wooden_dowels",
   "/obj/item/weapon/stool/wood",
-  "/obj/structure/table/rack/shelf/wooden"
+  "/obj/structure/table/rack/shelf/wooden",
+  "/obj/item/weapon/bedroll/cloth",
+  "/obj/structure/bed/bedroll/cloth"
 ]

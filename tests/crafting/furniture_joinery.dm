@@ -174,6 +174,7 @@
 	C.clean()
 	recipe_ci_wooden_shelf()
 	recipe_ci_wooden_refunds()
+	recipe_ci_cloth_bedroll()
 
 /proc/shelf_ci_clear()
 	for (var/obj/O in locate(2,1,1))

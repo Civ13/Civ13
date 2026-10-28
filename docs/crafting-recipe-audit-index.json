@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 224,
     "material_recipes_carib.txt": 1256,
     "material_recipes_crustacean.txt": 1309,
-    "material_recipes_global.txt": 1508,
+    "material_recipes_global.txt": 1509,
     "material_recipes_gorilla.txt": 1270,
     "material_recipes_kwai.txt": 203,
     "material_recipes_pygmy.txt": 1251,
@@ -39,7 +39,7 @@
     "foot wear": 146,
     "fortifications": 81,
     "fuel tanks": 49,
-    "furniture": 391,
+    "furniture": 392,
     "gas masks": 24,
     "gloves": 35,
     "hats": 421,
@@ -82,7 +82,7 @@
   "audited_on": "2026-10-28",
   "existing_furniture_candidates": 545,
   "new_global_joinery_rows": 5,
-  "new_global_material_rows": 6,
+  "new_global_material_rows": 7,
   "reviewed_follow_on_output_types": [
     "/obj/item/weapon/stool/wood",
     "/obj/structure/table/rack/shelf/wooden",
@@ -90,6 +90,13 @@
     "/obj/structure/closet/crate/empty",
     "/obj/structure/closet/crate/chest",
     "/obj/structure/closet/cabinet",
-    "/obj/structure/closet/coffin"
-  ]
+    "/obj/structure/closet/coffin",
+    "/obj/structure/table/fancy",
+    "/obj/structure/table/rack/coatrack",
+    "/obj/item/weapon/bedroll",
+    "/obj/item/weapon/bedroll/cloth"
+  ],
+  "reviewed_follow_on_families": 10,
+  "reviewed_legacy_bedroll_rows": 11,
+  "current_furniture_candidates": 555
 }
