@@ -1132,6 +1132,23 @@ jobs:
           name: idle-metabolism-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/idle-metabolism/
           retention-days: 7
+      - name: Verify laid rope making and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rope_making')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/rope_making -p 'test_*.py' -v
+          python3 tests/rope_making/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/rope-making/positive"
+          for control in payment replay admission persistence; do
+            python3 tests/rope_making/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control" --output "$RUNNER_TEMP/rope-making/$control"
+          done
+      - name: Upload rope making evidence
+        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rope_making'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rope-making-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/rope-making/
+          retention-days: 7
       - name: Verify staged flax processing and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/flax_processing')
         shell: bash

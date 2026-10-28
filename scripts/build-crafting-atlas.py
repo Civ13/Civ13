@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
 from atlas.tanning import add_tanning
+from atlas.rope_making import add_rope_making
 from atlas.variants import consolidate_variants, game_recipes
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -212,6 +213,7 @@ if bench:
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
 tanning_routes=add_tanning(files, add, records, sprite_variants)
+rope_routes=add_rope_making(files, add, records)
 for recipe in records:
     for resource in recipe['inputs']+recipe['outputs']:
         if resource['id'] in sprite_variants:
@@ -253,7 +255,7 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
-for route in tanning_routes:
+for route in tanning_routes+rope_routes:
     for resource in route['outputs']:
         acquisition.setdefault(resource,[]).append(route)
 add_processors(files, add, records)
