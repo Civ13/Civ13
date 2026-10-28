@@ -103,7 +103,7 @@ class AtlasNavigationTests(unittest.TestCase):
             else:
                 self.assertIn('sharpened flint', route['conditions'])
                 self.assertIn('one ordinary log into one plank and one bark', route['conditions'])
-                self.assertEqual(route['source_commit'], 'caca63c5d6d150c116871ce4b586f26dbe8500e2')
+                self.assertEqual(route['source_commit'], 'd228a3ec507660d79d14019e800af5f5310ce685')
                 self.assertEqual(route['line'], 2216)
         generated = [r for entries in self.catalog['acquisition'].values() for r in entries
                      if r['name'] in ('Loom processing', 'Mill processing', 'Sawmill processing')]
