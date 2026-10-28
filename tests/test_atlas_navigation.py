@@ -19,7 +19,11 @@ class AtlasNavigationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             target = Path(folder)/'catalog.json'
             subprocess.run([sys.executable, str(ROOT/'scripts/build-crafting-atlas.py'), '--catalog-only', '--game-catalog', str(target)], check=True, capture_output=True)
-            cls.catalog = json.loads(target.read_text())
+            cls.catalog_bytes = target.read_bytes()
+            cls.catalog = json.loads(cls.catalog_bytes)
+
+    def test_committed_catalog_matches_current_source(self):
+        self.assertEqual(self.catalog_bytes, (ROOT/'UI/crafting-atlas.json').read_bytes())
 
     def test_era_order_and_unknown_are_explicit(self):
         recipes = self.catalog['recipes']
