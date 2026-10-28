@@ -28,6 +28,83 @@
 	text2file("FAIL: runtime [e]", "food_result.txt")
 	del(world)
 	sleep(1)
+/proc/check_drying_spoilage(obj/structure/dehydrator/rack)
+	var/turf/T = get_turf(rack)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/input = new(T)
+	food_check(rack.hang_on(input), "rack accepts fresh threshold probe")
+	input.decaytimer = 4499
+	food_check(rack.drying_input_is_safe(input), "unsalted meat below rot threshold remains eligible")
+	input.decaytimer = 4500
+	food_check(!rack.drying_input_is_safe(input), "unsalted meat at rot threshold is refused")
+	input.decaytimer = 9000
+	food_check(!rack.drying_input_is_safe(input), "unsalted meat at expiry is refused")
+	input.decaytimer = 0
+	input.rotten = TRUE
+	food_check(!rack.drying_input_is_safe(input), "explicit spoiled flag is authoritative even at zero age")
+	input.rotten = FALSE
+	rack.before_save()
+	qdel(input)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/salted = new(T)
+	salted.mark_salted_meat()
+	food_check(rack.hang_on(salted), "rack accepts salted threshold probe")
+	salted.decaytimer = 8999
+	food_check(rack.drying_input_is_safe(salted), "salted meat below rot threshold remains eligible")
+	salted.decaytimer = 9000
+	food_check(!rack.drying_input_is_safe(salted), "salted meat at rot threshold is refused")
+	salted.decaytimer = 18000
+	food_check(!rack.drying_input_is_safe(salted), "salted meat at expiry is refused")
+	rack.before_save()
+	qdel(salted)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/spoiled = new(T)
+	food_check(rack.hang_on(spoiled), "rack accepts fresh input before saved spoilage")
+	rack.set_dry_timer(spoiled, TIME_TO_DRY - 150)
+	spoiled.rotten = TRUE
+	var/paid_protein = spoiled.reagents.get_reagent_amount("protein")
+	rack.before_save()
+	var/savefile/F = new("spoiled-rack-input.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, spoiled, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/restored = map_storage.Load_Entry(F, ref, starting_loc = T)
+	food_check(restored && restored.rotten, "saved input restores its spoiled flag")
+	qdel(spoiled)
+	rack.refill()
+	food_check(restored.loc == rack.storage, "encoded spoiled input returns through production refill")
+	var/drying_progress = rack.get_dry_timer(restored)
+	rack.current_process_id = "spoiled-refill"
+	rack.dry_process("spoiled-refill")
+	sleep(4)
+	food_check(restored.loc == rack.storage && restored.rotten && rack.get_dry_timer(restored) == drying_progress, "spoiled input remains owned without conversion or progress")
+	food_check(restored.reagents.get_reagent_amount("protein") == paid_protein, "refusal preserves paid input")
+	var/products = 0
+	for (var/obj/item/weapon/reagent_containers/food/snacks/driedmeat/candidate in rack.storage.contents)
+		products++
+	food_check(products == 0, "refusal does not create a dried product")
+	rack.current_process_id = ""
+	rack.before_save()
+	qdel(restored)
+	// Default-valued fields are omitted by the custom saver, as in old entries.
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/legacy = new(T)
+	food_check(rack.hang_on(legacy), "rack accepts default-valued legacy probe")
+	var/list/legacy_fields = legacy.get_saved_vars()
+	food_check(!("rotten" in legacy_fields) && !("decaytimer" in legacy_fields) && !("salted_meat" in legacy_fields), "legacy probe omits default spoilage and salt fields")
+	rack.before_save()
+	var/savefile/legacy_save = new("legacy-rack-input.sav")
+	legacy_save["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/legacy_ref = map_storage.BuildVarDirectory(legacy_save, legacy, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/restored_legacy = map_storage.Load_Entry(legacy_save, legacy_ref, starting_loc = T)
+	food_check(restored_legacy && !restored_legacy.rotten && !restored_legacy.salted_meat && restored_legacy.decaytimer == 0, "missing legacy fields restore constructor defaults")
+	qdel(legacy)
+	rack.refill()
+	food_check(restored_legacy.loc == rack.storage && rack.drying_input_is_safe(restored_legacy), "valid legacy rack input remains eligible")
+	rack.before_save()
+	qdel(restored_legacy)
+
 /proc/check_salted_meat(obj/structure/dehydrator/rack, mob/living/human/user)
 	var/turf/T = get_turf(rack)
 	var/obj/item/weapon/reagent_containers/food/condiment/saltshaker/shaker = new(T)
@@ -148,6 +225,7 @@
 	sleep(35) // Allow production constructor/refill startup to finish.
 	var/mob/living/human/food_fixture/user = new(T)
 	check_salted_meat(rack, user)
+	check_drying_spoilage(rack)
 	var/obj/item/weapon/reagent_containers/food/snacks/octopus/input = new(T)
 	input.reagents.remove_reagent("nutriment", 3)
 	input.reagents.remove_reagent("protein", 0.5)

@@ -782,6 +782,26 @@
 			"<span class='notice'>You remove \a [S.name] from \the [src].")
 	return TRUE
 
+// Refill can restore encoded inputs without going through attackby admission.
+// Leave unsafe inputs owned by the rack; never manufacture a fresh replacement.
+/obj/structure/dehydrator/proc/drying_input_is_safe(obj/item/input)
+	if (!istype(input, /obj/item/weapon/reagent_containers/food))
+		return TRUE
+	var/obj/item/weapon/reagent_containers/food/F = input
+	if (F.rotten || !isnum(F.decaytimer))
+		return FALSE
+	var/marker = findtext(F.name, "DECAY_")
+	if (!marker)
+		return FALSE
+	var/offset = marker + 6
+	var/original_decay = text2num(copytext(F.name, offset, offset + 8))
+	if (!isnum(original_decay) || original_decay < 0)
+		return FALSE
+	// A zero encoded limit means the original food did not decay.
+	if (original_decay > 0 && (F.decaytimer >= original_decay || (F.rots && F.decaytimer >= original_decay / 2)))
+		return FALSE
+	return TRUE
+
 /obj/structure/dehydrator/proc/dry_process(var/this_process = null)
 	var/list/pos
 	var/obj/item/P
@@ -802,6 +822,8 @@
 		if (storage.contents.len>0)
 			for (I in storage.contents)
 				if (I.dried_type)
+					if (!drying_input_is_safe(I))
+						continue
 					dry_timer = get_dry_timer(I)
 					dry_timer += 150
 					set_dry_timer(I, dry_timer)

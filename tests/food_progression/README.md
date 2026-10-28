@@ -15,6 +15,11 @@ legacy missing fields, an explicitly disabled decay limit, and a later decay
 callback after restoration. It does not execute the DM handlers or serializer.
 An older bear slab that has not reached its own expiry can still be cut; the
 cutlets become rotten immediately if their inherited age meets their rot limit.
+`test_drying_spoilage.py` checks the rack's conversion admission source and an
+offline model of restored spoiled inputs, thresholds, missing legacy fields and
+zero decay limits. The preservation fixture also prepares a real encoded-input
+save/refill case and salted/unsalted thresholds; it must be run separately to
+establish native behavior. Rejected inputs remain on the rack for removal.
 
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
 Run again with `--negative-control` to remove the seed debit in a generated
