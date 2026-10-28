@@ -3,6 +3,7 @@ import importlib.util
 import ast
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -25,7 +26,7 @@ def pr(title, base='feature-base', action='opened'):
     return {'action': action, 'pull_request': {'title': title, 'base': {'ref': base}}}
 
 
-def workflow_contexts(selection_result, gating):
+def workflow_contexts(selection_result, gating, *, event='pull_request', action='opened', title='feature', old_base=''):
     """Evaluate the actual two job-name expressions using a closed vocabulary."""
     workflow = (ROOT / '.github/workflows/test.yml').read_text()
     names = []
@@ -33,21 +34,110 @@ def workflow_contexts(selection_result, gating):
         expression = workflow.split('\n  ' + job + ':\n', 1)[1].splitlines()[0]
         assert expression.startswith('    name: ${{ ') and expression.endswith(' }}')
         expression = expression[len('    name: ${{ '):-len(' }}')]
-        expression = expression.replace('needs.changes.result', 'selection_result').replace(
-            'needs.changes.outputs.gating', 'gating').replace('&&', ' and ').replace('||', ' or ')
+        for before, after in (("!startsWith(github.event.pull_request.title, 'build:')", 'not requested'),
+                              ('github.event.pull_request.title', 'title'),
+                              ('github.event.changes.base.ref.from', 'old_base'),
+                              ('github.event_name', 'event'), ('github.event.action', 'action'),
+                              ('needs.changes.result', 'selection_result'),
+                              ('needs.changes.outputs.gating', 'gating'), ('&&', ' and '), ('||', ' or ')):
+            expression = expression.replace(before, after)
         tree = ast.parse(expression, mode='eval')
         for node in ast.walk(tree):
             if not isinstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.Compare,
-                                     ast.Eq, ast.Name, ast.Load, ast.Constant)):
+                                     ast.Eq, ast.Name, ast.Load, ast.Constant, ast.UnaryOp, ast.Not)):
                 raise AssertionError('Unexpected check-name expression syntax')
-            if isinstance(node, ast.Name) and node.id not in {'selection_result', 'gating'}:
+            if isinstance(node, ast.Name) and node.id not in {'selection_result', 'gating', 'event', 'action', 'title', 'old_base', 'requested'}:
                 raise AssertionError('Check identity must not depend on compiler success or native omission')
         names.append(eval(compile(tree, '<workflow check identity>', 'eval'),
-                          {'__builtins__': {}}, dict(selection_result=selection_result, gating=gating)))
+                          {'__builtins__': {}}, dict(selection_result=selection_result, gating=gating,
+                          event=event, action=action, title=title, old_base=old_base,
+                          requested=title.lower().startswith('build:'))))
     return tuple(names)
 
 
 class BuildPrefixTests(unittest.TestCase):
+    def test_edited_trigger_and_irrelevant_push_keep_check_identities(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        selector = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
+        changes = workflow.split('\n  changes:\n', 1)[1].split('\n  baseline:\n', 1)[0]
+        self.assertIn("if: github.event_name != 'pull_request' || github.event.action != 'edited' || !github.event.pull_request.title || startsWith(github.event.pull_request.title, 'build:') || github.event.changes.base.ref.from != ''", changes)
+        self.assertIn('lint_workflows: true', changes)
+        expression = next(line.strip()[4:] for line in changes.splitlines() if line.startswith('    if: '))
+        for before, after in (("startsWith(github.event.pull_request.title, 'build:')", 'requested'),
+                              ('!github.event.pull_request.title', 'not title'),
+                              ('github.event.changes.base.ref.from', 'old_base'),
+                              ('github.event_name', 'event'), ('github.event.action', 'action'),
+                              ('&&', ' and '), ('||', ' or ')):
+            expression = expression.replace(before, after)
+        parsed = ast.parse(expression, mode='eval')
+        for node in ast.walk(parsed):
+            self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or,
+                                         ast.Compare, ast.Eq, ast.NotEq, ast.Name,
+                                         ast.Load, ast.Constant, ast.UnaryOp, ast.Not))
+            if isinstance(node, ast.Name):
+                self.assertIn(node.id, ('event', 'action', 'title', 'requested', 'old_base'))
+        for event, action, title, old_base, expected in (
+                ('pull_request', 'opened', 'feature', '', True),
+                ('pull_request', 'synchronize', 'feature', '', True),
+                ('pull_request', 'edited', 'feature', '', False),
+                ('pull_request', 'edited', 'build: feature', '', True),
+                ('pull_request', 'edited', 'Build: feature', '', True),
+                ('pull_request', 'edited', '', '', True),
+                ('pull_request', 'edited', 'feature', 'master', True),
+                ('push', '', '', '', True), ('workflow_dispatch', '', '', '', True)):
+            with self.subTest(event=event, action=action, title=title, old_base=old_base):
+                actual = eval(compile(parsed, '<selector admission>', 'eval'), {'__builtins__': {}},
+                              dict(event=event, action=action, title=title,
+                                   requested=title.lower().startswith('build:'), old_base=old_base))
+                self.assertEqual(actual, expected)
+        self.assertIn("if: inputs.lint_workflows && (steps.select.outputs.gating == '1' || steps.select.outputs.game == 'true' || github.event_name == 'workflow_dispatch')", selector)
+        self.assertEqual(workflow_contexts('skipped', '', action='edited'),
+                         ('CI informational build', 'CI informational aggregate'))
+        self.assertEqual(workflow_contexts('skipped', '', action='edited', title='build: requested'),
+                         ('build', 'CI required aggregate'))
+        self.assertEqual(workflow_contexts('failure', ''), ('build', 'CI required aggregate'))
+        self.assertEqual(workflow_contexts('success', '1'), ('build', 'CI required aggregate'))
+        for name in ('baseline', 'evidence-checker'):
+            block = re.split(r'\n  [\w-]+:\n', workflow.split('\n  ' + name + ':\n', 1)[1], 1)[0]
+            self.assertIn("if: needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'", block)
+        # Both jobs must still fail on a failed selector, run on ordinary PRs,
+        # explicit build requests and manual dispatch, and skip unforced pushes.
+        for name in ('build', 'ci-required'):
+            block = workflow.split('\n  ' + name + ':\n', 1)[1]
+            self.assertIn("(needs.changes.result != 'success' || needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')", block)
+            expression = next(line.strip()[4:] for line in block.splitlines() if line.startswith('    if: '))
+            for before, after in (("startsWith(github.event.pull_request.title, 'build:')", 'requested'),
+                                  ('!github.event.pull_request.title', 'not title'),
+                                  ('github.event.changes.base.ref.from', 'old_base'),
+                                  ('github.event.action', 'action'), ('always()', 'True'), ('!cancelled()', 'True'),
+                                  ('needs.changes.result', 'result'),
+                                  ('needs.changes.outputs.gating', 'gating'),
+                                  ('needs.changes.outputs.game', 'game'),
+                                  ('github.event_name', 'event'), ('&&', ' and '), ('||', ' or ')):
+                expression = expression.replace(before, after)
+            parsed = ast.parse(expression, mode='eval')
+            for node in ast.walk(parsed):
+                self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or,
+                                             ast.Compare, ast.Eq, ast.NotEq, ast.Name,
+                                             ast.Load, ast.Constant, ast.UnaryOp, ast.Not))
+                if isinstance(node, ast.Name):
+                    self.assertIn(node.id, ('result', 'gating', 'game', 'event', 'action', 'title', 'requested', 'old_base'))
+            for result, gating, game, event, action, title, old_base, expected in (
+                    ('skipped', '', '', 'pull_request', 'edited', 'feature', '', False),
+                    ('skipped', '', '', 'pull_request', 'opened', 'feature', '', True),
+                    ('skipped', '', '', 'pull_request', 'edited', 'build: docs', '', True),
+                    ('skipped', '', '', 'pull_request', 'edited', 'feature', 'master', True),
+                    ('failure', '', '', 'pull_request', 'opened', 'feature', '', True),
+                    ('success', '1', 'false', 'pull_request', 'opened', 'feature', '', True),
+                    ('success', '0', 'true', 'push', '', '', '', True),
+                    ('success', '0', 'false', 'push', '', '', '', False),
+                    ('success', '0', 'false', 'workflow_dispatch', '', '', '', True)):
+                with self.subTest(job=name, result=result, gating=gating, game=game, event=event, action=action):
+                    actual = eval(compile(parsed, '<job admission>', 'eval'), {'__builtins__': {}},
+                                  dict(result=result, gating=gating, game=game, event=event, action=action,
+                                       title=title, requested=title.lower().startswith('build:'), old_base=old_base))
+                    self.assertEqual(actual, expected)
+
     def choose(self, event, payload, paths=b'README.md\0'):
         with patch.object(selection.subprocess, 'check_output', return_value=paths):
             return selection.selections('base', 'head', event, True, True, payload)[:3]

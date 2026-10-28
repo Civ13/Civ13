@@ -89,7 +89,7 @@ class CheckoutRefsTests(unittest.TestCase):
         self.assertIn('exit 1', verdict)
         self.assertNotIn('fromJSON(needs.changes.outputs.new_tests)', workflow)
         build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
-        self.assertIn('    if: always() && !cancelled()\n', build)
+        self.assertIn("    if: always() && !cancelled() && (needs.changes.result != 'skipped' || github.event_name != 'pull_request'", build)
         self.assertIn("if: always() && needs.changes.result == 'success'", build)
         self.assertIn('test "$SELECTION_RESULT" = success', build)
         self.assertNotIn('if: always()\n', build)

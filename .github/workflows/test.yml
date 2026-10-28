@@ -80,13 +80,16 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   changes:
+    if: github.event_name != 'pull_request' || github.event.action != 'edited' || !github.event.pull_request.title || startsWith(github.event.pull_request.title, 'build:') || github.event.changes.base.ref.from != ''
     uses: ./.github/workflows/ci-selection.yml
     with:
       build_prefix: true
+      lint_workflows: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
       base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
   baseline:
     needs: changes
+    if: needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     # Reused by a re-run of failed jobs, a job keeps its original attempt and
@@ -120,6 +123,7 @@ jobs:
           if-no-files-found: error
   evidence-checker:
     needs: changes
+    if: needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -333,9 +337,9 @@ jobs:
 
   # Existing game compilation gate.
   build:
-    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational build' || 'build' }}
+    name: ${{ (needs.changes.result == 'skipped' && github.event_name == 'pull_request' && github.event.action == 'edited' && github.event.pull_request.title && !startsWith(github.event.pull_request.title, 'build:') && github.event.changes.base.ref.from == '' || needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0') && 'CI informational build' || 'build' }}
     needs: changes
-    if: always() && !cancelled()
+    if: always() && !cancelled() && (needs.changes.result != 'skipped' || github.event_name != 'pull_request' || github.event.action != 'edited' || !github.event.pull_request.title || startsWith(github.event.pull_request.title, 'build:') || github.event.changes.base.ref.from != '') && (needs.changes.result != 'success' || needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     outputs:
@@ -2104,8 +2108,8 @@ jobs:
 
 
   ci-required:
-    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}
-    if: always()
+    name: ${{ (needs.changes.result == 'skipped' && github.event_name == 'pull_request' && github.event.action == 'edited' && github.event.pull_request.title && !startsWith(github.event.pull_request.title, 'build:') && github.event.changes.base.ref.from == '' || needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0') && 'CI informational aggregate' || 'CI required aggregate' }}
+    if: always() && (needs.changes.result != 'skipped' || github.event_name != 'pull_request' || github.event.action != 'edited' || !github.event.pull_request.title || startsWith(github.event.pull_request.title, 'build:') || github.event.changes.base.ref.from != '') && (needs.changes.result != 'success' || needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
     needs: [changes, baseline, evidence-checker, build, extraction-instances]
     runs-on: ubuntu-latest
     timeout-minutes: 5

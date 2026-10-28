@@ -12,6 +12,10 @@ on:
         description: Preserve CI subscriptions while allowing build-colon requests on other branches
         type: boolean
         default: false
+      lint_workflows:
+        description: Run the single workflow syntax check in the main CI caller
+        type: boolean
+        default: false
     outputs:
       extensive:
         value: ${{ jobs.changes.outputs.extensive }}
@@ -62,6 +66,7 @@ jobs:
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX" --receipt .ci/selection/selection.json
       - name: Validate all workflow syntax
+        if: inputs.lint_workflows && (steps.select.outputs.gating == '1' || steps.select.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
         run: |
           curl -fsSL --connect-timeout 10 --max-time 60 --retry 0 https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
           echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum -c -

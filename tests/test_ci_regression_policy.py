@@ -35,6 +35,8 @@ class RegressionPolicyTests(unittest.TestCase):
         self.assertNotIn('needs: changes', workflow)
         self.assertNotIn('actionlint/releases/', workflow)
         # The ordinary CI selector continues to lint all workflow files.
+        ci = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        self.assertIn('      lint_workflows: true\n', ci)
         self.assertIn('actionlint" -shellcheck=', selection)
         self.assertIn('.github/workflows/*.yml', selection)
 
