@@ -20,7 +20,7 @@ class NativePreparationTests(unittest.TestCase):
             self.assertIn('living_mob_list', baseline(path))
         workflow = read('.github/workflows/test.yml')
         # Only this suite's own lane; other suites' workflow wiring belongs to master.
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/movement_discovery')", workflow)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/movement_discovery')", workflow)
         # AGENTS.md links scoped guides; the dated notes live in those READMEs.
         guide = read('AGENTS.md') + ''.join(path.read_text(encoding='utf-8')
                                             for path in sorted((ROOT / 'docs/agent-guides').glob('*/README.md')))
