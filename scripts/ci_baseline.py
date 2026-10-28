@@ -42,7 +42,9 @@ SUITES = {
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
     # must still cover changes to fish, piranhas and ants, not just fishing.
-    'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',), 'paths': (
+    'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
+                                'tests/fishing_stock/test_preparation.py',
+                                'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',

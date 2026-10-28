@@ -132,7 +132,9 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_fishing_stock_registration_is_exact_and_offline(self):
         suite = ci.SUITES['fishing_stock']
-        self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',))
+        self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',
+                                         'tests/fishing_stock/test_preparation.py',
+                                         'tests/fishing_stock/test_native_runner.py'))
         self.assertEqual(suite['paths'], ('tests/fishing_stock/',))
         self.assertFalse(suite.get('always', False))
         source = (ROOT / suite['files'][0]).read_text()
@@ -144,7 +146,8 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(ci.TIMEOUT, 30)
 
     def test_fishing_stock_selection_preserves_shared_source_fallback(self):
-        for path in ('tests/fishing_stock/test_source_contract.py', 'tests/fishing_stock/README.md'):
+        for path in ('tests/fishing_stock/test_source_contract.py', 'tests/fishing_stock/README.md',
+                     'tests/fishing_stock/run_native.py', 'tests/fishing_stock/fixture.dm'):
             with self.subTest(path=path):
                 self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'fishing_stock'})
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
