@@ -325,6 +325,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	else
 		see_invisible = SEE_INVISIBLE_LIVING
 
+	update_lighting_plane()
 	updateghostimages()
 
 /mob/observer/ghost/proc/updateghostimages()

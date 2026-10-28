@@ -99,7 +99,7 @@ var/list/probe_observations = list()
 	return list("name" = copytext(F.name, 1, 257), "cd" = copytext(F.cd, 1, 257), "dir" = dirs)
 
 /proc/probe_run(control)
-	probe_assert(world.byond_version == 516 && world.byond_build == 1681, "pinned_engine")
+	probe_assert(world.byond_version == 516 && world.byond_build == 1688, "pinned_engine")
 	probe_assert(control == "none" || control == "cosmetic", "known_control")
 	var/obj/subtile_actor/A = new(locate(2, 2, 1))
 	var/datum/subtile_kernel/K = new(A, control == "cosmetic")

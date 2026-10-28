@@ -25,6 +25,7 @@ var/global/abandonment_season_changes = 0
 /obj/map_metadata/proc/record_abandonment_season_change(advance_decay = TRUE)
 	if (advance_decay && src == map)
 		abandonment_season_changes++
+	record_construction_season_change(advance_decay)
 
 /obj/item/proc/abandonment_uses_seasons()
 	if (!map)

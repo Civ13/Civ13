@@ -37,7 +37,7 @@ class NativeRunnerTests(unittest.TestCase):
         self.assertIn('set_registry(registry_name, list())', fixture)
         self.assertIn('visibility = 0', fixture)
         self.assertIn('/client/New()\n\tdel(src)', fixture)
-        self.assertEqual(len(native.case_names()), len(native.HOOKS) * 3 + 4)
+        self.assertEqual(len(native.case_names()), len(native.HOOKS) * 3 + 5)
 
     def test_each_control_changes_only_its_exact_production_hook(self):
         baseline = native.prepare(self.source)
@@ -90,13 +90,14 @@ class NativeRunnerTests(unittest.TestCase):
     def test_prepare_only_never_invokes_runner(self):
         with tempfile.TemporaryDirectory() as directory:
             args = argparse.Namespace(output=Path(directory)/'out', byond_bin=None,
-                                      prepare_only=True, all_controls=True, negative_control=None)
+                                      prepare_only=True, all_controls=True, negative_control=None,
+                                      expected_byond_version=native.VERSION)
             def forbidden(*args):
                 self.fail('prepare-only invoked a process')
             result = native.execute(args, runner=forbidden)
             self.assertEqual(result['status'], 'prepared-only')
             self.assertFalse(result['native_execution'])
-            self.assertEqual(len(result['modes']), 9)
+            self.assertEqual(len(result['modes']), 11)
             with self.assertRaises(FileExistsError):
                 native.execute(args, runner=forbidden)
 
@@ -109,7 +110,8 @@ class NativeRunnerTests(unittest.TestCase):
                 for name in ('DreamMaker', 'DreamDaemon'):
                     (binary/name).write_bytes(b'not an executable; injected test only')
                 args = argparse.Namespace(output=root/'out', byond_bin=binary,
-                                          prepare_only=False, all_controls=True, negative_control=None)
+                                          prepare_only=False, all_controls=True, negative_control=None,
+                                          expected_byond_version=native.VERSION)
                 controls = iter([None, *native.HOOKS])
                 def injected(command, work, role, deadline):
                     if role == 'compile':

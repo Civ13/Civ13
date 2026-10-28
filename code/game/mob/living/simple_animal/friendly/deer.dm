@@ -52,11 +52,11 @@
 
 /mob/living/simple_animal/deer/death()
 
-	deer_count &= src
+	deer_count -= src
 	..()
 /mob/living/simple_animal/deer/Destroy()
 
-	deer_count &= src
+	deer_count -= src
 	..()
 /mob/living/simple_animal/deer/New()
 	deer_count |= src

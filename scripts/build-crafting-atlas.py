@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
 from atlas.tanning import add_tanning
+from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -25,6 +26,8 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    # This item type's DM name is sand; the similarly named glass material is distinct.
+    if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
@@ -210,6 +213,15 @@ if bench:
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
 tanning_routes=add_tanning(files, add, records, sprite_variants)
+woodwork_path='code/modules/1713/primitive_woodworking.dm'
+woodwork_contract=json.loads((ROOT/'scripts/atlas/woodworking-contract.json').read_text(encoding='utf-8'))
+woodwork_revision=reviewed_source_revision(files[woodwork_path],woodwork_contract)
+woodworking_routes=add_woodworking(files, add, records, sprite_variants, woodwork_revision)
+for route in woodworking_routes:
+    for field in ('inputs','outputs'):
+        route[field]=[canon(resource) for resource in route[field]]
+for resource in ('/obj/item/stack/material/wood_piece','/obj/item/stack/material/crude_plank'):
+    sprite_variants[canon(resource)]=sprite_variants[resource]
 for recipe in records:
     for resource in recipe['inputs']+recipe['outputs']:
         if resource['id'] in sprite_variants:
@@ -242,15 +254,18 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
     entry={k:v for k,v in route.items() if k in ('name','file','line','conditions','status','tools','steps','map_notes','era','inputs','outputs')}
     entry['audit_commit']=route.get('source_commit',data['sources'].get('audit_commit',''))
     if isinstance(entry.get('tools'),list):entry['tools']=[label(tool) if isinstance(tool,str) and tool.startswith('/') else tool for tool in entry['tools']]
-    for output in route.get('outputs',[]):
+    related=route.get('related_resources',[])
+    if not isinstance(related,list) or any(not isinstance(x,str) or canon(x) not in route.get('inputs',[]) for x in related):
+        raise ValueError('Acquisition related resource must be a reviewed input')
+    for output in dict.fromkeys(route.get('outputs',[])+related):
         if not isinstance(output,str):continue
         key='/material/'+output.split(':',1)[1] if output.startswith('material:') else output
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
-for route in tanning_routes:
+for route in tanning_routes + woodworking_routes:
     for resource in route['outputs']:
-        acquisition.setdefault(resource,[]).append(route)
+        acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
 records=consolidate_variants(records)

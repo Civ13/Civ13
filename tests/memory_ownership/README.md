@@ -54,10 +54,30 @@ GC diagnostics expose queue size, oldest age, high-water/enqueue/drain counts,
 forced owners and pool size. Existing scheduler timing and per-type forced-delete
 counts remain available without a new world-wide reference scan.
 
-The head-cursor queue experiment in tests/gc_queue_benchmark was rejected: it had
-no consistent speed benefit and accumulated stale entries under reference reuse.
-Adaptive budgets remain profile-gated; increasing deletion work without measured
-server tick pressure would add risk. See that suite's recorded comparisons.
+The head-cursor queue experiment (parallel ref/timestamp arrays, a current-timestamp
+map and a head cursor) was rejected: it had no consistent speed benefit and
+accumulated stale entries under reference reuse. Adaptive budgets remain
+profile-gated; increasing deletion work without measured server tick pressure
+would add risk. Its standalone benchmark runner was removed on 2026-10-28; the
+recorded comparison follows.
+
+Three-run medians on Windows, BYOND 516.1681, for 200 rounds of 300 enqueues plus
+bounded drain, excluding initial backlog construction:
+
+| Initial backlog | Ref reuse | Baseline ms | Candidate ms |
+| --- | --- | ---: | ---: |
+| 300 | Unique | 169.97 | 197.84 |
+| 300 | Repeated | 110.90 | 94.06 |
+| 10,000 | Unique | 1483.57 | 1426.52 |
+| 10,000 | Repeated | 214.49 | 192.22 |
+| 50,000 | Unique | 5505.43 | 5634.38 |
+| 50,000 | Repeated | 1586.59 | 2065.52 |
+
+With repeated refs and initial backlog 50,000, the baseline drained to zero slots
+while the candidate ended with 59,900 allocated slots and only 300 current-map
+entries. A future alternative needs deduplicated bounded pending storage before
+integration. These are synthetic single-machine timings, not production
+locate/del costs or full-server performance.
 
 Removing the turf statement after native del(src) is source cleanup: its historical
 fixture already passed, so it is not presented as a reproduced runtime repair.
