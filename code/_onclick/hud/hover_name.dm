@@ -23,6 +23,8 @@
 	return ..()
 
 /obj/screen/hover_name/proc/target_visible(atom/target)
+	if (!los_read_allowed(parentmob, target, "hover"))
+		return FALSE
 	if (!target || !parentmob || !parentmob.client || !target.mouse_opacity || !target.alpha || istype(target, /obj/screen))
 		return FALSE
 	var/client/C = parentmob.client

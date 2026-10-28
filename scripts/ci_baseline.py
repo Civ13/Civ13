@@ -45,12 +45,23 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
+        'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
+        'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
+        'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Source and injected-help contracts only; this suite does not run DM.
+    # Keep shared production and Atlas sources unmapped so their existing
+    # conservative all-suite fallback remains intact.
+    'sawmill': {'files': ('tests/sawmill/test_contract.py',
+                           'tests/test_atlas_navigation.py',
+                           'tests/player_help/test_recipe_context.py'), 'paths': (
+        'tests/sawmill/',)},
     # Keep shared game sources unmapped where they previously selected the
     # all-suite fallback; persistence was already mapped by existing suites.
     'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
@@ -59,6 +70,14 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/functions.dm')},
+    # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
+    # and inert Help imports. No native sprite export or engine launch.
+    # Shared material/Atlas inputs retain their conservative all-suite fallback.
+    'woodworking': {'files': ('tests/primitive_woodworking/test_source.py',
+                              'tests/test_atlas_navigation.py'), 'paths': (
+        'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
+        'scripts/atlas/woodworking.py', 'scripts/atlas/woodworking-contract.json',
+        'code/modules/persistence/functions.dm', 'civ13.dme')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
@@ -239,6 +258,14 @@ def run_unit(name, output):
     return 0 if passed else 1
 
 
+def suite_environment(name, plan):
+    environment = os.environ.copy()
+    if name == 'los_context':
+        environment['LOS_EVENT_BASE'] = plan['base'] or ''
+        environment['LOS_EVENT_HEAD'] = plan['head'] or ''
+    return environment
+
+
 def execute(plan, output):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -266,7 +293,7 @@ def execute(plan, output):
             with (output / (name + '.log')).open('wb') as log:
                 try:
                     result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
-                                            timeout=TIMEOUT)
+                                            timeout=TIMEOUT, env=suite_environment(name, plan))
                     row['exit_code'] = result.returncode
                     row['status'] = 'failed'
                     if counts.is_file():

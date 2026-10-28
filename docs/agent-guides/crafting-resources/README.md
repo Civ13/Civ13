@@ -11,6 +11,22 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-10-28: gathered manual woodworking -->
+Manual woodworking in primitive_woodworking.dm keeps pieces and crude planks
+distinct from finished planks. Whittling admits sharpened flint or an actual knife
+whose working material is harder than the wood; flattening admits sharpened flint
+or sharp verified non-wood working material and charges no tool wear. Wooden
+handles on metal blades do not make those blades wooden. Hammer/wedge splitting
+is axe-free; the existing plank-to-handle recipes remain unchanged. Ownership is
+runtime-only; waits snapshot the shared persistence admission identity and become
+invalid when a save/load is admitted, even if it finishes before the wait returns.
+The offline source projections and hosted wiring do not establish native gameplay
+or savefile acceptance. Keep the sawmill owner's one-finished-plank-per-log contract
+separate; no spawn kit, map cache, peg joinery or respawn resource grant is added.
+Woodworking Atlas provenance uses `scripts/atlas/woodworking-contract.json` and
+the normalized source hash, not Git history. Refresh that reviewed contract when
+production source changes; depth-one CI must regenerate the same catalog.
+
 <!-- 2026-10-19: consumed crafting handles -->
 Consumed wood handles are selected from hands and real equipment slots, including
 shoulder/back, then retained through do_after. Revalidate the exact item and source
