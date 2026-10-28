@@ -26,6 +26,7 @@ FIELDS=('frame','framestack','buildstack','framestackamount','buildstackamount',
 def defaults(text,signature):
     values={}
     for line in block(text,signature).splitlines()[1:]:
+        line=line.split('//')[0].rstrip()
         m=re.fullmatch(r'\t(?:var/)?(\w+) = ([^/\n]+|/[^\n]+)',line)
         if m and m[1] in FIELDS+('flammable',):
             value=m[2].split('//')[0].strip()
@@ -40,7 +41,8 @@ def project(text,signature,args):
         line=raw.split('//')[0].rstrip()
         if not line.strip():continue
         depth=len(line)-len(line.lstrip('\t'));line=line.strip()
-        if line=='if (S) shards += S':line='if S: shards.append(S)'
+        if line=='..()':line='parent_attack()'
+        elif line=='if (S) shards += S':line='if S: shards.append(S)'
         elif line.startswith('if ('):line='if '+expr(line[4:-1],FIELDS)+':'
         elif line.startswith('else if ('):line='elif '+expr(line[9:-1],FIELDS)+':'
         elif line=='else':line='else:'
@@ -62,9 +64,9 @@ def project(text,signature,args):
 
 
 class RefundFixture:
-    def __init__(self,wooden=True,wait=True):
+    def __init__(self,wooden=True,wait=True,subtype='/obj/structure/table/rack/shelf/wooden'):
         values=defaults(TABLE,'/obj/structure/table\n')
-        if wooden:values.update(defaults(RACK,'/obj/structure/table/rack/shelf/wooden\n'))
+        if wooden:values.update(defaults(RACK,subtype+'\n'))
         self.model=NS(**values,loc='floor',deleted=False)
         self.outputs=Counter()
         self.env=dict(construct=lambda kind,loc:self.outputs.update([kind]),
@@ -149,6 +151,59 @@ class WoodenShelfContracts(unittest.TestCase):
             if kind==b'zTXt':metadata+=zlib.decompress(data.split(b'\0',1)[1][1:]).decode()
             elif kind==b'tEXt':metadata+=data.decode(errors='replace')
         self.assertIn('state = "shelfwood"',metadata)
+
+
+class WoodenFurnitureRefundContracts(unittest.TestCase):
+    CASES=(('/obj/structure/table/fancy',7,3,1),
+           ('/obj/structure/table/rack/coatrack',3,2,0))
+
+    def test_all_catalog_inputs_are_wood_and_existing_costs_are_retained(self):
+        rows=[line.split('RECIPE: ',1)[1].split(',')
+              for path in (ROOT/'config/crafting').glob('*.txt')
+              for line in path.read_text().splitlines() if line.startswith('RECIPE: ')]
+        for subtype,cost,_,_ in self.CASES:
+            routes=[r for r in rows if r[2]==subtype]
+            self.assertEqual(len(routes),7)
+            self.assertEqual({(r[0],int(r[3])) for r in routes},
+                             {('/material/wood/',cost),('/material/wood/soft/',cost)})
+
+    def test_production_recovery_and_cancellation_for_both_wood_types(self):
+        for subtype,cost,recovery,top in self.CASES:
+            for mode in (1,3):
+                f=RefundFixture(subtype=subtype);f.destroy(mode)
+                self.assertEqual(f.outputs,{'/obj/item/stack/material/woodplank':recovery})
+                self.assertTrue(f.model.deleted);self.assertLess(recovery,cost)
+            f=RefundFixture(subtype=subtype)
+            f.call(TABLE,'/obj/structure/table/proc/break_to_parts(', 'full_return',False)
+            self.assertEqual(f.outputs,{'/obj/item/stack/material/woodplank':1})
+            for mode in (2,3):
+                f=RefundFixture(subtype=subtype,wait=False);f.destroy(mode)
+                self.assertFalse(f.outputs);self.assertFalse(f.model.deleted)
+
+    def test_disassembled_frame_cycles_lose_wood_instead_of_farming_residue(self):
+        for subtype,cost,_,top in self.CASES:
+            f=RefundFixture(subtype=subtype);f.destroy(2)
+            expected=Counter({'/obj/structure/table_frame/wood':1})
+            if top:expected['/obj/item/stack/material/woodplank']=top
+            self.assertEqual(f.outputs,expected)
+            self.assertTrue(f.model.flammable)
+            frame=defaults(FRAME,'/obj/structure/table_frame\n')
+            frame.update(defaults(FRAME,'/obj/structure/table_frame/wood\n'))
+            f.model=NS(**frame,loc='floor',deleted=False);f.outputs.clear()
+            f.call(FRAME,'/obj/structure/table_frame/attackby(', 'I,user,params',NS(type='/obj/item/weapon/wrench'),None,None)
+            self.assertEqual(f.outputs,{'/obj/item/stack/material/wood':2})
+            self.assertLess(sum(f.outputs.values())+top,cost)
+            # Alternatively, resurfacing the actual frame spends one fresh log.
+            f.outputs.clear();spent=[]
+            stock=NS(type='/obj/item/stack/material/wood',amount=1,use=spent.append)
+            f.model.deleted=False
+            f.call(FRAME,'/obj/structure/table_frame/wood/attackby(', 'I,user,params',stock,None,None)
+            self.assertEqual(spent,[1]);self.assertEqual(f.outputs,{'/obj/structure/table/wood':1})
+            wood_table=defaults(TABLE,'/obj/structure/table\n')
+            wood_table.update(defaults(TABLE,'/obj/structure/table/wood\n'))
+            f.model=NS(**wood_table,loc='floor',deleted=False);f.outputs.clear();f.destroy(3)
+            self.assertEqual(f.outputs,{'/obj/item/stack/material/wood':3})
+            self.assertLess(sum(f.outputs.values())+top,cost+sum(spent))
 
 
 if __name__=='__main__':unittest.main()

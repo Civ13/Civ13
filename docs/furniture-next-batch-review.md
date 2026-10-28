@@ -30,7 +30,9 @@ structures, so future material rows are not omitted merely for being portable.
 | Concrete candidate | Existing route/source facts | Decision |
 |---|---|---|
 | `/obj/item/weapon/stool/wood` | Existing wooden stool, working constructor/art/padding/refund; no active explicit material recipe in the reviewed base | Prepare one pegged wooden-stool recipe |
-| `/obj/structure/table/rack/shelf/wooden` | Existing wood description/art, no active explicit material recipe; inherits iron buildstock and metal frame/rods from table | Correct wooden subtype fields and add the six-plank alternative; all other rack types remain unchanged |
+| `/obj/structure/table/rack/shelf/wooden` | Existing wood description/art, no active explicit material recipe; inherits iron buildstock and metal frame/rods from table | Correct wooden subtype fields and add the six-plank alternative |
+| `/obj/structure/table/fancy` | Seven existing wood-only catalog routes costing seven units; inherits metal recovery fields | Keep recipes and gates; correct this subtype to wooden recovery and flammability |
+| `/obj/structure/table/rack/coatrack` | Seven existing wood-only catalog routes costing three units; inherits metal recovery fields | Keep recipes and gates; recover the wooden stand without a separate tabletop |
 | `/obj/structure/bookcase` | Existing 6-plank recipe, Fine Furniture node; accepts books, and has research behavior and hammer dismantling | Existing route already fits wooden furniture; no extra recipe now |
 | `/obj/structure/closet/crate/empty` | Existing 5-plank route, Cooperage node; constructor initializes storage and may collect loose items | No duplicate route now; simple box versus cooperative barrel research needs separate evidence |
 | `/obj/structure/closet/crate/chest` | Existing 7-plank route, Cooperage node; inherited closet locking/storage behavior | Do not infer metal hinges/locks are required or absent from the sprite; no invented hardware variant |
@@ -109,3 +111,28 @@ assertions; compilation does not mean those native assertions ran.
 Further audit still needs anvil, cooking, chemistry, tool/workbench, attackby
 and processor inventories plus the non-furniture material categories. The
 broader requested audit and recipe expansion remain in progress.
+
+## Existing fancy table and coat rack recovery
+
+The next source review covered these two additional concrete types, for nine
+reviewed follow-on candidates in the table above. Each has six faction routes
+using ordinary wood and one global finished-plank route. Their existing costs
+(seven and three units respectively), research gates, timings and artwork stay
+unchanged. Their metal defaults were a construction/recovery mismatch; correcting
+it does not establish a new historical furniture design or era claim.
+
+Both now use the existing wooden frame and finished-plank stack fields. The fancy
+table also becomes flammable. Destruction/deconstruction returns three planks
+from the table and two from the coat rack; broken parts return one plank. Table
+disassembly yields a wooden frame and one plank, while the coat rack yields only
+the frame because it has no separate tabletop. The frame's existing wrench route
+returns two logs. Every path loses wood against the cheapest input. In particular,
+the coat rack cannot return three planks' worth of logs/planks and generate free
+bark by processing those logs again. Resurfacing a recovered frame spends another
+log and produces an ordinary wooden table whose recovery is also lossy against
+the full original furniture input. Parent table/frame procedures remain unchanged.
+
+Offline regressions execute those production recovery bodies and the wooden-frame
+resurfacing body, cover interruptions, all fourteen catalog rows and both recovery
+cycles. Native assertions for destruction, deconstruction, disassembly and frame
+wrenching are included in the compile-only fixture; they have not run in a world.

@@ -151,6 +151,7 @@
 	joinery_ci_expect(logs == 1 && metal == 0, "stool refund is one paid wood log without metal")
 	C.clean()
 	recipe_ci_wooden_shelf()
+	recipe_ci_wooden_refunds()
 
 /proc/shelf_ci_clear()
 	for (var/obj/O in locate(2,1,1))
@@ -214,3 +215,25 @@
 	qdel(H)
 	shelf_ci_clear()
 	map.ordinal_age = 0
+
+/proc/recipe_ci_wooden_refunds()
+	var/mob/living/human/handle_ci/H = new(locate(2,1,1))
+	for (var/path in list(/obj/structure/table/fancy, /obj/structure/table/rack/coatrack))
+		var/top = path == /obj/structure/table/fancy ? 1 : 0
+		for (var/mode in list(1, 3))
+			var/obj/structure/table/T = new path(locate(2,1,1))
+			T.table_destroy(mode, H)
+			joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/woodplank) == 2 + top && !shelf_ci_count(/obj/item/stack/material/iron) && !shelf_ci_count(/obj/item/stack/rods), "wood furniture deconstruction/destruction: [path]")
+			shelf_ci_clear()
+		var/obj/structure/table/T = new path(locate(2,1,1))
+		T.table_destroy(2, H)
+		var/obj/structure/table_frame/wood/F = locate() in locate(2,1,1)
+		joinery_ci_expect(F && shelf_ci_count(/obj/item/stack/material/woodplank) == top, "wood furniture frame without invented tabletop: [path]")
+		if (F)
+			var/obj/item/weapon/wrench/W = new(H)
+			H.l_hand = W
+			F.attackby(W, H)
+			joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/wood) == 2 && !shelf_ci_count(/obj/item/stack/rods), "wood furniture frame loses stock on recovery: [path]")
+			qdel(W)
+		shelf_ci_clear()
+	qdel(H)

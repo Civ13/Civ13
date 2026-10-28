@@ -29,6 +29,10 @@
 	flipped = FALSE
 	low = TRUE
 	fixedsprite = TRUE
+	frame = /obj/structure/table_frame/wood
+	framestack = /obj/item/stack/material/woodplank
+	buildstack = /obj/item/stack/material/woodplank
+	flammable = TRUE
 
 /obj/structure/table/nightstand
 	name = "night stand"
@@ -75,3 +79,7 @@
 	icon_state = "coatrack"
 	flammable = TRUE
 	not_movable = FALSE
+	frame = /obj/structure/table_frame/wood
+	framestack = /obj/item/stack/material/woodplank
+	buildstack = /obj/item/stack/material/woodplank
+	buildstackamount = 0 // A stand has no separate tabletop to recover.
