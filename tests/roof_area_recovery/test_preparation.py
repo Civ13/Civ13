@@ -13,6 +13,30 @@ RUNNER = ROOT / 'tests/world_save/run-durable-world.py'
 
 
 class RoofAreaPreparation(unittest.TestCase):
+    def test_roof_probe_reads_chunks_and_missing_roof_control_keeps_valid_encoding(self):
+        probe = (ROOT / 'tests/roof_area_recovery/probe.dm').read_text()
+        self.assertIn('var/version = F["/format_version"]', probe)
+        self.assertIn('map_storage.saved_content_refs(F["[turf_path]/content"], version)', probe)
+        self.assertNotIn('params2list(F["[turf_path]/content"])', probe)
+        self.assertIn('if(mode == "missing-roof") F["[turf_path]/content"] << (version == 3 ? list() : "")', probe)
+
+    def test_roof_projection_admits_both_typed_versions_and_decodes_chunked_contents(self):
+        source = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+        plan = source.split('/map_storage/proc/prepare_saved_roof_areas(', 1)[1].split('/map_storage/proc/materialize_saved_roof_areas()', 1)[0]
+        def check(plan):
+            self.assertIn('var/version = F["/format_version"]', plan)
+            self.assertIn('if(version != 2 && version != 3) continue', plan)
+            self.assertIn('var/list/contents = saved_content_refs(F["[turf_path]/content"], version)', plan)
+            self.assertNotIn('params2list(', plan)
+        check(plan)
+        # Each independently restored integration defect must be detected.
+        for old in (plan.replace('if(version != 2 && version != 3) continue',
+                                 'if(version != 2) continue'),
+                    plan.replace('saved_content_refs(F["[turf_path]/content"], version)',
+                                 'params2list(F["[turf_path]/content"])')):
+            with self.subTest(old=old), self.assertRaises(AssertionError):
+                check(old)
+
     def test_postflight_control_exception_names_are_distinct_in_shared_dm_scope(self):
         probe=(ROOT/'tests/roof_area_recovery/probe.dm').read_text()
         block=probe.split('else if(mode == "postflight-empty")',1)[1].split('else if(!(mode in',1)[0]

@@ -6,7 +6,7 @@ world
 	var/savefile/F = new(world.params["file"])
 	var/ref = text2num(world.params["ref"])
 	var/path = "/entries/[ref]"
-	if(F["/format_version"] == 2)
+	if((F["/format_version"] == 2 || F["/format_version"] == 3))
 		path = "/entries/[round((ref-1)/512)]/[ref]"
 	world.log << F.ExportText(path)
 	del(world)

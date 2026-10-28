@@ -173,6 +173,7 @@
 
 /obj/roof/New()
 	..()
+	register_seasonal_construction()
 	icon_state = "roof"
 	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
 	recalculate_borders(TRUE)
@@ -240,6 +241,7 @@
 	roofs_list += roof_overlay
 
 /obj/roof/Destroy()
+	unregister_seasonal_construction()
 	building_remove_floor()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))

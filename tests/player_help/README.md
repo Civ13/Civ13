@@ -46,10 +46,10 @@ These checks do not prove native browser layout; verify the actual Help dialog
 separately under an exclusive UI allocation, without contacting a model for the
 deterministic rendering cases.
 
-`run.py --byond-bin <516.1681-bin> --prepare-only --output <new-directory>`
+`run.py --byond-bin <BYOND-bin> --prepare-only --output <new-directory>`
 writes the exact fixture and hashes without compiling or starting BYOND. This
 supports an external coordinator's bounded process supervisor while a native
-resource hold is active. The normal runner retains its existing CLI behavior.
+resource hold is active. Preparation does not verify a compiler version.
 
 Run Python bridge tests with `python3 -m unittest discover -s tests/player_help -v`.
 `python3 tests/player_help/run-spool-controls.py` requires temporary source
@@ -77,11 +77,15 @@ The transport deadline test verifies the child-process timeout contract, not a
 network benchmark. Cases cover identity reuse, no replay, disabled/failure,
 bounded answers, no source metadata and exclusive worker ownership.
 
-Run `run.py --byond-bin <516.1681-bin>` and repeat with
+Run `run.py --byond-bin <516.1688-bin>` and repeat with
 `--negative-control escaping`, `heartbeat`, and `identity`. These compile the
 actual production DM help service with minimal process/global adapters and no
 normal world startup. The native fixture verifies heartbeat startup/expiry,
 malformed files, escaped HTML, request identity and disconnected-slot cleanup.
+The runner requires the exact 516.1688 compiler banner by default, matching
+`tools/byond/version.json`. For historical 516.1681 fixtures, explicitly pass
+`--expected-byond-version 516.1681` and use that version's binaries; accepting a
+compiler version does not establish that its native assertions passed.
 It compiles with hub visibility disabled, refuses port opening and client admission,
 and uses isolated disk files. Native assertions check the closed port and refusal
 to reopen it. The external supervisor separately rejects non-loopback connections.

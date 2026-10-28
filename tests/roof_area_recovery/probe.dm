@@ -89,9 +89,10 @@
 			var/generation = state["generation"]
 			var/list/W = state["world_state"]
 			var/savefile/F = new("map_saves/1.sav")
+			var/version = F["/format_version"]
 			var/turf_ref = F["/map/1/3/3"]
 			var/turf_path = map_storage.entry_path(F, turf_ref)
-			var/list/contents = params2list(F["[turf_path]/content"])
+			var/list/contents = map_storage.saved_content_refs(F["[turf_path]/content"], version)
 			var/roof_ref
 			for(var/ref in contents)
 				if(ispath(F["[map_storage.entry_path(F, ref)]/type"], /obj/roof)) roof_ref = ref
@@ -108,7 +109,8 @@
 				new /area/caribbean/roofed/semiarid()
 				new /area/caribbean/roofed/semiarid()
 			if(mode == "postflight-empty") new /area/caribbean/roofed/semiarid()
-			if(mode == "missing-roof") F["[turf_path]/content"] << ""
+			// Remove the roof through a valid empty content value in either format.
+			if(mode == "missing-roof") F["[turf_path]/content"] << (version == 3 ? list() : "")
 			if(mode == "wrong-base") F["[roof_path]/current_area_type"] << list("kind" = "value", "value" = /area/caribbean/nomads/desert)
 			if(mode == "missing-scalar") F["[roof_path]/switch_area"] << list("kind" = "entry", "ref" = roof_ref)
 			if(mode == "disabled-roof") F["[roof_path]/switch_area"] << list("kind" = "value", "value" = FALSE)
@@ -216,4 +218,12 @@
 		text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks, "mode" = mode)), "roof-result.json")
 	catch(var/exception/e)
 		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "mode" = mode, "error" = "[e]")), "roof-result.json")
+	// Optional fixture-only post-assertion park. The controller still judges the
+	// unchanged result, observes this live child and owns termination/cleanup.
+	var/completion_session = file2text("roof-session.txt")
+	if(completion_session)
+		for(var/completion_pulse = 1, completion_pulse <= 50, completion_pulse++)
+			text2file(json_encode(list("session" = completion_session, "mode" = mode, "result_md5" = md5(file("roof-result.json")), "checks" = durable_probe_checks, "pulse" = completion_pulse)), "roof-quiet-[completion_pulse].json")
+			text2file(completion_session, "roof-quiet-[completion_pulse].ready")
+			sleep(1)
 	del(world)

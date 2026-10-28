@@ -35,3 +35,4 @@
 	var/unsafe_query = reference.graph_html(viewer, "'><script>")
 	check_atlas(!findtext(unsafe_query, "'><script>") && findtext(unsafe_query, "&#39;"), "navigation query attribute escaping")
 	check_variants(viewer, reference)
+	check_resource_search(viewer)
