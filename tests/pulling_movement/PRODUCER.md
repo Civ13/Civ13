@@ -17,7 +17,13 @@ producer executes at most 16 rounds of leader-first/follower-second native 2px
 moves. The native seam checks each exact participant capability and position.
 It bypasses only the old full-tile follower subtree for these owned pulses;
 unrelated collision remains native. Human/living completion hooks are consolidated
-once per attempted intent, including blocked attempts. Target native glide is
+once per attempted intent, including blocked attempts. Each hook has its own
+error guard: a throwing living hook does not skip the human hook, and the intent
+is marked complete and settles exactly once after both unwind; the first error
+then rethrows. An aligned pair therefore still releases its lease and save hold.
+`test_completion_hooks.py` executes a projection of the actual statements, with
+a control against defect head b290932; this is not native exception evidence.
+Target native glide is
 compare-and-restored. No global tick rate, path search, crafting or RNG loop is
 added per pulse.
 

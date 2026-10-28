@@ -220,20 +220,27 @@
 /datum/subtile_pull_pair/proc/finish_intent()
 	if (intent_running || native_inflight || completion_running || intent_completed)
 		return
-	intent_completed = TRUE
 	restore_follower_glide()
 	completion_running = TRUE
-	try
-		if (intent_attempted && leader && !isDeleted(leader))
+	// One failing hook must not skip the other or strand the lease: both run,
+	// the intent settles once after they unwind, then the first error rethrows.
+	var/hook_error
+	if (intent_attempted && leader && !isDeleted(leader))
+		try
 			leader.living_movement_completed()
-			if (leader && !isDeleted(leader))
+		catch (var/exception/pull_living_hook_error)
+			hook_error = pull_living_hook_error
+		if (leader && !isDeleted(leader))
+			try
 				leader.human_movement_completed()
-	catch (var/exception/pull_hook_error)
-		completion_running = FALSE
-		settle_intent()
-		throw pull_hook_error
+			catch (var/exception/pull_human_hook_error)
+				if (!hook_error)
+					hook_error = pull_human_hook_error
 	completion_running = FALSE
+	intent_completed = TRUE
 	settle_intent()
+	if (hook_error)
+		throw hook_error
 
 /datum/subtile_pull_pair/proc/settle_intent()
 	if (!release())

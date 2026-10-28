@@ -140,10 +140,15 @@ class PullLifecycleContracts(unittest.TestCase):
         finish = section(producer, '/datum/subtile_pull_pair/proc/finish_intent()',
                          '/datum/subtile_pull_pair/proc/settle_intent()')
         self.assertIn('if (intent_running || native_inflight || completion_running || intent_completed)', finish)
-        self.assertIn('leader.living_movement_completed()\n\t\t\tif (leader && !isDeleted(leader))\n\t\t\t\tleader.human_movement_completed()', finish)
+        self.assertIn('\t\ttry\n\t\t\tleader.living_movement_completed()\n\t\tcatch (var/exception/pull_living_hook_error)', finish)
+        self.assertIn('\t\t\ttry\n\t\t\t\tleader.human_movement_completed()\n\t\t\tcatch (var/exception/pull_human_hook_error)', finish)
         self.assertLess(finish.index('completion_running = TRUE'), finish.index('leader.living_movement_completed()'))
-        hook_catch = section(finish, 'catch (var/exception/pull_hook_error)')
-        self.assertLess(hook_catch.index('completion_running = FALSE'), hook_catch.index('settle_intent()'))
+        # Hook failures are executed by test_completion_hooks.py; here pin order.
+        tail = section(finish, 'leader.human_movement_completed()')
+        self.assertLess(tail.index('completion_running = FALSE'), tail.index('intent_completed = TRUE'))
+        self.assertLess(tail.index('intent_completed = TRUE'), tail.index('settle_intent()'))
+        self.assertLess(tail.index('settle_intent()'), tail.index('throw hook_error'))
+        self.assertEqual(finish.count('settle_intent()'), 1)
         kernel = read(PREFIX + 'pull_pair_ownership.dm')
         old = subprocess.check_output(['git', 'show', BASE + ':' + PREFIX + 'pull_pair_ownership.dm'], cwd=ROOT).decode().replace('\r\n', '\n')
         start = '/datum/subtile_pull_pair/proc/controller_allowed()'
