@@ -25,6 +25,8 @@
     <Compile Include="CommunityLinks.cs" />
     <Compile Include="LocalDreamDaemon.cs" />
     <Compile Include="Social/*.cs" />
+    <Compile Include="Management/*.cs" />
+    <ProjectReference Include="../../server-management/Core/Civ13.ServerManagement.csproj" />
     <!-- Offline fixtures construct clock-bound proofs without DNS or sockets. -->
     <InternalsVisibleTo Include="Civ13.Launcher.SocialContracts" />
     <EmbeddedResource Include="../channel.json" LogicalName="client-channel.json" />
