@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-mill-video-5161688-held-20261028-r3",
+  "message": "ci: native manual wheat milling r3",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "mill",
+  "attempt": 1,
+  "scene_sha256": "1588338678fcc12ecf68274b708ee223e09004f8b3d0042e97024b3aa792c5ac",
+  "approval": "User-approved bounded trailer capture; staged wheat; normal manual mill work and same-output pickup; no cross-run identity or nonzero work-cost claim; existing limits and guards; expires 2026-10-29T03:19:44Z; root review required before initial ref publication."
+}
