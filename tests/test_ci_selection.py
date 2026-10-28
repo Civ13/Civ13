@@ -42,17 +42,33 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(workflow.count(expression), 4)
 
     def test_manual_selector_publishes_only_validated_base_receipt(self):
-        root = Path(__file__).resolve().parents[1]
-        def revision(ref):
-            return subprocess.check_output(['git', 'rev-parse', ref], cwd=root, text=True).strip()
-        head, base = revision('HEAD'), revision('HEAD^1')
+        source = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'repo'
+            (root / 'scripts').mkdir(parents=True)
+            for name in ('select-ci.py', 'ci_baseline.py', 'byond_toolchain.py'):
+                (root / 'scripts' / name).write_bytes((source / 'scripts' / name).read_bytes())
+            def git(*args):
+                return subprocess.check_output(['git', '-c', 'user.name=CI fixture',
+                    '-c', 'user.email=ci@example.invalid', '-c', 'commit.gpgsign=false', *args],
+                    cwd=root, stderr=subprocess.PIPE, text=True, timeout=15).strip()
+            git('init', '-q')
+            (root / 'README.md').write_text('base\n', encoding='utf-8')
+            git('add', '.')
+            git('commit', '-qm', 'base')
+            base = git('rev-parse', 'HEAD')
+            (root / 'README.md').write_text('head\n', encoding='utf-8')
+            git('commit', '-qam', 'head')
+            head = git('rev-parse', 'HEAD')
             output, receipt = Path(directory) / 'output', Path(directory) / 'receipt.json'
             script = root / 'scripts/select-ci.py'
             args = [sys.executable, '-B', str(script), '--base', base, '--head', head,
                     '--event', 'workflow_dispatch', '--build-prefix', 'true',
                     '--output', str(output), '--receipt', str(receipt)]
-            result = subprocess.run(args, cwd=root, capture_output=True, text=True, timeout=30)
+            env = dict(os.environ)
+            env.pop('GITHUB_EVENT_PATH', None)
+            env.pop('GITHUB_STEP_SUMMARY', None)
+            result = subprocess.run(args, cwd=root, env=env, capture_output=True, text=True, timeout=30)
             self.assertEqual(result.returncode, 0, result.stderr)
             plan = json.loads(receipt.read_text(encoding='utf-8'))
             self.assertEqual((plan['base'], plan['requested_base'], plan['head']), (base, base, head))
@@ -60,7 +76,7 @@ class SelectionTests(unittest.TestCase):
             self.assertEqual(plan['new_tests'], [])
             output.unlink(); receipt.unlink()
             args[args.index('--base') + 1] = head
-            result = subprocess.run(args, cwd=root, capture_output=True, text=True, timeout=30)
+            result = subprocess.run(args, cwd=root, env=env, capture_output=True, text=True, timeout=30)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('must differ', result.stderr)
             self.assertFalse(output.exists())
