@@ -259,7 +259,8 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 	var/list/routes = islist(all_routes) ? all_routes[resource_id] : null
 	var/list/resource_data = resources[resource_id]
 	var/resource_name = islist(resource_data) && resource_data["name"] ? resource_data["name"] : resource_id
-	var/list/body = list("<h2>How to obtain [html_encode(resource_name)]</h2>")
+	var/heading = findtext("[resource_id]", "/turf/") == 1 ? "Gathering from" : "How to obtain"
+	var/list/body = list("<h2>[heading] [html_encode(resource_name)]</h2>")
 	if (!islist(routes) || !routes.len)
 		body += "<p>No reviewed gathering instructions for this resource. Producer recipes below may provide processing routes; their requirements still apply.</p>"
 	else

@@ -188,7 +188,48 @@ def recipe_context(path):
                 parts.append(key + ': ' + ', '.join(str(row.get('quantity', ''))[:30] + ' x ' + ('softwood' if row.get('id') == '/material/wood/soft' else str(row.get('name', ''))[:100]) for row in rows[:20] if isinstance(row, dict)))
         parts.append('Conditions: ' + recipe_conditions(recipe))
         text = '\n'.join(parts)[:2000]
-        result.append({'topic': str(recipe.get('name', ''))[:150].lower(), 'text': text, 'source': 'recipe', 'catalog': str(recipe.get('kind', ''))})
+        topic = str(recipe.get('name', ''))[:150].lower()
+        outputs = recipe.get('outputs', [])
+        if isinstance(outputs, list) and any(isinstance(row, dict) and row.get('id') == '/obj/structure/reagent_dispensers/dew_collector' for row in outputs):
+            topic += ' rain collector rainwater collector'
+        result.append({'topic': topic, 'text': text, 'source': 'recipe', 'catalog': str(recipe.get('kind', ''))})
+    return result
+
+
+def acquisition_context(path):
+    """Project only the Atlas's curated player-facing acquisition fields."""
+    atlas = bounded_json(path, 16 * 1024 * 1024)
+    resources, routes = atlas.get('resources', {}), atlas.get('acquisition', {})
+    if not isinstance(resources, dict) or not isinstance(routes, dict) or len(resources) > 20000 or len(routes) > 20000:
+        raise ValueError('Invalid acquisition catalog')
+    result = []
+    for resource_id, entries in routes.items():
+        if not isinstance(resource_id, str) or len(resource_id) > 500 or not isinstance(entries, list) or len(entries) > 100:
+            raise ValueError('Invalid acquisition route')
+        data = resources.get(resource_id)
+        if not isinstance(data, dict) or not isinstance(data.get('name'), str):
+            continue
+        name = data['name'][:100]
+        for route in entries:
+            if not isinstance(route, dict) or not isinstance(route.get('name'), str):
+                continue
+            title = route['name'][:150]
+            parts = ['Reviewed gathering: ' + title, ('Source terrain: ' if resource_id.startswith('/turf/') else 'Resource: ') + name]
+            for key in ('steps', 'tools', 'conditions', 'era', 'map_notes'):
+                value = route.get(key)
+                if isinstance(value, list):
+                    value = '; '.join(item[:300] for item in value[:8] if isinstance(item, str))
+                elif isinstance(value, str):
+                    value = value[:500]
+                else:
+                    continue
+                if value:
+                    parts.append(key.capitalize() + ': ' + value)
+            aliases = ' beach sand desert sand' if resource_id in ('/turf/floor/beach/sand', '/obj/item/stack/ore/glass') else ''
+            result.append({'topic': (name + ' ' + title + aliases).lower(), 'source': 'acquisition',
+                           'text': '\n'.join(parts)[:2000]})
+            if len(result) > 20000:
+                raise ValueError('Too many acquisition routes')
     return result
 
 
@@ -361,6 +402,7 @@ def gameplay_knowledge(root, wiki_root=None):
     selections = [
         ('code/game/objects/structures/blacksmithing/refining.dm', '/obj/structure/furnace/attackby', '/obj/structure/furnace/blast_furnace', 'iron ingots ore bloomery fuel smelting sponge iron'),
         ('code/game/objects/structures/blacksmithing/blacksmithing.dm', '/obj/structure/anvil/attackby', '/////////IRON//////////', 'iron ingots sponge anvil crafting skill'),
+        ('code/modules/1713/dew_collector.dm', '/obj/structure/reagent_dispensers/dew_collector\n', '/obj/structure/reagent_dispensers/dew_collector/process_interval', 'dew collector rain collector rainwater collecting barrel'),
     ]
     root = Path(root).resolve()
     for relative, first, last, topic in selections:
@@ -380,7 +422,7 @@ def gameplay_knowledge(root, wiki_root=None):
             raise ValueError('Reviewed gameplay excerpt grew beyond budget')
         if relative.endswith('refining.dm'):
             excerpt = excerpt[:excerpt.index('\t\telse if (istype(I, /obj/item/weapon/material))')] + excerpt[excerpt.index('/obj/structure/furnace/attack_hand'):]
-        else:
+        elif relative.endswith('blacksmithing.dm'):
             excerpt = excerpt[:excerpt.index('\telse\n')] + excerpt[excerpt.index('\t\telse if (istype(P, /obj/item/stack/ore/iron_sponge))'):]
         # Each snippet carries provenance for diagnostics, not authority or instructions.
         result.append({'topic': topic, 'source': 'code', 'sha256': hashlib.sha256(raw).hexdigest(), 'text': 'CURRENT GAMEPLAY CODE (' + topic + '):\n' + excerpt})
@@ -680,10 +722,13 @@ class Bridge:
             return 4 * len(words & topic) + len(words & body)
         ranked = sorted(candidates, key=lambda entry: (score(entry), entry.get('catalog') == 'Material / global'), reverse=True)
         selected = []
-        for source in ('code', 'wiki', 'recipe'):
+        for source in ('code', 'acquisition', 'wiki', 'recipe'):
             matches = [entry for entry in ranked if entry.get('source') == source and score(entry) > 0]
             selected.extend(matches[:2])
         selected.extend(entry for entry in ranked if entry not in selected and score(entry) > 0)
+        # Prioritize the strongest evidence before the existing total text cap.
+        # Otherwise two long unrelated code excerpts can hide an exact recipe.
+        selected.sort(key=score, reverse=True)
         # Keep the existing transport child's 32000-character stdin bound even
         # with escaped Unicode history. Retrieval text is also untrusted data.
         context = '\n\n'.join(entry['text'] for entry in selected[:6])[:16000]
@@ -788,6 +833,7 @@ def main():
     if not isinstance(corpus, list) or not 1 <= len(corpus) <= 100 or any(not isinstance(entry, dict) or not isinstance(entry.get('topic'), str) or not isinstance(entry.get('text'), str) for entry in corpus):
         raise ValueError('Invalid approved player corpus')
     corpus += recipe_context(args.game_root / 'UI/crafting-atlas.json')
+    corpus += acquisition_context(args.game_root / 'UI/crafting-atlas.json')
     corpus += gameplay_knowledge(args.game_root, config.get('wiki_root'))
     bridge = Bridge(args.game_root / 'SQL/player-help', config, corpus)
     # Old questions are not re-sent after a bridge restart; game timeout informs players.
