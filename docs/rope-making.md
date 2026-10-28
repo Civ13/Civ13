@@ -12,8 +12,12 @@ Its harvest quantities and existing recipe costs are unchanged.
 
 1. Hold two hemp and choose **Tie Hemp Bundle**. Use the bundle on adjacent
    non-irradiated fresh water and complete its 30-second attended retting action.
-   A cancelled action leaves the paid bundle. Click it in water to resume, or
-   recover it into a hand.
+   A cancelled action leaves the paid bundle. Click it in water to resume.
+   To recover it, right-click the submerged bundle and choose **Recover Hemp
+   Bundle** with a free, usable hand. This cancels in-flight retting and keeps
+   the paid bundle and completed preparation, even if the water has become salty
+   or irradiated. Recovery also invalidates the old wait if the bundle is
+   returned to the same water before that wait finishes.
 2. Load the retted bundle into an empty **hemp dressing bench**. Use the bench
    four times, ten seconds each: dry, break the woody stems, scutch away shives,
    then comb the fibres. The two raw portions become two dressed fibre portions.
@@ -24,9 +28,11 @@ Its harvest quantities and existing recipe costs are unchanged.
    Existing **flax tow** can instead become distinct flax rope yarn by the same
    interaction. Obtain it through the existing flax bundling/retting/comb route.
    Using tow in hand still offers the existing quick twine action.
-4. Load four bundles of either hemp yarn or flax yarn into an empty **hand
-   ropewalk**. Mixed materials are rejected. Each bundle represents an equal
-   group of yarns making one strand, rather than a single thread.
+4. Combine four matching hemp yarn or flax yarn bundles into **one held stack**
+   by applying matching yarn stacks to each other. Use that stack on an empty
+   **hand ropewalk**; four separate stacks cannot be loaded individually.
+   Mixed materials are rejected. Each bundle represents an equal group of yarns
+   making one strand, rather than a single thread.
 5. Use the ropewalk once for ten seconds to twist four strands under tension.
    Use again for ten seconds to lay them together in the opposite direction.
    The final action produces four ordinary rope coils. Drag the frame onto
@@ -79,7 +85,8 @@ each wait; completion rechecks location, anchored state, the exact contained
 batch and its old stage before publishing output. No progress depends on a
 retained actor pointer or recurring processing worker. Completed stages and
 actual contained paid batches are durable; all four temporary action locks are
-explicitly excluded by the custom saver. Invalid imported stages and abstract
+explicitly excluded by the custom saver, as is the runtime retting epoch used
+to invalidate recovered waits. Invalid imported stages and abstract
 batch types cannot produce output.
 
 Every interaction refuses active save/load admission. A waiting action also

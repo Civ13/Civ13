@@ -81,6 +81,22 @@ class RopeSourceTests(unittest.TestCase):
             self.assertIn(term, text)
         self.assertNotIn('already researched', text)
 
+    def test_recovery_and_single_stack_instructions_reach_help(self):
+        source = (ROOT / PATH).read_text()
+        verb = source.split('/obj/item/hemp_rope_bundle/verb/recover_hemp_bundle()', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('set src in view(1)', verb)
+        self.assertIn('recover_bundle(usr)', verb)
+        rows = bridge.acquisition_context(ROOT / 'UI/crafting-atlas.json')
+        recovery = next(row['text'] for row in rows if 'tie and ret hemp for rope' in row['topic'])
+        for term in ('Recover Hemp Bundle', 'free hand', 'salty or irradiated water'):
+            self.assertIn(term, recovery)
+        rope = next(row['text'] for row in rows if 'counter-lay hemp rope' in row['topic'])
+        self.assertIn('one held stack', rope)
+        self.assertIn('Apply matching yarn stacks to each other', rope)
+        guide = (ROOT / 'docs/rope-making.md').read_text()
+        self.assertIn('four separate stacks cannot be loaded individually', guide)
+        self.assertIn('right-click the submerged bundle', guide)
+
     def test_runner_compile_only_cannot_launch_daemon(self):
         source = Path(__file__).with_name('run.py').read_text()
         begin = source.index('if args.compile_only:')

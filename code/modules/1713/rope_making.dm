@@ -31,14 +31,17 @@
 
 /obj/item/hemp_rope_bundle
 	name = "hemp rope-making bundle"
-	desc = "Two paid portions of hemp. Use on fresh water to ret; then load into a hemp dressing bench to dry, break, scutch and comb. Each use completes one stage."
+	desc = "Two paid portions of hemp. Use on fresh water to ret; then load into a hemp dressing bench to dry, break, scutch and comb. Right-click a submerged bundle and choose Recover Hemp Bundle with a free hand to recover it and cancel retting, even in unsuitable water."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "hemp"
 	w_class = ITEM_SIZE_NORMAL
 	var/stage = 0
 	var/tmp/working = FALSE
+	var/tmp/retting_epoch = 0
 
 /obj/item/hemp_rope_bundle/persistence_runtime_var(key)
+	if (key == "retting_epoch")
+		return TRUE
 	return key == "working" || ..()
 
 /obj/item/hemp_rope_bundle/proc/valid_stage()
@@ -59,17 +62,38 @@
 		return ret(user, loc)
 	return ..()
 
+/obj/item/hemp_rope_bundle/verb/recover_hemp_bundle()
+	set name = "Recover Hemp Bundle"
+	set category = "Object"
+	set src in view(1)
+	recover_bundle(usr)
+
+/obj/item/hemp_rope_bundle/proc/recover_bundle(mob/user)
+	if (!ishuman(user) || !rope_worker_ready(user, src) || !user.canmove || !user.can_use_hands() || !istype(loc, /turf/floor/beach/water))
+		return FALSE
+	if (!user.put_in_any_hand_if_possible(src, prioritize_active_hand = TRUE) || !rope_held(user, src))
+		to_chat(user, SPAN_WARNING("You need a free, usable hand to recover the bundle."))
+		return FALSE
+	// Recovery retires this wait even if the bundle is returned to the same water.
+	// A stale waiter must not clear a replacement wait's working lock.
+	retting_epoch++
+	working = FALSE
+	to_chat(user, SPAN_NOTICE("You recover the hemp bundle and cancel its retting work. Completed preparation is retained."))
+	return TRUE
+
 /obj/item/hemp_rope_bundle/proc/ret(mob/user, turf/floor/beach/water/W)
 	if (working || !valid_stage() || stage != 0 || !rope_worker_ready(user, src) || !istype(W) || loc != W || W.salty || W.radiation > 0)
 		return FALSE
 	working = TRUE
+	var/epoch = ++retting_epoch
 	var/datum/admission = persistence_admission_identity
 	var/completed = user.rope_making_wait(300, src)
+	if (retting_epoch != epoch)
+		return FALSE
+	working = FALSE
 	if (!completed || !rope_worker_ready(user, src) || admission != persistence_admission_identity || loc != W || W.salty || W.radiation > 0 || stage != 0)
-		working = FALSE
 		return FALSE
 	stage = 1
-	working = FALSE
 	to_chat(user, SPAN_NOTICE("The hemp is retted. Recover it for drying and dressing at a hemp dressing bench."))
 	return TRUE
 
@@ -189,7 +213,7 @@
 
 /obj/item/stack/rope_yarn
 	name = "rope yarn"
-	desc = "Spun fibre for laid rope. Load four matching bundles into an empty ropewalk."
+	desc = "Spun fibre for laid rope. Combine at least four matching yarn bundles into one held stack, then use that stack on an empty ropewalk."
 	icon = 'icons/obj/materials.dmi'
 	icon_state = "rope"
 	singular_name = "bundle of rope yarn"
@@ -225,7 +249,7 @@
 
 /obj/structure/ropewalk
 	name = "hand ropewalk"
-	desc = "A hand-powered rope-making frame with a tensioned movable end. Load four matching hemp or flax yarn bundles. Use once to twist the four strands under tension, then again to lay them together in the opposite direction. Drag onto yourself to recover unfinished work."
+	desc = "A hand-powered rope-making frame with a tensioned movable end. Combine four matching hemp or flax yarn bundles into one held stack, then use that stack on the empty frame. Use once to twist the four strands under tension, then again to lay them together in the opposite direction. Drag onto yourself to recover unfinished work."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "drying_rack_empty"
 	anchored = TRUE

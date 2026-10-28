@@ -13,7 +13,9 @@ def add_rope_making(files, add, records):
                 'if (!F.use(1))', 'new product(T, 1, FALSE)',
                 'if (Y.amount < 4 || !Y.use(4))', 'B.stage = 1',
                 'new /obj/item/stack/material/rope(site, 4, FALSE)',
-                'user.rope_making_wait(50, F)', 'user.rope_making_wait(100, src)')
+                'user.rope_making_wait(50, F)', 'user.rope_making_wait(100, src)',
+                '/obj/item/hemp_rope_bundle/proc/recover_bundle(mob/user)',
+                'if (retting_epoch != epoch)')
     if any(text not in source for text in required):
         raise ValueError('Rope source changed; review Atlas quantities and stages')
     routes = []
@@ -37,7 +39,8 @@ def add_rope_making(files, add, records):
           [(PREFIX+'hemp_rope_bundle', 1)], '/obj/item/stack/material/hemp/proc/tie_rope_bundle',
           ('Hold two raw hemp and choose Tie Hemp Bundle. Use the bundle on adjacent non-irradiated fresh water.',
            'Complete one attended 300-tick retting action. Interruption preserves the paid bundle; click it in water to resume.',
-           'Recover the retted bundle into a hand before loading the dressing bench.'))
+           'Right-click the submerged bundle and choose Recover Hemp Bundle with a free hand to cancel work and recover it, even in salty or irradiated water.',
+           'Recovery retains completed preparation. Recover the retted bundle into a hand before loading the dressing bench.'))
     route('Dry, break, scutch and comb hemp', [(PREFIX+'hemp_rope_bundle', 1)],
           [(PREFIX+'stack/dressed_hemp', 2)], '/obj/structure/hemp_dressing_bench/proc/dress',
           ('Load one held retted hemp bundle into an empty anchored dressing bench.',
@@ -53,7 +56,7 @@ def add_rope_making(files, add, records):
               tools=('Hand spindle',))
         route('Load, twist and counter-lay '+material+' rope', [(PREFIX+'stack/rope_yarn/'+material, 4)],
               [(PREFIX+'stack/material/rope', 4)], '/obj/structure/ropewalk/proc/load_yarn',
-              ('Load four bundles of the same yarn material into an empty anchored hand ropewalk. Materials cannot be mixed.',
+              ('Combine four bundles of the same yarn material into one held stack before loading an empty anchored hand ropewalk. Apply matching yarn stacks to each other to combine them. Materials cannot be mixed.',
                'Use for 100 ticks to twist four strands under tension, then use again for 100 ticks to lay them together in the opposite direction.',
                'Four yarn bundles represent equal-length groups of yarn, not four individual threads. Four output coils are game units.',
                'Recover paid unfinished work by dragging the frame onto yourself. A twisted batch resumes at counter-laying.',

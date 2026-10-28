@@ -20,6 +20,7 @@
 	var/wait_mode = "complete"
 	var/obj/item/rope_spindle/tool
 	var/obj/item/stack/feed
+	var/allow_recovery_pickup = FALSE
 
 /mob/living/human/rope_tester/New()
 	species = new /datum/species/human
@@ -31,8 +32,16 @@
 /obj/map_metadata/rope_tester/New()
 	return
 
-/mob/living/human/rope_tester/put_in_any_hand_if_possible(obj/item/W, prioritize_active_hand = FALSE)
-	return FALSE
+/mob/living/human/rope_tester/put_in_any_hand_if_possible(obj/item/W, del_on_fail = FALSE, disable_warning = TRUE, redraw_mob = TRUE, prioritize_active_hand = FALSE)
+	if (!allow_recovery_pickup || !istype(W, /obj/item/hemp_rope_bundle) || (l_hand && r_hand))
+		return FALSE
+	if (!W.forceMove(src) || W.loc != src)
+		return FALSE
+	if (!l_hand)
+		l_hand = W
+	else
+		r_hand = W
+	return TRUE
 
 // Inventory/HUD adapter only; production admission, payment and work stay intact.
 /mob/living/human/rope_tester/transfer_held_item_to(obj/item/I, atom/target)
@@ -56,6 +65,20 @@
 /mob/living/human/rope_tester/rope_making_wait(delay, atom/target)
 	if (wait_mode == "cancel")
 		return FALSE
+	if (wait_mode == "hold_retting")
+		sleep(3)
+		return FALSE
+	if (wait_mode == "recover_return" || wait_mode == "recover_restart")
+		var/obj/item/hemp_rope_bundle/B = target
+		var/turf/water = B.loc
+		rope_assert(B.recover_bundle(src) && rope_held(src, B), "in-flight bundle recovery succeeds")
+		rope_assert(transfer_held_item_to(B, water), "recovered bundle returns to same water")
+		if (wait_mode == "recover_restart")
+			wait_mode = "hold_retting"
+			spawn(0)
+				B.ret(src, water)
+			sleep(1)
+		return TRUE
 	if (wait_mode == "tool_loss")
 		r_hand = null
 		tool.forceMove(get_turf(src))
@@ -156,16 +179,48 @@
 		U.hold(raw)
 		rope_assert(raw.tie_rope_bundle(U) && raw.amount == 3, "bundle paid with raw hemp")
 		var/obj/item/hemp_rope_bundle/B = locate() in site
+		rope_assert((/obj/item/hemp_rope_bundle/verb/recover_hemp_bundle in B.verbs), "normal-player recovery verb registered")
 		var/turf/floor/beach/water/W = new(locate(4,3,1))
 		B.forceMove(W)
 		U.wait_mode = "cancel"
 		rope_assert(!B.ret(U, W) && B.stage == 0 && !B.working, "cancelled retting retains bundle")
+		U.allow_recovery_pickup = TRUE
+		rope_assert(B.recover_bundle(U) && rope_held(U, B) && B.stage == 0, "cancelled submerged bundle can be recovered")
+		rope_assert(U.transfer_held_item_to(B, W), "cancelled bundle can be returned to water")
 		W.salty = TRUE
 		rope_assert(!B.ret(U, W), "salt retting refused")
+		rope_assert(B.recover_bundle(U) && rope_held(U, B) && B.stage == 0, "salt water does not trap paid bundle")
+		rope_assert(U.transfer_held_item_to(B, W), "salt-recovered bundle retained")
 		W.salty = FALSE
 		W.radiation = 1
 		rope_assert(!B.ret(U, W), "irradiated water refused")
+		rope_assert(B.recover_bundle(U) && rope_held(U, B) && B.stage == 0, "irradiated water does not trap paid bundle")
+		rope_assert(U.transfer_held_item_to(B, W), "irradiated-water bundle retained")
 		W.radiation = 0
+		var/old_epoch = B.retting_epoch
+		var/obj/item/hand_blocker = new(U)
+		U.hold(hand_blocker, FALSE)
+		rope_assert(!B.recover_bundle(U) && B.loc == W && B.retting_epoch == old_epoch, "full hands refuse recovery without state loss")
+		U.r_hand = null
+		qdel(hand_blocker)
+		U.canmove = FALSE
+		rope_assert(!B.recover_bundle(U) && B.loc == W && B.retting_epoch == old_epoch, "immobile actor cannot recover bundle")
+		U.canmove = TRUE
+		var/obj/item/weapon/handcuffs/cuffs = new(U)
+		U.handcuffed = cuffs
+		rope_assert(!B.recover_bundle(U) && B.loc == W && B.retting_epoch == old_epoch, "restrained actor cannot recover bundle")
+		U.handcuffed = null
+		qdel(cuffs)
+		persistence_save_in_progress = TRUE
+		rope_assert(!B.recover_bundle(U) && B.loc == W && B.retting_epoch == old_epoch, "save admission refuses bundle recovery")
+		persistence_save_in_progress = FALSE
+		U.wait_mode = "recover_return"
+		rope_assert(!B.ret(U, W) && B.loc == W && B.stage == 0 && !B.working, "recovery invalidates wait after same-water return")
+		U.wait_mode = "recover_restart"
+		rope_assert(!B.ret(U, W) && B.stage == 0 && B.working, "retired waiter preserves replacement retting lock")
+		sleep(4)
+		rope_assert(!B.working && B.stage == 0, "replacement retting cancellation releases its own lock")
+		U.allow_recovery_pickup = FALSE
 		U.wait_mode = "overlap"
 		rope_assert(B.ret(U, W) && B.stage == 1 && !B.ret(U, W), "retting advances exactly once")
 		var/obj/structure/hemp_dressing_bench/D = new(site)
@@ -253,7 +308,8 @@
 		var/obj/item/hemp_rope_bundle/saved_hemp = new(D)
 		saved_hemp.stage = 3
 		saved_hemp.working = TRUE
-		rope_assert(!("working" in saved_hemp.get_saved_vars()), "bundle lock excluded")
+		saved_hemp.retting_epoch = 91
+		rope_assert(!("working" in saved_hemp.get_saved_vars()) && !("retting_epoch" in saved_hemp.get_saved_vars()), "bundle lock and epoch excluded")
 		map_storage.clear_bookkeeping()
 		map_storage.saving_z = 1
 		var/savefile/F = new("rope-state.sav")
@@ -271,7 +327,7 @@
 		var/obj/item/laid_rope_work/hemp/restored_batch = locate() in restored
 		var/obj/item/hemp_rope_bundle/restored_hemp = locate() in restored_dress
 		rope_assert(restored_batch && restored_batch.stage == 1 && !restored.working, "nested twisted batch disk round trip")
-		rope_assert(restored_hemp && restored_hemp.stage == 3 && !restored_hemp.working && !restored_dress.working, "nested dressed hemp disk round trip")
+		rope_assert(restored_hemp && restored_hemp.stage == 3 && !restored_hemp.working && restored_hemp.retting_epoch == 0 && !restored_dress.working, "nested dressed hemp disk round trip")
 		rope_assert(restored_tool && !restored_tool.spinning, "spindle disk round trip")
 		U.wait_mode = "overlap"
 		rope_assert(restored.lay_rope(U) && rope_amount(site, /obj/item/stack/material/rope) == before + 4, "restored counter-laying publishes paid rope")
