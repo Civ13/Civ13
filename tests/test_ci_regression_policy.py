@@ -33,7 +33,8 @@ class RegressionPolicyTests(unittest.TestCase):
         self.assertIn('node tools/changelog/publish.mjs --validate', workflow)
         self.assertNotIn('./.github/workflows/ci-selection.yml', workflow)
         self.assertNotIn('needs: changes', workflow)
-        self.assertNotIn('actionlint/releases/', workflow)
+        self.assertIn("      - name: Validate changelog workflow syntax for standalone manual runs\n"
+                      "        if: github.event_name == 'workflow_dispatch'\n", workflow)
         # The ordinary CI selector continues to lint all workflow files.
         ci = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         self.assertIn('      lint_workflows: true\n', ci)
