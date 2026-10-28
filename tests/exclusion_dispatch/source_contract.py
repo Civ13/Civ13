@@ -1,6 +1,20 @@
 """Fail-closed source contract; no compiler or runtime execution."""
 import re
 
+CURRENT_BASE = 'eedc9862fcb7b2b7c3617c6972965fafa650e51a'
+
+
+# Reviewed bounded-save integration adds only these non-hook blocks to the
+# pinned 5bf351 baseline. Keep complete-file equality after this projection;
+# deriving a baseline from candidate source would hide unrelated changes.
+BOUNDED_BLOCKS = (
+    ('\t\tlist/saving_export_stack = list()\n',
+     '\t\tlist/saving_content_owners = list()\n\t\tlist/saving_world_movables = list()\n\t\tvar/saving_work = 0\n\t\tvar/saving_slice_start = 0\n'),
+    ('\tsaving_export_stack = list()\n',
+     '\tsaving_content_owners = list()\n\tsaving_world_movables = list()\n\tsaving_work = 0\n\tsaving_slice_start = world.tick_usage\n'),
+    ('/map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)\n\tif(!ref) return\n\tvar/key = "[ref]"\n',
+     '\t// Keep the first captured edge if a completed child later moves.\n\tvar/owner = saving_content_owners[key]\n\tif(owner && owner != frame.entry) return\n\tsaving_content_owners[key] = frame.entry\n'),
+)
 
 AREA_POLICY = ('// Author policy is not restored from an ordinary or historical area payload.\n'
                '/area/persistence_runtime_var(key)\n'
@@ -18,6 +32,16 @@ def reconstruct_list_baseline(master):
         replacement = f'/{kind}/persistence_runtime_var(key)\n{match["prefix"]}\treturn (key in list({match[2]})) || ..()'
         master = master[:match.start()] + replacement + master[match.end():]
     return master
+
+
+def project_bounded_save(baseline):
+    for anchor, addition in BOUNDED_BLOCKS:
+        # Match complete lines: the reset anchor must not match declarations.
+        pattern = re.compile(r'^' + re.escape(anchor), re.M)
+        if len(list(pattern.finditer(baseline))) != 1:
+            raise ValueError('Expected exactly one bounded-save baseline anchor')
+        baseline = pattern.sub(lambda match: match[0] + addition, baseline, count=1)
+    return baseline
 
 
 def project_reserved_policy(baseline):
@@ -56,9 +80,13 @@ def project_area_change_owner(baseline):
     return baseline.replace(anchor, anchor + '\tif (key == "area_change_owner")\n\t\treturn TRUE\n', 1)
 
 
+def project_lighting_policy(master):
+    """The two fullbright exclusions and transient area-owner guard only."""
+    return project_area_change_owner(project_fullbright_exclusions(master))
+
+
 def transform(baseline):
-    # Current master already owns reserved policy. Project only this PR's delta.
-    expected = project_area_change_owner(project_fullbright_exclusions(baseline))
+    expected = project_reserved_policy(project_bounded_save(baseline))
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -72,4 +100,10 @@ def transform(baseline):
 
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
-        raise ValueError('Only approved dispatch, fullbright-exclusion and area-owner projections may differ from pinned master')
+        raise ValueError('Only approved dispatch and reserved-policy projections may differ')
+
+
+def validate_current_master(master, candidate):
+    """Pinned master already owns bounded-save work; preserve it in full."""
+    if project_lighting_policy(master) != candidate:
+        raise ValueError("Only approved fullbright exclusions and area-owner guard may differ from pinned current master")

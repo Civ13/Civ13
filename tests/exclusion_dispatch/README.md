@@ -1,3 +1,24 @@
+## Public current-master reconciliation (2026-10-28)
+
+The active reference is immutable master `eedc9862fcb7b2b7c3617c6972965fafa650e51a`.
+It already contains #3105's bounded-save blocks. `validate_current_master` requires
+complete-file equality after only the public lighting branch's two fullbright
+exclusions and transient area-owner guard are added. Both dispatch variants receive
+the same lighting policy; only three list hooks are reconstructed. The movable
+throw guard precedes its later inherited process hook. Collector selection remains
+unchanged with its symbol undefined in the fixture.
+
+Historical #3105 list/switch and bounded-block controls retain their immutable
+inputs. Current tests preserve bounded blocks, guards, diagnostics, snow/zone keys,
+both fullbright exclusions and area ownership, plus unrelated-base evolution and
+one-sided drift rejection. No production change or native acceptance is introduced
+by this manual test reconciliation. All native holds and version gates remain.
+
+## Preserved earlier reference notes (historical)
+
+The reference statements below describe prior integration checkpoints; they do
+not replace the active reference above or establish current native acceptance.
+
 ## Pinned-master reconciliation (2026-10-26)
 
 The active reference is master `99647037c70786a3c3944fcf5ae51b570b377f08`.
@@ -29,7 +50,22 @@ reconciliation; earlier native evidence does not verify this new candidate.
 
 ## Historical master integration (2026-10-20)
 
-The active baseline is pinned to master
+## Current-master reconciliation (2026-10-24)
+
+The live source-only runner pins master
+`13a47adfc7400d95d10539dea4b2fd6cd7314e50`. Whole-file equality permits only
+the three existing bounded-save additions; current roof state, movement/throw
+policy, collector conditionals and failure diagnostics must remain exact.
+The dispatch comparison reconstructs only the three list hooks under that same
+current policy. Native execution remains held and old leases remain invalid.
+
+The historical tests below retain immutable candidate `7ca76ce0` against their
+original master pin, including all original dispatch/policy omission controls.
+They do not relabel historical evidence as current native acceptance.
+
+## Historical master integration (2026-10-20)
+
+The historical baseline is pinned to master
 `5bf351248de6050876fe5b53f91209a970cc5668`. Its three switch hooks are
 reconstructed as list dispatch before applying the same reserved policy to both
 variants. Offline tests require those reconstructed hooks to equal the historical
@@ -230,3 +266,13 @@ host address remains audit data. Offline controls reject absent, wildcard,
 nonloopback and IPv6 bind diagnostics. This corrects the earlier README statement
 that the pre-close-address assertion was unchanged; the Windows listener monitor
 and unconditional grant hold are unchanged. Native parity still awaits a rerun.
+
+## Current bounded-save integration
+
+The current source reference is immutable master
+`5bf351248de6050876fe5b53f91209a970cc5668`. Reconstruct only its three historical
+list hooks before the existing bounded-block and switch projections; preserve
+all master diagnostics exactly. Tests compare those reconstructed hooks against
+immutable `5ac2df336b717f4ca2ccc60f2697b76ab4f2e019` and reject diagnostic drift.
+The reference never comes from candidate source. Earlier baseline descriptions
+above document the historical evidence, not this current integration.

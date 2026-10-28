@@ -13,9 +13,11 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 ROOF_NATIVE_NAME = 'Verify synthetic saved-roof recovery and two defect controls'
+ROOF_HEAD_REQUEST = "contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))"
+ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || "
+                       + ROOF_HEAD_REQUEST + ')')
 ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action != 'edited' && "
-                     "needs.changes.outputs.game == 'true' && "
-                     "contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')")
+                     "needs.changes.outputs.game == 'true' && " + ROOF_SUITE_SELECTION)
 
 
 class RegressionPolicyTests(unittest.TestCase):
@@ -135,7 +137,7 @@ class RegressionPolicyTests(unittest.TestCase):
         self.assertEqual(workflow.count('        if: ' + ROOF_NATIVE_GUARD + '\n'), 1)
         clauses = ("github.event_name == 'pull_request'", "github.event.action != 'edited'",
                    "needs.changes.outputs.game == 'true'",
-                   "contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')")
+                   ROOF_SUITE_SELECTION)
         for clause in clauses:
             changed = ' && '.join(part for part in ROOF_NATIVE_GUARD.split(' && ') if part != clause)
             with self.subTest(omitted=clause), self.assertRaises(AssertionError):
@@ -144,9 +146,58 @@ class RegressionPolicyTests(unittest.TestCase):
                         ROOF_NATIVE_GUARD.replace("'pull_request'", "'workflow_dispatch'"),
                         ROOF_NATIVE_GUARD.replace("!= 'edited'", "== 'edited'"),
                         ROOF_NATIVE_GUARD.replace("game == 'true'", "game == 'false'"),
-                        ROOF_NATIVE_GUARD.replace('tests/roof_area_recovery', 'tests/other')):
+                        ROOF_NATIVE_GUARD.replace('tests/roof_area_recovery', 'tests/other'),
+                        ROOF_NATIVE_GUARD.replace("format('roof-ci:{0}', github.event.pull_request.head.sha)", "'roof-ci'"),
+                        ROOF_NATIVE_GUARD.replace('github.event.pull_request.head.sha', 'github.sha')):
             with self.subTest(changed=changed), self.assertRaises(AssertionError):
                 self.assert_explicit_suite_guards(workflow.replace(ROOF_NATIVE_GUARD, changed, 1))
+
+    def test_roof_explicit_request_is_head_bound_and_keeps_native_event_guards(self):
+        import re
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        block = next(part for part in re.split(r'(?=      - name:)', workflow)
+                     if part.startswith('      - name: ' + ROOF_NATIVE_NAME + '\n'))
+        expression = re.findall(r'^        if: (.+)$', block, re.M)[0]
+        # Evaluate only these five known Boolean operands, not arbitrary Actions expressions.
+        translated = expression
+        for text, variable in (("github.event_name == 'pull_request'", 'pr_event'),
+                               ("github.event.action != 'edited'", 'not_edited'),
+                               ("needs.changes.outputs.game == 'true'", 'game'),
+                               ("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')", 'introduced'),
+                               (ROOF_HEAD_REQUEST, 'requested')):
+            self.assertEqual(translated.count(text), 1)
+            translated = translated.replace(text, variable)
+        translated = translated.replace('&&', 'and').replace('||', 'or')
+        self.assertRegex(translated, r'^[a-z_ ()]+$')
+        head = 'a' * 40
+        requested = 'roof-ci:' + head
+        cases = [('pull_request', 'synchronize', True, False, [requested], True),
+                 ('pull_request', 'opened', True, False, [requested], True),
+                 ('pull_request', 'reopened', True, False, [requested], True),
+                 ('pull_request', 'synchronize', True, True, [], True),
+                 ('pull_request', 'synchronize', True, False, [], False),
+                 ('pull_request', 'synchronize', True, False, ['roof-ci:' + 'b' * 40], False),
+                 ('pull_request', 'synchronize', True, False, ['prefix-' + requested], False),
+                 ('pull_request', 'synchronize', True, False, [requested + '-suffix'], False),
+                 ('pull_request', 'synchronize', True, False, ['roof-ci'], False),
+                 ('pull_request', 'edited', True, False, [requested], False),
+                 ('pull_request', 'synchronize', False, False, [requested], False),
+                 ('push', 'synchronize', True, True, [requested], False),
+                 ('workflow_dispatch', 'synchronize', True, True, [requested], False),
+                 ('pull_request_target', 'synchronize', True, True, [requested], False)]
+        for event, action, game, introduced, labels, expected in cases:
+            with self.subTest(event=event, action=action, labels=labels):
+                values = dict(pr_event=event == 'pull_request', not_edited=action != 'edited',
+                              game=game, introduced=introduced,
+                              requested=requested.casefold() in [label.casefold() for label in labels])
+                self.assertEqual(eval(translated, {'__builtins__': {}}, values), expected)
+        self.assertIn('types: [ opened, synchronize, reopened, edited ]', workflow)
+        self.assertNotIn('types: [ opened, synchronize, reopened, edited, labeled ]', workflow)
+        offline = next(part for part in re.split(r'(?=      - name:)', workflow)
+                       if part.startswith('      - name: Prepare roof-area recovery fixture offline\n'))
+        self.assertIn(ROOF_HEAD_REQUEST, offline)
+        example = (ROOT / 'tests/roof_area_recovery/ci-steps.yml.example').read_text()
+        self.assertIn('  if: ' + ROOF_NATIVE_GUARD + '\n', example)
 
     def test_roof_native_exception_is_bound_to_fixture_and_limits(self):
         import re

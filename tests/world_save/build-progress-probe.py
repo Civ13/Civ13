@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 
@@ -16,9 +17,17 @@ def replace_once(source, before, after):
 
 
 def instrument(saving, functions, phase_profile=False):
-    if saving.count('\tTICK_CHECK\n') != 2:
-        raise ValueError('Expected the two production serializer tick checks')
+    bounded = '/map_storage/proc/save_work_check()\n' in saving
+    expected_ticks = 1 if bounded else 2
+    if saving.count('\tTICK_CHECK\n') != expected_ticks:
+        raise ValueError('Expected the production serializer tick checks')
     saving = saving.replace('TICK_CHECK', 'WORLD_SAVE_PROGRESS_TICK_CHECK')
+    if bounded:
+        # Preserve the bounded policy's thresholds, counters and wait delays.
+        saving, sleeps = re.subn(r'(?m)^(\s*)sleep\((world.tick_lag|0)\)$',
+                                 r'\1world_save_progress_sleep(\2)', saving)
+        if sleeps != 3:
+            raise ValueError('Expected the three bounded serializer sleep sites')
     saving = ('#ifndef WORLD_SAVE_PROGRESS_TICK_CHECK\n'
               '#define WORLD_SAVE_PROGRESS_TICK_CHECK ( world.tick_usage > TICK_LIMIT_RUNNING ? world_save_progress_stoplag() : 0 )\n'
               '#endif\n'
@@ -54,12 +63,15 @@ def instrument(saving, functions, phase_profile=False):
     saving = replace_once(saving, '\t\tvar/savefile/savefile = new("map_saves/[A].sav")\n',
                           '\t\tworld_save_progress_emit("level_start", A, 0, TRUE)\n'
                           '\t\tvar/savefile/savefile = new("map_saves/[A].sav")\n')
-    saving = replace_once(saving, '\t\t\t\tsavefile["[turf.x]"] << ref\n\t\t\t\tWORLD_SAVE_PROGRESS_TICK_CHECK\n',
-                          '\t\t\t\tsavefile["[turf.x]"] << ref\n'
-                          '\t\t\t\tprogress_completed_turfs++\n'
+    index_write = ('\t\t\t\tsavefile["/map/[A]/[y]/[x]"] << ref\n' if bounded
+                   else '\t\t\t\tsavefile["[turf.x]"] << ref\n')
+    checkpoint = ('\t\t\t\tsave_work_check()\n' if bounded
+                  else '\t\t\t\tWORLD_SAVE_PROGRESS_TICK_CHECK\n')
+    saving = replace_once(saving, index_write + checkpoint,
+                          index_write + '\t\t\t\tprogress_completed_turfs++\n'
                           '\t\t\t\tif(progress_completed_turfs % 1024 == 0)\n'
                           '\t\t\t\t\tworld_save_progress_emit("turfs", A, progress_completed_turfs)\n'
-                          '\t\t\t\tWORLD_SAVE_PROGRESS_TICK_CHECK\n')
+                          + checkpoint)
     saving = replace_once(saving, '\t\tlog_startup_progress("\tSaved z-level [A].")\n',
                           '\t\tworld_save_progress_emit("level_serialized", A, progress_completed_turfs, TRUE)\n'
                           '\t\tlog_startup_progress("\tSaved z-level [A].")\n')
@@ -67,31 +79,49 @@ def instrument(saving, functions, phase_profile=False):
                           '\tworld_save_progress_emit("completion_marker", world.maxz, world.maxx * world.maxy, TRUE)\n'
                           '\tworld_save_progress_active = FALSE\n'
                           '\tlog_startup_progress("Finished saving.")\n')
-    # Original stoplag body is unchanged. Only the two saver checks call a
-    # scoped wrapper with the same production threshold and return value.
+    # Original stoplag and bounded-work policy bodies retain their thresholds,
+    # wait delays and return values through scoped diagnostic wrappers.
     if phase_profile:
-        saving = instrument_phases(saving)
+        saving = instrument_phases(saving, bounded=bounded)
     return saving, functions
 
 
-def instrument_phases(saving):
-    saving = replace_once(saving, '\t\tfor(var/turf/turf in world)\n',
-                          '\t\tworld_save_profile_phase("traversal")\n'
-                          '\t\tfor(var/turf/turf in world)\n'
-                          '\t\t\tworld_save_profile_visited++\n')
-    saving = replace_once(saving, '\t\t\tif (turf.z == A)\n',
-                          '\t\t\tif (turf.z == A)\n\t\t\t\tworld_save_profile_selected++\n')
-    saving = replace_once(saving, '\t\t\t\tsavefile.cd = "/map/[turf.z]/[turf.y]"\n',
-                          '\t\t\t\tworld_save_profile_phase("index")\n'
-                          '\t\t\t\tsavefile.cd = "/map/[turf.z]/[turf.y]"\n')
-    tick_anchor = '\t\t\t\t\tworld_save_progress_emit("turfs", A, progress_completed_turfs)\n\t\t\t\tWORLD_SAVE_PROGRESS_TICK_CHECK\n'
+def instrument_phases(saving, bounded=False):
+    if bounded:
+        anchor = '\t\tfor(var/y = 1, y <= world.maxy, y++)\n'
+        saving = replace_once(saving, anchor,
+                              '\t\tworld_save_profile_phase("traversal")\n' + anchor)
+        anchor = '\t\t\t\tvar/turf/T = locate(x, y, A)\n'
+        saving = replace_once(saving, anchor, anchor +
+                              '\t\t\t\tworld_save_profile_visited++\n'
+                              '\t\t\t\tworld_save_profile_selected++\n')
+        anchor = '\t\t\t\tsavefile["/map/[A]/[y]/[x]"] << ref\n'
+        saving = replace_once(saving, anchor,
+                              '\t\t\t\tworld_save_profile_phase("index")\n' + anchor)
+    else:
+        saving = replace_once(saving, '\t\tfor(var/turf/turf in world)\n',
+                              '\t\tworld_save_profile_phase("traversal")\n'
+                              '\t\tfor(var/turf/turf in world)\n'
+                              '\t\t\tworld_save_profile_visited++\n')
+        saving = replace_once(saving, '\t\t\tif (turf.z == A)\n',
+                              '\t\t\tif (turf.z == A)\n\t\t\t\tworld_save_profile_selected++\n')
+        saving = replace_once(saving, '\t\t\t\tsavefile.cd = "/map/[turf.z]/[turf.y]"\n',
+                              '\t\t\t\tworld_save_profile_phase("index")\n'
+                              '\t\t\t\tsavefile.cd = "/map/[turf.z]/[turf.y]"\n')
+    checkpoint = 'save_work_check()' if bounded else 'WORLD_SAVE_PROGRESS_TICK_CHECK'
+    tick_anchor = '\t\t\t\t\tworld_save_progress_emit("turfs", A, progress_completed_turfs)\n\t\t\t\t' + checkpoint + '\n'
     saving = replace_once(saving, tick_anchor, tick_anchor +
                           '\t\t\t\tworld_save_profile_phase("traversal")\n')
     saving = replace_once(saving, '\t\tworld_save_progress_emit("level_serialized",',
                           '\t\tworld_save_profile_phase("other")\n'
                           '\t\tworld_save_progress_emit("level_serialized",')
+    build_signature = 'savefile/savefile, datum/A, var/contents = 0'
+    build_arguments = 'savefile, A, contents'
+    if bounded:
+        build_signature += ', traversal = FALSE'
+        build_arguments += ', traversal'
     for name, signature, arguments, phase, counter in (
-        ('BuildVarDirectory', 'savefile/savefile, datum/A, var/contents = 0', 'savefile, A, contents', 'object', 'objects'),
+        ('BuildVarDirectory', build_signature, build_arguments, 'object', 'objects'),
         ('encode_saved_value', 'savefile/F, value', 'F, value', 'value', 'values'),
     ):
         before = f'/map_storage/proc/{name}({signature})\n'
@@ -116,6 +146,10 @@ def profile_helper(helper):
     helper = replace_once(helper, '\t. = stoplag()\n',
                           '\tvar/previous_phase = world_save_profile_phase("yield")\n'
                           '\t. = stoplag()\n\tworld_save_profile_phase(previous_phase)\n')
+    helper = replace_once(helper, '\tworld_save_progress_sleeps++\n\tsleep(delay)\n',
+                          '\tworld_save_progress_sleeps++\n'
+                          '\tvar/previous_phase = world_save_profile_phase("yield")\n'
+                          '\tsleep(delay)\n\tworld_save_profile_phase(previous_phase)\n')
     return replace_once(helper, '\t\tvar/path = "world_save_progress.json"\n',
                         '\t\tworld_save_profile_row(row)\n\t\tvar/path = "world_save_progress.json"\n')
 

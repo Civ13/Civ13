@@ -11,9 +11,9 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import reconstruct_list_baseline, validate, project_fullbright_exclusions, project_area_change_owner
+from source_contract import reconstruct_list_baseline, validate_current_master, CURRENT_BASE, project_lighting_policy
 
-BASE = '99647037c70786a3c3944fcf5ae51b570b377f08'
+BASE = CURRENT_BASE
 PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--byond-bin', type=Path)
@@ -28,10 +28,9 @@ a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
 old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
 current = (repo / PATH).read_text()
-old = reconstruct_list_baseline(old)
-validate(old, current)
-# Compare dispatch under the SAME new policy, not historical semantic parity.
-old = project_area_change_owner(project_fullbright_exclusions(old))
+validate_current_master(old, current)
+old = reconstruct_list_baseline(project_lighting_policy(old))
+# Compare dispatch under the SAME current policy, including roof/throw guards.
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
@@ -48,8 +47,6 @@ for file, path in [
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    # Keep master's movable throw-target guard before later inherited hooks,
-    # matching the functions/processes include order in the production DME.
     hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'atom/movable', 'turf', 'mob', 'area'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
@@ -92,7 +89,7 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, baseline_policy='pinned master (reserved policy retained), three reconstructed list hooks plus explicit fullbright and area-owner exclusions; collector undefined in fixture', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, baseline_policy='pinned current master with bounded-save behavior retained; exact fullbright and area-owner projections in both variants, three reconstructed list hooks; collector undefined in fixture', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version='516.1681', native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')

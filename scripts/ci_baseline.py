@@ -39,6 +39,10 @@ SUITES = {
         'tests/persistence_year/', 'tests/world_save/', 'code/modules/persistence/', 'code/setup.dm')},
     'evidence': {'files': ('tests/test_game_evidence.py',), 'paths': (
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
+    'ecology_heatmap': {'files': ('tests/ecology_heatmap/test_source_contract.py',), 'paths': (
+        'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
+        'docs/ecology-activity-heatmap-prototype.md',
+        'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
@@ -47,6 +51,14 @@ SUITES = {
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
+                             'tests/dictionary_era/test_slang_content.py',
+                             'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
+        'tests/dictionary_era/', 'code/_helpers/dictionary.dm', 'code/_helpers/text.dm',
+        'code/setup.dm', 'code/world.dm', 'code/__defines/__game.dm', 'civ13.dme',
+        'code/game/mob/living/carbon/human/say.dm',
+        'code/game/mob/living/carbon/human/whisper.dm',
+        'config/dictionary.txt', 'tools/byond/version.json')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
@@ -424,3 +436,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+

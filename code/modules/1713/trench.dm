@@ -494,6 +494,98 @@ var/list/global/floor_cache = list()
 	var/flooded = FALSE
 	var/salty = FALSE
 	var/image/irrigation_overlay = null
+	// Entry-local metadata: emitted only for active channels, not every floor.
+	var/irrigation_save_version = 1
+
+/turf/floor/get_saved_vars()
+	. = ..()
+	if (irrigation)
+		irrigation_validate_state()
+		. |= list("irrigation_save_version", "irrigation", "flooded", "salty")
+
+/turf/floor/persistence_runtime_var(key)
+	return key == "irrigation_overlay" || ..()
+
+/turf/floor/proc/irrigation_validate_state()
+	if (irrigation_save_version != 1 || !isnum(irrigation) || irrigation != TRUE || !isnum(flooded) || (flooded != FALSE && flooded != TRUE) || !isnum(salty) || (salty != FALSE && salty != TRUE) || (salty && !flooded))
+		throw EXCEPTION("Invalid active irrigation state")
+
+// ChangeTurf can reuse the same turf. Reset before payload fields decode, without
+// propagating into partially loaded neighbors or drying native source subtypes.
+/turf/floor/proc/irrigation_prepare_load()
+	if (irrigation_overlay)
+		overlays -= irrigation_overlay
+	irrigation_overlay = null
+	irrigation = initial(irrigation)
+	flooded = initial(flooded)
+	salty = initial(salty)
+	irrigation_save_version = initial(irrigation_save_version)
+
+/turf/after_load()
+	..()
+	if (istype(src, /turf/floor))
+		var/turf/floor/F = src
+		F.irrigation_after_load()
+
+/turf/floor/proc/irrigation_after_load()
+	if (irrigation)
+		irrigation_validate_state()
+		irrigation_restore_overlay()
+
+// All same-level turf fields have decoded before after_load. Restore the saved
+// wetness/salinity exactly; a load is not a new water-source/propagation event.
+/turf/floor/proc/irrigation_restore_overlay()
+	var/junction = 0
+	for (var/checkdir in cardinal)
+		var/turf/floor/T = get_step(src, checkdir)
+		if (istype(T, /turf/floor) && T.irrigation)
+			junction |= get_dir(src, T)
+	var/suffix = flooded ? "_flooded" : ""
+	if (irrigation_overlay)
+		overlays -= irrigation_overlay
+	irrigation_overlay = image(icon = 'icons/turf/trench.dmi', icon_state = "irrigation[junction][suffix]", layer = src.layer + 0.01)
+	overlays += irrigation_overlay
+
+// Read scalar envelopes only. This does not call the graph decoder or create
+// objects/lists from references during preflight. Legacy strings stay strings.
+/proc/irrigation_saved_scalar(savefile/F, field, version)
+	var/value = F[field]
+	if (version == 2)
+		if (!islist(value))
+			throw EXCEPTION("Invalid irrigation scalar envelope")
+		var/list/scalar = value
+		if (scalar.len != 2 || scalar["kind"] != "value" || !("value" in scalar))
+			throw EXCEPTION("Invalid irrigation scalar envelope")
+		return scalar["value"]
+	return value
+
+/proc/validate_saved_irrigation(savefile/F, version)
+	var/list/fields = F.dir
+	if (!fields.Find("irrigation_save_version"))
+		// Old ordinary floors never reliably saved channel flags. Do not guess
+		// freshwater or salinity from a name, artwork or the live destination.
+		if (fields.Find("irrigation") || fields.Find("irrigation_overlay"))
+			throw EXCEPTION("Unversioned irrigation entry requires explicit review")
+		if (fields.Find("name"))
+			var/saved_name = irrigation_saved_scalar(F, "name", version)
+			if (list("irrigation channel", "flooded irrigation channel", "flooded saltwater irrigation channel").Find(saved_name))
+				throw EXCEPTION("Legacy named irrigation channel has no durable state")
+		return TRUE
+	var/schema = irrigation_saved_scalar(F, "irrigation_save_version", version)
+	if (!isnum(schema) || schema != 1)
+		throw EXCEPTION("Unsupported irrigation entry version")
+	for (var/field in list("irrigation", "flooded", "salty"))
+		if (!fields.Find(field))
+			throw EXCEPTION("Incomplete irrigation entry")
+		var/value = irrigation_saved_scalar(F, field, version)
+		if (!isnum(value) || (value != FALSE && value != TRUE))
+			throw EXCEPTION("Invalid irrigation Boolean")
+	var/active = irrigation_saved_scalar(F, "irrigation", version)
+	var/wet = irrigation_saved_scalar(F, "flooded", version)
+	var/salt = irrigation_saved_scalar(F, "salty", version)
+	if (active != TRUE || (salt && !wet))
+		throw EXCEPTION("Contradictory irrigation entry")
+	return TRUE
 
 /turf/floor/update_icon()
 	..()

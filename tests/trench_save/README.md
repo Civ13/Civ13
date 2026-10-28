@@ -32,4 +32,28 @@ types, layout and contents but reset all three progress values from 1 to 0.
 The test checks appearance metadata using actual game icons; it does not prove a
 rendered client view, player shovel interaction, movement or production saves.
 No graphics change. CI's existing game build applies; this probe is currently a
-local regression and adds no new mandatory workflow step during integration.
+local regression unless admitted by its explicit workflow guard.
+
+## Explicit current-target profile
+
+Existing invocations above retain the strict **516.1681** expectation. A different
+compiler still fails them. The irrigation CI slice explicitly adds
+`--expected-byond-version 516.1688` for the normal fixture and both existing
+filling/digging controls. This is a new selected-target receipt, not a relabeling
+of historical 1681 evidence or broad engine/save compatibility acceptance.
+
+`--compile-only` compiles this actual prepared fixture, copies its compile
+evidence, and returns before any daemon or config/name copying. Metadata records
+the expected and observed compiler, compile-only request and runtime boundary.
+Compiler/runtime deadlines remain 120/60 seconds, startup isolation and old
+controls are unchanged, and temporary generated checkout files still retire in
+`finally`. The outer hosted step has a ten-minute limit and retains only its
+synthetic metadata/logs/results, not binaries or savefiles.
+
+The fixture calls the production `generate_gameid()` before map creation and
+saving because the isolated runner bypasses `/datum/global_init/New()`. The
+first 1688 hosted run (40381402743, head 6c7fc425) compiled and started but failed
+the saved-round identity preflight before restoration. That failure is retained;
+it does not establish a channel restoration failure. Offline preparation checks
+reject omitted, literal or late identity initialization. Production saved-world
+identity validation and historical omission controls remain unchanged.
