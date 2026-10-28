@@ -86,6 +86,11 @@ subtypes and rejected crafting XP. Assembly tools lie
 on a separate clear fixture tile, rather than invalid equipment slots; tools at
 the player's feet are a supported production route. Character startup uses the
 existing handle fixture adapters; this is not connected-player acceptance.
+Research rejection controls temporarily move the required node beyond the
+fixture faction's baseline, then restore its actual tier after the action.
+An era-0 Main-tree node is already granted at baseline zero even with an
+incomplete entry. The controls check both initial denial and revocation during
+the wait; this controlled metadata change does not change gameplay gates.
 Wooden-shelf assertions additionally cover its six-plank debit, subtype fields,
 destruction, broken parts, top/frame disassembly, frame wrenching and cancellation.
 Use `--compile-only` to compile the isolated fixture without starting DreamDaemon.

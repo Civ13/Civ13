@@ -75,6 +75,19 @@
 	if (!condition)
 		recipe_ci_fail("furniture joinery", label)
 
+// Main-tree era-0 nodes are already granted by a real era-0 baseline, even
+// with an incomplete entry. Move only this isolated control beyond baseline;
+// callers restore the real node tier after the action. No gameplay gate changes.
+/proc/joinery_ci_research_control(mob/living/human/H, node_id, completed)
+	var/datum/research_node/N = get_research_node(node_id)
+	var/original_tier = N.era_tier
+	N.era_tier = map.ordinal_age + 1
+	H.civilization = "joinery_research_ci"
+	map.faction_baseline_era[H.civilization] = map.ordinal_age
+	var/list/entry = map.ensure_node_entry(H.civilization, node_id)
+	entry[RNODE_ENTRY_STATUS] = completed ? RNODE_DONE : RNODE_AVAILABLE
+	return original_tier
+
 /proc/recipe_ci_furniture_joinery()
 	map.ordinal_age = 0
 	var/datum/stack_recipe/seed = new("joinery: whittled wooden dowel set")
@@ -89,15 +102,19 @@
 		joinery_ci_expect(!C.chisel || (!QDELETED(C.chisel) && !QDELETED(C.hammer)), "assembly tools reused: [title]")
 		C.clean()
 	// Test every rejection through the production action, including post-wait changes.
-	for (var/change in list("missing pegs", "nested chisel", "broken hammer", "locked research", "cancelled", "tool moved", "peg spent", "source spent", "occupied tile", "save crossed"))
+	for (var/change in list("missing pegs", "nested chisel", "broken hammer", "locked research", "research revoked", "cancelled", "tool moved", "peg spent", "source spent", "occupied tile", "save crossed"))
 		C = new("joinery: hewn chair (wooden pegs)", 4)
+		var/datum/research_node/controlled_node = null
+		var/original_tier = null
 		if (change == "missing pegs") C.actor.l_hand = null
 		if (change == "nested chisel") C.chisel.loc = C.hammer
 		if (change == "broken hammer") C.hammer.health = 0
-		if (change == "locked research")
-			C.actor.civilization = "joinery_locked_ci"
-			map.faction_baseline_era[C.actor.civilization] = 0
-		if (change in list("cancelled", "tool moved", "peg spent", "source spent", "occupied tile", "save crossed"))
+		if (change in list("locked research", "research revoked"))
+			var/node_id = get_recipe_node_req("[C.recipe.result_type]")
+			controlled_node = get_research_node(node_id)
+			original_tier = joinery_ci_research_control(C.actor, node_id, change == "research revoked")
+			joinery_ci_expect(map.is_node_done(C.actor.civilization, node_id) == (change == "research revoked"), "research control begins in the intended state: [change]")
+		if (change in list("research revoked", "cancelled", "tool moved", "peg spent", "source spent", "occupied tile", "save crossed"))
 			spawn(1)
 				switch (change)
 					if ("cancelled") C.actor.stat = UNCONSCIOUS
@@ -106,7 +123,12 @@
 					if ("source spent") C.stock.amount = 0
 					if ("occupied tile") new /obj/structure/bed/chair/wood(locate(2,1,1))
 					if ("save crossed") persistence_admission_identity = new /datum
+					if ("research revoked")
+						var/list/entry = map.get_node_entry(C.actor.civilization, controlled_node.id)
+						entry[RNODE_ENTRY_STATUS] = RNODE_AVAILABLE
 		C.craft()
+		if (controlled_node)
+			controlled_node.era_tier = original_tier
 		joinery_ci_expect((change == "source spent" || C.stock.amount == 20) && (change == "peg spent" || C.dowels.amount == 10) && joinery_ci_outputs(C.recipe.result_type) == C.before_output + (change == "occupied tile" ? 1 : 0), "no debit on rejection: [change]")
 		joinery_ci_expect(C.actor.joinery_xp == 0, "no unpaid XP on rejection: [change]")
 		C.clean()

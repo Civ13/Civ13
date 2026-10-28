@@ -43,8 +43,11 @@ without a metal axe; this batch adds an explicit hewn-frame option for furniture
 | Fancy/modern/poker tables, coatrack | Planks only | Fine Furniture/Fine Arts | Retain; do not backdate a style merely because its joints are old |
 
 Era ordinals above come from actual research constructors, not the old numeric
-thresholds or column 12. Column 12 is a **maximum** era. Existing factions must
-complete their actual node; advancing the world era does not grant that node.
+thresholds or column 12. Column 12 is a **maximum** era. Main-tree nodes at or
+below a faction's frozen founding baseline are already granted; this normally
+includes era-0 Basic Tools and Basic Furniture. Nodes above that baseline need
+research; later world-era advancement does not raise an established faction's
+baseline. Factionless Main-tree access instead catches up to the current era.
 Map/faction overrides keep their current menus. The new rows are global only.
 
 ## Implemented routes

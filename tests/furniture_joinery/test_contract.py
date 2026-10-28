@@ -16,7 +16,7 @@ import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT/'tests/primitive_woodworking'))
-from source_adapter import block, expr
+from source_adapter import block, expr, compile_body
 
 TEXT = (ROOT/'code/game/objects/items/stacks/furniture_joinery.dm').read_text()
 SPECS = json.loads((ROOT/'config/crafting/furniture_joinery.json').read_text())
@@ -83,6 +83,34 @@ class Fixture:
 
 
 class Contracts(unittest.TestCase):
+    def test_native_research_control_accounts_for_main_tree_baseline_grants(self):
+        source=(ROOT/'code/modules/research_tree/research_faction.dm').read_text()
+        fixture=(ROOT/'tests/crafting/furniture_joinery.dm').read_text()
+        node=NS(tree='Main',era_tier=0)
+        entries={};actor=NS(civilization='joinery_research_ci')
+        state=NS(ordinal_age=0,faction_baseline_era={actor.civilization:0})
+        state.ensure_node_entry=lambda faction,node_id:entries.setdefault((faction,node_id),{1:2})
+        # The existing projection's literal-null translation names isnull isNone.
+        env=dict(get_research_node=lambda node_id:node,
+                 get_node_entry=lambda faction,node_id:state.ensure_node_entry(faction,node_id),
+                 isNone=lambda value:value is None,RNODE_ENTRY_STATUS=1,RNODE_DONE=4,
+                 RNODE_AVAILABLE=2,map=state)
+        done,_=compile_body(source,'/obj/map_metadata/proc/is_node_done(',
+                            'self,faction,node_id',env,('ordinal_age','faction_baseline_era'))
+        control,_=compile_body(fixture,'/proc/joinery_ci_research_control(',
+                               'H,node_id,completed',env)
+        # Negative control: the old fixture's baseline zero already grants it.
+        self.assertTrue(done(state,actor.civilization,'basic_furniture'))
+        for completed in (False,True):
+            node.era_tier=0
+            original=control(actor,'basic_furniture',completed)
+            self.assertEqual(original,0)
+            self.assertEqual(done(state,actor.civilization,'basic_furniture'),completed)
+            entries[(actor.civilization,'basic_furniture')][1]=2
+            self.assertFalse(done(state,actor.civilization,'basic_furniture'))
+            node.era_tier=original
+            self.assertTrue(done(state,actor.civilization,'basic_furniture'))
+
     def test_stool_route_reuses_wood_model_and_cannot_refund_its_full_inputs(self):
         route=SPECS['joinery: pegged wooden stool']
         self.assertEqual(route['result_type'],'/obj/item/weapon/stool/wood')
