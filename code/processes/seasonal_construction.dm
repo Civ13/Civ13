@@ -122,10 +122,8 @@ var/global/seasonal_construction_cursor = 1
 	if (seasonal_construction_due <= 0)
 		return
 	var/damage = seasonal_construction_design_health() * seasonal_construction_due / lifetime
-	// Normal movable destruction deletes nested contents. Hold the final debit
-	// until empty; objects on the building's turf remain in the ordinary hooks.
-	if (damage >= seasonal_construction_health() && contents.len)
-		return
+	// Occupants/items do not postpone seasonal collapse; normal destruction
+	// owns contained atoms and any support-loss consequences.
 	// Debit debt before normal qdel hooks; no sleep or direct Destroy call.
 	seasonal_construction_due = 0
 	damage_seasonal_construction(damage)

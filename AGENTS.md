@@ -25,8 +25,9 @@ Seasonal construction is an exact-design opt-in in code/processes/seasonal_const
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired
 roof/floor slabs are exempt because generic wood roofs can underlie modern floors.
 Save hooks accrue unpaid debt without destruction; roofs explicitly save debt,
-and after_load rebases excluded runtime clocks/indexes. Terminal qdel waits for
-empty contents. tests/seasonal_construction is offline; prepare.py only prepares
+and after_load rebases excluded runtime clocks/indexes. The owner retained the
+16/32/64 rates and removed contents-based terminal deferral: normal qdel/collapse
+owns occupants and items. tests/seasonal_construction is offline; prepare.py only prepares
 an uncompiled native packet. Keep native/graphical acceptance and balancing pending.
 
 

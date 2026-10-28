@@ -77,10 +77,10 @@ Zero health uses `qdel()` and normal destruction hooks, including roof area,
 lighting, neighboring roof support and building callbacks. It never invokes
 `Destroy()` directly. Objects on the building's turf stay on that turf; ordinary
 support loss can still collapse roofs and affect occupants as it does today.
-If the retiring structure itself contains atoms, the terminal damage/debt debit
-waits until it is empty, preserving nested items instead of recursively deleting
-them. Paired slabs are excluded, so their second face cannot delete hidden storage
-through this mechanic. No custom content spilling, building leveling, save import,
+Occupants and items do not defer the terminal damage/debt debit. Normal movable
+destruction can recursively delete atoms inside the retiring object; no contents
+rescue or relocation is added. Turf occupants still face existing support-loss
+and collapse consequences. Paired slabs remain excluded. No custom content spilling, building leveling, save import,
 server restart, deployment or Gaia-cycle inclusion is part of this change.
 
 ## Evidence and remaining acceptance
@@ -88,14 +88,19 @@ server restart, deployment or Gaia-cycle inclusion is part of this change.
 `tests/seasonal_construction` projects a restricted, explicit set of production
 DM bodies into Python. It checks rates, exclusions, mode toggles, forced/repeated
 transitions, catch-up, repairs, existing damage, save debt, legacy rebasing,
-contained-item deferral, registry disposal, batch tails and budget resumes.
+occupied terminal destruction dispatch, registry disposal, batch tails and budget resumes.
 Named controls demonstrate nonpersistence counting, replay and debt loss; the
-contents control demonstrates the deletion attempt. These checks do not prove
+contents control reinstates the former deferral and demonstrates the missed
+terminal destruction. The adapter records contents at qdel dispatch; it does not
+simulate or prove native child deletion, occupant injury or collapse. These checks do not prove
 native list, GC, codec, rendering, performance or connected-player behavior.
 
 `prepare.py` prepares production sources and a synthetic 8x8x1 native fixture
-without any compiler/runtime launch. It can prepare mode, replay, save-debt and
-paired-slab omission controls. The fixture uses real construction, damage, qdel,
+without any compiler/runtime launch. It can prepare mode, replay, save-debt,
+paired-slab and reinstated-contents-deferral controls. The original `probe.dm`
+remains byte-identical historical evidence of the former policy. Preparation
+replaces only its obsolete contents case using `collapse_policy_contents.dm`
+and hashes both inputs. The uncompiled adapted fixture uses real construction, damage, qdel,
 entry save/load and historical runtime-field rejection with startup disabled,
 closed/refused ports and rejected clients. Packets contain source hashes and
 depend on the retained checkout/assets. Preparation is not compilation or a native
@@ -130,3 +135,16 @@ changed clock hooks are rejected; unrelated changes remain visible to parity.
 No failing method or historical control was removed. Original failed reconciliation
 logs are retained separately from the repaired checks. See the PR for exact-head
 offline/ordinary-CI receipts; older results do not establish current acceptance.
+
+## Owner-selected collapse policy (2026-10-28)
+
+The owner retained the existing 16/32/64 counted-season lifetimes and chose normal
+collapse consequences even when occupants/items are present. The contents-only
+terminal deferral is removed; debt is still debited once before normal damage/qdel.
+Mode admission, save/load/recovery holds, after-load rebasing, paired-slab exclusion,
+era/material opt-ins and every normal destruction hook remain unchanged. Save
+callbacks still accrue debt without damage or destruction. Historical worksheets,
+native probe and receipts describe the earlier policy and are not rewritten.
+The separate preparation adapter and new offline boundary controls are not native
+acceptance. Main retains source review and future execution admission; this local
+checkpoint does not publish, deploy, restart or grant a native test allowance.
