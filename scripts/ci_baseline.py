@@ -40,6 +40,8 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    'character_return_preparation': {'files': ('tests/world_save/character_return/test_prepare.py',),
+        'paths': ('tests/world_save/character_return/',)},
     'character_return': {'files': ('tests/save_movement/test_character_return.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',
         'code/game/mob/new_player/', 'code/game/mob/living/carbon/human/human_helpers.dm')},
