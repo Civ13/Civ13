@@ -131,6 +131,70 @@ var/list/mutate_on_tick = null
 /turf/after_load()
 	..()
 	snowfall_ground_icon()
+
+// The focused serializer fixture has no irrigation simulation or overlays.
+// Keep the production scalar preflight and reset behavior for ordinary floors;
+// active channels must use the full production trench fixture instead.
+/turf/floor
+	var/irrigation = FALSE
+	var/flooded = FALSE
+	var/salty = FALSE
+	var/image/irrigation_overlay = null
+	var/irrigation_save_version = 1
+
+/turf/floor/proc/irrigation_prepare_load()
+	if (irrigation_overlay)
+		overlays -= irrigation_overlay
+	irrigation_overlay = null
+	irrigation = initial(irrigation)
+	flooded = initial(flooded)
+	salty = initial(salty)
+	irrigation_save_version = initial(irrigation_save_version)
+
+/proc/irrigation_saved_scalar(savefile/F, field, version)
+	var/value = F[field]
+	if (version == 2)
+		if (!islist(value))
+			throw EXCEPTION("Invalid irrigation scalar envelope")
+		var/list/scalar = value
+		if (scalar.len != 2 || scalar["kind"] != "value" || !("value" in scalar))
+			throw EXCEPTION("Invalid irrigation scalar envelope")
+		return scalar["value"]
+	return value
+
+/proc/fixture_validate_saved_irrigation(savefile/F, version)
+	var/list/fields = F.dir
+	if (!fields.Find("irrigation_save_version"))
+		// Old ordinary floors never reliably saved channel flags. Do not guess
+		// freshwater or salinity from a name, artwork or the live destination.
+		if (fields.Find("irrigation") || fields.Find("irrigation_overlay"))
+			throw EXCEPTION("Unversioned irrigation entry requires explicit review")
+		if (fields.Find("name"))
+			var/saved_name = irrigation_saved_scalar(F, "name", version)
+			if (list("irrigation channel", "flooded irrigation channel", "flooded saltwater irrigation channel").Find(saved_name))
+				throw EXCEPTION("Legacy named irrigation channel has no durable state")
+		return TRUE
+	var/schema = irrigation_saved_scalar(F, "irrigation_save_version", version)
+	if (!isnum(schema) || schema != 1)
+		throw EXCEPTION("Unsupported irrigation entry version")
+	for (var/field in list("irrigation", "flooded", "salty"))
+		if (!fields.Find(field))
+			throw EXCEPTION("Incomplete irrigation entry")
+		var/value = irrigation_saved_scalar(F, field, version)
+		if (!isnum(value) || (value != FALSE && value != TRUE))
+			throw EXCEPTION("Invalid irrigation Boolean")
+	var/active = irrigation_saved_scalar(F, "irrigation", version)
+	var/wet = irrigation_saved_scalar(F, "flooded", version)
+	var/salt = irrigation_saved_scalar(F, "salty", version)
+	if (active != TRUE || (salt && !wet))
+		throw EXCEPTION("Contradictory irrigation entry")
+	return TRUE
+
+/proc/validate_saved_irrigation(savefile/F, version)
+	if (F.dir.Find("irrigation_save_version"))
+		throw EXCEPTION("Irrigation channels require the production trench fixture")
+	return fixture_validate_saved_irrigation(F, version)
+
 /turf/var/tmp/lighting_reserved = FALSE
 /turf/proc/activate_reserved_lighting()
 	// Only ordinary turfs are supported by this serializer-only adapter.

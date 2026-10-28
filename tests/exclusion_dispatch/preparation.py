@@ -23,6 +23,20 @@ def git(repo, *arguments):
                                    encoding='utf-8', stderr=subprocess.PIPE, timeout=15)
 
 
+def has_extraction_history(repo, head):
+    command = ['git', 'merge-base', '--is-ancestor', MERGE_BASE, head]
+    try:
+        result = subprocess.run(command, cwd=repo, text=True, encoding='utf-8',
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15)
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError('Cannot verify extraction ancestry; Git failed or timed out') from error
+    if result.returncode == 0:
+        return True
+    if result.returncode == 1:
+        return False
+    raise ValueError(f'Cannot verify extraction ancestry; Git exited {result.returncode}: {result.stderr.strip()}')
+
+
 def identities(repo, base, head, event_path=None, event_name=None, github_actions=False):
     manual_error = ('Manual exclusion checks require exclusion_comparison_base: supply a full '
                     'immutable commit SHA distinct from the selected head in workflow inputs')
@@ -77,10 +91,7 @@ def prepare(repo, base, head, **event):
     old = committed(base, PATH)
     # A branch descended from extraction must retain its complete reviewed
     # custody projection even if it otherwise matches the lighting-only base.
-    try:
-        extraction_history = git(repo, 'merge-base', head, MERGE_BASE).strip() == MERGE_BASE
-    except subprocess.SubprocessError:
-        extraction_history = False
+    extraction_history = has_extraction_history(repo, head)
     projection = 'lighting-only'
     if extraction_history:
         feature = committed(MERGE_BASE, PATH)

@@ -4,7 +4,41 @@ This explicit, default-off path keeps one named `master` hosting checkout and
 one DMB at `D:/GitHub/Civ13/civ13.dmb`. It updates only between the completed
 save/exit and next world load. Source preparation and offline tests do not
 authorize deployment, player interruption, a native compiler or a real cycle.
-There is no recurring updater, scheduled task or automatic retry in this path.
+There is no scheduled task or automatic retry in this path.
+
+The separately started `watch-admin` mode polls only the existing authenticated
+loopback lifecycle status for a typed in-game maintenance request. It uses the
+same updater and `supervisor.lock`, not a second server owner. It is not installed
+or enabled by this source change. It requires the existing reviewed canonical
+configuration and `canonical_update_enabled: true`; keep the private configuration
+and operational state on D:. Do not run this mode until the source and native
+admission have been reviewed. If it is not running, the game expires an
+unaccepted request after five minutes and tells admins. The game issues a
+one-minute warning before making the request visible to the supervisor. An
+`R_SERVER` admin must confirm it, including the warning that gameplay during
+serialization may not be preserved. This explicit request permits connected
+clients; ordinary `update-once` retains the existing connected-client deferral.
+
+The game supplies only an operation identity bound to its current session; it
+does not supply a command, path, branch or revision. The watcher records an
+exclusive per-operation receipt before submitting the save, then rechecks the
+session and request at the save boundary. The supervisor submits the distinct
+`maintenance_save_shutdown` action; the game atomically verifies that the same
+request is still pending after its warning and reserves it before yielding. An
+expired request can never fall through to the ordinary `save_shutdown` action.
+An existing receipt prevents replay,
+including after a crash or an ambiguous response. Failures are recorded in the
+receipt and, if the original world is still reachable, a fixed failure signal
+notifies admins. An interrupted watcher requires operator inspection; it never
+automatically retries an accepted identity. A completed receipt is written only
+after the existing updater's validated restore and readiness checks succeed.
+
+On compilation failure retain `HALTED.json`, the update journal, the hashed save
+backup and the archived previous DMB/RSC. The updated checkout is not reported
+as a successful update and no automatic rollback or launch occurs. An operator
+must reconcile the journal, binary/source provenance, process ownership and
+matching save before a separately authorized recovery using the existing owner;
+do not delete the retained generation or launch a fresh world as a substitute.
 
 `canonical_update.py check --config ABSOLUTE_CONFIG` inspects metadata only:
 it does not load a token, query a process, fetch Git, compile or launch anything.

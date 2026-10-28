@@ -704,7 +704,7 @@ class EventRunnerTests(unittest.TestCase):
     def execute_runner(self, directory, control=None, *, mismatch=False, changed_helper=False, bad_event=False,
                        base_edit='\n// unrelated future base evolution\n', head_edit=None,
                        event_kind='pull_request', event_base=None, source_version='516.1681', feature_base=False,
-                       replace_target=False, drop_custody=False):
+                       replace_target=False, drop_custody=False, ancestry_result=0):
         base_sha, head_sha = 'b' * 40, 'a' * 40
         base = (self.feature_source if feature_base else self.base_source) + base_edit
         candidate = self.merged + (base_edit if head_edit is None else head_edit)
@@ -722,6 +722,7 @@ class EventRunnerTests(unittest.TestCase):
                                      'inputs': {'exclusion_comparison_base': base_sha if event_base is None else event_base}}))
         out = directory / ('receipt-' + (control or 'positive') + '.json')
         original_check_output = subprocess.check_output
+        original_run = subprocess.run
         original_read_text = Path.read_text
         def git(command, **kwargs):
             if command[:3] == ['git', 'rev-parse', '--verify']:
@@ -742,6 +743,12 @@ class EventRunnerTests(unittest.TestCase):
                         value = original_read_text(ROOT / file, encoding='utf-8')
                     return value if kwargs.get('text') else value.encode()
             return original_check_output(command, **kwargs)
+        def run(command, **kwargs):
+            if command[:3] == ['git', 'merge-base', '--is-ancestor']:
+                if isinstance(ancestry_result, Exception):
+                    raise ancestry_result
+                return subprocess.CompletedProcess(command, ancestry_result, '', 'injected Git error')
+            return original_run(command, **kwargs)
         def read(path, *args, **kwargs):
             if path == ROOT / PATH: return candidate + ('// dirty checkout\n' if mismatch else '')
             return original_read_text(path, *args, **kwargs)
@@ -752,6 +759,7 @@ class EventRunnerTests(unittest.TestCase):
                                      'GITHUB_EVENT_PATH':str(event), 'GITHUB_SHA':head_sha}), \
              patch.object(sys, 'argv', argv), patch.object(Path, 'read_text', read), \
              patch.object(subprocess, 'check_output', side_effect=git), \
+             patch.object(subprocess, 'run', side_effect=run), \
              patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
              patch.object(resources, 'binary_info', side_effect=AssertionError('Binary query attempted')):
             with self.assertRaises(SystemExit) as exited:
@@ -821,6 +829,16 @@ class EventRunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(ValueError):
                 self.execute_runner(Path(tmp), event_kind='push', bad_event=True)
+
+    def test_actual_runner_refuses_unavailable_extraction_ancestry_before_output(self):
+        failures = (128, subprocess.TimeoutExpired('git', 15), OSError('git unavailable'))
+        for failure in failures:
+            with self.subTest(failure=failure), tempfile.TemporaryDirectory() as tmp:
+                directory = Path(tmp)
+                with self.assertRaisesRegex(ValueError, 'Cannot verify extraction ancestry'):
+                    self.execute_runner(directory, ancestry_result=failure, drop_custody=True)
+                self.assertFalse((directory / 'receipt-positive.json').exists())
+                self.assertFalse((directory / 'receipt-positive.sources').exists())
 
     def test_projection_conflict_does_not_accept_overlapping_base_edit(self):
         changed = self.base_source.replace('if(key == "last_save_reference_failure") return TRUE',

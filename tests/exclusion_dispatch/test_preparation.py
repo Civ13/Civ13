@@ -43,6 +43,13 @@ class ActualPreparationTests(unittest.TestCase):
             repo = directory / 'repo'
             repo.mkdir()
             git(repo, 'init', '-q')
+            # Make the extraction commit available while keeping this history
+            # unrelated, so Git can verify non-ancestry instead of failing open.
+            common = subprocess.check_output(['git', 'rev-parse', '--git-common-dir'], cwd=ROOT, text=True).strip()
+            objects = (ROOT / Path(common) / 'objects').resolve()
+            alternates = repo / '.git/objects/info/alternates'
+            alternates.parent.mkdir(parents=True, exist_ok=True)
+            alternates.write_bytes((objects.as_posix() + '\n').encode('utf-8'))
             for path in FIXTURE:
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -101,6 +108,11 @@ class ActualPreparationTests(unittest.TestCase):
         self.assertIn(message, completed.stderr)
         self.assertFalse(output.exists())
         self.assertFalse(output.with_suffix('.sources').exists())
+
+    def test_missing_extraction_object_fails_closed_in_actual_cli(self):
+        with self.history() as (directory, repo, base, head):
+            (repo / '.git/objects/info/alternates').unlink()
+            self.rejected(directory, repo, base, head, 'Cannot verify extraction ancestry; Git exited')
 
     def test_event_base_before_and_after_lighting_additions(self):
         for after in (False, True):
