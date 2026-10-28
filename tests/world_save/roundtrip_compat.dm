@@ -1,7 +1,10 @@
 // Current loader dependencies for the ordinary roundtrip world only.
 // Keep shared stubs.dm frozen: dedicated source packets pin its original bytes.
 // There are no /obj/roof or roof-climate subtypes here. This type declaration
-// does not enable roof reconstruction; all existing topology refusals remain.
+// does not enable roof reconstruction; actual topology restoration is refused.
+// Only the roundtrip storage subtype admits null validated_zone_state before
+// inspecting operation ownership, like production. Every present state still
+// delegates to the frozen parent refusal, including an empty topology list.
 /area/caribbean/roofed
 
 // Match the production registry's ordinary (non-topology-restore) membership.
@@ -32,3 +35,7 @@ var/global/list/area_list = list()
 		overlays += weather_snow_overlay
 	else
 		weather_snow_overlay = null
+
+/map_storage/roundtrip_fixture/begin_zone_restore(datum/persistence_world_operation/operation)
+	if(isnull(validated_zone_state)) return
+	return ..()

@@ -11,6 +11,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = ROOT / 'tests/world_save'
+ZONE_OVERRIDE = '/map_storage/roundtrip_fixture/begin_zone_restore'
 
 
 def procedure(source, path):
@@ -25,6 +26,17 @@ def procedure(source, path):
     if re.search(r'^\s*#', body, re.M):
         raise ValueError('Conditional procedure requires explicit handling')
     return body
+
+
+def compatibility_blocks(source):
+    """Extract only the two explicit roundtrip-scoped blocks; reject new directives."""
+    marker = '#ifdef ROUNDTRIP_NO_TOPOLOGY_COMPAT'
+    if re.findall(r'^#.*$', source, re.M) != [marker, '#endif', marker, '#endif']:
+        raise ValueError('Roundtrip compatibility guards changed')
+    blocks = re.findall(r'^' + marker + r'\n(.*?)^#endif\n', source, re.M | re.S)
+    if len(blocks) != 2:
+        raise ValueError('Expected setup and probe compatibility blocks')
+    return blocks
 
 
 def prepare_only(output, control=None):
@@ -52,6 +64,18 @@ def prepare_only(output, control=None):
          patch('subprocess.check_output', side_effect=AssertionError('process forbidden')):
         exec(compile(block, 'roundtrip-source-generation-only', 'exec'), namespace)
     return namespace
+
+
+def require_roundtrip_topology_boundary(adapter, shared):
+    """Exact source contract, not a DM interpreter or runtime acceptance."""
+    expected = (ZONE_OVERRIDE + '(datum/persistence_world_operation/operation)\n'
+                '\tif(isnull(validated_zone_state)) return\n\treturn ..()')
+    if procedure(adapter, ZONE_OVERRIDE) != expected:
+        raise ValueError('Roundtrip null-only topology dispatch changed')
+    parent = '/map_storage/proc/begin_zone_restore'
+    if procedure(shared, parent) != (parent + '(datum/persistence_world_operation/operation)\n'
+                                    '\tthrow EXCEPTION("Topology needs the full-source fixture")'):
+        raise ValueError('Shared topology refusal changed')
 
 
 class RoundtripCompatibilityTests(unittest.TestCase):
@@ -115,9 +139,11 @@ class RoundtripCompatibilityTests(unittest.TestCase):
     def test_no_roof_gameplay_or_topology_bypass_added(self):
         adapter = (HERE / 'roundtrip_compat.dm').read_text()
         self.assertIn('\n/area/caribbean/roofed\n', adapter)
-        for forbidden in (r'^/obj/roof', r'^/area/caribbean/roofed/', r'^/map_storage',
+        for forbidden in (r'^/obj/roof', r'^/area/caribbean/roofed/',
                           r'^/world', r'^/turf/proc/snowfall_ground_check'):
             self.assertIsNone(re.search(forbidden, adapter, re.M), forbidden)
+        self.assertEqual(re.findall(r'^/map_storage[^\n]*', adapter, re.M),
+                         [ZONE_OVERRIDE + '(datum/persistence_world_operation/operation)'])
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('if(!ispath(roof_root)) return // Serializer-only fixtures can omit roofs.', loading)
         self.assertIn('if(found) throw EXCEPTION("Ambiguous current roof area identity")', loading)
@@ -125,6 +151,81 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         self.assertIn('if(islist(state) && state["schema"] == 2) throw EXCEPTION("Topology needs the full-source fixture")', stubs)
         self.assertEqual(procedure(stubs, '/map_storage/proc/restore_zone_topology'),
                          '/map_storage/proc/restore_zone_topology()\n\tthrow EXCEPTION("Topology needs the full-source fixture")')
+        require_roundtrip_topology_boundary(adapter, stubs)
+
+    def test_null_only_dispatch_preserves_production_early_return_and_parent_refusal(self):
+        adapter = (HERE / 'roundtrip_compat.dm').read_text()
+        stubs = (HERE / 'stubs.dm').read_text()
+        require_roundtrip_topology_boundary(adapter, stubs)
+        production = procedure((ROOT / 'code/modules/persistence/zone_topology.dm').read_text(),
+                               '/map_storage/proc/begin_zone_restore')
+        self.assertEqual(production.splitlines()[1], '\tif(!validated_zone_state) return')
+        self.assertLess(production.index('if(!validated_zone_state) return'), production.index('operation.current'))
+        self.assertIn('var/list/validated_zone_state', stubs)
+        self.assertEqual(procedure(stubs, '/map_storage/proc/clear_saved_zones'),
+                         '/map_storage/proc/clear_saved_zones()\n\tvalidated_zone_state = null')
+
+    def test_subtype_is_selected_before_helpers_without_changing_legacy_import_assertion(self):
+        source = (HERE / 'roundtrip.dm').read_text()
+        compatibility_blocks(source)
+        start = procedure(source.replace('#ifdef ROUNDTRIP_NO_TOPOLOGY_COMPAT\n', '').replace('#endif\n', ''), '/world/New')
+        setup = ('\t\tvar/map_storage/initial_storage = map_storage\n'
+                 '\t\tmap_storage = new /map_storage/roundtrip_fixture(initial_storage.game_id)\n'
+                 '\t\tqdel(initial_storage)\n\t\tcheck_roundtrip_topology_boundary()\n')
+        self.assertEqual(start.count(setup), 1)
+        self.assertLess(start.index(setup), start.index('check_datum_constructor()'))
+        self.assertIn('write_legacy_fixture()\n\t\t\tcheck(ticker.loadmap(), "legacy fixture import failed")', start)
+        functions = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+        self.assertIn('var/map_storage/map_storage = new("SS13")', functions)
+        loadmap = procedure(functions, '/datum/controller/gameticker/proc/loadmap')
+        self.assertIn('\t\tmap_storage.begin_zone_restore(operation)\n', loadmap)
+        self.assertLess(loadmap.index('map_storage.begin_zone_restore(operation)'), loadmap.index('map_storage.ClearMap()'))
+        pins = json.loads((HERE / 'character_return/inputs.json').read_text())['sha256']
+        self.assertEqual(len(pins), 20)
+        for path, expected_hash in pins.items():
+            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), expected_hash, path)
+        self.assertNotIn('tests/world_save/roundtrip.dm', pins)
+        self.assertNotIn('tests/world_save/roundtrip_compat.dm', pins)
+
+    def test_future_native_probe_requires_null_success_and_empty_schema_one_two_rejection(self):
+        probe = compatibility_blocks((HERE / 'roundtrip.dm').read_text())[1]
+        source = procedure(probe, '/proc/check_roundtrip_topology_boundary')
+        self.assertIn('check(isnull(probe.validated_zone_state), "roundtrip topology probe did not start empty")', source)
+        self.assertLess(source.index('probe.begin_zone_restore(null)'), source.index('for(var/list/state'))
+        self.assertIn('for(var/list/state in list(list(), list("schema" = 1), list("schema" = 2)))', source)
+        self.assertIn('probe.validated_zone_state = state', source)
+        self.assertIn('check("[topology_error]" == "Topology needs the full-source fixture", "unexpected roundtrip topology rejection")', source)
+        self.assertIn('check(rejected, "roundtrip topology state was accepted")', source)
+        self.assertIn('\n\tqdel(probe)', source)
+
+    def test_other_fixture_includers_do_not_acquire_setup_or_probe(self):
+        environment = (HERE / 'roundtrip.dme').read_text()
+        self.assertEqual(environment.count('#define ROUNDTRIP_NO_TOPOLOGY_COMPAT\n'), 1)
+        self.assertLess(environment.index('#define ROUNDTRIP_NO_TOPOLOGY_COMPAT'),
+                        environment.index('#include "roundtrip.dm"'))
+        string_path = (HERE / 'string_path_roundtrip.dme').read_text()
+        self.assertIn('#include "roundtrip.dm"', string_path)
+        self.assertNotIn('ROUNDTRIP_NO_TOPOLOGY_COMPAT', string_path)
+        source = (HERE / 'roundtrip.dm').read_text()
+        for block in compatibility_blocks(source):
+            source = source.replace('#ifdef ROUNDTRIP_NO_TOPOLOGY_COMPAT\n' + block + '#endif\n', '', 1)
+        self.assertNotIn('roundtrip_fixture', source)
+        self.assertNotIn('check_roundtrip_topology_boundary', source)
+        self.assertNotIn('check_roundtrip_topology_boundary', (HERE / 'roundtrip_compat.dm').read_text())
+        floor = (ROOT / 'tests/floor_decal_tracking/prepare.py').read_text()
+        self.assertIn("removed = {'roundtrip.dm', 'transfers.dm', 'player_reclaim_probe.dm', 'round_metadata.dm'}", floor)
+        self.assertIn('if name in removed:\n            return', floor)
+
+    def test_missing_null_guard_or_parent_delegation_is_rejected_offline(self):
+        adapter = (HERE / 'roundtrip_compat.dm').read_text()
+        stubs = (HERE / 'stubs.dm').read_text()
+        for before, after in (('\tif(isnull(validated_zone_state)) return\n', ''),
+                              ('\treturn ..()\n', '\treturn\n'),
+                              ('if(isnull(validated_zone_state))', 'if(!validated_zone_state.len)'),
+                              ('if(isnull(validated_zone_state))', 'if(!isnull(validated_zone_state))')):
+            self.assertEqual(adapter.count(before), 1)
+            with self.subTest(mutation=before), self.assertRaisesRegex(ValueError, 'null-only'):
+                require_roundtrip_topology_boundary(adapter.replace(before, after, 1), stubs)
 
     def test_shared_historical_stubs_pin_and_engine_gate_unchanged(self):
         inputs = json.loads((HERE / 'character_return/inputs.json').read_text())

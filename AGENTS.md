@@ -9,6 +9,15 @@ bootstrap archive/receipt; no automatic fallback or suite admission change.
 Legacy banner-only evidence is not archive provenance; injected/offline tests
 are not native acceptance. Preserve historical failures and saved-character pins.
 
+<!-- 2026-10-28: ordinary roundtrip null-topology boundary -->
+Only roundtrip.dme selects the roundtrip_fixture storage subtype. It returns
+before operation ownership checks only when validated_zone_state is null;
+every present state, including an empty list, delegates to the frozen refusal.
+Keep the legacy positive import assertion. The scoped setup and boundary probe
+must not leak to the string-path or floor-decal fixture. Offline source checks
+are not native acceptance: published head2830578 failed legacy import after a
+clean 516.1688 compile. Preserve that failure and all saved-character pins.
+
 <!-- 2026-10-28: ordinary roundtrip loader compatibility -->
 `roundtrip_compat.dm` supplies current loader declarations only to roundtrip.dme;
 keep shared world-save stubs byte-identical to character-return input pins.
