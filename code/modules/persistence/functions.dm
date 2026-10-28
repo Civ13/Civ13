@@ -605,6 +605,7 @@ var/global/persistence_load_recovery_required = FALSE
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
 		return 0
 	operation.finish(TRUE)
+	last_persistence_save_time = world.time
 	return 1
 
 /datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)
