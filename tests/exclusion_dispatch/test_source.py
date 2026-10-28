@@ -10,7 +10,8 @@ import unittest
 from unittest.mock import patch
 
 import resources
-from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY
+from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
+from source_contract import CURRENT_BASE, validate_current_master
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
@@ -22,13 +23,15 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'lighting_reserved', 'lighting_reserved_clearance_enabled')
 
 
-class SourceContractTests(unittest.TestCase):
+class HistoricalSourceContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
-        cls.candidate = (ROOT / PATH).read_text()
+        # Retain the original immutable comparison and its defect controls.
+        cls.candidate = subprocess.check_output(['git', 'show',
+            '7ca76ce0e23661f4dea5a44acb195bf3010a97eb:' + PATH], cwd=ROOT, text=True)
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
@@ -64,6 +67,18 @@ class SourceContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate(self.baseline, self.candidate.replace(
                 'if(key == "last_save_reference_failure") return TRUE', 'return FALSE'))
+
+    def test_bounded_projection_is_exact_and_fail_closed(self):
+        projected = project_bounded_save(self.baseline)
+        for anchor, addition in BOUNDED_BLOCKS:
+            self.assertIn(anchor + addition, projected)
+            for changed in (self.baseline.replace(anchor, '', 1), self.baseline + anchor):
+                with self.assertRaises(ValueError):
+                    project_bounded_save(changed)
+            with self.assertRaises(ValueError):
+                validate(self.baseline, self.candidate.replace(addition, '', 1))
+        with self.assertRaises(ValueError):
+            validate(self.baseline + '// unrelated baseline drift\n', self.candidate)
 
     def test_each_new_exclusion_omission_is_rejected(self):
         for key in NEW_KEYS:
@@ -149,6 +164,30 @@ class SourceContractTests(unittest.TestCase):
                                     '--lease-receipt', str(Path(directory) / 'old-grant.json')])
             self.assertIn('Native execution held', code)
             self.assertIn('old leases invalid', code)
+
+
+class CurrentMasterContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.master = subprocess.check_output(['git', 'show', CURRENT_BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.candidate = (ROOT / PATH).read_text()
+
+    def test_entire_current_master_is_preserved_except_exact_bounded_additions(self):
+        validate_current_master(self.master, self.candidate)
+
+    def test_current_guards_diagnostics_and_each_bounded_block_cannot_be_removed(self):
+        for marker in ('key == "original_target"', '"next_animal_retaliation"',
+                       '"validated_roof_absent"', 'saving_export_stack.len - 7',
+                       'if(key == "last_save_reference_failure") return TRUE'):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.candidate)
+                with self.assertRaises(ValueError):
+                    validate_current_master(self.master, self.candidate.replace(marker, '', 1))
+        for _, addition in BOUNDED_BLOCKS:
+            with self.subTest(addition=addition), self.assertRaises(ValueError):
+                validate_current_master(self.master, self.candidate.replace(addition, '', 1))
+        with self.assertRaises(ValueError):
+            validate_current_master(self.master, self.candidate + '// unrelated drift\n')
 
 
 if __name__ == '__main__':

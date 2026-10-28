@@ -64,7 +64,7 @@ var/checks = 0
 			if(case_name == "grid") F["/map/1/1/1"] << null
 			if(case_name == "reference" || case_name == "area")
 				var/ref = F["/map/1/1/1"]
-				var/list/content = params2list(F["[map_storage.entry_path(F, ref)]/content"])
+				var/list/content = map_storage.saved_content_refs(F["[map_storage.entry_path(F, ref)]/content"], F["/format_version"])
 				check(content.len == 1, "writer item missing from mutation fixture")
 				var/path = map_storage.entry_path(F, text2num(content[1]))
 				if(case_name == "reference") F["[path]/destination"] << list("kind" = "turf", "x" = 1, "y" = 1, "z" = 4)

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "source_repository": "https://github.com/escortage/Humanity",
+  "source_revision": "33ae051274a4753c7769063577ad30a233c3a74d",
+  "art_origin_revision": "6b5590281ef6dbd7f2c4b3efa5452afedd0194c7",
+  "baseline_repository": "https://github.com/Civ13/Civ13",
+  "baseline_revision": "067478b82c7ad9f1b83759a221e6f22080ba865a",
+  "audited_civ14_revision": "459f0b9e4fa8efea11da21dbbeb500d6ac500f64",
+  "license": "CC0-1.0",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "artist_credit": "escortag (Discord: escortag); GitHub: escortage",
+  "target": "icons/farming/humanity_wild_herbs.dmi",
+  "states": [
+    "yarrow",
+    "milk_thistle",
+    "elderflower",
+    "comfrey"
+  ],
+  "size": [
+    32,
+    32
+  ],
+  "directions": 1,
+  "frames": 1,
+  "timing": "static; no upstream delays",
+  "modifications": "Four original PNGs packed left-to-right into DMI 4.0. State names, dimensions, RGBA bytes and transparency unchanged. No scaling, redraw, recoloring, animation or gameplay integration.",
+  "files": {
+    "yarrow.png": {
+      "upstream_path": "Resources/Textures/Humanity/Flora/wild_plants.rsi/yarrow.png",
+      "sha256": "07434fff720722915d59eb816e68408e58c07d4a71ffa1a1628340763c22d3fa",
+      "git_blob": "017cbffd05a9a586b1da564c69189dc126bceb0c"
+    },
+    "milk_thistle.png": {
+      "upstream_path": "Resources/Textures/Humanity/Flora/wild_plants.rsi/milk_thistle.png",
+      "sha256": "321826e1d08d82e4bb1cbf7d011bd3e06772eaa48484572eceafef0a35361070",
+      "git_blob": "592f9e84bdba0560a1b48a9186c76a70c2cf8e9e"
+    },
+    "elderflower.png": {
+      "upstream_path": "Resources/Textures/Humanity/Flora/wild_plants.rsi/elderflower.png",
+      "sha256": "64969cc972952255ca261213be27ef5c94381ad16a51738637df971f45e386d9",
+      "git_blob": "a432238621a33f3e50bff24de20aee8a5760ed08"
+    },
+    "comfrey.png": {
+      "upstream_path": "Resources/Textures/Humanity/Flora/wild_plants.rsi/comfrey.png",
+      "sha256": "35f077ea26bb8e22259d3204742af7c07328667938ce56f68f2ae9677847a3c1",
+      "git_blob": "439f1f0d418be7425e38e0820b3446355dc69be7"
+    },
+    "meta.json": {
+      "upstream_path": "Resources/Textures/Humanity/Flora/wild_plants.rsi/meta.json",
+      "sha256": "a7200ecaf4163792ffb565135954f0ed88ee45066c95b20d4b79ab1a1ca4bf47",
+      "git_blob": "a42f05d58959deeb7b1b5265959d1d0249aa5d2b"
+    },
+    "meta.original.json": {
+      "upstream_path": "Resources/Textures/Humanity/Flora/wild_plants.rsi/meta.json",
+      "revision": "6b5590281ef6dbd7f2c4b3efa5452afedd0194c7",
+      "sha256": "0ad14d841edf32348172ad204cec88e2344a39f68ee979411060f605bca0c2b8",
+      "git_blob": "86eba8997696eb1a5d822a173de858174d7b0217"
+    }
+  }
+}

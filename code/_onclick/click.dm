@@ -467,7 +467,14 @@
 	visible_message("<span class = 'red'><b>[src]</b> crawls with difficulty!</span>")
 	var/nloc = loc
 	if (nloc == oloc)
-		Move(F)
+		if (ishuman(src))
+			var/mob/living/human/subtile_human = src
+			if (subtile_human.human_subtile_offset_owned && (step_x || step_y))
+				subtile_human.human_subtile_posture_move(F)
+			else
+				Move(F)
+		else
+			Move(F)
 	scrambling = FALSE
 
 /mob/proc/proning(var/turf/floor/F)
@@ -493,7 +500,14 @@
 	sleep(get_prone_delay())
 	var/nloc = loc
 	if (nloc == oloc)
-		Move(F)
+		if (ishuman(src))
+			var/mob/living/human/subtile_human = src
+			if (subtile_human.human_subtile_offset_owned && (step_x || step_y))
+				subtile_human.human_subtile_posture_move(F)
+			else
+				Move(F)
+		else
+			Move(F)
 	scrambling = FALSE
 
 /atom/proc/middle_click_intent_check(var/mob/M)
