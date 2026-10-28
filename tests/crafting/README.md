@@ -97,6 +97,12 @@ Use `--compile-only` to compile the isolated fixture without starting DreamDaemo
 That option explicitly reports runtime checks as not run. It cannot certify
 recipe registration or any native assertion. See `docs/furniture-joinery-audit.md`.
 
+`cloth_bedroll.dm` additionally uses real four-unit cloth/leather construction,
+three fold/unfold cycles per type, refusal to fold used bedding, and ordinary
+backpack insertion/removal. Hammering either textile bedroll must preserve the
+bedroll and produce no wood. See `docs/cloth-bedroll-audit.md` for the inherited
+generic-structure refund finding and the historical/gameplay distinction.
+
 ## Limits
 
 Green CI means covered schema/registration contracts and the generic crafting

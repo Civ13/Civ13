@@ -2,9 +2,17 @@
 
 Earlier published checkpoint: #3383 at `e5ca39f6471141073a1396c7f5244c7e2a01044a`,
 stacked on #3382. Its explicitly requested hosted compile passed with BYOND
-516.1688, zero errors/warnings. The workflow remains informational because its
+516.1688, zero errors/warnings. That earlier workflow was informational because its
 dependency branch is outside ordinary master-target CI admission. No native
 crafting or connected-game acceptance is claimed.
+
+Later closeout: #3383 merged as `8e16cf45f325c68279f85c3193f0ff639139f020`.
+Its ordinary PR CI at `9a031728d` ran the native crafting positive and negative
+controls successfully, including the furniture construction/refund assertions.
+Post-merge CI at `8e16cf45f` passed actual BYOND 516.1688 compilation and 443
+offline executions across 17 suites; it did not rerun the introduced native suite.
+Connected gameplay and real saved-world acceptance remain unverified. The next
+portable-bedding slice is separately scoped in `cloth-bedroll-audit.md`.
 
 The stool checkpoint was isolated on `codex/furniture-next-stool` and is now
 part of #3383; shelving was verified separately on `codex/furniture-wooden-shelf`. It adds one
@@ -55,8 +63,8 @@ same abstract dowel set. Costs/time are conservative gameplay assumptions, not
 historical measurements. Successful hammer dismantling uses the stool's existing
 `material.place_sheet` and yields one log. Thus the cycle cannot repay its two
 logs plus consumed pegs. The existing one-unit padding handler remains the way
-to upholster it; no duplicate padded-stool recipe is added. No native padding or
-refund execution has yet been claimed.
+to upholster it; no duplicate padded-stool recipe is added. Native padding remains
+unverified; the later `9a031728d` fixture exercised construction and one-log refund.
 
 The existing sprite depicts the game's ordinary wooden stool. This is an
 all-wood gameplay form, not a replica of a museum stool with a reed seat.
@@ -105,8 +113,9 @@ Offline regressions execute the production `table_destroy`, `break_to_parts`
 and wooden-frame parent wrench bodies with source-derived defaults. They
 exercise all recovery branches, interruptions, old metal-default failure
 controls, material budgets, research metadata and real DMI state names.
-The isolated DM fixture also includes paid construction and actual lifecycle
-assertions; compilation does not mean those native assertions ran.
+The isolated DM fixture includes paid construction and actual lifecycle
+assertions. Those assertions ran at `9a031728d`; compilation alone does not
+establish execution of later changes.
 
 Further audit still needs anvil, cooking, chemistry, tool/workbench, attackby
 and processor inventories plus the non-furniture material categories. The
@@ -135,4 +144,5 @@ the full original furniture input. Parent table/frame procedures remain unchange
 Offline regressions execute those production recovery bodies and the wooden-frame
 resurfacing body, cover interruptions, all fourteen catalog rows and both recovery
 cycles. Native assertions for destruction, deconstruction, disassembly and frame
-wrenching are included in the compile-only fixture; they have not run in a world.
+wrenching ran in #3383's `9a031728d` isolated fixture. Later changes still require
+their own exact-head report.

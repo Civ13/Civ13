@@ -636,6 +636,7 @@ RECIPE: /material/cloth/,white carpet,/obj/covers/carpet/whitecarpet,1,20,0,1,ca
 //*****************| CLOTH FURNITURE |***************************
 
 RECIPE: /material/cloth/,cloth curtain,/obj/structure/curtain,1,80,1,1,furniture,0,0,0,8,null
+RECIPE: /material/cloth/,cloth bedroll,/obj/item/weapon/bedroll/cloth,4,100,0,1,furniture,0,0,0,8,null
 RECIPE: /material/cloth/,foldable canopy,/obj/item/weapon/tent,4,75,0,1,furniture,0,0,19,8,null
 RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,furniture,0,0,93,8,null
 RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,furniture,0,0,93,8,null

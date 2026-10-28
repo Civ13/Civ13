@@ -11,6 +11,12 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-10-28: portable cloth bedding -->
+Portable bedding variants use static rolled/unrolled typepaths; folding must not
+convert cloth into leather. Bedrolls refuse the generic wooden-structure hammer
+refund. Keep legacy leather recipes and starting equipment unchanged. The bounded
+native cloth-bedding fixture checks payment, identity, the use guard and storage.
+
 <!-- 2026-10-28: explicit furniture joinery alternatives -->
 Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
 all existing recipes. Peg stock is paid only after retained equipment, secondary

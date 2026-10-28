@@ -19,7 +19,7 @@ def inventory(root=ROOT):
             categories[fields[7]] += 1
             catalogs[path.name] += 1
             output = fields[2]
-            if fields[7] == 'furniture' or output.startswith(('/obj/structure/bed', '/obj/structure/table', '/obj/structure/bookcase', '/obj/structure/closet', '/obj/structure/filingcabinet', '/obj/item/weapon/stool', '/obj/item/weapon/barstool')):
+            if fields[7] == 'furniture' or output.startswith(('/obj/structure/bed', '/obj/structure/table', '/obj/structure/bookcase', '/obj/structure/closet', '/obj/structure/filingcabinet', '/obj/item/weapon/stool', '/obj/item/weapon/barstool', '/obj/item/weapon/bedroll')):
                 furniture.append(dict(file=path.relative_to(root).as_posix(), line=line, row=raw,
                                       material=fields[0], name=fields[1], output=output,
                                       category=fields[7], cost=fields[3], maximum_era=fields[11]))
@@ -30,5 +30,13 @@ def inventory(root=ROOT):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--summary', action='store_true', help='Write compact counts and preserve existing hand-reviewed metadata')
     args = parser.parse_args()
-    args.output.write_text(json.dumps(inventory(), indent=2) + '\n')
+    data = inventory()
+    if args.summary:
+        previous = json.loads(args.output.read_text()) if args.output.exists() else {}
+        previous.pop('furniture', None)
+        previous.update({key: data[key] for key in ('scope', 'catalogs', 'categories')})
+        previous['current_furniture_candidates'] = len(data['furniture'])
+        data = previous
+    args.output.write_text(json.dumps(data, indent=2) + '\n')
