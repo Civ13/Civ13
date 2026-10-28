@@ -75,6 +75,26 @@ class CheckoutRefsTests(unittest.TestCase):
             verdict = json.loads((Path(directory) / '.ci/aggregate/selection-failed.json').read_text())
             self.assertEqual(verdict, {'status': 'failed', 'reason': 'selection job did not succeed'})
 
+    def test_failed_baseline_step_writes_verdict_and_fails(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        block = workflow.split('      - name: Record failed baseline verdict\n', 1)[1].split('\n      - ', 1)[0]
+        self.assertIn("if: always() && needs.changes.result == 'success' && needs.baseline.result != 'success'", block)
+        script = '\n'.join(line[10:] for line in block.split('        run: |\n', 1)[1].splitlines())
+        bash = r'C:\Program Files\Git\bin\bash.exe' if os.name == 'nt' else shutil.which('bash')
+        self.assertTrue(bash and Path(bash).is_file(), 'Git Bash or bash is required')
+        with tempfile.TemporaryDirectory(prefix='ci-baseline-failed-') as directory:
+            env = dict(os.environ, BASELINE_RESULT='cancelled')
+            result = subprocess.run([bash, '-c', script], cwd=directory, env=env, capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            import json
+            verdict = json.loads((Path(directory) / '.ci/aggregate/baseline-failed.json').read_text())
+            self.assertEqual(verdict, {'status': 'failed', 'reason': 'baseline job did not succeed', 'result': 'cancelled'})
+            env['BASELINE_RESULT'] = 'unexpected"value'
+            result = subprocess.run([bash, '-c', script], cwd=directory, env=env, capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            verdict = json.loads((Path(directory) / '.ci/aggregate/baseline-failed.json').read_text())
+            self.assertEqual(verdict['result'], 'unknown')
+
     def test_workflow_preserves_failed_verdict_and_guarded_downloads(self):
         selection = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
@@ -93,7 +113,12 @@ class CheckoutRefsTests(unittest.TestCase):
         self.assertIn("if: always() && needs.changes.result == 'success'", build)
         self.assertIn('test "$SELECTION_RESULT" = success', build)
         self.assertNotIn('if: always()\n', build)
-        for name in ('baseline', 'evidence-checker', 'build'):
+        baseline = re.split(r'\n  [\w-]+:\n', workflow.split('\n  baseline:\n', 1)[1], 1)[0]
+        self.assertIn('fetch-depth: 1', baseline)
+        self.assertIn('scripts/ci_checkout_refs.py', baseline)
+        self.assertIn("if: always() && steps.baseline.outcome != 'skipped' && steps.baseline.outcome != ''", baseline)
+        self.assertIn('Baseline execution did not complete', baseline)
+        for name in ('evidence-checker', 'build'):
             block = re.split(r'\n  [\w-]+:\n', workflow.split('\n  ' + name + ':\n', 1)[1], 1)[0]
             self.assertIn('fetch-depth: 0', block)
 
