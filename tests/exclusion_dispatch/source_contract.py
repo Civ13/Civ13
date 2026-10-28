@@ -122,17 +122,29 @@ def event_identity(repo, environ=os.environ):
         if kind == 'pull_request':
             pr = event['pull_request']
             event_head, base = pr['head']['sha'], pr['base']['sha']
-        elif kind in ('push', 'workflow_dispatch'):
+        elif kind == 'push':
             event_head = environ['GITHUB_SHA']
-            base = event_head
+            if event.get('after') != event_head:
+                raise ValueError('Push event after SHA does not match checkout')
+            base = event['before']
+        elif kind == 'workflow_dispatch':
+            event_head = environ['GITHUB_SHA']
+            inputs = event.get('inputs')
+            base = inputs.get('exclusion_comparison_base') if isinstance(inputs, dict) else None
+            if not isinstance(base, str) or not re.fullmatch(r'[0-9a-f]{40}', base):
+                raise ValueError('Manual exclusion checks require exclusion_comparison_base as a full commit SHA')
         else:
             raise ValueError('Unsupported source identity event')
         if not all(isinstance(x, str) and re.fullmatch(r'[0-9a-f]{40}', x)
                    for x in (head, event_head, base)) or head != event_head:
             raise ValueError('Source event head does not match checkout')
+        if base == head or base == '0' * 40:
+            raise ValueError('Source event requires a distinct nonzero comparison base')
         merge_base = subprocess.check_output(['git', 'merge-base', head, base], cwd=repo, text=True).strip()
         if not re.fullmatch(r'[0-9a-f]{40}', merge_base):
             raise ValueError('Source event commits have no validated merge base')
+        if kind in ('push', 'workflow_dispatch') and merge_base != base:
+            raise ValueError('Source event comparison base must be an ancestor of head')
         return {'head': head, 'base': base, 'merge_base': merge_base}
     except (KeyError, TypeError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
         raise ValueError('Source event identity unavailable') from error
@@ -149,3 +161,21 @@ def replay_reviewed_merge(base, reviewed_base, reviewed_result):
         if result.returncode != 0:
             raise ValueError('Reviewed source projection conflicts with the event base')
         return result.stdout
+
+
+def resolve_event_projection(repo, identity, feature, candidate, master, reviewed):
+    """Select an exact master- or feature-ancestry projection, rejecting drift."""
+    base = subprocess.check_output(['git', 'show', identity['base'] + ':code/modules/persistence/functions.dm'], cwd=repo, text=True)
+    try:
+        projected = replay_reviewed_merge(base, master, reviewed)
+    except ValueError:
+        projected = None
+    if candidate == projected:
+        return projected, 'master-base'
+    ancestor = subprocess.check_output(['git', 'merge-base', identity['base'], MERGE_BASE], cwd=repo, text=True).strip()
+    if ancestor != MERGE_BASE:
+        raise ValueError('Event base is not descended from the reviewed feature')
+    projected = replay_reviewed_merge(base, feature, reviewed)
+    if candidate != projected:
+        raise ValueError('Source does not match a reviewed projection of the event base')
+    return projected, 'feature-base'

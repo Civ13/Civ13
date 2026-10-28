@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
+      exclusion_comparison_base:
+        description: 'Full immutable base commit SHA, distinct from the selected head; required when running exclusion checks'
+        type: string
+        required: false
+        default: ''
       extensive_regressions:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
@@ -1020,12 +1025,12 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/exclusion_dispatch/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/exclusion-native"
+          python3 scripts/exclusion_ci_1688.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/exclusion-native"
       - name: Retain Linux exclusion dispatch evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}
+          name: exclusion-native-1688-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
             ${{ runner.temp }}/exclusion-native/
             !${{ runner.temp }}/exclusion-native/**/*.dmb

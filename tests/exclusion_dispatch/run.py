@@ -12,7 +12,7 @@ import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
 from source_contract import (reconstruct_list_baseline, validate_merged_source, project_merged_source, event_identity,
-                             replay_reviewed_merge, MERGE_BASE, MERGE_MASTER)
+                             replay_reviewed_merge, resolve_event_projection, MERGE_BASE, MERGE_MASTER)
 
 BASE = MERGE_BASE
 HELPER_BASE = MERGE_MASTER
@@ -23,8 +23,10 @@ p.add_argument('--output', type=Path, required=True)
 p.add_argument('--source-only', action='store_true')
 p.add_argument('--expected-inputs', type=Path)
 p.add_argument('--lease-receipt', type=Path)
-p.add_argument('--negative-control', choices=['omit', 'parent', 'eager'])
+p.add_argument('--negative-control', choices=['omit', 'parent', 'eager', 'target-omit'])
 p.add_argument('--benchmark', action='store_true')
+p.add_argument('--source-version', choices=['516.1681', '516.1688'], default='516.1681',
+               help='Record the intended source-only CI version; the historical default is unchanged')
 p.add_argument('--calls', type=int, default=10000, choices=[10000, 20000, 40000])
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
@@ -33,12 +35,13 @@ current = (repo / PATH).read_text()
 reviewed = project_merged_source(old)
 validate_merged_source(old, reviewed)
 identity = event_identity(repo)
+projection = 'historical-local'
 if identity:
     head_source = subprocess.check_output(['git', 'show', identity['head'] + ':' + PATH], cwd=repo, text=True)
-    event_base = subprocess.check_output(['git', 'show', identity['base'] + ':' + PATH], cwd=repo, text=True)
     reviewed_base = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=repo, text=True)
-    if current != head_source or current != replay_reviewed_merge(event_base, reviewed_base, reviewed):
-        raise ValueError('Source does not match the exact event head and reviewed base projection')
+    if current != head_source:
+        raise ValueError('Source does not match the exact event head')
+    _, projection = resolve_event_projection(repo, identity, old, current, reviewed_base, reviewed)
     HELPER_BASE = identity['base']
 else:
     validate_merged_source(old, current)
@@ -56,6 +59,10 @@ for file, path in [
 ]:
     helper = (repo / file).read_text()
     pinned = subprocess.check_output(['git', 'show', HELPER_BASE + ':' + file], cwd=repo, text=True)
+    if identity and projection == 'feature-base':
+        feature_helper = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + file], cwd=repo, text=True)
+        master_helper = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + file], cwd=repo, text=True)
+        pinned = replay_reviewed_merge(pinned, feature_helper, master_helper)
     if helper != pinned:
         raise ValueError(f'Inherited helper differs from the event base: {file}')
     if identity:
@@ -65,7 +72,10 @@ for file, path in [
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob', 'area'])
+    # Keep the production movable definition before the later corpse-decay
+    # declaration, matching civ13.dme's include ordering exactly.
+    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)')
+                      for kind in ['atom', 'atom/movable', 'turf', 'mob', 'area'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
@@ -77,6 +87,10 @@ for variant, text in [('baseline', old), ('candidate', current)]:
         elif a.negative_control == 'eager':
             if '\tswitch(key)' not in hooks: raise ValueError('Eager control anchor missing')
             hooks = hooks.replace('\tswitch(key)', '\t..()\n\tswitch(key)')
+        elif a.negative_control == 'target-omit':
+            anchor = 'return key == "original_target" || ..()'
+            if hooks.count(anchor) != 1: raise ValueError('Original-target control anchor changed')
+            hooks = hooks.replace(anchor, 'return ..()', 1)
     for traced in [False, True]:
         suffix = variant + ('_traced' if traced else '_runtime')
         adapted_root = root
@@ -110,9 +124,9 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, event_identity=identity, baseline_policy='reviewed extraction integration projected onto the verified event base; three list hooks reconstructed from the validated merged source', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, event_identity=identity, projection=projection, baseline_policy='reviewed extraction integration projected onto the verified event base; three list hooks reconstructed from the validated merged source', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
-        commands=commands, required_version='516.1681', native_execution=False,
+        commands=commands, required_version=a.source_version, native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')
     sys.exit(0)
 raise SystemExit('Native execution held: fresh maintainer approval and exact-head review required; old leases invalid')

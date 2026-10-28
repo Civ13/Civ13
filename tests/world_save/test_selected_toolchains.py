@@ -114,7 +114,7 @@ class SelectedToolchains(unittest.TestCase):
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
         # Whole-file pin covers both branches' combined workflow, including receipt paths.
         self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
-                         '071e44c2c4de0fdf5f1240222f32f260df5c2183daf8c0ed20488290c9dc2287')
+                         '98526839e1e64921c98f4ede8fcf117683c02ec101981d0cdb39f967b7659a2b')
         master = self.master_workflow
         marker = '      - name: Verify protected sleep transfers and bounded save compatibility\n'
         current_guard = workflow.split(marker, 1)[1].split('\n', 1)[0]

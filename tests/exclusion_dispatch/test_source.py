@@ -6,16 +6,19 @@ import os
 from pathlib import Path
 import re
 import runpy
+import shutil
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import resources
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
 from source_contract import (CURRENT_BASE, MERGE_BASE, MERGE_MASTER, validate_current_master,
-                             validate_merged_source, project_merged_source, event_identity, replay_reviewed_merge)
+                             validate_merged_source, project_merged_source, event_identity, replay_reviewed_merge,
+                             resolve_event_projection)
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = 'a8d3950f08aaa55db59ec5f20777a475b2db95bb'
@@ -139,6 +142,11 @@ class HistoricalSourceContractTests(unittest.TestCase):
             generated = output.with_suffix('.sources')
             production = (generated / 'production.dm').read_text()
             probe = (generated / 'probe.dm').read_text()
+            self.assertIn('"original_target"', probe)
+            self.assertIn('candidate_runtime("original_target"),TRUE', probe)
+            self.assertLess(production.index('key == "original_target"'), production.index('key == "corpse_decay_record"'))
+            self.assertLess((ROOT / 'civ13.dme').read_text().index('persistence\\functions.dm'),
+                            (ROOT / 'civ13.dme').read_text().index('processes\\human_corpse_decay.dm'))
             for key in (*NEW_KEYS, 'weak_reference'):
                 self.assertIn(f'"{key}"', probe)
                 for variant in ('baseline', 'candidate'):
@@ -186,11 +194,10 @@ class ReviewedCurrentSource(unittest.TestCase):
         if cls.identity:
             head = subprocess.check_output(['git', 'show', cls.identity['head'] + ':' + PATH], cwd=ROOT, text=True)
             if head != cls.current: raise ValueError('Checkout differs from source event head')
-            base = subprocess.check_output(['git', 'show', cls.identity['base'] + ':' + PATH], cwd=ROOT, text=True)
             ancestor = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
             snapshot = project_merged_source(cls.feature)
             validate_merged_source(cls.feature, snapshot)
-            cls.expected = replay_reviewed_merge(base, ancestor, snapshot)
+            cls.expected, _ = resolve_event_projection(ROOT, cls.identity, cls.feature, cls.current, ancestor, snapshot)
         else:
             cls.expected = project_merged_source(cls.feature)
 
@@ -292,30 +299,45 @@ class EventRunnerTests(unittest.TestCase):
     def setUpClass(cls):
         cls.base_source = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
         feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.feature_source = feature
         cls.merged = project_merged_source(feature)
         cls.helpers = {p: (ROOT / p).read_text() for p in (
             'code/processes/human_corpse_decay.dm', 'code/processes/abandoned_items.dm',
             'code/modules/1713/active_training.dm')}
+        cls.feature_helpers = {p: subprocess.check_output(['git', 'show', MERGE_BASE + ':' + p], cwd=ROOT, text=True)
+                               for p in cls.helpers}
 
     def execute_runner(self, directory, control=None, *, mismatch=False, changed_helper=False, bad_event=False,
-                       base_edit='\n// unrelated future base evolution\n', head_edit=None):
+                       base_edit='\n// unrelated future base evolution\n', head_edit=None,
+                       event_kind='pull_request', event_base=None, source_version='516.1681', feature_base=False,
+                       replace_target=False):
         base_sha, head_sha = 'b' * 40, 'a' * 40
-        base = self.base_source + base_edit
+        base = (self.feature_source if feature_base else self.base_source) + base_edit
         candidate = self.merged + (base_edit if head_edit is None else head_edit)
+        if replace_target:
+            anchor = 'return key == "original_target" || ..()'
+            assert base.count(anchor) == candidate.count(anchor) == 1
+            base = base.replace(anchor, 'return ..()', 1)
+            candidate = candidate.replace(anchor, 'return ..()', 1)
         event = directory / 'event.json'
-        event.write_text(json.dumps({'pull_request': {'base': {'sha': base_sha}, 'head': {'sha': 'c'*40 if bad_event else head_sha}}}))
+        event.write_text(json.dumps({'pull_request': {'base': {'sha': base_sha}, 'head': {'sha': 'c'*40 if bad_event else head_sha}},
+                                     'before': base_sha if event_base is None else event_base,
+                                     'after': 'c'*40 if bad_event else head_sha,
+                                     'inputs': {'exclusion_comparison_base': base_sha if event_base is None else event_base}}))
         out = directory / ('receipt-' + (control or 'positive') + '.json')
         original_check_output = subprocess.check_output
         original_read_text = Path.read_text
         def git(command, **kwargs):
             if command[:3] == ['git', 'rev-parse', 'HEAD']: return head_sha + '\n'
-            if command[:2] == ['git', 'merge-base']: return MERGE_MASTER + '\n'
+            if command[:2] == ['git', 'merge-base']:
+                if command[-1] == MERGE_BASE: return (MERGE_BASE if feature_base else MERGE_MASTER) + '\n'
+                return (MERGE_MASTER if event_kind == 'pull_request' else base_sha) + '\n'
             if command[:2] == ['git', 'show']:
                 ref, file = command[2].split(':', 1)
                 if ref in (base_sha, head_sha):
                     if file == PATH: value = base if ref == base_sha else candidate
                     else:
-                        value = self.helpers[file]
+                        value = self.feature_helpers[file] if feature_base and ref == base_sha else self.helpers[file]
                         if changed_helper and ref == head_sha: value += '\n// changed helper\n'
                     return value if kwargs.get('text') else value.encode()
             return original_check_output(command, **kwargs)
@@ -323,8 +345,10 @@ class EventRunnerTests(unittest.TestCase):
             if path == ROOT / PATH: return candidate + ('// dirty checkout\n' if mismatch else '')
             return original_read_text(path, *args, **kwargs)
         argv = ['run.py', '--source-only', '--output', str(out)]
+        if source_version != '516.1681': argv += ['--source-version', source_version]
         if control: argv += ['--negative-control', control]
-        with patch.dict(os.environ, {'GITHUB_ACTIONS':'true', 'GITHUB_EVENT_NAME':'pull_request', 'GITHUB_EVENT_PATH':str(event)}), \
+        with patch.dict(os.environ, {'GITHUB_ACTIONS':'true', 'GITHUB_EVENT_NAME':event_kind,
+                                     'GITHUB_EVENT_PATH':str(event), 'GITHUB_SHA':head_sha}), \
              patch.object(sys, 'argv', argv), patch.object(Path, 'read_text', read), \
              patch.object(subprocess, 'check_output', side_effect=git), \
              patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
@@ -336,6 +360,8 @@ class EventRunnerTests(unittest.TestCase):
         self.assertEqual(receipt['event_identity']['head'], head_sha)
         self.assertEqual(receipt['event_identity']['base'], base_sha)
         self.assertFalse(receipt['native_execution'])
+        self.assertEqual(receipt['required_version'], source_version)
+        self.assertEqual(receipt['projection'], 'feature-base' if feature_base else 'master-base')
         return out.with_suffix('.sources').joinpath('production.dm').read_text()
 
     def test_actual_runner_accepts_evolved_base_and_mutates_all_controls(self):
@@ -350,16 +376,223 @@ class EventRunnerTests(unittest.TestCase):
                 if control == 'parent': self.assertIn('return FALSE', atom)
                 if control == 'eager': self.assertIn('\t..()\n\tswitch(key)', atom)
 
+    def test_actual_runner_projects_movable_and_target_omission_without_touching_corpse_hook(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            normal = self.execute_runner(directory)
+            omitted = self.execute_runner(directory, 'target-omit', source_version='516.1688')
+            pattern = r'^/atom/movable/(baseline|candidate)_runtime\(key\)\n(?:\t[^\n]*\n)+'
+            normal_hooks = [m.group() for m in re.finditer(pattern, normal, re.M)]
+            omitted_hooks = [m.group() for m in re.finditer(pattern, omitted, re.M)]
+            self.assertEqual(len(normal_hooks), 4)
+            self.assertEqual(len(omitted_hooks), 4)
+            self.assertIn('key == "original_target"', normal_hooks[0])
+            self.assertIn('key == "corpse_decay_record"', normal_hooks[1])
+            self.assertIn('key == "original_target"', normal_hooks[2])
+            self.assertIn('key == "corpse_decay_record"', normal_hooks[3])
+            self.assertEqual(normal_hooks[:2], omitted_hooks[:2])
+            self.assertNotIn('key == "original_target"', omitted_hooks[2])
+            self.assertEqual(normal_hooks[3], omitted_hooks[3])
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, 'Original-target control anchor changed'):
+                self.execute_runner(Path(tmp), 'target-omit', replace_target=True)
+
     def test_actual_runner_refuses_head_base_or_checkout_drift(self):
         for options in ({'mismatch':True}, {'changed_helper':True}, {'bad_event':True},
                         {'head_edit':'\n// unrelated head drift\n'}):
             with self.subTest(options=options), tempfile.TemporaryDirectory() as tmp:
                 with self.assertRaises(ValueError): self.execute_runner(Path(tmp), **options)
 
+    def test_actual_push_and_manual_runner_use_distinct_validated_base(self):
+        for kind in ('push', 'workflow_dispatch'):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as tmp:
+                self.execute_runner(Path(tmp), event_kind=kind)
+        with tempfile.TemporaryDirectory() as tmp:
+            self.execute_runner(Path(tmp), event_kind='push', feature_base=True)
+        for base in ('0'*40, 'a'*40):
+            with self.subTest(base=base), tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaisesRegex(ValueError, 'distinct nonzero'):
+                    self.execute_runner(Path(tmp), event_kind='push', event_base=base)
+        for base in ('', 'b'*7, '0'*40, 'a'*40):
+            with self.subTest(manual_base=base), tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaises(ValueError):
+                    self.execute_runner(Path(tmp), event_kind='workflow_dispatch', event_base=base)
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, 'after SHA'):
+                self.execute_runner(Path(tmp), event_kind='push', bad_event=True)
+
     def test_projection_conflict_does_not_accept_overlapping_base_edit(self):
         changed = self.base_source.replace('if(key == "last_save_reference_failure") return TRUE',
                                            'if(key == "last_save_reference_failure") return FALSE', 1)
         with self.assertRaises(ValueError): replay_reviewed_merge(changed, self.base_source, self.merged)
+
+
+class ManualPostIntegrationRunnerTests(unittest.TestCase):
+    """Run source preparation against a real synthetic two-parent Git history."""
+    def test_explicit_prior_master_not_feature_parent_carries_serializer_and_helper_evolution(self):
+        checkpoint = 'fc1658b357f65e4013d82614da7451c28038d93b'
+        paths = (PATH, 'code/processes/human_corpse_decay.dm',
+                 'code/processes/abandoned_items.dm', 'code/modules/1713/active_training.dm')
+        with tempfile.TemporaryDirectory(prefix='exclusion-manual-history-') as directory:
+            root=Path(directory); repo=root/'repo'; repo.mkdir()
+            def git(*args, data=None):
+                result=subprocess.run(['git','-C',str(repo),'-c','user.name=Offline fixture',
+                    '-c','user.email=offline@example.invalid',*args],input=data,capture_output=True,timeout=30,check=True)
+                return result.stdout.decode().strip()
+            git('init','-q')
+            common = subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=ROOT,text=True).strip()
+            objects=(ROOT/Path(common)/'objects').resolve()
+            alternates=repo/'.git/objects/info/alternates';alternates.parent.mkdir(parents=True,exist_ok=True)
+            alternates.write_bytes((objects.as_posix()+'\n').encode('utf-8'))
+            old_tree=git('rev-parse',checkpoint+'^{tree}')
+            feature=git('commit-tree',old_tree,'-p',checkpoint,'-m','fixture feature branch')
+            git('read-tree',checkpoint)
+            changed={}
+            for path,label in ((PATH,'serializer'),('code/processes/abandoned_items.dm','helper')):
+                original=subprocess.check_output(['git','show',checkpoint+':'+path],cwd=ROOT)
+                data=original+b'\n// prior master '+label.encode()+b' evolution\n'
+                blob=git('hash-object','-w','--stdin',data=data)
+                git('update-index','--cacheinfo',f'100644,{blob},{path}')
+                changed[path]=data
+            tree=git('write-tree')
+            prior=git('commit-tree',tree,'-p',checkpoint,'-m','fixture prior master')
+            head=git('commit-tree',tree,'-p',prior,'-p',feature,'-m','fixture post integration merge')
+            git('update-ref','refs/heads/fixture',head); git('symbolic-ref','HEAD','refs/heads/fixture')
+            self.assertEqual(git('rev-list','--parents','-n','1','HEAD').split(),[head,prior,feature])
+            for path in paths:
+                destination=repo/path;destination.parent.mkdir(parents=True,exist_ok=True)
+                destination.write_bytes(changed.get(path,subprocess.check_output(['git','show',checkpoint+':'+path],cwd=ROOT)))
+            for name in ('run.py','source_contract.py','resources.py','probe.dm'):
+                destination=repo/'tests/exclusion_dispatch'/name;destination.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copyfile(ROOT/'tests/exclusion_dispatch'/name,destination)
+            def execute(base, label):
+                event=root/(label+'-event.json');event.write_text(json.dumps({'inputs':{'exclusion_comparison_base':base}}))
+                output=root/(label+'-receipt.json')
+                env=dict(os.environ,GITHUB_ACTIONS='true',GITHUB_EVENT_NAME='workflow_dispatch',
+                         GITHUB_EVENT_PATH=str(event),GITHUB_SHA=head)
+                result=subprocess.run([sys.executable,'-B',str(repo/'tests/exclusion_dispatch/run.py'),
+                    '--source-only','--output',str(output)],cwd=repo,env=env,capture_output=True,text=True,timeout=40)
+                return result,output
+            result,output=execute(prior,'prior-master')
+            self.assertEqual(result.returncode,0,result.stderr)
+            receipt=json.loads(output.read_text());self.assertEqual(receipt['event_identity']['base'],prior)
+            self.assertEqual(receipt['event_identity']['head'],head);self.assertFalse(receipt['native_execution'])
+            for base,label in (('', 'missing'),(feature,'feature-parent')):
+                result,output=execute(base,label)
+                self.assertNotEqual(result.returncode,0);self.assertFalse(output.exists())
+                if not base: self.assertIn('exclusion_comparison_base',result.stderr)
+
+
+class Current1688RunnerTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # The legacy Linux module imports resource; tests do not use its limits
+        # or launch children on Windows.
+        with patch.dict(sys.modules, {'resource': SimpleNamespace()}):
+            spec = importlib.util.spec_from_file_location('exclusion_ci_1688', ROOT / 'scripts/exclusion_ci_1688.py')
+            cls.runner = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(cls.runner)
+        cls.original_workflow = subprocess.check_output(['git', 'show',
+            'fc1658b357f65e4013d82614da7451c28038d93b:.github/workflows/test.yml'], cwd=ROOT, text=True)
+        cls.original_runner = subprocess.check_output(['git', 'show',
+            'fc1658b357f65e4013d82614da7451c28038d93b:tests/exclusion_dispatch/run-ci.py'], cwd=ROOT)
+
+    def result(self, mode='parity'):
+        return dict(cases=1000, failures=0 if mode=='parity' else 1,
+                    target_failures=1 if mode=='target-omit' else 0,
+                    byond_version=516, byond_build=1688, samples=[], details=[],
+                    network=dict(closed_port=0, reopen_result=0, after_reopen_port=0))
+
+    def test_historical_runner_unchanged_and_workflow_only_replaces_existing_guarded_lane(self):
+        self.assertEqual((ROOT / 'tests/exclusion_dispatch/run-ci.py').read_bytes().replace(b'\r\n', b'\n'), self.original_runner)
+        workflow=(ROOT / '.github/workflows/test.yml').read_text()
+        before='python3 tests/exclusion_dispatch/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/exclusion-native"'
+        after='python3 scripts/exclusion_ci_1688.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/exclusion-native"'
+        self.assertEqual(workflow.count(after), 1)
+        for name in ('Verify Linux exclusion dispatch parity and mutation controls',
+                     'Retain Linux exclusion dispatch evidence'):
+            marker='      - name: '+name+'\n'
+            current=workflow.split(marker,1)[1].split('      - name:',1)[0]
+            expected=self.original_workflow.split(marker,1)[1].split('      - name:',1)[0]
+            current=current.replace(after,before).replace('name: exclusion-native-1688-${{ github.event.pull_request.head.sha || github.sha }}',
+                                                          'name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}')
+            self.assertEqual(current,expected)
+
+    def test_result_keeps_legacy_oracles_and_demands_exact_observed_version_and_target_control(self):
+        log='World opened on network port 12345 for address 127.0.0.1.\n'
+        self.assertEqual(self.runner.MODES, ('parity', 'omit', 'parent', 'eager'))
+        for mode in (*self.runner.MODES, 'target-omit'):
+            self.runner.validate_result(mode,self.result(mode),log)
+        for field,value in (('byond_version',515),('byond_version',516.0),('byond_build',1681),('byond_build',16880),('byond_build',1688.0),('target_failures',True),('target_failures',1)):
+            result=self.result(); result[field]=value
+            with self.subTest(field=field,value=value), self.assertRaises(RuntimeError): self.runner.validate_result('parity',result,log)
+        result=self.result('target-omit');result['target_failures']=0
+        with self.assertRaises(RuntimeError): self.runner.validate_result('target-omit',result,log)
+        with self.assertRaises(RuntimeError): self.runner.validate_result('parity',self.result(),'runtime error: bad ref')
+
+    def test_actual_main_threads_archive_and_checks_every_child_without_launch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); output=root/'packet'; binary=root/'bin'; archive=root/'pinned.zip'
+            checks=[]; calls=[]
+            runtime=SimpleNamespace(bin_dir=binary, identity={'version':'516.1688'},
+                before_launch=lambda role,where: checks.append((role,where)),
+                validate_compile=Mock())
+            def run(command, work, role, deadline):
+                calls.append((role,command))
+                if role.endswith('-prepare'):
+                    mode=role.removesuffix('-prepare'); packet=output/(mode+'.json')
+                    self.assertIn('--source-version',command); self.assertIn('516.1688',command)
+                    packet.write_text(json.dumps({'required_version':'516.1688','native_execution':False}))
+                    packet.with_suffix('.sources').mkdir()
+                    return ''
+                mode=Path(work).name.removesuffix('.sources')
+                self.assertEqual(checks[-1][0],mode+'-'+role)
+                if role=='compile': return 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n'
+                (Path(work)/'runtime.log').write_text('World opened on network port 1 for address 127.0.0.1.\n')
+                (Path(work)/'result.json').write_text(json.dumps(self.result(mode)))
+                return ''
+            with patch.object(sys,'argv',['runner','--byond-bin',str(binary),'--byond-archive',str(archive),'--output',str(output)]), \
+                 patch.object(self.runner.sys,'platform','linux'), patch.object(self.runner.current,'select',return_value=runtime) as select, \
+                 patch.object(self.runner.legacy,'run',side_effect=run), patch.object(subprocess,'Popen',side_effect=AssertionError('native forbidden')), \
+                 patch('builtins.print'):
+                self.runner.main()
+            select.assert_called_once_with(binary,archive)
+            self.assertEqual([role for role,_ in checks],[mode+'-'+role for mode in self.runner.MODES for role in ('compile','daemon')])
+            self.assertEqual(runtime.validate_compile.call_count,len(self.runner.MODES))
+            self.assertEqual(json.loads((output/'native-ci-1688.json').read_text())['status'],'passed')
+            self.assertEqual(len(calls),len(self.runner.MODES)*3)
+
+    def test_current_compiler_contract_rejects_wrong_duplicate_and_dirty_evidence(self):
+        runtime=object.__new__(self.runner.current.CurrentRuntime)
+        runtime.identity={'version':'516.1688'}
+        runtime.compiler=self.runner.current.load('exclusion_compile_contract',ROOT/'tests/new_z_budget/z_budget_evidence.py')
+        clean='DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n'
+        runtime.validate_compile(0,clean,'probe.dmb')
+        for bad in (clean.replace('1688','1681'), clean.replace('1688','16880'), clean+clean,
+                    clean.replace('probe.dmb','other.dmb'), clean+'runtime error: bad ref\n'):
+            with self.subTest(bad=bad), self.assertRaises(RuntimeError): runtime.validate_compile(0,bad,'probe.dmb')
+        with self.assertRaises(RuntimeError): runtime.validate_compile(1,clean,'probe.dmb')
+
+    def test_identity_failure_precedes_first_compiler_and_leaves_native_unexecuted(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); output=root/'packet'; binary=root/'bin'; archive=root/'pinned.zip'
+            runtime=SimpleNamespace(bin_dir=binary, identity={'version':'516.1688'},
+                before_launch=Mock(side_effect=ValueError('archive member changed')))
+            def prepare(command, work, role, deadline):
+                self.assertEqual(role, 'parity-prepare')
+                packet=output/'parity.json'
+                packet.write_text(json.dumps({'required_version':'516.1688','native_execution':False}))
+                packet.with_suffix('.sources').mkdir()
+                return ''
+            with patch.object(sys,'argv',['runner','--byond-bin',str(binary),'--byond-archive',str(archive),'--output',str(output)]), \
+                 patch.object(self.runner.sys,'platform','linux'), patch.object(self.runner.current,'select',return_value=runtime), \
+                 patch.object(self.runner.legacy,'run',side_effect=prepare) as run, \
+                 patch.object(subprocess,'Popen',side_effect=AssertionError('native forbidden')), patch('builtins.print'):
+                with self.assertRaisesRegex(ValueError,'archive member changed'): self.runner.main()
+            self.assertEqual(run.call_count, 1)
+            summary=json.loads((output/'native-ci-1688.json').read_text())
+            self.assertFalse(summary['native_execution'])
+            self.assertEqual(summary['status'],'incomplete')
 
 
 if __name__ == '__main__':
