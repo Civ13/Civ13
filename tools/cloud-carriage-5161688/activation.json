@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "5260b60f0efef2c0af70fae204b1180106ef50b3",
+  "branch": "ci/cloud-carriage-5161688-production-lease-20261028-r1",
+  "message": "ci: held native carriage eight-second production lease r1",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "0fa570286ec6c2c7de4575007c5fa8e25241f3dbde063cbac2c8a9691de92d79",
+  "approval": "Root-reviewed positive production lease acceptance under the user 2026-10-28 04:00 UTC 24-hour bounded native/capture grant; source preparation release approved, exact sealed tree still awaits root review before ref publication. Only one positive 8-second/20-FPS/160-frame/15-minute/192-MiB invocation, same cutoff 2026-10-29T03:19:44Z and software/network/process guards. Omission variants remain separately held. Not production server deployment, connected-driver or marketing acceptance."
+}
