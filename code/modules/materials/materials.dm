@@ -266,8 +266,10 @@ var/list/material/name_to_material
 	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	sheet_singular_name = "leaf"
-	sheet_plural_name = "leaves"
+	// The farm's generic harvest feeds both bast-fibre and leafy-top recipes.
+	// Rope fibre is in the stalk; a leaf-only label misstates that feedstock.
+	sheet_singular_name = "plant bundle"
+	sheet_plural_name = "plant bundles"
 	stack_type = /obj/item/stack/material/hemp
 	flags = MATERIAL_UNMELTABLE
 

@@ -41,6 +41,14 @@ class RopeSourceTests(unittest.TestCase):
         self.assertIn('B.stage != old_stage', source)
         self.assertIn('H.transfer_held_item_to(I, target) && I.loc == target', source)
 
+    def test_hemp_feedstock_includes_stalks_without_new_crop_grants(self):
+        materials = (ROOT / 'code/modules/materials/materials.dm').read_text()
+        hemp = materials.split('/material/hemp\n', 1)[1].split('/material/flax\n', 1)[0]
+        self.assertIn('sheet_singular_name = "plant bundle"', hemp)
+        farm = (ROOT / 'code/game/objects/farming.dm').read_text()
+        hemp = farm.split('/obj/structure/farming/plant/hemp\n', 1)[1].split('/obj/structure/farming/plant/flax\n', 1)[0]
+        self.assertIn('stack = "material/hemp"', hemp)
+
     def test_catalog_quantity_drift_fails_before_export(self):
         source = (ROOT / PATH).read_text()
         for old in ('F.use(1)', 'Y.use(4)', 'rope(site, 4, FALSE)'):

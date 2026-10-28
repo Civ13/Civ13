@@ -4,6 +4,9 @@ This optional route distinguishes preparing bast fibres, spinning yarn, twisting
 strands and laying those strands together. Existing quick raw-hemp/raw-flax rope,
 flax-tow twine, sinew cord and weak grass twine remain available. No map or spawn
 loadout changes are required, and the output is ordinary rope for existing uses.
+The farm's existing generic hemp harvest is labeled **plant bundles**, including
+stalks and leafy tops, rather than leaves alone: bast fibre comes from the stalk.
+Its harvest quantities and existing recipe costs are unchanged.
 
 ## Player route
 

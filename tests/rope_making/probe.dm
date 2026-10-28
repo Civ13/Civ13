@@ -138,7 +138,8 @@
 		var/faction = "rope_fixture"
 		map.faction_baseline_era[faction] = 0
 		planks.generate_recipes_civs(list(0,0,0), "global", faction)
-		rope_assert(!rope_recipe(planks.recipes, /obj/structure/ropewalk) && !rope_recipe(planks.recipes, /obj/item/rope_spindle), "unresearched equipment hidden")
+		rope_assert(!rope_recipe(planks.recipes, /obj/structure/ropewalk) && !rope_recipe(planks.recipes, /obj/structure/hemp_dressing_bench), "unresearched processing equipment hidden")
+		rope_assert(rope_recipe(planks.recipes, /obj/item/rope_spindle), "founding Basic Tools baseline admits spindle")
 		for (var/node in list("basic_tools", "resource_processing"))
 			var/list/research_entry = map.ensure_node_entry(faction, node)
 			research_entry[RNODE_ENTRY_STATUS] = RNODE_DONE
