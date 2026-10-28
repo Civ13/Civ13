@@ -61,6 +61,7 @@ class RunnerTests(unittest.TestCase):
                 (prepared/'probe.dme').write_bytes(('#include "'+prefix+'_probe.dm"\n#include "'+prefix+'_0.dm"\n').replace('\n',newline).encode())
                 (folder/'expected-crafting-atlas.json').write_bytes(b'{}\n')
                 request=dict(prepared_directory='generated',head='a'*40,variant='main',caps=dict(runner.CAPS),
+                    completion_contract=dict(runner.COMPLETION),
                     modes=list(runner.PHASES['main']),port=runner.PORT,outer_seconds=990,
                     binary_sha256=runner.ENGINE,source_sha256={'example.dm':'c'*64})
                 return request,folder
@@ -69,6 +70,7 @@ class RunnerTests(unittest.TestCase):
             expected=runner.execution_contract(first,a)
             self.assertEqual(expected,runner.execution_contract(second,b))
             for field,value in (('head','d'*40),('outer_seconds',991),('port',19328),
+                                ('completion_contract',dict(runner.COMPLETION,expected_exit=0)),
                                 ('caps',dict(runner.CAPS,child_seconds=61))):
                 changed=copy.deepcopy(second); changed[field]=value
                 self.assertNotEqual(expected,runner.execution_contract(changed,b))
@@ -76,11 +78,12 @@ class RunnerTests(unittest.TestCase):
             probe.write_bytes(probe.read_bytes()+b'// changed code\n')
             self.assertNotEqual(expected,runner.execution_contract(second,b))
 
-    def phase(self, fault=None, *, denied_exit=None, work_end=960, end=990, second_sample_at=.1):
+    def phase(self, fault=None, *, denied_exit=None, work_end=960, end=990, second_sample_at=.1,
+              completed=False, completion_fault=None, completion_exit=-9, variant='main'):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary); case = output/'cases/read'; case.mkdir(parents=True)
             if fault != 'early-exit': (case/'probe-port-closed.txt').write_bytes(b'closed\n')
-            calls = dict(cleanup=0, sockets=0, exit=0, popen=0, sleeps=[])
+            calls = dict(cleanup=0, sockets=0, exit=0, popen=0, sleeps=[], signals=[])
             clock = SimpleNamespace(value=0)
             process = SimpleNamespace(pid=123)
             def exited(_):
@@ -89,11 +92,13 @@ class RunnerTests(unittest.TestCase):
                     if calls['sockets'] < 2: return False
                     if denied_exit == 'terminal': return True
                     return denied_exit == 'late' and clock.value >= second_sample_at+.03
+                if completed: return completion_fault == 'early-exit' and calls['exit'] > 1
                 if fault == 'early-exit': return True
                 if fault == 'deadline': clock.value = 61
                 return calls['exit'] > 1
             def identity(pid):
-                return dict(pid=pid,start_ticks=7,pgrp=pid,session=pid,resident_pages=1,cpu_ticks=0)
+                return dict(pid=pid,start_ticks=8 if completion_fault == 'identity' and clock.value >= .1 else 7,pgrp=pid,session=pid,resident_pages=1,
+                    cpu_ticks=10 if completion_fault == 'cpu' and clock.value >= .1 else 0)
             def sockets(*args):
                 calls['sockets'] += 1
                 if denied_exit and calls['sockets'] == 2:
@@ -104,10 +109,33 @@ class RunnerTests(unittest.TestCase):
                 return []
             def cleanup(*args):
                 calls['cleanup'] += 1
-                return dict(exit_code=-9 if denied_exit == 'live' else 0,group_empty=fault != 'cleanup',errors=['injected'] if fault == 'cleanup' else [])
+                return dict(exit_code=completion_exit if completed else (-9 if denied_exit == 'live' else 0),
+                    group_empty=fault != 'cleanup',errors=['injected'] if fault == 'cleanup' else [])
+            def pulse(number):
+                if not completed: return
+                result = dict(done=0 if completion_fault == 'assertion' else 1,checks=24 if completion_fault == 'counter' and number > 1 else 23,mode='read')
+                if variant == 'cleanup-namespace':
+                    result=dict(done=0, checks=9, mode='read', error='other failure' if completion_fault == 'assertion' else 'Cross-z equal numeric roof ref was retained')
+                raw = json.dumps(result).encode(); (case/'roof-result.json').write_bytes(raw)
+                if completion_fault == 'missing' or completion_fault == 'stalled' and number > 1: return
+                data = dict(session='b'*64 if completion_fault == 'session' else 'a'*64,
+                    mode='write' if completion_fault == 'mode' else 'read', checks=result['checks'],pulse=number,
+                    result_md5='0'*32 if completion_fault == 'digest' else hashlib.md5(raw).hexdigest())
+                if completion_fault == 'pulse-bool': data['pulse']=True
+                if completion_fault == 'gap' and number == 1: number=2
+                payload=json.dumps(data)
+                if completion_fault == 'duplicate': payload+=payload
+                if completion_fault == 'oversize': payload+=' '*1024
+                (case/('roof-quiet-'+str(number)+'.json')).write_text(payload)
+                (case/('roof-quiet-'+str(number)+'.ready')).write_text('a'*64)
             def popen(*args, **kwargs):
-                calls['popen'] += 1; calls['environment'] = kwargs['env']; return process
-            old = SimpleNamespace(native_census=lambda:[],identity=identity,exited_unreaped=exited,
+                calls['popen'] += 1; calls['environment'] = kwargs['env']
+                if completed:
+                    (case/'roof-session.txt').write_text('a'*64)
+                    (output/'program').mkdir(); (output/'program/native-read.log').write_text('x'*(runner.CAPS['log_bytes']+1) if completion_fault == 'output' else 'quiet')
+                    pulse(1)
+                return process
+            old = SimpleNamespace(native_census=lambda:[identity(123)] if completion_fault == 'census' and calls['signals'] else [],identity=identity,exited_unreaped=exited,
                 group_members=lambda pid: [identity(pid),identity(124)] if fault == 'descendant' else [identity(pid)],
                 owned_sockets=sockets,cleanup=cleanup)
             usage_calls = []
@@ -118,18 +146,30 @@ class RunnerTests(unittest.TestCase):
             def sleep(seconds):
                 calls['sleeps'].append(seconds); clock.value += seconds
                 if denied_exit and len(calls['sleeps']) == 1: clock.value = second_sample_at
+                if completed:
+                    pulse(len(calls['sleeps'])+1)
+                    if completion_fault == 'log': (output/'program/native-read.log').write_text('changed')
+                    if completion_fault == 'session-file': (case/'roof-session.txt').write_text('b'*64)
             receipt = {'children':[]}
+            def observed_completion(*args):
+                state=runner.completion(*args)
+                if completion_fault == 'final-deadline' and calls['sockets'] >= 2: clock.value=60
+                return state
             namespace = dict(runner.__dict__, old=old,output=output,byond=Path('/test-engine'),
-                work_end=work_end,end=end,owned=[],fixed_inputs=0,receipt=receipt,check=lambda:None,save=lambda:None,
-                sha=lambda _:runner.ENGINE['DreamDaemon'],subprocess=SimpleNamespace(Popen=popen,DEVNULL=-3),
+                completion=observed_completion,
+                work_end=work_end,end=end,owned=[],fixed_inputs=0,receipt=receipt,variant=variant,signal=SimpleNamespace(SIGKILL=9),check=lambda:None,save=lambda:None,
+                sha=lambda p:runner.ENGINE['DreamDaemon'] if Path(p).name == 'DreamDaemon' else runner.sha(p),subprocess=SimpleNamespace(Popen=popen,DEVNULL=-3),
                 time=SimpleNamespace(monotonic=lambda:clock.value,sleep=sleep))
             unit = ast.fix_missing_locations(ast.Module(body=[actual_phase()],type_ignores=[]))
             exec(compile(unit,str(PATH),'exec'),namespace)
             error = None
             # Only a fake resource module and fake Popen are reachable here.
+            def terminate(pid, sig):
+                calls['signals'].append((pid,int(sig)))
+                if completion_fault == 'signal': raise PermissionError('injected signal denial')
             with patch.dict(sys.modules,resource=resource), patch.object(runner.os,'sysconf',
-                    lambda key:4096 if key == 'SC_PAGE_SIZE' else 100,create=True):
-                try: namespace['phase'](['/test-engine/DreamDaemon'],case,'read','read')
+                    lambda key:4096 if key == 'SC_PAGE_SIZE' else 100,create=True), patch.object(runner.os,'killpg',terminate,create=True):
+                try: namespace['phase'](['/test-engine/DreamDaemon'],case,'read','read',completion_session='a'*64 if completed else None)
                 except Exception as caught: error = caught
             return calls,receipt,error,(case/'probe-port-closed.ack').exists()
 
@@ -187,6 +227,75 @@ class RunnerTests(unittest.TestCase):
                 self.assertFalse(observation['terminal_after_wait'])
                 self.assertAlmostEqual(observation['wait_seconds'],expected)
                 self.assertEqual((calls['popen'],calls['sockets'],calls['cleanup']),(1,2,1))
+
+    def test_completion_requires_live_progress_then_exact_recorded_owned_termination(self):
+        calls,receipt,error,ack=self.phase(completed=True)
+        self.assertIsNone(error); self.assertTrue(ack)
+        row=receipt['children'][0]
+        self.assertEqual(calls['signals'],[(123,9)])
+        self.assertEqual(row['shutdown'],dict(signal=9,pid=123,start_ticks=7,sent=True))
+        self.assertEqual(row['exit_contract'],'controller-terminated-completion')
+        self.assertEqual([r['pulse'] for r in row['completion']['quiet_samples']],[1,2])
+        self.assertEqual(row['cleanup']['exit_code'],-9)
+        self.assertEqual((calls['popen'],calls['sockets'],calls['cleanup']),(1,2,1))
+
+    def test_completion_missing_forged_changed_or_nonquiet_evidence_never_authorizes_signal(self):
+        for fault in ('missing','stalled','session','session-file','mode','digest','assertion','counter','log','cpu','early-exit','pulse-bool','gap','duplicate','oversize','output','identity','final-deadline'):
+            with self.subTest(fault=fault):
+                calls,receipt,error,ack=self.phase(completed=True,completion_fault=fault,work_end=.3)
+                self.assertIsNotNone(error); self.assertEqual(calls['signals'],[])
+                self.assertEqual(calls['cleanup'],1)
+
+    def test_completion_observation_denials_fail_immediately_even_if_terminal_is_imminent(self):
+        for state in ('live','late','terminal'):
+            with self.subTest(state=state):
+                calls,receipt,error,ack=self.phase(completed=True,denied_exit=state)
+                self.assertIsInstance(error,PermissionError)
+                self.assertEqual((calls['sockets'],calls['cleanup']),(2,1))
+                self.assertEqual(calls['sleeps'],[.1]); self.assertEqual(calls['signals'],[])
+                self.assertTrue(receipt['children'][0]['socket_observation_denial']['completion_contract'])
+
+    def test_completion_retains_socket_identity_and_final_cleanup_rejections(self):
+        for fault in ('public-socket','descendant','cleanup','cpu'):
+            with self.subTest(fault=fault):
+                calls,receipt,error,ack=self.phase(fault,completed=True)
+                self.assertIsNotNone(error); self.assertEqual(calls['cleanup'],1)
+        for status in (0,1,-11,-15):
+            with self.subTest(status=status):
+                calls,receipt,error,ack=self.phase(completed=True,completion_exit=status)
+                self.assertIsNotNone(error); self.assertEqual(calls['signals'],[(123,9)])
+        calls,receipt,error,ack=self.phase(completed=True,completion_fault='census')
+        self.assertIsNotNone(error)
+        self.assertIn('Native baseline not empty',str(error))
+
+    def test_completion_termination_denial_preserves_original_error_over_cleanup_failure(self):
+        calls,receipt,error,ack=self.phase('cleanup',completed=True,completion_fault='signal')
+        self.assertIsInstance(error,PermissionError)
+        self.assertEqual(str(error),'injected signal denial')
+        self.assertFalse(receipt['children'][0]['shutdown']['sent'])
+        self.assertEqual(calls['cleanup'],1)
+
+    def test_completion_control_preserves_exact_named_assertion_oracle(self):
+        calls,receipt,error,ack=self.phase(completed=True,variant='cleanup-namespace')
+        self.assertIsNone(error); self.assertEqual(receipt['children'][0]['completion']['checks'],9)
+        calls,receipt,error,ack=self.phase(completed=True,variant='cleanup-namespace',completion_fault='assertion')
+        self.assertIsNotNone(error); self.assertEqual(calls['signals'],[])
+
+    def test_completion_needs_observed_interval_and_live_pulse_within_phase_budget(self):
+        for work in (0,.05,.1):
+            with self.subTest(work=work):
+                calls,receipt,error,ack=self.phase(completed=True,work_end=work)
+                self.assertIsNotNone(error); self.assertEqual(calls['signals'],[])
+
+    def test_probe_assertions_and_legacy_natural_exit_remain_byte_identical(self):
+        name='tests/roof_area_recovery/probe.dm'
+        before=runner.git('show','d5cb5a0ec450f580656e7f9dd11658c98b9dfd2b:'+name).decode()
+        current=(runner.ROOT/name).read_text()
+        self.assertEqual(current.split('\t// Optional fixture-only post-assertion park.')[0],before.removesuffix('\tdel(world)\n'))
+        self.assertTrue(current.endswith('\tdel(world)\n'))
+        calls,receipt,error,ack=self.phase()
+        self.assertIsNone(error); self.assertEqual(calls['signals'],[])
+        self.assertEqual(receipt['children'][0]['exit_contract'],'natural-exit')
 
     def test_socket_contract_rejects_wrong_port_and_reopening(self):
         good = dict(protocol='tcp',state='listen',address='127.0.0.1',port=runner.PORT)

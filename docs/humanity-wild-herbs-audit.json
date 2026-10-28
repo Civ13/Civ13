@@ -1,0 +1,32 @@
+{
+  "baseline_revision": "067478b82c7ad9f1b83759a221e6f22080ba865a",
+  "image_sheets": 475,
+  "decoded_frames": 60446,
+  "state_less_sheets": [
+    "icons/obj/vehicles/testing.dmi"
+  ],
+  "errors": [],
+  "candidates": [
+    {
+      "state": "yarrow",
+      "same_state_name": [],
+      "pixel_matches": []
+    },
+    {
+      "state": "milk_thistle",
+      "same_state_name": [],
+      "pixel_matches": []
+    },
+    {
+      "state": "elderflower",
+      "same_state_name": [],
+      "pixel_matches": []
+    },
+    {
+      "state": "comfrey",
+      "same_state_name": [],
+      "pixel_matches": []
+    }
+  ],
+  "limits": "Compares full visible RGBA, alpha-bounded translation and horizontal mirror; does not prove originality or detect every recoloring, redraw, composited overlay or historical deletion."
+}

@@ -9,6 +9,16 @@ and prepares native savefile/lifecycle assertions without launching. Native runs
 require the bounded plan review; compilation does not prove movement or rescue.
 Use the console `dm.exe`, not the GUI `dreammaker.exe`, for Windows compilation.
 
+<!-- 2026-10-24: persistence construction weathering -->
+Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
+gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired
+roof/floor slabs are exempt because generic wood roofs can underlie modern floors.
+Save hooks accrue unpaid debt without destruction; roofs explicitly save debt,
+and after_load rebases excluded runtime clocks/indexes. Terminal qdel waits for
+empty contents. tests/seasonal_construction is offline; prepare.py only prepares
+an uncompiled native packet. Keep native/graphical acceptance and balancing pending.
+
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
@@ -20,6 +30,11 @@ tests/human_subtile/run-diagonal.py targets 516.1688 with exact-Git staging and
 a separate executable allowlist; historical helpers remain frozen. Preserve the
 Windows startup-socket rejection rather than weakening its no-socket policy.
 Headless displacement/compile checks never prove DreamSeeker visual smoothness.
+<!-- 2026-10-28: pulling and menus keep smooth movement -->
+Pulling and open menus (any using_object except a stationary gun) keep the
+adapter eligible: a restricting state mid-step refuses all input until alignment.
+Headless fixtures have no client, so living/Move stops pulling there; pull-follow
+during smooth steps needs connected-client confirmation.
 
 <!-- 2026-10-25: shared hub community links -->
 `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
@@ -331,6 +346,15 @@ source preparation does not establish native acceptance.
 
 ### Map metadata
 
+<!-- 2026-10-27: coded minimap grid boundaries -->
+get_coded_loc uses one-based tiles with fixed 22x22 default, 15x10 campaign and
+40x40 Falcon cells. CAMPAIGN_MAP_LIST_MAPID_OR starts with a bare map constant;
+its comparison-prefix callers differ from standalone Boolean callers. Keep the
+grid's explicit ID selection local rather than globally changing that macro.
+tests/aotd_map/test_coded_loc.py projects the helper offline; it is not native
+HUD acceptance. Campaign DMM extents exceed the legacy ten-row/column frame;
+this correction preserves those cell sizes rather than rescaling their maps.
+
 <!-- 2026-10-24: optional geographic elevation -->
 Elevation is a bounded coordinate profile on map metadata, independent of native
 areas/turf identity and climate. `get_elevation(atom)` defaults to 0 metres; it
@@ -544,6 +568,17 @@ This lets agents introspect sprite sheets without opening them in a GUI - useful
 
 <!-- 2026-10-11: repeatable game verification -->
 ## Game verification evidence
+
+<!-- 2026-10-22: representative observer failure retention -->
+Representative sampler and observer waits must recheck their existing monotonic
+targets after early wakes. `tests/save_latency/representative` covers this offline.
+Phase log/diagnostic retention runs after owned cleanup on failures too; secondary
+retention errors preserve the original exception and never establish acceptance.
+
+<!-- 2026-10-24: bounded-save roof compatibility -->
+Roof preflight must use the shared versioned content decoder for typed formats
+2 and 3. A format-2-only plan skips chunked roof contents before area validation.
+Offline source checks do not establish native format-3 roof recovery.
 
 <!-- 2026-10-24: complete conditional offline projections -->
 The save_movement adapter selects the explicitly declared collector-disabled
@@ -953,6 +988,11 @@ omitted native coverage. Preserve existing native opt-ins and toolchain ownershi
 Hosted DreamMaker results must identify the actually executed manifest version;
 Python projections, compiled core_boot variants and native runtime/gameplay
 acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
+<!-- 2026-10-28: re-run of failed jobs -->
+CI receipt consumers download ci-selection/baseline/compile by the producing
+job's `attempt` output: a re-run of failed jobs reuses earlier jobs whose
+artifacts keep their original attempt. Receipts record `job_attempt`; keep the
+attempt ordering checks in scripts/ci_baseline.py when changing these jobs.
 Cloud-only workers must keep unavailable local native checks as not_run. After
 owner review and authorized push, obtain hosted validation for the current head
 and inspect its outcomes/artifacts; never substitute local tool absence or an
@@ -976,6 +1016,15 @@ docs/crafting-atlas.md; acquisition annotations retain their historical audit SH
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
 <!-- 2026-10-23: atlas catalog variants -->
+<!-- 2026-10-27: direct atlas resource search -->
+Atlas search has separate bounded Resource and Recipe results. Resource matching
+uses catalog names and canonical IDs, with case/whitespace/underscore normalization;
+IDs and labels stay unchanged. Recipe filters do not hide resource matches; direct
+resource navigation reuses atlas_resource/resource(id) and clears recipe filters.
+Empty input browses recipes. tests/crafting_atlas/resource-search.test.mjs checks
+the production template offline; resource_search.dm is a hosted renderer fixture,
+not connected-client or live-server acceptance. Do not add guessed reagent aliases.
+
 `scripts/atlas/variants.py` groups only identical explicit 13-field material rows
 with equal extracted semantics. Catalog identity/source IDs stay as variants;
 never group by name, canonical ingredients or outputs alone. Counts and legacy
@@ -1005,8 +1054,18 @@ runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.p
 is offline evidence; `tanning_probe.dm` requires separate native acceptance.
 
 Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
-not stage stacks through a turf. Legacy human `drop_from_inventory` overrides
-discard the parent's return: a null result can follow a successful floor drop.
+not stage stacks through a turf. Human `drop_from_inventory` definitions must
+forward the parent's result with `return ..()`; keep both organ guards and the
+implicit arguments. The parent can still report TRUE after refused/redirected
+movement, so destination-sensitive callers must check actual location too.
+The #3286 discarded-return control now uses an explicit legacy wrapper adapter
+alongside a production-human success assertion. Offline checks and the remaining
+native acceptance proposal are in `tests/flax_processing/test_drop_return.py`
+and `tests/flax_processing/drop-return-acceptance.md`.
+The selected Linux flax runner follows the current manifest and verifies archive
+members before each launch; old/mismatched banners fail offline runner contracts.
+Its historical 1681 CI rejection is preserved. Existing tanning-fixture edits do
+not select the harvest suite; its frozen version gate needs separate admission.
 Use the production human subtype in transfer tests, not just a `/mob/living` stub.
 Production `stack/Crossed` merges floor pieces
 into the arriving stack; clear hand/HUD ownership only after destination admission,
@@ -1480,6 +1539,16 @@ initializer raises a type-mismatch exception. `tests/floor_decal_tracking` cover
 the writer, seasonal reader and native entry compatibility. Ordinary turf saves
 exclude this derived field through their existing saved-variable allowlist.
 
+<!-- 2026-10-19: bounded admitted saver draft -->
+World-save traversal retains operation admission, durable state/player ownership,
+and active before_save_context transfer frames. Invalidated active parents fail
+closed with backup recovery; do not restore the old detached-parent exporter.
+Level format 3 adds bounded content chunks; keep version-2 and legacy readers,
+including durable reachability and ownership decoding. Round-state versioning is
+independent. Old readers reject version 3, so downgrade needs retained old files.
+The sleep(0)-below-80% policy increases effective duty cycle and is experimental.
+Dispatch save_latency_regressions for native dense/backup/heartbeat/refusal and
+current persistence checks; preparation alone is not acceptance or deployment.
 <!-- 2026-10-19: bot helper contention -->
 Bot control uses nonblocking flock and returns busy (75) without systemctl or
 cooldown writes under contention. The draft unit remains disabled pending

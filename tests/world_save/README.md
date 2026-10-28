@@ -12,7 +12,7 @@ not clear arbitrary pointers. A failed wake retains sleep protection for retry.
 The focused sleep fixture extracts the actual entry/wake helpers, production
 buckling methods and base forced movement, with narrow physiology/inventory and
 startup adapters. It checks normal and old-state transfers, other-occupant
-protection, refusal and persistence-busy paths, and a real version-2 save,
+protection, refusal and persistence-busy paths, and a real format-3 save,
 preflight and import with metadata aliases. Delayed verb/client ownership is
 covered by source contracts; this headless fixture does not establish real
 connected-client timing or full gameplay acceptance. Preparation alone does not
@@ -21,8 +21,9 @@ establish a native pass.
 The serializer still fails closed on unsupported cross-z object fields and on
 duplicate durable bindings. Diagnostics report only bounded source field/type,
 save-entry identifiers and z-levels, never player names, client keys or live
-native references. General movement during serialization remains a separate
-snapshot problem; no save format or loader migration is introduced here.
+native references in log messages. This draft uses bounded format-3 captures
+and preserves the first completed spatial capture across later movement; it is
+not an atomic world snapshot. Current readers retain format-2 compatibility.
 
 For a rejected object reference, inspect the single admin VV field
 `map_storage.last_save_reference_failure`: Game Panel, **View/Debug a Global
@@ -58,8 +59,10 @@ source hashes, logs and temporary saves for every attempted run.
 problem. Its `--expect-current-defects` mode characterizes existing traversal
 defects; without that flag it requires ordinary `PASS` results. Mutation controls
 retain their own exact expected failures. CI checks the ordinary `field-direct`
-case and explicitly characterizes the unchanged `move-direct` defect. That
-characterization is not evidence that the traversal defect was fixed.
+and `move-direct` cases with format-3 restoration, unique placement and durable
+alias checks. The `first-capture` mutation reproduces the exact old duplicate
+binding rejection. Broader cases outside this focused CI gate retain historical
+characterization expectations and are not claimed as an all-cases passing suite.
 
 `run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
 generation, then launches fresh two-level readers. It runs the production saver,

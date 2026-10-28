@@ -26,7 +26,7 @@ def fixtures(paths=('README.md',)):
                     native=dict(eligible=True, reason='Ordinary PR admission'),
                     gating=dict(eligible=True, reason='Full ordinary PR scope')),
                 baseline=ci.impact(paths), compile={'selected': False, 'reason': 'Documentation only'})
-    baseline = dict(schema_version=1, kind='baseline', status='passed', **source,
+    baseline = dict(schema_version=1, kind='baseline', status='passed', **source, job_attempt='1',
                     selection_sha256=ci.digest(plan), tracked_dirty=False,
                     tracked_dirty_after=False, source_unchanged=True,
                     observed_head_before=source['head'], observed_head_after=source['head'], suites={})
@@ -36,7 +36,7 @@ def fixtures(paths=('README.md',)):
             baseline['suites'][name].update(exit_code=0, counts=dict(
                 status='passed', tests=1, errors=0, failures=0, skipped=0))
     compiler = dict(schema_version=1, kind='compile', status='skipped', selected=False,
-                    step_outcome='skipped', reason='Documentation only', **source,
+                    step_outcome='skipped', reason='Documentation only', **source, job_attempt='1',
                     toolchain='BYOND ' + ci.toolchain.load()['version'], toolchain_error=None,
                     selection_sha256=ci.digest(plan))
     requirement = ci.toolchain.load()
@@ -129,6 +129,31 @@ class BaselinePolicyTests(unittest.TestCase):
                 self.assertIn(name, self.selected([path]))
         self.assertEqual(ci.SUITES['year']['files'], ('tests/persistence_year/test_floor.py',))
         self.assertFalse(any('test_native.py' in f for s in ci.SUITES.values() for f in s['files']))
+
+    def test_fishing_stock_registration_is_exact_and_offline(self):
+        suite = ci.SUITES['fishing_stock']
+        self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',
+                                         'tests/fishing_stock/test_preparation.py',
+                                         'tests/fishing_stock/test_native_runner.py'))
+        self.assertEqual(suite['paths'], ('tests/fishing_stock/',))
+        self.assertFalse(suite.get('always', False))
+        source = (ROOT / suite['files'][0]).read_text()
+        tree = ast.parse(source)
+        imports = {node.module if isinstance(node, ast.ImportFrom) else alias.name
+                   for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))
+                   for alias in node.names}
+        self.assertEqual(imports, {'argparse', 'dataclasses', 'itertools', 'pathlib', 're', 'unittest'})
+        self.assertEqual(ci.TIMEOUT, 30)
+
+    def test_fishing_stock_selection_preserves_shared_source_fallback(self):
+        for path in ('tests/fishing_stock/test_source_contract.py', 'tests/fishing_stock/README.md',
+                     'tests/fishing_stock/run_native.py', 'tests/fishing_stock/fixture.dm'):
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'fishing_stock'})
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+        shared = 'code/game/mob/living/simple_animal/friendly/static.dm'
+        self.assertEqual(self.selected([shared]), set(ci.SUITES))
+        self.assertIn('Unmapped impact: ' + shared, ci.impact([shared])['fallback_reasons'])
 
     def test_unknown_dependencies_and_failed_comparisons_are_visible_and_bounded(self):
         for paths, comparison in ((['requirements.txt'], 'available'),
@@ -282,6 +307,43 @@ class BaselinePolicyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Always-required'):
                     ci.load_selection(path, plan['head'], plan['base'])
 
+    def test_selection_from_an_earlier_attempt_of_the_same_run_is_named_explicitly(self):
+        # Re-running failed jobs reuses the successful selection job, so its
+        # receipt keeps attempt 1 while the consumer runs in attempt 2.
+        plan, _, _, _ = fixtures()
+        current = {key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id')}
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'selection.json'
+            ci.write_json(path, plan)
+            with patch.object(ci, 'provenance', return_value=dict(current, run_attempt='2')):
+                self.assertEqual(ci.load_selection(path, plan['head'], plan['base'], '1'), plan)
+                with self.assertRaisesRegex(ValueError, 'provenance mismatch: run_attempt'):
+                    ci.load_selection(path, plan['head'], plan['base'])
+                for declared in ('2', '3'):
+                    with self.subTest(declared=declared), self.assertRaisesRegex(ValueError, 'run_attempt'):
+                        ci.load_selection(path, plan['head'], plan['base'], declared)
+                for declared in ('', '0', '01', 'x', '1 '):
+                    with self.subTest(declared=declared), self.assertRaises(ValueError):
+                        ci.load_selection(path, plan['head'], plan['base'], declared)
+                changed = dict(plan, run_id='456')
+                ci.write_json(path, changed)
+                with self.assertRaisesRegex(ValueError, 'provenance mismatch: run_id'):
+                    ci.load_selection(path, plan['head'], plan['base'], '1')
+            with patch.object(ci, 'provenance', return_value=dict(current, run_attempt='1')):
+                ci.write_json(path, dict(plan, run_attempt='2'))
+                with self.assertRaisesRegex(ValueError, 'run_attempt'):
+                    ci.load_selection(path, plan['head'], plan['base'], '2')
+
+    def test_receipts_record_the_attempt_that_executed_them(self):
+        plan, _, _, _ = fixtures()
+        with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '2'}):
+            ci.compile_receipt(plan, 'skipped', Path(temporary) / 'compile.json')
+            receipt = json.loads((Path(temporary) / 'compile.json').read_text())
+        self.assertEqual((receipt['run_attempt'], receipt['job_attempt']), ('1', '2'))
+        source = (ROOT / 'scripts/ci_baseline.py').read_text()
+        execute = source.split('def execute(', 1)[1].split('\ndef ', 1)[0]
+        self.assertIn("job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT')", execute)
+
 
 class AggregateTests(unittest.TestCase):
     def test_selected_compilation_rejects_missing_or_wrong_archive_provenance(self):
@@ -417,6 +479,57 @@ class AggregateTests(unittest.TestCase):
                 data[kind][key] = 'stale'
                 with self.subTest(kind=kind, key=key):
                     self.assertTrue(ci.aggregate(*data, False))
+
+    def test_reused_and_rerun_jobs_validate_against_their_own_attempts(self):
+        plan, baseline, compiler, jobs = fixtures()
+        compiler['job_attempt'] = '2'
+        attempts = dict(baseline='1', compile='2', current='2')
+        self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False, attempts), [])
+        self.assertIn('compile job attempt mismatch', ci.aggregate(plan, baseline, compiler, jobs, False))
+        for change, kind in ((dict(compile='1'), 'compile'), (dict(current='1'), 'compile'),
+                             (dict(baseline='2'), 'baseline'), (dict(baseline=''), 'baseline'),
+                             (dict(compile=None), 'compile'), (dict(current=None), 'baseline')):
+            with self.subTest(change=change):
+                self.assertIn(kind + ' job attempt mismatch', ci.aggregate(
+                    plan, baseline, compiler, jobs, False, dict(attempts, **change)))
+        earlier = deepcopy(baseline)
+        earlier['job_attempt'] = '0'
+        self.assertIn('baseline job attempt mismatch', ci.aggregate(
+            plan, earlier, compiler, jobs, False, dict(attempts, baseline='0')))
+        missing = deepcopy(baseline)
+        del missing['job_attempt']
+        self.assertIn('baseline job attempt mismatch', ci.aggregate(plan, missing, compiler, jobs, False, attempts))
+        # A rerun cannot pair receipts from another selection or attempt.
+        stale = deepcopy(compiler)
+        stale['run_attempt'] = '2'
+        self.assertIn('compile provenance mismatch: run_attempt', ci.aggregate(
+            plan, baseline, stale, jobs, False, attempts))
+
+    def test_workflow_consumers_download_receipts_by_their_producing_attempt(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        reusable = (ROOT / '.github/workflows/ci-selection.yml').read_text()
+        self.assertIn('value: ${{ jobs.changes.outputs.attempt }}', reusable)
+        self.assertIn('      attempt: ${{ github.run_attempt }}\n    steps:', reusable)
+        import re
+        jobs = {name: re.split(r'\n  (?:# [^\n]*\n  )*[\w-]+:\n', workflow.split('\n  ' + name + ':\n', 1)[1], 1)[0]
+                for name in ('baseline', 'build')}
+        self.assertNotIn('Compile selected exact-head game', jobs['baseline'])
+        self.assertIn('Compile selected exact-head game', jobs['build'])
+        for name, block in jobs.items():
+            with self.subTest(job=name):
+                self.assertIn('    outputs:\n      attempt: ${{ github.run_attempt }}\n', block)
+                self.assertIn('ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}', block)
+                self.assertIn('SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}', block)
+                self.assertIn('--selection-attempt "$SELECTION_ATTEMPT"', block)
+        aggregate = workflow.split('\n  ci-required:\n')[1]
+        for artifact, producer in (('selection', 'changes'), ('baseline', 'baseline'), ('compile', 'build')):
+            self.assertIn('ci-%s-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.%s.outputs.attempt }}' % (artifact, producer), aggregate)
+        for flag in ('--selection-attempt "$SELECTION_ATTEMPT"', '--baseline-attempt "$BASELINE_ATTEMPT"',
+                     '--compile-attempt "$COMPILE_ATTEMPT"'):
+            self.assertIn(flag, aggregate)
+        # Every attempt still publishes its own receipts under its own attempt.
+        self.assertIn('name: ci-aggregate-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}', aggregate)
+        self.assertIn('name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}', reusable)
 
     def test_workflow_aggregate_always_checks_jobs_and_retains_hidden_receipts(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()

@@ -410,14 +410,19 @@
 	spawn(10)
 		update()
 /atom/proc/get_coded_loc()
-	var/a = ceil(x/22)
-	var/b = 10-Floor(y/22)
-	if (map.ID == MAP_CAMPAIGN || CAMPAIGN_MAP_LIST_MAPID_OR)
-		a = ceil(x/15)
-		b = 10-Floor(y/10)
-	if (map.ID == MAP_OPERATION_FALCON)
-		a = ceil(x/40)
-		b = 10-Floor(y/40)
+	var/cell_width = 22
+	var/cell_height = 22
+	// Select by ID locally: the shared campaign macro expects a comparison prefix.
+	switch(map.ID)
+		if (MAP_CAMPAIGN, MAP_CAMPAIGN_NEW, MAP_CAMPAIGN_1A, MAP_CAMPAIGN_1B, MAP_CAMPAIGN_2A, MAP_CAMPAIGN_2B, MAP_CAMPAIGN_3A, MAP_CAMPAIGN_3B, MAP_CAMPAIGN_4A, MAP_CAMPAIGN_4B)
+			cell_width = 15
+			cell_height = 10
+		if (MAP_OPERATION_FALCON)
+			cell_width = 40
+			cell_height = 40
+	var/a = ceil(x/cell_width)
+	// Coordinates start at 1; keep every boundary tile in its ten-row grid.
+	var/b = 10-Floor((y-1)/cell_height)
 
 	switch(a)
 		if (0 to 1)
