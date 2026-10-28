@@ -495,6 +495,7 @@ var/global/list/node_grid_col_cache = null
 		// --- basic_tools (20) ---
 		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/stack/material/rope" = "basic_tools",
+		"/obj/item/rope_spindle" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
 		"/obj/item/weapon/cane" = "basic_tools",
 		"/obj/item/weapon/chisel" = "basic_tools",
@@ -1389,6 +1390,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/compost" = "resource_processing",
 		"/obj/structure/converter/retting_trough" = "resource_processing",
 		"/obj/structure/flax_comb" = "resource_processing",
+		"/obj/structure/hemp_dressing_bench" = "resource_processing",
+		"/obj/structure/ropewalk" = "resource_processing",
 		"/obj/structure/reagent_dispensers/dew_collector" = "basic_agriculture",
 		"/obj/structure/converter/tanning" = "resource_processing",
 		"/obj/structure/dehydrator" = "resource_processing",
