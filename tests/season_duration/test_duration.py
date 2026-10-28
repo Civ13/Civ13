@@ -11,6 +11,8 @@ BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
 import sys
 sys.path.insert(0, str(ROOT / "tests/snowfall_ground"))
 from source_contract import without_season_snow
+sys.path.insert(0, str(ROOT / "tests/seasonal_construction"))
+from construction_contract import without_construction_hook
 
 
 def body(source, signature):
@@ -86,7 +88,10 @@ class DurationTests(unittest.TestCase):
                          "code/game/objects/map_metadata/nomads/nomads.dm",
                          "code/game/objects/map_metadata/colonia.dm", "code/game/objects/map_metadata/pepelsibirsk.dm"):
             before = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT)
-            self.assertEqual((ROOT / relative).read_text(), without_season_snow(before.decode())[0], relative)
+            current = (ROOT / relative).read_text()
+            if relative == "code/processes/abandoned_items.dm":
+                current = without_construction_hook(current)
+            self.assertEqual(current, without_season_snow(before.decode())[0], relative)
         # Durable topology may evolve; duration owns only the saved timer schema.
         relative = "code/modules/persistence/durable_world.dm"
         old_world = subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT, text=True)

@@ -111,7 +111,11 @@ var/human_subtile_diagonal_checks = 0
 			cuffs = new(R)
 			R.handcuffed = cuffs
 		var/list/stopped = R.human_subtile_snapshot()
-		human_subtile_diagonal_assert(!R.human_subtile_input_supported(WEST) && !R.SelfMove(get_step(R, WEST), WEST, world.time + 4) && human_subtile_same(stopped, R.human_subtile_snapshot()), "restricted_offset_does_not_bypass_[state]")
+		if (state == "pulling")
+			// Pulling keeps smooth movement; living/Move drags the pulled object.
+			human_subtile_diagonal_assert(R.human_subtile_input_supported(WEST) && R.human_subtile_eligible(WEST) && human_subtile_same(stopped, R.human_subtile_snapshot()), "pulling_keeps_smooth_offset_movement")
+		else
+			human_subtile_diagonal_assert(!R.human_subtile_input_supported(WEST) && !R.SelfMove(get_step(R, WEST), WEST, world.time + 4) && human_subtile_same(stopped, R.human_subtile_snapshot()), "restricted_offset_does_not_bypass_[state]")
 		if (state == "prone")
 			R.prone = FALSE
 		else if (state == "pulling")
@@ -126,6 +130,24 @@ var/human_subtile_diagonal_checks = 0
 		if (held)
 			qdel(held)
 		qdel(R)
+	// An open menu keeps smooth movement, including one opened mid-step.
+	var/mob/living/human/subtile_fixture/U = human_subtile_fixture_actor(8, 7)
+	U.human_subtile_input_supported(EAST)
+	var/obj/item/menu_source = new(U)
+	U.set_using_object(menu_source)
+	human_subtile_diagonal_assert(U.human_subtile_eligible(EAST) && U.SelfMove(get_step(U, EAST), EAST, world.time + 4) && U.x == 9 && !U.step_x && U.fixture_pulses == 16 && U.using_object == menu_source, "open_menu_keeps_full_smooth_step")
+	human_subtile_fixture_reset(U)
+	U.unset_using_object()
+	U.fixture_cancel_after = 1
+	U.SelfMove(get_step(U, EAST), EAST, world.time + 4)
+	U.fixture_authorized = TRUE
+	U.fixture_cancel_after = 0
+	U.set_using_object(menu_source)
+	human_subtile_fixture_reset(U)
+	human_subtile_diagonal_assert(U.step_x == 2 && U.human_subtile_input_supported(EAST) && U.SelfMove(get_step(U, EAST), EAST, world.time + 4) && U.x == 10 && !U.step_x, "menu_opened_mid_step_does_not_strand_offset")
+	U.unset_using_object()
+	qdel(menu_source)
+	qdel(U)
 	var/mob/living/human/subtile_fixture/B = human_subtile_fixture_actor(8, 7)
 	B.human_subtile_input_supported(EAST)
 	B.fixture_cancel_after = 1

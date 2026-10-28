@@ -1,0 +1,47 @@
+{
+  "license": "CC0-1.0",
+  "version": 1,
+  "states": [
+    {
+      "name": "potato"
+    },
+    {
+      "name": "corn"
+    },
+    {
+      "name": "rice"
+    },
+    {
+      "name": "wheat"
+    },
+    {
+      "name": "hemp"
+    },
+    {
+      "name": "healing"
+    },
+    {
+      "name": "yarrow"
+    },
+    {
+      "name": "milk_thistle"
+    },
+    {
+      "name": "elderflower"
+    },
+    {
+      "name": "comfrey"
+    },
+    {
+      "name": "poppy"
+    },
+    {
+      "name": "aloe"
+    }
+  ],
+  "copyright": "Copyright (c) 2026 escortag (Discord: escortag). Created for Humanity. Released under CC0-1.0.",
+  "size": {
+    "y": 32,
+    "x": 32
+  }
+}

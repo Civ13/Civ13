@@ -142,7 +142,7 @@ var/list/cross_observations = list()
 	var/total_placements = 0
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
-		cross_check(F["/format_version"] == 2, "movement changed native save format version")
+		cross_check(F["/format_version"] == 3, "bounded movement did not use native save format 3")
 		F.cd = "/entries"
 		var/list/shards = F.dir.Copy()
 		for(var/shard in shards)
@@ -154,7 +154,7 @@ var/list/cross_observations = list()
 				F.cd = path
 				// Do not create an absent optional native field while inspecting it.
 				if("content" in F.dir)
-					for(var/child in params2list(F["content"]))
+					for(var/child in map_storage.saved_content_refs(F["content"], F["/format_version"]))
 						if(F["[map_storage.entry_path(F, child)]/type"] == /obj/item/cross_target) total_placements++
 	cross_check(total_targets == 1, "movement serialized more than one target entry")
 	cross_check(total_placements == 1, "movement serialized more than one spatial parent")
