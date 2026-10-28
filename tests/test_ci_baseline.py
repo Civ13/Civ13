@@ -52,6 +52,20 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_los_event_identity_comes_from_validated_plan(self):
+        plan, _, _, _ = fixtures()
+        with patch.dict(os.environ, {'LOS_EVENT_BASE': 'stale', 'LOS_EVENT_HEAD': 'stale'}):
+            environment = ci.suite_environment('los_context', plan)
+        self.assertEqual(environment['LOS_EVENT_BASE'], plan['base'])
+        self.assertEqual(environment['LOS_EVENT_HEAD'], plan['head'])
+        plan['base'] = None
+        self.assertEqual(ci.suite_environment('los_context', plan)['LOS_EVENT_BASE'], '')
+
+    def test_visibility_selects_only_explicit_offline_file(self):
+        self.assertEqual(ci.SUITES['los_context']['files'], ('tests/los_context/test_offline.py',))
+        self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
+        self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))
+
     def selected(self, paths, comparison='available'):
         return {name for name, row in ci.impact(paths, comparison)['suites'].items() if row['selected']}
 
