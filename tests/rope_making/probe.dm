@@ -61,7 +61,8 @@
 		tool.forceMove(get_turf(src))
 	if (wait_mode == "feed_loss")
 		l_hand = null
-		feed.forceMove(get_turf(src))
+		// Keep the loss probe independent of legitimate floor-stack merging.
+		feed.forceMove(locate(4,4,1))
 	if (wait_mode == "admission")
 		// Simulate an admitted save/load which has already finished before wake.
 		persistence_admission_identity = new /datum
