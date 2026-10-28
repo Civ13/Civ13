@@ -1,6 +1,9 @@
 """Reviewed procedural cordage routes. Drift checks bind tuning to production."""
 PATH = 'code/modules/1713/rope_making.dm'
 PREFIX = '/obj/item/'
+# First implementation containing the reviewed production actions, retained as
+# provenance only. Generation/tests read current files, never Git history.
+AUDIT_COMMIT = '9bd17d45d3815ca38dbab3c3438d43040adc6fc9'
 
 
 def add_rope_making(files, add, records):
@@ -22,6 +25,7 @@ def add_rope_making(files, add, records):
         if station:
             record.update(processor='rope_making', processor_name='Rope making', station=station)
         routes.append(dict(name=name, file=PATH, line=line,
+                           audit_commit=AUDIT_COMMIT,
                            inputs=[x['id'] for x in record['inputs']],
                            outputs=[x['id'] for x in record['outputs']],
                            steps=list(steps), tools=list(tools), conditions=' '.join(steps),
