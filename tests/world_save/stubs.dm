@@ -234,6 +234,11 @@ var/list/mutate_on_tick = null
 	durable_import = null
 	loading_z = 0
 
+// Disabled renderer coverage is runtime-only; minimal serializer fixtures have none.
+/atom/movable/lighting_fullbright
+/turf/proc/sync_fullbright_coverage()
+	return
+
 // These serializer-only worlds cannot import topology. Full-source prepared
 // zone fixtures compile the production implementation instead.
 /area/var/tmp/persistence_zone_id
