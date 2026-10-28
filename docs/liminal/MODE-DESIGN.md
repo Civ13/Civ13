@@ -2,7 +2,7 @@
 
 Status: design milestone for review. Working name and original room layouts;
 inspired by familiar-but-wrong indoor horror, without copying proprietary rooms,
-art, characters or scenes. The private topology proof is not a playable mode.
+art, characters or scenes. The offline topology proof is not a playable mode.
 Source audit baseline: Civ13 commit
 `10d264e5896221b34949ee4b67c0fd2b94bde249`. Implementation is staged below;
 this document does not activate a server mode or authorize native runs.
@@ -29,7 +29,7 @@ this document does not activate a server mode or authorize native runs.
 - Use configurable scenario year 1990 by default, within the initial 1990-1993
   policy. Period equipment, props, recipes and research need explicit allowlists;
   a map title or broad modern era is insufficient. See ERA-AND-SCENARIOS.md.
-- The powered-gateway expedition/colonization scenario is separately owned.
+- The powered-gateway expedition/colonization scenario is separate.
   Share an immutable level template contract, not escape objectives, gateway
   power logic or an inhabited world's mutable state. Never reseed/reset it.
 
@@ -95,7 +95,7 @@ level portals: matching targets, safe landing footprints, unique pair identity,
 permissions and delayed-transition lifetime need explicit checks. The first
 mode can remain on one finite level and needs no portal mechanic.
 
-The root audit also verified echofiend sound investigation in
+The source audit also verified echofiend sound investigation in
 [monsters.dm](https://github.com/Civ13/Civ13/blob/10d264e5896221b34949ee4b67c0fd2b94bde249/code/game/mob/living/simple_animal/hostile/monsters.dm),
 wired through [sound.dm](https://github.com/Civ13/Civ13/blob/10d264e5896221b34949ee4b67c0fd2b94bde249/code/game/sound.dm).
 This is a design reference; it does not establish pursuit through generated

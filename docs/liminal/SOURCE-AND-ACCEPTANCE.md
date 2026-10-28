@@ -5,20 +5,20 @@
 The native design audit baseline is Civ13 commit
 `10d264e5896221b34949ee4b67c0fd2b94bde249`. Read-only source references are
 capability evidence, not new-mode gameplay acceptance. Existing surface/oceanic
-source remains at its own reviewed commits; cavern work remains separately private.
+source retains its own reviewed versions and acceptance boundaries.
 
 | Reference | Established observation | Reuse limit |
 | --- | --- | --- |
 | code/game/objects/map_metadata/lights_out.dm | Survivor/extraction foundation; increment-per-spawn(10) timer toward 300 conflicts with 30-second comment | Do not inherit jungle constructor effects or copy timing blindly |
 | code/modules/1713/lantern.dm | Unlimited flashlight variants and darknight light range/color fields; separate fuel-based variants | No assumed battery scarcity or new asset/visibility proof |
 | code/game/objects/effects/bump_teleporter.dm | Target-ID lookup, delayed movement and persistence_set_loc | Not proof of unique/safe paired indoor portals |
-| code/game/mob/living/simple_animal/hostile/monsters.dm | Root audit verified echofiend sound investigation | Door/pixel-pathing, spawn safety and pacing unproved |
-| code/game/sound.dm | Root audit verified sound integration | No measured acoustic occlusion from authored tags |
-| Existing carpet floors, footsteps and ambience | Root audit identified reusable hooks | Exact per-file native palette/appearance remains a mapping task |
+| code/game/mob/living/simple_animal/hostile/monsters.dm | Source audit verified echofiend sound investigation | Door/pixel-pathing, spawn safety and pacing unproved |
+| code/game/sound.dm | Source audit verified sound integration | No measured acoustic occlusion from authored tags |
+| Existing carpet floors, footsteps and ambience | Source audit identified reusable hooks | Exact per-file native palette/appearance remains a mapping task |
 
-The first three files were independently read at the pinned baseline while
-preparing these documents. Echofiend/sound/carpet findings reuse the root audit
-rather than duplicating its ownership. Primary links are in MODE-DESIGN.md.
+The source audit covers the pinned files and the echofiend, sound and carpet
+capabilities listed above. These references do not establish native gameplay
+acceptance for the new mode. Primary links are in MODE-DESIGN.md.
 
 Offline shared helpers are copied verbatim from
 tools/procedural_maps/validator.py and io.py at
@@ -102,7 +102,7 @@ Tunable controls: allowed family mix/weights, optional detour, finite scale/caps
 grace/round/extraction duration proposals, approved steady light/ambience choices
 and later threat eligibility. Tuning cannot disable the invariants.
 
-The private small proof currently passes 45 explicit tests on Python 3.11 and 3.13.
+The initial small offline proof passed 45 explicit tests on Python 3.11 and 3.13.
 Its default 6-room layout has 1060 blueprint cells, 152 navigable footprint centers,
 393 explored progression states and a 60-step completed route. Default topology
 SHA-256 is 6e4e1946ee62525bad82681d6b7cb5b0d2b8d8c03472b8856009108a93bcad40.
@@ -115,7 +115,7 @@ blocked anchors, output tampering and hard candidate/state limits are covered.
 
 Keep design changes separate from implementation commits and drafts.
 
-1. **Design milestone:** publish these coherent documents for root review; freeze
+1. **Design milestone:** submit these documents for maintainer review; freeze
    initial decisions, room vocabulary, finite map boundary and source caveats.
    Preserve existing terrain profiles and their branch/history/evidence.
 2. **Small independent authored-room tool:** source-backed deterministic catalog,
@@ -142,5 +142,21 @@ Keep design changes separate from implementation commits and drafts.
 
 No design decision currently blocks slices 1-2. Choosing/validating the native
 indoor catalog and mode handlers is necessary for slices 3-4. Native runtime,
-visual/audio acceptance and host capacity cannot be established by the private
-topology proof. Root retains design/source review and all merge decisions.
+visual/audio acceptance and host capacity cannot be established by the offline
+topology proof. Maintainer review is required for design/source changes and all merges.
+
+## Static room-study palette interface
+
+An example render of an individual family is a static layout study. Its manifest
+must identify the exact canonical catalog/mask hash, row orientation, socket
+display policy, palette source revision, selected DMI/icon states, file hashes
+and any placeholder mapping. Raw catalog masks have sealed boundaries; a study
+that opens all socket apertures must label that policy rather than imply an
+assembled level. A generated chapter instead uses exactly its linked sockets
+and keeps every unused socket sealed.
+
+The palette study supplies visual candidates. Native export separately verifies
+type/var declarations, density, collision footprints, source includes and static
+parse-back. Shared palette identity links those records; a convincing image does
+not establish native collision, door locks, timing, lighting or mode acceptance.
+No room art or image is required for the deterministic topology tests.
