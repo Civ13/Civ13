@@ -1,0 +1,119 @@
+{
+  "original_sha256": "79e5dd51a7296a696203c06962f2013f7826da536afbd1cd547dc4b64c3d79af",
+  "operations": [
+    {
+      "start": 2569,
+      "end": 2602,
+      "before": "",
+      "after": "intro_connected_initialize(src)\n\t"
+    },
+    {
+      "start": 3265,
+      "end": 3265,
+      "before": "Del()\n\tif (src == intro_observer_client)\n\t\tintro_stop(\"observer disconnected\")\n\treturn ..()\n\n/client/",
+      "after": ""
+    },
+    {
+      "start": 3285,
+      "end": 3285,
+      "before": "\n\n/client/Move()\n\treturn FALSE",
+      "after": ""
+    },
+    {
+      "start": 4199,
+      "end": 4320,
+      "before": "",
+      "after": "src != intro_connected_observer || !intro_connected_client || intro_connected_client.mob != intro_driver || intro_driver."
+    },
+    {
+      "start": 4336,
+      "end": 4337,
+      "before": "",
+      "after": "c"
+    },
+    {
+      "start": 4338,
+      "end": 4340,
+      "before": "bs",
+      "after": "nn"
+    },
+    {
+      "start": 4341,
+      "end": 4343,
+      "before": "rv",
+      "after": "ct"
+    },
+    {
+      "start": 4344,
+      "end": 4345,
+      "before": "r",
+      "after": "d"
+    },
+    {
+      "start": 7712,
+      "end": 8938,
+      "before": "",
+      "after": "connected_attach_and_steer()\n\tvar/native_title = winget(intro_connected_client, \"cloud\", \"title\")\n\ttext2file(json_encode(list(\"probe\"=\"connected_window_binding_v1\", \"source\"=\"5260b60f0efef2c0af70fae204b1180106ef50b3\", \"control_id\"=\"cloud\", \"expected_title\"=\"Civ13 carriage take\", \"actual_is_text\"=istext(native_title), \"actual_length\"=(istext(native_title) ? length(native_title) : null), \"actual_title_prefix\"=(istext(native_title) ? copytext(native_title, 1, 129) : null), \"production_login_title_effect_accepted\"=FALSE)), \"intro-checks.txt\")\n\tintro_check(istext(native_title) && length(native_title)>0 && length(native_title)<=128 && native_title==\"Civ13 carriage take\", \"bounded actual fixture cloud title\")\n\ttext2file(json_encode(list(\"source\"=\"5260b60f0efef2c0af70fae204b1180106ef50b3\", \"phase\"=\"driver_ready\", \"title\"=native_title, \"expected_title\"=\"Civ13 carriage take\", \"control_id\"=\"cloud\", \"production_login_title_effect_accepted\"=FALSE, \"client\"=\"\\ref[intro_connected_client]\", \"body\"=\"\\ref[intro_connected_client.mob]\", \"driver\"=\"\\ref[intro_driver]\", \"driver_attached\"=(intro_connected_client.mob==intro_driver), \"eye_is_driver\"=(intro_connected_client.eye==intro_driver))), \"intro-connected-window.json\")\n\tintro_"
+    },
+    {
+      "start": 12072,
+      "end": 12072,
+      "before": "stype(i",
+      "after": ""
+    },
+    {
+      "start": 12092,
+      "end": 12092,
+      "before": ".mob,",
+      "after": ""
+    },
+    {
+      "start": 12093,
+      "end": 12096,
+      "before": "/mob/",
+      "after": "== "
+    },
+    {
+      "start": 12102,
+      "end": 12103,
+      "before": "",
+      "after": "c"
+    },
+    {
+      "start": 12104,
+      "end": 12106,
+      "before": "bs",
+      "after": "nn"
+    },
+    {
+      "start": 12107,
+      "end": 12109,
+      "before": "rv",
+      "after": "ct"
+    },
+    {
+      "start": 12110,
+      "end": 12118,
+      "before": "r)",
+      "after": "d_client"
+    },
+    {
+      "start": 12188,
+      "end": 12293,
+      "before": "",
+      "after": "client identity\")\n\tif (phase == \"admission\")\n\t\tintro_check(istype(intro_connected_client.mob, /mob/intro_"
+    },
+    {
+      "start": 12301,
+      "end": 12643,
+      "before": "",
+      "after": "), \"observer admission phase\")\n\telse\n\t\tintro_check(intro_connected_client.mob == intro_driver && intro_driver.client == intro_connected_client && intro_connected_client.eye == intro_driver && intro_connected_client.perspective == MOB_PERSPECTIVE, \"driver capture phase\")\n\t\tintro_connected_receipt(phase == \"start\" ? \"drive_start\" : \"drive_end"
+    },
+    {
+      "start": 13321,
+      "end": 13555,
+      "before": "",
+      "after": ")\n\tif (fexists(\"intro-disconnect-request.txt\") && !intro_connected_disconnect_requested)\n\t\tintro_check(file2text(\"intro-disconnect-request.txt\") == \"server_disconnect\\n\", \"fixed owned disconnect request\")\n\t\tintro_connected_disconnect("
+    }
+  ]
+}
