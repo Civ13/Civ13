@@ -20,6 +20,50 @@ spec.loader.exec_module(baseline)
 
 
 class CheckoutRefsTests(unittest.TestCase):
+    def test_unselected_evidence_never_hides_a_fixture(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
+        evidence = workflow.split('\n  evidence-checker:\n', 1)[1].split('\n  extraction-instances:\n', 1)[0]
+        def condition(block, name):
+            step = block.split('      - name: ' + name + '\n', 1)[1].split('\n      - ', 1)[0]
+            return next(line.strip() for line in step.splitlines() if line.startswith('        if: '))
+        self.assertEqual(condition(evidence, 'Explain unselected evidence fixtures'),
+                         condition(build, 'Check out simple compilation source'))
+        self.assertEqual(condition(evidence, 'Check out selected evidence sources and history'),
+                         condition(build, 'Check out history for selected or manual fixtures'))
+        self.assertIn('this job did not execute native or source fixtures', evidence)
+        self.assertIn("coverage: ${{ steps.no_evidence.outputs.coverage || 'selected_or_unknown' }}", evidence)
+        self.assertIn("echo 'coverage=not_selected' >> \"$GITHUB_OUTPUT\"", evidence)
+
+        def require_closed_guards(section):
+            self.assertEqual(re.findall(r'^      - (?!name:)[^\n]*', section, re.M), [])
+            steps = re.split(r'\n      - name: ', section)[1:]
+            fixtures = [x for x in steps if not x.startswith(('Explain unselected evidence fixtures\n',
+                                                               'Check out selected evidence sources and history\n'))]
+            self.assertGreaterEqual(len(fixtures), 40)
+            for step in fixtures:
+                guards = [line.strip()[4:] for line in step.splitlines() if line.startswith('        if: ')]
+                self.assertEqual(len(guards), 1, step.splitlines()[0])
+                expression = guards[0]
+                roof = "(github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))"
+                expression = expression.replace(roof, 'False')
+                expression = expression.replace("needs.changes.outputs.extensive == 'true'", 'False')
+                expression = re.sub(r"contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\), '[a-zA-Z0-9_./-]+'\)", 'False', expression)
+                expression = re.sub(r'inputs\.(?:save_latency_regressions|protected_sleep_regressions) == true', 'False', expression)
+                expression = expression.replace('||', ' or ')
+                parsed = ast.parse(expression, mode='eval')
+                for node in ast.walk(parsed):
+                    self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.Or, ast.Constant))
+                    if isinstance(node, ast.Constant):
+                        self.assertIs(node.value, False)
+                self.assertFalse(eval(compile(parsed, '<unselected fixture>', 'eval'), {'__builtins__': {}}, {}))
+
+        require_closed_guards(evidence)
+        guard = "needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aotd_map')"
+        self.assertIn(guard, evidence)
+        with self.assertRaises((AssertionError, SyntaxError)):
+            require_closed_guards(evidence.replace(guard, guard + ' || true', 1))
+
     def test_build_checkout_conditions_partition_simple_and_fixture_events(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]

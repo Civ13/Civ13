@@ -136,8 +136,19 @@ jobs:
     needs: changes
     if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.no_evidence.outputs.coverage || 'selected_or_unknown' }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Explain unselected evidence fixtures
+        id: no_evidence
+        if: github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')
+        run: |
+          echo 'coverage=not_selected' >> "$GITHUB_OUTPUT"
+          echo 'No evidence fixture was selected; this job did not execute native or source fixtures.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Check out selected evidence sources and history
+        if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels) != '[]')
+        timeout-minutes: 12
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0

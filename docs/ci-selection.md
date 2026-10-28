@@ -198,7 +198,10 @@ the baseline does not need unrelated repository history. A non-manual build
 also uses a depth-one checkout and exact comparison when no introduced suite
 is selected and the PR has no labels. Selected suites, any PR label, uncertain
 label metadata and manual runs retain the existing full-history build checkout
-with a 12-minute checkout limit. Evidence-checker retains full history. These
+with a 12-minute checkout limit. When no evidence fixture can be selected under
+the same conservative conditions, evidence-checker explicitly reports that no
+fixture ran and skips checkout. Selected, labeled or manual evidence retains
+full history with a 12-minute checkout limit. These
 exceptions keep historic fixture dependencies and label-based admission intact;
 they do not prove that full history is inherently necessary.
 Each producer names its artifact with the attempt it actually ran in. A re-run
