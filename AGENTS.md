@@ -9,6 +9,12 @@ should_save is FALSE and all runtime fields explicitly exclude custom persistenc
 Source contracts are bounded offline CI only, not DM/native behavior proof.
 DME inclusion permits exact-revision compile coverage; activation, warm-up and
 activity/visibility adapters remain separate work. No animal mutation is added.
+<!-- 2026-10-28: ecology heatmap admin debug overlay -->
+activity_heatmap_debug.dm is a default-off R_DEBUG verb pair (Toggle Ecology
+Heatmap / Ecology Heatmap Status). Once toggled it samples living clientless
+simple animals on the admin's z every 10s into 8x8 cells and shows client images
+to that admin only; overflow resets the epoch. It is a test aid, not the
+production activity/visibility adapter, and never spawns or moves animals.
 
 
 <!-- 2026-10-26: diagonal human movement candidate -->

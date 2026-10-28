@@ -141,5 +141,79 @@ class SourceContracts(unittest.TestCase):
                 self.assertEqual(text.count(before),1)
                 self.assertIn(expected,contracts(text.replace(before,after)))
 
+DEBUG=ROOT/'code/modules/ecology/activity_heatmap_debug.dm'
+
+def debug_contracts(source, verbs):
+    errors=[]
+    required={
+      'default_off':'var/global/datum/ecology_heatmap_debug/ecology_heatmap_debugger = null',
+      'no_persistence':'should_save = FALSE',
+      'debug_rights':'if (!check_rights(R_DEBUG))\n\t\treturn',
+      'clientless_living_animals':'if (A.stat == DEAD || A.client)',
+      'own_z_only':'if (!T || T.z != z_level)',
+      'epoch_bound_sample':'heatmap.sample(now, rows, TRUE, heatmap.epoch)',
+      'epoch_bound_query':'heatmap.pressure(now, list(z_level, cx, cy), heatmap.epoch)',
+      'unknown_resets':'if (!heatmap.coverage_valid)',
+      'viewer_only_images':'viewer.images += images',
+      'stale_loop_exit':'while (my_token == token && viewer && heatmap)',
+    }
+    for name,token in required.items():
+        if source.count(token)<1: errors.append(name)
+    if source.count('if (!check_rights(R_DEBUG))\n\t\treturn')!=2: errors.append('debug_rights')
+    for verb in ['/client/proc/toggle_ecology_heatmap,','/client/proc/ecology_heatmap_status,']:
+        if verb not in verbs: errors.append('registered_debug_verb')
+    return errors
+
+
+class DebugAdapterContracts(unittest.TestCase):
+    def verbs(self):
+        text=(ROOT/'code/modules/admin/admin_verbs.dm').read_text()
+        return text.split('var/list/admin_verbs_debug = list(',1)[1].split('\n\t)',1)[0]
+
+    def test_required_contracts(self):
+        self.assertEqual(debug_contracts(DEBUG.read_text(),self.verbs()),[])
+
+    def test_included_once_after_core(self):
+        text=(ROOT/'civ13.dme').read_text()
+        line='#include "code\\modules\\ecology\\activity_heatmap_debug.dm"'
+        self.assertEqual(text.count(line),1)
+        self.assertLess(text.index('activity_heatmap.dm"'),text.index(line))
+
+    def test_no_broadcast_or_world_mutation(self):
+        code='\n'.join(line for line in DEBUG.read_text().splitlines() if not line.lstrip().startswith('//'))
+        for token in ['world <<','world.','del(A)','qdel(A)','forceMove','.loc =','/process','register(']:
+            if token=='world.':
+                self.assertEqual(code.count(token),code.count('world.time'))
+                continue
+            self.assertNotIn(token,code)
+
+    def test_all_fields_runtime_excluded(self):
+        text=DEBUG.read_text()
+        fields=re.findall(r'var/tmp/(?:list/|client/|datum/ecology_activity_heatmap/)?(\w+)\s*=',text)
+        exclusion=text.split('/datum/ecology_heatmap_debug/persistence_runtime_var(key)',1)[1].split('/datum/ecology_heatmap_debug/Destroy()',1)[0]
+        self.assertEqual(len(fields),7)
+        for field in fields:
+            self.assertIn('"'+field+'"',exclusion)
+        self.assertIn('return ..()',exclusion)
+
+    def test_mutation_controls(self):
+        text=DEBUG.read_text();verbs=self.verbs()
+        changes=[
+          ('ecology_heatmap_debug/ecology_heatmap_debugger = null','ecology_heatmap_debug/ecology_heatmap_debugger = new','default_off'),
+          ('A.stat == DEAD || A.client','A.stat == DEAD','clientless_living_animals'),
+          ('T.z != z_level','FALSE','own_z_only'),
+          ('heatmap.sample(now, rows, TRUE, heatmap.epoch)','heatmap.sample(now, rows, TRUE, 0)','epoch_bound_sample'),
+          ('viewer.images += images','world << images','viewer_only_images'),
+          ('my_token == token && viewer','viewer','stale_loop_exit'),
+        ]
+        for before,after,expected in changes:
+            with self.subTest(control=expected):
+                self.assertEqual(text.count(before),1)
+                self.assertIn(expected,debug_contracts(text.replace(before,after),verbs))
+        with self.subTest(control='debug_rights'):
+            self.assertIn('debug_rights',debug_contracts(text.replace('check_rights(R_DEBUG)','TRUE',1),verbs))
+        with self.subTest(control='registered_debug_verb'):
+            self.assertIn('registered_debug_verb',debug_contracts(text,verbs.replace('/client/proc/toggle_ecology_heatmap,','')))
+
 if __name__=='__main__':
     unittest.main()

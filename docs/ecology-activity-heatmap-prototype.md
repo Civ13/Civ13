@@ -1,9 +1,11 @@
 # Inactive activity heatmap datum
 
-Status: source candidate only. No process, singleton, player hook, spawn/delete
-path, live telemetry, startup action or server configuration is added. Including
-the declaration in civ13.dme makes it available for future compilation; it does
-not construct an instance. No compile or native execution has been performed.
+Status: source candidate plus a default-off admin debug overlay (see below).
+The datum itself has no process, singleton, player hook, spawn/delete path, live
+telemetry, startup action or server configuration. Nothing constructs an
+instance unless an admin uses the debug verb. The included revision compiles
+with 0 errors/0 warnings on DreamMaker 516.1688; no native, connected-client or
+gameplay execution has been performed.
 
 ## API and ownership
 
@@ -56,13 +58,41 @@ and calls the parent. No custom save payload or restore hook is provided. This
 is not a tested disk-save round trip; a future owner must not embed copies of
 these fields in its own payload.
 
+## Admin debug overlay (test aid)
+
+`code/modules/ecology/activity_heatmap_debug.dm` adds two Debug verbs for admins
+with R_DEBUG. Nothing runs until one is used, and nothing is saved.
+
+- **Toggle Ecology Heatmap** starts or stops the overlay. It binds to the
+  toggling admin's client and current z-level. Every 10 seconds it collects the
+  8x8-tile cells occupied by living, clientless `/mob/living/simple_animal`
+  mobs on that z (from `living_mob_list`) and feeds them to one heatmap instance
+  as a complete snapshot with its current epoch. Default heatmap policy: 4096
+  cells, 600 second half-life, 0.25 per sample, capped at 1.
+- Cells with a decayed score of at least 0.02 are drawn as translucent squares
+  shown only to that admin, above the lighting plane: yellow for low activity,
+  red for high. Activity builds up over a few minutes of sampling.
+- If a sample has more than 256 distinct occupied cells, or storage exceeds 4096
+  cells, the heatmap holds UNKNOWN; the adapter then starts a new epoch, which
+  clears the drawn map. **Ecology Heatmap Status** reports the epoch, sample and
+  scored-cell counts, and how many UNKNOWN resets happened.
+- The loop stops when toggled off or when the viewer disconnects.
+
+To try it in a test round: log in as an admin with R_DEBUG on a map with
+wildlife, stand on the z-level to inspect, use Debug > Toggle Ecology Heatmap,
+and walk or ghost around for a few minutes. This is a debugging view of animal
+presence, not the planned production activity or visibility adapter. It never
+spawns, moves or deletes animals. Heavy-wildlife maps may exceed 256 occupied
+cells per sample and keep resetting; the status verb shows that.
+
 ## Validation and release boundaries
 
 From the repository root, after applying the candidate:
 
     python -B -m unittest discover -s tests/ecology_heatmap -v
 
-Twelve source-contract tests include twelve deliberate source mutations. These
+Seventeen source-contract tests include twenty deliberate source mutations
+(twelve for the datum, eight for the debug adapter). These
 check inclusion, field exclusions, hard guards and inert declaration shape;
 they are not a parser, interpreter, DM compile or behavioral proof. Separate
 Python reference-model behavior is background design evidence only, not this

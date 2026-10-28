@@ -807,6 +807,7 @@
 #include "code\modules\1713\weather_policy.dm"
 #include "code\modules\1713\snowfall_ground.dm"
 #include "code\modules\ecology\activity_heatmap.dm"
+#include "code\modules\ecology\activity_heatmap_debug.dm"
 #include "code\modules\1713\barriers\cover.dm"
 #include "code\modules\1713\barriers\sandbag.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"

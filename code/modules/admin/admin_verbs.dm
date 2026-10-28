@@ -171,6 +171,8 @@ var/list/admin_verbs_debug = list(
 	/client/proc/load_voyage_event,
 	/client/proc/load_battle_ship,
 	/client/proc/debug_variables_map,
+	/client/proc/toggle_ecology_heatmap,
+	/client/proc/ecology_heatmap_status,
 	/datum/admins/proc/subcom13_panel,
 	)
 

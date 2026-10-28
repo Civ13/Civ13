@@ -40,6 +40,7 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'ecology_heatmap': {'files': ('tests/ecology_heatmap/test_source_contract.py',), 'paths': (
         'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
+        'code/modules/ecology/activity_heatmap_debug.dm',
         'docs/ecology-activity-heatmap-prototype.md',
         'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
