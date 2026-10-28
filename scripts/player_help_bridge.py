@@ -277,6 +277,84 @@ def bronze_knowledge(root):
     return result[:1]
 
 
+RESOURCE_SOURCE_MARKERS = (
+    'var/shard_type = SHARD_SHRAPNEL',
+    'display_name = name',
+    '/material/proc/place_shard(var/turf/target)',
+    'name = "[material.display_name] [material.shard_type]"',
+    'if ( H.shoes || ( H.wear_suit && (H.wear_suit.body_parts_covered & FEET) ) )',
+)
+
+
+def resource_knowledge(root):
+    """Reviewed bounded shard behavior and names derived from explicit material definitions."""
+    root = Path(root).resolve()
+    paths = ('code/modules/materials/materials.dm',
+             'code/game/objects/items/weapons/material/shards.dm',
+             'code/predefines.dm',
+             'code/game/objects/items/clothing/clothing.dm',
+             'code/modules/reagents/reagent_containers/food/sandwich.dm')
+    contents, hashes = {}, {}
+    for relative in paths:
+        path = (root / relative).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError('Gameplay source escaped root')
+        raw = path.read_bytes()
+        if len(raw) > 512000:
+            raise ValueError('Oversized resource source')
+        contents[relative] = raw.decode('utf-8').replace('\r\n', '\n')
+        hashes[relative] = hashlib.sha256(raw).hexdigest()
+    materials, shards, definitions, clothing, sandwich = (contents[path] for path in paths)
+    joined = '\n'.join(contents.values())
+    if any(marker not in joined for marker in RESOURCE_SOURCE_MARKERS):
+        raise ValueError('Reviewed resource source markers changed')
+
+    def section(text, start, end):
+        if text.count(start) != 1 or text.count(end) != 1:
+            raise ValueError('Reviewed resource source boundaries changed')
+        a = text.index(start)
+        b = text.index(end, a + len(start))
+        result = text[a:b]
+        if len(result) > 6000:
+            raise ValueError('Resource excerpt exceeds bound')
+        return result
+
+    base = section(materials, '/material/New()', '/material/proc/get_blunt_damage()')
+    placement = section(materials, '/material/proc/place_shard(var/turf/target)', '/material/proc/is_brittle()')
+    shard = section(shards, '/obj/item/weapon/material/shard\n', '// Preset types')
+    shoes = section(clothing, '/obj/item/clothing/shoes/attackby', '/obj/item/clothing/shoes/proc/handle_movement')
+    food = section(sandwich, '/obj/item/weapon/reagent_containers/food/snacks/csandwich/attackby', '/obj/item/weapon/reagent_containers/food/snacks/csandwich/proc/update()')
+    default = next((line.strip() for line in materials.splitlines() if 'var/shard_type = SHARD_SHRAPNEL' in line), '')
+    macros = '\n'.join(line for line in definitions.splitlines() if line.startswith(('#define SHARD_SHRAPNEL ', '#define SHARD_SHARD ')))
+    if not default or len(macros.splitlines()) != 2:
+        raise ValueError('Reviewed shard constants changed')
+    if '#define SHARD_SHRAPNEL "shrapnel"' not in macros or '#define SHARD_SHARD "shard"' not in macros:
+        raise ValueError('Reviewed shard labels changed')
+    rows = []
+    for material, end, alias in [('flint', 'bone', 'flint shrapnel'),
+                                 ('steel', 'steel/sub', 'steel shrapnel'),
+                                 ('glass', 'glass/proc/is_reinforced()', 'glass shard'),
+                                 ('obsidian', 'barbedwire', 'obsidian shrapnel')]:
+        details = section(materials, '\n/material/' + material + '\n', '\n/material/' + end + '\n')
+        if not re.search(r'^\s*name\s*=\s*"' + re.escape(material) + r'"\s*$', details, re.M):
+            raise ValueError('Reviewed material name changed: ' + material)
+        if re.search(r'^\s*display_name\s*=', details, re.M):
+            raise ValueError('Reviewed material display name changed: ' + material)
+        shard_override = re.findall(r'^\s*shard_type\s*=\s*(\w+)', details, re.M)
+        if shard_override != (['SHARD_SHARD'] if material == 'glass' else []):
+            raise ValueError('Reviewed material shard type changed: ' + material)
+        text = ('CURRENT GAMEPLAY CODE (material shard: ' + alias + '):\n' + default + '\n' + macros +
+                '\n' + base + '\n' + placement + '\n' + details + '\n' + shard + '\n' + shoes + '\n' + food +
+                '\nThe display name is constructed from material and shard type. Shards are sharp items; '
+                'the code describes throwing and defines contact injury with stated protections. '
+                'These excerpts do not establish a material-specific crafting recipe or availability.')
+        if len(text) > 16000:
+            raise ValueError('Combined resource evidence exceeds bound')
+        rows.append({'topic': alias + ' ' + material + ' shard shrapnel debris', 'source': 'code',
+                     'source_hashes': dict(hashes), 'sha256': hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest(), 'text': text})
+    return rows
+
+
 def gameplay_knowledge(root, wiki_root=None):
     """Only reviewed gameplay excerpts, never arbitrary repository search or tools."""
     result = []
@@ -307,6 +385,7 @@ def gameplay_knowledge(root, wiki_root=None):
         # Each snippet carries provenance for diagnostics, not authority or instructions.
         result.append({'topic': topic, 'source': 'code', 'sha256': hashlib.sha256(raw).hexdigest(), 'text': 'CURRENT GAMEPLAY CODE (' + topic + '):\n' + excerpt})
     result.extend(bronze_knowledge(root))
+    result.extend(resource_knowledge(root))
     if wiki_root:
         wiki = Path(wiki_root).resolve()
         for relative in ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md'):

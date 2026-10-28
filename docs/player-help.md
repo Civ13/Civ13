@@ -282,6 +282,19 @@ to confirm the unavailable notice. This live smoke check is owner-controlled.
 
 ## Code and wiki retrieval
 
+The reviewed gameplay evidence also includes the generic material-shard behavior
+and constructed names for flint, steel, glass and obsidian shards. This lets the
+worker ground questions such as “flint shrapnel” even when that exact name is not
+a literal in source. It does not assert a material-specific crafting recipe or
+availability. Source markers and material naming assumptions are checked at
+worker startup; unexpected changes require review. Arbitrary game files remain
+outside the retrieval allowlist.
+
+The answer window shows the submitted question and, below the wiki and atlas
+links, previous questions from the same bounded client conversation. Questions
+are rendered as text. Existing session, expiry and disconnect limits apply; an
+older worker still displays the current standalone question.
+
 The bridge retrieves reviewed gameplay excerpts from the game's bloomery and
 anvil implementation in addition to generated recipe data. Excerpt boundary
 changes fail startup rather than silently supplying unrelated code. Source hashes
