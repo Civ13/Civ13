@@ -68,6 +68,15 @@ function realContract(html=template){
   assert.equal(run('selectedResource'),null);
 }
 realContract();
+const sand=boot(catalog);
+sand.run('resource("/turf/floor/beach/sand")');
+assert(text(sand.get('obtain')).includes('Gathering from sand'));
+assert(text(sand.get('obtain')).includes('Shovel sand'));
+assert(text(sand.get('obtain')).includes('non-harm'));
+sand.run('resource("/obj/item/stack/ore/glass")');
+assert(text(sand.get('obtain')).includes('How to obtain sand'));
+assert(text(sand.get('obtain')).includes('Shovel sand'));
+assert.notEqual('/turf/floor/beach/sand','/obj/item/stack/ore/glass');
 const resourceOmission=template.replace('rr.slice(0,150)','rr.slice(0,0)');
 assert.notEqual(resourceOmission,template);
 assert.throws(()=>realContract(resourceOmission),/direct resource result/);

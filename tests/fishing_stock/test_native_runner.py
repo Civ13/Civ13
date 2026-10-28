@@ -207,12 +207,12 @@ class RunnerTests(unittest.TestCase):
     def test_existing_bootstrap_paths_and_scoped_five_minute_ci_gate(self):
         workflow = (native.ROOT / ".github/workflows/test.yml").read_text()
         section = workflow.split("      - name: Verify isolated fishing completion and native omission controls\n", 1)[1].split("      - name: Verify accessory removal", 1)[0]
-        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/fishing_stock')", section)
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/fishing_stock')", section)
         self.assertIn("timeout-minutes: 5", section)
         self.assertIn("--execute --expected-byond-version 516.1688", section)
         self.assertIn('--byond-archive "$PWD/BYOND/pinned.zip"', section)
         self.assertIn('--acquisition-receipt "$PWD/.ci/compile/byond-download.json"', section)
-        self.assertIn("always() && steps.fishing_stock_native.outputs.started == 'true'", section)
+        self.assertIn("always() && needs.changes.result == 'success' && steps.fishing_stock_native.outputs.started == 'true'", section)
         self.assertIn("if-no-files-found: error", section)
         bootstrap = (native.ROOT / "scripts/travis_pre_byond.sh").read_text()
         self.assertIn("cd BYOND", bootstrap)

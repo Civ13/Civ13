@@ -5,14 +5,21 @@ Unknown instructions fail closed. External callbacks, list iteration/removal and
 budget reads are Python adapters; validate those separately with native BYOND.
 """
 from pathlib import Path
+import hashlib
 import re
-import subprocess
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[2]
 EARLY = 1234
-BASELINE = "9db2b2f42a5fbbb0bdd49d50a2672da6111a7709"
+
+
+def historical_source():
+    data = Path(__file__).with_name('historical-research.txt').read_bytes()
+    if hashlib.sha256(data).hexdigest() != '462d5363b8b9d7944957097bb7db3f0e4c631ece28a3b70d2fcd33f755f564fc':
+        raise ValueError('Historical research control differs from the reviewed fixture')
+    return data.decode('utf-8')
 
 
 def proc(source, signature):
@@ -129,6 +136,11 @@ class Trace:
 
 
 class ResearchResumeTests(unittest.TestCase):
+    def test_historical_control_rejects_fixture_drift(self):
+        with patch.object(Path, 'read_bytes', return_value=b'altered historical source'):
+            with self.assertRaisesRegex(ValueError, 'Historical research control'):
+                historical_source()
+
     def setUp(self):
         self.source = (ROOT / "code/processes/research_tree.dm").read_text()
         self.a, self.b, self.c = [Bench(name) for name in "abc"]
@@ -215,9 +227,7 @@ class ResearchResumeTests(unittest.TestCase):
         self.assertEqual(trace.pending, [self.b, self.c])
 
     def test_audited_immutable_baseline_falsely_finishes_and_loses_tail(self):
-        baseline = subprocess.check_output(
-            ["git", "show", BASELINE + ":code/processes/research_tree.dm"],
-            cwd=ROOT, text=True)
+        baseline = historical_source()
         trace = self.trace(source=baseline)
         for _ in range(3):
             self.assertIsNone(trace.dispatch(1))

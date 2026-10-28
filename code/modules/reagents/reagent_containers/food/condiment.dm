@@ -28,6 +28,11 @@
 	afterattack(var/obj/target, var/mob/user, var/proximity)
 		if (!proximity)
 			return
+		if (istype(target, /obj/item/weapon/reagent_containers/food/snacks))
+			var/obj/item/weapon/reagent_containers/food/snacks/snack = target
+			if (snack.can_salt_meat() && (istype(src, /obj/item/weapon/reagent_containers/food/condiment/saltpile) || istype(src, /obj/item/weapon/reagent_containers/food/condiment/saltshaker) || (reagents && reagents.has_reagent("sodiumchloride"))))
+				snack.salt_meat(src, user)
+				return
 
 		if (istype(target, /obj/structure/pot))
 			return
