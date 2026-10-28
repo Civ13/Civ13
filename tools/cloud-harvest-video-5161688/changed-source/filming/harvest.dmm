@@ -1,0 +1,42 @@
+"aV" = (/turf/floor/dirt,/area/caribbean/desert)
+"ac" = (/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"bC" = (/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"bD" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"bE" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"bF" = (/mob/living/simple_animal/frog,/turf/floor/grass,/area/caribbean/no_mans_land/invisible_wall)
+"bH" = (/obj/structure/wild/tallgrass,/turf/floor/dirt,/area/caribbean/desert)
+"bM" = (/obj/structure/wild/tallgrass,/turf/floor/beach/water,/area/caribbean/desert)
+"bU" = (/obj/structure/wild/tallgrass2,/turf/floor/grass,/area/caribbean/desert)
+"bb" = (/turf/floor/grass,/area/caribbean/desert)
+"bq" = (/turf/floor/beach/sand,/area/caribbean/desert)
+"br" = (/turf/floor/dirt/underground{name = "rock"},/area/caribbean/desert)
+"ca" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/desert)
+"ck" = (/obj/structure/wild/smallbush,/turf/floor/dirt/underground{name = "rock"},/area/caribbean/desert)
+"cl" = (/turf/floor/beach/water,/area/caribbean/no_mans_land/invisible_wall)
+"kH" = (/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
+"kJ" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"lY" = (/obj/structure/wild/tree/dead_tree,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
+"mT" = (/obj/structure/farming/plant/wheat{icon_state = "oat-harvest"},/turf/floor/dirt/ploughed,/area/caribbean/desert)
+"na" = (/obj/structure/wild/smallbush,/turf/floor/dirt,/area/caribbean/no_mans_land/invisible_wall)
+"nj" = (/obj/structure/farming/plant/wheat{icon_state = "oat-harvest"},/obj/structure/farming/plant/wheat{icon_state = "oat-harvest"},/turf/floor/dirt/ploughed,/area/caribbean/desert)
+"qs" = (/turf/floor/beach/water,/area/caribbean/desert)
+"qu" = (/obj/structure/wild/smallbush,/turf/floor/grass,/area/caribbean/desert)
+"qv" = (/obj/structure/wild/tallgrass,/turf/floor/grass,/area/caribbean/desert)
+
+(1,1,1) = {"
+aVbbaVbUaVaVqvbCbDbDbFbDbCbDbD
+bDbCbDbDbDbCbDbCqsqsqsbCqsqsbb
+bCqsqsbbbMqsqsqsqsqsqsqsqsqsqs
+qsqsqsqsqsqsqsbbbbbbbbqsqsqsqs
+qsqsqsqsqsqvqvqubrbrbbqsbbqvqv
+qsbbqvqvququqvbHbrbrckbbbbquca
+qubbqvbHqvbbmTmTmTmTmTmTmTmTac
+cacaaVmTmTnjmTmTmTmTmTmTmTmTac
+qsbbqvaVnjmTmTmTmTmTmTmTacacac
+qsqsbbbbbbaVmTnjmTacacacacacac
+bbqsqsqubbbbaVnjmTacacacacacbq
+bEbCclclclbCbDbCkHlYkHkJkJkJkJ
+kHbDbCclclclbCbEbCbCkHnakJkJkJ
+aVcaqvquqsqsqsqsbbbbquaVaVaVac
+acaVcabbquqvqsqsqsqsbbbbbbaVaV
+"}
