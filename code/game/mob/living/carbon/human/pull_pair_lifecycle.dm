@@ -72,6 +72,64 @@
 		follower_expected = actual
 	return TRUE
 
+/datum/subtile_pull_pair
+	var/recovery_grace = 50
+	var/resolve_epoch = 0
+
+/datum/subtile_pull_pair/proc/recovery_possible()
+	return leader && leader.client && leader.client.mob == leader && recovery_ready(leader)
+
+// Nearest whole tile for a 32px footprint. For a straight pair (leader ahead
+// of the follower by 0..2px) the two targets never coincide.
+/proc/subtile_pull_nearest_tile(list/position)
+	var/list/target = position.Copy()
+	if (target["sx"] >= 16)
+		target["x"]++
+	if (target["sy"] >= 16)
+		target["y"]++
+	target["sx"] = 0
+	target["sy"] = 0
+	return target
+
+/datum/subtile_pull_pair/proc/resolve_after(delay)
+	var/epoch = ++resolve_epoch
+	spawn(delay)
+		if (!released && resolve_epoch == epoch && !resolve_aligned("recovery_timeout"))
+			resolve_after(delay)
+
+// Settle a quiet held pair without player input: place each live survivor on
+// its nearest whole tile, then drop the lease. Never runs during a save or
+// while native/intent/completion work is unwinding.
+/datum/subtile_pull_pair/proc/resolve_aligned(reason)
+	if (released)
+		return TRUE
+	if (intent_running || native_inflight || completion_running || issued || persistence_save_in_progress)
+		return FALSE
+	cancel(reason)
+	restore_follower_glide()
+	for (var/atom/movable/member in list(leader, follower))
+		if (isDeleted(member))
+			continue
+		if (isturf(member.loc))
+			var/list/target = subtile_pull_nearest_tile(subtile_pull_snapshot(member))
+			var/turf/destination = locate(target["x"], target["y"], target["z"])
+			if (destination && destination != member.loc)
+				member.forceMove(destination)
+		member.step_x = 0
+		member.step_y = 0
+	drop_lease()
+	return TRUE
+
+/datum/subtile_pull_ownership/proc/resolve_quiet(reason)
+	var/list/pairs = list()
+	for (var/atom/movable/member in owners)
+		var/datum/subtile_pull_pair/P = owners[member]
+		if (istype(P) && !(P in pairs))
+			pairs += P
+	for (var/datum/subtile_pull_pair/P in pairs)
+		if (P.intent_completed)
+			P.resolve_aligned(reason)
+
 /datum/subtile_pull_pair/proc/save_checkpoint()
 	if (intent_running || native_inflight || completion_running || issued)
 		cancel("save_inflight")

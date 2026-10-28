@@ -468,7 +468,10 @@ var/global/persistence_load_recovery_required = FALSE
 	if(persistence_save_in_progress && !(restart_owner && persistence_restart.startup_hold)) return null
 	if((persistence_restart.startup_hold || persistence_restart.busy || persistence_restart.exists()) && !restart_owner) return null
 	// Never begin save preparation while a coupled native intent, interrupted
-	// pair or orphaned partial survivor still owns physical positions.
+	// pair or orphaned partial survivor still owns physical positions. Quiet
+	// held pairs settle to aligned tiles first; only in-flight intents hold.
+	if(kind == "save")
+		subtile_pull_ownership.resolve_quiet("save_admission")
 	if(kind == "save" && !subtile_pull_ownership.save_ready())
 		to_chat(world, SPAN_WARNING("Map save held: a smooth pull requires an aligned checkpoint."))
 		return null

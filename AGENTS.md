@@ -1,21 +1,23 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-27: staged pull-pair ownership kernel -->
-pull_pair_ownership.dm now has an explicit default-OFF pull_pair_producer.dm
-caller. Only aligned straight cardinal pulls of whitelisted empty leaf stacks or
+<!-- 2026-10-28: default-on pull pairs with stuck-pair resolver -->
+pull_pair_ownership.dm now has a default-ON pull_pair_producer.dm caller (owner
+request); it follows the smooth movement toggle. Only aligned straight cardinal pulls of whitelisted empty leaf stacks or
 base crates are admitted; no turns, living targets or assemblies. Client costs
 and deadlines are captured once; both bodies use authenticated native pulses,
 with consolidated actor hooks and reverse recovery. Partial pair exports refuse
 before normal save hooks; only aligned checkpoints export. Native collision,
-lifecycle acceptance, partial-save support and default activation remain gates.
+lifecycle acceptance and partial-save support remain unverified.
 Offline projections are not native authority/collision evidence. Keep the shared
 ready/posture exclusivity guards when integrating crafting/prone/NPC work.
 pull_pair_lifecycle.dm revokes logout/stop/deletion capabilities and restores the
 target glide. Deleted actors leave no registry key/member/controller reference;
-partial survivors remain exclusively held, with no automatic orphan movement.
+unrecoverable pairs (dead/downed/disconnected leader, deleted member) settle
+immediately to nearest aligned tiles; others after a 5-second recovery grace.
 Save admission reads every bounded lease before creating the operation: native
 calls/intents must unwind, hooks must complete, and live survivors must have valid
-aligned shapes. Partial orphans can intentionally hold saves until resolved.
+aligned shapes; save admission first settles quiet pairs, so none holds forever.
 Never serialize a half-applied pair or release an offset to legacy movement.
 
 <!-- 2026-10-28: public lighting/exclusion reconciliation -->

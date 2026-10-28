@@ -1,6 +1,5 @@
-// Ownership kernel for the explicit default-off straight-leaf producer.
-// Do not enable pulling by removing human_subtile_unlinked guards. Native and
-// lifecycle/save acceptance remain required before gameplay default activation.
+// Ownership kernel for the default-on straight-leaf producer. Stuck pairs are
+// settled to aligned tiles by pull_pair_lifecycle.dm, never left holding saves.
 var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 
 /datum/subtile_pull_ownership
@@ -188,6 +187,10 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 		recovery_required = TRUE
 		return FALSE
 	cancel("released")
+	drop_lease()
+	return TRUE
+
+/datum/subtile_pull_pair/proc/drop_lease()
 	if (registry)
 		if (leader && registry.owners[leader] == src)
 			registry.owners -= leader

@@ -1,9 +1,10 @@
-# Experimental straight-leaf pair producer
+# Straight-leaf pair producer
 
-The producer is now connected to `client.Move -> human.SelfMove`, through an
-explicit body-local `human_subtile_pull_enabled` flag that defaults FALSE and has
-no player verb. Its setter requires alignment, no active physical owner and the
-existing safe human adapter setter. Existing gameplay is unchanged while OFF.
+The producer is connected to `client.Move -> human.SelfMove`, through the
+body-local runtime `human_subtile_pull_enabled` flag. It defaults TRUE (owner
+request, 2026-10-28) and also requires `human_subtile_enabled`, so the existing
+Toggle Smooth Movement verb turns it off. Its setter requires alignment, no
+active physical owner and the existing safe human adapter setter.
 
 Initial targets are exact wood/steel/iron material-stack types and the base empty
 crate type. Both participants start aligned; the target must be directly behind
@@ -62,10 +63,21 @@ Deletion retires only the exact matching registry entry, clears the deleted
 member/snapshot/origin and controller references, and revokes capabilities before
 the original movable Destroy detaches contents. An aligned survivor releases; a
 partial survivor retains exclusive ownership and blocks saving. Orphaned pairs
-cannot issue another paired recovery. This intentionally does not invent an
-autonomous object mover, borrow another body's client, or snap a survivor. A valid
-explicit aligned checkpoint or retirement of the survivor can clear the hold;
-automatic orphan recovery and arbitrary-time saves remain activation blockers.
+cannot issue another paired recovery, and no other body's client is borrowed.
+
+Stuck-pair resolver (`pull_pair_lifecycle.dm`). When `settle_intent` cannot
+release, only a live, standing, connected leader can pay for reverse recovery
+(`recovery_possible`). Otherwise (death, knockdown, restraint, disconnect,
+deleted member, foreign displacement) `resolve_aligned` settles the pair now.
+It places each live survivor on its nearest whole tile with `forceMove`, zeroes
+its step offsets, then drops the lease. A recoverable pair settles the same way
+after `recovery_grace` (5 seconds) if the player does not reverse; stale timers
+stop by epoch. Save admission settles every quiet completed pair before the hold
+check, so only an in-flight intent (at most one move interval) delays a save.
+The resolver refuses while native/intent/completion work unwinds or a save is in
+progress, then retries. For a straight pair the nearest tiles never coincide and
+each snap is at most 16px (`test_resolver.py` checks all 384 states).
+Arbitrary-time partial saves remain unsupported.
 
 Remaining gates before gameplay enablement:
 

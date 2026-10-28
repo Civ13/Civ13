@@ -83,7 +83,8 @@ class Fixture:
         self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
-                        subtile_pull_ownership=NS(save_ready=lambda: True, retire_member=lambda actor: None),
+                        subtile_pull_ownership=NS(save_ready=lambda: True, retire_member=lambda actor: None,
+                                                  resolve_quiet=lambda reason: None),
                         get_turf=get_turf, isturf=lambda a: isinstance(a, Atom) and a.turf,
                         ishuman=lambda a: a.human, ADMIN_AREA='admin',
                         istype=lambda a, kind: isinstance(a, Area) and a.admin,
@@ -147,6 +148,7 @@ class GuardTests(unittest.TestCase):
         f = Fixture()
         calls, messages, writes = [], [], []
         f.env['subtile_pull_ownership'].save_ready = lambda: calls.append('checkpoint') or False
+        f.env['subtile_pull_ownership'].resolve_quiet = lambda reason: calls.append('resolve:' + reason)
         f.env['to_chat'] = lambda target, text: messages.append(text)
         f.env['new_operation'] = lambda: calls.append('new_operation') or f.operation()
         prior = object()
@@ -157,11 +159,12 @@ class GuardTests(unittest.TestCase):
         self.assertFalse(f.env['persistence_save_in_progress'])
         self.assertIs(f.store.last_save_reference_failure, prior)
         self.assertEqual(writes, [])
-        self.assertEqual(calls, ['checkpoint'])
+        # Quiet held pairs settle to aligned tiles before the hold is evaluated.
+        self.assertEqual(calls, ['resolve:save_admission', 'checkpoint'])
         self.assertEqual(messages, ['Map save held: a smooth pull requires an aligned checkpoint.'])
         # Loads retain their original admission; this is not a new global lock.
         operation = f.begin(f.store, 'load')
-        self.assertEqual(calls, ['checkpoint', 'new_operation'])
+        self.assertEqual(calls, ['resolve:save_admission', 'checkpoint', 'new_operation'])
         self.assertEqual(operation.kind, 'load')
         operation.finish(True)
         # Releasing all pair holds restores normal save admission.

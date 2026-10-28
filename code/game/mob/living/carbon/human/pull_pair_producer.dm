@@ -1,6 +1,6 @@
-// Experimental straight-leaf producer. Default OFF until native acceptance.
+// Straight-leaf producer. On by default; follows the smooth movement toggle.
 /mob/living/human
-	var/tmp/human_subtile_pull_enabled = FALSE
+	var/tmp/human_subtile_pull_enabled = TRUE
 
 /obj/proc/subtile_pull_pulses_allowed()
 	return FALSE
@@ -243,9 +243,16 @@
 		throw hook_error
 
 /datum/subtile_pull_pair/proc/settle_intent()
-	if (!release())
-		recovery_required = TRUE
-		cancel(orphaned ? "orphan_checkpoint_required" : "reverse_to_recover")
+	if (release())
+		return
+	recovery_required = TRUE
+	cancel(orphaned ? "orphan_checkpoint_required" : "reverse_to_recover")
+	// Only a live, standing, connected puller can pay for reverse recovery.
+	// Death, knockdown, disconnect or a deleted member settles now; otherwise
+	// an unused recovery settles after a grace period, so no pair holds forever.
+	if (!recovery_possible() && resolve_aligned("unrecoverable"))
+		return
+	resolve_after(recovery_grace)
 
 /datum/subtile_pull_pair/proc/restore_follower_glide()
 	if (follower_glide_owned)

@@ -1,10 +1,10 @@
 # Pull-pair ownership foundation
 
-The bounded ownership/capability kernel now has a default-OFF experimental
-straight-leaf producer; see [PRODUCER.md](PRODUCER.md). Client input and an exact
-native seam call it only after explicit opt-in. The existing
-`human_subtile_unlinked` pulling guards remain byte-identical. This is not yet
-approved for normal gameplay or default activation.
+The bounded ownership/capability kernel has a default-ON straight-leaf producer;
+see [PRODUCER.md](PRODUCER.md). It follows the body's smooth movement toggle.
+Master's `human_subtile_unlinked` guard already keeps smooth movement while
+pulling; this PR leaves it unchanged. Owner-approved default activation
+(2026-10-28) is not native or connected-client acceptance.
 
 The first profile reserves a real-input human and an aligned, empty leaf item or
 empty closet directly behind a straight cardinal intent. It rechecks reciprocal

@@ -54,9 +54,9 @@ class PullProducerContracts(unittest.TestCase):
                 self.assertLessEqual(calls,34)
         self.assertEqual(cases,96)
 
-    def test_explicit_default_off_setter_and_target_whitelist(self):
+    def test_default_on_setter_and_target_whitelist(self):
         text=PRODUCER.read_text()
-        self.assertIn('var/tmp/human_subtile_pull_enabled = FALSE',text)
+        self.assertIn('var/tmp/human_subtile_pull_enabled = TRUE',text)
         self.assertIn('!set_human_subtile(TRUE)',text)
         self.assertIn('return type == /obj/structure/closet/crate',text)
         self.assertIn('return type in list(/obj/item/stack/material/wood, /obj/item/stack/material/steel, /obj/item/stack/material/iron)',text)
