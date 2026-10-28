@@ -3,8 +3,8 @@
   "sources": {
     "code/game/objects/items/stacks/sheets/leather.dm": "478d2689bd69a4fcb3e02b5c7bcf430e1695daff92f5896de5cef0dadcf153dd",
     "code/modules/1713/animal_harvest.dm": "7e953521250d82da7ecb4488666aa1c030a2c0f6dab5024a27e2b6d6ff6a957a",
-    "code/modules/materials/material_sheets.dm": "dec45b08388f369e4c48336e48d9a2d18bd8dd9f51b347552695601a401ed4fa",
+    "code/modules/materials/material_sheets.dm": "552332ebbaf6c2208510003261b229b8bd9f688d322648a152ef9536bc97d2be",
     "code/game/objects/structures/converters.dm": "d4600844a91d2a8b38248a4daed84a82a13ae1ef72d194a276aafd7b965dd3d5",
-    "code/modules/materials/materials.dm": "792ba4f7d7ec2f9398fc5bed6e7f855d8c93ef7b61399175262de4378931a18c"
+    "code/modules/materials/materials.dm": "0be47a7bb017ab93215f330de4b96566e97ea7d16eee0e37092373ce1f7c8b82"
   }
 }
