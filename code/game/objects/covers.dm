@@ -72,6 +72,7 @@
 
 /obj/covers/New()
 	..()
+	register_seasonal_construction()
 	initial_opacity = opacity
 	maxhealth = health
 	spawn(5)
@@ -91,6 +92,7 @@
 	return TRUE
 
 /obj/covers/Destroy()			
+	unregister_seasonal_construction()
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))
 		if (wall && !incomplete)

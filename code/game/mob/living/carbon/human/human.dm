@@ -1027,7 +1027,7 @@ var/list/coefflist = list()
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in organs)
 		return
-	..()
+	return ..()
 
 /mob/living/human/reset_view(atom/A, update_hud = TRUE)
 	..()

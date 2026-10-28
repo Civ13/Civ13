@@ -24,7 +24,7 @@ function contract(html) {
   const text=n=>n.textContent+' '+n.children.map(text).join(' ');
   const selection=()=>elements.get('variants').children.find(n=>n.id==='variant');
   const filter=(id,value)=>{elements.get(id).value=value;elements.get(id)[id==='search'?'oninput':'onchange']()};
-  assert.equal(elements.get('count').textContent,'2 matches','grouped count');
+  assert.equal(elements.get('count').textContent,'2 recipe matches','grouped count');
   assert.equal(elements.get('catalog').children.length,2,'grouped index');
   assert.equal(selection().children.length,2,'catalog options');
   for(const id of ['r2','r1','r2','r2']){
@@ -39,12 +39,12 @@ function contract(html) {
   filter('kind','Material / global');
   assert.equal(selection().value,'r1','kind filter replaces excluded variant');
   filter('search','camp.txt');
-  assert.equal(elements.get('count').textContent,'0 matches','query and kind apply to same variant');
+  assert.equal(elements.get('count').textContent,'0 recipe matches · 0 resource matches','query and kind apply to same variant');
   assert.equal(elements.get('variants').children.length,0,'empty filter clears selector');
   assert.equal(elements.get('source').children.length,0,'empty filter clears source');
   elements.get('reset').onclick();elements.get('catalog').children[0].onclick();
   filter('search','camp.txt');
-  assert.equal(elements.get('count').textContent,'1 matches');
+  assert.equal(elements.get('count').textContent,'1 recipe matches · 0 resource matches');
   assert.equal(selection().value,'r2','path search selects matching catalog');
   assert.equal(selection().children.length,1,'only matching variants available');
   elements.get('reset').onclick();

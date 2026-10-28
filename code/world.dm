@@ -140,9 +140,6 @@ var/world_is_open = TRUE
 		href_logfile = file("data/logs/[date_string]-hrefs.htm")
 		diary = file("data/logs/[date_string].log")
 		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
-		var/oocdiary = file("ooc.log")
-		oocdiary << "> \[[time_stamp()]] New round [game_id] starting!"
-		webhook_send_round_start(game_id)
 		if (byond_version < RECOMMENDED_VERSION)
 			diary << "Your server's byond version does not meet the recommended requirements for this server. Please update BYOND."
 
@@ -416,12 +413,14 @@ var/global/persistence_reboot_scheduled = FALSE
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
-			if (map && map.persistence && !persistence_restart.startup_hold && !persistence_restart.busy)
-				var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
-				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
-				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
-				if (minsleft <= 2 && hr)
-					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
+			if (map && map.persistence && ticker && ticker.current_state >= GAME_STATE_PLAYING && !persistence_restart.startup_hold && !persistence_restart.busy)
+				// First save is one full interval after the round starts, not at round start.
+				if (!nextsave)
+					nextsave = world.realtime + 216000
+				// Warn from the actual schedule during its last two minutes.
+				var/save_in = round((nextsave - world.realtime) / 10)
+				if (save_in > 0 && save_in <= 120)
+					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[round(save_in / 60)] minutes</b> and <b>[save_in % 60] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
 				if (nextsave <= world.realtime)
 					nextsave = world.realtime + 216000
 					spawn(0)
