@@ -17,6 +17,19 @@ def selected_runtime(bin_dir, archive):
     return module.select(bin_dir, archive)
 
 
+def prepare_world(world):
+    # The fixture replaces world startup and does not initialize the game's
+    # scheduler. Do not run unrelated pre-map initialization against it.
+    marker = '/datum/global_init/New()\n'
+    if world.count(marker) != 1:
+        raise RuntimeError('Global initialization anchor drift')
+    world = world.replace(marker, marker + '\treturn\n', 1)
+    start = world.index('/world/New()')
+    parent = world.index('\n\t..()', start)
+    world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
+    return world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
@@ -38,11 +51,7 @@ def main():
     print(f'Evidence: {logs}', flush=True)
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     try:
-        world = (root / 'code/world.dm').read_text(encoding='utf-8')
-        start = world.index('/world/New()')
-        parent = world.index('\n\t..()', start)
-        world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
-        world = world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
+        world = prepare_world((root / 'code/world.dm').read_text(encoding='utf-8'))
         generated[1].write_text(world, encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')

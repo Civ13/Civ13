@@ -115,6 +115,19 @@ class ContinuousRoundToolchain(unittest.TestCase):
             with self.subTest(control=control):
                 self.assertEqual(self.exercise(control, current=False), self.exercise(control))
 
+    def test_fixture_stages_pre_map_initializer_without_running_game_startup(self):
+        runner = load(ROOT/'tests/persistence_round/run.py')
+        original = (ROOT/'code/world.dm').read_text(encoding='utf-8')
+        marker = '/datum/global_init/New()\n'
+        staged = self.exercise()['.persistence_round_ci_world.dm']
+        self.assertEqual(staged, runner.prepare_world(original))
+        self.assertIn(marker + '\treturn\n\tgenerate_gameid()', staged)
+        self.assertIn('/world/proc/unused_harvest_startup()', staged)
+        self.assertNotIn('/world/New()', staged)
+        for invalid in (original.replace(marker, ''), original + '\n' + marker):
+            with self.subTest(count=invalid.count(marker)), self.assertRaisesRegex(RuntimeError, 'Global initialization anchor drift'):
+                runner.prepare_world(invalid)
+
     def test_current_compile_rejects_wrong_duplicate_or_dirty_banner_and_process_failure(self):
         clean = 'DM compiler version 516.1688\n.persistence_round_ci.dmb - 0 errors, 0 warnings\n'
         for output, code in ((clean.replace('1688', '1681'), 0), (clean+clean, 0),
