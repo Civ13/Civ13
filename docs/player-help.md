@@ -282,6 +282,28 @@ to confirm the unavailable notice. This live smoke check is owner-controlled.
 
 ## Code and wiki retrieval
 
+The reviewed gameplay evidence also includes the generic material-shard behavior
+and constructed names for flint, steel, glass and obsidian shards. This lets the
+worker ground questions such as “flint shrapnel” even when that exact name is not
+a literal in source. It does not assert a material-specific crafting recipe or
+availability. Source markers and material naming assumptions are checked at
+worker startup; unexpected changes require review. Arbitrary game files remain
+outside the retrieval allowlist.
+
+The worker also projects the Atlas's reviewed acquisition routes, including
+conditions and map limitations, while omitting source paths and raw source text.
+“Rain collector” and “rainwater collector” select the existing dew collector
+recipe and the reviewed collector behavior; its research and map gates still
+apply. New collectors start open; examine the current cover state before using
+the hand action, which toggles it. The sand terrain is a gathering
+source, while the collected sand stack is a separate item. Missing Atlas routes
+do not prove an item has no uses or sources.
+
+The answer window shows the submitted question and, below the wiki and atlas
+links, previous questions from the same bounded client conversation. Questions
+are rendered as text. Existing session, expiry and disconnect limits apply; an
+older worker still displays the current standalone question.
+
 The bridge retrieves reviewed gameplay excerpts from the game's bloomery and
 anvil implementation in addition to generated recipe data. Excerpt boundary
 changes fail startup rather than silently supplying unrelated code. Source hashes
