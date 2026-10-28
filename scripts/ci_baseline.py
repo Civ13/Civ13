@@ -40,6 +40,10 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    # Keep mixed production static.dm unmapped: its existing all-suite fallback
+    # must still cover changes to fish, piranhas and ants, not just fishing.
+    'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',), 'paths': (
+        'tests/fishing_stock/',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
