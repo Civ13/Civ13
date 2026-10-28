@@ -1,5 +1,8 @@
 """Historical packet and reviewed-current-source checks; no native DM parity."""
 import json
+import importlib.util
+from importlib.machinery import SourceFileLoader
+import os
 from pathlib import Path
 import re
 import runpy
@@ -10,11 +13,18 @@ import unittest
 from unittest.mock import patch
 
 import resources
-from source_contract import reconstruct_list_baseline, transform, validate, project_reserved_policy, AREA_POLICY
+from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
+from source_contract import (CURRENT_BASE, MERGE_BASE, MERGE_MASTER, validate_current_master,
+                             validate_merged_source, project_merged_source, event_identity, replay_reviewed_merge)
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = 'a8d3950f08aaa55db59ec5f20777a475b2db95bb'
 PATH = 'code/modules/persistence/functions.dm'
+historical_path = ROOT / 'tests/exclusion_dispatch/historical/source_contract.py.txt'
+spec = importlib.util.spec_from_loader('historical_exclusion_contract', SourceFileLoader('historical_exclusion_contract', str(historical_path)))
+historical_contract = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(historical_contract)
+
 NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_owner', 'blackout_click_client_ref', 'blackout_click_counts',
             'blackout_click_started', 'blackout_click_expires',
@@ -23,6 +33,8 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
 
 
 class HistoricalSourceContractTests(unittest.TestCase):
+    validate = staticmethod(historical_contract.validate)
+    diagnostic_guard = 'if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE'
     @classmethod
     def setUpClass(cls):
         cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
@@ -35,7 +47,7 @@ class HistoricalSourceContractTests(unittest.TestCase):
             '5aaed0a172aa3baa3fe604096cbbb8a00f519aac:' + PATH], cwd=ROOT, text=True)
 
     def test_exact_transform_preserves_historical_master(self):
-        validate(self.baseline, self.candidate)
+        self.validate(self.baseline, self.candidate)
         for kind, count in [('atom', 3), ('turf', 9), ('mob', 22)]:
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertEqual(len(re.findall(r'"[^"]+"', body)), count)
@@ -63,29 +75,29 @@ class HistoricalSourceContractTests(unittest.TestCase):
             return source[source.index(start):source.index(end)]
         self.assertEqual(diagnostics(self.master), diagnostics(self.candidate))
         with self.assertRaises(ValueError):
-            validate(self.baseline, self.candidate.replace(
+            self.validate(self.baseline, self.candidate.replace(
                 'saving_export_stack.len - 7', 'saving_export_stack.len - 8'))
         with self.assertRaises(ValueError):
-            validate(self.baseline, self.candidate.replace(
-                'if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE', 'return FALSE'))
+            self.validate(self.baseline, self.candidate.replace(
+                self.diagnostic_guard, 'return FALSE'))
 
     def test_each_new_exclusion_omission_is_rejected(self):
         for key in NEW_KEYS:
             with self.subTest(key=key), self.assertRaises(ValueError):
-                validate(self.baseline, self.candidate.replace(f'"{key}"', '"omitted_runtime_key"', 1))
+                self.validate(self.baseline, self.candidate.replace(f'"{key}"', '"omitted_runtime_key"', 1))
 
     def test_parent_dispatch_controls_are_rejected(self):
         for mutated in (self.candidate.replace('\treturn ..()', '\treturn FALSE', 1),
                         self.candidate.replace('\tswitch(key)', '\t..()\n\tswitch(key)', 1)):
             with self.subTest(mutated=mutated[:40]), self.assertRaises(ValueError):
-                validate(self.baseline, mutated)
+                self.validate(self.baseline, mutated)
 
     def test_unrelated_and_weak_reference_changes_are_rejected(self):
         for mutated in (self.candidate + '// unrelated\n',
                         self.candidate.replace(' || key == "weak_reference"', ''),
                         self.candidate.replace('\t\tapply_restored_lighting()\n', '', 1)):
             with self.subTest(mutated=mutated[:40]), self.assertRaises(ValueError):
-                validate(self.baseline, mutated)
+                self.validate(self.baseline, mutated)
 
     def test_reserved_projection_is_explicit_and_fails_closed(self):
         projected = project_reserved_policy(self.baseline)
@@ -94,7 +106,7 @@ class HistoricalSourceContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             project_reserved_policy(projected)
         with self.assertRaises(ValueError):
-            validate(self.baseline, self.candidate.replace(AREA_POLICY, ''))
+            self.validate(self.baseline, self.candidate.replace(AREA_POLICY, ''))
 
     def test_missing_baseline_hook_fails_closed(self):
         with self.assertRaises(ValueError):
@@ -104,7 +116,7 @@ class HistoricalSourceContractTests(unittest.TestCase):
         read_text = Path.read_text
         def historical_input(path, *args, **kwargs):
             if path == ROOT / PATH:
-                return self.candidate
+                return (ROOT / PATH).read_bytes().decode().replace("\r\n", "\n")
             return read_text(path, *args, **kwargs)
         with patch.object(sys, 'argv', ['run.py'] + arguments), \
              patch.object(Path, 'read_text', historical_input), \
@@ -151,7 +163,7 @@ class HistoricalSourceContractTests(unittest.TestCase):
             body = re.search(rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+', self.candidate, re.M).group()
             self.assertLess(body.index(guard), body.index('switch(key)'))
             with self.assertRaises(ValueError):
-                validate(self.baseline, self.candidate.replace(guard, 'if (FALSE)'))
+                self.validate(self.baseline, self.candidate.replace(guard, 'if (FALSE)'))
 
     def test_native_mode_is_unconditionally_held_even_with_old_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -166,14 +178,27 @@ class ReviewedCurrentSource(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
         cls.reviewed = subprocess.check_output(['git', 'show', cls.REVIEWED + ':' + PATH], cwd=ROOT, text=True)
         cls.current = (ROOT / PATH).read_text()
+        assert cls.reviewed == cls.feature
+        cls.identity = event_identity(ROOT)
+        if cls.identity:
+            head = subprocess.check_output(['git', 'show', cls.identity['head'] + ':' + PATH], cwd=ROOT, text=True)
+            if head != cls.current: raise ValueError('Checkout differs from source event head')
+            base = subprocess.check_output(['git', 'show', cls.identity['base'] + ':' + PATH], cwd=ROOT, text=True)
+            ancestor = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
+            snapshot = project_merged_source(cls.feature)
+            validate_merged_source(cls.feature, snapshot)
+            cls.expected = replay_reviewed_merge(base, ancestor, snapshot)
+        else:
+            cls.expected = project_merged_source(cls.feature)
 
     def validate_current(self, source):
         # Full-file equality includes admitted custody, roof/zone cleanup and
         # diagnostics. A future production change needs a newly reviewed pin.
-        if source != self.reviewed:
-            raise ValueError('Current runtime exclusions differ from reviewed reconciliation')
+        if source != self.expected:
+            raise ValueError('Current runtime exclusions differ from the reviewed event projection')
 
     def test_complete_reviewed_source_and_all_exclusion_omissions(self):
         self.validate_current(self.current)
@@ -200,7 +225,141 @@ class ReviewedCurrentSource(unittest.TestCase):
             relative = 'tests/exclusion_dispatch/' + name
             expected = subprocess.check_output(['git', 'show',
                 '5aaed0a172aa3baa3fe604096cbbb8a00f519aac:' + relative], cwd=ROOT)
-            self.assertEqual((ROOT / relative).read_bytes().replace(b'\r\n', b'\n'), expected)
+            self.assertEqual((ROOT / 'tests/exclusion_dispatch/historical' / (name + '.txt')).read_bytes().replace(b'\r\n', b'\n'), expected)
+
+
+class HistoricalMasterSourceContractTests(HistoricalSourceContractTests):
+    validate = staticmethod(validate)
+    diagnostic_guard = 'if(key == "last_save_reference_failure") return TRUE'
+
+    def test_bounded_projection_is_exact_and_fail_closed(self):
+        projected = project_bounded_save(self.baseline)
+        for anchor, addition in BOUNDED_BLOCKS:
+            self.assertIn(anchor + addition, projected)
+            for changed in (self.baseline.replace(anchor, '', 1), self.baseline + anchor):
+                with self.assertRaises(ValueError):
+                    project_bounded_save(changed)
+            with self.assertRaises(ValueError):
+                self.validate(self.baseline, self.candidate.replace(addition, '', 1))
+        with self.assertRaises(ValueError):
+            validate(self.baseline + '// unrelated baseline drift\n', self.candidate)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.master = subprocess.check_output(['git', 'show',
+            '5bf351248de6050876fe5b53f91209a970cc5668:' + PATH], cwd=ROOT, text=True)
+        cls.baseline = reconstruct_list_baseline(cls.master)
+        cls.candidate = subprocess.check_output(['git', 'show',
+            '7ca76ce0e23661f4dea5a44acb195bf3010a97eb:' + PATH], cwd=ROOT, text=True)
+
+
+class MasterBoundedHistoryTests(unittest.TestCase):
+    def test_master_bounded_projection_and_each_omission_remain_exact(self):
+        master = subprocess.check_output(['git', 'show', CURRENT_BASE + ':' + PATH], cwd=ROOT, text=True)
+        candidate = subprocess.check_output(['git', 'show',
+            'd0c744919ba181e7a0bcfae222b5a37687af48fb:' + PATH], cwd=ROOT, text=True)
+        validate_current_master(master, candidate)
+        for marker in ('key == "original_target"', '"next_animal_retaliation"',
+                       '"validated_roof_absent"', 'saving_export_stack.len - 7',
+                       'if(key == "last_save_reference_failure") return TRUE'):
+            self.assertIn(marker, candidate)
+            with self.subTest(marker=marker), self.assertRaises(ValueError):
+                validate_current_master(master, candidate.replace(marker, '', 1))
+        for _, addition in BOUNDED_BLOCKS:
+            with self.subTest(addition=addition), self.assertRaises(ValueError):
+                validate_current_master(master, candidate.replace(addition, '', 1))
+        with self.assertRaises(ValueError): validate_current_master(master, candidate + '// unrelated drift\n')
+
+    def test_merged_projection_rejects_omission_and_duplicate_anchors(self):
+        feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
+        current = project_merged_source(feature)
+        validate_merged_source(feature, current)
+        for anchor, addition in BOUNDED_BLOCKS:
+            with self.subTest(anchor=anchor), self.assertRaises(ValueError):
+                validate_merged_source(feature, current.replace(addition, '', 1))
+            with self.subTest(duplicate=anchor), self.assertRaises(ValueError):
+                project_merged_source(feature + anchor)
+        for marker in ('if(current_state < GAME_STATE_PLAYING)', 'last_persistence_save_time = world.time',
+                       'restore_cleanup_error', 'authorize_restore_mutation'):
+            self.assertIn(marker, current)
+            with self.subTest(marker=marker), self.assertRaises(ValueError):
+                validate_merged_source(feature, current.replace(marker, 'omitted_guard', 1))
+
+
+class EventRunnerTests(unittest.TestCase):
+    """Exercise the actual source-only runner with evolving, injected event identities."""
+    @classmethod
+    def setUpClass(cls):
+        cls.base_source = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
+        feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.merged = project_merged_source(feature)
+        cls.helpers = {p: (ROOT / p).read_text() for p in (
+            'code/processes/human_corpse_decay.dm', 'code/processes/abandoned_items.dm',
+            'code/modules/1713/active_training.dm')}
+
+    def execute_runner(self, directory, control=None, *, mismatch=False, changed_helper=False, bad_event=False,
+                       base_edit='\n// unrelated future base evolution\n', head_edit=None):
+        base_sha, head_sha = 'b' * 40, 'a' * 40
+        base = self.base_source + base_edit
+        candidate = self.merged + (base_edit if head_edit is None else head_edit)
+        event = directory / 'event.json'
+        event.write_text(json.dumps({'pull_request': {'base': {'sha': base_sha}, 'head': {'sha': 'c'*40 if bad_event else head_sha}}}))
+        out = directory / ('receipt-' + (control or 'positive') + '.json')
+        original_check_output = subprocess.check_output
+        original_read_text = Path.read_text
+        def git(command, **kwargs):
+            if command[:3] == ['git', 'rev-parse', 'HEAD']: return head_sha + '\n'
+            if command[:2] == ['git', 'merge-base']: return MERGE_MASTER + '\n'
+            if command[:2] == ['git', 'show']:
+                ref, file = command[2].split(':', 1)
+                if ref in (base_sha, head_sha):
+                    if file == PATH: value = base if ref == base_sha else candidate
+                    else:
+                        value = self.helpers[file]
+                        if changed_helper and ref == head_sha: value += '\n// changed helper\n'
+                    return value if kwargs.get('text') else value.encode()
+            return original_check_output(command, **kwargs)
+        def read(path, *args, **kwargs):
+            if path == ROOT / PATH: return candidate + ('// dirty checkout\n' if mismatch else '')
+            return original_read_text(path, *args, **kwargs)
+        argv = ['run.py', '--source-only', '--output', str(out)]
+        if control: argv += ['--negative-control', control]
+        with patch.dict(os.environ, {'GITHUB_ACTIONS':'true', 'GITHUB_EVENT_NAME':'pull_request', 'GITHUB_EVENT_PATH':str(event)}), \
+             patch.object(sys, 'argv', argv), patch.object(Path, 'read_text', read), \
+             patch.object(subprocess, 'check_output', side_effect=git), \
+             patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
+             patch.object(resources, 'binary_info', side_effect=AssertionError('Binary query attempted')):
+            with self.assertRaises(SystemExit) as exited:
+                runpy.run_path(str(ROOT / 'tests/exclusion_dispatch/run.py'), run_name='__main__')
+        self.assertEqual(exited.exception.code, 0)
+        receipt = json.loads(out.read_text())
+        self.assertEqual(receipt['event_identity']['head'], head_sha)
+        self.assertEqual(receipt['event_identity']['base'], base_sha)
+        self.assertFalse(receipt['native_execution'])
+        return out.with_suffix('.sources').joinpath('production.dm').read_text()
+
+    def test_actual_runner_accepts_evolved_base_and_mutates_all_controls(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            normal = self.execute_runner(directory)
+            for control in ('omit', 'parent', 'eager'):
+                changed = self.execute_runner(directory, control)
+                self.assertNotEqual(changed, normal)
+                atom = re.search(r'^/atom/candidate_runtime\(key\)\n(?:\t[^\n]*\n)+', changed, re.M).group()
+                if control == 'omit': self.assertNotIn('"appearance"', atom)
+                if control == 'parent': self.assertIn('return FALSE', atom)
+                if control == 'eager': self.assertIn('\t..()\n\tswitch(key)', atom)
+
+    def test_actual_runner_refuses_head_base_or_checkout_drift(self):
+        for options in ({'mismatch':True}, {'changed_helper':True}, {'bad_event':True},
+                        {'head_edit':'\n// unrelated head drift\n'}):
+            with self.subTest(options=options), tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaises(ValueError): self.execute_runner(Path(tmp), **options)
+
+    def test_projection_conflict_does_not_accept_overlapping_base_edit(self):
+        changed = self.base_source.replace('if(key == "last_save_reference_failure") return TRUE',
+                                           'if(key == "last_save_reference_failure") return FALSE', 1)
+        with self.assertRaises(ValueError): replay_reviewed_merge(changed, self.base_source, self.merged)
 
 
 if __name__ == '__main__':

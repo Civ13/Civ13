@@ -1,4 +1,4 @@
-"""Historical defect control with current roof dependencies; never a historical build."""
+"""Historical defect control with current dependencies, never a historical build."""
 import contextlib
 import hashlib
 import importlib.util
@@ -41,7 +41,7 @@ class HistoricalWoundCompatibility(unittest.TestCase):
         self.spawn.assert_not_called()
         self.sockets.assert_not_called()
 
-    def test_historical_bytes_and_exact_current_roof_dependencies_are_staged_without_launches(self):
+    def test_historical_bytes_and_exact_current_dependencies_are_staged_without_launches(self):
         def git_read(command, **kwargs):
             self.assertEqual(command[0], 'git')
             if command[1] == 'show':
@@ -67,13 +67,20 @@ class HistoricalWoundCompatibility(unittest.TestCase):
             self.assertEqual((output / receipt['wound_control_source']).read_bytes(),
                              self.historical['code/modules/organs/wound.dm'])
             roof = self.loading[:self.loading.index('\n/map_storage/proc/Load_Entry(')]
-            expected = self.functions + '\n' + roof
+            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
+            start = self.loading.index(marker)
+            end = self.loading.find('\n/map_storage/proc/', start + len(marker))
+            helper = self.loading[start:end if end >= 0 else len(self.loading)]
+            expected = self.functions + '\n' + roof + '\n' + helper
             self.assertEqual(sources.count(expected.encode()), 1)
             combined = b'\n'.join(sources).decode('utf-8')
             self.assertEqual(combined.count(roof), 1)
+            self.assertEqual(combined.count(marker), 1)
             for name in re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M):
                 self.assertEqual(len(re.findall(r'^/map_storage/proc/' + name + r'\(', combined, re.M)), 1)
             self.assertEqual(receipt['wound_control_commit'], BASELINE)
+            self.assertEqual(hashlib.sha256(helper.encode()).hexdigest(),
+                             receipt['wound_control_compatibility_helper_sha256'])
             self.assertEqual(hashlib.sha256(roof.encode()).hexdigest(),
                              receipt['wound_control_roof_helpers_sha256'])
             self.assertTrue(receipt['prepared_only'])

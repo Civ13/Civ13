@@ -1,4 +1,4 @@
-"""Characterize existing cross-level saver failures; this suite does not claim repair."""
+"""Exercise bounded cross-level captures and retain strict historical-defect controls."""
 import argparse
 import hashlib
 import importlib.util
@@ -44,6 +44,10 @@ BASELINE_DEFECTS = {
     'unplaced': 'FAIL: unplaced first capture was silently skipped or duplicated',
 }
 CONTROLS = {
+    'first-capture': ('saving.dm',
+                      'if(previous && previous["atom"] == A && previous["z"] != saving_z)',
+                      'if(previous && previous["atom"] == A && previous["z"] < 0)',
+                      'move-direct', BASELINE_DEFECTS['move-direct']),
     'binder': ('durable_graph.dm',
                'if(node["ref"] && (node["ref"] != ref || node["z"] != z))',
                'if(FALSE)', 'binder', 'FAIL: original graph binder accepted a true duplicate'),
@@ -206,7 +210,7 @@ def native(output, byond, cases, receipt, expected=None, compile_only=False, run
                 (cwd / source.name).write_bytes(source.read_bytes())
         if runtime: runtime.before_launch('daemon:'+case, output)
         logs = owned_process([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted',
-                              '-ip', '127.0.0.1', '-params', f'case={case}', '-log', 'native.log'], cwd, 'daemon')
+                              '-params', f'case={case}', '-log', 'native.log'], cwd, 'daemon')
         logs += '\n' + read_bounded(cwd / 'native.log')
         result = json.loads(read_bounded(cwd / 'result.json'))
         adjudicate(result, logs, case, (expected or {}).get(case, 'PASS'),
@@ -233,8 +237,9 @@ def main():
         parser.error('--byond-bin is required for native compilation/execution')
     if args.negative_control and (args.expect_current_defects or args.case):
         parser.error('Mutation controls select one exact case and cannot combine with other modes')
-    if args.byond_archive and (not args.run_native or args.negative_control or
-            (args.case, args.expect_current_defects) not in ((['field-direct'], False), (['move-direct'], True))):
+    if args.byond_archive and (not args.run_native or args.expect_current_defects or
+            not ((args.case in (['field-direct'], ['move-direct']) and not args.negative_control)
+                 or (not args.case and args.negative_control == 'first-capture'))):
         parser.error('Current runtime admits only the selected cross-level CI cases')
     runtime = selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-cross-level-'))

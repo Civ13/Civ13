@@ -142,9 +142,9 @@ def main():
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
     if args.byond_archive and not current_ci_case(args):
-        parser.error('--byond-archive admits only the selected ordinary CI cases')
-    runtime = selected_runtime(args.byond_bin, args.byond_archive)
+        parser.error('--byond-archive admits only the selected persistence CI matrix')
     root = Path(__file__).resolve().parents[2]
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-durable-world-'))
     prefix = '.durable_world_' + uuid.uuid4().hex
     dme = root / (prefix + '.dme')
@@ -237,13 +237,25 @@ def main():
                 replacements[relative] = subprocess.check_output(
                     ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
             receipt['wound_control_commit'] = baseline
-            # Preserve both historical defect files byte-for-byte; the current
-            # exporter and topology module also need the current roof API.
+            # Historical defect control with explicit current dependencies,
+            # not a reproduction of an entire historical game build. Keep both
+            # historical files byte-for-byte; supply the current roof API and
+            # content codec only in the fixture's functions copy.
             loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
+            if loading.count(marker) != 1:
+                raise RuntimeError('Historical wound compatibility helper anchor changed')
+            start = loading.index(marker)
+            end = loading.find('\n/map_storage/proc/', start + len(marker))
+            helper = loading[start:end if end >= 0 else len(loading)]
             relative = 'code/modules/persistence/functions.dm'
             functions = (root / relative).read_text(encoding='utf-8')
-            roof = historical_wound_roof_helpers(loading, '\n'.join([functions, *replacements.values()]))
-            replacements[relative] = functions + '\n' + roof
+            existing = '\n'.join([functions, *replacements.values()])
+            if marker in existing:
+                raise RuntimeError('Historical wound content compatibility helper duplicated')
+            roof = historical_wound_roof_helpers(loading, existing)
+            replacements[relative] = functions + '\n' + roof + '\n' + helper
+            receipt['wound_control_compatibility_helper_sha256'] = hashlib.sha256(helper.encode()).hexdigest()
             receipt['wound_control_roof_helpers_sha256'] = hashlib.sha256(roof.encode()).hexdigest()
         elif args.negative_control == 'lighting-shared':
             relative = 'code/modules/lighting/lighting_source.dm'

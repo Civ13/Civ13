@@ -1,0 +1,42 @@
+name: Offline server management contracts
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - tools/server-management/**
+      - .github/workflows/server-management.yml
+permissions:
+  contents: read
+jobs:
+  contracts:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    env:
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE: 'true'
+      DOTNET_ADD_GLOBAL_TOOLS_TO_PATH: 'false'
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Set isolated SDK home for this job
+        shell: pwsh
+        run: |
+          "DOTNET_CLI_HOME=$env:RUNNER_TEMP/civ13-management-cli" >> $env:GITHUB_ENV
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore without package sources and run synthetic contracts
+        shell: pwsh
+        run: |
+          dotnet restore tools/server-management/tests/Contracts.csproj --configfile tools/server-management/NuGet.Config -p:NuGetAudit=false --disable-parallel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tools/server-management/tests/Contracts.csproj --no-restore --configuration Release --disable-build-servers -p:UseSharedCompilation=false
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

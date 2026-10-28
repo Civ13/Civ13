@@ -54,5 +54,15 @@
   "/obj/structure/telecom/station/tv",
   "/obj/structure/telecom/antenna",
   "/obj/item/weapon/telephone/landline",
-  "/obj/structure/telecom/terminal"
+  "/obj/structure/telecom/terminal",
+  "/obj/item/stack/farming/seeds/turnip",
+  "/obj/structure/farming/plant/turnip",
+  "/obj/item/weapon/reagent_containers/food/snacks/grown/turnip",
+  "/obj/item/stack/farming/seeds/plump_helmet",
+  "/obj/structure/farming/plant/plump_helmet",
+  "/obj/item/weapon/reagent_containers/food/snacks/grown/plump_helmet",
+  "/obj/structure/wild/flowers/yarrow_scenery",
+  "/obj/structure/wild/flowers/milk_thistle_scenery",
+  "/obj/structure/wild/flowers/elderflower_scenery",
+  "/obj/structure/wild/flowers/comfrey_scenery"
 ]

@@ -24,7 +24,7 @@ BEFORE = 'f05659dd5d117302b7ab494ad6e226f2b3f50ab1'
 # Verbatim reviewed #3105 helper; no other branch Git objects are needed in CI.
 REVIEWED_HELPER_SHA256 = 'a89a5191b43b304d7a1e6d6ea74b17a0c1630ed05b25ff09650b5f775268aab2'
 STEPS = ('Offline lighting recovery regression',
-         'Verify protected sleep transfers and version-2 saves',
+         'Verify protected sleep transfers and bounded save compatibility',
          'Offline world-save round-trip regression')
 DRIVERS = ('run-durable-world.py', 'run-sleep-transfer.py', 'run-cross-level.py',
            'inspect-partial-save.py', 'run-dimension-bootstrap.py', 'run-reader-contract.py')
@@ -85,6 +85,8 @@ class SelectedToolchains(unittest.TestCase):
             'tests/world_save/partial_save_inspector/inspect-partial-save.py')}
         cls.historical_wounds = {path: old(path, 'd0ffbfb2335eb735756b998f3f2ff617c28f144b')
                                  for path in ('code/modules/organs/wound.dm', 'code/modules/persistence/loading.dm')}
+        cls.master_workflow = old('.github/workflows/test.yml', 'eedc9862fcb7b2b7c3617c6972965fafa650e51a')
+        cls.master_cross = old('tests/world_save/run-cross-level.py', 'eedc9862fcb7b2b7c3617c6972965fafa650e51a')
 
     def setUp(self):
         self.enterContext(patch.object(socket, 'socket', side_effect=AssertionError('Socket forbidden')))
@@ -110,21 +112,18 @@ class SelectedToolchains(unittest.TestCase):
     def test_reviewed_helper_is_verbatim_and_workflow_changes_only_thread_identity_and_offline_test(self):
         self.assertEqual(hashlib.sha256((HERE/'current_runtime.py').read_text().encode()).hexdigest(), REVIEWED_HELPER_SHA256)
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
-        normalized = workflow
-        for module in ('test_selected_toolchains.py', 'test_graph_fixture_dependencies.py',
-                       'test_wound_compatibility.py'):
-            command = f'          python3 -B -m unittest discover -s tests/world_save -p {module} -v\n'
-            self.assertEqual(normalized.count(command), 1)
-            normalized = normalized.replace(command, '')
-        normalized = normalized.replace(' --byond-archive "$PWD/BYOND/pinned.zip"', '')
-        round_step = ('      - name: Test continuous persistence round contracts offline\n'
-            "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round') || inputs.persistence_integration_regressions == true\n"
-            '        run: python3 -B -m unittest discover -s tests/persistence_round -v\n')
-        self.assertEqual(normalized.count(round_step), 1)
-        normalized = normalized.replace(round_step, '')
-        self.assertEqual(normalized, self.before['.github/workflows/test.yml'])
+        # Whole-file pin covers both branches' combined workflow, including receipt paths.
+        self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
+                         '071e44c2c4de0fdf5f1240222f32f260df5c2183daf8c0ed20488290c9dc2287')
+        master = self.master_workflow
+        marker = '      - name: Verify protected sleep transfers and bounded save compatibility\n'
+        current_guard = workflow.split(marker, 1)[1].split('\n', 1)[0]
+        master_guard = master.split(marker, 1)[1].split('\n', 1)[0]
+        self.assertEqual(current_guard, master_guard)
+        for command in ('--case field-direct', '--case move-direct', '--negative-control first-capture'):
+            self.assertIn(command, workflow.split(marker, 1)[1].split('      - name:', 1)[0])
         selected = calls(workflow)
-        self.assertEqual(len(selected), 42)
+        self.assertEqual(len(selected), 43)
         for path, args in selected:
             with self.subTest(path=path, args=args):
                 module = load(ROOT/path)
@@ -149,7 +148,17 @@ class SelectedToolchains(unittest.TestCase):
                 def table(source):
                     return [ast.dump(node) for node in ast.parse(source).body if isinstance(node, ast.Assign)
                             and any(isinstance(target, ast.Name) and target.id == name for target in node.targets)]
-                self.assertEqual(table(before), table(after))
+                if path.endswith('run-cross-level.py') and name == 'CONTROLS':
+                    def controls(source):
+                        node = next(n.value for n in ast.parse(source).body if isinstance(n, ast.Assign)
+                                    and any(isinstance(t, ast.Name) and t.id == 'CONTROLS' for t in n.targets))
+                        return {ast.literal_eval(k): ast.dump(v) for k, v in zip(node.keys, node.values)}
+                    old_controls, current_controls = controls(before), controls(after)
+                    self.assertEqual(current_controls, controls(self.master_cross))
+                    self.assertEqual(set(current_controls) - set(old_controls), {'first-capture'})
+                    for key, value in old_controls.items(): self.assertEqual(current_controls[key], value)
+                else:
+                    self.assertEqual(table(before), table(after))
         def function(source, name):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n, ast.FunctionDef) and n.name == name))
         for path, names in {
@@ -173,7 +182,9 @@ class SelectedToolchains(unittest.TestCase):
             CURRENT.select('inert', 'inert.zip')
         rejected = {'run-durable-world.py': (['--roof-areas'], ['--zone-topology'], ['--persistence-year'], ['--prepare-only']),
                     'run-cross-level.py': (['--compile-only'], ['--run-native', '--case', 'pins'],
-                                           ['--run-native', '--case', 'move-direct']),
+                                           ['--run-native', '--case', 'move-direct', '--expect-current-defects'],
+                                           ['--run-native', '--negative-control', 'binder'],
+                                           ['--run-native', '--negative-control', 'first-capture', '--case', 'field-direct']),
                     'run-sleep-transfer.py': (['--compile-only'], ['--run-native', '--case', 'entry']),
                     'run-dimension-bootstrap.py': (['--prepare-only'], ['--negative-control', 'memory-admission'])}
         for name, rows in rejected.items():
@@ -202,7 +213,10 @@ class SelectedToolchains(unittest.TestCase):
         module = load(HERE/'run-durable-world.py')
         modes = ('lighting', 'wounds', 'dimension_bootstrap', 'recovery_reconnect', 'lifecycle_shutdown', 'startup_only')
         expected = set()
-        for path, args in calls(self.before['.github/workflows/test.yml']):
+        historical_workflow = self.before['.github/workflows/test.yml'].replace(
+            'Verify protected sleep transfers and version-2 saves',
+            'Verify protected sleep transfers and bounded save compatibility')
+        for path, args in calls(historical_workflow):
             if not path.endswith('run-durable-world.py'): continue
             active = tuple(name for name in modes if '--'+name.replace('_', '-') in args)
             profile = args[args.index('--profile')+1] if '--profile' in args else 'gaia'

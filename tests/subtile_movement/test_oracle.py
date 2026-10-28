@@ -41,7 +41,7 @@ def same_position(a, b):
 
 
 def receipt_contract(row, control):
-    if (row["byond_version"], row["byond_build"], row["port"]) != (516, 1681, 0):
+    if (row["byond_version"], row["byond_build"], row["port"]) != (516, 1688, 0):
         raise ValueError("engine or port")
     if row["control"] != control or not 1 <= row["checks"] <= 100:
         raise ValueError("profile or bounds")
@@ -124,14 +124,14 @@ class OfflineOracle(unittest.TestCase):
     def test_receipt_profiles_and_wrong_failure_controls(self):
         before = dict(x=2, y=2, z=1, sx=0, sy=0)
         first = dict(name="first_east", before=before, after=dict(before, sx=4))
-        good = dict(byond_version=516, byond_build=1681, port=0, checks=42,
+        good = dict(byond_version=516, byond_build=1688, port=0, checks=42,
                     failed=[], control="none", error=None, observations=[first])
         receipt_contract(good, "none")
         cosmetic = dict(good, control="cosmetic", checks=3,
                         failed=["physical_east_four_pixels"], error="physical_east_four_pixels",
                         observations=[dict(first, after=dict(before))])
         receipt_contract(cosmetic, "cosmetic")
-        for bad in (dict(good, port=1234), dict(good, byond_build=1688),
+        for bad in (dict(good, port=1234), dict(good, byond_build=1681),
                     dict(cosmetic, failed=["unexpected_exception"]),
                     dict(cosmetic, observations=[first]), dict(good, checks=101)):
             with self.assertRaises(ValueError):

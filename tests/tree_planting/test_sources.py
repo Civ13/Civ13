@@ -209,7 +209,7 @@ class Trees(unittest.TestCase):
                                                  ('rain', 75, 80, None), ('snow_storm', 80, 80, 'frozen'),
                                                  ('sandstorm', 80, 80, 'destroyed')):
             state = dict(src=plant, loc=plant, area=State(icon_state=weather, climate='temperate'),
-                         water=initial, max_water=80, map=State(heat_wave=False), stage=6, death=None)
+                         water=initial, max_water=80, winter_hardy=False, map=State(heat_wave=False), stage=6, death=None)
             result = adapter.execute(code, **state)
             self.assertEqual((result[1], result[3]), (expected, death))
 

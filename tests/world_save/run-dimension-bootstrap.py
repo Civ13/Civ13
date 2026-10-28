@@ -27,10 +27,10 @@ def selected_runtime(bin_dir, archive):
 
 
 def current_probe(source):
-    """Project only the expected build; retain the frozen historical input."""
+    """Project only the build in the exact merged fixture; historical inputs remain in Git."""
     original = hashlib.sha256(source.encode()).hexdigest()
     anchor = 'check(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")'
-    if original != 'a2b377da7baa6fff05aea3f9c6f0e10a4f6451b68786f3708898845040e0ac0b' or source.count(anchor) != 1:
+    if original != '8d8ed1aee114c8d4bf837b969e25dac779b8d1f1887c91d6afb5574bf73225d7' or source.count(anchor) != 1:
         raise RuntimeError('Historical dimension probe hash or runtime assertion anchor changed')
     projected = source.replace(anchor, anchor.replace('1681', '1688'), 1)
     return projected, {'contract': 'current-516.1688', 'original_sha256': original,
@@ -110,6 +110,7 @@ def main():
                'runtime_projection': projection,
                'allocator': 'production shared allocator, verbatim prefix',
                'allocator_full_source_sha256': allocator_hash, 'full_game_verified': False}
+    if projection: receipt['runtime_projection'] = projection
 
     def persist():
         (output / 'summary.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')

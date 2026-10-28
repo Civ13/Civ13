@@ -26,6 +26,8 @@
 	del(world)
 	sleep(1)
 /world/New()
+	// The isolated runner bypasses global_init/New(), including round identity.
+	generate_gameid()
 	if(config)
 		config.webhook_can_fire = FALSE
 		config.ToRban = FALSE
@@ -40,6 +42,16 @@
 	var/obj/map_metadata/original_map = map
 	for(var/turf/T in world)
 		T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	// Ordinary dirt channels are not the flooded trench subtypes below. Keep
+	// these disconnected from sources so constructor defaults cannot fake a pass.
+	var/list/ordinary_irrigation = list(list(2,4,0,0), list(5,4,1,0), list(8,4,1,1))
+	for(var/list/channel_case in ordinary_irrigation)
+		var/turf/floor/plot = locate(channel_case[1],channel_case[2],1)
+		plot.irrigate(channel_case[4] ? "salty" : channel_case[3] ? "fresh" : "empty")
+		plot.name = "custom saved channel [channel_case[1]]"
+	var/turf/floor/filled_plot = locate(11,4,1)
+	filled_plot.flooded = TRUE
+	filled_plot.salty = TRUE // Residue on a non-channel must not revive irrigation.
 	// Connected dry bend, isolated fresh and salty channels, plus z-level edge.
 	new /turf/floor/trench(locate(2,2,1))
 	new /turf/floor/trench(locate(3,2,1))
@@ -69,6 +81,23 @@
 		var/turf/floor/T = locate(xyz[1],xyz[2],xyz[3])
 		geometry[jointext(xyz, ",")] = trench_appearance(T)
 	trench_check(map_storage.Save_World(), "production whole-world export succeeds")
+	var/savefile/irrigation_file = new("map_saves/1.sav")
+	var/dry_ref = irrigation_file["/map/1/4/2"]
+	var/dry_path = map_storage.entry_path(irrigation_file, dry_ref)
+	var/fresh_ref = irrigation_file["/map/1/4/5"]
+	var/fresh_path = map_storage.entry_path(irrigation_file, fresh_ref)
+	var/list/saved_dry = irrigation_file["[dry_path]/flooded"]
+	var/list/saved_fresh_salt = irrigation_file["[fresh_path]/salty"]
+	trench_check(islist(saved_dry) && saved_dry["kind"] == "value" && saved_dry["value"] == FALSE, "dry channel writes an explicit zero flooded flag")
+	trench_check(islist(saved_fresh_salt) && saved_fresh_salt["kind"] == "value" && saved_fresh_salt["value"] == FALSE, "fresh channel writes an explicit zero salt flag")
+	for(var/list/channel_case in ordinary_irrigation)
+		var/turf/floor/plot = locate(channel_case[1],channel_case[2],1)
+		plot.ChangeTurf(/turf/floor/beach/sand, FALSE, FALSE)
+		plot = locate(channel_case[1],channel_case[2],1)
+		plot.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+		plot = locate(channel_case[1],channel_case[2],1)
+		plot.irrigate("salty") // Poison same-type destination state after true replacement.
+	filled_plot.irrigate("salty")
 	for(var/list/xyz in coords)
 		var/turf/T = locate(xyz[1],xyz[2],xyz[3])
 		T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
@@ -77,6 +106,13 @@
 	trench_check(map_storage.validate_world_save(), "production preflight accepts trench save")
 	map_storage.ClearMap()
 	trench_check(map_storage.Load_World(), "production whole-world import succeeds")
+	for(var/list/channel_case in ordinary_irrigation)
+		var/turf/floor/plot = locate(channel_case[1],channel_case[2],1)
+		trench_check(istype(plot, /turf/floor/dirt) && plot.irrigation && plot.flooded == channel_case[3] && plot.salty == channel_case[4], "ordinary irrigation flags survive without natural sources")
+		var/expected_icon = channel_case[3] ? "irrigation0_flooded" : "irrigation0"
+		trench_check(plot.irrigation_overlay && plot.irrigation_overlay.icon_state == expected_icon, "ordinary irrigation overlay rebuilds from restored flags")
+	filled_plot = locate(11,4,1)
+	trench_check(!filled_plot.irrigation && !filled_plot.irrigation_overlay, "non-channel save clears poisoned live irrigation")
 	sleep(10)
 	for(var/list/xyz in coords)
 		var/turf/floor/T = locate(xyz[1],xyz[2],xyz[3])

@@ -4,6 +4,7 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 import importlib.util
 import io
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -157,7 +158,14 @@ class ContinuousRoundToolchain(unittest.TestCase):
         original = '          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin"'
         current = original.replace(' --byond-bin', ' --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin')
         self.assertEqual(normalized.count(current), 6)
-        self.assertEqual(normalized.replace(current, original), self.before['.github/workflows/test.yml'])
+        marker = '      - name: Verify continuous persistence rounds and negative controls\n'
+        after_step = normalized.split(marker, 1)[1].split('      - name:', 1)[0]
+        before_step = self.before['.github/workflows/test.yml'].split(marker, 1)[1].split('      - name:', 1)[0]
+        self.assertEqual(after_step.replace(current, original), before_step)
+        # Pin the full merged workflow as well: other branches' guards and
+        # attempt-bound receipts are not covered by this local step comparison.
+        self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
+                         '071e44c2c4de0fdf5f1240222f32f260df5c2183daf8c0ed20488290c9dc2287')
 
 
 if __name__ == '__main__': unittest.main()

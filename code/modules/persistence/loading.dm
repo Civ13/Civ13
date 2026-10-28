@@ -48,7 +48,8 @@
 	for(var/z = 1, z <= save_validation_maxz(), z++)
 		if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Missing saved roof level [z]")
 		var/savefile/F = new("map_saves/[z].sav")
-		if(F["/format_version"] != 2) continue
+		var/version = F["/format_version"]
+		if(version != 2 && version != 3) continue
 		if((generation && F["/generation"] != generation) || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz())
 			throw EXCEPTION("Saved roof generation or dimensions differ")
 		for(var/y = 1, y <= world.maxy, y++)
@@ -57,7 +58,7 @@
 				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Missing roof-validation turf")
 				var/turf_path = entry_path(F, ref)
 				if(!ispath(F["[turf_path]/type"], /turf)) throw EXCEPTION("Invalid roof-validation turf")
-				var/list/contents = params2list(F["[turf_path]/content"])
+				var/list/contents = saved_content_refs(F["[turf_path]/content"], version)
 				for(var/child in contents)
 					var/path = entry_path(F, child)
 					var/type = F["[path]/type"]
@@ -227,6 +228,9 @@
 			object = locate(xa,ya,za)
 			var/turf/restored_turf = object
 			restored_turf.activate_reserved_lighting()
+			if (istype(restored_turf, /turf/floor))
+				var/turf/floor/restored_floor = restored_turf
+				restored_floor.irrigation_prepare_load()
 			// Missing fields in legacy/clear-ground saves mean no generated snow.
 			restored_turf.weather_snow = 0
 			restored_turf.snowfall_ground_icon()
@@ -275,7 +279,7 @@
 				continue
 			else if(v == "content")
 				if(nocontents != 2)
-					var/list/refs = params2list(savefile[v])
+					var/list/refs = saved_content_refs(savefile[v], format_version)
 					var/atom/container = object
 					if(container)
 						for(var/obj/ob in container.contents.Copy())
@@ -289,7 +293,7 @@
 								qdel(ob)
 					for(var/x in refs)
 						Load_Entry(savefile, x, null, object, nocontents = nextContents, lag_fix = lag_fix)
-			else if(format_version == 2)
+			else if(format_version == 2 || format_version == 3)
 				object.vars[v] = decode_saved_value(savefile, savefile[v])
 			else if(istext(savefile[v]) && findtext(savefile[v], "**list") == 1)
 				var/x = savefile[v]
@@ -509,9 +513,9 @@
 			if(round_state.len && F["/generation"] != round_state["generation"])
 				throw EXCEPTION("Saved level belongs to another round generation")
 			var/version = F["/format_version"]
-			if(version && version != 2)
+			if(version && version != 2 && version != 3)
 				throw EXCEPTION("Unsupported save version [version]")
-			if(version == 2 && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()))
+			if((version == 2 || version == 3) && (F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()))
 				throw EXCEPTION("Saved world dimensions differ from the current world")
 			var/list/validated_lists = list()
 			var/list/turf_refs = list()
@@ -535,10 +539,12 @@
 					var/type = F["type"]
 					if(!ispath(type, /turf))
 						throw EXCEPTION("Invalid turf type at [x],[y],[z]")
+					if(ispath(type, /turf/floor))
+						validate_saved_irrigation(F, version)
 					TICK_CHECK
 			F.cd = "/entries"
 			var/list/entries = F.dir.Copy()
-			if(version == 2)
+			if(version == 2 || version == 3)
 				var/list/shards = entries
 				entries = list()
 				for(var/shard in shards)
@@ -563,13 +569,13 @@
 					if(field == "type")
 						continue
 					if(field == "content")
-						for(var/content_ref in params2list(value))
+						for(var/content_ref in saved_content_refs(value, version))
 							if(!entry_set["[content_ref]"])
 								throw EXCEPTION("Missing content entry [content_ref] on z=[z]")
 							var/content_type = F["[entry_path(F, content_ref)]/type"]
 							if(!ispath(content_type, /atom/movable))
 								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
-					else if(version == 2)
+					else if(version == 2 || version == 3)
 						validate_saved_value(F, value, entry_set, validated_lists)
 					else if(istext(value) && findtext(value, "**entry") == 1)
 						if(!entry_set[copytext(value, 8)])
@@ -638,7 +644,7 @@
 // Large flat savefile directories make repeated entry navigation expensive.
 // Legacy files remain flat; new files cap each entry directory at 512 children.
 /map_storage/proc/entry_path(savefile/F, ref)
-	if(F["/format_version"] == 2)
+	if(F["/format_version"] == 2 || F["/format_version"] == 3)
 		return "/entries/[round((text2num("[ref]") - 1) / 512)]/[ref]"
 	return "/entries/[ref]"
 
@@ -687,3 +693,18 @@
 	map.age8_done = (map.ordinal_age >= 8)
 	log_startup_progress("	Restored world metadata (epoch: [map.age], research: [map.default_research]).")
 	return TRUE
+
+/map_storage/proc/saved_content_refs(value, version)
+	if(version != 3)
+		if(!istext(value) && !isnull(value)) throw EXCEPTION("Invalid legacy saved contents")
+		return params2list(value)
+	if(!islist(value)) throw EXCEPTION("Invalid version-3 saved contents")
+	var/list/refs = list()
+	for(var/chunk in value)
+		if(!istext(chunk) || length(chunk) > 32000)
+			throw EXCEPTION("Invalid saved content chunk")
+		var/list/part = params2list(chunk)
+		if(part.len > 500) throw EXCEPTION("Oversized saved content chunk")
+		refs += part
+		TICK_CHECK
+	return refs

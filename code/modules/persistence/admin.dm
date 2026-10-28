@@ -57,5 +57,8 @@
 	if(!ticker)
 		alert("Unable to start the game as it is not set up.")
 		return
+	if(ticker.current_state < GAME_STATE_PLAYING)
+		alert("The round has not started yet; there is nothing to save.")
+		return
 	spawn(0)
 		ticker.savemap()

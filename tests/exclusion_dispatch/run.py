@@ -11,9 +11,11 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import reconstruct_list_baseline, validate, project_reserved_policy
+from source_contract import (reconstruct_list_baseline, validate_merged_source, project_merged_source, event_identity,
+                             replay_reviewed_merge, MERGE_BASE, MERGE_MASTER)
 
-BASE = 'a8d3950f08aaa55db59ec5f20777a475b2db95bb'
+BASE = MERGE_BASE
+HELPER_BASE = MERGE_MASTER
 PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--byond-bin', type=Path)
@@ -28,10 +30,20 @@ a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
 old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
 current = (repo / PATH).read_text()
-old = reconstruct_list_baseline(old)
-validate(old, current)
-# Compare dispatch under the SAME new policy, not historical semantic parity.
-old = project_reserved_policy(old)
+reviewed = project_merged_source(old)
+validate_merged_source(old, reviewed)
+identity = event_identity(repo)
+if identity:
+    head_source = subprocess.check_output(['git', 'show', identity['head'] + ':' + PATH], cwd=repo, text=True)
+    event_base = subprocess.check_output(['git', 'show', identity['base'] + ':' + PATH], cwd=repo, text=True)
+    reviewed_base = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=repo, text=True)
+    if current != head_source or current != replay_reviewed_merge(event_base, reviewed_base, reviewed):
+        raise ValueError('Source does not match the exact event head and reviewed base projection')
+    HELPER_BASE = identity['base']
+else:
+    validate_merged_source(old, current)
+old = reconstruct_list_baseline(current)
+# Compare dispatch under the SAME current policy, including roof/throw guards.
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
@@ -43,8 +55,13 @@ for file, path in [
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 ]:
     helper = (repo / file).read_text()
-    pinned = subprocess.check_output(['git', 'show', BASE + ':' + file], cwd=repo, text=True)
-    assert helper == pinned, f'Inherited helper drift: {file}'
+    pinned = subprocess.check_output(['git', 'show', HELPER_BASE + ':' + file], cwd=repo, text=True)
+    if helper != pinned:
+        raise ValueError(f'Inherited helper differs from the event base: {file}')
+    if identity:
+        head_helper = subprocess.check_output(['git', 'show', identity['head'] + ':' + file], cwd=repo, text=True)
+        if helper != head_helper:
+            raise ValueError(f'Inherited helper differs from the event head: {file}')
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
@@ -52,10 +69,13 @@ for variant, text in [('baseline', old), ('candidate', current)]:
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
+            if '"appearance", ' not in hooks: raise ValueError('Omission control anchor missing')
             hooks = hooks.replace('"appearance", ', '')
         elif a.negative_control == 'parent':
+            if 'return ..()' not in hooks: raise ValueError('Parent control anchor missing')
             hooks = hooks.replace('return ..()', 'return FALSE')
         elif a.negative_control == 'eager':
+            if '\tswitch(key)' not in hooks: raise ValueError('Eager control anchor missing')
             hooks = hooks.replace('\tswitch(key)', '\t..()\n\tswitch(key)')
     for traced in [False, True]:
         suffix = variant + ('_traced' if traced else '_runtime')
@@ -90,7 +110,7 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks plus explicit reserved-lighting exclusions', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, event_identity=identity, baseline_policy='reviewed extraction integration projected onto the verified event base; three list hooks reconstructed from the validated merged source', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version='516.1681', native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')

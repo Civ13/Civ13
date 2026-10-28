@@ -27,7 +27,7 @@ EXPECTED = {
 
 class CurrentRoundMetadata(unittest.TestCase):
     def exercise(self, *, control=None, compiler_log=None, identity_error_at=None,
-                 actual=None, expected_error=None, launches=2, current_mode=True):
+                 actual=None, expected_error=None, launches=2, current_mode=True, archive_mode=False):
         if compiler_log is None:
             compiler_log = CLEAN if current_mode else CLEAN.replace('516.1688', '516.1681')
         with tempfile.TemporaryDirectory(prefix='round-metadata-injected-') as directory:
@@ -48,6 +48,18 @@ class CurrentRoundMetadata(unittest.TestCase):
                 if role == identity_error_at:
                     raise ValueError('archive member mismatch')
                 return {'version': '516.1688'}
+
+            def before_launch(role, evidence):
+                self.assertEqual(evidence, output)
+                events.append('verify:' + role)
+                if role == identity_error_at:
+                    raise ValueError('archive member mismatch')
+
+            def validate_archive_compile(code, log, name):
+                self.assertEqual(name, 'roundtrip.dmb')
+                RUNNER.current.validate_compiler(RUNNER.subprocess.CompletedProcess([], code, log, ''))
+
+            runtime = SimpleNamespace(before_launch=before_launch, validate_compile=validate_archive_compile)
 
             def launch(command, **kwargs):
                 role = 'compile' if Path(command[0]) == compiler else 'daemon'
@@ -74,7 +86,7 @@ class CurrentRoundMetadata(unittest.TestCase):
 
             argv = ['run-round-metadata.py', '--byond-bin', str(binary)]
             if current_mode:
-                argv += ['--current-linux-toolchain']
+                argv += ['--byond-archive', 'inert.zip'] if archive_mode else ['--current-linux-toolchain']
             if control:
                 argv += ['--negative-control', control]
             with patch.object(sys, 'argv', argv), \
@@ -83,6 +95,7 @@ class CurrentRoundMetadata(unittest.TestCase):
                  patch.object(RUNNER.subprocess, 'CREATE_NO_WINDOW', 0x08000000, create=True), \
                  patch.object(RUNNER.tempfile, 'mkdtemp', return_value=str(output)), \
                  patch.object(RUNNER.current, 'verify', side_effect=verify), \
+                 patch.object(RUNNER, 'selected_runtime', return_value=runtime if archive_mode else None), \
                  patch.object(RUNNER.subprocess, 'Popen', side_effect=launch) as execute, \
                  redirect_stdout(io.StringIO()):
                 if expected_error:
@@ -106,15 +119,31 @@ class CurrentRoundMetadata(unittest.TestCase):
                 self.assertTrue(all(row['exit'] == 0 for row in summary['processes']))
                 self.assertFalse(summary['opendream_verified'])
                 self.assertFalse(summary['rpo_verified'])
-                self.assertEqual(summary['toolchain_mode'], 'current-linux' if current_mode else 'historical-516.1681')
+                self.assertEqual(summary['toolchain_mode'], 'current-archive' if archive_mode else ('current-linux' if current_mode else 'historical-516.1681'))
                 self.assertEqual(summary['archive_identity_verified'], current_mode)
                 for row in summary['processes']:
-                    self.assertEqual('runtime_identity' in row, current_mode)
+                    self.assertEqual('runtime_identity' in row, current_mode and not archive_mode)
 
     def test_positive_and_all_named_controls_keep_their_exact_oracles(self):
         for control in EXPECTED:
             with self.subTest(control=control):
                 self.exercise(control=control)
+
+    def test_explicit_archive_mode_keeps_oracles_and_identity_checks(self):
+        for control in EXPECTED:
+            with self.subTest(control=control):
+                self.exercise(control=control, archive_mode=True)
+        self.exercise(archive_mode=True, identity_error_at='compile', expected_error='archive member mismatch', launches=0)
+        self.exercise(archive_mode=True, identity_error_at='daemon', expected_error='archive member mismatch', launches=1)
+        self.exercise(archive_mode=True, compiler_log=CLEAN.replace('516.1688', '516.1681'),
+                      expected_error='exact current compiler', launches=1)
+
+    def test_current_toolchain_modes_cannot_be_combined(self):
+        with patch.object(sys, 'argv', ['runner', '--byond-bin', '.', '--byond-archive', 'inert.zip', '--current-linux-toolchain']), \
+             patch.object(RUNNER.tempfile, 'mkdtemp') as create, patch.object(RUNNER, 'selected_runtime') as select, \
+             patch.object(RUNNER.subprocess, 'Popen') as launch, patch.object(sys, 'stderr', io.StringIO()):
+            with self.assertRaises(SystemExit): RUNNER.main()
+        create.assert_not_called(); select.assert_not_called(); launch.assert_not_called()
 
     def test_default_windows_mode_retains_exact_historical_runner_without_archive(self):
         for control in EXPECTED:
