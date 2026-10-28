@@ -199,6 +199,13 @@ jobs:
       - name: Test local discovery source parity offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/local_discovery')
         run: python3 -B -m unittest discover -s tests/local_discovery -v
+      - name: Verify immutable irrigation baseline and offline contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/irrigation_persistence')
+        run: |
+          if ! git cat-file -e 067478b82c7ad9f1b83759a221e6f22080ba865a^{commit}; then
+            git fetch --no-tags --depth=1 origin 067478b82c7ad9f1b83759a221e6f22080ba865a
+          fi
+          python3 -B -m unittest discover -s tests/irrigation_persistence -p 'test_*.py' -v
       - name: Test optional roof upper-floor source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
@@ -1559,6 +1566,33 @@ jobs:
           pwsh -NoProfile -File tests/irrigation/run.ps1 -ByondBin "$PWD/BYOND/byond/bin"
           git fetch --no-tags --depth=1 origin b43ff97a5a97745f29727e11a29c3783257fd619
           pwsh -NoProfile -File tests/irrigation/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Revision b43ff97a5a97745f29727e11a29c3783257fd619 -Baseline
+
+      - name: Verify trench and ordinary irrigation restoration with current toolchain
+        id: trench_irrigation
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/irrigation_persistence')
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/trench-irrigation"
+          export TMPDIR="$RUNNER_TEMP/trench-irrigation"
+          python3 -B tests/trench_save/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688
+          python3 -B tests/trench_save/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688 --negative-control filling
+          python3 -B tests/trench_save/run.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688 --negative-control digging
+
+      - name: Retain synthetic trench and irrigation diagnostics
+        if: always() && steps.trench_irrigation.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: trench-irrigation-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/trench-irrigation/**/metadata.json
+            ${{ runner.temp }}/trench-irrigation/**/compile.log
+            ${{ runner.temp }}/trench-irrigation/**/runtime.log
+            ${{ runner.temp }}/trench-irrigation/**/daemon.log
+            ${{ runner.temp }}/trench-irrigation/**/trench_result.txt
 
       - name: Run isolated power accounting regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/power') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/native_grid')
