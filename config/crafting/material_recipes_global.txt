@@ -2128,6 +2128,7 @@ RECIPE: /material/wood/soft/,wearable sign,/obj/item/clothing/accessory/wearable
 
 //*********************| WOOD FURNITURE |**************************
 // Explicit joint-making alternatives; tools and paid components are in furniture_joinery.json.
+RECIPE: /material/wood/,joinery: pegged wooden stool,/obj/item/weapon/stool/wood,2,100,0,1,joinery,0,0,0,8,wood
 RECIPE: /material/wood/soft/,joinery: whittled wooden dowel set,/obj/item/stack/wooden_dowels,1,120,0,1,joinery,0,0,0,8,null
 RECIPE: /material/wood/,joinery: hewn table (wooden pegs),/obj/structure/table/wood,4,120,1,1,joinery,0,0,0,8,null
 RECIPE: /material/wood/,joinery: hewn chair (wooden pegs),/obj/structure/bed/chair/wood,4,120,1,1,joinery,0,0,0,8,null

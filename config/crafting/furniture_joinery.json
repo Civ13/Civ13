@@ -41,5 +41,16 @@
       "chisel",
       "hammer"
     ]
+  },
+  "joinery: pegged wooden stool": {
+    "stock_type": "/obj/item/stack/material/wood",
+    "stock_cost": 2,
+    "result_type": "/obj/item/weapon/stool/wood",
+    "component_type": "/obj/item/stack/wooden_dowels",
+    "component_cost": 1,
+    "tools": [
+      "chisel",
+      "hammer"
+    ]
   }
 }

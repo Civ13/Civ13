@@ -19,7 +19,7 @@ def inventory(root=ROOT):
             categories[fields[7]] += 1
             catalogs[path.name] += 1
             output = fields[2]
-            if fields[7] == 'furniture' or output.startswith(('/obj/structure/bed', '/obj/structure/table', '/obj/structure/bookcase', '/obj/structure/closet', '/obj/structure/filingcabinet')):
+            if fields[7] == 'furniture' or output.startswith(('/obj/structure/bed', '/obj/structure/table', '/obj/structure/bookcase', '/obj/structure/closet', '/obj/structure/filingcabinet', '/obj/item/weapon/stool', '/obj/item/weapon/barstool')):
                 furniture.append(dict(file=path.relative_to(root).as_posix(), line=line, row=raw,
                                       material=fields[0], name=fields[1], output=output,
                                       category=fields[7], cost=fields[3], maximum_era=fields[11]))

@@ -7,10 +7,12 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import struct
 import subprocess
 import sys
 from types import SimpleNamespace as NS
 import unittest
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT/'tests/primitive_woodworking'))
@@ -81,6 +83,32 @@ class Fixture:
 
 
 class Contracts(unittest.TestCase):
+    def test_stool_route_reuses_wood_model_and_cannot_refund_its_full_inputs(self):
+        route=SPECS['joinery: pegged wooden stool']
+        self.assertEqual(route['result_type'],'/obj/item/weapon/stool/wood')
+        self.assertEqual((route['stock_cost'],route['component_cost']),(2,1))
+        rows=[r for r in (ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines() if ',joinery: pegged wooden stool,' in r]
+        self.assertEqual(len(rows),1)
+        self.assertTrue(rows[0].endswith(',8,wood'))
+        source=(ROOT/'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text()
+        self.assertIn('material = "wood"',block(source,'/obj/item/weapon/stool/wood\n'))
+        refund=block(source,'/obj/item/weapon/stool/proc/dismantle()')
+        self.assertEqual(refund.count('material.place_sheet(get_turf(src))'),2) # wood plus optional padding
+        materials=(ROOT/'code/modules/materials/materials.dm').read_text()
+        self.assertIn('return new stack_type(target)',block(materials,'/material/proc/place_sheet('))
+        self.assertIn('stack_type = /obj/item/stack/material/wood',block(materials,'/material/wood\n'))
+        self.assertIn('"/obj/item/weapon/stool/wood" = "basic_furniture"',(ROOT/'code/modules/research_tree/research_node.dm').read_text())
+        self.assertIn('C.use(1)',source)
+        self.assertIn('add_padding(padding_type)',source)
+        # Verify reused DMI state names from actual PNG metadata, without new art.
+        blob=(ROOT/'icons/obj/bed_chair.dmi').read_bytes();pos=8;metadata=''
+        while pos<len(blob):
+            size=struct.unpack('>I',blob[pos:pos+4])[0];kind=blob[pos+4:pos+8];data=blob[pos+8:pos+8+size];pos+=size+12
+            if kind==b'zTXt':metadata+=zlib.decompress(data.split(b'\0',1)[1][1:]).decode()
+            elif kind==b'tEXt':metadata+=data.decode(errors='replace')
+        self.assertIn('state = "stool_wood"',metadata)
+        self.assertIn('state = "stool_base"',metadata)
+
     def test_legacy_rows_preserved_without_git_history(self):
         for item in json.loads((Path(__file__).parent/'legacy-furniture.json').read_text()):
             self.assertIn(item['row'], (ROOT/item['file']).read_text().splitlines())
@@ -88,7 +116,7 @@ class Contracts(unittest.TestCase):
     def test_explicit_route_data_matches_catalog_and_no_hidden_bulk(self):
         rows=[r.split('RECIPE: ',1)[1].split(',') for r in (ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines() if r.startswith('RECIPE: ') and ',joinery: ' in r]
         self.assertEqual(set(SPECS),{r[1] for r in rows})
-        self.assertEqual(len(rows),4)
+        self.assertEqual(len(rows),5)
         for row in rows:
             spec=SPECS[row[1]]
             self.assertEqual(spec['result_type'],row[2])
@@ -179,7 +207,7 @@ class Contracts(unittest.TestCase):
         subprocess.run([sys.executable,str(ROOT/'scripts/build-crafting-atlas.py'),'--catalog-only','--check-game-catalog',str(ROOT/'UI/crafting-atlas.json')],cwd=ROOT,check=True,capture_output=True)
         data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
         selected=[r for r in data['recipes'] if r['name'] in SPECS]
-        self.assertEqual(len(selected),4)
+        self.assertEqual(len(selected),5)
         spec=importlib.util.spec_from_file_location('help_joinery',ROOT/'scripts/player_help_bridge.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
         contexts=helper.recipe_context(ROOT/'UI/crafting-atlas.json')

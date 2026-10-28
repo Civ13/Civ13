@@ -65,5 +65,6 @@
   "/obj/structure/wild/flowers/milk_thistle_scenery",
   "/obj/structure/wild/flowers/elderflower_scenery",
   "/obj/structure/wild/flowers/comfrey_scenery",
-  "/obj/item/stack/wooden_dowels"
+  "/obj/item/stack/wooden_dowels",
+  "/obj/item/weapon/stool/wood"
 ]

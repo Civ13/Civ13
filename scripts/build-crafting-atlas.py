@@ -179,6 +179,7 @@ for p,raw in files.items():
 nodes=files.get('code/modules/research_tree/research_node.dm','')
 sprite_variants={}
 sprite_variants['/obj/item/stack/wooden_dowels']=dict(type='/obj/item/stack/wooden_dowels',name='wooden dowel set')
+sprite_variants['/obj/item/weapon/stool/wood']=dict(type='/obj/item/weapon/stool/wood',name='wooden stool')
 assembly_path='code/modules/1713/gunsmithing/blackpowder_assembly.dm'
 assembly=uncomment(files.get(assembly_path,''))
 if assembly:

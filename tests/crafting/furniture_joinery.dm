@@ -135,3 +135,18 @@
 	sleep(6)
 	joinery_ci_expect(C.stock.amount == 16 && joinery_ci_outputs(C.recipe.result_type) == C.before_output + 1, "competing waits cannot spend one peg set twice")
 	C.clean()
+	// Existing stool constructor chooses wood, and disassembly returns only one
+	// log, never metal or paid pegs. Native execution remains a separate check.
+	C = new("joinery: pegged wooden stool")
+	C.craft()
+	var/obj/item/weapon/stool/wood/stool = locate() in locate(2,1,1)
+	joinery_ci_expect(stool && stool.material && stool.material.name == "wood", "stool has actual wood material")
+	if (stool)
+		stool.dismantle()
+	var/logs = 0
+	var/metal = 0
+	for (var/obj/item/stack/material/S in locate(2,1,1))
+		if (istype(S, /obj/item/stack/material/wood)) logs += S.amount
+		if (istype(S, /obj/item/stack/material/iron) || istype(S, /obj/item/stack/material/steel)) metal += S.amount
+	joinery_ci_expect(logs == 1 && metal == 0, "stool refund is one paid wood log without metal")
+	C.clean()
