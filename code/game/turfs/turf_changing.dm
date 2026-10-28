@@ -49,6 +49,7 @@
 	fix_broken_daylights()
 	update_icon()
 
+	W.sync_fullbright_coverage()
 	return W
 
 /turf/proc/transport_properties_from(turf/other)

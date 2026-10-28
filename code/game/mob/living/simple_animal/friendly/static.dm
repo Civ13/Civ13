@@ -29,6 +29,8 @@
 		H.visible_message("[H] starts fishing.")
 		if (istype(W, /obj/item/weapon/fishing/modern))
 			if (do_after(H, 120, src))
+				if (counter <= 0)
+					return
 				if (prob(40))
 					to_chat(H, "You got a fish!")
 					counter = (counter-1)
@@ -47,6 +49,8 @@
 					return
 		else
 			if (do_after(H, 150, src))
+				if (counter <= 0)
+					return
 				if (prob(30))
 					to_chat(H, "You got a fish!")
 					counter = (counter-1)
@@ -68,6 +72,8 @@
 		if (B.sharpened)
 			H.visible_message("[H] starts fishing.")
 			if (do_after(H, 120, src))
+				if (counter <= 0)
+					return
 				if (prob(20))
 					to_chat(H, "You got a fish!")
 					counter = (counter-1)

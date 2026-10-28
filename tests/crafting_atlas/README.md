@@ -1,5 +1,15 @@
 # Crafting atlas verification
 
+`node tests/crafting_atlas/resource-search.test.mjs` checks direct resource results
+against the real catalog and production website template, including name/ID and
+whitespace/underscore normalization, separate types/identities/bounds, restrictive
+recipe filters, acquisition/producer navigation, reset and empty/no-match clearing.
+It includes resource-omission and normalization-omission controls. These are offline
+DOM contracts, not browser pixels or native client evidence. `resource_search.dm`
+adds corresponding real-renderer contracts to the existing hosted Atlas fixture;
+local static tests do not execute that DM fixture. Topic still uses the existing
+validated resource route and drops prior recipe filter state.
+
 `tests/test_atlas_variants.py` and `node tests/crafting_atlas/variants.test.mjs`
 check grouping and selected-source accuracy offline. `variants.dm` exercises
 grouped counts, repeated old-ID selection, selected source/transformation,

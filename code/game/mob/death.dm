@@ -94,6 +94,11 @@
 	facing_dir = null
 
 	stat = DEAD
+	if (ishuman(src))
+		var/mob/living/human/subtile_actor = src
+		if (subtile_actor.human_subtile_visual_owner && subtile_actor.human_subtile_visual_owner.human_subtile_visual_actor == src)
+			subtile_actor.human_subtile_visual_owner.human_subtile_release_visuals()
+		subtile_actor.human_subtile_release_glide()
 
 	update_canmove()
 

@@ -1,7 +1,7 @@
 # Ordered movement discovery candidate
 
 Original audit oracle: `978a13d526ecc891fd7e755b7d6d6add2ca720ec`.
-Current reconciliation oracle/master: `99647037c70786a3c3944fcf5ae51b570b377f08`.
+Current reconciliation oracle/master: `bc7209b23d4ee39651a736a7a9ddb1d1081166ac`.
 The full-file projection now pins this master so its newer persistence guards,
 set_stat handling and animal retaliation code remain intact.
 Issue: https://github.com/Civ13/Civ13/issues/3267 (movement discovery only).

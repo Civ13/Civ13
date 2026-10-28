@@ -19,10 +19,11 @@ class NativePreparationTests(unittest.TestCase):
         for path in WRITES:
             self.assertIn('living_mob_list', baseline(path))
         workflow = read('.github/workflows/test.yml')
-        for suite in ('movement_discovery', 'persistence_year', 'ping_scheduler',
-                      'local_discovery', 'roof_area_recovery', 'footwear_water_mask'):
-            self.assertIn(f"contains(fromJSON(needs.changes.outputs.new_tests), 'tests/{suite}')", workflow)
-        guide = read('AGENTS.md')
+        # Only this suite's own lane; other suites' workflow wiring belongs to master.
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/movement_discovery')", workflow)
+        # AGENTS.md links scoped guides; the dated notes live in those READMEs.
+        guide = read('AGENTS.md') + ''.join(path.read_text(encoding='utf-8')
+                                            for path in sorted((ROOT / 'docs/agent-guides').glob('*/README.md')))
         for rule in ('ordered movement discovery subset', 'ping pass aggregation',
                      'persistence minimum date', 'save movement and physical sleep guards'):
             self.assertIn(rule, guide)

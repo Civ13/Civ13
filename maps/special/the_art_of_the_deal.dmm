@@ -284,7 +284,7 @@
 "asn" = (/obj/structure/sign/exit,/turf/wall/wood,/area/caribbean/roofed)
 "asB" = (/obj/effect/floor_decal/industrial/warning/dust{dir = 8; icon_state = "warning_dust"},/turf/floor/plating/metro{dir = 10},/area/caribbean/roofed/temperate)
 "asE" = (/obj/structure/sign/traffic/gas,/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/nomads/forest)
-"ata" = (/obj/structure/vehicleparts/frame/car/van/lf,/obj/structure/vehicleparts/movement/reversed{broken = 1},/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 1; icon_state = "license_plate_us"},/obj/structure/vehicleparts/axis/car{color = "#444444"; speedlist = alist(7,5,4,2.5,1.8)},/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
+"ata" = (/obj/structure/vehicleparts/frame/car/van/lf,/obj/structure/vehicleparts/movement/reversed{broken = 1},/obj/structure/engine/internal/gasoline{enginesize = 7000},/obj/structure/vehicleparts/license_plate/us/centered/front{dir = 1; icon_state = "license_plate_us"},/obj/structure/vehicleparts/axis/car{color = "#444444"; speedlist = list(7,5,4,2.5,1.8)},/turf/floor/dirt/dust,/area/caribbean/nomads/forest)
 "atM" = (/obj/structure/multiz/ladder/ww2/stairsup,/turf/floor/wood,/area/caribbean/roofed/temperate)
 "auf" = (/obj/effect/floor_decal/corner_kafel/white/diagonal{color = "#D2C273"},/obj/structure/curtain/open/yellow{pixel_x = -32},/obj/structure/lamp/lamp_big/alwayson{dir = 8; icon_state = "tube"},/turf/floor/plating/marble/tile{color = "#ece8c1"},/area/caribbean/roofed)
 "auP" = (/obj/structure/sign/n5{pixel_y = -32},/obj/effect/floor_decal/corner/paleblue/border,/obj/effect/floor_decal/corner/paleblue/border{dir = 4},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
@@ -1527,11 +1527,7 @@
 "mGc" = (/obj/effect/floor_decal/corner_kafel/green/diagonal,/obj/structure/table/glass,/obj/item/weapon/pen,/obj/structure/sign/flag/japanese/modern{pixel_x = -32},/turf/floor/plating/marble/tile{color = "#c1eccc"},/area/caribbean/roofed)
 "mGI" = (/obj/structure/sink,/obj/covers/marble_checkerboard,/turf/floor/dirt/dust,/area/caribbean/roofed/temperate)
 "mHf" = (/obj/covers/carpet/redcarpet,/turf/floor/wood,/area/caribbean/roofed/temperate)
-<<<<<<< global-cleanup
-"mHm" = (/obj/structure/table/modern/table,/obj/structure/npc_vendor/cartel{pixel_y = 64; layer = 3.1},/turf/floor/plating/marble/black,/area/caribbean/roofed/temperate{name = "Night Club"; ambience = list('sound/ambience/nightclub2.ogg')})
-=======
-"mHm" = (/obj/structure/table/modern/table,/mob/living/simple_animal/npc_vendor/cartel{pixel_y = 64; layer = 3.1},/turf/floor/plating/marble/black,/area/caribbean/roofed/temperate{name = "Night Club"; ambience = list('sound/ambience/nightclub2.ogg'); forced_ambience = list('sound/ambience/nightclub2.ogg')})
->>>>>>> master
+"mHm" = (/obj/structure/table/modern/table,/mob/living/simple_animal/npc_vendor/cartel{pixel_y = 64; layer = 3.1},/turf/floor/plating/marble/black,/area/caribbean/roofed/temperate{name = "Night Club"; ambience = list('sound/ambience/nightclub2.ogg')})
 "mHz" = (/obj/structure/vending/sales/moneycounter,/obj/structure/table/glass,/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed)
 "mHH" = (/obj/structure/curtain/open/yellow{pixel_y = 32},/obj/effect/floor_decal/plaque,/obj/covers/ornatemarblefloor/black,/obj/covers/sandstone/tile/decorative,/turf/floor/plating/marble/ornate,/area/caribbean/roofed)
 "mIa" = (/obj/structure/grille/chainlinkfence,/obj/structure/barbwire{pixel_y = 8},/turf/floor/plating/road,/area/caribbean/nomads/forest)
@@ -2258,13 +2254,8 @@
 "tLG" = (/obj/structure/bed/chair/office/dark{dir = 8; icon_state = "officechair_dark"},/obj/structure/lamp/lamp_big/alwayson{dir = 1; icon_state = "tube"},/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "tLT" = (/obj/covers/steelplating/white{color = "#c5e9b2"; name = "tiled floor"},/turf/floor/plating/white,/area/caribbean/roofed/temperate)
 "tND" = (/obj/structure/grille/chainlinkfence{dir = 8; icon_state = "chainlinkfence"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/no_mans_land/invisible_wall{icon_state = "red1"})
-<<<<<<< global-cleanup
-"tNG" = (/obj/structure/npc_vendor/walter,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"tOH" = (/obj/covers/carpet/arcade,/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door{name = "Strobe Night Club"; unique_door_name = "Strobe NIght Club"},/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed/temperate{name = "Night Club"; ambience = list('sound/ambience/nightclub2.ogg')})
-=======
 "tNG" = (/mob/living/simple_animal/npc_vendor/walter,/turf/floor/wood,/area/caribbean/roofed/temperate)
-"tOH" = (/obj/covers/carpet/arcade,/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door{name = "Strobe Night Club"; unique_door_name = "Strobe NIght Club"},/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed/temperate{name = "Night Club"; ambience = list('sound/ambience/nightclub2.ogg'); forced_ambience = list('sound/ambience/nightclub2.ogg')})
->>>>>>> master
+"tOH" = (/obj/covers/carpet/arcade,/obj/structure/simple_door/key_door/anyone/doubledoor/steel/store_door{name = "Strobe Night Club"; unique_door_name = "Strobe NIght Club"},/turf/floor/plating/marble/decorative_tile,/area/caribbean/roofed/temperate{name = "Night Club"; ambience = list('sound/ambience/nightclub2.ogg')})
 "tOM" = (/obj/structure/sign/painting13{pixel_y = 32},/turf/floor/wood,/area/caribbean/roofed/temperate{name = "Molino's Pizzeria"})
 "tPc" = (/obj/structure/closet/anchored{name = "locker"},/obj/structure/lamp/lamp_big/alwayson/white{dir = 8; icon_state = "tube"},/obj/item/weapon/storage/fancy/cigarettes/randompack/lighter,/obj/item/weapon/handcuffs,/obj/item/weapon/handcuffs,/turf/floor/plating/steel,/area/caribbean/roofed/temperate)
 "tRh" = (/obj/structure/railing{dir = 8; icon_state = "railing0"},/turf/floor/carpet,/area/caribbean/roofed/temperate)
