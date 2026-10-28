@@ -12455,8 +12455,8 @@
     {
       "name": "Sawmill processing",
       "file": "code/modules/1713/production.dm",
-      "line": 2209,
-      "source_commit": "422a619dcf6e50308dda458c52e30a1a5c3c75f3",
+      "line": 2216,
+      "source_commit": "caca63c5d6d150c116871ce4b586f26dbe8500e2",
       "inputs": [
         "/obj/item/stack/material/wood"
       ],
