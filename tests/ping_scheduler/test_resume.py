@@ -1,10 +1,19 @@
 """Offline restricted production traces; Python adapters are not native evidence."""
 from pathlib import Path
+import hashlib
 import re
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 EARLY = 1234
+
+
+def historical_source():
+    data = Path(__file__).with_name('historical-ping.txt').read_bytes()
+    if hashlib.sha256(data).hexdigest() != '026c5030918624a57e94d3949f8245a2e7a5b7251ff6bc63e2b37a376735c885':
+        raise ValueError('Historical ping control differs from the reviewed fixture')
+    return data.decode('utf-8')
 
 
 def body(source, signature):
@@ -129,6 +138,11 @@ class Trace:
 
 
 class PingTests(unittest.TestCase):
+    def test_historical_control_rejects_fixture_drift(self):
+        with patch.object(Path, 'read_bytes', return_value=b'altered historical source'):
+            with self.assertRaisesRegex(ValueError, 'Historical ping control'):
+                historical_source()
+
     def setUp(self):
         self.source = (ROOT / "code/processes/ping_track.dm").read_text()
         self.clients = [Client(key, ping) for key, ping in zip("abc", (10, 30, 50))]
@@ -209,7 +223,7 @@ class PingTests(unittest.TestCase):
         self.assertIsNone(t.pending)
 
     def test_audited_baseline_repeats_prefix_and_publishes_partial_sum(self):
-        old = Path(__file__).with_name('fixtures').joinpath('ping_track-9db2b2f.dm').read_text(encoding='utf-8')
+        old = historical_source()
         t = Trace(old, self.clients)
         for _ in range(3):
             self.assertEqual(t.dispatch(1), EARLY)

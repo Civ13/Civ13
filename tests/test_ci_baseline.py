@@ -108,10 +108,9 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(reads, {'code/processes/ping_track.dm', 'code/processes/_process.dm'})
         self.assertTrue(reads.issubset(set(ci.SUITES['ping']['paths'])))
         self.assertNotIn('__processScheduler.dm', source)
-        self.assertIn("joinpath('ping_track-9db2b2f.dm').read_text", source)
-        self.assertNotIn('subprocess', source)
-        self.assertEqual(self.selected(['tests/ping_scheduler/fixtures/ping_track-9db2b2f.dm']),
-                         {'policy', 'bootstrap', 'progress', 'ping'})
+        self.assertIn("Path(__file__).with_name('historical-ping.txt').read_bytes()", source)
+        self.assertIn('ping', self.selected(['tests/ping_scheduler/historical-ping.txt']))
+        self.assertIn('research', self.selected(['tests/research_scheduler/historical-research.txt']))
         self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
                          {'policy', 'bootstrap', 'progress', 'research'})
 
@@ -189,6 +188,24 @@ class BaselinePolicyTests(unittest.TestCase):
         shared = 'code/game/mob/living/simple_animal/friendly/static.dm'
         self.assertEqual(self.selected([shared]), set(ci.SUITES))
         self.assertIn('Unmapped impact: ' + shared, ci.impact([shared])['fallback_reasons'])
+
+    def test_sawmill_registration_and_selection_are_offline_and_bounded(self):
+        suite = ci.SUITES['sawmill']
+        self.assertEqual(suite['files'], ('tests/sawmill/test_contract.py',
+                                          'tests/test_atlas_navigation.py',
+                                          'tests/player_help/test_recipe_context.py'))
+        self.assertEqual(suite['paths'], ('tests/sawmill/',))
+        self.assertFalse(suite.get('always', False))
+        for path in suite['files']:
+            with self.subTest(path=path):
+                self.assertIn('sawmill', self.selected([path]))
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+        for shared in ('code/modules/1713/production.dm', 'scripts/atlas/catalog_metadata.py',
+                       'scripts/player_help_bridge.py', 'UI/crafting-atlas.json'):
+            with self.subTest(shared=shared):
+                self.assertEqual(self.selected([shared]), set(ci.SUITES))
+                self.assertIn('Unmapped impact: ' + shared, ci.impact([shared])['fallback_reasons'])
+        self.assertFalse(any(path.endswith(('.dm', 'run.py')) for path in suite['files']))
 
     def test_dictionary_inputs_select_only_the_reviewed_offline_file(self):
         self.assertEqual(ci.SUITES['dictionary']['files'],
