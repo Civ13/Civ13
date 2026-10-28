@@ -6,6 +6,19 @@ processor filters narrow a sorted index of at most 150 matches; refine filters
 to reach additional records. Select a recipe to follow inputs, quantities and
 outputs. **Legacy paginated list** deliberately opens the older 12-record pages.
 Requests are limited to once per second.
+
+Search a resource's catalog name or canonical identifier to see labeled **Resource**
+results alongside **Recipe** results. For example, `proteolytic enzyme` and
+`proteolytic_enzyme` both offer the resource directly, plus its extraction and
+gelatin recipes. Matching ignores case, treats underscores as spaces and trims
+and collapses whitespace. Labels and canonical IDs stay unchanged; the game's
+separate reagent name **Digestive Protease** is not added as a catalog alias.
+Select a Resource result to open the existing acquisition and related-recipe view.
+Resource navigation clears recipe filters; era, processor and website recipe-system
+filters do not hide matching Resource results. Resource results are independently
+limited to 150; recipe results retain the in-game 150 and website 250 limits.
+Empty or whitespace-only input browses recipes without listing every resource.
+
 Identical material definitions repeated in alternative catalogs share one index
 entry and one dependency node. **Transformation / catalog variant** selects the
 catalog and its exact source row; the in-game selector uses **Show variant**.
