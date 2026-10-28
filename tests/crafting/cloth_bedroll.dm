@@ -28,6 +28,7 @@
 			qdel(stock)
 			qdel(held)
 			continue
+		qdel(held)
 		for (var/i = 1, i <= 3, i++)
 			rolled.attack_self(H)
 			var/obj/structure/bed/bedroll/B = locate() in locate(2,1,1)
@@ -38,6 +39,7 @@
 			bedroll_ci_expect(!B.fold_up(H) && !QDELETED(B) && !shelf_ci_count(rolled_path), "used bedding cannot fold: [rolled_path]")
 			B.used = FALSE
 			var/obj/item/weapon/hammer/hammer = new /obj/item/weapon/hammer/tribalhammer(H)
+			H.l_hand = hammer
 			B.attackby(hammer, H)
 			bedroll_ci_expect(!QDELETED(B) && !shelf_ci_count(/obj/item/stack/material/wood), "textile bedding cannot produce a wood refund: [rolled_path]")
 			qdel(hammer)
@@ -48,6 +50,5 @@
 		bedroll_ci_expect(bag.remove_from_storage(rolled, locate(2,1,1)) && rolled.type == rolled_path && shelf_ci_count(rolled_path) == 1, "backpack removal preserves type without conversion: [rolled_path]")
 		qdel(bag)
 		qdel(stock)
-		qdel(held)
 		shelf_ci_clear()
 	qdel(H)
