@@ -1,5 +1,6 @@
 """Offline source sensitivity checks; these do not establish native DM parity."""
 import json
+import os
 from pathlib import Path
 import re
 import runpy
@@ -11,7 +12,12 @@ from unittest.mock import patch
 
 import resources
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
-from source_contract import CURRENT_BASE, validate_current_master, project_lighting_policy, project_fullbright_exclusions, project_area_change_owner
+from source_contract import validate_current_master, project_lighting_policy, project_fullbright_exclusions, project_area_change_owner
+
+# Frozen reconciliation checkpoint for historical assertions, never the runner's
+# live reference. Actual CI preparation uses the immutable event pair instead.
+RECONCILIATION_CHECKPOINT = 'eedc9862fcb7b2b7c3617c6972965fafa650e51a'
+RECONCILIATION_CANDIDATE = '2d8b3c152bf321c442e154240e52bb41c71c1688'
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = '5bf351248de6050876fe5b53f91209a970cc5668'
@@ -21,6 +27,13 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
             'blackout_click_started', 'blackout_click_expires',
             'pickaxe_mining_owner', 'mining_in_progress', 'pickaxe_mining_action',
             'lighting_reserved', 'lighting_reserved_clearance_enabled')
+
+
+def runner_argv(arguments):
+    if os.environ.get('GITHUB_ACTIONS') == 'true':
+        return ['run.py'] + arguments  # exercise the CI event identities unchanged
+    head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+    return ['run.py', '--base', RECONCILIATION_CHECKPOINT, '--head', head] + arguments
 
 
 class HistoricalSourceContractTests(unittest.TestCase):
@@ -112,7 +125,7 @@ class HistoricalSourceContractTests(unittest.TestCase):
             transform(self.baseline.replace('/mob/persistence_runtime_var(key)', '/mob/other(key)'))
 
     def run_runner(self, arguments):
-        with patch.object(sys, 'argv', ['run.py'] + arguments), \
+        with patch.object(sys, 'argv', runner_argv(arguments)), \
              patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
              patch.object(resources, 'binary_info', side_effect=AssertionError('Binary query attempted')):
             with self.assertRaises(SystemExit) as exited:
@@ -182,8 +195,9 @@ SNOW_GUARD = ('\tif (key == "snowfall_ground_index" || key == "snowfall_ground_g
 class CurrentMasterContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.master = subprocess.check_output(['git', 'show', CURRENT_BASE + ':' + PATH], cwd=ROOT, text=True)
-        cls.candidate = (ROOT / PATH).read_text()
+        cls.master = subprocess.check_output(['git', 'show', RECONCILIATION_CHECKPOINT + ':' + PATH], cwd=ROOT, text=True)
+        cls.candidate = subprocess.check_output(['git', 'show',
+            RECONCILIATION_CANDIDATE + ':' + PATH], cwd=ROOT, text=True)
 
     def test_entire_current_master_is_preserved_plus_only_lighting_exclusions(self):
         validate_current_master(self.master, self.candidate)
@@ -224,12 +238,13 @@ class CurrentMasterContractTests(unittest.TestCase):
 class LightingCurrentMasterContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.baseline = subprocess.check_output(['git', 'show', CURRENT_BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.baseline = subprocess.check_output(['git', 'show', RECONCILIATION_CHECKPOINT + ':' + PATH], cwd=ROOT, text=True)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
         cls.historical_baseline = reconstruct_list_baseline(subprocess.check_output(
             ['git', 'show', HISTORICAL_BASE + ':' + PATH], cwd=ROOT, text=True))
-        cls.candidate = (ROOT / PATH).read_text()
+        cls.candidate = subprocess.check_output(['git', 'show',
+            RECONCILIATION_CANDIDATE + ':' + PATH], cwd=ROOT, text=True)
 
     def test_exact_transform_preserves_current_master(self):
         validate_current_master(self.master, self.candidate)
@@ -341,7 +356,7 @@ class LightingCurrentMasterContractTests(unittest.TestCase):
             project_area_change_owner(self.baseline.replace('/turf/persistence_runtime_var(key)', '/turf/other(key)'))
 
     def run_runner(self, arguments):
-        with patch.object(sys, 'argv', ['run.py'] + arguments), \
+        with patch.object(sys, 'argv', runner_argv(arguments)), \
              patch.object(resources.Budget, 'run', side_effect=AssertionError('Native launch attempted')), \
              patch.object(resources, 'binary_info', side_effect=AssertionError('Binary query attempted')):
             with self.assertRaises(SystemExit) as exited:

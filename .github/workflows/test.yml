@@ -853,6 +853,9 @@ jobs:
       - name: Verify lighting plane composition modes
         id: lighting_composition
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/light_plane_composition')
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -946,11 +949,17 @@ jobs:
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
       - name: Check exclusion dispatch source while native execution is held
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
         run: |
           python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
           python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
       - name: Verify Linux exclusion dispatch parity and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
         timeout-minutes: 5
         shell: bash
         run: |

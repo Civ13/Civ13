@@ -10,6 +10,7 @@ import signal
 import subprocess
 import sys
 import time
+from preparation import identities
 
 HERE = Path(__file__).resolve().parent
 DIAGNOSTIC = re.compile(r'\bBUG\b|runtime error|Bad ref|Bad loc|Cannot read null|Cannot execute null|segmentation|fatal error|infinite loop', re.I)
@@ -85,21 +86,27 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--base', default=os.environ.get('CI_BASE'))
+    parser.add_argument('--head', default=os.environ.get('CI_HEAD'))
     args = parser.parse_args()
     if sys.platform != 'linux':
         parser.error('This separate runner supports Linux only')
+    identity = identities(HERE.parents[1], args.base, args.head,
+        event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
+        github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     byond = args.byond_bin.resolve(strict=True)
     compiler, daemon = byond / 'DreamMaker', byond / 'DreamDaemon'
     binaries = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (compiler, daemon)}
     deadline = time.monotonic() + 180
-    summary = dict(status='incomplete', binaries=binaries, native_execution=False,
+    summary = dict(status='incomplete', binaries=binaries, native_execution=False, identity=identity,
                    scope='isolated Linux hook parity and controls; no benchmark or deployment', modes={})
     try:
         for mode in MODES:
             packet = output / (mode + '.json')
-            command = [sys.executable, str(HERE / 'run.py'), '--source-only', '--output', str(packet)]
+            command = [sys.executable, str(HERE / 'run.py'), '--source-only', '--output', str(packet),
+                       '--base', identity['base'], '--head', identity['head']]
             if mode != 'parity':
                 command += ['--negative-control', mode]
             run(command, output, mode + '-prepare', deadline)

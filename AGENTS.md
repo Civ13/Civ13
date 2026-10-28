@@ -1,12 +1,14 @@
 # Civ13 - Agent guide
 
 <!-- 2026-10-28: public lighting/exclusion reconciliation -->
-The exclusion runner pins current master eedc9862fcb7b2b7c3617c6972965fafa650e51a.
-Bounded-save blocks are already upstream: preserve their complete source, then
-project only fullbright exclusions and area_change_owner into both variants.
-Keep immutable historical bounded-save tests and lighting omission/parent controls;
-the current whole-file comparison rejects one-sided drift and accepts identical
-unrelated evolution on both sides. Source-only checks do not authorize native work.
+The exclusion runner requires immutable event base/head SHAs and verifies the
+checked-out head, event metadata in Actions and committed fixture inputs. Never
+fall back to a fixed master checkpoint, moving ref or base/head self-comparison.
+Preserve the complete event-base source, adding only missing exact fullbright
+exclusions and area_change_owner; already integrated lighting policy stays intact.
+Keep immutable historical bounded-save tests and lighting omission/parent controls,
+plus actual CLI preparation tests for evolved pre/post-lighting event bases and
+one-sided regressions. Source-only checks do not authorize native work.
 
 <!-- 2026-10-19: disabled lighting composition V2 -->
 Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.

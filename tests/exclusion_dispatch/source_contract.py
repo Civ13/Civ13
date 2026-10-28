@@ -1,9 +1,6 @@
 """Fail-closed source contract; no compiler or runtime execution."""
 import re
 
-CURRENT_BASE = 'eedc9862fcb7b2b7c3617c6972965fafa650e51a'
-
-
 # Reviewed bounded-save integration adds only these non-hook blocks to the
 # pinned 5bf351 baseline. Keep complete-file equality after this projection;
 # deriving a baseline from candidate source would hide unrelated changes.
@@ -85,6 +82,31 @@ def project_lighting_policy(master):
     return project_area_change_owner(project_fullbright_exclusions(master))
 
 
+def current_lighting_policy(base):
+    """Accept exact pre/post-addition event bases, never partial lighting policy.
+
+    The candidate is not normalized: losing an existing exclusion must fail.
+    Keep the strict historical projections above unchanged.
+    """
+    token = '/atom/movable/lighting_fullbright'
+    if token in base:
+        pairs = (
+            'list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)',
+            'if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))',
+        )
+        if base.count(token) != 2 or any(base.count(anchor) != 1 for anchor in pairs):
+            raise ValueError('Event base has partial or changed fullbright exclusions')
+    else:
+        base = project_fullbright_exclusions(base)
+    owner = '/turf/persistence_runtime_var(key)\n\tif (key == "area_change_owner")\n\t\treturn TRUE\n'
+    if '"area_change_owner"' in base:
+        if base.count('"area_change_owner"') != 1 or base.count(owner) != 1:
+            raise ValueError('Event base has partial or changed area-owner guard')
+    else:
+        base = project_area_change_owner(base)
+    return base
+
+
 def transform(baseline):
     expected = project_reserved_policy(project_bounded_save(baseline))
     for kind in ('atom', 'turf', 'mob'):
@@ -104,6 +126,6 @@ def validate(baseline, candidate):
 
 
 def validate_current_master(master, candidate):
-    """Pinned master already owns bounded-save work; preserve it in full."""
-    if project_lighting_policy(master) != candidate:
-        raise ValueError("Only approved fullbright exclusions and area-owner guard may differ from pinned current master")
+    """Preserve the immutable event base, adding only missing lighting policy."""
+    if current_lighting_policy(master) != candidate:
+        raise ValueError('Only approved fullbright exclusions and area-owner guard may differ from event base')

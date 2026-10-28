@@ -1,18 +1,36 @@
 ## Public current-master reconciliation (2026-10-28)
 
-The active reference is immutable master `eedc9862fcb7b2b7c3617c6972965fafa650e51a`.
-It already contains #3105's bounded-save blocks. `validate_current_master` requires
-complete-file equality after only the public lighting branch's two fullbright
-exclusions and transient area-owner guard are added. Both dispatch variants receive
-the same lighting policy; only three list hooks are reconstructed. The movable
-throw guard precedes its later inherited process hook. Collector selection remains
-unchanged with its symbol undefined in the fixture.
+The live reference is the immutable event base, supplied through `CI_BASE` and
+`CI_HEAD` (or explicit `--base`/`--head` for offline preparation). Both must be full,
+nonzero commit SHAs with common history, distinct from each other; the head must
+equal checked-out HEAD. Actions also requires matching pull-request base/head or
+push before/after metadata from `GITHUB_EVENT_PATH`. Missing identities, moving
+refs, mismatches and dirty production/helper/fixture inputs fail before output.
+There is no hardcoded-master or candidate-derived fallback. Events without an
+immutable comparison pair fail closed rather than inventing a base.
+
+`validate_current_master` preserves complete-file equality after adding only the
+public lighting branch's missing two fullbright exclusions and transient area-owner
+guard. The event base can precede either addition or already contain both. Partial
+or changed existing policy fails; the candidate is never normalized. This preserves
+#3105's current-base comparison and its bounded-save blocks as upstream evolves.
+Both dispatch variants receive the same lighting policy; only three list hooks are
+reconstructed. The movable throw guard precedes its later inherited process hook.
+Collector selection remains unchanged with its symbol undefined in the fixture.
 
 Historical #3105 list/switch and bounded-block controls retain their immutable
 inputs. Current tests preserve bounded blocks, guards, diagnostics, snow/zone keys,
-both fullbright exclusions and area ownership, plus unrelated-base evolution and
-one-sided drift rejection. No production change or native acceptance is introduced
-by this manual test reconciliation. All native holds and version gates remain.
+both fullbright exclusions and area ownership. `test_preparation.py` executes the
+actual source-only CLI in temporary committed Git histories for pre/post-addition
+bases, shared unrelated serializer/helper evolution, divergent unrelated-file base
+evolution, push events, one-sided regressions, and identity/dirty-input failures.
+The frozen `eedc9862fcb7b2b7c3617c6972965fafa650e51a` content is only a historical
+test seed. Its preserved reconciliation assertions compare the immutable candidate
+`2d8b3c152bf321c442e154240e52bb41c71c1688`, rather than comparing a moving checkout
+to that old seed. Neither checkpoint is the live runner base. The source-only
+entry point independently validates the actual event base and checked-out head.
+No production change or native acceptance is introduced by this test reconciliation.
+All native holds/version gates remain.
 
 ## Preserved earlier reference notes (historical)
 
