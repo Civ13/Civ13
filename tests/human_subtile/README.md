@@ -1,4 +1,88 @@
-# Opt-in human sub-tile adapter
+# Human sub-tile movement: diagonal/default candidate
+
+The current candidate extends the adapter to all eight directions. This remains
+fixed-tile-intent movement: key release prevents later queued intents but does
+not cancel the current admitted intent. It is not free pixel locomotion or a
+new key-up stopping scheme. Every
+admitted 32px intent uses at most sixteen native 2px pulses on the same absolute
+cooldown interval. Diagonal pulses advance both axes together through the native
+offset seam, bypassing the legacy immediate cardinal decomposition only for an
+authenticated one-use pulse. The existing ordinal cooldown multiplier is retained.
+Collision, partial slide, cancellation, costs and once-only completion semantics
+remain physical. The 32x32 footprint and global simulation rate are unchanged.
+
+Ordinary eligible human input initializes the default through
+`set_human_subtile(TRUE)` after placement/construction/load. The stored enable
+flag remains false until that safe admission. Explicit `set_human_subtile(FALSE)`
+(also exposed as IC > Toggle Smooth Movement) at alignment clears pending initialization and preserves legacy movement for the
+body's runtime lifetime. Disabling at an owned offset still refuses without
+snapping. An interrupted intent now stops each moving axis at its next native
+grid alignment instead of preserving the offset indefinitely. Reverse movement
+can realign a 2px interruption with a 2px collision-checked move, while consuming
+the usual full admission cost/cooldown. The existing paid prone/scramble paths can realign an owned offset after their
+normal wait, without forcing an injured player to stand. Pulling and open menus
+(`using_object`) keep smooth movement; living/Move drags a pulled object behind
+each tile crossing. Only a stationary gun's `using_object` restricts. Restraints
+and being pulled retain their normal restrictions; release cuffs through ordinary
+controls, then reverse or move to the next alignment. A blocked reverse can align in the other direction.
+No admin placement participates in the recovery regression. Owned save capsules can initialize on the first eligible input;
+arbitrary raw legacy offsets are never silently adopted. Runtime choices are not
+saved as account preferences. New/revived eligible bodies initialize on input.
+
+Native interpolation uses the actual admitted distance/time to set `glide_size`,
+including Euclidean diagonal scaling unless `LONG_GLIDE` already applies. The
+owning client's frame rate is raised to at least 60 and above server FPS while
+this mode owns its visual settings. Prior client FPS, camera glide and body glide
+are restored only while still owned; intervening preference changes are retained. Settings are restored on opt-out, restricted input, logout, death or body handoff. No
+`pixel_x/y` offsets, simulated screenshots or global FPS changes are involved.
+The installed official BYOND reference's [gliding documentation](https://www.byond.com/docs/ref/#/{notes}/gliding)
+explains that legacy pixel movement interpolates only when client FPS exceeds
+server FPS. This motivates the policy; it is not client-rendering acceptance.
+
+The maximum native movement-call budget doubles from 8 to 16 per admitted input,
+while admission costs and completion hooks remain once per input. At interval
+`D` deciseconds the call budget is `160/D` per second per continuously moving
+actor, versus `80/D` before. At D=4 this is 40 versus 20 calls/s. Client rendering
+at 60 versus 20 FPS can render three times as many frames. Several physical
+pulses can still coalesce in a server frame; 16 calls do not imply 16 network
+packets or visible frames. Actual CPU, bandwidth and multiplayer latency need
+measurement. Tick-boundary normalization is checked as a 2px physical delta;
+DreamSeeker camera/sprite continuity remains a separate visual gate.
+
+Use the current runner for this candidate:
+
+```powershell
+py -3 tests/human_subtile/run-diagonal.py --output <fresh-evidence-directory> --byond-bin <516.1688-bin>
+```
+
+`--prepare-only` stages exact committed Git sources. `--compile-only` compiles
+without starting a daemon. The current fixtures and strict receipt oracles target 1688 and run the 42 existing human
+assertions plus 117 diagonal/default/interpolation/recovery assertions, and separately
+the 52 existing mining assertions. These are expected counts until a complete
+native receipt confirms them. `--control legacy-split` and
+`--control cardinal-arithmetic` must each reach exactly
+`diagonal_32px_per_axis` after four new assertions. The offset-recovery control must fail exactly
+`cancel_stop_reverse_realigns_without_snap` at new assertion 86. Complete failures
+are retained. The optional `human_subtile_fixture_client_visuals(C)` entry tests
+actual body handoff and intervening client/body preference changes; it requires
+a separately authorized real client and is not called by headless CI.
+
+Windows uses the unchanged `scripts/native_fixture.py` Session and byte-identical
+copies of its frozen launch/accounting helpers, with a separate observed 1688
+binary-hash allowlist. One process per Job, memory/CPU/time/output limits,
+retained cleanup and the no-sampled-sockets policy remain intact. The 1681 hash
+refusal and the later 1688 startup-loopback socket rejection are preserved; the
+latter prevents local Windows runtime acceptance; see [the bounded runtime proposal](RUNTIME-ISOLATION.md). No connected-client input or capture has
+been performed for this candidate. Before default-on deployment, acceptance
+still needs permitted native fixture completion, actual client admission/cost
+parity and genuine DreamSeeker observation at cardinal/diagonal transitions,
+tile boundaries, corners, stop/reverse and walk/run speeds. A rebuilt world and
+coordinated server restart are required after merge.
+
+## Historical cardinal prototype and evidence
+
+The following records the older 4px/1681 prototype. Its assertion counts and
+connected-client results do not validate the current candidate. Historical source/oracles remain in Git at `bef0ba6534d56ca6395057fd8508d037afeedec0`; current runners and fixtures now target 1688.
 
 Opt-in integration stacked from the separately verified native primitive
 at `c605363a11050dbf67fe4820cc8cc4587c9cf97c` (Civ13 base `cc03b199`).

@@ -1,12 +1,20 @@
 """Stage or run the actual bounded durable metadata graph in isolated storage."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
 import tempfile
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('graph_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
 
 
 def adjudicate(result, log, control, contracts, associative=False):
@@ -48,6 +56,7 @@ def adjudicate(result, log, control, contracts, associative=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--negative-control', choices=('generation', 'alias', 'binding', 'clock', 'omission', 'timer', 'infinity', 'alist-values', 'alist-kind', 'alist-alias', 'alist-binding'))
     parser.add_argument('--alist', action='store_true', help='Verify native associative collections and actual map squad defaults')
@@ -62,6 +71,12 @@ def main():
         parser.error('Keep associative graph and scalar contract controls separate')
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required to launch native verification')
+    if args.byond_archive and (args.prepare_only or
+            args.negative_control not in ((None, 'alist-values', 'alist-kind', 'alist-alias', 'alist-binding') if args.alist
+                                         else (None, 'clock', 'omission', 'timer', 'infinity') if args.contracts
+                                         else (None, 'generation', 'alias', 'binding'))):
+        parser.error('Current archive mode admits only the selected graph CI cases')
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
     root = Path(__file__).resolve().parents[2]
     source_path = root / 'code/modules/persistence/durable_graph.dm'
     probe_path = Path(__file__).with_name('durable_graph_probe.dm')
@@ -152,14 +167,17 @@ def main():
     print(f'Retained evidence: {output}', flush=True)
     if args.prepare_only:
         return
-    byond = args.byond_bin.resolve(strict=True)
+    byond = args.byond_bin.absolute() if runtime else args.byond_bin.resolve(strict=True)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+    if runtime: runtime.before_launch('compile', output)
     build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=output,
                            capture_output=True, text=True, timeout=120)
     (output / 'compile.log').write_text(build.stdout + build.stderr, encoding='utf-8')
+    if runtime: runtime.validate_compile(build.returncode, build.stdout + build.stderr, 'probe.dmb')
     if build.returncode or '0 errors, 0 warnings' not in build.stdout:
         raise RuntimeError('Native compilation failed; see retained compile.log')
+    if runtime: runtime.before_launch('daemon', output)
     run = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'native.log'],
                          cwd=output, capture_output=True, text=True, timeout=60)
     (output / 'daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')

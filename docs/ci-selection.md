@@ -178,6 +178,13 @@ keeps JSON booleans). Numeric tokens avoid
 values such as `false`, `False` or `00` are invalid and fail.
 
 Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-<attempt>`.
+Each producer names its artifact with the attempt it actually ran in. A re-run
+of failed jobs reuses earlier successful jobs, so baseline, build and the
+aggregate download by the producing job's `attempt` output, not their own
+attempt. Receipts keep the selection's `run_attempt` and digest and add
+`job_attempt`; the aggregate requires selection <= job <= current attempt and
+the declared job attempt. A reused receipt still records the earlier attempt
+and does not erase any failed attempt.
 They retain exact checked-out head, resolved base (or null plus requested base),
 run/attempt, event action/ref, separate compile/native/gating eligibility reasons,
 selection digest, changed paths, fallback/skip reasons, suite commands,

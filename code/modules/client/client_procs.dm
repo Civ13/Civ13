@@ -308,6 +308,7 @@
 	..()
 
 /client/Del()
+	human_subtile_release_visuals()
 	clear_hover_name()
 	webhook_send_logout(ckey)
 
