@@ -1,3 +1,9 @@
+#define LIGHTING_COMPOSITION_V2 0
+#define LIGHTING_MASK_PLANE 4
+/turf/proc/sync_fullbright_coverage()
+	return
+/proc/sync_fullbright_coverage_world()
+	return
 // Isolated native geometry; production corner/overlay constructors are extracted.
 /world
 	hub = ""

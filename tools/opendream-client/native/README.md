@@ -137,6 +137,34 @@ and actual executable replacement. `--version` and `--self-check` exercise the
 single-file entrypoint without network, accounts or installation. Actual live
 update-channel delivery and real client sign-in/gameplay need separate acceptance.
 
+## Local DreamDaemon hosting (operators)
+
+An operator can host a server from the launcher by placing `host.json` in the
+launcher root (`%LOCALAPPDATA%\Civ13`, or the `--root` folder). Without that file
+the menu is unchanged. With it, `H: Host local DreamDaemon server` appears:
+
+```json
+{"schema": 1, "game_directory": "D:/GitHub/Civ13", "world": "civ13.dmb", "port": 1714, "public": true,
+ "bot": {"php": "C:/php/php.exe", "root": "D:/Civilizationbot-local/bot", "profile": "D:/Civilizationbot-local/profile.json"}}
+```
+
+`H` starts the verified BYOND `dd.exe` with `-trusted`, `-public` (or `-invisible`)
+and `-log logs/world.log` in `game_directory`, unless something already listens on
+`port`. When `bot` is present it also starts the Civilizationbot portable supervisor
+(`control.php start <profile>`) unless the bot's `http_port` from that profile is
+already listening. `bot` is optional. Paths must be absolute and exist, and `world`
+must be a compiled `.dmb` inside `game_directory`; an invalid file disables hosting
+with a message.
+
+An optional `"update": {"git": "C:/Program Files/Git/cmd/git.exe", "branch": "master"}`
+updates the server before starting it: `git fetch origin <branch>`, then
+`git merge --ff-only FETCH_HEAD` (local uncommitted edits are kept; a diverged
+checkout stops), then the verified BYOND `dm.exe -max_errors 0 <world>.dme`, which
+must report `0 errors, 0 warnings`. Any failed step leaves DreamDaemon unstarted.
+A server already listening on `port` is never updated, because it holds its `.dmb`.
+The launcher does not stop servers. `tests/LocalHostingTests.cs` injects process
+starts, update steps and port probes, so it launches nothing.
+
 ## Release deployment
 
 Publishing any GitHub release triggers `native-launcher-release.yml`. It checks
@@ -174,6 +202,12 @@ without creating a live release or feed.
 
 ## BYOND prerequisite
 
+Launcher release versions (for example 1.0.8) are independent of BYOND engine
+versions. Launcher 1.0.7 bundled an exact 516.1681 requirement, so an installed
+516.1688 was rejected even when discovered correctly. Build from the shared
+compiler contract below to accept 516.1688. Do not loosen detection to accept
+unreviewed future builds or edit a published executable/feed in place.
+
 `../../byond/version.json` is the shared compiler/server/client requirement, embedded
 as the resource `byond.json`. It targets **516.1688**, separately from the minimum
 compiler 516.1681 and the savefile major 516. A source upgrade is not runtime or
@@ -183,6 +217,29 @@ provides `516.1688_byond.exe`. Its SHA-256 and size were observed from an offici
 HTTPS download on 2026-10-24. They provide exact-byte reproducibility, not a
 BYOND-published or independently authenticated checksum. The
 installer's PE version and NSIS format were checked without executing it.
+
+The accepted client version is the exact compiler target, not `minimumCompiler`.
+Both client executables must have canonical matching PE metadata. Older builds,
+mixed/malformed versions, and unknown future builds remain unsupported. A future
+engine upgrade changes `tools/byond/version.json` with its reviewed installer
+URL, SHA-256 and size. That same file is embedded at build time; startup never
+fetches a mutable engine requirement and remains usable offline.
+
+`Civ13.exe --byond-contract` only prints the validated embedded contract, before
+network requests, registry discovery, setup or sign-in. `Build.ps1` compares that
+data from the produced artifact with the complete source contract. Both PR and
+exact-tag release workflows call this build guard. `release.py` repeats the
+comparison before uploading any asset, binds the contract identity to its plan,
+and records its version and canonical SHA-256 in release metadata. A compiler
+bump without rebuilding the launcher therefore fails before publication. Existing
+immutable asset readback and stable-feed version guards still apply: shipping
+different launcher bytes requires a new launcher semantic version.
+
+The offline release tests include compiler-bump, stale artifact, hash/size/URL
+drift and malformed-contract controls. Run the focused detection fixture with
+`Launcher.Tests.exe --byond-only`; optionally pass an installed BYOND bin folder
+for read-only Windows PE/discovery checks. The fixture uses injected setup and
+transport adapters and never downloads, installs, starts a game or signs in.
 
 Detection checks both BYOND and DreamSeeker PE versions through the managed
 install receipt, 32/64-bit HKLM/HKCU Dantom registry locations, known program

@@ -2,6 +2,8 @@
 	var/client/my_client // Need to keep track of this ourselves, since by the time Logout() is called the client has already been nulled
 
 /mob/new_player/Login()
+	if (client && player_help_service)
+		player_help_service.bind_body(client, src)
 	winset(src, null, "mainwindow.title='[customserver_name()]'")//For displaying the server name.
 	update_Login_details()	//handles setting lastKnownIP and computer_id for use by the ban systems as well as checking for multikeying
 	if(map_storage.reclaim_saved_player(src))

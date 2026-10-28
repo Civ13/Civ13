@@ -95,6 +95,7 @@ class PublicationTests(unittest.TestCase):
             with mock.patch.multiple(bridge, load_config=mock.Mock(return_value={}),
                     bounded_json=mock.Mock(return_value=corpus),
                     recipe_context=mock.Mock(return_value=[]),
+                    acquisition_context=mock.Mock(return_value=[]),
                     gameplay_knowledge=mock.Mock(return_value=[]),
                     Bridge=mock.Mock(return_value=instance)):
                 with mock.patch.object(bridge.signal, 'signal'):
@@ -141,6 +142,7 @@ class PublicationTests(unittest.TestCase):
                 with mock.patch.multiple(bridge, load_config=mock.Mock(return_value=config),
                         bounded_json=mock.Mock(side_effect=read),
                         recipe_context=mock.Mock(return_value=[]),
+                        acquisition_context=mock.Mock(return_value=[]),
                         gameplay_knowledge=mock.Mock(return_value=[]),
                         Bridge=mock.Mock(return_value=instance)):
                     with mock.patch.object(bridge.signal, 'signal'), mock.patch.object(bridge.time, 'sleep'):
