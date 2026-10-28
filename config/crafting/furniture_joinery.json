@@ -42,6 +42,14 @@
       "hammer"
     ]
   },
+  "joinery: wooden document drawers": {
+    "stock_type": "/obj/item/stack/material/woodplank",
+    "stock_cost": 6,
+    "result_type": "/obj/structure/filingcabinet/chestdrawer/wood",
+    "component_type": "/obj/item/stack/wooden_dowels",
+    "component_cost": 1,
+    "tools": ["chisel", "hammer"]
+  },
   "joinery: pegged wooden stool": {
     "stock_type": "/obj/item/stack/material/wood",
     "stock_cost": 2,

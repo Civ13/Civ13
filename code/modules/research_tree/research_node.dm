@@ -785,6 +785,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/cabinet" = "fine_furniture",
 		"/obj/structure/closet/cabinet/ceiling" = "fine_furniture",
 		"/obj/structure/filingcabinet/chestdrawer" = "fine_furniture",
+		"/obj/structure/filingcabinet/chestdrawer/wood" = "fine_furniture",
 		"/obj/structure/oven" = "fine_furniture",
 		"/obj/structure/oven/woodstove" = "fine_furniture",
 		"/obj/structure/sign/clock" = "fine_furniture",

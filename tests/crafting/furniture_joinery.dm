@@ -176,6 +176,7 @@
 	recipe_ci_wooden_refunds()
 	recipe_ci_cloth_bedroll()
 	recipe_ci_rope_hammock()
+	recipe_ci_document_drawers()
 
 /proc/shelf_ci_clear()
 	for (var/obj/O in locate(2,1,1))

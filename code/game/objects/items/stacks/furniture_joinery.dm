@@ -12,7 +12,7 @@ var/global/list/furniture_joinery_specs
 /obj/item/stack/wooden_dowels
 	name = "wooden dowel sets"
 	singular_name = "wooden dowel set"
-	desc = "Whittled wooden pegs for furniture joints. Each set supplies a small frame. Hold the required sets alongside logs; keep a chisel and hammer or mallet equipped or on the ground at your feet."
+	desc = "Whittled wooden pegs for furniture joints. Each set supplies a small frame. Hold the required sets alongside the recipe's wood stock; keep a chisel and hammer or mallet equipped or on the ground at your feet."
 	icon = 'icons/obj/old_weapons.dmi'
 	icon_state = "sharpened_stick"
 	color = "#824B28"

@@ -82,7 +82,8 @@ SUITES = {
     # Shared crafting/Atlas files keep the conservative all-suite fallback.
     'furniture_joinery': {'files': ('tests/furniture_joinery/test_contract.py',
                                   'tests/furniture_joinery/test_wooden_shelf.py',
-                                  'tests/furniture_joinery/test_bedroll.py'), 'paths': (
+                                  'tests/furniture_joinery/test_bedroll.py',
+                                  'tests/furniture_joinery/test_document_drawers.py'), 'paths': (
         'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
         'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',

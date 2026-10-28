@@ -27,6 +27,8 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
+        return 'wooden document drawers'
     if s.rstrip('/') in ('/obj/item/weapon/bedroll/cloth', '/obj/structure/bed/bedroll/cloth'):
         return 'cloth bedroll'
     # This item type's DM name is sand; the similarly named glass material is distinct.
