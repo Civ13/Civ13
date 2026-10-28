@@ -52,7 +52,14 @@ NEW_KEYS = ('next_click', 'next_move', 'may_do_after', 'may_do_mob',
 
 def runner_argv(arguments):
     if os.environ.get('GITHUB_ACTIONS') == 'true':
-        return ['run.py'] + arguments  # exercise the CI event identities unchanged
+        # Some hosted steps expose the event but do not set CI_BASE/CI_HEAD.
+        # Derive both from the validated event and retain any supplied values
+        # only if they agree; run.py revalidates the pair and event metadata.
+        identity = event_identity(ROOT)
+        for variable, key in (('CI_BASE', 'base'), ('CI_HEAD', 'head')):
+            if variable in os.environ and os.environ[variable] != identity[key]:
+                raise ValueError(variable + ' differs from validated event identity')
+        return ['run.py', '--base', identity['base'], '--head', identity['head']] + arguments
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     return ['run.py', '--base', RECONCILIATION_CHECKPOINT, '--head', head] + arguments
 
