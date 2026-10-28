@@ -1,7 +1,7 @@
 """Offline conversation contract and transport tests; no model or live worker."""
 import json
 from pathlib import Path
-import re
+import importlib.util
 import unittest
 from unittest import mock
 import test_bridge
@@ -16,15 +16,28 @@ class ConversationTests(unittest.TestCase):
     finish = test_bridge.BridgeTests.finish
 
     def test_ci_base_branch_allowlist_preserves_focused_stack(self):
-        workflow = (Path(__file__).resolve().parents[2] / '.github/workflows/test.yml').read_text(encoding='utf-8')
-        def branches(event):
-            section = workflow.split('  ' + event + ':\n', 1)[1].split('\n\n', 1)[0]
-            match = re.search(r'^    branches: \[([^\]]+)\]$', section, re.M)
-            self.assertIsNotNone(match, 'Use explicit base branches, never wildcards')
-            return {part.strip().strip('\"\'') for part in match[1].split(',')}
-        self.assertEqual(branches('pull_request'), {'master', 'help-markdown-byond-html'})
-        self.assertEqual(branches('push'), {'master'})
+        root = Path(__file__).resolve().parents[2]
+        workflow = (root / '.github/workflows/test.yml').read_text(encoding='utf-8')
         self.assertNotIn('pull_request_target:', workflow)
+        self.assertIn('uses: ./.github/workflows/ci-selection.yml', workflow)
+        self.assertIn('      build_prefix: true', workflow)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/player_help')", workflow)
+        spec = importlib.util.spec_from_file_location('ci_selector_help_contract', root / 'scripts/select-ci.py')
+        selector = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(selector)
+        self.assertEqual(selector.CI_BASES, {'master', 'help-markdown-byond-html'})
+        for base in ('master', 'help-markdown-byond-html', 'unrelated'):
+            for action in ('opened', 'synchronize', 'reopened', 'edited'):
+                payload = {'action': action, 'pull_request': {'title': 'help', 'base': {'ref': base}}}
+                policy = selector.eligibility('pull_request', payload, True)
+                expected = base != 'unrelated' and action != 'edited'
+                self.assertEqual(policy['native']['eligible'], expected, (base, action))
+                self.assertEqual(policy['gating']['eligible'], expected, (base, action))
+        for ref in ('refs/heads/master', 'refs/heads/unrelated'):
+            payload = {'ref': ref, 'deleted': False, 'commits': [{'message': 'help'}]}
+            policy = selector.eligibility('push', payload, True)
+            self.assertEqual(policy['native']['eligible'], ref == 'refs/heads/master')
+            self.assertEqual(policy['gating']['eligible'], ref == 'refs/heads/master')
 
     def request(self, pairs=None, account='a', question='What fuel does it need?'):
         return {'id': '1-2-3', 'account': account * 32, 'question': question,

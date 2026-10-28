@@ -85,6 +85,51 @@ class RegressionPolicyTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
+    def test_reviewed_atlas_test_edits_select_only_their_suite_on_ordinary_prs(self):
+        # Exercise the actual Git comparison and admission, not a copied selector.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', directory, *args],
+                                               stderr=subprocess.PIPE).decode().strip()
+            git('init')
+            git('config', 'user.name', 'CI policy test')
+            git('config', 'user.email', 'ci@example.invalid')
+            atlas_inputs = {'tests/test_crafting_atlas.py': 'tests/test_crafting_atlas.py',
+                            'tests/crafting_atlas/probe.dm': 'tests/crafting_atlas',
+                            'tests/crafting_atlas/resource-search.test.mjs': 'tests/crafting_atlas'}
+            paths = tuple(atlas_inputs) + ('tests/crafting_atlas/unrelated.dm',)
+            for name in paths:
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('original\n')
+            git('add', '.')
+            git('commit', '-m', 'base')
+            base = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                os.chdir(root)
+                for name in paths:
+                    with self.subTest(path=name):
+                        (root / name).write_text('changed\n')
+                        git('add', name)
+                        git('commit', '-m', 'edit test')
+                        head = git('rev-parse', 'HEAD')
+                        expected = [atlas_inputs[name]] if name in atlas_inputs else []
+                        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+                        self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], expected)
+                        for action, branch in (('edited', 'master'), ('opened', 'other')):
+                            payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': branch}}}
+                            self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], [])
+                        self.assertEqual(selection.selections(base, head, 'push', False, True,
+                            {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]})[2], [])
+                        base = head
+            finally:
+                os.chdir(previous)
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", workflow)
+
     def test_offline_and_game_regressions_have_explicit_suite_guards(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         self.assert_explicit_suite_guards(workflow)

@@ -9,6 +9,14 @@ DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.
 CI_BASES = {'master', 'help-markdown-byond-html'}
 ORDINARY_PR_ACTIONS = {'opened', 'synchronize', 'reopened'}
 
+# These existing Atlas tests are reviewed exceptions to added-test selection.
+# Exact paths keep unrelated edits from requesting costly native fixtures.
+ATLAS_TEST_INPUTS = {
+    'tests/test_crafting_atlas.py': 'tests/test_crafting_atlas.py',
+    'tests/crafting_atlas/probe.dm': 'tests/crafting_atlas',
+    'tests/crafting_atlas/resource-search.test.mjs': 'tests/crafting_atlas',
+}
+
 
 def starts_build(message):
     """The first line is literal data, with no case folding or whitespace trim."""
@@ -120,7 +128,9 @@ def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     game, reason = select(base, head) if policy['compile']['eligible'] else (False, 'Outside ordinary CI subscription')
     if policy['forced']:
         game, reason = True, 'build: request or incomplete event metadata; compile game'
-    new_tests = introduced_tests(base, head, event) if policy['native']['eligible'] else []
+    new_tests = (sorted(set(introduced_tests(base, head, event)) |
+                        set(changed_atlas_tests(base, head, event)))
+                 if policy['native']['eligible'] else [])
     extensive = policy['native']['eligible'] and game and needs_extensive(event, opted_in)
     return game, extensive, new_tests, reason
 
@@ -148,6 +158,20 @@ def select(base, head):
 
 def needs_extensive(event, opted_in):
     return event == 'workflow_dispatch' and opted_in
+
+def changed_atlas_tests(base, head, event):
+    """Select only explicitly reviewed Atlas test edits on ordinary PRs."""
+    if event != 'pull_request' or not base or not head or set(base) == {'0'}:
+        return []
+    try:
+        paths = subprocess.check_output(
+            ['git', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
+             base, head, '--', *ATLAS_TEST_INPUTS],
+            stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
+    except (subprocess.SubprocessError, UnicodeError):
+        return []
+    return sorted({ATLAS_TEST_INPUTS[path] for path in paths if path in ATLAS_TEST_INPUTS})
+
 
 def introduced_tests(base, head, event):
     """Only added executable tests on a PR qualify, never edits or prose.
