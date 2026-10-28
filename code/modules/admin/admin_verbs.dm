@@ -136,6 +136,7 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/resume_pending_recovery
 	)
 var/list/admin_verbs_debug = list(
+	/client/proc/profile_dump,
 	/client/proc/gc_outcomes,
 	/client/proc/gc_inspect_owner_field,
 	/client/proc/gc_deletion_costs,

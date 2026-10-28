@@ -967,6 +967,7 @@
 #include "code\modules\admin\admin_ranks.dm"
 #include "code\modules\admin\admin_secrets.dm"
 #include "code\modules\admin\admin_verbs.dm"
+#include "code\modules\admin\profile_dump.dm"
 #include "code\modules\admin\create_mob.dm"
 #include "code\modules\admin\create_object.dm"
 #include "code\modules\admin\create_turf.dm"

@@ -125,6 +125,11 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	lifecycle_operation = shutdown ? operation : null
 	lifecycle_session = shutdown ? session : null
 	var/list/published
+	// Give connected players a minute's notice; busy already blocks other saves.
+	if(clients.len)
+		to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart in 1 minute. Your progress will be kept; reconnect in a few minutes to continue.</b></font>")
+		sleep(600)
+		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will restart when the save completes.</b></font>")
 	try
 		if(!save_generation()) throw EXCEPTION("World save failed; server remains running")
 		var/list/I = current_identity()
@@ -134,7 +139,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		expected_generation = I["generation"]
 		if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")
 		if(shutdown)
-			to_chat(world, "<b>Save validated. Shutting down for the local updater.</b>")
+			to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
 			request_shutdown()
 		else
 			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
@@ -175,6 +180,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		last_error = null
 		busy = FALSE
 		report("Intended generation restored and one-shot intent consumed")
+		to_chat(world, "<font color='yellow' size=4><b>The world has been restored from the last save. Welcome back!</b></font>")
 		last_error = null
 		players_ready = map_storage.finish_player_restoration()
 		return TRUE
