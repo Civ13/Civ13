@@ -48,13 +48,18 @@ and a hammer in a legal hand slot. Report actual execution separately from fixtu
 compilation. Connected play, natural resource reachability, suspended/occupied
 animation and real saved-world round trips remain unverified.
 
-The shared material craft completion now rechecks `one_per_turf` after its action
-wait, before awarding XP or consuming materials. Another craft completing during
-the wait therefore cannot create a duplicate on that tile. This preserves the
-existing same-output-type predicate and recipes whose flag is disabled. Offline
-regressions change occupancy across the completion boundary; the native fixture
-places a competing hammock during the real wait and checks unchanged stock and
-only the competitor's output. This is not a new global reservation or support rule.
+The hammock recipe rechecks `one_per_turf` after its action wait, before awarding
+XP or consuming rope. Another hammock completing during the wait therefore cannot
+create a duplicate on that tile. This preserves the same-output-type predicate and
+disabled-flag behavior. The check is explicitly limited to this hammock recipe:
+legacy recipes such as the powered sawmill prepay secondary inputs before waiting
+and must not gain a new late rejection without a separate payment/refund design.
+The offline control proves an occupied powered-sawmill result does not enter the
+new rejection path; it is not a claim of atomic crafting for that legacy recipe.
+Offline regressions change hammock occupancy across the completion boundary; the
+native fixture places a competing hammock during the real wait and checks unchanged
+stock and only the competitor's output. No shared reservation or atomic-crafting
+rewrite is included.
 
 ## Broader audit stopping point
 

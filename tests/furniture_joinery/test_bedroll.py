@@ -162,7 +162,7 @@ class HammockContracts(unittest.TestCase):
     def test_occupancy_changed_during_wait_rejects_before_payment(self):
         source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
         production=block(source,'/obj/item/stack/proc/produce_recipe(')
-        start=production.index('\t\tif (recipe.one_per_turf')
+        start=production.index('\t\tif (recipe.result_type == /obj/structure/bed/hammock')
         end=production.index('\t\tif (!exercise_can_build',start)
         self.assertLess(production.index('if (!do_after(user, buildtime))'),start)
         self.assertLess(start,production.index('H.adaptStat("crafting"'))
@@ -181,6 +181,24 @@ class HammockContracts(unittest.TestCase):
             if late_output:user.loc.append(late_output)
             if guard(recipe,user):stock-=6;own_output+=1
             self.assertEqual((stock,own_output),(6,1) if paid else (12,0))
+        # A powered sawmill prepays its circuit before the wait. This new
+        # rejection path must not interrupt that unrelated legacy transaction.
+        sawmill='/obj/structure/sawmill/powered'
+        powered=NS(one_per_turf=True,result_type=sawmill)
+        self.assertTrue(guard(powered,NS(loc=[sawmill])))
+        broad_body=body.replace('recipe.result_type == /obj/structure/bed/hammock && ','')
+        broad_guard,_=compile_body('/proc/old_completion()\n'+broad_body+'\n\treturn TRUE\n',
+                                  '/proc/old_completion()', 'recipe,user',
+                                  dict(locate=lambda path:path,to_chat=lambda *args:None))
+        self.assertFalse(broad_guard(powered,NS(loc=[sawmill])))
+        prepayment=production[production.index('else if (recipe.result_type == '+sawmill+')'):]
+        prepayment=prepayment[:prepayment.index('\n\telse if (')]
+        self.assertIn('NR.amount -= 1',prepayment)
+        self.assertIn('qdelHandReturn(',prepayment)
+        self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime))'))
+        rows=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()
+        fields=next(row.split('RECIPE: ',1)[1].split(',') for row in rows if ','+sawmill+',' in row)
+        self.assertEqual(fields[5],'1')
 
     def test_paid_route_research_and_catalog_are_consistent(self):
         path='/obj/structure/bed/hammock'

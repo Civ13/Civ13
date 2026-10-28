@@ -1835,9 +1835,9 @@
 				handReturnMap.Remove(H.key)
 			return
 
-		// Another craft can occupy this turf while the action yields. Reject
-		// before XP, material debit or construction, using the admission rule.
-		if (recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
+		// Hammocks pay only after this wait. Do not reject legacy recipes here:
+		// some already consumed secondary inputs before do_after.
+		if (recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
 			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
