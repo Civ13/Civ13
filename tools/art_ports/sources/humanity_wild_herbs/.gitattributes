@@ -1,0 +1,4 @@
+# Retain the exact upstream bytes used by the provenance hashes on every OS.
+*.png binary
+meta*.json -text
+manifest.json text eol=lf

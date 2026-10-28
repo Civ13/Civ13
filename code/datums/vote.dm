@@ -15,6 +15,26 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	// Initial lobby map selection must still be possible.
 	return ticker && ticker.current_state >= GAME_STATE_PLAYING && (vote_type == "epoch" || vote_type == "map" || vote_type == "gamemode")
 
+// world.time of the last successful persistence save in this process.
+var/global/last_persistence_save_time = 0
+
+// Returns why players cannot start (or complete) a save vote, or null if they can.
+/proc/persistence_save_vote_block_reason()
+	if (!persistence_round_active())
+		return "Save votes are only available in persistent rounds."
+	if (config.skip_persistence_saving)
+		return "Saving is disabled on this server."
+	if (!ticker || ticker.current_state < GAME_STATE_PLAYING)
+		return "The round has not started yet."
+	if (persistence_restart.startup_hold || persistence_restart.busy)
+		return "The world is busy with a save or restart."
+	if (clients.len < 3)
+		return "At least 3 players must be online."
+	var/wait = max(last_persistence_save_time, round_start_time) + 6000 - world.time
+	if (wait > 0)
+		return "The world was saved less than 10 minutes ago ([round((wait + 599) / 600)] minutes left)."
+	return null
+
 /datum/vote
 	var/initiator = null
 	var/started_time = null
@@ -205,6 +225,16 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 					text2file("[string1][string2]","SQL/gamedata.txt")
 				if ("gamemode")
 					processes.gamemode.swap(.)
+				if ("save")
+					if (. == "Save Now")
+						var/save_block = persistence_save_vote_block_reason()
+						if (save_block)
+							to_chat(world, "<b>The save vote passed, but the save was skipped: [save_block]</b>")
+						else
+							log_game("Saving the world due to save vote.")
+							spawn(0)
+								if (ticker.savemap())
+									nextsave = world.realtime + 216000
 				if ("ship selection")
 					var/obj/map_metadata/battle_ships/battle_ships = map
 					if (faction == 3)
@@ -248,6 +278,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			switch(vote_type)
 				if ("restart")
 					choices.Add("Restart Round","Continue Playing")
+					win_threshold = 0.59
+				if ("save")
+					question = "Save the world now?"
+					choices.Add("Save Now","Keep Playing")
 					win_threshold = 0.59
 				if ("epoch")
 					for (var/epoch in processes.epochswap.epochs)
@@ -449,6 +483,13 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 			else
 				. += "<font color='grey'>Restart (Disallowed)</font>"
 			. += "</li><li>"
+			if (persistence_round_active())
+				var/save_block = persistence_save_vote_block_reason()
+				if (!save_block)
+					. += "<a href='?src=\ref[src];vote=save'>Save progress</a>"
+				else
+					. += "<font color='grey'>Save progress ([save_block])</font>"
+				. += "</li><li>"
 			if (admin)
 				. += "\t(<a href='?src=\ref[src];vote=toggle_restart'>[config.allow_vote_restart?"Allowed":"Disallowed"]</a>)"
 				. += "</li><li>"
@@ -488,6 +529,15 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 							to_chat(usr, "You can't start restart votes if the server population is lower than <b>five</b> and the round has been going for over <b>three</b> hours.")
 							return FALSE
 					initiate_vote("restart",usr.key)
+			if ("save")
+				var/save_block = persistence_save_vote_block_reason()
+				if (save_block)
+					to_chat(usr, save_block)
+					return FALSE
+				if (config.vote_no_dead && usr.stat == DEAD && !usr.client.holder)
+					to_chat(usr, "You can't start save votes if you are not playing.")
+					return FALSE
+				initiate_vote("save",usr.key)
 			if ("custom")
 				if (usr.client.holder)
 					initiate_vote("custom",usr.key)

@@ -20,6 +20,7 @@
 #include "code\hud.dm"
 #include "code\movementMachine.dm"
 #include "code\names.dm"
+#include "code\modules\kestrel\gaia_pilot.dm"
 #include "code\pathfinding.dm"
 #include "code\predefines.dm"
 #include "code\setup.dm"

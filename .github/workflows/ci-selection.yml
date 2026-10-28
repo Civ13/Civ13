@@ -21,6 +21,9 @@ on:
         value: ${{ jobs.changes.outputs.game }}
       gating:
         value: ${{ jobs.changes.outputs.gating }}
+      attempt:
+        description: Run attempt that produced the selection artifact; a re-run of failed jobs reuses an earlier one
+        value: ${{ jobs.changes.outputs.attempt }}
 permissions:
   contents: read
 jobs:
@@ -32,6 +35,7 @@ jobs:
       game: ${{ steps.select.outputs.game }}
       new_tests: ${{ steps.select.outputs.new_tests }}
       gating: ${{ steps.select.outputs.gating }}
+      attempt: ${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
