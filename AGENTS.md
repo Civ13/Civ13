@@ -8,6 +8,19 @@ Save hooks accrue unpaid debt without destruction; roofs explicitly save debt,
 and after_load rebases excluded runtime clocks/indexes. Terminal qdel waits for
 empty contents. tests/seasonal_construction is offline; prepare.py only prepares
 an uncompiled native packet. Keep native/graphical acceptance and balancing pending.
+
+<!-- 2026-10-26: diagonal human movement candidate -->
+The human adapter uses sixteen native 2px pulses per admitted input, bitmask
+diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
+for an eligible input and calls the safe setter; an explicit aligned opt-out
+clears pending initialization. Owned restored offsets may resume; arbitrary
+legacy offsets are not adopted. Native glide/client FPS ownership is runtime-only
+and restored on opt-out, restricted input, logout, body handoff and death.
+tests/human_subtile/run-diagonal.py targets 516.1688 with exact-Git staging and
+a separate executable allowlist; historical helpers remain frozen. Preserve the
+Windows startup-socket rejection rather than weakening its no-socket policy.
+Headless displacement/compile checks never prove DreamSeeker visual smoothness.
+
 <!-- 2026-10-25: shared hub community links -->
 `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
 WEBSITEURL; keep literal metadata escaped and configured links HTTP(S)-only.
@@ -317,6 +330,15 @@ source preparation does not establish native acceptance.
 - Object placement: to put an object on a floor tile, define a new tile key that includes the object + the floor turf + the area, then use that key in the grid at the desired position.
 
 ### Map metadata
+
+<!-- 2026-10-27: coded minimap grid boundaries -->
+get_coded_loc uses one-based tiles with fixed 22x22 default, 15x10 campaign and
+40x40 Falcon cells. CAMPAIGN_MAP_LIST_MAPID_OR starts with a bare map constant;
+its comparison-prefix callers differ from standalone Boolean callers. Keep the
+grid's explicit ID selection local rather than globally changing that macro.
+tests/aotd_map/test_coded_loc.py projects the helper offline; it is not native
+HUD acceptance. Campaign DMM extents exceed the legacy ten-row/column frame;
+this correction preserves those cell sizes rather than rescaling their maps.
 
 <!-- 2026-10-24: optional geographic elevation -->
 Elevation is a bounded coordinate profile on map metadata, independent of native
@@ -940,6 +962,11 @@ omitted native coverage. Preserve existing native opt-ins and toolchain ownershi
 Hosted DreamMaker results must identify the actually executed manifest version;
 Python projections, compiled core_boot variants and native runtime/gameplay
 acceptance are separate evidence. Historical 516.1681 runs do not verify 1688.
+<!-- 2026-10-28: re-run of failed jobs -->
+CI receipt consumers download ci-selection/baseline/compile by the producing
+job's `attempt` output: a re-run of failed jobs reuses earlier jobs whose
+artifacts keep their original attempt. Receipts record `job_attempt`; keep the
+attempt ordering checks in scripts/ci_baseline.py when changing these jobs.
 Cloud-only workers must keep unavailable local native checks as not_run. After
 owner review and authorized push, obtain hosted validation for the current head
 and inspect its outcomes/artifacts; never substitute local tool absence or an
@@ -963,6 +990,15 @@ docs/crafting-atlas.md; acquisition annotations retain their historical audit SH
 
 <!-- 2026-10-15: atlas unlock and processing contracts -->
 <!-- 2026-10-23: atlas catalog variants -->
+<!-- 2026-10-27: direct atlas resource search -->
+Atlas search has separate bounded Resource and Recipe results. Resource matching
+uses catalog names and canonical IDs, with case/whitespace/underscore normalization;
+IDs and labels stay unchanged. Recipe filters do not hide resource matches; direct
+resource navigation reuses atlas_resource/resource(id) and clears recipe filters.
+Empty input browses recipes. tests/crafting_atlas/resource-search.test.mjs checks
+the production template offline; resource_search.dm is a hosted renderer fixture,
+not connected-client or live-server acceptance. Do not add guessed reagent aliases.
+
 `scripts/atlas/variants.py` groups only identical explicit 13-field material rows
 with equal extracted semantics. Catalog identity/source IDs stay as variants;
 never group by name, canonical ingredients or outputs alone. Counts and legacy

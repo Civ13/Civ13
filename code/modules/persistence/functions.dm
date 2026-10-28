@@ -586,6 +586,9 @@ var/global/persistence_load_recovery_required = FALSE
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
 /datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction)
+	// A lobby/setting-up world has no round to persist; restored rounds are PLAYING.
+	if(current_state < GAME_STATE_PLAYING)
+		return FALSE
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
 	if(!operation) return FALSE
 	try
@@ -602,6 +605,7 @@ var/global/persistence_load_recovery_required = FALSE
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
 		return 0
 	operation.finish(TRUE)
+	last_persistence_save_time = world.time
 	return 1
 
 /datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)
