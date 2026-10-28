@@ -166,7 +166,7 @@ class ContinuousRoundToolchain(unittest.TestCase):
         self.assertEqual(source[source.index(marker):], before[before.index(marker):])
         workflow = (ROOT/'.github/workflows/test.yml').read_text(encoding='utf-8')
         step = ('      - name: Test continuous persistence round contracts offline\n'
-            "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_round') || inputs.persistence_integration_regressions == true\n"
+            "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_round') || inputs.persistence_integration_regressions == true\n"
             '        run: python3 -B -m unittest discover -s tests/persistence_round -v\n')
         self.assertEqual(workflow.count(step), 1)
         normalized = workflow.replace(step, '')
@@ -176,7 +176,7 @@ class ContinuousRoundToolchain(unittest.TestCase):
         marker = '      - name: Verify continuous persistence rounds and negative controls\n'
         after_step = normalized.split(marker, 1)[1].split('      - name:', 1)[0]
         before_step = self.before['.github/workflows/test.yml'].split(marker, 1)[1].split('      - name:', 1)[0]
-        self.assertEqual(after_step.replace(current, original), before_step)
+        self.assertEqual(after_step.replace(current, original).replace("fromJSON(needs.changes.outputs.new_tests || '[]')", 'fromJSON(needs.changes.outputs.new_tests)'), before_step)
         WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
 
 

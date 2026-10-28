@@ -80,7 +80,7 @@ def get_turf(atom):
 
 class Fixture:
     def __init__(self, movable_source=None, operation_source=None):
-        self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False,
+        self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
                         get_turf=get_turf, isturf=lambda a: isinstance(a, Atom) and a.turf,
@@ -127,7 +127,7 @@ class Fixture:
         self.backend = project(functions, '/map_storage/proc/run_world_operation', 'src, kind, operation=None', self.env, True)
         self.store = NS(dimension_recovery_required=False, dimension_budget_hold=False)
     def operation(self):
-        op = NS(storage=None, kind=None, backend_started=False, contents_started=False,
+        op = NS(storage=None, kind=None, admission_identity=object(), backend_started=False, contents_started=False,
                 mutation_started=False, restoring_players=False)
         for name, function in self.op_methods.items():
             setattr(op, name, MethodType(function, op))
@@ -231,6 +231,23 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(len(messages), 2)
         ticker = extract(read(FUNCTIONS), '/datum/controller/gameticker/proc/savemap')
         self.assertNotIn('SAVING THE MAP!', ticker)
+
+    def test_admission_identity_survives_completed_operation_and_rejected_attempt(self):
+        f = Fixture()
+        old = f.env['persistence_admission_identity']
+        save = f.begin(f.store, 'save')
+        first = f.env['persistence_admission_identity']
+        self.assertIs(first, save.admission_identity)
+        self.assertIsNot(first, old)
+        self.assertIsNone(f.begin(f.store, 'save'))
+        self.assertIs(f.env['persistence_admission_identity'], first)
+        save.finish(True)
+        self.assertFalse(f.env['persistence_save_in_progress'])
+        self.assertIs(f.env['persistence_admission_identity'], first)
+        load = f.begin(f.store, 'load')
+        self.assertIs(f.env['persistence_admission_identity'], load.admission_identity)
+        self.assertIsNot(f.env['persistence_admission_identity'], first)
+        load.finish(True)
 
     def test_hands_refuse_before_slot_changes_and_accept_already_contained_items(self):
         for side in ('l', 'r'):

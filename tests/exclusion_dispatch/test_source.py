@@ -978,6 +978,11 @@ class Current1688RunnerTests(unittest.TestCase):
             expected=self.original_workflow.split(marker,1)[1].split('      - name:',1)[0]
             current=current.replace('name: exclusion-native-1688-${{ github.event.pull_request.head.sha || github.sha }}',
                                                           'name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}')
+            # The later CI checkout fix makes absent selector output safe and
+            # retains failed-selection evidence; the scoped workflow contract
+            # separately requires both guards in the actual workflow.
+            current=current.replace("fromJSON(needs.changes.outputs.new_tests || '[]')", 'fromJSON(needs.changes.outputs.new_tests)')
+            current=current.replace("if: always() && needs.changes.result == 'success' && ", 'if: always() && ')
             self.assertEqual(current,expected)
 
     def test_result_keeps_legacy_oracles_and_demands_exact_observed_version_and_target_control(self):

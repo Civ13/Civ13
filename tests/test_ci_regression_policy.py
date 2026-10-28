@@ -15,7 +15,7 @@ spec.loader.exec_module(selection)
 
 ROOF_NATIVE_NAME = 'Verify synthetic saved-roof recovery and two defect controls'
 ROOF_HEAD_REQUEST = "contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))"
-ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery') || "
+ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery') || "
                        + ROOF_HEAD_REQUEST + ')')
 ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action != 'edited' && "
                      "needs.changes.outputs.game == 'true' && " + ROOF_SUITE_SELECTION)
@@ -26,7 +26,7 @@ class RegressionPolicyTests(unittest.TestCase):
     ADMISSION_GATES = (
         '!cancelled()', "needs.changes.result == 'success'",
         "steps.compile.outcome == 'success'",
-        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission'))",
+        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_admission'))",
     )
     VEHICLE_DIAGNOSTICS = {
         'Diagnose extraction vehicle custody ' + suffix
@@ -178,7 +178,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 os.chdir(previous)
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
-            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", workflow)
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), '" + suite + "')", workflow)
 
     def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
         payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
@@ -257,7 +257,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 if block.startswith('      - name: Verify private collector native publication\n'):
                     # This narrower hosted fixture has no manual/extensive
                     # entry. Keep its introduced-PR-only gate explicit.
-                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')\n", block)
+                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/nomads_lifecycle')\n", block)
                     self.assertIn('timeout-minutes: 3\n', block)
                     self.assertIn('tests/nomads_lifecycle/run_variable_probe_linux.py', block)
                     self.assertNotIn('workflow_dispatch', block)
@@ -274,7 +274,7 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('workflow_dispatch', block)
                     self.assertNotIn('secrets.', block)
                     continue
-                self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
+                self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && (?:steps\.[a-z_]+\.outcome != 'skipped' && )?\()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
         self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
         self.assertEqual(admission_steps, 1)
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
@@ -311,7 +311,7 @@ class RegressionPolicyTests(unittest.TestCase):
         for text, variable in (("github.event_name == 'pull_request'", 'pr_event'),
                                ("github.event.action != 'edited'", 'not_edited'),
                                ("needs.changes.outputs.game == 'true'", 'game'),
-                               ("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')", 'introduced'),
+                               ("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery')", 'introduced'),
                                (ROOF_HEAD_REQUEST, 'requested')):
             self.assertEqual(translated.count(text), 1)
             translated = translated.replace(text, variable)

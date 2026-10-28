@@ -21,7 +21,7 @@ toolchain = importlib.util.module_from_spec(_toolchain_spec)
 _toolchain_spec.loader.exec_module(toolchain)
 POLICY_FILES = tuple('tests/' + name for name in (
     'test_ci_selection.py', 'test_ci_regression_policy.py',
-    'test_ci_build_prefix.py', 'test_ci_baseline.py'))
+    'test_ci_build_prefix.py', 'test_ci_baseline.py', 'test_ci_checkout_refs.py'))
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
@@ -51,6 +51,14 @@ SUITES = {
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Keep shared game sources unmapped where they previously selected the
+    # all-suite fallback; persistence was already mapped by existing suites.
+    'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
+                                  'tests/stone_kiln/test_source.py'), 'paths': (
+        'tests/stone_boiling/', 'tests/stone_kiln/',
+        'code/modules/persistence/functions.dm')},
+    'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
+        'tests/save_movement/', 'code/modules/persistence/functions.dm')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
@@ -214,6 +222,9 @@ def load_selection(path, head, base, selection_attempt=None):
 def run_unit(name, output):
     """Child interpreter emits counts so zero tests or unittest skips cannot pass."""
     suite = unittest.TestSuite()
+    # This reviewed suite imports its adjacent, source-only projection adapter.
+    if name == 'save_movement':
+        sys.path.insert(0, str(ROOT / 'tests/save_movement'))
     for index, relative in enumerate(SUITES[name]['files']):
         path = ROOT / relative
         spec = importlib.util.spec_from_file_location(f'baseline_{name}_{index}', path)
