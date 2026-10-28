@@ -66,6 +66,7 @@ def processing_only_material(typepath):
         if typepath in processing_materials:return processing_materials[typepath]
         typepath=typepath.rsplit('/',1)[0]
     return False
+joinery=json.loads((ROOT/"config/crafting/furniture_joinery.json").read_text())
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -87,7 +88,19 @@ for p,s in files.items():
             if len(cols)!=13: issues.append(dict(file=p,line=ln,reason='Expected 13 fields',raw=row));continue
             a,n,b,c,t,one,floor,category,ind,mil,med,age,mat=cols
             if processing_only_material(a):continue
-            add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),[(a,c)],[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.',row)
+            ingredients=[(a,c)]
+            joint=joinery.get(n)
+            tool_notes=''
+            if n.startswith('joinery: '):
+                if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
+                    raise ValueError('Joinery recipe contract drift: '+n)
+                if joint['component_type']:
+                    ingredients.append((joint['component_type'],joint['component_cost']))
+                roles={'chisel':'chisel','hammer':'hammer/mallet','shaping':'sharpened flint or sharp knife harder than plank; knife wear 0.25'}
+                tool_notes=' Tools equipped or at your feet: '+' and '.join(roles[role] for role in joint['tools'])+'.'
+                if joint['component_type']:tool_notes+=' Hold dowels in the other hand.'
+                tool_notes+=' Tools reused; checked at end.'
+            add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),ingredients,[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.'+tool_notes,row)
 
 def splitargs(s):
     out=[];start=0;depth=0;quoted=False
@@ -166,6 +179,9 @@ for p,raw in files.items():
 
 nodes=files.get('code/modules/research_tree/research_node.dm','')
 sprite_variants={}
+sprite_variants['/obj/item/stack/wooden_dowels']=dict(type='/obj/item/stack/wooden_dowels',name='wooden dowel set')
+sprite_variants['/obj/item/weapon/stool/wood']=dict(type='/obj/item/weapon/stool/wood',name='wooden stool')
+sprite_variants['/obj/structure/table/rack/shelf/wooden']=dict(type='/obj/structure/table/rack/shelf/wooden',name='wooden shelf')
 assembly_path='code/modules/1713/gunsmithing/blackpowder_assembly.dm'
 assembly=uncomment(files.get(assembly_path,''))
 if assembly:

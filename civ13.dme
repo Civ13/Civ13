@@ -425,6 +425,7 @@
 #include "code\game\objects\items\stacks\medical.dm"
 #include "code\game\objects\items\stacks\money.dm"
 #include "code\game\objects\items\stacks\recipe.dm"
+#include "code\game\objects\items\stacks\furniture_joinery.dm"
 #include "code\game\objects\items\stacks\rods.dm"
 #include "code\game\objects\items\stacks\stack.dm"
 #include "code\game\objects\items\stacks\sheets\leather.dm"
