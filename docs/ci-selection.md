@@ -194,8 +194,16 @@ Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-
 The selector, baseline and aggregate use depth-one exact-head checkouts and
 fetch only the exact event comparison commit when needed. The ping and research
 historical negative controls use checked-in, hash-verified source fixtures, so
-the baseline does not need unrelated repository history. Build and evidence
-checkouts retain their separate history requirements.
+the baseline does not need unrelated repository history. A non-manual build
+also uses a depth-one checkout and exact comparison when no introduced suite
+is selected and the PR has no labels. Selected suites, any PR label, uncertain
+label metadata and manual runs retain the existing full-history build checkout
+with a 12-minute checkout limit. When no evidence fixture can be selected under
+the same conservative conditions, evidence-checker explicitly reports that no
+fixture ran and skips checkout. Selected, labeled or manual evidence retains
+full history with a 12-minute checkout limit. These
+exceptions keep historic fixture dependencies and label-based admission intact;
+they do not prove that full history is inherently necessary.
 Each producer names its artifact with the attempt it actually ran in. A re-run
 of failed jobs reuses earlier successful jobs, so baseline, build and the
 aggregate download by the producing job's `attempt` output, not their own
@@ -216,6 +224,9 @@ tree and before/after patches (the atlas catalog is generated before compilation
 Baseline uploads run after an attempted baseline step; a cancelled or failed
 checkout has no baseline artifact. The aggregate records an explicit failed
 baseline verdict instead of treating that absence as the primary failure.
+Compilation receipts and uploads run only after the chosen checkout and its
+comparison preparation succeed. An unsuccessful build produces an explicit
+aggregate failure verdict before artifact downloads.
 Runner loss or cancellation can still prevent artifact delivery, which cannot
 become a passing aggregate.
 

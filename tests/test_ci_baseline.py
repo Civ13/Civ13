@@ -52,6 +52,55 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_woodworking_runs_on_production_or_modified_test_changes_without_extensive(self):
+        self.assertEqual(ci.SUITES['woodworking']['files'],('tests/primitive_woodworking/test_source.py','tests/test_atlas_navigation.py'))
+        dedicated=('code/modules/1713/primitive_woodworking.dm',
+                   'scripts/atlas/woodworking.py',
+                   'scripts/atlas/woodworking-contract.json',
+                   'tests/primitive_woodworking/test_source.py',
+                   'tests/primitive_woodworking/source_adapter.py')
+        for path in dedicated:
+            with self.subTest(path=path):
+                result=ci.impact([path])
+                self.assertTrue(result['suites']['woodworking']['selected'])
+                self.assertFalse(result['fallback_reasons'])
+                # No extensive/new-test condition: every selected woodworking
+                # run loads the existing complete regenerated-catalog comparison.
+                self.assertIn('tests/test_atlas_navigation.py',ci.SUITES['woodworking']['files'])
+        self.assertIn('woodworking',self.selected(['code/modules/persistence/functions.dm']))
+        self.assertIn('woodworking',self.selected(['civ13.dme']))
+        source=(ROOT/'tests/primitive_woodworking/test_source.py').read_text()
+        tree=ast.parse(source)
+        reads={node.right.value for node in ast.walk(tree)
+               if isinstance(node,ast.BinOp) and isinstance(node.op,ast.Div)
+               and isinstance(node.left,ast.Name) and node.left.id=='ROOT'
+               and isinstance(node.right,ast.Constant) and isinstance(node.right.value,str)}
+        self.assertIn('civ13.dme',reads)
+        for path in reads:
+            with self.subTest(actual_dependency=path):
+                self.assertIn('woodworking',self.selected([path]))
+        shared=('code/modules/materials/material_sheets.dm','code/modules/materials/materials.dm',
+                'code/game/objects/items/weapons/material/kitchen.dm',
+                'code/game/objects/items/weapons/material/thrown.dm',
+                'code/game/objects/items/weapons/surgery_tools.dm',
+                'scripts/build-crafting-atlas.py','scripts/player_help_bridge.py','UI/crafting-atlas.json')
+        for path in shared:
+            with self.subTest(shared=path):
+                self.assertEqual(self.selected([path]),set(ci.SUITES))
+                self.assertIn('Unmapped impact: '+path,ci.impact([path])['fallback_reasons'])
+
+    def test_woodworking_production_and_projector_only_changes_check_full_atlas(self):
+        for path in ('code/modules/1713/primitive_woodworking.dm','scripts/atlas/woodworking.py'):
+            with self.subTest(only_changed_input=path):
+                plan=ci.impact([path])
+                self.assertTrue(plan['suites']['woodworking']['selected'])
+                files=ci.SUITES['woodworking']['files']
+                self.assertIn('tests/test_atlas_navigation.py',files)
+                test=(ROOT/'tests/test_atlas_navigation.py').read_text()
+                self.assertIn('test_committed_catalog_matches_current_source',test)
+                self.assertIn("'--catalog-only', '--game-catalog'",test)
+                self.assertIn("self.assertEqual(self.catalog_bytes, (ROOT/'UI/crafting-atlas.json').read_bytes())",test)
+
     def selected(self, paths, comparison='available'):
         return {name for name, row in ci.impact(paths, comparison)['suites'].items() if row['selected']}
 

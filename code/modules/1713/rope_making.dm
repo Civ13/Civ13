@@ -88,6 +88,8 @@
 	var/epoch = ++retting_epoch
 	var/datum/admission = persistence_admission_identity
 	var/completed = user.rope_making_wait(300, src)
+	if (QDELETED(src))
+		return FALSE
 	if (retting_epoch != epoch)
 		return FALSE
 	working = FALSE

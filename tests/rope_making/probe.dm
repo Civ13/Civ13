@@ -65,6 +65,9 @@
 /mob/living/human/rope_tester/rope_making_wait(delay, atom/target)
 	if (wait_mode == "cancel")
 		return FALSE
+	if (wait_mode == "destroy_bundle")
+		qdel(target)
+		return TRUE
 	if (wait_mode == "hold_retting")
 		sleep(3)
 		return FALSE
@@ -220,6 +223,9 @@
 		rope_assert(!B.ret(U, W) && B.stage == 0 && B.working, "retired waiter preserves replacement retting lock")
 		sleep(4)
 		rope_assert(!B.working && B.stage == 0, "replacement retting cancellation releases its own lock")
+		var/obj/item/hemp_rope_bundle/destroyed_bundle = new(W)
+		U.wait_mode = "destroy_bundle"
+		rope_assert(!destroyed_bundle.ret(U, W), "destroyed bundle cannot finish retting")
 		U.allow_recovery_pickup = FALSE
 		U.wait_mode = "overlap"
 		rope_assert(B.ret(U, W) && B.stage == 1 && !B.ret(U, W), "retting advances exactly once")
