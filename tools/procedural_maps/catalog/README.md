@@ -10,7 +10,10 @@ This one frozen JSON file retains its original CRLF bytes with a specific
 `-text` Git attribute. Do not normalize it on checkout or staging: the adjacent
 checksum binds the exact bytes, independently of the host operating system.
 
-The static DMM type/var/area catalog lives in `dmm_export.py` and uses the
-repository's own source at the pinned commit. No copied DM source, third-party
-library or native binary is distributed here. Source drift rejects export;
+The static DMM type/var/area catalogs live in `dmm_export.py`: version 1 retains
+the original source, version 2 retains the preceding source, and version 3 pins
+the reviewed current source with the generic flower-state fix. Sidecars and
+new manifests bind the selected catalog; the historical resource proposal stays
+unchanged and its original source evidence is tested with a matching checkout.
+No copied DM source, third-party library or native binary is distributed here. Source drift rejects export;
 see the [guide](../../../docs/procedural-maps.md) for a matching catalog checkout.

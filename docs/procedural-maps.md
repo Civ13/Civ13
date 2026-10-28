@@ -204,11 +204,21 @@ acceptance is established by the offline water-connectivity check.
 
 ## Source catalog and Dream Maker viewing
 
-The current static export catalog pins Civ13 commit
-`067478b82c7ad9f1b83759a221e6f22080ba865a`. Export verifies actual declarations
-and Git blob identities, accounting for LF/CRLF checkout conversion. If source
-changes cause `CATALOG_SOURCE_MISMATCH`, use a clean matching source checkout
-instead of weakening pins. For example, manually prepare another Git worktree:
+The current static export catalog `civ13-static-layout/3` pins Civ13 commit
+`c39f4d6846c8882df0097a6bba021cc5288a9229`. Historical catalogs
+`civ13-static-layout/2` and `/1` respectively pin
+`eedc9862fcb7b2b7c3617c6972965fafa650e51a` and
+`067478b82c7ad9f1b83759a221e6f22080ba865a`.
+Export verifies all declarations and Git blobs against one complete catalog,
+accounting for LF/CRLF conversion; it rejects mixed or unknown source. New seed
+manifests record their catalog version and source commit. A bound manifest cannot
+be re-exported against another catalog. An older unbound manifest requires an
+explicit `export --catalog-version civ13-static-layout/1`, `/2` or `/3` choice; use
+the matching `--catalog-root`. Existing historical bundles verify only against
+their historical catalog, without rewriting their sidecars.
+
+If source changes cause `CATALOG_SOURCE_MISMATCH`, use a clean matching source
+checkout instead of weakening pins. For example, prepare the historical source:
 
 ```sh
 git worktree add --detach ../civ13-map-catalog 067478b82c7ad9f1b83759a221e6f22080ba865a
@@ -217,8 +227,17 @@ python3 -m tools.procedural_maps generate --config data/procedural_maps/config.j
 
 This optional worktree command only prepares source. The tool does not create
 it, download dependencies, update a BYOND installation or launch an editor.
-Use `--catalog-root` consistently for `export`, `verify` and source inspection
-when the current checkout has drifted.
+Use `--catalog-root` consistently for `export`, `verify` and source inspection.
+For an old unbound manifest, explicitly select its intended catalog when exporting:
+
+```sh
+python3 -m tools.procedural_maps export --ir old/map.ir.json --manifest old/seed.manifest.json --out data/procedural_maps/old-export --catalog-version civ13-static-layout/1 --catalog-root ../civ13-map-catalog
+```
+
+The three catalogs project the same static map types and layout. Version 2 adds
+flower declarations and DME includes; version 3 maps the missing generic flower3
+appearance to flower2 without another random draw. This comparison does not
+establish equal native appearance, constructor, runtime or gameplay behavior.
 
 To view a generated DMM later:
 
@@ -275,10 +294,12 @@ map replacement. It never opens or overwrites saved player worlds.
 
 ## Tests and contributions
 
-From the repository root:
+From the repository root, prepare the historical checkout above and a separate
+version 2 source checkout. The suite checks original evidence and all catalogs:
 
 ```sh
-python3 -I -B tests/procedural_maps/run.py
+git worktree add --detach ../civ13-map-catalog-v2 eedc9862fcb7b2b7c3617c6972965fafa650e51a
+python3 -I -B tests/procedural_maps/run.py --historical-catalog-root ../civ13-map-catalog --intermediate-catalog-root ../civ13-map-catalog-v2
 ```
 
 The explicit test list retains the prior generator/validator/config, source

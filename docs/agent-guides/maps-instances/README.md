@@ -13,7 +13,7 @@ Do not turn an evidence limitation into a new approval requirement.
 
 <!-- Offline procedural geography -->
 `tools/procedural_maps` generates new offline IR/DMM/sidecar bundles only.
-Run `python3 -I -B tests/procedural_maps/run.py` with a verified interpreter.
+Run `python3 -I -B tests/procedural_maps/run.py --historical-catalog-root <v1-checkout> --intermediate-catalog-root <v2-checkout>` with a verified interpreter.
 Keep source pins, versioned configs, graph/raster invariants and old golden hashes.
 OCEANIC schema 3 has separate island/lake/sea and ship-clearance rules; preserve
 its per-island starts and bounded fresh/coast routes. Do not silently substitute

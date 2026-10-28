@@ -28,6 +28,7 @@ def main(argv=None):
     p=commands.add_parser('export',help='export existing IR and its manifest to a new bundle')
     p.add_argument('--ir',required=True,type=Path);p.add_argument('--manifest',required=True,type=Path)
     p.add_argument('--out',required=True,type=Path);p.add_argument('--catalog-root',type=Path);p.add_argument('--no-preview',action='store_true')
+    p.add_argument('--catalog-version',choices=['civ13-static-layout/1','civ13-static-layout/2','civ13-static-layout/3'],help='explicit catalog for a historical unbound manifest')
     p=commands.add_parser('verify',help='verify bundle hashes, sidecar binding, layout and catalog')
     p.add_argument('directory',type=Path);p.add_argument('--catalog-root',type=Path)
     p=commands.add_parser('audit-source',help='read-only classic map/source audit')
@@ -59,10 +60,10 @@ def main(argv=None):
             if r['document'] is None:
                 (folder/'rejection.json').write_text(json_text(r),encoding='utf-8',newline='\n')
                 print(json_text(r));return 1
-            result=write_bundle(folder,r['document'],r['manifest'],a.catalog_root,not a.no_preview)
+            result=write_bundle(folder,r['document'],r['manifest'],a.catalog_root,not a.no_preview,fresh=True)
         elif a.command=='export':
             doc=read_json(a.ir);manifest=read_json(a.manifest);folder=new_output(a.out,True)
-            result=write_bundle(folder,doc,manifest,a.catalog_root,not a.no_preview)
+            result=write_bundle(folder,doc,manifest,a.catalog_root,not a.no_preview,a.catalog_version)
         elif a.command=='verify':result=verify_bundle(a.directory,a.catalog_root)
         elif a.command=='audit-source':result=audit(a.catalog_root,a.reference_image)
         else:

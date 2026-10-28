@@ -1,6 +1,7 @@
 from tools.procedural_maps.repo_source import read_pinned
 import hashlib
 import json
+import os
 from pathlib import Path
 import unittest
 
@@ -15,7 +16,7 @@ class ResourceProposalTests(unittest.TestCase):
         d=json.loads((ROOT/'tools/procedural_maps/catalog/native-resources-v0.1.json').read_text())
         for entry in d['entries']:
             for evidence in entry['evidence']:
-                b=read_pinned(evidence['path'], evidence['git_blob'])
+                b=read_pinned(evidence['path'], evidence['git_blob'],os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])
                 self.assertEqual(evidence['git_blob'],hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest())
                 lines=b.decode().splitlines();self.assertEqual(evidence['anchor'],lines[evidence['line']-1])
                 section=[]
@@ -23,6 +24,21 @@ class ResourceProposalTests(unittest.TestCase):
                     if section and line.startswith('/'):break
                     section.append(line)
                 for fragment in evidence['required_source_fragments']:self.assertIn(fragment,'\n'.join(section))
+    def test_current_source_preserves_each_frozen_evidence_section(self):
+        from tools.procedural_maps.dmm_export import CATALOG,verify_catalog
+        self.assertTrue(verify_catalog())
+        d=json.loads((ROOT/'tools/procedural_maps/catalog/native-resources-v0.1.json').read_text())
+        for entry in d['entries']:
+            for evidence in entry['evidence']:
+                path=evidence['path'];old=read_pinned(path,evidence['git_blob'],os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']).decode().splitlines()
+                new=read_pinned(path,CATALOG[path]).decode().splitlines()
+                def section(lines):
+                    start=lines.index(evidence['anchor']);out=[]
+                    for line in lines[start:]:
+                        if out and line.startswith('/'):break
+                        out.append(line)
+                    return out
+                self.assertEqual(section(old),section(new),evidence['anchor'])
     def test_no_native_resource_admission(self):
         d=json.loads((ROOT/'tools/procedural_maps/catalog/native-resources-v0.1.json').read_text())
         self.assertFalse(d['automatic_abstract_to_native_mapping']);self.assertFalse(d['native_interactions_implemented'])

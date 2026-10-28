@@ -3,6 +3,7 @@ Unsupported runtime semantics live in the mandatory sidecar, never new DM vars.
 No native engine is imported, launched, compiled, or evaluated.
 """
 import hashlib
+from copy import deepcopy
 import json
 import re
 from pathlib import Path
@@ -10,9 +11,13 @@ from .source_audit import parse_classic
 from .validator import validate,canonical_hash
 from .repo_source import read_pinned
 
-COMMIT="067478b82c7ad9f1b83759a221e6f22080ba865a"
-CATALOG_VERSION="civ13-static-layout/1"
-CATALOG={
+HISTORICAL_COMMIT="067478b82c7ad9f1b83759a221e6f22080ba865a"
+INTERMEDIATE_COMMIT="eedc9862fcb7b2b7c3617c6972965fafa650e51a"
+COMMIT="c39f4d6846c8882df0097a6bba021cc5288a9229"
+HISTORICAL_VERSION="civ13-static-layout/1"
+INTERMEDIATE_VERSION="civ13-static-layout/2"
+CATALOG_VERSION="civ13-static-layout/3"
+HISTORICAL_CATALOG={
  "code/game/turfs/floor_types.dm":"3b3c83d2082f4f840a598d0fbb54cb3b3132eee8",
  "code/game/turfs/flooring/flooring_premade.dm":"cf0dcd8da162773fe9c44837b57dc188c339b25e",
  "code/game/objects/structures/wild.dm":"066f593f429133376970ac98fe9928e6e8cdba4d",
@@ -22,13 +27,23 @@ CATALOG={
  "code/game/objects/map_metadata/nomads/nomads.dm":"7d44d40584567fafcddfeb79056a0a4da24acb08",
  "civ13.dme":"b2bef805c76f6b14ead026cc7756d9d3eb0b2f53",
 }
+INTERMEDIATE_CATALOG={**HISTORICAL_CATALOG,
+ "code/game/objects/structures/wild.dm":"37d613e825c791c4cbe3369a1c159a874aac1aa5",
+ "civ13.dme":"e3f9ed942fc1f60cc82a0a5699b155c953cb9719"}
+CATALOG={**INTERMEDIATE_CATALOG,
+ "code/game/objects/structures/wild.dm":"c66b86cf4618676c5a2b0986eca677977d9ae764"}
+CATALOGS={HISTORICAL_VERSION:(HISTORICAL_COMMIT,HISTORICAL_CATALOG),
+          INTERMEDIATE_VERSION:(INTERMEDIATE_COMMIT,INTERMEDIATE_CATALOG),
+          CATALOG_VERSION:(COMMIT,CATALOG)}
 TREES={"BROADLEAF":"/obj/structure/wild/tree/live_tree","PINE":"/obj/structure/wild/tree/live_tree/pine",
        "PALM":"/obj/structure/wild/palm","CACTUS":"/obj/structure/wild/tree/cactus"}
 
 
-def verify_catalog(catalog_root=None):
-    for path,pin in CATALOG.items():
-        read_pinned(path,pin,catalog_root)
+def verify_catalog(catalog_root=None,version=CATALOG_VERSION):
+    if version not in CATALOGS:raise ValueError("CATALOG_VERSION_UNSUPPORTED")
+    commit,catalog=CATALOGS[version]
+    for path,pin in catalog.items():
+        read_pinned(path,pin,catalog_root,commit)
     # Exact type declarations, not prefix/type-name guesses. DME source includes are also pinned.
     declarations={
       "code/game/turfs/floor_types.dm":["/turf/floor/grass","/turf/floor/beach/sand","/turf/floor/beach/water","/turf/floor/beach/water/deep","/turf/floor/beach/water/shallowsaltwater","/turf/floor/beach/water/deep/saltwater","/turf/floor/beach/water/swamp"],
@@ -40,10 +55,21 @@ def verify_catalog(catalog_root=None):
       "code/game/objects/map_metadata/nomads/nomads.dm":["/obj/map_metadata/nomads"],
     }
     for path,types in declarations.items():
-        source=read_pinned(path,CATALOG[path],catalog_root).decode("utf-8")
+        source=read_pinned(path,catalog[path],catalog_root,commit).decode("utf-8")
         for typename in types:
             if not re.search(r"^"+re.escape(typename)+r"\s*$",source,re.M):raise ValueError("CATALOG_TYPE_MISSING: "+typename)
     return True
+
+
+def select_catalog(catalog_root=None):
+    # Match one complete catalog, never mix pins from different versions.
+    for version in (CATALOG_VERSION,INTERMEDIATE_VERSION,HISTORICAL_VERSION):
+        try:
+            verify_catalog(catalog_root,version)
+            return version
+        except (OSError,ValueError):
+            pass
+    raise ValueError("CATALOG_SOURCE_MISMATCH: checkout matches no supported catalog")
 
 
 def project(doc):
@@ -87,8 +113,18 @@ def project(doc):
     return result
 
 
-def emit(doc,manifest,catalog_root=None):
-    verify_catalog(catalog_root)
+def emit(doc,manifest,catalog_root=None,catalog_version=None):
+    binding=manifest.get('catalog_binding')
+    if binding is not None:
+        if type(binding) is not dict or set(binding)!={'catalog_version','source_commit'}:raise ValueError('CATALOG_BINDING_MISMATCH')
+        version=binding['catalog_version']
+        if version not in CATALOGS or binding['source_commit']!=CATALOGS[version][0] or catalog_version not in (None,version):raise ValueError('CATALOG_BINDING_MISMATCH')
+    else:
+        if catalog_version is None:raise ValueError('UNBOUND_MANIFEST_REQUIRES_CATALOG_VERSION')
+        version=catalog_version
+    verify_catalog(catalog_root,version)
+    manifest=deepcopy(manifest)
+    if binding is None:manifest['catalog_binding']=dict(catalog_version=version,source_commit=CATALOGS[version][0])
     if manifest["generation_result"]["ir_sha256"]!=canonical_hash(doc):raise ValueError("MANIFEST_IR_MISMATCH")
     layout=project(doc);recipes=sorted(set(layout.values()));alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     def key(n):return "".join(alphabet[(n//52**power)%52] for power in [1,0])
@@ -101,7 +137,7 @@ def emit(doc,manifest,catalog_root=None):
         for y in range(doc["height"],0,-1):lines.append("".join(keys[layout[(x,y,z)]] for x in range(1,doc["width"]+1)))
         lines.append('"}')
     text="\n".join(lines)+"\n"
-    sidecar={"schema":"civ13-dmm-sidecar/1","catalog_version":CATALOG_VERSION,"source_commit":COMMIT,
+    sidecar={"schema":"civ13-dmm-sidecar/1","catalog_version":version,"source_commit":CATALOGS[version][0],
              "dmm_sha256":hashlib.sha256(text.encode()).hexdigest(),"ir_sha256":canonical_hash(doc),
              "manifest":manifest,"semantic_ir":doc,
              "projection_limits":["river/lake/body distinction, biome, elevation, soil/climate and abstract resource labels require this sidecar",
@@ -113,8 +149,14 @@ def emit(doc,manifest,catalog_root=None):
 
 
 def verify_roundtrip(text,sidecar):
-    if sidecar["schema"]!="civ13-dmm-sidecar/1" or sidecar["source_commit"]!=COMMIT or sidecar["catalog_version"]!=CATALOG_VERSION:
+    version=sidecar.get("catalog_version")
+    if sidecar["schema"]!="civ13-dmm-sidecar/1" or version not in CATALOGS or sidecar["source_commit"]!=CATALOGS[version][0]:
         raise ValueError("SIDECAR_VERSION")
+    binding=sidecar.get('manifest',{}).get('catalog_binding')
+    if binding is None:
+        if version!=HISTORICAL_VERSION:raise ValueError('UNBOUND_MANIFEST_REQUIRES_HISTORICAL_CATALOG')
+    elif binding!={'catalog_version':version,'source_commit':sidecar['source_commit']}:
+        raise ValueError('CATALOG_BINDING_MISMATCH')
     if hashlib.sha256(text.encode()).hexdigest()!=sidecar["dmm_sha256"]:raise ValueError("DMM_HASH_MISMATCH")
     doc=sidecar["semantic_ir"]
     if canonical_hash(doc)!=sidecar["ir_sha256"] or sidecar["manifest"]["generation_result"]["ir_sha256"]!=sidecar["ir_sha256"]:
