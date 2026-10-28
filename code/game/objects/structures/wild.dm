@@ -257,6 +257,66 @@ var/list/seed_list_jungle
 	maxhealth = 50
 	pixel_x = -16
 
+// Tuning defaults: four 5-unit draws, comparable to a normal small transfer.
+/obj/structure/wild/tree/cactus
+	var/cactus_water_remaining = 20
+	var/tmp/cactus_water_busy = FALSE
+
+/obj/structure/wild/tree/cactus/get_saved_vars()
+	. = ..()
+	// Wild objects use an allowlist. Include zero as well as positive stock.
+	. |= "cactus_water_remaining"
+
+/obj/structure/wild/tree/cactus/persistence_runtime_var(key)
+	return key == "cactus_water_busy" || ..()
+
+/obj/structure/wild/tree/cactus/attackby(obj/item/W, mob/user)
+	if (!istype(W, /obj/item/weapon/reagent_containers) || !user || user.a_intent == I_HARM)
+		return ..()
+	var/obj/item/weapon/reagent_containers/vessel = W
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if (cactus_water_busy || QDELETED(src) || QDELETED(vessel) || QDELETED(user) || !isturf(loc) || user.get_active_hand() != vessel || vessel.loc != user || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated())
+		return TRUE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		to_chat(user, SPAN_WARNING("You cannot collect cactus water during persistence operations."))
+		return TRUE
+	if (!vessel.is_open_container() || !vessel.reagents)
+		to_chat(user, SPAN_NOTICE("Open the container first."))
+		return TRUE
+	if (!isnum(cactus_water_remaining) || cactus_water_remaining <= 0)
+		to_chat(user, SPAN_NOTICE("The cactus has no water left to collect."))
+		return TRUE
+
+	cactus_water_busy = TRUE
+	var/datum/reagents/holder = vessel.reagents
+	// update_total can notify the vessel when removing trace reagents. Recheck
+	// ownership and the persistence gate after that callback before committing.
+	holder.update_total()
+	if (QDELETED(src))
+		return TRUE
+	if (QDELETED(user) || QDELETED(vessel) || QDELETED(holder) || vessel.reagents != holder || !vessel.is_open_container() || vessel.loc != user || user.get_active_hand() != vessel || !isturf(loc) || !user.Adjacent(src) || user.stat != CONSCIOUS || user.incapacitated() || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		cactus_water_busy = FALSE
+		return TRUE
+	var/collected = min(5, cactus_water_remaining, holder.get_free_space())
+	if (collected < MINIMUM_CHEMICAL_VOLUME || !chemical_reagents_list["water"])
+		cactus_water_busy = FALSE
+		to_chat(user, SPAN_NOTICE("The container has no room for cactus water."))
+		return TRUE
+	// Reserve before the holder's callbacks, then refund anything it did not
+	// accept. Its capacity can change in an update_total callback.
+	cactus_water_remaining -= collected
+	var/list/accepted_amount = list("amount" = 0)
+	holder.add_reagent("water", collected, safety = TRUE, accepted_amount = accepted_amount)
+	var/accepted = max(0, min(collected, accepted_amount["amount"]))
+	if (!QDELETED(src))
+		cactus_water_remaining += collected - accepted
+		cactus_water_busy = FALSE
+	if (!QDELETED(holder))
+		holder.handle_reactions()
+	if (accepted > 0 && !QDELETED(user) && !QDELETED(vessel))
+		to_chat(user, SPAN_NOTICE("You collect [accepted] units of water from the cactus in [vessel]."))
+	return TRUE
+
 /obj/structure/wild/tree/dead_tree
 	name = "dead tree"
 	icon = 'icons/obj/flora/deadtrees.dmi'
@@ -694,9 +754,63 @@ var/list/seed_list_jungle
 	layer = 5.1
 	health = 5
 	maxhealth = 5
+	// Source-defined scenery variants keep one original image; no placement opt-in.
+	var/fixed_flower_appearance = FALSE
 	New()
 		..()
-		icon_state = "flower[rand(1,14)]"
+		if (fixed_flower_appearance)
+			restore_fixed_flower_appearance()
+		else
+			icon_state = "flower[rand(1,14)]"
+			// The original sheet has no flower3; reuse existing art without another roll.
+			if (icon_state == "flower3")
+				icon_state = "flower2"
+
+/obj/structure/wild/flowers/proc/restore_fixed_flower_appearance()
+	if (!fixed_flower_appearance)
+		return
+	icon = initial(icon)
+	icon_state = initial(icon_state)
+
+/obj/structure/wild/flowers/rad_act(amount)
+	. = ..()
+	// Preserve inherited radiation, damage and name changes. Only its generic
+	// fallback image is replaced; this live artwork does not indicate health.
+	if (fixed_flower_appearance && amount > 0 && icon == deadicon && icon_state == deadicon_state)
+		restore_fixed_flower_appearance()
+
+/obj/structure/wild/flowers/after_load()
+	. = ..()
+	// Wild saves retain icon_state, but not a changed icon resource.
+	restore_fixed_flower_appearance()
+
+/obj/structure/wild/flowers/yarrow_scenery
+	name = "yarrow"
+	desc = "A flowering yarrow plant."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "yarrow"
+	fixed_flower_appearance = TRUE
+
+/obj/structure/wild/flowers/milk_thistle_scenery
+	name = "milk thistle"
+	desc = "An upright plant with purple flower heads."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "milk_thistle"
+	fixed_flower_appearance = TRUE
+
+/obj/structure/wild/flowers/elderflower_scenery
+	name = "elderflower"
+	desc = "Clusters of pale flowers over broad leaves."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "elderflower"
+	fixed_flower_appearance = TRUE
+
+/obj/structure/wild/flowers/comfrey_scenery
+	name = "comfrey"
+	desc = "Purple flowers over a broad-leaved plant."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "comfrey"
+	fixed_flower_appearance = TRUE
 
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))

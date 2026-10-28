@@ -1,6 +1,7 @@
 """Production ordinary world-save round trips and strict round-mode omission controls."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -11,14 +12,23 @@ import tempfile
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
 
 
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None  # Preserve the historical 516.1681 path.
+    spec = importlib.util.spec_from_file_location('round_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-archive', type=Path, help='Opt in to exact current Linux archive/member identity')
     parser.add_argument('--negative-control', choices=('restore', 'preflight', 'integrity'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
-    byond = args.byond_bin.resolve(strict=True)
+    byond = args.byond_bin.absolute() if args.byond_archive else args.byond_bin.resolve(strict=True)
+    runtime = selected_runtime(byond, args.byond_archive)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     if not compiler.is_file() or not daemon.is_file():
@@ -71,6 +81,7 @@ def main():
         processes.append(row)
         process = None
         try:
+            if runtime: runtime.before_launch(role, output)
             with (output / f'{role}-stdio.log').open('w', encoding='utf-8') as stream:
                 process = subprocess.Popen(command, cwd=output, stdout=stream, stderr=subprocess.STDOUT,
                                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
@@ -97,7 +108,9 @@ def main():
         return logs
 
     build = owned('compile', [str(compiler), '-max_errors', '0', 'roundtrip.dme'])
-    if '516.1681' not in build or '0 errors, 0 warnings' not in build:
+    if runtime:
+        runtime.validate_compile(0, build, 'roundtrip.dmb')
+    elif '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError(f'Pinned clean compilation required: {build}')
     owned('daemon', [str(daemon), 'roundtrip.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()

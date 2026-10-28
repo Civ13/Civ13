@@ -60,12 +60,75 @@ class InputTrace(unittest.TestCase):
         for field in FIELDS:
             self.assertTrue(audit(self.source, self.clicks, self.persistence.replace('"'+field+'"', '"omitted"')))
 
-    def test_disabled_trace_preserves_entire_prior_click_source(self):
-        # Immutable f907c70ee source, normalized LF: removing observational calls
-        # must recover the entire pre-telemetry implementation, including gates.
-        prior = re.sub(r'^.*blackout_click_trace\("[a-z_]+"\)\n', '', self.clicks, flags=re.M)
+    def assert_disabled_trace_preserves_prior_source(self, clicks):
+        # Immutable f907c70ee5409eb3c833ed78ad163537bcb4d3fc, normalized LF.
+        # #3337 (10d264e5896221b34949ee4b67c0fd2b94bde249) deliberately
+        # changed posture movement after telemetry was introduced. Require its
+        # exact block in each named proc, then reverse only that reviewed delta
+        # in this projection. Keep the original full-file hash and all gates.
+        approved_posture = (
+            '\tif (nloc == oloc)\n'
+            '\t\tif (ishuman(src))\n'
+            '\t\t\tvar/mob/living/human/subtile_human = src\n'
+            '\t\t\tif (subtile_human.human_subtile_offset_owned && (step_x || step_y))\n'
+            '\t\t\t\tsubtile_human.human_subtile_posture_move(F)\n'
+            '\t\t\telse\n'
+            '\t\t\t\tMove(F)\n'
+            '\t\telse\n'
+            '\t\t\tMove(F)\n'
+            '\tscrambling = FALSE'
+        )
+        historical_posture = '\tif (nloc == oloc)\n\t\tMove(F)\n\tscrambling = FALSE'
+        prior = re.sub(r'^.*blackout_click_trace\("[a-z_]+"\)\n', '', clicks, flags=re.M)
+        for proc in ('scramble', 'proning'):
+            declaration = '/mob/proc/' + proc + '(var/turf/floor/F)\n'
+            self.assertEqual(prior.count(declaration), 1, 'posture proc: ' + proc)
+            start = prior.index(declaration)
+            end = prior.index('\n/', start)
+            body = prior[start:end]
+            self.assertEqual(body.count(approved_posture), 1, 'approved posture block: ' + proc)
+            prior = prior[:start] + body.replace(approved_posture, historical_posture) + prior[end:]
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
-                         '6de55f9ad85dd8351f39917eef2ec90732dd08544283814e24330ca8263f0882')
+                         '6de55f9ad85dd8351f39917eef2ec90732dd08544283814e24330ca8263f0882',
+                         'entire prior click source')
+
+    def test_disabled_trace_preserves_entire_prior_click_source(self):
+        self.assert_disabled_trace_preserves_prior_source(self.clicks)
+
+    def test_disabled_trace_rejects_changed_posture_guard(self):
+        for proc in ('scramble', 'proning'):
+            with self.subTest(proc=proc):
+                start = self.clicks.index('/mob/proc/' + proc + '(var/turf/floor/F)\n')
+                changed = self.clicks[:start] + self.clicks[start:].replace(
+                    'subtile_human.human_subtile_offset_owned && (step_x || step_y)',
+                    'FALSE', 1)
+                self.assertNotEqual(changed, self.clicks)
+                with self.assertRaisesRegex(AssertionError, 'approved posture block: ' + proc):
+                    self.assert_disabled_trace_preserves_prior_source(changed)
+
+    def test_disabled_trace_rejects_changed_posture_call(self):
+        for proc in ('scramble', 'proning'):
+            with self.subTest(proc=proc):
+                start = self.clicks.index('/mob/proc/' + proc + '(var/turf/floor/F)\n')
+                changed = self.clicks[:start] + self.clicks[start:].replace(
+                    'subtile_human.human_subtile_posture_move(F)', 'Move(F)', 1)
+                self.assertNotEqual(changed, self.clicks)
+                with self.assertRaisesRegex(AssertionError, 'approved posture block: ' + proc):
+                    self.assert_disabled_trace_preserves_prior_source(changed)
+
+    def test_disabled_trace_rejects_missing_posture_block(self):
+        start = self.clicks.index('/mob/proc/proning(var/turf/floor/F)\n')
+        block_start = self.clicks.index('\tif (nloc == oloc)\n', start)
+        block_end = self.clicks.index('\tscrambling = FALSE', block_start)
+        changed = self.clicks[:block_start] + self.clicks[block_end:]
+        with self.assertRaisesRegex(AssertionError, 'approved posture block: proning'):
+            self.assert_disabled_trace_preserves_prior_source(changed)
+
+    def test_disabled_trace_rejects_changed_click_gate(self):
+        changed = self.clicks.replace('if (world.time <= next_click)', 'if (FALSE)', 1)
+        self.assertNotEqual(changed, self.clicks)
+        with self.assertRaisesRegex(AssertionError, 'entire prior click source'):
+            self.assert_disabled_trace_preserves_prior_source(changed)
 
     def test_capture_never_changes_gameplay_clocks(self):
         self.assertNotRegex(self.source, r'\.(?:next_click|next_move|may_do_after|may_do_mob)\s*=(?!=)')
