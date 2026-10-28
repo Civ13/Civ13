@@ -22,8 +22,9 @@ discovery, deletion while pending, null/deleted-only snapshots, empty population
 live-list additions/removals, callback deletion and a caught analysis exception.
 Controls restore the ephemeral iterator, omit consumption, or insert the old
 deleted-entry `continue`; each demonstrates its specific broken trace. A fourth
-control reads the actual audited research source from immutable master
-`9db2b2f42a5fbbb0bdd49d50a2672da6111a7709`: the shared finished procedure sees its
+control reads `historical-research.txt`, copied byte-for-byte from
+`code/processes/research_tree.dm` at `9db2b2f42a5fbbb0bdd49d50a2672da6111a7709`
+(Git blob `390dc80ecd1ab2027240b4cf34f8fd707475c889`): the shared finished procedure sees its
 empty scheduler snapshot, normalizes the budget return to completion, and the next
 dispatch repeats the first bench while the tail is never reached.
 

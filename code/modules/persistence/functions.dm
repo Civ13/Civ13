@@ -168,7 +168,7 @@
 	// Minimal serializer fixtures may omit carriage type declarations.
 	if (key == "glide_size" && ("carriage_glide_owner" in vars) && vars["carriage_glide_owner"])
 		return TRUE
-	return (key in list("original_target", "carriage_glide_owner", "carriage_glide_previous", "carriage_glide_applied", "carriage_glide_step")) || ..()
+	return key == "original_target" || key == "woodwork_owner" || key == "carriage_glide_owner" || key == "carriage_glide_previous" || key == "carriage_glide_applied" || key == "carriage_glide_step" || ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.
@@ -182,6 +182,8 @@
 	should_save = FALSE
 
 /turf/persistence_runtime_var(key)
+	if (key == "area_change_owner")
+		return TRUE
 	if (key == "snowfall_ground_index" || key == "snowfall_ground_generation" || key == "weather_snow_overlay")
 		return TRUE
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
@@ -269,7 +271,7 @@ map_storage
 	var
 		// These are atom types for the map saver to ignore. Objects of these type will
 		// not be saved with everything else.
-		list/ignore_types = list(/mob/new_player, /atom/movable/lighting_overlay)
+		list/ignore_types = list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)
 
 		// This text string is tacked onto all saved passwords so that their md5 values
 		// will be different than what the password's hash would normally be, providing
@@ -285,6 +287,10 @@ map_storage
 		list/saving_references = list()
 		list/saving_export_frames = list()
 		list/saving_export_stack = list()
+		list/saving_content_owners = list()
+		list/saving_world_movables = list()
+		var/saving_work = 0
+		var/saving_slice_start = 0
 		list/all_loaded = list()
 		list/found_types = list()
 		list/saved_turfs = list()
@@ -368,6 +374,10 @@ map_storage
 		release_export_frame(frame)
 	saving_export_frames = list()
 	saving_export_stack = list()
+	saving_content_owners = list()
+	saving_world_movables = list()
+	saving_work = 0
+	saving_slice_start = world.tick_usage
 	saving_references = list()
 	existing_references = list()
 	found_types = list()
@@ -421,7 +431,7 @@ map_storage
 	sleep(1)
 	world.log << "Clearing objects..."
 	for (var/obj/object in world)
-		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay))
+		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))
 			continue
 		qdel(object)
 	return
@@ -439,6 +449,9 @@ map_storage
 var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
+// Runtime-only identity changes on each accepted save or load, even when the
+// operation completes before a waiting gameplay action wakes.
+var/global/datum/persistence_admission_identity
 
 /proc/persistence_save_active()
 	return persistence_active_operation && persistence_active_operation.kind == "save"
@@ -470,12 +483,14 @@ var/global/persistence_load_recovery_required = FALSE
 #endif
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
+	persistence_admission_identity = operation.admission_identity
 	if(kind == "save")
 		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
 	return operation
 
 /datum/persistence_world_operation
 	should_save = FALSE
+	var/datum/admission_identity
 	var/map_storage/storage
 	var/kind
 	var/backend_started = FALSE
@@ -507,6 +522,10 @@ var/global/persistence_load_recovery_required = FALSE
 		persistence_active_operation = null
 		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
+
+/datum/persistence_world_operation/New()
+	..()
+	admission_identity = new /datum
 
 // Direct calls acquire their own operation. A wrapper explicitly passes its
 // existing identity; a second backend entry is rejected even with that identity.
@@ -589,6 +608,9 @@ var/global/persistence_load_recovery_required = FALSE
 	return A ? "\ref[A]" : "prospective:[world.area]"
 
 /datum/controller/gameticker/proc/savemap(datum/persistence_restart_transaction/transaction)
+	// A lobby/setting-up world has no round to persist; restored rounds are PLAYING.
+	if(current_state < GAME_STATE_PLAYING)
+		return FALSE
 	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "save", transaction)
 	if(!operation) return FALSE
 	try
@@ -605,6 +627,7 @@ var/global/persistence_load_recovery_required = FALSE
 		message_admins("EXCEPTION IN MAP SAVING!! [e] on [e.file]:[e.line]")
 		return 0
 	operation.finish(TRUE)
+	last_persistence_save_time = world.time
 	return 1
 
 /datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)
@@ -837,6 +860,10 @@ var/global/persistence_load_recovery_required = FALSE
 /map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)
 	if(!ref) return
 	var/key = "[ref]"
+	// Keep the first captured edge if a completed child later moves.
+	var/owner = saving_content_owners[key]
+	if(owner && owner != frame.entry) return
+	saving_content_owners[key] = frame.entry
 	if(!frame.content_seen[key])
 		frame.content_seen[key] = TRUE
 		frame.content_refs += key

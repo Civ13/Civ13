@@ -127,8 +127,10 @@
 		return set_human_subtile(TRUE)
 	return FALSE
 
+// Pulling and open menus keep smooth movement: living/Move drags the pulled
+// object behind each tile crossing, and menus only record their source window.
 /mob/living/human/proc/human_subtile_unlinked()
-	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulling && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !using_object && !using_cannon && !football
+	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) && !using_cannon && !football
 
 /mob/living/human/proc/human_subtile_input_supported(direction)
 	human_subtile_initialize_default(direction)
