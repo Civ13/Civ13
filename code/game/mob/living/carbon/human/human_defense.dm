@@ -686,7 +686,12 @@ bullet_act
 	receive_damage()
 	instadeath_check()
 	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
+	// Only the player's own conscious action is currently proven perceivable.
+	var/track_self_injury = user == src && client && client.mob == src && stat == CONSCIOUS && sleeping <= 0
+	var/previous_self_damage = track_self_injury ? getBruteLoss() + getBurnLoss() : 0
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
+	if (track_self_injury && getBruteLoss() + getBurnLoss() > previous_self_damage && player_help_service)
+		player_help_service.record_observed_injury(client, src, "self_weapon_hit")
 	if (!map.civilizations && !map.nomads && !map.is_RP && ishuman(src) && ishuman(user))
 		var/mob/living/human/Hsrc = src
 		var/mob/living/human/Huser = user
