@@ -132,8 +132,14 @@ full regenerated-catalog comparison runs for production-only and projector-only
 changes without an extensive/new-test condition.
 
 The Atlas exporter reads quantities from `woodwork_spec`, supplies the same
-acquisition steps to Help, and registers genuine reused sprite states. Tanning
-source digests are refreshed only after reviewing unchanged tanning conversions,
+acquisition steps to Help, and registers genuine reused sprite states.
+Woodworking provenance uses a reviewed revision and normalized source hash from
+`scripts/atlas/woodworking-contract.json`, so depth-one baseline checkouts produce
+the same catalog. Changed source or malformed provenance rejects export until
+the contract is reviewed and refreshed. The history-unavailable regression runs
+the complete catalog builder and comparison without Git log/show access.
+
+Tanning source digests are refreshed only after reviewing unchanged tanning conversions,
 unchanged direct axe/saw yields, the added legacy log-owner guard and the two new
 material declarations. The focused tanning regression includes that owner guard.
 

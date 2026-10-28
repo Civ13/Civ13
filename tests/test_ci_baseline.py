@@ -56,6 +56,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(ci.SUITES['woodworking']['files'],('tests/primitive_woodworking/test_source.py','tests/test_atlas_navigation.py'))
         dedicated=('code/modules/1713/primitive_woodworking.dm',
                    'scripts/atlas/woodworking.py',
+                   'scripts/atlas/woodworking-contract.json',
                    'tests/primitive_woodworking/test_source.py',
                    'tests/primitive_woodworking/source_adapter.py')
         for path in dedicated:
@@ -156,7 +157,9 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(reads, {'code/processes/ping_track.dm', 'code/processes/_process.dm'})
         self.assertTrue(reads.issubset(set(ci.SUITES['ping']['paths'])))
         self.assertNotIn('__processScheduler.dm', source)
-        self.assertIn('"git", "show", BASE + ":code/processes/ping_track.dm"', source)
+        self.assertIn("Path(__file__).with_name('historical-ping.txt').read_bytes()", source)
+        self.assertIn('ping', self.selected(['tests/ping_scheduler/historical-ping.txt']))
+        self.assertIn('research', self.selected(['tests/research_scheduler/historical-research.txt']))
         self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
                          {'policy', 'bootstrap', 'progress', 'research'})
 

@@ -7,8 +7,14 @@ import re
 import sys
 import struct
 import zlib
+import contextlib
+import io
+import runpy
+import subprocess
+import tempfile
 from types import MethodType, SimpleNamespace as NS
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from source_adapter import ROOT, SOURCE, block, compile_body
@@ -381,6 +387,43 @@ class WoodworkingContracts(unittest.TestCase):
         handle_recipes=[row for row in data['recipes'] if any(out['id']=='/obj/item/weapon/material/handle' for out in row.get('outputs',[]))]
         self.assertTrue(handle_recipes)
         self.assertFalse(any(item['id']==crude for row in handle_recipes for item in row['inputs']))
+
+    def test_complete_catalog_matches_with_history_commands_unavailable(self):
+        original=subprocess.check_output
+        seen=[]
+        def current_checkout_only(command,*args,**kwargs):
+            if command[0]=='git':
+                seen.append(command)
+                self.assertNotIn('log',command,'Catalog provenance must not depend on available history')
+                self.assertNotIn('show',command,'Catalog provenance must not fetch past source')
+            return original(command,*args,**kwargs)
+        with tempfile.TemporaryDirectory(prefix='woodwork-history-free-') as directory:
+            target=Path(directory)/'catalog.json'
+            script=ROOT/'scripts/build-crafting-atlas.py'
+            with patch.object(sys,'argv',[str(script),'--catalog-only','--game-catalog',str(target)]), \
+                 patch.object(sys,'path',[str(ROOT/'scripts'),*sys.path]), \
+                 patch.object(subprocess,'check_output',side_effect=current_checkout_only), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                try:
+                    runpy.run_path(str(script),run_name='__main__')
+                except SystemExit as result:
+                    self.assertEqual(result.code,0)
+            self.assertTrue(any('ls-files' in command for command in seen))
+            self.assertEqual(target.read_bytes(),(ROOT/'UI/crafting-atlas.json').read_bytes())
+
+    def test_reviewed_provenance_is_history_free_and_rejects_unreviewed_source(self):
+        contract=json.loads((ROOT/'scripts/atlas/woodworking-contract.json').read_text())
+        self.assertEqual(atlas.reviewed_source_revision(TEXT,contract),contract['audit_commit'])
+        self.assertEqual(atlas.reviewed_source_revision(TEXT.replace('\n','\r\n'),contract),contract['audit_commit'])
+        changed=TEXT.replace('if (working)','if (FALSE)',1)
+        self.assertNotEqual(TEXT,changed)
+        with self.assertRaisesRegex(ValueError,'Review changed woodworking source'):
+            atlas.reviewed_source_revision(changed,contract)
+        for broken in (dict(contract,audit_commit='uncommitted'),dict(contract,audit_commit='0'*40),
+                       dict(contract,source_sha256='0'*64),dict(contract,source='other.dm'),
+                       dict(contract,schema_version=2),dict(contract,schema_version=True),dict(contract,unexpected=True)):
+            with self.subTest(contract=broken),self.assertRaises(ValueError):
+                atlas.reviewed_source_revision(TEXT,broken)
 
     def test_reused_art_states_exist_in_actual_png_metadata(self):
         for path,state in [('icons/obj/materials.dmi','sheet-wood'),('icons/obj/old_weapons.dmi','sharpened_stick'),('icons/misc/tribal.dmi','tribalhammer')]:

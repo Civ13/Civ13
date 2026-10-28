@@ -5,6 +5,22 @@ import re
 SOURCE = 'code/modules/1713/primitive_woodworking.dm'
 
 
+def reviewed_source_revision(text, contract):
+    """Bind reviewed source bytes without depending on checkout depth/history."""
+    fields = {'schema_version', 'source', 'audit_commit', 'source_sha256'}
+    if (not isinstance(contract, dict) or set(contract) != fields
+            or type(contract['schema_version']) is not int or contract['schema_version'] != 1):
+        raise ValueError('Review woodworking provenance contract before exporting')
+    if (contract['source'] != SOURCE or not isinstance(contract['audit_commit'], str)
+            or not re.fullmatch(r'[0-9a-f]{40}', contract['audit_commit'])
+            or contract['audit_commit'] == '0' * 40):
+        raise ValueError('Unknown woodworking source provenance')
+    actual = hashlib.sha256(text.replace('\r\n', '\n').encode('utf-8')).hexdigest()
+    if contract['source_sha256'] != actual:
+        raise ValueError('Review changed woodworking source before exporting')
+    return contract['audit_commit']
+
+
 def specifications(text):
     rows = {}
     for mode, body in re.findall(r'if \("([a-z_]+)"\)\n\t\t\treturn list\(([^\n]+)\)', text):
