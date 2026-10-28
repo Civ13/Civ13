@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import re
+import time
 import uuid
 import zipfile
 
@@ -191,7 +192,7 @@ class CanonicalUpdater:
         core.write_json(recovery / 'build.json', manifest)
         return manifest
 
-    def run(self):
+    def run(self, *, admin_operation=None, expected_session=None):
         require(self.config.get('canonical_update_enabled') is True,
                 'Canonical save/load updating is disabled; activation is separate')
         require(not (self.root / 'HALTED.json').exists(), 'Supervisor is halted; no automatic recovery')
@@ -212,18 +213,26 @@ class CanonicalUpdater:
         initial = sup.status()
         sup.accept_ready(initial, None)
         require(not initial.get('restart_intent'), 'Unconsumed restart intent')
-        if initial.get('clients'):
+        if admin_operation is not None:
+            require(re.fullmatch(r'[0-9a-f]{32}', admin_operation) is not None and
+                    initial.get('maintenance_operation') == admin_operation and
+                    core.startup_session(initial) == expected_session,
+                    'Admin request or process session changed')
+        elif initial.get('clients'):
             return {'deferred': 'connected clients', 'source_changed': False}
         session = core.startup_session(initial)
         require(self.verify_source(inspect_only=True)['commit'] == old['revision'],
                 'Running revision differs from local named master')
-        self.transaction = {'operation': uuid.uuid4().hex, 'previous_host': old['host'],
+        self.transaction = {'operation': admin_operation or uuid.uuid4().hex, 'previous_host': old['host'],
                             'previous_revision': old['revision'], 'previous_binaries': old['binaries'],
                             'configuration': self.protected_config(), 'map': self.config['map']}
         (self.root / 'updates').mkdir(exist_ok=True)
         self.phase('saving')
         try:
-            backup, generation = sup.stop_saved(self.transaction['operation'], expected_session=session)
+            if admin_operation:
+                backup, generation = sup.stop_saved(self.transaction['operation'], expected_session=session, admin_operation=True)
+            else:
+                backup, generation = sup.stop_saved(self.transaction['operation'], expected_session=session)
             # stop_saved is not treated as proof by itself: independently recheck
             # exact exit and the acknowledged same-map generation before Git.
             self.quiet(self.game, old['host'], self.config['port'])
@@ -284,9 +293,50 @@ class CanonicalUpdater:
             raise
 
 
+def consume_admin_once(config, supervisor=None, updater_factory=CanonicalUpdater):
+    """Consume one typed request while holding the existing supervisor lock.
+
+    The exclusive receipt is durable before any lifecycle mutation. A crash or
+    ambiguous response therefore cannot cause this identity to be replayed.
+    """
+    game, root = configuration(config)
+    require(config.get('canonical_update_enabled') is True, 'Canonical updater is disabled')
+    with core.exclusive_lock(root / 'supervisor.lock'):
+        sup = supervisor or core.Supervisor(config)
+        require(not (root / 'HALTED.json').exists(), 'Supervisor is halted')
+        require(sup.state.get('phase') == 'ready' and sup.alive(), 'No owned ready world')
+        status = sup.status()
+        operation = status.get('maintenance_operation')
+        if operation is None:
+            return None
+        require(isinstance(operation, str) and re.fullmatch(r'[0-9a-f]{32}', operation), 'Invalid maintenance identity')
+        session = core.startup_session(status)
+        folder = root / 'admin-maintenance'
+        folder.mkdir(exist_ok=True)
+        receipt = folder / (operation + '.json')
+        with receipt.open('x', encoding='utf-8') as stream:
+            json.dump({'operation': operation, 'phase': 'accepted'}, stream)
+            stream.flush()
+            os.fsync(stream.fileno())
+        try:
+            result = updater_factory(config, supervisor=sup).run(admin_operation=operation, expected_session=session)
+            core.write_json(receipt, {'operation': operation, 'phase': 'complete', 'result': result})
+            return result
+        except Exception as error:
+            core.write_json(receipt, {'operation': operation, 'phase': 'failed', 'error': str(error)})
+            # If the old world still exists, send only a fixed failure signal;
+            # no exception text, path or command is sent into the game.
+            try:
+                if sup.alive():
+                    core.query(config['port'], sup.token, 'maintenance_failed', operation, session)
+            except Exception:
+                pass
+            raise
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('check', 'update-once'))
+    parser.add_argument('action', choices=('check', 'update-once', 'watch-admin'))
     parser.add_argument('--config', type=Path, required=True)
     args = parser.parse_args()
     config = json.loads(args.config.read_text(encoding='utf-8-sig'))
@@ -297,6 +347,10 @@ def main():
                           'mode': 'metadata only; no token, process, network or update'}))
         return
     require(config.get('canonical_update_enabled') is True, 'Canonical updater is disabled')
+    if args.action == 'watch-admin':
+        while True:
+            consume_admin_once(config)
+            time.sleep(5)
     with core.exclusive_lock(root / 'supervisor.lock'):
         print(json.dumps(CanonicalUpdater(config).run()))
 

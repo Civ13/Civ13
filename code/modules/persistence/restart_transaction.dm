@@ -108,7 +108,9 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	sleep(1)
 	throw EXCEPTION("Native shutdown returned without closing the world")
 
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session)
+// prewarned records the typed maintenance request's completed player warning.
+// It is consumed by the separately reviewed #3368 integration when present.
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE)
 	if(shutdown && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
 		report("Save/shutdown refused: invalid lifecycle binding")
 		return FALSE
