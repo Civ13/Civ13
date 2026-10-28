@@ -202,8 +202,14 @@ class RoundAnnouncementTests(unittest.TestCase):
 
     def test_saved_identity_precedes_success_return_and_callbacks(self):
         loader = self.persistence.split('/datum/controller/gameticker/proc/loadmap(', 1)[1].split('\n// The completion marker', 1)[0]
-        self.assertLess(loader.index('map_storage.restore_round_state(src, saved_round)'),
-                        loader.index('operation.finish(TRUE)'))
+        # Extraction pins the storage instance for the entire restore attempt.
+        # Verify this alias is the global storage before checking its calls.
+        self.assertIn('var/map_storage/storage = map_storage', loader)
+        identity = loader.index('storage.restore_round_state(src, saved_round)')
+        self.assertLess(identity, loader.index('storage.restore_zone_spawns()'))
+        self.assertLess(identity, loader.index('storage.finish_player_restoration()'))
+        self.assertLess(identity, loader.index('attempt.release_transients()'))
+        self.assertLess(identity, loader.index('operation.finish(TRUE)'))
         self.assertLess(loader.index('operation.finish(TRUE)'), loader.index('return 1'))
         restore = self.persistence.split('/map_storage/proc/restore_round_state(', 1)[1]
         self.assertIn('global.game_id = state["game_id"]', restore)
