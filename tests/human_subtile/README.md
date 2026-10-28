@@ -20,8 +20,10 @@ snapping. An interrupted intent now stops each moving axis at its next native
 grid alignment instead of preserving the offset indefinitely. Reverse movement
 can realign a 2px interruption with a 2px collision-checked move, while consuming
 the usual full admission cost/cooldown. The existing paid prone/scramble paths can realign an owned offset after their
-normal wait, without forcing an injured player to stand. Pulling and restraints
-retain their normal restrictions; stop pulling or release cuffs through ordinary
+normal wait, without forcing an injured player to stand. Pulling and open menus
+(`using_object`) keep smooth movement; living/Move drags a pulled object behind
+each tile crossing. Only a stationary gun's `using_object` restricts. Restraints
+and being pulled retain their normal restrictions; release cuffs through ordinary
 controls, then reverse or move to the next alignment. A blocked reverse can align in the other direction.
 No admin placement participates in the recovery regression. Owned save capsules can initialize on the first eligible input;
 arbitrary raw legacy offsets are never silently adopted. Runtime choices are not

@@ -11,6 +11,11 @@ tests/human_subtile/run-diagonal.py targets 516.1688 with exact-Git staging and
 a separate executable allowlist; historical helpers remain frozen. Preserve the
 Windows startup-socket rejection rather than weakening its no-socket policy.
 Headless displacement/compile checks never prove DreamSeeker visual smoothness.
+<!-- 2026-10-28: pulling and menus keep smooth movement -->
+Pulling and open menus (any using_object except a stationary gun) keep the
+adapter eligible: a restricting state mid-step refuses all input until alignment.
+Headless fixtures have no client, so living/Move stops pulling there; pull-follow
+during smooth steps needs connected-client confirmation.
 
 <!-- 2026-10-25: shared hub community links -->
 `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and
