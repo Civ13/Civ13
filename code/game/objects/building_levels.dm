@@ -54,7 +54,7 @@ var/building_compiled_maxz = 0
 
 /turf/sky/building/Entered(atom/movable/A)
 	// Lighting renderers belong to their turf; they are not falling cargo.
-	if (istype(A, /atom/movable/lighting_overlay))
+	if (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))
 		return
 	if (!A || !A.loc || istype(A, /obj/covers) || istype(A, /obj/roof) || isobserver(A) || (locate(/obj/covers) in src) || (locate(/obj/structure/multiz/ladder) in src))
 		return
@@ -118,7 +118,7 @@ var/building_compiled_maxz = 0
 
 /obj/roof/get_saved_vars()
 	. = ..()
-	. |= list("building_pair_id", "building_floor_z", "health", "current_area_type", "switch_area")
+	. |= list("building_pair_id", "building_floor_z", "health", "current_area_type", "switch_area", "seasonal_construction_due")
 
 /obj/roof/persistence_runtime_var(key)
 	return key == "roof_overlay" || ..()
@@ -288,9 +288,11 @@ var/building_compiled_maxz = 0
 // Both source files define covers lifecycle procedures. This common call is
 // placed in the final definition so paired cleanup cannot be shadowed.
 /obj/covers/Del()
+	unregister_seasonal_construction()
 	building_remove_roof()
 	return ..()
 
 /obj/roof/Del()
+	unregister_seasonal_construction()
 	building_remove_floor()
 	return ..()

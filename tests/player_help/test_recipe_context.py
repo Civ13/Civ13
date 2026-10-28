@@ -145,6 +145,31 @@ class RecipeContextTests(unittest.TestCase):
         for forbidden in ('floor 1', 'time 60 deciseconds', 'level 1', 'WRONG MAP', 'PRIVATE', 'a' * 32):
             self.assertNotIn(forbidden, prompt)
 
+    def test_sawmill_processing_prompt_uses_one_plank_yield(self):
+        catalog = ROOT / 'UI/crafting-atlas.json'
+        corpus = (bridge.bounded_json(ROOT / 'UI/player-help.json', 32768)
+                  + bridge.recipe_context(catalog) + bridge.acquisition_context(catalog)
+                  + bridge.gameplay_knowledge(ROOT))
+        calls = []
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(bridge, 'network', side_effect=AssertionError('network forbidden')), \
+                mock.patch.object(bridge, 'network_child', side_effect=AssertionError('network forbidden')):
+            instance = bridge.Bridge(Path(temporary),
+                                     {'enabled': True, 'model': 'injected-test', 'endpoint': 'unused',
+                                      'workers': 1, 'timeout_seconds': 1}, corpus,
+                                     lambda *args: calls.append(args) or {'message': {'content': 'fixture'}})
+            try:
+                result = instance.answer({'id': '1-2-3', 'account': 'a' * 32,
+                                          'question': 'How do I use a primitive sawmill to cut logs and replace its flint blade?',
+                                          'game_context': {'map': 'Nomads Gaia', 'civilizations': True}})
+            finally:
+                instance.close()
+        self.assertEqual(result['status'], 'ok')
+        prompt = calls[0][1]['messages'][0]['content'].lower()
+        self.assertIn('one log yields one plank and one bark', prompt)
+        self.assertIn('sharpened flint', prompt)
+        self.assertNotIn('one log yields four planks', prompt)
+
 
 if __name__ == '__main__':
     unittest.main()

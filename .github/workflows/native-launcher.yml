@@ -33,7 +33,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build self-contained executable and check startup
         shell: pwsh
-        run: ./tools/opendream-client/native/Build.ps1 -Dotnet (Get-Command dotnet).Source
+        run: ./tools/opendream-client/native/Build.ps1 -Dotnet (Get-Command dotnet).Source -Python (Get-Command python).Source
       - name: Isolated updater contracts and actual executable replacement
         shell: pwsh
         run: |

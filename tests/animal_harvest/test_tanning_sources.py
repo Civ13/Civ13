@@ -314,7 +314,7 @@ class TanningSourceContracts(unittest.TestCase):
         planks=tuple(map(int,re.search(r'var/planks = hatchet \? (\d+) : (\d+)',cut).groups()))
         self.assertEqual((costs,planks),((2,1),(1,4)))
         for index,kind in enumerate(('/obj/item/weapon/material/hatchet','/obj/item/weapon/saw')):
-            for case in ('valid','empty','moved','burning','unheld','disconnected','wrong_tool'):
+            for case in ('valid','empty','moved','burning','unheld','disconnected','wrong_tool','woodwork_busy'):
                 site,user,item,tool=scenario()
                 tool.type=kind
                 if case=='empty': item.amount=costs[index]-1
@@ -324,6 +324,7 @@ class TanningSourceContracts(unittest.TestCase):
                 if case=='wrong_tool': tool.type='/obj/item/weapon/material/kitchen/utensil/knife'
                 env={'src':item,'user':user,'tool':tool,'source_loc':site,'site':site,'loc':item.loc,
                      'amount':item.amount,'cost':costs[index],'onfire':case=='burning',
+                     'woodwork_owner':object() if case=='woodwork_busy' else None,
                      'hide_worker_can_reach':lambda u,s:gate(reach,{'user':u,'source':s})}
                 with self.subTest(tool=kind,case=case):
                     self.assertEqual(bool(gate(valid,env)),case=='valid')

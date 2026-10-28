@@ -13,6 +13,7 @@ spec = importlib.util.spec_from_file_location('native_release', Path(__file__).r
 release = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(release)
 HEAD = 'a' * 40
+BYOND = json.loads((Path(__file__).resolve().parents[3] / 'byond/version.json').read_text())
 
 
 def event(prerelease=False):
@@ -108,11 +109,65 @@ class ReleaseTests(unittest.TestCase):
         self.exe.write_bytes(b'MZ fixture binary; never executed')
         self.client = self.root / 'client-channel.json'
         self.client.write_text('{}')
-        self.plan = release.make_plan(event(), {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD)
+        self.plan = release.make_plan(event(), {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD, BYOND)
         self.api = FakeGitHub(self.plan)
 
     def publish(self):
-        return release.publish(self.api, self.plan, self.exe, self.root / 'output', self.client)
+        return release.publish(self.api, self.plan, self.exe, self.root / 'output', self.client,
+                               BYOND, inspect=lambda _: copy.deepcopy(BYOND))
+
+    def test_embedded_contract_drift_blocks_before_upload(self):
+        for field, value in [('version', '516.1681'), ('version', '516.1689'),
+                             ('sha256', '0' * 64), ('bytes', BYOND['bytes'] + 1),
+                             ('url', 'https://example.com/byond.exe'), ('schema', 2)]:
+            embedded = dict(BYOND, **{field: value})
+            if field == 'version':
+                embedded['url'] = f'https://www.byond.com/download/build/516/{value}_byond.exe'
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                release.publish(self.api, self.plan, self.exe, self.root / 'output', self.client,
+                                BYOND, inspect=lambda _: embedded)
+            self.assertEqual((self.api.uploads, self.api.activations), (0, 0))
+
+    def test_missing_malformed_or_failed_contract_inspection_blocks_upload(self):
+        for embedded in (None, [], {}, dict(BYOND, version='516.01688'), dict(BYOND, sha256='bad'),
+                         dict(BYOND, version=516), dict(BYOND, sha256=None), dict(BYOND, schema=True)):
+            with self.subTest(embedded=embedded), self.assertRaises(ValueError):
+                release.publish(self.api, self.plan, self.exe, self.root / 'output', self.client,
+                                BYOND, inspect=lambda _: embedded)
+        def failed(_):
+            raise TimeoutError('fixture inspection timeout')
+        with self.assertRaises(TimeoutError):
+            release.publish(self.api, self.plan, self.exe, self.root / 'output', self.client,
+                            BYOND, inspect=failed)
+        self.assertEqual((self.api.uploads, self.api.activations), (0, 0))
+
+    def test_compiler_bump_propagates_without_launcher_semver_change(self):
+        bumped = dict(BYOND, version='516.1689',
+                      url='https://www.byond.com/download/build/516/516.1689_byond.exe', sha256='1' * 64)
+        plan = release.make_plan(event(), {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD, bumped)
+        self.assertEqual(plan['version'], '1.0.0')
+        self.assertEqual(plan['byond']['version'], '516.1689')
+        self.assertEqual(release.verify_byond(self.exe, bumped, inspect=lambda _: bumped), plan['byond'])
+        with self.assertRaisesRegex(ValueError, 'changed after release planning'):
+            release.publish(self.api, self.plan, self.exe, self.root / 'output', self.client,
+                            bumped, inspect=lambda _: bumped)
+        self.assertEqual((self.api.uploads, self.api.activations), (0, 0))
+
+    def test_release_metadata_records_compiler_contract_identity(self):
+        self.publish()
+        metadata = json.loads(self.api.assets['native-launcher-release.json']['data'])
+        self.assertEqual(metadata['byond'], release.byond_identity(BYOND))
+
+    def test_source_embeds_authoritative_contract_and_all_packagers_check_artifact(self):
+        native = Path(release.__file__).resolve().parent
+        project = (native / 'Civ13.Launcher.csproj').read_text()
+        self.assertIn('Include="../../byond/version.json" LogicalName="byond.json"', project)
+        self.assertNotIn('Include="byond.json"', project)
+        self.assertIn("'release.py') verify-byond --executable $exe", (native / 'Build.ps1').read_text())
+        for name in ('native-launcher.yml', 'native-launcher-release.yml'):
+            workflow = (native.parents[2] / '.github/workflows' / name).read_text()
+            self.assertIn('native/Build.ps1', workflow)
+            self.assertIn('test_release.py', workflow)
 
     def old_feed(self):
         self.api.parent = 'f' * 40
@@ -129,7 +184,7 @@ class ReleaseTests(unittest.TestCase):
                 payload['release']['tag_name'] = tag
                 with self.subTest(tag=tag, prerelease=prerelease), self.assertRaisesRegex(
                         ValueError, 'not launcher releases'):
-                    release.make_plan(payload, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD)
+                    release.make_plan(payload, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD, BYOND)
 
     def test_success_readback_then_feed_and_idempotent_repeat(self):
         result = self.publish()
@@ -199,23 +254,23 @@ class ReleaseTests(unittest.TestCase):
             bad = copy.deepcopy(event())
             bad[key] = value
             with self.assertRaises(ValueError):
-                release.make_plan(bad, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD)
+                release.make_plan(bad, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD, BYOND)
         for key, value in [('draft', True), ('id', 0), ('tag_name', '-option'), ('prerelease', 'false')]:
             bad = copy.deepcopy(event())
             bad['release'][key] = value
             with self.assertRaises(ValueError):
-                release.make_plan(bad, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD)
+                release.make_plan(bad, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD, BYOND)
         with self.assertRaises(ValueError):
-            release.make_plan(event(), {'schema': 1, 'version': '1.0.1'}, HEAD, HEAD)
+            release.make_plan(event(), {'schema': 1, 'version': '1.0.1'}, HEAD, HEAD, BYOND)
         with self.assertRaises(ValueError):
-            release.make_plan(event(), {'schema': 1, 'version': '1.0.0'}, HEAD, 'b' * 40)
+            release.make_plan(event(), {'schema': 1, 'version': '1.0.0'}, HEAD, 'b' * 40, BYOND)
         with self.assertRaises(ValueError):
-            release.make_plan(event(), {'schema': 1, 'version': '99999.0.0'}, HEAD, HEAD)
+            release.make_plan(event(), {'schema': 1, 'version': '99999.0.0'}, HEAD, HEAD, BYOND)
 
     def test_dated_release_uses_exact_tag_version_config(self):
         payload = event()
         payload['release']['tag_name'] = 'opendream-client-2026-10-14'
-        self.assertEqual(release.make_plan(payload, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD)['version'], '1.0.0')
+        self.assertEqual(release.make_plan(payload, {'schema': 1, 'version': '1.0.0'}, HEAD, HEAD, BYOND)['version'], '1.0.0')
 
     def test_stable_no_downgrade_or_same_version_replacement(self):
         current = {'schema': 1, 'version': '1.0.0', 'url': 'old', 'sha256': '0' * 64}
