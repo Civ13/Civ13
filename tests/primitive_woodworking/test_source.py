@@ -304,6 +304,8 @@ class WoodworkingContracts(unittest.TestCase):
         recipes=(ROOT/'config/crafting/material_recipes_global.txt').read_text()
         self.assertIn('/material/wood/soft/,wood handle,',recipes)
         self.assertIn('/material/wood/soft/,plank handle,',recipes)
+        with self.assertRaises(ValueError):
+            atlas.specifications(TEXT+'\n\t\tif ("unreviewed")\n\t\t\treturn list("cost" = 1, "count" = 1, "delay" = 1, "output" = /obj/item/stack/bark, "bark" = 0)\n')
 
     def test_crude_planks_require_flattening_and_never_charge_tool_wear(self):
         self.assertEqual(SPECS['plank']['output'],'/obj/item/stack/material/crude_plank')

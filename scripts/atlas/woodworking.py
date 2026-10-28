@@ -7,7 +7,7 @@ SOURCE = 'code/modules/1713/primitive_woodworking.dm'
 
 def specifications(text):
     rows = {}
-    for mode, body in re.findall(r'if \("(pieces|wedge|mallet|plank|flatten)"\)\n\t\t\treturn list\(([^\n]+)\)', text):
+    for mode, body in re.findall(r'if \("([a-z_]+)"\)\n\t\t\treturn list\(([^\n]+)\)', text):
         fields = dict(re.findall(r'"(\w+)" = (/[\w/]+|\d+)', body))
         rows[mode] = {key: value if value.startswith('/') else int(value) for key, value in fields.items()}
     if set(rows) != {'pieces', 'wedge', 'mallet', 'plank', 'flatten'} or any(set(row) != {'cost', 'count', 'delay', 'output', 'bark'} for row in rows.values()):
