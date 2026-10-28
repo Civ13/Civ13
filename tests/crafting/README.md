@@ -76,6 +76,27 @@ individually: fossil stack objects currently use the stone datum and there is no
 working substitutes or change ingredient balance. Reenable a row only after
 restoring its definition and verifying its intended interaction.
 
+## Furniture joinery
+
+The fixture also includes `furniture_joinery.dm`: actual global peg-jointed
+table/chair/bed and dowel-set construction, exact dual debits, tool reuse,
+rejection after tool/stock/research/save changes, occupied tiles, cancellation,
+last-set hand cleanup and competing waits. It also checks preset log/plank
+subtypes and rejected crafting XP. Assembly tools lie
+on a separate clear fixture tile, rather than invalid equipment slots; tools at
+the player's feet are a supported production route. Character startup uses the
+existing handle fixture adapters; this is not connected-player acceptance.
+Research rejection controls temporarily move the required node beyond the
+fixture faction's baseline, then restore its actual tier after the action.
+An era-0 Main-tree node is already granted at baseline zero even with an
+incomplete entry. The controls check both initial denial and revocation during
+the wait; this controlled metadata change does not change gameplay gates.
+Wooden-shelf assertions additionally cover its six-plank debit, subtype fields,
+destruction, broken parts, top/frame disassembly, frame wrenching and cancellation.
+Use `--compile-only` to compile the isolated fixture without starting DreamDaemon.
+That option explicitly reports runtime checks as not run. It cannot certify
+recipe registration or any native assertion. See `docs/furniture-joinery-audit.md`.
+
 ## Limits
 
 Green CI means covered schema/registration contracts and the generic crafting
