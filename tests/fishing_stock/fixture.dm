@@ -12,6 +12,7 @@
 
 var/global/list/fish_probe_verdicts = list()
 var/global/fish_probe_initial_port = 0
+var/global/fish_probe_cleanup_survivors = 0
 var/global/fish_probe_port_closed = 0
 var/global/fish_probe_reopen_refused = 0
 var/global/fish_probe_clients = 0
@@ -45,6 +46,9 @@ var/global/fish_probe_topics = 0
 	for (var/atom/A in fish_probe_owned.Copy())
 		if (A)
 			del(A)
+	for (var/atom/B in fish_probe_owned)
+		if (B)
+			fish_probe_cleanup_survivors++
 	fish_probe_owned.Cut()
 	fish_probe_school = null
 	fish_probe_outer = null
@@ -159,7 +163,7 @@ var/global/fish_probe_topics = 0
 	for (var/label in fish_probe_verdicts)
 		if (!fish_probe_verdicts[label])
 			failed += label
-	var/list/receipt = list("schema_version" = 1, "fixture" = "fishing-completion-v1", "source_head" = FISHING_SOURCE_HEAD, "source_sha256" = FISHING_SOURCE_SHA, "hook_sha256" = FISHING_HOOK_SHA, "variant" = FISHING_VARIANT, "byond_version" = world.byond_version, "byond_build" = world.byond_build, "initial_port" = fish_probe_initial_port, "port_closed" = fish_probe_port_closed, "reopen_refused" = fish_probe_reopen_refused, "clients" = fish_probe_clients, "topics" = fish_probe_topics, "cases" = fish_probe_verdicts, "failed_cases" = failed, "errors" = fish_probe_errors, "cleanup_owned_remaining" = fish_probe_owned.len)
+	var/list/receipt = list("schema_version" = 1, "fixture" = "fishing-completion-v1", "source_head" = FISHING_SOURCE_HEAD, "source_sha256" = FISHING_SOURCE_SHA, "hook_sha256" = FISHING_HOOK_SHA, "variant" = FISHING_VARIANT, "byond_version" = world.byond_version, "byond_build" = world.byond_build, "initial_port" = fish_probe_initial_port, "port_closed" = fish_probe_port_closed, "reopen_refused" = fish_probe_reopen_refused, "clients" = fish_probe_clients, "topics" = fish_probe_topics, "cases" = fish_probe_verdicts, "failed_cases" = failed, "errors" = fish_probe_errors, "cleanup_owned_remaining" = fish_probe_cleanup_survivors)
 	text2file(json_encode(receipt), "result.json")
 	world.log << "FISHING_DONE"
 	del(world)

@@ -168,6 +168,54 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('/client/New()', source)
         self.assertIn('/world/Topic(', source)
 
+    def test_cleanup_counts_survivors_before_forgetting_owned_references(self):
+        source = (ROOT / "fixture.dm").read_text()
+        expected = ["for (var/atom/A in fish_probe_owned.Copy())", "if (A)", "del(A)",
+                    "for (var/atom/B in fish_probe_owned)", "if (B)", "fish_probe_cleanup_survivors++",
+                    "fish_probe_owned.Cut()", "fish_probe_school = null", "fish_probe_outer = null",
+                    "fish_probe_inner = null", "fish_probe_inner_tool = null", "return"]
+        def valid(candidate):
+            cleanup = candidate.split("/proc/fish_probe_cleanup()\n", 1)[1].split("\n/proc/", 1)[0]
+            return ([line.strip() for line in cleanup.splitlines() if line.strip()] == expected
+                    and candidate.count("var/global/fish_probe_cleanup_survivors = 0") == 1
+                    and candidate.count("fish_probe_cleanup_survivors = 0") == 1
+                    and '"cleanup_owned_remaining" = fish_probe_cleanup_survivors)' in candidate)
+        self.assertTrue(valid(source))
+        for changed in (source.replace("del(A)", "// omitted deletion"),
+                        source.replace("fish_probe_cleanup_survivors++", "// omitted census"),
+                        source.replace("\tfor (var/atom/B in fish_probe_owned)", "\tfish_probe_owned.Cut()\n\tfor (var/atom/B in fish_probe_owned)"),
+                        source.replace('"cleanup_owned_remaining" = fish_probe_cleanup_survivors)', '"cleanup_owned_remaining" = fish_probe_owned.len)'),
+                        source.replace("\tfish_probe_owned.Cut()", "\tfish_probe_cleanup_survivors = 0\n\tfish_probe_owned.Cut()")):
+            self.assertFalse(valid(changed))
+        receipt = synthetic_receipt(); receipt["cleanup_owned_remaining"] = 1
+        self.assertIn("invalid cleanup_owned_remaining", prepare.verify_receipt(receipt, "candidate", receipt["hook_sha256"]))
+
+    def test_source_projected_deletion_omission_cannot_be_hidden_by_cut(self):
+        # Source-bound observation-order model only; this does not emulate DM
+        # deletion or prove native survivor behavior. Runtime receipts are separate.
+        source = (ROOT / "fixture.dm").read_text()
+        def observe(candidate, survivors=0):
+            owned = [object(), object(), object()]
+            cleanup = candidate.split("/proc/fish_probe_cleanup()\n", 1)[1].split("\n/proc/", 1)[0]
+            for line in cleanup.splitlines():
+                if line.strip() == "del(A)":
+                    owned = [None for _ in owned]
+                elif line.strip() == "fish_probe_cleanup_survivors++":
+                    survivors += sum(value is not None for value in owned)
+                elif line.strip() == "fish_probe_owned.Cut()":
+                    owned.clear()
+            if '"cleanup_owned_remaining" = fish_probe_cleanup_survivors)' in candidate:
+                return survivors
+            return len(owned)
+        self.assertEqual(observe(source), 0)
+        omitted = source.replace("del(A)", "// omitted deletion")
+        self.assertEqual(observe(omitted), 3)
+        # A later successful cleanup must not erase earlier surviving owners.
+        self.assertEqual(observe(source, survivors=observe(omitted)), 3)
+        old_receipt = omitted.replace('"cleanup_owned_remaining" = fish_probe_cleanup_survivors)',
+                                      '"cleanup_owned_remaining" = fish_probe_owned.len)')
+        self.assertEqual(observe(old_receipt), 0)
+
     def test_synthetic_receipt_verifier_requires_each_control_cause(self):
         for variant in prepare.VARIANTS:
             receipt = synthetic_receipt(variant)

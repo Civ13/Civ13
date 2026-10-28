@@ -17,7 +17,7 @@ ROUTES = (("modern", 120, 40), ("ordinary", 150, 30), ("branch", 120, 20))
 VARIANTS = ("candidate", "omit-modern", "omit-ordinary", "omit-branch")
 SOURCE_LIMIT = 16384
 OUTPUT_LIMIT = 262144
-TEMPLATE_HASHES = {'adapters.dm': '9594f3586a5e433e8e0a9962cc852df7e2af6574ac00e3c818ba1fec7d8c08d7', 'fixture.dm': '65dc446b41882adcaddf3173363471e5b38eba9dbe8d67f197d4e3b4be02e3a2'}
+TEMPLATE_HASHES = {'adapters.dm': '9594f3586a5e433e8e0a9962cc852df7e2af6574ac00e3c818ba1fec7d8c08d7', 'fixture.dm': 'c8e6f25c4747c0348e240c7337bda90c9c7596fd5ae13bf2b7c938deb2ced2d2'}
 
 
 def sha256(data):
