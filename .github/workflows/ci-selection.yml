@@ -38,10 +38,19 @@ jobs:
       attempt: ${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
+      - name: Prepare exact comparison commit
+        id: prepare
+        timeout-minutes: 2
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ inputs.base }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
       - name: Selection regression tests on every invocation
         run: python3 -B scripts/ci_baseline.py unit --suite policy --output .ci/selection/policy.json
       - id: select
@@ -62,7 +71,7 @@ jobs:
           node tools/changelog/check-queues.mjs
           "$RUNNER_TEMP/actionlint" -shellcheck= -ignore 'unexpected key "queue" for "concurrency" section' .github/workflows/*.yml
       - name: Retain selection and policy receipts
-        if: always()
+        if: always() && steps.prepare.outcome == 'success'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}

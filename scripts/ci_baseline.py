@@ -21,7 +21,7 @@ toolchain = importlib.util.module_from_spec(_toolchain_spec)
 _toolchain_spec.loader.exec_module(toolchain)
 POLICY_FILES = tuple('tests/' + name for name in (
     'test_ci_selection.py', 'test_ci_regression_policy.py',
-    'test_ci_build_prefix.py', 'test_ci_baseline.py'))
+    'test_ci_build_prefix.py', 'test_ci_baseline.py', 'test_ci_checkout_refs.py'))
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {

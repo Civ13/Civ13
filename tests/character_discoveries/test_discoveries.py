@@ -342,7 +342,7 @@ class DiscoveryTests(unittest.TestCase):
         self.assertEqual(workflow.count(name), 1)
         block = name + workflow.split(name, 1)[1].split('      - name:', 1)[0]
         self.assertEqual(block, name +
-            "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/character_discoveries')\n" +
+            "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/character_discoveries')\n" +
             "        run: python3 -I -B -m unittest discover -s tests/character_discoveries -p 'test_*.py' -v\n")
         job = re.search(r'^  evidence-checker:\n(.*?)(?=^  [A-Za-z0-9_-]+:|\Z)', workflow, re.M | re.S)
         self.assertIsNotNone(job)
