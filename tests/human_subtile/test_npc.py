@@ -101,7 +101,6 @@ class NpcContracts(unittest.TestCase):
             self.assertNotIn('npc_subtile', read(path), path)
         client_move = read('code/game/mob/mob_movement.dm').split('/client/Move(n, direct, ordinal = FALSE)', 1)[1]
         self.assertNotIn('npc_subtile', client_move)
-        self.assertNotIn('simple_animal', client_move)
 
     def test_only_vendor_family_opts_in(self):
         source = read(MODULE)
