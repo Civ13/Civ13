@@ -161,15 +161,17 @@ def needs_extensive(event, opted_in):
 
 def changed_atlas_tests(base, head, event):
     """Select only explicitly reviewed Atlas test edits on ordinary PRs."""
-    if event != 'pull_request' or not base or not head or set(base) == {'0'}:
+    if event != 'pull_request':
         return []
+    if not base or not head or set(base) == {'0'}:
+        raise RuntimeError('Atlas test selection requires a valid base and head comparison')
     try:
         paths = subprocess.check_output(
             ['git', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
              base, head, '--', *ATLAS_TEST_INPUTS],
             stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
-    except (subprocess.SubprocessError, UnicodeError):
-        return []
+    except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
+        raise RuntimeError('Atlas test selection could not compare base and head; check Git and the refs') from exc
     return sorted({ATLAS_TEST_INPUTS[path] for path in paths if path in ATLAS_TEST_INPUTS})
 
 

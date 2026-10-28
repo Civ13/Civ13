@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import os
 import unittest
@@ -129,6 +130,46 @@ class RegressionPolicyTests(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
             self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", workflow)
+
+    def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
+        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+        faults = (
+            ('timeout', subprocess.TimeoutExpired('git', 15)),
+            ('git failure', subprocess.CalledProcessError(1, 'git')),
+            ('invalid UTF-8', b'\xff'),
+        )
+        for label, fault in faults:
+            with self.subTest(fault=label), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory) / 'output.txt'
+                receipt = Path(directory) / 'receipt.json'
+                argv = ['select-ci.py', '--base', 'base', '--head', 'head',
+                        '--event', 'pull_request', '--build-prefix', 'true',
+                        '--output', str(output), '--receipt', str(receipt)]
+                kwargs = {'return_value': fault} if isinstance(fault, bytes) else {'side_effect': fault}
+                with patch.object(sys, 'argv', argv), patch.object(selection, 'load_event', return_value=payload), \
+                        patch.object(selection, 'select', return_value=(True, 'selected')), \
+                        patch.object(selection, 'introduced_tests', return_value=[]), \
+                        patch.object(selection.subprocess, 'check_output', **kwargs):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.main()
+                self.assertFalse(output.exists())
+                self.assertFalse(receipt.exists())
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]):
+            for base, head in (('', 'head'), ('0' * 40, 'head'), ('base', '')):
+                with self.subTest(base=base, head=head):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.selections(base, head, 'pull_request', False, True, payload)
+
+    def test_atlas_comparison_does_not_expand_ineligible_event_admission(self):
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]), \
+                patch.object(selection.subprocess, 'check_output', side_effect=AssertionError('unexpected Atlas comparison')):
+            for action, base in (('edited', 'master'), ('opened', 'unrelated')):
+                payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': base}}}
+                self.assertEqual(selection.selections('base', 'head', 'pull_request', False, True, payload)[2], [])
+            payload = {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]}
+            self.assertEqual(selection.selections('base', 'head', 'push', False, True, payload)[2], [])
 
     def test_offline_and_game_regressions_have_explicit_suite_guards(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
