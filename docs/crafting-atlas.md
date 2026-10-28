@@ -14,6 +14,11 @@ gelatin recipes. Matching ignores case, treats underscores as spaces and trims
 and collapses whitespace. Labels and canonical IDs stay unchanged; the game's
 separate reagent name **Digestive Protease** is not added as a catalog alias.
 Select a Resource result to open the existing acquisition and related-recipe view.
+Terrain resources describe gathering from the tile, rather than obtaining the
+tile itself. The reviewed sand route links beach/desert sand to the separate
+sand stack: use a shovel with non-harm intent, complete the action and collect
+the stack while the tile has stock. Snow cover takes priority; map availability
+and uninterrupted actions still matter.
 Resource navigation clears recipe filters; era, processor and website recipe-system
 filters do not hide matching Resource results. Resource results are independently
 limited to 150; recipe results retain the in-game 150 and website 250 limits.

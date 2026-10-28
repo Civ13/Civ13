@@ -359,12 +359,16 @@ var/global/datum/player_help_service/player_help_service = new
 				C << "The helper did not accept follow-up context. Your conversation was cleared; please start a new conversation."
 				reset_conversation(C)
 			else if (C && answer_format && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) && length(response["answer"]) <= 4000)
+				// Snapshot only this session's completed questions before appending the current pair.
+				var/list/previous_questions = list()
+				for (var/list/pair in C.player_help_turns)
+					previous_questions += pair["question"]
 				if (entry["conversation"] && response["conversation_protocol"] == 1)
 					remember(C, entry["question"], response["answer"])
 				else
 					reset_conversation(C)
 					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
-				C << browse(render_answer(response["answer"], answer_format, C), "window=player_help;size=600x500")
+				C << browse(render_answer(response["answer"], answer_format, C, entry["question"], previous_questions), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
@@ -387,7 +391,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return response["answer_format"]
 	return null
 
-/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null)
+/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null, question = null, list/previous_questions = null)
 	if (!istext(answer) || length(answer) > 4000)
 		answer = "AI gameplay help did not receive a usable response."
 	var/body
@@ -397,12 +401,21 @@ var/global/datum/player_help_service/player_help_service = new
 		body = markdown_answer(answer)
 	else
 		return null
+	var/current_question = ""
+	if (istext(question) && length(question) <= 500)
+		current_question = "<p><b>Question:</b> [html_encode(question)]</p>"
+	var/history = ""
+	if (islist(previous_questions) && previous_questions.len)
+		history = "<h3>Previous questions</h3>"
+		for (var/previous_question in previous_questions)
+			if (istext(previous_question) && length(previous_question) <= 500)
+				history += "<p>[html_encode(previous_question)]</p>"
 	if (C && C.player_help_action_token)
 		var/actions = "<a href='?src=\ref[src];action=reset;token=[C.player_help_action_token]'>New conversation</a>"
 		if (C.player_help_acknowledged && C.player_help_turns.len)
 			actions = "<a href='?src=\ref[src];action=followup;token=[C.player_help_action_token]'>Follow up</a> | [actions]"
 		body += "<p>[actions]</p>"
-	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[current_question][body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p>[history]</body></html>"
 
 // Bounded display subset of CommonMark 0.31.2, not an HTML trust boundary
 // delegated to the model. Only these routines generate answer markup.
