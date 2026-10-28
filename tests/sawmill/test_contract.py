@@ -22,7 +22,8 @@ class PrimitiveSawmillContracts(unittest.TestCase):
         self.assertIn('(hatchet ? 80 : 60)/user.getStatCoeff("strength")', axe)
         cut = body(SOURCE, '/obj/structure/sawmill/proc/cut_primitive_log(')
         self.assertIn('20 / H.getStatCoeff("strength")', cut)
-        self.assertIn('new(site, 4, FALSE)', cut)
+        self.assertIn('new(site, 1, FALSE)', cut)
+        self.assertIn('new /obj/item/stack/bark(site, 1)', cut)
 
     def test_partial_stack_and_material_validation_precede_debit(self):
         cut = body(SOURCE, '/obj/structure/sawmill/proc/cut_primitive_log(')
@@ -31,7 +32,7 @@ class PrimitiveSawmillContracts(unittest.TestCase):
         self.assertGreater(cut[:debit].count('W.default_type != "wood"'), 1)
         self.assertIn('W.material.name != "wood"', cut[:debit])
         self.assertLess(debit, cut.index('flint_blade_uses--'))
-        self.assertLess(cut.index('flint_blade_uses--'), cut.index('new(site, 4, FALSE)'))
+        self.assertLess(cut.index('flint_blade_uses--'), cut.index('new(site, 1, FALSE)'))
         self.assertIn('P.customcolor = wood_customcolor', cut)
 
     def test_wrong_and_broken_blades_and_consumption(self):

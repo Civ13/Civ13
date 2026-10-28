@@ -57,11 +57,12 @@ class AtlasNavigationTests(unittest.TestCase):
         saw = [r for r in recipes if r.get('processor') == 'sawmill']
         self.assertEqual(len(saw), 3)
         self.assertEqual({r['station']: r['unlock_eras'] for r in saw}, {'/obj/structure/sawmill': [1], '/obj/structure/sawmill/large': [3], '/obj/structure/sawmill/powered': [3]})
-        self.assertEqual({r['outputs'][0]['quantity'] for r in saw}, {'4 nominal', '10 nominal', '12 nominal'})
+        self.assertEqual({r['outputs'][0]['quantity'] for r in saw}, {'1', '10 nominal', '12 nominal'})
         self.assertTrue(all(r['inputs'][0]['quantity'] == '1' for r in saw))
         primitive = next(r for r in saw if r['station'] == '/obj/structure/sawmill')
         self.assertIn('sharpened flint', primitive['conditions'])
         self.assertIn('20 logs', primitive['conditions'])
+        self.assertIn('One log yields one plank and one bark', primitive['conditions'])
         self.assertTrue(all('skill failure' in r['conditions'] for r in saw if r is not primitive))
         self.assertIn('cable power', next(r['conditions'] for r in saw if r['station'].endswith('/powered')))
         grain = [r for r in recipes if r.get('processor') == 'grain_mill']
@@ -101,6 +102,7 @@ class AtlasNavigationTests(unittest.TestCase):
                 self.assertFalse(unrelated_conditions_are_clean(route | {'conditions': route['conditions'] + ' flint blade'}))
             else:
                 self.assertIn('sharpened flint', route['conditions'])
+                self.assertIn('one ordinary log into one plank and one bark', route['conditions'])
                 self.assertEqual(route['source_commit'], 'caca63c5d6d150c116871ce4b586f26dbe8500e2')
                 self.assertEqual(route['line'], 2216)
         generated = [r for entries in self.catalog['acquisition'].values() for r in entries

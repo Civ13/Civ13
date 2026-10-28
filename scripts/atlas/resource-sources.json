@@ -12469,7 +12469,7 @@
       "steps": [
         "Secure the Sawmill in place, then use the listed raw ingredient on it. Complete the work to collect the processed product."
       ],
-      "conditions": "Anchored machine and completed work required. The primitive mill needs sharpened flint, cuts one ordinary log into four planks and one bark, and wears its blade. Large and powered mills use their existing stack, skill and interruption rules; the powered mill needs power.",
+      "conditions": "Anchored machine and completed work required. The primitive mill needs sharpened flint, cuts one ordinary log into one plank and one bark, and wears its blade. Large and powered mills use their existing stack, skill and interruption rules; the powered mill needs power.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"

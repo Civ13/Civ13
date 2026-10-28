@@ -2146,7 +2146,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/sawmill
 	name = "Primitive Saw Mill"
-	desc = "A small saw mill. Insert sharpened flint as a blade, then use logs on it to cut four planks per log. The blade wears out."
+	desc = "A small saw mill. Insert sharpened flint as a blade, then use logs on it to cut one plank per log. The blade wears out."
 	icon = 'icons/obj/plankage.dmi'
 	icon_state = "primitive_sawmill"
 	anchored = TRUE
@@ -2245,7 +2245,7 @@
 	// Validate immediately before debit; omit H to avoid Production discounts.
 	W.use(1)
 	flint_blade_uses--
-	var/obj/item/stack/material/woodplank/P = new(site, 4, FALSE)
+	var/obj/item/stack/material/woodplank/P = new(site, 1, FALSE)
 	P.color = wood_color
 	P.customcolor = wood_customcolor
 	P.customcolor1 = wood_customcolor1
@@ -2256,7 +2256,7 @@
 	if (flint_blade_uses == 0)
 		to_chat(H, SPAN_WARNING("The flint blade breaks. Fit another sharpened flint to continue."))
 	else
-		to_chat(H, SPAN_NOTICE("You cut the log into four planks and collect its bark."))
+		to_chat(H, SPAN_NOTICE("You cut the log into a plank and collect its bark."))
 	return TRUE
 
 /obj/structure/sawmill/proc/check_power()

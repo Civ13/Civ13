@@ -2,7 +2,7 @@
 
 The existing Resource Processing recipe builds the primitive mill from 28 wood.
 Hold a sharpened flint and use it on the mill to install a blade. Use a held
-ordinary log stack on the anchored mill to cut one log into four planks and one
+ordinary log stack on the anchored mill to cut one log into one plank and one
 bark; repeat for the rest of the stack. A blade breaks after 20 completed cuts
 and another sharpened flint can be installed. The blade cannot be removed.
 
