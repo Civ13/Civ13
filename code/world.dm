@@ -420,11 +420,10 @@ var/global/persistence_reboot_scheduled = FALSE
 				// First save is one full interval after the round starts, not at round start.
 				if (!nextsave)
 					nextsave = world.realtime + 216000
-				var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
-				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
-				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
-				if (minsleft <= 2 && hr)
-					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
+				// Warn from the actual schedule during its last two minutes.
+				var/save_in = round((nextsave - world.realtime) / 10)
+				if (save_in > 0 && save_in <= 120)
+					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[round(save_in / 60)] minutes</b> and <b>[save_in % 60] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
 				if (nextsave <= world.realtime)
 					nextsave = world.realtime + 216000
 					spawn(0)
