@@ -570,7 +570,7 @@ jobs:
           mkdir -p "$evidence"
           failed=0
           for control in baseline coverage runtime storage stale-wait duplicate conversion; do
-            args=(--probe rack-save --byond-bin "$PWD/BYOND/byond/bin" --output "$evidence/$control")
+            args=(--probe rack-save --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version "${BYOND_MAJOR}.${BYOND_MINOR}" --output "$evidence/$control")
             if [[ "$control" != baseline ]]; then
               args+=(--rack-control "$control")
             fi
@@ -1939,14 +1939,15 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin"
-          /usr/bin/python3 tests/food_progression/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control
-          /usr/bin/python3 tests/food_progression/run.py --probe storage --byond-bin "$PWD/BYOND/byond/bin"
-          /usr/bin/python3 tests/food_progression/run.py --can-negative-control --byond-bin "$PWD/BYOND/byond/bin"
-          /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin"
-          /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin" --preservation-control nutrition
-          /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin" --preservation-control age
-          /usr/bin/python3 tests/food_progression/preservation_run.py --byond-bin "$PWD/BYOND/byond/bin" --preservation-control conversion
+          args=(--byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version "${BYOND_MAJOR}.${BYOND_MINOR}")
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}"
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --negative-control
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe storage
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --can-negative-control
+          /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}"
+          /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control nutrition
+          /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control age
+          /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control conversion
 
       - name: Verify animal health, single-hit damage and tool wear
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_combat')

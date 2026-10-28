@@ -22,6 +22,11 @@ save/refill case and salted/unsalted thresholds; it must be run separately to
 establish native behavior. Rejected inputs remain on the rack for removal.
 
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
+Both food runners default to the historical 516.1681 compiler. Select the
+current 516.1688 compiler explicitly with `--expected-byond-version 516.1688`;
+other versions and mismatched compiler output are rejected. The selected CI food
+lane passes its pinned version to the crop, storage and preservation probes and
+their existing controls. Rack-save remains a separate opt-in lane.
 Run again with `--negative-control` to remove the seed debit in a generated
 source copy and require the planting assertion to detect that regression.
 

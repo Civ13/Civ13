@@ -10,6 +10,8 @@ import subprocess
 import tempfile
 import uuid
 
+from compiler_contract import HISTORICAL_VERSION, VERSIONS, compiler_is_clean
+
 # Rack waits total 555 deciseconds before export/load overhead. Keep the
 # daemon allowance inside the outer watchdog's 180-second total budget.
 RACK_RUNTIME_TIMEOUT_SECONDS = 75
@@ -17,6 +19,7 @@ RACK_RUNTIME_TIMEOUT_SECONDS = 75
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--expected-byond-version', choices=VERSIONS, default=HISTORICAL_VERSION)
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--negative-control', action='store_true')
     control.add_argument('--soil-negative-control', action='store_true')
@@ -155,9 +158,9 @@ def main():
         control_define = '#define RACK_CONTROL_DUPLICATE\n' if args.rack_control == 'duplicate' else ''
         generated['.dme'].write_text(source + '\n' + control_define + '#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        hash_paths = [probe, Path(__file__), Path(__file__).with_name('preservation_guard.py'), Path(__file__).with_name('guard_cleanup.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
+        hash_paths = [probe, Path(__file__), Path(__file__).with_name('compiler_contract.py'), Path(__file__).with_name('preservation_guard.py'), Path(__file__).with_name('guard_cleanup.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
         source_hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in hash_paths}
-        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'prepare_only': args.prepare_only, 'source_hashes': source_hashes, 'rack_control': args.rack_control, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
+        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'expected_byond_version': args.expected_byond_version, 'prepare_only': args.prepare_only, 'source_hashes': source_hashes, 'rack_control': args.rack_control, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
             'drying_wait_ticks': 2 if args.probe == 'preservation' else 150 if args.probe == 'rack-save' else None, 'runtime_timeout_seconds': RACK_RUNTIME_TIMEOUT_SECONDS if args.probe == 'rack-save' else 30, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 rack/turf graph' if args.probe == 'rack-save' else 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
@@ -174,7 +177,7 @@ def main():
         text = build.stdout + build.stderr
         (output / 'compile.log').write_text(text, encoding='utf-8')
         print(text, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
+        if not compiler_is_clean(build.returncode, text, args.expected_byond_version):
             raise RuntimeError('Pinned production-source compilation failed')
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(generated[suffix], output / generated[suffix].name)
