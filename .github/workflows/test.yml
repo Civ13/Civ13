@@ -906,7 +906,7 @@ jobs:
           set +u
           source "$PWD/BYOND/byond/bin/byondsetup"
           set -u
-          /usr/bin/python3 -I -B tests/nomads_lifecycle/run_variable_probe_linux.py --byond-bin "$PWD/BYOND/byond/bin" --expected-head "$COLLECTOR_HEAD" --output "$RUNNER_TEMP/private-collector"
+          /usr/bin/python3 -I -B tests/nomads_lifecycle/run_variable_probe_linux.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --expected-head "$COLLECTOR_HEAD" --output "$RUNNER_TEMP/private-collector"
       - name: Retain private collector fixture evidence
         if: always() && steps.collector_native.outputs.started == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -916,6 +916,7 @@ jobs:
             ${{ runner.temp }}/private-collector/source-manifest.json
             ${{ runner.temp }}/private-collector/result.json
             ${{ runner.temp }}/private-collector/failure.json
+            ${{ runner.temp }}/private-collector/runtime-identity.json
             ${{ runner.temp }}/private-collector/*.log
             ${{ runner.temp }}/private-collector/prepared/writable/native-*.log
             ${{ runner.temp }}/private-collector/prepared/**/data/**/*.json

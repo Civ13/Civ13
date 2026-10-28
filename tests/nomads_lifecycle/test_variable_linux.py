@@ -44,6 +44,56 @@ class LinuxCollector(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     m.native_gate(temp / 'new', byond, 'not-a-commit')
 
+    def test_current_engine_is_explicit_and_cannot_relabel_legacy(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder); workspace = root / 'workspace'; workspace.mkdir()
+            temp = root / 'temporary'; temp.mkdir()
+            byond = workspace / 'BYOND/byond/bin'; byond.mkdir(parents=True)
+            archive = workspace / 'BYOND/pinned.zip'; archive.write_bytes(b'fixture; verifier is separate')
+            other = root / 'other.zip'; other.write_bytes(b'not the CI path')
+            env = dict(GITHUB_ACTIONS='true', RUNNER_OS='Linux', GITHUB_EVENT_NAME='pull_request',
+                       GITHUB_REPOSITORY='Civ13/Civ13', GITHUB_WORKSPACE=str(workspace), RUNNER_TEMP=str(temp),
+                       BYOND_MAJOR='516', BYOND_MINOR='1688')
+            with mock.patch.object(m.sys, 'platform', 'linux'), mock.patch.object(m, 'ROOT', workspace), \
+                    mock.patch.dict(os.environ, env, clear=True):
+                m.native_gate(temp / 'new', byond, 'a' * 40, archive)
+                with self.assertRaisesRegex(RuntimeError, 'pinned CI engine'):
+                    m.native_gate(temp / 'new', byond, 'a' * 40)
+                with self.assertRaisesRegex(RuntimeError, 'exact CI archive'):
+                    m.native_gate(temp / 'new', byond, 'a' * 40, other)
+                with mock.patch.dict(os.environ, {'BYOND_MINOR': '1681'}):
+                    m.native_gate(temp / 'new', byond, 'a' * 40)
+                    with self.assertRaisesRegex(RuntimeError, 'pinned CI engine'):
+                        m.native_gate(temp / 'new', byond, 'a' * 40, archive)
+
+    def test_current_identity_drift_stops_before_any_child(self):
+        runtime = mock.Mock()
+        runtime.before_launch.side_effect = ValueError('installed member changed')
+        budget = mock.Mock()
+        fake_resource = types.SimpleNamespace()
+        with tempfile.TemporaryDirectory() as folder, mock.patch.dict('sys.modules', resource=fake_resource), \
+                mock.patch.object(m.subprocess, 'Popen') as spawn:
+            root = Path(folder)
+            with self.assertRaisesRegex(ValueError, 'installed member changed'):
+                m.run_child(['DreamMaker'], root, 'compile', root, {}, {'DreamMaker': 'a'},
+                            {'children': []}, budget, mock.Mock(), runtime)
+            runtime.before_launch.assert_called_once_with('compile', root)
+            spawn.assert_not_called()
+
+    def test_current_mode_uses_archive_bound_identity_and_clean_compiler_contract(self):
+        path = m.ROOT / 'tests/world_save/current_runtime.py'
+        spec = importlib.util.spec_from_file_location('collector_current_contract', path)
+        current = importlib.util.module_from_spec(spec); spec.loader.exec_module(current)
+        runtime = object.__new__(current.CurrentRuntime)
+        runtime.identity = {'version': '516.1688'}
+        runtime.compiler = types.SimpleNamespace(MAX_COMPILE_LOG=1024 * 1024, DIAGNOSTIC=m.DIAGNOSTIC)
+        good = 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n'
+        runtime.validate_compile(0, good, 'probe.dmb')
+        for bad in (good.replace('1688', '1681'), good.replace('0 warnings', '1 warnings'), good + good):
+            with self.subTest(bad=bad), self.assertRaises(RuntimeError):
+                runtime.validate_compile(0, bad, 'probe.dmb')
+        self.assertIn('runtime-identity.json', m.generated())
+
     def test_proc_birth_and_group_identity_parser(self):
         values = ['S', '11', '123', '123'] + ['0'] * 18
         values[11], values[12], values[19], values[21] = '4', '5', '999', '2'
@@ -245,6 +295,7 @@ class LinuxCollector(unittest.TestCase):
         block = source.split('      - name: Verify private collector native publication', 1)[1].split('      - name: Verify bounded lighting startup ordering', 1)[0]
         self.assertIn("if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')", block)
         for needed in ('timeout-minutes: 3', '--expected-head "$COLLECTOR_HEAD"', 'retention-days: 7',
+                       '--byond-archive "$PWD/BYOND/pinned.zip"', 'private-collector/runtime-identity.json',
                        'if: always() && steps.collector_native.outputs.started == \'true\''):
             self.assertIn(needed, block)
         for forbidden in ('secrets.', 'workflow_dispatch', 'sudo ', 'continue-on-error', '1714', 'D:/'):

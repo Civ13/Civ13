@@ -73,6 +73,21 @@ var/lifecycle_reclaim_ok = TRUE
 		var/list/I = lifecycle_request(L)
 		var/list/R = lifecycle_reply(L, I)
 		check(R["ok"] && R["ready"] && nomads_lifecycle_hex(R["session"], 32), "ready status invalid")
+		// The supervisor observed a pending request, but it expires before
+		// submission. The typed action must never become ordinary shutdown.
+		var/expired = md5("expired-maintenance")
+		L.maintenance_operation = expired
+		R = lifecycle_reply(L, lifecycle_request(L))
+		check(R["maintenance_operation"] == expired, "pending maintenance not visible")
+		L.maintenance_operation = null
+		var/list/stale = list("nomads_lifecycle" = "1", "token" = L.fixture_token, "action" = "maintenance_save_shutdown", "session" = L.boot_session(), "operation" = expired)
+		R = lifecycle_reply(L, stale)
+		check(!R["ok"] && !L.busy && !T.saves, "expired maintenance admitted")
+		L.maintenance_operation = expired
+		stale["action"] = "save_shutdown"
+		R = lifecycle_reply(L, stale)
+		check(!R["ok"] && !L.busy && !T.saves, "pending maintenance accepted as generic shutdown")
+		L.maintenance_operation = null
 		check(!("token" in R) && !findtext(json_encode(R), L.fixture_token), "status exposed token")
 		R = lifecycle_reply(L, I, "192.0.2.1:12345")
 		check(!R["ok"], "nonloopback accepted")
