@@ -402,7 +402,7 @@ def gameplay_knowledge(root, wiki_root=None):
     selections = [
         ('code/game/objects/structures/blacksmithing/refining.dm', '/obj/structure/furnace/attackby', '/obj/structure/furnace/blast_furnace', 'iron ingots ore bloomery fuel smelting sponge iron'),
         ('code/game/objects/structures/blacksmithing/blacksmithing.dm', '/obj/structure/anvil/attackby', '/////////IRON//////////', 'iron ingots sponge anvil crafting skill'),
-        ('code/modules/1713/dew_collector.dm', '/obj/structure/reagent_dispensers/dew_collector\n', '/obj/structure/reagent_dispensers/dew_collector/process_interval', 'dew collector rain collector rainwater collecting barrel'),
+        ('code/modules/1713/dew_collector.dm', '/obj/structure/reagent_dispensers/dew_collector\n', '/mob/proc/dew_drawing_wait', 'dew collector rain collector rainwater collecting barrel'),
     ]
     root = Path(root).resolve()
     for relative, first, last, topic in selections:
@@ -424,6 +424,20 @@ def gameplay_knowledge(root, wiki_root=None):
             excerpt = excerpt[:excerpt.index('\t\telse if (istype(I, /obj/item/weapon/material))')] + excerpt[excerpt.index('/obj/structure/furnace/attack_hand'):]
         elif relative.endswith('blacksmithing.dm'):
             excerpt = excerpt[:excerpt.index('\telse\n')] + excerpt[excerpt.index('\t\telse if (istype(P, /obj/item/stack/ore/iron_sponge))'):]
+        elif relative.endswith('dew_collector.dm'):
+            expected = ('max_capacity = 200', 'var/collecting = TRUE', 'collecting = !collecting',
+                        'collection_seconds >= 60', 'reagents.add_reagent("water", min(rate, max_capacity - reagents.total_volume))',
+                        'findtext(A.icon_state, "rain") || findtext(A.icon_state, "monsoon")',
+                        'A.weather == WEATHER_NONE', 'return 10', 'return 2',
+                        'The collecting cover is [collecting ? "open" : "closed"]')
+            if any(marker not in excerpt for marker in expected):
+                raise ValueError('Reviewed dew collector behavior changed')
+            excerpt += ('\nReviewed guidance: A new collector cover starts open. Examine the collector '
+                        'before toggling: using a hand toggles the cover, so opening an already-open '
+                        'cover would close it. Under the stated outdoor, weather and temperature guards, '
+                        'qualifying rain adds 10 units per collected minute; qualifying clear night or '
+                        'early morning adds 2 units, up to 200 units capacity. Interrupted collection '
+                        'and unavailable weather do not guarantee water.')
         # Each snippet carries provenance for diagnostics, not authority or instructions.
         result.append({'topic': topic, 'source': 'code', 'sha256': hashlib.sha256(raw).hexdigest(), 'text': 'CURRENT GAMEPLAY CODE (' + topic + '):\n' + excerpt})
     result.extend(bronze_knowledge(root))

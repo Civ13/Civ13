@@ -105,6 +105,16 @@ class GatheringGroundingTests(unittest.TestCase):
         self.assertIn('rainwater collector', rows[0]['topic'])
         self.assertNotIn('rain', rows[1]['topic'])
 
+    def test_collector_prompt_checks_cover_before_toggle(self):
+        prompt = self.answer_prompt('How do I use a rain collector?', bridge.gameplay_knowledge(ROOT))
+        self.assertIn('cover starts open', prompt)
+        self.assertIn('examine', prompt)
+        self.assertIn('before toggling', prompt)
+        self.assertIn('10 units', prompt)
+        self.assertIn('2 units', prompt)
+        self.assertIn('200', prompt)
+        self.assertIn('collecting = !collecting', prompt)
+
 
 if __name__ == '__main__':
     unittest.main()
