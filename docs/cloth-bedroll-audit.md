@@ -2,7 +2,7 @@
 
 This is one further reviewed furniture family, following the nine concrete
 follow-on candidates in `furniture-next-batch-review.md`. It is not a completed
-audit of the 9,647 material rows now indexed across 11 catalogs. The inventory
+audit of the 9,650 material rows now indexed across 11 catalogs. The inventory
 matcher now includes item bedrolls even when a map labels them `none`: 555
 furniture/storage/bedding candidates include 12 bedroll rows, eleven legacy
 leather rows and the single new global cloth row.

@@ -1999,6 +1999,9 @@ RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy &
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,hemp dressing bench,/obj/structure/hemp_dressing_bench,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,hand spindle,/obj/item/rope_spindle,1,30,0,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/soft/,hand ropewalk,/obj/structure/ropewalk,12,200,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,dew collector,/obj/structure/reagent_dispensers/dew_collector,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/soft/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null

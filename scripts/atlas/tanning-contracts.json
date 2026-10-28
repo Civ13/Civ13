@@ -5,6 +5,6 @@
     "code/modules/1713/animal_harvest.dm": "7e953521250d82da7ecb4488666aa1c030a2c0f6dab5024a27e2b6d6ff6a957a",
     "code/modules/materials/material_sheets.dm": "552332ebbaf6c2208510003261b229b8bd9f688d322648a152ef9536bc97d2be",
     "code/game/objects/structures/converters.dm": "d4600844a91d2a8b38248a4daed84a82a13ae1ef72d194a276aafd7b965dd3d5",
-    "code/modules/materials/materials.dm": "0be47a7bb017ab93215f330de4b96566e97ea7d16eee0e37092373ce1f7c8b82"
+    "code/modules/materials/materials.dm": "bb22035dde1a1e16f8cb13ba1db36d8ade7c810a78af77bee201e4f7fa9b058f"
   }
 }
