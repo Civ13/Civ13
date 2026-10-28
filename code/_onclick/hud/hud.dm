@@ -257,6 +257,13 @@ var/list/global_huds = list(
 	mymob = owner
 	//instantiate()
 	for(var/mytype in subtypesof(/obj/screen/plane_master))
+		if(mytype == /obj/screen/plane_master/light_mask)
+			#ifdef OPENDREAM
+			continue
+			#else
+			if(!LIGHTING_COMPOSITION_V2)
+				continue
+			#endif
 		var/obj/screen/plane_master/instance = new mytype()
 		plane_masters["[instance.plane]"] = instance
 		instance.backdrop(mymob)
