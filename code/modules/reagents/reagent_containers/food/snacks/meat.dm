@@ -4,6 +4,32 @@
 #define DRY_MODIFIER 15 //temporary it placed here. TO DO - move after categorising snacks to snacks.dm
 #define GROWN_DRY_MODIFIER 21 //temporary it placed here. TO DO - move after categorising snacks to snacks.dm
 
+// Provisional balance: one unit of table salt doubles meat life, or quadruples
+// dried meat life. Scaling both values retains the fraction already spent.
+/obj/item/weapon/reagent_containers/food/snacks/proc/mark_salted_meat()
+	salted_meat = TRUE
+	var/multiplier = istype(src, /obj/item/weapon/reagent_containers/food/snacks/driedmeat) ? 4 : 2
+	decay *= multiplier
+	decaytimer *= multiplier
+	name = "salted [name]"
+
+/obj/item/weapon/reagent_containers/food/snacks/proc/can_salt_meat()
+	return istype(src, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/driedmeat)
+
+/obj/item/weapon/reagent_containers/food/snacks/proc/salt_meat(obj/item/weapon/reagent_containers/food/condiment/salt_source, mob/user)
+	if (salted_meat)
+		to_chat(user, SPAN_WARNING("\The [src] is already salted."))
+		return
+	if (rotten || decay <= 0 || decaytimer >= decay || (rots && decaytimer >= decay / 2))
+		to_chat(user, SPAN_WARNING("\The [src] is too spoiled to preserve."))
+		return
+	if (!salt_source.reagents || !salt_source.reagents.has_reagent("sodiumchloride", 1))
+		to_chat(user, SPAN_WARNING("You need one unit of table salt to preserve \the [src]."))
+		return
+	salt_source.reagents.remove_reagent("sodiumchloride", 1)
+	mark_salted_meat()
+	to_chat(user, SPAN_NOTICE("You salt \the [src] to preserve it."))
+
 /obj/item/weapon/reagent_containers/food/snacks/meat
 	name = "meat"
 	desc = "A slab of meat."
@@ -28,8 +54,11 @@
 			to_chat(user, SPAN_NOTICE("You extract collagen proteins from the raw meat."))
 		return
 	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet)  || istype(W, /obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
-		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
+		for (var/i = 1 to 2)
+			var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet = new(src)
+			if (salted_meat)
+				cutlet.mark_salted_meat()
+				cutlet.decaytimer = decaytimer * cutlet.decay / decay
 		to_chat(user, "You cut the meat into thin strips.")
 		qdel(src)
 	else

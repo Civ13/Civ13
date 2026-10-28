@@ -33,6 +33,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	dried_type = null //Item, that will appear after drying (or dehydrating) process
 	dry_size = 2 //How many units will a drying item take in a dehydrator or dryer; dehydrator have 4 rows with 3 units each
 	var/dry = FALSE //That this must be used for smoking not usual snack... think about it!
+	var/salted_meat = FALSE // Durable preservation state, including after cutting or drying.
 	w_class = ITEM_SIZE_SMALL //Size of the object, used in sized storage system
 	decay = 15*600 //Decay time limit, in deciseconds. 0 means it doesn't decay. See details at food.dm in food_decay()
 	decaytimer = 0 //Timer of decaying. See details at food.dm in food_decay()

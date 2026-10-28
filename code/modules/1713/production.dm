@@ -824,6 +824,11 @@
 											output_food.reagents.remove_reagent(nutrient.id, nutrient.volume * (1 - retained_fraction))
 							var/decay_offset = findtext(I.name, "DECAY_") + 6
 							var/original_decay = text2num(copytext(I.name, decay_offset, decay_offset + 8))
+							if (istype(input_food, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) && istype(output_food, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
+								var/obj/item/weapon/reagent_containers/food/snacks/input_meat = input_food
+								var/obj/item/weapon/reagent_containers/food/snacks/output_meat = output_food
+								if (input_meat.salted_meat)
+									output_meat.mark_salted_meat()
 							if (original_decay > 0 && output_food.decay > 0)
 								output_food.decaytimer = max(output_food.decaytimer, input_food.decaytimer * output_food.decay / original_decay)
 						var/obj/item/I_s = slots[pos[1]][pos[2]]

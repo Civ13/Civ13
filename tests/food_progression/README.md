@@ -1,5 +1,15 @@
 # Production food progression probe
 
+Salted meat provisionally consumes one unit of table salt: fresh meat and
+cutlets get twice their ordinary decay limit, and dried meat gets four times its
+ordinary limit. The same fraction of life remains after either action; salting
+does not make rotten food safe. Cut salted slabs into cutlets and dry them, or
+use a salt condiment directly on dried meat. The paid state survives both routes.
+`test_salted_meat_sources.py` checks offline source contracts only. The existing
+`preservation.dm` fixture additionally exercises direct and repeated salting,
+depletion, drying, and the actual save entry round trip when its native runner is
+authorized; preparing it does not execute those assertions.
+
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
 Run again with `--negative-control` to remove the seed debit in a generated
 source copy and require the planting assertion to detect that regression.
