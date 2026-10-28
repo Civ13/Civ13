@@ -694,9 +694,60 @@ var/list/seed_list_jungle
 	layer = 5.1
 	health = 5
 	maxhealth = 5
+	// Source-defined scenery variants keep one original image; no placement opt-in.
+	var/fixed_flower_appearance = FALSE
 	New()
 		..()
-		icon_state = "flower[rand(1,14)]"
+		if (fixed_flower_appearance)
+			restore_fixed_flower_appearance()
+		else
+			icon_state = "flower[rand(1,14)]"
+
+/obj/structure/wild/flowers/proc/restore_fixed_flower_appearance()
+	if (!fixed_flower_appearance)
+		return
+	icon = initial(icon)
+	icon_state = initial(icon_state)
+
+/obj/structure/wild/flowers/rad_act(amount)
+	. = ..()
+	// Preserve inherited radiation, damage and name changes. Only its generic
+	// fallback image is replaced; this live artwork does not indicate health.
+	if (fixed_flower_appearance && amount > 0 && icon == deadicon && icon_state == deadicon_state)
+		restore_fixed_flower_appearance()
+
+/obj/structure/wild/flowers/after_load()
+	. = ..()
+	// Wild saves retain icon_state, but not a changed icon resource.
+	restore_fixed_flower_appearance()
+
+/obj/structure/wild/flowers/yarrow_scenery
+	name = "yarrow"
+	desc = "A flowering yarrow plant."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "yarrow"
+	fixed_flower_appearance = TRUE
+
+/obj/structure/wild/flowers/milk_thistle_scenery
+	name = "milk thistle"
+	desc = "An upright plant with purple flower heads."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "milk_thistle"
+	fixed_flower_appearance = TRUE
+
+/obj/structure/wild/flowers/elderflower_scenery
+	name = "elderflower"
+	desc = "Clusters of pale flowers over broad leaves."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "elderflower"
+	fixed_flower_appearance = TRUE
+
+/obj/structure/wild/flowers/comfrey_scenery
+	name = "comfrey"
+	desc = "Purple flowers over a broad-leaved plant."
+	icon = 'icons/farming/humanity_wild_herbs.dmi'
+	icon_state = "comfrey"
+	fixed_flower_appearance = TRUE
 
 /obj/structure/wild/tallgrass/fire_act(temperature)
 	if (prob(55 * (temperature/500)))
