@@ -133,6 +133,35 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(ci.SUITES['year']['files'], ('tests/persistence_year/test_floor.py',))
         self.assertFalse(any('test_native.py' in f for s in ci.SUITES.values() for f in s['files']))
 
+    def test_water_treatment_and_save_checks_run_for_all_source_inputs(self):
+        self.assertEqual(ci.SUITES['water_treatment']['files'],
+                         ('tests/stone_boiling/test_source.py', 'tests/stone_kiln/test_source.py'))
+        self.assertEqual(ci.SUITES['save_movement']['files'], ('tests/save_movement/test_guard.py',))
+        inputs = ('code/game/objects/structures/kitchen/stone_boiling.dm',
+                  'code/game/objects/structures/kitchen/stone_kiln_upgrade.dm',
+                  'code/game/objects/structures/kitchen/oven.dm',
+                  'code/modules/1713/machinery/engines/heatsource.dm',
+                  'code/modules/persistence/functions.dm',
+                  'code/modules/reagents/Chemistry-Holder.dm',
+                  'code/modules/reagents/reagent_containers/glass.dm',
+                  'code/modules/reagents/reagent_containers/food/drinks/drinkingglass.dm',
+                  'code/modules/materials/material_sheets.dm',
+                  'code/modules/1713/resource_sifting.dm',
+                  'code/modules/research_tree/research_node.dm',
+                  'config/crafting/material_recipes_global.txt')
+        for path in inputs:
+            with self.subTest(path=path):
+                self.assertIn('water_treatment', self.selected([path]))
+                if path != 'code/modules/persistence/functions.dm':
+                    self.assertEqual(self.selected([path]), set(ci.SUITES))
+                    self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+        for path in ('tests/stone_boiling/test_source.py', 'tests/stone_kiln/test_source.py'):
+            self.assertIn('water_treatment', self.selected([path]))
+        for path in ('tests/save_movement/source_adapter.py', 'tests/save_movement/test_guard.py',
+                     'code/modules/persistence/functions.dm'):
+            self.assertIn('save_movement', self.selected([path]))
+        self.assertFalse(any('test_native.py' in f for s in ci.SUITES.values() for f in s['files']))
+
     def test_fishing_stock_registration_is_exact_and_offline(self):
         suite = ci.SUITES['fishing_stock']
         self.assertEqual(suite['files'], ('tests/fishing_stock/test_source_contract.py',
