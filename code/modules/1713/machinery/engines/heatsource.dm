@@ -1,3 +1,29 @@
+// Heat-source fuel units are seconds of burn time. These values also let
+// other heat equipment use the same paid fuels without inventing energy.
+/proc/heat_source_liquid_fuels()
+	return list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil", "fat_oil")
+
+/proc/heat_source_liquid_fuel_energy(amount)
+	return 30 * amount
+
+/proc/heat_source_solid_fuel_energy(obj/item/I)
+	if (!I || !I.loc)
+		return 0
+	if (istype(I, /obj/item/stack/ore/coal))
+		return 240 * I.amount
+	if (istype(I, /obj/item/stack/ore/charcoal))
+		return 80 * I.amount
+	if (istype(I, /obj/item/stack/material/wood) || istype(I, /obj/item/stack/material/woodplank) || istype(I, /obj/item/weapon/branch) || istype(I, /obj/item/stack/material/bamboo) || istype(I, /obj/item/stack/dung))
+		return 60 * I.amount
+	if (istype(I, /obj/item/stack/material/leaf))
+		return 30 * I.amount
+	if (I.flammable)
+		if (istype(I, /obj/item/stack))
+			var/obj/item/stack/S = I
+			return 25 * S.amount
+		return 25
+	return 0
+
 /obj/structure/heatsource
 	name = "iron furnace"
 	desc = "A big iron furnace. Can be used to power external-powered engines."
@@ -10,10 +36,11 @@
 	var/on = FALSE
 	not_movable = FALSE
 	not_disassemblable = TRUE
-	var/fuels = list("petroleum", "gasoline", "diesel", "pethanol", "biodiesel", "olive_oil", "fat_oil")
+	var/list/fuels
 
 /obj/structure/heatsource/New()
 	..()
+	fuels = heat_source_liquid_fuels()
 	do_light()
 
 /obj/structure/heatsource/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -34,37 +61,37 @@
 					qdel(src)
 					return
 		else if (istype(W, /obj/item/stack/ore/coal))
-			fuel += (240)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/ore/charcoal))
-			fuel += (80)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/wood) || istype(W, /obj/item/stack/material/woodplank))
-			fuel += (60)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/weapon/branch))
-			fuel += (60)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/bamboo))
-			fuel += (60)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/material/leaf))
-			fuel += (30)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
 		else if (istype(W, /obj/item/stack/dung))
-			fuel += (60)*W.amount
+			fuel += heat_source_solid_fuel_energy(W)
 			user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 			qdel(W)
 			return
@@ -75,17 +102,13 @@
 				if (fcont.reagents.has_reagent(F))
 					amt += fcont.reagents.get_reagent_amount(F)
 					fcont.reagents.remove_reagent(F, fcont.reagents.get_reagent_amount(F))
-			fuel += (30)*amt
+			fuel += heat_source_liquid_fuel_energy(amt)
 			user.visible_message(SPAN_NOTICE("[user] pours the fuel into \the [src], refueling it."), SPAN_NOTICE("You pour the fuel into \the [src], refueling it."))
 			fcont.reagents.clear_reagents()
 			return
 		else if  (istype(W, /obj/item))
 			if (W.flammable)
-				if (istype(W, /obj/item/stack))
-					var/obj/item/stack/ST = W
-					fuel += 25*ST.amount
-				else
-					fuel += 25
+				fuel += heat_source_solid_fuel_energy(W)
 				user.visible_message(SPAN_NOTICE("[user] places \the [W] in \the [src], refueling it."), SPAN_NOTICE("You place \the [W] in the [src], refueling it."))
 				qdel(W)
 				return
