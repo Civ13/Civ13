@@ -1,0 +1,119 @@
+{
+  "original_sha256": "79e5dd51a7296a696203c06962f2013f7826da536afbd1cd547dc4b64c3d79af",
+  "operations": [
+    {
+      "start": 2569,
+      "end": 2602,
+      "before": "",
+      "after": "intro_connected_initialize(src)\n\t"
+    },
+    {
+      "start": 3265,
+      "end": 3265,
+      "before": "Del()\n\tif (src == intro_observer_client)\n\t\tintro_stop(\"observer disconnected\")\n\treturn ..()\n\n/client/",
+      "after": ""
+    },
+    {
+      "start": 3285,
+      "end": 3285,
+      "before": "\n\n/client/Move()\n\treturn FALSE",
+      "after": ""
+    },
+    {
+      "start": 4199,
+      "end": 4320,
+      "before": "",
+      "after": "src != intro_connected_observer || !intro_connected_client || intro_connected_client.mob != intro_driver || intro_driver."
+    },
+    {
+      "start": 4336,
+      "end": 4337,
+      "before": "",
+      "after": "c"
+    },
+    {
+      "start": 4338,
+      "end": 4340,
+      "before": "bs",
+      "after": "nn"
+    },
+    {
+      "start": 4341,
+      "end": 4343,
+      "before": "rv",
+      "after": "ct"
+    },
+    {
+      "start": 4344,
+      "end": 4345,
+      "before": "r",
+      "after": "d"
+    },
+    {
+      "start": 7712,
+      "end": 8377,
+      "before": "",
+      "after": "connected_attach_and_steer()\n\tvar/native_title = winget(intro_connected_client, \"mainwindow\", \"title\")\n\tintro_check(istext(native_title) && length(native_title)>0 && length(native_title)<=128, \"bounded actual Login title\")\n\ttext2file(json_encode(list(\"source\"=\"5260b60f0efef2c0af70fae204b1180106ef50b3\", \"phase\"=\"driver_ready\", \"title\"=native_title, \"expected_title\"=customserver_name(), \"client\"=\"\\ref[intro_connected_client]\", \"body\"=\"\\ref[intro_connected_client.mob]\", \"driver\"=\"\\ref[intro_driver]\", \"driver_attached\"=(intro_connected_client.mob==intro_driver), \"eye_is_driver\"=(intro_connected_client.eye==intro_driver))), \"intro-connected-window.json\")\n\tintro_"
+    },
+    {
+      "start": 11511,
+      "end": 11511,
+      "before": "stype(i",
+      "after": ""
+    },
+    {
+      "start": 11531,
+      "end": 11531,
+      "before": ".mob,",
+      "after": ""
+    },
+    {
+      "start": 11532,
+      "end": 11535,
+      "before": "/mob/",
+      "after": "== "
+    },
+    {
+      "start": 11541,
+      "end": 11542,
+      "before": "",
+      "after": "c"
+    },
+    {
+      "start": 11543,
+      "end": 11545,
+      "before": "bs",
+      "after": "nn"
+    },
+    {
+      "start": 11546,
+      "end": 11548,
+      "before": "rv",
+      "after": "ct"
+    },
+    {
+      "start": 11549,
+      "end": 11557,
+      "before": "r)",
+      "after": "d_client"
+    },
+    {
+      "start": 11627,
+      "end": 11732,
+      "before": "",
+      "after": "client identity\")\n\tif (phase == \"admission\")\n\t\tintro_check(istype(intro_connected_client.mob, /mob/intro_"
+    },
+    {
+      "start": 11740,
+      "end": 12082,
+      "before": "",
+      "after": "), \"observer admission phase\")\n\telse\n\t\tintro_check(intro_connected_client.mob == intro_driver && intro_driver.client == intro_connected_client && intro_connected_client.eye == intro_driver && intro_connected_client.perspective == MOB_PERSPECTIVE, \"driver capture phase\")\n\t\tintro_connected_receipt(phase == \"start\" ? \"drive_start\" : \"drive_end"
+    },
+    {
+      "start": 12760,
+      "end": 12994,
+      "before": "",
+      "after": ")\n\tif (fexists(\"intro-disconnect-request.txt\") && !intro_connected_disconnect_requested)\n\t\tintro_check(file2text(\"intro-disconnect-request.txt\") == \"server_disconnect\\n\", \"fixed owned disconnect request\")\n\t\tintro_connected_disconnect("
+    }
+  ]
+}

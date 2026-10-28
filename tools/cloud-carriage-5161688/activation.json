@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "5260b60f0efef2c0af70fae204b1180106ef50b3",
+  "branch": "ci/cloud-carriage-5161688-connected-driver-20261028-r3",
+  "message": "ci: held native carriage eight-second connected driver r3",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "4fc77b0b0940f24e109d8523319b5c6a8ded0965f8eb817603cdd171a0a4d11c",
+  "approval": "Root reviewed and authorized one fresh bounded connected r3 attempt under the owner grant. Fixture input-admission changes temporarily during steering: exactly four original east/south start/stop verbs, exact membership checks before/after every handler, removal on normal completion and caught failure. Initial client New empty-table guards remain unchanged. This tests an availability hypothesis, not a proven root cause; direct calls are not keyboard dispatch. Original steering assertions, one 8-second 20FPS 160-frame capture, 15-minute job, 192MiB artifact limit, expiry, owned process/network restrictions and denied webhook sink remain. No network acceptance or production deployment. Server-initiated native del(client) still requires independent post-Del receipt before Job cleanup."
+}

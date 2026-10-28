@@ -1,0 +1,63 @@
+"ad" = (/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"an" = (/turf/floor/beach/sand,/area/caribbean/desert/town)
+"ap" = (/obj/structure/wild/burnedbush,/turf/floor/beach/sand,/area/caribbean/desert/town)
+"az" = (/turf/floor/dirt,/area/caribbean/desert/town)
+"cA" = (/obj/structure/closet/crate/wood,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"cB" = (/obj/structure/closet/crate/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cC" = (/obj/structure/multiz/ladder/ww2,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cD" = (/obj/item/weapon/hammer,/obj/item/weapon/mop,/obj/item/weapon/reagent_containers/glass/bucket,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cR" = (/obj/structure/bed/chair/wood/wings{dir = 4},/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"cT" = (/obj/item/weapon/material/shovel,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"cU" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cV" = (/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cm" = (/turf/wall/wood,/area/caribbean/desert/buildings)
+"cn" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"co" = (/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cp" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cw" = (/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"cx" = (/obj/structure/oven,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"dF" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"dG" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/boltaction/singleshot/martini_henry,/obj/item/ammo_casing/a577,/obj/item/ammo_casing/a577,/obj/item/ammo_casing/a577,/obj/item/ammo_casing/a577,/obj/item/ammo_casing/a577,/obj/item/ammo_casing/a577,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"dI" = (/obj/structure/closet/coffin,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"dJ" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"dK" = (/obj/structure/table/wood,/obj/item/weapon/paper,/obj/item/weapon/paper,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"dL" = (/obj/structure/table/wood,/obj/item/weapon/pen,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"dW" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"dn" = (/obj/structure/table/wood,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"do" = (/obj/structure/bed/chair/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"dz" = (/obj/structure/bed{material = "wood"},/obj/item/weapon/bedsheet/green,/turf/floor/wood/ship,/area/caribbean/desert/buildings)
+"eD" = (/obj/structure/noticeboard{layer = 4},/obj/structure/barricade/ship/mast{name = "wood pole"},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/town)
+"eE" = (/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"eG" = (/obj/structure/barricade/steel,/obj/structure/window/classic,/obj/structure/curtain/leather/open,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"eK" = (/turf/floor/dirt/dust,/area/caribbean/desert/town)
+"eP" = (/obj/structure/multiz/ladder/ww2,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"eQ" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 4},/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"eV" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+"ec" = (/obj/structure/vehicle/carriage/lease_acceptance{icon_state = "simple_carriage2"; dir = 2},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"ed" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"el" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"em" = (/obj/item/weapon/reagent_containers/glass/barrel,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"en" = (/obj/structure/religious/woodcross1,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"er" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"es" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/dirt/dust,/area/caribbean/desert/town)
+"ew" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/dirt,/area/caribbean/desert/town)
+"ex" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 3000; unlimited = 1},/turf/floor/plating/cobblestone/vertical/dark,/area/caribbean/desert/town)
+"fo" = (/obj/structure/bed/chair/wood/red,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "blue2"; name = "Bank"})
+
+(1,1,1) = {"
+cmcncmcmadadadadadadadcocpcoco
+cwcwcxcmadadadadadadcAcocBcCcD
+cmcmcmcmadanadananadcTcocUcVcV
+cmcRdncmadadadanapadcTcpdododo
+dFcwdGcmadadadadadaddIcodJdKdL
+cmcwdzcnadadananadaddIcodWcUcU
+cmcmcmcmadadadecadaddIcocpcoed
+adadeKadadadadadadanadelemeneK
+eKeKeKeKeKeKeKadeKadadaderadeK
+azazeweKeKeKeKeKeseseKeKeKeKeK
+exeKeKeKeKazeKeKeKeKeKeKeKeKeK
+eDazeKeKeKeKeKeKeKeKadeKadadeK
+exeKeKeKeKeKeKeKeKesadadeEeEeE
+eKeKeKeKeKeKeKeKazeKeKadeGePeQ
+azeKeKeKeKeKadeKazeKadadeEfoeV
+"}
