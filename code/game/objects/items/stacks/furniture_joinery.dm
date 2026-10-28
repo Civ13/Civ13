@@ -12,7 +12,7 @@ var/global/list/furniture_joinery_specs
 /obj/item/stack/wooden_dowels
 	name = "wooden dowel sets"
 	singular_name = "wooden dowel set"
-	desc = "Whittled wooden pegs for furniture joints. Each set supplies a small frame. Hold the required sets alongside logs; keep a chisel and hammer or mallet equipped."
+	desc = "Whittled wooden pegs for furniture joints. Each set supplies a small frame. Hold the required sets alongside logs; keep a chisel and hammer or mallet equipped or on the ground at your feet."
 	icon = 'icons/obj/old_weapons.dmi'
 	icon_state = "sharpened_stick"
 	color = "#824B28"
@@ -24,6 +24,9 @@ var/global/list/furniture_joinery_specs
 // Real hands/equipment only. Never search closed or nested storage.
 /proc/furniture_joinery_equipped(mob/living/human/H, obj/item/I)
 	return !QDELETED(H) && !QDELETED(I) && I.loc == H && H.get_inventory_slot(I) && (isnull(I.health) || I.health > 0)
+
+/proc/furniture_joinery_available(mob/living/human/H, obj/item/I)
+	return furniture_joinery_equipped(H, I) || (!QDELETED(H) && !QDELETED(I) && isturf(I.loc) && I.loc == get_turf(H))
 
 /proc/furniture_joinery_tool(obj/item/I, role, material/stock)
 	if (QDELETED(I) || I.woodwork_owner || (!isnull(I.health) && I.health <= 0))
@@ -65,6 +68,16 @@ var/global/list/furniture_joinery_specs
 			if (furniture_joinery_equipped(H, I) && furniture_joinery_tool(I, role, S.get_material()))
 				tools[role] = I
 				break
+		if (!tools[role])
+			// At most 32 movable atoms at the actor's feet; no containers or range scan.
+			var/visited = 0
+			for (var/atom/movable/A in site)
+				if (++visited > 32)
+					break
+				var/obj/item/I = A
+				if (istype(I) && furniture_joinery_available(H, I) && furniture_joinery_tool(I, role, S.get_material()))
+					tools[role] = I
+					break
 
 /datum/furniture_joinery_action/proc/valid()
 	if (!spec || QDELETED(actor) || QDELETED(stock) || actor.incapacitated())
@@ -73,7 +86,7 @@ var/global/list/furniture_joinery_specs
 		return FALSE
 	if (actor.woodwork_owner || stock.woodwork_owner || stock.loc != stock_loc || !stock.crafting_stack_accessible(actor) || get_turf(actor) != site)
 		return FALSE
-	if (stock.type != text2path(spec["stock_type"]) || recipe.result_type != text2path(spec["result_type"]) || recipe.req_amount != spec["stock_cost"] || !stock.can_use(recipe.req_amount))
+	if (!istype(stock, text2path(spec["stock_type"])) || recipe.result_type != text2path(spec["result_type"]) || recipe.req_amount != spec["stock_cost"] || !stock.can_use(recipe.req_amount))
 		return FALSE
 	var/material/expected = istype(stock, /obj/item/stack/material/wood) ? /material/wood : /material/wood/soft
 	var/material/actual = stock.get_material()
@@ -88,7 +101,7 @@ var/global/list/furniture_joinery_specs
 		return FALSE
 	for (var/role in spec["tools"])
 		var/obj/item/I = tools[role]
-		if (!furniture_joinery_equipped(actor, I) || !furniture_joinery_tool(I, role, stock.get_material()))
+		if (!furniture_joinery_available(actor, I) || !furniture_joinery_tool(I, role, stock.get_material()))
 			return FALSE
 	if (spec["component_type"])
 		if (!furniture_joinery_equipped(actor, component) || !actor.item_is_in_hands(component) || component.type != text2path(spec["component_type"]) || component.woodwork_owner || !component.can_use(spec["component_cost"]))

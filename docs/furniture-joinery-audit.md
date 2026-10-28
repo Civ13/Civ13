@@ -59,7 +59,9 @@ frame, not a historically measured peg count. No free furniture or fasteners
 appear. The ordinary routes remain cheaper/faster abstractions; this first batch
 does not force every existing craft through a new component economy.
 
-Tools must be in actual hands/equipment slots. The second ingredient stays in
+Tools can be in actual hands/equipment slots or loose on the ground at the
+player's feet. Tool discovery inspects at most 32 movable atoms on that tile;
+clear clutter or equip the tool if it is not found. The second ingredient stays in
 the other hand. Storage is not searched. Retain the selected tools and component
 across the wait; changed ownership, broken/deleted tools, lost sharpness or
 hardness, exhausted stock, research loss, occupied output tiles and a crossed
@@ -69,6 +71,9 @@ flint follows its existing convention. Assembly tools are reused without wear.
 Source and peg costs are exact, with no Production-religion discount. The menu
 and Atlas show the secondary ingredient and required tools; Help inherits the
 same source-derived records. Batch multipliers are refused for these recipes.
+Ordinary preset-size log/plank subtypes qualify only with the same actual wood
+material. Joinery crafting XP is awarded after successful post-wait validation
+and both debits; rejected work awards none. Other recipes retain their XP behavior.
 
 The existing stone chisel represents cutting mortises and shaping sockets,
 and the mallet drives the wooden pins. Dedicated augers, boring, glue and

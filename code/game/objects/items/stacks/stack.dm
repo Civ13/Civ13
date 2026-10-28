@@ -266,9 +266,9 @@
 			var/list/joint_spec = furniture_joinery_spec(R)
 			if (joint_spec)
 				if (joint_spec["component_cost"])
-					title += " + [joint_spec["component_cost"]] wooden dowel set(s); equip chisel and hammer/mallet"
+					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
 				else
-					title += "; equip sharpened flint or a sharp knife harder than the plank"
+					title += "; sharpened flint or a sharp knife harder than the plank equipped or at your feet"
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
@@ -1837,7 +1837,7 @@
 
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
-		if (H)
+		if (H && !joinery)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1946,6 +1946,8 @@
 	if (use(required, joinery ? null : H))
 		if (joinery)
 			joinery.consume_component()
+			if (H && recipe.time)
+				H.adaptStat("crafting", 1*recipe.req_amount)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)

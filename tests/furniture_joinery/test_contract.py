@@ -70,9 +70,10 @@ class Fixture:
                  persistence_save_in_progress=False, persistence_active_operation=None, persistence_load_recovery_required=False,
                  persistence_admission_identity=self.save_epoch,
                  get_turf=lambda x:x.site, text2path=lambda x:x, locate=lambda x:x,
-                 istype=lambda x,p:x.type==p, get_recipe_node_req=lambda x:'basic_furniture',
+                 istype=lambda x,p:x.type==p or x.type.startswith(p+'/'), get_recipe_node_req=lambda x:'basic_furniture',
                  map=NS(is_node_done=lambda f,n:self.researched),
                  furniture_joinery_equipped=lambda a,i:i is not None and not i.deleted and i.loc is a and i.equipped and (i.health is None or i.health>0) if hasattr(i,'health') else i is not None and not i.deleted and i.loc is a and i.equipped,
+                 furniture_joinery_available=lambda a,i:i is not None and not i.deleted and ((i.loc is a and i.equipped and (i.health is None or i.health>0)) or i.loc is self.site),
                  furniture_joinery_tool=lambda i,r,m:i is not None and not i.deleted)
         exec(compile(project_guard(), '<production joinery guard>', 'exec'),env)
         self.valid=lambda:env['valid'](self)
@@ -124,6 +125,56 @@ class Contracts(unittest.TestCase):
             with self.subTest(label=label):
                 f=Fixture();change(f);self.assertFalse(f.valid())
 
+    def test_ordinary_preset_stock_subtypes_keep_actual_material_guards(self):
+        f=Fixture();f.stock.type += '/twentyfive';self.assertTrue(f.valid())
+        f=Fixture();f.spec=SPECS['joinery: whittled wooden dowel set']
+        f.stock.type=f.spec['stock_type']+'/twentyfive'
+        f.material.type='/material/wood/soft'
+        f.recipe.result_type=f.spec['result_type'];f.recipe.req_amount=1
+        f.tools={'shaping':NS(deleted=False,equipped=True,loc=f.actor,health=5)}
+        self.assertTrue(f.valid())
+        f.material.type='/material/wood'
+        self.assertFalse(f.valid())
+
+    def test_tools_at_feet_are_available_but_nested_and_remote_tools_reject(self):
+        f=Fixture();tool=f.tools['chisel'];tool.equipped=False;tool.loc=f.site
+        self.assertTrue(f.valid())
+        tool.loc=[];self.assertFalse(f.valid())
+        self.assertIn('if (++visited > 32)',TEXT)
+        self.assertIn('for (var/atom/movable/A in site)',TEXT)
+
+    def test_xp_moves_after_paid_commit_for_joinery_only(self):
+        source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
+        self.assertIn('if (H && !joinery)\n\t\t\tH.adaptStat',source)
+        start=source.index('\tif (joinery && !joinery.valid())')
+        end=source.index('\t\tif (needs_crafting_handle)',start)
+        body=source[start:end]
+        self.assertLess(body.index('if (use(required, joinery ? null : H))'),body.index('H.adaptStat'))
+        self.assertLess(body.index('joinery.consume_component()'),body.index('H.adaptStat'))
+        # Execute this production commit fragment with isolated debit/XP adapters.
+        text='def commit():\n'
+        for raw in body.splitlines():
+            line=raw.strip()
+            if not line or line.startswith('//'):continue
+            depth=len(raw)-len(raw.lstrip('\t'))
+            line=line.replace('joinery ? null : H','payer')
+            if line.startswith('if ('):line='if '+expr(line[4:-1])+':'
+            elif line=='return':line='return'
+            else:line=expr(line)
+            text+='    '*depth+line+'\n'
+        for change in ('tool','stock','research','save','paid','debit failed'):
+            f=Fixture();xp=[];debits=[]
+            if change=='tool':f.tools['chisel'].equipped=False
+            if change=='stock':f.stock.amount=0
+            if change=='research':f.researched=False
+            if change=='save':f.env['persistence_save_in_progress']=True
+            env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),
+                     H=NS(adaptStat=lambda *args:xp.append(args)),recipe=NS(time=4,req_amount=4),
+                     required=4,payer=None,user=None,to_chat=lambda *args:None,SPAN_WARNING=lambda x:x,
+                     use=lambda *args:debits.append('logs') is None and change!='debit failed')
+            exec(compile(text,'<production joinery commit>','exec'),env);env['commit']()
+            self.assertEqual(len(xp),1 if change=='paid' else 0,change)
+
     def test_atlas_secondary_ingredients_help_and_freshness(self):
         subprocess.run([sys.executable,str(ROOT/'scripts/build-crafting-atlas.py'),'--catalog-only','--check-game-catalog',str(ROOT/'UI/crafting-atlas.json')],cwd=ROOT,check=True,capture_output=True)
         data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
@@ -138,7 +189,7 @@ class Contracts(unittest.TestCase):
             if SPECS[row['name']]['component_cost']:
                 self.assertIn({'id':'/obj/item/stack/wooden_dowels','name':'wooden dowel set','quantity':str(SPECS[row['name']]['component_cost'])},row['inputs'])
             context=next(c['text'] for c in contexts if c['topic']==row['name'])
-            self.assertIn('Equipped',context)
+            self.assertIn('Tools equipped or at your feet',context)
             self.assertNotIn('unknown here',context)
 
 

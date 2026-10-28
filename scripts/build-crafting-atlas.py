@@ -96,9 +96,9 @@ for p,s in files.items():
                 if joint['component_type']:
                     ingredients.append((joint['component_type'],joint['component_cost']))
                 roles={'chisel':'chisel','hammer':'hammer/mallet','shaping':'sharpened flint or sharp knife harder than plank; knife wear 0.25'}
-                tool_notes=' Equipped '+' and '.join(roles[role] for role in joint['tools'])+'.'
+                tool_notes=' Tools equipped or at your feet: '+' and '.join(roles[role] for role in joint['tools'])+'.'
                 if joint['component_type']:tool_notes+=' Hold dowels in the other hand.'
-                tool_notes+=' Tools reused; inputs rechecked after wait.'
+                tool_notes+=' Tools reused; checked at end.'
             add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),ingredients,[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.'+tool_notes,row)
 
 def splitargs(s):

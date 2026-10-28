@@ -81,8 +81,11 @@ restoring its definition and verifying its intended interaction.
 The fixture also includes `furniture_joinery.dm`: actual global peg-jointed
 table/chair/bed and dowel-set construction, exact dual debits, tool reuse,
 rejection after tool/stock/research/save changes, occupied tiles, cancellation,
-last-set hand cleanup and competing waits. Character startup and inventory setup
-use the existing handle fixture adapters; this is not connected-player acceptance.
+last-set hand cleanup and competing waits. It also checks preset log/plank
+subtypes and rejected crafting XP. Assembly tools lie
+on a separate clear fixture tile, rather than invalid equipment slots; tools at
+the player's feet are a supported production route. Character startup uses the
+existing handle fixture adapters; this is not connected-player acceptance.
 Use `--compile-only` to compile the isolated fixture without starting DreamDaemon.
 That option explicitly reports runtime checks as not run. It cannot certify
 recipe registration or any native assertion. See `docs/furniture-joinery-audit.md`.

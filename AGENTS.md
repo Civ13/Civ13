@@ -9,6 +9,9 @@ woodworking shaping predicate for dowels. Its material knives wear 0.25 only on
 success; assembly tools are reused. New routes are global only. See the dated
 furniture audit and checked-in original-row fixtures. --compile-only explicitly
 does not run crafting assertions; native/client and reachability remain separate.
+Tools may be equipped or loose at the actor's feet through a bounded scan.
+Preset stack subtypes retain actual-material checks. Award joinery XP only after
+successful debits; preserve legacy recipe XP ordering.
 
 <!-- 2026-10-28: gathered manual woodworking -->
 Manual woodworking in primitive_woodworking.dm keeps pieces and crude planks
