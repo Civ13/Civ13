@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-carriage-5161688-held-20261028-r4",
+  "message": "ci: held native carriage eight-second proof r4",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "a614f434a530c3af0ffd803600c1c88c86cf5f99437c6fd7d29fe7abec8dc2fd",
+  "approval": "One user-approved replacement carriage capture with map-driven sizing; expires 2026-10-29T03:19:44Z; unchanged guard and limits; no production or YouTube changes."
+}
