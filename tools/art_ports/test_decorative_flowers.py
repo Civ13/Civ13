@@ -1,5 +1,6 @@
 """Offline source projections and real asset checks, not BYOND acceptance."""
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import unittest
@@ -51,9 +52,26 @@ class DecorativeFlowerTests(unittest.TestCase):
         for roll in range(1, 15):
             p = self.make(dm.FLOWERS, roll=roll)
             p.invoke('New')
-            self.assertEqual(p.fields['icon_state'], f'flower{roll}')
+            self.assertEqual(p.fields['icon_state'], 'flower2' if roll == 3 else f'flower{roll}')
             self.assertEqual(p.draws, [(1, 14)])
-        # The existing flower3 bug is deliberately handled by another branch.
+        # The combined review applies the separate alias only to ordinary flowers.
+
+    def test_combined_pool_matches_independent_asset_audit(self):
+        spec = importlib.util.spec_from_file_location('combined_flower_audit', ROOT / 'tools/flower_state_audit/audit.py')
+        audit = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(audit)
+        outcomes = []
+        for roll in range(1, 15):
+            ordinary = self.make(dm.FLOWERS, roll=roll)
+            ordinary.invoke('New')
+            outcomes.append(ordinary.fields['icon_state'])
+            for typename in TYPES:
+                fixed = self.make(typename, roll=roll)
+                fixed.invoke('New')
+                self.assert_fixed(fixed)
+                self.assertEqual(fixed.draws, [])
+        self.assertEqual(outcomes, audit.outcomes(WILD))
+        self.assertFalse(set(outcomes) - audit.states(ROOT / 'icons/obj/flora/ausflora.dmi').keys())
 
     def test_radiation_numeric_and_name_effects_match_actual_parent_source(self):
         for typename in TYPES:
