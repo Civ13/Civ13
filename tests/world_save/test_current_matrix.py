@@ -125,7 +125,7 @@ class CurrentMatrix(unittest.TestCase):
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
         # Exact combined workflow retains all master receipt and guard changes.
         self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
-                         '98526839e1e64921c98f4ede8fcf117683c02ec101981d0cdb39f967b7659a2b')
+                         '8b01edc9f1a448e11f9332a259f2a73889ee365ca01950a9bbf93d3e17f97ce1')
         master = self.master_workflow
         for step in STEPS:
             marker='      - name: '+step+'\n'

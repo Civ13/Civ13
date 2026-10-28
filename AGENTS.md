@@ -15,6 +15,42 @@ also nested in a frame and steering in the driver seat. Use get_turf() for their
 coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
 it does not establish durable garage ownership or cargo/passenger extraction.
 
+<!-- 2026-10-28: public lighting/exclusion reconciliation -->
+The exclusion runner requires immutable event base/head SHAs and verifies the
+checked-out head, event metadata in Actions and committed fixture inputs. Never
+fall back to a fixed master checkpoint, moving ref or base/head self-comparison.
+Preserve the complete event-base source, adding only missing exact fullbright
+exclusions and area_change_owner; already integrated lighting policy stays intact.
+For extraction-descended heads, additionally require the exact reviewed extraction
+custody projection against that event base; never accept a lighting-only result in
+place of the extraction source. Verify all committed fixture and helper inputs.
+Keep immutable historical bounded-save tests and lighting omission/parent controls,
+plus actual CLI preparation tests for evolved pre/post-lighting event bases and
+one-sided regressions. Source-only checks do not authorize native work.
+The selected exclusion Linux entry point is explicitly 516.1688 and verifies the
+existing pinned archive/members at admission and execution boundaries. Preserve
+the historical 516.1681 gate, shared resource/cleanup limits and causal controls.
+
+<!-- 2026-10-19: disabled lighting composition V2 -->
+Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.
+V2 separates weather from tile RGB and explicitly represents visible fullbright
+coverage. Historical render receipts bind only tests/light_plane_composition/rejected;
+never relabel their failed weather/fullbright counterexamples as V2 evidence.
+Headless mode/coverage checks and synthetic pixel-oracle tests cannot prove rendering.
+
+<!-- 2026-10-22: area change lighting dispatch -->
+`ChangeArea` owns turf membership, existing area notifications and the final
+`T.change_area` hook. A temporary per-request identity rejects stale dispatch
+after yielding callbacks, reentry (including away/back), or turf replacement;
+the final destination is checked too. Exclude that identity from custom saves.
+Same-area calls return before ownership changes; a missing old area still
+initializes lighting. Valid hooks reconcile actual overlay state to destination
+policy, since the old area's lighting may never have been applied; read current
+area after the build startup wait and invalidate coefficients on real changes.
+`tests/light_plane_composition` extracts both real
+procedures and checks helper dispatch with counted overlay adapters, separate
+from native corner graphs and client rendering. Keep V2 disabled.
+
 <!-- 2026-10-27: inactive ecology activity heatmap -->
 The data-only ecology_activity_heatmap datum has no singleton, process or player
 hooks. Samples/queries bind caller-captured epochs before touching clock/coverage;
@@ -61,6 +97,7 @@ Pulling and open menus (any using_object except a stationary gun) keep the
 adapter eligible: a restricting state mid-step refuses all input until alignment.
 Headless fixtures have no client, so living/Move stops pulling there; pull-follow
 during smooth steps needs connected-client confirmation.
+
 
 <!-- 2026-10-25: shared hub community links -->
 `code/world.dm` owns the shared Nomads/TDM hub renderer. Reuse DISCORDURL and

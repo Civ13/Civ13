@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import os
 import unittest
@@ -133,6 +134,91 @@ class RegressionPolicyTests(unittest.TestCase):
                 self.assertEqual(selection.introduced_tests(head, head, 'pull_request'), [])
             finally:
                 os.chdir(previous)
+
+    def test_reviewed_atlas_test_edits_select_only_their_suite_on_ordinary_prs(self):
+        # Exercise the actual Git comparison and admission, not a copied selector.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', directory, *args],
+                                               stderr=subprocess.PIPE).decode().strip()
+            git('init')
+            git('config', 'user.name', 'CI policy test')
+            git('config', 'user.email', 'ci@example.invalid')
+            atlas_inputs = {'tests/test_crafting_atlas.py': 'tests/test_crafting_atlas.py',
+                            'tests/crafting_atlas/probe.dm': 'tests/crafting_atlas',
+                            'tests/crafting_atlas/resource-search.test.mjs': 'tests/crafting_atlas'}
+            paths = tuple(atlas_inputs) + ('tests/crafting_atlas/unrelated.dm',)
+            for name in paths:
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('original\n')
+            git('add', '.')
+            git('commit', '-m', 'base')
+            base = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                os.chdir(root)
+                for name in paths:
+                    with self.subTest(path=name):
+                        (root / name).write_text('changed\n')
+                        git('add', name)
+                        git('commit', '-m', 'edit test')
+                        head = git('rev-parse', 'HEAD')
+                        expected = [atlas_inputs[name]] if name in atlas_inputs else []
+                        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+                        self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], expected)
+                        for action, branch in (('edited', 'master'), ('opened', 'other')):
+                            payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': branch}}}
+                            self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], [])
+                        self.assertEqual(selection.selections(base, head, 'push', False, True,
+                            {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]})[2], [])
+                        base = head
+            finally:
+                os.chdir(previous)
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), '" + suite + "')", workflow)
+
+    def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
+        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+        faults = (
+            ('timeout', subprocess.TimeoutExpired('git', 15)),
+            ('git failure', subprocess.CalledProcessError(1, 'git')),
+            ('invalid UTF-8', b'\xff'),
+        )
+        for label, fault in faults:
+            with self.subTest(fault=label), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory) / 'output.txt'
+                receipt = Path(directory) / 'receipt.json'
+                argv = ['select-ci.py', '--base', 'base', '--head', 'head',
+                        '--event', 'pull_request', '--build-prefix', 'true',
+                        '--output', str(output), '--receipt', str(receipt)]
+                kwargs = {'return_value': fault} if isinstance(fault, bytes) else {'side_effect': fault}
+                with patch.object(sys, 'argv', argv), patch.object(selection, 'load_event', return_value=payload), \
+                        patch.object(selection, 'select', return_value=(True, 'selected')), \
+                        patch.object(selection, 'introduced_tests', return_value=[]), \
+                        patch.object(selection.subprocess, 'check_output', **kwargs):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.main()
+                self.assertFalse(output.exists())
+                self.assertFalse(receipt.exists())
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]):
+            for base, head in (('', 'head'), ('0' * 40, 'head'), ('base', '')):
+                with self.subTest(base=base, head=head):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.selections(base, head, 'pull_request', False, True, payload)
+
+    def test_atlas_comparison_does_not_expand_ineligible_event_admission(self):
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]), \
+                patch.object(selection.subprocess, 'check_output', side_effect=AssertionError('unexpected Atlas comparison')):
+            for action, base in (('edited', 'master'), ('opened', 'unrelated')):
+                payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': base}}}
+                self.assertEqual(selection.selections('base', 'head', 'pull_request', False, True, payload)[2], [])
+            payload = {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]}
+            self.assertEqual(selection.selections('base', 'head', 'push', False, True, payload)[2], [])
 
     def test_offline_and_game_regressions_have_explicit_suite_guards(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()

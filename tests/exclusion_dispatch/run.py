@@ -11,13 +11,11 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import (reconstruct_list_baseline, validate_merged_source, project_merged_source, event_identity,
-                             replay_reviewed_merge, resolve_event_projection, MERGE_BASE, MERGE_MASTER)
+from preparation import prepare, PATH, INHERITED
 
-BASE = MERGE_BASE
-HELPER_BASE = MERGE_MASTER
-PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
+p.add_argument('--base', default=os.environ.get('CI_BASE'))
+p.add_argument('--head', default=os.environ.get('CI_HEAD'))
 p.add_argument('--byond-bin', type=Path)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--source-only', action='store_true')
@@ -30,52 +28,23 @@ p.add_argument('--source-version', choices=['516.1681', '516.1688'], default='51
 p.add_argument('--calls', type=int, default=10000, choices=[10000, 20000, 40000])
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
-old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
-current = (repo / PATH).read_text()
-reviewed = project_merged_source(old)
-validate_merged_source(old, reviewed)
-identity = event_identity(repo)
-projection = 'historical-local'
-if identity:
-    head_source = subprocess.check_output(['git', 'show', identity['head'] + ':' + PATH], cwd=repo, text=True)
-    reviewed_base = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=repo, text=True)
-    if current != head_source:
-        raise ValueError('Source does not match the exact event head')
-    _, projection = resolve_event_projection(repo, identity, old, current, reviewed_base, reviewed)
-    HELPER_BASE = identity['base']
-else:
-    validate_merged_source(old, current)
-old = reconstruct_list_baseline(current)
+identity, old, snapshot, projection = prepare(repo, a.base, a.head,
+    event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
+    github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
+BASE = identity['base']
+current = snapshot[PATH]
 # Compare dispatch under the SAME current policy, including roof/throw guards.
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
 
 inherited = ''
-for file, path in [
-    ('code/processes/human_corpse_decay.dm', '/atom/movable/persistence_runtime_var(key)'),
-    ('code/processes/abandoned_items.dm', '/obj/item/persistence_runtime_var(key)'),
-    ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
-]:
-    helper = (repo / file).read_text()
-    pinned = subprocess.check_output(['git', 'show', HELPER_BASE + ':' + file], cwd=repo, text=True)
-    if identity and projection == 'feature-base':
-        feature_helper = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + file], cwd=repo, text=True)
-        master_helper = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + file], cwd=repo, text=True)
-        pinned = replay_reviewed_merge(pinned, feature_helper, master_helper)
-    if helper != pinned:
-        raise ValueError(f'Inherited helper differs from the event base: {file}')
-    if identity:
-        head_helper = subprocess.check_output(['git', 'show', identity['head'] + ':' + file], cwd=repo, text=True)
-        if helper != head_helper:
-            raise ValueError(f'Inherited helper differs from the event head: {file}')
+for file, path in INHERITED:
+    helper = snapshot[file]
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    # Keep the production movable definition before the later corpse-decay
-    # declaration, matching civ13.dme's include ordering exactly.
-    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)')
-                      for kind in ['atom', 'atom/movable', 'turf', 'mob', 'area'])
+    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'atom/movable', 'turf', 'mob', 'area'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
@@ -106,6 +75,7 @@ header = f'#define BENCH_CALLS {a.calls}\n' + ('#define BENCHMARK\n' if a.benchm
 inputs = {name: hashlib.sha256(content.encode()).hexdigest() for name, content in {
     'production.dm': source, 'probe.dm': probe, 'probe.dme': header,
     'source_contract.py': Path(__file__).with_name('source_contract.py').read_text(),
+    'preparation.py': Path(__file__).with_name('preparation.py').read_text(),
     'runner.py': Path(__file__).read_text(), 'resources.py': Path(__file__).with_name('resources.py').read_text(),
 }.items()}
 compiler = a.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker') if a.byond_bin else None
@@ -123,8 +93,9 @@ if a.source_only:
     for name, content in [('production.dm', source), ('probe.dm', probe), ('probe.dme', header)]:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
-        head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, event_identity=identity, projection=projection, baseline_policy='reviewed extraction integration projected onto the verified event base; three list hooks reconstructed from the validated merged source', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        head_sha=identity['head'], identity_source=identity['identity_source'],
+        baseline_sha=BASE, event_identity=identity, projection=projection,
+        baseline_policy='exact event base with reviewed lighting and extraction projections; collector undefined in fixture', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
         commands=commands, required_version=a.source_version, native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')

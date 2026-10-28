@@ -194,7 +194,7 @@ def main():
             'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
             'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
             'lighting-export': ('code/modules/persistence/functions.dm', 'if ("appearance", "light", "light_sources")', 'if ("appearance")'),
-            'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))', 'if(FALSE)'),
+            'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay) || ispath(type, /atom/movable/lighting_fullbright))', 'if(FALSE)'),
             'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
             'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),

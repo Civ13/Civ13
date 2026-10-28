@@ -23,6 +23,16 @@ class AtlasTests(unittest.TestCase):
             self.assertEqual({x['id'] for x in bench['inputs']},{'/obj/item/weapon/material/part/pickaxe','/obj/item/weapon/material/handle'})
             self.assertEqual(bench['outputs'][0]['id'],'/obj/item/weapon/material/pickaxe')
             self.assertTrue(before['acquisition'])
+            sand_item='/obj/item/stack/ore/glass'
+            sand_turf='/turf/floor/beach/sand'
+            self.assertEqual(before['resources'][sand_item]['name'],'sand')
+            self.assertEqual(before['resources'][sand_item]['type'],sand_item)
+            self.assertEqual(before['resources'][sand_turf]['type'],sand_turf)
+            sand_route=next(r for r in before['acquisition'][sand_item] if r['name']=='Shovel sand')
+            self.assertIn(sand_route,before['acquisition'][sand_turf])
+            self.assertEqual(sand_route['outputs'],[sand_item])
+            self.assertIn('non-harm',sand_route['conditions'])
+            self.assertIn('Snow cover takes priority',sand_route['conditions'])
             for resource_id,routes in before['acquisition'].items():
                 self.assertIn(resource_id,before['resources'])
                 self.assertTrue(all(route.get('name') and route.get('file') and route.get('audit_commit') for route in routes))

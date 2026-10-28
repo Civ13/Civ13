@@ -179,6 +179,8 @@
 	should_save = FALSE
 
 /turf/persistence_runtime_var(key)
+	if (key == "area_change_owner")
+		return TRUE
 	if (key == "snowfall_ground_index" || key == "snowfall_ground_generation" || key == "weather_snow_overlay")
 		return TRUE
 	if (key == "pickaxe_mining_owner" || key == "mining_in_progress")
@@ -266,7 +268,7 @@ map_storage
 	var
 		// These are atom types for the map saver to ignore. Objects of these type will
 		// not be saved with everything else.
-		list/ignore_types = list(/mob/new_player, /atom/movable/lighting_overlay)
+		list/ignore_types = list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)
 
 		// This text string is tacked onto all saved passwords so that their md5 values
 		// will be different than what the password's hash would normally be, providing
@@ -426,7 +428,7 @@ map_storage
 	sleep(1)
 	world.log << "Clearing objects..."
 	for (var/obj/object in world)
-		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay))
+		if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))
 			continue
 		qdel(object)
 	return

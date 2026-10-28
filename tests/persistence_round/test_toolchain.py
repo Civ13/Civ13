@@ -165,7 +165,7 @@ class ContinuousRoundToolchain(unittest.TestCase):
         # Pin the full merged workflow as well: other branches' guards and
         # attempt-bound receipts are not covered by this local step comparison.
         self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
-                         '98526839e1e64921c98f4ede8fcf117683c02ec101981d0cdb39f967b7659a2b')
+                         '8b01edc9f1a448e11f9332a259f2a73889ee365ca01950a9bbf93d3e17f97ce1')
 
 
 if __name__ == '__main__': unittest.main()

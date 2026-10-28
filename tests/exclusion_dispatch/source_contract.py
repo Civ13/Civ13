@@ -62,6 +62,61 @@ def project_reserved_policy(baseline):
     return baseline.replace(anchor, '\treturn (key in list("lighting_reserved", "affecting_lights", "lighting_overlay"', 1).replace(insertion, AREA_POLICY + insertion, 1)
 
 
+def project_fullbright_exclusions(baseline):
+    """Apply exactly the two runtime-only fullbright serialization exclusions."""
+    pairs = (
+        ('list(/mob/new_player, /atom/movable/lighting_overlay)',
+         'list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)'),
+        ('if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay))',
+         'if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))'),
+    )
+    if '/atom/movable/lighting_fullbright' in baseline:
+        raise ValueError('Historical baseline already contains fullbright exclusions')
+    for before, after in pairs:
+        if baseline.count(before) != 1:
+            raise ValueError('Historical fullbright exclusion anchor drifted')
+        baseline = baseline.replace(before, after, 1)
+    return baseline
+
+
+def project_area_change_owner(baseline):
+    """Exclude only the new process-local area transition identity."""
+    anchor = '/turf/persistence_runtime_var(key)\n'
+    if baseline.count(anchor) != 1 or '"area_change_owner"' in baseline:
+        raise ValueError('Area-change ownership projection anchor drifted')
+    return baseline.replace(anchor, anchor + '\tif (key == "area_change_owner")\n\t\treturn TRUE\n', 1)
+
+
+def project_lighting_policy(master):
+    """The two fullbright exclusions and transient area-owner guard only."""
+    return project_area_change_owner(project_fullbright_exclusions(master))
+
+
+def current_lighting_policy(base):
+    """Accept exact pre/post-addition event bases, never partial lighting policy.
+
+    The candidate is not normalized: losing an existing exclusion must fail.
+    Keep the strict historical projections above unchanged.
+    """
+    token = '/atom/movable/lighting_fullbright'
+    if token in base:
+        pairs = (
+            'list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)',
+            'if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))',
+        )
+        if base.count(token) != 2 or any(base.count(anchor) != 1 for anchor in pairs):
+            raise ValueError('Event base has partial or changed fullbright exclusions')
+    else:
+        base = project_fullbright_exclusions(base)
+    owner = '/turf/persistence_runtime_var(key)\n\tif (key == "area_change_owner")\n\t\treturn TRUE\n'
+    if '"area_change_owner"' in base:
+        if base.count('"area_change_owner"') != 1 or base.count(owner) != 1:
+            raise ValueError('Event base has partial or changed area-owner guard')
+    else:
+        base = project_area_change_owner(base)
+    return base
+
+
 def transform(baseline):
     expected = project_reserved_policy(project_bounded_save(baseline))
     for kind in ('atom', 'turf', 'mob'):
@@ -81,6 +136,12 @@ def validate(baseline, candidate):
 
 
 def validate_current_master(master, candidate):
+    """Preserve the immutable event base, adding only missing lighting policy."""
+    if current_lighting_policy(master) != candidate:
+        raise ValueError('Only approved fullbright exclusions and area-owner guard may differ from event base')
+
+
+def validate_historical_bounded(master, candidate):
     """Master already owns dispatch/policy; only the bounded blocks may differ."""
     if project_bounded_save(master) != candidate:
         raise ValueError('Only approved bounded-save additions may differ from pinned current master')
@@ -165,7 +226,8 @@ def replay_reviewed_merge(base, reviewed_base, reviewed_result):
 
 def resolve_event_projection(repo, identity, feature, candidate, master, reviewed):
     """Select an exact master- or feature-ancestry projection, rejecting drift."""
-    base = subprocess.check_output(['git', 'show', identity['base'] + ':code/modules/persistence/functions.dm'], cwd=repo, text=True)
+    base = current_lighting_policy(subprocess.check_output(['git', 'show', identity['base'] + ':code/modules/persistence/functions.dm'], cwd=repo, text=True))
+    feature, master, reviewed = map(current_lighting_policy, (feature, master, reviewed))
     try:
         projected = replay_reviewed_merge(base, master, reviewed)
     except ValueError:
