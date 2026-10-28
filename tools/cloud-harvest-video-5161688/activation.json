@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-harvest-video-5161688-held-20261028-r3",
+  "message": "ci: native staged mature wheat harvest r3",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "harvest",
+  "attempt": 1,
+  "scene_sha256": "5a8d4a63a75b57e71e708abb0ad71cdc3fc89ff8ab1fd7a2e1c9a148d4743676",
+  "approval": "User-approved bounded trailer capture; staged mature wheat; native harvest and pickup; no observed growth or cross-run identity; existing limits and guards; expires 2026-10-29T03:19:44Z; root review required before initial ref publication."
+}
