@@ -20,7 +20,9 @@ CORE = 'code/modules/1713/rope_making.dm'
 CONTROLS = {
     'payment': ('if (!F.use(1))', 'if (FALSE)', 'FAIL: spindle payment'),
     'replay': ('B.stage = 1', 'B.stage = 0', 'FAIL: twist advances without rope'),
-    'admission': ('admission != persistence_admission_identity', 'FALSE', 'FAIL: completed admission cancels spindle'),
+    # Keep the capture referenced so the deliberately false guard compiles cleanly
+    # and the control reaches its causal assertion rather than unused-var warnings.
+    'admission': ('admission != persistence_admission_identity', 'admission != admission', 'FAIL: completed admission cancels spindle'),
     'persistence': ('return key == "working" || ..()', 'return ..()', 'FAIL: station lock excluded'),
 }
 
