@@ -57,7 +57,7 @@ class BaselinePolicyTests(unittest.TestCase):
                      'code/game/objects/items/stacks/furniture_joinery.dm',
                      'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py'):
             self.assertIn('furniture_joinery', self.selected([path]))
-        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py',))
+        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py'))
         for path in ('code/game/objects/items/stacks/stack.dm', 'scripts/build-crafting-atlas.py',
                      'config/crafting/material_recipes_global.txt'):
             self.assertEqual(self.selected([path]), set(ci.SUITES))

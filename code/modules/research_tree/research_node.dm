@@ -791,6 +791,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/modern/table" = "fine_furniture",
 		"/obj/structure/table/rack/coatrack" = "fine_furniture",
 		"/obj/structure/table/rack/shelf" = "fine_furniture",
+		"/obj/structure/table/rack/shelf/wooden" = "fine_furniture",
 		// --- fine_garments (55) ---
 		"/obj/item/clothing/accessory/storage/coinpouch/gator_wallet" = "fine_garments",
 		"/obj/item/clothing/accessory/storage/coinpouch/lizard_wallet" = "fine_garments",

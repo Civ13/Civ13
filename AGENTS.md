@@ -12,6 +12,9 @@ does not run crafting assertions; native/client and reachability remain separate
 Tools may be equipped or loose at the actor's feet through a bounded scan.
 Preset stack subtypes retain actual-material checks. Award joinery XP only after
 successful debits; preserve legacy recipe XP ordering.
+The wooden shelf alone replaces inherited metal construction/refund fields.
+Keep shared tables, steel racks and wooden frames unchanged; shelf regressions
+cover wood-only recovery and the existing frame's two-log refund separately.
 
 <!-- 2026-10-28: gathered manual woodworking -->
 Manual woodworking in primitive_woodworking.dm keeps pieces and crude planks

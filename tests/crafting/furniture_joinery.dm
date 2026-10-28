@@ -150,3 +150,67 @@
 		if (istype(S, /obj/item/stack/material/iron) || istype(S, /obj/item/stack/material/steel)) metal += S.amount
 	joinery_ci_expect(logs == 1 && metal == 0, "stool refund is one paid wood log without metal")
 	C.clean()
+	recipe_ci_wooden_shelf()
+
+/proc/shelf_ci_clear()
+	for (var/obj/O in locate(2,1,1))
+		qdel(O)
+
+/proc/shelf_ci_count(path)
+	var/count = 0
+	for (var/obj/O in locate(2,1,1))
+		if (istype(O, path))
+			count += istype(O, /obj/item/stack) ? O:amount : 1
+	return count
+
+/proc/recipe_ci_wooden_shelf()
+	map.ordinal_age = 2
+	var/mob/living/human/handle_ci/H = new(locate(2,1,1))
+	H.civilization = "recipe_ci"
+	var/datum/stack_recipe/R = recipe_ci_food_recipe(/material/wood/soft, /obj/structure/table/rack/shelf/wooden, H.civilization)
+	joinery_ci_expect(R && R.req_amount == 6, "wooden shelf catalog offers six-plank route at Fine Furniture")
+	if (!R)
+		qdel(H)
+		return
+	// Normal production constructor/debit, with only build delay bounded to zero.
+	R.time = 0
+	var/obj/item/stack/material/woodplank/stock = new(H, 10, FALSE)
+	H.r_hand = stock
+	stock.produce_recipe(R, 1, H)
+	var/obj/structure/table/rack/shelf/wooden/S = locate() in locate(2,1,1)
+	joinery_ci_expect(S && stock.amount == 4, "wooden shelf constructor pays six planks")
+	if (S)
+		joinery_ci_expect(S.frame == /obj/structure/table_frame/wood && S.framestack == /obj/item/stack/material/woodplank && S.buildstack == /obj/item/stack/material/woodplank, "wooden shelf has only wood construction fields")
+		S.table_destroy(3, H) // Existing complete deconstruction path.
+		joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/woodplank) == 3 && !shelf_ci_count(/obj/item/stack/material/iron) && !shelf_ci_count(/obj/item/stack/rods), "deconstruction yields three planks and no metal")
+	shelf_ci_clear()
+	S = new(locate(2,1,1))
+	S.table_destroy(1, H) // Existing destruction path.
+	joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/woodplank) == 3, "destruction yields three wood units below six paid inputs")
+	shelf_ci_clear()
+	S = new(locate(2,1,1))
+	S.break_to_parts()
+	joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/woodplank) == 1 && !shelf_ci_count(/obj/item/stack/material/iron), "broken parts return one plank without iron")
+	shelf_ci_clear()
+	S = new(locate(2,1,1))
+	S.table_destroy(2, H) // Existing top/frame disassembly path.
+	var/obj/structure/table_frame/wood/F = locate() in locate(2,1,1)
+	joinery_ci_expect(F && shelf_ci_count(/obj/item/stack/material/woodplank) == 1 && !shelf_ci_count(/obj/item/stack/rods), "disassembly keeps a wooden frame and one plank")
+	if (F)
+		var/obj/item/weapon/wrench/W = new(H)
+		H.l_hand = W
+		F.attackby(W, H)
+		joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/wood) == 2 && !shelf_ci_count(/obj/item/stack/rods) && !shelf_ci_count(/obj/item/stack/material/iron), "wood frame completes as two logs without metal")
+	shelf_ci_clear()
+	S = new(locate(2,1,1))
+	var/list/cancelled = list(FALSE)
+	spawn(1)
+		if (!QDELETED(H))
+			H.stat = UNCONSCIOUS
+			cancelled[1] = TRUE
+	S.table_destroy(2, H)
+	joinery_ci_expect(cancelled[1] && !QDELETED(S) && !shelf_ci_count(/obj/structure/table_frame) && !shelf_ci_count(/obj/item/stack), "cancelled shelf disassembly creates no refund")
+	qdel(stock)
+	qdel(H)
+	shelf_ci_clear()
+	map.ordinal_age = 0

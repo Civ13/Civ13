@@ -1,13 +1,15 @@
-# Furniture follow-on source preparation - 2026-10-28
+# Furniture follow-on review - 2026-10-28
 
-Published first batch: #3383 at `e5ca39f6471141073a1396c7f5244c7e2a01044a`,
+Earlier published checkpoint: #3383 at `e5ca39f6471141073a1396c7f5244c7e2a01044a`,
 stacked on #3382. Its explicitly requested hosted compile passed with BYOND
 516.1688, zero errors/warnings. The workflow remains informational because its
 dependency branch is outside ordinary master-target CI admission. No native
 crafting or connected-game acceptance is claimed.
 
-This follow-on is isolated on `codex/furniture-next-stool`. It prepares one
-missing wooden-stool route; it does not expand every row in the inventory.
+The stool checkpoint was isolated on `codex/furniture-next-stool` and is now
+part of #3383; shelving was verified separately on `codex/furniture-wooden-shelf`. It adds one
+missing wooden-stool route and a checked wooden shelf material route; it does not
+expand every row in the inventory.
 
 ## What was inventoried versus actually reviewed
 
@@ -28,7 +30,7 @@ structures, so future material rows are not omitted merely for being portable.
 | Concrete candidate | Existing route/source facts | Decision |
 |---|---|---|
 | `/obj/item/weapon/stool/wood` | Existing wooden stool, working constructor/art/padding/refund; no active explicit material recipe in the reviewed base | Prepare one pegged wooden-stool recipe |
-| `/obj/structure/table/rack/shelf/wooden` | Existing wood description/art, no active explicit material recipe; inherits iron buildstock and metal frame/rods from table | Review model correction before any recipe; do not mint metal from a wood build |
+| `/obj/structure/table/rack/shelf/wooden` | Existing wood description/art, no active explicit material recipe; inherits iron buildstock and metal frame/rods from table | Correct wooden subtype fields and add the six-plank alternative; all other rack types remain unchanged |
 | `/obj/structure/bookcase` | Existing 6-plank recipe, Fine Furniture node; accepts books, and has research behavior and hammer dismantling | Existing route already fits wooden furniture; no extra recipe now |
 | `/obj/structure/closet/crate/empty` | Existing 5-plank route, Cooperage node; constructor initializes storage and may collect loose items | No duplicate route now; simple box versus cooperative barrel research needs separate evidence |
 | `/obj/structure/closet/crate/chest` | Existing 7-plank route, Cooperage node; inherited closet locking/storage behavior | Do not infer metal hinges/locks are required or absent from the sprite; no invented hardware variant |
@@ -70,16 +72,39 @@ The British Museum EA46705 search record also describes tenons/dowels and rush
 webbing; its page returned 403 on the fresh read, so no date was inferred from
 it and it is not needed to establish the candidate's precise chronology.
 
-## Shelf batch after the stool
+## Wooden shelf route and model correction
 
-Before making the existing wood shelf craftable, set and verify wood frame and
-build/refund stock on that subtype, assess flammability and inherited table
-interactions, and check the actual `shelfwood` appearance. A proposed 4-6-plank
-open shelf with optional pegging must be balanced against the six-plank bookcase
-and its research functionality. Do not backdate the current store-shelf art or
-reuse the steel shelf's six-metal recipe merely because both are named shelf.
-Obtain a primary source for the chosen simple shelf form, then choose its gate.
-No shelf gameplay source is changed in this preparation.
+The existing wooden shelf now has a six-finished-plank route, 100 ds, mapped to
+Fine Furniture (era 2), and remains available through maximum era 8. This is a
+wood material alternative to the existing six-steel shelf, not a duplicate
+bookcase or a new storage/research capability. Existing plank preparation routes
+supply the wood; no extra station or special tool requirement is invented.
+
+Only the wooden shelf subtype overrides its inherited frame to the existing
+wooden frame, both stack fields to finished planks, and flammability to true.
+Parent tables/racks and the steel shelf are unchanged. The actual shared
+recovery paths now yield: destruction/deconstruction -> three planks; broken
+parts -> one plank; disassembly -> one plank plus a wooden frame. Wrenching
+that existing frame yields two logs, a lower-processing wood refund, not rods.
+Every ordinary recovery route returns at most three wood units against six
+paid planks. The special Wizard Boy MDF-board conversion is preserved.
+Interrupted disassembly/deconstruction produces no output.
+
+[Herculaneum Archaeological Park's sideboard record](https://ercolano.cultura.gov.it/il-ritorno-della-credenza-di-ercolano-un-viaggio-nel-tempo-tra-legno-e-memoria-dopo-quasi-novantanni-dal-ritrovamento-lo-straordinario-mobile-ligneo-con-il-suo-corredo-di-stoviglie-e-espost/?lang=en)
+attests an ancient wooden storage cabinet/sideboard preserved by the 79 CE
+eruption, with its domestic vessels. This supports pre-medieval wooden storage
+furniture, not the precise open-shelf design, every joint, or an exclusively
+wooden bill of materials. The simple open shelf and six-plank cost are explicit
+engineering/gameplay abstractions. Keeping the existing Fine Furniture era-2
+gate avoids newly backdating the feature from its existing furniture tier.
+Existing `shelfwood` art is reused; no museum reconstruction is claimed.
+
+Offline regressions execute the production `table_destroy`, `break_to_parts`
+and wooden-frame parent wrench bodies with source-derived defaults. They
+exercise all recovery branches, interruptions, old metal-default failure
+controls, material budgets, research metadata and real DMI state names.
+The isolated DM fixture also includes paid construction and actual lifecycle
+assertions; compilation does not mean those native assertions ran.
 
 Further audit still needs anvil, cooking, chemistry, tool/workbench, attackby
 and processor inventories plus the non-furniture material categories. The

@@ -59,6 +59,10 @@
 	desc = "A wooden shelf."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "shelfwood"
+	frame = /obj/structure/table_frame/wood
+	framestack = /obj/item/stack/material/woodplank
+	buildstack = /obj/item/stack/material/woodplank
+	flammable = TRUE
 
 /obj/structure/table/rack/shelf/store
 	icon = 'icons/obj/structures.dmi'

@@ -86,6 +86,8 @@ subtypes and rejected crafting XP. Assembly tools lie
 on a separate clear fixture tile, rather than invalid equipment slots; tools at
 the player's feet are a supported production route. Character startup uses the
 existing handle fixture adapters; this is not connected-player acceptance.
+Wooden-shelf assertions additionally cover its six-plank debit, subtype fields,
+destruction, broken parts, top/frame disassembly, frame wrenching and cancellation.
 Use `--compile-only` to compile the isolated fixture without starting DreamDaemon.
 That option explicitly reports runtime checks as not run. It cannot certify
 recipe registration or any native assertion. See `docs/furniture-joinery-audit.md`.

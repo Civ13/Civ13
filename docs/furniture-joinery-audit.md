@@ -16,6 +16,10 @@ closets/crates or filing cabinets. Counts include repeated map/faction rows,
 not distinct inventions. Four new global joinery rows bring the total to 9,644.
 `tests/furniture_joinery/legacy-furniture.json` freezes those 545 original rows
 as checked-in regression inputs. Tests never depend on historical Git objects.
+The same PR's subsequent reviewed batches add a paid wooden stool and a wooden
+shelf material route. The current index records 9,646 active rows (six additions
+over the initial inventory), including five explicit joinery rows. These limited
+expansions do not establish historical review of every inventoried row.
 
 The furniture subset and shared `stack.produce_recipe` path were reviewed for
 material/secondary-input costs, title-driven tools and constructor behavior.
