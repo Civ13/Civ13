@@ -4,6 +4,8 @@ var/global/datum/player_help_service/player_help_service = new
 /client
 	// Session-only state. Never attached to a mob or passed to native persistence.
 	var/tmp/list/player_help_turns = list()
+	var/tmp/mob/player_help_body
+	var/tmp/list/player_help_injuries = list()
 	var/tmp/player_help_generation = 0
 	var/tmp/player_help_touched = 0
 	var/tmp/player_help_action_token
@@ -13,13 +15,15 @@ var/global/datum/player_help_service/player_help_service = new
 	set name = "Ask for help"
 	set category = "Help!"
 	player_help_service.expire_conversations()
+	player_help_service.bind_body(src, mob)
 	var/generation = player_help_generation
 	var/question = player_help_prompt()
+	player_help_service.bind_body(src, mob)
 	if (question && (src in clients) && generation == player_help_generation)
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
-	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
+	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
 
 /datum/player_help_service
 	var/root = "SQL/player-help/"
@@ -41,17 +45,27 @@ var/global/datum/player_help_service/player_help_service = new
 
 /datum/player_help_service/proc/reset_conversation(client/C)
 	C.player_help_turns = list()
+	C.player_help_injuries = list()
 	C.player_help_generation++
 	C.player_help_action_token = null
 	C.player_help_acknowledged = FALSE
 	conversation_clients -= C
 	// A pending account reservation survives reset until response/timeout.
 
+// Login calls this even when a client briefly visits another body and returns.
+/datum/player_help_service/proc/bind_body(client/C, mob/body)
+	if (!C || C.player_help_body == body)
+		return
+	reset_conversation(C)
+	C.player_help_body = body
+
 /datum/player_help_service/proc/expire_conversations()
 	// At most 128 retained client sessions. Release disconnected client refs.
 	for (var/client/C in conversation_clients.Copy())
 		if (!(C in clients) || limit_time() - C.player_help_touched >= 9000)
 			reset_conversation(C)
+		else
+			bind_body(C, C.mob)
 
 /datum/player_help_service/proc/remember(client/C, question, answer)
 	if (!(C in conversation_clients) && conversation_clients.len >= 128)
@@ -107,6 +121,8 @@ var/global/datum/player_help_service/player_help_service = new
 		C.ask_player_help()
 
 /datum/player_help_service/proc/valid_action(client/C, token)
+	if (C && (C in clients))
+		bind_body(C, C.mob)
 	return C && (C in clients) && C.player_help_action_token && token == C.player_help_action_token
 
 // Account identity comes only from the authenticated client, never player input.
@@ -262,6 +278,33 @@ var/global/datum/player_help_service/player_help_service = new
 						queue += list(list("item" = child, "place" = copytext(html_decode("[I.name]"), 1, 81), "depth" = entry["depth"] + 1))
 	return list("items" = items, "truncated" = truncated)
 
+// Only server-controlled categories enter this temporary per-client record.
+// This first hook covers a conscious player's own successful weapon strike.
+/datum/player_help_service/proc/record_observed_injury(client/C, mob/living/human/H, kind)
+	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || H.stat != CONSCIOUS || H.sleeping > 0 || kind != "self_weapon_hit")
+		return
+	bind_body(C, H)
+	if (!(C in conversation_clients))
+		if (conversation_clients.len >= 128)
+			reset_conversation(conversation_clients[1])
+		// Track an injury-only session, without extending an existing conversation.
+		C.player_help_touched = limit_time()
+		conversation_clients |= C
+	C.player_help_injuries += list(list("kind" = "self_weapon_hit", "time" = limit_time()))
+	while (C.player_help_injuries.len > 6)
+		C.player_help_injuries.Cut(1, 2)
+
+/datum/player_help_service/proc/injury_context(client/C, mob/living/human/H)
+	var/list/results = list()
+	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || C.player_help_body != H)
+		return results
+	var/now = limit_time()
+	for (var/list/event in C.player_help_injuries)
+		if (event["kind"] != "self_weapon_hit" || !isnum(event["time"]) || event["time"] > now || now - event["time"] >= 6000)
+			continue
+		results += list(list("kind" = "self_weapon_hit", "certainty" = "observed", "age_seconds" = round((now - event["time"]) / 10)))
+	return results
+
 // Read public map metadata directly; never accept player text as server state.
 /datum/player_help_service/proc/game_context(mob/asking_player)
 	var/list/context = list("map" = "Unknown", "gamemode" = "Unknown")
@@ -285,6 +328,7 @@ var/global/datum/player_help_service/player_help_service = new
 				events += "Exposed to local weather"
 		condition["active_effects"] = events
 		condition["inventory"] = inventory_context(H)
+		condition["recent_injuries"] = injury_context(H.client, H)
 		context["player"] = condition
 	return context
 
@@ -301,6 +345,8 @@ var/global/datum/player_help_service/player_help_service = new
 // Server-owned queue boundary; no client/Topic-supplied account identifiers.
 /datum/player_help_service/proc/enqueue(account, question, client/C)
 	expire_conversations()
+	if (C)
+		bind_body(C, C.mob)
 	if (!available())
 		return "AI gameplay help is unavailable. Please use the Crafting Atlas or try again later."
 	if (!istext(question) || !length(question) || length(question) > 500)
@@ -335,7 +381,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return "AI gameplay help could not send your question. Please try again later."
 	var/list/sent_conversation = request["conversation"]
 	var/list/sent_turns = sent_conversation ? sent_conversation["turns"] : null
-	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "generation" = C ? C.player_help_generation : null, "question" = question, "conversation" = !!sent_conversation, "had_history" = sent_turns && sent_turns.len, "deadline" = world.time + request_timeout_seconds * 10)
+	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "generation" = C ? C.player_help_generation : null, "body" = C ? C.mob : null, "question" = question, "conversation" = !!sent_conversation, "had_history" = sent_turns && sent_turns.len, "deadline" = world.time + request_timeout_seconds * 10)
 	return TRUE
 
 /datum/player_help_service/proc/write_request(slot, list/request)
@@ -350,7 +396,9 @@ var/global/datum/player_help_service/player_help_service = new
 			continue
 		var/client/C = entry["client"]
 		// Disconnect does not cancel work or release the account's pending lock.
-		if (C && (!(C in clients) || C.player_help_generation != entry["generation"]))
+		if (C && (C in clients))
+			bind_body(C, C.mob)
+		if (C && (!(C in clients) || C.player_help_generation != entry["generation"] || C.mob != entry["body"]))
 			C = null
 		var/list/response = matching_response(i, entry["id"])
 		if (islist(response))
