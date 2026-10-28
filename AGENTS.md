@@ -1,5 +1,14 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-27: disabled Backrooms expedition foundation -->
+`docs/backrooms-expedition` separates powered colonization from finite escape.
+`gateway_core.dm` contains uninstantiated finite-charge/lifecycle/identity datums,
+not a teleporter or world-save adapter. Template hashes never replace mutable
+instance identity. `tests/backrooms_gateway` projects pure source guards offline
+and prepares native savefile/lifecycle assertions without launching. Native runs
+require the bounded plan review; compilation does not prove movement or rescue.
+Use the console `dm.exe`, not the GUI `dreammaker.exe`, for Windows compilation.
+
 <!-- 2026-10-24: persistence construction weathering -->
 Seasonal construction is an exact-design opt-in in code/processes/seasonal_construction.dm,
 gated by map.persistence, with 16/32/64-season fibre/earth/timber defaults. Paired
@@ -8,6 +17,7 @@ Save hooks accrue unpaid debt without destruction; roofs explicitly save debt,
 and after_load rebases excluded runtime clocks/indexes. Terminal qdel waits for
 empty contents. tests/seasonal_construction is offline; prepare.py only prepares
 an uncompiled native packet. Keep native/graphical acceptance and balancing pending.
+
 
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
