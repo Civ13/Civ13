@@ -69,11 +69,11 @@
 
 /mob/living/simple_animal/chick/death()
 
-	chicken_count &= src
+	chicken_count -= src
 	..()
 /mob/living/simple_animal/chick/Destroy()
 
-	chicken_count &= src
+	chicken_count -= src
 	..()
 /mob/living/simple_animal/chicken
 	name = "\improper chicken"
@@ -120,11 +120,11 @@
 
 /mob/living/simple_animal/chicken/death()
 
-	chicken_count &= src
+	chicken_count -= src
 	..()
 /mob/living/simple_animal/chicken/Destroy()
 
-	chicken_count &= src
+	chicken_count -= src
 	..()
 /mob/living/simple_animal/chicken/Life()
 	. =..()
@@ -236,11 +236,11 @@
 
 /mob/living/simple_animal/rooster/death()
 
-	chicken_count &= src
+	chicken_count -= src
 	..()
 /mob/living/simple_animal/rooster/Destroy()
 
-	chicken_count &= src
+	chicken_count -= src
 	..()
 ////////////////////////////////////////TURKEYS//////////////////////
 /mob/living/simple_animal/turkey_f
@@ -508,11 +508,11 @@
 
 /mob/living/simple_animal/turkey_m/death()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_m/Destroy()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_f/New()
 	..()
@@ -520,19 +520,19 @@
 
 /mob/living/simple_animal/turkey_f/death()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_f/Destroy()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkeychick/death()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkeychick/Destroy()
 
-	turkey_count &= src
+	turkey_count -= src
 	..()
 /mob/living/simple_animal/turkey_f/Life()
 	. =..()
