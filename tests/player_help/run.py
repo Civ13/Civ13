@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -341,9 +342,18 @@ var/failures = 0
 '''
 
 
+def compiler_succeeded(result, expected_version):
+    """Require the selected compiler's exact banner and the existing clean result."""
+    banners = re.findall(r'^DM compiler version[^\r\n]*', result.stdout, re.MULTILINE)
+    return (result.returncode == 0 and banners == ['DM compiler version ' + expected_version]
+            and '0 errors, 0 warnings' in result.stdout
+            and 'invalid file' not in (result.stdout + result.stderr).lower())
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--expected-byond-version', choices=('516.1681', '516.1688'), default='516.1688')
     parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
     parser.add_argument('--prepare-only', action='store_true', help='Write the exact isolated fixture without launching any process; requires --output')
     parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect', 'conversation-generation', 'conversation-action'])
@@ -409,8 +419,7 @@ def main():
         built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
         (temp / 'compile.log').write_text(built.stdout + built.stderr)
         print(built.stdout)
-        if (built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout
-                or 'invalid file' in (built.stdout + built.stderr).lower()):
+        if not compiler_succeeded(built, args.expected_byond_version):
             raise SystemExit('Fixture compilation failed')
         ran = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'probe.log'], cwd=temp, capture_output=True, text=True, timeout=40)
         output = ran.stdout + ran.stderr + (temp / 'probe.log').read_text(errors='replace')
