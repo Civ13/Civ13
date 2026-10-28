@@ -22,6 +22,22 @@ ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    def test_changelog_validation_runs_on_pr_description_edits_without_a_second_selector(self):
+        workflow = (ROOT / '.github/workflows/changelog-checks.yml').read_text(encoding='utf-8')
+        selection = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
+        self.assertIn('types: [opened, synchronize, reopened, edited]', workflow)
+        self.assertIn('      - name: Validate the PR description\n'
+                      "        if: github.event_name == 'pull_request'\n"
+                      '        run: node tools/changelog/check-pr.mjs\n', workflow)
+        self.assertIn('node --test tools/changelog/*.test.mjs', workflow)
+        self.assertIn('node tools/changelog/publish.mjs --validate', workflow)
+        self.assertNotIn('./.github/workflows/ci-selection.yml', workflow)
+        self.assertNotIn('needs: changes', workflow)
+        self.assertNotIn('actionlint/releases/', workflow)
+        # The ordinary CI selector continues to lint all workflow files.
+        self.assertIn('actionlint" -shellcheck=', selection)
+        self.assertIn('.github/workflows/*.yml', selection)
+
     def test_only_added_executable_tests_select_their_suite(self):
         with patch.object(selection.subprocess, 'check_output', return_value=
                           b'tests/weather/new_probe.dm\0tests/weather/README.md\0'
