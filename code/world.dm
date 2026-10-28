@@ -416,7 +416,10 @@ var/global/persistence_reboot_scheduled = FALSE
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
-			if (map && map.persistence && !persistence_restart.startup_hold && !persistence_restart.busy)
+			if (map && map.persistence && ticker && ticker.current_state >= GAME_STATE_PLAYING && !persistence_restart.startup_hold && !persistence_restart.busy)
+				// First save is one full interval after the round starts, not at round start.
+				if (!nextsave)
+					nextsave = world.realtime + 216000
 				var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
 				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
 				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
