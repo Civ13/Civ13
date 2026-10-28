@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "5260b60f0efef2c0af70fae204b1180106ef50b3",
+  "branch": "ci/cloud-carriage-5161688-connected-driver-20261028-r2",
+  "message": "ci: held native carriage eight-second connected driver r2",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "50236426fa1c923f3773742b05ea36a7f4daa7cc6bdbbc0c52b4703e55544c31",
+  "approval": "Root reviewed and authorized one bounded connected-driver native attempt under the owner grant, directly verified by the publishing coordinator. One 8-second 20FPS 160-frame capture, 15-minute job, 192MiB artifact limit; unchanged cutoff and owned process/network limits. Webhook export remains a denied fixture sink: no network acceptance. No keyboard or OS/user-close proof; native server-initiated del(client) requires independent post-Del receipt before Job cleanup. No production deployment or feature acceptance. Root separately reviewed and authorized one fresh r2 diagnostic attempt after r1 failed before capture: only three read-only steering snapshots and their helper; original east assertion remains unchanged."
+}
