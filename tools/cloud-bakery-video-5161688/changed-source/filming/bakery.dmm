@@ -1,0 +1,52 @@
+"ac" = (/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ad" = (/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"ae" = (/turf/floor/dirt/dust,/area/caribbean/desert)
+"az" = (/turf/floor/dirt,/area/caribbean/desert/town)
+"bq" = (/turf/floor/beach/sand,/area/caribbean/desert)
+"cF" = (/obj/effect/decal/cleanable/flour,/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cG" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/rollingpin,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cH" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/rollingpin,/obj/item/weapon/reagent_containers/food/snacks/dough,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cI" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/dough,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cJ" = (/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cK" = (/obj/structure/closet/crate/empty,/obj/item/weapon/reagent_containers/food/condiment/flour,/obj/item/weapon/reagent_containers/food/condiment/flour,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cW" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cX" = (/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cY" = (/obj/effect/decal/cleanable/flour,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cZ" = (/obj/item/weapon/material/pickaxe,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"co" = (/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cp" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Funerary"})
+"cq" = (/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"cr" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"dO" = (/obj/structure/table/wood,/obj/item/weapon/material/kitchen/utensil/knife,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"dP" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/wood_broken,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"dQ" = (/obj/structure/table/wood,/obj/item/weapon/reagent_containers/food/snacks/flatbread,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"dR" = (/obj/structure/table/wood,/obj/item/weapon/paper,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"dS" = (/obj/structure/table/wood,/obj/item/clothing/suit/chef,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"dp" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"eH" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 3000; unlimited = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"eK" = (/turf/floor/dirt/dust,/area/caribbean/desert/town)
+"ef" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"eg" = (/obj/structure/sign/custom{desc = "Fresh bread everyday!"; name = "Johnson's Bakery"},/turf/wall/wood,/area/caribbean/desert/buildings{icon_state = "red5"; name = "Bakery"})
+"el" = (/obj/item/weapon/reagent_containers/glass/barrel/water,/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"er" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"es" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/dirt/dust,/area/caribbean/desert/town)
+"kJ" = (/turf/floor/beach/sand/desert,/area/caribbean/no_mans_land/invisible_wall)
+"lj" = (/turf/floor/dirt/dust,/area/caribbean/no_mans_land/invisible_wall)
+
+(1,1,1) = {"
+acacaeaebqacacacacacacacacacbq
+kJkJljljkJkJkJkJkJkJkJkJkJkJkJ
+kJkJljkJkJkJkJkJkJkJkJkJkJkJkJ
+coadeKeKcqcqcrcqcqcrcqcqadadad
+coadeKeKcqcFcGcHcIcJcKcqadadad
+coadeKadcqcWcXcYcXcXcKcqcZadad
+cpeKeKadcrdpcXcXcYcXcXcradadad
+coeKeKeKcqdOdPdQdRdScXcqadadad
+coadeKeKcqcXcXcXcXcXcXcqadadad
+coadeKadcqcrcrefegcrcrcqadadad
+eHadeKeKadadadeKeKadeHeleKadad
+eKeKeKeKeKadeKeKeKeKadeKaderad
+azesesazazeKeseKeKeKeKeKeKesaz
+azeKeKeKeKeKeKeKeKadeKeKeKeKad
+eHadeKeKadadadadadadeHeKeKeKeK
+"}

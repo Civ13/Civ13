@@ -1,0 +1,47 @@
+"aU" = (/obj/structure/wild/tallgrass2,/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ac" = (/turf/floor/beach/sand/desert,/area/caribbean/desert)
+"ad" = (/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"ak" = (/obj/covers/wood_wall,/turf/floor/beach/sand/desert,/area/caribbean/desert/buildings)
+"al" = (/turf/floor/wood,/area/caribbean/desert/buildings)
+"an" = (/turf/floor/beach/sand,/area/caribbean/desert/town)
+"az" = (/turf/floor/dirt,/area/caribbean/desert/town)
+"cM" = (/obj/structure/bookcase,/turf/floor/wood,/area/caribbean/desert/buildings)
+"cm" = (/turf/wall/wood,/area/caribbean/desert/buildings)
+"dT" = (/obj/structure/oven,/turf/floor/wood,/area/caribbean/desert/buildings)
+"eF" = (/obj/structure/simple_door/key_door/anyone/wood,/turf/floor/wood,/area/caribbean/desert/buildings)
+"eH" = (/obj/structure/barricade/wood_pole,/obj/item/flashlight/lantern/on{anchored = 1; fuel = 3000; unlimited = 1},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"eK" = (/turf/floor/dirt/dust,/area/caribbean/desert/town)
+"ej" = (/obj/structure/window/classic,/obj/structure/curtain/open/bed,/turf/floor/wood,/area/caribbean/desert/buildings)
+"er" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/beach/sand/desert,/area/caribbean/desert/town)
+"es" = (/obj/effect/landmark{icon_state = "x3"; name = "JoinLateCiv"},/turf/floor/dirt/dust,/area/caribbean/desert/town)
+"gr" = (/obj/structure/bed/chair/wood/wings{dir = 1},/turf/floor/wood,/area/caribbean/desert/buildings)
+"jX" = (/obj/structure/table/wood,/obj/item/kitchen/wood_bowl,/turf/floor/wood,/area/caribbean/desert/buildings)
+"kc" = (/obj/structure/table/wood,/obj/item/trash/candle,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lD" = (/obj/structure/table/wood,/obj/item/weapon/gun/projectile/shotgun/coachgun,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lN" = (/obj/structure/potted_plant{icon_state = "potted_plant"; dir = 6},/turf/floor/wood,/area/caribbean/desert/buildings)
+"lR" = (/obj/structure/bed/chair/wood/wings,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lT" = (/obj/structure/mill,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lU" = (/obj/structure/table/wood,/obj/item/weapon/book,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lV" = (/obj/structure/bed/wood,/obj/item/weapon/bedsheet/ce,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lW" = (/obj/structure/closet/cabinet,/obj/item/weapon/gun/projectile/revolver/peacemaker,/turf/floor/wood_broken,/area/caribbean/desert/buildings)
+"lX" = (/obj/structure/table/wood,/obj/item/trash/candle,/obj/item/weapon/matchbox,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lo" = (/obj/structure/table/wood,/obj/item/flashlight/lantern/on/anchored,/turf/floor/wood,/area/caribbean/desert/buildings)
+"lr" = (/obj/structure/bed/wood,/obj/item/weapon/bedsheet,/turf/floor/wood,/area/caribbean/desert/buildings)
+
+(1,1,1) = {"
+cmeKeKadejlDjXkcalaldTejadeKad
+ejeKeKadakgralgralcMcMakadeKaz
+cmadeKadakakejakeFakakakeHeKeK
+ejadeKadadadadeKeKadadadadeKeK
+cmadeKeKeKeKeKeKeseKeKeKeKazeK
+cmadeKeKeKeKadadadadeKeKaderad
+ejadeKeKakakakakakakakakadadad
+cmadeKeKejdTlNlTakallrejadadad
+ejadeKeKakalalaleFallWakadadad
+cmadeKeKeFalallRakakakakadadad
+adeKeKadakallolUakallXakadadad
+eKeKeKadejalgrgreFallVejadadac
+eKeKadadakakakakakakakakadadac
+anadadadadadadadadadadadadadac
+acacacacacacaUacacacacacacacac
+"}
