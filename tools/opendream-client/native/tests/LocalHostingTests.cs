@@ -72,6 +72,34 @@ static class LocalHostingTests {
         LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add);
         Require(host.Bot is null && !host.Public && started.Count == 1 && started[0].ArgumentList.Contains("-invisible"), "server-only profile changed");
 
+        var git = Path.Combine(dir, "git.exe");
+        File.WriteAllText(git, "");
+        Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, update = new { git, branch = "master" } }); LocalHosting.Load(launcher); }, "update without the world's .dme");
+        File.WriteAllText(Path.Combine(game, "civ13.dme"), "");
+        Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, update = new { git, branch = "--upload-pack=x" } }); LocalHosting.Load(launcher); }, "option-shaped branch");
+        Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, update = new { git, branch = "master" } });
+        host = LocalHosting.Load(launcher)!;
+        Require(host.Update is { Branch: "master" } && host.Update.Git == git, "update section not read");
+        var ran = new List<ProcessStartInfo>();
+        (int, string) Ok(ProcessStartInfo step) { ran.Add(step); return (0, step.FileName.EndsWith("dm.exe") ? "civ13.dmb - 0 errors, 0 warnings" : ""); }
+        started.Clear();
+        lines = LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add, Ok);
+        Require(ran.Count == 3 && ran.All(step => step.WorkingDirectory == host.GameDirectory && step.RedirectStandardOutput && !step.UseShellExecute), "update steps not run in the game folder");
+        Require(ran[0].FileName == git && ran[0].ArgumentList.SequenceEqual(new[] { "fetch", "origin", "master" }), "fetch step changed");
+        Require(ran[1].ArgumentList.SequenceEqual(new[] { "merge", "--ff-only", "FETCH_HEAD" }), "update is not fast-forward only");
+        Require(ran[2].FileName == Path.Combine(@"C:\BYOND\bin", "dm.exe") && ran[2].ArgumentList.SequenceEqual(new[] { "-max_errors", "0", "civ13.dme" }), "compile step changed");
+        Require(started.Count == 1 && lines[0].StartsWith("Updated to origin/master"), "server not started after a successful update");
+        foreach (var (failAt, output, label) in new[] { (1, "fatal: Not possible to fast-forward", "diverged merge"), (2, "civ13.dmb - 0 errors, 3 warnings", "compile warnings") }) {
+            ran.Clear(); started.Clear();
+            lines = LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add, step => {
+                ran.Add(step);
+                return ran.Count - 1 == failAt ? (failAt == 2 ? 0 : 1, output) : (0, step.FileName.EndsWith("dm.exe") ? "0 errors, 0 warnings" : "");
+            });
+            Require(started.Count == 0 && ran.Count == failAt + 1 && lines[0].Contains("DreamDaemon was not started"), "started DreamDaemon after " + label);
+        }
+        ran.Clear(); started.Clear();
+        LocalHosting.Run(host, @"C:\BYOND\bin", port => port == 1714, started.Add, Ok);
+        Require(ran.Count == 0 && started.Count == 0, "updated or restarted a running world");
         Reject(() => { Write(new { schema = 2, game_directory = game, world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "future schema");
         Reject(() => { Write(new { schema = 1, game_directory = "relative", world = "civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "relative game folder");
         Reject(() => { Write(new { schema = 1, game_directory = game, world = @"..\civ13.dmb", port = 1714 }); LocalHosting.Load(launcher); }, "world outside the game folder");
@@ -80,7 +108,7 @@ static class LocalHostingTests {
         Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, bot = new { php, root = game, profile } }); LocalHosting.Load(launcher); }, "bot root without control.php");
         File.WriteAllText(profile, "{}");
         Reject(() => { Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, bot = new { php, root = bot, profile } }); LocalHosting.Load(launcher); }, "bot profile without http_port");
-        Console.WriteLine($"PASS local hosting: {assertions} assertions; opt-in host.json, menu visibility, DreamDaemon/bot supervisor starts only when absent, strict profile validation.");
+        Console.WriteLine($"PASS local hosting: {assertions} assertions; opt-in host.json, menu visibility, DreamDaemon/bot supervisor starts only when absent, strict profile validation, fast-forward update and 0-warning rebuild before start.");
         return assertions;
     }
 }

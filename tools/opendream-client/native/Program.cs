@@ -125,6 +125,8 @@ public static class Program {
                 if (choice is null or "4") return 0;
                 if (host != null && string.Equals(choice, LocalHosting.MenuKey, StringComparison.OrdinalIgnoreCase)) {
                     try {
+                        if (host.Update != null && !LocalHosting.Listening(host.Port))
+                            Console.WriteLine($"Updating to origin/{host.Update.Branch} and rebuilding {host.World}; this can take a few minutes...");
                         foreach (var line in LocalHosting.Run(host, byond, LocalHosting.Listening, start => { using var process = Process.Start(start); }))
                             Console.WriteLine(line);
                     } catch (Exception e) when (e is System.ComponentModel.Win32Exception or IOException or InvalidOperationException) {

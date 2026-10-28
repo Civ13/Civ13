@@ -154,9 +154,16 @@ and `-log logs/world.log` in `game_directory`, unless something already listens 
 (`control.php start <profile>`) unless the bot's `http_port` from that profile is
 already listening. `bot` is optional. Paths must be absolute and exist, and `world`
 must be a compiled `.dmb` inside `game_directory`; an invalid file disables hosting
-with a message. The world is the operator's compiled build: the launcher does not
-compile, update or stop servers. `tests/LocalHostingTests.cs` injects process starts
-and port probes, so it launches nothing.
+with a message.
+
+An optional `"update": {"git": "C:/Program Files/Git/cmd/git.exe", "branch": "master"}`
+updates the server before starting it: `git fetch origin <branch>`, then
+`git merge --ff-only FETCH_HEAD` (local uncommitted edits are kept; a diverged
+checkout stops), then the verified BYOND `dm.exe -max_errors 0 <world>.dme`, which
+must report `0 errors, 0 warnings`. Any failed step leaves DreamDaemon unstarted.
+A server already listening on `port` is never updated, because it holds its `.dmb`.
+The launcher does not stop servers. `tests/LocalHostingTests.cs` injects process
+starts, update steps and port probes, so it launches nothing.
 
 ## Release deployment
 
