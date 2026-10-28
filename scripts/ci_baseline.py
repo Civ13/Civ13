@@ -45,6 +45,12 @@ SUITES = {
     'character_return': {'files': ('tests/save_movement/test_character_return.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',
         'code/game/mob/new_player/', 'code/game/mob/living/carbon/human/human_helpers.dm')},
+    # Keep mixed production static.dm unmapped: its existing all-suite fallback
+    # must still cover changes to fish, piranhas and ants, not just fishing.
+    'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
+                                'tests/fishing_stock/test_preparation.py',
+                                'tests/fishing_stock/test_native_runner.py'), 'paths': (
+        'tests/fishing_stock/',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

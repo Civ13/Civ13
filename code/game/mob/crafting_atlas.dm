@@ -61,14 +61,40 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 		recipe["searchable"] = searchable
 	return TRUE
 
+// Match presentation text only. Canonical resource and recipe IDs stay unchanged.
+/datum/crafting_atlas_reference/proc/search_text(value)
+	var/text = lowertext("[value]")
+	for (var/separator in list("_", ascii2text(9), ascii2text(10), ascii2text(13)))
+		text = replacetext(text, separator, " ")
+	while (findtext(text, "  "))
+		text = replacetext(text, "  ", " ")
+	while (copytext(text, 1, 2) == " ")
+		text = copytext(text, 2)
+	while (length(text) && copytext(text, length(text)) == " ")
+		text = copytext(text, 1, length(text))
+	return text
+
+/datum/crafting_atlas_reference/proc/matching_resources(query = "")
+	var/list/matches = list()
+	query = search_text(query)
+	// Empty input keeps the existing recipe browse view; resources appear on search.
+	if (!query)
+		return matches
+	for (var/id in resources)
+		var/list/resource = resources[id]
+		if (islist(resource) && findtext(search_text("[resource["name"]] [id]"), query))
+			matches += id
+	return matches
+
 /datum/crafting_atlas_reference/proc/matching_variants(list/recipe, query = "")
+	query = search_text(query)
 	var/list/variants = recipe["variants"]
 	if (!islist(variants))
 		variants = list(recipe)
 	var/list/matches = list()
 	for (var/list/variant in variants)
 		var/searchable = "[recipe["searchable"]] [variant["kind"]] [variant["file"]]:[variant["line"]]"
-		if (!query || findtext(searchable, query))
+		if (!query || findtext(search_text(searchable), query))
 			matches += list(variant)
 	return matches
 
@@ -172,6 +198,17 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 /datum/crafting_atlas_reference/proc/graph_html(mob/viewer, query = "", era = "", processor = "", recipe_id = "")
 	query = copytext("[query]", 1, 65)
 	var/list/index = list()
+	var/list/resource_matches = matching_resources(query)
+	var/resource_shown = 0
+	for (var/id in resource_matches)
+		if (resource_shown >= 150)
+			break
+		resource_shown++
+		var/list/resource = resources[id]
+		var/name = resource["name"] ? resource["name"] : id
+		index += "<p data-result-type='resource'><a href='?src=\ref[src];atlas_resource=[url_encode(id)]'>[html_encode(name)]</a><br><small>Resource: [html_encode(id)]</small></p>"
+	if (resource_matches.len > 150)
+		index += "<p>First 150 resource matches shown. Refine your search to find more.</p>"
 	var/list/selected
 	var/list/selected_group
 	var/list/selected_matches
@@ -198,14 +235,14 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 			selected_group = recipe
 			selected_matches = matches
 		if (matched <= 150)
-			index += "<p><a href='?src=\ref[src];atlas_open=1;atlas_recipe=[url_encode("[choice["id"]]")];atlas_query=[url_encode(query)];atlas_era=[url_encode(era)];atlas_processor=[url_encode(processor)]'>[html_encode("[recipe["name"]]")]</a><br><small>[html_encode("[recipe["era_label"]]")]</small></p>"
+			index += "<p data-result-type='recipe'><a href='?src=\ref[src];atlas_open=1;atlas_recipe=[url_encode("[choice["id"]]")];atlas_query=[url_encode(query)];atlas_era=[url_encode(era)];atlas_processor=[url_encode(processor)]'>[html_encode("[recipe["name"]]")]</a><br><small>Recipe: [html_encode("[recipe["era_label"]]")]</small></p>"
 	var/list/era_names = list("0: Stone Age", "1: Bronze Age", "2: Middle Ages", "3: Imperial Age", "4: Industrial Age", "5: Early Modern Age", "6: WW2", "7: Cold War", "8: Modern Age")
 	var/query_html = replacetext(html_encode(query), "'", "&#39;")
 	var/controls = "<form action='byond://?' method='get'><input type='hidden' name='src' value='\ref[src]'><input type='hidden' name='atlas_open' value='1'><input name='atlas_query' maxlength='64' value='[query_html]' aria-label='Search'><select name='atlas_era' aria-label='Unlock era'><option value=''>All unlock eras</option>"
 	for (var/i in 1 to era_names.len)
 		controls += "<option value='[i-1]'[era == "[i-1]" ? " selected" : ""]>[era_names[i]]</option>"
 	controls += "<option value='multiple'[era == "multiple" ? " selected" : ""]>Multiple eras</option><option value='unknown'[era == "unknown" ? " selected" : ""]>Unknown / context dependent</option></select><select name='atlas_processor' aria-label='Processor'><option value=''>All processors and recipes</option><option value='sawmill'[processor == "sawmill" ? " selected" : ""]>Sawmills</option><option value='grain_mill'[processor == "grain_mill" ? " selected" : ""]>Grain mills</option><option value='tanning_rack'[processor == "tanning_rack" ? " selected" : ""]>Tanning racks</option></select><input type='submit' value='Filter'></form>"
-	var/diagram = "<p>No matching recipes. Clear filters or search for an ingredient.</p>"
+	var/diagram = resource_matches.len ? "<p>No matching recipes. Select a Resource result to view acquisition routes and related recipes.</p>" : "<p>No matching recipes or resources. Clear filters or search for an ingredient.</p>"
 	if (selected)
 		var/list/inputs = list()
 		var/list/outputs = list()
@@ -215,7 +252,7 @@ var/global/datum/crafting_atlas_reference/crafting_atlas_reference = new
 			outputs += "<p>[resource_html(viewer, product)]</p>"
 		diagram = "<h3>[html_encode("[selected["name"]]")]</h3><table class='dependency' width='100%'><tr><th>Inputs</th><th></th><th>Transformation</th><th></th><th>Outputs</th></tr><tr><td bgcolor='#254a35'>[jointext(inputs, "")]</td><td>&rarr;</td><td bgcolor='#254366'>[html_encode("[selected["kind"]]")]</td><td>&rarr;</td><td bgcolor='#5b4824'>[jointext(outputs, "")]</td></tr></table><p>Unlock era: [html_encode("[selected["era_label"]]")]. [html_encode("[selected["era_basis"]]")]</p><p>[html_encode("[selected["conditions"]]")]</p>"
 		diagram = variant_html(selected_group, selected_matches, selected["id"], query, era, processor) + diagram + source_html(selected)
-	return "<html><head><title>Crafting Atlas</title><style>body{background:#17202b;color:#eee;font-family:Verdana;font-size:13px}a{color:#9ed2ff}td{padding:8px;vertical-align:top}input,select{margin:4px}small{color:#c4d2e2}</style></head><body><h2>Crafting Atlas</h2>[controls]<p>[matched] matching recipes, sorted by unlock era. Research tiers can be ahead of map era; unknown and multiple-era records remain explicit. Map, faction, skills and other conditions still apply.</p><table width='100%'><tr><td width='26%'>[jointext(index, "")][matched > 150 ? "<p>First 150 matches shown. Refine filters to find more.</p>" : ""]</td><td>[diagram]</td></tr></table><p><a href='?src=\ref[src];atlas_open=1'>Reset atlas</a> | <a href='?src=\ref[src];atlas_page=1'>Legacy paginated list</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Full web atlas</a></p></body></html>"
+	return "<html><head><title>Crafting Atlas</title><style>body{background:#17202b;color:#eee;font-family:Verdana;font-size:13px}a{color:#9ed2ff}td{padding:8px;vertical-align:top}input,select{margin:4px}small{color:#c4d2e2}</style></head><body><h2>Crafting Atlas</h2>[controls]<p>[matched] matching recipes, sorted by unlock era. [resource_matches.len] matching resources. Search a resource name or identifier for Resource results; filters apply to recipes. Research tiers can be ahead of map era; unknown and multiple-era records remain explicit. Map, faction, skills and other conditions still apply.</p><table width='100%'><tr><td width='26%'>[jointext(index, "")][matched > 150 ? "<p>First 150 recipe matches shown. Refine filters to find more.</p>" : ""]</td><td>[diagram]</td></tr></table><p><a href='?src=\ref[src];atlas_open=1'>Reset atlas</a> | <a href='?src=\ref[src];atlas_page=1'>Legacy paginated list</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Full web atlas</a></p></body></html>"
 
 /datum/crafting_atlas_reference/proc/acquisition_html(resource_id)
 	var/list/all_routes = catalog["acquisition"]
