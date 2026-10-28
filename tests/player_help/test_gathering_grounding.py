@@ -66,6 +66,23 @@ class GatheringGroundingTests(unittest.TestCase):
                 self.instances[-1].close()
                 self.instances.pop()
 
+    def test_flint_shrapnel_reaches_prompt_with_full_production_corpus(self):
+        wiki = self.root / 'wiki'
+        for relative in ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md'):
+            path = wiki / 'src' / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('Find resources and consult the Crafting Atlas.', encoding='utf-8')
+        corpus = bridge.bounded_json(ROOT / 'UI/player-help.json', 32768)
+        corpus += bridge.recipe_context(self.catalog)
+        corpus += bridge.acquisition_context(self.catalog)
+        corpus += bridge.gameplay_knowledge(ROOT, wiki)
+        self.assertTrue({'recipe', 'acquisition', 'wiki', 'code'} <=
+                        {entry.get('source') for entry in corpus})
+        prompt = self.answer_prompt('I do not know if flint shrapnel can be used for anything.', corpus)
+        self.assertIn('current gameplay code (material shard: flint shrapnel)', prompt)
+        self.assertIn('foot', prompt)
+        self.assertNotIn('code/game/', prompt)
+
     def test_rain_collector_alias_selects_actual_dew_recipe_and_gates(self):
         recipes = bridge.recipe_context(self.catalog)
         dew = next(row for row in recipes if row['topic'].startswith('dew collector'))
