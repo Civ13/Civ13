@@ -8,6 +8,13 @@ reported, a dated PR comment is posted, and CI on the new head is checked.
 Analysis alone is not done. If you found a valid issue in scope, fix it in
 this turn.
 
+Publish completed work that is ready for review and merge as a regular PR.
+Reserve drafts for unfinished work or actual unresolved blockers. Pending CI
+alone does not require draft status; required checks still apply before merging.
+Unverified native/in-game testing is a report note, not by itself a reason for
+a draft or a merge hold. This PR-status preference does not expand merge,
+deployment or live-server authority.
+
 Triage each review finding into exactly one of:
 
 - valid: fix it, add or adjust a test that fails without the fix
@@ -48,7 +55,7 @@ skipped and passed checks. A pending check is not a pass.
 
 Start each task with one sentence naming its scope, deliverable and stopping
 point. Respect any narrower or broader authority the user has explicitly given.
-Example: "Shorten the agent guide, preserve the scoped notes, push a draft PR,
+Example: "Shorten the agent guide, preserve the scoped notes, open a regular PR,
 post a dated verification comment, and stop after checking CI on its head."
 This example grants no merge or deployment authority.
 
