@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-carriage-5161688-glide-probe-20261028-r1",
+  "message": "ci: held native carriage eight-second glide probe r1",
+  "deadline_utc": "2026-10-29T03:19:44Z",
+  "job": "carriage",
+  "attempt": 1,
+  "scene_sha256": "f66bd6c798f5a84a52536d3d0beffc7124d55f0ea8ab1af470491f7a9282b561",
+  "approval": "Root-reviewed release under the user-approved 2026-10-28 04:00 UTC 24-hour bounded capture grant: fixture-only stock versus fractional glide measurement on the same carriage, driver, horse and cargo; not a production fix or marketing acceptance. Preserve the earlier cutoff 2026-10-29T03:19:44Z and unchanged 8-second/20-FPS/15-minute/192-MiB limits, software/network scope and cleanup guards. Root publishes and monitors; visual support requires native pixel review."
+}
