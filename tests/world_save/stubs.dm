@@ -22,6 +22,8 @@ var/building_allocating_z = 0
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
 var/TimeOfGame = 0
+// Declared with the save vote in code/datums/vote.dm, which fixtures omit.
+var/last_persistence_save_time = 0
 // Ordinary serializer probes do not execute reboot effects. Transaction tests
 // compile the complete production state machine with their own adapters.
 var/datum/persistence_restart_transaction/persistence_restart = new
@@ -170,7 +172,8 @@ var/list/mutate_on_tick = null
 	rejuvenate_calls++
 	stat = CONSCIOUS
 /datum/controller/gameticker
-	var/current_state = GAME_STATE_PREGAME
+	// Fixture saves model a running round; savemap refuses lobby/setup states.
+	var/current_state = GAME_STATE_PLAYING
 	var/finished = FALSE
 	var/list/minds = list()
 /datum/controller/gameticker/proc/collect_minds()
