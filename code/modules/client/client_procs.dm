@@ -312,6 +312,8 @@
 		var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[mob]
 		if (paired_move && paired_move.controller == src)
 			paired_move.lifecycle_stop("controller_deleted", TRUE)
+	if (player_help_service)
+		player_help_service.reset_conversation(src)
 	human_subtile_release_visuals()
 	clear_hover_name()
 	webhook_send_logout(ckey)
