@@ -1,5 +1,7 @@
 """Source boundaries only; not evidence of native restore acceptance."""
 from pathlib import Path
+import importlib.util
+import tempfile
 import unittest
 import re
 
@@ -59,6 +61,42 @@ class RestoreIntegrationSources(unittest.TestCase):
         self.assertIn('return ticker.loadmap(src, expected_intent)', source)
         self.assertIn('if(import_complete && !matches(I, current_identity()))', source)
         self.assertIn('transaction.matches(expected_intent, transaction.current_identity())', self.wrapper)
+
+    def test_restart_fixture_has_production_client_list_and_preserves_transaction_controls(self):
+        production = (ROOT / 'code/modules/persistence/restart_transaction.dm').read_text(encoding='utf-8')
+        client_source = (ROOT / 'code/_helpers/global_lists.dm').read_text(encoding='utf-8')
+        fixture = (ROOT / 'tests/world_save/restart_transaction_probe.dm').read_text(encoding='utf-8')
+        declaration = 'var/list/clients = list()'
+        self.assertEqual(len(re.findall(r'^' + re.escape(declaration) + r'(?=\s|$)', client_source, re.M)), 1)
+        self.assertEqual(len(re.findall(r'^' + re.escape(declaration) + r'$', fixture, re.M)), 1)
+        self.assertIn('if(clients.len)', production)
+        self.assertIn('world.OpenPort("none")', fixture)
+        self.assertNotRegex(fixture, r'(?m)^\s*clients\s*(?:\+=|-=|=)')
+        lifecycle = (ROOT / 'tests/world_save/lifecycle_probe.dm').read_text(encoding='utf-8')
+        self.assertNotRegex(lifecycle, r'(?m)^var/list/clients\b')
+        lifecycle_runner = (ROOT / 'tests/world_save/run-lifecycle.py').read_text(encoding='utf-8')
+        self.assertIn("base = (output / 'probe.dm').read_text(encoding='utf-8').split('/world/New()')[0]", lifecycle_runner)
+        self.assertIn("(output / 'probe.dm').write_text(base + probe, encoding='utf-8')", lifecycle_runner)
+        self.assertEqual(len(re.findall(r'^' + re.escape(declaration) + r'$', fixture.split('/world/New()')[0] + lifecycle, re.M)), 1)
+        spec = importlib.util.spec_from_file_location('restart_fixture', ROOT / 'tests/world_save/run-restart-transaction.py')
+        runner = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(runner)
+        with tempfile.TemporaryDirectory(prefix='restart-fixture-source-') as directory:
+            for control in (None, 'generation', 'consume', 'import', 'deferred-reboot'):
+                with self.subTest(control=control):
+                    output = Path(directory) / (control or 'positive')
+                    output.mkdir()
+                    receipt = runner.prepare(ROOT, output, control)
+                    self.assertEqual(receipt['negative_control'], control)
+                    self.assertEqual((output / 'probe.dm').read_text(encoding='utf-8'), fixture)
+                    transaction = (output / 'transaction.dm').read_text(encoding='utf-8')
+                    if control in (None, 'deferred-reboot'):
+                        self.assertEqual(transaction, production)
+                    else:
+                        self.assertNotEqual(transaction, production)
+                    self.assertIn('if(clients.len)', transaction)
+                    self.assertIn('sleep(600)', transaction)
+                    self.assertIn('#include "transaction.dm"', (output / 'probe.dme').read_text(encoding='utf-8'))
 
     def test_policy_callback_binding_is_rechecked(self):
         method = self.functions.split('proc/authorize_restore_mutation(', 1)[1].split('proc/current(', 1)[0]
