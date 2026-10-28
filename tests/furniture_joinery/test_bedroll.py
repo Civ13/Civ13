@@ -17,7 +17,7 @@ import zlib
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tests/primitive_woodworking'))
-from source_adapter import block,expr
+from source_adapter import block,expr,compile_body
 SOURCE=(ROOT/'code/game/objects/items/weapons/nomadstuff.dm').read_text()
 BED=(ROOT/'code/game/objects/structures/stool_bed_chair_nest/bed.dm').read_text()
 STRUCTURE=(ROOT/'code/game/objects/structures.dm').read_text()
@@ -156,6 +156,75 @@ class BedrollContracts(unittest.TestCase):
             if kind==b'zTXt':metadata+=zlib.decompress(data.split(b'\0',1)[1][1:]).decode()
             elif kind==b'tEXt':metadata+=data.decode(errors='replace')
         for state in ('bedroll_r','bedroll_o','bedroll_w'):self.assertIn('state = "'+state+'"',metadata)
+
+
+class HammockContracts(unittest.TestCase):
+    def test_occupancy_changed_during_wait_rejects_before_payment(self):
+        source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
+        production=block(source,'/obj/item/stack/proc/produce_recipe(')
+        start=production.index('\t\tif (recipe.result_type == /obj/structure/bed/hammock')
+        end=production.index('\t\tif (!exercise_can_build',start)
+        self.assertLess(production.index('if (!do_after(user, buildtime))'),start)
+        self.assertLess(start,production.index('H.adaptStat("crafting"'))
+        self.assertLess(start,production.index('\tif (use(required,'))
+        body='\n'.join(line[1:] for line in production[start:end].splitlines())
+        guard,_=compile_body('/proc/completion_occupancy()\n'+body+'\n\treturn TRUE\n',
+                             '/proc/completion_occupancy()', 'recipe,user',
+                             dict(locate=lambda path:path,to_chat=lambda *args:None))
+        path='/obj/structure/bed/hammock'
+        for one_per,late_output,paid in ((True,path,False),(True,None,True),
+                                        (True,'/obj/structure/bed/wood',True),(False,path,True)):
+            recipe=NS(one_per_turf=one_per,result_type=path)
+            user=NS(loc=[]);stock=12;own_output=0
+            self.assertTrue(guard(recipe,user))
+            # The wait starts clear, then a competitor may commit its output.
+            if late_output:user.loc.append(late_output)
+            if guard(recipe,user):stock-=6;own_output+=1
+            self.assertEqual((stock,own_output),(6,1) if paid else (12,0))
+        # A powered sawmill prepays its circuit before the wait. This new
+        # rejection path must not interrupt that unrelated legacy transaction.
+        sawmill='/obj/structure/sawmill/powered'
+        powered=NS(one_per_turf=True,result_type=sawmill)
+        self.assertTrue(guard(powered,NS(loc=[sawmill])))
+        broad_body=body.replace('recipe.result_type == /obj/structure/bed/hammock && ','')
+        broad_guard,_=compile_body('/proc/old_completion()\n'+broad_body+'\n\treturn TRUE\n',
+                                  '/proc/old_completion()', 'recipe,user',
+                                  dict(locate=lambda path:path,to_chat=lambda *args:None))
+        self.assertFalse(broad_guard(powered,NS(loc=[sawmill])))
+        prepayment=production[production.index('else if (recipe.result_type == '+sawmill+')'):]
+        prepayment=prepayment[:prepayment.index('\n\telse if (')]
+        self.assertIn('NR.amount -= 1',prepayment)
+        self.assertIn('qdelHandReturn(',prepayment)
+        self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime))'))
+        rows=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()
+        fields=next(row.split('RECIPE: ',1)[1].split(',') for row in rows if ','+sawmill+',' in row)
+        self.assertEqual(fields[5],'1')
+
+    def test_paid_route_research_and_catalog_are_consistent(self):
+        path='/obj/structure/bed/hammock'
+        lines=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()
+        rows=[x.split('RECIPE: ',1)[1].split(',') for x in lines if x.startswith('RECIPE: ') and ','+path+',' in x]
+        self.assertEqual(rows,[['/material/rope/','rope hammock',path,'6','180','1','1','furniture','0','0','0','8','rope']])
+        self.assertIn('"'+path+'" = "weaving"',(ROOT/'code/modules/research_tree/research_node.dm').read_text())
+        data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
+        row=next(r for r in data['recipes'] if r['name']=='rope hammock')
+        self.assertEqual(row['inputs'],[dict(id='/material/rope',name='rope',quantity='6')])
+        self.assertEqual(row['outputs'],[dict(id=path,name='hammock',quantity='1')])
+        self.assertEqual(row['unlock_eras'],[0]);self.assertIn('weaving',row['conditions'])
+
+    def test_hammock_refuses_real_generic_wood_refund_with_old_default_control(self):
+        f=Bedding()
+        values=defaults('/obj/structure/bed') | defaults('/obj/structure/bed/hammock')
+        bed=NS(**values,type='/obj/structure/bed/hammock',loc='floor',contents=[],deleted=False)
+        f.objects.append(bed)
+        hammer=NS(type='/obj/item/weapon/hammer')
+        procedure('',f.env,hammer=True)(bed,None,hammer)
+        self.assertFalse(bed.deleted);self.assertEqual(f.objects,[bed])
+        bed.not_disassemblable=False
+        procedure('',f.env,hammer=True)(bed,None,hammer)
+        self.assertTrue(bed.deleted);self.assertEqual(f.objects[-1].type,'/obj/item/stack/material/wood')
+        # Ordinary wooden beds retain their existing dispatch policy.
+        self.assertFalse(defaults('/obj/structure/bed')['not_disassemblable'])
 
 
 if __name__=='__main__':unittest.main()
