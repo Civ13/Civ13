@@ -9,6 +9,12 @@ use a salt condiment directly on dried meat. The paid state survives both routes
 `preservation.dm` fixture additionally exercises direct and repeated salting,
 depletion, drying, and the actual save entry round trip when its native runner is
 authorized; preparing it does not execute those assertions.
+`test_meat_cutting_model.py` binds an offline behavior model to both cutting
+handlers and the save/decay source contracts. It covers rot and expiry boundaries,
+legacy missing fields, an explicitly disabled decay limit, and a later decay
+callback after restoration. It does not execute the DM handlers or serializer.
+An older bear slab that has not reached its own expiry can still be cut; the
+cutlets become rotten immediately if their inherited age meets their rot limit.
 
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
 Run again with `--negative-control` to remove the seed debit in a generated

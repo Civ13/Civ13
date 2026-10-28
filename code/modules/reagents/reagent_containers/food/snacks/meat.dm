@@ -14,7 +14,19 @@
 	name = "salted [name]"
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/can_salt_meat()
-	return istype(src, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/driedmeat)
+	return istype(src, /obj/item/weapon/reagent_containers/food/snacks/meat) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/bearmeat) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) || istype(src, /obj/item/weapon/reagent_containers/food/snacks/driedmeat)
+
+// A disabled decay limit has no meaningful age fraction to transfer.
+/obj/item/weapon/reagent_containers/food/snacks/proc/can_cut_preserved_meat()
+	return !rotten && decay > 0 && decaytimer < decay && (!rots || decaytimer < decay / 2)
+
+/obj/item/weapon/reagent_containers/food/snacks/proc/prepare_meat_cutlet(obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet)
+	if (salted_meat)
+		cutlet.mark_salted_meat()
+	// Cutting must not turn an aged slab into fresh preservable food.
+	cutlet.decaytimer = decaytimer * cutlet.decay / decay
+	if (cutlet.rots && cutlet.decaytimer >= cutlet.decay / 2)
+		cutlet.rot()
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/salt_meat(obj/item/weapon/reagent_containers/food/condiment/salt_source, mob/user)
 	if (salted_meat)
@@ -53,12 +65,13 @@
 		if(kit.extract_biological(src))
 			to_chat(user, SPAN_NOTICE("You extract collagen proteins from the raw meat."))
 		return
-	if (!roasted && !rotten && (istype(W,/obj/item/weapon/attachment/bayonet)  || istype(W, /obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+	if (!roasted && (istype(W,/obj/item/weapon/attachment/bayonet)  || istype(W, /obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/kitchen/utensil/knife)))
+		if (!can_cut_preserved_meat())
+			to_chat(user, SPAN_WARNING("\The [src] cannot be cut into preservable meat."))
+			return
 		for (var/i = 1 to 2)
 			var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet = new(src)
-			if (salted_meat)
-				cutlet.mark_salted_meat()
-				cutlet.decaytimer = decaytimer * cutlet.decay / decay
+			prepare_meat_cutlet(cutlet)
 		to_chat(user, "You cut the meat into thin strips.")
 		qdel(src)
 	else
