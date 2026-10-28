@@ -1,4 +1,9 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// Compile dependencies for the production loader's roof helpers. These minimal
+// stubs declare no /obj/roof; full-source roof tests own recovery acceptance.
+var/list/area_list = list()
+/area/caribbean/roofed
+
 // Minimal serializer fixtures do not exercise wounds. Keep the loader's type
 // contract declared, but fail closed if one is introduced into these probes.
 // The --wounds full-source fixture tests actual constructor/state restoration.
@@ -17,6 +22,8 @@ var/building_allocating_z = 0
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
 var/TimeOfGame = 0
+// Declared with the save vote in code/datums/vote.dm, which fixtures omit.
+var/last_persistence_save_time = 0
 // Ordinary serializer probes do not execute reboot effects. Transaction tests
 // compile the complete production state machine with their own adapters.
 var/datum/persistence_restart_transaction/persistence_restart = new
@@ -104,6 +111,84 @@ var/list/mutate_on_tick = null
 	return
 /turf/proc/recalc_atom_opacity()
 	return
+// These relocatable serializer fixtures own clear ground, not generated snow.
+// Production icon rebuilding needs snow assets/overlays; never substitute this
+// adapter for snowfall acceptance. Reject snow state on both export and import.
+/turf/var/weather_snow = 0
+/turf/proc/snowfall_ground_icon()
+	if(!isnum(weather_snow) || weather_snow != 0)
+		throw EXCEPTION("Generated snow requires the production snowfall fixture")
+	return
+/turf/before_save()
+	snowfall_ground_icon()
+	return ..()
+/turf/after_load()
+	..()
+	snowfall_ground_icon()
+
+// The focused serializer fixture has no irrigation simulation or overlays.
+// Keep the production scalar preflight and reset behavior for ordinary floors;
+// active channels must use the full production trench fixture instead.
+/turf/floor
+	var/irrigation = FALSE
+	var/flooded = FALSE
+	var/salty = FALSE
+	var/image/irrigation_overlay = null
+	var/irrigation_save_version = 1
+
+/turf/floor/proc/irrigation_prepare_load()
+	if (irrigation_overlay)
+		overlays -= irrigation_overlay
+	irrigation_overlay = null
+	irrigation = initial(irrigation)
+	flooded = initial(flooded)
+	salty = initial(salty)
+	irrigation_save_version = initial(irrigation_save_version)
+
+/proc/irrigation_saved_scalar(savefile/F, field, version)
+	var/value = F[field]
+	if (version == 2)
+		if (!islist(value))
+			throw EXCEPTION("Invalid irrigation scalar envelope")
+		var/list/scalar = value
+		if (scalar.len != 2 || scalar["kind"] != "value" || !("value" in scalar))
+			throw EXCEPTION("Invalid irrigation scalar envelope")
+		return scalar["value"]
+	return value
+
+/proc/fixture_validate_saved_irrigation(savefile/F, version)
+	var/list/fields = F.dir
+	if (!fields.Find("irrigation_save_version"))
+		// Old ordinary floors never reliably saved channel flags. Do not guess
+		// freshwater or salinity from a name, artwork or the live destination.
+		if (fields.Find("irrigation") || fields.Find("irrigation_overlay"))
+			throw EXCEPTION("Unversioned irrigation entry requires explicit review")
+		if (fields.Find("name"))
+			var/saved_name = irrigation_saved_scalar(F, "name", version)
+			if (list("irrigation channel", "flooded irrigation channel", "flooded saltwater irrigation channel").Find(saved_name))
+				throw EXCEPTION("Legacy named irrigation channel has no durable state")
+		return TRUE
+	var/schema = irrigation_saved_scalar(F, "irrigation_save_version", version)
+	if (!isnum(schema) || schema != 1)
+		throw EXCEPTION("Unsupported irrigation entry version")
+	for (var/field in list("irrigation", "flooded", "salty"))
+		if (!fields.Find(field))
+			throw EXCEPTION("Incomplete irrigation entry")
+		var/value = irrigation_saved_scalar(F, field, version)
+		if (!isnum(value) || (value != FALSE && value != TRUE))
+			throw EXCEPTION("Invalid irrigation Boolean")
+	var/active = irrigation_saved_scalar(F, "irrigation", version)
+	var/wet = irrigation_saved_scalar(F, "flooded", version)
+	var/salt = irrigation_saved_scalar(F, "salty", version)
+	if (active != TRUE || (salt && !wet))
+		throw EXCEPTION("Contradictory irrigation entry")
+	return TRUE
+
+/proc/validate_saved_irrigation(savefile/F, version)
+	if (F.dir.Find("irrigation_save_version"))
+		throw EXCEPTION("Irrigation channels require the production trench fixture")
+	return fixture_validate_saved_irrigation(F, version)
+
 /turf/var/tmp/lighting_reserved = FALSE
 /turf/proc/activate_reserved_lighting()
 	// Only ordinary turfs are supported by this serializer-only adapter.
@@ -155,7 +240,8 @@ var/list/mutate_on_tick = null
 	rejuvenate_calls++
 	stat = CONSCIOUS
 /datum/controller/gameticker
-	var/current_state = GAME_STATE_PREGAME
+	// Fixture saves model a running round; savemap refuses lobby/setup states.
+	var/current_state = GAME_STATE_PLAYING
 	var/finished = FALSE
 	var/list/minds = list()
 /datum/controller/gameticker/proc/collect_minds()
@@ -216,6 +302,11 @@ var/list/mutate_on_tick = null
 	durable_import = null
 	loading_z = 0
 
+// Disabled renderer coverage is runtime-only; minimal serializer fixtures have none.
+/atom/movable/lighting_fullbright
+/turf/proc/sync_fullbright_coverage()
+	return
+
 // These serializer-only worlds cannot import topology. Full-source prepared
 // zone fixtures compile the production implementation instead.
 /area/var/tmp/persistence_zone_id
@@ -257,9 +348,13 @@ var/list/mutate_on_tick = null
 	return
 /map_storage/proc/encode_zone_reference(area/A)
 	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/capture_zone_descriptor(area/A)
+	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_zone_reference(id, type)
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/begin_zone_restore(datum/persistence_world_operation/operation)
+	// Legacy fixtures have null state; all topology or malformed values stay held.
+	if(isnull(validated_zone_state)) return
 	throw EXCEPTION("Topology needs the full-source fixture")
 /map_storage/proc/validate_captured_world_save(list/candidate)
 	throw EXCEPTION("Topology needs the full-source fixture")

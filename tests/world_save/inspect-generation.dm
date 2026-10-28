@@ -22,7 +22,7 @@
 					F.cd = map_storage.entry_path(F, ref)
 					if(!("content" in F.dir)) continue
 					var/contents = F["[map_storage.entry_path(F, ref)]/content"]
-					for(var/child in params2list(contents))
+					for(var/child in map_storage.saved_content_refs(contents, F["/format_version"]))
 						if(parents["[child]"])
 							throw EXCEPTION("Multiple saved containment parents for [child]")
 						parents["[child]"] = "[ref]"
@@ -61,7 +61,7 @@
 /proc/generation_entries(savefile/F)
 	F.cd = "/entries"
 	var/list/entries = F.dir.Copy()
-	if(F["/format_version"] == 2)
+	if((F["/format_version"] == 2 || F["/format_version"] == 3))
 		var/list/shards = entries
 		entries = list()
 		for(var/shard in shards)
@@ -84,7 +84,7 @@
 	var/list/children = result["contents"]
 	if("content" in fields)
 		var/content = F["[map_storage.entry_path(F, ref)]/content"]
-		for(var/child in params2list(content))
+		for(var/child in map_storage.saved_content_refs(content, F["/format_version"]))
 			children += list(generation_snapshot(F, child, visited, depth + 1))
 			TICK_CHECK
 	return result

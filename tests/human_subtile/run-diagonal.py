@@ -143,7 +143,7 @@ def main():
         require((work / 'result.txt').read_bytes() == expected_result.encode(), 'Wrong native result marker')
         if suite == 'diagonal':
             require(receipt['checks'] == 42, 'Incomplete existing human regression checks')
-            expected_checks = 86 if args.control == 'offset-recovery' else 4 if expected_error else 117
+            expected_checks = 86 if args.control == 'offset-recovery' else 4 if expected_error else 119
             require(receipt['diagonal_checks'] == expected_checks, 'Incomplete diagonal checks')
         else:
             require(receipt['mining_checks'] == 52, 'Incomplete mining assertions')

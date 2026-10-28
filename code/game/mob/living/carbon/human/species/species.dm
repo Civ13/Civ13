@@ -180,6 +180,8 @@
 			if (!H.shoes)
 				if (prob(25))
 					to_chat(H, SPAN_DANGER("The hot ground burns your feet!"))
+					if (player_help_service)
+						player_help_service.record_observed_injury(H.client, H, "reported_hot_ground")
 					H.adjustBurnLossByPart(0.3*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts
@@ -241,6 +243,8 @@
 			if (H.shoes.cold_protection != FEET)
 				if (prob(25 - (H.shoes ? 15 : 0)))
 					to_chat(H, SPAN_DANGER("Your feet are freezing!"))
+					if (player_help_service)
+						player_help_service.record_observed_injury(H.client, H, "reported_freezing_feet")
 					H.adjustBurnLossByPart(1*dmod, pick("l_foot", "r_foot"))
 
 		//Check protected bodyparts

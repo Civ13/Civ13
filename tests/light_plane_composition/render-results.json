@@ -1,0 +1,194 @@
+{
+  "status": "ORDINARY_COMPOSITION_PASS_GENERAL_FIX_BLOCKED",
+  "source_commit": "cc03b199128f8afed58713912c551ad7556e6bc4",
+  "candidate": "Visible opaque-alpha MULTIPLY lighting master, tile colors composed with OVERLAY, explicit see>=45 legacy white bypass",
+  "pairs": [
+    {
+      "baseline": "C55",
+      "candidate": "C56",
+      "changed_pixels": 1947,
+      "bbox": [
+        224,
+        55,
+        256,
+        128
+      ],
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C57",
+      "candidate": "C58",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C59",
+      "candidate": "C60",
+      "changed_pixels": 730,
+      "bbox": [
+        224,
+        103,
+        256,
+        128
+      ],
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C61",
+      "candidate": "C62",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C63",
+      "candidate": "C64",
+      "changed_pixels": 617,
+      "bbox": [
+        227,
+        95,
+        256,
+        128
+      ],
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C65",
+      "candidate": "C66",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C67",
+      "candidate": "C68",
+      "changed_pixels": 112,
+      "bbox": [
+        224,
+        124,
+        256,
+        128
+      ],
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C69",
+      "candidate": "C70",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C71",
+      "candidate": "C72",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C73",
+      "candidate": "C74",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C75",
+      "candidate": "C76",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C77",
+      "candidate": "C78",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C79",
+      "candidate": "C80",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C81",
+      "candidate": "C82",
+      "changed_pixels": 1947,
+      "bbox": [
+        224,
+        55,
+        256,
+        128
+      ],
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    },
+    {
+      "baseline": "C83",
+      "candidate": "C84",
+      "changed_pixels": 0,
+      "bbox": null,
+      "native_view_equal": true,
+      "visible_pixels_equal": true,
+      "changed_pixels_opaque_black": true
+    }
+  ],
+  "black_canopy_nonblack_pixels_before": 1947,
+  "after": 0,
+  "hidden_marker_not_in_native_view": true,
+  "original_mask_rgb_alpha_lum_graph_and_native_view_unchanged": true,
+  "native_sight_art_and_gameplay_contents_unmodified": true,
+  "runtime_seconds": 57.641336100001354,
+  "cleanup": true,
+  "limits": "Imposed21x21 composition scene, not production shared graph, propagation, mode-lifecycle or persistence roundtrip acceptance",
+  "production_candidate_prepared": true,
+  "capture_receipt_sha256": "0f6ea6192c081f388f3f7c2618272e23a2d93a5885354c37e4b28729616bf953",
+  "compiler_receipt_sha256": "8a6c099de6d02bf5a5287e53633182bdd1e089c5ed79c5e1b1ca57bb35371de0",
+  "candidate_sources_sha256": {
+    "code/_onclick/hud/plane_master.dm": "d7bb8ab896654d39a62c61a3ca61c1c158c2648262ad25384df2723e16b2d448",
+    "code/modules/lighting/lighting_overlay.dm": "be1d2824596bcbe7e08b14bd0542d6d648dc1a4c87d1fc09a746f2d50a8f58a9",
+    "code/game/mob/living/life.dm": "248cf0e5f870b19f39167cc8c9605b9fb472a67e8d59df84b716528592f6fb63",
+    "code/game/mob/observer/ghost/ghost.dm": "af1e9bf489d1909c2f757b55e04e39df03607cb7dcfb0988a7e500ab06f1771e"
+  },
+  "source_boundary": "Final native scene uses exact candidate plane source and actual constructor/update source with only pre_bullet_act and Destroy outside the established renderer fixture omitted. Living/ghost hook placement is source-checked, not a full-game lifecycle acceptance.",
+  "deployment": false,
+  "canonical_lf_sources_sha256": {
+    "code/_onclick/hud/plane_master.dm": "87231208522de1845a3a22820f793491a574cdc8c1a8a333636e713316f1d4f7",
+    "code/modules/lighting/lighting_overlay.dm": "dae3b3995c235b2ef5740c919cee2c02d4808baf94b6bbba592053416b053b2f",
+    "code/game/mob/living/life.dm": "afb476fc2e2fb2515df9297b193c23ca6080260a2eefbf062615f3b7034cfc2d",
+    "code/game/mob/observer/ghost/ghost.dm": "00e6f2bf76ebe532b06f87770ce4fc814895ba823234d0a362a3e3ac09387595"
+  },
+  "candidate_sources_sha256_format": "Raw Windows staged bytes used by the native fixture. canonical_lf_sources_sha256 binds the Git/CI LF-normalized production source.",
+  "general_fix_counterexamples": "counterexamples.json"
+}

@@ -1,0 +1,119 @@
+"""Explicit 516.1688 Linux parity lane; the historical 1681 gate is unchanged."""
+import argparse
+import importlib.util
+import json
+import os
+from pathlib import Path
+import re
+import sys
+import time
+
+from preparation import git
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+VERSION = '516.1688'
+
+
+def module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    value = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(value)
+    return value
+
+
+def source_identity():
+    return dict(head=git(ROOT, 'rev-parse', 'HEAD').strip(),
+                tree=git(ROOT, 'rev-parse', 'HEAD^{tree}').strip(),
+                tracked_dirty=bool(git(ROOT, 'status', '--porcelain', '--untracked-files=no').strip()))
+
+
+def validate_build(log, diagnostics):
+    if (re.findall(r'^DM compiler version[^\r\n]*', log, re.M) != ['DM compiler version ' + VERSION]
+            or not re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M)
+            or re.search(r'invalid file|file not found|cannot open', log, re.I)
+            or diagnostics.search(log)):
+        raise RuntimeError('Exact 516.1688 clean compilation required')
+
+
+def execute(args, *, ci=None, runtime=None):
+    if sys.platform != 'linux':
+        raise ValueError('Current exclusion fixture supports Linux only')
+    ci = ci or module('historical_exclusion_ci', HERE / 'run-ci.py')
+    runtime = runtime or module('current_exclusion_runtime', ROOT / 'scripts/byond_runtime.py')
+    identity = ci.identities(ROOT, args.base, args.head,
+        event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
+        github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
+    source = source_identity()
+    if source['tracked_dirty'] or source['head'] != identity['head']:
+        raise ValueError('Current exclusion fixture requires unchanged checked-out head')
+    environment = os.environ.copy()
+    if environment.get('LD_PRELOAD') or environment.get('LD_AUDIT'):
+        raise ValueError('Loader injection is incompatible with pinned exclusion execution')
+    byond, archive, output = args.byond_bin.absolute(), args.byond_archive.absolute(), args.output.absolute()
+    if output.exists() or output.is_symlink():
+        raise ValueError('Preserve prior exclusion evidence; use a fresh output directory')
+    selected = runtime.verify_linux(byond, archive)
+    if selected['version'] != VERSION:
+        raise ValueError('Current exclusion fixture requires the reviewed ' + VERSION + ' pin')
+    environment.update(LD_LIBRARY_PATH=str(byond), BYOND_SYSTEM=str(byond.parent))
+    output.mkdir(parents=True)
+    deadline = time.monotonic() + 180
+    summary = dict(status='incomplete', identity=identity, source=source, runtime_identity=selected,
+        native_execution=False, native_execution_attempted=False, runtime_checks=['admission'], modes={},
+        scope='isolated Linux hook parity and controls; no benchmark, pixels, lifecycle or deployment',
+        source_preparation='legacy source-only generator; its historical runtime gate is not used for admission')
+
+    def verify(phase):
+        if runtime.verify_linux(byond, archive) != selected:
+            raise RuntimeError('Runtime identity changed: ' + phase)
+        if source_identity() != source:
+            raise RuntimeError('Checked-out source changed: ' + phase)
+        summary['runtime_checks'].append(phase)
+
+    try:
+        for mode in ci.MODES:
+            packet = output / (mode + '.json')
+            command = [sys.executable, str(HERE / 'run.py'), '--source-only', '--output', str(packet),
+                       '--base', identity['base'], '--head', identity['head']]
+            if mode != 'parity':
+                command += ['--negative-control', mode]
+            ci.run(command, output, mode + '-prepare', deadline, environment=environment)
+            work = packet.with_suffix('.sources')
+            verify(mode + ':before-compiler')
+            summary['native_execution_attempted'] = True
+            build = ci.run([str(byond / 'DreamMaker'), '-max_errors', '0', 'probe.dme'],
+                           work, 'compile', deadline, environment=environment)
+            summary['native_execution'] = True
+            validate_build(build, ci.DIAGNOSTIC)
+            verify(mode + ':before-daemon')
+            log = ci.run([str(byond / 'DreamDaemon'), 'probe.dmb', '-ip', '127.0.0.1', '-invisible',
+                          '-close', '-trusted', '-log', 'runtime.log'], work, 'daemon', deadline,
+                         environment=environment)
+            log += (work / 'runtime.log').read_text(errors='replace')
+            if not re.search(r'(?<![\d.])516\.1688(?![\d.])', log):
+                raise RuntimeError('Exact 516.1688 native runtime banner required')
+            verify(mode + ':after-daemon')
+            result = json.loads((work / 'result.json').read_text())
+            ci.validate_result(mode, result, log)
+            summary['modes'][mode] = result
+        summary['status'] = 'passed'
+    except BaseException as error:
+        summary.update(status='failed', error=str(error), exception_type=type(error).__name__)
+        raise
+    finally:
+        (output / 'native-ci.json').write_text(json.dumps(summary, indent=2) + '\n')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-archive', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--base', default=os.environ.get('CI_BASE'))
+    parser.add_argument('--head', default=os.environ.get('CI_HEAD'))
+    execute(parser.parse_args())
+
+
+if __name__ == '__main__':
+    main()

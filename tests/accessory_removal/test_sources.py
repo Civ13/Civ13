@@ -83,7 +83,7 @@ class AccessoryPreparation(unittest.TestCase):
     def test_workflow_selects_only_this_registered_suite(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         step = workflow.split('      - name: Verify accessory removal actor and native controls\n', 1)[1].split('      - name:', 1)[0]
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/accessory_removal')", step)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/accessory_removal')", step)
         self.assertIn('--negative-control "$control"', step)
         self.assertIn('for control in original-usr fork-guard', step)
 

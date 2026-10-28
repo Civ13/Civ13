@@ -513,12 +513,19 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	possible_transfer_amounts = list(10,20)
 	volume = 80
 	var/on_stove = FALSE
+	var/tmp/datum/stone_kiln_reagent_identity
+	var/tmp/datum/stone_kiln_owner
 	New()
 		..()
 		flags |= CONDUCT
 
 /obj/item/weapon/reagent_containers/glass/small_pot/on_reagent_change()
+	if (stone_kiln_reagent_identity)
+		stone_kiln_reagent_identity = new /datum
 	update_icon()
+
+/obj/item/weapon/reagent_containers/glass/small_pot/persistence_runtime_var(key)
+	return key == "stone_kiln_reagent_identity" || key == "stone_kiln_owner" || ..()
 
 /obj/item/weapon/reagent_containers/glass/small_pot/update_icon()
 	overlays.Cut()
