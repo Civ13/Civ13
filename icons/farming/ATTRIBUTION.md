@@ -34,3 +34,31 @@ Review previews: [turnip](../../docs/media/winter-crops-turnip.png) and
 [plump helmet](../../docs/media/winter-crops-plump-helmet.png). These documentation
 images reproduce the attributed sprites at nearest-neighbor 4x, with explanatory
 labels; they are not connected-game screenshots and contain no new game artwork.
+
+## Humanity wild medicinal plants
+
+`humanity_wild_herbs.dmi` contains four original 32x32 wild-plant images:
+`yarrow`, `milk_thistle`, `elderflower` and `comfrey`.
+
+Original artist credit from the
+[origin metadata](https://github.com/escortage/Humanity/blob/6b5590281ef6dbd7f2c4b3efa5452afedd0194c7/Resources/Textures/Humanity/Flora/wild_plants.rsi/meta.json):
+
+> Copyright (c) 2026 escortag (Discord: escortag). Created for Humanity. Released under CC0-1.0.
+
+GitHub identity: [escortage](https://github.com/escortage). The
+[audited head](https://github.com/escortage/Humanity/tree/33ae051274a4753c7769063577ad30a233c3a74d/Resources/Textures/Humanity/Flora/wild_plants.rsi)
+retains CC0-1.0 and shortens the credit to `escortage`. These four PNG blobs are
+unchanged since their introduction. Both metadata notices are preserved under
+`tools/art_ports/sources/humanity_wild_herbs/` with source files and hashes.
+
+The art retains its **[CC0 1.0 Universal dedication](https://creativecommons.org/publicdomain/zero/1.0/)**,
+independently of Civ13's code license. No endorsement is implied.
+Modifications: four PNGs packed into one DMI with the original state names,
+32x32 dimensions, one frame and one direction. RGBA bytes are unchanged.
+No resizing, drawing, recoloring, synthetic animation or AI-generated art.
+
+The [audit](../../docs/civ14-humanity-art-audit.md) records provenance,
+duplicate/semantic comparisons and explicit gameplay limits. The
+[conversion tools](../../tools/art_ports/README.md) reproduce and test the pack.
+The [preview](../../docs/media/humanity-wild-herbs.png) uses actual pixels at 4x
+and 1x for review; it is not a gameplay screenshot.

@@ -84,13 +84,16 @@ class CanonicalUpdateTests(unittest.TestCase):
             wrong_dimensions = False
             frozen_heartbeat = False
             bad_compile_summary = False
+            maintenance = None
+            clients = 0
 
             def alive(self):
                 return self.running
 
             def status(self):
                 self.tick += 10
-                return {'ok': 1, 'ready': 1, 'busy': 0, 'error': None, 'clients': 0,
+                return {'ok': 1, 'ready': 1, 'busy': 0, 'error': None, 'clients': self.clients,
+                        'maintenance_operation': self.maintenance,
                         'session': 'e' * 32, 'map': 'NOMADS_GAIA',
                         'revision': self.state['revision'], 'restart_hold': 0, 'restart_intent': 0,
                         'generation': self.state.get('generation'),
@@ -98,8 +101,10 @@ class CanonicalUpdateTests(unittest.TestCase):
                         'maxx': 501 if self.wrong_dimensions else 500, 'maxy': 350, 'maxz': 1,
                         'debug': {'tick': 1 if self.frozen_heartbeat else self.tick, 'runtime': {'total': 0}}}
 
-            def stop_saved(self, operation, expected_session=None):
+            def stop_saved(self, operation, expected_session=None, admin_operation=False):
                 owner.assertEqual(expected_session, 'e' * 32)
+                if admin_operation:
+                    owner.assertEqual(operation, self.maintenance)
                 owner.events.append('save')
                 if self.fail_save:
                     raise RuntimeError('injected save failure')
@@ -217,6 +222,91 @@ class CanonicalUpdateTests(unittest.TestCase):
         self.assertFalse((self.root / 'builds').exists())
         self.assertEqual(self.git('branch', '--show-current').strip(), 'master')
         self.assertEqual(self.git('status', '--porcelain'), ' M config/host.txt\n')
+
+    def test_admin_request_with_connected_clients_runs_once(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        self.sup.clients = 2
+        factory = lambda config, supervisor: self.updater
+        result = m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=factory)
+        self.assertEqual(result['phase'], 'ready')
+        self.assertEqual(self.events.count('save'), 1)
+        receipt = self.root / 'admin-maintenance' / (operation + '.json')
+        self.assertEqual(json.loads(receipt.read_text())['phase'], 'complete')
+        with self.assertRaises(FileExistsError):
+            m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=factory)
+        self.assertEqual(self.events.count('save'), 1)
+
+    def test_admin_request_failure_is_retained_and_not_replayed(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        self.sup.fail_save = True
+        factory = lambda config, supervisor: self.updater
+        with patch.object(m.core, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'save failure'):
+                m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=factory)
+            query.assert_called_once_with(1714, self.sup.token, 'maintenance_failed', operation, 'e' * 32)
+        receipt = self.root / 'admin-maintenance' / (operation + '.json')
+        self.assertEqual(json.loads(receipt.read_text())['phase'], 'failed')
+        with self.assertRaisesRegex(RuntimeError, 'halted'):
+            m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=factory)
+        # Model operator reconciliation only in this isolated fixture; the
+        # retained identity must still reject a replay after the latch is gone.
+        (self.root / 'HALTED.json').unlink()
+        with self.assertRaises(FileExistsError):
+            m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=factory)
+        self.assertEqual(self.events, ['save'])
+
+    def test_admin_session_or_operation_mismatch_refused_before_save(self):
+        self.sup.maintenance = 'd' * 32
+        for operation, session in [('d' * 32, 'f' * 32), ('c' * 32, 'e' * 32)]:
+            with self.subTest(operation=operation, session=session), self.assertRaisesRegex(RuntimeError, 'request or process session'):
+                self.updater.run(admin_operation=operation, expected_session=session)
+        self.assertEqual(self.events, [])
+
+    def test_save_boundary_rechecks_admin_request_before_network_mutation(self):
+        self.sup.maintenance = 'c' * 32
+        self.sup.clients = 2
+        with patch.object(m.core, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'request changed'):
+                m.core.Supervisor.stop_saved(self.sup, 'd' * 32, expected_session='e' * 32, admin_operation=True)
+            query.assert_not_called()
+
+    def test_admin_compile_failure_keeps_old_artifacts_and_save(self):
+        self.sup.maintenance = 'd' * 32
+        self.sup.fail_compile = True
+        factory = lambda config, supervisor: self.updater
+        with self.assertRaisesRegex(RuntimeError, 'compiler failure'):
+            m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=factory)
+        self.assertFalse(self.sup.running)
+        self.assertNotIn('load', self.events)
+        self.assertTrue(Path(self.updater.transaction['previous_artifacts']).is_file())
+        self.assertTrue((Path(self.updater.transaction['backup']) / 'receipt.json').is_file())
+        self.assertEqual(json.loads((self.root / 'admin-maintenance' / ('d' * 32 + '.json')).read_text())['phase'], 'failed')
+
+    def test_admin_update_failure_keeps_backup_and_never_compiles(self):
+        self.sup.maintenance = 'd' * 32
+        original = self.updater.guard
+        def fail_update(*args, **kwargs):
+            if kwargs.get('update'):
+                raise RuntimeError('injected update conflict')
+            return original(*args, **kwargs)
+        self.updater.guard = fail_update
+        with self.assertRaisesRegex(RuntimeError, 'update conflict'):
+            m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=lambda config, supervisor: self.updater)
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+        self.assertTrue((Path(self.updater.transaction['backup']) / 'receipt.json').exists())
+        self.assertTrue(Path(self.updater.transaction['previous_artifacts']).exists())
+
+    def test_admin_launch_or_restore_failure_never_reports_complete(self):
+        self.sup.maintenance = 'd' * 32
+        with patch.object(self.sup, 'launch_prepared', side_effect=RuntimeError('launch or restore failed')):
+            with self.assertRaisesRegex(RuntimeError, 'launch or restore failed'):
+                m.consume_admin_once(self.config, supervisor=self.sup, updater_factory=lambda config, supervisor: self.updater)
+        receipt = json.loads((self.root / 'admin-maintenance' / ('d' * 32 + '.json')).read_text())
+        self.assertEqual(receipt['phase'], 'failed')
+        self.assertTrue((self.root / 'HALTED.json').exists())
 
     def test_save_failure_never_fetches_or_builds_or_loads(self):
         self.sup.fail_save = True

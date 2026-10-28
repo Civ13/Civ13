@@ -7,16 +7,40 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+import byond_runtime
+import byond_toolchain
+
 CORE = 'code/modules/1713/flax_processing.dm'
 CONTROLS = {
     'payment': ('if (!use(2))', 'if (FALSE)', 'FAIL: bundle payment'),
     'replay': ('\tB.stage++', '\t// omitted stage advance', 'FAIL: comb stage advances'),
     'persistence': ('return key == "soaking" || ..()', 'return ..()', 'FAIL: soaking lock excluded'),
 }
+
+
+def runtime_identity(binary, archive):
+    if sys.platform == 'linux':
+        if archive is None:
+            raise ValueError('--byond-archive is required for Linux fixture identity')
+        return byond_runtime.verify_linux(binary, archive)
+    # Existing Windows launch path is not archive/member verification evidence.
+    return None
+
+
+def check_compile(build, expected_version):
+    output = build.stdout + build.stderr
+    if build.returncode:
+        raise RuntimeError('Fixture compiler exited nonzero: ' + output[-4000:])
+    try:
+        byond_toolchain.compiler_log(output, expected_version)
+    except ValueError as error:
+        raise RuntimeError('Fixture compiler version/result contract rejected: ' + output[-4000:]) from error
 
 
 def source_for(control):
@@ -32,6 +56,7 @@ def source_for(control):
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--negative-control', choices=CONTROLS)
     parser.add_argument('--source-check', action='store_true')
@@ -43,10 +68,13 @@ def main():
         return
     if not args.byond_bin or not args.output:
         parser.error('--byond-bin and --output are required for native verification')
+    if sys.platform == 'linux' and args.byond_archive is None:
+        parser.error('--byond-archive is required for Linux fixture identity')
+    requirement = byond_toolchain.load()
     args.output.mkdir(parents=True, exist_ok=True)
     if any(args.output.iterdir()):
         parser.error('Preserve existing evidence; use an empty output directory')
-    binary = args.byond_bin.resolve()
+    binary = args.byond_bin.absolute()  # Preserve links/traversal for identity rejection.
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -57,8 +85,10 @@ def main():
     paths = [CORE, 'code/modules/persistence/saving.dm',
              'code/modules/persistence/loading.dm', 'code/modules/persistence/functions.dm',
              'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm',
-             'tests/flax_processing/probe.dm', 'tests/flax_processing/run.py']
+             'tests/flax_processing/probe.dm', 'tests/flax_processing/run.py',
+             'scripts/byond_runtime.py', 'scripts/byond_toolchain.py', 'tools/byond/version.json']
     metadata = {'head_sha': commit, 'control': args.negative_control,
+                'expected_byond_version': requirement['version'],
                 'source_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}}
     (args.output / 'metadata.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
     (args.output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
@@ -88,12 +118,13 @@ def main():
             source += '\n#include "' + generated[3].name + '"\n'
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
         generated[0].write_text(source + '\n#include "tests/flax_processing/probe.dm"\n', encoding='utf-8')
+        identity = runtime_identity(binary, args.byond_archive)
+        (args.output / 'compiler-runtime.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=ROOT, capture_output=True, text=True, timeout=180, creationflags=flags)
         output = build.stdout + build.stderr
         (args.output / 'compile.log').write_text(output, encoding='utf-8')
-        if build.returncode or '516.1681' not in output or '0 errors, 0 warnings' not in output:
-            raise RuntimeError('Pinned compile failed: ' + output[-4000:])
+        check_compile(build, requirement['version'])
         with tempfile.TemporaryDirectory(prefix='civ13-flax-runtime-') as temporary:
             work = Path(temporary)
             for path in generated[4:]:
@@ -101,6 +132,8 @@ def main():
             shutil.copytree(ROOT / 'config/names', work / 'config/names')
             (work / 'config/crafting').mkdir(parents=True)
             shutil.copy2(ROOT / 'config/crafting/material_recipes_global.txt', work / 'config/crafting/material_recipes_global.txt')
+            identity = runtime_identity(binary, args.byond_archive)
+            (args.output / 'daemon-runtime.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
             result = subprocess.run([str(daemon), str(work / generated[4].name),
                                      *(['-invisible', '-close'] if os.name == 'nt' else []),
                                      '-trusted', '-log', 'runtime.log'], cwd=work,

@@ -1,4 +1,4 @@
-"""Isolated production registry hooks, Linux BYOND 516.1681. Never starts Civ13."""
+"""Isolated production registry hooks, Linux BYOND (default 516.1681). Never starts Civ13."""
 import argparse
 import hashlib
 import json
@@ -10,13 +10,12 @@ import subprocess
 import sys
 import time
 
-from test_source_contract import HOOKS, ROOT, SOURCES, violations
-
-def load_source():
-    return '\n'.join((ROOT / f'code/game/mob/living/simple_animal/hostile/{name}.dm').read_text() for name in SOURCES)
+from test_source_contract import HOOKS, ROOT, SOURCES, load_source, violations
 
 
 VERSION = '516.1681'
+# Historical callers stay strict 1681; the hosted 1688 target is selected explicitly.
+VERSIONS = ('516.1681', '516.1688')
 LIMIT = 2 * 1024 * 1024
 DIAGNOSTIC = re.compile(r'\bwarning:|\berror:|runtime error|\bRUNTIME\b|\bBUG\b|bad ref|bad loc|cannot read|cannot execute|segmentation|fatal|infinite loop|exception', re.I)
 
@@ -51,7 +50,7 @@ def expected_failures(control, hooks=HOOKS):
     return sorted(names)
 
 
-def prepare(source, control=None, hooks=HOOKS):
+def prepare(source, control=None, hooks=HOOKS, version=VERSION):
     bodies = extract(source, hooks)
     if control is not None:
         if control not in hooks:
@@ -151,15 +150,15 @@ var/parent_order_ok = 1
 		world.log << "BUG network contract initial=[initial_port] current=[port] reopen=[reopen]"
 		del(world)
 		return
-	if(byond_version != 516 || byond_build != 1681)
+	if(byond_version != 516 || byond_build != @BUILD@)
 		world.log << "BUG runtime version actual=[byond_version].[byond_build]"
 		del(world)
 		return
 CALLS
-	text2file(json_encode(list("version" = "516.1681", "initial_port" = initial_port, "closed_port" = port, "reopen" = reopen, "cases" = results)), "result.json")
+	text2file(json_encode(list("version" = "@VERSION@", "initial_port" = initial_port, "closed_port" = port, "reopen" = reopen, "cases" = results)), "result.json")
 	world.log << "DONE registry fixture"
 	del(world)
-'''.replace('CALLS', '\n'.join(calls))
+'''.replace('CALLS', '\n'.join(calls)).replace('@VERSION@', version).replace('@BUILD@', version.split('.')[1])
     return {'probe.dme': '#include "hooks.dm"\n#include "fixture.dm"\n',
             'hooks.dm': declarations + '\n\n' + '\n'.join(bodies.values()),
             'fixture.dm': accessors + fixture}
@@ -204,7 +203,7 @@ def read_bounded(path):
     return path.read_text(encoding='utf-8', errors='strict')
 
 
-def verify(result, log, control=None, hooks=HOOKS, runtime_log=None):
+def verify(result, log, control=None, hooks=HOOKS, runtime_log=None, version=VERSION):
     canonical = log if runtime_log is None else runtime_log
     if DIAGNOSTIC.search(log) or canonical.count('DONE registry fixture') != 1:
         raise ValueError('Runtime diagnostics or incomplete/duplicate completion')
@@ -221,7 +220,7 @@ def verify(result, log, control=None, hooks=HOOKS, runtime_log=None):
     if any(address != '127.0.0.1' for _, address in re.findall(
             r'World opened on network port ([0-9]+) for address ([^\s]+)\.', log)):
         raise ValueError('Non-loopback binding in output')
-    if result.get('version') != VERSION or any(result.get(k) != 0 for k in ('closed_port', 'reopen')):
+    if result.get('version') != version or any(result.get(k) != 0 for k in ('closed_port', 'reopen')):
         raise ValueError('Runtime version/network contract missing')
     rows = result.get('cases')
     if not isinstance(rows, list) or sorted(r.get('case', '') for r in rows) != sorted(case_names(hooks)):
@@ -240,7 +239,8 @@ def execute(args, runner=run):
     output.mkdir(parents=True, exist_ok=False)
     source = load_source()
     modes = [None, *HOOKS] if args.all_controls else [args.negative_control]
-    summary = {'status': 'incomplete', 'native_execution': False, 'version': VERSION,
+    version = args.expected_byond_version
+    summary = {'status': 'incomplete', 'native_execution': False, 'version': version,
                'source_sha256': hashlib.sha256(source.encode()).hexdigest(), 'modes': {}}
     deadline = time.monotonic() + 600
     try:
@@ -251,7 +251,7 @@ def execute(args, runner=run):
         for index, control in enumerate(modes):
             work = output / ('baseline' if control is None else 'control-' + str(index))
             work.mkdir()
-            sources = prepare(source, control)
+            sources = prepare(source, control, version=version)
             for name, content in sources.items():
                 (work / name).write_text(content, newline='\n')
             mode = {'control': control, 'native_execution': False, 'status': 'prepared',
@@ -260,14 +260,14 @@ def execute(args, runner=run):
             if args.prepare_only:
                 continue
             log = runner([str(compiler), '-max_errors', '0', 'probe.dme'], work, 'compile', deadline)
-            if not re.search(r'DM compiler version 516\.1681\b', log) or '0 errors, 0 warnings' not in log or DIAGNOSTIC.search(log):
+            if not re.search(r'DM compiler version ' + re.escape(version) + r'\b', log) or '0 errors, 0 warnings' not in log or DIAGNOSTIC.search(log):
                 raise ValueError('Pinned clean compilation required')
             summary['native_execution'] = mode['native_execution'] = True
             log = runner([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-invisible', '-close', '-trusted', '-nowebclient', '-log', 'runtime.log'], work, 'daemon', deadline)
             runtime_log = read_bounded(work / 'runtime.log')
             log += '\n' + runtime_log
             result = json.loads(read_bounded(work / 'result.json'))
-            verify(result, log, control, runtime_log=runtime_log)
+            verify(result, log, control, runtime_log=runtime_log, version=version)
             mode.update(status='passed', result=result)
             print(json.dumps(dict(control=control, status='passed', cases=len(result['cases']),
                                   expected_failures=expected_failures(control),
@@ -295,6 +295,7 @@ def main():
     p.add_argument('--byond-bin', type=Path)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--prepare-only', action='store_true')
+    p.add_argument('--expected-byond-version', choices=VERSIONS, default=VERSION)
     modes = p.add_mutually_exclusive_group()
     modes.add_argument('--negative-control', choices=list(HOOKS))
     modes.add_argument('--all-controls', action='store_true')

@@ -6,6 +6,7 @@ file replacements, credentials, or networking to the game are used.
 """
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -18,10 +19,18 @@ import sys
 import tempfile
 
 BIN = Path('/usr/local/byond/bin')
+CURRENT_RUNTIME = None
 MAX_BYTES = 256 * 1024 * 1024
 SCHEMA_BASE = '8b91aff1a86c99062b2c07403a7d397884c3c06d'
 TYPE_PATTERN = re.compile(r'/(?:mob|obj|datum|turf|area)(?:/[A-Za-z_][A-Za-z0-9_]*)*')
 FIELD_PATTERN = re.compile(r'[A-Za-z_][A-Za-z0-9_]{0,95}')
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None
+    spec = importlib.util.spec_from_file_location('inspector_current_runtime', Path(__file__).parents[1]/'current_runtime.py')
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
 
 WORLD_HEADER = r'''
 #define EXCEPTION(message) new /exception(message)
@@ -225,6 +234,7 @@ def native_run(command, stage, label, timeout=60, expect_rejection=False):
     log = stage / (label + '.log')
     env = os.environ.copy()
     env['LD_LIBRARY_PATH'] = str(BIN) + (':' + env['LD_LIBRARY_PATH'] if env.get('LD_LIBRARY_PATH') else '')
+    if CURRENT_RUNTIME: CURRENT_RUNTIME.before_launch(label, stage)
     with log.open('xb') as stream:
         result = subprocess.run(command, cwd=stage, env=env, stdout=stream,
                                 stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL,
@@ -241,7 +251,8 @@ def native_run(command, stage, label, timeout=60, expect_rejection=False):
 def compile_world(stage, name, text):
     (stage / (name + '.dme')).write_text(text, encoding='utf-8')
     log = native_run([str(BIN/'DreamMaker'), name+'.dme'], stage, name+'-compile')
-    require(re.search(r'DM compiler version\s+516[.]1681\b', log), 'Expected existing BYOND 516.1681 compiler.')
+    if CURRENT_RUNTIME: CURRENT_RUNTIME.validate_compile(0, log, name+'.dmb')
+    else: require(re.search(r'DM compiler version\s+516[.]1681\b', log), 'Expected existing BYOND 516.1681 compiler.')
     require('0 errors, 0 warnings' in log and (stage/(name+'.dmb')).is_file(),
             name + ' compilation did not pass with zero errors and warnings.')
 
@@ -318,12 +329,15 @@ def selftest(stage):
 
 
 def main():
-    global BIN
+    global BIN, CURRENT_RUNTIME
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--self-test-only', action='store_true')
     parser.add_argument('--source', type=Path, help='Explicit existing map_saves/2.sav; never used by self-test.')
     parser.add_argument('--byond-bin', type=Path, help='Native CI path; allowed only with --self-test-only.')
+    parser.add_argument('--byond-archive', type=Path)
     args = parser.parse_args()
+    require(not args.byond_archive or (args.self_test_only and args.source is None and args.byond_bin is not None),
+            'Current archive mode requires synthetic self-test only and explicit tools; private source mode stays historical.')
     if args.self_test_only:
         require(args.source is None, 'Synthetic self-test must not receive a private source path.')
     else:
@@ -332,8 +346,9 @@ def main():
                 'Specify the absolute existing map_saves/2.sav path with --source.')
     if args.byond_bin:
         require(args.self_test_only, '--byond-bin is limited to synthetic self-tests.')
-        BIN = args.byond_bin.resolve()
+        BIN = args.byond_bin.absolute() if args.byond_archive else args.byond_bin.resolve()
     require(os.geteuid() != 0, 'Run as the ordinary civ13 user, without sudo.')
+    CURRENT_RUNTIME = selected_runtime(BIN, args.byond_archive)
     for name in ('DreamMaker', 'DreamDaemon'):
         require((BIN/name).is_file() and os.access(BIN/name, os.X_OK), 'Existing BYOND binary missing: '+name)
     os.umask(0o077)
@@ -343,7 +358,7 @@ def main():
     print('Private staging directory: '+str(stage), flush=True)
     selftest(stage)
     summary = {'synthetic_selftest_passed': True, 'schema_version': 2,
-               'compiler_required': '516.1681',
+               'compiler_required': CURRENT_RUNTIME.identity['version'] if CURRENT_RUNTIME else '516.1681',
                'unknown_type_paths_retained': True, 'numeric_shard_order_passed': True,
                'scalar_values_omitted': True, 'malformed_type_leaf_rejected': True,
                'synthetic_save_bytes_unchanged': True,
