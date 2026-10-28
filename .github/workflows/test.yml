@@ -1074,9 +1074,10 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/flax-processing/positive"
+          python3 -B -m unittest discover -s tests/flax_processing -p 'test_*.py' -v
+          python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/flax-processing/positive"
           for control in payment replay persistence; do
-            python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control" --output "$RUNNER_TEMP/flax-processing/$control"
+            python3 tests/flax_processing/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control" --output "$RUNNER_TEMP/flax-processing/$control"
           done
       - name: Upload flax processing evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/flax_processing'))
