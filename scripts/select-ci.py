@@ -2,6 +2,7 @@
 import argparse
 import os
 import json
+import re
 from pathlib import PurePosixPath
 import subprocess
 
@@ -177,6 +178,22 @@ def introduced_tests(base, head, event):
     return sorted(suites)
 
 
+def validate_manual_base(base, head, cwd=None):
+    """Manual runs need explicit immutable, locally available distinct commits."""
+    if not re.fullmatch(r'[0-9a-f]{40}', base or '') or not re.fullmatch(r'[0-9a-f]{40}', head or ''):
+        raise ValueError('Manual CI requires comparison_base and head as full lowercase 40-character commit IDs')
+    if base == head:
+        raise ValueError('Manual comparison_base must differ from the head commit')
+    try:
+        for value in (base, head):
+            resolved = subprocess.check_output(['git', 'rev-parse', '--verify', value + '^{commit}'],
+                                               cwd=cwd, stderr=subprocess.PIPE, timeout=15).decode('utf-8').strip()
+            if resolved != value:
+                raise ValueError('Manual comparison commit identity mismatch')
+    except (subprocess.SubprocessError, UnicodeError) as exc:
+        raise ValueError('Manual comparison_base or head is unavailable in the local checkout') from exc
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', default='')
@@ -187,6 +204,11 @@ def main():
     parser.add_argument('--build-prefix', choices=('true', 'false'), default='false')
     parser.add_argument('--receipt', help='Exact-source machine-readable selection receipt')
     args = parser.parse_args()
+    if args.event == 'workflow_dispatch' and args.build_prefix == 'true':
+        try:
+            validate_manual_base(args.base, args.head)
+        except ValueError as error:
+            parser.error(str(error))
     payload = load_event(os.environ.get('GITHUB_EVENT_PATH'))
     policy = eligibility(args.event, payload, args.build_prefix == 'true')
     game, extensive, new_tests, reason = selections(

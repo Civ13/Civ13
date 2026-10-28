@@ -5,12 +5,67 @@ from unittest.mock import patch
 import subprocess
 import tempfile
 import os
+import json
+import sys
 
 spec = importlib.util.spec_from_file_location('selection', Path(__file__).resolve().parents[1] / 'scripts/select-ci.py')
 selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 class SelectionTests(unittest.TestCase):
+    def test_manual_comparison_base_requires_distinct_local_full_commits(self):
+        with tempfile.TemporaryDirectory() as directory:
+            def git(*args):
+                return subprocess.check_output(['git', '-C', directory, *args], stderr=subprocess.PIPE).decode().strip()
+            git('init')
+            git('config', 'user.name', 'Selection test')
+            git('config', 'user.email', 'selection@example.invalid')
+            file = Path(directory) / 'file.txt'
+            file.write_text('base', encoding='utf-8')
+            git('add', 'file.txt')
+            git('commit', '-m', 'base')
+            base = git('rev-parse', 'HEAD')
+            file.write_text('head', encoding='utf-8')
+            git('add', 'file.txt')
+            git('commit', '-m', 'head')
+            head = git('rev-parse', 'HEAD')
+            selection.validate_manual_base(base, head, cwd=directory)
+            for invalid in ('', 'HEAD', '0' * 40, 'f' * 40, head):
+                with self.subTest(base=invalid), self.assertRaises(ValueError):
+                    selection.validate_manual_base(invalid, head, cwd=directory)
+
+    def test_manual_workflow_routes_one_base_through_all_receipts(self):
+        workflow = (Path(__file__).resolve().parents[1] / '.github/workflows/test.yml').read_text()
+        self.assertIn('      comparison_base:\n', workflow)
+        self.assertIn('        required: true\n', workflow.split('      comparison_base:\n', 1)[1].split('      extensive_regressions:', 1)[0])
+        expression = "github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before"
+        self.assertEqual(workflow.count(expression), 4)
+
+    def test_manual_selector_publishes_only_validated_base_receipt(self):
+        root = Path(__file__).resolve().parents[1]
+        def revision(ref):
+            return subprocess.check_output(['git', 'rev-parse', ref], cwd=root, text=True).strip()
+        head, base = revision('HEAD'), revision('HEAD^1')
+        with tempfile.TemporaryDirectory() as directory:
+            output, receipt = Path(directory) / 'output', Path(directory) / 'receipt.json'
+            script = root / 'scripts/select-ci.py'
+            args = [sys.executable, '-B', str(script), '--base', base, '--head', head,
+                    '--event', 'workflow_dispatch', '--build-prefix', 'true',
+                    '--output', str(output), '--receipt', str(receipt)]
+            result = subprocess.run(args, cwd=root, capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            plan = json.loads(receipt.read_text(encoding='utf-8'))
+            self.assertEqual((plan['base'], plan['requested_base'], plan['head']), (base, base, head))
+            self.assertEqual(plan['comparison']['status'], 'available')
+            self.assertEqual(plan['new_tests'], [])
+            output.unlink(); receipt.unlink()
+            args[args.index('--base') + 1] = head
+            result = subprocess.run(args, cwd=root, capture_output=True, text=True, timeout=30)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('must differ', result.stderr)
+            self.assertFalse(output.exists())
+            self.assertFalse(receipt.exists())
+
     def test_extensive_is_explicit_manual_opt_in(self):
         self.assertTrue(selection.needs_extensive('workflow_dispatch', True))
         self.assertFalse(selection.needs_extensive('workflow_dispatch', False))

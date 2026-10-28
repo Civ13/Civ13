@@ -51,9 +51,12 @@ procedure bodies in each revision, then compares the disabled projections.
 Unrelated edits outside those procedures, including DME includes, remain allowed.
 Changes within those procedures require reconciliation with the base. A missing
 or mismatched base/head fails clearly; the suite never fetches a branch or uses
-moving master. `workflow_dispatch` supplies no event base and will fail with an
-actionable diagnostic if this suite is selected; use a PR/push with a valid base
-or run locally with explicit immutable IDs. Historical evidence
+moving master. Manual `workflow_dispatch` requires the `comparison_base` input:
+an available, full 40-character commit SHA distinct from the head. The selector
+validates it before publishing selection outputs and passes the same ID through
+baseline, compilation and aggregate receipts. Other reusable callers retain
+their existing selection behavior. Locally, provide both explicit immutable IDs.
+Historical evidence
 against `10d264e5896221b34949ee4b67c0fd2b94bde249` remains historical evidence,
 not a required hash for future shared files.
 Unsupported block comments or preprocessing directives in an affected adapter

@@ -30,7 +30,7 @@ TURN_GUARD = '\tif (!CIV13_GEOMETRIC_LOS_CORE && dir != get_dir(src,A))\n\t\tfac
 def event_base():
     base, head = os.environ.get('LOS_EVENT_BASE', ''), os.environ.get('LOS_EVENT_HEAD', '')
     if not re.fullmatch('[0-9a-f]{40}', base) or not re.fullmatch('[0-9a-f]{40}', head):
-        raise ValueError('LOS event base and head must be explicit full commit IDs; workflow_dispatch has no event base: run as a PR/push with a known base, or run locally with LOS_EVENT_BASE and LOS_EVENT_HEAD set to full commit IDs')
+        raise ValueError('LOS event base and head must be explicit full commit IDs; for workflow_dispatch supply comparison_base, or locally set LOS_EVENT_BASE and LOS_EVENT_HEAD')
     def git(*args):
         return subprocess.check_output(['git', *args], cwd=ROOT, stderr=subprocess.PIPE, timeout=15).decode('utf-8').strip()
     try:
@@ -67,6 +67,17 @@ def verify_adapters(base, current):
             raise AssertionError('LOS hook moved out of its production adapter: ' + path)
         if base_has_core and path in locations and addition not in adapter_fragment(base[path], locations[path]):
             raise AssertionError('LOS hook moved in event base: ' + path)
+        if path in ('code/game/mob/logout.dm', 'code/modules/client/client_procs.dm'):
+            # Both retirement guards must be the first executable statement.
+            # Removing a relocated hook would otherwise hide the ordering change.
+            expected_start = '\n' + addition.rstrip('\n')
+            body = adapter_fragment(current[path], locations[path])
+            if not body.startswith(body.split('\n', 1)[0] + expected_start):
+                raise AssertionError('LOS retirement guard is not first in ' + path)
+            if base_has_core:
+                body = adapter_fragment(base[path], locations[path])
+                if not body.startswith(body.split('\n', 1)[0] + expected_start):
+                    raise AssertionError('LOS retirement guard moved in event base: ' + path)
     for path, signature in locations.items():
         def project(source, has_core):
             body = adapter_fragment(source, signature)
@@ -376,6 +387,12 @@ class SourceBoundaries(unittest.TestCase):
         broken['code/game/mob/logout.dm'] = broken['code/game/mob/logout.dm'].replace('/mob/Logout()\n', '/mob/Logout()\n\treturn\n', 1)
         with self.assertRaises(AssertionError):
             verify_adapters(base, broken)
+        for path, first in [('code/game/mob/logout.dm', '\tclient?.clear_hover_name()\n'),
+                            ('code/modules/client/client_procs.dm', '\thuman_subtile_release_visuals()\n')]:
+            broken = dict(unrelated)
+            broken[path] = broken[path].replace(ADDITIONS[path], '', 1).replace(first, first + ADDITIONS[path], 1)
+            with self.assertRaisesRegex(AssertionError, 'retirement guard'):
+                verify_adapters(base, broken)
         broken = dict(unrelated)
         broken['code/game/mob/logout.dm'] = broken['code/game/mob/logout.dm'].replace('client?.clear_hover_name()', '// column-zero comment\n\treturn\n\tclient?.clear_hover_name()', 1)
         with self.assertRaises(AssertionError):
@@ -396,7 +413,7 @@ class SourceBoundaries(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'explicit full commit'):
                 event_base()
         with patch.dict(os.environ, {'LOS_EVENT_BASE': '', 'LOS_EVENT_HEAD': valid_head}):
-            with self.assertRaisesRegex(ValueError, 'workflow_dispatch has no event base'):
+            with self.assertRaisesRegex(ValueError, 'supply comparison_base'):
                 event_base()
         with patch.dict(os.environ, {'LOS_EVENT_BASE': '0' * 40, 'LOS_EVENT_HEAD': 'f' * 40}):
             with self.assertRaises(ValueError):

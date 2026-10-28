@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
+      comparison_base:
+        description: 'Required full 40-character commit SHA for manual CI comparison (must differ from head)'
+        type: string
+        required: true
       extensive_regressions:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
@@ -79,7 +83,7 @@ jobs:
     with:
       build_prefix: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
-      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+      base: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
   baseline:
     needs: changes
     runs-on: ubuntu-latest
@@ -101,7 +105,7 @@ jobs:
       - name: Run required bounded offline baseline
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
         run: python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/baseline
       - name: Retain offline commands, counts, logs and skips
@@ -413,7 +417,7 @@ jobs:
         if: always()
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           COMPILE_OUTCOME: ${{ steps.compile.outcome }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
         run: python3 -B scripts/ci_baseline.py compile --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --outcome "$COMPILE_OUTCOME" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/compile/compile.json
@@ -2086,7 +2090,7 @@ jobs:
       - name: Require selected jobs and exact-source execution receipts
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           CI_NEEDS: ${{ toJSON(needs) }}
           EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
           GATING_SELECTION: ${{ needs.changes.outputs.gating }}
