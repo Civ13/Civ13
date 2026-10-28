@@ -1,5 +1,32 @@
 # World-save regression world
 
+## Ordinary roundtrip compatibility
+
+`roundtrip.dme` includes `roundtrip_compat.dm` for the current loader's area
+registry, roof base type and generated-snow declarations. It leaves shared
+`stubs.dm` byte-identical because immutable character-return preparation pins
+that file. The registry adapts the ordinary production membership operations
+to this fixture's immediate `del()` lifecycle, including empty explicit areas.
+The snow scalar/overlay defaults and icon projection match production; this
+fixture has no weather worker and only exercises the loader's clear-ground
+reset on `/turf/test`. It does not establish generated-snow gameplay coverage.
+No roof objects or climate subtypes are introduced, and the existing topology
+refusals, production loader, roundtrip assertions and omission controls remain
+unchanged. Other fixture environments do not acquire these adapters implicitly.
+
+```sh
+python3 -B tests/world_save/test_roundtrip_compat.py -v
+```
+
+These offline tests execute only the existing runner's source-generation block
+for the positive case and all three controls, with process entrypoints poisoned.
+They check include closure, source parity, adapter scope and the unchanged shared
+input pin; they neither compile nor run DM. The historical declaration-only
+packet left `run-round-metadata.py` unchanged; its default still requires BYOND
+**516.1681**. The separate explicit profile candidate below does not retroactively
+change those receipts. Neither candidate admits native execution or proves a
+fixture pass; authorized isolated validation is still required.
+
 ## Protected sleep transfers
 
 Protected sleep sends a body to a different z-level while preserving scalar
@@ -119,6 +146,59 @@ the independent modern tamper assertion. CI runs the normal fixture and all thre
 controls and retains attempted-run logs/saves on failure. BYOND fixture success
 would not establish OpenDream behavior, coherent snapshot recovery, the 300-second
 crash-loss bound, zero-loss clean stopping or a month of crash-free operation.
+
+### Explicit round-metadata engine selection
+
+The historical command still defaults to **516.1681**, with its existing
+banner-only gate and original three exact control assertions. That legacy gate
+does not establish archive or daemon provenance. No environment variable or
+central-manifest update silently selects a different engine.
+
+An opt-in **Linux-only 516.1688** profile requires all three arguments below,
+in addition to the existing `--byond-bin`. It reuses the pinned, passive
+`scripts/byond_runtime.py` and `scripts/byond_toolchain.py` helpers. Immediately
+before each compiler/daemon launch it validates the exact acquisition receipt
+and matches DreamMaker, DreamDaemon, libbyond.so and libext.so to the reviewed
+Linux archive. Linked/mixed/mismatched members fail closed. Compilation also
+requires exactly one `DM compiler version 516.1688` banner and the clean result.
+The current profile does not accept the legacy banner or an arbitrary version.
+
+```sh
+# Only after separate admission for isolated Linux native execution:
+python3 tests/world_save/run-round-metadata.py \
+  --expected-byond-version 516.1688 \
+  --byond-bin /path/to/byond/bin \
+  --byond-archive /path/to/516.1688_byond_linux.zip \
+  --acquisition-receipt /path/to/byond-download.json
+# Repeat separately with --negative-control restore, preflight and integrity.
+```
+
+There is no download, installation, extraction or source fallback here.
+Keep the original acquisition source/cache-origin record; do not
+relabel historical results or fabricate receipts. Helper/manifest hash drift
+requires review rather than accepting a new toolchain automatically. The two
+`*-engine.json` files retain current-profile identity before each launch;
+`cleanup.json` retains attempted-process state on failure. `summary.json` names
+the expected version only after the unchanged exact fixture result succeeds.
+
+These checks bind installed bytes to the observed archive, not vendor-authenticated
+checksums, OS loader libraries, arbitrary external extensions or a native
+runtime-reported version. The existing process/deadline/diagnostic policy is
+unchanged and is not a continuous no-socket guarantee. Source preparation and
+injected Python tests do not establish DM compilation, save compatibility,
+DreamDaemon execution, client behavior or production readiness. The hosted
+workflow explicitly selects 516.1688 for the positive round-metadata command
+and all three controls, using the existing bootstrap outputs
+`BYOND/pinned.zip` and `.ci/compile/byond-download.json`. Other historical runners
+are unchanged and may retain independent engine/fixture blockers. Selector
+classification and native suite guards remain unchanged; this is not new native
+acceptance or a saved-character bed-fixture result.
+
+```sh
+python3 -B tests/world_save/test_round_metadata_engine.py -v
+python3 -B tests/world_save/test_roundtrip_compat.py -v
+python3 -B tests/test_byond_runtime.py -v
+```
 
 `Load_Entry` supplies a location only when constructing atoms. Non-atom datums,
 including matrices, are constructed with no arguments before saved fields are

@@ -1269,7 +1269,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/lighting-recovery"
           export TMPDIR="$RUNNER_TEMP/lighting-recovery"
           python3 tests/world_save/test_lighting_corner_allocation.py
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688 --byond-archive "$PWD/BYOND/pinned.zip" --acquisition-receipt "$PWD/.ci/compile/byond-download.json"
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting
           for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view lighting-eager lighting-shared; do
             python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
@@ -1380,9 +1380,9 @@ jobs:
           python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --wounds --negative-control wound-restore
           python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin"
           python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control integrity
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688 --byond-archive "$PWD/BYOND/pinned.zip" --acquisition-receipt "$PWD/.ci/compile/byond-download.json" --negative-control restore
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688 --byond-archive "$PWD/BYOND/pinned.zip" --acquisition-receipt "$PWD/.ci/compile/byond-download.json" --negative-control preflight
+          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --expected-byond-version 516.1688 --byond-archive "$PWD/BYOND/pinned.zip" --acquisition-receipt "$PWD/.ci/compile/byond-download.json" --negative-control integrity
           python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin"
           for control in generation alias binding; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"

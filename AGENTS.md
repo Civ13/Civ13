@@ -1,5 +1,22 @@
 # Civ13 - Agent guide
 
+<!-- Explicit legacy round-metadata profile candidate -->
+run-round-metadata.py keeps its historical 516.1681 default and assertion gates.
+Opt-in --expected-byond-version 516.1688 is Linux-only, requires archive plus
+acquisition receipt, and reuses pinned passive identity helpers before each
+native launch. Hosted round-metadata calls select it explicitly with the existing
+bootstrap archive/receipt; no automatic fallback or suite admission change.
+Legacy banner-only evidence is not archive provenance; injected/offline tests
+are not native acceptance. Preserve historical failures and saved-character pins.
+
+<!-- 2026-10-28: ordinary roundtrip loader compatibility -->
+`roundtrip_compat.dm` supplies current loader declarations only to roundtrip.dme;
+keep shared world-save stubs byte-identical to character-return input pins.
+Its ordinary area registry and snow icon projection do not enable topology or
+weather simulation. Offline preparation tests do not compile DM. That historical
+declaration-only packet left run-round-metadata.py unchanged; the default still
+requires legacy 516.1681. The explicit profile candidate does not relabel it.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
