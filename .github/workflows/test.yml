@@ -145,6 +145,12 @@ jobs:
       - name: Test representative save executor contracts without native effects
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/save_latency') || inputs.save_latency_regressions == true
         run: python3 -B -m unittest discover -s tests/save_latency/representative -v
+      - name: Check manual woodworking admission, accounting and Help contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/primitive_woodworking')
+        run: |
+          python3 scripts/build-crafting-atlas.py --catalog-only --check-game-catalog UI/crafting-atlas.json
+          python3 -I -S -B -m unittest discover -s tests/primitive_woodworking -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/animal_harvest -p test_tanning_sources.py -k log -v
       - name: Check Art of the Deal map regressions offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aotd_map')
         run: python3 -B -m unittest discover -s tests/aotd_map -p 'test_*.py' -v

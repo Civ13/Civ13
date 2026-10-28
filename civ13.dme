@@ -1073,6 +1073,7 @@
 #include "code\modules\magic\magic_weapons.dm"
 #include "code\modules\magic\spells.dm"
 #include "code\modules\materials\material_sheets.dm"
+#include "code\modules\1713\primitive_woodworking.dm"
 #include "code\modules\materials\materials.dm"
 #include "code\modules\multiz\_stubs.dm"
 #include "code\modules\multiz\area_teleporter.dm"
