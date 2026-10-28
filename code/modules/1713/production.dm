@@ -2146,7 +2146,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /obj/structure/sawmill
 	name = "Primitive Saw Mill"
-	desc = "A small saw mill, used to cut logs into planks. This crude machine only produces 1 plank per log."
+	desc = "A small saw mill. Insert sharpened flint as a blade, then use logs on it to cut one plank per log. The blade wears out."
 	icon = 'icons/obj/plankage.dmi'
 	icon_state = "primitive_sawmill"
 	anchored = TRUE
@@ -2158,6 +2158,10 @@
 	var/tmp/obj/item/stack/current_material = null
 	var/tmp/mob/living/human/current_user = null
 	var/tmp/work_time_amount = 0
+	// The blade is consumed on installation; each use cuts one log.
+	var/flint_blade_uses = 0
+	var/tmp/primitive_busy = FALSE
+	var/tmp/primitive_epoch = 0
 
 /obj/structure/sawmill/large
 	name = "Large Saw Mill"
@@ -2175,6 +2179,85 @@
 	bound_height = 32
 	icon_state = "sawmill_power"
 	powerneeded = 1
+
+// Only the primitive mill uses this blade. It cannot be removed and reinserted.
+/obj/structure/sawmill/proc/is_primitive_mill()
+	return !istype(src, /obj/structure/sawmill/large) && !istype(src, /obj/structure/sawmill/powered)
+
+/obj/structure/sawmill/persistence_runtime_var(key)
+	return key == "primitive_busy" || key == "primitive_epoch" || ..()
+
+/obj/structure/sawmill/proc/cancel_primitive_work()
+	primitive_epoch++
+	primitive_busy = FALSE
+	icon_state = "primitive_sawmill"
+
+/obj/structure/sawmill/wrench_action(mob/living/human/H)
+	var/was_anchored = anchored
+	. = ..()
+	// A later re-anchor must not revive a cut started before unfastening.
+	if (is_primitive_mill() && anchored != was_anchored)
+		cancel_primitive_work()
+
+/obj/structure/sawmill/proc/primitive_access(obj/item/I, mob/living/human/H)
+	return !QDELETED(src) && !QDELETED(I) && !QDELETED(H) && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && isturf(loc) && isturf(H.loc) && in_range(src, H) && I.loc == H && H.item_is_in_hands(I) && !H.incapacitated()
+
+/obj/structure/sawmill/proc/install_flint(obj/item/weapon/flint/F, mob/living/human/H)
+	if (primitive_busy || flint_blade_uses > 0 || !primitive_access(F, H) || !F.sharpened)
+		to_chat(H, SPAN_WARNING("The mill needs an empty blade mount and sharpened flint held in your hand."))
+		return FALSE
+	if (!H.drop_from_inventory(F))
+		return FALSE
+	qdel(F)
+	flint_blade_uses = 20 // Provisional balance: 20 logs per blade.
+	to_chat(H, SPAN_NOTICE("You fit the sharpened flint blade into the saw mill."))
+	return TRUE
+
+/obj/structure/sawmill/proc/cut_primitive_log(obj/item/stack/material/wood/W, mob/living/human/H)
+	// The only defined log-to-plank material mapping is wood -> woodplank.
+	// Refuse unknown material variants instead of silently changing their type.
+	if (QDELETED(W) || W.default_type != "wood" || !W.material || W.material.name != "wood")
+		to_chat(H, SPAN_WARNING("This mill cannot process that kind of wood."))
+		return FALSE
+	if (primitive_busy || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || W.onfire || W.amount < 1 || !H.in_mood() || H.getStatCoeff("strength") <= 0)
+		to_chat(H, SPAN_WARNING("The mill must be anchored and idle, with a usable flint blade and a held log."))
+		return FALSE
+	primitive_busy = TRUE
+	primitive_epoch++
+	var/token = primitive_epoch
+	var/atom/mill_location = loc
+	icon_state = "primitive_sawmill1"
+	H.visible_message(SPAN_NOTICE("[H] starts cutting a log on [src]."))
+	// Provisional balance: 20 ds at coefficient 1, versus the axe's 80 ds.
+	var/completed = do_after(H, 20 / H.getStatCoeff("strength"), src)
+	if (QDELETED(src) || token != primitive_epoch)
+		return FALSE
+	cancel_primitive_work()
+	if (!completed || loc != mill_location || !anchored || flint_blade_uses < 1 || !primitive_access(W, H) || W.onfire || W.amount < 1 || W.default_type != "wood" || !W.material || W.material.name != "wood")
+		return FALSE
+	var/turf/site = get_turf(src)
+	var/wood_color = W.color
+	var/wood_customcolor = W.customcolor
+	var/wood_customcolor1 = W.customcolor1
+	var/wood_customcolor2 = W.customcolor2
+	var/wood_customname = W.customname
+	// Material stacks' use() override discards its parent's return value.
+	// Validate immediately before debit; omit H to avoid Production discounts.
+	W.use(1)
+	flint_blade_uses--
+	var/obj/item/stack/material/woodplank/P = new(site, 1, FALSE)
+	P.color = wood_color
+	P.customcolor = wood_customcolor
+	P.customcolor1 = wood_customcolor1
+	P.customcolor2 = wood_customcolor2
+	P.customname = wood_customname
+	new /obj/item/stack/bark(site, 1)
+	playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+	if (flint_blade_uses == 0)
+		to_chat(H, SPAN_WARNING("The flint blade breaks. Fit another sharpened flint to continue."))
+	else
+		to_chat(H, SPAN_NOTICE("You cut the log into a plank and collect its bark."))
+	return TRUE
 
 /obj/structure/sawmill/proc/check_power()
 	if (!powersource || !powerneeded)
@@ -2330,6 +2413,12 @@
 		current_user = null
 
 /obj/structure/sawmill/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob, var/obj/item/I)
+	if (is_primitive_mill() && istype(W, /obj/item/weapon/flint))
+		install_flint(W, H)
+		return
+	if (is_primitive_mill() && istype(W, /obj/item/stack/material/wood))
+		cut_primitive_log(W, H)
+		return
 	check_power()
 	if (istype(W, /obj/item/stack/material/wood))
 		produce(W, H, /obj/item/stack/material/woodplank)
@@ -2385,8 +2474,14 @@
 
 /obj/structure/sawmill/after_load()
 	. = ..()
-	finish_work()
+	if (is_primitive_mill())
+		cancel_primitive_work()
+	else
+		finish_work()
 
 /obj/structure/sawmill/before_save()
 	. = ..()
-	finish_work()
+	if (is_primitive_mill())
+		cancel_primitive_work()
+	else
+		finish_work()

@@ -51,6 +51,13 @@ SUITES = {
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Source and injected-help contracts only; this suite does not run DM.
+    # Keep shared production and Atlas sources unmapped so their existing
+    # conservative all-suite fallback remains intact.
+    'sawmill': {'files': ('tests/sawmill/test_contract.py',
+                           'tests/test_atlas_navigation.py',
+                           'tests/player_help/test_recipe_context.py'), 'paths': (
+        'tests/sawmill/',)},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
