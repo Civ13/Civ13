@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
+      comparison_base:
+        description: 'Required full 40-character commit SHA for manual CI comparison (must differ from head)'
+        type: string
+        required: true
       exclusion_comparison_base:
         description: 'Full immutable base commit SHA, distinct from the selected head; required when running exclusion checks'
         type: string
@@ -85,7 +89,7 @@ jobs:
       build_prefix: true
       lint_workflows: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
-      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+      base: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
   baseline:
     needs: changes
     if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
@@ -117,7 +121,7 @@ jobs:
         id: baseline
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
         run: |
           mkdir -p .ci/baseline
@@ -477,7 +481,7 @@ jobs:
         if: always() && needs.changes.result == 'success' && (steps.simple_checkout.outcome == 'success' && steps.simple_prepare.outcome == 'success' || steps.history_checkout.outcome == 'success')
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           COMPILE_OUTCOME: ${{ steps.compile.outcome }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
         run: |
@@ -2249,7 +2253,7 @@ jobs:
       - name: Require selected jobs and exact-source execution receipts
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           CI_NEEDS: ${{ toJSON(needs) }}
           EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
           GATING_SELECTION: ${{ needs.changes.outputs.gating }}
