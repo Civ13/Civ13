@@ -9,6 +9,9 @@ exclusions and area_change_owner; already integrated lighting policy stays intac
 Keep immutable historical bounded-save tests and lighting omission/parent controls,
 plus actual CLI preparation tests for evolved pre/post-lighting event bases and
 one-sided regressions. Source-only checks do not authorize native work.
+The selected exclusion Linux entry point is explicitly 516.1688 and verifies the
+existing pinned archive/members at admission and execution boundaries. Preserve
+the historical 516.1681 gate, shared resource/cleanup limits and causal controls.
 
 <!-- 2026-10-19: disabled lighting composition V2 -->
 Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.

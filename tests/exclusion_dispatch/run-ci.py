@@ -24,7 +24,7 @@ def limits():
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
 
 
-def run(command, work, role, deadline):
+def run(command, work, role, deadline, *, environment=None):
     remaining = min(40, deadline - time.monotonic())
     if remaining <= 0:
         raise RuntimeError('Aggregate CI deadline expired before launch')
@@ -33,7 +33,7 @@ def run(command, work, role, deadline):
     started = time.monotonic()
     # Git otherwise maps up to 1 GiB of a packed repository per window,
     # exceeding the child's 512 MiB address-space bound during source reads.
-    environment = dict(os.environ, GIT_CONFIG_COUNT='2',
+    environment = dict(os.environ if environment is None else environment, GIT_CONFIG_COUNT='2',
                        GIT_CONFIG_KEY_0='core.packedGitWindowSize', GIT_CONFIG_VALUE_0='16m',
                        GIT_CONFIG_KEY_1='core.packedGitLimit', GIT_CONFIG_VALUE_1='32m')
     try:

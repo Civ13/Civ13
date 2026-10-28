@@ -13,7 +13,7 @@ INHERITED = (
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 )
 FIXTURE = tuple('tests/exclusion_dispatch/' + name for name in (
-    'run.py', 'run-ci.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm'))
+    'run.py', 'run-ci.py', 'run-ci-current.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm'))
 
 
 def git(repo, *arguments):

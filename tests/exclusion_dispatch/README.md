@@ -32,6 +32,18 @@ entry point independently validates the actual event base and checked-out head.
 No production change or native acceptance is introduced by this test reconciliation.
 All native holds/version gates remain.
 
+The selected Linux lane uses `run-ci-current.py`, an explicit 516.1688 entry
+point. Admission and each pre-compiler/pre-daemon/post-daemon boundary verify the
+existing pinned Linux archive and four installed members through
+`scripts/byond_runtime.py`; loader injection is refused and native children bind
+the verified installation. The historical `run-ci.py` main retains its exact
+516.1681 gates, limits, cleanup, network/parity checks and three mutation controls.
+Its shared process helper only accepts an optional explicit child environment.
+The current lane keeps the same 180-second aggregate, 40-second child CPU/wall,
+512 MiB address-space, 16 MiB file and zero-core bounds. Source-only generation
+does not execute the historical caller's runtime gate or constitute current
+native acceptance. Mocked pipeline checks cannot establish native success.
+
 ## Preserved earlier reference notes (historical)
 
 The reference statements below describe prior integration checkpoints; they do
