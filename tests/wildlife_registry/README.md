@@ -11,17 +11,20 @@ One-time review against master 5bf351248de6050876fe5b53f91209a970cc5668 verifies
 only eight production operators change. The separate farm patch is not included.
 All-state PR searches for bear_count, bison_count and wolf_count found no prior
 repair; current file history still contains the original intersections.
+Deer death/Destroy were added later (2026-10-28, below); the suite now covers ten hooks.
 
 Run offline with the Python standard library:
 
     python -m unittest discover -s tests/wildlife_registry -v
 
-Five source-contract tests check all eight bounded hook bodies, parent calls,
+Five source-contract tests (plus the deer and engine-selection contracts in
+`test_deer_contract.py`) check all ten bounded hook bodies, parent calls,
 wrong-registry/clear-all/missing-parent mutations, individual reversions and an
 all-intersection control. Unrelated source additions are allowed. No Git history
 is required. These are textual checks, not execution or emulation of DM semantics.
 No native compiler/runtime, save/load or connected gameplay acceptance is claimed.
-No CI workflow change, deployment or external publication is included.
+CI runs this suite's native lane with an explicit `--expected-byond-version 516.1688`
+(see the 2026-10-28 section). No deployment or external publication is included.
 
 Native acceptance should exercise production hooks with several peer identities,
 repeated death, Destroy without death, death then Destroy and unregistered owner
@@ -30,7 +33,7 @@ lifecycle and reproduction issues remain outside this operator correction.
 
 ## Isolated native production-hook runner
 
-`run_native.py` builds only the exact 15 production hook declarations/bodies and
+`run_native.py` builds only the exact ten production hook declarations/bodies and
 an inert fixture, not Civ13 or its startup adapters. Native `/mob` identities and
 native lists are used. Parent death/Destroy hooks only record invocation and
 observe that removal happened before the parent call. Generated registry getters
@@ -40,8 +43,8 @@ a fresh list, so compound-assignment alias behavior cannot fool the oracle.
 Each hook checks registered removal, repeated removal, and an unregistered owner,
 always retaining two distinct peer identities. Every type with both hooks also
 checks death followed by Destroy. Destroy-only cases do not call death first.
-There are 28 cases per run. `--all-controls` compiles/runs the baseline followed
-by all 8 exact single-target restorations of `&=`. A control must fail exactly
+There are 35 cases per run. `--all-controls` compiles/runs the baseline followed
+by all 10 exact single-target restorations of `&=`. A control must fail exactly
 its three direct cases and, where present, its type's death/Destroy sequence.
 Unexpected failures, missing/duplicate cases, or a surviving control fail closed.
 
@@ -49,7 +52,8 @@ Prepare packets without any native execution:
 
     python tests/wildlife_registry/run_native.py --prepare-only --all-controls --output /tmp/wildlife-registry-sources
 
-Run on an authorized Linux host with BYOND 516.1681 already available:
+Run on an authorized Linux host with BYOND 516.1681 already available (add
+`--expected-byond-version 516.1688` for the hosted 1688 engine):
 
     python tests/wildlife_registry/run_native.py --byond-bin /path/to/byond/bin --all-controls --output /tmp/wildlife-registry-native
 
