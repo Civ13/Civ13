@@ -1,4 +1,8 @@
 [
+  "/obj/item/stack/material/wood_piece",
+  "/obj/item/stack/material/crude_plank",
+  "/obj/item/weapon/material/wooden_wedge",
+  "/obj/item/weapon/hammer/tribalhammer",
   "/obj/item/stack/bark",
   "/obj/item/stack/material/rawhide",
   "/obj/item/stack/material/hairlesshide",

@@ -70,6 +70,14 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/functions.dm')},
+    # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
+    # and inert Help imports. No native sprite export or engine launch.
+    # Shared material/Atlas inputs retain their conservative all-suite fallback.
+    'woodworking': {'files': ('tests/primitive_woodworking/test_source.py',
+                              'tests/test_atlas_navigation.py'), 'paths': (
+        'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
+        'scripts/atlas/woodworking.py', 'scripts/atlas/woodworking-contract.json',
+        'code/modules/persistence/functions.dm', 'civ13.dme')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
