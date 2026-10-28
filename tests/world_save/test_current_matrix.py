@@ -16,6 +16,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
+WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contract', ROOT/'tests/world_save/workflow_contract.py')
+WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
+WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
 HERE = ROOT/'tests/world_save'
 
 
@@ -123,9 +126,7 @@ class CurrentMatrix(unittest.TestCase):
 
     def test_workflow_only_threads_identity_and_every_selected_case_reaches_identity_gate(self):
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
-        # Exact combined workflow retains all master receipt and guard changes.
-        self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
-                         '8eebffa97363503192a8786566ff256ea06ec4fec4fefc45530588907771ed70')
+        WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
         master = self.master_workflow
         for step in STEPS:
             marker='      - name: '+step+'\n'

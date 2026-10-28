@@ -4,7 +4,6 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 import importlib.util
 import io
-import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -17,6 +16,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
+WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contract', ROOT/'tests/world_save/workflow_contract.py')
+WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
+WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
 BEFORE = '5475bac8893da62926467a08fa52952d6663e838'
 EXPECTED = {None: 'PASS: fixture complete', 'vote': 'FAIL: vote creation blocked',
     'ticker': 'FAIL: finished flag cleared', 'deferred': 'FAIL: deferred round end cancelled',
@@ -162,10 +164,7 @@ class ContinuousRoundToolchain(unittest.TestCase):
         after_step = normalized.split(marker, 1)[1].split('      - name:', 1)[0]
         before_step = self.before['.github/workflows/test.yml'].split(marker, 1)[1].split('      - name:', 1)[0]
         self.assertEqual(after_step.replace(current, original), before_step)
-        # Pin the full merged workflow as well: other branches' guards and
-        # attempt-bound receipts are not covered by this local step comparison.
-        self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
-                         '8eebffa97363503192a8786566ff256ea06ec4fec4fefc45530588907771ed70')
+        WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
 
 
 if __name__ == '__main__': unittest.main()

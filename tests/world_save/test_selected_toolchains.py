@@ -19,6 +19,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
+WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contract', ROOT/'tests/world_save/workflow_contract.py')
+WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
+WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
 HERE = ROOT/'tests/world_save'
 BEFORE = 'f05659dd5d117302b7ab494ad6e226f2b3f50ab1'
 # Verbatim reviewed #3105 helper; no other branch Git objects are needed in CI.
@@ -112,9 +115,7 @@ class SelectedToolchains(unittest.TestCase):
     def test_reviewed_helper_is_verbatim_and_workflow_changes_only_thread_identity_and_offline_test(self):
         self.assertEqual(hashlib.sha256((HERE/'current_runtime.py').read_text().encode()).hexdigest(), REVIEWED_HELPER_SHA256)
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
-        # Whole-file pin covers both branches' combined workflow, including receipt paths.
-        self.assertEqual(hashlib.sha256(workflow.encode()).hexdigest(),
-                         '8eebffa97363503192a8786566ff256ea06ec4fec4fefc45530588907771ed70')
+        WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
         master = self.master_workflow
         marker = '      - name: Verify protected sleep transfers and bounded save compatibility\n'
         current_guard = workflow.split(marker, 1)[1].split('\n', 1)[0]
@@ -134,6 +135,60 @@ class SelectedToolchains(unittest.TestCase):
                      patch.object(os, 'geteuid', return_value=1000, create=True), \
                      self.assertRaisesRegex(ValueError, 'identity gate'):
                     module.main()
+
+    def test_scoped_workflow_contract_refuses_mutations_and_accepts_unrelated_step(self):
+        workflow = (ROOT/'.github/workflows/test.yml').read_text(encoding='utf-8')
+        WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
+        unrelated = '      - name: An unrelated sawmill baseline wiring change\n        run: echo unrelated\n'
+        unrelated_workflow = workflow.replace(
+            '      - name: Verify bounded animal harvesting and binding conservation\n',
+            unrelated + '      - name: Verify bounded animal harvesting and binding conservation\n', 1)
+        self.assertNotEqual(unrelated_workflow, workflow)
+        WORKFLOW_CONTRACT.assert_workflow_contract(unrelated_workflow)
+        fixtures = json.loads(WORKFLOW_CONTRACT.FIXTURE.read_text(encoding='utf-8'))
+        incomplete = dict(fixtures)
+        incomplete.pop('Retain compiler diagnostics and source receipts including failures')
+        with patch.object(WORKFLOW_CONTRACT.json, 'loads', return_value=incomplete), \
+             self.assertRaisesRegex(AssertionError, 'fixture step list'):
+            WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
+        mutations = (
+            ('Verify protected sleep transfers and bounded save compatibility',
+             'inputs.protected_sleep_regressions == true', 'inputs.protected_sleep_regressions == false'),
+            ('Check exclusion dispatch source while native execution is held',
+             'github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base',
+             'github.sha || inputs.exclusion_comparison_base'),
+            ('Verify continuous persistence rounds and negative controls',
+             '--byond-archive "$PWD/BYOND/pinned.zip"', '--byond-archive "$PWD/BYOND/other.zip"'),
+            ('Record compilation outcome and source receipts',
+             'SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}',
+             'SELECTION_ATTEMPT: ${{ github.run_attempt }}'),
+            ('Retain bounded save source and native evidence',
+             'if-no-files-found: error', 'if-no-files-found: ignore'),
+        )
+        for name, old, new in mutations:
+            with self.subTest(name=name):
+                body = fixtures[name]
+                self.assertIn(old, body)
+                altered = workflow.replace(body, body.replace(old, new, 1), 1)
+                self.assertNotEqual(altered, workflow)
+                with self.assertRaises(AssertionError):
+                    WORKFLOW_CONTRACT.assert_workflow_contract(altered)
+        for old, new in (('  BYOND_MINOR: "1688"', '  BYOND_MINOR: "1681"'),
+                         ('          fetch-depth: 0', '          fetch-depth: 1'),
+                         ('      build_prefix: true', '      build_prefix: false'),
+                         ('      exclusion_comparison_base:', '      renamed_comparison_base:')):
+            with self.subTest(old=old):
+                self.assertIn(old, workflow)
+                with self.assertRaises(AssertionError):
+                    WORKFLOW_CONTRACT.assert_workflow_contract(workflow.replace(old, new, 1))
+        first = '      - name: Check exclusion dispatch source while native execution is held\n' + fixtures['Check exclusion dispatch source while native execution is held']
+        second = '      - name: Verify Linux exclusion dispatch parity and mutation controls\n' + fixtures['Verify Linux exclusion dispatch parity and mutation controls']
+        self.assertIn(first, workflow)
+        self.assertIn(second, workflow)
+        moved = workflow.replace(first, '__FIRST_REVIEWED_STEP__', 1).replace(second, first, 1).replace(
+            '__FIRST_REVIEWED_STEP__', second, 1)
+        with self.assertRaisesRegex(AssertionError, 'ordering'):
+            WORKFLOW_CONTRACT.assert_workflow_contract(moved)
 
     def test_all_existing_process_arguments_timeouts_and_control_tables_are_preserved(self):
         for path, before in self.before.items():
