@@ -55,6 +55,13 @@ SUITES = {
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Source and injected-help contracts only; this suite does not run DM.
+    # Keep shared production and Atlas sources unmapped so their existing
+    # conservative all-suite fallback remains intact.
+    'sawmill': {'files': ('tests/sawmill/test_contract.py',
+                           'tests/test_atlas_navigation.py',
+                           'tests/player_help/test_recipe_context.py'), 'paths': (
+        'tests/sawmill/',)},
     # Keep shared game sources unmapped where they previously selected the
     # all-suite fallback; persistence was already mapped by existing suites.
     'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
