@@ -71,20 +71,25 @@ def add_processors(files, add, records):
         return source[start:end if end != -1 else len(source)], source[:start].count('\n') + 1
 
     saw, saw_line = body('/obj/structure/sawmill/proc/produce(')
+    primitive, primitive_line = body('/obj/structure/sawmill/proc/cut_primitive_log(')
     finish, _ = body('/obj/structure/sawmill/proc/finish_work(')
     attack, _ = body('/obj/structure/sawmill/attackby(')
     yields = re.findall(r'current_work = new P\(null, W.amount \* (\d+), FALSE\)', saw)
     if yields != ['10', '12', '4'] or 'give_exp' not in finish or 'clamp(ceil(this_production.amount/2' not in finish or '/obj/item/stack/material/woodplank' not in attack:
         raise ValueError('Sawmill source contract changed; review atlas quantities and conditions')
+    if 'new(site, 4, FALSE)' not in primitive or 'flint_blade_uses--' not in primitive or 'cut_primitive_log(W, H)' not in attack:
+        raise ValueError('Primitive sawmill source contract changed; review atlas quantities and conditions')
     for required in ('!H.in_mood()', '!anchored', 'istype(src, /obj/structure/sawmill/powered) && powered == FALSE', 'if (current_work)', 'if (do_after(H, work_time_amount, src.loc))'):
         if required not in saw:
             raise ValueError('Sawmill source contract changed; review atlas conditions')
     for suffix, name, amount in [('', 'Primitive sawmill', yields[2]), ('/large', 'Large sawmill', yields[0]), ('/powered', 'Powered sawmill', yields[1])]:
         station = '/obj/structure/sawmill' + suffix
         conditions = 'Anchored, idle sawmill; actor in mood; complete the action. Nominal yield per log; skill failure can reduce output. Interrupting can lose inputs. Time depends on stack size, crafting and dexterity.'
+        if not suffix:
+            conditions = 'Anchored, idle primitive mill; held ordinary log and installed sharpened flint blade required. One log yields four planks and one bark in 20 deciseconds at strength coefficient 1. Each blade cuts 20 logs. Interruption or saving cancels work without consuming a log or blade use.'
         if suffix == '/powered':
             conditions += ' Requires cable power (powerneeded = 1).'
-        add(name + ': logs to planks', 'Processor', [('/obj/item/stack/material/wood', 1)], [('/obj/item/stack/material/woodplank', amount + ' nominal')], path, saw_line, conditions)
+        add(name + ': logs to planks', 'Processor', [('/obj/item/stack/material/wood', 1)], [('/obj/item/stack/material/woodplank', amount + ' nominal')], path, primitive_line if not suffix else saw_line, conditions)
         records[-1].update(processor='sawmill', processor_name='Sawmills', station=station)
     mill, line = body('/obj/structure/mill/attackby(')
     mill_finish, _ = body('/obj/structure/mill/proc/finish_work(')
