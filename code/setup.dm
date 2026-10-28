@@ -113,6 +113,8 @@
 		admin_notice("<span class='danger'>Failed to load the dictionary!</span>", R_DEBUG)
 	sleep(-1)
 /////////////////PERSISTENCE STUFF/////////////////////
+	// An intended or incomplete startup restore must resolve before a notice.
+	var/startup_round_pending = persistence_restart.startup_hold
 /*	var/Fp = file("set_persistent.py")
 	if (fexists(Fp))
 		shell("sudo python3 /home/1713/rescue.py &")
@@ -152,25 +154,41 @@
 		// save+reboot cycle (see start_persistence_loop()) relies on this to
 		// carry the world across restarts.
 		if (!persistence_restart.startup_hold && fexists("map_saves/map.txt"))
-			var/list/saved_meta = splittext(file2text("map_saves/map.txt"), "\n")
+			// Any existing save needs resolution, even if its header is unreadable
+			// or for another map. Do not announce a provisional fresh identity.
+			startup_round_pending = TRUE
+			var/saved_metadata_text
+			try
+				saved_metadata_text = file2text("map_saves/map.txt")
+			catch
+				world.log << "Saved map metadata could not be read; round announcement remains pending."
+			var/list/saved_meta = istext(saved_metadata_text) ? splittext(saved_metadata_text, "\n") : list()
 			if (saved_meta.len && saved_meta[1] == map.ID)
 				if (fexists("map_saves/save_complete.txt"))
+					startup_round_pending = TRUE
 					nextsave = world.realtime + 216000 // don't immediately resave what we are about to load
 					spawn(50)
 						if (ticker)
 							to_chat(world, "<big><b>Restoring the world from the last persistent save...</b></big>")
-							ticker.loadmap()
+							if(ticker.loadmap()) announce_restored_round_once()
 				else
+					startup_round_pending = TRUE
 					admin_notice("<span class='danger'>A map save exists but has no completion marker (interrupted save?). Not auto-loading; restore map_saves/ from map_backups/ and use the Load Map verb if needed.</span>", R_DEBUG)
 			else
 				admin_notice("<span class='danger'>Found a map save for '[saved_meta.len ? saved_meta[1] : "unknown"]' but the current map is '[map.ID]'. Not auto-loading.</span>", R_DEBUG)
+		else if (!persistence_restart.startup_hold && fexists("map_saves/save_complete.txt"))
+			startup_round_pending = TRUE
+			admin_notice("<span class='danger'>A save completion marker exists without map metadata. Not auto-loading or announcing a round.</span>", R_DEBUG)
 
 	// All constructors/configuration are initialized before importing. An intent
 	// applies independently of the PERSISTENCE gamemode configuration above.
 	if(persistence_restart.startup_hold)
 		nextsave = world.realtime + 216000
 		spawn(50)
-			if(ticker) persistence_restart.resume_startup()
+			if(ticker && persistence_restart.resume_startup() && persistence_restart.players_ready)
+				announce_restored_round_once()
+	if(!startup_round_pending)
+		announce_round_start_once()
 	//////////////////////////////////////////////////////
 	admin_notice("<span class='danger'>Initializations complete.</span>", R_DEBUG)
 	sleep(-1)
