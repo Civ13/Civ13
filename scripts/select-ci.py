@@ -106,7 +106,8 @@ def eligibility(event, payload, build_prefix):
     elif not metadata_valid:
         scope_reason = 'Missing event scope metadata; selection must fail closed'
     compile_eligible = ordinary or supported_edit or forced
-    compile_reason = ('Explicit build: request or incomplete metadata requires compilation' if forced else
+    compile_reason = ('Manual CI requires compilation and the native toolchain' if build_prefix and event == 'workflow_dispatch' else
+                      'Explicit build: request or incomplete metadata requires compilation' if forced else
                       'Supported edited PR: evaluate exact base/head diff' if supported_edit else
                       'Ordinary/legacy event: evaluate exact base/head diff' if ordinary else
                       'Outside automatic compilation scope')
@@ -127,7 +128,11 @@ def eligibility(event, payload, build_prefix):
 def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     policy = eligibility(event, payload or {}, build_prefix)
     game, reason = select(base, head) if policy['compile']['eligible'] else (False, 'Outside ordinary CI subscription')
-    if policy['forced']:
+    if build_prefix and event == 'workflow_dispatch':
+        # Manual inputs can request native fixtures independently of the diff.
+        # The build job also installs their BYOND toolchain.
+        game, reason = True, 'Manual CI run; compile game and prepare native toolchain'
+    elif policy['forced']:
         game, reason = True, 'build: request or incomplete event metadata; compile game'
     new_tests = (sorted(set(introduced_tests(base, head, event)) |
                         set(changed_atlas_tests(base, head, event)))

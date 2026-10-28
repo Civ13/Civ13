@@ -208,6 +208,24 @@ class BuildPrefixTests(unittest.TestCase):
                 self.assertEqual(output.read_text(encoding='utf-8'),
                     f'new_tests=[]\ngame={str(expected).lower()}\nextensive=false\ngating=0\n')
                 self.assertFalse((root / 'INJECTED').exists())
+            # A valid docs-only base must not suppress an explicit manual run
+            # or its BYOND bootstrap, even for a single native opt-in.
+            workflow = (ROOT / '.github/workflows/test.yml').read_text()
+            build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
+            compile_step = build.split('      - name: Compile selected exact-head game\n', 1)[1].split('      - name:', 1)[0]
+            rack_step = build.split('      - name: Verify paid rack', 1)[1].split('      - name:', 1)[0]
+            self.assertIn("if: needs.changes.outputs.game == 'true'", compile_step)
+            self.assertIn('github.event_name == \'workflow_dispatch\' && inputs.rack_save_regressions', rack_step)
+            for extensive, rack in ((True, False), (False, True), (False, False)):
+                with self.subTest(extensive=extensive, rack=rack):
+                    event_path.write_text(json.dumps({'inputs': {'rack_save_regressions': rack}}), encoding='utf-8')
+                    output.write_text('', encoding='utf-8')
+                    manual = command.copy()
+                    manual[manual.index('--event') + 1] = 'workflow_dispatch'
+                    manual[manual.index('--extensive') + 1] = str(extensive).lower()
+                    subprocess.run(manual, cwd=root, env=env, check=True, capture_output=True)
+                    self.assertEqual(output.read_text(encoding='utf-8'),
+                        f'new_tests=[]\ngame=true\nextensive={str(extensive).lower()}\ngating=0\n')
             event_path.write_text('{invalid', encoding='utf-8')
             self.assertEqual(selection.load_event(event_path), {})
             self.assertEqual(selection.load_event(root / 'missing'), {})
