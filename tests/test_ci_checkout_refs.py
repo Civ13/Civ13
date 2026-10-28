@@ -49,7 +49,7 @@ class CheckoutRefsTests(unittest.TestCase):
                 expression = expression.replace(roof, 'False')
                 expression = expression.replace("needs.changes.outputs.extensive == 'true'", 'False')
                 expression = re.sub(r"contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\), '[a-zA-Z0-9_./-]+'\)", 'False', expression)
-                expression = re.sub(r'inputs\.(?:save_latency_regressions|protected_sleep_regressions) == true', 'False', expression)
+                expression = re.sub(r'inputs\.(?:save_latency_regressions|protected_sleep_regressions|persistence_integration_regressions) == true', 'False', expression)
                 expression = expression.replace('||', ' or ')
                 parsed = ast.parse(expression, mode='eval')
                 for node in ast.walk(parsed):
