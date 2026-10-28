@@ -30,7 +30,7 @@ must also fit 16,384 ASCII-JSON bytes; older complete pairs may be omitted to fi
 The latest game snapshot is authoritative, and prior AI answers may be wrong.
 
 History expires after 15 idle minutes of running-server time, on disconnect,
-reset or server restart. Reconnecting, even to the same account, starts empty.
+reset, body replacement or server restart. Reconnecting, even to the same account, starts empty.
 At most 128 client sessions retain history; reaching that limit evicts the oldest
 tracked session. Session fields live on clients, not saved player mobs; the
 service explicitly excludes its pending questions and runtime registries from
@@ -335,5 +335,19 @@ map metadata is marked unknown. Era does not prove faction research unlocks.
 ### Player and environment snapshot
 
 Each question includes the current map, mode, era, season and time of day. For the asking human it also includes health, nutrition, hydration and wetness percentages, body temperature in kelvin, indoor/outdoor exposure, local weather and active fire/incapacitation/weather exposure. This is a detached snapshot taken when submitting the question, not continuous monitoring. No account identity, other players, hidden disease diagnoses or private admin events are sent. Missing context remains unknown; the effects list is not an exhaustive event catalog. The input dialog tells players their gameplay condition is sent to the configured AI service. Collection performs no world scan, HTTP request or spawned timer.
+
+Recent injury context is a session-only, bounded list of up to six fixed
+observations from the last ten minutes. It records a conscious character's own
+weapon strike only when brute or burn damage increases. It also records that the
+game sent the current conscious character a direct message for a silenced
+projectile or shrapnel hit, hot ground burning their feet, or freezing feet,
+only when that character's chat is ready and bound to their client. A reported
+message does not prove damage, identify an attacker, or explain all health loss.
+Other attacks, silent damage without those messages, and other environmental
+causes remain unknown. No actor names, keys, raw logs, item names or descriptions
+are stored. Body changes invalidate pending replies and clear conversation and
+observations, including a switch away and back; a new connection starts empty.
+The existing request-size limit, spool and endpoint retention limits above also
+apply to these observations.
 
 Inventory context includes occupied equipment/hand/pocket slots and carried storage contents, with item names, stack quantities and their slot/container labels. It excludes body internals and item IDs, and stops at 24 items, 64 inspected entries or two container levels. An explicit truncation flag tells the model that omitted ingredients may still be present. Item labels are untrusted text, not instructions. The request file budget is 16 KiB to accommodate bounded inventory snapshots.

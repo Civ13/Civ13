@@ -1,6 +1,48 @@
 # Production food progression probe
 
+Salted meat provisionally consumes one unit of table salt: fresh meat and
+cutlets get twice their ordinary decay limit, and dried meat gets four times its
+ordinary limit. The same fraction of life remains after either action; salting
+does not make rotten food safe. Cut salted slabs into cutlets and dry them, or
+use a salt condiment directly on dried meat. The paid state survives both routes.
+`test_salted_meat_sources.py` checks offline source contracts only. The existing
+`preservation.dm` fixture additionally exercises direct and repeated salting,
+depletion, drying, and the actual save entry round trip when its native runner is
+authorized; preparing it does not execute those assertions.
+`test_meat_cutting_model.py` binds an offline behavior model to both cutting
+handlers and the save/decay source contracts. It covers rot and expiry boundaries,
+legacy missing fields, an explicitly disabled decay limit, and a later decay
+callback after restoration. It does not execute the DM handlers or serializer.
+An older bear slab that has not reached its own expiry can still be cut; the
+cutlets become rotten immediately if their inherited age meets their rot limit.
+`test_drying_spoilage.py` checks the rack's conversion admission source and an
+offline model of restored spoiled inputs, thresholds, missing legacy fields and
+zero decay limits. The preservation fixture also prepares a real encoded-input
+save/refill case and salted/unsalted thresholds; it must be run separately to
+establish native behavior. Rejected inputs remain on the rack for removal.
+For dried products, the save hook drops the item with a zero live decay limit
+and the original limit encoded in its name. The fixture checks that paused state
+after load, then refills the rack and removes the product through its normal
+interaction before checking its active limit, paid salt, age and depleted food.
+`test_dried_rack_save_contract.py` checks that sequence offline; it does not run
+the native serializer or rack.
+
+The opt-in `preservation_run.py --probe decay-rate` diagnostic saves and loads a
+salted dried item, removes it from the rack before its constructor callback wakes,
+and compares two age samples with an ordinary reference created in the same tick.
+It replaces the food wait with 20 ds and the rack restart wait with 21 ds while
+retaining the production age charge. `--decay-rate-control omit-restart` removes
+only the delayed restart in the generated source. A missed synchronization window
+fails rather than interpreting ambiguous samples. This diagnostic is not selected
+by ordinary CI and is not evidence until its baseline and control are executed;
+the accelerated schedule does not establish full-game elapsed-time behavior.
+
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
+Both food runners default to the historical 516.1681 compiler. Select the
+current 516.1688 compiler explicitly with `--expected-byond-version 516.1688`;
+other versions and mismatched compiler output are rejected. The selected CI food
+lane passes its pinned version to the crop, storage and preservation probes and
+their existing controls. Rack-save remains a separate opt-in lane.
 Run again with `--negative-control` to remove the seed debit in a generated
 source copy and require the planting assertion to detect that regression.
 

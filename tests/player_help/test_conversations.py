@@ -21,7 +21,7 @@ class ConversationTests(unittest.TestCase):
         self.assertNotIn('pull_request_target:', workflow)
         self.assertIn('uses: ./.github/workflows/ci-selection.yml', workflow)
         self.assertIn('      build_prefix: true', workflow)
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/player_help')", workflow)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/player_help')", workflow)
         spec = importlib.util.spec_from_file_location('ci_selector_help_contract', root / 'scripts/select-ci.py')
         selector = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(selector)

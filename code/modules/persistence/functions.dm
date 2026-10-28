@@ -446,6 +446,9 @@ map_storage
 var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
+// Runtime-only identity changes on each accepted save or load, even when the
+// operation completes before a waiting gameplay action wakes.
+var/global/datum/persistence_admission_identity
 
 /proc/persistence_save_active()
 	return persistence_active_operation && persistence_active_operation.kind == "save"
@@ -477,12 +480,14 @@ var/global/persistence_load_recovery_required = FALSE
 #endif
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
+	persistence_admission_identity = operation.admission_identity
 	if(kind == "save")
 		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
 	return operation
 
 /datum/persistence_world_operation
 	should_save = FALSE
+	var/datum/admission_identity
 	var/map_storage/storage
 	var/kind
 	var/backend_started = FALSE
@@ -514,6 +519,10 @@ var/global/persistence_load_recovery_required = FALSE
 		persistence_active_operation = null
 		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
+
+/datum/persistence_world_operation/New()
+	..()
+	admission_identity = new /datum
 
 // Direct calls acquire their own operation. A wrapper explicitly passes its
 // existing identity; a second backend entry is rejected even with that identity.
