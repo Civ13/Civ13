@@ -165,7 +165,7 @@
 // Apply on import too so historical references cannot recreate a foreign owner.
 // The target atom (including a roofbuilder) remains independently saveable.
 /atom/movable/persistence_runtime_var(key)
-	return key == "original_target" || ..()
+	return key == "original_target" || key == "woodwork_owner" || ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.

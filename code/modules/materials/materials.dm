@@ -604,6 +604,22 @@ var/list/material/name_to_material
 	weight = 13
 	resilience = 1.1
 
+/material/wood/piece
+	name = "wood_piece"
+	display_name = "small wood"
+	stack_type = /obj/item/stack/material/wood_piece
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	processing_only = TRUE
+
+/material/wood/crude_plank
+	name = "crude_plank"
+	display_name = "crude wood"
+	stack_type = /obj/item/stack/material/crude_plank
+	sheet_singular_name = "plank"
+	sheet_plural_name = "planks"
+	processing_only = TRUE
+
 /material/wood/soft
 	name = "woodplank"
 	hardness = 90
