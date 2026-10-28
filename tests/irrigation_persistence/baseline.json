@@ -1,0 +1,51 @@
+{
+  "upstream": "Civ13/Civ13",
+  "upstream_commit": "067478b82c7ad9f1b83759a221e6f22080ba865a",
+  "scope": "immutable upstream source baseline for full-checkout validation",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "blob_sha": "8cf99cf698d3f8eeccd446680ff7a61c1150725c"
+    },
+    {
+      "path": "code/modules/1713/trench.dm",
+      "blob_sha": "0af1795cc0f68e33864e327235bc3f449d750e1b"
+    },
+    {
+      "path": "code/modules/persistence/loading.dm",
+      "blob_sha": "1b509d0d8377427a8f96f9716ffd4be8880952eb"
+    },
+    {
+      "path": "code/modules/persistence/functions.dm",
+      "blob_sha": "f311d0c9f1d1b6e07444e31ec08ee2886f39d133"
+    },
+    {
+      "path": "code/modules/persistence/saving.dm",
+      "blob_sha": "19e54f5051f9d750555129ca0bc4833fa56e1116"
+    },
+    {
+      "path": "code/game/turfs/turf.dm",
+      "blob_sha": "cb6f32a24560e02e729ac18ccc12fee5f30a3541"
+    },
+    {
+      "path": "tests/trench_save/probe.dm",
+      "blob_sha": "0fce75bfeaed82f1bd9f8c4b45fdd20e60b4e960"
+    },
+    {
+      "path": "tests/trench_save/README.md",
+      "blob_sha": "3ed457ba5af14e5c801cdea335302fac6b967e92"
+    },
+    {
+      "path": "tests/irrigation/fixture.dm",
+      "blob_sha": "ab2704537efdeb9de786c339e19565dbcf0f17d3"
+    },
+    {
+      "path": "tests/irrigation/README.md",
+      "blob_sha": "21d1d38ae59a64215277dd03ee3716dad7e6ecdc"
+    },
+    {
+      "path": "code/modules/1713/snowfall_ground.dm",
+      "blob_sha": "7783c6b84bf36f70545bccc026f749cca1af96a5"
+    }
+  ]
+}

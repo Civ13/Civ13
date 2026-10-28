@@ -116,7 +116,10 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(ci.SUITES['hub_status']['files'], ('tests/test_hub_status.py',))
         for path in ('code/world.dm', 'config/config.txt', 'tests/test_hub_status.py'):
             with self.subTest(path=path):
-                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'hub_status'})
+                expected = {'policy', 'bootstrap', 'progress', 'hub_status'}
+                if path == 'code/world.dm':
+                    expected.add('dictionary')
+                self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 
     def test_modified_tests_and_helpers_are_affected_without_introduced_test_admission(self):
@@ -154,6 +157,22 @@ class BaselinePolicyTests(unittest.TestCase):
         shared = 'code/game/mob/living/simple_animal/friendly/static.dm'
         self.assertEqual(self.selected([shared]), set(ci.SUITES))
         self.assertIn('Unmapped impact: ' + shared, ci.impact([shared])['fallback_reasons'])
+
+    def test_dictionary_inputs_select_only_the_reviewed_offline_file(self):
+        self.assertEqual(ci.SUITES['dictionary']['files'],
+                         ('tests/dictionary_era/test_sources.py',
+                          'tests/dictionary_era/test_slang_content.py',
+                          'tests/dictionary_era/test_phrase_mode.py'))
+        for path in ('code/_helpers/dictionary.dm', 'config/dictionary.txt',
+                     'code/game/mob/living/carbon/human/say.dm',
+                     'code/game/mob/living/carbon/human/whisper.dm',
+                     'tests/dictionary_era/prepare.py', 'tests/dictionary_era/probe.dm'):
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]),
+                                 {'policy', 'bootstrap', 'progress', 'dictionary'})
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+        registered = ci.SUITES['dictionary']['files']
+        self.assertFalse(any(path.endswith(('probe.dm', 'prepare.py')) for path in registered))
 
     def test_unknown_dependencies_and_failed_comparisons_are_visible_and_bounded(self):
         for paths, comparison in ((['requirements.txt'], 'available'),
