@@ -492,6 +492,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		// --- basic_tools (20) ---
+		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/stack/material/rope" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
 		"/obj/item/weapon/cane" = "basic_tools",

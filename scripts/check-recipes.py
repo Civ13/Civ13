@@ -23,9 +23,12 @@ def main():
     parser.add_argument("--camera-prototype-negative-control", action="store_true")
     parser.add_argument("--handle-hands-negative-control", action="store_true")
     parser.add_argument("--evidence-dir", type=Path)
+    parser.add_argument("--compile-only", action="store_true", help="Compile the isolated fixture without launching a world")
     args = parser.parse_args()
     if sum((args.food_bootstrap_negative_control, args.camera_prototype_negative_control, args.handle_hands_negative_control)) > 1:
         parser.error("Run one negative control at a time")
+    if args.compile_only and (args.food_bootstrap_negative_control or args.camera_prototype_negative_control or args.handle_hands_negative_control):
+        parser.error("Compile-only cannot establish a runtime negative control")
     root = Path(__file__).resolve().parents[1]
     if args.evidence_dir:
         if args.evidence_dir.exists():
@@ -34,11 +37,14 @@ def main():
         sources = ["scripts/check-recipes.py", "tests/crafting/checks.dm", "tests/crafting/handles.dm",
                    "code/game/objects/items/stacks/stack.dm", "code/_helpers/mobs.dm",
                    "code/game/mob/inventory.dm", "code/game/mob/living/carbon/human/inventory.dm",
-                   "code/game/objects/items.dm", "config/crafting/material_recipes_global.txt"]
+                   "code/game/objects/items.dm", "config/crafting/material_recipes_global.txt",
+                   "code/game/objects/items/stacks/furniture_joinery.dm", "config/crafting/furniture_joinery.json",
+                   "tests/crafting/furniture_joinery.dm"]
         metadata = {"head_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                     "control": "hands-only" if args.handle_hands_negative_control else None,
                     "source_sha256": {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in sources},
-                    "scope": "Production crafting, wait, debit and slot cleanup; character startup, skills and HUD are adapters"}
+                    "runtime_status": "not_run" if args.compile_only else "pending",
+                    "scope": "Compile only; no world launched" if args.compile_only else "Production crafting, wait, debit and slot cleanup; character startup, skills and HUD are adapters"}
         (args.evidence_dir / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
     with tempfile.TemporaryDirectory(prefix=".recipe-ci-", dir=root) as build, tempfile.TemporaryDirectory(prefix="civ13-recipes-") as run:
@@ -78,6 +84,7 @@ def main():
         dme += f'\n#include "{root.as_posix()}/tests/crafting/checks.dm"\n#include "{root.as_posix()}/tests/crafting/camera_progression.dm"\n#include "{root.as_posix()}/tests/crafting/exercise_progression.dm"\n#include "{root.as_posix()}/tests/crafting/telecom_progression.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/energy_progression.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/handles.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/furniture_joinery.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
@@ -88,6 +95,9 @@ def main():
             (args.evidence_dir / "compile.log").write_text(compiled.stdout, encoding="utf-8")
         if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout:
             return 1
+        if args.compile_only:
+            print("Isolated crafting fixture compiled; runtime checks NOT RUN (--compile-only).")
+            return 0
         shutil.copytree(root / "config/crafting", run / "config/crafting")
         shutil.copytree(root / "config/names", run / "config/names")
         if args.camera_prototype_negative_control:

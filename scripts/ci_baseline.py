@@ -72,6 +72,11 @@ SUITES = {
                               'tests/test_atlas_navigation.py'), 'paths': (
         'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
         'scripts/atlas/woodworking.py', 'code/modules/persistence/functions.dm', 'civ13.dme')},
+    # Offline only: reviewed guard projection, catalog generation, inert Help imports.
+    # Shared crafting/Atlas files keep the conservative all-suite fallback.
+    'furniture_joinery': {'files': ('tests/furniture_joinery/test_contract.py',), 'paths': (
+        'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
+        'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (

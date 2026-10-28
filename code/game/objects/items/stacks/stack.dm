@@ -263,6 +263,12 @@
 			else
 				title+= "[R.title]"
 			title+= " ([R.req_amount] [singular_name]\s)"
+			var/list/joint_spec = furniture_joinery_spec(R)
+			if (joint_spec)
+				if (joint_spec["component_cost"])
+					title += " + [joint_spec["component_cost"]] wooden dowel set(s); equip chisel and hammer/mallet"
+				else
+					title += "; equip sharpened flint or a sharp knife harder than the plank"
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
@@ -305,6 +311,12 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/human/H = user
+	var/datum/furniture_joinery_action/joinery
+	if (findtext(recipe.title, "joinery: ") == 1)
+		joinery = new(src, H, recipe)
+		if (quantity != 1 || !joinery.valid())
+			to_chat(user, SPAN_WARNING("Joinery needs its exact materials, completed research and equipped tools. Consult the Crafting Atlas."))
+			return
 	var/needs_crafting_handle = FALSE
 	var/obj/item/weapon/material/handle/crafting_handle = null
 	var/atom/handle_crafting_source_loc = null
@@ -1926,7 +1938,14 @@
 			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
 			return
 
-	if (use(required,H))
+	// Retain and recheck tools, secondary stock, occupied tile and research after
+	// the wait. No debit occurs on an interrupted or invalidated action.
+	if (joinery && !joinery.valid())
+		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
+		return
+	if (use(required, joinery ? null : H))
+		if (joinery)
+			joinery.consume_component()
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)

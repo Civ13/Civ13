@@ -2127,6 +2127,11 @@ RECIPE: /material/wood/soft/,fishing cage,/obj/structure/fishing_cage,12,200,1,1
 RECIPE: /material/wood/soft/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 
 //*********************| WOOD FURNITURE |**************************
+// Explicit joint-making alternatives; tools and paid components are in furniture_joinery.json.
+RECIPE: /material/wood/soft/,joinery: whittled wooden dowel set,/obj/item/stack/wooden_dowels,1,120,0,1,joinery,0,0,0,8,null
+RECIPE: /material/wood/,joinery: hewn table (wooden pegs),/obj/structure/table/wood,4,120,1,1,joinery,0,0,0,8,null
+RECIPE: /material/wood/,joinery: hewn chair (wooden pegs),/obj/structure/bed/chair/wood,4,120,1,1,joinery,0,0,0,8,null
+RECIPE: /material/wood/,joinery: hewn bed (wooden pegs),/obj/structure/bed/wood,4,180,1,1,joinery,0,0,0,8,null
 RECIPE: /material/wood/soft/,ballot box,/obj/structure/voting,8,50,1,1,furniture,25,0,0,8,null
 RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null

@@ -1,5 +1,15 @@
 # Civ13 - Agent guide
 
+<!-- 2026-10-28: explicit furniture joinery alternatives -->
+Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
+all existing recipes. Peg stock is paid only after retained equipment, secondary
+stock, output occupancy, research and persistence epoch pass post-wait checks;
+do not reselect a replacement tool or search nested storage. Use the primitive
+woodworking shaping predicate for dowels. Its material knives wear 0.25 only on
+success; assembly tools are reused. New routes are global only. See the dated
+furniture audit and checked-in original-row fixtures. --compile-only explicitly
+does not run crafting assertions; native/client and reachability remain separate.
+
 <!-- 2026-10-28: gathered manual woodworking -->
 Manual woodworking in primitive_woodworking.dm keeps pieces and crude planks
 distinct from finished planks. Whittling admits sharpened flint or an actual knife
