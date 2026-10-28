@@ -64,6 +64,17 @@ class BaselinePolicyTests(unittest.TestCase):
                 self.assertTrue(result['suites']['woodworking']['selected'])
                 self.assertFalse(result['fallback_reasons'])
         self.assertIn('woodworking',self.selected(['code/modules/persistence/functions.dm']))
+        self.assertIn('woodworking',self.selected(['civ13.dme']))
+        source=(ROOT/'tests/primitive_woodworking/test_source.py').read_text()
+        tree=ast.parse(source)
+        reads={node.right.value for node in ast.walk(tree)
+               if isinstance(node,ast.BinOp) and isinstance(node.op,ast.Div)
+               and isinstance(node.left,ast.Name) and node.left.id=='ROOT'
+               and isinstance(node.right,ast.Constant) and isinstance(node.right.value,str)}
+        self.assertIn('civ13.dme',reads)
+        for path in reads:
+            with self.subTest(actual_dependency=path):
+                self.assertIn('woodworking',self.selected([path]))
         shared=('code/modules/materials/material_sheets.dm','code/modules/materials/materials.dm',
                 'code/game/objects/items/weapons/material/kitchen.dm',
                 'code/game/objects/items/weapons/material/thrown.dm',

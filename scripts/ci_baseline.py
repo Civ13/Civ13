@@ -70,7 +70,7 @@ SUITES = {
     # Shared material/Atlas inputs retain their conservative all-suite fallback.
     'woodworking': {'files': ('tests/primitive_woodworking/test_source.py',), 'paths': (
         'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
-        'scripts/atlas/woodworking.py', 'code/modules/persistence/functions.dm')},
+        'scripts/atlas/woodworking.py', 'code/modules/persistence/functions.dm', 'civ13.dme')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
