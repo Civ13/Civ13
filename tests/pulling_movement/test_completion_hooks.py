@@ -6,13 +6,13 @@ execution, client behavior or save/load acceptance.
 from pathlib import Path
 import itertools
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = 'code/game/mob/living/carbon/human/pull_pair_producer.dm'
-# Candidate head that documented the held hook-failure finding.
-DEFECT = 'b290932397345079881bc254d1b61eb18b9b87e9'
+# finish_intent frozen from defect head b290932, so shallow or source-only
+# checkouts still run the historical control without Git history.
+DEFECT = Path(__file__).resolve().parent / 'fixtures' / 'defect_finish_intent.dm.txt'
 FIELDS = ('intent_running', 'native_inflight', 'completion_running', 'intent_completed',
           'intent_attempted', 'leader')
 
@@ -177,7 +177,7 @@ class CompletionHookFailureContracts(unittest.TestCase):
             self.assertEqual((pair.leader.calls, pair.settled, pair.glide), ([], [], 0), field)
 
     def test_documented_defect_head_skips_human_hook_after_living_failure(self):
-        old = subprocess.check_output(['git', 'show', DEFECT + ':' + SOURCE], cwd=ROOT).decode()
+        old = DEFECT.read_text(encoding='utf-8')
         found = violations(projected(old))
         skipped = [item for item in found if item[1] == 'hooks' and item[0] == (True, False, False, True)]
         self.assertEqual(skipped, [((True, False, False, True), 'hooks', ['living'])], found)

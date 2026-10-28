@@ -39,15 +39,17 @@ Next implementation gates, in order:
    authenticated native seam before enabling its experimental profile.
 3. Native-test the straight reverse resolver and the source lifecycle follow-up:
    deletion removes the retiring actor's keys/references, logout/handoff revokes
-   the old controller, and callbacks unwind before completion/release. Partial
-   orphans retain exclusive ownership and an explicit save hold. Automatic orphan,
-   foreign transport, death/expiry/map-reset recovery remain default-enable gates.
+   the old controller, and callbacks unwind before completion/release. The
+   stuck-pair resolver aligns death/knockdown/disconnect/orphan pairs at once and
+   unused recoveries after five seconds; save admission settles quiet pairs first.
+   Its forceMove callbacks and foreign transport changes are not native-tested.
 4. Validate global save admission plus the direct participant checkpoint guard.
    Both require valid aligned live survivors and no active native/intent/completion
-   work. Partial pairs/orphans hold saves before backend preparation; no half-pair
+   work. Only an in-flight intent still holds a save; no half-pair
    capsule or runtime lease replays after load. Arbitrary-time partial saves remain
    unsupported rather than silently exporting one participant.
-5. Test actual straight dragging before default enablement. Expand to living
+5. The producer is on by default, so actual in-game straight dragging is the
+   main unverified gate; offline checks are not gameplay evidence. Expand to living
    targets and turning only with reviewed native collision/authority contracts.
    Straight-line interpolation of both bodies during a 90-degree turn can overlap
    their 32x32 footprints, despite legal tile endpoints; do not hide this by

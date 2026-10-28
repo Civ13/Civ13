@@ -4,13 +4,10 @@ No native movement, fake clients or Python simulation of DM authority is used.
 """
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULE = ROOT / 'code/game/mob/living/carbon/human/pull_pair_ownership.dm'
-# Master integrated by the 2026-10-28 merge; the PR leaves these producers unchanged.
-INTEGRATED = '67ce06e95e32d55f94c07e23d20116fab45e6417'
 DIRS = dict(NORTH=1, SOUTH=2, EAST=4, WEST=8)
 
 
@@ -88,14 +85,18 @@ class PullOwnershipContracts(unittest.TestCase):
             self.assertEqual((follower['x'],follower['y'],follower['sx'],follower['sy']), (6,6,0,0))
 
     def test_other_producers_and_unlinked_guard_are_not_broadly_enabled(self):
+        # Click, path and mob-helper movement never reach the pair producer.
         for path in ('code/_onclick/click.dm', 'code/pathfinding.dm', 'code/_helpers/mobs.dm'):
-            old = subprocess.check_output(['git','show',INTEGRATED+':'+path],cwd=ROOT).decode().replace('\r\n','\n')
-            self.assertEqual((ROOT/path).read_text(encoding='utf-8'), old, path)
-        human = (ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
-        old = subprocess.check_output(['git','show',INTEGRATED+':code/game/mob/living/carbon/human/subtile_movement.dm'],cwd=ROOT).decode().replace('\r\n','\n')
+            other = (ROOT/path).read_text(encoding='utf-8')
+            for name in ('subtile_pull', 'pull_pair', 'human_subtile_pull'):
+                self.assertNotIn(name, other, path)
+        human = (ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm').read_text(encoding='utf-8')
         start='/mob/living/human/proc/human_subtile_unlinked()'
         end='/mob/living/human/proc/human_subtile_input_supported'
-        self.assertEqual(human[human.index(start):human.index(end)], old[old.index(start):old.index(end)])
+        unlinked = human[human.index(start):human.index(end)]
+        self.assertNotIn('subtile_pull', unlinked)
+        for guard in ('!buckled', '!pulledby', '!control_object', '!incorporeal_move'):
+            self.assertIn(guard, unlinked)
         text = source()
         for forbidden in ('.Move(', 'forceMove(', 'pixel_x =', 'pixel_y =',
                           'living_movement_completed(', 'human_movement_completed(', 'sleep(', 'spawn(',

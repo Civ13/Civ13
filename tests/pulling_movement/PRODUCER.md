@@ -79,17 +79,22 @@ progress, then retries. For a straight pair the nearest tiles never coincide and
 each snap is at most 16px (`test_resolver.py` checks all 384 states).
 Arbitrary-time partial saves remain unsupported.
 
-Remaining gates before gameplay enablement:
+Pulse waits use `subtile_pull_wait_until`, which sleeps whole ticks and rechecks
+until the pulse is due. A single fractional sleep could wake a tick early, and
+consume() refuses an early pulse, which stopped the pull (`test_pulse_timing.py`).
+Teardown callers (Destroy, Logout, client Del) use `teardown_settle`, which logs a
+rethrown hook error after the pair has settled instead of skipping their cleanup.
 
-- Compile and native positive/blocked/cancellation/reverse/stop cases; exact
-  costs, hooks, corner behavior, frame interpolation and coherent failed saves.
-- Partial native displacement or unexpected callback movement must remain
-  fail-closed. Automatic repair of external transport/ownership changes or a
-  partial orphan is not completed here. A retained lease can intentionally hold
-  map/restart saves until resolved. Do not enable in production with that gap.
+Remaining unverified gaps (the producer ships on by default):
+
+- Native or in-game verification of positive/blocked/cancellation/reverse/stop
+  cases, exact costs, hooks, frame interpolation and the resolver's snap-back.
+- The resolver's `forceMove` callbacks (Exited/Entered/Crossed) and external
+  transport or ownership changes are not native-tested. Unexpected callback
+  movement must stay fail-closed.
 - Living targets, turns/diagonals, loaded containers, assemblies, arbitrary leaf
-  types, client handoff UX and partial-save roundtrip need separate profiles and
-  actual-client acceptance. No claim that all dragging is now smooth is made.
+  types, client handoff UX and a partial-save round trip each need a separate
+  profile and actual-client acceptance. No claim that all dragging is smooth is made.
 
 The pulling offline checks include 8,192 source-derived displacement comparisons,
 the 96-state reverse planner, a 1,152-case actual checkpoint-expression projection,

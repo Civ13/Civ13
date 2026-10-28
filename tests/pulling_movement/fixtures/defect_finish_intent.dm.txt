@@ -1,0 +1,21 @@
+// Frozen fixture: finish_intent as it stood at defect head b290932 (PR #3367),
+// where a throwing living hook skipped the human hook. Not compiled.
+/datum/subtile_pull_pair/proc/finish_intent()
+	if (intent_running || native_inflight || completion_running || intent_completed)
+		return
+	intent_completed = TRUE
+	restore_follower_glide()
+	completion_running = TRUE
+	try
+		if (intent_attempted && leader && !isDeleted(leader))
+			leader.living_movement_completed()
+			if (leader && !isDeleted(leader))
+				leader.human_movement_completed()
+	catch (var/exception/pull_hook_error)
+		completion_running = FALSE
+		settle_intent()
+		throw pull_hook_error
+	completion_running = FALSE
+	settle_intent()
+
+/datum/subtile_pull_pair/proc/settle_intent()

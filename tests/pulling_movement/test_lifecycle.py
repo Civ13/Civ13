@@ -2,12 +2,10 @@
 import itertools
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 PREFIX = 'code/game/mob/living/carbon/human/'
-BASE = '9785cba5f66892596742f40dad8cc44500c30e53'
 
 
 def read(name):
@@ -112,8 +110,16 @@ class PullLifecycleContracts(unittest.TestCase):
     def test_logout_stop_and_direct_export_revoke_before_hooks_and_require_unwind(self):
         text = read(PREFIX + 'pull_pair_lifecycle.dm')
         stop = section(text, '/datum/subtile_pull_pair/proc/lifecycle_stop', '/datum/subtile_pull_pair/proc/retire_member')
-        self.assertLess(stop.index('cancel(reason)'), stop.index('finish_intent()'))
+        self.assertLess(stop.index('cancel(reason)'), stop.index('teardown_settle()'))
         self.assertIn('restore_follower_glide()', stop)
+        # Teardown callers (Destroy/Logout/client Del) never see a rethrown hook error.
+        teardown = section(text, '/datum/subtile_pull_pair/proc/teardown_settle()', '/datum/subtile_pull_pair/proc/lifecycle_stop')
+        self.assertIn('\ttry\n\t\tif (intent_completed)\n\t\t\tsettle_intent()\n\t\telse\n\t\t\tfinish_intent()\n\tcatch (var/exception/pull_teardown_error)', teardown)
+        self.assertNotIn('throw', teardown)
+        retire = section(text, '/datum/subtile_pull_pair/proc/retire_member', '/datum/subtile_pull_pair/proc/record_interrupted_pulse')
+        for caller in (stop, retire):
+            self.assertIn('if (!intent_running && !native_inflight && !completion_running)\n\t\tteardown_settle()', caller)
+            self.assertNotIn('finish_intent()', caller)
         self.assertIn('if (forget_controller)\n\t\tcontroller = null', stop)
         self.assertIn('if (!intent_running && !native_inflight && !completion_running)', stop)
         logout = read('code/game/mob/living/logout.dm')
@@ -149,15 +155,21 @@ class PullLifecycleContracts(unittest.TestCase):
         self.assertLess(tail.index('intent_completed = TRUE'), tail.index('settle_intent()'))
         self.assertLess(tail.index('settle_intent()'), tail.index('throw hook_error'))
         self.assertEqual(finish.count('settle_intent()'), 1)
-        kernel = read(PREFIX + 'pull_pair_ownership.dm')
-        old = subprocess.check_output(['git', 'show', BASE + ':' + PREFIX + 'pull_pair_ownership.dm'], cwd=ROOT).decode().replace('\r\n', '\n')
-        start = '/datum/subtile_pull_pair/proc/controller_allowed()'
-        end = '/datum/subtile_pull_pair/proc/prepare('
-        self.assertEqual(section(kernel, start, end), section(old, start, end))
-        old_producer = subprocess.check_output(['git', 'show', BASE + ':' + PREFIX + 'pull_pair_producer.dm'], cwd=ROOT).decode().replace('\r\n', '\n')
-        for start, end in (('/datum/subtile_pull_pair/proc/perform_intent()', '/proc/subtile_pull_recovery_plan'),
-                           ('/proc/subtile_pull_recovery_plan', '/datum/subtile_pull_pair/proc/finish_intent')):
-            self.assertEqual(section(producer, start, end), section(old_producer, start, end))
+        # Real input authority, the 16-pulse bound and the paid deadline stay as
+        # focused checks rather than comparisons against a historical commit.
+        allowed = section(read(PREFIX + 'pull_pair_ownership.dm'), '/datum/subtile_pull_pair/proc/controller_allowed()',
+                          '/datum/subtile_pull_pair/proc/prepare(')
+        for guard in ('istype(controller, /client)', 'leader.client == controller', 'controller.mob == leader',
+                      'controller.canmove && controller.moving'):
+            self.assertIn(guard, allowed)
+        perform = section(producer, '/datum/subtile_pull_pair/proc/perform_intent()', '// Sleep whole ticks')
+        self.assertIn('for (var/i = 1, i <= 16, i++)', perform)
+        self.assertIn('var/due = start_time + (i - 1) * (deadline - start_time) / 16', perform)
+        self.assertIn('subtile_pull_wait_until(due)', perform)
+        self.assertNotRegex(perform, r'sleep\(due')
+        self.assertIn('if (controller_allowed() && world.time < deadline)\n\t\tsleep(deadline - world.time)', perform)
+        for charge in ('nutrition', 'water -=', 'stamina', 'move_delay', 'velocity'):
+            self.assertNotIn(charge, perform)
 
     def test_release_requires_unwound_native_state_and_valid_survivor_shapes(self):
         release = section(read(PREFIX + 'pull_pair_ownership.dm'),

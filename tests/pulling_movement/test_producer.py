@@ -1,11 +1,9 @@
 """Offline producer contracts and source-derived reverse recovery planning."""
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT=Path(__file__).resolve().parents[2]
-BASE='10d264e5896221b34949ee4b67c0fd2b94bde249'
 PRODUCER=ROOT/'code/game/mob/living/carbon/human/pull_pair_producer.dm'
 
 
@@ -69,10 +67,19 @@ class PullProducerContracts(unittest.TestCase):
         self.assertIn('H.human_subtile_eligible(direct) || H.human_subtile_pull_ready(direct)',move)
         self.assertIn('human_subtile_deadline(move_delay, world.time, ordinal)',move)
         self.assertLess(move.index('moving = TRUE',move.index('/client/Move(')),move.index('H.SelfMove(n, direct, subtile_deadline)'))
-        old=subprocess.check_output(['git','show',BASE+':code/game/mob/mob_movement.dm'],cwd=ROOT).decode().replace('\r\n','\n')
-        marker='\t\tvar/t_movement_speed_multiplier = mob.movement_speed_multiplier'
-        end='\n#define NO_ACCURACY_MOVEMENT_CHECKS'
-        self.assertIn(old[old.index(marker):old.index(end)],move)
+        client_move=move[move.index('/client/Move('):move.index('\n#define NO_ACCURACY_MOVEMENT_CHECKS')]
+        # One paid input: costs are charged, one deadline captured, one SelfMove.
+        self.assertEqual(client_move.count('human_subtile_deadline('),1)
+        self.assertEqual(client_move.count('H.SelfMove(n, direct, subtile_deadline)'),1)
+        self.assertLess(client_move.index('H.nutrition -='),client_move.index('H.SelfMove(n, direct, subtile_deadline)'))
+        # The subtile path keeps its captured deadline; the legacy multiplier is untouched.
+        keep='if (!isnull(subtile_deadline))\n\t\t\tmove_delay = subtile_deadline\n\t\t\treturn .'
+        marker='var/t_movement_speed_multiplier = mob.movement_speed_multiplier'
+        self.assertLess(client_move.index(keep),client_move.index(marker))
+        legacy=client_move[client_move.index(marker):]
+        for kept in ('move_delay /= t_movement_speed_multiplier','move_delay *= ROOT2_FAST','move_delay += world.time'):
+            self.assertIn(kept,legacy)
+        self.assertNotIn('subtile',legacy)
         for charge in ('nutrition -=','water -=','stats["stamina"]','get_path('):
             self.assertNotIn(charge,PRODUCER.read_text())
 

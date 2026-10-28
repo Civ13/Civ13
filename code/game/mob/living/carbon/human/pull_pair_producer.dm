@@ -177,8 +177,7 @@
 /datum/subtile_pull_pair/proc/perform_intent()
 	for (var/i = 1, i <= 16, i++)
 		var/due = start_time + (i - 1) * (deadline - start_time) / 16
-		if (due > world.time)
-			sleep(due - world.time)
+		subtile_pull_wait_until(due)
 		if (recovering)
 			if (!recovery_valid())
 				break
@@ -201,6 +200,12 @@
 	// Blocked/short recovery attempts still consume their admitted interval.
 	if (controller_allowed() && world.time < deadline)
 		sleep(deadline - world.time)
+
+// Sleep whole ticks until a pulse is due. A fractional sleep can wake a tick
+// early, and consume() refuses a pulse before its due time, stopping the pull.
+/proc/subtile_pull_wait_until(due)
+	while (world.time < due)
+		sleep(world.tick_lag * max(1, -round(0.001 - (due - world.time) / world.tick_lag)))
 
 // Catch the2px gap first; then reverse follower-before-leader. The returned
 // sequence contains at most3 physical moves, each at most2px, and never overlaps

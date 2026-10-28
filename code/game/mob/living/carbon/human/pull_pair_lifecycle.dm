@@ -1,5 +1,5 @@
-// No background resolver or borrowed authority. Partial/orphaned survivors stay
-// exclusively held until a real paid recovery or an explicit aligned placement.
+// No borrowed authority. Partial/orphaned survivors stay exclusively held until
+// a real paid recovery or the stuck-pair resolver below aligns them.
 /datum/subtile_pull_ownership/proc/save_ready()
 	for (var/atom/movable/member in owners)
 		var/datum/subtile_pull_pair/P = owners[member]
@@ -15,6 +15,17 @@
 	if (P)
 		P.retire_member(member)
 
+// Destroy, Logout and client Del must finish their own cleanup. A hook error
+// rethrown by finish_intent arrives after the pair has settled, so log it here.
+/datum/subtile_pull_pair/proc/teardown_settle()
+	try
+		if (intent_completed)
+			settle_intent()
+		else
+			finish_intent()
+	catch (var/exception/pull_teardown_error)
+		log_debug("Pull pair teardown hook failed: [pull_teardown_error]")
+
 /datum/subtile_pull_pair/proc/lifecycle_stop(reason, forget_controller = FALSE)
 	if (released)
 		return
@@ -24,10 +35,7 @@
 		controller = null
 	// A native callback must unwind before intent hooks or lease release.
 	if (!intent_running && !native_inflight && !completion_running)
-		if (intent_completed)
-			settle_intent()
-		else
-			finish_intent()
+		teardown_settle()
 
 /datum/subtile_pull_pair/proc/retire_member(atom/movable/member)
 	if (released || !(member == leader || member == follower))
@@ -51,10 +59,7 @@
 	follower_planned = null
 	recovery_required = TRUE
 	if (!intent_running && !native_inflight && !completion_running)
-		if (intent_completed)
-			settle_intent()
-		else
-			finish_intent()
+		teardown_settle()
 
 /datum/subtile_pull_pair/proc/record_interrupted_pulse(atom/movable/member, datum/subtile_pull_capability/P)
 	if (released || !P || P.member != member || !(member == leader || member == follower) || !subtile_pull_shape(member))
