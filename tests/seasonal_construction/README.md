@@ -27,7 +27,7 @@ Do not treat its JSON schema or source preparation as a passing test receipt.
 
 The prepared fixture covers native construction rates and qdel, exact exclusions,
 paired-slab removal from the registry, mode/forced/repeated transition counters,
-normal destruction of contained atoms, and real disk entry save/load with paid debt and
+occupied terminal damage/destruction dispatch, and real disk entry save/load with paid debt and
 historical runtime fields. It does not yet cover full season queue/terrain work,
 fresh-process world recovery, representative populations or connected clients.
 Those remain explicit parent-review acceptance work. The fixture's direct
@@ -50,3 +50,9 @@ the new packet remains uncompiled/unrun. Offline checks cover just-below/at-zero
 health, one debt debit/retirement, save/mode holds and after-load rebasing with
 contents present. Existing historical native packets and Library reports are not
 rewritten by this local checkpoint.
+
+The prepared adapter observes one delegated Destroy dispatch and stable paid debt
+on repeat service. It does not assert immediate child/nested-item deletion or any
+occupant outcome: the later `lighting_atom.dm` movable Destroy definition must be
+accounted for. Fixture-owned objects are cleaned up separately after assertions.
+Neither this policy patch nor its probe repairs the global destruction chain.

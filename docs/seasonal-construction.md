@@ -77,9 +77,9 @@ Zero health uses `qdel()` and normal destruction hooks, including roof area,
 lighting, neighboring roof support and building callbacks. It never invokes
 `Destroy()` directly. Objects on the building's turf stay on that turf; ordinary
 support loss can still collapse roofs and affect occupants as it does today.
-Occupants and items do not defer the terminal damage/debt debit. Normal movable
-destruction can recursively delete atoms inside the retiring object; no contents
-rescue or relocation is added. Turf occupants still face existing support-loss
+Occupants and items do not defer the terminal damage/debt debit. Existing
+destruction hooks are dispatched; no contents rescue or relocation is added.
+Actual child/occupant consequences remain unverified. Turf occupants still face existing support-loss
 and collapse consequences. Paired slabs remain excluded. No custom content spilling, building leveling, save import,
 server restart, deployment or Gaia-cycle inclusion is part of this change.
 
@@ -148,3 +148,10 @@ native probe and receipts describe the earlier policy and are not rewritten.
 The separate preparation adapter and new offline boundary controls are not native
 acceptance. Main retains source review and future execution admission; this local
 checkpoint does not publish, deploy, restart or grant a native test allowance.
+
+The prepared contents case observes terminal health/debt and one delegated
+Destroy dispatch, not child deletion. `lighting_atom.dm` is included after
+`atoms_movable.dm` and defines the later movable Destroy body; inspecting the
+earlier recursive loop alone does not establish selected runtime behavior.
+No global destruction-chain repair is part of this policy change. Historical
+fixtures and the superseded prepared-case checkpoint remain available for review.

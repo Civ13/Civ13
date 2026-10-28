@@ -27,7 +27,8 @@ roof/floor slabs are exempt because generic wood roofs can underlie modern floor
 Save hooks accrue unpaid debt without destruction; roofs explicitly save debt,
 and after_load rebases excluded runtime clocks/indexes. The owner retained the
 16/32/64 rates and removed contents-based terminal deferral: normal qdel/collapse
-owns occupants and items. tests/seasonal_construction is offline; prepare.py only prepares
+hooks are dispatched; child/occupant consequences remain unverified. Tests are
+offline; prepare.py only prepares
 an uncompiled native packet. Keep native/graphical acceptance and balancing pending.
 
 

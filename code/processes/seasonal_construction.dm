@@ -122,8 +122,8 @@ var/global/seasonal_construction_cursor = 1
 	if (seasonal_construction_due <= 0)
 		return
 	var/damage = seasonal_construction_design_health() * seasonal_construction_due / lifetime
-	// Occupants/items do not postpone seasonal collapse; normal destruction
-	// owns contained atoms and any support-loss consequences.
+	// Occupants/items do not postpone seasonal collapse. Dispatch existing
+	// destruction/support hooks without special content handling here.
 	// Debit debt before normal qdel hooks; no sleep or direct Destroy call.
 	seasonal_construction_due = 0
 	damage_seasonal_construction(damage)

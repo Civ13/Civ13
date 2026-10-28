@@ -15,6 +15,23 @@ SPEC.loader.exec_module(PREPARE)
 
 
 class SourceTests(unittest.TestCase):
+    def test_prepared_contents_case_observes_dispatch_without_claiming_child_fate(self):
+        policy = (ROOT / "tests/seasonal_construction/collapse_policy_contents.dm").read_text()
+        for unsupported in ("child.gc_destroyed", "nested.gc_destroyed", "neighbor.gc_destroyed"):
+            self.assertNotIn(unsupported, policy)
+        self.assertIn("construction_contents_probe_destroy_calls == 1", policy)
+        self.assertIn("W.health == 0 && W.seasonal_construction_due == 0", policy)
+        self.assertIn("W.check_seasonal_construction()", policy)
+        observer = body(policy, "/obj/covers/straw_wall/Destroy()")
+        self.assertIn("construction_contents_probe_destroy_calls++", observer)
+        self.assertIn("return ..()", observer)
+        dme = (ROOT / "civ13.dme").read_text()
+        self.assertLess(dme.index('code\\game\\atoms_movable.dm'),
+                        dme.index('code\\modules\\lighting\\lighting_atom.dm'))
+        lighting = (ROOT / "code/modules/lighting/lighting_atom.dm").read_text()
+        self.assertIn("loc = null", body(lighting, "/atom/movable/Destroy()"))
+        self.assertNotIn("qdel(AM)", body(lighting, "/atom/movable/Destroy()"))
+
     def test_terminal_policy_dispatch_keeps_normal_destruction_and_debit_order(self):
         source = SOURCE.read_text()
         check = body(source, "/obj/proc/check_seasonal_construction()")
@@ -120,6 +137,9 @@ class SourceTests(unittest.TestCase):
                 probe = (output / "probe.dm").read_text()
                 self.assertIn("occupied construction postponed terminal destruction", probe)
                 self.assertNotIn("contained objects were retired or debt consumed", probe)
+                self.assertNotIn("child.gc_destroyed", probe)
+                self.assertNotIn("nested.gc_destroyed", probe)
+                self.assertIn("construction_contents_probe_destroy_calls == 1", probe)
                 self.assertIn("tests/seasonal_construction/collapse_policy_contents.dm", packet["production_hashes"])
                 self.assertIn("map_storage.BuildVarDirectory(F, O, 1)", probe)
                 self.assertIn("map_storage.Load_Entry(F, ref, null, locate(5,5,1))", probe)
