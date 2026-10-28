@@ -6,13 +6,11 @@ budget reads are Python adapters; validate those separately with native BYOND.
 """
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
 EARLY = 1234
-BASELINE = "9db2b2f42a5fbbb0bdd49d50a2672da6111a7709"
 
 
 def proc(source, signature):
@@ -215,9 +213,7 @@ class ResearchResumeTests(unittest.TestCase):
         self.assertEqual(trace.pending, [self.b, self.c])
 
     def test_audited_immutable_baseline_falsely_finishes_and_loses_tail(self):
-        baseline = subprocess.check_output(
-            ["git", "show", BASELINE + ":code/processes/research_tree.dm"],
-            cwd=ROOT, text=True)
+        baseline = Path(__file__).with_name('fixtures').joinpath('research_tree-9db2b2f.dm').read_text(encoding='utf-8')
         trace = self.trace(source=baseline)
         for _ in range(3):
             self.assertIsNone(trace.dispatch(1))

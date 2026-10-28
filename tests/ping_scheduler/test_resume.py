@@ -1,11 +1,9 @@
 """Offline restricted production traces; Python adapters are not native evidence."""
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = "9db2b2f42a5fbbb0bdd49d50a2672da6111a7709"
 EARLY = 1234
 
 
@@ -211,7 +209,7 @@ class PingTests(unittest.TestCase):
         self.assertIsNone(t.pending)
 
     def test_audited_baseline_repeats_prefix_and_publishes_partial_sum(self):
-        old = subprocess.check_output(["git", "show", BASE + ":code/processes/ping_track.dm"], cwd=ROOT, text=True)
+        old = Path(__file__).with_name('fixtures').joinpath('ping_track-9db2b2f.dm').read_text(encoding='utf-8')
         t = Trace(old, self.clients)
         for _ in range(3):
             self.assertEqual(t.dispatch(1), EARLY)
