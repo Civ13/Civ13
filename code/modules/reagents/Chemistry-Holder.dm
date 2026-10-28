@@ -141,16 +141,23 @@
 
 /* Holder-to-chemical */
 
-/datum/reagents/proc/add_reagent(var/id, var/amount, var/data = null, var/safety = FALSE)
+/datum/reagents/proc/add_reagent(var/id, var/amount, var/data = null, var/safety = FALSE, var/list/accepted_amount = null)
+	if (accepted_amount)
+		accepted_amount["amount"] = 0
 	if (!isnum(amount) || amount <= 0)
 		return FALSE
 
 	update_total()
 	amount = min(amount, get_free_space())
+	// Callers requesting accounting must not accept a negative or empty fill.
+	if (accepted_amount && amount <= 0)
+		return FALSE
 
 	for (var/datum/reagent/current in reagent_list)
 		if (current.id == id)
 			current.volume += amount
+			if (accepted_amount)
+				accepted_amount["amount"] = amount
 			if (!isnull(data)) // For all we know, it could be zero or empty string and meaningful
 				current.mix_data(data, amount)
 			update_total()
@@ -165,6 +172,8 @@
 		reagent_list += R
 		R.holder = src
 		R.volume = amount
+		if (accepted_amount)
+			accepted_amount["amount"] = amount
 		R.initialize_data(data)
 		update_total()
 		if (!safety)
