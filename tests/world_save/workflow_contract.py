@@ -28,6 +28,9 @@ REVIEWED_STEPS = (
     'Check exclusion dispatch source while native execution is held',
     'Verify Linux exclusion dispatch parity and mutation controls',
     'Retain Linux exclusion dispatch evidence',
+    'Retain dependency job outcomes before validating artifacts',
+    'Require selected jobs and exact-source execution receipts',
+    'Retain aggregate verdict and dependency outcomes',
 )
 
 
@@ -43,7 +46,10 @@ def assert_workflow_contract(workflow):
         jobs = re.findall(r'^  ([A-Za-z_][A-Za-z0-9_-]*):$', prefix, re.M)
         expected_job = ('baseline' if name in ('Run required bounded offline baseline',
                         'Retain offline commands, counts, logs and skips') else
-                        'evidence-checker' if name == 'Test continuous persistence round contracts offline' else 'build')
+                        'evidence-checker' if name == 'Test continuous persistence round contracts offline' else
+                        'ci-required' if name in ('Retain dependency job outcomes before validating artifacts',
+                        'Require selected jobs and exact-source execution receipts',
+                        'Retain aggregate verdict and dependency outcomes') else 'build')
         if not jobs or jobs[-1] != expected_job:
             raise AssertionError('Reviewed step moved from job: ' + name)
         lines = []
@@ -70,6 +76,8 @@ def assert_workflow_contract(workflow):
         ('Offline world-save round-trip regression', 'Retain ordinary world-save evidence'),
         ('Verify bounded admitted save traversal and backup recovery', 'Retain bounded save source and native evidence'),
         ('Verify continuous persistence rounds and negative controls', 'Retain continuous-round integration evidence'),
+        ('Retain dependency job outcomes before validating artifacts',
+         'Require selected jobs and exact-source execution receipts', 'Retain aggregate verdict and dependency outcomes'),
     ):
         positions = [workflow.index('      - name: ' + name + '\n') for name in sequence]
         if positions != sorted(positions):
@@ -125,3 +133,31 @@ def assert_workflow_contract(workflow):
         for fragment in required:
             if section.count(fragment) != 1:
                 raise AssertionError('Missing or duplicate ' + job + ' identity/provenance: ' + fragment.strip())
+
+    # The aggregate downloads each producer's attempt, not its own attempt on
+    # a failed-job rerun. Bind names, paths, actions and the dependency graph.
+    aggregate_marker = '  ci-required:\n'
+    if workflow.count(aggregate_marker) != 1:
+        raise AssertionError('Missing or duplicate required aggregate job')
+    aggregate = re.split(r'^  [A-Za-z_][A-Za-z0-9_-]*:\s*$', workflow.split(aggregate_marker, 1)[1],
+                         maxsplit=1, flags=re.M)[0]
+    for fragment in (
+        "    name: ${{ needs.changes.result == 'success' && needs.changes.outputs.gating && needs.changes.outputs.gating == '0' && 'CI informational aggregate' || 'CI required aggregate' }}\n",
+        '    if: always()\n',
+        '    needs: [changes, baseline, evidence-checker, build, extraction-instances]\n',
+        '    runs-on: ubuntu-latest\n',
+        '    timeout-minutes: 5\n',
+        '      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n        with:\n          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n',
+        '          persist-credentials: false\n',
+        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}\n          path: .ci/selection\n',
+        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}\n          path: .ci/baseline\n',
+        '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}\n          path: .ci/compile\n',
+    ):
+        if ('\n' + aggregate).count('\n' + fragment) != 1:
+            raise AssertionError('Required aggregate identity, dependency or receipt changed: ' + fragment.strip())
+    first = aggregate.index('      - name: Retain dependency job outcomes before validating artifacts\n')
+    last = aggregate.index('      - name: Require selected jobs and exact-source execution receipts\n')
+    downloads = aggregate[first:last]
+    for prefix in ('ci-selection-', 'ci-baseline-', 'ci-compile-'):
+        if downloads.count('          name: ' + prefix) != 1:
+            raise AssertionError('Required aggregate download ordering changed: ' + prefix)

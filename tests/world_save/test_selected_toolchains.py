@@ -164,6 +164,19 @@ class SelectedToolchains(unittest.TestCase):
              'SELECTION_ATTEMPT: ${{ github.run_attempt }}'),
             ('Retain bounded save source and native evidence',
              'if-no-files-found: error', 'if-no-files-found: ignore'),
+            ('Require selected jobs and exact-source execution receipts',
+             'BASELINE_ATTEMPT: ${{ needs.baseline.outputs.attempt }}',
+             'BASELINE_ATTEMPT: ${{ github.run_attempt }}'),
+            ('Require selected jobs and exact-source execution receipts',
+             'COMPILE_ATTEMPT: ${{ needs.build.outputs.attempt }}',
+             'COMPILE_ATTEMPT: ${{ github.run_attempt }}'),
+            ('Require selected jobs and exact-source execution receipts',
+             'SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}',
+             'SELECTION_ATTEMPT: ${{ github.run_attempt }}'),
+            ('Require selected jobs and exact-source execution receipts',
+             '--baseline .ci/baseline/baseline.json', '--baseline .ci/elsewhere/baseline.json'),
+            ('Retain aggregate verdict and dependency outcomes',
+             'path: .ci/aggregate/', 'path: .ci/elsewhere/'),
         )
         for name, old, new in mutations:
             with self.subTest(name=name):
@@ -181,6 +194,30 @@ class SelectedToolchains(unittest.TestCase):
                 self.assertIn(old, workflow)
                 with self.assertRaises(AssertionError):
                     WORKFLOW_CONTRACT.assert_workflow_contract(workflow.replace(old, new, 1))
+        prefix, aggregate = workflow.split('  ci-required:\n', 1)
+        for old, new in (
+            ('needs: [changes, baseline, evidence-checker, build, extraction-instances]',
+             'needs: [changes, baseline, evidence-checker, build]'),
+            ('name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}',
+             'name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}'),
+            ('name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}',
+             'name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}'),
+            ('name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}',
+             'name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}'),
+            ('path: .ci/compile', 'path: .ci/wrong-compile'),
+            ('ref: ${{ github.event.pull_request.head.sha || github.sha }}', 'ref: master'),
+            ("CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}",
+             'CI_BASE: ${{ github.sha }}'),
+        ):
+            with self.subTest(aggregate_mutation=old):
+                self.assertIn(old, aggregate)
+                with self.assertRaises(AssertionError):
+                    WORKFLOW_CONTRACT.assert_workflow_contract(prefix + '  ci-required:\n' + aggregate.replace(old, new, 1))
+        marker = '      - name: Summarize explicit execution and skip meanings\n'
+        self.assertIn(marker, aggregate)
+        unrelated_aggregate = prefix + '  ci-required:\n' + aggregate.replace(marker,
+            '      - name: Unrelated aggregate reporting\n        run: echo unrelated\n' + marker, 1)
+        WORKFLOW_CONTRACT.assert_workflow_contract(unrelated_aggregate)
         first = '      - name: Check exclusion dispatch source while native execution is held\n' + fixtures['Check exclusion dispatch source while native execution is held']
         second = '      - name: Verify Linux exclusion dispatch parity and mutation controls\n' + fixtures['Verify Linux exclusion dispatch parity and mutation controls']
         self.assertIn(first, workflow)
