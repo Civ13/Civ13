@@ -97,22 +97,34 @@ jobs:
       attempt: ${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
+      - name: Prepare exact comparison commit
+        timeout-minutes: 2
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}
           path: .ci/selection
       - name: Run required bounded offline baseline
+        id: baseline
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
-        run: python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/baseline
+        run: |
+          mkdir -p .ci/baseline
+          printf '%s\n' '{"status":"failed","reason":"Baseline execution did not complete"}' > .ci/baseline/baseline.json
+          python3 -B scripts/ci_baseline.py run --selection .ci/selection/selection.json --head "$CI_HEAD" --base "$CI_BASE" --selection-attempt "$SELECTION_ATTEMPT" --output .ci/baseline
       - name: Retain offline commands, counts, logs and skips
-        if: always()
+        if: always() && steps.baseline.outcome != 'skipped' && steps.baseline.outcome != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -2268,6 +2280,15 @@ jobs:
         run: |
           mkdir -p .ci/aggregate
           printf '%s\n' '{"status":"failed","reason":"selection job did not succeed"}' > .ci/aggregate/selection-failed.json
+          exit 1
+      - name: Record failed baseline verdict
+        if: always() && needs.changes.result == 'success' && needs.baseline.result != 'success'
+        env:
+          BASELINE_RESULT: ${{ needs.baseline.result }}
+        run: |
+          mkdir -p .ci/aggregate
+          case "$BASELINE_RESULT" in success|failure|cancelled|skipped) ;; *) BASELINE_RESULT=unknown ;; esac
+          printf '{"status":"failed","reason":"baseline job did not succeed","result":"%s"}\n' "$BASELINE_RESULT" > .ci/aggregate/baseline-failed.json
           exit 1
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:

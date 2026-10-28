@@ -29,6 +29,7 @@ REVIEWED_STEPS = (
     'Verify Linux exclusion dispatch parity and mutation controls',
     'Retain Linux exclusion dispatch evidence',
     'Retain dependency job outcomes before validating artifacts',
+    'Record failed baseline verdict',
     'Require selected jobs and exact-source execution receipts',
     'Retain aggregate verdict and dependency outcomes',
 )
@@ -48,6 +49,7 @@ def assert_workflow_contract(workflow):
                         'Retain offline commands, counts, logs and skips') else
                         'evidence-checker' if name == 'Test continuous persistence round contracts offline' else
                         'ci-required' if name in ('Retain dependency job outcomes before validating artifacts',
+                        'Record failed baseline verdict',
                         'Require selected jobs and exact-source execution receipts',
                         'Retain aggregate verdict and dependency outcomes') else 'build')
         if not jobs or jobs[-1] != expected_job:
@@ -76,7 +78,7 @@ def assert_workflow_contract(workflow):
         ('Offline world-save round-trip regression', 'Retain ordinary world-save evidence'),
         ('Verify bounded admitted save traversal and backup recovery', 'Retain bounded save source and native evidence'),
         ('Verify continuous persistence rounds and negative controls', 'Retain continuous-round integration evidence'),
-        ('Retain dependency job outcomes before validating artifacts',
+        ('Retain dependency job outcomes before validating artifacts', 'Record failed baseline verdict',
          'Require selected jobs and exact-source execution receipts', 'Retain aggregate verdict and dependency outcomes'),
     ):
         positions = [workflow.index('      - name: ' + name + '\n') for name in sequence]
@@ -126,7 +128,7 @@ def assert_workflow_contract(workflow):
             '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n',
             '      attempt: ${{ github.run_attempt }}\n',
             '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n',
-            '          fetch-depth: 0\n',
+            '          fetch-depth: ' + ('1' if job == 'baseline' else '0') + '\n',
             '          persist-credentials: false\n',
             '          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}\n',
             '          path: .ci/selection\n',
@@ -134,6 +136,24 @@ def assert_workflow_contract(workflow):
         for fragment in required:
             if section.count(fragment) != 1:
                 raise AssertionError('Missing or duplicate ' + job + ' identity/provenance: ' + fragment.strip())
+        if job == 'baseline':
+            prepare = ('      - name: Prepare exact comparison commit\n'
+                       '        timeout-minutes: 2\n'
+                       '        env:\n'
+                       '          EVENT_NAME: ${{ github.event_name }}\n'
+                       "          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}\n"
+                       '          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n'
+                       '        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"\n')
+            checkout = ('      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n'
+                        '        timeout-minutes: 2\n'
+                        '        with:\n'
+                        '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n'
+                        '          fetch-depth: 1\n'
+                        '          persist-credentials: false\n')
+            if section.count(prepare) != 1 or section.count(checkout) != 1:
+                raise AssertionError('Baseline exact comparison preparation changed')
+            if section.index('      - uses: actions/checkout@') > section.index(prepare) or section.index(prepare) > section.index('      - uses: actions/download-artifact@'):
+                raise AssertionError('Baseline preparation ordering changed')
         selection_gate = ("    if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')\n" if job == 'baseline' else
                           "    if: always() && !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch'))\n")
         if section.count(selection_gate) != 1:

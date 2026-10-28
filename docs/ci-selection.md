@@ -191,6 +191,11 @@ keeps JSON booleans). Numeric tokens avoid
 values such as `false`, `False` or `00` are invalid and fail.
 
 Seven-day artifacts use `ci-{selection,baseline,compile,aggregate}-<head>-<run>-<attempt>`.
+The selector, baseline and aggregate use depth-one exact-head checkouts and
+fetch only the exact event comparison commit when needed. The ping and research
+historical negative controls use checked-in, hash-verified source fixtures, so
+the baseline does not need unrelated repository history. Build and evidence
+checkouts retain their separate history requirements.
 Each producer names its artifact with the attempt it actually ran in. A re-run
 of failed jobs reuses earlier successful jobs, so baseline, build and the
 aggregate download by the producing job's `attempt` output, not their own
@@ -208,8 +213,11 @@ HEAD (even an empty commit), or missing post-test evidence fails. These boundary
 snapshots do not establish that no temporary mutation was restored mid-run.
 Compiler diagnostics include setup output, combined stdout/stderr, Git source
 tree and before/after patches (the atlas catalog is generated before compilation).
-Uploads use `always()` including failures/skips; runner loss or cancellation can
-still prevent artifact delivery, which cannot become a passing aggregate.
+Baseline uploads run after an attempted baseline step; a cancelled or failed
+checkout has no baseline artifact. The aggregate records an explicit failed
+baseline verdict instead of treating that absence as the primary failure.
+Runner loss or cancellation can still prevent artifact delivery, which cannot
+become a passing aggregate.
 
 The admitted gating or informational aggregate runs with `always()`. It requires successful selection,
 baseline, evidence-checker and build jobs, and extraction when that job is

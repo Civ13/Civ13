@@ -162,6 +162,14 @@ class SelectedToolchains(unittest.TestCase):
             ('Record compilation outcome and source receipts',
              'SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}',
              'SELECTION_ATTEMPT: ${{ github.run_attempt }}'),
+            ('Run required bounded offline baseline',
+             'SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}',
+             'SELECTION_ATTEMPT: ${{ github.run_attempt }}'),
+            ('Run required bounded offline baseline',
+             'Baseline execution did not complete', 'baseline falsely succeeded'),
+            ('Record failed baseline verdict', "exit 1", 'exit 0'),
+            ('Retain offline commands, counts, logs and skips',
+             "steps.baseline.outcome != 'skipped'", "steps.baseline.outcome == 'skipped'"),
             ('Retain bounded save source and native evidence',
              'if-no-files-found: error', 'if-no-files-found: ignore'),
             ('Require selected jobs and exact-source execution receipts',
@@ -187,7 +195,6 @@ class SelectedToolchains(unittest.TestCase):
                 with self.assertRaises(AssertionError):
                     WORKFLOW_CONTRACT.assert_workflow_contract(altered)
         for old, new in (('  BYOND_MINOR: "1688"', '  BYOND_MINOR: "1681"'),
-                         ('          fetch-depth: 0', '          fetch-depth: 1'),
                          ('      build_prefix: true', '      build_prefix: false'),
                          ('      lint_workflows: true', '      lint_workflows: false'),
                          ("needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", "needs.changes.outputs.skip_duplicate != 'true'"),
@@ -196,6 +203,26 @@ class SelectedToolchains(unittest.TestCase):
                 self.assertIn(old, workflow)
                 with self.assertRaises(AssertionError):
                     WORKFLOW_CONTRACT.assert_workflow_contract(workflow.replace(old, new, 1))
+        before_baseline, baseline_and_after = workflow.split('  baseline:\n', 1)
+        baseline, after_baseline = baseline_and_after.split('  evidence-checker:\n', 1)
+        for old, new in (
+            ('fetch-depth: 1', 'fetch-depth: 0'),
+            ('scripts/ci_checkout_refs.py --head', 'scripts/ci_checkout_refs.py --wrong-head'),
+            ('BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || \'\' }}',
+             'BASE_REF: ${{ github.sha }}'),
+            ('HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}',
+             'HEAD_REF: ${{ github.event.pull_request.base.sha }}'),
+        ):
+            with self.subTest(baseline_mutation=old):
+                self.assertIn(old, baseline)
+                altered = before_baseline + '  baseline:\n' + baseline.replace(old, new, 1) + '  evidence-checker:\n' + after_baseline
+                with self.assertRaises(AssertionError):
+                    WORKFLOW_CONTRACT.assert_workflow_contract(altered)
+        before_build, build_and_after = workflow.split('  build:\n', 1)
+        build, after_build = build_and_after.split('  ci-required:\n', 1)
+        self.assertIn('fetch-depth: 0', build)
+        with self.assertRaises(AssertionError):
+            WORKFLOW_CONTRACT.assert_workflow_contract(before_build + '  build:\n' + build.replace('fetch-depth: 0', 'fetch-depth: 1', 1) + '  ci-required:\n' + after_build)
         prefix, aggregate = workflow.split('  ci-required:\n', 1)
         for old, new in (
             ('needs: [changes, baseline, evidence-checker, build, extraction-instances]',
