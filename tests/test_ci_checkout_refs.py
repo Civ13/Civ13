@@ -108,6 +108,84 @@ class CheckoutRefsTests(unittest.TestCase):
             with self.subTest(values=values):
                 self.assertEqual(outcomes, [expected == 'shallow', expected == 'history'])
 
+    def test_shallow_build_never_runs_fixture_steps(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
+        steps = re.split(r'\n      - ', build)[1:]
+        # Only the compiler and its plumbing may run on the simple path.
+        plumbing = {
+            'Require successful change selection', 'Explain compilation skip',
+            'Check out simple compilation source', 'Prepare simple compilation comparison commit',
+            'Check out history for selected or manual fixtures', 'Read reviewed BYOND archive cache identity',
+            'Restore exact BYOND archive only', 'Compile selected exact-head game',
+            'Save verified BYOND archive after successful compilation',
+            'Record compilation outcome and source receipts',
+            'Retain compiler diagnostics and source receipts including failures',
+            'Explain opt-in runtime coverage',
+        }
+        named = {}
+        by_id = {}
+        for step in steps:
+            first = step.splitlines()[0]
+            if first.startswith('uses: '):
+                self.assertEqual(first, 'uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093')
+                continue
+            self.assertTrue(first.startswith('name: '), first)
+            name = first[6:]
+            self.assertNotIn(name, named)
+            named[name] = step
+            ids = re.findall(r'^        id: ([\w-]+)$', step, re.M)
+            self.assertLessEqual(len(ids), 1)
+            if ids:
+                self.assertNotIn(ids[0], by_id)
+                by_id[ids[0]] = name
+        self.assertTrue(plumbing <= named.keys())
+        self.assertEqual(named['Explain opt-in runtime coverage'].count('\n        run: echo '), 1)
+        self.assertEqual(len(named['Explain opt-in runtime coverage'].splitlines()), 3)
+        self.assertGreaterEqual(len(named) - len(plumbing), 140)
+
+        def fixture_cannot_run(name, checking):
+            self.assertNotIn(name, plumbing, name)
+            self.assertNotIn(name, checking, name)
+            checking = checking | {name}
+            step = named[name]
+            guards = re.findall(r'^        if: (.*)$', step, re.M)
+            self.assertEqual(len(guards), 1, name)
+            expression = guards[0]
+            # Compilation may succeed on the shallow path; treat it as true,
+            # so it cannot by itself make a fixture guard pass this check.
+            expression = expression.replace("steps.compile.outcome == 'success'", 'True')
+            expression = expression.removeprefix('${{').removesuffix('}}').strip()
+            for ref in set(re.findall(r'steps\.([\w-]+)\.', expression)):
+                self.assertIn(ref, by_id, name)
+                fixture_cannot_run(by_id[ref], checking)
+            expression = re.sub(r"steps\.[\w-]+\.(?:outcome != 'skipped'|outputs\.started == 'true')", 'False', expression)
+            expression = re.sub(r"contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\), '[a-zA-Z0-9_./-]+'\)", 'False', expression)
+            expression = expression.replace("needs.changes.outputs.extensive == 'true'", 'False')
+            expression = expression.replace('(inputs.world_save_regressions || inputs.save_latency_regressions) == true', 'False')
+            expression = re.sub(r'inputs\.[\w_]+(?: == true)?', 'False', expression)
+            expression = expression.replace("github.event_name == 'workflow_dispatch'", 'False')
+            expression = expression.replace("github.event_name == 'pull_request'", 'True')
+            expression = expression.replace("github.event.action != 'edited'", 'True')
+            expression = expression.replace("needs.changes.outputs.game == 'true'", 'True')
+            expression = expression.replace("needs.changes.result == 'success'", 'True')
+            expression = expression.replace("contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))", 'False')
+            expression = expression.replace('always()', 'True').replace('!cancelled()', 'True').replace('&&', ' and ').replace('||', ' or ')
+            parsed = ast.parse(expression, mode='eval')
+            for node in ast.walk(parsed):
+                self.assertIsInstance(node, (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.Constant), f'{name}: {expression}')
+                if isinstance(node, ast.Constant):
+                    self.assertIsInstance(node.value, bool)
+            self.assertFalse(eval(compile(parsed, '<shallow build fixture>', 'eval'), {'__builtins__': {}}, {}), name)
+
+        for name in named.keys() - plumbing:
+            fixture_cannot_run(name, set())
+        name = 'Compile Art of the Deal with current game declarations'
+        original = named[name]
+        named[name] = original.replace("needs.changes.outputs.extensive == 'true'", 'true', 1)
+        with self.assertRaises((AssertionError, SyntaxError)):
+            fixture_cannot_run(name, set())
+
     def test_build_rejects_missing_and_invalid_suite_output(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
         build = workflow.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
