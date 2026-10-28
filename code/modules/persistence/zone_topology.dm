@@ -336,7 +336,7 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		F.cd = "/"
 		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz", "zone_capture", "map"))
 			if(!(key in F.dir)) throw EXCEPTION("Missing zone capture header")
-		if(F["/format_version"] != 2 || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
+		if(!(F["/format_version"] in list(2, 3)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
 		F.cd = "/zone_capture"
 		if(F.dir.len != world.maxx * world.maxy) throw EXCEPTION("Incomplete captured zone level")
 		F.cd = "/map"

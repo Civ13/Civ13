@@ -16,6 +16,15 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.source = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text()
         self.helpers = '\n'.join(RUNNER.BASE.extract_proc(self.source, path) for path in RUNNER.HELPERS)
 
+    def test_duplicate_diagnostic_injects_capture_without_changing_production(self):
+        probe = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
+        self.assertIn('/map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory', probe)
+        self.assertIn('if(A == cross_target && saving_z == 2)', probe)
+        self.assertIn('saving_world_movables -= "\\ref[A]"', probe)
+        self.assertIn('return ..()', probe)
+        self.assertIn('new /map_storage/cross_level/diagnostic_duplicate(', probe)
+        self.assertIn('map_storage.saved_content_refs(', probe)
+
     def test_candidate_extracts_exact_helpers_and_actual_buckling_and_movement(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

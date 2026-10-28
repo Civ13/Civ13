@@ -67,9 +67,16 @@ The reviewed `run_linux.py` invocation is now wired into the existing Linux PR
 build job. `ci-steps.yml.example` retains the exact reviewed step template; the
 active copy is in `.github/workflows/test.yml`. It reuses that build job after its
 BYOND bootstrap/full-game compile, `contents: read`, exact PR-head checkout and
-disabled credential persistence. It selects only introduced roof tests on
+disabled credential persistence. It selects introduced roof tests on
 opened/synchronize/reopened PR events, never body edits, push or manual dispatch.
 The three packets run sequentially and stop on the first failure, without retries.
+An existing-suite request can instead use PR label `roof-ci:<full-head-SHA>`.
+After source/resource review, an authorized maintainer sets that 48-character
+label for the exact reviewed commit before publishing it. The ordinary PR
+synchronize event then selects both offline roof contracts and this native step.
+The label does not change `new_tests`, grant resources or permit manual/edited
+events; adding it alone triggers no run. A later source head needs a new matching
+label and review. Do not create an artificial introduced test to select the suite.
 The enclosing step is bounded to 40 minutes; native work plus cleanup remains
 990 + 330 + 330 seconds. Preparation and input verification precede those native
 deadlines. No change to production/private data or native session is involved.
@@ -195,6 +202,21 @@ the final native census must succeed. Logs and failed fixture copies are retaine
 Retain source/DME/patch hashes, compiler output, per-mode result/log hashes,
 process birth/exit identities, external socket observations and cleanup receipts.
 The proposed limits, fixtures and offline packets are not an execution grant.
+
+The completion proposal gives each runtime a fresh controller session. After all
+existing assertions/result publication, the probe emits at most 50 numbered
+pulses separated by sleep(1), then exits. Each pulse binds session, mode, result
+file MD5 and assertion counter; the controller independently freezes SHA256.
+This is a bounded post-assertion park, not proof that every engine callback is
+quiescent. The controller requires pulse progress across at least 0.1 seconds of
+successful live checks, stable result/counter/logs and at most 0.05 observed CPU
+seconds before recording and sending SIGKILL to the owned child group. Only that
+explicit contract admits exit -9, with successful normal owned cleanup and empty
+final census. Compile/legacy natural paths retain exit0. Every observation denial
+fails immediately in the completion path; no delayed-terminal exception applies.
+All existing deadlines, resource/socket/output bounds and assertion oracles stay.
+Failed CI40103757399 and its consumed request retain their failed verdicts. This
+source-only proposal has not been compiled or executed natively.
 
 ## Private generation acceptance
 
