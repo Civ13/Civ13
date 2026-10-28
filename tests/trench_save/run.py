@@ -10,11 +10,25 @@ import tempfile
 import uuid
 
 
-def main():
+def argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--negative-control', choices=('filling', 'digging'))
-    args = parser.parse_args()
+    # Historical callers remain strict 1681. Current-target admission is explicit
+    # and cannot relabel the old receipts or silently accept a future engine.
+    parser.add_argument('--expected-byond-version', choices=('516.1681', '516.1688'), default='516.1681')
+    parser.add_argument('--compile-only', action='store_true')
+    return parser
+
+
+def compiler_matches(text, returncode, version):
+    return (returncode == 0 and
+            re.search(r'^DM compiler version ' + re.escape(version) + r'\b', text, re.MULTILINE) is not None and
+            re.search(r'\b0 errors,\s*0 warnings\b', text) is not None)
+
+
+def main():
+    args = argument_parser().parse_args()
     root = Path(__file__).resolve().parents[2]
     stem = '.trench_save_' + uuid.uuid4().hex
     generated = {suffix: root / (stem + suffix) for suffix in
@@ -49,8 +63,11 @@ def main():
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         generated['.dme'].write_text(source + '\n#include "tests/trench_save/probe.dm"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'negative_control': args.negative_control,
-            'normal_startup': False, 'map': 'synthetic 12x8x2 trench layout'}), encoding='utf-8')
+        metadata = {'commit': head, 'negative_control': args.negative_control,
+            'normal_startup': False, 'map': 'synthetic 12x8x2 trench layout',
+            'expected_byond_version': args.expected_byond_version,
+            'compile_only': args.compile_only, 'runtime_started': False}
+        (output / 'metadata.json').write_text(json.dumps(metadata), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(root / 'tests/trench_save/probe.dm', output / 'probe.dm')
         for path in generated.values():
@@ -63,10 +80,15 @@ def main():
         text = build.stdout + build.stderr
         (output / 'compile.log').write_text(text, encoding='utf-8')
         print(text, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
+        if not compiler_matches(text, build.returncode, args.expected_byond_version):
             raise RuntimeError('Pinned production-source compilation failed')
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(generated[suffix], output / generated[suffix].name)
+        metadata['compiler_verified'] = args.expected_byond_version
+        (output / 'metadata.json').write_text(json.dumps(metadata), encoding='utf-8')
+        if args.compile_only:
+            print('PASS: prepared trench fixture compiled; runtime not started', flush=True)
+            return
         for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines():
             destination = output / rel
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -74,6 +96,8 @@ def main():
         command = [str(daemon), str(output / generated['.dmb'].name)]
         if os.name == 'nt':
             command += ['-invisible', '-close']
+        metadata['runtime_started'] = True
+        (output / 'metadata.json').write_text(json.dumps(metadata), encoding='utf-8')
         runtime = subprocess.run(command + ['-trusted', '-log', 'runtime.log'], cwd=output,
                                  capture_output=True, text=True, timeout=60, creationflags=flags)
         (output / 'daemon.log').write_text(runtime.stdout + runtime.stderr, encoding='utf-8')
@@ -87,6 +111,8 @@ def main():
             raise RuntimeError('Production trench save probe failed')
         if args.negative_control:
             print('PASS: expected trench omission mutation detected', flush=True)
+        metadata['runtime_result'] = 'passed'
+        (output / 'metadata.json').write_text(json.dumps(metadata), encoding='utf-8')
     finally:
         for path in generated.values():
             path.unlink(missing_ok=True)

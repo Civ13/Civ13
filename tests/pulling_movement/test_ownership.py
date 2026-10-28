@@ -9,7 +9,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULE = ROOT / 'code/game/mob/living/carbon/human/pull_pair_ownership.dm'
-BASE = '10d264e5896221b34949ee4b67c0fd2b94bde249'
+# Master integrated by the 2026-10-28 merge; the PR leaves these producers unchanged.
+INTEGRATED = '67ce06e95e32d55f94c07e23d20116fab45e6417'
 DIRS = dict(NORTH=1, SOUTH=2, EAST=4, WEST=8)
 
 
@@ -88,10 +89,10 @@ class PullOwnershipContracts(unittest.TestCase):
 
     def test_other_producers_and_unlinked_guard_are_not_broadly_enabled(self):
         for path in ('code/_onclick/click.dm', 'code/pathfinding.dm', 'code/_helpers/mobs.dm'):
-            old = subprocess.check_output(['git','show',BASE+':'+path],cwd=ROOT).decode().replace('\r\n','\n')
+            old = subprocess.check_output(['git','show',INTEGRATED+':'+path],cwd=ROOT).decode().replace('\r\n','\n')
             self.assertEqual((ROOT/path).read_text(encoding='utf-8'), old, path)
         human = (ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm').read_text()
-        old = subprocess.check_output(['git','show',BASE+':code/game/mob/living/carbon/human/subtile_movement.dm'],cwd=ROOT).decode().replace('\r\n','\n')
+        old = subprocess.check_output(['git','show',INTEGRATED+':code/game/mob/living/carbon/human/subtile_movement.dm'],cwd=ROOT).decode().replace('\r\n','\n')
         start='/mob/living/human/proc/human_subtile_unlinked()'
         end='/mob/living/human/proc/human_subtile_input_supported'
         self.assertEqual(human[human.index(start):human.index(end)], old[old.index(start):old.index(end)])

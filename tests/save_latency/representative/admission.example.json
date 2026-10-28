@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "authorized": false,
+  "attempt_id": null,
+  "executor_thread": null,
+  "resource_owner": null,
+  "reservation_id": null,
+  "authority_reference": null,
+  "repository": null,
+  "ledger_directory": null,
+  "identity": null,
+  "resource_sha256": null,
+  "driver_sha256": {},
+  "resource_sample": null
+}
