@@ -267,7 +267,7 @@ class CurrentRunner(unittest.TestCase):
                              re.findall(r'--disabled|--negative-control [\w-]+', new_call))
             self.assertIn('--byond-archive "$PWD/BYOND/pinned.zip"', new_call)
         self.assertEqual(len(set(re.findall(r'--output "([^"]+)"', '\n'.join(new_calls)))), 13)
-        condition = "if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/light_plane_composition')"
+        condition = "if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/light_plane_composition')"
         self.assertIn(condition, text)
         self.assertIn('LIGHTING_COMPOSITION_V2 0', (current.ROOT / 'code/__defines/_planes+layers.dm').read_text())
 

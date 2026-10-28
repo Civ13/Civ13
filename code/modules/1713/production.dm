@@ -782,6 +782,26 @@
 			"<span class='notice'>You remove \a [S.name] from \the [src].")
 	return TRUE
 
+// Refill can restore encoded inputs without going through attackby admission.
+// Leave unsafe inputs owned by the rack; never manufacture a fresh replacement.
+/obj/structure/dehydrator/proc/drying_input_is_safe(obj/item/input)
+	if (!istype(input, /obj/item/weapon/reagent_containers/food))
+		return TRUE
+	var/obj/item/weapon/reagent_containers/food/F = input
+	if (F.rotten || !isnum(F.decaytimer))
+		return FALSE
+	var/marker = findtext(F.name, "DECAY_")
+	if (!marker)
+		return FALSE
+	var/offset = marker + 6
+	var/original_decay = text2num(copytext(F.name, offset, offset + 8))
+	if (!isnum(original_decay) || original_decay < 0)
+		return FALSE
+	// A zero encoded limit means the original food did not decay.
+	if (original_decay > 0 && (F.decaytimer >= original_decay || (F.rots && F.decaytimer >= original_decay / 2)))
+		return FALSE
+	return TRUE
+
 /obj/structure/dehydrator/proc/dry_process(var/this_process = null)
 	var/list/pos
 	var/obj/item/P
@@ -802,6 +822,8 @@
 		if (storage.contents.len>0)
 			for (I in storage.contents)
 				if (I.dried_type)
+					if (!drying_input_is_safe(I))
+						continue
 					dry_timer = get_dry_timer(I)
 					dry_timer += 150
 					set_dry_timer(I, dry_timer)
@@ -824,6 +846,11 @@
 											output_food.reagents.remove_reagent(nutrient.id, nutrient.volume * (1 - retained_fraction))
 							var/decay_offset = findtext(I.name, "DECAY_") + 6
 							var/original_decay = text2num(copytext(I.name, decay_offset, decay_offset + 8))
+							if (istype(input_food, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet) && istype(output_food, /obj/item/weapon/reagent_containers/food/snacks/driedmeat))
+								var/obj/item/weapon/reagent_containers/food/snacks/input_meat = input_food
+								var/obj/item/weapon/reagent_containers/food/snacks/output_meat = output_food
+								if (input_meat.salted_meat)
+									output_meat.mark_salted_meat()
 							if (original_decay > 0 && output_food.decay > 0)
 								output_food.decaytimer = max(output_food.decaytimer, input_food.decaytimer * output_food.decay / original_decay)
 						var/obj/item/I_s = slots[pos[1]][pos[2]]

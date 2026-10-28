@@ -24,7 +24,7 @@ class PublicationControlTests(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         step = workflow.split('      - name: Verify bounded admitted save traversal and backup recovery\n', 1)[1].split('      - name:', 1)[0]
         self.assertIn('        timeout-minutes: 40\n', step)
-        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_latency') || inputs.save_latency_regressions", step)
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/save_latency') || inputs.save_latency_regressions", step)
         self.assertIn('saving_sha=$(sha256sum code/modules/persistence/saving.dm', step)
         lines = [line.strip() for line in step.splitlines()]
         commands = [shlex.split(line) for line in lines
@@ -41,7 +41,7 @@ class PublicationControlTests(unittest.TestCase):
         self.assertTrue('BYOND_MAJOR: "516"' in workflow, 'Pinned BYOND major changed')
         self.assertTrue('BYOND_MINOR: "1681"' in workflow, 'Pinned BYOND minor changed')
         artifact = workflow.split('      - name: Retain bounded save source and native evidence\n', 1)[1].split('      - name:', 1)[0]
-        self.assertIn("if: always() && steps.save_latency.outcome != 'skipped'", artifact)
+        self.assertIn("if: always() && needs.changes.result == 'success' && steps.save_latency.outcome != 'skipped'", artifact)
         self.assertIn('path: ${{ runner.temp }}/save-latency/', artifact)
 
     def test_only_final_drain_is_removed(self):
