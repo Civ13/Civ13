@@ -218,6 +218,7 @@ jobs:
           python3 -B tests/world_save/test_sleep_transfer_sources.py -v
           python3 -B tests/world_save/test_cross_level_sources.py -v
           python3 -B tests/world_save/test_round_start_announcement.py -v
+          python3 -B tests/world_save/test_irrigation_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
       - name: Test save movement and physical sleep guards offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_movement')
