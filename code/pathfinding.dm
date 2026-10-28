@@ -46,8 +46,13 @@
 				continue
 
 			var/terrain_cost = 1 + (neighbor.move_delay ? neighbor.move_delay / 10 : 0)
-			var/dist = ((current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414) * terrain_cost
-			var/tentativeGScore = gScore[current] + dist
+			var/tentativeGScore
+			if(kestrel_gaia && kestrel_gaia.enabled)
+				var/step_scale = ((current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414)
+				tentativeGScore = kestrel_gaia.path_score(gScore[current], step_scale, terrain_cost)
+			else
+				var/dist = ((current.x == neighbor.x || current.y == neighbor.y) ? 1 : 1.414) * terrain_cost
+				tentativeGScore = gScore[current] + dist
 
 			if(!inOpen[neighbor])
 				openList += neighbor

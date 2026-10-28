@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
         run: |
           $plan = Get-Content release-output/plan.json -Raw | ConvertFrom-Json
-          ./tools/opendream-client/native/Build.ps1 -Dotnet (Get-Command dotnet).Source -Version $plan.version
+          ./tools/opendream-client/native/Build.ps1 -Dotnet (Get-Command dotnet).Source -Version $plan.version -Python (Get-Command python).Source
       - name: Verify updater and actual executable replacement
         shell: pwsh
         run: |

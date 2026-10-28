@@ -1,4 +1,4 @@
-"""Stage exact committed sources; optionally run closed, bounded Linux CI probes.
+"""Stage exact committed sources; optionally run target-516.1688 closed, bounded Linux CI probes.
 
 --prepare-only never resolves or launches a BYOND executable. Windows native
 execution needs the separately reviewed owned-Job envelope, not this CI runner.
@@ -163,7 +163,7 @@ def validate_compile(log, artifact):
         raise RuntimeError('Compiler output bound or diagnostic')
     lines = log.splitlines()
     banners = [line for line in lines if re.search(r'DM compiler version', line, re.I)]
-    if banners != ['DM compiler version 516.1681']:
+    if banners != ['DM compiler version 516.1688']:
         raise RuntimeError('Exactly one pinned compiler banner required')
     results = [line for line in lines if re.search(r'\berrors?\b|\bwarnings?\b', line, re.I)]
     summary = (re.escape(artifact) + r' - 0 errors, 0 warnings'
@@ -228,7 +228,7 @@ def run_process(command, cwd, name, deadline):
 
 
 def validate_receipt(row, suite, control, head):
-    if type(row) is not dict or (row.get('byond_version'), row.get('byond_build')) != (516, 1681):
+    if type(row) is not dict or (row.get('byond_version'), row.get('byond_build')) != (516, 1688):
         raise ValueError('Wrong engine/receipt')
     if suite == 'primitive':
         # Reuse the independent physical-displacement oracle, not return truthiness.
@@ -260,11 +260,11 @@ def validate_receipt(row, suite, control, head):
         if not isinstance(rows, list) or len(rows) != 1 or rows[0].get('scene') != 'normal':
             raise ValueError('Missing actual human observations')
         pulses = rows[0].get('rows')
-        if not isinstance(pulses, list) or len(pulses) != 8:
+        if not isinstance(pulses, list) or len(pulses) != 16:
             raise ValueError('Wrong human physical pulse count')
-        if (pulses[0].get('sx'), pulses[0].get('locs'), pulses[0].get('native')) != (4, 2, 4):
+        if (pulses[0].get('sx'), pulses[0].get('locs'), pulses[0].get('native')) != (2, 2, 2):
             raise ValueError('Missing physical displacement/overlap')
-        if any(p.get('native') != 4 for p in pulses):
+        if any(p.get('native') != 2 for p in pulses):
             raise ValueError('Unexpected ordinary native displacement')
 
 

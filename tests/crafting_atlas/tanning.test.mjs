@@ -26,7 +26,7 @@ const search = query => { elements.get('search').value = query; elements.get('se
 assert(elements.get('processor').children.some(x => x.value === 'tanning_rack'));
 elements.get('processor').value = 'tanning_rack';
 elements.get('processor').onchange();
-assert.equal(elements.get('count').textContent, '1 matches');
+assert.equal(elements.get('count').textContent, '1 recipe matches');
 elements.get('catalog').children[0].onclick();
 assert.equal(elements.get('title').textContent, 'Rack-dry washed hides');
 assert(elements.get('conditions').textContent.includes('resource_processing'));
@@ -44,7 +44,7 @@ for (const id of ['/material/rawhide', '/material/hairlesshide', '/material/weth
   assert(text(elements.get('relations')).includes('Uses:'), id+' consumer navigation');
 }
 search('Harvest adult turkey hen skin');
-assert.equal(elements.get('count').textContent, '1 matches');
+assert.equal(elements.get('count').textContent, '1 recipe matches · 0 resource matches');
 elements.get('catalog').children[0].onclick();
 assert(text(elements.get('diagram')).includes('raw hide'));
 assert(elements.get('conditions').textContent.includes('chicks give no hide'));
