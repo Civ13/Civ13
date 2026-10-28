@@ -108,12 +108,7 @@
 	var/F4 = file("config/dictionary.txt")
 	if (fexists(F4))
 		var/list/dictionary_temp = file2list(F4,"\n")
-		for (var/i in dictionary_temp)
-			if (findtext(i, ","))
-				var/list/current = splittext(i, ",")
-				dictionary_list += list(current)
-				if (current.len != 2)
-					world.log << "Error! Dictionary entry [current[1]] has a length of [current.len] (should be 2)."
+		dictionary_list += parse_dictionary_lines(dictionary_temp)
 	else
 		admin_notice("<span class='danger'>Failed to load the dictionary!</span>", R_DEBUG)
 	sleep(-1)
