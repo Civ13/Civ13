@@ -1,0 +1,27 @@
+{
+  "status": "GENERAL_FIX_REJECTED_RENDER_REGRESSIONS",
+  "weather_proxy": {
+    "changed_pixels": 283,
+    "bbox": [
+      192,
+      160,
+      224,
+      191
+    ],
+    "restored_exact": true
+  },
+  "intentional_mask_free_tile": {
+    "changed_pixels": 1024,
+    "bbox": [
+      224,
+      96,
+      256,
+      128
+    ],
+    "restored_exact": true
+  },
+  "receipt_sha256": "f2ed2c6cef24fe592cad10d78a92911ed9683fd231b22b98eaae9682e9bb66be",
+  "production_source_changed_after_captures": false,
+  "deployment": false,
+  "limits": "Weather uses a frozen actual rain1 source frame at production area plane/layer. Mask-free cell models deliberate no-overlay policy. Not a full weather-controller or map integration."
+}

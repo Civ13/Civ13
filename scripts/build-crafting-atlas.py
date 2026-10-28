@@ -25,6 +25,8 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    # This item type's DM name is sand; the similarly named glass material is distinct.
+    if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
@@ -242,7 +244,10 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
     entry={k:v for k,v in route.items() if k in ('name','file','line','conditions','status','tools','steps','map_notes','era','inputs','outputs')}
     entry['audit_commit']=route.get('source_commit',data['sources'].get('audit_commit',''))
     if isinstance(entry.get('tools'),list):entry['tools']=[label(tool) if isinstance(tool,str) and tool.startswith('/') else tool for tool in entry['tools']]
-    for output in route.get('outputs',[]):
+    related=route.get('related_resources',[])
+    if not isinstance(related,list) or any(not isinstance(x,str) or canon(x) not in route.get('inputs',[]) for x in related):
+        raise ValueError('Acquisition related resource must be a reviewed input')
+    for output in dict.fromkeys(route.get('outputs',[])+related):
         if not isinstance(output,str):continue
         key='/material/'+output.split(':',1)[1] if output.startswith('material:') else output
         key=canon(key)

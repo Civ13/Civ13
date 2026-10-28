@@ -17,6 +17,11 @@ on:
         description: 'Required full 40-character commit SHA for manual CI comparison (must differ from head)'
         type: string
         required: true
+      exclusion_comparison_base:
+        description: 'Full immutable base commit SHA, distinct from the selected head; required when running exclusion checks'
+        type: string
+        required: false
+        default: ''
       extensive_regressions:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
@@ -221,6 +226,8 @@ jobs:
         run: |
           python3 -B tests/world_save/test_sleep_transfer_sources.py -v
           python3 -B tests/world_save/test_cross_level_sources.py -v
+          python3 -B tests/world_save/test_round_start_announcement.py -v
+          python3 -B tests/world_save/test_irrigation_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
       - name: Test save movement and physical sleep guards offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/save_movement')
@@ -642,7 +649,7 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -B -m unittest discover -s tests/wildlife_registry -v
-          python3 tests/wildlife_registry/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/wildlife_registry-native" --all-controls
+          python3 tests/wildlife_registry/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/wildlife_registry-native" --expected-byond-version 516.1688 --all-controls
       - name: Verify farm and poultry registry production hooks and native controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/animal_registry')
         timeout-minutes: 10
@@ -854,6 +861,42 @@ jobs:
       - name: Verify Nomads lifecycle supervisor offline contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
         run: python3 -m unittest discover -s tests/nomads_lifecycle -v
+      - name: Verify lighting plane composition modes
+        id: lighting_composition
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/light_plane_composition')
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -m venv "$RUNNER_TEMP/light-plane-tools"
+          "$RUNNER_TEMP/light-plane-tools/bin/python" -m pip install Pillow==11.3.0
+          "$RUNNER_TEMP/light-plane-tools/bin/python" -B -m unittest discover -s tests/light_plane_composition -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/enabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-change --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-change"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-change --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-change-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-owner --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-owner"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-owner --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-owner-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control area-policy-dynamic --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy-dynamic"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --disabled --negative-control area-policy-dynamic --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/area-policy-dynamic-disabled"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control coverage --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/coverage"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control bypass --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/bypass"
+          python3 -B tests/light_plane_composition/run_current.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ordinary --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/light-plane-1688/ordinary"
+
+      - name: Retain current lighting fixture evidence
+        if: always() && steps.lighting_composition.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lighting-fixture-1688-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/light-plane-1688
+          retention-days: 7
+          if-no-files-found: warn
+
       - name: Verify private collector native publication
         id: collector_native
         if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')
@@ -867,7 +910,7 @@ jobs:
           set +u
           source "$PWD/BYOND/byond/bin/byondsetup"
           set -u
-          /usr/bin/python3 -I -B tests/nomads_lifecycle/run_variable_probe_linux.py --byond-bin "$PWD/BYOND/byond/bin" --expected-head "$COLLECTOR_HEAD" --output "$RUNNER_TEMP/private-collector"
+          /usr/bin/python3 -I -B tests/nomads_lifecycle/run_variable_probe_linux.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --expected-head "$COLLECTOR_HEAD" --output "$RUNNER_TEMP/private-collector"
       - name: Retain private collector fixture evidence
         if: always() && steps.collector_native.outputs.started == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -877,6 +920,7 @@ jobs:
             ${{ runner.temp }}/private-collector/source-manifest.json
             ${{ runner.temp }}/private-collector/result.json
             ${{ runner.temp }}/private-collector/failure.json
+            ${{ runner.temp }}/private-collector/runtime-identity.json
             ${{ runner.temp }}/private-collector/*.log
             ${{ runner.temp }}/private-collector/prepared/writable/native-*.log
             ${{ runner.temp }}/private-collector/prepared/**/data/**/*.json
@@ -917,16 +961,22 @@ jobs:
           python3 tests/lighting_queues/run_native.py --byond-bin "$PWD/BYOND/byond/bin" --compare "$RUNNER_TEMP/lighting-baseline.json" --output "$RUNNER_TEMP/lighting-current.json"
       - name: Check exclusion dispatch source while native execution is held
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
         run: |
           python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
           python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
       - name: Verify Linux exclusion dispatch parity and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
+        env:
+          CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
         timeout-minutes: 5
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/exclusion_dispatch/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/exclusion-native"
+          python3 tests/exclusion_dispatch/run-ci-current.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/exclusion-native"
       - name: Retain Linux exclusion dispatch evidence
         if: always() && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
