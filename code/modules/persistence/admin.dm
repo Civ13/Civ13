@@ -17,7 +17,8 @@
 	if(WWinput(usr, "Retry validation of the retained recovery intent? After an import failure, restart from the original map first. This never discards an intent or starts a fresh round.", "Resume Pending Recovery", "No", list("Yes", "No")) != "Yes") return
 	if(!check_rights(R_SERVER)) return
 	spawn(0)
-		persistence_restart.resume_startup()
+		if(persistence_restart.resume_startup() && persistence_restart.players_ready)
+			announce_restored_round_once()
 
 /datum/admins/proc/loadmap()
 	set category = "Debug"
@@ -42,7 +43,7 @@
 	if(!ticker)
 		alert("Unable to load the world as it is not set up.")
 		return
-	ticker.loadmap()
+	if(ticker.loadmap()) announce_restored_round_once()
 
 /datum/admins/proc/savemap()
 	set category = "Debug"
