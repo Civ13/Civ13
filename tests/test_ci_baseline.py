@@ -108,7 +108,10 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(reads, {'code/processes/ping_track.dm', 'code/processes/_process.dm'})
         self.assertTrue(reads.issubset(set(ci.SUITES['ping']['paths'])))
         self.assertNotIn('__processScheduler.dm', source)
-        self.assertIn('"git", "show", BASE + ":code/processes/ping_track.dm"', source)
+        self.assertIn("joinpath('ping_track-9db2b2f.dm').read_text", source)
+        self.assertNotIn('subprocess', source)
+        self.assertEqual(self.selected(['tests/ping_scheduler/fixtures/ping_track-9db2b2f.dm']),
+                         {'policy', 'bootstrap', 'progress', 'ping'})
         self.assertEqual(self.selected(['code/processes/__processScheduler.dm']),
                          {'policy', 'bootstrap', 'progress', 'research'})
 
