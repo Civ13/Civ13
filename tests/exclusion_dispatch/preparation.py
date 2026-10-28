@@ -22,6 +22,10 @@ def git(repo, *arguments):
 
 
 def identities(repo, base, head, event_path=None, event_name=None, github_actions=False):
+    manual_error = ('Manual exclusion checks require exclusion_comparison_base: supply a full '
+                    'immutable commit SHA distinct from the selected head in workflow inputs')
+    if event_name == 'workflow_dispatch' and not base:
+        raise ValueError(manual_error)
     for role, value in (('base', base), ('head', head)):
         if not value or not re.fullmatch(r'[0-9a-f]{40}', value) or set(value) == {'0'}:
             raise ValueError(f'Missing or non-immutable {role} identity; full nonzero SHA required')
@@ -29,7 +33,8 @@ def identities(repo, base, head, event_path=None, event_name=None, github_action
             raise ValueError(f'{role} identity is not the exact commit')
     if base == head:
         raise ValueError('Base/head self-comparison is forbidden')
-    if git(repo, 'rev-parse', 'HEAD').strip() != head:
+    actual_head = git(repo, 'rev-parse', 'HEAD').strip()
+    if actual_head != head:
         raise ValueError('Requested head differs from checked-out HEAD')
     # A PR event base need not be an ancestor of an unrefreshed feature branch.
     if not git(repo, 'merge-base', base, head).strip():
@@ -42,6 +47,11 @@ def identities(repo, base, head, event_path=None, event_name=None, github_action
             expected = (event['pull_request']['base']['sha'], event['pull_request']['head']['sha'])
         elif event_name == 'push':
             expected = (event['before'], event['after'])
+        elif event_name == 'workflow_dispatch':
+            manual_base = event.get('inputs', {}).get('exclusion_comparison_base')
+            if not manual_base:
+                raise ValueError(manual_error)
+            expected = (manual_base, actual_head)
         else:
             raise ValueError('No immutable base/head pair for this event')
         if (base, head) != expected:

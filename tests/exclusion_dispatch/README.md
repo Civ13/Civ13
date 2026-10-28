@@ -8,6 +8,9 @@ push before/after metadata from `GITHUB_EVENT_PATH`. Missing identities, moving
 refs, mismatches and dirty production/helper/fixture inputs fail before output.
 There is no hardcoded-master or candidate-derived fallback. Events without an
 immutable comparison pair fail closed rather than inventing a base.
+Manual extensive/save-latency runs must supply `exclusion_comparison_base` as a
+full immutable commit SHA distinct from the selected checked-out head. The runner
+also checks that base against the dispatch event's named input before any launch.
 
 `validate_current_master` preserves complete-file equality after adding only the
 public lighting branch's missing two fullbright exclusions and transient area-owner

@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
+      exclusion_comparison_base:
+        description: 'Full immutable base commit SHA, distinct from the selected head; required when running exclusion checks'
+        type: string
+        required: false
+        default: ''
       extensive_regressions:
         description: 'Opt in to all existing game and offline regression suites'
         type: boolean
@@ -855,7 +860,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/light_plane_composition')
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -951,7 +956,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
         run: |
           python3 tests/exclusion_dispatch/run.py --source-only --output "$RUNNER_TEMP/exclusion-source.json"
           python3 -m unittest discover -s tests/exclusion_dispatch -p 'test_*.py' -v
@@ -959,7 +964,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/reserved_lighting') || inputs.save_latency_regressions == true
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || inputs.exclusion_comparison_base || '' }}
         timeout-minutes: 5
         shell: bash
         run: |

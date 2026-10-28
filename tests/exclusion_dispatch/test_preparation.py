@@ -60,7 +60,7 @@ class ActualPreparationTests(unittest.TestCase):
             yield directory, repo, base, head
 
     def invoke(self, directory, repo, base, head, *, expected=None, event='pull_request',
-               missing=None, arguments=()):
+               missing=None, arguments=(), manual_input=True):
         # Clear inherited host event state: each subprocess receives its own
         # immutable test event, not a mocked prepare() or git-show implementation.
         environment = {key: value for key, value in os.environ.items()
@@ -70,6 +70,10 @@ class ActualPreparationTests(unittest.TestCase):
         pair = expected or (base, head)
         metadata = ({'before': pair[0], 'after': pair[1]} if event == 'push' else
                     {'pull_request': {'base': {'sha': pair[0]}, 'head': {'sha': pair[1]}}})
+        if event == 'workflow_dispatch':
+            metadata = {'inputs': {}}
+            if manual_input is not None:
+                metadata['inputs']['exclusion_comparison_base'] = pair[0] if manual_input is True else manual_input
         event_path = directory / 'event.json'
         event_path.write_text(json.dumps(metadata), encoding='utf-8')
         environment['GITHUB_EVENT_PATH'] = str(event_path)
@@ -174,7 +178,7 @@ class ActualPreparationTests(unittest.TestCase):
             self.rejected(directory, repo, head, base, 'differs from checked-out HEAD')
             self.rejected(directory, repo, base, head, 'differ from immutable event', expected=(head, head))
             self.rejected(directory, repo, 'f' * 40, head, 'CalledProcessError')
-            self.rejected(directory, repo, base, head, 'No immutable base/head pair', event='workflow_dispatch')
+            self.rejected(directory, repo, base, head, 'No immutable base/head pair', event='unsupported')
 
     def test_dirty_source_helper_and_fixture_are_rejected_before_output(self):
         with self.history() as (directory, repo, base, head):
@@ -198,6 +202,31 @@ class ActualPreparationTests(unittest.TestCase):
     def test_push_event_uses_before_and_checked_out_after(self):
         with self.history() as args:
             self.passed(*args, event='push')
+
+    def test_manual_dispatch_explicit_immutable_base_before_and_after_lighting(self):
+        for after in (False, True):
+            with self.subTest(after=after), self.history(
+                    project_lighting_policy(self.seed) if after else self.seed) as (directory, repo, base, head):
+                for arguments in ((), ('--base', base, '--head', head)):
+                    self.passed(directory, repo, base, head, event='workflow_dispatch', arguments=arguments)
+
+    def test_manual_dispatch_missing_invalid_self_and_mismatched_inputs_fail_before_output(self):
+        with self.history() as (directory, repo, base, head):
+            self.rejected(directory, repo, base, head, 'require exclusion_comparison_base',
+                          event='workflow_dispatch', missing='CI_BASE')
+            for absent in (None, ''):
+                with self.subTest(absent=absent):
+                    self.rejected(directory, repo, base, head, 'require exclusion_comparison_base',
+                                  event='workflow_dispatch', manual_input=absent)
+            self.rejected(directory, repo, 'HEAD~1', head, 'non-immutable base',
+                          event='workflow_dispatch')
+            self.rejected(directory, repo, '0' * 40, head, 'non-immutable base',
+                          event='workflow_dispatch')
+            self.rejected(directory, repo, head, head, 'self-comparison', event='workflow_dispatch')
+            self.rejected(directory, repo, head, base, 'differs from checked-out HEAD', event='workflow_dispatch')
+            self.rejected(directory, repo, base, head, 'differ from immutable event',
+                          event='workflow_dispatch', manual_input=head)
+            self.rejected(directory, repo, 'f' * 40, head, 'CalledProcessError', event='workflow_dispatch')
 
 
 if __name__ == '__main__':
