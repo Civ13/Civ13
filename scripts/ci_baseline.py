@@ -39,6 +39,10 @@ SUITES = {
         'tests/persistence_year/', 'tests/world_save/', 'code/modules/persistence/', 'code/setup.dm')},
     'evidence': {'files': ('tests/test_game_evidence.py',), 'paths': (
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
+    'ecology_heatmap': {'files': ('tests/ecology_heatmap/test_source_contract.py',), 'paths': (
+        'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
+        'docs/ecology-activity-heatmap-prototype.md',
+        'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
@@ -432,3 +436,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
