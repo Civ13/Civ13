@@ -40,6 +40,9 @@ SUITES = {
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    # Shared transport/persistence files retain their existing all-suite fallback.
+    'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
+        'tests/carriage_glide/',)},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',

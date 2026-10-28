@@ -165,7 +165,10 @@
 // Apply on import too so historical references cannot recreate a foreign owner.
 // The target atom (including a roofbuilder) remains independently saveable.
 /atom/movable/persistence_runtime_var(key)
-	return key == "original_target" || ..()
+	// Minimal serializer fixtures may omit carriage type declarations.
+	if (key == "glide_size" && ("carriage_glide_owner" in vars) && vars["carriage_glide_owner"])
+		return TRUE
+	return (key in list("original_target", "carriage_glide_owner", "carriage_glide_previous", "carriage_glide_applied", "carriage_glide_step")) || ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.
