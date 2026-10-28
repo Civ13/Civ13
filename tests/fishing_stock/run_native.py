@@ -16,6 +16,11 @@ VERSION = "516.1688"
 # inside the workflow's five-minute wall bound for cleanup/receipt finalization.
 WORK_SECONDS = 280
 MEMORY_BYTES = 512 * 1024**2
+# Git defaults to a 1GiB pack mapping on 64-bit hosts, above our unchanged
+# 512MiB process cap. Bound mappings/cache without relaxing any source checks.
+GIT_MEMORY_ARGS = ("-c", "core.packedGitWindowSize=16m",
+                   "-c", "core.packedGitLimit=64m",
+                   "-c", "core.deltaBaseCacheLimit=16m")
 PINS = {
     "tests/animal_registry/run_native.py": "da0c2d5c7bebf45f584a6b0c8b67d8ab0094798024cddf9fc899ad482ba19b1f",
     "tests/animal_registry/test_source_contract.py": "485e34f625efd0064e2ee9f35aac0075a5332d951a4b0828fa7592cd0385f08a",
@@ -78,8 +83,16 @@ def remaining(deadline):
 
 def source_provenance(deadline):
     def git(*args):
-        result = subprocess.run(["git", *args], cwd=ROOT, capture_output=True,
-                                timeout=min(5, remaining(deadline)), check=True)
+        try:
+            result = subprocess.run(["git", *GIT_MEMORY_ARGS, *args], cwd=ROOT, capture_output=True,
+                                    timeout=min(5, remaining(deadline)), check=True)
+        except subprocess.CalledProcessError as error:
+            label = ("tracked source dirty" if args == ("diff", "--quiet", "HEAD")
+                     and error.returncode == 1 else "Git provenance failure")
+            detail = (error.stderr or b"").decode("utf-8", errors="replace")[-320:]
+            # Keep exit1 distinct from infrastructure/pack failures such as128.
+            # Bounded stderr survives both the job log and summary's500-char cap.
+            raise RuntimeError(f"{label}; command={args[0]}; exit={error.returncode}; stderr={detail!r}") from error
         return result.stdout.decode("utf-8").strip()
     head = git("rev-parse", "--verify", "HEAD")
     if not re.fullmatch(r"[0-9a-f]{40}", head):

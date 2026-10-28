@@ -225,6 +225,41 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(self.events, [])
         self.spawn.assert_not_called(); self.network.assert_not_called()
 
+    def test_source_provenance_bounds_git_without_scoping_away_dirty_files(self):
+        responses = [HEAD.encode(), b"", "\n".join(native.TRACKED_INPUTS).encode()]
+        with patch.object(subprocess, "run", side_effect=lambda *args, **kwargs: SimpleNamespace(stdout=responses.pop(0))) as run:
+            result = native.source_provenance(time.monotonic() + 5)
+        self.assertEqual(result["head"], HEAD)
+        commands = [call.args[0] for call in run.call_args_list]
+        prefix = ["git", *native.GIT_MEMORY_ARGS]
+        self.assertTrue(all(command[:len(prefix)] == prefix for command in commands))
+        self.assertEqual(commands[1][len(prefix):], ["diff", "--quiet", "HEAD"])
+        self.assertEqual(commands[2][len(prefix):], ["ls-files", "--error-unmatch", "--", *native.TRACKED_INPUTS])
+        self.assertTrue(all(call.kwargs["check"] and call.kwargs["timeout"] <= 5 for call in run.call_args_list))
+        self.assertEqual(native.MEMORY_BYTES, 512 * 1024**2)
+
+    def test_git_dirty_and_infrastructure_failures_keep_distinct_bounded_stderr(self):
+        for code, label, detail in ((1, "tracked source dirty", b""),
+                                    (128, "Git provenance failure", b"fatal: packfile cannot be mapped: Cannot allocate memory\n"),
+                                    (128, "Git provenance failure", b"x" * 1000 + b"fatal: retained ending\xff")):
+            def git(command, **kwargs):
+                if "rev-parse" in command:
+                    return SimpleNamespace(stdout=HEAD.encode())
+                raise subprocess.CalledProcessError(code, command, stderr=detail)
+            with patch.object(subprocess, "run", side_effect=git):
+                with self.assertRaises(RuntimeError):
+                    self.execute(provenance=native.source_provenance)
+            saved = json.loads((self.args.output / "summary.json").read_text())
+            self.assertIn(label, saved["error"])
+            self.assertIn("exit=" + str(code), saved["error"])
+            self.assertLessEqual(len(saved["error"]), 514)
+            self.assertEqual(saved["modes"], {})
+            self.assertFalse(saved["native_attempted"])
+            if code == 128:
+                self.assertIn("fatal:", saved["error"])
+            self.assertEqual(self.events, [])
+            self.args.output = self.root / ("out-" + str(len(list(self.root.iterdir()))))
+
     def test_shared_containment_is_pinned_and_not_reimplemented(self):
         self.assertEqual(native.WORK_SECONDS, 280)
         self.assertEqual(native.MEMORY_BYTES, 512 * 1024**2)
