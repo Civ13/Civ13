@@ -27,6 +27,16 @@ interaction before checking its active limit, paid salt, age and depleted food.
 `test_dried_rack_save_contract.py` checks that sequence offline; it does not run
 the native serializer or rack.
 
+The opt-in `preservation_run.py --probe decay-rate` diagnostic saves and loads a
+salted dried item, removes it from the rack before its constructor callback wakes,
+and compares two age samples with an ordinary reference created in the same tick.
+It replaces the food wait with 20 ds and the rack restart wait with 21 ds while
+retaining the production age charge. `--decay-rate-control omit-restart` removes
+only the delayed restart in the generated source. A missed synchronization window
+fails rather than interpreting ambiguous samples. This diagnostic is not selected
+by ordinary CI and is not evidence until its baseline and control are executed;
+the accelerated schedule does not establish full-game elapsed-time behavior.
+
 Run `run.py --byond-bin <516.1681-bin>` with a verified Python interpreter.
 Both food runners default to the historical 516.1681 compiler. Select the
 current 516.1688 compiler explicitly with `--expected-byond-version 516.1688`;
