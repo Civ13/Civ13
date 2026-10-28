@@ -474,6 +474,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/produce_basket" = "basic_agriculture",
 		"/obj/item/weapon/storage/seed_collector" = "basic_agriculture",
 		// --- basic_furniture (17) ---
+		"/obj/item/weapon/stool/wood" = "basic_furniture",
 		"/obj/item/weapon/bedsheet" = "basic_furniture",
 		"/obj/item/weapon/bedsheet/blue" = "basic_furniture",
 		"/obj/item/weapon/bedsheet/brown" = "basic_furniture",
@@ -492,6 +493,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/rack" = "basic_furniture",
 		"/obj/structure/table/wood" = "basic_furniture",
 		// --- basic_tools (20) ---
+		"/obj/item/stack/wooden_dowels" = "basic_tools",
 		"/obj/item/stack/material/rope" = "basic_tools",
 		"/obj/item/weapon/book/research" = "basic_tools",
 		"/obj/item/weapon/cane" = "basic_tools",
@@ -789,6 +791,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/table/modern/table" = "fine_furniture",
 		"/obj/structure/table/rack/coatrack" = "fine_furniture",
 		"/obj/structure/table/rack/shelf" = "fine_furniture",
+		"/obj/structure/table/rack/shelf/wooden" = "fine_furniture",
 		// --- fine_garments (55) ---
 		"/obj/item/clothing/accessory/storage/coinpouch/gator_wallet" = "fine_garments",
 		"/obj/item/clothing/accessory/storage/coinpouch/lizard_wallet" = "fine_garments",

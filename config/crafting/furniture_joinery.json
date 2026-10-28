@@ -1,0 +1,56 @@
+{
+  "joinery: whittled wooden dowel set": {
+    "stock_type": "/obj/item/stack/material/woodplank",
+    "stock_cost": 1,
+    "result_type": "/obj/item/stack/wooden_dowels",
+    "component_type": null,
+    "component_cost": 0,
+    "tools": [
+      "shaping"
+    ]
+  },
+  "joinery: hewn table (wooden pegs)": {
+    "stock_type": "/obj/item/stack/material/wood",
+    "stock_cost": 4,
+    "result_type": "/obj/structure/table/wood",
+    "component_type": "/obj/item/stack/wooden_dowels",
+    "component_cost": 1,
+    "tools": [
+      "chisel",
+      "hammer"
+    ]
+  },
+  "joinery: hewn chair (wooden pegs)": {
+    "stock_type": "/obj/item/stack/material/wood",
+    "stock_cost": 4,
+    "result_type": "/obj/structure/bed/chair/wood",
+    "component_type": "/obj/item/stack/wooden_dowels",
+    "component_cost": 1,
+    "tools": [
+      "chisel",
+      "hammer"
+    ]
+  },
+  "joinery: hewn bed (wooden pegs)": {
+    "stock_type": "/obj/item/stack/material/wood",
+    "stock_cost": 4,
+    "result_type": "/obj/structure/bed/wood",
+    "component_type": "/obj/item/stack/wooden_dowels",
+    "component_cost": 2,
+    "tools": [
+      "chisel",
+      "hammer"
+    ]
+  },
+  "joinery: pegged wooden stool": {
+    "stock_type": "/obj/item/stack/material/wood",
+    "stock_cost": 2,
+    "result_type": "/obj/item/weapon/stool/wood",
+    "component_type": "/obj/item/stack/wooden_dowels",
+    "component_cost": 1,
+    "tools": [
+      "chisel",
+      "hammer"
+    ]
+  }
+}

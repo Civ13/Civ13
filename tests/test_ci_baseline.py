@@ -52,6 +52,16 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_furniture_joinery_inputs_select_offline_contracts(self):
+        for path in ('tests/furniture_joinery/test_contract.py',
+                     'code/game/objects/items/stacks/furniture_joinery.dm',
+                     'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py'):
+            self.assertIn('furniture_joinery', self.selected([path]))
+        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py'))
+        for path in ('code/game/objects/items/stacks/stack.dm', 'scripts/build-crafting-atlas.py',
+                     'config/crafting/material_recipes_global.txt'):
+            self.assertEqual(self.selected([path]), set(ci.SUITES))
+
     def test_los_event_identity_comes_from_validated_plan(self):
         plan, _, _, _ = fixtures()
         with patch.dict(os.environ, {'LOS_EVENT_BASE': 'stale', 'LOS_EVENT_HEAD': 'stale'}):
@@ -65,6 +75,7 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertEqual(ci.SUITES['los_context']['files'], ('tests/los_context/test_offline.py',))
         self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
         self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))
+
     def test_woodworking_runs_on_production_or_modified_test_changes_without_extensive(self):
         self.assertEqual(ci.SUITES['woodworking']['files'],('tests/primitive_woodworking/test_source.py','tests/test_atlas_navigation.py'))
         dedicated=('code/modules/1713/primitive_woodworking.dm',
