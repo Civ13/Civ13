@@ -293,10 +293,10 @@ class LinuxCollector(unittest.TestCase):
     def test_workflow_runs_only_introduced_tests_without_security_changes(self):
         source = (m.ROOT / '.github/workflows/test.yml').read_text()
         block = source.split('      - name: Verify private collector native publication', 1)[1].split('      - name: Verify bounded lighting startup ordering', 1)[0]
-        self.assertIn("if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')", block)
+        self.assertIn("if: contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/nomads_lifecycle')", block)
         for needed in ('timeout-minutes: 3', '--expected-head "$COLLECTOR_HEAD"', 'retention-days: 7',
                        '--byond-archive "$PWD/BYOND/pinned.zip"', 'private-collector/runtime-identity.json',
-                       'if: always() && steps.collector_native.outputs.started == \'true\''):
+                       "if: always() && needs.changes.result == 'success' && steps.collector_native.outputs.started == 'true'"):
             self.assertIn(needed, block)
         for forbidden in ('secrets.', 'workflow_dispatch', 'sudo ', 'continue-on-error', '1714', 'D:/'):
             self.assertNotIn(forbidden, block)
