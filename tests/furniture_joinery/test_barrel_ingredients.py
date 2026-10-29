@@ -61,11 +61,14 @@ class Fixture:
             item.deleted = True; item.loc = None
             self.actor.hands[:] = [i for i in self.actor.hands if i is not item]
         self.delete = delete
-        def turf(obj): return obj if obj.type == '/turf' else obj.loc
+        def turf(obj):
+            while obj is not None and obj.type != '/turf': obj = obj.loc
+            return obj
         env = dict(istype=lambda item, path: path_is(getattr(item, 'type', None), path),
             QDELETED=lambda obj: obj is None or getattr(obj, 'deleted', False),
             isturf=lambda obj: getattr(obj, 'type', None) == '/turf',
             get_dist=lambda a,b: max(abs(turf(a).x-turf(b).x), abs(turf(a).y-turf(b).y)),
+            get_turf=turf,
             persistence_save_in_progress=False, persistence_active_operation=None,
             persistence_load_recovery_required=False, qdel=delete, to_chat=lambda *args: None,
             parent_call=lambda: self.parent_calls.append(True), holder=Reagents)
@@ -134,8 +137,8 @@ class BarrelIngredients(unittest.TestCase):
             f = Fixture(); stock = f.stock()
             if change == 'far': f.site.x = 6
             if change == 'other z': f.actor.z = 2; f.actor_site.z = 2
-            if change == 'target nested': f.barrel.loc = NS(type='/obj/item/storage')
-            if change == 'actor nested': f.actor.loc = NS(type='/obj/container')
+            if change == 'target nested': f.barrel.loc = NS(type='/obj/item/storage', loc=f.site)
+            if change == 'actor nested': f.actor.loc = NS(type='/obj/container', loc=f.actor_site)
             if change == 'stock moved': stock.loc = f.site
             if change == 'no hands': f.actor.hands.clear()
             if change == 'disabled': f.actor.disabled = True
@@ -144,7 +147,7 @@ class BarrelIngredients(unittest.TestCase):
             if key: f.ready.__globals__[key] = True
             f.attack(f.barrel, stock, f.actor)
             self.assertEqual(stock.amount, 2, change); self.assertEqual(f.barrel.reagents.total_volume, 0)
-        f = Fixture(); f.barrel.loc = f.actor; stock = f.stock()
+        f = Fixture(); f.barrel.loc = f.actor; f.barrel.z = 0; stock = f.stock()
         f.attack(f.barrel, stock, f.actor)
         self.assertEqual(stock.amount, 1)  # A barrel carried by the actor remains usable.
 

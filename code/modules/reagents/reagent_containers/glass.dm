@@ -314,7 +314,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	return null
 
 /obj/item/weapon/reagent_containers/glass/barrel/proc/ingredient_actor_ready(obj/item/I, mob/living/user)
-	return !QDELETED(src) && !QDELETED(I) && !QDELETED(user) && istype(user, /mob/living) && isturf(user.loc) && user.z == z && (loc == user || (isturf(loc) && get_dist(user, src) <= 1)) && I.loc == user && user.item_is_in_hands(I) && user.canUnEquip(I) && !user.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
+	var/turf/site = get_turf(src)
+	return !QDELETED(src) && !QDELETED(I) && !QDELETED(user) && istype(user, /mob/living) && site && isturf(user.loc) && user.z == site.z && (loc == user || (isturf(loc) && get_dist(user, site) <= 1)) && I.loc == user && user.item_is_in_hands(I) && user.canUnEquip(I) && !user.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
 
 /obj/item/weapon/reagent_containers/glass/barrel/proc/payload_fits_without_loss(datum/reagents/source)
 	// Check real holder clamping/pruning with volumes only; never copy live data,

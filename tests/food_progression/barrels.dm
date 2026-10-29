@@ -103,6 +103,7 @@
 	barrel_check(H.put_in_inactive_hand(carried), "carried barrel legal hand")
 	var/obj/item/stack/ore/sulphur/carried_stock = new(H)
 	barrel_check(H.put_in_active_hand(carried_stock), "carried-barrel stock legal hand")
+	barrel_check(carried.ingredient_actor_ready(carried_stock, H), "carried barrel resolves its containing turf for admission")
 	carried.attackby(carried_stock, H)
 	barrel_check(QDELETED(carried_stock) && carried.reagents.get_reagent_amount("sulfur") == 3, "carried barrel receives one paid dose")
 	H.remove_from_mob(carried); qdel(carried)
