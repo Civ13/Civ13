@@ -196,6 +196,27 @@
 	#endif
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
+	if (istype(src, /mob/living/simple_animal))
+		var/mob/living/simple_animal/npc = src
+		if (npc.npc_subtile_pulse)
+			var/datum/npc_subtile_pulse/P = npc.npc_subtile_take_pulse(newloc, direct)
+			if (!P)
+				return FALSE
+			var/atom/old_location = loc
+			var/old_direction = dir
+			. = ..(newloc, direct, P.sx, P.sy)
+			P.engine_return = .
+			if (!npc || isDeleted(npc))
+				return .
+			if (direct != old_direction)
+				dir = old_direction
+				set_dir(direct)
+			l_move_time = world.time
+			if (old_location != loc && old_location && old_location.z == z)
+				last_move = get_dir(old_location, loc)
+			return .
+		if (npc.npc_subtile_offset_owned && (step_x || step_y))
+			return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
 	if (ishuman(src))
