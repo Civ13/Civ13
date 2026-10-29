@@ -346,7 +346,9 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		F.cd = "/map"
 		if(!("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
 		F.cd = "/map/[z]"
-		var/list/rows = F.dir
+		// savefile.dir follows the current directory; detach this listing before
+		// checking membership entries, which changes F.cd inside the turf loop.
+		var/list/rows = F.dir.Copy()
 		for(var/y = 1, y <= world.maxy, y++)
 			if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row")
 			for(var/x = 1, x <= world.maxx, x++)
