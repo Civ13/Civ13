@@ -1,4 +1,16 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
+// The isolated serializer fixtures model an empty pull registry only. Any
+// populated registry or invalid save owner is refused, never settled here.
+#ifndef SPAN_WARNING
+#define SPAN_WARNING(X) (X)
+#endif
+/datum/world_save_idle_pull_registry
+	var/list/owners = list()
+	proc/resolve_quiet(reason, datum/persistence_world_operation/operation)
+		return reason == "save_admission" && operation && operation.current(operation.storage, "save") && !length(owners)
+	proc/save_ready()
+		return !length(owners)
+var/global/datum/world_save_idle_pull_registry/subtile_pull_ownership = new
 // Minimal serializer fixtures do not exercise wounds. Keep the loader's type
 // contract declared, but fail closed if one is introduced into these probes.
 // The --wounds full-source fixture tests actual constructor/state restoration.
