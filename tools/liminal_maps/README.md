@@ -6,6 +6,12 @@ finite chapter from original room families, checks physical sockets, zones,
 footprint clearance and abstract objective/lock/exit reachability, then writes a
 reproducible JSON bundle. It is not a registered or playable Civ13 game mode.
 
+**Room-layout status:** This tool still uses the version-1 room catalog. Its
+corresponding [room-layout previews](../../docs/liminal/ROOM-PREVIEWS.md) were
+rejected as room designs. A successful topology check verifies the stated graph,
+clearance and progression rules; it does not approve the layouts for a mode.
+Revised room design and native integration remain separate work.
+
 Run from a complete repository checkout with Python **3.11+**. Only the standard
 library is used; no pip installation, engine, assets or native save is required:
 
