@@ -9,10 +9,17 @@ PATH = 'code/modules/persistence/zone_topology.dm'
 
 
 class FormatCompatibility(unittest.TestCase):
-    def test_directory_index_yields_while_building_large_level(self):
+    def test_turf_validation_reads_by_path_without_per_turf_directory_listing(self):
+        # Listing or indexing a whole level's savefile directory is quadratic;
+        # each turf reads its own entries by absolute path and the loop still yields.
         source = (ROOT/PATH).read_text()
-        helper = source.split('/proc/savefile_dir_index(list/names)', 1)[1].split('\n/map_storage/', 1)[0]
-        self.assertRegex(helper, r'\tfor\(var/name in names\)\n\t\tindex\[name\] = TRUE\n\t\tTICK_CHECK\n')
+        self.assertNotIn('savefile_dir_index', source)
+        self.assertNotIn('"[ref]" in F.dir', source)
+        self.assertNotIn('"[x]" in F.dir', source)
+        loop = source.split('for(var/x = 1, x <= world.maxx, x++)', 1)[1].split('var/list/spawns', 1)[0]
+        self.assertIn('var/ref = F["/map/[z]/[y]/[x]"]', loop)
+        self.assertIn('if(isnull(F["/zone_capture/[ref]/id"])) throw EXCEPTION("Missing captured membership entry")', loop)
+        self.assertRegex(loop, r'validated_zone_grid \+= id\n\t+TICK_CHECK\n')
 
     def test_zone_header_admits_typed_versions_2_and_3_only(self):
         source = (ROOT/PATH).read_text()
