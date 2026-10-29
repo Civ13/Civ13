@@ -916,8 +916,7 @@ class EventRunnerTests(unittest.TestCase):
             if command[:2] == ['git', 'show']:
                 ref, file = command[2].split(':', 1)
                 if ref in (MERGE_BASE, MERGE_MASTER):
-                    value = historical_text(ref, file)
-                    return value if kwargs.get('text') else value.encode('utf-8')
+                    raise AssertionError('Historical source must come from pinned fixtures, not git show')
                 if ref in (base_sha, head_sha):
                     if file == PATH: value = base if ref == base_sha else candidate
                     elif file in self.helpers:

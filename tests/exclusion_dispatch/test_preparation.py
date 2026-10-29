@@ -335,7 +335,7 @@ class ActualPreparationTests(unittest.TestCase):
                     target = repo / path
                     original = target.read_bytes()
                     try:
-                        target.write_bytes(original + b'\n// dirty input\n')
+                        target.write_bytes(original + b'\n# dirty input\n')
                         self.rejected(directory, repo, base, head, 'Working input differs')
                     finally:
                         target.write_bytes(original)
