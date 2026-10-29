@@ -17,6 +17,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import resources
+import historical_fixtures
 from historical_fixtures import text as historical_text
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
 from source_contract import (validate_current_master, validate_historical_bounded, project_lighting_policy, project_fullbright_exclusions, project_area_change_owner, CURRENT_BASE, MERGE_BASE, MERGE_MASTER, validate_merged_source, project_merged_source, event_identity, replay_reviewed_merge, resolve_event_projection, current_lighting_policy, project_ordered_release, has_ordered_release_history, ORDERED_RELEASE)
@@ -464,14 +465,13 @@ class ExtractionHistoricalSourceContractTests(unittest.TestCase):
     diagnostic_guard = 'if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE'
     @classmethod
     def setUpClass(cls):
-        cls.baseline = subprocess.check_output(['git', 'show', EXTRACTION_BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.baseline = historical_text(EXTRACTION_BASE, PATH)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
         # Preserve this packet's exact historical semantics and mutation oracles.
         # Current merged source is independently checked below, never projected
         # back into this historical packet or described as its native evidence.
-        cls.candidate = subprocess.check_output(['git', 'show',
-            '5aaed0a172aa3baa3fe604096cbbb8a00f519aac:' + PATH], cwd=ROOT, text=True)
+        cls.candidate = historical_text('5aaed0a172aa3baa3fe604096cbbb8a00f519aac', PATH)
 
     def test_exact_transform_preserves_historical_master(self):
         self.validate(self.baseline, self.candidate)
@@ -482,8 +482,7 @@ class ExtractionHistoricalSourceContractTests(unittest.TestCase):
         self.assertEqual(self.candidate.count('apply_restored_lighting()'), self.baseline.count('apply_restored_lighting()'))
 
     def test_reconstructed_hooks_match_reviewed_historical_hooks(self):
-        historical = subprocess.check_output(['git', 'show',
-            '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019:' + PATH], cwd=ROOT, text=True)
+        historical = historical_text('5ac2df336b717f4ca2ccc60f2697b76ab4f2e019', PATH)
         for kind in ('atom', 'turf', 'mob'):
             pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
             self.assertEqual(re.search(pattern, self.baseline, re.M).group(),
@@ -688,6 +687,46 @@ class ReviewedCurrentSource(unittest.TestCase):
             self.assertNotEqual(hashlib.sha256(data + b'\nmutation').hexdigest(), digest)
 
 
+class HistoricalFixtureIntegrityTests(unittest.TestCase):
+    # Original commit/path digests captured independently of the manifest.
+    PINS = {
+        ('a8d3950f08aaa55db59ec5f20777a475b2db95bb', PATH): 'da7579b210d0b1633bd58a9ae03a894f92cfff0805628a3109440b26bf54e30f',
+        ('5aaed0a172aa3baa3fe604096cbbb8a00f519aac', PATH): '06839a18fcaaa373ba8b31de608a3277558c3e305a97d5bd51d1ac8c3dea427a',
+        (CURRENT_BASE, PATH): '9b78f233b4aca79231cf9b2704a5d705ba58cc7830acad1aebe4871d86d3b9c6',
+        ('d0c744919ba181e7a0bcfae222b5a37687af48fb', PATH): '2f18639721f2140b083f5b6737db07a784efbd93f5fc1b8a4c287eb05147c7b1',
+        (MERGE_BASE, PATH): '92f08bd1037d6302fdafaba02a3a477d5b01db39316cab86aa22e8b7c6be8765',
+        (MERGE_BASE, 'code/processes/human_corpse_decay.dm'): 'a005ae9231059629c501292df1c6e1aae1244e5fbceb5ad7a2b7b75e9dd0a6ae',
+        (MERGE_BASE, 'code/processes/abandoned_items.dm'): '029a81ff9e2c7b4ab9b0d69bf343b113e0dce4f1ec2713b91769ec09eff248cc',
+        (MERGE_BASE, 'code/modules/1713/active_training.dm'): '0ba4cc88df711c41d29a5b13536f4ed7e8aa21d5f0f394cd0f3f7d8f34e6ea34',
+        ('3d35f802e580ac4f4d012a4ffc448bd485b62b53', '.github/workflows/test.yml'): 'b84bc7ac7e39c000fcaf41bae949616079f1327f2f7b7f5d2cdfbb3399f16f6b',
+        ('3d35f802e580ac4f4d012a4ffc448bd485b62b53', 'tests/exclusion_dispatch/run-ci.py'): '128aa46d22de7846e2b5581553054f8995b99c0b3720ee6c56d6d0c30ef61559',
+    }
+
+    def test_frozen_sources_match_independent_pins_and_manifest(self):
+        manifest = json.loads((historical_fixtures.DIRECTORY / 'manifest.json').read_text(encoding='utf-8'))
+        for (revision, path), digest in self.PINS.items():
+            with self.subTest(revision=revision, path=path):
+                entry = manifest[revision + ':' + path]
+                data = (historical_fixtures.DIRECTORY / entry['file']).read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), digest)
+                self.assertEqual(entry['sha256'], digest)
+                self.assertEqual(entry['bytes'], len(data))
+                self.assertEqual(hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest(), entry['git_blob'])
+                self.assertEqual(historical_text(revision, path), data.decode('utf-8').replace('\r\n', '\n').replace('\r', '\n'))
+
+    def test_frozen_source_tampering_is_rejected(self):
+        with tempfile.TemporaryDirectory(prefix='exclusion-history-tamper-') as directory:
+            copied = Path(directory) / 'fixtures'
+            shutil.copytree(historical_fixtures.DIRECTORY, copied)
+            manifest = json.loads((copied / 'manifest.json').read_text(encoding='utf-8'))
+            entry = manifest[MERGE_BASE + ':' + PATH]
+            with (copied / entry['file']).open('ab') as file:
+                file.write(b'\nchanged')
+            with patch.object(historical_fixtures, 'DIRECTORY', copied):
+                with self.assertRaisesRegex(ValueError, 'Historical fixture changed'):
+                    historical_text(MERGE_BASE, PATH)
+
+
 class LocalShallowSourceTests(unittest.TestCase):
     def test_reviewed_source_in_shallow_checkout_without_historical_objects(self):
         with tempfile.TemporaryDirectory(prefix='exclusion-shallow-source-') as directory:
@@ -715,7 +754,10 @@ class LocalShallowSourceTests(unittest.TestCase):
             clone = root / 'clone'
             git(root, 'clone', '-q', '--depth=1', origin.as_uri(), str(clone))
             self.assertEqual(git(clone, 'rev-parse', '--is-shallow-repository'), 'true')
-            for old in (MERGE_BASE, '5aaed0a172aa3baa3fe604096cbbb8a00f519aac'):
+            for old in (MERGE_BASE, MERGE_MASTER, CURRENT_BASE, EXTRACTION_BASE,
+                        '5aaed0a172aa3baa3fe604096cbbb8a00f519aac',
+                        'd0c744919ba181e7a0bcfae222b5a37687af48fb',
+                        '3d35f802e580ac4f4d012a4ffc448bd485b62b53'):
                 result = subprocess.run(['git', '-C', str(clone), 'cat-file', '-e', old + '^{commit}'],
                                         capture_output=True, timeout=15)
                 self.assertNotEqual(result.returncode, 0)
@@ -727,6 +769,15 @@ class LocalShallowSourceTests(unittest.TestCase):
                                     capture_output=True, timeout=45)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn('Ran 4 tests', result.stderr)
+            historical_cases = ['HistoricalFixtureIntegrityTests',
+                'ExtractionHistoricalSourceContractTests.test_exact_transform_preserves_historical_master',
+                'ExtractionHistoricalSourceContractTests.test_reconstructed_hooks_match_reviewed_historical_hooks',
+                'HistoricalMasterSourceContractTests.test_bounded_projection_is_exact_and_fail_closed',
+                'MasterBoundedHistoryTests']
+            historical = subprocess.run(command[:-2] + historical_cases + ['-v'], cwd=clone, env=env,
+                                        text=True, capture_output=True, timeout=45)
+            self.assertEqual(historical.returncode, 0, historical.stdout + historical.stderr)
+            self.assertIn('Ran 7 tests', historical.stderr)
             # A modified working source cannot masquerade as its checked-out head.
             with (clone / PATH).open('a', encoding='utf-8') as source:
                 source.write('\n// uncommitted drift\n')
@@ -754,18 +805,15 @@ class HistoricalMasterSourceContractTests(ExtractionHistoricalSourceContractTest
 
     @classmethod
     def setUpClass(cls):
-        cls.master = subprocess.check_output(['git', 'show',
-            '5bf351248de6050876fe5b53f91209a970cc5668:' + PATH], cwd=ROOT, text=True)
+        cls.master = historical_text('5bf351248de6050876fe5b53f91209a970cc5668', PATH)
         cls.baseline = reconstruct_list_baseline(cls.master)
-        cls.candidate = subprocess.check_output(['git', 'show',
-            '7ca76ce0e23661f4dea5a44acb195bf3010a97eb:' + PATH], cwd=ROOT, text=True)
+        cls.candidate = historical_text('7ca76ce0e23661f4dea5a44acb195bf3010a97eb', PATH)
 
 
 class MasterBoundedHistoryTests(unittest.TestCase):
     def test_master_bounded_projection_and_each_omission_remain_exact(self):
-        master = subprocess.check_output(['git', 'show', CURRENT_BASE + ':' + PATH], cwd=ROOT, text=True)
-        candidate = subprocess.check_output(['git', 'show',
-            'd0c744919ba181e7a0bcfae222b5a37687af48fb:' + PATH], cwd=ROOT, text=True)
+        master = historical_text(CURRENT_BASE, PATH)
+        candidate = historical_text('d0c744919ba181e7a0bcfae222b5a37687af48fb', PATH)
         validate_historical_bounded(master, candidate)
         for marker in ('key == "original_target"', '"next_animal_retaliation"',
                        '"validated_roof_absent"', 'saving_export_stack.len - 7',
@@ -779,7 +827,7 @@ class MasterBoundedHistoryTests(unittest.TestCase):
         with self.assertRaises(ValueError): validate_historical_bounded(master, candidate + '// unrelated drift\n')
 
     def test_merged_projection_rejects_omission_and_duplicate_anchors(self):
-        feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
+        feature = historical_text(MERGE_BASE, PATH)
         current = project_merged_source(feature)
         validate_merged_source(feature, current)
         for anchor, addition in BOUNDED_BLOCKS:
@@ -798,21 +846,21 @@ class EventRunnerTests(unittest.TestCase):
     """Exercise the actual source-only runner with evolving, injected event identities."""
     @classmethod
     def setUpClass(cls):
-        cls.base_source = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
-        feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.base_source = historical_text(MERGE_MASTER, PATH)
+        feature = historical_text(MERGE_BASE, PATH)
         cls.feature_source = feature
         cls.merged = current_lighting_policy(project_merged_source(feature))
         cls.helpers = {p: (ROOT / p).read_text() for p in (
             'code/processes/human_corpse_decay.dm', 'code/processes/abandoned_items.dm',
             'code/modules/1713/active_training.dm')}
-        cls.feature_helpers = {p: subprocess.check_output(['git', 'show', MERGE_BASE + ':' + p], cwd=ROOT, text=True)
+        cls.feature_helpers = {p: historical_text(MERGE_BASE, p)
                                for p in cls.helpers}
         # Model independent feature-base evolution, then apply the reviewed
         # master delta. Never construct the event base from candidate bytes.
         cls.evolved_feature_helpers = {}
         cls.evolved_feature_heads = {}
         for path in cls.helpers:
-            master = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + path], cwd=ROOT, text=True)
+            master = historical_text(MERGE_MASTER, path)
             cls.evolved_feature_helpers[path] = cls.feature_helpers[path] + '\n// independent feature-base evolution\n'
             cls.evolved_feature_heads[path] = replay_reviewed_merge(cls.evolved_feature_helpers[path], cls.feature_helpers[path], master)
 
@@ -857,6 +905,9 @@ class EventRunnerTests(unittest.TestCase):
                 return (MERGE_MASTER if event_kind == 'pull_request' else base_sha) + '\n'
             if command[:2] == ['git', 'show']:
                 ref, file = command[2].split(':', 1)
+                if ref in (MERGE_BASE, MERGE_MASTER):
+                    value = historical_text(ref, file)
+                    return value if kwargs.get('text') else value.encode('utf-8')
                 if ref in (base_sha, head_sha):
                     if file == PATH: value = base if ref == base_sha else candidate
                     elif file in self.helpers:
@@ -1029,7 +1080,7 @@ class ManualPostIntegrationRunnerTests(unittest.TestCase):
             alternates=repo/'.git/objects/info/alternates';alternates.parent.mkdir(parents=True,exist_ok=True)
             alternates.write_bytes((objects.as_posix()+'\n').encode('utf-8'))
             git('read-tree',checkpoint)
-            feature_source=subprocess.check_output(['git','show',MERGE_BASE+':'+PATH],cwd=ROOT,text=True)
+            feature_source=historical_text(MERGE_BASE, PATH)
             combined=current_lighting_policy(project_merged_source(feature_source)).encode('utf-8')
             def index(path,data):
                 blob=git('hash-object','-w','--stdin',data=data)
@@ -1112,10 +1163,8 @@ class Current1688RunnerTests(unittest.TestCase):
             spec = importlib.util.spec_from_file_location('exclusion_ci_1688', ROOT / 'scripts/exclusion_ci_1688.py')
             cls.runner = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(cls.runner)
-        cls.original_workflow = subprocess.check_output(['git', 'show',
-            '3d35f802e580ac4f4d012a4ffc448bd485b62b53:.github/workflows/test.yml'], cwd=ROOT, text=True)
-        cls.original_runner = subprocess.check_output(['git', 'show',
-            '3d35f802e580ac4f4d012a4ffc448bd485b62b53:tests/exclusion_dispatch/run-ci.py'], cwd=ROOT)
+        cls.original_workflow = historical_text('3d35f802e580ac4f4d012a4ffc448bd485b62b53', '.github/workflows/test.yml')
+        cls.original_runner = historical_text('3d35f802e580ac4f4d012a4ffc448bd485b62b53', 'tests/exclusion_dispatch/run-ci.py').encode('utf-8')
 
     def result(self, mode='parity'):
         return dict(cases=1000, failures=0 if mode=='parity' else 1,
