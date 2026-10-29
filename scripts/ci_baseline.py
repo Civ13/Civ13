@@ -28,7 +28,8 @@ SUITES = {
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection; no native launch.
     'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',
-                                    'tests/persistence_pointers/test_restore_dependents.py'),
+                                    'tests/persistence_pointers/test_restore_dependents.py',
+                                    'tests/persistence_pointers/test_action_reconnect.py'),
         'paths': ('tests/persistence_pointers/',),
         'shared_paths': ('code/modules/persistence/',
             'code/game/mob/living/simple_animal/',
@@ -43,6 +44,8 @@ SUITES = {
             'code/modules/1713/gunsmithing/gun_configuration.dm',
             'code/modules/1713/machinery/modular_vehicles/wheels.dm',
             'code/game/mob/living/living_defense.dm',
+            'code/game/mob/living/living_hud.dm',
+            'code/game/mob/living/carbon/human/human_hud.dm',
             'code/game/objects/items/weapons/swords_axes_etc.dm')},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
