@@ -104,7 +104,7 @@ def assert_workflow_contract(workflow):
         '      build_prefix: true\n',
         '      lint_workflows: true\n',
         "      extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}\n",
-        "      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}\n",
+        "      base: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}\n",
     ):
         if changes.count(fragment) != 1:
             raise AssertionError('Selection contract changed: ' + fragment.strip())
@@ -124,18 +124,58 @@ def assert_workflow_contract(workflow):
         section = job_body.split(end_marker, 1)[0]
         required = (
             '    needs: changes\n',
-            '      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n',
             '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n',
             '      attempt: ${{ github.run_attempt }}\n',
-            '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n',
-            '          fetch-depth: ' + ('1' if job == 'baseline' else '0') + '\n',
-            '          persist-credentials: false\n',
             '          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}\n',
             '          path: .ci/selection\n',
-        )
+        ) + ((
+            '      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n',
+            '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n',
+            '          fetch-depth: 1\n',
+            '          persist-credentials: false\n',
+        ) if job == 'baseline' else ())
         for fragment in required:
             if section.count(fragment) != 1:
                 raise AssertionError('Missing or duplicate ' + job + ' identity/provenance: ' + fragment.strip())
+        if job == 'build':
+            # Exactly one of two complementary checkouts runs: shallow with an
+            # exact comparison commit, or full history for selected fixtures.
+            simple = ("github.event_name != 'workflow_dispatch' && needs.changes.outputs.extensive == 'false' && needs.changes.outputs.new_tests == '[]' && (github.event_name != 'pull_request' || toJSON(github.event.pull_request.labels) == '[]')")
+            history = ("github.event_name == 'workflow_dispatch' || needs.changes.outputs.extensive != 'false' || needs.changes.outputs.new_tests != '[]' || (github.event_name == 'pull_request' && toJSON(github.event.pull_request.labels) != '[]')")
+            blocks = (
+                ('      - name: Check out simple compilation source\n'
+                 '        id: simple_checkout\n'
+                 '        if: ' + simple + '\n'
+                 '        timeout-minutes: 2\n'
+                 '        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n'
+                 '        with:\n'
+                 '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n'
+                 '          fetch-depth: 1\n'
+                 '          persist-credentials: false\n'),
+                ('      - name: Prepare simple compilation comparison commit\n'
+                 '        id: simple_prepare\n'
+                 '        if: ' + simple + '\n'
+                 '        timeout-minutes: 2\n'
+                 '        env:\n'
+                 '          EVENT_NAME: ${{ github.event_name }}\n'
+                 "          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}\n"
+                 '          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n'
+                 '        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"\n'),
+                ('      - name: Check out history for selected or manual fixtures\n'
+                 '        id: history_checkout\n'
+                 '        if: ' + history + '\n'
+                 '        timeout-minutes: 12\n'
+                 '        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n'
+                 '        with:\n'
+                 '          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n'
+                 '          fetch-depth: 0\n'
+                 '          persist-credentials: false\n'),
+            )
+            if any(section.count(block) != 1 for block in blocks) or section.count('actions/checkout@') != 2:
+                raise AssertionError('Build checkout or comparison preparation changed')
+            positions = [section.index(block) for block in blocks] + [section.index('      - uses: actions/download-artifact@')]
+            if positions != sorted(positions):
+                raise AssertionError('Build checkout ordering changed')
         if job == 'baseline':
             prepare = ('      - name: Prepare exact comparison commit\n'
                        '        timeout-minutes: 2\n'
