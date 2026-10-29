@@ -8,6 +8,7 @@ import re
 
 from prepare import prepare
 from compare import compare
+from measurement import prepare_runtime, stage_runtime, validate_runtime_files
 
 ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
@@ -15,7 +16,7 @@ EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
             'refusal-owner': 'FAIL: assertion: refused constructor detached before deferred deletion',
             'owner-identity': 'FAIL: assertion: superseded cleanup preserves owner',
             'lumcount-guard': 'PASS'}
-DIAGNOSTIC = re.compile(r'runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
+DIAGNOSTIC = re.compile(r'##\s*ERROR|File not found|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
 
 
 # Resource literals in included DM files resolve relative to the generated DME,
@@ -26,6 +27,13 @@ VERSION = '516.1688'
 
 def runtime_module():
     spec = importlib.util.spec_from_file_location('reserved_runtime_pin', ROOT / 'scripts/byond_runtime.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def startup_module():
+    spec = importlib.util.spec_from_file_location('startup_runner', ROOT/'tests/lighting_startup/run.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -83,27 +91,32 @@ def main():
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    spec = importlib.util.spec_from_file_location('startup_runner', ROOT/'tests/lighting_startup/run.py')
-    runner = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(runner)
+    runner = startup_module()
     byond = args.byond_bin.absolute()
     compiler = byond/('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond/('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = 0x8 if os.name == 'nt' else 0
     identity = verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute())
     (out/'runtime-identity.json').write_text(json.dumps(identity, indent=2))
+    runtime_root = out/'runtime-inputs'
+    runtime = None
     for name in EXPECTED:
         work = out/name
-        prepare(ROOT, work, None if name in ('baseline', 'candidate') else name)
+        source = prepare(ROOT, work, None if name in ('baseline', 'candidate') else name)
+        if runtime is None:
+            runtime = prepare_runtime(runtime_root, source['head'])
+        stage_runtime({'runtime': runtime, 'head': source['head']}, runtime_root, work)
         bind_resources(ROOT, work)
         verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute(), identity)
         result = runner.run_logged([str(compiler), '-max_errors', '0', 'probe.dme'], work, 'compile.log', 180, flags)
         validate_compiler(result.returncode, combined_output(result))
+        validate_runtime_files(runtime, work, exact=True)
         verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute(), identity)
         result = runner.run_logged([str(daemon), 'probe.dmb', '-close', '-trusted', '-log', 'runtime.log',
                                    '-params', 'reserved=' + ('0' if name == 'baseline' else '1')],
                                   work, 'daemon.log', 180, flags)
         verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute(), identity)
+        validate_runtime_files(runtime, work, exact=True)
         validate_runtime(result, work, name)
     parity = compare(out/'baseline/states.jsonl', out/'candidate/states.jsonl')
     try:

@@ -1401,6 +1401,7 @@ jobs:
           path: |
             ${{ runner.temp }}/reserved-lighting/parity.json
             ${{ runner.temp }}/reserved-lighting/runtime-identity.json
+            ${{ runner.temp }}/reserved-lighting/runtime-inputs/runtime-inputs.json
             ${{ runner.temp }}/reserved-lighting/*/manifest.json
             ${{ runner.temp }}/reserved-lighting/*/*.log
             ${{ runner.temp }}/reserved-lighting/*/result.txt

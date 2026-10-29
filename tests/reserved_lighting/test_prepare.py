@@ -32,6 +32,9 @@ class SourcePreparation(unittest.TestCase):
             self.assertNotIn('.dmf"', dme)
             self.assertIn('tests/reserved_lighting/probe.dm', dme)
             self.assertNotIn('/world/New()', (out/'world.dm').read_text(encoding='utf-8'))
+            self.assertNotIn('var/global/datum/global_init/init = new ()', (out/'world.dm').read_text(encoding='utf-8'))
+            self.assertIn('var/global/datum/global_init/init = null', (out/'world.dm').read_text(encoding='utf-8'))
+            self.assertIn('var/global/datum/global_init/init = new ()', (ROOT/'code/world.dm').read_text(encoding='utf-8'))
             for name, signature in (('movement.dm', '/client/proc/unused_reserved_movement_new()'),
                                     ('client_procs.dm', '/client/proc/unused_reserved_client_new(TopicData)')):
                 adapter = (out/name).read_text(encoding='utf-8')

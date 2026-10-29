@@ -444,3 +444,14 @@ compiled successfully but failed on three historical Git-object reads before
 native correctness execution. Its failure is preserved. Historical exclusion
 test inputs are now checked-in fixtures with exact original hashes; this changes
 test portability, not the live source oracle or runtime admission.
+
+Run [40838457688](https://github.com/Civ13/Civ13/actions/runs/40838457688) then passed
+the clean compile, offline exclusion contracts and native exclusion controls, but
+the reserved-lighting lane stopped on missing public name files and normal
+pre-world global initialization. The generated world adapter now leaves that
+normal initializer unconstructed; the existing probe owns its minimal config
+and lighting startup. Production startup is unchanged. The CI runner stages only
+the same 146 exact-head public name files used by the measurement controller,
+checks their hashes before/after execution, and retains their manifest. It copies
+no private configuration and rejects missing-file diagnostics even with PASS.
+The compile/daemon counts, semantic controls and process bounds are unchanged.
