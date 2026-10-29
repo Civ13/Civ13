@@ -96,7 +96,8 @@ SUITES = {
                                   'tests/furniture_joinery/test_document_drawers.py',
                                   'tests/furniture_joinery/test_sofa_materials.py',
                                   'tests/furniture_joinery/test_canopy.py',
-                                  'tests/furniture_joinery/test_cutting_board.py'), 'paths': (
+                                  'tests/furniture_joinery/test_cutting_board.py',
+                                  'tests/furniture_joinery/test_barrel_ingredients.py'), 'paths': (
         'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
         'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py',
         'code/modules/1713/cutting_board.dm', 'tests/primitive_woodworking/source_adapter.py',

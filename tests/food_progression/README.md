@@ -1,5 +1,14 @@
 # Production food progression probe
 
+`run.py --probe barrels` covers the portable barrel's specialized ingredient
+handler: actual paid ore units and exact capacity, subtype/final-hand cleanup,
+actor/lid/stock/save guards, whole/depleted/trace manure, partial/zero-transfer
+refusal and a real saved barrel reagent entry. It does not exercise inherited
+fruit conversions, dispenser locks or full-game reachability. Compile-only starts
+no world; use a new evidence directory and the explicit current compiler version
+as for the other probes. Native execution is separate from compilation. The
+eight source/data hashes and bounded text evidence are retained by selected CI.
+
 `run.py --probe cutting` runs the cutting-board slice separately from crop and
 storage. It covers all seven frozen input types and original yields/delays,
 live food ownership, continued age/rot, salt/reagent preservation, poisonous and

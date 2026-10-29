@@ -101,3 +101,5 @@ The 557 indexed furniture candidates remain an inventory, not reviewed routes.
 Barrel mixing/transfer handlers, cooking/tray processors, anvils/workbenches,
 chemistry and the other material categories remain actionable follow-ons.
 No additional route was justified by this four-output slice.
+The next [portable-barrel ingredient slice](barrel-ingredient-audit.md) implements
+bounded payment and capacity corrections, rather than adding a duplicate recipe.

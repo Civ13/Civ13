@@ -93,6 +93,15 @@ active hand. The custom saver must exclude both reservation pointers.
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-29: portable barrel ingredient accounting -->
+Portable barrels keep their existing ore/manure conversions. Require actual
+open-holder capacity; debit a whole ore unit via stack.use before granting its
+three-unit dose. Transfer only a complete manure payload up to ten units and
+delete the item only when drained. Preview volumes with no reactions/data copy
+to refuse near-capacity trace pruning. Preserve the shared-glass all-suite CI
+fallback. See `docs/barrel-ingredient-audit.md`; the separate food barrels probe
+does not claim inherited fruit conversion or large-dispenser lock coverage.
+
 <!-- 2026-10-29: paid cutting-board input -->
 Cutting boards retain a live paid food child, with normal decay at exposed-food
 rate and existing child save/load. Refuse unsupported subtypes and spoiled food;
