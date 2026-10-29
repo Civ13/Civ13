@@ -741,7 +741,12 @@ class LocalShallowSourceTests(unittest.TestCase):
             git(origin, 'config', 'user.email', 'offline@example.invalid')
             files = (PATH, 'tests/exclusion_dispatch/test_source.py',
                      'tests/exclusion_dispatch/source_contract.py', 'tests/exclusion_dispatch/resources.py',
-                     'tests/exclusion_dispatch/historical_fixtures.py')
+                     'tests/exclusion_dispatch/historical_fixtures.py', 'tests/exclusion_dispatch/preparation.py',
+                     'tests/exclusion_dispatch/run.py', 'tests/exclusion_dispatch/run-ci.py',
+                     'tests/exclusion_dispatch/run-ci-current.py', 'tests/exclusion_dispatch/probe.dm',
+                     'code/processes/human_corpse_decay.dm', 'code/processes/abandoned_items.dm',
+                     'code/modules/1713/active_training.dm', 'scripts/exclusion_ci_1688.py',
+                     'tests/world_save/current_runtime.py', '.github/workflows/test.yml')
             for name in files:
                 target = origin / name
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -773,11 +778,12 @@ class LocalShallowSourceTests(unittest.TestCase):
                 'ExtractionHistoricalSourceContractTests.test_exact_transform_preserves_historical_master',
                 'ExtractionHistoricalSourceContractTests.test_reconstructed_hooks_match_reviewed_historical_hooks',
                 'HistoricalMasterSourceContractTests.test_bounded_projection_is_exact_and_fail_closed',
-                'MasterBoundedHistoryTests']
+                'MasterBoundedHistoryTests', 'ManualPostIntegrationRunnerTests',
+                'Current1688RunnerTests.test_historical_runner_unchanged_and_workflow_only_replaces_existing_guarded_lane']
             historical = subprocess.run(command[:-2] + historical_cases + ['-v'], cwd=clone, env=env,
                                         text=True, capture_output=True, timeout=45)
             self.assertEqual(historical.returncode, 0, historical.stdout + historical.stderr)
-            self.assertIn('Ran 7 tests', historical.stderr)
+            self.assertIn('Ran 9 tests', historical.stderr)
             # A modified working source cannot masquerade as its checked-out head.
             with (clone / PATH).open('a', encoding='utf-8') as source:
                 source.write('\n// uncommitted drift\n')
@@ -1065,7 +1071,6 @@ class ManualPostIntegrationRunnerTests(unittest.TestCase):
     """Run source preparation against a real synthetic two-parent Git history."""
     def test_explicit_prior_master_not_feature_parent_carries_serializer_and_helper_evolution(self):
         from preparation import FIXTURE
-        checkpoint = '9ac92766a575cc30211ba8c86e1fc3e0af2fabe2'
         paths = (PATH, 'code/processes/human_corpse_decay.dm',
                  'code/processes/abandoned_items.dm', 'code/modules/1713/active_training.dm')
         with tempfile.TemporaryDirectory(prefix='exclusion-manual-history-') as directory:
@@ -1075,27 +1080,48 @@ class ManualPostIntegrationRunnerTests(unittest.TestCase):
                     '-c','user.email=offline@example.invalid',*args],input=data,capture_output=True,timeout=30,check=True)
                 return result.stdout.decode().strip()
             git('init','-q')
-            common = subprocess.check_output(['git','rev-parse','--git-common-dir'],cwd=ROOT,text=True).strip()
-            objects=(ROOT/Path(common)/'objects').resolve()
-            alternates=repo/'.git/objects/info/alternates';alternates.parent.mkdir(parents=True,exist_ok=True)
-            alternates.write_bytes((objects.as_posix()+'\n').encode('utf-8'))
-            git('read-tree',checkpoint)
-            feature_source=historical_text(MERGE_BASE, PATH)
-            combined=current_lighting_policy(project_merged_source(feature_source)).encode('utf-8')
             def index(path,data):
                 blob=git('hash-object','-w','--stdin',data=data)
                 git('update-index','--add','--cacheinfo',f'100644,{blob},{path}')
+            # A self-contained graph represents the reviewed feature and master
+            # snapshots. No alternates, old Git objects or network are used.
+            feature_source=historical_text(MERGE_BASE, PATH)
+            for path in paths:
+                index(path, historical_text(MERGE_BASE, path).encode('utf-8'))
+            feature_tree=git('write-tree')
+            root_commit=git('commit-tree',feature_tree,'-m','fixture root')
+            feature_identity=git('commit-tree',feature_tree,'-p',root_commit,'-m','fixture reviewed feature')
+            for path in paths:
+                index(path, historical_text(MERGE_MASTER, path).encode('utf-8'))
+            master_tree=git('write-tree')
+            master=git('commit-tree',master_tree,'-p',root_commit,'-m','fixture reviewed master')
+            # This identity exists but is not in the fixture head's ancestry.
+            release_identity=git('commit-tree',master_tree,'-m','fixture unrelated release')
+            self.assertFalse((repo/'.git/objects/info/alternates').exists())
+            for old in (MERGE_BASE, MERGE_MASTER, ORDERED_RELEASE,
+                        '9ac92766a575cc30211ba8c86e1fc3e0af2fabe2',
+                        '3d35f802e580ac4f4d012a4ffc448bd485b62b53'):
+                self.assertNotEqual(subprocess.run(['git','-C',str(repo),'cat-file','-e',old+'^{commit}'],
+                                                   capture_output=True,timeout=15).returncode,0)
+            combined=current_lighting_policy(project_merged_source(feature_source)).encode('utf-8')
             index(PATH,combined)
             for path in FIXTURE:
-                index(path,(ROOT/path).read_text(encoding='utf-8').encode('utf-8'))
+                content=(ROOT/path).read_text(encoding='utf-8')
+                if path == 'tests/exclusion_dispatch/source_contract.py':
+                    # Test-only seam: same ancestry/identity code, but bind it to
+                    # commits in this isolated graph rather than repository pins.
+                    for old_id,new_id in ((MERGE_BASE,feature_identity),(MERGE_MASTER,master),
+                                          (ORDERED_RELEASE,release_identity)):
+                        if content.count(old_id) != 1:
+                            raise AssertionError('Synthetic identity anchor changed')
+                        content=content.replace(old_id,new_id,1)
+                index(path,content.encode('utf-8'))
             foundation_tree=git('write-tree')
-            foundation=git('commit-tree',foundation_tree,'-p',checkpoint,'-m','fixture combined foundation')
+            foundation=git('commit-tree',foundation_tree,'-p',feature_identity,'-m','fixture combined foundation')
             feature=git('commit-tree',foundation_tree,'-p',foundation,'-m','fixture feature branch')
-            changed={}
             for path,label in ((PATH,'serializer'),('code/processes/abandoned_items.dm','helper')):
                 original=subprocess.check_output(['git','show',foundation+':'+path],cwd=repo)
-                data=original+b'\n// prior master '+label.encode()+b' evolution\n'
-                index(path,data);changed[path]=data
+                index(path,original+b'\n// prior master '+label.encode()+b' evolution\n')
             tree=git('write-tree')
             prior=git('commit-tree',tree,'-p',foundation,'-m','fixture prior master')
             head=git('commit-tree',tree,'-p',prior,'-p',feature,'-m','fixture post integration merge')
@@ -1122,7 +1148,6 @@ class ManualPostIntegrationRunnerTests(unittest.TestCase):
                 if not base: self.assertIn('exclusion_comparison_base',result.stderr)
             # Exercise the real CLI with a master base that predates the
             # extraction custody projection, including one-sided omissions.
-            master='3d35f802e580ac4f4d012a4ffc448bd485b62b53'
             prhead=git('commit-tree',foundation_tree,'-p',master,'-p',foundation,'-m','fixture extraction integration')
             def checkout_fixture(revision):
                 git('update-ref','refs/heads/fixture',revision)
