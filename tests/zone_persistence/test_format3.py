@@ -9,6 +9,11 @@ PATH = 'code/modules/persistence/zone_topology.dm'
 
 
 class FormatCompatibility(unittest.TestCase):
+    def test_directory_index_yields_while_building_large_level(self):
+        source = (ROOT/PATH).read_text()
+        helper = source.split('/proc/savefile_dir_index(list/names)', 1)[1].split('\n/map_storage/', 1)[0]
+        self.assertRegex(helper, r'\tfor\(var/name in names\)\n\t\tindex\[name\] = TRUE\n\t\tTICK_CHECK\n')
+
     def test_zone_header_admits_typed_versions_2_and_3_only(self):
         source = (ROOT/PATH).read_text()
         self.assertEqual(source.count('!(F["/format_version"] in list(2, 3))'), 1)
