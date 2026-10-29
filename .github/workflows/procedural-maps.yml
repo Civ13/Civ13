@@ -44,5 +44,11 @@ jobs:
           ref: eedc9862fcb7b2b7c3617c6972965fafa650e51a
           path: .ci/intermediate-catalog
           persist-credentials: false
+      - name: Check out version 3 source catalog for compatibility tests
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: c39f4d6846c8882df0097a6bba021cc5288a9229
+          path: .ci/v3-catalog
+          persist-credentials: false
       - name: Run explicit offline contracts and CLI round trips
-        run: python -I -B tests/procedural_maps/run.py --historical-catalog-root .ci/historical-catalog --intermediate-catalog-root .ci/intermediate-catalog --report .ci/procedural-maps.json
+        run: python -I -B tests/procedural_maps/run.py --historical-catalog-root .ci/historical-catalog --intermediate-catalog-root .ci/intermediate-catalog --v3-catalog-root .ci/v3-catalog --report .ci/procedural-maps.json

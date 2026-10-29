@@ -16,3 +16,9 @@ def read_pinned(relative, expected_blob, root=None, source_commit=SOURCE_COMMIT)
         raise ValueError("CATALOG_SOURCE_MISMATCH: " + relative +
                          "; use a clean catalog checkout at " + source_commit)
     return data
+
+
+def read_source(relative, root=None):
+    """Read checkout source with LF normalization and no content pin."""
+    root = Path(root) if root is not None else REPOSITORY_ROOT
+    return (root / relative).read_bytes().replace(b"\r\n", b"\n")

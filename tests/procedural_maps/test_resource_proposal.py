@@ -25,13 +25,14 @@ class ResourceProposalTests(unittest.TestCase):
                     section.append(line)
                 for fragment in evidence['required_source_fragments']:self.assertIn(fragment,'\n'.join(section))
     def test_current_source_preserves_each_frozen_evidence_section(self):
-        from tools.procedural_maps.dmm_export import CATALOG,verify_catalog
+        from tools.procedural_maps.dmm_export import verify_catalog
+        from tools.procedural_maps.repo_source import read_source
         self.assertTrue(verify_catalog())
         d=json.loads((ROOT/'tools/procedural_maps/catalog/native-resources-v0.1.json').read_text())
         for entry in d['entries']:
             for evidence in entry['evidence']:
                 path=evidence['path'];old=read_pinned(path,evidence['git_blob'],os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']).decode().splitlines()
-                new=read_pinned(path,CATALOG[path]).decode().splitlines()
+                new=read_source(path).decode().splitlines()
                 def section(lines):
                     start=lines.index(evidence['anchor']);out=[]
                     for line in lines[start:]:

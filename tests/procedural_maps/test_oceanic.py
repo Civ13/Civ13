@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from tools.procedural_maps.bundle import check_manifest,write_bundle,verify_bundle
 from tools.procedural_maps.configuration import oceanic_preset,preset,validate_config
-from tools.procedural_maps.dmm_export import emit,verify_roundtrip
+from tools.procedural_maps.dmm_export import emit,verify_roundtrip,CATALOG_VERSION
 from tools.procedural_maps.generator import generate
 from tools.procedural_maps.ocean_generator import ALGORITHM_VERSION
 from tools.procedural_maps.validator import canonical_hash,validate
@@ -162,8 +162,9 @@ class OceanicTests(unittest.TestCase):
     def test_missing_surface_layer_rejects_cleanly(self):
         self.changed(lambda d:d['layers'].pop('SURFACE'),'SCHEMA')
     def test_export_roundtrip_keeps_semantics(self):
-        d=self.result['document'];m=self.result['manifest'];text,sidecar=emit(d,m)
-        self.assertEqual(d,sidecar['semantic_ir']);self.assertEqual(m,sidecar['manifest'])
+        d=self.result['document'];m=self.result['manifest'];text,sidecar=emit(d,m,catalog_version=CATALOG_VERSION)
+        bound=dict(m,catalog_binding=dict(catalog_version=CATALOG_VERSION,source_commit=sidecar['source_commit']))
+        self.assertEqual(d,sidecar['semantic_ir']);self.assertEqual(bound,sidecar['manifest'])
         proof=verify_roundtrip(text,sidecar);self.assertTrue(proof['ir_plus_sidecar_semantics_equal'])
         self.assertNotIn('/obj/item/',text)
     def test_ocean_config_binding(self):
@@ -178,7 +179,7 @@ class OceanicTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'PROFILE_BINDING'):check_manifest(self.result['document'],m)
     def test_complete_bundle(self):
         with tempfile.TemporaryDirectory() as folder:
-            p=Path(folder);write_bundle(p,self.result['document'],self.result['manifest'],preview=True)
+            p=Path(folder);write_bundle(p,self.result['document'],self.result['manifest'],preview=True,catalog_version=CATALOG_VERSION)
             self.assertFalse(verify_bundle(p)['native_ready'])
     def test_cli_oceanic_preset_generate_verify(self):
         with tempfile.TemporaryDirectory() as folder:

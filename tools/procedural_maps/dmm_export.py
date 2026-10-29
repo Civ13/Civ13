@@ -9,14 +9,16 @@ import re
 from pathlib import Path
 from .source_audit import parse_classic
 from .validator import validate,canonical_hash
-from .repo_source import read_pinned
+from .repo_source import read_pinned,read_source
 
 HISTORICAL_COMMIT="067478b82c7ad9f1b83759a221e6f22080ba865a"
 INTERMEDIATE_COMMIT="eedc9862fcb7b2b7c3617c6972965fafa650e51a"
-COMMIT="c39f4d6846c8882df0097a6bba021cc5288a9229"
+V3_COMMIT="c39f4d6846c8882df0097a6bba021cc5288a9229"
+COMMIT="bc7209b23d4ee39651a736a7a9ddb1d1081166ac"
 HISTORICAL_VERSION="civ13-static-layout/1"
 INTERMEDIATE_VERSION="civ13-static-layout/2"
-CATALOG_VERSION="civ13-static-layout/3"
+V3_VERSION="civ13-static-layout/3"
+CATALOG_VERSION="civ13-static-layout/4"
 HISTORICAL_CATALOG={
  "code/game/turfs/floor_types.dm":"3b3c83d2082f4f840a598d0fbb54cb3b3132eee8",
  "code/game/turfs/flooring/flooring_premade.dm":"cf0dcd8da162773fe9c44837b57dc188c339b25e",
@@ -30,11 +32,15 @@ HISTORICAL_CATALOG={
 INTERMEDIATE_CATALOG={**HISTORICAL_CATALOG,
  "code/game/objects/structures/wild.dm":"37d613e825c791c4cbe3369a1c159a874aac1aa5",
  "civ13.dme":"e3f9ed942fc1f60cc82a0a5699b155c953cb9719"}
-CATALOG={**INTERMEDIATE_CATALOG,
+V3_CATALOG={**INTERMEDIATE_CATALOG,
  "code/game/objects/structures/wild.dm":"c66b86cf4618676c5a2b0986eca677977d9ae764"}
+# Version 4 pins only the exact type declarations and their DME includes, so
+# unrelated edits to the same files keep the catalog valid. COMMIT is where it was
+# first verified, not a required checkout.
 CATALOGS={HISTORICAL_VERSION:(HISTORICAL_COMMIT,HISTORICAL_CATALOG),
           INTERMEDIATE_VERSION:(INTERMEDIATE_COMMIT,INTERMEDIATE_CATALOG),
-          CATALOG_VERSION:(COMMIT,CATALOG)}
+          V3_VERSION:(V3_COMMIT,V3_CATALOG),
+          CATALOG_VERSION:(COMMIT,None)}
 TREES={"BROADLEAF":"/obj/structure/wild/tree/live_tree","PINE":"/obj/structure/wild/tree/live_tree/pine",
        "PALM":"/obj/structure/wild/palm","CACTUS":"/obj/structure/wild/tree/cactus"}
 
@@ -42,8 +48,10 @@ TREES={"BROADLEAF":"/obj/structure/wild/tree/live_tree","PINE":"/obj/structure/w
 def verify_catalog(catalog_root=None,version=CATALOG_VERSION):
     if version not in CATALOGS:raise ValueError("CATALOG_VERSION_UNSUPPORTED")
     commit,catalog=CATALOGS[version]
-    for path,pin in catalog.items():
-        read_pinned(path,pin,catalog_root,commit)
+    def source(path):
+        if catalog is None:return read_source(path,catalog_root)
+        return read_pinned(path,catalog[path],catalog_root,commit)
+    for path in catalog or ():source(path)
     # Exact type declarations, not prefix/type-name guesses. DME source includes are also pinned.
     declarations={
       "code/game/turfs/floor_types.dm":["/turf/floor/grass","/turf/floor/beach/sand","/turf/floor/beach/water","/turf/floor/beach/water/deep","/turf/floor/beach/water/shallowsaltwater","/turf/floor/beach/water/deep/saltwater","/turf/floor/beach/water/swamp"],
@@ -55,15 +63,20 @@ def verify_catalog(catalog_root=None,version=CATALOG_VERSION):
       "code/game/objects/map_metadata/nomads/nomads.dm":["/obj/map_metadata/nomads"],
     }
     for path,types in declarations.items():
-        source=read_pinned(path,catalog[path],catalog_root,commit).decode("utf-8")
+        text=source(path).decode("utf-8")
         for typename in types:
-            if not re.search(r"^"+re.escape(typename)+r"\s*$",source,re.M):raise ValueError("CATALOG_TYPE_MISSING: "+typename)
+            if not re.search(r"^"+re.escape(typename)+r"\s*$",text,re.M):raise ValueError("CATALOG_TYPE_MISSING: "+typename)
+    if catalog is None:
+        includes=set(source("civ13.dme").decode("utf-8").splitlines())
+        for path in declarations:
+            if '#include "'+path.replace("/","\\")+'"' not in includes:raise ValueError("CATALOG_INCLUDE_MISSING: "+path)
     return True
 
 
 def select_catalog(catalog_root=None):
-    # Match one complete catalog, never mix pins from different versions.
-    for version in (CATALOG_VERSION,INTERMEDIATE_VERSION,HISTORICAL_VERSION):
+    # Match one complete catalog, never mix pins from different versions. An exact
+    # pinned checkout keeps its historical binding; any other uses declaration-only /4.
+    for version in (V3_VERSION,INTERMEDIATE_VERSION,HISTORICAL_VERSION,CATALOG_VERSION):
         try:
             verify_catalog(catalog_root,version)
             return version

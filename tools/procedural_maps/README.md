@@ -30,8 +30,10 @@ Dream Maker editor acceptance.
 Tests, including original v0.1/v0.2 golden maps and all prior offline contracts:
 
 ```sh
-python3 -I -B tests/procedural_maps/run.py
+python3 -I -B tests/procedural_maps/run.py --historical-catalog-root <v1-checkout> --intermediate-catalog-root <v2-checkout> --v3-catalog-root <v3-checkout>
 ```
+
+See [the guide](../../docs/procedural-maps.md#tests-and-contributions) for preparing the catalog checkouts.
 
 The original source is covered by the repository's [license](../../LICENSE).
 No DFLib code/binary, reference screenshot, copied game source, third-party art,

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from tools.procedural_maps.dmm_export import emit,project,verify_roundtrip,verify_catalog,CATALOG_VERSION,HISTORICAL_VERSION,INTERMEDIATE_VERSION,COMMIT,HISTORICAL_COMMIT,INTERMEDIATE_COMMIT
+from tools.procedural_maps.dmm_export import emit,project,verify_roundtrip,verify_catalog,select_catalog,CATALOG_VERSION,HISTORICAL_VERSION,INTERMEDIATE_VERSION,V3_VERSION,COMMIT,HISTORICAL_COMMIT,INTERMEDIATE_COMMIT,V3_COMMIT
 from tools.procedural_maps.bundle import write_bundle,verify_bundle
 from tools.procedural_maps.io import json_text
 from test_surface_generator import small
@@ -21,17 +21,17 @@ class ExportTests(unittest.TestCase):
         cls.text,cls.sidecar=emit(cls.doc,cls.manifest,catalog_version=CATALOG_VERSION)
     def test_pinned_catalog(self):self.assertTrue(verify_catalog())
     def test_source_delta_is_confined_to_flowers_and_additive_dme_includes(self):
-        from tools.procedural_maps.dmm_export import CATALOG,HISTORICAL_CATALOG
+        from tools.procedural_maps.dmm_export import V3_CATALOG,HISTORICAL_CATALOG
         from tools.procedural_maps.repo_source import read_pinned
-        oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])
+        oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']);v3root=Path(os.environ['CIV13_TEST_V3_CATALOG_ROOT'])
         path='code/game/objects/structures/wild.dm'
         old=read_pinned(path,HISTORICAL_CATALOG[path],oldroot).decode()
-        new=read_pinned(path,CATALOG[path]).decode()
+        new=read_pinned(path,V3_CATALOG[path],v3root).decode()
         start='/obj/structure/wild/flowers\n';end='/obj/structure/wild/tallgrass/fire_act(temperature)'
         self.assertEqual(old.split(start,1)[0],new.split(start,1)[0])
         self.assertEqual(old.split(end,1)[1],new.split(end,1)[1])
         olddme=read_pinned('civ13.dme',HISTORICAL_CATALOG['civ13.dme'],oldroot).decode().splitlines()
-        newdme=read_pinned('civ13.dme',CATALOG['civ13.dme']).decode().splitlines()
+        newdme=read_pinned('civ13.dme',V3_CATALOG['civ13.dme'],v3root).decode().splitlines()
         additions=[line for line in newdme if line not in olddme]
         self.assertEqual(5,len(additions));self.assertEqual(olddme,[line for line in newdme if line not in additions])
         self.assertTrue(all(line.startswith('#include ') for line in additions))
@@ -49,17 +49,17 @@ class ExportTests(unittest.TestCase):
         oldside['manifest']['catalog_binding']=dict(catalog_version=CATALOG_VERSION,source_commit=COMMIT)
         self.assertEqual(self.sidecar,oldside)
     def test_v2_to_v3_source_delta_is_only_generic_flower_alias(self):
-        from tools.procedural_maps.dmm_export import CATALOG,INTERMEDIATE_CATALOG
+        from tools.procedural_maps.dmm_export import V3_CATALOG,INTERMEDIATE_CATALOG
         from tools.procedural_maps.repo_source import read_pinned
-        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT'])
+        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT']);v3root=Path(os.environ['CIV13_TEST_V3_CATALOG_ROOT'])
         self.assertTrue(verify_catalog(v2root,INTERMEDIATE_VERSION))
         path='code/game/objects/structures/wild.dm'
         old=read_pinned(path,INTERMEDIATE_CATALOG[path],v2root).decode()
-        new=read_pinned(path,CATALOG[path]).decode()
+        new=read_pinned(path,V3_CATALOG[path],v3root).decode()
         before='\t\t\ticon_state = "flower[rand(1,14)]"\n'
         after=before+'\t\t\t// The original sheet has no flower3; reuse existing art without another roll.\n\t\t\tif (icon_state == "flower3")\n\t\t\t\ticon_state = "flower2"\n'
         self.assertEqual(1,old.count(before));self.assertEqual(new,old.replace(before,after))
-        self.assertEqual({k:v for k,v in INTERMEDIATE_CATALOG.items() if k!=path},{k:v for k,v in CATALOG.items() if k!=path})
+        self.assertEqual({k:v for k,v in INTERMEDIATE_CATALOG.items() if k!=path},{k:v for k,v in V3_CATALOG.items() if k!=path})
     def test_v2_bundle_preserves_binding_and_matches_v3_static_layout(self):
         v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT'])
         text,side=emit(self.doc,self.manifest,v2root,INTERMEDIATE_VERSION)
@@ -69,21 +69,51 @@ class ExportTests(unittest.TestCase):
             folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,v2root,preview=False,catalog_version=INTERMEDIATE_VERSION)
             self.assertEqual('VERIFIED_OFFLINE_ONLY',verify_bundle(folder,v2root)['status'])
             with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder)
-    def test_v3_bundle_rejects_v2_checkout(self):
-        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT'])
+    def test_v3_bundle_rejects_v2_and_current_checkouts(self):
+        v2root=Path(os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT']);v3root=Path(os.environ['CIV13_TEST_V3_CATALOG_ROOT'])
         with tempfile.TemporaryDirectory() as tmp:
-            folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,preview=False,catalog_version=CATALOG_VERSION)
+            folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,v3root,preview=False,catalog_version=V3_VERSION)
+            self.assertEqual('VERIFIED_OFFLINE_ONLY',verify_bundle(folder,v3root)['status'])
             with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder,v2root)
+            with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder)
+    def test_v3_and_v4_static_output_matches(self):
+        v3root=Path(os.environ['CIV13_TEST_V3_CATALOG_ROOT'])
+        text,side=emit(self.doc,self.manifest,v3root,V3_VERSION)
+        self.assertEqual(self.text,text)
+        self.assertEqual((V3_VERSION,V3_COMMIT),(side['catalog_version'],side['source_commit']))
+    def test_pinned_checkouts_keep_their_version_and_others_select_v4(self):
+        for env,version in [('CIV13_TEST_HISTORICAL_CATALOG_ROOT',HISTORICAL_VERSION),('CIV13_TEST_INTERMEDIATE_CATALOG_ROOT',INTERMEDIATE_VERSION),('CIV13_TEST_V3_CATALOG_ROOT',V3_VERSION)]:
+            with self.subTest(version=version):self.assertEqual(version,select_catalog(Path(os.environ[env])))
+        self.assertEqual(CATALOG_VERSION,select_catalog())
+    def test_v4_tolerates_unrelated_edits_but_not_missing_declarations_or_includes(self):
+        root=Path(__file__).resolve().parents[2]
+        files=['code/game/turfs/floor_types.dm','code/game/turfs/flooring/flooring_premade.dm','code/game/objects/structures/wild.dm',
+               'code/game/objects/structures/rocks.dm','code/game/area/caribbean.dm','code/game/objects/effects/landmarks/normal.dm',
+               'code/game/objects/map_metadata/nomads/nomads.dm','civ13.dme']
+        with tempfile.TemporaryDirectory() as tmp:
+            copy_root=Path(tmp)
+            for path in files:(copy_root/path).parent.mkdir(parents=True,exist_ok=True);(copy_root/path).write_bytes((root/path).read_bytes().replace(b'\r\n',b'\n'))
+            wild=copy_root/'code/game/objects/structures/wild.dm';dme=copy_root/'civ13.dme'
+            original_wild=wild.read_bytes();original_dme=dme.read_bytes()
+            wild.write_bytes(original_wild+b'\n/obj/structure/wild/unrelated_change\n');dme.write_bytes(original_dme+b'#include "code\\unrelated.dm"\n')
+            self.assertTrue(verify_catalog(copy_root))
+            with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_catalog(copy_root,V3_VERSION)
+            wild.write_bytes(original_wild.replace(b'\n/obj/structure/wild/palm\n',b'\n/obj/structure/wild/palm_renamed\n',1))
+            with self.assertRaisesRegex(ValueError,'CATALOG_TYPE_MISSING: /obj/structure/wild/palm'):verify_catalog(copy_root)
+            wild.write_bytes(original_wild)
+            include=b'#include "code\\game\\objects\\structures\\wild.dm"\n'
+            self.assertEqual(1,original_dme.count(include));dme.write_bytes(original_dme.replace(include,b'',1))
+            with self.assertRaisesRegex(ValueError,'CATALOG_INCLUDE_MISSING: code/game/objects/structures/wild.dm'):verify_catalog(copy_root)
     def test_historical_bundle_requires_its_matching_catalog(self):
         oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])
         with tempfile.TemporaryDirectory() as tmp:
             folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,oldroot,preview=False,catalog_version=HISTORICAL_VERSION)
             self.assertEqual('VERIFIED_OFFLINE_ONLY',verify_bundle(folder,oldroot)['status'])
             with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder)
-    def test_current_bundle_rejects_historical_catalog(self):
-        oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])
+    def test_v3_bundle_rejects_historical_catalog(self):
+        oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']);v3root=Path(os.environ['CIV13_TEST_V3_CATALOG_ROOT'])
         with tempfile.TemporaryDirectory() as tmp:
-            folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,preview=False,catalog_version=CATALOG_VERSION)
+            folder=Path(tmp);write_bundle(folder,self.doc,self.manifest,v3root,preview=False,catalog_version=V3_VERSION)
             with self.assertRaisesRegex(ValueError,'CATALOG_SOURCE_MISMATCH'):verify_bundle(folder,oldroot)
     def test_original_unbound_historical_bundle_still_verifies(self):
         oldroot=Path(os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT'])

@@ -67,7 +67,7 @@ class PortTopologyTests(unittest.TestCase):
     def test_route_expansion_bound(self):
         for r in self.result['manifest']['graph_to_raster']['bounded_route_stats']:self.assertLessEqual(r['expanded_cells'],64*80)
     def test_sidecar_retains_complete_graph(self):
-        d=self.result['document'];text,sidecar=emit(d,self.result['manifest'],catalog_version='civ13-static-layout/3');proof=verify_roundtrip(text,sidecar)
+        d=self.result['document'];text,sidecar=emit(d,self.result['manifest'],catalog_version='civ13-static-layout/4');proof=verify_roundtrip(text,sidecar)
         self.assertTrue(proof['static_native_layout_equal']);self.assertTrue(proof['ir_plus_sidecar_semantics_equal'])
         self.assertEqual(d['junctions'],sidecar['semantic_ir']['junctions'])
         self.assertNotIn('junctions =',text);self.assertNotIn('span =',text)

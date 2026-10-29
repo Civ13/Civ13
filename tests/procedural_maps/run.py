@@ -20,9 +20,11 @@ TEST_FILES=(
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--report',type=Path)
     parser.add_argument('--historical-catalog-root',type=Path,required=True)
-    parser.add_argument('--intermediate-catalog-root',type=Path,required=True);a=parser.parse_args()
+    parser.add_argument('--intermediate-catalog-root',type=Path,required=True)
+    parser.add_argument('--v3-catalog-root',type=Path,required=True);a=parser.parse_args()
     os.environ['CIV13_TEST_HISTORICAL_CATALOG_ROOT']=str(a.historical_catalog_root.resolve())
     os.environ['CIV13_TEST_INTERMEDIATE_CATALOG_ROOT']=str(a.intermediate_catalog_root.resolve())
+    os.environ['CIV13_TEST_V3_CATALOG_ROOT']=str(a.v3_catalog_root.resolve())
     suite=unittest.TestSuite()
     for name in TEST_FILES:
         spec=importlib.util.spec_from_file_location('procedural_'+name[:-3],Path(__file__).with_name(name))
