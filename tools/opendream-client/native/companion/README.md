@@ -5,6 +5,10 @@ contract and a concrete Discord Social SDK C-ABI backend. It is a library/core,
 not a runnable production companion host. No process/pipe creation, vendor DLL
 loader, application discovery, GUI or launcher startup composition is supplied.
 The launcher remains optional and normal BYOND/DreamSeeker joining is unchanged.
+The [private hosting contracts](../SOCIAL-SDK-HOSTING.md) add an injected native
+pipe loop and managed startup/channel ownership. The
+[Windows parent provider](../SOCIAL-SDK-WINDOWS-PROVIDER.md) adds fixed-off OS
+source; the child endpoint adapter and executable entry point remain absent.
 There are no game/server changes, authentication, tokens, provisional accounts,
 invites, voice, microphone calls, new OAuth scopes or application-setting changes.
 
