@@ -9,7 +9,9 @@
 	var/obj/structure/filingcabinet/chestdrawer/wood/D = locate() in locate(2,1,1)
 	joinery_ci_expect(D && C.stock.amount == 14 && C.dowels.amount == 9, "drawers pay six planks and one peg set")
 	if (D)
-		joinery_ci_expect(D.color == "#A07449" && D.icon_state == "chestdrawer", "wood drawers reuse the tinted drawer model")
+		world.log << "Document drawer appearance: color=[D.color]; icon_state=[D.icon_state]"
+		joinery_ci_expect(lowertext(D.color) == "#a07449", "wood drawers retain the intended RGB tint: [D.color]")
+		joinery_ci_expect(D.icon_state == "chestdrawer", "wood drawers retain the drawer state: [D.icon_state]")
 		var/mob/living/human/handle_ci/H = new(locate(2,1,1))
 		for (var/item_path in list(/obj/item/weapon/paper, /obj/item/weapon/paper_bundle, /obj/item/weapon/folder))
 			var/obj/item/I = new item_path(H)
