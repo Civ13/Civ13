@@ -10,6 +10,7 @@ var/global/list/player_list = list()				//List of all mobs **with clients attach
 var/global/list/mob_list = list()					//List of all mobs, including clientless
 var/global/list/human_mob_list = list()				//List of all human mobs and sub-types, including clientless
 var/global/list/living_mob_list = list()			//List of all alive mobs, including clientless. Excludes /mob/new_player
+var/global/list/living_complex_animal_list = list() // Ordered complex-animal subset of living_mob_list
 var/global/list/dog_mob_list = list()				//List of all dogs
 var/global/list/dead_mob_list = list()				//List of all dead mobs, including clientless. Excludes /mob/new_player
 var/global/list/observer_mob_list = list()			//List of all observers, excluding clientless

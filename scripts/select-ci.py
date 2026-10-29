@@ -2,6 +2,7 @@
 import argparse
 import os
 import json
+import re
 from pathlib import PurePosixPath
 import subprocess
 
@@ -16,6 +17,14 @@ SOURCE_PREPARATION_ONLY_TESTS = frozenset({
     'tests/world_save/character_return/test_prepare.py',
 })
 
+# These existing Atlas tests are reviewed exceptions to added-test selection.
+# Exact paths keep unrelated edits from requesting costly native fixtures.
+ATLAS_TEST_INPUTS = {
+    'tests/test_crafting_atlas.py': 'tests/test_crafting_atlas.py',
+    'tests/crafting_atlas/probe.dm': 'tests/crafting_atlas',
+    'tests/crafting_atlas/resource-search.test.mjs': 'tests/crafting_atlas',
+}
+
 
 def starts_build(message):
     """The first line is literal data, with no case folding or whitespace trim."""
@@ -29,6 +38,44 @@ def load_event(path):
         return event if isinstance(event, dict) else {}
     except (OSError, ValueError, TypeError):
         return {}
+
+
+def edited_change_kind(payload):
+    """Recognize title/body edits and base retargets; ambiguous data is invalid."""
+    pr = payload.get('pull_request')
+    if not isinstance(pr, dict) or not isinstance(pr.get('title'), str) or not pr['title']:
+        return 'invalid'
+    if 'body' not in pr or not (pr['body'] is None or isinstance(pr['body'], str)):
+        return 'invalid'
+    for field in ('head', 'base'):
+        row = pr.get(field)
+        if not isinstance(row, dict) or not isinstance(row.get('sha'), str) or not re.fullmatch(r'[0-9a-f]{40}', row['sha']):
+            return 'invalid'
+    changes = payload.get('changes')
+    if not isinstance(changes, dict) or not changes or not set(changes) <= {'title', 'body', 'base'}:
+        return 'invalid'
+    for field in ('title', 'body'):
+        if field in changes:
+            row = changes[field]
+            if not isinstance(row, dict) or set(row) != {'from'}:
+                return 'invalid'
+            if not isinstance(row['from'], str) and not (field == 'body' and row['from'] is None):
+                return 'invalid'
+            if row['from'] == pr[field] or field == 'title' and not row['from']:
+                return 'invalid'
+    if 'base' in changes:
+        base = changes['base']
+        if not isinstance(base, dict) or not set(base) <= {'ref', 'sha'} or 'ref' not in base:
+            return 'invalid'
+        ref = base['ref']
+        if not isinstance(ref, dict) or set(ref) != {'from'} or not isinstance(ref['from'], str) or not ref['from']:
+            return 'invalid'
+        if 'sha' in base:
+            old_sha = base['sha']
+            if not isinstance(old_sha, dict) or set(old_sha) != {'from'} or not isinstance(old_sha['from'], str):
+                return 'invalid'
+        return 'retarget'
+    return 'text'
 
 
 def build_policy(event, payload):
@@ -76,18 +123,26 @@ def eligibility(event, payload, build_prefix):
     ordinary, forced = build_policy(event, payload) if build_prefix else (True, False)
     action = payload.get('action')
     base_ref = None
-    metadata_valid, supported_edit, gating = True, False, False
+    metadata_valid, supported_edit, gating, skip_duplicate = True, False, False, False
     scope_reason = 'Event outside full ordinary CI scope'
     if event == 'pull_request':
         pr = payload.get('pull_request')
         base = pr.get('base') if isinstance(pr, dict) else None
         base_ref = base.get('ref') if isinstance(base, dict) else None
-        metadata_valid = (isinstance(pr, dict) and isinstance(pr.get('title'), str)
+        metadata_valid = (isinstance(pr, dict) and isinstance(pr.get('title'), str) and bool(pr['title'])
                           and isinstance(base, dict) and isinstance(base.get('ref'), str) and bool(base['ref'])
                           and isinstance(action, str) and bool(action))
+        kind = edited_change_kind(payload) if action == 'edited' and build_prefix else None
+        if kind == 'invalid':
+            metadata_valid = False
         supported = metadata_valid and base['ref'] in CI_BASES
-        supported_edit = supported and action == 'edited'
+        if kind == 'retarget':
+            # Existing native gates explicitly exclude edited events. Do not claim
+            # a full retarget check until those gates can admit and verify it.
+            metadata_valid = False
+        supported_edit = supported and action == 'edited' and kind != 'retarget'
         gating = supported and action in ORDINARY_PR_ACTIONS
+        skip_duplicate = bool(build_prefix and metadata_valid and kind == 'text' and not forced)
         scope_reason = ('Full ordinary PR admission' if gating else
                         'Edited PR omits introduced/native admission' if supported_edit else
                         'PR outside full ordinary base/action scope')
@@ -103,8 +158,10 @@ def eligibility(event, payload, build_prefix):
         metadata_valid = True
     elif not metadata_valid:
         scope_reason = 'Missing event scope metadata; selection must fail closed'
-    compile_eligible = ordinary or supported_edit or forced
-    compile_reason = ('Explicit build: request or incomplete metadata requires compilation' if forced else
+    compile_eligible = (ordinary or supported_edit or forced) and not skip_duplicate
+    compile_reason = ('Manual CI requires compilation and the native toolchain' if build_prefix and event == 'workflow_dispatch' else
+                      'Validated title/body edit reuses existing required checks' if skip_duplicate else
+                      'Explicit build: request or incomplete metadata requires compilation' if forced else
                       'Supported edited PR: evaluate exact base/head diff' if supported_edit else
                       'Ordinary/legacy event: evaluate exact base/head diff' if ordinary else
                       'Outside automatic compilation scope')
@@ -113,7 +170,7 @@ def eligibility(event, payload, build_prefix):
                      'Existing master-push policy; introduced PR suites remain off' if ordinary and event == 'push' else
                      'Manual extensive admission still requires its explicit input' if ordinary else
                      'No introduced/native or extensive admission for this event')
-    return dict(action=action if isinstance(action, str) else None,
+    return dict(action=action if isinstance(action, str) else None, skip_duplicate=skip_duplicate,
                 base_ref=base_ref if isinstance(base_ref, str) else None,
                 ref=payload.get('ref') if isinstance(payload.get('ref'), str) else None,
                 metadata_valid=metadata_valid,
@@ -124,10 +181,18 @@ def eligibility(event, payload, build_prefix):
 
 def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     policy = eligibility(event, payload or {}, build_prefix)
+    if policy['skip_duplicate']:
+        return False, False, [], 'Validated title/body edit; reuse existing required checks'
     game, reason = select(base, head) if policy['compile']['eligible'] else (False, 'Outside ordinary CI subscription')
-    if policy['forced']:
+    if build_prefix and event == 'workflow_dispatch':
+        # Manual inputs can request native fixtures independently of the diff.
+        # The build job also installs their BYOND toolchain.
+        game, reason = True, 'Manual CI run; compile game and prepare native toolchain'
+    elif policy['forced']:
         game, reason = True, 'build: request or incomplete event metadata; compile game'
-    new_tests = introduced_tests(base, head, event) if policy['native']['eligible'] else []
+    new_tests = (sorted(set(introduced_tests(base, head, event)) |
+                        set(changed_atlas_tests(base, head, event)))
+                 if policy['native']['eligible'] else [])
     extensive = policy['native']['eligible'] and game and needs_extensive(event, opted_in)
     return game, extensive, new_tests, reason
 
@@ -155,6 +220,22 @@ def select(base, head):
 
 def needs_extensive(event, opted_in):
     return event == 'workflow_dispatch' and opted_in
+
+def changed_atlas_tests(base, head, event):
+    """Select only explicitly reviewed Atlas test edits on ordinary PRs."""
+    if event != 'pull_request':
+        return []
+    if not base or not head or set(base) == {'0'}:
+        raise RuntimeError('Atlas test selection requires a valid base and head comparison')
+    try:
+        paths = subprocess.check_output(
+            ['git', 'diff', '--name-only', '--no-renames', '--diff-filter=AM', '-z',
+             base, head, '--', *ATLAS_TEST_INPUTS],
+            stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
+    except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
+        raise RuntimeError('Atlas test selection could not compare base and head; check Git and the refs') from exc
+    return sorted({ATLAS_TEST_INPUTS[path] for path in paths if path in ATLAS_TEST_INPUTS})
+
 
 def introduced_tests(base, head, event):
     """Only added executable tests on a PR qualify, never edits or prose.
@@ -186,6 +267,22 @@ def introduced_tests(base, head, event):
     return sorted(suites)
 
 
+def validate_manual_base(base, head, cwd=None):
+    """Manual runs need explicit immutable, locally available distinct commits."""
+    if not re.fullmatch(r'[0-9a-f]{40}', base or '') or not re.fullmatch(r'[0-9a-f]{40}', head or ''):
+        raise ValueError('Manual CI requires comparison_base and head as full lowercase 40-character commit IDs')
+    if base == head:
+        raise ValueError('Manual comparison_base must differ from the head commit')
+    try:
+        for value in (base, head):
+            resolved = subprocess.check_output(['git', 'rev-parse', '--verify', value + '^{commit}'],
+                                               cwd=cwd, stderr=subprocess.PIPE, timeout=15).decode('utf-8').strip()
+            if resolved != value:
+                raise ValueError('Manual comparison commit identity mismatch')
+    except (subprocess.SubprocessError, UnicodeError) as exc:
+        raise ValueError('Manual comparison_base or head is unavailable in the local checkout') from exc
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', default='')
@@ -196,8 +293,20 @@ def main():
     parser.add_argument('--build-prefix', choices=('true', 'false'), default='false')
     parser.add_argument('--receipt', help='Exact-source machine-readable selection receipt')
     args = parser.parse_args()
+    if args.event == 'workflow_dispatch' and args.build_prefix == 'true':
+        try:
+            validate_manual_base(args.base, args.head)
+        except ValueError as error:
+            parser.error(str(error))
     payload = load_event(os.environ.get('GITHUB_EVENT_PATH'))
     policy = eligibility(args.event, payload, args.build_prefix == 'true')
+    if args.build_prefix == 'true' and args.event == 'pull_request' and payload.get('action') == 'edited':
+        pr = payload.get('pull_request')
+        if (not isinstance(pr, dict) or not isinstance(pr.get('head'), dict)
+                or not isinstance(pr.get('base'), dict) or pr['head'].get('sha') != args.head
+                or pr['base'].get('sha') != args.base):
+            policy['metadata_valid'] = False
+            policy['skip_duplicate'] = False
     game, extensive, new_tests, reason = selections(
         args.base, args.head, args.event, args.extensive == 'true',
         args.build_prefix == 'true', payload)
@@ -214,6 +323,7 @@ def main():
         output.write('new_tests=' + json.dumps(new_tests, separators=(',', ':')) + '\n')
         output.write(f'game={str(game).lower()}\nextensive={str(extensive).lower()}\n')
         output.write(f'gating={int(policy["gating"]["eligible"])}\n')
+        output.write(f'skip_duplicate={str(policy["skip_duplicate"]).lower()}\n')
     print(f'game={str(game).lower()}, extensive={str(extensive).lower()}, introduced suites={new_tests}: {reason}')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:

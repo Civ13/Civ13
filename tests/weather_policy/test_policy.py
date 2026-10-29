@@ -8,6 +8,9 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 BASE = "d6b06c638517bb4100beeca6a90d09adc3629fb7"
 POLICY = ROOT / "code/modules/1713/weather_policy.dm"
+import sys
+sys.path.insert(0, str(ROOT / "tests/seasonal_construction"))
+from construction_contract import without_construction_hook
 
 
 def body(source, signature):
@@ -259,7 +262,10 @@ class WeatherPolicyTests(unittest.TestCase):
         self.assertEqual(self.source.split(marker)[1], old_process.split(marker)[1])
         for relative in ("code/processes/abandoned_items.dm", "code/modules/persistence/durable_environment.dm",
                          "code/modules/persistence/durable_timers.dm"):
-            self.assertEqual((ROOT / relative).read_bytes(), subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT))
+            current = (ROOT / relative).read_bytes()
+            if relative == "code/processes/abandoned_items.dm":
+                current = without_construction_hook(current.decode()).encode()
+            self.assertEqual(current, subprocess.check_output(["git", "show", BASE + ":" + relative], cwd=ROOT))
 
     def test_durable_weather_schema_preserves_deadline_ownership(self):
         relative = "code/modules/persistence/durable_world.dm"

@@ -1,34 +1,34 @@
 """Production ordinary world-save round trips and strict round-mode omission controls."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
 import subprocess
 import tempfile
-from round_metadata_engine import EngineProfile
 
 DIAGNOSTIC = re.compile(r'runtime error:|bad ref|BUG:|##\s*ERROR\s*:|RUNTIME:|assertion failed|infinite loop|segmentation|fatal error', re.I)
 
 
-def parse_args(argv=None):
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None  # Preserve the historical 516.1681 path.
+    spec = importlib.util.spec_from_file_location('round_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-archive', type=Path, help='Opt in to exact current Linux archive/member identity')
     parser.add_argument('--negative-control', choices=('restore', 'preflight', 'integrity'))
-    parser.add_argument('--expected-byond-version', choices=('516.1681', '516.1688'), default='516.1681')
-    parser.add_argument('--byond-archive', type=Path)
-    parser.add_argument('--acquisition-receipt', type=Path)
-    return parser.parse_args(argv)
-
-
-def main(argv=None):
-    args = parse_args(argv)
-    engine = EngineProfile(args.expected_byond_version, args.byond_archive, args.acquisition_receipt)
+    args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
-    # Current-profile identity must see links rather than resolving them away.
-    byond = args.byond_bin.absolute() if engine.current else args.byond_bin.resolve(strict=True)
+    byond = args.byond_bin.absolute() if args.byond_archive else args.byond_bin.resolve(strict=True)
+    runtime = selected_runtime(byond, args.byond_archive)
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     if not compiler.is_file() or not daemon.is_file():
@@ -81,9 +81,7 @@ def main(argv=None):
         processes.append(row)
         process = None
         try:
-            if engine.current:
-                row['engine_identity'] = engine.identity(byond)
-                (output / f'{role}-engine.json').write_text(json.dumps(row['engine_identity'], indent=2), encoding='utf-8')
+            if runtime: runtime.before_launch(role, output)
             with (output / f'{role}-stdio.log').open('w', encoding='utf-8') as stream:
                 process = subprocess.Popen(command, cwd=output, stdout=stream, stderr=subprocess.STDOUT,
                                            creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
@@ -110,17 +108,15 @@ def main(argv=None):
         return logs
 
     build = owned('compile', [str(compiler), '-max_errors', '0', 'roundtrip.dme'])
-    if engine.current:
-        engine.check_compile(build)
-    else:
-        if '516.1681' not in build or '0 errors, 0 warnings' not in build:
-            raise RuntimeError(f'Pinned clean compilation required: {build}')
+    if runtime:
+        runtime.validate_compile(0, build, 'roundtrip.dmb')
+    elif '516.1681' not in build or '0 errors, 0 warnings' not in build:
+        raise RuntimeError(f'Pinned clean compilation required: {build}')
     owned('daemon', [str(daemon), 'roundtrip.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if actual != expected:
         raise RuntimeError(f'Unexpected round metadata result: {actual!r}; expected {expected!r}')
     (output / 'summary.json').write_text(json.dumps({'scope': __doc__, 'result': actual,
-        'expected_byond_version': engine.version,
         'negative_control': args.negative_control, 'sources_sha256': hashes, 'processes': processes,
         'opendream_verified': False, 'rpo_verified': False}, indent=2), encoding='utf-8')
     print(f'PASS: ordinary round metadata {args.negative_control or "positive"}')

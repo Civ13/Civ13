@@ -9,6 +9,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path, PurePosixPath
+import re
 import subprocess
 import sys
 import time
@@ -20,7 +21,7 @@ toolchain = importlib.util.module_from_spec(_toolchain_spec)
 _toolchain_spec.loader.exec_module(toolchain)
 POLICY_FILES = tuple('tests/' + name for name in (
     'test_ci_selection.py', 'test_ci_regression_policy.py',
-    'test_ci_build_prefix.py', 'test_ci_baseline.py'))
+    'test_ci_build_prefix.py', 'test_ci_baseline.py', 'test_ci_checkout_refs.py'))
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
@@ -38,8 +39,34 @@ SUITES = {
         'tests/persistence_year/', 'tests/world_save/', 'code/modules/persistence/', 'code/setup.dm')},
     'evidence': {'files': ('tests/test_game_evidence.py',), 'paths': (
         'tests/test_game_evidence.py', 'scripts/check-game-evidence.py')},
+    'ecology_heatmap': {'files': ('tests/ecology_heatmap/test_source_contract.py',), 'paths': (
+        'tests/ecology_heatmap/', 'code/modules/ecology/activity_heatmap.dm',
+        'docs/ecology-activity-heatmap-prototype.md',
+        'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    # Shared transport/persistence files retain their existing all-suite fallback.
+    'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
+        'tests/carriage_glide/',)},
+    'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
+                              'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
+        'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
+        'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
+        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
+    'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
+        'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
+        'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
+        'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm')},
+    # Inert source projections and file-only fixture preparation. Import graph:
+    # stdlib + existing LOS/save-movement projections; no native runner is imported.
+    # Keep shared movement/lighting files unmapped: they retain all-suite fallback.
+    'root_tree_presentation': {'files': (
+        'tests/root_tree_presentation/test_contract.py',
+        'tests/root_tree_presentation/test_preparation.py',
+        'tests/root_tree_presentation/test_protocol.py'), 'paths': (
+        'tests/root_tree_presentation/', 'code/modules/visibility/',
+        'code/__defines/_planes+layers.dm', 'civ13.dme',
+        'tests/save_movement/source_adapter.py')},
     'character_return_preparation': {'files': ('tests/world_save/character_return/test_prepare.py',),
         'paths': ('tests/world_save/character_return/',)},
     'character_return': {'files': ('tests/save_movement/test_character_return.py',), 'paths': (
@@ -51,6 +78,53 @@ SUITES = {
                                 'tests/fishing_stock/test_preparation.py',
                                 'tests/fishing_stock/test_native_runner.py'), 'paths': (
         'tests/fishing_stock/',)},
+    # Source and injected-help contracts only; this suite does not run DM.
+    # Keep shared production and Atlas sources unmapped so their existing
+    # conservative all-suite fallback remains intact.
+    'sawmill': {'files': ('tests/sawmill/test_contract.py',
+                           'tests/test_atlas_navigation.py',
+                           'tests/player_help/test_recipe_context.py'), 'paths': (
+        'tests/sawmill/',)},
+    # Keep shared game sources unmapped where they previously selected the
+    # all-suite fallback; persistence was already mapped by existing suites.
+    'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
+                                  'tests/stone_kiln/test_source.py'), 'paths': (
+        'tests/stone_boiling/', 'tests/stone_kiln/',
+        'code/modules/persistence/functions.dm')},
+    'save_movement': {'files': ('tests/save_movement/test_guard.py',), 'paths': (
+        'tests/save_movement/', 'code/modules/persistence/functions.dm')},
+    # Full import graph: stdlib source adapter, catalog-only Atlas builder/projector,
+    # and inert Help imports. No native sprite export or engine launch.
+    # Shared material/Atlas inputs retain their conservative all-suite fallback.
+    'woodworking': {'files': ('tests/primitive_woodworking/test_source.py',
+                              'tests/test_atlas_navigation.py'), 'paths': (
+        'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
+        'scripts/atlas/woodworking.py', 'scripts/atlas/woodworking-contract.json',
+        'code/modules/persistence/functions.dm', 'civ13.dme')},
+    # Offline only: reviewed guard projection, catalog generation, inert Help imports.
+    # Shared crafting/Atlas files keep the conservative all-suite fallback.
+    'furniture_joinery': {'files': ('tests/furniture_joinery/test_contract.py',
+                                  'tests/furniture_joinery/test_wooden_shelf.py',
+                                  'tests/furniture_joinery/test_bedroll.py',
+                                  'tests/furniture_joinery/test_document_drawers.py',
+                                  'tests/furniture_joinery/test_sofa_materials.py',
+                                  'tests/furniture_joinery/test_canopy.py',
+                                  'tests/furniture_joinery/test_cutting_board.py',
+                                  'tests/furniture_joinery/test_barrel_ingredients.py',
+                                  'tests/furniture_joinery/test_glass_extraction.py',
+                                  'tests/furniture_joinery/test_glass_cotton.py'), 'paths': (
+        'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
+        'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py',
+        'code/modules/1713/cutting_board.dm', 'tests/primitive_woodworking/source_adapter.py',
+        'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm')},
+    'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
+                             'tests/dictionary_era/test_slang_content.py',
+                             'tests/dictionary_era/test_phrase_mode.py'), 'paths': (
+        'tests/dictionary_era/', 'code/_helpers/dictionary.dm', 'code/_helpers/text.dm',
+        'code/setup.dm', 'code/world.dm', 'code/__defines/__game.dm', 'civ13.dme',
+        'code/game/mob/living/carbon/human/say.dm',
+        'code/game/mob/living/carbon/human/whisper.dm',
+        'config/dictionary.txt', 'tools/byond/version.json')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
@@ -169,12 +243,27 @@ def selection_eligibility(plan):
     return policy
 
 
-def load_selection(path, head, base):
+def attempt_number(value):
+    if type(value) is not str or not re.fullmatch(r'[1-9][0-9]{0,5}', value):
+        raise ValueError('Invalid run attempt: ' + repr(value))
+    return int(value)
+
+
+def load_selection(path, head, base, selection_attempt=None):
+    """A re-run of failed jobs reuses earlier successful jobs and their artifacts,
+    so the selection may come from an earlier attempt of this same run. The
+    caller names that attempt from the selection job's own output."""
     plan = json.loads(Path(path).read_text(encoding='utf-8'))
     expected = provenance(head, base)
-    for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt'):
+    for key in ('head', 'base', 'requested_base', 'run_id'):
         if plan.get(key) != expected[key]:
             raise ValueError('Selection provenance mismatch: ' + key)
+    if selection_attempt is None:
+        if plan.get('run_attempt') != expected['run_attempt']:
+            raise ValueError('Selection provenance mismatch: run_attempt')
+    elif (plan.get('run_attempt') != selection_attempt
+          or attempt_number(selection_attempt) > attempt_number(expected['run_attempt'])):
+        raise ValueError('Selection provenance mismatch: run_attempt')
     if plan.get('schema_version') != 1 or plan.get('kind') != 'selection' or plan.get('status') != 'passed':
         raise ValueError('Missing or failed selection receipt')
     suites = plan['baseline']['suites']
@@ -191,6 +280,9 @@ def load_selection(path, head, base):
 def run_unit(name, output):
     """Child interpreter emits counts so zero tests or unittest skips cannot pass."""
     suite = unittest.TestSuite()
+    # This reviewed suite imports its adjacent, source-only projection adapter.
+    if name == 'save_movement':
+        sys.path.insert(0, str(ROOT / 'tests/save_movement'))
     for index, relative in enumerate(SUITES[name]['files']):
         path = ROOT / relative
         spec = importlib.util.spec_from_file_location(f'baseline_{name}_{index}', path)
@@ -205,11 +297,20 @@ def run_unit(name, output):
     return 0 if passed else 1
 
 
+def suite_environment(name, plan):
+    environment = os.environ.copy()
+    if name == 'los_context':
+        environment['LOS_EVENT_BASE'] = plan['base'] or ''
+        environment['LOS_EVENT_HEAD'] = plan['head'] or ''
+    return environment
+
+
 def execute(plan, output):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     receipt = dict(schema_version=1, kind='baseline', status='running',
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
+                   job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
                    selection_sha256=digest(plan), suites={})
     (output / 'source-tree.txt').write_text(git('ls-tree', '-r', 'HEAD') + '\n', encoding='utf-8')
     observed_head_before = revision('HEAD')
@@ -231,7 +332,7 @@ def execute(plan, output):
             with (output / (name + '.log')).open('wb') as log:
                 try:
                     result = subprocess.run(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT,
-                                            timeout=TIMEOUT)
+                                            timeout=TIMEOUT, env=suite_environment(name, plan))
                     row['exit_code'] = result.returncode
                     row['status'] = 'failed'
                     if counts.is_file():
@@ -282,6 +383,7 @@ def compile_receipt(plan, outcome, output):
         toolchain_error = str(error)[:300]
     receipt = dict(schema_version=1, kind='compile', status=status, selected=selected,
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
+                   job_attempt=os.environ.get('GITHUB_RUN_ATTEMPT'),
                    selection_sha256=digest(plan), step_outcome=outcome,
                    reason=plan['compile']['reason'],
                    toolchain='BYOND ' + requirement['version'] if requirement else None,
@@ -292,8 +394,12 @@ def compile_receipt(plan, outcome, output):
     return 1 if status == 'failed' else 0
 
 
-def aggregate(plan, baseline, compile_run, jobs, extraction_selected):
+def aggregate(plan, baseline, compile_run, jobs, extraction_selected, attempts=None):
+    """attempts names the attempt each reused or re-run job actually executed in,
+    plus the aggregate's own current attempt; by default all equal the selection's."""
     errors = []
+    if attempts is None:
+        attempts = dict.fromkeys(('baseline', 'compile', 'current'), plan.get('run_attempt'))
     try:
         selection_eligibility(plan)
     except ValueError as error:
@@ -322,6 +428,13 @@ def aggregate(plan, baseline, compile_run, jobs, extraction_selected):
                 errors.append(kind + ' provenance mismatch: ' + key)
         if receipt.get('selection_sha256') != digest(plan):
             errors.append(kind + ' selection digest mismatch')
+        try:
+            if receipt.get('job_attempt') != attempts[kind] or not (
+                    attempt_number(plan.get('run_attempt')) <= attempt_number(attempts[kind])
+                    <= attempt_number(attempts['current'])):
+                raise ValueError('order')
+        except ValueError:
+            errors.append(kind + ' job attempt mismatch')
     if baseline.get('status') != 'passed':
         errors.append('Baseline did not pass')
     if baseline.get('tracked_dirty') is not False:
@@ -364,10 +477,13 @@ def main():
     parser.add_argument('--outcome')
     parser.add_argument('--baseline')
     parser.add_argument('--compile-receipt')
+    parser.add_argument('--selection-attempt')
+    parser.add_argument('--baseline-attempt')
+    parser.add_argument('--compile-attempt')
     args = parser.parse_args()
     if args.mode == 'unit':
         return run_unit(args.suite, args.output)
-    plan = load_selection(args.selection, args.head, args.base)
+    plan = load_selection(args.selection, args.head, args.base, args.selection_attempt)
     if args.mode == 'run':
         return execute(plan, args.output)
     if args.mode == 'compile':
@@ -379,11 +495,14 @@ def main():
     extraction = os.environ['EXTRACTION_SELECTED']
     if extraction not in {'true', 'false'}:
         raise ValueError('Missing extraction selection')
+    attempts = dict(baseline=args.baseline_attempt, compile=args.compile_attempt,
+                    current=os.environ.get('GITHUB_RUN_ATTEMPT'))
     errors = aggregate(plan, json.loads(Path(args.baseline).read_text(encoding='utf-8')),
                        json.loads(Path(args.compile_receipt).read_text(encoding='utf-8')),
-                       jobs, extraction == 'true')
+                       jobs, extraction == 'true', attempts)
     receipt = dict(schema_version=1, kind='aggregate', status='failed' if errors else 'passed',
                    **{key: plan[key] for key in ('head', 'base', 'requested_base', 'run_id', 'run_attempt')},
+                   job_attempt=attempts['current'], receipt_attempts=attempts,
                    selection_sha256=digest(plan), jobs=jobs, errors=errors,
                    action=plan['action'], eligibility=plan['eligibility'],
                    coverage='gating' if gating == '1' else 'informational')
@@ -394,3 +513,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+

@@ -138,7 +138,7 @@ var/global/list/persistence_player_claims = list()
 	if(!("persistence_owner_ckey" in F.dir)) return
 	var/value = F["[entry_path(F, ref)]/persistence_owner_ckey"]
 	if(isnull(value)) return
-	if(F["/format_version"] == 2)
+	if((F["/format_version"] == 2 || F["/format_version"] == 3))
 		if(!islist(value) || value["kind"] != "value")
 			throw EXCEPTION("Invalid saved player ownership encoding")
 		value = value["value"]

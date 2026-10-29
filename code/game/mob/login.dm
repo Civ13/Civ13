@@ -37,6 +37,8 @@
 /mob/Login()
 	if (!client)
 		return
+	if (player_help_service)
+		player_help_service.bind_body(client, src)
 	winset(client, null, "mainwindow.title='[customserver_name()]'")
 	player_list |= src
 	update_Login_details()
