@@ -20,6 +20,10 @@ var/global/list/round_voters = list() //Keeps track of the individuals voting fo
 	return (map && (map.persistence || map.perschadplus)) || (config && config.allowedgamemodes == "PERSISTENCE")
 
 /proc/persistence_blocks_vote(var/vote_type, list/completion)
+	// A nonpersistent round can also be held by a mode-bound maintenance save.
+	if (persistence_mode_change_locked())
+		if (vote_type in list("restart", "epoch", "map", "gamemode")) return TRUE
+		if (completion && completion.len == 2 && (istype(completion[1], /process/epochswap) || istype(completion[1], /process/mapswap) || istype(completion[1], /process/gamemode))) return TRUE
 	if (!persistence_round_active())
 		return FALSE
 	if (vote_type == "restart")

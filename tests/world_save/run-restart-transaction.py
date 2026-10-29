@@ -38,14 +38,18 @@ def prepare(root, output, control=None):
     probe = root / 'tests/world_save/restart_transaction_probe.dm'
     (output / 'probe.dm').write_bytes(probe.read_bytes())
     (output / 'transaction.dm').write_text(source, encoding='utf-8', newline='\n')
+    loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+    metadata_start = loading.index('/map_storage/proc/round_mode_metadata(')
+    metadata_end = loading.index('\n/map_storage/proc/load_map_metadata()', metadata_start)
+    (output / 'metadata.dm').write_text(loading[metadata_start:metadata_end] + '\n', encoding='utf-8')
     (output / 'reboot.dm').write_text(reboot, encoding='utf-8', newline='\n')
     macro = re.findall(r'^#define islist\(A\) .+$', (root / 'code/_macros.dm').read_text(encoding='utf-8'), re.M)
     if len(macro) != 1:
         raise RuntimeError('Production list macro changed')
-    (output / 'probe.dme').write_text(macro[0] + '\n#define SPAN_DANGER(text) text\n#include "probe.dm"\n#define fdel(path) restart_delete_adapter(path)\n#include "transaction.dm"\n#define sleep(delay) restart_sleep_adapter(delay)\n#include "reboot.dm"\n', encoding='utf-8')
+    (output / 'probe.dme').write_text(macro[0] + '\n#define SPAN_DANGER(text) text\n#include "probe.dm"\n#include "metadata.dm"\n#define fdel(path) restart_delete_adapter(path)\n#include "transaction.dm"\n#define sleep(delay) restart_sleep_adapter(delay)\n#include "reboot.dm"\n', encoding='utf-8')
     return {'negative_control': control, 'production_hashes': {
         name: hashlib.sha256((root / name).read_bytes()).hexdigest()
-        for name in (relative, 'code/world.dm', 'code/_macros.dm')},
+        for name in (relative, 'code/world.dm', 'code/_macros.dm', 'code/modules/persistence/loading.dm')},
         'generated_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                              for p in output.iterdir() if p.suffix in ('.dm', '.dme')}}
 

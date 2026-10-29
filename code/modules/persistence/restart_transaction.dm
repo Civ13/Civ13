@@ -84,6 +84,12 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction/proc/save_generation()
 	return ticker.savemap(src)
 
+/datum/persistence_restart_transaction/proc/saved_persistence_mode()
+	// Validate the mode actually serialized, not just samples of live state.
+	var/list/modes = map_storage.round_mode_metadata(splittext(file2text("map_saves/map.txt"), "\n"))
+	if(!islist(modes) || modes.len != 4) throw EXCEPTION("Saved persistence mode is unavailable")
+	return !!(modes["persistence"] || modes["perschadplus"] || (config && config.allowedgamemodes == "PERSISTENCE"))
+
 /datum/persistence_restart_transaction/proc/load_generation(list/expected_intent)
 	// Startup ownership is admitted explicitly; never clear another operation.
 	return ticker.loadmap(src, expected_intent)
@@ -93,13 +99,14 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	// A normal successful native reboot does not resume this transaction.
 	throw EXCEPTION("Native restart returned without replacing the world")
 
-/datum/persistence_restart_transaction/proc/request_shutdown()
+/datum/persistence_restart_transaction/proc/request_shutdown(expected_persistence = null)
 	var/list/I = read_intent()
 	if(!busy || startup_hold || !expected_generation || I["generation"] != expected_generation || !matches(I, current_identity()))
 		throw EXCEPTION("Validated shutdown lost its generation ownership")
 	// Validation can yield. Recheck the durable ownership at the final boundary.
 	if(!matches(I, read_intent()) || trim(file2text("map_saves/save_complete.txt")) != expected_generation)
 		throw EXCEPTION("Validated shutdown generation changed after validation")
+	if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed at shutdown")
 	// Native graceful world deletion lets the external supervisor preserve the
 	// completed generation and replace the binary before the next startup.
 	del(world)
@@ -110,7 +117,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 
 // prewarned records the typed maintenance request's completed player warning.
 // It is consumed by the separately reviewed #3368 integration when present.
-/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE)
+/datum/persistence_restart_transaction/proc/execute(shutdown = FALSE, operation, session, prewarned = FALSE, expected_persistence = null)
 	if(shutdown && (!persistence_lifecycle_hex(operation) || !persistence_lifecycle_hex(session)))
 		report("Save/shutdown refused: invalid lifecycle binding")
 		return FALSE
@@ -128,21 +135,31 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	lifecycle_session = shutdown ? session : null
 	var/list/published
 	// Give connected players a minute's notice; busy already blocks other saves.
-	if(clients.len)
-		to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart in 1 minute. Your progress will be kept; reconnect in a few minutes to continue.</b></font>")
+	if(clients.len && !prewarned)
+		if(!isnull(expected_persistence) && expected_persistence == 0)
+			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save and restart in 1 minute. This nonpersistent round will start fresh; the save will be retained for recovery.</b></font>")
+		else
+			to_chat(world, "<font color='yellow' size=4><b>Attention - The server will save the world and restart in 1 minute. Your progress will be kept; reconnect in a few minutes to continue.</b></font>")
 		sleep(600)
 		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will restart when the save completes.</b></font>")
 	try
+		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
 		if(!save_generation()) throw EXCEPTION("World save failed; server remains running")
+		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed during save")
+		if(!isnull(expected_persistence) && expected_persistence != saved_persistence_mode()) throw EXCEPTION("Saved persistence mode differs from the accepted mode")
 		var/list/I = current_identity()
 		// Record ownership before publication, including a failed partial write.
 		published = I
 		publish(I)
 		expected_generation = I["generation"]
 		if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")
+		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before shutdown")
 		if(shutdown)
-			to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
-			request_shutdown()
+			if(!isnull(expected_persistence) && expected_persistence == 0)
+				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting into a fresh nonpersistent round.</b></font>")
+			else
+				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
+			request_shutdown(expected_persistence)
 		else
 			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
 			request_restart()

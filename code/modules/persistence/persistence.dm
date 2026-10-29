@@ -2,6 +2,9 @@
 	set category = "Nomads"
 	set desc = "Set the current round as Persistent."
 	set name = "Persistence"
+	if (persistence_mode_change_locked())
+		to_chat(usr, "<span class='danger'>Persistence mode is locked during the accepted maintenance save.</span>")
+		return
 
 	if (map && !map.persistence)
 		map.persistence = TRUE
@@ -28,6 +31,9 @@
 	set category = "Nomads"
 	set desc = "Set the current round as persistent Chad Mode +."
 	set name = "Persistence Chad Mode +"
+	if (persistence_mode_change_locked())
+		to_chat(usr, "<span class='danger'>Persistence mode is locked during the accepted maintenance save.</span>")
+		return
 
 	if (map && !map.perschadplus)
 		map.perschadplus = TRUE
