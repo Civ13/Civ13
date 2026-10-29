@@ -48,6 +48,11 @@ SUITES = {
     # Shared transport/persistence files retain their existing all-suite fallback.
     'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
         'tests/carriage_glide/',)},
+    'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
+                              'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
+        'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
+        'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
+        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',

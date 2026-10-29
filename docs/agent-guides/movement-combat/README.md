@@ -29,6 +29,17 @@ tests/human_subtile/run-crawl.py retains full-source headless checks and timing
 controls; compile/offline evidence does not establish native or visual acceptance.
 The prior Windows no-socket runtime hold remains unchanged.
 
+<!-- 2026-10-27: initial thrown-item overlap -->
+Initial launch clearance belongs only to a human's physically overlapping item
+and successful adjacent outbound hops. Sample separation even on empty turfs;
+never turn it into permanent source immunity or first-hop-only immunity.
+Accepted unrelated same-z forceMove also ends clearance; genuine no-ops retain it.
+Only a matching call-local flight token preserves a processor hop. Callback
+replacement flights must not consume the old frame's hit/progress or cleanup.
+Reset on redirection, failed hop and lifecycle boundaries; custom saves exclude
+all five launch fields and flight identity despite tmp. tests/throw_launch_clearance executes source
+flow offline and prepares a full-source native fixture; compile is not gameplay.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
