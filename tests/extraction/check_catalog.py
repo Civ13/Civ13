@@ -14,6 +14,7 @@ import fixture_toolchain as current
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--map', choices=('maps/extraction/industrial_district.dmm', 'maps/extraction/interchange_mall.dmm', 'maps/2013/alleyway.dmm', 'maps/1969/bank_robbery.dmm'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     spec = importlib.util.spec_from_file_location('map_environment', root / 'scripts/map_environment.py')
@@ -21,7 +22,8 @@ def main():
     spec.loader.exec_module(module)
     compiler = args.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     source = (root / 'civ13.dme').read_text(encoding='utf-8')
-    for selection in ('maps/extraction/industrial_district.dmm', 'maps/2013/alleyway.dmm', 'maps/1969/bank_robbery.dmm'):
+    selections = (args.map,) if args.map else ('maps/extraction/industrial_district.dmm', 'maps/extraction/interchange_mall.dmm', 'maps/2013/alleyway.dmm', 'maps/1969/bank_robbery.dmm')
+    for selection in selections:
         prefix = root / ('.extraction_catalog_' + uuid.uuid4().hex)
         try:
             prefix.with_suffix('.dme').write_text(module.select_map(source, selection), encoding='utf-8')

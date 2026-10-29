@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import subprocess
 from historical_fixtures import text as historical_text
+import integrated_projection
 
 from source_contract import (current_lighting_policy, reconstruct_list_baseline, validate_current_master,
                              project_merged_source, resolve_event_projection, replay_reviewed_merge, has_ordered_release_history, require_complete_history,
@@ -17,7 +18,11 @@ INHERITED = (
 )
 FIXTURE = tuple('tests/exclusion_dispatch/' + name for name in (
     'run.py', 'run-ci.py', 'run-ci-current.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm',
-    'historical_fixtures.py', 'fixtures/manifest.json',
+    'historical_fixtures.py', 'fixtures/manifest.json', 'integrated_projection.py',
+    'fixtures/mall-before-squash-functions.dm.txt', 'fixtures/extraction-squash-functions.dm.txt',
+    'fixtures/mall-before-squash-human_corpse_decay.dm.txt', 'fixtures/extraction-squash-human_corpse_decay.dm.txt',
+    'fixtures/mall-before-squash-abandoned_items.dm.txt', 'fixtures/extraction-squash-abandoned_items.dm.txt',
+    'fixtures/mall-before-squash-active_training.dm.txt', 'fixtures/extraction-squash-active_training.dm.txt',
     'fixtures/extraction-reviewed-functions.dm.txt', 'fixtures/reconciliation-base-functions.dm.txt',
     'fixtures/extraction-human-corpse-decay.dm.txt', 'fixtures/seed-human-corpse-decay.dm.txt',
     'fixtures/extraction-abandoned-items.dm.txt', 'fixtures/seed-abandoned-items.dm.txt',
@@ -100,7 +105,9 @@ def prepare(repo, base, head, **event):
     # custody projection even if it otherwise matches the lighting-only base.
     extraction_history = has_extraction_history(repo, head)
     projection = 'lighting-only'
-    if extraction_history:
+    if extraction_history and integrated_projection.project(repo, identity, current):
+        projection = 'reviewed-integrated-base'
+    elif extraction_history:
         feature = historical_text(MERGE_BASE, PATH)
         master = historical_text(MERGE_MASTER, PATH)
         reviewed = project_merged_source(feature)
@@ -109,6 +116,9 @@ def prepare(repo, base, head, **event):
     else:
         validate_current_master(old, current[PATH])
     for path, _ in INHERITED:
+        if projection == 'reviewed-integrated-base':
+            # Independently replayed and compared in integrated_projection.
+            continue
         pinned = committed(base, path)
         if projection == 'feature-base':
             pinned = replay_reviewed_merge(pinned, historical_text(MERGE_BASE, path), historical_text(MERGE_MASTER, path))

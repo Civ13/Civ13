@@ -12,12 +12,35 @@ import historical_fixtures as fixtures
 class HistoricalFixtures(unittest.TestCase):
     def test_all_frozen_inputs_load_without_git_or_processes(self):
         manifest = json.loads((fixtures.DIRECTORY / 'manifest.json').read_text())
-        self.assertEqual(len(manifest), 9)
+        self.assertTrue(manifest)
+        # Every frozen source must be covered exactly once, including later
+        # reviewed integration checkpoints, without a stale fixed total.
+        self.assertCountEqual([entry['file'] for entry in manifest.values()],
+                              [path.name for path in fixtures.DIRECTORY.glob('*.txt')])
         with patch('subprocess.check_output', side_effect=AssertionError('Historical Git query')), \
              patch('subprocess.Popen', side_effect=AssertionError('Process launch')):
             for identity in manifest:
                 commit, path = identity.split(':', 1)
                 self.assertTrue(fixtures.text(commit, path))
+
+    def test_manifest_coverage_rejects_missing_duplicate_and_unlisted_sources(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary) / 'fixtures'
+            shutil.copytree(fixtures.DIRECTORY, directory)
+            manifest_path = directory / 'manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            identity, entry = next(iter(manifest.items()))
+            missing = {key: value for key, value in manifest.items() if key != identity}
+            duplicate = dict(manifest, duplicate=entry)
+            for changed in (missing, duplicate):
+                with self.subTest(manifest=changed), patch.object(fixtures, 'DIRECTORY', directory):
+                    manifest_path.write_text(json.dumps(changed))
+                    with self.assertRaises(AssertionError):
+                        self.test_all_frozen_inputs_load_without_git_or_processes()
+            manifest_path.write_text(json.dumps(manifest))
+            (directory / 'unlisted.txt').write_text('unlisted frozen source')
+            with patch.object(fixtures, 'DIRECTORY', directory), self.assertRaises(AssertionError):
+                self.test_all_frozen_inputs_load_without_git_or_processes()
 
     def test_changed_historical_bytes_are_rejected(self):
         manifest = json.loads((fixtures.DIRECTORY / 'manifest.json').read_text())

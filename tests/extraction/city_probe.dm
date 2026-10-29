@@ -63,7 +63,8 @@
 	for (var/obj/effect/extraction_exit/scheduled/E in extraction_city_stations)
 		if (E.station_id == "north") north = E
 		else if (E.station_id == "south") south = E
-	equipment_assert(north && south && extraction_city_stations.len == 2 && extraction_loot_markers.len == 18, "original city has two scheduled stations and eighteen finite containers")
+	// Preserve the 18 ordinary sources plus the two exact-target keyed caches.
+	equipment_assert(north && south && extraction_city_stations.len == 2 && extraction_loot_markers.len == 20, "original city has two scheduled stations and twenty finite containers")
 	var/mob/living/human/A = new(locate(3,3,1))
 	var/mob/living/human/B = new(locate(3,3,1))
 	A.m_intent = "stealth"

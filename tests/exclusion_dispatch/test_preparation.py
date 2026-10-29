@@ -179,6 +179,34 @@ class ActualPreparationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'repository history unavailable'):
                     preparation.require_complete_history(ROOT)
 
+    def test_actual_squash_projection_keeps_event_and_dirty_fixture_boundaries(self):
+        import integrated_projection as profile
+        before, after = ({path: historical_text(revision, path) for path in profile.PATHS}
+                         for revision in (profile.BEFORE, profile.AFTER))
+        with self.history(before[PATH], before[PATH]) as (directory, repo, _, _):
+            for path in profile.PATHS[1:]:
+                (repo / path).write_text(before[path], encoding='utf-8')
+            base = self.commit(repo, before[PATH])
+            for path in profile.PATHS[1:]:
+                (repo / path).write_text(after[path], encoding='utf-8')
+            content_head = self.commit(repo, after[PATH])
+            tree = git(repo, 'rev-parse', content_head + '^{tree}')
+            head = git(repo, '-c', 'user.name=Offline Test', '-c', 'user.email=offline@example.invalid',
+                       'commit-tree', tree, '-p', content_head, '-p', profile.BEFORE, '-p', profile.AFTER,
+                       '-m', 'Squash integration fixture')
+            git(repo, 'reset', '--hard', head)
+            for event in ('pull_request', 'push'):
+                completed, output = self.invoke(directory, repo, base, head, event=event)
+                self.assertEqual(completed.returncode, 0, completed.stderr)
+                receipt = json.loads(output.read_text())
+                self.assertEqual(receipt['projection'], 'reviewed-integrated-base')
+                self.assertEqual((receipt['baseline_sha'], receipt['head_sha']), (base, head))
+                self.assertFalse(receipt['native_execution'])
+            self.rejected(directory, repo, base, head, 'differ from immutable event', expected=(content_head, head))
+            fixture = repo / 'tests/exclusion_dispatch/fixtures/extraction-squash-functions.dm.txt'
+            fixture.write_text(fixture.read_text(encoding='utf-8') + '// dirty fixture\n', encoding='utf-8')
+            self.rejected(directory, repo, base, head, 'Working input differs from checked-out head')
+
     def test_release_negative_in_shallow_history_is_unknown(self):
         negative = subprocess.CompletedProcess([], 1, '', '')
         positive = subprocess.CompletedProcess([], 0, '', '')

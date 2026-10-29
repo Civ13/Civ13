@@ -29,7 +29,11 @@ def validate_result(mode, result, log):
             type(result.get('byond_build')) is not int or result['byond_build'] != 1688):
         raise RuntimeError('Observed fixture runtime is not exactly 516.1688')
     failures = result.get('target_failures')
-    if type(failures) is not int or (failures <= 0 if mode == 'target-omit' else failures != 0):
+    # Parent omission breaks inherited target exclusion for exactly the two
+    # mob types in probe.dm. It must not weaken any positive/parity assertion.
+    expected = {'parity': 0, 'omit': 0, 'parent': 2, 'eager': 0}
+    if (mode not in (*expected, 'target-omit') or type(failures) is not int
+            or (failures <= 0 if mode == 'target-omit' else failures != expected[mode])):
         raise RuntimeError('Original-target positive or omission control failed')
 
 

@@ -12,6 +12,21 @@ inputs. Conflicting evolution, dirty sources or mismatched event identities fail
 closed. Offline preparation also requires explicit immutable base/head identities;
 there is no fixed-source fallback. No native evidence is claimed for this merge.
 
+## Reviewed squash integration (2026-10-29)
+
+Extraction was squash-merged as `76c6f244f6eca7f2f7b9037da80181c52d498afb`,
+whose tree equals reviewed extraction head `038112dc40af981d03e096740dd4b1de8b7bcc54`.
+For extraction-descended mall heads carrying that actual master commit,
+`integrated_projection.py` replays the independently pinned source delta from
+mall `4f2868cd58e89ed99eda715b3241ff980d2de41d` to that approved squash across the
+actual immutable event base. Functions and all three inherited helper modules
+must match the complete replay result. Checked-in snapshots retain exact blob,
+byte-count and SHA256 provenance in `fixtures/manifest.json`; they select the
+reviewed delta and never replace the live event base. Conflicts and head-only
+changes fail closed. Existing event, dirty-input, source-version and native
+admission checks remain in force. Offline and injected tests prove preparation
+behavior only, not native platform or gameplay semantics.
+
 ## Public current-master reconciliation (2026-10-28)
 
 The live reference is the immutable event base, supplied through `CI_BASE` and

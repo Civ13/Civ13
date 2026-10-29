@@ -22,6 +22,28 @@ ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    MALL_STEP = 'Verify native mall interactions and omission controls'
+    MALL_GATES = (
+        '!cancelled()', "needs.changes.result == 'success'",
+        "steps.compile.outcome == 'success'",
+        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || inputs.mall_regressions == true)",
+    )
+
+    def assert_mall_guard(self, block):
+        self.assertIn('        if: ${{ ' + ' && '.join(self.MALL_GATES) + ' }}\n', block)
+        self.assertNotIn('continue-on-error:', block)
+
+    def test_mall_guard_rejects_missing_prerequisite_or_scope(self):
+        guard = '        if: ${{ ' + ' && '.join(self.MALL_GATES) + ' }}\n'
+        self.assert_mall_guard(guard)
+        with self.assertRaises(AssertionError):
+            self.assert_mall_guard(guard.replace("new_tests || '[]'", 'new_tests'))
+        for omitted in self.MALL_GATES:
+            with self.subTest(omitted=omitted), self.assertRaises(AssertionError):
+                self.assert_mall_guard('        if: ${{ ' + ' && '.join(g for g in self.MALL_GATES if g != omitted) + ' }}\n')
+        with self.assertRaises(AssertionError):
+            self.assert_mall_guard(guard + '        continue-on-error: true\n')
+
     ADMISSION_STEP = 'Verify persistence admission adapter and ordinary restore compatibility'
     ADMISSION_GATES = (
         '!cancelled()', "needs.changes.result == 'success'",
@@ -247,8 +269,15 @@ class RegressionPolicyTests(unittest.TestCase):
         import re
         diagnostics = []
         admission_steps = 0
+        mall_steps = 0
         for block in re.split(r'(?=      - name:)', workflow):
             name = re.search(r'^      - name: (.+)$', block, re.MULTILINE)
+            if name and name.group(1) == self.MALL_STEP:
+                mall_steps += 1
+                self.assert_mall_guard(block)
+                self.assertEqual(block.count('tests/extraction/run_mall.py'), 8)
+                self.assertRegex(workflow, r'mall_regressions:\n        description: [^\n]+\n        type: boolean\n        default: false\n')
+                continue
             if name and name.group(1) == self.ADMISSION_STEP:
                 admission_steps += 1
                 self.assert_admission_guard(block)
@@ -296,6 +325,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && (?:steps\.[a-z_]+\.outcome != 'skipped' && )?\()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
         self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
         self.assertEqual(admission_steps, 1)
+        self.assertEqual(mall_steps, 1)
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
         self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
 

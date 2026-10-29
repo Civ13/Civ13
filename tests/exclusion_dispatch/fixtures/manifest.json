@@ -112,5 +112,53 @@
     "bytes": 6852,
     "sha256": "128aa46d22de7846e2b5581553054f8995b99c0b3720ee6c56d6d0c30ef61559",
     "git_blob": "13db3f3d1484cd8a9039c065322efe49f3a2257e"
+  },
+  "4f2868cd58e89ed99eda715b3241ff980d2de41d:code/modules/persistence/functions.dm": {
+    "file": "mall-before-squash-functions.dm.txt",
+    "bytes": 47518,
+    "sha256": "92f08bd1037d6302fdafaba02a3a477d5b01db39316cab86aa22e8b7c6be8765",
+    "git_blob": "dc732e9527887872335ee3601fb827999f67d9e8"
+  },
+  "4f2868cd58e89ed99eda715b3241ff980d2de41d:code/processes/human_corpse_decay.dm": {
+    "file": "mall-before-squash-human_corpse_decay.dm.txt",
+    "bytes": 8469,
+    "sha256": "a005ae9231059629c501292df1c6e1aae1244e5fbceb5ad7a2b7b75e9dd0a6ae",
+    "git_blob": "c71ce5c3826619dfaa5467e3e2ad8f29c1cf1d68"
+  },
+  "4f2868cd58e89ed99eda715b3241ff980d2de41d:code/processes/abandoned_items.dm": {
+    "file": "mall-before-squash-abandoned_items.dm.txt",
+    "bytes": 6987,
+    "sha256": "029a81ff9e2c7b4ab9b0d69bf343b113e0dce4f1ec2713b91769ec09eff248cc",
+    "git_blob": "010d00460e51ffe926b32f63ebd130fb6608dbd0"
+  },
+  "4f2868cd58e89ed99eda715b3241ff980d2de41d:code/modules/1713/active_training.dm": {
+    "file": "mall-before-squash-active_training.dm.txt",
+    "bytes": 9623,
+    "sha256": "0ba4cc88df711c41d29a5b13536f4ed7e8aa21d5f0f394cd0f3f7d8f34e6ea34",
+    "git_blob": "0407e15543550b6786746d669414635dbd706d95"
+  },
+  "76c6f244f6eca7f2f7b9037da80181c52d498afb:code/modules/persistence/functions.dm": {
+    "file": "extraction-squash-functions.dm.txt",
+    "bytes": 50445,
+    "sha256": "66cdf18ebea9403d26a56843d47b10b169b7c4365083d00f80ef513de35409d8",
+    "git_blob": "714ac76cde52cf5558f725f4e323096de50b10a7"
+  },
+  "76c6f244f6eca7f2f7b9037da80181c52d498afb:code/processes/human_corpse_decay.dm": {
+    "file": "extraction-squash-human_corpse_decay.dm.txt",
+    "bytes": 8473,
+    "sha256": "9406826fc16eaf0a471339202f842e02f7ed047a154aa15d9c7c5673ea67e12f",
+    "git_blob": "8c9c1903373050faaee54c2eae70f6198b0d846e"
+  },
+  "76c6f244f6eca7f2f7b9037da80181c52d498afb:code/processes/abandoned_items.dm": {
+    "file": "extraction-squash-abandoned_items.dm.txt",
+    "bytes": 7037,
+    "sha256": "42b0c511b7079de45aa9da03c356c1d235f56e9c6b8e3382445a89a317c2f218",
+    "git_blob": "f987e346660ec7a6b8db659da87abd571e610f26"
+  },
+  "76c6f244f6eca7f2f7b9037da80181c52d498afb:code/modules/1713/active_training.dm": {
+    "file": "extraction-squash-active_training.dm.txt",
+    "bytes": 9623,
+    "sha256": "0ba4cc88df711c41d29a5b13536f4ed7e8aa21d5f0f394cd0f3f7d8f34e6ea34",
+    "git_blob": "0407e15543550b6786746d669414635dbd706d95"
   }
 }

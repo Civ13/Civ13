@@ -17,6 +17,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import resources
+import preparation
 import historical_fixtures
 from historical_fixtures import text as historical_text
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
@@ -604,13 +605,13 @@ class ReviewedCurrentSource(unittest.TestCase):
         cls.current = (ROOT / PATH).read_text(encoding='utf-8')
         cls.identity = event_identity(ROOT)
         if cls.identity:
-            head = subprocess.check_output(['git', 'show', cls.identity['head'] + ':' + PATH], cwd=ROOT, text=True)
-            if head != cls.current: raise ValueError('Checkout differs from source event head')
-            ancestor = historical_text(MERGE_MASTER, PATH)
-            snapshot = project_merged_source(cls.feature)
-            validate_merged_source(cls.feature, snapshot)
-            cls.expected, _ = resolve_event_projection(ROOT, cls.identity, cls.feature, cls.current, ancestor, snapshot,
-                                                       ordered_release=has_ordered_release_history(ROOT, cls.identity['head']))
+            # Use the runner's complete, fail-closed event projection, including
+            # integrated squash bases. Do not revive retired commit ancestry
+            # checks after that reviewed integration has already been verified.
+            _, _, snapshot, _ = preparation.prepare(ROOT, cls.identity['base'], cls.identity['head'],
+                event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
+                github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
+            cls.expected = snapshot[PATH]
         else:
             # For ordinary and shallow local runs use the actual checked-out
             # commit, never a stale historical whole-file reconstruction.
@@ -687,6 +688,34 @@ class ReviewedCurrentSource(unittest.TestCase):
             self.assertNotEqual(hashlib.sha256(data + b'\nmutation').hexdigest(), digest)
 
 
+class ReviewedCurrentSourceSetupTests(unittest.TestCase):
+    def test_actions_setup_uses_complete_verified_event_projection(self):
+        class CurrentSource(ReviewedCurrentSource):
+            pass
+        identity = dict(base='1' * 40, head='2' * 40)
+        snapshot = {PATH: 'independently verified event projection'}
+        environment = dict(GITHUB_ACTIONS='true', GITHUB_EVENT_PATH='event.json', GITHUB_EVENT_NAME='pull_request')
+        with patch.dict(os.environ, environment), \
+             patch(__name__ + '.event_identity', return_value=identity), \
+             patch.object(preparation, 'prepare', return_value=(identity, '', snapshot, 'reviewed-integrated-base')) as prepare, \
+             patch(__name__ + '.has_ordered_release_history', side_effect=AssertionError('Retired ancestry query')), \
+             patch('subprocess.check_output', side_effect=AssertionError('Duplicate Git projection')):
+            CurrentSource.setUpClass()
+        prepare.assert_called_once_with(ROOT, identity['base'], identity['head'],
+            event_path='event.json', event_name='pull_request', github_actions=True)
+        self.assertEqual(CurrentSource.expected, snapshot[PATH])
+
+    def test_actions_setup_propagates_preparation_rejection_without_fallback(self):
+        class CurrentSource(ReviewedCurrentSource):
+            pass
+        identity = dict(base='1' * 40, head='2' * 40)
+        with patch(__name__ + '.event_identity', return_value=identity), \
+             patch.object(preparation, 'prepare', side_effect=ValueError('Independent projection rejected')), \
+             patch('subprocess.check_output', side_effect=AssertionError('Unverified fallback')):
+            with self.assertRaisesRegex(ValueError, 'Independent projection rejected'):
+                CurrentSource.setUpClass()
+
+
 class HistoricalFixtureIntegrityTests(unittest.TestCase):
     # Original commit/path digests captured independently of the manifest.
     PINS = {
@@ -746,6 +775,7 @@ class LocalShallowSourceTests(unittest.TestCase):
             files = (PATH, 'tests/exclusion_dispatch/test_source.py',
                      'tests/exclusion_dispatch/source_contract.py', 'tests/exclusion_dispatch/resources.py',
                      'tests/exclusion_dispatch/historical_fixtures.py', 'tests/exclusion_dispatch/preparation.py',
+                     'tests/exclusion_dispatch/integrated_projection.py',
                      'tests/exclusion_dispatch/run.py', 'tests/exclusion_dispatch/run-ci.py',
                      'tests/exclusion_dispatch/run-ci-current.py', 'tests/exclusion_dispatch/probe.dm',
                      'code/processes/human_corpse_decay.dm', 'code/processes/abandoned_items.dm',
@@ -930,6 +960,8 @@ class EventRunnerTests(unittest.TestCase):
             return original_check_output(command, **kwargs)
         def run(command, **kwargs):
             if command[:3] == ['git', 'merge-base', '--is-ancestor']:
+                if command[3] == '76c6f244f6eca7f2f7b9037da80181c52d498afb':
+                    return subprocess.CompletedProcess(command, 1, '', '')
                 if isinstance(ancestry_result, Exception):
                     raise ancestry_result
                 if command[3] == ORDERED_RELEASE:
@@ -1032,6 +1064,31 @@ class EventRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Original-target control anchor changed'):
                 self.execute_runner(Path(tmp), 'target-omit', replace_target=True)
 
+    def test_parent_mutation_loses_target_only_for_two_mob_probe_types(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            normal = self.execute_runner(directory)
+            parent = self.execute_runner(directory, 'parent')
+            def hooks(source, path):
+                return re.findall(r'^' + re.escape(path) + r'/candidate_runtime\(key\)\n(?:\t[^\n]*\n)+',
+                                  source, re.M)
+            mob = hooks(normal, '/mob')
+            self.assertEqual(len(mob), 1)
+            self.assertEqual(mob[0].count('\treturn ..()\n'), 1)
+            self.assertNotIn('"original_target"', mob[0])
+            self.assertEqual(hooks(parent, '/mob'), [mob[0].replace('\treturn ..()\n', '\treturn FALSE\n')])
+            for path in ('/atom/movable', '/obj/item', '/mob/living/human'):
+                before = hooks(normal, path)
+                self.assertTrue(before, path)
+                self.assertEqual(hooks(parent, path), before)
+            self.assertIn('key == "original_target"', ''.join(hooks(parent, '/atom/movable')))
+            self.assertIn('|| ..()', ''.join(hooks(parent, '/mob/living/human')))
+            probe = (ROOT / 'tests/exclusion_dispatch/probe.dm').read_text()
+            paths = re.search(r'for\(var/path in list\(([^\n]+)\)\)', probe).group(1).split(',')
+            self.assertEqual(paths, ['/datum', '/atom/movable', '/obj', '/obj/item',
+                                     '/mob', '/mob/living/human', '/area', '/turf/floor/dirt'])
+            self.assertEqual([path for path in paths if path.startswith('/mob')], ['/mob', '/mob/living/human'])
+
     def test_actual_runner_refuses_head_base_or_checkout_drift(self):
         for options in ({'mismatch':True}, {'changed_helper':True}, {'bad_event':True},
                         {'head_edit':'\n// unrelated head drift\n'}, {'drop_custody':True}):
@@ -1123,6 +1180,10 @@ class ManualPostIntegrationRunnerTests(unittest.TestCase):
                         if content.count(old_id) != 1:
                             raise AssertionError('Synthetic identity anchor changed')
                         content=content.replace(old_id,new_id,1)
+                elif path == 'tests/exclusion_dispatch/integrated_projection.py':
+                    # Keep this graph self-contained: the reviewed integration
+                    # selector exists but is unrelated to this older fixture.
+                    content=content.replace('76c6f244f6eca7f2f7b9037da80181c52d498afb',release_identity,1)
                 elif path == 'tests/exclusion_dispatch/fixtures/manifest.json':
                     # Re-key only the temporary manifest; source bytes and hashes
                     # remain the real independently pinned historical fixtures.
@@ -1210,7 +1271,7 @@ class Current1688RunnerTests(unittest.TestCase):
 
     def result(self, mode='parity'):
         return dict(cases=1000, failures=0 if mode=='parity' else 1,
-                    target_failures=1 if mode=='target-omit' else 0,
+                    target_failures=1 if mode=='target-omit' else 2 if mode=='parent' else 0,
                     byond_version=516, byond_build=1688, samples=[], details=[],
                     network=dict(closed_port=0, reopen_result=0, after_reopen_port=0))
 
@@ -1244,6 +1305,38 @@ class Current1688RunnerTests(unittest.TestCase):
         result=self.result('target-omit');result['target_failures']=0
         with self.assertRaises(RuntimeError): self.runner.validate_result('target-omit',result,log)
         with self.assertRaises(RuntimeError): self.runner.validate_result('parity',self.result(),'runtime error: bad ref')
+
+    def test_parent_target_count_is_exact_without_weakening_other_modes(self):
+        log='World opened on network port 12345 for address 127.0.0.1.\n'
+        for mode in self.runner.MODES:
+            expected = 2 if mode == 'parent' else 0
+            self.runner.validate_result(mode, self.result(mode), log)
+            for count in (-1, 0, 1, 2, 3, 5, True, None, float(expected)):
+                if type(count) is int and count == expected:
+                    continue
+                with self.subTest(mode=mode, count=count), self.assertRaises(RuntimeError):
+                    self.runner.validate_result(mode, dict(self.result(mode), target_failures=count), log)
+        for mode in ('', None, 'unknown'):
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                self.runner.validate_result(mode, self.result('omit'), log)
+        with self.assertRaises(RuntimeError):
+            self.runner.validate_result('parent', dict(self.result('parent'), failures=0), log)
+
+    def test_retained_parent_control_receipt_and_collateral_guards(self):
+        # CI40905723089 artifact12912983203: actual parent control counters.
+        result = dict(self.result('parent'), cases=1501, failures=691, target_failures=2)
+        log='World opened on network port 12345 for address 127.0.0.1.\n'
+        self.runner.validate_result('parent', result, log)
+        for mode in ('parity', 'omit', 'eager'):
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                self.runner.validate_result(mode, result, log)
+        for changes in ({'cases': 0}, {'samples': [1]}, {'failures': 0}):
+            with self.subTest(changes=changes), self.assertRaises(RuntimeError):
+                self.runner.validate_result('parent', dict(result, **changes), log)
+        with self.assertRaises(RuntimeError):
+            self.runner.validate_result('parent', result, log + 'runtime error: bad ref\n')
+        with self.assertRaises(RuntimeError):
+            self.runner.validate_result('parent', result, log.replace('127.0.0.1', '0.0.0.0'))
 
     def test_actual_main_threads_archive_and_checks_every_child_without_launch(self):
         with tempfile.TemporaryDirectory() as tmp:

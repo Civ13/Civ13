@@ -168,3 +168,20 @@ single-target oracle. See docs/extraction-instance-contract.md.
 in a disposable root-local DME, plus a missing-type diagnostic control. CI's
 `dagger_map_compile` opt-in retains exact-head logs. No game starts; successful
 compilation is not controller, instancing, protection or gameplay acceptance.
+
+
+## Mall-specific extraction source notes
+
+<!-- 2026-10-12: extraction map parser compatibility -->
+- Emit numeric `0`/`1` for DMM boolean assignments. BYOND accepts `FALSE`/`TRUE`
+  in maps, but MapDiffBot2 rejects variable references in tile definitions.
+- Extraction container keys explicitly inherit `/obj/item`, despite their path
+  beneath `/obj/item/weapon/key`, to exclude generic keyslot and closet re-keying.
+
+<!-- 2026-10-12: fixed extraction scenery -->
+Native furniture can yield materials through damage and direct deconstruction
+callbacks even when generic disassembly is disabled. Mall raid placements use
+map-only variants in `extraction/mall.dm`; the generator preserves native atoms
+on protected home/hub floors. Keep the offline fixture catalog and compiled
+`mall_fixture_dressing_probe()` aligned when adding furnishings. A compiled
+probe is not evidence that its native tool/damage checks have executed.

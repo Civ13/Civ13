@@ -1,4 +1,11 @@
 [
+  "/obj/structure/extraction_mall_fixture/register",
+  "/obj/item/weapon/key/extraction_container/industrial_tool_cage",
+  "/obj/item/weapon/key/extraction_container/industrial_dispatch",
+  "/obj/item/weapon/key/extraction_container/city_pharmacy",
+  "/obj/item/weapon/key/extraction_container/city_evidence",
+  "/obj/item/weapon/key/extraction_container/mall_security",
+  "/obj/item/weapon/key/extraction_container/mall_hardware",
   "/obj/item/vehicle_key",
   "/obj/item/extraction_wheel_crate",
   "/obj/item/stack/material/wood_piece",
