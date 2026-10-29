@@ -17,6 +17,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import resources
+import preparation
 import historical_fixtures
 from historical_fixtures import text as historical_text
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
@@ -604,13 +605,13 @@ class ReviewedCurrentSource(unittest.TestCase):
         cls.current = (ROOT / PATH).read_text(encoding='utf-8')
         cls.identity = event_identity(ROOT)
         if cls.identity:
-            head = subprocess.check_output(['git', 'show', cls.identity['head'] + ':' + PATH], cwd=ROOT, text=True)
-            if head != cls.current: raise ValueError('Checkout differs from source event head')
-            ancestor = historical_text(MERGE_MASTER, PATH)
-            snapshot = project_merged_source(cls.feature)
-            validate_merged_source(cls.feature, snapshot)
-            cls.expected, _ = resolve_event_projection(ROOT, cls.identity, cls.feature, cls.current, ancestor, snapshot,
-                                                       ordered_release=has_ordered_release_history(ROOT, cls.identity['head']))
+            # Use the runner's complete, fail-closed event projection, including
+            # integrated squash bases. Do not revive retired commit ancestry
+            # checks after that reviewed integration has already been verified.
+            _, _, snapshot, _ = preparation.prepare(ROOT, cls.identity['base'], cls.identity['head'],
+                event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
+                github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
+            cls.expected = snapshot[PATH]
         else:
             # For ordinary and shallow local runs use the actual checked-out
             # commit, never a stale historical whole-file reconstruction.
@@ -685,6 +686,34 @@ class ReviewedCurrentSource(unittest.TestCase):
             data = (ROOT / 'tests/exclusion_dispatch/historical' / (name + '.txt')).read_bytes().replace(b'\r\n', b'\n')
             self.assertEqual(hashlib.sha256(data).hexdigest(), digest, name)
             self.assertNotEqual(hashlib.sha256(data + b'\nmutation').hexdigest(), digest)
+
+
+class ReviewedCurrentSourceSetupTests(unittest.TestCase):
+    def test_actions_setup_uses_complete_verified_event_projection(self):
+        class CurrentSource(ReviewedCurrentSource):
+            pass
+        identity = dict(base='1' * 40, head='2' * 40)
+        snapshot = {PATH: 'independently verified event projection'}
+        environment = dict(GITHUB_ACTIONS='true', GITHUB_EVENT_PATH='event.json', GITHUB_EVENT_NAME='pull_request')
+        with patch.dict(os.environ, environment), \
+             patch(__name__ + '.event_identity', return_value=identity), \
+             patch.object(preparation, 'prepare', return_value=(identity, '', snapshot, 'reviewed-integrated-base')) as prepare, \
+             patch(__name__ + '.has_ordered_release_history', side_effect=AssertionError('Retired ancestry query')), \
+             patch('subprocess.check_output', side_effect=AssertionError('Duplicate Git projection')):
+            CurrentSource.setUpClass()
+        prepare.assert_called_once_with(ROOT, identity['base'], identity['head'],
+            event_path='event.json', event_name='pull_request', github_actions=True)
+        self.assertEqual(CurrentSource.expected, snapshot[PATH])
+
+    def test_actions_setup_propagates_preparation_rejection_without_fallback(self):
+        class CurrentSource(ReviewedCurrentSource):
+            pass
+        identity = dict(base='1' * 40, head='2' * 40)
+        with patch(__name__ + '.event_identity', return_value=identity), \
+             patch.object(preparation, 'prepare', side_effect=ValueError('Independent projection rejected')), \
+             patch('subprocess.check_output', side_effect=AssertionError('Unverified fallback')):
+            with self.assertRaisesRegex(ValueError, 'Independent projection rejected'):
+                CurrentSource.setUpClass()
 
 
 class HistoricalFixtureIntegrityTests(unittest.TestCase):
