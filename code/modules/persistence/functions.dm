@@ -200,10 +200,12 @@
 // HUD objects belong to a client session and are rebuilt by the normal HUD path.
 // The custom saver visits tmp vars too; exclude these on both export and import.
 // Click/move deadlines and in-flight action locks belong to the running process.
+// LAssailant is a last-attacker pointer that can name a mob on another z-level,
+// which per-level saves reject, so one stale attacker would block every save.
 // Ignoring historical values during import leaves new mobs at their defaults,
 // without resetting cooldowns or active actions on an existing live mob.
 /mob/persistence_runtime_var(key)
-	if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")
+	if (key == "pickaxe_mining_action" || key == "next_animal_retaliation" || key == "LAssailant")
 		return TRUE
 	switch(key)
 		if ("next_click", "next_move", "may_do_after", "may_do_mob", "blackout_click_owner", "blackout_click_client_ref", "blackout_click_counts", "blackout_click_started", "blackout_click_expires", "hud_used", "HUDneed", "HUDinventory", "HUDfrippery", "HUDprocess", "HUDtech", "hands", "pullin", "purged", "i_select", "m_select", "zone_sel")
