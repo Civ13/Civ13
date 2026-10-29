@@ -85,7 +85,10 @@ SUITES = {
     'character_return': {'files': ('tests/save_movement/test_character_return.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',
         'code/game/mob/new_player/', 'code/game/mob/living/carbon/human/human_helpers.dm'),
-        'shared_paths': ('code/game/gameticker.dm',)},
+        'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
+            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'code/game/mob/living/carbon/human/human_life.dm')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',

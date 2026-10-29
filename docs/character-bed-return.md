@@ -1,7 +1,6 @@
 # Character return and sleep-zone migration
 
-Base: master `c79792d002b9a15b7cebd7735a43f6ac960ad4b2`. PR #3278 merged
-as `9618d92d1d612887441ed502a31aadddf5b5ca66`; retain its runtime-reference
+PR #3278 merged as `9618d92d1d612887441ed502a31aadddf5b5ca66`; retain its runtime-reference
 exclusion and the owned save/load admission introduced by #3276.
 
 ## Existing authority and limits
@@ -91,8 +90,7 @@ same body/inventory, two competing clients/reentrant callbacks, failed movement,
 save/load/recovery holds, dead-body policy and final new-body admission. Retain
 existing ownership, sleep, movement and topology regressions. Offline projections
 are not native Login/Entered/HUD acceptance. No live save, configuration, native
-world, deployment or restart is part of this task. Runtime paths/configurations
-remain unchanged on D:; this C: checkout contains temporary source work only.
+world, deployment or restart is performed by this source change.
 
 Implementation lives in `code/modules/persistence/bed_return.dm`, extending the
 existing `reclaim_saved_player` handoff. `tests/save_movement/test_character_return.py`
