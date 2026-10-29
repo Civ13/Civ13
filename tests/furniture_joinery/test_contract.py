@@ -121,7 +121,8 @@ class Contracts(unittest.TestCase):
         source=(ROOT/'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text()
         self.assertIn('material = "wood"',block(source,'/obj/item/weapon/stool/wood\n'))
         refund=block(source,'/obj/item/weapon/stool/proc/dismantle()')
-        self.assertEqual(refund.count('material.place_sheet(get_turf(src))'),2) # wood plus optional padding
+        self.assertEqual(refund.count('material.place_sheet(get_turf(src))'),1) # frame wood
+        self.assertIn('furniture_padding_sheet(padding_material, get_turf(src))',refund)
         materials=(ROOT/'code/modules/materials/materials.dm').read_text()
         self.assertIn('return new stack_type(target)',block(materials,'/material/proc/place_sheet('))
         self.assertIn('stack_type = /obj/item/stack/material/wood',block(materials,'/material/wood\n'))
@@ -144,7 +145,7 @@ class Contracts(unittest.TestCase):
     def test_explicit_route_data_matches_catalog_and_no_hidden_bulk(self):
         rows=[r.split('RECIPE: ',1)[1].split(',') for r in (ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines() if r.startswith('RECIPE: ') and ',joinery: ' in r]
         self.assertEqual(set(SPECS),{r[1] for r in rows})
-        self.assertEqual(len(rows),5)
+        self.assertEqual(len(rows),6)
         for row in rows:
             spec=SPECS[row[1]]
             self.assertEqual(spec['result_type'],row[2])
@@ -235,12 +236,12 @@ class Contracts(unittest.TestCase):
         subprocess.run([sys.executable,str(ROOT/'scripts/build-crafting-atlas.py'),'--catalog-only','--check-game-catalog',str(ROOT/'UI/crafting-atlas.json')],cwd=ROOT,check=True,capture_output=True)
         data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
         selected=[r for r in data['recipes'] if r['name'] in SPECS]
-        self.assertEqual(len(selected),5)
+        self.assertEqual(len(selected),6)
         spec=importlib.util.spec_from_file_location('help_joinery',ROOT/'scripts/player_help_bridge.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
         contexts=helper.recipe_context(ROOT/'UI/crafting-atlas.json')
         for row in selected:
-            self.assertEqual(row['unlock_eras'],[0])
+            self.assertEqual(row['unlock_eras'],[2] if row['name']=='joinery: wooden document drawers' else [0])
             self.assertIn('Tools reused',row['conditions'])
             if SPECS[row['name']]['component_cost']:
                 self.assertIn({'id':'/obj/item/stack/wooden_dowels','name':'wooden dowel set','quantity':str(SPECS[row['name']]['component_cost'])},row['inputs'])

@@ -937,6 +937,7 @@ RECIPE: /material/plastic/,D20,/obj/item/weapon/dice/d20,1,205,0,1,dice,147,0,0,
 RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1,storage,0,0,0,8,null
 RECIPE: /material/plastic/,large filing cabinet,/obj/structure/filingcabinet/filingcabinet,6,95,1,1,storage,0,0,0,8,null
 RECIPE: /material/plastic/,chest drawer,/obj/structure/filingcabinet/chestdrawer,6,95,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/soft/,joinery: wooden document drawers,/obj/structure/filingcabinet/chestdrawer/wood,6,180,1,1,joinery,0,0,0,8,null
 RECIPE: /material/plastic/,dumpster,/obj/structure/closet/crate/dumpster,5,95,1,1,storage,105,0,0,8,null
 
 RECIPE: /material/plastic/,trash bag,/obj/item/weapon/storage/bag/trash,1,95,0,1,storage,150,0,0,8,null

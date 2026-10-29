@@ -19,6 +19,27 @@ The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
 
+`canopy.dm` adds both original paid canopy routes, real roof/area creation and
+retirement, competing unfold/fold actions, late destination occupancy, protected
+independent roofs, legacy shared cover and neighbor icon states. It expands the
+isolated map to 4x3 tiles; normal game dimensions remain unchanged. Existing 35 ds
+canopy waits run normally. No client rendering or saved-world acceptance implied.
+
+`sofa_materials.dm` checks the three existing eight-cloth sofa recipes and their
+three map-only chair variants. Fixed upholstery must reject padding without
+debit and refuse generic wood recovery. An ordinary bed control still accepts
+paid cloth/leather padding and returns exactly one unit on removal, as does a
+wooden stool. Actual padded bed/stool hammer paths return paid cloth/leather or
+refuse frame output/deletion for unmapped padding. Bed-wait cancellation and late
+unmapped-padding controls preserve installed material. An unpadded wooden-bed
+hammer control keeps its existing recovery. No new sofa recipe,
+art or connected-client acceptance is implied.
+The steel-frame comfy-chair control also refuses generic wood recovery.
+
+`document_drawers.dm` checks paid planks/pegs, document-only admission and late
+occupancy/tool/research rejection through the existing joinery action. It does
+not exercise the connected retrieval browser or establish save/world acceptance.
+
 `rope_hammock.dm` adds paid six-rope construction, short-stock and occupied-turf
 refusal, unoccupied processing and legal-hand hammer-refund checks. It uses the
 existing inert actor adapters and does not establish suspension physics or
