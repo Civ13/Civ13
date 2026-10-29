@@ -438,3 +438,9 @@ to that earlier head; it is not a resource measurement or acceptance of this
 reconciliation. The measurement tooling adds no production optimization or
 automatic measurement step. Source review can assess the tooling separately
 from the explicitly admitted preflight and paired measurements described above.
+
+The first reconciliation run, [40837156658](https://github.com/Civ13/Civ13/actions/runs/40837156658),
+compiled successfully but failed on three historical Git-object reads before
+native correctness execution. Its failure is preserved. Historical exclusion
+test inputs are now checked-in fixtures with exact original hashes; this changes
+test portability, not the live source oracle or runtime admission.
