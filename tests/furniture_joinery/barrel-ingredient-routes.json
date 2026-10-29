@@ -1,0 +1,6 @@
+[
+  {"input": "sulphur", "reagent": "sulfur", "stock": 1, "dose": 3},
+  {"input": "saltpeter", "reagent": "potassium", "stock": 1, "dose": 3},
+  {"input": "coal", "reagent": "carbon", "stock": 1, "dose": 3},
+  {"input": "charcoal", "reagent": "carbon", "stock": 1, "dose": 3}
+]

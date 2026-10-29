@@ -137,6 +137,34 @@ and actual executable replacement. `--version` and `--self-check` exercise the
 single-file entrypoint without network, accounts or installation. Actual live
 update-channel delivery and real client sign-in/gameplay need separate acceptance.
 
+## Local DreamDaemon hosting (operators)
+
+An operator can host a server from the launcher by placing `host.json` in the
+launcher root (`%LOCALAPPDATA%\Civ13`, or the `--root` folder). Without that file
+the menu is unchanged. With it, `H: Host local DreamDaemon server` appears:
+
+```json
+{"schema": 1, "game_directory": "D:/GitHub/Civ13", "world": "civ13.dmb", "port": 1714, "public": true,
+ "bot": {"php": "C:/php/php.exe", "root": "D:/Civilizationbot-local/bot", "profile": "D:/Civilizationbot-local/profile.json"}}
+```
+
+`H` starts the verified BYOND `dd.exe` with `-trusted`, `-public` (or `-invisible`)
+and `-log logs/world.log` in `game_directory`, unless something already listens on
+`port`. When `bot` is present it also starts the Civilizationbot portable supervisor
+(`control.php start <profile>`) unless the bot's `http_port` from that profile is
+already listening. `bot` is optional. Paths must be absolute and exist, and `world`
+must be a compiled `.dmb` inside `game_directory`; an invalid file disables hosting
+with a message.
+
+An optional `"update": {"git": "C:/Program Files/Git/cmd/git.exe", "branch": "master"}`
+updates the server before starting it: `git fetch origin <branch>`, then
+`git merge --ff-only FETCH_HEAD` (local uncommitted edits are kept; a diverged
+checkout stops), then the verified BYOND `dm.exe -max_errors 0 <world>.dme`, which
+must report `0 errors, 0 warnings`. Any failed step leaves DreamDaemon unstarted.
+A server already listening on `port` is never updated, because it holds its `.dmb`.
+The launcher does not stop servers. `tests/LocalHostingTests.cs` injects process
+starts, update steps and port probes, so it launches nothing.
+
 ## Release deployment
 
 Publishing any GitHub release triggers `native-launcher-release.yml`. It checks

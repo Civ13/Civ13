@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # This offline fixture models gameplay without collector instrumentation.
 # Unknown symbols/directives must not acquire an implicit disabled meaning.
-DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False}
+DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False, 'CIV13_ROOT_TREE_PRESENTATION': False}
 
 
 def read(path):
@@ -21,7 +21,7 @@ def read(path):
 def extract(source, declaration, *, defines=None):
     """Select declared proc-local ifdef branches without truncating the body.
 
-    This is deliberately not a DM preprocessor. Only ifdef/ifndef, else and
+    This is deliberately not a DM preprocessor. Only single-symbol if/ifdef/ifndef, else and
     endif with explicitly known Boolean symbols are supported. Directives in
     inactive branches are checked too; ambiguous scope or syntax fails closed.
     """
@@ -44,12 +44,12 @@ def extract(source, declaration, *, defines=None):
             continue
         if stripped.startswith('#'):
             directive = stripped.split('//', 1)[0].rstrip()
-            conditional = re.fullmatch(r'#(ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
+            conditional = re.fullmatch(r'#(if|ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
             if conditional:
                 operation, symbol = conditional.groups()
                 if symbol not in defines:
                     raise AssertionError('Unknown conditional symbol: ' + symbol)
-                selected = defines[symbol] if operation == 'ifdef' else not defines[symbol]
+                selected = not defines[symbol] if operation == 'ifndef' else defines[symbol]
                 branches.append((active, selected, False))
                 active = active and selected
             elif directive == '#else':
@@ -91,7 +91,7 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
 
 def project(source, declaration, args, env, method=False, *, defines=None):
     """Project complete selected bodies; only engine effects are supplied by tests."""
-    lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required']
+    lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required, persistence_admission_identity']
     for raw in extract(source, declaration, defines=defines).splitlines():
         code = raw.split('//', 1)[0].rstrip()
         if not code.strip():

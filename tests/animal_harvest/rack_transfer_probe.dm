@@ -7,6 +7,11 @@
 /mob/living/human/rack_transfer_tester/hide_worker_connected()
 	return TRUE
 
+// Explicit historical wrapper adapter: reproduce #3286's discarded return
+// without requiring the production human to retain the defect fixed by #3322.
+/mob/living/human/rack_transfer_tester/legacy_return/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
+	..()
+
 // Failure injection at the movement seam; not a claim about the live trigger.
 /obj/item/stack/material/wethide/rack_blocked/forceMove(atom/destination, special_event)
 	if (istype(destination, /obj/structure/converter/tanning))
@@ -20,15 +25,23 @@
 /proc/tanning_rack_transfer_regressions(turf/site)
 	var/mob/living/human/rack_transfer_tester/worker = new(site)
 	var/turf/rack_site = locate(4,3,1)
-	// Human drop overrides discard the parent result: old rack code stops here.
+	// Production human now forwards success; physical floor ownership is unchanged.
 	var/obj/structure/converter/tanning/clear_rack = new(rack_site)
 	var/obj/item/stack/material/wethide/clear_batch = new(worker, 3, FALSE)
 	worker.r_hand = clear_batch
 	var/drop_result = worker.drop_from_inventory(clear_batch)
-	harvest_assert(!drop_result && clear_batch.loc == site && !worker.item_is_in_hands(clear_batch), "Legacy human drop did not reproduce false result after floor drop")
+	harvest_assert(drop_result && clear_batch.loc == site && !worker.item_is_in_hands(clear_batch), "Human drop did not report successful floor transfer")
 	harvest_assert(clear_batch.forceMove(clear_rack) && clear_batch.loc == clear_rack, "Storage transfer after human drop failed")
 	qdel(clear_batch)
 	qdel(clear_rack)
+	// Retain the old false-result/real-drop causal control under its named adapter.
+	var/mob/living/human/rack_transfer_tester/legacy_return/legacy_worker = new(site)
+	clear_batch = new(legacy_worker, 3, FALSE)
+	legacy_worker.r_hand = clear_batch
+	drop_result = legacy_worker.drop_from_inventory(clear_batch)
+	harvest_assert(!drop_result && clear_batch.loc == site && !legacy_worker.item_is_in_hands(clear_batch), "Legacy wrapper control did not reproduce false result after floor drop")
+	qdel(clear_batch)
+	qdel(legacy_worker)
 	// Source control: old floor staging changes the held batch via real Crossed().
 	var/obj/item/stack/material/wethide/floor_hide = new(site, 2, FALSE)
 	var/obj/item/stack/material/wethide/held = new(worker, 3, FALSE)

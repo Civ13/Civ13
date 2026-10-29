@@ -4,13 +4,19 @@ import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+# Keys are source files below simple_animal/; values map hook owners to registries.
 SOURCES = {
-    'bear': {'hostile/bear': 'bear_count'},
-    'buffalo': {'bison': 'bison_count', 'bisonbull': 'bison_count'},
-    'wolf': {'hostile/wolf': 'wolf_count'},
+    'hostile/bear': {'hostile/bear': 'bear_count'},
+    'hostile/buffalo': {'bison': 'bison_count', 'bisonbull': 'bison_count'},
+    'hostile/wolf': {'hostile/wolf': 'wolf_count'},
+    'friendly/deer': {'deer': 'deer_count'},
 }
 HOOKS = {f'{animal}/{hook}': registry for animals in SOURCES.values()
          for animal, registry in animals.items() for hook in ('death', 'Destroy')}
+
+
+def load_source():
+    return '\n'.join((ROOT / f'code/game/mob/living/simple_animal/{name}.dm').read_text() for name in SOURCES)
 
 
 def violations(source):
@@ -28,16 +34,16 @@ def violations(source):
 class RegistrySourceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.source = '\n'.join((ROOT / f'code/game/mob/living/simple_animal/hostile/{name}.dm').read_text() for name in SOURCES)
+        cls.source = load_source()
 
-    def test_all_eight_hooks_remove_only_the_owner_before_parent(self):
-        self.assertEqual(len(HOOKS), 8)
+    def test_all_ten_hooks_remove_only_the_owner_before_parent(self):
+        self.assertEqual(len(HOOKS), 10)
         self.assertEqual(violations(self.source), [])
 
     def test_unrelated_source_edits_do_not_change_hook_contracts(self):
         self.assertEqual(violations(self.source + '\n// Unrelated future source note.\n'), [])
 
-    def test_all_intersection_negative_control_rejects_eight_hooks(self):
+    def test_all_intersection_negative_control_rejects_ten_hooks(self):
         original_operators = self.source.replace('_count -= src', '_count &= src')
         self.assertEqual(set(violations(original_operators)), set(HOOKS))
 

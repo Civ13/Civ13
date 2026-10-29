@@ -191,6 +191,9 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
@@ -299,6 +302,9 @@
 		return // Moved here to avoid nullrefs below
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
+		// A paid crawl retains admission even after early collision/posture exit.
+		if (subtile_input_actor.human_subtile_transaction && subtile_input_actor.human_subtile_transaction.paid_posture)
+			return FALSE
 		subtile_input_actor.human_subtile_prepare_ui_movement()
 		if (!subtile_input_actor.human_subtile_input_supported(direct))
 			human_subtile_release_visuals()
@@ -814,7 +820,7 @@
 
 			// make animals acknowledge us
 			if (mob_is_human)
-				for (var/mob/living/simple_animal/complex_animal/C in living_mob_list) // living_mob_list fails here
+				for (var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list)
 					var/dist_x = abs(mob.x - C.x)
 					var/dist_y = abs(mob.y - C.y)
 					if (dist_x <= 10 && dist_y <= 10)

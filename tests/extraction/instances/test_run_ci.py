@@ -273,7 +273,7 @@ class RunnerContracts(unittest.TestCase):
     def test_workflow_has_independent_bounded_job_and_manual_default_off(self):
         workflow = (runner.ROOT / '.github/workflows/test.yml').read_text()
         guard = ("if: needs.changes.outputs.extensive == 'true' || "
-                 "contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || "
+                 "contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || "
                  "(github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions)")
         block = workflow.split('  extraction-instances:\n', 1)[1].split('  # Existing game compilation gate.', 1)[0]
         self.assertEqual(block.count(guard), 2)

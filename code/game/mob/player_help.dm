@@ -4,6 +4,8 @@ var/global/datum/player_help_service/player_help_service = new
 /client
 	// Session-only state. Never attached to a mob or passed to native persistence.
 	var/tmp/list/player_help_turns = list()
+	var/tmp/mob/player_help_body
+	var/tmp/list/player_help_injuries = list()
 	var/tmp/player_help_generation = 0
 	var/tmp/player_help_touched = 0
 	var/tmp/player_help_action_token
@@ -13,13 +15,15 @@ var/global/datum/player_help_service/player_help_service = new
 	set name = "Ask for help"
 	set category = "Help!"
 	player_help_service.expire_conversations()
+	player_help_service.bind_body(src, mob)
 	var/generation = player_help_generation
 	var/question = player_help_prompt()
+	player_help_service.bind_body(src, mob)
 	if (question && (src in clients) && generation == player_help_generation)
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
-	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
+	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
 
 /datum/player_help_service
 	var/root = "SQL/player-help/"
@@ -41,17 +45,27 @@ var/global/datum/player_help_service/player_help_service = new
 
 /datum/player_help_service/proc/reset_conversation(client/C)
 	C.player_help_turns = list()
+	C.player_help_injuries = list()
 	C.player_help_generation++
 	C.player_help_action_token = null
 	C.player_help_acknowledged = FALSE
 	conversation_clients -= C
 	// A pending account reservation survives reset until response/timeout.
 
+// Login calls this even when a client briefly visits another body and returns.
+/datum/player_help_service/proc/bind_body(client/C, mob/body)
+	if (!C || C.player_help_body == body)
+		return
+	reset_conversation(C)
+	C.player_help_body = body
+
 /datum/player_help_service/proc/expire_conversations()
 	// At most 128 retained client sessions. Release disconnected client refs.
 	for (var/client/C in conversation_clients.Copy())
 		if (!(C in clients) || limit_time() - C.player_help_touched >= 9000)
 			reset_conversation(C)
+		else
+			bind_body(C, C.mob)
 
 /datum/player_help_service/proc/remember(client/C, question, answer)
 	if (!(C in conversation_clients) && conversation_clients.len >= 128)
@@ -107,6 +121,8 @@ var/global/datum/player_help_service/player_help_service = new
 		C.ask_player_help()
 
 /datum/player_help_service/proc/valid_action(client/C, token)
+	if (C && (C in clients))
+		bind_body(C, C.mob)
 	return C && (C in clients) && C.player_help_action_token && token == C.player_help_action_token
 
 // Account identity comes only from the authenticated client, never player input.
@@ -262,6 +278,38 @@ var/global/datum/player_help_service/player_help_service = new
 						queue += list(list("item" = child, "place" = copytext(html_decode("[I.name]"), 1, 81), "depth" = entry["depth"] + 1))
 	return list("items" = items, "truncated" = truncated)
 
+// Fixed server-controlled categories only; reported categories are invoked at
+// the corresponding direct victim message, never at a generic damage hook.
+/datum/player_help_service/proc/record_observed_injury(client/C, mob/living/human/H, kind)
+	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || H.stat != CONSCIOUS || H.sleeping > 0)
+		return
+	if (!(kind in list("self_weapon_hit", "reported_projectile_hit", "reported_shrapnel_hit", "reported_hot_ground", "reported_freezing_feet")))
+		return
+	// Queued chat can be dropped before it becomes visible; do not record it.
+	if (kind != "self_weapon_hit" && (!C.chat || !C.chat.is_ready || C.chat.client != C))
+		return
+	bind_body(C, H)
+	if (!(C in conversation_clients))
+		if (conversation_clients.len >= 128)
+			reset_conversation(conversation_clients[1])
+		// Track an injury-only session, without extending an existing conversation.
+		C.player_help_touched = limit_time()
+		conversation_clients |= C
+	C.player_help_injuries += list(list("kind" = kind, "time" = limit_time()))
+	while (C.player_help_injuries.len > 6)
+		C.player_help_injuries.Cut(1, 2)
+
+/datum/player_help_service/proc/injury_context(client/C, mob/living/human/H)
+	var/list/results = list()
+	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || C.player_help_body != H)
+		return results
+	var/now = limit_time()
+	for (var/list/event in C.player_help_injuries)
+		if (!(event["kind"] in list("self_weapon_hit", "reported_projectile_hit", "reported_shrapnel_hit", "reported_hot_ground", "reported_freezing_feet")) || !isnum(event["time"]) || event["time"] > now || now - event["time"] >= 6000)
+			continue
+		results += list(list("kind" = event["kind"], "certainty" = "observed", "age_seconds" = round((now - event["time"]) / 10)))
+	return results
+
 // Read public map metadata directly; never accept player text as server state.
 /datum/player_help_service/proc/game_context(mob/asking_player)
 	var/list/context = list("map" = "Unknown", "gamemode" = "Unknown")
@@ -285,6 +333,7 @@ var/global/datum/player_help_service/player_help_service = new
 				events += "Exposed to local weather"
 		condition["active_effects"] = events
 		condition["inventory"] = inventory_context(H)
+		condition["recent_injuries"] = injury_context(H.client, H)
 		context["player"] = condition
 	return context
 
@@ -301,6 +350,8 @@ var/global/datum/player_help_service/player_help_service = new
 // Server-owned queue boundary; no client/Topic-supplied account identifiers.
 /datum/player_help_service/proc/enqueue(account, question, client/C)
 	expire_conversations()
+	if (C)
+		bind_body(C, C.mob)
 	if (!available())
 		return "AI gameplay help is unavailable. Please use the Crafting Atlas or try again later."
 	if (!istext(question) || !length(question) || length(question) > 500)
@@ -335,7 +386,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return "AI gameplay help could not send your question. Please try again later."
 	var/list/sent_conversation = request["conversation"]
 	var/list/sent_turns = sent_conversation ? sent_conversation["turns"] : null
-	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "generation" = C ? C.player_help_generation : null, "question" = question, "conversation" = !!sent_conversation, "had_history" = sent_turns && sent_turns.len, "deadline" = world.time + request_timeout_seconds * 10)
+	pending["[slot]"] = list("id" = id, "account" = account, "client" = C, "generation" = C ? C.player_help_generation : null, "body" = C ? C.mob : null, "question" = question, "conversation" = !!sent_conversation, "had_history" = sent_turns && sent_turns.len, "deadline" = world.time + request_timeout_seconds * 10)
 	return TRUE
 
 /datum/player_help_service/proc/write_request(slot, list/request)
@@ -350,7 +401,9 @@ var/global/datum/player_help_service/player_help_service = new
 			continue
 		var/client/C = entry["client"]
 		// Disconnect does not cancel work or release the account's pending lock.
-		if (C && (!(C in clients) || C.player_help_generation != entry["generation"]))
+		if (C && (C in clients))
+			bind_body(C, C.mob)
+		if (C && (!(C in clients) || C.player_help_generation != entry["generation"] || C.mob != entry["body"]))
 			C = null
 		var/list/response = matching_response(i, entry["id"])
 		if (islist(response))
@@ -359,12 +412,16 @@ var/global/datum/player_help_service/player_help_service = new
 				C << "The helper did not accept follow-up context. Your conversation was cleared; please start a new conversation."
 				reset_conversation(C)
 			else if (C && answer_format && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) && length(response["answer"]) <= 4000)
+				// Snapshot only this session's completed questions before appending the current pair.
+				var/list/previous_questions = list()
+				for (var/list/pair in C.player_help_turns)
+					previous_questions += pair["question"]
 				if (entry["conversation"] && response["conversation_protocol"] == 1)
 					remember(C, entry["question"], response["answer"])
 				else
 					reset_conversation(C)
 					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
-				C << browse(render_answer(response["answer"], answer_format, C), "window=player_help;size=600x500")
+				C << browse(render_answer(response["answer"], answer_format, C, entry["question"], previous_questions), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
@@ -387,7 +444,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return response["answer_format"]
 	return null
 
-/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null)
+/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null, question = null, list/previous_questions = null)
 	if (!istext(answer) || length(answer) > 4000)
 		answer = "AI gameplay help did not receive a usable response."
 	var/body
@@ -397,12 +454,21 @@ var/global/datum/player_help_service/player_help_service = new
 		body = markdown_answer(answer)
 	else
 		return null
+	var/current_question = ""
+	if (istext(question) && length(question) <= 500)
+		current_question = "<p><b>Question:</b> [html_encode(question)]</p>"
+	var/history = ""
+	if (islist(previous_questions) && previous_questions.len)
+		history = "<h3>Previous questions</h3>"
+		for (var/previous_question in previous_questions)
+			if (istext(previous_question) && length(previous_question) <= 500)
+				history += "<p>[html_encode(previous_question)]</p>"
 	if (C && C.player_help_action_token)
 		var/actions = "<a href='?src=\ref[src];action=reset;token=[C.player_help_action_token]'>New conversation</a>"
 		if (C.player_help_acknowledged && C.player_help_turns.len)
 			actions = "<a href='?src=\ref[src];action=followup;token=[C.player_help_action_token]'>Follow up</a> | [actions]"
 		body += "<p>[actions]</p>"
-	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p></body></html>"
+	return "<html><body><h2>AI gameplay help</h2><p>AI answers can be mistaken. Verify recipes in the Crafting Atlas.</p>[current_question][body]<p><a href='https://civ13.github.io/civ13-wiki/'>Player wiki</a> | <a href='https://civ13.github.io/Civ13/crafting/'>Crafting Atlas</a></p>[history]</body></html>"
 
 // Bounded display subset of CommonMark 0.31.2, not an HTML trust boundary
 // delegated to the model. Only these routines generate answer markup.
