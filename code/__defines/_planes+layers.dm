@@ -58,6 +58,9 @@ What is the naming convention for planes or layers?
 #define LIGHTING_COMPOSITION_V2 0
 #endif
 #define LIGHTING_MASK_PLANE 4
+// Plane5 remains available for the separate geometric cell presentation lane.
+#define ROOT_TREE_PLANE 6
+#define ROOT_WEATHER_PLANE 7
 
 #define ROOF_PLANE 2
 

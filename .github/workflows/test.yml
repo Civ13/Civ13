@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
+      comparison_base:
+        description: 'Required full 40-character commit SHA for manual CI comparison (must differ from head)'
+        type: string
+        required: true
       exclusion_comparison_base:
         description: 'Full immutable base commit SHA, distinct from the selected head; required when running exclusion checks'
         type: string
@@ -85,7 +89,7 @@ jobs:
       build_prefix: true
       lint_workflows: true
       extensive: ${{ github.event_name == 'workflow_dispatch' && inputs.extensive_regressions }}
-      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+      base: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
   baseline:
     needs: changes
     if: needs.changes.outputs.skip_duplicate != 'true' && (needs.changes.outputs.gating == '1' || needs.changes.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
@@ -117,7 +121,7 @@ jobs:
         id: baseline
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
         run: |
           mkdir -p .ci/baseline
@@ -477,7 +481,7 @@ jobs:
         if: always() && needs.changes.result == 'success' && (steps.simple_checkout.outcome == 'success' && steps.simple_prepare.outcome == 'success' || steps.history_checkout.outcome == 'success')
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           COMPILE_OUTCOME: ${{ steps.compile.outcome }}
           SELECTION_ATTEMPT: ${{ needs.changes.outputs.attempt }}
         run: |
@@ -1192,6 +1196,23 @@ jobs:
         with:
           name: idle-metabolism-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/idle-metabolism/
+          retention-days: 7
+      - name: Verify laid rope making and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rope_making')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/rope_making -p 'test_*.py' -v
+          python3 tests/rope_making/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/rope-making/positive"
+          for control in payment replay admission persistence; do
+            python3 tests/rope_making/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control" --output "$RUNNER_TEMP/rope-making/$control"
+          done
+      - name: Upload rope making evidence
+        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rope_making'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rope-making-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/rope-making/
           retention-days: 7
       - name: Verify staged flax processing and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/flax_processing')
@@ -2236,7 +2257,7 @@ jobs:
       - name: Require selected jobs and exact-source execution receipts
         env:
           CI_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-          CI_BASE: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           CI_NEEDS: ${{ toJSON(needs) }}
           EXTRACTION_SELECTED: ${{ needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || (github.event_name == 'workflow_dispatch' && inputs.extraction_instance_regressions) }}
           GATING_SELECTION: ${{ needs.changes.outputs.gating }}

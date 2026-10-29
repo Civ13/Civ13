@@ -19,6 +19,26 @@ The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
 
+`sofa_materials.dm` checks the three existing eight-cloth sofa recipes and their
+three map-only chair variants. Fixed upholstery must reject padding without
+debit and refuse generic wood recovery. An ordinary bed control still accepts
+paid cloth/leather padding and returns exactly one unit on removal, as does a
+wooden stool. Actual padded bed/stool hammer paths return paid cloth/leather or
+refuse frame output/deletion for unmapped padding. Bed-wait cancellation and late
+unmapped-padding controls preserve installed material. An unpadded wooden-bed
+hammer control keeps its existing recovery. No new sofa recipe,
+art or connected-client acceptance is implied.
+The steel-frame comfy-chair control also refuses generic wood recovery.
+
+`document_drawers.dm` checks paid planks/pegs, document-only admission and late
+occupancy/tool/research rejection through the existing joinery action. It does
+not exercise the connected retrieval browser or establish save/world acceptance.
+
+`rope_hammock.dm` adds paid six-rope construction, short-stock and occupied-turf
+refusal, unoccupied processing and legal-hand hammer-refund checks. It uses the
+existing inert actor adapters and does not establish suspension physics or
+connected gameplay. See `docs/rope-hammock-audit.md` for scope and history limits.
+
 - All active config/crafting/material_recipes_*.txt rows, including map/faction
   lists: 13 fields, canonical compiled material paths, compiled object outputs,
   positive (including fractional) costs, numeric flags, nonnegative time/research
@@ -75,6 +95,33 @@ individually: fossil stack objects currently use the stone datum and there is no
 /material/fossil datum, so those rows could never register. This does not add
 working substitutes or change ingredient balance. Reenable a row only after
 restoring its definition and verifying its intended interaction.
+
+## Furniture joinery
+
+The fixture also includes `furniture_joinery.dm`: actual global peg-jointed
+table/chair/bed and dowel-set construction, exact dual debits, tool reuse,
+rejection after tool/stock/research/save changes, occupied tiles, cancellation,
+last-set hand cleanup and competing waits. It also checks preset log/plank
+subtypes and rejected crafting XP. Assembly tools lie
+on a separate clear fixture tile, rather than invalid equipment slots; tools at
+the player's feet are a supported production route. Character startup uses the
+existing handle fixture adapters; this is not connected-player acceptance.
+Research rejection controls temporarily move the required node beyond the
+fixture faction's baseline, then restore its actual tier after the action.
+An era-0 Main-tree node is already granted at baseline zero even with an
+incomplete entry. The controls check both initial denial and revocation during
+the wait; this controlled metadata change does not change gameplay gates.
+Wooden-shelf assertions additionally cover its six-plank debit, subtype fields,
+destruction, broken parts, top/frame disassembly, frame wrenching and cancellation.
+Use `--compile-only` to compile the isolated fixture without starting DreamDaemon.
+That option explicitly reports runtime checks as not run. It cannot certify
+recipe registration or any native assertion. See `docs/furniture-joinery-audit.md`.
+
+`cloth_bedroll.dm` additionally uses real four-unit cloth/leather construction,
+three fold/unfold cycles per type, refusal to fold used bedding, and ordinary
+backpack insertion/removal. Hammering either textile bedroll must preserve the
+bedroll and produce no wood. See `docs/cloth-bedroll-audit.md` for the inherited
+generic-structure refund finding and the historical/gameplay distinction.
 
 ## Limits
 
