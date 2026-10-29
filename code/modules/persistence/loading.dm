@@ -197,7 +197,7 @@
 			throw EXCEPTION("Invalid saved type at entry [ind]: [type]")
 		// Older completed saves can contain client HUD graphs. Never construct
 		// their screen/datum objects without the live client owner they require.
-		if(ispath(type, /obj/screen) || ispath(type, /datum/hud))
+		if(ispath(type, /obj/screen) || ispath(type, /datum/hud) || ispath(type, /datum/action) || ispath(type, /obj/item/weapon/grab))
 			return null
 		// Historical saves can retain derived lighting graphs through item vars.
 		// Their constructors require live owners/turfs; never import those graphs.

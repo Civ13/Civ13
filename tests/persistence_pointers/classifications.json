@@ -1,0 +1,226 @@
+[
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "last_loc",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "coordinate",
+    "reason": "Turf references use the coordinate codec, which supports references to other levels."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "target_obj",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "pathfind_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "origin",
+    "type": "/obj",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "retained_fail_closed",
+    "reason": "Spawner/sink ownership updates alive_mobs on retirement; retain until separate accounting review."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "following_mob",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "retained_fail_closed",
+    "reason": "Paid leash is consumed/recreated here; command-follow shares the field. Policy and durable identity unresolved."
+  },
+  {
+    "owner": "/mob/living/simple_animal",
+    "field": "target_mob",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/mob/living/simple_animal/pet",
+    "field": "movement_target",
+    "type": "/mob/living/simple_animal/mouse",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/mob/living/simple_animal/pet",
+    "field": "flee_target",
+    "type": "/mob",
+    "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/mob/living/simple_animal/hostile",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/hostile/hostile.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/datum/npc_subtile_pulse",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/npc_subtile_pulse",
+    "field": "destination",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/npc_subtile_transaction",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/npc_subtile_transaction",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/npc_subtile_transaction",
+    "field": "combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/npc_subtile_transaction",
+    "field": "following",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/obj/item/weapon/grab",
+    "field": "hud",
+    "type": "/obj/screen/grab",
+    "path": "code/game/mob/grab.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/obj/item/weapon/grab",
+    "field": "affecting",
+    "type": "/mob/living",
+    "path": "code/game/mob/grab.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/obj/item/weapon/grab",
+    "field": "assailant",
+    "type": "/mob/living/human",
+    "path": "code/game/mob/grab.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/obj/structure/optable",
+    "field": "victim",
+    "type": "/mob/living/human",
+    "path": "code/game/objects/structures/optable.dm",
+    "policy": "retained_fail_closed",
+    "reason": "No non-null local writer: check_victim clears it and take_victim only relocates the mob. No proven blocker."
+  },
+  {
+    "owner": "/obj/item/weapon/plastique",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/objects/items/weapons/explosives.dm",
+    "policy": "retained_fail_closed",
+    "reason": "afterattack argument shadows target; target = target writes the argument. Intended planted relationship needs review."
+  },
+  {
+    "owner": "/obj/structure/multiz",
+    "field": "target",
+    "type": "/obj/structure/multiz",
+    "path": "code/modules/multiz/structures.dm",
+    "policy": "retained_fail_closed",
+    "reason": "Durable topology is reconstructed by find_target during initialization; cross-level export is still unsupported."
+  },
+  {
+    "owner": "/datum/subtile_pull_pair",
+    "field": "leader",
+    "type": "/mob/living/human",
+    "path": "code/game/mob/living/carbon/human/pull_pair_ownership.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/subtile_pull_pair",
+    "field": "follower",
+    "type": "/obj",
+    "path": "code/game/mob/living/carbon/human/pull_pair_ownership.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/datum/subtile_pull_capability",
+    "field": "member",
+    "type": "/atom/movable",
+    "path": "code/game/mob/living/carbon/human/pull_pair_ownership.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
+  },
+  {
+    "owner": "/mob/observer/ghost",
+    "field": "following",
+    "type": "/atom/movable",
+    "path": "code/game/mob/observer/ghost/ghost.dm",
+    "policy": "runtime",
+    "reason": "Current AI/spectator target is reacquired in this process; export and legacy import exclude it."
+  },
+  {
+    "owner": "/datum/action",
+    "field": "target",
+    "type": "/atom/movable",
+    "path": "code/_onclick/hud/action.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/datum/action",
+    "field": "button",
+    "type": "/obj/screen/movable/action_button",
+    "path": "code/_onclick/hud/action.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/datum/action",
+    "field": "owner",
+    "type": "/mob/living",
+    "path": "code/_onclick/hud/action.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  }
+]

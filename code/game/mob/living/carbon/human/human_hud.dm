@@ -59,6 +59,9 @@
 			client.mouse_pointer_icon = client.prefs.cursor
 		check_HUD()
 		client.screen |= contents
+		// Reconnect rebuilds clear screen; restored actions can already have
+		// this owner, so Grant() intentionally returns before adding buttons.
+		update_action_buttons()
 
 /mob/living/human/create_HUD()
 

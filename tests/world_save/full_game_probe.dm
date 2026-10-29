@@ -1,4 +1,116 @@
 var/global/datum/world_save_game_probe/world_save_game_probe = new
+
+// Keep targets stable during the yielding serializer. Constructors, movement,
+// exclusion hooks and the exporter/importer are production implementations.
+/mob/living/simple_animal/frog/persistence_pointer_probe/Life()
+	return
+
+/mob/living/human/persistence_action_probe/Life()
+	return
+
+/datum/world_save_game_probe/proc/check_action_restore()
+	var/turf/home = locate(24,20,1)
+	var/mob/living/human/persistence_action_probe/holder = new(home)
+	holder.persistence_restored = TRUE
+	holder.stunned = 7
+	holder.mouth_covered = TRUE
+	var/obj/item/weapon/attachment/scope/adjustable/binoculars/scope = new(holder)
+	holder.l_hand = scope
+	scope.on_changed_slot()
+	var/obj/item/turret_controls/controls = new(holder)
+	holder.r_hand = controls
+	controls.azoom.Grant(holder)
+	var/obj/item/garrote/garrote = new(holder)
+	garrote.garroting = TRUE
+	garrote.next_garrote = world.time + 400
+	garrote.update_icon()
+	var/obj/item/flashlight/light = new(holder)
+	light.action_button_name = "fixture flashlight"
+	holder.handle_actions()
+	var/map_storage/storage = new("action-fixture")
+	storage.saving_z = 1
+	var/savefile/F = new("runtime-actions.sav")
+	F["/format_version"] << 3
+	var/ref = storage.BuildVarDirectory(F, holder, 1)
+	for(var/obj/item/I in list(scope, controls, garrote, light))
+		var/item_ref = storage.saving_references["\ref[I]"]
+		if(!item_ref) throw EXCEPTION("Action fixture item was not saved")
+		F.cd = storage.entry_path(F, item_ref)
+		if("actions" in F.dir || "action" in F.dir || (I == controls && "azoom" in F.dir))
+			throw EXCEPTION("Constructor action graph was exported")
+		// Legacy null action entries must never replace constructor graphs.
+		F["actions"] << list("kind" = "entry", "ref" = 999996)
+		F["action"] << list("kind" = "entry", "ref" = 999997)
+		if(I == controls) F["azoom"] << list("kind" = "entry", "ref" = 999998)
+		if(I == garrote)
+			F["garroting"] << list("kind" = "value", "value" = TRUE)
+	F.cd = storage.entry_path(F, ref)
+	F["mouth_covered"] << list("kind" = "value", "value" = TRUE)
+	storage.clear_bookkeeping()
+	storage.loading_z = 1
+	var/mob/living/human/restored = storage.Load_Entry(F, ref, null, home)
+	for(var/datum/loaded in storage.all_loaded.Copy()) loaded.after_load()
+	var/obj/item/weapon/attachment/scope/restored_scope = restored.l_hand
+	var/obj/item/turret_controls/restored_controls = restored.r_hand
+	if(!istype(restored_scope) || !restored_scope.azoom || !(restored_scope.azoom in restored_scope.actions) || restored_scope.azoom.owner != restored || !(restored_scope.azoom in restored.actions))
+		throw EXCEPTION("Restored held binoculars lost constructor action or grant")
+	if(!istype(restored_controls) || !restored_controls.azoom || restored_controls.azoom.scope != restored_controls.optics || restored_controls.azoom.owner != restored || !(restored_controls.azoom in restored_controls.actions))
+		throw EXCEPTION("Restored turret controls lost action, optics binding or grant")
+	var/obj/item/garrote/restored_garrote = locate() in restored
+	var/obj/item/flashlight/restored_light = locate() in restored
+	if(!restored_garrote || restored_garrote.garroting || restored_garrote.next_garrote || restored_garrote.icon_state != initial(restored_garrote.icon_state) || restored.mouth_covered || restored.stunned != 7)
+		throw EXCEPTION("Discarded grab/garrote state survived or unrelated restriction changed")
+	if(!restored_light || !restored_light.action || restored_light.action.owner != restored || restored_light.action.target != restored_light)
+		throw EXCEPTION("Generic restored item action was not regenerated")
+	if(!holder.mouth_covered || !garrote.garroting || controls.azoom.owner != holder || scope.azoom.owner != holder)
+		throw EXCEPTION("Export/import mutated original live owners")
+	qdel(holder)
+	qdel(restored)
+	storage.clear_bookkeeping()
+	text2file("PASS: constructor scope/turret/generic action graphs and grants restored; grab dependents discarded", "runtime_action_result.txt")
+
+/datum/world_save_game_probe/proc/check_runtime_pointers()
+	if(world.maxz < 2)
+		throw EXCEPTION("Pointer regression requires two isolated levels")
+	var/turf/home = locate(23,20,1)
+	var/mob/living/simple_animal/frog/persistence_pointer_probe/actor = new(home)
+	var/mob/living/simple_animal/frog/persistence_pointer_probe/target = new(home)
+	actor.LAssailant = target
+	actor.target_mob = target
+	actor.target_obj = target
+	actor.pathfind_target = target
+	actor.stance = HOSTILE_STANCE_ATTACK
+	actor.moving = TRUE
+	actor.found_path = list(home)
+	if(!target.forceMove(locate(23,20,2)) || target.z != 2)
+		throw EXCEPTION("Pointer regression could not move target across z")
+	if(!ticker.savemap())
+		throw EXCEPTION("Cross-z AI pointer blocked world save: [map_storage.last_error]")
+	var/map_storage/storage = new("pointer-fixture")
+	storage.saving_z = 1
+	var/savefile/F = new("runtime-pointers.sav")
+	F["/format_version"] << 3
+	var/ref = storage.BuildVarDirectory(F, actor, 1)
+	F.cd = storage.entry_path(F, ref)
+	for(var/key in list("LAssailant", "target_mob", "target_obj", "pathfind_target", "stance", "moving", "found_path"))
+		if(key in F.dir)
+			throw EXCEPTION("Runtime pointer or dependent AI state was exported: [key]")
+	if(actor.target_mob != target || actor.target_obj != target || actor.pathfind_target != target || actor.LAssailant != target || actor.stance != HOSTILE_STANCE_ATTACK || !actor.moving)
+		throw EXCEPTION("Export mutated live AI pointers or stance")
+	// Historical payloads must be skipped before decoding a dangling reference.
+	F["target_mob"] << list("kind" = "entry", "ref" = 999999)
+	F["stance"] << list("kind" = "value", "value" = HOSTILE_STANCE_ATTACK)
+	storage.clear_bookkeeping()
+	storage.loading_z = 1
+	var/mob/living/simple_animal/restored = storage.Load_Entry(F, ref, null, home)
+	if(!restored || restored.target_mob || restored.stance != initial(restored.stance) || restored.moving)
+		throw EXCEPTION("Historical pointer import restored orphaned AI state")
+	qdel(actor)
+	qdel(target)
+	qdel(restored)
+	storage.clear_bookkeeping()
+	text2file("PASS: real frog cross-z pointers omitted without live mutation; legacy AI state ignored", "runtime_pointer_result.txt")
+
 /datum/world_save_game_probe/New()
 	// This compiled test world has no external adapters configured. Explicitly
 	// disable optional outbound hooks before the ordinary startup spawns run.
@@ -19,6 +131,8 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 				del(world)
 			return
 		world.name = "Civ13 LOCAL full-game world-save probe"
+		check_action_restore()
+		check_runtime_pointers()
 		var/turf/T = locate(20,20,1)
 		var/saved_turf_type = T.type
 		var/obj/structure/closet/crate/C = new(T)

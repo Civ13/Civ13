@@ -109,6 +109,9 @@
 	gun_work_busy = FALSE
 	if (optic_rail && optic_rail.loc != src) optic_rail = null
 	recompute_configuration()
+	var/mob/living/holder = loc
+	if (istype(holder) && (holder.l_hand == src || holder.r_hand == src))
+		update_attachment_actions(holder)
 
 /obj/item/weapon/gun/proc/configuration_unloaded()
 	if (istype(src, /obj/item/weapon/gun/projectile))

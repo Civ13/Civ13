@@ -24,6 +24,12 @@ Parts of code courtesy of Super3222
 	..()
 	build_zooming()
 
+/obj/item/weapon/attachment/scope/after_load()
+	. = ..()
+	// The inherited attachment hook preserves constructor-owned azoom/actions.
+	// Slot references are complete by this pass; restore only held-item grants.
+	on_changed_slot()
+
 /obj/item/weapon/attachment/scope/adjustable
 	name = "generic adjustable scope"
 	var/min_zoom = 3

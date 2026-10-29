@@ -205,6 +205,10 @@
 // Ignoring historical values during import leaves new mobs at their defaults,
 // without resetting cooldowns or active actions on an existing live mob.
 /mob/persistence_runtime_var(key)
+	if (key == "mouth_covered")
+		return TRUE
+	if (key == "actions" || key == "grab_list" || key == "grabbed_by")
+		return TRUE
 	if (key == "pickaxe_mining_action" || key == "next_animal_retaliation" || key == "LAssailant")
 		return TRUE
 	switch(key)
@@ -217,6 +221,24 @@
 
 /datum/hud
 	should_save = FALSE
+
+// Actions and grabs are live ownership graphs, not inventory or world assets.
+// Exclude whole graphs as well as mob indexes; legacy import rejects their
+// types before constructors can require a client, assailant or victim.
+/datum/action
+	should_save = FALSE
+
+/obj/item/weapon/grab
+	should_save = FALSE
+
+/mob/living/simple_animal/hostile/persistence_runtime_var(key)
+	return key == "target" || ..()
+
+/mob/living/simple_animal/pet/persistence_runtime_var(key)
+	return key == "movement_target" || key == "flee_target" || ..()
+
+/mob/observer/ghost/persistence_runtime_var(key)
+	return key == "following" || ..()
 
 // Dirt uses the turf allowlist rather than the object changed-vars encoder.
 // Preserve finite fertility across exports without serializing recovery tokens.
@@ -304,6 +326,7 @@ map_storage
 		var/last_error = null
 		// Admin VV diagnostic snapshots only. Never retain live objects here.
 		var/list/last_save_reference_failure
+		var/consecutive_save_failures = 0
 		var/round_restored = FALSE
 		var/per_pause = 200
 		var/so_far = 0
@@ -316,6 +339,7 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
+	if(key == "consecutive_save_failures") return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
 	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE
@@ -582,14 +606,43 @@ var/global/datum/persistence_admission_identity
 		if(kind == "save") success = save_world_contents(operation)
 		else success = load_world_contents(operation)
 	catch(var/exception/e)
+		if(kind == "save") record_save_outcome(FALSE)
 		if(owns_operation)
 			cleanup_world_operation()
 			operation.finish(FALSE)
 		throw e
+	if(kind == "save") record_save_outcome(success)
 	if(owns_operation)
 		if(!success) cleanup_world_operation()
 		operation.finish(success)
 	return success
+
+// Count only admitted backend attempts, including direct Save_World calls.
+// Keep notifications bounded and use the existing log/admin destinations.
+/map_storage/proc/save_failure_alert_due(success)
+	if(success)
+		src.consecutive_save_failures = 0
+		return FALSE
+	src.consecutive_save_failures++
+	return src.consecutive_save_failures == 3 || src.consecutive_save_failures % 10 == 0
+
+/map_storage/proc/record_save_outcome(success)
+	if(!save_failure_alert_due(success)) return
+	try
+		var/context = "no reference diagnostic"
+		var/list/failure = last_save_reference_failure
+		if(islist(failure))
+			var/list/source = failure["source"]
+			var/list/target = failure["target"]
+			if(islist(source) && islist(target))
+				context = "kind=[failure["kind"]] source=[source["type"]] field=[source["field"]] target=[target["type"]] saved_z=[failure["saved_z"]] target_z=[target["native_z"]]"
+		var/message = "World save has failed [consecutive_save_failures] consecutive times: [context]. Inspect map_storage.last_save_reference_failure."
+		world.log << message
+		message_admins(message)
+	catch
+		// An unavailable notification sink must not strand save admission or
+		// replace the original export exception. No lookup refs are published.
+		world.log << "World-save failure alert could not be delivered."
 
 // Cleanup can dispatch subtype code. Keep admission until every attempted
 // cleanup finishes, and contain cleanup exceptions so release still occurs.

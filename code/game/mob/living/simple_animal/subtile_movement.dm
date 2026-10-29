@@ -225,6 +225,10 @@
 	return P
 
 /mob/living/simple_animal/persistence_runtime_var(key)
+	// Targets, path caches and their control state belong to this AI run. Keep
+	// following_mob durable pending a separate leash ownership policy decision.
+	if (key in list("target_obj", "target_mob", "pathfind_target", "found_path", "moving", "last_pathfound", "move_gen", "stance", "stance_step"))
+		return TRUE
 	if (key == "glide_size" && (npc_subtile_glide_owned || npc_subtile_import_owned || npc_subtile_position))
 		return TRUE
 	if ((key == "step_x" || key == "step_y") && (npc_subtile_import_owned || npc_subtile_position))
