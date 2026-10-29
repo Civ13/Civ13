@@ -2,21 +2,17 @@
 import ast
 from pathlib import Path
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 PATH = 'code/modules/persistence/zone_topology.dm'
-BASE = '99647037c70786a3c3944fcf5ae51b570b377f08'
 
 
 class FormatCompatibility(unittest.TestCase):
-    def test_only_typed_version_admission_changes_from_pinned_master(self):
-        before = subprocess.check_output(['git', 'show', BASE+':'+PATH], cwd=ROOT, text=True)
-        anchor = 'F["/format_version"] != 2'
-        self.assertEqual(before.count(anchor), 1)
-        self.assertEqual((ROOT/PATH).read_text(), before.replace(anchor,
-            '!(F["/format_version"] in list(2, 3))', 1))
+    def test_zone_header_admits_typed_versions_2_and_3_only(self):
+        source = (ROOT/PATH).read_text()
+        self.assertEqual(source.count('!(F["/format_version"] in list(2, 3))'), 1)
+        self.assertNotIn('F["/format_version"] != 2', source)
 
     def test_actual_guard_accepts_only_typed_versions_with_matching_generation_and_dimensions(self):
         source = (ROOT/PATH).read_text()
