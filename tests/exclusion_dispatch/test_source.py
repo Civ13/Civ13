@@ -18,7 +18,7 @@ from unittest.mock import Mock, patch
 
 import resources
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
-from source_contract import (validate_current_master, validate_historical_bounded, project_lighting_policy, project_fullbright_exclusions, project_area_change_owner, CURRENT_BASE, MERGE_BASE, MERGE_MASTER, validate_merged_source, project_merged_source, event_identity, replay_reviewed_merge, resolve_event_projection, current_lighting_policy)
+from source_contract import (validate_current_master, validate_historical_bounded, project_lighting_policy, project_fullbright_exclusions, project_area_change_owner, CURRENT_BASE, MERGE_BASE, MERGE_MASTER, validate_merged_source, project_merged_source, event_identity, replay_reviewed_merge, resolve_event_projection, current_lighting_policy, project_ordered_release, has_ordered_release_history, ORDERED_RELEASE)
 
 # Frozen reconciliation checkpoint for historical assertions, never the runner's
 # live reference. Actual CI preparation uses the immutable event pair instead.
@@ -602,9 +602,12 @@ class ReviewedCurrentSource(unittest.TestCase):
             ancestor = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
             snapshot = project_merged_source(cls.feature)
             validate_merged_source(cls.feature, snapshot)
-            cls.expected, _ = resolve_event_projection(ROOT, cls.identity, cls.feature, cls.current, ancestor, snapshot)
+            cls.expected, _ = resolve_event_projection(ROOT, cls.identity, cls.feature, cls.current, ancestor, snapshot,
+                                                       ordered_release=has_ordered_release_history(ROOT, cls.identity['head']))
         else:
             cls.expected = current_lighting_policy(project_merged_source(cls.feature))
+            if has_ordered_release_history(ROOT, subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()):
+                cls.expected = project_ordered_release(cls.expected)
 
     def validate_current(self, source):
         # Full-file equality includes admitted custody, roof/zone cleanup and
@@ -723,10 +726,13 @@ class EventRunnerTests(unittest.TestCase):
     def execute_runner(self, directory, control=None, *, mismatch=False, changed_helper=False, bad_event=False,
                        base_edit='\n// unrelated future base evolution\n', head_edit=None,
                        event_kind='pull_request', event_base=None, source_version='516.1681', feature_base=False,
-                       replace_target=False, drop_custody=False, ancestry_result=0, extra_movable=False):
+                       replace_target=False, drop_custody=False, ancestry_result=0, extra_movable=False,
+                       ordered_release=False, omit_ordered_release=False):
         base_sha, head_sha = 'b' * 40, 'a' * 40
         base = (self.feature_source if feature_base else self.base_source) + base_edit
         candidate = self.merged + (base_edit if head_edit is None else head_edit)
+        if ordered_release and not omit_ordered_release:
+            candidate = project_ordered_release(candidate)
         if extra_movable:
             anchor = 'key == "original_target" || ..()'
             assert base.count(anchor) == candidate.count(anchor) == 1
@@ -772,6 +778,8 @@ class EventRunnerTests(unittest.TestCase):
             if command[:3] == ['git', 'merge-base', '--is-ancestor']:
                 if isinstance(ancestry_result, Exception):
                     raise ancestry_result
+                if command[3] == ORDERED_RELEASE:
+                    return subprocess.CompletedProcess(command, 0 if ordered_release else 1, '', '')
                 return subprocess.CompletedProcess(command, ancestry_result, '', 'injected Git error')
             return original_run(command, **kwargs)
         def read(path, *args, **kwargs):
@@ -803,6 +811,24 @@ class EventRunnerTests(unittest.TestCase):
         self.assertEqual(receipt['required_version'], source_version)
         self.assertEqual(receipt['projection'], 'feature-base' if feature_base else 'master-base')
         return out.with_suffix('.sources').joinpath('production.dm').read_text()
+
+    def test_reviewed_release_projection_and_ordered_event_are_fail_closed(self):
+        ordered = project_ordered_release(self.merged)
+        self.assertEqual(project_ordered_release(ordered), ordered)
+        for bad in (self.merged.replace('release_attempted = TRUE', 'release_attempted = FALSE', 1),
+                    self.merged + self.merged):
+            with self.assertRaises(ValueError):
+                project_ordered_release(bad)
+        with tempfile.TemporaryDirectory() as tmp:
+            self.execute_runner(Path(tmp), ordered_release=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ValueError):
+                self.execute_runner(Path(tmp), ordered_release=True, omit_ordered_release=True)
+        for result in (subprocess.CompletedProcess([], 128, '', 'missing'),
+                       subprocess.TimeoutExpired('git', 15), OSError('git unavailable')):
+            with self.subTest(result=result), patch.object(subprocess, 'run', side_effect=result if isinstance(result, Exception) else None, return_value=result):
+                with self.assertRaisesRegex(ValueError, 'Cannot verify release-order ancestry'):
+                    has_ordered_release_history(ROOT, 'a' * 40)
 
     def test_actual_runner_accepts_evolved_base_and_mutates_all_controls(self):
         with tempfile.TemporaryDirectory() as tmp:

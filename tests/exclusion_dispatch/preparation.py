@@ -5,7 +5,7 @@ import re
 import subprocess
 
 from source_contract import (current_lighting_policy, reconstruct_list_baseline, validate_current_master,
-                             project_merged_source, resolve_event_projection, replay_reviewed_merge,
+                             project_merged_source, resolve_event_projection, replay_reviewed_merge, has_ordered_release_history,
                              MERGE_BASE, MERGE_MASTER)
 
 PATH = 'code/modules/persistence/functions.dm'
@@ -97,7 +97,8 @@ def prepare(repo, base, head, **event):
         feature = committed(MERGE_BASE, PATH)
         master = committed(MERGE_MASTER, PATH)
         reviewed = project_merged_source(feature)
-        _, projection = resolve_event_projection(repo, identity, feature, current[PATH], master, reviewed)
+        _, projection = resolve_event_projection(repo, identity, feature, current[PATH], master, reviewed,
+                                                 ordered_release=has_ordered_release_history(repo, head))
     else:
         validate_current_master(old, current[PATH])
     for path, _ in INHERITED:

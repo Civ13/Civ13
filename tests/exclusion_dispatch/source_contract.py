@@ -9,6 +9,7 @@ import tempfile
 CURRENT_BASE = '99647037c70786a3c3944fcf5ae51b570b377f08'
 MERGE_BASE = 'c4585fabaf81e1357054b4527d71d4f3a2d8a0b2'
 MERGE_MASTER = 'eedc9862fcb7b2b7c3617c6972965fafa650e51a'
+ORDERED_RELEASE = 'b2f6845438391f9874834d4c59cc1115f35c04b5'
 
 
 # Reviewed bounded-save integration adds only these non-hook blocks to the
@@ -224,7 +225,40 @@ def replay_reviewed_merge(base, reviewed_base, reviewed_result):
         return result.stdout
 
 
-def resolve_event_projection(repo, identity, feature, candidate, master, reviewed):
+
+def has_ordered_release_history(repo, head):
+    """Select the reviewed source delta by immutable ancestry, never candidate text."""
+    try:
+        result = subprocess.run(['git', 'merge-base', '--is-ancestor', ORDERED_RELEASE, head],
+                                cwd=repo, capture_output=True, text=True, timeout=15)
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError('Cannot verify release-order ancestry') from error
+    if result.returncode not in (0, 1):
+        raise ValueError('Cannot verify release-order ancestry: Git exited ' + str(result.returncode))
+    return result.returncode == 0
+
+
+def project_ordered_release(source):
+    """Apply exactly the reviewed provider-release/player-callback reorder."""
+    players = ('\t\tif(!transaction)\n'
+               '\t\t\toperation.restoring_players = TRUE\n'
+               '\t\t\tstorage.finish_player_restoration()\n')
+    release = ('\t\tif(attempt_owned)\n'
+               '\t\t\tphase = "release"\n'
+               '\t\t\trelease_attempted = TRUE\n'
+               '\t\t\tif(attempt.release_transients() != TRUE)\n'
+               '\t\t\t\tthrow EXCEPTION("Restore transient release rejected")\n')
+    ordered_players = players.replace('\t\t\toperation.restoring_players',
+                                      '\t\t\tphase = "players"\n\t\t\toperation.restoring_players', 1)
+    old, new = players + release, release + ordered_players
+    if source.count(old) == 1 and source.count(new) == 0:
+        return source.replace(old, new, 1)
+    if source.count(new) == 1 and source.count(old) == 0:
+        return source
+    raise ValueError('Reviewed release-order projection anchor changed or duplicated')
+
+
+def resolve_event_projection(repo, identity, feature, candidate, master, reviewed, ordered_release=False):
     """Select an exact master- or feature-ancestry projection, rejecting drift."""
     base = current_lighting_policy(subprocess.check_output(['git', 'show', identity['base'] + ':code/modules/persistence/functions.dm'], cwd=repo, text=True))
     feature, master, reviewed = map(current_lighting_policy, (feature, master, reviewed))
@@ -232,12 +266,16 @@ def resolve_event_projection(repo, identity, feature, candidate, master, reviewe
         projected = replay_reviewed_merge(base, master, reviewed)
     except ValueError:
         projected = None
+    if projected is not None and ordered_release:
+        projected = project_ordered_release(projected)
     if candidate == projected:
         return projected, 'master-base'
     ancestor = subprocess.check_output(['git', 'merge-base', identity['base'], MERGE_BASE], cwd=repo, text=True).strip()
     if ancestor != MERGE_BASE:
         raise ValueError('Event base is not descended from the reviewed feature')
     projected = replay_reviewed_merge(base, feature, reviewed)
+    if ordered_release:
+        projected = project_ordered_release(projected)
     if candidate != projected:
         raise ValueError('Source does not match a reviewed projection of the event base')
     return projected, 'feature-base'
