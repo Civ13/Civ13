@@ -42,16 +42,28 @@ def compiled_binding(root,head):
     try:return provenance.validate_compile(root,head)
     except (provenance.Invalid,ValueError,KeyError,OSError) as error:raise Rejected(str(error)) from error
 
-def initialize(root,head,*,failure_control=None):
+def authorization_digest(root,authorized_session):
+    path=Path(root)/'authorized-identity.txt'
+    if type(authorized_session) is not bool:raise Rejected('Explicit approved-session Boolean required')
+    if not authorized_session:
+        if path.exists():raise Rejected('Existing session file needs explicit approved-session opt-in')
+        return None
+    data=bounded(path)
+    if not data.strip() or len(data)>256:raise Rejected('One approved local fixture identity required')
+    return digest(data)
+
+def initialize(root,head,*,failure_control=None,authorized_session=False):
     """Call once in a fresh prepared/compiled stage before the owner launches it."""
     root=Path(root).resolve()
     if not re.fullmatch('[0-9a-f]{40}',head) or failure_control not in (None,'runtime','admission'):
         raise Rejected('Explicit source head and known control required')
-    for name in ('run.binding.json','client-ready.txt','phase.request','phase.ready.json','fixture.failed.json','complete.txt'):
+    reserved=('run.binding.json','client-ready.txt','phase.request','phase.ready.json','fixture.failed.json','complete.txt')
+    for name in reserved+tuple('phase-'+str(n)+'.ready.json' for n in range(1,10)):
         if (root/name).exists():raise Rejected('Fresh run directory required: '+name)
     accepted=compiled_binding(root,head)
     binding=dict(schema=2,run=uuid.uuid4().hex,head=head,
-        manifest=accepted['input_binding']['manifest_sha256'],compile_binding=accepted,failure_control=failure_control)
+        manifest=accepted['input_binding']['manifest_sha256'],compile_binding=accepted,failure_control=failure_control,
+        authorized_session=authorized_session,authorized_identity_sha256=authorization_digest(root,authorized_session))
     with (root/'run.binding.json').open('x',encoding='utf-8') as stream:
         json.dump(binding,stream)
     return binding
@@ -74,6 +86,8 @@ class PhaseGate:
             raise Rejected('Source/compiled binding changed')
 
     def healthy(self):
+        if authorization_digest(self.root,self.binding['authorized_session'])!=self.binding['authorized_identity_sha256']:
+            raise Rejected('Approved fixture identity changed during run')
         if (self.root/'fixture.failed.json').exists():raise Rejected('Native fixture failure retained')
         for path in self.logs:
             log=bounded(path).decode('utf-8',errors='replace')
@@ -84,10 +98,12 @@ class PhaseGate:
         """Poll Pending; treat Rejected as terminal. Recheck after each capture."""
         if type(expected) is not int or not 1<=expected<=9:raise Rejected('Known phase required')
         self.healthy()
-        path=self.root/'phase.ready.json'
+        path=self.root/('phase-'+str(expected)+'.ready.json')
         if not path.exists():raise Pending('No settled acknowledgment yet')
         try:ack=json.loads(bounded(path))
-        except json.JSONDecodeError as error:raise Pending('Acknowledgment write incomplete') from error
+        except json.JSONDecodeError as error:
+            if error.msg=='Extra data':raise Rejected('Multiple acknowledgment records') from error
+            raise Pending('Acknowledgment write incomplete') from error
         if ack.get('phase')!=expected:raise Pending('Waiting for requested phase')
         for field in ('schema','run','manifest','head'):
             if ack.get(field)!=self.binding[field]:raise Rejected('Stale/foreign phase binding: '+field)

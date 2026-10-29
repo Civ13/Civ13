@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace as N
 from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -12,6 +13,8 @@ spec=importlib.util.spec_from_file_location('root_tree_prepare',Path(__file__).w
 prepare=importlib.util.module_from_spec(spec);spec.loader.exec_module(prepare)
 spec=importlib.util.spec_from_file_location('preparation_support',Path(__file__).with_name('support.py'))
 support=importlib.util.module_from_spec(spec);spec.loader.exec_module(support)
+spec=importlib.util.spec_from_file_location('fixture_projection',Path(__file__).with_name('test_contract.py'))
+projection=importlib.util.module_from_spec(spec);spec.loader.exec_module(projection)
 
 
 class Preparation(unittest.TestCase):
@@ -42,22 +45,48 @@ class Preparation(unittest.TestCase):
         self.assertIn('M.client.view = "15x15"',source)
         self.assertIn('new /obj/hidden_witness',source)
         self.assertIn('T.sync_fullbright_coverage()',source)
-        self.assertIn('if(copytext(key,1,6) != "Guest")',source)
-        # text2file appends; replace the prior sample before publishing new JSON.
-        self.assertLess(source.index('fdel("phase.ready.json")'),source.index('text2file(json_encode('))
+        self.assertIn('if(!fixture_client_allowed(client))',source)
+        # Immutable per-phase publication avoids delete/read sharing races.
+        self.assertNotIn('fdel("phase.ready.json")',source)
+        self.assertIn('"phase-[phase].ready.json"',source)
         client_del=source.split('/client/Del()',1)[1].split('/proc/',1)[0]
         self.assertLess(client_del.index('los_context.retire()'),client_del.index('root_tree_presenter.retire()'))
         self.assertNotIn('civ13.dmb',source)
         self.assertIn('/atom/movable\n\tplane = GAME_PLANE',source)
         caller=source.split('spawn(1)',1)[1].split('/proc/fixture_phase',1)[0]
-        self.assertLess(caller.index('fixture_phase(phase, src) != TRUE'),caller.index('text2file(json_encode(witness)'))
+        self.assertLess(caller.index('fixture_phase(phase, src) != TRUE'),caller.index('fixture_publish(phase, witness)'))
         self.assertIn('fixture_failed || !witness',caller)
         self.assertIn('phase == 9 && !fixture_failed',caller)
+        self.assertIn('closed = (fixture_presenter.shutter in M.client.screen)',source)
         error=source.split('/world/Error(',1)[1].split('/proc/',1)[0]
         self.assertIn('fixture_fail("native_runtime")',error)
         for name in ('tree_identity','plane_identity','plane_constructor_identity','plane_refresh_identity',
                      'plane_constructor_[name]','plane_refresh_[name]'):
             self.assertIn('"'+name+'"',source)
+
+    def test_actual_publisher_never_deletes_or_appends_an_existing_ack(self):
+        source=Path(__file__).with_name('fixture.dm').read_text();env=projection.environment();files={};failures=[]
+        def write(data,path):files[path]=files.get(path,'')+data+'\n';return True
+        env.update(fixture_failed=False,islist=lambda x:isinstance(x,dict),fexists=lambda path:path in files,
+                   json_encode=json.dumps,text2file=write,fixture_fail=lambda why:failures.append(why) or False)
+        publish=projection.compile_proc(source,'/proc/fixture_publish(','phase, witness',env)
+        self.assertTrue(publish(7,{'phase':7}));self.assertTrue(publish(8,{'phase':8}))
+        self.assertEqual(json.loads(files['phase-7.ready.json'])['phase'],7)
+        self.assertEqual(json.loads(files['phase-8.ready.json'])['phase'],8)
+        old=dict(files);self.assertFalse(publish(7,{'phase':7}));self.assertEqual(files,old)
+        self.assertEqual(failures,['duplicate_ack'])
+        env['fixture_failed']=True;self.assertFalse(publish(9,{'phase':9}));self.assertNotIn('phase-9.ready.json',files)
+
+    def test_fixture_loopback_guest_and_explicit_exact_session_admission(self):
+        source=Path(__file__).with_name('fixture.dm').read_text();env=projection.environment()
+        env.update(fixture_authorized_session=False,fixture_authorized_identity='fixtureuser',copytext=lambda x,a,b:x[a-1:b-1])
+        allowed=projection.compile_proc(source,'/proc/fixture_client_allowed(','C',env)
+        guest=N(key='Guest-123',ckey='guest123',address='127.0.0.1')
+        account=N(key='Fixture User',ckey='fixtureuser',address='127.0.0.1')
+        self.assertTrue(allowed(guest));self.assertFalse(allowed(account))
+        env['fixture_authorized_session']=True;self.assertTrue(allowed(account))
+        account.ckey='anotheruser';self.assertFalse(allowed(account))
+        guest.address='192.0.2.1';self.assertFalse(allowed(guest))
 
     def test_ci_registers_offline_files_only(self):
         spec=importlib.util.spec_from_file_location('root_ci',ROOT/'scripts/ci_baseline.py')

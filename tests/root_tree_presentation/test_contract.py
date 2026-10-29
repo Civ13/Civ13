@@ -38,6 +38,7 @@ def compile_proc(text,signature,args,env,method=False):
         line=re.sub(r'^var/(?:\w+/)*(\w+)\s*=',r'\1 =',line)
         line=P.expression(line).replace('.Copy()','.copy()').replace('.Cut()','.clear()')
         line=line.replace('arglist(sample)','*sample')
+        line=line.replace('"phase-[phase].ready.json"','f"phase-{phase}.ready.json"')
         line=re.sub(r'([\w.]+)\.len',r'len(\1)',line)
         line=line.replace('/obj/structure/wild/tree/live_tree',repr('/obj/structure/wild/tree/live_tree'))
         line=line.replace('/turf/floor/plating',repr('/turf/floor/plating'))
@@ -67,7 +68,8 @@ def environment():
       'isnum':lambda x:isinstance(x,(int,float)),'islist':lambda x:isinstance(x,list),
       'dm_list':lambda *xs:Values(xs),'isturf':lambda x:hasattr(x,'type') and x.type=='/turf/floor/plating',
       'length':lambda x:0 if x is None else len(x),'qdel':lambda x:setattr(x,'deleted',True),
-      'root_tree_presenters':Items(),'BLEND_OVERLAY':2,
+      'root_tree_presenters':Items(),'BLEND_OVERLAY':2,'ROOT_TREE_PLANE':6,'TILE_BOUND':8,
+      'RESET_COLOR':16,'RESET_ALPHA':32,'RESET_TRANSFORM':64,
       'isnull':lambda x:x is None,'istype':lambda x,t:t=='/matrix' and isinstance(x,Matrix)}
     compile_proc(TREE,'/proc/root_tree_identity_transform(','M',env)
     return env
@@ -76,7 +78,7 @@ def tree():
     return N(type='/obj/structure/wild/tree/live_tree',gcDestroyed=False,gc_destroyed=False,
       loc=N(type='/turf/floor/plating'),anchored=True,opacity=True,step_x=0,step_y=0,pixel_x=-16,pixel_y=0,
       bound_x=0,bound_y=0,bound_width=32,bound_height=32,plane=1,layer=5.11,pixel_w=0,pixel_z=0,appearance_flags=0,transform=identity(),filters=[],overlays=[],underlays=[],
-      vis_contents=[],render_source=None,render_target=None,maptext='',icon='icons/obj/flora/bigtrees.dmi')
+      vis_contents=[],render_source=None,render_target=None,maptext='',icon='icons/obj/flora/bigtrees.dmi',mouse_opacity=1,alpha=255)
 
 class Snapshot(unittest.TestCase):
     def setUp(self):
@@ -227,9 +229,32 @@ class OwnershipAndComposition(unittest.TestCase):
         refresh=P.fragment(TREE,'/datum/root_tree_presenter/proc/refresh(')
         self.assertLess(refresh.index('context.decision'),refresh.index('root_light_rgb'))
         self.assertLess(refresh.index('root_light_rgb'),refresh.index('frame.Blend(rgb, ICON_MULTIPLY)'))
-        self.assertNotIn('I.color = sample',refresh);self.assertIn('I.loc = T',refresh)
-        self.assertIn('I.mouse_opacity = T.mouse_opacity',refresh);self.assertIn('I.appearance_flags |= TILE_BOUND',refresh)
+        setting=P.fragment(TREE,'/proc/root_tree_set_frame(')
+        self.assertNotIn('I.color = sample',setting);self.assertIn('I.loc = T',setting)
+        self.assertIn('I.mouse_opacity = T.mouse_opacity',setting);self.assertIn('I.appearance_flags |= TILE_BOUND',setting)
         self.assertLess(refresh.index('if(!context.capture())'),refresh.index('owner.screen -= shutter'))
+    def test_attached_frame_uses_parent_visual_offsets_once(self):
+        env=environment();f=compile_proc(TREE,'/proc/root_tree_set_frame(','I, T, frame',env)
+        class Image:
+            def __setattr__(self,name,value):
+                if name=='appearance':self.__dict__.update(vars(value))
+                else:object.__setattr__(self,name,value)
+        for x,y in [(-16,0),(-24,0),(-8,16)]:
+            t=tree();t.pixel_x=x;t.pixel_y=y;t.appearance=t;i=Image()
+            f(i,t,object())
+            self.assertEqual((x+i.pixel_x,y+i.pixel_y),(x,y))
+            self.assertTrue(i.appearance_flags & env['RESET_COLOR']);self.assertTrue(i.appearance_flags & env['RESET_ALPHA'])
+        mutant=TREE.replace('\tI.pixel_x = 0\n','').replace('\tI.pixel_y = 0\n','')
+        omitted=compile_proc(mutant,'/proc/root_tree_set_frame(','I, T, frame',env)
+        t=tree();t.pixel_x=-16;t.pixel_y=0;t.appearance=t;i=Image();omitted(i,t,object())
+        self.assertEqual((t.pixel_x+i.pixel_x)-t.pixel_x,-16)
+    def test_weather_render_source_is_anchored_to_map_origin(self):
+        weather=P.fragment(TREE,'/obj/screen/root_tree_weather')
+        self.assertIn('screen_loc = "WEST,SOUTH"',weather)
+        # Native diagnostic patch: x=192..223, y=384..415 in a 480px map.
+        # CENTER adds seven tiles (224px), moving it completely above the map.
+        visible=lambda offset:sum(0<=y+offset<480 for y in range(384,416))
+        self.assertEqual(visible(0),32);self.assertEqual(visible(224),0)
     def test_invalidation_precedes_native_mutation_and_has_omission_control(self):
         def check(source,signature,write):
             body=P.fragment(source,signature)

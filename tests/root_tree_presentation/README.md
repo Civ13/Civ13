@@ -35,6 +35,9 @@ root-turf view membership. Hidden/stale roots receive blank image overrides;
 no shared tree invisibility or opacity is changed. Images remain attached to
 their original tree; visible overrides retain its mouse opacity. Native mouse
 delivery and alignment still need the client acceptance described below.
+Image-local offsets are zero: the attached owner supplies its original visual
+offset once. Baked tint and copied alpha use reset flags to avoid inheriting
+those appearance properties a second time.
 Explicit lighting bypass at see_invisible >=45 and intentional fullbright turf
 policy produce white; an absent/pending/foreign mask does not produce white.
 
@@ -42,6 +45,10 @@ The tree output uses plane 6 above the tile mask. A client-owned lease captures
 the existing weather plane and replays it above trees on plane 7. Plane 5 stays
 reserved for the earlier independent LOS presenter lane. HUD/chat stay above
 these planes. The presenter refuses a weather plane already leased elsewhere.
+The replay anchors at WEST,SOUTH, matching the viewport-sized source slate.
+The [BYOND reference](https://www.byond.com/docs/ref/info.html#/atom/var/render_source)
+specifies bottom-left render-source anchoring; CENTER does not account for
+icon extent. The earlier CENTER replay moved the diagnostic cyan patch off-map.
 Null or exactly identity native transform matrices are accepted for trees and
 the game plane. All six components are compared exactly; no epsilon admits a
 small translation, scale, rotation or shear. It refuses game-plane filters,
@@ -111,7 +118,7 @@ the pinned compiler, command, log and retained-process exit audit. Keep each
 failed receipt; do not replace stale artifacts just to satisfy admission.
 The fixture is a separate 21x21 world using actual tree/mask art and real opaque
 trunks; it has no game startup, live data, account credentials or test commands
-exposed through a game transport. It accepts one guest client only. Its movable
+exposed through a game transport. It accepts one loopback client, guest by default. Its movable
 plane explicitly matches production GAME_PLANE 1. Original #3394 native runs
 failed phase-2 admission; their nine acknowledgments/identical images are not
 presenter or pixel acceptance. Preserve those failures and diagnostic patches.
@@ -131,6 +138,12 @@ requires the matching accepted compiler receipt/log/owned exit audit before
 binding DMB/RSC. It cannot relabel an arbitrary/stale binary by hashing it.
 It creates a unique `run.binding.json`; the fixture refuses a missing binding.
 Earlier captures without this revision/compile chain remain diagnostic.
+For the already-approved signed-in session, the owner may supply its private
+`authorized-identity.txt` and explicitly call `initialize(...,
+authorized_session=True)`. This fixture-only option admits that exact ckey over
+loopback and hashes the identity file into the run binding without logging its
+value. It rejects an identity file without explicit opt-in and any mid-run file
+change. No account-admission source patch or production policy change is needed.
 Use `failure_control="runtime"` and `"admission"` in separate fresh negative
 runs: phase 2 must fail, never be acknowledged or reported as a pass.
 
@@ -141,8 +154,12 @@ Poll `gate.phase(n)` before capture, treating `Pending` as a bounded wait and
 `Rejected` as terminal. Logs must exist; missing logs are not clean logs.
 Five ticks settle each sample. Schema-2 receipts carry the unique run, manifest,
 source head, actual admitted renderer/root counts and native identity controls.
+Each phase publishes once to its own immutable `phase-N.ready.json` (N=1..9).
+Readers never force deletion/replacement of the prior phase. A duplicate file
+fails publication; concatenated records fail the gate immediately. The old
+shared `phase.ready.json` is not consumed.
 
-`/world/Error` marks failure sticky, removes ready/complete files and records
+`/world/Error` marks failure sticky, removes the complete marker and records
 `fixture.failed.json`. The caller requires an explicit TRUE phase result and a
 fresh settled checkpoint before writing any acknowledgment. Phase 2 executes
 22 native checks: null/default/explicit identity, real translation/scale/shear/
@@ -166,7 +183,7 @@ can return pass. The gate launches/terminates no processes and reuses existing
 ownership/capture infrastructure. `complete.txt` means only that the native
 sequence ended; acknowledgments alone never establish pixel acceptance.
 
-Read `phase.ready.json` by bound phase, not mtime.
+Read `phase-N.ready.json` by bound phase, not mtime.
 Retain full uncropped original captures and the source manifest. A renderer or
 admission failure prevents any later phase acknowledgment. Phase 9 deliberately rejects an unrelated hidden atom and closes the
 shutter. The fixture does not write a pixel-pass verdict itself.

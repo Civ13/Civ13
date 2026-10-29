@@ -31,7 +31,7 @@ class Gate(unittest.TestCase):
         value.update(phase=phase,status='denied' if phase==9 else 'ready',renderer_active=int(phase>1),
             rendered=0 if phase in (1,9) else 3 if phase<5 else 2,shutter=int(phase==9),
             identity_controls={name:1 for name in protocol.IDENTITY_CHECKS})
-        value.update(changes);(self.root/'phase.ready.json').write_text(json.dumps(value))
+        value.update(changes);(self.root/('phase-'+str(phase)+'.ready.json')).write_text(json.dumps(value))
     def captures(self):
         for phase in range(1,10):
             self.ack(phase);self.gate.record_pixels(phase,('synthetic map '+str(phase)).encode())
@@ -62,6 +62,13 @@ class Gate(unittest.TestCase):
     def test_pending_is_not_pass_and_unknown_phase_rejected(self):
         with self.assertRaises(protocol.Pending):self.gate.phase(1)
         with self.assertRaises(protocol.Rejected):self.gate.phase(10)
+    def test_phase_seven_and_eight_have_independent_immutable_records(self):
+        self.ack(7);self.ack(8)
+        self.assertEqual(self.gate.phase(7)['phase'],7);self.assertEqual(self.gate.phase(8)['phase'],8)
+    def test_concatenated_records_reject_instead_of_waiting_until_timeout(self):
+        self.ack(7);a=(self.root/'phase-7.ready.json').read_bytes()
+        self.ack(8);path=self.root/'phase-8.ready.json';path.write_bytes(a+b'\n'+path.read_bytes())
+        with self.assertRaisesRegex(protocol.Rejected,'Multiple acknowledgment'):self.gate.phase(8)
     def test_missing_logs_and_changed_compiled_or_source_inputs_rejected(self):
         self.ack(1);self.log.unlink()
         with self.assertRaises(protocol.Rejected):self.gate.phase(1)
@@ -117,6 +124,14 @@ class Gate(unittest.TestCase):
         audit['phases'][0]['cleanup']['all_retained_exited']=False;raw=json.dumps(audit).encode();audit_path.write_bytes(raw)
         receipt['supervisor_sha256']=protocol.digest(raw);path.write_text(json.dumps(receipt))
         with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.validate_compile(self.root,HEAD)
+    def test_approved_session_file_requires_explicit_opt_in_and_is_hash_bound(self):
+        (self.root/'run.binding.json').unlink();identity=self.root/'authorized-identity.txt';identity.write_text('fixtureuser')
+        with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
+        binding=protocol.initialize(self.root,HEAD,authorized_session=True)
+        self.assertTrue(binding['authorized_session']);self.assertNotIn('fixtureuser',json.dumps(binding))
+        accepted=protocol.PhaseGate(self.root,HEAD,runtime_logs=[self.log]);accepted.healthy()
+        identity.write_text('anotheruser')
+        with self.assertRaises(protocol.Rejected):accepted.healthy()
 
 class CurrentRevision(unittest.TestCase):
     """Fresh local repositories, no fixed historical objects or network access."""

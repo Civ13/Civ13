@@ -163,12 +163,13 @@ var/global/fixture_run
 var/global/fixture_manifest
 var/global/fixture_head
 var/global/fixture_failure_control
+var/global/fixture_authorized_session = FALSE
+var/global/fixture_authorized_identity
 var/global/list/fixture_identity_controls = list()
 
 /proc/fixture_fail(reason)
 	if(!fixture_failed)
 		fixture_failed = TRUE
-		fdel("phase.ready.json")
 		fdel("complete.txt")
 		text2file(json_encode(list("schema"=2,"run"=fixture_run,"status"="failed","reason"=reason)), "fixture.failed.json")
 	return FALSE
@@ -191,8 +192,26 @@ var/global/list/fixture_identity_controls = list()
 	fixture_identity_controls[name] = TRUE
 	return TRUE
 
+/proc/fixture_publish(phase, list/witness)
+	if(fixture_failed || !islist(witness) || witness["phase"] != phase)
+		return fixture_fail("invalid_ack")
+	var/path = "phase-[phase].ready.json"
+	// Never append to or delete a file a polling reader may hold open.
+	if(fexists(path))
+		return fixture_fail("duplicate_ack")
+	if(!text2file(json_encode(witness), path))
+		return fixture_fail("ack_write")
+	return TRUE
+
+/proc/fixture_client_allowed(client/C)
+	if(!C || C.address != "127.0.0.1")
+		return FALSE
+	if(copytext(C.key,1,6) == "Guest")
+		return TRUE
+	return fixture_authorized_session && fixture_authorized_identity && C.ckey == fixture_authorized_identity
+
 /client/New()
-	if(fixture_client)
+	if(!fixture_client_allowed(src) || fixture_client)
 		return null
 	fixture_client = src
 	return ..()
@@ -231,6 +250,15 @@ var/global/list/fixture_identity_controls = list()
 	fixture_manifest = binding["manifest"]
 	fixture_head = binding["head"]
 	fixture_failure_control = binding["failure_control"]
+	fixture_authorized_session = binding["authorized_session"] == TRUE
+	if(fixture_authorized_session)
+		if(!fixture_hex(binding["authorized_identity_sha256"], 64))
+			fixture_fail("session_binding")
+			return
+		fixture_authorized_identity = ckey(file2text("authorized-identity.txt"))
+		if(!fixture_authorized_identity)
+			fixture_fail("session_identity_missing")
+			return
 	for(var/turf/T in world)
 		set_fixture_light(T, 1, 1, 1)
 	for(var/point in list(list(9,12),list(10,12),list(14,11),list(16,13)))
@@ -250,8 +278,8 @@ var/global/list/fixture_identity_controls = list()
 		fixture_fail("login_after_failure")
 		del(client)
 		return
-	if(copytext(key,1,6) != "Guest")
-		fixture_fail("non_guest")
+	if(!fixture_client_allowed(client))
+		fixture_fail("client_not_allowed")
 		del(client)
 		return
 	loc = locate(11,8,1)
@@ -284,8 +312,8 @@ var/global/list/fixture_identity_controls = list()
 			if(fixture_failed || !witness)
 				fixture_fail("settled_frame_failed")
 				break
-			fdel("phase.ready.json")
-			text2file(json_encode(witness),"phase.ready.json")
+			if(!fixture_publish(phase, witness))
+				break
 		if(phase == 9 && !fixture_failed)
 			text2file("COMPLETE", "complete.txt")
 
@@ -416,7 +444,7 @@ var/global/list/fixture_identity_controls = list()
 		if(!active)
 			return null
 		var/accepted = fixture_presenter.refresh()
-		closed = fixture_presenter.shutter in M.client.screen
+		closed = (fixture_presenter.shutter in M.client.screen)
 		for(var/image/I in fixture_presenter.owned_images)
 			if(I.icon)
 				rendered++

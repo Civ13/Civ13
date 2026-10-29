@@ -45,8 +45,10 @@ var/global/list/root_tree_presenters
 	should_save = FALSE
 
 /obj/screen/root_tree_weather
-	screen_loc = "CENTER"
+	// A render_source is bottom-left anchored, unlike a plane master itself.
+	screen_loc = "WEST,SOUTH"
 	plane = ROOT_WEATHER_PLANE
+	blend_mode = BLEND_OVERLAY
 	mouse_opacity = 0
 	appearance_flags = NO_CLIENT_COLOR
 	should_save = FALSE
@@ -161,20 +163,28 @@ var/global/list/root_tree_presenters
 		else if(T.color)
 			frame.Blend(T.color, ICON_MULTIPLY)
 		frame.Blend(rgb, ICON_MULTIPLY)
-		I.appearance = T.appearance
-		I.loc = T
-		I.icon = frame
-		I.icon_state = ""
-		I.color = null
-		I.plane = ROOT_TREE_PLANE
-		I.appearance_flags |= TILE_BOUND
-		I.override = TRUE
-		I.mouse_opacity = T.mouse_opacity
+		root_tree_set_frame(I, T, frame)
 	if(key != context.policy_key())
 		invalidate()
 		return FALSE
 	owner.screen -= shutter
 	return TRUE
+
+/proc/root_tree_set_frame(image/I, obj/structure/wild/tree/live_tree/T, icon/frame)
+	I.appearance = T.appearance
+	I.loc = T
+	// Attached images already follow their parent's visual origin. Re-copying
+	// its offsets adds them twice (the native -16px counterexample).
+	I.pixel_x = 0
+	I.pixel_y = 0
+	I.icon = frame
+	I.icon_state = ""
+	I.color = null
+	I.plane = ROOT_TREE_PLANE
+	// Tint is baked; copied alpha and identity transform must apply only once.
+	I.appearance_flags |= TILE_BOUND | RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	I.override = TRUE
+	I.mouse_opacity = T.mouse_opacity
 
 /datum/root_tree_presenter/proc/retire()
 	if(retired)
