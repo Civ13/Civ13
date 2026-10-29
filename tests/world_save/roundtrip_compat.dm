@@ -1,40 +1,20 @@
 // Current loader dependencies for the ordinary roundtrip world only.
 // Shared stubs remain independent; receipts bind their actual versioned bytes.
-// There are no /obj/roof or roof-climate subtypes here. This type declaration
-// does not enable roof reconstruction; actual topology restoration is refused.
+// Shared stubs supply roof-area and clear-ground declarations. There are no
+// roof objects/climate simulation here; actual topology restoration is refused.
 // Only the roundtrip storage subtype admits null validated_zone_state before
 // inspecting operation ownership, like production. Every present state still
 // delegates to the shared parent refusal, including an empty topology list.
-/area/caribbean/roofed
 
 // Match the production registry's ordinary (non-topology-restore) membership.
 // The fixture uses immediate del(), not the game's qdel/Destroy lifecycle.
 // Explicit empty instances must remain discoverable by the real roof finder.
-var/global/list/area_list = list()
 /area/New()
 	..()
 	area_list |= src
 /area/Del()
 	area_list -= src
 	..()
-
-// Production scalar/overlay defaults and icon projection, without weather
-// sampling, registration, accumulation or floor after_load behavior. The
-// ordinary /turf/test fixture exercises only the loader's clear-ground reset.
-/turf
-	var/weather_snow = 0 // Durable generated loose-snow units; authored snow uses available_snow.
-	var/tmp/image/weather_snow_overlay = null
-
-/turf/proc/snowfall_ground_icon()
-	if (weather_snow_overlay)
-		overlays -= weather_snow_overlay
-	if (weather_snow > 0)
-		if (!weather_snow_overlay)
-			weather_snow_overlay = image('icons/turf/snow.dmi', icon_state = "snow", layer = 2.03)
-			weather_snow_overlay.plane = plane
-		overlays += weather_snow_overlay
-	else
-		weather_snow_overlay = null
 
 /map_storage/roundtrip_fixture/begin_zone_restore(datum/persistence_world_operation/operation)
 	if(isnull(validated_zone_state)) return

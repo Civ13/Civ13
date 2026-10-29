@@ -116,7 +116,7 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         adapter = (HERE / 'roundtrip_compat.dm').read_text()
         production = (ROOT / 'code/modules/persistence/zone_topology.dm').read_text()
         globals_source = (ROOT / 'code/_helpers/global_lists.dm').read_text()
-        self.assertIn('var/global/list/area_list = list()', adapter)
+        self.assertIn('var/list/area_list = list()', (HERE / 'stubs.dm').read_text())
         self.assertIn('var/global/list/area_list = list()', globals_source)
         self.assertIn('area_list |= A', procedure(production, '/proc/persistence_register_area'))
         self.assertIn('area_list -= A', procedure(production, '/proc/persistence_unregister_area'))
@@ -126,22 +126,39 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         self.assertEqual(procedure((HERE / 'stubs.dm').read_text(), '/proc/qdel'),
                          '/proc/qdel(datum/D)\n\tdel(D)')
 
-    def test_snow_defaults_and_projection_match_production_exactly(self):
+    def test_generated_packet_has_single_shared_dependency_declarations(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            prepare_only(output)
+            includes = re.findall(r'^#include "([^"]+)"$', (output / 'roundtrip.dme').read_text(), re.M)
+            packet = '\n'.join(Path(path).read_text() for path in includes)
+            for name, pattern in (
+                ('area_list', r'^var/(?:global/)?list/area_list\b'),
+                ('weather_snow', r'^(?:\tvar/weather_snow|/turf/var/weather_snow)\b'),
+                ('snowfall_ground_icon', r'^/turf/proc/snowfall_ground_icon\('),
+            ):
+                with self.subTest(declaration=name):
+                    self.assertEqual(len(re.findall(pattern, packet, re.M)), 1)
+
+    def test_shared_snow_adapter_rejects_nonzero_state_without_weather_simulation(self):
         adapter = (HERE / 'roundtrip_compat.dm').read_text()
+        shared = (HERE / 'stubs.dm').read_text()
         production = (ROOT / 'code/modules/1713/snowfall_ground.dm').read_text()
-        for declaration in ('var/weather_snow = 0 // Durable generated loose-snow units; authored snow uses available_snow.',
-                            'var/tmp/image/weather_snow_overlay = null'):
-            self.assertIn(declaration, adapter)
-            self.assertIn(declaration, production)
-        self.assertEqual(procedure(adapter, '/turf/proc/snowfall_ground_icon'),
-                         procedure(production, '/turf/proc/snowfall_ground_icon'))
+        self.assertIn('var/weather_snow = 0', production)
+        self.assertIn('/turf/var/weather_snow = 0', shared)
+        self.assertEqual(procedure(shared, '/turf/proc/snowfall_ground_icon'),
+                         '/turf/proc/snowfall_ground_icon()\n'
+                         '\tif(!isnum(weather_snow) || weather_snow != 0)\n'
+                         '\t\tthrow EXCEPTION("Generated snow requires the production snowfall fixture")\n'
+                         '\treturn')
+        self.assertNotIn('weather_snow_overlay', adapter)
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         self.assertIn('restored_turf.weather_snow = 0\n\t\t\trestored_turf.snowfall_ground_icon()', loading)
         self.assertIn('map_storage_saved_vars = "name;dir"', (HERE / 'roundtrip.dm').read_text())
 
     def test_no_roof_gameplay_or_topology_bypass_added(self):
         adapter = (HERE / 'roundtrip_compat.dm').read_text()
-        self.assertIn('\n/area/caribbean/roofed\n', adapter)
+        self.assertIn('\n/area/caribbean/roofed\n', (HERE / 'stubs.dm').read_text())
         for forbidden in (r'^/obj/roof', r'^/area/caribbean/roofed/',
                           r'^/world', r'^/turf/proc/snowfall_ground_check'):
             self.assertIsNone(re.search(forbidden, adapter, re.M), forbidden)

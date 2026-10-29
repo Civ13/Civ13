@@ -199,10 +199,11 @@ historical reference data. Current saved-character preparation checks scoped
 lifecycle procedure contracts and records hashes of all actual input bytes.
 
 <!-- 2026-10-28: ordinary roundtrip loader compatibility -->
-`roundtrip_compat.dm` supplies current loader declarations only to roundtrip.dme;
+`roundtrip_compat.dm` supplies ordinary area membership only to roundtrip.dme;
 shared world-save stubs retain null-only legacy admission and reject every
 present topology payload. Do not freeze unrelated current source to old file pins.
-Its ordinary area registry and snow icon projection do not enable topology or
-weather simulation. Offline preparation tests do not compile DM. That historical
+It reuses the shared area registry declaration and clear-ground snow adapter;
+nonzero snow still fails closed. Do not redeclare those shared symbols or add
+weather/topology simulation. Offline preparation tests do not compile DM. That historical
 declaration-only packet left run-round-metadata.py unchanged; without
 --byond-archive the default still requires legacy 516.1681.
