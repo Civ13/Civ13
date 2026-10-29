@@ -30,14 +30,15 @@ waiting without checking that the same paid input remained. Two preparers could
 produce from one input, and scraping could erase a replacement. An unrelated
 tool could reach the parent twice, including the wrench anchoring handler.
 
-The board now stores a distinct list containing the consumed type's text path.
-The offered food is still deleted once through normal inventory destruction.
-Only a retained, recognized type marker can produce food. A legacy reference
-still marked deleted can normalize while its type exists; a reference already
-destroyed by GC cannot be recovered, and a live object reference is refused.
+The board now owns the actual food as a live child, removed from the actor's
+hand. Its ordinary decay process keeps running, charging exposed-board time at
+the same rate as loose food. Contents and the input reference use the existing
+custom save codec. A deleted reference or an earlier type-only marker cannot
+reconstruct food state and cannot produce output. Scraping can clear old markers.
 
 Every timed completion checks the actor, tile, held knife where applicable,
-persistence identity and the exact paid list. The input is cleared before output
+persistence identity and the exact live food, location and freshness. The slot
+is cleared and its food detached before output
 constructors run. Scraping still intentionally discards the input, while refusing
 to clear a changed slot or icon. Unrelated tools dispatch to the parent once.
 The board lives in its own DM file; other production stations stay unchanged.
@@ -50,8 +51,16 @@ The board lives in its own DM file; other production stations stay unchanged.
 | Meatball | 1 patty | Immediate |
 | Dried meat | 1 minced dried meat | 180 ds |
 
-These are the existing fixed item conversions, not a nutrient, reagent, age,
-salting or food-quality conservation claim. Scraping is deliberately lossy.
+The seven exact input types retain these item quantities and delays. Unknown
+subtypes are refused intact, including poisonous frog meat and already-minced
+dried meat; the latter cannot be repeatedly refreshed. Rotten, expired,
+disabled-decay, over-capacity or child-containing food is likewise refused.
+Freshness is checked again after preparation. Each output's constructor reagents
+are cleared, then the original reagents/data are divided among outputs without
+creating nutrition or removing added poison. Salt state and relative age transfer
+to the output's decay limit, with raw/cooked and unpleasant-food flags retained.
+This intentionally replaces the old state-resetting conversion behavior.
+Scraping is deliberately lossy.
 Existing material knives, including the wooden kitchen knife, remain usable.
 No new wear, tool, research or era restriction is introduced. Existing icons
 and food constructors are reused; no new sprite or historical reconstruction.
@@ -64,10 +73,13 @@ icons, occupied/unsupported/nonremovable inputs, concurrent/reentrant work,
 scraping, movement, lost tools, save-state changes and parent dispatch. These
 projections are not DM execution or a savefile. The separate bounded food probe
 compiles all game sources, uses legal hands, real knives/food/handlers and waits,
-forces the original consumed object to be destroyed, races two preparers,
-changes state during waits, and writes/loads a real custom board save entry.
-Only this fixture subtype shortens preparation waits to two ticks; production
-delays are checked against frozen data. Record hosted execution separately from
+checks live food ownership, races two preparers, changes state during waits,
+refuses poisonous/repeated-mincing subtypes, checks actual aging/rot and carries
+salt, age and poison through a real board-plus-food-child save round trip.
+The fixture shortens preparation and food-decay callback waits to two ticks while
+retaining production age charges; production preparation delays are independently
+checked against frozen data. This accelerated cadence proves state flow, not
+full-game wall-clock timing. Record hosted execution separately from
 local compile-only results. Connected gameplay, rendering and full-world saves
 remain separate evidence; this fixture does not prove all-map bootstrap access.
 

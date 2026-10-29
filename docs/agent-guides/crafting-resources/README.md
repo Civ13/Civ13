@@ -94,12 +94,13 @@ active hand. The custom saver must exclude both reservation pointers.
 ## Crafting checks
 
 <!-- 2026-10-29: paid cutting-board input -->
-Cutting boards consume food into a distinct list with a text type path, never a
-retained deleted food object. Knife and scraping waits revalidate that exact
-slot and persistence identity; claim the slot before output constructors run.
-Keep existing conversion yields/delays and the single parent tool dispatch.
-`docs/cutting-board-production-audit.md` distinguishes fixed item accounting
-from nutrient/age preservation and barrel recipe triage from handler review.
+Cutting boards retain a live paid food child, with normal decay at exposed-food
+rate and existing child save/load. Refuse unsupported subtypes and spoiled food;
+transfer original reagents, relative age and salt instead of fresh constructor
+nutrition. Knife/scraping waits revalidate the exact slot and persistence
+identity; claim the slot before output constructors. Keep quantities/delays and
+single parent dispatch. `docs/cutting-board-production-audit.md` distinguishes
+full board handler review from barrel recipe triage.
 The separate food `--probe cutting` fixture avoids the crafting runner's budget;
 `--compile-only` starts no world and establishes no runtime/save acceptance.
 

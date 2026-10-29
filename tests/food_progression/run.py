@@ -65,7 +65,7 @@ def main():
                                  ('code\\controllers\\mc\\globals.dm', '_globals.dm'),
                                  ('code\\game\\objects\\farming.dm', '_farming.dm')]:
             source = source.replace(original, generated[suffix].name)
-        if args.probe == 'storage':
+        if args.probe in ('storage', 'cutting'):
             food = (root / 'code/modules/reagents/reagent_containers/food.dm').read_text(encoding='utf-8')
             wait = 'spawn(rand(590,610))'
             if food.count(wait) != 1:
@@ -101,10 +101,10 @@ def main():
         generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         (output / 'metadata.json').write_text(json.dumps({'commit': head, 'expected_byond_version': args.expected_byond_version, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
-            'growth_wait_ticks': 2 if args.probe == 'crop' else None, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False,
+            'growth_wait_ticks': 2 if args.probe == 'crop' else None, 'food_wait_ticks': 2 if args.probe in ('storage', 'cutting') else None, 'normal_startup': False,
             'compile_only': args.compile_only, 'map': 'synthetic 6x3x1 ' + args.probe + ' fixture',
             'source_sha256': {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in
-                ('code/modules/1713/cutting_board.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json')}
+                ('code/modules/1713/cutting_board.dm', 'code/modules/reagents/reagent_containers/food.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json')}
                 if args.probe == 'cutting' else {}}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')

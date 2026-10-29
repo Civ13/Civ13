@@ -2,12 +2,14 @@
 
 `run.py --probe cutting` runs the cutting-board slice separately from crop and
 storage. It covers all seven frozen input types and original yields/delays,
-actual held-food consumption, independence from the destroyed original object,
-two preparers, interrupted/replaced/tool-lost/save-crossed work, scraping and a
-real custom save-entry round trip. Its board subtype bounds waits to two ticks;
-production delays are independently checked. It supplies actors, food and knives
-and does not establish player bootstrap, graphics, nutrient/age preservation or
-full-world restoration. Use `--expected-byond-version 516.1688` for the current
+live food ownership, continued age/rot, salt/reagent preservation, poisonous and
+already-minced subtype refusal, two preparers, interrupted/replaced/tool-lost/
+save-crossed work, scraping and a real board-plus-food-child save round trip.
+Its board subtype and generated food source bound waits to two ticks while
+retaining production age charges; preparation delays are independently checked.
+It supplies actors, food and knives and does not establish player bootstrap,
+graphics, full-game elapsed timing or full-world restoration.
+Use `--expected-byond-version 516.1688` for the current
 compiler. `--compile-only` launches no world and explicitly reports runtime not
 run. `--evidence-dir <new-directory>` retains logs/metadata/results without
 overwriting prior evidence; selected CI uploads its bounded text evidence.

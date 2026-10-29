@@ -75,16 +75,14 @@
 		var/obj/item/weapon/reagent_containers/food/snacks/food = new food_path(H)
 		cutting_check(H.put_in_active_hand(food), "food occupies a legal hand")
 		B.attackby(food, H)
-		cutting_check(QDELETED(food) && islist(B.input) && B.input["type"] == "[food_path]", "load consumes exactly the offered supported food")
+		cutting_check(!QDELETED(food) && B.input == food && food.loc == B && !H.item_is_in_hands(food), "load retains exactly the paid food outside the actor's hands")
 		cutting_check(B.icon_state == route["icon"], "intake retains intended ingredient icon")
-		del(food) // Reproduce GC hard deletion without a thirty-second wait.
-		cutting_check(islist(B.input) && B.input["type"] == "[food_path]", "paid type survives destruction of original food")
 		var/list/recipe = cutting_board_recipe(food_path)
 		cutting_check(recipe["output"] == output_path && recipe["count"] == route["count"] && recipe["delay"] == route["delay"], "production plan matches frozen intended conversion")
 		var/obj/item/weapon/knife = new knife_path(H)
 		cutting_check(H.put_in_active_hand(knife), "preindustrial knife occupies a legal hand")
 		B.attackby(knife, H)
-		cutting_check(!B.input && cutting_count(site, output_path) == route["count"], "production processing keeps original item yield")
+		cutting_check(QDELETED(food) && !B.input && cutting_count(site, output_path) == route["count"], "production processing consumes the real input once and keeps original item yield")
 		B.attackby(knife, H)
 		cutting_check(cutting_count(site, output_path) == route["count"], "empty board cannot produce more food")
 		H.remove_from_mob(knife)
@@ -108,20 +106,21 @@
 	other.remove_from_mob(K2); qdel(K2); qdel(other)
 	cutting_clear(site)
 	// Cancelled/replaced/tool-lost actions cannot emit unpaid output.
-	for (var/change in list("cancelled", "replacement", "knife moved", "save crossed"))
+	for (var/change in list("cancelled", "replacement", "knife moved", "save crossed", "rotted"))
 		B = new(site)
 		food = new(H)
 		cutting_check(H.put_in_active_hand(food), "rejection input legal hand")
 		B.attackby(food, H)
-		var/list/paid = B.input
+		var/obj/item/weapon/reagent_containers/food/snacks/paid = B.input
 		K = new knife_path(H)
 		cutting_check(H.put_in_active_hand(K), "rejection knife legal hand")
 		spawn(1)
 			switch (change)
 				if ("cancelled") H.stat = UNCONSCIOUS
-				if ("replacement") B.input = list("type" = paid["type"])
+				if ("replacement") B.input = new /obj/item/weapon/reagent_containers/food/snacks/rawfish(B)
 				if ("knife moved") H.remove_from_mob(K)
 				if ("save crossed") persistence_admission_identity = new /datum
+				if ("rotted") paid.rotten = TRUE
 		B.attackby(K, H)
 		cutting_check(B.input && !cutting_count(site, /obj/item/weapon/reagent_containers/food/snacks/mince), "rejected action preserves slot without output: [change]")
 		H.stat = 0
@@ -134,7 +133,7 @@
 	cutting_check(H.put_in_active_hand(food), "scrape input legal hand")
 	B.attackby(food, H)
 	spawn(1)
-		B.input = list("type" = "/obj/item/weapon/reagent_containers/food/snacks/rawfish")
+		B.input = new /obj/item/weapon/reagent_containers/food/snacks/rawfish(B)
 	B.attack_hand(H)
 	cutting_check(B.input, "scraping refuses a replacement paid slot")
 	B.attack_hand(H)
@@ -142,9 +141,53 @@
 	B.attack_hand(H)
 	cutting_check(B.icon_state == "cutting_board", "dirty empty board can be cleaned")
 	cutting_clear(site)
-	// The real custom persistence codec retains only the consumed type marker.
+	// Poisonous and already-minced subtypes remain intact, never sanitized/reset.
+	B = new(site)
+	var/obj/item/weapon/reagent_containers/food/snacks/meat/poisonfrog/frog = new(H)
+	cutting_check(H.put_in_active_hand(frog), "poisonous subtype legal hand")
+	B.attackby(frog, H)
+	cutting_check(!B.input && frog.loc == H && frog.reagents.get_reagent_amount("cyanide") == 25 && frog.reagents.get_reagent_amount("food_poisoning") == 15, "unsupported poisonous frog remains unchanged in hand")
+	H.remove_from_mob(frog); qdel(frog)
+	var/obj/item/weapon/reagent_containers/food/snacks/driedmeat/dried = new(H)
+	cutting_check(H.put_in_active_hand(dried), "dried input legal hand")
+	dried.mark_salted_meat()
+	dried.decaytimer = dried.decay * 0.8
+	B.attackby(dried, H)
+	K = new knife_path(H)
+	cutting_check(H.put_in_active_hand(K), "dried knife legal hand")
+	B.attackby(K, H)
+	var/obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat/minced = locate() in site
+	cutting_check(minced && minced.salted_meat && minced.decaytimer / minced.decay >= 0.8, "dried product retains paid salt and relative age")
+	cutting_check(H.put_in_inactive_hand(minced), "repeat minced input legal hand")
+	var/minced_age = minced.decaytimer
+	for (var/repeat in 1 to 3)
+		B.attackby(minced, H)
+		B.attackby(K, H)
+	cutting_check(!B.input && minced.loc == H && minced.decaytimer >= minced_age && cutting_count(site, minced.type) == 0, "already-minced product cannot repeat mincing or reset its age")
+	H.remove_from_mob(minced); qdel(minced)
+	H.remove_from_mob(K); qdel(K)
+	cutting_clear(site)
+	// Accelerated real food callbacks still charge exposed-board time and rot it.
 	B = new(site)
 	food = new(H)
+	cutting_check(H.put_in_active_hand(food), "aging input legal hand")
+	B.attackby(food, H)
+	sleep(18)
+	cutting_check(!QDELETED(food) && food.loc == B && food.decaytimer >= 4800 && food.rotten, "live board food ages and rots without freezing")
+	K = new knife_path(H)
+	cutting_check(H.put_in_active_hand(K), "rotten rejection knife legal hand")
+	B.attackby(K, H)
+	cutting_check(B.input == food && !cutting_count(site, /obj/item/weapon/reagent_containers/food/snacks/mince), "rotten board food cannot become fresh mince")
+	H.remove_from_mob(K); qdel(K)
+	cutting_clear(site)
+	// The real custom persistence codec retains a live paid food child and reagents.
+	B = new(site)
+	food = new(H)
+	food.mark_salted_meat()
+	food.decaytimer = food.decay * 0.1
+	food.reagents.add_reagent("cyanide", 2)
+	food.reagents.add_reagent("food_poisoning", 1)
+	var/paid_food_poison = food.reagents.get_reagent_amount("food_poisoning")
 	cutting_check(H.put_in_active_hand(food), "save input legal hand")
 	B.attackby(food, H)
 	B.before_save()
@@ -152,15 +195,26 @@
 	F["/format_version"] << 2
 	map_storage.clear_bookkeeping()
 	map_storage.saving_z = 1
-	var/ref = map_storage.BuildVarDirectory(F, B)
+	var/ref = map_storage.BuildVarDirectory(F, B, 1)
 	cutting_check(ref, "loaded board has a saved entry")
 	qdel(B)
 	map_storage.clear_bookkeeping()
 	B = map_storage.Load_Entry(F, ref, starting_loc = site)
-	cutting_check(B && islist(B.input) && B.input["type"] == "/obj/item/weapon/reagent_containers/food/snacks/rawfish", "board paid input restores through actual entry codec")
+	var/obj/item/weapon/reagent_containers/food/snacks/restored = B.input
+	cutting_check(B && restored && restored.loc == B && !QDELETED(restored) && restored.salted_meat && restored.decaytimer / restored.decay >= 0.1 && restored.reagents.get_reagent_amount("cyanide") == 2 && restored.reagents.get_reagent_amount("food_poisoning") == paid_food_poison, "board live food child, age, salt and poisons restore through actual entry codec")
+	var/paid_protein = restored.reagents.get_reagent_amount("protein")
 	K = new knife_path(H)
 	cutting_check(H.put_in_active_hand(K), "restored board knife legal hand")
 	B.attackby(K, H)
 	cutting_check(!B.input && cutting_count(site, /obj/item/weapon/reagent_containers/food/snacks/mince) == 2, "restored paid input processes once")
-	text2file("PASS: cutting-board intake, original yields, GC independence, concurrency, rejections and actual entry save/load", "food_result.txt")
+	var/protein = 0
+	var/cyanide = 0
+	var/food_poison = 0
+	for (var/obj/item/weapon/reagent_containers/food/snacks/mince/output in site)
+		protein += output.reagents.get_reagent_amount("protein")
+		cyanide += output.reagents.get_reagent_amount("cyanide")
+		food_poison += output.reagents.get_reagent_amount("food_poisoning")
+		cutting_check(output.salted_meat && output.decaytimer / output.decay >= 0.1, "output retains paid salt and elapsed relative age")
+	cutting_check(abs(protein - paid_protein) < 0.001 && abs(cyanide - 2) < 0.001 && abs(food_poison - paid_food_poison) < 0.001, "output shares preserve total paid protein and poison without constructor nutrition")
+	text2file("PASS: cutting-board live food, original yields, elapsed age, salt/reagents, subtype refusal, concurrency, rejections and actual child save/load", "food_result.txt")
 	del(world)
