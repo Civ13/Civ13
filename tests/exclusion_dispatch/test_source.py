@@ -599,29 +599,50 @@ class ReviewedCurrentSource(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.feature = subprocess.check_output(['git', 'show', MERGE_BASE + ':' + PATH], cwd=ROOT, text=True)
-        cls.reviewed = subprocess.check_output(['git', 'show', cls.REVIEWED + ':' + PATH], cwd=ROOT, text=True)
-        cls.current = (ROOT / PATH).read_text()
-        assert cls.reviewed == cls.feature
+        cls.feature = historical_text(cls.REVIEWED, PATH)
+        if hashlib.sha256(cls.feature.encode('utf-8')).hexdigest() != '92f08bd1037d6302fdafaba02a3a477d5b01db39316cab86aa22e8b7c6be8765':
+            raise ValueError('Frozen reviewed extraction source changed')
+        cls.current = (ROOT / PATH).read_text(encoding='utf-8')
         cls.identity = event_identity(ROOT)
         if cls.identity:
             head = subprocess.check_output(['git', 'show', cls.identity['head'] + ':' + PATH], cwd=ROOT, text=True)
             if head != cls.current: raise ValueError('Checkout differs from source event head')
-            ancestor = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + PATH], cwd=ROOT, text=True)
+            ancestor = historical_text(MERGE_MASTER, PATH)
             snapshot = project_merged_source(cls.feature)
             validate_merged_source(cls.feature, snapshot)
             cls.expected, _ = resolve_event_projection(ROOT, cls.identity, cls.feature, cls.current, ancestor, snapshot,
                                                        ordered_release=has_ordered_release_history(ROOT, cls.identity['head']))
         else:
-            cls.expected = current_lighting_policy(project_merged_source(cls.feature))
-            if has_ordered_release_history(ROOT, subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()):
-                cls.expected = project_ordered_release(cls.expected)
+            # For ordinary and shallow local runs use the actual checked-out
+            # commit, never a stale historical whole-file reconstruction.
+            cls.expected = subprocess.check_output(['git', 'show', 'HEAD:' + PATH], cwd=ROOT, text=True)
 
     def validate_current(self, source):
-        # Full-file equality includes admitted custody, roof/zone cleanup and
-        # diagnostics. A future production change needs a newly reviewed pin.
+        # The event path compares a reviewed base/head projection. Locally,
+        # require clean HEAD bytes plus the focused historical guarantees below.
         if source != self.expected:
             raise ValueError('Current runtime exclusions differ from the reviewed event projection')
+        pattern = r'^/(atom|turf|mob|area|map_storage)/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n|#(?:if[^\n]*|endif)\n)+'
+        def keys(text):
+            return {match.group(1): set(re.findall(r'"([a-z_]+)"', match.group()))
+                    for match in re.finditer(pattern, text, re.M)}
+        required, actual = keys(self.feature), keys(source)
+        if set(required) != set(actual) or any(not values <= actual[kind] for kind, values in required.items()):
+            raise ValueError('Reviewed runtime exclusions are missing')
+        for guard in ('operation.authorize_restore_mutation(storage)',
+                      'operation.mutation_started = TRUE',
+                      'if(attempt.release_transients() != TRUE)',
+                      'operation.restoring_players = TRUE',
+                      'storage.finish_player_restoration()',
+                      'operation.finish(TRUE)', 'saving_export_stack.len - 7'):
+            if guard not in source:
+                raise ValueError('Reviewed custody or diagnostics guard is missing')
+        load = source.split('/datum/controller/gameticker/proc/loadmap(', 1)[1].split('/map_storage/proc/capture_round_state(', 1)[0]
+        order = [load.index(marker) for marker in ('operation.authorize_restore_mutation(storage)',
+                 'operation.mutation_started = TRUE', 'attempt.release_transients()',
+                 'operation.restoring_players = TRUE', 'storage.finish_player_restoration()', 'operation.finish(TRUE)')]
+        if order != sorted(order):
+            raise ValueError('Reviewed custody or player activation order changed')
 
     def test_complete_reviewed_source_and_all_exclusion_omissions(self):
         self.validate_current(self.current)
@@ -643,12 +664,76 @@ class ReviewedCurrentSource(unittest.TestCase):
             with self.subTest(guard=guard), self.assertRaises(ValueError):
                 self.validate_current(self.current.replace(guard, 'omitted_guard', 1))
 
+    def test_local_focus_rejects_committed_semantic_regressions(self):
+        # Simulate each regression being committed: byte equality alone cannot
+        # establish the focused historical custody and exclusion guarantees.
+        changes = (('"restore_policy"', '"omitted_restore_policy"'),
+                   ('operation.authorize_restore_mutation(storage)', 'omitted_authorization(storage)'),
+                   ('attempt.release_transients()', 'omitted_release()'))
+        for before, after in changes:
+            self.assertIn(before, self.current)
+            changed = self.current.replace(before, after, 1)
+            with self.subTest(guard=before), patch.object(self, 'expected', changed):
+                with self.assertRaises(ValueError):
+                    self.validate_current(changed)
+
     def test_frozen_historical_helpers_remain_byte_identical(self):
-        for name in ('run.py', 'source_contract.py', 'resources.py', 'probe.dm'):
-            relative = 'tests/exclusion_dispatch/' + name
-            expected = subprocess.check_output(['git', 'show',
-                '5aaed0a172aa3baa3fe604096cbbb8a00f519aac:' + relative], cwd=ROOT)
-            self.assertEqual((ROOT / 'tests/exclusion_dispatch/historical' / (name + '.txt')).read_bytes().replace(b'\r\n', b'\n'), expected)
+        pinned = {'run.py': 'a939f07db2ae70bc365056a3e70996a59120a3df8a95cba4249157ea4f8fb570',
+                  'source_contract.py': '1e36081857e021340481daacc4209593ba57fcc2dc6ed8893d09c75ed9f6a71e',
+                  'resources.py': '2642e5d23761f19a3d346181c2339d8057dff926d08feb3c355623a3da2d46be',
+                  'probe.dm': 'e416be0b5f5978a8076e7caaef875be12f2fff77aa0ca74bfe854b81522821d3'}
+        for name, digest in pinned.items():
+            data = (ROOT / 'tests/exclusion_dispatch/historical' / (name + '.txt')).read_bytes().replace(b'\r\n', b'\n')
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest, name)
+            self.assertNotEqual(hashlib.sha256(data + b'\nmutation').hexdigest(), digest)
+
+
+class LocalShallowSourceTests(unittest.TestCase):
+    def test_reviewed_source_in_shallow_checkout_without_historical_objects(self):
+        with tempfile.TemporaryDirectory(prefix='exclusion-shallow-source-') as directory:
+            root = Path(directory)
+            origin = root / 'origin'
+            origin.mkdir()
+            def git(repo, *args):
+                return subprocess.check_output(['git', '-C', str(repo), *args], text=True,
+                                               stderr=subprocess.PIPE, timeout=30).strip()
+            git(origin, 'init', '-q')
+            git(origin, 'config', 'user.name', 'Offline fixture')
+            git(origin, 'config', 'user.email', 'offline@example.invalid')
+            files = (PATH, 'tests/exclusion_dispatch/test_source.py',
+                     'tests/exclusion_dispatch/source_contract.py', 'tests/exclusion_dispatch/resources.py',
+                     'tests/exclusion_dispatch/historical_fixtures.py')
+            for name in files:
+                target = origin / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / name, target)
+            shutil.copytree(ROOT / 'tests/exclusion_dispatch/historical', origin / 'tests/exclusion_dispatch/historical')
+            shutil.copytree(ROOT / 'tests/exclusion_dispatch/fixtures', origin / 'tests/exclusion_dispatch/fixtures')
+            git(origin, 'add', '.')
+            git(origin, '-c', 'commit.gpgsign=false', 'commit', '-qm', 'fixture source')
+            git(origin, '-c', 'commit.gpgsign=false', 'commit', '--allow-empty', '-qm', 'shallow head')
+            clone = root / 'clone'
+            git(root, 'clone', '-q', '--depth=1', origin.as_uri(), str(clone))
+            self.assertEqual(git(clone, 'rev-parse', '--is-shallow-repository'), 'true')
+            for old in (MERGE_BASE, '5aaed0a172aa3baa3fe604096cbbb8a00f519aac'):
+                result = subprocess.run(['git', '-C', str(clone), 'cat-file', '-e', old + '^{commit}'],
+                                        capture_output=True, timeout=15)
+                self.assertNotEqual(result.returncode, 0)
+            env = {key: value for key, value in os.environ.items()
+                   if not key.startswith('GITHUB_') and key not in ('CI_BASE', 'CI_HEAD')}
+            command = [sys.executable, '-B', str(clone / 'tests/exclusion_dispatch/test_source.py'),
+                       'ReviewedCurrentSource', '-v']
+            result = subprocess.run(command, cwd=clone, env=env, text=True,
+                                    capture_output=True, timeout=45)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('Ran 4 tests', result.stderr)
+            # A modified working source cannot masquerade as its checked-out head.
+            with (clone / PATH).open('a', encoding='utf-8') as source:
+                source.write('\n// uncommitted drift\n')
+            rejected = subprocess.run(command, cwd=clone, env=env, text=True,
+                                      capture_output=True, timeout=45)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertIn('Current runtime exclusions differ', rejected.stdout + rejected.stderr)
 
 
 class HistoricalMasterSourceContractTests(ExtractionHistoricalSourceContractTests):

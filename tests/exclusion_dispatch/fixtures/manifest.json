@@ -52,5 +52,11 @@
     "bytes": 6791,
     "sha256": "2f60ed53221e560a3711b05b625fa22c40ce3cebdd96a616dc4bf628a330b412",
     "git_blob": "176b5ec59f03e9136a631f02ee7465a9055a2f02"
+  },
+  "c4585fabaf81e1357054b4527d71d4f3a2d8a0b2:code/modules/persistence/functions.dm": {
+    "file": "extraction-reviewed-functions.dm.txt",
+    "bytes": 47518,
+    "sha256": "92f08bd1037d6302fdafaba02a3a477d5b01db39316cab86aa22e8b7c6be8765",
+    "git_blob": "dc732e9527887872335ee3601fb827999f67d9e8"
   }
 }
