@@ -309,6 +309,7 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 	var/list/index = list()
 	for(var/name in names)
 		index[name] = TRUE
+		TICK_CHECK
 	return index
 
 /map_storage/proc/prepare_saved_zones(list/world_state, generation)
