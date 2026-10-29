@@ -225,6 +225,20 @@ var/list/mutate_on_tick = null
 	var/spawning = FALSE
 /mob/new_player/proc/close_spawn_windows()
 	return
+// The legacy serializer/reclaim fixture does not enable bed return. Its dedicated
+// offline suite projects bed_return.dm; these adapters are not bed acceptance.
+/proc/persistence_bed_return_enabled()
+	return FALSE
+/map_storage/proc/prepare_character_return(mob/living/human/H)
+	return TRUE
+/map_storage/proc/finish_character_return(mob/living/human/H)
+	return
+/map_storage/proc/character_recovery_unready()
+	return TRUE
+/map_storage/proc/local_character_bodies(account)
+	return list()
+/map_storage/proc/return_player_eligible(mob/living/human/H, account)
+	return FALSE
 /mob/living/human
 	var/tmp/rejuvenate_calls = 0
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)

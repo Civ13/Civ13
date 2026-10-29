@@ -186,3 +186,24 @@ Exclusion dispatch run-ci.py consumes source-only packets for bounded Linux CI
 parity and three controls, retaining receipts. It is separate from run.py's held
 Windows grant runner; neither an offline pass nor workflow addition proves native
 parity, and this lane makes no benchmark or listener-sampling claim.
+
+<!-- 2026-10-28: ordinary roundtrip null-topology boundary -->
+Only roundtrip.dme selects the roundtrip_fixture storage subtype. It returns
+before operation ownership checks only when validated_zone_state is null;
+every present state, including an empty list, delegates to the shared refusal.
+Keep the legacy positive import assertion. The scoped setup and boundary probe
+must not leak to the string-path or floor-decal fixture. Offline source checks
+are not native acceptance: published head2830578 failed legacy import after a
+clean 516.1688 compile. Preserve that failure and the original input hashes as
+historical reference data. Current saved-character preparation checks scoped
+lifecycle procedure contracts and records hashes of all actual input bytes.
+
+<!-- 2026-10-28: ordinary roundtrip loader compatibility -->
+`roundtrip_compat.dm` supplies ordinary area membership only to roundtrip.dme;
+shared world-save stubs retain null-only legacy admission and reject every
+present topology payload. Do not freeze unrelated current source to old file pins.
+It reuses the shared area registry declaration and clear-ground snow adapter;
+nonzero snow still fails closed. Do not redeclare those shared symbols or add
+weather/topology simulation. Offline preparation tests do not compile DM. That historical
+declaration-only packet left run-round-metadata.py unchanged; without
+--byond-archive the default still requires legacy 516.1681.

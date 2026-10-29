@@ -3,6 +3,7 @@
 #define FALSE 0
 #define EXCEPTION(message) new /exception(message)
 var/persistence_save_in_progress = FALSE
+var/global/list/clients = list() // Offline fixture has no connected native clients.
 var/building_allocating_z = 0
 var/map_storage/map_storage = new
 var/obj/map_metadata/map = new

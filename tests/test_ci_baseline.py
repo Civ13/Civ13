@@ -52,6 +52,50 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_character_return_preparation_selects_actual_source_and_helper_inputs(self):
+        manifest = json.loads((ROOT / 'tests/world_save/character_return/inputs.json').read_text())
+        inputs = set(manifest['reference_sha256'])
+        for relative in ('tests/world_save/character_return/prepare.py',
+                         'tests/world_save/run-cross-level.py',
+                         'tests/world_save/test_roundtrip_compat.py',
+                         'tests/world_save/run-restart-transaction.py'):
+            tree = ast.parse((ROOT / relative).read_text())
+            inputs.add(relative)
+            inputs.update(node.value for node in ast.walk(tree)
+                          if isinstance(node, ast.Constant) and isinstance(node.value, str)
+                          and node.value.startswith(('code/', 'tests/'))
+                          and node.value.endswith(('.py', '.dm', '.dme', '.json')))
+        for path in sorted(inputs):
+            with self.subTest(input=path):
+                self.assertIn('character_return_preparation', self.selected([path]))
+
+    def test_character_shared_inputs_keep_conservative_unmapped_fallback(self):
+        self.assertIn('character_return', self.selected(['code/game/gameticker.dm']))
+        for path in ('code/predefines.dm', 'code/_macros.dm',
+                     'tests/new_z_budget/z_budget_evidence.py'):
+            with self.subTest(input=path):
+                result = ci.impact([path])
+                self.assertIn('Unmapped impact: ' + path, result['fallback_reasons'])
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+
+    def test_character_return_selects_all_direct_source_inputs(self):
+        tree = ast.parse((ROOT / ci.SUITES['character_return']['files'][0]).read_text())
+        inputs = {node.value for node in ast.walk(tree)
+                  if isinstance(node, ast.Constant) and isinstance(node.value, str)
+                  and node.value.startswith('code/') and node.value.endswith('.dm')}
+        self.assertIn('code/modules/persistence/functions.dm', inputs)
+        for path in sorted(inputs):
+            with self.subTest(input=path):
+                self.assertIn('character_return', self.selected([path]))
+
+    def test_character_return_other_shared_reads_keep_unknown_fallback(self):
+        for path in ('code/game/mob/living/carbon/carbon_defines.dm',
+                     'code/game/mob/living/carbon/human/nomads_spawn.dm',
+                     'code/game/mob/living/carbon/human/human_life.dm'):
+            with self.subTest(input=path):
+                self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+
     def test_crop_stage_step_selection_preserves_shared_farming_fallback(self):
         suite = ci.SUITES['crop_stage_step']
         self.assertEqual(suite['files'], ('tests/crop_stage_step/test_source.py',))
@@ -213,6 +257,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 expected = {'policy', 'bootstrap', 'progress', 'hub_status'}
                 if path == 'code/world.dm':
                     expected.add('dictionary')
+                    expected.add('character_return_preparation')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 
