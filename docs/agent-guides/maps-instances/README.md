@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- Finite authored indoor preparation -->
+`tools/liminal_maps` assembles/validates original indoor topology only; run the
+explicit `tests/liminal_maps/run.py` offline suite. Preserve catalog/helper pins,
+typed sockets, clearance/progression guards and design docs. It does not emit
+native DMMs, register a mode or prove native lighting/audio/gameplay. Keep native
+catalog/mode integration and third-party asset ports separately reviewed.
+
 <!-- 2026-10-27: disabled Backrooms expedition foundation -->
 `docs/backrooms-expedition` separates powered colonization from finite escape.
 `gateway_core.dm` contains uninstantiated finite-charge/lifecycle/identity datums,
