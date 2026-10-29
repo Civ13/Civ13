@@ -72,12 +72,14 @@ class DocumentDrawers(unittest.TestCase):
     def test_atlas_help_materials_and_tools(self):
         row=next(r for r in json.loads((ROOT/'UI/crafting-atlas.json').read_text())['recipes'] if r['name']==TITLE)
         self.assertEqual(row['outputs'],[dict(id=KIND,name='wooden document drawers',quantity='1')])
-        self.assertEqual(sorted(x['quantity'] for x in row['inputs']),['1','6'])
+        self.assertEqual(row['inputs'],[
+            dict(id='/material/wood/soft',name='finished planks',quantity='6'),
+            dict(id='/obj/item/stack/wooden_dowels',name='wooden dowel set',quantity='1')])
         self.assertEqual(row['unlock_eras'],[2]);self.assertIn('fine_furniture',row['conditions'])
         spec=importlib.util.spec_from_file_location('drawer_help',ROOT/'scripts/player_help_bridge.py')
         helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
         context=next(x['text'] for x in helper.recipe_context(ROOT/'UI/crafting-atlas.json') if x['topic']==TITLE)
-        for expected in ('6 x','1 x wooden dowel set','chisel','hammer'):self.assertIn(expected,context)
+        for expected in ('6 x finished planks','1 x wooden dowel set','chisel','hammer'):self.assertIn(expected,context)
 
 
 if __name__=='__main__':unittest.main()

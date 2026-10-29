@@ -185,7 +185,7 @@ def recipe_context(path):
         for key in ('inputs', 'outputs'):
             rows = recipe.get(key, [])
             if isinstance(rows, list):
-                parts.append(key + ': ' + ', '.join(str(row.get('quantity', ''))[:30] + ' x ' + ('softwood' if row.get('id') == '/material/wood/soft' else str(row.get('name', ''))[:100]) for row in rows[:20] if isinstance(row, dict)))
+                parts.append(key + ': ' + ', '.join(str(row.get('quantity', ''))[:30] + ' x ' + ('finished planks' if row.get('id') == '/material/wood/soft' else str(row.get('name', ''))[:100]) for row in rows[:20] if isinstance(row, dict)))
         parts.append('Conditions: ' + recipe_conditions(recipe))
         text = '\n'.join(parts)[:2000]
         topic = str(recipe.get('name', ''))[:150].lower()
