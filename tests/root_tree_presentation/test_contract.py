@@ -145,6 +145,18 @@ class LightPolicy(unittest.TestCase):
         self.assertIsNone(self.f(self.root,self.viewer))
 
 class OwnershipAndComposition(unittest.TestCase):
+    def test_movement_projection_selects_explicit_flag_and_rejects_unknown_syntax(self):
+        spec=importlib.util.spec_from_file_location('root_movement_adapter',ROOT/'tests/save_movement/source_adapter.py')
+        adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
+        source=(ROOT/'code/game/atoms_movable.dm').read_text()
+        signature='/atom/movable/proc/forceMove'
+        disabled=adapter.extract(source,signature)
+        self.assertNotIn('root_tree_invalidate',disabled)
+        enabled=adapter.extract(source,signature,defines={**adapter.DEFAULT_DEFINES,'CIV13_ROOT_TREE_PRESENTATION':True})
+        self.assertLess(enabled.index('root_tree_invalidate(src)'),enabled.index('loc = destination'))
+        for directive in ['#if UNKNOWN_SYMBOL','#if CIV13_ROOT_TREE_PRESENTATION || 1']:
+            mutant=source.replace('#if CIV13_ROOT_TREE_PRESENTATION',directive)
+            with self.assertRaises(AssertionError):adapter.extract(mutant,signature)
     def test_replaced_weather_or_changed_game_plane_rejected_on_refresh(self):
         env=environment()
         f=compile_proc(TREE,'/datum/root_tree_presenter/proc/planes_admitted(','self',env,True)

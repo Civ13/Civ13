@@ -47,7 +47,8 @@ class Preparation(unittest.TestCase):
             'tests/root_tree_presentation/test_contract.py',
             'tests/root_tree_presentation/test_preparation.py'))
         for path in ['code/modules/visibility/root_tree_presenter.dm',
-                     'tests/root_tree_presentation/fixture.dm','code/__defines/_planes+layers.dm']:
+                     'tests/root_tree_presentation/fixture.dm','code/__defines/_planes+layers.dm',
+                     'tests/save_movement/source_adapter.py']:
             self.assertTrue(ci.impact([path])['suites']['root_tree_presentation']['selected'])
         for path in ['code/modules/lighting/lighting_overlay.dm','code/game/mob/mob_movement.dm']:
             self.assertEqual(set(k for k,v in ci.impact([path])['suites'].items() if v['selected']),set(ci.SUITES))
