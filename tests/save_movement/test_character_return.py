@@ -294,6 +294,32 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertTrue(f.registered['account'])
         self.assertTrue(f.body.inducedSSD)
 
+    def test_move_callback_ban_keeps_lobby_and_claim_for_valid_retry(self):
+        for kind in ('Playing', 'Server'):
+            with self.subTest(kind=kind):
+                f = ReturnFixture()
+                banned = set()
+                f.client.quickBan_isbanned = banned.__contains__
+                f.body.move_hook = lambda: banned.add(kind)
+                items, organs = f.body.inventory, f.body.organs
+                self.assertFalse(f.store.reclaim_saved_player(f.lobby))
+                self.assertIs(f.client.mob, f.lobby)
+                self.assertIs(f.lobby.client, f.client)
+                self.assertIs(f.registered['account'][1], f.body)
+                self.assertFalse(f.claims)
+                self.assertFalse(f.lobby.spawning)
+                self.assertFalse(f.deleted)
+                self.assertIsNone(f.body.key)
+                self.assertTrue(f.body.inducedSSD)
+                self.assertIs(f.body.inventory, items)
+                self.assertIs(f.body.organs, organs)
+                banned.clear()
+                f.body.move_hook = None
+                self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+                self.assertIs(f.client.mob, f.body)
+                self.assertFalse(f.registered)
+                self.assertFalse(f.claims)
+
     def test_changed_reservation_or_owner_after_callback_cannot_claim(self):
         for case in ('reservation', 'owner', 'retired'):
             f = ReturnFixture()

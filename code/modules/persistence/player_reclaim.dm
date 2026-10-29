@@ -84,7 +84,8 @@ var/global/list/persistence_player_claims = list()
 /map_storage/proc/reclaim_saved_player(mob/new_player/lobby)
 	if(!lobby || !lobby.client || lobby.client.mob != lobby) return FALSE
 	var/client/C = lobby.client
-	// Reclaim uses the same admission restrictions as ordinary player joining.
+	// Retain saved-body reconnect admission: account bans and recovery readiness.
+	// Fresh-character entry locks, round/join gates and role checks are separate.
 	// A rejected account leaves both its lobby and the saved claim untouched.
 	if(IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
 		return FALSE
@@ -100,7 +101,8 @@ var/global/list/persistence_player_claims = list()
 	// return retains the original body claim; release only this lobby's reservation.
 	persistence_player_claims[C.ckey] = lobby
 	try
-		if(!prepare_character_return(H) || !H || persistence_player_claims[C.ckey] != lobby || lobby.client != C || C.mob != lobby || H.persistence_owner_ckey != C.ckey || H.client || H.key || H.stat == DEAD || player_restoration_blocked() || (persistence_bed_return_enabled() && !return_player_eligible(H, C.ckey)))
+		// Movement hooks may yield or change account admission; recheck before handoff.
+		if(!prepare_character_return(H) || !H || persistence_player_claims[C.ckey] != lobby || lobby.client != C || C.mob != lobby || H.persistence_owner_ckey != C.ckey || H.client || H.key || H.stat == DEAD || player_restoration_blocked() || (persistence_bed_return_enabled() && !return_player_eligible(H, C.ckey)) || IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
 			if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
 			return FALSE
 		lobby.spawning = TRUE

@@ -46,6 +46,15 @@ disk save or invulnerability; only a completed world generation is durable.
 - Native reconnect to a still-existing body preserves its current position;
   reconnect is not a free bed teleport. Retain the legacy wake path for old
   sleepers and do not remove physical sleep-zone safety checks.
+- Reclaim preserves the existing registered-body Login admission: guest/account
+  bans and persistence readiness apply, while fresh-character entry locks,
+  round state, players_can_join, trait and role/respawn checks do not govern
+  reconnecting to that owned body. This is not identical to new-character joining.
+  The new local-owned-body retry uses that reconnect policy too; a genuinely new
+  character still follows ordinary creation checks. Recheck Playing/Server bans
+  after return movement callbacks, before key transfer. A refusal retains the
+  lobby and pending body claim for retry; movement may already have placed the
+  still-sleeping body safely at its bed.
 - Lobby join and final character creation retry reclaim before new-body creation
   and hold when an owned live/ambiguous/occupied body or incomplete recovery exists.
   Reserve the existing body before movement callbacks or key handoff. Failed

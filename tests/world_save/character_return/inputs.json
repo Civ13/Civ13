@@ -25,7 +25,7 @@
   },
   "procedure_sha256": {
     "code/modules/persistence/player_reclaim.dm": {
-      "/map_storage/proc/reclaim_saved_player": "e31fdf2d86e9f9d7f148c9c7c31f9440baf0f7b4a60deec97588c46e8dbfdc90",
+      "/map_storage/proc/reclaim_saved_player": "09e565a6c75bcc671a7ccb57537d8ac7f9a04cab1bd42f8154c19220bc25ce49",
       "/map_storage/proc/find_restored_player": "200b424a972af26c02427201b4ac19b55f7cbb70de45cb7ad9d86fa8f4778ad5"
     },
     "code/modules/persistence/bed_return.dm": {
