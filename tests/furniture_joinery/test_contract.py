@@ -121,7 +121,8 @@ class Contracts(unittest.TestCase):
         source=(ROOT/'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text()
         self.assertIn('material = "wood"',block(source,'/obj/item/weapon/stool/wood\n'))
         refund=block(source,'/obj/item/weapon/stool/proc/dismantle()')
-        self.assertEqual(refund.count('material.place_sheet(get_turf(src))'),2) # wood plus optional padding
+        self.assertEqual(refund.count('material.place_sheet(get_turf(src))'),1) # frame wood
+        self.assertIn('furniture_padding_sheet(padding_material, get_turf(src))',refund)
         materials=(ROOT/'code/modules/materials/materials.dm').read_text()
         self.assertIn('return new stack_type(target)',block(materials,'/material/proc/place_sheet('))
         self.assertIn('stack_type = /obj/item/stack/material/wood',block(materials,'/material/wood\n'))

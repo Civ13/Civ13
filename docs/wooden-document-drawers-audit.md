@@ -1,5 +1,9 @@
 # Document drawer review - 2026-10-28
 
+Follow-on status, 2026-10-29: [upholstered seating](upholstered-seating-audit.md)
+has now been source-reviewed, with narrow padding/recovery conservation fixes.
+The next independent family is canopy fold/unfold and roof/area lifecycle.
+
 This is one additional reviewed family, after the merged joinery, cloth-bedroll
 and hammock work. The three existing document-cabinet routes all cost six plastic
 units: ordinary/tall filing cabinets use Papermaking and the chest drawer uses
@@ -64,7 +68,8 @@ saved-world round trips remain unverified.
 
 The broader audit is still partial. This family includes review of all three
 legacy outputs and the added subtype; inventory inclusion alone is not review.
-Next independent families remain upholstered seating (frame/padding costs and
-recovery), canopy fold/unfold and roof/area behavior, and production/storage
-stations (barrels, cutting boards and kitchen handlers). Full anvil, cooking,
+Upholstered seating (frame/padding costs and recovery) is now source-reviewed in
+[the follow-on audit](upholstered-seating-audit.md). Next independent families are
+canopy fold/unfold and roof/area behavior, then production/storage stations
+(barrels, cutting boards and kitchen handlers). Full anvil, cooking,
 chemistry, clothing and weapons route reviews remain outside the completed slices.
