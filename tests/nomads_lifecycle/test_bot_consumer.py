@@ -286,7 +286,7 @@ class BackendTests(unittest.TestCase):
             status = {'ok':1,'ready':1,'busy':0,'restart_hold':0,'restart_intent':0,'error':None,'revision':revision,'map':'NOMADS_GAIA','generation':generation,'restart_import_complete':1,'session':'d'*32}
             with patch.object(core.subprocess,'Popen',return_value=Mock(pid=123)) as spawn, patch.object(core,'process_identity',return_value=456), patch.object(core.socket,'socket') as socket, patch.object(sup,'alive',return_value=True), patch.object(sup,'status',return_value=status):
                 sup.launch_prepared(run,manifest,generation,'e'*32)
-            self.assertEqual(spawn.call_args.args[0],['pinned-dd.exe','civ13.dmb','1714','-trusted','-invisible','-log','supervisor-runtime.log','-ip','127.0.0.1'])
+            self.assertEqual(spawn.call_args.args[0],['pinned-dd.exe','civ13.dmb','1714','-trusted','-invisible','-close','-log','supervisor-runtime.log','-ip','127.0.0.1'])
             self.assertEqual(spawn.call_args.kwargs['cwd'],run)
             socket.return_value.__enter__.return_value.bind.assert_called_with(('127.0.0.1',1714))
             self.assertEqual(sup.state['phase'],'ready')
