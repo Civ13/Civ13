@@ -26,9 +26,10 @@ pull_pair_lifecycle.dm revokes logout/stop/deletion capabilities and restores th
 target glide. Deleted actors leave no registry key/member/controller reference;
 unrecoverable pairs (dead/downed/disconnected leader, deleted member) settle
 immediately to nearest aligned tiles; others after a 5-second recovery grace.
-Save admission reads every bounded lease before creating the operation: native
+Save admission reserves its operation, then reads every bounded lease: native
 calls/intents must unwind, hooks must complete, and live survivors must have valid
-aligned shapes; save admission first settles quiet pairs, so none holds forever.
+aligned shapes. Admission attempts to settle quiet pairs and remains held when
+they cannot be safely settled.
 <!-- 2026-10-29: settle validation and reserved admission -->
 Save admission reserves its operation before settling, so movement callbacks run
 under that exclusion; a failed settle or hold withdraws the unstarted reservation.

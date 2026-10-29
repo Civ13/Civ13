@@ -182,7 +182,22 @@ class CraftingMovementContracts(unittest.TestCase):
     def test_player_authority_optout_cadence_save_and_prone_unchanged(self):
         source = read(HUMAN)
         added = block(HUMAN, '// Identifies a still-valid passive recipe view.', '/mob/living/human/proc/human_subtile_input_supported')
-        self.assertEqual(source.replace(added, ''), baseline(HUMAN))
+        source = source.replace(added, '')
+        # Paired pulling deliberately adds these exact ownership/admission seams.
+        # Strip only those reviewed statements before the original parity check.
+        pair_changes = (
+            ('return !subtile_pull_ownership.owners[src] && human_subtile_shape()', 'return human_subtile_shape()'),
+            ('return !subtile_pull_ownership.owners[src] && human_subtile_offset_owned', 'return human_subtile_offset_owned'),
+            ('human_subtile_posture_ready(direction) || human_subtile_pull_ready(direction)', 'human_subtile_posture_ready(direction)'),
+            ('human_subtile_transaction || human_subtile_pulse || subtile_pull_ownership.owners[src] || !human_subtile_shape()',
+             'human_subtile_transaction || human_subtile_pulse || !human_subtile_shape()'),
+            ('\tif (human_subtile_pull_ready(direct))\n\t\treturn human_subtile_pull_travel(n, direct, deadline)\n', ''),
+            ('\tif (key == "human_subtile_pull_enabled")\n\t\treturn TRUE\n', ''),
+        )
+        for current, original in pair_changes:
+            self.assertEqual(source.count(current), 1, current)
+            source = source.replace(current, original, 1)
+        self.assertEqual(source, baseline(HUMAN))
         self.assertEqual(read('code/_onclick/click.dm'), baseline('code/_onclick/click.dm'))
         self.assertEqual(read('code/pathfinding.dm'), baseline('code/pathfinding.dm'))
 
