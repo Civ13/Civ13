@@ -36,6 +36,49 @@ def district_reachable(layers, start=(8, 8, 1)):
 
 
 class KeyMapTests(unittest.TestCase):
+    def placed_loot(self, filename):
+        source = (ROOT / 'maps/extraction' / filename).read_text()
+        cells = [value for rows in parse(source).values() for row in rows for value in row]
+        ordinary, keyed = [], []
+        for value in cells:
+            if '/obj/effect/extraction_loot_marker' in value:
+                identity = int(re.search(r'container_id = (\d+)', value)[1])
+                (keyed if '/extraction_loot_marker/keyed/' in value else ordinary).append(identity)
+        self.assertCountEqual(keyed, (61, 62))
+        return cells, ordinary, keyed
+
+    def test_mode_fixed_pool_assertion_matches_actual_industrial_placements(self):
+        # Count placed cells, not dictionary definitions or generator constants.
+        cells, ordinary, keyed = self.placed_loot('industrial_district.dmm')
+        self.assertCountEqual(ordinary, range(1, 28))
+        actual = {
+            'house': sum('/obj/effect/extraction_house_marker' in cell for cell in cells),
+            'raid': sum('/obj/effect/extraction_raid_marker' in cell for cell in cells),
+            'loot': len(ordinary) + len(keyed),
+        }
+        self.assertEqual(actual, {'house': 16, 'raid': 4, 'loot': 29})
+        probe = (ROOT / 'tests/extraction/mode_probe.dm').read_text()
+        assertion = next(line for line in probe.splitlines()
+                         if '"fixed room, deployment and loot pools"' in line)
+        required = dict((kind, int(count)) for kind, count in re.findall(
+            r'extraction_(house|raid|loot)_markers\.len == (\d+)', assertion))
+        self.assertEqual(required, actual)
+
+    def test_city_fixed_pool_assertion_matches_actual_city_placements(self):
+        cells, ordinary, keyed = self.placed_loot('modern_city_extraction.dmm')
+        self.assertCountEqual(ordinary, (*range(1, 13), *range(19, 25)))
+        actual = {
+            'extraction_city_stations': sum('/obj/effect/extraction_exit/scheduled' in cell for cell in cells),
+            'extraction_loot_markers': len(ordinary) + len(keyed),
+        }
+        self.assertEqual(actual, {'extraction_city_stations': 2, 'extraction_loot_markers': 20})
+        probe = (ROOT / 'tests/extraction/city_probe.dm').read_text()
+        assertion = next(line for line in probe.splitlines()
+                         if '"original city has two scheduled stations' in line)
+        required = dict((name, int(count)) for name, count in re.findall(
+            r'(extraction_city_stations|extraction_loot_markers)\.len == (\d+)', assertion))
+        self.assertEqual(required, actual)
+
     def test_checked_in_maps_match_generators(self):
         expected = {
             'industrial_district.dmm': build_district(),

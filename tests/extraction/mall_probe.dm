@@ -389,8 +389,12 @@ var/global/mall_fixture_failed = FALSE
 	mall_vehicle_route_probe(M)
 
 // Actual default-map driving, not a relocated flat-fixture car or client-input claim.
-/proc/mall_car_budget(deadline)
-	mall_assert(world.realtime < deadline, "actual mall car case stays within shared 45 second deadline")
+/proc/mall_car_elapsed(started, now = world.timeofday)
+	// Short day-clock intervals retain precision and cross midnight safely.
+	return (now - started + 864000) % 864000
+
+/proc/mall_car_budget(started)
+	mall_assert(mall_car_elapsed(started) < 450, "actual mall car case stays within shared 45 second deadline")
 
 // Model selecting the key for each click, then restore the prior active hand.
 // In the driver's seat this preserves the real wheel as the active input item.
@@ -404,11 +408,11 @@ var/global/mall_fixture_failed = FALSE
 
 // Explicit cardinal input adapter. Every step still executes production Move,
 // frame CanPass/CheckExit and turf callbacks; no actor/vehicle forceMove here.
-/proc/mall_car_walk(mob/living/human/H, turf/target, deadline, horizontal_first = TRUE)
+/proc/mall_car_walk(mob/living/human/H, turf/target, started, horizontal_first = TRUE)
 	mall_assert(target && H.z == target.z && get_dist(H, target) <= 16, "car walking waypoint is bounded on the actual map")
 	var/steps = 0
 	while (get_turf(H) != target)
-		mall_car_budget(deadline)
+		mall_car_budget(started)
 		mall_assert(++steps <= 32, "car walking input has a bounded number of steps")
 		var/direction
 		if ((horizontal_first && H.x != target.x) || H.y == target.y)
@@ -427,13 +431,13 @@ var/global/mall_fixture_failed = FALSE
 
 // Observe the real asynchronous wheel-started movement loop one tick at a time.
 // Turns legitimately move the axis anchor, so each straight leg starts afresh.
-/proc/mall_car_drive_leg(mob/living/human/H, obj/structure/vehicleparts/axis/A, direction, coordinate, deadline)
+/proc/mall_car_drive_leg(mob/living/human/H, obj/structure/vehicleparts/axis/A, direction, coordinate, started)
 	var/steps = 0
-	var/last_move = world.realtime
+	var/last_move = world.timeofday
 	var/turf/previous = get_turf(A)
 	mall_assert(previous && previous.z == 1, "contained car controller has a road turf before driving")
 	while ((direction == SOUTH ? previous.y : previous.x) != coordinate)
-		mall_car_budget(deadline)
+		mall_car_budget(started)
 		mall_assert(A.dir == direction && A.moving && A.currentspeed > 0 && A.engine.on && A.driver == H && H.buckled == A.wheel.drivingchair && A.wheel.loc == H && H.get_active_hand() == A.wheel, "real driver engine active wheel and direction remain linked during mall travel")
 		mall_assert((direction == SOUTH ? previous.y : previous.x) > coordinate, "real movement cannot overshoot the mall route waypoint")
 		sleep(1)
@@ -442,13 +446,12 @@ var/global/mall_fixture_failed = FALSE
 			mall_assert(current == get_step(previous, direction), "actual mall driving advances exactly one production road tile")
 			mall_assert(++steps <= 110, "actual mall straight leg has a bounded translation count")
 			previous = current
-			last_move = world.realtime
-		mall_assert(world.realtime - last_move < 20, "actual mall car movement cannot silently stall")
+			last_move = world.timeofday
+		mall_assert(mall_car_elapsed(last_move) < 20, "actual mall car movement cannot silently stall")
 	return steps
 
 /proc/mall_vehicle_route_probe(obj/map_metadata/extraction_survival/mall/M)
-	var/started = world.realtime
-	var/deadline = started + 450
+	var/started = world.timeofday
 	mall_stage("before actual mall car purchase and travel")
 	// Real turf Enter callbacks need this clock, not its client scheduler loop.
 	if (!movementMachine) movementMachine = new
@@ -539,14 +542,14 @@ var/global/mall_fixture_failed = FALSE
 	mall_assert(seat && door && door.axis == A && seat.axis == A, "paid car retains production driver and door links")
 	// Walk around the current SOUTH-facing three-square footprint to its east.
 	if (H.x <= arrived.x && H.y >= arrived.y && H.y <= arrived.y + 2)
-		mall_car_walk(H, locate(H.x, arrived.y - 1, 1), deadline, FALSE)
-	mall_car_walk(H, locate(arrived.x + 1, H.y, 1), deadline)
-	mall_car_walk(H, locate(seat.x + 1, seat.y, 1), deadline, FALSE)
+		mall_car_walk(H, locate(H.x, arrived.y - 1, 1), started, FALSE)
+	mall_car_walk(H, locate(arrived.x + 1, H.y, 1), started)
+	mall_car_walk(H, locate(seat.x + 1, seat.y, 1), started, FALSE)
 	mall_assert(H.Adjacent(door), "driver reaches the actual closed car door on foot")
 	if (!door.doorcode) mall_car_use_key(H, door, key)
 	if (!door.w_left[7]) mall_car_use_key(H, door, key)
 	mall_assert(door.doorcode == key.code && door.w_left[7], "existing supported key opens the real driver door through production attackby")
-	mall_car_walk(H, get_turf(seat), deadline)
+	mall_car_walk(H, get_turf(seat), started)
 	H.swap_hand()
 	mall_assert(!H.get_active_hand() && H.get_inactive_hand() == key, "driver keeps the original key and frees the active hand for the wheel")
 	seat.user_buckle_mob(H, H)
@@ -556,27 +559,27 @@ var/global/mall_fixture_failed = FALSE
 	A.wheel.attack_self(H)
 	mall_assert(E.on && !A.moving, "production steering input starts the actual engine")
 	A.wheel.attack_self(H)
-	var/south_steps = mall_car_drive_leg(H, A, SOUTH, highway.y + 1, deadline)
+	var/south_steps = mall_car_drive_leg(H, A, SOUTH, highway.y + 1, started)
 	mall_assert(A.wheel.turndir(H, "right") && A.dir == WEST, "real steering turns from south into the mall highway ring")
 	for (var/i in 1 to 3) A.wheel.attack_self(H)
 	mall_assert(A.currentspeed == 4, "production steering input selects bounded native top gear")
-	var/west_steps = mall_car_drive_leg(H, A, WEST, highway.x + 1, deadline)
+	var/west_steps = mall_car_drive_leg(H, A, WEST, highway.x + 1, started)
 	// The private bay is SOUTH-shaped. Preserve its production geometry check.
 	mall_assert(A.wheel.turndir(H, "left") && A.dir == SOUTH, "real steering returns the car to its private-bay orientation")
 	for (var/i in 1 to 4) A.wheel.secondary_attack_self(H)
 	A.wheel.secondary_attack_self(H)
 	while (A.movement_processes)
-		mall_car_budget(deadline)
+		mall_car_budget(started)
 		sleep(1)
 	mall_assert(!A.moving && !A.currentspeed && !E.on && !A.transforming_vehicle && A.driver == H && M.vehicle_at_exit(A, highway), "actual driven car parks and stops next to the real highway")
 	mall_assert(south_steps + west_steps >= 60 && tank.reagents.total_volume > 0 && tank.reagents.total_volume < 100, "actual road travel moves the car and consumes its supplied fuel")
 	mall_car_use_key(H, door, key)
 	mall_assert(door.w_left[7] && seat.user_unbuckle_mob(H) == H && !H.buckled && !A.driver && A.wheel.loc == seat, "real driver opens the door and leaves the stopped car without duplicating its wheel")
-	mall_car_walk(H, get_step(get_turf(seat), EAST), deadline)
+	mall_car_walk(H, get_step(get_turf(seat), EAST), started)
 	mall_car_use_key(H, door, key)
 	mall_assert(!door.w_left[7], "former driver closes the original real door after leaving")
-	mall_car_walk(H, locate(H.x, highway.y - 1, 1), deadline, FALSE)
-	mall_car_walk(H, locate(highway.x, highway.y - 1, 1), deadline)
+	mall_car_walk(H, locate(H.x, highway.y - 1, 1), started, FALSE)
+	mall_car_walk(H, locate(highway.x, highway.y - 1, 1), started)
 	mall_assert(highway.eligible(H), "former driver walks adjacent to the actual highway exit")
 	var/final_fuel = tank.reagents.total_volume
 	var/list/stopped_record = M.vehicle_codec.encode(A)
@@ -612,6 +615,8 @@ var/global/mall_fixture_failed = FALSE
 		mall_assert(physical_counts[id] == 1 && owned_ids[id], "returned mall part cargo and key identities each have one physical atom and one account owner")
 	var/revision = S.profile["revision"]
 	mall_assert(!S.credit_vehicle_extraction(sequence, list(), stopped_record) && S.profile["revision"] == revision, "actual mall vehicle return cannot credit the raid a second time")
-	mall_car_budget(deadline)
+	mall_car_budget(started)
 	mall_assert(!world.port, "actual mall car case keeps the fixture network closed")
-	mall_stage("actual mall car receipt [json_encode(list("car_id" = A.extraction_vehicle_part_id, "bag_id" = bag_id, "child_id" = child_id, "key_id" = key_id, "south_steps" = south_steps, "west_steps" = west_steps, "fuel_before" = 100, "fuel_after" = final_fuel, "elapsed_deciseconds" = world.realtime - started, "garage_revision" = revision))]")
+	var/elapsed = mall_car_elapsed(started)
+	mall_assert(elapsed > 0 && elapsed < 450, "actual mall car receipt records a nonzero bounded elapsed time")
+	mall_stage("actual mall car receipt [json_encode(list("car_id" = A.extraction_vehicle_part_id, "bag_id" = bag_id, "child_id" = child_id, "key_id" = key_id, "south_steps" = south_steps, "west_steps" = west_steps, "fuel_before" = 100, "fuel_after" = final_fuel, "elapsed_deciseconds" = elapsed, "garage_revision" = revision))]")

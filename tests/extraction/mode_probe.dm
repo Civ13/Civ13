@@ -92,7 +92,8 @@
 	M.accounts.store.root = "data/mode_accounts/"
 	extraction_progression_probe(M)
 	extraction_hub_probe(M)
-	equipment_assert(extraction_house_markers.len == 16 && extraction_raid_markers.len == 4 && extraction_loot_markers.len == 27, "fixed room, deployment and loot pools")
+	// Preserve the 27 ordinary sources plus the two exact-target keyed caches.
+	equipment_assert(extraction_house_markers.len == 16 && extraction_raid_markers.len == 4 && extraction_loot_markers.len == 29, "fixed room, deployment and loot pools")
 	var/mob/living/human/A = new(locate(3,3,1))
 	var/mob/living/human/B = new(locate(3,3,1))
 	A.m_intent = "stealth"

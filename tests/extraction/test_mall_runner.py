@@ -7,6 +7,7 @@ import contextlib
 import io
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -34,6 +35,51 @@ CONTROLS = {
 
 
 class NativeOracleTests(unittest.TestCase):
+    def test_paid_car_short_clock_retains_resolution_across_midnight(self):
+        # Project the fixture's arithmetic, not a native timing acceptance claim.
+        probe = (HERE / 'mall_probe.dm').read_text(encoding='utf-8')
+        helper = re.search(
+            r'/proc/mall_car_elapsed\(started, now = world\.timeofday\)\n'
+            r'(.*?)(?=\n/proc/)', probe, re.S)
+        self.assertIsNotNone(helper)
+        expression = re.search(r'^\treturn (.+)$', helper[1], re.M)[1]
+        self.assertEqual(expression, '(now - started + 864000) % 864000')
+        for started in (0, 1, 500000, 863990, 863999):
+            for interval in (0, 1, 19, 20, 21, 449, 450, 451):
+                now = (started + interval) % 864000
+                with self.subTest(started=started, interval=interval):
+                    elapsed = eval(expression, {'__builtins__': {}},
+                                   {'started': started, 'now': now})
+                    self.assertEqual(elapsed, interval)
+                    self.assertEqual(elapsed < 20, interval < 20)
+                    self.assertEqual(elapsed < 450, interval < 450)
+
+    def test_paid_car_all_limits_share_the_day_clock_and_original_start(self):
+        probe = (HERE / 'mall_probe.dm').read_text(encoding='utf-8')
+        route = probe[probe.index('/proc/mall_car_elapsed('):]
+        self.assertNotIn('world.realtime', route)
+        self.assertIn('var/started = world.timeofday', route)
+        self.assertEqual(route.count('var/started ='), 1)
+        self.assertIn('mall_assert(mall_car_elapsed(started) < 450,', route)
+        self.assertIn('var/last_move = world.timeofday', route)
+        self.assertIn('last_move = world.timeofday', route)
+        self.assertIn('mall_assert(mall_car_elapsed(last_move) < 20,', route)
+        self.assertEqual(route.count('mall_car_budget(started)'), 5)
+        for call in re.findall(r'^\s*(?:var/\w+ = )?mall_car_(?:walk|drive_leg)\((.*)\)$',
+                               route, re.M):
+            self.assertRegex(call, r', started(?:, FALSE)?$')
+
+    def test_paid_car_receipt_requires_nonzero_bounded_elapsed(self):
+        probe = (HERE / 'mall_probe.dm').read_text(encoding='utf-8')
+        sample = '\tvar/elapsed = mall_car_elapsed(started)\n'
+        guard = 'mall_assert(elapsed > 0 && elapsed < 450,'
+        receipt = '"elapsed_deciseconds" = elapsed'
+        self.assertEqual(probe.count(sample), 1)
+        self.assertEqual(probe.count(guard), 1)
+        self.assertEqual(probe.count(receipt), 1)
+        self.assertLess(probe.index(sample), probe.index(guard))
+        self.assertLess(probe.index(guard), probe.index(receipt))
+
     def test_paid_car_probe_does_not_read_codec_scratch_references(self):
         # encode releases its graph references before returning. The native
         # paid-car probe must retain its own references for the return census.
