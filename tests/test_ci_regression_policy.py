@@ -392,8 +392,7 @@ class SourcePreparationAdmissionTests(unittest.TestCase):
                     self.assertEqual(selection.selections('base', 'head', 'pull_request',
                                      False, True, payload)[:3], (True, False, []))
                 self.assertTrue(baseline.impact(paths)['suites']['year']['selected'])
-                if added:
-                    self.assertTrue(baseline.impact(paths)['suites']['character_return_preparation']['selected'])
+                self.assertTrue(baseline.impact(paths)['suites']['character_return_preparation']['selected'])
         for path in ('scripts/select-ci.py', 'code/predefines.dm',
                      'code/game/mob/living/simple_animal/friendly/static.dm'):
             decision = baseline.impact([path])
