@@ -187,6 +187,7 @@
 	food.decaytimer = food.decay * 0.1
 	food.reagents.add_reagent("cyanide", 2)
 	food.reagents.add_reagent("food_poisoning", 1)
+	food.radiation = 137
 	var/paid_food_poison = food.reagents.get_reagent_amount("food_poisoning")
 	cutting_check(H.put_in_active_hand(food), "save input legal hand")
 	B.attackby(food, H)
@@ -201,7 +202,7 @@
 	map_storage.clear_bookkeeping()
 	B = map_storage.Load_Entry(F, ref, starting_loc = site)
 	var/obj/item/weapon/reagent_containers/food/snacks/restored = B.input
-	cutting_check(B && restored && restored.loc == B && !QDELETED(restored) && restored.salted_meat && restored.decaytimer / restored.decay >= 0.1 && restored.reagents.get_reagent_amount("cyanide") == 2 && restored.reagents.get_reagent_amount("food_poisoning") == paid_food_poison, "board live food child, age, salt and poisons restore through actual entry codec")
+	cutting_check(B && restored && restored.loc == B && !QDELETED(restored) && restored.salted_meat && restored.radiation == 137 && restored.decaytimer / restored.decay >= 0.1 && restored.reagents.get_reagent_amount("cyanide") == 2 && restored.reagents.get_reagent_amount("food_poisoning") == paid_food_poison, "board live food child, age, salt and hazards restore through actual entry codec")
 	var/paid_protein = restored.reagents.get_reagent_amount("protein")
 	K = new knife_path(H)
 	cutting_check(H.put_in_active_hand(K), "restored board knife legal hand")
@@ -214,7 +215,7 @@
 		protein += output.reagents.get_reagent_amount("protein")
 		cyanide += output.reagents.get_reagent_amount("cyanide")
 		food_poison += output.reagents.get_reagent_amount("food_poisoning")
-		cutting_check(output.salted_meat && output.decaytimer / output.decay >= 0.1, "output retains paid salt and elapsed relative age")
+		cutting_check(output.salted_meat && output.radiation == 137 && output.decaytimer / output.decay >= 0.1, "output retains salt, radiation and elapsed relative age")
 	cutting_check(abs(protein - paid_protein) < 0.001 && abs(cyanide - 2) < 0.001 && abs(food_poison - paid_food_poison) < 0.001, "output shares preserve total paid protein and poison without constructor nutrition")
 	text2file("PASS: cutting-board live food, original yields, elapsed age, salt/reagents, subtype refusal, concurrency, rejections and actual child save/load", "food_result.txt")
 	del(world)

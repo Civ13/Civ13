@@ -58,7 +58,7 @@ disabled-decay, over-capacity or child-containing food is likewise refused.
 Freshness is checked again after preparation. Each output's constructor reagents
 are cleared, then the original reagents/data are divided among outputs without
 creating nutrition or removing added poison. Salt state and relative age transfer
-to the output's decay limit, with raw/cooked and unpleasant-food flags retained.
+to the output's decay limit, with radiation, raw/cooked and unpleasant-food flags retained.
 This intentionally replaces the old state-resetting conversion behavior.
 Scraping is deliberately lossy.
 Existing material knives, including the wooden kitchen knife, remain usable.

@@ -26,6 +26,8 @@
 	output.roasted = food.roasted
 	output.boiled = food.boiled
 	output.disgusting = food.disgusting
+	output.non_vegetarian = food.non_vegetarian
+	output.radiation = food.radiation
 	output.satisfaction = min(output.satisfaction, food.satisfaction)
 	if (output.rots && output.decaytimer >= output.decay / 2)
 		output.rot()

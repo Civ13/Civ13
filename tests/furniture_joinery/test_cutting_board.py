@@ -103,6 +103,7 @@ class Fixture:
                     rotten=False, decay=150000 if name.startswith('driedmeat') else 12000,
                     decaytimer=0, rots=not name.startswith('driedmeat'), salted_meat=False,
                     raw=True, roasted=False, boiled=False, disgusting=False, satisfaction=-3,
+                    non_vegetarian=True, radiation=0,
                     reagents=Holder(protein=5))
     def construct(self, path, site):
         output = self.food(path.removeprefix(FOOD), site)
@@ -160,6 +161,7 @@ class CuttingBoard(unittest.TestCase):
         f = Fixture(); food = f.item(FOOD + 'meat')
         food.decaytimer = 2400; food.mark_salted_meat(); food.reagents['cyanide'] = 3
         food.disgusting = True; food.satisfaction = -20; food.raw = False; food.roasted = True
+        food.radiation = 137
         f.attack(f.board, food, f.actor)
         f.after = lambda: setattr(food, 'decaytimer', food.decaytimer + 600) or True
         fraction = (food.decaytimer + 600) / food.decay
@@ -170,6 +172,7 @@ class CuttingBoard(unittest.TestCase):
             self.assertTrue(output.salted_meat); self.assertAlmostEqual(output.decaytimer / output.decay, fraction)
             self.assertTrue(output.disgusting); self.assertTrue(output.roasted)
             self.assertFalse(output.raw); self.assertEqual(output.satisfaction, -20)
+            self.assertEqual(output.radiation, 137); self.assertTrue(output.non_vegetarian)
 
     def test_dried_output_cannot_be_minced_repeatedly_or_reset_age(self):
         f = Fixture(); food = f.item(FOOD + 'driedmeat')
