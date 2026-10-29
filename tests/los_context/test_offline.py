@@ -85,6 +85,11 @@ def verify_adapters(base, current):
                 if body.count(ADDITIONS[path]) != 1:
                     raise AssertionError('Ambiguous LOS adapter in ' + path)
                 body = body.replace(ADDITIONS[path], '', 1)
+            if path == 'code/modules/client/client_procs.dm':
+                # Independently default-off root composition cleanup is not a
+                # change to the older LOS retirement/legacy adapter contract.
+                body = body.replace('\tif(CIV13_ROOT_TREE_PRESENTATION && root_tree_presenter)\n\t\troot_tree_presenter.retire()', '')
+                body = '\n'.join(line for line in body.splitlines() if line)
             if path == 'code/game/mob/mob.dm' and has_core:
                 if body.count(TURN_GUARD) != 1:
                     raise AssertionError('Disabled Examine turn guard missing')
@@ -264,7 +269,7 @@ class Context:
 
 def projected_context(source=None):
     source = CORE.read_text() if source is None else source
-    env={'__builtins__':{},'len':len,'Mutation':Mutation}
+    env={'__builtins__':{},'len':len,'Mutation':Mutation,'CIV13_ROOT_TREE_PRESENTATION':False}
     cls=type('ProjectedContext',(Context,),{})
     for name in ['advance_revision','begin_change','finish_change']:
         setattr(cls,name,project(source,'/datum/los_context/proc/'+name+'(',env,True))

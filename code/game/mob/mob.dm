@@ -169,6 +169,9 @@
 	return FALSE
 
 /mob/proc/reset_view(atom/A)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (client)
 		if (istype(A, /atom/movable))
 			client.perspective = EYE_PERSPECTIVE
