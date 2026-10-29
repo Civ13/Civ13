@@ -84,7 +84,7 @@ class Fixture:
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
                         subtile_pull_ownership=NS(save_ready=lambda: True, retire_member=lambda actor: None,
-                                                  resolve_quiet=lambda reason: None),
+                                                  resolve_quiet=lambda reason, admission: True),
                         get_turf=get_turf, isturf=lambda a: isinstance(a, Atom) and a.turf,
                         ishuman=lambda a: a.human, ADMIN_AREA='admin',
                         istype=lambda a, kind: isinstance(a, Area) and a.admin,
@@ -124,7 +124,8 @@ class Fixture:
                            for name, args in (('current', 'src, expected_storage, expected_kind'),
                                               ('enter_backend', 'src, expected_storage, expected_kind'),
                                               ('enter_contents', 'src, expected_storage, expected_kind'),
-                                              ('finish', 'src, success'))}
+                                              ('finish', 'src, success'),
+                                              ('withdraw', 'src'))}
         self.env['new_operation'] = self.operation
         self.backend = project(functions, '/map_storage/proc/run_world_operation', 'src, kind, operation=None', self.env, True)
         self.store = NS(dimension_recovery_required=False, dimension_budget_hold=False)
@@ -144,27 +145,40 @@ class Fixture:
 
 
 class GuardTests(unittest.TestCase):
-    def test_pull_hold_rejects_save_before_identity_backend_or_failure_reset(self):
+    def test_pull_hold_rejects_save_before_backend_or_failure_reset(self):
         f = Fixture()
         calls, messages, writes = [], [], []
+        def resolve_quiet(reason, admission):
+            # Settling runs under this save's own reservation, never unheld.
+            calls.append(('resolve:' + reason, admission is f.env['persistence_active_operation'],
+                          f.env['persistence_save_in_progress'], admission.backend_started))
+            return True
         f.env['subtile_pull_ownership'].save_ready = lambda: calls.append('checkpoint') or False
-        f.env['subtile_pull_ownership'].resolve_quiet = lambda reason: calls.append('resolve:' + reason)
+        f.env['subtile_pull_ownership'].resolve_quiet = resolve_quiet
         f.env['to_chat'] = lambda target, text: messages.append(text)
         f.env['new_operation'] = lambda: calls.append('new_operation') or f.operation()
         prior = object()
         f.store.last_save_reference_failure = prior
         f.store.save_world_contents = lambda operation: writes.append(operation) or True
         self.assertFalse(f.backend(f.store, 'save'))
+        # The unstarted reservation is withdrawn: no operation or save flag remains.
         self.assertIsNone(f.env['persistence_active_operation'])
         self.assertFalse(f.env['persistence_save_in_progress'])
         self.assertIs(f.store.last_save_reference_failure, prior)
         self.assertEqual(writes, [])
-        # Quiet held pairs settle to aligned tiles before the hold is evaluated.
-        self.assertEqual(calls, ['resolve:save_admission', 'checkpoint'])
+        self.assertEqual(calls, ['new_operation', ('resolve:save_admission', True, True, False), 'checkpoint'])
         self.assertEqual(messages, ['Map save held: a smooth pull requires an aligned checkpoint.'])
+        # A settle that cannot validate final positions holds without a checkpoint read.
+        f.env['subtile_pull_ownership'].resolve_quiet = lambda reason, admission: calls.append('unsettled') and False
+        self.assertIsNone(f.begin(f.store, 'save'))
+        self.assertEqual(calls[-1], 'unsettled')
+        self.assertIsNone(f.env['persistence_active_operation'])
+        self.assertFalse(f.env['persistence_save_in_progress'])
+        f.env['subtile_pull_ownership'].resolve_quiet = resolve_quiet
+        del calls[:]
         # Loads retain their original admission; this is not a new global lock.
         operation = f.begin(f.store, 'load')
-        self.assertEqual(calls, ['resolve:save_admission', 'checkpoint', 'new_operation'])
+        self.assertEqual(calls, ['new_operation'])
         self.assertEqual(operation.kind, 'load')
         operation.finish(True)
         # Releasing all pair holds restores normal save admission.

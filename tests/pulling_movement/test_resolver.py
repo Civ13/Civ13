@@ -115,12 +115,16 @@ class StuckPairResolverContracts(unittest.TestCase):
 
     def test_resolver_waits_for_unwind_and_saves_then_aligns_before_dropping_lease(self):
         text = read(PREFIX + 'pull_pair_lifecycle.dm')
-        resolve = section(text, '/datum/subtile_pull_pair/proc/resolve_aligned(reason)',
+        resolve = section(text, '/datum/subtile_pull_pair/proc/resolve_aligned(reason, datum/persistence_world_operation/admission)',
                           '/datum/subtile_pull_ownership/proc/resolve_quiet')
-        guard = resolve.index('if (intent_running || native_inflight || completion_running || issued || persistence_save_in_progress)\n\t\treturn FALSE')
+        guard = resolve.index('if (settling || intent_running || native_inflight || completion_running || issued)\n\t\treturn FALSE')
+        save = resolve.index('if (persistence_save_in_progress && !(admission && persistence_active_operation == admission && !admission.backend_started))\n\t\treturn FALSE')
         self.assertLess(guard, resolve.index('cancel(reason)'))
+        self.assertLess(save, resolve.index('cancel(reason)'))
         self.assertLess(resolve.index('cancel(reason)'), resolve.index('member.forceMove(destination)'))
-        self.assertLess(resolve.index('member.step_y = 0'), resolve.index('drop_lease()'))
+        # Executed final-position checks live in test_settle_admission.py.
+        self.assertLess(resolve.index('member.forceMove(destination)'), resolve.index('failure = "settle_position_changed"'))
+        self.assertLess(resolve.index('failure = "settle_position_changed"'), resolve.index('drop_lease()'))
         self.assertIn('if (isDeleted(member))\n\t\t\tcontinue', resolve)
         self.assertNotRegex(resolve, r'\bloc\s*=(?!=)')
         for forbidden in ('sleep(', 'spawn(', '.Move('):
@@ -134,16 +138,17 @@ class StuckPairResolverContracts(unittest.TestCase):
                           '/datum/subtile_pull_pair/proc/drop_lease()')
         self.assertLess(release.index('cancel("released")'), release.index('drop_lease()'))
 
-    def test_save_admission_settles_quiet_pairs_before_the_hold(self):
+    def test_save_admission_reserves_then_settles_quiet_pairs_before_the_hold(self):
         body = section(read('code/modules/persistence/functions.dm'), '/proc/begin_persistence_operation(',
                        '/datum/persistence_world_operation\n')
-        resolve = body.index('subtile_pull_ownership.resolve_quiet("save_admission")')
+        resolve = body.index('subtile_pull_ownership.resolve_quiet("save_admission", operation)')
         self.assertLess(body.index('if(persistence_save_in_progress && !(restart_owner'), resolve)
-        self.assertLess(resolve, body.index('if(kind == "save" && !subtile_pull_ownership.save_ready())'))
+        self.assertLess(body.index('persistence_active_operation = operation'), resolve)
+        self.assertLess(resolve, body.index('!subtile_pull_ownership.save_ready()'))
         quiet = section(read(PREFIX + 'pull_pair_lifecycle.dm'), '/datum/subtile_pull_ownership/proc/resolve_quiet',
                         '/datum/subtile_pull_pair/proc/save_checkpoint()')
-        self.assertIn('if (P.intent_completed)\n\t\t\tP.resolve_aligned(reason)', quiet)
-        self.assertLess(quiet.index('pairs += P'), quiet.index('P.resolve_aligned(reason)'))
+        self.assertIn('if (P.intent_completed && !P.resolve_aligned(reason, admission))\n\t\t\t. = FALSE', quiet)
+        self.assertLess(quiet.index('pairs += P'), quiet.index('P.resolve_aligned(reason, admission)'))
 
     def test_smooth_pulling_is_on_by_default_and_follows_the_movement_toggle(self):
         producer = read(PREFIX + 'pull_pair_producer.dm')

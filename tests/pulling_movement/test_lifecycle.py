@@ -38,7 +38,7 @@ class PullLifecycleContracts(unittest.TestCase):
         for actor in ('leader', 'follower'):
             replacements['isDeleted(' + actor + ')'] = actor + '_deleted'
             replacements['subtile_pull_shape(' + actor + ', TRUE)'] = actor + '_aligned'
-        names = ('intent_running', 'native_inflight', 'completion_running', 'issued', 'intent_completed',
+        names = ('intent_running', 'native_inflight', 'completion_running', 'issued', 'settling', 'intent_completed',
                  'leader', 'leader_deleted', 'leader_aligned',
                  'follower', 'follower_deleted', 'follower_aligned')
         code = expression(policy, replacements, names)
@@ -46,15 +46,15 @@ class PullLifecycleContracts(unittest.TestCase):
                   'aligned': (True, False, True), 'offset': (True, False, False),
                   'contained': (True, False, False), 'invalid_shape': (True, False, False)}
         cases = 0
-        for running, native, completing, issued, completed in itertools.product((False, True), repeat=5):
-            stage = (running, native, completing, issued, completed)
+        for running, native, completing, issued, settling, completed in itertools.product((False, True), repeat=6):
+            stage = (running, native, completing, issued, settling, completed)
             for leader, follower in itertools.product(actors, repeat=2):
                 values = dict(zip(names, (*stage, *actors[leader], *actors[follower])))
                 actual = bool(eval(code, {'__builtins__': {}}, values))
-                expected = stage == (False, False, False, False, True) and {leader, follower} <= {'absent', 'deleted', 'aligned'}
+                expected = stage == (False, False, False, False, False, True) and {leader, follower} <= {'absent', 'deleted', 'aligned'}
                 self.assertEqual(actual, expected, (stage, leader, follower))
                 cases += 1
-        self.assertEqual(cases, 1152)
+        self.assertEqual(cases, 2304)
 
     def test_interrupted_receipt_rejects_unconsumed_or_foreign_displacement(self):
         text = read(PREFIX + 'pull_pair_lifecycle.dm')
@@ -71,13 +71,16 @@ class PullLifecycleContracts(unittest.TestCase):
         self.assertIn('P.member != member', receipt)
         self.assertIn('!subtile_pull_shape(member)', receipt)
 
-    def test_save_admission_precedes_operation_identity_flags_and_backend(self):
+    def test_save_admission_reserves_then_holds_before_announcing_or_returning(self):
+        # Executed ordering lives in test_settle_admission.py; pin the hold here.
         persistence = read('code/modules/persistence/functions.dm')
         body = section(persistence, '/proc/begin_persistence_operation(', '/datum/persistence_world_operation\n')
-        hold = body.index('if(kind == "save" && !subtile_pull_ownership.save_ready())')
-        for mutation in ('var/datum/persistence_world_operation/operation = new',
-                         'persistence_active_operation = operation', 'persistence_save_in_progress = TRUE'):
-            self.assertLess(hold, body.index(mutation))
+        hold = body.index('!subtile_pull_ownership.save_ready()')
+        for reservation in ('var/datum/persistence_world_operation/operation = new',
+                            'persistence_active_operation = operation', 'persistence_save_in_progress = TRUE'):
+            self.assertLess(body.index(reservation), hold)
+        self.assertLess(hold, body.index('operation.withdraw()'))
+        self.assertLess(body.index('operation.withdraw()'), body.index('SAVING THE MAP.'))
         self.assertIn('Map save held: a smooth pull requires an aligned checkpoint.', body)
         ready = section(read(PREFIX + 'pull_pair_lifecycle.dm'),
                         '/datum/subtile_pull_ownership/proc/save_ready()',

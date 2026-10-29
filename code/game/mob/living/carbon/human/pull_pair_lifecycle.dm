@@ -8,7 +8,7 @@
 	return TRUE
 
 /datum/subtile_pull_pair/proc/checkpoint_ready()
-	return !intent_running && !native_inflight && !completion_running && !issued && intent_completed && (!leader || isDeleted(leader) || subtile_pull_shape(leader, TRUE)) && (!follower || isDeleted(follower) || subtile_pull_shape(follower, TRUE))
+	return !intent_running && !native_inflight && !completion_running && !issued && !settling && intent_completed && (!leader || isDeleted(leader) || subtile_pull_shape(leader, TRUE)) && (!follower || isDeleted(follower) || subtile_pull_shape(follower, TRUE))
 
 /datum/subtile_pull_ownership/proc/retire_member(atom/movable/member)
 	var/datum/subtile_pull_pair/P = owners[member]
@@ -80,6 +80,7 @@
 /datum/subtile_pull_pair
 	var/recovery_grace = 50
 	var/resolve_epoch = 0
+	var/settling = FALSE
 
 /datum/subtile_pull_pair/proc/recovery_possible()
 	return leader && leader.client && leader.client.mob == leader && recovery_ready(leader)
@@ -103,37 +104,69 @@
 			resolve_after(delay)
 
 // Settle a quiet held pair without player input: place each live survivor on
-// its nearest whole tile, then drop the lease. Never runs during a save or
-// while native/intent/completion work is unwinding.
-/datum/subtile_pull_pair/proc/resolve_aligned(reason)
+// its nearest whole tile, then drop the lease. Never runs during another save
+// or while native/intent/completion work is unwinding. Save admission passes
+// its own unstarted reservation, so the settle runs under that exclusion.
+/datum/subtile_pull_pair/proc/resolve_aligned(reason, datum/persistence_world_operation/admission)
 	if (released)
 		return TRUE
-	if (intent_running || native_inflight || completion_running || issued || persistence_save_in_progress)
+	if (settling || intent_running || native_inflight || completion_running || issued)
 		return FALSE
+	if (persistence_save_in_progress && !(admission && persistence_active_operation == admission && !admission.backend_started))
+		return FALSE
+	settling = TRUE
 	cancel(reason)
 	restore_follower_glide()
+	var/list/targets = list()
 	for (var/atom/movable/member in list(leader, follower))
 		if (isDeleted(member))
 			continue
+		var/atom/destination = member.loc
 		if (isturf(member.loc))
 			var/list/target = subtile_pull_nearest_tile(subtile_pull_snapshot(member))
-			var/turf/destination = locate(target["x"], target["y"], target["z"])
-			if (destination && destination != member.loc)
-				member.forceMove(destination)
+			destination = locate(target["x"], target["y"], target["z"])
+		targets[member] = destination
+	for (var/atom/movable/member in targets)
+		if (isDeleted(member))
+			continue
+		var/atom/destination = targets[member]
+		// Clear the offset first, so a callback's own offset stays observable.
 		member.step_x = 0
 		member.step_y = 0
+		if (destination && destination != member.loc)
+			member.forceMove(destination)
+	settling = FALSE
+	if (released)
+		return TRUE
+	// Entered/Crossed/forceMove callbacks can relocate or re-offset a member,
+	// start native work or end the reservation. Keep the lease unless every
+	// survivor is exactly where it was placed; a later pass settles again.
+	if (intent_running || native_inflight || completion_running || issued || (admission && persistence_active_operation != admission))
+		recovery_required = TRUE
+		failure = "settle_interrupted"
+		return FALSE
+	for (var/atom/movable/member in targets)
+		if (isDeleted(member))
+			continue
+		if (!targets[member] || member.loc != targets[member] || member.step_x || member.step_y || (isturf(member.loc) && !subtile_pull_shape(member, TRUE)))
+			recovery_required = TRUE
+			failure = "settle_position_changed"
+			return FALSE
 	drop_lease()
 	return TRUE
 
-/datum/subtile_pull_ownership/proc/resolve_quiet(reason)
+// TRUE only when every quiet pair settled. Pairs still running an intent are
+// left to the caller's save_ready() hold.
+/datum/subtile_pull_ownership/proc/resolve_quiet(reason, datum/persistence_world_operation/admission)
 	var/list/pairs = list()
 	for (var/atom/movable/member in owners)
 		var/datum/subtile_pull_pair/P = owners[member]
 		if (istype(P) && !(P in pairs))
 			pairs += P
+	. = TRUE
 	for (var/datum/subtile_pull_pair/P in pairs)
-		if (P.intent_completed)
-			P.resolve_aligned(reason)
+		if (P.intent_completed && !P.resolve_aligned(reason, admission))
+			. = FALSE
 
 /datum/subtile_pull_pair/proc/save_checkpoint()
 	if (intent_running || native_inflight || completion_running || issued)

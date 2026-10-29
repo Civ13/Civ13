@@ -29,6 +29,11 @@ immediately to nearest aligned tiles; others after a 5-second recovery grace.
 Save admission reads every bounded lease before creating the operation: native
 calls/intents must unwind, hooks must complete, and live survivors must have valid
 aligned shapes; save admission first settles quiet pairs, so none holds forever.
+<!-- 2026-10-29: settle validation and reserved admission -->
+Save admission reserves its operation before settling, so movement callbacks run
+under that exclusion; a failed settle or hold withdraws the unstarted reservation.
+The resolver keeps the lease unless every survivor ends exactly on its placed
+tile after callbacks; tests/pulling_movement/test_settle_admission.py executes both.
 Never serialize a half-applied pair or release an offset to legacy movement.
 <!-- 2026-10-27: paid prone/crawl intervals -->
 Client-owned unlinked crawling uses the existing prone/scramble delay, with
