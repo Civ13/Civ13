@@ -695,6 +695,10 @@ class HistoricalFixtureIntegrityTests(unittest.TestCase):
         (CURRENT_BASE, PATH): '9b78f233b4aca79231cf9b2704a5d705ba58cc7830acad1aebe4871d86d3b9c6',
         ('d0c744919ba181e7a0bcfae222b5a37687af48fb', PATH): '2f18639721f2140b083f5b6737db07a784efbd93f5fc1b8a4c287eb05147c7b1',
         (MERGE_BASE, PATH): '92f08bd1037d6302fdafaba02a3a477d5b01db39316cab86aa22e8b7c6be8765',
+        (MERGE_MASTER, PATH): 'aa47728b2e855c1ee2b1a59cfa65337354835ba2805f6dd1aab5ff56763c1960',
+        (MERGE_MASTER, 'code/processes/human_corpse_decay.dm'): 'a005ae9231059629c501292df1c6e1aae1244e5fbceb5ad7a2b7b75e9dd0a6ae',
+        (MERGE_MASTER, 'code/processes/abandoned_items.dm'): '42b0c511b7079de45aa9da03c356c1d235f56e9c6b8e3382445a89a317c2f218',
+        (MERGE_MASTER, 'code/modules/1713/active_training.dm'): '0ba4cc88df711c41d29a5b13536f4ed7e8aa21d5f0f394cd0f3f7d8f34e6ea34',
         (MERGE_BASE, 'code/processes/human_corpse_decay.dm'): 'a005ae9231059629c501292df1c6e1aae1244e5fbceb5ad7a2b7b75e9dd0a6ae',
         (MERGE_BASE, 'code/processes/abandoned_items.dm'): '029a81ff9e2c7b4ab9b0d69bf343b113e0dce4f1ec2713b91769ec09eff248cc',
         (MERGE_BASE, 'code/modules/1713/active_training.dm'): '0ba4cc88df711c41d29a5b13536f4ed7e8aa21d5f0f394cd0f3f7d8f34e6ea34',
@@ -1115,6 +1119,15 @@ class ManualPostIntegrationRunnerTests(unittest.TestCase):
                         if content.count(old_id) != 1:
                             raise AssertionError('Synthetic identity anchor changed')
                         content=content.replace(old_id,new_id,1)
+                elif path == 'tests/exclusion_dispatch/fixtures/manifest.json':
+                    # Re-key only the temporary manifest; source bytes and hashes
+                    # remain the real independently pinned historical fixtures.
+                    manifest=json.loads(content)
+                    for old_id,new_id in ((MERGE_BASE,feature_identity),(MERGE_MASTER,master)):
+                        for key in list(manifest):
+                            if key.startswith(old_id + ':'):
+                                manifest[new_id + key[len(old_id):]]=manifest.pop(key)
+                    content=json.dumps(manifest,indent=2)+'\n'
                 index(path,content.encode('utf-8'))
             foundation_tree=git('write-tree')
             foundation=git('commit-tree',foundation_tree,'-p',feature_identity,'-m','fixture combined foundation')

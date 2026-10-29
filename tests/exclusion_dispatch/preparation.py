@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+from historical_fixtures import text as historical_text
 
 from source_contract import (current_lighting_policy, reconstruct_list_baseline, validate_current_master,
                              project_merged_source, resolve_event_projection, replay_reviewed_merge, has_ordered_release_history,
@@ -15,7 +16,12 @@ INHERITED = (
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 )
 FIXTURE = tuple('tests/exclusion_dispatch/' + name for name in (
-    'run.py', 'run-ci.py', 'run-ci-current.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm'))
+    'run.py', 'run-ci.py', 'run-ci-current.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm',
+    'historical_fixtures.py', 'fixtures/manifest.json',
+    'fixtures/extraction-reviewed-functions.dm.txt', 'fixtures/reconciliation-base-functions.dm.txt',
+    'fixtures/extraction-human-corpse-decay.dm.txt', 'fixtures/seed-human-corpse-decay.dm.txt',
+    'fixtures/extraction-abandoned-items.dm.txt', 'fixtures/seed-abandoned-items.dm.txt',
+    'fixtures/extraction-active-training.dm.txt', 'fixtures/seed-active-training.dm.txt'))
 
 
 def git(repo, *arguments):
@@ -94,8 +100,8 @@ def prepare(repo, base, head, **event):
     extraction_history = has_extraction_history(repo, head)
     projection = 'lighting-only'
     if extraction_history:
-        feature = committed(MERGE_BASE, PATH)
-        master = committed(MERGE_MASTER, PATH)
+        feature = historical_text(MERGE_BASE, PATH)
+        master = historical_text(MERGE_MASTER, PATH)
         reviewed = project_merged_source(feature)
         _, projection = resolve_event_projection(repo, identity, feature, current[PATH], master, reviewed,
                                                  ordered_release=has_ordered_release_history(repo, head))
@@ -104,7 +110,7 @@ def prepare(repo, base, head, **event):
     for path, _ in INHERITED:
         pinned = committed(base, path)
         if projection == 'feature-base':
-            pinned = replay_reviewed_merge(pinned, committed(MERGE_BASE, path), committed(MERGE_MASTER, path))
+            pinned = replay_reviewed_merge(pinned, historical_text(MERGE_BASE, path), historical_text(MERGE_MASTER, path))
         if current[path] != pinned:
             raise ValueError('Inherited helper drift from event base: ' + path)
     return identity, reconstruct_list_baseline(current[PATH]), current, projection

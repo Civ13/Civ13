@@ -63,7 +63,7 @@ class ActualPreparationTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / path, target)
             shutil.copytree(ROOT / 'tests/exclusion_dispatch/fixtures',
-                            repo / 'tests/exclusion_dispatch/fixtures')
+                            repo / 'tests/exclusion_dispatch/fixtures', dirs_exist_ok=True)
             for path, _ in INHERITED:
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -327,7 +327,10 @@ class ActualPreparationTests(unittest.TestCase):
 
     def test_dirty_source_helper_and_fixture_are_rejected_before_output(self):
         with self.history() as (directory, repo, base, head):
-            for path in (PATH, INHERITED[0][0], 'tests/exclusion_dispatch/probe.dm'):
+            for path in (PATH, INHERITED[0][0], 'tests/exclusion_dispatch/probe.dm',
+                         'tests/exclusion_dispatch/historical_fixtures.py',
+                         'tests/exclusion_dispatch/fixtures/manifest.json',
+                         'tests/exclusion_dispatch/fixtures/extraction-reviewed-functions.dm.txt'):
                 with self.subTest(path=path):
                     target = repo / path
                     original = target.read_bytes()
