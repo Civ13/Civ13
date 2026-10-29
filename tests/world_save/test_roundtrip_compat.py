@@ -256,6 +256,24 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         self.assertIn('return module.select(bin_dir, archive)', runner)
         self.assertIn('runtime.validate_compile(', runner)
 
+    def test_full_source_recovery_setup_uses_separate_safe_floor_identities(self):
+        source = (HERE / 'recovery_reconnect_probe.dm').read_text()
+        self.assertIn('/turf/floor/recovery_return/New()\n', source)
+        self.assertIn('var/return_x = 2\n', source)
+        self.assertIn('var/turf/floor/recovery_return/return_turf = new(locate(return_x,2,1))', source)
+        self.assertIn('var/mob/living/human/durable_probe_leader/H = new(return_turf)\n\t\t\treturn_x++', source)
+        accounts = re.search(r'for\(var/account in list\(([^\n]+)\)\)', source)[1].split(', ')
+        self.assertEqual(len(accounts), 6)
+        self.assertEqual(len(set(accounts)), 6)
+        self.assertLess(2 + len(accounts) - 1, 8)
+        self.assertNotIn('new(locate(2,2,1))', source)
+        # Retain the causal recovery/ban/control assertions, not an admitted bypass.
+        for anchor in ('!T.resume_startup() && T.import_complete',
+                       'waiting authenticated client not reclaimed after recovery',
+                       '!playing.transfers && !server.transfers && !guest.transfers',
+                       'eligible waiting account could not reclaim retained body'):
+            self.assertIn(anchor, source)
+
 
 if __name__ == '__main__':
     unittest.main()
