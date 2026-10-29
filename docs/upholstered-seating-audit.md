@@ -43,6 +43,12 @@ material such as dark leather stays installed rather than disappearing or being
 converted to ordinary hide. Repeat removal cannot mint additional material.
 Bed/stool padding dismantling uses the same recovery helper. This is local to
 upholstery; generic material metadata and other material recovery are unchanged.
+Hammer dispatch also recovers supported padding before frame output/deletion and
+refuses destruction while installed padding cannot be recovered. The bed check
+runs after its existing wait, so cancellation does not strip padding and a late
+change to unmapped padding refuses the frame refund. Unpadded wooden-bed recovery
+is unchanged. These guards apply to intentional hammer teardown; combat and
+explosion destruction keep their existing behavior.
 
 ## Period and appearance limits
 
@@ -69,8 +75,9 @@ remain checked. Recovery tests execute the actual fallback, generic sheet factor
 and bed/stool removal bodies, including exact material identity and an unmapped
 dark-leather control. The compiled native fixture exercises all six fixed-art
 sofa types, the three paid eight-cloth recipes, a steel comfy chair, paid bed/stool
-cloth/leather removal, padded stool dismantling, dark leather retention and an
-ordinary wooden-bed hammer control. Record hosted execution separately from compilation.
+cloth/leather removal and actual hammer teardown, refusal for dark-leather padding,
+bed-wait cancellation/late-change guards and an unpadded wooden-bed hammer control.
+Record hosted execution separately from compilation.
 
 Connected-client presentation, natural resource/research reachability and world
 save round trips are unverified by offline checks. This source review adds one

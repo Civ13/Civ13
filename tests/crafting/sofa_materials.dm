@@ -64,21 +64,53 @@
 			H.remove_from_mob(cutters)
 			qdel(cutters)
 			shelf_ci_clear()
-	// Wooden stool dismantling returns its existing frame plus paid cloth padding.
-	var/obj/item/weapon/stool/wood/stool = new(locate(2,1,1))
-	var/obj/item/stack/material/cloth/stool_cloth = new(H, 3, FALSE)
-	joinery_ci_expect(H.put_in_active_hand(stool_cloth), "dismantling padding control legal hand")
-	stool.attackby(stool_cloth, H)
-	joinery_ci_expect(stool_cloth.amount == 2 && stool.padding_material, "dismantling control first pays for padding")
-	H.remove_from_mob(stool_cloth)
-	qdel(stool_cloth)
-	var/obj/item/weapon/hammer/stool_hammer = new /obj/item/weapon/hammer/tribalhammer(H)
-	joinery_ci_expect(H.put_in_active_hand(stool_hammer), "stool dismantling tool legal hand")
-	stool.attackby(stool_hammer, H)
-	joinery_ci_expect(QDELETED(stool) && shelf_ci_count(/obj/item/stack/material/wood) == 1 && shelf_ci_count(/obj/item/stack/material/cloth) == 1, "wooden stool dismantling returns frame and paid padding")
-	H.remove_from_mob(stool_hammer)
-	qdel(stool_hammer)
-	shelf_ci_clear()
+	// Actual hammer paths: preserve unrecoverable upholstery before frame output.
+	for (var/furniture_path in list(/obj/structure/bed/wood, /obj/item/weapon/stool/wood))
+		for (var/padding_name in list("cloth", "leather", "darkleather"))
+			var/obj/furniture = new furniture_path(locate(2,1,1))
+			var/stock_path = padding_name == "cloth" ? /obj/item/stack/material/cloth : /obj/item/stack/material/leather
+			if (padding_name == "darkleather")
+				furniture:add_padding(padding_name) // Unmapped-material control, no stock type invented.
+			else
+				var/obj/item/stack/material/stock = new stock_path(H, 3, FALSE)
+				joinery_ci_expect(H.put_in_active_hand(stock), "hammer padding control legal hand")
+				furniture.attackby(stock, H)
+				joinery_ci_expect(stock.amount == 2 && furniture:padding_material, "hammer control first pays for padding")
+				H.remove_from_mob(stock)
+				qdel(stock)
+			var/material/original_padding = furniture:padding_material
+			var/obj/item/weapon/hammer/hammer = new /obj/item/weapon/hammer/tribalhammer(H)
+			joinery_ci_expect(H.put_in_active_hand(hammer), "padded furniture hammer legal hand")
+			furniture.attackby(hammer, H)
+			if (padding_name == "darkleather")
+				joinery_ci_expect(!QDELETED(furniture) && furniture:padding_material == original_padding && !shelf_ci_count(/obj/item/stack/material/wood) && !shelf_ci_count(/obj/item/stack/material/leather), "unmapped hammer refuses output/deletion: [furniture_path]")
+			else
+				joinery_ci_expect(QDELETED(furniture) && shelf_ci_count(/obj/item/stack/material/wood) == 1 && shelf_ci_count(stock_path) == 1, "hammer returns frame and exact paid padding: [furniture_path], [padding_name]")
+			H.remove_from_mob(hammer)
+			qdel(hammer)
+			shelf_ci_clear()
+	// Cancellation and a padding change during the real bed wait leave no outputs.
+	for (var/change in list("cancelled", "late dark leather"))
+		var/obj/structure/bed/wood/B = new(locate(2,1,1))
+		var/obj/item/stack/material/cloth/stock = new(H, 3, FALSE)
+		joinery_ci_expect(H.put_in_active_hand(stock), "bed wait control stock legal hand")
+		B.attackby(stock, H)
+		joinery_ci_expect(stock.amount == 2 && B.padding_material, "bed wait control pays padding")
+		H.remove_from_mob(stock)
+		qdel(stock)
+		var/obj/item/weapon/hammer/hammer = new /obj/item/weapon/hammer/tribalhammer(H)
+		joinery_ci_expect(H.put_in_active_hand(hammer), "bed wait control hammer legal hand")
+		spawn(1)
+			if (change == "cancelled")
+				H.stat = UNCONSCIOUS
+			else
+				B.add_padding("darkleather")
+		B.attackby(hammer, H)
+		joinery_ci_expect(!QDELETED(B) && B.padding_material && B.padding_material.name == (change == "cancelled" ? "cloth" : "darkleather") && !shelf_ci_count(/obj/item/stack/material/wood) && !shelf_ci_count(/obj/item/stack/material/cloth), "bed wait rejects without recovery/deletion: [change]")
+		H.stat = 0
+		H.remove_from_mob(hammer)
+		qdel(hammer)
+		shelf_ci_clear()
 	// Dark leather has no matching stack: retain it rather than converting to hide.
 	var/obj/structure/bed/wood/bed = new(locate(2,1,1))
 	bed.add_padding("darkleather")

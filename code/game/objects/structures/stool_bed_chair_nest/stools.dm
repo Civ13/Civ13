@@ -141,6 +141,9 @@ var/global/list/stool_cache = list() //haha stool
 
 /obj/item/weapon/stool/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/hammer))
+		if (padding_material && !remove_padding())
+			to_chat(user, "The padding cannot be recovered intact.")
+			return
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		dismantle()
 		qdel(src)
