@@ -5,10 +5,71 @@ must review the bounded plan before any DreamDaemon/DreamSeeker launch. No serve
 restart, deploy, public activation, live save access, security/network setting or
 credential change is needed for design, source editing or compilation.
 
-## First source slice
+## Deliverable and accepted decisions
 
-The independent slice implements finite charge, powered lifecycle admission and
-an immutable colony/content snapshot ABI, with no physical actor movement.
+This PR completes the expedition **design**: power, crossing, colonization,
+identity/persistence and future acceptance contracts. It does not deliver a
+playable doorway. The shared design #3346, JSON topology tool #3348 and disabled
+power/identity foundation #3351 have merged independently. Their completion does
+not complete the integrations below. The room-layout status correction #3402
+records rejected version-1 previews; revised geometry remains unapproved.
+
+Decision record dated 2026-10-28:
+
+| Decision | Accepted scope | Evidence still needed for gameplay |
+| --- | --- | --- |
+| B1 | Outages stop ordinary travel both ways and preserve the colony. Require protected, prepaid emergency-return reserves before entry. | Native outage/return, reserve conservation, durable entitlements, complete paired saves and safe rescue. |
+| B2 | One colony, eight residents, threats initially off, exploration and paid construction. | Authoritative body/capacity accounting, paid resource conservation, no-threat behavior and measured native headroom. |
+
+Other cost/timing/footprint values remain provisional. Geometry approval and
+implementation evidence are separate from policy acceptance; neither is inferred
+from these decisions or a successful topology check.
+
+Required B1/B2 acceptance cases once the corresponding integrations exist:
+
+- Interrupt power before a request, during preflight and after arrival. Both
+  ordinary directions close; the same instance, residents, construction,
+  contents and spent-resource state remain, without regeneration or free travel.
+- Before entry, atomically fund/reserve return rights for all living residents
+  plus the entrant. Missing, malformed, exhausted or unprotected reserve rejects
+  without movement, new charge or altered prior rights. Emergency egress still
+  requires its independent power and its protected landing.
+- Entitlements and body identities survive paired-world save/load. Logout and
+  reconnect free no slot and issue no duplicate claim/kit; verified return/death
+  releases only that body's matching claim.
+- Eight living resident bodies, including disconnected/protected sleepers, fill
+  the first preset. A ninth entry fails before debit/movement; observers do not
+  count. Full inbound capacity cannot prevent safe powered return or rescue.
+- The preset starts no hostile director/spawner. Building consumes real resources
+  exactly once; cancellation preserves inputs. Reconnect, outage or template
+  reload cannot restore spent materials or initial dressing.
+
+## Remaining integration work
+
+These are implementation dependencies, not missing B1/B2 policy decisions and
+not reasons to represent the completed design as working gameplay:
+
+| Gate | Exact remaining dependency |
+| --- | --- |
+| Geometry and native destination | Visually reviewed revised room families and purposeful furnishings; finite expedition recipe with return/colony anchors; pinned native palette/export and parse-back; materialized same-size planes. The rejected catalog/example output is ineligible. |
+| Endpoint/instance ownership | Scenario-scoped pair and logical-level records with durable lineage, unique runtime owner/epoch, direction-specific anchors and stale-owner invalidation. Registration/lookup cannot confer level approval. No native z or memory reference may substitute for the durable instance ID. |
+| B1 return and rescue | Protected paid reserve/entitlement ledger with bounded startup/hold/retry costs, exact replenishment debit, safe emergency pad/egress and obtainable facility rescue role. Ordinary maintenance/building cannot spend the reserve. |
+| B2 residents and access | Authoritative living-body ownership, membership and eight-slot accounting, including disconnected/protected sleepers; coordinated inbound reservations and full-capacity returns. |
+| Complete persistence | Both planes and scenario/body/resource/entitlement metadata in one complete world-save generation; preflight before mutation, current runtime-field exclusions, fresh-process restore and no partial recovery. Crossing must participate in save/load/recovery/restart exclusion. |
+| Era and resources | Actual 1990/tier-7 spawn, loot, recipe and research allowlists, including prerequisites; finite food/water/material acquisition manifest and paid charge handler. Year labels and generic Modern kits cannot satisfy this gate. |
+| Physical transfer | Pair serialization, exact native clearance, four ordinary landing reservations, no-yield movement/debit audit, rejection/reconciliation rules and committed shared cooldowns. No physical transfer is supplied by the power-state predicate. |
+| Playable evidence | Measured two-plane/eight-resident runtime and save/import headroom, sustained supply balance, native boundary/save tests and connected-client entry/build/outage/return acceptance. |
+
+No additional geometry choice is required to review this design. Before a native
+map can be selected, recommend reviewing the revised room families and dressed
+expedition manifest visually, then binding only their approved exact output.
+Keep the one-colony/eight-resident/threats-off preset; tune reserve and supply
+costs in a separate disabled implementation with conservation tests before play.
+
+## Merged power/identity foundation
+
+The independently merged source implements finite charge, powered lifecycle
+admission and an immutable colony/content snapshot ABI, with no physical actor movement.
 Tests must cover exact maintenance/startup boundaries, same-time idempotence,
 loss immediately before admission, interruption during startup, late service,
 shutdown/restart spending, depleted charge, invalid/fractional input, different

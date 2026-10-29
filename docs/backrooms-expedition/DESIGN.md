@@ -1,9 +1,25 @@
 # Backrooms expedition and colonization
 
-Status: design-first proposal and disabled implementation foundation. This is a
-separate scenario from the finite Liminal Facility escape mode. No map, lobby
-entry, job, process, gateway object or production activation is installed by the
-foundation. Source audit: Civ13 `10d264e5896221b34949ee4b67c0fd2b94bde249`.
+Status: design specification with accepted first-preset decisions. This is a
+separate scenario from the finite Liminal Facility escape mode. These documents
+install no gameplay. The separately merged [power/identity foundation #3351](https://github.com/Civ13/Civ13/pull/3351)
+contains uninstantiated datums, with no map, lobby entry, job, process, gateway
+object or production activation. Historical source/asset audit:
+Civ13 `10d264e5896221b34949ee4b67c0fd2b94bde249`.
+
+## Accepted first-preset decisions
+
+Decision record dated 2026-10-28:
+
+| Decision | Accepted policy | Remaining implementation condition |
+| --- | --- | --- |
+| B1 | Outages close ordinary travel in both directions and preserve the colony, inhabitants, construction and supplies. Protected, prepaid emergency-return reserves are required before entry. | Resident-bound entitlements, paid reserve conservation, safe powered egress and paired-save restoration must exist before entry can be enabled. |
+| B2 | One colony, eight resident bodies, threats initially off, exploration and paid construction. | Disconnected living residents count toward eight; body/access accounting, resource conservation and native capacity/headroom still need verification. |
+
+These are policy decisions, not approval of room geometry, a native level or a
+working doorway. The early-1990s roster/research policy remains required. Other
+cost, timing and footprint values below are provisional tuning, not additional
+accepted decisions. See [acceptance status](ACCEPTANCE.md) for the remaining work.
 
 ## Scenario and period
 
@@ -108,8 +124,8 @@ preserve actual worn/nested items without issuing a duplicate free kit.
 The colony occupies a precompiled plane of the **same XY dimensions** as the
 surface facility. Begin with a compact static two-plane scenario; never allocate
 a large new plane on a live Nomads/TDM map. A 96x96x2 design envelope is 18,432
-native cells, not a measured host-capacity guarantee. Final footprint follows
-the generator owner's native export and memory review. Dynamic growth remains
+base-map cells, not a measured total runtime/roof or host-capacity guarantee.
+Final footprint follows the shared generator's native export and memory review. Dynamic growth remains
 subject to world_z_budget's UNMEASURED hold and is out of scope.
 
 The facility supplies finite food, clean water, medical stock, tools, material
@@ -171,8 +187,8 @@ Use three placement classes in the shared room-profile contract:
 | Open floor | Approved freestanding tables/columns or deliberate survey features in sufficiently large rooms | Connected walking clearance, colony construction plots and rescue staging |
 | Narrow passage | Sparse approved nonblocking markings or wall-mounted details; an empty passage is valid | Dense props, loose supply piles and any reduction of return-route clearance |
 
-The shared generator owner supplies these semantic slots and deterministic
-dressing choices; the expedition adapter does not implement another room
+The required expedition recipe must supply these semantic slots and deterministic
+dressing choices through the shared generator; the expedition adapter does not implement another room
 generator. Bind choices to the immutable template's room/slot IDs, exact seed,
 configuration, catalog and palette version. Record initial placements and item
 quantities in the manifest, validate collision/reachability after dressing, and
@@ -185,6 +201,12 @@ passes are not our seed/replay or progression proof. Native adapter clearance,
 our own authored layouts and validated instance/return contracts remain
 authoritative. Player-built furniture, removed props and spent stores become
 mutable instance state; neither an outage nor save restoration reruns dressing.
+
+The merged shared design and topology tool retain a version-1 room catalog whose
+previews were rejected as room designs. Their graph/clearance checks do not
+approve room composition. Revised geometry, purposeful furnishings and native
+palette/export review remain separate deliverables; no catalog digest or example
+output in this specification is an approved expedition layout.
 
 ## Power and doorway
 
@@ -262,7 +284,7 @@ transfer. This transaction is a later slice, not supplied by the state predicate
 
 ## Disconnection, return and rescue decisions
 
-**Default outage behavior:** both ordinary directions stop. No level/occupant
+**B1 accepted outage behavior:** both ordinary directions stop. No level/occupant
 deletion, teleport damage, colony reset or implied free one-way portal. Normal
 return requires the facility pair to be powered and a safe home landing.
 
@@ -274,16 +296,22 @@ Before a fresh inbound crossing, reserve one return entitlement per additional
 resident, including startup/hold/crossing costs under the configured emergency
 policy. Entitlements bind colony body ownership, survive saves and are released
 only on verified return/death, not logout. Refuse entry if reserve cannot cover
-current residents plus the entrant. Do not claim a guaranteed return before that
-ledger and protected-pad adapter exist; the foundation does not implement them.
+current residents plus the entrant. This prepayment is mandatory for the accepted
+first preset. Exact reserve costs, bounded hold/retry policy and accounting still
+require implementation review; they must not become an unlimited free return.
+Do not claim a guaranteed return before that ledger and protected-pad adapter
+exist; the foundation does not implement them.
 
 Facility operators repair/recharge and reopen the original pair for normal rescue.
 A reserved surface rescue role/loadout must remain obtainable when all explorers
 are away. Body recovery, long disconnection and party leadership changes cannot
-erase membership or change the destination colony. If either home pad is blocked,
-show the reason and keep the actor in place while operators clear an alternate
-reserved pad. If reserve/equipment is destroyed or all pads are invalid, players
-can remain stranded pending operator repair. This is a **softlock risk**, never
+erase membership or change the destination colony. Ordinary returns try only the
+four ordered facility pads. Emergency egress uses its separate protected home
+pad; it cannot fall back to arbitrary coordinates or an ordinary occupied pad.
+When no valid landing remains, show the reason and keep the actor in place while
+operators clear the appropriate reserved pad. If reserve/equipment is destroyed
+or all permitted pads are invalid, players can remain stranded pending operator
+repair. This is a **softlock risk**, never
 a hidden reset/reward. Default protected infrastructure and admission checks aim
 to prevent it. A later hardcore preset may allow reserve destruction only with
 an explicit pre-round warning and an independently reviewed rescue policy. No
@@ -296,20 +324,20 @@ Existing colony bodies may reconnect where saved through ordinary reclaim.
 
 ## Configurable rules and staging
 
-| Rule | Initial proposed default / bound |
+| Rule | Accepted first-preset policy / remaining proposed bound |
 | --- | --- |
 | enabled | false; no registration supplied |
 | scenario_year / research tier | 1990 / 7; year 1990-1993, period allowlist required |
-| colonies / gateway pairs / Backrooms planes | 1 / 1 / 1, fixed before startup |
-| living residents | 8, configurable 1-16 pending native capacity tests |
+| colonies / gateway pairs / Backrooms planes | B2 selects one colony; one pair/one dedicated plane is the proposed initial topology, fixed before startup |
+| living residents | B2 selects eight; alternate caps of 1-16 require separate policy and native capacity review |
 | generation | exact shared indoor profile/catalog/manifest, finite offline output |
 | plane envelope | design target 96x96, same XY each plane; final measured separately |
 | supply capacity | 600 units; 1-100000 integer, finite paid input only |
 | startup / maintenance / crossing | 10 / 1 per second / 2 charge units |
 | startup / cooldown | 300 / 20 deciseconds; reviewed bounded overrides only |
-| disconnected behavior | keep colony, independent survival, no offline simulation |
-| emergency return | protected paid reserve required before playable entry |
-| build / supply / threats | approved recipe/type/room allowlists; threats initially off |
+| disconnected behavior | B1 preserves colony and inhabitants; independent survival and no offline simulation remain the design |
+| emergency return | B1 requires protected, prepaid reserves before entry; ledger and powered egress remain unimplemented |
+| build / supply / threats | B2 selects exploration, paid construction and threats initially off; recipe/type/room admission remains required |
 | persistence | whole paired scenario generation; never independent half restores |
 
 Expose a small reviewed preset rather than arbitrary endpoint coordinates, type
@@ -317,8 +345,8 @@ paths or eval. Unknown/malformed policy rejects before allocation or spending.
 Changing content/identity or the policy requires a fresh colony or an explicit
 migration; never reinterpret an old save with newly generated rooms.
 
-Milestones: design; disabled power/identity foundation; shared generator native
-export; period gear/paid supply and rescue ledgers; native atomic crossing; paired
+Milestones: this design; merged disabled power/identity foundation; shared
+generator native export; period gear/paid supply and rescue ledgers; native atomic crossing; paired
 world-save/reconnect; bounded headless then connected-client acceptance; separate
 activation review. CONTRACT.md defines dependencies and ACCEPTANCE.md defines
 the bounded plan. Documentation and implementation commits remain distinct.

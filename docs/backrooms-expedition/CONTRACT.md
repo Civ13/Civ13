@@ -2,13 +2,16 @@
 
 ## Ownership and shared room producer
 
-Shared producer design: [draft #3346](https://github.com/Civ13/Civ13/pull/3346),
-[ERA-AND-SCENARIOS.md](https://github.com/Civ13/Civ13/blob/26c05cd8f85821c3ce76dcc72e3f0e61378c7ac4/docs/liminal/ERA-AND-SCENARIOS.md)
-and `docs/liminal/ROOM-GENERATION.md`, profile
-INDOOR_LIMINAL, authored catalog liminal-authored-rooms/0.1.0 with digest
-`7ee6647de885a921746f9ac9d0ec5fa9e5140a30a8c06294cd4ff16c3d37c95b` at audit
-time. Do not copy its generator, room masks, RNG or escape-mode state machine.
-This branch must remain independently reviewable without those unmerged files.
+Shared producer design: [merged #3346](https://github.com/Civ13/Civ13/pull/3346),
+[ERA-AND-SCENARIOS.md](../liminal/ERA-AND-SCENARIOS.md) and
+[ROOM-GENERATION.md](../liminal/ROOM-GENERATION.md). The separate
+[offline topology tool #3348](https://github.com/Civ13/Civ13/pull/3348) is merged;
+it emits JSON, not native DMMs or a playable scenario. Its profile is
+INDOOR_LIMINAL. The original liminal-authored-rooms/0.1.0 catalog/digest is
+historical proof input, not an expedition content pin. Version-1 previews were
+rejected as room designs; [the shared status](../liminal/README.md) records that
+limitation. Revised room geometry is not approved by either merge.
+Do not copy its generator, room masks, RNG or escape-mode state machine.
 Use that proposal's three separate authorities: immutable LevelTemplateRef,
 mutable LevelInstanceRef and scenario policy in ScenarioSpec. A template ID is
 a geometry-input hash; an instance ID is authority-minted mutable-world lineage.
@@ -16,7 +19,8 @@ Two colonies can use the same template without sharing an instance or inventory.
 ScenarioSpec binds EXPEDITION, version, year and era catalog admission separately
 from geometry. None of these identifiers implies a loaded, native-ready world.
 
-Required producer contract, to be supplied through a separately pinned dependency:
+Required expedition producer contract, still to be supplied through a separately
+pinned dependency rather than inferred from the escape tool's example output:
 
 1. A verified finite room manifest: profile/schema/algorithm/catalog/palette
    versions and SHA-256, exact seed/config, stable room/zone/socket IDs, tile
@@ -45,10 +49,31 @@ The first foundation stores the complete **manifest SHA-256** as content identit
 this binds more than the catalog alone. It does not generate a room or validate
 the producer's geometry itself.
 
+### Template ID representation boundary
+
+The merged tool's `civ13-generated-level-template/1` contract in
+`tools/liminal_maps/contracts.py` emits `template_id = "sha256:" + digest`, with
+the digest computed over canonical immutable identity inputs. The merged power
+foundation's schema-1 binding field named `template_id` accepts only the raw
+lowercase 64-hex digest. They are different wire representations, not competing
+instance IDs. Passing the prefixed tool value directly must reject.
+
+A future versioned adapter must validate the exact supported template schema,
+recompute its canonical identity hash and require the exact `sha256:` prefix plus
+64 lowercase hex characters before extracting that digest into the core field.
+Round-trip reconstruction must equal the original full template ID. Reject
+unknown algorithms, schema versions, malformed/extra prefixes or identity
+mismatches; do not truncate arbitrary strings or hash the printed ID again.
+Keep the full template contract and its manifest/content pins alongside the
+binding. This is a specified adapter, not one implemented by these documents or
+by the standalone core. Neither successful decoding nor a topology receipt can
+approve geometry, era policy or a loaded instance.
+
 ## Narrow power seam and independent first slice
 
-Implement standalone `/datum/backrooms_supply` and
-`/datum/backrooms_gateway_core` in `code/modules/1713/backrooms/gateway_core.dm`.
+The merged [#3351](https://github.com/Civ13/Civ13/pull/3351) supplies standalone
+`/datum/backrooms_supply` and `/datum/backrooms_gateway_core` in
+`code/modules/1713/backrooms/gateway_core.dm`.
 No singleton, process, map metadata, live doorway or default-enable setting.
 The file can be included for type availability without instantiating anything.
 
@@ -59,7 +84,9 @@ must perform exact item debit and credit in one no-yield section. Direct calls
 are internal trusted code, not player authority or a recipe implementation.
 
 The core binds immutable `scenario_id`, `colony_id`, `gateway_id`, `instance_id`,
-`template_id`, `scenario_spec_sha256` and `manifest_sha256`, plus year/tier policy.
+`template_id`, `scenario_spec_sha256` and `manifest_sha256`, plus scenario year.
+The period tier/roster policy belongs to the separately hashed ScenarioSpec and
+future admission provider; the core does not enforce a research catalog.
 The immutable template digest and mutable instance lineage are both required;
 neither a seed nor a template digest can substitute for instance identity.
 `start(now, destination_ready)` charges
@@ -94,9 +121,10 @@ fields: schema, binding, supply_capacity and supply_charge. Binding contains onl
 scenario_id, colony_id, gateway_id, instance_id, template_id, scenario_spec_sha256,
 manifest_sha256 and scenario_year. Restore compares against expected identity/policy
 provided by trusted scenario construction. Missing/extra/malformed fields,
-unknown schema, fractional/out-of-range charge, year/tier/content/identity
-mismatch reject before changing the current controller or source. Records use
-bounded ASCII opaque IDs and lowercase 64-hex digests. No native object refs,
+unknown schema, fractional/out-of-range charge, year/content/identity
+mismatch reject before changing the current controller or source. Tier/roster
+enforcement remains a separate scenario-owner gate, not a schema-1 scalar test.
+Records use bounded ASCII opaque IDs and lowercase 64-hex digests. No native object refs,
 runtime endpoint pointers, ready/start flags, charge connection, clocks,
 reservations, cooldowns or active operations survive restoration. Successful
 restore publishes a disconnected supply and OFF core; a new paid start is needed.
@@ -147,7 +175,11 @@ Baseline `10d264e5896221b34949ee4b67c0fd2b94bde249` observations:
 | code/modules/1713/modern_terminal.dm | Powered local cable text terminal; not an Internet/email system |
 | code/game/objects/structures/table.dm, filingcabinet.dm; code/modules/1713/structures.dm | Wooden table work surfaces, functional paper cabinets and the 1980_computer_on prop are candidates for purposeful office dressing; type presence does not admit a desk assembly, working computer or worn/native visual result |
 | docs/new-z-budget.md, tests/new_z_budget | Dynamic allocation is held UNMEASURED; no new production bypass |
-| docs/liminal/ROOM-GENERATION.md on generator-owner branch | Shared abstract authored rooms; native teleporting explicitly unsupported |
+
+Later shared dependencies are the merged `docs/liminal/ROOM-GENERATION.md` and
+`tools/liminal_maps/contracts.py` from #3346/#3348. They are not part of the
+historical baseline above. Current native export/era admission and the expedition
+recipe remain absent; version-1 room previews are rejected.
 
 Use in-repository doorway/computer/light/material art only after exact state and
 constructor audits. No new image generation or third-party asset transfer.
