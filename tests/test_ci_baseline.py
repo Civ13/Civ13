@@ -67,7 +67,7 @@ class BaselinePolicyTests(unittest.TestCase):
         # including water-treatment consumers and the cutting-board threshold.
         for shared in ('code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm'):
             self.assertEqual(self.selected([shared]), set(ci.SUITES))
-        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py', 'tests/furniture_joinery/test_bedroll.py', 'tests/furniture_joinery/test_document_drawers.py', 'tests/furniture_joinery/test_sofa_materials.py', 'tests/furniture_joinery/test_canopy.py', 'tests/furniture_joinery/test_cutting_board.py', 'tests/furniture_joinery/test_barrel_ingredients.py', 'tests/furniture_joinery/test_glass_extraction.py'))
+        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py', 'tests/furniture_joinery/test_bedroll.py', 'tests/furniture_joinery/test_document_drawers.py', 'tests/furniture_joinery/test_sofa_materials.py', 'tests/furniture_joinery/test_canopy.py', 'tests/furniture_joinery/test_cutting_board.py', 'tests/furniture_joinery/test_barrel_ingredients.py', 'tests/furniture_joinery/test_glass_extraction.py', 'tests/furniture_joinery/test_glass_cotton.py'))
         for path in ('code/game/objects/items/stacks/stack.dm', 'scripts/build-crafting-atlas.py',
                      'config/crafting/material_recipes_global.txt'):
             self.assertEqual(self.selected([path]), set(ci.SUITES))
