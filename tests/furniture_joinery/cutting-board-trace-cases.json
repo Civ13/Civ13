@@ -1,0 +1,9 @@
+[
+  {"dose": 0.0099, "stored": 0, "two_outputs": true},
+  {"dose": 0.01, "stored": 0.01, "two_outputs": false},
+  {"dose": 0.0101, "stored": 0.0101, "two_outputs": false},
+  {"dose": 0.0199, "stored": 0.0199, "two_outputs": false},
+  {"dose": 0.02, "stored": 0.02, "two_outputs": true},
+  {"dose": 0.0201, "stored": 0.0201, "two_outputs": true},
+  {"dose": 0.04, "stored": 0.04, "two_outputs": true}
+]

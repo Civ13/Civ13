@@ -32,6 +32,65 @@
 	for (var/obj/O in site)
 		qdel(O)
 
+/proc/cutting_trace_probe(mob/living/human/H, turf/site, knife_path)
+	// Control: the unchanged holder loses a representable trace if blindly split.
+	var/datum/reagents/control = new(50)
+	var/datum/reagents/first = new(50)
+	var/datum/reagents/second = new(50)
+	control.add_reagent("cyanide", 0.01)
+	cutting_check(control.get_reagent_amount("cyanide") == 0.01, "chemistry retains the minimum trace before a split")
+	control.trans_to_holder(first, control.total_volume / 2)
+	control.trans_to_holder(second, control.total_volume)
+	cutting_check(!first.get_reagent_amount("cyanide") && !second.get_reagent_amount("cyanide"), "negative control reproduces subminimum split loss")
+	qdel(control); qdel(first); qdel(second)
+	var/list/cases = json_decode(file2text("cutting-board-trace-cases.json"))
+	for (var/path in list(/obj/item/weapon/reagent_containers/food/snacks/meat, /obj/item/weapon/reagent_containers/food/snacks/rawfish, /obj/item/weapon/reagent_containers/food/snacks/rawcutlet))
+		var/output_count = path == /obj/item/weapon/reagent_containers/food/snacks/rawcutlet ? 1 : 2
+		for (var/list/trace in cases)
+			var/obj/structure/cutting_board/food_fixture/B = new(site)
+			var/obj/item/weapon/reagent_containers/food/snacks/food = new path(H)
+			food.reagents.clear_reagents()
+			food.reagents.add_reagent("protein", 1)
+			food.reagents.add_reagent("cyanide", trace["dose"])
+			cutting_check(abs(food.reagents.get_reagent_amount("cyanide") - trace["stored"]) < 0.0000001, "frozen trace expectation matches actual holder threshold")
+			cutting_check(H.put_in_active_hand(food), "trace input legal hand")
+			B.attackby(food, H)
+			var/allowed = output_count == 1 || trace["two_outputs"]
+			if (allowed)
+				cutting_check(B.input == food && food.loc == B, "representable trace portions are admitted")
+			else
+				cutting_check(!B.input && !QDELETED(food) && food.loc == H && abs(food.reagents.get_reagent_amount("cyanide") - trace["stored"]) < 0.0000001, "unsafe split stays in hand with its trace intact")
+			var/obj/item/weapon/K = new knife_path(H)
+			cutting_check(H.put_in_inactive_hand(K), "trace knife legal hand")
+			B.attackby(K, H)
+			if (allowed)
+				var/poison = 0
+				var/protein = 0
+				for (var/obj/item/weapon/reagent_containers/food/snacks/mince/output in site)
+					if (QDELETED(output)) continue
+					poison += output.reagents.get_reagent_amount("cyanide")
+					protein += output.reagents.get_reagent_amount("protein")
+				cutting_check(cutting_count(site, /obj/item/weapon/reagent_containers/food/snacks/mince) == output_count && abs(poison - trace["stored"]) < 0.0000001 && abs(protein - 1) < 0.0000001, "successful trace conversion conserves poison and nutrition")
+			else
+				cutting_check(!cutting_count(site, /obj/item/weapon/reagent_containers/food/snacks/mince) && food.loc == H && abs(food.reagents.get_reagent_amount("cyanide") - trace["stored"]) < 0.0000001, "refused trace cannot generate toxin-free outputs")
+			if (food.loc == H) H.remove_from_mob(food)
+			qdel(food)
+			H.remove_from_mob(K); qdel(K)
+			cutting_clear(site)
+	// A trace added during the real preparation wait also prevents completion.
+	var/obj/structure/cutting_board/food_fixture/B = new(site)
+	var/obj/item/weapon/reagent_containers/food/snacks/meat/food = new(H)
+	cutting_check(H.put_in_active_hand(food), "late trace input legal hand")
+	B.attackby(food, H)
+	var/obj/item/weapon/K = new knife_path(H)
+	cutting_check(H.put_in_active_hand(K), "late trace knife legal hand")
+	spawn(1)
+		food.reagents.add_reagent("cyanide", 0.01)
+	B.attackby(K, H)
+	cutting_check(B.input == food && food.loc == B && food.reagents.get_reagent_amount("cyanide") == 0.01 && !cutting_count(site, /obj/item/weapon/reagent_containers/food/snacks/mince), "late trace is retained without unsafe output")
+	H.remove_from_mob(K); qdel(K)
+	cutting_clear(site)
+
 /world
 	hub = ""
 	hub_password = ""
@@ -66,6 +125,7 @@
 	var/turf/site = locate(2,2,1)
 	var/mob/living/human/cutting_fixture/H = new(site)
 	var/knife_path = /obj/item/weapon/material/kitchen/utensil/knife/wood
+	cutting_trace_probe(H, site, knife_path)
 	// Every old intended conversion, including previously rejected fillets/cutlets.
 	var/list/routes = json_decode(file2text("cutting-board-routes.json"))
 	for (var/list/route in routes)
@@ -217,5 +277,5 @@
 		food_poison += output.reagents.get_reagent_amount("food_poisoning")
 		cutting_check(output.salted_meat && output.radiation == 137 && output.decaytimer / output.decay >= 0.1, "output retains salt, radiation and elapsed relative age")
 	cutting_check(abs(protein - paid_protein) < 0.001 && abs(cyanide - 2) < 0.001 && abs(food_poison - paid_food_poison) < 0.001, "output shares preserve total paid protein and poison without constructor nutrition")
-	text2file("PASS: cutting-board live food, original yields, elapsed age, salt/reagents, subtype refusal, concurrency, rejections and actual child save/load", "food_result.txt")
+	text2file("PASS: cutting-board trace conservation/refusal, live food, original yields, elapsed age, salt/reagents, subtype refusal, concurrency, rejections and actual child save/load", "food_result.txt")
 	del(world)

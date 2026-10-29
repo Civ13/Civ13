@@ -2095,6 +2095,7 @@ jobs:
             ${{ runner.temp }}/cutting-board-evidence/food_result.txt
             ${{ runner.temp }}/cutting-board-evidence/probe.dm
             ${{ runner.temp }}/cutting-board-evidence/cutting-board-routes.json
+            ${{ runner.temp }}/cutting-board-evidence/cutting-board-trace-cases.json
           if-no-files-found: warn
 
       - name: Verify animal health, single-hit damage and tool wear

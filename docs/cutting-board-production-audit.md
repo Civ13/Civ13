@@ -61,6 +61,13 @@ creating nutrition or removing added poison. Salt state and relative age transfe
 to the output's decay limit, with radiation, raw/cooked and unpleasant-food flags retained.
 This intentionally replaces the old state-resetting conversion behavior.
 Scraping is deliberately lossy.
+Chemistry discards portions below `MINIMUM_CHEMICAL_VOLUME` (0.01 units).
+The board refuses an equal split if any reagent's per-output share would be
+smaller, both at intake and after the wait. Thus 0.01 cyanide in meat/raw fish
+stays intact in the refused input rather than disappearing into two 0.005
+portions. A total of 0.02 is representable as two 0.01 shares; a one-output
+cutlet can retain 0.01. Existing chemistry is unchanged. Amounts below 0.01
+already discarded by a holder before intake cannot be recovered by the board.
 Existing material knives, including the wooden kitchen knife, remain usable.
 No new wear, tool, research or era restriction is introduced. Existing icons
 and food constructors are reused; no new sprite or historical reconstruction.
@@ -76,7 +83,12 @@ compiles all game sources, uses legal hands, real knives/food/handlers and waits
 checks live food ownership, races two preparers, changes state during waits,
 refuses poisonous/repeated-mincing subtypes, checks actual aging/rot and carries
 salt, age and poison through a real board-plus-food-child save round trip.
-The fixture shortens preparation and food-decay callback waits to two ticks while
+Frozen trace cases cover 0.0099, 0.01, 0.0101, 0.0199, 0.02, 0.0201 and 0.04
+cyanide with real holders on both two-output inputs and a one-output control.
+Refused inputs keep their trace, successful outputs conserve totals, and a late
+trace prevents completion. A direct native holder control reproduces the old
+0.01-to-two-0.005 loss independently of the board guard.
+The fixture shortens preparation and food-decay callback waits to 2 ds while
 retaining production age charges; production preparation delays are independently
 checked against frozen data. This accelerated cadence proves state flow, not
 full-game wall-clock timing. Record hosted execution separately from

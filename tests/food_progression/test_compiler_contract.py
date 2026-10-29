@@ -68,7 +68,8 @@ class CompilerContractTests(unittest.TestCase):
         retained = workflow.split('      - name: Retain isolated cutting-board evidence', 1)[1].split('\n      - name:', 1)[0]
         self.assertIn("always()", retained)
         for name in ('metadata.json', 'compile.log', 'runtime.log', 'daemon.log',
-                     'food_result.txt', 'probe.dm', 'cutting-board-routes.json'):
+                     'food_result.txt', 'probe.dm', 'cutting-board-routes.json',
+                     'cutting-board-trace-cases.json'):
             self.assertIn('/cutting-board-evidence/' + name, retained)
         self.assertNotIn('checkout.patch', retained)
         self.assertNotIn('.dmb', retained)

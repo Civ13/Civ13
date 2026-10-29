@@ -104,12 +104,13 @@ def main():
             'growth_wait_ticks': 2 if args.probe == 'crop' else None, 'food_wait_ticks': 2 if args.probe in ('storage', 'cutting') else None, 'normal_startup': False,
             'compile_only': args.compile_only, 'map': 'synthetic 6x3x1 ' + args.probe + ' fixture',
             'source_sha256': {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in
-                ('code/modules/1713/cutting_board.dm', 'code/modules/reagents/reagent_containers/food.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json')}
+                ('code/modules/1713/cutting_board.dm', 'code/modules/reagents/reagent_containers/food.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json', 'tests/furniture_joinery/cutting-board-trace-cases.json')}
                 if args.probe == 'cutting' else {}}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
         if args.probe == 'cutting':
             shutil.copy2(root / 'tests/furniture_joinery/cutting-board-routes.json', output / 'cutting-board-routes.json')
+            shutil.copy2(root / 'tests/furniture_joinery/cutting-board-trace-cases.json', output / 'cutting-board-trace-cases.json')
         for path in generated.values():
             if path.exists():
                 shutil.copy2(path, output / path.name)

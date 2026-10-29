@@ -101,6 +101,10 @@ nutrition. Knife/scraping waits revalidate the exact slot and persistence
 identity; claim the slot before output constructors. Keep quantities/delays and
 single parent dispatch. `docs/cutting-board-production-audit.md` distinguishes
 full board handler review from barrel recipe triage.
+Refuse equal splits whose reagent shares fall below chemistry's existing
+minimum; otherwise trace poisons can vanish. Recheck after waits and retain the
+shared holder/threshold all-suite CI fallback. Shared chemistry
+pruning is unchanged; the native trace fixture demonstrates both loss and guard.
 The separate food `--probe cutting` fixture avoids the crafting runner's budget;
 `--compile-only` starts no world and establishes no runtime/save acceptance.
 

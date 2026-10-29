@@ -12,9 +12,17 @@
 		return list("output" = /obj/item/weapon/reagent_containers/food/snacks/driedmeat/minced_driedmeat, "count" = 1, "delay" = 180, "state" = "cutting_board_driedmeat")
 	return null
 
+// Chemistry discards smaller aliquots; refuse before moving or consuming food.
+/proc/cutting_board_reagents_can_split(obj/item/weapon/reagent_containers/food/snacks/food)
+	var/list/recipe = cutting_board_recipe(food.type)
+	for (var/datum/reagent/part in food.reagents.reagent_list)
+		if (part.volume / recipe["count"] < MINIMUM_CHEMICAL_VOLUME)
+			return FALSE
+	return TRUE
+
 // Exact types only: subtype-specific state cannot be inferred from a type name.
 /proc/cutting_board_food_is_safe(obj/item/weapon/reagent_containers/food/snacks/food)
-	return istype(food) && !QDELETED(food) && cutting_board_recipe(food.type) && !food.rotten && food.decay > 0 && food.decaytimer < food.decay && (!food.rots || food.decaytimer < food.decay / 2) && food.reagents && food.reagents.total_volume <= 50 && !food.contents.len
+	return istype(food) && !QDELETED(food) && cutting_board_recipe(food.type) && !food.rotten && food.decay > 0 && food.decaytimer < food.decay && (!food.rots || food.decaytimer < food.decay / 2) && food.reagents && food.reagents.total_volume <= 50 && !food.contents.len && cutting_board_reagents_can_split(food)
 
 /proc/cutting_board_transfer_food(obj/item/weapon/reagent_containers/food/snacks/food, obj/item/weapon/reagent_containers/food/snacks/output, remaining)
 	output.reagents.clear_reagents()

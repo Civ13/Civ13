@@ -14,6 +14,9 @@ BOARD = '/obj/structure/cutting_board'
 FOOD = '/obj/item/weapon/reagent_containers/food/snacks/'
 KNIFE = '/obj/item/weapon/material/kitchen/utensil/knife/wood'
 ROUTES = json.loads(Path(__file__).with_name('cutting-board-routes.json').read_text())
+TRACE_CASES = json.loads(Path(__file__).with_name('cutting-board-trace-cases.json').read_text())
+MINIMUM = float(re.search(r'^#define MINIMUM_CHEMICAL_VOLUME (\S+)',
+    (ROOT / 'code/__defines/chemistry.dm').read_text(), re.M)[1])
 
 
 def path_is(path, parent):
@@ -25,6 +28,8 @@ def project(signature, args, env, fields=()):
     source = source.replace('paid_input ? 20 : 15', '(20 if paid_input else 15)')
     source = source.replace('return ..()', 'return parent_call()')
     source = source.replace('food.contents.len', 'len(food.contents)')
+    source = source.replace('for (var/datum/reagent/part in food.reagents.reagent_list)',
+                            'for part in food.reagents.reagent_list:')
     source = re.sub(r'(?<![\w])list\(([^\n)]*)\)',
                     lambda m: 'record(' + re.sub(r'("\w+") = ', r'\1, ', m[1]) + ')', source)
     source = source.replace('for (var/i = 1, i <= recipe["count"], i++)',
@@ -38,11 +43,20 @@ class Holder(dict):
     def total_volume(self): return sum(self.values())
     def __bool__(self): return True  # A real empty reagent datum still exists.
     def clear_reagents(self): self.clear()
+    @property
+    def reagent_list(self): return [NS(id=key, volume=value) for key, value in self.items()]
+    def prune(self):
+        for key, value in list(self.items()):
+            if value < MINIMUM: del self[key]
+    def add_reagent(self, key, value):
+        self[key] = self.get(key, 0) + value
+        self.prune()
     def trans_to_holder(self, target, amount):
         fraction = amount / self.total_volume if self.total_volume else 0
         for key, value in list(self.items()):
-            target[key] = target.get(key, 0) + value * fraction
+            target.add_reagent(key, value * fraction)
             self[key] -= value * fraction
+            self.prune()
 
 
 class Food(NS):
@@ -74,6 +88,7 @@ class Fixture:
             item.deleted = True; item.loc = None
             self.actor.hands[:] = [obj for obj in self.actor.hands if obj is not item]
         self.env = dict(record=lambda *pairs: dict(zip(pairs[::2], pairs[1::2])), native_range=range,
+            MINIMUM_CHEMICAL_VOLUME=MINIMUM,
             istype=lambda obj, path=FOOD.rstrip('/'): path_is(getattr(obj, 'type', None), path),
             QDELETED=lambda obj: obj is None or getattr(obj, 'deleted', False),
             isturf=lambda obj: getattr(obj, 'type', '') == '/turf',
@@ -85,6 +100,8 @@ class Fixture:
             do_after=lambda user, delay, board: self.delays.append(delay) or self.after())
         self.recipe = project('/proc/cutting_board_recipe(', 'path', self.env)
         self.env['cutting_board_recipe'] = self.recipe
+        self.split_safe = project('/proc/cutting_board_reagents_can_split(', 'food', self.env)
+        self.env['cutting_board_reagents_can_split'] = self.split_safe
         self.safe = project('/proc/cutting_board_food_is_safe(', 'food', self.env)
         self.transfer = project('/proc/cutting_board_transfer_food(', 'food,output,remaining', self.env)
         self.env.update(cutting_board_food_is_safe=self.safe, cutting_board_transfer_food=self.transfer)
@@ -185,8 +202,38 @@ class CuttingBoard(unittest.TestCase):
         self.assertEqual(len(f.outputs), 1); self.assertIs(output.loc, f.actor)
         self.assertEqual(output.decaytimer, age)
 
+    def test_trace_boundary_controls_preserve_or_refuse_the_entire_paid_input(self):
+        self.assertEqual(MINIMUM, .01)
+        for name, count in (('meat', 2), ('rawfish', 2), ('rawcutlet', 1)):
+            for row in TRACE_CASES:
+                with self.subTest(food=name, dose=row['dose']):
+                    f = Fixture(); food = f.item(FOOD + name)
+                    food.reagents = Holder(protein=1)
+                    food.reagents.add_reagent('cyanide', row['dose'])
+                    self.assertAlmostEqual(food.reagents.get('cyanide', 0), row['stored'])
+                    expected = count == 1 or row['two_outputs']
+                    f.attack(f.board, food, f.actor)
+                    if not expected:
+                        self.assertIs(food.loc, f.actor); self.assertFalse(food.deleted)
+                        self.assertAlmostEqual(food.reagents['cyanide'], row['stored'])
+                        self.assertIsNone(f.board.input); f.cut(); self.assertEqual(f.outputs, [])
+                    else:
+                        self.assertIs(f.board.input, food); f.cut()
+                        self.assertEqual(len(f.outputs), count)
+                        self.assertAlmostEqual(sum(o.reagents.get('cyanide', 0) for o in f.food_outputs), row['stored'])
+                        self.assertAlmostEqual(sum(o.reagents.get('protein', 0) for o in f.food_outputs), 1)
+
+    def test_trace_adapter_reproduces_original_loss_without_the_guard(self):
+        chemistry = (ROOT / 'code/modules/reagents/Chemistry-Holder.dm').read_text()
+        self.assertIn('R.volume < MINIMUM_CHEMICAL_VOLUME',
+                      block(chemistry, '/datum/reagents/proc/update_total('))
+        source, first, second = Holder(cyanide=.01), Holder(), Holder()
+        source.trans_to_holder(first, source.total_volume / 2)
+        source.trans_to_holder(second, source.total_volume)
+        self.assertEqual(first.total_volume + second.total_volume, 0)
+
     def test_rejections_revalidate_live_food_location_state_and_actions(self):
-        for change in ('cancelled', 'replacement', 'mutated', 'food moved', 'rotted', 'expired', 'knife', 'moved', 'epoch', 'save', 'disabled'):
+        for change in ('cancelled', 'replacement', 'mutated', 'food moved', 'rotted', 'expired', 'late trace', 'knife', 'moved', 'epoch', 'save', 'disabled'):
             with self.subTest(change=change):
                 f = Fixture(); paid = f.load('rawfish')
                 def after():
@@ -195,6 +242,7 @@ class CuttingBoard(unittest.TestCase):
                     if change == 'food moved': paid.loc = f.site
                     if change == 'rotted': paid.rotten = True
                     if change == 'expired': paid.decaytimer = paid.decay
+                    if change == 'late trace': paid.reagents.add_reagent('cyanide', .01)
                     if change == 'knife': f.actor.hands.clear()
                     if change == 'moved': f.board.loc = NS(type='/turf', x=5, y=5, z=1)
                     if change == 'epoch': f.ready.__globals__['persistence_admission_identity'] = object()

@@ -5,10 +5,14 @@ storage. It covers all seven frozen input types and original yields/delays,
 live food ownership, continued age/rot, salt/reagent preservation, poisonous and
 already-minced subtype refusal, two preparers, interrupted/replaced/tool-lost/
 save-crossed work, scraping and a real board-plus-food-child save round trip.
-Its board subtype and generated food source bound waits to two ticks while
+Its board subtype and generated food source bound waits to 2 ds while
 retaining production age charges; preparation delays are independently checked.
 It supplies actors, food and knives and does not establish player bootstrap,
 graphics, full-game elapsed timing or full-world restoration.
+Frozen trace controls use real holder pruning at/around 0.01: unsafe two-output
+splits are refused intact; successful splits and one-output controls retain the
+stored cyanide/nutrition totals. A direct holder negative control demonstrates
+the loss without the board guard. Traces added during a wait are revalidated.
 Use `--expected-byond-version 516.1688` for the current
 compiler. `--compile-only` launches no world and explicitly reports runtime not
 run. `--evidence-dir <new-directory>` retains logs/metadata/results without
