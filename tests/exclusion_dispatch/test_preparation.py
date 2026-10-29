@@ -11,6 +11,7 @@ import unittest
 from unittest.mock import patch
 
 import preparation
+import source_contract
 
 from preparation import FIXTURE, INHERITED, PATH
 from source_contract import MERGE_BASE, project_lighting_policy
@@ -166,17 +167,31 @@ class ActualPreparationTests(unittest.TestCase):
                 git(repo, 'cat-file', '-e', revision + ':' + path)
 
     def test_history_status_unavailable_or_invalid_fails_closed(self):
-        with patch.object(preparation, 'git', return_value='false\n'):
+        with patch.object(source_contract.subprocess, 'check_output', return_value='false\n'):
             self.assertIsNone(preparation.require_complete_history(ROOT))
         for value in ('true\n', '', 'unknown\n'):
-            with self.subTest(status=value), patch.object(preparation, 'git', return_value=value):
+            with self.subTest(status=value), patch.object(source_contract.subprocess, 'check_output', return_value=value):
                 with self.assertRaisesRegex(ValueError, 'Cannot verify extraction ancestry'):
                     preparation.require_complete_history(ROOT)
         for error in (OSError('git unavailable'), subprocess.TimeoutExpired('git', 15),
                       subprocess.CalledProcessError(128, 'git')):
-            with self.subTest(error=error), patch.object(preparation, 'git', side_effect=error):
+            with self.subTest(error=error), patch.object(source_contract.subprocess, 'check_output', side_effect=error):
                 with self.assertRaisesRegex(ValueError, 'repository history unavailable'):
                     preparation.require_complete_history(ROOT)
+
+    def test_release_negative_in_shallow_history_is_unknown(self):
+        negative = subprocess.CompletedProcess([], 1, '', '')
+        positive = subprocess.CompletedProcess([], 0, '', '')
+        with patch.object(source_contract.subprocess, 'run', return_value=positive), \
+             patch.object(source_contract.subprocess, 'check_output', side_effect=AssertionError('unneeded status query')):
+            self.assertTrue(source_contract.has_ordered_release_history(ROOT, 'a' * 40))
+        with patch.object(source_contract.subprocess, 'run', return_value=negative), \
+             patch.object(source_contract.subprocess, 'check_output', return_value='true\n'):
+            with self.assertRaisesRegex(ValueError, 'release-order ancestry in a shallow repository'):
+                source_contract.has_ordered_release_history(ROOT, 'a' * 40)
+        with patch.object(source_contract.subprocess, 'run', return_value=negative), \
+             patch.object(source_contract.subprocess, 'check_output', return_value='false\n'):
+            self.assertFalse(source_contract.has_ordered_release_history(ROOT, 'a' * 40))
 
     def test_shallow_boundary_hiding_extraction_ancestry_fails_before_output(self):
         # The object exists, but a shallow boundary hides its parent path.

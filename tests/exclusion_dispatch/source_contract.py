@@ -226,6 +226,19 @@ def replay_reviewed_merge(base, reviewed_base, reviewed_result):
 
 
 
+def require_complete_history(repo, context='extraction ancestry'):
+    # A negative ancestry result is not proof across a shallow boundary.
+    try:
+        status = subprocess.check_output(['git', 'rev-parse', '--is-shallow-repository'],
+            cwd=repo, text=True, encoding='utf-8', stderr=subprocess.PIPE, timeout=15).strip()
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError(f'Cannot verify {context}: repository history unavailable') from error
+    if status == 'true':
+        raise ValueError(f'Cannot verify {context} in a shallow repository')
+    if status != 'false':
+        raise ValueError(f'Cannot verify {context}: invalid history status')
+
+
 def has_ordered_release_history(repo, head):
     """Select the reviewed source delta by immutable ancestry, never candidate text."""
     try:
@@ -233,9 +246,12 @@ def has_ordered_release_history(repo, head):
                                 cwd=repo, capture_output=True, text=True, timeout=15)
     except (OSError, subprocess.SubprocessError) as error:
         raise ValueError('Cannot verify release-order ancestry') from error
-    if result.returncode not in (0, 1):
-        raise ValueError('Cannot verify release-order ancestry: Git exited ' + str(result.returncode))
-    return result.returncode == 0
+    if result.returncode == 0:
+        return True
+    if result.returncode == 1:
+        require_complete_history(repo, 'release-order ancestry')
+        return False
+    raise ValueError('Cannot verify release-order ancestry: Git exited ' + str(result.returncode))
 
 
 def project_ordered_release(source):
