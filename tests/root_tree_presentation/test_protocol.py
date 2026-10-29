@@ -162,6 +162,7 @@ class Gate(unittest.TestCase):
         self.gate.binding['renderer_control']=None
         with self.assertRaises(protocol.Rejected):self.gate.input_identity()
         (self.root/'run.binding.json').unlink()
+        (self.root/'phase-2.ready.json').unlink()
         with self.assertRaisesRegex(protocol.Rejected,'one control'):protocol.initialize(self.root,HEAD,failure_control='runtime')
 
     def failure_stage(self,control):
