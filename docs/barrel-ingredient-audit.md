@@ -70,3 +70,7 @@ discard partial doses and needs its own coherent batch. Large-dispenser key
 assignment ordering was spotted during triage but is not changed by this
 ingredient fix. Cooking/trays, anvils/workbenches, chemistry and other material
 categories remain actionable audit families.
+
+The subsequent [fixed-dose food extraction slice](glass-food-extraction-audit.md)
+requires whole-yield capacity for fifteen inherited food conversions. It does
+not turn this specialized-handler audit into a review of every glass action.

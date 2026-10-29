@@ -155,5 +155,6 @@
 	B = map_storage.Load_Entry(F, ref, starting_loc = site)
 	barrel_check(B && B.reagents.get_reagent_amount("sulfur") == 3 && B.reagents.get_reagent_amount("poo") == 10 && B.reagents.total_volume == 13, "actual barrel entry codec retains both paid doses")
 	barrel_clear(site)
-	text2file("PASS: barrel paid ore, exact capacity, subtype/stock/actor guards, complete manure/trace transfer, rejection and actual entry save/load", "food_result.txt")
+	barrel_food_extraction(site, H)
+	text2file("PASS: barrel paid ore, exact capacity, subtype/stock/actor guards, complete manure/trace transfer, rejection and actual entry save/load; fifteen inherited fixed-dose food routes require whole capacity", "food_result.txt")
 	del(world)

@@ -102,6 +102,17 @@ does not prove transactional map loading or constructors at full map scale.
 Those remain under #3048/#3049.
 No game behavior or artwork is changed.
 
+The barrel probe also exercises fifteen inherited fixed-dose food conversions
+through actual beaker and barrel handlers. `glass-extraction-routes.json` freezes
+their original inputs/yields. Exact/headroom fills must consume one whole food;
+partial, full, closed and undersized-holder attempts retain the actual food and
+recipient. Both catalogs and twelve source/data hashes are retained in the
+barrel evidence artifact. This capacity check does not verify legacy food-state
+conversion semantics, cotton insertion or lard-candle waits.
+The new `glass_extraction.dm` helper is included only by the barrel probe and
+retained with it; adding this executable coverage admits the existing food suite
+under the ordinary PR selector. Editing an existing fixture alone does not.
+
 The production dirt turf save allowlist must restore nondefault soil nutrition.
 `--soil-negative-control` removes only that allowlist addition in a generated
 source and requires this nutrition assertion to fail. This additional control is an explicit local check; CI
