@@ -18,6 +18,46 @@ projection=importlib.util.module_from_spec(spec);spec.loader.exec_module(project
 
 
 class Preparation(unittest.TestCase):
+    def test_named_renderer_controls_change_only_the_bound_presenter_input(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(prepare.provenance,'revision',side_effect=lambda requested:support.snapshot(prepare.provenance)):
+            normal,base=prepare.provenance.plan(support.HEAD)
+            for control in prepare.provenance.RENDERER_CONTROLS:
+                out=Path(temp)/control;manifest=prepare.prepare(out,support.HEAD,renderer_control=control)
+                _,files=prepare.provenance.plan(support.HEAD,control)
+                self.assertEqual(manifest['source_objects'],normal['source_objects'])
+                self.assertEqual([p for p in files if files[p]!=base[p]],['root_tree_presenter.dm'])
+                self.assertEqual(prepare.provenance.validate_stage(out,support.HEAD)['renderer_control'],control)
+                text=files['root_tree_presenter.dm'].decode()
+                if control=='neighbor':
+                    env=projection.environment();f=projection.compile_proc(text,'/proc/root_tree_set_frame(','I, T, frame',env)
+                    t=projection.tree();t.appearance=t;i=N(appearance_flags=0);f(i,t,object())
+                    self.assertEqual(i.plane,env['GAME_PLANE'])
+                    self.assertIn('context.decision(context.body, T, "hover")',text)
+                else:
+                    guard=next(l.strip() for l in text.splitlines() if l.startswith('\t\tif(!context.root_tree_admitted(T)'))
+                    self.assertEqual(guard,'if(!context.root_tree_admitted(T))')
+                    self.assertNotIn('context.decision(',text);self.assertNotIn('view(owner.view, owner.eye)',text)
+                    self.assertIn('if(!context.capture())',text);self.assertIn('I.plane = ROOT_TREE_PLANE',text)
+                    env=projection.environment();env.update(LOS_DENY=0,view=lambda v,e:[])
+                    c=N(body=object(),root_tree_admitted=lambda t:True,decision=lambda *a:0)
+                    t=projection.tree();owner=N(view=7,eye=object())
+                    original=next(l.strip() for l in base['root_tree_presenter.dm'].decode().splitlines() if l.startswith('\t\tif(!context.root_tree_admitted(T)'))
+                    def admitted(condition):
+                        source='/proc/control_guard()\n\t'+condition+'\n\t\treturn FALSE\n\treturn TRUE\n'
+                        return projection.compile_proc(source,'/proc/control_guard(','context, T, owner',env)(c,t,owner)
+                    self.assertFalse(admitted(original));self.assertTrue(admitted(guard))
+                metadata=json.loads((out/'source-manifest.json').read_text());metadata['renderer_control']=None
+                (out/'source-manifest.json').write_text(json.dumps(metadata))
+                with self.assertRaises(prepare.provenance.Invalid):prepare.provenance.validate_stage(out,support.HEAD)
+
+    def test_unknown_or_changed_anchor_cannot_create_an_unreviewed_variant(self):
+        p=prepare.provenance;data=(ROOT/'code/modules/visibility/root_tree_presenter.dm').read_bytes().replace(b'\r\n',b'\n')
+        self.assertEqual(p.renderer_variant(data,None),data)
+        for control in p.RENDERER_CONTROLS:
+            with self.assertRaises(p.Invalid):p.renderer_variant(data+b'\n'+data,control)
+            with self.assertRaises(p.Invalid):p.renderer_variant(b'changed',control)
+        with self.assertRaises(p.Invalid):p.renderer_variant(data,'arbitrary')
+
     def test_exact_source_and_art_staged_without_processes(self):
         with tempfile.TemporaryDirectory() as temp, patch('subprocess.Popen',side_effect=AssertionError('No process')), \
              patch.object(prepare.provenance,'revision',side_effect=lambda requested:support.snapshot(prepare.provenance)):

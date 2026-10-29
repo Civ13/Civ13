@@ -163,6 +163,7 @@ var/global/fixture_run
 var/global/fixture_manifest
 var/global/fixture_head
 var/global/fixture_failure_control
+var/global/fixture_renderer_control
 var/global/fixture_authorized_session = FALSE
 var/global/fixture_authorized_identity
 var/global/list/fixture_identity_controls = list()
@@ -250,6 +251,10 @@ var/global/list/fixture_identity_controls = list()
 	fixture_manifest = binding["manifest"]
 	fixture_head = binding["head"]
 	fixture_failure_control = binding["failure_control"]
+	fixture_renderer_control = binding["renderer_control"]
+	if(!(fixture_renderer_control in list(null, "neighbor", "visibility")) || (fixture_renderer_control && fixture_failure_control))
+		fixture_fail("control_binding")
+		return
 	fixture_authorized_session = binding["authorized_session"] == TRUE
 	if(fixture_authorized_session)
 		if(!fixture_hex(binding["authorized_identity_sha256"], 64))
@@ -449,6 +454,8 @@ var/global/list/fixture_identity_controls = list()
 			if(I.icon)
 				rendered++
 		var/expected = phase == 9 ? 0 : (phase < 5 ? 3 : 2)
+		if(fixture_renderer_control == "visibility" && phase != 9)
+			expected++
 		if(rendered != expected || (phase == 9 ? (accepted || !closed) : (!accepted || closed)))
 			return null
-	return list("schema"=2,"run"=fixture_run,"manifest"=fixture_manifest,"head"=fixture_head,"phase"=phase,"status"=(phase == 9 ? "denied" : "ready"),"renderer_active"=!!active,"rendered"=rendered,"shutter"=closed,"identity_controls"=fixture_identity_controls.Copy())
+	return list("schema"=2,"run"=fixture_run,"manifest"=fixture_manifest,"head"=fixture_head,"renderer_control"=fixture_renderer_control,"phase"=phase,"status"=(phase == 9 ? "denied" : "ready"),"renderer_active"=!!active,"rendered"=rendered,"shutter"=closed,"identity_controls"=fixture_identity_controls.Copy())

@@ -23,6 +23,7 @@ PIN='tests/human_subtile/native_1688/guard_config.py'
 TOOLS=tuple('tests/root_tree_presentation/'+p for p in ('prepare.py','provenance.py','protocol.py','compile.py'))
 TEMPLATES=('tests/root_tree_presentation/fixture.dme.in','tests/root_tree_presentation/fixture.dmf.in')
 SOURCES=COPIES+ASSETS+(OVERLAY,PLANE,COVERAGE,PIN)+TOOLS+TEMPLATES
+RENDERER_CONTROLS=('neighbor','visibility')
 
 class Invalid(RuntimeError):pass
 def digest(data):return hashlib.sha256(data).hexdigest()
@@ -60,17 +61,31 @@ def proc(data,signature):
     start=starts[0];end=next((i for i in range(start+1,len(lines)) if lines[i].startswith('/')),len(lines))
     return ('\n'.join(lines[start:end])+'\n').encode()
 
-def plan(head):
+def renderer_variant(data,control):
+    """Named, exact-source omissions for isolated compiler inputs only."""
+    if control is None:return data
+    if control not in RENDERER_CONTROLS:raise Invalid('Unknown renderer control')
+    before,after={
+        'neighbor':(b'\tI.plane = ROOT_TREE_PLANE\n',b'\tI.plane = GAME_PLANE\n'),
+        'visibility':(b'\t\tif(!context.root_tree_admitted(T) || context.decision(context.body, T, "hover") == LOS_DENY || !(T.loc in view(owner.view, owner.eye)))\n',
+                      b'\t\tif(!context.root_tree_admitted(T))\n')
+    }[control]
+    if data.count(before)!=1:raise Invalid('Renderer control source anchor changed')
+    return data.replace(before,after)
+
+def plan(head,renderer_control=None):
+    if renderer_control is not None and renderer_control not in RENDERER_CONTROLS:raise Invalid('Unknown renderer control')
     state=revision(head)
     if state['head']!=head or set(state['sources'])!=set(SOURCES):raise Invalid('Source revision mismatch/incomplete snapshot')
     src=state['sources'];files={Path(p).name:src[p] for p in COPIES}
+    files['root_tree_presenter.dm']=renderer_variant(files['root_tree_presenter.dm'],renderer_control)
     files.update({p:src[p] for p in ASSETS})
     files['production-light-update.dm']=(proc(src[OVERLAY],'/proc/copylist(')+
         proc(src[OVERLAY],'/atom/movable/lighting_overlay/proc/update_overlay(')+
         proc(src[PLANE],'/obj/screen/plane_master/light_mask/backdrop(')+
         proc(src[PLANE],'/mob/proc/update_lighting_plane(')+src[COVERAGE])
     files.update({'fixture.dme':src[TEMPLATES[0]],'fixture.dmf':src[TEMPLATES[1]]})
-    manifest=dict(schema=3,head=head,tree=state['tree'],
+    manifest=dict(schema=3,head=head,tree=state['tree'],renderer_control=renderer_control,
         source_objects={p:dict(describe(data),git_blob=hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()) for p,data in src.items()},
         files={p:describe(data) for p,data in files.items()})
     binaries=next(ast.literal_eval(n.value) for n in ast.parse(src[PIN]).body
@@ -79,12 +94,14 @@ def plan(head):
     return manifest,files
 
 def validate_stage(root,head):
-    root=Path(root).resolve();expected,files=plan(head)
+    root=Path(root).resolve()
     raw=read(root/'source-manifest.json')
+    supplied=json.loads(raw)
+    expected,files=plan(head,supplied.get('renderer_control'))
     if json.loads(raw)!=expected:raise Invalid('Stage manifest is not the specified source revision')
     for path,data in files.items():
         if read(root/path)!=data:raise Invalid('Stage differs from committed/generated input: '+path)
-    return dict(head=head,tree=expected['tree'],manifest_sha256=digest(raw),files=expected['files'],compiler_sha256=expected['compiler_sha256'])
+    return dict(head=head,tree=expected['tree'],renderer_control=expected['renderer_control'],manifest_sha256=digest(raw),files=expected['files'],compiler_sha256=expected['compiler_sha256'])
 
 def output_artifacts(root):return {p:describe(read(Path(root)/p)) for p in ('fixture.dmb','fixture.rsc')}
 

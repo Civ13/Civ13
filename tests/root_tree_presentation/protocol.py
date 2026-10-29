@@ -61,8 +61,11 @@ def initialize(root,head,*,failure_control=None,authorized_session=False):
     for name in reserved+tuple('phase-'+str(n)+'.ready.json' for n in range(1,10)):
         if (root/name).exists():raise Rejected('Fresh run directory required: '+name)
     accepted=compiled_binding(root,head)
+    if failure_control is not None and accepted['input_binding']['renderer_control'] is not None:
+        raise Rejected('Run one control at a time')
     binding=dict(schema=2,run=uuid.uuid4().hex,head=head,
         manifest=accepted['input_binding']['manifest_sha256'],compile_binding=accepted,failure_control=failure_control,
+        renderer_control=accepted['input_binding']['renderer_control'],
         authorized_session=authorized_session,authorized_identity_sha256=authorization_digest(root,authorized_session))
     with (root/'run.binding.json').open('x',encoding='utf-8') as stream:
         json.dump(binding,stream)
@@ -82,7 +85,8 @@ class PhaseGate:
 
     def input_identity(self):
         accepted=compiled_binding(self.root,self.binding['head'])
-        if (accepted!=self.binding.get('compile_binding') or accepted['input_binding']['manifest_sha256']!=self.binding['manifest']):
+        if (accepted!=self.binding.get('compile_binding') or accepted['input_binding']['manifest_sha256']!=self.binding['manifest'] or
+            accepted['input_binding']['renderer_control']!=self.binding.get('renderer_control')):
             raise Rejected('Source/compiled binding changed')
 
     def healthy(self):
@@ -105,10 +109,11 @@ class PhaseGate:
             if error.msg=='Extra data':raise Rejected('Multiple acknowledgment records') from error
             raise Pending('Acknowledgment write incomplete') from error
         if ack.get('phase')!=expected:raise Pending('Waiting for requested phase')
-        for field in ('schema','run','manifest','head'):
+        for field in ('schema','run','manifest','head','renderer_control'):
             if ack.get(field)!=self.binding[field]:raise Rejected('Stale/foreign phase binding: '+field)
         active=0 if expected==1 else 1
         rendered=0 if expected in (1,9) else 3 if expected<5 else 2
+        if self.binding['renderer_control']=='visibility' and expected not in (1,9):rendered+=1
         for field,value in dict(status='denied' if expected==9 else 'ready',
                                 renderer_active=active,rendered=rendered,shutter=1 if expected==9 else 0).items():
             if ack.get(field)!=value:raise Rejected('Failed phase witness: '+field)
@@ -132,7 +137,8 @@ class PhaseGate:
 
     def finish(self,pixel_checks,*,cleanup_verified=False):
         self.input_identity();self.phase(9)
-        if self.binding['failure_control'] is not None:raise Rejected('Negative control must fail, never pass')
+        if self.binding['failure_control'] is not None or self.binding['renderer_control'] is not None:
+            raise Rejected('Negative control must fail, never pass')
         if set(self.frames)!=set(range(1,10)):raise Rejected('Nine ordered map captures required')
         if not isinstance(pixel_checks,dict) or set(pixel_checks)!=PIXEL_CHECKS or any(v is not True for v in pixel_checks.values()):
             raise Rejected('Independent pixel oracles and both negative controls required')
@@ -141,3 +147,43 @@ class PhaseGate:
         self.healthy()
         return dict(status='passed',head=self.binding['head'],run=self.binding['run'],
                     manifest=self.binding['manifest'],frames=dict(self.frames),pixel_checks=dict(pixel_checks),owned_cleanup_verified=True)
+
+    def renderer_control_result(self,*,oracle_passed,cleanup_verified=False):
+        """Record an independently observed expected defect, never acceptance."""
+        control=self.binding['renderer_control']
+        if control not in provenance.RENDERER_CONTROLS or self.binding['failure_control'] is not None:
+            raise Rejected('A bound renderer-only control is required')
+        target=3 if control=='neighbor' else 2
+        self.input_identity();self.phase(target)
+        if set(self.frames)!=set(range(1,target+1)) or oracle_passed is not False:
+            raise Rejected('Ordered control captures and an independently failed pixel oracle required')
+        if cleanup_verified is not True:raise Rejected('Existing owner must verify all retained process exits')
+        self.healthy()
+        return dict(status='control_detected',acceptance=False,head=self.binding['head'],run=self.binding['run'],
+            renderer_control=control,failed_oracle='negative_'+control,frames=dict(self.frames),owned_cleanup_verified=True)
+
+    def failure_control_result(self,*,cleanup_verified=False):
+        """Verify expected phase-2 failure after the existing owner cleans up."""
+        self.input_identity()
+        control=self.binding['failure_control']
+        if control not in ('runtime','admission') or self.binding['renderer_control'] is not None:
+            raise Rejected('A bound runtime/admission-only control is required')
+        if authorization_digest(self.root,self.binding['authorized_session'])!=self.binding['authorized_identity_sha256']:
+            raise Rejected('Approved fixture identity changed during run')
+        failure=json.loads(bounded(self.root/'fixture.failed.json'))
+        reason='native_runtime' if control=='runtime' else 'root_admission'
+        if failure.get('schema')!=2 or failure.get('run')!=self.binding['run'] or failure.get('reason')!=reason or failure.get('status')!='failed':
+            raise Rejected('Expected bound native failure was not observed')
+        if not (self.root/'phase-1.ready.json').is_file() or any((self.root/('phase-'+str(n)+'.ready.json')).exists() for n in range(2,10)) or (self.root/'complete.txt').exists():
+            raise Rejected('Control must stop before phase-2 acknowledgment')
+        baseline=json.loads(bounded(self.root/'phase-1.ready.json'))
+        if any(baseline.get(k)!=self.binding[k] for k in ('schema','run','head','manifest','renderer_control')) or any(baseline.get(k)!=v for k,v in dict(phase=1,status='ready',renderer_active=0,rendered=0,shutter=0).items()):
+            raise Rejected('Bound phase-1 baseline required')
+        logs=[bounded(p).decode('utf-8',errors='replace') for p in self.logs]
+        if control=='runtime' and not any(re.search(r'runtime\s+(?:error|in\b)',log,re.I) for log in logs):
+            raise Rejected('Actual native runtime diagnostic required')
+        if control=='admission' and any(re.search(r'runtime\s+(?:error|in\b)|unhandled\s+exception',log,re.I) for log in logs):
+            raise Rejected('Admission control had an unrelated native runtime error')
+        if cleanup_verified is not True:raise Rejected('Existing owner must verify all retained process exits')
+        return dict(status='control_detected',acceptance=False,head=self.binding['head'],run=self.binding['run'],
+            failure_control=control,reason=reason,owned_cleanup_verified=True)

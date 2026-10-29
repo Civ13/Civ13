@@ -27,7 +27,7 @@ class Gate(unittest.TestCase):
         self.binding=protocol.initialize(self.root,HEAD)
         self.gate=protocol.PhaseGate(self.root,HEAD,runtime_logs=[self.log])
     def ack(self,phase,**changes):
-        value={k:self.binding[k] for k in ('schema','run','manifest','head')}
+        value={k:self.binding[k] for k in ('schema','run','manifest','head','renderer_control')}
         value.update(phase=phase,status='denied' if phase==9 else 'ready',renderer_active=int(phase>1),
             rendered=0 if phase in (1,9) else 3 if phase<5 else 2,shutter=int(phase==9),
             identity_controls={name:1 for name in protocol.IDENTITY_CHECKS})
@@ -132,6 +132,72 @@ class Gate(unittest.TestCase):
         accepted=protocol.PhaseGate(self.root,HEAD,runtime_logs=[self.log]);accepted.healthy()
         identity.write_text('anotheruser')
         with self.assertRaises(protocol.Rejected):accepted.healthy()
+
+    def renderer_stage(self,control):
+        self.root=Path(self.temp.name)/control;prepare.prepare(self.root,HEAD,renderer_control=control)
+        support.fake_compile(self.root,protocol.provenance)
+        self.log=self.root/'owned-runtime.log';self.log.write_text('')
+        self.binding=protocol.initialize(self.root,HEAD)
+        self.gate=protocol.PhaseGate(self.root,HEAD,runtime_logs=[self.log])
+
+    def test_renderer_controls_have_distinct_binding_counts_and_cannot_pass_acceptance(self):
+        for control,target in [('neighbor',3),('visibility',2)]:
+            self.renderer_stage(control)
+            for phase in range(1,target+1):
+                self.ack(phase,rendered=0 if phase==1 else 4 if control=='visibility' else 3)
+                self.gate.record_pixels(phase,('synthetic control map '+str(phase)).encode())
+            with self.assertRaises(protocol.Rejected):self.gate.renderer_control_result(oracle_passed=True,cleanup_verified=True)
+            with self.assertRaises(protocol.Rejected):self.gate.renderer_control_result(oracle_passed=False)
+            result=self.gate.renderer_control_result(oracle_passed=False,cleanup_verified=True)
+            self.assertEqual(result['status'],'control_detected');self.assertIs(result['acceptance'],False)
+            self.assertEqual(result['failed_oracle'],'negative_'+control)
+            self.ack(9)
+            with self.assertRaisesRegex(protocol.Rejected,'never pass'):self.gate.finish({})
+
+    def test_renderer_control_cannot_be_combined_relabelled_or_omitted_from_ack(self):
+        self.renderer_stage('visibility');self.ack(2,rendered=4,renderer_control=None)
+        with self.assertRaises(protocol.Rejected):self.gate.phase(2)
+        self.ack(2,rendered=3)
+        with self.assertRaises(protocol.Rejected):self.gate.phase(2)
+        self.gate.binding['renderer_control']=None
+        with self.assertRaises(protocol.Rejected):self.gate.input_identity()
+        (self.root/'run.binding.json').unlink()
+        with self.assertRaisesRegex(protocol.Rejected,'one control'):protocol.initialize(self.root,HEAD,failure_control='runtime')
+
+    def failure_stage(self,control):
+        self.root=Path(self.temp.name)/control;prepare.prepare(self.root,HEAD)
+        support.fake_compile(self.root,protocol.provenance)
+        self.log=self.root/'owned-runtime.log';self.log.write_text('runtime error: Injected fixture runtime control' if control=='runtime' else '')
+        self.binding=protocol.initialize(self.root,HEAD,failure_control=control)
+        self.gate=protocol.PhaseGate(self.root,HEAD,runtime_logs=[self.log]);self.ack(1)
+        failure=dict(schema=2,run=self.binding['run'],status='failed',reason='native_runtime' if control=='runtime' else 'root_admission')
+        (self.root/'fixture.failed.json').write_text(json.dumps(failure))
+
+    def test_expected_failure_controls_require_actual_bound_failure_and_cleanup(self):
+        for control in ('runtime','admission'):
+            self.failure_stage(control)
+            with self.assertRaises(protocol.Rejected):self.gate.phase(2)
+            with self.assertRaises(protocol.Rejected):self.gate.failure_control_result()
+            result=self.gate.failure_control_result(cleanup_verified=True)
+            self.assertEqual(result['status'],'control_detected');self.assertIs(result['acceptance'],False)
+            self.assertEqual(result['failure_control'],control)
+            self.ack(2)
+            with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
+            (self.root/'phase-2.ready.json').unlink()
+            (self.root/'fixture.failed.json').unlink()
+            with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
+
+    def test_wrong_failure_or_missing_runtime_diagnostic_is_not_expected_control(self):
+        self.failure_stage('runtime');path=self.root/'fixture.failed.json';failure=json.loads(path.read_text())
+        for change in ({'run':'foreign'},{'reason':'root_admission'},{'status':'ready'}):
+            path.write_text(json.dumps({**failure,**change}))
+            with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
+        path.write_text(json.dumps(failure));self.log.write_text('')
+        with self.assertRaisesRegex(protocol.Rejected,'runtime diagnostic'):self.gate.failure_control_result(cleanup_verified=True)
+
+    def test_normal_run_cannot_be_reported_as_an_expected_control(self):
+        with self.assertRaises(protocol.Rejected):self.gate.renderer_control_result(oracle_passed=False,cleanup_verified=True)
+        with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
 
 class CurrentRevision(unittest.TestCase):
     """Fresh local repositories, no fixed historical objects or network access."""

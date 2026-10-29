@@ -209,3 +209,78 @@ must reveal the otherwise hidden fourth tree and fail. These are fixture-only
 controls, never production activation. Hover/Examine target delivery, two-client
 isolation, reconnect/load rebuilding and uninstrumented direct writes remain
 separate acceptance items; screenshots alone cannot establish them.
+
+### Runnable control packets (existing capture owner only)
+
+The named renderer variants are deterministic staged-input transformations;
+they never edit production source or accept an arbitrary patch. `neighbor`
+sets the attached override back on GAME_PLANE, so the real tile mask multiplies
+it again and the black neighbor cuts the red canopy. `visibility` omits both
+the context decision and native root-turf view guard, retaining exact root/type
+admission and scene capture. It exposes the otherwise hidden fourth canopy.
+Only `root_tree_presenter.dm` differs from the normal staged inputs. The source
+manifest records the selected control, expected derived bytes and original Git
+objects; the compiler receipt and run/phase bindings carry that identity. A
+renamed manifest, edited stage or stale normal binary cannot become a control.
+Visibility-control counts are four frames at phases 2-4 and three at 5-8;
+the normal fixture still requires three and two. Both retain zero at phase 9.
+
+From a clean owned checkout at the reviewed head, prepare four **fresh** stages.
+`$PacketParent` must be an existing evidence directory; no path may reuse prior
+captures or compiler evidence. `$VerifiedPython` and `$ByondBin` are the existing
+verified interpreter and pinned 516.1688 installation, respectively.
+
+```powershell
+$Head = (git rev-parse HEAD).Trim()
+if ($LASTEXITCODE) { throw 'Source head unavailable' }
+foreach ($Name in @('neighbor','visibility','runtime','admission')) {
+    $Stage = Join-Path $PacketParent $Name
+    $Variant = @()
+    if ($Name -in @('neighbor','visibility')) { $Variant = @('--renderer-control',$Name) }
+    & $VerifiedPython tests/root_tree_presentation/prepare.py --head $Head --output $Stage @Variant
+    if ($LASTEXITCODE) { throw "Preparation failed: $Name" }
+    & $VerifiedPython tests/root_tree_presentation/compile.py --head $Head --dme (Join-Path $Stage 'fixture.dme') --output (Join-Path $PacketParent "$Name-compile") --byond-bin $ByondBin
+    if ($LASTEXITCODE) { throw "Compilation failed: $Name" }
+}
+```
+
+Do not initialize these stages twice. The existing controller must parameterize
+its stage, current head and mode instead of hardcoding the old 17c3 normal run.
+The following are the exact file-only API calls **inside that controller**;
+they launch nothing. Import `protocol` from this current checkout. Set
+`approved_session=True` only for the existing explicitly approved private
+identity file; otherwise use False and no identity file.
+
+| Stage | Call before the existing owned launcher | Request/capture only | Independent expected failure |
+| --- | --- | --- | --- |
+| neighbor | `protocol.initialize(stage, head, authorized_session=approved_session)` | phases 1, 2, 3 | The phase-3 black-neighbor red-canopy oracle returns False. |
+| visibility | `protocol.initialize(stage, head, authorized_session=approved_session)` | phases 1, 2 | The hidden-fourth-root absence oracle returns False. |
+| runtime | `protocol.initialize(stage, head, failure_control="runtime", authorized_session=approved_session)` | capture phase 1; request phase 2 | Sticky `native_runtime`, actual runtime diagnostic, no phase-2 acknowledgment. |
+| admission | `protocol.initialize(stage, head, failure_control="admission", authorized_session=approved_session)` | capture phase 1; request phase 2 | Sticky `root_admission`, no runtime error and no phase-2 acknowledgment. |
+
+Create the usual `gate = protocol.PhaseGate(stage, head,
+runtime_logs=[actual_owned_runtime_log, actual_owned_stderr_log])` before phase
+requests. For renderer controls, use the existing `gate.phase(n)` and
+`gate.record_pixels(n, actual_normalized_map_bytes)` for the short sequence above,
+then stop and verify owned cleanup. Call
+`gate.renderer_control_result(oracle_passed=actual_control_oracle_result,
+cleanup_verified=actual_owned_exit_verification)`. The result requires an actual
+False pixel oracle and returns `control_detected, acceptance=False`. A renderer
+control can never pass `finish()`, even if a caller supplies all-True oracles.
+Do not mark False solely from the variant name or frame count.
+
+For runtime/admission controls, the existing fail-closed watch intentionally
+aborts at phase 2. Preserve that failure and all logs, perform existing owned
+cleanup, then call
+`gate.failure_control_result(cleanup_verified=actual_owned_exit_verification)`.
+It requires the bound phase-1 baseline, exact native failure reason, actual
+logs, no acknowledgment from phase 2 onward and no complete marker. Missing or
+wrong failure, an omitted hook, late acknowledgment or unknown cleanup rejects.
+This reports an observed expected control, never renderer acceptance. Do not
+combine renderer and failure controls or suppress the existing abort path.
+
+The 17c3 exact-head nine-capture report resolves the measured displacement and
+weather loss, with sampled RGB/visibility/view/shutter observations. It does not
+establish complete alpha/overlap ordering, all lifecycle paths or filtered-plane
+support. These four short control packets supply the missing negative witnesses;
+they do not expand that coverage or authorize an additional launcher/run.
