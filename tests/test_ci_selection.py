@@ -38,8 +38,36 @@ class SelectionTests(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[1] / '.github/workflows/test.yml').read_text()
         self.assertIn('      comparison_base:\n', workflow)
         self.assertIn('        required: true\n', workflow.split('      comparison_base:\n', 1)[1].split('      extensive_regressions:', 1)[0])
-        expression = "github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before"
-        self.assertEqual(workflow.count(expression), 4)
+        expression = "${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}"
+
+        def assert_routes(source):
+            changes = source.split('\n  changes:\n', 1)[1].split('\n  baseline:\n', 1)[0]
+            baseline = source.split('\n  baseline:\n', 1)[1].split('\n  evidence-checker:\n', 1)[0]
+            build = source.split('\n  build:\n', 1)[1].split('\n  ci-required:\n', 1)[0]
+            aggregate = source.split('\n  ci-required:\n', 1)[1]
+            self.assertIn('      base: ' + expression, changes)
+            for job in (baseline, aggregate):
+                prepare = job.split('      - name: Prepare exact comparison commit\n', 1)[1].split('\n      - ', 1)[0]
+                self.assertIn('          BASE_REF: ' + expression, prepare)
+            for job in (baseline, build, aggregate):
+                self.assertIn('          CI_BASE: ' + expression, job)
+
+        assert_routes(workflow)
+        # Mutate each actual producer/consumer binding, independent of unrelated steps.
+        for job, end, field in (('changes', 'baseline', 'base'),
+                                ('baseline', 'evidence-checker', 'BASE_REF'),
+                                ('baseline', 'evidence-checker', 'CI_BASE'),
+                                ('build', 'ci-required', 'CI_BASE'),
+                                ('ci-required', None, 'BASE_REF'),
+                                ('ci-required', None, 'CI_BASE')):
+            start = workflow.index('\n  ' + job + ':\n')
+            stop = workflow.index('\n  ' + end + ':\n', start) if end else len(workflow)
+            section = workflow[start:stop]
+            binding = field + ': ' + expression
+            self.assertEqual(section.count(binding), 1)
+            altered = workflow[:start] + section.replace(binding, field + ': ${{ github.sha }}', 1) + workflow[stop:]
+            with self.subTest(job=job, field=field), self.assertRaises(AssertionError):
+                assert_routes(altered)
 
     def test_manual_selector_publishes_only_validated_base_receipt(self):
         source = Path(__file__).resolve().parents[1]
