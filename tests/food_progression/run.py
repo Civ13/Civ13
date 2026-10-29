@@ -98,7 +98,7 @@ def main():
             source = source.replace('code\\modules\\persistence\\functions.dm', generated['_persistence.dm'].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
         probe = root / 'tests/food_progression' / {'crop': 'probe.dm', 'storage': 'storage.dm', 'cutting': 'cutting_board.dm', 'barrels': 'barrels.dm'}[args.probe]
-        extra_probe = '\n#include "tests/food_progression/glass_extraction.dm"\n' if args.probe == 'barrels' else ''
+        extra_probe = '\n#include "tests/food_progression/glass_extraction.dm"\n#include "tests/food_progression/cotton_insertion.dm"\n' if args.probe == 'barrels' else ''
         generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n' + extra_probe, encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         (output / 'metadata.json').write_text(json.dumps({'commit': head, 'expected_byond_version': args.expected_byond_version, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
@@ -108,7 +108,7 @@ def main():
                 ('code/modules/1713/cutting_board.dm', 'code/modules/reagents/reagent_containers/food.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json', 'tests/furniture_joinery/cutting-board-trace-cases.json')}
                 if args.probe == 'cutting' else
                 {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in
-                 ('code/modules/reagents/reagent_containers/glass.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'code/game/objects/items/stacks/stack.dm', 'code/game/mob/living/carbon/human/shit_piss.dm', 'code/modules/reagents/reagent_containers/food/grown.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm', 'tests/food_progression/barrels.dm', 'tests/food_progression/glass_extraction.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/barrel-ingredient-routes.json', 'tests/furniture_joinery/glass-extraction-routes.json')}
+                 ('code/modules/reagents/reagent_containers/glass.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/materials/material_sheets.dm', 'code/modules/materials/materials.dm', 'code/game/mob/living/carbon/human/shit_piss.dm', 'code/modules/reagents/reagent_containers/food/grown.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm', 'tests/food_progression/barrels.dm', 'tests/food_progression/glass_extraction.dm', 'tests/food_progression/cotton_insertion.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/barrel-ingredient-routes.json', 'tests/furniture_joinery/glass-extraction-routes.json')}
                 if args.probe == 'barrels' else {}}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
@@ -119,6 +119,7 @@ def main():
             shutil.copy2(root / 'tests/furniture_joinery/barrel-ingredient-routes.json', output / 'barrel-ingredient-routes.json')
             shutil.copy2(root / 'tests/furniture_joinery/glass-extraction-routes.json', output / 'glass-extraction-routes.json')
             shutil.copy2(root / 'tests/food_progression/glass_extraction.dm', output / 'glass_extraction.dm')
+            shutil.copy2(root / 'tests/food_progression/cotton_insertion.dm', output / 'cotton_insertion.dm')
         for path in generated.values():
             if path.exists():
                 shutil.copy2(path, output / path.name)

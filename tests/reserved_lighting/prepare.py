@@ -52,8 +52,13 @@ def prepare(repo, output, control=None, provenance=None):
             target = output / rel if rel in FILES else repo / rel
             line = '#include "' + target.as_posix() + '"'
         lines.append(line)
-    # Disable only normal world startup, as in existing production lighting probe.
+    # Disable normal global/world startup; the probe owns minimal initialization.
     world = (repo / 'code/world.dm').read_text(encoding='utf-8')
+    global_startup = 'var/global/datum/global_init/init = new ()'
+    assert world.count(global_startup) == 1, 'global startup initializer anchor drift'
+    # This constructor runs before world/New and loads normal configuration.
+    # The isolated probe owns its minimal config and lighting initialization.
+    world = world.replace(global_startup, 'var/global/datum/global_init/init = null', 1)
     start = world.index('/world/New()')
     parent = world.index('\n\t..()', start)
     world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)

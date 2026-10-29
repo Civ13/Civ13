@@ -105,6 +105,11 @@ It produces new typed IR, a static DMM and a required sidecar without launching
 the game or replacing installed maps. Native playability and a reference-matching
 seed remain unverified.
 
+The [liminal authored-room tool](tools/liminal_maps/README.md) prepares finite
+indoor topology and separate scenario/template manifests. Its
+[mode design](docs/liminal/README.md) records the native DMM/gameplay work still
+required; the tool does not register or activate a game mode.
+
 ## Cloud-rendered scene capture
 
 See [reproducing native cloud-rendered stills](docs/cloud-rendering.md) for the

@@ -52,6 +52,15 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_crop_stage_step_selection_preserves_shared_farming_fallback(self):
+        suite = ci.SUITES['crop_stage_step']
+        self.assertEqual(suite['files'], ('tests/crop_stage_step/test_source.py',))
+        for path in ('tests/crop_stage_step/test_source.py',
+                     'tests/crop_stage_step/baseline_growth.json',
+                     'tests/plant_lifecycle/run.ps1'):
+            self.assertIn('crop_stage_step', self.selected([path]))
+        self.assertEqual(self.selected(['code/game/objects/farming.dm']), set(ci.SUITES))
+
     def test_furniture_joinery_inputs_select_offline_contracts(self):
         for path in ('tests/furniture_joinery/test_contract.py',
                      'code/game/objects/items/stacks/furniture_joinery.dm',
@@ -67,7 +76,7 @@ class BaselinePolicyTests(unittest.TestCase):
         # including water-treatment consumers and the cutting-board threshold.
         for shared in ('code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm'):
             self.assertEqual(self.selected([shared]), set(ci.SUITES))
-        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py', 'tests/furniture_joinery/test_bedroll.py', 'tests/furniture_joinery/test_document_drawers.py', 'tests/furniture_joinery/test_sofa_materials.py', 'tests/furniture_joinery/test_canopy.py', 'tests/furniture_joinery/test_cutting_board.py', 'tests/furniture_joinery/test_barrel_ingredients.py', 'tests/furniture_joinery/test_glass_extraction.py'))
+        self.assertEqual(ci.SUITES['furniture_joinery']['files'], ('tests/furniture_joinery/test_contract.py', 'tests/furniture_joinery/test_wooden_shelf.py', 'tests/furniture_joinery/test_bedroll.py', 'tests/furniture_joinery/test_document_drawers.py', 'tests/furniture_joinery/test_sofa_materials.py', 'tests/furniture_joinery/test_canopy.py', 'tests/furniture_joinery/test_cutting_board.py', 'tests/furniture_joinery/test_barrel_ingredients.py', 'tests/furniture_joinery/test_glass_extraction.py', 'tests/furniture_joinery/test_glass_cotton.py'))
         for path in ('code/game/objects/items/stacks/stack.dm', 'scripts/build-crafting-atlas.py',
                      'config/crafting/material_recipes_global.txt'):
             self.assertEqual(self.selected([path]), set(ci.SUITES))

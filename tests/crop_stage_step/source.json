@@ -1,0 +1,9 @@
+{
+  "upstream_repository": "Civ13/Civ13",
+  "upstream_ref": "c39f4d6846c8882df0097a6bba021cc5288a9229",
+  "baseline_farming_blob": "da41cb8ff87aa53405f94095623d31a0fe462d32",
+  "baseline_runner_blob": "2ec7317a8cca5979a75380f5d351cf81bb0359de",
+  "reconciled_master_ref": "8b4c3f5ca76e4ed78927819e9b4c50873ec9b19e",
+  "scope": "Historical baseline pin; integration checked in a full checkout. Offline projection only; no game runtime acceptance.",
+  "gameplay_activation": false
+}

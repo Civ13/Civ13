@@ -113,6 +113,12 @@ The new `glass_extraction.dm` helper is included only by the barrel probe and
 retained with it; adding this executable coverage admits the existing food suite
 under the ordinary PR selector. Editing an existing fixture alone does not.
 
+The subsequent `cotton_insertion.dm` helper checks whole cotton pile payment and
+capacity through both actual handlers, including rejected payment and invalid
+stock/material. It is included only by the barrel probe; its source and material
+definitions bring the barrel receipt to fifteen hashes. The uploaded helper and
+prior food/ore/manure/save controls remain available independently.
+
 The production dirt turf save allowlist must restore nondefault soil nutrition.
 `--soil-negative-control` removes only that allowlist addition in a generated
 source and requires this nutrition assertion to fail. This additional control is an explicit local check; CI

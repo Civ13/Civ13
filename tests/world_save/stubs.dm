@@ -238,6 +238,10 @@ var/list/mutate_on_tick = null
 	if ("human_subtile_position" in F.dir)
 		throw EXCEPTION("Sub-tile restoration requires the full-source human fixture")
 	return
+/mob/living/simple_animal/proc/npc_subtile_prepare_import(savefile/F)
+	if ("npc_subtile_position" in F.dir)
+		throw EXCEPTION("NPC sub-tile restoration requires the full-source fixture")
+	return
 /mob/living/human/proc/rejuvenate()
 	rejuvenate_calls++
 	stat = CONSCIOUS

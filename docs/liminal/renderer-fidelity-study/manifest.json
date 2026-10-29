@@ -1,0 +1,3491 @@
+{
+  "schema": "civ13-renderer-fidelity-study-result/1",
+  "status": "RENDERER_STUDY_NOT_CATALOG_DESIGN_OR_ACCEPTANCE",
+  "asset_revision": "10d264e5896221b34949ee4b67c0fd2b94bde249",
+  "catalog_revision": "26c05cd8f85821c3ce76dcc72e3f0e61378c7ac4",
+  "catalog_family": "office_columns",
+  "original_mask": [
+    "###########",
+    "#.........#",
+    "#.........#",
+    "#..X......#",
+    "#.........#",
+    "#.........#",
+    "#.........#",
+    "#......X..#",
+    "#.........#",
+    "#.........#",
+    "###########"
+  ],
+  "opened_instance_sockets": {
+    "W": [
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ]
+    ],
+    "E": [
+      [
+        10,
+        4
+      ],
+      [
+        10,
+        5
+      ],
+      [
+        10,
+        6
+      ]
+    ],
+    "N": [
+      [
+        4,
+        10
+      ],
+      [
+        5,
+        10
+      ],
+      [
+        6,
+        10
+      ]
+    ]
+  },
+  "original_anchors": {
+    "spawn": [],
+    "objective": [
+      [
+        5,
+        5
+      ]
+    ],
+    "exit": []
+  },
+  "explicit_context": "Three-tile-wide hall stubs outside admitted sockets, not new catalog rooms.",
+  "furnishing_semantics": [
+    {
+      "asset": "desk",
+      "position": [
+        1,
+        8
+      ],
+      "role": "northwest work surface"
+    },
+    {
+      "asset": "desk",
+      "position": [
+        2,
+        8
+      ],
+      "role": "northwest work surface"
+    },
+    {
+      "asset": "chair",
+      "position": [
+        1,
+        7
+      ],
+      "direction": 1,
+      "role": "seat facing north toward work surface"
+    },
+    {
+      "asset": "chair",
+      "position": [
+        2,
+        7
+      ],
+      "direction": 1,
+      "role": "seat facing north toward work surface"
+    },
+    {
+      "asset": "computer",
+      "position": [
+        1,
+        8
+      ],
+      "role": "CRT terminal on desk, not a progression device"
+    },
+    {
+      "asset": "paper",
+      "position": [
+        2,
+        8
+      ],
+      "role": "paper on work surface"
+    },
+    {
+      "asset": "desk",
+      "position": [
+        8,
+        2
+      ],
+      "role": "southeast work surface"
+    },
+    {
+      "asset": "desk",
+      "position": [
+        9,
+        2
+      ],
+      "role": "southeast work surface"
+    },
+    {
+      "asset": "chair",
+      "position": [
+        8,
+        1
+      ],
+      "direction": 1,
+      "role": "seat facing north toward work surface"
+    },
+    {
+      "asset": "chair",
+      "position": [
+        9,
+        1
+      ],
+      "direction": 1,
+      "role": "seat facing north toward work surface"
+    },
+    {
+      "asset": "computer",
+      "position": [
+        8,
+        2
+      ],
+      "role": "CRT terminal on desk"
+    },
+    {
+      "asset": "paper",
+      "position": [
+        9,
+        2
+      ],
+      "role": "paper on work surface"
+    },
+    {
+      "asset": "cabinet",
+      "position": [
+        9,
+        8
+      ],
+      "role": "filing storage beside east wall, not a partition"
+    },
+    {
+      "asset": "cabinet",
+      "position": [
+        9,
+        9
+      ],
+      "role": "filing storage beside east wall, not a machine"
+    },
+    {
+      "asset": "shelf",
+      "position": [
+        1,
+        1
+      ],
+      "role": "empty southwest storage shelf"
+    },
+    {
+      "asset": "shelf",
+      "position": [
+        2,
+        1
+      ],
+      "role": "empty southwest storage shelf"
+    },
+    {
+      "asset": "plant",
+      "position": [
+        1,
+        9
+      ],
+      "role": "decorative plastic corner plant"
+    },
+    {
+      "asset": "plant",
+      "position": [
+        9,
+        7
+      ],
+      "role": "decorative plant beside storage, outside entrance reserve"
+    },
+    {
+      "asset": "noticeboard",
+      "position": [
+        8,
+        10
+      ],
+      "role": "empty wall-mounted notice board"
+    }
+  ],
+  "layers": [
+    {
+      "x": -3,
+      "y": 4,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -3,
+      "y": 5,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -3,
+      "y": 6,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -2,
+      "y": 4,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -2,
+      "y": 5,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -2,
+      "y": 6,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -1,
+      "y": 4,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -1,
+      "y": 5,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -1,
+      "y": 6,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 10,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 9,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 10,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 10,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 9,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 9,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 5,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 6,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 9,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 10,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 9,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 9,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 11,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 12,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 13,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 11,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 12,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 13,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 5,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 6,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 5,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 5,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 11,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 12,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 13,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 9,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 10,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 6,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 3,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 6,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_corners",
+      "direction": 5,
+      "role": "concave carpet corner",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 7,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 8,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 5,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 6,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 5,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "role": "carpet edge",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "asset": "carpet",
+      "state": "sblucarpet_edges",
+      "direction": 5,
+      "role": "outer carpet corner",
+      "color": null
+    },
+    {
+      "x": 11,
+      "y": 4,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 12,
+      "y": 4,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 12,
+      "y": 6,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 13,
+      "y": 4,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": 13,
+      "y": 6,
+      "asset": "hall_floor",
+      "state": "floor",
+      "direction": 2,
+      "role": "",
+      "color": null
+    },
+    {
+      "x": -3,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall4",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": -3,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall4",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": -2,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": -2,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": -1,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": -1,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall5",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall10",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall9",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 9,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 0,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall6",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall0",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall9",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 11,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 12,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 3,
+      "y": 13,
+      "asset": "wall",
+      "state": "cement_wall2",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall0",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall5",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 7,
+      "y": 13,
+      "asset": "wall",
+      "state": "cement_wall2",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "asset": "wall",
+      "state": "cement_wall9",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall6",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall5",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "asset": "wall",
+      "state": "cement_wall3",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "asset": "wall",
+      "state": "cement_wall10",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 12,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall12",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "asset": "wall",
+      "state": "cement_wall8",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "asset": "wall",
+      "state": "cement_wall8",
+      "direction": 2,
+      "role": "native compatible-wall junction",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "asset": "desk",
+      "state": "woodtable_1tileendtable",
+      "direction": 4,
+      "role": "northwest work surface",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "asset": "desk",
+      "state": "woodtable_1tileendtable",
+      "direction": 8,
+      "role": "northwest work surface",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "asset": "chair",
+      "state": "officechair_dark",
+      "direction": 1,
+      "role": "seat facing north toward work surface",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "asset": "chair",
+      "state": "officechair_dark",
+      "direction": 1,
+      "role": "seat facing north toward work surface",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "asset": "computer",
+      "state": "ibm",
+      "direction": 2,
+      "role": "CRT terminal on desk, not a progression device",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "asset": "paper",
+      "state": "paper",
+      "direction": 2,
+      "role": "paper on work surface",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "asset": "desk",
+      "state": "woodtable_1tileendtable",
+      "direction": 4,
+      "role": "southeast work surface",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "asset": "desk",
+      "state": "woodtable_1tileendtable",
+      "direction": 8,
+      "role": "southeast work surface",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "asset": "chair",
+      "state": "officechair_dark",
+      "direction": 1,
+      "role": "seat facing north toward work surface",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "asset": "chair",
+      "state": "officechair_dark",
+      "direction": 1,
+      "role": "seat facing north toward work surface",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "asset": "computer",
+      "state": "ibm",
+      "direction": 2,
+      "role": "CRT terminal on desk",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "asset": "paper",
+      "state": "paper",
+      "direction": 2,
+      "role": "paper on work surface",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 8,
+      "asset": "cabinet",
+      "state": "filingcabinet",
+      "direction": 2,
+      "role": "filing storage beside east wall, not a partition",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "asset": "cabinet",
+      "state": "filingcabinet",
+      "direction": 2,
+      "role": "filing storage beside east wall, not a machine",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "asset": "shelf",
+      "state": "book-0",
+      "direction": 2,
+      "role": "empty southwest storage shelf",
+      "color": null
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "asset": "shelf",
+      "state": "book-0",
+      "direction": 2,
+      "role": "empty southwest storage shelf",
+      "color": null
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "asset": "plant",
+      "state": "plant-05plastic4",
+      "direction": 2,
+      "role": "decorative plastic corner plant",
+      "color": null
+    },
+    {
+      "x": 9,
+      "y": 7,
+      "asset": "plant",
+      "state": "plant-05plastic4",
+      "direction": 2,
+      "role": "decorative plant beside storage, outside entrance reserve",
+      "color": null
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "asset": "noticeboard",
+      "state": "nboard00",
+      "direction": 2,
+      "role": "empty wall-mounted notice board",
+      "color": null
+    }
+  ],
+  "wall_junctions": [
+    {
+      "x": -3,
+      "y": 3,
+      "junction": 4
+    },
+    {
+      "x": -3,
+      "y": 7,
+      "junction": 4
+    },
+    {
+      "x": -2,
+      "y": 3,
+      "junction": 12
+    },
+    {
+      "x": -2,
+      "y": 7,
+      "junction": 12
+    },
+    {
+      "x": -1,
+      "y": 3,
+      "junction": 12
+    },
+    {
+      "x": -1,
+      "y": 7,
+      "junction": 12
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "junction": 5
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "junction": 3
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "junction": 3
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "junction": 10
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "junction": 9
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "junction": 3
+    },
+    {
+      "x": 0,
+      "y": 9,
+      "junction": 3
+    },
+    {
+      "x": 0,
+      "y": 10,
+      "junction": 6
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 1,
+      "y": 10,
+      "junction": 12
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 2,
+      "y": 10,
+      "junction": 12
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "junction": 0
+    },
+    {
+      "x": 3,
+      "y": 10,
+      "junction": 9
+    },
+    {
+      "x": 3,
+      "y": 11,
+      "junction": 3
+    },
+    {
+      "x": 3,
+      "y": 12,
+      "junction": 3
+    },
+    {
+      "x": 3,
+      "y": 13,
+      "junction": 2
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "junction": 0
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "junction": 5
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "junction": 3
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "junction": 3
+    },
+    {
+      "x": 7,
+      "y": 13,
+      "junction": 2
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "junction": 12
+    },
+    {
+      "x": 9,
+      "y": 0,
+      "junction": 12
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "junction": 12
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "junction": 9
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "junction": 3
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "junction": 3
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "junction": 6
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "junction": 5
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "junction": 3
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "junction": 3
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "junction": 10
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "junction": 12
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "junction": 12
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "junction": 12
+    },
+    {
+      "x": 12,
+      "y": 7,
+      "junction": 12
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "junction": 8
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "junction": 8
+    }
+  ],
+  "dmi_frames": [
+    {
+      "icon": "icons/turf/floors.dmi",
+      "state": "floor",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        64,
+        0,
+        32,
+        32
+      ],
+      "rgba_sha256": "3651833b283541a5c2a6a7e8583a4be67f88795e16f70801b7a78bbaba1a93d9"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        224,
+        160,
+        32,
+        32
+      ],
+      "rgba_sha256": "618498def54751792f9e7ccdb74be09a771c61ff7c4b9a996743114ce730fba2"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        128,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "4c9f3b3a91b6b89921b9325cf4dd61718a70676f7eff04ece654b7789926702d"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 8,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        224,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "62d6714cb8fa1ae99bcdf186cfe054da47ed6f5f154edcf163b644429f22f1fd"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 10,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        288,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "d6755d60fb711d6a7bc72df2eb5ffb8b11fe11385c3b61a3b1a34c8edf0f895f"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 1,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        160,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "abeb2545db4969e1cf1b474b38a90077d5a4bcbc95e733de93306cafcf97f893"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 9,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        352,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "41aa1f16ddf6a8457527b4656055c19feedc12aa644c20584653b16d6c5e621a"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 10,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        0,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "eda83287b147acceb3a7227e3c900665689ca756e1f65e96f5648119665838e9"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 9,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        64,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "3bd86acafd90776985eeec89b9020db4543ff0b7fe6efadd3dd4b8a96c6596a5"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 5,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        32,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "9148c0cc39dfed115ea4d786988f0e2df13e2de375632e8080ae192c36b36492"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 4,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        192,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "6e0b36e1a02815af63d85d7ef544d5ea609d11bd7f0c392c4702f41fe2317a91"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_corners",
+      "direction": 6,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        384,
+        160,
+        32,
+        32
+      ],
+      "rgba_sha256": "a4481ead72aa561db0320eb87cacdd9feef5c9579572ddcc7273a409672b557b"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 5,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        320,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "dba63be95a6c03e5ee270859222a84e1ed7cc901143e914b5efecf17f45da68f"
+    },
+    {
+      "icon": "icons/turf/flooring/carpet.dmi",
+      "state": "sblucarpet_edges",
+      "direction": 6,
+      "frame": 0,
+      "dirs": 8,
+      "frames": 1,
+      "crop": [
+        256,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "bab1610d0401d84d4eb97bed096c34d31fa03a8652dab38833aa2c137fea3f23"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall4",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        480,
+        224,
+        32,
+        32
+      ],
+      "rgba_sha256": "5499c9ffa064e00a583fae6bb348ebaff4f5b68c4c69f3fef7e26ddb4b9970d1"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall12",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        224,
+        256,
+        32,
+        32
+      ],
+      "rgba_sha256": "751fb7b96ff3d90b46fc4b87571dd946d12e0e04b7401d2b3d80d5bbd81e3242"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall5",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        0,
+        256,
+        32,
+        32
+      ],
+      "rgba_sha256": "4ee74da5610d5dffd4fbf99c0df008701fe0f20189ef1d11240b74bd58457806"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall3",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        448,
+        224,
+        32,
+        32
+      ],
+      "rgba_sha256": "8dbde5e96655a4e65ba982606520e7df44f2aed375a5ac1bedd0654ad149953a"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall10",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        160,
+        256,
+        32,
+        32
+      ],
+      "rgba_sha256": "b3585a97a58f525f6a0890ebfda309b1274677b6361a79e8e301cdf712078651"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall9",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        128,
+        256,
+        32,
+        32
+      ],
+      "rgba_sha256": "db5f42d61396b3ae760e7f1bed222b7712777a0fcdc373846eea15110ab5dcea"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall6",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        32,
+        256,
+        32,
+        32
+      ],
+      "rgba_sha256": "0d5ac290b5e64da89e5a851875fcf2af6ea66d3463edefff10b6cbd45071906f"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall0",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        352,
+        224,
+        32,
+        32
+      ],
+      "rgba_sha256": "0f6092ad8113d24ad8d34301b19148f4290e004ebe2fdda7d41d6fe66347deb1"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall2",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        416,
+        224,
+        32,
+        32
+      ],
+      "rgba_sha256": "7270404090d82730494a0f8c0f96ad7c089412b98b45ded9f8f2327679df55f6"
+    },
+    {
+      "icon": "icons/turf/wall_masks.dmi",
+      "state": "cement_wall8",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        96,
+        256,
+        32,
+        32
+      ],
+      "rgba_sha256": "263449a5158ad980bea9814d2c1b7fa34528168c4d63e6f84e83850638b9ab7c"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable_1tileendtable",
+      "direction": 4,
+      "frame": 0,
+      "dirs": 4,
+      "frames": 1,
+      "crop": [
+        1024,
+        96,
+        32,
+        32
+      ],
+      "rgba_sha256": "4c5fa07300596a9ab5816c997f1b24c0c4dececa24f8aed897a04882fe19b0a5"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "woodtable_1tileendtable",
+      "direction": 8,
+      "frame": 0,
+      "dirs": 4,
+      "frames": 1,
+      "crop": [
+        1056,
+        96,
+        32,
+        32
+      ],
+      "rgba_sha256": "00c164552a45f6daf8cb9228d8e0835d2c89e8515a019a411419ad248be3eccc"
+    },
+    {
+      "icon": "icons/obj/bed_chair.dmi",
+      "state": "officechair_dark",
+      "direction": 1,
+      "frame": 0,
+      "dirs": 4,
+      "frames": 1,
+      "crop": [
+        288,
+        96,
+        32,
+        32
+      ],
+      "rgba_sha256": "6111b3f0749f3b76535fa0f270ff344d3e27a7db9abe38de44f6974f3494551e"
+    },
+    {
+      "icon": "icons/obj/computers.dmi",
+      "state": "ibm",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 4,
+      "frames": 1,
+      "crop": [
+        576,
+        160,
+        32,
+        32
+      ],
+      "rgba_sha256": "76b37bcfb5881342e293794335db93f88f22d96aa7e1b78ef9b7538396ba4f46"
+    },
+    {
+      "icon": "icons/obj/bureaucracy.dmi",
+      "state": "paper",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "rgba_sha256": "f837d880e008701b1f6a18549d9891f378bb140e38c5e28b99b5cbee4ad269d2"
+    },
+    {
+      "icon": "icons/obj/bureaucracy.dmi",
+      "state": "filingcabinet",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        192,
+        192,
+        32,
+        32
+      ],
+      "rgba_sha256": "5a949a7642d62755673ab8a1995e5c5889159fdfe5b17017a015209e0db7825c"
+    },
+    {
+      "icon": "icons/obj/library.dmi",
+      "state": "book-0",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        256,
+        32,
+        32,
+        32
+      ],
+      "rgba_sha256": "9ba8256f3d0a3c33b9d541e6c0fa23c397b440d05afa2f19fa7f0b1abc44791d"
+    },
+    {
+      "icon": "icons/obj/flora/filled_plantpots.dmi",
+      "state": "plant-05plastic4",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        0,
+        128,
+        32,
+        32
+      ],
+      "rgba_sha256": "b5ba8e9138f9e11d1cbdb30905a46e3d921f3a3364916d8367c6118c2866ccf7"
+    },
+    {
+      "icon": "icons/obj/structures.dmi",
+      "state": "nboard00",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 4,
+      "frames": 1,
+      "crop": [
+        64,
+        416,
+        32,
+        32
+      ],
+      "rgba_sha256": "1e105223ef79865d32332253addeb6fb6bb884a3df348a743b5baa28895297a8"
+    },
+    {
+      "icon": "icons/obj/doors/material_doors.dmi",
+      "state": "wood",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "rgba_sha256": "011149a24e5f9dcbf204e0d5e91a3c9854c282ac0f5b3257c1041819cc0a43a2"
+    },
+    {
+      "icon": "icons/obj/doors/material_doors.dmi",
+      "state": "woodopen",
+      "direction": 2,
+      "frame": 0,
+      "dirs": 1,
+      "frames": 1,
+      "crop": [
+        416,
+        0,
+        32,
+        32
+      ],
+      "rgba_sha256": "7e1eed04b55ada7f75ca9967890f2d66f290c1057a648a3e2bb41d4f4f9f70f2"
+    }
+  ],
+  "source_files": {
+    "LICENSE": {
+      "canonical_sha256": "57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6",
+      "git_blob": "dba13ed2ddf783ee8118c6a581dbf75305f816a3"
+    },
+    "code/game/objects/items/paper/paper.dm": {
+      "canonical_sha256": "a4d3c693d1cc1647a96e68f562efe3f82382cb16b9f75ba3b23ca6b356763e17",
+      "git_blob": "c582d5635c73e44e5db31b2c3a13373bfbc0c80f"
+    },
+    "code/game/objects/structures/bookcase.dm": {
+      "canonical_sha256": "d2d106b787d4d7da4e34ca142c42a67c11029be6f65e4450d52211e0a0e78f17",
+      "git_blob": "812e9f1f6b63c9cae4864fce793a390f688b06c3"
+    },
+    "code/game/objects/structures/door.dm": {
+      "canonical_sha256": "780eae62a8aaf3a4d408a54dc617b9f28afa848bb132cdcb95b44f3a0180a816",
+      "git_blob": "1d1bb16cad27c9b8de2e01da4a729e41e9719e7f"
+    },
+    "code/game/objects/structures/filingcabinet.dm": {
+      "canonical_sha256": "0d0ad94d4dc48b2f0bde17bdeefd805865f6cfe4eb1211b821ea4ca325d8391b",
+      "git_blob": "7bcab9c572b550de2f8050ce960c0b32b598ead8"
+    },
+    "code/game/objects/structures/noticeboard.dm": {
+      "canonical_sha256": "d84324c34277720b8cbaa25f6453bb42861ef43eb9e0df6ef246e1b85a43292a",
+      "git_blob": "ce015a0e5de18649c2805cbde6461d860689f815"
+    },
+    "code/game/objects/structures/plant_pots.dm": {
+      "canonical_sha256": "697945f58fceb3225fdbced58a8edce129e9bb543fbe6d3016c0f198f100df15",
+      "git_blob": "99bed732e2e71c32bc58134030307203791f02f7"
+    },
+    "code/game/objects/structures/stool_bed_chair_nest/chairs.dm": {
+      "canonical_sha256": "55e0827915d0b2afdd7e13db14c7d689510edbf602a98aa52c8ea6fd6067fff9",
+      "git_blob": "7f84b03ba84a131f67e815e0dbe1654ad1fe9e31"
+    },
+    "code/game/objects/structures/table.dm": {
+      "canonical_sha256": "bc482c091f77a8ec0ad765c009f421af4843b82e1a8e95c2d7312c3bbb3e3ffc",
+      "git_blob": "e05f3b143c0740d9a0c9640a38facec8cee17969"
+    },
+    "code/game/turfs/floor.dm": {
+      "canonical_sha256": "ba825e8c48cad688256ef133f6b3d8475e0dfc5332cff1d19661fce1c535b19c",
+      "git_blob": "069d4cd3d88a7a406f7a33877d3b0b4ad676fa44"
+    },
+    "code/game/turfs/floor_icon.dm": {
+      "canonical_sha256": "896154e09a25d27c78a756b0f90bffbfbcc309556d28af6c19f8746474176d69",
+      "git_blob": "9d38510bcf355aff0b8cc3e4426febb22d818f93"
+    },
+    "code/game/turfs/flooring/flooring.dm": {
+      "canonical_sha256": "c1a735e875bee522f4662008bbf87056ee69c22d8fe2bdf8b9f06c7fccb59ed0",
+      "git_blob": "4ec717a2cb2040ff163b25f92219ee7457760678"
+    },
+    "code/game/turfs/wall_icon_exp.dm": {
+      "canonical_sha256": "4b2667a64f1c5297c0374dc93f0a4efbfcb0ea0185ddb58038c745af914a1b83",
+      "git_blob": "92bbbed1b67e1ae7d50025f7e29bff65a7d58c1a"
+    },
+    "code/game/turfs/wall_types.dm": {
+      "canonical_sha256": "13fdc7a64f6c05944f0dfa40f0786814605ea68f98b7d687aa5301e61c982151",
+      "git_blob": "73adf4f4209061738fa73b0a3472c4124284d8da"
+    },
+    "code/modules/1713/modern_terminal.dm": {
+      "canonical_sha256": "d872d741097aa8031281ced0647b9dbe0b457622a27309be3e86a4d22cd816f5",
+      "git_blob": "bb5c9ee5a75e5a0cccf2c793b4425a402c5b79ae"
+    },
+    "code/modules/materials/materials.dm": {
+      "canonical_sha256": "792ba4f7d7ec2f9398fc5bed6e7f855d8c93ef7b61399175262de4378931a18c",
+      "git_blob": "f07727fbf025dbcf9628b2ad7c103d3df5b79f9e"
+    },
+    "code/predefines.dm": {
+      "canonical_sha256": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+      "git_blob": "7f1c0107ecbbed604e32e12c10e3fc7090c28a64"
+    },
+    "icons/obj/bed_chair.dmi": {
+      "canonical_sha256": "835995618abf2d6f4490c0a560cce74075304e119eb1e9595ccc01181e14b739",
+      "git_blob": "d6c1d766c43e45c65be183d5780499d81a273dbc"
+    },
+    "icons/obj/bureaucracy.dmi": {
+      "canonical_sha256": "1bd487031b06c9bfbf02886bc7da113ff2327156b6770e202d3195efc37d1ad6",
+      "git_blob": "5679d76db3de54bf82072bbd1254b46505b65d15"
+    },
+    "icons/obj/computers.dmi": {
+      "canonical_sha256": "f0771e469c6bf427b528e6656a4c7d46aeaa348a9dcc007522b5188e3aa8627d",
+      "git_blob": "f37acf9efed26a41b8eebfdaab1368eff7f9e28e"
+    },
+    "icons/obj/doors/material_doors.dmi": {
+      "canonical_sha256": "a89f10ea5276c295677eade73624d631dfb5b82e4b73fbcb5431b02548ed294d",
+      "git_blob": "d87068130efe13ea05faeba81203b9316e416dc8"
+    },
+    "icons/obj/flora/filled_plantpots.dmi": {
+      "canonical_sha256": "3b30faafe8fa5ed782dd54cd9f151b4ef82c8810b9d41bb21cb15fa85882f9b2",
+      "git_blob": "657fe0f7dc59e7f1bd2bdd5fbd68006b934e1c7f"
+    },
+    "icons/obj/library.dmi": {
+      "canonical_sha256": "ca4c699608de18cb90cebaaed5ad569f0aef6c2e64a3a2547fbb7f8003d02286",
+      "git_blob": "4498dcf0dbf42e1166bfabdee5f9c795eae1c6e8"
+    },
+    "icons/obj/structures.dmi": {
+      "canonical_sha256": "44ad3521e774dc729685e53b1b65779352c727d24f8ad9ae5358e75c472ab345",
+      "git_blob": "e71bf3a7bc50e249a55c6a0e7fb6d40e47892e13"
+    },
+    "icons/turf/flooring/carpet.dmi": {
+      "canonical_sha256": "30a0c782d2c680c0405c19493834decd99d6a1945a88c5078c31eec7eb6fdbaa",
+      "git_blob": "84b0129ded581a59ef3aa7033ac7ca71b055e6ea"
+    },
+    "icons/turf/floors.dmi": {
+      "canonical_sha256": "229e603ee10ce9dd4070a285674c733c3727004e647af2f1e0328e24d683c6de",
+      "git_blob": "3be3426f66127393161ddb7b4ce6bcab91cb18a6"
+    },
+    "icons/turf/wall_masks.dmi": {
+      "canonical_sha256": "c3440dbc201be52d35117aece6a00eb85a83c781fa6108295ba8f72bba266e8a",
+      "git_blob": "3098cebfe6eaa65710b106d0715557d931c9437f"
+    }
+  },
+  "checks": {
+    "connected_wall_controls": "PASS",
+    "surface_props_on_desks": "PASS",
+    "chairs_face_desks": "PASS",
+    "dense_props_outside_cross_reserve": "PASS",
+    "anchor_empty": "PASS",
+    "radius1_hall_to_hall_via_anchor": "PASS"
+  },
+  "unresolved": [
+    "Revised catalog/furnishing approval",
+    "Three-cell-wide native gate ownership",
+    "Dynamic light/audio",
+    "Runtime constructor/rendering parity",
+    "Missing officechair_dark_over source state"
+  ],
+  "native_execution": false,
+  "private_reference_copied": false,
+  "pillow": "10.4.0",
+  "scene_sha256": "98fc137d6a7cd8ebbde35299ca96b0da6e9ee71faf97705eabdcb1f83af37317",
+  "renderer_sha256": "5d2438ad2facca9125f369ebfdeb7c187f3e9a2468596f0a2b3bc7d9eddb3fc6",
+  "credit": "Existing Civ13 and upstream SS13 asset contributors; retain root LICENSE. No individual authors invented.",
+  "files": {
+    "door-state-audit.png": {
+      "sha256": "d603177413a1a945cc432be2ab2bf3c24d334320646b744e78c78f6b59207b72",
+      "bytes": 30928
+    },
+    "representative-room.png": {
+      "sha256": "187587b720b0b8ba19c6268faa4c03fe799a68e906a7ff05f16fa2239747a919",
+      "bytes": 96865
+    }
+  }
+}

@@ -1162,13 +1162,14 @@
 				return
 			var/turf/t = null
 			var/area/a = null
+			var/allow_stage = FALSE
 			if (src)
 				t = get_turf(src)
 			if (t)
 				a = get_area(t)
 
 			if (a && a.location == 0 && (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy)))
-				stageGrowth()
+				allow_stage = TRUE
 			else if (a)
 				var/currcl = a.climate
 				var/count = 0
@@ -1180,10 +1181,17 @@
 							if (season == k)
 								count++
 				if (count > 0 || ! list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA).Find(map.ID))
-					stageGrowth()
-			if (stage > readyStageMax)
-				set_dead()
+					allow_stage = TRUE
+			advance_stage_if_allowed(allow_stage)
 			growth()
+
+// Shared stage boundary only: callers own eligibility, resources and cadence.
+// Keep virtual stageGrowth dispatch and the terminal check even when paused.
+/obj/structure/farming/plant/proc/advance_stage_if_allowed(allow_stage)
+	if (allow_stage)
+		stageGrowth()
+	if (stage > readyStageMax)
+		set_dead()
 
 /obj/structure/farming/plant/proc/stageGrowth()  // Uses plant_nutrition as Use the plant's nutrition as a chance to grow
 	if(plant_nutrition > 80) // Good soil, keep growing
