@@ -40,6 +40,27 @@ class SleepTransferSourceTests(unittest.TestCase):
             self.assertFalse(receipt['actual_client_timing_verified'])
             self.assertFalse(receipt['full_gameplay_verified'])
 
+    def test_force_move_dependencies_match_production_throw_fields_and_cleanup(self):
+        production = (ROOT / 'code/game/atoms_movable.dm').read_text(encoding='utf-8')
+        fixture = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text(encoding='utf-8')
+        fields = ('var/tmp/mob/living/human/throw_launch_source = null',
+                  'var/tmp/throw_launch_dx = null', 'var/tmp/throw_launch_dy = null',
+                  'var/tmp/throw_launch_x = null', 'var/tmp/throw_launch_y = null',
+                  'var/tmp/list/throw_flight_token = null')
+        for field in fields:
+            with self.subTest(field=field):
+                self.assertEqual(production.count(field), 1)
+                self.assertEqual(fixture.count(field), 1)
+        self.assertIn('/atom/movable/proc/clear_throw_launch', RUNNER.MOVEMENT_HELPERS)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            receipt = RUNNER.prepare(output)
+            generated = (output / 'force_move.dm').read_text(encoding='utf-8')
+            cleanup = RUNNER.BASE.extract_proc(production, '/atom/movable/proc/clear_throw_launch')
+            self.assertEqual(generated.count(cleanup), 1)
+            self.assertIn('/atom/movable/proc/clear_throw_launch',
+                          receipt['source_projections']['force_move.dm']['procedures'])
+
     def test_generated_environment_has_one_startup_and_only_relative_sources(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

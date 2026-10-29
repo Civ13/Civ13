@@ -14,7 +14,8 @@ HELPERS = (
     '/mob/living/human/proc/enter_protected_sleep',
     '/mob/living/human/proc/complete_protected_wakeup',
 )
-MOVEMENT_HELPERS = ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed', '/atom/movable/proc/forceMove')
+MOVEMENT_HELPERS = ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed',
+                    '/atom/movable/proc/forceMove', '/atom/movable/proc/clear_throw_launch')
 BUCKLING = ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')
 CASES = ('normal', 'legacy-wake', 'unrelated-occupant', 'refused-unbuckle', 'busy',
          'busy-recheck', 'moved-origin', 'refused-move', 'invalid-return',

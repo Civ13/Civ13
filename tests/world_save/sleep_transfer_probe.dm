@@ -9,6 +9,13 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 	var/anchored = FALSE // Production atoms_movable.dm default used by unbuckle.
 	var/gcDestroyed = FALSE
 	var/gc_destroyed = FALSE
+	// Production throw-flight fields read by the projected forceMove helper.
+	var/tmp/mob/living/human/throw_launch_source = null
+	var/tmp/throw_launch_dx = null
+	var/tmp/throw_launch_dy = null
+	var/tmp/throw_launch_x = null
+	var/tmp/throw_launch_y = null
+	var/tmp/list/throw_flight_token = null
 /area/caribbean/admin
 /mob/living
 	var/obj/buckled
