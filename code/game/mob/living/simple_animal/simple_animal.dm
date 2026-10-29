@@ -118,6 +118,8 @@
 	if (src && client)
 		client.screen = null
 	..()
+	// Parent login rebuilds the HUD after saved actions were already granted.
+	update_action_buttons()
 
 /mob/living/simple_animal/adjustBruteLoss(var/amount)
 	. = ..()

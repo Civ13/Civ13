@@ -58,6 +58,43 @@ def fixture():
 
 
 class ActionReconnect(unittest.TestCase):
+    def test_possessed_animal_reconnect_restores_pregranted_buttons_after_parent_login(self):
+        holder, env, grant, _ = fixture()
+        declaration = '/mob/living/simple_animal/Login'
+        body = extract(source('code/game/mob/living/simple_animal/simple_animal.dm'), declaration)
+        # Native screen=null empties its list; parent login rebuilds the HUD.
+        # Keep both clears explicit so refreshing before the parent fails.
+        self.assertEqual(body.count('client.screen = null'), 1)
+        self.assertEqual(body.count('..()'), 1)
+        body = body.replace('client.screen = null', 'client.screen.clear()').replace('..()', 'parent_login()')
+        def parent_login():
+            env['client'].screen.clear()
+            env['client'].screen.add('animal HUD')
+        env.update(src=holder, parent_login=parent_login)
+        login = project(declaration+'()\n'+body+'\n', declaration, '', env)
+        action = Action()
+        button = action.button
+        grant(action, holder)
+        for _ in range(2):
+            holder.client = env['client'] = NS(screen=Screen())
+            grant(action, holder)
+            self.assertNotIn(button, holder.client.screen)
+            login()
+            self.assertIn(button, holder.client.screen)
+            self.assertIn('animal HUD', holder.client.screen)
+            self.assertIs(action.owner, holder)
+            self.assertIs(action.button, button)
+            self.assertEqual(len(holder.actions), 1)
+            button.moved, button.screen_loc = True, 'animal-custom-position'
+            login()
+            self.assertIn(button, holder.client.screen)
+            self.assertEqual(button.screen_loc, 'animal-custom-position')
+        parent = extract(source('code/game/mob/login.dm'), '/mob/Login')
+        living = extract(source('code/game/mob/living/login.dm'), '/mob/living/Login')
+        self.assertIn('client.screen = null', parent)
+        self.assertIn('hud_used = new /datum/hud(src)', parent)
+        self.assertNotIn('update_action_buttons()', parent+living)
+
     def test_reconnect_repopulates_constructor_buttons_after_hud_clears_screen(self):
         holder, env, grant, update = fixture()
         action = Action()
