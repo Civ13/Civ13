@@ -9,6 +9,20 @@ PATH = 'code/modules/persistence/zone_topology.dm'
 
 
 class FormatCompatibility(unittest.TestCase):
+    def test_zone_row_listing_is_detached_before_membership_navigation(self):
+        source = (ROOT/PATH).read_text()
+        body = source.split('/map_storage/proc/prepare_saved_zones(', 1)[1].split('\n/map_storage/', 1)[0]
+
+        def check_detached_rows(text):
+            listing = text.index('F.cd = "/map/[z]"')
+            copied = text.index('var/list/rows = F.dir.Copy()', listing)
+            checked = text.index('if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row")', copied)
+            self.assertLess(checked, text.index('F.cd = "/zone_capture/[ref]"', checked))
+
+        check_detached_rows(body)
+        with self.assertRaises((AssertionError, ValueError)):
+            check_detached_rows(body.replace('var/list/rows = F.dir.Copy()', 'var/list/rows = F.dir', 1))
+
     def test_turf_validation_reads_by_path_without_per_turf_directory_listing(self):
         # Listing or indexing a whole level's savefile directory is quadratic;
         # each turf reads its own entries by absolute path and the loop still yields.
