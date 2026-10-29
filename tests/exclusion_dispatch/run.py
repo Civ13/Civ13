@@ -57,9 +57,11 @@ for variant, text in [('baseline', old), ('candidate', current)]:
             if '\tswitch(key)' not in hooks: raise ValueError('Eager control anchor missing')
             hooks = hooks.replace('\tswitch(key)', '\t..()\n\tswitch(key)')
         elif a.negative_control == 'target-omit':
-            anchor = 'return key == "original_target" || ..()'
+            # Remove only the target term, retaining other evolved runtime
+            # exclusions and the parent call in the same production hook.
+            anchor = 'key == "original_target" || '
             if hooks.count(anchor) != 1: raise ValueError('Original-target control anchor changed')
-            hooks = hooks.replace(anchor, 'return ..()', 1)
+            hooks = hooks.replace(anchor, '', 1)
     for traced in [False, True]:
         suffix = variant + ('_traced' if traced else '_runtime')
         adapted_root = root

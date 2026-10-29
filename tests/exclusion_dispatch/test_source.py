@@ -419,8 +419,12 @@ class LightingCurrentMasterContractTests(unittest.TestCase):
                 selected = production.split(f'/datum/proc/{variant}_saved()', 1)[1].split('/turf/floor/dirt/', 1)[0]
                 self.assertIn('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t\tvariable_observability_skipped(src.vars[key])\n#endif\n\t\t\t\tcontinue', selected)
                 self.assertIn('\n\treturn to_save\n', selected)
-                self.assertLess(production.index(f'/atom/movable/{variant}_runtime(key)\n\treturn key == "original_target"'),
-                                production.index(f'/atom/movable/{variant}_runtime(key)\n\tif (key == "corpse_decay_record")'))
+                movable = list(re.finditer(rf'^/atom/movable/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M))
+                self.assertEqual(len(movable), 2)
+                self.assertIn('key == "original_target"', movable[0].group())
+                self.assertIn('|| ..()', movable[0].group())
+                self.assertIn('key == "corpse_decay_record"', movable[1].group())
+                self.assertLess(movable[0].start(), movable[1].start())
             self.assertNotIn('#define CIV13_VARIABLE_OBSERVABILITY', (generated / 'probe.dme').read_text())
 
     def test_native_probe_uses_postclose_state_and_constructible_atom(self):
@@ -707,14 +711,27 @@ class EventRunnerTests(unittest.TestCase):
             'code/modules/1713/active_training.dm')}
         cls.feature_helpers = {p: subprocess.check_output(['git', 'show', MERGE_BASE + ':' + p], cwd=ROOT, text=True)
                                for p in cls.helpers}
+        # Model independent feature-base evolution, then apply the reviewed
+        # master delta. Never construct the event base from candidate bytes.
+        cls.evolved_feature_helpers = {}
+        cls.evolved_feature_heads = {}
+        for path in cls.helpers:
+            master = subprocess.check_output(['git', 'show', MERGE_MASTER + ':' + path], cwd=ROOT, text=True)
+            cls.evolved_feature_helpers[path] = cls.feature_helpers[path] + '\n// independent feature-base evolution\n'
+            cls.evolved_feature_heads[path] = replay_reviewed_merge(cls.evolved_feature_helpers[path], cls.feature_helpers[path], master)
 
     def execute_runner(self, directory, control=None, *, mismatch=False, changed_helper=False, bad_event=False,
                        base_edit='\n// unrelated future base evolution\n', head_edit=None,
                        event_kind='pull_request', event_base=None, source_version='516.1681', feature_base=False,
-                       replace_target=False, drop_custody=False, ancestry_result=0):
+                       replace_target=False, drop_custody=False, ancestry_result=0, extra_movable=False):
         base_sha, head_sha = 'b' * 40, 'a' * 40
         base = (self.feature_source if feature_base else self.base_source) + base_edit
         candidate = self.merged + (base_edit if head_edit is None else head_edit)
+        if extra_movable:
+            anchor = 'key == "original_target" || ..()'
+            assert base.count(anchor) == candidate.count(anchor) == 1
+            base = base.replace(anchor, 'key == "original_target" || key == "woodwork_owner" || ..()', 1)
+            candidate = candidate.replace(anchor, 'key == "original_target" || key == "woodwork_owner" || ..()', 1)
         if drop_custody:
             candidate = current_lighting_policy(base)
         if replace_target:
@@ -744,8 +761,9 @@ class EventRunnerTests(unittest.TestCase):
                 if ref in (base_sha, head_sha):
                     if file == PATH: value = base if ref == base_sha else candidate
                     elif file in self.helpers:
-                        value = self.feature_helpers[file] if feature_base and ref == base_sha else self.helpers[file]
-                        if changed_helper and ref == head_sha: value += '\n// changed helper\n'
+                        value = (self.evolved_feature_helpers[file] if ref == base_sha else self.evolved_feature_heads[file]) if feature_base else self.helpers[file]
+                        if changed_helper and ref == head_sha and file == 'code/processes/human_corpse_decay.dm':
+                            value += '\n// changed helper\n'
                     else:
                         value = original_read_text(ROOT / file, encoding='utf-8')
                     return value if kwargs.get('text') else value.encode()
@@ -758,6 +776,12 @@ class EventRunnerTests(unittest.TestCase):
             return original_run(command, **kwargs)
         def read(path, *args, **kwargs):
             if path == ROOT / PATH: return candidate + ('// dirty checkout\n' if mismatch else '')
+            for file in self.helpers:
+                if path == ROOT / file:
+                    value = self.evolved_feature_heads[file] if feature_base else original_read_text(path, *args, **kwargs)
+                    if changed_helper and file == 'code/processes/human_corpse_decay.dm':
+                        value += '\n// changed helper\n'
+                    return value
             return original_read_text(path, *args, **kwargs)
         argv = ['run.py', '--base', base_sha, '--head', head_sha, '--source-only', '--output', str(out)]
         if source_version != '516.1681': argv += ['--source-version', source_version]
@@ -809,6 +833,17 @@ class EventRunnerTests(unittest.TestCase):
             self.assertEqual(normal_hooks[:2], omitted_hooks[:2])
             self.assertNotIn('key == "original_target"', omitted_hooks[2])
             self.assertEqual(normal_hooks[3], omitted_hooks[3])
+            evolved_dir = directory / 'evolved'
+            evolved_dir.mkdir()
+            evolved = self.execute_runner(evolved_dir, 'target-omit', source_version='516.1688', extra_movable=True)
+            evolved_hooks = [m.group() for m in re.finditer(pattern, evolved, re.M)]
+            self.assertEqual(len(evolved_hooks), 4)
+            self.assertIn('key == "original_target"', evolved_hooks[0])
+            self.assertIn('key == "woodwork_owner"', evolved_hooks[0])
+            self.assertNotIn('key == "original_target"', evolved_hooks[2])
+            self.assertIn('key == "woodwork_owner"', evolved_hooks[2])
+            self.assertIn('|| ..()', evolved_hooks[2])
+            self.assertEqual(evolved_hooks[1].replace('baseline_runtime', 'candidate_runtime'), evolved_hooks[3])
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaisesRegex(ValueError, 'Original-target control anchor changed'):
                 self.execute_runner(Path(tmp), 'target-omit', replace_target=True)
@@ -825,6 +860,9 @@ class EventRunnerTests(unittest.TestCase):
                 self.execute_runner(Path(tmp), event_kind=kind)
         with tempfile.TemporaryDirectory() as tmp:
             self.execute_runner(Path(tmp), event_kind='push', feature_base=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError, 'Inherited helper drift from event base'):
+                self.execute_runner(Path(tmp), event_kind='push', feature_base=True, changed_helper=True)
         for base in ('0'*40, 'a'*40):
             with self.subTest(base=base), tempfile.TemporaryDirectory() as tmp:
                 with self.assertRaises(ValueError):
