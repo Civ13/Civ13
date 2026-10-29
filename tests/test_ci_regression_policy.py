@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import os
 import unittest
@@ -13,9 +14,11 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 ROOF_NATIVE_NAME = 'Verify synthetic saved-roof recovery and two defect controls'
+ROOF_HEAD_REQUEST = "contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha))"
+ROOF_SUITE_SELECTION = ("(contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery') || "
+                       + ROOF_HEAD_REQUEST + ')')
 ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action != 'edited' && "
-                     "needs.changes.outputs.game == 'true' && "
-                     "contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')")
+                     "needs.changes.outputs.game == 'true' && " + ROOF_SUITE_SELECTION)
 
 
 class RegressionPolicyTests(unittest.TestCase):
@@ -43,7 +46,7 @@ class RegressionPolicyTests(unittest.TestCase):
     ADMISSION_GATES = (
         '!cancelled()', "needs.changes.result == 'success'",
         "steps.compile.outcome == 'success'",
-        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/persistence_admission'))",
+        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_admission'))",
     )
     VEHICLE_DIAGNOSTICS = {
         'Diagnose extraction vehicle custody ' + suffix
@@ -87,6 +90,25 @@ class RegressionPolicyTests(unittest.TestCase):
                                               if gate != omitted) + ' }}')
         with self.assertRaises(AssertionError):
             self.assert_vehicle_diagnostic_guard(block + '\ncontinue-on-error: true')
+
+    def test_changelog_validation_runs_on_pr_description_edits_without_a_second_selector(self):
+        workflow = (ROOT / '.github/workflows/changelog-checks.yml').read_text(encoding='utf-8')
+        selection = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
+        self.assertIn('types: [opened, synchronize, reopened, edited]', workflow)
+        self.assertIn('      - name: Validate the PR description\n'
+                      "        if: github.event_name == 'pull_request'\n"
+                      '        run: node tools/changelog/check-pr.mjs\n', workflow)
+        self.assertIn('node --test tools/changelog/*.test.mjs', workflow)
+        self.assertIn('node tools/changelog/publish.mjs --validate', workflow)
+        self.assertNotIn('./.github/workflows/ci-selection.yml', workflow)
+        self.assertNotIn('needs: changes', workflow)
+        self.assertIn("      - name: Validate changelog workflow syntax for standalone manual runs\n"
+                      "        if: github.event_name == 'workflow_dispatch'\n", workflow)
+        # The ordinary CI selector continues to lint all workflow files.
+        ci = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        self.assertIn('      lint_workflows: true\n', ci)
+        self.assertIn('actionlint" -shellcheck=', selection)
+        self.assertIn('.github/workflows/*.yml', selection)
 
     def test_only_added_executable_tests_select_their_suite(self):
         with patch.object(selection.subprocess, 'check_output', return_value=
@@ -152,6 +174,91 @@ class RegressionPolicyTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
+    def test_reviewed_atlas_test_edits_select_only_their_suite_on_ordinary_prs(self):
+        # Exercise the actual Git comparison and admission, not a copied selector.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', directory, *args],
+                                               stderr=subprocess.PIPE).decode().strip()
+            git('init')
+            git('config', 'user.name', 'CI policy test')
+            git('config', 'user.email', 'ci@example.invalid')
+            atlas_inputs = {'tests/test_crafting_atlas.py': 'tests/test_crafting_atlas.py',
+                            'tests/crafting_atlas/probe.dm': 'tests/crafting_atlas',
+                            'tests/crafting_atlas/resource-search.test.mjs': 'tests/crafting_atlas'}
+            paths = tuple(atlas_inputs) + ('tests/crafting_atlas/unrelated.dm',)
+            for name in paths:
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('original\n')
+            git('add', '.')
+            git('commit', '-m', 'base')
+            base = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                os.chdir(root)
+                for name in paths:
+                    with self.subTest(path=name):
+                        (root / name).write_text('changed\n')
+                        git('add', name)
+                        git('commit', '-m', 'edit test')
+                        head = git('rev-parse', 'HEAD')
+                        expected = [atlas_inputs[name]] if name in atlas_inputs else []
+                        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+                        self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], expected)
+                        for action, branch in (('edited', 'master'), ('opened', 'other')):
+                            payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': branch}}}
+                            self.assertEqual(selection.selections(base, head, 'pull_request', False, True, payload)[2], [])
+                        self.assertEqual(selection.selections(base, head, 'push', False, True,
+                            {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]})[2], [])
+                        base = head
+            finally:
+                os.chdir(previous)
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        for suite in ('tests/crafting_atlas', 'tests/test_crafting_atlas.py'):
+            self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), '" + suite + "')", workflow)
+
+    def test_atlas_comparison_failure_stops_the_actual_selector_before_output(self):
+        payload = {'action': 'opened', 'pull_request': {'title': 'test', 'base': {'ref': 'master'}}}
+        faults = (
+            ('timeout', subprocess.TimeoutExpired('git', 15)),
+            ('git failure', subprocess.CalledProcessError(1, 'git')),
+            ('invalid UTF-8', b'\xff'),
+        )
+        for label, fault in faults:
+            with self.subTest(fault=label), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory) / 'output.txt'
+                receipt = Path(directory) / 'receipt.json'
+                argv = ['select-ci.py', '--base', 'base', '--head', 'head',
+                        '--event', 'pull_request', '--build-prefix', 'true',
+                        '--output', str(output), '--receipt', str(receipt)]
+                kwargs = {'return_value': fault} if isinstance(fault, bytes) else {'side_effect': fault}
+                with patch.object(sys, 'argv', argv), patch.object(selection, 'load_event', return_value=payload), \
+                        patch.object(selection, 'select', return_value=(True, 'selected')), \
+                        patch.object(selection, 'introduced_tests', return_value=[]), \
+                        patch.object(selection.subprocess, 'check_output', **kwargs):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.main()
+                self.assertFalse(output.exists())
+                self.assertFalse(receipt.exists())
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]):
+            for base, head in (('', 'head'), ('0' * 40, 'head'), ('base', '')):
+                with self.subTest(base=base, head=head):
+                    with self.assertRaisesRegex(RuntimeError, 'Atlas test selection.*base and head'):
+                        selection.selections(base, head, 'pull_request', False, True, payload)
+
+    def test_atlas_comparison_does_not_expand_ineligible_event_admission(self):
+        with patch.object(selection, 'select', return_value=(True, 'selected')), \
+                patch.object(selection, 'introduced_tests', return_value=[]), \
+                patch.object(selection.subprocess, 'check_output', side_effect=AssertionError('unexpected Atlas comparison')):
+            for action, base in (('edited', 'master'), ('opened', 'unrelated')):
+                payload = {'action': action, 'pull_request': {'title': 'test', 'base': {'ref': base}}}
+                self.assertEqual(selection.selections('base', 'head', 'pull_request', False, True, payload)[2], [])
+            payload = {'ref': 'refs/heads/master', 'commits': [{'message': 'test'}]}
+            self.assertEqual(selection.selections('base', 'head', 'push', False, True, payload)[2], [])
+
     def test_offline_and_game_regressions_have_explicit_suite_guards(self):
         workflow = (ROOT / '.github/workflows/test.yml').read_text()
         self.assert_explicit_suite_guards(workflow)
@@ -196,7 +303,7 @@ class RegressionPolicyTests(unittest.TestCase):
                 if block.startswith('      - name: Verify private collector native publication\n'):
                     # This narrower hosted fixture has no manual/extensive
                     # entry. Keep its introduced-PR-only gate explicit.
-                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests), 'tests/nomads_lifecycle')\n", block)
+                    self.assertIn("        if: contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/nomads_lifecycle')\n", block)
                     self.assertIn('timeout-minutes: 3\n', block)
                     self.assertIn('tests/nomads_lifecycle/run_variable_probe_linux.py', block)
                     self.assertNotIn('workflow_dispatch', block)
@@ -213,7 +320,7 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('workflow_dispatch', block)
                     self.assertNotIn('secrets.', block)
                     continue
-                self.assertRegex(block, r"if: (?:always\(\) && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests\)")
+                self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && (?:steps\.[a-z_]+\.outcome != 'skipped' && )?\()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
         self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
         self.assertEqual(admission_steps, 1)
         self.assertEqual(mall_steps, 1)
@@ -225,7 +332,7 @@ class RegressionPolicyTests(unittest.TestCase):
         self.assertEqual(workflow.count('        if: ' + ROOF_NATIVE_GUARD + '\n'), 1)
         clauses = ("github.event_name == 'pull_request'", "github.event.action != 'edited'",
                    "needs.changes.outputs.game == 'true'",
-                   "contains(fromJSON(needs.changes.outputs.new_tests), 'tests/roof_area_recovery')")
+                   ROOF_SUITE_SELECTION)
         for clause in clauses:
             changed = ' && '.join(part for part in ROOF_NATIVE_GUARD.split(' && ') if part != clause)
             with self.subTest(omitted=clause), self.assertRaises(AssertionError):
@@ -234,9 +341,58 @@ class RegressionPolicyTests(unittest.TestCase):
                         ROOF_NATIVE_GUARD.replace("'pull_request'", "'workflow_dispatch'"),
                         ROOF_NATIVE_GUARD.replace("!= 'edited'", "== 'edited'"),
                         ROOF_NATIVE_GUARD.replace("game == 'true'", "game == 'false'"),
-                        ROOF_NATIVE_GUARD.replace('tests/roof_area_recovery', 'tests/other')):
+                        ROOF_NATIVE_GUARD.replace('tests/roof_area_recovery', 'tests/other'),
+                        ROOF_NATIVE_GUARD.replace("format('roof-ci:{0}', github.event.pull_request.head.sha)", "'roof-ci'"),
+                        ROOF_NATIVE_GUARD.replace('github.event.pull_request.head.sha', 'github.sha')):
             with self.subTest(changed=changed), self.assertRaises(AssertionError):
                 self.assert_explicit_suite_guards(workflow.replace(ROOF_NATIVE_GUARD, changed, 1))
+
+    def test_roof_explicit_request_is_head_bound_and_keeps_native_event_guards(self):
+        import re
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        block = next(part for part in re.split(r'(?=      - name:)', workflow)
+                     if part.startswith('      - name: ' + ROOF_NATIVE_NAME + '\n'))
+        expression = re.findall(r'^        if: (.+)$', block, re.M)[0]
+        # Evaluate only these five known Boolean operands, not arbitrary Actions expressions.
+        translated = expression
+        for text, variable in (("github.event_name == 'pull_request'", 'pr_event'),
+                               ("github.event.action != 'edited'", 'not_edited'),
+                               ("needs.changes.outputs.game == 'true'", 'game'),
+                               ("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery')", 'introduced'),
+                               (ROOF_HEAD_REQUEST, 'requested')):
+            self.assertEqual(translated.count(text), 1)
+            translated = translated.replace(text, variable)
+        translated = translated.replace('&&', 'and').replace('||', 'or')
+        self.assertRegex(translated, r'^[a-z_ ()]+$')
+        head = 'a' * 40
+        requested = 'roof-ci:' + head
+        cases = [('pull_request', 'synchronize', True, False, [requested], True),
+                 ('pull_request', 'opened', True, False, [requested], True),
+                 ('pull_request', 'reopened', True, False, [requested], True),
+                 ('pull_request', 'synchronize', True, True, [], True),
+                 ('pull_request', 'synchronize', True, False, [], False),
+                 ('pull_request', 'synchronize', True, False, ['roof-ci:' + 'b' * 40], False),
+                 ('pull_request', 'synchronize', True, False, ['prefix-' + requested], False),
+                 ('pull_request', 'synchronize', True, False, [requested + '-suffix'], False),
+                 ('pull_request', 'synchronize', True, False, ['roof-ci'], False),
+                 ('pull_request', 'edited', True, False, [requested], False),
+                 ('pull_request', 'synchronize', False, False, [requested], False),
+                 ('push', 'synchronize', True, True, [requested], False),
+                 ('workflow_dispatch', 'synchronize', True, True, [requested], False),
+                 ('pull_request_target', 'synchronize', True, True, [requested], False)]
+        for event, action, game, introduced, labels, expected in cases:
+            with self.subTest(event=event, action=action, labels=labels):
+                values = dict(pr_event=event == 'pull_request', not_edited=action != 'edited',
+                              game=game, introduced=introduced,
+                              requested=requested.casefold() in [label.casefold() for label in labels])
+                self.assertEqual(eval(translated, {'__builtins__': {}}, values), expected)
+        self.assertIn('types: [ opened, synchronize, reopened, edited ]', workflow)
+        self.assertNotIn('types: [ opened, synchronize, reopened, edited, labeled ]', workflow)
+        offline = next(part for part in re.split(r'(?=      - name:)', workflow)
+                       if part.startswith('      - name: Prepare roof-area recovery fixture offline\n'))
+        self.assertIn(ROOF_HEAD_REQUEST, offline)
+        example = (ROOT / 'tests/roof_area_recovery/ci-steps.yml.example').read_text()
+        self.assertIn('  if: ' + ROOF_NATIVE_GUARD + '\n', example)
 
     def test_roof_native_exception_is_bound_to_fixture_and_limits(self):
         import re
@@ -253,6 +409,130 @@ class RegressionPolicyTests(unittest.TestCase):
                               ('        if: ' + ROOF_NATIVE_GUARD + '\n', '')):
             with self.subTest(before=before, after=after), self.assertRaises(AssertionError):
                 self.assert_explicit_suite_guards(workflow.replace(block, block.replace(before, after), 1))
+
+
+class SourcePreparationAdmissionTests(unittest.TestCase):
+    FILES = (
+        'tests/world_save/character_return/fixture.dm',
+        'tests/world_save/character_return/prepare.py',
+        'tests/world_save/character_return/test_prepare.py',
+    )
+
+    def introduced(self, paths):
+        with patch.object(selection.subprocess, 'check_output',
+                          return_value=('\0'.join(paths) + '\0').encode()):
+            return selection.introduced_tests('base', 'head', 'pull_request')
+
+    def baseline(self):
+        spec = importlib.util.spec_from_file_location('preparation_baseline', ROOT / 'scripts/ci_baseline.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_only_three_reviewed_preparation_files_are_exempt(self):
+        for paths in ((path,) for path in self.FILES):
+            with self.subTest(paths=paths):
+                self.assertEqual(self.introduced(paths), [])
+        self.assertEqual(self.introduced(self.FILES), [])
+        self.assertEqual(selection.SOURCE_PREPARATION_ONLY_TESTS, frozenset(self.FILES))
+        baseline = self.baseline()
+        self.assertEqual(baseline.SUITES['character_return_preparation']['files'],
+                         ('tests/world_save/character_return/test_prepare.py',
+                          'tests/world_save/test_roundtrip_compat.py',
+                          'tests/world_save/test_restart_sources.py'))
+        for path in self.FILES:
+            self.assertTrue(baseline.impact([path])['suites']['character_return_preparation']['selected'])
+
+    def test_unlisted_files_even_inside_same_directory_retain_native_selection(self):
+        for path in ('tests/world_save/new_probe.dm',
+                     'tests/world_save/character_return/run_native.py',
+                     'tests/world_save/character_return/run.ps1',
+                     'tests/world_save/character_return/run.sh',
+                     'tests/world_save/character_return/fixture.DM',
+                     'tests/world_save/character_return/nested/prepare.py',
+                     'tests/world_save/character_return_other/prepare.py'):
+            with self.subTest(path=path):
+                self.assertEqual(self.introduced([path]), ['tests/world_save'])
+                self.assertEqual(self.introduced([*self.FILES, path]), ['tests/world_save'])
+
+    def test_mixed_production_and_unlisted_world_save_additions_keep_native_selection(self):
+        payload = {'action': 'synchronize', 'pull_request': {'title': 'save source', 'base': {'ref': 'master'}}}
+        for production in ('code/modules/persistence/loading.dm',
+                           'code/modules/persistence/saving.dm',
+                           'code/modules/persistence/player_reclaim.dm'):
+            paths = [*self.FILES, production, 'tests/world_save/new_probe.dm']
+            with self.subTest(production=production), patch.object(selection.subprocess,
+                    'check_output', return_value=('\0'.join(paths) + '\0').encode()):
+                self.assertEqual(selection.selections('base', 'head', 'pull_request',
+                                 False, True, payload)[:3], (True, False, ['tests/world_save']))
+
+    def test_production_compile_and_offline_coverage_are_not_exempted(self):
+        baseline = self.baseline()
+        payload = {'action': 'synchronize', 'pull_request': {'title': 'save source', 'base': {'ref': 'master'}}}
+        for production in ('code/modules/persistence/loading.dm',
+                           'code/modules/persistence/saving.dm',
+                           'code/modules/persistence/bed_return.dm'):
+            for added in ([], list(self.FILES)):
+                paths = [production, *added]
+                with self.subTest(production=production, added=added), patch.object(
+                        selection.subprocess, 'check_output',
+                        return_value=('\0'.join(paths) + '\0').encode()):
+                    # Existing production-only policy compiles, but does not
+                    # invent introduced native tests without a new runnable file.
+                    self.assertEqual(selection.selections('base', 'head', 'pull_request',
+                                     False, True, payload)[:3], (True, False, []))
+                self.assertTrue(baseline.impact(paths)['suites']['year']['selected'])
+                self.assertTrue(baseline.impact(paths)['suites']['character_return_preparation']['selected'])
+        for path in ('scripts/select-ci.py', 'code/predefines.dm',
+                     'code/game/mob/living/simple_animal/friendly/static.dm'):
+            decision = baseline.impact([path])
+            self.assertTrue(decision['fallback_reasons'])
+            self.assertTrue(all(row['selected'] for row in decision['suites'].values()))
+
+    def test_explicit_extensive_manual_admission_is_unchanged(self):
+        with patch.object(selection.subprocess, 'check_output',
+                          return_value=b'code/modules/persistence/loading.dm\0'):
+            self.assertEqual(selection.selections('base', 'head', 'workflow_dispatch',
+                             True, True, {})[:3], (True, True, []))
+            self.assertEqual(selection.selections('base', 'head', 'workflow_dispatch',
+                             False, True, {})[:3], (True, False, []))
+
+    def test_real_git_preparation_additions_then_mixed_native_and_production(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-c', 'user.name=CI preparation test',
+                    '-c', 'user.email=ci@example.invalid', '-c', 'commit.gpgsign=false', *args],
+                    cwd=root, stderr=subprocess.PIPE, timeout=10).decode().strip()
+            git('init', '-q')
+            production = root / 'code/modules/persistence/loading.dm'
+            production.parent.mkdir(parents=True)
+            production.write_text('// original loading fixture\n')
+            git('add', '.')
+            git('commit', '-qm', 'base')
+            base = git('rev-parse', 'HEAD')
+            for path in self.FILES:
+                file = root / path
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_text('# source preparation only\n')
+            git('add', '.')
+            git('commit', '-qm', 'prepare only')
+            prepared = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                os.chdir(root)
+                self.assertEqual(selection.introduced_tests(base, prepared, 'pull_request'), [])
+                self.assertTrue(selection.select(base, prepared)[0])
+                (root / 'tests/world_save/new_probe.dm').write_text('// runnable fixture\n')
+                production.write_text('// changed loading fixture\n')
+                git('add', '.')
+                git('commit', '-qm', 'native fixture and production')
+                mixed = git('rev-parse', 'HEAD')
+                self.assertEqual(selection.introduced_tests(base, mixed, 'pull_request'), ['tests/world_save'])
+                self.assertEqual(selection.introduced_tests(prepared, mixed, 'pull_request'), ['tests/world_save'])
+                self.assertTrue(selection.select(prepared, mixed)[0])
+            finally:
+                os.chdir(previous)
 
 
 if __name__ == '__main__':

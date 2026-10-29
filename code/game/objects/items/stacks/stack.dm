@@ -227,6 +227,11 @@
 /obj/item/stack/attack_self(mob/user as mob)
 	list_recipes(user)
 
+/obj/item/stack/allows_smooth_movement_ui(mob/living/human/user)
+	// Browsing held recipes is passive. Topic still owns crafting admission,
+	// do_after interruption and once-only material/handle consumption.
+	return user && !QDELETED(user) && !QDELETED(src) && recipes && amount > 0 && loc == user && user.get_active_hand() == src && user.using_object == src
+
 /obj/item/stack/proc/list_recipes(mob/user as mob, recipes_sublist)
 	if (!recipes)
 		return
@@ -263,6 +268,12 @@
 			else
 				title+= "[R.title]"
 			title+= " ([R.req_amount] [singular_name]\s)"
+			var/list/joint_spec = furniture_joinery_spec(R)
+			if (joint_spec)
+				if (joint_spec["component_cost"])
+					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
+				else
+					title += "; sharpened flint or a sharp knife harder than the plank equipped or at your feet"
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
@@ -305,6 +316,12 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/human/H = user
+	var/datum/furniture_joinery_action/joinery
+	if (findtext(recipe.title, "joinery: ") == 1)
+		joinery = new(src, H, recipe)
+		if (quantity != 1 || !joinery.valid())
+			to_chat(user, SPAN_WARNING("Joinery needs its exact materials, completed research and equipped tools. Consult the Crafting Atlas."))
+			return
 	var/needs_crafting_handle = FALSE
 	var/obj/item/weapon/material/handle/crafting_handle = null
 	var/atom/handle_crafting_source_loc = null
@@ -1823,9 +1840,14 @@
 				handReturnMap.Remove(H.key)
 			return
 
+		// Hammocks pay only after this wait. Do not reject legacy recipes here:
+		// some already consumed secondary inputs before do_after.
+		if (recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
+			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
+			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
-		if (H)
+		if (H && !joinery)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1926,7 +1948,16 @@
 			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
 			return
 
-	if (use(required,H))
+	// Retain and recheck tools, secondary stock, occupied tile and research after
+	// the wait. No debit occurs on an interrupted or invalidated action.
+	if (joinery && !joinery.valid())
+		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
+		return
+	if (use(required, joinery ? null : H))
+		if (joinery)
+			joinery.consume_component()
+			if (H && recipe.time)
+				H.adaptStat("crafting", 1*recipe.req_amount)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)

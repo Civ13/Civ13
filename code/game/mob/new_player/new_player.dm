@@ -371,6 +371,7 @@ var/global/redirect_all_players = null
 	if (lobby_join_active || src != usr || !client || client.mob != src || spawning)
 		lobby_join_trace("handler_denied", "owner_or_busy")
 		return FALSE
+	if(!map_storage.allow_new_character(src)) return FALSE
 	lobby_join_trace("handler_entered", "none")
 	lobby_join_result = null
 	lobby_join_active = TRUE
@@ -1181,6 +1182,7 @@ var/global/redirect_all_players = null
 
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
 	lobby_join_trace("spawn_entered", "none")
+	if(!map_storage.allow_new_character(src)) return FALSE
 	// Durable Nomads maps use the job's named registry. Deny before body/mind
 	// creation if an authoritative restore deliberately removed that group.
 	if(persistence_spawns_authoritative && map && map.uses_durable_metadata())
@@ -1588,7 +1590,7 @@ var/global/redirect_all_players = null
 	show_latechoices_window(dat, join_jobs)
 
 /mob/new_player/proc/create_character(mobtype)
-
+	if(!map_storage.allow_new_character(src)) return null
 
 	if (delayed_spawning_as_job)
 		delayed_spawning_as_job.total_positions += 1

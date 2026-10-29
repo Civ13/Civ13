@@ -2,9 +2,144 @@
 
 The source oracle now pins extraction head `a8d3950f08aaa55db59ec5f20777a475b2db95bb` before its master integration. This preserves the already-reviewed restore-admission wrappers and cleanup exclusions while applying master's explicit reserved-lighting policy to both dispatch variants. It does not certify extraction recovery or restore performance. Historical native receipts and allocations remain historical; this change does not authorize the held native runner.
 
-## Current-master integration (2026-10-20)
+## Historical current-master reconciliation (2026-10-24)
 
-The active baseline is pinned to master
+The merged source runner checks the historical extraction projection with
+bounded-save, pre-round admission and save-vote additions. It binds the checked-out
+head and event base to Git, reapplies the reviewed extraction and lighting
+projections to the event base, and checks committed fixture and inherited helper
+inputs. Conflicting evolution, dirty sources or mismatched event identities fail
+closed. Offline preparation also requires explicit immutable base/head identities;
+there is no fixed-source fallback. No native evidence is claimed for this merge.
+
+## Reviewed squash integration (2026-10-29)
+
+Extraction was squash-merged as `76c6f244f6eca7f2f7b9037da80181c52d498afb`,
+whose tree equals reviewed extraction head `038112dc40af981d03e096740dd4b1de8b7bcc54`.
+For extraction-descended mall heads carrying that actual master commit,
+`integrated_projection.py` replays the independently pinned source delta from
+mall `4f2868cd58e89ed99eda715b3241ff980d2de41d` to that approved squash across the
+actual immutable event base. Functions and all three inherited helper modules
+must match the complete replay result. Checked-in snapshots retain exact blob,
+byte-count and SHA256 provenance in `fixtures/manifest.json`; they select the
+reviewed delta and never replace the live event base. Conflicts and head-only
+changes fail closed. Existing event, dirty-input, source-version and native
+admission checks remain in force. Offline and injected tests prove preparation
+behavior only, not native platform or gameplay semantics.
+
+## Public current-master reconciliation (2026-10-28)
+
+The live reference is the immutable event base, supplied through `CI_BASE` and
+`CI_HEAD` (or explicit `--base`/`--head` for offline preparation). Both must be full,
+nonzero commit SHAs with common history, distinct from each other; the head must
+equal checked-out HEAD. Actions also requires matching pull-request base/head or
+push before/after metadata from `GITHUB_EVENT_PATH`. Missing identities, moving
+refs, mismatches and dirty production/helper/fixture inputs fail before output.
+There is no hardcoded-master or candidate-derived fallback. Events without an
+immutable comparison pair fail closed rather than inventing a base.
+Manual extensive/save-latency runs must supply `exclusion_comparison_base` as a
+full immutable commit SHA distinct from the selected checked-out head. The runner
+also checks that base against the dispatch event's named input before any launch.
+
+`validate_current_master` preserves complete-file equality after adding only the
+public lighting branch's missing two fullbright exclusions and transient area-owner
+guard. Extraction-descended heads additionally require the exact reviewed custody
+projection applied to the immutable event base. The event base can precede either
+lighting addition or already contain both. Partial or changed existing policy fails;
+the candidate is never normalized. This preserves #3105's current-base comparison
+and its bounded-save blocks as upstream evolves.
+Both dispatch variants receive the same lighting policy; only three list hooks are
+reconstructed. The movable throw guard precedes its later inherited process hook.
+Collector selection remains unchanged with its symbol undefined in the fixture.
+
+Historical #3105 list/switch and bounded-block controls retain their immutable
+inputs. Current tests preserve bounded blocks, guards, diagnostics, snow/zone keys,
+both fullbright exclusions and area ownership. `test_preparation.py` executes the
+actual source-only CLI in temporary committed Git histories for pre/post-addition
+bases, shared unrelated serializer/helper evolution, divergent unrelated-file base
+evolution, push events, one-sided regressions, and identity/dirty-input failures.
+The frozen `eedc9862fcb7b2b7c3617c6972965fafa650e51a` content is only a historical
+test seed. Its preserved reconciliation assertions compare the immutable candidate
+`2d8b3c152bf321c442e154240e52bb41c71c1688`, rather than comparing a moving checkout
+to that old seed. Neither checkpoint is the live runner base. The source-only
+entry point independently validates the actual event base and checked-out head.
+The candidate and the `3b0be7a4` historical runner are retained as checksummed,
+lossless encoded text snapshots because their squash-merged source branch is gone;
+they are used only for historical tests, never as live source or native evidence.
+No production change or native acceptance is introduced by this test reconciliation.
+All native holds/version gates remain.
+
+Historical inputs are now frozen byte-for-byte in [fixtures](fixtures/README.md),
+with their original commit/path, Git blob and SHA-256 provenance. Tests read these
+checked-in files rather than requiring deleted branches or historical Git objects.
+The same comparisons and negative controls remain. Offline source-CLI tests need
+an explicit immutable `CI_BASE`; actual Actions runs retain their event identities.
+No fixture file can replace the live runner's independent base/head comparison.
+
+The selected Linux lane uses `run-ci-current.py`, an explicit 516.1688 entry
+point. Admission and each pre-compiler/pre-daemon/post-daemon boundary verify the
+existing pinned Linux archive and four installed members through
+`scripts/byond_runtime.py`; loader injection is refused and native children bind
+the verified installation. The historical `run-ci.py` main retains its exact
+516.1681 gates, limits, cleanup, network/parity checks and three mutation controls.
+Its shared process helper only accepts an optional explicit child environment.
+The current lane keeps the same 180-second aggregate, 40-second child CPU/wall,
+512 MiB address-space, 16 MiB file and zero-core bounds. Source-only generation
+does not execute the historical caller's runtime gate or constitute current
+native acceptance. Mocked pipeline checks cannot establish native success.
+
+## Preserved earlier reference notes (historical)
+
+The reference statements below describe prior integration checkpoints; they do
+not replace the active reference above or establish current native acceptance.
+
+## Pinned-master reconciliation (2026-10-26)
+
+The active reference is master `99647037c70786a3c3944fcf5ae51b570b377f08`.
+Only the feature's fullbright exclusions and transient area-change owner are
+projected onto that complete master file. Snow runtime fields, authoritative
+zone IDs, collector conditionals, topology validation and inherited hooks remain
+under whole-file equality. The probe corpus now covers the three snow runtime
+fields and persistence_zone_id; omission controls require each independently.
+Historical list/switch comparisons and previous rejected evidence remain.
+Historical exclusion, startup and lighting runners retain their strict 516.1681
+contracts; current master defaults to 516.1688. The selected lighting CI lane now
+uses a separate archive/member-verified current runner. This does not migrate the
+exclusion native lane or accept historical results for new source. Offline source
+checks are not native acceptance.
+
+## Historical master reconciliation (2026-10-24)
+
+The comparison now pins master `d6b06c638517bb4100beeca6a90d09adc3629fb7`.
+Reserved policy is already present, so only the two fullbright exclusions and
+the transient area-change owner are projected onto its reconstructed list
+baseline. Whole-file equality retains the roof recovery bookkeeping, collector
+instrumentation, date floor and all other current persistence behavior.
+The generated chain includes master's movable `original_target` guard before
+the later process hook, and retains the `next_animal_retaliation` mob exclusion.
+Historical reconstructed-hook checks and omission/parent controls remain.
+The complete collector conditional and selection tail are copied unchanged;
+the isolated fixture leaves the collector symbol undefined. This is source-only
+reconciliation; earlier native evidence does not verify this new candidate.
+
+## Historical master integration (2026-10-20)
+
+## Current-master reconciliation (2026-10-24)
+
+The live source-only runner pins master
+`13a47adfc7400d95d10539dea4b2fd6cd7314e50`. Whole-file equality permits only
+the three existing bounded-save additions; current roof state, movement/throw
+policy, collector conditionals and failure diagnostics must remain exact.
+The dispatch comparison reconstructs only the three list hooks under that same
+current policy. Native execution remains held and old leases remain invalid.
+
+The historical tests below retain immutable candidate `7ca76ce0` against their
+original master pin, including all original dispatch/policy omission controls.
+They do not relabel historical evidence as current native acceptance.
+
+## Historical master integration (2026-10-20)
+
+The historical baseline is pinned to master
 `5bf351248de6050876fe5b53f91209a970cc5668`. Its three switch hooks are
 reconstructed as list dispatch before applying the same reserved policy to both
 variants. Offline tests require those reconstructed hooks to equal the historical
@@ -12,6 +147,13 @@ variants. Offline tests require those reconstructed hooks to equal the historica
 bytes, including save-failure diagnostics, remain under whole-file equality;
 missing hooks and diagnostic mutations are rejected. This refresh changes the
 test reference only, not production behavior or the separate native hold.
+
+The area-change follow-up explicitly projects the runtime-only
+`turf.area_change_owner` exclusion into both comparison variants. Unique anchors
+reject duplicate projection or unrelated drift, and omission controls require
+the new exclusion. This compares dispatch under the same augmented policy; it
+does not claim unchanged historical serialization semantics or new native
+acceptance. The process-local transition token must not be exported or imported.
 
 ## Reserved-lighting integration policy
 
@@ -198,3 +340,15 @@ host address remains audit data. Offline controls reject absent, wildcard,
 nonloopback and IPv6 bind diagnostics. This corrects the earlier README statement
 that the pre-close-address assertion was unchanged; the Windows listener monitor
 and unconditional grant hold are unchanged. Native parity still awaits a rerun.
+
+## Current bounded-save integration
+
+The current source reference is immutable master
+`5bf351248de6050876fe5b53f91209a970cc5668`. Reconstruct only its three historical
+list hooks before the existing bounded-block and switch projections; preserve
+all master diagnostics exactly. Tests compare those reconstructed hooks against
+immutable `5ac2df336b717f4ca2ccc60f2697b76ab4f2e019` and reject diagnostic drift.
+The reference never comes from candidate source. Earlier baseline descriptions
+above document the historical evidence, not this current integration.
+
+Source preparation accepts a proven positive ancestry path in a shallow checkout, but rejects negative ancestry results when a shallow boundary could hide the path. Missing or unverifiable history is rejected before fixture output; the frozen historical source files do not replace the ancestry proof.

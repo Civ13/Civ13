@@ -27,9 +27,9 @@ class CaptureControlTests(unittest.TestCase):
         for declaration in ('var/list/area_list = list()', '/area/caribbean/roofed',
                             '/turf/var/weather_snow = 0', '/turf/proc/snowfall_ground_icon()'):
             self.assertIn(declaration, source)
-        self.assertIn('if(weather_snow)\n\t\tthrow EXCEPTION("Generated snow requires the production snowfall fixture")', source)
+        self.assertIn('if(!isnum(weather_snow) || weather_snow != 0)\n\t\tthrow EXCEPTION("Generated snow requires the production snowfall fixture")', source)
         self.assertIn('throw EXCEPTION("Roof topology requires the production roof fixture")', source)
-        self.assertIn('if(!validated_zone_state) return\n\tthrow EXCEPTION("Topology needs the full-source fixture")', source)
+        self.assertIn('if(isnull(validated_zone_state)) return\n\tthrow EXCEPTION("Topology needs the full-source fixture")', source)
 
     def test_positive_preserves_production_source(self):
         self.assertEqual(RUNNER.prepare_source(self.source), (self.source, 'PASS'))

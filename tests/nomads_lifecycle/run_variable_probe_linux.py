@@ -30,7 +30,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def native_gate(output, byond, head):
+def native_gate(output, byond, head, archive=None):
     need(sys.platform == 'linux' and os.environ.get('GITHUB_ACTIONS') == 'true'
          and os.environ.get('RUNNER_OS') == 'Linux' and os.environ.get('GITHUB_EVENT_NAME') == 'pull_request'
          and os.environ.get('GITHUB_REPOSITORY') == 'Civ13/Civ13', 'Requires isolated Linux PR CI')
@@ -39,9 +39,23 @@ def native_gate(output, byond, head):
     temporary = Path(os.environ['RUNNER_TEMP']).resolve(strict=True)
     need(ROOT.resolve() == workspace and output.resolve().is_relative_to(temporary)
          and output.resolve() != temporary and not output.exists(), 'New output under RUNNER_TEMP required')
+    version = '1688' if archive is not None else '1681'
     need(byond.resolve(strict=True) == workspace / 'BYOND/byond/bin'
-         and os.environ.get('BYOND_MAJOR') == '516' and os.environ.get('BYOND_MINOR') == '1681',
+         and os.environ.get('BYOND_MAJOR') == '516' and os.environ.get('BYOND_MINOR') == version,
          'Existing pinned CI engine required')
+    if archive is not None:
+        need(archive.resolve(strict=True) == workspace / 'BYOND/pinned.zip',
+             'Current engine requires the exact CI archive path')
+
+
+def current_runtime(byond, archive):
+    """Explicit 1688 adapter; the no-archive historical path remains pinned 1681."""
+    if archive is None:
+        return None
+    spec = importlib.util.spec_from_file_location('collector_current_runtime', ROOT / 'tests/world_save/current_runtime.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.select(byond, archive)
 
 
 def parse_stat(text):
@@ -135,7 +149,7 @@ def vacant_port():
 
 
 def generated():
-    names = {'source-manifest.json', 'result.json', 'failure.json', 'prepared/writable/probe.dmb', 'prepared/writable/probe.rsc'}
+    names = {'source-manifest.json', 'result.json', 'failure.json', 'runtime-identity.json', 'prepared/writable/probe.dmb', 'prepared/writable/probe.rsc'}
     for phase in ('compile', *MODES):
         names.update(f'{phase}.{stream}.log' for stream in ('stdout', 'stderr'))
     for mode in MODES:
@@ -234,8 +248,11 @@ def daemon_argv(byond, compiled, case):
             '-trusted', '-close', '-cd', str(case), '-log', native_log_path(compiled, case.name).name]
 
 
-def run_child(argv, case, phase, root, inputs, binary_hashes, receipt, budget, save):
+def run_child(argv, case, phase, root, inputs, binary_hashes, receipt, budget, save, runtime=None):
     import resource
+    if runtime:
+        budget.check()
+        runtime.before_launch(phase, root)
     budget.check(); need(sha(argv[0]) == binary_hashes[Path(argv[0]).name], 'Engine changed before launch')
     need(len(receipt['children']) < CAPS['launches'], 'Native launch budget')
     child = birth = None; closed = phase == 'compile'; started = time.monotonic()
@@ -300,8 +317,8 @@ def run_child(argv, case, phase, root, inputs, binary_hashes, receipt, budget, s
     need(sum(item['cpu_seconds'] for item in receipt['children']) <= CAPS['cpu_seconds'], 'Aggregate owned CPU budget')
 
 
-def main(output, byond, head):
-    native_gate(output, byond, head)
+def main(output, byond, head, archive=None):
+    native_gate(output, byond, head, archive)
     budget = Budget(datetime.now(timezone.utc) + timedelta(seconds=CAPS['aggregate_seconds']))
     receipt = dict(head=head, success=False, native_verified=False, phases=[], children=[],
                    scope='tiny collector and retained-file reader only; not Topic/serializer/Windows ACL acceptance')
@@ -317,6 +334,10 @@ def main(output, byond, head):
         with budget.phase('preflight', receipt['phases']):
             need(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, timeout=2).decode().strip() == head,
                  'Checkout differs from exact PR head')
+            runtime = current_runtime(byond, archive)
+            need((archive is None and runtime is None) or
+                 (archive is not None and runtime is not None and runtime.identity['version'] == '516.1688'),
+                 'Exact current runtime adapter required')
             need(not native_census(), 'Hosted native baseline must be empty')
             vacant_port(); need(shutil.disk_usage(output).free >= CAPS['disk_free_bytes'], 'Disk floor')
             for mode in MODES:
@@ -327,25 +348,33 @@ def main(output, byond, head):
                      'tests/new_z_budget/z_budget_evidence.py', 'code/modules/persistence/variable_observability.dm',
                      'code/game/atoms_movable.dm', 'code/_helpers/text.dm',
                      'scripts/nomads-lifecycle/variable_observability.py', 'scripts/nomads-lifecycle/read_blackout.py')
+            if runtime:
+                paths += ('tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+                          'scripts/byond_toolchain.py', 'tools/byond/version.json')
             originals = {name:sha(ROOT / name) for name in paths}
             binaries = {name:sha(byond / name) for name in ('DreamMaker', 'DreamDaemon')}
             manifest = dict(head=head, source_sha256=originals, prepared_sha256=inputs,
                 binary_sha256=binaries, native_verified=False, caps=CAPS, phases=PHASES, port=PORT)
+            if runtime:
+                manifest['runtime_identity'] = runtime.identity
             (output / 'source-manifest.json').write_text(json.dumps(manifest, indent=2))
             receipt['manifest_sha256'] = sha(output / 'source-manifest.json'); save()
         writable = output / 'prepared/writable'
         with budget.phase('compile', receipt['phases']):
             run_child([str(byond / 'DreamMaker'), '-max_errors', '0', 'probe.dme'], writable, 'compile', output,
-                      inputs, binaries, receipt, budget, save)
+                      inputs, binaries, receipt, budget, save, runtime)
             logs = ''.join((output / ('compile.' + stream + '.log')).read_text(errors='replace') for stream in ('stdout', 'stderr'))
-            validate_compile(0, logs, 'probe.dmb')
+            if runtime:
+                runtime.validate_compile(0, logs, 'probe.dmb')
+            else:
+                validate_compile(0, logs, 'probe.dmb')
             need((writable / 'probe.dmb').is_file(), 'No tiny compiled artifact')
             receipt['compiled_sha256'] = {p.name:sha(p) for p in (writable / 'probe.dmb', writable / 'probe.rsc') if p.is_file()}
         for mode in MODES:
             case = output / 'prepared' / mode
             with budget.phase(mode, receipt['phases']):
                 argv = daemon_argv(byond, writable / 'probe.dmb', case)
-                run_child(argv, case, mode, output, inputs, binaries, receipt, budget, save)
+                run_child(argv, case, mode, output, inputs, binaries, receipt, budget, save, runtime)
                 log_path = native_log_path(writable / 'probe.dmb', mode)
                 text = log_path.read_text(errors='replace')
                 console = ''.join((output / (mode + '.' + stream + '.log')).read_text(errors='replace') for stream in ('stdout', 'stderr'))
@@ -368,6 +397,10 @@ def main(output, byond, head):
             need(all(sha(ROOT / name) == value for name, value in originals.items()), 'Source input changed')
             need(all(sha(output / name) == value for name, value in inputs.items()), 'Prepared input changed')
             need(all(sha(byond / name) == value for name, value in binaries.items()), 'Engine identity changed')
+            if runtime:
+                need(runtime.checks == ['compile', *MODES] and
+                     runtime.verifier.verify_linux(runtime.bin_dir, runtime.archive) == runtime.identity,
+                     'Current archive or installed runtime changed')
             need(not native_census(), 'Final native baseline not empty'); vacant_port()
             receipt.update(success=True, native_verified=True, artifacts=artifacts(output, inputs))
     except Exception as error:
@@ -394,6 +427,8 @@ if __name__ == '__main__':
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument('--output', type=Path, required=True)
     cli.add_argument('--byond-bin', type=Path, required=True)
+    cli.add_argument('--byond-archive', type=Path, help='Opt in to exact 516.1688 archive and member identity')
     cli.add_argument('--expected-head', required=True)
     args = cli.parse_args()
-    raise SystemExit(main(args.output.resolve(), args.byond_bin.resolve(), args.expected_head))
+    raise SystemExit(main(args.output.resolve(), args.byond_bin.resolve(), args.expected_head,
+                          args.byond_archive.absolute() if args.byond_archive else None))

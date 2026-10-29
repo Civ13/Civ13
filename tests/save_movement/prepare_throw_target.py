@@ -14,7 +14,9 @@ def prepare(output):
     output = Path(output)
     receipt = BASE.prepare(output)
     raw = (ROOT / 'code/game/atoms_movable.dm').read_bytes()
-    paths = ('/atom/movable/proc/throw_at', '/atom/movable/proc/finished_throwing')
+    paths = ('/atom/movable/proc/clear_throw_launch', '/atom/movable/proc/begin_throw_launch',
+             '/atom/movable/proc/update_throw_launch', '/atom/movable/proc/throw_at',
+             '/atom/movable/proc/finished_throwing')
     projection = '\n'.join(BASE.extract_proc(raw.decode('utf-8-sig'), proc) for proc in paths)
     receipt['source_sha256']['code/game/atoms_movable.dm'] = BASE.sha(raw)
     receipt['source_projections']['throw_cleanup.dm'] = {

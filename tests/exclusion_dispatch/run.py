@@ -11,52 +11,57 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from source_contract import reconstruct_list_baseline, validate, project_reserved_policy
+from preparation import prepare, PATH, INHERITED, FIXTURE
 
-BASE = 'a8d3950f08aaa55db59ec5f20777a475b2db95bb'
-PATH = 'code/modules/persistence/functions.dm'
 p = argparse.ArgumentParser(description=__doc__)
+p.add_argument('--base', default=os.environ.get('CI_BASE'))
+p.add_argument('--head', default=os.environ.get('CI_HEAD'))
 p.add_argument('--byond-bin', type=Path)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--source-only', action='store_true')
 p.add_argument('--expected-inputs', type=Path)
 p.add_argument('--lease-receipt', type=Path)
-p.add_argument('--negative-control', choices=['omit', 'parent', 'eager'])
+p.add_argument('--negative-control', choices=['omit', 'parent', 'eager', 'target-omit'])
 p.add_argument('--benchmark', action='store_true')
+p.add_argument('--source-version', choices=['516.1681', '516.1688'], default='516.1681',
+               help='Record the intended source-only CI version; the historical default is unchanged')
 p.add_argument('--calls', type=int, default=10000, choices=[10000, 20000, 40000])
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
-old = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=repo, text=True)
-current = (repo / PATH).read_text()
-old = reconstruct_list_baseline(old)
-validate(old, current)
-# Compare dispatch under the SAME new policy, not historical semantic parity.
-old = project_reserved_policy(old)
+identity, old, snapshot, projection = prepare(repo, a.base, a.head,
+    event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
+    github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
+BASE = identity['base']
+current = snapshot[PATH]
+# Compare dispatch under the SAME current policy, including roof/throw guards.
 
 def proc(text, path):
     return re.search(r'^' + re.escape(path) + r'\n(?:\t[^\n]*\n)+', text, re.M).group()
 
 inherited = ''
-for file, path in [
-    ('code/processes/human_corpse_decay.dm', '/atom/movable/persistence_runtime_var(key)'),
-    ('code/processes/abandoned_items.dm', '/obj/item/persistence_runtime_var(key)'),
-    ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
-]:
-    helper = (repo / file).read_text()
-    pinned = subprocess.check_output(['git', 'show', BASE + ':' + file], cwd=repo, text=True)
-    assert helper == pinned, f'Inherited helper drift: {file}'
+for file, path in INHERITED:
+    helper = snapshot[file]
     inherited += proc(helper, path) + '\n'
 source = ''
 for variant, text in [('baseline', old), ('candidate', current)]:
-    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'turf', 'mob', 'area'])
+    hooks = '\n'.join(proc(text, f'/{kind}/persistence_runtime_var(key)') for kind in ['atom', 'atom/movable', 'turf', 'mob', 'area'])
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
+            if '"appearance", ' not in hooks: raise ValueError('Omission control anchor missing')
             hooks = hooks.replace('"appearance", ', '')
         elif a.negative_control == 'parent':
+            if 'return ..()' not in hooks: raise ValueError('Parent control anchor missing')
             hooks = hooks.replace('return ..()', 'return FALSE')
         elif a.negative_control == 'eager':
+            if '\tswitch(key)' not in hooks: raise ValueError('Eager control anchor missing')
             hooks = hooks.replace('\tswitch(key)', '\t..()\n\tswitch(key)')
+        elif a.negative_control == 'target-omit':
+            # Remove only the target term, retaining other evolved runtime
+            # exclusions and the parent call in the same production hook.
+            anchor = 'key == "original_target" || '
+            if hooks.count(anchor) != 1: raise ValueError('Original-target control anchor changed')
+            hooks = hooks.replace(anchor, '', 1)
     for traced in [False, True]:
         suffix = variant + ('_traced' if traced else '_runtime')
         adapted_root = root
@@ -72,8 +77,12 @@ header = f'#define BENCH_CALLS {a.calls}\n' + ('#define BENCHMARK\n' if a.benchm
 inputs = {name: hashlib.sha256(content.encode()).hexdigest() for name, content in {
     'production.dm': source, 'probe.dm': probe, 'probe.dme': header,
     'source_contract.py': Path(__file__).with_name('source_contract.py').read_text(),
+    'preparation.py': Path(__file__).with_name('preparation.py').read_text(),
     'runner.py': Path(__file__).read_text(), 'resources.py': Path(__file__).with_name('resources.py').read_text(),
 }.items()}
+# Record the exact committed inputs that the ancestry and source projection
+# consumed, including the historical fixture loader, manifest, and bytes.
+inputs.update({name: hashlib.sha256(snapshot[name].encode('utf-8')).hexdigest() for name in FIXTURE})
 compiler = a.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker') if a.byond_bin else None
 daemon = a.byond_bin.resolve() / ('dd.exe' if os.name == 'nt' else 'DreamDaemon') if a.byond_bin else None
 compiler_args = ['-max_errors', '0', 'probe.dme']
@@ -89,10 +98,11 @@ if a.source_only:
     for name, content in [('production.dm', source), ('probe.dm', probe), ('probe.dme', header)]:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
-        head_sha=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip(),
-        baseline_sha=BASE, baseline_policy='pinned master with three reconstructed list hooks plus explicit reserved-lighting exclusions', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        head_sha=identity['head'], identity_source=identity['identity_source'],
+        baseline_sha=BASE, event_identity=identity, projection=projection,
+        baseline_policy='exact event base with reviewed lighting and extraction projections; collector undefined in fixture', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
-        commands=commands, required_version='516.1681', native_execution=False,
+        commands=commands, required_version=a.source_version, native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')
     sys.exit(0)
 raise SystemExit('Native execution held: fresh maintainer approval and exact-head review required; old leases invalid')

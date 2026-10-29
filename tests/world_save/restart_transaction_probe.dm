@@ -2,6 +2,8 @@
 #define TRUE 1
 #define FALSE 0
 #define EXCEPTION(message) new /exception(message)
+// The isolated world has no connected clients; production owns this list.
+var/list/clients = list()
 var/persistence_save_in_progress = FALSE
 var/building_allocating_z = 0
 var/map_storage/map_storage = new

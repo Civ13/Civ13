@@ -62,6 +62,12 @@ world
 	OpenPort("none")
 	..()
 	try
+#ifdef ROUNDTRIP_NO_TOPOLOGY_COMPAT
+		var/map_storage/initial_storage = map_storage
+		map_storage = new /map_storage/roundtrip_fixture(initial_storage.game_id)
+		qdel(initial_storage)
+		check_roundtrip_topology_boundary()
+#endif
 		check_restore_wrapper()
 		if(world.params["wrapper_only"])
 			text2file("PASS", "result.txt")
@@ -309,3 +315,20 @@ world
 	mob.loc = locate(4,3,1)
 	var/status = file2text("result.txt")
 	src << browse("<html><body><h2>Civ13 actual offline save/import regression world</h2><p>Result: [status]</p><p>8x6x2 fixture, using repository persistence procedures and isolated game adapters.</p><p>Checks: nested objects, datum references, empty lists, associative lists, duplicates, aliases, cycles, cross-level turf reference, edge coordinates, metadata survival, corrupt-save rejection.</p><p>This is fixture runtime evidence, not full playable-world acceptance.</p></body></html>", "window=world_save_result;size=620x350")
+
+#ifdef ROUNDTRIP_NO_TOPOLOGY_COMPAT
+/proc/check_roundtrip_topology_boundary()
+	var/map_storage/roundtrip_fixture/probe = new("roundtrip-zone-boundary")
+	check(isnull(probe.validated_zone_state), "roundtrip topology probe did not start empty")
+	probe.begin_zone_restore(null)
+	for(var/list/state in list(list(), list("schema" = 1), list("schema" = 2)))
+		probe.validated_zone_state = state
+		var/rejected = FALSE
+		try
+			probe.begin_zone_restore(null)
+		catch(var/exception/topology_error)
+			check("[topology_error]" == "Topology needs the full-source fixture", "unexpected roundtrip topology rejection")
+			rejected = TRUE
+		check(rejected, "roundtrip topology state was accepted")
+	qdel(probe)
+#endif

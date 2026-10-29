@@ -1027,7 +1027,7 @@ var/list/coefflist = list()
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in organs)
 		return
-	..()
+	return ..()
 
 /mob/living/human/reset_view(atom/A, update_hud = TRUE)
 	..()
@@ -1345,6 +1345,8 @@ var/list/coefflist = list()
 	if (loc != old_location)
 		reset_corpse_decay_age()
 	if (human_subtile_pulse)
+		return .
+	if (subtile_pull_ownership.owners[src])
 		return .
 	human_movement_completed()
 

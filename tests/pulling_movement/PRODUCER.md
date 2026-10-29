@@ -1,0 +1,114 @@
+# Straight-leaf pair producer
+
+The producer is connected to `client.Move -> human.SelfMove`, through the
+body-local runtime `human_subtile_pull_enabled` flag. It defaults TRUE (owner
+request, 2026-10-28) and also requires `human_subtile_enabled`, so the existing
+Toggle Smooth Movement verb turns it off. Its setter requires alignment, no
+active physical owner and the existing safe human adapter setter.
+
+Initial targets are exact wood/steel/iron material-stack types and the base empty
+crate type. Both participants start aligned; the target must be directly behind
+a cardinal intent, empty, movable, appropriately sized and reciprocally pulled.
+Every capability still requires the actual admitted client's moving permission.
+No fake client or generally relaxed target/player authority is introduced.
+
+The original client input pays nutrition/water/stamina/velocity and the existing
+pull slowdown once, then captures the same transformed absolute deadline. The
+producer executes at most 16 rounds of leader-first/follower-second native 2px
+moves. The native seam checks each exact participant capability and position.
+It bypasses only the old full-tile follower subtree for these owned pulses;
+unrelated collision remains native. Human/living completion hooks are consolidated
+once per attempted intent, including blocked attempts. Each hook has its own
+error guard: a throwing living hook does not skip the human hook, and the intent
+is marked complete and settles exactly once after both unwind; the first error
+then rethrows. An aligned pair therefore still releases its lease and save hold.
+`test_completion_hooks.py` executes a projection of the actual statements, with
+a control against defect head b290932; this is not native exception evidence.
+Target native glide is
+compare-and-restored. No global tick rate, path search, crafting or RNG loop is
+added per pulse.
+
+Cancellation retains observed physical offsets and exclusive ownership. A fresh
+reverse input can recover the pair back along its owned straight path under the
+current real client, using its ordinary paid input deadline. Recovery catches the
+maximum 2px gap, then moves the follower before the leader. Its source-derived plan
+finishes all 96 valid 0..32px/gap 0..2 states within 16 rounds/at most 34 native calls.
+Actual collisions may stop recovery; no raw rewind, snap or foreign relocation is
+adopted. Starting another pull is refused while a participant has an outstanding
+lease. Stopping a pull cancels old forward work; recovery permits the former pair
+only if neither participant has acquired another pull link.
+
+Save contract is deliberately fail-closed. The global persistence admission reads
+the bounded registry before creating an operation or setting busy flags. Every
+pair must have no running intent, native call or capability; completion hooks must
+already have finished and each surviving actor must have a valid aligned shape.
+Otherwise the request returns a visible held-save message without entering save
+preparation/backend or clearing the previous failure record. Load admission is
+unchanged. A participant before_save_context remains a second guard for direct
+exports: active calls revoke then refuse, quiet partial pairs refuse, and aligned
+checkpoints release before original hooks. The runtime enable flag and all leases
+remain excluded from persistence. No partial-pair capsule/import/replay is added.
+
+Logout/body handoff cancels forward work, restores target glide and clears the
+old controller. Hooks/lease release wait until a native callback and its intent
+unwind. A newly admitted actual client can pay for reverse recovery under the
+unchanged authority predicate. Pull release keeps its old paid deadline, cancels
+further forward work and settles immediately if no worker remains. A callback
+interruption records only the capability's unchanged position or its exact fully
+consumed native endpoint, and only if the other live participant is unchanged;
+foreign/partial displacement is never adopted. A throwing native call unwinds its
+in-flight flag before outer cancellation/completion.
+
+Deletion retires only the exact matching registry entry, clears the deleted
+member/snapshot/origin and controller references, and revokes capabilities before
+the original movable Destroy detaches contents. An aligned survivor releases; a
+partial survivor retains exclusive ownership and blocks saving. Orphaned pairs
+cannot issue another paired recovery, and no other body's client is borrowed.
+
+Stuck-pair resolver (`pull_pair_lifecycle.dm`). When `settle_intent` cannot
+release, only a live, standing, connected leader can pay for reverse recovery
+(`recovery_possible`). Otherwise (death, knockdown, restraint, disconnect,
+deleted member, foreign displacement) `resolve_aligned` settles the pair now.
+It places each live survivor on its nearest whole tile with `forceMove`, zeroes
+its step offsets, then drops the lease. A recoverable pair settles the same way
+after `recovery_grace` (5 seconds) if the player does not reverse; stale timers
+stop by epoch. Save admission settles every quiet completed pair before the hold
+check, so only an in-flight intent (at most one move interval) delays a save.
+The resolver refuses while native/intent/completion work unwinds or a save is in
+progress, then retries. For a straight pair the nearest tiles never coincide and
+each snap is at most 16px (`test_resolver.py` checks all 384 states).
+Arbitrary-time partial saves remain unsupported.
+
+Pulse waits use `subtile_pull_wait_until`, which sleeps whole ticks and rechecks
+until the pulse is due. A single fractional sleep could wake a tick early, and
+consume() refuses an early pulse, which stopped the pull (`test_pulse_timing.py`).
+Teardown callers (Destroy, Logout, client Del) use `teardown_settle`, which logs a
+rethrown hook error after the pair has settled instead of skipping their cleanup.
+
+Remaining unverified gaps (the producer ships on by default):
+
+- Native or in-game verification of positive/blocked/cancellation/reverse/stop
+  cases, exact costs, hooks, frame interpolation and the resolver's snap-back.
+- The resolver's `forceMove` callbacks (Exited/Entered/Crossed) and external
+  transport or ownership changes are not native-tested. Unexpected callback
+  movement must stay fail-closed.
+- Living targets, turns/diagonals, loaded containers, assemblies, arbitrary leaf
+  types, client handoff UX and a partial-save round trip each need a separate
+  profile and actual-client acceptance. No claim that all dragging is smooth is made.
+
+The pulling offline checks include 8,192 source-derived displacement comparisons,
+the 96-state reverse planner, a 1,152-case actual checkpoint-expression projection,
+interrupted-receipt policy, and admission/native-routing/cost/hook/lifecycle source
+contracts. The existing save-movement adapter also executes the complete selected
+production admission and Destroy control flow with an injected pair-manager
+boundary. It verifies held admission preserves operation/failure state, load
+admission is unchanged, and nested qdel retires each actor before detachment.
+These checks do not execute DM or prove native lifecycle behavior. Walking stays
+a separate baseline. The initial failed boolean-extractor run is retained.
+
+Shared seams: retain the crafting branch's passive-UI helper/pre-input cleanup.
+This branch conservatively excludes using_object in its pair profile. Its added
+pair-owner exclusions in normal and posture readiness prevent concurrent physical
+workers; carry those exclusions into the prone owner's new readiness predicates.
+NPC native pulse dispatch and this pair dispatch must remain independently scoped
+when merging their neighboring movable seam changes.

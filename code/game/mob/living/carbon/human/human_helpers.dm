@@ -181,7 +181,10 @@
 	if (!found)
 		to_chat(src, SPAN_RED("You need to be over a bed."))
 		return
-	if (WWinput(src, "Are you sure you want to sleep for a while? This will protect you when disconnected, but you must stay ingame for 2 minutes for it to take effect.", "Sleep", "Yes", list("Yes","No")) == "Yes")
+	var/sleep_message = "Are you sure you want to sleep for a while? This will protect you when disconnected, but you must stay ingame for 2 minutes for it to take effect."
+	if (persistence_bed_return_enabled())
+		sleep_message = "Sleep here and assign this bed for saved-character returns? This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
+	if (WWinput(src, sleep_message, "Sleep", "Yes", list("Yes","No")) == "Yes")
 		to_chat(src, SPAN_NOTICE("You will start sleeping in two minutes."))
 		if (do_after(src, 2 MINUTES, src, FALSE))
 			if (!sleeping_client || client != sleeping_client || sleeping_client.mob != src)
@@ -197,6 +200,10 @@
 					to_chat(src, SPAN_RED("You need to be over a bed."))
 					return
 				else
+					if (persistence_bed_return_enabled())
+						if (!enter_saved_bed_sleep())
+							to_chat(src, SPAN_WARNING("Choose an available stationary bed and wait for world recovery to finish, then try Sleep again."))
+						return
 					if (!enter_protected_sleep())
 						to_chat(src, SPAN_RED("You could not enter protected sleep. Wait for any world save or load to finish, then check your bed and try again."))
 					return
@@ -223,6 +230,13 @@
 		to_chat(src, "You will wake up in 30 seconds.")
 		spawn(300)
 			if (!src || !waking_client || client != waking_client || waking_client.mob != src || !inducedSSD)
+				return
+			if (persistence_bed_return_enabled() && !is_protected_sleep_location(src))
+				if (!persistence_sleep_transfer_blocked())
+					sleeping = 0
+					inducedSSD = FALSE
+				else
+					to_chat(src, SPAN_WARNING("Wait for world recovery to finish, then retry Wake Up."))
 				return
 			if (!complete_protected_wakeup())
 				to_chat(src, SPAN_RED("You could not wake up safely. Your sleep protection remains active. Wait for any world save or load to finish, then try Wake Up again."))

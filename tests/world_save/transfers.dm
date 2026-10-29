@@ -96,6 +96,7 @@
 			if(J) del(J)
 		del(P.origin)
 		del(P)
+	check_chunk_transfer_publication()
 	return TRUE
 
 /proc/make_transfer_producer(turf/T, count)
@@ -121,3 +122,53 @@
 	del(P.origin)
 	del(P)
 	check(map_storage.Save_World(), "Transfer failure recovery export failed")
+
+// Inject an ordinary movement callback at the version-3 chunk checkpoint.
+// This runs the production encoder and final publication checks, with no world
+// save or external effects. The old version-2 direct-export cases above remain.
+/map_storage/transfer_chunk_probe
+	var/inject_movement = FALSE
+	var/moved = FALSE
+	var/datum/save_export_frame/mutation_frame
+/map_storage/transfer_chunk_probe/encode_saved_contents(savefile/F, datum/save_export_frame/frame)
+	if(inject_movement && frame.declared_children.len)
+		mutation_frame = frame
+	return ..()
+/map_storage/transfer_chunk_probe/save_work_check()
+	if(mutation_frame)
+		var/obj/item/I = mutation_frame.declared_children[1]
+		mutation_frame = null
+		spawn(0)
+			I.loc = locate(8,6,1)
+			moved = TRUE
+		sleep(world.tick_lag)
+	return ..()
+
+/proc/check_chunk_transfer_publication()
+	for(var/mutate in list(FALSE, TRUE))
+		var/turf/transfer_parent/T = new(locate(4,4,1))
+		var/obj/structure/transfer_producer/P = make_transfer_producer(T, 1)
+		var/obj/item/transfer_paid/I = P.paid[1]
+		var/map_storage/transfer_chunk_probe/exporter = new
+		exporter.saving_z = 1
+		exporter.inject_movement = mutate
+		var/savefile/F = new("transfer-chunk-[mutate].sav")
+		F["/format_version"] << 3
+		var/refused = FALSE
+		var/parent_ref
+		try
+			parent_ref = exporter.BuildVarDirectory(F, T, 1)
+		catch(var/exception/chunk_error)
+			check(findtext("[chunk_error]", "Declared paid child changed before content publication"), "Chunk transfer failed outside publication revalidation")
+			refused = TRUE
+		check(refused == mutate && exporter.moved == mutate, "Chunk transfer publication did not detect late movement")
+		if(!mutate)
+			var/item_ref = exporter.saving_references["\ref[I]"]
+			var/list/refs = exporter.saved_content_refs(F["[exporter.entry_path(F,parent_ref)]/content"], 3)
+			check(refs.Find("[item_ref]") && I.loc == T && I.progress == 150, "Version-3 paid transfer lost ownership or value")
+		check(!exporter.saving_export_frames.len && !exporter.saving_export_stack.len, "Chunk transfer retained active frames")
+		exporter.clear_bookkeeping()
+		del(P.origin)
+		del(P)
+		del(I)
+		del(exporter)

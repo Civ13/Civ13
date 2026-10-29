@@ -1,5 +1,61 @@
 # World-save regression world
 
+## Ordinary roundtrip compatibility
+
+`roundtrip.dme` includes `roundtrip_compat.dm` for the current loader's area
+registry, roof base type and generated-snow declarations. It leaves shared
+`stubs.dm` byte-identical because immutable character-return preparation pins
+that file. The registry adapts the ordinary production membership operations
+to this fixture's immediate `del()` lifecycle, including empty explicit areas.
+The snow scalar/overlay defaults and icon projection match production; this
+fixture has no weather worker and only exercises the loader's clear-ground
+reset on `/turf/test`. It does not establish generated-snow gameplay coverage.
+No roof objects or climate subtypes are introduced. Shared topology refusals,
+the production loader, positive roundtrip assertions and omission controls remain
+unchanged. The null-topology subtype below is selected only by roundtrip.dme.
+
+```sh
+python3 -B tests/world_save/test_roundtrip_compat.py -v
+```
+
+These offline tests execute only the existing runner's source-generation block
+for the positive case and all three controls, with process entrypoints poisoned.
+They check include closure, source parity, adapter scope and the unchanged shared
+input pin; they neither compile nor run DM. The historical declaration-only
+packet left `run-round-metadata.py` unchanged; its default still requires BYOND
+**516.1681**. Master's opt-in `--byond-archive` profile (`current_runtime.py`) does not
+retroactively change those receipts. Neither admits native execution or proves a
+fixture pass; authorized isolated validation is still required.
+
+### Null-topology import boundary
+
+At published commit `2830578f131c3237b997dc2c6b26a28aa569db4b`, hosted CI run
+`40683465662` compiled the fixture cleanly on 516.1688, then failed the unchanged
+`legacy fixture import failed` assertion. The import wrapper unconditionally
+calls `begin_zone_restore`, while the shared fixture stub always throws
+`Topology needs the full-source fixture`. Production returns immediately when
+validated zone state is absent; the later topology-restoration call is guarded.
+
+The roundtrip-only `/map_storage/roundtrip_fixture` subtype admits **null state
+only**, before accessing the operation, then delegates every present state to
+the unchanged parent refusal. This is stricter than admitting false-like values
+or empty lists and does not implement topology. Before the first assertion, the
+fixture replaces its unused initial storage with that subtype, preserving its
+game ID. A bounded probe requires null success and rejection of empty, schema-1
+and schema-2 lists with the original exception. The positive legacy import and
+all three exact metadata controls remain required.
+
+`ROUNDTRIP_NO_TOPOLOGY_COMPAT` is defined only in `roundtrip.dme`; its two guarded
+blocks select the subtype and define the probe. `string_path_roundtrip.dme`
+shares `roundtrip.dm` without selecting these blocks. The floor-decal generator
+omits `roundtrip.dm`, so it does not acquire setup or a new assertion dependency.
+No shared stub, production source, engine rule, selector or saved-character pin
+is changed. Offline tests check the source boundary, four deliberate guard/
+delegation mutations, include isolation and positive/control source generation.
+They do not execute the new probe or establish that the native import now passes.
+The observed hosted failure remains the current result until new validation;
+the saved-character/bed fixture remains preparation-only.
+
 ## Protected sleep transfers
 
 Protected sleep sends a body to a different z-level while preserving scalar
@@ -12,7 +68,7 @@ not clear arbitrary pointers. A failed wake retains sleep protection for retry.
 The focused sleep fixture extracts the actual entry/wake helpers, production
 buckling methods and base forced movement, with narrow physiology/inventory and
 startup adapters. It checks normal and old-state transfers, other-occupant
-protection, refusal and persistence-busy paths, and a real version-2 save,
+protection, refusal and persistence-busy paths, and a real format-3 save,
 preflight and import with metadata aliases. Delayed verb/client ownership is
 covered by source contracts; this headless fixture does not establish real
 connected-client timing or full gameplay acceptance. Preparation alone does not
@@ -21,8 +77,9 @@ establish a native pass.
 The serializer still fails closed on unsupported cross-z object fields and on
 duplicate durable bindings. Diagnostics report only bounded source field/type,
 save-entry identifiers and z-levels, never player names, client keys or live
-native references. General movement during serialization remains a separate
-snapshot problem; no save format or loader migration is introduced here.
+native references in log messages. This draft uses bounded format-3 captures
+and preserves the first completed spatial capture across later movement; it is
+not an atomic world snapshot. Current readers retain format-2 compatibility.
 
 For a rejected object reference, inspect the single admin VV field
 `map_storage.last_save_reference_failure`: Game Panel, **View/Debug a Global
@@ -58,8 +115,10 @@ source hashes, logs and temporary saves for every attempted run.
 problem. Its `--expect-current-defects` mode characterizes existing traversal
 defects; without that flag it requires ordinary `PASS` results. Mutation controls
 retain their own exact expected failures. CI checks the ordinary `field-direct`
-case and explicitly characterizes the unchanged `move-direct` defect. That
-characterization is not evidence that the traversal defect was fixed.
+and `move-direct` cases with format-3 restoration, unique placement and durable
+alias checks. The `first-capture` mutation reproduces the exact old duplicate
+binding rejection. Broader cases outside this focused CI gate retain historical
+characterization expectations and are not claimed as an all-cases passing suite.
 
 `run-dimension-bootstrap.py --byond-bin <bin>` writes a temporary three-level
 generation, then launches fresh two-level readers. It runs the production saver,

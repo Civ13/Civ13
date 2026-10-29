@@ -677,6 +677,12 @@
 			qdel(src)
 
 /obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/living/human/user as mob)
+	if (woodwork_wooden_hammer(T))
+		woodwork_begin(src, user, T, "plank")
+		return TRUE
+	if (woodwork_shaping_tool(T, get_material()))
+		woodwork_begin(src, user, T, "pieces")
+		return TRUE
 	if (istype(T, /obj/item/flashlight/torch))
 		var/obj/item/flashlight/torch/F = T
 		if(user.a_intent == "harm" && F.on && !onfire)
@@ -696,7 +702,7 @@
 	return key == "splitting_in_progress" || ..()
 
 /obj/item/stack/material/wood/proc/log_cutting_valid(obj/item/tool, mob/living/human/user, atom/source_loc, turf/site, cost)
-	return hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && !onfire && amount >= cost && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && (istype(tool, /obj/item/weapon/material/hatchet) || istype(tool, /obj/item/weapon/saw))
+	return !woodwork_owner && hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && !onfire && amount >= cost && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && (istype(tool, /obj/item/weapon/material/hatchet) || istype(tool, /obj/item/weapon/saw))
 
 /obj/item/stack/material/wood/proc/cut_logs(obj/item/tool, mob/living/human/user)
 	var/hatchet = istype(tool, /obj/item/weapon/material/hatchet)

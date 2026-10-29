@@ -1,6 +1,7 @@
 """Run production world/metadata persistence on a tiny isolated native world."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -16,9 +17,63 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 
 
+def historical_wound_roof_helpers(loading, existing):
+    """Keep the historical defect sources intact; add explicit current dependencies."""
+    start = ('// Only roof transformations backed by direct saved turf contents are projected.\n'
+             '// No save bytes or world areas change during this preflight.\n/map_storage\n')
+    end = '\n/map_storage/proc/Load_Entry('
+    if not loading.startswith(start) or loading.count(start) != 1 or loading.count(end) != 1:
+        raise RuntimeError('Historical wound roof compatibility anchors changed')
+    roof = loading[:loading.index(end)]
+    procedures = ('clear_saved_roof_areas', 'saved_roof_area_type', 'find_saved_roof_area',
+                  'unique_saved_roof_area', 'prepare_saved_roof_areas',
+                  'materialize_saved_roof_areas', 'restore_validated_roof',
+                  'is_loaded_validated_roof', 'verify_restored_roof_areas')
+    members = ('validated_roof_areas', 'validated_roof_entries', 'validated_roof_types',
+               'validated_roof_instances', 'validated_roof_absent', 'restoring_roof_areas')
+    if re.findall(r'^/map_storage/proc/(\w+)\(', roof, re.M) != list(procedures):
+        raise RuntimeError('Historical wound roof compatibility procedures changed')
+    declarations = roof.split('\n/map_storage/proc/', 1)[0]
+    if re.findall(r'^\tvar/(?:list/)?(\w+) = ', declarations, re.M) != list(members):
+        raise RuntimeError('Historical wound roof compatibility members changed')
+    patterns = [r'^/map_storage/proc/' + name + r'\(' for name in procedures]
+    patterns += [r'^\tvar/(?:list/)?' + name + r'\b' for name in members]
+    if any(re.search(pattern, existing, re.M) for pattern in patterns):
+        raise RuntimeError('Historical wound roof compatibility dependencies duplicated')
+    return roof
+
+
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None  # Frozen historical fixtures keep 1681.
+    spec = importlib.util.spec_from_file_location('durable_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def current_ci_case(args):
+    if args.prepare_only or args.zone_topology or args.roof_areas or args.roof_control or args.persistence_year:
+        return False
+    modes = [name for name in ('lighting', 'wounds', 'dimension_bootstrap', 'recovery_reconnect',
+                              'lifecycle_shutdown', 'startup_only') if getattr(args, name)]
+    if len(modes) > 1: return False
+    mode = modes[0] if modes else 'roundtrip'
+    cases = {(profile, name, None) for profile in ('gaia', 'europe')
+             for name in ('roundtrip', 'dimension_bootstrap', 'recovery_reconnect', 'lifecycle_shutdown')}
+    cases.update({('gaia', 'wounds', None), ('gaia', 'wounds', 'wound-restore'),
+                  ('gaia', 'startup_only', None), ('gaia', 'recovery_reconnect', 'reclaim-order'),
+                  ('europe', 'lifecycle_shutdown', 'shutdown-return')})
+    cases.update(('gaia', 'roundtrip', control) for control in
+                 ('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
+    cases.update(('gaia', 'lighting', control) for control in
+                 (None, 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity',
+                  'lighting-view', 'lighting-eager', 'lighting-shared'))
+    return (args.profile, mode, args.negative_control) in cases
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path, help='Exact current Linux identity for the selected ordinary CI cases')
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--zone-topology', action='store_true',
                         help='Prepare synthetic zone/spawn positive and negative fixtures; native execution is held')
@@ -86,7 +141,10 @@ def main():
         parser.error('Startup diagnostics cannot run persistence mutation controls')
     if not args.prepare_only and not args.byond_bin:
         parser.error('--byond-bin is required for native execution')
+    if args.byond_archive and not current_ci_case(args):
+        parser.error('--byond-archive admits only the selected persistence CI matrix')
     root = Path(__file__).resolve().parents[2]
+    runtime = selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-durable-world-'))
     prefix = '.durable_world_' + uuid.uuid4().hex
     dme = root / (prefix + '.dme')
@@ -136,7 +194,7 @@ def main():
             'timer-restore': ('code/modules/persistence/durable_world.dm', '\tmap.durable_timer_queue().restore(timers)', '\t// Negative control: omit restoring persisted callbacks.'),
             'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
             'lighting-export': ('code/modules/persistence/functions.dm', 'if ("appearance", "light", "light_sources")', 'if ("appearance")'),
-            'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay))', 'if(FALSE)'),
+            'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay) || ispath(type, /atom/movable/lighting_fullbright))', 'if(FALSE)'),
             'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
             'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
@@ -179,6 +237,26 @@ def main():
                 replacements[relative] = subprocess.check_output(
                     ['git', 'show', baseline + ':' + relative], cwd=root, text=True)
             receipt['wound_control_commit'] = baseline
+            # Historical defect control with explicit current dependencies,
+            # not a reproduction of an entire historical game build. Keep both
+            # historical files byte-for-byte; supply the current roof API and
+            # content codec only in the fixture's functions copy.
+            loading = (root / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
+            marker = '/map_storage/proc/saved_content_refs(value, version)\n'
+            if loading.count(marker) != 1:
+                raise RuntimeError('Historical wound compatibility helper anchor changed')
+            start = loading.index(marker)
+            end = loading.find('\n/map_storage/proc/', start + len(marker))
+            helper = loading[start:end if end >= 0 else len(loading)]
+            relative = 'code/modules/persistence/functions.dm'
+            functions = (root / relative).read_text(encoding='utf-8')
+            existing = '\n'.join([functions, *replacements.values()])
+            if marker in existing:
+                raise RuntimeError('Historical wound content compatibility helper duplicated')
+            roof = historical_wound_roof_helpers(loading, existing)
+            replacements[relative] = functions + '\n' + roof + '\n' + helper
+            receipt['wound_control_compatibility_helper_sha256'] = hashlib.sha256(helper.encode()).hexdigest()
+            receipt['wound_control_roof_helpers_sha256'] = hashlib.sha256(roof.encode()).hexdigest()
         elif args.negative_control == 'lighting-shared':
             relative = 'code/modules/lighting/lighting_source.dm'
             text = (root / relative).read_text(encoding='utf-8')
@@ -215,7 +293,7 @@ def main():
                                   ('var/client/C', 'var/datum/recovery_fixture_client/C'),
                                   ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
                                   (' in clients)', ' in recovery_fixture_clients)')):
-                expected = 2 if before == 'var/client/C' else (3 if before == 'lobby.client' else 1)
+                expected = 2 if before == 'var/client/C' else (5 if before == 'lobby.client' else 1)
                 if body.count(before) != expected:
                     raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
                 body = body.replace(before, after)
@@ -306,15 +384,17 @@ def main():
         (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
         if args.prepare_only:
             return
-        byond = args.byond_bin.resolve(strict=True)
+        byond = args.byond_bin.absolute() if runtime else args.byond_bin.resolve(strict=True)
         compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        if runtime: runtime.before_launch('compile', output)
         build = subprocess.run([str(compiler), '-max_errors', '0', dme.name], cwd=root,
                                capture_output=True, text=True, timeout=180, creationflags=flags)
         build_log = build.stdout + build.stderr
         (output / 'compile.log').write_text(build_log, encoding='utf-8')
-        validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
+        if runtime: runtime.validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
+        else: validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
         (output / 'config').mkdir()
@@ -327,6 +407,7 @@ def main():
             # Include operation admission, nested-call rejection and release.
             for mode, minimum_checks in (('write', 6), ('unmeasured', 7), ('read', 15), ('custody-success', 10), ('custody-denied', 10), ('custody-release', 10)):
                 before_files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (output / 'map_saves').iterdir() if p.is_file()} if mode == 'unmeasured' else {}
+                if runtime: runtime.before_launch('daemon:'+mode, output)
                 run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, '-ip', '127.0.0.1', '-nowebclient', *platform_flags, '-trusted',
                     '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
                     cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
@@ -358,6 +439,7 @@ def main():
             return
         command = [str(daemon), dme.with_suffix('.dmb').name, '-ip', '127.0.0.1', '-nowebclient', *platform_flags, '-trusted',
                    '-params', 'profile=' + args.profile, '-log', 'runtime.log']
+        if runtime: runtime.before_launch('daemon', output)
         if args.lighting or args.persistence_year:
             run = run_lighting(command, output, flags)
         else:

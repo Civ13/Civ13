@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "scope": "civ13-byond-official-identity-capture-only",
+  "status": "SOURCE_PROPOSAL_NOT_ADMITTED",
+  "head": null,
+  "owner": null,
+  "executor": null,
+  "peer_ip": null,
+  "run_id": null,
+  "adapter_sha256": null,
+  "launcher_sha256": null,
+  "url": "https://www.byond.com/download/build/516/516.1681_byond_linux.zip",
+  "limits": {"wall_seconds": 120, "cleanup_seconds": 15, "request_seconds": 10, "archive_bytes": 8388608, "expanded_bytes": 134217728, "member_bytes": 67108864, "members": 512, "scratch_bytes": 16777216, "receipt_bytes": 262144},
+  "image_count": 0,
+  "compile_count": 0,
+  "daemon_count": 0,
+  "package_install_count": 0,
+  "prerequisites": [
+    "Independently reviewed exact committed adapter source and immutable request/grant",
+    "One named hosted executor, public repository, literal standard ubuntu-24.04 runner, attempt1 and no duplicate dispatch",
+    "Fresh official-host DNS observation freezes exactly one public TLS peer; no fallback or connection retry",
+    "Dedicated private noexec,nodev,nosuid tmpfs16MiB at /run/civ13-capture-OWNER, mode0700, owned by controller UID, empty before exclusive claim",
+    "External cgroup hard memory256MiB, swap0, PIDs16, CPU quota1 plus20CPU-second process limit, 120second wall watchdog and5second forced-retirement allowance",
+    "Executor accounts125seconds plus10second mount teardown/output allowance within135second job envelope, and verifies owned cgroup empty and exact mount absent before accepting closeout",
+    "Controller stdout bounded256KiB plus bounded executor diagnostics within1MiB total; no downloaded archive artifact/cache/upload",
+    "Reviewed egress permits exactly frozen official HTTPS peer443 for controller, no public listeners/credentials/production mounts; DNS happens before freezing the request",
+    "New manual registration source and normal required review/checks before any execution; no registered workflow supplied or dispatched by this source change",
+    "Source-reviewed launcher with systemd, cgroupv2, bpftool and Landlock ABI4 available without installation; unsupported mechanisms stop before HTTPS",
+    "Actual Memory/PID enforcement controls and absolute watchdog/cleanup acceptance still require reviewed implementation and runtime proof; current code reads memory/PID limits, proves scratch ENOSPC, denied bind and denied TCP444 only"
+  ],
+  "candidate_package_metadata_not_complete_closure": [
+    {"source": "https://packages.debian.org/bookworm/i386/libc6/download", "filename": "libc6_2.36-9+deb12u14_i386.deb", "bytes": 2626392, "sha256": "76b12e06be66ec3fc2c1791d7d8cf34c2b828ed210e3913feeeb8edc9688f820"},
+    {"source": "https://packages.debian.org/bookworm/i386/libgcc-s1/download", "filename": "libgcc-s1_12.2.0-14+deb12u1_i386.deb", "bytes": 59560, "sha256": "56b95a550b342418f6c4765d5c9b08df2c7167134767e44f1f1bc82ced363ece"},
+    {"source": "https://packages.debian.org/bookworm/i386/libcurl4/download", "filename": "libcurl4_7.88.1-10+deb12u15_i386.deb", "bytes": 426548, "sha256": "29e3dc308078ecf8ef9a714f08d227ec7eeae93b48bf30ef2e5322153658b0b0"}
+  ]
+}

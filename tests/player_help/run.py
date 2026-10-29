@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -24,6 +25,7 @@ PRELUDE = '''
 #define WEATHER_WET 2
 #define WEATHER_EXTREME 3
 #define WEATHER_SMOG 4
+#define CONSCIOUS 0
 /world
     hub = ""
     visibility = 0
@@ -37,8 +39,12 @@ var/time_of_day = "Night"
 var/list/probe_clients = list()
 /datum/proc/persistence_runtime_var(key)
     return FALSE
+/datum/probe_chat
+    var/is_ready = TRUE
+    var/mob/probe_client/client
 /mob/probe_client
     var/mob/mob
+    var/datum/probe_chat/chat
 /mob/probe_help
     parent_type = /mob/probe_client
 /proc/IsGuestKey(key)
@@ -47,6 +53,8 @@ var/list/probe_clients = list()
     var/location = AREA_OUTSIDE
     var/weather = WEATHER_WET
 /mob
+    var/stat = 0
+    var/sleeping = 0
     var/probe_connected = TRUE
     var/probe_prompts = 0
     var/probe_submits = 0
@@ -77,6 +85,7 @@ var/list/probe_clients = list()
 /proc/get_area(mob/M)
     return M.loc
 /mob/living/human
+    var/mob/probe_client/probe_client
     var/obj/item/l_hand
     var/obj/item/r_hand
     var/obj/item/back
@@ -341,9 +350,18 @@ var/failures = 0
 '''
 
 
+def compiler_succeeded(result, expected_version):
+    """Require the selected compiler's exact banner and the existing clean result."""
+    banners = re.findall(r'^DM compiler version[^\r\n]*', result.stdout, re.MULTILINE)
+    return (result.returncode == 0 and banners == ['DM compiler version ' + expected_version]
+            and '0 errors, 0 warnings' in result.stdout
+            and 'invalid file' not in (result.stdout + result.stderr).lower())
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--expected-byond-version', choices=('516.1681', '516.1688'), default='516.1688')
     parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
     parser.add_argument('--prepare-only', action='store_true', help='Write the exact isolated fixture without launching any process; requires --output')
     parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect', 'conversation-generation', 'conversation-action'])
@@ -364,6 +382,7 @@ def main():
         # verb body runs; reserve/poll below are unmodified production paths.
         production = production.replace('client/', 'mob/probe_client/').replace('/client\n', '/mob/probe_client\n')
         production = production.replace(' in clients)', ' in probe_clients)')
+        production = production.replace('H.client', 'H.probe_client')
         production = production.replace('if (question && (src in probe_clients) && generation == player_help_generation)', 'if (question && probe_connected && generation == player_help_generation)')
         production = production.replace('player_help_service.submit(src, question)', 'probe_submit(question)')
         if args.negative_control == 'conversation-generation':
@@ -375,7 +394,10 @@ def main():
         elif args.negative_control == 'prompt-first':
             production = production.replace('var/question = player_help_prompt()', 'if (!player_help_service.available())\n\t\treturn\n\tvar/question = player_help_prompt()')
         elif args.negative_control == 'disconnect':
-            production = production.replace('if (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"]))', 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\tif (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"]))')
+            condition = 'if (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"] || C.mob != entry["body"]))'
+            if production.count(condition) != 1:
+                raise SystemExit('Disconnect control target changed')
+            production = production.replace(condition, 'if (!C)\n\t\t\tclear_slot(i)\n\t\t\tcontinue\n\t\t' + condition)
         production = production.replace('inspected++', 'inspected++; probe_inspections++')
         if args.negative_control == 'inventory-budget':
             production = production.replace('queue.len >= 64 || inspected + children_inspected >= 64', 'queue.len >= 64 || children_inspected + children_inspected >= 64')
@@ -392,7 +414,8 @@ def main():
             production = production.replace('islist(response) && response["id"] == id', 'islist(response)')
         (temp / 'production.dm').write_text(production, encoding='utf-8')
         conversation_probe = (ROOT / 'tests/player_help/conversation_probe.dm').read_text(encoding='utf-8')
-        probe = PROBE.replace('    world.log << "RESULT: [failures]"', conversation_probe + '\n    world.log << "RESULT: [failures]"')
+        injury_probe = (ROOT / 'tests/player_help/injury_probe.dm').read_text(encoding='utf-8')
+        probe = PROBE.replace('    world.log << "RESULT: [failures]"', conversation_probe + '\n' + injury_probe + '\n    world.log << "RESULT: [failures]"')
         (temp / 'probe.dme').write_text(PRELUDE + '\n#include "production.dm"\n' + probe, encoding='utf-8')
         if args.prepare_only:
             (temp / 'prepared.json').write_text(json.dumps({
@@ -409,8 +432,7 @@ def main():
         built = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True, text=True, timeout=90)
         (temp / 'compile.log').write_text(built.stdout + built.stderr)
         print(built.stdout)
-        if (built.returncode or '0 errors, 0 warnings' not in built.stdout or '516.1681' not in built.stdout
-                or 'invalid file' in (built.stdout + built.stderr).lower()):
+        if not compiler_succeeded(built, args.expected_byond_version):
             raise SystemExit('Fixture compilation failed')
         ran = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-close', '-log', 'probe.log'], cwd=temp, capture_output=True, text=True, timeout=40)
         output = ran.stdout + ran.stderr + (temp / 'probe.log').read_text(errors='replace')

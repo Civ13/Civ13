@@ -6,6 +6,8 @@
 #define FILE_DIR "../.."
 #include "../../code/predefines.dm"
 #include "stubs.dm"
+#define ROUNDTRIP_NO_TOPOLOGY_COMPAT
+#include "roundtrip_compat.dm"
 #define fdel(path) delete_file_adapter(path)
 #include "../../code/modules/multiz/world_z_budget.dm"
 #include "../../code/modules/persistence/functions.dm"

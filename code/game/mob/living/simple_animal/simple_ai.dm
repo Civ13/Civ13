@@ -93,7 +93,7 @@
 			if (valid_dirs.len)
 				var/moving_to = pick(valid_dirs)
 				set_dir(moving_to)
-				if (Move(get_step(src, moving_to)))
+				if (ai_step(get_step(src, moving_to), move_to_delay))
 					turns_since_move = 0
 			return "wander"
 

@@ -5,6 +5,13 @@ without maps or normal world startup, then exercises the actual vote, ticker and
 rotation procedures in temporary offline storage. No player accounts or server
 saves are used. The fixture rejects connections and closes the port.
 
+The default retains historical 516.1681 behavior, including Windows tools.
+Ordinary CI explicitly adds `--byond-archive "$PWD/BYOND/pinned.zip"` for the
+current Linux 516.1688 toolchain. That mode verifies the exact pinned archive
+and installed members before compilation and again before the daemon, and
+requires one exact compiler banner with zero errors and warnings. It is
+Linux-only; the historical default and the same six cases/deadlines remain.
+
 Checks include automatic/admin vote creation, stale pending votes and results
 before callbacks, finish-flag recovery, automatic rotation, initial lobby map
 selection and ordinary-round controls. `--negative-control vote` removes the

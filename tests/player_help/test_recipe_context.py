@@ -27,6 +27,15 @@ class RecipeContextTests(unittest.TestCase):
             path.write_text(json.dumps({'recipes': recipes}), encoding='utf-8')
             return bridge.recipe_context(path)
 
+    def test_finished_planks_override_ambiguous_cached_material_names(self):
+        for cached_name in ('soft', 'softwood', 'finished planks'):
+            with self.subTest(cached_name=cached_name):
+                recipe = {'name': 'plank furniture', 'inputs': [
+                    {'id': '/material/wood/soft', 'name': cached_name, 'quantity': '6'},
+                    {'id': '/material/wood', 'name': 'wood', 'quantity': '1'}]}
+                text = self.project([recipe])[0]['text']
+                self.assertIn('inputs: 6 x finished planks, 1 x wood', text)
+
     def test_actual_primitive_sawmill_legacy_catalog_matches_recipe_and_formats_meaning(self):
         rows = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8').splitlines()
         row = next(row for row in rows if ',primitive saw mill,/obj/structure/sawmill,' in row)
@@ -144,6 +153,31 @@ class RecipeContextTests(unittest.TestCase):
         self.assertIn('Do not claim research is unlocked from era alone.', prompt)
         for forbidden in ('floor 1', 'time 60 deciseconds', 'level 1', 'WRONG MAP', 'PRIVATE', 'a' * 32):
             self.assertNotIn(forbidden, prompt)
+
+    def test_sawmill_processing_prompt_uses_one_plank_yield(self):
+        catalog = ROOT / 'UI/crafting-atlas.json'
+        corpus = (bridge.bounded_json(ROOT / 'UI/player-help.json', 32768)
+                  + bridge.recipe_context(catalog) + bridge.acquisition_context(catalog)
+                  + bridge.gameplay_knowledge(ROOT))
+        calls = []
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(bridge, 'network', side_effect=AssertionError('network forbidden')), \
+                mock.patch.object(bridge, 'network_child', side_effect=AssertionError('network forbidden')):
+            instance = bridge.Bridge(Path(temporary),
+                                     {'enabled': True, 'model': 'injected-test', 'endpoint': 'unused',
+                                      'workers': 1, 'timeout_seconds': 1}, corpus,
+                                     lambda *args: calls.append(args) or {'message': {'content': 'fixture'}})
+            try:
+                result = instance.answer({'id': '1-2-3', 'account': 'a' * 32,
+                                          'question': 'How do I use a primitive sawmill to cut logs and replace its flint blade?',
+                                          'game_context': {'map': 'Nomads Gaia', 'civilizations': True}})
+            finally:
+                instance.close()
+        self.assertEqual(result['status'], 'ok')
+        prompt = calls[0][1]['messages'][0]['content'].lower()
+        self.assertIn('one log yields one plank and one bark', prompt)
+        self.assertIn('sharpened flint', prompt)
+        self.assertNotIn('one log yields four planks', prompt)
 
 
 if __name__ == '__main__':

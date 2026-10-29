@@ -191,8 +191,49 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
+	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
+	if (paired_move)
+		var/datum/subtile_pull_capability/P = paired_move.issued
+		if (!P || !P.consume(src, newloc, direct, P.after["sx"], P.after["sy"]))
+			return FALSE
+		var/atom/previous_location = loc
+		var/previous_direction = dir
+		. = ..(newloc, direct, P.after["sx"], P.after["sy"])
+		if (!src || isDeleted(src))
+			return .
+		if (direct != previous_direction)
+			dir = previous_direction
+			set_dir(direct)
+		l_move_time = world.time
+		if (previous_location != loc && previous_location && previous_location.z == z)
+			last_move = get_dir(previous_location, loc)
+		return .
+	if (istype(src, /mob/living/simple_animal))
+		var/mob/living/simple_animal/npc = src
+		if (npc.npc_subtile_pulse)
+			var/datum/npc_subtile_pulse/P = npc.npc_subtile_take_pulse(newloc, direct)
+			if (!P)
+				return FALSE
+			var/atom/old_location = loc
+			var/old_direction = dir
+			. = ..(newloc, direct, P.sx, P.sy)
+			P.engine_return = .
+			if (!npc || isDeleted(npc))
+				return .
+			if (direct != old_direction)
+				dir = old_direction
+				set_dir(direct)
+			l_move_time = world.time
+			if (old_location != loc && old_location && old_location.z == z)
+				last_move = get_dir(old_location, loc)
+			return .
+		if (npc.npc_subtile_offset_owned && (step_x || step_y))
+			return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
 	var/mob/living/human/subtile_actor
 	if (ishuman(src))
@@ -203,7 +244,7 @@
 				return FALSE
 		else if (subtile_actor.human_subtile_offset_owned && (step_x || step_y))
 			return FALSE
-	if (direct & (direct - 1))
+	if (!subtile_pulse && (direct & (direct - 1)))
 		if (direct & TRUE)
 			if (direct & 4)
 				if (step(src, NORTH))
@@ -299,8 +340,17 @@
 		return // Moved here to avoid nullrefs below
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
-		if (!subtile_input_actor.human_subtile_input_supported(direct))
+		// A paid crawl retains admission even after early collision/posture exit.
+		if (subtile_input_actor.human_subtile_transaction && subtile_input_actor.human_subtile_transaction.paid_posture)
 			return FALSE
+		subtile_input_actor.human_subtile_prepare_ui_movement()
+		if (!subtile_input_actor.human_subtile_input_supported(direct))
+			human_subtile_release_visuals()
+			return FALSE
+		if (!subtile_input_actor.human_subtile_eligible(direct) && !subtile_input_actor.human_subtile_pull_ready(direct))
+			human_subtile_release_visuals()
+	else
+		human_subtile_release_visuals()
 
 	if (!mob.next_change_dir)
 		mob.next_change_dir = list(
@@ -767,8 +817,8 @@
 			else if (mob.confused && prob(40))
 				step(mob, pick(cardinal))
 			else
-				if (mob_is_human && H.human_subtile_eligible(direct))
-					subtile_deadline = H.human_subtile_deadline(move_delay, world.time)
+				if (mob_is_human && (H.human_subtile_eligible(direct) || H.human_subtile_pull_ready(direct)))
+					subtile_deadline = H.human_subtile_deadline(move_delay, world.time, ordinal)
 					. = H.SelfMove(n, direct, subtile_deadline)
 				else
 					. = mob.SelfMove(n, direct)
@@ -808,7 +858,7 @@
 
 			// make animals acknowledge us
 			if (mob_is_human)
-				for (var/mob/living/simple_animal/complex_animal/C in living_mob_list) // living_mob_list fails here
+				for (var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list)
 					var/dist_x = abs(mob.x - C.x)
 					var/dist_y = abs(mob.y - C.y)
 					if (dist_x <= 10 && dist_y <= 10)

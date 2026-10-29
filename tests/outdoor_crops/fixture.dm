@@ -22,6 +22,7 @@ var/global/datum/map_fixture/map = new
 /turf/floor/beach/water
 /turf/floor/trench/flooded
 /obj/structure/farming/plant
+    var/winter_hardy = FALSE
     var/stage = 1
     var/plant = "tomato"
     var/sprite_plant
@@ -169,3 +170,10 @@ var/global/datum/map_fixture/map = new
     del(world)
 
 
+
+// Seed admission is exercised separately in tests/winter_crops; this fixture tests forage/water.
+/proc/winter_crop_plot_error(turf/T)
+    return null
+
+/obj/item/stack/farming/seeds/proc/planting_error(turf/T)
+    return null

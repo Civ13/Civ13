@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # This offline fixture models gameplay without collector instrumentation.
 # Unknown symbols/directives must not acquire an implicit disabled meaning.
-DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False}
+# The pull-pair kernel is part of every production build.
+DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False, 'CIV13_ROOT_TREE_PRESENTATION': False,
+                   'CIV13_SUBTILE_PULL_PAIRS': True}
 
 
 def read(path):
@@ -21,7 +23,7 @@ def read(path):
 def extract(source, declaration, *, defines=None):
     """Select declared proc-local ifdef branches without truncating the body.
 
-    This is deliberately not a DM preprocessor. Only ifdef/ifndef, else and
+    This is deliberately not a DM preprocessor. Only single-symbol if/ifdef/ifndef, else and
     endif with explicitly known Boolean symbols are supported. Directives in
     inactive branches are checked too; ambiguous scope or syntax fails closed.
     """
@@ -44,12 +46,12 @@ def extract(source, declaration, *, defines=None):
             continue
         if stripped.startswith('#'):
             directive = stripped.split('//', 1)[0].rstrip()
-            conditional = re.fullmatch(r'#(ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
+            conditional = re.fullmatch(r'#(if|ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
             if conditional:
                 operation, symbol = conditional.groups()
                 if symbol not in defines:
                     raise AssertionError('Unknown conditional symbol: ' + symbol)
-                selected = defines[symbol] if operation == 'ifdef' else not defines[symbol]
+                selected = not defines[symbol] if operation == 'ifndef' else defines[symbol]
                 branches.append((active, selected, False))
                 active = active and selected
             elif directive == '#else':
@@ -79,19 +81,21 @@ def extract(source, declaration, *, defines=None):
 FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'inducedSSD', 'buckled', 'storage', 'kind', 'backend_started',
           'contents_started', 'mutation_started', 'restoring_players',
-          'current', 'enter_backend', 'enter_contents', 'finish',
+          'current', 'enter_backend', 'enter_contents', 'finish', 'withdraw',
           'contents', 'stomach_contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
           'l_hand', 'r_hand', 'equipped', 'update_inv_l_hand', 'update_inv_r_hand', 'equip_to_slot',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
           'clear_saved_zones', 'clear_zone_export', 'clear_saved_roof_areas', 'clear_bookkeeping', 'release_durable_world',
-          'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until')
+          'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until',
+          'z', 'clear_throw_launch', 'throw_flight_token', 'throw_launch_source',
+          'throw_launch_dx', 'throw_launch_dy', 'throw_launch_x', 'throw_launch_y')
 
 
 def project(source, declaration, args, env, method=False, *, defines=None):
     """Project complete selected bodies; only engine effects are supplied by tests."""
-    lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required']
+    lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required, persistence_admission_identity, persistence_player_restore_ready']
     for raw in extract(source, declaration, defines=defines).splitlines():
         code = raw.split('//', 1)[0].rstrip()
         if not code.strip():

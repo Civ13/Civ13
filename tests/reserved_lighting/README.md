@@ -37,8 +37,8 @@ Before eventual compilation, the coordinator's isolated launcher must place the
 prepared DME in the checkout root so existing resource paths resolve; this
 preparer does not compile the DME from the output directory.
 
-The new native fixture is **uncompiled and unrun**. Expected allocation counts
-are assertions to verify, not results: 256 normal overlays versus 220 for an
+The original Windows review stage left this fixture unrun. Current Linux
+parity acceptance is recorded below; allocation assertions are: 256 normal overlays versus 220 for an
 8x8 reserved region on a 16x16 world, with 289 shared corners in both modes.
 It records normal/halo color, luminosity, ownership and source membership rows,
 torch movement, daylight, opacity, activation, replacement and native entry
@@ -54,24 +54,24 @@ requires an overlay and four corners before recording the actual production
 color matrix, luminosity, TOD, visibility, RGB channels, ordered master
 coordinates/directions and source-owner memberships. Membership never depends
 on observed overlay presence; only six still-unactivated interior cells are
-excluded. These are proposed assertions pending native execution.
+excluded. Current Linux native parity acceptance is recorded below.
 
 The carried-source case uses production top-atom ownership and checks removal
 from the carrier after release. Pooled refusal uses actual cleanup and pool
 callbacks with explicit offline queue retirement, not a running garbage process.
 Ice daylight repair clears only a cached overlay pointer and requires the
 production repair callback to rediscover its actual owner and retain corners.
-Every proposed behavior is still unrun. `compare.py baseline.jsonl candidate.jsonl`
+`compare.py baseline.jsonl candidate.jsonl`
 requires all six ordered snapshots and exact equality of their complete rows;
 its result cannot establish provenance or replace successful native receipts.
 Controls cover virtual masters, halo boundaries and refused ownership. Redundant
 individual import/runtime/compatibility guard mutations are omitted: another
 production guard can preserve their behavior, making them unsuitable oracles.
 
-Do not launch the fixture until the coordinator releases the native hold and
-reviews the exact candidate and launch plan. Use pinned BYOND 516.1681, temporary
-storage, closed ports and diagnostic scanning. No CI suite has been registered;
-root coordinates shared CI selection after review. Compiler success alone will
+The original Windows stage required a separate native grant and pinned BYOND
+516.1681, temporary storage, closed ports and diagnostic scanning. Its frozen
+runner retains that contract. The current Linux CI lane is described below.
+Compiler success alone will
 not establish allocation counts or lighting parity. No memory/speed gain measured.
 The marker adds a scalar field to every turf, including ordinary cells. That cost
 is unmeasured. Overlay counts alone cannot establish a net reduction in RAM.
@@ -111,9 +111,10 @@ appearance, source drift and invalid cells. These are not native renderer tests.
 
 ## Current CI parity lane
 
-`run-ci.py --byond-bin <516.1681-bin> --output <new-directory>` runs only
+`run-ci.py --byond-bin <516.1688-bin> --byond-archive <pinned.zip>
+--output <new-directory>` runs only
 in a disposable CI workspace. It prepares the actual merged production sources,
-compiles five closed-port 16x16 fixtures, and compares all six complete native
+compiles six closed-port 16x16 fixtures, and compares all six complete native
 state snapshots with reserved omission off versus on. The virtual-master mutation
 must reach a structural snapshot mismatch; halo and refused-owner mutations must
 fail their named assertions. Compilation and execution have finite per-process
@@ -123,7 +124,7 @@ renderer is used. The default area clearance flag remains FALSE and no map opts 
 The workflow now selects this native lane for the introduced suite or extensive
 regressions and retains evidence even on failure. The older Windows contained
 runner remains a separate explicitly granted workflow. Earlier statements above
-about an unregistered/unrun native fixture describe that original review stage.
+describe that original Windows review stage.
 A passing CI run establishes only these native state/parity checks, never client
 pixels, complete map clearance, net memory savings or deployment readiness.
 
@@ -141,3 +142,316 @@ backlink identity must preserve that owner and luminosity. The Linux CI lane add
 an `owner-identity` mutation removing this guard. The refusal control now removes
 the constructor's admission guard, since synchronous `qdel` itself also detaches
 refused overlays. No deferred-Destroy behavior is assumed.
+
+
+## Comparable resource instrumentation
+
+Exact head `2d4229c2ca3062e6c358aa21575f0c203282f995` passed
+[CI 39347909747](https://github.com/Civ13/Civ13/actions/runs/39347909747): six
+snapshots, 1,350 equal rows and four causal controls. This historical parity
+result is not acceptance of the changed semantic workload. It contains no comparable CPU/private-memory measurements.
+
+`measurement.py` is a separate, source-reviewed measurement candidate, not a
+native-accepted adapter. Its injected process/clock/counter interface is exercised
+by `test_measurement.py` without launching any processes. No production/probe
+changes, gate enablement or automatic native CI step are added.
+
+A playable-owner executor can seal an isolated input directory containing
+`daemon`, `probe.dmb`, `probe.rsc`, the unchanged `probe.dm`, and `build.json`:
+
+```text
+<verified-python> tests/reserved_lighting/measurement.py --seal <input-directory> --head <exact-source-sha>
+<verified-python> tests/reserved_lighting/measurement.py --packet <input-directory>/measurement-packet.json --grant <grant.json> --output <fresh-output-directory>
+```
+
+Sealing only hashes files. `build.json` must contain `head`, `byond_version`
+(`516.1688`), `compiler_sha256` and `files` mapping the four input names to SHA256.
+This provenance is a declaration requiring independent exact-build evidence, not
+proof from a compiler run. The sealing step never builds or launches anything.
+The packet binds all inputs and permits only the same executable/DMB/RSC with
+`reserved=0/1` changing. Both production defaults remain FALSE.
+It also binds the absolute paths and SHA-256 hashes of the running measurement
+script, comparator and Python executable. Moving or modifying these requires
+resealing and a fresh packet-bound grant. This is not a complete Python runtime
+dependency attestation; executor review must establish the trusted runtime.
+
+The Linux-only adapter needs `/proc`, externally accepted account/network/process
+isolation, and accepted platform/resource containment. A grant binds packet hash,
+head, `executor: "playable-owner"`, `isolated_environment_accepted: true`,
+`platform_adapter_accepted: true`, and numeric `starts_unix`/`ends_unix`. This is an
+executor precondition, not self-authorization. No grant or native run is supplied
+by this change. The Windows stopped-run packet must not be reused.
+
+One excluded warmup per variant precedes ten alternating AB/BA pairs (22 fresh
+processes). Per-process limits are 30 seconds wall, 10 seconds CPU, 512 MiB sampled
+private bytes and 16 MiB generated output; total measurement wall is at most 960
+seconds. Samples occur every 0.1 seconds and retain PID/start ticks. Linux exit
+CPU comes from `wait4` user+kernel seconds; private bytes are sampled
+`Private_Clean + Private_Dirty + Private_Hugetlb`, not RSS, true peak or net RAM.
+No private observation makes a run incomplete. Wall includes observer/sampling
+latency. Compilation, sealing and comparisons are outside the process timer.
+
+Every sample is persisted before validation. Counter drift, wrong attribution,
+sockets/children, output/resource/lease limits, partial outcomes, diagnostics,
+missing parity or cleanup failure abort the batch without retry. Cleanup uses
+only the retained child/group, with a five-second deadline. Between-sample
+activity cannot be excluded by polling: network and child containment must be
+provided by the isolated executor. Sampled private limits are detection limits;
+the executor must supply accepted hard resource containment. The adapter itself
+has not been validated with native BYOND in this task.
+
+Every measured pair must pass six-snapshot/1,350-row equality. Raw paired CPU,
+wall and sampled-private differences and their medians are retained; no automatic
+speedup verdict is emitted. The tiny 16x16 workload may be below useful timer or
+memory resolution. Measurements establish only this end-to-end fixture workload,
+not isolated lighting CPU, client rendering, production latency, OOM remediation
+or whole-server RAM savings. Fresh native allocation and exact input/build
+artifacts remain required before execution.
+
+Lease and aggregate bounds are checked again immediately before every launch,
+after input hashing. Cleanup retires surviving group members even after the
+direct child has been reaped, without waiting for that child twice. Before each
+signal it checks Linux group/session membership and leader birth identity;
+changed or unavailable ownership fails closed and reports incomplete cleanup.
+The group inspection is not atomic with signaling and does not replace accepted
+external process containment. Persistent groups fail the bounded cleanup check.
+Diagnostic rejection includes spaced `## ERROR`, Bad ref/loc and null execution.
+Unhandled exceptions, out-of-memory messages, failed assertions and access
+violations also invalidate PASS artifacts. Injected outcome-entry controls check
+each fatal message in runtime, stdout and stderr, with clean-log controls.
+If post-launch identity acquisition fails, cleanup terminates and reaps only the
+retained, unreaped direct child. It does not signal an unverified process group;
+the receipt remains incomplete and requires external containment cleanup.
+
+Batch completion rechecks lease/aggregate bounds and all bound inputs after
+the final parity comparison and summaries, then rechecks time after hashing.
+Expiry or input drift during final acceptance leaves the receipt incomplete,
+even when every process exited and each pair returned matching snapshots.
+Injected controls cover lease expiry during final comparison or rehashing,
+aggregate timeout and input drift without starting any native process.
+
+
+### Public runtime inputs
+
+The unchanged full-source fixture initializes name lists through literal reads
+in `code/names.dm`. An empty working directory would emit missing-file errors;
+fatal diagnostics remain rejected. Before compiling/sealing, the source-only
+`--prepare-runtime <fresh-input-directory> --head <exact-source-sha>` operation
+reads only tracked `code/names.dm` and `config/names` Git blobs, derives the
+explicit literal allowlist, and writes only those public name files (currently
+146 files, 135,796 Git-object bytes) plus `runtime-inputs.json`. Archive reads
+disable host text expansion and check selected files against the exact Git tree;
+stored CRLF and binary bytes are preserved. No settings/config tree,
+credentials, saves or live files are copied. The script also binds names.dm in
+its execution identity. Other newly discovered runtime reads require review;
+this staging is not a claim that a native run is clean.
+
+Place the exact prepared compiler outputs and daemon in that input directory.
+`build.json` additionally binds `runtime_inputs_sha256`, the SHA-256 of
+`runtime-inputs.json`. The runtime manifest records exact source head, source
+hash/Git blob and each public relative path, byte count, SHA-256 and Git blob.
+Sealing includes that manifest and every name file. Existing packets need to be
+resealed and independently accepted; this operation creates no execution grant.
+
+Every fresh per-run directory receives separate verified name-file copies before
+launch, outside the measured process interval. Traversal, absolute paths, links,
+unknown/missing/changed inputs and unexpected configuration files are rejected.
+Copies are checked again after the process outcome. The source directory never
+becomes a writable runtime/config symlink. These checks do not replace external
+filesystem/process/network containment or eliminate all concurrent-write races.
+
+Exact-head linkage comes from trusted Git-archive preparation and independent
+build review; a self-consistent hand-authored manifest alone does not prove it.
+
+
+### Registered containment-only pilot (default OFF)
+
+The three pilot files in this branch match exact master merge
+`61329b29e7e4b5d898662a7adf1c05595b13b357` from #3256 and #3259. They retain
+manual/default-false container execution, the exact repository/head/public-hosted
+guards and read-only job permissions. PR events can select only injected offline
+tests under the existing introduced-suite policy. There are no BYOND, compiler,
+measurement batch, game inputs, secrets, public ports, caches or artifact uploads
+in that workflow. These synchronized draft copies were not executed as this PR.
+
+Corrected containment pilot
+[39636638727](https://github.com/Civ13/Civ13/actions/runs/39636638727) executed at
+that master merge, with nine injected tests and all five runtime controls complete.
+It checked denied egress, a protected-input write denial plus positive scratch
+write, actual scratch ENOSPC, PID rejection attributed to the cgroup, hard-memory
+OOM and retirement of an owned surviving descendant. All five owned containers
+were removed; two retained process birth identities and their cgroup retired.
+The independent source owner and sole allocator reconciled the same receipt.
+
+This is a Python-only 64 MiB memory/zero-swap envelope with 16 PIDs/threads,
+0.25 CPU, 8 MiB noexec scratch and 1 MiB shared memory. EACCES alone is not causal
+read-only mount proof; separate mount RW=false inspection is configuration
+evidence. CPU quota readback is not timing calibration. Host CLI output uses a
+1 MiB polling detection threshold that may overshoot, not a hard host disk quota.
+The exact local logging configuration is max-size=1m, max-file=1, compress=false.
+Nine injected tests cover the source contracts; the successful run supplies only
+the stated small Python containment evidence, not BYOND/platform acceptance.
+
+Prior pilot
+[39633874487](https://github.com/Civ13/Civ13/actions/runs/39633874487) failed before
+its first Python control started because Docker rejected compression with one
+log file. Its incomplete receipt and cleanup-only evidence remain preserved.
+Both explicitly approved allocations are consumed. No further execution follows
+from staging, source tests, the successful pilot or these synchronized copies.
+
+### Remaining native measurement prerequisites
+
+1. Review a bounded, isolated Linux BYOND 516.1688 build/preflight plan and its
+   executor. The accepted Python image does not contain BYOND or establish the
+   larger compiler/runtime envelope. Use a free standard public hosted runner,
+   verified image/tool identities and external hard process/network/memory/swap/
+   scratch/output bounds, with readback and owned cleanup. No Desktop or
+   production resource, save, credential or public test port is a test input.
+2. After explicit scoped admission, regenerate source/runtime manifests with
+   Linux paths at the exact current PR head and compile the unchanged 16x16
+   fixture. Retain independently checked compiler/version/hash, invocation,
+   source inputs and zero-error/zero-warning outputs. Seal daemon, probe.dm,
+   probe.dmb, probe.rsc, build.json and the 146 allowlisted public name inputs.
+   A self-consistent build declaration alone is not exact-build proof.
+3. Validate the real Linux measurement adapter and cleanup with the accepted
+   wrapper: CPU attribution, sampled private memory, lease/aggregate bounds,
+   diagnostics, input mutation, parity and failure cleanup. Python containment
+   controls do not test the BYOND executable, /proc observations or wait4 path.
+4. Obtain a fresh packet/head/executor-bound grant and separate authorization
+   before the 22-process measurement batch. Both variants must use the same
+   exact binary/resources, and every pair must pass six snapshots/1,350 overlay rows plus all 1,536 lumcount rows, including 36 rows for the fixed six omitted cells.
+   Preserve raw measurements and limitations; no speedup or RAM claim exists.
+
+No native build packet, BYOND preflight, adapter execution or CPU/private-memory
+measurement is supplied by this PR. Historical parity evidence binds lighting
+source `2d4229c2ca3062e6c358aa21575f0c203282f995`; the later semantic correctness
+reference is `a93e490e9e05a4faace778dd8431abf0d6f10564`. The October 24 source
+candidate reconciles master `d6b06c638517bb4100beeca6a90d09adc3629fb7`; this PR
+now targets master. Historical correctness is not native acceptance of the
+reconciled tree. All source/runtime manifests and any future compiled packet
+must bind the new exact candidate, with fresh platform/executor admission.
+Source acceptance and merge readiness remain separate.
+
+### Separate native preflight source (default OFF)
+
+The [native preflight source](native_preflight/README.md) now provides an inert
+toolchain recipe, exact public Git staging, and a separate one-compile/two-smoke
+driver with injected negative controls. It does not change the measurement
+batch or the accepted pilot. Its toolchain identities remain unresolved; larger
+causal controls, engine contract, zero-cost handoff and explicit scoped admission
+are required before any acquisition, build or native execution. No workflow
+activates this source and no native result is supplied by it.
+
+
+### Official toolchain identity capture source (default OFF)
+
+The separate [hosted capture source](native_preflight/hosted/README.md) supplies
+real fixed-peer HTTPS, bounded ZIP/static-ELF inventories, a hard-tmpfs adapter
+and an inert systemd launcher. It captures candidate identities without
+extracting/installing/executing BYOND or building an image. Its independently
+reviewed offline controls do not establish actual platform/network/resource
+enforcement. Memory/PID/watchdog causal controls, registration, exact official
+peer/source/grant, one named executor and scoped approval remain prerequisites.
+No capture, image preparation, native preflight or measurement has run here.
+The public standard runner proposal uses no artifact upload or cache storage.
+The pinned image-acquisition controller's unresolved hashes remain strict.
+
+### Semantic base reconciliation
+
+The pinned semantic correctness reference is
+`a93e490e9e05a4faace778dd8431abf0d6f10564`, not acceptance of a later master
+reconciliation.
+Its [native correctness run39679381491](https://github.com/Civ13/Civ13/actions/runs/39679381491)
+compiled with zero errors/warnings and passed six snapshots, 1,350 overlay rows,
+1,536 all-cell lumcount rows, 36 fixed-omitted-cell rows and five causal controls.
+The later run39679709439 skipped native checks; its overall success is not this
+native evidence. This changes the workload/probe/comparator relative to the old
+2d4229/a946 source. Neither earlier #3243 packets nor historical CPU/private-memory
+acceptance can be carried forward. No resource measurements exist for either tree.
+
+Measurement sealing now cites the exact semantic-base correctness run/head and
+rejects the old reference. Every pair and the separate preflight smoke require
+the complete semantic coverage summary. Real-comparator offline regressions
+exercise an omitted-cell lumcount mutation and missing/wrong coverage counts.
+Fresh source/runtime manifests must bind the resulting feature head; regenerate
+them again on any future accepted Linux executor. This source reconciliation
+provides no native preflight, platform, measurement, acquisition or runtime grant.
+
+### October 25 toolchain migration
+
+The published reconciliation used master
+`704ebe205bf06c07bcf6460cfa1c3a2e9254a152` without a production-policy delta.
+Measurement sealing, the separate preflight and the two ordinary Linux CI
+correctness lanes now require 516.1688. The frozen Windows runner retains its
+original 1681 contract. This does not relabel historical correctness evidence. Exact-head
+CI40099748074 at `ab10a6362d3e79bce498695f0c402409d0c07048` already ran and passed
+native exclusion and reserved-lighting parity plus controls under that old tree.
+The separately cited old mall 403 is not that correctness result. Historical
+acquisition failures also remain separate evidence; no download was retried here.
+
+The already retained 1688 Linux archive is 4,887,281 bytes, SHA256
+`16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9`, matching
+the central version manifest and repository mirror's advertised asset digest.
+Static inspection found 61 regular files, 14,626,448 expanded bytes and the i386
+interpreter `/lib/ld-linux.so.2`. Compiler, daemon and bundled libraries are
+hash-bound in the unresolved templates. No duplicate acquisition is needed.
+
+This Windows preparation does not supply actual i386 loader/transitive-library
+hashes, Python/rootfs/final-image identity, accepted larger-profile storage and
+containment, an engine/account/socket contract, or an admitted Linux executor.
+The exact central version manifest is now explicitly required in public source
+staging; no other tools/config subtree is admitted. Regenerate all source/runtime
+and eventual compiled packets at the reviewed candidate, then again with actual
+Linux executor paths. Preflight remains one compile and exactly two attribution
+smokes, with the 22-process comparison separately held. No restart, installation,
+image build/pull, dispatch, cgroup change or native execution is authorized here.
+
+The established Linux correctness lanes take the already checked
+`BYOND/pinned.zip` via `--byond-archive` and reuse the central passive verifier.
+They recheck the compiler, daemon and bundled libraries before every native
+launch and after each runtime, reject identity drift and old/mixed banners,
+and retain exact runtime identity metadata. Their fixture/control sets, process
+limits, deadlines, port guards and cleanup are unchanged. Ordinary PR CI may run
+these two lanes; the manual pilot, attribution preflight and 22-process batch
+remain separately held. Archive hashes establish reproducibility, not publisher
+authentication or full i386 dependency/platform acceptance.
+
+### October 29 source reconciliation
+
+This reconciliation integrates master
+`b64a33bd9b1ca5f12bb6e855d4848c193f9e64e4` to resolve actual merge conflicts.
+It retains master's exclusion runtime fixture, including its event-bound
+base/head preparation, current 1688 runner and separate historical 1681 runner.
+The reserved-lighting runtime identity tests cover their own runner; master's
+exclusion tests cover that independent lane. One test now checks the complete
+current movable hook instead of its superseded one-line spelling; offline
+invocations can supply an immutable `CI_BASE` just as the runner requires.
+Production code, maps and resources
+have no delta from that master revision. The workflow retains master's admission
+conditions and adds the measurement controllers' offline checks, the reserved
+runner's pinned-archive argument and its identity receipt.
+
+Earlier exact head `df9382507c2d095d744a5fe249ffd955704b130b` passed
+[CI 40240362081](https://github.com/Civ13/Civ13/actions/runs/40240362081), including
+the 1688 compile and both native correctness lanes. That evidence remains bound
+to that earlier head; it is not a resource measurement or acceptance of this
+reconciliation. The measurement tooling adds no production optimization or
+automatic measurement step. Source review can assess the tooling separately
+from the explicitly admitted preflight and paired measurements described above.
+
+The first reconciliation run, [40837156658](https://github.com/Civ13/Civ13/actions/runs/40837156658),
+compiled successfully but failed on three historical Git-object reads before
+native correctness execution. Its failure is preserved. Historical exclusion
+test inputs are now checked-in fixtures with exact original hashes; this changes
+test portability, not the live source oracle or runtime admission.
+
+Run [40838457688](https://github.com/Civ13/Civ13/actions/runs/40838457688) then passed
+the clean compile, offline exclusion contracts and native exclusion controls, but
+the reserved-lighting lane stopped on missing public name files and normal
+pre-world global initialization. The generated world adapter now leaves that
+normal initializer unconstructed; the existing probe owns its minimal config
+and lighting startup. Production startup is unchanged. The CI runner stages only
+the same 146 exact-head public name files used by the measurement controller,
+checks their hashes before/after execution, and retains their manifest. It copies
+no private configuration and rejects missing-file diagnostics even with PASS.
+The compile/daemon counts, semantic controls and process bounds are unchanged.

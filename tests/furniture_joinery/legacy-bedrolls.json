@@ -1,0 +1,46 @@
+[
+  {
+    "file": "config/crafting/material_recipes_abashiri.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,none,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_battle_ships.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_camp.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,none,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_carib.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_crustacean.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_global.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_gorilla.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_kwai.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,none,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_pygmy.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_sovafghan.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,furniture,0,0,0,8,null"
+  },
+  {
+    "file": "config/crafting/material_recipes_voyage.txt",
+    "row": "RECIPE: /material/leather/,leather bedroll,/obj/item/weapon/bedroll,4,100,0,1,none,0,0,0,8,null"
+  }
+]

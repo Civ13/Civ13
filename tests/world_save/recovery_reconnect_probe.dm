@@ -3,6 +3,9 @@
 var/list/recovery_fixture_clients = list()
 var/recovery_fixture_loads = 0
 var/recovery_fixture_late_arrived = FALSE
+/turf/floor/recovery_return/New()
+	// Safe floor identity for return; no visual/physiology startup is under test.
+	return
 /mob/living/human/durable_probe_leader/update_icons()
 	// Identity-only constructors have no physiology/species or real HUD.
 	// Keep disposal and disk inventory restoration real; adapt presentation IO.
@@ -73,8 +76,12 @@ var/recovery_fixture_late_arrived = FALSE
 		season = "SUMMER"
 		time_of_day = "Evening"
 		game_hour = 129
+		var/return_x = 2
 		for(var/account in list("fixtureaccount", "playingbanned", "serverbanned", "guest123", "latearrival", "disconnected"))
-			var/mob/living/human/durable_probe_leader/H = new(locate(2,2,1))
+			// Reclaim retains real safe-turf admission: bodies cannot share a tile.
+			var/turf/floor/recovery_return/return_turf = new(locate(return_x,2,1))
+			var/mob/living/human/durable_probe_leader/H = new(return_turf)
+			return_x++
 			// A guest client is tested against a registered saved owner, since
 			// durable guest ownership itself must fail validation.
 			H.persistence_owner_ckey = account == "guest123" ? "guestowner" : account

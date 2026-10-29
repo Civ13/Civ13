@@ -14,7 +14,8 @@ HELPERS = (
     '/mob/living/human/proc/enter_protected_sleep',
     '/mob/living/human/proc/complete_protected_wakeup',
 )
-MOVEMENT_HELPERS = ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed', '/atom/movable/proc/forceMove')
+MOVEMENT_HELPERS = ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed',
+                    '/atom/movable/proc/forceMove', '/atom/movable/proc/clear_throw_launch')
 BUCKLING = ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')
 CASES = ('normal', 'legacy-wake', 'unrelated-occupant', 'refused-unbuckle', 'busy',
          'busy-recheck', 'moved-origin', 'refused-move', 'invalid-return',
@@ -22,6 +23,7 @@ CASES = ('normal', 'legacy-wake', 'unrelated-occupant', 'refused-unbuckle', 'bus
          'diagnostic-cross-level', 'diagnostic-chain', 'diagnostic-duplicate', 'diagnostic-null-frame')
 MINIMUM_CHECKS = dict(zip(CASES, (14, 7, 10, 10, 10, 9, 7, 9, 7, 7, 7, 8, 11, 16, 30, 40, 20, 12)))
 RECORD_PROC = '/map_storage/proc/record_save_reference_failure'
+PRESENTATION_DEFAULT = '#ifndef CIV13_ROOT_TREE_PRESENTATION\n#define CIV13_ROOT_TREE_PRESENTATION 0\n#endif\n'
 CONTROLS = {
     'old-bed': ('disk', 'FAIL: protected sleeper/bed export rejected: Cross-level object reference cannot be represented in per-level save files: /obj/structure/bed/sleep_fixture saved_z=1 native_z=2 turf_z=2 source_type=/mob/living/human/sleep_fixture source_field=buckled'),
     'persistence-gate': ('busy', 'FAIL: entry moved during persistence'),
@@ -67,6 +69,12 @@ def omit_record(source):
     return BASE.replace_once(source, body, header + '\n\treturn\n', 'diagnostic-record control')
 
 
+def presentation_default(source):
+    if source.count(PRESENTATION_DEFAULT) != 1:
+        raise RuntimeError('Expected exactly one disabled production presentation default')
+    return PRESENTATION_DEFAULT
+
+
 def prepare(output, control=None, root=ROOT):
     receipt = BASE.prepare(output, root=root)
     output = Path(output)
@@ -99,6 +107,16 @@ def prepare(output, control=None, root=ROOT):
     receipt['source_sha256']['tests/world_save/sleep_transfer_probe.dm'] = BASE.sha(raw)
     (output / 'sleep_transfer_probe.dm').write_bytes(raw)
     environment = (output / 'probe.dme').read_text(encoding='utf-8')
+    visibility = 'code/modules/visibility/los_context.dm'
+    raw = (root / visibility).read_bytes()
+    default = presentation_default(raw.decode('utf-8-sig'))
+    receipt['source_sha256'][visibility] = BASE.sha(raw)
+    receipt['source_projections']['presentation_default'] = {'source': visibility, 'sha256': BASE.sha(default.encode())}
+    # The shared cross-level environment hardcodes the same default; keep only the production projection.
+    shared = '// Match the production default; this fixture does not model tree presentation.\n#define CIV13_ROOT_TREE_PRESENTATION 0\n'
+    if environment.count(shared) > 1:
+        raise RuntimeError('Expected at most one shared presentation default')
+    environment = default + environment.replace(shared, '', 1)
     environment += '\n' + '\n'.join(f'#include "{name}"' for name in (
         'sleep_helpers.dm', 'buckling.dm', 'force_move.dm', 'sleep_transfer_probe.dm')) + '\n'
     (output / 'probe.dme').write_text(environment, encoding='utf-8')
@@ -113,6 +131,7 @@ def main():
     mode.add_argument('--compile-only', action='store_true')
     mode.add_argument('--run-native', action='store_true', help='Requires maintainer approval; launches trusted DreamDaemon')
     parser.add_argument('--byond-bin', type=Path)
+    parser.add_argument('--byond-archive', type=Path)
     parser.add_argument('--case', choices=CASES, action='append')
     parser.add_argument('--negative-control', choices=tuple(CONTROLS))
     args = parser.parse_args()
@@ -120,6 +139,9 @@ def main():
         parser.error('--byond-bin is required for native compilation/execution')
     if args.negative_control and args.case:
         parser.error('Each control selects its exact intended assertion')
+    if args.byond_archive and (not args.run_native or args.case):
+        parser.error('Current runtime admits only the selected sleep CI cases')
+    runtime = BASE.selected_runtime(args.byond_bin, args.byond_archive)
     output = Path(tempfile.mkdtemp(prefix='civ13-sleep-transfer-'))
     receipt = prepare(output, args.negative_control)
     cases, expected = args.case or CASES, {}
@@ -135,7 +157,8 @@ def main():
     BASE.refresh_receipt(output, receipt)
     print(f'Retained evidence: {output}', flush=True)
     if not args.prepare_only:
-        BASE.native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
+        if runtime: BASE.native(output, args.byond_bin, cases, receipt, expected, args.compile_only, runtime=runtime)
+        else: BASE.native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
 
 
 if __name__ == '__main__':

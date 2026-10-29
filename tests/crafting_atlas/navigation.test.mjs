@@ -40,7 +40,7 @@ function contract(html) {
   elements.get('relations').children.find(n=>n.onclick).onclick();
   assert.equal(elements.get('processor').value, '');
   assert.equal(elements.get('era').value, '');
-  assert(elements.get('catalog').children.length === 4, 'resource navigation resets restrictive filters');
+  assert(elements.get('catalog').children.filter(n=>n['data-result-type']==='recipe').length === 4, 'resource navigation resets restrictive filters');
   elements.get('search').value = 'absent';
   assert.deepEqual(result(), [], 'empty search');
   elements.get('reset').onclick();

@@ -485,7 +485,7 @@ default behaviour is:
 	// remove the character from the list of the dead
 	if (stat == DEAD)
 		dead_mob_list -= src
-		living_mob_list += src
+		register_living_mob(src)
 		timeofdeath = FALSE
 
 	// restore us to conciousness
@@ -506,6 +506,13 @@ default behaviour is:
 		return FALSE
 	if (using_drone)
 		return FALSE
+	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
+	if (paired_move)
+		// The pair owns follow planning. Never run this full-tile drag subtree
+		// or its completion hook once for each physical pulse.
+		if (!paired_move.issued || paired_move.issued.member != src)
+			return FALSE
+		return ..()
 
 	if (restrained())
 		stop_pulling()
@@ -582,6 +589,10 @@ default behaviour is:
 	if (ishuman(src))
 		var/mob/living/human/subtile_human = src
 		if (subtile_human.human_subtile_pulse)
+			return moved
+	if (istype(src, /mob/living/simple_animal))
+		var/mob/living/simple_animal/subtile_npc = src
+		if (subtile_npc.npc_subtile_pulse)
 			return moved
 	living_movement_completed()
 	return moved
@@ -675,7 +686,7 @@ default behaviour is:
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in internal_organs)
 		return
-	..()
+	return ..()
 
 //damage/heal the mob ears and adjust the deaf amount
 /mob/living/adjustEarDamage(var/damage, var/deaf)
@@ -752,6 +763,9 @@ default behaviour is:
 	set category = "IC"
 
 
+	var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[src]
+	if (paired_move)
+		paired_move.lifecycle_stop("pull_stopped")
 	if (pulling)
 		pulling.pulledby = null
 		pulling = null
@@ -765,6 +779,14 @@ default behaviour is:
 
 	if ( !AM || !usr || src==AM || !isturf(loc) )	//if there's no person pulling OR the person is pulling themself OR the object being pulled is inside something: abort!
 		return
+	if (subtile_pull_ownership.owners[src] || subtile_pull_ownership.owners[AM])
+		to_chat(src, SPAN_NOTICE("Reverse an interrupted smooth pull to alignment before starting another pull."))
+		return FALSE
+	if (ishuman(src))
+		var/mob/living/human/pull_actor = src
+		if (pull_actor.human_subtile_pull_enabled && (pull_actor.human_subtile_transaction || pull_actor.step_x || pull_actor.step_y))
+			to_chat(src, SPAN_NOTICE("Finish the current smooth step before starting a pull."))
+			return FALSE
 
 	if (AM.anchored || istype(AM, /obj/item/football))
 		to_chat(src, SPAN_WARNING("It won't budge!"))

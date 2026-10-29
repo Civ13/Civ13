@@ -16,6 +16,15 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.source = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text()
         self.helpers = '\n'.join(RUNNER.BASE.extract_proc(self.source, path) for path in RUNNER.HELPERS)
 
+    def test_duplicate_diagnostic_injects_capture_without_changing_production(self):
+        probe = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
+        self.assertIn('/map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory', probe)
+        self.assertIn('if(A == cross_target && saving_z == 2)', probe)
+        self.assertIn('saving_world_movables -= "\\ref[A]"', probe)
+        self.assertIn('return ..()', probe)
+        self.assertIn('new /map_storage/cross_level/diagnostic_duplicate(', probe)
+        self.assertIn('map_storage.saved_content_refs(', probe)
+
     def test_candidate_extracts_exact_helpers_and_actual_buckling_and_movement(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
@@ -31,6 +40,27 @@ class SleepTransferSourceTests(unittest.TestCase):
             self.assertFalse(receipt['actual_client_timing_verified'])
             self.assertFalse(receipt['full_gameplay_verified'])
 
+    def test_force_move_dependencies_match_production_throw_fields_and_cleanup(self):
+        production = (ROOT / 'code/game/atoms_movable.dm').read_text(encoding='utf-8')
+        fixture = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text(encoding='utf-8')
+        fields = ('var/tmp/mob/living/human/throw_launch_source = null',
+                  'var/tmp/throw_launch_dx = null', 'var/tmp/throw_launch_dy = null',
+                  'var/tmp/throw_launch_x = null', 'var/tmp/throw_launch_y = null',
+                  'var/tmp/list/throw_flight_token = null')
+        for field in fields:
+            with self.subTest(field=field):
+                self.assertEqual(production.count(field), 1)
+                self.assertEqual(fixture.count(field), 1)
+        self.assertIn('/atom/movable/proc/clear_throw_launch', RUNNER.MOVEMENT_HELPERS)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            receipt = RUNNER.prepare(output)
+            generated = (output / 'force_move.dm').read_text(encoding='utf-8')
+            cleanup = RUNNER.BASE.extract_proc(production, '/atom/movable/proc/clear_throw_launch')
+            self.assertEqual(generated.count(cleanup), 1)
+            self.assertIn('/atom/movable/proc/clear_throw_launch',
+                          receipt['source_projections']['force_move.dm']['procedures'])
+
     def test_generated_environment_has_one_startup_and_only_relative_sources(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
@@ -43,6 +73,42 @@ class SleepTransferSourceTests(unittest.TestCase):
                 self.assertTrue((output / name).is_file())
             startup_count = sum((output / name).read_text().count('/world/New()\n') for name in sources)
             self.assertEqual(startup_count, 1)
+
+    def test_movement_fixture_uses_exact_disabled_production_presentation_default(self):
+        source = (ROOT / 'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
+        default = RUNNER.presentation_default(source)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            receipt = RUNNER.prepare(output)
+            environment = (output / 'probe.dme').read_text(encoding='utf-8')
+            self.assertTrue(environment.startswith(default))
+            self.assertIn('#if CIV13_ROOT_TREE_PRESENTATION', (output / 'force_move.dm').read_text(encoding='utf-8'))
+            self.assertEqual(receipt['source_projections']['presentation_default']['source'], 'code/modules/visibility/los_context.dm')
+            self.assertEqual(receipt['source_sha256']['code/modules/visibility/los_context.dm'], RUNNER.BASE.sha((ROOT / 'code/modules/visibility/los_context.dm').read_bytes()))
+        for altered in (source.replace(default, '', 1), source.replace(default, default.replace(' 0\n', ' 1\n'), 1), source + default):
+            with self.subTest(count=altered.count(default)), self.assertRaisesRegex(RuntimeError, 'disabled production presentation default'):
+                RUNNER.presentation_default(altered)
+
+    def test_complete_movement_dependency_closure_uses_neutral_production_throw_state(self):
+        production = (ROOT / 'code/game/atoms_movable.dm').read_text()
+        defaults = (ROOT / 'code/modules/visibility/los_context.dm').read_text()
+        self.assertIn('#define CIV13_ROOT_TREE_PRESENTATION 0', defaults)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            RUNNER.prepare(output)
+            environment = (output / 'probe.dme').read_text()
+            self.assertEqual(environment.count('#define CIV13_ROOT_TREE_PRESENTATION 0'), 1)
+            self.assertLess(environment.index('#define CIV13_ROOT_TREE_PRESENTATION 0'),
+                            environment.index('#include "force_move.dm"'))
+            movement = (output / 'force_move.dm').read_text()
+            self.assertIn(RUNNER.BASE.extract_proc(production, '/atom/movable/proc/clear_throw_launch'), movement)
+            adapters = (output / 'sleep_transfer_probe.dm').read_text()
+            for field in ('var/tmp/mob/living/human/throw_launch_source = null',
+                          'var/tmp/throw_launch_dx = null', 'var/tmp/throw_launch_dy = null',
+                          'var/tmp/throw_launch_x = null', 'var/tmp/throw_launch_y = null',
+                          'var/tmp/list/throw_flight_token = null'):
+                self.assertIn(field, production)
+                self.assertIn(field, adapters)
 
     def test_every_control_changes_only_its_generated_source(self):
         for control in RUNNER.CONTROLS:

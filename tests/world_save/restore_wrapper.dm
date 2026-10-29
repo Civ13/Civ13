@@ -1,10 +1,17 @@
 // Actual gameticker wrapper with injected storage/provider effects only.
 // This fixture does not implement durable custody or immutable readers.
+/datum/wrapper_waiting_client
+	var/mob/mob
+	var/transfers = 0
+
 /map_storage/wrapper_fixture
 	var/failure_stage = ""
 	var/metadata_result = TRUE
 	var/list/events = list()
 	var/datum/persistence_restore_attempt/wrapper_fixture/observed_attempt
+	var/datum/wrapper_waiting_client/waiting_client
+	var/mob/new_player/waiting_lobby
+	var/mob/living/human/waiting_body
 	proc/event(value)
 		check(persistence_save_in_progress, "wrapper callback retains operation lock")
 		events += value
@@ -38,6 +45,17 @@
 		if(failure_stage == "metadata_throw")
 			throw EXCEPTION("fixture metadata primary")
 		return metadata_result
+	finish_player_restoration()
+		event("players")
+		check(persistence_active_operation && persistence_active_operation.current(src, "load") && persistence_active_operation.restoring_players, "player callback retains load ownership")
+		check(!begin_persistence_operation(src, "save"), "player callback rejects concurrent save")
+		var/ready = ..()
+		// The fixture has no network client; this adapter models the handoff
+		// made to an eligible waiting client by the production parent callback.
+		if(ready && waiting_client)
+			waiting_client.mob = waiting_body
+			waiting_client.transfers++
+		return ready
 	clear_bookkeeping()
 		event("bookkeeping")
 		if(failure_stage == "bookkeeping")
@@ -104,7 +122,7 @@
 			throw EXCEPTION("fixture release cleanup")
 		return P.mode != "release_false"
 
-/proc/wrapper_case(stage, provider_mode, metadata_result, expected)
+/proc/wrapper_case(stage, provider_mode, metadata_result, expected, waiting = FALSE)
 	var/map_storage/original_storage = map_storage
 	var/obj/map_metadata/original_map = map
 	var/obj/map_metadata/fixture_map
@@ -116,6 +134,11 @@
 	var/map_storage/wrapper_fixture/S = new("WRAPPER")
 	S.failure_stage = stage
 	S.metadata_result = metadata_result
+	if(waiting)
+		S.waiting_lobby = new
+		S.waiting_body = new
+		S.waiting_client = new
+		S.waiting_client.mob = S.waiting_lobby
 	if(!isnull(provider_mode))
 		if(provider_mode == "default")
 			S.restore_policy = new /datum/persistence_restore_policy
@@ -143,12 +166,18 @@
 	var/mutated = ("clear" in S.events) || ("world" in S.events)
 	check(persistence_load_recovery_required == (!expected && mutated), "wrapper retains failed mutation recovery hold")
 	check(persistence_save_in_progress == persistence_load_recovery_required, "wrapper busy state preserves recovery hold")
+	if(waiting)
+		if(expected)
+			check(S.waiting_client.mob == S.waiting_body && S.waiting_client.transfers == 1, "waiting client transferred after successful restore")
+		else
+			check(S.waiting_client.mob == S.waiting_lobby && S.waiting_client.transfers == 0, "release failure keeps waiting client in lobby")
+			check(persistence_load_recovery_required && persistence_save_in_progress && !persistence_player_restore_ready, "release failure keeps player recovery hold")
 	// Isolated cases reset the fixture world, never production recovery custody.
 	persistence_load_recovery_required = FALSE
 	persistence_save_in_progress = FALSE
 	check(errors.len == admin_errors + (expected ? 0 : 1), "wrapper reports each failed attempt once")
 	if(expected)
-		check(jointext(S.events, ",") == (isnull(provider_mode) ? "validate,clear,world,metadata" : "begin,validate,reserve,clear,world,metadata,release"), "wrapper success callback order")
+		check(jointext(S.events, ",") == (isnull(provider_mode) ? "validate,clear,world,metadata,players" : "begin,validate,reserve,clear,world,metadata,release,players"), "wrapper success callback order")
 	else
 		check(S.events[S.events.len] == "bookkeeping", "wrapper failure clears bookkeeping")
 		check(length(S.last_error), "wrapper failure retains primary error")
@@ -156,8 +185,8 @@
 
 /proc/check_restore_wrapper()
 	var/initial_errors = errors.len
-	var/map_storage/wrapper_fixture/S = wrapper_case("", null, TRUE, TRUE)
-	S = wrapper_case("", "", TRUE, TRUE)
+	var/map_storage/wrapper_fixture/S = wrapper_case("", null, TRUE, TRUE, TRUE)
+	S = wrapper_case("", "", TRUE, TRUE, TRUE)
 	check(S.observed_attempt.release_calls == 1 && !S.observed_attempt.fail_calls, "successful attempt released once")
 	check(S.persistence_runtime_var("restore_policy") && S.persistence_runtime_var("restore_cleanup_error") && S.persistence_runtime_var("persistence_export_frame"), "wrapper runtime exclusions preserve parent")
 	check(S.observed_attempt.persistence_runtime_var("storage") && S.observed_attempt.persistence_runtime_var("policy") && S.observed_attempt.persistence_runtime_var("persistence_export_frame"), "attempt runtime exclusions preserve parent")
@@ -189,8 +218,9 @@
 	S = wrapper_case("bookkeeping", "", FALSE, FALSE)
 	check(findtext(S.last_error, "World metadata restoration rejected") && findtext(S.restore_cleanup_error, "fixture bookkeeping cleanup"), "bookkeeping failure preserves primary metadata failure")
 	for(var/mode in list("release_throw", "release_false"))
-		S = wrapper_case("", mode, TRUE, FALSE)
+		S = wrapper_case("", mode, TRUE, FALSE, TRUE)
 		check(S.observed_attempt.failure_phase == "release" && S.observed_attempt.mutated && S.observed_attempt.release_calls == 1, "success-path release failure retains recovery without second release")
+		check(!("players" in S.events), "release failure must precede player callback")
 	var/map_storage/original_storage = map_storage
 	S = new("BUSY")
 	map_storage = S

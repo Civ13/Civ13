@@ -38,8 +38,11 @@ compile_game() {
 echo "Setting up the system for BYOND compilation."
 sudo timeout -k 5 30 dpkg --add-architecture i386
 # Install dependencies only; never upgrade the hosted image.
-sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update
-sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+# Retry stalled transfers inside the existing phase deadlines. These command-local
+# options retain APT's configured sources and authentication; no host config write.
+apt_acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
+sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get "${apt_acquire[@]}" update
+sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" install -y --no-install-recommends python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
 
 # END package setup
 

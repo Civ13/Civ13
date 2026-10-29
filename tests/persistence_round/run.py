@@ -1,5 +1,6 @@
 """Compile production persistent round guards in a small offline world, with temporary storage."""
 import argparse
+import importlib.util
 import os
 from pathlib import Path
 import re
@@ -8,13 +9,36 @@ import subprocess
 import tempfile
 
 
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None  # Preserve the historical 516.1681 mode.
+    path = Path(__file__).resolve().parents[1] / 'world_save/current_runtime.py'
+    spec = importlib.util.spec_from_file_location('round_current_runtime', path)
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def prepare_world(world):
+    # The fixture replaces world startup and does not initialize the game's
+    # scheduler. Do not run unrelated pre-map initialization against it.
+    marker = '/datum/global_init/New()\n'
+    if world.count(marker) != 1:
+        raise RuntimeError('Global initialization anchor drift')
+    world = world.replace(marker, marker + '\treturn\n', 1)
+    start = world.index('/world/New()')
+    parent = world.index('\n\t..()', start)
+    world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
+    return world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--byond-archive', type=Path, help='Exact current Linux archive identity; omitted retains historical 516.1681')
     parser.add_argument('--negative-control', choices=['vote', 'ticker', 'deferred', 'save', 'startup'])
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    binary = args.byond_bin.resolve()
+    toolchain = selected_runtime(args.byond_bin, args.byond_archive)
+    binary = args.byond_bin.absolute() if toolchain else args.byond_bin.resolve()
     compiler = binary / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = binary / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     prefix = '.persistence_round_ci'
@@ -27,11 +51,7 @@ def main():
     print(f'Evidence: {logs}', flush=True)
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     try:
-        world = (root / 'code/world.dm').read_text(encoding='utf-8')
-        start = world.index('/world/New()')
-        parent = world.index('\n\t..()', start)
-        world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
-        world = world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
+        world = prepare_world((root / 'code/world.dm').read_text(encoding='utf-8'))
         generated[1].write_text(world, encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
@@ -66,18 +86,22 @@ def main():
         generated[0].write_text(source + '\n#include "tests/persistence_round/probe.dm"\n', encoding='utf-8')
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         print(f'Commit: {commit}', flush=True)
+        if toolchain: toolchain.before_launch('compile', logs)
         build = subprocess.run([str(compiler), '-max_errors', '0', str(generated[0])],
                                cwd=root, capture_output=True, text=True, timeout=120,
                                creationflags=flags)
         output = build.stdout + build.stderr
         (logs / 'compile.log').write_text(output, encoding='utf-8')
         print(output, flush=True)
-        if build.returncode or '0 errors, 0 warnings' not in output or '516.1681' not in output:
+        if toolchain:
+            toolchain.validate_compile(build.returncode, output, generated[2].name)
+        elif build.returncode or '0 errors, 0 warnings' not in output or '516.1681' not in output:
             raise RuntimeError('Pinned compilation failed')
         shutil.copy2(generated[2], logs / generated[2].name)
         shutil.copy2(generated[3], logs / generated[3].name)
         shutil.copytree(root / 'config/names', logs / 'config/names')
         (logs / 'config/config.txt').write_text('# Offline fixture\n', encoding='utf-8')
+        if toolchain: toolchain.before_launch('daemon', logs)
         runtime = subprocess.run([str(daemon), str(logs / generated[2].name), '-ip', '127.0.0.1', '-nowebclient',
                                   *(['-invisible', '-close'] if os.name == 'nt' else []),
                                   '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'],
