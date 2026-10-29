@@ -304,6 +304,13 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		if(!istext(row["zone"]) || validated_zone_grid[index] != row["zone"] || seen["[index]"]) throw EXCEPTION("Duplicate or stale spawn zone")
 		seen["[index]"] = TRUE
 
+// Associative set of savefile directory names, for constant-time membership checks.
+/proc/savefile_dir_index(list/names)
+	var/list/index = list()
+	for(var/name in names)
+		index[name] = TRUE
+	return index
+
 /map_storage/proc/prepare_saved_zones(list/world_state, generation)
 	clear_saved_zones()
 	if(!islist(world_state) || world_state["schema"] == 1) return
@@ -337,20 +344,25 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		for(var/key in list("format_version", "generation", "maxx", "maxy", "maxz", "zone_capture", "map"))
 			if(!(key in F.dir)) throw EXCEPTION("Missing zone capture header")
 		if(!(F["/format_version"] in list(2, 3)) || F["/generation"] != generation || F["/maxx"] != world.maxx || F["/maxy"] != world.maxy || F["/maxz"] != save_validation_maxz()) throw EXCEPTION("Zone capture header differs")
+		// savefile.dir builds a new list on every read. Index each directory once so
+		// the per-turf checks below stay linear in the level size, not quadratic.
 		F.cd = "/zone_capture"
-		if(F.dir.len != world.maxx * world.maxy) throw EXCEPTION("Incomplete captured zone level")
+		var/list/capture_dir = F.dir
+		if(capture_dir.len != world.maxx * world.maxy) throw EXCEPTION("Incomplete captured zone level")
+		var/list/capture_entries = savefile_dir_index(capture_dir)
 		F.cd = "/map"
 		if(!("[z]" in F.dir)) throw EXCEPTION("Missing captured zone grid")
+		F.cd = "/map/[z]"
+		var/list/rows = savefile_dir_index(F.dir)
 		for(var/y = 1, y <= world.maxy, y++)
-			F.cd = "/map/[z]"
-			if(!("[y]" in F.dir)) throw EXCEPTION("Missing captured zone row")
+			if(!rows["[y]"]) throw EXCEPTION("Missing captured zone row")
+			F.cd = "/map/[z]/[y]"
+			var/list/columns = savefile_dir_index(F.dir)
 			for(var/x = 1, x <= world.maxx, x++)
-				F.cd = "/map/[z]/[y]"
-				if(!("[x]" in F.dir)) throw EXCEPTION("Missing captured turf coordinate")
-				var/ref = F["[x]"]
+				if(!columns["[x]"]) throw EXCEPTION("Missing captured turf coordinate")
+				var/ref = F["/map/[z]/[y]/[x]"]
 				if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Invalid captured turf reference")
-				F.cd = "/zone_capture"
-				if(!("[ref]" in F.dir)) throw EXCEPTION("Missing captured membership entry")
+				if(!capture_entries["[ref]"]) throw EXCEPTION("Missing captured membership entry")
 				F.cd = "/zone_capture/[ref]"
 				if(F.dir.len != 2 || !("index" in F.dir) || !("id" in F.dir)) throw EXCEPTION("Missing captured membership")
 				var/id = F["id"]
