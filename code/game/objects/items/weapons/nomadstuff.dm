@@ -11,6 +11,12 @@
 
 	attack_verb = list("battered","whacked")
 	flammable = TRUE
+	var/unrolled_type = /obj/structure/bed/bedroll
+
+/obj/item/weapon/bedroll/cloth
+	name = "cloth bedroll"
+	desc = "A portable bundle of woven bedding. Unroll it to sleep."
+	unrolled_type = /obj/structure/bed/bedroll/cloth
 
 /obj/structure/bed/bedroll
 	name = "bedroll"
@@ -26,6 +32,15 @@
 	buckle_lying = TRUE
 	var/image/cover_overlay = null
 	flammable = TRUE
+	not_disassemblable = TRUE // Textile bedding must not inherit a wooden-structure refund.
+	var/rolled_type = /obj/item/weapon/bedroll
+	var/bedding_material = "leather"
+
+/obj/structure/bed/bedroll/cloth
+	name = "cloth bedroll"
+	desc = "A portable bundle of woven bedding. Fold it for travel."
+	rolled_type = /obj/item/weapon/bedroll/cloth
+	bedding_material = "cloth"
 
 /obj/structure/bed/bedroll/New()
 	..()
@@ -33,7 +48,7 @@
 
 /obj/item/weapon/bedroll/attack_self(mob/user as mob)
 	to_chat(user, "You open the bedroll, extending it.")
-	new/obj/structure/bed/bedroll(user.loc)
+	new unrolled_type(user.loc)
 	qdel(src)
 	return
 /obj/structure/bed/bedroll/update_icon()
@@ -48,12 +63,15 @@
 	set category = null
 	set src in view(1)
 	set name = "Fold Bedroll"
+	fold_up(usr)
+
+/obj/structure/bed/bedroll/proc/fold_up(mob/user)
 	if (used == FALSE)
-		to_chat(usr, "You fold the bedroll.")
+		to_chat(user, "You fold the bedroll.")
 		running = FALSE
-		new/obj/item/weapon/bedroll(src.loc)
+		var/obj/item/weapon/bedroll/rolled = new rolled_type(src.loc)
 		qdel(src)
-		return
+		return rolled
 
 /obj/structure/bed/bedroll/proc/check_use(var/mob/living/human/H)
 	if ((H in src.loc) && buckled_mob == H && used == TRUE && running == FALSE)
@@ -79,7 +97,7 @@
 					affecting.visible_message(\
 						"<span class='danger'>[affecting.name] is tucked inside 1the [src] by [user.name]!</span>",\
 						"<span class='danger'>You are tucked inside 1the [src] by [user.name]!</span>",\
-						"<span class='notice'>You hear the rustling of leather.</span>")
+						"<span class='notice'>You hear the rustling of [bedding_material].</span>")
 			qdel(W)
 	else
 		..()

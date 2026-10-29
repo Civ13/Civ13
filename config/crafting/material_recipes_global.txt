@@ -636,6 +636,7 @@ RECIPE: /material/cloth/,white carpet,/obj/covers/carpet/whitecarpet,1,20,0,1,ca
 //*****************| CLOTH FURNITURE |***************************
 
 RECIPE: /material/cloth/,cloth curtain,/obj/structure/curtain,1,80,1,1,furniture,0,0,0,8,null
+RECIPE: /material/cloth/,cloth bedroll,/obj/item/weapon/bedroll/cloth,4,100,0,1,furniture,0,0,0,8,null
 RECIPE: /material/cloth/,foldable canopy,/obj/item/weapon/tent,4,75,0,1,furniture,0,0,19,8,null
 RECIPE: /material/cloth/,sofa (left),/obj/structure/bed/sofa/left,8,140,1,1,furniture,0,0,93,8,null
 RECIPE: /material/cloth/,sofa (centre),/obj/structure/bed/sofa,8,140,1,1,furniture,0,0,93,8,null
@@ -936,6 +937,7 @@ RECIPE: /material/plastic/,D20,/obj/item/weapon/dice/d20,1,205,0,1,dice,147,0,0,
 RECIPE: /material/plastic/,filing cabinet,/obj/structure/filingcabinet,6,95,1,1,storage,0,0,0,8,null
 RECIPE: /material/plastic/,large filing cabinet,/obj/structure/filingcabinet/filingcabinet,6,95,1,1,storage,0,0,0,8,null
 RECIPE: /material/plastic/,chest drawer,/obj/structure/filingcabinet/chestdrawer,6,95,1,1,storage,0,0,0,8,null
+RECIPE: /material/wood/soft/,joinery: wooden document drawers,/obj/structure/filingcabinet/chestdrawer/wood,6,180,1,1,joinery,0,0,0,8,null
 RECIPE: /material/plastic/,dumpster,/obj/structure/closet/crate/dumpster,5,95,1,1,storage,105,0,0,8,null
 
 RECIPE: /material/plastic/,trash bag,/obj/item/weapon/storage/bag/trash,1,95,0,1,storage,150,0,0,8,null
@@ -1510,6 +1512,7 @@ RECIPE: /material/flax/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8
 RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,rope hammock,/obj/structure/bed/hammock,6,180,1,1,furniture,0,0,0,8,rope
 RECIPE: /material/rope/,leash,/obj/item/weapon/leash,1,20,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,garrote,/obj/item/garrote,3,120,0,1,none,0,43,0,8,null
 
@@ -1780,6 +1783,7 @@ RECIPE: /material/copper/,copper arm bangles,/obj/item/clothing/accessory/armban
 //********************************************************
 
 RECIPE: /material/steel/,shelf,/obj/structure/table/rack/shelf,6,80,1,1,furniture,90,0,0,8,steel
+RECIPE: /material/wood/soft/,wooden shelf,/obj/structure/table/rack/shelf/wooden,6,100,1,1,furniture,0,0,0,8,null
 RECIPE: /material/steel/,wheelchair,/obj/structure/bed/chair/wheelchair,6,140,0,1,none,95,0,98,8,null
 RECIPE: /material/steel/,clock,/obj/structure/sign/clock,9,200,1,1,none,98,0,0,8,null
 RECIPE: /material/steel/,ashtray,/obj/item/weapon/material/ashtray,3,120,0,1,none,100,0,0,8,null
@@ -1997,6 +2001,9 @@ RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy &
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,hemp dressing bench,/obj/structure/hemp_dressing_bench,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/soft/,hand spindle,/obj/item/rope_spindle,1,30,0,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/soft/,hand ropewalk,/obj/structure/ropewalk,12,200,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,dew collector,/obj/structure/reagent_dispensers/dew_collector,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,compost bin,/obj/structure/compost,10,150,1,1,economy & production,35,0,0,8,null
 RECIPE: /material/wood/soft/,oil well,/obj/structure/oilwell,40,270,1,1,economy & production,105,0,0,8,null
@@ -2127,6 +2134,12 @@ RECIPE: /material/wood/soft/,fishing cage,/obj/structure/fishing_cage,12,200,1,1
 RECIPE: /material/wood/soft/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 
 //*********************| WOOD FURNITURE |**************************
+// Explicit joint-making alternatives; tools and paid components are in furniture_joinery.json.
+RECIPE: /material/wood/,joinery: pegged wooden stool,/obj/item/weapon/stool/wood,2,100,0,1,joinery,0,0,0,8,wood
+RECIPE: /material/wood/soft/,joinery: whittled wooden dowel set,/obj/item/stack/wooden_dowels,1,120,0,1,joinery,0,0,0,8,null
+RECIPE: /material/wood/,joinery: hewn table (wooden pegs),/obj/structure/table/wood,4,120,1,1,joinery,0,0,0,8,null
+RECIPE: /material/wood/,joinery: hewn chair (wooden pegs),/obj/structure/bed/chair/wood,4,120,1,1,joinery,0,0,0,8,null
+RECIPE: /material/wood/,joinery: hewn bed (wooden pegs),/obj/structure/bed/wood,4,180,1,1,joinery,0,0,0,8,null
 RECIPE: /material/wood/soft/,ballot box,/obj/structure/voting,8,50,1,1,furniture,25,0,0,8,null
 RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null

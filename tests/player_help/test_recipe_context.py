@@ -27,6 +27,15 @@ class RecipeContextTests(unittest.TestCase):
             path.write_text(json.dumps({'recipes': recipes}), encoding='utf-8')
             return bridge.recipe_context(path)
 
+    def test_finished_planks_override_ambiguous_cached_material_names(self):
+        for cached_name in ('soft', 'softwood', 'finished planks'):
+            with self.subTest(cached_name=cached_name):
+                recipe = {'name': 'plank furniture', 'inputs': [
+                    {'id': '/material/wood/soft', 'name': cached_name, 'quantity': '6'},
+                    {'id': '/material/wood', 'name': 'wood', 'quantity': '1'}]}
+                text = self.project([recipe])[0]['text']
+                self.assertIn('inputs: 6 x finished planks, 1 x wood', text)
+
     def test_actual_primitive_sawmill_legacy_catalog_matches_recipe_and_formats_meaning(self):
         rows = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8').splitlines()
         row = next(row for row in rows if ',primitive saw mill,/obj/structure/sawmill,' in row)

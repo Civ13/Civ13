@@ -54,6 +54,15 @@ SUITES = {
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
         'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm')},
+    # Inert source projections and file-only fixture preparation. Import graph:
+    # stdlib + existing LOS/save-movement projections; no native runner is imported.
+    # Keep shared movement/lighting files unmapped: they retain all-suite fallback.
+    'root_tree_presentation': {'files': (
+        'tests/root_tree_presentation/test_contract.py',
+        'tests/root_tree_presentation/test_preparation.py'), 'paths': (
+        'tests/root_tree_presentation/', 'code/modules/visibility/',
+        'code/__defines/_planes+layers.dm', 'civ13.dme',
+        'tests/save_movement/source_adapter.py')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
@@ -83,6 +92,15 @@ SUITES = {
         'tests/primitive_woodworking/', 'code/modules/1713/primitive_woodworking.dm',
         'scripts/atlas/woodworking.py', 'scripts/atlas/woodworking-contract.json',
         'code/modules/persistence/functions.dm', 'civ13.dme')},
+    # Offline only: reviewed guard projection, catalog generation, inert Help imports.
+    # Shared crafting/Atlas files keep the conservative all-suite fallback.
+    'furniture_joinery': {'files': ('tests/furniture_joinery/test_contract.py',
+                                  'tests/furniture_joinery/test_wooden_shelf.py',
+                                  'tests/furniture_joinery/test_bedroll.py',
+                                  'tests/furniture_joinery/test_document_drawers.py',
+                                  'tests/furniture_joinery/test_sofa_materials.py'), 'paths': (
+        'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
+        'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (

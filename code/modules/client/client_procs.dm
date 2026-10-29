@@ -310,6 +310,8 @@
 /client/Del()
 	if (CIV13_GEOMETRIC_LOS_CORE && los_context)
 		los_context.retire()
+	if(CIV13_ROOT_TREE_PRESENTATION && root_tree_presenter)
+		root_tree_presenter.retire()
 	if (player_help_service)
 		player_help_service.reset_conversation(src)
 	human_subtile_release_visuals()

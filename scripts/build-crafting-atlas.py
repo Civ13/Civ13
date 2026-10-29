@@ -3,6 +3,7 @@ from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
 from atlas.tanning import add_tanning
+from atlas.rope_making import add_rope_making
 from atlas.woodworking import add_woodworking, reviewed_source_revision
 from atlas.variants import consolidate_variants, game_recipes
 
@@ -26,6 +27,12 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
+        return 'finished planks'
+    if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
+        return 'wooden document drawers'
+    if s.rstrip('/') in ('/obj/item/weapon/bedroll/cloth', '/obj/structure/bed/bedroll/cloth'):
+        return 'cloth bedroll'
     # This item type's DM name is sand; the similarly named glass material is distinct.
     if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
@@ -65,6 +72,7 @@ def processing_only_material(typepath):
         if typepath in processing_materials:return processing_materials[typepath]
         typepath=typepath.rsplit('/',1)[0]
     return False
+joinery=json.loads((ROOT/"config/crafting/furniture_joinery.json").read_text())
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -86,7 +94,19 @@ for p,s in files.items():
             if len(cols)!=13: issues.append(dict(file=p,line=ln,reason='Expected 13 fields',raw=row));continue
             a,n,b,c,t,one,floor,category,ind,mil,med,age,mat=cols
             if processing_only_material(a):continue
-            add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),[(a,c)],[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.',row)
+            ingredients=[(a,c)]
+            joint=joinery.get(n)
+            tool_notes=''
+            if n.startswith('joinery: '):
+                if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
+                    raise ValueError('Joinery recipe contract drift: '+n)
+                if joint['component_type']:
+                    ingredients.append((joint['component_type'],joint['component_cost']))
+                roles={'chisel':'chisel','hammer':'hammer/mallet','shaping':'sharpened flint or sharp knife harder than plank; knife wear 0.25'}
+                tool_notes=' Tools equipped or at your feet: '+' and '.join(roles[role] for role in joint['tools'])+'.'
+                if joint['component_type']:tool_notes+=' Hold dowels in the other hand.'
+                tool_notes+=' Tools reused; checked at end.'
+            add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),ingredients,[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.'+tool_notes,row)
 
 def splitargs(s):
     out=[];start=0;depth=0;quoted=False
@@ -165,6 +185,9 @@ for p,raw in files.items():
 
 nodes=files.get('code/modules/research_tree/research_node.dm','')
 sprite_variants={}
+sprite_variants['/obj/item/stack/wooden_dowels']=dict(type='/obj/item/stack/wooden_dowels',name='wooden dowel set')
+sprite_variants['/obj/item/weapon/stool/wood']=dict(type='/obj/item/weapon/stool/wood',name='wooden stool')
+sprite_variants['/obj/structure/table/rack/shelf/wooden']=dict(type='/obj/structure/table/rack/shelf/wooden',name='wooden shelf')
 assembly_path='code/modules/1713/gunsmithing/blackpowder_assembly.dm'
 assembly=uncomment(files.get(assembly_path,''))
 if assembly:
@@ -213,6 +236,7 @@ if bench:
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
 tanning_routes=add_tanning(files, add, records, sprite_variants)
+rope_routes=add_rope_making(files, add, records)
 woodwork_path='code/modules/1713/primitive_woodworking.dm'
 woodwork_contract=json.loads((ROOT/'scripts/atlas/woodworking-contract.json').read_text(encoding='utf-8'))
 woodwork_revision=reviewed_source_revision(files[woodwork_path],woodwork_contract)
@@ -263,7 +287,7 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
-for route in tanning_routes + woodworking_routes:
+for route in tanning_routes + rope_routes + woodworking_routes:
     for resource in route['outputs']:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)

@@ -1,6 +1,11 @@
 // Source-only #3233 core. No production caller creates a context and no map opts in.
 // Keep disabled until all action, renderer and lifecycle adapters are reviewed.
+#ifndef CIV13_GEOMETRIC_LOS_CORE
 #define CIV13_GEOMETRIC_LOS_CORE 0
+#endif
+#ifndef CIV13_ROOT_TREE_PRESENTATION
+#define CIV13_ROOT_TREE_PRESENTATION 0
+#endif
 #define LOS_DENY 0
 #define LOS_WORLD 1
 #define LOS_SURFACE 2
@@ -106,6 +111,7 @@ var/global/list/los_active_contexts
 	var/revision = 1
 	var/retired = FALSE
 	var/list/mutations = list()
+	var/list/root_trees = list()
 
 /datum/los_context/New(client/C)
 	..()
@@ -130,6 +136,9 @@ var/global/list/los_active_contexts
 
 /datum/los_context/proc/retire()
 	retired = TRUE
+	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
+		owner.root_tree_presenter.retire()
+	root_trees.Cut()
 	for (var/datum/los_mutation/M in mutations)
 		M.closed = TRUE
 		M.context = null
@@ -159,6 +168,8 @@ var/global/list/los_active_contexts
 	var/datum/los_mutation/M = new
 	M.context = src
 	mutations += M
+	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
+		owner.root_tree_presenter.invalidate()
 	return M
 
 // Closing an outer ticket cannot clear a nested or newer mutation.
@@ -213,7 +224,9 @@ var/global/list/los_active_contexts
 					return null
 				if (A.type == /atom/movable/lighting_overlay && !A.opacity)
 					continue
-				if (A.type != /obj/structure/simple_door && A.type != /mob/living/human)
+				if (CIV13_ROOT_TREE_PRESENTATION && A.type == /atom/movable/lighting_fullbright && !A.opacity)
+					continue
+				if (A.type != /obj/structure/simple_door && A.type != /mob/living/human && !root_tree_admitted(A))
 					return null
 				if (A.opacity)
 					B.surface_owner = A
@@ -244,7 +257,7 @@ var/global/list/los_active_contexts
 		return LOS_DENY
 	if (target == body)
 		return LOS_SELF
-	if (target.type != /turf/floor/plating && target.type != /turf/wall && target.type != /obj/structure/simple_door && target.type != /mob/living/human)
+	if (target.type != /turf/floor/plating && target.type != /turf/wall && target.type != /obj/structure/simple_door && target.type != /mob/living/human && !root_tree_admitted(target))
 		return LOS_DENY
 	if ((!isturf(target) && !isturf(target.loc)) || target.z != body.z || !target.alpha || target.invisibility > body.see_invisible)
 		return LOS_DENY
@@ -260,7 +273,7 @@ var/global/list/los_active_contexts
 			return LOS_DENY
 	var/result = LOS_WORLD
 	if (target.opacity)
-		if (target.type != /turf/wall && target.type != /obj/structure/simple_door)
+		if (target.type != /turf/wall && target.type != /obj/structure/simple_door && !root_tree_admitted(target))
 			return LOS_DENY
 		var/datum/los_cell/first
 		var/list/best
