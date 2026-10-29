@@ -26,6 +26,8 @@ class Items(list):
             if x in self:self.remove(x)
         return self
 
+class Matrix(N):pass
+def identity():return Matrix(a=1,b=0,c=0,d=0,e=1,f=0)
 def compile_proc(text,signature,args,env,method=False):
     name=signature.split('/')[-1].split('(')[0]
     lines=['def '+name+'('+args+'):']
@@ -39,6 +41,7 @@ def compile_proc(text,signature,args,env,method=False):
         line=re.sub(r'([\w.]+)\.len',r'len(\1)',line)
         line=line.replace('/obj/structure/wild/tree/live_tree',repr('/obj/structure/wild/tree/live_tree'))
         line=line.replace('/turf/floor/plating',repr('/turf/floor/plating'))
+        line=line.replace('/matrix',repr('/matrix'))
         if method:
             for field in ['root_trees','owner','images','owned_images','shutter','retired','weather_copy','weather_plane','weather_target','context','driver_generation']:
                 line=re.sub(r'(?<![.\w])'+field+r'\b','self.'+field,line)
@@ -59,17 +62,20 @@ def compile_proc(text,signature,args,env,method=False):
     return env[name]
 
 def environment():
-    return {'__builtins__':{},'len':len,'range':range,'abs':abs,'GAME_PLANE':1,'PLANE_MASTER':1,'CIV13_ROOT_TREE_PRESENTATION':True,
+    env={'__builtins__':{},'len':len,'range':range,'abs':abs,'GAME_PLANE':1,'PLANE_MASTER':1,'CIV13_ROOT_TREE_PRESENTATION':True,
       'lighting_startup_in_progress':False,'created_lighting_corners_and_overlays':True,
       'isnum':lambda x:isinstance(x,(int,float)),'islist':lambda x:isinstance(x,list),
       'dm_list':lambda *xs:Values(xs),'isturf':lambda x:hasattr(x,'type') and x.type=='/turf/floor/plating',
       'length':lambda x:0 if x is None else len(x),'qdel':lambda x:setattr(x,'deleted',True),
-      'root_tree_presenters':Items(),'BLEND_OVERLAY':2}
+      'root_tree_presenters':Items(),'BLEND_OVERLAY':2,
+      'isnull':lambda x:x is None,'istype':lambda x,t:t=='/matrix' and isinstance(x,Matrix)}
+    compile_proc(TREE,'/proc/root_tree_identity_transform(','M',env)
+    return env
 
 def tree():
     return N(type='/obj/structure/wild/tree/live_tree',gcDestroyed=False,gc_destroyed=False,
       loc=N(type='/turf/floor/plating'),anchored=True,opacity=True,step_x=0,step_y=0,pixel_x=-16,pixel_y=0,
-      bound_x=0,bound_y=0,bound_width=32,bound_height=32,plane=1,layer=5.11,pixel_w=0,pixel_z=0,appearance_flags=0,transform=None,filters=[],overlays=[],underlays=[],
+      bound_x=0,bound_y=0,bound_width=32,bound_height=32,plane=1,layer=5.11,pixel_w=0,pixel_z=0,appearance_flags=0,transform=identity(),filters=[],overlays=[],underlays=[],
       vis_contents=[],render_source=None,render_target=None,maptext='',icon='icons/obj/flora/bigtrees.dmi')
 
 class Snapshot(unittest.TestCase):
@@ -114,6 +120,20 @@ class Admission(unittest.TestCase):
         class Bomb:
             def __getattribute__(self,k):raise AssertionError(k)
         self.assertFalse(self.f(Bomb(),Bomb()))
+    def test_native_identity_allowed_and_each_real_matrix_component_rejected(self):
+        t=tree();c=N(root_trees=[t])
+        for matrix in [None,identity()]:
+            t.transform=matrix;self.assertTrue(self.f(c,t))
+        for field in 'abcdef':
+            for delta in [1,0.000001]:
+                t.transform=identity();setattr(t.transform,field,getattr(t.transform,field)+delta)
+                self.assertFalse(self.f(c,t),(field,delta))
+    def test_matrix_component_omission_control(self):
+        env=environment();mutant=TREE.replace('M.c == 0 && ','')
+        compile_proc(mutant,'/proc/root_tree_identity_transform(','M',env)
+        f=compile_proc(mutant,'/datum/los_context/proc/root_tree_admitted(','self, A',env,True)
+        t=tree();t.transform.c=1
+        self.assertTrue(f(N(root_trees=[t]),t))
 
 class LightPolicy(unittest.TestCase):
     def setUp(self):
@@ -165,6 +185,11 @@ class OwnershipAndComposition(unittest.TestCase):
         r=N(owner=N(mob=N(hud_used=N(plane_masters=masters)),screen=[weather,game]),weather_plane=weather,
             weather_copy=N(render_source='owned'),weather_target='owned')
         self.assertTrue(f(r))
+        game.transform=identity();self.assertTrue(f(r))
+        for field in 'abcdef':
+            game.transform=identity();setattr(game.transform,field,getattr(game.transform,field)+1)
+            self.assertFalse(f(r),field)
+        game.transform=identity()
         game.filters=['shadow'];self.assertFalse(f(r));game.filters=[]
         masters['[LIGHTING_PLANE]']=object();self.assertFalse(f(r));masters['[LIGHTING_PLANE]']=weather
         r.owner.screen.remove(weather);self.assertFalse(f(r));r.owner.screen.append(weather)

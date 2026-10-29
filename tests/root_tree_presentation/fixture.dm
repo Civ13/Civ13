@@ -44,6 +44,7 @@
 	proc/InCone(mob/user, facing)
 		return FALSE
 /atom/movable
+	plane = GAME_PLANE
 	var/anchored = FALSE
 /area
 	var/dynamic_lighting = TRUE
@@ -157,6 +158,38 @@ var/global/list/fixture_trees = list()
 var/global/datum/root_tree_presenter/fixture_presenter
 var/global/image/fixture_weather
 var/global/client/fixture_client
+var/global/fixture_failed = FALSE
+var/global/fixture_run
+var/global/fixture_manifest
+var/global/fixture_head
+var/global/fixture_failure_control
+var/global/list/fixture_identity_controls = list()
+
+/proc/fixture_fail(reason)
+	if(!fixture_failed)
+		fixture_failed = TRUE
+		fdel("phase.ready.json")
+		fdel("complete.txt")
+		text2file(json_encode(list("schema"=2,"run"=fixture_run,"status"="failed","reason"=reason)), "fixture.failed.json")
+	return FALSE
+
+/world/Error(exception/E, datum/E_src)
+	fixture_fail("native_runtime")
+	return ..()
+
+/proc/fixture_hex(value, size)
+	if(!istext(value) || length(value) != size)
+		return FALSE
+	for(var/i = 1, i <= size, i++)
+		if(!findtext("0123456789abcdef", copytext(value, i, i+1)))
+			return FALSE
+	return TRUE
+
+/proc/fixture_check(name, passed)
+	if(passed != TRUE)
+		return fixture_fail("identity_control_[name]")
+	fixture_identity_controls[name] = TRUE
+	return TRUE
 
 /client/New()
 	if(fixture_client)
@@ -190,6 +223,14 @@ var/global/client/fixture_client
 
 /world/New()
 	..()
+	var/list/binding = json_decode(file2text("run.binding.json"))
+	if(!islist(binding) || binding["schema"] != 2 || !fixture_hex(binding["run"], 32) || !fixture_hex(binding["manifest"], 64) || !fixture_hex(binding["head"], 40) || !(binding["failure_control"] in list(null, "runtime", "admission")))
+		fixture_fail("run_binding")
+		return
+	fixture_run = binding["run"]
+	fixture_manifest = binding["manifest"]
+	fixture_head = binding["head"]
+	fixture_failure_control = binding["failure_control"]
 	for(var/turf/T in world)
 		set_fixture_light(T, 1, 1, 1)
 	for(var/point in list(list(9,12),list(10,12),list(14,11),list(16,13)))
@@ -205,8 +246,12 @@ var/global/client/fixture_client
 
 /mob/living/human/Login()
 	..()
+	if(fixture_failed || !fixture_run)
+		fixture_fail("login_after_failure")
+		del(client)
+		return
 	if(copytext(key,1,6) != "Guest")
-		text2file("FAILED_NON_GUEST", "client-ready.txt")
+		fixture_fail("non_guest")
 		del(client)
 		return
 	loc = locate(11,8,1)
@@ -225,29 +270,45 @@ var/global/client/fixture_client
 	text2file("READY", "client-ready.txt")
 	spawn(1)
 		var/phase = 0
-		while(client && phase < 9)
+		while(client && phase < 9 && !fixture_failed)
 			var/requested = text2num(file2text("phase.request"))
 			if(requested != phase+1)
 				sleep(1)
 				continue
 			phase = requested
-			fixture_phase(phase, src)
+			if(fixture_phase(phase, src) != TRUE || fixture_failed)
+				fixture_fail("phase_failed")
+				break
 			sleep(5)
+			var/list/witness = fixture_checkpoint(phase, src)
+			if(fixture_failed || !witness)
+				fixture_fail("settled_frame_failed")
+				break
 			fdel("phase.ready.json")
-			text2file(json_encode(list("phase"=phase,"x"=x,"y"=y,"view"=client.view)),"phase.ready.json")
-		text2file("COMPLETE", "complete.txt")
+			text2file(json_encode(witness),"phase.ready.json")
+		if(phase == 9 && !fixture_failed)
+			text2file("COMPLETE", "complete.txt")
 
 /proc/fixture_phase(phase, mob/living/human/M)
 	if(phase == 1)
-		return // Native identity baseline; no root presenter.
+		return TRUE // Native identity baseline; no root presenter.
 	if(phase == 2)
+		if(fixture_failure_control == "runtime")
+			CRASH("Injected fixture runtime control")
+		if(fixture_failure_control == "admission")
+			var/obj/structure/wild/tree/live_tree/rejected_tree = fixture_trees[1]
+			rejected_tree.pixel_w = 1
 		var/datum/los_context/V = new(M.client)
 		for(var/obj/structure/wild/tree/live_tree/T in fixture_trees)
 			if(!V.admit_root_tree(T))
-				CRASH("Root admission failed")
+				return fixture_fail("root_admission")
+		if(!fixture_transform_controls(M, V))
+			return FALSE
 		fixture_presenter = new(M.client, V)
 		if(fixture_presenter.retired)
-			CRASH("Presenter admission failed")
+			return fixture_fail("presenter_admission")
+		if(!fixture_plane_refresh_controls(M))
+			return FALSE
 	else
 		fixture_presenter.invalidate()
 	if(phase == 3)
@@ -280,5 +341,76 @@ var/global/client/fixture_client
 	if(phase == 9)
 		new /obj/hidden_witness(locate(11,12,1))
 	var/accepted = fixture_presenter.refresh()
-	if(!accepted && phase != 9)
-		CRASH("Frame rejected")
+	if((phase == 9 && accepted) || (phase != 9 && !accepted))
+		return fixture_fail("frame_admission")
+	return !fixture_failed
+
+// Native controls execute before phase 2 can be acknowledged. No controller
+// may infer that a runtime in this callee automatically aborts its caller.
+/proc/fixture_transform_controls(mob/living/human/M, datum/los_context/V)
+	var/obj/structure/wild/tree/live_tree/T = fixture_trees[1]
+	var/obj/screen/plane_master/G = M.hud_used.plane_masters["[GAME_PLANE]"]
+	var/matrix/original_tree = T.transform
+	var/matrix/original_plane = G.transform
+	if(!fixture_check("helper_null", root_tree_identity_transform(null)) || !fixture_check("tree_default", V.root_tree_admitted(T)))
+		return FALSE
+	T.transform = null
+	if(!fixture_check("tree_null", V.root_tree_admitted(T)))
+		return FALSE
+	T.transform = matrix(1,0,0,0,1,0)
+	if(!fixture_check("tree_identity", V.root_tree_admitted(T)))
+		return FALSE
+	var/list/changes = list("translate"=matrix(1,0,1,0,1,0), "scale"=matrix(2,0,0,0,1,0), "shear"=matrix(1,1,0,0,1,0), "rotate"=matrix(0,-1,0,1,0,0))
+	for(var/name in changes)
+		T.transform = changes[name]
+		if(!fixture_check("tree_[name]", !root_tree_identity_transform(T.transform) && !V.root_tree_admitted(T)))
+			return FALSE
+	T.transform = original_tree
+	if(!fixture_check("plane_default", root_tree_identity_transform(G.transform)))
+		return FALSE
+	G.transform = null
+	if(!fixture_check("plane_null", root_tree_identity_transform(G.transform)))
+		return FALSE
+	G.transform = matrix(1,0,0,0,1,0)
+	if(!fixture_check("plane_identity", root_tree_identity_transform(G.transform)))
+		return FALSE
+	for(var/name in changes)
+		G.transform = changes[name]
+		var/datum/root_tree_presenter/probe = new(M.client, V)
+		var/rejected = probe.retired
+		probe.retire()
+		qdel(probe)
+		if(!fixture_check("plane_constructor_[name]", rejected))
+			return FALSE
+	G.transform = original_plane
+	return !fixture_failed
+
+/proc/fixture_plane_refresh_controls(mob/living/human/M)
+	var/obj/screen/plane_master/G = M.hud_used.plane_masters["[GAME_PLANE]"]
+	var/matrix/original_plane = G.transform
+	var/list/changes = list("translate"=matrix(1,0,1,0,1,0), "scale"=matrix(2,0,0,0,1,0), "shear"=matrix(1,1,0,0,1,0), "rotate"=matrix(0,-1,0,1,0,0))
+	for(var/name in changes)
+		G.transform = changes[name]
+		if(!fixture_check("plane_refresh_[name]", !fixture_presenter.planes_admitted() && !fixture_presenter.refresh() && (fixture_presenter.shutter in M.client.screen)))
+			return FALSE
+	G.transform = original_plane
+	return fixture_check("plane_restore", fixture_presenter.planes_admitted() && fixture_presenter.refresh())
+
+/proc/fixture_checkpoint(phase, mob/living/human/M)
+	if(fixture_failed || !M || !M.client)
+		return null
+	var/active = fixture_presenter && !fixture_presenter.retired && M.client.root_tree_presenter == fixture_presenter
+	var/rendered = 0
+	var/closed = FALSE
+	if(phase > 1)
+		if(!active)
+			return null
+		var/accepted = fixture_presenter.refresh()
+		closed = fixture_presenter.shutter in M.client.screen
+		for(var/image/I in fixture_presenter.owned_images)
+			if(I.icon)
+				rendered++
+		var/expected = phase == 9 ? 0 : (phase < 5 ? 3 : 2)
+		if(rendered != expected || (phase == 9 ? (accepted || !closed) : (!accepted || closed)))
+			return null
+	return list("schema"=2,"run"=fixture_run,"manifest"=fixture_manifest,"head"=fixture_head,"phase"=phase,"status"=(phase == 9 ? "denied" : "ready"),"renderer_active"=!!active,"rendered"=rendered,"shutter"=closed,"identity_controls"=fixture_identity_controls.Copy())

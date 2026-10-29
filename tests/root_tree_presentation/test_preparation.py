@@ -43,13 +43,23 @@ class Preparation(unittest.TestCase):
         client_del=source.split('/client/Del()',1)[1].split('/proc/',1)[0]
         self.assertLess(client_del.index('los_context.retire()'),client_del.index('root_tree_presenter.retire()'))
         self.assertNotIn('civ13.dmb',source)
+        self.assertIn('/atom/movable\n\tplane = GAME_PLANE',source)
+        caller=source.split('spawn(1)',1)[1].split('/proc/fixture_phase',1)[0]
+        self.assertLess(caller.index('fixture_phase(phase, src) != TRUE'),caller.index('text2file(json_encode(witness)'))
+        self.assertIn('fixture_failed || !witness',caller)
+        self.assertIn('phase == 9 && !fixture_failed',caller)
+        error=source.split('/world/Error(',1)[1].split('/proc/',1)[0]
+        self.assertIn('fixture_fail("native_runtime")',error)
+        for name in ('tree_identity','plane_identity','plane_constructor_[name]','plane_refresh_[name]'):
+            self.assertIn('"'+name+'"',source)
 
     def test_ci_registers_offline_files_only(self):
         spec=importlib.util.spec_from_file_location('root_ci',ROOT/'scripts/ci_baseline.py')
         ci=importlib.util.module_from_spec(spec);spec.loader.exec_module(ci)
         self.assertEqual(ci.SUITES['root_tree_presentation']['files'],(
             'tests/root_tree_presentation/test_contract.py',
-            'tests/root_tree_presentation/test_preparation.py'))
+            'tests/root_tree_presentation/test_preparation.py',
+            'tests/root_tree_presentation/test_protocol.py'))
         for path in ['code/modules/visibility/root_tree_presenter.dm',
                      'tests/root_tree_presentation/fixture.dm','code/__defines/_planes+layers.dm',
                      'tests/save_movement/source_adapter.py']:
