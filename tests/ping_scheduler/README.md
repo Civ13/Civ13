@@ -17,8 +17,9 @@ clients are consumed without a query.
 
 Ten offline cases cover early/final budget interruption, sums/counts, delayed
 clients, disconnects before/during queries, population mutations, empty passes and
-the day cutoff. Controls use the actual audited source at
-9db2b2f42a5fbbb0bdd49d50a2672da6111a7709, omit consumption or move finalization
+the day cutoff. Controls use `historical-ping.txt`, copied byte-for-byte from
+`code/processes/ping_track.dm` at `9db2b2f42a5fbbb0bdd49d50a2672da6111a7709`
+(Git blob `f80707ea830352b1f733083e4b191c8612fdfe7b`), omit consumption or move finalization
 after the budget check. No native runner is added or invoked.
 
 After parent review and coordination, prepare an isolated BYOND 516.1681 fixture

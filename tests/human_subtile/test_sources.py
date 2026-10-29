@@ -56,13 +56,13 @@ class SourceContracts(unittest.TestCase):
     def test_absolute_schedule_catches_up_without_eight_rounding_losses(self):
         for tick in (1, .5):
             for duration in (.7, 2.6, 5.85, 20):
-                due = [i * duration / 8 for i in range(8)]
+                due = [i * duration / 16 for i in range(16)]
                 actual = [math.ceil((d - 1e-9) / tick) * tick for d in due]
-                self.assertEqual(len(actual), 8)
+                self.assertEqual(len(actual), 16)
                 self.assertLessEqual(actual[-1], math.ceil(duration / tick) * tick)
-                self.assertEqual(8 * 4, 32)
+                self.assertEqual(16 * 2, 32)
         source = read(MODULE)
-        self.assertIn("start_time + (i - 1) * duration / 8", source)
+        self.assertIn("start_time + (i - 1) * duration / 16", source)
         self.assertIn("sleep(due - world.time)", source)
         self.assertNotIn("sleep(duration / 8)", source)
 
@@ -81,7 +81,7 @@ class SourceContracts(unittest.TestCase):
 
     def test_completion_and_cleanup_cover_partial_cancel_delete(self):
         source = read(MODULE)
-        self.assertIn("!completed && actor && !isDeleted(actor) && total_distance > 0", source)
+        self.assertIn("!completed && actor && !isDeleted(actor) && (total_distance > 0 || (paid_posture && attempted))", source)
         self.assertIn("actor.living_movement_completed()", source)
         self.assertIn("actor.human_movement_completed()", source)
         self.assertIn("if (!actor || isDeleted(actor) || actor.human_subtile_transaction != src)", source)

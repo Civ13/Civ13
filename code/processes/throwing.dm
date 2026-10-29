@@ -15,6 +15,7 @@
 		var/atom/movable/AM = current
 
 		if (!isDeleted(AM))
+			var/list/flight_token = AM.throw_flight_token
 			if (AM.loc)
 				try
 					switch (AM.throwmode)
@@ -45,10 +46,15 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
+										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
 
-									AM.hit_check(AM.speed)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Entered/Crossed replaced or ended this flight.
+									AM.hit_check(AM.speed, advanced)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Impact callbacks may also replace this flight.
 									AM.error += AM.dist_x
 									AM.dist_travelled++
 								else
@@ -74,9 +80,14 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
-									AM.hit_check(AM.speed)
+										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Entered/Crossed replaced or ended this flight.
+									AM.hit_check(AM.speed, advanced)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Impact callbacks may also replace this flight.
 									AM.error -= AM.dist_y
 									AM.dist_travelled++
 								AM.a = get_area(AM.loc)
@@ -108,9 +119,14 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
-									AM.hit_check(AM.speed)
+										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Entered/Crossed replaced or ended this flight.
+									AM.hit_check(AM.speed, advanced)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Impact callbacks may also replace this flight.
 									AM.error += AM.dist_y
 									AM.dist_travelled++
 								else
@@ -136,9 +152,14 @@
 										if (C.passable == TRUE)
 											continue
 										canMove = FALSE
+									var/advanced = FALSE
 									if (canMove)
-										AM.forceMove_nondenseturf(step)
-									AM.hit_check(AM.speed)
+										advanced = AM.forceMove_nondenseturf(step, throw_hop_token = flight_token)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Entered/Crossed replaced or ended this flight.
+									AM.hit_check(AM.speed, advanced)
+									if (!AM || AM.throw_flight_token != flight_token)
+										continue // Impact callbacks may also replace this flight.
 									AM.error -= AM.dist_x
 									AM.dist_travelled++
 

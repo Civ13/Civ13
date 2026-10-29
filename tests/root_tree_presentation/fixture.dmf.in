@@ -1,0 +1,13 @@
+window "root"
+    elem "root"
+        type = MAIN
+        size = 600x600
+        title = "Civ13 root RGB pixel fixture"
+        can-resize = false
+    elem "map"
+        type = MAP
+        pos = 44,62
+        size = 480x480
+        zoom = 1
+        letterbox = true
+        is-default = true

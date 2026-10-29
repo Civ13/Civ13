@@ -1,6 +1,17 @@
 """Fail-closed source contract; no compiler or runtime execution."""
 import re
 
+# Reviewed bounded-save integration adds only these non-hook blocks to the
+# pinned 5bf351 baseline. Keep complete-file equality after this projection;
+# deriving a baseline from candidate source would hide unrelated changes.
+BOUNDED_BLOCKS = (
+    ('\t\tlist/saving_export_stack = list()\n',
+     '\t\tlist/saving_content_owners = list()\n\t\tlist/saving_world_movables = list()\n\t\tvar/saving_work = 0\n\t\tvar/saving_slice_start = 0\n'),
+    ('\tsaving_export_stack = list()\n',
+     '\tsaving_content_owners = list()\n\tsaving_world_movables = list()\n\tsaving_work = 0\n\tsaving_slice_start = world.tick_usage\n'),
+    ('/map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)\n\tif(!ref) return\n\tvar/key = "[ref]"\n',
+     '\t// Keep the first captured edge if a completed child later moves.\n\tvar/owner = saving_content_owners[key]\n\tif(owner && owner != frame.entry) return\n\tsaving_content_owners[key] = frame.entry\n'),
+)
 
 AREA_POLICY = ('// Author policy is not restored from an ordinary or historical area payload.\n'
                '/area/persistence_runtime_var(key)\n'
@@ -20,8 +31,18 @@ def reconstruct_list_baseline(master):
     return master
 
 
+def project_bounded_save(baseline):
+    for anchor, addition in BOUNDED_BLOCKS:
+        # Match complete lines: the reset anchor must not match declarations.
+        pattern = re.compile(r'^' + re.escape(anchor), re.M)
+        if len(list(pattern.finditer(baseline))) != 1:
+            raise ValueError('Expected exactly one bounded-save baseline anchor')
+        baseline = pattern.sub(lambda match: match[0] + addition, baseline, count=1)
+    return baseline
+
+
 def project_reserved_policy(baseline):
-    """Apply only the historical declared policy to its list baseline."""
+    """Apply only this PR's declared policy to the historical list baseline."""
     anchor = '\treturn (key in list("affecting_lights", "lighting_overlay"'
     insertion = '// HUD objects belong to a client session and are rebuilt by the normal HUD path.'
     if baseline.count(anchor) != 1 or baseline.count(insertion) != 1:
@@ -31,9 +52,63 @@ def project_reserved_policy(baseline):
     return baseline.replace(anchor, '\treturn (key in list("lighting_reserved", "affecting_lights", "lighting_overlay"', 1).replace(insertion, AREA_POLICY + insertion, 1)
 
 
-def dispatch_transform(baseline):
-    """Change only the three dispatch forms; preserve every other byte."""
-    expected = baseline
+def project_fullbright_exclusions(baseline):
+    """Apply exactly the two runtime-only fullbright serialization exclusions."""
+    pairs = (
+        ('list(/mob/new_player, /atom/movable/lighting_overlay)',
+         'list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)'),
+        ('if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay))',
+         'if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))'),
+    )
+    if '/atom/movable/lighting_fullbright' in baseline:
+        raise ValueError('Historical baseline already contains fullbright exclusions')
+    for before, after in pairs:
+        if baseline.count(before) != 1:
+            raise ValueError('Historical fullbright exclusion anchor drifted')
+        baseline = baseline.replace(before, after, 1)
+    return baseline
+
+
+def project_area_change_owner(baseline):
+    """Exclude only the new process-local area transition identity."""
+    anchor = '/turf/persistence_runtime_var(key)\n'
+    if baseline.count(anchor) != 1 or '"area_change_owner"' in baseline:
+        raise ValueError('Area-change ownership projection anchor drifted')
+    return baseline.replace(anchor, anchor + '\tif (key == "area_change_owner")\n\t\treturn TRUE\n', 1)
+
+
+def project_lighting_policy(master):
+    """The two fullbright exclusions and transient area-owner guard only."""
+    return project_area_change_owner(project_fullbright_exclusions(master))
+
+
+def current_lighting_policy(base):
+    """Accept exact pre/post-addition event bases, never partial lighting policy.
+
+    The candidate is not normalized: losing an existing exclusion must fail.
+    Keep the strict historical projections above unchanged.
+    """
+    token = '/atom/movable/lighting_fullbright'
+    if token in base:
+        pairs = (
+            'list(/mob/new_player, /atom/movable/lighting_overlay, /atom/movable/lighting_fullbright)',
+            'if(istype(object, /obj/map_metadata) || istype(object, /atom/movable/lighting_overlay) || istype(object, /atom/movable/lighting_fullbright))',
+        )
+        if base.count(token) != 2 or any(base.count(anchor) != 1 for anchor in pairs):
+            raise ValueError('Event base has partial or changed fullbright exclusions')
+    else:
+        base = project_fullbright_exclusions(base)
+    owner = '/turf/persistence_runtime_var(key)\n\tif (key == "area_change_owner")\n\t\treturn TRUE\n'
+    if '"area_change_owner"' in base:
+        if base.count('"area_change_owner"') != 1 or base.count(owner) != 1:
+            raise ValueError('Event base has partial or changed area-owner guard')
+    else:
+        base = project_area_change_owner(base)
+    return base
+
+
+def transform(baseline):
+    expected = project_reserved_policy(project_bounded_save(baseline))
     for kind in ('atom', 'turf', 'mob'):
         pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?P<prefix>(?:\t[^\n]*\n)*?)\treturn \(key in list\((.*?)\)\) \|\| \.\.\(\)'
         matches = list(re.finditer(pattern, expected, re.M))
@@ -45,16 +120,12 @@ def dispatch_transform(baseline):
     return expected
 
 
-def transform(baseline):
-    """Historical reserved-policy projection, kept for its pinned controls."""
-    return dispatch_transform(project_reserved_policy(baseline))
-
-
-def validate_current_master(baseline, candidate):
-    if dispatch_transform(baseline) != candidate:
-        raise ValueError('Only reconstructed current-master dispatch hooks may differ')
-
-
 def validate(baseline, candidate):
     if transform(baseline) != candidate:
         raise ValueError('Only approved dispatch and reserved-policy projections may differ')
+
+
+def validate_current_master(master, candidate):
+    """Preserve the immutable event base, adding only missing lighting policy."""
+    if current_lighting_policy(master) != candidate:
+        raise ValueError('Only approved fullbright exclusions and area-owner guard may differ from event base')

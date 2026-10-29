@@ -184,7 +184,12 @@ var/durable_probe_tips = 0
 		var/turf_ref = F["/map/2/2/2"]
 		var/content_path = "[map_storage.entry_path(F, turf_ref)]/content"
 		var/old_content = F[content_path]
-		F[content_path] << ""
+		// Remove ownership edges without corrupting the content codec itself.
+		// This must isolate reachability validation from structural preflight.
+		if(F["/format_version"] == 3)
+			F[content_path] << list()
+		else
+			F[content_path] << ""
 		fdel("map_saves/round.json")
 		text2file(header, "map_saves/round.json")
 		durable_world_check(!map_storage.validate_world_save() && locate(/mob/living/human/durable_probe_leader) == leader, "orphan metadata reference accepted")

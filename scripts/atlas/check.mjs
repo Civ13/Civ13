@@ -17,7 +17,7 @@ assert(elements.get('catalog').children.length>0);
 assert(elements.get('diagram').children.length===1);
 elements.get('search').value='sinew';elements.get('search').oninput();
 assert(elements.get('catalog').children.length>0);
-elements.get('catalog').children.find(n=>n.onclick).onclick();
+elements.get('catalog').children.find(n=>n['data-result-type']==='recipe').onclick();
 assert(elements.get('title').textContent.length>0);
 const follow=elements.get('relations').children.find(n=>n.onclick);assert(follow);follow.onclick();
 assert(elements.get('catalog').children.length>0);

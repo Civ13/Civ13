@@ -61,7 +61,6 @@ class LinuxCITests(unittest.TestCase):
                 ci.run(['does-not-exist'], Path(temp), 'expired', time.monotonic() - 1)
             self.assertEqual(list(Path(temp).iterdir()), [])
 
-    @unittest.skipUnless(sys.platform == 'linux', 'Linux process-group/resource semantics')
     def test_timeout_reaps_owned_child_and_retains_receipt(self):
         with tempfile.TemporaryDirectory() as temp:
             work = Path(temp)
@@ -72,7 +71,6 @@ class LinuxCITests(unittest.TestCase):
             self.assertNotEqual(receipt['returncode'], 0)
             self.assertIn('error', receipt)
 
-    @unittest.skipUnless(sys.platform == 'linux', 'Linux process-group/resource semantics')
     def test_actual_source_preparation_with_bounded_git_mapping(self):
         with tempfile.TemporaryDirectory() as temp:
             work = Path(temp)
@@ -82,7 +80,6 @@ class LinuxCITests(unittest.TestCase):
             self.assertFalse(json.loads(packet.read_text())['native_execution'])
             self.assertTrue((work / 'source.sources/production.dm').is_file())
 
-    @unittest.skipUnless(sys.platform == 'linux', 'Linux process-group/resource semantics')
     def test_clean_process_retains_logs_and_receipt(self):
         with tempfile.TemporaryDirectory() as temp:
             work = Path(temp)

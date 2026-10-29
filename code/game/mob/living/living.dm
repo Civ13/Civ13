@@ -485,7 +485,7 @@ default behaviour is:
 	// remove the character from the list of the dead
 	if (stat == DEAD)
 		dead_mob_list -= src
-		living_mob_list += src
+		register_living_mob(src)
 		timeofdeath = FALSE
 
 	// restore us to conciousness
@@ -675,7 +675,7 @@ default behaviour is:
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in internal_organs)
 		return
-	..()
+	return ..()
 
 //damage/heal the mob ears and adjust the deaf amount
 /mob/living/adjustEarDamage(var/damage, var/deaf)

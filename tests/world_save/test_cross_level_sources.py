@@ -86,7 +86,7 @@ class CrossLevelSourceTests(unittest.TestCase):
                     actual = (output / Path(path).name).read_text()
                     self.assertEqual(actual, original.replace(before, after, 1) if Path(path).name == name else original)
                 self.assertIn(case, RUNNER.CASES)
-                self.assertTrue(expected.startswith('FAIL: '))
+                self.assertTrue((expected['pattern'] if isinstance(expected, dict) else expected).startswith('FAIL: '))
 
     def test_control_anchor_drift_fails_closed(self):
         for _, before, after, _, _ in RUNNER.CONTROLS.values():
@@ -151,6 +151,13 @@ class CrossLevelSourceTests(unittest.TestCase):
         self.assertIn('record_save_reference_failure("cross_level_object", A)', saving)
         self.assertIn('durable_export.bind_entry(A, saving_z, ref, src)', saving)
         self.assertIn('exporter.record_save_reference_failure("duplicate_durable_entry", A, ref, node["z"], node["ref"])', graph)
+
+    def test_bounded_movement_requires_chunked_format_and_success(self):
+        probe = (ROOT / 'tests/world_save/cross_level_probe.dm').read_text()
+        self.assertIn('F["/format_version"] == 3', probe)
+        self.assertIn('map_storage.saved_content_refs(F["content"], F["/format_version"])', probe)
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        self.assertNotIn('--case move-direct --expect-current-defects', workflow)
 
     def test_bounded_characterization_accepts_only_intended_duplicate(self):
         expected = RUNNER.BASELINE_DEFECTS['move-direct']

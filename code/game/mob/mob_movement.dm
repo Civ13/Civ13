@@ -191,6 +191,9 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
@@ -203,7 +206,7 @@
 				return FALSE
 		else if (subtile_actor.human_subtile_offset_owned && (step_x || step_y))
 			return FALSE
-	if (direct & (direct - 1))
+	if (!subtile_pulse && (direct & (direct - 1)))
 		if (direct & TRUE)
 			if (direct & 4)
 				if (step(src, NORTH))
@@ -299,8 +302,16 @@
 		return // Moved here to avoid nullrefs below
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
-		if (!subtile_input_actor.human_subtile_input_supported(direct))
+		// A paid crawl retains admission even after early collision/posture exit.
+		if (subtile_input_actor.human_subtile_transaction && subtile_input_actor.human_subtile_transaction.paid_posture)
 			return FALSE
+		if (!subtile_input_actor.human_subtile_input_supported(direct))
+			human_subtile_release_visuals()
+			return FALSE
+		if (!subtile_input_actor.human_subtile_eligible(direct))
+			human_subtile_release_visuals()
+	else
+		human_subtile_release_visuals()
 
 	if (!mob.next_change_dir)
 		mob.next_change_dir = list(
@@ -768,7 +779,7 @@
 				step(mob, pick(cardinal))
 			else
 				if (mob_is_human && H.human_subtile_eligible(direct))
-					subtile_deadline = H.human_subtile_deadline(move_delay, world.time)
+					subtile_deadline = H.human_subtile_deadline(move_delay, world.time, ordinal)
 					. = H.SelfMove(n, direct, subtile_deadline)
 				else
 					. = mob.SelfMove(n, direct)
@@ -808,7 +819,7 @@
 
 			// make animals acknowledge us
 			if (mob_is_human)
-				for (var/mob/living/simple_animal/complex_animal/C in living_mob_list) // living_mob_list fails here
+				for (var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list)
 					var/dist_x = abs(mob.x - C.x)
 					var/dist_y = abs(mob.y - C.y)
 					if (dist_x <= 10 && dist_y <= 10)

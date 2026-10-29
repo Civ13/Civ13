@@ -1,0 +1,22 @@
+{
+  "source_repository": "Civ13/Civ13",
+  "source_commit": "8f819a586484dadc66cb8b330df56922b699b7ff",
+  "helper_source_path": "tools/procedural_maps/validator.py",
+  "helper_source_git_blob": "cbc7b895773cfb6f42e9382c6b2567252c5bb851",
+  "helper_source_sha256": "b186f151b532b3d4e61c94de5276ed3a165fa9941404c01ae6e7d2bf385d01b1",
+  "copied_function_sha256": {
+    "stable_u64": "edddd22a2c881c42327fbeb0910e64aabcaab00b7ad9dcc2df8eba8bc65d1c2b",
+    "canonical_hash": "84e4414d098fe679cf68bf593b08b6e669ba06a6dff3b52bfecefbd570ed3fcf"
+  },
+  "reused_io_source_path": "tools/procedural_maps/io.py",
+  "reused_io_git_blob": "6e7c460d41e5e183e9b43f4d21fd972549d28f03",
+  "reused_io_sha256": "04e524f66a2b96338d5963520e19dcb51a2d3fd2c82a0bb05ce68ab0a5c63822",
+  "native_design_source_commit": "10d264e5896221b34949ee4b67c0fd2b94bde249",
+  "schema": "civ13-authored-room-source-provenance/1",
+  "design_commit": "474d900e454903001b1487707b49df7232b5f405",
+  "design_catalog_path": "docs/liminal/room-archetypes-v1.json",
+  "assets_copied": [],
+  "native_catalog_admission": "PENDING",
+  "native_dmm_emitter_implemented": false,
+  "room_catalog_design_commit": "f33c55aafbad7ff6e75f9a761f2f82d8b89d3be1"
+}

@@ -1,0 +1,540 @@
+{
+  "schema": "civ13-liminal-room-catalog/1",
+  "version": "liminal-authored-rooms/0.1.0",
+  "native_approved": false,
+  "archetypes": {
+    "arrival_vestibule": {
+      "width": 9,
+      "height": 9,
+      "mask": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "role": "ARRIVAL",
+      "zone": "OFFICE",
+      "sockets": {
+        "E": {
+          "facing": "E",
+          "offset": 4,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [
+          [
+            4,
+            4
+          ]
+        ],
+        "objective": [],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "SAFE_UNIFORM",
+        "sound_intent": "QUIET",
+        "rarity_weight": 100,
+        "material_intent": "TEXTILE_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "office_columns": {
+      "width": 11,
+      "height": 11,
+      "mask": [
+        "###########",
+        "#.........#",
+        "#.........#",
+        "#..X......#",
+        "#.........#",
+        "#.........#",
+        "#.........#",
+        "#......X..#",
+        "#.........#",
+        "#.........#",
+        "###########"
+      ],
+      "role": "HUB",
+      "zone": "OFFICE",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 5,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 5,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "N": {
+          "facing": "N",
+          "offset": 5,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            5,
+            5
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "REPEATED_UNIFORM",
+        "sound_intent": "DAMPENED",
+        "rarity_weight": 40,
+        "material_intent": "TEXTILE_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "offset_office": {
+      "width": 13,
+      "height": 11,
+      "mask": [
+        "#############",
+        "#.....X.....#",
+        "#.....X.....#",
+        "#.....X.....#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#.....X.....#",
+        "#.....X.....#",
+        "#.....X.....#",
+        "#############"
+      ],
+      "role": "HUB",
+      "zone": "OFFICE",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 5,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 5,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "N": {
+          "facing": "N",
+          "offset": 3,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            6,
+            5
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "PATCHY_INTENT",
+        "sound_intent": "DAMPENED",
+        "rarity_weight": 30,
+        "material_intent": "TEXTILE_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "cubicle_repetition": {
+      "width": 15,
+      "height": 13,
+      "mask": [
+        "###############",
+        "#.............#",
+        "#...X.....X...#",
+        "#...X.....X...#",
+        "#...X.....X...#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#...X.....X...#",
+        "#...X.....X...#",
+        "#...X.....X...#",
+        "#.............#",
+        "###############"
+      ],
+      "role": "HUB",
+      "zone": "OFFICE",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "N": {
+          "facing": "N",
+          "offset": 7,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            7,
+            6
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "REPEATED_UNIFORM",
+        "sound_intent": "DAMPENED",
+        "rarity_weight": 20,
+        "material_intent": "TEXTILE_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "archive_stacks": {
+      "width": 13,
+      "height": 13,
+      "mask": [
+        "#############",
+        "#...........#",
+        "#..X.....X..#",
+        "#..X.....X..#",
+        "#..X.....X..#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#..X.....X..#",
+        "#..X.....X..#",
+        "#..X.....X..#",
+        "#...........#",
+        "#############"
+      ],
+      "role": "HUB",
+      "zone": "OFFICE",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "N": {
+          "facing": "N",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            6,
+            6
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "LOW_AMBIENT_INTENT",
+        "sound_intent": "QUIET",
+        "rarity_weight": 15,
+        "material_intent": "SHELVING_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "acoustic_atrium": {
+      "width": 15,
+      "height": 13,
+      "mask": [
+        "###############",
+        "#.............#",
+        "#.............#",
+        "#...X.....X...#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#.............#",
+        "#...X.....X...#",
+        "#.............#",
+        "#.............#",
+        "###############"
+      ],
+      "role": "HUB",
+      "zone": "OFFICE",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 6,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "N": {
+          "facing": "N",
+          "offset": 7,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            7,
+            6
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "HIGH_VOID_INTENT",
+        "sound_intent": "REVERBERANT_INTENT",
+        "rarity_weight": 10,
+        "material_intent": "HARD_FLOOR_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "threshold_buffer": {
+      "width": 9,
+      "height": 9,
+      "mask": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "role": "TRANSITION",
+      "zone": "BUFFER",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 4,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 4,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "CONTRAST_INTENT",
+        "sound_intent": "BUFFERED_INTENT",
+        "rarity_weight": 100,
+        "material_intent": "MIXED_THRESHOLD_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "utility_gallery": {
+      "width": 13,
+      "height": 9,
+      "mask": [
+        "#############",
+        "#...........#",
+        "#...XXXXX...#",
+        "#...........#",
+        "#...........#",
+        "#...........#",
+        "#...XXXXX...#",
+        "#...........#",
+        "#############"
+      ],
+      "role": "SERVICE",
+      "zone": "UTILITY",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 4,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        },
+        "E": {
+          "facing": "E",
+          "offset": 4,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            9,
+            4
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "SERVICE_INTENT",
+        "sound_intent": "INDUSTRIAL_INTENT",
+        "rarity_weight": 100,
+        "material_intent": "TILED_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "maintenance_alcove": {
+      "width": 7,
+      "height": 7,
+      "mask": [
+        "#######",
+        "#.....#",
+        "#.....#",
+        "#.....#",
+        "#.....#",
+        "#.....#",
+        "#######"
+      ],
+      "role": "ALCOVE",
+      "zone": "OFFICE",
+      "sockets": {
+        "S": {
+          "facing": "S",
+          "offset": 3,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [
+          [
+            3,
+            3
+          ]
+        ],
+        "exit": []
+      },
+      "tags": {
+        "light_intent": "LOCAL_TASK_INTENT",
+        "sound_intent": "QUIET",
+        "rarity_weight": 30,
+        "material_intent": "STORAGE_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    },
+    "extraction_airlock": {
+      "width": 9,
+      "height": 9,
+      "mask": [
+        "#########",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#.......#",
+        "#########"
+      ],
+      "role": "EXIT",
+      "zone": "EGRESS",
+      "sockets": {
+        "W": {
+          "facing": "W",
+          "offset": 4,
+          "width": 3,
+          "kind": "HUMAN_DOOR",
+          "clearance": "HUMAN"
+        }
+      },
+      "anchors": {
+        "spawn": [],
+        "objective": [],
+        "exit": [
+          [
+            4,
+            4
+          ]
+        ]
+      },
+      "tags": {
+        "light_intent": "SAFE_TERMINAL_INTENT",
+        "sound_intent": "QUIET",
+        "rarity_weight": 100,
+        "material_intent": "EGRESS_INTENT"
+      },
+      "native_admission": "PENDING",
+      "authoring": "ORIGINAL_ABSTRACT_MASK_NO_ASSET_COPY"
+    }
+  }
+}

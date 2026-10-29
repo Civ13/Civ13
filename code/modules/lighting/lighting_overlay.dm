@@ -37,6 +37,12 @@
 	blend_mode = BLEND_ADD
 	invisibility = 0
 	#endif
+	#ifndef OPENDREAM
+	#if LIGHTING_COMPOSITION_V2
+	plane = LIGHTING_MASK_PLANE
+	blend_mode = BLEND_OVERLAY
+	#endif
+	#endif
 	verbs.Cut()
 
 	layer			  = 13 // The lighting overlay should appear above everything including weather effects
@@ -44,6 +50,7 @@
 	if (T)
 		T.lighting_overlay = src
 		T.luminosity	   = FALSE
+		T.sync_fullbright_coverage()
 
 	if (no_update)
 		return
@@ -80,6 +87,9 @@
 	return L.Copy()
 
 /atom/movable/lighting_overlay/proc/update_overlay()
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(loc)
+	#endif
 	var/turf/T = loc
 	if (!T || !istype(T)) // Erm...
 		if (loc)
@@ -95,7 +105,8 @@
 	blend_mode = BLEND_ADD
 	#endif
 	#ifndef OPENDREAM
-	blend_mode = BLEND_MULTIPLY
+	// Opt-in masks compose on a separate light-only plane.
+	blend_mode = LIGHTING_COMPOSITION_V2 ? BLEND_OVERLAY : BLEND_MULTIPLY
 	#endif
 	var/list/L = color ? copylist(color) : list()
 	#ifdef OPENDREAM

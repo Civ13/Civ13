@@ -68,10 +68,10 @@ Controls cover virtual masters, halo boundaries and refused ownership. Redundant
 individual import/runtime/compatibility guard mutations are omitted: another
 production guard can preserve their behavior, making them unsuitable oracles.
 
-Do not launch the fixture until the coordinator releases the native hold and
-reviews the exact candidate and launch plan. Use pinned BYOND 516.1681, temporary
-storage, closed ports and diagnostic scanning. No CI suite has been registered;
-root coordinates shared CI selection after review. Compiler success alone will
+The original Windows stage required a separate native grant and pinned BYOND
+516.1681, temporary storage, closed ports and diagnostic scanning. Its frozen
+runner retains that contract. The current Linux CI lane is described below.
+Compiler success alone will
 not establish allocation counts or lighting parity. No memory/speed gain measured.
 The marker adds a scalar field to every turf, including ordinary cells. That cost
 is unmeasured. Overlay counts alone cannot establish a net reduction in RAM.
@@ -111,7 +111,8 @@ appearance, source drift and invalid cells. These are not native renderer tests.
 
 ## Current CI parity lane
 
-`run-ci.py --byond-bin <516.1681-bin> --output <new-directory>` runs only
+`run-ci.py --byond-bin <516.1688-bin> --byond-archive <pinned.zip>
+--output <new-directory>` runs only
 in a disposable CI workspace. It prepares the actual merged production sources,
 compiles six closed-port 16x16 fixtures, and compares all six complete native
 state snapshots with reserved omission off versus on. The virtual-master mutation
@@ -164,7 +165,7 @@ A playable-owner executor can seal an isolated input directory containing
 ```
 
 Sealing only hashes files. `build.json` must contain `head`, `byond_version`
-(`516.1681`), `compiler_sha256` and `files` mapping the four input names to SHA256.
+(`516.1688`), `compiler_sha256` and `files` mapping the four input names to SHA256.
 This provenance is a declaration requiring independent exact-build evidence, not
 proof from a compiler run. The sealing step never builds or launches anything.
 The packet binds all inputs and permits only the same executable/DMB/RSC with
@@ -376,9 +377,9 @@ Fresh source/runtime manifests must bind the resulting feature head; regenerate
 them again on any future accepted Linux executor. This source reconciliation
 provides no native preflight, platform, measurement, acquisition or runtime grant.
 
-### October 25 source-only toolchain migration
+### October 25 toolchain migration
 
-The unpublished reconciliation uses master
+The published reconciliation used master
 `704ebe205bf06c07bcf6460cfa1c3a2e9254a152` without a production-policy delta.
 Measurement sealing, the separate preflight and the two ordinary Linux CI
 correctness lanes now require 516.1688. The frozen Windows runner retains its
@@ -414,3 +415,26 @@ limits, deadlines, port guards and cleanup are unchanged. Ordinary PR CI may run
 these two lanes; the manual pilot, attribution preflight and 22-process batch
 remain separately held. Archive hashes establish reproducibility, not publisher
 authentication or full i386 dependency/platform acceptance.
+
+### October 29 source reconciliation
+
+This reconciliation integrates master
+`b64a33bd9b1ca5f12bb6e855d4848c193f9e64e4` to resolve actual merge conflicts.
+It retains master's exclusion runtime fixture, including its event-bound
+base/head preparation, current 1688 runner and separate historical 1681 runner.
+The reserved-lighting runtime identity tests cover their own runner; master's
+exclusion tests cover that independent lane. One test now checks the complete
+current movable hook instead of its superseded one-line spelling; offline
+invocations can supply an immutable `CI_BASE` just as the runner requires.
+Production code, maps and resources
+have no delta from that master revision. The workflow retains master's admission
+conditions and adds the measurement controllers' offline checks, the reserved
+runner's pinned-archive argument and its identity receipt.
+
+Earlier exact head `df9382507c2d095d744a5fe249ffd955704b130b` passed
+[CI 40240362081](https://github.com/Civ13/Civ13/actions/runs/40240362081), including
+the 1688 compile and both native correctness lanes. That evidence remains bound
+to that earlier head; it is not a resource measurement or acceptance of this
+reconciliation. The measurement tooling adds no production optimization or
+automatic measurement step. Source review can assess the tooling separately
+from the explicitly admitted preflight and paired measurements described above.

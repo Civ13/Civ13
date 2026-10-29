@@ -208,7 +208,7 @@ var/global/corpse_decay_cursor = 1
 	// Restore durable age; bind fresh runtime epochs after native graph loading.
 	unregister_corpse_decay()
 	if (stat == DEAD)
-		living_mob_list -= src
+		unregister_living_mob(src)
 		dead_mob_list |= src
 		update_canmove()
 		update_icons()

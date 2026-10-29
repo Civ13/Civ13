@@ -1,4 +1,4 @@
-"""Synthetic archive/pin controls for both Linux lanes; no native or network calls."""
+"""Synthetic archive/pin controls for the reserved lane; no native or network calls."""
 import copy
 import hashlib
 import importlib.util
@@ -23,8 +23,7 @@ def module(name, path):
     return value
 
 
-RUNNERS = (module('reserved_current_runtime_test', ROOT / 'tests/reserved_lighting/run-ci.py'),
-           module('exclusion_current_runtime_test', ROOT / 'tests/exclusion_dispatch/run-ci.py'))
+RUNNERS = (module('reserved_current_runtime_test', ROOT / 'tests/reserved_lighting/run-ci.py'),)
 COMPILER = 'DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings (1.0s)\n'
 BANNER = 'Welcome BYOND! (5.0 Public Version 516.1688)\n'
 

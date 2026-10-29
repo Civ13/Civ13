@@ -44,6 +44,7 @@ var/datum/process_list/processes = new
 	// SSCleanup members
 	var/process/abandoned_items/abandoned_items = null
 	var/process/human_corpse_decay/human_corpse_decay = null
+	var/process/seasonal_construction/seasonal_construction = null
 	var/process/garbage/garbage = null
 	var/process/python/python = null
 	var/process/player_help/player_help = null

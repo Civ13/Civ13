@@ -24,6 +24,11 @@
 	name = "chest drawer"
 	icon_state = "chestdrawer"
 
+/obj/structure/filingcabinet/chestdrawer/wood
+	name = "wooden document drawers"
+	desc = "Peg-joined wooden drawers for papers, paper bundles and folders."
+	color = "#A07449"
+
 
 /obj/structure/filingcabinet/filingcabinet	//not changing the path to avoid unecessary map issues, but please don't name stuff like this in the future -Pete
 	icon_state = "tallcabinet"

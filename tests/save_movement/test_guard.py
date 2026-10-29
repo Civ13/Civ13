@@ -32,6 +32,8 @@ class Atom:
         self.lastx = self.lasty = self.lastz = 0
         self.on_entry = self.on_release = self.on_drop = None
         self.drop_calls = self.sleep_calls = 0
+        self.throw_flight_token = self.throw_launch_source = None
+        self.throw_launch_dx = self.throw_launch_dy = self.throw_launch_x = self.throw_launch_y = None
     @property
     def loc(self):
         return self._loc
@@ -80,10 +82,11 @@ def get_turf(atom):
 
 class Fixture:
     def __init__(self, movable_source=None, operation_source=None):
-        self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False,
+        self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
                         get_turf=get_turf, isturf=lambda a: isinstance(a, Atom) and a.turf,
+                        isnull=lambda value: value is None,
                         ishuman=lambda a: a.human, ADMIN_AREA='admin',
                         istype=lambda a, kind: isinstance(a, Area) and a.admin,
                         list=lambda *args: args, EXCEPTION=RuntimeError,
@@ -107,7 +110,8 @@ class Fixture:
         self.allow = project(movable, '/proc/persistence_movement_allowed', 'mover, destination', self.env)
         self.env['persistence_movement_allowed'] = self.allow
         self.env['is_protected_sleep_location'] = project(read(HELPERS), '/proc/is_protected_sleep_location', 'location', self.env)
-        self.move = project(movable, '/atom/movable/proc/forceMove', 'src, destination, special_event=None', self.env, True)
+        self.move = project(movable, '/atom/movable/proc/forceMove', 'src, destination, special_event=None, throw_hop_token=None', self.env, True)
+        self.clear_launch = project(movable, '/atom/movable/proc/clear_throw_launch', 'src', self.env, True)
         self.raw = project(movable, '/atom/movable/proc/persistence_set_loc', 'src, destination', self.env, True)
         self.zmove = project(movable, '/atom/movable/proc/persistence_set_z', 'src, target_z', self.env, True)
         self.enter = project(read(HELPERS), '/mob/living/human/proc/enter_protected_sleep', 'src', self.env, True)
@@ -127,14 +131,14 @@ class Fixture:
         self.backend = project(functions, '/map_storage/proc/run_world_operation', 'src, kind, operation=None', self.env, True)
         self.store = NS(dimension_recovery_required=False, dimension_budget_hold=False)
     def operation(self):
-        op = NS(storage=None, kind=None, backend_started=False, contents_started=False,
+        op = NS(storage=None, kind=None, admission_identity=object(), backend_started=False, contents_started=False,
                 mutation_started=False, restoring_players=False)
         for name, function in self.op_methods.items():
             setattr(op, name, MethodType(function, op))
         return op
     def actor(self, loc=None, human=True):
         actor = Atom(loc or self.home, human=human)
-        for name, method in dict(forceMove=self.move, persistence_set_loc=self.raw,
+        for name, method in dict(forceMove=self.move, clear_throw_launch=self.clear_launch, persistence_set_loc=self.raw,
                                  persistence_set_z=self.zmove, in_protected_sleep_zone=self.zone,
                                  set_stat=self.stat, **self.sleep_methods).items():
             setattr(actor, name, MethodType(method, actor))
@@ -231,6 +235,23 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(len(messages), 2)
         ticker = extract(read(FUNCTIONS), '/datum/controller/gameticker/proc/savemap')
         self.assertNotIn('SAVING THE MAP!', ticker)
+
+    def test_admission_identity_survives_completed_operation_and_rejected_attempt(self):
+        f = Fixture()
+        old = f.env['persistence_admission_identity']
+        save = f.begin(f.store, 'save')
+        first = f.env['persistence_admission_identity']
+        self.assertIs(first, save.admission_identity)
+        self.assertIsNot(first, old)
+        self.assertIsNone(f.begin(f.store, 'save'))
+        self.assertIs(f.env['persistence_admission_identity'], first)
+        save.finish(True)
+        self.assertFalse(f.env['persistence_save_in_progress'])
+        self.assertIs(f.env['persistence_admission_identity'], first)
+        load = f.begin(f.store, 'load')
+        self.assertIs(f.env['persistence_admission_identity'], load.admission_identity)
+        self.assertIsNot(f.env['persistence_admission_identity'], first)
+        load.finish(True)
 
     def test_hands_refuse_before_slot_changes_and_accept_already_contained_items(self):
         for side in ('l', 'r'):
@@ -434,6 +455,7 @@ class GuardTests(unittest.TestCase):
         self.assertIs(human.loc, retired_inner)
         fresh = Atom()
         fresh.forceMove = MethodType(f.move, fresh)
+        fresh.clear_throw_launch = MethodType(f.clear_launch, fresh)
         self.assertTrue(fresh.forceMove(f.other))  # empty creation exception
         fresh.gc_destroyed = -1
         self.assertTrue(fresh.forceMove(None))  # empty deletion exception

@@ -140,9 +140,6 @@ var/world_is_open = TRUE
 		href_logfile = file("data/logs/[date_string]-hrefs.htm")
 		diary = file("data/logs/[date_string].log")
 		diary << "[log_end]\n[log_end]\nStarting up. (ID: [game_id]) [time2text(world.timeofday, "hh:mm.ss")][log_end]\n---------------------[log_end]"
-		var/oocdiary = file("ooc.log")
-		oocdiary << "> \[[time_stamp()]] New round [game_id] starting!"
-		webhook_send_round_start(game_id)
 		if (byond_version < RECOMMENDED_VERSION)
 			diary << "Your server's byond version does not meet the recommended requirements for this server. Please update BYOND."
 
@@ -293,6 +290,46 @@ var/world_topic_spam_protect_time = world.timeofday
 	config = new /datum/configuration()
 	config.load("config/config.txt", "config")
 
+// Escape literal listing text and attributes without BYOND's URL auto-detection.
+/proc/hub_status_text(value)
+	var/text = "[value]"
+	text = replacetext(text, "&", "&amp;")
+	text = replacetext(text, "<", "&lt;")
+	text = replacetext(text, ">", "&gt;")
+	text = replacetext(text, "\"", "&quot;")
+	text = replacetext(text, "'", "&#39;")
+	return text
+
+// Only absolute HTTP(S) links with a conservative ASCII URL alphabet belong here.
+/proc/hub_status_link(url, label, open_new_window = FALSE)
+	if (!istext(url))
+		return ""
+	var/authority_start
+	if (copytext(url, 1, 9) == "https://")
+		authority_start = 9
+	else if (copytext(url, 1, 8) == "http://")
+		authority_start = 8
+	else
+		return ""
+	var/authority_end = length(url) + 1
+	for (var/delimiter in list("/", "?", "#"))
+		var/delimiter_position = findtext(url, delimiter, authority_start)
+		if (delimiter_position && delimiter_position < authority_end)
+			authority_end = delimiter_position
+	if (authority_start == authority_end)
+		return ""
+	for (var/i = 1, i <= length(url), i++)
+		var/character = lowertext(copytext(url, i, i + 1))
+		if (!findtext("abcdefghijklmnopqrstuvwxyz0123456789-._~:/?#@!$&()*+,;=%", character))
+			return ""
+		if (i >= authority_start && i < authority_end)
+			if (!findtext("abcdefghijklmnopqrstuvwxyz0123456789.-:", character))
+				return ""
+	var/target = ""
+	if (open_new_window)
+		target = " target=\"_blank\" rel=\"noopener noreferrer\""
+	return "<a href=\"[hub_status_text(url)]\"[target]>[hub_status_text(label)]</a>"
+
 /world/proc/update_status()
 
 	if (world.port == config.testing_port)
@@ -300,20 +337,30 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/s = ""
 
-	if (config.open_hub_discord_in_new_window)
-		s += "<center><a href=\"[config.discordurl]\" target=\"_blank\"><b>[customserver_name()]</b></a></center><br>"
-	else
-		s += "<center><a href=\"[config.discordurl]\"><b>[customserver_name()]</b></a></center><br>"
+	var/server_title = hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)
+	if (!server_title)
+		server_title = hub_status_text(customserver_name())
+	s += "<center><b>[server_title]</b></center><br>"
+
+	var/list/community_links = list()
+	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
+	var/website_link = hub_status_link(config.websiteurl, "Website")
+	if (discord_link)
+		community_links += discord_link
+	if (website_link)
+		community_links += website_link
+	if (community_links.len)
+		s += "[jointext(community_links, " | ")]<br>"
 
 	if (config.hub_banner_url)
 		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
 	if (map)
-		s += "<b>Map:</b> [map.title] ([roundduration2text()])<br>"
+		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
 	if (map)
-		s += "<b>Gamemode:</b> [map.gamemode]"
+		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (config.hub_body)
 		s += config.hub_body
 
@@ -366,12 +413,14 @@ var/global/persistence_reboot_scheduled = FALSE
 /proc/start_persistence_loop()
 	if (! config.skip_persistence_saving)
 		spawn(300)
-			if (map && map.persistence && !persistence_restart.startup_hold && !persistence_restart.busy)
-				var/minsleft = 60-text2num(time2text(world.realtime,"mm"))
-				var/secsleft = 60-text2num(time2text(world.realtime,"ss"))
-				var/hr = (text2num(time2text(world.realtime,"hh")) & 0x1) //only odd hours
-				if (minsleft <= 2 && hr)
-					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[minsleft-1] minutes</b> and <b>[secsleft-1] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
+			if (map && map.persistence && ticker && ticker.current_state >= GAME_STATE_PLAYING && !persistence_restart.startup_hold && !persistence_restart.busy)
+				// First save is one full interval after the round starts, not at round start.
+				if (!nextsave)
+					nextsave = world.realtime + 216000
+				// Warn from the actual schedule during its last two minutes.
+				var/save_in = round((nextsave - world.realtime) / 10)
+				if (save_in > 0 && save_in <= 120)
+					to_chat(world, "<font color='yellow' size=4><b>Attention - Round will be saved in approximately <b>[round(save_in / 60)] minutes</b> and <b>[save_in % 60] seconds</b>. Game might lag up to a couple of minutes.</b></font>")
 				if (nextsave <= world.realtime)
 					nextsave = world.realtime + 216000
 					spawn(0)

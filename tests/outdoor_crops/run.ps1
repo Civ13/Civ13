@@ -36,6 +36,8 @@ try {
     [IO.File]::WriteAllText((Join-Path $temp 'production.dm'), $globals + "`n" + $seeds + "`n" + $production)
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'fixture.dm') -Destination $temp
     Copy-Item -LiteralPath (Join-Path $repo 'icons/farming/seeds.dmi') -Destination (Join-Path $temp 'icons/farming/seeds.dmi')
+    Copy-Item -LiteralPath (Join-Path $repo 'icons/farming/pocket_stronghold_turnip.dmi') -Destination (Join-Path $temp 'icons/farming/pocket_stronghold_turnip.dmi')
+    Copy-Item -LiteralPath (Join-Path $repo 'icons/farming/pocket_stronghold_plump_helmet.dmi') -Destination (Join-Path $temp 'icons/farming/pocket_stronghold_plump_helmet.dmi')
     Copy-Item -LiteralPath (Join-Path $repo 'code/__defines/maps.dm') -Destination (Join-Path $temp 'maps.dm')
     $includes = @('#include "maps.dm"','#include "fixture.dm"','#include "production.dm"')
     if ($Baseline) { $includes = @('#define BASELINE') + $includes }
