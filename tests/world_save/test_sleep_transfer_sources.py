@@ -53,6 +53,21 @@ class SleepTransferSourceTests(unittest.TestCase):
             startup_count = sum((output / name).read_text().count('/world/New()\n') for name in sources)
             self.assertEqual(startup_count, 1)
 
+    def test_movement_fixture_uses_exact_disabled_production_presentation_default(self):
+        source = (ROOT / 'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
+        default = RUNNER.presentation_default(source)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            receipt = RUNNER.prepare(output)
+            environment = (output / 'probe.dme').read_text(encoding='utf-8')
+            self.assertTrue(environment.startswith(default))
+            self.assertIn('#if CIV13_ROOT_TREE_PRESENTATION', (output / 'force_move.dm').read_text(encoding='utf-8'))
+            self.assertEqual(receipt['source_projections']['presentation_default']['source'], 'code/modules/visibility/los_context.dm')
+            self.assertEqual(receipt['source_sha256']['code/modules/visibility/los_context.dm'], RUNNER.BASE.sha((ROOT / 'code/modules/visibility/los_context.dm').read_bytes()))
+        for altered in (source.replace(default, '', 1), source.replace(default, default.replace(' 0\n', ' 1\n'), 1), source + default):
+            with self.subTest(count=altered.count(default)), self.assertRaisesRegex(RuntimeError, 'disabled production presentation default'):
+                RUNNER.presentation_default(altered)
+
     def test_every_control_changes_only_its_generated_source(self):
         for control in RUNNER.CONTROLS:
             with self.subTest(control=control), tempfile.TemporaryDirectory() as directory:
