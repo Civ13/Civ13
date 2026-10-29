@@ -17,7 +17,7 @@ they are not a Python GUI or an existing management IPC channel.
 
 `LocalManagementPresentation.WriteInstances` reuses the TextWriter convention.
 It consumes bounded typed manifests, explicit process targets and observations
-through a direct reference to the shared .NET8 core. No new wire schema, pipe,
+compiled directly from the shared .NET8 core sources. No new wire schema, pipe,
 HTTP endpoint, Python bridge, file watcher or collector interface is invented.
 No process reader is an argument or constructed by the renderer. Clock scope and
 current monotonic time are supplied explicitly; rendering cannot renew samples.
@@ -33,8 +33,9 @@ profile kinds. There is no Main/menu wiring, registration, refresh loop or actio
 The isolated presentation executable references the ACTUAL launcher project and
 renders supplied fake records into StringWriter. The parent test project excludes
 that nested Program, matching its existing SocialContracts exclusion pattern.
-No existing test is removed or replaced. This new fixture is not yet wired into
-CI; no native launcher/game acceptance or packaging is claimed.
+No existing test is removed or replaced. Launcher CI runs this fixture and the
+composition, file-reader and registration programs offline; no native
+launcher/game acceptance or packaging is claimed.
 
 ## Remaining integration gates
 
