@@ -13,7 +13,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parent))
 TEST_FILES=(
     'test_acceptance.py','test_annotations.py','test_cli.py','test_configuration.py',
     'test_dmm_export.py','test_metrics.py','test_port_topology.py','test_resource_proposal.py',
-    'test_source_audit.py','test_surface_generator.py','test_validator.py','test_public_cli.py',
+    'test_source_audit.py','test_surface_generator.py','test_validator.py','test_public_cli.py','test_oceanic.py',
 )
 
 

@@ -2,8 +2,9 @@
 
 The JSON files are complete configuration inputs. The `surface-ports-coast-*`
 examples use schema 2 and explicit side/span controls at reference dimensions;
-the three other files retain legacy profile configs. Oceanic/cavern generation
-remains unimplemented.
+the three original files retain legacy profile configs. `oceanic-islands.json`
+uses schema 3 and the implemented oceanic backend. Legacy `oceanic.json` and
+cavern generation still reject explicitly; no automatic migration occurs.
 
 For a fast, reproducible small example, run from repository root:
 

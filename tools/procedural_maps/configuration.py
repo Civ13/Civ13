@@ -6,6 +6,7 @@ from .validator import canonical_hash
 
 CONFIG_VERSION="civ13-generation-config/1"
 PORT_CONFIG_VERSION="civ13-generation-config/2"
+OCEAN_CONFIG_VERSION="civ13-generation-config/3"
 BIOMES={"TEMPERATE","LUSH","STEPPE","ARID","DESERT","ALPINE","COAST","CAVERN"}
 ROOT={"schema","profile","preset","seed","dimensions","biome_mix_pct","climate","water",
       "mountains","vegetation","resources","starts"}
@@ -136,6 +137,32 @@ def port_surface_preset(seed="ports-0",width=155,height=225,*,sea_side="S"):
 
 
 def _validate_config(d):
+    if isinstance(d,dict) and d.get('schema')==OCEAN_CONFIG_VERSION:
+        base=deepcopy(d);layout=base.pop('ocean_layout',None);base['schema']=CONFIG_VERSION
+        errors=_validate_v1(base)
+        if errors:return errors
+        def bad(detail):return [{'code':'CONFIG_OCEAN_LAYOUT','detail':detail}]
+        if d['profile']!='OCEANIC':return bad('schema 3 is the oceanic island family only')
+        if type(layout) is not dict or set(layout)!={'island_count','island_min_area','island_gap_tiles','ship_radius','coast_width_tiles','climate_axis'}:return bad('ocean layout keys')
+        count=layout['island_count']
+        if type(count) is not list or len(count)!=2 or any(type(v) is not int for v in count) or not 2<=count[0]<=count[1]<=6:return bad('island count interval 2..6')
+        for key,lo,hi in [('island_min_area',32,8192),('island_gap_tiles',4,24),('ship_radius',1,3),('coast_width_tiles',1,4)]:
+            if type(layout[key]) is not int or not lo<=layout[key]<=hi:return bad(key+' bounds')
+        axis=layout['climate_axis']
+        if type(axis) is not list or len(axis)!=2 or any(type(v) is not int or not -4<=v<=4 for v in axis) or axis==[0,0]:return bad('nonzero climate axis -4..4')
+        if layout['island_gap_tiles']<2*layout['ship_radius']+2:return bad('island gap must fit ship diameter plus two shore cells')
+        water=d['water'];starts=d['starts'];mount=d['mountains']
+        if water['river_networks']!=[0,0] or water['swamp_pct']!=[0,0]:return bad('island rivers and swamps are not implemented; require zero')
+        if water['lake_count']!=count or water['lake_area_pct'][0]<1:return bad('one positive inland terminal lake per island; lake count interval must equal island count')
+        if starts['count']<count[1]:return bad('at least one start per island for every candidate')
+        if mount['range_count'][1]>count[0]:return bad('at most one range per island in this slice')
+        area=d['dimensions']['width']*d['dimensions']['height']
+        if count[0]*layout['island_min_area']>area*(100-water['coverage_pct'][0])//100:return bad('minimum dry island areas exceed land budget')
+        if sum(d['biome_mix_pct'].get(k,0) for k in ['COAST','LUSH','TEMPERATE','STEPPE','ARID','DESERT'])!=100:return bad('unsupported oceanic biome')
+        chain=[k for k in ['LUSH','TEMPERATE','STEPPE','ARID','DESERT'] if d['biome_mix_pct'].get(k,0)]
+        indices=[['LUSH','TEMPERATE','STEPPE','ARID','DESERT'].index(k) for k in chain]
+        if indices and indices!=list(range(min(indices),max(indices)+1)):return bad('interior climate sequence cannot skip transition biomes')
+        return []
     if not isinstance(d,dict) or d.get("schema")!=PORT_CONFIG_VERSION:return _validate_v1(d)
     base=deepcopy(d);layout=base.pop("surface_layout",None);base["schema"]=CONFIG_VERSION
     errors=_validate_v1(base)
@@ -175,6 +202,20 @@ def _validate_config(d):
 def validate_config(d):
     try:return _validate_config(d)
     except (TypeError,KeyError,ValueError) as e:return [{"code":"CONFIG_SCHEMA","detail":"malformed versioned configuration: "+str(e)}]
+
+
+def oceanic_preset(seed='ocean-0',width=64,height=80):
+    """Versioned archipelago family; old v1 ocean configs remain unimplemented."""
+    d=preset('OCEANIC',seed);d.update(schema=OCEAN_CONFIG_VERSION,preset='CUSTOM')
+    d['dimensions'].update(width=width,height=height)
+    d['biome_mix_pct']={'COAST':40,'TEMPERATE':60}
+    d['climate'].update(moisture_range=[35,75],temperature_c_range=[15,30])
+    d['water'].update(coverage_pct=[65,82],sea_pct=[65,75],river_networks=[0,0],
+                      lake_count=[2,3],lake_area_pct=[1,2],swamp_pct=[0,0])
+    d['mountains'].update(range_count=[0,1],range_min_area=16,range_width_tiles=[2,4])
+    d['ocean_layout']=dict(island_count=[2,3],island_min_area=64,island_gap_tiles=6,
+                           ship_radius=1,coast_width_tiles=2,climate_axis=[1,1])
+    return d
 
 
 def seed_manifest(config,algorithm_version,content_version,profile_version):

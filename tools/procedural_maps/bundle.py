@@ -14,6 +14,11 @@ def check_manifest(doc,manifest):
     config=manifest.get('configuration',{})
     if validate_config(config) or manifest.get('configuration_sha256')!=canonical_hash(config):raise ValueError('CONFIG_BINDING_MISMATCH')
     if config['seed']!=doc['seed'] or any(config['dimensions'][key]!=doc[key] for key in ['width','height']):raise ValueError('IDENTITY_BINDING_MISMATCH')
+    if config['profile']!=doc['profile']:raise ValueError('PROFILE_BINDING_MISMATCH')
+    if doc['schema']=='civ13-geography-ir/3':
+        layout=config.get('ocean_layout',{});rules=doc['ocean_policy']
+        if any(rules[k]!=layout.get(k) for k in ['island_min_area','island_gap_tiles']) or not layout.get('island_count',[7,7])[0]<=rules['island_count']<=layout.get('island_count',[7,7])[1]:raise ValueError('OCEAN_CONFIG_BINDING_MISMATCH')
+        if doc['policy']['ship_radius']!=layout.get('ship_radius') or rules['start_min_spacing']!=config['starts']['min_spacing_tiles'] or rules['coast_route_max']!=config['starts']['max_route_tiles'] or len(doc['starts'])!=config['starts']['count']:raise ValueError('OCEAN_CONFIG_BINDING_MISMATCH')
     if {key:level['native_z'] for key,level in doc['layers'].items()}!=config['dimensions']['layers']:raise ValueError('LAYER_BINDING_MISMATCH')
     if any(manifest.get(key)!=doc[key] for key in ['algorithm_version','content_version','profile_version']):raise ValueError('VERSION_BINDING_MISMATCH')
     if manifest.get('generation_result',{}).get('ir_sha256')!=canonical_hash(doc):raise ValueError('IR_BINDING_MISMATCH')
