@@ -310,6 +310,8 @@
 /client/Del()
 	if (CIV13_GEOMETRIC_LOS_CORE && los_context)
 		los_context.retire()
+	if(CIV13_ROOT_TREE_PRESENTATION && root_tree_presenter)
+		root_tree_presenter.retire()
 	if (mob)
 		var/datum/subtile_pull_pair/paired_move = subtile_pull_ownership.owners[mob]
 		if (paired_move && paired_move.controller == src)

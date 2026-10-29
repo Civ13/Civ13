@@ -158,6 +158,9 @@
 	var/is_new_area = (is_origin_turf ^ is_destination_turf) || (is_origin_turf && is_destination_turf && loc.loc != destination.loc)
 
 	var/atom/origin = loc
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	loc = destination
 
 	if (origin)
@@ -183,6 +186,9 @@
 /atom/movable/proc/persistence_set_loc(atom/destination)
 	if (!persistence_movement_allowed(src, destination))
 		return FALSE
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	loc = destination
 	return TRUE
 

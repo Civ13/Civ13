@@ -11,6 +11,49 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-10-28: portable cloth bedding -->
+Portable bedding variants use static rolled/unrolled typepaths; folding must not
+convert cloth into leather. Bedrolls refuse the generic wooden-structure hammer
+refund. Keep legacy leather recipes and starting equipment unchanged. The bounded
+native cloth-bedding fixture checks payment, identity, the use guard and storage.
+The paid six-rope hammock is mapped to Weaving and likewise refuses generic wood
+recovery. Its ordinary turf placement remains an abstraction of hanging supports;
+do not claim ceiling/load simulation. See `docs/rope-hammock-audit.md` for the
+reviewed remaining furniture families and historical limits.
+Wooden document drawers are a Fine Furniture joinery route using finished planks
+and paid pegs, with the existing post-wait joinery guards. Preserve the three
+plastic document-cabinet routes and their paper-only handler. See
+`docs/wooden-document-drawers-audit.md`; no shared crafting rewrite is needed.
+Fixed-art bed/chair sofas reject padding stacks before debit; their no-op padding
+handlers must never consume materials. Fixed sofas and nonwood comfy chairs
+refuse generic wood recovery. Bed/stool upholstery recovery supplies exact plain
+cloth/leather stacks locally; unmapped padding stays installed on removal.
+Hammer teardown must recover padding before frame output/deletion or refuse it;
+the bed guard runs after its existing wait. Keep unpadded wooden-bed recovery.
+See `docs/upholstered-seating-audit.md`; preserve existing costs, gates and art.
+Canopy cloth/leather routes already exist. Unfold/fold revalidate the actor,
+tile, item and persistence identity after waiting. Folding protects independent
+roofs and keeps shared cover until the last canopy leaves. Recompute neighbor
+states after retirement. See `docs/canopy-crafting-audit.md`; do not alter shared
+roof/area or seasonal-collapse policy as part of a canopy recipe change.
+
+<!-- 2026-10-28: explicit furniture joinery alternatives -->
+Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
+all existing recipes. Peg stock is paid only after retained equipment, secondary
+stock, output occupancy, research and persistence epoch pass post-wait checks;
+do not reselect a replacement tool or search nested storage. Use the primitive
+woodworking shaping predicate for dowels. Its material knives wear 0.25 only on
+success; assembly tools are reused. New routes are global only. See the dated
+furniture audit and checked-in original-row fixtures. --compile-only explicitly
+does not run crafting assertions; native/client and reachability remain separate.
+Tools may be equipped or loose at the actor's feet through a bounded scan.
+Preset stack subtypes retain actual-material checks. Award joinery XP only after
+successful debits; preserve legacy recipe XP ordering.
+Wooden shelf, fancy table and coat rack subtypes replace inherited metal
+construction/refund fields. The coat rack has no separate tabletop refund.
+Keep shared tables, steel racks and wooden frames unchanged; regressions cover
+wood-only recovery, frame resurfacing and the existing two-log frame refund.
+
 <!-- 2026-10-28: gathered manual woodworking -->
 Manual woodworking in primitive_woodworking.dm keeps pieces and crude planks
 distinct from finished planks. Whittling admits sharpened flint or an actual knife
