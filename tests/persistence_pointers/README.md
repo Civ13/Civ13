@@ -42,3 +42,9 @@ existing isolated trusted DreamDaemon; compilation is not a runtime pass.
 
 No production saves, daemon, client, external message or server operation is
 part of this offline suite.
+
+`test_restore_dependents.py` covers constructor-owned item/turret action fields,
+scope/gun grants, generic action regeneration and transient grab/garrote state.
+The full-game probe additionally prepares real binocular, turret-control,
+flashlight and garrote disk round trips with deliberately dangling legacy action
+entries. Its execution remains separate from these offline checks.

@@ -27,7 +27,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 SUITES = {
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection; no native launch.
-    'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',),
+    'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',
+                                    'tests/persistence_pointers/test_restore_dependents.py'),
         'paths': ('tests/persistence_pointers/',),
         'shared_paths': ('code/modules/persistence/',
             'code/game/mob/living/simple_animal/',
@@ -36,7 +37,13 @@ SUITES = {
             'code/game/objects/structures/optable.dm',
             'code/game/objects/items/weapons/explosives.dm',
             'code/modules/multiz/structures.dm', 'code/_onclick/hud/action.dm',
-            'tests/world_save/full_game_probe.dm', 'tests/save_movement/source_adapter.py')},
+            'tests/world_save/full_game_probe.dm', 'tests/save_movement/source_adapter.py',
+            'tests/save_movement/test_guard.py', 'code/processes/abandoned_items.dm',
+            'code/modules/1713/weapons/zoom.dm', 'code/modules/1713/weapons/attachment.dm',
+            'code/modules/1713/gunsmithing/gun_configuration.dm',
+            'code/modules/1713/machinery/modular_vehicles/wheels.dm',
+            'code/game/mob/living/living_defense.dm',
+            'code/game/objects/items/weapons/swords_axes_etc.dm')},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},

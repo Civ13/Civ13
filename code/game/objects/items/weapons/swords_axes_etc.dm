@@ -271,6 +271,16 @@
 /obj/item/garrote/update_icon()
 	icon_state = "garrote[garroting ? "_w" : ""]"
 
+/obj/item/garrote/persistence_runtime_var(key)
+	return key == "garroting" || key == "next_garrote" || ..()
+
+/obj/item/garrote/after_load()
+	. = ..()
+	// The discarded grab/process cannot own a running choke after restoration.
+	garroting = initial(garroting)
+	next_garrote = initial(next_garrote)
+	update_icon()
+
 /obj/item/garrote/attack(mob/living/human/target as mob, mob/living/human/user as mob)
 	if (garroting)
 		stop_garroting(user,target)

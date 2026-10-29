@@ -205,6 +205,8 @@
 // Ignoring historical values during import leaves new mobs at their defaults,
 // without resetting cooldowns or active actions on an existing live mob.
 /mob/persistence_runtime_var(key)
+	if (key == "mouth_covered")
+		return TRUE
 	if (key == "actions" || key == "grab_list" || key == "grabbed_by")
 		return TRUE
 	if (key == "pickaxe_mining_action" || key == "next_animal_retaliation" || key == "LAssailant")

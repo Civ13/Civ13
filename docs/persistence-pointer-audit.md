@@ -24,6 +24,14 @@ references. Unknown and durable links retain the cross-level rejection.
 | Animal `origin` | Spawner/sink `alive_mobs` accounting during retirement | Retain fail-closed pending ownership/accounting review |
 | `pulling`/`pulledby`, `buckled`/`buckled_mob` | Physical relationships, not disposable AI targets | Retain existing movement/save admission and reciprocal release guards; do not globally exclude |
 
+Constructor-owned item `action`/`actions` and turret-control `azoom` are excluded
+on export and legacy import so unsaved graph refs cannot overwrite their new
+instances with null. Scopes already inherit the attachment exclusion. Restore
+passes regrant held scope/gun/turret actions and regenerate generic item actions.
+`mouth_covered`, `garroting` and the garrote deadline are transient; garrote
+appearance is rebuilt after load. This does not reset cuffs, buckles, movement
+restrictions or injury state.
+
 The typed inventory gate is bounded to the ten audited modules and records 28
 declarations. It deliberately includes unsaved owners so losing an owner
 exclusion is detectable. It does not claim repository-wide coverage; untyped
@@ -44,10 +52,10 @@ test/live message is introduced. The counter is process-local and not saved.
 
 ## Decisions and remaining work
 
-`following_mob` needs an owner decision: preserve paid leash relationships
-through stable cross-level identities (recommended), or explicitly end/refund
-them at save/load boundaries. Command-follow should become a separate transient
-field. Blindly discarding the shared pointer loses a paid relationship.
+`following_mob` requires durable cross-level identity engineering to preserve
+the existing paid leash and command-follow behavior. No new product decision
+is required for that preservation path. Do not automatically turn command-follow
+into transient state, or discard/refund paid relationships during save/load.
 
 Stair/ladder topology needs a reviewed durable identity/restore contract, or an
 explicitly proven reconstruction contract across every ladder subtype and load
@@ -62,5 +70,5 @@ Native acceptance remains separate: run the isolated full-game frog/cross-level
 save/import regression only with authorization for that runner, temporary saves
 and its external-effect adapters. Offline checks and compilation do not prove
 native save/load behavior or a deployed fix. Keep #3407 open for the unresolved
-paid-follow/topology decisions and native evidence. Vertical power connections
+paid-follow/topology implementation and native evidence. Vertical power connections
 remain queued until #3407 is finished.

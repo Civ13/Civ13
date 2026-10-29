@@ -471,6 +471,20 @@
 		return ZOOM_CONSTANT
 	return optics.zoom_amt
 
+/obj/item/turret_controls/persistence_runtime_var(key)
+	return key == "azoom" || ..()
+
+/obj/item/turret_controls/after_load()
+	. = ..()
+	// Keep the constructor action, but bind it to the restored optics instance.
+	if (azoom)
+		if (azoom.scope && azoom.scope != optics)
+			qdel(azoom.scope)
+		azoom.scope = optics
+		var/mob/living/holder = loc
+		if (istype(holder) && (holder.l_hand == src || holder.r_hand == src))
+			azoom.Grant(holder)
+
 /obj/item/turret_controls/proc/build_zooming()
 	azoom = new()
 	azoom.scope = optics

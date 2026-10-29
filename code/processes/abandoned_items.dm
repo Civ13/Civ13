@@ -105,6 +105,10 @@ var/global/abandoned_item_cursor = 1
 		reset_abandonment()
 
 /obj/item/persistence_runtime_var(key)
+	// Constructor/Life-owned UI graphs must not be overwritten by the null
+	// references used for unsaved /datum/action entries, including legacy saves.
+	if (key == "actions" || key == "action")
+		return TRUE
 	if (key == "abandonment_index" || key == "abandonment_since" || key == "abandonment_location" || key == "abandonment_season_since" || key == "abandonment_seasonal")
 		return TRUE
 	return ..()
