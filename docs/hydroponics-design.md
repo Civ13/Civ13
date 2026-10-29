@@ -1,96 +1,198 @@
-# Modern hydroponics design contract (proposal)
+# Modern hydroponics: accepted direction and implementation contract
 
-Status: **proposal for review, not implemented.** This is the "reviewed contract"
-that #3050 holds implementation on. Every number below is a proposed default
-for a reviewer to accept or change. Nothing here is gameplay evidence.
+Status: **design documentation; no tray implementation or activation.**
+This records the accepted #3050 choices and the remaining integration decisions.
+Merging this document does not complete #3050 or admit live runtime execution.
 
-Source facts are pinned to master `c79792d002b9a15b7cebd7735a43f6ac960ad4b2`.
+Source reconciliation: master `0f12bdd809f93ea8d8d6c631332404a894eb55df`.
+The source links below are immutable. Test requirements are acceptance criteria,
+not claims that those tests have run.
 
-## Source facts the design must respect
+## Accepted user decisions
 
-| Fact | Where | Consequence |
-|---|---|---|
-| Crop growth requires `/turf/floor/dirt/ploughed`; otherwise `growth()` only runs `water_proc()` and returns | `code/game/objects/farming.dm` `plant/growth()` | A tray cannot reuse `growth()` unchanged. Fabricating a dirt turf is rejected by #3050. |
-| Ordinary crops schedule themselves with a recursive `spawn(600)` per plant | same | Trays must not add a second chain per crop. |
-| Timber seedlings already use a bounded scheduler: saved `growth_time_left`, runtime-only `last_growth_tick` excluded by `persistence_runtime_var`, re-anchored in `after_load()`, driven by `process_interval()` from `processing_objects` | `plant/tree` in `farming.dm`, `docs/tree-planting.md` | This is the precedent for the tray owner. |
-| `stageGrowth()` advances deterministically when `plant_nutrition > 80` | `farming.dm` | A fed tray behaves like well-fertilised soil. |
-| Harvest: `spawn_seeds()` returns 2 seeds; `spawn_produce()` returns 1 item plus 0-2 extra when `plant_nutrition >= 80` (stacks: x1-3). Both spawn at `loc` | `farming.dm` | A plant held inside a tray would spawn its outputs into the tray. The adapter must put them on the tray's turf. |
-| Soil nutrition: 0-150; plants eat 3 per tick; soil recovers 20-40 every 20 min only while unplanted; compost item `fertilizer_value = 60`, dry dung 20, manure 10 | `flooring_premade.dm`, `floor_attackby.dm`, `shit_piss.dm` | Outdoor nutrition is cheap and renewable, so outdoor farming stays the economical option. |
-| Reagent `fertilizer` is registered, but no reaction produces it | `Chemistry-Reagents-Toxins.dm`, `Chemistry-Recipes.dm` | It cannot be the solution's paid input. |
-| Reagents `eznutrient`, `left4zed`, `robustharvest` are registered (subtypes of `/datum/reagent/toxin/fertilizer`, so mildly toxic if ingested), but no reaction produces them | `Chemistry-Reagents-Toxins.dm` | `eznutrient` is a registered ID that a new recipe can produce, so it avoids the #3201 trap where a recipe without a registered reagent silently consumes its inputs. |
-| Paid `potassium` and `nitrogen` come from the nitrary (10 leachate -> 1 potassium + 1 nitrogen, from 8 crop-equivalent units, 10 water, 1 ash, 30 active-server minutes) and from the saltpeter ore route it mirrors. `poo` x2 + `urine` makes `potassium` only | `wood_ash_compost.dm`, `docs/wood-ash-compost.md`, `Chemistry-Recipes.dm` | Nutrients are finite, paid and pre-Modern-reachable. |
-| Power: `obj.powerneeded`/`powersource`; `cable.update_power(amount, 1, consumer)` reserves per consumer, idempotently, and returns whether it was accepted; `obj/Destroy()` releases it. `powerflow` is capacity, `currentflow` reserved demand, not stored energy | `objs.dm`, `cables.dm`, `fridge.dm` (`powerneeded = 5`) | Power loss means "reservation refused", so there's no battery-drain model to invent. |
-| Research: `electricity` (Industrial, era tier 5, prototype); Agriculture tree has `basic_agriculture` -> `irrigation` (tier 2) -> `advanced_agriculture` (tier 4) | `research_node.dm` | The new node goes in the Agriculture tree after both. |
-| There is no tray art: `icons/obj/hydroponics_machines.dmi` is not in the repo, and the plant-bag code that names it is commented out | `bags.dm` | Art must be made by transforming existing assets or with vector tools, never generated (AGENTS.md). |
+| ID | Accepted choice | Boundary |
+| --- | --- | --- |
+| H1 | Potato, carrot, cabbage, tomato, beans and wheat | Exact initial whitelist. No automatic addition of #3314 crops or later crop types. |
+| H2 | 60 total reservoir units; 1 nutrient unit and 2 water units per powered, supplied minute; 6 cycles to ready; 5 power units (PU); 2 seeds and 1–3 produce | Abstract game units. Nutrient identity, physical binding and partial-cycle transaction semantics remain to be specified. |
+| H3 | Shortage pauses growth; prolonged shortage can kill fragile or water-dependent crops | Fragile crop identities, grace/death durations and recovery/reset rules are unsettled. No universal death timer is approved. |
+| H4 | Ready crops have no time expiration for now, except exposure to poor weather such as a snowstorm | Exposure, harmful-weather selection and damage/death timing are unsettled. Trays are not implicitly weatherproof. |
+| H5 | Era tier 6 after advanced agriculture and electricity; 4 steel, 2 glass and 1 cable | Bench tier, research study price, exact material item units and dismantling refunds remain separate decisions. |
+| H6 | Hand-filled first; pumps later | No nearby-water refill, automatic intake, pipe or pump scope in the first implementation. |
 
-## Proposed contract
+These choices supersede conflicting earlier proposals. In particular, do not
+reopen the accepted cycle debit, construction counts or whitelist as if they were
+still pending. Do not infer a 120-second death timer, 240-second ready expiry,
+bench tier 5, or unconditional shortage immunity from them.
 
-### 1. Structure and ownership
-- New `/obj/structure/hydroponics_tray`: anchored, dense, one seed slot, an internal reagent reservoir, and a lamp that draws power.
-- The tray is the **single processing owner**. It registers in `processing_objects` only while it holds a growing crop, and leaves it on ready, empty, death and `Destroy`/`Del`. This copies the tree seedling's chain and its persistence exclusions.
-- The planted crop is the existing plant type, held in the tray's contents with a tray-owned flag. `growth()` returns immediately for tray-owned plants, so their recursive outdoor chain never starts. No dirt turf is fabricated.
-- **Shared rules come through a small adapter, not a copy:** pull an overridable "advance one stage" step out of `growth()` (the `stageGrowth()` call plus the death-past-`readyStageMax` check). The tray calls it each supplied cycle. Outdoor behaviour must stay byte-for-byte the same; the existing plant lifecycle tests are the regression check.
+## Current source contracts
 
-### 2. Crop whitelist (initial)
-`potato, carrot, cabbage, tomato, beans, wheat`. These are food staples with ordinary produce/seed paths and the standard 7-10 ready window.
+| Source fact at the pin | Design implication |
+| --- | --- |
+| Ordinary [crop growth](https://github.com/Civ13/Civ13/blob/0f12bdd809f93ea8d8d6c631332404a894eb55df/code/game/objects/farming.dm) requires ploughed soil and owns a recursive `spawn(600)`. It uses virtual `stageGrowth()` and checks death past `readyStageMax` even when eligibility prevents advancement. | Do not fabricate a dirt turf or call the ordinary growth chain from a tray. A shared stage boundary must preserve outdoor eligibility, timing, subtype dispatch and terminal checks exactly. |
+| Ordinary readiness begins at stage 7; planting starts at stage 1. At high nutrition, stage advancement is deterministic. Seed and produce helpers emit at `loc`. | Six productive cycles match the accepted ready target. A contained crop needs an explicit turf output destination and one-time harvest ownership. |
+| The same farming file has the timber seedling's saved remainder, runtime clock anchor, `persistence_runtime_var`, `after_load()` and `process_interval()` pattern. | Reuse the single-owner, saved-remainder principle; do not assume its crop or power behavior is a tray implementation. |
+| [Holder](https://github.com/Civ13/Civ13/blob/0f12bdd809f93ea8d8d6c631332404a894eb55df/code/modules/reagents/Chemistry-Holder.dm) `add_reagent(..., accepted_amount)` can report the admitted addition; `remove_reagent()` still returns a boolean. Transfers are proportional, and mutation callbacks still occur with `safety = TRUE`. Small amounts below the chemical minimum can be pruned. | The new admitted-addition output improves fill accounting. It does not make a multi-resource debit atomic or prove exact removal. Revalidate owners and quantities after callback boundaries; do not equate requested transfer with retained volume. |
+| [Cable](https://github.com/Civ13/Civ13/blob/0f12bdd809f93ea8d8d6c631332404a894eb55df/code/modules/1713/machinery/cables.dm) `update_power()` returns rebuilt capacity. Request acceptance is exposed by `draw_cable_power()` / `rebuild_supply(requester, request)`. Reservations are consumer keyed. | Capacity is not a boolean acceptance result or proof of a delivered minute. Do not debit a battery again at the consumer or invent stored energy from `powerflow`. |
+| [Chemistry](https://github.com/Civ13/Civ13/blob/0f12bdd809f93ea8d8d6c631332404a894eb55df/code/modules/reagents/Chemistry-Recipes.dm) includes a water/potassium explosion. Registered fertilizer products do not by themselves supply a paid recipe. | The former proposal of 8 water +1 potassium +1 nitrogen →10 nutrient solution is withdrawn as a selected route. Elemental potassium is not a safe nutrient solution. Recipe registration, competing reactions and mixing order need chemistry review. |
+| [Research nodes](https://github.com/Civ13/Civ13/blob/0f12bdd809f93ea8d8d6c631332404a894eb55df/code/modules/research_tree/research_node.dm) distinguish `era_tier`, `min_bench_tier` and prerequisites. | Accepted era tier 6 and both prerequisites do not approve bench tier 5 or grant completed research from global era alone. |
+| Save/load uses explicit runtime-variable exclusions and load repair hooks. A primary reagent holder has special handling. | A second holder or crop-host link needs an explicit tested ownership/rebinding contract. A `tmp` field alone does not establish persistence exclusion; do not rely on a repair order before holders are rebound. |
 
-Excluded: trees and fruit trees, mushrooms (they keep their existing indoor exception), herbs (they return no seeds and medicine owns them), cash and drug crops. Each later addition needs its own review.
+The source pin has no `advance_stage_if_allowed` helper or production hydroponics
+tray. The behavior-preserving helper is an independently reviewable source slice;
+it is not evidence of a merged feature. #3049 owns protected outdoor soil, #3048
+owns route coverage, and mining/material infrastructure retains its own owner.
+Coordinate their interfaces without redesigning those systems here.
 
-### 3. Cycle and units
-- **One cycle = 60 seconds of active-server time** that is both powered and supplied. This matches the outdoor `spawn(600)` cadence. Progress is kept as a saved `growth_time_left`; the clock anchor is runtime-only.
-- Each cycle debits **1u of `eznutrient` and 2u of `water`** from the reservoir, then advances one stage. Planting at stage 1 to ready at stage 7 is 6 cycles: 6u solution and 12u water per crop.
-- The reservoir caps at **60u in total**. It accepts only `water` and `eznutrient`. Any other reagent is refused at transfer time: no dumping, no partial accept.
-- **Ready (stage 7) stops processing and debits nothing.** The crop holds until harvest. Unlike outdoor crops, it never passes the ready window and dies. That is the main benefit the tray buys, besides ignoring biome, season and weather.
+## Units and finite accounting
 
-### 4. Nutrient solution (one registered recipe)
-- New `/datum/chemical_reaction/hydroponic_nutrient`: `water` 8 + `potassium` 1 + `nitrogen` 1 -> 10 `eznutrient`.
-- It reuses the registered `eznutrient` ID. Its display name should become something period-neutral, such as "hydroponic nutrient solution". This needs review: the debug dispenser lists it.
-- One nitrary batch (1 potassium + 1 nitrogen) makes 10u, enough for 1.6 tray crops. Nothing is created from scraps, and there is no self-sustaining loop: a tray's harvest cannot refill its own solution without the nitrary's paid crop units, ash and time.
-- `tests/chemical_registration` must cover the new reaction. Add a native test of real mixing in a beaker, with a negative control that removes the reaction.
+Use U for abstract reagent-volume units, N for the accepted nutrient accounting
+unit, PU for requested power load and seconds for productive active-server time.
+None is an SI litre, mole, watt or joule. The physical mapping of 1 N to a
+registered solution quantity is unresolved.
 
-### 5. Power and failure behaviour
-- `powerneeded = 5` (same as the fridge), reserved through the cable `update_power` each cycle.
-- **Refused or no power source:** the cycle does nothing. No debit, no growth, timer frozen, and examine says the tray is unpowered.
-- **Empty or insufficient reservoir:** same as unpowered. The tray must never debit partially or go negative.
-- **The crop does not die from power or supply loss.** Pausing is a real cost without being punitive; this needs review. On disconnect and reconnect, the reservation is released and re-requested through the consumer key, so it is never double-counted.
+For each completed, certified productive cycle:
 
-### 6. Yield and harvest
-- Harvest uses the existing tools and `spawn_seeds()`/`spawn_produce()`, with `plant_nutrition` set to 100. That gives 2 seeds plus 1-3 produce, the same as fertilised outdoor soil.
-- **Atomic:** set the tray's empty state and retire the plant exactly once, put the outputs on the tray's turf (not in its contents), then leave `processing_objects`. A second harvest of the same plant must do nothing.
-- Uprooting a growing crop returns nothing, as it does outdoors.
+- productive time increases by 60 seconds;
+- nutrient cost is 1 N and water cost is 2 U;
+- one shared crop-stage step occurs;
+- requested load while productive is 5 PU.
 
-### 7. Research, era, construction
-- New `hydroponics` node in the Agriculture tree. Prerequisites `advanced_agriculture` and `electricity`; era tier 6; bench tier 5; analysis mode.
-- The tray's craft cost uses the existing recipe system with reviewed amounts. The proposed starting point, to be checked against the Crafting Atlas once implemented: 4 steel sheets, 2 glass sheets, 1 cable coil.
-- Dismantling returns the materials, minus whatever the existing deconstruction rules say. The reservoir's contents spill to the turf, and the crop is destroyed.
+A complete crop therefore costs 6 N and 12 U water across 360 productive seconds.
+The nominal load-times-time is 1800 PU·s; this is arithmetic, not evidence of energy
+delivery or a new fuel/battery debit. Paused time contributes no productive time.
 
-### 8. Persistence
-- **Saved:** crop type and stage, `growth_time_left`, reservoir reagents (native reagent holder), tray-owned flag.
-- **Excluded through `persistence_runtime_var`:** `last_growth_tick`, the processing state, the power reservation.
-- `after_load()` re-anchors the clock, rejoins `processing_objects` only if the crop is still growing, and re-links power the way other powered objects do. Oil wells re-link their runtime links after load, but the fridge pattern still needs confirming on the selected source.
-- Offline time earns no progress.
+If a reviewed binding chooses 1 N =1 U solution, a balanced 60-U fill of 20 U
+solution plus 40 U water pays for 20 cycles: three crops and two cycles of a fourth.
+Pure water has no nutrient credit, and pure solution cannot replace the water cost.
+The reservoir is 60 U combined, not a 60-U water chamber plus a second free chamber.
 
-### 9. Mining and materials coordination
-Steel, glass and saltpeter come from existing routes. This adds no new mineral sources, so it doesn't overlap mining #7.
+### Payment boundary and precision: decision required before integration
 
-## Acceptance (from #3050, mapped to tests)
-- **Isolated native fixture** (temporary storage, network closed, pinned engine, generated-source negative controls):
-  - empty, partial and wrong reservoir inputs;
-  - exact 1u+2u debit per cycle and no negative values;
-  - no growth while unpowered or supply-starved;
-  - disconnect/reconnect reservation idempotence;
-  - single processing chain across repeated plant/harvest/remove;
-  - atomic one-time harvest with 2 seeds;
-  - destructive removal releases registry and power;
-  - finite registry count after many trays;
-  - save/load at every stage, including ready and unpowered.
-- **Regression:** existing plant lifecycle, crop diagnostics, outdoor crop, chemical registration and power suites unchanged.
-- **Gameplay capture:** only where tests leave real uncertainty, such as tray rendering and the lamp overlay.
+Accepted per-minute totals do not choose continuous debit, upfront payment,
+escrow or payment on completion. Choose one transaction contract and test it
+before wiring resources to growth. Candidate approaches are:
 
-## Open decisions for the reviewer
-1. Solution cost (section 3/4): 1.6 crops per nitrary batch. Is that too cheap or too dear next to outdoor farming? Changing the 1u debit is the lever.
-2. Crops pause instead of dying when power or supply is lost.
-3. Ready crops hold indefinitely in trays.
-4. Reuse `eznutrient` with a rename, or add a new reagent ID.
-5. Era tier 6 and the craft materials.
-6. Whether a powered pump that fills from a water source belongs in stage 1 or comes later. This proposal fills the reservoir by hand only.
+1. Whole-cycle reservation/escrow, retaining an exact saved productive remainder.
+   This avoids tiny repeated physical removals, but cancellation, refill and
+   destruction require explicit ownership/refund rules.
+2. Completion-time debit after a certified service window, with invalidation on
+   relevant state changes. This avoids an upfront payment, but must prevent
+   free progress when resources disappear during the interval.
+3. Fractional physical debits with a bounded remainder. This follows partial work
+   closely but must solve holder pruning, callbacks and exact-removal accounting.
+
+These are alternatives, not selected implementation parameters. No negative
+volume, synthetic refill, rounded-away repeated cost or duplicated credit is
+permitted. Fractional process credits must retain their own dimension and may not
+silently enlarge the physical 60-U capacity. A failed callback or changed owner
+must not advance the stage after an incomplete payment. An interrupted transaction
+must have a defined durable state; blind rollback through reactive holders is
+not automatically safe.
+
+## Nutrient route and bootstrap
+
+Product ID, recipe, yield and ingredient prices remain proposed product choices.
+The minimal route candidate is a dedicated registered nutrient solution made
+through a controlled, paid conversion of existing compost/nitrary material.
+A separately reviewed mineral-salt route is an alternative. Neither is approved
+by H2. Reusing `eznutrient` would also require review of its existing toxic
+fertilizer behavior, naming and dispenser exposure.
+
+Before implementation, identify exact source item/reagent IDs and retained
+quantities; bound reactions and callbacks; verify reachability at the accepted
+research gate; and compare total inputs with seed/produce/compost outputs.
+Do not infer a closed-loop gain or safety from a nominal recipe equation.
+The paid upstream crop material, water, ash, processing time and any mineral costs
+must remain in the ledger. Bootstrap must work from available seeds, water,
+nutrient inputs, construction materials and an actual power route without an
+already-running tray. Route coverage belongs with #3048; new mineral supply is
+not implicit hydroponics scope.
+
+## Shared crop adapter and one lifecycle owner
+
+Proposed integration boundary:
+
+- The existing crop retains its stage/yield/type rules. A shared stage helper
+  performs virtual `stageGrowth()` only when admitted, then retains the existing
+  terminal check. Outdoor callers retain all original eligibility and cadence.
+- The tray owns the crop host relation and is the only tray scheduler owner.
+  Establish hosting before any ordinary recursive growth chain can start.
+  Define constructor, unhost, removal and delayed-callback behavior explicitly.
+- A tray calls the shared stage helper only after a certified productive cycle
+  and committed resource accounting. No second crop sleeper, per-resource timer
+  or unbounded catch-up loop may be introduced.
+- Harvest retires that crop's harvest authority once and emits the accepted
+  two seeds plus 1–3 produce on the tray's turf. A repeated request emits nothing.
+  Uproot, deletion and failed admission cannot produce an extra harvest.
+- Growing state owns bounded progress observation. Ready state stops growth
+  and its growth debit, while still receiving whatever bounded exposure
+  observation is selected for H4. Removing every observer would miss storms.
+
+The exact crop-host flag/interface and processing registry schema require source
+review. They are not already present APIs. Do not change outdoor nutrition,
+climate, water sampling, ready aging, RNG or specialized crop behavior to fit trays.
+
+### Power interruption
+
+A capacity check admits instantaneous demand; it does not certify a 60-second
+service window. Define interval start/end, source settlement order, topology
+changes, source exhaustion, consumer deletion and restart invalidation against
+actual power processing. A candidate source-window witness must fail closed on
+those changes and cannot carry a stale claim over reload. No such service-window
+API is established by this document.
+
+When power or supply is unavailable, productive growth pauses. Retained
+partial progress and paid-credit treatment follow the selected transaction
+contract. No catch-up credit accrues while offline. Fragile-crop shortage damage
+requires the still-unsettled trait, duration and recovery policy; do not add a
+universal timer as a convenience.
+
+### Save/reload and teardown
+
+Persist only validated durable crop identity/stage, reservoir contents, productive
+remainder and any explicitly selected paid/escrow state. Exclude runtime anchors,
+processing membership, power reservations and service witnesses explicitly through
+the persistence contract. Reload must rebind owners, validate state, re-anchor time
+and register at most one eligible observer after repairs. It must not award
+offline progress, repeat a debit, revive a stale lease or duplicate a harvest.
+
+Unplant, death and destruction release processing/power ownership exactly once.
+Wrong or partially accepted manual fills must have a specified retained/refused
+quantity and must not discard the donor's unaccepted contents. Dismantling refunds,
+spill behavior and input reagent rejection are not silently settled here.
+
+## Acceptance matrix and next source slices
+
+| Case | Required result | Evidence needed |
+| --- | --- | --- |
+| Shared stage extraction | Outdoor callback order, eligibility, subtype dispatch and terminal behavior match the baseline; no tray activation | Source parity with meaningful mutation controls, compile, focused regressions and exact-head CI |
+| Manual fill: empty, partial, full, mixed or rejected | Capacity never exceeds 60 U; donor loss equals accepted retained quantity under the selected input contract | Actual holder integration plus callback/precision negative controls |
+| Six productive cycles | 6 N +12 U paid, six stages advanced, exactly one ready crop | Deterministic accounting cases and admitted real-source integration |
+| Power interruption/exhaustion/reconnect | No uncertified productive time or free stage; no duplicate consumer demand or extra source debit | Source-order tests including mid-window invalidation and restart |
+| Supply starvation/refill | Pause; no partial unpaid stage or negative reservoir; defined remainder behavior | Chosen transaction boundary and failure controls |
+| Fragile shortage/poor weather | Only selected crops/predicates/timing apply; sheltered ready crops have no time expiry | Product policy still required, then focused cases; no invented default |
+| Repeated harvest/remove/delete | At most one accepted yield; finite registries and released reservations | Actual host/harvest lifecycle and destructive negative controls |
+| Save/reload at partial, ready, starved and unpowered states | One owner, preserved paid/remainder state, no offline gain or stale service witness | Save round trips against current serializer and load repair order |
+| Crop-to-compost recycling | No free nutrient/water from rounding or duplicated output; upstream route costs retained | Recipe-specific finite ledger including every accepted harvest and returned seed |
+| Research/build/bootstrap | Both prerequisites and era tier 6; paid 4 steel +2 glass +1 cable; hand fill only | Exact item/recipe/research integration and #3048 route coverage |
+| Appearance/interaction | Tray and crop visible and usable with correct output location | Source/compile checks plus genuine client evidence where uncertainty remains |
+
+Offline models or source projections support the named contracts only. They do
+not establish native callback timing, actual chemistry, engine save compatibility,
+client appearance, runtime acceptance or deployment. Historical results retain
+their original parameters; they are not relabeled as tests of the accepted rates.
+
+Proceed in narrow reviewable slices: (1) behavior-preserving shared crop-stage
+helper and outdoor parity; (2) resolve/test quantity transaction and power-service
+interfaces with their owners; (3) dormant tray host/scheduler/save integration;
+(4) reviewed nutrient, research, construction and interaction wiring; (5) admitted
+runtime/gameplay verification and separately authorized activation. A missing
+mortality policy does not prevent slice 1. No production activation, pump, native
+game/server/client start, merge or deployment is implied by this proposal.
+
+Remaining product decisions are precise: nutrient product/recipe and physical
+binding; fragile-crop list and shortage duration/recovery; poor-weather exposure,
+damage/timing; bench/study pricing; dismantling policy. Quantity atomicity,
+partial-cycle payment, source-window proof and save ownership are technical
+contracts to resolve before resource-integrated gameplay. Accepted H1–H6 remain
+fixed unless the user changes them.
