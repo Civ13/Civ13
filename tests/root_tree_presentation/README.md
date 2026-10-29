@@ -128,9 +128,10 @@ source head, actual admitted renderer/root counts and native identity controls.
 `/world/Error` marks failure sticky, removes ready/complete files and records
 `fixture.failed.json`. The caller requires an explicit TRUE phase result and a
 fresh settled checkpoint before writing any acknowledgment. Phase 2 executes
-20 native checks: null/default/explicit identity, real translation/scale/shear/
+22 native checks: null/default/explicit identity, real translation/scale/shear/
 rotation for trees, constructor rejection for game-plane changes, and refresh
-rejection with a closed shutter followed by restored identity acceptance.
+rejection with a closed shutter, explicit identity constructor/refresh admission,
+and restored default identity acceptance.
 
 After each capture, `gate.record_pixels(n, normalized_map_rgb_bytes)` rescans
 the native logs and rejects identical map pixels for required visual transitions
@@ -156,7 +157,7 @@ shutter. The fixture does not write a pixel-pass verdict itself.
 | Phase | Native pixel acceptance |
 | --- | --- |
 | 1 | Native identity-light baseline, original sprite positions and overlap order. |
-| 2 | All 20 native matrix controls pass; presenter owns three visible frames. Identity light has zero shift/shape/alpha/order differences; the occluded fourth root is wholly absent. |
+| 2 | All 22 native matrix controls pass; presenter owns three visible frames. Identity light has zero shift/shape/alpha/order differences; the occluded fourth root is wholly absent. |
 | 3 | First root red (1,.2,.1), second green (.1,1,.2), third dim (.12,.18,.24). Their entire sprites follow their own root; black neighbor (9,13) does not cut the red canopy. Cyan weather remains over the overlapping sprites. |
 | 4 | First tree moves from (9,12) to (8,12), changes to blue root light (.2,.3,1), leaves no stale proxy at its old root. |
 | 5 | Delete second tree: no stale canopy/target remains; first and third stay correct. |

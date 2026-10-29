@@ -12,7 +12,8 @@ import uuid
 
 LIMIT=16*1024*1024
 IDENTITY_CHECKS=frozenset(['helper_null','tree_default','tree_null','tree_identity',
-    'plane_default','plane_null','plane_identity','plane_restore']+
+    'plane_default','plane_null','plane_identity','plane_restore',
+    'plane_constructor_identity','plane_refresh_identity']+
     ['tree_'+x for x in ('translate','scale','shear','rotate')]+
     ['plane_'+stage+'_'+x for stage in ('constructor','refresh') for x in ('translate','scale','shear','rotate')])
 PIXEL_CHECKS=frozenset(('identity','root_rgb','overlap','hidden_root','movement',

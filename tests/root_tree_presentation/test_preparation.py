@@ -50,7 +50,8 @@ class Preparation(unittest.TestCase):
         self.assertIn('phase == 9 && !fixture_failed',caller)
         error=source.split('/world/Error(',1)[1].split('/proc/',1)[0]
         self.assertIn('fixture_fail("native_runtime")',error)
-        for name in ('tree_identity','plane_identity','plane_constructor_[name]','plane_refresh_[name]'):
+        for name in ('tree_identity','plane_identity','plane_constructor_identity','plane_refresh_identity',
+                     'plane_constructor_[name]','plane_refresh_[name]'):
             self.assertIn('"'+name+'"',source)
 
     def test_ci_registers_offline_files_only(self):

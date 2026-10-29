@@ -382,6 +382,13 @@ var/global/list/fixture_identity_controls = list()
 		qdel(probe)
 		if(!fixture_check("plane_constructor_[name]", rejected))
 			return FALSE
+	G.transform = matrix(1,0,0,0,1,0)
+	var/datum/root_tree_presenter/identity_probe = new(M.client, V)
+	var/identity_admitted = !identity_probe.retired && identity_probe.planes_admitted()
+	identity_probe.retire()
+	qdel(identity_probe)
+	if(!fixture_check("plane_constructor_identity", identity_admitted))
+		return FALSE
 	G.transform = original_plane
 	return !fixture_failed
 
@@ -393,6 +400,9 @@ var/global/list/fixture_identity_controls = list()
 		G.transform = changes[name]
 		if(!fixture_check("plane_refresh_[name]", !fixture_presenter.planes_admitted() && !fixture_presenter.refresh() && (fixture_presenter.shutter in M.client.screen)))
 			return FALSE
+	G.transform = matrix(1,0,0,0,1,0)
+	if(!fixture_check("plane_refresh_identity", fixture_presenter.planes_admitted() && fixture_presenter.refresh()))
+		return FALSE
 	G.transform = original_plane
 	return fixture_check("plane_restore", fixture_presenter.planes_admitted() && fixture_presenter.refresh())
 
