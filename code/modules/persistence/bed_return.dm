@@ -88,6 +88,13 @@
 	var/list/save_artifacts = flist("map_saves/")
 	return fexists("map_saves/map.txt") || fexists("map_saves/save_complete.txt") || fexists("map_saves/round.json") || save_artifacts.len
 
+// TRUE only when every registered entry is gone: nulled by deletion or queued for it.
+/map_storage/proc/restored_bodies_destroyed(list/registered)
+	for(var/entry in registered)
+		var/mob/living/human/H = entry
+		if(H && !H.gc_destroyed && !H.gcDestroyed) return FALSE
+	return TRUE
+
 // TRUE means preserve the lobby, even if reclaim cannot yet succeed. Dead-only
 // ownership permits the existing death/respawn policy; never revive that body.
 /map_storage/proc/character_return_pending(account)
@@ -95,6 +102,12 @@
 	if(character_recovery_unready() || persistence_active_operation || persistence_player_claims[account]) return TRUE
 	var/list/bodies = local_character_bodies(account)
 	var/list/registered = persistence_restored_bodies[account]
+	// A restored body destroyed later (for example, decayed into remains) leaves only
+	// null or deleted registry entries. With no owned body left there is nothing to
+	// return, so drop the registration and let the ordinary death/respawn policy apply.
+	if(registered && registered.len && !bodies.len && restored_bodies_destroyed(registered))
+		persistence_restored_bodies.Remove(account)
+		registered = null
 	if(registered && registered.len && (registered.len != 1 || bodies.len != 1 || registered[1] != bodies[1])) return TRUE
 	if(bodies.len > 1) return TRUE
 	if(bodies.len == 1)

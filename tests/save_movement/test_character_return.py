@@ -158,9 +158,11 @@ class ReturnFixture:
                         find_restored_player=lambda account: self.body if self.ready else None)
         for name in ('character_return_turf', 'prepare_character_return', 'local_character_bodies',
                      'character_recovery_unready', 'character_return_pending', 'allow_new_character',
-                     'reclaim_saved_player', 'return_player_eligible', 'finish_character_return'):
+                     'reclaim_saved_player', 'return_player_eligible', 'finish_character_return',
+                     'restored_bodies_destroyed'):
             argument = {'character_return_turf': 'H', 'prepare_character_return': 'H',
                         'local_character_bodies': 'account', 'character_return_pending': 'account',
+                        'restored_bodies_destroyed': 'registered',
                         'allow_new_character': 'lobby', 'reclaim_saved_player': 'lobby',
                         'return_player_eligible': 'H, account', 'finish_character_return': 'H'}.get(name)
             function = self.proc('/map_storage/proc/' + name, 'src' + (', ' + argument if argument else ''), True)
@@ -178,7 +180,7 @@ class ReturnFixture:
                   'record_persistence_owner', 'player_restoration_blocked', 'prepare_character_return',
                   'local_character_bodies', 'character_return_turf', 'character_recovery_unready',
                   'character_return_pending', 'reclaim_saved_player', 'find_restored_player',
-                  'return_player_eligible', 'finish_character_return',
+                  'return_player_eligible', 'finish_character_return', 'restored_bodies_destroyed',
                   'dimension_recovery_required', 'dimension_budget_hold')
         with patch.object(adapter, 'FIELDS', fields):
             return adapter.project(source, declaration, args, self.env, method)
@@ -489,6 +491,31 @@ class CharacterReturnTests(unittest.TestCase):
             if case == 'ambiguous_registry': f.registered['account'].append(None)
             with self.subTest(case=case):
                 self.assertFalse(f.store.allow_new_character(f.lobby))
+
+    def test_destroyed_restored_body_releases_join_for_ordinary_respawn(self):
+        # Gaia 2026-10-29: a restored body decayed into remains, leaving its stale
+        # registry entry to hold Join forever with no character to return.
+        for case in ('queued_delete', 'hard_deleted'):
+            f = ReturnFixture()
+            f.world.remove(f.body)
+            if case == 'queued_delete': f.body.gc_destroyed = True
+            if case == 'hard_deleted': f.registered['account'] = DMList([None])
+            with self.subTest(case=case):
+                self.assertTrue(f.store.allow_new_character(f.lobby))
+                self.assertIsNone(f.registered['account'])
+
+    def test_live_or_missing_registered_body_still_holds_join(self):
+        # Only a fully destroyed registration is released; a body that still
+        # exists (even outside the world list) or an extra live owner keeps the hold.
+        f = ReturnFixture()
+        f.world.remove(f.body)
+        self.assertFalse(f.store.allow_new_character(f.lobby))
+        self.assertIs(f.registered['account'][1], f.body)
+        f = ReturnFixture()
+        f.body.gc_destroyed = True
+        f.world.append(Body(f, f.home))
+        self.assertFalse(f.store.allow_new_character(f.lobby))
+        self.assertTrue(f.registered['account'])
 
     def test_fresh_account_is_allowed_only_without_pending_owned_recovery(self):
         f = ReturnFixture()

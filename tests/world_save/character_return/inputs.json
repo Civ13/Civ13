@@ -30,7 +30,7 @@
     },
     "code/modules/persistence/bed_return.dm": {
       "/map_storage/proc/prepare_character_return": "e46f80998f36b8eaf01ff66ca6cccc4a77133fed7405f9544243c1c1b7d574ea",
-      "/map_storage/proc/character_return_pending": "548cc14e46fb9bc2b19a31d9d3dd4107c5c4ab1a7583f65b1ac9f7d78673cf68",
+      "/map_storage/proc/character_return_pending": "16dda9021c738bfb89b1981d1bec668ffd1b2735f1762781b9868e42b9ad6f27",
       "/map_storage/proc/return_player_eligible": "3fd7f5cb76cc978c64043463c50a2bd5e66005c8d11863a52c554f884832c63f",
       "/map_storage/proc/finish_character_return": "37da25cf167204f3266dbf9e5172f4d53378b547e7191f44dbef9dee8a07d163",
       "/map_storage/proc/character_return_turf": "4ce521863bb186006f54c3a80d2f485eb9b48635ce547abda5296fa656b1b74d",
