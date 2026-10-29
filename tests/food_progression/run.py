@@ -1,5 +1,6 @@
 """Bounded production planting/harvest probe with temporary runtime storage."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -20,15 +21,25 @@ def main():
     control.add_argument('--negative-control', action='store_true')
     control.add_argument('--soil-negative-control', action='store_true')
     control.add_argument('--can-negative-control', action='store_true')
-    parser.add_argument('--probe', choices=('crop', 'storage'), default='crop')
+    parser.add_argument('--probe', choices=('crop', 'storage', 'cutting', 'barrels'), default='crop')
+    parser.add_argument('--compile-only', action='store_true', help='Compile without launching a world')
+    parser.add_argument('--evidence-dir', type=Path, help='New directory for retained isolated evidence')
     args = parser.parse_args()
+    if args.compile_only and any((args.negative_control, args.soil_negative_control, args.can_negative_control)):
+        parser.error('Compile-only cannot establish a runtime negative control')
     if args.can_negative_control:
         args.probe = 'storage'
     root = Path(__file__).resolve().parents[2]
     stem = '.food_progression_' + uuid.uuid4().hex
     generated = {suffix: root / (stem + suffix) for suffix in
                  ('.dme', '_world.dm', '_globals.dm', '_farming.dm', '_floor.dm', '_persistence.dm', '_food.dm', '.dmb', '.rsc')}
-    output = Path(tempfile.mkdtemp(prefix='civ13-food-progression-'))
+    if args.evidence_dir:
+        output = args.evidence_dir.resolve()
+        if output.exists():
+            parser.error('Preserve evidence; --evidence-dir must not exist')
+        output.mkdir(parents=True)
+    else:
+        output = Path(tempfile.mkdtemp(prefix='civ13-food-progression-'))
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     print(f'Evidence: {output}', flush=True)
     try:
@@ -54,7 +65,7 @@ def main():
                                  ('code\\controllers\\mc\\globals.dm', '_globals.dm'),
                                  ('code\\game\\objects\\farming.dm', '_farming.dm')]:
             source = source.replace(original, generated[suffix].name)
-        if args.probe == 'storage':
+        if args.probe in ('storage', 'cutting'):
             food = (root / 'code/modules/reagents/reagent_containers/food.dm').read_text(encoding='utf-8')
             wait = 'spawn(rand(590,610))'
             if food.count(wait) != 1:
@@ -86,13 +97,28 @@ def main():
             generated['_persistence.dm'].write_text(persistence.replace(marker, '\t// negative control omits soil nutrition'), encoding='utf-8')
             source = source.replace('code\\modules\\persistence\\functions.dm', generated['_persistence.dm'].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
-        probe = root / 'tests/food_progression' / ('storage.dm' if args.probe == 'storage' else 'probe.dm')
-        generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
+        probe = root / 'tests/food_progression' / {'crop': 'probe.dm', 'storage': 'storage.dm', 'cutting': 'cutting_board.dm', 'barrels': 'barrels.dm'}[args.probe]
+        extra_probe = '\n#include "tests/food_progression/glass_extraction.dm"\n' if args.probe == 'barrels' else ''
+        generated['.dme'].write_text(source + '\n#include "' + probe.relative_to(root).as_posix() + '"\n' + extra_probe, encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
         (output / 'metadata.json').write_text(json.dumps({'commit': head, 'expected_byond_version': args.expected_byond_version, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
-            'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
+            'growth_wait_ticks': 2 if args.probe == 'crop' else None, 'food_wait_ticks': 2 if args.probe in ('storage', 'cutting') else None, 'normal_startup': False,
+            'compile_only': args.compile_only, 'map': 'synthetic 6x3x1 ' + args.probe + ' fixture',
+            'source_sha256': {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in
+                ('code/modules/1713/cutting_board.dm', 'code/modules/reagents/reagent_containers/food.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json', 'tests/furniture_joinery/cutting-board-trace-cases.json')}
+                if args.probe == 'cutting' else
+                {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in
+                 ('code/modules/reagents/reagent_containers/glass.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'code/game/objects/items/stacks/stack.dm', 'code/game/mob/living/carbon/human/shit_piss.dm', 'code/modules/reagents/reagent_containers/food/grown.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm', 'tests/food_progression/barrels.dm', 'tests/food_progression/glass_extraction.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/barrel-ingredient-routes.json', 'tests/furniture_joinery/glass-extraction-routes.json')}
+                if args.probe == 'barrels' else {}}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
+        if args.probe == 'cutting':
+            shutil.copy2(root / 'tests/furniture_joinery/cutting-board-routes.json', output / 'cutting-board-routes.json')
+            shutil.copy2(root / 'tests/furniture_joinery/cutting-board-trace-cases.json', output / 'cutting-board-trace-cases.json')
+        if args.probe == 'barrels':
+            shutil.copy2(root / 'tests/furniture_joinery/barrel-ingredient-routes.json', output / 'barrel-ingredient-routes.json')
+            shutil.copy2(root / 'tests/furniture_joinery/glass-extraction-routes.json', output / 'glass-extraction-routes.json')
+            shutil.copy2(root / 'tests/food_progression/glass_extraction.dm', output / 'glass_extraction.dm')
         for path in generated.values():
             if path.exists():
                 shutil.copy2(path, output / path.name)
@@ -105,6 +131,9 @@ def main():
         print(text, flush=True)
         if not compiler_is_clean(build.returncode, text, args.expected_byond_version):
             raise RuntimeError('Pinned production-source compilation failed')
+        if args.compile_only:
+            print('Isolated food fixture compiled; runtime checks NOT RUN (--compile-only).', flush=True)
+            return
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(generated[suffix], output / generated[suffix].name)
         for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines():

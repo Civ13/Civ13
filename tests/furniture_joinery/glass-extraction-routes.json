@@ -1,0 +1,77 @@
+[
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/grapes",
+    "reagent": "grapejuice",
+    "dose": 5
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona",
+    "reagent": "quinine",
+    "dose": 10
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/olives",
+    "reagent": "olive_oil",
+    "dose": 6
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/juniper",
+    "reagent": "juniper_juice",
+    "dose": 6
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/animalfat",
+    "reagent": "lard",
+    "dose": 10
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/potato",
+    "reagent": "potato",
+    "dose": 5
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/agave",
+    "reagent": "agave",
+    "dose": 10
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/sapote",
+    "reagent": "sapotejuice",
+    "dose": 4
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/apple",
+    "reagent": "applejuice",
+    "dose": 10
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/sapodilla",
+    "reagent": "sapodillajuice",
+    "dose": 10
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod",
+    "reagent": "fish",
+    "dose": 5
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/rawfish",
+    "reagent": "fish",
+    "dose": 5
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/rice",
+    "reagent": "rice",
+    "dose": 5
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/coffee",
+    "reagent": "coffee",
+    "dose": 15
+  },
+  {
+    "input": "/obj/item/weapon/reagent_containers/food/snacks/grown/corn",
+    "reagent": "cornoil",
+    "dose": 5
+  }
+]

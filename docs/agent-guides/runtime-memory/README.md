@@ -13,6 +13,15 @@ Do not turn an evidence limitation into a new approval requirement.
 
 ### Process scheduler integration
 
+<!-- 2026-10-22: ordered movement discovery subset -->
+Use register_living_mob/unregister_living_mob for living-list writes. The derived
+living_complex_animal_list mirrors order and duplicate/last-match removal; it is
+not dog_mob_list or a stat/z/spatial filter. tests/movement_discovery checks
+source-derived offline lifecycle/callback/RNG traces; native parity is pending.
+prepare_native.py stages a tiny paired legacy/candidate iterator fixture only;
+it has no execution option. Native mutation/yield/reentry and lifecycle oracles
+remain uncompiled/unrun and require separate reviewed admission.
+
 <!-- 2026-10-22: wolf cave timer ownership -->
 Wolf caves own one guarded self-processing five-second chain; /full delegates
 startup to the parent. Destroy stops the chain and ticking is excluded on custom

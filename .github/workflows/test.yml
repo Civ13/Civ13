@@ -196,6 +196,9 @@ jobs:
       - name: Test research scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/research_scheduler')
         run: python3 -B -m unittest discover -s tests/research_scheduler -v
+      - name: Test ordered movement discovery source traces offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/movement_discovery')
+        run: python3 -B -m unittest discover -s tests/movement_discovery -v
       - name: Test cleanables scheduler resume source traces offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/cleanables_scheduler')
         run: python3 -B -m unittest discover -s tests/cleanables_scheduler -v
@@ -1210,6 +1213,9 @@ jobs:
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control legacy-split --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/legacy-split"
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control cardinal-arithmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cardinal-arithmetic"
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control offset-recovery --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/offset-recovery"
+          /usr/bin/python3 -B tests/human_subtile/run-crawl.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/crawl"
+          /usr/bin/python3 -B tests/human_subtile/run-crawl.py --control late-start --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/crawl-late-start"
+          /usr/bin/python3 -B tests/human_subtile/run-crawl.py --control lost-lock --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/crawl-lost-lock"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --control mining-position --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining-position"
 
@@ -1223,6 +1229,7 @@ jobs:
             ${{ runner.temp }}/human-subtile/**/source-manifest.json
             ${{ runner.temp }}/human-subtile/**/runner-receipt.json
             ${{ runner.temp }}/human-subtile/**/diagonal-manifest.json
+            ${{ runner.temp }}/human-subtile/**/crawl-manifest.json
             ${{ runner.temp }}/human-subtile/**/accepted.json
             ${{ runner.temp }}/human-subtile/*/*-receipt.json
             ${{ runner.temp }}/human-subtile/**/*.log
@@ -1291,6 +1298,23 @@ jobs:
         with:
           name: idle-metabolism-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/idle-metabolism/
+          retention-days: 7
+      - name: Verify laid rope making and mutation controls
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rope_making')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/rope_making -p 'test_*.py' -v
+          python3 tests/rope_making/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/rope-making/positive"
+          for control in payment replay admission persistence; do
+            python3 tests/rope_making/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control" --output "$RUNNER_TEMP/rope-making/$control"
+          done
+      - name: Upload rope making evidence
+        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/rope_making'))
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rope-making-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/rope-making/
           retention-days: 7
       - name: Verify staged flax processing and mutation controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/flax_processing')
@@ -2176,6 +2200,7 @@ jobs:
           /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
 
       - name: Verify production food progression and seed-consumption negative control
+        id: food_progression
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/food_progression')
         shell: bash
         run: |
@@ -2185,10 +2210,45 @@ jobs:
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --negative-control
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe storage
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --can-negative-control
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe cutting --evidence-dir "$RUNNER_TEMP/cutting-board-evidence"
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe barrels --evidence-dir "$RUNNER_TEMP/barrel-ingredient-evidence"
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}"
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control nutrition
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control age
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control conversion
+
+      - name: Retain isolated cutting-board evidence
+        if: always() && needs.changes.result == 'success' && steps.food_progression.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cutting-board-evidence
+          path: |
+            ${{ runner.temp }}/cutting-board-evidence/metadata.json
+            ${{ runner.temp }}/cutting-board-evidence/compile.log
+            ${{ runner.temp }}/cutting-board-evidence/runtime.log
+            ${{ runner.temp }}/cutting-board-evidence/daemon.log
+            ${{ runner.temp }}/cutting-board-evidence/food_result.txt
+            ${{ runner.temp }}/cutting-board-evidence/probe.dm
+            ${{ runner.temp }}/cutting-board-evidence/cutting-board-routes.json
+            ${{ runner.temp }}/cutting-board-evidence/cutting-board-trace-cases.json
+          if-no-files-found: warn
+
+      - name: Retain isolated barrel ingredient evidence
+        if: always() && needs.changes.result == 'success' && steps.food_progression.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: barrel-ingredient-evidence
+          path: |
+            ${{ runner.temp }}/barrel-ingredient-evidence/metadata.json
+            ${{ runner.temp }}/barrel-ingredient-evidence/compile.log
+            ${{ runner.temp }}/barrel-ingredient-evidence/runtime.log
+            ${{ runner.temp }}/barrel-ingredient-evidence/daemon.log
+            ${{ runner.temp }}/barrel-ingredient-evidence/food_result.txt
+            ${{ runner.temp }}/barrel-ingredient-evidence/probe.dm
+            ${{ runner.temp }}/barrel-ingredient-evidence/barrel-ingredient-routes.json
+            ${{ runner.temp }}/barrel-ingredient-evidence/glass-extraction-routes.json
+            ${{ runner.temp }}/barrel-ingredient-evidence/glass_extraction.dm
+          if-no-files-found: warn
 
       - name: Verify animal health, single-hit damage and tool wear
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/animal_combat')
