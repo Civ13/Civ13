@@ -81,7 +81,7 @@ class CompilerContractTests(unittest.TestCase):
         self.assertIn('always()', retained)
         for name in ('metadata.json', 'compile.log', 'runtime.log', 'daemon.log',
                      'food_result.txt', 'probe.dm', 'barrel-ingredient-routes.json',
-                     'glass-extraction-routes.json', 'glass_extraction.dm'):
+                     'glass-extraction-routes.json', 'glass_extraction.dm', 'cotton_insertion.dm'):
             self.assertIn('/barrel-ingredient-evidence/' + name, retained)
         self.assertNotIn('checkout.patch', retained)
         self.assertNotIn('.dmb', retained)
@@ -91,6 +91,12 @@ class CompilerContractTests(unittest.TestCase):
         self.assertIn('include "tests/food_progression/glass_extraction.dm"', runner)
         self.assertIn("'tests/food_progression/glass_extraction.dm'", runner)
         self.assertIn("output / 'glass_extraction.dm'", runner)
+
+    def test_cotton_helper_is_included_fingerprinted_and_retained(self):
+        runner = (ROOT / 'tests/food_progression/run.py').read_text()
+        self.assertIn('include "tests/food_progression/cotton_insertion.dm"', runner)
+        self.assertIn("'tests/food_progression/cotton_insertion.dm'", runner)
+        self.assertIn("output / 'cotton_insertion.dm'", runner)
 
 
 if __name__ == '__main__':

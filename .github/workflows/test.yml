@@ -2121,6 +2121,7 @@ jobs:
             ${{ runner.temp }}/barrel-ingredient-evidence/barrel-ingredient-routes.json
             ${{ runner.temp }}/barrel-ingredient-evidence/glass-extraction-routes.json
             ${{ runner.temp }}/barrel-ingredient-evidence/glass_extraction.dm
+            ${{ runner.temp }}/barrel-ingredient-evidence/cotton_insertion.dm
           if-no-files-found: warn
 
       - name: Verify animal health, single-hit damage and tool wear
