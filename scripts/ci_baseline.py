@@ -29,6 +29,10 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    # Stdlib-only source projection; no native runner is imported or executed.
+    # Keep shared farming.dm unmapped so its all-suite fallback stays intact.
+    'crop_stage_step': {'files': ('tests/crop_stage_step/test_source.py',), 'paths': (
+        'tests/crop_stage_step/', 'tests/plant_lifecycle/')},
     'research': {'files': ('tests/research_scheduler/test_resume.py',), 'paths': (
         'tests/research_scheduler/', 'code/processes/research_tree.dm',
         'code/processes/_process.dm', 'code/processes/___defines.dm',

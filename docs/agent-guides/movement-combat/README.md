@@ -11,6 +11,19 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-10-27: vendor AI sub-tile candidate -->
+NPC vendors opt into simple_animal ai_step physical pulses. Admission belongs to
+the unowned AI body, never a fake client or the human authority hook. Wandering
+and explicit smart-step callers choose once, then one worker performs at most 16
+native 2px pulses during the supplied interval; AI throttles and pathfinding stay
+outside it. Other animal families and native walk/walk_to stay legacy. Owned
+partial offsets refuse legacy movement and opt-out until collision-safe AI
+realignment; unsupported linked states must not snap. NPC save capsules exclude
+runtime workers/glide and restore through an authenticated native placement.
+tests/human_subtile/run-npc.py has prepare/compile-only modes: its prepared NPC
+runtime fixture and actual rendered appearance remain unexecuted until reviewed.
+This candidate does not change prone movement, JIT path scoring or live TDM.
+
 <!-- 2026-10-27: paid prone/crawl intervals -->
 Client-owned unlinked crawling uses the existing prone/scramble delay, with
 native 2px pulses distributed through that interval and final arrival at its
@@ -56,6 +69,13 @@ Pulling and open menus (any using_object except a stationary gun) keep the
 adapter eligible: a restricting state mid-step refuses all input until alignment.
 Headless fixtures have no client, so living/Move stops pulling there; pull-follow
 during smooth steps needs connected-client confirmation.
+<!-- 2026-10-29: crafting view cleanup on top of #3370 -->
+Do not re-add `!pulling` or narrow using_object to an allowlist in
+human_subtile_unlinked(); #3370's rule above is accepted. Before smooth input, a
+stale held-stack recipe view (hand switch, drop, transfer, depletion) closes; it
+never gates movement. Stationary do_after waits also stop on step_x/step_y change
+at the existing poll. tests/human_subtile/test_crafting_ui.py is offline evidence;
+prepared native crafting_ui.dm is not launched and real-client focus is unverified.
 
 
 <!-- 2026-10-19: combined sub-tile mining acceptance -->

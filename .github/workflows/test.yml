@@ -275,7 +275,11 @@ jobs:
         run: python3 -B -m unittest discover -s tests/gameplay_bridge -v
       - name: Test inactive reserved lighting clearance and executor guards offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting')
-        run: python3 -B -m unittest discover -s tests/reserved_lighting -p 'test_*.py' -v
+        run: |
+          python3 -B -m unittest discover -s tests/reserved_lighting -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/reserved_lighting/native_preflight -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/reserved_lighting/native_preflight/acquisition -p 'test_*.py' -v
+          python3 -B -m unittest discover -s tests/reserved_lighting/native_preflight/hosted -p 'test_*.py' -v
       - name: Test offline evidence checker
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_game_evidence.py')
         run: python3 -m unittest discover -s tests -p test_game_evidence.py -v
@@ -1387,7 +1391,7 @@ jobs:
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          python3 tests/reserved_lighting/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/reserved-lighting"
+          python3 tests/reserved_lighting/run-ci.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$RUNNER_TEMP/reserved-lighting"
       - name: Retain reserved lighting parity evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -1396,6 +1400,8 @@ jobs:
           # Retain receipts and generated test sources, not linked game assets or binaries.
           path: |
             ${{ runner.temp }}/reserved-lighting/parity.json
+            ${{ runner.temp }}/reserved-lighting/runtime-identity.json
+            ${{ runner.temp }}/reserved-lighting/runtime-inputs/runtime-inputs.json
             ${{ runner.temp }}/reserved-lighting/*/manifest.json
             ${{ runner.temp }}/reserved-lighting/*/*.log
             ${{ runner.temp }}/reserved-lighting/*/result.txt

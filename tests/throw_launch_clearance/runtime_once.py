@@ -10,6 +10,7 @@ import argparse
 import ctypes
 import hashlib
 import importlib.util
+import ipaddress
 import json
 from pathlib import Path
 import re
@@ -21,7 +22,7 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 WORKSPACE = ROOT.parent
 PORT = 59474
-PROFILE = 'throw-launch-startup-loopback-v1'
+PROFILE = 'throw-launch-startup-loopback-v2'
 HELPERS = ('scripts/native_fixture.py', 'tests/human_subtile/run-diagonal.py',
            'tests/human_subtile/run.py', 'tests/human_subtile/native_1688/windows.py',
            'tests/human_subtile/native_1688/owned_job.py', 'tests/human_subtile/native_1688/guard_config.py',
@@ -49,12 +50,59 @@ def workspace_path(path):
     return path
 
 
+def normalize_socket(row, owner):
+    """Two closed schemas, with family derived/checked from literal addresses.
+
+    Ownership comes from the PID-filtered backend's retained process handle,
+    checked against current Job membership and a fresh creation-time query.
+    Unknown fields (including unverified owner claims) are never discarded.
+    """
+    keys = {'protocol', 'address', 'port', 'state', 'remote_address', 'remote_port'}
+    require(type(row) is dict and set(row) in (keys, keys | {'family'}), 'Unknown socket schema')
+    numeric = 'family' in row
+    require(type(row['protocol']) is str and row['protocol'] in ('tcp', 'udp'), 'Unknown socket protocol')
+    require(type(row['port']) is int and 1 <= row['port'] <= 65535, 'Malformed local port')
+    def address(value):
+        require(type(value) is str and '%' not in value, 'Malformed socket address')
+        try:
+            parsed = ipaddress.ip_address(value)
+        except ValueError as error:
+            raise RuntimeError('Malformed socket address') from error
+        require(str(parsed) == value, 'Ambiguous socket address')
+        return parsed
+    local = address(row['address'])
+    if numeric:
+        require(type(row['family']) is int and row['family'] in (2, 23) and
+                {2: 4, 23: 6}[row['family']] == local.version, 'Socket family/address mismatch')
+    if row['protocol'] == 'tcp':
+        remote = address(row['remote_address'])
+        require(remote.version == local.version and type(row['remote_port']) is int and
+                0 <= row['remote_port'] <= 65535, 'Malformed remote endpoint')
+        if numeric:
+            require(type(row['state']) is int and 1 <= row['state'] <= 12, 'Unknown numeric TCP state')
+            state = 'listen' if row['state'] == 2 else str(row['state'])
+        else:
+            require(type(row['state']) is str and row['state'] in
+                    {'listen', '1', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'},
+                    'Unknown textual TCP state')
+            state = row['state']
+    else:
+        udp_state = row['state'] is None if numeric else type(row['state']) is str and row['state'] == 'None'
+        require(udp_state and row['remote_address'] is None and row['remote_port'] is None,
+                'Malformed UDP observation')
+        state = None
+    return dict(protocol=row['protocol'], family=local.version, address=str(local), port=row['port'],
+                state=state, remote_address=row['remote_address'], remote_port=row['remote_port'],
+                pid=owner['pid'], creation_filetime=owner['creation_filetime'])
+
+
 class StartupLoopback:
     """A single daemon's explicit startup exception, never a renewed window."""
     def __init__(self, delegate, marker, audit, clock=time.monotonic):
         self.delegate, self.marker, self.audit, self.clock = delegate, Path(marker), audit, clock
         self.started = None
         self.closed = False
+        self.child = self.owner = None
 
     def __getattr__(self, name):
         return getattr(self.delegate, name)
@@ -63,24 +111,46 @@ class StartupLoopback:
         require(self.started is None and phase == 'throw-launch', 'Exactly one throw daemon launch')
         require(not self.marker.exists(), 'Closure marker must not pre-exist')
         self.started = self.clock()  # Before creation is conservatively earlier.
-        return self.delegate.launch(argv, cwd, evidence, phase)
+        self.child = self.delegate.launch(argv, cwd, evidence, phase)
+        self.owner = dict(self.delegate.identity(self.child))
+        require(set(self.owner) == {'pid', 'creation_filetime', 'image'} and
+                type(self.owner['pid']) is int and self.owner['pid'] == self.child.pid and self.child.pid > 0 and
+                type(self.owner['creation_filetime']) is int and self.owner['creation_filetime'] > 0 and
+                type(self.owner['image']) is str and bool(self.owner['image']), 'Invalid retained owner identity')
+        require(self.delegate.a.times(self.child)[0] == self.owner['creation_filetime'], 'Owner birth mismatch')
+        return self.child
 
     def observe(self, child):
         require(self.started is not None, 'No owned daemon')
         elapsed = self.clock() - self.started
-        require(self.closed or elapsed <= 5, 'Startup closure deadline exceeded')
+        require(elapsed >= 0 and (self.closed or elapsed <= 5), 'Startup closure deadline exceeded')
         if self.marker.exists():
             require(self.marker.stat().st_size <= 32 and self.marker.read_bytes() == b'closed\r\n',
                     'Malformed fresh closure marker')
             self.closed = True
         sample = dict(self.delegate.observe(child))
         raw = sample['sockets']
-        self.audit(dict(elapsed=elapsed, closed=self.closed, observed_sockets=raw))
-        require(self.closed or elapsed <= 5, 'Startup closure deadline exceeded')
-        allowed = (not self.closed and len(raw) == 1 and raw[0] == dict(
-            protocol='tcp', family=2, address='127.0.0.1', port=PORT,
-            state=2, remote_address='0.0.0.0', remote_port=0))
+        identity, birth = self.delegate.identity(child), self.delegate.a.times(child)[0]
+        elapsed = self.clock() - self.started
+        self.audit(dict(elapsed=elapsed, closed=self.closed, observed_sockets=raw,
+                        expected_owner=self.owner, observed_owner=identity, observed_birth=birth))
+        require(child is self.child and identity == self.owner and birth == self.owner['creation_filetime'],
+                'Foreign owner or changed retained birth')
+        require(elapsed >= 0 and (self.closed or elapsed <= 5), 'Startup closure deadline exceeded')
+        require(type(raw) is list, 'Malformed socket collection')
+        normalized = [normalize_socket(row, self.owner) for row in raw]
+        # A socket exception also requires this exact sole live Job member.
+        owned_live = (sample['exited'] is False and type(sample['members']) is list and
+                      all(type(value) is int for value in sample['members']) and
+                      sample['members'] == [self.owner['pid']] and
+                      all(type(sample[key]) is int for key in ('total', 'retained', 'active', 'terminated')) and
+                      sample['total'] == sample['retained'] == sample['active'] == 1 and sample['terminated'] == 0)
+        allowed = (not self.closed and owned_live and len(normalized) == 1 and normalized[0] == dict(
+            protocol='tcp', family=4, address='127.0.0.1', port=PORT, state='listen',
+            remote_address='0.0.0.0', remote_port=0, pid=self.owner['pid'],
+            creation_filetime=self.owner['creation_filetime']))
         sample['observed_sockets'] = raw
+        sample['normalized_sockets'] = normalized
         sample['startup_loopback_exception'] = bool(allowed)
         sample['closure_seen'] = self.closed
         # Every other socket remains visible to the unchanged strict validator.

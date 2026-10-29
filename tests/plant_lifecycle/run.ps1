@@ -7,6 +7,10 @@ if ($Revision) {
 } else { $source = Get-Content -LiteralPath (Join-Path $repo 'code/game/objects/farming.dm') -Raw }
 $source = $source.Replace("`r`n", "`n")
 $names = @('readyHarvest','growth','stageGrowth','soil_nutrition_proc','set_dead','water_proc')
+# Historical revisions predate the shared stage boundary; retain baseline support.
+if ($source -match '(?m)^/obj/structure/farming/plant/proc/advance_stage_if_allowed\(') {
+    $names += 'advance_stage_if_allowed'
+}
 $procs = foreach ($name in $names) {
     $match = [regex]::Match($source, '(?m)^/obj/structure/farming/plant/proc/' + $name + '\([^\n]*\)[^\n]*\n[\s\S]*?(?=^/obj/|\z)')
     if (!$match.Success) { throw "Missing production proc $name" }

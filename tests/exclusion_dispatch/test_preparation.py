@@ -11,6 +11,7 @@ import unittest
 
 from preparation import FIXTURE, INHERITED, PATH
 from source_contract import project_lighting_policy
+from historical_fixtures import text as historical_text
 
 ROOT = Path(__file__).resolve().parents[2]
 # Seed content only; never supplied as the temporary runner's live reference.
@@ -26,8 +27,7 @@ def git(repo, *args):
 class ActualPreparationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.seed = subprocess.check_output(['git', 'show', SEED + ':' + PATH], cwd=ROOT,
-                                           text=True, encoding='utf-8')
+        cls.seed = historical_text(SEED, PATH)
 
     def commit(self, repo, text):
         (repo / PATH).write_text(text, encoding='utf-8')
@@ -50,8 +50,7 @@ class ActualPreparationTests(unittest.TestCase):
             for path, _ in INHERITED:
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
-                text = subprocess.check_output(['git', 'show', SEED + ':' + path], cwd=ROOT,
-                                               text=True, encoding='utf-8')
+                text = historical_text(SEED, path)
                 target.write_text(text + ('\n// Shared inherited evolution.\n' if inherited_evolution else ''),
                                   encoding='utf-8')
             (repo / PATH).parent.mkdir(parents=True, exist_ok=True)

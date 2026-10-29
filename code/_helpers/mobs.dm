@@ -220,6 +220,8 @@ Proc for attack log creation, because really why not
 		target_loc = target.loc
 
 	var/atom/original_loc = user.loc
+	var/original_step_x = user.step_x
+	var/original_step_y = user.step_y
 
 	var/holding = user.get_active_hand()
 
@@ -254,7 +256,9 @@ Proc for attack log creation, because really why not
 			break
 
 		if (!can_move)
-			if (user.loc != original_loc)
+			// A stationary action also stops on physical movement within its tile.
+			// Explicit can_move actions retain their existing contract.
+			if (user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y)
 				. = FALSE
 				break
 

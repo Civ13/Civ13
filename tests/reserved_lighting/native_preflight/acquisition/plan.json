@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "status": "UNRESOLVED_SOURCE_ONLY",
+  "scope": "civ13-reserved-toolchain-acquisition-only",
+  "head": null,
+  "executor": null,
+  "byond_version": "516.1688",
+  "archive": {
+    "url": "https://www.byond.com/download/build/516/516.1688_byond_linux.zip",
+    "sha256": "16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9",
+    "bytes": 4887281,
+    "kind": "zip",
+    "members": {
+      "byond/bin/DreamMaker": {
+        "path": "opt/byond/bin/DreamMaker",
+        "sha256": "5c7d95f6a5f6f6b096409794446416e006503005996ef37dd52f48fdcf59bfa9",
+        "bytes": 43552
+      },
+      "byond/bin/DreamDaemon": {
+        "path": "opt/byond/bin/DreamDaemon",
+        "sha256": "0047b52e042647ea3a496b368ab829672917052a130cb67646c515a01c20188a",
+        "bytes": 72288
+      },
+      "byond/bin/libext.so": {
+        "path": "opt/byond/bin/libext.so",
+        "sha256": "825d6455eee7e3410a6fabcb1abd874a02b5a7a9641286928196823468edcbf6",
+        "bytes": 2414088
+      },
+      "byond/bin/libbyond.so": {
+        "path": "opt/byond/bin/libbyond.so",
+        "sha256": "bcee0bdbc5e3bd96da1eef99ec71de97a5143fc3a54893c97e4806ac88b2a33a",
+        "bytes": 8341064
+      }
+    },
+    "provenance": {
+      "role": "Retained bytes match current central official-observed archive pin and user-approved repository mirror; not publisher-signed",
+      "static_inventory_sha256": "015f9eaa9f2cf2310cc7d89360266c0478ff2afa4d8d7653782167682e16348f",
+      "central_manifest_sha256": "9701c4011cab496295bb8b57cb74a570a6ffe90f191c18ddd3c0c9e48606d84f",
+      "source_master": "704ebe205bf06c07bcf6460cfa1c3a2e9254a152",
+      "network_requests": 0,
+      "extracted_or_executed": false,
+      "central_manifest_git_sha256": "662acc3d771988e91de44b7be6f648c256aee7b2173e42a64956b8aca3bad95d",
+      "central_manifest_git_blob": "738fecfaf195bfbe31ed68fa4f0e4d05b9912248",
+      "central_manifest_hash_role": "central_manifest_sha256 records Windows checkout bytes; canonical Git binding is separate and Linux staging must be regenerated"
+    }
+  },
+  "dependencies": [],
+  "dependency_closure_provenance": null,
+  "base_image": "docker.io/library/python@sha256:57d96f71de145a98e7ceca18ee4ade77bba4103a33a72dfaea026b23625c6bf0",
+  "base_image_id": "sha256:3c4d812a6efe003770aafbdba65f9c1960ba8234ab23a133934205a70bdcda77",
+  "recipe_sha256": "696987f7bdf46b1ec503097b9d973d0cacf94c342c375318ad633ee80d573232",
+  "image_output_mode": "CAPTURE_CANDIDATE_FOR_INDEPENDENT_REVIEW",
+  "routes": [
+    "https://www.byond.com/download/build/516/516.1688_byond_linux.zip"
+  ],
+  "registry_hosts": [
+    "registry-1.docker.io",
+    "auth.docker.io",
+    "production.cloudflare.docker.com"
+  ],
+  "network_provenance": null,
+  "artifact_handoff_provenance": null,
+  "limits": {
+    "outer_seconds": 600,
+    "cleanup_seconds": 30,
+    "request_seconds": 10,
+    "download_total_bytes": 603979776,
+    "source_bytes": 2147483648,
+    "daemon_bytes": 8589934592,
+    "evidence_bytes": 134217728,
+    "export_bytes": 2147483648,
+    "rootfs_bytes": 536870912,
+    "file_bytes": 67108864,
+    "members": 4096,
+    "receipt_bytes": 8388608
+  },
+  "native_compile_count": 0,
+  "native_daemon_count": 0,
+  "dispatch_count": 0,
+  "notes": "UNRESOLVED and inert. Current 1688 archive/member identities are read from already retained bytes; no new identity download is needed. Dependency closure, final image, real bounded storage/backend and fresh admission are still absent. Repository-mirror acquisition needs the separately reviewed route/redirect/identity contract; it is not an implicit fallback."
+}
