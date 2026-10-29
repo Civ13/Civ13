@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import stat
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 import warnings
@@ -20,6 +21,19 @@ spec.loader.exec_module(runtime)
 
 class RuntimeIdentityTests(unittest.TestCase):
     def setUp(self):
+        # Keep the dependency local to this passive Linux fixture. On this
+        # Windows Python, lstat's ctime is birth time while fstat's is change
+        # time. Present consistent fixture metadata, without changing the
+        # production identity predicate or global os/pathlib behavior.
+        fixture_os = types.SimpleNamespace(**vars(os))
+        if os.name == 'nt':
+            def fixture_fstat(fd):
+                info = os.fstat(fd)
+                return types.SimpleNamespace(**{
+                    key: info.st_birthtime_ns if key == 'st_ctime_ns' else getattr(info, key)
+                    for key in dir(info) if key.startswith('st_')})
+            fixture_os.fstat = fixture_fstat
+        self.enterContext(patch.object(runtime, 'os', fixture_os))
         self.root = Path(self.enterContext(tempfile.TemporaryDirectory(prefix='byond-runtime-offline-'))).resolve()
         self.bin = self.root / 'bin'
         self.bin.mkdir()
@@ -138,6 +152,33 @@ class RuntimeIdentityTests(unittest.TestCase):
         (self.bin / 'DreamDaemon').write_bytes(b'X' * len(self.bodies['DreamDaemon']))
         with self.assertRaises(ValueError):
             self.verify()
+
+    def test_each_descriptor_identity_change_is_still_rejected(self):
+        # The fixture adaptation must not normalize away any identity guard.
+        original = runtime.os.fstat
+        for field in ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns'):
+            calls = 0
+            def changed(fd):
+                nonlocal calls
+                info = original(fd)
+                calls += 1
+                values = {key: getattr(info, key) for key in dir(info) if key.startswith('st_')}
+                if calls == 2:
+                    values[field] += 1
+                return types.SimpleNamespace(**values)
+            with self.subTest(field=field), patch.object(runtime.os, 'fstat', side_effect=changed):
+                with self.assertRaisesRegex(ValueError, 'changed while reading'):
+                    runtime._read_regular(self.archive, self.archive.stat().st_size, runtime.pin.MAX_BYTES)
+
+    def test_open_descriptor_substitution_is_still_rejected(self):
+        original = runtime.os.fstat
+        def changed(fd):
+            info = original(fd)
+            values = {key: getattr(info, key) for key in dir(info) if key.startswith('st_')}
+            values['st_ino'] += 1
+            return types.SimpleNamespace(**values)
+        with patch.object(runtime.os, 'fstat', side_effect=changed), self.assertRaisesRegex(ValueError, 'changed while opening'):
+            runtime._read_regular(self.archive, self.archive.stat().st_size, runtime.pin.MAX_BYTES)
 
     @unittest.skipUnless(hasattr(os, 'mkfifo'), 'Requires POSIX FIFO support')
     def test_fifo_member_is_rejected_without_opening(self):

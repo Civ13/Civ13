@@ -1,5 +1,32 @@
 # Production food progression probe
 
+`run.py --probe barrels` covers the portable barrel's specialized ingredient
+handler: actual paid ore units and exact capacity, subtype/final-hand cleanup,
+actor/lid/stock/save guards, whole/depleted/trace manure, partial/zero-transfer
+refusal and a real saved barrel reagent entry. It does not exercise inherited
+fruit conversions, dispenser locks or full-game reachability. Compile-only starts
+no world; use a new evidence directory and the explicit current compiler version
+as for the other probes. Native execution is separate from compilation. The
+eight source/data hashes and bounded text evidence are retained by selected CI.
+
+`run.py --probe cutting` runs the cutting-board slice separately from crop and
+storage. It covers all seven frozen input types and original yields/delays,
+live food ownership, continued age/rot, salt/reagent preservation, poisonous and
+already-minced subtype refusal, two preparers, interrupted/replaced/tool-lost/
+save-crossed work, scraping and a real board-plus-food-child save round trip.
+Its board subtype and generated food source bound waits to 2 ds while
+retaining production age charges; preparation delays are independently checked.
+It supplies actors, food and knives and does not establish player bootstrap,
+graphics, full-game elapsed timing or full-world restoration.
+Frozen trace controls use real holder pruning at/around 0.01: unsafe two-output
+splits are refused intact; successful splits and one-output controls retain the
+stored cyanide/nutrition totals. A direct holder negative control demonstrates
+the loss without the board guard. Traces added during a wait are revalidated.
+Use `--expected-byond-version 516.1688` for the current
+compiler. `--compile-only` launches no world and explicitly reports runtime not
+run. `--evidence-dir <new-directory>` retains logs/metadata/results without
+overwriting prior evidence; selected CI uploads its bounded text evidence.
+
 Salted meat provisionally consumes one unit of table salt: fresh meat and
 cutlets get twice their ordinary decay limit, and dried meat gets four times its
 ordinary limit. The same fraction of life remains after either action; salting

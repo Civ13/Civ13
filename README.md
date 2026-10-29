@@ -100,6 +100,11 @@ See [source documentation generation and comment conventions](docs/api/README.md
 See the [Civ13 mapping checklist](docs/mapping.md) for map registration, areas,
 travel, spawns, resource readiness and saved-world compatibility.
 
+For experimental Python generation, see the [offline procedural map guide](docs/procedural-maps.md).
+It produces new typed IR, a static DMM and a required sidecar without launching
+the game or replacing installed maps. Native playability and a reference-matching
+seed remain unverified.
+
 ## Cloud-rendered scene capture
 
 See [reproducing native cloud-rendered stills](docs/cloud-rendering.md) for the

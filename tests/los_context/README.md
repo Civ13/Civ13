@@ -51,7 +51,11 @@ from its validated selection receipt. The LOS check loads the five base files
 from local Git objects, removes the LOS-only edits from the four affected
 procedure bodies in each revision, then compares the disabled projections.
 Unrelated edits outside those procedures, including DME includes, remain allowed.
-Changes within those procedures require reconciliation with the base. A missing
+That full-body comparison applies only when the event base lacks the core, i.e.
+the change that introduces it. Once the base has the core, later edits within
+those procedures are allowed; each hook must still appear exactly once inside its
+adapter, the Examine turn guard must remain and both retirement guards must stay
+the first statement. Offline controls use a synthetic pre-core base. A missing
 or mismatched base/head fails clearly; the suite never fetches a branch or uses
 moving master. Manual `workflow_dispatch` requires the `comparison_base` input:
 an available, full 40-character commit SHA distinct from the head. The selector

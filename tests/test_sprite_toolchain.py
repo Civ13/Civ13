@@ -2,6 +2,7 @@
 import argparse
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -16,7 +17,21 @@ runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
 
 
+def posix_runner_os():
+    # Replace only the runner's dependency. Mutating shared os.name also changes
+    # pathlib's concrete Path class throughout the interpreter on Windows.
+    return types.SimpleNamespace(**dict(vars(os), name='posix'))
+
+
 class SpriteToolchainTests(unittest.TestCase):
+    def test_posix_dependency_preserves_host_os_and_pathlib(self):
+        host_name, host_path = os.name, type(Path())
+        with patch.object(runner, 'os', posix_runner_os()):
+            self.assertEqual(runner.os.name, 'posix')
+            self.assertEqual(os.name, host_name)
+            self.assertIs(type(Path().absolute()), host_path)
+        self.assertEqual(os.name, host_name)
+
     def result(self, text='DM compiler version 516.1688\nfixture.dmb - 0 errors, 0 warnings\n', stderr='', code=0):
         return subprocess.CompletedProcess([], code, text, stderr)
 
@@ -66,7 +81,7 @@ class SpriteToolchainTests(unittest.TestCase):
         args.byond_archive = Path('/unused.zip')
         verifier = Mock()
         verifier.verify_linux.side_effect = ValueError('wrong archive or daemon')
-        with patch.object(runner.os, 'name', 'posix'), patch.object(runner, 'toolchain', return_value=verifier), self.assertRaises(ValueError):
+        with patch.object(runner, 'os', posix_runner_os()), patch.object(runner, 'toolchain', return_value=verifier), self.assertRaises(ValueError):
             runner.selected_runtime(args)
         verifier.verify_linux.assert_called_once_with(args.byond_bin, args.byond_archive)
 
@@ -119,7 +134,7 @@ class SpriteToolchainTests(unittest.TestCase):
             if 'diff' in command:
                 return b''
             return ('b' if 'HEAD^{tree}' in command else 'a') * 40 + '\n'
-        with patch.object(runner, 'ROOT', root), patch.object(runner.os, 'name', 'posix'), \
+        with patch.object(runner, 'ROOT', root), patch.object(runner, 'os', posix_runner_os()), \
              patch.object(sys, 'argv', ['sprite', '--byond-bin', str(root/'bin'), '--byond-archive', str(root/'pin.zip'), '--output', str(output)]), \
              patch.object(runner, 'selected_runtime', side_effect=identities), \
              patch.object(runner.subprocess, 'run', side_effect=run), \

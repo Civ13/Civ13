@@ -125,7 +125,7 @@
 
 	timeofdeath = world.time
 	if (mind) mind.store_memory("Time of death: [stationtime2text()]", FALSE)
-	living_mob_list -= src
+	unregister_living_mob(src)
 	dead_mob_list |= src
 
 	updateicon()

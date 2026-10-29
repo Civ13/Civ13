@@ -576,9 +576,9 @@ var/list/VVckey_edit = list("key", "ckey")
 				if (var_new == null) return
 				if ((O.vars[variable] == 2) && (var_new < 2))//Bringing the dead back to life
 					dead_mob_list -= O
-					living_mob_list += O
+					register_living_mob(O)
 				if ((O.vars[variable] < 2) && (var_new == 2))//Kill he
-					living_mob_list -= O
+					unregister_living_mob(O)
 					dead_mob_list += O
 				O.vars[variable] = var_new
 			else
