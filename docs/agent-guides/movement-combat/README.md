@@ -69,6 +69,13 @@ Pulling and open menus (any using_object except a stationary gun) keep the
 adapter eligible: a restricting state mid-step refuses all input until alignment.
 Headless fixtures have no client, so living/Move stops pulling there; pull-follow
 during smooth steps needs connected-client confirmation.
+<!-- 2026-10-29: crafting view cleanup on top of #3370 -->
+Do not re-add `!pulling` or narrow using_object to an allowlist in
+human_subtile_unlinked(); #3370's rule above is accepted. Before smooth input, a
+stale held-stack recipe view (hand switch, drop, transfer, depletion) closes; it
+never gates movement. Stationary do_after waits also stop on step_x/step_y change
+at the existing poll. tests/human_subtile/test_crafting_ui.py is offline evidence;
+prepared native crafting_ui.dm is not launched and real-client focus is unverified.
 
 
 <!-- 2026-10-19: combined sub-tile mining acceptance -->

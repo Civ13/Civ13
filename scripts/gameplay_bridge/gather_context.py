@@ -1,7 +1,9 @@
 """Reviewed first-gather conditional source projection; never executes DM.
 
 Restricted to two known conditional symbols. Not a general DM preprocessor.
-Pinned whole-file disabled hashes bind the reviewed master 75890d88 source without Git objects.
+Whole-file disabled hashes bind master10d264e5 plus the explicit physical
+stationary-wait change. The floor projection is unchanged from that reviewed
+master; bridge/mechanics pins stay unchanged. These are source, not native checks.
 """
 import hashlib
 import re
@@ -11,8 +13,8 @@ MARKER = "CIV13_GAMEPLAY_WAIT_GUARDS"
 PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
          "code/modules/gameplay_bridge/bridge.dm", "code/modules/gameplay_bridge/mechanics.dm")
 DISABLED_SHA256 = {
- PATHS[0]: "f048a7cc53fad9001161e2ee12d97c2b3f4ad9b51fad18e557a9d0c4e33c34fd",
- PATHS[1]: "06768a7a93d6c49120ba66c1a67a33c227c398c274d87728317c38e82aae92ee",
+ PATHS[0]: "65300bd76e9f96a461eb0a7faf486239d78deeedb27df183c2f0447dee365904",
+ PATHS[1]: "f6f2b4014157f9886f93be0b9a39919b3b121b9d1626522fb20e6122c2e49955",
  PATHS[2]: "9a2f299490853811f6bb6c6bffaf25a1d1a4e92b1c7224b3c0e68c1bf01d53e9",
  PATHS[3]: "ef11a72c838e5b704e6e88029964d04182ba8f9920dd4493c1a76ce956ca369f",
 }

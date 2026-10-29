@@ -326,6 +326,7 @@
 		// A paid crawl retains admission even after early collision/posture exit.
 		if (subtile_input_actor.human_subtile_transaction && subtile_input_actor.human_subtile_transaction.paid_posture)
 			return FALSE
+		subtile_input_actor.human_subtile_prepare_ui_movement()
 		if (!subtile_input_actor.human_subtile_input_supported(direct))
 			human_subtile_release_visuals()
 			return FALSE
