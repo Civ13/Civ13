@@ -2077,6 +2077,7 @@ jobs:
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe storage
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --can-negative-control
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe cutting --evidence-dir "$RUNNER_TEMP/cutting-board-evidence"
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe barrels --evidence-dir "$RUNNER_TEMP/barrel-ingredient-evidence"
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}"
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control nutrition
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control age
@@ -2096,6 +2097,21 @@ jobs:
             ${{ runner.temp }}/cutting-board-evidence/probe.dm
             ${{ runner.temp }}/cutting-board-evidence/cutting-board-routes.json
             ${{ runner.temp }}/cutting-board-evidence/cutting-board-trace-cases.json
+          if-no-files-found: warn
+
+      - name: Retain isolated barrel ingredient evidence
+        if: always() && needs.changes.result == 'success' && steps.food_progression.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: barrel-ingredient-evidence
+          path: |
+            ${{ runner.temp }}/barrel-ingredient-evidence/metadata.json
+            ${{ runner.temp }}/barrel-ingredient-evidence/compile.log
+            ${{ runner.temp }}/barrel-ingredient-evidence/runtime.log
+            ${{ runner.temp }}/barrel-ingredient-evidence/daemon.log
+            ${{ runner.temp }}/barrel-ingredient-evidence/food_result.txt
+            ${{ runner.temp }}/barrel-ingredient-evidence/probe.dm
+            ${{ runner.temp }}/barrel-ingredient-evidence/barrel-ingredient-routes.json
           if-no-files-found: warn
 
       - name: Verify animal health, single-hit damage and tool wear

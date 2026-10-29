@@ -47,11 +47,11 @@ class CompilerContractTests(unittest.TestCase):
         self.assertIn('tests/food_progression', lane)
         self.assertIn('--expected-byond-version "${BYOND_MAJOR}.${BYOND_MINOR}"', lane)
         commands = [line.strip() for line in lane.splitlines() if line.strip().startswith('/usr/bin/python3 tests/food_progression/')]
-        self.assertEqual(len(commands), 9)
+        self.assertEqual(len(commands), 10)
         self.assertTrue(all('"${args[@]}"' in line for line in commands))
         for required in ('--negative-control', '--probe storage', '--can-negative-control',
                          '--preservation-control nutrition', '--preservation-control age',
-                         '--preservation-control conversion', '--probe cutting'):
+                         '--preservation-control conversion', '--probe cutting', '--probe barrels'):
             self.assertTrue(any(required in line for line in commands), required)
         self.assertEqual(sum('preservation_run.py' in line for line in commands), 4)
         rack = workflow.split('      - name: Verify paid rack save and six mutation controls', 1)[1].split('\n      - name:', 1)[0]
@@ -71,6 +71,17 @@ class CompilerContractTests(unittest.TestCase):
                      'food_result.txt', 'probe.dm', 'cutting-board-routes.json',
                      'cutting-board-trace-cases.json'):
             self.assertIn('/cutting-board-evidence/' + name, retained)
+        self.assertNotIn('checkout.patch', retained)
+        self.assertNotIn('.dmb', retained)
+
+    def test_barrel_probe_retains_its_separate_bounded_evidence(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        self.assertIn('--probe barrels --evidence-dir "$RUNNER_TEMP/barrel-ingredient-evidence"', workflow)
+        retained = workflow.split('      - name: Retain isolated barrel ingredient evidence', 1)[1].split('\n      - name:', 1)[0]
+        self.assertIn('always()', retained)
+        for name in ('metadata.json', 'compile.log', 'runtime.log', 'daemon.log',
+                     'food_result.txt', 'probe.dm', 'barrel-ingredient-routes.json'):
+            self.assertIn('/barrel-ingredient-evidence/' + name, retained)
         self.assertNotIn('checkout.patch', retained)
         self.assertNotIn('.dmb', retained)
 
