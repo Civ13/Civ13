@@ -82,3 +82,16 @@ The reviewed wrapper retains raw socket observations and permits only one IPv4
 TCP LISTEN at 127.0.0.1:59474 before the fresh closure marker, for at most five
 seconds. All other sockets remain fatal; closure never renews the exception.
 This detects samples, not continuous prevention. No client or live server is used.
+
+Profile v2 corrects the failed v1 row-schema comparison. It accepts only the
+closed numeric-family/state schema and the actual backend's textual-state schema,
+then parses canonical literal addresses to derive/check family. It never assumes
+an omitted family means IPv4. Unknown/extra fields, ambiguous addresses and invalid
+types reject. Canonical endpoints carry the verified retained PID/birth; every
+observation rechecks identity and creation time through the retained handle, and
+an exception needs the sole live Job member. Deadline validation runs again after
+observation, so sampling latency cannot extend five seconds. Tests execute the
+unchanged real socket decoder against synthetic OS-table bytes without native
+APIs, including foreign PID filtering, both row shapes and negative cases.
+The failed v1 attempt remains evidence; none of its 242 gameplay assertions ran.
+A corrected freeze does not authorize a second daemon.
