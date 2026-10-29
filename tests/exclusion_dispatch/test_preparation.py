@@ -57,10 +57,13 @@ class ActualPreparationTests(unittest.TestCase):
             # Exercise the real historical test wrapper inside this isolated
             # repository; it imports the frozen historical contract at startup.
             for path in ('tests/exclusion_dispatch/test_source.py',
+                         'tests/exclusion_dispatch/historical_fixtures.py',
                          'tests/exclusion_dispatch/historical/source_contract.py.txt'):
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / path, target)
+            shutil.copytree(ROOT / 'tests/exclusion_dispatch/fixtures',
+                            repo / 'tests/exclusion_dispatch/fixtures')
             for path, _ in INHERITED:
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
