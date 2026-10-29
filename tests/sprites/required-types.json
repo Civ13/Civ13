@@ -70,5 +70,6 @@
   "/obj/structure/table/rack/shelf/wooden",
   "/obj/item/weapon/bedroll/cloth",
   "/obj/structure/bed/bedroll/cloth",
-  "/obj/structure/bed/hammock"
+  "/obj/structure/bed/hammock",
+  "/obj/structure/filingcabinet/chestdrawer/wood"
 ]

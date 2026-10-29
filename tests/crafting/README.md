@@ -19,6 +19,10 @@ The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
 
+`document_drawers.dm` checks paid planks/pegs, document-only admission and late
+occupancy/tool/research rejection through the existing joinery action. It does
+not exercise the connected retrieval browser or establish save/world acceptance.
+
 `rope_hammock.dm` adds paid six-rope construction, short-stock and occupied-turf
 refusal, unoccupied processing and legal-hand hammer-refund checks. It uses the
 existing inert actor adapters and does not establish suspension physics or

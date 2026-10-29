@@ -20,6 +20,10 @@ The paid six-rope hammock is mapped to Weaving and likewise refuses generic wood
 recovery. Its ordinary turf placement remains an abstraction of hanging supports;
 do not claim ceiling/load simulation. See `docs/rope-hammock-audit.md` for the
 reviewed remaining furniture families and historical limits.
+Wooden document drawers are a Fine Furniture joinery route using finished planks
+and paid pegs, with the existing post-wait joinery guards. Preserve the three
+plastic document-cabinet routes and their paper-only handler. See
+`docs/wooden-document-drawers-audit.md`; no shared crafting rewrite is needed.
 
 <!-- 2026-10-28: explicit furniture joinery alternatives -->
 Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
