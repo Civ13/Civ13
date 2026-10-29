@@ -45,6 +45,9 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    # Shared transport/persistence files retain their existing all-suite fallback.
+    'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
+        'tests/carriage_glide/',)},
     'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
