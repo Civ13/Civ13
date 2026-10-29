@@ -909,6 +909,7 @@ class EventRunnerTests(unittest.TestCase):
             if command[:3] == ['git', 'rev-parse', '--verify']:
                 return command[3].removesuffix('^{commit}') + '\n'
             if command[:3] == ['git', 'rev-parse', 'HEAD']: return head_sha + '\n'
+            if command[:3] == ['git', 'rev-parse', '--is-shallow-repository']: return 'false\n'
             if command[:2] == ['git', 'merge-base']:
                 if command[-1] == MERGE_BASE:
                     return (MERGE_BASE if command[2] == head_sha or feature_base else MERGE_MASTER) + '\n'

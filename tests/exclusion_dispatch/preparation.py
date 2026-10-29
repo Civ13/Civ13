@@ -29,6 +29,19 @@ def git(repo, *arguments):
                                    encoding='utf-8', stderr=subprocess.PIPE, timeout=15)
 
 
+def require_complete_history(repo):
+    # An available ancestor object does not prove a connected path in a
+    # shallow repository: Git may report non-ancestry across the boundary.
+    try:
+        shallow = git(repo, 'rev-parse', '--is-shallow-repository').strip()
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError('Cannot verify extraction ancestry: repository history unavailable') from error
+    if shallow == 'true':
+        raise ValueError('Cannot verify extraction ancestry in a shallow repository')
+    if shallow != 'false':
+        raise ValueError('Cannot verify extraction ancestry: invalid history status')
+
+
 def has_extraction_history(repo, head):
     command = ['git', 'merge-base', '--is-ancestor', MERGE_BASE, head]
     try:
@@ -83,6 +96,7 @@ def identities(repo, base, head, event_path=None, event_name=None, github_action
 
 def prepare(repo, base, head, **event):
     identity = identities(repo, base, head, **event)
+    require_complete_history(repo)
     # Read independent commit objects, then verify the actual fixture inputs.
     # Never construct the comparison from candidate bytes or a moving ref.
     def committed(revision, path):

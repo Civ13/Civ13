@@ -335,3 +335,5 @@ all master diagnostics exactly. Tests compare those reconstructed hooks against
 immutable `5ac2df336b717f4ca2ccc60f2697b76ab4f2e019` and reject diagnostic drift.
 The reference never comes from candidate source. Earlier baseline descriptions
 above document the historical evidence, not this current integration.
+
+Source preparation requires a non-shallow Git history: a shallow boundary can hide an existing extraction ancestor and make Git report a false non-ancestor. Missing or unverifiable history is rejected before fixture output; the frozen historical source files do not replace the ancestry proof.

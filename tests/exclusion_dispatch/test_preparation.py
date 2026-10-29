@@ -8,6 +8,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+
+import preparation
 
 from preparation import FIXTURE, INHERITED, PATH
 from source_contract import MERGE_BASE, project_lighting_policy
@@ -161,6 +164,40 @@ class ActualPreparationTests(unittest.TestCase):
                          'tests/exclusion_dispatch/test_source.py',
                          'tests/exclusion_dispatch/historical/source_contract.py.txt'):
                 git(repo, 'cat-file', '-e', revision + ':' + path)
+
+    def test_history_status_unavailable_or_invalid_fails_closed(self):
+        with patch.object(preparation, 'git', return_value='false\n'):
+            self.assertIsNone(preparation.require_complete_history(ROOT))
+        for value in ('true\n', '', 'unknown\n'):
+            with self.subTest(status=value), patch.object(preparation, 'git', return_value=value):
+                with self.assertRaisesRegex(ValueError, 'Cannot verify extraction ancestry'):
+                    preparation.require_complete_history(ROOT)
+        for error in (OSError('git unavailable'), subprocess.TimeoutExpired('git', 15),
+                      subprocess.CalledProcessError(128, 'git')):
+            with self.subTest(error=error), patch.object(preparation, 'git', side_effect=error):
+                with self.assertRaisesRegex(ValueError, 'repository history unavailable'):
+                    preparation.require_complete_history(ROOT)
+
+    def test_shallow_boundary_hiding_extraction_ancestry_fails_before_output(self):
+        # The object exists, but a shallow boundary hides its parent path.
+        # Git reports 1 (non-ancestor) even though full connected history says 0.
+        with self.history() as (directory, repo, original_base, original_head):
+            base_tree = git(repo, 'rev-parse', original_base + '^{tree}')
+            head_tree = git(repo, 'rev-parse', original_head + '^{tree}')
+            identity = ('-c', 'user.name=Offline fixture', '-c', 'user.email=offline@example.invalid')
+            bridge = git(repo, *identity, 'commit-tree', base_tree, '-p', MERGE_BASE, '-m', 'fixture bridge')
+            head = git(repo, *identity, 'commit-tree', head_tree, '-p', bridge, '-m', 'fixture head')
+            git(repo, 'update-ref', 'refs/heads/shallow-fixture', head)
+            git(repo, 'symbolic-ref', 'HEAD', 'refs/heads/shallow-fixture')
+            git(repo, 'reset', '--hard', head)
+            git(repo, 'cat-file', '-e', MERGE_BASE + '^{commit}')
+            command = ['git', '-C', str(repo), 'merge-base', '--is-ancestor', MERGE_BASE, head]
+            self.assertEqual(subprocess.run(command, capture_output=True, timeout=15).returncode, 0)
+            shallow = repo / '.git/shallow'
+            shallow.write_text(bridge + '\n', encoding='ascii')
+            self.assertEqual(git(repo, 'rev-parse', '--is-shallow-repository'), 'true')
+            self.assertEqual(subprocess.run(command, capture_output=True, timeout=15).returncode, 1)
+            self.rejected(directory, repo, bridge, head, 'Cannot verify extraction ancestry in a shallow repository')
 
     def test_missing_extraction_object_fails_closed_in_actual_cli(self):
         with self.history() as (directory, repo, base, head):
