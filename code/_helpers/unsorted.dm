@@ -594,7 +594,7 @@ var/mob/dview/dview_mob = new
 	if (stat == DEAD)
 		dead_mob_list -= src
 	else
-		living_mob_list -= src
+		unregister_living_mob(src)
 
 // call to generate a stack trace and print to runtime logs
 /proc/crash_with(msg)

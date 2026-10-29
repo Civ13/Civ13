@@ -463,6 +463,16 @@
 	var/oloc = loc
 	var/slowness = weakened ? 1.50 : 1.00
 	scrambling = TRUE
+	if (ishuman(src))
+		var/mob/living/human/crawling_human = src
+		try
+			if (crawling_human.human_subtile_crawl_move(F, 9*slowness, "scramble"))
+				visible_message("<span class = 'red'><b>[src]</b> crawls with difficulty!</span>")
+				scrambling = FALSE
+				return
+		catch (var/exception/crawl_error)
+			scrambling = FALSE
+			throw crawl_error
 	sleep(9*slowness)
 	visible_message("<span class = 'red'><b>[src]</b> crawls with difficulty!</span>")
 	var/nloc = loc
@@ -478,6 +488,8 @@
 	scrambling = FALSE
 
 /mob/proc/proning(var/turf/floor/F)
+	if (!isturf(F))
+		return FALSE
 	if (F.density)
 		return FALSE
 	if (stat || buckled || paralysis || stunned || sleeping || (status_flags & FAKEDEATH) || restrained() || (weakened > 10))
@@ -497,7 +509,17 @@
 		dir = WEST
 	else
 		dir = EAST
-	sleep(get_prone_delay())
+	var/prone_delay = get_prone_delay()
+	if (ishuman(src))
+		var/mob/living/human/crawling_human = src
+		try
+			if (crawling_human.human_subtile_crawl_move(F, prone_delay, "prone"))
+				scrambling = FALSE
+				return
+		catch (var/exception/crawl_error)
+			scrambling = FALSE
+			throw crawl_error
+	sleep(prone_delay)
 	var/nloc = loc
 	if (nloc == oloc)
 		if (ishuman(src))

@@ -1,0 +1,129 @@
+{
+  "schema": "civ13-generation-config/2",
+  "profile": "SURFACE",
+  "preset": "CUSTOM",
+  "seed": "ports-0",
+  "dimensions": {
+    "width": 155,
+    "height": 225,
+    "layers": {
+      "SURFACE": 2,
+      "UNDERGROUND": 1
+    }
+  },
+  "biome_mix_pct": {
+    "TEMPERATE": 70,
+    "STEPPE": 20,
+    "ARID": 10
+  },
+  "climate": {
+    "moisture_range": [
+      20,
+      80
+    ],
+    "temperature_c_range": [
+      0,
+      30
+    ]
+  },
+  "water": {
+    "coverage_pct": [
+      12,
+      26
+    ],
+    "river_networks": [
+      1,
+      1
+    ],
+    "river_width_tiles": [
+      3,
+      3
+    ],
+    "lake_count": [
+      1,
+      1
+    ],
+    "lake_area_pct": [
+      4,
+      7
+    ],
+    "swamp_pct": [
+      0,
+      4
+    ],
+    "sea_pct": [
+      2,
+      4
+    ]
+  },
+  "mountains": {
+    "range_count": [
+      0,
+      2
+    ],
+    "range_min_area": 32,
+    "range_width_tiles": [
+      3,
+      12
+    ]
+  },
+  "vegetation": {
+    "suitable_site_density_pct": [
+      10,
+      35
+    ]
+  },
+  "resources": {
+    "density_per_1000_land_tiles": [
+      10,
+      30
+    ]
+  },
+  "starts": {
+    "count": 18,
+    "min_spacing_tiles": 8,
+    "max_route_tiles": 60
+  },
+  "surface_layout": {
+    "sea_side": "N",
+    "inlets": [
+      {
+        "id": "inlet-w",
+        "side": "W",
+        "span": [
+          84,
+          86
+        ]
+      },
+      {
+        "id": "inlet-e",
+        "side": "E",
+        "span": [
+          84,
+          86
+        ]
+      }
+    ],
+    "outlet": {
+      "id": "outlet",
+      "kind": "SEA",
+      "side": "N",
+      "span": [
+        92,
+        94
+      ]
+    },
+    "junction_pct": [
+      45,
+      33
+    ],
+    "lake_pct": [
+      56,
+      61
+    ],
+    "climate_axis": [
+      1,
+      -1
+    ]
+  }
+}

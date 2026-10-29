@@ -774,6 +774,18 @@ Proc for attack log creation, because really why not
 		return TRUE
 	return FALSE
 
+// Mirror living-list writes without changing their admission or duplicate semantics.
+// Append and last-match removal preserve the filtered living-list order.
+/proc/register_living_mob(var/datum/M)
+	global.living_mob_list += M
+	if (istype(M, /mob/living/simple_animal/complex_animal))
+		global.living_complex_animal_list += M
+
+/proc/unregister_living_mob(var/datum/M)
+	. = global.living_mob_list.Remove(M)
+	if (istype(M, /mob/living/simple_animal/complex_animal))
+		global.living_complex_animal_list.Remove(M)
+
 // Returns true if M was not already in the dead mob list
 /mob/proc/switch_from_living_to_dead_mob_list()
 	remove_from_living_mob_list()
@@ -790,12 +802,12 @@ Proc for attack log creation, because really why not
 /mob/living/add_to_living_mob_list()
 	if((src in global.living_mob_list) || (src in global.dead_mob_list))
 		return FALSE
-	global.living_mob_list += src
+	register_living_mob(src)
 	return TRUE
 
 // Returns true if the mob was removed from the living list
 /mob/proc/remove_from_living_mob_list()
-	return global.living_mob_list.Remove(src)
+	return unregister_living_mob(src)
 
 // Returns true if the mob was in neither the dead or living list
 /mob/proc/add_to_dead_mob_list()
