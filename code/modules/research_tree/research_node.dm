@@ -1814,6 +1814,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/under/zulu_slene" = "weaving",
 		"/obj/item/weapon/bedroll" = "weaving",
 		"/obj/item/weapon/bedroll/cloth" = "weaving",
+		"/obj/structure/bed/hammock" = "weaving",
 		"/obj/item/weapon/reagent_containers/glass/rag" = "weaving",
 		"/obj/item/weapon/tent" = "weaving",
 		"/obj/structure/curtain" = "weaving",

@@ -16,6 +16,10 @@ Portable bedding variants use static rolled/unrolled typepaths; folding must not
 convert cloth into leather. Bedrolls refuse the generic wooden-structure hammer
 refund. Keep legacy leather recipes and starting equipment unchanged. The bounded
 native cloth-bedding fixture checks payment, identity, the use guard and storage.
+The paid six-rope hammock is mapped to Weaving and likewise refuses generic wood
+recovery. Its ordinary turf placement remains an abstraction of hanging supports;
+do not claim ceiling/load simulation. See `docs/rope-hammock-audit.md` for the
+reviewed remaining furniture families and historical limits.
 
 <!-- 2026-10-28: explicit furniture joinery alternatives -->
 Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
