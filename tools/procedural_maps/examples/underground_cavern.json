@@ -1,0 +1,85 @@
+{
+  "schema": "civ13-generation-config/1",
+  "profile": "UNDERGROUND_CAVERN",
+  "preset": "CONNECTED_CAVES",
+  "seed": "0",
+  "dimensions": {
+    "width": 155,
+    "height": 225,
+    "layers": {
+      "SURFACE": 2,
+      "UNDERGROUND": 1
+    }
+  },
+  "biome_mix_pct": {
+    "CAVERN": 100
+  },
+  "climate": {
+    "moisture_range": [
+      40,
+      80
+    ],
+    "temperature_c_range": [
+      5,
+      20
+    ]
+  },
+  "water": {
+    "coverage_pct": [
+      2,
+      10
+    ],
+    "river_networks": [
+      0,
+      2
+    ],
+    "river_width_tiles": [
+      2,
+      5
+    ],
+    "lake_count": [
+      1,
+      3
+    ],
+    "lake_area_pct": [
+      1,
+      8
+    ],
+    "swamp_pct": [
+      0,
+      0
+    ],
+    "sea_pct": [
+      0,
+      0
+    ]
+  },
+  "mountains": {
+    "range_count": [
+      0,
+      0
+    ],
+    "range_min_area": 32,
+    "range_width_tiles": [
+      3,
+      12
+    ]
+  },
+  "vegetation": {
+    "suitable_site_density_pct": [
+      10,
+      35
+    ]
+  },
+  "resources": {
+    "density_per_1000_land_tiles": [
+      10,
+      30
+    ]
+  },
+  "starts": {
+    "count": 8,
+    "min_spacing_tiles": 8,
+    "max_route_tiles": 60
+  }
+}

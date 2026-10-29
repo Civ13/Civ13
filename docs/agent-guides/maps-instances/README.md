@@ -11,6 +11,32 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- Offline procedural geography -->
+`tools/procedural_maps` generates new offline IR/DMM/sidecar bundles only.
+Run `python3 -I -B tests/procedural_maps/run.py --historical-catalog-root <v1-checkout> --intermediate-catalog-root <v2-checkout> --v3-catalog-root <v3-checkout>`
+with a verified interpreter. Current export uses declaration-only catalog /4;
+keep the whole-file pins of /1-/3 for their bundles. Keep source pins, versioned configs, graph/raster invariants and old golden hashes.
+OCEANIC schema 3 has separate island/lake/sea and ship-clearance rules; preserve
+its per-island starts and bounded fresh/coast routes. Do not silently substitute
+surface edge-inlet rivers for deferred island river endpoints or cavern generation.
+Abstract supplies and the frozen resource proposal are not native playability;
+no live map, saved world or native engine is read/applied/launched by this tool.
+
+<!-- Finite authored indoor preparation -->
+`tools/liminal_maps` assembles/validates original indoor topology only; run the
+explicit `tests/liminal_maps/run.py` offline suite. Preserve catalog/helper pins,
+typed sockets, clearance/progression guards and design docs. It does not emit
+native DMMs, register a mode or prove native lighting/audio/gameplay. Keep native
+catalog/mode integration and third-party asset ports separately reviewed.
+
+<!-- 2026-10-27: liminal static visual proposal -->
+Version-1 docs/liminal/ROOM-PREVIEWS.md images are rejected historical evidence,
+not accepted layouts. RENDERER-FIDELITY-STUDY.md separates source-backed wall
+junction/door state and semantic furnishing audits from catalog redesign. Do not
+stretch a single-tile door across a three-cell socket or treat every dense prop
+as a partition/machine. Generic computer ibm_off and officechair_dark_over are
+absent in their DMIs at the audited source; do not invent their pixels.
+
 <!-- 2026-10-27: disabled Backrooms expedition foundation -->
 `docs/backrooms-expedition` separates powered colonization from finite escape.
 `gateway_core.dm` contains uninstantiated finite-charge/lifecycle/identity datums,

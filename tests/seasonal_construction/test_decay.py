@@ -165,8 +165,10 @@ class Construction:
         self.register_seasonal_construction()
 
     def qdel(self):
-        if self.contents:
-            raise AssertionError("native destruction would delete contents")
+        # Record dispatch with contents intact. Native child deletion/collapse
+        # is outside this adapter; do not simulate a preservation guarantee.
+        self.qdel_calls = getattr(self, 'qdel_calls', 0) + 1
+        self.contents_at_qdel = tuple(self.contents)
         self.gc_destroyed = True
         self.unregister_seasonal_construction()
 
@@ -319,20 +321,48 @@ class DecayTests(unittest.TestCase):
         s.sweep()
         self.assertEqual(item.health, 12 - 75 / 16)
 
-    def test_terminal_decay_waits_for_contents_without_consuming_debt(self):
-        s = State()
-        item = Construction(s)
-        child = object()
-        item.contents.append(child)
-        for _ in range(16):
-            s.transition()
-        s.sweep()
+    def test_terminal_decay_dispatches_normal_destruction_with_contents_and_debits_once(self):
+        for kind, hp in (("/obj/covers/straw_wall", 75), ("/obj/roof/thatch", 100)):
+            with self.subTest(kind=kind):
+                s = State(); item = Construction(s, kind, hp)
+                child = NS(contents=[object()])
+                occupant = NS(is_living=True)
+                item.contents.extend([child, occupant])
+                for _ in range(15): s.transition()
+                s.sweep()
+                self.assertFalse(item.gc_destroyed)
+                self.assertEqual(item.health, hp / 16)
+                self.assertEqual(item.contents, [child, occupant])
+                s.transition(); s.sweep(); item.check_seasonal_construction()
+                self.assertTrue(item.gc_destroyed)
+                self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls), (0, 0, 1))
+                self.assertEqual(item.contents_at_qdel, (child, occupant))
+                self.assertEqual((item.messages, s.registry), (1, []))
+
+    def test_occupied_terminal_debt_still_obeys_persistence_save_and_mode_holds(self):
+        for kind, hp in (("/obj/covers/straw_wall", 75), ("/obj/roof/thatch", 100)):
+            s = State(); item = Construction(s, kind, hp); child = object()
+            item.contents.append(child)
+            for _ in range(16): s.transition()
+            s.saving = True; item.before_save(); s.sweep(); item.check_seasonal_construction()
+            self.assertEqual((item.health, item.seasonal_construction_due), (hp, 16))
+            self.assertFalse(item.gc_destroyed)
+            s.saving = False; s.map.persistence = False; item.check_seasonal_construction()
+            self.assertEqual((item.health, item.seasonal_construction_due), (hp, 16))
+            s.map.persistence = True; s.sweep(); s.sweep()
+            self.assertEqual((item.qdel_calls, item.seasonal_construction_due), (1, 0))
+            self.assertEqual(item.contents_at_qdel, (child,))
+
+    def test_reloaded_occupied_terminal_debt_is_not_damage_until_service(self):
+        s = State(); s.clock = 999; item = Construction(s)
+        child = NS(contents=[object()]); item.contents.append(child)
+        item.seasonal_construction_due = 16
+        item.after_load(); item.after_load()
         self.assertEqual((item.health, item.seasonal_construction_due), (75, 16))
-        self.assertEqual(item.contents, [child])
-        item.contents.clear()
-        s.sweep()
-        self.assertTrue(item.gc_destroyed)
-        self.assertEqual(item.messages, 1)
+        self.assertFalse(item.gc_destroyed)
+        s.sweep(); s.sweep()
+        self.assertEqual((item.health, item.seasonal_construction_due, item.qdel_calls), (0, 0, 1))
+        self.assertEqual(item.contents_at_qdel, (child,))
 
     def test_storage_unanchored_and_incomplete_observations_do_not_accrue(self):
         for attr in ("on_turf", "anchored", "wall", "incomplete"):
@@ -402,7 +432,8 @@ class DecayTests(unittest.TestCase):
             "mode": ("advance_decay && persistence && !persistence_save_in_progress", "advance_decay && !persistence_save_in_progress"),
             "replay": ("src != map || construction_last_season == season", "src != map"),
             "save-debt": ("seasonal_construction_due += elapsed", "seasonal_construction_due = 0"),
-            "contents": ("damage >= seasonal_construction_health() && contents.len", "damage >= seasonal_construction_health() && FALSE"),
+            "contents": ("\t// Debit debt before normal qdel hooks; no sleep or direct Destroy call.",
+                         "\tif (damage >= seasonal_construction_health() && contents.len)\n\t\treturn\n\t// Debit debt before normal qdel hooks; no sleep or direct Destroy call."),
         }
         # Mutation errors are only accepted through the named assertion below.
         for name, (before, after) in mutants.items():
@@ -422,9 +453,9 @@ class DecayTests(unittest.TestCase):
                 item.contents.append(object())
                 for _ in range(16):
                     s.transition()
-                with self.assertRaisesRegex(AssertionError, "native destruction would delete contents"):
-                    s.sweep()
-                self.assertEqual(item.health, 0)
+                s.sweep()
+                self.assertFalse(item.gc_destroyed, "contents mutant did not postpone terminal destruction")
+                self.assertEqual((item.health, item.seasonal_construction_due), (75, 16))
             else:
                 s.transition()
                 item.before_save()

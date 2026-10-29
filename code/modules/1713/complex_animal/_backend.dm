@@ -77,7 +77,7 @@
 /mob/living/simple_animal/complex_animal/Move()
 	..()
 	// I used to do a 'in range(30, src)' check here, it caused MASSIVE cpu usage
-	for (var/mob/living/L in living_mob_list)
+	for (var/mob/living/L in living_complex_animal_list)
 		if (L == src)
 			continue
 		if (istype(L, /mob/living/simple_animal/complex_animal))

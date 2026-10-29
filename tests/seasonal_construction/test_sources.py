@@ -15,6 +15,36 @@ SPEC.loader.exec_module(PREPARE)
 
 
 class SourceTests(unittest.TestCase):
+    def test_prepared_contents_case_observes_dispatch_without_claiming_child_fate(self):
+        policy = (ROOT / "tests/seasonal_construction/collapse_policy_contents.dm").read_text()
+        for unsupported in ("child.gc_destroyed", "nested.gc_destroyed", "neighbor.gc_destroyed"):
+            self.assertNotIn(unsupported, policy)
+        self.assertIn("construction_contents_probe_destroy_calls == 1", policy)
+        self.assertIn("W.health == 0 && W.seasonal_construction_due == 0", policy)
+        self.assertIn("W.check_seasonal_construction()", policy)
+        observer = body(policy, "/obj/covers/straw_wall/Destroy()")
+        self.assertIn("construction_contents_probe_destroy_calls++", observer)
+        self.assertIn("return ..()", observer)
+        dme = (ROOT / "civ13.dme").read_text()
+        self.assertLess(dme.index('code\\game\\atoms_movable.dm'),
+                        dme.index('code\\modules\\lighting\\lighting_atom.dm'))
+        lighting = (ROOT / "code/modules/lighting/lighting_atom.dm").read_text()
+        self.assertIn("loc = null", body(lighting, "/atom/movable/Destroy()"))
+        self.assertNotIn("qdel(AM)", body(lighting, "/atom/movable/Destroy()"))
+
+    def test_terminal_policy_dispatch_keeps_normal_destruction_and_debit_order(self):
+        source = SOURCE.read_text()
+        check = body(source, "/obj/proc/check_seasonal_construction()")
+        self.assertNotIn("contents", check.split("var/damage =", 1)[1])
+        self.assertLess(check.index("seasonal_construction_due = 0"), check.index("damage_seasonal_construction(damage)"))
+        for prefix in ("/obj/covers", "/obj/roof"):
+            damage = body(source, prefix + "/damage_seasonal_construction(damage)")
+            self.assertIn("health -= damage", damage)
+            self.assertIn("if (health <= 0)", damage)
+            self.assertEqual(damage.count("qdel(src)"), 1)
+            for bypass in ("Destroy(", "forceMove(", "contents", "loc ="):
+                self.assertNotIn(bypass, damage)
+
     def test_legacy_parity_projection_rejects_missing_duplicate_moved_and_changed_hooks(self):
         source = (ROOT / "code/processes/abandoned_items.dm").read_text()
         legacy = without_construction_hook(source)
@@ -89,7 +119,7 @@ class SourceTests(unittest.TestCase):
         s.sweep()
         self.assertEqual((roof.health, roof.seasonal_construction_due, s.registry), (100, 0, []))
 
-    def test_positive_and_four_controls_prepare_without_any_native_outputs(self):
+    def test_positive_and_declared_controls_prepare_without_any_native_outputs(self):
         original = SOURCE.read_bytes()
         for control in (None, *PREPARE.CONTROLS):
             with self.subTest(control=control), tempfile.TemporaryDirectory(prefix="civ13-construction-packet-") as directory:
@@ -97,6 +127,7 @@ class SourceTests(unittest.TestCase):
                 output = Path(directory)
                 self.assertTrue(packet["prepared_only"])
                 self.assertEqual(packet["control"], control)
+                self.assertEqual(packet["contents_policy"], "normal destruction; no occupancy deferral")
                 self.assertEqual(packet["production_hashes"]["code/processes/seasonal_construction.dm"],
                                  hashlib.sha256(original).hexdigest())
                 self.assertFalse(list(output.glob("*.dmb")))
@@ -104,6 +135,12 @@ class SourceTests(unittest.TestCase):
                 self.assertFalse(list(output.glob("*.sav")))
                 self.assertFalse(list(output.glob("*.log")))
                 probe = (output / "probe.dm").read_text()
+                self.assertIn("occupied construction postponed terminal destruction", probe)
+                self.assertNotIn("contained objects were retired or debt consumed", probe)
+                self.assertNotIn("child.gc_destroyed", probe)
+                self.assertNotIn("nested.gc_destroyed", probe)
+                self.assertIn("construction_contents_probe_destroy_calls == 1", probe)
+                self.assertIn("tests/seasonal_construction/collapse_policy_contents.dm", packet["production_hashes"])
                 self.assertIn("map_storage.BuildVarDirectory(F, O, 1)", probe)
                 self.assertIn("map_storage.Load_Entry(F, ref, null, locate(5,5,1))", probe)
                 self.assertIn("visibility = 0", probe)
@@ -118,6 +155,11 @@ class SourceTests(unittest.TestCase):
                     mutated = output / packet["adapted_sources"]["code/processes/seasonal_construction.dm"]
                     self.assertIn(PREPARE.CONTROLS[control][1], mutated.read_text())
         self.assertEqual(SOURCE.read_bytes(), original)
+
+    def test_historical_native_probe_remains_immutable(self):
+        historical = ROOT / "tests/seasonal_construction/probe.dm"
+        self.assertEqual(hashlib.sha256(historical.read_bytes()).hexdigest(),
+                         "548f261090e707670b2ae77a6d5a7d0dc46683099e97f6256c1f3a5436f3254d")
 
 
 if __name__ == "__main__":

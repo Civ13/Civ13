@@ -9,5 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="../Civ13.Launcher.csproj" />
     <Compile Remove="SocialContracts/**/*.cs" />
+    <Compile Remove="ManagementPresentation/**/*.cs" />
   </ItemGroup>
 </Project>

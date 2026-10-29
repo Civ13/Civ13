@@ -1,0 +1,36 @@
+name: Offline authored rooms
+on:
+  pull_request:
+    branches: [master, codex/liminal-design]
+    paths:
+      - tools/liminal_maps/**
+      - tests/liminal_maps/**
+      - docs/liminal/**
+      - .github/workflows/liminal-maps.yml
+  push:
+    branches: [master]
+    paths:
+      - tools/liminal_maps/**
+      - tests/liminal_maps/**
+      - .github/workflows/liminal-maps.yml
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Explicit offline authored-room contracts
+        run: python -I -B tests/liminal_maps/run.py --report .ci/liminal-maps.json

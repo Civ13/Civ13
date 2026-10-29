@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # This offline fixture models gameplay without collector instrumentation.
 # Unknown symbols/directives must not acquire an implicit disabled meaning.
-DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False}
+DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False, 'CIV13_ROOT_TREE_PRESENTATION': False}
 
 
 def read(path):
@@ -21,7 +21,7 @@ def read(path):
 def extract(source, declaration, *, defines=None):
     """Select declared proc-local ifdef branches without truncating the body.
 
-    This is deliberately not a DM preprocessor. Only ifdef/ifndef, else and
+    This is deliberately not a DM preprocessor. Only single-symbol if/ifdef/ifndef, else and
     endif with explicitly known Boolean symbols are supported. Directives in
     inactive branches are checked too; ambiguous scope or syntax fails closed.
     """
@@ -44,12 +44,12 @@ def extract(source, declaration, *, defines=None):
             continue
         if stripped.startswith('#'):
             directive = stripped.split('//', 1)[0].rstrip()
-            conditional = re.fullmatch(r'#(ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
+            conditional = re.fullmatch(r'#(if|ifdef|ifndef)\s+([A-Za-z_]\w*)', directive)
             if conditional:
                 operation, symbol = conditional.groups()
                 if symbol not in defines:
                     raise AssertionError('Unknown conditional symbol: ' + symbol)
-                selected = defines[symbol] if operation == 'ifdef' else not defines[symbol]
+                selected = not defines[symbol] if operation == 'ifndef' else defines[symbol]
                 branches.append((active, selected, False))
                 active = active and selected
             elif directive == '#else':
@@ -86,7 +86,9 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'drop_item', 'forceMove', 'sleep_update', 'persistence_set_loc',
           'save_world_contents', 'load_world_contents', 'cleanup_world_operation',
           'clear_saved_zones', 'clear_zone_export', 'clear_saved_roof_areas', 'clear_bookkeeping', 'release_durable_world',
-          'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until')
+          'last_save_reference_failure', 'movement_location', 'stopped', 'stopped_until',
+          'z', 'clear_throw_launch', 'throw_flight_token', 'throw_launch_source',
+          'throw_launch_dx', 'throw_launch_dy', 'throw_launch_x', 'throw_launch_y')
 
 
 def project(source, declaration, args, env, method=False, *, defines=None):

@@ -11,6 +11,48 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-10-27: vendor AI sub-tile candidate -->
+NPC vendors opt into simple_animal ai_step physical pulses. Admission belongs to
+the unowned AI body, never a fake client or the human authority hook. Wandering
+and explicit smart-step callers choose once, then one worker performs at most 16
+native 2px pulses during the supplied interval; AI throttles and pathfinding stay
+outside it. Other animal families and native walk/walk_to stay legacy. Owned
+partial offsets refuse legacy movement and opt-out until collision-safe AI
+realignment; unsupported linked states must not snap. NPC save capsules exclude
+runtime workers/glide and restore through an authenticated native placement.
+tests/human_subtile/run-npc.py has prepare/compile-only modes: its prepared NPC
+runtime fixture and actual rendered appearance remain unexecuted until reviewed.
+This candidate does not change prone movement, JIT path scoring or live TDM.
+
+<!-- 2026-10-27: paid prone/crawl intervals -->
+Client-owned unlinked crawling uses the existing prone/scramble delay, with
+native 2px pulses distributed through that interval and final arrival at its
+deadline. It does not use walking costs or its diagonal cooldown multiplier.
+Partial progress changes physical overlap/reach before the former tile move;
+posture/restriction/ownership changes stop subsequent pulses. Keep the crawl
+transaction, scrambling lock and client deadline after early blockage/cancel.
+Floor clicks dispatch scramble even while prone: retain both initiating posture
+flags rather than assuming scramble means prone is false.
+Dynamic collision fixtures must place a new boundary ahead of the full physical
+footprint. A full-tile object created eight pixels inside an already-overlapped
+turf does not re-trigger legacy Enter/Cross; keep that native case separate.
+spawn copies scalar proc locals; async fixture witnesses need a shared list or
+datum. Retain worker and parent observations when testing paid action ownership.
+tests/human_subtile/run-crawl.py retains full-source headless checks and timing
+controls; compile/offline evidence does not establish native or visual acceptance.
+The prior Windows no-socket runtime hold remains unchanged.
+
+<!-- 2026-10-27: initial thrown-item overlap -->
+Initial launch clearance belongs only to a human's physically overlapping item
+and successful adjacent outbound hops. Sample separation even on empty turfs;
+never turn it into permanent source immunity or first-hop-only immunity.
+Accepted unrelated same-z forceMove also ends clearance; genuine no-ops retain it.
+Only a matching call-local flight token preserves a processor hop. Callback
+replacement flights must not consume the old frame's hit/progress or cleanup.
+Reset on redirection, failed hop and lifecycle boundaries; custom saves exclude
+all five launch fields and flight identity despite tmp. tests/throw_launch_clearance executes source
+flow offline and prepares a full-source native fixture; compile is not gameplay.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
