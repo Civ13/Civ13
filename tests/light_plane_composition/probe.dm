@@ -7,6 +7,8 @@
 #define HUD_PLANE 15
 #define INVISIBILITY_LIGHTING 20
 #define INVISIBILITY_LEVEL_TWO 45
+#define CRASH(message) throw EXCEPTION(message)
+#define PoolOrNew probe_pool
 
 /datum/hud
 	var/list/plane_masters = list()
@@ -30,12 +32,19 @@ var/checks = 0
 	var/should_save = TRUE
 /turf
 	var/atom/movable/lighting_overlay
+	var/window_coeff_dirty = FALSE
 /area
 	var/dynamic_lighting = TRUE
 /datum/map_fixture
 	var/list/zlevels_without_lighting = list()
 var/datum/map_fixture/map
+var/missing_old_area = FALSE
 /proc/get_area(atom/A)
+	// Native map turfs have an area. Adapt only the initial lookup to cover the
+	// helper's supported absent-old-area branch, then use native membership.
+	if(missing_old_area)
+		missing_old_area = FALSE
+		return null
 	return A.loc
 /proc/qdel(atom/A)
 	del(A)
@@ -45,9 +54,10 @@ var/datum/map_fixture/map
 /world
 	hub = ""
 	visibility = 0
-	maxx = 1
+	maxx = 2
 	maxy = 1
 	maxz = 1
+	turf = /turf/area_change_probe
 
 /world/OpenPort(port)
 	if(port == "none")
@@ -123,7 +133,9 @@ var/datum/map_fixture/map
 			#else
 			check(!(locate(/atom/movable/lighting_fullbright) in T), "disabled allocates no coverage")
 			#endif
-			world.log << "PASS checks=[checks]"
+			var/plane_checks = checks
+			check_area_changes()
+			world.log << "PASS checks=[plane_checks] area_change_checks=[checks - plane_checks]"
 		catch(var/exception/E)
 			world.log << "FAIL checks=[checks] [E.name]"
 		del(world)

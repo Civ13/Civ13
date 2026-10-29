@@ -41,6 +41,7 @@
 //unset redraw_mob to prevent the mob from being redrawn at the end.
 /mob/proc/equip_to_slot_if_possible(obj/item/W as obj, slot, del_on_fail = FALSE, disable_warning = FALSE, redraw_mob = TRUE)
 	if (!istype(W)) return FALSE
+	if (!persistence_movement_allowed(W, src)) return FALSE
 
 	if (!W.mob_can_equip(src, slot))
 		if (del_on_fail)
@@ -50,8 +51,7 @@
 				to_chat(src, "<span class = 'red'>You are unable to equip that.</span>") //Only print if del_on_fail is false)
 		return FALSE
 
-	equip_to_slot(W, slot, redraw_mob) //This proc should not ever fail.
-	return TRUE
+	return equip_to_slot(W, slot, redraw_mob)
 
 //This is an UNSAFE proc. It merely handles the actual job of equipping. All the checks on whether you can or can't eqip need to be done before! Use mob_can_equip() for that task.
 //In most cases you will want to use equip_to_slot_if_possible()
@@ -64,7 +64,7 @@
 
 /mob/proc/equip_to_slot_or_drop(obj/item/W as obj, slot)
 	if (!equip_to_slot_if_possible(W, slot, TRUE, TRUE, FALSE))
-		W.loc = get_turf(src)
+		if (W) W.persistence_set_loc(get_turf(src))
 
 //The list of slots by priority. equip_to_appropriate_slot() uses this list. Doesn't matter if a mob type doesn't have a slot.
 var/list/slot_equipment_priority = list( \
@@ -106,14 +106,12 @@ var/list/slot_equipment_priority = list( \
 	if (istype(back,/obj/item/weapon/storage))
 		var/obj/item/weapon/storage/backpack = back
 		if (backpack.can_be_inserted(newitem, TRUE))
-			newitem.forceMove(back)
-			return TRUE
+			return newitem.loc == back || newitem.forceMove(back)
 
 	// Try to place it in any item that can store stuff, on the mob.
 	for (var/obj/item/weapon/storage/S in contents)
 		if (S.can_be_inserted(newitem, TRUE))
-			newitem.forceMove(S)
-			return TRUE
+			return newitem.loc == S || newitem.forceMove(S)
 
 	return FALSE
 
@@ -134,7 +132,7 @@ var/list/slot_equipment_priority = list( \
 
 //Puts the item into your l_hand if possible and calls all necessary triggers/updates. returns TRUE on success.
 /mob/proc/put_in_l_hand(var/obj/item/W)
-	if (lying || !istype(W))
+	if (lying || !istype(W) || !persistence_movement_allowed(W, src))
 		return FALSE
 	W.pixel_x = initial(W.pixel_x)
 	W.pixel_y = initial(W.pixel_y)
@@ -144,7 +142,7 @@ var/list/slot_equipment_priority = list( \
 
 //Puts the item into your r_hand if possible and calls all necessary triggers/updates. returns TRUE on success.
 /mob/proc/put_in_r_hand(var/obj/item/W)
-	if (lying || !istype(W))
+	if (lying || !istype(W) || !persistence_movement_allowed(W, src))
 		return FALSE
 	W.pixel_x = initial(W.pixel_x)
 	W.pixel_y = initial(W.pixel_y)
@@ -166,7 +164,7 @@ var/list/slot_equipment_priority = list( \
 /mob/proc/put_in_hands(var/obj/item/W)
 	if (!W)
 		return FALSE
-	W.forceMove(get_turf(src))
+	if (W.loc != get_turf(src) && !W.forceMove(get_turf(src))) return FALSE
 	W.layer = initial(W.layer)
 	W.dropped()
 	return FALSE
@@ -240,6 +238,35 @@ var/list/slot_equipment_priority = list( \
 		update_icons()
 		return TRUE
 	return FALSE
+
+// Transfer a held item without staging it on the floor or using MOVED_DROP.
+/mob/living/proc/transfer_held_item_to(obj/item/I, atom/target)
+	if (QDELETED(src) || QDELETED(I) || QDELETED(target) || I.loc != src || !item_is_in_hands(I) || I.nodrop || I.nodrop_special_check())
+		return FALSE
+	// Move before clearing ownership: admission failure must leave the hand intact.
+	// No intermediate turf: Crossed() can merge unrelated floor stacks into I.
+	var/moved = I.forceMove(target) && !QDELETED(I) && I.loc == target
+	if (QDELETED(src))
+		return FALSE
+	if (!moved && !QDELETED(I))
+		if (I.loc != src)
+			I.forceMove(src)
+		if (I.loc == src)
+			return FALSE
+	// Successful transfer, or an unrecoverable move/deletion: clear stale UI slots.
+	u_equip(I)
+	if (client)
+		client.screen -= I
+	if (!QDELETED(I))
+		I.layer = initial(I.layer)
+		I.plane = GAME_PLANE
+		I.screen_loc = null
+		if (I.scoped_invisible)
+			I.invisibility = 0
+			I.scoped_invisible = FALSE
+		I.dropped(src)
+	update_icons()
+	return moved && !QDELETED(I) && I.loc == target
 
 //removes all in a mob to the Target (or loc if no target). Ignores nodrop flags by default.
 /mob/proc/strip(var/atom/Target = null, var/ignore_nodrop = FALSE)

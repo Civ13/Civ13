@@ -15,6 +15,8 @@ var/atlas_failed = FALSE
 		text2file(message, "failed.txt")
 /world/New()
 	OpenPort("none")
+	check_atlas(!world.port && !OpenPort(12345), "fixture refuses listening ports")
+	text2file("closed", "port-closed.txt")
 	var/datum/crafting_atlas_reference/cold_reference = new
 	check_atlas(cold_reference.resource_exists("fixture"), "cold resource navigation loads catalog")
 	check_atlas(!cold_reference.resource_exists("absent"), "unknown resource rejected")
@@ -37,6 +39,7 @@ var/atlas_failed = FALSE
 	check_atlas(findtext(first_page, "Paper variant") && findtext(first_page, "Inherited default"), "validated state variant sprite")
 	check_atlas(findtext(first_page, "atlas_resource="), "resource acquisition navigation")
 	check_atlas(findtext(crafting_atlas_reference.acquisition_html("missing"), "No reviewed gathering instructions"), "missing guidance is explicit")
+	check_atlas(findtext(crafting_atlas_reference.acquisition_html("/turf/floor/beach/sand"), "Gathering from"), "terrain heading describes source, not item acquisition")
 	var/list/routes = list()
 	for (var/i in 1 to 13)
 		routes += list(list("name" = "Route [i]", "steps" = list("Use shovel", "Collect clay"), "tools" = "<script>shovel</script>", "conditions" = "Map clay terrain", "status" = "Conditional"))

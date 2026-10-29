@@ -1027,7 +1027,7 @@ var/list/coefflist = list()
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in organs)
 		return
-	..()
+	return ..()
 
 /mob/living/human/reset_view(atom/A, update_hud = TRUE)
 	..()
@@ -1059,7 +1059,8 @@ var/list/coefflist = list()
 /mob/living/human/put_in_l_hand(var/obj/item/W)
 	if (!..() || l_hand)
 		return FALSE
-	W.forceMove(src)
+	if (W.loc != src && !W.forceMove(src)) return FALSE
+	if (W.loc != src) return FALSE
 	l_hand = W
 	W.equipped(src,slot_l_hand)
 	W.add_fingerprint(src)
@@ -1070,7 +1071,8 @@ var/list/coefflist = list()
 /mob/living/human/put_in_r_hand(var/obj/item/W)
 	if (!..() || r_hand)
 		return FALSE
-	W.forceMove(src)
+	if (W.loc != src && !W.forceMove(src)) return FALSE
+	if (W.loc != src) return FALSE
 	r_hand = W
 	W.equipped(src,slot_r_hand)
 	W.add_fingerprint(src)

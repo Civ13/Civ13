@@ -24,6 +24,36 @@ def encoded(value):
     return (json.dumps(value, sort_keys=True, indent=2) + '\n').encode('utf-8')
 
 
+def byond_identity(contract):
+    """Bind packaging to the complete exact-tag compiler contract, including hashes."""
+    if (not isinstance(contract, dict) or type(contract.get('schema')) is not int or contract['schema'] != 1
+            or not isinstance(contract.get('version'), str)
+            or not re.fullmatch(r'[1-9][0-9]{0,4}\.[1-9][0-9]{0,4}', contract['version'])
+            or any(int(part) > 65534 for part in contract['version'].split('.'))
+            or not isinstance(contract.get('sha256'), str)
+            or not re.fullmatch(r'[a-fA-F0-9]{64}', contract['sha256'])
+            or type(contract.get('bytes')) is not int or not 0 < contract['bytes'] <= 64 * 1024 * 1024
+            or contract.get('url') != 'https://www.byond.com/download/build/'
+                + contract['version'].split('.')[0] + '/' + contract['version'] + '_byond.exe'):
+        raise ValueError('Invalid compiler BYOND contract.')
+    return {'version': contract['version'], 'contract_sha256': hashlib.sha256(encoded(contract)).hexdigest()}
+
+
+def inspect_byond(executable):
+    # This entrypoint returns embedded data before updates, registry access or UI.
+    result = subprocess.run([str(executable.resolve()), '--byond-contract'], capture_output=True,
+                            check=True, timeout=30, text=True, encoding='utf-8')
+    return json.loads(result.stdout)
+
+
+def verify_byond(executable, contract, inspect=inspect_byond):
+    identity = byond_identity(contract)
+    embedded = inspect(executable)
+    if byond_identity(embedded) != identity or embedded != contract:
+        raise ValueError('Published launcher BYOND contract differs from the compiler contract.')
+    return identity
+
+
 def version(value):
     if not isinstance(value, str) or not VERSION.fullmatch(value):
         raise ValueError('Expected a three-part numeric launcher version.')
@@ -33,7 +63,7 @@ def version(value):
     return result
 
 
-def make_plan(event, configured, head, tagged_head):
+def make_plan(event, configured, head, tagged_head, byond):
     release = event.get('release', {})
     tag = release.get('tag_name', '')
     if (event.get('action') != 'published' or event.get('repository', {}).get('full_name', '').lower() != REPO.lower()
@@ -42,6 +72,8 @@ def make_plan(event, configured, head, tagged_head):
             or not isinstance(tag, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._/-]{0,199}', tag)
             or '..' in tag or not SHA.fullmatch(head) or tagged_head != head):
         raise ValueError('Release identity, publication state or exact tag commit is invalid.')
+    if tag.lower().startswith('byond-toolchain-cache-'):
+        raise ValueError('BYOND toolchain cache releases are not launcher releases.')
     configured_version = configured.get('version')
     if configured.get('schema') != 1:
         raise ValueError('Invalid launcher version configuration.')
@@ -51,7 +83,8 @@ def make_plan(event, configured, head, tagged_head):
     if semantic_tag and semantic_tag.group(1) != configured_version:
         raise ValueError('Semantic release tag differs from exact-tag launcher version.json.')
     return {'schema': 1, 'repo': REPO, 'release_id': release['id'], 'tag': tag,
-            'head': head, 'version': configured_version, 'prerelease': release['prerelease']}
+            'head': head, 'version': configured_version, 'prerelease': release['prerelease'],
+            'byond': byond_identity(byond)}
 
 
 class ApiError(RuntimeError):
@@ -178,7 +211,10 @@ def activate_feed(api, desired):
     return 'activated'
 
 
-def publish(api, plan, executable, output, client_channel):
+def publish(api, plan, executable, output, client_channel, byond, inspect=inspect_byond):
+    # Refuse stale/wrong embedded requirements before touching release assets/feed.
+    if verify_byond(executable, byond, inspect) != plan['byond']:
+        raise ValueError('BYOND compiler contract changed after release planning.')
     check_release(api, plan)
     sha256 = digest(executable)
     output.mkdir(parents=True, exist_ok=True)
@@ -215,16 +251,24 @@ def git(*args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['plan', 'publish'])
-    parser.add_argument('--event', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('mode', choices=['plan', 'publish', 'verify-byond'])
+    parser.add_argument('--event', type=Path)
+    parser.add_argument('--output', type=Path)
     parser.add_argument('--executable', type=Path)
     options = parser.parse_args()
     native = Path(__file__).resolve().parent
+    byond = json.loads((native.parents[1] / 'byond/version.json').read_text(encoding='utf-8'))
+    if options.mode == 'verify-byond':
+        if not options.executable:
+            parser.error('--executable is required')
+        print(json.dumps(verify_byond(options.executable, byond)))
+        return
+    if not options.event or not options.output:
+        parser.error('--event and --output are required for release planning/publication')
     event = json.loads(options.event.read_text(encoding='utf-8-sig'))
     tag = event.get('release', {}).get('tag_name', '')
     plan = make_plan(event, json.loads((native / 'version.json').read_text()), git('rev-parse', 'HEAD'),
-                     git('rev-parse', '--verify', 'refs/tags/' + tag + '^{commit}'))
+                     git('rev-parse', '--verify', 'refs/tags/' + tag + '^{commit}'), byond)
     options.output.mkdir(parents=True, exist_ok=True)
     if options.mode == 'plan':
         (options.output / 'plan.json').write_bytes(encoded(plan))
@@ -234,7 +278,7 @@ def main():
         raise ValueError('The checked and tested Civ13.exe is required.')
     if json.loads((options.output / 'plan.json').read_text()) != plan:
         raise ValueError('Build plan differs from current exact-tag identity.')
-    print(json.dumps(publish(GitHub(), plan, options.executable, options.output, native.parent / 'channel.json')))
+    print(json.dumps(publish(GitHub(), plan, options.executable, options.output, native.parent / 'channel.json', byond)))
 
 
 if __name__ == '__main__':

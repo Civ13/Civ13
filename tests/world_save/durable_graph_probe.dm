@@ -19,6 +19,14 @@
 /map_storage/proc/entry_path(savefile/F, ref)
 	return "/entries/[ref]"
 var/map_storage/map_storage = new
+// Current graph dependencies only; this fixture never supplies topology.
+/map_storage/var/list/zone_export_state
+/map_storage/var/list/restored_zones = list()
+/area/var/tmp/persistence_zone_id
+/map_storage/proc/capture_zone_descriptor(area/A)
+	throw EXCEPTION("Topology needs the full-source fixture")
+/map_storage/proc/validate_zone_reference(id, type)
+	throw EXCEPTION("Topology needs the full-source fixture")
 // This standalone graph fixture never supplies an exporter. The full native
 // save fixture exercises operator diagnostics with the actual storage helpers.
 /map_storage/proc/record_save_reference_failure(kind, datum/target, current_entry = 0, first_z = 0, first_entry = 0)
@@ -30,6 +38,10 @@ var/map_storage/map_storage = new
 /map_storage/proc/save_validation_area_type(x, y, z)
 	var/turf/T = save_validation_coordinate(x, y, z) ? locate(x, y, z) : null
 	return T ? T.loc.type : null
+/map_storage/proc/save_validation_area_key(x, y, z)
+	// This graph-only adapter has no roof projection or production startup.
+	var/turf/T = save_validation_coordinate(x, y, z) ? locate(x, y, z) : null
+	return T ? "\ref[T.loc]" : null
 var/obj/map_metadata/map
 var/fixture_checks = 0
 var/fixture_failures = 0

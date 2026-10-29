@@ -2,11 +2,17 @@
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
 from atlas.catalog_metadata import add_processors, annotate_eras
+from atlas.tanning import add_tanning
+from atlas.rope_making import add_rope_making
+from atlas.woodworking import add_woodworking, reviewed_source_revision
+from atlas.variants import consolidate_variants, game_recipes
 
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output', type=Path, default=ROOT/'data/atlas-preview')
 parser.add_argument('--byond-bin', type=Path)
+parser.add_argument('--byond-archive', type=Path)
+parser.add_argument('--legacy-fixture-5161681', action='store_true')
 parser.add_argument('--catalog-only', action='store_true')
 parser.add_argument('--game-catalog', type=Path)
 parser.add_argument('--check-game-catalog', type=Path)
@@ -21,14 +27,25 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
+        return 'finished planks'
+    if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
+        return 'wooden document drawers'
+    if s.rstrip('/') in ('/obj/item/weapon/bedroll/cloth', '/obj/structure/bed/bedroll/cloth'):
+        return 'cloth bedroll'
+    # This item type's DM name is sand; the similarly named glass material is distinct.
+    if s.rstrip('/') == '/obj/item/stack/ore/glass':return 'sand'
     return s.rstrip('/').split('/')[-1].replace('_',' ')
 material_stacks={}
 material_aliases={}
+processing_materials={}
 material_source=uncomment(files.get('code/modules/materials/materials.dm',''))
 for match in re.finditer(r'^(/material/[^\s(]+)\s*\n((?:\t[^\n]*\n|\n)*)',material_source,re.M):
     typepath,body=match.groups()
     stack=re.search(r'\bstack_type\s*=\s*(/[^\s]+)',body)
     name=re.search(r'\bname\s*=\s*"([^"]+)"',body)
+    processing=re.search(r'\bprocessing_only\s*=\s*(TRUE|FALSE)',body)
+    if processing:processing_materials[typepath]=processing[1]=='TRUE'
     if stack:
         material_stacks[typepath]=stack[1]
         material_aliases[stack[1]]=typepath
@@ -48,6 +65,14 @@ def canon(s):
     if s.startswith('/obj/item/stack/material/'):
         return '/material/'+s.split('/obj/item/stack/material/')[1]
     return s
+
+def processing_only_material(typepath):
+    typepath=canon(typepath)
+    while typepath.startswith('/material/'):
+        if typepath in processing_materials:return processing_materials[typepath]
+        typepath=typepath.rsplit('/',1)[0]
+    return False
+joinery=json.loads((ROOT/"config/crafting/furniture_joinery.json").read_text())
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
@@ -68,7 +93,20 @@ for p,s in files.items():
             cols=row.split('RECIPE: ',1)[1].strip().split(',')
             if len(cols)!=13: issues.append(dict(file=p,line=ln,reason='Expected 13 fields',raw=row));continue
             a,n,b,c,t,one,floor,category,ind,mil,med,age,mat=cols
-            add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),[(a,c)],[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.',row)
+            if processing_only_material(a):continue
+            ingredients=[(a,c)]
+            joint=joinery.get(n)
+            tool_notes=''
+            if n.startswith('joinery: '):
+                if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
+                    raise ValueError('Joinery recipe contract drift: '+n)
+                if joint['component_type']:
+                    ingredients.append((joint['component_type'],joint['component_cost']))
+                roles={'chisel':'chisel','hammer':'hammer/mallet','shaping':'sharpened flint or sharp knife harder than plank; knife wear 0.25'}
+                tool_notes=' Tools equipped or at your feet: '+' and '.join(roles[role] for role in joint['tools'])+'.'
+                if joint['component_type']:tool_notes+=' Hold dowels in the other hand.'
+                tool_notes+=' Tools reused; checked at end.'
+            add(n,'Material / '+Path(p).stem.replace('material_recipes_',''),ingredients,[(b,1)],p,ln,f'Legacy research I/M/M: {ind}/{mil}/{med}; maximum era ordinal {age}; time {t} deciseconds; category {category}; one per turf {one}; floor {floor}; supplied material {mat}. Research-node and map gates also apply.'+tool_notes,row)
 
 def splitargs(s):
     out=[];start=0;depth=0;quoted=False
@@ -147,6 +185,9 @@ for p,raw in files.items():
 
 nodes=files.get('code/modules/research_tree/research_node.dm','')
 sprite_variants={}
+sprite_variants['/obj/item/stack/wooden_dowels']=dict(type='/obj/item/stack/wooden_dowels',name='wooden dowel set')
+sprite_variants['/obj/item/weapon/stool/wood']=dict(type='/obj/item/weapon/stool/wood',name='wooden stool')
+sprite_variants['/obj/structure/table/rack/shelf/wooden']=dict(type='/obj/structure/table/rack/shelf/wooden',name='wooden shelf')
 assembly_path='code/modules/1713/gunsmithing/blackpowder_assembly.dm'
 assembly=uncomment(files.get(assembly_path,''))
 if assembly:
@@ -194,6 +235,17 @@ if bench:
     for name,result in re.findall(r'"(Pickaxe|Shovel|Hatchet)"\s*=\s*(/obj/item/weapon/material/\w+)',bench):
         head={'Pickaxe':'pickaxe','Shovel':'shovel','Hatchet':'axehead/hatchet'}[name]
         add('Workbench '+name,'Tool assembly',[(f'/obj/item/weapon/material/part/{head}',1),('/obj/item/weapon/material/handle',1)],[(result,1)],bench_path,1,'Tool assembly workbench; usable matching head and handle acquired through native gates; 100 ticks; nearby conscious actor; cancellation retains inputs. Preserves component material, quality and wear. Legacy hand assembly remains available.', 'tool_recipes staged guarded finish_assembly')
+tanning_routes=add_tanning(files, add, records, sprite_variants)
+rope_routes=add_rope_making(files, add, records)
+woodwork_path='code/modules/1713/primitive_woodworking.dm'
+woodwork_contract=json.loads((ROOT/'scripts/atlas/woodworking-contract.json').read_text(encoding='utf-8'))
+woodwork_revision=reviewed_source_revision(files[woodwork_path],woodwork_contract)
+woodworking_routes=add_woodworking(files, add, records, sprite_variants, woodwork_revision)
+for route in woodworking_routes:
+    for field in ('inputs','outputs'):
+        route[field]=[canon(resource) for resource in route[field]]
+for resource in ('/obj/item/stack/material/wood_piece','/obj/item/stack/material/crude_plank'):
+    sprite_variants[canon(resource)]=sprite_variants[resource]
 for recipe in records:
     for resource in recipe['inputs']+recipe['outputs']:
         if resource['id'] in sprite_variants:
@@ -226,19 +278,27 @@ for route in data['sources'].get('mechanisms',[]) if isinstance(data['sources'],
     entry={k:v for k,v in route.items() if k in ('name','file','line','conditions','status','tools','steps','map_notes','era','inputs','outputs')}
     entry['audit_commit']=route.get('source_commit',data['sources'].get('audit_commit',''))
     if isinstance(entry.get('tools'),list):entry['tools']=[label(tool) if isinstance(tool,str) and tool.startswith('/') else tool for tool in entry['tools']]
-    for output in route.get('outputs',[]):
+    related=route.get('related_resources',[])
+    if not isinstance(related,list) or any(not isinstance(x,str) or canon(x) not in route.get('inputs',[]) for x in related):
+        raise ValueError('Acquisition related resource must be a reviewed input')
+    for output in dict.fromkeys(route.get('outputs',[])+related):
         if not isinstance(output,str):continue
         key='/material/'+output.split(':',1)[1] if output.startswith('material:') else output
         key=canon(key)
         acquisition.setdefault(key,[]).append(entry)
 data['acquisition']=acquisition
+for route in tanning_routes + rope_routes + woodworking_routes:
+    for resource in route['outputs']:
+        acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
 annotate_eras(records, uncomment(nodes), splitargs)
+records=consolidate_variants(records)
+data['recipes']=records
 data['limitations'].append('Unlock eras use explicit minimum gates or mapped research tiers; processor eras describe station construction research. Research can be ahead of the map era. Unknown entries are not assigned an era from their maximum expiry. No filter guarantees current faction availability.')
 resource_ids=sorted({x['id'] for r in records for x in r['inputs']+r['outputs']})
 resource_names={x['id']:x['name'] for r in records for x in r['inputs']+r['outputs']}
 if options.catalog_only:
-    game=dict(acquisition=acquisition,recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+    game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
     game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
     if options.game_catalog:
         options.game_catalog.parent.mkdir(parents=True,exist_ok=True)
@@ -254,7 +314,13 @@ assets=OUT/'sprites';assets.mkdir(exist_ok=True)
 representatives={x:(sprite_variants[x]['type']+'#'+sprite_variants[x]['state'] if x in sprite_variants and 'state' in sprite_variants[x] else sprite_variants[x]['type'] if x in sprite_variants else material_stack(x) if x.startswith('/material/') else x) for x in resource_ids}
 fallback='/obj/item/weapon/paper'
 (assets/'requests.json').write_text(json.dumps(sorted(set(representatives.values())|{fallback})),encoding='utf-8')
-subprocess.run([sys.executable,str(ROOT/'tests/sprites/run.py'),'--byond-bin',str(options.byond_bin),'--output',str(OUT/'compiled-sprites.json'),'--atlas-assets',str(assets)],check=True,cwd=ROOT)
+runtime_args = (['--byond-archive', str(options.byond_archive)] if options.byond_archive else [])
+if options.legacy_fixture_5161681:
+    runtime_args.append('--legacy-fixture-5161681')
+subprocess.run([sys.executable,str(ROOT/'tests/sprites/run.py'),'--byond-bin',str(options.byond_bin),'--output',str(OUT/'compiled-sprites.json'),'--atlas-assets',str(assets),*runtime_args],check=True,cwd=ROOT)
+data['sprite_evidence'] = json.loads((OUT/'compiled-sprites.evidence.json').read_text())
+if data['sprite_evidence']['head_sha'] != SHA:
+    raise RuntimeError('Sprite evidence and atlas source revision differ')
 rows={r['type']:r for r in json.loads((OUT/'compiled-sprites.json').read_text())}
 exports=json.loads((assets/'exports.json').read_text())
 from PIL import Image
@@ -268,7 +334,7 @@ for resource in resource_ids:
     row=rows[typepath.split('#')[0]]
     mode='source symbol; abstract or dynamic appearance unresolved' if not direct else 'reviewed state; runtime overlays may differ' if '#' in resource else 'material exemplar; runtime recoloring may differ' if resource.startswith('/material/') else 'compiled default'
     data['resources'][resource]=dict(type=typepath.split('#')[0],icon=row['icon'],state=typepath.split('#')[1] if '#' in typepath else row['state'],dir=row['dir'],image='sprites/'+exports[typepath],label=mode,source_symbol=not direct)
-game=dict(acquisition=acquisition,recipes=[{k:v for k,v in r.items() if k not in ('raw',)} for r in records],resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
+game=dict(acquisition=acquisition,recipes=game_recipes(records),resources={x:dict(name=resource_names[x],type=(material_stack(x) if x.startswith('/material/') else x),label='Initial sprite; runtime appearance may differ')|sprite_variants.get(x,{}) for x in resource_ids})
 game_text=json.dumps(game,separators=(',',':'),ensure_ascii=True)+'\n'
 if options.game_catalog:
     options.game_catalog.parent.mkdir(parents=True,exist_ok=True)

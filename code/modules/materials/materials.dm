@@ -71,6 +71,7 @@ var/list/material/name_to_material
 	var/shard_icon							// Related to above.
 	var/shard_can_repair = TRUE			  	// Can shards be turned into sheets with a welder?
 	var/list/recipes						// Holder for all recipes usable with a sheet of this material.
+	var/processing_only = FALSE // Intermediate feedstock, not a generic crafting material.
 	var/destruction_desc = "breaks apart"	// Fancy string for barricades/tables/objects exploding.
 
 	// Icons
@@ -265,8 +266,10 @@ var/list/material/name_to_material
 	cut_delay = 5
 	shard_type = null
 	tableslam_noise = null
-	sheet_singular_name = "leaf"
-	sheet_plural_name = "leaves"
+	// The farm's generic harvest feeds both bast-fibre and leafy-top recipes.
+	// Rope fibre is in the stalk; a leaf-only label misstates that feedstock.
+	sheet_singular_name = "plant bundle"
+	sheet_plural_name = "plant bundles"
 	stack_type = /obj/item/stack/material/hemp
 	flags = MATERIAL_UNMELTABLE
 
@@ -601,6 +604,22 @@ var/list/material/name_to_material
 	weight = 13
 	resilience = 1.1
 
+/material/wood/piece
+	name = "wood_piece"
+	display_name = "small wood"
+	stack_type = /obj/item/stack/material/wood_piece
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	processing_only = TRUE
+
+/material/wood/crude_plank
+	name = "crude_plank"
+	display_name = "crude wood"
+	stack_type = /obj/item/stack/material/crude_plank
+	sheet_singular_name = "plank"
+	sheet_plural_name = "planks"
+	processing_only = TRUE
+
 /material/wood/soft
 	name = "woodplank"
 	hardness = 90
@@ -915,6 +934,7 @@ var/list/material/name_to_material
 	stack_type = /obj/item/stack/material/pelt/bisonpelt
 
 /material/hairlesshide
+	processing_only = TRUE
 	name = "hairlesshide"
 	use_name = "hairless hide"
 	icon_colour = "#8C7E6E"
@@ -922,6 +942,30 @@ var/list/material/name_to_material
 	sheet_singular_name = "pelt"
 	sheet_plural_name = "pelts"
 	stack_type = /obj/item/stack/material/hairlesshide
+
+/material/rawhide
+	processing_only = TRUE
+	name = "rawhide"
+	use_name = "raw hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/rawhide
+
+/material/wethide
+	processing_only = TRUE
+	name = "wethide"
+	use_name = "wet hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/wethide
+
+/material/dryhide
+	processing_only = TRUE
+	name = "dryhide"
+	use_name = "dry hide"
+	sheet_singular_name = "piece"
+	sheet_plural_name = "pieces"
+	stack_type = /obj/item/stack/material/dryhide
 
 /*/material/scalelesshide //deactivated for now, prepped up for skinned gatorpelts
 	name = "scalelesshide"

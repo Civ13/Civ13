@@ -39,4 +39,3 @@ class Budget:
 
     def cleanup_wait(self):
         return min(5, max(0, self.remaining() - self.RECEIPT_RESERVE))
-

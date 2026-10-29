@@ -181,6 +181,8 @@
 		qdel(src)
 		return TRUE
 
+	if (!persistence_movement_allowed(src, curloc)) return TRUE
+
 	if (istype(curloc, /turf/floor/trench))
 		launch_from_trench = TRUE
 
@@ -219,7 +221,7 @@
 		return FALSE
 
 	original = target
-	loc = curloc
+	if (!persistence_set_loc(curloc)) return TRUE
 	starting = curloc
 
 	yo = targloc.y - curloc.y + y_offset
@@ -260,7 +262,7 @@
 		return FALSE
 
 	original = target
-	loc = curloc
+	if (!persistence_set_loc(curloc)) return TRUE
 	starting = curloc
 	current = curloc
 
@@ -281,7 +283,7 @@
 		qdel(src)
 		return FALSE
 
-	loc = get_turf(user) //move the projectile out into the world
+	if (!persistence_set_loc(get_turf(user))) return TRUE // move out into the world
 
 	firer = user
 	firer_original_dir = firer.dir
@@ -340,6 +342,8 @@
 		if (blockedhit == FALSE)
 			if (silenced)
 				to_chat(target_mob, SPAN_DANGER("You've been hit in \the [parse_zone(hit_zone)] by the shrapnel!"))
+				if (ishuman(target_mob) && player_help_service)
+					player_help_service.record_observed_injury(target_mob.client, target_mob, "reported_shrapnel_hit")
 			else
 				visible_message(SPAN_DANGER("\The [target_mob] is hit by the shrapnel in the [parse_zone(hit_zone)]!"))
 		return FALSE
@@ -410,6 +414,8 @@
 		if (silenced)
 			if(hit_zone)
 				to_chat(target_mob, "<span class='danger'>You've been hit in the [parse_zone(hit_zone)] by \the [src]!</span>")
+				if (ishuman(target_mob) && player_help_service)
+					player_help_service.record_observed_injury(target_mob.client, target_mob, "reported_projectile_hit")
 		else
 			if(hit_zone)
 				visible_message("<span class='danger'>\The [target_mob] is hit in the [parse_zone(hit_zone)]!</span>")//X has fired Y is now given by the guns so you cant tell who shot you if you could not see the shooter

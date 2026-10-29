@@ -121,12 +121,14 @@ class DiggingToolRules(unittest.TestCase):
         nodes = source('code/modules/research_tree/research_node.dm')
         self.assertIn('"' + SHOVEL + '/trench" = "field_defenses"', nodes)
 
-    def test_collection_research_backend_catalog_and_mining_work_remain_unchanged(self):
+    def test_collection_admission_research_backend_catalog_and_mining_work(self):
         floor = source(FLOOR)
         old = baseline(FLOOR)
         start = '\telse if (istype(C, ' + SHOVEL + ') || istype(C, ' + UTENSIL + '/spoon))'
-        end = '\telse if (istype(C, ' + PICK + ')'
-        self.assertEqual(floor[floor.index(start):floor.index(end)], old[old.index(start):old.index(end)])
+        # Snowfall intentionally changes the collection resource/clearance body.
+        # Keep its shovel/spoon admission; snowfall_ground projects that body.
+        self.assertIn(start, floor)
+        self.assertIn(start, old)
         self.assertEqual(procedure(floor, '/datum/pickaxe_mining_action/proc/perform()'),
                          procedure(old, '/datum/pickaxe_mining_action/proc/perform()'))
         research = 'code/modules/research_tree/research_node.dm'
@@ -158,7 +160,7 @@ class DiggingToolRules(unittest.TestCase):
     def test_ci_runs_only_offline_admission_tests(self):
         workflow = source('.github/workflows/test.yml')
         step = workflow.split('- name: Test digging tool and research admission offline', 1)[1].split('- name:', 1)[0]
-        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests), 'tests/test_digging_tools.py')", step)
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/test_digging_tools.py')", step)
         self.assertIn('python3 -B -m unittest discover -s tests -p test_digging_tools.py -v', step)
         self.assertNotIn('byond', step.lower())
 

@@ -57,7 +57,7 @@
 /obj/structure/vehicle/proc/check_engine()
 	return
 
-/obj/structure/vehicle/proc/do_move(var/m_dir = null)
+/obj/structure/vehicle/proc/do_move(var/m_dir = null, interval = null)
 	for (var/mob/living/ML in ontop)
 		ML.forceMove(get_step(src, m_dir))
 	for (var/obj/O in ontop_o)
@@ -85,6 +85,7 @@
 		return
 	if (driver)
 		if (!(driver in range(2,src)))
+			driver.release_carriage_glide()
 			ontop -= driver
 			driver.pixel_x = 0
 			driver.pixel_y = 0
@@ -118,11 +119,16 @@
 /obj/structure/vehicle/proc/movementloop()
 	if (moving && driver && !movement_processes)
 		movement_processes++
+		var/interval = null
 		if (do_vehicle_check() && axis.currentspeed > 0)
-			do_move(driver.dir)
+			interval = vehicle_m_delay + 1
+			do_move(driver.dir, interval)
 		else
 			axis.currentspeed = 0
-		spawn(vehicle_m_delay+1)
+		if (isnull(interval))
+			interval = vehicle_m_delay + 1
+		// Other vehicles retain their original scheduling behavior.
+		spawn(istype(src, /obj/structure/vehicle/carriage) ? interval : vehicle_m_delay + 1)
 			movement_processes--
 			movementloop()
 			return
@@ -166,8 +172,8 @@
 		if (O != src && ontop_o.len < storagecapacity && !(O.anchored) && !(O in ontop_o))
 			user.visible_message(SPAN_NOTICE("[user] starts putting \the [O] on \the [src]..."), SPAN_NOTICE("You start putting \the [O] on \the [src]..."))
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
+				if (!O.persistence_set_loc(get_turf(src))) return FALSE
 				user.visible_message(SPAN_NOTICE("[user] sucessfully puts \the [O] on \the [src]."), SPAN_NOTICE("You sucessfully put \the [O] on \the [src]."))
-				O.loc = get_turf(src)
 				O.pixel_x = pixel_x + 16
 				O.pixel_y = pixel_y + 16
 				ontop_o += O
@@ -188,6 +194,7 @@
 		user.visible_message(SPAN_NOTICE("[user] start leaving \the [src]..."), SPAN_NOTICE("You start getting off \the [src]..."))
 		if (do_after(user, leave_time, src))
 			user.visible_message(SPAN_NOTICE("[user] sucessfully leaves \the [src]."), SPAN_NOTICE("You leave \the [src]."))
+			user.release_carriage_glide()
 			ontop -= user
 			user.pixel_x = 0
 			user.pixel_y = 0
@@ -212,14 +219,15 @@
 	else if (ontop_o.len > 0)
 		for (var/obj/O in ontop_o)
 			if (do_after(user, 15, src))
+				if (!O.persistence_set_loc(get_turf(user))) return FALSE
 				O.anchored = FALSE
 				if (initial(O.density))
 					O.density = TRUE
+				O.release_carriage_glide()
 				ontop_o -= O
 				O.pixel_x = 0
 				O.pixel_y = 0
 				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
-				O.loc = get_turf(user)
 		return
 
 /obj/structure/vehicle/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
@@ -239,6 +247,7 @@
 			user.visible_message("<div class='notice'>[user] start leaving \the [src]...</div>","<div class='notice'>You start leaving \the [src]...</div>")
 			if (do_after(user, leave_time, src))
 				user.visible_message("<div class='notice'>[user] sucessfully leaves \the [src].</div>","<div class='notice'>You leave \the [src].</div>")
+				user.release_carriage_glide()
 				ontop -= user
 				user.pixel_x = 0
 				user.pixel_y = 0
@@ -602,8 +611,8 @@
 		if (O.anchored == FALSE && !(O in ontop_o) && ontop_o.len < storagecapacity)
 			user.visible_message(SPAN_NOTICE("[user] starts putting \the [O] on \the [src]..."), SPAN_NOTICE("You start putting \the [O] on \the [src]..."))
 			if (do_after(user, 40, src) && ontop_o.len < storagecapacity)
+				if (!O.persistence_set_loc(get_turf(src))) return FALSE
 				user.visible_message(SPAN_NOTICE("[user] sucessfully puts \the [O] on \the [src]."), SPAN_NOTICE("You sucessfully put \the [O] on \the [src]."))
-				O.loc = get_turf(src)
 				O.pixel_x = pixel_x + 16
 				O.pixel_y = pixel_y + 16
 				ontop_o += O
@@ -657,6 +666,7 @@
 	else if (ontop_o.len > 0)
 		for (var/obj/O in ontop_o)
 			if (do_after(user, 15, src))
+				if (!O.persistence_set_loc(get_turf(user))) return FALSE
 				O.anchored = FALSE
 				if (initial(O.density))
 					O.density = TRUE
@@ -666,7 +676,6 @@
 				O.pixel_y = 0
 				O.dir = dir
 				user.visible_message(SPAN_NOTICE("[user] takes \the [O] from \the [src]."), SPAN_NOTICE("You take \the [O] from \the [src]."))
-				O.loc = get_turf(user)
 		return
 
 /obj/structure/vehicle/boat/attackby(obj/item/weapon/W as obj, mob/living/human/user as mob)
@@ -1129,6 +1138,7 @@
 				else if(bucklepoint5 == M)
 					bucklepoint5 = null
 				visible_message("<div class='notice'>[user] sucessfully removes [M] from the [src].</div>")
+				M.release_carriage_glide()
 				ontop -= M
 				M.pixel_x = 0
 				M.pixel_y = 0
@@ -1155,6 +1165,7 @@
 						pulling4 = null
 						ontop -= pulling4
 					visible_message("<div class='notice'>[user]  unties the [A] from the [src]...</div>")
+					M.release_carriage_glide()
 					ontop -= M
 					buckled_animal_propulsion -= 1
 					M.buckled = null
@@ -1177,6 +1188,7 @@
 						pulling4 = null
 						ontop -= pulling4
 					visible_message("<div class='notice'>[user]  unties the [A] from the [src]...</div>")
+					M.release_carriage_glide()
 					ontop -= M
 					buckled_animal_propulsion -= 2
 					M.buckled = null
@@ -1197,6 +1209,7 @@
 				else if(bucklepoint5 == M)
 					bucklepoint5 = null
 				M.anchored = FALSE
+				M.release_carriage_glide()
 				ontop_o -= M
 				M.pixel_x = 0
 				M.pixel_y = 0
@@ -1519,6 +1532,7 @@
 				driver.pixel_y = 16
 				driver.dir = WEST
 		if (!(driver in range(1,src)))
+			driver.release_carriage_glide()
 			ontop -= driver
 			driver.anchored = FALSE
 			driver.driver = FALSE
@@ -1861,6 +1875,7 @@
 						dwheel.forceMove(src)
 						user.r_hand = null
 						user.update_icons()
+						user.release_carriage_glide()
 						ontop -= user
 			else
 				current_cargo -= 1 //The driver doesnt counts as cargo. Just passengers
@@ -1871,6 +1886,7 @@
 			buckled_mob = null
 			update_overlay()
 			update_icon()
+			user.release_carriage_glide()
 			ontop -= user
 			return
 
@@ -1989,6 +2005,7 @@
 			buckled_mob = null
 			update_overlay()
 			update_icon()
+			driver.release_carriage_glide()
 			ontop -= driver
 			driver = null
 			return FALSE
@@ -2012,6 +2029,7 @@
 			unbuckle_mob()
 			update_overlay()
 			update_icon()
+			driver.release_carriage_glide()
 			ontop -= driver
 			if (driver.l_hand == dwheel)
 				driver.remove_from_mob(dwheel)
@@ -2028,6 +2046,10 @@
 		return FALSE
 
 /obj/structure/vehicle/carriage/movementloop() //Makes the pulling animals hungry
+	// The existing scheduled wake finishes the previous visual leg, including stops.
+	// A repeated start while that wake is pending must not snap its glide.
+	if (!movement_processes)
+		release_carriage_glides()
 	if(pulling1 || pulling2 || pulling3 || pulling4)
 		if(pulling1)
 			if(pulling1.burnloss + pulling1.oxyloss + pulling1.toxloss + pulling1.bruteloss >= pulling1.health) //Is it dead?
@@ -2062,3 +2084,131 @@
 			else
 				pulling4.simplehunger -= 1
 	..()
+
+// Appearance-only leases. No timer or physical movement is owned here.
+/atom/movable
+	var/tmp/datum/carriage_glide_lease/carriage_glide_owner
+	var/tmp/carriage_glide_previous
+	var/tmp/carriage_glide_applied
+	var/tmp/list/carriage_glide_step
+
+/atom/movable/proc/release_carriage_glide()
+	var/datum/carriage_glide_lease/lease = carriage_glide_owner
+	if (!lease)
+		return
+	carriage_glide_owner = null
+	carriage_glide_step = null
+	if (glide_size == carriage_glide_applied)
+		glide_size = carriage_glide_previous
+	carriage_glide_previous = null
+	carriage_glide_applied = null
+	lease.members -= src
+	GLOB.moved_event.unregister(src, lease, /datum/carriage_glide_lease/proc/moved)
+	GLOB.destroyed_event.unregister(src, lease, /datum/carriage_glide_lease/proc/destroyed)
+
+/datum/carriage_glide_lease
+	should_save = FALSE
+	var/obj/structure/vehicle/carriage/carriage
+	var/list/members = list()
+
+/datum/carriage_glide_lease/Destroy()
+	release()
+	return ..()
+
+/datum/carriage_glide_lease/proc/release()
+	var/obj/structure/vehicle/carriage/C = carriage
+	carriage = null // Retire before callbacks; an old listener never owns a new leg.
+	if (C && C.carriage_glide == src)
+		C.carriage_glide = null
+	for (var/atom/movable/A in members.Copy())
+		if (!A)
+			continue
+		if (A.carriage_glide_owner == src)
+			A.release_carriage_glide()
+		// Retire this listener even if a foreign owner replaced the pointer.
+		GLOB.moved_event.unregister(A, src, /datum/carriage_glide_lease/proc/moved)
+		GLOB.destroyed_event.unregister(A, src, /datum/carriage_glide_lease/proc/destroyed)
+	members.Cut()
+
+/datum/carriage_glide_lease/proc/moved(atom/movable/A, atom/old_loc, atom/new_loc)
+	if (!carriage || !A || A.carriage_glide_owner != src)
+		return
+	var/list/expected = A.carriage_glide_step
+	A.carriage_glide_step = null // One arrival only, including nested callbacks.
+	if (expected && old_loc == expected[1] && new_loc == expected[2])
+		return
+	if (A == carriage)
+		release()
+	else
+		A.release_carriage_glide()
+
+/datum/carriage_glide_lease/proc/destroyed(atom/movable/A)
+	if (!carriage || !A || A.carriage_glide_owner != src)
+		return
+	if (A == carriage)
+		release()
+	else
+		A.release_carriage_glide()
+
+/datum/carriage_glide_lease/proc/claim(atom/movable/A, interval, m_dir, turf/destination)
+	if (!carriage || !A || isDeleted(A) || A.loc != carriage.loc)
+		return
+	// Retire the walking adapter's stack before recording the native prior value.
+	if (ishuman(A))
+		var/mob/living/human/H = A
+		if (H.human_subtile_visual_owner && H.human_subtile_visual_owner.human_subtile_visual_actor == H)
+			H.human_subtile_visual_owner.human_subtile_release_visuals()
+		H.human_subtile_release_glide()
+	A.release_carriage_glide()
+	A.carriage_glide_owner = src
+	A.carriage_glide_previous = A.glide_size
+	A.carriage_glide_applied = 32 * world.tick_lag / max(interval, world.tick_lag)
+	if ((m_dir & (m_dir - 1)) && !(A.appearance_flags & LONG_GLIDE))
+		A.carriage_glide_applied *= ROOT2_FAST
+	A.glide_size = A.carriage_glide_applied
+	A.carriage_glide_step = list(A.loc, destination)
+	members |= A
+	GLOB.moved_event.register(A, src, /datum/carriage_glide_lease/proc/moved)
+	GLOB.destroyed_event.register(A, src, /datum/carriage_glide_lease/proc/destroyed)
+
+/obj/structure/vehicle/carriage
+	var/tmp/datum/carriage_glide_lease/carriage_glide
+
+/obj/structure/vehicle/carriage/proc/release_carriage_glides()
+	if (carriage_glide)
+		carriage_glide.release()
+
+/obj/structure/vehicle/carriage/do_move(m_dir, interval)
+	if (isnull(interval))
+		interval = vehicle_m_delay + 1
+	release_carriage_glides()
+	var/datum/carriage_glide_lease/lease = new
+	lease.carriage = src
+	carriage_glide = lease
+	var/turf/destination = get_step(src, m_dir)
+	if (destination)
+		lease.claim(src, interval, m_dir, destination)
+		for (var/mob/living/M in ontop)
+			lease.claim(M, interval, m_dir, destination)
+		for (var/obj/O in ontop_o)
+			lease.claim(O, interval, m_dir, destination)
+	try
+		. = ..()
+	catch (var/exception/E)
+		lease.release()
+		throw E
+	for (var/atom/movable/A in lease.members)
+		A.carriage_glide_step = null
+
+/obj/structure/vehicle/carriage/safety_check()
+	. = ..()
+	var/datum/carriage_glide_lease/lease = carriage_glide
+	if (lease)
+		for (var/atom/movable/A in lease.members.Copy())
+			if (A != src && (!(A in ontop) && !(A in ontop_o) || A.loc != loc))
+				A.release_carriage_glide()
+	if (!movement_processes)
+		release_carriage_glides()
+
+/obj/structure/vehicle/carriage/persistence_runtime_var(key)
+	return key == "carriage_glide" || ..()

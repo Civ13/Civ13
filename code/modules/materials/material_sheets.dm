@@ -643,7 +643,7 @@
 	flammable = TRUE
 	var/onfire = FALSE
 	var/ash_production = FALSE
-	var/splitting_in_progress = FALSE
+	var/tmp/splitting_in_progress = FALSE
 	
 /obj/item/stack/material/wood/New()
 	update_icon()
@@ -677,6 +677,12 @@
 			qdel(src)
 
 /obj/item/stack/material/wood/attackby(obj/item/T as obj, mob/living/human/user as mob)
+	if (woodwork_wooden_hammer(T))
+		woodwork_begin(src, user, T, "plank")
+		return TRUE
+	if (woodwork_shaping_tool(T, get_material()))
+		woodwork_begin(src, user, T, "pieces")
+		return TRUE
 	if (istype(T, /obj/item/flashlight/torch))
 		var/obj/item/flashlight/torch/F = T
 		if(user.a_intent == "harm" && F.on && !onfire)
@@ -687,62 +693,41 @@
 				start_fire()
 				user.visible_message(SPAN_RED("[user.name] sets \the [src] on fire!"), SPAN_RED("You set \the [src] on fire!"))
 				return
-	if (istype(T, /obj/item/weapon/material/hatchet))
-		// var/obj/item/weapon/material/hatchet/SH = T
-		// Check if there's enough material
-		if (src.amount < 2)
-			to_chat(user, "You don't have enough material to try.")
-			return
-		// Check if splitting process is already in progress
-		if (splitting_in_progress)
-			to_chat(user, SPAN_WARNING("\The [src] are already being split."))
-			return
-		// Set splitting_in_progress to TRUE to indicate the process has started
-		splitting_in_progress = TRUE
-
-		// Start the splitting process
-		user.visible_message("[user.name] starts carving \the [src] into a plank using \the [T].", "You start carving \the [src] into a plank.")
-		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
-		
-		// Set a delay for the splitting process
-		if (!do_after(user, (80/(user.getStatCoeff("strength"))), src)) // Was originally dividing by SH.chopping_speed after getstatcoeff but the flint hatchet has a faster chopping_speed than an iron one. TODO: refactor the speeds.
-			splitting_in_progress = FALSE // In case we abort mid-way.
-			return
-		// Finish the splitting process
-		user.visible_message("[user.name] finishes carving \the [src] into a plank.", "You finish carving \the [src] into a plank.")
-		src.use(2)
-		var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
-		dropwood.amount = 1 // You might expect to obtain anywhere from 2 to 4 planks from a single log. TODO: skill-based plank output
-		dropwood.update_strings() 
-		splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
-	if (istype(T, /obj/item/weapon/saw))
-		// Check if there's enough material
-		if (src.amount < 1)
-			to_chat(user, "You don't have enough planks to saw.")
-			return
-		// Check if splititng process is already in progress
-		if (splitting_in_progress)
-			to_chat(user, SPAN_WARNING("\The [src] are already being sawed."))
-			return
-		// Set splitting_in_progress to TRUE to indicate the process has started
-		splitting_in_progress = TRUE
-
-		// Start the splitting process
-		user.visible_message("[user.name] starts sawing \the [src] into planks using \the [T].", "You start sawing \the [src] into planks.")
-		playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
-		
-		// Set a delay for the splitting process
-		if (!do_after(user, (60/(user.getStatCoeff("strength"))), src))
-			splitting_in_progress = FALSE // In case we abort mid-way.
-			return
-		// Finish the splitting process
-		user.visible_message("[user.name] finishes sawing \the [src] into planks.", "You finish carving \the [src] into planks.")
-		src.use(1)
-		var/obj/item/stack/material/woodplank/dropwood = new /obj/item/stack/material/woodplank(get_turf(user)) 
-		dropwood.amount = 4
-		dropwood.update_strings() 
-		splitting_in_progress = FALSE // Reset the variable to FALSE after the splitting process is complete
+	if (istype(T, /obj/item/weapon/material/hatchet) || istype(T, /obj/item/weapon/saw))
+		cut_logs(T, user)
+		return TRUE
 	return ..()
+
+/obj/item/stack/material/wood/persistence_runtime_var(key)
+	return key == "splitting_in_progress" || ..()
+
+/obj/item/stack/material/wood/proc/log_cutting_valid(obj/item/tool, mob/living/human/user, atom/source_loc, turf/site, cost)
+	return !woodwork_owner && hide_worker_can_reach(user, src) && loc == source_loc && get_turf(src) == site && !onfire && amount >= cost && !QDELETED(tool) && tool.loc == user && user.item_is_in_hands(tool) && (istype(tool, /obj/item/weapon/material/hatchet) || istype(tool, /obj/item/weapon/saw))
+
+/obj/item/stack/material/wood/proc/cut_logs(obj/item/tool, mob/living/human/user)
+	var/hatchet = istype(tool, /obj/item/weapon/material/hatchet)
+	var/cost = hatchet ? 2 : 1
+	var/planks = hatchet ? 1 : 4
+	var/atom/source_loc = loc
+	var/turf/site = get_turf(src)
+	if (splitting_in_progress || !log_cutting_valid(tool, user, source_loc, site, cost) || user.getStatCoeff("strength") <= 0)
+		return FALSE
+	splitting_in_progress = TRUE
+	user.visible_message(SPAN_NOTICE("[user] starts cutting [src] into planks."))
+	playsound(loc, 'sound/effects/woodfile.ogg', 100, TRUE)
+	var/completed = do_after(user, (hatchet ? 80 : 60)/user.getStatCoeff("strength"), src)
+	if (QDELETED(src))
+		return FALSE
+	splitting_in_progress = FALSE
+	if (!completed || !log_cutting_valid(tool, user, source_loc, site, cost))
+		return FALSE
+	if (!use(cost))
+		return FALSE
+	// Constructor counts are final before any automatic merge. One bark per log.
+	new /obj/item/stack/material/woodplank(site, planks)
+	new /obj/item/stack/bark(site, cost)
+	to_chat(user, SPAN_NOTICE("You cut the logs into planks and collect their bark."))
+	return TRUE
 
 /obj/item/stack/material/woodplank
 	name = "soft"
@@ -895,7 +880,7 @@
 
 /obj/item/stack/material/leather
 	name = "leather"
-	desc = "The by-product of mob grinding."
+	desc = "Animal hide preserved by washing, drying, and bark tanning."
 	icon_state = "sheet-leather"
 	default_type = "leather"
 	value = 2

@@ -31,6 +31,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_pm_panel,	//admin-pm list,
 	/client/proc/cmd_admin_subtle_message,	//send an message to somebody as a 'voice in their head',
 	/client/proc/cmd_admin_delete,		//delete an instance/object/mob/etc,
+	/client/proc/cmd_admin_clean_item,	//wash an item from its context menu,
 	/client/proc/cmd_admin_get,
 	/client/proc/getserverlog,
 	/client/proc/getruntimelog,
@@ -132,9 +133,11 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/loadmap,
 	/datum/admins/proc/savemap,
 	/datum/admins/proc/save_restart_resume,
+	/datum/admins/proc/save_update_resume,
 	/datum/admins/proc/resume_pending_recovery
 	)
 var/list/admin_verbs_debug = list(
+	/client/proc/profile_dump,
 	/client/proc/gc_outcomes,
 	/client/proc/gc_inspect_owner_field,
 	/client/proc/gc_deletion_costs,

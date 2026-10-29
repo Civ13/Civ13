@@ -123,3 +123,44 @@ injected runners, and bounded Python child processes only. Passing them or
 `--prepare-only` does not establish native compilation/list semantics, game
 startup, save/load, reproduction, visual acceptance or performance. Native
 acceptance remains pending until this runner actually succeeds on BYOND.
+
+## Poultry suite (2026-10-27)
+
+`birds.dm` had the same defect in twelve hooks across two registries. Chick,
+chicken and rooster death/Destroy ran `chicken_count &= src`; turkey chick, tom
+(`turkey_m`) and hen (`turkey_f`) death/Destroy ran `turkey_count &= src`. Each
+type registers in `New()`, and each registry's length gates egg hatching
+(`chicken_count.len < 50`, `turkey_count.len < 35`). The first death or chick
+growth (which qdels the chick) collapsed that registry to at most the retiring
+bird, so its hatching cap stopped limiting hatching. Only those twelve operators
+become `-=`. Other birds in the file have no registry. The cap values, the
+5-bird chicken local check, egg laying, growth and saves are untouched.
+
+`test_source_contract.py` exposes `POULTRY_SOURCE`/`POULTRY_HOOKS` and a `SUITES`
+map; `violations()` takes an optional hook map. `test_poultry_contract.py` holds
+the poultry source contracts and offline preparation/verdict tests. The native
+runner takes `--suite farm|poultry` (default `farm`, so existing commands keep
+their meaning); a poultry run has 42 cases (three per hook plus six
+death-then-Destroy pairs) and twelve single-hook controls:
+
+    python tests/animal_registry/run_native.py --suite poultry --byond-bin /path/to/byond/bin --all-controls --output /tmp/poultry-registry-native
+
+Known remaining instance outside this suite: `deer.dm` retires `deer_count` with
+the same `&= src` pattern in two hooks.
+
+CI runs both suites in the existing registry step. On Windows the existing
+`test_injected_compiler_runtime_and_diagnostics` errors because the runner is
+Linux-only; master's copy fails identically there, so it is not a regression.
+Isolated hook evidence does not establish hatching rates, population balance,
+save/load or connected-client gameplay.
+
+## Engine version selection (2026-10-27)
+
+The runner was written for 516.1681, but the main workflow's compiler now targets
+516.1688 (docs/byond-5161688.md). Its first CI run since then (this PR) compiled the
+farm baseline cleanly on 1688 and then failed closed at the pinned-version check.
+Following that doc's rule against relabeling, the default stays strict 516.1681.
+`--expected-byond-version 516.1688` must be passed explicitly; it then pins the
+compiler banner, the in-fixture `byond_build` check and the result version together.
+CI passes it for both suites. 1688 native results are separate from the historical
+1681 run 39363090396 and do not retroactively re-verify it.

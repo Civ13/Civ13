@@ -105,6 +105,7 @@
 /obj/structure/bed/chair/comfy
 	desc = "It's a chair. It looks comfy."
 	icon_state = "chair_padding"
+	not_disassemblable = TRUE // Steel/leather frames cannot use the generic wood refund.
 
 /obj/structure/bed/chair/comfy/brown/New(var/newloc,var/newmaterial)
 	..(newloc,"steel","leather")

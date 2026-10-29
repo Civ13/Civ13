@@ -263,6 +263,12 @@
 			else
 				title+= "[R.title]"
 			title+= " ([R.req_amount] [singular_name]\s)"
+			var/list/joint_spec = furniture_joinery_spec(R)
+			if (joint_spec)
+				if (joint_spec["component_cost"])
+					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
+				else
+					title += "; sharpened flint or a sharp knife harder than the plank equipped or at your feet"
 			if (can_build)
 				t1 += text("<A href='?src=\ref[src];sublist=[recipes_sublist];make=[i];multiplier=1'>[title]</A>  ")
 			else
@@ -305,6 +311,12 @@
 	var/customdesc = ""
 	var/turn_dir = 0
 	var/mob/living/human/H = user
+	var/datum/furniture_joinery_action/joinery
+	if (findtext(recipe.title, "joinery: ") == 1)
+		joinery = new(src, H, recipe)
+		if (quantity != 1 || !joinery.valid())
+			to_chat(user, SPAN_WARNING("Joinery needs its exact materials, completed research and equipped tools. Consult the Crafting Atlas."))
+			return
 	var/needs_crafting_handle = FALSE
 	var/obj/item/weapon/material/handle/crafting_handle = null
 	var/atom/handle_crafting_source_loc = null
@@ -1823,9 +1835,14 @@
 				handReturnMap.Remove(H.key)
 			return
 
+		// Hammocks pay only after this wait. Do not reject legacy recipes here:
+		// some already consumed secondary inputs before do_after.
+		if (recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
+			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
+			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
-		if (H)
+		if (H && !joinery)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1926,7 +1943,16 @@
 			to_chat(user, SPAN_WARNING("Keep the materials and the selected wood handle accessible until construction completes."))
 			return
 
-	if (use(required,H))
+	// Retain and recheck tools, secondary stock, occupied tile and research after
+	// the wait. No debit occurs on an interrupted or invalidated action.
+	if (joinery && !joinery.valid())
+		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
+		return
+	if (use(required, joinery ? null : H))
+		if (joinery)
+			joinery.consume_component()
+			if (H && recipe.time)
+				H.adaptStat("crafting", 1*recipe.req_amount)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)
@@ -1977,11 +2003,11 @@
 				return
 			else
 				var/obj/structure/closet/crate/wall_mailbox/M = O
+				if (!M.persistence_set_loc(get_step(user, user.dir))) return FALSE
 				var/image/mailbox_color_overlay = image("icon" = 'icons/obj/mail.dmi', "icon_state" = "wall_mailbox_closed")
 				mailbox_color_overlay.color = input
 				M.mailbox_color = input
 				M.overlays += mailbox_color_overlay
-				M.loc = get_step(user, user.dir)
 				return
 
 		if (istype(O, /obj/structure/sign) && !istype(O, /obj/structure/sign/signpost))
@@ -1990,56 +2016,56 @@
 			if (customdesc != "")
 				O.desc = customdesc
 			var/obj/structure/sign/S = O
-			S.loc = get_step(user, user.dir)
+			if (!S.persistence_set_loc(get_step(user, user.dir))) return FALSE
 			return
 
 		if (istype(O, /obj/structure/noticeboard) || istype(O, /obj/structure/mirror))
 			var/obj/structure/noticeboard/N = O
-			N.loc = get_step(user, user.dir)
+			if (!N.persistence_set_loc(get_step(user, user.dir))) return FALSE
 			return
 
 		if (istype(O, /obj/item/clothing/accessory/medal))
 			if (customdesc != "")
 				O.desc = customdesc
 			var/obj/item/clothing/accessory/medal/M = O
-			M.loc = get_turf(user)
+			if (!M.persistence_set_loc(get_turf(user))) return FALSE
 			return
 
 		if (build_override_firelance)
-			build_override_firelance.loc = get_turf(O)
+			if (!build_override_firelance.persistence_set_loc(get_turf(O))) return FALSE
 			build_override_firelance.set_dir(user.dir)
 			build_override_firelance.add_fingerprint(user)
 			qdel(O)
 			return
 
 		if (build_override_key)
-			build_override_key.loc = get_turf(O)
+			if (!build_override_key.persistence_set_loc(get_turf(O))) return FALSE
 			build_override_key.set_dir(user.dir)
 			build_override_key.add_fingerprint(user)
 			qdel(O)
 			return
 
 		if (build_override_object)
-			build_override_object.loc = get_turf(O)
+			if (!build_override_object.persistence_set_loc(get_turf(O))) return FALSE
 			build_override_object.set_dir(user.dir)
 			build_override_object.add_fingerprint(user)
 			qdel(O)
 			return
 
 		if (newtotem)
-			newtotem.loc = get_turf(O)
+			if (!newtotem.persistence_set_loc(get_turf(O))) return FALSE
 			newtotem.set_dir(user.dir)
 			newtotem.add_fingerprint(user)
 			qdel(O)
 			return
 		if (build_override_door)
-			build_override_door.loc = get_turf(O)
+			if (!build_override_door.persistence_set_loc(get_turf(O))) return FALSE
 			build_override_door.set_dir(user.dir)
 			build_override_door.add_fingerprint(user)
 			qdel(O)
 			return
 		if (faction_override_door)
-			faction_override_door.loc = get_turf(O)
+			if (!faction_override_door.persistence_set_loc(get_turf(O))) return FALSE
 			faction_override_door.set_dir(user.dir)
 			faction_override_door.add_fingerprint(user)
 			qdel(O)
@@ -2309,7 +2335,7 @@
 			build_override_supply.owner = customvar
 			build_override_supply.name = customname
 			build_override_supply.desc = "A [customvar2], property of [customvar]."
-			build_override_supply.loc = get_turf(O)
+			if (!build_override_supply.persistence_set_loc(get_turf(O))) return FALSE
 			build_override_supply.add_fingerprint(user)
 			qdel(O)
 			return
@@ -2321,7 +2347,7 @@
 			build_override_vending.owner = customvar
 			build_override_vending.name = customname
 			build_override_vending.desc = "A [customvar2], property of [customvar]."
-			build_override_vending.loc = get_turf(O)
+			if (!build_override_vending.persistence_set_loc(get_turf(O))) return FALSE
 			build_override_vending.add_fingerprint(user)
 			qdel(O)
 			return

@@ -1,3 +1,18 @@
+/datum/admins/proc/save_update_resume()
+	set category = "Server"
+	set name = "Save, Update and Resume"
+	var/mob/requester = usr
+	if(!requester || !requester.client) return
+	var/client/requester_client = requester.client
+	var/datum/admins/requester_holder = requester_client.holder
+	if(requester_holder != src || owner != requester_client || requester_client.mob != requester || !check_rights(R_SERVER, TRUE, requester)) return
+	if(WWinput(requester, "Request the configured supervisor to save, shut down, update, compile and restore this world? Players will be disconnected. Serialization is not atomic; stop gameplay before saving. The supervisor must already be enabled.", "Save, Update and Resume", "No", list("Yes", "No")) != "Yes") return
+	if(!requester || !requester_client || !requester_holder || usr != requester || requester.client != requester_client || requester_client.mob != requester || requester_client.holder != requester_holder || requester_holder != src || owner != requester_client || !check_rights(R_SERVER, TRUE, requester)) return
+	if(!nomads_lifecycle.request_maintenance())
+		to_chat(requester, "Maintenance request refused; a request, save or recovery may already be active, or lifecycle control is disabled.")
+		return
+	to_chat(requester, "Maintenance requested. The supervisor must accept it; check admin messages and supervisor journal for the outcome.")
+
 /datum/admins/proc/save_restart_resume()
 	set category = "Server"
 	set name = "Save, Restart and Resume"
@@ -17,7 +32,8 @@
 	if(WWinput(usr, "Retry validation of the retained recovery intent? After an import failure, restart from the original map first. This never discards an intent or starts a fresh round.", "Resume Pending Recovery", "No", list("Yes", "No")) != "Yes") return
 	if(!check_rights(R_SERVER)) return
 	spawn(0)
-		persistence_restart.resume_startup()
+		if(persistence_restart.resume_startup() && persistence_restart.players_ready)
+			announce_restored_round_once()
 
 /datum/admins/proc/loadmap()
 	set category = "Debug"
@@ -42,7 +58,7 @@
 	if(!ticker)
 		alert("Unable to load the world as it is not set up.")
 		return
-	ticker.loadmap()
+	if(ticker.loadmap()) announce_restored_round_once()
 
 /datum/admins/proc/savemap()
 	set category = "Debug"
@@ -56,6 +72,9 @@
 
 	if(!ticker)
 		alert("Unable to start the game as it is not set up.")
+		return
+	if(ticker.current_state < GAME_STATE_PLAYING)
+		alert("The round has not started yet; there is nothing to save.")
 		return
 	spawn(0)
 		ticker.savemap()

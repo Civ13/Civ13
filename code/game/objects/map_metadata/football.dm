@@ -196,6 +196,17 @@
 	return ""
 
 /obj/map_metadata/football/proc/reset_ball()
+	// Admit the complete batch before changing ownership or match state.
+	// Ordinary same-z resets remain available while saving.
+	var/list/return_points = list()
+	for (var/mob/living/human/H in player_list)
+		var/turf/target = pick(latejoin_turfs[H.original_job.spawn_location])
+		if (!target || !persistence_movement_allowed(H, target)) return FALSE
+		return_points[H] = target
+	for (var/obj/item/football/FB in world)
+		var/turf/target = pick(latejoin_turfs["football"])
+		if (!target || !persistence_movement_allowed(FB, target)) return FALSE
+		return_points[FB] = target
 	stopped = TRUE
 	stopped_until = world.time + 200
 	to_chat(world, "<font size=3 color='yellow'><b>Goal! Play stopped - returning to positions...</b></font>")
@@ -203,25 +214,23 @@
 	for (var/mob/M in player_list)
 		M.client << whistle
 	for (var/mob/living/human/H in player_list)
-		var/turf/spawnpoint = null
-		var/list/turfs = latejoin_turfs[H.original_job.spawn_location]
-		spawnpoint = pick(turfs)
-		H.loc = spawnpoint
+		var/turf/spawnpoint = return_points[H]
+		if (!H.persistence_set_loc(spawnpoint)) return FALSE
 	for (var/obj/item/football/FB in world)
-		var/turf/spawnpoint = null
-		var/list/turfs = latejoin_turfs["football"]
-		spawnpoint = pick(turfs)
+		var/turf/spawnpoint = return_points[FB]
+		if (!persistence_movement_allowed(FB, spawnpoint)) return FALSE
 		if (FB.owner)
 			FB.owner.football = null
 			FB.last_owner = FB.owner
 			FB.owner = null
-		FB.loc = spawnpoint
+		if (!FB.persistence_set_loc(spawnpoint)) return FALSE
 	spawn(200)
 		stopped = FALSE
 		to_chat(world, "<font size=3 color='yellow'><b>Play resumes!</b></font>")
 		var/whistle2 = sound("sound/effects/football_whistle.ogg", repeat = FALSE, wait = TRUE, channel = 777)
 		for (var/mob/M in player_list)
 			M.client << whistle2
+	return TRUE
 
 ///////////////////////////////////////////////////
 /mob/living/human/var/team = null

@@ -173,13 +173,17 @@
 
 /obj/roof/New()
 	..()
+	register_seasonal_construction()
 	icon_state = "roof"
 	roof_overlay = image(icon='icons/turf/roofs.dmi', loc = src, icon_state=overlay_state,layer=11.1)
 	recalculate_borders(TRUE)
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	var/oldclimate = CURRENTAREA.climate
 
-	if (CURRENTAREA.type && src.switch_area)
+	// Import has already reconstructed and validated this roof's area before
+	// graph fields decode. Do not replace that shared area during construction.
+	var/restored_area = map_storage && map_storage.restore_validated_roof(src)
+	if (!restored_area && CURRENTAREA.type && src.switch_area)
 		current_area_type = CURRENTAREA.type
 		switch(oldclimate)
 			if ("tundra")
@@ -237,6 +241,7 @@
 	roofs_list += roof_overlay
 
 /obj/roof/Destroy()
+	unregister_seasonal_construction()
 	building_remove_floor()
 	new current_area_type(get_turf(src))
 	for (var/atom/movable/lighting_overlay/LO in get_turf(src))

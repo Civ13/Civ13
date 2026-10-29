@@ -16,14 +16,23 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.source = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text()
         self.helpers = '\n'.join(RUNNER.BASE.extract_proc(self.source, path) for path in RUNNER.HELPERS)
 
+    def test_duplicate_diagnostic_injects_capture_without_changing_production(self):
+        probe = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
+        self.assertIn('/map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory', probe)
+        self.assertIn('if(A == cross_target && saving_z == 2)', probe)
+        self.assertIn('saving_world_movables -= "\\ref[A]"', probe)
+        self.assertIn('return ..()', probe)
+        self.assertIn('new /map_storage/cross_level/diagnostic_duplicate(', probe)
+        self.assertIn('map_storage.saved_content_refs(', probe)
+
     def test_candidate_extracts_exact_helpers_and_actual_buckling_and_movement(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             receipt = RUNNER.prepare(output)
-            self.assertEqual((output / 'sleep_helpers.dm').read_text(), self.helpers)
+            self.assertEqual((output / 'sleep_helpers.dm').read_text(), self.helpers + RUNNER.BASE.extract_proc(self.source, '/proc/is_protected_sleep_location'))
             for relative, target, paths in (
                 ('code/game/objects/buckling.dm', 'buckling.dm', RUNNER.BUCKLING),
-                ('code/game/atoms_movable.dm', 'force_move.dm', ('/atom/movable/proc/forceMove',)),
+                ('code/game/atoms_movable.dm', 'force_move.dm', RUNNER.MOVEMENT_HELPERS),
             ):
                 expected = '\n'.join(RUNNER.BASE.extract_proc((ROOT / relative).read_text(), path) for path in paths)
                 self.assertEqual((output / target).read_text(), expected)
@@ -49,7 +58,7 @@ class SleepTransferSourceTests(unittest.TestCase):
             with self.subTest(control=control), tempfile.TemporaryDirectory() as directory:
                 output = Path(directory)
                 RUNNER.prepare(output, control)
-                self.assertEqual((output / 'sleep_helpers.dm').read_text(), RUNNER.mutate(self.helpers, control))
+                self.assertEqual((output / 'sleep_helpers.dm').read_text(), RUNNER.mutate(self.helpers, control) + RUNNER.BASE.extract_proc(self.source, '/proc/is_protected_sleep_location'))
                 if control != 'diagnostic-record':
                     self.assertNotEqual((output / 'sleep_helpers.dm').read_text(), self.helpers)
                 for relative in RUNNER.BASE.PRODUCTION:
@@ -85,10 +94,10 @@ class SleepTransferSourceTests(unittest.TestCase):
         self.assertIn('seat.unbuckle_mob()', changed)
         self.assertIn('return !buckled && (!seat || seat.buckled_mob != src)', changed)
 
-    def test_persistence_control_omits_all_five_gates_only(self):
-        self.assertEqual(self.helpers.count('persistence_save_in_progress'), 5)
+    def test_persistence_control_omits_all_six_gates_only(self):
+        self.assertEqual(self.helpers.count('persistence_sleep_transfer_blocked()'), 6)
         changed = RUNNER.mutate(self.helpers, 'persistence-gate')
-        self.assertNotIn('persistence_save_in_progress', changed)
+        self.assertNotIn('persistence_sleep_transfer_blocked()', changed)
         self.assertIn('release_protected_sleep_buckle()', changed)
         self.assertIn('!return_turf || !sleep_turf', changed)
         self.assertIn('inducedSSD || buckled ||', changed)

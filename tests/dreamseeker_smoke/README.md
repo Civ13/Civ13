@@ -1,5 +1,25 @@
 # Guest renderer feasibility only
 
+## Current source status (2026-10-29)
+
+This PR adds standalone, opt-in verification tooling. The current reconciliation
+retains master `8b4c3f5ca76e4ed78927819e9b4c50873ec9b19e` for all production code,
+lighting/persistence tests, CI selection and agent guidance. Earlier inherited
+lighting changes are already superseded by accepted master changes; this probe
+does not reintroduce them or activate a renderer. The completed tree screenshots
+in #3398 belong to that feature and do not establish this fixture's acceptance.
+
+The hosted source targets 516.1688. Local-installed execution remains deliberately
+disabled by the unset reviewed-manifest constants. Its future staging contract
+also needs a reviewed mapping for VC140 system dependencies; a matching payload
+directory alone is insufficient. This is not a working local execution route.
+All five spent attempts and their failed/uncertain outcomes stay preserved.
+
+Native startup, exact pixels and cleanup for this source are unverified report
+items. Source publication or regular-PR status grants no local attempt, hosted
+dispatch, dependency setup, profile change or production operation. The existing
+capture owner remains responsible for any separately admitted future run.
+
 This separate Windows CI experiment asks whether the hosted x64 desktop can show
 and capture actual DreamSeeker 516.1688 map pixels. It does NOT test the Civ13
 compositor, oversized trees, native visibility, weather or persistence. No smoke
@@ -24,9 +44,9 @@ does not isolate Windows registry, existing BYOND authentication or preferences.
 The daemon is explicitly started with `-ip 127.0.0.1`, invisible, `-trusted` and no
 webclient. Its exact loopback-only listener must be observed before client launch.
 Trusted mode follows the repository's daemon policy; it does not grant execution
-approval. Existing process, socket and resource checks remain required. This
-source correction does not resolve vendor download failures or establish native
-renderer acceptance.
+approval. Existing process, socket and resource checks remain required. The
+historical 1681 download failure is retained; the active source uses the separately
+pinned 1688 mirror. Download identity checks do not establish native acceptance.
 Only one loopback guest is admitted. An unexpected local address, remote peer,
 listener, UDP endpoint, child, window or prompt fails the run. Socket polling is
 an observation/control, not an OS network sandbox or proof against transient
@@ -46,7 +66,7 @@ JSON receipts are uploaded, not compiled resource caches or vendor binaries.
 Any failure stops here; do not use account login, administrator overrides,
 firewall changes or RDP to make the hosted smoke pass.
 
-## Explicit local-installed mode (source draft, no execution admitted)
+## Explicit local-installed scaffold (disabled, no execution admitted)
 
 The historical 1681 HTTP403 and all five later spent attempts remain failed
 evidence. The active 1688 migration is described in MIGRATION-1688.md; neither
@@ -168,9 +188,9 @@ activation of only this owned fixture window. Unmodified red/blue captures are
 needed because actual native rendering is the uncertain contract. Existing pixel,
 guest/build, owned-window and cleanup checks remain unchanged. Success would
 establish only this smoke, never lighting composition or NPC acceptance. No local
-compiler, daemon, client, UI or socket was exercised to prepare this source draft.
+compiler, daemon, client, UI or socket was exercised for this reconciliation.
 
-## Workflow selection guard (unpublished source)
+## Workflow selection guard
 
 Pull requests matching this workflow or any smoke file select only the standard
 `windows-2022` offline-contracts job. Selection uses the full PR three-dot diff;
@@ -178,16 +198,17 @@ a later unrelated-only push does not erase earlier smoke changes. The native
 job requires successful offline contracts, `workflow_dispatch`, boolean
 `run_native: true` (default false), and `selected_sha` equal to the dispatch's
 exact `github.sha`. The SHA input is a consistency check, not execution authority.
-The original hosted installer and request remain unchanged. Do not dispatch it
-without separate exact authorization; neither source review nor publication
-authorizes another attempt at the recorded vendor 403.
+The hosted installer uses the pinned 1688 mirror; historical requests stay recorded.
+Do not dispatch it without separate exact authorization; neither source review
+nor publication authorizes another native attempt.
 
 Offline controls read the actual workflow job blocks and path selectors, exercise
 the frozen full-PR path set, default-off/incorrect-SHA cases and mutations removing
 the native guard/event restriction. Their expression evaluator deliberately
 supports only this small equality conjunction, not general YAML or all GitHub
-expressions. Actual Actions parsing/selection still requires reviewed publication
-and CI evidence. This draft has neither been pushed nor dispatched.
+expressions. Actual Actions parsing/selection is checked by ordinary PR CI. A
+successful offline-contracts job and skipped guest-renderer job establish source
+contracts only; no native dispatch is part of this reconciliation.
 
 ## Proposed isolated local controller runtime
 

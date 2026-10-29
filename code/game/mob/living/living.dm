@@ -75,7 +75,7 @@ default behaviour is:
 
 			//Leaping mobs just land on the tile, no pushing, no anything.
 			if (status_flags & LEAPING)
-				loc = tmob.loc
+				persistence_set_loc(tmob.loc)
 				status_flags &= ~LEAPING
 				now_pushing = FALSE
 				return
@@ -89,7 +89,7 @@ default behaviour is:
 							var/t = get_dir(H, tmob)
 							step(tmob, t)
 						if (HR.loc != H.loc)
-							HR.loc = H.loc
+							HR.persistence_set_loc(H.loc)
 							HR.forceMove(H.loc)
 							HR.trample(tmob)
 						H.riding_mob.update_icons()
@@ -485,11 +485,11 @@ default behaviour is:
 	// remove the character from the list of the dead
 	if (stat == DEAD)
 		dead_mob_list -= src
-		living_mob_list += src
+		register_living_mob(src)
 		timeofdeath = FALSE
 
 	// restore us to conciousness
-	stat = CONSCIOUS
+	set_stat(CONSCIOUS)
 
 	// make the icons look correct
 	regenerate_icons()
@@ -500,6 +500,8 @@ default behaviour is:
 	return
 
 /mob/living/Move(a, b, flag)
+	if (!persistence_movement_allowed(src, a))
+		return FALSE
 	if (buckled)
 		return FALSE
 	if (using_drone)
@@ -580,6 +582,10 @@ default behaviour is:
 	if (ishuman(src))
 		var/mob/living/human/subtile_human = src
 		if (subtile_human.human_subtile_pulse)
+			return moved
+	if (istype(src, /mob/living/simple_animal))
+		var/mob/living/simple_animal/subtile_npc = src
+		if (subtile_npc.npc_subtile_pulse)
 			return moved
 	living_movement_completed()
 	return moved
@@ -673,7 +679,7 @@ default behaviour is:
 /mob/living/human/drop_from_inventory(var/obj/item/W, var/atom/Target = null)
 	if (W in internal_organs)
 		return
-	..()
+	return ..()
 
 //damage/heal the mob ears and adjust the deaf amount
 /mob/living/adjustEarDamage(var/damage, var/deaf)

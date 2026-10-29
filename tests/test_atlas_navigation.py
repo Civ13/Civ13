@@ -19,7 +19,11 @@ class AtlasNavigationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             target = Path(folder)/'catalog.json'
             subprocess.run([sys.executable, str(ROOT/'scripts/build-crafting-atlas.py'), '--catalog-only', '--game-catalog', str(target)], check=True, capture_output=True)
-            cls.catalog = json.loads(target.read_text())
+            cls.catalog_bytes = target.read_bytes()
+            cls.catalog = json.loads(cls.catalog_bytes)
+
+    def test_committed_catalog_matches_current_source(self):
+        self.assertEqual(self.catalog_bytes, (ROOT/'UI/crafting-atlas.json').read_bytes())
 
     def test_era_order_and_unknown_are_explicit(self):
         recipes = self.catalog['recipes']
@@ -57,8 +61,13 @@ class AtlasNavigationTests(unittest.TestCase):
         saw = [r for r in recipes if r.get('processor') == 'sawmill']
         self.assertEqual(len(saw), 3)
         self.assertEqual({r['station']: r['unlock_eras'] for r in saw}, {'/obj/structure/sawmill': [1], '/obj/structure/sawmill/large': [3], '/obj/structure/sawmill/powered': [3]})
-        self.assertEqual({r['outputs'][0]['quantity'] for r in saw}, {'4 nominal', '10 nominal', '12 nominal'})
-        self.assertTrue(all(r['inputs'][0]['quantity'] == '1' and 'skill failure' in r['conditions'] for r in saw))
+        self.assertEqual({r['outputs'][0]['quantity'] for r in saw}, {'1', '10 nominal', '12 nominal'})
+        self.assertTrue(all(r['inputs'][0]['quantity'] == '1' for r in saw))
+        primitive = next(r for r in saw if r['station'] == '/obj/structure/sawmill')
+        self.assertIn('sharpened flint', primitive['conditions'])
+        self.assertIn('20 logs', primitive['conditions'])
+        self.assertIn('One log yields one plank and one bark', primitive['conditions'])
+        self.assertTrue(all('skill failure' in r['conditions'] for r in saw if r is not primitive))
         self.assertIn('cable power', next(r['conditions'] for r in saw if r['station'].endswith('/powered')))
         grain = [r for r in recipes if r.get('processor') == 'grain_mill']
         self.assertEqual(len(grain), 8)
@@ -75,11 +84,37 @@ class AtlasNavigationTests(unittest.TestCase):
         verb = source.split('/mob/verb/crafting_atlas()')[1].split('/obj/')[0]
         self.assertIn('crafting_atlas_reference.show(src)', verb)
         self.assertIn('legacy = FALSE', source)
-        self.assertIn('legacy ? page_html(viewer, query, page) : graph_html', source)
+        self.assertIn('legacy ? page_html(viewer, query, page, recipe_id) : graph_html', source)
         self.assertIn('legacy = TRUE', source.split('else if (href_list["atlas_page"])')[1])
         self.assertIn('atlas_open=1', (ROOT/'code/game/objects/items/stacks/stack.dm').read_text())
         for processor in ('sawmill', 'grain_mill'):
             self.assertIn('show(usr, processor = "'+processor+'")', source)
+
+    def test_sawmill_conditions_do_not_contaminate_other_machines(self):
+        sources = json.loads((ROOT/'scripts/atlas/resource-sources.json').read_text())
+        routes = [r for r in sources['mechanisms'] if r['name'] in ('Loom processing', 'Mill processing', 'Sawmill processing')]
+        self.assertEqual({name: sum(r['name'] == name for r in routes) for name in ('Loom processing', 'Mill processing', 'Sawmill processing')},
+                         {'Loom processing': 4, 'Mill processing': 4, 'Sawmill processing': 1})
+        def unrelated_conditions_are_clean(route):
+            text = route['conditions'].lower()
+            return all(word not in text for word in ('sawmill', 'saw mill', 'flint', 'blade', 'plank', 'log'))
+        for route in routes:
+            if route['name'] != 'Sawmill processing':
+                self.assertEqual(route['conditions'], 'Anchored machine; worker mood, stamina, skill and wait conditions apply.')
+                self.assertTrue(unrelated_conditions_are_clean(route))
+                self.assertEqual(route['source_commit'], 'd3b3ab657d6bd34e50ca61d1084b44ca077300e1')
+                self.assertFalse(unrelated_conditions_are_clean(route | {'conditions': route['conditions'] + ' flint blade'}))
+            else:
+                self.assertIn('sharpened flint', route['conditions'])
+                self.assertIn('one ordinary log into one plank and one bark', route['conditions'])
+                self.assertEqual(route['source_commit'], 'd228a3ec507660d79d14019e800af5f5310ce685')
+                self.assertEqual(route['line'], 2216)
+        generated = [r for entries in self.catalog['acquisition'].values() for r in entries
+                     if r['name'] in ('Loom processing', 'Mill processing', 'Sawmill processing')]
+        self.assertEqual(len(generated), 9)
+        self.assertTrue(all(unrelated_conditions_are_clean(r) for r in generated if r['name'] != 'Sawmill processing'))
+        sand = next(r for r in self.catalog['acquisition']['/turf/floor/beach/sand'] if r['name'] == 'Shovel sand')
+        self.assertIn('non-harm', sand['conditions'])
 
 
 if __name__ == '__main__':

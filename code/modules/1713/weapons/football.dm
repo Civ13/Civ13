@@ -338,7 +338,7 @@
 	if (istype(A, /obj/item/football) && team)
 		if (istype(map, /obj/map_metadata/football))
 			var/obj/map_metadata/football/MF = map
-			MF.reset_ball()
+			if (!MF.reset_ball()) return FALSE
 			MF.teams[team][2] += 1
 			var/obj/item/football/FB = A
 			to_chat(world, "<font size=4 color='orange'>GOAL! <b>[FB.last_owner ? FB.last_owner : "Unknown"] [FB.last_owner ? "([FB.last_owner.ckey])" : ""]</b> scores for <b>[team]</b>!</font>")
@@ -602,7 +602,7 @@ function startTeam(uniform_type) {
 		if(G.state<2)
 			to_chat(user, "<span class='warning'>You need a better grip to do that!</span>")
 			return
-		G.affecting.loc = src.loc
+		if (!G.affecting.persistence_set_loc(src.loc)) return FALSE
 		G.affecting.Weaken(5)
 		visible_message("<span class='warning'>[G.assailant] dunks [G.affecting] into the [src]!</span>", 3)
 		qdel(W)

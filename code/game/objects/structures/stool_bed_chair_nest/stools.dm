@@ -97,10 +97,11 @@ var/global/list/stool_cache = list() //haha stool
 	update_icon()
 
 /obj/item/weapon/stool/proc/remove_padding()
-	if (padding_material)
-		padding_material.place_sheet(get_turf(src))
-		padding_material = null
+	if (!padding_material || !furniture_padding_sheet(padding_material, get_turf(src)))
+		return FALSE
+	padding_material = null
 	update_icon()
+	return TRUE
 
 /obj/item/weapon/stool/attack(mob/M as mob, mob/user as mob)
 	if (prob(5) && istype(M,/mob/living))
@@ -135,11 +136,14 @@ var/global/list/stool_cache = list() //haha stool
 	if (material)
 		material.place_sheet(get_turf(src))
 	if (padding_material)
-		padding_material.place_sheet(get_turf(src))
+		furniture_padding_sheet(padding_material, get_turf(src))
 	qdel(src)
 
 /obj/item/weapon/stool/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/hammer))
+		if (padding_material && !remove_padding())
+			to_chat(user, "The padding cannot be recovered intact.")
+			return
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		dismantle()
 		qdel(src)
@@ -171,8 +175,10 @@ var/global/list/stool_cache = list() //haha stool
 		if (!padding_material)
 			to_chat(user, "\The [src] has no padding to remove.")
 			return
+		if (!remove_padding())
+			to_chat(user, "The padding cannot be recovered intact.")
+			return
 		to_chat(user, "You remove the padding from \the [src].")
 		playsound(src, 'sound/items/Wirecutter.ogg', 100, TRUE)
-		remove_padding()
 	else
 		..()

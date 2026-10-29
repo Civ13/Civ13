@@ -6,5 +6,9 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <ItemGroup><ProjectReference Include="../Civ13.Launcher.csproj" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Civ13.Launcher.csproj" />
+    <Compile Remove="SocialContracts/**/*.cs" />
+    <Compile Remove="ManagementPresentation/**/*.cs" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,43 @@
+# REVIEW ONLY: not loaded by GitHub Actions. Proposed insertion in the existing
+# test.yml build job after its pinned BYOND bootstrap/full-game compile.
+# Existing permissions contents:read, checkout exact PR head with
+# persist-credentials:false, and the existing engine installation are reused.
+# No separate installation, secrets, service, privilege or manual dispatch.
+- name: Verify synthetic saved-roof recovery and two defect controls
+  id: roof_native
+  if: github.event_name == 'pull_request' && github.event.action != 'edited' && needs.changes.outputs.game == 'true' && (contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_area_recovery') || contains(github.event.pull_request.labels.*.name, format('roof-ci:{0}', github.event.pull_request.head.sha)))
+  timeout-minutes: 40
+  shell: bash
+  env:
+    ROOF_HEAD: ${{ github.event.pull_request.head.sha }}
+  run: |
+    set -euo pipefail
+    test "$(git rev-parse HEAD)" = "$ROOF_HEAD"
+    test ! -e "$RUNNER_TEMP/roof-area-review"
+    mkdir "$RUNNER_TEMP/roof-area-review"
+    echo "started=true" >> "$GITHUB_OUTPUT"
+    for variant in main projection cleanup-namespace; do
+      packet="$RUNNER_TEMP/roof-area-review/$variant-packet"
+      output="$RUNNER_TEMP/roof-area-review/$variant-output"
+      /usr/bin/python3 -I -B tests/roof_area_recovery/run_linux.py \
+        --prepare-only --packet-dir "$packet" --expected-head "$ROOF_HEAD" \
+        --variant "$variant" > "$RUNNER_TEMP/roof-area-review/$variant-preparation.json"
+      request_sha="$(sha256sum "$packet/request.json" | cut -d ' ' -f 1)"
+      printf '%s  %s\n' "$request_sha" "$variant-packet/request.json" \
+        >> "$RUNNER_TEMP/roof-area-review/request-hashes.txt"
+      /usr/bin/python3 -I -B tests/roof_area_recovery/run_linux.py \
+        --packet-dir "$packet" --expected-head "$ROOF_HEAD" \
+        --request-sha256 "$request_sha" --output "$output" \
+        --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+    done
+- name: Retain synthetic roof requests, claims, sources and native outcomes
+  if: always() && steps.roof_native.outputs.started == 'true'
+  uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+  with:
+    name: roof-recovery-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+    path: |
+      ${{ runner.temp }}/roof-area-review
+      ${{ runner.temp }}/roof-area-request-claims
+    include-hidden-files: true
+    retention-days: 7
+    if-no-files-found: error

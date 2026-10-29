@@ -10,6 +10,8 @@ import subprocess
 import tempfile
 import uuid
 
+from compiler_contract import HISTORICAL_VERSION, VERSIONS, compiler_is_clean
+
 # Rack waits total 555 deciseconds before export/load overhead. Keep the
 # daemon allowance inside the outer watchdog's 180-second total budget.
 RACK_RUNTIME_TIMEOUT_SECONDS = 75
@@ -17,13 +19,15 @@ RACK_RUNTIME_TIMEOUT_SECONDS = 75
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--expected-byond-version', choices=VERSIONS, default=HISTORICAL_VERSION)
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--negative-control', action='store_true')
     control.add_argument('--soil-negative-control', action='store_true')
     control.add_argument('--can-negative-control', action='store_true')
-    parser.add_argument('--probe', choices=('crop', 'storage', 'preservation', 'rack-save'), default='preservation')
+    parser.add_argument('--probe', choices=('crop', 'storage', 'preservation', 'rack-save', 'decay-rate'), default='preservation')
     parser.add_argument('--preservation-control', choices=('nutrition', 'age', 'conversion'))
     parser.add_argument('--rack-control', choices=('coverage', 'runtime', 'storage', 'stale-wait', 'duplicate', 'conversion'))
+    parser.add_argument('--decay-rate-control', choices=('omit-restart',))
     parser.add_argument('--output', type=Path)
     parser.add_argument('--stem')
     parser.add_argument('--start-gated', action='store_true')
@@ -31,6 +35,10 @@ def main():
     args = parser.parse_args()
     if args.rack_control and (args.probe != 'rack-save' or args.preservation_control):
         parser.error('Rack controls require --probe rack-save and no preservation control')
+    if args.decay_rate_control and (args.probe != 'decay-rate' or args.preservation_control or args.rack_control or args.negative_control or args.soil_negative_control or args.can_negative_control):
+        parser.error('The decay-rate control is exclusive to the decay-rate probe')
+    if args.probe == 'decay-rate' and (args.preservation_control or args.rack_control or args.negative_control or args.soil_negative_control or args.can_negative_control):
+        parser.error('The decay-rate probe cannot use other controls')
     if args.start_gated and input() != 'start':
         raise RuntimeError('Missing resource guard release')
     if args.can_negative_control:
@@ -68,12 +76,12 @@ def main():
                                  ('code\\controllers\\mc\\globals.dm', '_globals.dm'),
                                  ('code\\game\\objects\\farming.dm', '_farming.dm')]:
             source = source.replace(original, generated[suffix].name)
-        if args.probe == 'storage':
+        if args.probe in ('storage', 'decay-rate'):
             food = (root / 'code/modules/reagents/reagent_containers/food.dm').read_text(encoding='utf-8')
             wait = 'spawn(rand(590,610))'
             if food.count(wait) != 1:
                 raise RuntimeError('Food wait marker changed')
-            food = food.replace(wait, 'spawn(2)')
+            food = food.replace(wait, 'spawn(20)' if args.probe == 'decay-rate' else 'spawn(2)')
             if args.can_negative_control:
                 guard = 'else // Closed cans already returned above; opened cans age like ordinary storage.'
                 if food.count(guard) != 1:
@@ -81,11 +89,20 @@ def main():
                 food = food.replace(guard, 'else if (!istype(loc, /obj/item/weapon/can))')
             generated['_food.dm'].write_text(food, encoding='utf-8')
             source = source.replace('code\\modules\\reagents\\reagent_containers\\food.dm', generated['_food.dm'].name)
-        if args.probe in ('preservation', 'rack-save'):
+        if args.probe in ('preservation', 'rack-save', 'decay-rate'):
             production = (root / 'code/modules/1713/production.dm').read_text(encoding='utf-8')
             marker = 'spawn(150) //one tick at 15 seconds will be enough'
             if production.count(marker) != 1:
                 raise RuntimeError('Production drying wait marker changed')
+            if args.probe == 'decay-rate':
+                restart = ('\t\tspawn(600+rand(1, 50)) //in order not to create a duplicate process, we wait until the old process dies\n'
+                           '\t\t\tif (D)\n'
+                           '\t\t\t\tD.food_decay() //restarting decay process')
+                if production.count(restart) != 1:
+                    raise RuntimeError('Rack decay restart marker changed')
+                replacement = ('\t\t// Diagnostic control omits the rack restart.' if args.decay_rate_control else
+                               restart.replace('spawn(600+rand(1, 50))', 'spawn(21)'))
+                production = production.replace(restart, replacement)
             if args.rack_control == 'coverage':
                 coverage = ('\tfor (var/atom/movable/child in origin.contents)\n'
                             '\t\tif (!(child in paid_items))\n'
@@ -151,14 +168,14 @@ def main():
             generated['_persistence.dm'].write_text(persistence.replace(marker, '\t// negative control omits soil nutrition'), encoding='utf-8')
             source = source.replace('code\\modules\\persistence\\functions.dm', generated['_persistence.dm'].name)
         source = re.sub(r'^#include ".*\.dmm"\s*$', '', source, flags=re.M)
-        probe = root / 'tests/food_progression' / ('rack_save.dm' if args.probe == 'rack-save' else 'preservation.dm' if args.probe == 'preservation' else 'storage.dm' if args.probe == 'storage' else 'probe.dm')
+        probe = root / 'tests/food_progression' / ('rack_save.dm' if args.probe == 'rack-save' else 'preservation.dm' if args.probe == 'preservation' else 'decay_rate.dm' if args.probe == 'decay-rate' else 'storage.dm' if args.probe == 'storage' else 'probe.dm')
         control_define = '#define RACK_CONTROL_DUPLICATE\n' if args.rack_control == 'duplicate' else ''
         generated['.dme'].write_text(source + '\n' + control_define + '#include "' + probe.relative_to(root).as_posix() + '"\n', encoding='utf-8')
         head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        hash_paths = [probe, Path(__file__), Path(__file__).with_name('preservation_guard.py'), Path(__file__).with_name('guard_cleanup.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
+        hash_paths = [probe, Path(__file__), Path(__file__).with_name('compiler_contract.py'), Path(__file__).with_name('preservation_guard.py'), Path(__file__).with_name('guard_cleanup.py')] + [root / name for name in ('code/modules/1713/production.dm', 'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm', 'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')]
         source_hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest() for path in hash_paths}
-        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'prepare_only': args.prepare_only, 'source_hashes': source_hashes, 'rack_control': args.rack_control, 'preservation_control': args.preservation_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
-            'drying_wait_ticks': 2 if args.probe == 'preservation' else 150 if args.probe == 'rack-save' else None, 'runtime_timeout_seconds': RACK_RUNTIME_TIMEOUT_SECONDS if args.probe == 'rack-save' else 30, 'growth_wait_ticks': 2, 'food_wait_ticks': 2 if args.probe == 'storage' else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 rack/turf graph' if args.probe == 'rack-save' else 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
+        (output / 'metadata.json').write_text(json.dumps({'commit': head, 'expected_byond_version': args.expected_byond_version, 'prepare_only': args.prepare_only, 'source_hashes': source_hashes, 'rack_control': args.rack_control, 'preservation_control': args.preservation_control, 'decay_rate_control': args.decay_rate_control, 'negative_control': args.negative_control, 'soil_negative_control': args.soil_negative_control, 'can_negative_control': args.can_negative_control, 'probe': args.probe,
+            'drying_wait_ticks': 2 if args.probe == 'preservation' else 150 if args.probe == 'rack-save' else None, 'runtime_timeout_seconds': RACK_RUNTIME_TIMEOUT_SECONDS if args.probe == 'rack-save' else 30, 'growth_wait_ticks': 2, 'food_wait_ticks': 20 if args.probe == 'decay-rate' else 2 if args.probe == 'storage' else None, 'rack_restart_ticks': 21 if args.probe == 'decay-rate' and not args.decay_rate_control else None, 'normal_startup': False, 'map': 'synthetic 6x3x1 rack/turf graph' if args.probe == 'rack-save' else 'synthetic 6x3x1 preservation fixture' if args.probe == 'preservation' else 'synthetic 6x3x1 decay-rate fixture' if args.probe == 'decay-rate' else 'synthetic 6x3x1 storage fixture' if args.probe == 'storage' else 'synthetic 6x3x1 temperate plot'}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
         for path in generated.values():
@@ -174,7 +191,7 @@ def main():
         text = build.stdout + build.stderr
         (output / 'compile.log').write_text(text, encoding='utf-8')
         print(text, flush=True)
-        if build.returncode or 'DM compiler version 516.1681' not in text or '0 errors, 0 warnings' not in text:
+        if not compiler_is_clean(build.returncode, text, args.expected_byond_version):
             raise RuntimeError('Pinned production-source compilation failed')
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(generated[suffix], output / generated[suffix].name)
@@ -198,9 +215,9 @@ def main():
                     'FAIL: stale drying wait does not advance or consume paid input' if args.rack_control == 'stale-wait' else
                     'FAIL: restored rack contains exactly one paid input' if args.rack_control == 'duplicate' else
                     'FAIL: restored conversion retains paid nutrition' if args.rack_control == 'conversion' else
-                    'FAIL: drying does not replenish consumed nutrition' if args.preservation_control == 'nutrition' else
+                    'FAIL: dried save does not restore depleted nutrition' if args.preservation_control == 'nutrition' else
                     'FAIL: drying retains available nutrition across reagent conversion' if args.preservation_control == 'conversion' else
-                    'FAIL: drying does not erase accumulated age' if args.preservation_control == 'age' else
+                    'FAIL: salted dried meat lasts four times longer and retains age' if args.preservation_control == 'age' else
                     'FAIL: opened can accumulates food age' if args.can_negative_control else
                     'FAIL: production planting consumes one seed' if args.negative_control else
                     'FAIL: full turf entry restores nondefault soil nutrition' if args.soil_negative_control else 'PASS:')

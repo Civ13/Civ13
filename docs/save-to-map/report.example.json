@@ -1,0 +1,54 @@
+{
+  "compile_status": "not_run",
+  "counter_scope": "examined_projection_before_acceptance",
+  "counters": {
+    "excluded_entity_roots": 1,
+    "excluded_fields": 2,
+    "retained_cells": 12,
+    "retained_fields": 10,
+    "retained_objects": 4,
+    "uninspected_subtrees": 2,
+    "unsupported_objects": 1
+  },
+  "details_truncated": false,
+  "geometry_status": "incomplete",
+  "groups": [
+    {
+      "category": "credential_field",
+      "count": 1,
+      "reason": "excluded_by_policy"
+    },
+    {
+      "category": "player_or_npc_and_contents",
+      "count": 1,
+      "reason": "excluded_by_policy"
+    },
+    {
+      "category": "user_text_field",
+      "count": 1,
+      "reason": "excluded_by_policy"
+    },
+    {
+      "category": "unknown_static_type",
+      "count": 1,
+      "reason": "unsupported_static"
+    }
+  ],
+  "native_round_trip": "not_run",
+  "next_actions": [
+    "review_companion_profile",
+    "verify_native_source_compatibility"
+  ],
+  "overflow_dispositions": 0,
+  "overflow_group_count": 0,
+  "playability_status": "unverified_proposed_profile",
+  "policy_id": "static-map-v0",
+  "privacy_validation": "allowlist_projection_only_no_real_data",
+  "profile_id": "synthetic-static-v0",
+  "ready": false,
+  "schema_version": 1,
+  "scope": "synthetic_static_source_core",
+  "status": "incomplete_preview",
+  "topology_provenance": "synthetic_only",
+  "uninspected_descendant_count": null
+}

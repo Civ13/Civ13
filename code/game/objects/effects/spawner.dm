@@ -52,9 +52,10 @@
 /obj/effect/spawner/objective_spawner/proc/spawnerproc()
 	if (activated)
 		spawn(100)
-			var/obj/item/cursedtreasure/targetobjective = new/obj/item/cursedtreasure(src.loc)
 			var/locationtomove = pick(latejoin_turfs["treasure-mark"])
-			targetobjective.loc = locationtomove
+			if (!isturf(locationtomove)) return
+			// Construct at the final landmark; never relocate a placed atom.
+			var/obj/item/cursedtreasure/targetobjective = new/obj/item/cursedtreasure(locationtomove)
 			world.log << "DEBUG: Created treasure at [targetobjective.x], [targetobjective.y]"
 			activated = 0
 			qdel(src)

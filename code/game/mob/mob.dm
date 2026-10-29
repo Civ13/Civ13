@@ -1,7 +1,7 @@
 /mob/Destroy()//This makes sure that mobs with clients/keys are not just deleted from the game.
 	mob_list -= src
 	dead_mob_list -= src
-	living_mob_list -= src
+	unregister_living_mob(src)
 	unset_using_object()
 	qdel(hud_used)
 
@@ -30,7 +30,7 @@
 	if (stat == DEAD)
 		dead_mob_list += src
 	else
-		living_mob_list += src
+		register_living_mob(src)
 	..()
 
 	if (!isnewplayer(src) && !istype(src, /mob/dview) && src.client)
@@ -169,6 +169,9 @@
 	return FALSE
 
 /mob/proc/reset_view(atom/A)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (client)
 		if (istype(A, /atom/movable))
 			client.perspective = EYE_PERSPECTIVE
@@ -203,13 +206,15 @@
 	set name = "Examine"
 	set category = "IC"
 	if(!A) return
+	if (!los_read_allowed(src, A, "examine"))
+		return
 
 	if ((is_blind(src) || stat) && !isobserver(src))
 		to_chat(src, SPAN_NOTICE("Something is there but you can't see it."))
 		return TRUE
 
 	// changing direction counts as a movement, so don't do it unless we have to - Kachnov
-	if (dir != get_dir(src,A))
+	if (!CIV13_GEOMETRIC_LOS_CORE && dir != get_dir(src,A))
 		face_atom(A)
 	//A.visible_message("<small>[A] looks at [src].</small>")//Doesn't work for everything yet.
 	A.examine(src)
@@ -1117,6 +1122,8 @@ mob/proc/yank_out_object()
 		return ..()
 
 /mob/proc/set_stat(new_stat)
+	if (new_stat == CONSCIOUS && in_protected_sleep_zone())
+		new_stat = UNCONSCIOUS
 	. = stat != new_stat
 	stat = new_stat
 

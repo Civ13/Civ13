@@ -298,11 +298,14 @@ var/global/datum/controller/occupations/job_master
 		var/turf/spawnpoint = null
 		var/list/turfs = latejoin_turfs[spawn_location]
 		if (!latejoin_turfs[spawn_location] || !latejoin_turfs[spawn_location].len)
+			if(persistence_spawns_authoritative)
+				to_chat(H, SPAN_WARNING("No saved spawn destination exists for this job. Ask an administrator to place one."))
+				return FALSE
 			spawnpoint = locate(48,50,1)
 		else
 			spawnpoint = pick(turfs)
 		if (!locate(/mob) in spawnpoint && !locate(/obj/structure) in spawnpoint)
-			H.loc = spawnpoint
+			if (!H.persistence_set_loc(spawnpoint)) return FALSE
 			if (map.battleroyale) // if its the DM map, remove the "used" spawnpoint from the list
 				latejoin_turfs[spawn_location] -= spawnpoint
 					
@@ -319,7 +322,7 @@ var/global/datum/controller/occupations/job_master
 	for(var/obj/structure/fob_spawnpoint/fob in world)
 		if (fob.faction_text == H.faction_text)
 			spawnable_points += fob
-	H.loc = null
+	if (!H.persistence_set_loc(null)) return FALSE
 	var/input = WWinput(H, "Spawn where?", "Spawnpoint Selection", "Base", spawnable_points)
 	if (!(input == "Base"))
 		var/turf/fob_loc = get_turf(input)

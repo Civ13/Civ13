@@ -33,7 +33,14 @@ class LocalWslTests(unittest.TestCase):
                                 check=True, capture_output=True, text=True).stdout.strip()
 
             for name in ('scripts/build-crafting-atlas.py', 'scripts/atlas/catalog_metadata.py',
-                         'code/modules/1713/production.dm'):
+                         'scripts/atlas/tanning.py', 'scripts/atlas/variants.py',
+                         'scripts/atlas/tanning-contracts.json',
+                         'code/modules/1713/production.dm',
+                         'code/game/objects/items/stacks/sheets/leather.dm',
+                         'code/modules/1713/animal_harvest.dm',
+                         'code/modules/materials/material_sheets.dm',
+                         'code/game/objects/structures/converters.dm',
+                         'code/modules/materials/materials.dm'):
                 path = source / name
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes((root / name).read_bytes())
@@ -71,7 +78,7 @@ class LocalWslTests(unittest.TestCase):
                     self.assertTrue(any(row['name'] == 'fixture item' for row in catalog['recipes']))
                     (stage / 'civ13.dmb').write_bytes(b'fake compiler output')
                     (stage / 'civ13.rsc').write_bytes(b'fake resource output')
-                    return module.subprocess.CompletedProcess(command, 0, '0 errors, 0 warnings')
+                    return module.subprocess.CompletedProcess(command, 0, 'DM compiler version 516.1688\n- 0 errors, 0 warnings')
                 if command[0] == 'git':
                     return real_run(command, **kwargs)
                 raise AssertionError('Unexpected executable: ' + command[0])
@@ -95,6 +102,7 @@ class LocalWslTests(unittest.TestCase):
         runtime = home / '.local/share/civ13-local/nomads'
         runtime.mkdir(parents=True)
         (runtime / 'source-sha.txt').write_text('a' * 40)
+        (runtime / 'byond-version.txt').write_text(module.REQUIREMENT['version'])
         process = Mock(pid=77)
         process.poll.return_value = None
         process.wait.side_effect = module.subprocess.TimeoutExpired('owned fake', 10) if cleanup_timeout else None
@@ -143,14 +151,39 @@ class LocalWslTests(unittest.TestCase):
         process.terminate.assert_called_once_with()
         process.wait.assert_called_once_with(timeout=10)
         process.kill.assert_not_called()
-        self.assertEqual(module.json.loads(state.read_text()), {'pid': 77, 'started': '123'})
+        self.assertEqual(module.json.loads(state.read_text()), {'pid': 77, 'started': '123', 'byond': module.REQUIREMENT['version']})
 
     def test_successful_start_retains_identity_without_stopping_child(self):
         process, state = self.start_fixture()
         module.main()
         process.terminate.assert_not_called()
         process.wait.assert_not_called()
-        self.assertEqual(module.json.loads(state.read_text()), {'pid': 77, 'started': '123'})
+        self.assertEqual(module.json.loads(state.read_text()), {'pid': 77, 'started': '123', 'byond': module.REQUIREMENT['version']})
+
+    def test_old_runtime_record_is_preserved_before_process_observation(self):
+        for original in ('{"pid":77,"started":"123"}', '[]', '{"pid":77,"byond":"516.1681"}'):
+            process, state = self.start_fixture()
+            state.write_text(original)
+            with self.subTest(original=original), patch.object(module, 'process_matches', side_effect=AssertionError('Unexpected process observation')):
+                with self.assertRaisesRegex(RuntimeError, 'older or unknown BYOND version'):
+                    module.main()
+            module.subprocess.Popen.assert_not_called()
+            process.terminate.assert_not_called()
+            self.assertEqual(state.read_text(), original)
+
+    def test_missing_or_old_compiled_version_refuses_start(self):
+        for value in (None, '516.1681', 'malformed'):
+            process, state = self.start_fixture()
+            metadata = state.parent / 'byond-version.txt'
+            if value is None:
+                metadata.unlink()
+            else:
+                metadata.write_text(value)
+            with self.subTest(value=value), self.assertRaisesRegex(RuntimeError, 'Run Build with BYOND 516.1688'):
+                module.main()
+            module.subprocess.Popen.assert_not_called()
+            process.terminate.assert_not_called()
+            self.assertFalse(state.exists())
 
     def test_exited_start_reaps_without_termination(self):
         process, state = self.start_fixture()

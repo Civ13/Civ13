@@ -7,6 +7,9 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 
 /atom/movable
 	var/anchored = FALSE // Production atoms_movable.dm default used by unbuckle.
+	var/gcDestroyed = FALSE
+	var/gc_destroyed = FALSE
+/area/caribbean/admin
 /mob/living
 	var/obj/buckled
 	var/list/pinned = list()
@@ -353,9 +356,16 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 	sleep_check_snapshot(record["target"], cross_target, 2, 1, 2, 2, 1, 2)
 	sleep_check_detached_record(record)
 
+// Inject a duplicate capture only in this diagnostic fixture. The bounded
+// traversal normally preserves the first capture and never reaches this guard.
+/map_storage/cross_level/diagnostic_duplicate/BuildVarDirectory(savefile/F, datum/A, contents = 0, traversal = FALSE)
+	if(A == cross_target && saving_z == 2)
+		saving_world_movables -= "\ref[A]"
+	return ..()
+
 /proc/sleep_check_duplicate_record()
 	cross_setup_movement()
-	map_storage = new /map_storage/cross_level("diagnostic-duplicate-fixture")
+	map_storage = new /map_storage/cross_level/diagnostic_duplicate("diagnostic-duplicate-fixture")
 	var/reason = cross_try_save()
 	cross_assert_failed_save(reason, "Durable metadata atom was exported more than once", "duplicate diagnostic fixture did not reach the original binder guard")
 	var/list/record = map_storage.last_save_reference_failure
@@ -366,7 +376,7 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 	sleep_check_snapshot(target, cross_target, 1, 1, 2, 1, 1, 2)
 	var/savefile/F = new("map_saves/1.sav")
 	var/turf_ref = F["/map/1/1/1"]
-	var/list/first_contents = params2list(F["[map_storage.entry_path(F, turf_ref)]/content"])
+	var/list/first_contents = map_storage.saved_content_refs(F["[map_storage.entry_path(F, turf_ref)]/content"], F["/format_version"])
 	cross_check(first_contents.len == 1, "duplicate fixture lost its first native placement")
 	var/first_entry = text2num(first_contents[1])
 	cross_check(record["first_z"] == 1 && record["first_entry"] == first_entry && record["saved_z"] == 2 && record["current_entry"] == source["entry"] + 1, "duplicate failure record lost first or current entry identity")

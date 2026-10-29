@@ -12,6 +12,10 @@ on:
         description: Preserve CI subscriptions while allowing build-colon requests on other branches
         type: boolean
         default: false
+      lint_workflows:
+        description: Run the single workflow syntax check in the main CI caller
+        type: boolean
+        default: false
     outputs:
       extensive:
         value: ${{ jobs.changes.outputs.extensive }}
@@ -19,21 +23,43 @@ on:
         value: ${{ jobs.changes.outputs.new_tests }}
       game:
         value: ${{ jobs.changes.outputs.game }}
+      gating:
+        value: ${{ jobs.changes.outputs.gating }}
+      skip_duplicate:
+        value: ${{ jobs.changes.outputs.skip_duplicate }}
+      attempt:
+        description: Run attempt that produced the selection artifact; a re-run of failed jobs reuses an earlier one
+        value: ${{ jobs.changes.outputs.attempt }}
 permissions:
   contents: read
 jobs:
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       extensive: ${{ steps.select.outputs.extensive }}
       game: ${{ steps.select.outputs.game }}
       new_tests: ${{ steps.select.outputs.new_tests }}
+      gating: ${{ steps.select.outputs.gating }}
+      skip_duplicate: ${{ steps.select.outputs.skip_duplicate }}
+      attempt: ${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
+      - name: Prepare exact comparison commit
+        id: prepare
+        timeout-minutes: 2
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ inputs.base }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
+      - name: Selection regression tests on every invocation
+        run: python3 -B scripts/ci_baseline.py unit --suite policy --output .ci/selection/policy.json
       - id: select
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -41,16 +67,23 @@ jobs:
           BUILD_PREFIX: ${{ inputs.build_prefix }}
           BASE_REF: ${{ inputs.base }}
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX"
-      - name: Selection regression tests
-        if: steps.select.outputs.extensive == 'true' || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_regression_policy.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_selection.py') || contains(fromJSON(steps.select.outputs.new_tests), 'tests/test_ci_build_prefix.py')
-        run: python3 -m unittest discover -s tests -p 'test_ci*.py' -v
+        run: python3 scripts/select-ci.py --base "$BASE_REF" --head "$HEAD_REF" --output "$GITHUB_OUTPUT" --event "$EVENT_NAME" --extensive "$EXTENSIVE" --build-prefix "$BUILD_PREFIX" --receipt .ci/selection/selection.json
       - name: Validate all workflow syntax
+        if: inputs.lint_workflows && (steps.select.outputs.gating == '1' || steps.select.outputs.game == 'true' || github.event_name == 'workflow_dispatch')
         run: |
-          curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
+          curl -fsSL --connect-timeout 10 --max-time 60 --retry 0 https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz -o "$RUNNER_TEMP/actionlint.tar.gz"
           echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint.tar.gz" | sha256sum -c -
           tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
           # Released actionlint 1.7.12 predates GitHub's concurrency.queue option.
           # Validate that exact setting separately; retain every other lint rule.
           node tools/changelog/check-queues.mjs
           "$RUNNER_TEMP/actionlint" -shellcheck= -ignore 'unexpected key "queue" for "concurrency" section' .github/workflows/*.yml
+      - name: Retain selection and policy receipts
+        if: always() && steps.prepare.outcome == 'success'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: .ci/selection/
+          retention-days: 7
+          if-no-files-found: error

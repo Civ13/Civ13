@@ -5,11 +5,12 @@ using System.Text.Json;
 namespace Civ13.Launcher;
 
 public static class Program {
-    public static void WriteMainMenu(TextWriter output) {
+    public static void WriteMainMenu(TextWriter output, bool hosting = false) {
         output.WriteLine(ServerCatalog.MainMenu);
         foreach (var link in CommunityLinks.Items)
             output.WriteLine($"{link.Key}: {link.Value.Label} - {link.Value.Url}");
         output.WriteLine(ServerCatalog.OpenDreamMenu);
+        if (hosting) output.WriteLine(LocalHosting.Menu);
     }
 
     public static string BundledChannel() {
@@ -18,12 +19,13 @@ public static class Program {
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
-    public static ByondRequirement RequiredByond() {
+    public static string BundledByond() {
         using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("byond.json")
             ?? throw new InvalidOperationException("Bundled BYOND requirement missing.");
         using var reader = new StreamReader(stream);
-        return ByondRequirement.Read(reader.ReadToEnd());
+        return reader.ReadToEnd();
     }
+    public static ByondRequirement RequiredByond() => ByondRequirement.Read(BundledByond());
     public static async Task<int> Main(string[] args) {
         try {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
@@ -35,6 +37,11 @@ public static class Program {
                 Channel.Read(BundledChannel()).Validate();
                 RequiredByond().Validate();
                 Console.WriteLine("PASS: embedded client/BYOND manifests and native launcher entrypoint.");
+                return 0;
+            }
+            if (args.SequenceEqual(["--byond-contract"])) {
+                RequiredByond().Validate();
+                Console.WriteLine(BundledByond());
                 return 0;
             }
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
@@ -66,7 +73,7 @@ public static class Program {
                     bin = candidate;
                     break;
                 }
-                if (bin == null) throw new IOException("Existing verified BYOND 516.1681 client missing; this local path never installs it.");
+                if (bin == null) throw new IOException("Existing verified BYOND " + RequiredByond().Version + " client missing; this local path never installs it.");
                 var start = LocalDreamDaemon.Prepare(receipt, bin, root);
                 Directory.CreateDirectory(root);
                 using var process = Process.Start(start) ?? throw new IOException("BYOND client did not start.");
@@ -107,12 +114,26 @@ public static class Program {
             Console.WriteLine("BYOND " + RequiredByond().Version + " available at " + byond);
             Console.WriteLine("Sign in to your BYOND account in the BYOND Pager before joining.");
             owner.Dispose();
+            HostProfile? host = null;
+            try { host = LocalHosting.Load(root); }
+            catch (Exception e) when (e is InvalidDataException or JsonException or IOException) { Console.WriteLine("Local hosting disabled: " + e.Message); }
             var discovery = new ServerDiscovery();
             while (true) {
-                WriteMainMenu(Console.Out);
+                WriteMainMenu(Console.Out, host != null);
                 Console.Write("Choose a number: ");
                 var choice = Console.ReadLine();
                 if (choice is null or "4") return 0;
+                if (host != null && string.Equals(choice, LocalHosting.MenuKey, StringComparison.OrdinalIgnoreCase)) {
+                    try {
+                        if (host.Update != null && !LocalHosting.Listening(host.Port))
+                            Console.WriteLine($"Updating to origin/{host.Update.Branch} and rebuilding {host.World}; this can take a few minutes...");
+                        foreach (var line in LocalHosting.Run(host, byond, LocalHosting.Listening, start => { using var process = Process.Start(start); }))
+                            Console.WriteLine(line);
+                    } catch (Exception e) when (e is System.ComponentModel.Win32Exception or IOException or InvalidOperationException) {
+                        Console.WriteLine("Local hosting failed: " + e.Message);
+                    }
+                    continue;
+                }
                 if (CommunityLinks.TryOpen(choice, start => { using var browser = Process.Start(start); }, Console.Out)) continue;
                 if (choice == "1") Process.Start(new ProcessStartInfo(Path.Combine(byond, "byond.exe")) { UseShellExecute = false, WorkingDirectory = byond });
                 if (ServerCatalog.MenuServer(choice) is { } serverName) {
