@@ -181,7 +181,7 @@ def assert_workflow_contract(workflow):
                        '        timeout-minutes: 2\n'
                        '        env:\n'
                        '          EVENT_NAME: ${{ github.event_name }}\n'
-                       "          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}\n"
+                       "          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}\n"
                        '          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n'
                        '        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"\n')
             checkout = ('      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n'
@@ -214,7 +214,7 @@ def assert_workflow_contract(workflow):
         '    timeout-minutes: 5\n',
         "      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683\n        if: needs.changes.result == 'success'\n        timeout-minutes: 2\n        with:\n          ref: ${{ github.event.pull_request.head.sha || github.sha }}\n          fetch-depth: 1\n",
         '          persist-credentials: false\n',
-        "      - name: Prepare exact comparison commit\n        if: needs.changes.result == 'success'\n        timeout-minutes: 2\n        env:\n          EVENT_NAME: ${{ github.event_name }}\n          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}\n          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n        run: python3 -B scripts/ci_checkout_refs.py --head \"$HEAD_REF\" --base \"$BASE_REF\" --event \"$EVENT_NAME\"\n",
+        "      - name: Prepare exact comparison commit\n        if: needs.changes.result == 'success'\n        timeout-minutes: 2\n        env:\n          EVENT_NAME: ${{ github.event_name }}\n          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}\n          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n        run: python3 -B scripts/ci_checkout_refs.py --head \"$HEAD_REF\" --base \"$BASE_REF\" --event \"$EVENT_NAME\"\n",
         '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-selection-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.changes.outputs.attempt }}\n          path: .ci/selection\n',
         '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-baseline-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.baseline.outputs.attempt }}\n          path: .ci/baseline\n',
         '      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093\n        with:\n          name: ci-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ needs.build.outputs.attempt }}\n          path: .ci/compile\n',

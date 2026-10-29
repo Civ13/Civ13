@@ -45,8 +45,9 @@ class RestoreIntegrationSources(unittest.TestCase):
                    'storage.ClearMap()', 'storage.run_world_operation("load", operation)',
                    'storage.load_map_metadata()', 'storage.restore_durable_world()',
                    'map.apply_persistence_age_floor()', 'storage.restore_round_state(src, saved_round)',
-                   'storage.restore_zone_spawns()', 'storage.finish_player_restoration()',
-                   'attempt.release_transients()')
+                   'storage.restore_zone_spawns()', 'attempt.release_transients()',
+                   'operation.restoring_players = TRUE', 'storage.finish_player_restoration()',
+                   'operation.finish(TRUE)')
         offsets = [self.wrapper.index(call) for call in ordered]
         self.assertEqual(offsets, sorted(offsets))
         # Neither the optional provider nor native callbacks may leak into saves.

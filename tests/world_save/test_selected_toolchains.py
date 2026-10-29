@@ -215,8 +215,10 @@ class SelectedToolchains(unittest.TestCase):
         for old, new in (
             ('fetch-depth: 1', 'fetch-depth: 0'),
             ('scripts/ci_checkout_refs.py --head', 'scripts/ci_checkout_refs.py --wrong-head'),
-            ('BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || \'\' }}',
+            ('BASE_REF: ${{ github.event_name == \'workflow_dispatch\' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || \'\' }}',
              'BASE_REF: ${{ github.sha }}'),
+            ('BASE_REF: ${{ github.event_name == \'workflow_dispatch\' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || \'\' }}',
+             'BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || \'\' }}'),
             ('HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}',
              'HEAD_REF: ${{ github.event.pull_request.base.sha }}'),
         ):
@@ -253,8 +255,10 @@ class SelectedToolchains(unittest.TestCase):
             ('fetch-depth: 1', 'fetch-depth: 0'),
             ("needs.changes.result != 'success' || needs.changes.outputs.skip_duplicate != 'true'", "needs.changes.outputs.skip_duplicate != 'true'"),
             ('scripts/ci_checkout_refs.py --head', 'scripts/ci_checkout_refs.py --wrong-head'),
-            ('BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || \'\' }}',
+            ('BASE_REF: ${{ github.event_name == \'workflow_dispatch\' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || \'\' }}',
              'BASE_REF: ${{ github.sha }}'),
+            ('BASE_REF: ${{ github.event_name == \'workflow_dispatch\' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || \'\' }}',
+             'BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || \'\' }}'),
             ('ref: ${{ github.event.pull_request.head.sha || github.sha }}', 'ref: master'),
             ("CI_BASE: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}",
              'CI_BASE: ${{ github.sha }}'),

@@ -734,14 +734,15 @@ var/global/datum/persistence_admission_identity
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)
 		storage.restore_zone_spawns()
-		if(!transaction)
-			operation.restoring_players = TRUE
-			storage.finish_player_restoration()
 		if(attempt_owned)
 			phase = "release"
 			release_attempted = TRUE
 			if(attempt.release_transients() != TRUE)
 				throw EXCEPTION("Restore transient release rejected")
+		if(!transaction)
+			phase = "players"
+			operation.restoring_players = TRUE
+			storage.finish_player_restoration()
 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
 		var/primary_failure = "[e] on [e.file]:[e.line]"
