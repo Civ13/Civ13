@@ -35,6 +35,9 @@ root-turf view membership. Hidden/stale roots receive blank image overrides;
 no shared tree invisibility or opacity is changed. Images remain attached to
 their original tree; visible overrides retain its mouse opacity. Native mouse
 delivery and alignment still need the client acceptance described below.
+Image-local offsets are zero: the attached owner supplies its original visual
+offset once. Baked tint and copied alpha use reset flags to avoid inheriting
+those appearance properties a second time.
 Explicit lighting bypass at see_invisible >=45 and intentional fullbright turf
 policy produce white; an absent/pending/foreign mask does not produce white.
 
@@ -42,7 +45,14 @@ The tree output uses plane 6 above the tile mask. A client-owned lease captures
 the existing weather plane and replays it above trees on plane 7. Plane 5 stays
 reserved for the earlier independent LOS presenter lane. HUD/chat stay above
 these planes. The presenter refuses a weather plane already leased elsewhere.
-It also refuses game-plane filters/color/transform/alpha changes: moving a tree
+The replay anchors at WEST,SOUTH, matching the viewport-sized source slate.
+The [BYOND reference](https://www.byond.com/docs/ref/info.html#/atom/var/render_source)
+specifies bottom-left render-source anchoring; CENTER does not account for
+icon extent. The earlier CENTER replay moved the diagnostic cyan patch off-map.
+Null or exactly identity native transform matrices are accepted for trees and
+the game plane. All six components are compared exactly; no epsilon admits a
+small translation, scale, rotation or shear. It refuses game-plane filters,
+color, nonidentity transform or alpha changes: moving a tree
 out of a filtered scene changes filter grouping. The ordinary game-plane drop
 shadow is therefore **unsupported** in this first isolated slice.
 
@@ -85,17 +95,33 @@ daemon/client and never weakens the 6 GiB host reserve.
 Offline tests project actual snapshot/admission/invalidate/retire source,
 exercise ownership/stale/omission controls and stage exact source/art. They do
 not establish native rendering, input, runtime lifecycle or save/load acceptance.
-CI registers only the two offline files; compiler/client runners are not imported.
+CI registers only the three offline files; compiler/client runners are not imported.
 
 ## Consumable native pixel fixture
 
-`prepare.py --output <fresh-directory>` only copies exact current source/art,
-extracts the production mask update/bypass/fullbright procedures, and writes
-source hashes, `fixture.dme` and `fixture.dmf`. It never launches anything.
-Compile that DME with the same compiler-only wrapper. Keep each failed receipt.
+`prepare.py --head <full-current-commit> --output <fresh-directory>` verifies
+the actual checkout HEAD and clean relevant inputs, then reads canonical Git
+blobs from that revision. It stages committed source/art, extracts production
+mask/bypass/fullbright procedures and copies committed DME/DMF templates.
+The schema-3 manifest binds the head, tree, source blob IDs and **all** compiler
+inputs, including generated `fixture.dme`, `fixture.dmf` and production extracts.
+Neither a supplied 40-hex label nor a self-rehashed staged manifest is authority.
+It never launches an engine. Tests use synthetic providers or newly created
+local repositories; no historical Git checkpoint is required.
+
+Compile that fresh DME with the same compiler-only wrapper and matching `--head`.
+The fixture wrapper rejects preexisting DMB/RSC or compiler evidence, verifies
+revision-derived inputs before/after the unchanged retained Windows compiler,
+and writes `compile.receipt.json`, `compile.log` and `compile-supervisor.json`
+beside the fixture. The receipt links source/input hashes to DMB/RSC hashes,
+the pinned compiler, command, log and retained-process exit audit. Keep each
+failed receipt; do not replace stale artifacts just to satisfy admission.
 The fixture is a separate 21x21 world using actual tree/mask art and real opaque
 trunks; it has no game startup, live data, account credentials or test commands
-exposed through a game transport. It accepts one guest client only.
+exposed through a game transport. It accepts one loopback client, guest by default. Its movable
+plane explicitly matches production GAME_PLANE 1. Original #3394 native runs
+failed phase-2 admission; their nine acknowledgments/identical images are not
+presenter or pixel acceptance. Preserve those failures and diagnostic patches.
 
 The existing scene/capture owner can use its reviewed retained-handle loopback
 and window-bound capture controller; this folder creates no duplicate launcher.
@@ -105,18 +131,67 @@ coordinator's concrete run admission and exclusive screen turn. Use the fixed
 calibration square at WEST,SOUTH establishes the map origin independently of
 window decorations. Do not move/resize the window during samples.
 
+Before launching, call `protocol.initialize(stage, exact_head)` in the fresh
+prepared/compiled directory, from the same current source revision. It rebuilds
+the expected input plan from that revision, validates every staged file and
+requires the matching accepted compiler receipt/log/owned exit audit before
+binding DMB/RSC. It cannot relabel an arbitrary/stale binary by hashing it.
+It creates a unique `run.binding.json`; the fixture refuses a missing binding.
+Earlier captures without this revision/compile chain remain diagnostic.
+For the already-approved signed-in session, the owner may supply its private
+`authorized-identity.txt` and explicitly call `initialize(...,
+authorized_session=True)`. This fixture-only option admits that exact ckey over
+loopback and hashes the identity file into the run binding without logging its
+value. It rejects an identity file without explicit opt-in and any mid-run file
+change. No account-admission source patch or production policy change is needed.
+Use `failure_control="runtime"` and `"admission"` in separate fresh negative
+runs: phase 2 must fail, never be acknowledged or reported as a pass.
+
 After `client-ready.txt` says READY, write the next integer to `phase.request`.
-Wait for `phase.ready.json` with that phase before capturing a lossless PNG;
-five ticks settle each sample. Read `phase.ready.json` by phase, not mtime.
+Use `PhaseGate(stage, exact_head, runtime_logs=[actual_owned_runtime_log,
+actual_owned_stderr_log])` from `protocol.py` in the existing capture controller.
+Poll `gate.phase(n)` before capture, treating `Pending` as a bounded wait and
+`Rejected` as terminal. Logs must exist; missing logs are not clean logs.
+Five ticks settle each sample. Schema-2 receipts carry the unique run, manifest,
+source head, actual admitted renderer/root counts and native identity controls.
+Each phase publishes once to its own immutable `phase-N.ready.json` (N=1..9).
+Readers never force deletion/replacement of the prior phase. A duplicate file
+fails publication; concatenated records fail the gate immediately. The old
+shared `phase.ready.json` is not consumed.
+
+`/world/Error` marks failure sticky, removes the complete marker and records
+`fixture.failed.json`. The caller requires an explicit TRUE phase result and a
+fresh settled checkpoint before writing any acknowledgment. Phase 2 executes
+22 native checks: null/default/explicit identity, real translation/scale/shear/
+rotation for trees, constructor rejection for game-plane changes, and refresh
+rejection with a closed shutter, explicit identity constructor/refresh admission,
+and restored default identity acceptance.
+
+After each capture, `gate.record_pixels(n, normalized_map_rgb_bytes)` rescans
+the native logs and rejects identical map pixels for required visual transitions
+(including phase 2 -> 3). Supply actual registered map pixels excluding labels,
+window decorations and calibration; a changing label is not a visual oracle.
+This detects the reported identical-image false green, but does not replace
+independent RGB/overlap/visibility comparisons.
+
+After the existing owner has verified its retained process exits, call
+`gate.finish(pixel_checks, cleanup_verified=actual_owned_exit_verification)`.
+`pixel_checks` must contain exactly the True results named by `PIXEL_CHECKS`,
+including both renderer negative controls. No captures, missing oracles, runtime
+errors, changed source, incomplete native identity controls or unknown cleanup
+can return pass. The gate launches/terminates no processes and reuses existing
+ownership/capture infrastructure. `complete.txt` means only that the native
+sequence ended; acknowledgments alone never establish pixel acceptance.
+
+Read `phase-N.ready.json` by bound phase, not mtime.
 Retain full uncropped original captures and the source manifest. A renderer or
-admission failure crashes the isolated fixture rather than producing a success
-receipt. Phase 9 deliberately rejects an unrelated hidden atom and closes the
+admission failure prevents any later phase acknowledgment. Phase 9 deliberately rejects an unrelated hidden atom and closes the
 shutter. The fixture does not write a pixel-pass verdict itself.
 
 | Phase | Native pixel acceptance |
 | --- | --- |
 | 1 | Native identity-light baseline, original sprite positions and overlap order. |
-| 2 | Root presenter identity light: zero shift/shape/alpha/order differences for the three visible trees; the occluded blue fourth root is wholly absent. |
+| 2 | All 22 native matrix controls pass; presenter owns three visible frames. Identity light has zero shift/shape/alpha/order differences; the occluded fourth root is wholly absent. |
 | 3 | First root red (1,.2,.1), second green (.1,1,.2), third dim (.12,.18,.24). Their entire sprites follow their own root; black neighbor (9,13) does not cut the red canopy. Cyan weather remains over the overlapping sprites. |
 | 4 | First tree moves from (9,12) to (8,12), changes to blue root light (.2,.3,1), leaves no stale proxy at its old root. |
 | 5 | Delete second tree: no stale canopy/target remains; first and third stay correct. |
@@ -134,3 +209,78 @@ must reveal the otherwise hidden fourth tree and fail. These are fixture-only
 controls, never production activation. Hover/Examine target delivery, two-client
 isolation, reconnect/load rebuilding and uninstrumented direct writes remain
 separate acceptance items; screenshots alone cannot establish them.
+
+### Runnable control packets (existing capture owner only)
+
+The named renderer variants are deterministic staged-input transformations;
+they never edit production source or accept an arbitrary patch. `neighbor`
+sets the attached override back on GAME_PLANE, so the real tile mask multiplies
+it again and the black neighbor cuts the red canopy. `visibility` omits both
+the context decision and native root-turf view guard, retaining exact root/type
+admission and scene capture. It exposes the otherwise hidden fourth canopy.
+Only `root_tree_presenter.dm` differs from the normal staged inputs. The source
+manifest records the selected control, expected derived bytes and original Git
+objects; the compiler receipt and run/phase bindings carry that identity. A
+renamed manifest, edited stage or stale normal binary cannot become a control.
+Visibility-control counts are four frames at phases 2-4 and three at 5-8;
+the normal fixture still requires three and two. Both retain zero at phase 9.
+
+From a clean owned checkout at the reviewed head, prepare four **fresh** stages.
+`$PacketParent` must be an existing evidence directory; no path may reuse prior
+captures or compiler evidence. `$VerifiedPython` and `$ByondBin` are the existing
+verified interpreter and pinned 516.1688 installation, respectively.
+
+```powershell
+$Head = (git rev-parse HEAD).Trim()
+if ($LASTEXITCODE) { throw 'Source head unavailable' }
+foreach ($Name in @('neighbor','visibility','runtime','admission')) {
+    $Stage = Join-Path $PacketParent $Name
+    $Variant = @()
+    if ($Name -in @('neighbor','visibility')) { $Variant = @('--renderer-control',$Name) }
+    & $VerifiedPython tests/root_tree_presentation/prepare.py --head $Head --output $Stage @Variant
+    if ($LASTEXITCODE) { throw "Preparation failed: $Name" }
+    & $VerifiedPython tests/root_tree_presentation/compile.py --head $Head --dme (Join-Path $Stage 'fixture.dme') --output (Join-Path $PacketParent "$Name-compile") --byond-bin $ByondBin
+    if ($LASTEXITCODE) { throw "Compilation failed: $Name" }
+}
+```
+
+Do not initialize these stages twice. The existing controller must parameterize
+its stage, current head and mode instead of hardcoding the old 17c3 normal run.
+The following are the exact file-only API calls **inside that controller**;
+they launch nothing. Import `protocol` from this current checkout. Set
+`approved_session=True` only for the existing explicitly approved private
+identity file; otherwise use False and no identity file.
+
+| Stage | Call before the existing owned launcher | Request/capture only | Independent expected failure |
+| --- | --- | --- | --- |
+| neighbor | `protocol.initialize(stage, head, authorized_session=approved_session)` | phases 1, 2, 3 | The phase-3 black-neighbor red-canopy oracle returns False. |
+| visibility | `protocol.initialize(stage, head, authorized_session=approved_session)` | phases 1, 2 | The hidden-fourth-root absence oracle returns False. |
+| runtime | `protocol.initialize(stage, head, failure_control="runtime", authorized_session=approved_session)` | capture phase 1; request phase 2 | Sticky `native_runtime`, actual runtime diagnostic, no phase-2 acknowledgment. |
+| admission | `protocol.initialize(stage, head, failure_control="admission", authorized_session=approved_session)` | capture phase 1; request phase 2 | Sticky `root_admission`, no runtime error and no phase-2 acknowledgment. |
+
+Create the usual `gate = protocol.PhaseGate(stage, head,
+runtime_logs=[actual_owned_runtime_log, actual_owned_stderr_log])` before phase
+requests. For renderer controls, use the existing `gate.phase(n)` and
+`gate.record_pixels(n, actual_normalized_map_bytes)` for the short sequence above,
+then stop and verify owned cleanup. Call
+`gate.renderer_control_result(oracle_passed=actual_control_oracle_result,
+cleanup_verified=actual_owned_exit_verification)`. The result requires an actual
+False pixel oracle and returns `control_detected, acceptance=False`. A renderer
+control can never pass `finish()`, even if a caller supplies all-True oracles.
+Do not mark False solely from the variant name or frame count.
+
+For runtime/admission controls, the existing fail-closed watch intentionally
+aborts at phase 2. Preserve that failure and all logs, perform existing owned
+cleanup, then call
+`gate.failure_control_result(cleanup_verified=actual_owned_exit_verification)`.
+It requires the bound phase-1 baseline, exact native failure reason, actual
+logs, no acknowledgment from phase 2 onward and no complete marker. Missing or
+wrong failure, an omitted hook, late acknowledgment or unknown cleanup rejects.
+This reports an observed expected control, never renderer acceptance. Do not
+combine renderer and failure controls or suppress the existing abort path.
+
+The 17c3 exact-head nine-capture report resolves the measured displacement and
+weather loss, with sampled RGB/visibility/view/shutter observations. It does not
+establish complete alpha/overlap ordering, all lifecycle paths or filtered-plane
+support. These four short control packets supply the missing negative witnesses;
+they do not expand that coverage or authorize an additional launcher/run.

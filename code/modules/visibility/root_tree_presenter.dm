@@ -2,6 +2,15 @@
 /client/var/tmp/datum/root_tree_presenter/root_tree_presenter
 var/global/list/root_tree_presenters
 
+// Native appearance getters can return a non-null identity matrix. Test its
+// values rather than its presence; even a small real transform is unsupported.
+/proc/root_tree_identity_transform(matrix/M)
+	if(isnull(M))
+		return TRUE
+	if(!istype(M, /matrix))
+		return FALSE
+	return M.a == 1 && M.b == 0 && M.c == 0 && M.d == 0 && M.e == 1 && M.f == 0
+
 /datum/los_context/proc/root_tree_admitted(obj/structure/wild/tree/live_tree/A)
 	if(!CIV13_ROOT_TREE_PRESENTATION || !A || A.type != /obj/structure/wild/tree/live_tree || !(A in root_trees))
 		return FALSE
@@ -9,7 +18,7 @@ var/global/list/root_tree_presenters
 		return FALSE
 	if(A.plane != GAME_PLANE || A.layer != 5.11 || A.pixel_w || A.pixel_z || (A.appearance_flags & PLANE_MASTER))
 		return FALSE
-	if(A.step_x || A.step_y || abs(A.pixel_x) > 32 || abs(A.pixel_y) > 32 || A.bound_x || A.bound_y || A.bound_width != 32 || A.bound_height != 32 || A.transform || length(A.filters) || length(A.overlays) || length(A.underlays) || length(A.vis_contents) || A.render_source || A.render_target || A.maptext)
+	if(A.step_x || A.step_y || abs(A.pixel_x) > 32 || abs(A.pixel_y) > 32 || A.bound_x || A.bound_y || A.bound_width != 32 || A.bound_height != 32 || !root_tree_identity_transform(A.transform) || length(A.filters) || length(A.overlays) || length(A.underlays) || length(A.vis_contents) || A.render_source || A.render_target || A.maptext)
 		return FALSE
 	return A.icon in list('icons/obj/flora/bigtrees.dmi', 'icons/obj/flora/bigtrees_winter.dmi', 'icons/obj/flora/deadtrees.dmi', 'icons/obj/flora/deadtrees_winter.dmi')
 
@@ -36,8 +45,10 @@ var/global/list/root_tree_presenters
 	should_save = FALSE
 
 /obj/screen/root_tree_weather
-	screen_loc = "CENTER"
+	// A render_source is bottom-left anchored, unlike a plane master itself.
+	screen_loc = "WEST,SOUTH"
 	plane = ROOT_WEATHER_PLANE
+	blend_mode = BLEND_OVERLAY
 	mouse_opacity = 0
 	appearance_flags = NO_CLIENT_COLOR
 	should_save = FALSE
@@ -64,7 +75,7 @@ var/global/list/root_tree_presenters
 	var/obj/screen/plane_master/G = C.mob.hud_used.plane_masters["[GAME_PLANE]"]
 	// Cross-plane scene filters cannot be copied per tree without changing
 	// their grouping. Refuse them until that composition has its own proof.
-	if(!G || length(G.filters) || G.color || G.transform || G.alpha != 255)
+	if(!G || length(G.filters) || G.color || !root_tree_identity_transform(G.transform) || G.alpha != 255)
 		retired = TRUE
 		return
 	if(!P || !(P in C.screen) || P.blend_mode != BLEND_OVERLAY || P.render_target || C.root_tree_presenter)
@@ -108,7 +119,7 @@ var/global/list/root_tree_presenters
 		return FALSE
 	var/obj/screen/plane_master/P = owner.mob.hud_used.plane_masters["[LIGHTING_PLANE]"]
 	var/obj/screen/plane_master/G = owner.mob.hud_used.plane_masters["[GAME_PLANE]"]
-	return P == weather_plane && (P in owner.screen) && P.blend_mode == BLEND_OVERLAY && P.render_target == weather_target && weather_copy.render_source == weather_target && G && (G in owner.screen) && !length(G.filters) && !G.color && !G.transform && G.alpha == 255
+	return P == weather_plane && (P in owner.screen) && P.blend_mode == BLEND_OVERLAY && P.render_target == weather_target && weather_copy.render_source == weather_target && G && (G in owner.screen) && !length(G.filters) && !G.color && root_tree_identity_transform(G.transform) && G.alpha == 255
 
 /datum/root_tree_presenter/proc/refresh()
 	if(!CIV13_ROOT_TREE_PRESENTATION || retired || !owner)
@@ -152,20 +163,28 @@ var/global/list/root_tree_presenters
 		else if(T.color)
 			frame.Blend(T.color, ICON_MULTIPLY)
 		frame.Blend(rgb, ICON_MULTIPLY)
-		I.appearance = T.appearance
-		I.loc = T
-		I.icon = frame
-		I.icon_state = ""
-		I.color = null
-		I.plane = ROOT_TREE_PLANE
-		I.appearance_flags |= TILE_BOUND
-		I.override = TRUE
-		I.mouse_opacity = T.mouse_opacity
+		root_tree_set_frame(I, T, frame)
 	if(key != context.policy_key())
 		invalidate()
 		return FALSE
 	owner.screen -= shutter
 	return TRUE
+
+/proc/root_tree_set_frame(image/I, obj/structure/wild/tree/live_tree/T, icon/frame)
+	I.appearance = T.appearance
+	I.loc = T
+	// Attached images already follow their parent's visual origin. Re-copying
+	// its offsets adds them twice (the native -16px counterexample).
+	I.pixel_x = 0
+	I.pixel_y = 0
+	I.icon = frame
+	I.icon_state = ""
+	I.color = null
+	I.plane = ROOT_TREE_PLANE
+	// Tint is baked; copied alpha and identity transform must apply only once.
+	I.appearance_flags |= TILE_BOUND | RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	I.override = TRUE
+	I.mouse_opacity = T.mouse_opacity
 
 /datum/root_tree_presenter/proc/retire()
 	if(retired)
