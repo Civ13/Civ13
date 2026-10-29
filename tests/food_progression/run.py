@@ -107,7 +107,7 @@ def main():
                 ('code/modules/1713/cutting_board.dm', 'code/modules/reagents/reagent_containers/food.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'tests/food_progression/cutting_board.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/cutting-board-routes.json', 'tests/furniture_joinery/cutting-board-trace-cases.json')}
                 if args.probe == 'cutting' else
                 {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in
-                 ('code/modules/reagents/reagent_containers/glass.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'code/game/objects/items/stacks/stack.dm', 'code/game/mob/living/carbon/human/shit_piss.dm', 'tests/food_progression/barrels.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/barrel-ingredient-routes.json')}
+                 ('code/modules/reagents/reagent_containers/glass.dm', 'code/modules/reagents/Chemistry-Holder.dm', 'code/__defines/chemistry.dm', 'code/game/objects/items/stacks/stack.dm', 'code/game/mob/living/carbon/human/shit_piss.dm', 'code/modules/reagents/reagent_containers/food/grown.dm', 'code/modules/reagents/reagent_containers/food/snacks/meat.dm', 'tests/food_progression/barrels.dm', 'tests/food_progression/run.py', 'tests/furniture_joinery/barrel-ingredient-routes.json', 'tests/furniture_joinery/glass-extraction-routes.json')}
                 if args.probe == 'barrels' else {}}), encoding='utf-8')
         (output / 'checkout.patch').write_text(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root, text=True), encoding='utf-8')
         shutil.copy2(probe, output / 'probe.dm')
@@ -116,6 +116,7 @@ def main():
             shutil.copy2(root / 'tests/furniture_joinery/cutting-board-trace-cases.json', output / 'cutting-board-trace-cases.json')
         if args.probe == 'barrels':
             shutil.copy2(root / 'tests/furniture_joinery/barrel-ingredient-routes.json', output / 'barrel-ingredient-routes.json')
+            shutil.copy2(root / 'tests/furniture_joinery/glass-extraction-routes.json', output / 'glass-extraction-routes.json')
         for path in generated.values():
             if path.exists():
                 shutil.copy2(path, output / path.name)

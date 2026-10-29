@@ -101,6 +101,10 @@ delete the item only when drained. Preview volumes with no reactions/data copy
 to refuse near-capacity trace pruning. Preserve the shared-glass all-suite CI
 fallback. See `docs/barrel-ingredient-audit.md`; the separate food barrels probe
 does not claim inherited fruit conversion or large-dispenser lock coverage.
+The following fixed-dose food extraction slice requires full existing output
+capacity in all fifteen glass food branches; cinchona returns on rejection.
+Keep the original yields and ordering. See `docs/glass-food-extraction-audit.md`;
+variable-dose cotton and lard-candle waits remain outside that bounded fix.
 
 <!-- 2026-10-29: paid cutting-board input -->
 Cutting boards retain a live paid food child, with normal decay at exposed-food

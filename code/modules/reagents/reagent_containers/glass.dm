@@ -118,8 +118,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 5)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] smashes the grapes against the container.</span>", "<span class='notice'>You smash the grapes into its juice inside the container.</span>", "<span class='notice'>You hear the sound of something grinding.</span>")
 		reagents.add_reagent("grapejuice", 5)
@@ -129,8 +129,9 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 10)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
+			return
 		user.visible_message("<span class='warning'>[user] grinds the cinchona plant against the container.</span>", "<span class='notice'>You grind the cinchona plant into quinine inside the container.</span>", "<span class='notice'>You hear the sound of something grinding.</span>")
 		reagents.add_reagent("quinine", 10)
 		qdel(W)
@@ -139,8 +140,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 6)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] grinds the olives against the container.</span>", "<span class='notice'>You grind the olives into an olive oil mixture inside the container.</span>", "<span class='notice'>You hear the sound of something grinding.</span>")
 		reagents.add_reagent("olive_oil", 6)
@@ -150,8 +151,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 6)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] crushes the juniper berry against the container.</span>", "<span class='notice'>You crush the juniper berry to extract its juice inside the container.</span>", "<span class='notice'>You hear the sound of something crushing.</span>")
 		reagents.add_reagent("juniper_juice", 6)
@@ -161,8 +162,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 10)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] smashes and grinds the animal fat inside the container.</span>", "<span class='notice'>You smash and grind the animal fat inside the container into a mixture of lard.</span>", "<span class='notice'>You hear the sound of repetitive grinding and smashing.</span>")
 		reagents.add_reagent("lard", 10)
@@ -172,8 +173,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 5)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 
 		user.visible_message("<span class='warning'>[user] smashes the potato against the container.</span>", "<span class='notice'>You smash the potato and extract its juice inside the container.</span>", "<span class='notice'>You hear the sound of something smashing.</span>")
@@ -184,8 +185,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 10)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] rips up the agave leaf against the container.</span>", "<span class='notice'>You rip up the agave leaf and collect its nectar inside the container.</span>", "<span class='notice'>You hear the sound of something ripping.</span>")
 		reagents.add_reagent("agave", 10)
@@ -195,8 +196,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 4)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] crushes the sapote fruit against the container.</span>", "<span class='notice'>You crush the sapote fruit and let its juice seep into the container.</span>", "<span class='notice'>You hear the sound of something crushing.</span>")
 		reagents.add_reagent("sapotejuice", 4)
@@ -206,8 +207,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 10)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[src] smashes the apple against the container.</span>", "<span class='notice'>You smash the apple against the container and let its juice seep into the container.</span>", "<span class='notice'>You hear the sound of something smashing.</span>")
 		reagents.add_reagent("applejuice", 10)
@@ -217,8 +218,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 10)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[src] smashes the sapodilla against the container.</span>", "<span class='notice'>You smash the sapodilla and let its juice seep inside the container.</span>", "<span class='notice'>You hear the sound of something smashing.</span>")
 		reagents.add_reagent("sapodillajuice", 10)
@@ -228,8 +229,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 5)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering the container.")
 		reagents.add_reagent("fish", 5)
@@ -239,8 +240,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 5)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] throws the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "<span class='notice'>You throw the fish into \the [src].</span>", "You hear the sound of something entering the container.")
 		reagents.add_reagent("fish", 5)
@@ -250,8 +251,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 5)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] smashes the rice against \the insides of \the [src].</span>", "<span class='notice'>You smash the rice and produce a rice paste inside the container.</span>", "<span class='notice'>You smash the rice and produce a rice paste inside the container.</span>", "You hear the sound of activity.")
 		reagents.add_reagent("rice", 5)
@@ -261,8 +262,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 15)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] grinds the coffee against \the [src].</span>", "<span class='notice'>You grind the coffee and produce a coffee drink.</span>", "<span class='notice'>You grind the coffee and produce a coffee drink.</span>", "You hear the sound of something grinding.")
 		reagents.add_reagent("coffee", 15)
@@ -284,8 +285,8 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		if (reagents.get_free_space() < 5)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole ingredient.</span>")
 			return
 		user.visible_message("<span class='warning'>[user] grinds the corn against \the [src].</span>", "<span class='notice'>You grind the corn and produce corn oil.</span>", "<span class='notice'>You grind the corn and produce corn oil.</span>", "You hear the sound of something grinding.")
 		reagents.add_reagent("cornoil", 5)
