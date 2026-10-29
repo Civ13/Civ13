@@ -416,7 +416,13 @@ var/global/mall_fixture_failed = FALSE
 		else
 			direction = H.y < target.y ? NORTH : SOUTH
 		var/turf/before = get_turf(H)
-		mall_assert(step(H, direction) && get_turf(H) == get_step(before, direction), "car actor walks through real map callbacks without teleporting")
+		// Human Move wrappers do not all forward their parent's return value.
+		// Observe the actual one-tile arrival after the real collision callbacks.
+		var/step_result = step(H, direction)
+		var/turf/after_step = get_turf(H)
+		if (!step_result || after_step != get_step(before, direction))
+			mall_stage("car walking step [json_encode(list("return" = step_result, "from_x" = before.x, "from_y" = before.y, "to_x" = after_step?.x, "to_y" = after_step?.y, "direction" = direction, "target_x" = target.x, "target_y" = target.y))]")
+		mall_assert(after_step == get_step(before, direction), "car actor walks through real map callbacks without teleporting")
 		sleep(0)
 
 // Observe the real asynchronous wheel-started movement loop one tick at a time.
