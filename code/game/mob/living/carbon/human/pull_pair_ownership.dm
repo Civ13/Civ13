@@ -1,5 +1,8 @@
 // Ownership kernel for the default-on straight-leaf producer. Stuck pairs are
 // settled to aligned tiles by pull_pair_lifecycle.dm, never left holding saves.
+// Persistence admission settles pairs only where this kernel is compiled in;
+// minimal save fixtures include functions.dm without it.
+#define CIV13_SUBTILE_PULL_PAIRS 1
 var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 
 /datum/subtile_pull_ownership

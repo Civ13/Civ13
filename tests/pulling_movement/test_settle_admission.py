@@ -335,6 +335,11 @@ def admission_statements(text):
     body = section(text, '/proc/begin_persistence_operation(', '/datum/persistence_world_operation\n')
     segment = body[body.index(ADMISSION_START) + len(ADMISSION_START):body.index(ADMISSION_END) + len(ADMISSION_END)]
     segment = re.sub(r'#ifdef CIV13_VARIABLE_OBSERVABILITY\n.*?#endif\n', '', segment, flags=re.S)
+    # Production always compiles the pull-pair kernel, so keep the guarded admission check.
+    guarded = re.findall(r'#ifdef CIV13_SUBTILE_PULL_PAIRS\n.*?#endif\n', segment, flags=re.S)
+    if len(guarded) != 1:
+        raise ValueError('Expected one guarded pull-pair admission check')
+    segment = segment.replace(guarded[0], guarded[0][len('#ifdef CIV13_SUBTILE_PULL_PAIRS\n'):-len('#endif\n')], 1)
     exact = {
         'var/datum/persistence_world_operation/operation = new': 'operation = G.new_operation()',
         'operation.storage = storage': 'operation.storage = storage',
