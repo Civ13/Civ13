@@ -1,4 +1,4 @@
-var/list/clients = list()
+// The shared restart probe declares the offline clients collection.
 // Standalone lifecycle fixture: no live world operation or error collector.
 // These declarations let the production fixed-state snapshot report unavailable
 // diagnostics; they do not constitute diagnostic collection acceptance.

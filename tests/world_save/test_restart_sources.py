@@ -28,6 +28,14 @@ class RestartFixtureSources(unittest.TestCase):
                 self.assertEqual(receipt['negative_control'], control)
                 self.assertIn('var/global/list/clients = list()', (Path(output) / 'probe.dm').read_text())
 
+    def test_lifecycle_combination_has_one_shared_client_collection(self):
+        with tempfile.TemporaryDirectory() as output:
+            RUNNER.prepare(ROOT, Path(output))
+            base = (Path(output) / 'probe.dm').read_text().split('/world/New()')[0]
+            lifecycle = (ROOT / 'tests/world_save/lifecycle_probe.dm').read_text()
+            import re
+            self.assertEqual(len(re.findall(r'^var/(?:global/)?list/clients\s*=', base + lifecycle, re.M)), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
