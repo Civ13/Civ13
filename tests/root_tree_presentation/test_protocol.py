@@ -3,7 +3,9 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import subprocess
 import unittest
+from unittest.mock import patch
 
 def load(name,file):
     spec=importlib.util.spec_from_file_location(name,Path(__file__).with_name(file))
@@ -11,14 +13,16 @@ def load(name,file):
 
 prepare=load('gate_prepare','prepare.py')
 protocol=load('root_gate','protocol.py')
+support=load('gate_support','support.py')
 HEAD='a'*40
 
 class Gate(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
-        self.root=Path(self.temp.name)/'stage';prepare.prepare(self.root)
-        (self.root/'fixture.dmb').write_bytes(b'offline fake compiled content, never executed')
-        (self.root/'fixture.rsc').write_bytes(b'offline fake resources, never executed')
+        for module in (prepare.provenance,protocol.provenance):
+            mock=patch.object(module,'revision',side_effect=lambda requested,m=module:support.snapshot(m));mock.start();self.addCleanup(mock.stop)
+        self.root=Path(self.temp.name)/'stage';prepare.prepare(self.root,HEAD)
+        support.fake_compile(self.root,protocol.provenance)
         self.log=self.root/'owned-runtime.log';self.log.write_text('')
         self.binding=protocol.initialize(self.root,HEAD)
         self.gate=protocol.PhaseGate(self.root,HEAD,runtime_logs=[self.log])
@@ -67,7 +71,7 @@ class Gate(unittest.TestCase):
         (self.root/'fixture.dmb').write_bytes(b'changed')
         with self.assertRaises(protocol.Rejected):self.gate.input_identity()
         (self.root/'fixture.dm').write_text('changed')
-        with self.assertRaises(protocol.Rejected):protocol.validate_inputs(self.root)
+        with self.assertRaises(protocol.Rejected):protocol.validate_inputs(self.root,HEAD)
     def test_late_runtime_and_missing_pixel_oracle_prevent_finish(self):
         self.captures()
         with self.assertRaises(protocol.Rejected):self.gate.finish({})
@@ -82,5 +86,55 @@ class Gate(unittest.TestCase):
         self.captures()
         with self.assertRaisesRegex(protocol.Rejected,'retained process exits'):
             self.gate.finish({name:True for name in protocol.PIXEL_CHECKS})
+    def test_wrong_well_formed_head_cannot_initialize(self):
+        (self.root/'run.binding.json').unlink()
+        with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,'c'*40)
+    def test_stale_binary_before_initialize_cannot_be_rehashed_into_pass(self):
+        (self.root/'run.binding.json').unlink();(self.root/'fixture.dmb').write_bytes(b'older binary')
+        with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
+    def test_missing_or_wrong_head_compile_receipt_rejected(self):
+        (self.root/'run.binding.json').unlink()
+        path=self.root/'compile.receipt.json';receipt=json.loads(path.read_text());receipt['head']='c'*40;path.write_text(json.dumps(receipt))
+        with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
+        path.unlink()
+        with self.assertRaises(protocol.Rejected):protocol.initialize(self.root,HEAD)
+    def test_generated_dme_and_dmf_cannot_be_rehashed_in_manifest(self):
+        for name in ('fixture.dme','fixture.dmf'):
+            original=(self.root/name).read_bytes();manifest=(self.root/'source-manifest.json').read_bytes()
+            (self.root/name).write_bytes(original+b'changed')
+            metadata=json.loads(manifest);metadata['files'][name]=protocol.provenance.describe((self.root/name).read_bytes())
+            (self.root/'source-manifest.json').write_text(json.dumps(metadata))
+            with self.assertRaises(protocol.Rejected):self.gate.input_identity()
+            (self.root/name).write_bytes(original);(self.root/'source-manifest.json').write_bytes(manifest)
+    def test_compile_requires_fresh_outputs(self):
+        with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.require_fresh_outputs(self.root)
+    def test_receipt_input_binding_and_owned_exit_audit_required(self):
+        path=self.root/'compile.receipt.json';original=path.read_bytes();receipt=json.loads(original)
+        receipt['input_binding']['files']['fixture.dm']['sha256']='c'*64;path.write_text(json.dumps(receipt))
+        with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.validate_compile(self.root,HEAD)
+        path.write_bytes(original);receipt=json.loads(original)
+        audit_path=self.root/'compile-supervisor.json';audit=json.loads(audit_path.read_text())
+        audit['phases'][0]['cleanup']['all_retained_exited']=False;raw=json.dumps(audit).encode();audit_path.write_bytes(raw)
+        receipt['supervisor_sha256']=protocol.digest(raw);path.write_text(json.dumps(receipt))
+        with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.validate_compile(self.root,HEAD)
+
+class CurrentRevision(unittest.TestCase):
+    """Fresh local repositories, no fixed historical objects or network access."""
+    def setUp(self):
+        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup);self.root=Path(self.temp.name)
+        for name,data in support.snapshot(protocol.provenance)['sources'].items():
+            path=self.root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
+        def git(*args):return subprocess.check_output(['git',*args],cwd=self.root,stderr=subprocess.PIPE).decode().strip()
+        self.git=git;git('init','--quiet');git('add','--','.')
+        git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Current source fixture')
+        self.head=git('rev-parse','HEAD')
+    def test_exact_current_git_objects_and_wrong_head(self):
+        state=protocol.provenance.revision(self.head,self.root)
+        self.assertEqual(state['head'],self.head)
+        self.assertEqual(set(state['sources']),set(protocol.provenance.SOURCES))
+        with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.revision('0'*40,self.root)
+    def test_dirty_current_inputs_are_not_labeled_committed(self):
+        with (self.root/'tests/root_tree_presentation/fixture.dm').open('a') as stream:stream.write('\n// dirty\n')
+        with self.assertRaises(protocol.provenance.Invalid):protocol.provenance.revision(self.head,self.root)
 
 if __name__=='__main__':unittest.main()

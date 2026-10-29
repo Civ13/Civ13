@@ -5,10 +5,13 @@ must scan its actual owned runtime/stderr logs and provide normalized map pixel
 bytes plus independent pixel-oracle results before finish() can succeed.
 """
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
 import uuid
+spec=importlib.util.spec_from_file_location('tree_gate_provenance',Path(__file__).with_name('provenance.py'))
+provenance=importlib.util.module_from_spec(spec);spec.loader.exec_module(provenance)
 
 LIMIT=16*1024*1024
 IDENTITY_CHECKS=frozenset(['helper_null','tree_default','tree_null','tree_identity',
@@ -31,18 +34,13 @@ def bounded(path):
 
 def digest(data):return hashlib.sha256(data).hexdigest()
 
-def validate_inputs(root):
-    manifest=bounded(root/'source-manifest.json')
-    metadata=json.loads(manifest)
-    for source,entry in metadata['inputs'].items():
-        target=(root/source if source.startswith('icons/') else root/Path(source).name).resolve()
-        if not target.is_relative_to(root):raise Rejected('Input escapes owned stage')
-        if digest(bounded(target))!=entry['sha256']:raise Rejected('Staged input changed: '+target.name)
-    # prepare.py hashes normalized extracted production text, not Windows CRLF.
-    production=bounded(root/'production-light-update.dm').decode().replace('\r\n','\n').encode()
-    if digest(production)!=metadata['production_light_update_sha256']:
-        raise Rejected('Extracted production input changed')
-    return digest(manifest)
+def validate_inputs(root,head):
+    try:return provenance.validate_stage(root,head)['manifest_sha256']
+    except (provenance.Invalid,ValueError,KeyError,OSError) as error:raise Rejected(str(error)) from error
+
+def compiled_binding(root,head):
+    try:return provenance.validate_compile(root,head)
+    except (provenance.Invalid,ValueError,KeyError,OSError) as error:raise Rejected(str(error)) from error
 
 def initialize(root,head,*,failure_control=None):
     """Call once in a fresh prepared/compiled stage before the owner launches it."""
@@ -51,9 +49,9 @@ def initialize(root,head,*,failure_control=None):
         raise Rejected('Explicit source head and known control required')
     for name in ('run.binding.json','client-ready.txt','phase.request','phase.ready.json','fixture.failed.json','complete.txt'):
         if (root/name).exists():raise Rejected('Fresh run directory required: '+name)
-    binding=dict(schema=2,run=uuid.uuid4().hex,head=head,manifest=validate_inputs(root),
-        compiled_sha256=digest(bounded(root/'fixture.dmb')),
-        resources_sha256=digest(bounded(root/'fixture.rsc')),failure_control=failure_control)
+    accepted=compiled_binding(root,head)
+    binding=dict(schema=2,run=uuid.uuid4().hex,head=head,
+        manifest=accepted['input_binding']['manifest_sha256'],compile_binding=accepted,failure_control=failure_control)
     with (root/'run.binding.json').open('x',encoding='utf-8') as stream:
         json.dump(binding,stream)
     return binding
@@ -71,9 +69,8 @@ class PhaseGate:
         self.input_identity()
 
     def input_identity(self):
-        if (validate_inputs(self.root)!=self.binding['manifest'] or
-            digest(bounded(self.root/'fixture.dmb'))!=self.binding['compiled_sha256'] or
-            digest(bounded(self.root/'fixture.rsc'))!=self.binding['resources_sha256']):
+        accepted=compiled_binding(self.root,self.binding['head'])
+        if (accepted!=self.binding.get('compile_binding') or accepted['input_binding']['manifest_sha256']!=self.binding['manifest']):
             raise Rejected('Source/compiled binding changed')
 
     def healthy(self):

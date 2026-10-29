@@ -10,23 +10,28 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('root_tree_prepare',Path(__file__).with_name('prepare.py'))
 prepare=importlib.util.module_from_spec(spec);spec.loader.exec_module(prepare)
+spec=importlib.util.spec_from_file_location('preparation_support',Path(__file__).with_name('support.py'))
+support=importlib.util.module_from_spec(spec);spec.loader.exec_module(support)
 
 
 class Preparation(unittest.TestCase):
     def test_exact_source_and_art_staged_without_processes(self):
-        with tempfile.TemporaryDirectory() as temp, patch('subprocess.Popen',side_effect=AssertionError('No process')):
-            out=Path(temp)/'fresh';manifest=prepare.prepare(out)
+        with tempfile.TemporaryDirectory() as temp, patch('subprocess.Popen',side_effect=AssertionError('No process')), \
+             patch.object(prepare.provenance,'revision',side_effect=lambda requested:support.snapshot(prepare.provenance)):
+            out=Path(temp)/'fresh';manifest=prepare.prepare(out,support.HEAD)
             self.assertEqual(json.loads((out/'source-manifest.json').read_text()),manifest)
-            for path,entry in manifest['inputs'].items():
-                target=out/path if path.startswith('icons/') else out/Path(path).name
-                self.assertEqual(target.read_bytes(),(ROOT/path).read_bytes())
+            _,files=prepare.provenance.plan(support.HEAD)
+            for path,entry in manifest['files'].items():
+                target=out/path
+                self.assertEqual(target.read_bytes(),files[path])
                 self.assertEqual(hashlib.sha256(target.read_bytes()).hexdigest(),entry['sha256'])
             light=(out/'production-light-update.dm').read_text()
             self.assertIn('/atom/movable/lighting_overlay/proc/update_overlay()',light)
             self.assertIn('/obj/screen/plane_master/light_mask/backdrop(',light)
             self.assertIn('/turf/proc/needs_fullbright_coverage()',light)
-            self.assertEqual(hashlib.sha256(light.encode()).hexdigest(),manifest['production_light_update_sha256'])
-            with self.assertRaises(FileExistsError):prepare.prepare(out)
+            self.assertEqual(hashlib.sha256(light.encode()).hexdigest(),manifest['files']['production-light-update.dm']['sha256'])
+            self.assertIn('fixture.dme',manifest['files']);self.assertIn('fixture.dmf',manifest['files'])
+            with self.assertRaises(FileExistsError):prepare.prepare(out,support.HEAD)
 
     def test_fixture_contains_separate_native_controls_and_no_production_startup(self):
         source=(Path(__file__).with_name('fixture.dm')).read_text()

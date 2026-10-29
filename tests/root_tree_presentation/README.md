@@ -92,10 +92,23 @@ CI registers only the three offline files; compiler/client runners are not impor
 
 ## Consumable native pixel fixture
 
-`prepare.py --output <fresh-directory>` only copies exact current source/art,
-extracts the production mask update/bypass/fullbright procedures, and writes
-source hashes, `fixture.dme` and `fixture.dmf`. It never launches anything.
-Compile that DME with the same compiler-only wrapper. Keep each failed receipt.
+`prepare.py --head <full-current-commit> --output <fresh-directory>` verifies
+the actual checkout HEAD and clean relevant inputs, then reads canonical Git
+blobs from that revision. It stages committed source/art, extracts production
+mask/bypass/fullbright procedures and copies committed DME/DMF templates.
+The schema-3 manifest binds the head, tree, source blob IDs and **all** compiler
+inputs, including generated `fixture.dme`, `fixture.dmf` and production extracts.
+Neither a supplied 40-hex label nor a self-rehashed staged manifest is authority.
+It never launches an engine. Tests use synthetic providers or newly created
+local repositories; no historical Git checkpoint is required.
+
+Compile that fresh DME with the same compiler-only wrapper and matching `--head`.
+The fixture wrapper rejects preexisting DMB/RSC or compiler evidence, verifies
+revision-derived inputs before/after the unchanged retained Windows compiler,
+and writes `compile.receipt.json`, `compile.log` and `compile-supervisor.json`
+beside the fixture. The receipt links source/input hashes to DMB/RSC hashes,
+the pinned compiler, command, log and retained-process exit audit. Keep each
+failed receipt; do not replace stale artifacts just to satisfy admission.
 The fixture is a separate 21x21 world using actual tree/mask art and real opaque
 trunks; it has no game startup, live data, account credentials or test commands
 exposed through a game transport. It accepts one guest client only. Its movable
@@ -112,8 +125,12 @@ calibration square at WEST,SOUTH establishes the map origin independently of
 window decorations. Do not move/resize the window during samples.
 
 Before launching, call `protocol.initialize(stage, exact_head)` in the fresh
-prepared/compiled directory. It validates staged source hashes, binds DMB/RSC
-and creates a unique `run.binding.json`; the fixture refuses a missing binding.
+prepared/compiled directory, from the same current source revision. It rebuilds
+the expected input plan from that revision, validates every staged file and
+requires the matching accepted compiler receipt/log/owned exit audit before
+binding DMB/RSC. It cannot relabel an arbitrary/stale binary by hashing it.
+It creates a unique `run.binding.json`; the fixture refuses a missing binding.
+Earlier captures without this revision/compile chain remain diagnostic.
 Use `failure_control="runtime"` and `"admission"` in separate fresh negative
 runs: phase 2 must fail, never be acknowledged or reported as a pass.
 
