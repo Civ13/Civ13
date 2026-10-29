@@ -134,7 +134,7 @@
 		if (health > 0)
 			icon_state = icon_living
 			dead_mob_list -= src
-			living_mob_list += src
+			register_living_mob(src)
 			stat = CONSCIOUS
 			density = TRUE
 		return FALSE

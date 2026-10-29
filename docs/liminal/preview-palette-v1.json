@@ -1,0 +1,86 @@
+{
+  "schema": "civ13-liminal-static-preview-palette/1",
+  "version": "liminal-visual-proposal/0.1.0",
+  "status": "PROPOSAL_NOT_NATIVE_APPROVED",
+  "source_revision": "10d264e5896221b34949ee4b67c0fd2b94bde249",
+  "design_revision": "26c05cd8f85821c3ce76dcc72e3f0e61378c7ac4",
+  "catalog_sha256": "7ee6647de885a921746f9ac9d0ec5fa9e5140a30a8c06294cd4ff16c3d37c95b",
+  "coordinate_system": "zero-based x east, y north; catalog row zero south",
+  "aperture_policy": "SEALED_CATALOG; cyan annotations identify conditional three-cell openings only",
+  "assets": {
+    "office_carpet": {
+      "type": "/turf/floor/carpet/tealcarpet",
+      "icon": "icons/turf/flooring/carpet.dmi", "state": "sblucarpet",
+      "source": "code/game/turfs/floor_types.dm",
+      "related_source": ["code/game/turfs/flooring/flooring.dm", "code/game/turfs/floor_icon.dm"],
+      "appearance_limit": "Full base tile only; dynamic carpet edges and corners omitted.",
+      "era_basis": "Conventional woven office carpet; no electronic equipment or era-dependent loadout implied."
+    },
+    "hard_tile": {
+      "type": "/turf/floor", "vars": {"icon_state": "floor"},
+      "icon": "icons/turf/floors.dmi", "state": "floor",
+      "source": "code/game/turfs/floor.dm",
+      "appearance_limit": "Existing DMI state selected as a literal appearance proposal; native floor initialization remains unverified.",
+      "era_basis": "Plain grey square tiles, suitable for an early-1990s institutional interior."
+    },
+    "concrete_floor": {
+      "type": "/turf/floor/plating/concrete",
+      "icon": "icons/turf/floors.dmi", "state": "concrete6",
+      "source": "code/game/turfs/floor_types.dm",
+      "appearance_limit": "Fixed existing concrete6 frame; constructor may randomize concrete6/concrete7 and sets interior FALSE.",
+      "era_basis": "Unfinished concrete, no modern machinery inferred."
+    },
+    "concrete_wall": {
+      "type": "/turf/wall/cement",
+      "icon": "icons/turf/wall_masks.dmi", "state": "cement_wall0",
+      "source": "code/game/turfs/wall_types.dm",
+      "related_source": ["code/game/turfs/walls.dm", "code/game/turfs/wall_icon_exp.dm", "code/modules/materials/materials.dm"],
+      "appearance_limit": "Standalone cement_wall0 repeated per solid cell. Native material overlay/junction selection is deliberately not simulated.",
+      "era_basis": "Concrete wall/column mass. Dedicated fabric cubicle dividers are not mapped."
+    },
+    "archive_shelf": {
+      "type": "/obj/structure/bookcase",
+      "icon": "icons/obj/library.dmi", "state": "book-0",
+      "source": "code/game/objects/structures/bookcase.dm",
+      "appearance_limit": "Initial empty bookcase sprite; initialize/update_icon depend on contents and map era. No books or research content invented.",
+      "era_basis": "Wooden shelving predates 1990. Initial sprite only."
+    },
+    "filing_cabinet": {
+      "type": "/obj/structure/filingcabinet",
+      "icon": "icons/obj/bureaucracy.dmi", "state": "filingcabinet",
+      "source": "code/game/objects/structures/filingcabinet.dm",
+      "appearance_limit": "Closed dense filing cabinet appearance only; storage/removability are not immutable blockers or service interactions.",
+      "era_basis": "Mechanical filing cabinets; no post-1993 devices or interfaces."
+    }
+  },
+  "rooms": {
+    "arrival_vestibule": {"floor": "office_carpet", "solid": "concrete_wall", "feature": "Clear orientation volume; spawn site remains empty."},
+    "office_columns": {"floor": "office_carpet", "solid": "concrete_wall", "feature": "Two isolated columns; three protected approaches."},
+    "offset_office": {"floor": "office_carpet", "solid": "concrete_wall", "feature": "Two partition masses; exact three-cell central aperture."},
+    "cubicle_repetition": {"floor": "office_carpet", "solid": "filing_cabinet", "feature": "Twelve cabinets in four repeated bays; fabric-divider mapping pending."},
+    "archive_stacks": {"floor": "office_carpet", "solid": "archive_shelf", "feature": "Twelve empty shelving cells; continuous central aisle."},
+    "acoustic_atrium": {"floor": "hard_tile", "solid": "concrete_wall", "feature": "Open hard-floor volume with four columns; acoustics remain intent."},
+    "threshold_buffer": {"floor": "office_carpet", "east_half_floor": "hard_tile", "solid": "concrete_wall", "feature": "Carpet-to-tile material boundary; no extra door or blocker."},
+    "utility_gallery": {"floor": "hard_tile", "solid": "filing_cabinet", "feature": "Two five-cabinet banks; service anchor and work approach empty."},
+    "maintenance_alcove": {"floor": "concrete_floor", "solid": "concrete_wall", "feature": "Single south socket; discovery site empty. No storage added to floor."},
+    "extraction_airlock": {"floor": "hard_tile", "solid": "concrete_wall", "feature": "Single west socket; terminal exit site empty. No native airlock/escape device."}
+  },
+  "unmapped_roles": {
+    "doorway": "Conditional aperture geometry only; no native door type, lock or gate approved.",
+    "light": "No fixture placements authored; unlit full-bright asset presentation only.",
+    "spawn": "Catalog coordinate annotation only; no spawn landmark or job admission.",
+    "objective": "Catalog coordinate annotation only; marker and service interaction types pending.",
+    "exit": "Catalog coordinate annotation only; extraction area and timer pending.",
+    "portal": "Unsupported; no portal rendered or emitted.",
+    "audio": "Catalog sound intents retained as metadata; no audio/occlusion/reverb simulation.",
+    "native_collision": "Source density is only a candidate property; table climbing, cabinet movement, actor pixel clearance and native gates require independent validation."
+  },
+  "attribution": {
+    "repository": "https://github.com/Civ13/Civ13",
+    "credit": "Existing Civ13 and upstream SS13 art contributors; individual original authors are not named by these DMI files.",
+    "license_reference": "LICENSE",
+    "license_statement": "Repository root contains GNU Affero General Public License v3. No per-file sidecar found for these five DMI resources. Retain upstream notices and do not treat this as a new per-file license determination.",
+    "external_assets": [],
+    "asset_modifications": "None. First DMI frame/direction, alpha compositing and integer nearest-neighbor scaling only; annotations are separate editorial geometry."
+  }
+}

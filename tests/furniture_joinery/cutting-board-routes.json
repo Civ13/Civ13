@@ -1,0 +1,9 @@
+[
+  {"input":"fishfillet","output":"mince","count":1,"delay":180,"icon":"cutting_board_cutlet"},
+  {"input":"rawcutlet","output":"mince","count":1,"delay":180,"icon":"cutting_board_cutlet"},
+  {"input":"meat","output":"mince","count":2,"delay":180,"icon":"cutting_board_steak"},
+  {"input":"rawfish","output":"mince","count":2,"delay":180,"icon":"cutting_board_fish"},
+  {"input":"mince","output":"meatball","count":1,"delay":10,"icon":"cutting_board_mince"},
+  {"input":"meatball","output":"patty","count":1,"delay":0,"icon":"cutting_board_meatball"},
+  {"input":"driedmeat","output":"driedmeat/minced_driedmeat","count":1,"delay":180,"icon":"cutting_board_driedmeat"}
+]
