@@ -41,7 +41,8 @@
 			glide_size = human_subtile_previous_glide
 		human_subtile_glide_owned = FALSE
 
-/mob/living/human/proc/human_subtile_update_visuals(duration, direction, client/owner)
+/mob/living/human/proc/human_subtile_update_visuals(duration, direction, client/owner, distance = 32)
+	release_carriage_glide()
 	if (owner && human_subtile_visual_owner && human_subtile_visual_owner != owner)
 		human_subtile_visual_owner.human_subtile_release_visuals()
 	if (!human_subtile_glide_owned)
@@ -51,7 +52,7 @@
 		human_subtile_previous_glide = glide_size
 	// Native interpolation follows physical motion, including normalization at
 	// tile edges. Legacy pixel movement needs client FPS above server FPS.
-	glide_size = 32 * world.tick_lag / max(duration, world.tick_lag)
+	glide_size = distance * world.tick_lag / max(duration, world.tick_lag)
 	if ((direction & (direction - 1)) && !(appearance_flags & LONG_GLIDE))
 		glide_size *= ROOT2_FAST
 	human_subtile_applied_glide = glide_size
@@ -98,6 +99,10 @@
 	var/total_distance = 0
 	var/completed = FALSE
 	var/legacy_posture = FALSE
+	var/paid_posture
+	var/initial_prone
+	var/initial_lying
+	var/attempted = FALSE
 
 /mob/living/human/proc/human_subtile_snapshot()
 	return list("x" = x, "y" = y, "z" = z, "sx" = step_x, "sy" = step_y)
@@ -158,6 +163,30 @@
 	// pulses align moving axes, with one pair of completion hooks.
 	return human_subtile_travel(n, direct, world.time, TRUE)
 
+// Called after the original posture admission, before its paid wait. A handled
+// attempt owns the entire interval, including an early collision/cancellation.
+// This profile is client locomotion; NPC/linked bodies keep their legacy path.
+// Smooth walking may pull, but a pulling crawl stays on the legacy path.
+/mob/living/human/proc/human_subtile_crawl_authority(client/owner)
+	return owner && client == owner && owner.mob == src && owner.canmove
+
+/mob/living/human/proc/human_subtile_crawl_ready(direction)
+	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned)
+
+/mob/living/human/proc/human_subtile_crawl_move(turf/n, duration, posture)
+	var/direct = get_dir(src, n)
+	if (human_subtile_transaction || human_subtile_pulse || !scrambling || !human_subtile_crawl_ready(direct) || !human_subtile_crawl_authority(client) || n != get_step(src, direct) || !(posture in list("prone", "scramble")) || !isnum(duration) || duration <= 0 || duration >= INFINITY)
+		return FALSE
+	if (human_subtile_default_pending)
+		set_human_subtile(TRUE)
+	if (!human_subtile_enabled)
+		return FALSE
+	var/deadline = world.time + duration
+	if (client)
+		client.move_delay = max(client.move_delay, deadline)
+	human_subtile_travel(n, direct, deadline, FALSE, posture)
+	return TRUE
+
 /mob/living/human/proc/set_human_subtile(enabled)
 	if (human_subtile_transaction || human_subtile_pulse || !human_subtile_shape())
 		return FALSE
@@ -214,7 +243,7 @@
 		return FALSE
 	return human_subtile_travel(n, direct, deadline)
 
-/mob/living/human/proc/human_subtile_travel(turf/n, direct, deadline, legacy_posture = FALSE)
+/mob/living/human/proc/human_subtile_travel(turf/n, direct, deadline, legacy_posture = FALSE, paid_posture = null)
 	if (human_subtile_transaction || human_subtile_pulse)
 		return FALSE
 	var/datum/human_subtile_transaction/T = new
@@ -224,13 +253,17 @@
 	T.end_time = deadline
 	T.expected = human_subtile_snapshot()
 	T.legacy_posture = legacy_posture
-	if (!legacy_posture)
+	T.paid_posture = paid_posture
+	T.initial_prone = prone
+	T.initial_lying = lying
+	if (!legacy_posture && !paid_posture)
 		human_subtile_update_visuals(deadline - world.time, direct, client)
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
 		moved = T.perform(direct)
 	catch (var/exception/subtile_error)
+		T.wait_paid_interval()
 		T.finish()
 		throw subtile_error
 	T.finish()
@@ -238,16 +271,29 @@
 
 /datum/human_subtile_transaction/proc/release()
 	if (actor && actor.human_subtile_transaction == src)
+		if (paid_posture)
+			release_visuals()
 		actor.human_subtile_pulse = null
 		actor.human_subtile_transaction = null
 	actor = null
 	owner = null
 	return
 
+/datum/human_subtile_transaction/proc/release_visuals()
+	if (actor && actor.human_subtile_transaction == src)
+		if (owner && owner.human_subtile_visual_actor == actor)
+			owner.human_subtile_release_visuals()
+		actor.human_subtile_release_glide()
+
 /datum/human_subtile_transaction/proc/valid(direction)
 	if (cancelled || !actor || isDeleted(actor) || actor.human_subtile_transaction != src || persistence_save_in_progress || world.time > end_time + world.tick_lag)
 		return FALSE
-	if (legacy_posture)
+	if (paid_posture)
+		if (!actor.scrambling || !actor.human_subtile_enabled || !actor.human_subtile_crawl_ready(direction) || !actor.human_subtile_crawl_authority(owner) || actor.prone != initial_prone || actor.lying != initial_lying)
+			return FALSE
+		if (map && map.check_caribbean_block(actor, get_turf(actor)))
+			return FALSE
+	else if (legacy_posture)
 		if (!actor.human_subtile_posture_ready(direction) || !actor.human_subtile_posture_authority(owner))
 			return FALSE
 	else if (!actor.human_subtile_authority(owner) || !actor.human_subtile_eligible(direction))
@@ -262,11 +308,19 @@
 	// uses native collision. A reverse input can therefore escape a 2px offset.
 	var/remaining_x = (direction & EAST) ? 32 - actor.step_x : (direction & WEST) ? (actor.step_x ? actor.step_x : 32) : 0
 	var/remaining_y = (direction & NORTH) ? 32 - actor.step_y : (direction & SOUTH) ? (actor.step_y ? actor.step_y : 32) : 0
+	var/pulse_count = paid_posture ? ceil(max(remaining_x, remaining_y) / 2) : 16
+	if (paid_posture)
+		actor.human_subtile_update_visuals(duration, direction, owner, max(remaining_x, remaining_y))
 	for (var/i = 1, i <= 16, i++)
 		if (!remaining_x && !remaining_y)
 			break
 		var/due = start_time + (i - 1) * duration / 16
-		if (due > world.time)
+		if (paid_posture)
+			due = start_time + i * duration / pulse_count
+			// Observe cancellation every tick, including injury-lengthened waits.
+			while (due > world.time && valid(direction))
+				sleep(world.tick_lag)
+		else if (due > world.time)
 			sleep(due - world.time)
 		if (!valid(direction))
 			break
@@ -310,6 +364,7 @@
 		if (hanging)
 			break
 		var/datum/human_subtile_pulse/P = new
+		attempted = TRUE
 		P.actor = actor
 		P.destination = destination
 		P.direction = direction
@@ -322,7 +377,7 @@
 		if (!actor || isDeleted(actor) || actor.human_subtile_transaction != src)
 			break
 		actor.human_subtile_pulse = null
-		if (legacy_posture ? !actor.human_subtile_posture_authority(owner) : !actor.human_subtile_authority(owner))
+		if (paid_posture ? !actor.human_subtile_crawl_authority(owner) : (legacy_posture ? !actor.human_subtile_posture_authority(owner) : !actor.human_subtile_authority(owner)))
 			break
 		var/list/after = actor.human_subtile_snapshot()
 		if (after["z"] != expected["z"])
@@ -338,10 +393,21 @@
 			break
 		remaining_x -= abs(actual_x)
 		remaining_y -= abs(actual_y)
+	wait_paid_interval()
 	return total_distance > 0
 
+/datum/human_subtile_transaction/proc/wait_paid_interval()
+	if (paid_posture)
+		// Restore visuals as soon as travel stops, but retain admission ownership
+		// until the captured deadline, including a failed native call.
+		if (actor && actor.human_subtile_transaction == src)
+			actor.human_subtile_pulse = null
+		release_visuals()
+		while (world.time < end_time)
+			sleep(world.tick_lag)
+
 /datum/human_subtile_transaction/proc/complete()
-	if (!completed && actor && !isDeleted(actor) && total_distance > 0)
+	if (!completed && actor && !isDeleted(actor) && (total_distance > 0 || (paid_posture && attempted)))
 		completed = TRUE
 		actor.human_subtile_pulse = null
 		actor.living_movement_completed()

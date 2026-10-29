@@ -31,6 +31,11 @@ cloth/leather stacks locally; unmapped padding stays installed on removal.
 Hammer teardown must recover padding before frame output/deletion or refuse it;
 the bed guard runs after its existing wait. Keep unpadded wooden-bed recovery.
 See `docs/upholstered-seating-audit.md`; preserve existing costs, gates and art.
+Canopy cloth/leather routes already exist. Unfold/fold revalidate the actor,
+tile, item and persistence identity after waiting. Folding protects independent
+roofs and keeps shared cover until the last canopy leaves. Recompute neighbor
+states after retirement. See `docs/canopy-crafting-audit.md`; do not alter shared
+roof/area or seasonal-collapse policy as part of a canopy recipe change.
 
 <!-- 2026-10-28: explicit furniture joinery alternatives -->
 Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
@@ -87,6 +92,37 @@ active hand. The custom saver must exclude both reservation pointers.
 
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
+
+<!-- 2026-10-29: portable barrel ingredient accounting -->
+Portable barrels keep their existing ore/manure conversions. Require actual
+open-holder capacity; debit a whole ore unit via stack.use before granting its
+three-unit dose. Transfer only a complete manure payload up to ten units and
+delete the item only when drained. Preview volumes with no reactions/data copy
+to refuse near-capacity trace pruning. Preserve the shared-glass all-suite CI
+fallback. See `docs/barrel-ingredient-audit.md`; the separate food barrels probe
+does not claim inherited fruit conversion or large-dispenser lock coverage.
+The following fixed-dose food extraction slice requires full existing output
+capacity in all fifteen glass food branches; cinchona returns on rejection.
+Keep the original yields and ordering. See `docs/glass-food-extraction-audit.md`;
+variable-dose cotton and lard-candle waits remain outside that bounded fix.
+The subsequent cotton slice retains the whole-pile one-to-one conversion but
+requires full actual capacity and positive whole cotton stock paid via use.
+See `docs/cotton-insertion-audit.md`; candle waits are still separate work.
+
+<!-- 2026-10-29: paid cutting-board input -->
+Cutting boards retain a live paid food child, with normal decay at exposed-food
+rate and existing child save/load. Refuse unsupported subtypes and spoiled food;
+transfer original reagents, relative age and salt instead of fresh constructor
+nutrition. Knife/scraping waits revalidate the exact slot and persistence
+identity; claim the slot before output constructors. Keep quantities/delays and
+single parent dispatch. `docs/cutting-board-production-audit.md` distinguishes
+full board handler review from barrel recipe triage.
+Refuse equal splits whose reagent shares fall below chemistry's existing
+minimum; otherwise trace poisons can vanish. Recheck after waits and retain the
+shared holder/threshold all-suite CI fallback. Shared chemistry
+pruning is unchanged; the native trace fixture demonstrates both loss and guard.
+The separate food `--probe cutting` fixture avoids the crafting runner's budget;
+`--compile-only` starts no world and establishes no runtime/save acceptance.
 
 <!-- 2026-10-15: Modern processor recipe validation -->
 The recipe catalog fixture defaults to era 0. New era-gated machine families

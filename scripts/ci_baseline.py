@@ -45,6 +45,9 @@ SUITES = {
         'code/modules/persistence/functions.dm')},
     'hub_status': {'files': ('tests/test_hub_status.py',), 'paths': (
         'tests/test_hub_status.py', 'code/world.dm', 'config/config.txt')},
+    # Shared transport/persistence files retain their existing all-suite fallback.
+    'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
+        'tests/carriage_glide/',)},
     'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
                               'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
@@ -59,7 +62,8 @@ SUITES = {
     # Keep shared movement/lighting files unmapped: they retain all-suite fallback.
     'root_tree_presentation': {'files': (
         'tests/root_tree_presentation/test_contract.py',
-        'tests/root_tree_presentation/test_preparation.py'), 'paths': (
+        'tests/root_tree_presentation/test_preparation.py',
+        'tests/root_tree_presentation/test_protocol.py'), 'paths': (
         'tests/root_tree_presentation/', 'code/modules/visibility/',
         'code/__defines/_planes+layers.dm', 'civ13.dme',
         'tests/save_movement/source_adapter.py')},
@@ -98,9 +102,16 @@ SUITES = {
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
                                   'tests/furniture_joinery/test_document_drawers.py',
-                                  'tests/furniture_joinery/test_sofa_materials.py'), 'paths': (
+                                  'tests/furniture_joinery/test_sofa_materials.py',
+                                  'tests/furniture_joinery/test_canopy.py',
+                                  'tests/furniture_joinery/test_cutting_board.py',
+                                  'tests/furniture_joinery/test_barrel_ingredients.py',
+                                  'tests/furniture_joinery/test_glass_extraction.py',
+                                  'tests/furniture_joinery/test_glass_cotton.py'), 'paths': (
         'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
-        'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py')},
+        'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py',
+        'code/modules/1713/cutting_board.dm', 'tests/primitive_woodworking/source_adapter.py',
+        'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_phrase_mode.py'), 'paths': (

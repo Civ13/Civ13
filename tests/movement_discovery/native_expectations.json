@@ -1,0 +1,32 @@
+{
+  "scope": "Uncompiled source contract. Native-dependent traces must match the complete legacy trace exactly; no guessed mutation iterator policy is substituted.",
+  "bound": {"grid": [16, 16, 2], "trace_entries_per_dispatch": 256, "nested_depth": 1, "cases": 16, "loop_shapes": 2, "modes": 2},
+  "cases": [
+    {"id":"plain","events":{"human":["0|a|human","0|b|human","0|c|human"],"animal":["0|a|base","0|b|base","0|c|base"]},"members":"a,b,c"},
+    {"id":"duplicate","events":{"human":["0|a|human","0|b|human","0|c|human","0|a|human"],"animal":["0|a|base","0|b|base","0|c|base","0|a|base"]},"members":"a,b,c,a"},
+    {"id":"different-base","events":{"human":["0|a|human","0|b|human","0|c|human"],"animal":["0|a|base","0|b|base","0|c|type"]},"members":"a,b,c"},
+    {"id":"far","events":{"human":["0|a|human","0|b|human"],"animal":["0|a|base","0|b|base"]},"members":"a,b,c"},
+    {"id":"coordinate-policy","events":{"human":[],"animal":["0|a|base","0|b|base","0|c|base"]},"members":"a,b,c"},
+    {"id":"knowledge","events":{"human":["0|a|human","0|b|human","0|c|human"],"animal":[]},"members":"a,b,c"},
+    {"id":"remove-unrelated","events":{"human":null,"animal":null},"members":"a,b,c"},
+    {"id":"remove-self","events":{"human":null,"animal":null},"members":"b,c"},
+    {"id":"remove-next","events":{"human":null,"animal":null},"members":"a,c"},
+    {"id":"append","events":{"human":null,"animal":null},"members":"a,b,c,d"},
+    {"id":"delete-self","events":{"human":null,"animal":null},"members":"b,c"},
+    {"id":"delete-next","events":{"human":null,"animal":null},"members":"a,c"},
+    {"id":"delete-duplicate","events":{"human":null,"animal":null},"members":"a,c"},
+    {"id":"reentry","events":{"human":["0|a|human","1|a|human","1|b|human","1|c|human","0|b|human","0|c|human"],"animal":["0|a|base","1|a|base","1|b|base","1|c|base","0|b|base","0|c|base"]},"members":"a,b,c"},
+    {"id":"yield-remove-next","events":{"human":null,"animal":null},"members":"a,c"},
+    {"id":"yield-append","events":{"human":null,"animal":null},"members":"a,b,c,d"}
+  ],
+  "controls": {
+    "fixed": {"expected":"zero assertion failures, no runtime/compiler diagnostics, all 32 paired iteration cases and lifecycle record present"},
+    "missing-add": {"first_failure":"lifecycle.constructor-complex"},
+    "missing-remove": {"first_failure":"lifecycle.guard-remove"},
+    "deduplicate": {"first_failure":"lifecycle.duplicate-append"},
+    "reverse-order": {"first_failure":"lifecycle.constructor-second"},
+    "same-z": {"first_failure":"parity.human.plain"},
+    "rng-order": {"first_failure":"parity.animal.plain"}
+  },
+  "acceptance": "Compare complete ordered probability/dispatch trace, ordered surviving membership and knowledge arrays for each pair. Lifecycle return values, duplicate last removal and native null slot assertions must pass. A compile error, unexpected runtime error, timeout, missing case or different control failure is not accepted. Raw native evidence and external containment remain required in a separately approved run."
+}

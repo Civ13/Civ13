@@ -133,6 +133,8 @@
 
 /obj/structure/tent/New()
 	..()
+	if (!isturf(loc))
+		return
 	oldarea = get_area(src)
 	if (oldarea.location == AREA_OUTSIDE)
 		for(var/obj/structure/tent/T in range(1,src))
@@ -140,19 +142,36 @@
 		update_icon()
 		new/obj/roof/canopy(loc)
 
+/proc/canopy_actor_ready(mob/user, turf/site, datum/save_epoch)
+	return !QDELETED(user) && site && isturf(user.loc) && !user.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity
+
+/obj/item/weapon/tent/proc/unfold_allowed(mob/user, turf/site, atom/source_loc, datum/save_epoch)
+	if (QDELETED(src) || !canopy_actor_ready(user, site, save_epoch) || user.loc != site || loc != source_loc || (loc != user && loc != site))
+		return FALSE
+	var/area/A = get_area(site)
+	if (!A || A.location != AREA_OUTSIDE)
+		return FALSE
+	for (var/obj/structure/tent/T in site)
+		if (!QDELETED(T))
+			return FALSE
+	for (var/obj/roof/R in site)
+		if (!QDELETED(R))
+			return FALSE
+	return TRUE
+
 /obj/item/weapon/tent/attack_self(mob/user as mob)
-	for (var/obj/O in src.loc)
-		if (istype(O, /obj/structure/tent))
-			to_chat(user, "There is already a structure here.")
-			return
-	var/area/caribbean/oldarea = get_area(src)
-	if (oldarea.location == AREA_INSIDE)
-		to_chat(user, "This location is covered already, you can't set up a tent here.")
+	var/turf/site = get_turf(user)
+	var/atom/source_loc = loc
+	var/datum/save_epoch = persistence_admission_identity
+	if (!unfold_allowed(user, site, source_loc, save_epoch))
+		to_chat(user, "The canopy needs a clear, uncovered tile.")
 		return
 	visible_message("[user] starts unfolding the [src]...","You open the [src] and start unfolding it...")
 	if (do_after(user, 35, src))
+		if (!unfold_allowed(user, site, source_loc, save_epoch))
+			return
 		visible_message("[user] finishes unfolding the [src].","You finish unfolding the [src].")
-		new/obj/structure/tent(user.loc)
+		new /obj/structure/tent(site)
 		qdel(src)
 		return
 
@@ -160,22 +179,47 @@
 	set category = null
 	set src in view(1)
 	set name = "Fold Canopy"
+	fold_up(usr)
 
-	if (!oldarea)
-		return
-	visible_message("[usr] starts folding the [src]...","You start folding the [src]...")
-	if (do_after(usr, 35, src))
-		visible_message("[usr] finishes folding the [src].","You finish folding the [src].")
-		new/obj/item/weapon/tent(get_turf(src))
-		for(var/obj/structure/tent/T in range(1,src))
-			T.update_icon()
-		for (var/obj/roof/RF in loc)
-			qdel(RF)
+/obj/structure/tent/proc/fold_allowed(mob/user, turf/site, datum/save_epoch)
+	if (QDELETED(src) || !oldarea || loc != site || !canopy_actor_ready(user, site, save_epoch) || user.z != site.z || get_dist(user, site) > 1)
+		return FALSE
+	// A separate roof owns its own area transition. Do not remove or overwrite it.
+	for (var/obj/roof/R in site)
+		if (!QDELETED(R) && !istype(R, /obj/roof/canopy))
+			return FALSE
+	return TRUE
+
+/obj/structure/tent/proc/fold_up(mob/user)
+	var/turf/site = get_turf(src)
+	var/datum/save_epoch = persistence_admission_identity
+	if (!fold_allowed(user, site, save_epoch))
+		to_chat(user, "The canopy cannot be folded here; remove any other roof first.")
+		return null
+	visible_message("[user] starts folding the [src]...","You start folding the [src]...")
+	if (do_after(user, 35, src))
+		if (!fold_allowed(user, site, save_epoch))
+			return null
+		visible_message("[user] finishes folding the [src].","You finish folding the [src].")
+		var/other_canopy = FALSE
+		for (var/obj/structure/tent/T in site)
+			if (T != src && !QDELETED(T))
+				other_canopy = TRUE
+		// Retire this instance before roof callbacks or output construction can reenter.
 		qdel(src)
-		return
+		if (!other_canopy)
+			for (var/obj/roof/canopy/RF in site)
+				qdel(RF)
+		var/obj/item/weapon/tent/rolled = new /obj/item/weapon/tent(site)
+		for (var/obj/structure/tent/T in range(1,site))
+			if (!QDELETED(T))
+				T.update_icon()
+		return rolled
+	return null
 
 /obj/structure/tent/update_icon()
 	..()
+	icon_state = initial(icon_state)
 
 	for (var/obj/structure/tent/TTT in locate(x,y-1,z))
 		icon_state = "tent_s"

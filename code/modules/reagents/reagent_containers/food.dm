@@ -78,7 +78,7 @@
 				decaytimer += 200 //unpowered fridge still better, than storage container
 		else if (istype(loc, /obj/structure/closet/crate/freezer))
 			decaytimer += 50 //to be readjusted according to gameplay, since freezers don't require power
-		else if (isturf(loc)) //if on the floor (i.e. not stored inside something), decay faster
+		else if (isturf(loc) || istype(loc, /obj/structure/cutting_board)) // Exposed board food ages like loose food.
 			decaytimer += 600
 		else // Closed cans already returned above; opened cans age like ordinary storage.
 			decaytimer += 300
