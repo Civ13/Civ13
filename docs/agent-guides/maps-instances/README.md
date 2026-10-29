@@ -18,6 +18,14 @@ typed sockets, clearance/progression guards and design docs. It does not emit
 native DMMs, register a mode or prove native lighting/audio/gameplay. Keep native
 catalog/mode integration and third-party asset ports separately reviewed.
 
+<!-- 2026-10-27: liminal static visual proposal -->
+Version-1 docs/liminal/ROOM-PREVIEWS.md images are rejected historical evidence,
+not accepted layouts. RENDERER-FIDELITY-STUDY.md separates source-backed wall
+junction/door state and semantic furnishing audits from catalog redesign. Do not
+stretch a single-tile door across a three-cell socket or treat every dense prop
+as a partition/machine. Generic computer ibm_off and officechair_dark_over are
+absent in their DMIs at the audited source; do not invent their pixels.
+
 <!-- 2026-10-27: disabled Backrooms expedition foundation -->
 `docs/backrooms-expedition` separates powered colonization from finite escape.
 `gateway_core.dm` contains uninstantiated finite-charge/lifecycle/identity datums,
