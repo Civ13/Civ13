@@ -3,7 +3,7 @@
 /mob/living/human/var/tmp/persistence_restored = FALSE
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "persistence_restored" || ..()
+	return key == "persistence_restored" || key == "laddervision" || ..()
 
 var/global/list/persistence_restored_bodies = list()
 var/global/persistence_player_restore_ready = FALSE

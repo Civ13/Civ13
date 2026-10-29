@@ -1,4 +1,52 @@
 var/global/datum/world_save_game_probe/world_save_game_probe = new
+
+// Keep targets stable during the yielding serializer. Constructors, movement,
+// exclusion hooks and the exporter/importer are production implementations.
+/mob/living/simple_animal/frog/persistence_pointer_probe/Life()
+	return
+
+/datum/world_save_game_probe/proc/check_runtime_pointers()
+	if(world.maxz < 2)
+		throw EXCEPTION("Pointer regression requires two isolated levels")
+	var/turf/home = locate(23,20,1)
+	var/mob/living/simple_animal/frog/persistence_pointer_probe/actor = new(home)
+	var/mob/living/simple_animal/frog/persistence_pointer_probe/target = new(home)
+	actor.LAssailant = target
+	actor.target_mob = target
+	actor.target_obj = target
+	actor.pathfind_target = target
+	actor.stance = HOSTILE_STANCE_ATTACK
+	actor.moving = TRUE
+	actor.found_path = list(home)
+	if(!target.forceMove(locate(23,20,2)) || target.z != 2)
+		throw EXCEPTION("Pointer regression could not move target across z")
+	if(!ticker.savemap())
+		throw EXCEPTION("Cross-z AI pointer blocked world save: [map_storage.last_error]")
+	var/map_storage/storage = new("pointer-fixture")
+	storage.saving_z = 1
+	var/savefile/F = new("runtime-pointers.sav")
+	F["/format_version"] << 3
+	var/ref = storage.BuildVarDirectory(F, actor, 1)
+	F.cd = storage.entry_path(F, ref)
+	for(var/key in list("LAssailant", "target_mob", "target_obj", "pathfind_target", "stance", "moving", "found_path"))
+		if(key in F.dir)
+			throw EXCEPTION("Runtime pointer or dependent AI state was exported: [key]")
+	if(actor.target_mob != target || actor.target_obj != target || actor.pathfind_target != target || actor.LAssailant != target || actor.stance != HOSTILE_STANCE_ATTACK || !actor.moving)
+		throw EXCEPTION("Export mutated live AI pointers or stance")
+	// Historical payloads must be skipped before decoding a dangling reference.
+	F["target_mob"] << list("kind" = "entry", "ref" = 999999)
+	F["stance"] << list("kind" = "value", "value" = HOSTILE_STANCE_ATTACK)
+	storage.clear_bookkeeping()
+	storage.loading_z = 1
+	var/mob/living/simple_animal/restored = storage.Load_Entry(F, ref, null, home)
+	if(!restored || restored.target_mob || restored.stance != initial(restored.stance) || restored.moving)
+		throw EXCEPTION("Historical pointer import restored orphaned AI state")
+	qdel(actor)
+	qdel(target)
+	qdel(restored)
+	storage.clear_bookkeeping()
+	text2file("PASS: real frog cross-z pointers omitted without live mutation; legacy AI state ignored", "runtime_pointer_result.txt")
+
 /datum/world_save_game_probe/New()
 	// This compiled test world has no external adapters configured. Explicitly
 	// disable optional outbound hooks before the ordinary startup spawns run.
@@ -19,6 +67,7 @@ var/global/datum/world_save_game_probe/world_save_game_probe = new
 				del(world)
 			return
 		world.name = "Civ13 LOCAL full-game world-save probe"
+		check_runtime_pointers()
 		var/turf/T = locate(20,20,1)
 		var/saved_turf_type = T.type
 		var/obj/structure/closet/crate/C = new(T)

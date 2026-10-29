@@ -25,6 +25,18 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Source-only pointer inventory/hooks and injected alert counter. Imports are
+    # stdlib plus the existing inert save-movement projection; no native launch.
+    'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',),
+        'paths': ('tests/persistence_pointers/',),
+        'shared_paths': ('code/modules/persistence/',
+            'code/game/mob/living/simple_animal/',
+            'code/game/mob/living/carbon/human/pull_pair_ownership.dm',
+            'code/game/mob/grab.dm', 'code/game/mob/observer/ghost/ghost.dm',
+            'code/game/objects/structures/optable.dm',
+            'code/game/objects/items/weapons/explosives.dm',
+            'code/modules/multiz/structures.dm', 'code/_onclick/hud/action.dm',
+            'tests/world_save/full_game_probe.dm', 'tests/save_movement/source_adapter.py')},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},

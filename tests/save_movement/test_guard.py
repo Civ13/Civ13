@@ -82,6 +82,7 @@ def get_turf(atom):
 
 class Fixture:
     def __init__(self, movable_source=None, operation_source=None):
+        self.save_results = []
         self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
                         persistence_restart=NS(startup_hold=False, busy=False, exists=lambda: False),
@@ -96,7 +97,8 @@ class Fixture:
                                                         (kind == '/obj' and not a.human) or
                                                         (kind == '/mob' and a.human)],
                         CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2, world=NS(time=42, timeofday=42),
-                        to_chat=lambda *args: None, SPAN_WARNING=lambda text: text)
+                        to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
+                        record_save_outcome=self.save_results.append)
         self.area, self.admin = Area(), Area(True)
         self.sleep = Atom(self.admin, turf=True, xyz=(1, 1, 1))
         self.home = Atom(self.area, turf=True, xyz=(3, 2, 2))
@@ -534,6 +536,7 @@ class GuardTests(unittest.TestCase):
                 else:
                     self.assertEqual(f.backend(f.store, 'save'), outcome)
                 self.assertTrue(all(observed))
+                self.assertEqual(f.save_results, [outcome is True])
                 self.assertEqual(len(observed), 1 if outcome is True else 2)
                 self.assertIsNone(f.env['persistence_active_operation'])
                 self.assertFalse(f.env['persistence_save_in_progress'])

@@ -1,5 +1,15 @@
 # Persistence: scoped agent notes
 
+<!-- 2026-10-29: pointer classification audit -->
+See [the #3407 pointer audit](../../persistence-pointer-audit.md) and
+`tests/persistence_pointers` for the bounded typed inventory, safe runtime
+exclusions, legacy grab/action constructor rejection and repeated-save alerts.
+AI targets require their dependent stance/path state to be excluded too.
+`following_mob` includes a consumed/refundable leash; keep it fail-closed pending
+the paid-relationship policy. Ladder topology and unknown links also remain
+fail-closed. Do not clear live pointers to make export succeed. The full-game
+frog regression is prepared source, not proof that native save/load ran.
+
 Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts
