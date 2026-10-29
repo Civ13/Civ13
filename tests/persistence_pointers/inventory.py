@@ -2,7 +2,8 @@
 
 Includes tmp and inherited declarations. Untyped vars, collections, dynamic
 assignments and files outside SCOPE still need separate review. Retained means
-fail closed, not a claim of cross-level safety or a durable codec.
+fail closed, not a claim of cross-level safety. level_link fields use the
+cross-level link codec declared by persistence_level_link_var.
 """
 from pathlib import Path
 import re

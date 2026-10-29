@@ -10,12 +10,12 @@ references. Unknown and durable links retain the cross-level rejection.
 | Animal `target_obj`, `target_mob`, `pathfind_target` | Current AI search/combat/navigation state | Exclude alongside `found_path`, `moving`, `last_pathfound`, `move_gen`, `stance`, `stance_step`; imports use type defaults |
 | Hostile `target` | Current AI target | Exclude only on hostile animals, with parent delegation |
 | Pet `movement_target`, `flee_target` | Prey/pursuit and fleeing state in `handle_movement_target`/`handle_flee_target` | Exclude only on pets |
-| Animal `following_mob` | Paid leash is consumed in `attackby` and recreated in `free_animal`; NPC speech commands also use it | Retain fail-closed pending policy below |
+| Animal `following_mob` | Paid leash is consumed in `attackby` and recreated in `free_animal`; NPC speech commands also use it | Durable: saved as-is, through the cross-level link codec when the followed atom is on another level |
 | NPC transaction `target`, `combat_target`, `following`, pulse/transaction `actor` | Both owner datums explicitly `should_save = FALSE` | No direct save blocker; preserve owner exclusions |
 | Grab `assailant`, `affecting`, `hud` and reciprocal indexes | Entire live combat/UI graph; constructor requires user/victim | Exclude whole grab type and mob `grab_list`/`grabbed_by`; reject legacy grab type before constructing; hand/content refs encode null |
 | Operating table `victim` | `check_victim` only clears it; `take_victim` moves C but never assigns this cache | No proven non-null gameplay writer; retain guard |
 | Plastique `target` | `afterattack(atom/movable/target, ...)` shadows the field; `target = target` assigns the argument | No proven non-null field writer; retain guard, do not silently change armed explosive behavior |
-| Stair/ladder `target` | Durable topology/cache: constructors/initialization call `find_target`; linked ladders point to another level by design | Retain fail-closed; initialization reconstruction is not a saved cross-level codec |
+| Stair/ladder `target` | Durable topology/cache: constructors/initialization call `find_target`; linked ladders point to another level by design | Durable: the exact paired object is restored through the cross-level link codec |
 | Pull pair `leader`, `follower`, capability `member` | Owner datums explicitly `should_save = FALSE`; save admission resolves paired movement separately | No direct blocker from these datums; preserve admission checks |
 | Ghost `following` | Ghosts are not on `ignore_types`; spectator follow can retain another level | Exclude only the follow field; do not assume all ghosts are unsaved |
 | HUD action `target`, `owner`, `button` | `/datum/action` is held in `mob.actions`; it is distinct from `/datum/hud` | Exclude whole action type plus mob index; reject legacy action constructors |
@@ -50,17 +50,42 @@ it omits native lookup refs, player identities and values. Alert errors cannot
 replace the export exception or strand admission. No Discord destination or
 test/live message is introduced. The counter is process-local and not saved.
 
+## Cross-level links
+
+<!-- 2026-10-29: durable leash/follow and stair/ladder links -->
+A type opts a top-level field into the link codec with
+`persistence_level_link_var(key)`; only `following_mob` on simple animals and
+`target` on `/obj/structure/multiz` do so. Every other field keeps the per-level
+`cross_level_object` rejection, and a same-level value still uses an ordinary
+entry. The codec preserves the relationship exactly: it never refunds, drops or
+re-derives a paid leash, command-follow or ladder pair.
+
+- Export: when a declared field holds a movable whose turf is on another level,
+  the field stores `{"kind": "level_link", "id": N}`. Row N of the optional
+  `level_links` list in `round.json` records the target's own level, entry and
+  exact type, bound when that level exports it (or immediately, if it already
+  has). One row serves every link to the same target. A target that would not
+  be saved encodes null, as an unsaved same-level entry does. A saved target
+  which is never exported (`unbound_level_link`) or exported twice
+  (`duplicate_level_link`) fails the save closed and is recorded in
+  `last_save_reference_failure` for the repeated-failure alert.
+- Preflight: `read_round_state` and `validate_world_save` check every row's
+  shape, that each target entry has the recorded type in the same generation
+  and is reachable from a turf, and that every link value names a row. Links
+  are only valid as top-level fields; nested values are rejected.
+- Import: link fields are deferred while levels load, then assigned after the
+  last level, before roof verification. A missing or retyped target fails the
+  load before players are restored. Saves without links keep the old
+  `round.json` shape; older saves contain no link values.
+
+`tests/persistence_pointers/level_links/run.py` runs the actual saver, loader
+and preflight in an isolated 3x2x2 world: forward, backward, mutual pair,
+nested and shared targets, same-level, undeclared field, unsaved target,
+unbound target and tampered-row cases, plus export/import mutation controls.
+
 ## Decisions and remaining work
 
-`following_mob` requires durable cross-level identity engineering to preserve
-the existing paid leash and command-follow behavior. No new product decision
-is required for that preservation path. Do not automatically turn command-follow
-into transient state, or discard/refund paid relationships during save/load.
-
-Stair/ladder topology needs a reviewed durable identity/restore contract, or an
-explicitly proven reconstruction contract across every ladder subtype and load
-order. This patch does not declare initialization alone sufficient, and it
-does not implement cross-level power networks.
+Cross-level power networks are still not implemented.
 
 The policy for known transient fields is explicit omission before encoding and
 before legacy decoding. There is no catch-and-drop fallback for unknown
@@ -69,6 +94,6 @@ cross-level pointers. Newly found pointers require their own classification.
 Native acceptance remains separate: run the isolated full-game frog/cross-level
 save/import regression only with authorization for that runner, temporary saves
 and its external-effect adapters. Offline checks and compilation do not prove
-native save/load behavior or a deployed fix. Keep #3407 open for the unresolved
-paid-follow/topology implementation and native evidence. Vertical power connections
-remain queued until #3407 is finished.
+native save/load behavior or a deployed fix. The link fixture above is native
+evidence for the codec only, not for the full game. Vertical power connections
+can now build on the cross-level link codec.

@@ -36,8 +36,8 @@
     "field": "following_mob",
     "type": "/mob/living",
     "path": "code/game/mob/living/simple_animal/simple_animal.dm",
-    "policy": "retained_fail_closed",
-    "reason": "Paid leash is consumed/recreated here; command-follow shares the field. Policy and durable identity unresolved."
+    "policy": "level_link",
+    "reason": "Paid leash or command-follow is saved as-is; a followed atom on another level uses the cross-level link codec."
   },
   {
     "owner": "/mob/living/simple_animal",
@@ -164,8 +164,8 @@
     "field": "target",
     "type": "/obj/structure/multiz",
     "path": "code/modules/multiz/structures.dm",
-    "policy": "retained_fail_closed",
-    "reason": "Durable topology is reconstructed by find_target during initialization; cross-level export is still unsupported."
+    "policy": "level_link",
+    "reason": "Durable stair/ladder pair; the paired object on another level is restored exactly through the cross-level link codec."
   },
   {
     "owner": "/datum/subtile_pull_pair",

@@ -65,7 +65,7 @@ class PointerContracts(unittest.TestCase):
         self.assertEqual(actual, expected, 'Review new/changed pointer declarations; do not auto-allowlist')
         self.assertEqual(len(expected), len(reviewed))
         for row in reviewed:
-            self.assertIn(row['policy'], ('runtime', 'unsaved_graph', 'coordinate', 'retained_fail_closed'))
+            self.assertIn(row['policy'], ('runtime', 'unsaved_graph', 'coordinate', 'retained_fail_closed', 'level_link'))
             self.assertGreater(len(row['reason']), 15)
 
     def test_scanner_covers_tmp_and_explicit_paths_without_proc_locals(self):

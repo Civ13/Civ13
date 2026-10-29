@@ -100,6 +100,9 @@
 		savefile = null // Close the candidate level before consistency validation.
 		sleep(world.tick_lag)
 		log_startup_progress("	Saved z-level [A].")
+	// Bind every cross-level link before candidate validation reads round state.
+	var/list/level_links = finish_level_links()
+	if(level_links.len) round_state["level_links"] = level_links
 	clear_bookkeeping()
 	if(world_state)
 		if(zone_export_state) finalize_zone_export(world_state)
@@ -151,7 +154,8 @@
 	saving_reference_pins += A
 	saving_references["\ref[A]"] = ref
 	if(istype(A, /atom/movable))
-		saving_world_movables["\ref[A]"] = list("atom" = A, "z" = saving_z)
+		saving_world_movables["\ref[A]"] = list("atom" = A, "z" = saving_z, "ref" = ref)
+		bind_level_link(A, ref)
 	if(durable_export) durable_export.bind_entry(A, saving_z, ref, src)
 	var/datum/save_export_frame/frame = new
 	frame.exporter = src
@@ -208,7 +212,11 @@
 				continue
 			if(A.vars.Find(v))
 				frame.current_field = v
-				var/value = encode_saved_value(savefile, A.vars[v])
+				var/value
+				if(level_link_target(A, v, A.vars[v]))
+					value = encode_level_link(A.vars[v])
+				else
+					value = encode_saved_value(savefile, A.vars[v])
 				frame.current_field = null
 				require_export_frame(frame)
 				savefile.cd = entry_path(savefile, ref)
@@ -280,3 +288,68 @@
 		save_work_check()
 		require_export_frame(frame)
 	return chunks
+
+// Cross-level links. A declared field whose movable target is placed on another
+// level stores a link ID; round state maps each ID to the target's own level
+// entry once that level is exported. A target which would not be saved encodes
+// null, exactly as an unsaved same-level entry does. An unbound saved target
+// fails closed instead of silently dropping the relationship.
+/map_storage/proc/level_link_target(datum/source, field, value)
+	if(!istype(value, /atom/movable) || !source.persistence_level_link_var(field))
+		return FALSE
+	var/turf/T = get_turf(value)
+	return T && T.z != saving_z
+
+/map_storage/proc/level_link_target_saved(atom/movable/target)
+	if(!target.should_save || istype(target, /obj/map_metadata))
+		return FALSE
+	for(var/ignored in ignore_types)
+		if(istype(target, ignored))
+			return FALSE
+	return TRUE
+
+/map_storage/proc/encode_level_link(atom/movable/target)
+	if(!level_link_target_saved(target))
+		return list("kind" = "entry", "ref" = 0)
+	var/identity = "\ref[target]"
+	var/id = saving_level_link_ids[identity]
+	if(id)
+		var/list/existing = saving_level_links[id]
+		if(existing["atom"] != target)
+			throw EXCEPTION("Cross-level link identity changed during export")
+		return list("kind" = "level_link", "id" = id)
+	var/list/link = list("atom" = target, "z" = 0, "ref" = 0, "type" = "[target.type]")
+	saving_level_links += list(link)
+	id = saving_level_links.len
+	saving_level_link_ids[identity] = id
+	// The target's own level may already be complete.
+	var/list/previous = saving_world_movables[identity]
+	if(previous && previous["atom"] == target)
+		link["z"] = previous["z"]
+		link["ref"] = previous["ref"]
+	return list("kind" = "level_link", "id" = id)
+
+/map_storage/proc/bind_level_link(atom/movable/A, ref)
+	var/id = saving_level_link_ids["\ref[A]"]
+	if(!id)
+		return
+	var/list/link = saving_level_links[id]
+	if(link["atom"] != A)
+		throw EXCEPTION("Cross-level link identity changed during export")
+	if(link["ref"] && (link["ref"] != ref || link["z"] != saving_z))
+		record_save_reference_failure("duplicate_level_link", A, ref, link["z"], link["ref"])
+		throw EXCEPTION("Cross-level link target was exported more than once: type=[A.type] first_z=[link["z"]] first_ref=[link["ref"]] current_z=[saving_z] current_ref=[ref]")
+	link["z"] = saving_z
+	link["ref"] = ref
+
+// Returns JSON-safe rows without live objects, then releases the export pins.
+/map_storage/proc/finish_level_links()
+	var/list/rows = list()
+	for(var/list/link in saving_level_links)
+		if(!link["ref"])
+			record_save_reference_failure("unbound_level_link", link["atom"])
+			throw EXCEPTION("Cross-level link target is absent from the saved world: type=[link["type"]]")
+		rows += list(list("z" = link["z"], "ref" = link["ref"], "type" = link["type"]))
+	saving_level_links = list()
+	saving_level_link_ids = list()
+	return rows

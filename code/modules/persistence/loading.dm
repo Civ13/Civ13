@@ -270,6 +270,8 @@
 		all_loaded += object
 		existing_references["[ind]"] = object
 		if(durable_import) durable_import.accept_entry(loading_z, ind, object)
+		if(loading_level_link_targets["[loading_z]:[ind]"])
+			loading_level_link_targets["[loading_z]:[ind]"] = object
 		for(var/v in savefile.dir)
 			savefile.cd = entry_path(savefile, ind)
 			if(object.persistence_runtime_var(v))
@@ -297,6 +299,9 @@
 								qdel(ob)
 					for(var/x in refs)
 						Load_Entry(savefile, x, null, object, nocontents = nextContents, lag_fix = lag_fix)
+			else if((format_version == 2 || format_version == 3) && is_level_link_value(savefile[v]))
+				// The target may be on a later level; assign after all levels load.
+				loading_level_link_fields += list(list(object, v, level_link_row(savefile[v])))
 			else if(format_version == 2 || format_version == 3)
 				object.vars[v] = decode_saved_value(savefile, savefile[v])
 			else if(istext(savefile[v]) && findtext(savefile[v], "**list") == 1)
@@ -422,6 +427,7 @@
 	// References may precede the roof object in the saved graph. Rebuild only
 	// the roof topology proven by preflight, before any object fields decode.
 	materialize_saved_roof_areas()
+	begin_level_link_import()
 	for(var/B = 1, B <= world.maxz, B++)
 		loading_z = B
 		try
@@ -481,6 +487,17 @@
 			clear_bookkeeping()
 			saved_turfs = list()
 			return FALSE
+	try
+		restore_level_links()
+	catch(var/exception/link_error)
+		if (surface_inventory) surface_inventory.discovery_fail()
+		clear_saved_roof_areas()
+		last_error = "[link_error] on [link_error.file]:[link_error.line]"
+		world.log << "World-save restoration failed: [last_error]"
+		message_admins("EXCEPTION IN MAP LOADING!! [link_error] on [link_error.file]:[link_error.line]")
+		clear_bookkeeping()
+		saved_turfs = list()
+		return FALSE
 	verify_restored_roof_areas()
 	clear_bookkeeping()
 	clear_saved_roof_areas()
@@ -500,6 +517,7 @@
 	clear_saved_roof_areas()
 	release_durable_world()
 	clear_saved_zones()
+	validated_level_links = null
 	try
 		if(candidate && (!persistence_active_operation || !persistence_active_operation.current(src, "save") || candidate["generation"] != zone_export_generation)) throw EXCEPTION("Unowned candidate validation")
 		if((!candidate && !fexists("map_saves/save_complete.txt")) || !fexists("map_saves/map.txt"))
@@ -509,6 +527,8 @@
 			throw EXCEPTION("Save metadata does not match the current map")
 		var/list/round_state = candidate ? candidate : read_round_state()
 		var/list/player_owners = list()
+		var/list/level_links = round_state["level_links"]
+		if(level_links) validate_level_link_rows(level_links)
 		if(isnull(round_mode_metadata(meta)))
 			throw EXCEPTION("Save round-mode metadata is malformed")
 		prepare_saved_zones(round_state["world_state"], round_state["generation"])
@@ -582,6 +602,9 @@
 							var/content_type = F["[entry_path(F, content_ref)]/type"]
 							if(!ispath(content_type, /atom/movable))
 								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
+					else if((version == 2 || version == 3) && is_level_link_value(value))
+						if(!level_links || !validate_level_link_value(value, level_links))
+							throw EXCEPTION("Invalid cross-level link on z=[z]")
 					else if(version == 2 || version == 3)
 						validate_saved_value(F, value, entry_set, validated_lists)
 					else if(istext(value) && findtext(value, "**entry") == 1)
@@ -591,9 +614,13 @@
 						for(var/item in params2list(copytext(value, 7)))
 							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
 								throw EXCEPTION("Missing legacy list entry on z=[z]")
+		if(level_links) validate_level_link_targets(level_links, round_state["generation"])
 		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
+		// Candidate validation during export never authorizes a later import.
+		if(!candidate) validated_level_links = level_links ? level_links.Copy() : list()
 		return TRUE
 	catch(var/exception/e)
+		validated_level_links = null
 		clear_saved_roof_areas()
 		clear_saved_zones()
 		release_durable_world()
@@ -715,3 +742,94 @@
 		refs += part
 		TICK_CHECK
 	return refs
+
+// Cross-level link rows are bounded JSON from round state: target level, entry
+// and exact type. Values in level files carry only the row index.
+/map_storage/proc/validate_level_link_rows(list/rows)
+	if(!islist(rows) || !rows.len || rows.len > 1000000)
+		throw EXCEPTION("Invalid cross-level link inventory")
+	var/list/seen = list()
+	for(var/list/row in rows)
+		if(!islist(row) || row.len != 3 || !("z" in row) || !("ref" in row) || !("type" in row))
+			throw EXCEPTION("Invalid cross-level link row")
+		var/z = row["z"]
+		var/ref = row["ref"]
+		var/type = istext(row["type"]) ? text2path(row["type"]) : null
+		if(!isnum(z) || z < 1 || z != round(z) || z > save_validation_maxz() || !isnum(ref) || ref < 1 || ref != round(ref) || !ispath(type, /atom/movable) || ispath(type, /obj/screen) || ispath(type, /mob/new_player))
+			throw EXCEPTION("Invalid cross-level link target identity")
+		if(seen["[z]:[ref]"])
+			throw EXCEPTION("Duplicate cross-level link target")
+		seen["[z]:[ref]"] = TRUE
+	if(rows.len != seen.len)
+		throw EXCEPTION("Invalid cross-level link inventory")
+	return TRUE
+
+/map_storage/proc/is_level_link_value(value)
+	if(!islist(value))
+		return FALSE
+	var/list/L = value
+	return L["kind"] == "level_link"
+
+/map_storage/proc/validate_level_link_value(list/value, list/rows)
+	if(value.len != 2 || !("id" in value))
+		return FALSE
+	var/id = value["id"]
+	return isnum(id) && id >= 1 && id == round(id) && id <= rows.len
+
+// Every target must be an entry of the same generation which normal contents
+// loading reaches from a turf; an orphan entry would never be constructed.
+/map_storage/proc/validate_level_link_targets(list/rows, generation)
+	for(var/z = 1, z <= save_validation_maxz(), z++)
+		var/list/wanted = list()
+		for(var/list/row in rows)
+			if(row["z"] == z) wanted["[row["ref"]]"] = row["type"]
+		if(!wanted.len) continue
+		var/savefile/F = new("map_saves/[z].sav")
+		if(generation && F["/generation"] != generation)
+			throw EXCEPTION("Cross-level link target belongs to another generation")
+		for(var/ref in wanted)
+			if("[F["[entry_path(F, ref)]/type"]]" != wanted[ref])
+				throw EXCEPTION("Cross-level link target differs from its saved level")
+		var/list/queue = list()
+		var/list/seen = list()
+		for(var/y = 1, y <= world.maxy, y++)
+			for(var/x = 1, x <= world.maxx, x++) queue += F["/map/[z]/[y]/[x]"]
+		var/cursor = 1
+		while(cursor <= queue.len && wanted.len)
+			TICK_CHECK
+			var/ref = "[queue[cursor++]]"
+			if(seen[ref]) continue
+			seen[ref] = TRUE
+			wanted -= ref
+			var/path = entry_path(F, ref)
+			var/type = F["[path]/type"]
+			if(ispath(type, /obj/screen) || ispath(type, /datum/hud)) continue
+			for(var/child in saved_content_refs(F["[path]/content"], F["/format_version"])) queue += child
+		if(wanted.len) throw EXCEPTION("Cross-level link references an unreachable world entry")
+
+/map_storage/proc/begin_level_link_import()
+	loading_level_links = validated_level_links
+	validated_level_links = null
+	loading_level_link_targets = list()
+	loading_level_link_fields = list()
+	if(!loading_level_links) return
+	for(var/list/row in loading_level_links)
+		loading_level_link_targets["[row["z"]]:[row["ref"]]"] = TRUE
+
+/map_storage/proc/level_link_row(list/value)
+	if(!loading_level_links || !validate_level_link_value(value, loading_level_links))
+		throw EXCEPTION("Cross-level link was not admitted by preflight")
+	return loading_level_links[value["id"]]
+
+/map_storage/proc/restore_level_links()
+	for(var/list/pending in loading_level_link_fields)
+		var/datum/owner = pending[1]
+		var/list/row = pending[3]
+		var/atom/movable/target = loading_level_link_targets["[row["z"]]:[row["ref"]]"]
+		if(!istype(target, /atom/movable) || "[target.type]" != row["type"])
+			throw EXCEPTION("Cross-level link target was not restored: type=[row["type"]]")
+		if(owner) owner.vars[pending[2]] = target
+		TICK_CHECK
+	loading_level_link_fields = list()
+	loading_level_link_targets = list()
+	loading_level_links = null

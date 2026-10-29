@@ -48,6 +48,11 @@
 	proc/find_target()
 		return
 
+	// Stair/ladder pairs link across levels by design. The saved link restores
+	// the exact paired object instead of re-deriving it from load order.
+	persistence_level_link_var(key)
+		return key == "target" || ..()
+
 	initialize()
 		find_target()
 /*
