@@ -91,7 +91,7 @@ class GatheringGroundingTests(unittest.TestCase):
                        {'topic': 'rain', 'source': 'code', 'text': 'rain ' + 'y' * 9000}]
         prompt = self.answer_prompt('How do I make a rain collector?', recipes + bridge.gameplay_knowledge(ROOT) + distractors)
         self.assertIn('recipe: dew collector', prompt)
-        self.assertIn('8 x softwood', prompt)
+        self.assertIn('8 x finished planks', prompt)
         self.assertIn('basic_agriculture', prompt)
         self.assertIn('current gameplay code (dew collector rain collector', prompt)
         self.assertIn('findtext(a.icon_state, "rain")', prompt)

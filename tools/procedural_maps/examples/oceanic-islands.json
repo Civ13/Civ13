@@ -1,0 +1,100 @@
+{
+  "schema": "civ13-generation-config/3",
+  "profile": "OCEANIC",
+  "preset": "CUSTOM",
+  "seed": "ocean-0",
+  "dimensions": {
+    "width": 64,
+    "height": 80,
+    "layers": {
+      "SURFACE": 2,
+      "UNDERGROUND": 1
+    }
+  },
+  "biome_mix_pct": {
+    "COAST": 40,
+    "TEMPERATE": 60
+  },
+  "climate": {
+    "moisture_range": [
+      35,
+      75
+    ],
+    "temperature_c_range": [
+      15,
+      30
+    ]
+  },
+  "water": {
+    "coverage_pct": [
+      65,
+      82
+    ],
+    "river_networks": [
+      0,
+      0
+    ],
+    "river_width_tiles": [
+      2,
+      5
+    ],
+    "lake_count": [
+      2,
+      3
+    ],
+    "lake_area_pct": [
+      1,
+      2
+    ],
+    "swamp_pct": [
+      0,
+      0
+    ],
+    "sea_pct": [
+      65,
+      75
+    ]
+  },
+  "mountains": {
+    "range_count": [
+      0,
+      1
+    ],
+    "range_min_area": 16,
+    "range_width_tiles": [
+      2,
+      4
+    ]
+  },
+  "vegetation": {
+    "suitable_site_density_pct": [
+      10,
+      35
+    ]
+  },
+  "resources": {
+    "density_per_1000_land_tiles": [
+      10,
+      30
+    ]
+  },
+  "starts": {
+    "count": 6,
+    "min_spacing_tiles": 8,
+    "max_route_tiles": 60
+  },
+  "ocean_layout": {
+    "island_count": [
+      2,
+      3
+    ],
+    "island_min_area": 64,
+    "island_gap_tiles": 6,
+    "ship_radius": 1,
+    "coast_width_tiles": 2,
+    "climate_axis": [
+      1,
+      1
+    ]
+  }
+}

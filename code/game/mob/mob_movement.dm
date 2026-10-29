@@ -191,6 +191,9 @@
 
 //This proc should never be overridden elsewhere at /atom/movable to keep directions sane.
 /atom/movable/Move(newloc, direct)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (!persistence_movement_allowed(src, newloc))
 		return FALSE
 	var/datum/human_subtile_pulse/subtile_pulse
@@ -813,7 +816,7 @@
 
 			// make animals acknowledge us
 			if (mob_is_human)
-				for (var/mob/living/simple_animal/complex_animal/C in living_mob_list) // living_mob_list fails here
+				for (var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list)
 					var/dist_x = abs(mob.x - C.x)
 					var/dist_y = abs(mob.y - C.y)
 					if (dist_x <= 10 && dist_y <= 10)

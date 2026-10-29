@@ -27,7 +27,8 @@
     <Compile Include="LocalHosting.cs" />
     <Compile Include="Social/*.cs" />
     <Compile Include="Management/*.cs" />
-    <ProjectReference Include="../../server-management/Core/Civ13.ServerManagement.csproj" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
+    <!-- Compiled in directly: a self-contained -r win-x64 restore would otherwise need runtime packs for the offline server-management feed. -->
+    <Compile Include="../../server-management/Core/*.cs" />
     <!-- Offline fixtures construct clock-bound proofs without DNS or sockets. -->
     <InternalsVisibleTo Include="Civ13.Launcher.SocialContracts" />
     <EmbeddedResource Include="../channel.json" LogicalName="client-channel.json" />

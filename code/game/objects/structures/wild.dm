@@ -131,6 +131,9 @@ var/list/seed_list_jungle
 		return pick_seed_by_biome(A.climate)
 
 /obj/structure/wild/Destroy()
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	if (amount > 0)
 		var/obj/item/stack/material/wood/wooddrop = new /obj/item/stack/material/wood
 		wooddrop.amount = amount
@@ -382,6 +385,9 @@ var/list/seed_list_jungle
 	deadicon_state = icon_state
 
 /obj/structure/wild/tree/live_tree/update_icon()
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(src)
+	#endif
 	..()
 	if (radiation >= 15)
 		icon = deadicon
