@@ -9,7 +9,8 @@ from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = '10d264e5896221b34949ee4b67c0fd2b94bde249'
+# The reviewed master merged into this branch, including #3370's movement rule.
+BASE = '01566713425d9e923b6ed2e18332113d48f6bc67'
 HUMAN = 'code/game/mob/living/carbon/human/subtile_movement.dm'
 STACK = 'code/game/objects/items/stacks/stack.dm'
 WAIT = 'code/_helpers/mobs.dm'
@@ -87,14 +88,46 @@ class CraftingMovementContracts(unittest.TestCase):
                 if changed == 'other_window': user.using_object = object()
                 self.assertFalse(eval(code, {'__builtins__': {}}, current))
 
-    def test_default_denies_and_malformed_associations_cannot_dispatch(self):
-        source = block(HUMAN, '/mob/living/human/proc/human_subtile_object_use_supported()', '/mob/living/human/proc/human_subtile_prepare_ui_movement()')
-        self.assertIn('istype(using_object, /atom/movable) && using_object.allows_smooth_movement_ui(src)', source)
-        self.assertIn('/atom/movable/proc/allows_smooth_movement_ui(mob/living/human/user)\n\treturn FALSE', source)
+    def test_admission_keeps_master_pulling_and_open_menu_rule(self):
+        # #3370 is the accepted rule: pulling and every using_object except a
+        # mounted gun keep smooth movement. The recipe-view contract never gates.
+        unlinked = block(HUMAN, '/mob/living/human/proc/human_subtile_unlinked()', '\n\n')
+        self.assertEqual(unlinked, '/mob/living/human/proc/human_subtile_unlinked()\n\treturn ' +
+                         block(HUMAN, '!buckled && !riding', '\n'))
+        self.assertEqual(unlinked, baseline(HUMAN)[baseline(HUMAN).index('/mob/living/human/proc/human_subtile_unlinked()'):][:len(unlinked)])
+        self.assertNotRegex(unlinked, r'!pulling\b')
+        self.assertIn('!istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary)', unlinked)
+        for gate in ('!using_object &&', 'allows_smooth_movement_ui', 'human_subtile_object_use_supported'):
+            self.assertNotIn(gate, unlinked)
         human = read(HUMAN)
-        for guard in ('!pulling', '!pulledby', '!buckled', '!riding', '!using_drone', '!control_object', '!using_cannon'):
-            self.assertIn(guard, human)
-        self.assertIn('human_subtile_object_use_supported()', human)
+        self.assertNotIn('human_subtile_object_use_supported', human)
+        for guard in ('!pulledby', '!buckled', '!riding', '!using_drone', '!control_object', '!using_cannon'):
+            self.assertIn(guard, unlinked)
+        self.assertIn('/atom/movable/proc/allows_smooth_movement_ui(mob/living/human/user)\n\treturn FALSE', human)
+
+    def test_generated_old_allowlist_is_caught_restricting_pulling_and_menus(self):
+        unlinked = block(HUMAN, '/mob/living/human/proc/human_subtile_unlinked()', '\n\n')
+        rule = block(HUMAN, '!buckled && !riding', '\n')
+        names = ('buckled', 'riding', 'riding_mob', 'using_drone', 'control_object', 'incorporeal_move',
+                 'pulling', 'pulledby', 'grab_list', 'grabbed_by', 'using_cannon', 'football')
+
+        def admitted(expression, pulling, menu):
+            text = expression.replace('(!grab_list || !grab_list.len)', 'True').replace('(!grabbed_by || !grabbed_by.len)', 'True')
+            text = text.replace('!istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary)', 'not mounted')
+            text = text.replace('human_subtile_object_use_supported()', 'not menu').replace('!using_object', 'not menu')
+            values = {name: False for name in names}
+            values.update(pulling=pulling, menu=menu, mounted=False)
+            code = compile(text.replace('&&', ' and ').replace('!', ' not ').strip(), '<rule>', 'eval')
+            return bool(eval(code, {'__builtins__': {}}, values))
+
+        for pulling, menu in ((True, False), (False, True), (True, True)):
+            self.assertTrue(admitted(rule, pulling, menu), (pulling, menu))
+        old = ('!buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulling && !pulledby && '
+               '(!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && human_subtile_object_use_supported() && !using_cannon && !football')
+        self.assertFalse(admitted(old, True, False), 'control should refuse a pulling human')
+        self.assertFalse(admitted(old, False, True), 'control should refuse an unlisted open menu')
+        self.assertNotEqual(old, rule)
+        self.assertIn(rule, unlinked)
 
     def test_stale_recipe_view_closes_before_admission_without_snap_or_focus(self):
         source = block(HUMAN, '/mob/living/human/proc/human_subtile_prepare_ui_movement()', '/mob/living/human/proc/human_subtile_input_supported')
@@ -139,9 +172,8 @@ class CraftingMovementContracts(unittest.TestCase):
 
     def test_player_authority_optout_cadence_save_and_prone_unchanged(self):
         source = read(HUMAN)
-        added = block(HUMAN, '/mob/living/human/proc/human_subtile_object_use_supported()', '/mob/living/human/proc/human_subtile_input_supported')
-        source = source.replace(added, '').replace('human_subtile_object_use_supported() && !using_cannon', '!using_object && !using_cannon')
-        self.assertEqual(source, baseline(HUMAN))
+        added = block(HUMAN, '// Identifies a still-valid passive recipe view.', '/mob/living/human/proc/human_subtile_input_supported')
+        self.assertEqual(source.replace(added, ''), baseline(HUMAN))
         self.assertEqual(read('code/_onclick/click.dm'), baseline('code/_onclick/click.dm'))
         self.assertEqual(read('code/pathfinding.dm'), baseline('code/pathfinding.dm'))
 
