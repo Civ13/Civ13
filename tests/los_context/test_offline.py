@@ -78,6 +78,14 @@ def verify_adapters(base, current):
                 body = adapter_fragment(base[path], locations[path])
                 if not body.startswith(body.split('\n', 1)[0] + expected_start):
                     raise AssertionError('LOS retirement guard moved in event base: ' + path)
+    examine = adapter_fragment(current['code/game/mob/mob.dm'], locations['code/game/mob/mob.dm'])
+    if examine.count(TURN_GUARD) != 1:
+        raise AssertionError('Disabled Examine turn guard missing')
+    if base_has_core:
+        # The full-body projection only proves the introducing change is inert.
+        # Once the core is in the base, later PRs may edit these procedures;
+        # hook presence, placement and retirement ordering remain enforced.
+        return True
     for path, signature in locations.items():
         def project(source, has_core):
             body = adapter_fragment(source, signature)
@@ -371,6 +379,17 @@ class SourceBoundaries(unittest.TestCase):
         base = event_base()
         current = {path: (ROOT/path).read_text(encoding='utf-8') for path in ADDITIONS}
         self.assertTrue(verify_adapters(base, current))
+        # Projection controls need a base without the core, as in its introducing PR.
+        pre_core = {path: source.replace(ADDITIONS[path], '', 1) for path, source in current.items()}
+        pre_core['code/game/mob/mob.dm'] = pre_core['code/game/mob/mob.dm'].replace(TURN_GUARD, TURN_OFF, 1)
+        self.assertTrue(verify_adapters(pre_core, current))
+        later = dict(current)
+        later['code/modules/client/client_procs.dm'] = later['code/modules/client/client_procs.dm'].replace(
+            '\thuman_subtile_release_visuals()\n', '\thuman_subtile_release_visuals()\n\tlater_unrelated_cleanup()\n', 1)
+        self.assertTrue(verify_adapters(current, later))  # Later PRs may edit adapter bodies.
+        with self.assertRaisesRegex(AssertionError, 'differs from event base'):
+            verify_adapters(pre_core, later)
+        base = pre_core
         unrelated = dict(current)
         with tempfile.TemporaryDirectory() as temp:
             included = Path(temp) / 'code' / 'unrelated.dm'
@@ -396,8 +415,9 @@ class SourceBoundaries(unittest.TestCase):
                             ('code/modules/client/client_procs.dm', '\thuman_subtile_release_visuals()\n')]:
             broken = dict(unrelated)
             broken[path] = broken[path].replace(ADDITIONS[path], '', 1).replace(first, first + ADDITIONS[path], 1)
-            with self.assertRaisesRegex(AssertionError, 'retirement guard'):
-                verify_adapters(base, broken)
+            for ordering_base in (base, current):
+                with self.assertRaisesRegex(AssertionError, 'retirement guard'):
+                    verify_adapters(ordering_base, broken)
         broken = dict(unrelated)
         broken['code/game/mob/logout.dm'] = broken['code/game/mob/logout.dm'].replace('client?.clear_hover_name()', '// column-zero comment\n\treturn\n\tclient?.clear_hover_name()', 1)
         with self.assertRaises(AssertionError):
@@ -411,6 +431,13 @@ class SourceBoundaries(unittest.TestCase):
         with self.assertRaises(AssertionError):
             verify_adapters(base, broken)
         self.assertTrue(verify_adapters(current, unrelated))  # Post-merge base already has the core.
+        for path, old, new in [('code/game/mob/mob.dm', ADDITIONS['code/game/mob/mob.dm'], ''),
+                               ('code/modules/client/client_procs.dm', ADDITIONS['code/modules/client/client_procs.dm'], ''),
+                               ('code/game/mob/mob.dm', TURN_GUARD, TURN_OFF)]:
+            broken = dict(current)
+            broken[path] = broken[path].replace(old, new, 1)
+            with self.assertRaises(AssertionError):
+                verify_adapters(current, broken)
 
     def test_event_base_provenance_refuses_missing_and_wrong_ids(self):
         valid_head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
