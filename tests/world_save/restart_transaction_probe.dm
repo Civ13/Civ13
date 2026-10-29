@@ -5,6 +5,14 @@
 // The isolated world has no connected clients; production owns this list.
 var/list/clients = list()
 var/persistence_save_in_progress = FALSE
+// Exercise the production mode checks without importing game startup/config.
+var/fixture_persistence_mode = 0
+var/fixture_saved_persistence_mode = 0
+/proc/persistence_round_active()
+	return fixture_persistence_mode
+var/datum/configuration/config = new
+/datum/configuration
+	var/allowedgamemodes = "ALL"
 var/building_allocating_z = 0
 var/map_storage/map_storage = new
 var/obj/map_metadata/map = new
@@ -68,6 +76,8 @@ var/failures = 0
 	var/restarts = 0
 	var/concurrent = FALSE
 	var/change_before_restart = FALSE
+	var/change_mode_during_save = FALSE
+	var/aba_mode_during_save = FALSE
 	var/identity_calls = 0
 	var/list/identity = list("version" = 1, "generation" = "round-v2:probe", "metadata" = "metadata-digest", "round" = "round-digest")
 /datum/persistence_restart_transaction/probe/supported()
@@ -78,6 +88,12 @@ var/failures = 0
 	if(save_ok)
 		fdel("map_saves/save_complete.txt")
 		text2file(identity["generation"], "map_saves/save_complete.txt")
+		if(aba_mode_during_save) fixture_persistence_mode = !fixture_persistence_mode
+		fixture_saved_persistence_mode = fixture_persistence_mode
+		fdel("map_saves/map.txt")
+		text2file(jointext(list("fixture", "age", "0", "0", "0", "0", "0", "0", "mode", "timestamp", "[fixture_saved_persistence_mode]", "0", "0", "0"), "\n"), "map_saves/map.txt")
+		if(aba_mode_during_save) fixture_persistence_mode = !fixture_persistence_mode
+	if(change_mode_during_save) fixture_persistence_mode = !fixture_persistence_mode
 	return save_ok
 /datum/persistence_restart_transaction/probe/load_generation(list/expected_intent)
 	// Adapter for the admitted production wrapper boundary.

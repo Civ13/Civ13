@@ -30,6 +30,7 @@ var/datum/lifecycle_fixture_globals/GLOB
 var/shutdown_calls = 0
 var/allow_native_shutdown = FALSE
 var/change_final_marker = FALSE
+var/change_mode_at_final_validation = FALSE
 var/lifecycle_reclaim_ok = TRUE
 /proc/lifecycle_native_shutdown()
 	shutdown_calls++
@@ -48,6 +49,8 @@ var/lifecycle_reclaim_ok = TRUE
 	if(change_final_marker && identity_calls == 3)
 		fdel("map_saves/save_complete.txt")
 		text2file("round-v2:changed", "map_saves/save_complete.txt")
+	if(change_mode_at_final_validation && identity_calls == 3)
+		fixture_persistence_mode = !fixture_persistence_mode
 	if(change_before_restart && identity_calls > 1) I["generation"] = "round-v2:replacement"
 	return I
 /datum/nomads_lifecycle_control/probe
@@ -70,9 +73,45 @@ var/lifecycle_reclaim_ok = TRUE
 	spawn(0)
 		var/datum/persistence_restart_transaction/probe/T = new_transaction()
 		var/datum/nomads_lifecycle_control/probe/L = new
+		nomads_lifecycle = L
 		var/list/I = lifecycle_request(L)
 		var/list/R = lifecycle_reply(L, I)
 		check(R["ok"] && R["ready"] && nomads_lifecycle_hex(R["session"], 32), "ready status invalid")
+		// Explicit zero must not be confused with an absent mode; both modes
+		// are echoed and mismatched or malformed bindings reserve nothing.
+		for(var/mode = 0, mode <= 1, mode++)
+			fixture_persistence_mode = mode
+			R = lifecycle_reply(L, lifecycle_request(L))
+			check(!isnull(R["persistence_mode"]) && R["persistence_mode"] == mode, "status mode mismatch")
+			I = lifecycle_request(L, "save_shutdown")
+			I["expected_persistence"] = mode ? "0" : "1"
+			R = lifecycle_reply(L, I)
+			check(!R["ok"] && !L.busy && !T.saves, "mismatched mode reserved shutdown")
+			I["expected_persistence"] = "invalid"
+			R = lifecycle_reply(L, I)
+			check(!R["ok"] && !L.busy && !T.saves, "invalid mode reserved shutdown")
+			I["expected_persistence"] = "[mode]"
+			T.save_ok = FALSE // Accept the request but never reach native shutdown.
+			R = lifecycle_reply(L, I)
+			check(R["ok"] && R["busy"] && !isnull(R["persistence_mode"]) && R["persistence_mode"] == mode, "matching mode not acknowledged")
+			check(persistence_mode_change_locked(), "mode change was not locked at reservation")
+			sleep(2)
+			check(T.saves == 1 && !L.busy && !shutdown_calls && !T.exists(), "matching mode fixture failed")
+			check(!persistence_mode_change_locked(), "mode change remained locked after failure")
+			T = new_transaction()
+		fixture_persistence_mode = 0
+		L = new
+		I = lifecycle_request(L, "save_shutdown")
+		I["expected_persistence"] = "0"
+		R = lifecycle_reply(L, I)
+		check(R["ok"] && L.busy, "mode-bound request was not reserved")
+		fixture_persistence_mode = 1
+		sleep(2)
+		check(!T.saves && !shutdown_calls && !L.busy && findtext(L.last_error, "Persistence mode changed before save"), "mode change after admission reached save")
+		fixture_persistence_mode = 0
+		T = new_transaction()
+		L = new
+		I = lifecycle_request(L)
 		// The supervisor observed a pending request, but it expires before
 		// submission. The typed action must never become ordinary shutdown.
 		var/expired = md5("expired-maintenance")
@@ -162,6 +201,29 @@ var/lifecycle_reclaim_ok = TRUE
 		R = lifecycle_reply(L, I)
 		sleep(2)
 		check(!shutdown_calls && !T.exists(), "stale generation shutdown")
+		// Exercise the production metadata reader with both serialized modes.
+		for(var/saved_mode = 0, saved_mode <= 1, saved_mode++)
+			T = new_transaction()
+			fixture_persistence_mode = saved_mode
+			check(T.save_generation() && T.saved_persistence_mode() == saved_mode, "serialized mode reader mismatch")
+		// Simulate a mode change while saving and while final validation yields.
+		T = new_transaction()
+		fixture_persistence_mode = 0
+		T.change_mode_during_save = TRUE
+		T.execute(TRUE, md5("mode-change-save"), L.boot_session(), FALSE, 0)
+		check(T.saves == 1 && !shutdown_calls && !T.exists(), "mode change during save reached shutdown")
+		T = new_transaction()
+		fixture_persistence_mode = 0
+		T.aba_mode_during_save = TRUE
+		T.execute(TRUE, md5("mode-aba-save"), L.boot_session(), FALSE, 0)
+		check(T.saves == 1 && fixture_persistence_mode == 0 && !shutdown_calls && !T.exists() && findtext(T.last_error, "Saved persistence mode differs"), "ABA saved mode reached shutdown")
+		T = new_transaction()
+		fixture_persistence_mode = 1
+		change_mode_at_final_validation = TRUE
+		T.execute(TRUE, md5("mode-change-final"), L.boot_session(), FALSE, 1)
+		check(!shutdown_calls && !T.exists() && findtext(T.last_error, "Persistence mode changed at shutdown"), "final mode change reached shutdown")
+		change_mode_at_final_validation = FALSE
+		fixture_persistence_mode = 0
 		T = new_transaction()
 		change_final_marker = TRUE
 		var/before = shutdown_calls

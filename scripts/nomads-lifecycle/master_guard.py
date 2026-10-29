@@ -11,7 +11,8 @@ ORIGIN = 'https://github.com/Civ13/Civ13.git'
 
 
 def verified_master(repository, git='git', *, update=False, expected_origin=ORIGIN,
-                    inspect_only=False, mutation_guard=None, approved_host_sha256=None):
+                    inspect_only=False, mutation_guard=None, approved_host_sha256=None,
+                    before_fast_forward=None):
     repository = Path(repository).resolve(strict=True)
     if inspect_only and update:
         raise ValueError('Inspection cannot update source')
@@ -94,6 +95,8 @@ def verified_master(repository, git='git', *, update=False, expected_origin=ORIG
         if command('symbolic-ref', '--quiet', '--short', 'HEAD') != 'master' or not clean():
             raise RuntimeError('Master guard refused: checkout changed during verification')
         before_mutation()
+        if before_fast_forward is not None:
+            before_fast_forward(before, target)
         command('merge', '--ff-only', target)
     if command('symbolic-ref', '--quiet', '--short', 'HEAD') != 'master' or command('rev-parse', 'HEAD') != target or not clean():
         raise RuntimeError('Master guard refused: final master identity or clean state changed')

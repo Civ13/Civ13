@@ -156,12 +156,16 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
     return state
 
 
-def query(port, token, action='status', operation=None, session=None):
+def query(port, token, action='status', operation=None, session=None, expected_persistence=None):
     values = {'nomads_lifecycle': '1', 'token': token, 'action': action}
     if operation:
         values['operation'] = operation
     if session:
         values['session'] = session
+    if expected_persistence is not None:
+        if type(expected_persistence) is not int or expected_persistence not in (0, 1):
+            raise ValueError('Expected persistence mode must be 0 or 1')
+        values['expected_persistence'] = str(expected_persistence)
     payload = b'\0' * 5 + urllib.parse.urlencode(values).encode('ascii') + b'\0'
     with socket.create_connection(('127.0.0.1', port), timeout=15) as connection:
         connection.sendall(b'\x00\x83' + struct.pack('>H', len(payload)) + payload)
@@ -325,7 +329,7 @@ class Supervisor:
             generation=generation, session=session, status=status,
             canonical_game_directory=self.config.get('canonical_game_directory'))
 
-    def stop_saved(self, operation, expected_session=None, admin_operation=False):
+    def stop_saved(self, operation, expected_session=None, admin_operation=False, expected_persistence=None):
         before = self.status()
         if admin_operation and before.get('maintenance_operation') != operation:
             raise RuntimeError('Admin maintenance request changed before save')
@@ -336,11 +340,20 @@ class Supervisor:
             raise RuntimeError('Current world supplied no valid process session challenge')
         if expected_session is not None and (session != expected_session or not self.alive()):
             raise RuntimeError('Owned process session changed before save; no mutation sent')
+        if expected_persistence is not None and (type(before.get('persistence_mode')) is not int or
+                before['persistence_mode'] != expected_persistence):
+            raise RuntimeError('Persistence mode changed before save; no mutation sent')
         self.record('save_requested', operation=operation, revision=self.state['revision'])
         action = 'maintenance_save_shutdown' if admin_operation else 'save_shutdown'
-        answer = query(self.config['port'], self.token, action, operation, session)
+        if expected_persistence is None:
+            answer = query(self.config['port'], self.token, action, operation, session)
+        else:
+            answer = query(self.config['port'], self.token, action, operation, session, expected_persistence)
         if answer.get('operation') != operation:
             raise RuntimeError('Save operation identity not acknowledged')
+        if expected_persistence is not None and (type(answer.get('persistence_mode')) is not int or
+                answer['persistence_mode'] != expected_persistence):
+            raise RuntimeError('Save acknowledgement did not bind persistence mode')
         deadline = self.clock() + self.config.get('save_timeout_seconds', 1800)
         while self.alive():
             if self.clock() > deadline:

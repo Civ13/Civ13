@@ -1,6 +1,9 @@
 """Real Git/disk transactions with inert compiler/process transports only."""
 import json
 import hashlib
+import io
+import struct
+from contextlib import redirect_stdout
 from pathlib import Path
 import subprocess
 import sys
@@ -71,6 +74,7 @@ class CanonicalUpdateTests(unittest.TestCase):
             'binaries': {name: m.core.digest(self.game / name) for name in ('civ13.dmb', 'civ13.rsc')}}
         m.core.write_json(self.root / 'state.json', self.state)
         self.events = []
+        self.clone_arguments = None
         owner = self
 
         class InertSupervisor(m.core.Supervisor):
@@ -81,11 +85,21 @@ class CanonicalUpdateTests(unittest.TestCase):
             stay_alive = False
             advance_during_compile = False
             damage_working_save = False
+            damage_old_binary = False
+            damage_staged_source = False
+            damage_before_freeze = False
+            damage_dme_before_freeze = False
+            damage_atlas_before_freeze = False
+            invalid_generated_atlas = False
+            damage_archive_during_compile = False
+            replace_archive_and_digest = False
             wrong_dimensions = False
             frozen_heartbeat = False
             bad_compile_summary = False
             maintenance = None
             clients = 0
+            persistence_mode = 1
+            mode_after_launch = None
 
             def alive(self):
                 return self.running
@@ -94,15 +108,16 @@ class CanonicalUpdateTests(unittest.TestCase):
                 self.tick += 10
                 return {'ok': 1, 'ready': 1, 'busy': 0, 'error': None, 'clients': self.clients,
                         'maintenance_operation': self.maintenance,
-                        'session': 'e' * 32, 'map': 'NOMADS_GAIA',
+                        'session': 'e' * 32, 'map': 'NOMADS_GAIA', 'persistence_mode': self.persistence_mode,
                         'revision': self.state['revision'], 'restart_hold': 0, 'restart_intent': 0,
-                        'generation': self.state.get('generation'),
+                        'generation': self.state.get('generation') or '',
                         'restart_import_complete': int(bool(self.state.get('generation'))),
                         'maxx': 501 if self.wrong_dimensions else 500, 'maxy': 350, 'maxz': 1,
                         'debug': {'tick': 1 if self.frozen_heartbeat else self.tick, 'runtime': {'total': 0}}}
 
-            def stop_saved(self, operation, expected_session=None, admin_operation=False):
+            def stop_saved(self, operation, expected_session=None, admin_operation=False, expected_persistence=None):
                 owner.assertEqual(expected_session, 'e' * 32)
+                owner.assertEqual(expected_persistence, self.persistence_mode)
                 if admin_operation:
                     owner.assertEqual(operation, self.maintenance)
                 owner.events.append('save')
@@ -118,23 +133,47 @@ class CanonicalUpdateTests(unittest.TestCase):
 
             def command(self, arguments, cwd=None, log=None, timeout=1800):
                 owner.assertFalse(self.running)
+                if arguments[0] == owner.config['git'] and arguments[1] == 'clone':
+                    owner.clone_arguments = list(arguments)
                 if arguments[0] == owner.config['python']:
                     owner.events.append('atlas')
-                    (owner.game / 'UI/crafting-atlas.json').write_text('generated Gaia atlas')
+                    output = Path(arguments[arguments.index('--game-catalog') + 1])
+                    owner.assertNotEqual(output, Path(cwd) / 'UI/crafting-atlas.json')
+                    output.write_text('not JSON' if self.invalid_generated_atlas else
+                                      json.dumps({'acquisition': {}, 'recipes': [], 'resources': {}}))
+                    if self.damage_before_freeze:
+                        (Path(cwd) / 'source.txt').write_text('unexpected before freeze')
+                    if self.damage_dme_before_freeze:
+                        with (Path(cwd) / 'civ13.dme').open('a') as dme:
+                            dme.write('\n#include "unexpected.dm"\n')
+                    if self.damage_atlas_before_freeze:
+                        (Path(cwd) / 'UI/crafting-atlas.json').write_text('unexpected direct atlas edit')
                     return ''
                 if arguments[0] == str(owner.compiler):
                     owner.events.append('compile')
-                    owner.assertIn('nomads_gaia.dmm', (owner.game / 'civ13.dme').read_text())
+                    owner.assertIn('nomads_gaia.dmm', (Path(cwd) / 'civ13.dme').read_text())
                     if self.fail_compile:
                         raise RuntimeError('injected compiler failure')
                     for name in ('civ13.dmb', 'civ13.rsc'):
-                        (owner.game / name).write_bytes(b'new Gaia fixture ' + name.encode())
+                        (Path(cwd) / name).write_bytes(b'new Gaia fixture ' + name.encode())
+                    if self.damage_old_binary:
+                        (owner.game / 'civ13.dmb').write_bytes(b'unexpected concurrent replacement')
+                    if self.damage_staged_source:
+                        (Path(cwd) / 'source.txt').write_text('unexpected staged source edit')
                     if self.advance_during_compile:
                         owner.advance('newer master')
                     if self.damage_working_save:
                         (owner.game / 'map_saves/1.sav').write_bytes(b'changed after save')
+                    if self.damage_archive_during_compile:
+                        Path(owner.updater.transaction['previous_artifacts']).write_bytes(b'damaged archive')
+                    if self.replace_archive_and_digest:
+                        archive_path = Path(owner.updater.transaction['previous_artifacts'])
+                        with m.zipfile.ZipFile(archive_path, 'w') as archive:
+                            archive.writestr('civ13.dmb', b'wrong artifact')
+                            archive.writestr('civ13.rsc', b'wrong artifact')
+                        owner.updater.transaction['previous_artifacts_sha256'] = m.core.digest(archive_path)
                     return '10 errors, 0 warnings' if self.bad_compile_summary else '0 errors, 0 warnings'
-                return owner.git(*arguments[1:])
+                return owner.git(*arguments[1:], cwd=cwd).strip()
 
             def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None):
                 owner.events.append('load')
@@ -143,6 +182,8 @@ class CanonicalUpdateTests(unittest.TestCase):
 
                 def spawn(*args, **kwargs):
                     owner.assertEqual(kwargs['cwd'], owner.game)
+                    if self.mode_after_launch is not None:
+                        self.persistence_mode = self.mode_after_launch
                     self.running = True
                     return type('InertChild', (), {'pid': 789})()
 
@@ -154,11 +195,14 @@ class CanonicalUpdateTests(unittest.TestCase):
                                                    readiness_check=readiness_check)
 
         self.sup = InertSupervisor(self.config)
+        self.now = 0
         def observe_continuity_wait(seconds):
             owner.assertEqual(self.sup.state['phase'], 'starting')
             owner.assertNotIn('cycle_complete', (owner.root / 'events.jsonl').read_text())
             owner.events.append('continuity-before-ready')
+            self.now += seconds
         self.sup.sleep = observe_continuity_wait
+        self.sup.clock = lambda: self.now
         self.updater = m.CanonicalUpdater(self.config, supervisor=self.sup,
                                           guard=self.guard, quiet=self.quiet)
 
@@ -213,15 +257,192 @@ class CanonicalUpdateTests(unittest.TestCase):
         self.assertEqual(self.events[:3], ['save', 'exit', 'source-gate'])
         self.assertLess(self.events.index('source-gate'), self.events.index('compile'))
         self.assertLess(self.events.index('compile'), self.events.index('load'))
+        self.assertIn('--single-branch', self.clone_arguments)
+        self.assertEqual(self.clone_arguments[self.clone_arguments.index('--branch') + 1], 'master')
         self.assertEqual(protected, self.updater.protected_config())
         self.assertEqual(originals, [(self.game / p).read_bytes() for p in ('civ13.dme', 'UI/crafting-atlas.json')])
         self.assertEqual(self.sup.state['phase'], 'ready')
-        self.assertIn('continuity-before-ready', self.events)
         self.assertEqual((self.root / 'events.jsonl').read_text().count('cycle_complete'), 1)
         self.assertFalse((self.root / 'runs').exists())
         self.assertFalse((self.root / 'builds').exists())
         self.assertEqual(self.git('branch', '--show-current').strip(), 'master')
         self.assertEqual(self.git('status', '--porcelain'), ' M config/host.txt\n')
+
+    def test_nonpersistent_save_is_retained_but_fresh_world_does_not_import(self):
+        self.sup.persistence_mode = 0
+        result = self.updater.run()
+        self.assertFalse(result['restored'])
+        self.assertIsNone(self.sup.state['generation'])
+        self.assertEqual(list((self.game / 'map_saves').iterdir()), [])
+        retained = Path(self.updater.transaction['retained_working_save'])
+        self.assertTrue((retained / 'restart_intent.json').is_file())
+        self.assertTrue((Path(self.updater.transaction['backup']) / 'receipt.json').is_file())
+        self.assertEqual(self.sup.state['phase'], 'ready')
+
+    def test_missing_or_invalid_mode_stops_before_save(self):
+        for value in (None, '1', 2, True):
+            self.sup.persistence_mode = value
+            with self.subTest(value=value), self.assertRaisesRegex(RuntimeError, 'persistence mode'):
+                self.updater.run()
+            self.assertEqual(self.events, [])
+
+    def test_mode_changed_before_save_sends_no_mutation(self):
+        self.sup.persistence_mode = 0
+        with patch.object(m.core, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'mode changed'):
+                m.core.Supervisor.stop_saved(self.sup, 'd' * 32, expected_session='e' * 32,
+                                            expected_persistence=1)
+            query.assert_not_called()
+
+    def test_save_acknowledgement_must_match_bound_mode(self):
+        with patch.object(m.core, 'query', return_value={'operation': 'd' * 32, 'persistence_mode': 0}) as query:
+            with self.assertRaisesRegex(RuntimeError, 'did not bind persistence mode'):
+                m.core.Supervisor.stop_saved(self.sup, 'd' * 32, expected_session='e' * 32,
+                                            expected_persistence=1)
+            query.assert_called_once_with(1714, 'a' * 32, 'save_shutdown', 'd' * 32, 'e' * 32, 1)
+        self.assertTrue(self.sup.running)
+
+    def test_existing_transport_encodes_explicit_zero_mode(self):
+        body = b'\x06{"ok":1}\x00'
+        class Connection:
+            def __init__(self):
+                self.response = bytearray(b'\x00\x83' + struct.pack('>H', len(body)) + body)
+                self.sent = b''
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def sendall(self, data): self.sent = data
+            def recv(self, count):
+                data = bytes(self.response[:count])
+                del self.response[:count]
+                return data
+        connection = Connection()
+        with patch.object(m.core.socket, 'create_connection', return_value=connection):
+            self.assertEqual(m.core.query(1714, 'a' * 32, 'save_shutdown', 'd' * 32, 'e' * 32, 0), {'ok': 1})
+        self.assertIn(b'expected_persistence=0', connection.sent)
+
+    def test_compile_failure_never_switches_old_binaries(self):
+        old = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        self.sup.fail_compile = True
+        with self.assertRaisesRegex(RuntimeError, 'compiler failure'):
+            self.updater.run()
+        self.assertEqual(old, {name: (self.game / name).read_bytes() for name in old})
+        self.assertNotIn('load', self.events)
+
+    def test_partial_binary_switch_halts_with_recovery_archive(self):
+        real_replace = m.os.replace
+        def fail_second(source, destination):
+            if Path(destination) == self.game / 'civ13.rsc':
+                raise OSError('injected switch failure')
+            return real_replace(source, destination)
+        with patch.object(m.os, 'replace', side_effect=fail_second):
+            with self.assertRaisesRegex(OSError, 'switch failure'):
+                self.updater.run()
+        self.assertNotIn('load', self.events)
+        self.assertTrue(Path(self.updater.transaction['previous_artifacts']).is_file())
+        self.assertEqual(self.updater.transaction['failed_phase'], 'switching')
+        self.assertTrue((self.root / 'HALTED.json').exists())
+
+    def test_changed_canonical_binary_is_not_overwritten(self):
+        self.sup.damage_old_binary = True
+        with self.assertRaisesRegex(RuntimeError, 'artifacts changed'):
+            self.updater.run()
+        self.assertEqual((self.game / 'civ13.dmb').read_bytes(), b'unexpected concurrent replacement')
+        self.assertNotIn('load', self.events)
+
+    def test_changed_staged_source_refuses_candidate_before_switch(self):
+        self.sup.damage_staged_source = True
+        old = (self.game / 'civ13.dmb').read_bytes()
+        with self.assertRaisesRegex(RuntimeError, 'Staged source has unexpected edits'):
+            self.updater.run()
+        self.assertEqual((self.game / 'civ13.dmb').read_bytes(), old)
+        self.assertNotIn('load', self.events)
+
+    def test_staged_edit_before_freezing_is_refused(self):
+        self.sup.damage_before_freeze = True
+        with self.assertRaisesRegex(RuntimeError, 'Staged source has unexpected edits'):
+            self.updater.run()
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+
+    def test_derived_dme_edit_before_freezing_is_refused(self):
+        old = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        self.sup.damage_dme_before_freeze = True
+        with self.assertRaisesRegex(RuntimeError, 'Staged DME changed'):
+            self.updater.run()
+        self.assertEqual(old, {name: (self.game / name).read_bytes() for name in old})
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+
+    def test_recovery_archive_damage_before_switch_refuses_replacement(self):
+        old = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        self.sup.damage_archive_during_compile = True
+        with self.assertRaisesRegex(RuntimeError, 'Previous artifact archive changed'):
+            self.updater.run()
+        self.assertEqual(old, {name: (self.game / name).read_bytes() for name in old})
+        self.assertNotIn('load', self.events)
+
+    def test_direct_atlas_edit_during_generation_is_refused(self):
+        old = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        self.sup.damage_atlas_before_freeze = True
+        with self.assertRaisesRegex(RuntimeError, 'Staged source has unexpected edits'):
+            self.updater.run()
+        self.assertEqual(old, {name: (self.game / name).read_bytes() for name in old})
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+
+    def test_archive_contents_are_checked_even_when_digest_matches(self):
+        old = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        self.sup.replace_archive_and_digest = True
+        with self.assertRaisesRegex(RuntimeError, 'Previous artifact archive contents changed'):
+            self.updater.run()
+        self.assertEqual(old, {name: (self.game / name).read_bytes() for name in old})
+        self.assertNotIn('load', self.events)
+
+    def test_archive_rechecked_between_binary_replacements(self):
+        old_rsc = (self.game / 'civ13.rsc').read_bytes()
+        real_replace = m.os.replace
+        def damage_after_first(source, destination):
+            result = real_replace(source, destination)
+            if Path(destination) == self.game / 'civ13.dmb':
+                Path(self.updater.transaction['previous_artifacts']).write_bytes(b'damaged after first switch')
+            return result
+        with patch.object(m.os, 'replace', side_effect=damage_after_first):
+            with self.assertRaisesRegex(RuntimeError, 'Previous artifact archive changed'):
+                self.updater.run()
+        self.assertEqual((self.game / 'civ13.rsc').read_bytes(), old_rsc)
+        self.assertEqual(self.updater.transaction['failed_phase'], 'switching')
+        self.assertTrue((self.root / 'HALTED.json').exists())
+        self.assertNotIn('load', self.events)
+
+    def test_invalid_generated_atlas_refuses_compile_and_switch(self):
+        old = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        self.sup.invalid_generated_atlas = True
+        with self.assertRaisesRegex(RuntimeError, 'Generated atlas is not valid JSON'):
+            self.updater.run()
+        self.assertEqual(old, {name: (self.game / name).read_bytes() for name in old})
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+
+    def test_fresh_launch_with_wrong_mode_never_publishes_ready(self):
+        self.sup.persistence_mode = 0
+        self.sup.mode_after_launch = 1
+        with self.assertRaisesRegex(RuntimeError, 'mode'):
+            self.updater.run()
+        self.assert_no_ready_publication()
+
+    def test_dry_run_never_queries_or_constructs_supervisor(self):
+        path = self.base / 'config.json'
+        path.write_text(json.dumps(self.config))
+        output = io.StringIO()
+        with patch.object(sys, 'argv', ['canonical_update.py', 'dry-run', '--config', str(path)]), \
+             patch.object(m.core, 'Supervisor') as supervisor, patch.object(m.core, 'query') as query, \
+             redirect_stdout(output):
+            m.main()
+        supervisor.assert_not_called()
+        query.assert_not_called()
+        result = json.loads(output.getvalue())
+        self.assertIn('unknown', result['persistence_mode'])
+        self.assertIn('stage and validate build', result['plan'])
 
     def test_admin_request_with_connected_clients_runs_once(self):
         operation = 'd' * 32
@@ -434,6 +655,19 @@ class CanonicalUpdateTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'tool identity'):
             self.updater.run()
         self.assertEqual(self.events, [])
+
+    def test_upstream_configuration_change_refused_before_fast_forward(self):
+        (self.dev / 'config/local-options.txt').write_text('upstream changed config')
+        self.git('add', 'config/local-options.txt', cwd=self.dev)
+        self.git('commit', '-m', 'change config', cwd=self.dev)
+        self.git('push', 'origin', 'master', cwd=self.dev)
+        before = (self.game / 'config/local-options.txt').read_bytes()
+        with self.assertRaisesRegex(RuntimeError, 'configuration changes'):
+            self.updater.run()
+        self.assertEqual(self.git('rev-parse', 'HEAD').strip(), self.old)
+        self.assertEqual((self.game / 'config/local-options.txt').read_bytes(), before)
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
 
     def test_new_remote_master_after_compile_prevents_load(self):
         self.sup.advance_during_compile = True

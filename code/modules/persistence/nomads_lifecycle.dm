@@ -2,6 +2,11 @@
 // supervisor interface, not an admin command/eval or remote control service.
 var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 
+// Reservation precedes the asynchronous transaction; keep mode writers out
+// until the bound operation has finished, including its warning and save yields.
+/proc/persistence_mode_change_locked()
+	return nomads_lifecycle && nomads_lifecycle.busy && !isnull(nomads_lifecycle.expected_persistence)
+
 /proc/nomads_lifecycle_hex(value, size)
 	if(!istext(value) || length(value) != size) return FALSE
 	for(var/i = 1, i <= size, i++)
@@ -12,6 +17,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/session
 	var/operation
 	var/operation_is_maintenance = FALSE
+	var/expected_persistence
 	var/busy = FALSE
 	var/last_error
 	var/list/used_operations = list()
@@ -53,7 +59,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
-	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "debug" = agent_diagnostic_state())
+	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "debug" = agent_diagnostic_state())
 
 // Fixed cached state only. No arbitrary vars, logs, file reads or world scans.
 /proc/agent_diagnostic_source_file(value)
@@ -104,6 +110,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/action = input["action"]
 	var/list/allowed = action == "status" ? list("nomads_lifecycle", "token", "action") : list("nomads_lifecycle", "token", "action", "session", "operation")
 	if(action == "diagnose") allowed = list("nomads_lifecycle", "token", "action", "session", "operation", "target")
+	if((action == "save_shutdown" || action == "maintenance_save_shutdown") && ("expected_persistence" in input)) allowed += "expected_persistence"
 	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
@@ -127,9 +134,13 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 		return json_encode(snapshot(FALSE, "operation_replayed"))
 	if(used_operations.len >= 64)
 		return json_encode(snapshot(FALSE, "operation_limit_restart_required"))
+	if("expected_persistence" in input)
+		if(!(input["expected_persistence"] in list("0", "1")) || !map || !ticker || text2num(input["expected_persistence"]) != !!persistence_round_active())
+			return json_encode(snapshot(FALSE, "persistence_mode_changed"))
 	if(busy || persistence_save_in_progress || persistence_restart.busy || persistence_restart.startup_hold || persistence_restart.exists() || building_allocating_z || map_storage.dimension_recovery_required || !persistence_restart.supported())
 		return json_encode(snapshot(FALSE, "save_or_recovery_unavailable"))
 	operation = input["operation"]
+	expected_persistence = ("expected_persistence" in input) ? text2num(input["expected_persistence"]) : null
 	operation_is_maintenance = action == "maintenance_save_shutdown"
 	used_operations += operation
 	busy = TRUE // Reserve before the asynchronous saver can yield.
@@ -140,8 +151,9 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 
 /datum/nomads_lifecycle_control/proc/run_operation()
 	try
-		persistence_restart.execute(TRUE, operation, boot_session(), operation_is_maintenance)
+		persistence_restart.execute(TRUE, operation, boot_session(), operation_is_maintenance, expected_persistence)
 		last_error = persistence_restart.last_error ? persistence_restart.last_error : "shutdown_returned"
 	catch(var/exception/e)
 		last_error = "[e]"
 	busy = FALSE
+	expected_persistence = null

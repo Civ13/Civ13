@@ -16,8 +16,12 @@ class RestartFixtureSources(unittest.TestCase):
             RUNNER.prepare(ROOT, Path(output))
             transaction = (Path(output) / 'transaction.dm').read_text()
             probe = (Path(output) / 'probe.dm').read_text()
-            self.assertIn('if(clients.len)', transaction)
+            self.assertIn('if(clients.len && !prewarned)', transaction)
             self.assertIn('sleep(600)', transaction)
+            lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
+            self.assertIn('spawn(600)', lifecycle)
+            self.assertIn('maintenance_announcing ? null : maintenance_operation', lifecycle)
+            self.assertIn('The server will save and shut down after one minute', lifecycle)
             # Same declaration as code/_helpers/global_lists.dm.
             self.assertEqual(probe.count('var/list/clients = list()'), 1)
             self.assertNotIn('#define clients', (Path(output) / 'probe.dme').read_text())

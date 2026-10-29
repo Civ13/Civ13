@@ -70,7 +70,7 @@ class RestoreIntegrationSources(unittest.TestCase):
         declaration = 'var/list/clients = list()'
         self.assertEqual(len(re.findall(r'^' + re.escape(declaration) + r'(?=\s|$)', client_source, re.M)), 1)
         self.assertEqual(len(re.findall(r'^' + re.escape(declaration) + r'$', fixture, re.M)), 1)
-        self.assertIn('if(clients.len)', production)
+        self.assertIn('if(clients.len && !prewarned)', production)
         self.assertIn('world.OpenPort("none")', fixture)
         self.assertNotRegex(fixture, r'(?m)^\s*clients\s*(?:\+=|-=|=)')
         lifecycle = (ROOT / 'tests/world_save/lifecycle_probe.dm').read_text(encoding='utf-8')
@@ -95,7 +95,7 @@ class RestoreIntegrationSources(unittest.TestCase):
                         self.assertEqual(transaction, production)
                     else:
                         self.assertNotEqual(transaction, production)
-                    self.assertIn('if(clients.len)', transaction)
+                    self.assertIn('if(clients.len && !prewarned)', transaction)
                     self.assertIn('sleep(600)', transaction)
                     self.assertIn('#include "transaction.dm"', (output / 'probe.dme').read_text(encoding='utf-8'))
 
