@@ -1,19 +1,26 @@
 # Saved-character bed return: prepare-only native fixture
 
-This dedicated fixture is bound to PR3355 source commit
-`f065e129e2b3c422236869218353db29c2bf62de`. It is source/test preparation,
+This dedicated fixture retains PR3355 source commit
+`f065e129e2b3c422236869218353db29c2bf62de` as historical provenance. Current
+inputs are hash-bound in each receipt, with focused executable lifecycle
+procedure contracts checked before preparation. It is source/test preparation,
 not a native acceptance receipt. It provides no compiler/runtime launcher.
 
 ## Why a separate preparation path
 
-The existing `run-durable-world.py --recovery-reconnect` adapter expects three
-`lobby.client` accesses. This head has five, including post-movement admission
-and failure-cleanup rechecks. Its immutable adapter block raises
-`Reclaim client IO adapter anchor changed: lobby.client` before it can prepare
-that mode. This is fixture incompatibility, not a demonstrated game defect.
-Do not relax the generic recovery contract or substitute its older source.
+The former `run-durable-world.py --recovery-reconnect` adapter expected three
+`lobby.client` accesses. Current reclaim has five, including post-movement and
+failure-cleanup rechecks. Both preparation paths now adapt exactly those five
+accesses without deleting the extra guards. The dedicated packet adds bed-specific
+cases; it does not substitute an older production reclaim implementation.
 
-The new preparer verifies twenty pinned input hashes before helper import/output.
+The preparer checks the first-return/ownership lifecycle procedure contracts
+before helper import/output. It records hashes of all twenty current inputs;
+unrelated maintenance no longer has to match whole files from the historical
+commit. The original twenty hashes remain as reference data, not current-source
+claims. Any executable change to the scoped lifecycle procedures requires review;
+comments are ignored in those procedure snapshots. Receipt source-tree digests
+change whenever any actual input bytes change.
 It reuses `run-cross-level.py` extraction, unique-replacement and stub-adaptation
 helpers, the existing production saver/loader/graph and real movement/buckling
 procedures, plus the established sleep-fixture declaration adapters. It never
@@ -71,8 +78,8 @@ python -B tests/world_save/character_return/prepare.py --prepare-only \
 ```
 
 For an immutable partial source snapshot, set `CIV13_CHARACTER_SOURCE_ROOT` only
-for the offline test command. Inputs must still match every manifest hash.
-Existing output, changed inputs/adapter anchors, unknown controls and native CLI
+for the offline test command. Lifecycle procedure contracts must still match.
+Existing output, changed lifecycle/adapter anchors, unknown controls and native CLI
 options are rejected. No child process is invoked during preparation; tests
 poison subprocess entry points to verify this boundary. Receipts bind inputs,
 generator/template bytes and every generated DM/DME file.

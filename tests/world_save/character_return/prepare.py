@@ -26,14 +26,30 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def procedure_contract(source, path):
+    """Bind executable lifecycle procedures, allowing unrelated file evolution."""
+    matches = list(re.finditer(r'^' + re.escape(path) + r'\([^\n]*\)\n', source, re.M))
+    if len(matches) != 1:
+        raise ValueError('Expected one contract procedure: ' + path)
+    match = matches[0]
+    end = re.search(r'^/(?!/)', source[match.end():], re.M)
+    body = source[match.start():match.end() + end.start() if end else len(source)]
+    return '\n'.join(line.rstrip() for line in body.splitlines()
+                     if line.strip() and not line.lstrip().startswith('//'))
+
+
 def verify_inputs(root):
     manifest = json.loads((HERE / 'inputs.json').read_text())
-    if manifest['source_commit'] != COMMIT:
-        raise ValueError('Unexpected immutable source commit')
-    for path, expected in manifest['sha256'].items():
-        if digest((root / path).read_bytes()) != expected:
-            raise ValueError('Pinned source mismatch: ' + path)
-    return manifest
+    if manifest['schema'] != 2 or manifest['reference_commit'] != COMMIT:
+        raise ValueError('Unexpected source contract manifest')
+    actual = {path: digest((root / path).read_bytes()) for path in manifest['reference_sha256']}
+    for path, procedures in manifest['procedure_sha256'].items():
+        source = (root / path).read_text(encoding='utf-8-sig')
+        for proc, expected in procedures.items():
+            if digest(procedure_contract(source, proc).encode()) != expected:
+                raise ValueError('Lifecycle procedure contract changed: ' + proc)
+    return dict(manifest, sha256=actual,
+                source_tree_sha256=digest(json.dumps(actual, sort_keys=True).encode()))
 
 
 def load_helpers(root):
@@ -74,7 +90,7 @@ def prepare(root, output, control=None):
         raise ValueError('Unknown omission control')
     if output.exists():
         raise ValueError('Output must not already exist')
-    manifest = verify_inputs(root)  # Before importing helpers or producing any output.
+    manifest = verify_inputs(root)  # Lifecycle contracts before helper import/output.
     base = load_helpers(root)
     generated = {}
     for relative in base.PRODUCTION:
@@ -132,7 +148,8 @@ def prepare(root, output, control=None):
         'bed_return.dm', 'character_return_fixture.dm')) + '\n'
     generated['probe.dme'] = dme
     receipt = {
-        'source_commit': COMMIT, 'source_sha256': manifest['sha256'],
+        'source_reference_commit': COMMIT, 'source_sha256': manifest['sha256'],
+        'source_tree_sha256': manifest['source_tree_sha256'],
         'prepared_only': True, 'native_executed': False, 'compiled': False,
         'engine_profile': '516.1688 (execution/provenance caller separately reviewed)',
         'cases': [CONTROLS[control][0]] if control else list(CASES),

@@ -67,7 +67,8 @@ SUITES = {
         'tests/root_tree_presentation/', 'code/modules/visibility/',
         'code/__defines/_planes+layers.dm', 'civ13.dme',
         'tests/save_movement/source_adapter.py')},
-    'character_return_preparation': {'files': ('tests/world_save/character_return/test_prepare.py',),
+    'character_return_preparation': {'files': ('tests/world_save/character_return/test_prepare.py',
+        'tests/world_save/test_roundtrip_compat.py', 'tests/world_save/test_restart_sources.py'),
         'paths': ('tests/world_save/character_return/',)},
     'character_return': {'files': ('tests/save_movement/test_character_return.py',), 'paths': (
         'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',

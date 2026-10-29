@@ -1,10 +1,10 @@
 // Current loader dependencies for the ordinary roundtrip world only.
-// Keep shared stubs.dm frozen: dedicated source packets pin its original bytes.
+// Shared stubs remain independent; receipts bind their actual versioned bytes.
 // There are no /obj/roof or roof-climate subtypes here. This type declaration
 // does not enable roof reconstruction; actual topology restoration is refused.
 // Only the roundtrip storage subtype admits null validated_zone_state before
 // inspecting operation ownership, like production. Every present state still
-// delegates to the frozen parent refusal, including an empty topology list.
+// delegates to the shared parent refusal, including an empty topology list.
 /area/caribbean/roofed
 
 // Match the production registry's ordinary (non-topology-restore) membership.

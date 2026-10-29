@@ -347,7 +347,9 @@ class SourcePreparationAdmissionTests(unittest.TestCase):
         self.assertEqual(selection.SOURCE_PREPARATION_ONLY_TESTS, frozenset(self.FILES))
         baseline = self.baseline()
         self.assertEqual(baseline.SUITES['character_return_preparation']['files'],
-                         ('tests/world_save/character_return/test_prepare.py',))
+                         ('tests/world_save/character_return/test_prepare.py',
+                          'tests/world_save/test_roundtrip_compat.py',
+                          'tests/world_save/test_restart_sources.py'))
         for path in self.FILES:
             self.assertTrue(baseline.impact([path])['suites']['character_return_preparation']['selected'])
 

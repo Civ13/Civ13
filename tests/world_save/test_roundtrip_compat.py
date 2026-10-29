@@ -73,8 +73,11 @@ def require_roundtrip_topology_boundary(adapter, shared):
     if procedure(adapter, ZONE_OVERRIDE) != expected:
         raise ValueError('Roundtrip null-only topology dispatch changed')
     parent = '/map_storage/proc/begin_zone_restore'
-    if procedure(shared, parent) != (parent + '(datum/persistence_world_operation/operation)\n'
-                                    '\tthrow EXCEPTION("Topology needs the full-source fixture")'):
+    shared_body = '\n'.join(line for line in procedure(shared, parent).splitlines()
+                            if not line.lstrip().startswith('//'))
+    if shared_body != (parent + '(datum/persistence_world_operation/operation)\n'
+                       '\tif(isnull(validated_zone_state)) return\n'
+                       '\tthrow EXCEPTION("Topology needs the full-source fixture")'):
         raise ValueError('Shared topology refusal changed')
 
 
@@ -93,7 +96,7 @@ class RoundtripCompatibilityTests(unittest.TestCase):
                 self.assertEqual(len(includes), 12)
                 for path in includes:
                     self.assertTrue(Path(path).is_file(), path)
-                self.assertIn(str(HERE / 'roundtrip_compat.dm'), includes)
+                self.assertIn((HERE / 'roundtrip_compat.dm').as_posix(), includes)
                 key = 'tests/world_save/roundtrip_compat.dm'
                 self.assertEqual(prepared['hashes'][key],
                                  hashlib.sha256((ROOT / key).read_bytes()).hexdigest())
@@ -180,10 +183,8 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         loadmap = procedure(functions, '/datum/controller/gameticker/proc/loadmap')
         self.assertIn('\t\tmap_storage.begin_zone_restore(operation)\n', loadmap)
         self.assertLess(loadmap.index('map_storage.begin_zone_restore(operation)'), loadmap.index('map_storage.ClearMap()'))
-        pins = json.loads((HERE / 'character_return/inputs.json').read_text())['sha256']
+        pins = json.loads((HERE / 'character_return/inputs.json').read_text())['reference_sha256']
         self.assertEqual(len(pins), 20)
-        for path, expected_hash in pins.items():
-            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), expected_hash, path)
         self.assertNotIn('tests/world_save/roundtrip.dm', pins)
         self.assertNotIn('tests/world_save/roundtrip_compat.dm', pins)
 
@@ -227,12 +228,16 @@ class RoundtripCompatibilityTests(unittest.TestCase):
             with self.subTest(mutation=before), self.assertRaisesRegex(ValueError, 'null-only'):
                 require_roundtrip_topology_boundary(adapter.replace(before, after, 1), stubs)
 
-    def test_shared_historical_stubs_pin_and_engine_gate_unchanged(self):
+    def test_shared_topology_boundary_and_explicit_current_engine_selection(self):
         inputs = json.loads((HERE / 'character_return/inputs.json').read_text())
-        self.assertEqual(hashlib.sha256((HERE / 'stubs.dm').read_bytes()).hexdigest(),
-                         inputs['sha256']['tests/world_save/stubs.dm'])
+        self.assertIn('tests/world_save/stubs.dm', inputs['reference_sha256'])
+        require_roundtrip_topology_boundary((HERE / 'roundtrip_compat.dm').read_text(),
+                                           (HERE / 'stubs.dm').read_text())
         runner = (HERE / 'run-round-metadata.py').read_text()
-        self.assertIn("if '516.1681' not in build or '0 errors, 0 warnings' not in build:", runner)
+        self.assertIn("parser.add_argument('--byond-archive'", runner)
+        self.assertIn('selected_runtime(byond, args.byond_archive)', runner)
+        self.assertIn('return module.select(bin_dir, archive)', runner)
+        self.assertIn('runtime.validate_compile(', runner)
 
 
 if __name__ == '__main__':

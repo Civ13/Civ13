@@ -48,11 +48,25 @@ class PreparationTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(SOURCE / name, target)
         file = bad / 'code/modules/persistence/player_reclaim.dm'
-        file.write_bytes(file.read_bytes() + b'\n// unexpected source\n')
+        file.write_text(file.read_text().replace('H.persistence_owner_ckey != C.ckey', 'FALSE'), newline='\n')
         with patch.object(PREP, 'load_helpers', side_effect=AssertionError('import before pin check')):
-            with self.assertRaisesRegex(ValueError, 'Pinned source mismatch'):
+            with self.assertRaisesRegex(ValueError, 'Lifecycle procedure contract changed'):
                 PREP.prepare(bad, self.output)
         self.assertFalse(self.output.exists())
+
+    def test_unrelated_comments_change_receipt_hash_without_invalidating_lifecycle(self):
+        bad = Path(self.temp.name) / 'source'
+        before = PREP.verify_inputs(SOURCE)
+        for name in before['sha256']:
+            target = bad / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(SOURCE / name, target)
+        file = bad / 'code/modules/persistence/player_reclaim.dm'
+        file.write_bytes(file.read_bytes() + b'\n// unrelated maintenance note\n')
+        after = PREP.verify_inputs(bad)
+        self.assertNotEqual(before['source_tree_sha256'], after['source_tree_sha256'])
+        self.assertNotEqual(before['sha256'][file.relative_to(bad).as_posix()],
+                            after['sha256'][file.relative_to(bad).as_posix()])
 
     def test_existing_output_is_never_overwritten(self):
         self.output.mkdir()
@@ -104,16 +118,22 @@ class PreparationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Exact reclaim IO anchor changed'):
             PREP.adapt_reclaim(original.replace('lobby.client != C', 'FALSE'), base)
 
-    def test_original_recovery_adapter_exposes_exact_five_vs_three_failure(self):
-        # Execute only the immutable read/adapt block, not its CLI, build or run paths.
+    def test_recovery_adapter_preserves_all_five_client_rechecks(self):
+        # Execute only the read/adapt block, not its CLI, build or run paths.
         source = (SOURCE / 'tests/world_save/run-durable-world.py').read_text()
         start = source.index("            relative = 'code/modules/persistence/player_reclaim.dm'", source.index('        if args.recovery_reconnect:\n'))
         end = source.index('        for index, (relative, text) in enumerate(replacements.items()):', start)
         block = textwrap.dedent(source[start:end])
+        namespace = {'root': SOURCE, 'replacements': {}}
         with patch('subprocess.Popen', side_effect=AssertionError('process forbidden')), \
              patch('subprocess.run', side_effect=AssertionError('process forbidden')):
-            with self.assertRaisesRegex(RuntimeError, '^Reclaim client IO adapter anchor changed: lobby.client$'):
-                exec(compile(block, 'immutable-recovery-adapter-excerpt', 'exec'), {'root': SOURCE, 'replacements': {}})
+            exec(compile(block, 'recovery-adapter-excerpt', 'exec'), namespace)
+        adapted = namespace['replacements']['code/modules/persistence/player_reclaim.dm']
+        self.assertEqual(adapted.count('lobby.claim_client'), 5)
+        for guard in ('persistence_player_claims[C.ckey] != lobby', 'C.mob != lobby',
+                      'H.persistence_owner_ckey != C.ckey', 'H.client || H.key',
+                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(C.ckey)'):
+            self.assertIn(guard, adapted)
 
     def test_only_dedicated_disabled_stubs_removed(self):
         self.prepare()
