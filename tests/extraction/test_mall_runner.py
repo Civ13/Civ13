@@ -34,6 +34,12 @@ CONTROLS = {
 
 
 class NativeOracleTests(unittest.TestCase):
+    def test_paid_car_probe_does_not_read_codec_scratch_references(self):
+        # encode releases its graph references before returning. The native
+        # paid-car probe must retain its own references for the return census.
+        probe = (HERE / 'mall_probe.dm').read_text(encoding='utf-8')
+        self.assertNotRegex(probe, r'vehicle_codec\.(?:objects|index)\b')
+
     def validate(self, *, report=None, expected=None, stages=None, **outputs):
         streams = {'stdout': BINDING, 'stderr': '', 'runtime.log': NETWORK_LOG}
         streams.update(outputs)

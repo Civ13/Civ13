@@ -481,13 +481,23 @@ var/global/mall_fixture_failed = FALSE
 	mall_assert(H.put_in_active_hand(key) && M.save_home(S), "car fixture owns a supported held door key and nested boot cargo before deployment")
 	var/list/initial_record = M.vehicle_codec.encode(A)
 	mall_assert(initial_record && M.vehicle_codec.validate(initial_record), "actual paid vehicle graph and cargo encode before deployment")
-	var/list/part_refs = M.vehicle_codec.objects.Copy()
+	// The codec releases its scratch references before encode returns. Retain
+	// the purchased physical graph independently, including its nested parts.
+	var/list/part_refs = list(A)
+	part_refs |= S.garage_parts
+	for (var/obj/O in S.garage_parts)
+		for (var/obj/child_part in O.contents)
+			if (!istype(child_part, /atom/movable/lighting_overlay)) part_refs |= child_part
+	var/list/initial_nodes = initial_record["nodes"]
+	mall_assert(part_refs.len == initial_nodes.len, "paid vehicle reference census covers the complete encoded graph")
 	var/list/part_ids = list()
 	var/list/wanted_ids = list()
 	for (var/obj/O in part_refs)
 		mall_assert(O.extraction_vehicle_part_id && !wanted_ids[O.extraction_vehicle_part_id], "initial vehicle part identities are nonempty and distinct")
 		part_ids[O] = O.extraction_vehicle_part_id
 		wanted_ids[O.extraction_vehicle_part_id] = TRUE
+	for (var/list/node in initial_nodes)
+		mall_assert(wanted_ids[node["id"]], "every encoded paid vehicle part has its original physical reference")
 	var/bag_id = bag.extraction_item_id
 	var/child_id = child.extraction_item_id
 	var/key_id = key.extraction_item_id
