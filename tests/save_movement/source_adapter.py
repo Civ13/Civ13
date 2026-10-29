@@ -11,7 +11,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # This offline fixture models gameplay without collector instrumentation.
 # Unknown symbols/directives must not acquire an implicit disabled meaning.
-DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False, 'CIV13_ROOT_TREE_PRESENTATION': False}
+# The pull-pair kernel is part of every production build.
+DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False, 'CIV13_ROOT_TREE_PRESENTATION': False,
+                   'CIV13_SUBTILE_PULL_PAIRS': True}
 
 
 def read(path):

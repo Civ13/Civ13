@@ -491,10 +491,12 @@ var/global/datum/persistence_admission_identity
 	// native intent, interrupted pair or orphaned partial survivor still holds
 	// positions; the unstarted reservation is then withdrawn.
 	try
+#ifdef CIV13_SUBTILE_PULL_PAIRS
 		if(kind == "save" && (!subtile_pull_ownership.resolve_quiet("save_admission", operation) || !operation.current(storage, kind) || !subtile_pull_ownership.save_ready()))
 			operation.withdraw()
 			to_chat(world, SPAN_WARNING("Map save held: a smooth pull requires an aligned checkpoint."))
 			return null
+#endif
 		if(kind == "save")
 			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
 	catch(var/exception/admission_error)

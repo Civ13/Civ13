@@ -109,7 +109,7 @@ class SourceAdapterTests(unittest.TestCase):
         source=read('code/modules/persistence/functions.dm')
         for enabled in (False,True):
             with self.subTest(enabled=enabled):
-                body=extract(source,'/proc/begin_persistence_operation',defines={'CIV13_VARIABLE_OBSERVABILITY':enabled})
+                body=extract(source,'/proc/begin_persistence_operation',defines={'CIV13_VARIABLE_OBSERVABILITY':enabled,'CIV13_SUBTILE_PULL_PAIRS':True})
                 self.assertIn('persistence_active_operation = operation',body)
                 self.assertTrue(body.rstrip().endswith('return operation'))
                 self.assertEqual('operation.observability_id' in body,enabled)
