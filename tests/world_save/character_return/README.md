@@ -25,6 +25,9 @@ It reuses `run-cross-level.py` extraction, unique-replacement and stub-adaptatio
 helpers, the existing production saver/loader/graph and real movement/buckling
 procedures, plus the established sleep-fixture declaration adapters. It never
 calls the old runner's native functions or compiler validator.
+Movement keeps production's default disabled tree-presentation branch, neutral
+throw-launch fields and the actual clear_throw_launch helper. This fixture does
+not establish active throwing or enabled tree-presentation behavior.
 
 Only the generated dedicated packet removes the six disabled bed-return stubs.
 It includes complete production `bed_return.dm`. The sole policy-file adaptation

@@ -134,7 +134,8 @@ def prepare(root, output, control=None):
         ('code/game/objects/buckling.dm', 'buckling.dm',
          ('/obj/proc/buckle_mob', '/obj/proc/unbuckle_mob', '/obj/proc/post_buckle_mob')),
         ('code/game/atoms_movable.dm', 'force_move.dm',
-         ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed', '/atom/movable/proc/forceMove')),
+         ('/proc/persistence_live_contents', '/proc/persistence_movement_allowed',
+          '/atom/movable/proc/forceMove', '/atom/movable/proc/clear_throw_launch')),
     ):
         text = (root / relative).read_text(encoding='utf-8-sig')
         generated[target] = '\n'.join(base.extract_proc(text, name) for name in procedures)
