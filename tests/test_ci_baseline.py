@@ -52,6 +52,32 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_character_return_preparation_selects_actual_source_and_helper_inputs(self):
+        manifest = json.loads((ROOT / 'tests/world_save/character_return/inputs.json').read_text())
+        inputs = set(manifest['reference_sha256'])
+        for relative in ('tests/world_save/character_return/prepare.py',
+                         'tests/world_save/run-cross-level.py',
+                         'tests/world_save/test_roundtrip_compat.py',
+                         'tests/world_save/run-restart-transaction.py'):
+            tree = ast.parse((ROOT / relative).read_text())
+            inputs.add(relative)
+            inputs.update(node.value for node in ast.walk(tree)
+                          if isinstance(node, ast.Constant) and isinstance(node.value, str)
+                          and node.value.startswith(('code/', 'tests/'))
+                          and node.value.endswith(('.py', '.dm', '.dme', '.json')))
+        for path in sorted(inputs):
+            with self.subTest(input=path):
+                self.assertIn('character_return_preparation', self.selected([path]))
+
+    def test_character_shared_inputs_keep_conservative_unmapped_fallback(self):
+        self.assertIn('character_return', self.selected(['code/game/gameticker.dm']))
+        for path in ('code/predefines.dm', 'code/_macros.dm',
+                     'tests/new_z_budget/z_budget_evidence.py'):
+            with self.subTest(input=path):
+                result = ci.impact([path])
+                self.assertIn('Unmapped impact: ' + path, result['fallback_reasons'])
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+
     def test_furniture_joinery_inputs_select_offline_contracts(self):
         for path in ('tests/furniture_joinery/test_contract.py',
                      'code/game/objects/items/stacks/furniture_joinery.dm',
@@ -204,6 +230,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 expected = {'policy', 'bootstrap', 'progress', 'hub_status'}
                 if path == 'code/world.dm':
                     expected.add('dictionary')
+                    expected.add('character_return_preparation')
                 self.assertEqual(self.selected([path]), expected)
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
 

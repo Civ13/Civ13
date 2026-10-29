@@ -69,6 +69,12 @@ disk save or invulnerability; only a completed world generation is durable.
   character admission. Without a historical account manifest, an externally lost
   whole save directory is indistinguishable from a fresh installation; this patch
   cannot recover deleted data or infer ownership from lastKnownCkey/name.
+- Establish live-character readiness when an admitted fresh round enters play,
+  only if no existing saved/recovery hold is present. Its later ordinary saves
+  must not make its own files look like an unimported startup generation. Save
+  success/failure does not grant readiness or consume recovery: actual imported
+  rounds still wait for committed restoration, and active-operation/error/level
+  recovery holds override even an already-ready live world.
 
 ## Relationship to #3311
 

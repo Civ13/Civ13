@@ -183,8 +183,80 @@ class ReturnFixture:
         with patch.object(adapter, 'FIELDS', fields):
             return adapter.project(source, declaration, args, self.env, method)
 
+    def fresh_round_admission(self, can_start=True, startup_hold=False, round_restored=False):
+        # Execute real setup admission through PLAYING. Later seeding/hooks are
+        # outside this offline boundary; file writes remain an explicit adapter.
+        source = adapter.read('code/game/gameticker.dm')
+        declaration = '/datum/controller/gameticker/proc/setup'
+        start = source.index(declaration + '(')
+        end = source.index('\tstop_lobby_music()\n', start)
+        source = source[start:end] + '\treturn TRUE\n'
+        self.store.round_restored = round_restored
+        self.env.update(persistence_restart=NS(startup_hold=startup_hold),
+                        sleep=lambda ticks: None, GAME_STATE_PREGAME=1, GAME_STATE_PLAYING=3,
+                        job_master=NS(ResetOccupations=lambda: None))
+        self.env['map'].can_start = lambda: can_start
+        self.env['map'].required_players = 0
+        ticker = NS(current_state=1, admin_started=False)
+        with patch.object(adapter, 'FIELDS', (*adapter.FIELDS, 'current_state', 'admin_started')):
+            return adapter.project(source, declaration, 'src', self.env, True)(ticker)
+
 
 class CharacterReturnTests(unittest.TestCase):
+    def test_fresh_round_readiness_survives_ordinary_save_artifacts(self):
+        for action in ('new_character', 'reconnect', 'bed_sleep'):
+            with self.subTest(action=action):
+                f = ReturnFixture()
+                f.env['persistence_player_restore_ready'] = False
+                f.registered.clear()
+                f.body.persistence_restored = f.body.inducedSSD = False
+                self.assertTrue(f.fresh_round_admission())
+                # Same paths produced by an ordinary in-round save; no disk IO.
+                f.artifacts.extend(('map_saves/map.txt', 'map_saves/save_complete.txt'))
+                self.assertFalse(f.store.character_recovery_unready())
+                self.assertTrue(f.env['persistence_player_restore_ready'])
+                if action == 'new_character':
+                    f.world.remove(f.body)
+                    self.assertTrue(f.store.allow_new_character(f.lobby))
+                elif action == 'reconnect':
+                    self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+                    self.assertIs(f.client.mob, f.body)
+                    self.assertIs(f.body.loc, f.home)
+                else:
+                    f.body.client, f.client.mob = f.client, f.body
+                    f.body.loc, f.body.buckled = f.bed_turf, f.bed
+                    f.bed.buckled_mob = f.body
+                    f.bed_turf.append(f.bed)
+                    self.assertTrue(f.body.enter_saved_bed_sleep())
+
+    def test_fresh_admission_does_not_release_saved_or_failed_recovery(self):
+        for hold in ('saved_artifacts', 'restart', 'restored_import', 'load_recovery', 'dimension', 'budget', 'error', 'not_started'):
+            with self.subTest(hold=hold):
+                f = ReturnFixture()
+                f.env['persistence_player_restore_ready'] = False
+                if hold == 'saved_artifacts': f.artifacts.append('map_saves/1.sav')
+                if hold == 'load_recovery': f.env['persistence_load_recovery_required'] = True
+                if hold == 'dimension': f.store.dimension_recovery_required = True
+                if hold == 'budget': f.store.dimension_budget_hold = True
+                if hold == 'error': f.blocked = True
+                f.fresh_round_admission(can_start=hold != 'not_started', startup_hold=hold == 'restart',
+                                        round_restored=hold == 'restored_import')
+                self.assertFalse(f.env['persistence_player_restore_ready'])
+
+    def test_live_readiness_cannot_bypass_save_or_error_holds(self):
+        f = ReturnFixture()
+        f.env['persistence_player_restore_ready'] = False
+        self.assertTrue(f.fresh_round_admission())
+        f.artifacts.append('map_saves/1.sav')
+        f.env['persistence_active_operation'] = NS(current=lambda *args: False, restoring_players=False)
+        self.assertTrue(f.store.character_recovery_unready())
+        f.env['persistence_active_operation'] = None
+        f.blocked = True  # Actual player_restoration_blocked error/hold boundary.
+        self.assertTrue(f.store.character_recovery_unready())
+        self.assertTrue(f.env['persistence_player_restore_ready'])
+        f.blocked = False
+        self.assertFalse(f.store.character_recovery_unready())
+
     def test_changed_var_export_selects_nondefault_nutrition_and_water(self):
         fields = adapter.extract(adapter.read('code/modules/persistence/functions.dm'), '/datum/proc/get_saved_vars')
         fields = re.sub(r'(?<!\w)/(?:mob|turf|obj|datum)(?:/[\w]+)*', lambda m: repr(m[0]), fields)
