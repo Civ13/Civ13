@@ -112,6 +112,32 @@ def resolve_statements(text):
     return namespace['resolve']
 
 
+def release_statements(text):
+    body = section(text, '/datum/subtile_pull_pair/proc/release()',
+                   '/datum/subtile_pull_pair/proc/drop_lease()').rstrip().splitlines()[1:]
+    names = {'isDeleted(leader)': 'P.leader.deleted', 'isDeleted(follower)': 'P.follower.deleted',
+             'subtile_pull_shape(leader, TRUE)': 'P.leader.aligned()',
+             'subtile_pull_shape(follower, TRUE)': 'P.follower.aligned()'}
+    exact = {'return TRUE': 'return True', 'return FALSE': 'return False',
+             'cancel("release_requires_recovery")': 'P.cancel("release_requires_recovery")',
+             'recovery_required = TRUE': 'P.recovery_required = True',
+             'cancel("released")': 'P.cancel("released")', 'drop_lease()': 'P.drop_lease()'}
+    lines = translate(body, exact, ((r'if \((.*)\)', '{}'),))
+    projected = []
+    for line, original in zip(lines, [l for l in body if l.strip() and not l.strip().startswith('//')]):
+        value = original.strip()
+        if value.startswith('if ('):
+            expression = boolean(value[4:-1], names)
+            for name in ('released', 'settling', 'intent_running', 'native_inflight', 'completion_running', 'issued', 'leader', 'follower'):
+                expression = re.sub(r'(?<![.\w])' + name + r'\b', 'P.' + name, expression)
+            line = line[:len(line) - len(line.lstrip())] + 'if ' + expression + ':'
+        projected.append(line)
+    namespace = {}
+    exec(compile('def release(P):\n' + '\n'.join('    ' + l for l in projected),
+                 '<actual-pair-release>', 'exec'), {'__builtins__': {}}, namespace)
+    return namespace['release']
+
+
 class Turf:
     def __init__(self, x, y):
         self.x, self.y = x, y
@@ -217,6 +243,29 @@ class SettleValidation(unittest.TestCase):
         self.assertTrue(self.resolve(pair, world, 'recovery_timeout'))
         self.assertEqual(inner, [False])
         self.assertEqual(pair.released, True)
+
+    def test_callback_cannot_release_before_final_position_validation(self):
+        source = read(PREFIX + 'pull_pair_ownership.dm')
+        release = release_statements(source)
+        attempts = []
+        def relocate_and_release(member):
+            member.loc = member.world.turfs[(9, 9)]
+            attempts.append(release(pair))
+        world, pair = self.pair(relocate_and_release)
+        pair.follower.step_x = 0
+        self.assertFalse(self.resolve(pair, world, 'save_admission'))
+        self.assertEqual(attempts, [False])
+        self.assertFalse(pair.released)
+        self.assertEqual(pair.failure, 'settle_position_changed')
+
+        old = source.replace('completion_running || issued || settling)', 'completion_running || issued)', 1)
+        self.assertNotEqual(old, source)
+        release = release_statements(old)
+        attempts.clear()
+        world, pair = self.pair(relocate_and_release)
+        pair.follower.step_x = 0
+        self.assertTrue(self.resolve(pair, world, 'save_admission'))
+        self.assertEqual(attempts, [True], 'control should release before validation')
 
     def test_throwing_callback_retains_lease_and_resets_settling(self):
         def fail(member):

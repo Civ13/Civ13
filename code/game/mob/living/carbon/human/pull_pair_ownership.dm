@@ -177,7 +177,7 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 /datum/subtile_pull_pair/proc/release()
 	if (released)
 		return TRUE
-	if (intent_running || native_inflight || completion_running || issued)
+	if (intent_running || native_inflight || completion_running || issued || settling)
 		return FALSE
 	// Releasing a live offset/unsupported shape would let a legacy Move snap.
 	// Deleted members are retired separately; survivors still require a valid

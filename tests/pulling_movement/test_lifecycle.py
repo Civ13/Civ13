@@ -177,7 +177,7 @@ class PullLifecycleContracts(unittest.TestCase):
     def test_release_requires_unwound_native_state_and_valid_survivor_shapes(self):
         release = section(read(PREFIX + 'pull_pair_ownership.dm'),
                           '/datum/subtile_pull_pair/proc/release()', '/datum/subtile_pull_capability\n')
-        self.assertLess(release.index('if (intent_running || native_inflight || completion_running || issued)'),
+        self.assertLess(release.index('if (intent_running || native_inflight || completion_running || issued || settling)'),
                         release.index('cancel("released")'))
         self.assertIn('leader && !isDeleted(leader) && !subtile_pull_shape(leader, TRUE)', release)
         self.assertIn('follower && !isDeleted(follower) && !subtile_pull_shape(follower, TRUE)', release)
