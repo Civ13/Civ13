@@ -514,6 +514,7 @@ var/global/mall_fixture_failed = FALSE
 	mall_assert(entry && entry.x == 89 && entry.y == 19 && entry.z == 1 && highway && highway.x == 15 && highway.y == 12 && highway.z == 1, "car route uses actual default mall south entry and west highway")
 	var/list/original_markers = extraction_raid_markers
 	var/deployed = FALSE
+	mall_stage("paid car before deployment [json_encode(list("x" = A.x, "y" = A.y, "z" = A.z, "dir" = A.dir, "maxdist" = A.maxdist, "components" = A.components.len))]")
 	extraction_raid_markers = list(entry)
 	try
 		deployed = M.deploy_vehicle(H)
@@ -522,6 +523,8 @@ var/global/mall_fixture_failed = FALSE
 		throw failure
 	extraction_raid_markers = original_markers
 	mall_assert(deployed && S.raid_vehicle == A && !S.garage_vehicle && S.profile["state"] == "raid" && !S.profile["garage"].len && M.raid_vehicles[A], "production deployment debits the garage and moves the same actual owned car")
+	var/turf/arrived = get_turf(A)
+	mall_stage("paid car after deployment [json_encode(list("x" = A.x, "y" = A.y, "z" = A.z, "turf_x" = arrived?.x, "turf_y" = arrived?.y, "turf_z" = arrived?.z, "distance" = get_dist(A, entry), "dir" = A.dir, "maxdist" = A.maxdist, "components" = A.components.len))]")
 	mall_assert(get_dist(A, entry) <= 4 && A.z == 1 && A.dir == SOUTH && A.maxdist == 3 && A.components.len == 9, "actual car arrives beside the real south road marker with its native turning footprint")
 	mall_assert(M.raid_items[bag] && M.raid_items[child] && M.raid_items[key], "deployed nested cargo and carried key enter actual raid custody")
 	var/obj/structure/bed/chair/drivers/car/seat = A.wheel.drivingchair
