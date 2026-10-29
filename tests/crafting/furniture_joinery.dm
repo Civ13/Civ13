@@ -178,6 +178,7 @@
 	recipe_ci_rope_hammock()
 	recipe_ci_document_drawers()
 	recipe_ci_sofa_materials()
+	recipe_ci_canopy()
 
 /proc/shelf_ci_clear()
 	for (var/obj/O in locate(2,1,1))

@@ -31,6 +31,11 @@ cloth/leather stacks locally; unmapped padding stays installed on removal.
 Hammer teardown must recover padding before frame output/deletion or refuse it;
 the bed guard runs after its existing wait. Keep unpadded wooden-bed recovery.
 See `docs/upholstered-seating-audit.md`; preserve existing costs, gates and art.
+Canopy cloth/leather routes already exist. Unfold/fold revalidate the actor,
+tile, item and persistence identity after waiting. Folding protects independent
+roofs and keeps shared cover until the last canopy leaves. Recompute neighbor
+states after retirement. See `docs/canopy-crafting-audit.md`; do not alter shared
+roof/area or seasonal-collapse policy as part of a canopy recipe change.
 
 <!-- 2026-10-28: explicit furniture joinery alternatives -->
 Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve

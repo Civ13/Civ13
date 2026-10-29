@@ -93,7 +93,8 @@ SUITES = {
                                   'tests/furniture_joinery/test_wooden_shelf.py',
                                   'tests/furniture_joinery/test_bedroll.py',
                                   'tests/furniture_joinery/test_document_drawers.py',
-                                  'tests/furniture_joinery/test_sofa_materials.py'), 'paths': (
+                                  'tests/furniture_joinery/test_sofa_materials.py',
+                                  'tests/furniture_joinery/test_canopy.py'), 'paths': (
         'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
         'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
