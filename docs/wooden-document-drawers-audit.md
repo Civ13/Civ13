@@ -15,6 +15,13 @@ normal modifiers. It produces a distinct wooden chest-drawer subtype, retains
 the parent drawer's Fine Furniture node (tier 2, bench 1) and maximum era 8.
 The route is global-only; separate faction catalogs do not receive it automatically.
 
+The existing dowel unit is a **set**, representing a batch of pegs, not an
+individual dowel. Individual pegs within a set have no fixed count. The original
+one-set requirement is retained as the gameplay abstraction; no numeric peg
+count is invented and no other furniture's cost or set meaning is rebalanced.
+Preparing the set separately costs one finished plank, so starting without a
+set costs seven finished planks in total: six cabinet planks plus one for the set.
+
 The existing data-driven joinery action validates the retained stock, peg set,
 tools, research, occupied turf and persistence identity after waiting, before
 either payment or XP. This slice does not extend the hammock's special guard or
