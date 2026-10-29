@@ -103,11 +103,18 @@ var/global/list/root_tree_presenters
 		I.icon = null
 		I.mouse_opacity = 0
 
+/datum/root_tree_presenter/proc/planes_admitted()
+	if(!owner || !owner.mob || !owner.mob.hud_used || !weather_plane || !weather_copy)
+		return FALSE
+	var/obj/screen/plane_master/P = owner.mob.hud_used.plane_masters["[LIGHTING_PLANE]"]
+	var/obj/screen/plane_master/G = owner.mob.hud_used.plane_masters["[GAME_PLANE]"]
+	return P == weather_plane && (P in owner.screen) && P.blend_mode == BLEND_OVERLAY && P.render_target == weather_target && weather_copy.render_source == weather_target && G && (G in owner.screen) && !length(G.filters) && !G.color && !G.transform && G.alpha == 255
+
 /datum/root_tree_presenter/proc/refresh()
 	if(!CIV13_ROOT_TREE_PRESENTATION || retired || !owner)
 		return FALSE
 	invalidate()
-	if(owner.root_tree_presenter != src || owner.los_context != context || !context || context.owner != owner || !context.policy_key() || weather_plane.render_target != weather_target)
+	if(owner.root_tree_presenter != src || owner.los_context != context || !context || context.owner != owner || !context.policy_key() || !planes_admitted())
 		return FALSE
 	if(!context.capture())
 		return FALSE

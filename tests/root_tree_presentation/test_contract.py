@@ -64,7 +64,7 @@ def environment():
       'isnum':lambda x:isinstance(x,(int,float)),'islist':lambda x:isinstance(x,list),
       'dm_list':lambda *xs:Values(xs),'isturf':lambda x:hasattr(x,'type') and x.type=='/turf/floor/plating',
       'length':lambda x:0 if x is None else len(x),'qdel':lambda x:setattr(x,'deleted',True),
-      'root_tree_presenters':Items()}
+      'root_tree_presenters':Items(),'BLEND_OVERLAY':2}
 
 def tree():
     return N(type='/obj/structure/wild/tree/live_tree',gcDestroyed=False,gc_destroyed=False,
@@ -145,6 +145,19 @@ class LightPolicy(unittest.TestCase):
         self.assertIsNone(self.f(self.root,self.viewer))
 
 class OwnershipAndComposition(unittest.TestCase):
+    def test_replaced_weather_or_changed_game_plane_rejected_on_refresh(self):
+        env=environment()
+        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/planes_admitted(','self',env,True)
+        weather=N(blend_mode=2,render_target='owned');game=N(filters=[],color=None,transform=None,alpha=255)
+        masters={'[LIGHTING_PLANE]':weather,'[GAME_PLANE]':game}
+        r=N(owner=N(mob=N(hud_used=N(plane_masters=masters)),screen=[weather,game]),weather_plane=weather,
+            weather_copy=N(render_source='owned'),weather_target='owned')
+        self.assertTrue(f(r))
+        game.filters=['shadow'];self.assertFalse(f(r));game.filters=[]
+        masters['[LIGHTING_PLANE]']=object();self.assertFalse(f(r));masters['[LIGHTING_PLANE]']=weather
+        r.owner.screen.remove(weather);self.assertFalse(f(r));r.owner.screen.append(weather)
+        weather.render_target='foreign';self.assertFalse(f(r))
+        r.weather_plane=None;self.assertFalse(f(r))
     def model(self):
         env=environment();r=N(retired=False,driver_generation=1,owner=N(screen=Items(['HUD']),images=Items(['foreign']),root_tree_presenter=None),
            shutter=N(deleted=False),weather_copy=N(deleted=False),weather_plane=N(render_target='owned'),weather_target='owned',
