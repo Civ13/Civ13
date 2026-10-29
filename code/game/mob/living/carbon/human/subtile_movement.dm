@@ -165,11 +165,12 @@
 // Called after the original posture admission, before its paid wait. A handled
 // attempt owns the entire interval, including an early collision/cancellation.
 // This profile is client locomotion; NPC/linked bodies keep their legacy path.
+// Smooth walking may pull, but a pulling crawl stays on the legacy path.
 /mob/living/human/proc/human_subtile_crawl_authority(client/owner)
 	return owner && client == owner && owner.mob == src && owner.canmove
 
 /mob/living/human/proc/human_subtile_crawl_ready(direction)
-	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && ((!step_x && !step_y) || human_subtile_offset_owned)
+	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned)
 
 /mob/living/human/proc/human_subtile_crawl_move(turf/n, duration, posture)
 	var/direct = get_dir(src, n)
