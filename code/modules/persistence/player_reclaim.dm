@@ -105,6 +105,12 @@ var/global/list/persistence_player_claims = list()
 		if(!prepare_character_return(H) || !H || persistence_player_claims[C.ckey] != lobby || lobby.client != C || C.mob != lobby || H.persistence_owner_ckey != C.ckey || H.client || H.key || H.stat == DEAD || player_restoration_blocked() || (persistence_bed_return_enabled() && !return_player_eligible(H, C.ckey)) || IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
 			if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
 			return FALSE
+		// Defend unique local ownership after callbacks, including direct owner changes.
+		if(persistence_bed_return_enabled())
+			var/list/current_bodies = local_character_bodies(C.ckey)
+			if(length(current_bodies) != 1 || current_bodies[1] != H)
+				if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+				return FALSE
 		lobby.spawning = TRUE
 		lobby.close_spawn_windows()
 		H.key = C.key

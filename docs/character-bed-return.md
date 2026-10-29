@@ -55,6 +55,10 @@ disk save or invulnerability; only a completed world generation is durable.
   after return movement callbacks, before key transfer. A refusal retains the
   lobby and pending body claim for retry; movement may already have placed the
   still-sleeping body safely at its bed.
+  Defensively rescan local ownership after callbacks: the selected body must
+  remain the sole locally owned body before handoff. Normal owner recording
+  clears an earlier owner; this protects the invariant against direct callback
+  changes, rather than documenting a confirmed ordinary gameplay failure.
 - Lobby join and final character creation retry reclaim before new-body creation
   and hold when an owned live/ambiguous/occupied body or incomplete recovery exists.
   Reserve the existing body before movement callbacks or key handoff. Failed

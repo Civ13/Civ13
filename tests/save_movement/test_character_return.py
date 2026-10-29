@@ -335,6 +335,32 @@ class CharacterReturnTests(unittest.TestCase):
                 if case == 'reservation': self.assertIsNotNone(f.claims['account'])
         self.assertFalse(f.claims)
 
+    def test_duplicate_owner_callback_defensively_holds_for_valid_retry(self):
+        f = ReturnFixture()
+        duplicate = Body(f, f.home)
+        # Deliberately skip normal owner recording, which clears the old owner.
+        f.body.move_hook = lambda: f.world.append(duplicate)
+        items, organs = f.body.inventory, f.body.organs
+        self.assertFalse(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.client.mob, f.lobby)
+        self.assertIs(f.lobby.client, f.client)
+        self.assertIs(f.registered['account'][1], f.body)
+        self.assertEqual(f.body.persistence_owner_ckey, 'account')
+        self.assertFalse(f.claims)
+        self.assertFalse(f.lobby.spawning)
+        self.assertFalse(f.deleted)
+        self.assertIsNone(f.body.key)
+        self.assertTrue(f.body.inducedSSD)
+        self.assertIs(f.body.inventory, items)
+        self.assertIs(f.body.organs, organs)
+        self.assertFalse(f.store.allow_new_character(f.lobby))
+        f.world.remove(duplicate)
+        f.body.move_hook = None
+        self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.client.mob, f.body)
+        self.assertFalse(f.registered)
+        self.assertFalse(f.claims)
+
     def test_key_failure_cleans_only_owned_reservation(self):
         f = ReturnFixture()
         f.body.refuse_key = True
