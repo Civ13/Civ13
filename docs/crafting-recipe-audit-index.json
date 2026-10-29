@@ -110,9 +110,12 @@
     "/obj/structure/bed/sofa/right",
     "/obj/structure/bed/chair/sofa",
     "/obj/structure/bed/chair/sofa/left",
-    "/obj/structure/bed/chair/sofa/right"
+    "/obj/structure/bed/chair/sofa/right",
+    "/obj/item/weapon/tent",
+    "/obj/structure/tent"
   ],
-  "reviewed_follow_on_families": 13,
+  "reviewed_follow_on_families": 14,
   "reviewed_legacy_bedroll_rows": 11,
-  "current_furniture_candidates": 557
+  "current_furniture_candidates": 557,
+  "reviewed_legacy_canopy_rows": 12
 }
