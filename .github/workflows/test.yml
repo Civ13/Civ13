@@ -2066,6 +2066,7 @@ jobs:
           /usr/bin/python3 tests/decal_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --baseline
 
       - name: Verify production food progression and seed-consumption negative control
+        id: food_progression
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/food_progression')
         shell: bash
         run: |
@@ -2075,10 +2076,26 @@ jobs:
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --negative-control
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe storage
           /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --can-negative-control
+          /usr/bin/python3 tests/food_progression/run.py "${args[@]}" --probe cutting --evidence-dir "$RUNNER_TEMP/cutting-board-evidence"
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}"
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control nutrition
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control age
           /usr/bin/python3 tests/food_progression/preservation_run.py "${args[@]}" --preservation-control conversion
+
+      - name: Retain isolated cutting-board evidence
+        if: always() && needs.changes.result == 'success' && steps.food_progression.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cutting-board-evidence
+          path: |
+            ${{ runner.temp }}/cutting-board-evidence/metadata.json
+            ${{ runner.temp }}/cutting-board-evidence/compile.log
+            ${{ runner.temp }}/cutting-board-evidence/runtime.log
+            ${{ runner.temp }}/cutting-board-evidence/daemon.log
+            ${{ runner.temp }}/cutting-board-evidence/food_result.txt
+            ${{ runner.temp }}/cutting-board-evidence/probe.dm
+            ${{ runner.temp }}/cutting-board-evidence/cutting-board-routes.json
+          if-no-files-found: warn
 
       - name: Verify animal health, single-hit damage and tool wear
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/animal_combat')

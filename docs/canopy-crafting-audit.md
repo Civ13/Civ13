@@ -61,7 +61,8 @@ round-trip acceptance.
 
 This adds one source-reviewed follow-on family/two concrete models to the audit
 index, independently from 557 inventoried furniture candidates. The wider audit
-remains partial. Production/storage handlers such as barrels, cutting boards and
-kitchen implements are next. Shared roof damage/destruction policy, seasonal
+remains partial. The next [production/storage slice](cutting-board-production-audit.md)
+reviews the cutting board and triages wooden barrel/kitchen-implement recipes.
+Shared roof damage/destruction policy, seasonal
 collapse, graphical shelter effects and world restoration are outside this
 bounded action correction; their ownership and existing guards are preserved.

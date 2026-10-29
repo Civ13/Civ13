@@ -93,6 +93,16 @@ active hand. The custom saver must exclude both reservation pointers.
 <!-- 2026-10-11: crafting validation -->
 ## Crafting checks
 
+<!-- 2026-10-29: paid cutting-board input -->
+Cutting boards consume food into a distinct list with a text type path, never a
+retained deleted food object. Knife and scraping waits revalidate that exact
+slot and persistence identity; claim the slot before output constructors run.
+Keep existing conversion yields/delays and the single parent tool dispatch.
+`docs/cutting-board-production-audit.md` distinguishes fixed item accounting
+from nutrient/age preservation and barrel recipe triage from handler review.
+The separate food `--probe cutting` fixture avoids the crafting runner's budget;
+`--compile-only` starts no world and establishes no runtime/save acceptance.
+
 <!-- 2026-10-15: Modern processor recipe validation -->
 The recipe catalog fixture defaults to era 0. New era-gated machine families
 must select their real supported era in tests/crafting/checks.dm; the reactor
