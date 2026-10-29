@@ -19,6 +19,13 @@ The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
 
+`sofa_materials.dm` checks the three existing eight-cloth sofa recipes and their
+three map-only chair variants. Fixed upholstery must reject padding without
+debit and refuse generic wood recovery. An ordinary bed control still accepts
+paid cloth padding and returns exactly one unit on removal. No new sofa recipe,
+art or connected-client acceptance is implied.
+The steel-frame comfy-chair control also refuses generic wood recovery.
+
 `document_drawers.dm` checks paid planks/pegs, document-only admission and late
 occupancy/tool/research rejection through the existing joinery action. It does
 not exercise the connected retrieval browser or establish save/world acceptance.

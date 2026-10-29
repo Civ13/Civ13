@@ -79,7 +79,7 @@
     "weapon accessories": 84,
     "weapons": 173
   },
-  "audited_on": "2026-10-28",
+  "audited_on": "2026-10-29",
   "existing_furniture_candidates": 545,
   "new_global_joinery_rows": 6,
   "new_global_material_rows": 9,
@@ -100,9 +100,19 @@
     "/obj/structure/filingcabinet",
     "/obj/structure/filingcabinet/filingcabinet",
     "/obj/structure/filingcabinet/chestdrawer",
-    "/obj/structure/filingcabinet/chestdrawer/wood"
+    "/obj/structure/filingcabinet/chestdrawer/wood",
+    "/obj/structure/bed/chair/wood/red",
+    "/obj/structure/bed/chair/wood/wings",
+    "/obj/structure/bed/chair/comfy/brown",
+    "/obj/structure/bed/psych",
+    "/obj/structure/bed/sofa",
+    "/obj/structure/bed/sofa/left",
+    "/obj/structure/bed/sofa/right",
+    "/obj/structure/bed/chair/sofa",
+    "/obj/structure/bed/chair/sofa/left",
+    "/obj/structure/bed/chair/sofa/right"
   ],
-  "reviewed_follow_on_families": 12,
+  "reviewed_follow_on_families": 13,
   "reviewed_legacy_bedroll_rows": 11,
   "current_furniture_candidates": 557
 }

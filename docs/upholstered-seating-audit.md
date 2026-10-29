@@ -1,0 +1,73 @@
+# Upholstered seating review - 2026-10-29
+
+This slice reviews the next family after document drawers. Active material rows,
+constructors, padding dispatch and generic recovery were inspected together.
+Existing recipes are preserved. No additional recipe is justified in this slice.
+
+| Existing global route | Constructor / interaction | Decision |
+| --- | --- | --- |
+| Padded wooden chair and wing-backed chair: six finished planks, Fine Furniture | Static wooden art, with stack/wirecutter interactions refused by the wooden-chair handler | Existing preindustrial wood routes; do not invent a second recipe or a removable textile ledger from baked-in art |
+| Brown comfy chair: six leather, Basic Furniture | Steel frame plus leather padding; ordinary paid replacement/removal after unpadding | Preserve the legacy recipe; refuse the inherited generic wood refund for the nonwood comfy-chair family |
+| Divan: nine leather, Fine Furniture | Wooden frame plus leather padding, inherited removable padding | Existing wood/leather construction abstraction; no arbitrary material alternative |
+| Old sofa, left/centre/right: eight cloth each, Fine Furniture | Fixed art; empty add/remove-padding handlers; generic hammer previously returned one wood log | Refuse unsupported stack padding before any debit and refuse generic wood recovery |
+| Chair sofa, left/centre/right | Same fixed-art/no-op padding behavior; map types without active material rows | Apply the same conservation rules to the inherited interaction, without inventing recipes |
+
+The brown comfy-chair constructor explicitly supplies steel and leather. Other
+colored comfy constructors also supply steel; fancy sofas and booths under that
+family use leather material. Their common generic wood refund is therefore
+refused at the comfy parent. Ordinary wooden chairs and beds retain their existing
+recovery behavior. This does not add a recovered steel/leather bill to old crafted
+or mapped objects whose original inputs are not recorded.
+
+## Concrete fixes and material accounting
+
+The bed stack handler spends one padding unit before invoking `add_padding`.
+Both fixed sofa families override that procedure with an empty return. The old
+path therefore loses one cloth/leather unit without changing the sofa, and a
+second attempt can lose another. Each fixed sofa parent now refuses stack
+interactions before reaching that debit. Non-stack dispatch still reaches the
+existing bed/structure handlers.
+
+Those fixed sofas also inherited `not_disassemblable = FALSE`: a hammer reached
+the generic structure action and returned one wood log. The three eight-cloth
+recipes could thus convert cloth to wood. Fixed sofas and the nonwood comfy-chair
+family now refuse that generic recovery. No speculative refund is substituted.
+
+An ordinary bed continues to accept one paid cloth/leather padding unit. Its
+existing removal procedure returns one unit and clears the padding reference;
+repeated removal cannot mint additional material. That supported path is kept
+separate from fixed sofa art in the regressions.
+
+## Period and appearance limits
+
+The Met's [sixteenth-century Spanish walnut/leather armchair](https://www.metmuseum.org/art/collection/search/196742)
+and [late-sixteenth-century Florentine walnut/leather armchair](https://www.metmuseum.org/art/collection/search/197332)
+support wood-and-leather seating before industrial steel furniture. They do not
+date the game's red/wing chair silhouettes, establish ancient/universal medieval
+upholstery, or establish its material quantities. Existing Fine/Basic Furniture
+tiers and legacy costs are gameplay gates and abstractions.
+
+All existing sprites and constructor appearance are retained. The old-sofa art
+remains a stylized existing object; this repair does not backdate it or introduce
+a historically reconstructed sofa. A new removable upholstered wooden chair
+would need an explicit material ledger and compatible visual states; duplicating
+the current static wooden rows would not supply that behavior.
+
+## Verification and remaining audit
+
+Offline checks execute the actual sofa stack dispatch, the production bed
+padding branch and the generic structure hammer branch through bounded inert
+adapters. Controls deliberately enter the old no-op padding and wood-refund paths
+and demonstrate material loss/conversion. Legacy rows and research/art identities
+remain checked. The compiled native fixture exercises all six fixed-art sofa
+types, the three paid eight-cloth recipes, a steel comfy chair and a paid ordinary
+bed padding/removal control. Record hosted execution separately from compilation.
+
+Connected-client presentation, natural resource/research reachability and world
+save round trips are unverified by offline checks. This source review adds one
+follow-on family and ten concrete output types to the audit index; inventory
+membership does not imply historical or native acceptance of every route.
+Remaining independent slices are canopy fold/unfold and roof-area lifecycle,
+then production/storage stations such as barrels, cutting boards and kitchen
+handlers. Full anvil, cooking, chemistry, clothing and weapons reviews remain
+outside completed slices.

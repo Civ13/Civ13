@@ -1,0 +1,65 @@
+// Fixed-art sofa dispatch; real stock, padding and generic recovery procedures.
+/proc/recipe_ci_sofa_materials()
+	map.ordinal_age = 2
+	var/mob/living/human/handle_ci/H = new(locate(2,1,1))
+	H.civilization = "recipe_ci"
+	for (var/path in list(/obj/structure/bed/sofa, /obj/structure/bed/sofa/left, /obj/structure/bed/sofa/right, /obj/structure/bed/chair/sofa, /obj/structure/bed/chair/sofa/left, /obj/structure/bed/chair/sofa/right))
+		var/obj/structure/bed/B
+		if (ispath(path, /obj/structure/bed/sofa))
+			var/datum/stack_recipe/R = recipe_ci_food_recipe(/material/cloth, path, H.civilization)
+			joinery_ci_expect(R && R.req_amount == 8, "existing eight-cloth sofa route: [path]")
+			if (!R)
+				continue
+			R.time = 0 // Bound delay only; production construction and debit remain.
+			var/obj/item/stack/material/cloth/stock = new(H, 16, FALSE)
+			H.r_hand = stock
+			stock.produce_recipe(R, 1, H)
+			B = locate(path) in locate(2,1,1)
+			joinery_ci_expect(B && stock.amount == 8, "sofa pays eight cloth units: [path]")
+			H.remove_from_mob(stock)
+			qdel(stock)
+		else
+			B = new path(locate(2,1,1)) // Existing map chair variant; no recipe invented.
+		if (!B)
+			continue
+		for (var/stock_path in list(/obj/item/stack/material/cloth, /obj/item/stack/material/leather))
+			var/obj/item/stack/material/S = new stock_path(H, 3, FALSE)
+			joinery_ci_expect(H.put_in_active_hand(S), "padding stock occupies legal hand")
+			B.attackby(S, H)
+			joinery_ci_expect(S.amount == 3 && !B.padding_material, "fixed sofa refuses padding without debit: [path], [stock_path]")
+			H.remove_from_mob(S)
+			qdel(S)
+		var/obj/item/weapon/hammer/hammer = new /obj/item/weapon/hammer/tribalhammer(H)
+		joinery_ci_expect(H.put_in_active_hand(hammer), "sofa hammer occupies legal hand")
+		B.attackby(hammer, H)
+		joinery_ci_expect(!QDELETED(B) && !shelf_ci_count(/obj/item/stack/material/wood), "fixed sofa refuses generic wood recovery: [path]")
+		H.remove_from_mob(hammer)
+		qdel(hammer)
+		shelf_ci_clear()
+	// The leather comfy-chair route constructs a steel frame, never wood.
+	var/obj/structure/bed/chair/comfy/brown/comfy = new(locate(2,1,1))
+	var/obj/item/weapon/hammer/comfy_hammer = new /obj/item/weapon/hammer/tribalhammer(H)
+	joinery_ci_expect(H.put_in_active_hand(comfy_hammer), "comfy-chair hammer occupies legal hand")
+	comfy.attackby(comfy_hammer, H)
+	joinery_ci_expect(comfy.material && comfy.material.name == "steel" && !QDELETED(comfy) && !shelf_ci_count(/obj/item/stack/material/wood), "steel comfy chair cannot recover wood")
+	H.remove_from_mob(comfy_hammer)
+	qdel(comfy_hammer)
+	shelf_ci_clear()
+	// Supported removable upholstery still pays once and returns only its padding.
+	var/obj/structure/bed/wood/bed = new(locate(2,1,1))
+	var/obj/item/stack/material/cloth/cloth = new(H, 3, FALSE)
+	joinery_ci_expect(H.put_in_active_hand(cloth), "supported padding occupies legal hand")
+	bed.attackby(cloth, H)
+	joinery_ci_expect(cloth.amount == 2 && bed.padding_material && bed.padding_material.name == "cloth", "supported bed padding still pays one cloth")
+	H.remove_from_mob(cloth)
+	qdel(cloth)
+	var/obj/item/weapon/wirecutters/cutters = new(H)
+	joinery_ci_expect(H.put_in_active_hand(cutters), "padding removal tool occupies legal hand")
+	bed.attackby(cutters, H)
+	joinery_ci_expect(!bed.padding_material && shelf_ci_count(/obj/item/stack/material/cloth) == 1, "supported padding removes to exactly one cloth")
+	bed.attackby(cutters, H)
+	joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/cloth) == 1, "repeated removal cannot mint cloth")
+	H.remove_from_mob(cutters)
+	qdel(cutters)
+	shelf_ci_clear()
+	qdel(H)

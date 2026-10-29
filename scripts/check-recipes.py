@@ -42,7 +42,8 @@ def main():
                    "tests/crafting/furniture_joinery.dm", "tests/crafting/cloth_bedroll.dm",
                    "code/game/objects/items/weapons/nomadstuff.dm", "code/game/objects/structures.dm",
                    "code/game/objects/structures/stool_bed_chair_nest/bed.dm", "tests/crafting/rope_hammock.dm",
-                   "code/game/objects/structures/filingcabinet.dm", "tests/crafting/document_drawers.dm"]
+                   "code/game/objects/structures/filingcabinet.dm", "tests/crafting/document_drawers.dm",
+                   "tests/crafting/sofa_materials.dm", "code/game/objects/structures/stool_bed_chair_nest/chairs.dm"]
         metadata = {"head_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                     "control": "hands-only" if args.handle_hands_negative_control else None,
                     "source_sha256": {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in sources},
@@ -91,6 +92,7 @@ def main():
         dme += f'\n#include "{root.as_posix()}/tests/crafting/cloth_bedroll.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/rope_hammock.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/document_drawers.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/sofa_materials.dm"\n'
         # Preserve resource lookup from original includes.
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)

@@ -1,5 +1,9 @@
 # Document drawer review - 2026-10-28
 
+Follow-on status, 2026-10-29: [upholstered seating](upholstered-seating-audit.md)
+has now been source-reviewed, with narrow padding/recovery conservation fixes.
+The next independent family is canopy fold/unfold and roof/area lifecycle.
+
 This is one additional reviewed family, after the merged joinery, cloth-bedroll
 and hammock work. The three existing document-cabinet routes all cost six plastic
 units: ordinary/tall filing cabinets use Papermaking and the chest drawer uses

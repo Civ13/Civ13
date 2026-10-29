@@ -361,7 +361,13 @@
 	base_icon = "sofa_forward"
 	applies_material_colour = FALSE
 	not_movable = FALSE
-	not_disassemblable = FALSE
+	not_disassemblable = TRUE // Cloth recipes must not produce the generic wood refund.
+
+/obj/structure/bed/sofa/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/stack))
+		to_chat(user, SPAN_NOTICE("This sofa has fixed upholstery."))
+		return
+	..()
 
 /obj/structure/bed/sofa/left
 	icon_state = "sofa_forward_left"
@@ -451,7 +457,13 @@
 	base_icon = "sofa_forward"
 	applies_material_colour = FALSE
 	not_movable = FALSE
-	not_disassemblable = FALSE
+	not_disassemblable = TRUE // Match the fixed-upholstery bed sofa's recovery rule.
+
+/obj/structure/bed/chair/sofa/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/stack))
+		to_chat(user, SPAN_NOTICE("This sofa has fixed upholstery."))
+		return
+	..()
 
 /obj/structure/bed/chair/sofa/left
 	icon_state = "sofa_forward_left"

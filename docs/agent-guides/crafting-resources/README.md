@@ -24,6 +24,10 @@ Wooden document drawers are a Fine Furniture joinery route using finished planks
 and paid pegs, with the existing post-wait joinery guards. Preserve the three
 plastic document-cabinet routes and their paper-only handler. See
 `docs/wooden-document-drawers-audit.md`; no shared crafting rewrite is needed.
+Fixed-art bed/chair sofas reject padding stacks before debit; their no-op padding
+handlers must never consume materials. Fixed sofas and nonwood comfy chairs
+refuse generic wood recovery. Supported bed padding/removal remains paid. See
+`docs/upholstered-seating-audit.md`; preserve existing costs, gates and art.
 
 <!-- 2026-10-28: explicit furniture joinery alternatives -->
 Namespaced joinery recipes share furniture_joinery.json with Atlas/Help. Preserve
