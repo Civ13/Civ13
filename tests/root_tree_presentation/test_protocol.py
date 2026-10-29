@@ -193,8 +193,10 @@ class Gate(unittest.TestCase):
         for change in ({'run':'foreign'},{'reason':'root_admission'},{'status':'ready'}):
             path.write_text(json.dumps({**failure,**change}))
             with self.assertRaises(protocol.Rejected):self.gate.failure_control_result(cleanup_verified=True)
-        path.write_text(json.dumps(failure));self.log.write_text('')
-        with self.assertRaisesRegex(protocol.Rejected,'runtime diagnostic'):self.gate.failure_control_result(cleanup_verified=True)
+        path.write_text(json.dumps(failure))
+        for unrelated in ('','runtime error: unrelated fixture defect'):
+            self.log.write_text(unrelated)
+            with self.assertRaisesRegex(protocol.Rejected,'runtime diagnostic'):self.gate.failure_control_result(cleanup_verified=True)
 
     def test_normal_run_cannot_be_reported_as_an_expected_control(self):
         with self.assertRaises(protocol.Rejected):self.gate.renderer_control_result(oracle_passed=False,cleanup_verified=True)

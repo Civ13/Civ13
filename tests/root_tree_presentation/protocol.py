@@ -180,7 +180,7 @@ class PhaseGate:
         if any(baseline.get(k)!=self.binding[k] for k in ('schema','run','head','manifest','renderer_control')) or any(baseline.get(k)!=v for k,v in dict(phase=1,status='ready',renderer_active=0,rendered=0,shutter=0).items()):
             raise Rejected('Bound phase-1 baseline required')
         logs=[bounded(p).decode('utf-8',errors='replace') for p in self.logs]
-        if control=='runtime' and not any(re.search(r'runtime\s+(?:error|in\b)',log,re.I) for log in logs):
+        if control=='runtime' and not any(re.search(r'runtime\s+(?:error|in\b)',log,re.I) and 'Injected fixture runtime control' in log for log in logs):
             raise Rejected('Actual native runtime diagnostic required')
         if control=='admission' and any(re.search(r'runtime\s+(?:error|in\b)|unhandled\s+exception',log,re.I) for log in logs):
             raise Rejected('Admission control had an unrelated native runtime error')
