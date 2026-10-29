@@ -11,7 +11,7 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from preparation import prepare, PATH, INHERITED
+from preparation import prepare, PATH, INHERITED, FIXTURE
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--base', default=os.environ.get('CI_BASE'))
@@ -80,6 +80,9 @@ inputs = {name: hashlib.sha256(content.encode()).hexdigest() for name, content i
     'preparation.py': Path(__file__).with_name('preparation.py').read_text(),
     'runner.py': Path(__file__).read_text(), 'resources.py': Path(__file__).with_name('resources.py').read_text(),
 }.items()}
+# Record the exact committed inputs that the ancestry and source projection
+# consumed, including the historical fixture loader, manifest, and bytes.
+inputs.update({name: hashlib.sha256(snapshot[name].encode('utf-8')).hexdigest() for name in FIXTURE})
 compiler = a.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker') if a.byond_bin else None
 daemon = a.byond_bin.resolve() / ('dd.exe' if os.name == 'nt' else 'DreamDaemon') if a.byond_bin else None
 compiler_args = ['-max_errors', '0', 'probe.dme']

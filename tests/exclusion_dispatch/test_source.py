@@ -961,6 +961,10 @@ class EventRunnerTests(unittest.TestCase):
         self.assertEqual(receipt['event_identity']['head'], head_sha)
         self.assertEqual(receipt['event_identity']['base'], base_sha)
         self.assertFalse(receipt['native_execution'])
+        for name in ('tests/exclusion_dispatch/historical_fixtures.py',
+                     'tests/exclusion_dispatch/fixtures/manifest.json',
+                     'tests/exclusion_dispatch/fixtures/extraction-reviewed-functions.dm.txt'):
+            self.assertEqual(receipt['inputs'][name], hashlib.sha256((ROOT/name).read_text(encoding='utf-8').encode('utf-8')).hexdigest())
         self.assertEqual(receipt['required_version'], source_version)
         self.assertEqual(receipt['projection'], 'feature-base' if feature_base else 'master-base')
         return out.with_suffix('.sources').joinpath('production.dm').read_text()
