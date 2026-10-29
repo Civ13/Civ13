@@ -51,7 +51,8 @@ def initialize(root,head,*,failure_control=None):
     for name in ('run.binding.json','client-ready.txt','phase.request','phase.ready.json','fixture.failed.json','complete.txt'):
         if (root/name).exists():raise Rejected('Fresh run directory required: '+name)
     binding=dict(schema=2,run=uuid.uuid4().hex,head=head,manifest=validate_inputs(root),
-        compiled_sha256=digest(bounded(root/'fixture.dmb')),failure_control=failure_control)
+        compiled_sha256=digest(bounded(root/'fixture.dmb')),
+        resources_sha256=digest(bounded(root/'fixture.rsc')),failure_control=failure_control)
     with (root/'run.binding.json').open('x',encoding='utf-8') as stream:
         json.dump(binding,stream)
     return binding
@@ -70,7 +71,8 @@ class PhaseGate:
 
     def input_identity(self):
         if (validate_inputs(self.root)!=self.binding['manifest'] or
-            digest(bounded(self.root/'fixture.dmb'))!=self.binding['compiled_sha256']):
+            digest(bounded(self.root/'fixture.dmb'))!=self.binding['compiled_sha256'] or
+            digest(bounded(self.root/'fixture.rsc'))!=self.binding['resources_sha256']):
             raise Rejected('Source/compiled binding changed')
 
     def healthy(self):

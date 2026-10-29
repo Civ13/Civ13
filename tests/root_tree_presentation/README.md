@@ -112,7 +112,7 @@ calibration square at WEST,SOUTH establishes the map origin independently of
 window decorations. Do not move/resize the window during samples.
 
 Before launching, call `protocol.initialize(stage, exact_head)` in the fresh
-prepared/compiled directory. It validates staged source hashes, binds the DMB
+prepared/compiled directory. It validates staged source hashes, binds DMB/RSC
 and creates a unique `run.binding.json`; the fixture refuses a missing binding.
 Use `failure_control="runtime"` and `"admission"` in separate fresh negative
 runs: phase 2 must fail, never be acknowledged or reported as a pass.
