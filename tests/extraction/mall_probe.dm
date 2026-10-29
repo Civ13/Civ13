@@ -425,10 +425,11 @@ var/global/mall_fixture_failed = FALSE
 	var/steps = 0
 	var/last_move = world.realtime
 	var/turf/previous = get_turf(A)
-	while ((direction == SOUTH ? A.y : A.x) != coordinate)
+	mall_assert(previous && previous.z == 1, "contained car controller has a road turf before driving")
+	while ((direction == SOUTH ? previous.y : previous.x) != coordinate)
 		mall_car_budget(deadline)
 		mall_assert(A.dir == direction && A.moving && A.currentspeed > 0 && A.engine.on && A.driver == H && H.buckled == A.wheel.drivingchair && A.wheel.loc == H && H.get_active_hand() == A.wheel, "real driver engine active wheel and direction remain linked during mall travel")
-		mall_assert((direction == SOUTH ? A.y : A.x) > coordinate, "real movement cannot overshoot the mall route waypoint")
+		mall_assert((direction == SOUTH ? previous.y : previous.x) > coordinate, "real movement cannot overshoot the mall route waypoint")
 		sleep(1)
 		var/turf/current = get_turf(A)
 		if (current != previous)
@@ -525,15 +526,15 @@ var/global/mall_fixture_failed = FALSE
 	mall_assert(deployed && S.raid_vehicle == A && !S.garage_vehicle && S.profile["state"] == "raid" && !S.profile["garage"].len && M.raid_vehicles[A], "production deployment debits the garage and moves the same actual owned car")
 	var/turf/arrived = get_turf(A)
 	mall_stage("paid car after deployment [json_encode(list("x" = A.x, "y" = A.y, "z" = A.z, "turf_x" = arrived?.x, "turf_y" = arrived?.y, "turf_z" = arrived?.z, "distance" = get_dist(A, entry), "dir" = A.dir, "maxdist" = A.maxdist, "components" = A.components.len))]")
-	mall_assert(get_dist(A, entry) <= 4 && A.z == 1 && A.dir == SOUTH && A.maxdist == 3 && A.components.len == 9, "actual car arrives beside the real south road marker with its native turning footprint")
+	mall_assert(arrived && get_dist(arrived, entry) <= 4 && arrived.z == 1 && A.dir == SOUTH && A.maxdist == 3 && A.components.len == 9, "actual car arrives beside the real south road marker with its native turning footprint")
 	mall_assert(M.raid_items[bag] && M.raid_items[child] && M.raid_items[key], "deployed nested cargo and carried key enter actual raid custody")
 	var/obj/structure/bed/chair/drivers/car/seat = A.wheel.drivingchair
 	var/obj/structure/vehicleparts/frame/door = A.wheel.control
 	mall_assert(seat && door && door.axis == A && seat.axis == A, "paid car retains production driver and door links")
 	// Walk around the current SOUTH-facing three-square footprint to its east.
-	if (H.x <= A.x && H.y >= A.y && H.y <= A.y + 2)
-		mall_car_walk(H, locate(H.x, A.y - 1, 1), deadline, FALSE)
-	mall_car_walk(H, locate(A.x + 1, H.y, 1), deadline)
+	if (H.x <= arrived.x && H.y >= arrived.y && H.y <= arrived.y + 2)
+		mall_car_walk(H, locate(H.x, arrived.y - 1, 1), deadline, FALSE)
+	mall_car_walk(H, locate(arrived.x + 1, H.y, 1), deadline)
 	mall_car_walk(H, locate(seat.x + 1, seat.y, 1), deadline, FALSE)
 	mall_assert(H.Adjacent(door), "driver reaches the actual closed car door on foot")
 	if (!door.doorcode) mall_car_use_key(H, door, key)

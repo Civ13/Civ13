@@ -40,6 +40,15 @@ class NativeOracleTests(unittest.TestCase):
         probe = (HERE / 'mall_probe.dm').read_text(encoding='utf-8')
         self.assertNotRegex(probe, r'vehicle_codec\.(?:objects|index)\b')
 
+    def test_paid_car_route_uses_turf_coordinates_for_contained_axis(self):
+        # The hosted receipt records axis x/y/z = 0 even on a valid road turf.
+        # Raw coordinates are useful in diagnostics, never route decisions.
+        probe = (HERE / 'mall_probe.dm').read_text(encoding='utf-8')
+        route = probe[probe.index('/proc/mall_car_drive_leg('):]
+        decisions = '\n'.join(line for line in route.splitlines()
+                              if not line.lstrip().startswith('mall_stage('))
+        self.assertNotRegex(decisions, r'\bA\.[xyz]\b')
+
     def validate(self, *, report=None, expected=None, stages=None, **outputs):
         streams = {'stdout': BINDING, 'stderr': '', 'runtime.log': NETWORK_LOG}
         streams.update(outputs)
