@@ -115,26 +115,32 @@
 	if (persistence_save_in_progress && !(admission && persistence_active_operation == admission && !admission.backend_started))
 		return FALSE
 	settling = TRUE
-	cancel(reason)
-	restore_follower_glide()
 	var/list/targets = list()
-	for (var/atom/movable/member in list(leader, follower))
-		if (isDeleted(member))
-			continue
-		var/atom/destination = member.loc
-		if (isturf(member.loc))
-			var/list/target = subtile_pull_nearest_tile(subtile_pull_snapshot(member))
-			destination = locate(target["x"], target["y"], target["z"])
-		targets[member] = destination
-	for (var/atom/movable/member in targets)
-		if (isDeleted(member))
-			continue
-		var/atom/destination = targets[member]
-		// Clear the offset first, so a callback's own offset stays observable.
-		member.step_x = 0
-		member.step_y = 0
-		if (destination && destination != member.loc)
-			member.forceMove(destination)
+	try
+		cancel(reason)
+		restore_follower_glide()
+		for (var/atom/movable/member in list(leader, follower))
+			if (isDeleted(member))
+				continue
+			var/atom/destination = member.loc
+			if (isturf(member.loc))
+				var/list/target = subtile_pull_nearest_tile(subtile_pull_snapshot(member))
+				destination = locate(target["x"], target["y"], target["z"])
+			targets[member] = destination
+		for (var/atom/movable/member in targets)
+			if (isDeleted(member))
+				continue
+			var/atom/destination = targets[member]
+			// Clear the offset first, so a callback's own offset stays observable.
+			member.step_x = 0
+			member.step_y = 0
+			if (destination && destination != member.loc)
+				member.forceMove(destination)
+	catch (var/exception/settle_error)
+		settling = FALSE
+		recovery_required = TRUE
+		failure = "settle_error"
+		throw settle_error
 	settling = FALSE
 	if (released)
 		return TRUE

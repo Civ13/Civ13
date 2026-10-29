@@ -69,6 +69,8 @@ def resolve_statements(text):
     body = section(text, RESOLVE_START, RESOLVE_END).rstrip().splitlines()[1:]
     exact = {
         'return TRUE': 'return True', 'return FALSE': 'return False', 'continue': 'continue',
+        'try': 'try:', 'catch (var/exception/settle_error)': 'except Exception as settle_error:',
+        'throw settle_error': 'raise settle_error',
         'settling = TRUE': 'P.settling = True', 'settling = FALSE': 'P.settling = False',
         'cancel(reason)': 'P.cancel(reason)', 'restore_follower_glide()': 'pass',
         'var/list/targets = list()': 'targets = {}',
@@ -84,6 +86,7 @@ def resolve_statements(text):
         'recovery_required = TRUE': 'P.recovery_required = True',
         'failure = "settle_interrupted"': 'P.failure = "settle_interrupted"',
         'failure = "settle_position_changed"': 'P.failure = "settle_position_changed"',
+        'failure = "settle_error"': 'P.failure = "settle_error"',
         'drop_lease()': 'P.drop_lease()',
     }
     pair_names = ('released', 'settling', 'intent_running', 'native_inflight', 'completion_running', 'issued')
@@ -105,7 +108,7 @@ def resolve_statements(text):
         projected.append(line)
     source = 'def resolve(P, G, reason, admission=None):\n' + '\n'.join('    ' + l for l in projected)
     namespace = {}
-    exec(compile(source, '<actual-resolve-aligned>', 'exec'), {'__builtins__': {'list': list}}, namespace)
+    exec(compile(source, '<actual-resolve-aligned>', 'exec'), {'__builtins__': {'list': list, 'Exception': Exception}}, namespace)
     return namespace['resolve']
 
 
@@ -215,6 +218,29 @@ class SettleValidation(unittest.TestCase):
         self.assertEqual(inner, [False])
         self.assertEqual(pair.released, True)
 
+    def test_throwing_callback_retains_lease_and_resets_settling(self):
+        def fail(member):
+            raise RuntimeError('movement callback')
+
+        world, pair = self.pair(fail)
+        with self.assertRaisesRegex(RuntimeError, 'movement callback'):
+            self.resolve(pair, world, 'save_admission')
+        self.assertFalse(pair.released)
+        self.assertFalse(pair.settling)
+        self.assertTrue(pair.recovery_required)
+        self.assertEqual(pair.failure, 'settle_error')
+        pair.leader.on_move = None
+        self.assertTrue(self.resolve(pair, world, 'retry'))
+
+        control = self.text.replace('\tcatch (var/exception/settle_error)\n\t\tsettling = FALSE\n\t\trecovery_required = TRUE\n\t\tfailure = "settle_error"\n',
+                                    '\tcatch (var/exception/settle_error)\n', 1)
+        self.assertNotEqual(control, self.text)
+        old = resolve_statements(control)
+        world, pair = self.pair(fail)
+        with self.assertRaises(RuntimeError):
+            old(pair, world, 'save_admission')
+        self.assertTrue(pair.settling, 'control should strand settling ownership')
+
     def test_only_the_reserving_unstarted_save_may_settle(self):
         world, pair = self.pair()
         world.saving = True
@@ -269,17 +295,21 @@ def admission_statements(text):
         'persistence_admission_identity = operation.admission_identity': 'G.identity = operation',
         'if(kind == "save" && (!subtile_pull_ownership.resolve_quiet("save_admission", operation) || !operation.current(storage, kind) || !subtile_pull_ownership.save_ready()))':
             'if kind == "save" and (not G.resolve_quiet("save_admission", operation) or not operation.current(storage, kind) or not G.save_ready()):',
+        'if(kind == "save" && (!operation.current(storage, kind) || !subtile_pull_ownership.save_ready()))':
+            'if kind == "save" and (not operation.current(storage, kind) or not G.save_ready()):',
         'subtile_pull_ownership.resolve_quiet("save_admission")': 'G.resolve_quiet("save_admission", None)',
         'if(kind == "save" && !subtile_pull_ownership.save_ready())': 'if kind == "save" and not G.save_ready():',
         'if(kind == "save")': 'if kind == "save":',
         'operation.withdraw()': 'operation.withdraw()',
+        'try': 'try:', 'catch(var/exception/admission_error)': 'except Exception as admission_error:',
+        'throw admission_error': 'raise admission_error',
         'return null': 'return None', 'return operation': 'return operation',
     }
     patterns = ((r'to_chat\(world, (.*)\)', 'G.announce({!r})'),)
     lines = segment.rstrip().splitlines()
     source = 'def admit(G, storage, kind):\n' + '\n'.join('    ' + l for l in translate(lines, exact, patterns))
     namespace = {}
-    exec(compile(source, '<actual-save-admission>', 'exec'), {'__builtins__': {}}, namespace)
+    exec(compile(source, '<actual-save-admission>', 'exec'), {'__builtins__': {'Exception': Exception}}, namespace)
     return namespace['admit']
 
 
@@ -350,6 +380,28 @@ class SaveAdmission(unittest.TestCase):
         self.assertIsNotNone(admit(world, 'storage', 'load'))
         self.assertEqual(world.observed, [])
 
+    def test_errors_withdraw_the_same_unstarted_reservation(self):
+        admit = admission_statements(self.text)
+        for stage in ('resolve_quiet', 'announce'):
+            world = AdmissionWorld()
+            def fail(*args):
+                raise RuntimeError(stage)
+            setattr(world, stage, fail)
+            with self.assertRaisesRegex(RuntimeError, stage):
+                admit(world, 'storage', 'save')
+            self.assertIsNone(world.active)
+            self.assertFalse(world.saving)
+        original = self.text.replace('\tcatch(var/exception/admission_error)\n\t\toperation.withdraw()\n',
+                                     '\tcatch(var/exception/admission_error)\n', 1)
+        self.assertNotEqual(original, self.text)
+        old = admission_statements(original)
+        world = AdmissionWorld()
+        world.resolve_quiet = lambda *args: (_ for _ in ()).throw(RuntimeError('callback'))
+        with self.assertRaises(RuntimeError):
+            old(world, 'storage', 'save')
+        self.assertIsNotNone(world.active, 'control should strand the reservation')
+        self.assertTrue(world.saving)
+
     def test_withdraw_releases_only_an_unstarted_current_operation(self):
         withdraw = section(self.text, '\tproc/withdraw()', '\tproc/finish(success)')
         self.assertIn('if(persistence_active_operation != src || backend_started) return FALSE', withdraw)
@@ -361,13 +413,9 @@ class SaveAdmission(unittest.TestCase):
 
     def test_generated_original_order_is_caught_settling_before_reservation(self):
         body = section(self.text, '/proc/begin_persistence_operation(', '/datum/persistence_world_operation\n')
-        hold = body[body.index('\t// Reserve admission before settling'):body.index('\tif(kind == "save")\n\t\tto_chat(world, "<FONT')]
-        original_hold = ('\tif(kind == "save")\n\t\tsubtile_pull_ownership.resolve_quiet("save_admission")\n'
-                         '\tif(kind == "save" && !subtile_pull_ownership.save_ready())\n'
-                         '\t\tto_chat(world, SPAN_WARNING("Map save held: a smooth pull requires an aligned checkpoint."))\n'
-                         '\t\treturn null\n')
+        original_hold = ('\tif(kind == "save")\n\t\tsubtile_pull_ownership.resolve_quiet("save_admission")\n')
         operation = '\tvar/datum/persistence_world_operation/operation = new\n'
-        original = body.replace(hold, '', 1).replace(operation, original_hold + operation, 1)
+        original = body.replace('!subtile_pull_ownership.resolve_quiet("save_admission", operation) || ', '', 1).replace(operation, original_hold + operation, 1)
         admit = admission_statements(self.text.replace(body, original, 1))
         world = AdmissionWorld()
         self.assertIsNotNone(admit(world, 'storage', 'save'))
