@@ -80,10 +80,17 @@ class CompilerContractTests(unittest.TestCase):
         retained = workflow.split('      - name: Retain isolated barrel ingredient evidence', 1)[1].split('\n      - name:', 1)[0]
         self.assertIn('always()', retained)
         for name in ('metadata.json', 'compile.log', 'runtime.log', 'daemon.log',
-                     'food_result.txt', 'probe.dm', 'barrel-ingredient-routes.json'):
+                     'food_result.txt', 'probe.dm', 'barrel-ingredient-routes.json',
+                     'glass-extraction-routes.json', 'glass_extraction.dm'):
             self.assertIn('/barrel-ingredient-evidence/' + name, retained)
         self.assertNotIn('checkout.patch', retained)
         self.assertNotIn('.dmb', retained)
+
+    def test_glass_extraction_helper_is_included_and_fingerprinted(self):
+        runner = (ROOT / 'tests/food_progression/run.py').read_text()
+        self.assertIn('include "tests/food_progression/glass_extraction.dm"', runner)
+        self.assertIn("'tests/food_progression/glass_extraction.dm'", runner)
+        self.assertIn("output / 'glass_extraction.dm'", runner)
 
 
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ class DiagonalContracts(unittest.TestCase):
 
     def test_interpolation_uses_physics_and_restorable_client_settings(self):
         source = MODULE.read_text()
-        self.assertIn('32 * world.tick_lag / max(duration, world.tick_lag)', source)
+        self.assertIn('distance * world.tick_lag / max(duration, world.tick_lag)', source)
         self.assertIn('!(appearance_flags & LONG_GLIDE)', source)
         self.assertIn('owner.fps = max(owner.human_subtile_previous_fps, world.fps + 1, 60)', source)
         self.assertIn('fps = human_subtile_previous_fps', source)

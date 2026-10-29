@@ -79,6 +79,27 @@ class InputTrace(unittest.TestCase):
             '\tscrambling = FALSE'
         )
         historical_posture = '\tif (nloc == oloc)\n\t\tMove(F)\n\tscrambling = FALSE'
+        # The paid crawl change then admits the subtile crawl before each
+        # posture wait and guards proning's turf argument. Reverse only those
+        # exact reviewed blocks too.
+        def crawl_block(delay, posture, message=''):
+            return ('\tif (ishuman(src))\n'
+                    '\t\tvar/mob/living/human/crawling_human = src\n'
+                    '\t\ttry\n'
+                    '\t\t\tif (crawling_human.human_subtile_crawl_move(F, ' + delay + ', "' + posture + '"))\n'
+                    + message +
+                    '\t\t\t\tscrambling = FALSE\n'
+                    '\t\t\t\treturn\n'
+                    '\t\tcatch (var/exception/crawl_error)\n'
+                    '\t\t\tscrambling = FALSE\n'
+                    '\t\t\tthrow crawl_error\n')
+        crawl_deltas = {
+            'scramble': [(crawl_block('9*slowness', 'scramble', "\t\t\t\tvisible_message(\"<span class = 'red'><b>[src]</b> crawls with difficulty!</span>\")\n")
+                          + '\tsleep(9*slowness)\n', '\tsleep(9*slowness)\n')],
+            'proning': [('(var/turf/floor/F)\n\tif (!isturf(F))\n\t\treturn FALSE\n', '(var/turf/floor/F)\n'),
+                        ('\tvar/prone_delay = get_prone_delay()\n' + crawl_block('prone_delay', 'prone') + '\tsleep(prone_delay)\n',
+                         '\tsleep(get_prone_delay())\n')],
+        }
         prior = re.sub(r'^.*blackout_click_trace\("[a-z_]+"\)\n', '', clicks, flags=re.M)
         for proc in ('scramble', 'proning'):
             declaration = '/mob/proc/' + proc + '(var/turf/floor/F)\n'
@@ -87,7 +108,11 @@ class InputTrace(unittest.TestCase):
             end = prior.index('\n/', start)
             body = prior[start:end]
             self.assertEqual(body.count(approved_posture), 1, 'approved posture block: ' + proc)
-            prior = prior[:start] + body.replace(approved_posture, historical_posture) + prior[end:]
+            body = body.replace(approved_posture, historical_posture)
+            for approved, historical in crawl_deltas[proc]:
+                self.assertEqual(body.count(approved), 1, 'approved crawl block: ' + proc)
+                body = body.replace(approved, historical)
+            prior = prior[:start] + body + prior[end:]
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          '6de55f9ad85dd8351f39917eef2ec90732dd08544283814e24330ca8263f0882',
                          'entire prior click source')
@@ -104,6 +129,17 @@ class InputTrace(unittest.TestCase):
                     'FALSE', 1)
                 self.assertNotEqual(changed, self.clicks)
                 with self.assertRaisesRegex(AssertionError, 'approved posture block: ' + proc):
+                    self.assert_disabled_trace_preserves_prior_source(changed)
+
+    def test_disabled_trace_rejects_changed_crawl_block(self):
+        for proc, old, new in (('scramble', '9*slowness, "scramble"', '9, "scramble"'),
+                               ('proning', 'prone_delay, "prone"', 'prone_delay * 2, "prone"'),
+                               ('proning', '\tif (!isturf(F))\n\t\treturn FALSE\n', '')):
+            with self.subTest(proc=proc, old=old):
+                start = self.clicks.index('/mob/proc/' + proc + '(var/turf/floor/F)\n')
+                changed = self.clicks[:start] + self.clicks[start:].replace(old, new, 1)
+                self.assertNotEqual(changed, self.clicks)
+                with self.assertRaisesRegex(AssertionError, 'approved crawl block: ' + proc):
                     self.assert_disabled_trace_preserves_prior_source(changed)
 
     def test_disabled_trace_rejects_changed_posture_call(self):

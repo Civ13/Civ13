@@ -30,6 +30,23 @@ Save admission reads every bounded lease before creating the operation: native
 calls/intents must unwind, hooks must complete, and live survivors must have valid
 aligned shapes; save admission first settles quiet pairs, so none holds forever.
 Never serialize a half-applied pair or release an offset to legacy movement.
+<!-- 2026-10-27: paid prone/crawl intervals -->
+Client-owned unlinked crawling uses the existing prone/scramble delay, with
+native 2px pulses distributed through that interval and final arrival at its
+deadline. It does not use walking costs or its diagonal cooldown multiplier.
+Partial progress changes physical overlap/reach before the former tile move;
+posture/restriction/ownership changes stop subsequent pulses. Keep the crawl
+transaction, scrambling lock and client deadline after early blockage/cancel.
+Floor clicks dispatch scramble even while prone: retain both initiating posture
+flags rather than assuming scramble means prone is false.
+Dynamic collision fixtures must place a new boundary ahead of the full physical
+footprint. A full-tile object created eight pixels inside an already-overlapped
+turf does not re-trigger legacy Enter/Cross; keep that native case separate.
+spawn copies scalar proc locals; async fixture witnesses need a shared list or
+datum. Retain worker and parent observations when testing paid action ownership.
+tests/human_subtile/run-crawl.py retains full-source headless checks and timing
+controls; compile/offline evidence does not establish native or visual acceptance.
+The prior Windows no-socket runtime hold remains unchanged.
 
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
