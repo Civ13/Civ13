@@ -1064,6 +1064,31 @@ class EventRunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Original-target control anchor changed'):
                 self.execute_runner(Path(tmp), 'target-omit', replace_target=True)
 
+    def test_parent_mutation_loses_target_only_for_two_mob_probe_types(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            normal = self.execute_runner(directory)
+            parent = self.execute_runner(directory, 'parent')
+            def hooks(source, path):
+                return re.findall(r'^' + re.escape(path) + r'/candidate_runtime\(key\)\n(?:\t[^\n]*\n)+',
+                                  source, re.M)
+            mob = hooks(normal, '/mob')
+            self.assertEqual(len(mob), 1)
+            self.assertEqual(mob[0].count('\treturn ..()\n'), 1)
+            self.assertNotIn('"original_target"', mob[0])
+            self.assertEqual(hooks(parent, '/mob'), [mob[0].replace('\treturn ..()\n', '\treturn FALSE\n')])
+            for path in ('/atom/movable', '/obj/item', '/mob/living/human'):
+                before = hooks(normal, path)
+                self.assertTrue(before, path)
+                self.assertEqual(hooks(parent, path), before)
+            self.assertIn('key == "original_target"', ''.join(hooks(parent, '/atom/movable')))
+            self.assertIn('|| ..()', ''.join(hooks(parent, '/mob/living/human')))
+            probe = (ROOT / 'tests/exclusion_dispatch/probe.dm').read_text()
+            paths = re.search(r'for\(var/path in list\(([^\n]+)\)\)', probe).group(1).split(',')
+            self.assertEqual(paths, ['/datum', '/atom/movable', '/obj', '/obj/item',
+                                     '/mob', '/mob/living/human', '/area', '/turf/floor/dirt'])
+            self.assertEqual([path for path in paths if path.startswith('/mob')], ['/mob', '/mob/living/human'])
+
     def test_actual_runner_refuses_head_base_or_checkout_drift(self):
         for options in ({'mismatch':True}, {'changed_helper':True}, {'bad_event':True},
                         {'head_edit':'\n// unrelated head drift\n'}, {'drop_custody':True}):
@@ -1246,7 +1271,7 @@ class Current1688RunnerTests(unittest.TestCase):
 
     def result(self, mode='parity'):
         return dict(cases=1000, failures=0 if mode=='parity' else 1,
-                    target_failures=1 if mode=='target-omit' else 0,
+                    target_failures=1 if mode=='target-omit' else 2 if mode=='parent' else 0,
                     byond_version=516, byond_build=1688, samples=[], details=[],
                     network=dict(closed_port=0, reopen_result=0, after_reopen_port=0))
 
@@ -1280,6 +1305,38 @@ class Current1688RunnerTests(unittest.TestCase):
         result=self.result('target-omit');result['target_failures']=0
         with self.assertRaises(RuntimeError): self.runner.validate_result('target-omit',result,log)
         with self.assertRaises(RuntimeError): self.runner.validate_result('parity',self.result(),'runtime error: bad ref')
+
+    def test_parent_target_count_is_exact_without_weakening_other_modes(self):
+        log='World opened on network port 12345 for address 127.0.0.1.\n'
+        for mode in self.runner.MODES:
+            expected = 2 if mode == 'parent' else 0
+            self.runner.validate_result(mode, self.result(mode), log)
+            for count in (-1, 0, 1, 2, 3, 5, True, None, float(expected)):
+                if type(count) is int and count == expected:
+                    continue
+                with self.subTest(mode=mode, count=count), self.assertRaises(RuntimeError):
+                    self.runner.validate_result(mode, dict(self.result(mode), target_failures=count), log)
+        for mode in ('', None, 'unknown'):
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                self.runner.validate_result(mode, self.result('omit'), log)
+        with self.assertRaises(RuntimeError):
+            self.runner.validate_result('parent', dict(self.result('parent'), failures=0), log)
+
+    def test_retained_parent_control_receipt_and_collateral_guards(self):
+        # CI40905723089 artifact12912983203: actual parent control counters.
+        result = dict(self.result('parent'), cases=1501, failures=691, target_failures=2)
+        log='World opened on network port 12345 for address 127.0.0.1.\n'
+        self.runner.validate_result('parent', result, log)
+        for mode in ('parity', 'omit', 'eager'):
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                self.runner.validate_result(mode, result, log)
+        for changes in ({'cases': 0}, {'samples': [1]}, {'failures': 0}):
+            with self.subTest(changes=changes), self.assertRaises(RuntimeError):
+                self.runner.validate_result('parent', dict(result, **changes), log)
+        with self.assertRaises(RuntimeError):
+            self.runner.validate_result('parent', result, log + 'runtime error: bad ref\n')
+        with self.assertRaises(RuntimeError):
+            self.runner.validate_result('parent', result, log.replace('127.0.0.1', '0.0.0.0'))
 
     def test_actual_main_threads_archive_and_checks_every_child_without_launch(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -36,7 +36,7 @@ BIND = 'World opened on network port 12345 for address 127.0.0.1.\n'
 
 class CurrentCITests(unittest.TestCase):
     def harness(self, directory, *, runtime_identity=None, daemon_version='516.1688',
-                survive=None, bad_network=False):
+                survive=None, bad_network=False, target_counts=None):
         root = Path(directory)
         args = SimpleNamespace(base='a' * 40, head='b' * 40, byond_bin=root / 'byond/bin',
                                byond_archive=root / 'pinned.zip', output=root / 'evidence')
@@ -60,7 +60,8 @@ class CurrentCITests(unittest.TestCase):
                                            '-trusted', '-log', 'runtime.log'])
             mode = work.name.split('.')[0]
             result = dict(cases=1000, failures=0 if mode in ('parity', survive) else 1, samples=[],
-                          byond_version=516, byond_build=1688, target_failures=0,
+                          byond_version=516, byond_build=1688,
+                          target_failures=(target_counts or {}).get(mode, 2 if mode == 'parent' else 0),
                           network=dict(closed_port=1 if bad_network else 0, reopen_result=0, after_reopen_port=0))
             (work / 'result.json').write_text(json.dumps(result))
             (work / 'runtime.log').write_text('BYOND version ' + daemon_version + '\n' + BIND)
@@ -85,6 +86,7 @@ class CurrentCITests(unittest.TestCase):
             receipt = json.loads((args.output / 'native-ci.json').read_text())
             self.assertEqual(receipt['status'], 'passed')
             self.assertEqual(tuple(receipt['modes']), historical.MODES)
+            self.assertEqual(receipt['modes']['parent']['target_failures'], 2)
             self.assertEqual(receipt['runtime_identity'], selected)
             self.assertEqual(len(receipt['runtime_checks']), 13)
             self.assertEqual(runtime.verify_linux.call_count, 13)
@@ -102,6 +104,31 @@ class CurrentCITests(unittest.TestCase):
                             ('target_failures',1), ('target_failures',True), ('target_failures',None)):
             with self.subTest(field=field,value=value), self.assertRaises(RuntimeError):
                 current.validate_observed_result(dict(good, **{field:value}))
+
+    def test_target_counts_are_exact_and_mode_specific(self):
+        for mode in historical.MODES:
+            expected = 2 if mode == 'parent' else 0
+            good = dict(byond_version=516, byond_build=1688, target_failures=expected)
+            current.validate_observed_result(good, mode)
+            for value in (-1, 0, 1, 2, 3, 5, True, None, float(expected)):
+                if type(value) is int and value == expected:
+                    continue
+                with self.subTest(mode=mode, value=value), self.assertRaises(RuntimeError):
+                    current.validate_observed_result(dict(good, target_failures=value), mode)
+        for mode in ('', None, 'unknown', 'target-omit'):
+            with self.subTest(mode=mode), self.assertRaises(RuntimeError):
+                current.validate_observed_result(dict(byond_version=516, byond_build=1688, target_failures=0), mode)
+
+    def test_parent_target_drift_stops_pipeline_before_eager(self):
+        for count in (0, 1, 3):
+            with self.subTest(count=count), tempfile.TemporaryDirectory() as directory:
+                args, ci, runtime, _, source = self.harness(directory, target_counts={'parent': count})
+                with self.assertRaisesRegex(RuntimeError, 'Original-target'):
+                    self.execute(args, ci, runtime, source)
+                receipt = json.loads((args.output / 'native-ci.json').read_text())
+                self.assertEqual(receipt['status'], 'failed')
+                self.assertEqual(tuple(receipt['modes']), ('parity', 'omit'))
+                self.assertFalse((args.output / 'eager.json').exists())
 
     def test_historical_pin_limits_and_result_guards_are_preserved(self):
         encoded = (HERE / 'historical/lighting-historical-run-ci.py.b64.txt').read_text(encoding='ascii')
@@ -161,7 +188,7 @@ class CurrentCITests(unittest.TestCase):
 
     def test_wrong_daemon_version_and_surviving_mutation_fail(self):
         for kwargs in ({'daemon_version': '516.1681'}, {'daemon_version': '516.16880'},
-                       {'survive': 'omit'}, {'bad_network': True}):
+                       {'survive': 'omit'}, {'survive': 'parent'}, {'survive': 'eager'}, {'bad_network': True}):
             with self.subTest(kwargs=kwargs), tempfile.TemporaryDirectory() as directory:
                 args, ci, runtime, _, source = self.harness(directory, **kwargs)
                 with self.assertRaises(RuntimeError):

@@ -43,12 +43,16 @@ def validate_build(log, diagnostics):
         raise RuntimeError('Exact 516.1688 clean compilation required')
 
 
-def validate_observed_result(result):
+def validate_observed_result(result, mode='parity'):
     if (type(result.get('byond_version')) is not int or result['byond_version'] != 516 or
             type(result.get('byond_build')) is not int or result['byond_build'] != 1688):
         raise RuntimeError('Observed fixture runtime is not exactly 516.1688')
-    if type(result.get('target_failures')) is not int or result['target_failures'] != 0:
-        raise RuntimeError('Original-target positive assertion failed')
+    # The parent mutation removes mob's fallback to movable; both /mob and
+    # /mob/living/human intentionally lose the inherited original_target guard.
+    expected = {'parity': 0, 'omit': 0, 'parent': 2, 'eager': 0}
+    if (mode not in expected or type(result.get('target_failures')) is not int
+            or result['target_failures'] != expected[mode]):
+        raise RuntimeError('Original-target assertion differs from expected ' + str(mode) + ' control')
 
 
 def execute(args, *, ci=None, runtime=None):
@@ -111,7 +115,7 @@ def execute(args, *, ci=None, runtime=None):
             verify(mode + ':after-daemon')
             result = json.loads((work / 'result.json').read_text())
             ci.validate_result(mode, result, log)
-            validate_observed_result(result)
+            validate_observed_result(result, mode)
             summary['modes'][mode] = result
         summary['status'] = 'passed'
     except BaseException as error:
