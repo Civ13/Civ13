@@ -35,6 +35,20 @@ under that exclusion; a failed settle or hold withdraws the unstarted reservatio
 The resolver keeps the lease unless every survivor ends exactly on its placed
 tile after callbacks; tests/pulling_movement/test_settle_admission.py executes both.
 Never serialize a half-applied pair or release an offset to legacy movement.
+
+<!-- 2026-10-27: vendor AI sub-tile candidate -->
+NPC vendors opt into simple_animal ai_step physical pulses. Admission belongs to
+the unowned AI body, never a fake client or the human authority hook. Wandering
+and explicit smart-step callers choose once, then one worker performs at most 16
+native 2px pulses during the supplied interval; AI throttles and pathfinding stay
+outside it. Other animal families and native walk/walk_to stay legacy. Owned
+partial offsets refuse legacy movement and opt-out until collision-safe AI
+realignment; unsupported linked states must not snap. NPC save capsules exclude
+runtime workers/glide and restore through an authenticated native placement.
+tests/human_subtile/run-npc.py has prepare/compile-only modes: its prepared NPC
+runtime fixture and actual rendered appearance remain unexecuted until reviewed.
+This candidate does not change prone movement, JIT path scoring or live TDM.
+
 <!-- 2026-10-27: paid prone/crawl intervals -->
 Client-owned unlinked crawling uses the existing prone/scramble delay, with
 native 2px pulses distributed through that interval and final arrival at its
@@ -53,6 +67,17 @@ tests/human_subtile/run-crawl.py retains full-source headless checks and timing
 controls; compile/offline evidence does not establish native or visual acceptance.
 The prior Windows no-socket runtime hold remains unchanged.
 
+<!-- 2026-10-27: initial thrown-item overlap -->
+Initial launch clearance belongs only to a human's physically overlapping item
+and successful adjacent outbound hops. Sample separation even on empty turfs;
+never turn it into permanent source immunity or first-hop-only immunity.
+Accepted unrelated same-z forceMove also ends clearance; genuine no-ops retain it.
+Only a matching call-local flight token preserves a processor hop. Callback
+replacement flights must not consume the old frame's hit/progress or cleanup.
+Reset on redirection, failed hop and lifecycle boundaries; custom saves exclude
+all five launch fields and flight identity despite tmp. tests/throw_launch_clearance executes source
+flow offline and prepares a full-source native fixture; compile is not gameplay.
+
 <!-- 2026-10-26: diagonal human movement candidate -->
 The human adapter uses sixteen native 2px pulses per admitted input, bitmask
 diagonals, and the legacy ordinal cooldown multiplier. Default activation waits
@@ -69,6 +94,13 @@ Pulling and open menus (any using_object except a stationary gun) keep the
 adapter eligible: a restricting state mid-step refuses all input until alignment.
 Headless fixtures have no client, so living/Move stops pulling there; pull-follow
 during smooth steps needs connected-client confirmation.
+<!-- 2026-10-29: crafting view cleanup on top of #3370 -->
+Do not re-add `!pulling` or narrow using_object to an allowlist in
+human_subtile_unlinked(); #3370's rule above is accepted. Before smooth input, a
+stale held-stack recipe view (hand switch, drop, transfer, depletion) closes; it
+never gates movement. Stationary do_after waits also stop on step_x/step_y change
+at the existing poll. tests/human_subtile/test_crafting_ui.py is offline evidence;
+prepared native crafting_ui.dm is not launched and real-client focus is unverified.
 
 
 <!-- 2026-10-19: combined sub-tile mining acceptance -->

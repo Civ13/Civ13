@@ -29,6 +29,10 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    # Stdlib-only source projection; no native runner is imported or executed.
+    # Keep shared farming.dm unmapped so its all-suite fallback stays intact.
+    'crop_stage_step': {'files': ('tests/crop_stage_step/test_source.py',), 'paths': (
+        'tests/crop_stage_step/', 'tests/plant_lifecycle/')},
     'research': {'files': ('tests/research_scheduler/test_resume.py',), 'paths': (
         'tests/research_scheduler/', 'code/processes/research_tree.dm',
         'code/processes/_process.dm', 'code/processes/___defines.dm',
@@ -48,6 +52,11 @@ SUITES = {
     # Shared transport/persistence files retain their existing all-suite fallback.
     'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',), 'paths': (
         'tests/carriage_glide/',)},
+    'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
+                              'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
+        'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
+        'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
+        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
@@ -101,7 +110,8 @@ SUITES = {
                                   'tests/furniture_joinery/test_canopy.py',
                                   'tests/furniture_joinery/test_cutting_board.py',
                                   'tests/furniture_joinery/test_barrel_ingredients.py',
-                                  'tests/furniture_joinery/test_glass_extraction.py'), 'paths': (
+                                  'tests/furniture_joinery/test_glass_extraction.py',
+                                  'tests/furniture_joinery/test_glass_cotton.py'), 'paths': (
         'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
         'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py',
         'code/modules/1713/cutting_board.dm', 'tests/primitive_woodworking/source_adapter.py',

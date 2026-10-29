@@ -35,6 +35,13 @@ entry point independently validates the actual event base and checked-out head.
 No production change or native acceptance is introduced by this test reconciliation.
 All native holds/version gates remain.
 
+Historical inputs are now frozen byte-for-byte in [fixtures](fixtures/README.md),
+with their original commit/path, Git blob and SHA-256 provenance. Tests read these
+checked-in files rather than requiring deleted branches or historical Git objects.
+The same comparisons and negative controls remain. Offline source-CLI tests need
+an explicit immutable `CI_BASE`; actual Actions runs retain their event identities.
+No fixture file can replace the live runner's independent base/head comparison.
+
 The selected Linux lane uses `run-ci-current.py`, an explicit 516.1688 entry
 point. Admission and each pre-compiler/pre-daemon/post-daemon boundary verify the
 existing pinned Linux archive and four installed members through

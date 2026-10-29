@@ -105,6 +105,9 @@ The following fixed-dose food extraction slice requires full existing output
 capacity in all fifteen glass food branches; cinchona returns on rejection.
 Keep the original yields and ordering. See `docs/glass-food-extraction-audit.md`;
 variable-dose cotton and lard-candle waits remain outside that bounded fix.
+The subsequent cotton slice retains the whole-pile one-to-one conversion but
+requires full actual capacity and positive whole cotton stock paid via use.
+See `docs/cotton-insertion-audit.md`; candle waits are still separate work.
 
 <!-- 2026-10-29: paid cutting-board input -->
 Cutting boards retain a live paid food child, with normal decay at exposed-food

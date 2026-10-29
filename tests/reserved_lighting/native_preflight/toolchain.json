@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "UNRESOLVED_SOURCE_RECIPE_ONLY",
+  "version": "516.1688",
+  "platform": "linux/amd64",
+  "archive_reference": "https://www.byond.com/download/build/516/516.1688_byond_linux.zip",
+  "archive_sha256": "16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9",
+  "image": null,
+  "image_id": null,
+  "compiler": {
+    "path": "byond/bin/DreamMaker",
+    "sha256": "5c7d95f6a5f6f6b096409794446416e006503005996ef37dd52f48fdcf59bfa9"
+  },
+  "daemon": {
+    "path": "byond/bin/DreamDaemon",
+    "sha256": "0047b52e042647ea3a496b368ab829672917052a130cb67646c515a01c20188a"
+  },
+  "python": {
+    "path": "/usr/local/bin/python3.12",
+    "sha256": null
+  },
+  "rootfs_files": {},
+  "dependency_references": [
+    "/lib/ld-linux.so.2",
+    "libc.so.6",
+    "libm.so.6",
+    "libgcc_s.so.1",
+    "libstdc++.so.6",
+    "libcurl.so.4"
+  ],
+  "dependency_resolution": "UNRESOLVED: static i386 DT_NEEDED in compiler, daemon and bundled libbyond/libext establishes these external SONAME requirements, not package versions, transitive closure or runtime compatibility. Bind actual loader/shared objects, hashes and licenses before building.",
+  "acquisition": "EXCLUDED: no download, package installation, image pull/build or registry login in preflight",
+  "rootfs_provenance": null,
+  "independent_review": null,
+  "archive_provenance": {
+    "role": "Retained bytes match current central official-observed archive pin and user-approved repository mirror; not publisher-signed",
+    "static_inventory_sha256": "015f9eaa9f2cf2310cc7d89360266c0478ff2afa4d8d7653782167682e16348f",
+    "central_manifest_sha256": "9701c4011cab496295bb8b57cb74a570a6ffe90f191c18ddd3c0c9e48606d84f",
+    "source_master": "704ebe205bf06c07bcf6460cfa1c3a2e9254a152",
+    "network_requests": 0,
+    "extracted_or_executed": false,
+    "central_manifest_git_sha256": "662acc3d771988e91de44b7be6f648c256aee7b2173e42a64956b8aca3bad95d",
+    "central_manifest_git_blob": "738fecfaf195bfbe31ed68fa4f0e4d05b9912248",
+    "central_manifest_hash_role": "central_manifest_sha256 records Windows checkout bytes; canonical Git binding is separate and Linux staging must be regenerated"
+  },
+  "archive_repository_release": {
+    "url": "https://github.com/Civ13/Civ13/releases/download/byond-toolchain-cache-516.1688-linux-16278f318cde/516.1688_byond_linux.zip",
+    "repositoryId": 141349998,
+    "releaseId": 423087014,
+    "assetId": 673801489,
+    "redirectUrl": "https://release-assets.githubusercontent.com/github-production-release-asset/141349998/2c92a741-bfd1-4b43-8ec3-8c3813669b82",
+    "tagTarget": "3f3dd47f614f4659031a793dc590346f5e4de3e6",
+    "provenance": "Complete unchanged official-observed Linux archive and bundled notices; user-approved repository mirror, not a vendor-authenticated checksum"
+  }
+}

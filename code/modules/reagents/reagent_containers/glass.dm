@@ -274,12 +274,17 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 		if (!is_open_container())
 			to_chat(user, "<span class='notice'>\The [src] is closed.</span>")
 			return
-		if (!reagents.get_free_space())
-			to_chat(user, "<span class='danger'>\The [src] is full!</span>")
+		var/amount = CT.amount
+		if (!isnum(amount) || amount < 1 || amount != round(amount) || !CT.material || CT.material.name != "cotton" || !CT.can_use(amount))
+			to_chat(user, "<span class='warning'>You need a whole valid cotton pile.</span>")
+			return
+		if (reagents.get_free_space() < amount)
+			to_chat(user, "<span class='danger'>There is not enough room for the whole cotton pile.</span>")
+			return
+		if (!CT.use(amount))
 			return
 		user.visible_message("<span class='warning'>[user] puts the cotton inside \the [src].</span>", "<span class='notice'>You put the cotton inside \the [src].</span>", "<span class='notice'>You put the cotton inside \the [src].</span>", "You hear the sound of activity.")
-		reagents.add_reagent("cotton", CT.amount)
-		qdel(W)
+		reagents.add_reagent("cotton", amount)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/corn)) //item transfer? what is it?
 		if (!is_open_container())

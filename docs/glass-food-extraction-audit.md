@@ -59,3 +59,6 @@ capacity issue only, following the specialized barrel ingredient fix. Remaining
 recorded families include large-dispenser key assignment ordering, cooking/trays,
 anvils/workbenches and other material categories. Review ownership again before
 starting another implementation family.
+
+The next [whole cotton insertion fix](cotton-insertion-audit.md) addresses the
+separate variable-dose stock conversion without changing these food routes.

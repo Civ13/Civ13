@@ -4,12 +4,12 @@ import importlib.util
 import json
 import os
 from pathlib import Path
-import subprocess
 import sys
 import tempfile
 from types import ModuleType, SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
+from historical_fixtures import text as historical_text
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -92,9 +92,7 @@ class CurrentCITests(unittest.TestCase):
                 self.assertEqual(call.kwargs['environment']['BYOND_SYSTEM'], str(args.byond_bin.parent))
 
     def test_historical_pin_limits_and_result_guards_are_preserved(self):
-        prior = subprocess.check_output(['git', 'show',
-            '3b0be7a483bada0649d954d09045968999e538e0:tests/exclusion_dispatch/run-ci.py'],
-            cwd=ROOT, text=True)
+        prior = historical_text('3b0be7a483bada0649d954d09045968999e538e0', 'tests/exclusion_dispatch/run-ci.py')
         def bodies(text):
             return {node.name: ast.dump(node, include_attributes=False) for node in ast.parse(text).body
                     if isinstance(node, ast.FunctionDef)}

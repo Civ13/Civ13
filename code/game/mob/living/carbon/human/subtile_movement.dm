@@ -136,6 +136,23 @@
 /mob/living/human/proc/human_subtile_unlinked()
 	return !buckled && !riding && !riding_mob && !using_drone && !control_object && !incorporeal_move && !pulledby && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && !istype(using_object, /obj/item/weapon/gun/projectile/automatic/stationary) && !using_cannon && !football
 
+// Identifies a still-valid passive recipe view. It no longer gates movement:
+// admission follows human_subtile_unlinked() above for every using_object.
+/atom/movable/proc/allows_smooth_movement_ui(mob/living/human/user)
+	return FALSE
+
+/mob/living/human/proc/human_subtile_prepare_ui_movement()
+	if (!(human_subtile_enabled || human_subtile_default_pending || human_subtile_offset_owned))
+		return
+	if (!istype(using_object, /obj/item/stack) || using_object.allows_smooth_movement_ui(src))
+		return
+	// Close a stale recipe view after a hand switch, drop, transfer or depleted
+	// stack, so its refresh/close callbacks never target a stack no longer held.
+	// Other object-use links stay put; this does not gate movement.
+	unset_using_object()
+	if (client)
+		client << browse(null, "window=stack")
+
 /mob/living/human/proc/human_subtile_input_supported(direction)
 	human_subtile_initialize_default(direction)
 	// Unsupported transitions keep the legacy path only when tile-aligned.

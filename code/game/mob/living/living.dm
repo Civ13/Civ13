@@ -590,6 +590,10 @@ default behaviour is:
 		var/mob/living/human/subtile_human = src
 		if (subtile_human.human_subtile_pulse)
 			return moved
+	if (istype(src, /mob/living/simple_animal))
+		var/mob/living/simple_animal/subtile_npc = src
+		if (subtile_npc.npc_subtile_pulse)
+			return moved
 	living_movement_completed()
 	return moved
 

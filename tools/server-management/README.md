@@ -7,9 +7,9 @@ minimal current transfer state and per-peer sequences alongside inventory saves;
 real atomic storage/recovery integration remains unaccepted. No real transfer or
 cryptographic provider is implemented.
 
-This package is an inert .NET 8 library for an observe-only instance catalog and
-status projection. It has no launcher wiring, collector, host/config/save discovery,
-process or network operations, installation, scheduler or lifecycle effects.
+This package is a .NET 8 library for an observe-only instance catalog, status
+projection and explicitly invoked local process facts. It has no launcher wiring,
+host/config/save discovery, network operations, installation, scheduler or lifecycle effects.
 No package source or external dependency is required. The existing launcher can
 consume a shared headless core later; this package does not replace its UI.
 
@@ -47,6 +47,43 @@ constructing evidence. Caller-supplied DTO equality is not independent proof.
 `MatchingReceipt` is a display comparison, not a lease or action authorization.
 No DTO/status result enables mutations. Persisted/public status data must never
 be deserialized into fresh authority or readiness evidence.
+
+## Explicit local process facts
+
+`LocalProcessObserver` binds a single operator-selected `ProcessTarget` to the
+complete instance/host/profile/revision/digest/kind and expected PID/start time.
+It refuses a different local host or request binding before inspection. There is
+no process-name/table enumeration, hostname resolution, automatic registration,
+receipt adoption or polling loop. The caller supplies its configured local host
+ID and a process-local monotonic clock scope; neither is discovered from a peer.
+All evidence kinds retain that complete request, including initial PID absence.
+
+`ProcessFactsReader` uses an injected read session. `SystemProcessAccessor` is the
+read-only Windows/Linux implementation using `Process.GetProcessById`, refresh,
+exit state and UTC start-time ticks. It samples twice and releases its query
+object; it never starts, stops, signals, kills or configures a process. Only an
+initial missing-PID lookup is `Missing`; exit/change during reading, unsupported
+platform and query failure are `Unavailable`, while permission failure is
+`Denied`. Errors expose fixed codes, not OS messages, paths or command lines.
+No executable file, credentials, environment, memory or module list is read.
+
+The elapsed read budget is an admission check after the synchronous read returns,
+not a hard cancellation/deadline for OS calls. Samples keep their original start
+time. A clock change/regression, slow read, malformed evidence, stale sample or
+different request fails closed. `ProcessFactProjection` displays PID absence or
+start-time match/mismatch separately from `StatusProjection`: absence alone does
+not assert an instance stopped, and matching OS facts do not establish ownership,
+an executable hash, boot/run identity, a lease, health or backend readiness.
+Two reads cannot eliminate TOCTOU or justify later lifecycle actions. Start-time
+precision/platform semantics and actual Windows/Linux behavior need separate
+acceptance before operational use. No conversion to an authoritative `Observation`
+is supplied; in particular, expected boot/run IDs are never copied into observed
+identity. The existing Windows lifecycle supervisor's FILETIME/receipt contract
+is separate and has not been adopted or changed by this adapter.
+
+Tests inject both process sessions and clocks, exercising the real reader and
+observer algorithms without calling `SystemProcessAccessor` or inspecting any
+live process. The adapter remains unwired to the launcher and game entrypoints.
 
 Run the synthetic tests with an existing .NET 8 targeting pack, after setting the
 following variables in the child shell only:

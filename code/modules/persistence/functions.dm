@@ -168,7 +168,7 @@
 	// Minimal serializer fixtures may omit carriage type declarations.
 	if (key == "glide_size" && ("carriage_glide_owner" in vars) && vars["carriage_glide_owner"])
 		return TRUE
-	return key == "original_target" || key == "woodwork_owner" || key == "carriage_glide_owner" || key == "carriage_glide_previous" || key == "carriage_glide_applied" || key == "carriage_glide_step" || ..()
+	return key == "original_target" || key == "woodwork_owner" || key == "carriage_glide_owner" || key == "carriage_glide_previous" || key == "carriage_glide_applied" || key == "carriage_glide_step" || key == "throw_launch_source" || key == "throw_launch_dx" || key == "throw_launch_dy" || key == "throw_launch_x" || key == "throw_launch_y" || key == "throw_flight_token" || ..()
 
 // Lighting graphs belong to the current map/owners and are rebuilt after import.
 // The custom serializer enumerates tmp fields as well as durable fields.

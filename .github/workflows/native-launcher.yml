@@ -40,6 +40,36 @@ jobs:
           $version = (Get-Content tools/opendream-client/native/version.json -Raw | ConvertFrom-Json).version
           dotnet run --project tools/opendream-client/native/tests/Launcher.Tests.csproj -- tools/opendream-client/native/publish/Civ13.exe $version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run offline management composition, reader, registration and presentation contracts
+        timeout-minutes: 6
+        shell: pwsh
+        env:
+          DOTNET_CLI_HOME: ${{ runner.temp }}/civ13-management-cli
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
+          DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+          DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+          DOTNET_NOLOGO: '1'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # Each program pins its own offline NuGet.Config; all use injected facts only.
+          $programs = [ordered]@{
+            'tools/opendream-client/native/composition-tests/CompositionTests.csproj' = '^PASS \d+ composition assertions'
+            'tools/opendream-client/native/file-reader-tests/FileReaderTests.csproj' = '^\d+ file-reader assertions passed'
+            'tools/opendream-client/native/registration-tests/RegistrationTests.csproj' = '^PASS \d+ registration-provider assertions'
+            'tools/opendream-client/native/tests/ManagementPresentation/ManagementPresentation.csproj' = '^PASS \d+ launcher management presentation assertions'
+          }
+          foreach ($project in $programs.Keys) {
+            Push-Location (Split-Path $project)
+            try {
+              $output = & dotnet run --project (Split-Path $project -Leaf) --configuration Release --disable-build-servers -p:UseSharedCompilation=false 2>&1
+              $code = $LASTEXITCODE
+            } finally { Pop-Location }
+            $output | ForEach-Object { Write-Output $_ }
+            if ($code -ne 0) { throw "$project exited $code" }
+            if (-not ($output | Select-String -Pattern $programs[$project])) { throw "$project printed no pass line" }
+          }
+          $dirty = & git status --porcelain --untracked-files=no
+          if ($dirty) { throw "Management contracts changed tracked files: $dirty" }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Civ13-Windows-launcher-${{ github.event.pull_request.head.sha || github.sha }}
