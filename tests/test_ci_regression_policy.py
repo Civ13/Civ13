@@ -26,7 +26,7 @@ class RegressionPolicyTests(unittest.TestCase):
     MALL_GATES = (
         '!cancelled()', "needs.changes.result == 'success'",
         "steps.compile.outcome == 'success'",
-        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || inputs.mall_regressions == true)",
+        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || inputs.mall_regressions == true)",
     )
 
     def assert_mall_guard(self, block):
@@ -36,6 +36,8 @@ class RegressionPolicyTests(unittest.TestCase):
     def test_mall_guard_rejects_missing_prerequisite_or_scope(self):
         guard = '        if: ${{ ' + ' && '.join(self.MALL_GATES) + ' }}\n'
         self.assert_mall_guard(guard)
+        with self.assertRaises(AssertionError):
+            self.assert_mall_guard(guard.replace("new_tests || '[]'", 'new_tests'))
         for omitted in self.MALL_GATES:
             with self.subTest(omitted=omitted), self.assertRaises(AssertionError):
                 self.assert_mall_guard('        if: ${{ ' + ' && '.join(g for g in self.MALL_GATES if g != omitted) + ' }}\n')

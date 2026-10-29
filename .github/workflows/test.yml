@@ -905,7 +905,7 @@ jobs:
 
       - name: Verify native mall interactions and omission controls
         id: mall_native
-        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/extraction') || inputs.mall_regressions == true) }}
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction') || inputs.mall_regressions == true) }}
         timeout-minutes: 30
         shell: bash
         run: |
