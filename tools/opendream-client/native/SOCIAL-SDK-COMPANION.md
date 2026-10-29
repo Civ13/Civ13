@@ -2,8 +2,10 @@
 
 `CompanionPresenceTransport` implements the existing `IDiscordPresenceTransport`
 over an injected nonblocking channel. Production startup remains unwired. No
-channel implementation, child-process launcher, network listener, SDK binding,
-DLL, credentials, authentication or native execution is supplied here.
+active OS channel/process factory, network listener, DLL loader,
+credentials, authentication or live native execution is supplied here. The
+[native companion core](companion/README.md) now implements the peer protocol and
+an SDK C-ABI backend, compiled/tested using original fake SDK functions.
 `PumpedSocialClient` retains generation/revision, expiry, callback deadline and
 quarantine ownership; this transport adds bounded framing and peer lifecycle.
 
@@ -87,17 +89,25 @@ Dispose attempts Clear once and Stop, closes the injected channel and settles
 the retained callback. Backpressure or exceptions close without retry/reconnect.
 Clear/Stop writes and local close cannot prove native/remote cleanup occurred;
 keep `ClearIssued` semantics. The peer lease covers launcher crash/lost pumping.
-This source slice tests that obligation with a fake peer; no native worker exists.
+The managed tests use a fake peer; the native core tests exercise the peer and
+real binding with fake SDK functions. No production worker/process host exists.
+The [private hosting contracts](SOCIAL-SDK-HOSTING.md) additionally supply a
+bounded injected-stream channel, managed lease owner and native I/O loop; they
+do not create OS processes/pipes or connect production startup.
+The concrete [Windows parent provider](SOCIAL-SDK-WINDOWS-PROVIDER.md) is supplied
+behind fixed-off source gates and exercised only through an injected fake platform.
 
 The inspected SDK 1.10.19337 supplies C/C++ headers and x64 libraries, not a
-standalone managed binding. A later reviewed C++20 peer can map Publish to
+standalone managed binding. The original C++20 backend now maps Publish to
 Activity Details/State and `UpdateRichPresence`, pump `RunCallbacks`, translate
 the result and use `ClearRichPresence`/client destruction during cleanup. One
 owner must manage the global callback pump and userdata lifetimes. The x86
 DreamDaemon must not load the x64 library. No SDK code is vendored here.
 
-License/linking/distribution review, actual pipe/process implementation, native
-ABI/build acceptance and separately authorized live presence remain future work.
+License/linking/distribution review, actual pipe/process implementation, vendor
+binary ABI/runtime acceptance and separately authorized live presence remain
+future work. Compilation against the real header with fake C functions verifies
+binding declarations and ownership logic, not vendor binary/runtime behavior.
 Account/friends/invites/voice are separate scopes. Ordinary BYOND/DreamSeeker
 access and server verification remain independent of this profile and Discord.
 

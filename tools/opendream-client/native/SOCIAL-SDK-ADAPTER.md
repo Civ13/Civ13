@@ -1,7 +1,8 @@
 # Launcher presence adapter
 
 This milestone implements the SDK-independent adapter behind the contracts merged
-in #3305. It does not implement a native Discord binding. Production startup is
+in #3305. A subsequent [native core/backend](companion/README.md) supplies the
+C++ SDK C-ABI mapping with fake-driven tests. Production startup is
 still unwired; normal BYOND/DreamSeeker play does not depend on the launcher,
 Discord, account linking, presence or microphone permission.
 
@@ -123,8 +124,8 @@ The ordinary manual browser path remains usable after optional adapter failure.
 All transport calls in these tests are synthetic; they establish no native ABI,
 DLL loading, Discord UI, authentication, live invite or microphone acceptance.
 
-Next: supply the approved package/application inputs and review the concrete
-binding/worker lifecycle before native compilation/loading or live acceptance.
+Next: review the implemented native core/backend, then supply a bounded private
+process/channel host and review vendor linking/distribution and live acceptance.
 Friends/account UI, invites through a real SDK callback, voice, media and game
 context signaling remain later slices. No cosmetic launcher readiness option,
 new game admission rule, spectator feed, release or deployment is added here.

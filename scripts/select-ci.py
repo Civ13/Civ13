@@ -152,7 +152,8 @@ def eligibility(event, payload, build_prefix):
     elif not metadata_valid:
         scope_reason = 'Missing event scope metadata; selection must fail closed'
     compile_eligible = (ordinary or supported_edit or forced) and not skip_duplicate
-    compile_reason = ('Validated title/body edit reuses existing required checks' if skip_duplicate else
+    compile_reason = ('Manual CI requires compilation and the native toolchain' if build_prefix and event == 'workflow_dispatch' else
+                      'Validated title/body edit reuses existing required checks' if skip_duplicate else
                       'Explicit build: request or incomplete metadata requires compilation' if forced else
                       'Supported edited PR: evaluate exact base/head diff' if supported_edit else
                       'Ordinary/legacy event: evaluate exact base/head diff' if ordinary else
@@ -176,7 +177,11 @@ def selections(base, head, event, opted_in, build_prefix=False, payload=None):
     if policy['skip_duplicate']:
         return False, False, [], 'Validated title/body edit; reuse existing required checks'
     game, reason = select(base, head) if policy['compile']['eligible'] else (False, 'Outside ordinary CI subscription')
-    if policy['forced']:
+    if build_prefix and event == 'workflow_dispatch':
+        # Manual inputs can request native fixtures independently of the diff.
+        # The build job also installs their BYOND toolchain.
+        game, reason = True, 'Manual CI run; compile game and prepare native toolchain'
+    elif policy['forced']:
         game, reason = True, 'build: request or incomplete event metadata; compile game'
     new_tests = (sorted(set(introduced_tests(base, head, event)) |
                         set(changed_atlas_tests(base, head, event)))
@@ -253,6 +258,22 @@ def introduced_tests(base, head, event):
     return sorted(suites)
 
 
+def validate_manual_base(base, head, cwd=None):
+    """Manual runs need explicit immutable, locally available distinct commits."""
+    if not re.fullmatch(r'[0-9a-f]{40}', base or '') or not re.fullmatch(r'[0-9a-f]{40}', head or ''):
+        raise ValueError('Manual CI requires comparison_base and head as full lowercase 40-character commit IDs')
+    if base == head:
+        raise ValueError('Manual comparison_base must differ from the head commit')
+    try:
+        for value in (base, head):
+            resolved = subprocess.check_output(['git', 'rev-parse', '--verify', value + '^{commit}'],
+                                               cwd=cwd, stderr=subprocess.PIPE, timeout=15).decode('utf-8').strip()
+            if resolved != value:
+                raise ValueError('Manual comparison commit identity mismatch')
+    except (subprocess.SubprocessError, UnicodeError) as exc:
+        raise ValueError('Manual comparison_base or head is unavailable in the local checkout') from exc
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', default='')
@@ -263,6 +284,11 @@ def main():
     parser.add_argument('--build-prefix', choices=('true', 'false'), default='false')
     parser.add_argument('--receipt', help='Exact-source machine-readable selection receipt')
     args = parser.parse_args()
+    if args.event == 'workflow_dispatch' and args.build_prefix == 'true':
+        try:
+            validate_manual_base(args.base, args.head)
+        except ValueError as error:
+            parser.error(str(error))
     payload = load_event(os.environ.get('GITHUB_EVENT_PATH'))
     policy = eligibility(args.event, payload, args.build_prefix == 'true')
     if args.build_prefix == 'true' and args.event == 'pull_request' and payload.get('action') == 'edited':

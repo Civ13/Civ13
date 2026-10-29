@@ -52,6 +52,19 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_los_event_identity_comes_from_validated_plan(self):
+        plan, _, _, _ = fixtures()
+        with patch.dict(os.environ, {'LOS_EVENT_BASE': 'stale', 'LOS_EVENT_HEAD': 'stale'}):
+            environment = ci.suite_environment('los_context', plan)
+        self.assertEqual(environment['LOS_EVENT_BASE'], plan['base'])
+        self.assertEqual(environment['LOS_EVENT_HEAD'], plan['head'])
+        plan['base'] = None
+        self.assertEqual(ci.suite_environment('los_context', plan)['LOS_EVENT_BASE'], '')
+
+    def test_visibility_selects_only_explicit_offline_file(self):
+        self.assertEqual(ci.SUITES['los_context']['files'], ('tests/los_context/test_offline.py',))
+        self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
+        self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))
     def test_woodworking_runs_on_production_or_modified_test_changes_without_extensive(self):
         self.assertEqual(ci.SUITES['woodworking']['files'],('tests/primitive_woodworking/test_source.py','tests/test_atlas_navigation.py'))
         dedicated=('code/modules/1713/primitive_woodworking.dm',
