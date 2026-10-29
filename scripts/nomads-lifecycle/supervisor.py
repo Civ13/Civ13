@@ -393,7 +393,8 @@ class Supervisor:
                 probe.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
             probe.bind((bind, c['port']))
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
-        argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-log', 'supervisor-runtime.log']
+        # -close ends the process when the world shuts down; save_shutdown waits for that exit.
+        argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-close', '-log', 'supervisor-runtime.log']
         if bind == '127.0.0.1':
             argv += ['-ip', bind]
         child = subprocess.Popen(argv, cwd=run, creationflags=flags)

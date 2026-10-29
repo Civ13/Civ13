@@ -49,7 +49,7 @@ static class LocalHostingTests {
         var daemon = started[0];
         Require(daemon.FileName == Path.Combine(@"C:\BYOND\bin", "dd.exe") && daemon.WorkingDirectory == host.GameDirectory && !daemon.UseShellExecute,
             "DreamDaemon start used the wrong executable, folder or shell");
-        Require(daemon.ArgumentList.SequenceEqual(new[] { "civ13.dmb", "1714", "-trusted", "-public", "-log", "logs/world.log" }),
+        Require(daemon.ArgumentList.SequenceEqual(new[] { "civ13.dmb", "1714", "-trusted", "-public", "-close", "-log", "logs/world.log" }),
             "DreamDaemon arguments changed: " + string.Join(" ", daemon.ArgumentList));
         Require(Directory.Exists(Path.Combine(game, "logs")), "log folder not created before DreamDaemon start");
         var supervisor = started[1];

@@ -56,7 +56,7 @@ public static class LocalHosting {
     public static ProcessStartInfo DaemonStart(HostProfile host, string byondBin) {
         var start = new ProcessStartInfo(Path.Combine(byondBin, "dd.exe")) {
             UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = host.GameDirectory };
-        foreach (var argument in new[] { host.World, host.Port.ToString(), "-trusted", host.Public ? "-public" : "-invisible", "-log", "logs/world.log" })
+        foreach (var argument in new[] { host.World, host.Port.ToString(), "-trusted", host.Public ? "-public" : "-invisible", "-close", "-log", "logs/world.log" })
             start.ArgumentList.Add(argument);
         return start;
     }
