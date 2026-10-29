@@ -81,7 +81,7 @@ class SourceContracts(unittest.TestCase):
 
     def test_completion_and_cleanup_cover_partial_cancel_delete(self):
         source = read(MODULE)
-        self.assertIn("!completed && actor && !isDeleted(actor) && total_distance > 0", source)
+        self.assertIn("!completed && actor && !isDeleted(actor) && (total_distance > 0 || (paid_posture && attempted))", source)
         self.assertIn("actor.living_movement_completed()", source)
         self.assertIn("actor.human_movement_completed()", source)
         self.assertIn("if (!actor || isDeleted(actor) || actor.human_subtile_transaction != src)", source)

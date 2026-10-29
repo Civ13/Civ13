@@ -1114,6 +1114,9 @@ jobs:
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control legacy-split --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/legacy-split"
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control cardinal-arithmetic --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/cardinal-arithmetic"
           /usr/bin/python3 -B tests/human_subtile/run-diagonal.py --control offset-recovery --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/offset-recovery"
+          /usr/bin/python3 -B tests/human_subtile/run-crawl.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/crawl"
+          /usr/bin/python3 -B tests/human_subtile/run-crawl.py --control late-start --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/crawl-late-start"
+          /usr/bin/python3 -B tests/human_subtile/run-crawl.py --control lost-lock --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/crawl-lost-lock"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining"
           /usr/bin/python3 -B tests/human_subtile/run.py --suite mining --control mining-position --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/human-subtile/mining-position"
 
@@ -1127,6 +1130,7 @@ jobs:
             ${{ runner.temp }}/human-subtile/**/source-manifest.json
             ${{ runner.temp }}/human-subtile/**/runner-receipt.json
             ${{ runner.temp }}/human-subtile/**/diagonal-manifest.json
+            ${{ runner.temp }}/human-subtile/**/crawl-manifest.json
             ${{ runner.temp }}/human-subtile/**/accepted.json
             ${{ runner.temp }}/human-subtile/*/*-receipt.json
             ${{ runner.temp }}/human-subtile/**/*.log
