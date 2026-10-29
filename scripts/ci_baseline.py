@@ -26,10 +26,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
-    # stdlib plus the existing inert save-movement projection; no native launch.
+    # stdlib plus the existing inert save-movement projection, and the link test
+    # imports the cross-level runner only to stage files; no native launch.
     'persistence_pointers': {'files': ('tests/persistence_pointers/test_contract.py',
                                     'tests/persistence_pointers/test_restore_dependents.py',
-                                    'tests/persistence_pointers/test_action_reconnect.py'),
+                                    'tests/persistence_pointers/test_action_reconnect.py',
+                                    'tests/persistence_pointers/test_level_links.py'),
         'paths': ('tests/persistence_pointers/',),
         'shared_paths': ('code/modules/persistence/',
             'code/game/mob/living/simple_animal/',
@@ -39,6 +41,7 @@ SUITES = {
             'code/game/objects/items/weapons/explosives.dm',
             'code/modules/multiz/structures.dm', 'code/_onclick/hud/action.dm',
             'tests/world_save/full_game_probe.dm', 'tests/save_movement/source_adapter.py',
+            'tests/world_save/run-cross-level.py', 'tests/world_save/stubs.dm',
             'tests/save_movement/test_guard.py', 'code/processes/abandoned_items.dm',
             'code/modules/1713/weapons/zoom.dm', 'code/modules/1713/weapons/attachment.dm',
             'code/modules/1713/gunsmithing/gun_configuration.dm',

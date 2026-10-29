@@ -224,9 +224,14 @@
 	P.armed = FALSE
 	return P
 
+// A paid leash or command-follow is a durable relationship. It is saved as-is,
+// through the cross-level link codec when the followed atom is on another level.
+/mob/living/simple_animal/persistence_level_link_var(key)
+	return key == "following_mob" || ..()
+
 /mob/living/simple_animal/persistence_runtime_var(key)
-	// Targets, path caches and their control state belong to this AI run. Keep
-	// following_mob durable pending a separate leash ownership policy decision.
+	// Targets, path caches and their control state belong to this AI run.
+	// following_mob is durable; see persistence_level_link_var above.
 	if (key in list("target_obj", "target_mob", "pathfind_target", "found_path", "moving", "last_pathfound", "move_gen", "stance", "stance_step"))
 		return TRUE
 	if (key == "glide_size" && (npc_subtile_glide_owned || npc_subtile_import_owned || npc_subtile_position))

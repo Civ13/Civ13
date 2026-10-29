@@ -131,6 +131,12 @@
 	// Weak handles cache native references from this process, never durable IDs.
 	return key == "persistence_export_frame" || key == "weak_reference"
 
+// Durable links which may point at a movable on another level. Only top-level
+// fields named here use the cross-level codec; every other field keeps the
+// per-level rejection. Same-level values still use ordinary entry encoding.
+/datum/proc/persistence_level_link_var(key)
+	return FALSE
+
 /datum/proc/get_saved_vars()
 	var/list/to_save = list()
 	var/partial = FALSE
@@ -313,6 +319,14 @@ map_storage
 		list/saving_export_stack = list()
 		list/saving_content_owners = list()
 		list/saving_world_movables = list()
+		// Cross-level links: export rows pin their target until it is bound to
+		// its own level entry. Import rows come from the validated round state.
+		list/saving_level_links = list()
+		list/saving_level_link_ids = list()
+		list/validated_level_links
+		list/loading_level_links
+		list/loading_level_link_targets = list()
+		list/loading_level_link_fields = list()
 		var/saving_work = 0
 		var/saving_slice_start = 0
 		list/all_loaded = list()
@@ -340,6 +354,7 @@ map_storage
 
 /map_storage/persistence_runtime_var(key)
 	if(key == "consecutive_save_failures") return TRUE
+	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
 	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE
@@ -402,6 +417,11 @@ map_storage
 	saving_export_stack = list()
 	saving_content_owners = list()
 	saving_world_movables = list()
+	saving_level_links = list()
+	saving_level_link_ids = list()
+	loading_level_links = null
+	loading_level_link_targets = list()
+	loading_level_link_fields = list()
 	saving_work = 0
 	saving_slice_start = world.tick_usage
 	saving_references = list()
@@ -868,10 +888,12 @@ var/global/datum/persistence_admission_identity
 		throw EXCEPTION("Completed generation is missing round state")
 	var/list/state = json_decode(file2text("map_saves/round.json"))
 	var/has_elevation = islist(state) && ("elevation" in state)
-	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
+	var/has_level_links = islist(state) && ("level_links" in state)
+	if(!islist(state) || state.len != (version == 2 ? 12 : 11) + has_elevation + has_level_links || state["version"] != version || state["generation"] != marker || state["metadata"] != md5(file2text("map_saves/map.txt")) || state["map"] != map.ID || state["maxx"] != world.maxx || state["maxy"] != world.maxy || state["maxz"] != save_validation_maxz())
 		throw EXCEPTION("Round state does not match completed generation")
 	if(has_elevation)
 		elevation_profile_from_snapshot(state["elevation"], world.maxx, world.maxy, save_validation_maxz())
+	if(has_level_links) validate_level_link_rows(state["level_links"])
 	if(version == 2 && !islist(state["world_state"]))
 		throw EXCEPTION("Completed generation is missing durable world state")
 	if(!istext(state["game_id"]) || !length(state["game_id"]) || length(state["game_id"]) > 128)

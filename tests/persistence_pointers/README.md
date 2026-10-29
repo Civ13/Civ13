@@ -48,3 +48,19 @@ scope/gun grants, generic action regeneration and transient grab/garrote state.
 The full-game probe additionally prepares real binocular, turret-control,
 flashlight and garrote disk round trips with deliberately dangling legacy action
 entries. Its execution remains separate from these offline checks.
+
+`test_level_links.py` checks the cross-level link declarations and production
+anchors offline, and stages the native packet without launching it. The native
+round trip reuses the world_save cross-level packet with its own probe:
+
+```bash
+python3 tests/persistence_pointers/level_links/run.py --run-native \
+  --byond-bin "$BYOND/bin" --byond-archive "$BYOND_ZIP"
+python3 tests/persistence_pointers/level_links/run.py --run-native \
+  --byond-bin "$BYOND/bin" --byond-archive "$BYOND_ZIP" --negative-control export
+python3 tests/persistence_pointers/level_links/run.py --run-native \
+  --byond-bin "$BYOND/bin" --byond-archive "$BYOND_ZIP" --negative-control import
+```
+
+It launches the isolated trusted DreamDaemon with no network port and a private
+save directory per case; it is not full-game evidence.
