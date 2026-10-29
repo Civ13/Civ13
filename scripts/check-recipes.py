@@ -43,7 +43,8 @@ def main():
                    "code/game/objects/items/weapons/nomadstuff.dm", "code/game/objects/structures.dm",
                    "code/game/objects/structures/stool_bed_chair_nest/bed.dm", "tests/crafting/rope_hammock.dm",
                    "code/game/objects/structures/filingcabinet.dm", "tests/crafting/document_drawers.dm",
-                   "tests/crafting/sofa_materials.dm", "code/game/objects/structures/stool_bed_chair_nest/chairs.dm"]
+                   "tests/crafting/sofa_materials.dm", "code/game/objects/structures/stool_bed_chair_nest/chairs.dm",
+                   "code/game/objects/structures/stool_bed_chair_nest/stools.dm"]
         metadata = {"head_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                     "control": "hands-only" if args.handle_hands_negative_control else None,
                     "source_sha256": {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in sources},

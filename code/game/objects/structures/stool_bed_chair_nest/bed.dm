@@ -176,9 +176,11 @@
 		if (!padding_material)
 			to_chat(user, "\The [src] has no padding to remove.")
 			return
+		if (!remove_padding())
+			to_chat(user, "The padding cannot be recovered intact.")
+			return
 		to_chat(user, "You remove the padding from \the [src].")
 		playsound(src, 'sound/items/Wirecutter.ogg', 100, TRUE)
-		remove_padding()
 
 	else if (istype(W, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = W
@@ -197,11 +199,21 @@
 	else
 		..()
 
+/proc/furniture_padding_sheet(material/padding, turf/site)
+	// These two materials have real stacks but no generic stack_type mapping.
+	// Keep the fallback local to upholstery and exact: dark leather is distinct.
+	if (padding.type == /material/cloth)
+		return new /obj/item/stack/material/cloth(site)
+	if (padding.type == /material/leather)
+		return new /obj/item/stack/material/leather(site)
+	return padding.place_sheet(site)
+
 /obj/structure/bed/proc/remove_padding()
-	if (padding_material)
-		padding_material.place_sheet(get_turf(src))
-		padding_material = null
+	if (!padding_material || !furniture_padding_sheet(padding_material, get_turf(src)))
+		return FALSE
+	padding_material = null
 	update_icon()
+	return TRUE
 
 /obj/structure/bed/proc/add_padding(var/padding_type)
 	padding_material = get_material_by_name(padding_type)
@@ -213,7 +225,7 @@
 	else
 		material.place_sheet(get_turf(src))
 	if (padding_material)
-		padding_material.place_sheet(get_turf(src))
+		furniture_padding_sheet(padding_material, get_turf(src))
 
 /obj/structure/bed/psych
 	name = "divan"

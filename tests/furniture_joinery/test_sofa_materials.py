@@ -52,6 +52,47 @@ def padding_parent(sofa, stock):
 
 
 class SofaMaterials(unittest.TestCase):
+    def test_padding_recovery_pays_exact_identity_or_keeps_unrecoverable_padding(self):
+        materials = (ROOT / 'code/modules/materials/materials.dm').read_text()
+        generic = block(materials, '/material/proc/place_sheet(').replace(
+            'return new stack_type(target)', 'return construct(stack_type, target)')
+        factory = block(BED, '/proc/furniture_padding_sheet(')
+        factory = re.sub(r'return new (/[\w/]+)\(([^\n]*)\)',
+                         lambda m: 'return construct(' + json.dumps(m[1]) + ', ' + m[2] + ')', factory)
+        for source, signature in ((BED, '/obj/structure/bed/proc/remove_padding('),
+                ((ROOT / 'code/game/objects/structures/stool_bed_chair_nest/stools.dm').read_text(),
+                 '/obj/item/weapon/stool/proc/remove_padding(')):
+            for name, stack_name in (('cloth', 'cloth'), ('leather', 'leather'),
+                                     ('cotton', 'cotton'), ('leather/dark', None)):
+                with self.subTest(signature=signature, material=name):
+                    outputs = []
+                    def construct(kind, loc):
+                        item = NS(type=kind, loc=loc, amount=1)
+                        outputs.append(item)
+                        return item
+                    body = block(materials, '/material/' + name + '\n')
+                    stack = re.search(r'\tstack_type = (/[\w/]+)', body)
+                    material = NS(type='/material/' + name, stack_type=stack[1] if stack else None)
+                    place, _ = compile_body(generic, '/material/proc/place_sheet(', 'self,target',
+                                            dict(construct=construct), ('stack_type',))
+                    material.place_sheet = lambda site: place(material, site)
+                    sheet, _ = compile_body(factory, '/proc/furniture_padding_sheet(', 'padding,site',
+                                            dict(construct=construct))
+                    furniture = NS(padding_material=material, update_icon=lambda: None)
+                    remove, _ = compile_body(source, signature, 'self',
+                        dict(furniture_padding_sheet=sheet, get_turf=lambda obj: 'floor'),
+                        ('padding_material', 'update_icon'))
+                    self.assertEqual(bool(remove(furniture)), bool(stack_name))
+                    if stack_name:
+                        self.assertIsNone(furniture.padding_material)
+                        self.assertEqual([(x.type, x.amount) for x in outputs],
+                                         [('/obj/item/stack/material/' + stack_name, 1)])
+                        self.assertFalse(remove(furniture))
+                        self.assertEqual(len(outputs), 1)
+                    else:
+                        self.assertIs(furniture.padding_material, material)
+                        self.assertEqual(outputs, [])
+
     def test_all_six_fixed_art_types_refuse_stacks_without_debit(self):
         for kind in KINDS:
             parent = next(base for base in BASES if kind == base or kind.startswith(base + '/'))

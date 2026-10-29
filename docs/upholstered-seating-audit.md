@@ -33,10 +33,16 @@ the generic structure action and returned one wood log. The three eight-cloth
 recipes could thus convert cloth to wood. Fixed sofas and the nonwood comfy-chair
 family now refuse that generic recovery. No speculative refund is substituted.
 
-An ordinary bed continues to accept one paid cloth/leather padding unit. Its
-existing removal procedure returns one unit and clears the padding reference;
-repeated removal cannot mint additional material. That supported path is kept
-separate from fixed sofa art in the regressions.
+Beds and stools already accept one paid cloth/leather padding unit. The first
+hosted control exposed a third bug: those two material definitions have no
+generic `stack_type`, so `place_sheet` returns nothing and removal discards the
+padding reference. Upholstery recovery now has exact cloth/leather fallbacks to
+their existing stack items. Other materials use their existing sheet mapping.
+Removal clears the reference only after an item is returned, so an unmapped
+material such as dark leather stays installed rather than disappearing or being
+converted to ordinary hide. Repeat removal cannot mint additional material.
+Bed/stool padding dismantling uses the same recovery helper. This is local to
+upholstery; generic material metadata and other material recovery are unchanged.
 
 ## Period and appearance limits
 
@@ -59,9 +65,12 @@ Offline checks execute the actual sofa stack dispatch, the production bed
 padding branch and the generic structure hammer branch through bounded inert
 adapters. Controls deliberately enter the old no-op padding and wood-refund paths
 and demonstrate material loss/conversion. Legacy rows and research/art identities
-remain checked. The compiled native fixture exercises all six fixed-art sofa
-types, the three paid eight-cloth recipes, a steel comfy chair and a paid ordinary
-bed padding/removal control. Record hosted execution separately from compilation.
+remain checked. Recovery tests execute the actual fallback, generic sheet factory
+and bed/stool removal bodies, including exact material identity and an unmapped
+dark-leather control. The compiled native fixture exercises all six fixed-art
+sofa types, the three paid eight-cloth recipes, a steel comfy chair, paid bed/stool
+cloth/leather removal, padded stool dismantling, dark leather retention and an
+ordinary wooden-bed hammer control. Record hosted execution separately from compilation.
 
 Connected-client presentation, natural resource/research reachability and world
 save round trips are unverified by offline checks. This source review adds one
