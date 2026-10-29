@@ -79,7 +79,7 @@ def extract(source, declaration, *, defines=None):
 FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'inducedSSD', 'buckled', 'storage', 'kind', 'backend_started',
           'contents_started', 'mutation_started', 'restoring_players',
-          'current', 'enter_backend', 'enter_contents', 'finish',
+          'current', 'enter_backend', 'enter_contents', 'finish', 'withdraw',
           'contents', 'stomach_contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
           'l_hand', 'r_hand', 'equipped', 'update_inv_l_hand', 'update_inv_r_hand', 'equip_to_slot',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',

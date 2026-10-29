@@ -484,8 +484,20 @@ var/global/datum/persistence_admission_identity
 	persistence_active_operation = operation
 	persistence_save_in_progress = TRUE
 	persistence_admission_identity = operation.admission_identity
-	if(kind == "save")
-		to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
+	// Reserve admission before settling quiet held pull pairs, so their
+	// movement callbacks cannot begin or overlap another operation. A coupled
+	// native intent, interrupted pair or orphaned partial survivor still holds
+	// positions; the unstarted reservation is then withdrawn.
+	try
+		if(kind == "save" && (!subtile_pull_ownership.resolve_quiet("save_admission", operation) || !operation.current(storage, kind) || !subtile_pull_ownership.save_ready()))
+			operation.withdraw()
+			to_chat(world, SPAN_WARNING("Map save held: a smooth pull requires an aligned checkpoint."))
+			return null
+		if(kind == "save")
+			to_chat(world, "<FONT color='yellow'><B>SAVING THE MAP. Do not move between z-levels until saving finishes. Normal gameplay level transfers and protected sleep teleports are blocked; admins should avoid cross-z movement.</B></FONT>")
+	catch(var/exception/admission_error)
+		operation.withdraw()
+		throw admission_error
 	return operation
 
 /datum/persistence_world_operation
@@ -507,6 +519,12 @@ var/global/datum/persistence_admission_identity
 	proc/enter_contents(map_storage/expected_storage, expected_kind)
 		if(!current(expected_storage, expected_kind) || !backend_started || contents_started) return FALSE
 		contents_started = TRUE
+		return TRUE
+	// Release an admission that never entered the backend.
+	proc/withdraw()
+		if(persistence_active_operation != src || backend_started) return FALSE
+		persistence_active_operation = null
+		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
 	proc/finish(success)
 		if(persistence_active_operation != src) return FALSE

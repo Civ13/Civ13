@@ -87,6 +87,7 @@
 	..()
 
 /atom/movable/Destroy()
+	subtile_pull_ownership.retire_member(src)
 	clear_throw_launch()
 	throw_flight_token = null
 	. = ..()

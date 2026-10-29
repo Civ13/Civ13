@@ -63,7 +63,10 @@ class ThrowTargetTests(unittest.TestCase):
         self.assertIs(roof, before['original_target'])  # independent world atom retained
 
     def test_omitted_policy_negative_control_exposes_the_original_foreign_edge(self):
-        source = read(FUNCTIONS).replace('return key == "original_target" || ', 'return ', 1)
+        original = read(FUNCTIONS)
+        marker = 'key == "original_target" || '
+        self.assertEqual(original.count(marker), 1)
+        source = original.replace(marker, '', 1)
         roof = NS(loc=(2, 1, 2))
         marble = self.stack(roof)
         self.assertIn('original_target', saved_fields(marble, policy(source=source)))
