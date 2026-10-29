@@ -11,6 +11,7 @@ import unittest
 from unittest.mock import patch
 
 import resources
+from historical_fixtures import text as historical_text
 from source_contract import reconstruct_list_baseline, BOUNDED_BLOCKS, project_bounded_save, transform, validate, project_reserved_policy, AREA_POLICY
 from source_contract import validate_current_master, project_lighting_policy, project_fullbright_exclusions, project_area_change_owner
 
@@ -33,18 +34,20 @@ def runner_argv(arguments):
     if os.environ.get('GITHUB_ACTIONS') == 'true':
         return ['run.py'] + arguments  # exercise the CI event identities unchanged
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    return ['run.py', '--base', RECONCILIATION_CHECKPOINT, '--head', head] + arguments
+    base = os.environ.get('CI_BASE')
+    if not base:
+        raise ValueError('Offline source CLI checks require an explicit immutable CI_BASE')
+    return ['run.py', '--base', base, '--head', head] + arguments
 
 
 class HistoricalSourceContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.baseline = subprocess.check_output(['git', 'show', BASE + ':' + PATH], cwd=ROOT, text=True)
+        cls.baseline = historical_text(BASE, PATH)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
         # Retain the original immutable comparison and its defect controls.
-        cls.candidate = subprocess.check_output(['git', 'show',
-            '7ca76ce0e23661f4dea5a44acb195bf3010a97eb:' + PATH], cwd=ROOT, text=True)
+        cls.candidate = historical_text('7ca76ce0e23661f4dea5a44acb195bf3010a97eb', PATH)
 
     def test_exact_transform_preserves_current_master(self):
         validate(self.baseline, self.candidate)
@@ -55,8 +58,7 @@ class HistoricalSourceContractTests(unittest.TestCase):
         self.assertEqual(self.candidate.count('apply_restored_lighting()'), self.baseline.count('apply_restored_lighting()'))
 
     def test_reconstructed_hooks_match_reviewed_historical_hooks(self):
-        historical = subprocess.check_output(['git', 'show',
-            '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019:' + PATH], cwd=ROOT, text=True)
+        historical = historical_text('5ac2df336b717f4ca2ccc60f2697b76ab4f2e019', PATH)
         for kind in ('atom', 'turf', 'mob'):
             pattern = rf'^/{kind}/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+'
             self.assertEqual(re.search(pattern, self.baseline, re.M).group(),
@@ -195,9 +197,8 @@ SNOW_GUARD = ('\tif (key == "snowfall_ground_index" || key == "snowfall_ground_g
 class CurrentMasterContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.master = subprocess.check_output(['git', 'show', RECONCILIATION_CHECKPOINT + ':' + PATH], cwd=ROOT, text=True)
-        cls.candidate = subprocess.check_output(['git', 'show',
-            RECONCILIATION_CANDIDATE + ':' + PATH], cwd=ROOT, text=True)
+        cls.master = historical_text(RECONCILIATION_CHECKPOINT, PATH)
+        cls.candidate = historical_text(RECONCILIATION_CANDIDATE, PATH)
 
     def test_entire_current_master_is_preserved_plus_only_lighting_exclusions(self):
         validate_current_master(self.master, self.candidate)
@@ -238,13 +239,11 @@ class CurrentMasterContractTests(unittest.TestCase):
 class LightingCurrentMasterContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.baseline = subprocess.check_output(['git', 'show', RECONCILIATION_CHECKPOINT + ':' + PATH], cwd=ROOT, text=True)
+        cls.baseline = historical_text(RECONCILIATION_CHECKPOINT, PATH)
         cls.master = cls.baseline
         cls.baseline = reconstruct_list_baseline(cls.master)
-        cls.historical_baseline = reconstruct_list_baseline(subprocess.check_output(
-            ['git', 'show', HISTORICAL_BASE + ':' + PATH], cwd=ROOT, text=True))
-        cls.candidate = subprocess.check_output(['git', 'show',
-            RECONCILIATION_CANDIDATE + ':' + PATH], cwd=ROOT, text=True)
+        cls.historical_baseline = reconstruct_list_baseline(historical_text(HISTORICAL_BASE, PATH))
+        cls.candidate = historical_text(RECONCILIATION_CANDIDATE, PATH)
 
     def test_exact_transform_preserves_current_master(self):
         validate_current_master(self.master, self.candidate)
@@ -255,8 +254,7 @@ class LightingCurrentMasterContractTests(unittest.TestCase):
         self.assertEqual(self.candidate.count('apply_restored_lighting()'), self.baseline.count('apply_restored_lighting()'))
 
     def test_reconstructed_hooks_match_reviewed_historical_hooks(self):
-        historical = subprocess.check_output(['git', 'show',
-            '5ac2df336b717f4ca2ccc60f2697b76ab4f2e019:' + PATH], cwd=ROOT, text=True)
+        historical = historical_text('5ac2df336b717f4ca2ccc60f2697b76ab4f2e019', PATH)
         current_expected = project_reserved_policy(self.historical_baseline).replace(
             'if (key == "pickaxe_mining_action")',
             'if (key == "pickaxe_mining_action" || key == "next_animal_retaliation")', 1)
@@ -389,11 +387,15 @@ class LightingCurrentMasterContractTests(unittest.TestCase):
                     bodies = re.findall(rf'^/{kind}/{variant}_runtime\(key\)\n(?:\t[^\n]*\n)+', production, re.M)
                     self.assertTrue(any(f'"{key}"' in body for body in bodies))
             self.assertIn('source_contract.py', receipt['inputs'])
+            current_movable = re.search(r'^/atom/movable/persistence_runtime_var\(key\)\n(?:\t[^\n]*\n)+',
+                                        (ROOT / PATH).read_text(), re.M).group()
             for variant in ('baseline', 'candidate'):
                 selected = production.split(f'/datum/proc/{variant}_saved()', 1)[1].split('/turf/floor/dirt/', 1)[0]
                 self.assertIn('#ifdef CIV13_VARIABLE_OBSERVABILITY\n\t\t\t\tvariable_observability_skipped(src.vars[key])\n#endif\n\t\t\t\tcontinue', selected)
                 self.assertIn('\n\treturn to_save\n', selected)
-                self.assertLess(production.index(f'/atom/movable/{variant}_runtime(key)\n\treturn key == "original_target"'),
+                expected_movable = current_movable.replace('persistence_runtime_var', variant + '_runtime')
+                self.assertIn(expected_movable, production)
+                self.assertLess(production.index(expected_movable),
                                 production.index(f'/atom/movable/{variant}_runtime(key)\n\tif (key == "corpse_decay_record")'))
             self.assertNotIn('#define CIV13_VARIABLE_OBSERVABILITY', (generated / 'probe.dme').read_text())
 

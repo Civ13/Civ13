@@ -8,6 +8,7 @@ import re
 
 from prepare import prepare
 from compare import compare
+from measurement import prepare_runtime, stage_runtime, validate_runtime_files
 
 ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
@@ -15,12 +16,51 @@ EXPECTED = {'baseline': 'PASS', 'candidate': 'PASS', 'virtual-master': 'PASS',
             'refusal-owner': 'FAIL: assertion: refused constructor detached before deferred deletion',
             'owner-identity': 'FAIL: assertion: superseded cleanup preserves owner',
             'lumcount-guard': 'PASS'}
-DIAGNOSTIC = re.compile(r'runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
+DIAGNOSTIC = re.compile(r'##\s*ERROR|File not found|runtime error|Runtime in|BUG:|CRASH|Infinite loop|Cannot read null|PORT_OPEN', re.I)
 
 
 # Resource literals in included DM files resolve relative to the generated DME,
 # not the original included source. Bind only immutable checkout resources.
 RESOURCE_DIRECTORIES = ('icons', 'sound', 'UI', 'interface', 'code/js')
+VERSION = '516.1688'
+
+
+def runtime_module():
+    spec = importlib.util.spec_from_file_location('reserved_runtime_pin', ROOT / 'scripts/byond_runtime.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def startup_module():
+    spec = importlib.util.spec_from_file_location('startup_runner', ROOT/'tests/lighting_startup/run.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def verify_runtime(byond, archive, expected=None):
+    identity = runtime_module().verify_linux(byond, archive)
+    if identity['version'] != VERSION or expected is not None and identity != expected:
+        raise RuntimeError('Pinned 516.1688 runtime identity required; drift refused')
+    return identity
+
+
+def combined_output(result):
+    return result.stdout + ('\n' if result.stdout and not result.stdout.endswith('\n') else '') + result.stderr
+
+
+def validate_compiler(code, log):
+    if (code or re.findall(r'^DM compiler version[^\r\n]*', log, re.M) != ['DM compiler version ' + VERSION]
+            or not re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M)
+            or DIAGNOSTIC.search(log)):
+        raise RuntimeError('Pinned clean fixture compilation required')
+
+
+def validate_runtime_banner(log):
+    banners = re.findall(r'^Welcome BYOND![^\r\n]*', log, re.M)
+    if not banners or any(value != 'Welcome BYOND! (5.0 Public Version ' + VERSION + ')' for value in banners):
+        raise RuntimeError('Pinned native runtime banner required')
 
 
 def bind_resources(repo, work):
@@ -32,7 +72,8 @@ def bind_resources(repo, work):
 
 
 def validate_runtime(result, work, name):
-    log = result.stdout + result.stderr + (work/'runtime.log').read_text(errors='replace')
+    log = combined_output(result) + '\n' + (work/'runtime.log').read_text(errors='replace')
+    validate_runtime_banner(log)
     if result.returncode or DIAGNOSTIC.search(log):
         raise RuntimeError('Unexpected native diagnostic: ' + log)
     if (work/'port-closed.txt').read_text().strip() != 'closed':
@@ -45,27 +86,37 @@ def validate_runtime(result, work, name):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    parser.add_argument('--byond-archive', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    spec = importlib.util.spec_from_file_location('startup_runner', ROOT/'tests/lighting_startup/run.py')
-    runner = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(runner)
-    compiler = args.byond_bin.resolve()/('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    daemon = args.byond_bin.resolve()/('dd.exe' if os.name == 'nt' else 'DreamDaemon')
+    runner = startup_module()
+    byond = args.byond_bin.absolute()
+    compiler = byond/('dm.exe' if os.name == 'nt' else 'DreamMaker')
+    daemon = byond/('dd.exe' if os.name == 'nt' else 'DreamDaemon')
     flags = 0x8 if os.name == 'nt' else 0
+    identity = verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute())
+    (out/'runtime-identity.json').write_text(json.dumps(identity, indent=2))
+    runtime_root = out/'runtime-inputs'
+    runtime = None
     for name in EXPECTED:
         work = out/name
-        prepare(ROOT, work, None if name in ('baseline', 'candidate') else name)
+        source = prepare(ROOT, work, None if name in ('baseline', 'candidate') else name)
+        if runtime is None:
+            runtime = prepare_runtime(runtime_root, source['head'])
+        stage_runtime({'runtime': runtime, 'head': source['head']}, runtime_root, work)
         bind_resources(ROOT, work)
+        verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute(), identity)
         result = runner.run_logged([str(compiler), '-max_errors', '0', 'probe.dme'], work, 'compile.log', 180, flags)
-        log = result.stdout + result.stderr
-        if result.returncode or 'DM compiler version 516.1681' not in log or not re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M):
-            raise RuntimeError('Fixture compilation failed: ' + log)
+        validate_compiler(result.returncode, combined_output(result))
+        validate_runtime_files(runtime, work, exact=True)
+        verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute(), identity)
         result = runner.run_logged([str(daemon), 'probe.dmb', '-close', '-trusted', '-log', 'runtime.log',
                                    '-params', 'reserved=' + ('0' if name == 'baseline' else '1')],
                                   work, 'daemon.log', 180, flags)
+        verify_runtime(args.byond_bin.absolute(), args.byond_archive.absolute(), identity)
+        validate_runtime_files(runtime, work, exact=True)
         validate_runtime(result, work, name)
     parity = compare(out/'baseline/states.jsonl', out/'candidate/states.jsonl')
     try:
