@@ -5,6 +5,7 @@
 // The isolated world has no connected clients; production owns this list.
 var/list/clients = list()
 var/persistence_save_in_progress = FALSE
+var/global/list/clients = list() // Offline fixture has no connected native clients.
 var/building_allocating_z = 0
 var/map_storage/map_storage = new
 var/obj/map_metadata/map = new

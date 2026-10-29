@@ -11,6 +11,31 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-10-27: staged pull-pair ownership kernel -->
+<!-- 2026-10-28: default-on pull pairs with stuck-pair resolver -->
+pull_pair_ownership.dm now has a default-ON pull_pair_producer.dm caller (owner
+request); it follows the smooth movement toggle. Only aligned straight cardinal pulls of whitelisted empty leaf stacks or
+base crates are admitted; no turns, living targets or assemblies. Client costs
+and deadlines are captured once; both bodies use authenticated native pulses,
+with consolidated actor hooks and reverse recovery. Partial pair exports refuse
+before normal save hooks; only aligned checkpoints export. Native collision,
+lifecycle acceptance and partial-save support remain unverified.
+Offline projections are not native authority/collision evidence. Keep the shared
+ready/posture exclusivity guards when integrating crafting/prone/NPC work.
+pull_pair_lifecycle.dm revokes logout/stop/deletion capabilities and restores the
+target glide. Deleted actors leave no registry key/member/controller reference;
+unrecoverable pairs (dead/downed/disconnected leader, deleted member) settle
+immediately to nearest aligned tiles; others after a 5-second recovery grace.
+Save admission reads every bounded lease before creating the operation: native
+calls/intents must unwind, hooks must complete, and live survivors must have valid
+aligned shapes; save admission first settles quiet pairs, so none holds forever.
+<!-- 2026-10-29: settle validation and reserved admission -->
+Save admission reserves its operation before settling, so movement callbacks run
+under that exclusion; a failed settle or hold withdraws the unstarted reservation.
+The resolver keeps the lease unless every survivor ends exactly on its placed
+tile after callbacks; tests/pulling_movement/test_settle_admission.py executes both.
+Never serialize a half-applied pair or release an offset to legacy movement.
+
 <!-- 2026-10-27: vendor AI sub-tile candidate -->
 NPC vendors opt into simple_animal ai_step physical pulses. Admission belongs to
 the unowned AI body, never a fake client or the human authority hook. Wandering

@@ -126,6 +126,10 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		current_state = GAME_STATE_PREGAME
 		job_master.ResetOccupations()
 		return FALSE
+	// A known fresh live world is authoritative before its first save writes files.
+	// Existing save artifacts and recovery holds still require committed import.
+	if(persistence_bed_return_enabled() && !map_storage.character_recovery_unready())
+		persistence_player_restore_ready = TRUE
 	current_state = GAME_STATE_PLAYING
 	stop_lobby_music()
 	job_master.ResetOccupations()

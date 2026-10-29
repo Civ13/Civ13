@@ -112,7 +112,11 @@ def prepare(output, control=None, root=ROOT):
     default = presentation_default(raw.decode('utf-8-sig'))
     receipt['source_sha256'][visibility] = BASE.sha(raw)
     receipt['source_projections']['presentation_default'] = {'source': visibility, 'sha256': BASE.sha(default.encode())}
-    environment = default + environment
+    # The shared cross-level environment hardcodes the same default; keep only the production projection.
+    shared = '// Match the production default; this fixture does not model tree presentation.\n#define CIV13_ROOT_TREE_PRESENTATION 0\n'
+    if environment.count(shared) > 1:
+        raise RuntimeError('Expected at most one shared presentation default')
+    environment = default + environment.replace(shared, '', 1)
     environment += '\n' + '\n'.join(f'#include "{name}"' for name in (
         'sleep_helpers.dm', 'buckling.dm', 'force_move.dm', 'sleep_transfer_probe.dm')) + '\n'
     (output / 'probe.dme').write_text(environment, encoding='utf-8')

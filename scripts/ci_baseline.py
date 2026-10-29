@@ -71,6 +71,24 @@ SUITES = {
         'tests/root_tree_presentation/', 'code/modules/visibility/',
         'code/__defines/_planes+layers.dm', 'civ13.dme',
         'tests/save_movement/source_adapter.py')},
+    'character_return_preparation': {'files': ('tests/world_save/character_return/test_prepare.py',
+        'tests/world_save/test_roundtrip_compat.py', 'tests/world_save/test_restart_sources.py'),
+        'paths': ('tests/world_save/character_return/',),
+        # Shared reads must select this suite without claiming exclusive impact
+        # ownership and removing the existing all-suite unmapped fallback.
+        'shared_paths': ('tests/world_save/', 'tests/new_z_budget/z_budget_evidence.py',
+            'tests/floor_decal_tracking/prepare.py', 'code/predefines.dm', 'code/_macros.dm',
+            'code/modules/persistence/', 'code/modules/multiz/world_z_budget.dm',
+            'code/game/mob/living/carbon/human/human_helpers.dm', 'code/game/objects/buckling.dm',
+            'code/game/atoms_movable.dm', 'code/_helpers/global_lists.dm',
+            'code/modules/1713/snowfall_ground.dm', 'code/world.dm')},
+    'character_return': {'files': ('tests/save_movement/test_character_return.py',), 'paths': (
+        'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',
+        'code/game/mob/new_player/', 'code/game/mob/living/carbon/human/human_helpers.dm'),
+        'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
+            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/game/mob/living/carbon/human/nomads_spawn.dm',
+            'code/game/mob/living/carbon/human/human_life.dm')},
     # Keep mixed production static.dm unmapped: its existing all-suite fallback
     # must still cover changes to fish, piranhas and ants, not just fishing.
     'fishing_stock': {'files': ('tests/fishing_stock/test_source_contract.py',
@@ -190,9 +208,11 @@ def impact(paths, comparison='available'):
     for path in paths:
         covered = False
         for name, spec in SUITES.items():
-            if any(matches(path, pattern) for pattern in (*spec['paths'], *spec['files'])):
-                reasons[name].append('Affected input: ' + path)
+            owned = any(matches(path, pattern) for pattern in (*spec['paths'], *spec['files']))
+            if owned:
                 covered = True
+            if owned or any(matches(path, pattern) for pattern in spec.get('shared_paths', ())):
+                reasons[name].append('Affected input: ' + path)
         if path in CI_PATHS or path in POLICY_FILES:
             unknown.append('CI policy/dependency changed: ' + path)
         elif not covered and not documentation(path):

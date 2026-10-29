@@ -73,7 +73,7 @@ def main():
         if source.count(before) != 1:
             raise RuntimeError('Control requires one unique production guard')
         source = source.replace(before, after, 1)
-    (output / loader.name).write_text(source, encoding='utf-8')
+    (output / loader.name).write_text(source, encoding='utf-8', newline='\n')
     environment = (fixture / 'roundtrip.dme').read_text(encoding='utf-8')
     environment = environment.replace('#define FILE_DIR "../.."', f'#define FILE_DIR "{root.as_posix()}"')
     hashes = {}
@@ -85,7 +85,7 @@ def main():
         return f'#include "{target.as_posix()}"'
 
     environment = re.sub(r'^#include "([^"]+)"', include, environment, flags=re.MULTILINE)
-    (output / 'roundtrip.dme').write_text(environment, encoding='utf-8')
+    (output / 'roundtrip.dme').write_text(environment, encoding='utf-8', newline='\n')
     hashes['generated_environment'] = hashlib.sha256(environment.encode()).hexdigest()
     processes = []
 

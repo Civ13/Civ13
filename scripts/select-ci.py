@@ -9,6 +9,13 @@ import subprocess
 DOC_WORKFLOWS = {'.github/workflows/api-docs.yml', '.github/workflows/api-pages.yml'}
 CI_BASES = {'master', 'help-markdown-byond-html'}
 ORDINARY_PR_ACTIONS = {'opened', 'synchronize', 'reopened'}
+# Reviewed source preparation, not native entry points. These exact files retain
+# ci_baseline's character_return_preparation suite; never exempt the directory.
+SOURCE_PREPARATION_ONLY_TESTS = frozenset({
+    'tests/world_save/character_return/fixture.dm',
+    'tests/world_save/character_return/prepare.py',
+    'tests/world_save/character_return/test_prepare.py',
+})
 
 # These existing Atlas tests are reviewed exceptions to added-test selection.
 # Exact paths keep unrelated edits from requesting costly native fixtures.
@@ -246,6 +253,8 @@ def introduced_tests(base, head, event):
         return []
     suites = set()
     for path in paths:
+        if path in SOURCE_PREPARATION_ONLY_TESTS:
+            continue
         parts = PurePosixPath(path).parts
         suffix = PurePosixPath(path).suffix.lower()
         if len(parts) >= 2 and parts[0] == 'tests' and suffix in {'.py', '.ps1', '.dm', '.sh'}:

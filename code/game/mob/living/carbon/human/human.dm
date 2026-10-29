@@ -1346,6 +1346,8 @@ var/list/coefflist = list()
 		reset_corpse_decay_age()
 	if (human_subtile_pulse)
 		return .
+	if (subtile_pull_ownership.owners[src])
+		return .
 	human_movement_completed()
 
 /mob/living/human/proc/human_movement_completed()

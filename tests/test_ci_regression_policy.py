@@ -383,5 +383,129 @@ class RegressionPolicyTests(unittest.TestCase):
                 self.assert_explicit_suite_guards(workflow.replace(block, block.replace(before, after), 1))
 
 
+class SourcePreparationAdmissionTests(unittest.TestCase):
+    FILES = (
+        'tests/world_save/character_return/fixture.dm',
+        'tests/world_save/character_return/prepare.py',
+        'tests/world_save/character_return/test_prepare.py',
+    )
+
+    def introduced(self, paths):
+        with patch.object(selection.subprocess, 'check_output',
+                          return_value=('\0'.join(paths) + '\0').encode()):
+            return selection.introduced_tests('base', 'head', 'pull_request')
+
+    def baseline(self):
+        spec = importlib.util.spec_from_file_location('preparation_baseline', ROOT / 'scripts/ci_baseline.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_only_three_reviewed_preparation_files_are_exempt(self):
+        for paths in ((path,) for path in self.FILES):
+            with self.subTest(paths=paths):
+                self.assertEqual(self.introduced(paths), [])
+        self.assertEqual(self.introduced(self.FILES), [])
+        self.assertEqual(selection.SOURCE_PREPARATION_ONLY_TESTS, frozenset(self.FILES))
+        baseline = self.baseline()
+        self.assertEqual(baseline.SUITES['character_return_preparation']['files'],
+                         ('tests/world_save/character_return/test_prepare.py',
+                          'tests/world_save/test_roundtrip_compat.py',
+                          'tests/world_save/test_restart_sources.py'))
+        for path in self.FILES:
+            self.assertTrue(baseline.impact([path])['suites']['character_return_preparation']['selected'])
+
+    def test_unlisted_files_even_inside_same_directory_retain_native_selection(self):
+        for path in ('tests/world_save/new_probe.dm',
+                     'tests/world_save/character_return/run_native.py',
+                     'tests/world_save/character_return/run.ps1',
+                     'tests/world_save/character_return/run.sh',
+                     'tests/world_save/character_return/fixture.DM',
+                     'tests/world_save/character_return/nested/prepare.py',
+                     'tests/world_save/character_return_other/prepare.py'):
+            with self.subTest(path=path):
+                self.assertEqual(self.introduced([path]), ['tests/world_save'])
+                self.assertEqual(self.introduced([*self.FILES, path]), ['tests/world_save'])
+
+    def test_mixed_production_and_unlisted_world_save_additions_keep_native_selection(self):
+        payload = {'action': 'synchronize', 'pull_request': {'title': 'save source', 'base': {'ref': 'master'}}}
+        for production in ('code/modules/persistence/loading.dm',
+                           'code/modules/persistence/saving.dm',
+                           'code/modules/persistence/player_reclaim.dm'):
+            paths = [*self.FILES, production, 'tests/world_save/new_probe.dm']
+            with self.subTest(production=production), patch.object(selection.subprocess,
+                    'check_output', return_value=('\0'.join(paths) + '\0').encode()):
+                self.assertEqual(selection.selections('base', 'head', 'pull_request',
+                                 False, True, payload)[:3], (True, False, ['tests/world_save']))
+
+    def test_production_compile_and_offline_coverage_are_not_exempted(self):
+        baseline = self.baseline()
+        payload = {'action': 'synchronize', 'pull_request': {'title': 'save source', 'base': {'ref': 'master'}}}
+        for production in ('code/modules/persistence/loading.dm',
+                           'code/modules/persistence/saving.dm',
+                           'code/modules/persistence/bed_return.dm'):
+            for added in ([], list(self.FILES)):
+                paths = [production, *added]
+                with self.subTest(production=production, added=added), patch.object(
+                        selection.subprocess, 'check_output',
+                        return_value=('\0'.join(paths) + '\0').encode()):
+                    # Existing production-only policy compiles, but does not
+                    # invent introduced native tests without a new runnable file.
+                    self.assertEqual(selection.selections('base', 'head', 'pull_request',
+                                     False, True, payload)[:3], (True, False, []))
+                self.assertTrue(baseline.impact(paths)['suites']['year']['selected'])
+                self.assertTrue(baseline.impact(paths)['suites']['character_return_preparation']['selected'])
+        for path in ('scripts/select-ci.py', 'code/predefines.dm',
+                     'code/game/mob/living/simple_animal/friendly/static.dm'):
+            decision = baseline.impact([path])
+            self.assertTrue(decision['fallback_reasons'])
+            self.assertTrue(all(row['selected'] for row in decision['suites'].values()))
+
+    def test_explicit_extensive_manual_admission_is_unchanged(self):
+        with patch.object(selection.subprocess, 'check_output',
+                          return_value=b'code/modules/persistence/loading.dm\0'):
+            self.assertEqual(selection.selections('base', 'head', 'workflow_dispatch',
+                             True, True, {})[:3], (True, True, []))
+            self.assertEqual(selection.selections('base', 'head', 'workflow_dispatch',
+                             False, True, {})[:3], (True, False, []))
+
+    def test_real_git_preparation_additions_then_mixed_native_and_production(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-c', 'user.name=CI preparation test',
+                    '-c', 'user.email=ci@example.invalid', '-c', 'commit.gpgsign=false', *args],
+                    cwd=root, stderr=subprocess.PIPE, timeout=10).decode().strip()
+            git('init', '-q')
+            production = root / 'code/modules/persistence/loading.dm'
+            production.parent.mkdir(parents=True)
+            production.write_text('// original loading fixture\n')
+            git('add', '.')
+            git('commit', '-qm', 'base')
+            base = git('rev-parse', 'HEAD')
+            for path in self.FILES:
+                file = root / path
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_text('# source preparation only\n')
+            git('add', '.')
+            git('commit', '-qm', 'prepare only')
+            prepared = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                os.chdir(root)
+                self.assertEqual(selection.introduced_tests(base, prepared, 'pull_request'), [])
+                self.assertTrue(selection.select(base, prepared)[0])
+                (root / 'tests/world_save/new_probe.dm').write_text('// runnable fixture\n')
+                production.write_text('// changed loading fixture\n')
+                git('add', '.')
+                git('commit', '-qm', 'native fixture and production')
+                mixed = git('rev-parse', 'HEAD')
+                self.assertEqual(selection.introduced_tests(base, mixed, 'pull_request'), ['tests/world_save'])
+                self.assertEqual(selection.introduced_tests(prepared, mixed, 'pull_request'), ['tests/world_save'])
+                self.assertTrue(selection.select(prepared, mixed)[0])
+            finally:
+                os.chdir(previous)
+
+
 if __name__ == '__main__':
     unittest.main()

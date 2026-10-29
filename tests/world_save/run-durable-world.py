@@ -293,7 +293,7 @@ def main():
                                   ('var/client/C', 'var/datum/recovery_fixture_client/C'),
                                   ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
                                   (' in clients)', ' in recovery_fixture_clients)')):
-                expected = 2 if before == 'var/client/C' else (3 if before == 'lobby.client' else 1)
+                expected = 2 if before == 'var/client/C' else (5 if before == 'lobby.client' else 1)
                 if body.count(before) != expected:
                     raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
                 body = body.replace(before, after)

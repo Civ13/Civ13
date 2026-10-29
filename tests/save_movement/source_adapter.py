@@ -79,7 +79,7 @@ def extract(source, declaration, *, defines=None):
 FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
           'inducedSSD', 'buckled', 'storage', 'kind', 'backend_started',
           'contents_started', 'mutation_started', 'restoring_players',
-          'current', 'enter_backend', 'enter_contents', 'finish',
+          'current', 'enter_backend', 'enter_contents', 'finish', 'withdraw',
           'contents', 'stomach_contents', 'pulledby', 'position', 'icon_state', 'none_state', 'next_activation',
           'l_hand', 'r_hand', 'equipped', 'update_inv_l_hand', 'update_inv_r_hand', 'equip_to_slot',
           'in_protected_sleep_zone', 'release_protected_sleep_buckle',
@@ -93,7 +93,7 @@ FIELDS = ('loc', 'sleeping', 'facing_dir', 'stat', 'lastx', 'lasty', 'lastz',
 
 def project(source, declaration, args, env, method=False, *, defines=None):
     """Project complete selected bodies; only engine effects are supplied by tests."""
-    lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required, persistence_admission_identity']
+    lines = ['def projected(' + args + '):', '    global persistence_active_operation, persistence_save_in_progress, persistence_load_recovery_required, persistence_admission_identity, persistence_player_restore_ready']
     for raw in extract(source, declaration, defines=defines).splitlines():
         code = raw.split('//', 1)[0].rstrip()
         if not code.strip():

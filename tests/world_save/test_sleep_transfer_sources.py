@@ -89,6 +89,27 @@ class SleepTransferSourceTests(unittest.TestCase):
             with self.subTest(count=altered.count(default)), self.assertRaisesRegex(RuntimeError, 'disabled production presentation default'):
                 RUNNER.presentation_default(altered)
 
+    def test_complete_movement_dependency_closure_uses_neutral_production_throw_state(self):
+        production = (ROOT / 'code/game/atoms_movable.dm').read_text()
+        defaults = (ROOT / 'code/modules/visibility/los_context.dm').read_text()
+        self.assertIn('#define CIV13_ROOT_TREE_PRESENTATION 0', defaults)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            RUNNER.prepare(output)
+            environment = (output / 'probe.dme').read_text()
+            self.assertEqual(environment.count('#define CIV13_ROOT_TREE_PRESENTATION 0'), 1)
+            self.assertLess(environment.index('#define CIV13_ROOT_TREE_PRESENTATION 0'),
+                            environment.index('#include "force_move.dm"'))
+            movement = (output / 'force_move.dm').read_text()
+            self.assertIn(RUNNER.BASE.extract_proc(production, '/atom/movable/proc/clear_throw_launch'), movement)
+            adapters = (output / 'sleep_transfer_probe.dm').read_text()
+            for field in ('var/tmp/mob/living/human/throw_launch_source = null',
+                          'var/tmp/throw_launch_dx = null', 'var/tmp/throw_launch_dy = null',
+                          'var/tmp/throw_launch_x = null', 'var/tmp/throw_launch_y = null',
+                          'var/tmp/list/throw_flight_token = null'):
+                self.assertIn(field, production)
+                self.assertIn(field, adapters)
+
     def test_every_control_changes_only_its_generated_source(self):
         for control in RUNNER.CONTROLS:
             with self.subTest(control=control), tempfile.TemporaryDirectory() as directory:

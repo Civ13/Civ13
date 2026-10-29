@@ -1,0 +1,41 @@
+{
+  "schema": 2,
+  "reference_commit": "f065e129e2b3c422236869218353db29c2bf62de",
+  "reference_sha256": {
+    "tests/world_save/run-cross-level.py": "6d763abae19f572f2877bbe22eb7a6ec76332ab03d31f43be84ec033cf8c7ed1",
+    "tests/new_z_budget/z_budget_evidence.py": "133c130845ab28cfb6f0bfb8b2c63b595d3694afc44a3af398cb1fdf3de584db",
+    "tests/world_save/stubs.dm": "6f01a35f0c87533fb16f8cb653967a900edea8331637fcebf4a4ab4de74cfb8a",
+    "tests/world_save/cross_level.dme": "c2a0f837b159e582c8cee047335c06b8f3335b943bcf82247f286dc172b3c81d",
+    "tests/world_save/cross_level_probe.dm": "c066ce93e04f6a1008dbf9a0be55c0deec18b7238b445e5a81e1bb664dab08f9",
+    "tests/world_save/sleep_transfer_probe.dm": "e1a1749f7cfe0f7fd7a7a27a3b2006d4a1258e890dc1eae31a3a334abda3a11b",
+    "code/predefines.dm": "34b8a776b72aa65194fb110921a1f0a48e67e611e1b031d4d9591ada5fa6d867",
+    "code/_macros.dm": "00724d29f49cc41c0454d6573053a07253eef410b2a90d0c6c52f1628a55da2f",
+    "code/modules/multiz/world_z_budget.dm": "29b0e5c3e32649a9c9a8a91888387740214bc4508b45a0079d1b632f66ce0e2e",
+    "code/modules/persistence/functions.dm": "9b78f233b4aca79231cf9b2704a5d705ba58cc7830acad1aebe4871d86d3b9c6",
+    "code/modules/persistence/player_reclaim.dm": "7c0f5d65feda4ef28751550c7ebd65f538c438098120d6cd8a074953f2bc3a4e",
+    "code/modules/persistence/bed_return.dm": "b4de99086123d24508bcd65f8faf09710501a2d20917ea546808a18bed2cd5a8",
+    "code/modules/persistence/saving.dm": "ff67609762ac01940197d34237e07ee576a8eb46fb28e322abe5490000127a3b",
+    "code/modules/persistence/loading.dm": "0d3499cc50d330f0cb89bbf6bab14a8701bd2d469e850cdc5250db8d0a36c546",
+    "code/modules/persistence/durable_graph.dm": "88837547699436855077a67942aaf7bf96ad692f6bceddda3a1d169c1539117b",
+    "code/modules/persistence/durable_world.dm": "d515c4cb0e217b7fe0553303c5ee3a5045e19f069abd54e6d662ef73acd42385",
+    "code/game/mob/living/carbon/human/human_helpers.dm": "702fae5e01b593302f57fbc9b6f7246773c39e030e78a64e50068d937919a2f3",
+    "code/game/objects/buckling.dm": "591bc9ced32f443a2238b6eed0d6b72dc405c03f551e1ac6090f18b308c8c1b7",
+    "code/game/atoms_movable.dm": "f1c977e2bb60a4a36d27962a8530c4967c1a2862ab348ddc090d837a49fd0ced",
+    "tests/world_save/run-durable-world.py": "ac4b4aea7b764f76313055c38a30ddcad150cba31d7f7bd41eb11549c044f59a"
+  },
+  "procedure_sha256": {
+    "code/modules/persistence/player_reclaim.dm": {
+      "/map_storage/proc/reclaim_saved_player": "d2343cf9da0066ad7a032faa1715b80c22c57736f7a03d905a3b1be23b0b4b69",
+      "/map_storage/proc/find_restored_player": "200b424a972af26c02427201b4ac19b55f7cbb70de45cb7ad9d86fa8f4778ad5"
+    },
+    "code/modules/persistence/bed_return.dm": {
+      "/map_storage/proc/prepare_character_return": "e46f80998f36b8eaf01ff66ca6cccc4a77133fed7405f9544243c1c1b7d574ea",
+      "/map_storage/proc/character_return_pending": "548cc14e46fb9bc2b19a31d9d3dd4107c5c4ab1a7583f65b1ac9f7d78673cf68",
+      "/map_storage/proc/return_player_eligible": "3fd7f5cb76cc978c64043463c50a2bd5e66005c8d11863a52c554f884832c63f",
+      "/map_storage/proc/finish_character_return": "37da25cf167204f3266dbf9e5172f4d53378b547e7191f44dbef9dee8a07d163",
+      "/map_storage/proc/character_return_turf": "4ce521863bb186006f54c3a80d2f485eb9b48635ce547abda5296fa656b1b74d",
+      "/map_storage/proc/character_recovery_unready": "ad3acc9efa31ae0d786fa2a3f7992168cd6abf33a96f954e5a0ec51ef80b3d10",
+      "/map_storage/proc/allow_new_character": "06b2458b898d344215f490388e0093b4f09d2b052354b638fffee11b288932c2"
+    }
+  }
+}
