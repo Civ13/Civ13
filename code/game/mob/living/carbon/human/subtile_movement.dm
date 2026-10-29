@@ -42,6 +42,7 @@
 		human_subtile_glide_owned = FALSE
 
 /mob/living/human/proc/human_subtile_update_visuals(duration, direction, client/owner, distance = 32)
+	release_carriage_glide()
 	if (owner && human_subtile_visual_owner && human_subtile_visual_owner != owner)
 		human_subtile_visual_owner.human_subtile_release_visuals()
 	if (!human_subtile_glide_owned)

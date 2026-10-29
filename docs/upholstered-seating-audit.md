@@ -1,5 +1,8 @@
 # Upholstered seating review - 2026-10-29
 
+Follow-on status: [portable canopy actions](canopy-crafting-audit.md) are now
+source-reviewed. Production/storage handlers are the next independent family.
+
 This slice reviews the next family after document drawers. Active material rows,
 constructors, padding dispatch and generic recovery were inspected together.
 Existing recipes are preserved. No additional recipe is justified in this slice.
@@ -83,7 +86,8 @@ Connected-client presentation, natural resource/research reachability and world
 save round trips are unverified by offline checks. This source review adds one
 follow-on family and ten concrete output types to the audit index; inventory
 membership does not imply historical or native acceptance of every route.
-Remaining independent slices are canopy fold/unfold and roof-area lifecycle,
-then production/storage stations such as barrels, cutting boards and kitchen
-handlers. Full anvil, cooking, chemistry, clothing and weapons reviews remain
+The bounded canopy action review is recorded separately; shared roof damage,
+seasonal policy and world restoration are not implied complete by that review.
+Remaining independent slices are production/storage stations such as barrels,
+cutting boards and kitchen handlers. Full anvil, cooking, chemistry, clothing and weapons reviews remain
 outside completed slices.

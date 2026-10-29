@@ -19,6 +19,12 @@ The daemon's Windows account login message is engine behavior, not a game login.
 
 ## Coverage
 
+`canopy.dm` adds both original paid canopy routes, real roof/area creation and
+retirement, competing unfold/fold actions, late destination occupancy, protected
+independent roofs, legacy shared cover and neighbor icon states. It expands the
+isolated map to 4x3 tiles; normal game dimensions remain unchanged. Existing 35 ds
+canopy waits run normally. No client rendering or saved-world acceptance implied.
+
 `sofa_materials.dm` checks the three existing eight-cloth sofa recipes and their
 three map-only chair variants. Fixed upholstery must reject padding without
 debit and refuse generic wood recovery. An ordinary bed control still accepts

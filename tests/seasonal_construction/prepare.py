@@ -13,6 +13,8 @@ CONTROLS = {
     "replay": ("src != map || construction_last_season == season", "src != map"),
     "save-debt": ("seasonal_construction_due += elapsed", "seasonal_construction_due = 0"),
     "paired": ("if (R.building_pair_id)", "if (FALSE && R.building_pair_id)"),
+    "contents": ("\t// Debit debt before normal qdel hooks; no sleep or direct Destroy call.",
+                 "\tif (damage >= seasonal_construction_health() && contents.len)\n\t\treturn\n\t// Debit debt before normal qdel hooks; no sleep or direct Destroy call."),
 }
 
 
@@ -63,16 +65,25 @@ def prepare(output, control=None):
     base_path = ROOT / "tests/world_save/durable_world_probe.dm"
     base = base_path.read_text(encoding="utf-8")
     probe_path = ROOT / "tests/seasonal_construction/probe.dm"
-    probe = base[:base.index("/world/New()")] + probe_path.read_text(encoding="utf-8")
+    # Keep the historical fixture immutable; adapt only its obsolete policy case.
+    policy_path = ROOT / "tests/seasonal_construction/collapse_policy_contents.dm"
+    historical = probe_path.read_text(encoding="utf-8")
+    policy = policy_path.read_text(encoding="utf-8")
+    adapted_probe, replacements = re.subn(r'^/proc/construction_probe_contents\(\)\n.*?(?=^/|\Z)',
+                                         lambda _: policy + "\n", historical, flags=re.M | re.S)
+    if replacements != 1:
+        raise ValueError("Historical contents probe anchor changed")
+    probe = base[:base.index("/world/New()")] + adapted_probe
     (output / "probe.dm").write_text(probe, encoding="utf-8", newline="\n")
     source += '\n#include "' + (output / "probe.dm").as_posix() + '"\n'
     (output / "probe.dme").write_text(source, encoding="utf-8", newline="\n")
-    for path in (base_path, probe_path):
+    for path in (base_path, probe_path, policy_path):
         hashes[path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     diff = subprocess.check_output(["git", "diff", "--binary", "HEAD"], cwd=ROOT)
     (output / "tested.patch").write_bytes(diff)
     receipt = {"head_sha": commit, "prepared_only": True, "control": control,
+               "contents_policy": "normal destruction; no occupancy deferral",
                "scope": "synthetic 8x8x1; production construction and entry save/load; not compiled or run",
                "production_hashes": hashes, "adapted_sources": adapted,
                "patch_sha256": hashlib.sha256(diff).hexdigest(),

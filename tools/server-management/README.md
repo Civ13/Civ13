@@ -1,5 +1,12 @@
 # Server management P0 contracts
 
+The source-only [mutual transfer proposal](TRANSFER-CONTRACT.md) adds inert policy,
+identity and custody-state DTOs with deterministic mock tests. Official servers
+have no optional receipt archive or audit-retention dependency. The user permits
+minimal current transfer state and per-peer sequences alongside inventory saves;
+real atomic storage/recovery integration remains unaccepted. No real transfer or
+cryptographic provider is implemented.
+
 This package is an inert .NET 8 library for an observe-only instance catalog and
 status projection. It has no launcher wiring, collector, host/config/save discovery,
 process or network operations, installation, scheduler or lifecycle effects.

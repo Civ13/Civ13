@@ -18,7 +18,7 @@
 		if (isDeleted(M))
 			catchBadType(M)
 			mob_list -= M
-			living_mob_list -= M
+			unregister_living_mob(M)
 			continue
 
 		else if (istype(M, /mob/new_player))
@@ -31,7 +31,7 @@
 			if (!M)
 				catchBadType(M)
 				mob_list -= M
-				living_mob_list -= M
+				unregister_living_mob(M)
 				continue
 			M.Life()
 			if (!(M == null))
