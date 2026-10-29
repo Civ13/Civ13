@@ -38,6 +38,10 @@ class Preparation(unittest.TestCase):
         self.assertIn('new /obj/hidden_witness',source)
         self.assertIn('T.sync_fullbright_coverage()',source)
         self.assertIn('if(copytext(key,1,6) != "Guest")',source)
+        # text2file appends; replace the prior sample before publishing new JSON.
+        self.assertLess(source.index('fdel("phase.ready.json")'),source.index('text2file(json_encode('))
+        client_del=source.split('/client/Del()',1)[1].split('/proc/',1)[0]
+        self.assertLess(client_del.index('los_context.retire()'),client_del.index('root_tree_presenter.retire()'))
         self.assertNotIn('civ13.dmb',source)
 
     def test_ci_registers_offline_files_only(self):

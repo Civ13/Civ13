@@ -166,6 +166,8 @@ var/global/client/fixture_client
 /client/var/adminobs = FALSE
 
 /client/Del()
+	if(los_context)
+		los_context.retire()
 	if(root_tree_presenter)
 		root_tree_presenter.retire()
 	if(fixture_client == src)
@@ -231,6 +233,7 @@ var/global/client/fixture_client
 			phase = requested
 			fixture_phase(phase, src)
 			sleep(5)
+			fdel("phase.ready.json")
 			text2file(json_encode(list("phase"=phase,"x"=x,"y"=y,"view"=client.view)),"phase.ready.json")
 		text2file("COMPLETE", "complete.txt")
 
