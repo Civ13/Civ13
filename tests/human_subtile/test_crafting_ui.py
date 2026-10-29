@@ -129,6 +129,15 @@ class CraftingMovementContracts(unittest.TestCase):
         self.assertNotEqual(old, rule)
         self.assertIn(rule, unlinked)
 
+    def test_prepared_fixture_matches_generic_object_eligibility(self):
+        fixture = read('tests/human_subtile/crafting_ui.dm')
+        expected = ('crafting_ui_movement_assert(H.human_subtile_eligible(EAST) && '
+                    '!generic.allows_smooth_movement_ui(H), "crafting_nonstack_view_keeps_eligibility")')
+        self.assertIn(expected, fixture)
+        old = expected.replace('H.human_subtile_eligible(EAST)', '!H.human_subtile_eligible(EAST)', 1)
+        self.assertNotIn(old, fixture, 'control must catch the old restrictive fixture assertion')
+        self.assertEqual(fixture.count('crafting_nonstack_view_keeps_eligibility'), 1)
+
     def test_stale_recipe_view_closes_before_admission_without_snap_or_focus(self):
         source = block(HUMAN, '/mob/living/human/proc/human_subtile_prepare_ui_movement()', '/mob/living/human/proc/human_subtile_input_supported')
         self.assertIn('!istype(using_object, /obj/item/stack) || using_object.allows_smooth_movement_ui(src)', source)

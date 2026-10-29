@@ -6,11 +6,12 @@ ineligible, releasing native interpolation and taking legacy tile movement when
 aligned. Opening the separate Crafting Atlas does not itself set that pointer;
 Atlas-only focus/render behavior still needs connected-client evidence.
 
-This follow-up permits one typed passive-UI contract: the current active-hand
-stack, directly owned by the human, with a recipe list and positive quantity.
-The base object contract denies every other object. Stationary guns, machines,
-instruments, pulling, riding and all remaining eligibility checks stay in place.
-No client authority, opt-out, speed, costs, hook scheduling or world FPS changes.
+The typed passive-UI contract identifies a current active-hand recipe stack,
+directly owned by the human, with a recipe list and positive quantity. It is
+used for stale-view cleanup; it does not gate movement. The accepted master rule
+allows pulling and other object-use links while retaining the mounted-gun,
+riding, authority and other existing restrictions. No client authority, opt-out,
+speed, costs, hook scheduling or world FPS changes.
 
 A stale recipe view after a hand change, drop, transfer or depletion closes before
 the next movement admission. It releases the existing `using_object` association
@@ -29,10 +30,10 @@ poll cadence, not a new event-driven guarantee for movement that returns entirel
 between polls. Crafting material/handle charges and cancellation refunds are
 unchanged and remain after the existing action wait.
 
-`test_crafting_ui.py` has nine offline source-derived policy and parity checks.
+`test_crafting_ui.py` has offline source-derived policy and parity checks.
 The held-stack predicate and physical-position boolean are evaluated from their
 production expressions. These are not native DM or browser simulations.
-All four disabled/enabled gather projections are also compared to master10d264e5:
+All four disabled/enabled gather projections are also compared to master0156671:
 only the helper's intended physical-wait predicate changes. Its hash is refreshed;
 the previously stale floor hash is refreshed to unchanged reviewed master bytes.
 Bridge/mechanics hashes and all context-slot/claim semantics remain unchanged.
@@ -49,8 +50,8 @@ refresh, costs/cooldown, handoff and rendered tile-boundary continuity remain
 separate acceptance. Save/load with a held view and partial offset also needs
 native confirmation; no new persisted UI or movement worker state is added.
 
-Shared integration seams: the independent prone owner uses
-`human_subtile_unlinked` and posture readiness. This branch changes only the
-object-use clause there, adds a passive object API and pre-input stale-view
-cleanup, and strengthens the existing stationary action predicate. Prone timing
-and the posture transaction stay unchanged. Coordinated pulling is separate.
+Shared integration seams: prone and pulling also use the human adapter and
+eligibility checks. This branch leaves master's `human_subtile_unlinked` rule
+unchanged, adds a passive stack API and pre-input stale-view cleanup, and
+strengthens the existing stationary action predicate. Prone timing and the
+posture transaction stay unchanged. Coordinated pulling is separate.

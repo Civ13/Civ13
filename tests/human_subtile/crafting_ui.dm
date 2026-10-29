@@ -24,9 +24,9 @@ var/crafting_ui_movement_checks = 0
 		H.set_using_object(S)
 	crafting_ui_movement_assert(H.SelfMove(get_step(H, EAST), EAST, world.time + 4), "crafting_open_during_intent_admitted")
 	crafting_ui_movement_assert(H.x == 5 && !H.step_x && H.fixture_pulses == 16 && H.using_object == S, "crafting_open_during_intent_does_not_interrupt")
-	var/obj/item/restricted = new(H)
-	H.set_using_object(restricted)
-	crafting_ui_movement_assert(!H.human_subtile_eligible(EAST) && !restricted.allows_smooth_movement_ui(H), "crafting_nonpassive_use_stays_restricted")
+	var/obj/item/generic = new(H)
+	H.set_using_object(generic)
+	crafting_ui_movement_assert(H.human_subtile_eligible(EAST) && !generic.allows_smooth_movement_ui(H), "crafting_nonstack_view_keeps_eligibility")
 	H.set_using_object(S)
 	human_subtile_fixture_reset(H)
 	H.fixture_cancel_after = 1
@@ -57,4 +57,4 @@ var/crafting_ui_movement_checks = 0
 	sleep(5)
 	qdel(H)
 	qdel(S)
-	qdel(restricted)
+	qdel(generic)
