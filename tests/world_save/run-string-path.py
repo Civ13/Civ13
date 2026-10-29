@@ -389,10 +389,10 @@ def main():
                     raise RuntimeError('UI fixture marker changed')
                 source = source.replace(marker, marker + '\t\tcheck_player_ui()\n', 1)
             if args.player_reclaim_negative_control == 'legacy':
-                marker = '\ttry\n\t\tcheck_datum_constructor()\n'
+                marker = '\t\tcheck_datum_constructor()\n'
                 if source.count(marker) != 1:
                     raise RuntimeError('Early legacy probe marker changed')
-                source = source.replace(marker, '\ttry\n\t\tcheck_legacy_player_owner()\n\t\tcheck_datum_constructor()\n', 1)
+                source = source.replace(marker, '\t\tcheck_legacy_player_owner()\n' + marker, 1)
             if admission:
                 marker = '\t\tcheck_player_reclaim()\n'
                 if source.count(marker) != 1:
@@ -592,7 +592,7 @@ def main():
     elif '516.1681' not in build or '0 errors, 0 warnings' not in build:
         raise RuntimeError('Pinned clean compilation required')
     if runtime: runtime.before_launch('daemon', output)
-    owned('daemon', [str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
+    owned('daemon', [str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted', '-log', 'runtime.log'])
     actual = read(output / 'result.txt').strip()
     if args.phase_profile_attribution_negative_control:
         failure = read(output / 'failure-name.txt').strip()

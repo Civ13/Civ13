@@ -216,10 +216,10 @@ class ElevationTests(unittest.TestCase):
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
         save = (ROOT / 'code/modules/persistence/saving.dm').read_text()
         preflight = body(loading, '/map_storage/proc/validate_world_save()')
-        loadmap = body(source, '/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)')
+        loadmap = body(source, '/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)')
         self.assertLess(preflight.index('read_round_state()'), preflight.index('prepare_saved_roof_areas('))
         self.assertLess(loadmap.index('read_round_state()'), loadmap.index('operation.mutation_started = TRUE'))
-        self.assertLess(loadmap.index('map.restore_elevation_snapshot('), loadmap.index('map_storage.ClearMap()'))
+        self.assertLess(loadmap.index('map.restore_elevation_snapshot('), loadmap.index('storage.ClearMap()'))
         self.assertLess(loadmap.index('map.restore_elevation_snapshot('), loadmap.index('run_world_operation("load"'))
         self.assertLess(save.index('capture_round_state(generation)'), save.index('fdel("map_saves/save_complete.txt")'))
         block = source[source.index('// Geographic metres'):source.index('// Custom persistence iterates vars')]

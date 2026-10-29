@@ -44,7 +44,7 @@ var/recovery_fixture_late_arrived = FALSE
 		durable_world_check(!reclaim_saved_player(C.mob) && !C.transfers, "client arriving during import reclaimed early")
 /datum/persistence_restart_transaction/recovery_probe
 	var/fail_consume = TRUE
-/datum/persistence_restart_transaction/recovery_probe/load_generation()
+/datum/persistence_restart_transaction/recovery_probe/load_generation(list/expected_intent)
 	recovery_fixture_loads++
 	return ..()
 /datum/persistence_restart_transaction/recovery_probe/consume(list/I)
@@ -52,7 +52,7 @@ var/recovery_fixture_late_arrived = FALSE
 	return ..()
 
 /world/New()
-	world.OpenPort(0)
+	world.OpenPort("none")
 	try
 		// Normal global startup is disabled; real mob removal still emits these.
 		GLOB.all_observable_events = list()

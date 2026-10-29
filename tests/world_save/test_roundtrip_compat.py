@@ -93,10 +93,11 @@ class RoundtripCompatibilityTests(unittest.TestCase):
                 self.assertEqual(prepared['expected'], result)
                 environment = (output / 'roundtrip.dme').read_text()
                 includes = re.findall(r'^#include "([^"]+)"$', environment, re.M)
-                self.assertEqual(len(includes), 12)
+                self.assertEqual(len(includes), 13)
                 for path in includes:
                     self.assertTrue(Path(path).is_file(), path)
                 self.assertIn((HERE / 'roundtrip_compat.dm').as_posix(), includes)
+                self.assertIn((HERE / 'restore_wrapper.dm').as_posix(), includes)
                 key = 'tests/world_save/roundtrip_compat.dm'
                 self.assertEqual(prepared['hashes'][key],
                                  hashlib.sha256((ROOT / key).read_bytes()).hexdigest())
@@ -198,8 +199,10 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         functions = (ROOT / 'code/modules/persistence/functions.dm').read_text()
         self.assertIn('var/map_storage/map_storage = new("SS13")', functions)
         loadmap = procedure(functions, '/datum/controller/gameticker/proc/loadmap')
-        self.assertIn('\t\tmap_storage.begin_zone_restore(operation)\n', loadmap)
-        self.assertLess(loadmap.index('map_storage.begin_zone_restore(operation)'), loadmap.index('map_storage.ClearMap()'))
+        # loadmap reads the global through a local alias, so the fixture subtype still applies.
+        self.assertIn('\tvar/map_storage/storage = map_storage\n', loadmap)
+        self.assertIn('\t\tstorage.begin_zone_restore(operation)\n', loadmap)
+        self.assertLess(loadmap.index('storage.begin_zone_restore(operation)'), loadmap.index('storage.ClearMap()'))
         pins = json.loads((HERE / 'character_return/inputs.json').read_text())['reference_sha256']
         self.assertEqual(len(pins), 20)
         self.assertNotIn('tests/world_save/roundtrip.dm', pins)

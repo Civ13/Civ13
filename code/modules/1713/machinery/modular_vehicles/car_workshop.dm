@@ -104,11 +104,20 @@
 		return
 	var/list/options = models()
 	options["Unload inputs"] = "unload"
+	options["Service vehicle keys"] = "keys"
 	var/choice = WWinput(H, "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty.", name, "Cancel", options + list("Cancel"))
 	if (busy || !Adjacent(H) || !allowed(H))
 		return
 	if (choice == "Unload inputs")
 		unload()
+		return
+	if (choice == "Service vehicle keys")
+		var/list/cars = list()
+		for (var/obj/structure/vehicleparts/axis/A in range(5, src))
+			if (key_service_vehicle(A)) cars["[A.reg_number] ([A.keyed_vehicle_id])"] = A
+		var/car = WWinput(H, "Select a stopped unoccupied vehicle in the northeast service bay.", name, "Cancel", cars + list("Cancel"))
+		var/action = WWinput(H, "Copy requires a matching key. Rekey requires physical custody and invalidates old copies.", name, "Cancel", list("Copy", "Rekey", "Cancel"))
+		if (cars[car] && action in list("Copy", "Rekey")) service_vehicle_key(H, cars[car], action == "Rekey")
 		return
 	assemble_for(H, choice)
 
@@ -174,6 +183,7 @@
 	var/list/required = costs(model)
 	for (var/key in required)
 		stock[key] -= required[key]
+	if (!vehicle_key_service.issue_constructed(A, get_turf(src))) return null
 	return A
 
 /obj/structure/car_workshop/proc/assemble_layout(obj/effects/premadevehicles/B, size)
@@ -202,6 +212,7 @@
 				A.components += F
 			if (istype(O, /obj/structure/engine/internal))
 				A.engine = O
+				A.engine.key_axis = A
 				A.engine.engineclass = "carengine"
 				A.engine.icon = 'icons/obj/vehicles/vehicleparts.dmi'
 			if (istype(O, /obj/structure/bed/chair/drivers))

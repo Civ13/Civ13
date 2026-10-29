@@ -28,8 +28,10 @@ var/global/persistence_test_reboots = 0
 
 /datum/persistence_callback
 	var/called = FALSE
+	var/enable_persistence = FALSE
 	proc/receive(winner)
 		called = TRUE
+		if (enable_persistence) map.persistence = TRUE
 
 /world/New()
 	OpenPort("none")
@@ -52,13 +54,28 @@ var/global/persistence_test_reboots = 0
 			vote.reset()
 			persistent_assert(!vote.initiate_vote(kind, "offline-admin", TRUE), "vote creation blocked: [kind]")
 			persistent_assert(!vote.mode, "blocked vote cannot become active")
+			// Acquire real generation-bound sessions, then simulate a mode whose
+			// persistence policy changed while it was pending.
+			var/datum/vote_handle/pending = vote.request_choices("Pending adapter", list("Choice"), "offline-admin", 20, list(C, "receive"), TRUE)
+			persistent_assert(pending && vote.is_current(pending), "pending fixture acquires real handle")
 			vote.mode = kind
-			vote.callback = list(C, "receive")
 			vote.process()
-			persistent_assert(!vote.mode && !vote.callback, "pending vote cancelled: [kind]")
+			persistent_assert(!vote.mode && !vote.active_request && pending.state == "cancelled" && !pending.manager && !pending.completion && !C.called, "pending vote cancelled: [kind]")
+			var/datum/vote_handle/result_handle = vote.request_choices("Result adapter", list("Choice"), "offline-admin", 20, list(C, "receive"), TRUE)
+			persistent_assert(result_handle && vote.submit_vote("offline-admin", 1, result_handle.generation), "result fixture acquires voted handle")
 			vote.mode = kind
-			vote.callback = list(C, "receive")
-			persistent_assert(!vote.result() && !vote.mode && !vote.callback && !C.called, "result blocked before callback: [kind]")
+			persistent_assert(!result_handle.resolve() && !vote.mode && !vote.active_request && result_handle.state == "cancelled" && !result_handle.manager && !result_handle.completion && !C.called, "result blocked before callback: [kind]")
+			persistent_assert(!pending.resolve() && !result_handle.resolve() && !C.called, "cancelled persistence handles remain inert")
+			persistent_assert(!vote.apply_result(kind, 0, "Restart Round", list(C, "receive")), "direct result application blocked: [kind]")
+		map.persistence = FALSE
+		C.enable_persistence = TRUE
+		var/datum/vote_handle/during_callback = vote.request_choices("Persistence during callback", list("Restart Round"), "offline-admin", 20, list(C, "receive"), TRUE)
+		persistent_assert(during_callback && vote.submit_vote("offline-admin", 1, during_callback.generation), "callback fixture acquires voted handle")
+		vote.mode = "restart"
+		ticker.finished = FALSE
+		persistent_assert(!during_callback.resolve() && C.called && map.persistence && !ticker.finished, "callback policy change blocks old result application")
+		persistent_assert(during_callback.state == "resolved" && !during_callback.manager && !during_callback.completion, "callback policy change retains terminal detached handle")
+		C.enable_persistence = FALSE
 		persistent_assert(!persistence_blocks_vote("custom"), "non-ending polls remain available")
 		ticker.finished = TRUE
 		ticker.process()
@@ -70,6 +87,8 @@ var/global/persistence_test_reboots = 0
 		persistent_assert(!ticker.finished && ticker.current_state == GAME_STATE_PLAYING, "stale finished state recovered")
 		var/process/epochswap/E = new
 		var/process/mapswap/M = new
+		persistent_assert(!vote.request_choices("Hidden map transition", list("Yes"), "offline-admin", 20, list(M, "swap"), TRUE), "generic map callback blocked")
+		persistent_assert(!vote.request_choices("Hidden epoch transition", list("Yes"), "offline-admin", 20, list(E, "swap"), TRUE), "generic epoch callback blocked")
 		E.ready = TRUE
 		E.restart_triggered = TRUE
 		M.ready = TRUE

@@ -27,10 +27,10 @@ def selected_runtime(bin_dir, archive):
 
 
 def current_probe(source):
-    """Explicit current projection; the frozen 1681 input stays unchanged."""
+    """Project only the build in the exact merged fixture; historical inputs remain in Git."""
     original = hashlib.sha256(source.encode()).hexdigest()
     anchor = 'check(world.byond_version == 516 && world.byond_build == 1681, "pinned native runtime")'
-    if original != '06bd4862bed6c66e735b4bfdf1f5d8d65786e40b5c396490be26bfc2622cbd5a' or source.count(anchor) != 1:
+    if original != '8d8ed1aee114c8d4bf837b969e25dac779b8d1f1887c91d6afb5574bf73225d7' or source.count(anchor) != 1:
         raise RuntimeError('Historical dimension probe hash or runtime assertion anchor changed')
     projected = source.replace(anchor, anchor.replace('1681', '1688'), 1)
     return projected, {'contract': 'current-516.1688', 'original_sha256': original,
@@ -41,6 +41,7 @@ def current_probe(source):
 CASES = ('positive', 'matching', 'fractional', 'negative', 'text', 'total-cap',
          'growth-cap', 'shrink', 'horizontal', 'missing', 'marker', 'metadata',
          'generation', 'grid', 'reference', 'area', 'json', 'intent',
+         'custody-positive', 'custody-denied', 'custody-binding',
          'allocation-failure', 'exact-post', 'budget', 'multi-budget', 'unmeasured', 'multi-unmeasured')
 
 
@@ -56,6 +57,7 @@ def main():
     if args.byond_archive and (args.prepare_only or args.negative_control not in (None, 'preflight')):
         parser.error('Current runtime admits only the selected dimension CI cases')
     runtime = selected_runtime(args.byond_bin, args.byond_archive)
+    expected_build = int(runtime.identity['version'].split('.')[1]) if runtime else 1681
     root = Path(__file__).resolve().parents[2]
     fixture = root / 'tests/world_save'
     output = Path(tempfile.mkdtemp(prefix='civ13-dimension-bootstrap-'))
@@ -105,6 +107,7 @@ def main():
     (output / 'dimension_bootstrap.dme').write_text(environment, encoding='utf-8', newline='\n')
     receipt = {'prepared_only': args.prepare_only, 'negative_control': args.negative_control,
                'sources_sha256': hashes, 'cases': {}, 'processes': [],
+               'runtime_projection': projection,
                'allocator': 'production shared allocator, verbatim prefix',
                'allocator_full_source_sha256': allocator_hash, 'full_game_verified': False}
     if projection: receipt['runtime_projection'] = projection
@@ -128,6 +131,7 @@ def main():
         process = None
         try:
             with (cwd / 'stdio.log').open('w', encoding='utf-8') as stream:
+                if runtime: runtime.before_launch(role, output)
                 process = subprocess.Popen(command, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
                     creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
                 row['pid'] = process.pid
@@ -157,7 +161,6 @@ def main():
             raise RuntimeError(f'Invalid native evidence: {row}\n{text}')
         return text
 
-    if runtime: runtime.before_launch('compile', output)
     build = owned('compile', [str(compiler), '-max_errors', '0', 'dimension_bootstrap.dme'], output)
     if runtime: runtime.validate_compile(0, build, 'dimension_bootstrap.dmb')
     else: validate_compile(0, build, 'dimension_bootstrap.dmb')
@@ -172,8 +175,7 @@ def main():
         if seed:
             shutil.copytree(seed / 'map_saves', cwd / 'map_saves')
         seed_hashes = {p.relative_to(cwd / 'map_saves').as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (cwd / 'map_saves').rglob('*') if p.is_file()} if seed else {}
-        if runtime: runtime.before_launch('daemon:'+name, output)
-        owned(name, [str(daemon), 'dimension_bootstrap.dmb', '-invisible', '-close',
+        owned(name, [str(daemon), 'dimension_bootstrap.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close',
                      '-trusted', '-params', params, '-log', 'runtime.log'], cwd)
         if name in ('budget', 'multi-budget', 'unmeasured', 'multi-unmeasured') and not args.negative_control:
             after = {p.relative_to(cwd / 'map_saves').as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in (cwd / 'map_saves').rglob('*') if p.is_file()}
@@ -181,7 +183,7 @@ def main():
                 raise RuntimeError('Admission refusal modified or removed an original generation file')
         result = (cwd / 'result.txt').read_text(encoding='utf-8').strip()
         native = json.loads((cwd / 'receipt.json').read_text(encoding='utf-8'))
-        if native.get('byond_version') != 516 or native.get('byond_build') != (1688 if runtime else 1681):
+        if native.get('byond_version') != 516 or native.get('byond_build') != expected_build:
             raise RuntimeError('Pinned runtime required')
         receipt['cases'][name] = {'result': result, **native}
         persist()
@@ -190,7 +192,7 @@ def main():
     seeds = {}
     for count in (2, 3, 4):
         cwd, result, native = run(f'write{count}', f'mode=write{count}')
-        if result != 'PASS' or native != {'checks': 4, 'maxz': count, 'allocations': 0, 'byond_version': 516, 'byond_build': 1688 if runtime else 1681}:
+        if result != 'PASS' or native != {'checks': 4, 'maxz': count, 'allocations': 0, 'byond_version': 516, 'byond_build': expected_build}:
             raise RuntimeError(f'Writer did not produce the intended generation: {result}, {native}')
         seeds[count] = cwd
     selected = ('missing',) if args.negative_control == 'preflight' else ('unmeasured',) if args.negative_control else CASES
@@ -205,10 +207,10 @@ def main():
             if native['allocations'] != control_allocations or native['maxz'] != control_z:
                 raise RuntimeError('Control failed for an unrelated allocation outcome')
         else:
-            expected_allocations = int(case in ('positive', 'allocation-failure', 'exact-post'))
+            expected_allocations = int(case in ('positive', 'custody-positive', 'allocation-failure', 'exact-post'))
             expected_z = 3 if expected_allocations else 2
             # Reject incomplete or truncated execution even when PASS was emitted.
-            minimum = 10 if case in ('positive', 'matching') else 5
+            minimum = 10 if case in ('positive', 'matching', 'custody-positive') else 5
             if native['allocations'] != expected_allocations or native['maxz'] != expected_z or native['checks'] < minimum:
                 raise RuntimeError(f'Unexpected native dimensions/check count: {case}: {native}')
     print(f'PASS: dimension bootstrap {args.negative_control or "positive and malformed controls"}')

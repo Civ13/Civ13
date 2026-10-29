@@ -13,6 +13,7 @@ var/list/admin_verbs_default = list(
 	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/toggle_disruptive_votes,
 	/client/proc/enable_fov,
 	/client/proc/disable_fov,
 	/client/proc/remove_dead_bodies,
@@ -69,6 +70,7 @@ var/list/admin_verbs_admin = list(
 )
 
 var/list/admin_verbs_trialadmin = list(
+	/client/proc/toggle_disruptive_votes,
 	/client/proc/quickBan_person,
 	/client/proc/cmd_admin_get,
 	/client/proc/player_panel_new,
@@ -280,6 +282,7 @@ var/list/admin_verbs_mentor = list(
 )
 
 var/list/admin_verbs_manager = list(
+	/client/proc/toggle_disruptive_votes,
 	/client/proc/toggle_playing,
 	/client/proc/toggle_tts,
 	/client/proc/start_epochswap_vote,

@@ -86,7 +86,7 @@ class RoofAreaPreparation(unittest.TestCase):
                 output = Path(result.stdout.split('Retained evidence: ', 1)[1].splitlines()[0])
                 receipt = json.loads((output / 'receipt.json').read_text())
                 self.assertEqual(receipt['roof_control'], control)
-                changed = (output / next(output.glob('*_2.dm')).name).read_text()
+                changed = (output / receipt['generated_sources']['code/modules/persistence/loading.dm']).read_text()
                 if control == 'projection':
                     self.assertNotIn('\t\tprepare_saved_roof_areas(round_state["generation"])', changed)
                     self.assertIn('Old-defect control', changed)

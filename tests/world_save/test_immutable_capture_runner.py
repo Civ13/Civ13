@@ -13,6 +13,24 @@ class CaptureControlTests(unittest.TestCase):
     def setUp(self):
         self.source = (ROOT / 'code/modules/persistence/immutable_capture.dm').read_text(encoding='utf-8')
 
+    def test_isolated_environment_includes_real_player_restore_dependencies(self):
+        source = (ROOT / 'tests/world_save/immutable_capture.dme').read_text()
+        player = '#include "../../code/modules/persistence/player_reclaim.dm"'
+        self.assertEqual(source.count(player), 1)
+        self.assertLess(source.index('persistence/functions.dm'), source.index(player))
+        self.assertLess(source.index(player), source.index('persistence/saving.dm'))
+        self.assertLess(source.index(player), source.index('persistence/loading.dm'))
+        self.assertNotIn('player_reclaim_probe.dm', source)
+
+    def test_minimal_fixture_declares_new_loader_dependencies_and_refuses_snow_effects(self):
+        source = (ROOT / 'tests/world_save/stubs.dm').read_text()
+        for declaration in ('var/list/area_list = list()', '/area/caribbean/roofed',
+                            '/turf/var/weather_snow = 0', '/turf/proc/snowfall_ground_icon()'):
+            self.assertIn(declaration, source)
+        self.assertIn('if(!isnum(weather_snow) || weather_snow != 0)\n\t\tthrow EXCEPTION("Generated snow requires the production snowfall fixture")', source)
+        self.assertIn('throw EXCEPTION("Roof topology requires the production roof fixture")', source)
+        self.assertIn('if(isnull(validated_zone_state)) return\n\tthrow EXCEPTION("Topology needs the full-source fixture")', source)
+
     def test_positive_preserves_production_source(self):
         self.assertEqual(RUNNER.prepare_source(self.source), (self.source, 'PASS'))
 

@@ -5,6 +5,13 @@ without maps or normal world startup, then exercises the actual vote, ticker and
 rotation procedures in temporary offline storage. No player accounts or server
 saves are used. The fixture rejects connections and closes the port.
 
+The default retains historical 516.1681 behavior, including Windows tools.
+Ordinary CI explicitly adds `--byond-archive "$PWD/BYOND/pinned.zip"` for the
+current Linux 516.1688 toolchain. That mode verifies the exact pinned archive
+and installed members before compilation and again before the daemon, and
+requires one exact compiler banner with zero errors and warnings. It is
+Linux-only; the historical default and the same six cases/deadlines remain.
+
 Checks include automatic/admin vote creation, stale pending votes and results
 before callbacks, finish-flag recovery, automatic rotation, initial lobby map
 selection and ordinary-round controls. `--negative-control vote` removes the
@@ -27,3 +34,11 @@ that production guard and must fail this exact assertion.
 This is a production-procedure integration test, not a full public-server test
 or a save/reboot proof. The separate restart-transaction suite checks the
 administrative save/restart contract with isolated external-effect adapters.
+
+The vote adapter acquires real generation-bound handles before simulating stale
+pending routes. It checks terminal cancellation, cleared callback ownership,
+repeat-resolution rejection and the production direct-application guard. A
+callback that enables persistence must prevent the resolved route from ending
+the round. Generic questions also cannot hide map/epoch transition callbacks.
+`python -m unittest discover -s tests/persistence_round -p 'test_*.py'` checks
+source integration contracts only; it is not native compiler or runtime proof.

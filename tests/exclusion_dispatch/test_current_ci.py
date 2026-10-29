@@ -1,5 +1,7 @@
 """Mocked current-runtime admission/pipeline controls; never launch BYOND."""
 import ast
+import base64
+import hashlib
 import importlib.util
 import json
 import os
@@ -58,6 +60,7 @@ class CurrentCITests(unittest.TestCase):
                                            '-trusted', '-log', 'runtime.log'])
             mode = work.name.split('.')[0]
             result = dict(cases=1000, failures=0 if mode in ('parity', survive) else 1, samples=[],
+                          byond_version=516, byond_build=1688, target_failures=0,
                           network=dict(closed_port=1 if bad_network else 0, reopen_result=0, after_reopen_port=0))
             (work / 'result.json').write_text(json.dumps(result))
             (work / 'runtime.log').write_text('BYOND version ' + daemon_version + '\n' + BIND)
@@ -91,8 +94,23 @@ class CurrentCITests(unittest.TestCase):
                 self.assertEqual(call.kwargs['environment']['LD_LIBRARY_PATH'], str(args.byond_bin))
                 self.assertEqual(call.kwargs['environment']['BYOND_SYSTEM'], str(args.byond_bin.parent))
 
+    def test_observed_version_and_target_guard_remain_strict(self):
+        good=dict(byond_version=516, byond_build=1688, target_failures=0)
+        current.validate_observed_result(good)
+        for field,value in (('byond_version',516.0), ('byond_version',515), ('byond_build',1681),
+                            ('byond_build',16880), ('byond_build',1688.0),
+                            ('target_failures',1), ('target_failures',True), ('target_failures',None)):
+            with self.subTest(field=field,value=value), self.assertRaises(RuntimeError):
+                current.validate_observed_result(dict(good, **{field:value}))
+
     def test_historical_pin_limits_and_result_guards_are_preserved(self):
+        encoded = (HERE / 'historical/lighting-historical-run-ci.py.b64.txt').read_text(encoding='ascii')
+        data = base64.b64decode(''.join(encoded.split()), validate=True)
+        self.assertEqual(hashlib.sha256(data).hexdigest(),
+                         '2f60ed53221e560a3711b05b625fa22c40ce3cebdd96a616dc4bf628a330b412')
+        prior = data.decode('utf-8')
         prior = historical_text('3b0be7a483bada0649d954d09045968999e538e0', 'tests/exclusion_dispatch/run-ci.py')
+        self.assertEqual(prior, data.decode('utf-8'))
         def bodies(text):
             return {node.name: ast.dump(node, include_attributes=False) for node in ast.parse(text).body
                     if isinstance(node, ast.FunctionDef)}
@@ -113,7 +131,11 @@ class CurrentCITests(unittest.TestCase):
         for log in (BUILD.replace('1688', '1681'), BUILD.replace('1688', '16880'),
                     'DM compiler version 516.1681\n' + BUILD,
                     BUILD.replace('0 warnings', '1 warning'), BUILD + 'runtime error: bad loc\n',
-                    BUILD + 'cannot open file\n'):
+                    BUILD + 'cannot open file\n', BUILD + BUILD.splitlines()[1] + '\n',
+                    BUILD + 'warning: additional diagnostics\n',
+                    '\n'.join(reversed(BUILD.splitlines())) + '\n', BUILD + 'x' * 1048576,
+                    *(BUILD + word + '\n' for word in ('unexpected runtime', 'OOM', 'out of memory',
+                                                        'access violation', 'CRASHED', 'invalid file'))):
             with self.subTest(log=log), self.assertRaises(RuntimeError):
                 current.validate_build(log, historical.DIAGNOSTIC)
 

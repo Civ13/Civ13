@@ -1,0 +1,52 @@
+diff --git a/tests/world_save/restore_wrapper.dm b/tests/world_save/restore_wrapper.dm
+index 35996ecc6..d17107508 100644
+--- a/tests/world_save/restore_wrapper.dm
++++ b/tests/world_save/restore_wrapper.dm
+@@ -106,6 +106,13 @@
+ 
+ /proc/wrapper_case(stage, provider_mode, metadata_result, expected)
+ 	var/map_storage/original_storage = map_storage
++	var/obj/map_metadata/original_map = map
++	var/obj/map_metadata/fixture_map
++	// The production wrapper now restores geographic metadata before ClearMap.
++	// These cases run before roundtrip.dm creates its ordinary saved-map actor.
++	if(!map)
++		fixture_map = new
++		map = fixture_map
+ 	var/map_storage/wrapper_fixture/S = new("WRAPPER")
+ 	S.failure_stage = stage
+ 	S.metadata_result = metadata_result
+@@ -124,9 +131,13 @@
+ 		result = ticker.loadmap()
+ 	catch(var/exception/e)
+ 		map_storage = original_storage
++		map = original_map
++		if(fixture_map) qdel(fixture_map)
+ 		persistence_save_in_progress = FALSE
+ 		throw e
+ 	map_storage = original_storage
++	map = original_map
++	if(fixture_map) qdel(fixture_map)
+ 	check(result == expected, (stage == "" && isnull(provider_mode) && metadata_result != TRUE) ? "metadata exact TRUE required" : "wrapper result [stage]/[provider_mode]/[metadata_result]")
+ 	check(!persistence_active_operation, "wrapper releases only operation identity")
+ 	var/mutated = ("clear" in S.events) || ("world" in S.events)
+diff --git a/tests/world_save/test_restore_integration_sources.py b/tests/world_save/test_restore_integration_sources.py
+index 123a5dfe5..f966aeaa7 100644
+--- a/tests/world_save/test_restore_integration_sources.py
++++ b/tests/world_save/test_restore_integration_sources.py
+@@ -25,6 +25,15 @@ class RestoreIntegrationSources(unittest.TestCase):
+         self.assertLess(dimensions.index('operation.mutation_started = TRUE'), dimensions.index('allocate_saved_level(z)'))
+         self.assertIn('prepare_saved_dimensions(expected_intent, operation)', self.wrapper)
+ 
++    def test_wrapper_cases_own_metadata_before_geographic_restore(self):
++        source = (ROOT / 'tests/world_save/restore_wrapper.dm').read_text()
++        case = source.split('/proc/wrapper_case(', 1)[1].split('/proc/check_restore_wrapper()', 1)[0]
++        self.assertLess(case.index('fixture_map = new'), case.index('result = ticker.loadmap()'))
++        self.assertEqual(case.count('map = original_map'), 2)
++        self.assertEqual(case.count('if(fixture_map) qdel(fixture_map)'), 2)
++        self.assertIn('check(result == expected', case)
++        self.assertNotIn('/obj/map_metadata/proc/restore_elevation_snapshot', source)
++
+     def test_master_geography_and_player_restore_remain_inside_custody(self):
+         ordered = ('operation.authorize_restore_mutation(storage)',
+                    'operation.mutation_started = TRUE',

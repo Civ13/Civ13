@@ -8,9 +8,13 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+
+import preparation
+import source_contract
 
 from preparation import FIXTURE, INHERITED, PATH
-from source_contract import project_lighting_policy
+from source_contract import MERGE_BASE, project_lighting_policy
 from historical_fixtures import text as historical_text
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -43,10 +47,27 @@ class ActualPreparationTests(unittest.TestCase):
             repo = directory / 'repo'
             repo.mkdir()
             git(repo, 'init', '-q')
+            # Make the extraction commit available while keeping this history
+            # unrelated, so Git can verify non-ancestry instead of failing open.
+            common = subprocess.check_output(['git', 'rev-parse', '--git-common-dir'], cwd=ROOT, text=True).strip()
+            objects = (ROOT / Path(common) / 'objects').resolve()
+            alternates = repo / '.git/objects/info/alternates'
+            alternates.parent.mkdir(parents=True, exist_ok=True)
+            alternates.write_bytes((objects.as_posix() + '\n').encode('utf-8'))
             for path in FIXTURE:
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / path, target)
+            # Exercise the real historical test wrapper inside this isolated
+            # repository; it imports the frozen historical contract at startup.
+            for path in ('tests/exclusion_dispatch/test_source.py',
+                         'tests/exclusion_dispatch/historical_fixtures.py',
+                         'tests/exclusion_dispatch/historical/source_contract.py.txt'):
+                target = repo / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / path, target)
+            shutil.copytree(ROOT / 'tests/exclusion_dispatch/fixtures',
+                            repo / 'tests/exclusion_dispatch/fixtures', dirs_exist_ok=True)
             for path, _ in INHERITED:
                 target = repo / path
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -84,6 +105,35 @@ class ActualPreparationTests(unittest.TestCase):
             text=True, encoding='utf-8', capture_output=True, timeout=30)
         return completed, output
 
+    def invoke_hosted_test_runner(self, directory, repo, base, head, *, event='pull_request',
+                                  payload=None, extra_environment=None, missing_event=False):
+        environment = {key: value for key, value in os.environ.items()
+                       if not key.startswith(('GITHUB_', 'CI_BASE', 'CI_HEAD'))}
+        environment.update(GITHUB_ACTIONS='true', GITHUB_EVENT_NAME=event, GITHUB_SHA=head,
+                           PYTHONDONTWRITEBYTECODE='1')
+        if extra_environment:
+            environment.update(extra_environment)
+        metadata = payload if payload is not None else (
+            {'before': base, 'after': head} if event == 'push' else
+            {'inputs': {'exclusion_comparison_base': base}} if event == 'workflow_dispatch' else
+            {'pull_request': {'base': {'sha': base}, 'head': {'sha': head}}})
+        event_path = directory / 'hosted-event.json'
+        event_path.write_text(json.dumps(metadata), encoding='utf-8')
+        environment['GITHUB_EVENT_PATH'] = str(directory / 'missing-event.json' if missing_event else event_path)
+        output = directory / ('hosted-receipt-' + str(len(list(directory.glob('hosted-receipt-*')))) + '.json')
+        script = (
+            'import sys; from pathlib import Path; '
+            'sys.path.insert(0, str(Path(sys.argv[1]) / "tests/exclusion_dispatch")); '
+            'import test_source; '
+            'case = test_source.HistoricalSourceContractTests("test_source_only_generates_actual_hooks_and_cases_without_native"); '
+            'result = case.run_runner(["--source-only", "--output", sys.argv[2]]); '
+            'raise SystemExit(result)'
+        )
+        completed = subprocess.run([sys.executable, '-B', '-c', script, str(repo), str(output)],
+                                   cwd=repo, env=environment, text=True, encoding='utf-8',
+                                   capture_output=True, timeout=45)
+        return completed, output
+
     def passed(self, directory, repo, base, head, **kwargs):
         completed, output = self.invoke(directory, repo, base, head, **kwargs)
         self.assertEqual(completed.returncode, 0, completed.stderr)
@@ -100,6 +150,154 @@ class ActualPreparationTests(unittest.TestCase):
         self.assertIn(message, completed.stderr)
         self.assertFalse(output.exists())
         self.assertFalse(output.with_suffix('.sources').exists())
+
+    def disconnect_alternate(self, repo, base, head):
+        # Git may reuse fixture blobs from the alternate. Copy only objects
+        # reachable from this temporary repository's refs before removing it.
+        git(repo, 'repack', '-a', '-d')
+        (repo / '.git/objects/info/alternates').unlink()
+        self.assertNotEqual(subprocess.run(['git', 'cat-file', '-e', MERGE_BASE + '^{commit}'],
+                                           cwd=repo, capture_output=True, timeout=15).returncode, 0)
+        git(repo, 'fsck', '--connectivity-only', '--no-reflogs')
+        for revision in (base, head):
+            git(repo, 'cat-file', '-e', revision + '^{commit}')
+            for path in (PATH, *(file for file, _ in INHERITED), *FIXTURE,
+                         'tests/exclusion_dispatch/test_source.py',
+                         'tests/exclusion_dispatch/historical/source_contract.py.txt'):
+                git(repo, 'cat-file', '-e', revision + ':' + path)
+
+    def test_history_status_unavailable_or_invalid_fails_closed(self):
+        with patch.object(source_contract.subprocess, 'check_output', return_value='false\n'):
+            self.assertIsNone(preparation.require_complete_history(ROOT))
+        for value in ('true\n', '', 'unknown\n'):
+            with self.subTest(status=value), patch.object(source_contract.subprocess, 'check_output', return_value=value):
+                with self.assertRaisesRegex(ValueError, 'Cannot verify extraction ancestry'):
+                    preparation.require_complete_history(ROOT)
+        for error in (OSError('git unavailable'), subprocess.TimeoutExpired('git', 15),
+                      subprocess.CalledProcessError(128, 'git')):
+            with self.subTest(error=error), patch.object(source_contract.subprocess, 'check_output', side_effect=error):
+                with self.assertRaisesRegex(ValueError, 'repository history unavailable'):
+                    preparation.require_complete_history(ROOT)
+
+    def test_release_negative_in_shallow_history_is_unknown(self):
+        negative = subprocess.CompletedProcess([], 1, '', '')
+        positive = subprocess.CompletedProcess([], 0, '', '')
+        with patch.object(source_contract.subprocess, 'run', return_value=positive), \
+             patch.object(source_contract.subprocess, 'check_output', side_effect=AssertionError('unneeded status query')):
+            self.assertTrue(source_contract.has_ordered_release_history(ROOT, 'a' * 40))
+        with patch.object(source_contract.subprocess, 'run', return_value=negative), \
+             patch.object(source_contract.subprocess, 'check_output', return_value='true\n'):
+            with self.assertRaisesRegex(ValueError, 'release-order ancestry in a shallow repository'):
+                source_contract.has_ordered_release_history(ROOT, 'a' * 40)
+        with patch.object(source_contract.subprocess, 'run', return_value=negative), \
+             patch.object(source_contract.subprocess, 'check_output', return_value='false\n'):
+            self.assertFalse(source_contract.has_ordered_release_history(ROOT, 'a' * 40))
+
+    def test_shallow_boundary_hiding_extraction_ancestry_fails_before_output(self):
+        # The object exists, but a shallow boundary hides its parent path.
+        # Git reports 1 (non-ancestor) even though full connected history says 0.
+        with self.history() as (directory, repo, original_base, original_head):
+            base_tree = git(repo, 'rev-parse', original_base + '^{tree}')
+            head_tree = git(repo, 'rev-parse', original_head + '^{tree}')
+            identity = ('-c', 'user.name=Offline fixture', '-c', 'user.email=offline@example.invalid')
+            bridge = git(repo, *identity, 'commit-tree', base_tree, '-p', MERGE_BASE, '-m', 'fixture bridge')
+            head = git(repo, *identity, 'commit-tree', head_tree, '-p', bridge, '-m', 'fixture head')
+            git(repo, 'update-ref', 'refs/heads/shallow-fixture', head)
+            git(repo, 'symbolic-ref', 'HEAD', 'refs/heads/shallow-fixture')
+            git(repo, 'reset', '--hard', head)
+            git(repo, 'cat-file', '-e', MERGE_BASE + '^{commit}')
+            command = ['git', '-C', str(repo), 'merge-base', '--is-ancestor', MERGE_BASE, head]
+            self.assertEqual(subprocess.run(command, capture_output=True, timeout=15).returncode, 0)
+            shallow = repo / '.git/shallow'
+            shallow.write_text(bridge + '\n', encoding='ascii')
+            self.assertEqual(git(repo, 'rev-parse', '--is-shallow-repository'), 'true')
+            self.assertEqual(subprocess.run(command, capture_output=True, timeout=15).returncode, 1)
+            self.rejected(directory, repo, bridge, head, 'Cannot verify extraction ancestry in a shallow repository')
+
+    def test_missing_extraction_object_fails_closed_in_actual_cli(self):
+        with self.history() as (directory, repo, base, head):
+            self.disconnect_alternate(repo, base, head)
+            self.rejected(directory, repo, base, head, 'Cannot verify extraction ancestry; Git exited')
+
+    def test_hosted_wrapper_uses_actual_divergent_pr_event_base(self):
+        with self.history() as (directory, repo, common, _):
+            helper = repo / INHERITED[1][0]
+            evolution = '\n// Shared independently evolved helper.\n'
+            git(repo, 'checkout', '-qb', 'feature', common)
+            original = helper.read_text(encoding='utf-8')
+            helper.write_text(original + evolution, encoding='utf-8')
+            head = self.commit(repo, project_lighting_policy(self.seed))
+            git(repo, 'checkout', '-qb', 'upstream', common)
+            helper.write_text(original + evolution, encoding='utf-8')
+            base = self.commit(repo, self.seed)
+            git(repo, 'checkout', '-q', 'feature')
+            self.assertEqual(git(repo, 'merge-base', base, head), common)
+            self.assertNotEqual(base, common)
+            self.assertEqual(git(repo, 'show', base + ':' + INHERITED[1][0]),
+                             git(repo, 'show', head + ':' + INHERITED[1][0]))
+            self.assertNotEqual(git(repo, 'show', common + ':' + INHERITED[1][0]),
+                                git(repo, 'show', base + ':' + INHERITED[1][0]))
+            completed, output = self.invoke_hosted_test_runner(directory, repo, base, head)
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            receipt = json.loads(output.read_text(encoding='utf-8'))
+            self.assertEqual((receipt['baseline_sha'], receipt['head_sha']), (base, head))
+            self.assertEqual(receipt['identity_source'], 'event')
+            self.assertFalse(receipt['native_execution'])
+            # Replacing the event base with its ancestor discards the shared
+            # helper evolution and must fail rather than masquerade as this PR.
+            rejected, rejected_output = self.invoke_hosted_test_runner(directory, repo, common, head)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertIn('Inherited helper drift from event base', rejected.stderr)
+            self.assertFalse(rejected_output.exists())
+            self.assertFalse(rejected_output.with_suffix('.sources').exists())
+
+    def test_hosted_wrapper_push_manual_and_identity_refusals_in_isolated_history(self):
+        with self.history() as (directory, repo, base, head):
+            for event in ('push', 'workflow_dispatch'):
+                with self.subTest(event=event):
+                    completed, output = self.invoke_hosted_test_runner(directory, repo, base, head, event=event)
+                    self.assertEqual(completed.returncode, 0, completed.stderr)
+                    receipt = json.loads(output.read_text(encoding='utf-8'))
+                    self.assertEqual((receipt['baseline_sha'], receipt['head_sha']), (base, head))
+                    self.assertEqual(receipt['identity_source'], 'event')
+                    self.assertFalse(receipt['native_execution'])
+            completed, output = self.invoke_hosted_test_runner(directory, repo, base, head,
+                extra_environment={'CI_BASE': base, 'CI_HEAD': head})
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(json.loads(output.read_text(encoding='utf-8'))['baseline_sha'], base)
+            refusals = (
+                {'extra_environment': {'CI_BASE': '0' * 40}},
+                {'extra_environment': {'CI_HEAD': base}},
+                {'extra_environment': {'CI_BASE': ''}},
+                {'missing_event': True},
+                {'payload': {'pull_request': {'base': {'sha': '0' * 40}, 'head': {'sha': head}}}},
+                {'payload': {'pull_request': {'base': {'sha': 'not-a-sha'}, 'head': {'sha': head}}}},
+                {'payload': {'pull_request': {'base': {'sha': head}, 'head': {'sha': head}}}},
+                {'event': 'push', 'payload': {'before': base, 'after': base}},
+                {'event': 'workflow_dispatch', 'payload': {'inputs': {}}},
+            )
+            for options in refusals:
+                with self.subTest(options=options):
+                    completed, output = self.invoke_hosted_test_runner(directory, repo, base, head, **options)
+                    self.assertNotEqual(completed.returncode, 0)
+                    self.assertFalse(output.exists())
+                    self.assertFalse(output.with_suffix('.sources').exists())
+            git(repo, 'checkout', '--orphan', 'unrelated')
+            unrelated = self.commit(repo, self.seed)
+            git(repo, 'checkout', '-q', head)
+            completed, output = self.invoke_hosted_test_runner(directory, repo, unrelated, head)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn('Source event identity unavailable', completed.stderr)
+            self.assertFalse(output.exists())
+            self.assertFalse(output.with_suffix('.sources').exists())
+            # A missing historical extraction commit is an unavailable
+            # ancestry proof, never a verified non-ancestor.
+            self.disconnect_alternate(repo, base, head)
+            completed, output = self.invoke_hosted_test_runner(directory, repo, base, head)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn('Cannot verify extraction ancestry', completed.stderr)
+            self.assertFalse(output.exists())
+            self.assertFalse(output.with_suffix('.sources').exists())
 
     def test_event_base_before_and_after_lighting_additions(self):
         for after in (False, True):
@@ -181,12 +379,15 @@ class ActualPreparationTests(unittest.TestCase):
 
     def test_dirty_source_helper_and_fixture_are_rejected_before_output(self):
         with self.history() as (directory, repo, base, head):
-            for path in (PATH, INHERITED[0][0], 'tests/exclusion_dispatch/probe.dm'):
+            for path in (PATH, INHERITED[0][0], 'tests/exclusion_dispatch/probe.dm',
+                         'tests/exclusion_dispatch/historical_fixtures.py',
+                         'tests/exclusion_dispatch/fixtures/manifest.json',
+                         'tests/exclusion_dispatch/fixtures/extraction-reviewed-functions.dm.txt'):
                 with self.subTest(path=path):
                     target = repo / path
                     original = target.read_bytes()
                     try:
-                        target.write_bytes(original + b'\n// dirty input\n')
+                        target.write_bytes(original + b'\n# dirty input\n')
                         self.rejected(directory, repo, base, head, 'Working input differs')
                     finally:
                         target.write_bytes(original)

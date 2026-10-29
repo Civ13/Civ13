@@ -344,6 +344,24 @@ class GuardTests(unittest.TestCase):
         self.assertFalse(equip(human, item, 1))
         self.assertEqual(events, ['equip-check', 'equip'])
 
+    def test_extraction_hand_guard_survives_save_movement_projection(self):
+        f = Fixture()
+        human, item = f.actor(), f.actor(f.other, human=False)
+        calls = []
+        human.l_hand = None
+        human.update_inv_l_hand = lambda: None
+        item.equipped = item.add_fingerprint = item.on_changed_slot = lambda *args: None
+        item.extraction_surface_source = NS(service=None)
+        f.env.update(parent=lambda: True, slot_l_hand='l')
+        source = read('code/game/mob/living/carbon/human/human.dm').replace('..()', 'parent()')
+        put = project(source, '/mob/living/human/put_in_l_hand', 'src, W', f.env, True)
+        self.assertFalse(put(human, item))
+        item.extraction_surface_source.service = NS(movement_allowed=lambda *args: calls.append(args) or False)
+        self.assertFalse(put(human, item))
+        self.assertEqual(calls, [(item, human)])
+        self.assertIs(item.loc, f.other)
+        self.assertIsNone(human.l_hand)
+
     def test_active_explosive_nullspace_commit_refuses_save_and_retries(self):
         f = Fixture()
         human, charge = f.actor(), f.actor(human=False)

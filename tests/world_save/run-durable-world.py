@@ -17,29 +17,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "new_z_budget"))
 from z_budget_evidence import DIAGNOSTIC, validate_compile
 
 
-def selected_runtime(bin_dir, archive):
-    if archive is None: return None  # Frozen historical fixtures keep 1681.
-    spec = importlib.util.spec_from_file_location('lighting_current_runtime', Path(__file__).with_name('current_runtime.py'))
-    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-    return module.select(bin_dir, archive)
-
-
-def current_ci_case(args):
-    if args.prepare_only or args.zone_topology or args.roof_areas or args.roof_control or args.persistence_year:
-        return False
-    if args.lighting: return True  # Preserve the already reviewed current lighting path.
-    mode = next((name for name in ('wounds', 'dimension_bootstrap', 'recovery_reconnect',
-                                  'lifecycle_shutdown', 'startup_only') if getattr(args, name)), 'roundtrip')
-    cases = {(profile, name, None) for profile in ('gaia', 'europe')
-             for name in ('roundtrip', 'dimension_bootstrap', 'recovery_reconnect', 'lifecycle_shutdown')}
-    cases.update({('gaia', 'wounds', None), ('gaia', 'wounds', 'wound-restore'),
-                  ('gaia', 'startup_only', None), ('gaia', 'recovery_reconnect', 'reclaim-order'),
-                  ('europe', 'lifecycle_shutdown', 'shutdown-return')})
-    cases.update(('gaia', 'roundtrip', control) for control in
-                 ('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
-    return (args.profile, mode, args.negative_control) in cases
-
-
 def historical_wound_roof_helpers(loading, existing):
     """Keep the historical defect sources intact; add explicit current dependencies."""
     start = ('// Only roof transformations backed by direct saved turf contents are projected.\n'
@@ -66,10 +43,37 @@ def historical_wound_roof_helpers(loading, existing):
     return roof
 
 
+def selected_runtime(bin_dir, archive):
+    if archive is None: return None  # Frozen historical fixtures keep 1681.
+    spec = importlib.util.spec_from_file_location('durable_current_runtime', Path(__file__).with_name('current_runtime.py'))
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    return module.select(bin_dir, archive)
+
+
+def current_ci_case(args):
+    if args.prepare_only or args.zone_topology or args.roof_areas or args.roof_control or args.persistence_year:
+        return False
+    modes = [name for name in ('lighting', 'wounds', 'dimension_bootstrap', 'recovery_reconnect',
+                              'lifecycle_shutdown', 'startup_only') if getattr(args, name)]
+    if len(modes) > 1: return False
+    mode = modes[0] if modes else 'roundtrip'
+    cases = {(profile, name, None) for profile in ('gaia', 'europe')
+             for name in ('roundtrip', 'dimension_bootstrap', 'recovery_reconnect', 'lifecycle_shutdown')}
+    cases.update({('gaia', 'wounds', None), ('gaia', 'wounds', 'wound-restore'),
+                  ('gaia', 'startup_only', None), ('gaia', 'recovery_reconnect', 'reclaim-order'),
+                  ('europe', 'lifecycle_shutdown', 'shutdown-return')})
+    cases.update(('gaia', 'roundtrip', control) for control in
+                 ('season', 'preflight', 'reachability', 'callback', 'timer-restore'))
+    cases.update(('gaia', 'lighting', control) for control in
+                 (None, 'lighting-export', 'lighting-legacy', 'lighting-rebuild', 'lighting-opacity',
+                  'lighting-view', 'lighting-eager', 'lighting-shared'))
+    return (args.profile, mode, args.negative_control) in cases
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path)
-    parser.add_argument('--byond-archive', type=Path, help='Exact current Linux identity for the selected persistence CI matrix')
+    parser.add_argument('--byond-archive', type=Path, help='Exact current Linux identity for the selected ordinary CI cases')
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--zone-topology', action='store_true',
                         help='Prepare synthetic zone/spawn positive and negative fixtures; native execution is held')
@@ -151,7 +155,7 @@ def main():
                'dimension_bootstrap': args.dimension_bootstrap, 'recovery_reconnect': args.recovery_reconnect,
                'lifecycle_shutdown': args.lifecycle_shutdown,
                'prepared_only': args.prepare_only, 'startup_only': args.startup_only,
-               'production_hashes': {}}
+               'production_hashes': {}, 'generated_sources': {}}
     print(f'Retained evidence: {output}', flush=True)
     try:
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
@@ -170,6 +174,18 @@ def main():
             if text.count(marker) != 1:
                 raise RuntimeError('Startup isolation anchor changed')
             replacements[relative] = text.replace(marker, marker + '\treturn\n', 1)
+        for relative in ('code/modules/client/client_procs.dm', 'code/modules/client/movement.dm', 'code/modules/statpanel/statpanel.dm'):
+            text = (root / relative).read_text(encoding='utf-8')
+            text, count = re.subn(r'(^/client/(?:New|Topic)\([^\n]*\)\n)', r'\1\treturn null\n', text, flags=re.M)
+            if not count:
+                raise RuntimeError('Client admission adapter anchor changed: ' + relative)
+            replacements[relative] = text
+        if not args.lifecycle_shutdown:
+            text = replacements['code/world.dm']
+            anchor = '/world/Topic(T, addr, master, key)\n'
+            if text.count(anchor) != 1:
+                raise RuntimeError('World Topic isolation anchor changed')
+            replacements['code/world.dm'] = text.replace(anchor, anchor + '\treturn null\n', 1)
         mutations = {
             'season': ('code/modules/persistence/durable_world.dm', '\tseason = E["season"]', '\tseason = "SPRING"'),
             'preflight': ('code/modules/persistence/durable_world.dm', '\tvar/list/fields = state["fields"]', '\tif(islist(state["fields"])) return TRUE\n\tvar/list/fields = state["fields"]'),
@@ -207,7 +223,7 @@ def main():
             before, after = {
                 'year-helper': ('if (!persistence)\n', 'if (TRUE)\n'),
                 'year-load': ('\t\tmap.apply_persistence_age_floor()\n', ''),
-                'year-order': ('\t\tmap_storage.restore_durable_world()\n', '\t\tmap.apply_persistence_age_floor()\n\t\tmap_storage.restore_durable_world()\n'),
+                'year-order': ('\t\tstorage.restore_durable_world()\n', '\t\tmap.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()\n'),
             }[args.negative_control]
             if text.count(before) != 1:
                 raise RuntimeError('Date control anchor changed')
@@ -286,6 +302,7 @@ def main():
             generated_path = root / (prefix + f'_{index}.dm')
             generated_path.write_text(text, encoding='utf-8', newline='\n')
             generated.append(generated_path)
+            receipt['generated_sources'][relative] = generated_path.name
             original_include = relative.replace('/', chr(92))
             if source.count(original_include) != 1:
                 raise RuntimeError('Production include anchor changed')
@@ -342,6 +359,15 @@ def main():
                 '\tworld.OpenPort(0)\n'
                 '\ttext2file(json_encode(list("startup_only" = TRUE)), "startup-result.json")\n'
                 '\tdel(world)\n')
+        # Only standalone startup calls: lighting also asserts that opening a
+        # port is rejected, and that expression must remain unchanged.
+        probe = re.sub(r'^(\t+)world\.OpenPort\((?:0|"none")\)$',
+                       lambda match: match[1] + 'world.OpenPort("none")\n' + match[1] +
+                       'durable_world_check(!world.port && !clients.len, "offline fixture rejects native clients")',
+                       probe, flags=re.M)
+        probe += '\n/world\n\tvisibility = 0\n'
+        if '/world/OpenPort(' not in probe:
+            probe += '/world/OpenPort(port)\n\treturn port == "none" ? ..("none") : 0\n'
         probe_path = root / (prefix + '_probe.dm')
         probe_path.write_text(probe, encoding='utf-8', newline='\n')
         generated.append(probe_path)
@@ -353,7 +379,7 @@ def main():
         receipt['probe_hash'] = hashlib.sha256((root / 'tests/world_save/durable_world_probe.dm').read_bytes()).hexdigest()
         receipt['generated_probe_hash'] = hashlib.sha256(probe_path.read_bytes()).hexdigest()
         receipt['base_commit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        (output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff'], cwd=root))
+        (output / 'tested.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root))
         (output / 'probe.dme').write_text(source, encoding='utf-8')
         (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
         if args.prepare_only:
@@ -367,10 +393,8 @@ def main():
                                capture_output=True, text=True, timeout=180, creationflags=flags)
         build_log = build.stdout + build.stderr
         (output / 'compile.log').write_text(build_log, encoding='utf-8')
-        if runtime:
-            runtime.validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
-        else:
-            validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
+        if runtime: runtime.validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
+        else: validate_compile(build.returncode, build_log, dme.with_suffix('.dmb').name)
         for suffix in ('.dmb', '.rsc'):
             shutil.copy2(dme.with_suffix(suffix), output / dme.with_suffix(suffix).name)
         (output / 'config').mkdir()
@@ -381,10 +405,10 @@ def main():
             # Both use the identical compiled two-level DMB. Only disk files
             # survive from the writer to the fresh reader process.
             # Include operation admission, nested-call rejection and release.
-            for mode, minimum_checks in (('write', 6), ('unmeasured', 7), ('read', 15)):
+            for mode, minimum_checks in (('write', 6), ('unmeasured', 7), ('read', 15), ('custody-success', 10), ('custody-denied', 10), ('custody-release', 10)):
                 before_files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (output / 'map_saves').iterdir() if p.is_file()} if mode == 'unmeasured' else {}
                 if runtime: runtime.before_launch('daemon:'+mode, output)
-                run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
+                run = subprocess.run([str(daemon), dme.with_suffix('.dmb').name, '-ip', '127.0.0.1', '-nowebclient', *platform_flags, '-trusted',
                     '-params', f'profile={args.profile};dimension_mode={mode}', '-log', f'{mode}-runtime.log'],
                     cwd=output, capture_output=True, text=True, timeout=120, creationflags=flags)
                 (output / f'{mode}-daemon.log').write_text(run.stdout + run.stderr, encoding='utf-8')
@@ -406,11 +430,14 @@ def main():
                 (output / 'receipt.json').write_text(json.dumps(receipt, indent=2), encoding='utf-8')
                 if not result.get('done') or result.get('checks', 0) < minimum_checks:
                     raise RuntimeError(f'Expanded {mode} assertions incomplete: {result}')
+                if mode.startswith('custody-') and (output / 'map_saves/restart_intent.json').exists():
+                    shutil.copy2(output / 'map_saves/restart_intent.json', output / f'{mode}-held-intent.json')
+                    (output / 'map_saves/restart_intent.json').unlink()
                 # A reader must write its own completion record.
                 (output / 'metadata-result.json').unlink()
             print(json.dumps(receipt, indent=2))
             return
-        command = [str(daemon), dme.with_suffix('.dmb').name, *platform_flags, '-trusted',
+        command = [str(daemon), dme.with_suffix('.dmb').name, '-ip', '127.0.0.1', '-nowebclient', *platform_flags, '-trusted',
                    '-params', 'profile=' + args.profile, '-log', 'runtime.log']
         if runtime: runtime.before_launch('daemon', output)
         if args.lighting or args.persistence_year:
@@ -443,8 +470,9 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
+        # 141 wound assertions plus the generated offline-client startup check.
         if args.wounds and not args.negative_control:
-            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 141:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 142:
                 raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
         if args.lifecycle_shutdown:
             # The DM receipt is written before native deletion. Acceptance must
@@ -495,7 +523,7 @@ def main():
                     'lighting-shared': 'corners share mutable affecting list'}
         if args.negative_control:
             if args.negative_control == 'wound-restore':
-                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 4:
+                if result.get('done') or 'Cannot read null.max_damage' not in result.get('error', '') or not result.get('source', '').endswith(receipt['wound_control_source']) or result.get('line') != 394 or result.get('checks') != 5:
                     raise RuntimeError('Historical wound source did not reproduce the constructor failure: ' + str(result))
                 receipt['result'] = result
                 receipt['expected_failure_caught'] = True
@@ -504,11 +532,11 @@ def main():
                 return
             if result.get('done') or result.get('error') != expected[args.negative_control]:
                 raise RuntimeError('Negative control failed outside its intended assertion: ' + str(result))
-            # Four operation-admission checks precede the malformed-wire guard.
-            if args.negative_control == 'preflight' and result.get('checks') != 11:
+            # Includes four operation-admission checks and the offline startup check.
+            if args.negative_control == 'preflight' and result.get('checks') != 12:
                 raise RuntimeError('Preflight control did not reach its first malformed-wire assertion')
-            # Includes the export operation-release assertion before recovery.
-            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:
+            # Includes export operation-release and offline startup checks before recovery.
+            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:
                 raise RuntimeError('Reclaim ordering control did not reach its intended first failure')
             if args.negative_control == 'lighting-legacy':
                 import_error = result.get('import_error') or ''

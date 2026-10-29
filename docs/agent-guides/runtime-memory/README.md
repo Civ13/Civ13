@@ -151,3 +151,6 @@ systems. The hidden reagent source must survive every queued spawn callback, the
 retire through atom/reagent cleanup. `tests/chemical_smoke_ownership/run.py` checks
 production copies, lifetime bounds and repeated holder/membership cleanup against
 an immutable historical negative control in temporary offline storage.
+
+<!-- 2026-10-12: deferred organ icon readiness -->
+External-organ constructor icon work must reject retired or partially hydrated owner/species links. Native save loading may yield between those links; hair style lookup previously dereferenced a missing organ species. tests/human_corpse_decay/run.py includes icon-readiness and icon-callback mutation controls and prints rejected native diagnostics.

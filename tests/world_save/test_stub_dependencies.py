@@ -43,6 +43,32 @@ class StubDependencies(unittest.TestCase):
             side_effect=AssertionError('Native process forbidden')))
         self.enterContext(patch.object(socket, 'socket', side_effect=AssertionError('Socket forbidden')))
 
+    def test_pull_fixture_admits_only_empty_registry_owned_save(self):
+        text = (FIXTURE / 'stubs.dm').read_text(encoding='utf-8')
+        start = text.index('/datum/world_save_idle_pull_registry\n')
+        end = text.index('var/global/datum/world_save_idle_pull_registry/', start)
+        block = text[start:end]
+        resolver = 'return reason == "save_admission" && operation && operation.current(operation.storage, "save") && !length(owners)'
+        ready = 'return !length(owners)'
+        self.assertEqual(block.count(resolver), 1)
+        self.assertEqual(block.count(ready), 1)
+        # Project the fixture's exact boolean expression; it is deliberately
+        # unable to model or settle a live pull pair.
+        expression = resolver.removeprefix('return ').replace('&&', 'and').replace('!length(owners)', 'not len(owners)')
+        namespace = {}
+        exec('def resolve(reason, operation, owners):\n    return ' + expression, namespace)
+        class Operation:
+            storage = object()
+            def __init__(self, current): self.allowed = current
+            def current(self, storage, kind): return storage is self.storage and kind == 'save' and self.allowed
+        resolve = namespace['resolve']
+        self.assertTrue(resolve('save_admission', Operation(True), []))
+        for reason, operation, owners in (('other', Operation(True), []), ('save_admission', None, []),
+                                          ('save_admission', Operation(False), []),
+                                          ('save_admission', Operation(True), ['active'])):
+            with self.subTest(reason=reason, operation=operation, owners=owners):
+                self.assertFalse(resolve(reason, operation, owners))
+
     def check_dependencies(self, sources, roof_free=True):
         text = '\n'.join(sources)
         self.check_clear_ground(text)

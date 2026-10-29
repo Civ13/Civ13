@@ -11,7 +11,7 @@ import sys
 import tempfile
 import time
 from resources import Budget, DIAGNOSTIC, binary_info
-from preparation import prepare, PATH, INHERITED
+from preparation import prepare, PATH, INHERITED, FIXTURE
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--base', default=os.environ.get('CI_BASE'))
@@ -21,12 +21,14 @@ p.add_argument('--output', type=Path, required=True)
 p.add_argument('--source-only', action='store_true')
 p.add_argument('--expected-inputs', type=Path)
 p.add_argument('--lease-receipt', type=Path)
-p.add_argument('--negative-control', choices=['omit', 'parent', 'eager'])
+p.add_argument('--negative-control', choices=['omit', 'parent', 'eager', 'target-omit'])
 p.add_argument('--benchmark', action='store_true')
+p.add_argument('--source-version', choices=['516.1681', '516.1688'], default='516.1681',
+               help='Record the intended source-only CI version; the historical default is unchanged')
 p.add_argument('--calls', type=int, default=10000, choices=[10000, 20000, 40000])
 a = p.parse_args()
 repo = Path(__file__).resolve().parents[2]
-identity, old, snapshot = prepare(repo, a.base, a.head,
+identity, old, snapshot, projection = prepare(repo, a.base, a.head,
     event_path=os.environ.get('GITHUB_EVENT_PATH'), event_name=os.environ.get('GITHUB_EVENT_NAME'),
     github_actions=os.environ.get('GITHUB_ACTIONS') == 'true')
 BASE = identity['base']
@@ -46,11 +48,20 @@ for variant, text in [('baseline', old), ('candidate', current)]:
     root = proc(text, '/datum/proc/persistence_runtime_var(key)')
     if variant == 'candidate':
         if a.negative_control == 'omit':
+            if '"appearance", ' not in hooks: raise ValueError('Omission control anchor missing')
             hooks = hooks.replace('"appearance", ', '')
         elif a.negative_control == 'parent':
+            if 'return ..()' not in hooks: raise ValueError('Parent control anchor missing')
             hooks = hooks.replace('return ..()', 'return FALSE')
         elif a.negative_control == 'eager':
+            if '\tswitch(key)' not in hooks: raise ValueError('Eager control anchor missing')
             hooks = hooks.replace('\tswitch(key)', '\t..()\n\tswitch(key)')
+        elif a.negative_control == 'target-omit':
+            # Remove only the target term, retaining other evolved runtime
+            # exclusions and the parent call in the same production hook.
+            anchor = 'key == "original_target" || '
+            if hooks.count(anchor) != 1: raise ValueError('Original-target control anchor changed')
+            hooks = hooks.replace(anchor, '', 1)
     for traced in [False, True]:
         suffix = variant + ('_traced' if traced else '_runtime')
         adapted_root = root
@@ -69,6 +80,9 @@ inputs = {name: hashlib.sha256(content.encode()).hexdigest() for name, content i
     'preparation.py': Path(__file__).with_name('preparation.py').read_text(),
     'runner.py': Path(__file__).read_text(), 'resources.py': Path(__file__).with_name('resources.py').read_text(),
 }.items()}
+# Record the exact committed inputs that the ancestry and source projection
+# consumed, including the historical fixture loader, manifest, and bytes.
+inputs.update({name: hashlib.sha256(snapshot[name].encode('utf-8')).hexdigest() for name in FIXTURE})
 compiler = a.byond_bin.resolve() / ('dm.exe' if os.name == 'nt' else 'DreamMaker') if a.byond_bin else None
 daemon = a.byond_bin.resolve() / ('dd.exe' if os.name == 'nt' else 'DreamDaemon') if a.byond_bin else None
 compiler_args = ['-max_errors', '0', 'probe.dme']
@@ -85,9 +99,10 @@ if a.source_only:
         (generated / name).write_text(content)
     a.output.write_text(json.dumps(dict(status='source-only; native not run',
         head_sha=identity['head'], identity_source=identity['identity_source'],
-        baseline_sha=BASE, baseline_policy='immutable event base with existing behavior retained; only missing exact fullbright and area-owner additions, three reconstructed list hooks; collector undefined in fixture', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
+        baseline_sha=BASE, event_identity=identity, projection=projection,
+        baseline_policy='exact event base with reviewed lighting and extraction projections; collector undefined in fixture', compiled_sha256=hashlib.sha256(source.encode()).hexdigest(),
         probe_sha256=hashlib.sha256(probe.encode()).hexdigest(), inputs=inputs, binaries=binaries,
-        commands=commands, required_version='516.1681', native_execution=False,
+        commands=commands, required_version=a.source_version, native_execution=False,
         execution_authorization='HELD: fresh maintainer approval and exact-head review required; old leases invalid'), indent=2) + '\n')
     sys.exit(0)
 raise SystemExit('Native execution held: fresh maintainer approval and exact-head review required; old leases invalid')

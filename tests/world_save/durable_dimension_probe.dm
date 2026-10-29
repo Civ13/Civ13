@@ -1,7 +1,33 @@
+// Synthetic custody effects only; startup, import, dimensions and disk IO are production.
+var/custody_reserve_calls = 0
+var/custody_release_calls = 0
+var/custody_failure_mutated = FALSE
+/datum/persistence_restore_policy/durable_dimension
+	begin_attempt(map_storage/storage)
+		var/datum/persistence_restore_attempt/durable_dimension/A = new
+		A.storage = storage
+		A.policy = src
+		return A
+/datum/persistence_restore_attempt/durable_dimension
+	before_mutation()
+		custody_reserve_calls++
+		durable_world_check(world.maxz == 2 && !persistence_restart.import_started, "startup custody reserved before growth")
+		durable_world_check(persistence_active_operation && persistence_active_operation.storage == storage, "startup custody owns admitted storage")
+		return world.params["dimension_mode"] != "custody-denied"
+	fail(phase, original, mutation_started)
+		custody_failure_mutated = mutation_started
+		var/datum/persistence_restore_failure/F = new
+		F.attempt = src
+		F.recovery_retained = TRUE
+		return F
+	release_transients()
+		custody_release_calls++
+		return world.params["dimension_mode"] != "custody-release"
+
 // Appended to the existing durable fixture's declarations. Each writer/reader
 // is a fresh native process with the same compiled two-level world.
 /world/New()
-	world.OpenPort(0)
+	world.OpenPort("none")
 	try
 		if(world.params["dimension_mode"] != "unmeasured")
 			world_z_budget = new /datum/world_z_budget/fixture_admission
@@ -36,6 +62,35 @@
 			durable_world_check(findtext(map_storage.last_error, "UNMEASURED:") > 0, "unmeasured restart diagnostic missing")
 			durable_world_check(file2text(persistence_restart.intent_path) == unmeasured_intent && file2text("map_saves/round.json") == unmeasured_header && file2text("map_saves/save_complete.txt") == unmeasured_marker, "unmeasured restart changed intent or generation")
 			durable_world_check(!map_storage.Save_World(), "unmeasured restart allowed save overwrite")
+			text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks)), "metadata-result.json")
+			del(world)
+			return
+		if(findtext(world.params["dimension_mode"], "custody-") == 1)
+			var/custody_header = file2text("map_saves/round.json")
+			var/custody_marker = file2text("map_saves/save_complete.txt")
+			var/list/custody_round = json_decode(custody_header)
+			var/list/custody_identity = list("version" = 1, "generation" = custody_round["generation"], "metadata" = md5(file2text("map_saves/map.txt")), "round" = md5(custody_header))
+			text2file(json_encode(custody_identity), persistence_restart.intent_path)
+			var/custody_intent = file2text(persistence_restart.intent_path)
+			map_storage.restore_policy = new /datum/persistence_restore_policy/durable_dimension
+			durable_world_check(persistence_restart.detect_startup(), "custody restart discovered intent")
+			var/restored = persistence_restart.resume_startup()
+			var/denied = world.params["dimension_mode"] == "custody-denied"
+			var/success = world.params["dimension_mode"] == "custody-success"
+			durable_world_check(restored == success, "combined startup custody result")
+			durable_world_check(custody_reserve_calls == 1 && custody_release_calls == 1, "combined custody callback counts")
+			durable_world_check(world.maxz == (denied ? 2 : 3), "combined startup dimension boundary")
+			durable_world_check(persistence_restart.import_started == !denied, "combined startup mutation latch")
+			durable_world_check(!persistence_active_operation, "combined startup released operation identity")
+			durable_world_check(file2text("map_saves/round.json") == custody_header && file2text("map_saves/save_complete.txt") == custody_marker, "combined startup preserved generation")
+			if(success)
+				durable_world_check(persistence_restart.import_complete && !persistence_restart.exists() && !persistence_save_in_progress, "combined success consumed matching intent")
+				var/mob/living/human/durable_probe_leader/restored_leader = locate(/mob/living/human/durable_probe_leader)
+				durable_world_check(restored_leader && restored_leader.z == 3 && map.faction1_squad_leaders[7] == restored_leader, "combined import preserves upper durable alias")
+			else
+				durable_world_check(file2text(persistence_restart.intent_path) == custody_intent && persistence_restart.startup_hold && persistence_save_in_progress, "combined failure retains recovery intent")
+				durable_world_check(persistence_load_recovery_required == !denied && custody_failure_mutated == !denied, "combined failure custody mutation boundary")
+				if(!denied) durable_world_check(!persistence_restart.resume_startup() && custody_reserve_calls == 1, "mutating startup failure cannot retry")
 			text2file(json_encode(list("done" = !durable_probe_failed, "checks" = durable_probe_checks)), "metadata-result.json")
 			del(world)
 			return

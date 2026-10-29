@@ -18,7 +18,8 @@ class RestartFixtureSources(unittest.TestCase):
             probe = (Path(output) / 'probe.dm').read_text()
             self.assertIn('if(clients.len)', transaction)
             self.assertIn('sleep(600)', transaction)
-            self.assertEqual(probe.count('var/global/list/clients = list()'), 1)
+            # Same declaration as code/_helpers/global_lists.dm.
+            self.assertEqual(probe.count('var/list/clients = list()'), 1)
             self.assertNotIn('#define clients', (Path(output) / 'probe.dme').read_text())
 
     def test_all_existing_controls_keep_the_client_declaration(self):
@@ -26,7 +27,7 @@ class RestartFixtureSources(unittest.TestCase):
             with self.subTest(control=control), tempfile.TemporaryDirectory() as output:
                 receipt = RUNNER.prepare(ROOT, Path(output), control)
                 self.assertEqual(receipt['negative_control'], control)
-                self.assertIn('var/global/list/clients = list()', (Path(output) / 'probe.dm').read_text())
+                self.assertIn('var/list/clients = list()', (Path(output) / 'probe.dm').read_text())
 
     def test_lifecycle_combination_has_one_shared_client_collection(self):
         with tempfile.TemporaryDirectory() as output:

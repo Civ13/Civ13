@@ -1,5 +1,6 @@
 """Offline bootstrap command contract: stub sudo, never run apt or BYOND."""
 import os
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -23,11 +24,12 @@ class ByondBootstrapTests(unittest.TestCase):
         self.assertIn('Unsupported BYOND bootstrap option', result.stderr)
         self.assertNotIn('Setting up', result.stdout)
 
-    def run_package_prefix(self, fail_update=False):
+    def run_package_prefix(self, fail_phase='', fail_status=19):
         source = SCRIPT.read_text()
         marker = 'echo "Setting up BYOND."'
         self.assertEqual(source.count(marker), 1)
-        prefix = 'set -eo pipefail\n' + source.split('# BEGIN package setup\n')[1].split('# END package setup')[0]
+        prefix = ('set -eo pipefail\n' + source.split('# BEGIN package setup\n')[1].split('# END package setup')[0]
+                  + '\nprintf "%s\\n" NATIVE_SETUP_REACHED\n')
         with tempfile.TemporaryDirectory(prefix='byond-bootstrap-stubs-') as temporary:
             root = Path(temporary)
             # PATH contains only this stub. No sudo, env, apt, dpkg, network or
@@ -36,7 +38,8 @@ class ByondBootstrapTests(unittest.TestCase):
             stub.write_text('''#!/bin/sh
 printf '%s\\n' "$*" >> "$COMMAND_LOG"
 case "$*" in
-  *"apt-get update") [ "$FAIL_UPDATE" = 1 ] && exit 19 ;;
+  *" update") [ "$FAIL_PHASE" = update ] && exit "$FAIL_STATUS" ;;
+  *" install "*) [ "$FAIL_PHASE" = install ] && exit "$FAIL_STATUS" ;;
 esac
 exit 0
 ''')
@@ -44,7 +47,7 @@ exit 0
             log = root / 'commands.txt'
             result = subprocess.run([BASH, '--noprofile', '--norc', '-c', prefix], cwd=root,
                                     env={'PATH': shell_path(root), 'COMMAND_LOG': shell_path(log),
-                                         'FAIL_UPDATE': '1' if fail_update else '0'},
+                                         'FAIL_PHASE': fail_phase, 'FAIL_STATUS': str(fail_status)},
                                     capture_output=True, text=True, timeout=5)
             return result, log.read_text().splitlines()
 
@@ -53,16 +56,47 @@ exit 0
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(commands, [
             'timeout -k 5 30 dpkg --add-architecture i386',
-            'env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get update',
-            'env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get install -y python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386',
+            'env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 update',
+            'env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 install -y --no-install-recommends python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386',
         ])
+        self.assertIn('NATIVE_SETUP_REACHED', result.stdout)
         self.assertFalse(any('upgrade' in command for command in commands))
 
     def test_package_failure_stops_before_install_or_native_setup(self):
-        result, commands = self.run_package_prefix(fail_update=True)
-        self.assertEqual(result.returncode, 19)
-        self.assertEqual(len(commands), 2)
-        self.assertNotIn('Setting up BYOND.', result.stdout)
+        for phase, count in (('update', 2), ('install', 3)):
+            # Include APT's nonzero refusal and the observed outer timeout. There
+            # is no shell-level retry or fall-through into native setup.
+            for status in (19, 100, 124):
+                with self.subTest(phase=phase, status=status):
+                    result, commands = self.run_package_prefix(phase, status)
+                    self.assertEqual(result.returncode, status)
+                    self.assertEqual(len(commands), count)
+                    self.assertNotIn('NATIVE_SETUP_REACHED', result.stdout)
+
+    def test_transfer_options_do_not_modify_sources_authentication_or_host_networking(self):
+        result, commands = self.run_package_prefix()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        # Only the three existing privileged invocations execute. APT's own
+        # retry budget stays inside the unchanged outer phase timeouts.
+        self.assertEqual(len(commands), 3)
+        for command in commands[1:]:
+            tokens = shlex.split(command)
+            self.assertEqual(tokens.count('Acquire::Retries=2'), 1)
+            self.assertEqual(tokens.count('Acquire::http::Timeout=15'), 1)
+            self.assertEqual(tokens.count('Acquire::https::Timeout=15'), 1)
+            self.assertFalse(any(flag in command for flag in (
+                '--allow-unauthenticated', '--allow-insecure-repositories', '--fix-missing',
+                'Verify-Peer=false', 'Verify-Host=false', 'ForceIPv', 'sources.list',
+                '/etc/apt/', 'iptables', 'ufw', 'sysctl')))
+
+    def test_download_is_bounded_without_source_or_tls_changes(self):
+        commands = [shlex.split(line.strip()) for line in SCRIPT.read_text().splitlines()
+                    if line.strip().startswith('timeout -k 5 65 wget ')]
+        self.assertEqual(commands, [[
+            'timeout', '-k', '5', '65', 'wget', '--timeout=30', '--tries=1', '--no-verbose',
+            '-O', 'pinned.zip',
+            'https://civ13.com/downloads/516.1681_byond_linux.zip',
+        ]])
 
     def test_shell_syntax_and_pinned_compiler_contract(self):
         subprocess.run([BASH, '-n', shell_path(SCRIPT)], check=True, timeout=5)

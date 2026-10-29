@@ -22,6 +22,55 @@ ROOF_NATIVE_GUARD = ("github.event_name == 'pull_request' && github.event.action
 
 
 class RegressionPolicyTests(unittest.TestCase):
+    ADMISSION_STEP = 'Verify persistence admission adapter and ordinary restore compatibility'
+    ADMISSION_GATES = (
+        '!cancelled()', "needs.changes.result == 'success'",
+        "steps.compile.outcome == 'success'",
+        "(needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_admission'))",
+    )
+    VEHICLE_DIAGNOSTICS = {
+        'Diagnose extraction vehicle custody ' + suffix
+        for suffix in ('positive', 'roster omission', 'reservation omission',
+                       'issuance omission', 'persistence omission')
+    }
+    VEHICLE_GATES = (
+        '!cancelled()', "needs.changes.result == 'success'",
+        "steps.compile.outcome == 'success'",
+        "needs.changes.outputs.extensive == 'true'",
+    )
+
+    def assert_vehicle_diagnostic_guard(self, block):
+        self.assertIn('if: ${{ ' + ' && '.join(self.VEHICLE_GATES) + ' }}', block)
+        self.assertNotIn('continue-on-error:', block)
+
+    def assert_admission_guard(self, block):
+        self.assertIn('        if: ${{ ' + ' && '.join(self.ADMISSION_GATES) + ' }}\n', block)
+        self.assertNotIn('continue-on-error:', block)
+
+    def test_admission_policy_requires_complete_independent_gate(self):
+        block = '        if: ${{ ' + ' && '.join(self.ADMISSION_GATES) + ' }}\n'
+        self.assert_admission_guard(block)
+        for omitted in self.ADMISSION_GATES:
+            with self.subTest(omitted=omitted), self.assertRaises(AssertionError):
+                self.assert_admission_guard(
+                    '        if: ${{ ' + ' && '.join(gate for gate in self.ADMISSION_GATES
+                                                      if gate != omitted) + ' }}\n')
+        with self.assertRaises(AssertionError):
+            self.assert_admission_guard(block.replace('tests/persistence_admission', 'tests/unrelated'))
+        with self.assertRaises(AssertionError):
+            self.assert_admission_guard(block + '        continue-on-error: true\n')
+
+    def test_vehicle_diagnostic_policy_accepts_only_complete_gate(self):
+        block = 'if: ${{ ' + ' && '.join(self.VEHICLE_GATES) + ' }}'
+        self.assert_vehicle_diagnostic_guard(block)
+        for omitted in self.VEHICLE_GATES:
+            with self.subTest(omitted=omitted), self.assertRaises(AssertionError):
+                self.assert_vehicle_diagnostic_guard(
+                    'if: ${{ ' + ' && '.join(gate for gate in self.VEHICLE_GATES
+                                              if gate != omitted) + ' }}')
+        with self.assertRaises(AssertionError):
+            self.assert_vehicle_diagnostic_guard(block + '\ncontinue-on-error: true')
+
     def test_changelog_validation_runs_on_pr_description_edits_without_a_second_selector(self):
         workflow = (ROOT / '.github/workflows/changelog-checks.yml').read_text(encoding='utf-8')
         selection = (ROOT / '.github/workflows/ci-selection.yml').read_text(encoding='utf-8')
@@ -196,7 +245,18 @@ class RegressionPolicyTests(unittest.TestCase):
 
     def assert_explicit_suite_guards(self, workflow):
         import re
+        diagnostics = []
+        admission_steps = 0
         for block in re.split(r'(?=      - name:)', workflow):
+            name = re.search(r'^      - name: (.+)$', block, re.MULTILINE)
+            if name and name.group(1) == self.ADMISSION_STEP:
+                admission_steps += 1
+                self.assert_admission_guard(block)
+                continue
+            if name and name.group(1) in self.VEHICLE_DIAGNOSTICS:
+                diagnostics.append(name.group(1))
+                self.assert_vehicle_diagnostic_guard(block)
+                continue
             if 'uses: actions/upload-artifact' in block:
                 continue
             if block.startswith('      - name: Require selected jobs and exact-source execution receipts\n'):
@@ -233,7 +293,9 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('workflow_dispatch', block)
                     self.assertNotIn('secrets.', block)
                     continue
-                self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && \()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
+                self.assertRegex(block, r"if: (?:always\(\) && needs\.changes\.result == 'success' && (?:steps\.[a-z_]+\.outcome != 'skipped' && )?\()?needs\.changes\.outputs\.extensive == 'true' \|\| contains\(fromJSON\(needs\.changes\.outputs\.new_tests \|\| '\[\]'\)")
+        self.assertEqual(sorted(diagnostics), sorted(self.VEHICLE_DIAGNOSTICS))
+        self.assertEqual(admission_steps, 1)
         self.assertIn("if: needs.changes.outputs.game == 'true'\n        timeout-minutes: 15\n", workflow)
         self.assertIn('bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log', workflow)
 

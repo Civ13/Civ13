@@ -1,9 +1,16 @@
 // Offline adapters: no game startup, players, network, SQL, or production files.
-// Compile dependencies for the production loader's roof helpers. These minimal
-// stubs declare no /obj/roof; full-source roof tests own recovery acceptance.
-var/list/area_list = list()
-/area/caribbean/roofed
-
+// The isolated serializer fixtures model an empty pull registry only. Any
+// populated registry or invalid save owner is refused, never settled here.
+#ifndef SPAN_WARNING
+#define SPAN_WARNING(X) (X)
+#endif
+/datum/world_save_idle_pull_registry
+	var/list/owners = list()
+	proc/resolve_quiet(reason, datum/persistence_world_operation/operation)
+		return reason == "save_admission" && operation && operation.current(operation.storage, "save") && !length(owners)
+	proc/save_ready()
+		return !length(owners)
+var/global/datum/world_save_idle_pull_registry/subtile_pull_ownership = new
 // Minimal serializer fixtures do not exercise wounds. Keep the loader's type
 // contract declared, but fail closed if one is introduced into these probes.
 // The --wounds full-source fixture tests actual constructor/state restoration.
@@ -30,7 +37,12 @@ var/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction
 	var/startup_hold = FALSE
 	var/busy = FALSE
+	var/import_started = FALSE
 	var/expected_generation
+/datum/persistence_restart_transaction/proc/current_identity()
+	return list()
+/datum/persistence_restart_transaction/proc/matches(list/A, list/B)
+	return FALSE
 /datum/persistence_restart_transaction/proc/exists()
 	return FALSE
 var/obj/map_metadata/map
@@ -38,6 +50,12 @@ var/obj/map_metadata/map
 var/mob/dview_mob
 var/list/errors = list()
 var/list/clients = list()
+// Minimal serializer worlds have no roof/season workers. Reject use of those
+// unsupported effects instead of pretending to establish their native behavior.
+var/list/area_list = list()
+/area/caribbean/roofed
+	New()
+		throw EXCEPTION("Roof topology requires the production roof fixture")
 var/game_id = "fixture-round"
 var/round_start_time = 0
 var/round_elapsed_offset = 0
@@ -282,6 +300,20 @@ var/list/mutate_on_tick = null
 	var/age6_done
 	var/age7_done
 	var/age8_done
+// Ordinary-map fixture only. Surface admission is tested by extraction probes;
+// accidental activation here must fail instead of supplying synthetic success.
+/obj/map_metadata/extraction_survival
+	var/datum/extraction_surface_service/surface_service
+/datum/extraction_surface_service
+	var/world_inventory_complete = FALSE
+	proc/begin_world_inventory(levels)
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/feed_loaded_level(level, list/objects)
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/discovery_fail()
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
+	proc/finish_world_inventory()
+		throw EXCEPTION("Surface service outside ordinary world-save fixture")
 /turf/proc/ChangeTurf(path, tell_universe, force_lighting_update)
 	return new path(src)
 

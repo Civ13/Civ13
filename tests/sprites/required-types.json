@@ -1,4 +1,6 @@
 [
+  "/obj/item/vehicle_key",
+  "/obj/item/extraction_wheel_crate",
   "/obj/item/stack/material/wood_piece",
   "/obj/item/stack/material/crude_plank",
   "/obj/item/weapon/material/wooden_wedge",
@@ -44,6 +46,8 @@
   "/obj/item/weapon/shield/chitin",
   "/obj/item/weapon/shield/chitin/large",
   "/obj/structure/farming/plant/herbs",
+  "/obj/item/extraction_generator_kit",
+  "/obj/structure/car_workshop/extraction_private",
   "/obj/structure/exercise",
   "/obj/structure/exercise/course",
   "/obj/structure/exercise/modern",

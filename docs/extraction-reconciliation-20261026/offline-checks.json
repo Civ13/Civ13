@@ -1,0 +1,144 @@
+{
+  "source_commit": "c4585fabaf81e1357054b4527d71d4f3a2d8a0b2",
+  "os": "Windows",
+  "python": "CPython 3.13.1",
+  "scope": "Offline source, injected compiler/transport, and prepare-only checks; no native compiler or runtime execution",
+  "checks": [
+    {
+      "directory": "tests/reserved_lighting",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 25,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_ci*.py",
+      "status": "passed",
+      "tests": 61,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_byond_bootstrap.py",
+      "status": "passed",
+      "tests": 8,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_byond_toolchain.py",
+      "status": "passed",
+      "tests": 33,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_byond_runtime.py",
+      "status": "failed",
+      "tests": 13,
+      "skipped": 2,
+      "errors": 1
+    },
+    {
+      "directory": "tests",
+      "pattern": "test_sprite_toolchain.py",
+      "status": "failed",
+      "tests": 14,
+      "skipped": 2,
+      "errors": 2
+    },
+    {
+      "directory": "tests/extraction",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 25,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/extraction/instances",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 26,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_restore_integration_sources.py",
+      "status": "passed",
+      "tests": 11,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_progress_sources.py",
+      "status": "passed",
+      "tests": 6,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_sleep_transfer_sources.py",
+      "status": "passed",
+      "tests": 14,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/world_save",
+      "pattern": "test_cross_level_sources.py",
+      "status": "passed",
+      "tests": 15,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/persistence_year",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 9,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/zone_persistence",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 40,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/roof_area_recovery",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 28,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/elevation",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 13,
+      "skipped": 0,
+      "errors": 0
+    },
+    {
+      "directory": "tests/save_movement",
+      "pattern": "test_*.py",
+      "status": "passed",
+      "tests": 59,
+      "skipped": 0,
+      "errors": 0
+    }
+  ]
+}

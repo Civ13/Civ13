@@ -37,6 +37,52 @@ class WoundDiagnostics(unittest.TestCase):
         self.assertTrue(rejected(guard, wounds=False, lighting=True))
         self.assertFalse(rejected(guard, diagnostic='ordinary completed output'))
 
+    def test_actual_wound_receipt_requires_all_checks_including_offline_startup(self):
+        tree = ast.parse(RUNNER.read_text(encoding='utf-8'))
+        matches = [node for node in ast.walk(tree) if isinstance(node, ast.If)
+                   and any(isinstance(child, ast.Constant) and child.value ==
+                           'Wound disk recovery assertions incomplete: '
+                           for child in ast.walk(node))]
+        guard = min(matches, key=lambda node: sum(1 for _ in ast.walk(node)))
+        module = ast.fix_missing_locations(ast.Module(body=[guard], type_ignores=[]))
+        compiled = compile(module, str(RUNNER), 'exec')
+        exec(compiled, {'result': {'done': 1, 'checks': 142, 'roundtrips': 18}})
+        for result in ({'done': 1, 'checks': 141, 'roundtrips': 18},
+                       {'done': 1, 'checks': 143, 'roundtrips': 18},
+                       {'done': 1, 'checks': 142, 'roundtrips': 17},
+                       {'done': 0, 'checks': 142, 'roundtrips': 18}):
+            with self.subTest(result=result), self.assertRaises(RuntimeError):
+                exec(compiled, {'result': result})
+
+    def test_negative_control_exact_counts_include_offline_startup(self):
+        tree = ast.parse(RUNNER.read_text(encoding='utf-8'))
+        cases = [
+            ('Historical wound source did not reproduce the constructor failure: ',
+             'wound-restore', 5, {'error': 'Cannot read null.max_damage',
+                                'source': 'fixture_wound.dm', 'line': 394}),
+            ('Preflight control did not reach its first malformed-wire assertion',
+             'preflight', 12, {}),
+            ('Reclaim ordering control did not reach its intended first failure',
+             'reclaim-order', 10, {}),
+        ]
+        for message, control, count, details in cases:
+            matches = [node for node in ast.walk(tree) if isinstance(node, ast.If)
+                       and any(isinstance(child, ast.Constant) and child.value == message
+                               for child in ast.walk(node))]
+            guard = min(matches, key=lambda node: sum(1 for _ in ast.walk(node)))
+            module = ast.fix_missing_locations(ast.Module(body=[guard], type_ignores=[]))
+            compiled = compile(module, str(RUNNER), 'exec')
+            context = {'args': SimpleNamespace(negative_control=control),
+                       'receipt': {'wound_control_source': 'fixture_wound.dm'}}
+            for actual in (count - 1, count, count + 1):
+                context['result'] = dict(details, done=0, checks=actual)
+                with self.subTest(control=control, checks=actual):
+                    if actual == count:
+                        exec(compiled, context)
+                    else:
+                        with self.assertRaises(RuntimeError):
+                            exec(compiled, context)
+
     def test_omitting_wounds_reproduces_diagnostic_acceptance(self):
         guard = copy.deepcopy(diagnostic_guard())
         self.assertIsInstance(guard.test, ast.BoolOp)

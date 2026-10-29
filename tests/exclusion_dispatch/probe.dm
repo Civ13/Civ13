@@ -2,6 +2,7 @@
 #define FALSE 0
 var/failures = 0
 var/cases = 0
+var/target_failures = 0
 var/list/details = list()
 var/list/samples = list()
 var/list/parent_trace = list()
@@ -90,6 +91,11 @@ var/list/network_receipt = list()
 				var/b = D.candidate_traced(key)
 				assert_equal(old,json_encode(list(b,parent_trace,D.value)),"[path] trace [i] mutate [mutate]")
 		mutate_parent = FALSE
+		if(istype(D, /atom/movable))
+			assert_equal(D.baseline_runtime("original_target"),TRUE,"baseline movable target excluded")
+			assert_equal(D.candidate_runtime("original_target"),TRUE,"candidate movable target excluded")
+			if(D.candidate_runtime("original_target") != TRUE)
+				target_failures++
 		if(isturf(D))
 			assert_equal(D.candidate_runtime("lighting_reserved"),TRUE,"new turf reserved policy")
 			assert_equal(D.candidate_runtime("area_change_owner"),TRUE,"area request owner is runtime-only")
@@ -121,5 +127,5 @@ var/list/network_receipt = list()
 				sleep(1)
 		del(D)
 #endif
-	text2file(json_encode(list("cases"=cases,"failures"=failures,"details"=details,"samples"=samples,"network"=network_receipt)),"result.json")
+	text2file(json_encode(list("cases"=cases,"failures"=failures,"target_failures"=target_failures,"details"=details,"samples"=samples,"network"=network_receipt,"byond_version"=world.byond_version,"byond_build"=world.byond_build)),"result.json")
 	del(world)

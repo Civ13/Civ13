@@ -108,6 +108,9 @@ def project(source, declaration, args, env, method=False, *, defines=None):
         if typed_loop:
             code = f'for ({typed_loop[2]} in typed_iter({typed_loop[3]}, "/{typed_loop[1]}"))'
         code = re.sub(r'\bvar/(?:\w+/)*(\w+)\b', r'\1', code)
+        # The merged extraction hand/equipment guards use one optional lookup.
+        # Model its null result explicitly; never omit the guarded instruction.
+        code = re.sub(r'\b(\w+)\?\.(\w+)\b', r'getattr(\1, "\2", None)', code)
         code = code.replace('/area/caribbean/admin', 'ADMIN_AREA')
         code = code.replace('in_protected_sleep_zone() ? 2 : 0', '(2 if in_protected_sleep_zone() else 0)')
         code = code.replace('&&', ' and ').replace('||', ' or ')

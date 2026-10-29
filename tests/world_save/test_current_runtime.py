@@ -34,6 +34,8 @@ class CurrentRuntimeTests(unittest.TestCase):
     def setUpClass(cls):
         # Harmless immutable Git reads before process/socket prohibitions.
         cls.old_durable = subprocess.check_output(['git','show','1572e6c:tests/world_save/run-durable-world.py'],cwd=ROOT,text=True)
+        cls.feature_durable = subprocess.check_output(['git','show',
+            'f97c2940b0b1202ed97f5f413bd1a4a6f24e0962:tests/world_save/run-durable-world.py'],cwd=ROOT,text=True)
 
     def setUp(self):
         self.spawn=self.enterContext(patch.object(subprocess,'Popen',side_effect=AssertionError('Native process forbidden')))
@@ -99,7 +101,9 @@ class CurrentRuntimeTests(unittest.TestCase):
                   'integrity':'FAIL: modern metadata tamper passed preflight'}[negative]
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory); byond=root/'bin'; byond.mkdir(); output=root/'output'; output.mkdir()
-            names=('dm.exe','dd.exe') if os.name=='nt' else ('DreamMaker','DreamDaemon')
+            # The explicit archive contract always selects Linux binaries even
+            # when these inert injected tests are executed on Windows.
+            names=('DreamMaker','DreamDaemon')
             for name in names: (byond/name).write_bytes(b'inert; never executable')
             def popen(command,**kwargs):
                 compiler=Path(command[0]).name==names[0]; calls.append('compile' if compiler else 'daemon')
@@ -145,7 +149,7 @@ class CurrentRuntimeTests(unittest.TestCase):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name==name))
         self.assertEqual(function(self.old_durable,'run_lighting'),function((HERE/'run-durable-world.py').read_text(),'run_lighting'))
         marker = "        result_path = output / 'metadata-result.json'"
-        self.assertEqual(self.old_durable.split(marker,1)[1],(HERE/'run-durable-world.py').read_text().split(marker,1)[1])
+        self.assertEqual(self.feature_durable.split(marker,1)[1],(HERE/'run-durable-world.py').read_text().split(marker,1)[1])
         for flags in (['--roof-areas'],['--zone-topology'],['--prepare-only'],['--persistence-year']):
             with self.subTest(flags=flags), patch.object(sys,'argv',['durable','--byond-bin','unused','--byond-archive','unused.zip',*flags]), \
                     patch.object(runner,'selected_runtime') as selected, patch('sys.stderr'), self.assertRaises(SystemExit):
@@ -190,7 +194,11 @@ class CurrentRuntimeTests(unittest.TestCase):
         block=workflow.split('- name: Offline lighting recovery regression',1)[1].split('      - name:',1)[0]
         calls=[line for line in block.splitlines() if 'run-round-metadata.py ' in line or 'run-durable-world.py ' in line]
         self.assertEqual(len(calls),3)
-        self.assertTrue(all('--byond-archive "$PWD/BYOND/pinned.zip"' in line for line in calls))
+        for line in calls:
+            if 'run-round-metadata.py ' in line:
+                self.assertIn('--current-linux-toolchain', line)
+            else:
+                self.assertIn('--byond-archive "$PWD/BYOND/pinned.zip"', line)
         self.assertIn('for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view lighting-eager lighting-shared;',block)
         self.assertIn('DM compiler version 516.1681',(ROOT/'tests/new_z_budget/z_budget_evidence.py').read_text())
 

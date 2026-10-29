@@ -2,8 +2,9 @@
 #define TRUE 1
 #define FALSE 0
 #define EXCEPTION(message) new /exception(message)
+// The isolated world has no connected clients; production owns this list.
+var/list/clients = list()
 var/persistence_save_in_progress = FALSE
-var/global/list/clients = list() // Offline fixture has no connected native clients.
 var/building_allocating_z = 0
 var/map_storage/map_storage = new
 var/obj/map_metadata/map = new
@@ -78,7 +79,10 @@ var/failures = 0
 		fdel("map_saves/save_complete.txt")
 		text2file(identity["generation"], "map_saves/save_complete.txt")
 	return save_ok
-/datum/persistence_restart_transaction/probe/load_generation()
+/datum/persistence_restart_transaction/probe/load_generation(list/expected_intent)
+	// Adapter for the admitted production wrapper boundary.
+	if(!matches(expected_intent, current_identity())) throw EXCEPTION("fixture stale intent")
+	import_started = TRUE
 	loads++
 	return load_ok
 /datum/persistence_restart_transaction/probe/current_identity()

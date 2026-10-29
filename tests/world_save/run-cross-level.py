@@ -209,8 +209,8 @@ def native(output, byond, cases, receipt, expected=None, compile_only=False, run
             if source.exists():
                 (cwd / source.name).write_bytes(source.read_bytes())
         if runtime: runtime.before_launch('daemon:'+case, output)
-        logs = owned_process([str(daemon), 'probe.dmb', '-invisible', '-close', '-trusted',
-                              '-ip', '127.0.0.1', '-params', f'case={case}', '-log', 'native.log'], cwd, 'daemon')
+        logs = owned_process([str(daemon), 'probe.dmb', '-ip', '127.0.0.1', '-nowebclient', '-invisible', '-close', '-trusted',
+                              '-params', f'case={case}', '-log', 'native.log'], cwd, 'daemon')
         logs += '\n' + read_bounded(cwd / 'native.log')
         result = json.loads(read_bounded(cwd / 'result.json'))
         adjudicate(result, logs, case, (expected or {}).get(case, 'PASS'),
@@ -254,10 +254,8 @@ def main():
     refresh_receipt(output, receipt)
     print(f'Retained evidence: {output}', flush=True)
     if not args.prepare_only:
-        if runtime:
-            native(output, args.byond_bin, cases, receipt, expected, args.compile_only, runtime=runtime)
-        else:
-            native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
+        if runtime: native(output, args.byond_bin, cases, receipt, expected, args.compile_only, runtime=runtime)
+        else: native(output, args.byond_bin, cases, receipt, expected, args.compile_only)
 
 
 if __name__ == '__main__':

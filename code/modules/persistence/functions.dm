@@ -318,7 +318,7 @@ map_storage
 /map_storage/persistence_runtime_var(key)
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
 	if(key in list("validated_zone_state", "validated_zones", "validated_zone_grid", "restored_zones", "zone_export_state", "zone_export_zones", "zone_export_pins", "zone_export_anchors", "zone_id_reservations", "zone_high_water", "zone_namespace", "zone_next_counter", "zone_export_generation", "zone_export_maxz", "zone_candidate_validation")) return TRUE
-	if(key == "last_save_reference_failure") return TRUE
+	if(key in list("last_save_reference_failure", "restore_policy", "restore_cleanup_error")) return TRUE
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	if(key in list("last_variable_failure", "last_variable_operation")) return TRUE
 #endif
@@ -513,6 +513,23 @@ var/global/datum/persistence_admission_identity
 	var/contents_started = FALSE
 	var/mutation_started = FALSE
 	var/restoring_players = FALSE
+	var/datum/persistence_restore_policy/restore_policy
+	var/datum/persistence_restore_attempt/restore_attempt
+	var/restore_reserved = FALSE
+	var/datum/persistence_restart_transaction/restart_transaction
+	proc/authorize_restore_mutation(map_storage/expected_storage)
+		var/datum/persistence_restore_policy/expected_policy = restore_policy
+		var/datum/persistence_restore_attempt/expected_attempt = restore_attempt
+		if(!current(expected_storage, "load") || map_storage != expected_storage || restore_policy != expected_policy || restore_attempt != expected_attempt || expected_storage.restore_policy != expected_policy || (restore_attempt && (restore_attempt.storage != storage || restore_attempt.policy != restore_policy)))
+			throw EXCEPTION("Restore attempt binding changed before mutation")
+		if(restore_attempt && !restore_reserved)
+			if(restore_attempt.before_mutation() != TRUE)
+				throw EXCEPTION("Restore recovery reservation unavailable")
+			restore_reserved = TRUE
+		// Reservation callbacks can yield or replace the owner: recheck afterward.
+		if(!current(expected_storage, "load") || map_storage != expected_storage || restore_policy != expected_policy || restore_attempt != expected_attempt || expected_storage.restore_policy != expected_policy || (restore_attempt && (restore_attempt.storage != storage || restore_attempt.policy != restore_policy)))
+			throw EXCEPTION("Restore attempt binding changed before mutation")
+		return TRUE
 	proc/current(map_storage/expected_storage, expected_kind)
 		return persistence_active_operation == src && storage == expected_storage && kind == expected_kind
 	proc/enter_backend(map_storage/expected_storage, expected_kind)
@@ -583,6 +600,7 @@ var/global/datum/persistence_admission_identity
 	try
 		clear_bookkeeping()
 	catch(var/exception/e)
+		restore_cleanup_error = "[restore_cleanup_error]; [e]"
 		world.log << "World-save bookkeeping cleanup failed: [e]"
 	try
 		release_durable_world()
@@ -652,56 +670,127 @@ var/global/datum/persistence_admission_identity
 	last_persistence_save_time = world.time
 	return 1
 
-/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)
-	var/datum/persistence_world_operation/operation = begin_persistence_operation(map_storage, "load", transaction)
+/map_storage
+	var/tmp/datum/persistence_restore_policy/restore_policy
+	var/tmp/restore_cleanup_error
+
+// Wrapper custody only. No production provider or full restore proof exists.
+/datum/persistence_restore_policy
+	should_save = FALSE
+	// A provider owns cleanup until it returns an attempt bound to both arguments.
+	proc/begin_attempt(map_storage/storage)
+		return null
+
+/datum/persistence_restore_attempt
+	should_save = FALSE
+	var/map_storage/storage
+	var/datum/persistence_restore_policy/policy
+	proc/before_mutation()
+		return FALSE
+	proc/fail(phase, original_failure, mutation_started)
+		return null
+	proc/release_transients()
+		// This never authorizes releasing recovery custody or publishing success.
+		return FALSE
+	persistence_runtime_var(key)
+		return (key in list("storage", "policy")) || ..()
+
+/datum/persistence_restore_failure
+	should_save = FALSE
+	var/datum/persistence_restore_attempt/attempt
+	var/recovery_retained = FALSE
+	persistence_runtime_var(key)
+		return key == "attempt" || ..()
+
+// Admission and restart ownership enclose optional extraction recovery custody.
+/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)
+	var/map_storage/storage = map_storage
+	var/datum/persistence_world_operation/operation = begin_persistence_operation(storage, "load", transaction)
 	if(!operation) return FALSE
+	operation.restart_transaction = transaction
+	var/datum/persistence_restore_policy/policy = storage.restore_policy
+	operation.restore_policy = policy
+	var/datum/persistence_restore_attempt/attempt
+	var/attempt_owned = FALSE
+	var/release_attempted = FALSE
+	var/phase = "preflight"
+	storage.restore_cleanup_error = null
 	try
-		if(!map_storage.prepare_saved_dimensions() || !map_storage.validate_world_save())
-			operation.finish(FALSE)
-			return FALSE
+		if(policy)
+			attempt = policy.begin_attempt(storage)
+			if(!istype(attempt) || attempt.storage != storage || attempt.policy != policy)
+				throw EXCEPTION("Restore provider unavailable or returned an unowned attempt")
+			attempt_owned = TRUE
+			operation.restore_attempt = attempt
+		if(operation.restore_policy != policy || storage.restore_policy != policy || !operation.current(storage, "load"))
+			throw EXCEPTION("Restore attempt binding changed before preflight")
+		if(!storage.prepare_saved_dimensions(expected_intent, operation) || !storage.validate_world_save())
+			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save preflight rejected")
+		if(expected_intent && (!transaction || !transaction.matches(expected_intent, transaction.current_identity())))
+			throw EXCEPTION("Restart intent does not match the completed generation")
 		var/watch = start_watch()
 		log_startup_progress("Starting map load...")
-		// Snapshot the validated header before any destructive restoration.
-		var/list/saved_round = map_storage.read_round_state()
+		var/list/saved_round = storage.read_round_state()
 		if(transaction && saved_round["generation"] != transaction.expected_generation)
 			throw EXCEPTION("Restart generation changed before import")
-		map_storage.require_durable_world_idle()
+		storage.require_durable_world_idle()
+		operation.authorize_restore_mutation(storage)
+		phase = "clear"
 		operation.mutation_started = TRUE
+		if(transaction) transaction.import_started = TRUE
 		// Validated geography must be authoritative before replacement constructors.
-		map.restore_elevation_snapshot(saved_round, world.maxx, world.maxy, map_storage.save_validation_maxz())
-		map_storage.begin_zone_restore(operation)
-		map_storage.reset_player_restoration()
-		map_storage.suspend_durable_world()
+		map.restore_elevation_snapshot(saved_round, world.maxx, world.maxy, storage.save_validation_maxz())
+		storage.begin_zone_restore(operation)
+		storage.reset_player_restoration()
+		storage.suspend_durable_world()
 		invalidate_persistence_area_snapshots()
-		map_storage.ClearMap()
-		if(!map_storage.run_world_operation("load", operation))
-			throw EXCEPTION("Load_World did not complete")
-		if(!map_storage.load_map_metadata())
-			throw EXCEPTION("Saved world metadata restoration failed")
-		map_storage.restore_durable_world()
-		// Both legacy metadata and durable fields are now authoritative. Apply
-		// the mode's minimum without replacing a later saved date or research.
+		storage.ClearMap()
+		phase = "world"
+		if(!storage.run_world_operation("load", operation))
+			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save restoration rejected")
+		phase = "metadata"
+		if(storage.load_map_metadata() != TRUE)
+			throw EXCEPTION("World metadata restoration rejected")
+		storage.restore_durable_world()
+		// Apply the date floor after both legacy and durable metadata restoration.
 		map.apply_persistence_age_floor()
-		map_storage.restore_round_state(src, saved_round)
-		map_storage.restore_zone_spawns()
-		log_startup_progress("	Loaded the map in [stop_watch(watch)]s.")
-		// Client restoration can dispatch callbacks too. Keep this operation's
-		// identity until normal import completion, including those callbacks.
+		storage.restore_round_state(src, saved_round)
+		storage.restore_zone_spawns()
+		if(attempt_owned)
+			phase = "release"
+			release_attempted = TRUE
+			if(attempt.release_transients() != TRUE)
+				throw EXCEPTION("Restore transient release rejected")
 		if(!transaction)
+			phase = "players"
 			operation.restoring_players = TRUE
-			// Future custody-enabled deployments must reconcile authoritative
-			// ownership here even for older generations before activating a body.
-			map_storage.finish_player_restoration()
+			storage.finish_player_restoration()
+		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
-		map_storage.cleanup_world_operation()
+		var/primary_failure = "[e] on [e.file]:[e.line]"
+		if(attempt_owned)
+			try
+				var/datum/persistence_restore_failure/outcome = attempt.fail(phase, primary_failure, operation.mutation_started)
+				if(!istype(outcome) || outcome.attempt != attempt || (operation.mutation_started && outcome.recovery_retained != TRUE))
+					throw EXCEPTION("Restore failure did not confirm retained recovery custody")
+			catch(var/exception/failure_error)
+				storage.restore_cleanup_error = "[failure_error]"
+			if(!release_attempted)
+				release_attempted = TRUE
+				try
+					if(attempt.release_transients() != TRUE)
+						throw EXCEPTION("Restore transient cleanup rejected")
+				catch(var/exception/release_error)
+					storage.restore_cleanup_error = "[storage.restore_cleanup_error]; [release_error]"
+		storage.cleanup_world_operation()
 		try
 			if(operation.mutation_started)
-				map_storage.reset_player_restoration()
+				storage.reset_player_restoration()
 		catch(var/exception/reset_error)
 			world.log << "World-save player cleanup failed: [reset_error]"
-		map_storage.last_error = "[e] on [e.file]:[e.line]"
+		storage.last_error = primary_failure
 		operation.finish(FALSE)
-		world.log << "World-save import failed: [map_storage.last_error]"
+		world.log << "World-save import failed: [storage.last_error]"
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
 		return FALSE
 	operation.finish(TRUE)
@@ -953,7 +1042,7 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/allocate_saved_level(target_z)
 	return building_allocate_level(target_z, TRUE, dimension_reservation)
 
-/map_storage/proc/prepare_saved_dimensions(list/expected_intent)
+/map_storage/proc/prepare_saved_dimensions(list/expected_intent, datum/persistence_world_operation/operation)
 	if(dimension_budget_hold)
 		// Admission failed before native growth. Preserve its original diagnostic;
 		// never let a failed automatic import later overwrite the saved world.
@@ -984,7 +1073,11 @@ var/global/datum/persistence_admission_identity
 		if(!valid) throw EXCEPTION("Prospective saved world failed validation: [last_error]")
 		// Full structural/coordinate/metadata validation has completed before the
 		// first allocation. Allocation may append only, never replace mapped turfs.
+		if(operation) operation.authorize_restore_mutation(src)
 		dimension_recovery_required = TRUE
+		if(operation)
+			operation.mutation_started = TRUE
+			if(operation.restart_transaction) operation.restart_transaction.import_started = TRUE
 		for(var/z = world.maxz + 1, z <= target_z, z++)
 			if(!allocate_saved_level(z) || world.maxz != z)
 				throw EXCEPTION("Saved level allocation failed; preserve files and restart before retrying")

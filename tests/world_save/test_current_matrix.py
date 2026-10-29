@@ -16,6 +16,9 @@ import unittest
 from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
+WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contract', ROOT/'tests/world_save/workflow_contract.py')
+WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
+WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
 HERE = ROOT/'tests/world_save'
 
 
@@ -84,6 +87,10 @@ class CurrentMatrix(unittest.TestCase):
         cls.historical = {path: subprocess.check_output(['git','show','d0ffbfb2335eb735756b998f3f2ff617c28f144b:'+path],cwd=ROOT)
                           for path in ('code/modules/persistence/loading.dm','code/modules/organs/wound.dm')}
         cls.old_reader = subprocess.check_output(['git','show','75890d883190355e430f9958fd102864ee88429a:code/modules/persistence/loading.dm'],cwd=ROOT)
+        cls.master_workflow = subprocess.check_output(['git','show',
+            'eedc9862fcb7b2b7c3617c6972965fafa650e51a:.github/workflows/test.yml'],cwd=ROOT,text=True)
+        cls.feature_durable = subprocess.check_output(['git','show',
+            'f97c2940b0b1202ed97f5f413bd1a4a6f24e0962:tests/world_save/run-durable-world.py'],cwd=ROOT,text=True)
 
     def setUp(self):
         self.enterContext(patch.object(socket,'socket',side_effect=AssertionError('Socket forbidden')))
@@ -119,17 +126,12 @@ class CurrentMatrix(unittest.TestCase):
 
     def test_workflow_only_threads_identity_and_every_selected_case_reaches_identity_gate(self):
         workflow = (ROOT/'.github/workflows/test.yml').read_text()
-        archive = ' --byond-archive "$PWD/BYOND/pinned.zip"'
-        old = self.old_workflow
-        # This contract owns the persistence blocks, including their guards/bounds.
-        # CI artifact provenance outside them has separate CI-policy regressions.
+        WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
+        master = self.master_workflow
         for step in STEPS:
             marker='      - name: '+step+'\n'
-            before=old.split(marker,1)[1].split('      - name:',1)[0]
-            after=workflow.split(marker,1)[1].split('      - name:',1)[0]
-            # Round-metadata already had the reviewed argument before this change.
-            lines=[line if 'run-round-metadata.py' in line else line.replace(archive,'') for line in after.splitlines(keepends=True)]
-            self.assertEqual(''.join(lines), before)
+            self.assertEqual(workflow.split(marker,1)[1].split('\n',1)[0],
+                             master.split(marker,1)[1].split('\n',1)[0])
         calls=selected_calls(workflow)
         self.assertEqual(len(calls),58)
         for path,args in calls:
@@ -171,7 +173,11 @@ class CurrentMatrix(unittest.TestCase):
             selected.assert_not_called()
 
     def test_dimension_projection_is_exact_hashed_and_keeps_legacy_input(self):
-        module=load(HERE/'run-dimension-bootstrap.py'); old=self.old_dimension_probe
+        module=load(HERE/'run-dimension-bootstrap.py'); historical=self.old_dimension_probe
+        self.assertEqual(hashlib.sha256(historical.encode()).hexdigest(), '06bd4862bed6c66e735b4bfdf1f5d8d65786e40b5c396490be26bfc2622cbd5a')
+        with self.assertRaisesRegex(RuntimeError, 'hash or runtime assertion'): module.current_probe(historical)
+        old=(HERE/'dimension_bootstrap_probe.dm').read_text()
+        self.assertEqual(hashlib.sha256(old.encode()).hexdigest(), '8d8ed1aee114c8d4bf837b969e25dac779b8d1f1887c91d6afb5574bf73225d7')
         projected,receipt=module.current_probe(old)
         self.assertEqual(projected,old.replace('world.byond_build == 1681','world.byond_build == 1688',1))
         self.assertEqual(receipt['original_sha256'],hashlib.sha256(old.encode()).hexdigest())
@@ -216,13 +222,13 @@ class CurrentMatrix(unittest.TestCase):
             root=Path(directory); tools=self.tools(root); output=root/'packet'; output.mkdir()
             def popen(command,**kwargs):
                 cwd=Path(kwargs['cwd']); compiler=Path(command[0]).name in ('dm.exe','DreamMaker')
-                label='compile' if compiler else 'daemon:'+cwd.name
+                label='compile' if compiler else cwd.name
                 self.assertEqual(runtime.checks[-1],label); launched.append(label)
                 if compiler:
                     kwargs['stdout'].write(self.compile(command,cwd,runtime))
                     if drift: runtime.verifier.verify_linux.side_effect=ValueError('member changed')
                 else:
-                    writer=cwd.name.startswith('write'); count=int(cwd.name[-1]) if writer else 3 if cwd.name in ('positive','allocation-failure','exact-post') or control else 2
+                    writer=cwd.name.startswith('write'); count=int(cwd.name[-1]) if writer else 3 if cwd.name in ('positive','custody-positive','allocation-failure','exact-post') or control else 2
                     (cwd/'map_saves').mkdir(exist_ok=True); (cwd/'map_saves/seed.sav').write_bytes(b'synthetic seed')
                     (cwd/'runtime.log').write_text('clean')
                     (cwd/'result.txt').write_text('FAIL: rejected save allocated levels' if control and not writer else 'PASS')
@@ -242,7 +248,7 @@ class CurrentMatrix(unittest.TestCase):
         for control in (None,'preflight'):
             error,launched,checks,receipt=self.dimension(control)
             self.assertIsNone(error); self.assertEqual(launched,checks)
-            self.assertEqual(len(launched),28 if control is None else 5)
+            self.assertEqual(len(launched),31 if control is None else 5)
             self.assertEqual(receipt['runtime_projection']['contract'],'current-516.1688')
         error,launched,checks,_=self.dimension(wrong_build=True)
         self.assertIsInstance(error,RuntimeError); self.assertEqual(len(launched),2)
@@ -276,15 +282,15 @@ class CurrentMatrix(unittest.TestCase):
                     result=dict(done=1,checks=20)
                     if '--startup-only' in flags: (output/'startup-result.json').write_text('{"startup_only":1}')
                     if '--wounds' in flags:
-                        result=dict(done=1,checks=141,roundtrips=18)
+                        result=dict(done=1,checks=142,roundtrips=18)
                         if control:
                             receipt=json.loads((output/'receipt.json').read_text())
-                            result=dict(done=0,checks=4,error='Cannot read null.max_damage',source=receipt['wound_control_source'],line=394)
+                            result=dict(done=0,checks=5,error='Cannot read null.max_damage',source=receipt['wound_control_source'],line=394)
                     elif '--lifecycle-shutdown' in flags:
                         result.update(intent_hash=hashlib.md5((saves/'restart_intent.json').read_bytes()).hexdigest(),generation='fixture')
                         if control: (saves/'restart_intent.json').unlink()
                     elif control:
-                        result=dict(done=0,checks=11 if control=='preflight' else 9 if control=='reclaim-order' else 20,error=errors[control])
+                        result=dict(done=0,checks=12 if control=='preflight' else 10 if control=='reclaim-order' else 20,error=errors[control])
                     (output/'metadata-result.json').write_text(json.dumps(result))
                     return NS(returncode=0,stdout='',stderr='')
                 flags=[str(tools) if token=='$PWD/BYOND/byond/bin' else token for token in flags]
@@ -293,7 +299,7 @@ class CurrentMatrix(unittest.TestCase):
                         patch.object(subprocess,'run',side_effect=run), patch('builtins.print'):
                     module.main()
                 self.assertEqual(launched,runtime.checks)
-                self.assertEqual(len(launched),4 if '--dimension-bootstrap' in flags else 2)
+                self.assertEqual(len(launched),7 if '--dimension-bootstrap' in flags else 2)
                 if control=='wound-restore':
                     self.assertEqual((output/'receipt.json').exists(),True)
 
@@ -428,7 +434,24 @@ class CurrentMatrix(unittest.TestCase):
         markers={'tests/world_save/run-durable-world.py':"        result_path = output / 'metadata-result.json'",
                  'tests/world_save/run-string-path.py':"    actual = read(output / 'result.txt').strip()"}
         for path,marker in markers.items():
-            self.assertEqual(self.old_sources[path].split(marker,1)[1],(ROOT/path).read_text().split(marker,1)[1])
+            reference = self.old_sources[path]
+            if path.endswith('run-durable-world.py'):
+                # Master and feature differ only by the added offline-client
+                # check in these result counts; preserve every other oracle.
+                master_tail = reference.split(marker,1)[1]
+                changes = (
+                    ("        if args.wounds and not args.negative_control:\n", "        # 141 wound assertions plus the generated offline-client startup check.\n        if args.wounds and not args.negative_control:\n"),
+                    ("result.get('checks') != 141", "result.get('checks') != 142"),
+                    ("result.get('checks') != 4:", "result.get('checks') != 5:"),
+                    ("# Four operation-admission checks precede the malformed-wire guard.\n            if args.negative_control == 'preflight' and result.get('checks') != 11:", "# Includes four operation-admission checks and the offline startup check.\n            if args.negative_control == 'preflight' and result.get('checks') != 12:"),
+                    ("# Includes the export operation-release assertion before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:", "# Includes export operation-release and offline startup checks before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:"),
+                )
+                for before, after in changes:
+                    self.assertEqual(master_tail.count(before), 1)
+                    master_tail = master_tail.replace(before, after, 1)
+                self.assertEqual(master_tail, self.feature_durable.split(marker,1)[1])
+                reference = self.feature_durable
+            self.assertEqual(reference.split(marker,1)[1],(ROOT/path).read_text().split(marker,1)[1])
         def function(source,name):
             return ast.dump(next(n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name==name))
         self.assertEqual(function(self.old_graph,'adjudicate'),function((HERE/'run-durable-graph.py').read_text(),'adjudicate'))

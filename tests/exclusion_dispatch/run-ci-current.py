@@ -13,6 +13,7 @@ from preparation import git
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 VERSION = '516.1688'
+EXTRA_DIAGNOSTIC = re.compile(r'unexpected runtime|\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b|invalid file', re.I)
 
 
 def module(name, path):
@@ -29,11 +30,25 @@ def source_identity():
 
 
 def validate_build(log, diagnostics):
-    if (re.findall(r'^DM compiler version[^\r\n]*', log, re.M) != ['DM compiler version ' + VERSION]
-            or not re.search(r'^probe.dmb - 0 errors, 0 warnings \(.+\)$', log, re.M)
+    lines = log.splitlines()
+    banners = [line for line in lines if re.search(r'DM compiler version', line, re.I)]
+    results = [line for line in lines if re.search(r'\berrors?\b|\bwarnings?\b', line, re.I)]
+    summary = (r'probe\.dmb - 0 errors, 0 warnings '
+               r'\(\d{1,2}/\d{1,2}/\d{2,4} \d{1,2}:\d{2}(?::\d{2})? (?:am|pm)\)')
+    if (len(log.encode('utf-8')) > 1024 * 1024 or banners != ['DM compiler version ' + VERSION]
+            or len(results) != 1 or not re.fullmatch(summary, results[0])
+            or lines.index(banners[0]) >= lines.index(results[0])
             or re.search(r'invalid file|file not found|cannot open', log, re.I)
-            or diagnostics.search(log)):
+            or diagnostics.search(log) or EXTRA_DIAGNOSTIC.search(log)):
         raise RuntimeError('Exact 516.1688 clean compilation required')
+
+
+def validate_observed_result(result):
+    if (type(result.get('byond_version')) is not int or result['byond_version'] != 516 or
+            type(result.get('byond_build')) is not int or result['byond_build'] != 1688):
+        raise RuntimeError('Observed fixture runtime is not exactly 516.1688')
+    if type(result.get('target_failures')) is not int or result['target_failures'] != 0:
+        raise RuntimeError('Original-target positive assertion failed')
 
 
 def execute(args, *, ci=None, runtime=None):
@@ -96,6 +111,7 @@ def execute(args, *, ci=None, runtime=None):
             verify(mode + ':after-daemon')
             result = json.loads((work / 'result.json').read_text())
             ci.validate_result(mode, result, log)
+            validate_observed_result(result)
             summary['modes'][mode] = result
         summary['status'] = 'passed'
     except BaseException as error:

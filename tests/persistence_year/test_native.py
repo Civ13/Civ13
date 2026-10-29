@@ -41,8 +41,9 @@ class NativePacketTests(unittest.TestCase):
                 self.assertFalse(list(output.glob("*.dmb")))
                 self.assertFalse((output / "daemon.log").exists())
                 self.assertEqual(production.read_bytes(), original)
-                copies = list(output.glob("*_2.dm"))
-                self.assertEqual(len(copies), int(control is not None))
+                generated = receipt['generated_sources']
+                copies = [output / generated['code/modules/persistence/functions.dm']] if control else []
+                self.assertEqual('code/modules/persistence/functions.dm' in generated, control is not None)
                 if copies:
                     source = copies[0].read_text()
                     if control == "year-helper":
@@ -50,7 +51,7 @@ class NativePacketTests(unittest.TestCase):
                     elif control == "year-load":
                         self.assertNotIn("map.apply_persistence_age_floor()", source)
                     else:
-                        self.assertIn("map.apply_persistence_age_floor()\n\t\tmap_storage.restore_durable_world()", source)
+                        self.assertIn("map.apply_persistence_age_floor()\n\t\tstorage.restore_durable_world()", source)
 
 
 if __name__ == "__main__":

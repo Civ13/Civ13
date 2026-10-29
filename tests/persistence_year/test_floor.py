@@ -96,9 +96,9 @@ def wiring(mode, setup, load):
     setup = uncomment(setup)
     assert setup.count(CALL) == 1
     assert '\tif (config.allowedgamemodes == "PERSISTENCE")\n\t\tmap.persistence = TRUE\n\t\t' + CALL in setup
-    restore = uncomment(proc(load, "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction)"))
+    restore = uncomment(proc(load, "/datum/controller/gameticker/proc/loadmap(datum/persistence_restart_transaction/transaction, list/expected_intent)"))
     assert restore.count(CALL) == 1
-    assert restore.index("map_storage.load_map_metadata()") < restore.index("map_storage.restore_durable_world()") < restore.index(CALL) < restore.index("map_storage.restore_round_state(src, saved_round)")
+    assert restore.index("storage.load_map_metadata()") < restore.index("storage.restore_durable_world()") < restore.index(CALL) < restore.index("storage.restore_round_state(src, saved_round)")
     assert "\n\t\t" + CALL + "\n" in restore
 
 

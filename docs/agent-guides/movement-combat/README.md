@@ -182,3 +182,21 @@ claim. Preserve mining progress/owner cleanup and ordinary null callback order.
 The gather disabled-source hashes project reviewed master; refresh them only
 after verifying all four full-file projections. Idle-metabolism extraction must
 project the disabled helper before finding its conditional proc declaration.
+
+<!-- 2026-10-11: extraction vehicle graph -->
+Modular car wheels are contained in their connected frames; the controller is
+also nested in a frame and steering in the driver seat. Use get_turf() for their
+coordinates. tests/extraction/vehicle_probe.dm checks physical transfer only;
+it does not establish durable garage ownership or cargo/passenger extraction.
+
+<!-- 2026-10-12: native path starting tile -->
+`cirrAstar()` includes the starting turf in its returned path. Discard leading
+current-turf entries before calling `step_towards()`, especially when replanning
+on every decision. Otherwise a successful path can repeatedly produce no move.
+
+<!-- 2026-10-13: city zombie pursuit cancellation -->
+City zombie cached paths must clear immediately on lost perception, even while
+idle wandering is on cooldown. Track pursuit separately from target_mob because
+native deletion can clear the reference first. The city fixture and
+--city-pursuit-negative-control exercise the stale route; compile-only does not
+execute those native assertions.

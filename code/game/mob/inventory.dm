@@ -40,6 +40,7 @@
 //set disable_warning to disable the 'you are unable to equip that' warning.
 //unset redraw_mob to prevent the mob from being redrawn at the end.
 /mob/proc/equip_to_slot_if_possible(obj/item/W as obj, slot, del_on_fail = FALSE, disable_warning = FALSE, redraw_mob = TRUE)
+	if (W?.extraction_surface_source) return FALSE
 	if (!istype(W)) return FALSE
 	if (!persistence_movement_allowed(W, src)) return FALSE
 
@@ -63,6 +64,7 @@
 	return equip_to_slot_if_possible(W, slot, TRUE, TRUE, FALSE)
 
 /mob/proc/equip_to_slot_or_drop(obj/item/W as obj, slot)
+	if (W?.extraction_surface_source) return FALSE
 	if (!equip_to_slot_if_possible(W, slot, TRUE, TRUE, FALSE))
 		if (W) W.persistence_set_loc(get_turf(src))
 

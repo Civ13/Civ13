@@ -49,7 +49,7 @@ class HistoricalWoundCompatibility(unittest.TestCase):
                 return self.historical[command[2].split(':', 1)[1]].decode('utf-8')
             if command[1:] == ['rev-parse', 'HEAD']:
                 return 'offline-identity\n'
-            self.assertEqual(command[1:], ['diff'])
+            self.assertEqual(command[1:], ['diff', 'HEAD'])
             return b''
 
         with tempfile.TemporaryDirectory() as directory, \

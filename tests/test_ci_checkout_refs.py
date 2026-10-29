@@ -241,6 +241,55 @@ class CheckoutRefsTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
+    def test_manual_baseline_and_aggregate_prepare_separate_exact_base_checkouts(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text(encoding='utf-8')
+        comparison = "${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}"
+        baseline_job = workflow.split('\n  baseline:\n', 1)[1].split('\n  evidence-checker:\n', 1)[0]
+        aggregate_job = workflow.split('\n  ci-required:\n', 1)[1]
+        for job in (baseline_job, aggregate_job):
+            preparation = job.split('      - name: Prepare exact comparison commit\n', 1)[1].split('\n      - ', 1)[0]
+            self.assertIn('          BASE_REF: ' + comparison + '\n', preparation)
+            self.assertIn('          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}\n', preparation)
+            self.assertIn('scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"', preparation)
+            self.assertIn('          CI_BASE: ' + comparison + '\n', job)
+        with tempfile.TemporaryDirectory(prefix='manual-ci-refs-') as directory:
+            root = Path(directory); origin = root / 'origin'; origin.mkdir()
+            def git(*args, cwd=origin):
+                return subprocess.check_output(['git', *args], cwd=cwd, stderr=subprocess.PIPE, text=True).strip()
+            git('init', '-q'); git('config', 'user.email', 'fixture@example.invalid'); git('config', 'user.name', 'CI fixture')
+            (origin / 'README.md').write_text('base', encoding='utf-8')
+            git('add', '.'); git('commit', '-qm', 'base'); base = git('rev-parse', 'HEAD')
+            (origin / 'README.md').write_text('head', encoding='utf-8')
+            git('commit', '-qam', 'head'); head = git('rev-parse', 'HEAD')
+            previous = os.getcwd()
+            try:
+                for name in ('baseline', 'aggregate'):
+                    clone = root / name
+                    git('clone', '-q', '--depth=1', origin.as_uri(), str(clone))
+                    self.assertNotEqual(subprocess.run(['git', 'cat-file', '-e', base + '^{commit}'], cwd=clone, capture_output=True).returncode, 0)
+                    os.chdir(clone)
+                    refs.prepare(head, base, 'workflow_dispatch')
+                    self.assertEqual(git('rev-parse', 'HEAD', cwd=clone), head)
+                    eligibility = {'action': None, 'metadata_valid': True,
+                                   **{key: {'eligible': key != 'gating', 'reason': 'manual fixture'}
+                                      for key in ('compile', 'native', 'gating')}}
+                    with patch.object(baseline, 'ROOT', clone), patch.dict(os.environ, {'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '2'}):
+                        receipt = baseline.selection_receipt(base, head, False, False, [], 'manual', 'workflow_dispatch', eligibility)
+                        import json
+                        receipt_path = clone / 'selection.json'
+                        receipt_path.write_text(json.dumps(receipt), encoding='utf-8')
+                        self.assertEqual(baseline.load_selection(receipt_path, head, base, selection_attempt='2'), receipt)
+                        with self.assertRaisesRegex(ValueError, 'Selection provenance mismatch'):
+                            baseline.load_selection(receipt_path, head, head, selection_attempt='2')
+                        with self.assertRaisesRegex(ValueError, 'run_attempt'):
+                            baseline.load_selection(receipt_path, head, base, selection_attempt='1')
+                    self.assertEqual(receipt['requested_base'], base)
+                    self.assertEqual(receipt['head'], head)
+                    self.assertEqual(receipt['comparison']['status'], 'available')
+                    self.assertEqual(receipt['comparison']['paths'], ['README.md'])
+            finally:
+                os.chdir(previous)
+
     def test_fetch_timeout_fails_closed(self):
         with patch.object(refs, 'git', side_effect=subprocess.TimeoutExpired('git', 90)):
             with self.assertRaises(subprocess.TimeoutExpired):

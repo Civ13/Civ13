@@ -16,12 +16,23 @@ world
 	var/number = 0
 	var/turf/destination
 	var/area/current_area
+var/custody_reservations = 0
+/datum/persistence_restore_policy/dimension_fixture
+/datum/persistence_restore_attempt/dimension_fixture
+	before_mutation()
+		custody_reservations++
+		check(!allocation_calls && world.maxz == 2, "custody reservation precedes first allocation")
+		if(world.params["case"] == "custody-denied") return FALSE
+		if(world.params["case"] == "custody-binding") storage.restore_policy = null
+		return TRUE
 var/allocation_calls = 0
 var/checks = 0
 /proc/check(condition, message)
 	checks++
 	if(!condition) throw EXCEPTION(message)
 /map_storage/dimension_fixture/allocate_saved_level(target_z)
+	if(findtext(world.params["case"], "custody-") == 1)
+		check(custody_reservations == 1 && persistence_active_operation.restore_reserved, "allocation requires reserved custody")
 	allocation_calls++
 	var/result = ..()
 	if(world.params["case"] == "allocation-failure") return FALSE
@@ -77,7 +88,7 @@ var/checks = 0
 		text2file(json_encode(R), "map_saves/round.json")
 /proc/dimension_read()
 	var/case_name = world.params["case"]
-	if(!(case_name in list("positive", "matching", "budget", "multi-budget", "unmeasured", "multi-unmeasured"))) dimension_mutate(case_name)
+	if(!(case_name in list("positive", "matching", "budget", "multi-budget", "unmeasured", "multi-unmeasured", "custody-positive", "custody-denied", "custody-binding"))) dimension_mutate(case_name)
 	if(case_name == "budget") world_z_budget.configure("new_z_cell_budget", "100")
 	if(case_name == "multi-budget") world_z_budget.configure("new_z_cell_budget", "150")
 	var/marker = file2text("map_saves/save_complete.txt")
@@ -95,7 +106,16 @@ var/checks = 0
 		intent = list("version" = 1, "generation" = trim(marker), "metadata" = md5(file2text("map_saves/map.txt")), "round" = round_hash)
 		text2file(json_encode(intent), "map_saves/restart_intent.json")
 		intent_snapshot = file2text("map_saves/restart_intent.json")
-	var/accepted = map_storage.prepare_saved_dimensions(intent)
+	if(findtext(case_name, "custody-") == 1)
+		map_storage.restore_policy = new /datum/persistence_restore_policy/dimension_fixture
+		operation.restore_policy = map_storage.restore_policy
+		operation.restore_attempt = new /datum/persistence_restore_attempt/dimension_fixture
+		operation.restore_attempt.storage = map_storage
+		operation.restore_attempt.policy = map_storage.restore_policy
+	var/accepted = map_storage.prepare_saved_dimensions(intent, operation)
+	if(findtext(case_name, "custody-") == 1)
+		check(custody_reservations == 1, "dimension custody callback called exactly once")
+		check(operation.mutation_started == (case_name == "custody-positive"), "dimension custody rejection leaves operation nonmutating")
 	check(!map_storage.validation_maxz && !map_storage.dimension_bootstrap_busy, "validation context leaked")
 	check(file2text("map_saves/save_complete.txt") == marker && md5(file2text("map_saves/round.json")) == round_hash, "bootstrap changed generation files")
 	if(case_name == "allocation-failure" || case_name == "exact-post")
@@ -106,7 +126,7 @@ var/checks = 0
 		check(!map_storage.Save_World() && map_storage.dimension_recovery_required && file2text("map_saves/save_complete.txt") == marker, "failed allocation allowed save overwrite")
 		check(locate(8, 6, 2) == original && sentinel.loc == original && sentinel.number == 77, "allocation failure changed mapped world")
 		return
-	if(case_name != "positive" && case_name != "matching")
+	if(case_name != "positive" && case_name != "matching" && case_name != "custody-positive")
 		if(case_name == "unmeasured" || case_name == "multi-unmeasured")
 			check(!accepted, "unmeasured saved target accepted")
 			check(findtext(map_storage.last_error, "UNMEASURED:") > 0, "unmeasured refusal diagnostic missing")
@@ -123,7 +143,7 @@ var/checks = 0
 	check(accepted, "bootstrap rejected valid save: [map_storage.last_error]")
 	check(world.maxz == (case_name == "matching" ? 2 : 3), "saved dimensions not allocated")
 	check(allocation_calls == (case_name == "matching" ? 0 : 1), "allocation count differs")
-	if(case_name == "positive") check(istype(locate(8, 6, 3), /turf/sky/building), "shared allocator did not create building sky")
+	if(case_name == "positive" || case_name == "custody-positive") check(istype(locate(8, 6, 3), /turf/sky/building), "shared allocator did not create building sky")
 	check(locate(8, 6, 2) == original && sentinel.loc == original, "bootstrap replaced existing map")
 	check(map_storage.validate_world_save(), "normal exact validation rejected allocated save")
 	check(!map_storage.Load_World() && operation.current(map_storage, "load"), "nested import bypassed dimension operation")

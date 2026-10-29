@@ -1,3 +1,17 @@
+## Extraction integration baseline
+
+The source oracle now pins extraction head `a8d3950f08aaa55db59ec5f20777a475b2db95bb` before its master integration. This preserves the already-reviewed restore-admission wrappers and cleanup exclusions while applying master's explicit reserved-lighting policy to both dispatch variants. It does not certify extraction recovery or restore performance. Historical native receipts and allocations remain historical; this change does not authorize the held native runner.
+
+## Historical current-master reconciliation (2026-10-24)
+
+The merged source runner checks the historical extraction projection with
+bounded-save, pre-round admission and save-vote additions. It binds the checked-out
+head and event base to Git, reapplies the reviewed extraction and lighting
+projections to the event base, and checks committed fixture and inherited helper
+inputs. Conflicting evolution, dirty sources or mismatched event identities fail
+closed. Offline preparation also requires explicit immutable base/head identities;
+there is no fixed-source fallback. No native evidence is claimed for this merge.
+
 ## Public current-master reconciliation (2026-10-28)
 
 The live reference is the immutable event base, supplied through `CI_BASE` and
@@ -14,9 +28,11 @@ also checks that base against the dispatch event's named input before any launch
 
 `validate_current_master` preserves complete-file equality after adding only the
 public lighting branch's missing two fullbright exclusions and transient area-owner
-guard. The event base can precede either addition or already contain both. Partial
-or changed existing policy fails; the candidate is never normalized. This preserves
-#3105's current-base comparison and its bounded-save blocks as upstream evolves.
+guard. Extraction-descended heads additionally require the exact reviewed custody
+projection applied to the immutable event base. The event base can precede either
+lighting addition or already contain both. Partial or changed existing policy fails;
+the candidate is never normalized. This preserves #3105's current-base comparison
+and its bounded-save blocks as upstream evolves.
 Both dispatch variants receive the same lighting policy; only three list hooks are
 reconstructed. The movable throw guard precedes its later inherited process hook.
 Collector selection remains unchanged with its symbol undefined in the fixture.
@@ -32,6 +48,9 @@ test seed. Its preserved reconciliation assertions compare the immutable candida
 `2d8b3c152bf321c442e154240e52bb41c71c1688`, rather than comparing a moving checkout
 to that old seed. Neither checkpoint is the live runner base. The source-only
 entry point independently validates the actual event base and checked-out head.
+The candidate and the `3b0be7a4` historical runner are retained as checksummed,
+lossless encoded text snapshots because their squash-merged source branch is gone;
+they are used only for historical tests, never as live source or native evidence.
 No production change or native acceptance is introduced by this test reconciliation.
 All native holds/version gates remain.
 
@@ -316,3 +335,5 @@ all master diagnostics exactly. Tests compare those reconstructed hooks against
 immutable `5ac2df336b717f4ca2ccc60f2697b76ab4f2e019` and reject diagnostic drift.
 The reference never comes from candidate source. Earlier baseline descriptions
 above document the historical evidence, not this current integration.
+
+Source preparation accepts a proven positive ancestry path in a shallow checkout, but rejects negative ancestry results when a shallow boundary could hide the path. Missing or unverifiable history is rejected before fixture output; the frozen historical source files do not replace the ancestry proof.

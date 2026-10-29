@@ -837,6 +837,9 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 	density = FALSE
 	opacity = FALSE
 	var/obj/structure/vehicleparts/axis/link = null
+	get_saved_vars()
+		. = ..()
+		. |= "link"
 
 	New()
 		..()

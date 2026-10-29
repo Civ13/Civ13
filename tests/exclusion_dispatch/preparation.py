@@ -3,8 +3,11 @@ import json
 from pathlib import Path
 import re
 import subprocess
+from historical_fixtures import text as historical_text
 
-from source_contract import current_lighting_policy, reconstruct_list_baseline, validate_current_master
+from source_contract import (current_lighting_policy, reconstruct_list_baseline, validate_current_master,
+                             project_merged_source, resolve_event_projection, replay_reviewed_merge, has_ordered_release_history, require_complete_history,
+                             MERGE_BASE, MERGE_MASTER)
 
 PATH = 'code/modules/persistence/functions.dm'
 INHERITED = (
@@ -13,12 +16,32 @@ INHERITED = (
     ('code/modules/1713/active_training.dm', '/mob/living/human/persistence_runtime_var(key)'),
 )
 FIXTURE = tuple('tests/exclusion_dispatch/' + name for name in (
-    'run.py', 'run-ci.py', 'run-ci-current.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm'))
+    'run.py', 'run-ci.py', 'run-ci-current.py', 'source_contract.py', 'preparation.py', 'resources.py', 'probe.dm',
+    'historical_fixtures.py', 'fixtures/manifest.json',
+    'fixtures/extraction-reviewed-functions.dm.txt', 'fixtures/reconciliation-base-functions.dm.txt',
+    'fixtures/extraction-human-corpse-decay.dm.txt', 'fixtures/seed-human-corpse-decay.dm.txt',
+    'fixtures/extraction-abandoned-items.dm.txt', 'fixtures/seed-abandoned-items.dm.txt',
+    'fixtures/extraction-active-training.dm.txt', 'fixtures/seed-active-training.dm.txt'))
 
 
 def git(repo, *arguments):
     return subprocess.check_output(['git', *arguments], cwd=repo, text=True,
                                    encoding='utf-8', stderr=subprocess.PIPE, timeout=15)
+
+
+def has_extraction_history(repo, head):
+    command = ['git', 'merge-base', '--is-ancestor', MERGE_BASE, head]
+    try:
+        result = subprocess.run(command, cwd=repo, text=True, encoding='utf-8',
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15)
+    except (OSError, subprocess.SubprocessError) as error:
+        raise ValueError('Cannot verify extraction ancestry; Git failed or timed out') from error
+    if result.returncode == 0:
+        return True
+    if result.returncode == 1:
+        require_complete_history(repo, 'extraction ancestry')
+        return False
+    raise ValueError(f'Cannot verify extraction ancestry; Git exited {result.returncode}: {result.stderr.strip()}')
 
 
 def identities(repo, base, head, event_path=None, event_name=None, github_actions=False):
@@ -73,8 +96,22 @@ def prepare(repo, base, head, **event):
             raise ValueError('Working input differs from checked-out head: ' + path)
         current[path] = text
     old = committed(base, PATH)
-    validate_current_master(old, current[PATH])
+    # A branch descended from extraction must retain its complete reviewed
+    # custody projection even if it otherwise matches the lighting-only base.
+    extraction_history = has_extraction_history(repo, head)
+    projection = 'lighting-only'
+    if extraction_history:
+        feature = historical_text(MERGE_BASE, PATH)
+        master = historical_text(MERGE_MASTER, PATH)
+        reviewed = project_merged_source(feature)
+        _, projection = resolve_event_projection(repo, identity, feature, current[PATH], master, reviewed,
+                                                 ordered_release=has_ordered_release_history(repo, head))
+    else:
+        validate_current_master(old, current[PATH])
     for path, _ in INHERITED:
-        if current[path] != committed(base, path):
+        pinned = committed(base, path)
+        if projection == 'feature-base':
+            pinned = replay_reviewed_merge(pinned, historical_text(MERGE_BASE, path), historical_text(MERGE_MASTER, path))
+        if current[path] != pinned:
             raise ValueError('Inherited helper drift from event base: ' + path)
-    return identity, reconstruct_list_baseline(current_lighting_policy(old)), current
+    return identity, reconstruct_list_baseline(current[PATH]), current, projection

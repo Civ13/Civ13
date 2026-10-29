@@ -201,3 +201,9 @@ production request/reboot/whitelist bodies in a disposable OpenDream world.
 Bot control uses nonblocking flock and returns busy (75) without systemctl or
 cooldown writes under contention. The draft unit remains disabled pending
 independent game supervision and native bot-restart/game-survival acceptance.
+
+<!-- 2026-10-11: cancellable voting -->
+Votes expose terminal vote handles with generation-bound ballots and immutable
+deadlines. Retain and cancel handles when a caller's lifetime ends; completion
+callbacks run after detachment and may start another vote. See docs/voting.md
+and tests/extraction/vote_probe.dm; adapters isolate restart/deployment effects.

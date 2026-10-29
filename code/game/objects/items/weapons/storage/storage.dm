@@ -360,6 +360,7 @@
 //This proc return TRUE if the item can be picked up and FALSE if it can't.
 //Set the stop_messages to stop it from printing messages
 /obj/item/weapon/storage/proc/can_be_inserted(obj/item/W as obj, stop_messages = FALSE)
+	if (W?.extraction_surface_source) return FALSE
 	if (!istype(W)) return //Not an item
 
 	if (usr && usr.isEquipped(W) && !usr.canUnEquip(W))
@@ -418,6 +419,7 @@
 //such as when picking up all the items on a tile with one click.
 /obj/item/weapon/storage/proc/handle_item_insertion(obj/item/W as obj, prevent_warning = FALSE)
 	if (!istype(W)) return FALSE
+	if (W.extraction_surface_source) return FALSE
 	if (!persistence_movement_allowed(W, src)) return FALSE
 	if (usr)
 		usr.remove_from_mob(W)
@@ -457,6 +459,7 @@
 //Call this proc to handle the removal of an item from the storage item. The item will be moved to the atom sent as new_target
 /obj/item/weapon/storage/proc/remove_from_storage(obj/item/W as obj, atom/new_location)
 	if (!istype(W)) return FALSE
+	if (W?.extraction_surface_source) return FALSE
 	if (!persistence_movement_allowed(W, new_location ? new_location : get_turf(src))) return FALSE
 
 

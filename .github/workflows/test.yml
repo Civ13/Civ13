@@ -110,7 +110,7 @@ jobs:
         timeout-minutes: 2
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
@@ -264,6 +264,13 @@ jobs:
           python3 -B tests/world_save/test_round_start_announcement.py -v
           python3 -B tests/world_save/test_irrigation_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_round_metadata_toolchain.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_graph_fixture_dependencies.py -v
+          python3 -B -m unittest discover -s tests/world_save -p test_wound_compatibility.py -v
+      - name: Test continuous persistence round contracts offline
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_round') || inputs.persistence_integration_regressions == true
+        run: python3 -B -m unittest discover -s tests/persistence_round -v
       - name: Test save movement and physical sleep guards offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/save_movement')
         run: python3 -B -m unittest discover -s tests/save_movement -v
@@ -890,6 +897,97 @@ jobs:
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --byond-archive "$GITHUB_WORKSPACE/BYOND/pinned.zip" --output "$RUNNER_TEMP/sprites.json"
           /usr/bin/python3 tests/sprites/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --byond-archive "$GITHUB_WORKSPACE/BYOND/pinned.zip" --output "$RUNNER_TEMP/sprites-negative.json" --negative-control
 
+      - name: Verify extraction accounts, equipment, safe hub and provenance control
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/extraction')
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe store
+          /usr/bin/python3 tests/extraction/run_crypto.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/extraction/run_crypto.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --negative-control
+          /usr/bin/python3 tests/extraction/run_ipc.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/extraction/run_ipc.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --proof-negative-control
+          /usr/bin/python3 tests/extraction/run_ipc.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --publication-negative-control
+          git clone --no-checkout https://github.com/Valgorithms/Civilizationbot.git "$RUNNER_TEMP/extraction-bot-contract"
+          git -C "$RUNNER_TEMP/extraction-bot-contract" checkout --detach be8545fc0a279573343d24bfb61876d877b7f24a
+          /usr/bin/python3 tests/extraction/run_economics.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --php /usr/bin/php --bot-root "$RUNNER_TEMP/extraction-bot-contract" --bot-head be8545fc0a279573343d24bfb61876d877b7f24a --output "$RUNNER_TEMP/extraction-economic-roundtrip"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --insurance-fixture-output "$RUNNER_TEMP/extraction-insurance-roundtrip"
+          /usr/bin/php tests/extraction/insurance_bot_compatibility.php "$RUNNER_TEMP/extraction-bot-contract" "$RUNNER_TEMP/extraction-insurance-roundtrip"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe restart
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe settlement
+          /usr/bin/python3 tests/extraction/test_recovery.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/extraction/test_map_environment.py
+          /usr/bin/python3 tests/extraction/check_catalog.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe npc --npc-insurance-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --corpse-release-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --economic-payment-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --room-payment-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --supply-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe city
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe city --city-presence-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vote-negative-control stale
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vote-negative-control cancel
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vote-negative-control reentry
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vote-negative-control disruptive_creation
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vote-negative-control disruptive_pending
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vote-negative-control disruptive_result
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe insurance
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control debit
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control visibility
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control premium
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control car
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control return
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe groups --group-negative-control fee
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-loss-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control roster
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control reservation
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control issuance
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control persistence
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-purchase-negative-control
+            /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-raid-negative-control debit
+            /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe mode --vehicle-raid-negative-control credit
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --provenance-negative-control
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --workshop-negative-control wear
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe equipment --workshop-negative-control cleanup
+
+      - name: Diagnose extraction vehicle custody positive
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles
+
+      - name: Diagnose extraction vehicle custody roster omission
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control roster
+
+      - name: Diagnose extraction vehicle custody reservation omission
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control reservation
+
+      - name: Diagnose extraction vehicle custody issuance omission
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control issuance
+
+      - name: Diagnose extraction vehicle custody persistence omission
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && needs.changes.outputs.extensive == 'true' }}
+        shell: bash
+        run: |
+          source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/extraction/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --probe vehicles --vehicle-custody-negative-control persistence
+
       - name: Verify generated atlas assets and native bounded viewer
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/crafting_atlas')
         shell: bash
@@ -1048,7 +1146,7 @@ jobs:
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/exclusion_dispatch') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/reserved_lighting') || inputs.save_latency_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: exclusion-native-${{ github.event.pull_request.head.sha || github.sha }}
+          name: exclusion-native-1688-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
             ${{ runner.temp }}/exclusion-native/
             !${{ runner.temp }}/exclusion-native/**/*.dmb
@@ -1079,6 +1177,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
       - name: Verify native wall appearance and neighbor work
+        id: wall_appearance
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wall_appearance')
         shell: bash
         run: |
@@ -1088,7 +1187,7 @@ jobs:
           python3 tests/wall_appearance/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control duplicate --output "$RUNNER_TEMP/wall-duplicate.json"
           python3 tests/wall_appearance/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control overlay --output "$RUNNER_TEMP/wall-overlay.json"
       - name: Retain wall appearance comparison evidence
-        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wall_appearance'))
+        if: always() && needs.changes.result == 'success' && steps.wall_appearance.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wall_appearance'))
         uses: actions/upload-artifact@v4
         with:
           name: wall-appearance-comparison
@@ -1362,6 +1461,7 @@ jobs:
         shell: bash
 
       - name: Verify direct nuclear fallout scope and controls
+        id: radiation_scope
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/radiation_scope')
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -1369,7 +1469,7 @@ jobs:
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control cross-z --output-dir "$RUNNER_TEMP/radiation-scope/cross-z"
           python3 tests/radiation_scope/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control normalization --output-dir "$RUNNER_TEMP/radiation-scope/normalization"
       - name: Retain nuclear fallout scope evidence
-        if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/radiation_scope'))
+        if: always() && needs.changes.result == 'success' && steps.radiation_scope.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/radiation_scope'))
         uses: actions/upload-artifact@v4
         with:
           name: radiation-scope
@@ -1385,6 +1485,26 @@ jobs:
             ${{ runner.temp }}/crafting-handles/
           retention-days: 7
           if-no-files-found: warn
+      - name: Verify persistence admission adapter and ordinary restore compatibility
+        id: persistence_admission
+        if: ${{ !cancelled() && needs.changes.result == 'success' && steps.compile.outcome == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_admission')) }}
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          mkdir -p "$RUNNER_TEMP/persistence-admission"
+          export TMPDIR="$RUNNER_TEMP/persistence-admission"
+          python3 -B -m unittest discover -s tests/exclusion_dispatch -p 'test_source.py' -v
+          python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
+          python3 tests/persistence_admission/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recheck
+          python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --roundtrip
+      - name: Retain persistence admission evidence
+        if: always() && steps.persistence_admission.outcome != 'skipped' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_admission'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: persistence-admission
+          path: ${{ runner.temp }}/persistence-admission/
+          if-no-files-found: error
       - name: Native reserved lighting parity and causal controls
         shell: bash
         timeout-minutes: 35
@@ -1442,10 +1562,10 @@ jobs:
           mkdir -p "$RUNNER_TEMP/lighting-recovery"
           export TMPDIR="$RUNNER_TEMP/lighting-recovery"
           python3 tests/world_save/test_lighting_corner_allocation.py
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip"
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --lighting
+          python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --lighting
           for control in lighting-export lighting-legacy lighting-rebuild lighting-opacity lighting-view lighting-eager lighting-shared; do
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --lighting --negative-control "$control"
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --lighting --negative-control "$control"
           done
         shell: bash
       - name: Retain lighting recovery evidence
@@ -1550,13 +1670,18 @@ jobs:
           mkdir -p "$RUNNER_TEMP/world-save"
           export TMPDIR="$RUNNER_TEMP/world-save"
           bash tests/world_save/run.sh
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --wounds
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --wounds --negative-control wound-restore
-          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip"
-          python3 tests/world_save/run-dimension-bootstrap.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control preflight
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control restore
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control preflight
-          python3 tests/world_save/run-round-metadata.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control integrity
+          python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control metadata
+          python3 tests/world_save/run-wrapper.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control recovery
+          python3 tests/world_save/run-reader-contract.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-reader-contract.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control binding
+          python3 tests/world_save/run-reader-contract.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control close
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --wounds
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --wounds --negative-control wound-restore
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
+          python3 tests/world_save/run-dimension-bootstrap.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
+          python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin" --negative-control restore
+          python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin" --negative-control preflight
+          python3 tests/world_save/run-round-metadata.py --current-linux-toolchain --byond-bin "$PWD/BYOND/byond/bin" --negative-control integrity
           python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip"
           for control in generation alias binding; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control"
@@ -1569,17 +1694,17 @@ jobs:
           for control in clock omission timer infinity; do
             python3 tests/world_save/run-durable-graph.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control"
           done
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --startup-only
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --startup-only
           for profile in gaia europe; do
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --profile "$profile"
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --profile "$profile" --dimension-bootstrap
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --profile "$profile" --recovery-reconnect
-              python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --profile "$profile" --lifecycle-shutdown
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile"
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --dimension-bootstrap
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --recovery-reconnect
+              python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile "$profile" --lifecycle-shutdown
           done
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --profile europe --lifecycle-shutdown --negative-control shutdown-return
-          python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --recovery-reconnect --negative-control reclaim-order
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --profile europe --lifecycle-shutdown --negative-control shutdown-return
+          python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --recovery-reconnect --negative-control reclaim-order
           for control in season preflight reachability callback timer-restore; do
-            python3 tests/world_save/run-durable-world.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --negative-control "$control"
+            python3 tests/world_save/run-durable-world.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control "$control"
           done
         shell: bash
       - name: Verify bounded admitted save traversal and backup recovery
@@ -1840,6 +1965,8 @@ jobs:
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control nodrop
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control restart
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control noop
+          /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control icon-readiness
+          /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control icon-callback
           /usr/bin/python3 tests/human_corpse_decay/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control runtime-parent
 
       - name: Verify bounded GC outcome and reference triage
@@ -2147,12 +2274,12 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin"
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control vote
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control deferred
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
-          /usr/bin/python3 tests/persistence_round/run.py --byond-bin "$PWD/BYOND/byond/bin" --negative-control startup
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control vote
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control ticker
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control deferred
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control save
+          /usr/bin/python3 tests/persistence_round/run.py --byond-archive "$PWD/BYOND/pinned.zip" --byond-bin "$PWD/BYOND/byond/bin" --negative-control startup
       - name: Retain continuous-round integration evidence
         if: always() && needs.changes.result == 'success' && steps.persistence_round.outcome != 'skipped'
         uses: actions/upload-artifact@v4
@@ -2254,7 +2381,7 @@ jobs:
         timeout-minutes: 2
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.comparison_base || github.event.pull_request.base.sha || github.event.before || '' }}
           HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
       - name: Retain dependency job outcomes before validating artifacts
