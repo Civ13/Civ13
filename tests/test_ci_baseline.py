@@ -52,6 +52,15 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_crop_stage_step_selection_preserves_shared_farming_fallback(self):
+        suite = ci.SUITES['crop_stage_step']
+        self.assertEqual(suite['files'], ('tests/crop_stage_step/test_source.py',))
+        for path in ('tests/crop_stage_step/test_source.py',
+                     'tests/crop_stage_step/baseline_growth.json',
+                     'tests/plant_lifecycle/run.ps1'):
+            self.assertIn('crop_stage_step', self.selected([path]))
+        self.assertEqual(self.selected(['code/game/objects/farming.dm']), set(ci.SUITES))
+
     def test_furniture_joinery_inputs_select_offline_contracts(self):
         for path in ('tests/furniture_joinery/test_contract.py',
                      'code/game/objects/items/stacks/furniture_joinery.dm',
