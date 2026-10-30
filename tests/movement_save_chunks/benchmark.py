@@ -50,12 +50,43 @@ def cases():
             for baseline in (1, 0)]
 
 
+def instrument_capture_checks(source: str):
+    """Label only the isolated copied serializer; never change production bytes."""
+    labels = {}
+    lines = source.splitlines(keepends=True)
+    for number, line in enumerate(lines, 1):
+        if '.check()' in line or line.strip() == 'check()':
+            label = f'saving.dm:{number}'
+            labels[label] = line.strip()
+            lines[number - 1] = line.replace('check()', f'check("{label}")')
+    if len(labels) != 7: raise ValueError('Capture check callsites changed; review instrumentation')
+    text = ''.join(lines)
+    anchor = '\tproc/check()\n'
+    if text.count(anchor) != 1: raise ValueError('Capture checker declaration changed')
+    text = text.replace(anchor, '\tvar/profile_previous_site = "start"\n\tvar/profile_previous_usage = 0\n\tvar/profile_last_path\n\tproc/check(profile_site)\n')
+    message = 'elapsed_ds=[elapsed_ds]")'
+    if text.count(message) != 1: raise ValueError('Capture budget diagnostic changed')
+    text = text.replace(message, 'elapsed_ds=[elapsed_ds] previous_check=[profile_previous_site] current_check=[profile_site] interval_usage=[current_usage - profile_previous_usage] last_path=[profile_last_path]")')
+    for anchor in ('\tproc/reserve_bytes(count)\n', '\t\tmoving_save_chunk.paths += absolute\n', '\tchunk.start_usage = world.tick_usage\n'):
+        if text.count(anchor) != 1: raise ValueError('Capture profile anchor changed: ' + anchor.strip())
+    text = text.replace('\tproc/reserve_bytes(count)\n', '\t\tprofile_previous_site = profile_site\n\t\tprofile_previous_usage = current_usage\n\tproc/reserve_bytes(count)\n')
+    text = text.replace('\t\tmoving_save_chunk.paths += absolute\n', '\t\tmoving_save_chunk.paths += absolute\n\t\tmoving_save_chunk.profile_last_path = absolute\n')
+    text = text.replace('\tchunk.start_usage = world.tick_usage\n', '\tchunk.start_usage = world.tick_usage\n\tchunk.profile_previous_usage = chunk.start_usage\n')
+    return text, labels
+
+
 def prepare(output: Path):
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()): raise ValueError('output must be a new or empty isolated directory')
     hashes = {}
+    production_hashes = {}
+    labels = {}
     for name in FILES:
         data = (ROOT / name).read_bytes()
+        production_hashes[name] = hashlib.sha256(data).hexdigest()
+        if name == 'code/modules/persistence/saving.dm':
+            instrumented, labels = instrument_capture_checks(data.decode())
+            data = instrumented.encode()
         target = output / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
@@ -66,7 +97,8 @@ def prepare(output: Path):
     (output / 'benchmark.dme').write_text(dme)
     hashes['benchmark.dme'] = hashlib.sha256(dme.encode()).hexdigest()
     receipt = dict(schema=1, execution='not_run', byond_version=VERSION,
-                   baseline='same-head feature-disabled roster', sources=hashes, cases=cases(),
+                   baseline='same-head feature-disabled roster', sources=hashes, production_sources=production_hashes, cases=cases(),
+                   instrumentation={'scope': 'isolated copied saving.dm only', 'check_labels': labels, 'timing': 'Label bookkeeping adds overhead; measured intervals are instrumented, not pure production timing. No per-check logging, yields or limit changes.'},
                    boundaries={'live_server': False, 'listener_control': 'fixture OpenPort(none), loopback-only daemon, no webclient; socket absence not measured', 'max_concurrency': 1},
                    missing_evidence=['native compilation', 'RSS/private memory', 'fresh-process restore'])
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))

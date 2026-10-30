@@ -24,6 +24,33 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertFalse(list(Path(folder).rglob('*.dmb')))
             native.assert_not_called()
 
+    def test_check_labels_modify_only_hashed_isolated_packet(self):
+        import hashlib
+        original_path = ROOT / 'code/modules/persistence/saving.dm'
+        original = original_path.read_bytes()
+        with tempfile.TemporaryDirectory() as folder:
+            receipt = bench.prepare(Path(folder))
+            name = 'code/modules/persistence/saving.dm'
+            copied = (Path(folder) / name).read_bytes()
+            self.assertEqual(original_path.read_bytes(), original)
+            self.assertEqual(receipt['production_sources'][name], hashlib.sha256(original).hexdigest())
+            self.assertEqual(receipt['sources'][name], hashlib.sha256(copied).hexdigest())
+            self.assertNotEqual(original, copied)
+            self.assertEqual(len(receipt['instrumentation']['check_labels']), 7)
+            text = copied.decode()
+            self.assertIn('interval_usage=[current_usage - profile_previous_usage]', text)
+            self.assertIn('work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1', text)
+            self.assertEqual(text.count('sleep('), original.decode().count('sleep('))
+            self.assertEqual(text.count('world.log'), original.decode().count('world.log'))
+            self.assertNotIn('profile_previous_site', original.decode())
+            for label in receipt['instrumentation']['check_labels']:
+                self.assertIn('check("' + label + '")', text)
+        for anchor in ('\tproc/reserve_bytes(count)\n', '\t\tmoving_save_chunk.paths += absolute\n', '\tchunk.start_usage = world.tick_usage\n'):
+            with self.subTest(anchor=anchor), self.assertRaisesRegex(ValueError, 'profile anchor changed'):
+                bench.instrument_capture_checks(original.decode().replace(anchor, anchor.rstrip() + ' // changed\n', 1))
+        with self.assertRaisesRegex(ValueError, 'callsites changed'):
+            bench.instrument_capture_checks(original.decode().replace('moving_save_chunk.check()', 'moving_save_chunk.check(FALSE)', 1))
+
     def test_prepare_refuses_nonempty_destination(self):
         with tempfile.TemporaryDirectory() as folder:
             (Path(folder) / 'sentinel').write_text('keep')
