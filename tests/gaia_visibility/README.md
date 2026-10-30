@@ -40,8 +40,8 @@ is explicitly suppressed by staged guards.
 before the early global initializer, normal world startup, configuration loader,
 map metadata worker scheduling, client/admin/webhook admission and preference
 saving. `bootstrap.dm` replaces those paths with an in-memory configuration and
-only lighting/visibility processing. Prepared macros route native extension calls
-and shell calls to counting no-ops; world Export/Import/Topic/Reboot/settings are
+only lighting/visibility processing. Prepared macros route native extension calls to counting no-ops, while exact
+shell-using procedure guards deny shell execution without rewriting game types; world Export/Import/Topic/Reboot/settings are
 blocked. No OS security settings are changed. These are source adapters, not an
 established confinement result; compilation and native bootstrap remain unverified.
 

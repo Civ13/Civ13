@@ -1,12 +1,23 @@
 """Exact entry-point adapters for the staged fixture, never production files."""
 PREFIX = b'''// Test-only native/shell boundaries; no operating-system settings are changed.
-#define shell gaia_visibility_denied_shell
 #define call_ext(X,Y) call(/proc/gaia_visibility_denied_native)
-#define SetConfig gaia_visibility_denied_setting
+#define SetConfig(A,B,C) gaia_visibility_denied_setting()
 '''
 
 # Guards precede every original body, including global construction before New.
 GUARDS = {
+    'code/game/mob/living/chat_overlay.dm': (
+        ('/mob/proc/play_tts(message,var/mob/living/speaker)', '\treturn gaia_visibility_denied_shell()\n'),
+    ),
+    'code/processes/python.dm': (
+        ('/process/python/proc/execute(var/command, var/list/py_args = list())', '\treturn gaia_visibility_denied_shell()\n'),
+    ),
+    'code/modules/admin/verbs/bot_service.dm': (
+        ('/client/proc/control_civilizationbot()', '    return gaia_visibility_denied_shell()\n'),
+    ),
+    'code/setup.dm': (
+        ('/proc/setup_everything(datum/persistence_area_startup/startup)', '\treturn FALSE\n'),
+    ),
     'code/world.dm': (
         ('/datum/global_init/New()', '\treturn gaia_visibility_global_init()\n'),
         ('/world/New()', '\treturn gaia_visibility_start()\n'),
@@ -47,5 +58,12 @@ def adapt(path, data):
         if len(matches) != 1:
             raise ValueError('isolation entry drift: ' + signature)
         line = matches[0]
-        text = text.replace(line, line + guard, 1)
+        # DM's static set directives remain before executable statements.
+        # No global shell macro: /shell types and constructor calls are unrelated.
+        index = text.index(line) + len(line)
+        for following in text[index:].splitlines(keepends=True):
+            if following.strip() and not following.lstrip().startswith('set '):
+                break
+            index += len(following)
+        text = text[:index] + guard + text[index:]
     return text.encode()

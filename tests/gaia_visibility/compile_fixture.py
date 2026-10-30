@@ -51,5 +51,9 @@ if __name__ == '__main__':
     p.add_argument('--byond-bin', required=True, type=Path)
     args = p.parse_args()
     result = compile_packet(args.head, args.output, args.byond_bin)
+    # Mirror bounded diagnostics into CI logs; the complete log remains an artifact.
+    log = args.output / "evidence/compiler.log"
+    if log.is_file():
+        print(log.read_text(errors="replace")[-32000:])
     print(json.dumps(result, sort_keys=True))
     raise SystemExit(0 if result['status'] == 'passed' else 1)

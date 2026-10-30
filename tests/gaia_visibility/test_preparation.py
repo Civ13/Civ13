@@ -63,6 +63,28 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('code/dependency.dm', dme)
         self.assertIn('tests/gaia_visibility/fixture.dm', dme)
 
+    def test_shell_types_and_constructors_are_not_macro_targets(self):
+        prefix = prepare.isolation.PREFIX.decode()
+        self.assertNotIn('#define shell', prefix)
+        self.assertIn('#define SetConfig(A,B,C) gaia_visibility_denied_setting()', prefix)
+        self.assertNotIn('#define SetConfig gaia_', prefix)
+        path = 'code/modules/admin/verbs/bot_service.dm'
+        source = ('/client/proc/control_civilizationbot()\n'
+                  '    set category = "Server"\n'
+                  '    set name = "Service"\n'
+                  '    shell("fixture command must be unreachable")\n'
+                  '/obj/item/cannon_ball/shell\n'
+                  '    var/shell = null\n'
+                  '/proc/fixture_make_shell()\n'
+                  '    return new/obj/item/cannon_ball/shell(get_turf(src))\n')
+        adapted = prepare.isolation.adapt(path, source.encode()).decode()
+        self.assertIn('/obj/item/cannon_ball/shell\n', adapted)
+        self.assertIn('var/shell = null', adapted)
+        self.assertIn('new/obj/item/cannon_ball/shell(get_turf(src))', adapted)
+        denial = adapted.index('return gaia_visibility_denied_shell()')
+        self.assertLess(adapted.index('set name = "Service"'), denial)
+        self.assertLess(denial, adapted.index('shell("fixture command'))
+
     def test_guarded_bootstrap_and_empty_owned_runtime(self):
         self.stage()
         root = self.root / 'out'
