@@ -2,7 +2,12 @@
 from collections import defaultdict
 from types import SimpleNamespace as N
 import unittest
-from test_contract import ROOT, TREE, P, Values, compile_proc, environment
+import importlib.util
+from pathlib import Path
+_spec = importlib.util.spec_from_file_location('root_noop_contract', Path(__file__).with_name('test_contract.py'))
+_contract = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_contract)
+ROOT, TREE, P, Values, compile_proc, environment = (_contract.ROOT, _contract.TREE, _contract.P, _contract.Values, _contract.compile_proc, _contract.environment)
 
 class NoOpRefresh(unittest.TestCase):
     def test_frame_publication_uses_owned_identity_and_withdrawal(self):
