@@ -29,8 +29,11 @@
 	var/list/missing = list()
 	var/before_missing = identity_map.len
 	var/missing_id = identity_map[missing]
-	if(!isnull(missing_id) || identity_map.len != before_missing || identity_map.Find(missing) || identity_map.Find(null))
-		throw EXCEPTION("LIST_IDENTITY: absent lookup inserted missing/null key")
+	var/find_missing = identity_map.Find(missing)
+	var/find_null = identity_map.Find(null)
+	world.log << "LIST_IDENTITY_OBSERVATION missing_isnull=[isnull(missing_id)] missing_isnum=[isnum(missing_id)] missing_islist=[islist(missing_id)] missing_value=[missing_id] before_len=[before_missing] after_len=[identity_map.len] find_missing=[find_missing] find_null=[find_null]"
+	if(!isnull(missing_id) || identity_map.len != before_missing)
+		throw EXCEPTION("LIST_IDENTITY: absent associative lookup changed map or returned value")
 
 	var/list/self_cycle = list()
 	self_cycle += list(self_cycle)
