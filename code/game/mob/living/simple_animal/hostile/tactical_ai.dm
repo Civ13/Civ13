@@ -375,11 +375,23 @@
 	playsound(src.loc, attack_sound, 100, TRUE, 2)
 	custom_emote(1, "[attack_verb] [target_mob]!")
 
+	// This path applies damage directly, bypassing attack_generic's audit logs.
+	// Keep the same attempted-attack semantics, independent of armor or Help.
+	if (isliving(target_mob))
+		append_attack_log(text("\[[time_stamp()]\] <font color='red'>attacked [target_mob.name] ([target_mob.ckey])</font>"))
+		target_mob.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>was attacked by [name] ([ckey])</font>"))
 	var/damage = pick(melee_damage_lower, melee_damage_upper)
 	if (ishuman(target_mob))
 		var/mob/living/human/H = target_mob
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
+		// Observe before damage: the same blow may incapacitate the victim.
+		// Never disclose an unseen animal or infer injury from the attack emote.
+		var/client/observing_client = H.client
+		var/observed_attack = observing_client && observing_client.mob == H && observing_client.eye == H && H.stat == CONSCIOUS && H.sleeping <= 0 && !H.blinded && !H.eye_blind && !(H.sdisabilities & BLIND) && !H.find_trait("Blind") && !H.paralysis && H.see_invisible >= invisibility && (src in view(H))
+		var/previous_damage = H.getBruteLoss() + H.getBurnLoss()
+		var/attached_before = affecting && affecting.owner == H
+		var/injury_limb = affecting ? affecting.limb_name : null
 		if (istype(src, /mob/living/simple_animal/mouse))
 			try_infect(H, 3, "plague")
 
@@ -390,6 +402,9 @@
 			visible_message("\The [src] bites off [H]'s limb!")
 			for(var/mob/living/human/NB in view(6, src))
 				NB.mood -= 10
+		var/lost_limb = attached_before && (!affecting || affecting.owner != H)
+		if (observed_attack && player_help_service && (lost_limb || H.getBruteLoss() + H.getBurnLoss() > previous_damage))
+			player_help_service.record_animal_injury(observing_client, H, src, injury_limb, lost_limb)
 		do_attack_animation(H)
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob

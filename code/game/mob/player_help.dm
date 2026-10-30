@@ -288,6 +288,23 @@ var/global/datum/player_help_service/player_help_service = new
 	// Queued chat can be dropped before it becomes visible; do not record it.
 	if (kind != "self_weapon_hit" && (!C.chat || !C.chat.is_ready || C.chat.client != C))
 		return
+	retain_injury(C, H, list("kind" = kind, "time" = limit_time()))
+
+// Called only after the animal attack confirms injury. Awareness is captured
+// before damage: the same hit may knock the victim unconscious. Never retain
+// attacker references, renamed labels, account names or raw admin attack logs.
+/datum/player_help_service/proc/record_animal_injury(client/C, mob/living/human/H, mob/living/simple_animal/animal, limb, lost_limb)
+	if (!C || !(C in clients) || !H || C.mob != H || H.client != C || !animal)
+		return
+	if ((lost_limb || !isnull(limb)) && !(limb in injury_body_parts()))
+		return
+	var/source = istype(animal, /mob/living/simple_animal/hostile/alligator) ? "alligator" : "animal"
+	retain_injury(C, H, list("kind" = lost_limb ? "animal_limb_loss" : "animal_damage", "time" = limit_time(), "source" = source, "body_part" = limb))
+
+/datum/player_help_service/proc/injury_body_parts()
+	return list("chest", "groin", "head", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot")
+
+/datum/player_help_service/proc/retain_injury(client/C, mob/living/human/H, list/event)
 	bind_body(C, H)
 	if (!(C in conversation_clients))
 		if (conversation_clients.len >= 128)
@@ -295,7 +312,7 @@ var/global/datum/player_help_service/player_help_service = new
 		// Track an injury-only session, without extending an existing conversation.
 		C.player_help_touched = limit_time()
 		conversation_clients |= C
-	C.player_help_injuries += list(list("kind" = kind, "time" = limit_time()))
+	C.player_help_injuries += list(event)
 	while (C.player_help_injuries.len > 6)
 		C.player_help_injuries.Cut(1, 2)
 
@@ -305,9 +322,25 @@ var/global/datum/player_help_service/player_help_service = new
 		return results
 	var/now = limit_time()
 	for (var/list/event in C.player_help_injuries)
-		if (!(event["kind"] in list("self_weapon_hit", "reported_projectile_hit", "reported_shrapnel_hit", "reported_hot_ground", "reported_freezing_feet")) || !isnum(event["time"]) || event["time"] > now || now - event["time"] >= 6000)
+		if (!(event["kind"] in list("self_weapon_hit", "reported_projectile_hit", "reported_shrapnel_hit", "reported_hot_ground", "reported_freezing_feet", "animal_damage", "animal_limb_loss")) || !isnum(event["time"]) || event["time"] > now || now - event["time"] >= 6000)
 			continue
-		results += list(list("kind" = event["kind"], "certainty" = "observed", "age_seconds" = round((now - event["time"]) / 10)))
+		var/list/row = list("kind" = event["kind"], "certainty" = "observed", "age_seconds" = round((now - event["time"]) / 10))
+		if (event["kind"] in list("animal_damage", "animal_limb_loss"))
+			if (!(event["source"] in list("alligator", "animal")) || ((event["kind"] == "animal_limb_loss" || !isnull(event["body_part"])) && !(event["body_part"] in injury_body_parts())))
+				continue
+			row["source"] = event["source"]
+			if (!isnull(event["body_part"]))
+				row["body_part"] = event["body_part"]
+		results += list(row)
+	return results
+
+// Fixed external body parts only, not a vars walk or internal organ diagnosis.
+/datum/player_help_service/proc/body_damage_context(mob/living/human/H)
+	var/list/results = list()
+	for (var/part in injury_body_parts())
+		var/obj/item/organ/external/O = H.get_organ(part)
+		var/present = O && O.owner == H
+		results += list(list("body_part" = part, "missing" = present ? FALSE : TRUE, "brute" = present ? round(max(0, min(1000, O.brute_dam))) : 0, "burn" = present ? round(max(0, min(1000, O.burn_dam))) : 0))
 	return results
 
 // Read public map metadata directly; never accept player text as server state.
@@ -334,6 +367,7 @@ var/global/datum/player_help_service/player_help_service = new
 		condition["active_effects"] = events
 		condition["inventory"] = inventory_context(H)
 		condition["recent_injuries"] = injury_context(H.client, H)
+		condition["body_damage"] = body_damage_context(H)
 		context["player"] = condition
 	return context
 

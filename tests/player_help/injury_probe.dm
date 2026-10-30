@@ -78,3 +78,41 @@
     probe_clients -= injury_client
     D.expire_conversations()
     check(!injury_client.player_help_injuries.len && !injury_client.player_help_turns.len, "disconnect clears injury and conversation state")
+
+    // Production retention/projection with fixture-owned client and external organs.
+    probe_clients += injury_client
+    injury_client.mob = injury_second
+    D.bind_body(injury_client, injury_second)
+    var/mob/living/simple_animal/hostile/alligator/injury_animal = new
+    injury_animal.name = "SECRET RENAMED ANIMAL"
+    D.record_animal_injury(injury_client, injury_second, injury_animal, "l_hand", TRUE)
+    var/list/animal_rows = D.injury_context(injury_client, injury_second)
+    var/list/animal_row = animal_rows[1]
+    check(animal_row["kind"] == "animal_limb_loss" && animal_row["source"] == "alligator" && animal_row["body_part"] == "l_hand", "confirmed limb-loss source has fixed public labels")
+    check(!findtext(json_encode(animal_rows), "SECRET"), "renamed animal identity is never retained")
+    D.record_animal_injury(injury_client, injury_first, injury_animal, "l_hand", TRUE)
+    D.record_animal_injury(injury_client, injury_second, injury_animal, "SECRET PART", TRUE)
+    check(D.injury_context(injury_client, injury_second).len == 1, "wrong body and unknown body part are rejected")
+    D.record_animal_injury(injury_client, injury_second, injury_animal, null, FALSE)
+    animal_rows = D.injury_context(injury_client, injury_second)
+    animal_row = animal_rows[2]
+    check(animal_rows.len == 2 && animal_row["kind"] == "animal_damage" && !("body_part" in animal_row), "rerolled damage retains source without guessing body part")
+    D.record_animal_injury(injury_client, injury_second, injury_animal, null, TRUE)
+    check(D.injury_context(injury_client, injury_second).len == 2, "limb loss requires a known detached limb")
+    var/obj/item/organ/external/injury_hand = new
+    injury_hand.owner = injury_second
+    injury_hand.brute_dam = 20
+    injury_hand.burn_dam = 2000
+    injury_second.probe_organs["l_hand"] = injury_hand
+    var/list/body_rows = D.body_damage_context(injury_second)
+    check(body_rows.len == 11, "body projection has fixed bounded parts")
+    for (var/list/body_row in body_rows)
+        if (body_row["body_part"] == "l_hand")
+            check(!body_row["missing"] && body_row["brute"] == 20 && body_row["burn"] == 1000, "own external damage is bounded")
+    injury_hand.owner = null
+    body_rows = D.body_damage_context(injury_second)
+    for (var/list/body_row in body_rows)
+        if (body_row["body_part"] == "l_hand")
+            check(body_row["missing"] && !body_row["brute"] && !body_row["burn"], "detached limb is missing not another object disclosure")
+    D.reset_conversation(injury_client)
+    probe_clients -= injury_client
