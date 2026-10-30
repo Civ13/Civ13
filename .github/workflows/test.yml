@@ -476,7 +476,7 @@ jobs:
       # Compile-only candidate fixture. Never invoke DreamDaemon or the DMB.
       - name: Compile exact Gaia visibility fixture without running it
         id: gaia_fixture_compile
-        if: needs.changes.outputs.game == 'true' && contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/gaia_visibility')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/gaia_visibility')
         timeout-minutes: 6
         shell: bash
         env:
