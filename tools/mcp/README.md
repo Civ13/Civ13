@@ -56,6 +56,9 @@ existing reader's operation/failure correlation and 60-second freshness rules.
 Both use capture-time observations, not a durable object identity. Timestamp
 validation does not provide nonce-based replay protection. Runtime access still
 requires separate authorization; configuring this source does not grant it.
+Recovery errors and any row coordinates are marked `error_correlation:
+uncorrelated`: status can retain an earlier failure across a later operation,
+and the adapter does not attach it to the current phase.
 
 ## Configure Codex
 

@@ -21,7 +21,7 @@ test('default off, fixed invocation, bounded output and isolated environment', a
  const disabled = createRuntimeAdapter({}, 'bridge');
  assert.equal(disabled.enabled, false); await assert.rejects(disabled.run('recovery'), /disabled/);
  const run = createRuntimeAdapter(env, 'fixed-bridge', fakeSpawn((child, executable, args, options) => {
-  assert.equal(executable, process.execPath); assert.deepEqual(args, ['-I','fixed-bridge','recovery']);
+  assert.equal(executable, process.execPath); assert.deepEqual(args, ['-I','-B','fixed-bridge','recovery']);
   assert.equal(options.shell, false); assert.equal(options.env.SECRET, undefined);
   assert.equal(options.env.CIV13_RUNTIME_ROOT, env.CIV13_RUNTIME_ROOT);
   child.stdout.write('{"ok":true,"ready":false}'); child.emit('close',0);
@@ -71,11 +71,19 @@ test('closing the adapter cancels its owned child', async () => {
 
 const python = process.env.CIV13_MCP_TEST_PYTHON || (process.env.pythonLocation && path.join(
  process.env.pythonLocation, ...(process.platform === 'win32' ? ['python.exe'] : ['bin','python3'])));
-test('real isolated Python bridge fails before transport when private configuration is absent', {skip: !python}, async () => {
+test('real isolated Python bridge creates no bytecode and fails before transport without configuration', {skip: !python}, async () => {
  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'civ13-mcp-runtime-empty-'));
  try {
-  const adapter = createRuntimeAdapter({...env,CIV13_RUNTIME_PYTHON:python,CIV13_RUNTIME_ROOT:dir},
-   path.join(import.meta.dirname, 'runtime_bridge.py'));
+  const toolDir = path.join(dir,'tools','mcp'), scriptDir = path.join(dir,'scripts','nomads-lifecycle');
+  const privateRoot = path.join(dir,'private-root');
+  await fs.mkdir(toolDir,{recursive:true}); await fs.mkdir(scriptDir,{recursive:true}); await fs.mkdir(privateRoot);
+  await fs.copyFile(path.join(import.meta.dirname,'runtime_bridge.py'),path.join(toolDir,'runtime_bridge.py'));
+  for (const file of ['agent_debug.py','variable_observability.py','read_blackout.py'])
+   await fs.copyFile(path.resolve(import.meta.dirname,'../../scripts/nomads-lifecycle',file),path.join(scriptDir,file));
+  const adapter = createRuntimeAdapter({...env,CIV13_RUNTIME_PYTHON:python,CIV13_RUNTIME_ROOT:privateRoot},
+   path.join(toolDir, 'runtime_bridge.py'));
   assert.deepEqual(await adapter.run('recovery'), {ok:false,error_code:'transport_unavailable'});
+  assert.equal((await fs.readdir(scriptDir)).includes('__pycache__'), false);
+  assert.equal((await fs.readdir(toolDir)).includes('__pycache__'), false);
  } finally { await fs.rm(dir,{recursive:true,force:true}); }
 });

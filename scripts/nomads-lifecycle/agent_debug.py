@@ -195,6 +195,7 @@ def recovery(root, revision, transport):
         raise ValueError('error')
     return dict(revision=revision, session=status['session'],
                 **{key: bool(status[key]) for key in flags}, error_code=classify(error),
+                error_correlation='uncorrelated' if error else None,
                 captured_zone_row=captured_zone_row(error, status),
                 debug=debug_state(status.get('debug')),
                 variable_identity=variables.identity_header(

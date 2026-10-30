@@ -16,7 +16,17 @@ class SelectionTests(unittest.TestCase):
     def test_mcp_changed_files_and_comparison_failure(self):
         for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
                      'tools/mcp/package-lock.json', '.github/workflows/mcp.yml',
-                     'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py'):
+                     'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
+                     'scripts/nomads-lifecycle/agent_debug.py',
+                     'scripts/nomads-lifecycle/variable_observability.py',
+                     'scripts/nomads-lifecycle/read_blackout.py',
+                     'tests/nomads_lifecycle/test_agent_debug.py',
+                     'tests/nomads_lifecycle/test_variable_observability.py',
+                     'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+                     'code/modules/persistence/restart_transaction.dm',
+                     'code/modules/persistence/nomads_lifecycle.dm',
+                     'code/modules/persistence/variable_observability.dm',
+                     'code/modules/persistence/zone_topology.dm'):
             with self.subTest(path=path), patch.object(selection.subprocess, 'check_output',
                                                         return_value=(path + '\0').encode()):
                 self.assertTrue(selection.select_mcp('a' * 40, 'b' * 40, 'pull_request'))
@@ -52,6 +62,9 @@ class SelectionTests(unittest.TestCase):
             (root / 'tools/mcp').mkdir(parents=True)
             (root / 'scripts').mkdir()
             (root / 'scripts/ci_checkout_refs.py').write_text('before', encoding='utf-8')
+            (root / 'scripts/nomads-lifecycle').mkdir()
+            for name in ('agent_debug.py', 'variable_observability.py', 'read_blackout.py'):
+                (root / 'scripts/nomads-lifecycle' / name).write_text('before', encoding='utf-8')
             for name in ('server.mjs', 'test.mjs'):
                 (root / 'tools/mcp' / name).write_text('before', encoding='utf-8')
             git('add', '.')
@@ -82,6 +95,21 @@ class SelectionTests(unittest.TestCase):
                 cwd=root, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual((root / 'helper-output').read_text(), 'mcp=true\n')
+            (root / 'helper-output').unlink()
+            base = git('rev-parse', 'HEAD')
+            for name in ('agent_debug.py', 'variable_observability.py', 'read_blackout.py'):
+                (root / 'scripts/nomads-lifecycle' / name).write_text('after', encoding='utf-8')
+                git('add', '.')
+                git('commit', '-qm', name)
+                head = git('rev-parse', 'HEAD')
+                output = root / ('reader-' + name)
+                result = subprocess.run([sys.executable, '-B', str(script), '--mcp-only', '--base', base,
+                    '--head', head, '--event', 'pull_request', '--output', str(output)],
+                    cwd=root, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(output.read_text(), 'mcp=true\n')
+                output.unlink()
+                base = head
 
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -62,6 +62,7 @@ class AgentTools(unittest.TestCase):
         result = m.run('recovery', self.root, self.revision, transport=self.query)
         self.assertTrue(result['ok'])
         self.assertEqual(result['data']['error_code'], 'lighting_owner_mismatch')
+        self.assertEqual(result['data']['error_correlation'], 'uncorrelated')
         self.assertTrue(result['data']['restart_hold'])
         self.assertFalse(result['data']['debug']['available'])
         for secret in (self.token, 'private-path', 'at 1,2,1'):

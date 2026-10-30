@@ -23,7 +23,7 @@ export function createRuntimeAdapter(env, bridge, spawnProcess = spawn) {
           CIV13_RUNTIME_SESSION:config[2], CIV13_RUNTIME_ROUND:config[3] };
         for (const key of ['SystemRoot', 'WINDIR']) if (env[key]) childEnv[key] = env[key];
         let child;
-        try { child = spawnProcess(executable, ['-I', bridge, method], {shell:false, windowsHide:true,
+        try { child = spawnProcess(executable, ['-I', '-B', bridge, method], {shell:false, windowsHide:true,
           stdio:['ignore','pipe','ignore'], env:childEnv}); }
         catch { active = false; reject(Error('Runtime adapter unavailable')); return; }
         let chunks = [], bytes = 0, settled = false;

@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tests/nomads_lifecycle'))
@@ -13,6 +14,15 @@ import test_variable_observability as variables_fixture
 spec = importlib.util.spec_from_file_location('runtime_bridge', ROOT / 'tools/mcp/runtime_bridge.py')
 bridge = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bridge)
+
+
+def variable_status():
+    # Use explicit inert values; this adapter test does not depend on unrelated
+    # movable implementation defaults or execute the game.
+    defaults = dict(throwing=0, throwmode=0, speed=0, range=0,
+                    dist_travelled=0, throw_speed=2, throw_range=7)
+    with patch.object(variables_fixture, 'production_throw_defaults', return_value=defaults):
+        return variables_fixture.status()
 
 
 class RuntimeBridgeTests(unittest.TestCase):
@@ -51,6 +61,7 @@ class RuntimeBridgeTests(unittest.TestCase):
         result = bridge.run('recovery', self.config, transport=self.exchange(status))
         self.assertTrue(result['ok'])
         self.assertEqual(result['captured_zone_row'], {'z': 2, 'y': 3})
+        self.assertEqual(result['error_correlation'], 'uncorrelated')
         self.assertEqual(result['progress']['transaction_phase'], 'restore')
         self.assertEqual(len(self.calls), 1)
         for forbidden in ('a' * 32, self.config['session'], 'private-path', str(self.root)):
@@ -61,13 +72,38 @@ class RuntimeBridgeTests(unittest.TestCase):
         old = self.recovery_status(); old['debug'].pop('observed_utc')
         self.assertEqual(bridge.run('recovery', self.config, transport=self.exchange(old))['error_code'], 'freshness_unavailable')
         old_header = self.recovery_status()
-        old_header['debug']['variables'] = variables_fixture.status()
+        old_header['debug']['variables'] = variable_status()
         old_header['debug']['variables']['utc'] = (datetime.now(timezone.utc) - timedelta(seconds=62)).strftime('%Y-%m-%d %H:%M:%S')
         self.assertEqual(bridge.run('recovery', self.config, transport=self.exchange(old_header))['error_code'], 'stale_snapshot')
 
+    def test_retained_error_is_not_attributed_to_current_or_idle_operation(self):
+        previous = self.recovery_status()
+        retained_error = previous['error']
+        prior = bridge.run('recovery', self.config, transport=self.exchange(previous))
+        self.assertEqual(prior['error_correlation'], 'uncorrelated')
+        current = self.recovery_status()
+        current['error'] = retained_error
+        current['debug']['progress'].update(kind='save', phase='capture', transaction_phase='save',
+                                            loading_z=None, saving_z=1)
+        later = bridge.run('recovery', self.config, transport=self.exchange(current))
+        self.assertEqual(later['progress']['kind'], 'save')
+        self.assertEqual(later['error_code'], 'captured_zone_row_missing')
+        self.assertEqual(later['captured_zone_row'], {'z': 2, 'y': 3})
+        self.assertEqual(later['error_correlation'], 'uncorrelated')
+        current['busy'] = 0
+        current['debug']['progress'].update(active=0, kind='idle', phase=None, saving_z=None,
+                                            transaction_phase='failed')
+        idle = bridge.run('recovery', self.config, transport=self.exchange(current))
+        self.assertEqual(idle['progress']['kind'], 'idle')
+        self.assertEqual(idle['captured_zone_row'], {'z': 2, 'y': 3})
+        self.assertEqual(idle['error_correlation'], 'uncorrelated')
+        self.assertEqual(current['error'], retained_error)
+        current['error'] = None
+        self.assertIsNone(bridge.run('recovery', self.config, transport=self.exchange(current))['error_correlation'])
+
     def test_variables_preserves_correlation_freshness_and_discards_object_details(self):
         status = dict(ok=1, revision=self.config['revision'], session=self.config['session'],
-                      debug={'variables': variables_fixture.status()})
+                      debug={'variables': variable_status()})
         result = bridge.run('variables', self.config, transport=self.exchange(status), now=variables_fixture.NOW)
         self.assertTrue(result['ok'])
         self.assertEqual(result['last_operation']['id'], 'operation-1')

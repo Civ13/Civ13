@@ -251,7 +251,18 @@ def select_mcp(base, head, event):
         raise RuntimeError('MCP selection could not compare base and head') from exc
     return any(path.startswith('tools/mcp/') or path in {
         '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'tests/test_ci_selection.py',
-        'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py'
+        'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
+        'scripts/nomads-lifecycle/agent_debug.py',
+        'scripts/nomads-lifecycle/variable_observability.py',
+        'scripts/nomads-lifecycle/read_blackout.py',
+        'tests/nomads_lifecycle/test_agent_debug.py',
+        'tests/nomads_lifecycle/test_variable_observability.py',
+        # Fixed production readers and phase-contract inputs; no general DM glob.
+        'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+        'code/modules/persistence/restart_transaction.dm',
+        'code/modules/persistence/nomads_lifecycle.dm',
+        'code/modules/persistence/variable_observability.dm',
+        'code/modules/persistence/zone_topology.dm'
     } for path in paths)
 
 

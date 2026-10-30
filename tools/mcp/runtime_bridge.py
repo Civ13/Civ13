@@ -37,7 +37,7 @@ def run(method, config, *, transport=None, now=None):
         return dict(ok=True, read_only=True, revision=revision, freshness=debug['freshness'],
                     age_seconds=debug['age_seconds'], tick=debug['tick'], progress=debug['progress'],
                     **{key: data[key] for key in ('ready', 'busy', 'restart_hold', 'restart_import_complete',
-                                                 'restart_intent', 'error_code', 'captured_zone_row')})
+                                                 'restart_intent', 'error_code', 'error_correlation', 'captured_zone_row')})
     kwargs = {'transport': transport} if transport else {}
     result = variable_observability.run(root=root, revision=revision, session=session,
                                         round_id=round_id, now=now, **kwargs)

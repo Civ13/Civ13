@@ -82,6 +82,10 @@ For the fixed missing captured-zone-row error, `recovery` can report only the
 numeric z and y within the status dimensions as `captured_zone_row`. Older
 messages, malformed values or missing dimensions produce null. Other exception
 text, paths and credentials remain withheld; coordinates are operational data.
+The lifecycle status can retain a previous error after a new operation begins.
+An error classification and its row are marked `error_correlation: uncorrelated`;
+they must not be attributed to the currently displayed phase. A null value means
+the status returned no error, not that past failures have been erased.
 
 ## Paired tiles and actual screenshots
 
