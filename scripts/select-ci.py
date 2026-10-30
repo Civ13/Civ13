@@ -250,7 +250,8 @@ def select_mcp(base, head, event):
     except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
         raise RuntimeError('MCP selection could not compare base and head') from exc
     return any(path.startswith('tools/mcp/') or path in {
-        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'tests/test_ci_selection.py'
+        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'tests/test_ci_selection.py',
+        'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py'
     } for path in paths)
 
 

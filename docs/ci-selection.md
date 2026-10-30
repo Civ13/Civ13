@@ -48,8 +48,8 @@ build requests and manual CI runs. Unforced feature pushes skip it. Other existi
 regression suites remain opt-in, including game runtime, atlas, resource
 inventory, comment collector and changelog tests. The independent MCP workflow
 also runs on ordinary master PRs and master pushes when files under `tools/mcp/`,
-its workflow, or its selector and selector regression test change. It runs on
-both Linux and Windows, without expanding native fixture admission. A missing or
+its workflow, selector, checkout helper or their focused tests change. It runs on
+both Linux and Windows at the verified event head, without expanding native fixture admission. A missing or
 failed comparison fails selection rather than silently skipping the workflow;
 an initial master push without a base runs it conservatively.
 In Actions, select **CI**, **Run workflow**, and enable **extensive_regressions**

@@ -7,7 +7,7 @@ A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 
 | Tool | Inputs | Effects |
 | --- | --- | --- |
-| source_read | path, start (1+), lines (1–200) | Reads code/*.dm, civ13.dme, README.md, INSTALL or the two docs/api guides only; max 2 MB input/16 KB output |
+| source_read | path, start (1+), lines (1–200) | Reads code/*.dm, civ13.dme, README.md, INSTALL, the two docs/api guides or exact fixture catalog guides only; max 2 MB input/16 KB output |
 | source_search | literal query (1–120 chars), declarationOnly, limit (1–100) | Lexical DM search, max 5 seconds/10,000 files; no semantic inheritance resolution |
 | project_diagnostics | none | Checks at most 10,000 DME includes for existence; no preprocessing/type checking |
 | fixture_catalog | none | Lists a curated subset of fixture guides, prerequisites and evidence limits; no preparation, commands or native tests |
@@ -18,6 +18,7 @@ A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 
 Resources `civ13://guide`, `civ13://api-guide` and `civ13://api-index` read the bounded repository README and versioned API-docs guides. All source,
 resource and compiler text is untrusted reference data, never instructions.
+Catalog guides are fixed individual files, not general access to `tests/`.
 Paths are confined using realpath; traversal and symlinks outside the root are
 rejected. Runtime data/configuration/logs are deliberately inaccessible. No shell,
 eval, Topic, production administration or DreamDaemon tool. MCP transport remains

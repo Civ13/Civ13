@@ -41,6 +41,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify checked-out head
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node -e "if (require('child_process').execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim() !== process.env.HEAD_REF) process.exit(1)"
       - uses: actions/setup-node@v4
         with:
           node-version: 24

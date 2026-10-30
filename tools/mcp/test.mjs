@@ -18,7 +18,10 @@ test('real stdio handshake, discovery, bounded calls and error isolation', async
   for (const fixture of catalog.structuredContent.fixtures) {
    assert.ok(fixture.guide && fixture.prerequisites && fixture.evidence);
    assert.equal(await (await import('node:fs/promises')).stat(path.resolve(import.meta.dirname,'../..',fixture.guide)).then(s => s.isFile()), true);
+   assert.equal((await call('source_read',{path:fixture.guide,lines:1})).isError,undefined);
   }
+  assert.equal((await call('source_read',{path:'tests/zone_persistence/probe.dm'})).isError,true);
+  assert.equal((await call('source_read',{path:'tests/season_transition/../zone_persistence/README.md'})).isError,true);
   assert.equal((await call('dm_reference_search',{query:' '})).isError,true);
   assert.equal((await call('dm_reference_read',{topic:'/list',length:16001})).isError,true);
   const read = await call('source_read',{path:'README.md',lines:2}); assert.equal(read.isError,undefined);
@@ -87,12 +90,17 @@ test('realpath rejects directory links escaping configured root', async () => {
  const repo = path.join(dir,'repo'), outside = path.join(dir,'outside');
  await fs.mkdir(repo); await fs.mkdir(outside);
  await fs.writeFile(path.join(outside,'escape.dm'),'private fixture');
+ await fs.writeFile(path.join(outside,'README.md'),'private guide');
  await fs.symlink(outside,path.join(repo,'code'),process.platform==='win32'?'junction':'dir');
+ await fs.mkdir(path.join(repo,'tests'));
+ await fs.symlink(outside,path.join(repo,'tests','season_transition'),process.platform==='win32'?'junction':'dir');
  const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs'),repo]});
  const client = new Client({name:'path-test',version:'1.0.0'});
  try {
   await client.connect(transport);
   const response = await client.callTool({name:'source_read',arguments:{path:'code/escape.dm'}});
   assert.equal(response.isError,true); assert.match(response.content[0].text,/escapes repository/);
+  const guide = await client.callTool({name:'source_read',arguments:{path:'tests/season_transition/README.md'}});
+  assert.equal(guide.isError,true); assert.match(guide.content[0].text,/escapes repository/);
  } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
 });

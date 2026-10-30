@@ -15,7 +15,8 @@ spec.loader.exec_module(selection)
 class SelectionTests(unittest.TestCase):
     def test_mcp_changed_files_and_comparison_failure(self):
         for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
-                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml'):
+                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml',
+                     'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py'):
             with self.subTest(path=path), patch.object(selection.subprocess, 'check_output',
                                                         return_value=(path + '\0').encode()):
                 self.assertTrue(selection.select_mcp('a' * 40, 'b' * 40, 'pull_request'))
@@ -36,6 +37,8 @@ class SelectionTests(unittest.TestCase):
         self.assertIn("if: needs.changes.outputs.mcp == 'true'", workflow)
         self.assertIn('--mcp-only', workflow)
         self.assertIn('scripts/ci_checkout_refs.py', workflow)
+        self.assertIn('ref: ${{ github.event.pull_request.head.sha || github.sha }}', workflow.split('  mcp:\n', 1)[1])
+        self.assertIn('Verify checked-out head', workflow)
 
     def test_mcp_selector_real_diff_and_no_output_on_failure(self):
         script = Path(__file__).resolve().parents[1] / 'scripts/select-ci.py'
@@ -47,6 +50,8 @@ class SelectionTests(unittest.TestCase):
                     *args], cwd=root, stderr=subprocess.PIPE, text=True).strip()
             git('init', '-q')
             (root / 'tools/mcp').mkdir(parents=True)
+            (root / 'scripts').mkdir()
+            (root / 'scripts/ci_checkout_refs.py').write_text('before', encoding='utf-8')
             for name in ('server.mjs', 'test.mjs'):
                 (root / 'tools/mcp' / name).write_text('before', encoding='utf-8')
             git('add', '.')
@@ -69,6 +74,14 @@ class SelectionTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertFalse(output.exists())
                 base = head
+            (root / 'scripts/ci_checkout_refs.py').write_text('after', encoding='utf-8')
+            git('add', '.')
+            git('commit', '-qm', 'helper-only')
+            result = subprocess.run([sys.executable, '-B', str(script), '--mcp-only', '--base', base,
+                '--head', git('rev-parse', 'HEAD'), '--event', 'pull_request', '--output', str(root / 'helper-output')],
+                cwd=root, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((root / 'helper-output').read_text(), 'mcp=true\n')
 
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:

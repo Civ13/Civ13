@@ -14,8 +14,9 @@ const server = new McpServer({ name: 'civ13-local', version: '1.0.0' });
 const children = new Set();
 let compiling = false;
 const inside = p => p === root || p.startsWith(root + path.sep);
+const fixtureGuides = new Set(fixtureCatalog.map(fixture => fixture.guide));
 async function source(relative) {
-  if (!/^(code\/.*\.dm|civ13\.dme|README\.md|INSTALL|docs\/api\/(README|index)\.md)$/.test(relative) || relative.includes('..') || relative.includes('\\')) throw Error('Source path is not allowed');
+  if ((!/^(code\/.*\.dm|civ13\.dme|README\.md|INSTALL|docs\/api\/(README|index)\.md)$/.test(relative) && !fixtureGuides.has(relative)) || relative.includes('..') || relative.includes('\\')) throw Error('Source path is not allowed');
   const absolute = await fs.realpath(path.resolve(root, relative));
   if (!inside(absolute)) throw Error('Source escapes repository');
   const stat = await fs.stat(absolute);
