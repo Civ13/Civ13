@@ -83,6 +83,14 @@
 		return
 	
 	statpanel_next_update = world.time + 10
+	if (status_tabs && statpanel_tab == "Status")
+		// Put the shared, fixed-label observation ahead of longer mob sections.
+		var/list/previous_stats = statpanel_data
+		statpanel_data = list()
+		var/list/player_status = player_status_observation()
+		add_stat("<b>World activity:</b>", player_world_activity(player_status))
+		add_stat("<b>Joining:</b>", player_join_status(player_status))
+		statpanel_data += previous_stats
 	
 	var/list/verbs_data = list()
 	var/list/all_verbs = list()

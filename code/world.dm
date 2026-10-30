@@ -330,6 +330,74 @@ var/world_topic_spam_protect_time = world.timeofday
 		target = " target=\"_blank\" rel=\"noopener noreferrer\""
 	return "<a href=\"[hub_status_text(url)]\"[target]>[hub_status_text(label)]</a>"
 
+// Only fixed public labels leave this snapshot. Never include error strings,
+// file paths, coordinates, sessions, operation IDs or diagnostic payloads.
+/proc/player_status_observation()
+	var/datum/persistence_world_operation/P = persistence_active_operation
+	var/recovery_hold = persistence_load_recovery_required
+	if(map_storage && (map_storage.dimension_recovery_required || map_storage.dimension_budget_hold)) recovery_hold = TRUE
+	if(persistence_startup_recovery_status == "unresolved" && !(P && P.kind == "load")) recovery_hold = TRUE
+	if(persistence_restart && ((persistence_restart.diagnostic_phase == "failed" && (persistence_restart.startup_hold || persistence_save_in_progress)) || (persistence_restart.diagnostic_phase == "readiness_unconfirmed" && !persistence_player_restore_ready))) recovery_hold = TRUE
+	return list(
+		"recovery_hold" = !!recovery_hold,
+		"kind" = P ? P.kind : null,
+		"phase" = P ? P.diagnostic_phase : null,
+		"startup_pending" = persistence_startup_recovery_status == "pending",
+		"restart_hold" = persistence_restart ? !!persistence_restart.startup_hold : FALSE,
+		"restart_busy" = persistence_restart ? !!persistence_restart.busy : FALSE,
+		"restart_phase" = persistence_restart ? persistence_restart.diagnostic_phase : null,
+		"persistence_busy" = !!persistence_save_in_progress,
+		"lifecycle_busy" = nomads_lifecycle ? !!nomads_lifecycle.busy : FALSE,
+		"maintenance_pending" = nomads_lifecycle ? !!nomads_lifecycle.maintenance_operation : FALSE,
+		"ticker_known" = !!ticker,
+		"map_known" = !!map,
+		"round_state" = ticker ? ticker.current_state : null,
+		"players_can_join" = ticker ? !!ticker.players_can_join : FALSE,
+		"entry_status" = !GLOB ? "unknown" : (GLOB.enter_allowed ? "open" : "locked"),
+		"character_unconfirmed" = !!(map && map_storage && persistence_bed_return_enabled() && (!persistence_player_restore_ready || map_storage.player_restoration_blocked()))
+	)
+
+/proc/player_world_activity(list/state)
+	if(state["recovery_hold"]) return "World recovery needs administrator attention."
+	if(state["kind"] == "save")
+		if(state["phase"] == "admitted") return "Preparing a world save."
+		if(state["phase"] == "candidate_validation") return "Validating the world save."
+		if(state["phase"] == "write_marker") return "Finishing the world save."
+		return "Saving the world."
+	if(state["kind"] == "load")
+		if(state["phase"] == "preflight" || state["phase"] == "allocate_levels") return "Validating and preparing the saved world."
+		if(state["phase"] == "metadata") return "Restoring world state."
+		if(state["phase"] == "players") return "Restoring player readiness."
+		return "Loading the saved world."
+	if(state["startup_pending"] || state["restart_hold"]) return "Preparing world recovery."
+	if(state["restart_busy"])
+		if(state["restart_phase"] == "notice") return "Maintenance is scheduled."
+		if(state["restart_phase"] == "post_save_validation" || state["restart_phase"] == "final_validation") return "Validating the saved world."
+		if(state["restart_phase"] == "intent_publication") return "Preparing the saved world for restart."
+		if(state["restart_phase"] == "shutdown") return "Server shutdown is in progress."
+		return "World maintenance is in progress."
+	if(state["lifecycle_busy"]) return "Preparing a save and shutdown."
+	if(state["maintenance_pending"]) return "Maintenance requested, shutdown is not yet confirmed."
+	if(state["persistence_busy"]) return "World work is in progress."
+	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting."
+	return "Server is running."
+
+/proc/player_join_status(list/state)
+	if(state["recovery_hold"]) return "World recovery needs administrator attention."
+	if(state["kind"] == "load") return "World is loading - please wait before joining."
+	if(state["kind"] == "save") return "World is saving - joining may be delayed."
+	if(state["startup_pending"] || state["restart_hold"]) return "World recovery is pending - please wait."
+	if(state["restart_busy"]) return "Joining is paused for maintenance - please wait."
+	if(state["persistence_busy"] || state["lifecycle_busy"]) return "World work is in progress - joining may be delayed."
+	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting - please wait."
+	if(state["round_state"] < GAME_STATE_PLAYING) return "Round has not started - please wait."
+	if(state["round_state"] != GAME_STATE_PLAYING) return "Round has finished - wait for the next round."
+	if(!state["players_can_join"]) return "Joining is temporarily unavailable."
+	if(state["entry_status"] == "unknown") return "Joining status is unavailable."
+	if(state["entry_status"] == "locked") return "Joining is locked by an administrator."
+	if(state["character_unconfirmed"]) return "Character recovery is not confirmed - joining may be delayed."
+	return "Round is open - account, character and role checks still apply."
+
 /world/proc/update_status()
 
 	if (world.port == config.testing_port)
@@ -356,6 +424,9 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<img src=\"https://i.imgur.com/napac0L.png\"><br>"
 	if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
+	var/list/player_status = player_status_observation()
+	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
+	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
 	config.hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
@@ -369,6 +440,7 @@ var/world_topic_spam_protect_time = world.timeofday
 /proc/get_packaged_server_status_data()
 	. = ""
 	. += "<b>Server Status</b>: Online"
+	var/list/player_status = player_status_observation()
 	. += ";"
 	. += "<b>Address</b>: byond://[world.internet_address]:[world.port]"
 	. += ";"
@@ -398,10 +470,19 @@ var/world_topic_spam_protect_time = world.timeofday
 	. += ";"
 	. += "allow_vote_restart=[config.allow_vote_restart?"1":"0"]"
 	. += ";"
+	// Append new fields after the legacy positional record used by existing bots.
+	. += "<b>World activity</b>: [player_world_activity(player_status)];"
+	. += "<b>Joining</b>: [player_join_status(player_status)];"
 
 
 /proc/start_serverdata_loop()
+	var/last_player_status
 	spawn while (1)
+		var/list/player_status = player_status_observation()
+		var/current_player_status = "[player_world_activity(player_status)]|[player_join_status(player_status)]"
+		if(current_player_status != last_player_status)
+			world.update_status()
+			last_player_status = current_player_status
 		var/F = file("serverdata.txt")
 		if (fexists("serverdata.txt"))
 			fdel(F)
