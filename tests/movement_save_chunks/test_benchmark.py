@@ -58,9 +58,10 @@ class BenchmarkSafetyTests(unittest.TestCase):
         self.assertEqual(fine.count('profile_read_field(A, v)'), original.count('A.vars[v]'))
         self.assertEqual(fine.count('sleep('), original.count('sleep('))
         self.assertEqual(fine.count('world.log'), original.count('world.log'))
-        for operation in ('read_field', 'find_field', 'runtime_field', 'text_length', 'alias_lookup', 'pin_append', 'alias_insert'):
+        for operation in ('read_field', 'find_field', 'runtime_field', 'text_length', 'alias_ref', 'alias_lookup', 'pin_append', 'alias_insert'):
             self.assertIn('profile_interval("' + operation + '"', fine)
         self.assertIn('profile_reservation', fine)
+        self.assertIn('profile_alias_key = null', fine)
         with tempfile.TemporaryDirectory() as folder, patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('Native forbidden')), patch('builtins.print'):
             self.assertEqual(bench.main(['--output', folder, '--diagnostic-subset']), 0)
             receipt = json.loads((Path(folder) / 'receipt.json').read_text())

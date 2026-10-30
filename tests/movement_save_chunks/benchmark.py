@@ -97,14 +97,17 @@ def instrument_field_costs(text: str):
     text = text.replace('A.vars[v]', 'profile_read_field(A, v)')
     replace_once('\t\t\t\tframe.current_field = v\n', '\t\t\t\tframe.current_field = v\n\t\t\t\tif(moving_save_chunk) moving_save_chunk.profile_current_field = v\n')
     replace_once('\tif(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * length(value))\n', '\tif(moving_save_chunk) moving_save_chunk.profile_value_kind = islist(value) ? "list" : (istext(value) ? "text" : (istype(value, /datum) ? "datum" : "scalar"))\n\tif(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * profile_text_length(value))\n')
+    replace_once('\t\tvar/id = saving_lists["\\ref[L]"]\n', '\t\tvar/profile_alias_key = "\\ref[L]"\n\t\tvar/id = saving_lists[profile_alias_key]\n')
     for operation, statement in (
-        ('alias_lookup', '\t\tvar/id = saving_lists["\\ref[L]"]\n'),
+        ('alias_ref', '\t\tvar/profile_alias_key = "\\ref[L]"\n'),
+        ('alias_lookup', '\t\tvar/id = saving_lists[profile_alias_key]\n'),
         ('pin_append', '\t\t\tsaving_list_pins += list(L)\n'),
         ('alias_insert', '\t\t\tsaving_lists["\\ref[L]"] = id\n'),
     ):
         indent = statement[:len(statement) - len(statement.lstrip('\t'))]
         before = indent + 'var/profile_' + operation + '_start = moving_save_chunk ? world.tick_usage : 0\n'
         after = indent + 'if(moving_save_chunk) moving_save_chunk.profile_interval("' + operation + '", profile_' + operation + '_start)\n'
+        if operation == 'alias_lookup': after += indent + 'profile_alias_key = null\n'
         replace_once(statement, before + statement + after)
     for name, expression in (('runtime_field', 'A.persistence_runtime_var(key)'), ('find_field', 'A.vars.Find(key)'), ('read_field', 'A.vars[key]')):
         text += '\n/map_storage/proc/profile_' + name + '(datum/A, key)\n\tvar/datum/moving_save_capture/profile = moving_save_chunk\n\tif(!profile) return ' + expression + '\n\tvar/started = world.tick_usage\n\tvar/result = ' + expression + '\n\tprofile.profile_interval("' + name + '", started)\n\treturn result\n'
