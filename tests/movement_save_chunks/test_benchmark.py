@@ -98,6 +98,26 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertEqual(result['status'], 'memory_sampling_unavailable')
             child.kill.assert_called_once()
 
+    def test_missing_final_sample_accepts_only_conclusive_clean_exit_with_prior_rss(self):
+        for final_code, prior_rss, deadline, expected in (
+            (0, True, 1200, 'exited'),
+            (-9, True, 1200, 'memory_sampling_unavailable'),
+            (0, False, 1200, 'memory_sampling_unavailable'),
+            (0, True, 1, 'job_timeout'),
+        ):
+            with self.subTest(final_code=final_code, prior_rss=prior_rss, deadline=deadline):
+                child = Mock(pid=42, returncode=final_code)
+                child.poll.side_effect = [None, None, final_code]
+                memories = [{'rss_bytes': 1024} if prior_rss else {}, {}]
+                with tempfile.TemporaryDirectory() as folder, patch.object(bench.subprocess, 'Popen', return_value=child), patch.object(bench, 'proc_memory', side_effect=memories), patch.object(bench.time, 'monotonic', side_effect=[0, 0.1, 1, 1.01]), patch.object(bench.time, 'sleep'):
+                    result = bench.run_monitored(['fake'], Path(folder), 'daemon', bench.Limits(), deadline)
+                    self.assertEqual(result['status'], expected)
+                    self.assertEqual(result.get('sampling_exit_race', False), expected == 'exited')
+                    if expected == 'exited': self.assertEqual(result['sampling_observed_reason'], 'memory_sampling_unavailable')
+                    child.kill.assert_called_once()
+                    child.wait.assert_called_once()
+                    self.assertEqual(result['samples'], 2)
+
     def test_native_diagnostic_markers_are_all_refused(self):
         for marker in ('BUG: invariant', 'Badref', 'bad ref', 'Bad loc', 'Unhandled exception', 'Runtime error:', '## ERROR:', 'FAIL:'):
             with self.subTest(marker=marker): self.assertIsNotNone(bench.DIAGNOSTIC.search(marker))

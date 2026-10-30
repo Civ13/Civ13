@@ -494,8 +494,12 @@
 	var/reserved_bytes = 0
 	var/list/paths = list()
 	proc/check()
-		if(++work > 8192 || world.time != start_tick || world.tick_usage - start_usage > 10 || world.tick_usage >= 90 || (world.timeofday - start_clock + 864000) % 864000 > 1)
-			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded")
+		var/tick_delta = world.time - start_tick
+		var/current_usage = world.tick_usage
+		var/usage_delta = current_usage - start_usage
+		var/elapsed_ds = (world.timeofday - start_clock + 864000) % 864000
+		if(++work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1)
+			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
 		if(reserved_bytes > 1048576) throw EXCEPTION("Moving save chunk exceeds its byte reservation")

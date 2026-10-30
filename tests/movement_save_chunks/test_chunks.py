@@ -194,6 +194,11 @@ class ProductionBoundaryTests(unittest.TestCase):
         result = subprocess.run(['bash', '-c', 'set -eu; ' + assignment + '; ' + man_assignment + '; MANPATH="/test/man:$MANPATH"; test "$MANPATH" = /test/man:; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_capture_budget_diagnostics_keep_original_limits(self):
+        self.assertIn('work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1', SAVING)
+        for field in ('work=[work]', 'tick_delta=[tick_delta]', 'usage_delta=[usage_delta]', 'total_usage=[current_usage]', 'elapsed_ds=[elapsed_ds]'):
+            self.assertIn(field, SAVING)
+
     def test_existing_fail_closed_boundaries_remain(self):
         for text in ('Child moved or disappeared during capture', 'require_export_frame(frame)', 'drain_save_transfers(frame)'):
             self.assertIn(text, SAVING)

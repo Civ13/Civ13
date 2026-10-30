@@ -141,6 +141,15 @@ def run_monitored(command, cwd: Path, prefix: str, limits: Limits, job_deadline)
                 if reason:
                     child.kill(); child.wait(timeout=2)
                     summary['returncode'] = child.returncode
+                    # /proc can disappear between sampling and poll while the
+                    # child is exiting. Do not add a grace period: kill/wait
+                    # still happens immediately. A reaped zero exit proves the
+                    # kill did not terminate a live child; require earlier RSS
+                    # and never forgive a time or resource limit.
+                    if reason == 'memory_sampling_unavailable' and child.returncode == 0 and 'rss_bytes' in summary['peaks']:
+                        summary['sampling_exit_race'] = True
+                        summary['sampling_observed_reason'] = reason
+                        reason = None
                     break
                 time.sleep(limits.sample_ms / 1000)
         finally:
@@ -232,7 +241,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
         admitted = max((row.get('roster', 0) for row in phases), default=0)
         result.update(case=case, marker=marker, native_diagnostics=diagnostics, phases=phases, phase_contract=contract_ok,
                       admitted_roots=admitted, fallback_roots=case['count']-admitted,
-                      passed=result['status'] == 'exited' and marker == 'PASS' and not diagnostics and contract_ok and 'rss_bytes' in result.get('peaks', {}))
+                      passed=result['status'] == 'exited' and result.get('returncode') == 0 and marker == 'PASS' and not diagnostics and contract_ok and 'rss_bytes' in result.get('peaks', {}))
         results.append(result)
         (output / 'results.json').write_text(json.dumps(results, indent=2))
     receipt.update(execution='passed' if len(results) == len(cases()) and all(r.get('passed') for r in results) else 'failed_or_incomplete',
