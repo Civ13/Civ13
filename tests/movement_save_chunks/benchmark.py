@@ -19,6 +19,10 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
+_plan_spec = importlib.util.spec_from_file_location('moving_save_diagnostic_cases', Path(__file__).with_name('diagnostic_cases.py'))
+_plan_module = importlib.util.module_from_spec(_plan_spec)
+_plan_spec.loader.exec_module(_plan_module)
+select_case_plan = _plan_module.select_case_plan
 FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
@@ -75,7 +79,40 @@ def instrument_capture_checks(source: str):
     return text, labels
 
 
-def prepare(output: Path):
+def instrument_field_costs(text: str):
+    """Fixed scalar attribution only; no extra limits, yields or per-mark logs."""
+    def replace_once(old, new):
+        nonlocal text
+        if text.count(old) != 1: raise ValueError('Field profile anchor changed: ' + old.strip())
+        text = text.replace(old, new)
+    replace_once('\tproc/check(profile_site)\n', '\tvar/profile_peak_cost = 0\n\tvar/profile_peak_operation = "none"\n\tvar/profile_current_field\n\tvar/profile_value_kind\n\tproc/profile_interval(operation, started)\n\t\tvar/cost = world.tick_usage - started\n\t\tif(cost > profile_peak_cost)\n\t\t\tprofile_peak_cost = cost\n\t\t\tprofile_peak_operation = operation\n\tproc/check(profile_site, profile_reservation = 0)\n')
+    replace_once('last_path=[profile_last_path]")', 'last_path=[profile_last_path] field=[profile_current_field] value_kind=[profile_value_kind] reservation=[profile_reservation] peak_operation=[profile_peak_operation] peak_operation_usage=[profile_peak_cost]")')
+    # The pre-existing reservation checker, not a new budget checkpoint.
+    pattern = r'(\t\tcheck\("saving\.dm:\d+")\)\n\tproc/reserve_node'
+    text, count = re.subn(pattern, r'\1, count)\n\tproc/reserve_node', text)
+    if count != 1: raise ValueError('Reservation checker changed')
+    replace_once('\t\t\tif(A.persistence_runtime_var(v))\n', '\t\t\tif(profile_runtime_field(A, v))\n')
+    replace_once('\t\t\tif(A.vars.Find(v))\n', '\t\t\tif(profile_find_field(A, v))\n')
+    if text.count('A.vars[v]') != 3: raise ValueError('Saved field reads changed')
+    text = text.replace('A.vars[v]', 'profile_read_field(A, v)')
+    replace_once('\t\t\t\tframe.current_field = v\n', '\t\t\t\tframe.current_field = v\n\t\t\t\tif(moving_save_chunk) moving_save_chunk.profile_current_field = v\n')
+    replace_once('\tif(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * length(value))\n', '\tif(moving_save_chunk) moving_save_chunk.profile_value_kind = islist(value) ? "list" : (istext(value) ? "text" : (istype(value, /datum) ? "datum" : "scalar"))\n\tif(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * profile_text_length(value))\n')
+    for operation, statement in (
+        ('alias_lookup', '\t\tvar/id = saving_lists["\\ref[L]"]\n'),
+        ('pin_append', '\t\t\tsaving_list_pins += list(L)\n'),
+        ('alias_insert', '\t\t\tsaving_lists["\\ref[L]"] = id\n'),
+    ):
+        indent = statement[:len(statement) - len(statement.lstrip('\t'))]
+        before = indent + 'var/profile_' + operation + '_start = moving_save_chunk ? world.tick_usage : 0\n'
+        after = indent + 'if(moving_save_chunk) moving_save_chunk.profile_interval("' + operation + '", profile_' + operation + '_start)\n'
+        replace_once(statement, before + statement + after)
+    for name, expression in (('runtime_field', 'A.persistence_runtime_var(key)'), ('find_field', 'A.vars.Find(key)'), ('read_field', 'A.vars[key]')):
+        text += '\n/map_storage/proc/profile_' + name + '(datum/A, key)\n\tvar/datum/moving_save_capture/profile = moving_save_chunk\n\tif(!profile) return ' + expression + '\n\tvar/started = world.tick_usage\n\tvar/result = ' + expression + '\n\tprofile.profile_interval("' + name + '", started)\n\treturn result\n'
+    text += '\n/map_storage/proc/profile_text_length(value)\n\tvar/started = world.tick_usage\n\tvar/result = length(value)\n\tmoving_save_chunk.profile_interval("text_length", started)\n\treturn result\n'
+    return text
+
+
+def prepare(output: Path, diagnostic_subset=False):
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()): raise ValueError('output must be a new or empty isolated directory')
     hashes = {}
@@ -86,7 +123,7 @@ def prepare(output: Path):
         production_hashes[name] = hashlib.sha256(data).hexdigest()
         if name == 'code/modules/persistence/saving.dm':
             instrumented, labels = instrument_capture_checks(data.decode())
-            data = instrumented.encode()
+            data = instrument_field_costs(instrumented).encode()
         target = output / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
@@ -97,8 +134,9 @@ def prepare(output: Path):
     (output / 'benchmark.dme').write_text(dme)
     hashes['benchmark.dme'] = hashlib.sha256(dme.encode()).hexdigest()
     receipt = dict(schema=1, execution='not_run', byond_version=VERSION,
-                   baseline='same-head feature-disabled roster', sources=hashes, production_sources=production_hashes, cases=cases(),
-                   instrumentation={'scope': 'isolated copied saving.dm only', 'check_labels': labels, 'timing': 'Label bookkeeping adds overhead; measured intervals are instrumented, not pure production timing. No per-check logging, yields or limit changes.'},
+                   case_selector_sha256=hashlib.sha256(Path(__file__).with_name('diagnostic_cases.py').read_bytes()).hexdigest(),
+                   baseline='same-head feature-disabled roster', sources=hashes, production_sources=production_hashes, **select_case_plan(cases(), diagnostic_subset),
+                   instrumentation={'scope': 'isolated copied saving.dm only', 'check_labels': labels, 'timing': 'Label and operation timing bookkeeping add overhead; measured intervals are instrumented, not pure production timing. No per-check logging, yields or limit changes.'},
                    boundaries={'live_server': False, 'listener_control': 'fixture OpenPort(none), loopback-only daemon, no webclient; socket absence not measured', 'max_concurrency': 1},
                    missing_evidence=['native compilation', 'RSS/private memory', 'fresh-process restore'])
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
@@ -241,6 +279,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
     if not compiler.is_file() or not daemon.is_file(): raise ValueError('Explicit BYOND binary directory is incomplete')
     started = time.monotonic(); deadline = started + limits.job_seconds
     receipt = json.loads((output / 'receipt.json').read_text())
+    selected_cases = receipt['cases']
     receipt.update(execution='running', limits=vars(limits), compiler=str(compiler), daemon=str(daemon),
                    memory_limit_note='RLIMIT_AS is a stricter virtual-address ceiling in addition to sampled RSS; limit refusal is failure/inconclusive, not a memory pass',
                    timing_note='Capture phase logging and logical-counter instrumentation consume the capture budget; timings are instrumented, not uninstrumented production timing')
@@ -254,7 +293,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
         (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
         return receipt
     results = []
-    for index, case in enumerate(cases()):
+    for index, case in enumerate(selected_cases):
         if time.monotonic() >= deadline:
             results.append(dict(case=case, status='not_started_job_timeout')); continue
         folder = output / f'case-{index:02d}-{case["count"]}-{case["payload"]}-{case["baseline"]}'
@@ -276,7 +315,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
                       passed=result['status'] == 'exited' and result.get('returncode') == 0 and marker == 'PASS' and not diagnostics and contract_ok and 'rss_bytes' in result.get('peaks', {}))
         results.append(result)
         (output / 'results.json').write_text(json.dumps(results, indent=2))
-    receipt.update(execution='passed' if len(results) == len(cases()) and all(r.get('passed') for r in results) else 'failed_or_incomplete',
+    receipt.update(execution='passed' if len(results) == len(selected_cases) and all(r.get('passed') for r in results) else 'failed_or_incomplete',
                    compile=build, results=results, elapsed=time.monotonic()-started,
                    memory_acceptance='not_established',
                    missing_evidence=['fresh-process restore', 'representative full-game workload', 'agreed latency and memory acceptance threshold'])
@@ -287,6 +326,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--diagnostic-subset', action='store_true', help='Four candidate-only diagnostic cases; not comparative evidence')
     parser.add_argument('--run-native', action='store_true', help='Explicitly compile and run isolated native fixture; requires separate authorization')
     parser.add_argument('--byond-bin', type=Path)
     parser.add_argument('--byond-archive', type=Path)
@@ -300,7 +340,7 @@ def main(argv=None):
     except ValueError as error: parser.error(str(error))
     if args.run_native and (not args.byond_bin or not args.byond_archive or not args.output): parser.error('--run-native requires --byond-bin, --byond-archive and --output')
     output = args.output.resolve() if args.output else Path(tempfile.mkdtemp(prefix='civ13-moving-save-benchmark-'))
-    receipt = prepare(output)
+    receipt = prepare(output, args.diagnostic_subset)
     if args.run_native:
         try:
             receipt = run_native(output, args.byond_bin.absolute(), args.byond_archive.absolute(), limits)

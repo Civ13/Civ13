@@ -44,12 +44,31 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertEqual(text.count('world.log'), original.decode().count('world.log'))
             self.assertNotIn('profile_previous_site', original.decode())
             for label in receipt['instrumentation']['check_labels']:
-                self.assertIn('check("' + label + '")', text)
+                self.assertRegex(text, 'check\\("' + label.replace('.', r'\.') + '"(?:, count)?\\)')
         for anchor in ('\tproc/reserve_bytes(count)\n', '\t\tmoving_save_chunk.paths += absolute\n', '\tchunk.start_usage = world.tick_usage\n'):
             with self.subTest(anchor=anchor), self.assertRaisesRegex(ValueError, 'profile anchor changed'):
                 bench.instrument_capture_checks(original.decode().replace(anchor, anchor.rstrip() + ' // changed\n', 1))
         with self.assertRaisesRegex(ValueError, 'callsites changed'):
             bench.instrument_capture_checks(original.decode().replace('moving_save_chunk.check()', 'moving_save_chunk.check(FALSE)', 1))
+
+    def test_finer_taps_preserve_read_count_and_default_matrix(self):
+        original = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+        labelled, _ = bench.instrument_capture_checks(original)
+        fine = bench.instrument_field_costs(labelled)
+        self.assertEqual(fine.count('profile_read_field(A, v)'), original.count('A.vars[v]'))
+        self.assertEqual(fine.count('sleep('), original.count('sleep('))
+        self.assertEqual(fine.count('world.log'), original.count('world.log'))
+        for operation in ('read_field', 'find_field', 'runtime_field', 'text_length', 'alias_lookup', 'pin_append', 'alias_insert'):
+            self.assertIn('profile_interval("' + operation + '"', fine)
+        self.assertIn('profile_reservation', fine)
+        with tempfile.TemporaryDirectory() as folder, patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('Native forbidden')), patch('builtins.print'):
+            self.assertEqual(bench.main(['--output', folder, '--diagnostic-subset']), 0)
+            receipt = json.loads((Path(folder) / 'receipt.json').read_text())
+            self.assertEqual(len(receipt['cases']), 4)
+            self.assertFalse(receipt['comparative'])
+            self.assertTrue(all(case['baseline'] == 0 for case in receipt['cases']))
+        with self.assertRaisesRegex(ValueError, 'Saved field reads changed'):
+            bench.instrument_field_costs(labelled.replace('A.vars[v]', 'A.vars["changed"]', 1))
 
     def test_prepare_refuses_nonempty_destination(self):
         with tempfile.TemporaryDirectory() as folder:
