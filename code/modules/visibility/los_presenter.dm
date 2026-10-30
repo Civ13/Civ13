@@ -29,7 +29,7 @@
 
 // Movement/opacity hooks mark the local viewport dirty. The shared process
 // supplies a fresh capture; this owner never starts its own sleeping driver.
-/datum/los_presenter/proc/invalidate(atom/changed)
+/datum/los_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE)
 	if(retired || !owner || !context || !context.body)
 		return
 	dirty = TRUE
@@ -37,6 +37,8 @@
 	// Before a blocker write/move, withdraw only content potentially behind
 	// that cell. Do not leave previously visible content exposed until the
 	// budgeted refresh, and do not shutter unrelated map regions or the HUD.
+	if(!changed || (!possible_opacity && !changed.opacity))
+		return
 	var/turf/cell = get_turf(changed)
 	if(!cell || changed == context.body || cell.z != context.body.z)
 		return

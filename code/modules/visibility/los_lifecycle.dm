@@ -80,7 +80,7 @@
 	// presentation audit, not an information-release lease: reads capture fresh.
 	los_next_audit = world.time + 5
 
-/proc/los_invalidate(atom/changed)
+/proc/los_invalidate(atom/changed, possible_opacity = FALSE)
 	if(!CIV13_GEOMETRIC_LOS_CORE || !los_active_contexts)
 		return
 	var/turf/T = get_turf(changed)
@@ -96,15 +96,20 @@
 			continue
 		C.los_dirty = TRUE
 		if(C.root_tree_presenter)
-			C.root_tree_presenter.invalidate(changed)
+			C.root_tree_presenter.invalidate(changed, possible_opacity)
 		if(C.los_presenter)
-			C.los_presenter.invalidate(changed)
+			C.los_presenter.invalidate(changed, possible_opacity)
 
 // Called after authoritative movement callbacks, before the movement proc
 // returns to a yielding locomotion loop. Native client timing remains tested
 // separately; this avoids intentionally waiting for the next process tick.
 /proc/los_refresh_moved_viewer(atom/movable/A)
-	if(!CIV13_GEOMETRIC_LOS_CORE || !ismob(A))
+	if(!CIV13_GEOMETRIC_LOS_CORE)
+		return
+	// Same-turf physical pulses do not necessarily raise Entered. Withdraw
+	// newly occluded content for all nearby viewers at the new offset too.
+	los_invalidate(A)
+	if(!ismob(A))
 		return
 	var/mob/M = A
 	if(M.client && M.client.los_context)

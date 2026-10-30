@@ -87,10 +87,29 @@ class PresenterSourceContracts(unittest.TestCase):
         self.assertIn('target.step_x / 32', block)
         door = (ROOT / 'code/game/objects/structures/door.dm').read_text()
         close = door.split('/obj/structure/simple_door/proc/Close()', 1)[1].split('/obj/structure/simple_door/Destroy()', 1)[0]
-        self.assertLess(close.index('los_invalidate(src)'), close.index('opacity = TRUE'))
+        self.assertLess(close.index('los_invalidate(src, TRUE)'), close.index('opacity = TRUE'))
         movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()
         self.assertIn('los_refresh_moved_viewer(src)', movement)
         self.assertIn('M.client.reconcile_geometric_los()', LIFECYCLE)
+        postmove = LIFECYCLE.split('/proc/los_refresh_moved_viewer(', 1)[1]
+        self.assertLess(postmove.index('los_invalidate(A)'), postmove.index('if(!ismob(A))'))
+        self.assertEqual(movement.split('/atom/movable/Move(newloc, direct)', 1)[1].split('/client/proc/Move_object', 1)[0].count('los_refresh_moved_viewer(src)'), 3)
+
+    def test_transparent_clutter_does_not_create_hypothetical_blocker(self):
+        from types import SimpleNamespace
+        import re
+        block = SOURCE.split('/datum/los_presenter/proc/invalidate(', 1)[1].split('/datum/los_presenter/proc/owns_atom(', 1)[0]
+        self.assertIn('if(!changed || (!possible_opacity && !changed.opacity))', block)
+        self.assertLess(block.index('!possible_opacity && !changed.opacity'), block.index('los_footprint_hits_cell'))
+        guard = re.search(r'if\((!changed \|\| \(!possible_opacity && !changed.opacity\))\)', block)[1]
+        expression = guard.replace('||', 'or').replace('&&', 'and').replace('!', 'not ')
+        def skipped(opacity, possible=False):
+            return eval(expression, {'__builtins__': {}}, {'changed': SimpleNamespace(opacity=opacity), 'possible_opacity': possible})
+        self.assertTrue(skipped(False))  # Dropped item on eye tile: no masks.
+        self.assertFalse(skipped(True))  # Moving opaque blocker.
+        self.assertFalse(skipped(False, True))  # Open door about to close.
+        entered = (ROOT / 'code/datums/observation/moved.dm').read_text()
+        self.assertIn('los_invalidate(old_loc, am.opacity)', entered)
 
     def test_retirement_releases_masks(self):
         self.assertIn('owner.images -= owned_images', SOURCE)

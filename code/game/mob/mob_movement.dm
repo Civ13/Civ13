@@ -232,6 +232,7 @@
 			l_move_time = world.time
 			if (old_location != loc && old_location && old_location.z == z)
 				last_move = get_dir(old_location, loc)
+			los_refresh_moved_viewer(src)
 			return .
 		if (npc.npc_subtile_offset_owned && (step_x || step_y))
 			return FALSE

@@ -146,13 +146,19 @@ var/global/list/root_tree_presenters
 			return FALSE
 	return TRUE
 
-/datum/root_tree_presenter/proc/invalidate(atom/changed)
+/datum/root_tree_presenter/proc/invalidate(atom/changed, possible_opacity = FALSE)
 	if(retired || !owner)
 		return
 	owner.los_dirty = TRUE
+	// Transparent clutter movement cannot occlude any tree. Lighting turf
+	// notifications invalidate only roots actually owned by that turf.
+	if(changed && changed != context.body && !possible_opacity && !changed.opacity && !isturf(changed))
+		return
 	// Hide only owned tree content while a mutation is unsettled; never shutter
 	// the viewport, inventory, weather or HUD.
 	for(var/image/I in owned_images)
+		if(isturf(changed) && !possible_opacity && !changed.opacity && I.loc && I.loc.loc != changed)
+			continue
 		I.icon = null
 		I.overlays = null
 		I.underlays = null
