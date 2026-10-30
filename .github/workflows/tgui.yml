@@ -51,3 +51,17 @@ jobs:
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium)"
           test -n "$CHROMIUM_PATH"
           npm --prefix tgui run test:browser
+      - name: Capture fictional cloud UI previews
+        env:
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          SCREENSHOT_DIR: ${{ runner.temp }}/tgui-previews
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium)"
+          node tgui/scripts/screenshots.mjs
+      - name: Upload cloud UI previews
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: tgui-previews-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/tgui-previews
+          if-no-files-found: error
+          retention-days: 14
