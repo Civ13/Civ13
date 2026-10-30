@@ -13,6 +13,63 @@ selection = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(selection)
 
 class SelectionTests(unittest.TestCase):
+    def test_mcp_changed_files_and_comparison_failure(self):
+        for path in ('tools/mcp/server.mjs', 'tools/mcp/test.mjs',
+                     'tools/mcp/package-lock.json', '.github/workflows/mcp.yml'):
+            with self.subTest(path=path), patch.object(selection.subprocess, 'check_output',
+                                                        return_value=(path + '\0').encode()):
+                self.assertTrue(selection.select_mcp('a' * 40, 'b' * 40, 'pull_request'))
+                self.assertTrue(selection.select_mcp('a' * 40, 'b' * 40, 'push'))
+        with patch.object(selection.subprocess, 'check_output', return_value=b'code/world.dm\0'):
+            self.assertFalse(selection.select_mcp('a' * 40, 'b' * 40, 'pull_request'))
+        with patch.object(selection.subprocess, 'check_output', side_effect=subprocess.CalledProcessError(1, 'git')):
+            with self.assertRaises(RuntimeError):
+                selection.select_mcp('a' * 40, 'b' * 40, 'pull_request')
+        with self.assertRaises(RuntimeError):
+            selection.select_mcp('', 'b' * 40, 'pull_request')
+        self.assertTrue(selection.select_mcp('', '', 'workflow_dispatch'))
+        self.assertTrue(selection.select_mcp('0' * 40, 'b' * 40, 'push'))
+
+    def test_mcp_workflow_keeps_both_platforms_and_requires_selection(self):
+        workflow = (Path(__file__).resolve().parents[1] / '.github/workflows/mcp.yml').read_text()
+        self.assertIn('os: [ubuntu-latest, windows-latest]', workflow)
+        self.assertIn("if: needs.changes.outputs.mcp == 'true'", workflow)
+        self.assertIn('--mcp-only', workflow)
+        self.assertIn('scripts/ci_checkout_refs.py', workflow)
+
+    def test_mcp_selector_real_diff_and_no_output_on_failure(self):
+        script = Path(__file__).resolve().parents[1] / 'scripts/select-ci.py'
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.check_output(['git', '-c', 'user.name=Fixture',
+                    '-c', 'user.email=fixture@example.invalid', '-c', 'commit.gpgsign=false',
+                    *args], cwd=root, stderr=subprocess.PIPE, text=True).strip()
+            git('init', '-q')
+            (root / 'tools/mcp').mkdir(parents=True)
+            for name in ('server.mjs', 'test.mjs'):
+                (root / 'tools/mcp' / name).write_text('before', encoding='utf-8')
+            git('add', '.')
+            git('commit', '-qm', 'base')
+            base = git('rev-parse', 'HEAD')
+            for name in ('server.mjs', 'test.mjs'):
+                (root / 'tools/mcp' / name).write_text('after', encoding='utf-8')
+                git('add', '.')
+                git('commit', '-qm', name)
+                head = git('rev-parse', 'HEAD')
+                output = root / 'selection-output'
+                args = [sys.executable, '-B', str(script), '--mcp-only', '--base', base,
+                        '--head', head, '--event', 'pull_request', '--output', str(output)]
+                result = subprocess.run(args, cwd=root, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(output.read_text(encoding='utf-8'), 'mcp=true\n')
+                output.unlink()
+                args[args.index('--base') + 1] = 'f' * 40
+                result = subprocess.run(args, cwd=root, capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(output.exists())
+                base = head
+
     def test_manual_comparison_base_requires_distinct_local_full_commits(self):
         with tempfile.TemporaryDirectory() as directory:
             def git(*args):

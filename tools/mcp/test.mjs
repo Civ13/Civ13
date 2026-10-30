@@ -9,9 +9,16 @@ test('real stdio handshake, discovery, bounded calls and error isolation', async
  const client = new Client({name:'civ13-test',version:'1.0.0'});
  try {
   await client.connect(transport);
-  const tools = await client.listTools(); assert.equal(tools.tools.length,7);
+  const tools = await client.listTools(); assert.equal(tools.tools.length,8);
   assert.equal(tools.tools.find(t => t.name === 'dm_reference_read').annotations.openWorldHint,true);
   const call = (name,args={}) => client.callTool({name,arguments:args});
+  const catalog = await call('fixture_catalog');
+  assert.equal(catalog.isError,undefined);
+  assert.deepEqual(catalog.structuredContent.fixtures.map(f => f.id), ['character-return','season-transition','seasonal-construction','zone-persistence']);
+  for (const fixture of catalog.structuredContent.fixtures) {
+   assert.ok(fixture.guide && fixture.prerequisites && fixture.evidence);
+   assert.equal(await (await import('node:fs/promises')).stat(path.resolve(import.meta.dirname,'../..',fixture.guide)).then(s => s.isFile()), true);
+  }
   assert.equal((await call('dm_reference_search',{query:' '})).isError,true);
   assert.equal((await call('dm_reference_read',{topic:'/list',length:16001})).isError,true);
   const read = await call('source_read',{path:'README.md',lines:2}); assert.equal(read.isError,undefined);
