@@ -33,6 +33,8 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_subtle_message,	//send an message to somebody as a 'voice in their head',
 	/client/proc/cmd_admin_delete,		//delete an instance/object/mob/etc,
 	/client/proc/cmd_admin_clean_item,	//wash an item from its context menu,
+	/client/proc/cmd_admin_clean_player,	//restore player hygiene without healing,
+	/client/proc/cmd_admin_restore_mood,	//restore player morale without healing,
 	/client/proc/cmd_admin_get,
 	/client/proc/getserverlog,
 	/client/proc/getruntimelog,
