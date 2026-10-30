@@ -454,8 +454,12 @@ The prototype vendor has a finite one-million-credit treasury and 64 storage
 roots; market escrow has 64 roots and at most 128 listing records. These reserved
 accounts cannot be opened as player accounts. Prices use the explicit
 `modern_safehouse_prices_v1` game-price table and `civ13.game_credits.v1` currency,
-with no external currency conversion. Active game accounts cannot participate in
-offline economic mutations. Capacity, funds or revision failures retain escrow.
+with no external currency conversion. Future extraction traders must value
+supported real-world currency items using actual FX rates, with explicit currency
+and denomination mappings and server-pinned rate snapshots; see the
+[future trader currency design](extraction-economy-contract.md#real-world-currency-valuation-for-future-traders).
+This requirement does not enable conversion in the prototype. Active game accounts
+cannot participate in offline economic mutations. Capacity, funds or revision failures retain escrow.
 The equipment fixture checks signed buy/list/cancel paths, actor/action/expiry and
 funds rejection, replay/status and fresh-service recovery of a pending buyback.
 Its `--economic-payment-negative-control` deliberately omits buyer payment and
