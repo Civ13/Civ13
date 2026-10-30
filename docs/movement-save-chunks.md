@@ -123,3 +123,15 @@ RSS/private-bytes, tick/heartbeat and repeated cleanup matrix. Native staging
 overhead, source pins, path copies and allocator retention are outside the
 1 MiB logical reservation. No memory benchmark has run; the logical bound is
 not a measured heap cap and is not sufficient deployment evidence.
+
+## List identity cache optimization
+
+Native bounded measurements identified `"\ref[L]"` formation as a population-
+dependent spike inside capture. The serializer now keys its temporary list-ID
+cache directly by the pinned list. This affects legacy and chunked serialization,
+not only animals. Numeric list IDs, typed envelopes, pin-identity checks, insertion
+before recursive encoding, per-level resets and final cleanup are unchanged.
+Native primitive tests compare the old/new registration behavior, including fresh
+`filters` getter handles; fresh-process typed-codec tests and the full old-key
+baseline/direct-key candidate matrix must still pass on the final head. No capture
+limit is raised and a failed chunk still aborts the entire candidate.

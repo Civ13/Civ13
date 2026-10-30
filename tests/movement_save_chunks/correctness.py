@@ -17,7 +17,7 @@ def load(name):
     spec.loader.exec_module(module)
     return module
 
-SCENARIOS = ('walking', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth')
+SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth')
 ROSTER_ANCHOR = '/map_storage/proc/prepare_moving_save_roster()\n'
 ORIGIN_ANCHOR = '''\tvar/datum/child = saving_reference_pins[ref]
 \tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
@@ -37,6 +37,11 @@ def mutate(packet, control):
         text = path.read_text()
         if text.count(ORIGIN_ANCHOR) != 1: raise ValueError('origin mutation anchor differs')
         path.write_text(text.replace(ORIGIN_ANCHOR, '', 1))
+    elif control == 'old-keys':
+        path = packet / 'code/modules/persistence/saving.dm'
+        text = path.read_text()
+        if text.count('saving_lists[L]') != 2: raise ValueError('old-key codec baseline anchors differ')
+        path.write_text(text.replace('saving_lists[L]', 'saving_lists["\\ref[L]"]'))
     elif control != 'positive': raise ValueError('unknown control')
 
 def main(argv=None):
@@ -53,7 +58,7 @@ def main(argv=None):
         parser.error('native execution requires exact installed runtime and archive')
     args.output.mkdir(parents=True)
     prepare = load('prepare')
-    for control in ('positive', 'roster', 'origin'):
+    for control in ('positive', 'old-keys', 'roster', 'origin'):
         packet = args.output / (control + '-source'); packet.mkdir()
         prepare.prepare(packet); mutate(packet, control)
         # Mutations must get their own hashes, not masquerade as positive bytes.
@@ -67,7 +72,7 @@ def main(argv=None):
     limits.validate()
     deadline = time.monotonic() + args.job_seconds
     results = []
-    for control in ('positive', 'roster', 'origin'):
+    for control in ('positive', 'old-keys', 'roster', 'origin'):
         packet = args.output / (control + '-source')
         identity = runner.verify_runtime(args.byond_bin, args.byond_archive)
         (packet / 'runtime-identity.json').write_text(json.dumps(identity, indent=2))
@@ -75,12 +80,18 @@ def main(argv=None):
         log = (packet / 'compile.log').read_text(errors='replace') if (packet / 'compile.log').exists() else ''
         if not runner.compile_ok(build, log, packet / 'probe.dmb'):
             results.append({'control': control, 'stage': 'compile', 'passed': False, 'summary': build}); continue
-        scenarios = SCENARIOS if control == 'positive' else (('frontier',) if control == 'roster' else ('reference',))
+        scenarios = SCENARIOS if control == 'positive' else (('codec-write', 'codec-read') if control == 'old-keys' else (('frontier',) if control == 'roster' else ('reference',)))
         for scenario in scenarios:
             case = args.output / (control + '-' + scenario)
             case.mkdir()
             for name in ('probe.dmb', 'probe.rsc'):
                 if (packet / name).exists(): shutil.copy2(packet / name, case / name)
+            if scenario == 'codec-read':
+                source_case = args.output / (control + ('-walking' if control == 'positive' else '-codec-write'))
+                if not (source_case / 'list-codec.sav').is_file():
+                    results.append({'control': control, 'scenario': scenario, 'passed': False, 'reason': 'writer fixture file missing'})
+                    continue
+                shutil.copy2(source_case / 'list-codec.sav', case / 'list-codec.sav')
             identity = runner.verify_runtime(args.byond_bin, args.byond_archive)
             (case / 'runtime-identity.json').write_text(json.dumps(identity, indent=2))
             summary = runner.run_monitored([str(args.byond_bin / 'DreamDaemon'), 'probe.dmb', '-trusted', '-ip', '127.0.0.1', '-nowebclient', '-log', 'runtime.log', '-params', 'scenario=' + scenario], case, 'daemon', limits, deadline)
@@ -90,7 +101,7 @@ def main(argv=None):
             errors_path = case / 'errors.txt'
             diagnostics = diagnostics or (errors_path.exists() and bool(errors_path.read_text(errors='replace').strip()))
             clean = summary['status'] == 'exited' and summary.get('returncode') == 0 and not diagnostics
-            expected = None if control == 'positive' else ('admitted animal missing or multiply owned' if control == 'roster' else 'Moving save root has conflicting saved owners')
+            expected = None if control in ('positive', 'old-keys') else ('admitted animal missing or multiply owned' if control == 'roster' else 'Moving save root has conflicting saved owners')
             passed = clean and (result == 'PASS' if not expected else result == 'FAIL' and expected in logs)
             results.append({'control': control, 'scenario': scenario, 'passed': passed, 'expected_control_assertion': expected, 'summary': summary})
             (args.output / 'results.json').write_text(json.dumps(results, indent=2))

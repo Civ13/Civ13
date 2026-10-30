@@ -89,17 +89,26 @@ var/peak_capture_tick_usage = 0
 				subject.loc = locate(subject.x == 1 ? 4 : 1,1,1)
 	return ..()
 /obj/chunk_reference_holder
-	map_storage_saved_vars = "pet"
+	map_storage_saved_vars = "name;shared;pet"
 	var/mob/pet
+	var/list/shared
 /world/OpenPort(port)
 	return ..("none")
 /world/New()
 	OpenPort("none")
 	..()
 	try
+		if(world.params["scenario"] == "codec-read" || world.params["scenario"] == "codec-write")
+			if(world.params["scenario"] == "codec-write") write_native_list_codec_fixture()
+			else verify_native_list_codec_fixture()
+			world.log << "LIST_CODEC: PASS"
+			text2file("PASS", "result.txt")
+			del(world)
+			return
 		if(world.params["scenario"] == "walking")
 			if(!check_native_list_identity()) throw EXCEPTION("LIST_IDENTITY: primitive probe did not complete")
 			world.log << "LIST_IDENTITY: PASS"
+			write_native_list_codec_fixture()
 		map_storage = new /map_storage/chunk_fixture
 		map = new /obj/map_metadata(locate(1,1,1))
 		var/mob/living/simple_animal/chunk_fixture/optional_cuff/cuffed = new(locate(1,1,1))
@@ -113,6 +122,7 @@ var/peak_capture_tick_usage = 0
 		if(world.params["scenario"] == "reference")
 			var/obj/chunk_reference_holder/holder = new(locate(1,1,1))
 			holder.pet = subject
+			holder.shared = subject.payload
 		if(!map_storage.Save_World()) throw EXCEPTION("baseline save failed")
 		var/old_marker = file2text("map_saves/save_complete.txt")
 		armed = TRUE
@@ -134,15 +144,23 @@ var/peak_capture_tick_usage = 0
 			var/savefile/F = new("map_saves/1.sav")
 			var/owners = 0
 			var/found_ref
+			var/holder_ref
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf_ref = F["/map/1/1/[x]"]
 				for(var/ref in map_storage.saved_content_refs(F["[map_storage.entry_path(F, turf_ref)]/content"], 3))
 					if(F["[map_storage.entry_path(F, ref)]/name"])
 						var/path = F["[map_storage.entry_path(F, ref)]/type"]
+						if(path == /obj/chunk_reference_holder) holder_ref = ref
 						if(path == /mob/living/simple_animal/chunk_fixture)
 							owners++
 							found_ref = ref
 			if(owners != 1 || !found_ref) throw EXCEPTION("admitted animal missing or multiply owned")
+			if(world.params["scenario"] == "reference")
+				if(!holder_ref) throw EXCEPTION("Shared-list legacy owner missing")
+				var/list/legacy_list = F["[map_storage.entry_path(F, holder_ref)]/shared"]
+				var/list/chunk_list = F["[map_storage.entry_path(F, found_ref)]/payload"]
+				if(legacy_list["kind"] != "list" || chunk_list["kind"] != "list" || legacy_list["ref"] != chunk_list["ref"])
+					throw EXCEPTION("Legacy/chunk shared list alias was split")
 			if(!fexists("map_saves/save_complete.txt")) throw EXCEPTION("completed marker missing")
 		world.log << "CHUNK_PROFILE roster=[peak_roster] nodes=[peak_nodes] edges=[peak_edges] logical_bytes=[peak_logical_bytes] paths=[peak_paths] entry_pins=[peak_entry_pins] list_pins=[peak_list_pins] capture_tick_usage=[peak_capture_tick_usage]"
 		text2file("PASS", "result.txt")

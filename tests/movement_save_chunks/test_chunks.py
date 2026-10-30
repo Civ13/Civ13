@@ -181,6 +181,17 @@ class ProductionBoundaryTests(unittest.TestCase):
             self.assertNotIn('var/datum/child', control_proc)
             self.assertFalse(list(output.rglob('*.dmb')))
 
+    def test_fresh_process_codec_and_shared_legacy_chunk_alias_are_wired(self):
+        runner = (ROOT / 'tests/movement_save_chunks/correctness.py').read_text()
+        self.assertIn("'walking', 'codec-read'", runner)
+        self.assertIn("shutil.copy2(source_case / 'list-codec.sav'", runner)
+        self.assertIn("('codec-write', 'codec-read')", runner)
+        probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text()
+        self.assertIn('verify_native_list_codec_fixture()', probe)
+        self.assertIn('Legacy/chunk shared list alias was split', probe)
+        self.assertIn('holder.shared = subject.payload', probe)
+        self.assertIn('map_storage_saved_vars = "name;shared;pet"', probe)
+
     def test_vendor_setup_optional_library_path_under_nounset(self):
         import os
         import subprocess

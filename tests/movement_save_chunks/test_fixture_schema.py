@@ -44,7 +44,7 @@ class FixtureSchemaTests(unittest.TestCase):
 
     def test_reference_first_control_persists_its_reference_field(self):
         probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text()
-        self.assertIn('/obj/chunk_reference_holder\n\tmap_storage_saved_vars = "pet"\n\tvar/mob/pet', probe)
+        self.assertIn('/obj/chunk_reference_holder\n\tmap_storage_saved_vars = "name;shared;pet"\n\tvar/mob/pet', probe)
         self.assertIn('else if(world.params["scenario"] == "reference")\n\t\t\t\tsubject.loc = locate(1,1,1)', probe)
         # Generic non-item /obj types use explicit partial-field inventory.
         functions = (ROOT / 'code/modules/persistence/functions.dm').read_text()

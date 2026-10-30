@@ -57,7 +57,7 @@ jobs:
           mkdir -p "$evidence"
           git rev-parse HEAD 'HEAD^{tree}' > "$evidence/source-identity.txt"
           python3 -B tests/movement_save_chunks/correctness.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/correctness" --job-seconds 240
-          python3 -B tests/movement_save_chunks/benchmark.py --run-native --diagnostic-subset --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/memory" --job-seconds 900
+          python3 -B tests/movement_save_chunks/benchmark.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/memory" --job-seconds 900
       - name: Retain all exact-head evidence including failed attempts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

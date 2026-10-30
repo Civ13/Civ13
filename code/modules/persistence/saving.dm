@@ -282,11 +282,11 @@
 		return list("kind" = "area", "x" = T.x, "y" = T.y, "z" = T.z, "type" = AR.type)
 	if(islist(value))
 		var/list/L = value
-		var/id = saving_lists["\ref[L]"]
+		var/id = saving_lists[L]
 		if(!id || saving_list_pins[id] != L)
 			id = saving_list_pins.len + 1
 			saving_list_pins += list(L)
-			saving_lists["\ref[L]"] = id
+			saving_lists[L] = id
 			if(moving_save_chunk)
 				moving_save_chunk.reserve_node()
 				moving_save_chunk.reserve_edges(L.len)

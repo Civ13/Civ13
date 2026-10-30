@@ -24,52 +24,27 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertFalse(list(Path(folder).rglob('*.dmb')))
             native.assert_not_called()
 
-    def test_check_labels_modify_only_hashed_isolated_packet(self):
+    def test_candidate_source_unchanged_and_baseline_only_restores_old_keys(self):
         import hashlib
-        original_path = ROOT / 'code/modules/persistence/saving.dm'
-        original = original_path.read_bytes()
+        name = 'code/modules/persistence/saving.dm'
+        original = (ROOT / name).read_bytes()
         with tempfile.TemporaryDirectory() as folder:
             receipt = bench.prepare(Path(folder))
-            name = 'code/modules/persistence/saving.dm'
-            copied = (Path(folder) / name).read_bytes()
-            self.assertEqual(original_path.read_bytes(), original)
-            self.assertEqual(receipt['production_sources'][name], hashlib.sha256(original).hexdigest())
-            self.assertEqual(receipt['sources'][name], hashlib.sha256(copied).hexdigest())
-            self.assertNotEqual(original, copied)
-            self.assertEqual(len(receipt['instrumentation']['check_labels']), 7)
-            text = copied.decode()
-            self.assertIn('interval_usage=[current_usage - profile_previous_usage]', text)
-            self.assertIn('work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1', text)
-            self.assertEqual(text.count('sleep('), original.decode().count('sleep('))
-            self.assertEqual(text.count('world.log'), original.decode().count('world.log'))
-            self.assertNotIn('profile_previous_site', original.decode())
-            for label in receipt['instrumentation']['check_labels']:
-                self.assertRegex(text, 'check\\("' + label.replace('.', r'\.') + '"(?:, count)?\\)')
-        for anchor in ('\tproc/reserve_bytes(count)\n', '\t\tmoving_save_chunk.paths += absolute\n', '\tchunk.start_usage = world.tick_usage\n'):
-            with self.subTest(anchor=anchor), self.assertRaisesRegex(ValueError, 'profile anchor changed'):
-                bench.instrument_capture_checks(original.decode().replace(anchor, anchor.rstrip() + ' // changed\n', 1))
-        with self.assertRaisesRegex(ValueError, 'callsites changed'):
-            bench.instrument_capture_checks(original.decode().replace('moving_save_chunk.check()', 'moving_save_chunk.check(FALSE)', 1))
-
-    def test_finer_taps_preserve_read_count_and_default_matrix(self):
-        original = (ROOT / 'code/modules/persistence/saving.dm').read_text()
-        labelled, _ = bench.instrument_capture_checks(original)
-        fine = bench.instrument_field_costs(labelled)
-        self.assertEqual(fine.count('profile_read_field(A, v)'), original.count('A.vars[v]'))
-        self.assertEqual(fine.count('sleep('), original.count('sleep('))
-        self.assertEqual(fine.count('world.log'), original.count('world.log'))
-        for operation in ('read_field', 'find_field', 'runtime_field', 'text_length', 'alias_ref', 'alias_lookup', 'pin_append', 'alias_insert'):
-            self.assertIn('profile_interval("' + operation + '"', fine)
-        self.assertIn('profile_reservation', fine)
-        self.assertIn('profile_alias_key = null', fine)
+            candidate = (Path(folder) / name).read_bytes()
+            baseline = (Path(folder) / 'baseline-source' / name).read_bytes()
+            self.assertEqual(candidate, original)
+            self.assertEqual(baseline, original.replace(b'saving_lists[L]', b'saving_lists["\\ref[L]"]'))
+            self.assertEqual(receipt['sources'][name], hashlib.sha256(candidate).hexdigest())
+            self.assertEqual(receipt['baseline_sources'][name], hashlib.sha256(baseline).hexdigest())
+            self.assertEqual(len(receipt['cases']), 18)
+            self.assertTrue(receipt['comparative'])
+            for path in bench.FILES:
+                if path != name: self.assertEqual((Path(folder) / path).read_bytes(), (Path(folder) / 'baseline-source' / path).read_bytes())
         with tempfile.TemporaryDirectory() as folder, patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('Native forbidden')), patch('builtins.print'):
             self.assertEqual(bench.main(['--output', folder, '--diagnostic-subset']), 0)
             receipt = json.loads((Path(folder) / 'receipt.json').read_text())
             self.assertEqual(len(receipt['cases']), 4)
             self.assertFalse(receipt['comparative'])
-            self.assertTrue(all(case['baseline'] == 0 for case in receipt['cases']))
-        with self.assertRaisesRegex(ValueError, 'Saved field reads changed'):
-            bench.instrument_field_costs(labelled.replace('A.vars[v]', 'A.vars["changed"]', 1))
 
     def test_prepare_refuses_nonempty_destination(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -200,7 +175,7 @@ class BenchmarkSafetyTests(unittest.TestCase):
             (binaries / 'DreamMaker').touch(); (binaries / 'DreamDaemon').touch()
             with patch.object(bench, 'verify_runtime', side_effect=verify), patch.object(bench, 'run_monitored', side_effect=run), patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('Native forbidden')):
                 receipt = bench.run_native(output, binaries, Path(root) / 'pinned.zip', bench.Limits())
-            self.assertEqual(events, ['verify', 'launch'] * 19)
+            self.assertEqual(events, ['verify', 'launch'] * 20)
             self.assertEqual(receipt['execution'], 'passed')
             self.assertEqual(receipt['memory_acceptance'], 'not_established')
             self.assertEqual(len(receipt['results']), 18)
@@ -216,7 +191,7 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertFalse(bench.compile_ok({'status': 'exited', 'returncode': 0}, log + 'DM compiler version 516.1688\n', dmb))
             self.assertTrue(bench.compile_ok({'status': 'exited', 'returncode': 0}, log, dmb))
 
-    def test_fixture_disables_only_roster_and_verifies_prior_backup_bytes(self):
+    def test_fixture_baseline_disables_roster_and_verifies_prior_backup_bytes(self):
         source = (ROOT / 'tests/movement_save_chunks/benchmark.dm').read_text()
         self.assertIn('if(benchmark_baseline) return\n\t. = ..()', source)
         self.assertIn('benchmark_attempt <= 7', source)

@@ -54,92 +54,39 @@ def cases():
             for baseline in (1, 0)]
 
 
-def instrument_capture_checks(source: str):
-    """Label only the isolated copied serializer; never change production bytes."""
-    labels = {}
-    lines = source.splitlines(keepends=True)
-    for number, line in enumerate(lines, 1):
-        if '.check()' in line or line.strip() == 'check()':
-            label = f'saving.dm:{number}'
-            labels[label] = line.strip()
-            lines[number - 1] = line.replace('check()', f'check("{label}")')
-    if len(labels) != 7: raise ValueError('Capture check callsites changed; review instrumentation')
-    text = ''.join(lines)
-    anchor = '\tproc/check()\n'
-    if text.count(anchor) != 1: raise ValueError('Capture checker declaration changed')
-    text = text.replace(anchor, '\tvar/profile_previous_site = "start"\n\tvar/profile_previous_usage = 0\n\tvar/profile_last_path\n\tproc/check(profile_site)\n')
-    message = 'elapsed_ds=[elapsed_ds]")'
-    if text.count(message) != 1: raise ValueError('Capture budget diagnostic changed')
-    text = text.replace(message, 'elapsed_ds=[elapsed_ds] previous_check=[profile_previous_site] current_check=[profile_site] interval_usage=[current_usage - profile_previous_usage] last_path=[profile_last_path]")')
-    for anchor in ('\tproc/reserve_bytes(count)\n', '\t\tmoving_save_chunk.paths += absolute\n', '\tchunk.start_usage = world.tick_usage\n'):
-        if text.count(anchor) != 1: raise ValueError('Capture profile anchor changed: ' + anchor.strip())
-    text = text.replace('\tproc/reserve_bytes(count)\n', '\t\tprofile_previous_site = profile_site\n\t\tprofile_previous_usage = current_usage\n\tproc/reserve_bytes(count)\n')
-    text = text.replace('\t\tmoving_save_chunk.paths += absolute\n', '\t\tmoving_save_chunk.paths += absolute\n\t\tmoving_save_chunk.profile_last_path = absolute\n')
-    text = text.replace('\tchunk.start_usage = world.tick_usage\n', '\tchunk.start_usage = world.tick_usage\n\tchunk.profile_previous_usage = chunk.start_usage\n')
-    return text, labels
-
-
-def instrument_field_costs(text: str):
-    """Fixed scalar attribution only; no extra limits, yields or per-mark logs."""
-    def replace_once(old, new):
-        nonlocal text
-        if text.count(old) != 1: raise ValueError('Field profile anchor changed: ' + old.strip())
-        text = text.replace(old, new)
-    replace_once('\tproc/check(profile_site)\n', '\tvar/profile_peak_cost = 0\n\tvar/profile_peak_operation = "none"\n\tvar/profile_current_field\n\tvar/profile_value_kind\n\tproc/profile_interval(operation, started)\n\t\tvar/cost = world.tick_usage - started\n\t\tif(cost > profile_peak_cost)\n\t\t\tprofile_peak_cost = cost\n\t\t\tprofile_peak_operation = operation\n\tproc/check(profile_site, profile_reservation = 0)\n')
-    replace_once('last_path=[profile_last_path]")', 'last_path=[profile_last_path] field=[profile_current_field] value_kind=[profile_value_kind] reservation=[profile_reservation] peak_operation=[profile_peak_operation] peak_operation_usage=[profile_peak_cost]")')
-    # The pre-existing reservation checker, not a new budget checkpoint.
-    pattern = r'(\t\tcheck\("saving\.dm:\d+")\)\n\tproc/reserve_node'
-    text, count = re.subn(pattern, r'\1, count)\n\tproc/reserve_node', text)
-    if count != 1: raise ValueError('Reservation checker changed')
-    replace_once('\t\t\tif(A.persistence_runtime_var(v))\n', '\t\t\tif(profile_runtime_field(A, v))\n')
-    replace_once('\t\t\tif(A.vars.Find(v))\n', '\t\t\tif(profile_find_field(A, v))\n')
-    if text.count('A.vars[v]') != 3: raise ValueError('Saved field reads changed')
-    text = text.replace('A.vars[v]', 'profile_read_field(A, v)')
-    replace_once('\t\t\t\tframe.current_field = v\n', '\t\t\t\tframe.current_field = v\n\t\t\t\tif(moving_save_chunk) moving_save_chunk.profile_current_field = v\n')
-    replace_once('\tif(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * length(value))\n', '\tif(moving_save_chunk) moving_save_chunk.profile_value_kind = islist(value) ? "list" : (istext(value) ? "text" : (istype(value, /datum) ? "datum" : "scalar"))\n\tif(moving_save_chunk && istext(value)) moving_save_chunk.reserve_bytes(4 * profile_text_length(value))\n')
-    replace_once('\t\tvar/id = saving_lists["\\ref[L]"]\n', '\t\tvar/profile_alias_key = "\\ref[L]"\n\t\tvar/id = saving_lists[profile_alias_key]\n')
-    for operation, statement in (
-        ('alias_ref', '\t\tvar/profile_alias_key = "\\ref[L]"\n'),
-        ('alias_lookup', '\t\tvar/id = saving_lists[profile_alias_key]\n'),
-        ('pin_append', '\t\t\tsaving_list_pins += list(L)\n'),
-        ('alias_insert', '\t\t\tsaving_lists["\\ref[L]"] = id\n'),
-    ):
-        indent = statement[:len(statement) - len(statement.lstrip('\t'))]
-        before = indent + 'var/profile_' + operation + '_start = moving_save_chunk ? world.tick_usage : 0\n'
-        after = indent + 'if(moving_save_chunk) moving_save_chunk.profile_interval("' + operation + '", profile_' + operation + '_start)\n'
-        if operation == 'alias_lookup': after += indent + 'profile_alias_key = null\n'
-        replace_once(statement, before + statement + after)
-    for name, expression in (('runtime_field', 'A.persistence_runtime_var(key)'), ('find_field', 'A.vars.Find(key)'), ('read_field', 'A.vars[key]')):
-        text += '\n/map_storage/proc/profile_' + name + '(datum/A, key)\n\tvar/datum/moving_save_capture/profile = moving_save_chunk\n\tif(!profile) return ' + expression + '\n\tvar/started = world.tick_usage\n\tvar/result = ' + expression + '\n\tprofile.profile_interval("' + name + '", started)\n\treturn result\n'
-    text += '\n/map_storage/proc/profile_text_length(value)\n\tvar/started = world.tick_usage\n\tvar/result = length(value)\n\tmoving_save_chunk.profile_interval("text_length", started)\n\treturn result\n'
-    return text
-
-
 def prepare(output: Path, diagnostic_subset=False):
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()): raise ValueError('output must be a new or empty isolated directory')
     hashes = {}
     production_hashes = {}
-    labels = {}
+    baseline_hashes = {}
     for name in FILES:
         data = (ROOT / name).read_bytes()
         production_hashes[name] = hashlib.sha256(data).hexdigest()
-        if name == 'code/modules/persistence/saving.dm':
-            instrumented, labels = instrument_capture_checks(data.decode())
-            data = instrument_field_costs(instrumented).encode()
         target = output / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
         hashes[name] = hashlib.sha256(data).hexdigest()
+        baseline_data = data
+        if name == 'code/modules/persistence/saving.dm':
+            text = data.decode()
+            if text.count('saving_lists[L]') != 2: raise ValueError('Direct list-key baseline anchors changed')
+            baseline_data = text.replace('saving_lists[L]', 'saving_lists["\\ref[L]"]').encode()
+        baseline_target = output / 'baseline-source' / name
+        baseline_target.parent.mkdir(parents=True, exist_ok=True)
+        baseline_target.write_bytes(baseline_data)
+        baseline_hashes[name] = hashlib.sha256(baseline_data).hexdigest()
     header = ('#define TRUE 1\n#define FALSE 0\n#define TICK_CHECK fixture_tick_check()\n'
               '#define TICK_LIMIT_TO_RUN 100\n#define EXCEPTION(message) new /exception(message)\n')
     dme = header + ''.join(f'#include "{name}"\n' for name in FILES)
     (output / 'benchmark.dme').write_text(dme)
     hashes['benchmark.dme'] = hashlib.sha256(dme.encode()).hexdigest()
+    (output / 'baseline-source/benchmark.dme').write_text(dme)
+    baseline_hashes['benchmark.dme'] = hashes['benchmark.dme']
     receipt = dict(schema=1, execution='not_run', byond_version=VERSION,
                    case_selector_sha256=hashlib.sha256(Path(__file__).with_name('diagnostic_cases.py').read_bytes()).hexdigest(),
-                   baseline='same-head feature-disabled roster', sources=hashes, production_sources=production_hashes, **select_case_plan(cases(), diagnostic_subset),
-                   instrumentation={'scope': 'isolated copied saving.dm only', 'check_labels': labels, 'timing': 'Label and operation timing bookkeeping add overhead; measured intervals are instrumented, not pure production timing. No per-check logging, yields or limit changes.'},
+                   baseline='same-head old reference-string list keys and disabled roster', sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),
+                   instrumentation={'scope': 'logical fixture counters only; candidate serializer bytes unchanged', 'timing': 'Counter instrumentation adds overhead. Fine interval probes removed for acceptance matrix.'},
                    boundaries={'live_server': False, 'listener_control': 'fixture OpenPort(none), loopback-only daemon, no webclient; socket absence not measured', 'max_concurrency': 1},
                    missing_evidence=['native compilation', 'RSS/private memory', 'fresh-process restore'])
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
@@ -285,7 +232,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
     selected_cases = receipt['cases']
     receipt.update(execution='running', limits=vars(limits), compiler=str(compiler), daemon=str(daemon),
                    memory_limit_note='RLIMIT_AS is a stricter virtual-address ceiling in addition to sampled RSS; limit refusal is failure/inconclusive, not a memory pass',
-                   timing_note='Capture phase logging and logical-counter instrumentation consume the capture budget; timings are instrumented, not uninstrumented production timing')
+                   timing_note='Logical-counter instrumentation consumes capture budget; phase logging occurs after detach; timings are instrumented, not uninstrumented production timing')
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
     receipt['compile_runtime_identity'] = verify_runtime(byond_bin, byond_archive)
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
@@ -295,14 +242,23 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
         receipt.update(execution='compile_failed', compile=build)
         (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
         return receipt
+    baseline_folder = output / 'baseline-source'
+    receipt['baseline_compile_runtime_identity'] = verify_runtime(byond_bin, byond_archive)
+    baseline_build = run_monitored([str(compiler), '-max_errors', '0', 'benchmark.dme'], baseline_folder, 'compile', limits, deadline)
+    baseline_log = (baseline_folder / 'compile.log').read_text() if (baseline_folder / 'compile.log').exists() else ''
+    if not compile_ok(baseline_build, baseline_log, baseline_folder / 'benchmark.dmb'):
+        receipt.update(execution='baseline_compile_failed', compile=build, baseline_compile=baseline_build)
+        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
+        return receipt
     results = []
     for index, case in enumerate(selected_cases):
         if time.monotonic() >= deadline:
             results.append(dict(case=case, status='not_started_job_timeout')); continue
         folder = output / f'case-{index:02d}-{case["count"]}-{case["payload"]}-{case["baseline"]}'
         folder.mkdir()
+        artifact_source = baseline_folder if case['baseline'] else output
         for name in ('benchmark.dmb', 'benchmark.rsc'):
-            if (output / name).exists(): shutil.copy2(output / name, folder / name)
+            if (artifact_source / name).exists(): shutil.copy2(artifact_source / name, folder / name)
         params = '&'.join(f'{key}={value}' for key, value in case.items())
         identity = verify_runtime(byond_bin, byond_archive)
         (folder / 'runtime-identity.json').write_text(json.dumps(identity, indent=2))
@@ -319,7 +275,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
         results.append(result)
         (output / 'results.json').write_text(json.dumps(results, indent=2))
     receipt.update(execution='passed' if len(results) == len(selected_cases) and all(r.get('passed') for r in results) else 'failed_or_incomplete',
-                   compile=build, results=results, elapsed=time.monotonic()-started,
+                   compile=build, baseline_compile=baseline_build, results=results, elapsed=time.monotonic()-started,
                    memory_acceptance='not_established',
                    missing_evidence=['fresh-process restore', 'representative full-game workload', 'agreed latency and memory acceptance threshold'])
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))

@@ -9,6 +9,7 @@ FILES = ['code/predefines.dm', 'tests/world_save/stubs.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
          'code/modules/persistence/loading.dm', 'tests/movement_save_chunks/list_identity.dm',
+         'tests/movement_save_chunks/codec_roundtrip.dm',
          'tests/movement_save_chunks/probe.dm']
 
 def prepare(output):

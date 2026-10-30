@@ -1,6 +1,7 @@
 // Synthetic isolated memory fixture. No production files or clients.
 // The daemon may open a loopback port before World/New; initialization closes it.
-// Includes the production serializer; the only baseline change disables its roster.
+// Candidate uses the production serializer. The separately compiled baseline
+// restores old reference-string list keys and disables the movement roster.
 world
 	maxx = 32
 	maxy = 32
@@ -65,7 +66,6 @@ var/benchmark_peak_tick_usage = 0
 	if(moving_save_chunk)
 		if(!benchmark_capture_logged)
 			benchmark_capture_logged = TRUE
-			benchmark_phase("capture")
 		benchmark_peak_nodes = max(benchmark_peak_nodes, moving_save_chunk.nodes)
 		benchmark_peak_edges = max(benchmark_peak_edges, moving_save_chunk.edges)
 		benchmark_peak_bytes = max(benchmark_peak_bytes, moving_save_chunk.reserved_bytes)
@@ -74,7 +74,7 @@ var/benchmark_peak_tick_usage = 0
 /map_storage/memory_benchmark/save_work_check()
 	if(benchmark_capture_logged && !moving_save_chunk && !benchmark_replay_logged)
 		benchmark_replay_logged = TRUE
-		benchmark_phase("replay")
+		benchmark_phase("after_capture")
 	benchmark_peak_entry_pins = max(benchmark_peak_entry_pins, saving_reference_pins.len)
 	benchmark_peak_list_pins = max(benchmark_peak_list_pins, saving_list_pins.len)
 	return ..()
