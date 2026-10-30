@@ -82,6 +82,31 @@ test('official reference search and read through stdio with an offline transport
  } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
 });
 
+test('optional runtime tools use the fixed adapter through stdio with an injected process', async () => {
+ const fs = await import('node:fs/promises'); const os = await import('node:os');
+ const dir = await fs.mkdtemp(path.join(os.tmpdir(),'civ13-mcp-runtime-'));
+ const preload = path.join(dir,'spawn.cjs');
+ await fs.writeFile(preload, `const cp = require('node:child_process'); const {EventEmitter} = require('node:events');
+ const {PassThrough} = require('node:stream'); cp.spawn = (exe, args, options) => {
+   if (!args[1].endsWith('runtime_bridge.py') || !['recovery','variables'].includes(args[2]) || options.shell !== false) throw Error('wrong adapter');
+   const child = new EventEmitter(); child.stdout = new PassThrough(); child.kill = () => child.emit('close',null);
+   process.nextTick(() => { child.stdout.write(JSON.stringify({ok:true,method:args[2]})); child.emit('close',0); }); return child;
+ }; require('node:module').syncBuiltinESMExports();`);
+ const transport = new StdioClientTransport({command:process.execPath,args:['--require',preload,path.join(import.meta.dirname,'server.mjs')],
+  env:{...process.env,CIV13_RUNTIME_ENABLED:'1',CIV13_RUNTIME_PYTHON:process.execPath,CIV13_RUNTIME_ROOT:dir,
+   CIV13_RUNTIME_REVISION:'a'.repeat(40),CIV13_RUNTIME_SESSION:'b'.repeat(32),CIV13_RUNTIME_ROUND:'round-1'}});
+ const client = new Client({name:'runtime-test',version:'1.0.0'});
+ try {
+  await client.connect(transport);
+  const tools = await client.listTools(); assert.equal(tools.tools.length,10);
+  assert.equal(tools.tools.find(t=>t.name === 'runtime_recovery').annotations.openWorldHint,true);
+  for (const [name,method] of [['runtime_recovery','recovery'],['runtime_variables','variables']]) {
+   const response = await client.callTool({name,arguments:{}});
+   assert.deepEqual(response.structuredContent,{ok:true,method});
+  }
+ } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
+});
+
 
 
 test('realpath rejects directory links escaping configured root', async () => {

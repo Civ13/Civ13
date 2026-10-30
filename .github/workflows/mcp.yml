@@ -53,5 +53,10 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: tools/mcp/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - run: npm ci --prefix tools/mcp
       - run: npm test --prefix tools/mcp
+      - name: Offline runtime reader and phase contracts
+        run: node -e "const p=require('node:path'); const c=require('node:child_process'); const e=process.platform==='win32'?p.join(process.env.pythonLocation,'python.exe'):p.join(process.env.pythonLocation,'bin','python3'); for(const f of ['test_agent_debug.py','test_mcp_runtime_bridge.py','test_recovery_phases.py']) c.execFileSync(e,['-B','-m','unittest','discover','-s','tests/nomads_lifecycle','-p',f],{stdio:'inherit'});"

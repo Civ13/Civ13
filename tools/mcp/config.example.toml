@@ -4,3 +4,11 @@ args = ['D:\GitHub\Civ13\tools\mcp\server.mjs', 'D:\GitHub\Civ13']
 
 [mcp_servers.civ13.env]
 CIV13_DM_COMPILER = 'C:\Program Files (x86)\BYOND\bin\dm.exe'
+# Optional read-only runtime adapters are off unless all values below are set
+# by the operator for an already authorized local target. Do not commit real values.
+# CIV13_RUNTIME_ENABLED = '1'
+# CIV13_RUNTIME_PYTHON = 'C:\Users\operator\AppData\Local\Programs\Python\Python313\python.exe'
+# CIV13_RUNTIME_ROOT = 'C:\private\civ13-supervisor'
+# CIV13_RUNTIME_REVISION = '<installed-40-lowercase-hex>'
+# CIV13_RUNTIME_SESSION = '<observed-32-lowercase-hex>'
+# CIV13_RUNTIME_ROUND = '<observed-round-id>'

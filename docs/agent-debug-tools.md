@@ -4,8 +4,9 @@ For default-off private save/load variable evidence and automatic sanitized loca
 failure snapshots, see [variable observability](variable-observability.md).
 `recovery` additionally discovers its current header as `data.variable_identity`;
 it does not resolve or export retained object evidence. The separate reader pins
-the expected build/session/round and rejects stale data. No runtime MCP capability
-or deployment is implied.
+the expected build/session/round and rejects stale data. Optional, default-off
+MCP summaries are documented in [the MCP guide](../tools/mcp/README.md); their
+availability does not imply deployment or permission to query a live server.
 
 These commands investigate the configured Host's own current view through the
 existing lifecycle transport. They provide cached state, not rendered pixels or
@@ -28,7 +29,7 @@ Use a verified full Python executable for `<python>`. Run from
 | `debug_bundle.py bundle --input <snapshot.json>` | Explicit opt-in sanitized reproducible summary | Offline |
 
 All JSON command outputs use schema 1. Query errors are `invalid_input`,
-`transport_unavailable` or `snapshot_rejected`; offline errors are
+`transport_unavailable`, `stale_snapshot` or `snapshot_rejected`; offline errors are
 `input_rejected`. Raw exceptions and responses are withheld. `read_blackout.py`
 is the lower-level private reader, not a public report generator. It retains
 account identity, object references and coordinates; keep its output private.
@@ -65,6 +66,22 @@ it emits allowlisted repository `code/*.dm` paths, line and counts. Raw runtime
 messages, proc names and stacks are unavailable. An older installed status
 without debug metadata explicitly reports `available: false`; do not infer idle
 or healthy state from unavailable fields.
+
+Newer builds also expose the current admitted operation's `phase` and the last
+restart transaction's `transaction_phase`. The latter can persist after the
+transaction ends; combine it with `busy`, `ready`, `restart_hold` and error
+state, rather than treating a phase as a readiness verdict. After the save marker,
+`post_save_validation`, `intent_publication` and `final_validation` describe
+remaining checks, and restore continues through intent consumption and player
+readiness. Null phase values on older builds mean unavailable. No percentage or
+duration is inferred, and a marker alone does not prove completion. A newer
+status supplies a UTC observation time; the reader rejects timestamps in the
+future or more than 60 seconds old and marks absent timestamps unavailable.
+
+For the fixed missing captured-zone-row error, `recovery` can report only the
+numeric z and y within the status dimensions as `captured_zone_row`. Older
+messages, malformed values or missing dimensions produce null. Other exception
+text, paths and credentials remain withheld; coordinates are operational data.
 
 ## Paired tiles and actual screenshots
 

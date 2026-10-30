@@ -23,6 +23,7 @@
 
 /map_storage/proc/save_world_contents(datum/persistence_world_operation/operation)
 	if(!operation || !operation.enter_contents(src, "save")) return FALSE
+	operation.diagnostic_phase = "capture"
 	if(building_allocating_z || dimension_recovery_required)
 		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
 	prepare_player_ownership()
@@ -109,10 +110,12 @@
 		world_state["nodes"] = durable_export.finish_export()
 		durable_export = null
 		if(zone_export_state)
+			operation.diagnostic_phase = "candidate_validation"
 			if(!validate_captured_world_save(round_state)) throw EXCEPTION("Captured candidate is inconsistent; completed backup retained")
 			clear_saved_zones()
 			release_durable_world()
 			clear_zone_export()
+	operation.diagnostic_phase = "write_marker"
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
 	if(!text2file(json_encode(round_state), "map_saves/round.json"))
