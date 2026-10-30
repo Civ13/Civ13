@@ -1,0 +1,45 @@
+name: Read-only Windows dependency inventory
+on:
+  push:
+    branches: [ci/cloud-directx-inventory-20261030-r1]
+    paths:
+      - .github/workflows/cloud-directx-inventory-20261030.yml
+      - tools/cloud-directx-inventory-20261030/**
+permissions:
+  contents: read
+jobs:
+  inventory:
+    if: >-
+      github.repository == 'Civ13/Civ13' && github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'ci: read-only Windows dependency inventory r1'
+    runs-on: windows-2022
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Verify fresh source binding and deadline
+        shell: pwsh
+        env:
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          $base = 'ff67d89241336d55f456967ec596d5cd10358df6'
+          $parents = (git rev-list --parents -n 1 HEAD).Trim().Split(' ')
+          if ($LASTEXITCODE -ne 0 -or $parents.Count -ne 2 -or $parents[0] -ne $env:GITHUB_SHA -or $parents[1] -ne $base) { throw 'Wrong source ancestry.' }
+          if ($env:EVENT_BEFORE -ne $base -and $env:EVENT_BEFORE -ne ('0' * 40)) { throw 'Not first publication.' }
+          if ([DateTime]::UtcNow.AddMinutes(5) -ge [DateTime]::Parse('2026-10-31T20:00:00Z').ToUniversalTime()) { throw 'Admission cutoff or reserve elapsed.' }
+      - name: Inventory exact system DLLs and encoder metadata
+        shell: pwsh
+        run: |
+          & './tools/cloud-directx-inventory-20261030/inventory.ps1' -Output "$env:RUNNER_TEMP/dll-inventory.json"
+      - name: Retain bounded inventory
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-dependency-inventory-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/dll-inventory.json
+          retention-days: 7
+          if-no-files-found: warn
