@@ -36,8 +36,10 @@ this production compositor.
   offsets stay zero, tint is baked once and alpha/reset flags preserve ownership.
 - The compositor leases raw game, light-mask, roof, weather and tree targets.
   The game and root-lit tree outputs share one shadow filter; roofs are replayed
-  above them and weather above roofs. Source-alpha filtering is intended to keep
-  multiplied mask coverage from blacking out transparent portions of relays.
+  above them and weather above roofs. The revised GAME/roof relay applies one
+  explicit layer-filter multiply rather than a grouped child overlay and second
+  source-alpha filter. Documented multiply retains destination alpha; this is a
+  candidate correction for selective darkness, not a proven native fix.
   These **BYOND pixel semantics are not established by offline tests**.
 - Invalidations affect owned tree images, never a full-screen shutter. Retirement
   removes only owned images/screens, releases only matching render-target leases
@@ -365,3 +367,30 @@ weather loss, with sampled RGB/visibility/view/shutter observations. It does not
 establish complete alpha/overlap ordering, all lifecycle paths or filtered-plane
 support. These four short control packets supply the missing negative witnesses;
 they do not expand that coverage or authorize an additional launcher/run.
+
+
+### 2026-10-30 selective-darkness acceptance (not executed)
+
+The live pre-correction screenshot showed dark terrain/trees with brighter ordinary
+sprites. It does not prove why. Test the revised relay on the next explicitly
+admitted isolated client build before calling this fixed:
+
+1. Record exact commit, BYOND version, self visibility diagnostics, viewport and
+   fixed camera/light state. Do not import production saves or change security.
+2. In a bounded test scene compare raw GAME art, direct-mask replay, the historical
+   grouped relay and revised layer-filter relay. Use identical black/half-gray/white
+   masks and opaque/half-alpha sprite swatches, including a creature, grass and rock.
+3. Capture pixels with game-only, tree-only and combined passes. Opaque RGB should
+   multiply by the mask; zero mask must not leave bright ordinary sprites; white
+   mask must preserve original RGB. Half-alpha must remain half-alpha rather than
+   quarter-alpha over a contrasting checker background. Transparent holes must
+   remain clear; GAME and roof slates must align at non-square viewports.
+4. Include a deliberately omitted multiply as a negative control. Verify shared
+   shadow once, weather ordering, roof/native fallback, mouse identity and retire/
+   reconnect transitions. Preserve failed pixels and diagnostics separately.
+5. Only after native acceptance, compare stationary and moving revised-build
+   profiler intervals of equal duration/scenery. Keep self and inclusive times
+   separate; neither compile success nor arithmetic call reduction proves FPS.
+
+No test above has been executed by the cloud source worker. This plan does not
+itself authorize client/server launches or a live deployment.

@@ -230,6 +230,30 @@ class OwnershipAndComposition(unittest.TestCase):
         self.assertIn('screen_loc = "WEST,SOUTH"',relay)
         invalidate=P.fragment(TREE,'/datum/root_tree_presenter/proc/invalidate(')
         self.assertNotIn('owner.screen',invalidate);self.assertIn('I.icon = null',invalidate)
+    def test_lit_relay_uses_direct_mask_composite_and_preserves_source_alpha(self):
+        env=environment();calls=[]
+        def relay(source,number,order):
+            r=N(render_source=source,plane=number,layer=order,filters=Values([]))
+            calls.append(r);return r
+        env.update(make_relay=relay,filter=lambda **kw:kw,FILTER_OVERLAY=1,BLEND_MULTIPLY=3)
+        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/make_lit_relay(','self, source, mask_source, number, order',env,True)
+        for plane in [8,9]:
+            r=f(N(),'raw-scene','committed-mask',plane,1)
+            self.assertEqual((r.render_source,r.plane,r.layer),('raw-scene',plane,1))
+            self.assertEqual(list(r.filters),[dict(type='layer',render_source='committed-mask',flags=1,blend_mode=3)])
+        body=P.fragment(TREE,'/datum/root_tree_presenter/proc/make_lit_relay(')
+        self.assertNotIn('overlays +=',body)
+        self.assertNotIn('type="alpha"',body)
+        # Algebraic contract, NOT a native renderer/pixel oracle. Multiply uses
+        # destination alpha; the removed second alpha mask would square it.
+        for alpha in [0,0.25,0.5,1]:
+            for mask in [0,0.125,0.5,1]:
+                source=(0.8,0.4,0.2,alpha)
+                lit=tuple(channel*mask for channel in source[:3])+(alpha,)
+                self.assertEqual(lit[3],source[3])
+                self.assertEqual(lit[:3],(0.8*mask,0.4*mask,0.2*mask))
+        self.assertNotEqual(0.5*0.5,0.5)  # old redundant-alpha negative control
+
     def test_default_activation_has_owned_lifecycle(self):
         core=(ROOT/'code/modules/visibility/los_context.dm').read_text()
         self.assertIn('#define CIV13_ROOT_TREE_PRESENTATION 1',core)

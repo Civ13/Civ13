@@ -114,6 +114,7 @@
 #include "code\modules\visibility\root_tree_presenter.dm"
 #include "code\modules\visibility\los_presenter.dm"
 #include "code\modules\visibility\los_lifecycle.dm"
+#include "code\modules\visibility\los_diagnostics.dm"
 #include "code\_onclick\hud\hud.dm"
 #include "code\_onclick\hud\hud_vehicles.dm"
 #include "code\_onclick\hud\human.dm"

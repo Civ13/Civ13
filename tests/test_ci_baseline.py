@@ -136,7 +136,8 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_visibility_selects_only_explicit_offline_file(self):
         self.assertEqual(ci.SUITES['los_context']['files'], ('tests/los_context/test_offline.py',
-            'tests/los_context/test_production.py', 'tests/test_geometric_presentation.py'))
+            'tests/los_context/test_production.py', 'tests/test_geometric_presentation.py',
+            'tests/test_visibility_diagnostics.py'))
         self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
         self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))
 

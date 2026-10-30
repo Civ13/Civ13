@@ -124,14 +124,11 @@ var/global/list/root_tree_presenters
 
 /datum/root_tree_presenter/proc/make_lit_relay(source, mask_source, number, order)
 	var/obj/screen/root_scene_relay/R = make_relay(source, number, order)
-	var/image/M = image(null)
-	M.render_source = mask_source
-	M.blend_mode = BLEND_MULTIPLY
-	M.appearance_flags = RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
-	R.overlays += M
-	// Multiplication has viewport extent. Restore the original source alpha so
-	// empty pixels do not black out the floor or other composited planes.
-	R.filters += filter(type="alpha", render_source=source)
+	// Both inputs are full-viewport plane slates. Apply the mask directly as
+	// a composite filter, avoiding child-overlay plane/layer/group ordering.
+	// BLEND_MULTIPLY retains destination alpha; applying source alpha again
+	// would square translucency on sprite edges and translucent roof pixels.
+	R.filters += filter(type="layer", render_source=mask_source, flags=FILTER_OVERLAY, blend_mode=BLEND_MULTIPLY)
 	return R
 
 /datum/root_tree_presenter/proc/planes_admitted()
