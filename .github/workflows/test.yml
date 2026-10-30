@@ -2149,6 +2149,11 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify admin player care source contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_player_care')
+        timeout-minutes: 2
+        shell: bash
+        run: python3 -m unittest discover -s tests/admin_player_care -p 'test_player_care.py' -v
       - name: Verify admin item cleaning and rejection controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_clean')
         timeout-minutes: 5

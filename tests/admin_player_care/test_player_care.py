@@ -95,6 +95,14 @@ class PlayerCareSourceContracts(unittest.TestCase):
         self.assertIn('if(90 to 10000)\n\t\t\tmood_modifier = 1.15', handler)
         self.assertNotRegex(handler, r'\bmood\s*[-+*/]?=')
 
+    def test_ci_runs_player_contracts_separately_from_legacy_native_items(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        block = workflow.split('      - name: Verify admin player care source contracts\n', 1)[1].split('      - name:', 1)[0]
+        self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_player_care')", block)
+        self.assertIn("python3 -m unittest discover -s tests/admin_player_care -p 'test_player_care.py' -v", block)
+        self.assertNotIn('continue-on-error', block)
+        self.assertNotIn('byond-bin', block)
+
     def test_success_is_audited_once_after_effects(self):
         for name in COMMANDS:
             with self.subTest(command=name):
