@@ -111,6 +111,21 @@ class PresenterSourceContracts(unittest.TestCase):
         entered = (ROOT / 'code/datums/observation/moved.dm').read_text()
         self.assertIn('los_invalidate(old_loc, am.opacity)', entered)
 
+    def test_shared_tile_invalidation_preserves_ground_and_objects(self):
+        block = SOURCE.split('/datum/los_presenter/proc/invalidate(', 1)[1].split('/datum/los_presenter/proc/owns_atom(', 1)[0]
+        guard = 'if(get_turf(A) == cell)'
+        self.assertIn(guard, block)
+        self.assertLess(block.index(guard), block.index('los_footprint_hits_cell'))
+        self.assertNotIn('isturf(A) && !A.opacity', block)
+        # Native tile identity, not smooth geometric centers, controls exemption.
+        self.assertNotIn('tx == cx && ty == cy', block)
+        from types import SimpleNamespace
+        cell, behind = object(), object()
+        for target in [SimpleNamespace(tile=cell, step_x=0), SimpleNamespace(tile=cell, step_x=8), SimpleNamespace(tile=behind, step_x=-8)]:
+            exempt = eval(guard[3:-1], {'__builtins__': {}, 'get_turf': lambda a: a.tile}, {'A': target, 'cell': cell})
+            self.assertEqual(exempt, target.tile is cell)
+
+
     def test_retirement_releases_masks(self):
         self.assertIn('owner.images -= owned_images', SOURCE)
         self.assertIn('owner.los_presenter = null', SOURCE)

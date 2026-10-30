@@ -38,15 +38,49 @@ var/global/list/los_active_contexts
 		return FALSE
 	return TRUE
 
-// The four triangles cover conv(eye, footprint), not just four corner rays.
+// SAT for conv(eye, target square) against the closed unit blocker square.
+// Projection onto an arbitrary axis is the union of the eye projection and
+// target-square interval. Normals to eye->all four corners contain both hull
+// silhouette edges; x/y contain square hull edges and blocker square edges.
+// Extra (non-hull) axes cannot separate intersecting convex sets.
+/proc/los_hull_axis_separates(nx, ny, ex, ey, tx, ty, half_size, cx, cy)
+	var/eye = nx * ex + ny * ey
+	var/target = nx * tx + ny * ty
+	var/extent = abs(nx) + abs(ny)
+	var/target_radius = extent * half_size
+	var/cell = nx * cx + ny * cy
+	var/cell_radius = extent * 0.5
+	return max(eye, target + target_radius) < cell - cell_radius || cell + cell_radius < min(eye, target - target_radius)
+
 /proc/los_footprint_hits_cell(ex, ey, tx, ty, half_size, cx, cy)
-	if (los_triangle_hits_cell(ex, ey, tx-half_size, ty-half_size, tx+half_size, ty-half_size, cx, cy))
+	// Exact x/y SAT; strict inequalities preserve edge and corner contact.
+	if (max(ex, tx+half_size) < cx-0.5 || min(ex, tx-half_size) > cx+0.5 || max(ey, ty+half_size) < cy-0.5 || min(ey, ty-half_size) > cy+0.5)
+		return FALSE
+	if (los_hull_axis_separates(ey-ty+half_size, tx-half_size-ex, ex, ey, tx, ty, half_size, cx, cy))
+		return FALSE
+	// A zero-size footprint is the eye-target segment: all four normals
+	// coincide, so the first normal plus x/y completes its SAT.
+	if (!half_size)
 		return TRUE
-	if (los_triangle_hits_cell(ex, ey, tx+half_size, ty-half_size, tx+half_size, ty+half_size, cx, cy))
-		return TRUE
-	if (los_triangle_hits_cell(ex, ey, tx+half_size, ty+half_size, tx-half_size, ty+half_size, cx, cy))
-		return TRUE
-	return los_triangle_hits_cell(ex, ey, tx-half_size, ty+half_size, tx-half_size, ty-half_size, cx, cy)
+	if (los_hull_axis_separates(ey-ty+half_size, tx+half_size-ex, ex, ey, tx, ty, half_size, cx, cy))
+		return FALSE
+	if (los_hull_axis_separates(ey-ty-half_size, tx+half_size-ex, ex, ey, tx, ty, half_size, cx, cy))
+		return FALSE
+	if (los_hull_axis_separates(ey-ty-half_size, tx-half_size-ex, ex, ey, tx, ty, half_size, cx, cy))
+		return FALSE
+	return TRUE
+
+// Co-located world roots share the tile's visibility, including offset objects
+// and multiple opaque owners. Native tile identity is separate from fractional
+// geometry; blockers on OTHER tiles still occlude the target normally.
+/proc/los_target_blocked(tx, ty, cx, cy, target_tile_x, target_tile_y, blocker_tile_x, blocker_tile_y, opaque_target)
+	if (target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y)
+		return FALSE
+	if (opaque_target)
+		if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))
+			return TRUE
+		return FALSE
+	return los_footprint_hits_cell(0, 0, tx, ty, 0.25, cx, cy)
 
 // Rational slab intervals [low numerator, high numerator, positive denominator].
 /proc/los_ray_axis(e, t, c)
@@ -88,6 +122,8 @@ var/global/list/los_active_contexts
 	should_save = FALSE
 	var/cell_x
 	var/cell_y
+	var/tile_x
+	var/tile_y
 	var/atom/surface_owner
 	var/owners = 0
 
@@ -225,27 +261,36 @@ var/global/list/los_active_contexts
 			var/turf/T = locate(cx, cy, S.eye_z)
 			if (!T)
 				continue
-			var/datum/los_cell/B = new
-			B.cell_x = cx - S.eye_x
-			B.cell_y = cy - S.eye_y
+			var/owner_count = 0
+			var/atom/cell_owner = null
 			if (T.opacity)
-				B.surface_owner = T
-				B.owners++
+				cell_owner = T
+				owner_count++
 			for (var/atom/A in T)
 				if (A.opacity && A != body)
 					if (ismovable(A))
 						var/atom/movable/AM = A
 						if (AM.step_x || AM.step_y)
 							var/datum/los_cell/moving_blocker = new
-							moving_blocker.cell_x = B.cell_x + AM.step_x / 32
-							moving_blocker.cell_y = B.cell_y + AM.step_y / 32
+							moving_blocker.tile_x = cx - S.eye_x
+							moving_blocker.tile_y = cy - S.eye_y
+							moving_blocker.cell_x = cx - S.eye_x + AM.step_x / 32
+							moving_blocker.cell_y = cy - S.eye_y + AM.step_y / 32
 							moving_blocker.surface_owner = AM
 							moving_blocker.owners = 1
 							S.blockers += moving_blocker
 							continue
-					B.surface_owner = A
-					B.owners++
-			if (B.owners)
+					cell_owner = A
+					owner_count++
+			// Empty ground allocates no los_cell; moving blockers stay separate.
+			if (owner_count)
+				var/datum/los_cell/B = new
+				B.tile_x = cx - S.eye_x
+				B.tile_y = cy - S.eye_y
+				B.cell_x = cx - S.eye_x
+				B.cell_y = cy - S.eye_y
+				B.surface_owner = cell_owner
+				B.owners = owner_count
 				S.blockers += B
 	if (S.revision != revision || S.policy != policy_key())
 		return null
@@ -260,8 +305,10 @@ var/global/list/los_active_contexts
 		return LOS_SELF
 	if ((!isturf(target) && !isturf(target.loc)) || target.z != S.eye_z || !target.alpha || target.invisibility > body.see_invisible)
 		return LOS_DENY
-	var/tx = target.x - S.eye_x
-	var/ty = target.y - S.eye_y
+	var/target_tile_x = target.x - S.eye_x
+	var/target_tile_y = target.y - S.eye_y
+	var/tx = target_tile_x
+	var/ty = target_tile_y
 	if (ismovable(target))
 		var/atom/movable/moving_target = target
 		tx += moving_target.step_x / 32
@@ -273,34 +320,18 @@ var/global/list/los_active_contexts
 		var/obj/screen/fov/F = body.HUDtech["fov"]
 		if (F && F.alpha && target.InCone(body, OPPOSITE_DIR(body.dir)))
 			return LOS_DENY
-	var/result = LOS_WORLD
-	if (target.opacity)
-		var/datum/los_cell/first
-		var/list/best
-		var/tied = FALSE
-		for (var/datum/los_cell/B in S.blockers)
-			var/list/hit = los_ray_entry(0, 0, tx, ty, B.cell_x, B.cell_y)
-			if (!hit)
-				continue
-			if (!best || hit[1]*best[2] < best[1]*hit[2])
-				best = hit
-				first = B
-				tied = FALSE
-			else if (hit[1]*best[2] == best[1]*hit[2])
-				tied = TRUE
-		if (!first || tied || first.owners != 1 || first.surface_owner != target)
+	var/result = target.opacity ? LOS_SURFACE : LOS_WORLD
+	// Equal visual coordinates can belong to different native tiles during a
+	// smooth step. Include BOTH native tile and opacity policy in the cache key.
+	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
+	var/cached = S.clear_footprints[footprint_key]
+	if (!isnull(cached))
+		return cached
+	for (var/datum/los_cell/B in S.blockers)
+		if (los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, target.opacity))
+			S.clear_footprints[footprint_key] = LOS_DENY
 			return LOS_DENY
-		result = LOS_SURFACE
-	else
-		var/footprint_key = "[tx],[ty]"
-		var/cached = S.clear_footprints[footprint_key]
-		if (!isnull(cached))
-			return cached
-		for (var/datum/los_cell/B in S.blockers)
-			if (los_footprint_hits_cell(0, 0, tx, ty, 0.25, B.cell_x, B.cell_y))
-				S.clear_footprints[footprint_key] = LOS_DENY
-				return LOS_DENY
-		S.clear_footprints[footprint_key] = LOS_WORLD
+	S.clear_footprints[footprint_key] = result
 	return result
 
 // Fresh raw geometry on EACH information read covers direct opacity writers.

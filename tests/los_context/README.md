@@ -15,9 +15,12 @@ Capture covers the actual z level and viewport (up to 63x63), plus one edge tile
 accepts ordinary terrain and clutter, and derives blockers from raw opacity.
 Partial movement contributes `step_x/32` and `step_y/32` to the eye and moving
 opaque blockers. All geometric products use eye-relative coordinates rather
-than whole-map coordinates. Opaque targets must be the unique first surface;
-nonopaque targets require an unobstructed closed quarter-tile footprint. Multiple
-opaque owners at one position conservatively deny surface ownership. This is a
+than whole-map coordinates. Opaque targets use a closed ray and nonopaque targets a closed quarter-tile
+footprint. Blockers on the target's own native turf do not occlude that target,
+including items, mobs, ground, offset objects and multiple opaque owners. Other
+tile blockers still occlude normally. Snapshots retain native tile coordinates
+separately from fractional geometric centers; cache keys include both tile and
+geometry plus the opaque/nonopaque policy. This is a
 tile opacity model, not a reconstruction of irregular collision bounds.
 
 A renderer captures once and calls `decision_snapshot(target, snapshot)` for its

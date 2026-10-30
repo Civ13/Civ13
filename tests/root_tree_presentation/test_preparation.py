@@ -132,6 +132,7 @@ class Preparation(unittest.TestCase):
         ci=importlib.util.module_from_spec(spec);spec.loader.exec_module(ci)
         self.assertEqual(ci.SUITES['root_tree_presentation']['files'],(
             'tests/root_tree_presentation/test_contract.py',
+            'tests/root_tree_presentation/test_noop_refresh.py',
             'tests/root_tree_presentation/test_preparation.py',
             'tests/root_tree_presentation/test_protocol.py'))
         for path in ['code/modules/visibility/root_tree_presenter.dm',

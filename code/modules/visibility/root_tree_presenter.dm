@@ -41,6 +41,7 @@ var/global/list/root_tree_presenters
 	var/list/frame_keys = list()
 	var/list/source_appearances = list()
 	var/list/frames = list()
+	var/list/published_frames = list()
 	var/list/light_keys = list()
 	var/list/light_values = list()
 	var/list/screens = list()
@@ -159,6 +160,7 @@ var/global/list/root_tree_presenters
 	for(var/image/I in owned_images)
 		if(isturf(changed) && !possible_opacity && !changed.opacity && I.loc && I.loc.loc != changed)
 			continue
+		published_frames -= I.loc
 		I.icon = null
 		I.overlays = null
 		I.underlays = null
@@ -173,12 +175,19 @@ var/global/list/root_tree_presenters
 	if(!S)
 		invalidate()
 		return FALSE
-	var/reason = composition_conflict(S)
+	// Materialize the neighborhood once; the audit and root pass share it.
+	var/list/scene = length(owner.images) > 2048 ? list() : range(max(S.radius_x, S.radius_y) + 6, context.body)
+	var/reason = composition_conflict(S, scene)
 	if(reason)
 		release_owned_scene()
 		if(fallback_reason != reason)
 			fallback_count = min(fallback_count + 1, 1000000)
 		fallback_reason = reason
+		return TRUE
+	var/list/roots = scene_roots(scene)
+	if(!roots.len)
+		release_owned_scene()
+		fallback_reason = "no root trees"
 		return TRUE
 	if(!setup_scene())
 		fallback_reason = "scene lease unavailable"
@@ -188,9 +197,7 @@ var/global/list/root_tree_presenters
 	var/settled = TRUE
 	// Existing flora sheets are at most 160px with <=32px offsets. Six cells
 	// cover that overhang; geometry still judges the root.
-	for(var/obj/structure/wild/T in range(max(S.radius_x, S.radius_y) + 6, context.body))
-		if(!context.root_tree_admitted(T))
-			continue
+	for(var/obj/structure/wild/T in roots)
 		current += T
 		var/image/I = images[T]
 		if(!I)
@@ -200,11 +207,13 @@ var/global/list/root_tree_presenters
 			owned_images += I
 			owner.images += I
 		if(context.decision_snapshot(T, S, "visual") == LOS_DENY)
+			published_frames -= T
 			I.icon = null
 			I.mouse_opacity = 0
 			continue
 		var/rgb = cached_light(T)
 		if(!rgb)
+			published_frames -= T
 			I.icon = null
 			I.mouse_opacity = 0
 			settled = FALSE
@@ -222,8 +231,9 @@ var/global/list/root_tree_presenters
 			frame.Blend(rgb, ICON_MULTIPLY)
 			frames[T] = frame
 			frame_keys[T] = frame_key
-		if(I.icon != frame || source_appearances[T] != T.appearance)
+		if(frame_needs_publication(T, frame))
 			root_tree_set_frame(I, T, frame)
+			published_frames[T] = frame
 			source_appearances[T] = T.appearance
 	for(var/atom/old in images.Copy())
 		if(old in current)
@@ -233,6 +243,7 @@ var/global/list/root_tree_presenters
 		owned_images -= I
 		images -= old
 		frames -= old
+		published_frames -= old
 		frame_keys -= old
 		source_appearances -= old
 		light_keys -= old
@@ -243,6 +254,12 @@ var/global/list/root_tree_presenters
 	if(!settled)
 		owner.los_dirty = TRUE
 	return settled
+
+// Image.icon is an engine appearance getter, not our publication identity.
+// Track the exact cached frame we submitted instead of comparing that getter
+// against a mutable /icon datum on every audit. Invalidation clears this lease.
+/datum/root_tree_presenter/proc/frame_needs_publication(atom/T, icon/frame)
+	return published_frames[T] != frame || source_appearances[T] != T.appearance
 
 /datum/root_tree_presenter/proc/cached_light(obj/structure/wild/T)
 	var/turf/root = T.loc
@@ -299,13 +316,22 @@ var/global/list/root_tree_presenters
 			return TRUE
 	return FALSE
 
-/datum/root_tree_presenter/proc/composition_conflict(datum/los_snapshot/S)
+/datum/root_tree_presenter/proc/scene_roots(list/scene)
+	var/list/roots = list()
+	for(var/obj/structure/wild/T in scene)
+		if(context.root_tree_admitted(T))
+			roots += T
+	return roots
+
+/datum/root_tree_presenter/proc/composition_conflict(datum/los_snapshot/S, list/scene)
 	if(length(owner.images) > 2048)
 		return "client image audit budget exceeded"
 	var/list/budget = list(4096)
 	var/visits = 0
 	var/radius = max(S.radius_x, S.radius_y) + 6
-	for(var/atom/A in range(radius, context.body))
+	if(isnull(scene))
+		scene = range(radius, context.body)
+	for(var/atom/A in scene)
 		if(++visits > 4096)
 			return "scene atom audit budget exceeded"
 		if(context.root_tree_admitted(A))
@@ -347,6 +373,7 @@ var/global/list/root_tree_presenters
 	images.Cut()
 	owned_images.Cut()
 	frames.Cut()
+	published_frames.Cut()
 	frame_keys.Cut()
 	source_appearances.Cut()
 	light_keys.Cut()

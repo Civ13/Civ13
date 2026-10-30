@@ -93,6 +93,7 @@ SUITES = {
     # Keep shared movement/lighting files unmapped: they retain all-suite fallback.
     'root_tree_presentation': {'files': (
         'tests/root_tree_presentation/test_contract.py',
+        'tests/root_tree_presentation/test_noop_refresh.py',
         'tests/root_tree_presentation/test_preparation.py',
         'tests/root_tree_presentation/test_protocol.py'), 'paths': (
         'tests/root_tree_presentation/', 'code/modules/visibility/',

@@ -52,7 +52,7 @@ def compile_proc(text,signature,args,env,method=False):
         for path in ['/obj/structure/wild/largejungle','/obj/structure/wild/jungle','/obj/structure/wild/palm','/obj/structure/wild/tree']:
             line=line.replace(path,repr(path))
         if method:
-            for field in ['root_trees','owner','images','owned_images','retired','context','frames','frame_keys','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene']:
+            for field in ['root_trees','owner','images','owned_images','retired','context','frames','frame_keys','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene']:
                 line=re.sub(r'(?<![.\w])'+field+r'\b','self.'+field,line)
         if line.startswith('for(var/i = 1, i <= 20, i++)'):line='for i in range(1,21):'
         else:
@@ -180,7 +180,7 @@ class OwnershipAndComposition(unittest.TestCase):
         game=Plane(render_target='game',filters=[],deleted=False,color=None,alpha=255,transform=identity())
         roof=Plane(render_target='roof',deleted=False)
         r=N(retired=False,owner=N(screen=Items(['HUD',game,roof]),images=Items(['foreign','own']),root_tree_presenter=None),
-            images={},owned_images=Items(['own']),frames={},frame_keys={},source_appearances={},light_keys={},light_values={},screens=Items([roof]),
+            images={},owned_images=Items(['own']),frames={},published_frames={},frame_keys={},source_appearances={},light_keys={},light_values={},screens=Items([roof]),
             leased_planes=Items([game,roof]),lease_targets={game:'game',roof:'roof'},game_plane=game,
             original_filters=['shadow'],scene_plane=None,scene_active=True,context=object())
         r.owner.root_tree_presenter=r
@@ -264,7 +264,7 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/mob/mob_movement.dm','/atom/movable/Move(','persistence_movement_allowed'),
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
-            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','var/turf/T = loc')]:
+            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','last_color = L.Copy()')]:
             source=(ROOT/path).read_text();check(source,signature,write)
             mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)')
             with self.assertRaises(ValueError):check(mutant,signature,write)
@@ -299,7 +299,7 @@ class SceneFallback(unittest.TestCase):
         self.env.update(range=lambda radius,b:atoms,get_turf=lambda a:a,get_dist=lambda a,b:0)
         c=N(body=body,root_tree_admitted=lambda a:getattr(a,'root',False))
         r=N(context=c,owner=N(images=list(client_images),los_presenter=N(owned_images=list(los_owned))),owned_images=list(owned))
-        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/composition_conflict(','self, S',self.env,True)
+        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/composition_conflict(','self, S, scene=None',self.env,True)
         return f(r,N(radius_x=7,radius_y=7))
     def test_plain_root_success_and_native_world_conflicts(self):
         self.assertIsNone(self.audit([self.appearance(layer=5.11,root=True),self.appearance()]))
@@ -332,24 +332,29 @@ class SceneFallback(unittest.TestCase):
         self.assertIsNone(self.audit([], [high]))
     def test_fallback_releases_scene_but_retains_owner_and_can_reactivate(self):
         helper=OwnershipAndComposition();r,env,game,roof=helper.model();owner=r.owner
-        env.update(min=min)
+        env.update(min=min,max=max,range=lambda radius,body:[])
         # Execute the production refresh admission prefix; rendering is tested
         # independently and is intentionally not simulated as native pixels.
         prefix=P.fragment(TREE,'/datum/root_tree_presenter/proc/refresh(').split('\tvar/list/current = list()')[0]+'\treturn TRUE\n'
-        prefix=prefix.replace('composition_conflict(S)','self.composition_conflict(S)').replace('setup_scene()','self.setup_scene()')
-        r.fallback_reason=None;r.fallback_count=0;r.owner.los_context=r.context
+        prefix=prefix.replace('composition_conflict(S, scene)','self.composition_conflict(S, scene)').replace('setup_scene()','self.setup_scene()').replace('scene_roots(scene)','self.scene_roots(scene)')
+        r.context=N(body=object());r.fallback_reason=None;r.fallback_count=0;r.owner.los_context=r.context
         reason=['native foreground or mixed-layer appearance']
-        r.composition_conflict=lambda S:reason[0]
+        r.composition_conflict=lambda S,scene:reason[0]
+        r.scene_roots=lambda scene:[object()]
         activated=[]
         def setup():r.scene_active=True;activated.append(True);return True
         r.setup_scene=setup
         f=compile_proc(prefix,'/datum/root_tree_presenter/proc/refresh(','self, S',env,True)
-        self.assertTrue(f(r,object()));self.assertFalse(r.scene_active)
+        self.assertTrue(f(r,N(radius_x=7,radius_y=7)));self.assertFalse(r.scene_active)
         self.assertIs(r.owner,owner);self.assertIs(owner.root_tree_presenter,r)
         self.assertEqual(owner.images,['foreign']);self.assertEqual(game.filters,['shadow'])
         self.assertEqual(r.fallback_count,1);self.assertFalse(activated)
-        self.assertTrue(f(r,object()));self.assertEqual(r.fallback_count,1)
-        reason[0]=None;self.assertTrue(f(r,object()));self.assertTrue(r.scene_active)
+        self.assertTrue(f(r,N(radius_x=7,radius_y=7)));self.assertEqual(r.fallback_count,1)
+        reason[0]=None;self.assertTrue(f(r,N(radius_x=7,radius_y=7)));self.assertTrue(r.scene_active)
         self.assertIsNone(r.fallback_reason);self.assertEqual(activated,[True])
+        r.scene_roots=lambda scene:[]
+        self.assertTrue(f(r,N(radius_x=7,radius_y=7)))
+        self.assertFalse(r.scene_active);self.assertEqual(r.fallback_reason,'no root trees')
+        self.assertEqual(activated,[True])
 
 if __name__=='__main__':unittest.main()

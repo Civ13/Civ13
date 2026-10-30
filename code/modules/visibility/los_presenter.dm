@@ -59,6 +59,10 @@
 			var/atom/movable/target = A
 			tx += target.step_x / 32
 			ty += target.step_y / 32
+		// A blocker does not conceal content rooted on its own native tile.
+		// Step offsets do not change tile ownership; other blockers still mask it.
+		if(get_turf(A) == cell)
+			continue
 		if(los_footprint_hits_cell(0, 0, tx, ty, 0.5, cx, cy))
 			var/image/I = hidden_image(A)
 			images[A] = I
