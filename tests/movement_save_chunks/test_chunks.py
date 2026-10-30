@@ -177,6 +177,16 @@ class ProductionBoundaryTests(unittest.TestCase):
             self.assertNotIn(module.ORIGIN_ANCHOR, (output / 'origin-source/code/modules/persistence/functions.dm').read_text())
             self.assertFalse(list(output.rglob('*.dmb')))
 
+    def test_vendor_setup_optional_library_path_under_nounset(self):
+        import os
+        import subprocess
+        workflow = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
+        assignment = 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"'
+        self.assertLess(workflow.index(assignment), workflow.index('source "$PWD/BYOND/byond/bin/byondsetup"'))
+        environment = dict(os.environ); environment.pop('LD_LIBRARY_PATH', None)
+        result = subprocess.run(['bash', '-c', 'set -eu; ' + assignment + '; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_existing_fail_closed_boundaries_remain(self):
         for text in ('Child moved or disappeared during capture', 'require_export_frame(frame)', 'drain_save_transfers(frame)'):
             self.assertIn(text, SAVING)
