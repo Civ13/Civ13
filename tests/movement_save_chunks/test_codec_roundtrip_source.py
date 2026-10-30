@@ -29,6 +29,14 @@ class CodecRoundtripSourceTests(unittest.TestCase):
         self.assertIn('decoded_a[1] != decoded_b', SOURCE)
         self.assertIn('writer.saving_list_pins.len > 19', SOURCE)
 
+    def test_matrix_real_codec_alias_values_and_cycle(self):
+        for marker in ('matrix(2, 3, 4, 5, 6, 7)', 'matrix_alias',
+                       'matrix_graph[matrix_a]', 'matrix_a.a = 13',
+                       'matrix_b.a != 2', 'matrix alias partition changed',
+                       'matrix scalar components changed'):
+            self.assertIn(marker, SOURCE)
+        self.assertIn('restored.len != 18', SOURCE)
+
     def test_no_automatic_entry_or_production_files_cleanup_preserves_failure(self):
         for forbidden in ('/world/New', 'OpenPort(', 'sleep(', 'spawn(', 'map_saves/', 'map_backups/', 'fdel(', 'image(', 'filter('):
             self.assertNotIn(forbidden, SOURCE)

@@ -38,6 +38,18 @@
 		root["underlays"] = held_underlays
 		root["filters"] = held_filters
 		root["filters_alias"] = held_filters
+		// Real matrix entry serialization, aliases through a cyclic list, and
+		// distinct equal-valued matrices. No special matrix descriptor is used.
+		var/matrix/matrix_a = matrix(2, 3, 4, 5, 6, 7)
+		var/matrix/matrix_b = matrix(2, 3, 4, 5, 6, 7)
+		var/list/matrix_graph = list()
+		matrix_graph["self"] = matrix_graph
+		matrix_graph["matrix"] = matrix_a
+		matrix_graph[matrix_a] = "matrix-key"
+		root["matrix_a"] = matrix_a
+		root["matrix_alias"] = matrix_a
+		root["matrix_b"] = matrix_b
+		root["matrix_graph"] = matrix_graph
 		writer.clear_bookkeeping()
 		F = new("list-codec.sav")
 		F["/format_version"] << 3
@@ -76,7 +88,7 @@
 		var/list/reloaded_descriptor
 		F["/root"] >> reloaded_descriptor
 		restored = reader.decode_saved_value(F, reloaded_descriptor)
-		if(!islist(restored) || restored.len != 14)
+		if(!islist(restored) || restored.len != 18)
 			throw EXCEPTION("LIST_CODEC: decoded root is not a fresh matching graph")
 		if(restored["equal_a"] != restored["equal_alias"] || restored["overlays"] != restored["overlays_alias"] || restored["filters"] != restored["filters_alias"])
 			throw EXCEPTION("LIST_CODEC: repeated held aliases were split")
@@ -103,6 +115,23 @@
 		for(var/key in assoc)
 			if(decoded_assoc[key] != assoc[key])
 				throw EXCEPTION("LIST_CODEC: numeric/string/literal-marker value changed: [key]")
+		var/matrix/matrix_a = restored["matrix_a"]
+		var/matrix/matrix_alias = restored["matrix_alias"]
+		var/matrix/matrix_b = restored["matrix_b"]
+		var/list/matrix_graph = restored["matrix_graph"]
+		if(!istype(matrix_a) || !istype(matrix_alias) || !istype(matrix_b) || !islist(matrix_graph))
+			throw EXCEPTION("LIST_CODEC: matrix entries lost their types")
+		if("\ref[matrix_a]" != "\ref[matrix_alias]" || "\ref[matrix_a]" == "\ref[matrix_b]")
+			throw EXCEPTION("LIST_CODEC: matrix alias partition changed")
+		var/matrix/graph_matrix = matrix_graph["matrix"]
+		if(matrix_graph["self"] != matrix_graph || "\ref[graph_matrix]" != "\ref[matrix_a]" || matrix_graph[matrix_a] != "matrix-key")
+			throw EXCEPTION("LIST_CODEC: matrix association/cycle changed")
+		for(var/matrix/M in list(matrix_a, matrix_b))
+			if(M.a != 2 || M.b != 3 || M.c != 4 || M.d != 5 || M.e != 6 || M.f != 7)
+				throw EXCEPTION("LIST_CODEC: matrix scalar components changed")
+		matrix_a.a = 13
+		if(matrix_alias.a != 13 || matrix_b.a != 2)
+			throw EXCEPTION("LIST_CODEC: matrix mutation did not preserve alias separation")
 		reader.clear_bookkeeping()
 		if(reader.loaded_lists.len || reader.saving_list_pins.len)
 			throw EXCEPTION("LIST_CODEC: reader bookkeeping retained lists")
@@ -123,6 +152,6 @@
 
 /proc/clear_native_list_codec_cycles(list/root)
 	if(!root) return
-	for(var/name in list("self", "cycle_a", "cycle_b"))
+	for(var/name in list("self", "cycle_a", "cycle_b", "matrix_graph"))
 		var/list/L = root[name]
 		if(islist(L)) L.Cut()
