@@ -44,6 +44,32 @@ var/mutations = 0
 		return ..()
 /mob/living/simple_animal/chunk_fixture/optional_cuff
 	var/handcuffed = TRUE
+// Test-only headroom taps are called solely from the dedicated copied packet.
+var/headroom_waits = 0
+/proc/fixture_is_headroom()
+	return copytext(world.params["scenario"], 1, 10) == "headroom-"
+/proc/fixture_force_headroom(mob/A)
+	return armed && fixture_is_headroom() && A == subject && !headroom_waits
+/proc/fixture_headroom_nonprogress()
+	return armed && headroom_waits && world.params["scenario"] == "headroom-nonprogress"
+/proc/fixture_headroom_before_wait(mob/A, datum/save_export_frame/caller)
+	if(!fixture_force_headroom(A)) return
+	if(map_storage.moving_save_chunk || map_storage.saving_references["\ref[A]"]) throw EXCEPTION("HEADROOM: stage or root identity existed before wait")
+	headroom_waits++
+	mutations++
+	switch(world.params["scenario"])
+		if("headroom-visited") A.loc = locate(1,1,1)
+		if("headroom-unvisited") A.loc = locate(4,1,1)
+		if("headroom-delete") del(A)
+		if("headroom-container") A.loc = new /obj(locate(4,1,1))
+		if("headroom-cross-z") A.loc = locate(4,1,2)
+		if("headroom-parent-replaced")
+			if(!caller || !isturf(caller.source)) throw EXCEPTION("HEADROOM: expected a turf caller")
+			var/turf/replacement = new /turf(caller.source)
+			if(!replacement) throw EXCEPTION("HEADROOM: replacement did not construct")
+		if("headroom-parent-closed")
+			if(!caller) throw EXCEPTION("HEADROOM: expected an active caller")
+			caller.active = FALSE
 var/peak_roster = 0
 var/peak_nodes = 0
 var/peak_edges = 0
@@ -66,7 +92,7 @@ var/peak_capture_tick_usage = 0
 	peak_list_pins = max(peak_list_pins, saving_list_pins.len)
 	// Interleave only outside the synchronous capture, including every replay
 	// checkpoint. This exercises movement while detached records are written.
-	if(armed && !moving_save_chunk && saving_z == 1 && subject)
+	if(armed && !fixture_is_headroom() && !moving_save_chunk && saving_z == 1 && subject)
 		var/list/record = moving_save_roots["\ref[subject]"]
 		if(world.params["scenario"] in list("frontier", "frontier-delete"))
 			// Wait until the visited turf frame is closed, not merely assigned an ID.
@@ -118,6 +144,7 @@ var/peak_capture_tick_usage = 0
 		del(cuffed)
 		if(mob_list.len) throw EXCEPTION("Optional-cuff fixture left registry debris")
 		subject = new(locate(4,1,1))
+		if(world.params["scenario"] == "headroom-unvisited") subject.loc = locate(1,1,1)
 		if(!map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Absent optional cuff fields rejected an ordinary animal")
 		subject.name = "admitted animal"
 		subject.payload = list("literal", "key" = 17)
@@ -129,14 +156,23 @@ var/peak_capture_tick_usage = 0
 		var/old_marker = file2text("map_saves/save_complete.txt")
 		armed = TRUE
 		var/refused = FALSE
+		var/refusal_text
 		try
 			if(!map_storage.Save_World()) throw EXCEPTION("save returned false")
 		catch(var/exception/error)
 			refused = TRUE
+			refusal_text = "[error]"
 			world.log << "REFUSED: [error]"
 		armed = FALSE
-		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "yield", "depth"))
+		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
+		if(fixture_is_headroom())
+			if(headroom_waits != 1) throw EXCEPTION("HEADROOM: expected exactly one injected wait")
+			if(world.params["scenario"] == "headroom-nonprogress" && !findtext(refusal_text, "no tick headroom after bounded wait")) throw EXCEPTION("HEADROOM: nonprogress refused for wrong reason")
+			if(world.params["scenario"] == "headroom-parent-closed" && !findtext(refusal_text, "Save export frame is no longer valid")) throw EXCEPTION("HEADROOM: closed caller was not revalidated")
+			if(world.params["scenario"] == "headroom-parent-replaced" && !findtext(refusal_text, "Save export frame is no longer valid") && !findtext(refusal_text, "Save export turf was replaced")) throw EXCEPTION("HEADROOM: replaced caller was not revalidated")
+			if(world.params["scenario"] in list("headroom-delete", "headroom-container", "headroom-cross-z"))
+				if(!findtext(refusal_text, "Admitted moving save root changed containment, level or identity")) throw EXCEPTION("HEADROOM: changed root was not revalidated")
 		if(file2text("map_backups/save_complete.txt") != old_marker) throw EXCEPTION("prior completed generation changed")
 		if(refused)
 			if(fexists("map_saves/save_complete.txt") || persistence_save_in_progress || map_storage.moving_save_chunk || map_storage.moving_save_roots.len)
@@ -146,6 +182,7 @@ var/peak_capture_tick_usage = 0
 			var/savefile/F = new("map_saves/1.sav")
 			var/owners = 0
 			var/found_ref
+			var/found_x
 			var/holder_ref
 			for(var/x = 1, x <= world.maxx, x++)
 				var/turf_ref = F["/map/1/1/[x]"]
@@ -156,7 +193,11 @@ var/peak_capture_tick_usage = 0
 						if(path == /mob/living/simple_animal/chunk_fixture)
 							owners++
 							found_ref = ref
+							found_x = x
 			if(owners != 1 || !found_ref) throw EXCEPTION("admitted animal missing or multiply owned")
+			if(fixture_is_headroom())
+				var/expected_x = world.params["scenario"] == "headroom-visited" ? 1 : 4
+				if(found_x != expected_x) throw EXCEPTION("HEADROOM: saved owner did not follow actual post-wait turf")
 			if(world.params["scenario"] == "reference")
 				if(!holder_ref) throw EXCEPTION("Shared-list legacy owner missing")
 				var/list/legacy_list = F["[map_storage.entry_path(F, holder_ref)]/shared"]

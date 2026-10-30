@@ -11,9 +11,9 @@ def instrument_datum_references(name, source):
         anchor = '\tproc/check()\n'
         if source.count(anchor) != 1: raise ValueError('Capture checker changed')
         source = source.replace(anchor, '\tvar/profile_native_ref_peak = 0\n\tvar/profile_native_ref_type = "none"\n' + anchor)
-        anchor = 'elapsed_ds=[elapsed_ds]")'
+        anchor = 'start_usage=[start_usage]")'
         if source.count(anchor) != 1: raise ValueError('Budget diagnostic changed')
-        source = source.replace(anchor, 'elapsed_ds=[elapsed_ds] native_ref_peak=[profile_native_ref_peak] native_ref_type=[profile_native_ref_type]")')
+        source = source.replace(anchor, 'start_usage=[start_usage] native_ref_peak=[profile_native_ref_peak] native_ref_type=[profile_native_ref_type]")')
         source += '''
 /map_storage/proc/profile_native_identity(datum/value)
 	var/datum/moving_save_capture/profile = moving_save_chunk

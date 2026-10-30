@@ -487,6 +487,7 @@
 	var/atom/movable/root
 	var/start_tick
 	var/start_usage
+	var/admission_usage
 	var/start_clock
 	var/work = 0
 	var/encoding_depth = 0
@@ -500,7 +501,7 @@
 		var/usage_delta = current_usage - start_usage
 		var/elapsed_ds = (world.timeofday - start_clock + 864000) % 864000
 		if(++work > 8192 || tick_delta || usage_delta > 10 || current_usage >= 90 || elapsed_ds > 1)
-			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds]")
+			throw EXCEPTION("Moving save chunk exceeded its capture budget or yielded: work=[work] tick_delta=[tick_delta] usage_delta=[usage_delta] total_usage=[current_usage] elapsed_ds=[elapsed_ds] admission_usage=[admission_usage] start_usage=[start_usage]")
 	proc/reserve_bytes(count)
 		reserved_bytes += count
 		if(reserved_bytes > 1048576) throw EXCEPTION("Moving save chunk exceeds its byte reservation")
@@ -523,13 +524,28 @@
 
 /map_storage/proc/capture_moving_save_root(savefile/destination, list/record)
 	var/mob/living/simple_animal/A = record["atom"]
-	if(!A || "\ref[A]" != record["identity"] || !moving_save_root_supported(A) || A.z != record["z"] || A.z != saving_z)
+	// Reserve tick headroom before allocating a stage or any root identities.
+	// This wait is bounded; it never occurs inside the synchronous capture.
+	var/datum/save_export_frame/caller = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+	if(world.tick_usage >= 80)
+		sleep(world.tick_lag)
+		if(caller)
+			require_export_frame(caller)
+			if(!saving_export_stack.len || saving_export_stack[saving_export_stack.len] != caller)
+				throw EXCEPTION("Moving save caller changed while awaiting capture headroom")
+		else if(saving_export_stack.len)
+			throw EXCEPTION("Moving save caller appeared while awaiting capture headroom")
+		if(world.tick_usage >= 80)
+			throw EXCEPTION("Moving save capture has no tick headroom after bounded wait")
+	if(!A || record["atom"] != A || "\ref[A]" != record["identity"] || !moving_save_root_supported(A) || A.z != record["z"] || A.z != saving_z)
 		throw EXCEPTION("Admitted moving save root changed containment, level or identity")
 	var/turf/origin = A.loc
+	var/admission_usage = world.tick_usage
 	var/savefile/staged = new
 	staged["/format_version"] << 3
 	var/datum/moving_save_capture/chunk = new
 	chunk.root = A
+	chunk.admission_usage = admission_usage
 	chunk.start_tick = world.time
 	chunk.start_usage = world.tick_usage
 	chunk.start_clock = world.timeofday
@@ -556,8 +572,12 @@
 	return ref
 
 /map_storage/proc/moving_save_root_edge(atom/movable/A, atom/parent)
-	var/list/record = moving_save_roots["\ref[A]"]
-	return record && record["atom"] == A && record["ref"] && record["origin"] == parent && isturf(A.loc) && A.z == record["z"]
+	var/identity = "\ref[A]"
+	var/list/record = moving_save_roots[identity]
+	// A pre-capture wait can move the root away from the traversed turf.
+	// add_export_content defers that edge to its frozen actual origin; never
+	// use this allowance for a container or an unsupported ownership change.
+	return record && record["atom"] == A && record["identity"] == identity && record["ref"] && saving_reference_pins[record["ref"]] == A && isturf(parent) && isturf(record["origin"]) && moving_save_root_supported(A) && A.z == record["z"]
 
 /map_storage/proc/drain_moving_save_roster(savefile/F)
 	for(var/identity in moving_save_roots)

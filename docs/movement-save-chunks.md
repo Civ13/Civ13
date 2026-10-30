@@ -153,3 +153,18 @@ omission control restores matrix string keys and must fail the direct-key check.
 Preflight can still stringify matrices outside the synchronous capture window.
 These source changes need exact-head native verification; the earlier primitive
 pass alone does not prove frame validation or memory/tick acceptance.
+
+## Bounded admission headroom
+
+The matrix-key run 41130400869 passed 15 correctness cases and 16 of 18 memory
+cases. Its two remaining refusals occurred at the first chunk check with less
+than 0.04% relative tick work, but total usage already above 90%. Admission now
+waits at most one tick when incoming usage is at least 80%, before stage/ID
+allocation. It refuses if sufficient headroom is still unavailable. This is
+not a gameplay freeze, retry loop, or increase to the capture budget.
+After that wait, the caller frame and stack position, root identity, supported
+cohort and level are revalidated. The actual origin is frozen only after the
+wait. Walking to another turf defers the traversed edge to that frozen origin;
+containers and unsupported mutations still refuse. Admission and post-allocation
+start tick usage are retained as scalar failure diagnostics, since allocation
+cost itself is not preemptible. The new path still requires native verification.
