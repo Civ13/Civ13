@@ -9,6 +9,7 @@ var/datum/persistence_world_operation/persistence_active_operation
 	var/contents_started = FALSE
 	var/mutation_started = FALSE
 	var/restoring_players = FALSE
+	var/diagnostic_phase = "admitted"
 /map_storage
 	var/saving_z = 0
 	var/loading_z = 0

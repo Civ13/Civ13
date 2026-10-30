@@ -73,7 +73,7 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 /proc/agent_diagnostic_state()
 	var/datum/persistence_world_operation/P = persistence_active_operation
 	var/kind = P && (P.kind in list("save", "load")) ? P.kind : "idle"
-	var/list/progress = list("active" = !!P, "kind" = kind, "saving_z" = kind == "save" ? map_storage.saving_z : null, "loading_z" = kind == "load" ? map_storage.loading_z : null, "backend_started" = P ? P.backend_started : FALSE, "contents_started" = P ? P.contents_started : FALSE, "mutation_started" = P ? P.mutation_started : FALSE, "restoring_players" = P ? P.restoring_players : FALSE, "percent_available" = FALSE)
+	var/list/progress = list("active" = !!P, "kind" = kind, "phase" = P ? P.diagnostic_phase : null, "transaction_phase" = persistence_restart.diagnostic_phase, "saving_z" = kind == "save" ? map_storage.saving_z : null, "loading_z" = kind == "load" ? map_storage.loading_z : null, "backend_started" = P ? P.backend_started : FALSE, "contents_started" = P ? P.contents_started : FALSE, "mutation_started" = P ? P.mutation_started : FALSE, "restoring_players" = P ? P.restoring_players : FALSE, "percent_available" = FALSE)
 	var/datum/error_viewer/error_cache/cache = GLOB ? GLOB.error_cache : null
 	var/list/sources = list()
 	if(cache)
@@ -96,6 +96,8 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	var/list/runtime = list("total" = GLOB ? GLOB.total_runtimes : null, "skipped" = GLOB ? GLOB.total_runtimes_skipped : null, "cache_available" = !!cache, "source_total" = cache ? cache.error_sources.len : null, "prefix_limit" = 8, "sources" = sources, "stack_available" = FALSE, "proc_available" = FALSE)
 	var/list/state = list("schema" = 1, "tick" = world.time, "progress" = progress, "runtime" = runtime)
 #ifdef CIV13_VARIABLE_OBSERVABILITY
+	// The shared UTC helper rejects midnight rollover; null means unavailable.
+	state["observed_utc"] = variable_observability_utc()
 	state["variables"] = variable_observability_status()
 #endif
 	return state

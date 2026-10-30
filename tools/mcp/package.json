@@ -1,1 +1,1 @@
-{"name":"civ13-mcp","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test test.mjs dm-reference.test.mjs"},"engines":{"node":">=20"},"dependencies":{"@modelcontextprotocol/sdk":"1.32.1","zod":"4.6.7"}}
+{"name":"civ13-mcp","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test test.mjs dm-reference.test.mjs runtime-adapter.test.mjs"},"engines":{"node":">=20"},"dependencies":{"@modelcontextprotocol/sdk":"1.32.1","zod":"4.6.7"}}

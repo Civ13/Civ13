@@ -19,6 +19,8 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	var/intent_path = "map_saves/restart_intent.json"
 	var/lifecycle_operation
 	var/lifecycle_session
+	// Observational only; no phase value authorizes a transition.
+	var/diagnostic_phase = "idle"
 
 /datum/persistence_restart_transaction/proc/exists()
 	return fexists(intent_path)
@@ -107,6 +109,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 	if(!matches(I, read_intent()) || trim(file2text("map_saves/save_complete.txt")) != expected_generation)
 		throw EXCEPTION("Validated shutdown generation changed after validation")
 	if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed at shutdown")
+	diagnostic_phase = "shutdown"
 	// Native graceful world deletion lets the external supervisor preserve the
 	// completed generation and replace the binary before the next startup.
 	del(world)
@@ -131,6 +134,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		report("Save/restart currently supports native BYOND Gaia and Europe only")
 		return FALSE
 	busy = TRUE
+	diagnostic_phase = "notice"
 	lifecycle_operation = shutdown ? operation : null
 	lifecycle_session = shutdown ? session : null
 	var/list/published
@@ -144,14 +148,18 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will restart when the save completes.</b></font>")
 	try
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
+		diagnostic_phase = "save"
 		if(!save_generation()) throw EXCEPTION("World save failed; server remains running")
+		diagnostic_phase = "post_save_validation"
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed during save")
 		if(!isnull(expected_persistence) && expected_persistence != saved_persistence_mode()) throw EXCEPTION("Saved persistence mode differs from the accepted mode")
 		var/list/I = current_identity()
 		// Record ownership before publication, including a failed partial write.
 		published = I
+		diagnostic_phase = "intent_publication"
 		publish(I)
 		expected_generation = I["generation"]
+		diagnostic_phase = "final_validation"
 		if(!matches(I, current_identity())) throw EXCEPTION("Completed generation changed before restart")
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before shutdown")
 		if(shutdown)
@@ -162,8 +170,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 			request_shutdown(expected_persistence)
 		else
 			to_chat(world, "<b>Save validated. Restarting now; reconnect to resume the saved generation.</b>")
+			diagnostic_phase = "shutdown"
 			request_restart()
 	catch(var/exception/e)
+		diagnostic_phase = "failure_cleanup"
 		var/cleanup = ""
 		if(published && exists())
 			try
@@ -172,6 +182,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 				cleanup = " Intent cleanup FAILED: [cleanup_error]. Further saves are blocked until the intent is resolved."
 		report("[e].[cleanup]")
 	busy = FALSE
+	diagnostic_phase = "failed"
 	expected_generation = null
 	lifecycle_operation = null
 	lifecycle_session = null
@@ -180,6 +191,7 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 /datum/persistence_restart_transaction/proc/resume_startup()
 	if(!startup_hold || busy) return FALSE
 	busy = TRUE
+	diagnostic_phase = "restore_preflight"
 	try
 		var/list/I = read_intent()
 		lifecycle_operation = I["lifecycle_operation"]
@@ -191,8 +203,10 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		if(import_started && !import_complete)
 			throw EXCEPTION("An import already failed after it began; restart from the original map before retrying")
 		if(!import_complete)
+			diagnostic_phase = "restore"
 			if(!load_generation(I)) throw EXCEPTION("Intended generation import failed: [map_storage.last_error]")
 			import_complete = TRUE
+		diagnostic_phase = "consume_intent"
 		consume(I)
 		startup_hold = FALSE
 		persistence_save_in_progress = FALSE
@@ -201,9 +215,12 @@ var/global/datum/persistence_restart_transaction/persistence_restart = new
 		report("Intended generation restored and one-shot intent consumed")
 		to_chat(world, "<font color='yellow' size=4><b>The world has been restored from the last save. Welcome back!</b></font>")
 		last_error = null
+		diagnostic_phase = "players"
 		players_ready = map_storage.finish_player_restoration()
+		diagnostic_phase = players_ready ? "complete" : "readiness_unconfirmed"
 		return TRUE
 	catch(var/exception/e)
+		diagnostic_phase = "failed"
 		persistence_save_in_progress = TRUE
 		report("RECOVERY HOLD: [e]. No fresh round or automatic retry will run. Preserve map_saves; repair the matching files, then use Resume Pending Recovery before import begins, or restart from the original map after an import failure.")
 	busy = FALSE

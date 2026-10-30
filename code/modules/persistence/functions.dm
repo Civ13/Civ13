@@ -557,6 +557,8 @@ var/global/datum/persistence_admission_identity
 	var/contents_started = FALSE
 	var/mutation_started = FALSE
 	var/restoring_players = FALSE
+	// Observational only; never used for admission or recovery decisions.
+	var/diagnostic_phase = "admitted"
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
 	var/restore_reserved = FALSE
@@ -787,6 +789,7 @@ var/global/datum/persistence_admission_identity
 	var/attempt_owned = FALSE
 	var/release_attempted = FALSE
 	var/phase = "preflight"
+	operation.diagnostic_phase = "preflight"
 	storage.restore_cleanup_error = null
 	try
 		if(policy)
@@ -809,6 +812,7 @@ var/global/datum/persistence_admission_identity
 		storage.require_durable_world_idle()
 		operation.authorize_restore_mutation(storage)
 		phase = "clear"
+		operation.diagnostic_phase = "restore"
 		operation.mutation_started = TRUE
 		if(transaction) transaction.import_started = TRUE
 		// Validated geography must be authoritative before replacement constructors.
@@ -822,6 +826,7 @@ var/global/datum/persistence_admission_identity
 		if(!storage.run_world_operation("load", operation))
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save restoration rejected")
 		phase = "metadata"
+		operation.diagnostic_phase = "metadata"
 		if(storage.load_map_metadata() != TRUE)
 			throw EXCEPTION("World metadata restoration rejected")
 		storage.restore_durable_world()
@@ -836,6 +841,7 @@ var/global/datum/persistence_admission_identity
 				throw EXCEPTION("Restore transient release rejected")
 		if(!transaction)
 			phase = "players"
+			operation.diagnostic_phase = "players"
 			operation.restoring_players = TRUE
 			storage.finish_player_restoration()
 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
@@ -1152,10 +1158,12 @@ var/global/datum/persistence_admission_identity
 		dimension_recovery_required = TRUE
 		if(operation)
 			operation.mutation_started = TRUE
+			operation.diagnostic_phase = "allocate_levels"
 			if(operation.restart_transaction) operation.restart_transaction.import_started = TRUE
 		for(var/z = world.maxz + 1, z <= target_z, z++)
 			if(!allocate_saved_level(z) || world.maxz != z)
 				throw EXCEPTION("Saved level allocation failed; preserve files and restart before retrying")
+		if(operation) operation.diagnostic_phase = "preflight"
 		if(!validate_world_save())
 			throw EXCEPTION("Allocated saved world failed exact validation: [last_error]")
 		if(!world_z_budget.finish(dimension_reservation, TRUE))

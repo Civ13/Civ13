@@ -350,7 +350,7 @@ var/global/datum/persistence_area_startup/persistence_area_startup_token
 		// checking membership entries, which changes F.cd inside the turf loop.
 		var/list/rows = F.dir.Copy()
 		for(var/y = 1, y <= world.maxy, y++)
-			if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row")
+			if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")
 			for(var/x = 1, x <= world.maxx, x++)
 				var/ref = F["/map/[z]/[y]/[x]"]
 				if(isnull(ref)) throw EXCEPTION("Missing captured turf coordinate")
