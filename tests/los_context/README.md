@@ -71,3 +71,23 @@ establish none of those rendering, lifecycle or performance outcomes.
 Ordinary saves continue fresh read-only geometry capture because same-z movement
 remains permitted. Load/reconstruction and explicit mutation tickets suspend
 capture without withdrawing existing denied-world masks.
+
+## Snapshot-local broadphase and viewport parsing
+
+Dense captures (>16 blockers) retain their authoritative flat blocker list and
+add a derived 4x4-cell center index. Each target visits inclusive bins covering
+the eye/target hull bounding box expanded by a blocker's half-cell extent, then
+runs the unchanged exact blocker predicate. Empty/sparse captures use the flat
+path. Native tile identity remains distinct from fractional blocker centers;
+there is no cross-snapshot visibility cache or reduced refresh cadence.
+BYOND's one-argument `round` supplies floor semantics for negative bin indices.
+
+The production projection checks 48,600 target/blocker pairs with fractional
+eyes/objects, both opacity policies and native-tile exemptions against the flat
+path. An exact bucket-edge contact controls inclusive upper bounds. A synthetic
+17x17 fully populated blocker grid and 225 targets visit 23,104 candidates versus
+65,025 flat-list candidates, plus 1,444 bin lookups. These are source-derived
+counts without early exits, **not native timings or a measured gameplay speedup**.
+The dimensions parser now caches only an exact `owner.view` scalar and its
+read-only dimensions list; changed/invalid views are revalidated and retirement
+clears the cache. Every decision retains its existing fresh policy guard.

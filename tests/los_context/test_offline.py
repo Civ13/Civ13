@@ -286,8 +286,9 @@ def projected_context(source=None):
 
 def boundary_failures(core, hover, mob):
     failures=[]
-    for label,token in [('same_tile_identity','target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y'),('surface_occlusion','if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))'),('target_blocker_dispatch','los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, target.opacity)')]:
-        if token not in core:
+    for label,token in [('same_tile_identity','target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y'),('surface_occlusion','if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))'),('target_blocker_dispatch','S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity)'),('exact_blocker_route','los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target)')]:
+        expected = 2 if label == 'exact_blocker_route' else 1
+        if core.count(token) != expected:
             failures.append(label)
     hover_body=fragment(hover,'/obj/screen/hover_name/proc/target_visible(')
     examine=fragment(mob,'/mob/verb/examinate(')
@@ -503,7 +504,7 @@ class SourceBoundaries(unittest.TestCase):
     def test_surface_and_adapter_omission_controls(self):
         core=CORE.read_text();hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text();mob=(ROOT/'code/game/mob/mob.dm').read_text()
         self.assertEqual(boundary_failures(core,hover,mob),[])
-        for label,token in [('same_tile_identity','target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y'),('surface_occlusion','if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))'),('target_blocker_dispatch','los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, target.opacity)')]:
+        for label,token in [('same_tile_identity','target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y'),('surface_occlusion','if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))'),('target_blocker_dispatch','S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity)'),('exact_blocker_route','los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target)')]:
             self.assertEqual(boundary_failures(core.replace(token,'OMITTED',1),hover,mob),[label])
         self.assertEqual(boundary_failures(core,hover.replace('los_read_allowed(parentmob','OMITTED',1),mob),['hover_guard'])
         self.assertEqual(boundary_failures(core,hover,mob.replace('los_read_allowed(src','OMITTED',1)),['examine_guard'])

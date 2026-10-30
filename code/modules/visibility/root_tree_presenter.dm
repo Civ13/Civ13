@@ -39,6 +39,9 @@ var/global/list/root_tree_presenters
 	var/list/images = list()
 	var/list/owned_images = list()
 	var/list/frame_keys = list()
+	var/list/frame_appearances = list()
+	var/list/frame_lights = list()
+	var/list/frame_dirs = list()
 	var/list/source_appearances = list()
 	var/list/frames = list()
 	var/list/published_frames = list()
@@ -157,12 +160,7 @@ var/global/list/root_tree_presenters
 	for(var/image/I in owned_images)
 		if(isturf(changed) && !possible_opacity && !changed.opacity && I.loc && I.loc.loc != changed)
 			continue
-		published_frames -= I.loc
-		I.icon = null
-		I.overlays = null
-		I.underlays = null
-		I.maptext = ""
-		I.mouse_opacity = 0
+		withdraw_tree(I.loc, I)
 
 /datum/root_tree_presenter/proc/refresh(datum/los_snapshot/S)
 	if(retired || !owner || owner.root_tree_presenter != src || owner.los_context != context)
@@ -200,38 +198,42 @@ var/global/list/root_tree_presenters
 		if(!I)
 			I = image(null, T)
 			I.override = TRUE
+			I.mouse_opacity = 0
 			images[T] = I
 			owned_images += I
 			owner.images += I
 		if(context.decision_snapshot(T, S, "visual") == LOS_DENY)
-			published_frames -= T
-			I.icon = null
-			I.mouse_opacity = 0
+			withdraw_tree(T, I)
 			continue
 		var/rgb = cached_light(T)
 		if(!rgb)
-			published_frames -= T
-			I.icon = null
-			I.mouse_opacity = 0
+			withdraw_tree(T, I)
 			settled = FALSE
 			continue
-		var/frame_key = "[T.icon]|[T.icon_state]|[T.dir]|[json_encode(T.color)]|[rgb]"
+		var/source_appearance = T.appearance
 		var/icon/frame = frames[T]
-		if(!frame || frame_keys[T] != frame_key)
-			// Omit frame=1: preserve every animation frame and native timing.
-			frame = icon(T.icon, T.icon_state, T.dir)
-			if(islist(T.color))
-				var/list/tint = T.color
-				frame.MapColors(arglist(tint))
-			else if(T.color)
-				frame.Blend(T.color, ICON_MULTIPLY)
-			frame.Blend(rgb, ICON_MULTIPLY)
-			frames[T] = frame
-			frame_keys[T] = frame_key
-		if(frame_needs_publication(T, frame))
+		if(!frame_inputs_unchanged(T, rgb, source_appearance))
+			var/frame_key = "[T.icon]|[T.icon_state]|[T.dir]|[json_encode(T.color)]|[rgb]"
+			if(!frame || frame_keys[T] != frame_key)
+				// Omit frame=1: preserve every animation frame and native timing.
+				frame = icon(T.icon, T.icon_state, T.dir)
+				if(islist(T.color))
+					var/list/tint = T.color
+					frame.MapColors(arglist(tint))
+				else if(T.color)
+					frame.Blend(T.color, ICON_MULTIPLY)
+				frame.Blend(rgb, ICON_MULTIPLY)
+				frames[T] = frame
+				frame_keys[T] = frame_key
+			// Frame inputs are independent of whether this image is currently
+			// published; hidden/withdrawn roots must not borrow stale leases.
+			frame_appearances[T] = source_appearance
+			frame_lights[T] = rgb
+			frame_dirs[T] = T.dir
+		if(frame_needs_publication(T, frame, source_appearance))
 			root_tree_set_frame(I, T, frame)
 			published_frames[T] = frame
-			source_appearances[T] = T.appearance
+			source_appearances[T] = source_appearance
 	for(var/atom/old in images.Copy())
 		if(old in current)
 			continue
@@ -242,6 +244,9 @@ var/global/list/root_tree_presenters
 		frames -= old
 		published_frames -= old
 		frame_keys -= old
+		frame_appearances -= old
+		frame_lights -= old
+		frame_dirs -= old
 		source_appearances -= old
 		light_keys -= old
 		light_values -= old
@@ -255,8 +260,24 @@ var/global/list/root_tree_presenters
 // Image.icon is an engine appearance getter, not our publication identity.
 // Track the exact cached frame we submitted instead of comparing that getter
 // against a mutable /icon datum on every audit. Invalidation clears this lease.
-/datum/root_tree_presenter/proc/frame_needs_publication(atom/T, icon/frame)
-	return published_frames[T] != frame || source_appearances[T] != T.appearance
+/datum/root_tree_presenter/proc/frame_needs_publication(atom/T, icon/frame, source_appearance)
+	if(isnull(source_appearance))
+		source_appearance = T.appearance
+	return published_frames[T] != frame || source_appearances[T] != source_appearance
+
+/datum/root_tree_presenter/proc/frame_inputs_unchanged(atom/T, rgb, source_appearance)
+	return frames[T] && frame_appearances[T] == source_appearance && frame_lights[T] == rgb && frame_dirs[T] == T.dir
+
+/datum/root_tree_presenter/proc/withdraw_tree(atom/T, image/I)
+	if(!I || !published_frames[T])
+		return FALSE
+	published_frames -= T
+	I.icon = null
+	I.overlays = null
+	I.underlays = null
+	I.maptext = ""
+	I.mouse_opacity = 0
+	return TRUE
 
 /datum/root_tree_presenter/proc/cached_light(obj/structure/wild/T)
 	var/turf/root = T.loc
@@ -372,6 +393,9 @@ var/global/list/root_tree_presenters
 	frames.Cut()
 	published_frames.Cut()
 	frame_keys.Cut()
+	frame_appearances.Cut()
+	frame_lights.Cut()
+	frame_dirs.Cut()
 	source_appearances.Cut()
 	light_keys.Cut()
 	light_values.Cut()

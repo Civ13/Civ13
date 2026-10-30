@@ -52,7 +52,7 @@ def compile_proc(text,signature,args,env,method=False):
         for path in ['/obj/structure/wild/largejungle','/obj/structure/wild/jungle','/obj/structure/wild/palm','/obj/structure/wild/tree']:
             line=line.replace(path,repr(path))
         if method:
-            for field in ['root_trees','owner','images','owned_images','retired','context','frames','frame_keys','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene']:
+            for field in ['root_trees','owner','images','owned_images','retired','context','frames','frame_keys','frame_appearances','frame_lights','frame_dirs','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene']:
                 line=re.sub(r'(?<![.\w])'+field+r'\b','self.'+field,line)
         if line.startswith('for(var/i = 1, i <= 20, i++)'):line='for i in range(1,21):'
         else:
@@ -180,7 +180,7 @@ class OwnershipAndComposition(unittest.TestCase):
         game=Plane(render_target='game',filters=[],deleted=False,color=None,alpha=255,transform=identity())
         roof=Plane(render_target='roof',deleted=False)
         r=N(retired=False,owner=N(screen=Items(['HUD',game,roof]),images=Items(['foreign','own']),root_tree_presenter=None),
-            images={},owned_images=Items(['own']),frames={},published_frames={},frame_keys={},source_appearances={},light_keys={},light_values={},screens=Items([roof]),
+            images={},owned_images=Items(['own']),frames={},published_frames={},frame_keys={},frame_appearances={},frame_lights={},frame_dirs={},source_appearances={},light_keys={},light_values={},screens=Items([roof]),
             leased_planes=Items([game,roof]),lease_targets={game:'game',roof:'roof'},game_plane=game,
             original_filters=['shadow'],scene_plane=None,scene_active=True,context=object())
         r.owner.root_tree_presenter=r
@@ -229,7 +229,8 @@ class OwnershipAndComposition(unittest.TestCase):
         relay=P.fragment(TREE,'/obj/screen/root_scene_relay')
         self.assertIn('screen_loc = "WEST,SOUTH"',relay)
         invalidate=P.fragment(TREE,'/datum/root_tree_presenter/proc/invalidate(')
-        self.assertNotIn('owner.screen',invalidate);self.assertIn('I.icon = null',invalidate)
+        self.assertNotIn('owner.screen',invalidate);self.assertIn('withdraw_tree(I.loc, I)',invalidate)
+        self.assertIn('I.icon = null',P.fragment(TREE,'/datum/root_tree_presenter/proc/withdraw_tree('))
     def test_lit_relay_uses_direct_mask_composite_and_preserves_source_alpha(self):
         env=environment();calls=[]
         def relay(source,number,order):

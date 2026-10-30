@@ -82,6 +82,18 @@ var/global/list/los_active_contexts
 		return FALSE
 	return los_footprint_hits_cell(0, 0, tx, ty, 0.25, cx, cy)
 
+// BYOND's one-argument round is floor, including negative fractional values.
+// Expand the eye/footprint hull by the blocker's half-cell extent. Inclusive
+// bin bounds retain edge/corner contact, not just centers inside the hull.
+/proc/los_bucket_index(coordinate)
+	return round(coordinate / 4)
+
+/proc/los_bucket_lower(target_coordinate, half_size)
+	return los_bucket_index(min(0, target_coordinate-half_size) - 0.5)
+
+/proc/los_bucket_upper(target_coordinate, half_size)
+	return los_bucket_index(max(0, target_coordinate+half_size) + 0.5)
+
 // Rational slab intervals [low numerator, high numerator, positive denominator].
 /proc/los_ray_axis(e, t, c)
 	var/d = 2 * (t - e)
@@ -137,7 +149,45 @@ var/global/list/los_active_contexts
 	var/radius_x
 	var/radius_y
 	var/list/blockers = list()
+	var/list/blocker_bins
 	var/list/clear_footprints = list()
+
+// The flat list remains authoritative and is retained for sparse scenes and
+// snapshot fixtures. Bins are derived once per fresh capture, never shared.
+/datum/los_snapshot/proc/index_blockers()
+	blocker_bins = null
+	if(blockers.len <= 16)
+		return
+	blocker_bins = list()
+	for(var/datum/los_cell/B in blockers)
+		var/bin_key = "[los_bucket_index(B.cell_x)],[los_bucket_index(B.cell_y)]"
+		var/list/bin = blocker_bins[bin_key]
+		if(!bin)
+			bin = list()
+			blocker_bins[bin_key] = bin
+		bin += B
+
+/datum/los_snapshot/proc/blocks_target(tx, ty, target_tile_x, target_tile_y, opaque_target)
+	if(!blocker_bins)
+		for(var/datum/los_cell/B in blockers)
+			if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+				return TRUE
+		return FALSE
+	var/half_size = opaque_target ? 0 : 0.25
+	var/min_x = los_bucket_lower(tx, half_size)
+	var/max_x = los_bucket_upper(tx, half_size)
+	var/min_y = los_bucket_lower(ty, half_size)
+	var/max_y = los_bucket_upper(ty, half_size)
+	// Iterate bins directly, without allocating a candidate list per target.
+	for(var/bx = min_x, bx <= max_x, bx++)
+		for(var/by = min_y, by <= max_y, by++)
+			var/list/bin = blocker_bins["[bx],[by]"]
+			if(!bin)
+				continue
+			for(var/datum/los_cell/B in bin)
+				if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
+					return TRUE
+	return FALSE
 
 /datum/los_mutation
 	should_save = FALSE
@@ -152,6 +202,9 @@ var/global/list/los_active_contexts
 	var/retired = FALSE
 	var/list/mutations = list()
 	var/list/root_trees = list()
+	var/viewport_cache_ready = FALSE
+	var/viewport_cached_view
+	var/list/viewport_cached_dimensions
 
 /datum/los_context/New(client/C)
 	..()
@@ -178,6 +231,9 @@ var/global/list/los_active_contexts
 	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
 		owner.root_tree_presenter.retire()
 	root_trees.Cut()
+	viewport_cache_ready = FALSE
+	viewport_cached_view = null
+	viewport_cached_dimensions = null
 	for (var/datum/los_mutation/M in mutations)
 		M.closed = TRUE
 		M.context = null
@@ -231,10 +287,18 @@ var/global/list/los_active_contexts
 /datum/los_context/proc/viewport()
 	if (!owner)
 		return null
+	// Only the parsed scalar view is cached, never geometry or read authority.
+	// Internal callers treat this dimensions list as read-only.
+	if (viewport_cache_ready && owner.view == viewport_cached_view)
+		return viewport_cached_dimensions
+	viewport_cached_view = owner.view
+	viewport_cache_ready = TRUE
+	viewport_cached_dimensions = null
 	var/list/dimensions = getviewsize(owner.view)
 	if (!dimensions || dimensions.len != 2 || dimensions[1] < 1 || dimensions[2] < 1 || dimensions[1] > 63 || dimensions[2] > 63)
 		return null
-	return dimensions
+	viewport_cached_dimensions = dimensions
+	return viewport_cached_dimensions
 
 /datum/los_context/proc/policy_key()
 	if (!eligible() || !viewport() || mutations.len || (persistence_active_operation && persistence_active_operation.kind != "save") || body.stat || is_blind(body))
@@ -294,6 +358,7 @@ var/global/list/los_active_contexts
 				S.blockers += B
 	if (S.revision != revision || S.policy != policy_key())
 		return null
+	S.index_blockers()
 	return S
 
 // Shared synchronous geometric decision for a renderer's single captured pass.
@@ -327,10 +392,9 @@ var/global/list/los_active_contexts
 	var/cached = S.clear_footprints[footprint_key]
 	if (!isnull(cached))
 		return cached
-	for (var/datum/los_cell/B in S.blockers)
-		if (los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, target.opacity))
-			S.clear_footprints[footprint_key] = LOS_DENY
-			return LOS_DENY
+	if (S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
+		S.clear_footprints[footprint_key] = LOS_DENY
+		return LOS_DENY
 	S.clear_footprints[footprint_key] = result
 	return result
 
