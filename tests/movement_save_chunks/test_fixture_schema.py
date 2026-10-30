@@ -25,6 +25,10 @@ class FixtureSchemaTests(unittest.TestCase):
                 # No non-neutral fixture ownership is fabricated to satisfy admission.
                 self.assertNotRegex(block, r'var/(?:list/)?(?:' + '|'.join(sorted(required)) + r')\s*=')
 
+    def test_frontier_injection_waits_for_completed_turf_capture(self):
+        probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text()
+        self.assertIn('if(!mutations && !saving_export_stack.len && saving_references[', probe)
+
     def test_membership_result_is_normalized_before_boolean_comparison(self):
         probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text()
         self.assertIn('var/expect_refusal = !!(world.params["scenario"] in list(', probe)

@@ -69,7 +69,8 @@ var/peak_capture_tick_usage = 0
 	if(armed && !moving_save_chunk && saving_z == 1 && subject)
 		var/list/record = moving_save_roots["\ref[subject]"]
 		if(world.params["scenario"] in list("frontier", "frontier-delete"))
-			if(!mutations && saving_references["\ref[locate(1,1,1)]"])
+			// Wait until the visited turf frame is closed, not merely assigned an ID.
+			if(!mutations && !saving_export_stack.len && saving_references["\ref[locate(1,1,1)]"])
 				subject.loc = locate(1,1,1)
 				mutations++
 			else if(world.params["scenario"] == "frontier-delete" && record && record["ref"])
