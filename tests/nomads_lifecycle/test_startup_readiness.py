@@ -171,11 +171,13 @@ class StartupReadinessTests(unittest.TestCase):
                 status = dict(self.status, map='NOMADS_EUROPE', generation=generation or '',
                               restart_import_complete=int(restored))
                 supervisor = self.supervisor([dict(status, ready=0), status])
-                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=Mock(pid=100)), \
+                child = Mock(pid=100, poll=Mock(return_value=None))
+                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=child), \
                         patch.object(m, 'process_identity', return_value=200), \
                         patch.object(m, 'publish_ready', wraps=m.publish_ready) as publisher:
                     supervisor.start(build, backup, generation, 'e' * 32 if restored else 'f' * 32)
                 publisher.assert_called_once()
+                self.assertIs(supervisor.child, child)
                 self.assertEqual(supervisor.state['phase'], 'ready')
                 self.assertEqual(supervisor.state['map'], 'NOMADS_EUROPE')
                 self.assertNotIn(self.session, (self.root / 'events.jsonl').read_text())
@@ -188,7 +190,7 @@ class StartupReadinessTests(unittest.TestCase):
                 statuses = [dict(status, ready=0), dict(status, session='d' * 32)]
                 supervisor = self.supervisor(statuses, clock=lambda: 0) if changed_session else \
                     self.supervisor([dict(status, ready=0)], clock=Mock(side_effect=[0, 6]))
-                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=Mock(pid=100)), \
+                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=Mock(pid=100, poll=Mock(return_value=None))), \
                         patch.object(m, 'process_identity', return_value=200), \
                         patch.object(m, 'publish_ready', wraps=m.publish_ready) as publisher:
                     with self.assertRaisesRegex(RuntimeError, 'session changed' if changed_session else 'readiness timeout'):
@@ -196,24 +198,20 @@ class StartupReadinessTests(unittest.TestCase):
                 publisher.assert_not_called()
                 self.assertEqual(supervisor.state['phase'], 'starting')
 
-    def test_resumed_reconciliation_uses_same_publisher_and_stable_session(self):
-        for final_change in ({}, {'ready': 0}, {'session': 'd' * 32}):
-            with self.subTest(final_change=final_change):
-                self.save_state()
-                supervisor = self.supervisor([self.status, dict(self.status, **final_change), self.status])
-                with patch.object(supervisor, 'candidate', return_value=self.revision), \
-                        patch.object(m, 'process_identity', return_value=200), \
-                        patch.object(m, 'publish_ready', wraps=m.publish_ready) as publisher, \
-                        patch.object(supervisor, 'build') as build:
-                    if final_change:
-                        with self.assertRaises(RuntimeError):
-                            supervisor.cycle()
-                        self.assertEqual(supervisor.state['phase'], 'fresh_gaia_available')
-                    else:
-                        supervisor.cycle()
-                        self.assertEqual(supervisor.state['phase'], 'ready')
-                    publisher.assert_called_once()
-                    build.assert_not_called()
+    def test_restarted_helper_does_not_adopt_persisted_pid(self):
+        self.save_state()
+        supervisor = self.supervisor([self.status])
+        with patch.object(supervisor, 'candidate', return_value=self.revision) as candidate, \
+                patch.object(m, 'process_identity') as identity, \
+                patch.object(m, 'publish_ready') as publisher, \
+                patch.object(supervisor, 'build') as build:
+            with self.assertRaisesRegex(RuntimeError, 'helper_lost'):
+                supervisor.cycle()
+            identity.assert_not_called()
+            candidate.assert_not_called()
+            supervisor.status.assert_not_called()
+            publisher.assert_not_called()
+            build.assert_not_called()
 
 
 if __name__ == '__main__':

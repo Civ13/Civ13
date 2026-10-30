@@ -244,6 +244,8 @@ class Supervisor:
         self.clock, self.sleep = clock, sleep
         self.state_path = self.root / 'state.json'
         self.state = json.loads(self.state_path.read_text()) if self.state_path.exists() else {}
+        # This handle belongs to this supervisor instance, not the persisted PID.
+        self.child = None
         self.token = (Path(config['config_directory']) / 'lifecycle-token.txt').read_text().strip()
         if len(self.token) != 32 or any(c not in '0123456789abcdef' for c in self.token):
             raise ValueError('Expected a 32-character lowercase hex lifecycle token')
@@ -302,14 +304,37 @@ class Supervisor:
         write_json(folder / 'build.json', {'revision': revision, 'map': 'NOMADS_EUROPE', 'binaries': {name: digest(game / name) for name in ('civ13.dmb', 'civ13.rsc')}})
         return folder
 
-    def alive(self):
+    def owned_process_state(self):
+        """Describe only this instance's handle; never adopt a persisted PID."""
         host = self.state.get('host')
         if not host:
+            return 'absent'
+        child = self.child
+        if child is None:
+            return 'helper_lost'
+        if child.pid != host.get('pid'):
+            return 'identity_mismatch'
+        try:
+            if child.poll() is not None:
+                return 'exited'
+            identity = process_identity(child.pid)
+        except PermissionError:
+            return 'access_denied'
+        except OSError:
+            return 'unknown'
+        if identity is None:
+            return 'unknown'
+        if identity != host.get('creation_filetime'):
+            return 'identity_mismatch'
+        return 'running'
+
+    def alive(self):
+        state = self.owned_process_state()
+        if state == 'running':
+            return True
+        if state in ('absent', 'exited'):
             return False
-        identity = process_identity(host['pid'])
-        if identity is not None and identity != host['creation_filetime']:
-            raise RuntimeError('Host PID was reused; refusing ownership')
-        return identity is not None
+        raise RuntimeError('Owned host state is ' + state + '; refusing process adoption or mutation')
 
     def status(self):
         value = query(self.config['port'], self.token)
@@ -411,6 +436,7 @@ class Supervisor:
         if bind == '127.0.0.1':
             argv += ['-ip', bind]
         child = subprocess.Popen(argv, cwd=run, creationflags=flags)
+        self.child = child
         previous = {key: self.state.get(key) for key in ('revision', 'host', 'generation', 'backup', 'operation')} if self.state else None
         self.state = {'revision': revision, 'map': manifest['map'], 'binaries': manifest['binaries'], 'phase': 'starting', 'generation': generation, 'backup': str(backup) if backup else None, 'previous': previous, 'host': {'pid': child.pid, 'creation_filetime': process_identity(child.pid), 'workdir': str(run)}, 'operation': operation}
         write_json(self.state_path, self.state)
@@ -451,9 +477,9 @@ class Supervisor:
             raise RuntimeError('Canonical hosting requires the explicit save/load updater; no polling cycle')
         if (self.root / 'HALTED.json').exists():
             raise RuntimeError('Supervisor is latched halted; inspect evidence before operator recovery')
-        revision = self.candidate()
         if self.state and not self.alive():
             raise RuntimeError('Previously owned host exited unexpectedly; refusing automatic restart')
+        revision = self.candidate()
         if self.state and self.state.get('phase') != 'ready':
             initial = self.status()
             self.accept_ready(initial, self.state.get('generation'))

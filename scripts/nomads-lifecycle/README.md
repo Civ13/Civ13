@@ -85,15 +85,21 @@ installed by the offline tests or example configuration.
 `HALTED.json` is persistent. Compile/fetch/save/recovery failures stop polling;
 they never trigger forced termination, a fresh round, or an automatic retry.
 Inspect the failure and actual process identity before any operator recovery.
-The PID and creation FILETIME must match; PID reuse refuses ownership. The lock
-serializes supervisors. An unexpected owned exit also requires operator action.
-Reclaiming a supervisor stopped during startup requires the same expected
-generation, completed import and consumed intent checks before any next update.
+The supervisor retains its launched child handle while that supervisor process
+remains alive and checks its PID and creation FILETIME before treating it as
+running. The lock serializes supervisors. An unexpected owned exit requires
+operator action. A persisted PID and FILETIME are not a retained OS handle:
+after supervisor termination, including `--once`, a later instance reports
+`helper_lost` and refuses automatic adoption, status queries and updates. It
+does not infer that the game exited. Direct launches remain independent of this
+supervisor. The in-process state distinguishes absent, running, exited,
+helper_lost, identity_mismatch, access_denied and unknown; inaccessible or
+ambiguous observations never authorize a mutation.
 
 All readiness publication uses `supervisor.publish_ready(root, revision=...,
 expected_map=..., host=..., generation=..., session=..., status=...)`. Public
-fresh startup (no import), restored startup and resumed reconciliation call this
-same function before writing canonical `phase: ready`. A healthy lobby with
+fresh startup (no import) and restored startup call this same function before
+writing canonical `phase: ready`. A healthy lobby with
 `ready: 0` remains unavailable to the help observer.
 
 An explicitly owned manual launcher must reuse this function from its pinned

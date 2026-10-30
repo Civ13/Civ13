@@ -6,7 +6,7 @@ import tempfile
 import subprocess
 import sys
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SOURCE = Path(__file__).resolve().parents[2] / 'scripts/nomads-lifecycle/supervisor.py'
 spec = importlib.util.spec_from_file_location('nomads_supervisor', SOURCE)
@@ -130,9 +130,36 @@ class SupervisorTests(unittest.TestCase):
 
     def test_pid_reuse_is_not_owned(self):
         self.running()
+        self.supervisor.child = Mock(pid=123, poll=Mock(return_value=None))
         with patch.object(m, 'process_identity', return_value=789):
-            with self.assertRaisesRegex(RuntimeError, 'PID was reused'):
+            with self.assertRaisesRegex(RuntimeError, 'identity_mismatch'):
                 self.supervisor.alive()
+
+    def test_owned_handle_states_fail_closed_without_adoption(self):
+        self.assertEqual(self.supervisor.owned_process_state(), 'absent')
+        self.running()
+        with patch.object(m, 'process_identity') as identity:
+            self.assertEqual(self.supervisor.owned_process_state(), 'helper_lost')
+            identity.assert_not_called()
+        self.supervisor.child = Mock(pid=123, poll=Mock(return_value=0))
+        with patch.object(m, 'process_identity') as identity:
+            self.assertEqual(self.supervisor.owned_process_state(), 'exited')
+            identity.assert_not_called()
+        self.supervisor.child.poll.return_value = None
+        for outcome, expected in ((456, 'running'), (None, 'unknown'),
+                                  (PermissionError(), 'access_denied'),
+                                  (OSError(), 'unknown'), (789, 'identity_mismatch')):
+            with self.subTest(expected=expected), patch.object(m, 'process_identity',
+                    side_effect=outcome if isinstance(outcome, Exception) else None,
+                    return_value=outcome):
+                self.assertEqual(self.supervisor.owned_process_state(), expected)
+                if expected not in ('running',):
+                    with self.assertRaisesRegex(RuntimeError, expected):
+                        self.supervisor.alive()
+        self.supervisor.child.pid = 124
+        with patch.object(m, 'process_identity') as identity:
+            self.assertEqual(self.supervisor.owned_process_state(), 'identity_mismatch')
+            identity.assert_not_called()
 
     def test_modified_binary_rejected_again_after_copy(self):
         folder = self.root / 'binaries'
