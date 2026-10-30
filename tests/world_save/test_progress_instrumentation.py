@@ -19,7 +19,12 @@ class ProgressInstrumentationTests(unittest.TestCase):
         body = generated[generated.index(start):generated.index(end)]
         self.assertEqual(body.replace('world_save_progress_sleep(', 'sleep('),
                          original[original.index(start):original.index(end)])
-        self.assertEqual(generated.count('world_save_progress_sleep('), 3)
+        self.assertEqual(generated.count('world_save_progress_sleep('), 4)
+        capture = '/map_storage/proc/capture_moving_save_root('
+        edge = '/map_storage/proc/moving_save_root_edge('
+        self.assertEqual(generated[generated.index(capture):generated.index(edge)]
+                         .replace('world_save_progress_sleep(', 'sleep('),
+                         original[original.index(capture):original.index(edge)])
         self.assertEqual(generated.count('progress_completed_turfs++'), 1)
         self.assertIn('savefile["/map/[A]/[y]/[x]"] << ref', generated)
         self.assertIn('WORLD_SAVE_PROGRESS_TICK_CHECK\n', generated)
