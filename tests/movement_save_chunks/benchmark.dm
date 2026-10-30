@@ -1,7 +1,7 @@
 // Synthetic isolated memory fixture. No production files or clients.
 // The daemon may open a loopback port before World/New; initialization closes it.
 // Candidate uses the production serializer. The separately compiled baseline
-// restores old reference-string list keys and disables the movement roster.
+// restores only old preflight seen keys; both variants retain staged saving.
 world
 	maxx = 32
 	maxy = 32
@@ -58,9 +58,10 @@ var/benchmark_peak_tick_usage = 0
 			throw EXCEPTION("BENCHMARK_INJECTED_CAPTURE_FAILURE")
 		return ..()
 /map_storage/memory_benchmark/prepare_moving_save_roster()
-	if(benchmark_baseline) return
+	benchmark_phase("roster_start")
 	. = ..()
 	benchmark_peak_roster = max(benchmark_peak_roster, moving_save_roots.len)
+	benchmark_phase("roster_end")
 /map_storage/memory_benchmark/record_save_capture_path(savefile/F, path)
 	. = ..()
 	if(moving_save_chunk)

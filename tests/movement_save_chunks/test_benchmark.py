@@ -33,16 +33,16 @@ class BenchmarkSafetyTests(unittest.TestCase):
             candidate = (Path(folder) / name).read_bytes()
             baseline = (Path(folder) / 'baseline-source' / name).read_bytes()
             self.assertEqual(candidate, original)
-            self.assertEqual(baseline, bench.restore_old_identity_keys(name, original.decode()).encode())
+            self.assertEqual(baseline, bench.restore_preflight_reference_keys(original.decode()).encode())
             self.assertEqual(receipt['sources'][name], hashlib.sha256(candidate).hexdigest())
             self.assertEqual(receipt['baseline_sources'][name], hashlib.sha256(baseline).hexdigest())
             self.assertEqual(len(receipt['cases']), 18)
             self.assertTrue(receipt['comparative'])
             for path in bench.FILES:
-                if path not in (name, 'code/modules/persistence/functions.dm'): self.assertEqual((Path(folder) / path).read_bytes(), (Path(folder) / 'baseline-source' / path).read_bytes())
+                if path != name: self.assertEqual((Path(folder) / path).read_bytes(), (Path(folder) / 'baseline-source' / path).read_bytes())
             functions = 'code/modules/persistence/functions.dm'
             self.assertEqual((Path(folder) / functions).read_bytes(), (ROOT / functions).read_bytes())
-            self.assertEqual((Path(folder) / 'baseline-source' / functions).read_text(), bench.restore_old_identity_keys(functions, (ROOT / functions).read_text()))
+            self.assertEqual((Path(folder) / 'baseline-source' / functions).read_text(), (ROOT / functions).read_text())
             self.assertFalse(receipt['profile_datums'])
             self.assertEqual(receipt['datum_profile_sites'], {})
         with tempfile.TemporaryDirectory() as folder, patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('Native forbidden')), patch('builtins.print'):
@@ -149,12 +149,13 @@ class BenchmarkSafetyTests(unittest.TestCase):
         for marker in ('BUG: invariant', 'Badref', 'bad ref', 'Bad loc', 'Unhandled exception', 'Runtime error:', '## ERROR:', 'FAIL:'):
             with self.subTest(marker=marker): self.assertIsNotNone(bench.DIAGNOSTIC.search(marker))
 
-    def test_phase_contract_requires_all_repeats_and_real_baseline(self):
+    def test_phase_contract_requires_all_repeats_and_staged_baseline(self):
         rows = [dict(attempt=i, phase='after_refusal_cleanup' if i in (4, 5, 6) else 'after_success_cleanup', baseline=1, roster=0) for i in range(1, 8)]
-        rows.append(dict(attempt=8, phase='complete', baseline=1, roster=0))
+        rows += [dict(attempt=i, phase=p, baseline=1, roster=2) for i in range(1, 8) for p in ('roster_start', 'roster_end')]
+        rows.append(dict(attempt=8, phase='complete', baseline=1, roster=2))
         self.assertTrue(bench.phase_contract(rows, 1))
         self.assertFalse(bench.phase_contract(rows[:-2], 1))
-        self.assertFalse(bench.phase_contract([dict(row, roster=2) for row in rows], 1))
+        self.assertTrue(bench.phase_contract([dict(row, roster=2) for row in rows], 1))
         self.assertFalse(bench.phase_contract(rows, 0))
 
     def test_every_compile_and_daemon_launch_reverifies_exact_runtime(self):
@@ -170,7 +171,8 @@ class BenchmarkSafetyTests(unittest.TestCase):
             else:
                 baseline = int(dict(pair.split('=') for pair in command[-1].split('&'))['baseline'])
                 rows = [dict(attempt=i, phase='after_refusal_cleanup' if i in (4, 5, 6) else 'after_success_cleanup', baseline=baseline, roster=0) for i in range(1, 8)]
-                rows.append(dict(attempt=8, phase='complete', baseline=baseline, roster=0))
+                rows += [dict(attempt=i, phase=p, baseline=baseline, roster=2) for i in range(1, 8) for p in ('roster_start', 'roster_end')]
+                rows.append(dict(attempt=8, phase='complete', baseline=baseline, roster=2))
                 (cwd / 'daemon.log').write_text('\n'.join('BENCHMARK_PHASE ' + json.dumps(row) for row in rows))
                 (cwd / 'result.txt').write_text('PASS')
             return {'status': 'exited', 'returncode': 0, 'peaks': {'rss_bytes': 1024}, 'samples': 1}
@@ -196,9 +198,11 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertFalse(bench.compile_ok({'status': 'exited', 'returncode': 0}, log + 'DM compiler version 516.1688\n', dmb))
             self.assertTrue(bench.compile_ok({'status': 'exited', 'returncode': 0}, log, dmb))
 
-    def test_fixture_baseline_disables_roster_and_verifies_prior_backup_bytes(self):
+    def test_fixture_baseline_keeps_roster_and_verifies_prior_backup_bytes(self):
         source = (ROOT / 'tests/movement_save_chunks/benchmark.dm').read_text()
-        self.assertIn('if(benchmark_baseline) return\n\t. = ..()', source)
+        self.assertNotIn('if(benchmark_baseline) return', source)
+        self.assertIn('benchmark_phase("roster_start")\n\t. = ..()', source)
+        self.assertIn('benchmark_phase("roster_end")', source)
         self.assertIn('benchmark_attempt <= 7', source)
         self.assertIn('benchmark_attempt >= 4 && benchmark_attempt <= 6', source)
         self.assertIn('md5(file(', source)

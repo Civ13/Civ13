@@ -455,7 +455,7 @@
 			return bytes <= 262144
 		if(islist(value))
 			var/list/L = value
-			var/key = "\ref[L]"
+			var/key = L
 			if(seen[key]) return TRUE
 			if(L.len > 256 || seen.len >= 64) return FALSE
 			seen[key] = TRUE
@@ -471,7 +471,7 @@
 		// Even already-written external movers stay legacy, avoiding mixed-root
 		// physical relationships and successful-save regressions on stationary pets.
 		if(istype(D, /atom/movable) && D != root) return FALSE
-		var/key = "\ref[D]"
+		var/key = exporter.save_entry_identity(D)
 		if(seen[key]) return TRUE
 		if(seen.len >= 64 || D.vars.len > 1024) return FALSE
 		seen[key] = TRUE

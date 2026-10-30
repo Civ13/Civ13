@@ -11,18 +11,25 @@ fresh-process list/matrix codec tests. Remaining 2048-root refusals were
 attributed to native matrix reference-string formation. Neither primitive
 result is final-head acceptance or deployment evidence.
 
-## Current comparison
+## Current comparison: preflight-only optimization
 
-The candidate packet copies production serializer bytes unchanged. A separately
-compiled baseline packet restores list-cache and matrix-entry reference-string
-keys plus the original roster/durable-call type guards; its fixture disables
-the movement roster. Both use the
-same source head, fixture, compiler, construction order, payloads and limits.
-This compares the combined direct-key/chunk change against the old-key legacy
-path, not against an independently built historical game binary. Receipts bind
-both source trees and runtime identities. Intrusive interval diagnostics are
-removed; logical counters remain and impose some timing overhead. Phase logging
-occurs after synchronous detach, not inside it.
+Run 41132932200 on `51d99a2e` passed 24 correctness and 18 original legacy/candidate
+comparisons. Those results remain a separate baseline, not this new experiment.
+The candidate packet copies production serializer bytes unchanged. Its paired
+baseline uses the same staged saver, optimized main list/matrix codec and all
+headroom/safety guards; only the preflight seen-set keys revert to native
+reference strings. Both sides now build the moving roster. This is explicitly
+`comparison=preflight_only`, not the original legacy baseline.
+
+Both variants use the same source head, fixture, compiler, construction order,
+payloads and limits. Receipts pin the two exact preflight substitutions and
+baseline-generator hash. Outside-capture roster start/end phase timestamps
+measure admission wall time. Counters, phase logging and sampling still impose
+some overhead; neither variant is an uninstrumented full-game measurement.
+Direct preflight keys retain visited list/matrix handles for the bounded
+preflight lifetime; the previous string-key preflight did not pin them. This
+prevents recycled-handle false hits but is not a promise of zero memory cost.
+Current optimization results remain unverified until its own native run finishes.
 
 The full matrix is nine baseline/candidate pairs: 64/512/2048 animals ×
 1/16/64 KiB payloads. Each process performs three successful saves, three injected

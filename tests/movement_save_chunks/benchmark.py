@@ -27,7 +27,10 @@ _profile_spec = importlib.util.spec_from_file_location('moving_save_datum_profil
 _profile_module = importlib.util.module_from_spec(_profile_spec)
 _profile_spec.loader.exec_module(_profile_module)
 instrument_datum_references = _profile_module.instrument_datum_references
-restore_old_identity_keys = _profile_module.restore_old_identity_keys
+_preflight_spec = importlib.util.spec_from_file_location('moving_save_preflight_fixture', Path(__file__).with_name('preflight_fixture.py'))
+_preflight_module = importlib.util.module_from_spec(_preflight_spec)
+_preflight_spec.loader.exec_module(_preflight_module)
+restore_preflight_reference_keys = _preflight_module.restore_preflight_reference_keys
 FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
@@ -68,7 +71,7 @@ def prepare(output: Path, diagnostic_subset=False, profile_datums=False):
     for name in FILES:
         data = (ROOT / name).read_bytes()
         production_hashes[name] = hashlib.sha256(data).hexdigest()
-        baseline_data = restore_old_identity_keys(name, data.decode()).encode()
+        baseline_data = restore_preflight_reference_keys(data.decode()).encode() if name == 'code/modules/persistence/saving.dm' else data
         if profile_datums:
             data = instrument_datum_references(name, data.decode()).encode()
             baseline_data = instrument_datum_references(name, baseline_data.decode()).encode()
@@ -91,7 +94,7 @@ def prepare(output: Path, diagnostic_subset=False, profile_datums=False):
                    datum_profile_sites={"saver": _profile_module.EXPECTED_SAVER_REF_SITES, "identity_helper": 1} if profile_datums else {},
                    datum_profiler_sha256=hashlib.sha256(Path(__file__).with_name('datum_profile.py').read_bytes()).hexdigest(),
                    case_selector_sha256=hashlib.sha256(Path(__file__).with_name('diagnostic_cases.py').read_bytes()).hexdigest(),
-                   baseline='same-head reference-string list/matrix identities, old roster/durable guards and disabled roster', sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),
+                   comparison='preflight_only', baseline='same staged saver and optimized main codec, only preflight seen keys use reference strings', preflight_baseline_helper_sha256=hashlib.sha256(Path(__file__).with_name('preflight_fixture.py').read_bytes()).hexdigest(), sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),
                    instrumentation={'scope': 'copied-packet native datum reference timing' if profile_datums else 'logical fixture counters only; candidate serializer bytes unchanged', 'timing': 'Instrumentation adds overhead; opt-in reference profiling is diagnostic only, not acceptance timing.'},
                    boundaries={'live_server': False, 'listener_control': 'fixture OpenPort(none), loopback-only daemon, no webclient; socket absence not measured', 'max_concurrency': 1},
                    missing_evidence=['native compilation', 'RSS/private memory', 'fresh-process restore'])
@@ -223,9 +226,9 @@ def phase_contract(phases, baseline):
     observed = {(row.get('attempt'), row.get('phase')) for row in phases}
     expected = {(attempt, 'after_success_cleanup') for attempt in (1, 2, 3, 7)}
     expected |= {(attempt, 'after_refusal_cleanup') for attempt in (4, 5, 6)}
+    expected |= {(attempt, phase) for attempt in range(1, 8) for phase in ('roster_start', 'roster_end')}
     return (expected <= observed and any(row.get('phase') == 'complete' for row in phases)
-            and all(bool(row.get('baseline')) == bool(baseline) for row in phases)
-            and (not baseline or all(row.get('roster') == 0 for row in phases)))
+            and all(bool(row.get('baseline')) == bool(baseline) for row in phases))
 
 
 def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limits):

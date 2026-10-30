@@ -132,6 +132,7 @@ var/peak_capture_tick_usage = 0
 			del(world)
 			return
 		if(world.params["scenario"] == "walking")
+			if(!check_native_preflight_identity()) throw EXCEPTION("PREFLIGHT_IDENTITY: probe did not complete")
 			if(!check_native_matrix_frames()) throw EXCEPTION("MATRIX_FRAME: frame probe did not complete")
 			if(!check_native_matrix_identity()) throw EXCEPTION("MATRIX_IDENTITY: primitive probe did not complete")
 			if(!check_native_list_identity()) throw EXCEPTION("LIST_IDENTITY: primitive probe did not complete")
