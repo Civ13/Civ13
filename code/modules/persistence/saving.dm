@@ -526,12 +526,12 @@
 	var/mob/living/simple_animal/A = record["atom"]
 	// Reserve tick headroom before allocating a stage or any root identities.
 	// This wait is bounded; it never occurs inside the synchronous capture.
-	var/datum/save_export_frame/caller = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
+	var/datum/save_export_frame/parent_frame = saving_export_stack.len ? saving_export_stack[saving_export_stack.len] : null
 	if(world.tick_usage >= 80)
 		sleep(world.tick_lag)
-		if(caller)
-			require_export_frame(caller)
-			if(!saving_export_stack.len || saving_export_stack[saving_export_stack.len] != caller)
+		if(parent_frame)
+			require_export_frame(parent_frame)
+			if(!saving_export_stack.len || saving_export_stack[saving_export_stack.len] != parent_frame)
 				throw EXCEPTION("Moving save caller changed while awaiting capture headroom")
 		else if(saving_export_stack.len)
 			throw EXCEPTION("Moving save caller appeared while awaiting capture headroom")

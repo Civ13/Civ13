@@ -34,14 +34,14 @@ class HeadroomSourceTests(unittest.TestCase):
         packet = fixture.instrument_headroom(original)
         self.assertEqual(path.read_text(), original)
         self.assertEqual(packet.count('sleep(world.tick_lag)'), original.count('sleep(world.tick_lag)'))
-        self.assertEqual(packet.count('fixture_headroom_before_wait(A, caller)'), 1)
+        self.assertEqual(packet.count('fixture_headroom_before_wait(A, parent_frame)'), 1)
         self.assertEqual(packet.count('fixture_force_headroom(A)'), 1)
         self.assertEqual(packet.count('fixture_headroom_nonprogress()'), 1)
         self.assertNotIn('world.tick_usage =', packet)
         capture = packet.split('/map_storage/proc/capture_moving_save_root(')[1]
         self.assertLess(capture.index('fixture_headroom_before_wait'), capture.index('sleep(world.tick_lag)'))
         self.assertLess(capture.index('sleep(world.tick_lag)'), capture.index('var/savefile/staged = new'))
-        self.assertLess(capture.index('require_export_frame(caller)'), capture.index('var/savefile/staged = new'))
+        self.assertLess(capture.index('require_export_frame(parent_frame)'), capture.index('var/savefile/staged = new'))
         with self.assertRaises(ValueError):
             fixture.instrument_headroom(original.replace('sleep(world.tick_lag)', 'sleep(0)'))
         with self.assertRaises(ValueError):
@@ -52,8 +52,8 @@ class HeadroomSourceTests(unittest.TestCase):
         self.assertIn('armed && fixture_is_headroom() && A == subject && !headroom_waits', probe)
         self.assertIn('if(!fixture_force_headroom(A)) return', probe)
         self.assertIn('map_storage.moving_save_chunk || map_storage.saving_references["\\ref[A]"]', probe)
-        self.assertIn('caller.active = FALSE', probe)
-        self.assertIn('new /turf(caller.source)', probe)
+        self.assertIn('parent_frame.active = FALSE', probe)
+        self.assertIn('new /turf(parent_frame.source)', probe)
         self.assertIn('headroom_waits != 1', probe)
         self.assertIn('found_x != expected_x', probe)
         self.assertIn('!fixture_is_headroom() && !moving_save_chunk', probe)

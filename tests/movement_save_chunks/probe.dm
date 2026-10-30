@@ -52,7 +52,7 @@ var/headroom_waits = 0
 	return armed && fixture_is_headroom() && A == subject && !headroom_waits
 /proc/fixture_headroom_nonprogress()
 	return armed && headroom_waits && world.params["scenario"] == "headroom-nonprogress"
-/proc/fixture_headroom_before_wait(mob/A, datum/save_export_frame/caller)
+/proc/fixture_headroom_before_wait(mob/A, datum/save_export_frame/parent_frame)
 	if(!fixture_force_headroom(A)) return
 	if(map_storage.moving_save_chunk || map_storage.saving_references["\ref[A]"]) throw EXCEPTION("HEADROOM: stage or root identity existed before wait")
 	headroom_waits++
@@ -64,12 +64,12 @@ var/headroom_waits = 0
 		if("headroom-container") A.loc = new /obj(locate(4,1,1))
 		if("headroom-cross-z") A.loc = locate(4,1,2)
 		if("headroom-parent-replaced")
-			if(!caller || !isturf(caller.source)) throw EXCEPTION("HEADROOM: expected a turf caller")
-			var/turf/replacement = new /turf(caller.source)
+			if(!parent_frame || !isturf(parent_frame.source)) throw EXCEPTION("HEADROOM: expected a turf caller")
+			var/turf/replacement = new /turf(parent_frame.source)
 			if(!replacement) throw EXCEPTION("HEADROOM: replacement did not construct")
 		if("headroom-parent-closed")
-			if(!caller) throw EXCEPTION("HEADROOM: expected an active caller")
-			caller.active = FALSE
+			if(!parent_frame) throw EXCEPTION("HEADROOM: expected an active caller")
+			parent_frame.active = FALSE
 var/peak_roster = 0
 var/peak_nodes = 0
 var/peak_edges = 0
