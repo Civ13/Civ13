@@ -17,7 +17,8 @@
 
 		age = rand(current_species.min_age, current_species.max_age)
 		if (H)
-			copy_to(H,1)
+			return copy_to(H,1)
+		return TRUE
 
 
 	proc/randomize_hair_color(var/target = "hair")

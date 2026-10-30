@@ -245,7 +245,7 @@
 			if (prob(20))
 				var/ct = 0
 				for(var/mob/living/human/HM in range(3,src))
-					if (HM.stat != DEAD)
+					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (ct)
 					mood += 0.12
@@ -255,7 +255,7 @@
 			if (prob(20))
 				var/ct = 0
 				for(var/mob/living/human/HM in range(3,src))
-					if (HM.stat != DEAD)
+					if (HM != src && HM.stat != DEAD)
 						ct++
 				if (!ct)
 					mood += 0.12

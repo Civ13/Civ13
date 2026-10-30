@@ -213,6 +213,9 @@ var/global/redirect_all_players = null
 	if (href_list["ready"])
 		if (!ticker || ticker.current_state <= GAME_STATE_PREGAME) // Make sure we don't ready up after the round has started
 			ready = text2num(href_list["ready"])
+			if (ready && get_trait_selection_error(client.prefs.traits))
+				ready = FALSE
+				WWalert(src, "Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]", "Error")
 		else
 			ready = FALSE
 
@@ -281,8 +284,8 @@ var/global/redirect_all_players = null
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return TRUE
 
-		if (check_trait_points(client.prefs.traits) > 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+		if (get_trait_selection_error(client.prefs.traits))
+			WWalert(src,"Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]","Error")
 			return FALSE
 
 		if (client && client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -409,7 +412,7 @@ var/global/redirect_all_players = null
 
 // Native waits may return after disconnect, transfer or a restart hold.
 /mob/new_player/proc/lobby_join_admission_current()
-	return lobby_join_current() && ticker && ticker.current_state == GAME_STATE_PLAYING && ticker.players_can_join && map && !persistence_restart.startup_hold && !persistence_restart.busy && GLOB.enter_allowed && !client.quickBan_isbanned("Playing") && check_trait_points(client.prefs.traits) <= 0
+	return lobby_join_current() && ticker && ticker.current_state == GAME_STATE_PLAYING && ticker.players_can_join && map && !persistence_restart.startup_hold && !persistence_restart.busy && GLOB.enter_allowed && !client.quickBan_isbanned("Playing") && !get_trait_selection_error(client.prefs.traits)
 
 /mob/new_player/proc/lobby_join_input(message, title, default_value, list/choices)
 	if (!lobby_join_admission_current())
@@ -512,8 +515,8 @@ var/global/redirect_all_players = null
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
-		if (check_trait_points(client.prefs.traits) > 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+		if (get_trait_selection_error(client.prefs.traits))
+			WWalert(src,"Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -554,8 +557,8 @@ var/global/redirect_all_players = null
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
-		if (check_trait_points(client.prefs.traits) > 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+		if (get_trait_selection_error(client.prefs.traits))
+			WWalert(src,"Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -605,9 +608,9 @@ var/global/redirect_all_players = null
 			WWalert(src,"The round is either not ready, or has already finished.","Error")
 			return
 
-		if (check_trait_points(client.prefs.traits) > 0)
+		if (get_trait_selection_error(client.prefs.traits))
 			lobby_join_trace("nomads_denied", "traits_unbalanced")
-			WWalert(src,"<Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+			WWalert(src,"Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]","Error")
 			return FALSE
 
 		if (client.next_normal_respawn > world.realtime && !config.no_respawn_delays)
@@ -668,8 +671,8 @@ var/global/redirect_all_players = null
 
 	if (href_list["join_campaign"])
 
-		if (check_trait_points(client.prefs.traits) > 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+		if (get_trait_selection_error(client.prefs.traits))
+			WWalert(src,"Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]","Error")
 			return FALSE
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -716,8 +719,8 @@ var/global/redirect_all_players = null
 
 	if (href_list["late_join"])
 
-		if (check_trait_points(client.prefs.traits) > 0)
-			WWalert(src,"Your traits are not balanced! You can't join until you balance them (sum has to be <= 0).","Error")
+		if (get_trait_selection_error(client.prefs.traits))
+			WWalert(src,"Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]","Error")
 			return FALSE
 
 		if (client && client.quickBan_isbanned("Playing"))
@@ -1187,6 +1190,13 @@ var/global/redirect_all_players = null
 /mob/new_player/proc/AttemptLateSpawn(rank, var/nomsg = FALSE)
 	lobby_join_trace("spawn_entered", "none")
 	if(!map_storage.allow_new_character(src)) return FALSE
+	if (!client || !client.prefs)
+		return FALSE
+	if (get_trait_selection_error(client.prefs.traits))
+		lobby_join_trace("spawn_denied", "traits_invalid")
+		if (!nomsg)
+			WWalert(src, "Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]", "Error")
+		return FALSE
 	// Durable Nomads maps use the job's named registry. Deny before body/mind
 	// creation if an authoritative restore deliberately removed that group.
 	if(persistence_spawns_authoritative && map && map.uses_durable_metadata())
@@ -1595,6 +1605,13 @@ var/global/redirect_all_players = null
 
 /mob/new_player/proc/create_character(mobtype)
 	if(!map_storage.allow_new_character(src)) return null
+	// Reclaim above does not depend on the next character's preferences.
+	if (!client || !client.prefs)
+		return null
+	if (get_trait_selection_error(client.prefs.traits))
+		ready = FALSE
+		to_chat(src, SPAN_WARNING("Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]"))
+		return null
 
 	if (delayed_spawning_as_job)
 		delayed_spawning_as_job.total_positions += 1
@@ -1629,15 +1646,29 @@ var/global/redirect_all_players = null
 		if (ticker.random_players)
 			new_character.gender = pick(MALE, FEMALE)
 			client.prefs.real_name = random_name(new_character.gender)
-			client.prefs.randomize_appearance_for (new_character)
+			if (!client.prefs.randomize_appearance_for(new_character))
+				qdel(new_character)
+				spawning = FALSE
+				return null
 		else
 			// no more traps - Kachnov
 			var/client_prefs_original_gender = client.prefs.gender
 
 			// traps came back, this should fix them for good - Kachnov
 			new_character.gender = client.prefs.gender
-			client.prefs.copy_to(new_character)
+			var/copied_preferences = client.prefs.copy_to(new_character)
 			client.prefs.gender = client_prefs_original_gender
+			if (!copied_preferences)
+				qdel(new_character)
+				spawning = FALSE
+				return null
+
+	// Finish preference application before transferring the mind or key.
+	if (client && client.prefs.be_random_body)
+		if (!client.prefs.randomize_appearance_for(new_character))
+			qdel(new_character)
+			spawning = FALSE
+			return null
 
 	src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS cant last forever yo
 
@@ -1645,8 +1676,6 @@ var/global/redirect_all_players = null
 		mind.active = FALSE					//we wish to transfer the key manually
 		mind.original = new_character
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
-	if (client && client.prefs.be_random_body)
-		client.prefs.randomize_appearance_for (new_character)
 	new_character.original_job = original_job
 	new_character.name = real_name
 	new_character.dna.ready_dna(new_character)
