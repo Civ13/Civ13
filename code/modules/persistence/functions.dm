@@ -353,6 +353,7 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
+	if(key in list("moving_save_roots", "moving_save_chunk")) return TRUE
 	if(key == "consecutive_save_failures") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
@@ -411,6 +412,8 @@ map_storage
 // collected - these lists otherwise pin every atom they touched until the next
 // save/load runs. Called after a save or load finishes, successfully or not.
 /map_storage/proc/clear_bookkeeping()
+	moving_save_roots = list()
+	moving_save_chunk = null
 	for(var/datum/save_export_frame/frame in saving_export_stack.Copy())
 		release_export_frame(frame)
 	saving_export_frames = list()
@@ -1055,6 +1058,11 @@ var/global/datum/persistence_admission_identity
 
 /map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)
 	if(!ref) return
+	var/datum/child = saving_reference_pins[ref]
+	var/list/moving_root = child ? moving_save_roots["\ref[child]"] : null
+	if(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
+		if(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
+		return // The frozen origin owns this root; roster drain will attach it.
 	var/key = "[ref]"
 	// Keep the first captured edge if a completed child later moves.
 	var/owner = saving_content_owners[key]

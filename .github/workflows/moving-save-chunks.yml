@@ -1,0 +1,70 @@
+name: Bounded moving-save correctness and memory
+on:
+  pull_request:
+    paths:
+      - 'tests/movement_save_chunks/**'
+      - 'code/modules/persistence/saving.dm'
+      - 'code/modules/persistence/functions.dm'
+      - 'code/modules/persistence/loading.dm'
+      - 'code/modules/persistence/player_reclaim.dm'
+      - 'code/modules/multiz/world_z_budget.dm'
+      - 'code/predefines.dm'
+      - 'tests/world_save/stubs.dm'
+      - 'scripts/byond_runtime.py'
+      - 'scripts/byond_toolchain.py'
+      - 'scripts/travis_pre_byond.sh'
+      - 'tools/byond/version.json'
+      - '.github/workflows/moving-save-chunks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Offline source and resource-policy controls
+        run: python3 -B -m unittest discover -s tests/movement_save_chunks -v
+      - name: Install verified 516.1688 and compile exact game source
+        timeout-minutes: 15
+        env:
+          BYOND_MAJOR: '516'
+          BYOND_MINOR: '1688'
+          BYOND_ARCHIVE_SOURCE: repository-release
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(python3 scripts/byond_toolchain.py field version)" = 516.1688
+          bash scripts/travis_pre_byond.sh
+      - name: Isolated native correctness and bounded memory matrix
+        timeout-minutes: 21
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          evidence="$RUNNER_TEMP/moving-save-evidence"
+          mkdir -p "$evidence"
+          git rev-parse HEAD 'HEAD^{tree}' > "$evidence/source-identity.txt"
+          python3 -B tests/movement_save_chunks/correctness.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/correctness" --job-seconds 240
+          python3 -B tests/movement_save_chunks/benchmark.py --run-native --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --output "$evidence/memory" --job-seconds 900
+      - name: Retain all exact-head evidence including failed attempts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: moving-save-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            ${{ runner.temp }}/moving-save-evidence/
+            .ci/compile/
+            !${{ runner.temp }}/moving-save-evidence/**/*.dmb
+            !${{ runner.temp }}/moving-save-evidence/**/*.rsc
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
