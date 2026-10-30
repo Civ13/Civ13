@@ -6,11 +6,13 @@ checkboxes are acceptance criteria, not claims of completed work.
 ## Pinned evidence and scope
 
 - Civ13 `master`: `ef3faa6b90e0e56affa072d93dae3aa7ffbdc927` (remote verified).
-- Requested reference: [Giacom/-tg-station](https://github.com/Giacom/-tg-station/tree/f8f6a3693ec1c0e24ad14412e8ba54948f2ef9c1/tgui),
-  commit `f8f6a3693ec1c0e24ad14412e8ba54948f2ef9c1`, dated 2020-05-31.
-  Its package version is **tgui 2.0.0**, Inferno 7, webpack 4, Babel 7,
-  Node 12.13+/Yarn 1.19+. This is a historical tgui design reference, not
-  current /tg/station and not evidence that its dependencies are modern.
+- Corrected requested reference: [tgstation/tgstation](https://github.com/tgstation/tgstation/tree/bf6f771a1e221e06938978e36bbaf78543f85ebe/tgui),
+  commit `bf6f771a1e221e06938978e36bbaf78543f85ebe`, dated 2026-10-30 12:30:36 UTC.
+  Workspace version is **tgui 6.0.0**. Its lockfile resolves React/React DOM
+  19.2.7, tgui-core 6.1.1 and Rspack 1.7.12. The workspace declares TypeScript
+  ^5.8.3 and Bun 1.2.16. Actual browser target is **Edge >=123**.
+- This corrected reference supersedes the mistakenly supplied Giacom fork.
+  No code, build assumptions or migration work from that 2020 fork is adopted.
 - Civ13 currently uses NanoUI: jQuery/doT templates, `datum/nanoui`,
   `GLOB.nanomanager`, `process/nanoUI`, and `datum/topic_state` authorization.
   There are **12 `.tmpl` files: 10 screens and two layouts**; the thirteenth
@@ -24,11 +26,18 @@ checkboxes are acceptance criteria, not claims of completed work.
 Retain Civ13's manager, scheduler, ownership checks, topic states, existing
 `ui_interact` data producers and domain `Topic` handlers. Introduce a compatible
 `/datum/nanoui/tgui` renderer, not a second competing UI manager. Keep legacy
-NanoUI templates and an explicit fallback during migration. Use JSX components
-and the pinned reference's component conventions with a reproducible supported
-Node 24 build. Do not execute the old build scripts or import its webpack 4
-lockfile wholesale. A webpack 5/Babel build must explicitly target legacy JS;
-modern Node does not imply modern browser output.
+NanoUI templates and an automatic/manual fallback for incompatible browsers.
+Use current React 19, TypeScript and **tgui-core 6.1.1 components**, as used by
+the corrected upstream, with a minimal Civ13 application shell and transport.
+Avoid importing hundreds of unrelated upstream game interfaces, chat, lobby,
+keybindings, window pooling or its entire helper runtime.
+
+Use the existing supported Node 24 runtime with a pinned npm lockfile and
+Rspack 1.7.12; upstream uses Bun, but Rspack supports Node >=18.12. Registry
+metadata confirms tgui-core 6.1.1 MIT and the same integrity as upstream's lock.
+This deliberate build-runner substitution avoids downloading an executable
+bootstrap and leaves the actual React/component/rendering stack aligned.
+Modern browser output is intentional; do not claim IE support through Babel.
 
 Upstream DM is not drop-in: it redefines `ui_interact` and `mob.open_uis`, uses
 `SStgui` rather than Civ13 processes, `ui_state` rather than `topic_state`, and
@@ -36,19 +45,23 @@ requires absent preferences and lifecycle hooks. A wholesale import would
 conflict and could bypass existing authorization or break logout/transfer.
 
 Frontend messages must point to the UI datum, never directly to the machine.
-The adapter rechecks ownership and live interaction status before forwarding
-only the expected legacy action parameters. Client disabled states are not an
-authorization boundary. Preserve per-screen validation and state updates.
+Current upstream uses `Byond.sendMessage('act/<name>', payload)` and typed
+ready/update messages, not the old tgui initialize/action protocol. Its helper
+routes `{tgui:1, window_id:...}` through client-owned window pools. Civ13's
+bridge will explicitly add the UI datum ref and validate owner/window/status,
+then map only allowlisted screen actions to existing legacy parameters.
+Do not import upstream arbitrary key-command routing or expose unused client
+metadata. Client disabled states are not an authorization boundary.
 
 ## Proposed implementation commits
 
 1. **Reproducible frontend foundation** (`tgui/`, generated `UI/tgui/`):
    pin provenance and dependencies, retain applicable license notices, add
-   component/runtime subset and a deterministic production build, status/update
+   React/tgui-core component application and a deterministic production build, status/update
    bridge and bounded queue, safe text rendering, and local browser fixtures.
    Build from source; never copy the reference's stale compiled bundle.
 2. **Civ13 adapter** (`code/modules/nano/tgui.dm`, `civ13.dme`, asset registry):
-   inherit manager lifecycle; use existing `receiveUpdateData` transport;
+   inherit manager lifecycle; adapt typed messages to existing `receiveUpdateData` transport;
    deliver assets through the existing cache; preserve close/logout/transfer,
    parent/child status and polling. Make fallback explicit and keep legacy files.
 3. **Screen conversions**, preserving all current actions/data:
@@ -79,13 +92,17 @@ authorization boundary. Preserve per-screen validation and state updates.
 
 ## Browser and compatibility risks
 
-Civ13 targets BYOND 516.1688 with minimum compiler 516.1681. The reference
-explicitly transpiles for IE8 and ships IE shims; that is intent, not proof of
-rendering on the currently deployed client. Preserve conservative browser
-output and do not assume Chromium-only support. Its `byond.js` currently
-accesses `groups[1]` after a Trident regex without checking for a match, crashing
-on non-Trident user agents; adapted code needs a regression test for both.
-Modern browser automation is useful but is not native BYOND or OpenDream proof.
+Civ13 targets BYOND 516.1688 with minimum compiler 516.1681. Repository
+`docs/byond-5161688.md` describes WebView2 prerequisites, but compiler version
+alone does not prove which embedded browser actually renders a window.
+The corrected reference targets Edge >=123 and depends on React 19/modern APIs.
+IE cannot run it merely by transpiling syntax. An ES5 bootstrap must detect
+supported browser capabilities before loading modern assets and select legacy
+NanoUI otherwise; a manual fallback remains available if load/render fails.
+Browser capability negotiation must not grant additional server permissions.
+Test unsupported/unknown UA, failed bundles and missing modern APIs, without
+silently presenting a blank window or falsely claiming modern compatibility.
+Native BYOND and OpenDream remain unverified; browser automation is not proof.
 
 Test startup updates before scripts load, malformed data, Unicode and HTML-like
 names, empty lists, large inventories, repeated actions, Cancel/Close/reopen,
@@ -95,19 +112,24 @@ undo boundaries, cancel without commit and repeated save/found attempts.
 
 ## Licensing and supply chain
 
-Civ13 and upstream root LICENSE are AGPL-3.0. Upstream README separately calls
-tgui clientside MIT, assets CC-BY-SA-4.0 and Font Awesome SIL OFL; some individual
-files have additional notices (notably `styles/functions.scss` GPL-2.0-or-later).
-Record copied-file provenance and preserve actual per-file notices, rather than
-relabeling the whole tree MIT. Prefer omitting unrelated artwork, fonts, themes,
-optional developer-server integration and unused upstream game screens.
-Dependencies need lockfile integrity and license inventory. No install hooks,
-unrecognized downloaded binaries, privileged execution, credentials in builds,
-new paid services, branch protections or security-setting changes are authorized.
+Civ13 and upstream root LICENSE are AGPL-3.0. Current upstream has per-file MIT
+notices on its application entry/layout/styles, while its root README no longer
+contains the historical blanket tgui-MIT statement. The reusable tgui-core 6.1.1
+package explicitly declares MIT. Record actual package/file provenance and
+retain licenses/notices; do not infer all upstream files have one license.
+Unlike the mistakenly linked old fork, the corrected reference's
+`styles/functions.scss` explicitly says MIT. Prefer no copied upstream artwork,
+fonts, chat assets, themes or unrelated game screens. Inventory bundled
+third-party dependencies and retain their applicable notices.
+
+Use integrity-locked standard registry dependencies with lifecycle scripts
+disabled unless specifically inspected. No unrecognized executable bootstrap,
+privileged execution, credentials in builds, new paid services, branch-protection
+or security-setting changes are authorized.
 
 ## Acceptance and rollback
 
-- [ ] Supported toolchain installs reproducibly and builds from reviewed source.
+- [ ] Supported Node/React/tgui-core toolchain installs reproducibly and builds from reviewed source.
 - [ ] All ten screen contracts preserve controls, data and authorization.
 - [ ] Legacy renderer remains available; no unrelated browser UI migration.
 - [ ] Browser tests cover update/action/close and complex interrupted flows.
@@ -123,5 +145,5 @@ commits. This draft does not authorize merging, deployment, server restart,
 feature activation, native execution or client/runtime changes.
 
 Toolchain references: [Node supported releases](https://nodejs.org/en/about/previous-releases),
-[webpack target](https://webpack.js.org/configuration/target/),
-[webpack output environment](https://webpack.js.org/configuration/output/).
+[upstream Rspack browser target](https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/tgui/rspack.config.ts),
+[tgui-core component library](https://github.com/tgstation/tgui-core).
