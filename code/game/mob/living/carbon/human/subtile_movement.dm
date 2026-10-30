@@ -103,6 +103,7 @@
 	var/initial_prone
 	var/initial_lying
 	var/attempted = FALSE
+	var/fine_step = FALSE
 
 /mob/living/human/proc/human_subtile_snapshot()
 	return list("x" = x, "y" = y, "z" = z, "sx" = step_x, "sy" = step_y)
@@ -123,6 +124,10 @@
 
 /mob/living/human/proc/human_subtile_ready(direction)
 	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_unlinked()
+
+// Fine input never falls back to tile movement or takes ownership of a link.
+/mob/living/human/proc/human_subtile_fine_ready(direction)
+	return human_subtile_eligible(direction) && !pulling && !driver && !confused && ((!step_x && !step_y) || human_subtile_offset_owned)
 
 /mob/living/human/proc/human_subtile_initialize_default(direction)
 	// Wait for an eligible input, after construction/placement/load. Do not adopt
@@ -253,16 +258,18 @@
 		delay *= ROOT2_FAST
 	return now + delay
 
-/mob/living/human/SelfMove(turf/n, direct, deadline = null)
+/mob/living/human/SelfMove(turf/n, direct, deadline = null, fine_step = FALSE)
 	if (isnull(deadline))
 		return ..()
-	if (human_subtile_pull_ready(direct))
+	if (fine_step && !human_subtile_fine_ready(direct))
+		return FALSE
+	if (!fine_step && human_subtile_pull_ready(direct))
 		return human_subtile_pull_travel(n, direct, deadline)
 	if (!human_subtile_eligible(direct) || !human_subtile_authority(client) || human_subtile_transaction || n != get_step(src, direct) || !isnum(deadline) || deadline < world.time || deadline >= INFINITY)
 		return FALSE
-	return human_subtile_travel(n, direct, deadline)
+	return human_subtile_travel(n, direct, deadline, fine_step = fine_step)
 
-/mob/living/human/proc/human_subtile_travel(turf/n, direct, deadline, legacy_posture = FALSE, paid_posture = null)
+/mob/living/human/proc/human_subtile_travel(turf/n, direct, deadline, legacy_posture = FALSE, paid_posture = null, fine_step = FALSE)
 	if (human_subtile_transaction || human_subtile_pulse)
 		return FALSE
 	var/datum/human_subtile_transaction/T = new
@@ -273,10 +280,11 @@
 	T.expected = human_subtile_snapshot()
 	T.legacy_posture = legacy_posture
 	T.paid_posture = paid_posture
+	T.fine_step = fine_step
 	T.initial_prone = prone
 	T.initial_lying = lying
 	if (!legacy_posture && !paid_posture)
-		human_subtile_update_visuals(deadline - world.time, direct, client)
+		human_subtile_update_visuals(deadline - world.time, direct, client, fine_step ? 2 : 32)
 	human_subtile_transaction = T
 	var/moved = FALSE
 	try
@@ -307,6 +315,8 @@
 /datum/human_subtile_transaction/proc/valid(direction)
 	if (cancelled || !actor || isDeleted(actor) || actor.human_subtile_transaction != src || persistence_save_in_progress || world.time > end_time + world.tick_lag)
 		return FALSE
+	if (fine_step && !actor.human_subtile_fine_ready(direction))
+		return FALSE
 	if (paid_posture)
 		if (!actor.scrambling || !actor.human_subtile_enabled || !actor.human_subtile_crawl_ready(direction) || !actor.human_subtile_crawl_authority(owner) || actor.prone != initial_prone || actor.lying != initial_lying)
 			return FALSE
@@ -327,6 +337,9 @@
 	// uses native collision. A reverse input can therefore escape a 2px offset.
 	var/remaining_x = (direction & EAST) ? 32 - actor.step_x : (direction & WEST) ? (actor.step_x ? actor.step_x : 32) : 0
 	var/remaining_y = (direction & NORTH) ? 32 - actor.step_y : (direction & SOUTH) ? (actor.step_y ? actor.step_y : 32) : 0
+	if (fine_step)
+		remaining_x = (direction & (EAST | WEST)) ? 2 : 0
+		remaining_y = (direction & (NORTH | SOUTH)) ? 2 : 0
 	var/pulse_count = paid_posture ? ceil(max(remaining_x, remaining_y) / 2) : 16
 	if (paid_posture)
 		actor.human_subtile_update_visuals(duration, direction, owner, max(remaining_x, remaining_y))
