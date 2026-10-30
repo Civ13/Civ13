@@ -1,10 +1,10 @@
-// Source-only #3233 core. No production caller creates a context and no map opts in.
-// Keep disabled until all action, renderer and lifecycle adapters are reviewed.
+// Per-client geometric visibility. Snapshots are synchronous presentation inputs,
+// never reusable authorization leases for gameplay actions.
 #ifndef CIV13_GEOMETRIC_LOS_CORE
-#define CIV13_GEOMETRIC_LOS_CORE 0
+#define CIV13_GEOMETRIC_LOS_CORE 1
 #endif
 #ifndef CIV13_ROOT_TREE_PRESENTATION
-#define CIV13_ROOT_TREE_PRESENTATION 0
+#define CIV13_ROOT_TREE_PRESENTATION 1
 #endif
 #define LOS_DENY 0
 #define LOS_WORLD 1
@@ -15,8 +15,8 @@
 /client/var/tmp/datum/los_context/los_context
 var/global/list/los_active_contexts
 
-// These numeric primitives use only integers/halves/quarters on the 21x21 slice.
-// Closed contact is blocking. No epsilon can open a corner crack.
+// These primitives receive bounded eye-relative coordinates, including native
+// 2px movement fractions. Closed contact blocks; no epsilon opens a corner crack.
 /proc/los_axis_separates(nx, ny, ex, ey, ax, ay, bx, by, cx, cy)
 	var/p = nx * ex + ny * ey
 	var/q = nx * ax + ny * ay
@@ -97,7 +97,11 @@ var/global/list/los_active_contexts
 	var/policy
 	var/eye_x
 	var/eye_y
+	var/eye_z
+	var/radius_x
+	var/radius_y
 	var/list/blockers = list()
+	var/list/clear_footprints = list()
 
 /datum/los_mutation
 	should_save = FALSE
@@ -122,9 +126,6 @@ var/global/list/los_active_contexts
 		C.los_context.retire()
 	if (!los_active_contexts)
 		los_active_contexts = list()
-	if (los_active_contexts.len >= 2)
-		retired = TRUE
-		return
 	owner = C
 	body = C.mob
 	C.los_context = src
@@ -136,6 +137,8 @@ var/global/list/los_active_contexts
 
 /datum/los_context/proc/retire()
 	retired = TRUE
+	if (owner && owner.los_presenter)
+		owner.los_presenter.retire()
 	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
 		owner.root_tree_presenter.retire()
 	root_trees.Cut()
@@ -168,6 +171,8 @@ var/global/list/los_active_contexts
 	var/datum/los_mutation/M = new
 	M.context = src
 	mutations += M
+	if (owner && owner.los_presenter)
+		owner.los_presenter.invalidate()
 	if (CIV13_ROOT_TREE_PRESENTATION && owner && owner.root_tree_presenter)
 		owner.root_tree_presenter.invalidate()
 	return M
@@ -181,105 +186,100 @@ var/global/list/los_active_contexts
 	M.context = null
 	return advance_revision()
 
+// Unsupported camera/observer modes retain their established native behavior.
+// Blindness, mutations and save activity are NOT eligibility exemptions: they
+// suspend presentation and deny world information for an otherwise owned viewer.
+/datum/los_context/proc/eligible()
+	return !retired && owner && owner.los_context == src && body && istype(body, /mob/living/human) && owner.mob == body && owner.eye == body && !owner.adminobs && isturf(body.loc)
+
+/datum/los_context/proc/viewport()
+	if (!owner)
+		return null
+	var/list/dimensions = getviewsize(owner.view)
+	if (!dimensions || dimensions.len != 2 || dimensions[1] < 1 || dimensions[2] < 1 || dimensions[1] > 63 || dimensions[2] > 63)
+		return null
+	return dimensions
+
 /datum/los_context/proc/policy_key()
-	if (retired || !owner || owner.los_context != src || owner.mob != body || !body || body.type != /mob/living/human)
+	if (!eligible() || !viewport() || mutations.len || (persistence_active_operation && persistence_active_operation.kind != "save") || body.stat || is_blind(body))
 		return null
-	if (mutations.len || persistence_active_operation || owner.eye != body || owner.adminobs || !isturf(body.loc) || body.stat || is_blind(body))
-		return null
-	if (body.step_x || body.step_y || world.maxx != 21 || world.maxy != 21 || world.maxz != 1)
-		return null
-	if (owner.view != 7 && owner.view != "15x15")
-		return null
-	if (!config || !global_hud || !global_hud.fov || !body.HUDtech || !body.HUDtech["fov"])
-		return null
-	var/obj/screen/fov/F = body.HUDtech["fov"]
-	if (!istype(F, /obj/screen/fov) || !istype(global_hud.fov, /obj/screen/fov))
-		return null
-	// Preserve the existing shared mode; this commit does not make it per-client.
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z]|[owner.view]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|\ref[F]|[F.alpha]|[global_hud.fov.icon_state]|[config.disable_fov]|\ref[body.pulling]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z],[body.step_x],[body.step_y]|[owner.view]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
 /datum/los_context/proc/capture()
 	var/key = policy_key()
 	if (!key)
 		return null
+	var/list/dimensions = viewport()
 	var/datum/los_snapshot/S = new
 	S.revision = revision
 	S.policy = key
-	S.eye_x = body.x
-	S.eye_y = body.y
-	var/visits = 0
-	for (var/cx = max(1, body.x-8), cx <= min(21, body.x+8), cx++)
-		for (var/cy = max(1, body.y-8), cy <= min(21, body.y+8), cy++)
-			var/turf/T = locate(cx, cy, 1)
-			if (!T || (T.type != /turf/floor/plating && T.type != /turf/wall))
-				return null
+	S.eye_x = body.x + body.step_x / 32
+	S.eye_y = body.y + body.step_y / 32
+	S.eye_z = body.z
+	S.radius_x = round(dimensions[1] / 2)
+	S.radius_y = round(dimensions[2] / 2)
+	// One extra tile covers fractional eye movement and edge blockers. Ordinary
+	// clutter never invalidates the scene; opacity alone owns blocking geometry.
+	for (var/cx = max(1, body.x-S.radius_x-1), cx <= min(world.maxx, body.x+S.radius_x+1), cx++)
+		for (var/cy = max(1, body.y-S.radius_y-1), cy <= min(world.maxy, body.y+S.radius_y+1), cy++)
+			var/turf/T = locate(cx, cy, S.eye_z)
+			if (!T)
+				continue
 			var/datum/los_cell/B = new
-			B.cell_x = cx
-			B.cell_y = cy
+			B.cell_x = cx - S.eye_x
+			B.cell_y = cy - S.eye_y
 			if (T.opacity)
 				B.surface_owner = T
 				B.owners++
 			for (var/atom/A in T)
-				if (++visits > 1024)
-					return null
-				if (A.type == /atom/movable/lighting_overlay && !A.opacity)
-					continue
-				if (CIV13_ROOT_TREE_PRESENTATION && A.type == /atom/movable/lighting_fullbright && !A.opacity)
-					continue
-				if (A.type != /obj/structure/simple_door && A.type != /mob/living/human && !root_tree_admitted(A))
-					return null
-				if (A.opacity)
+				if (A.opacity && A != body)
+					if (ismovable(A))
+						var/atom/movable/AM = A
+						if (AM.step_x || AM.step_y)
+							var/datum/los_cell/moving_blocker = new
+							moving_blocker.cell_x = B.cell_x + AM.step_x / 32
+							moving_blocker.cell_y = B.cell_y + AM.step_y / 32
+							moving_blocker.surface_owner = AM
+							moving_blocker.owners = 1
+							S.blockers += moving_blocker
+							continue
 					B.surface_owner = A
 					B.owners++
 			if (B.owners)
-				if (cx == body.x && cy == body.y)
-					return null
 				S.blockers += B
 	if (S.revision != revision || S.policy != policy_key())
 		return null
 	return S
 
-// This is a synchronous read decision. No snapshot is a reusable action lease.
-// Fresh raw geometry on EACH call covers unhooked direct opacity writers here.
-/datum/los_context/proc/decision(mob/user, atom/target, operation)
-	if (operation != "hover" && operation != "examine")
-		return LOS_DENY
-	if (retired || !owner || !body || body.type != /mob/living/human || owner.los_context != src || owner.mob != user || user != body || user.client != owner || mutations.len)
-		return LOS_DENY
-	if (!target || target.gcDestroyed || target.gc_destroyed)
-		return LOS_DENY
-	if (ismovable(target))
-		var/atom/movable/I = target
-		if (operation == "hover" && I.loc == body && I.screen_loc && (I in owner.screen))
-			return LOS_OWN_SLOT
-	var/datum/los_snapshot/S = capture()
-	if (!S)
+// Shared synchronous geometric decision for a renderer's single captured pass.
+// Coordinates are eye-relative, keeping products small on large Gaia maps.
+/datum/los_context/proc/decision_snapshot(atom/target, datum/los_snapshot/S, operation = "visual")
+	if (!S || !target || target.gcDestroyed || target.gc_destroyed || S.revision != revision || S.policy != policy_key())
 		return LOS_DENY
 	if (target == body)
 		return LOS_SELF
-	if (target.type != /turf/floor/plating && target.type != /turf/wall && target.type != /obj/structure/simple_door && target.type != /mob/living/human && !root_tree_admitted(target))
+	if ((!isturf(target) && !isturf(target.loc)) || target.z != S.eye_z || !target.alpha || target.invisibility > body.see_invisible)
 		return LOS_DENY
-	if ((!isturf(target) && !isturf(target.loc)) || target.z != body.z || !target.alpha || target.invisibility > body.see_invisible)
-		return LOS_DENY
+	var/tx = target.x - S.eye_x
+	var/ty = target.y - S.eye_y
 	if (ismovable(target))
 		var/atom/movable/moving_target = target
-		if (moving_target.step_x || moving_target.step_y)
-			return LOS_DENY
-	if (abs(target.x-S.eye_x) > 7 || abs(target.y-S.eye_y) > 7 || !(target in view(owner.view, owner.eye)))
+		tx += moving_target.step_x / 32
+		ty += moving_target.step_y / 32
+	if (abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5)
 		return LOS_DENY
-	var/obj/screen/fov/F = body.HUDtech["fov"]
-	if (target.type == /mob/living/human && !config.disable_fov && F.alpha && !body.resting && !body.lying && !body.prone && get_dist(body, target) > 1 && body.pulling != target)
-		if (target.InCone(body, OPPOSITE_DIR(body.dir)))
+	// Preserve the existing directional human concealment policy, when active.
+	if (istype(target, /mob/living/human) && config && !config.disable_fov && body.HUDtech && !body.resting && !body.lying && !body.prone && get_dist(body, target) > 1 && body.pulling != target)
+		var/obj/screen/fov/F = body.HUDtech["fov"]
+		if (F && F.alpha && target.InCone(body, OPPOSITE_DIR(body.dir)))
 			return LOS_DENY
 	var/result = LOS_WORLD
 	if (target.opacity)
-		if (target.type != /turf/wall && target.type != /obj/structure/simple_door && !root_tree_admitted(target))
-			return LOS_DENY
 		var/datum/los_cell/first
 		var/list/best
 		var/tied = FALSE
 		for (var/datum/los_cell/B in S.blockers)
-			var/list/hit = los_ray_entry(S.eye_x, S.eye_y, target.x, target.y, B.cell_x, B.cell_y)
+			var/list/hit = los_ray_entry(0, 0, tx, ty, B.cell_x, B.cell_y)
 			if (!hit)
 				continue
 			if (!best || hit[1]*best[2] < best[1]*hit[2])
@@ -292,16 +292,42 @@ var/global/list/los_active_contexts
 			return LOS_DENY
 		result = LOS_SURFACE
 	else
+		var/footprint_key = "[tx],[ty]"
+		var/cached = S.clear_footprints[footprint_key]
+		if (!isnull(cached))
+			return cached
 		for (var/datum/los_cell/B in S.blockers)
-			if (los_footprint_hits_cell(S.eye_x, S.eye_y, target.x, target.y, 0.25, B.cell_x, B.cell_y))
+			if (los_footprint_hits_cell(0, 0, tx, ty, 0.25, B.cell_x, B.cell_y))
+				S.clear_footprints[footprint_key] = LOS_DENY
 				return LOS_DENY
-	if (S.revision != revision || S.policy != policy_key())
-		return LOS_DENY
+		S.clear_footprints[footprint_key] = LOS_WORLD
 	return result
+
+// Fresh raw geometry on EACH information read covers direct opacity writers.
+/datum/los_context/proc/decision(mob/user, atom/target, operation)
+	if (operation != "hover" && operation != "examine")
+		return LOS_DENY
+	if (retired || !owner || !body || owner.los_context != src || owner.mob != user || user != body || user.client != owner)
+		return LOS_DENY
+	if (!target || target.gcDestroyed || target.gc_destroyed)
+		return LOS_DENY
+	if (target == body)
+		return LOS_SELF
+	if (ismovable(target))
+		var/atom/movable/I = target
+		if (I.loc == body && (operation == "examine" || (I.screen_loc && (I in owner.screen))))
+			return LOS_OWN_SLOT
+	var/datum/los_snapshot/S = capture()
+	return decision_snapshot(target, S, operation)
 
 /proc/los_read_allowed(mob/user, atom/target, operation)
 	if (!CIV13_GEOMETRIC_LOS_CORE)
 		return TRUE
-	if (!user || !user.client || !user.client.los_context)
-		return FALSE
-	return user.client.los_context.decision(user, target, operation) != LOS_DENY
+	if (!user || !user.client)
+		return TRUE
+	var/datum/los_context/C = user.client.los_context
+	// Cameras, observers and non-human mobs retain their existing information
+	// checks. An eligible human with a temporarily unavailable snapshot does not.
+	if (!C || !C.eligible())
+		return TRUE
+	return C.decision(user, target, operation) != LOS_DENY

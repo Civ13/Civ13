@@ -3,7 +3,7 @@
 Only five arithmetic helpers and three mutation methods use the constrained
 projection below. Native view, client events, persistence and pixels are NOT
 evaluated. Integer/half/quarter inputs stay exactly representable in float32
-on the admitted 21x21 slice. The independent oracle uses rational convex hulls.
+in the historical 21x21 arithmetic cases. The independent oracle uses rational convex hulls.
 """
 from fractions import Fraction as Q
 import os
@@ -157,7 +157,7 @@ def expression(text, method=False):
         text = re.sub(r'\b'+a+r'\b', b, text)
     text = re.sub(r'\blist\(', 'dm_list(', text)
     if method:
-        for name in ['revision','retired','mutations']:
+        for name in ['revision','retired','mutations','owner']:
             text = re.sub(r'(?<!\.)\b'+name+r'\b', 'self.'+name, text)
         for name in ['retire','advance_revision']:
             text = re.sub(r'(?<!\.)\b'+name+r'\(', 'self.'+name+'(', text)
@@ -266,7 +266,7 @@ class Mutation:
 
 class Context:
     def __init__(self):
-        self.retired=False; self.revision=1; self.mutations=[]
+        self.retired=False; self.revision=1; self.mutations=[]; self.owner=None
 
     def retire(self):
         self.retired=True
@@ -454,18 +454,15 @@ class SourceBoundaries(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'base is missing or inaccessible'):
                 event_base()
 
-    def test_default_off_and_no_activation_callers(self):
+    def test_default_enabled_with_explicit_opt_out(self):
         core = CORE.read_text()
-        self.assertTrue(core_disabled(core))
-        self.assertFalse(core_disabled(core.replace('#define CIV13_GEOMETRIC_LOS_CORE 0', '#define CIV13_GEOMETRIC_LOS_CORE 1')))
-        self.assertFalse(core_disabled(core + '\n#define CIV13_GEOMETRIC_LOS_CORE 1\n'))
+        self.assertIn('#ifndef CIV13_GEOMETRIC_LOS_CORE\n#define CIV13_GEOMETRIC_LOS_CORE 1', core)
+        disabled = core.replace('#define CIV13_GEOMETRIC_LOS_CORE 1', '#define CIV13_GEOMETRIC_LOS_CORE 0')
+        self.assertTrue(core_disabled(disabled))
+        self.assertFalse(core_disabled(core))
+        self.assertFalse(core_disabled(disabled + '\n#define CIV13_GEOMETRIC_LOS_CORE 1\n'))
         directive = r'(?m)^\s*#\s*(?:define|undef)\s+CIV13_GEOMETRIC_LOS_CORE\b'
         self.assertNotRegex((ROOT/'civ13.dme').read_text(), directive)
-        for path in (ROOT/'code').rglob('*.dm'):
-            if path!=CORE:
-                content = path.read_text(errors='replace')
-                self.assertNotRegex(content, r'new\s*/datum/los_context')
-                self.assertNotRegex(content, directive)
 
     def test_guards_before_information(self):
         hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text()
@@ -477,8 +474,9 @@ class SourceBoundaries(unittest.TestCase):
     def test_operation_type_cap_and_persistence_boundaries(self):
         source=CORE.read_text(); decision=fragment(source,'/datum/los_context/proc/decision(')
         self.assertLess(decision.index('operation != "hover" && operation != "examine"'),decision.index('capture()'))
-        self.assertNotIn('istype(',fragment(source,'/datum/los_context/proc/capture('))
-        for token in ['world.maxx != 21','world.maxz != 1','++visits > 1024','los_active_contexts.len >= 2','first.owners != 1','first.surface_owner != target']:
+        for token in ['world.maxx != 21','world.maxz != 1','++visits > 1024','los_active_contexts.len >= 2']:
+            self.assertNotIn(token,source)
+        for token in ['first.owners != 1','first.surface_owner != target','dimensions[1] > 63','dimensions[2] > 63']:
             self.assertIn(token,source)
         for name in ['los_cell','los_snapshot','los_mutation','los_context']:
             self.assertIn('should_save = FALSE',fragment(source,'/datum/'+name))

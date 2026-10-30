@@ -1,56 +1,35 @@
-// Explicit test admission only. No map, login, input or timer constructs this.
+// Per-client root lighting. The scheduler owns refresh; no private polling loop.
 /client/var/tmp/datum/root_tree_presenter/root_tree_presenter
 var/global/list/root_tree_presenters
 
-// Native appearance getters can return a non-null identity matrix. Test its
-// values rather than its presence; even a small real transform is unsupported.
 /proc/root_tree_identity_transform(matrix/M)
-	if(isnull(M))
-		return TRUE
-	if(!istype(M, /matrix))
-		return FALSE
-	return M.a == 1 && M.b == 0 && M.c == 0 && M.d == 0 && M.e == 1 && M.f == 0
+	return isnull(M) || (istype(M, /matrix) && M.a == 1 && M.b == 0 && M.c == 0 && M.d == 0 && M.e == 1 && M.f == 0)
 
-/datum/los_context/proc/root_tree_admitted(obj/structure/wild/tree/live_tree/A)
-	if(!CIV13_ROOT_TREE_PRESENTATION || !A || A.type != /obj/structure/wild/tree/live_tree || !(A in root_trees))
-		return FALSE
-	if(A.gcDestroyed || A.gc_destroyed || !isturf(A.loc) || A.loc.type != /turf/floor/plating || !A.anchored || !A.opacity)
-		return FALSE
-	if(A.plane != GAME_PLANE || A.layer != 5.11 || A.pixel_w || A.pixel_z || (A.appearance_flags & PLANE_MASTER))
-		return FALSE
-	if(A.step_x || A.step_y || abs(A.pixel_x) > 32 || abs(A.pixel_y) > 32 || A.bound_x || A.bound_y || A.bound_width != 32 || A.bound_height != 32 || !root_tree_identity_transform(A.transform) || length(A.filters) || length(A.overlays) || length(A.underlays) || length(A.vis_contents) || A.render_source || A.render_target || A.maptext)
-		return FALSE
-	return A.icon in list('icons/obj/flora/bigtrees.dmi', 'icons/obj/flora/bigtrees_winter.dmi', 'icons/obj/flora/deadtrees.dmi', 'icons/obj/flora/deadtrees_winter.dmi')
+/proc/root_tree_family(atom/A)
+	return istype(A, /obj/structure/wild/tree) || istype(A, /obj/structure/wild/jungle) || istype(A, /obj/structure/wild/palm)
 
-/datum/los_context/proc/admit_root_tree(obj/structure/wild/tree/live_tree/T)
-	if(!CIV13_ROOT_TREE_PRESENTATION || !policy_key() || !T || root_trees.len >= 8 || (T in root_trees))
-		return FALSE
-	var/datum/los_mutation/M = begin_change()
-	if(!M)
-		return FALSE
-	root_trees += T
+/datum/los_context/proc/root_tree_admitted(atom/A)
+	return CIV13_ROOT_TREE_PRESENTATION && root_tree_family(A) && !A.gcDestroyed && !A.gc_destroyed && isturf(A.loc) && A.plane == GAME_PLANE && A.layer == 5.11 && abs(A.pixel_x) <= 32 && abs(A.pixel_y) <= 32 && !A.pixel_w && !A.pixel_z && root_tree_identity_transform(A.transform) && !length(A.overlays) && !length(A.underlays) && !length(A.filters) && !length(A.vis_contents) && !A.render_source && !A.render_target && !A.maptext
+
+// Kept for isolated callers; production discovers roots in the current viewport.
+/datum/los_context/proc/admit_root_tree(atom/T)
 	if(!root_tree_admitted(T))
-		root_trees -= T
-		finish_change(M)
 		return FALSE
-	return finish_change(M)
+	root_trees |= T
+	return TRUE
 
-/obj/screen/root_tree_shutter
-	icon = 'icons/turf/areas.dmi'
-	icon_state = "black"
-	screen_loc = "WEST,SOUTH to EAST,NORTH"
-	plane = ROOT_WEATHER_PLANE
-	layer = 100
+// These are deliberately not plane_master subtypes: only a presenter owns them.
+/obj/screen/root_scene_master
+	screen_loc = "CENTER"
+	appearance_flags = PLANE_MASTER | NO_CLIENT_COLOR | RESET_TRANSFORM | RESET_COLOR | RESET_ALPHA
+	blend_mode = BLEND_OVERLAY
 	mouse_opacity = 0
 	should_save = FALSE
 
-/obj/screen/root_tree_weather
-	// A render_source is bottom-left anchored, unlike a plane master itself.
+/obj/screen/root_scene_relay
 	screen_loc = "WEST,SOUTH"
-	plane = ROOT_WEATHER_PLANE
-	blend_mode = BLEND_OVERLAY
+	appearance_flags = NO_CLIENT_COLOR | KEEP_TOGETHER
 	mouse_opacity = 0
-	appearance_flags = NO_CLIENT_COLOR
 	should_save = FALSE
 
 /datum/root_tree_presenter
@@ -59,164 +38,336 @@ var/global/list/root_tree_presenters
 	var/datum/los_context/context
 	var/list/images = list()
 	var/list/owned_images = list()
-	var/obj/screen/plane_master/weather_plane
-	var/obj/screen/root_tree_weather/weather_copy
-	var/obj/screen/root_tree_shutter/shutter
-	var/weather_target
+	var/list/frame_keys = list()
+	var/list/source_appearances = list()
+	var/list/frames = list()
+	var/list/light_keys = list()
+	var/list/light_values = list()
+	var/list/screens = list()
+	var/list/leased_planes = list()
+	var/list/lease_targets = list()
+	var/obj/screen/plane_master/game_plane
+	var/list/original_filters
+	var/obj/screen/root_scene_master/scene_plane
 	var/retired = FALSE
-	var/driver_generation = 0
+	var/scene_active = FALSE
+	var/fallback_reason
+	var/fallback_count = 0
 
 /datum/root_tree_presenter/New(client/C, datum/los_context/V)
 	..()
-	if(!CIV13_ROOT_TREE_PRESENTATION || !CIV13_GEOMETRIC_LOS_CORE || !LIGHTING_COMPOSITION_V2 || !C || !V || V.owner != C || C.los_context != V || !V.policy_key() || !C.mob.hud_used)
-		retired = TRUE
-		return
-	var/obj/screen/plane_master/P = C.mob.hud_used.plane_masters["[LIGHTING_PLANE]"]
-	var/obj/screen/plane_master/G = C.mob.hud_used.plane_masters["[GAME_PLANE]"]
-	// Cross-plane scene filters cannot be copied per tree without changing
-	// their grouping. Refuse them until that composition has its own proof.
-	if(!G || length(G.filters) || G.color || !root_tree_identity_transform(G.transform) || G.alpha != 255)
-		retired = TRUE
-		return
-	if(!P || !(P in C.screen) || P.blend_mode != BLEND_OVERLAY || P.render_target || C.root_tree_presenter)
+	if(!CIV13_ROOT_TREE_PRESENTATION || !CIV13_GEOMETRIC_LOS_CORE || !LIGHTING_COMPOSITION_V2 || !C || !V || V.owner != C || C.root_tree_presenter || !C.mob || !C.mob.hud_used)
 		retired = TRUE
 		return
 	owner = C
 	context = V
-	weather_plane = P
-	weather_target = "*root-weather-\ref[src]"
-	weather_plane.render_target = weather_target
-	weather_copy = new
-	weather_copy.render_source = weather_target
-	shutter = new
-	owner.screen += weather_copy
-	owner.screen += shutter
 	owner.root_tree_presenter = src
 	if(!root_tree_presenters)
 		root_tree_presenters = list()
 	root_tree_presenters += src
-	var/generation = ++driver_generation
-	spawn(1)
-		drive(generation)
 
-/datum/root_tree_presenter/proc/drive(generation)
-	while(!retired && owner && owner.root_tree_presenter == src && driver_generation == generation)
-		refresh()
-		sleep(1)
+/datum/root_tree_presenter/proc/setup_scene()
+	if(scene_active)
+		return TRUE
+	var/obj/screen/plane_master/G = owner.mob.hud_used.plane_masters["[GAME_PLANE]"]
+	var/obj/screen/plane_master/L = owner.mob.hud_used.plane_masters["[LIGHTING_MASK_PLANE]"]
+	var/obj/screen/plane_master/W = owner.mob.hud_used.plane_masters["[LIGHTING_PLANE]"]
+	if(!G || !L || !W || G.render_target || L.render_target || W.render_target || G.color || G.alpha != 255 || !root_tree_identity_transform(G.transform))
+		return FALSE
+	game_plane = G
+	original_filters = length(G.filters) ? G.filters.Copy() : list()
+	var/game_target = lease(G, "game")
+	var/mask_target = lease(L, "mask")
+	var/weather_target = lease(W, "weather")
+	var/obj/screen/root_scene_master/R = make_plane(ROOF_PLANE)
+	var/roof_target = lease(R, "roof")
+	var/obj/screen/root_scene_master/T = make_plane(ROOT_TREE_PLANE)
+	var/tree_target = lease(T, "tree")
+	scene_plane = make_plane(ROOT_SCENE_PLANE)
+	// Apply the original scene filter ONCE to the game and tree union, not once
+	// per tree. The shared shadow now follows root lighting (native acceptance).
+	scene_plane.filters = original_filters.Copy()
+	G.filters = list()
+	make_lit_relay(game_target, mask_target, ROOT_SCENE_PLANE, 1)
+	make_relay(tree_target, ROOT_SCENE_PLANE, 2)
+	make_lit_relay(roof_target, mask_target, ROOT_ROOF_PLANE, 1)
+	make_relay(weather_target, ROOT_WEATHER_PLANE, 1)
+	// Keep floor/underfloor lighting even though the mask source is hidden.
+	var/obj/screen/root_scene_relay/mask_copy = make_relay(mask_target, ROOT_FLOOR_LIGHT_PLANE, 1)
+	mask_copy.blend_mode = BLEND_MULTIPLY
+	scene_active = TRUE
+	return TRUE
 
-// Blank overrides retain native target identity while preventing the original
-// overhanging sprite from reappearing on a failed or hidden-root decision.
-/datum/root_tree_presenter/proc/invalidate()
-	if(retired || !owner)
-		return
-	owner.screen |= shutter
-	for(var/image/I in owned_images)
-		I.icon = null
-		I.mouse_opacity = 0
+/datum/root_tree_presenter/proc/lease(obj/screen/P, suffix)
+	var/target = "*root-[suffix]-\ref[src]"
+	P.render_target = target
+	leased_planes += P
+	lease_targets[P] = target
+	return target
+
+/datum/root_tree_presenter/proc/make_plane(number)
+	var/obj/screen/root_scene_master/P = new
+	P.plane = number
+	screens += P
+	owner.screen += P
+	return P
+
+/datum/root_tree_presenter/proc/make_relay(source, number, order)
+	var/obj/screen/root_scene_relay/R = new
+	R.render_source = source
+	R.plane = number
+	R.layer = order
+	screens += R
+	owner.screen += R
+	return R
+
+/datum/root_tree_presenter/proc/make_lit_relay(source, mask_source, number, order)
+	var/obj/screen/root_scene_relay/R = make_relay(source, number, order)
+	var/image/M = image()
+	M.render_source = mask_source
+	M.blend_mode = BLEND_MULTIPLY
+	M.appearance_flags = RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	R.overlays += M
+	// Multiplication has viewport extent. Restore the original source alpha so
+	// empty pixels do not black out the floor or other composited planes.
+	R.filters += filter(type="alpha", render_source=source)
+	return R
 
 /datum/root_tree_presenter/proc/planes_admitted()
-	if(!owner || !owner.mob || !owner.mob.hud_used || !weather_plane || !weather_copy)
+	if(!scene_active)
+		return !retired && owner && !leased_planes.len && !screens.len
+	if(retired || !owner || !owner.mob || !owner.mob.hud_used || owner.mob.hud_used.plane_masters["[GAME_PLANE]"] != game_plane || length(game_plane.filters) || game_plane.color || game_plane.alpha != 255 || !root_tree_identity_transform(game_plane.transform))
 		return FALSE
-	var/obj/screen/plane_master/P = owner.mob.hud_used.plane_masters["[LIGHTING_PLANE]"]
-	var/obj/screen/plane_master/G = owner.mob.hud_used.plane_masters["[GAME_PLANE]"]
-	return P == weather_plane && (P in owner.screen) && P.blend_mode == BLEND_OVERLAY && P.render_target == weather_target && weather_copy.render_source == weather_target && G && (G in owner.screen) && !length(G.filters) && !G.color && root_tree_identity_transform(G.transform) && G.alpha == 255
+	for(var/obj/screen/P in leased_planes)
+		if(!(P in owner.screen) || P.render_target != lease_targets[P])
+			return FALSE
+	for(var/obj/screen/P in screens)
+		if(!(P in owner.screen))
+			return FALSE
+	return TRUE
 
-/datum/root_tree_presenter/proc/refresh()
-	if(!CIV13_ROOT_TREE_PRESENTATION || retired || !owner)
+/datum/root_tree_presenter/proc/invalidate(atom/changed)
+	if(retired || !owner)
+		return
+	owner.los_dirty = TRUE
+	// Hide only owned tree content while a mutation is unsettled; never shutter
+	// the viewport, inventory, weather or HUD.
+	for(var/image/I in owned_images)
+		I.icon = null
+		I.overlays = null
+		I.underlays = null
+		I.maptext = ""
+		I.mouse_opacity = 0
+
+/datum/root_tree_presenter/proc/refresh(datum/los_snapshot/S)
+	if(retired || !owner || owner.root_tree_presenter != src || owner.los_context != context)
 		return FALSE
-	invalidate()
-	if(owner.root_tree_presenter != src || owner.los_context != context || !context || context.owner != owner || !context.policy_key() || !planes_admitted())
+	if(!S)
+		S = context.capture()
+	if(!S)
+		invalidate()
 		return FALSE
-	if(!context.capture())
-		return FALSE
-	var/key = context.policy_key()
-	for(var/image/old in owned_images.Copy())
-		if(!old.loc)
-			owner.images -= old
-			owned_images -= old
-	var/list/retained = list()
-	for(var/obj/structure/wild/tree/live_tree/T in context.root_trees)
-		if(images[T])
-			retained[T] = images[T]
-	images = retained
-	for(var/obj/structure/wild/tree/live_tree/T in context.root_trees)
+	var/reason = composition_conflict(S)
+	if(reason)
+		release_owned_scene()
+		if(fallback_reason != reason)
+			fallback_count = min(fallback_count + 1, 1000000)
+		fallback_reason = reason
+		return TRUE
+	if(!setup_scene())
+		fallback_reason = "scene lease unavailable"
+		return TRUE
+	fallback_reason = null
+	var/list/current = list()
+	var/settled = TRUE
+	// Existing flora sheets are at most 160px with <=32px offsets. Six cells
+	// cover that overhang; geometry still judges the root.
+	for(var/obj/structure/wild/T in range(max(S.radius_x, S.radius_y) + 6, context.body))
+		if(!context.root_tree_admitted(T))
+			continue
+		current += T
 		var/image/I = images[T]
 		if(!I)
 			I = image(null, T)
 			I.override = TRUE
-			I.mouse_opacity = 0
 			images[T] = I
 			owned_images += I
 			owner.images += I
-		if(!context.root_tree_admitted(T) || context.decision(context.body, T, "hover") == LOS_DENY || !(T.loc in view(owner.view, owner.eye)))
+		if(context.decision_snapshot(T, S, "visual") == LOS_DENY)
+			I.icon = null
+			I.mouse_opacity = 0
 			continue
-		var/turf/root = T.loc
-		var/rgb = root_light_rgb(root, context.body)
+		var/rgb = cached_light(T)
 		if(!rgb)
+			I.icon = null
+			I.mouse_opacity = 0
+			settled = FALSE
 			continue
-		var/icon/frame = icon(T.icon, T.icon_state, T.dir, 1)
-		if(frame.Width() != 64 || frame.Height() != 64)
+		var/frame_key = "[T.icon]|[T.icon_state]|[T.dir]|[json_encode(T.color)]|[rgb]"
+		var/icon/frame = frames[T]
+		if(!frame || frame_keys[T] != frame_key)
+			// Omit frame=1: preserve every animation frame and native timing.
+			frame = icon(T.icon, T.icon_state, T.dir)
+			if(islist(T.color))
+				var/list/tint = T.color
+				frame.MapColors(arglist(tint))
+			else if(T.color)
+				frame.Blend(T.color, ICON_MULTIPLY)
+			frame.Blend(rgb, ICON_MULTIPLY)
+			frames[T] = frame
+			frame_keys[T] = frame_key
+		if(I.icon != frame || source_appearances[T] != T.appearance)
+			root_tree_set_frame(I, T, frame)
+			source_appearances[T] = T.appearance
+	for(var/atom/old in images.Copy())
+		if(old in current)
 			continue
-		if(islist(T.color))
-			var/list/tint = T.color
-			frame.MapColors(arglist(tint))
-		else if(T.color)
-			frame.Blend(T.color, ICON_MULTIPLY)
-		frame.Blend(rgb, ICON_MULTIPLY)
-		root_tree_set_frame(I, T, frame)
-	if(key != context.policy_key())
+		var/image/I = images[old]
+		owner.images -= I
+		owned_images -= I
+		images -= old
+		frames -= old
+		frame_keys -= old
+		source_appearances -= old
+		light_keys -= old
+		light_values -= old
+	if(S.policy != context.policy_key() || S.revision != context.revision)
 		invalidate()
 		return FALSE
-	owner.screen -= shutter
-	return TRUE
+	if(!settled)
+		owner.los_dirty = TRUE
+	return settled
 
-/proc/root_tree_set_frame(image/I, obj/structure/wild/tree/live_tree/T, icon/frame)
+/datum/root_tree_presenter/proc/cached_light(obj/structure/wild/T)
+	var/turf/root = T.loc
+	if(context.body.see_invisible >= INVISIBILITY_LEVEL_TWO || (!root.lighting_overlay && root.needs_fullbright_coverage()))
+		return "#ffffff"
+	var/list/sample = root_light_mask_snapshot(root)
+	if(!sample)
+		return null
+	var/atom/movable/lighting_overlay/L = root.lighting_overlay
+	var/key = "\ref[root]|[L.icon]|[L.icon_state]|[L.dir]|[json_encode(sample)]"
+	if(light_keys[T] == key)
+		return light_values[T]
+	var/rgb = root_light_rgb(root, context.body)
+	if(rgb)
+		light_keys[T] = key
+		light_values[T] = rgb
+	return rgb
+
+/proc/root_tree_set_frame(image/I, obj/structure/wild/T, icon/frame)
 	I.appearance = T.appearance
 	I.loc = T
-	// Attached images already follow their parent's visual origin. Re-copying
-	// its offsets adds them twice (the native -16px counterexample).
 	I.pixel_x = 0
 	I.pixel_y = 0
 	I.icon = frame
 	I.icon_state = ""
 	I.color = null
 	I.plane = ROOT_TREE_PLANE
-	// Tint is baked; copied alpha and identity transform must apply only once.
 	I.appearance_flags |= TILE_BOUND | RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
 	I.override = TRUE
 	I.mouse_opacity = T.mouse_opacity
 
+// A separate root pass cannot preserve arbitrary interleaving GAME layers.
+// Keep the complete native scene whenever uncertain; never borrow/remove an
+// additive client image owned by roof, vehicle, or another gameplay system.
+/proc/root_tree_foreground_appearance(A, inherited_plane, inherited_layer, depth = 0, list/budget)
+	if(!A)
+		return FALSE
+	if(!budget)
+		budget = list(4096)
+	if(budget[1] <= 0)
+		return TRUE
+	budget[1]--
+	if(depth >= 8)
+		return TRUE
+	var/p = A:plane == FLOAT_PLANE ? inherited_plane : A:plane
+	var/l = A:layer < 0 ? inherited_layer : A:layer
+	if(p == GAME_PLANE && l >= 5.11 && (A:icon || A:maptext || A:render_source))
+		return TRUE
+	for(var/O in A:overlays)
+		if(root_tree_foreground_appearance(O, p, l, depth + 1, budget))
+			return TRUE
+	for(var/U in A:underlays)
+		if(root_tree_foreground_appearance(U, p, l, depth + 1, budget))
+			return TRUE
+	return FALSE
+
+/datum/root_tree_presenter/proc/composition_conflict(datum/los_snapshot/S)
+	if(length(owner.images) > 2048)
+		return "client image audit budget exceeded"
+	var/list/budget = list(4096)
+	var/visits = 0
+	var/radius = max(S.radius_x, S.radius_y) + 6
+	for(var/atom/A in range(radius, context.body))
+		if(++visits > 4096)
+			return "scene atom audit budget exceeded"
+		if(context.root_tree_admitted(A))
+			continue
+		if(root_tree_foreground_appearance(A, A.plane, A.layer, 0, budget))
+			return budget[1] <= 0 ? "appearance audit budget exceeded" : "native foreground or mixed-layer appearance"
+		// Dynamic render/vis grouping cannot be assigned a reliable footprint.
+		if(A.plane == GAME_PLANE && (length(A.vis_contents) || A.render_source || A.render_target || length(A.filters)))
+			return "unbounded game appearance"
+	for(var/image/I in owner.images)
+		if(I in owned_images)
+			continue
+		if(owner.los_presenter && (I in owner.los_presenter.owned_images))
+			continue
+		var/atom/anchor = I.loc
+		var/turf/T = get_turf(anchor)
+		if(T && (T.z != context.body.z || get_dist(T, context.body) > radius))
+			continue
+		var/p = anchor ? anchor.plane : GAME_PLANE
+		var/l = anchor ? anchor.layer : 0
+		if(root_tree_foreground_appearance(I, p, l, 0, budget))
+			return budget[1] <= 0 ? "appearance audit budget exceeded" : "client-owned foreground image"
+	return null
+
+/datum/root_tree_presenter/proc/owns_tree(atom/A)
+	return scene_active && !retired && !!images[A]
+
+/datum/root_tree_presenter/proc/release_owned_scene()
+	if(owner)
+		owner.images -= owned_images
+		owner.screen -= screens
+	for(var/obj/screen/P in leased_planes)
+		if(P.render_target == lease_targets[P])
+			P.render_target = null
+	if(game_plane && !length(game_plane.filters))
+		game_plane.filters = original_filters
+	for(var/obj/screen/P in screens)
+		qdel(P)
+	images.Cut()
+	owned_images.Cut()
+	frames.Cut()
+	frame_keys.Cut()
+	source_appearances.Cut()
+	light_keys.Cut()
+	light_values.Cut()
+	screens.Cut()
+	leased_planes.Cut()
+	lease_targets.Cut()
+	game_plane = null
+	scene_plane = null
+	original_filters = null
+	scene_active = FALSE
+
 /datum/root_tree_presenter/proc/retire()
 	if(retired)
 		return
+	release_owned_scene()
 	retired = TRUE
-	driver_generation++
-	if(owner)
-		owner.images -= owned_images
-		owner.screen -= weather_copy
-		owner.screen -= shutter
-		if(owner.root_tree_presenter == src)
-			owner.root_tree_presenter = null
-	if(weather_plane && weather_plane.render_target == weather_target)
-		weather_plane.render_target = null
+	if(owner && owner.root_tree_presenter == src)
+		owner.root_tree_presenter = null
 	if(root_tree_presenters)
 		root_tree_presenters -= src
-		if(!root_tree_presenters.len)
-			root_tree_presenters = null
-	images.Cut()
-	owned_images.Cut()
-	qdel(weather_copy)
-	qdel(shutter)
 	owner = null
 	context = null
-	weather_plane = null
 
 /datum/root_tree_presenter/Destroy()
 	retire()
 	return ..()
 
 /proc/root_tree_invalidate(atom/changed)
-	if(!CIV13_ROOT_TREE_PRESENTATION || !root_tree_presenters)
-		return
-	for(var/datum/root_tree_presenter/P in root_tree_presenters)
-		P.invalidate()
+	los_invalidate(changed)

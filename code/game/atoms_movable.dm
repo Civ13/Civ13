@@ -185,6 +185,9 @@
 	root_tree_invalidate(src)
 	#endif
 	loc = destination
+	#if CIV13_ROOT_TREE_PRESENTATION
+	los_invalidate(src)
+	#endif
 
 	if (origin)
 		origin.Exited(src, destination)
@@ -213,6 +216,9 @@
 	root_tree_invalidate(src)
 	#endif
 	loc = destination
+	#if CIV13_ROOT_TREE_PRESENTATION
+	los_invalidate(src)
+	#endif
 	return TRUE
 
 /atom/movable/proc/persistence_set_z(target_z)

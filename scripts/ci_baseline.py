@@ -82,7 +82,9 @@ SUITES = {
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
         'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
-    'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
+    'los_context': {'files': ('tests/los_context/test_offline.py',
+                              'tests/los_context/test_production.py',
+                              'tests/test_geometric_presentation.py'), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
         'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm')},

@@ -1,3 +1,84 @@
+# Production root-tree presentation candidate - 2026-10-30
+
+The current source replaces the earlier explicitly registered eight-root fixture
+with per-client discovery of ordinary Gaia `/wild/tree`, `/wild/jungle`,
+`/wild/palm` families at the ordinary tree layer on actual world turfs. Compilation
+and native/client acceptance of this candidate must be reported separately.
+The historical fixture evidence below is retained, not upgraded into proof of
+this production compositor.
+
+## Current behavior and ownership
+
+- The shared visibility process reconciles client/body/HUD ownership after login,
+  captures geometric blockers once per presentation pass and supplies the same
+  snapshot to LOS and tree presenters. There is no private tree polling loop.
+- Root geometry, not canopy pixels, determines admission. Ordinary sprite sizes,
+  flora subtypes, animation frames and randomized visual offsets are retained.
+  A bounded six-cell discovery margin includes nearby overhanging art.
+- Whole-tree lighting is bounded to scenes whose native appearance ordering can
+  be preserved. Foreground GAME-plane roofs/images, mixed nested appearances
+  and nonstandard tree layers require whole-view native-compositor fallback.
+  This deliberately preserves ordinary layering rather than lighting only some
+  trees and silently reordering them. Only layer 5.11 roots with plain identity-
+  transformed appearances are admitted; low-layer largejungle remains native.
+  Fallback releases owned overrides/leases, retains its per-client owner, records
+  a bounded reason/count and retries when the audited scene is compatible.
+  Audits cap client images at 2,048, nearby atoms at 4,096, total recursively
+  visited appearances at 4,096 and nesting depth at eight; exhaustion selects
+  native fallback rather than a partial or falsely successful audit.
+  A default-enabled candidate therefore does
+  **not** promise whole-tree lighting in every Gaia scene.
+- A committed root mask matrix is applied to the mask texture, sampled at
+  `(16,16)`, then multiplied into the whole sprite. Pending/missing dynamic masks
+  remain hidden; they never become implicit white. Explicit fullbright policy
+  and the existing high-invisibility observer bypass remain separate.
+- Frames are cached per root by icon/state/direction/tint/root RGB. Attached image
+  offsets stay zero, tint is baked once and alpha/reset flags preserve ownership.
+- The compositor leases raw game, light-mask, roof, weather and tree targets.
+  The game and root-lit tree outputs share one shadow filter; roofs are replayed
+  above them and weather above roofs. Source-alpha filtering is intended to keep
+  multiplied mask coverage from blacking out transparent portions of relays.
+  These **BYOND pixel semantics are not established by offline tests**.
+- Invalidations affect owned tree images, never a full-screen shutter. Retirement
+  removes only owned images/screens, releases only matching render-target leases
+  and avoids overwriting replacement game filters. Other clients remain intact.
+- `client.set_geometric_los(FALSE)` retires owned presenters/context; reenabling
+  lets the shared process rebuild. This is a source rollback path, not permission
+  to change a live client or restart the server.
+
+## Offline verification
+
+```sh
+python -B -m unittest discover -s tests/root_tree_presentation -p 'test_*.py' -v
+```
+
+The contract suite executes constrained projections of real mask-snapshot,
+light-policy, tree-admission, identity-transform, frame-assignment, lease-check
+and retirement procedures. The fallback tests execute recursive foreground
+appearance admission (including inherited planes/layers and bounded nesting),
+world/client-image conflict scans, and the real refresh admission prefix through
+release, repeated fallback and reactivation. They preserve foreign client images
+and check diagnostic counters without claiming native pixels. It retains missing-owner, changed-matrix-component
+and doubled-offset controls. Shared compositor wiring and lifecycle defaults
+are source contracts only, not native rendering or performance evidence.
+
+Native acceptance must cover representative grass/clutter, more than eight
+roots/two clients, pine/snow/palm/jungle art, animation, tint/alpha/transforms and
+nested appearances; hidden-root canopies, roof overlap, floor transparency,
+weather and grouped shadow; doors and fractional movement, mouse targeting,
+HUD/body/reconnect replacement, save/load suspension, clean disable/restore, and
+dense-scene frame allocation/network/movement cost. See
+[the production acceptance plan](../../docs/gaia-visibility.md).
+
+## Preserved historical isolated-slice documentation
+
+Everything below describes the **former default-off fixture**, including its
+strict admission, shutter, old planes, native failures and receipts. It does not
+describe current production defaults or certify the new shared compositor.
+Frozen native fixture/receipt files have not been rewritten to relabel evidence.
+
+---
+
 # Per-client tree root presentation
 
 This is an explicitly admitted, default-off #3233 composition slice. It uses
