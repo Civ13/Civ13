@@ -6,13 +6,17 @@ reference-string-key runs preserved ownership but refused larger staged cohorts.
 Run 41122493287 localized those refusals to native `"\ref[L]"` formation, not the
 associative lookup. Run 41124431748 passed primitive direct-key registration
 comparisons, including aliases, cycles, retained pins and native list handles.
-That is not whole-codec or deployment evidence.
+Run 41129116593 additionally passed matrix-key primitive comparisons and
+fresh-process list/matrix codec tests. Remaining 2048-root refusals were
+attributed to native matrix reference-string formation. Neither primitive
+result is final-head acceptance or deployment evidence.
 
 ## Current comparison
 
 The candidate packet copies production serializer bytes unchanged. A separately
-compiled baseline packet changes only the two list-cache key expressions back
-to reference strings; its fixture disables the movement roster. Both use the
+compiled baseline packet restores list-cache and matrix-entry reference-string
+keys plus the original roster/durable-call type guards; its fixture disables
+the movement roster. Both use the
 same source head, fixture, compiler, construction order, payloads and limits.
 This compares the combined direct-key/chunk change against the old-key legacy
 path, not against an independently built historical game binary. Receipts bind

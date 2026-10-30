@@ -27,6 +27,7 @@ _profile_spec = importlib.util.spec_from_file_location('moving_save_datum_profil
 _profile_module = importlib.util.module_from_spec(_profile_spec)
 _profile_spec.loader.exec_module(_profile_module)
 instrument_datum_references = _profile_module.instrument_datum_references
+restore_old_identity_keys = _profile_module.restore_old_identity_keys
 FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
@@ -67,16 +68,14 @@ def prepare(output: Path, diagnostic_subset=False, profile_datums=False):
     for name in FILES:
         data = (ROOT / name).read_bytes()
         production_hashes[name] = hashlib.sha256(data).hexdigest()
-        if profile_datums: data = instrument_datum_references(name, data.decode()).encode()
+        baseline_data = restore_old_identity_keys(name, data.decode()).encode()
+        if profile_datums:
+            data = instrument_datum_references(name, data.decode()).encode()
+            baseline_data = instrument_datum_references(name, baseline_data.decode()).encode()
         target = output / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
         hashes[name] = hashlib.sha256(data).hexdigest()
-        baseline_data = data
-        if name == 'code/modules/persistence/saving.dm':
-            text = data.decode()
-            if text.count('saving_lists[L]') != 2: raise ValueError('Direct list-key baseline anchors changed')
-            baseline_data = text.replace('saving_lists[L]', 'saving_lists["\\ref[L]"]').encode()
         baseline_target = output / 'baseline-source' / name
         baseline_target.parent.mkdir(parents=True, exist_ok=True)
         baseline_target.write_bytes(baseline_data)
@@ -89,10 +88,10 @@ def prepare(output: Path, diagnostic_subset=False, profile_datums=False):
     (output / 'baseline-source/benchmark.dme').write_text(dme)
     baseline_hashes['benchmark.dme'] = hashes['benchmark.dme']
     receipt = dict(schema=1, execution='not_run', byond_version=VERSION, profile_datums=profile_datums,
-                   datum_profile_sites={"saver": _profile_module.EXPECTED_SAVER_REF_SITES, "frame": 1} if profile_datums else {},
+                   datum_profile_sites={"saver": _profile_module.EXPECTED_SAVER_REF_SITES, "identity_helper": 1} if profile_datums else {},
                    datum_profiler_sha256=hashlib.sha256(Path(__file__).with_name('datum_profile.py').read_bytes()).hexdigest(),
                    case_selector_sha256=hashlib.sha256(Path(__file__).with_name('diagnostic_cases.py').read_bytes()).hexdigest(),
-                   baseline='same-head old reference-string list keys and disabled roster', sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),
+                   baseline='same-head reference-string list/matrix identities, old roster/durable guards and disabled roster', sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),
                    instrumentation={'scope': 'copied-packet native datum reference timing' if profile_datums else 'logical fixture counters only; candidate serializer bytes unchanged', 'timing': 'Instrumentation adds overhead; opt-in reference profiling is diagnostic only, not acceptance timing.'},
                    boundaries={'live_server': False, 'listener_control': 'fixture OpenPort(none), loopback-only daemon, no webclient; socket absence not measured', 'max_concurrency': 1},
                    missing_evidence=['native compilation', 'RSS/private memory', 'fresh-process restore'])

@@ -996,8 +996,15 @@ var/global/datum/persistence_admission_identity
 	var/list/items = list()
 	var/committed = FALSE
 
+// Native matrix reference-string conversion can consume an entire tick.
+// Direct matrix keys retain identity; all other entry keys keep their contract.
+// This key is process-local only: on-disk entries still use numeric IDs.
+/map_storage/proc/save_entry_identity(datum/A)
+	if(istype(A, /matrix)) return A
+	return "\ref[A]"
+
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
-	if(!frame || !frame.active || frame.exporter != src || !frame.source || "\ref[frame.source]" != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || save_entry_identity(frame.source) != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
 	if(isturf(frame.source) && frame.source:persistence_export_frame != frame)
 		throw EXCEPTION("Save export turf was replaced")

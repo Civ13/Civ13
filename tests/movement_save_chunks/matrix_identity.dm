@@ -114,3 +114,62 @@
 		if("\ref[old]" != "\ref[candidate]")
 			throw EXCEPTION("MATRIX_IDENTITY: registration identity partition differs: [label]")
 	return baseline_id
+
+// Exercise the real production guard, not a reimplementation of its predicate.
+/proc/check_native_matrix_frames()
+	var/map_storage/exporter = new
+	var/matrix/original = matrix(2, 0, 0, 0, 2, 0)
+	var/matrix/equal_other = matrix(2, 0, 0, 0, 2, 0)
+	var/datum/ordinary = new
+	var/obj/ordinary_atom = new
+	if(!istype(exporter.save_entry_identity(original), /matrix))
+		throw EXCEPTION("MATRIX_FRAME: matrix identity still uses native reference strings")
+	if(exporter.save_entry_identity(ordinary) != "\ref[ordinary]" || exporter.save_entry_identity(ordinary_atom) != "\ref[ordinary_atom]")
+		throw EXCEPTION("MATRIX_FRAME: nonmatrix identity contract changed")
+	var/datum/save_export_frame/frame = new
+	frame.exporter = exporter
+	frame.source = original
+	frame.source_identity = exporter.save_entry_identity(original)
+	frame.entry = 1
+	exporter.saving_reference_pins += original
+	exporter.saving_references[frame.source_identity] = 1
+	exporter.saving_export_frames["1"] = frame
+	exporter.saving_export_stack += frame
+	exporter.require_export_frame(frame)
+	original.c = 7
+	exporter.require_export_frame(frame)
+	// Even equal coefficients must not allow substituting another source.
+	equal_other.c = 7
+	frame.source = equal_other
+	check_native_matrix_frame_refusal(exporter, frame, "equal-source")
+	frame.source = original
+	frame.source_identity = exporter.save_entry_identity(equal_other)
+	check_native_matrix_frame_refusal(exporter, frame, "wrong-key")
+	frame.source_identity = exporter.save_entry_identity(original)
+	exporter.saving_reference_pins[1] = equal_other
+	check_native_matrix_frame_refusal(exporter, frame, "wrong-pin")
+	exporter.saving_reference_pins[1] = original
+	exporter.saving_references[frame.source_identity] = 2
+	check_native_matrix_frame_refusal(exporter, frame, "wrong-entry")
+	exporter.saving_references[frame.source_identity] = 1
+	frame.active = FALSE
+	check_native_matrix_frame_refusal(exporter, frame, "inactive")
+	frame.active = TRUE
+	exporter.require_export_frame(frame)
+	del(original)
+	check_native_matrix_frame_refusal(exporter, frame, "deleted-source")
+	exporter.clear_bookkeeping()
+	if(exporter.saving_references.len || exporter.saving_reference_pins.len || exporter.saving_export_frames.len || frame.source || frame.source_identity)
+		throw EXCEPTION("MATRIX_FRAME: cleanup retained identity or pins")
+	del(ordinary)
+	del(ordinary_atom)
+	return TRUE
+
+/proc/check_native_matrix_frame_refusal(map_storage/exporter, datum/save_export_frame/frame, label)
+	var/refused = FALSE
+	try
+		exporter.require_export_frame(frame)
+	catch(var/exception/error)
+		if(error.name != "Save export frame is no longer valid") throw error
+		refused = TRUE
+	if(!refused) throw EXCEPTION("MATRIX_FRAME: invalid frame accepted: [label]")

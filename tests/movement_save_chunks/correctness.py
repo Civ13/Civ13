@@ -38,10 +38,13 @@ def mutate(packet, control):
         if text.count(ORIGIN_ANCHOR) != 1: raise ValueError('origin mutation anchor differs')
         path.write_text(text.replace(ORIGIN_ANCHOR, '', 1))
     elif control == 'old-keys':
-        path = packet / 'code/modules/persistence/saving.dm'
-        text = path.read_text()
-        if text.count('saving_lists[L]') != 2: raise ValueError('old-key codec baseline anchors differ')
-        path.write_text(text.replace('saving_lists[L]', 'saving_lists["\\ref[L]"]'))
+        baseline = load('datum_profile')
+        for name in ('code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm'):
+            path = packet / name
+            path.write_text(baseline.restore_old_identity_keys(name, path.read_text()))
+    elif control == 'matrix-identity':
+        path = packet / 'code/modules/persistence/functions.dm'
+        path.write_text(load('datum_profile').restore_matrix_reference_identity(path.read_text()))
     elif control != 'positive': raise ValueError('unknown control')
 
 def main(argv=None):
@@ -58,7 +61,7 @@ def main(argv=None):
         parser.error('native execution requires exact installed runtime and archive')
     args.output.mkdir(parents=True)
     prepare = load('prepare')
-    for control in ('positive', 'old-keys', 'roster', 'origin'):
+    for control in ('positive', 'old-keys', 'roster', 'origin', 'matrix-identity'):
         packet = args.output / (control + '-source'); packet.mkdir()
         prepare.prepare(packet); mutate(packet, control)
         # Mutations must get their own hashes, not masquerade as positive bytes.
@@ -72,7 +75,7 @@ def main(argv=None):
     limits.validate()
     deadline = time.monotonic() + args.job_seconds
     results = []
-    for control in ('positive', 'old-keys', 'roster', 'origin'):
+    for control in ('positive', 'old-keys', 'roster', 'origin', 'matrix-identity'):
         packet = args.output / (control + '-source')
         identity = runner.verify_runtime(args.byond_bin, args.byond_archive)
         (packet / 'runtime-identity.json').write_text(json.dumps(identity, indent=2))
@@ -80,7 +83,7 @@ def main(argv=None):
         log = (packet / 'compile.log').read_text(errors='replace') if (packet / 'compile.log').exists() else ''
         if not runner.compile_ok(build, log, packet / 'probe.dmb'):
             results.append({'control': control, 'stage': 'compile', 'passed': False, 'summary': build}); continue
-        scenarios = SCENARIOS if control == 'positive' else (('codec-write', 'codec-read') if control == 'old-keys' else (('frontier',) if control == 'roster' else ('reference',)))
+        scenarios = SCENARIOS if control == 'positive' else (('codec-write', 'codec-read') if control == 'old-keys' else (('walking',) if control == 'matrix-identity' else (('frontier',) if control == 'roster' else ('reference',))))
         for scenario in scenarios:
             case = args.output / (control + '-' + scenario)
             case.mkdir()
@@ -101,7 +104,7 @@ def main(argv=None):
             errors_path = case / 'errors.txt'
             diagnostics = diagnostics or (errors_path.exists() and bool(errors_path.read_text(errors='replace').strip()))
             clean = summary['status'] == 'exited' and summary.get('returncode') == 0 and not diagnostics
-            expected = None if control in ('positive', 'old-keys') else ('admitted animal missing or multiply owned' if control == 'roster' else 'Moving save root has conflicting saved owners')
+            expected = None if control in ('positive', 'old-keys') else ('MATRIX_FRAME: matrix identity still uses native reference strings' if control == 'matrix-identity' else ('admitted animal missing or multiply owned' if control == 'roster' else 'Moving save root has conflicting saved owners'))
             passed = clean and (result == 'PASS' if not expected else result == 'FAIL' and expected in logs)
             results.append({'control': control, 'scenario': scenario, 'passed': passed, 'expected_control_assertion': expected, 'summary': summary})
             (args.output / 'results.json').write_text(json.dumps(results, indent=2))

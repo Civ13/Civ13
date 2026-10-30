@@ -33,13 +33,18 @@ class BenchmarkSafetyTests(unittest.TestCase):
             candidate = (Path(folder) / name).read_bytes()
             baseline = (Path(folder) / 'baseline-source' / name).read_bytes()
             self.assertEqual(candidate, original)
-            self.assertEqual(baseline, original.replace(b'saving_lists[L]', b'saving_lists["\\ref[L]"]'))
+            self.assertEqual(baseline, bench.restore_old_identity_keys(name, original.decode()).encode())
             self.assertEqual(receipt['sources'][name], hashlib.sha256(candidate).hexdigest())
             self.assertEqual(receipt['baseline_sources'][name], hashlib.sha256(baseline).hexdigest())
             self.assertEqual(len(receipt['cases']), 18)
             self.assertTrue(receipt['comparative'])
             for path in bench.FILES:
-                if path != name: self.assertEqual((Path(folder) / path).read_bytes(), (Path(folder) / 'baseline-source' / path).read_bytes())
+                if path not in (name, 'code/modules/persistence/functions.dm'): self.assertEqual((Path(folder) / path).read_bytes(), (Path(folder) / 'baseline-source' / path).read_bytes())
+            functions = 'code/modules/persistence/functions.dm'
+            self.assertEqual((Path(folder) / functions).read_bytes(), (ROOT / functions).read_bytes())
+            self.assertEqual((Path(folder) / 'baseline-source' / functions).read_text(), bench.restore_old_identity_keys(functions, (ROOT / functions).read_text()))
+            self.assertFalse(receipt['profile_datums'])
+            self.assertEqual(receipt['datum_profile_sites'], {})
         with tempfile.TemporaryDirectory() as folder, patch.object(bench.subprocess, 'Popen', side_effect=AssertionError('Native forbidden')), patch('builtins.print'):
             self.assertEqual(bench.main(['--output', folder, '--diagnostic-subset']), 0)
             receipt = json.loads((Path(folder) / 'receipt.json').read_text())

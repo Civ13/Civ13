@@ -154,29 +154,30 @@
 			var/source_field = valid_owner && istext(owner.current_field) ? copytext("[owner.current_field]", 1, 81) : "contents"
 			record_save_reference_failure("cross_level_object", A)
 			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type] saved_z=[saving_z] native_z=[movable.z] turf_z=[location ? location.z : 0] source_type=[source_type] source_field=[source_field]")
-	if(!moving_save_chunk && moving_save_roots["\ref[A]"])
+	if(!moving_save_chunk && istype(A, /atom/movable) && moving_save_roots["\ref[A]"])
 		var/list/root = moving_save_roots["\ref[A]"]
 		if(root["atom"] != A) throw EXCEPTION("Moving save root identity changed")
 		if(!saving_references["\ref[A]"]) return capture_moving_save_root(savefile, root)
 	if(moving_save_chunk && istype(A, /atom/movable) && A != moving_save_chunk.root && !saving_references["\ref[A]"])
 		throw EXCEPTION("Moving save chunk references an uncaptured external movable")
-	var/ind = saving_references["\ref[A]"]
+	var/identity = save_entry_identity(A)
+	var/ind = saving_references[identity]
 	var/ref = 0
 	if(ind && saving_reference_pins[ind] == A)
 		return ind
 	if(moving_save_chunk) moving_save_chunk.reserve_node()
 	ref = saving_reference_pins.len + 1
 	saving_reference_pins += A
-	saving_references["\ref[A]"] = ref
+	saving_references[identity] = ref
 	if(istype(A, /atom/movable))
 		saving_world_movables["\ref[A]"] = list("atom" = A, "z" = saving_z, "ref" = ref)
 		bind_level_link(A, ref)
-	if(durable_export) durable_export.bind_entry(A, saving_z, ref, src)
+	if(durable_export && istype(A, /atom/movable)) durable_export.bind_entry(A, saving_z, ref, src)
 	var/datum/save_export_frame/frame = new
 	frame.exporter = src
 	frame.file = savefile
 	frame.source = A
-	frame.source_identity = "\ref[A]"
+	frame.source_identity = identity
 	frame.entry = ref
 	if(isturf(A))
 		A:persistence_export_frame = frame

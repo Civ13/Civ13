@@ -135,3 +135,21 @@ Native primitive tests compare the old/new registration behavior, including fres
 `filters` getter handles; fresh-process typed-codec tests and the full old-key
 baseline/direct-key candidate matrix must still pass on the final head. No capture
 limit is raised and a failed chunk still aborts the entire candidate.
+
+## Matrix-only entry identity optimization
+
+Run 41127261560 localized the remaining large-cohort spike to native matrix
+reference-string formation. Run 41129116593 passed differential matrix-key
+registration (including equal-valued distinct matrices and transform getters)
+and fresh-process typed matrix alias/value/cyclic-list association roundtrips.
+The proposed entry helper uses direct keys only for `/matrix`; atoms and every
+other datum retain reference-string keys. Entry IDs, disk format and strong pins
+are unchanged. Roster lookup and durable binding are movable-only operations;
+their new type gates avoid incidental matrix stringification. Durable entry
+nodes can only name movable atoms, so a matrix cannot require that binding.
+Frame validation uses the same helper; real-guard tests cover equal-valued source
+substitution, wrong key/pin/entry, inactive and deleted sources. A deterministic
+omission control restores matrix string keys and must fail the direct-key check.
+Preflight can still stringify matrices outside the synchronous capture window.
+These source changes need exact-head native verification; the earlier primitive
+pass alone does not prove frame validation or memory/tick acceptance.
