@@ -5,7 +5,7 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import path from 'node:path';
 
 test('real stdio handshake, discovery, bounded calls and error isolation', async () => {
- const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs')],env:{...process.env}});
+ const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs')],env:{...process.env,CIV13_RUNTIME_ENABLED:'0'}});
  const client = new Client({name:'civ13-test',version:'1.0.0'});
  try {
   await client.connect(transport);

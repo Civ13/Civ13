@@ -60,6 +60,10 @@ class RuntimeBridgeTests(unittest.TestCase):
         self.assertEqual(bridge.run('recovery', self.config, transport=self.exchange(self.recovery_status(62)))['error_code'], 'stale_snapshot')
         old = self.recovery_status(); old['debug'].pop('observed_utc')
         self.assertEqual(bridge.run('recovery', self.config, transport=self.exchange(old))['error_code'], 'freshness_unavailable')
+        old_header = self.recovery_status()
+        old_header['debug']['variables'] = variables_fixture.status()
+        old_header['debug']['variables']['utc'] = (datetime.now(timezone.utc) - timedelta(seconds=62)).strftime('%Y-%m-%d %H:%M:%S')
+        self.assertEqual(bridge.run('recovery', self.config, transport=self.exchange(old_header))['error_code'], 'stale_snapshot')
 
     def test_variables_preserves_correlation_freshness_and_discards_object_details(self):
         status = dict(ok=1, revision=self.config['revision'], session=self.config['session'],

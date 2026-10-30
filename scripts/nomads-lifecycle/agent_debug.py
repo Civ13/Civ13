@@ -233,6 +233,9 @@ def run(tool, root=None, revision=None, *, transport=reader.exchange, nonce=None
         return result
     except StaleSnapshot:
         return dict(schema=1, ok=False, tool=tool, error_code='stale_snapshot')
+    except variables.Rejected as error:
+        return dict(schema=1, ok=False, tool=tool,
+                    error_code='stale_snapshot' if str(error) == 'stale_snapshot' else 'snapshot_rejected')
     except (OSError, TimeoutError):
         return dict(schema=1, ok=False, tool=tool, error_code='transport_unavailable')
     except (ValueError, KeyError, TypeError, OverflowError, AttributeError):
