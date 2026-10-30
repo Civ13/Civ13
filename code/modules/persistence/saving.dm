@@ -407,9 +407,9 @@
 	if(subtile_pull_ownership.owners[A]) return FALSE
 	#endif
 	for(var/key in list("corpse_decay_record", "pulling", "pulledby", "buckled", "npc_subtile_pulse", "ride", "rider", "control_object", "handcuffed", "legcuffed", "following_mob", "origin"))
-		if(A.vars[key]) return FALSE
+		if(A.vars.Find(key) && A.vars[key]) return FALSE
 	for(var/key in list("grab_list", "grabbed_by", "pinned", "friends"))
-		if(length(A.vars[key])) return FALSE
+		if(A.vars.Find(key) && length(A.vars[key])) return FALSE
 	return TRUE
 
 /map_storage/proc/prepare_moving_save_roster()

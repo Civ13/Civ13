@@ -1,4 +1,5 @@
-// Synthetic isolated memory fixture. No production files, clients or listeners.
+// Synthetic isolated memory fixture. No production files or clients.
+// The daemon may open a loopback port before World/New; initialization closes it.
 // Includes the production serializer; the only baseline change disables its roster.
 world
 	maxx = 32
@@ -26,6 +27,23 @@ var/benchmark_peak_entry_pins = 0
 var/benchmark_peak_list_pins = 0
 var/benchmark_peak_tick_usage = 0
 /mob/living/simple_animal/memory_benchmark
+	// Production cohort predicate reads these by name. Minimal shared stubs do
+	// not define them; neutral nulls model an uncoupled, empty fixture animal.
+	// Human-only handcuffed/legcuffed are deliberately absent, like real animals.
+	var/corpse_decay_record
+	var/pulling
+	var/pulledby
+	var/buckled
+	var/npc_subtile_pulse
+	var/ride
+	var/rider
+	var/control_object
+	var/following_mob
+	var/origin
+	var/list/grab_list
+	var/list/grabbed_by
+	var/list/pinned
+	var/list/friends
 	var/payload
 	New()
 		..()

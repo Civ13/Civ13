@@ -175,6 +175,10 @@ class ProductionBoundaryTests(unittest.TestCase):
             self.assertEqual(module.main(['--output', str(output)]), 0)
             self.assertIn('return // omission control', (output / 'roster-source/code/modules/persistence/saving.dm').read_text())
             self.assertNotIn(module.ORIGIN_ANCHOR, (output / 'origin-source/code/modules/persistence/functions.dm').read_text())
+            control_source = (output / 'origin-source/code/modules/persistence/functions.dm').read_text()
+            control_proc = control_source.split('/map_storage/proc/add_export_content(', 1)[1].split('/map_storage/proc/', 1)[0]
+            self.assertNotIn('var/list/moving_root', control_proc)
+            self.assertNotIn('var/datum/child', control_proc)
             self.assertFalse(list(output.rglob('*.dmb')))
 
     def test_vendor_setup_optional_library_path_under_nounset(self):

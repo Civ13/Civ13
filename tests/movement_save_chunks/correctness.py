@@ -19,7 +19,9 @@ def load(name):
 
 SCENARIOS = ('walking', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth')
 ROSTER_ANCHOR = '/map_storage/proc/prepare_moving_save_roster()\n'
-ORIGIN_ANCHOR = '''\tif(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
+ORIGIN_ANCHOR = '''\tvar/datum/child = saving_reference_pins[ref]
+\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
+\tif(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
 \t\tif(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
 \t\treturn // The frozen origin owns this root; roster drain will attach it.
 '''
@@ -36,11 +38,6 @@ def mutate(packet, control):
         if text.count(ORIGIN_ANCHOR) != 1: raise ValueError('origin mutation anchor differs')
         path.write_text(text.replace(ORIGIN_ANCHOR, '', 1))
     elif control != 'positive': raise ValueError('unknown control')
-
-def compiler_passed(summary, log, artifact):
-    return (summary['status'] == 'exited' and summary['returncode'] == 0 and artifact.is_file()
-            and log.count('DM compiler version 516.1688') == 1
-            and '0 errors, 0 warnings' in log)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
@@ -76,7 +73,7 @@ def main(argv=None):
         (packet / 'runtime-identity.json').write_text(json.dumps(identity, indent=2))
         build = runner.run_monitored([str(args.byond_bin / 'DreamMaker'), '-max_errors', '0', 'probe.dme'], packet, 'compile', limits, deadline)
         log = (packet / 'compile.log').read_text(errors='replace') if (packet / 'compile.log').exists() else ''
-        if not compiler_passed(build, log, packet / 'probe.dmb'):
+        if not runner.compile_ok(build, log, packet / 'probe.dmb'):
             results.append({'control': control, 'stage': 'compile', 'passed': False, 'summary': build}); continue
         scenarios = SCENARIOS if control == 'positive' else (('frontier',) if control == 'roster' else ('reference',))
         for scenario in scenarios:

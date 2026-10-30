@@ -11,6 +11,23 @@ var/mob/living/simple_animal/chunk_fixture/subject
 var/armed = FALSE
 var/mutations = 0
 /mob/living/simple_animal/chunk_fixture
+	// Production cohort predicate reads these by name. Minimal shared stubs do
+	// not define them; neutral nulls model an uncoupled, empty fixture animal.
+	// Human-only handcuffed/legcuffed are deliberately absent, like real animals.
+	var/corpse_decay_record
+	var/pulling
+	var/pulledby
+	var/buckled
+	var/npc_subtile_pulse
+	var/ride
+	var/rider
+	var/control_object
+	var/following_mob
+	var/origin
+	var/list/grab_list
+	var/list/grabbed_by
+	var/list/pinned
+	var/list/friends
 	var/list/payload
 	New()
 		..()
@@ -25,6 +42,8 @@ var/mutations = 0
 			for(var/i = 1, i <= 70, i++) deep = list(deep)
 			payload = deep
 		return ..()
+/mob/living/simple_animal/chunk_fixture/optional_cuff
+	var/handcuffed = TRUE
 var/peak_roster = 0
 var/peak_nodes = 0
 var/peak_edges = 0
@@ -63,10 +82,13 @@ var/peak_capture_tick_usage = 0
 				new /obj/item(subject)
 			else if(world.params["scenario"] == "cross-z")
 				subject.loc = locate(1,1,2)
+			else if(world.params["scenario"] == "reference")
+				subject.loc = locate(1,1,1) // Keep the wrong-owner omission deterministic.
 			else
 				subject.loc = locate(subject.x == 1 ? 4 : 1,1,1)
 	return ..()
 /obj/chunk_reference_holder
+	map_storage_saved_vars = "pet"
 	var/mob/pet
 /world/OpenPort(port)
 	return ..("none")
@@ -76,7 +98,12 @@ var/peak_capture_tick_usage = 0
 	try
 		map_storage = new /map_storage/chunk_fixture
 		map = new /obj/map_metadata(locate(1,1,1))
+		var/mob/living/simple_animal/chunk_fixture/optional_cuff/cuffed = new(locate(1,1,1))
+		if(map_storage.moving_save_root_supported(cuffed)) throw EXCEPTION("Present active optional cuff was admitted")
+		del(cuffed)
+		if(mob_list.len) throw EXCEPTION("Optional-cuff fixture left registry debris")
 		subject = new(locate(4,1,1))
+		if(!map_storage.moving_save_root_supported(subject)) throw EXCEPTION("Absent optional cuff fields rejected an ordinary animal")
 		subject.name = "admitted animal"
 		subject.payload = list("literal", "key" = 17)
 		if(world.params["scenario"] == "reference")
@@ -92,7 +119,7 @@ var/peak_capture_tick_usage = 0
 			refused = TRUE
 			world.log << "REFUSED: [error]"
 		armed = FALSE
-		var/expect_refusal = world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "yield", "depth")
+		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "yield", "depth"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
 		if(file2text("map_backups/save_complete.txt") != old_marker) throw EXCEPTION("prior completed generation changed")
 		if(refused)
