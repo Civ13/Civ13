@@ -68,13 +68,17 @@ var/environment_weather_running = FALSE
 	restore_round_state(datum/controller/gameticker/T, list/state)
 		return
 	finish_player_restoration()
-		check(..(), "final callback restores players while operation held")
+		if(mode == "player-readiness-false") return FALSE
+		var/ready = ..()
+		check(ready, "final callback restores players while operation held")
+		if(!ready) return FALSE
 		if(finish_callback)
 			var/mob/living/human/H = new(locate(1,1,1))
 			H.persistence_owner_ckey = "probeowner"
 			register_restored_player(H)
 			check(find_restored_player("probeowner") == H, "held final phase permits owned player lookup")
 			overlap("client callback")
+		return TRUE
 	clear_bookkeeping()
 		if(cleanup_failure) throw EXCEPTION("expected cleanup")
 		return ..()
@@ -141,6 +145,12 @@ var/environment_weather_running = FALSE
 	S.finish_callback = TRUE
 	check(ticker.loadmap(), "load callbacks complete")
 	check_idle("load completion releases")
+	S = fresh_probe()
+	S.mode = "player-readiness-false"
+	check(!ticker.loadmap(), "unconfirmed player readiness rejects load")
+	check(persistence_load_recovery_required && persistence_save_in_progress && !persistence_active_operation, "unconfirmed player readiness retains recovery hold")
+	check(!persistence_player_restore_ready, "unconfirmed player readiness is not published")
+	S = fresh_probe()
 
 	// An old completion cannot unlock the next operation.
 	var/datum/persistence_world_operation/old = begin_persistence_operation(S, "save")

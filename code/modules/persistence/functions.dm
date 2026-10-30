@@ -495,6 +495,8 @@ map_storage
 var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
+// Observational startup state; it never authorizes or releases recovery.
+var/global/persistence_startup_recovery_status
 // Runtime-only identity changes on each accepted save or load, even when the
 // operation completes before a waiting gameplay action wakes.
 var/global/datum/persistence_admission_identity
@@ -843,7 +845,8 @@ var/global/datum/persistence_admission_identity
 			phase = "players"
 			operation.diagnostic_phase = "players"
 			operation.restoring_players = TRUE
-			storage.finish_player_restoration()
+			if(!storage.finish_player_restoration())
+				throw EXCEPTION("Player restoration readiness was not confirmed")
 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
 		var/primary_failure = "[e] on [e.file]:[e.line]"
@@ -873,6 +876,7 @@ var/global/datum/persistence_admission_identity
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
 		return FALSE
 	operation.finish(TRUE)
+	persistence_startup_recovery_status = null
 	// Restart recovery reclaims waiting clients after consuming its intent.
 	return 1
 

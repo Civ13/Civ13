@@ -157,6 +157,7 @@
 			// Any existing save needs resolution, even if its header is unreadable
 			// or for another map. Do not announce a provisional fresh identity.
 			startup_round_pending = TRUE
+			persistence_startup_recovery_status = "unresolved"
 			var/saved_metadata_text
 			try
 				saved_metadata_text = file2text("map_saves/map.txt")
@@ -166,11 +167,19 @@
 			if (saved_meta.len && saved_meta[1] == map.ID)
 				if (fexists("map_saves/save_complete.txt"))
 					startup_round_pending = TRUE
+					persistence_startup_recovery_status = "pending"
 					nextsave = world.realtime + 216000 // don't immediately resave what we are about to load
 					spawn(50)
 						if (ticker)
 							to_chat(world, "<big><b>Restoring the world from the last persistent save...</b></big>")
-							if(ticker.loadmap()) announce_restored_round_once()
+							try
+								if(ticker.loadmap()) announce_restored_round_once()
+								else persistence_startup_recovery_status = "unresolved"
+							catch(var/exception/automatic_load_error)
+								persistence_startup_recovery_status = "unresolved"
+								throw automatic_load_error
+						else
+							persistence_startup_recovery_status = "unresolved"
 				else
 					startup_round_pending = TRUE
 					admin_notice("<span class='danger'>A map save exists but has no completion marker (interrupted save?). Not auto-loading; restore map_saves/ from map_backups/ and use the Load Map verb if needed.</span>", R_DEBUG)
@@ -178,6 +187,7 @@
 				admin_notice("<span class='danger'>Found a map save for '[saved_meta.len ? saved_meta[1] : "unknown"]' but the current map is '[map.ID]'. Not auto-loading.</span>", R_DEBUG)
 		else if (!persistence_restart.startup_hold && fexists("map_saves/save_complete.txt"))
 			startup_round_pending = TRUE
+			persistence_startup_recovery_status = "unresolved"
 			admin_notice("<span class='danger'>A save completion marker exists without map metadata. Not auto-loading or announcing a round.</span>", R_DEBUG)
 
 	// All constructors/configuration are initialized before importing. An intent
