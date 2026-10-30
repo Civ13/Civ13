@@ -685,7 +685,7 @@
 						if (H.find_trait("Flat Footed"))
 							H.stats["stamina"][1] -= 2 * distance_fraction
 						else
-						H.stats["stamina"][1] -= distance_fraction
+							H.stats["stamina"][1] -= distance_fraction
 					if (H.bodytemperature < H.species.body_temperature)
 						H.bodytemperature += 0.66 * distance_fraction
 			if ("walk")

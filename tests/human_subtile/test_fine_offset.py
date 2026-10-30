@@ -57,7 +57,7 @@ class FineOffsetContracts(unittest.TestCase):
             for resource in ('nutrition', 'water'):
                 self.assertIn(f'H.{resource} -= {cost} * distance_fraction', MOVE)
         self.assertIn('H.stats["stamina"][1] -= 2 * distance_fraction', MOVE)
-        self.assertIn('H.stats["stamina"][1] -= distance_fraction', MOVE)
+        self.assertIn('\t\t\t\t\t\telse\n\t\t\t\t\t\t\tH.stats["stamina"][1] -= distance_fraction', MOVE)
         self.assertIn('max(world.tick_lag, (subtile_deadline - world.time) * distance_fraction)', MOVE)
         self.assertIn('if (!fine_step)\n\t\t\t\t\tmob.velocity = min(mob.velocity+1, 15)', MOVE)
         self.assertIn('if ((!fine_step) && t1', MOVE)
