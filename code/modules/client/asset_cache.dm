@@ -243,3 +243,11 @@ var/decl/asset_cache/asset_cache = new()
 			getFilesSlow(C, asset_cache.cache, FALSE)
 
 	return TRUE
+
+// Modern resources are sent only when opening an adapted UI.
+/datum/asset/simple/civ13_tgui
+	assets = list(
+		"civ13-tgui-bootstrap.js" = 'UI/tgui/civ13-tgui-bootstrap.js',
+		"civ13-tgui.js" = 'UI/tgui/civ13-tgui.js',
+		"civ13-tgui.css" = 'UI/tgui/civ13-tgui.css'
+	)

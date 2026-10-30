@@ -1,0 +1,44 @@
+// Reuse only the components used by Civ13. No upstream game themes/fonts/assets.
+@use 'tgui-core/styles/base';
+@use 'tgui-core/styles/colors';
+@use 'tgui-core/styles/vars-components';
+@use 'tgui-core/styles/reset';
+@use 'tgui-core/styles/components/Button';
+@use 'tgui-core/styles/components/Section';
+@use 'tgui-core/styles/components/NoticeBox';
+:root { color-scheme: dark; --color-base: #211c16; --color-primary: #b48c4d; --color-section: #30271e; --color-text: #eee5d3; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #211c16; color: #eee5d3; font: 14px Verdana, sans-serif; }
+.civ13-app { padding: 12px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+h1 { font-size: 20px; margin: 0; } h2 { font-size: 18px; } h3 { font-size: 15px; }
+p { margin: 8px 0; line-height: 1.5; }
+button, input { font: inherit; }
+button:focus-visible, input:focus-visible { outline: 2px solid #ffd985; outline-offset: 2px; }
+.Button { margin: 2px; }
+.Section { margin-bottom: 12px; border: 1px solid #66513b; }
+.inventory { width: 100%; border-collapse: collapse; }
+.inventory th, .inventory td { padding: 6px; text-align: left; border-bottom: 1px solid #66513b; }
+.inventory th:last-child, .inventory td:last-child { text-align: right; }
+.product { margin: 5px 0; }
+.tag { display: inline-block; padding: 3px 6px; margin: 3px; background: #443623; border-radius: 3px; }
+.modern-vending { --color-primary: #bd3c3c; }
+.faction-canvas { display: grid; grid-template-columns: repeat(32, 1fr); width: min(100%, 512px); aspect-ratio: 1; margin: 16px auto; border: 1px solid #846c4b; user-select: none; touch-action: none; }
+.faction-cell { padding: 0; border: 0; border-radius: 0; min-width: 0; min-height: 0; }
+.faction-cell:disabled { opacity: 1; }
+.swatch { display: inline-block; width: 24px; height: 24px; border: 1px solid white; vertical-align: middle; }
+.research-scroll { overflow: auto; margin-top: 14px; }
+.research-graph { position: relative; min-width: 680px; }
+.research-layer { display: grid; grid-template-columns: repeat(6, minmax(100px, 1fr)); gap: 20px; padding: 14px 0; position: relative; }
+.research-node { z-index: 1; background: #3a3020; border: 1px solid #a98b4d; border-radius: 4px; color: #eee5d3; padding: 8px; cursor: pointer; }
+.research-node strong, .research-node small { display: block; margin-bottom: 6px; }
+.research-node.done { border-color: #6caa68; background: #253b25; }
+.research-node.locked { color: #a99b87; background: #28231c; }
+.research-node.ancestor { border-color: #ef9d5b; box-shadow: 0 0 0 2px #c77a39; }
+.research-node.selected { outline: 2px solid #ffe3a6; }
+.research-node.muted { opacity: .4; }
+.research-lines { position: absolute; left: 0; top: 0; pointer-events: none; }
+.research-lines path { fill: none; stroke: #a98b4d; stroke-width: 1.5; opacity: .65; }
+progress { width: 100%; height: 10px; accent-color: #b58d47; }
+.modal-backdrop { position: fixed; inset: 0; z-index: 10; background: #000a; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.detail-modal { background: #30271e; border: 2px solid #a98b4d; padding: 16px; max-height: 90vh; overflow: auto; max-width: 650px; width: 100%; }

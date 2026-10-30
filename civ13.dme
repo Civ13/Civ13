@@ -1093,6 +1093,7 @@
 #include "code\modules\multiz\structures.dm"
 #include "code\modules\nano\_JSON.dm"
 #include "code\modules\nano\_nanoui.dm"
+#include "code\modules\nano\tgui.dm"
 #include "code\modules\nano\helpers.dm"
 #include "code\modules\nano\JSON Reader.dm"
 #include "code\modules\nano\JSON Writer.dm"

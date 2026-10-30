@@ -147,3 +147,34 @@ feature activation, native execution or client/runtime changes.
 Toolchain references: [Node supported releases](https://nodejs.org/en/about/previous-releases),
 [upstream Rspack browser target](https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/tgui/rspack.config.ts),
 [tgui-core component library](https://github.com/tgstation/tgui-core).
+
+## Implementation evidence (2026-10-30, local work pending publication)
+
+The adapter and all ten React/tgui-core screens have been implemented in the
+isolated cloud checkout. The first implementation commit is local only until
+publication authorization is resolved; the public draft currently contains this
+proposal, not a claim of completed implementation or passed implementation CI.
+
+Local checks: TypeScript, production Rspack build, 16 component/state tests,
+eight backend source-contract tests, and executable ES5 bootstrap tests pass.
+A second smoke executes the production bundle with real React/tgui-core in
+JSDOM, rendering all ten routes and checking action/read-only/text/fallback
+wiring. These source/DOM checks are not native gameplay or pixel validation.
+Independent review found a research ancestor-highlighting mismatch and a
+bootstrap-outage fallback gap; both were corrected with focused regressions.
+The migrated close callback checks its owning client and the early update queue
+is bounded. Unused management actions are not exposed through the bridge.
+
+Real local Chromium smoke could not start: the cloud shell sandbox prevents
+Chromium process sockets; escalation failed at environment setup. No denied
+filesystem path was read or modified. A scoped CI workflow is prepared to run
+that smoke with the runner's existing Chrome, alongside generated-asset
+consistency and source tests. Hosted implementation CI, native compilation and
+BYOND/OpenDream graphical acceptance remain pending/not run, not green.
+
+A dependency audit found development-tool advisories in an initial test-runner
+pin and unnecessary Rspack CLI development-server dependencies. The follow-on
+changes update the test runner and use Rspack's build API directly; no developer
+server is required or exposed. Final `npm audit` after those changes reports zero vulnerabilities across
+all dependencies. A clean `npm ci --ignore-scripts` and repeat build are also
+checked; the generated JS/CSS/license inventory reproduce byte for byte.

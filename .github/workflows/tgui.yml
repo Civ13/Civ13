@@ -1,0 +1,53 @@
+name: Tgui frontend
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'tgui/**'
+      - 'UI/tgui/**'
+      - 'UI/templates/**'
+      - 'code/modules/nano/**'
+      - 'code/modules/client/asset_cache.dm'
+      - 'civ13.dme'
+      - 'code/game/mob/groups/faction_creation.dm'
+      - 'code/game/mob/groups/faction_symbol.dm'
+      - 'code/game/objects/map_metadata/pepelsibirsk.dm'
+      - 'code/game/objects/structures/vending/**'
+      - 'code/modules/reagents/Chemistry-Machinery.dm'
+      - 'code/modules/research_tree/research_bench.dm'
+      - 'tests/tgui/**'
+      - '.github/workflows/tgui.yml'
+  push:
+    branches: [master]
+    paths: ['tgui/**', 'UI/tgui/**', 'tests/tgui/**', '.github/workflows/tgui.yml']
+permissions:
+  contents: read
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+          cache: npm
+          cache-dependency-path: tgui/package-lock.json
+      - name: Install integrity-locked dependencies without lifecycle hooks
+        run: npm ci --ignore-scripts --prefix tgui
+      - name: Typecheck, component tests and production build
+        run: npm --prefix tgui run check
+      - name: Backend source and ES5 bootstrap contracts
+        run: |
+          python3 -B -m unittest discover -s tests/tgui -p 'test_*.py' -v
+          node tests/tgui/bootstrap.test.cjs
+      - name: Check generated assets match source
+        run: git diff --exit-code -- UI/tgui tgui/THIRD_PARTY.md
+      - name: Real Chromium production smoke using runner browser
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium)"
+          test -n "$CHROMIUM_PATH"
+          npm --prefix tgui run test:browser
