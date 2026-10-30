@@ -90,7 +90,9 @@ def wiring(mode, setup, load):
     admin = uncomment(proc(mode, "/datum/admins/proc/persistent()"))
     # The call must belong to the enable branch; disable/Chad+ never call it.
     assert admin.count(CALL) == 1
-    assert "\tif (map && !map.persistence)\n\t\tmap.persistence = TRUE\n\t\t" + CALL in admin
+    assert "\tif (map && !map.persistence)\n\t\tmap.persistence = TRUE\n" in admin
+    assert "\n\t\t" + CALL + "\n" in admin
+    assert admin.index("map.persistence = TRUE") < admin.index(CALL)
     assert admin.index(CALL) < admin.index("\n\telse\n")
     assert CALL not in proc(mode, "/datum/admins/proc/persistent_chad()")
     setup = uncomment(setup)

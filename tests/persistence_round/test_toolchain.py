@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW_SPEC = importlib.util.spec_from_file_location('reviewed_workflow_contract', ROOT/'tests/world_save/workflow_contract.py')
 WORKFLOW_CONTRACT = importlib.util.module_from_spec(WORKFLOW_SPEC)
 WORKFLOW_SPEC.loader.exec_module(WORKFLOW_CONTRACT)
-BEFORE = '5475bac8893da62926467a08fa52952d6663e838'
+CONTRACT_PATH = Path(__file__).with_name('fixtures') / 'runner_contract.json'
 EXPECTED = {None: 'PASS: fixture complete', 'vote': 'FAIL: vote creation blocked',
     'ticker': 'FAIL: finished flag cleared', 'deferred': 'FAIL: deferred round end cancelled',
     'save': 'FAIL: save guard preserves persistent round state',
@@ -38,8 +38,7 @@ def load(path):
 class ContinuousRoundToolchain(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.before = {name: subprocess.check_output(['git', 'show', BEFORE+':'+name], cwd=ROOT).decode()
-            for name in ('tests/persistence_round/run.py', '.github/workflows/test.yml')}
+        cls.contract_source = json.loads(CONTRACT_PATH.read_text(encoding='utf-8'))
         cls.current = load(ROOT/'tests/world_save/current_runtime.py')
         cls.contract = load(ROOT/'tests/new_z_budget/z_budget_evidence.py')
 
@@ -96,7 +95,7 @@ class ContinuousRoundToolchain(unittest.TestCase):
             if control: args += ['--negative-control', control]
             with patch.object(runner, '__file__', str(runner_path)), \
                  patch.object(runner, 'selected_runtime', return_value=toolchain), \
-                 patch.object(subprocess, 'check_output', return_value=BEFORE+'\n'), \
+                 patch.object(subprocess, 'check_output', return_value='offline-injected-commit'+'\n'), \
                  patch.object(subprocess, 'run', side_effect=run), \
                  patch.object(sys, 'argv', args), redirect_stdout(io.StringIO()):
                 try: runner.main()
@@ -156,14 +155,14 @@ class ContinuousRoundToolchain(unittest.TestCase):
             runner.selected_runtime('inert', 'inert.zip')
 
     def test_source_workflow_scope_commands_deadlines_and_native_oracles_are_preserved(self):
-        source = (ROOT/'tests/persistence_round/run.py').read_text(encoding='utf-8'); before = self.before['tests/persistence_round/run.py']
+        source = (ROOT/'tests/persistence_round/run.py').read_text(encoding='utf-8')
         def launches(text):
             return [ast.dump(n) for n in ast.walk(ast.parse(text)) if isinstance(n, ast.Call)
                 and isinstance(n.func, ast.Attribute) and isinstance(n.func.value, ast.Name)
                 and n.func.value.id == 'subprocess' and n.func.attr == 'run']
-        self.assertEqual(launches(source), launches(before))
+        self.assertEqual(launches(source), launches('\n'.join(self.contract_source['subprocess_run_calls'])))
         marker = "        runtime = subprocess.run([str(daemon)"
-        self.assertEqual(source[source.index(marker):], before[before.index(marker):])
+        self.assertEqual(source[source.index(marker):], self.contract_source['runtime_and_cleanup'])
         workflow = (ROOT/'.github/workflows/test.yml').read_text(encoding='utf-8')
         step = ('      - name: Test continuous persistence round contracts offline\n'
             "        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/persistence_round') || inputs.persistence_integration_regressions == true\n"
@@ -175,8 +174,7 @@ class ContinuousRoundToolchain(unittest.TestCase):
         self.assertEqual(normalized.count(current), 6)
         marker = '      - name: Verify continuous persistence rounds and negative controls\n'
         after_step = normalized.split(marker, 1)[1].split('      - name:', 1)[0]
-        before_step = self.before['.github/workflows/test.yml'].split(marker, 1)[1].split('      - name:', 1)[0]
-        self.assertEqual(after_step.replace(current, original).replace("fromJSON(needs.changes.outputs.new_tests || '[]')", 'fromJSON(needs.changes.outputs.new_tests)'), before_step)
+        self.assertEqual(after_step, self.contract_source['workflow_step'])
         WORKFLOW_CONTRACT.assert_workflow_contract(workflow)
 
 

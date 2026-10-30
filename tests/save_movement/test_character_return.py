@@ -185,26 +185,43 @@ class ReturnFixture:
         with patch.object(adapter, 'FIELDS', fields):
             return adapter.project(source, declaration, args, self.env, method)
 
-    def fresh_round_admission(self, can_start=True, startup_hold=False, round_restored=False):
+    def fresh_round_admission(self, can_start=True, startup_hold=False, round_restored=False, persistent=False, manual=False):
         # Execute real setup admission through PLAYING. Later seeding/hooks are
         # outside this offline boundary; file writes remain an explicit adapter.
-        source = adapter.read('code/game/gameticker.dm')
+        full_source = adapter.read('code/game/gameticker.dm')
+        source = full_source
         declaration = '/datum/controller/gameticker/proc/setup'
         start = source.index(declaration + '(')
         end = source.index('\tstop_lobby_music()\n', start)
         source = source[start:end] + '\treturn TRUE\n'
         self.store.round_restored = round_restored
         self.env.update(persistence_restart=NS(startup_hold=startup_hold),
-                        sleep=lambda ticks: None, GAME_STATE_PREGAME=1, GAME_STATE_PLAYING=3,
+                        sleep=lambda ticks: None, GAME_STATE_PREGAME=1, GAME_STATE_SETTING_UP=2, GAME_STATE_PLAYING=3,
                         job_master=NS(ResetOccupations=lambda: None))
         self.env['map'].can_start = lambda: can_start
         self.env['map'].required_players = 0
-        ticker = NS(current_state=1, admin_started=False)
-        with patch.object(adapter, 'FIELDS', (*adapter.FIELDS, 'current_state', 'admin_started')):
+        self.env['map'].persistence = persistent
+        ticker = NS(current_state=1, admin_started=manual, pregame_timeleft=90, pregame_autostart_cancelled=False)
+        helpers = ('cancel_pregame_autostart', 'pregame_autostart_blocked')
+        fields = (*adapter.FIELDS, 'current_state', 'admin_started', 'pregame_timeleft', 'pregame_autostart_cancelled', *helpers)
+        with patch.object(adapter, 'FIELDS', fields):
+            for name in helpers:
+                projected = adapter.project(full_source, '/datum/controller/gameticker/proc/' + name, 'src', self.env, True)
+                setattr(ticker, name, MethodType(projected, ticker))
             return adapter.project(source, declaration, 'src', self.env, True)(ticker)
 
 
 class CharacterReturnTests(unittest.TestCase):
+    def test_persistent_admission_requires_manual_start_and_keeps_recovery_hold(self):
+        for manual, held in ((False, False), (True, False), (True, True)):
+            with self.subTest(manual=manual, held=held):
+                f = ReturnFixture()
+                f.env['persistence_player_restore_ready'] = False
+                if held:
+                    f.artifacts.append('map_saves/1.sav')
+                f.fresh_round_admission(persistent=True, manual=manual)
+                self.assertEqual(f.env['persistence_player_restore_ready'], manual and not held)
+
     def test_fresh_round_readiness_survives_ordinary_save_artifacts(self):
         for action in ('new_character', 'reconnect', 'bed_sleep'):
             with self.subTest(action=action):
