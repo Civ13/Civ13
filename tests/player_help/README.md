@@ -135,3 +135,24 @@ file/excerpt sizes fail closed on drift. Source hashes cover kiln, molds, oven,
 anvil and research/crafting gates. Controls remove the new evidence and reject
 other-map recipe contamination. Passing retrieval does not establish a model's
 answer quality, live faction unlocks or a deployed worker.
+
+Animal injury evidence (2026-10-30): `test_animal_attack.py` checks the direct
+simple-animal combat path's audit-log parity and pre-hit visibility/actual damage
+or detachment guards. This is a source contract, not native combat execution.
+`test_animal_context.py` captures the real worker prompt through an injected
+transport: confirmed alligator limb loss, missing/stale evidence, bounds and
+private-field rejection. The existing native `injury_probe.dm` additionally
+prepares production retention/body-projection assertions with fixture-owned
+clients/organs; preparation alone does not execute those assertions.
+
+Help does not read `attack_log` or dump `vars`. Legacy attack logs contain admin
+identity information and record attack attempts, not proof of damage. Help keeps
+at most six structured observations for less than ten minutes in the authenticated
+client/body session; body changes, disconnect and conversation reset clear them.
+Animal provenance is captured before a visible attack, committed only after actual
+damage or confirmed limb detachment, and uses fixed labels (`alligator` or generic
+`animal`) rather than arbitrary names/identities. Current external body-part
+brute/burn/missing state is an eleven-part allowlist, not evidence of a cause.
+Older wounds, unseen sources and causes absent from the snapshot remain unknown.
+This source change requires separately authorized game/worker updates to affect
+live Help; no deployment, restart or live inference is part of these checks.
