@@ -157,6 +157,7 @@
 		playsound(loc, 'sound/machines/door_open.ogg', 100, TRUE)
 	flick("[basic_icon]opening",src)
 	spawn (10)
+		los_invalidate(src)
 		density = FALSE
 		opacity = FALSE
 		state = TRUE
@@ -175,6 +176,7 @@
 		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
 	flick("[basic_icon]closing",src)
 	spawn (10)
+		los_invalidate(src)
 		density = TRUE
 		if(override_opacity)
 			opacity = FALSE

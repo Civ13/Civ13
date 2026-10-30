@@ -205,6 +205,9 @@
 					AM.Crossed(src)
 			if (is_new_area && is_destination_turf)
 				destination.loc.Entered(src, origin)
+	#if CIV13_ROOT_TREE_PRESENTATION
+	los_refresh_moved_viewer(src)
+	#endif
 	return TRUE
 
 // Preserve raw loc-assignment semantics at legacy teleport sites: adding
@@ -218,6 +221,7 @@
 	loc = destination
 	#if CIV13_ROOT_TREE_PRESENTATION
 	los_invalidate(src)
+	los_refresh_moved_viewer(src)
 	#endif
 	return TRUE
 

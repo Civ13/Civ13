@@ -10,6 +10,7 @@
 	var/datum/los_context/context
 	var/list/images = list()
 	var/list/owned_images = list()
+	var/list/visible_targets = list()
 	var/retired = FALSE
 	var/dirty = TRUE
 	var/last_policy
@@ -31,9 +32,36 @@
 /datum/los_presenter/proc/invalidate(atom/changed)
 	if(retired || !owner || !context || !context.body)
 		return
-	// A moving blocker can affect every target behind it in this viewport.
-	// Only the caller can filter old/new positions safely; null means all.
 	dirty = TRUE
+	owner.los_dirty = TRUE
+	// Before a blocker write/move, withdraw only content potentially behind
+	// that cell. Do not leave previously visible content exposed until the
+	// budgeted refresh, and do not shutter unrelated map regions or the HUD.
+	var/turf/cell = get_turf(changed)
+	if(!cell || changed == context.body || cell.z != context.body.z)
+		return
+	var/ex = context.body.x + context.body.step_x / 32
+	var/ey = context.body.y + context.body.step_y / 32
+	var/cx = cell.x - ex
+	var/cy = cell.y - ey
+	if(ismovable(changed))
+		var/atom/movable/blocker = changed
+		cx += blocker.step_x / 32
+		cy += blocker.step_y / 32
+	for(var/atom/A in visible_targets)
+		if(!A || !owns_atom(A) || A.z != cell.z)
+			continue
+		var/tx = A.x - ex
+		var/ty = A.y - ey
+		if(ismovable(A))
+			var/atom/movable/target = A
+			tx += target.step_x / 32
+			ty += target.step_y / 32
+		if(los_footprint_hits_cell(0, 0, tx, ty, 0.5, cx, cy))
+			var/image/I = hidden_image(A)
+			images[A] = I
+			owned_images |= I
+			owner.images |= I
 
 /datum/los_presenter/proc/owns_atom(atom/A)
 	if(!A || A.gcDestroyed || A.gc_destroyed)
@@ -83,6 +111,7 @@
 		return FALSE
 	var/list/next = list()
 	var/list/next_owned = list()
+	var/list/next_visible = list()
 	// Two extra root tiles cover ordinary non-tree oversized art. Trees have
 	// their own appearance-aware discovery and whole-root ownership.
 	for(var/cx = max(1, context.body.x-S.radius_x-2), cx <= min(world.maxx, context.body.x+S.radius_x+2), cx++)
@@ -94,6 +123,8 @@
 				var/image/turf_mask = hidden_image(T)
 				next[T] = turf_mask
 				next_owned += turf_mask
+			else
+				next_visible += T
 			for(var/atom/movable/A in T)
 				if(!owns_atom(A))
 					continue
@@ -101,6 +132,8 @@
 					var/image/atom_mask = hidden_image(A)
 					next[A] = atom_mask
 					next_owned += atom_mask
+				else
+					next_visible += A
 	if(S.policy != context.policy_key() || S.revision != context.revision)
 		dirty = TRUE
 		return FALSE
@@ -108,6 +141,7 @@
 	// ones. Existing image identities are reused instead of resent each tick.
 	owner.images -= owned_images - next_owned
 	owner.images |= next_owned - owned_images
+	visible_targets = next_visible
 	images = next
 	owned_images = next_owned
 	last_policy = S.policy
@@ -119,6 +153,7 @@
 	if(owner)
 		owner.images -= owned_images
 	images.Cut()
+	visible_targets.Cut()
 	owned_images.Cut()
 	dirty = TRUE
 

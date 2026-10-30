@@ -64,6 +64,34 @@ class PresenterSourceContracts(unittest.TestCase):
         self.assertNotIn('clear_images()', suspended)
         self.assertLess(end, LIFECYCLE.index('if(!key || !mob.hud_used)', end))
 
+    def test_blocker_invalidation_masks_affected_content_synchronously(self):
+        import importlib.util
+        import re
+        spec = importlib.util.spec_from_file_location('los_invalidation_geometry', ROOT / 'tests/los_context/test_offline.py')
+        geometry = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(geometry)
+        projected = geometry.projected_geometry()
+        block = SOURCE.split('/datum/los_presenter/proc/invalidate(', 1)[1].split('/datum/los_presenter/proc/owns_atom(', 1)[0]
+        call = re.search(r'if\((los_footprint_hits_cell\([^\n]+\))\)', block)
+        self.assertIsNotNone(call)
+        def hidden(tx, ty, cx=3, cy=0):
+            return eval(call[1], {'__builtins__': {}, **projected}, dict(tx=tx, ty=ty, cx=cx, cy=cy))
+        self.assertTrue(hidden(4, 0))  # Behind closing door.
+        self.assertFalse(hidden(1, 0))  # In front remains visible.
+        self.assertFalse(hidden(0, 4))  # Unrelated region remains visible.
+        self.assertTrue(hidden(4, .125, 2.125, 0))  # Smooth-offset blocker.
+        self.assertIn('owner.images |= I', block)
+        self.assertIn('owned_images |= I', block)
+        self.assertNotIn('screen_loc', block)
+        self.assertIn('blocker.step_x / 32', block)
+        self.assertIn('target.step_x / 32', block)
+        door = (ROOT / 'code/game/objects/structures/door.dm').read_text()
+        close = door.split('/obj/structure/simple_door/proc/Close()', 1)[1].split('/obj/structure/simple_door/Destroy()', 1)[0]
+        self.assertLess(close.index('los_invalidate(src)'), close.index('opacity = TRUE'))
+        movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()
+        self.assertIn('los_refresh_moved_viewer(src)', movement)
+        self.assertIn('M.client.reconcile_geometric_los()', LIFECYCLE)
+
     def test_retirement_releases_masks(self):
         self.assertIn('owner.images -= owned_images', SOURCE)
         self.assertIn('owner.los_presenter = null', SOURCE)

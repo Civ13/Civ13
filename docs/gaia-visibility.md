@@ -82,3 +82,14 @@ The owner exposes fallback reason/count rather than spamming logs. Verify safe
 scene -> fallback -> safe scene and exact filter/image cleanup natively before
 considering rollout. During ordinary saves, geometry stays fresh as players can
 move; world reconstruction suspends capture while retaining denial masks.
+
+### Pending-blocker masking
+
+Known blocker hooks now immediately add denial images for tracked visible content
+in the changed cell's geometric shadow, leaving unrelated map regions and HUD
+untouched. Door and curtain writes invalidate before changing opacity; movement
+invalidates old/new neighborhoods and owned viewers refresh synchronously after
+movement callbacks rather than intentionally waiting for the process. Smooth
+blocker/target offsets enter the mask geometry. Unhooked direct opacity writers
+still rely on the periodic raw audit; native callback yielding and actual display
+latency remain explicit fixture requirements, not proved by source tests.

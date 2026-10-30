@@ -76,7 +76,7 @@ def environment():
       'lighting_startup_in_progress':False,'created_lighting_corners_and_overlays':True,
       'isnum':lambda x:isinstance(x,(int,float)),'islist':lambda x:isinstance(x,list),
       'dm_list':lambda *xs:Values(xs),'isturf':lambda x:hasattr(x,'type') and x.type.startswith('/turf/'),
-      'length':lambda x:0 if x is None else len(x),'qdel':lambda x:setattr(x,'deleted',True),
+      'length':lambda x:0 if x is None else len(x),'ismovable':lambda x:hasattr(x,'vis_contents'),'qdel':lambda x:setattr(x,'deleted',True),
       'root_tree_presenters':Items(),'BLEND_OVERLAY':2,'ROOT_TREE_PLANE':6,'TILE_BOUND':8,
       'RESET_COLOR':16,'RESET_ALPHA':32,'RESET_TRANSFORM':64,
       'isnull':lambda x:x is None,'istype':lambda x,t:(t=='/matrix' and isinstance(x,Matrix)) or (hasattr(x,'type') and (x.type==t or x.type.startswith(t+'/')))}

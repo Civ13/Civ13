@@ -84,6 +84,9 @@
 	if(!CIV13_GEOMETRIC_LOS_CORE || !los_active_contexts)
 		return
 	var/turf/T = get_turf(changed)
+	// Null-space HUD/helper retirement has no world neighborhood to invalidate.
+	if(!T)
+		return
 	for(var/datum/los_context/V in los_active_contexts)
 		var/client/C = V.owner
 		if(!C || !V.body)
@@ -96,3 +99,14 @@
 			C.root_tree_presenter.invalidate(changed)
 		if(C.los_presenter)
 			C.los_presenter.invalidate(changed)
+
+// Called after authoritative movement callbacks, before the movement proc
+// returns to a yielding locomotion loop. Native client timing remains tested
+// separately; this avoids intentionally waiting for the next process tick.
+/proc/los_refresh_moved_viewer(atom/movable/A)
+	if(!CIV13_GEOMETRIC_LOS_CORE || !ismob(A))
+		return
+	var/mob/M = A
+	if(M.client && M.client.los_context)
+		M.client.los_dirty = TRUE
+		M.client.reconcile_geometric_los()

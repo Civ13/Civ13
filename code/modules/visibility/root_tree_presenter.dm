@@ -9,7 +9,7 @@ var/global/list/root_tree_presenters
 	return istype(A, /obj/structure/wild/tree) || istype(A, /obj/structure/wild/jungle) || istype(A, /obj/structure/wild/palm)
 
 /datum/los_context/proc/root_tree_admitted(atom/A)
-	return CIV13_ROOT_TREE_PRESENTATION && root_tree_family(A) && !A.gcDestroyed && !A.gc_destroyed && isturf(A.loc) && A.plane == GAME_PLANE && A.layer == 5.11 && abs(A.pixel_x) <= 32 && abs(A.pixel_y) <= 32 && !A.pixel_w && !A.pixel_z && root_tree_identity_transform(A.transform) && !length(A.overlays) && !length(A.underlays) && !length(A.filters) && !length(A.vis_contents) && !A.render_source && !A.render_target && !A.maptext
+	return CIV13_ROOT_TREE_PRESENTATION && root_tree_family(A) && !A.gcDestroyed && !A.gc_destroyed && isturf(A.loc) && A.plane == GAME_PLANE && A.layer == 5.11 && abs(A.pixel_x) <= 32 && abs(A.pixel_y) <= 32 && !A.pixel_w && !A.pixel_z && root_tree_identity_transform(A.transform) && !length(A.overlays) && !length(A.underlays) && !length(A.filters) && !length(A:vis_contents) && !A.render_source && !A.render_target && !A.maptext
 
 // Kept for isolated callers; production discovers roots in the current viewport.
 /datum/los_context/proc/admit_root_tree(atom/T)
@@ -123,7 +123,7 @@ var/global/list/root_tree_presenters
 
 /datum/root_tree_presenter/proc/make_lit_relay(source, mask_source, number, order)
 	var/obj/screen/root_scene_relay/R = make_relay(source, number, order)
-	var/image/M = image()
+	var/image/M = image(null)
 	M.render_source = mask_source
 	M.blend_mode = BLEND_MULTIPLY
 	M.appearance_flags = RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
@@ -307,7 +307,7 @@ var/global/list/root_tree_presenters
 		if(root_tree_foreground_appearance(A, A.plane, A.layer, 0, budget))
 			return budget[1] <= 0 ? "appearance audit budget exceeded" : "native foreground or mixed-layer appearance"
 		// Dynamic render/vis grouping cannot be assigned a reliable footprint.
-		if(A.plane == GAME_PLANE && (length(A.vis_contents) || A.render_source || A.render_target || length(A.filters)))
+		if(A.plane == GAME_PLANE && ((ismovable(A) && length(A:vis_contents)) || A.render_source || A.render_target || length(A.filters)))
 			return "unbounded game appearance"
 	for(var/image/I in owner.images)
 		if(I in owned_images)

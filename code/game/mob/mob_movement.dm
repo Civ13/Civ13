@@ -212,6 +212,7 @@
 		l_move_time = world.time
 		if (previous_location != loc && previous_location && previous_location.z == z)
 			last_move = get_dir(previous_location, loc)
+		los_refresh_moved_viewer(src)
 		return .
 	if (istype(src, /mob/living/simple_animal))
 		var/mob/living/simple_animal/npc = src
@@ -304,6 +305,7 @@
 				H.stop_pulling()
 			H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
+	los_refresh_moved_viewer(src)
 	return
 
 /client/proc/Move_object(direct)

@@ -37,6 +37,7 @@
 	..()
 
 /obj/structure/curtain/proc/toggle()
+	los_invalidate(src)
 	opacity = !opacity
 	if (opacity)
 		icon_state = "closed"
