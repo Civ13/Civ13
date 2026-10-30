@@ -183,8 +183,11 @@ class ProductionBoundaryTests(unittest.TestCase):
         workflow = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
         assignment = 'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"'
         self.assertLess(workflow.index(assignment), workflow.index('source "$PWD/BYOND/byond/bin/byondsetup"'))
-        environment = dict(os.environ); environment.pop('LD_LIBRARY_PATH', None)
-        result = subprocess.run(['bash', '-c', 'set -eu; ' + assignment + '; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
+        man_assignment = 'export MANPATH="${MANPATH:-}"'
+        self.assertLess(workflow.index(man_assignment), workflow.index('source "$PWD/BYOND/byond/bin/byondsetup"'))
+        environment = dict(os.environ)
+        for name in ('LD_LIBRARY_PATH', 'MANPATH'): environment.pop(name, None)
+        result = subprocess.run(['bash', '-c', 'set -eu; ' + assignment + '; ' + man_assignment + '; MANPATH="/test/man:$MANPATH"; test "$MANPATH" = /test/man:; LD_LIBRARY_PATH="/test/byond:$LD_LIBRARY_PATH"; test "$LD_LIBRARY_PATH" = /test/byond:'], env=environment, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_existing_fail_closed_boundaries_remain(self):

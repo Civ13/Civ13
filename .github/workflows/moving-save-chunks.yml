@@ -49,8 +49,9 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
-          # The vendor setup appends this optional variable; nounset stays enabled.
+          # The vendor setup appends optional environment variables; nounset stays enabled.
           export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+          export MANPATH="${MANPATH:-}"
           source "$PWD/BYOND/byond/bin/byondsetup"
           evidence="$RUNNER_TEMP/moving-save-evidence"
           mkdir -p "$evidence"
