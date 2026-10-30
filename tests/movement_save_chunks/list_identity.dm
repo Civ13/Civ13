@@ -1,6 +1,6 @@
 // Native BYOND primitive probe, not a Python model or production optimization.
 // No World/New hook: caller must include this file and invoke explicitly.
-// Fixed bounded churn: fewer than 150 explicit list/appearance/object allocations.
+// Fixed bounded churn: fewer than 200 explicit list/appearance/object allocations.
 /proc/check_native_list_identity()
 	var/list/identity_map = list()
 	var/list/pins = list()
@@ -76,13 +76,39 @@
 	pins += list(native_overlays)
 	pins += list(native_underlays)
 	pins += list(native_filters)
-	if(identity_map[native_holder.overlays] != 8 || identity_map[native_holder.underlays] != 9 || identity_map[native_holder.filters] != 10 || pins[8] != native_holder.overlays || pins[9] != native_holder.underlays || pins[10] != native_holder.filters)
-		throw EXCEPTION("LIST_IDENTITY: native-list repeated getter/key/pin mismatch")
+	check_native_list_handle_observation("overlays", native_overlays, native_holder.overlays, identity_map, pins, 8)
+	check_native_list_handle_observation("underlays", native_underlays, native_holder.underlays, identity_map, pins, 9)
+	check_native_list_handle_observation("filters", native_filters, native_holder.filters, identity_map, pins, 10)
+	var/list/baseline_cache = list()
+	var/list/baseline_pins = list()
+	var/list/direct_cache = list()
+	var/list/direct_pins = list()
+	// Feed the exact same held/retrieved handle to each strategy per step.
+	check_native_list_registration("held_overlays", native_overlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("held_underlays", native_underlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("held_filters", native_filters, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("get_overlays", native_holder.overlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("get_underlays", native_holder.underlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("get_filters", native_holder.filters, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("alias_overlays", native_overlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("alias_underlays", native_underlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("alias_filters", native_filters, baseline_cache, baseline_pins, direct_cache, direct_pins)
 	native_holder.overlays += image(null)
 	native_holder.underlays += image(null)
 	native_holder.filters += filter(type = "blur", size = 1)
-	if(identity_map[native_holder.overlays] != 8 || identity_map[native_holder.underlays] != 9 || identity_map[native_holder.filters] != 10 || native_overlays != native_holder.overlays || native_underlays != native_holder.underlays || native_filters != native_holder.filters)
-		throw EXCEPTION("LIST_IDENTITY: native-list mutation changed handle identity")
+	check_native_list_handle_observation("mutated_overlays", native_overlays, native_holder.overlays, identity_map, pins, 8)
+	check_native_list_handle_observation("mutated_underlays", native_underlays, native_holder.underlays, identity_map, pins, 9)
+	check_native_list_handle_observation("mutated_filters", native_filters, native_holder.filters, identity_map, pins, 10)
+	check_native_list_registration("mutated_held_overlays", native_overlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("mutated_held_underlays", native_underlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("mutated_held_filters", native_filters, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("mutated_get_overlays", native_holder.overlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("mutated_get_underlays", native_holder.underlays, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	check_native_list_registration("mutated_get_filters", native_holder.filters, baseline_cache, baseline_pins, direct_cache, direct_pins)
+	baseline_cache.Cut()
+	baseline_pins.Cut()
+	direct_cache.Cut()
+	direct_pins.Cut()
 
 	// Break cycles, then discard map and pins; a new pass must start empty.
 	self_cycle.Cut()
@@ -113,3 +139,30 @@
 	pins.Cut()
 	del(native_holder)
 	return TRUE
+
+// Repeated getters may produce different native list handles. Observe that
+// behavior, but require only held-key lookup and the original pin to be stable.
+/proc/check_native_list_handle_observation(label, list/held, list/retrieved, list/cache, list/pins, expected_id)
+	world.log << "LIST_HANDLE_OBSERVATION label=[label] held_id=[cache[held]] retrieved_id=[cache[retrieved]] same_handle=[held == retrieved] held_pin=[pins[expected_id] == held] retrieved_pin=[pins[expected_id] == retrieved] held_ref=\ref[held] retrieved_ref=\ref[retrieved]"
+	if(cache[held] != expected_id || pins[expected_id] != held)
+		throw EXCEPTION("LIST_IDENTITY: held native handle lookup/pin failed: [label]")
+
+// Mirror the current reference-string algorithm and proposed direct-key
+// algorithm independently, including the pin guard and insertion ordering.
+/proc/check_native_list_registration(label, list/L, list/baseline_cache, list/baseline_pins, list/direct_cache, list/direct_pins)
+	var/baseline_id = baseline_cache["\ref[L]"]
+	if(!baseline_id || baseline_pins[baseline_id] != L)
+		baseline_id = baseline_pins.len + 1
+		baseline_pins += list(L)
+		baseline_cache["\ref[L]"] = baseline_id
+	var/direct_id = direct_cache[L]
+	if(!direct_id || direct_pins[direct_id] != L)
+		direct_id = direct_pins.len + 1
+		direct_pins += list(L)
+		direct_cache[L] = direct_id
+	world.log << "LIST_REGISTRATION_OBSERVATION label=[label] baseline_id=[baseline_id] direct_id=[direct_id] baseline_pin=[baseline_pins[baseline_id] == L] direct_pin=[direct_pins[direct_id] == L] baseline_count=[baseline_pins.len] direct_count=[direct_pins.len]"
+	if(baseline_id != direct_id || baseline_pins.len != direct_pins.len || baseline_pins[baseline_id] != L || direct_pins[direct_id] != L)
+		throw EXCEPTION("LIST_IDENTITY: registration strategies differ: [label]")
+	for(var/i = 1, i <= baseline_pins.len, i++)
+		if(baseline_pins[i] != direct_pins[i])
+			throw EXCEPTION("LIST_IDENTITY: registration alias partition differs: [label] id=[i]")
