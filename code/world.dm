@@ -387,7 +387,7 @@ var/world_topic_spam_protect_time = world.timeofday
 	if(state["kind"] == "load") return "World is loading - please wait before joining."
 	if(state["kind"] == "save") return "World is saving - joining may be delayed."
 	if(state["startup_pending"] || state["restart_hold"]) return "World recovery is pending - please wait."
-	if(state["restart_busy"]) return "Joining is paused for maintenance - please wait."
+	if(state["restart_busy"]) return "Maintenance may affect joining - please wait."
 	if(state["persistence_busy"] || state["lifecycle_busy"]) return "World work is in progress - joining may be delayed."
 	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting - please wait."
 	if(state["round_state"] < GAME_STATE_PLAYING) return "Round has not started - please wait."

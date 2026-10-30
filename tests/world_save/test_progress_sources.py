@@ -225,7 +225,7 @@ class PlayerStatusSources(unittest.TestCase):
             ({'kind':'load'}, 'World is loading - please wait before joining.'),
             ({'kind':'save'}, 'World is saving - joining may be delayed.'),
             ({'startup_pending':True}, 'World recovery is pending - please wait.'),
-            ({'restart_busy':True}, 'Joining is paused for maintenance - please wait.'),
+            ({'restart_busy':True}, 'Maintenance may affect joining - please wait.'),
             ({'ticker_known':False}, 'Server is starting - please wait.'),
             ({'round_state':1}, 'Round has not started - please wait.'),
             ({'round_state':4}, 'Round has finished - wait for the next round.'),
@@ -240,6 +240,28 @@ class PlayerStatusSources(unittest.TestCase):
                 self.assertEqual(value, expected)
                 self.assertNotIn(';', value)
         self.assertIn('checks still apply', self.join(self.ready))
+
+    def test_maintenance_notice_allows_distinct_reclaim_and_fresh_paths(self):
+        restart = (SOURCE_ROOT / 'code/modules/persistence/restart_transaction.dm').read_text(encoding='utf-8')
+        bed_return = (SOURCE_ROOT / 'code/modules/persistence/bed_return.dm').read_text(encoding='utf-8')
+        reclaim = (SOURCE_ROOT / 'code/modules/persistence/player_reclaim.dm').read_text(encoding='utf-8')
+        notice = restart.split('busy = TRUE\n\tdiagnostic_phase = "notice"', 1)[1].split('\n\ttry', 1)[0]
+        self.assertIn('sleep(600)', notice)
+        handler = self.lobby.split('/mob/new_player/proc/handle_lobby_join', 1)[1]
+        self.assertIn('map_storage.allow_new_character(src)', handler)
+        fresh = self.lobby.split('/mob/new_player/proc/lobby_join_admission_current()', 1)[1].split('\n/mob/', 1)[0]
+        self.assertIn('!persistence_restart.busy', fresh)
+        admission = bed_return.split('/map_storage/proc/allow_new_character', 1)[1].split('\n/map_storage/', 1)[0]
+        self.assertLess(admission.index('reclaim_saved_player(lobby)'), admission.index('character_return_pending'))
+        unready = bed_return.split('/map_storage/proc/character_recovery_unready()', 1)[1].split('\n/map_storage/', 1)[0]
+        reclaim_path = reclaim.split('/map_storage/proc/reclaim_saved_player', 1)[1].split('\n/map_storage/', 1)[0]
+        self.assertIn('character_recovery_unready()', reclaim_path)
+        self.assertNotIn('persistence_restart.busy', unready)
+        self.assertNotIn('persistence_restart.busy', reclaim_path)
+        self.assertEqual(self.activity(self.ready | {'restart_busy':True, 'restart_phase':'notice'}),
+                         'Maintenance is scheduled.')
+        self.assertEqual(self.join(self.ready | {'restart_busy':True, 'restart_phase':'notice'}),
+                         'Maintenance may affect joining - please wait.')
 
     def test_public_labels_never_echo_error_or_phase_data(self):
         private = self.ready | {'kind':'load', 'phase':'private/path:12 secret 99,99',
