@@ -22,6 +22,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 	var/list/availablefactions = list()	  // list of factions with openings
 
 	var/pregame_timeleft = FALSE
+	var/pregame_autostart_cancelled = FALSE
 
 	var/delay_end = FALSE	//if set to nonzero, the round will not restart on it's own
 
@@ -42,6 +43,19 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 	//Plus it provides an easy way to make cinematics for other events. Just use this as a template :)
 
+// Cancellation lasts for this lobby, including callbacks that resume after a yield.
+// Start Now remains an explicit override; changing modes back is not a new timer.
+/datum/controller/gameticker/proc/cancel_pregame_autostart()
+	pregame_autostart_cancelled = TRUE
+	if (!admin_started && current_state <= GAME_STATE_SETTING_UP)
+		pregame_timeleft = null
+		current_state = GAME_STATE_PREGAME
+
+/datum/controller/gameticker/proc/pregame_autostart_blocked()
+	if (pregame_autostart_cancelled || (map && map.persistence))
+		cancel_pregame_autostart()
+	return pregame_autostart_cancelled && !admin_started
+
 /datum/controller/gameticker/proc/pregame()
 
 	spawn (0)
@@ -57,27 +71,32 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 
 		do
 			if(map_storage.round_restored) return
-			pregame_timeleft = GAMETICKER_PREGAME_TIME
+			if (!pregame_autostart_blocked())
+				pregame_timeleft = GAMETICKER_PREGAME_TIME
 			maytip = TRUE
 
 			to_chat(world, SPAN_NOTICE("<b>Welcome to the pre-game lobby!</b>"))
-			to_chat(world, "The game will start in [pregame_timeleft] seconds.")
+			if (!pregame_autostart_blocked())
+				to_chat(world, "The game will start in [pregame_timeleft] seconds.")
 
 			while (current_state == GAME_STATE_PREGAME)
 				for (var/i=0, i<10, i++)
 					sleep(1)
 					vote.process()
 				if(map_storage.round_restored) return
+				if (pregame_autostart_blocked()) continue
 				if (round_progressing)
 					pregame_timeleft--
 				if (pregame_timeleft == config.vote_autogamemode_timeleft)
 					if (!vote.time_remaining)
 						vote.autogamemode()	//Quit calling this over and over and over and over.
-						while (vote.time_remaining)
+						while (vote.time_remaining && !pregame_autostart_blocked())
 							for (var/i=0, i<10, i++)
 								sleep(1)
 								if(map_storage.round_restored) return
 								vote.process()
+				// A vote callback may have enabled persistence while we slept.
+				if (pregame_autostart_blocked()) continue
 				if (pregame_timeleft == 20)
 					if (tip)
 						to_chat(world, SPAN_NOTICE("<b>Tip of the round:</b> [tip]"))
@@ -113,6 +132,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		current_state = GAME_STATE_PREGAME
 		return FALSE
 
+	if (pregame_autostart_blocked()) return FALSE
 	var/can_start_round = map && (admin_started || map.can_start())
 	// Admission checks can yield while the autoload completes.
 	if(map_storage.round_restored) return TRUE
@@ -121,6 +141,7 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 		if(map_storage.round_restored) return TRUE
 		current_state = GAME_STATE_PREGAME
 		return FALSE
+	if (pregame_autostart_blocked()) return FALSE
 	if (!can_start_round)
 		to_chat(world, "<b>Unable to start the game.</b> Not enough players, [map.required_players] active players needed. Reverting to the pre-game lobby.")
 		current_state = GAME_STATE_PREGAME

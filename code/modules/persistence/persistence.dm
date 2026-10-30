@@ -8,6 +8,7 @@
 
 	if (map && !map.persistence)
 		map.persistence = TRUE
+		if (ticker) ticker.cancel_pregame_autostart()
 		map.apply_persistence_age_floor()
 		map.research_active = FALSE
 		if (!map.autoresearch)
