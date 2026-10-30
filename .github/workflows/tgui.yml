@@ -53,7 +53,7 @@ jobs:
           npm --prefix tgui run test:browser
       - name: Capture fictional cloud UI previews
         env:
-          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PREVIEW_SOURCE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
           SCREENSHOT_DIR: ${{ runner.temp }}/tgui-previews
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium)"
