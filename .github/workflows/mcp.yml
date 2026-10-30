@@ -9,18 +9,45 @@ permissions:
   contents: read
 jobs:
   changes:
-    uses: ./.github/workflows/ci-selection.yml
-    with:
-      base: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      mcp: ${{ steps.select.outputs.mcp }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Prepare comparison
+        if: github.event_name != 'workflow_dispatch'
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: python3 -B scripts/ci_checkout_refs.py --head "$HEAD_REF" --base "$BASE_REF" --event "$EVENT_NAME"
+      - id: select
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: python3 -B scripts/select-ci.py --mcp-only --base "$BASE_REF" --head "$HEAD_REF" --event "$EVENT_NAME" --output "$GITHUB_OUTPUT"
   mcp:
     needs: changes
-    if: github.event_name == 'workflow_dispatch' || contains(fromJSON(needs.changes.outputs.new_tests), 'tools/mcp')
+    if: needs.changes.outputs.mcp == 'true'
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify checked-out head
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node -e "if (require('child_process').execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim() !== process.env.HEAD_REF) process.exit(1)"
       - uses: actions/setup-node@v4
         with:
           node-version: 24
