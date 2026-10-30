@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "released": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-city-route-official-toolchain-5161688-20261030-r6",
+  "message": "ci: bounded no-capture city route preflight r6",
+  "deadline_utc": "2026-10-31T20:00:00Z",
+  "job": "bakery",
+  "attempt": 1,
+  "scene_sha256": "96629ece177b9c634b1f46a42904800605e1e7797c46d67b417d274d52ee19c4",
+  "approval": "Reviewed one-job app-local no-capture city preflight; authorization retained privately."
+}
