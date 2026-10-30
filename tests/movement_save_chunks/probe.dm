@@ -97,6 +97,9 @@ var/peak_capture_tick_usage = 0
 	OpenPort("none")
 	..()
 	try
+		if(world.params["scenario"] == "walking")
+			if(!check_native_list_identity()) throw EXCEPTION("LIST_IDENTITY: primitive probe did not complete")
+			world.log << "LIST_IDENTITY: PASS"
 		map_storage = new /map_storage/chunk_fixture
 		map = new /obj/map_metadata(locate(1,1,1))
 		var/mob/living/simple_animal/chunk_fixture/optional_cuff/cuffed = new(locate(1,1,1))
