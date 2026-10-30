@@ -21,6 +21,8 @@ class PreparationTests(unittest.TestCase):
         subprocess.run(['git', 'init', '-q', str(self.repo)], check=True)
         inputs = {
             'tests/gaia_visibility/prepare.py': (HERE / 'prepare.py').read_bytes(),
+            'tests/gaia_visibility/isolation.py': (HERE / 'isolation.py').read_bytes(),
+            'tests/gaia_visibility/bootstrap.dm': (HERE / 'bootstrap.dm').read_bytes(),
             'tests/gaia_visibility/fixture.dm': (HERE / 'fixture.dm').read_bytes(),
             'civ13.dme': b'#include "code/dependency.dm"\n// BEGIN_SELECTED_MAP\n#include "old.dmm"\n// END_SELECTED_MAP\n',
             'code/dependency.dm': b'// full dependency retained\n',
@@ -28,6 +30,8 @@ class PreparationTests(unittest.TestCase):
             'code/modules/visibility/root_tree_presenter.dm': b'\tI.pixel_x = 0\n',
             'tools/byond/version.json': b'{"version":"516.1688"}',
         }
+        for name, guards in prepare.isolation.GUARDS.items():
+            inputs[name] = ''.join(signature + '\n\treturn \"original unreachable\"\n' for signature, _ in guards).encode()
         for name, data in inputs.items():
             path = self.repo / name
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -59,6 +63,16 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('code/dependency.dm', dme)
         self.assertIn('tests/gaia_visibility/fixture.dm', dme)
 
+    def test_guarded_bootstrap_and_empty_owned_runtime(self):
+        self.stage()
+        root = self.root / 'out'
+        source = (root / 'code/world.dm').read_text()
+        self.assertIn('/datum/global_init/New()\n\treturn gaia_visibility_global_init()', source)
+        self.assertIn('/world/New()\n\treturn gaia_visibility_start()', source)
+        self.assertIn('bootstrap.dm', (root / 'gaia_visibility.dme').read_text())
+        for folder in ('config', 'data', 'map_saves', 'SQL', 'logs'):
+            self.assertEqual(list((root / 'owned-runtime' / folder).iterdir()), [])
+
     def test_large_asset_streams_without_source_size_limit(self):
         asset = self.repo / 'icons/large-asset.bin'
         asset.parent.mkdir()
@@ -87,7 +101,7 @@ class PreparationTests(unittest.TestCase):
             manifest = self.stage(control, control)
             self.assertEqual(manifest['control'], control)
             changed = [name for name, hashes in manifest['files'].items() if hashes['original_sha256'] and hashes['original_sha256'] != hashes['prepared_sha256']]
-            self.assertEqual(len(changed), 0 if control == 'native-los' else 1)
+            self.assertEqual(len(changed), len(prepare.isolation.GUARDS) + (0 if control == 'native-los' else 1))
 
     def test_refuses_mutable_ref_existing_output_and_tool_drift(self):
         with self.assertRaises(ValueError):

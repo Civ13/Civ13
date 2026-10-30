@@ -31,26 +31,49 @@ preserved unchanged. Review the generated diff and hashes before compilation.
 and palm), grass/snow, grass/rock clutter, a door in a wall line and a roof zone.
 Initial inspection positions are around (24,24,1), (24,24,2), door (33,24,z) and
 roof (38,24,z). These are prepared coordinates, not proof that map startup works.
-The ordinary map metadata and constructors are deliberately real dependencies.
+The ordinary map types and constructors are dependencies; metadata worker startup
+is explicitly suppressed by staged guards.
 
 ## Readiness boundary
 
-**Do not launch this packet yet.** Full game global initialization/startup remains
-in the source and can read configuration, write runtime data, or cause external
-effects. A generated map plus `visibility=0`, `-close` or a loopback address would
-not establish isolation. Before any future execution the runtime owner must
-review a fresh empty runtime directory, sanitized fixture configuration, outbound
-adapters, persistence paths, process lifetime/cleanup and listener admission, and
-obtain the specific native-run permission. None is supplied by prepare.py.
-Compilation of the isolated `gaia_visibility.dme` is a separate reported step;
-use the pinned toolchain and existing authorized compile boundary. This document
-contains no launch command. Never copy production credentials or a live save into
-this packet. A save/load case uses a fixture-generated temporary save only.
+**Do not launch this packet yet.** `isolation.py` now stages exact entry guards
+before the early global initializer, normal world startup, configuration loader,
+map metadata worker scheduling, client/admin/webhook admission and preference
+saving. `bootstrap.dm` replaces those paths with an in-memory configuration and
+only lighting/visibility processing. Prepared macros route native extension calls
+and shell calls to counting no-ops; world Export/Import/Topic/Reboot/settings are
+blocked. No OS security settings are changed. These are source adapters, not an
+established confinement result; compilation and native bootstrap remain unverified.
+
+Preparation creates `owned-runtime/{config,data,map_saves,SQL,logs}` as **empty**
+directories, separate from the archived source/configuration. A future admitted
+launcher must use that fresh runtime cwd and copy only reviewed compiled resources,
+never production configuration, credentials or saves. No launch is provided here.
+The external runtime owner must verify OS egress containment, loopback binding,
+unique listener ownership, no inherited privileged credentials, a process-tree
+watchdog and cleanup. BYOND can bind its initial listener before DM global startup;
+the early `OpenPort("none")` is not a substitute for that external admission.
+
+Default bootstrap is closed and terminates without explicit `fixture_admit`,
+three unique `fixture_clients` ckeys and a high `fixture_port`. These parameters
+are **not approval** and must not be supplied until separately admitted. Once
+admitted, only loopback clients on that allowlist are accepted, at most three at
+once, with in-memory preferences and no administrative grants. The packet has a
+ten-minute post-initialization ceiling and closes the listener/retires owned
+presentation before shutdown. An external watchdog remains necessary for startup
+failures or hangs. No credentials, account creation or automatic sign-in is added.
+
+The minimal bootstrap intentionally does not prove production scheduler/startup,
+normal client-admission integrations, authentication, full-game ecology or save/load.
+Those cases remain separate production-path acceptance, not results to attribute
+to this packet. A save/load case must use a separately reviewed temporary-save
+adapter; it is not enabled here. Source-controlled fixture compile CI may compile
+`gaia_visibility.dme`, but must never launch DreamDaemon.
 
 ## Real-client acceptance protocol (not automated assertions)
 
 Admit **three actual connected clients** after runtime admission. Use production
-human bodies, ordinary HUD/login and the shared visibility process; do not stub
+human bodies and HUD/login beneath the fixture client-admission adapter; do not stub
 clients or call a fake presenter. `gaia_visibility_fixture_report()` returns
 preconditions, mask counts and fallback diagnostics, but no PASS. It omits account
 identifiers and explicitly reports pixel/input/performance as not measured.

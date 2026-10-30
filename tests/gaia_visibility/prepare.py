@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import hashlib
+import importlib.util
 import json
 from pathlib import Path, PurePosixPath
 import re
@@ -13,6 +14,11 @@ ROOT = Path(__file__).resolve().parents[2]
 SELF = 'tests/gaia_visibility/prepare.py'
 FIXTURE = 'tests/gaia_visibility/fixture.dm'
 CONTROLS = ('native-los', 'white-root', 'double-offset')
+ISOLATION_PATH = 'tests/gaia_visibility/isolation.py'
+BOOTSTRAP_PATH = 'tests/gaia_visibility/bootstrap.dm'
+spec = importlib.util.spec_from_file_location('gaia_visibility_isolation', Path(__file__).with_name('isolation.py'))
+isolation = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(isolation)
 
 
 def git(repo, *args):
@@ -73,6 +79,8 @@ def prepare(output, head, *, control=None, repo=ROOT):
     committed_tool = git(repo, 'show', head + ':' + SELF)
     if committed_tool != Path(__file__).read_bytes():
         raise ValueError('prepare.py is not the exact candidate version; commit it first')
+    if git(repo, 'show', head + ':' + ISOLATION_PATH) != Path(__file__).with_name('isolation.py').read_bytes():
+        raise ValueError('isolation.py is not the exact candidate version; commit it first')
     output = Path(output).absolute()
     if output.exists() or output.is_symlink():
         raise FileExistsError(output)
@@ -102,6 +110,7 @@ def prepare(output, head, *, control=None, repo=ROOT):
                 return tar.extractfile(member).read()
 
             read_small(FIXTURE)
+            read_small(BOOTSTRAP_PATH)
             version = json.loads(read_small('tools/byond/version.json'))['version']
             dme = read_small('civ13.dme').decode()
             begin, end = '// BEGIN_SELECTED_MAP', '// END_SELECTED_MAP'
@@ -109,8 +118,8 @@ def prepare(output, head, *, control=None, repo=ROOT):
                 raise ValueError('selected-map boundary drift')
             a, b = dme.index(begin), dme.index(end) + len(end)
             dme = dme[:a] + '#include "tests/gaia_visibility/scene.dmm"' + dme[b:]
-            prefix = '#define GAIA_VISIBILITY_FIXTURE_BUILD\n'
-            updates = {}
+            prefix = '#define GAIA_VISIBILITY_FIXTURE_BUILD\n' + isolation.PREFIX.decode()
+            updates = {path: isolation.adapt(path, read_small(path)) for path in isolation.GUARDS}
             if control == 'native-los':
                 prefix += '#define CIV13_GEOMETRIC_LOS_CORE 0\n#define CIV13_ROOT_TREE_PRESENTATION 0\n'
             elif control == 'white-root':
@@ -120,7 +129,7 @@ def prepare(output, head, *, control=None, repo=ROOT):
             elif control == 'double-offset':
                 path = 'code/modules/visibility/root_tree_presenter.dm'
                 updates[path] = change_once(read_small(path), b'\tI.pixel_x = 0\n', b'\tI.pixel_x = T.pixel_x\n')
-            updates['gaia_visibility.dme'] = (prefix + dme + '\n#include "' + FIXTURE + '"\n').encode()
+            updates['gaia_visibility.dme'] = (prefix + dme + '\n#include "' + FIXTURE + '"\n#include "' + BOOTSTRAP_PATH + '"\n').encode()
             updates['tests/gaia_visibility/scene.dmm'] = scene()
             # Validate all paths and control anchors before creating destination.
             output.mkdir(parents=True, exist_ok=False)
@@ -141,13 +150,19 @@ def prepare(output, head, *, control=None, repo=ROOT):
                 hashes.setdefault(name, {'original_sha256': None})['prepared_sha256'] = sha(data)
     manifest = {
         'schema': 1, 'head': head, 'control': control,
-        'scope': 'preparation_only_full_game_startup_NOT_admitted_for_execution',
+        'scope': 'preparation_only_guarded_bootstrap_NOT_admitted_for_execution',
         'compiled': False, 'executed': False, 'client_pixel_evidence': False,
         'toolchain': version,
         'entrypoint': 'gaia_visibility.dme',
+        'runtime_directory': 'owned-runtime',
+        'isolation_adapters': list(isolation.GUARDS),
+        'execution_admitted': False,
         'scene': {'width': 48, 'height': 48, 'levels': 2, 'roots_per_level': 12, 'real_clients_required': 3},
         'files': dict(sorted(hashes.items())),
     }
+    runtime = output / 'owned-runtime'
+    for folder in ('config', 'data', 'map_saves', 'SQL', 'logs'):
+        (runtime / folder).mkdir(parents=True, exist_ok=False)
     (output / 'gaia-visibility-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
 
     return manifest
