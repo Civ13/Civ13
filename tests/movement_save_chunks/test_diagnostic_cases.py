@@ -48,7 +48,7 @@ class DiagnosticCaseTests(unittest.TestCase):
         self.assertTrue(all(row in full_cases() for row in plan['cases']))
         self.assertFalse(any(key in plan for key in ('limits', 'case_seconds', 'rss_mib', 'job_seconds')))
 
-    def test_acceptance_workflow_restores_full_matrix_with_unchanged_limits(self):
+    def test_diagnostic_workflow_keeps_limits_and_explicit_subset(self):
         text = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
         commands = [line for line in text.splitlines() if 'python3 -B tests/movement_save_chunks/' in line and '--run-native' in line]
         self.assertEqual(len(commands), 2)
@@ -57,7 +57,8 @@ class DiagnosticCaseTests(unittest.TestCase):
         self.assertNotIn('--diagnostic-subset', correctness)
         self.assertIn('--job-seconds 240', correctness)
         self.assertIn('benchmark.py', memory)
-        self.assertNotIn('--diagnostic-subset', memory)
+        self.assertIn('--diagnostic-subset', memory)
+        self.assertIn('--profile-datums', memory)
         self.assertIn('--job-seconds 900', memory)
 
 

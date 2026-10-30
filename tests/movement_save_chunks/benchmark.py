@@ -23,6 +23,10 @@ _plan_spec = importlib.util.spec_from_file_location('moving_save_diagnostic_case
 _plan_module = importlib.util.module_from_spec(_plan_spec)
 _plan_spec.loader.exec_module(_plan_module)
 select_case_plan = _plan_module.select_case_plan
+_profile_spec = importlib.util.spec_from_file_location('moving_save_datum_profile', Path(__file__).with_name('datum_profile.py'))
+_profile_module = importlib.util.module_from_spec(_profile_spec)
+_profile_spec.loader.exec_module(_profile_module)
+instrument_datum_references = _profile_module.instrument_datum_references
 FILES = ('code/predefines.dm', 'tests/world_save/stubs.dm',
          'code/modules/multiz/world_z_budget.dm', 'code/modules/persistence/functions.dm',
          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/saving.dm',
@@ -54,7 +58,7 @@ def cases():
             for baseline in (1, 0)]
 
 
-def prepare(output: Path, diagnostic_subset=False):
+def prepare(output: Path, diagnostic_subset=False, profile_datums=False):
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()): raise ValueError('output must be a new or empty isolated directory')
     hashes = {}
@@ -63,6 +67,7 @@ def prepare(output: Path, diagnostic_subset=False):
     for name in FILES:
         data = (ROOT / name).read_bytes()
         production_hashes[name] = hashlib.sha256(data).hexdigest()
+        if profile_datums: data = instrument_datum_references(name, data.decode()).encode()
         target = output / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
@@ -83,10 +88,12 @@ def prepare(output: Path, diagnostic_subset=False):
     hashes['benchmark.dme'] = hashlib.sha256(dme.encode()).hexdigest()
     (output / 'baseline-source/benchmark.dme').write_text(dme)
     baseline_hashes['benchmark.dme'] = hashes['benchmark.dme']
-    receipt = dict(schema=1, execution='not_run', byond_version=VERSION,
+    receipt = dict(schema=1, execution='not_run', byond_version=VERSION, profile_datums=profile_datums,
+                   datum_profile_sites={"saver": _profile_module.EXPECTED_SAVER_REF_SITES, "frame": 1} if profile_datums else {},
+                   datum_profiler_sha256=hashlib.sha256(Path(__file__).with_name('datum_profile.py').read_bytes()).hexdigest(),
                    case_selector_sha256=hashlib.sha256(Path(__file__).with_name('diagnostic_cases.py').read_bytes()).hexdigest(),
                    baseline='same-head old reference-string list keys and disabled roster', sources=hashes, production_sources=production_hashes, baseline_sources=baseline_hashes, **select_case_plan(cases(), diagnostic_subset),
-                   instrumentation={'scope': 'logical fixture counters only; candidate serializer bytes unchanged', 'timing': 'Counter instrumentation adds overhead. Fine interval probes removed for acceptance matrix.'},
+                   instrumentation={'scope': 'copied-packet native datum reference timing' if profile_datums else 'logical fixture counters only; candidate serializer bytes unchanged', 'timing': 'Instrumentation adds overhead; opt-in reference profiling is diagnostic only, not acceptance timing.'},
                    boundaries={'live_server': False, 'listener_control': 'fixture OpenPort(none), loopback-only daemon, no webclient; socket absence not measured', 'max_concurrency': 1},
                    missing_evidence=['native compilation', 'RSS/private memory', 'fresh-process restore'])
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2))
@@ -285,6 +292,7 @@ def run_native(output: Path, byond_bin: Path, byond_archive: Path, limits: Limit
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--profile-datums', action='store_true', help='Opt-in copied-packet native reference timing; not acceptance evidence')
     parser.add_argument('--diagnostic-subset', action='store_true', help='Four candidate-only diagnostic cases; not comparative evidence')
     parser.add_argument('--run-native', action='store_true', help='Explicitly compile and run isolated native fixture; requires separate authorization')
     parser.add_argument('--byond-bin', type=Path)
@@ -299,7 +307,7 @@ def main(argv=None):
     except ValueError as error: parser.error(str(error))
     if args.run_native and (not args.byond_bin or not args.byond_archive or not args.output): parser.error('--run-native requires --byond-bin, --byond-archive and --output')
     output = args.output.resolve() if args.output else Path(tempfile.mkdtemp(prefix='civ13-moving-save-benchmark-'))
-    receipt = prepare(output, args.diagnostic_subset)
+    receipt = prepare(output, args.diagnostic_subset, args.profile_datums)
     if args.run_native:
         try:
             receipt = run_native(output, args.byond_bin.absolute(), args.byond_archive.absolute(), limits)
