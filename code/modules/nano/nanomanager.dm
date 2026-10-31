@@ -233,10 +233,21 @@ GLOBAL_DATUM_INIT(nanomanager, /datum/nanomanager, new) // NanoManager, the mana
 	if (isnull(newMob.open_uis) || !istype(newMob.open_uis, /list))
 		newMob.open_uis = list()
 
-	for (var/datum/nanoui/ui in oldMob.open_uis)
+	for (var/datum/nanoui/ui in oldMob.open_uis.Copy())
 		ui.user = newMob
 		newMob.open_uis.Add(ui)
+		if (istype(ui, /datum/nanoui/tgui))
+			var/datum/nanoui/tgui/modern_ui = ui
+			modern_ui.prepare_user_transfer(oldMob.client)
 
 	oldMob.open_uis.Cut()
 
 	return TRUE // success
+
+// Native key assignment links the client after user_transferred has returned.
+/datum/nanomanager/proc/user_transfer_completed(var/mob/newMob)
+	if (!newMob || !newMob.client || !islist(newMob.open_uis))
+		return
+	for (var/datum/nanoui/tgui/ui in newMob.open_uis.Copy())
+		if (istype(ui, /datum/nanoui/tgui) && ui.user == newMob)
+			ui.complete_user_transfer(newMob)

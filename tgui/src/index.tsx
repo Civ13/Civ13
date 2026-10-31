@@ -10,7 +10,12 @@ let state: State = emptyState;
 const listeners = new Set<() => void>();
 function subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener); }; }
 function receive(raw: string) {
-  try { state = updateState(state, raw); listeners.forEach(listener => listener()); }
+  try {
+    const next = updateState(state, raw);
+    if (!window.Civ13Tgui.acceptSnapshot(next.config)) return;
+    state = next;
+    listeners.forEach(listener => listener());
+  }
   catch { window.Civ13Tgui.fallback(); }
 }
 class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {

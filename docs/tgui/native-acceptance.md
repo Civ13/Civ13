@@ -68,7 +68,8 @@ external integration or account credentials are required by this scene.
 
 | Case | Steps | Required observation |
 | --- | --- | --- |
-| Ready/snapshot/action/update | Open modern chemistry scene as A; wait for actual ready; click Amount 10 once. | Browser sends `type=ready` with datum ref/window/generation; server records `frontend_ready`, emits initial `data.amount=5`; exactly one native `act/amount` with `{amount:10}` reaches host; later server snapshot and visible UI show 10. Preserve this ordered chain. |
+| Ready/snapshot/ack/action/update | Open modern chemistry scene as A; wait for actual ready and current snapshot; click Amount 10 once. | Browser sends `type=ready` with datum ref/window/generation; server emits initial `data.amount=5`; browser validates snapshot identity and sends `ack`; server records acknowledgement; exactly one native `act/amount` reaches host and later snapshot/UI show 10. React mount alone must leave startup pending. |
+| Missing handshake delivery | In explicit fixture-only variants separately drop ready, first snapshot, then ack. Also drop the client fallback message. Retain exact injection diff and clean control. | Client requests fallback at 15 s without a valid snapshot; even with a silent outbound bridge, the server's 20 s watchdog selects classic if current owner/client/generation/state remain valid. Observe actual classic window and its usable legacy action. No claim of wall-clock scheduling under a stalled server, recovery after successful startup, or recovery if classic browse/assets also fail. |
 | Before ready and status-only | In a separately controlled run delay ready within 15 s; update counter to 7 before readiness; then release ready. Disable interaction via actual fixture topic state. | Latest snapshot after ready shows 7; pre-ready action dispatch count remains zero; disabled config is delivered and a real action attempt has no host effect. Receipt distinguishes observer/control injection from ordinary clicks. |
 | Cold/warm cache and focus | In isolated fresh profile open once, close and reopen without clearing it; click/edit UI then use map input. | Record requested/sent assets and received hashes in both passes, successful handshake and visible state; no stale old bundle. Focus returns to map on open per base `open()`; keyboard/close interactions remain usable. Warm-cache traffic reduction is a measurement, not an assumed pass criterion. |
 | Manual fallback | Click Classic interface after a modern snapshot. | Actual native `fallback` reaches current UI; `legacy_renderer` becomes true; `open()` advances generation and real legacy templates render with latest data; legacy action reaches host once. A fallback callback alone is insufficient. |
@@ -79,6 +80,19 @@ external integration or account credentials are required by this scene.
 | Stale generation/window | Retain a real old-page URL, close/reopen or fallback, then navigate to the old ready/action/fallback URL from the connected client. Repeat with wrong window. | Stale messages have zero host effects and do not change current ready/renderer state; a valid current action is the positive control. Log tokens only in private evidence. |
 | Wrong owner | From the second isolated client navigate to the first owner's actual ready/action/fallback URL. | `usr != user` rejects it before state/host mutation; valid owner action is the positive control. One client's A -> B transfer is not this negative control. |
 | Loss of access/deleted host | Move out of allowed range or change real topic state; separately delete the synthetic host while open. | Ordinary status/closure path runs, no stale action mutates a host, no runtime error or lingering registered window. |
+
+For the startup-recovery follow-up, transfer must reopen a modern tgui window
+only after native key assignment links the intended client reciprocally to B.
+The preceding ownership transfer must already invalidate generation/ready/ack
+while B.client is null. An active classic window keeps its existing renderer.
+Test logout and a second transfer before the first completion hook. Retain delayed old ready,
+ack and timer callbacks: none may acknowledge or reopen B's current generation.
+Close/logout must similarly prevent a delayed watchdog from reopening a window.
+These candidate source expectations are unrun until the follow-up is reviewed,
+published and actually exercised; original-head browser evidence cannot accept them.
+After ready with ack deliberately dropped, a modern action must have zero host
+effects. Delivering a valid ack must not replay it; a fresh current-owner action
+must execute once. Retain the existing status/window/generation negative controls.
 
 ## Native faction scene extension
 

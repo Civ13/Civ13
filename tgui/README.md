@@ -41,6 +41,31 @@ retained NanoUI on incompatibility, loading timeout or runtime error. Every
 modern screen also exposes **Classic interface**. It is a per-window fallback,
 not an account setting. No IE support is claimed for React19.
 
+The ten converted producers select the modern adapter by default; there is no
+opt-in feature toggle. Capability checks and retained classic rendering provide
+compatibility fallback, not a dormant modern path.
+
+React mounting sends `ready` but leaves the 15-second startup watchdog pending.
+Only a valid snapshot matching this UI ref, window and generation completes
+client startup and sends `ack`. The server retains a separate 20-second startup
+watchdog until that owner/generation's acknowledgement arrives. If ready,
+snapshot or ack delivery fails, the server can select the retained classic
+renderer without a successful client fallback message. Close invalidates the
+callback. Mob transfer invalidates startup state before the new mob has a client;
+the post-key-assignment hook reopens only after reciprocal binding to the intended
+client is confirmed, then starts a new bounded handshake. Classic fallback remains sticky for that
+UI datum. This covers initial handshake recovery, not failures after startup.
+Modern gameplay actions require ready and acknowledgement in addition to the
+existing owner/status/generation checks. Pre-ack actions are rejected; a later
+ack does not queue or replay them.
+
+`node tests/tgui/bootstrap.test.cjs` executes the actual bootstrap with fake
+transport and clocks. Its server side is a model using the production watchdog
+guard expressions, not DM execution. The production-bundle JSDOM check uses the
+real bootstrap, completes ready/snapshot/ack and rejects a stale-generation
+snapshot. Native Topic delivery, timer scheduling, actual classic reopen,
+cache, focus and transfer still require separate authorized acceptance.
+
 NanoUI owns windows, authorization, processing and cleanup. Modern actions go
 through a UI-datum ref, window id and generation token; the backend allowlists
 one action and its payload keys and rechecks ownership/status before dispatch.

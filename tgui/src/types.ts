@@ -6,6 +6,6 @@ export type State = { config: Config; data: Data };
 declare global {
   interface Window {
     receiveUpdateData: (raw: string) => void;
-    Civ13Tgui: { queue: string[]; send: (type: string, payload?: Params) => void; ready: () => void; fallback: () => void };
+    Civ13Tgui: { queue: string[]; send: (type: string, payload?: Params) => void; ready: () => void; acceptSnapshot: (config: Config) => boolean; fallback: () => void };
   }
 }

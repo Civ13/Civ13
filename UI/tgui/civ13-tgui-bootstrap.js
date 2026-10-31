@@ -7,6 +7,8 @@
   var generation = body.getAttribute('data-generation');
   var stopped = false;
   var ready = false;
+  var snapshotReceived = false;
+  var acknowledged = false;
   var timer;
   var send = function (type, payload) {
     if (stopped) { return; }
@@ -15,14 +17,24 @@
       + '&generation=' + encodeURIComponent(generation)
       + '&type=' + encodeURIComponent(type);
     if (payload !== undefined) { url += '&payload=' + encodeURIComponent(JSON.stringify(payload)); }
-    if (window.cef_to_byond) { window.cef_to_byond(url); }
-    else { window.location.href = url; }
+    try {
+      if (window.cef_to_byond) { window.cef_to_byond(url); }
+      else { window.location.href = url; }
+    } catch (error) { /* The bounded server watchdog owns silent-bridge recovery. */ }
   };
   var fallback = function () {
     if (stopped) { return; }
     send('fallback');
     stopped = true;
     window.clearTimeout(timer);
+  };
+  var completeStartup = function () {
+    if (stopped || !ready || !snapshotReceived || acknowledged) { return; }
+    acknowledged = true;
+    send('ack');
+    window.clearTimeout(timer);
+    var loading = document.getElementById('tgui-loading');
+    if (loading) { loading.style.display = 'none'; }
   };
   var bridge = window.Civ13Tgui = {
     queue: [],
@@ -31,10 +43,16 @@
     ready: function () {
       if (stopped || ready) { return; }
       ready = true;
-      window.clearTimeout(timer);
       send('ready');
-      var loading = document.getElementById('tgui-loading');
-      if (loading) { loading.style.display = 'none'; }
+      completeStartup();
+    },
+    acceptSnapshot: function (config) {
+      if (stopped || !config || config.ref !== ref || config.window !== windowId
+          || String(config.generation) !== generation || typeof config.template !== 'string'
+          || (config.status !== -1 && config.status !== 0 && config.status !== 1 && config.status !== 2)) { return false; }
+      snapshotReceived = true;
+      completeStartup();
+      return true;
     }
   };
   window.receiveUpdateData = function (raw) {
@@ -52,7 +70,7 @@
   }
   window.onerror = function () { fallback(); return true; };
   window.onunhandledrejection = function () { fallback(); };
-  timer = window.setTimeout(fallback, 15000);
+  timer = window.setTimeout(function () { if (!acknowledged) { fallback(); } }, 15000);
   var css = document.createElement('link');
   css.rel = 'stylesheet';
   css.href = 'civ13-tgui.css';

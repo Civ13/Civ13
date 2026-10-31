@@ -23,6 +23,9 @@ independent verification record.
 - Scope is those ten screens and their reusable UI foundation. Ordinary
   `browse()` windows, chat, HUD, launcher and OpenDream runtime are not migrated.
   No gameplay, map, persistence, or /tg/ machine implementation is imported.
+- The converted producers instantiate the modern adapter by default. Browser
+  capability checks select classic fallback when needed; this is not an opt-in
+  or dormant renderer. No deployment/feature-toggle change follows from this plan.
 
 ## Architecture decision
 
@@ -199,6 +202,13 @@ unverified and is not included in the native plan. See the bounded
 [native acceptance scene plan](native-acceptance.md), which prepares future work
 without launching a compiler, daemon or client. Current-master integration
 requires reconciliation and refreshed evidence if implementation bytes change.
+
+The source startup-recovery follow-up keeps the client watchdog pending through
+the first valid current-generation snapshot, sends an acknowledgement, and adds
+a bounded server watchdog for missing ready/snapshot/ack delivery. It preserves
+owner/status/generation checks and sticky classic fallback. Its fake transport,
+source contracts and production-bundle checks do not establish native recovery;
+the follow-up requires independent review and its own publication/CI evidence.
 
 A dependency audit found development-tool advisories in an initial test-runner
 pin and unnecessary Rspack CLI development-server dependencies. The follow-on

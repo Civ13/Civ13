@@ -4,6 +4,8 @@
 /datum/nanoui/tgui
 	var/legacy_renderer = FALSE
 	var/frontend_ready = FALSE
+	var/frontend_acknowledged = FALSE
+	var/client/pending_transfer_client
 	var/render_generation = 0
 	var/list/latest_data
 
@@ -16,15 +18,67 @@
 		return
 	render_generation++
 	frontend_ready = FALSE
+	frontend_acknowledged = FALSE
+	pending_transfer_client = null
 	if (!legacy_renderer)
 		var/datum/asset/assets = get_asset_datum(/datum/asset/simple/civ13_tgui)
 		assets.send(user)
-	return ..()
+	. = ..()
+	if (!legacy_renderer && state && user && user.client)
+		var/open_generation = render_generation
+		var/mob/open_user = user
+		var/client/open_client = user.client
+		// Browser ready alone does not prove receipt of a server snapshot.
+		// Recover even when client-to-server ready/fallback never arrives.
+		spawn(200)
+			if (legacy_renderer || frontend_acknowledged || render_generation != open_generation || user != open_user)
+				return
+			if (!user || user.client != open_client || !src_object || !state)
+				return
+			use_legacy_renderer()
 
 /datum/nanoui/tgui/close()
 	frontend_ready = FALSE
+	frontend_acknowledged = FALSE
+	pending_transfer_client = null
 	render_generation++
 	return ..()
+
+// Ownership moves before mind.transfer_to links the client's new body.
+/datum/nanoui/tgui/proc/prepare_user_transfer(var/client/expected_client)
+	render_generation++
+	frontend_ready = FALSE
+	frontend_acknowledged = FALSE
+	if (!expected_client)
+		expected_client = pending_transfer_client
+	pending_transfer_client = null
+	if (legacy_renderer)
+		return
+	if (!expected_client)
+		close()
+		return
+	pending_transfer_client = expected_client
+
+// Called only after key assignment, with current ownership checked by manager.
+/datum/nanoui/tgui/proc/complete_user_transfer(var/mob/linked_user)
+	if (legacy_renderer || user != linked_user || !user || !state || !src_object || !pending_transfer_client)
+		return
+	if (user.client != pending_transfer_client || pending_transfer_client.mob != user)
+		return
+	pending_transfer_client = null
+	open()
+
+// Shared by a validated browser fallback and the server startup watchdog.
+// Retain classic rendering for this UI datum once recovery is selected.
+/datum/nanoui/tgui/proc/use_legacy_renderer()
+	if (legacy_renderer || !user || !user.client || !src_object || !state)
+		return
+	update_status(FALSE)
+	if (!state || status == STATUS_CLOSE)
+		return
+	legacy_renderer = TRUE
+	set_initial_data(latest_data)
+	open()
 
 /datum/nanoui/tgui/get_config_data()
 	var/list/config = ..()
@@ -96,15 +150,17 @@
 		return
 	var/message_type = href_list["type"]
 	if (message_type == "fallback")
-		legacy_renderer = TRUE
-		set_initial_data(latest_data)
-		open()
+		use_legacy_renderer()
 		return
 	if (message_type == "ready")
 		frontend_ready = TRUE
 		push_data(status == STATUS_DISABLED ? null : latest_data, TRUE)
 		return
-	if (status != STATUS_INTERACTIVE || !frontend_ready || copytext(message_type, 1, 5) != "act/")
+	if (message_type == "ack")
+		if (frontend_ready)
+			frontend_acknowledged = TRUE
+		return
+	if (status != STATUS_INTERACTIVE || !frontend_ready || !frontend_acknowledged || copytext(message_type, 1, 5) != "act/")
 		return
 	var/action = copytext(message_type, 5)
 	if (!(action in allowed_actions()))
