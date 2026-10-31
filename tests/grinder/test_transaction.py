@@ -19,6 +19,16 @@ MACHINE = '/obj/structure/grinder'
 BATCH = '/datum/grinder_batch'
 STACK = '/obj/item/stack'
 STACK_SOURCE = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8')
+CHIPS = '/obj/item/stack/wood_chips'
+OVEN = '/obj/structure/oven'
+SHEETS_SOURCE = (ROOT / 'code/modules/materials/material_sheets.dm').read_text(encoding='utf-8')
+OVEN_SOURCE = (ROOT / 'code/game/objects/structures/kitchen/oven.dm').read_text(encoding='utf-8')
+ASH_SOURCE = (ROOT / 'code/modules/1713/wood_ash_compost.dm').read_text(encoding='utf-8')
+
+
+def chip_fields(source=SHEETS_SOURCE):
+    block = source.split(CHIPS + '\n', 1)[1].split('\n/', 1)[0]
+    return {key: value.split(' //', 1)[0] for key, value in re.findall(r'^\t(\w+) = (.+)$', block, re.M)}
 
 
 class Record:
@@ -32,8 +42,8 @@ class Returned(Exception):
 
 
 class Projection:
-    def __init__(self, source=SOURCE):
-        self.source = source + '\n' + STACK_SOURCE
+    def __init__(self, source=SOURCE, oven=OVEN_SOURCE):
+        self.source = source + '\n' + STACK_SOURCE + '\n' + SHEETS_SOURCE + '\n' + oven + '\n' + ASH_SOURCE
         self.time = 0
         self.pending = []
         self.sequence = 0
@@ -48,11 +58,12 @@ class Projection:
                           self.source, re.M | re.S)
         if not match:
             raise AssertionError('Missing production procedure: ' + path)
-        return [(len(line) - len(line.lstrip('\t')), line.strip())
+        return [(len(line) - len(line.lstrip('\t')), re.split(r'\s+//', line.strip(), maxsplit=1)[0])
                 for line in match[1].splitlines()
                 if line.strip() and not line.strip().startswith('//')]
 
     def expression(self, text, receiver, local):
+        text = re.sub(r'(/(?:obj|mob)(?:/\w+)+)', lambda match: repr(match[1]), text)
         text = text.replace('&&', ' and ').replace('||', ' or ')
         text = re.sub(r'!(?!=)', ' not ', text).strip()
         tree = ast.parse(text, mode='eval')
@@ -64,12 +75,18 @@ class Projection:
         if any(not isinstance(node, permitted) for node in ast.walk(tree)):
             raise AssertionError('Unsupported expression: ' + text)
         environment = dict(receiver.__dict__) | self.globals | local
-        for name in ('valid', 'check_power', 'stop_grinding', 'can_grind_input', 'draw_cable_power'):
+        for name in ('valid', 'check_power', 'stop_grinding', 'can_grind_input', 'draw_cable_power',
+                     'wood_residue_account', 'record_wood_fuel', 'refuel_wood_chips'):
             if hasattr(receiver, name):
                 environment[name] = getattr(receiver, name)
         environment |= dict(src=receiver, TRUE=True, FALSE=False, null=None,
-                            istype=lambda item: bool(item and (item.type == WOOD or item.type.startswith(WOOD + '/'))),
+                            istype=lambda item, kind=None: bool(item and (
+                                item.type == (kind or ('/mob/living/human' if item is local.get('H') else WOOD))
+                                or item.type.startswith((kind or ('/mob/living/human' if item is local.get('H') else WOOD)) + '/'))),
                             isnum=lambda value: isinstance(value, (int, float)),
+                            isturf=lambda item: bool(item and getattr(item, 'turf', False)),
+                            CONSCIOUS=0,
+                            wood_chip_logs_per_batch=lambda: self.run('/proc/wood_chip_logs_per_batch', Record()),
                             round=math.floor, min=min, prob=lambda _chance: False,
                             qdel=lambda obj: (setattr(obj, 'gcDestroyed', True), setattr(obj, 'loc', None)),
                             get_turf=lambda obj: obj.loc if getattr(obj.loc, 'turf', False) else None)
@@ -83,6 +100,7 @@ class Projection:
 
     def execute(self, lines, receiver, local):
         index = 0
+        branch_taken = None
         while index < len(lines):
             indent, line = lines[index]
             end = index + 1
@@ -91,13 +109,26 @@ class Projection:
             child = lines[index + 1:end]
             evaluate = lambda text: self.expression(text, receiver, local)
             if line.startswith('if (') or line.startswith('if('):
-                if evaluate(line[line.index('(') + 1:-1]):
+                branch_taken = bool(evaluate(line[line.index('(') + 1:-1]))
+                if branch_taken:
                     self.execute(child, receiver, local)
+            elif line.startswith('else if ('):
+                if branch_taken is None:
+                    raise AssertionError('Unpaired else-if')
+                if not branch_taken and evaluate(line[line.index('(') + 1:-1]):
+                    self.execute(child, receiver, local)
+                    branch_taken = True
+            elif line == 'else':
+                if branch_taken is None:
+                    raise AssertionError('Unpaired else')
+                if not branch_taken:
+                    self.execute(child, receiver, local)
+                branch_taken = None
             elif line.startswith('spawn('):
                 delay = int(re.fullmatch(r'spawn\((\d+) SECONDS\)', line)[1])
                 self.sequence += 1
                 heapq.heappush(self.pending, (self.time + delay, self.sequence, child, receiver, local.copy()))
-            elif line.startswith(('visible_message(', 'playsound(', 'update_icon(')):
+            elif line.startswith(('visible_message(', 'playsound(', 'update_icon(', 'to_chat(')):
                 pass  # UI/sound adapters have no transaction effects.
             elif line == 'return ..()':
                 raise Returned(None)  # Native parent lifecycle is outside this projection.
@@ -115,18 +146,18 @@ class Projection:
                     if declaration:
                         kind, _, target = target.rpartition('/')
                     if value.startswith('new type('):
-                        if receiver.type != WOOD:
+                        if receiver.type not in (WOOD, CHIPS):
                             raise AssertionError('Unsupported dynamic constructor')
-                        kind = 'obj/item/stack/material/wood'
+                        kind = receiver.type.lstrip('/')
                         value = value.replace('new type(', 'new(', 1)
                     if value.startswith('new('):
                         args = [evaluate(arg.strip()) for arg in value[4:-1].split(',')]
                         if kind == 'datum/grinder_batch':
                             result = Batch(self, args[0])
-                        elif kind == 'obj/item/stack/material/wood':
+                        elif kind in ('obj/item/stack/material/wood', 'obj/item/stack/wood_chips'):
                             if args[2] is not False:
                                 raise AssertionError('Output must opt out of constructor merge')
-                            result = Stock(args[0], args[1])
+                            result = Chips(args[0], args[1]) if kind.endswith('/wood_chips') else Stock(args[0], args[1])
                             self.outputs.append(result)
                         else:
                             raise AssertionError('Unsupported constructor: ' + kind)
@@ -160,7 +191,7 @@ class Projection:
 
 class Stock(Record):
     def __init__(self, loc, amount=25, kind=WOOD):
-        super().__init__(loc=loc, amount=amount, type=kind,
+        super().__init__(loc=loc, amount=amount, type=kind, stacktype=kind,
                          material=Record(name='wood'), max_amount=50,
                          gcDestroyed=False, gc_destroyed=False, onfire=False,
                          splitting_in_progress=False, woodwork_owner=None,
@@ -185,6 +216,54 @@ class Stock(Record):
 
     def update_strings(self):
         pass
+
+
+class Chips(Stock):
+    def __init__(self, loc, amount=1):
+        super().__init__(loc, amount, CHIPS)
+        fields = chip_fields()
+        self.max_amount = int(fields['max_amount'])
+        self.material = None
+        self.matter = None
+        self.recipes = None
+        self.build_type = None
+
+
+class Oven(Record):
+    def __init__(self, projection, site, fuel=0, paid_wood=0):
+        super().__init__(projection=projection, loc=site, z=1, fuel=fuel,
+                         gcDestroyed=False, gc_destroyed=False,
+                         account=Record(wood_remaining=paid_wood))
+
+    def wood_residue_account(self):
+        return self.account
+
+    def refuel(self, chips, actor):
+        return self.projection.run(OVEN + '/proc/refuel_wood_chips', self, chips=chips, H=actor)
+
+    def refuel_wood_chips(self, chips, actor):
+        return self.refuel(chips, actor)
+
+    def record_wood_fuel(self, item, amount):
+        return self.projection.run('/obj/structure/proc/record_wood_fuel', self, I=item, amount=amount)
+
+    def load(self, item, actor):
+        return self.projection.run(OVEN + '/attackby', self, I=item, H=actor)
+
+
+class Actor(Record):
+    def __init__(self, site):
+        super().__init__(type='/mob/living/human', loc=site, z=1, stat=0,
+                         enabled=True, adjacent=True, held=None)
+
+    def can_use_hands(self):
+        return self.enabled
+
+    def Adjacent(self, _target):
+        return self.adjacent
+
+    def item_is_in_hands(self, item):
+        return self.held is item
 
 
 class Machine(Record):
@@ -251,6 +330,7 @@ class GrinderTransaction(unittest.TestCase):
                 self.assertEqual(started, valid)
                 self.assertFalse(machine.active)
                 self.assertEqual(sum(out.amount for out in p.outputs), count // 5 if valid else 0)
+                self.assertTrue(all(out.type == CHIPS and out.amount <= out.max_amount for out in p.outputs))
                 self.assertEqual(stock.amount, count % 5 if valid else count)
                 self.assertEqual(stock.debits, [count // 5 * 5] if valid else [])
                 self.assertEqual(machine.reservation, 0)
@@ -430,21 +510,21 @@ class GrinderTransaction(unittest.TestCase):
 
     def test_construction_is_sized_and_does_not_merge_with_neighbors(self):
         p, machine, stock = self.scenario()
-        neighbor = Stock(machine.loc, 49)
+        neighbor = Chips(machine.loc, 9)
         p.outputs.append(neighbor)
         machine.start()
         p.advance(15)
-        self.assertEqual([s.amount for s in p.outputs], [49, 5])
+        self.assertEqual([s.amount for s in p.outputs], [9, 5])
         self.assertEqual(stock.debits, [25])
         output = p.outputs[1]
         split = p.run(STACK + '/proc/split', output, _amount=2)
         self.assertEqual((output.amount, split.amount), (3, 2))
         # Execute real base-stack merge branches, including the max-count cap.
         self.assertEqual(p.run(STACK + '/proc/merge', output, S=neighbor), 1)
-        self.assertEqual((neighbor.amount, output.amount), (50, 2))
+        self.assertEqual((neighbor.amount, output.amount), (10, 2))
         self.assertEqual(p.run(STACK + '/proc/merge', split, S=output), 2)
         self.assertTrue(split.gcDestroyed)
-        self.assertEqual(sum(s.amount for s in p.outputs if not s.gcDestroyed), 54)
+        self.assertEqual(sum(s.amount for s in p.outputs if not s.gcDestroyed), 14)
 
     def test_mutations_are_detected_by_behavior(self):
         mutations = {
@@ -480,6 +560,140 @@ class GrinderTransaction(unittest.TestCase):
         self.assertIn('tospawn.amount = inserted.amount/5', old)
         with self.assertRaisesRegex(AssertionError, 'Missing production procedure'):
             Projection(old).proc(BATCH + '/proc/valid')
+
+
+class ChipFuelTransaction(unittest.TestCase):
+    def fixture(self, count=1, projection=None):
+        p = projection or Projection()
+        site = Record(turf=True)
+        user = Actor(site)
+        chips = Chips(user, count)
+        user.held = chips
+        oven = Oven(p, site)
+        return p, oven, chips, user
+
+    def test_chip_batch_identity_and_capacity_are_not_full_wood(self):
+        p, oven, chips, user = self.fixture()
+        fields = chip_fields()
+        for name in ('matter', 'recipes', 'build_type'):
+            self.assertEqual(fields[name], 'null')
+        self.assertEqual(fields['stacktype'], CHIPS)
+        self.assertEqual(fields['value'], '0')
+        self.assertEqual(fields['flammable'], 'FALSE')
+        self.assertEqual(fields['icon'], "'icons/obj/materials.dmi'")
+        self.assertEqual(fields['icon_state'], '"sheet-wood"')
+        self.assertEqual(chips.max_amount * p.run('/proc/wood_chip_logs_per_batch', Record()), 50)
+        machine = Machine(p)
+        self.assertFalse(machine.can_grind_input(chips))
+        for kind in (WOOD, '/obj/item/stack/material/woodplank', '/obj/item/stack/bark'):
+            ordinary = Stock(user, 1, kind)
+            self.assertFalse(p.run(STACK + '/proc/transfer_to', chips, S=ordinary, _amount=1))
+            self.assertIsNone(p.run(STACK + '/attackby', chips, W=ordinary, user=user))
+            self.assertEqual((chips.amount, ordinary.amount), (1, 1))
+        self.assertNotIn(CHIPS + '/', SHEETS_SOURCE)
+        self.assertIsNone(chips.material)
+
+    def test_each_grinder_batch_and_leftover_has_equal_raw_log_fuel(self):
+        for count in range(5, 51):
+            with self.subTest(logs=count):
+                p = Projection()
+                machine = Machine(p)
+                stock = machine.inserted
+                stock.amount = count
+                self.assertTrue(machine.start())
+                p.advance(15)
+                self.assertEqual(stock.amount + 5 * p.outputs[0].amount, count)
+                actor = Actor(machine.loc)
+                raw = Stock(actor, count)
+                actor.held = raw
+                raw_oven = Oven(p, machine.loc, fuel=4, paid_wood=4)
+                raw_oven.load(raw, actor)
+                chip_oven = Oven(p, machine.loc, fuel=4, paid_wood=4)
+                chips = p.outputs[0]
+                chips.loc = actor
+                actor.held = chips
+                chip_oven.load(chips, actor)
+                self.assertTrue(chips.gcDestroyed)
+                self.assertEqual(chips.debits, [count // 5])
+                self.assertLessEqual(chip_oven.fuel, raw_oven.fuel)
+                self.assertEqual(chip_oven.account.wood_remaining, chip_oven.fuel)
+                if stock.amount:
+                    stock.loc = actor
+                    actor.held = stock
+                    chip_oven.load(stock, actor)
+                self.assertEqual((chip_oven.fuel, chip_oven.account.wood_remaining),
+                                 (raw_oven.fuel, raw_oven.account.wood_remaining))
+                before = chip_oven.fuel
+                chip_oven.load(chips, actor)
+                self.assertFalse(chip_oven.refuel(chips, actor))
+                self.assertEqual(chip_oven.fuel, before)
+
+    def test_normal_split_and_capped_merge_preserve_total_fuel(self):
+        for count in range(1, 10):
+            with self.subTest(split=count):
+                p, oven, whole, user = self.fixture(10)
+                split = p.run(STACK + '/proc/split', whole, _amount=count)
+                self.assertEqual(split.amount + whole.amount, 10)
+                user.held = split
+                oven.load(split, user)
+                user.held = whole
+                oven.load(whole, user)
+                self.assertEqual((oven.fuel, oven.account.wood_remaining), (50, 50))
+        p, oven, chips, user = self.fixture(8)
+        other = Chips(user, 5)
+        self.assertEqual(p.run(STACK + '/proc/merge', other, S=chips), 2)
+        self.assertEqual((chips.amount, other.amount), (10, 3))
+        oven.load(chips, user)
+        user.held = other
+        oven.load(other, user)
+        self.assertEqual((oven.fuel, oven.account.wood_remaining), (65, 65))
+
+    def test_invalid_counts_and_failed_debit_give_no_fuel_or_ash_credit(self):
+        for count in (-1, 0, 0.5, 10.5, 11, None, '5'):
+            p, oven, chips, user = self.fixture(count)
+            self.assertFalse(oven.refuel(chips, user))
+            self.assertEqual((oven.fuel, oven.account.wood_remaining), (0, 0))
+            self.assertFalse(chips.debits)
+        p, oven, chips, user = self.fixture(10)
+        chips.refuse_debit = True
+        self.assertFalse(oven.refuel(chips, user))
+        self.assertEqual((oven.fuel, oven.account.wood_remaining), (0, 0))
+        self.assertEqual(chips.amount, 10)
+
+    def test_inaccessible_or_deleted_fuel_preserves_input(self):
+        changes = (
+            lambda o, c, u: setattr(c, 'loc', o.loc),
+            lambda o, c, u: setattr(u, 'held', None),
+            lambda o, c, u: setattr(u, 'adjacent', False),
+            lambda o, c, u: setattr(u, 'z', 2),
+            lambda o, c, u: setattr(u, 'stat', 1),
+            lambda o, c, u: setattr(u, 'enabled', False),
+            lambda o, c, u: setattr(c, 'gcDestroyed', True),
+            lambda o, c, u: setattr(c, 'gc_destroyed', True),
+            lambda o, c, u: setattr(o, 'gcDestroyed', True),
+            lambda o, c, u: setattr(o, 'loc', None),
+        )
+        for change in changes:
+            p, oven, chips, user = self.fixture()
+            change(oven, chips, user)
+            self.assertFalse(oven.refuel(chips, user))
+            self.assertFalse(chips.debits)
+            self.assertEqual((oven.fuel, oven.account.wood_remaining), (0, 0))
+        p, oven, chips, user = self.fixture()
+        self.assertFalse(oven.refuel(chips, None))
+        self.assertFalse(oven.refuel(Stock(user), user))
+
+    def test_fuel_and_residue_mutations_expose_amplification_or_unpaid_credit(self):
+        for before, after in (
+            ('fuel += log_units', 'fuel += log_units + 1'),
+            ('account.wood_remaining += log_units', 'account.wood_remaining += log_units + 1'),
+            ('if (!account || !chips.use(batches))', 'if (!account)'),
+        ):
+            with self.subTest(mutation=before):
+                self.assertEqual(OVEN_SOURCE.count(before), 1)
+                p, oven, chips, user = self.fixture(projection=Projection(oven=OVEN_SOURCE.replace(before, after, 1)))
+                self.assertTrue(oven.refuel(chips, user))
+                self.assertFalse(oven.fuel == 5 and oven.account.wood_remaining == 5 and chips.debits == [1])
 
 
 if __name__ == '__main__':

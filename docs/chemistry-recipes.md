@@ -49,6 +49,20 @@ progression still determine which recipes a player is offered.
 
 ## Recipes and balance choices
 
+The existing powered grinder turns five whole raw logs into one batch of wood
+chips after its existing cycle. Unpaid remainders stay installed. One chip batch
+contains five log units' worth of feedstock; this conservative 5:1 count is an
+abstract gameplay unit, not a measured physical yield. Ten batches fill a stack.
+Chips reuse the existing small-wood stock sprite and have their own name/type;
+they cannot replace logs, planks or bark in crafting or be converted back to logs.
+
+An adjacent oven, campfire or wood stove accepts held chip batches. One batch
+adds five existing oven fuel units and five paid wood-residue units, equal to
+the five logs consumed. Ash appears only when paid fuel burns, not when loaded.
+Other fuel equipment and wood uses retain their existing behavior. No pulp,
+cellulose or fibre recipe is introduced. The grinder is presently map-placed in
+Wizard Boy; its construction and broader-map acquisition remain undefined.
+
 | Chain | Game conversion |
 | --- | --- |
 | Acid precursor | 2 hydrogen + 2 chlorine -> 1 hydrogen chloride; 1 hydrogen chloride + 5 water -> 5 hydrochloric acid |

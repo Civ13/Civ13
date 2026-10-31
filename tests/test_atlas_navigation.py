@@ -25,6 +25,22 @@ class AtlasNavigationTests(unittest.TestCase):
     def test_committed_catalog_matches_current_source(self):
         self.assertEqual(self.catalog_bytes, (ROOT/'UI/crafting-atlas.json').read_bytes())
 
+    def test_chip_routes_preserve_batch_unit_and_expose_existing_oven_use(self):
+        chips = '/obj/item/stack/wood_chips'
+        routes = self.catalog['acquisition'][chips]
+        self.assertEqual(len(routes), 2)
+        producer, consumer = routes
+        self.assertEqual(producer['outputs'], [chips])
+        self.assertEqual(producer['inputs'], ['/material/wood'])
+        self.assertIn('Five logs produce one abstract batch', producer['conditions'])
+        self.assertIn('wizard_boy.dmm', producer['map_notes'])
+        self.assertEqual(consumer['inputs'], [chips])
+        self.assertEqual(consumer['outputs'], [])
+        self.assertIn('five existing oven fuel units', consumer['steps'][1])
+        self.assertIn('native', consumer['status'])
+        self.assertTrue(producer['audit_commit'] == consumer['audit_commit'])
+        self.assertFalse(any('/material/wood' in r['outputs'] for r in routes))
+
     def test_era_order_and_unknown_are_explicit(self):
         recipes = self.catalog['recipes']
         self.assertEqual([r['era_sort'] for r in recipes], sorted(r['era_sort'] for r in recipes))
