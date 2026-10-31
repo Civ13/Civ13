@@ -36,6 +36,7 @@ var/datum/fixture_config/config = new
 	return round(value)
 /datum/controller/gameticker
 	var/login_music
+	var/pregame_autostart_cancelled = FALSE
 	var/pregame_timeleft
 	var/maytip
 	var/tip

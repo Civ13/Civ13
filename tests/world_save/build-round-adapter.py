@@ -74,7 +74,7 @@ def generate(root, control=None):
         if body.count(marker) != 2:
             raise RuntimeError('Busy yield mutation target changed')
         body = body.replace(marker, '\tif(persistence_save_in_progress) return FALSE\n')
-    start = source.index('/datum/controller/gameticker/proc/pregame()')
+    start = source.index('/datum/controller/gameticker/proc/cancel_pregame_autostart()')
     end = source.index('\n/datum/controller/gameticker/proc/setup()', start)
     pregame = source[start:end]
     hashes = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()}
