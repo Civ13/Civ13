@@ -55,6 +55,23 @@ def tar_bytes(entries):
 
 
 class ControllerContracts(unittest.TestCase):
+    def test_pass_receipt_requires_both_bounded_independent_resource_observations(self):
+        initial={'bytes':4,'sha256':'a'*64,'mode':0o600}
+        changed={'bytes':6,'sha256':'b'*64,'mode':0o600}
+        states={'vendor':{'before':dict(initial),'after':dict(changed),'changed':True,'integrity_verified':True},
+                'wildlife':{'before':dict(initial),'after':dict(initial),'changed':False,'integrity_verified':True}}
+        summary={'artifacts':{'human_subtile.rsc':initial},'resource_states':states}
+        status={'runtime_resources':states,'resource_copies_independent':True}
+        controller.validate_resource_states(summary,status)
+        import copy
+        for label,key,value in (('vendor','changed',False),('vendor','integrity_verified',False),
+                                ('vendor','daemon_error','failure'),('wildlife','after',dict(initial,bytes=0)),
+                                ('wildlife','before',dict(initial,sha256='c'*64))):
+            altered=copy.deepcopy(summary); altered['resource_states'][label][key]=value
+            with self.subTest(label=label,key=key), self.assertRaises(RuntimeError):
+                controller.validate_resource_states(altered,{'runtime_resources':altered['resource_states'],'resource_copies_independent':True})
+        with self.assertRaises(RuntimeError): controller.validate_resource_states(summary,{'runtime_resources':{}})
+
     def test_log_transport_survives_exit_and_rejects_corruption_or_missing_parts(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp); (root/'harness-status.json').write_text('{"phase":"fixture-compile"}')

@@ -267,7 +267,7 @@ class ScratchMeter:
 
 
 def prepare_linked_runtime(out, stage, dme, name):
-    """Share compiled read-only bytes on the same bounded scratch filesystem."""
+    """Share the immutable DMB; give each runtime an independent writable RSC."""
     work = out / name
     work.mkdir()
     artifacts = {}
@@ -276,11 +276,23 @@ def prepare_linked_runtime(out, stage, dme, name):
         info = source.lstat()
         require(stat.S_ISREG(info.st_mode) and 0 < info.st_size <= MAX_DISK,
                 'Missing or oversized compiled fixture artifact')
-        os.chmod(source, 0o444)
         target = work / source.name
-        os.link(source, target)
-        require(os.path.samefile(source, target), 'Fixture artifact hardlink mismatch')
-        artifacts[target.name] = {'bytes': info.st_size, 'sha256': file_hash(target)}
+        if extension == '.dmb':
+            os.chmod(source, 0o444)
+            os.link(source, target)
+            require(os.path.samefile(source, target), 'Fixture artifact hardlink mismatch')
+        else:
+            require(shutil.disk_usage(work).free >= info.st_size, 'Insufficient bounded scratch for resource copy')
+            # BYOND's resource cache can be modified by the running world. A
+            # shared hardlink would couple the two tests and the compiler output.
+            with source.open('rb') as reader, target.open('xb') as writer:
+                shutil.copyfileobj(reader, writer, length=1024*1024)
+            os.chmod(target, 0o600)
+            require(not os.path.samefile(source, target), 'Resource copy must be independent')
+        require(target.stat().st_size == info.st_size and file_hash(target) == file_hash(source),
+                'Compiled fixture copy mismatch')
+        artifacts[target.name] = {'bytes': info.st_size, 'sha256': file_hash(target),
+                                  'mode': stat.S_IMODE(target.stat().st_mode)}
     shutil.copytree(stage / 'config', work / 'config')
     return work, work / dme.with_suffix('.dmb').name, artifacts
 
@@ -288,8 +300,59 @@ def prepare_linked_runtime(out, stage, dme, name):
 def verify_linked_runtime(work, artifacts):
     for name, expected in artifacts.items():
         path = work / name
-        require(path.is_file() and path.stat().st_size == expected['bytes'] and
+        info = path.lstat()
+        require(stat.S_ISREG(info.st_mode) and info.st_size == expected['bytes'] and
+                (not name.endswith('.dmb') or stat.S_IMODE(info.st_mode) == expected['mode']) and
                 file_hash(path) == expected['sha256'], 'Compiled fixture artifact changed: ' + name)
+
+
+def resource_observation(path, expected):
+    info = path.lstat()
+    require(stat.S_ISREG(info.st_mode) and 0 < info.st_size <= MAX_DISK and
+            stat.S_IMODE(info.st_mode) == expected['mode'], 'Invalid runtime resource cache')
+    return {'bytes': info.st_size, 'sha256': file_hash(path), 'mode': stat.S_IMODE(info.st_mode)}
+
+
+def run_checked_runtime(legacy, group, command, work, dme, peer, artifacts, peer_expected, label, records):
+    """Record mutable own cache even on failure; protect compiler artifacts and peer."""
+    resource = dme.with_suffix('.rsc').name
+    binary = dme.with_suffix('.dmb').name
+    own = work / resource
+    peer_resource = peer / resource
+    compiler_resource = dme.with_suffix('.rsc')
+    verify_linked_runtime(work, artifacts)
+    verify_linked_runtime(dme.parent, artifacts)
+    verify_linked_runtime(peer, {binary: artifacts[binary]})
+    require(resource_observation(peer_resource, artifacts[resource]) == peer_expected and
+            not os.path.samefile(own, compiler_resource) and not os.path.samefile(own, peer_resource) and
+            not os.path.samefile(peer_resource, compiler_resource), 'Runtime resources are not isolated')
+    before = resource_observation(own, artifacts[resource])
+    records[label] = {'before': before, 'integrity_verified': False}
+    checkpoint(label + '-daemon', runtime_resources=records)
+    try:
+        return run_owned_phase(legacy, group, command, work, 'daemon', 90)
+    except BaseException as exc:
+        records[label]['daemon_error'] = type(exc).__name__ + ': ' + str(exc)[:512]
+        raise
+    finally:
+        try:
+            after = resource_observation(own, artifacts[resource])
+            records[label]['after'] = after
+            records[label]['changed'] = after != before
+            require(not os.path.samefile(own, compiler_resource) and not os.path.samefile(own, peer_resource) and
+                    not os.path.samefile(peer_resource, compiler_resource),
+                    'Runtime resource cache is shared')
+            verify_linked_runtime(work, {binary: artifacts[binary]})
+            verify_linked_runtime(dme.parent, artifacts)
+            verify_linked_runtime(peer, {binary: artifacts[binary]})
+            require(resource_observation(peer_resource, artifacts[resource]) == peer_expected,
+                    'Other runtime resource cache changed')
+            records[label]['integrity_verified'] = True
+        except BaseException as exc:
+            records[label]['integrity_error'] = type(exc).__name__ + ': ' + str(exc)[:512]
+            raise
+        finally:
+            checkpoint(label + '-daemon', runtime_resources=records)
 
 
 def parse_ldd(text):
@@ -425,21 +488,29 @@ def main():
         path = stage / rel
         require(path.stat().st_size == expected['bytes'] and file_hash(path) == expected['sha256'],
                 'Compiler changed fixture input: ' + rel)
-    # Separate fresh save/log directories refer to one hashed copy of each
-    # compiled artifact, reducing scratch use without weakening its hard quota.
+    # Separate fresh save/log directories share only the read-only DMB. The
+    # resource caches are isolated and writable within the same tmpfs quota.
     vendor_work, vendor_dmb, artifacts = prepare_linked_runtime(out, stage, dme, 'runtime')
     wild_work, wild_dmb, wild_artifacts = prepare_linked_runtime(out, stage, dme, 'runtime-wildlife')
     require(artifacts == wild_artifacts, 'Fixture artifact identities differ')
+    checkpoint('runtime-staged', runtime_artifacts=artifacts,
+               resource_copies_independent=not os.path.samefile(vendor_dmb.with_suffix('.rsc'), wild_dmb.with_suffix('.rsc')))
+    require(RUN_STATE['resource_copies_independent'], 'Runtime resource copies share an inode')
     results = {}
+    resource_states = {}
+    resource_name = dme.with_suffix('.rsc').name
+    peer_states = {'vendor': dict(artifacts[resource_name]), 'wildlife': dict(artifacts[resource_name])}
     for label, work, dmb in (('vendor', vendor_work, vendor_dmb), ('wildlife', wild_work, wild_dmb)):
         checkpoint(label + '-daemon')
         require(not any(work.rglob('*.sav')), 'Runtime save directory must begin empty')
         verify_linked_runtime(work, artifacts)
         runtime.verify_linux(binary, archive)
         params = 'tested_commit=' + args.head + (';cloud_wildlife=1' if label == 'wildlife' else '')
-        result = run_owned_phase(legacy, group, [str(binary / 'DreamDaemon'), str(dmb), '59474', '-ip', '127.0.0.1',
-            '-trusted', '-params', params, '-log', 'runtime.log'], work, 'daemon', 90)
-        verify_linked_runtime(work, artifacts)
+        peer_label, peer_work = ('wildlife', wild_work) if label == 'vendor' else ('vendor', vendor_work)
+        result = run_checked_runtime(legacy, group, [str(binary / 'DreamDaemon'), str(dmb), '59474', '-ip', '127.0.0.1',
+            '-trusted', '-params', params, '-log', 'runtime.log'], work, dme, peer_work, artifacts,
+            peer_states[peer_label], label, resource_states)
+        peer_states[label] = dict(resource_states[label]['after'])
         legacy.inspect_logs(work)
         require((work / 'port-closed.txt').read_bytes() == b'closed\n', 'Missing fixture port closure')
         require((work / 'result.txt').read_bytes() == b'PASS\n', 'Missing exact PASS marker')
@@ -455,7 +526,7 @@ def main():
             require(receipt.get('scope') == 'wildlife owner/contact helper only; no Life/bite acceptance', 'Incorrect wildlife scope')
         results[label] = dict(daemon=result, receipt_sha256=file_hash(receipt_path))
     summary = dict(head=args.head, accepted=True, identity=identity, abi=abi, envelope=envelope,
-        compile=compile_result, results=results, artifacts=artifacts,
+        compile=compile_result, results=results, artifacts=artifacts, resource_states=resource_states,
         scope='Vendor 46 and separate nine minimal owner/contact assertions; no bite, disease or runtime save acceptance beyond vendor codec.',
         seconds=time.monotonic() - began,
         limitation='Provider must independently verify sealed namespace, no host socket mounts, and container cleanup.')

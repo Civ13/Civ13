@@ -1,5 +1,8 @@
 """Offline contracts for cloud smoke admission and distinct native receipts."""
 import importlib.util
+import contextlib
+import io
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
@@ -109,11 +112,110 @@ class CloudEnvelope(unittest.TestCase):
             with tarfile.open(root/'harness-evidence.tar') as archive:
                 self.assertEqual(archive.getnames(),['harness-status.json'])
 
-    def test_compiled_fixture_is_shared_and_rechecked(self):
+    def test_binary_is_shared_and_resource_caches_are_isolated_and_rechecked(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); stage=root/'stage'; stage.mkdir()
+            (stage/'config').mkdir(); dme=stage/'human_subtile.dme'; dme.write_text('fixture')
+            dmb=dme.with_suffix('.dmb'); rsc=dme.with_suffix('.rsc')
+            dmb.write_bytes(b'compiled binary'); rsc.write_bytes(b'compiled resources')
+            first,first_dmb,first_artifacts=cloud.prepare_linked_runtime(root,stage,dme,'runtime')
+            second,second_dmb,second_artifacts=cloud.prepare_linked_runtime(root,stage,dme,'runtime-wildlife')
+            self.assertEqual(first_artifacts,second_artifacts)
+            self.assertTrue(os.path.samefile(first_dmb,second_dmb))
+            self.assertFalse(os.path.samefile(first_dmb.with_suffix('.rsc'),second_dmb.with_suffix('.rsc')))
+            self.assertFalse(os.path.samefile(first_dmb.with_suffix('.rsc'),rsc))
+            if os.name != 'nt':
+                self.assertEqual(first_artifacts['human_subtile.rsc']['mode'],0o600)
+            cloud.verify_linked_runtime(first,first_artifacts)
+            records={}
+            def change_cache(*args):
+                first_dmb.with_suffix('.rsc').write_bytes(b'changed')
+                return 'fixture-result'
+            with patch.object(cloud,'run_owned_phase',side_effect=change_cache), \
+                 patch.object(cloud,'RUN_ROOT',None), patch.object(cloud,'RUN_STATE',{'history':[]}), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                result=cloud.run_checked_runtime(None,None,[],first,dme,second,first_artifacts,
+                    first_artifacts['human_subtile.rsc'],'vendor',records)
+            self.assertEqual(result,'fixture-result')
+            self.assertTrue(records['vendor']['changed'])
+            self.assertTrue(records['vendor']['integrity_verified'])
+            self.assertEqual(records['vendor']['after']['bytes'],len(b'changed'))
+            self.assertEqual(second_dmb.with_suffix('.rsc').read_bytes(),b'compiled resources')
+            self.assertEqual(rsc.read_bytes(),b'compiled resources')
+
+    def test_runtime_failure_records_cache_change_and_error(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); stage=root/'stage'; stage.mkdir(); (stage/'config').mkdir()
+            dme=stage/'human_subtile.dme'; dme.write_text('fixture')
+            dme.with_suffix('.dmb').write_bytes(b'binary'); dme.with_suffix('.rsc').write_bytes(b'cache')
+            first,first_dmb,artifacts=cloud.prepare_linked_runtime(root,stage,dme,'runtime')
+            peer,_,_=cloud.prepare_linked_runtime(root,stage,dme,'runtime-wildlife')
+            records={}
+            def fail(*args):
+                first_dmb.with_suffix('.rsc').write_bytes(b'changed-cache')
+                raise RuntimeError('daemon failed')
+            with patch.object(cloud,'run_owned_phase',side_effect=fail), patch.object(cloud,'RUN_ROOT',None), \
+                 patch.object(cloud,'RUN_STATE',{'history':[]}), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaisesRegex(RuntimeError,'daemon failed'):
+                    cloud.run_checked_runtime(None,None,[],first,dme,peer,artifacts,
+                        artifacts['human_subtile.rsc'],'vendor',records)
+                self.assertEqual(cloud.RUN_STATE['runtime_resources'],records)
+            self.assertTrue(records['vendor']['changed'])
+            self.assertTrue(records['vendor']['integrity_verified'])
+            self.assertIn('daemon failed',records['vendor']['daemon_error'])
+
+    def test_peer_or_compiler_mutation_is_rejected_and_recorded(self):
+        for target in ('peer','compiler','binary'):
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary); stage=root/'stage'; stage.mkdir(); (stage/'config').mkdir()
+                dme=stage/'human_subtile.dme'; dme.write_text('fixture')
+                dme.with_suffix('.dmb').write_bytes(b'binary'); dme.with_suffix('.rsc').write_bytes(b'cache')
+                first,_,artifacts=cloud.prepare_linked_runtime(root,stage,dme,'runtime')
+                peer,_,_=cloud.prepare_linked_runtime(root,stage,dme,'runtime-wildlife')
+                records={}
+                def alter(*args):
+                    path = (peer/'human_subtile.rsc' if target=='peer' else dme.with_suffix('.rsc' if target=='compiler' else '.dmb'))
+                    if target=='binary': os.chmod(path,0o600)
+                    path.write_bytes(b'altered')
+                with patch.object(cloud,'run_owned_phase',side_effect=alter), patch.object(cloud,'RUN_ROOT',None), \
+                     patch.object(cloud,'RUN_STATE',{'history':[]}), contextlib.redirect_stdout(io.StringIO()):
+                    with self.assertRaises(RuntimeError):
+                        cloud.run_checked_runtime(None,None,[],first,dme,peer,artifacts,
+                            artifacts['human_subtile.rsc'],'vendor',records)
+                self.assertIn('after',records['vendor'])
+                self.assertIn('integrity_error',records['vendor'])
+                self.assertFalse(records['vendor']['integrity_verified'])
+
+    def test_resource_staging_rejects_missing_or_insufficient_scratch(self):
+        for insufficient in (False,True):
+            with self.subTest(insufficient=insufficient), tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary); stage=root/'stage'; stage.mkdir(); (stage/'config').mkdir()
+                dme=stage/'human_subtile.dme'; dme.write_text('fixture')
+                dme.with_suffix('.dmb').write_bytes(b'binary')
+                if insufficient: dme.with_suffix('.rsc').write_bytes(b'resources')
+                with patch.object(cloud.shutil,'disk_usage',return_value=SimpleNamespace(free=0)):
+                    with self.assertRaises((FileNotFoundError,RuntimeError)):
+                        cloud.prepare_linked_runtime(root,stage,dme,'runtime')
+
+    def test_resource_staging_rejects_equal_length_corrupted_copy(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); stage=root/'stage'; stage.mkdir(); (stage/'config').mkdir()
+            dme=stage/'human_subtile.dme'; dme.write_text('fixture')
+            dme.with_suffix('.dmb').write_bytes(b'binary')
+            dme.with_suffix('.rsc').write_bytes(b'resources')
+            def corrupt(reader,writer,length):
+                writer.write(b'x'*len(reader.read()))
+            with patch.object(cloud.shutil,'copyfileobj',side_effect=corrupt):
+                with self.assertRaisesRegex(RuntimeError,'copy mismatch'):
+                    cloud.prepare_linked_runtime(root,stage,dme,'runtime')
+
+    def test_compiled_fixture_is_rechecked_before_and_after_daemon(self):
         source = (HERE / 'cloud_npc_smoke.py').read_text(encoding='utf-8')
         self.assertIn('os.link(source, target)', source)
         self.assertIn('os.chmod(source, 0o444)', source)
-        self.assertEqual(source.split('def main():', 1)[1].count('verify_linked_runtime(work, artifacts)'), 2)
+        self.assertIn('shutil.copyfileobj(reader, writer', source)
+        self.assertIn('verify_linked_runtime(dme.parent, artifacts)', source)
+        self.assertIn('peer_states[peer_label]', source)
 
     def test_loader_inventory_rejects_missing_dependencies(self):
         row='libc.so.6 => /lib/i386-linux-gnu/libc.so.6 (0xf0000000)\n/lib/ld-linux.so.2 (0xf1230000)\n'

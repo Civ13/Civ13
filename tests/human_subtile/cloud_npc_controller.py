@@ -200,6 +200,28 @@ def package_from_logs(log, marker):
     return validate_package(data, package)
 
 
+def validate_resource_states(summary, status):
+    artifacts = summary.get('artifacts') or {}
+    initial = artifacts.get('human_subtile.rsc') or {}
+    states = summary.get('resource_states')
+    require(isinstance(states, dict) and set(states) == {'vendor', 'wildlife'} and
+            status.get('resource_copies_independent') is True and status.get('runtime_resources') == states,
+            'Missing or mismatched resource receipts')
+    def valid(observation):
+        return (isinstance(observation, dict) and type(observation.get('bytes')) is int and
+                0 < observation['bytes'] <= 1024**3 and
+                re.fullmatch('[0-9a-f]{64}', observation.get('sha256') or '') and
+                type(observation.get('mode')) is int and observation['mode'] == 0o600)
+    require(valid(initial), 'Invalid initial resource identity')
+    for label in ('vendor', 'wildlife'):
+        state = states[label]
+        require(isinstance(state, dict) and valid(state.get('before')) and valid(state.get('after')) and
+                state['before'] == initial and type(state.get('changed')) is bool and
+                state['changed'] == (state['before'] != state['after']) and
+                state.get('integrity_verified') is True and 'daemon_error' not in state and
+                'integrity_error' not in state, 'Invalid runtime resource receipt: ' + label)
+
+
 def validate_pass_evidence(data, head):
     """Revalidate successful receipts on the host; never infer pass from a marker."""
     with tarfile.open(fileobj=io.BytesIO(data), mode='r:') as archive:
@@ -214,6 +236,7 @@ def validate_pass_evidence(data, head):
                 'Harness status does not establish fixture pass')
         require(summary.get('head') == head and summary.get('accepted') is True,
                 'Summary does not match exact head')
+        validate_resource_states(summary, status)
         for suite in ('runtime','runtime-wildlife'):
             require(read('npc-smoke/'+suite+'/result.txt') == b'PASS\n' and
                     read('npc-smoke/'+suite+'/port-closed.txt') == b'closed\n', 'Bad suite markers')
