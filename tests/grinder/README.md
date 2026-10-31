@@ -37,7 +37,12 @@ transaction contract. It is neither compiled nor claimed as a native reproducer.
 
 Native compilation, the engine's callback/deletion ordering, real cable-network
 transients, native stack/inventory behavior, current-format save/load and gameplay
-are **unrun**. The projection checks procedure logic, not these engine contracts.
-No new CI wiring is included in this unpublished review patch; run the command
-above explicitly. Required hosted build/test selection still applies when the
-review owner publishes the change.
+are outside this offline runner's coverage. The projection checks procedure
+logic, not these engine contracts.
+The bounded offline registry in `scripts/ci_baseline.py` explicitly registers
+only `test_transaction.py`. Changes under `tests/grinder/` select it along with
+the mandatory baseline. Shared chemistry/stack source changes and unknown impact
+keep the existing conservative all-suite fallback, now including this suite.
+Normal CI records its command, test counts and log in the baseline artifact;
+nonzero exit, failed/empty/skipped execution or a missing receipt cannot pass
+the existing required aggregate. No workflow/native admission is expanded.
