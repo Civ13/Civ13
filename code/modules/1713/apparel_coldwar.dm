@@ -1871,7 +1871,7 @@
 
 /obj/item/clothing/under/toughguy
 	name = "specialist pants with woodland pattern paint"
-	desc = "A army issued pair of pants and woodland pattern body-paint; to blend seamlessly into the enviroment"
+	desc = "A army issued pair of pants and woodland pattern body-paint; to blend seamlessly into the environment"
 	icon_state = "toughguy"
 	item_state = "toughguy"
 

@@ -148,7 +148,7 @@
 
 /obj/map_metadata/tadojsville/cross_message(faction)
 	if (faction == INDIANS)
-		return "<font size = 4>The Warbands have recieved the attack order! Cross the river and attack the clinic!</font>"
+		return "<font size = 4>The Warbands have received the attack order! Cross the river and attack the clinic!</font>"
 	else if (faction == CIVILIAN)
 		return "<font size = 4>Warband Mercenaries are crossing the river to attack!</font>"
 	else

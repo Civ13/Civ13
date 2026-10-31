@@ -1,7 +1,7 @@
 /obj/map_metadata/syria
 	ID = MAP_SYRIA
 	title = "Syrian Civil War"
-	description = "The Free Syrian Army and the Syrian Goverment forces are battling against each other for the control of the Tadmur town!Both sides have to capture and hold the Goverme..."
+	description = "The Free Syrian Army and the Syrian Government forces are battling against each other for the control of the Tadmur town!Both sides have to capture and hold the Goverme..."
 	lobby_icon = "icons/lobby/syria.png"
 	caribbean_blocking_area_types = list(/area/caribbean/no_mans_land/invisible_wall,/area/caribbean/no_mans_land/invisible_wall/one,/area/caribbean/no_mans_land/invisible_wall/two, /area/caribbean/no_mans_land/invisible_wall/three)
 	respawn_delay = 1200
@@ -20,7 +20,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(ARAB = 0.5, AMERICAN = 0.5)
 	battle_name = "Battle of Tadmur"
-	mission_start_message = "<font size=4>The <b>Free Syrian Army</b> and the <b>Syrian Goverment forces</b> are battling against each other for the control of the Tadmur town!<br>Both sides have to capture and hold the Goverment Building for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
+	mission_start_message = "<font size=4>The <b>Free Syrian Army</b> and the <b>Syrian Government forces</b> are battling against each other for the control of the Tadmur town!<br>Both sides have to capture and hold the Government Building for <b>6 minutes</b>.<br>The battle will start in <b>5 minutes</b>.</font>"
 	faction1 = ARAB
 	faction2 = AMERICAN
 	songs = list(
@@ -106,7 +106,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Goverment Building! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Government Building! They will win in {time} minute{s}."
 				next_win = world.time + short_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -115,7 +115,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Goverment Building! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[1][1])] have captured the Government Building! They will win in {time} minute{s}."
 				next_win = world.time + long_win_time(roundend_condition_sides[2][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[1][1])
@@ -124,7 +124,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.33, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.33))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Goverment Building! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Government Building! They will win in {time} minute{s}."
 				next_win = world.time + short_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])
@@ -133,7 +133,7 @@
 	else if (win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[1]]), roundend_condition_sides[2], roundend_condition_sides[1], 1.01, TRUE))
 		if (!win_condition.check(typesof(roundend_condition_sides[roundend_condition_sides[2]]), roundend_condition_sides[1], roundend_condition_sides[2], 1.01))
 			if (last_win_condition != win_condition.hash)
-				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Goverment Building! They will win in {time} minute{s}."
+				current_win_condition = "The [roundend_condition_def2army(roundend_condition_sides[2][1])] has captured the Government Building! They will win in {time} minute{s}."
 				next_win = world.time + long_win_time(roundend_condition_sides[1][1])
 				announce_current_win_condition()
 				current_winner = roundend_condition_def2army(roundend_condition_sides[2][1])

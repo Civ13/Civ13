@@ -109,7 +109,7 @@ var/no_loop_groz = FALSE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_groz == FALSE)
 		ticker.finished = TRUE
-		var/message = "The <b>Russian Federal Forces</b> have secured the bridge into friendly territory! The retreat is succesful!"
+		var/message = "The <b>Russian Federal Forces</b> have secured the bridge into friendly territory! The retreat is successful!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

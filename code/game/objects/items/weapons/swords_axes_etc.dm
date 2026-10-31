@@ -165,7 +165,7 @@
 
 /obj/item/weapon/melee/knuckle_duster
 	name = "knuckle duster"
-	desc = "A peice of metal that fits around your hand. Could break some teeth."
+	desc = "A piece of metal that fits around your hand. Could break some teeth."
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "knuckle_duster"
 	item_state = "knuckle_duster"

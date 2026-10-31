@@ -84,7 +84,7 @@
 
 /obj/item/weapon/key/civ/hall
 	code = CV_CODE2
-	name = "Gaurd's Key"
+	name = "Guard's Key"
 
 /obj/structure/simple_door/key_door/civ/hall
 	keyslot_type = /datum/keyslot/civ/hall

@@ -99,7 +99,7 @@
 							map.custom_company[compchoice][l][2] = currb+compchoice_amt
 							return
 					map.custom_company[compchoice] += list(list(CM,compchoice_amt,0))
-					to_chat(H, "<big>Transfered [compchoice_amt]% of [compchoice] to [CM].</big>")
+					to_chat(H, "<big>Transferred [compchoice_amt]% of [compchoice] to [CM].</big>")
 					to_chat(CM, "<big>You received [compchoice_amt]% of [compchoice] from [H].</big>")
 					return
 	else
@@ -141,7 +141,7 @@
 			map.custom_company[companyname][l][2] = currb+stock
 			return
 	map.custom_company[companyname] += list(list(target,stock,0))
-	to_chat(src, "<big>Transfered [stock]% of [companyname] to [target].</big>")
+	to_chat(src, "<big>Transferred [stock]% of [companyname] to [target].</big>")
 	to_chat(target, "<big>You received [stock]% of [companyname] from [src].</big>")
 	return
 

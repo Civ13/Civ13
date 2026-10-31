@@ -539,7 +539,7 @@
 
 /obj/structure/sign/flag/gns
 	name = "GNS flag"
-	desc = "The flag of the Goverment of National Salvation."
+	desc = "The flag of the Government of National Salvation."
 	icon_state = "flag_gns"
 
 /obj/structure/sign/flag/ssg
@@ -668,8 +668,8 @@
 	icon_state = "flag_syria_fsa"
 
 /obj/structure/sign/flag/syria/ssg
-	name = "Syrian Salvation Goverment flag"
-	desc = "The flag of the Syrian Salvation Goverment."
+	name = "Syrian Salvation Government flag"
+	desc = "The flag of the Syrian Salvation Government."
 	icon_state = "flag_syria_sal"
 
 /obj/structure/sign/flag/fsa

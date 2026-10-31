@@ -2,7 +2,7 @@ var/list/global/wall_cache = list()
 
 /turf/wall
 	name = "wall"
-	desc = "A huge chunk of metal used to seperate rooms."
+	desc = "A huge chunk of metal used to separate rooms."
 	icon = 'icons/turf/wall_masks.dmi'
 	icon_state = "generic"
 	opacity = TRUE
