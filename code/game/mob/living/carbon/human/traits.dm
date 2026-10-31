@@ -22,39 +22,60 @@ var/global/list/trait_list = list(
 //	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),
 	"Blind" = list(-6,list(),"You can not see, you may require aid."),
 //	"Partial Blindness" = list(-2,list(),"You can barely see, you may require aid or sometype of instrument"),
-	"Introverted" = list(1,list("Extroverted"),"You are more confortable on your own - Your mood will improve when alone, and lower near others."),
-	"Extroverted" = list(-1,list("Introverted"),"You prefer to be near people - Your mood will improve when near others, and lower when alone."),
+	"Introverted" = list(1,list("Extroverted"),"In hunger-enabled modes, your mood improves without other living humans within 3 tiles, and falls near them."),
+	"Extroverted" = list(-1,list("Introverted"),"In hunger-enabled modes, your mood improves near other living humans within 3 tiles, and falls when alone."),
 //	"Down Syndrome" = list(-5,list(),"You are very backward in your mental and physical developement, you are no scolar. (Can't get Philo past 1.4, and has errors in speach and speach comes out slow)"),
 //	"Sickle Celled Anemia" = list(-1,list(),"Your blood cells are not normal, and you have a higher chance of having Heart failure. (Random Heart attacks and pains in the chest and other parts in the body)"),
-	"Hemophilia" = list(-2,list(),"Your blood does not clot normally. (You bleed out more than other people)"),
+	"Hemophilia" = list(-2,list(),"Your blood does not clot normally. (Affected blood-loss paths remove 25% more blood)"),
 //	"Spinal Paralysis" = list(-3,list(),"Your spine has been damaged long ago and aches (Your back hurts a lot and you'll soon become unable to walk)"),
 //	"Schizophrenia" = list(-4,list(),"You hear things and see horrible images in your head later in your life (PTSD and voices in your head)"),
-	"Dwarfism" = list(0,list("Gigantism","Tall","Short"),"You are smaller and need less food, but also have lower strength (0.8x Size, strength modifier 0.7x, decreased food requirements)"),
-	"Short" = list(-1,list("Gigantism","Tall","Dwarfism"),"You are a bit shorter and weaker than average. (0.9x Size, strength modifier 0.85x)"),
+	"Dwarfism" = list(0,list("Gigantism","Tall","Short"),"Strength x0.7, crafting x1.5, food use x0.8 where hunger applies; size x0.8 on Nomads maps."),
+	"Short" = list(-1,list("Gigantism","Tall","Dwarfism"),"Strength x0.85 and crafting x1.15; size x0.9 on Nomads maps."),
 //	"Hyperpigmentation" = list(5,list(),"Your skin is covered in Darkened patches or spots on your skin. (You gain heat resistance a bit)"),
-	"Tall" = list(1,list("Dwarfism","Short","Gigantism"),"You are taller than average. (1.1x Size, strength modifier 1.15x)"),
-	"Gigantism" = list(3,list("Dwarfism","Short","Tall"),"You are larger, need more food, and you move slower, but have higher strength (1.3x Size, decreased speed, increased food requirements, strength modifier 1.5x)"),
+	"Tall" = list(1,list("Dwarfism","Short","Gigantism"),"Strength x1.15 and dexterity x0.85; size x1.1 on Nomads maps."),
+	"Gigantism" = list(3,list("Dwarfism","Short","Tall"),"Strength x1.5, dexterity x0.7, movement speed multiplier x0.9, food use x1.4 where hunger applies; size x1.3 on Nomads maps."),
 //	"Sixth Sense" = list(3,list(),"You can hear voices of people who are not even near you."),
-	"Agile" = list(3,list("Slowness"),"You can run faster than most people."),
+	"Agile" = list(3,list("Slowness"),"Your movement speed multiplier is increased by 15%."),
 	"Weak Immune System" = list(-3,list("Strong Immune System"),"You are more likely to get sick."),
-	"Strong Immune System" = list(3,list("Weak Immune System"),"You are less likely to get sick."),
-	"Vegan" = list(-1,list("Carnivore","Cannibal"),"You can only eat plants."),
-	"Carnivore" = list(-1,list("Vegan"),"You can only eat meat."),
-	"Slowness" = list(-2,list("Agile"),"You move slower than most people."),
+	"Strong Immune System" = list(3,list("Weak Immune System"),"Reduces infection risk from several contaminated-water and environmental exposures; does not protect against every transmission route."),
+	"Vegan" = list(-1,list("Carnivore","Cannibal"),"You refuse non-vegetarian snacks when eating them yourself; this does not prevent force-feeding."),
+	"Carnivore" = list(-1,list("Vegan"),"You refuse vegetarian snacks when eating them yourself; this does not prevent force-feeding."),
+	"Slowness" = list(-2,list("Agile"),"Your movement speed multiplier is reduced by 15%."),
 //	"Bubonic Immunity" = list(5,list("Weak Immune System"),"Your body can survive the bubonic plague, unlike most people."),
 //	"Cannibal" = list(4,list("Vegan"),"You can only eat human meat."),
 //	"Tough Liver" = list(5,list(),"You have a higher tolerance when drinking Alcohol or when Poisoned."),
-	"Flat Footed" = list(-1,list(),"Your feet have flat bottoms, and you get tired from running short distances."),
+	"Flat Footed" = list(-1,list(),"Running uses twice the normal stamina per movement step."),
 //	"Diabetes"= list(-3,list(),"You cannot eat a lot of sugery things. (Possibly to lose a limb due to insulin levels)"),
-	"Baldness"= list(-1,list(),"You cant grow hair at all."),
+	"Baldness"= list(0,list(),"Cosmetic: bald hairstyle with no scalp hair growth; does not prevent facial hair."),
 //	"Demi-God"= list(15,list(),"You are superior in many ways, but there are things still stronger than you. (Beyond max Strength, Dexterity or Philisophy, Crafting/ Speed Increase aswell"),
 	"Empathetic" = list(1,list(),"You can notice what type of mood someone is in when you look at them."),
 	"Deaf" = list(-3,list(),"You cannot hear at all."),
 	"Mute" = list(-2,list("Stutter"),"You cannot speak at all."),
-	"Heat Tolerance" = list(2,list("Heat Sensitivity"),"You can tolerate the heat better than most people."),
-	"Heat Sensitivity" = list(-2,list("Heat Tolerance"),"Extreme heat affects you more than most people."),
-	"Cold Tolerance" = list(2,list("Cold Sensitivity"),"You can tolerate the cold weather better than most people."),
-	"Cold Sensitivity" = list(-2,list("Cold Tolerance"),"Extreme cold affects you more than most people."),
+	"Heat Tolerance" = list(2,list("Heat Sensitivity"),"Heat-discomfort damage multiplier x0.3; not immunity to fire or all heat damage. Nomad starting climate may replace this choice."),
+	"Heat Sensitivity" = list(-2,list("Heat Tolerance"),"Heat-discomfort damage multiplier x2. Nomad starting climate may replace this choice."),
+	"Cold Tolerance" = list(2,list("Cold Sensitivity"),"Cold-discomfort damage multiplier x0.3; not blanket cold immunity. Nomad starting climate may replace this choice."),
+	"Cold Sensitivity" = list(-2,list("Cold Tolerance"),"Cold-discomfort damage multiplier x2. Nomad starting climate may replace this choice."),
 	"Stutter"= list(-1,list("Mute"),"You have a permanent stutter."),
 
 )
+
+// Validate player choices, not runtime traits added by climate/background logic.
+// Never mutate legacy choices: the player must explicitly correct them in setup.
+/proc/get_trait_selection_error(trait_choices, check_budget = TRUE)
+	if (!islist(trait_choices))
+		return "Invalid trait data. Use Remove in character setup to clear it."
+	var/list/seen = list()
+	for (var/choice in trait_choices)
+		if (!istext(choice) || !(choice in trait_list))
+			return "Unknown trait. Remove the unrecognized entry in character setup."
+		if (choice in seen)
+			return "Duplicate trait: [choice]. Remove the repeated entry in character setup."
+		seen += choice
+	for (var/choice in trait_choices)
+		var/list/exclusions = trait_list[choice][2]
+		for (var/excluded in exclusions)
+			if (excluded in trait_choices)
+				return "Incompatible traits: [choice] and [excluded]. Remove one in character setup."
+	if (check_budget && check_trait_points(trait_choices) > 0)
+		return "Your traits are not balanced. The sum must be 0 or less."
+	return null

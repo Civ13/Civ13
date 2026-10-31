@@ -40,7 +40,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 			if (findtext(val, "{"))
 				key_val_pairs[key] = list()
 				var/list = replacetext(replacetext(val, "{", ""), "}", "")
-				list = splittext(list, "|")
+				list = (key == "traits" && !length(list)) ? list() : splittext(list, "|")
 				for (var/something in list)
 					key_val_pairs[key] += something
 			else
@@ -60,6 +60,10 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 	for(var/prf in preferences_disabled)
 		preferences_enabled -= prf
 
+	var/trait_error = get_trait_selection_error(traits)
+	if (trait_error && client)
+		to_chat(client, SPAN_WARNING("Character traits need attention: [trait_error] Your saved choices have been preserved."))
+
 	update_setup()
 
 	return TRUE
@@ -77,9 +81,7 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 
 	var/list/vars_to_save = list("preferences_disabled", "UI_style", "UI_file", "UI_useborder", "UI_style_color", "UI_style_alpha", "lobby_music_volume", "cursor", "real_name", "be_random_name", "be_random_body", "gender", "age", "b_type", "h_style", "hair_color", "facial_color", "eye_color", "r_hair", "g_hair", "b_hair", "f_style", "r_facial", "g_facial", "b_facial", "s_tone", "r_skin", "g_skin", "b_skin", "r_eyes", "g_eyes", "b_eyes", "traits")
 
-	for (var/i in traits)
-		if (!(i in trait_list))
-			traits -= i
+	// Preserve legacy choices, including invalid entries, until explicitly edited.
 
 	var/params = ""
 	for (var/key in vars_to_save)
@@ -92,10 +94,17 @@ var/list/forbidden_pref_save_varnames = list("client_ckey", "last_id")
 			params += "&"
 		if (islist(val))
 			params += "[key]={"
-			for (var/x in val)
-				params += "[x]"
-				if (x != val[val:len])
-					params += "|"
+			if (key == "traits")
+				// Value comparison loses separators for duplicate legacy choices.
+				for (var/i = 1, i <= val:len, i++)
+					params += "[val[i]]"
+					if (i < val:len)
+						params += "|"
+			else
+				for (var/x in val)
+					params += "[x]"
+					if (x != val[val:len])
+						params += "|"
 			params += "}"
 		else
 			params += "[key]=[val]"

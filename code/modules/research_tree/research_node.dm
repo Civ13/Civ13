@@ -659,6 +659,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/cable_coil/white" = "paved_infrastructure",
 		"/obj/item/stack/cable_coil/yellow" = "electricity",
 		"/obj/item/stack/material/electronics" = "electricity",
+		"/obj/structure/grinder/constructed" = "electricity",
 		"/obj/structure/telegraph" = "electricity",
 		"/obj/structure/teleprinter" = "electricity",
 		// --- factories (16) ---

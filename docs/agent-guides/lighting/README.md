@@ -24,6 +24,17 @@ The selected exclusion Linux entry point is explicitly 516.1688 and verifies the
 existing pinned archive/members at admission and execution boundaries. Preserve
 the historical 516.1681 gate, shared resource/cleanup limits and causal controls.
 
+<!-- 2026-10-30: Gaia production visibility candidate -->
+The owner requested default-on LOS and root-lit oversized trees. Production
+contexts now use actual view/z and smooth offsets; one process owns per-client
+refresh. The candidate compositor leases raw game/mask/roof/weather planes,
+combines separately lit game and whole-root trees under one scene shadow, then
+replays roofs and weather. See docs/gaia-visibility.md for native acceptance.
+Default-on source is not a rendering receipt or deployment decision. Historical
+21x21/eight-tree fixtures and failed pixel receipts remain historical; do not
+relabel them as production proof. This request supersedes the old default-off
+source instruction below, not its missing native evidence.
+
 <!-- 2026-10-19: disabled lighting composition V2 -->
 Keep LIGHTING_COMPOSITION_V2 at 0 until new native pixel and lifecycle acceptance.
 V2 separates weather from tile RGB and explicitly represents visible fullbright

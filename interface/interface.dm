@@ -6,6 +6,7 @@ Hotkey-Mode: (hotkey-mode must be on)\n \
 \tS = Down\n \
 \tD = Right\n \
 \tW = Up\n \
+\tAlt + WASD = fine offset movement (2 pixels)\n \
 \tQ = Drop\n \
 \tE = Equip\n \
 \tR = Throw\n \
@@ -38,6 +39,7 @@ Hotkey-Mode: (hotkey-mode must be on)\n \
 \tF12 = ChangeHUD\n \
 
 Any-Mode: (hotkey doesn't need to be on)\n  \
+\tAlt + arrows/numpad directions = fine offset movement\n \
 \tCtrl+q = Drop\n \
 \tCtrl+e = Equip\n \
 \tCtrl+r = Throw\n \

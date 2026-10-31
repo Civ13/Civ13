@@ -63,8 +63,8 @@ var/list/verb_metadata = list()
 	var/datum/job/scout = new
 /datum/mock_jobs/proc/GetJob(title)
 	return title == "Scout" ? scout : null
-/proc/check_trait_points(value)
-	return value
+/proc/get_trait_selection_error(value)
+	return value ? "Invalid fixture trait selection" : null
 /proc/to_chat(atom/target, message)
 	return
 /proc/check_rights(right, ignored, mob/new_player/player)

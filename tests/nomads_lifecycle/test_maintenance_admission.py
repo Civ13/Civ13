@@ -51,6 +51,7 @@ class MaintenanceAdmissionTests(unittest.TestCase):
         class InertSupervisor:
             config = {'port': 1714}
             token = 'a' * 32
+            owned_session = session
             state = {'revision': 'f' * 40}
             def status(inner):
                 return {'ready': True, 'busy': False, 'error': None, 'clients': 1,
@@ -58,6 +59,11 @@ class MaintenanceAdmissionTests(unittest.TestCase):
                         'maintenance_operation': pending, 'session': session}
             def alive(inner):
                 return True
+            def require_owned_listener(inner):
+                return None  # Inert listener transport; no OS inspection.
+            def require_owned_session(inner, value):
+                if value != inner.owned_session or not inner.alive():
+                    raise RuntimeError('Owned process session changed before mutation')
             def record(inner, *args, **kwargs):
                 pass
         def submit(port, token, action, sent_operation, sent_session):

@@ -6,7 +6,7 @@ import tempfile
 import subprocess
 import sys
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SOURCE = Path(__file__).resolve().parents[2] / 'scripts/nomads-lifecycle/supervisor.py'
 spec = importlib.util.spec_from_file_location('nomads_supervisor', SOURCE)
@@ -23,9 +23,13 @@ class SupervisorTests(unittest.TestCase):
         config.mkdir()
         (config / 'lifecycle-token.txt').write_text('a' * 32)
         self.supervisor = m.Supervisor({'root': str(self.root / 'runtime'), 'config_directory': str(config), 'port': 1714})
+        listener = patch.object(self.supervisor, 'require_owned_listener')
+        self.listener = listener.start()
+        self.addCleanup(listener.stop)
 
     def running(self):
         self.supervisor.state = {'revision': 'b' * 40, 'phase': 'ready', 'host': {'pid': 123, 'creation_filetime': 456, 'workdir': str(self.root / 'game')}}
+        self.supervisor.owned_session = 'e' * 32
 
     def generation(self):
         folder = self.root / 'save'
@@ -130,9 +134,36 @@ class SupervisorTests(unittest.TestCase):
 
     def test_pid_reuse_is_not_owned(self):
         self.running()
+        self.supervisor.child = Mock(pid=123, poll=Mock(return_value=None))
         with patch.object(m, 'process_identity', return_value=789):
-            with self.assertRaisesRegex(RuntimeError, 'PID was reused'):
+            with self.assertRaisesRegex(RuntimeError, 'identity_mismatch'):
                 self.supervisor.alive()
+
+    def test_owned_handle_states_fail_closed_without_adoption(self):
+        self.assertEqual(self.supervisor.owned_process_state(), 'absent')
+        self.running()
+        with patch.object(m, 'process_identity') as identity:
+            self.assertEqual(self.supervisor.owned_process_state(), 'helper_lost')
+            identity.assert_not_called()
+        self.supervisor.child = Mock(pid=123, poll=Mock(return_value=0))
+        with patch.object(m, 'process_identity') as identity:
+            self.assertEqual(self.supervisor.owned_process_state(), 'exited')
+            identity.assert_not_called()
+        self.supervisor.child.poll.return_value = None
+        for outcome, expected in ((456, 'running'), (None, 'unknown'),
+                                  (PermissionError(), 'access_denied'),
+                                  (OSError(), 'unknown'), (789, 'identity_mismatch')):
+            with self.subTest(expected=expected), patch.object(m, 'process_identity',
+                    side_effect=outcome if isinstance(outcome, Exception) else None,
+                    return_value=outcome):
+                self.assertEqual(self.supervisor.owned_process_state(), expected)
+                if expected not in ('running',):
+                    with self.assertRaisesRegex(RuntimeError, expected):
+                        self.supervisor.alive()
+        self.supervisor.child.pid = 124
+        with patch.object(m, 'process_identity') as identity:
+            self.assertEqual(self.supervisor.owned_process_state(), 'identity_mismatch')
+            identity.assert_not_called()
 
     def test_modified_binary_rejected_again_after_copy(self):
         folder = self.root / 'binaries'
@@ -233,14 +264,14 @@ class SupervisorTests(unittest.TestCase):
 
     def test_missing_session_never_requests_mutation(self):
         self.running()
-        with patch.object(self.supervisor, 'status', return_value={'ready': 1}), patch.object(m, 'query') as query:
+        with patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1}), patch.object(m, 'query') as query:
             with self.assertRaisesRegex(RuntimeError, 'session challenge'):
                 self.supervisor.stop_saved('d' * 32)
             query.assert_not_called()
 
     def test_client_arriving_during_build_prevents_shutdown(self):
         self.running()
-        with patch.object(self.supervisor, 'status', return_value={'ready': 1, 'clients': 1, 'session': 'e' * 32}), patch.object(m, 'query') as query:
+        with patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1, 'clients': 1, 'session': 'e' * 32}), patch.object(m, 'query') as query:
             with self.assertRaisesRegex(RuntimeError, 'not ready for a safe update'):
                 self.supervisor.stop_saved('d' * 32)
             query.assert_not_called()
@@ -286,10 +317,125 @@ class SupervisorTests(unittest.TestCase):
 
     def test_mutation_sent_once_with_process_session_on_failure(self):
         self.running()
-        with patch.object(self.supervisor, 'status', return_value={'ready': 1, 'session': 'e' * 32}), patch.object(m, 'query', side_effect=TimeoutError('unknown result')) as query:
+        with patch.object(self.supervisor, 'alive', return_value=True), patch.object(self.supervisor, 'status', return_value={'ready': 1, 'session': 'e' * 32}), patch.object(m, 'query', side_effect=TimeoutError('unknown result')) as query:
             with self.assertRaises(TimeoutError):
                 self.supervisor.stop_saved('d' * 32)
             query.assert_called_once_with(1714, 'a' * 32, 'save_shutdown', 'd' * 32, 'e' * 32)
+
+    def test_status_checks_owned_listener_before_query(self):
+        self.running()
+        self.listener.side_effect = PermissionError('listener denied')
+        with patch.object(m, 'query') as query, self.assertRaisesRegex(PermissionError, 'listener denied'):
+            self.supervisor.status()
+        query.assert_not_called()
+
+    def test_effect_admission_failure_never_sends_save(self):
+        self.running()
+        with patch.object(self.supervisor, 'alive', return_value=True), \
+             patch.object(self.supervisor, 'status', return_value={'ready': 1, 'session': 'e' * 32}), \
+             patch.object(m, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'expired'):
+                self.supervisor.stop_saved('d' * 32, before_mutation=Mock(side_effect=RuntimeError('expired')))
+            query.assert_not_called()
+
+    def test_expiry_during_final_listener_check_prevents_first_effect(self):
+        self.running()
+        now = [299]
+        observations = []
+        def observe_listener():
+            observations.append(now[0])
+            if len(observations) == 3:
+                now[0] = 301  # The final process/listener check crossed expiry.
+        self.listener.side_effect = observe_listener
+        def require_fresh():
+            if now[0] > 300:
+                raise RuntimeError('request expired')
+        freshness = Mock(side_effect=require_fresh)
+        with patch.object(self.supervisor, 'alive', return_value=True), \
+                patch.object(self.supervisor, 'status', return_value={'ready': 1, 'session': 'e' * 32}), \
+                patch.object(m, 'query') as query, \
+                self.assertRaisesRegex(RuntimeError, 'request expired'):
+            self.supervisor.stop_saved('d' * 32, before_mutation=freshness)
+        self.assertEqual(len(observations), 3)
+        freshness.assert_called_once()
+        query.assert_not_called()
+
+    def test_listener_change_before_save_never_sends_mutation(self):
+        self.running()
+        self.listener.side_effect = [None, RuntimeError('listener changed')]
+        status = {'ready': 1, 'busy': 0, 'error': None, 'restart_hold': 0,
+                  'restart_intent': 0, 'clients': 0, 'session': 'e' * 32}
+        with patch.object(self.supervisor, 'alive', return_value=True), \
+                patch.object(self.supervisor, 'status', return_value=status), \
+                patch.object(m, 'query') as query, \
+                self.assertRaisesRegex(RuntimeError, 'listener changed'):
+            self.supervisor.stop_saved('d' * 32)
+        query.assert_not_called()
+
+    def test_shutdown_wait_does_not_query_an_absent_listener(self):
+        self.running()
+        self.listener.side_effect = [None, None, None, m.ListenerNotReady('closed')]
+        status = {'ready': 1, 'busy': 0, 'error': None, 'restart_hold': 0,
+                  'restart_intent': 0, 'clients': 0, 'session': 'e' * 32}
+        operation = 'd' * 32
+        with patch.object(self.supervisor, 'alive', side_effect=[True] * 6 + [False]), \
+                patch.object(self.supervisor, 'status', return_value=status) as observed, \
+                patch.object(self.supervisor, 'sleep'), patch.object(self.supervisor, 'record'), \
+                patch.object(m, 'snapshot', return_value='generation'), \
+                patch.object(m, 'query', return_value={'operation': operation}) as query:
+            self.supervisor.stop_saved(operation)
+        observed.assert_called_once()
+        query.assert_called_once()
+
+    def test_shutdown_exit_during_wait_does_not_query_or_reject_save(self):
+        self.running()
+        status = {'ready': 1, 'busy': 0, 'error': None, 'restart_hold': 0,
+                  'restart_intent': 0, 'clients': 0, 'session': 'e' * 32}
+        operation = 'd' * 32
+        with patch.object(self.supervisor, 'alive', side_effect=[True] * 4 + [False]), \
+                patch.object(self.supervisor, 'status', return_value=status) as observed, \
+                patch.object(self.supervisor, 'sleep'), patch.object(self.supervisor, 'record'), \
+                patch.object(m, 'snapshot', return_value='generation'), \
+                patch.object(m, 'query', return_value={'operation': operation}) as query:
+            self.supervisor.stop_saved(operation)
+        observed.assert_called_once()
+        query.assert_called_once()
+
+    def test_save_rechecks_handle_and_bound_session_before_any_mutation(self):
+        self.running()
+        status = {'ready': 1, 'session': 'e' * 32}
+        with patch.object(self.supervisor, 'alive', side_effect=RuntimeError('helper_lost')), \
+                patch.object(self.supervisor, 'status') as status_read, patch.object(m, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'helper_lost'):
+                self.supervisor.stop_saved('d' * 32)
+            status_read.assert_not_called()
+            query.assert_not_called()
+        with patch.object(self.supervisor, 'alive', side_effect=[True, True, False]), \
+                patch.object(self.supervisor, 'status', return_value=status), patch.object(m, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'session changed before mutation'):
+                self.supervisor.stop_saved('d' * 32)
+            query.assert_not_called()
+        with patch.object(self.supervisor, 'alive', return_value=True), \
+                patch.object(self.supervisor, 'status', return_value=dict(status, session='f' * 32)), \
+                patch.object(m, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'session changed'):
+                self.supervisor.stop_saved('d' * 32)
+            query.assert_not_called()
+        self.supervisor.owned_session = None
+        with patch.object(self.supervisor, 'alive', return_value=True), \
+                patch.object(self.supervisor, 'status', return_value=status), patch.object(m, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'session changed'):
+                self.supervisor.stop_saved('d' * 32)
+            query.assert_not_called()
+
+    def test_once_refuses_before_reading_configuration_or_starting_supervisor(self):
+        for args in (['--once'], ['--once', '--force-cycle']):
+            with self.subTest(args=args), patch.object(sys, 'argv', ['supervisor.py', '--config', str(self.root / 'missing'), *args]), \
+                    patch.object(m, 'Supervisor') as constructor:
+                with self.assertRaises(SystemExit) as error:
+                    m.main()
+                self.assertEqual(error.exception.code, 2)
+                constructor.assert_not_called()
 
 
 if __name__ == '__main__':

@@ -49,6 +49,18 @@ class LobbyJoinSource(unittest.TestCase):
     def test_canonical_admission_and_job_body_preserved(self):
         source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
         body = procedure(source, "/mob/new_player/proc/process_lobby_join(")
+        # Reverse only the reviewed trait-validation replacement; preserve the
+        # historical admission/body digest rather than accepting unrelated drift.
+        guard = 'if (get_trait_selection_error(client.prefs.traits))'
+        message = 'Please correct your character traits: [get_trait_selection_error(client.prefs.traits)]'
+        old_message = "Your traits are not balanced! You can't join until you balance them (sum has to be <= 0)."
+        self.assertEqual(body.count(guard), 5)
+        self.assertEqual(body.count(message), 5)
+        body = body.replace(guard, 'if (check_trait_points(client.prefs.traits) > 0)')
+        body = body.replace(message, old_message)
+        nomads = body.index('if (href_list["nomads"])')
+        nomads_message = body.index(old_message, nomads)
+        body = body[:nomads_message] + '<' + body[nomads_message:]
         # Cached fixed diagnostic codes do not alter the historical admission body.
         body = re.sub(r'^\s*lobby_join_trace\("[a-z_]+", "[a-z_]+"\)\n', '', body, flags=re.M)
         body = body[body.index('\tif (href_list["tribes"])'):]
@@ -62,6 +74,35 @@ class LobbyJoinSource(unittest.TestCase):
         body = body.replace(', href_list["SelectedJob"])) != "Yes")', ')) != "Yes")')
         body = re.sub(r'if \(\(lobby_join_confirmation\((.*)\)\) != "Yes"\)', r'if ((input(src, \1) in list("Yes", "No")) == "No")', body)
         self.assertEqual(digest(body), BASE_JOIN_SHA)
+
+    def test_trait_validation_covers_waits_readiness_and_creation(self):
+        source = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
+        self.assertNotIn("check_trait_points(", source)
+        guard = 'get_trait_selection_error(client.prefs.traits)'
+        topic = procedure(source, "/mob/new_player/Topic(")
+        self.assertIn('if (ready && ' + guard + ')\n\t\t\t\tready = FALSE', topic)
+        admission = procedure(source, "/mob/new_player/proc/lobby_join_admission_current(")
+        self.assertIn('&& !' + guard, admission)
+        for name in ('lobby_join_input', 'lobby_join_confirmation'):
+            wait = procedure(source, '/mob/new_player/proc/' + name + '(')
+            self.assertGreaterEqual(wait.count('!lobby_join_admission_current()'), 2)
+        for name, side_effect in (('AttemptLateSpawn', 'job_master.AssignRole('),
+                                  ('create_character', 'delayed_spawning_as_job.total_positions')):
+            body = procedure(source, '/mob/new_player/proc/' + name + '(')
+            self.assertLess(body.index('allow_new_character(src)'), body.index(guard))
+            self.assertLess(body.index(guard), body.index(side_effect))
+        creation = procedure(source, '/mob/new_player/proc/create_character(')
+        self.assertLess(creation.index('client.prefs.be_random_body'), creation.index('mind.transfer_to('))
+        self.assertEqual(creation.count('qdel(new_character)'), 3)
+        self.assertEqual(creation.count('spawning = FALSE'), 3)
+        self.assertIn('var/copied_preferences = client.prefs.copy_to(new_character)', creation)
+        self.assertIn('if (!copied_preferences)', creation)
+        randomizer = (ROOT / 'code/game/mob/new_player/preferences_setup.dm').read_text()
+        self.assertIn('return copy_to(H,1)', randomizer)
+        ticker = procedure((ROOT / 'code/game/gameticker.dm').read_text(),
+                          '/datum/controller/gameticker/proc/create_characters()')
+        self.assertIn('if (player.create_character())\n\t\t\t\t\tqdel(player)', ticker)
+        self.assertIn('player.ready = FALSE', ticker)
 
     def test_menu_filters_and_link_inventory_preserved(self):
         for (path, name), expected in MENU_SHAS.items():

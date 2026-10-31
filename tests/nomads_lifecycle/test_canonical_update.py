@@ -9,15 +9,24 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SCRIPTS = Path(__file__).resolve().parents[2] / 'scripts/nomads-lifecycle'
 sys.path.insert(0, str(SCRIPTS))
 import canonical_update as m
+import bot_consumer as bot
 
 
 class CanonicalUpdateTests(unittest.TestCase):
     def setUp(self):
+        # The process and listener transports are inert in these source tests.
+        self.listener_guard = m.require_owned_listener
+        listener_patch = patch.object(m, 'require_owned_listener')
+        listener_patch.start()
+        self.addCleanup(listener_patch.stop)
+        observation_patch = patch.object(m.core, 'windows_listener_observation', return_value={})
+        self.listener_observation = observation_patch.start()
+        self.addCleanup(observation_patch.stop)
         self.temp = tempfile.TemporaryDirectory(prefix='cu-')
         self.base = Path(self.temp.name).resolve()
         self.assertTrue(self.base.is_relative_to(Path(tempfile.gettempdir()).resolve()))
@@ -115,9 +124,11 @@ class CanonicalUpdateTests(unittest.TestCase):
                         'maxx': 501 if self.wrong_dimensions else 500, 'maxy': 350, 'maxz': 1,
                         'debug': {'tick': 1 if self.frozen_heartbeat else self.tick, 'runtime': {'total': 0}}}
 
-            def stop_saved(self, operation, expected_session=None, admin_operation=False, expected_persistence=None):
+            def stop_saved(self, operation, expected_session=None, admin_operation=False, expected_persistence=None, before_mutation=None):
                 owner.assertEqual(expected_session, 'e' * 32)
                 owner.assertEqual(expected_persistence, self.persistence_mode)
+                if before_mutation is not None:
+                    before_mutation()
                 if admin_operation:
                     owner.assertEqual(operation, self.maintenance)
                 owner.events.append('save')
@@ -175,7 +186,7 @@ class CanonicalUpdateTests(unittest.TestCase):
                     return '10 errors, 0 warnings' if self.bad_compile_summary else '0 errors, 0 warnings'
                 return owner.git(*arguments[1:], cwd=cwd).strip()
 
-            def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None):
+            def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None, before_spawn=None):
                 owner.events.append('load')
                 owner.assertFalse(self.running)
                 owner.assertEqual(run, owner.game)
@@ -192,9 +203,11 @@ class CanonicalUpdateTests(unittest.TestCase):
                      patch.object(m.core.socket, 'socket'), \
                      patch.object(m.core, 'process_identity', return_value=987):
                     return super().launch_prepared(run, manifest, generation, operation, backup,
-                                                   readiness_check=readiness_check)
+                                                   readiness_check=readiness_check, before_spawn=before_spawn)
 
         self.sup = InertSupervisor(self.config)
+        self.sup.owned_session = 'e' * 32
+        self.sup.child = Mock(pid=123)
         self.now = 0
         def observe_continuity_wait(seconds):
             owner.assertEqual(self.sup.state['phase'], 'starting')
@@ -205,6 +218,270 @@ class CanonicalUpdateTests(unittest.TestCase):
         self.sup.clock = lambda: self.now
         self.updater = m.CanonicalUpdater(self.config, supervisor=self.sup,
                                           guard=self.guard, quiet=self.quiet)
+        run = self.updater.run
+        def run_with_lock(*args, held_lock=None, **kwargs):
+            if held_lock is not None:
+                return run(*args, held_lock=held_lock, **kwargs)
+            with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+                return run(*args, held_lock=lease, **kwargs)
+        self.updater.run = run_with_lock
+
+    def test_fresh_canonical_updater_cannot_adopt_persisted_host(self):
+        updater = m.CanonicalUpdater(self.config, guard=self.guard, quiet=self.quiet)
+        with patch.object(m.core, 'process_identity') as identity, patch.object(m.core, 'query') as query:
+            with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+                with self.assertRaisesRegex(RuntimeError, 'same-process supervisor owner'):
+                    updater.run(held_lock=lease)
+            identity.assert_not_called()
+            query.assert_not_called()
+        self.assertFalse((self.root / 'HALTED.json').exists())
+
+    def test_unverified_listener_guard_fails_closed(self):
+        self.listener_observation.side_effect = PermissionError('listener unavailable')
+        with patch.object(m, 'require_owned_listener', self.listener_guard), \
+             patch.object(self.sup, 'status') as status, \
+             self.assertRaisesRegex(PermissionError, 'listener unavailable'):
+            m.consume_admin_once(self.config, self.sup)
+        status.assert_not_called()
+        self.assertFalse((self.root / 'admin-maintenance').exists())
+
+    def test_same_process_coordinator_uses_existing_owner_and_lock(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        updater = Mock()
+        updater.run.return_value = {'phase': 'ready'}
+        factory = Mock(return_value=updater)
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            with patch.object(m.core, 'exclusive_lock', side_effect=AssertionError('lock reacquired')):
+                self.assertEqual(coordinator.poll_admin(), {'phase': 'ready'})
+            factory.assert_called_once_with(self.config, supervisor=self.sup)
+            updater.run.assert_called_once_with(admin_operation=operation, expected_session='e' * 32, held_lock=lease)
+            self.assertEqual(json.loads((self.root / 'admin-maintenance' / (operation + '.json')).read_text())['phase'], 'complete')
+        with self.assertRaisesRegex(RuntimeError, 'lock is not held'):
+            coordinator.poll_admin()
+        self.assertEqual(updater.run.call_count, 1)
+
+    def test_admin_update_revokes_bot_capability_before_updater(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        events = []
+        updater = Mock()
+        updater.run.side_effect = lambda **kwargs: events.append('update') or {'phase': 'ready'}
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=lambda config, supervisor: updater)
+            coordinator.poll_admin(before_update=lambda: events.append('revoke'))
+        self.assertEqual(events, ['revoke', 'update'])
+
+    def test_failed_bot_revocation_refuses_admin_receipt_and_update(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        factory = Mock()
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            with self.assertRaisesRegex(RuntimeError, 'queued'):
+                coordinator.poll_admin(before_update=Mock(side_effect=RuntimeError('queued')))
+        factory.assert_not_called()
+        self.assertFalse((self.root / 'admin-maintenance' / (operation + '.json')).exists())
+
+    def test_missing_revocation_proof_refuses_admin_receipt_and_update(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        self.config['canonical_bot_enabled'] = True
+        factory = Mock()
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            with self.assertRaisesRegex(RuntimeError, 'revocation is required'):
+                coordinator.poll_admin(before_update=Mock(return_value=None))
+        factory.assert_not_called()
+        self.assertFalse((self.root / 'admin-maintenance' / (operation + '.json')).exists())
+
+    def test_dispatcher_and_canonical_coordinator_share_owner_and_lease(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        self.config['canonical_bot_enabled'] = True
+        updater = Mock()
+        events = []
+        updater.run.side_effect = lambda **kwargs: events.append('update') or {'phase': 'ready'}
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            consumer = Mock()
+            consumer.root, consumer.held_lock = self.root, lease
+            consumer.backend.supervisor = self.sup
+            consumer.binding, consumer.blocked = {'target_type': 'canonical'}, False
+            def revoke():
+                events.append('revoke')
+                consumer.blocked = True
+                return m.core._BotRevocation(self.sup, lease)
+            consumer.revoke_for_update.side_effect = revoke
+            def coordinator(config, owner, held):
+                self.assertIs(owner, self.sup)
+                self.assertIs(held, lease)
+                return m.CanonicalCoordinator(config, owner, held,
+                    updater_factory=lambda config, supervisor: updater)
+            dispatcher = bot.OwnerDispatcher(self.sup, consumer, lease, coordinator_factory=coordinator)
+            with patch.object(m.core, 'exclusive_lock', side_effect=AssertionError('lock reacquired')):
+                self.assertEqual(dispatcher.tick(), 'canonical-update')
+                self.assertEqual(dispatcher.tick(), 'blocked')
+        self.assertEqual(events, ['revoke', 'update'])
+        consumer.advertise.assert_not_called()
+        consumer.consume_once.assert_not_called()
+        self.assertIsInstance(updater.run.call_args.kwargs['bot_revocation'], m.core._BotRevocation)
+
+    def test_canonical_update_refuses_missing_or_stale_bot_revocation(self):
+        self.config['canonical_bot_enabled'] = True
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            with self.assertRaisesRegex(RuntimeError, 'revocation is required'):
+                self.updater.run(held_lock=lease)
+            foreign = m.core.Supervisor.__new__(m.core.Supervisor)
+            with self.assertRaisesRegex(RuntimeError, 'revocation does not match'):
+                self.updater.run(held_lock=lease, bot_revocation=m.core._BotRevocation(foreign, lease))
+        self.assertNotIn('save', self.events)
+        self.assertNotIn('compile', self.events)
+
+    def test_owner_loss_before_acceptance_leaves_no_receipt_or_mutation(self):
+        operation = 'd' * 32
+        self.sup.maintenance = operation
+        factory = Mock()
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            with patch.object(self.sup, 'require_owned_session', side_effect=[None, RuntimeError('owner lost')]), \
+                 patch.object(m.core, 'query') as query, \
+                 self.assertRaisesRegex(RuntimeError, 'owner lost'):
+                coordinator.poll_admin()
+        self.assertFalse((self.root / 'admin-maintenance' / (operation + '.json')).exists())
+        factory.assert_not_called()
+        query.assert_not_called()
+
+    def test_same_process_direct_update_uses_bound_owner_and_lock(self):
+        updater = Mock()
+        updater.run.return_value = {'phase':'ready'}
+        factory = Mock(return_value=updater)
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            with patch.object(m.core, 'exclusive_lock', side_effect=AssertionError('lock reacquired')):
+                self.assertEqual(coordinator.update_once(), {'phase':'ready'})
+            factory.assert_called_once_with(self.config, supervisor=self.sup)
+            updater.run.assert_called_once_with(held_lock=lease)
+
+    def test_same_process_coordinator_runs_real_updater_with_inert_effects(self):
+        self.sup.maintenance = 'd' * 32
+        self.sup.clients = 2
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease,
+                                                updater_factory=lambda config, supervisor: self.updater)
+            with patch.object(m.core, 'exclusive_lock', side_effect=AssertionError('lock reacquired')):
+                result = coordinator.poll_admin()
+            self.assertEqual(result['phase'], 'ready')
+            self.assertEqual(self.events.count('save'), 1)
+            self.assertEqual(self.events.count('load'), 1)
+            self.assertEqual(json.loads((self.root / 'admin-maintenance' / ('d' * 32 + '.json')).read_text())['phase'], 'complete')
+
+    def test_updater_requires_live_lock_even_for_injected_owner(self):
+        updater = m.CanonicalUpdater(self.config, supervisor=self.sup, guard=self.guard, quiet=self.quiet)
+        with patch.object(m.core, 'query') as query:
+            with self.assertRaisesRegex(RuntimeError, 'lock lease required'):
+                updater.run()
+            query.assert_not_called()
+
+    def test_real_supervisor_launch_and_coordinator_share_one_owner(self):
+        # Only the OS process and status transports are injected. All state,
+        # lock and publication paths use this same Supervisor instance.
+        owner = m.core.Supervisor(self.config)
+        child = Mock(pid=123, poll=Mock(return_value=None))
+        status = self.sup.status()
+        status['maintenance_operation'] = 'd' * 32
+        manifest = {'revision':self.old, 'map':'NOMADS_GAIA', 'binaries':self.state['binaries']}
+        updater = Mock()
+        updater.run.return_value = {'phase':'ready'}
+        factory = Mock(return_value=updater)
+        with patch.object(m.core.socket, 'socket'), \
+                patch.object(m.core.subprocess, 'Popen', return_value=child), \
+                patch.object(m.core, 'process_identity', return_value=456), \
+                patch.object(owner, 'status', return_value=status), \
+                patch.object(m.core, 'query') as query:
+            with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+                owner.launch_prepared(self.game, manifest, None, 'c' * 32)
+                self.assertIs(owner.child, child)
+                self.assertEqual(owner.owned_session, 'e' * 32)
+                coordinator = m.CanonicalCoordinator(self.config, owner, lease, updater_factory=factory)
+                with patch.object(m.core, 'exclusive_lock', side_effect=AssertionError('lock reacquired')):
+                    self.assertEqual(coordinator.poll_admin(), {'phase':'ready'})
+                factory.assert_called_once_with(self.config, supervisor=owner)
+                updater.run.assert_called_once_with(admin_operation='d' * 32, expected_session='e' * 32, held_lock=lease)
+            query.assert_not_called()
+
+    def test_same_process_coordinator_refuses_unowned_or_replaced_session(self):
+        self.sup.maintenance = 'd' * 32
+        factory = Mock()
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            self.sup.child = None
+            with self.assertRaisesRegex(RuntimeError, 'same-process supervisor owner'):
+                m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            self.sup.child = Mock(pid=123)
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease, updater_factory=factory)
+            status = self.sup.status()
+            status['session'] = 'f' * 32
+            with patch.object(self.sup, 'status', return_value=status):
+                with self.assertRaisesRegex(RuntimeError, 'session changed'):
+                    coordinator.poll_admin()
+            with patch.object(self.sup, 'alive', side_effect=[True, False]):
+                with self.assertRaisesRegex(RuntimeError, 'exited before listener verification'):
+                    coordinator.poll_admin()
+        factory.assert_not_called()
+        self.assertFalse((self.root / 'admin-maintenance').exists())
+
+    def test_same_process_coordinator_does_not_signal_replacement_on_failure(self):
+        self.sup.maintenance = 'd' * 32
+        updater = Mock()
+        def fail(**_kwargs):
+            self.sup.owned_session = 'f' * 32
+            raise RuntimeError('injected failure')
+        updater.run.side_effect = fail
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease, patch.object(m.core, 'query') as query:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease,
+                                                updater_factory=lambda config, supervisor: updater)
+            with self.assertRaisesRegex(RuntimeError, 'injected failure'):
+                coordinator.poll_admin()
+            query.assert_not_called()
+        receipt = self.root / 'admin-maintenance' / ('d' * 32 + '.json')
+        self.assertEqual(json.loads(receipt.read_text())['phase'], 'failed')
+
+    def test_listener_change_blocks_maintenance_failure_signal(self):
+        self.sup.maintenance = 'd' * 32
+        self.listener_observation.side_effect = [None, None, None, RuntimeError('listener changed')]
+        updater = Mock()
+        updater.run.side_effect = RuntimeError('injected failure')
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease, patch.object(m.core, 'query') as query:
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease,
+                                                updater_factory=lambda config, supervisor: updater)
+            with self.assertRaisesRegex(RuntimeError, 'injected failure'):
+                coordinator.poll_admin()
+            query.assert_not_called()
+        receipt = self.root / 'admin-maintenance' / ('d' * 32 + '.json')
+        self.assertEqual(json.loads(receipt.read_text())['phase'], 'failed')
+
+    def test_lost_lock_preserves_accepted_receipt_and_sends_no_signal(self):
+        self.sup.maintenance = 'd' * 32
+        updater = Mock()
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease, patch.object(m.core, 'query') as query:
+            def lose_lock(**_kwargs):
+                lease.active = False
+                raise RuntimeError('injected interruption')
+            updater.run.side_effect = lose_lock
+            coordinator = m.CanonicalCoordinator(self.config, self.sup, lease,
+                                                updater_factory=lambda config, supervisor: updater)
+            with self.assertRaisesRegex(RuntimeError, 'lock is not held'):
+                coordinator.poll_admin()
+            query.assert_not_called()
+        receipt = self.root / 'admin-maintenance' / ('d' * 32 + '.json')
+        self.assertEqual(json.loads(receipt.read_text())['phase'], 'accepted')
+
+    def test_same_process_coordinator_rejects_foreign_or_missing_lock(self):
+        with m.core.exclusive_lock(self.root / 'other.lock') as foreign:
+            with self.assertRaisesRegex(RuntimeError, 'lock is not held'):
+                m.CanonicalCoordinator(self.config, self.sup, foreign)
+        with self.assertRaisesRegex(RuntimeError, 'lock lease required'):
+            m.CanonicalCoordinator(self.config, self.sup, None)
 
     def git(self, *args, cwd=None):
         result = subprocess.run(['git', '-c', 'user.name=Canonical fixture', '-c',
@@ -267,6 +544,225 @@ class CanonicalUpdateTests(unittest.TestCase):
         self.assertFalse((self.root / 'builds').exists())
         self.assertEqual(self.git('branch', '--show-current').strip(), 'master')
         self.assertEqual(self.git('status', '--porcelain'), ' M config/host.txt\n')
+
+    def test_v2_restart_preserves_pinned_binaries_and_never_updates(self):
+        self.config['canonical_bot_enabled'] = True
+        originals = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        first_effect = Mock()
+        with patch.object(self.updater, 'build', side_effect=AssertionError('unexpected build')), \
+                patch.object(self.updater, 'switch_build', side_effect=AssertionError('unexpected binary switch')):
+            result = self.updater.run(bot_action='restart', bot_operation='a' * 32, before_effect=first_effect)
+        first_effect.assert_called_once()
+        self.assertEqual(result['phase'], 'ready')
+        self.assertEqual(result['revision'], self.old)
+        self.assertEqual(originals, {name: (self.game / name).read_bytes() for name in originals})
+        self.assertNotIn('source-gate', self.events)
+        self.assertNotIn('compile', self.events)
+        self.assertEqual(self.events[:2], ['save', 'exit'])
+        self.assertIn('load', self.events)
+
+    def test_v2_canonical_actions_are_disabled_without_explicit_flag(self):
+        with self.assertRaisesRegex(RuntimeError, 'Invalid fixed bot operation'):
+            self.updater.run(bot_action='restart', bot_operation='a' * 32, before_effect=Mock())
+        self.assertNotIn('save', self.events)
+
+    def test_v2_save_stop_retains_generation_and_old_artifact_archive(self):
+        self.config['canonical_bot_enabled'] = True
+        result = self.updater.run(bot_action='save-stop', bot_operation='a' * 32, before_effect=Mock())
+        self.assertEqual(result['phase'], 'stopped-for-repin')
+        self.assertEqual(self.sup.state['phase'], 'stopped')
+        self.assertTrue(Path(self.updater.transaction['previous_artifacts']).is_file())
+        self.assertTrue((Path(self.updater.transaction['backup']) / 'receipt.json').is_file())
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+
+    def test_v2_expiry_before_first_effect_keeps_original_binary_and_world(self):
+        self.config['canonical_bot_enabled'] = True
+        original = (self.game / 'civ13.dmb').read_bytes()
+        with self.assertRaisesRegex(RuntimeError, 'expired'):
+            self.updater.run(bot_action='restart', bot_operation='a' * 32,
+                             before_effect=Mock(side_effect=RuntimeError('expired')))
+        self.assertEqual((self.game / 'civ13.dmb').read_bytes(), original)
+        self.assertTrue(self.sup.running)
+        self.assertNotIn('save', self.events)
+
+    def canonical_binding(self, generation):
+        return {'target_type': 'canonical', 'supervisor_root': str(self.root),
+                'runtime_directory': str(self.game), 'repository': str(self.game), 'daemon': str(self.daemon),
+                'expected': {'revision': self.old, 'map': 'NOMADS_GAIA', 'generation': generation,
+                             'dmb_sha256': self.state['binaries']['civ13.dmb'],
+                             'rsc_sha256': self.state['binaries']['civ13.rsc']}}
+
+    def bot_backend(self, binding, lease):
+        self.config['canonical_bot_enabled'] = True
+        return m.CanonicalBotBackend(self.config, binding, self.sup, lease,
+            guard=lambda *_args, **_kwargs: {'commit': self.old},
+            updater_factory=lambda config, supervisor: self.updater)
+
+    def test_canonical_bot_restart_uses_same_owner_and_preserves_v2_pins(self):
+        generation = 'round-v2:' + 'b' * 32
+        self.sup.state['generation'] = generation
+        m.core.write_json(self.sup.state_path, self.sup.state)
+        binding = self.canonical_binding(generation)
+        originals = {name: (self.game / name).read_bytes() for name in ('civ13.dmb', 'civ13.rsc')}
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            before = backend.observe()
+            result = backend.execute('restart', 'a' * 32, before, before_effect=Mock())
+        self.assertEqual(result['restored_generation'], result['saved_generation'])
+        self.assertNotEqual(result['after']['creation_filetime'], before['creation_filetime'])
+        self.assertEqual(originals, {name: (self.game / name).read_bytes() for name in originals})
+        self.assertNotIn('source-gate', self.events)
+        self.assertNotIn('compile', self.events)
+
+    def test_canonical_bot_ambiguous_save_preserves_world_journal_and_old_binary(self):
+        generation = 'round-v2:' + 'b' * 32
+        self.sup.state['generation'] = generation
+        m.core.write_json(self.sup.state_path, self.sup.state)
+        binding = self.canonical_binding(generation)
+        old_binary = (self.game/'civ13.dmb').read_bytes()
+        def ambiguous(operation, **kwargs):
+            kwargs['before_mutation']()
+            self.make_generation(operation)
+            raise TimeoutError('save outcome unknown')
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            before = backend.observe()
+            with patch.object(self.sup, 'stop_saved', side_effect=ambiguous), \
+                    self.assertRaisesRegex(TimeoutError, 'outcome unknown'):
+                backend.execute('restart', 'a'*32, before, before_effect=Mock())
+        self.assertTrue(self.sup.running)
+        self.assertEqual((self.game/'civ13.dmb').read_bytes(), old_binary)
+        self.assertTrue((self.game/'map_saves/save_complete.txt').is_file())
+        self.assertEqual(json.loads((self.root/'update-state.json').read_text())['phase'], 'failed')
+        self.assertTrue((self.root/'HALTED.json').is_file())
+        self.assertNotIn('compile', self.events)
+        self.assertNotIn('load', self.events)
+
+    def test_canonical_bot_saved_stop_requires_repin_before_saved_start(self):
+        generation = 'round-v2:' + 'b' * 32
+        self.sup.state['generation'] = generation
+        m.core.write_json(self.sup.state_path, self.sup.state)
+        binding = self.canonical_binding(generation)
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            before = backend.observe()
+            stopped = backend.execute('save-stop', 'a' * 32, before, before_effect=Mock())
+            self.assertIsNone(stopped['after'])
+            with self.assertRaisesRegex(RuntimeError, 'binding differs'):
+                backend.observe()
+            binding['expected']['generation'] = stopped['saved_generation']
+            reviewed = self.bot_backend(binding, lease)
+            self.assertIsNone(reviewed.observe())
+            started = reviewed.execute('start', 'f' * 32, None, before_effect=Mock())
+        self.assertEqual(started['restored_generation'], stopped['saved_generation'])
+        self.assertEqual(started['after']['dmb_sha256'], binding['expected']['dmb_sha256'])
+
+    def test_canonical_saved_start_expiry_preserves_journal_and_backup(self):
+        generation = 'round-v2:' + 'b' * 32
+        self.sup.state['generation'] = generation
+        m.core.write_json(self.sup.state_path, self.sup.state)
+        binding = self.canonical_binding(generation)
+        old_binary = (self.game / 'civ13.dmb').read_bytes()
+        with m.core.exclusive_lock(self.root / 'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            stopped = backend.execute('save-stop', 'a' * 32, backend.observe(), before_effect=Mock())
+            binding['expected']['generation'] = stopped['saved_generation']
+            reviewed = self.bot_backend(binding, lease)
+            with self.assertRaisesRegex(RuntimeError, 'expired'):
+                reviewed.execute('start', 'f' * 32, None, before_effect=Mock(side_effect=RuntimeError('expired')))
+        self.assertEqual((self.game / 'civ13.dmb').read_bytes(), old_binary)
+        self.assertFalse(self.sup.running)
+        self.assertEqual(json.loads((self.root / 'update-state.json').read_text())['phase'], 'failed')
+        self.assertTrue((self.root/'HALTED.json').is_file())
+        self.assertTrue((self.root/'backups'/('a'*32)/'receipt.json').is_file())
+        self.assertTrue((self.root/'updates'/('a'*32+'-artifacts.zip')).is_file())
+
+    def initial_bot_binding(self):
+        self.sup.state = {}
+        self.sup.child = None
+        self.sup.running = False
+        self.sup.state_path.unlink()
+        self.make_generation('e' * 32)
+        generation = 'round-v2:' + 'c' * 32
+        self.config['canonical_initial_start_enabled'] = True
+        self.config['canonical_initial_generation'] = generation
+        self.updater.quiet = Mock()
+        return self.canonical_binding(generation)
+
+    def test_canonical_initial_start_requires_explicit_matching_generation(self):
+        binding = self.initial_bot_binding()
+        for field, value in (('canonical_initial_start_enabled', False),
+                             ('canonical_initial_generation', 'round-v2:' + 'f'*32)):
+            previous = self.config[field]
+            self.config[field] = value
+            with self.subTest(field=field), m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+                backend = self.bot_backend(binding, lease)
+                with self.assertRaisesRegex(RuntimeError, 'disabled or lacks'):
+                    backend.observe()
+            self.config[field] = previous
+        self.assertFalse(self.sup.state_path.exists())
+        self.assertFalse((self.root/'update-state.json').exists())
+
+    def test_canonical_initial_start_rejects_incomplete_save_without_writes(self):
+        binding = self.initial_bot_binding()
+        (self.game/'map_saves/restart_intent.json').unlink()
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            with self.assertRaises(FileNotFoundError):
+                backend.observe()
+        self.assertFalse(self.sup.state_path.exists())
+        self.assertFalse((self.root/'update-state.json').exists())
+
+    def test_canonical_initial_start_snapshots_save_and_old_binaries(self):
+        binding = self.initial_bot_binding()
+        before = (self.game/'civ13.dmb').read_bytes()
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            self.assertIsNone(backend.observe())
+            result = backend.execute('start', 'a'*32, None, before_effect=Mock())
+        self.assertEqual(result['restored_generation'], binding['expected']['generation'])
+        self.assertEqual((self.game/'civ13.dmb').read_bytes(), before)
+        self.assertTrue((self.root/'backups'/('a'*32)/'receipt.json').is_file())
+        self.assertTrue((self.root/'updates'/('a'*32+'-artifacts.zip')).is_file())
+        self.assertNotIn('compile', self.events)
+
+    def test_canonical_only_initial_start_reuses_pinned_preservation_without_bot(self):
+        binding = self.initial_bot_binding()
+        self.config['canonical_bot_enabled'] = False
+        self.config['canonical_owner_enabled'] = True
+        expected = binding['expected']
+        self.config.update(canonical_owner_revision=expected['revision'],
+                           canonical_owner_dmb_sha256=expected['dmb_sha256'],
+                           canonical_owner_rsc_sha256=expected['rsc_sha256'])
+        before = (self.game/'civ13.dmb').read_bytes()
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            with self.assertRaisesRegex(RuntimeError, 'disabled or lacks'):
+                self.updater.validate_initial(expected=expected, held_lock=lease)
+            for field in ('revision', 'dmb_sha256', 'rsc_sha256', 'map'):
+                with self.subTest(field=field), self.assertRaisesRegex(RuntimeError, 'binding differs'):
+                    self.updater.validate_initial(expected=dict(expected, **{field: 'wrong'}),
+                                                  held_lock=lease, authority='owner')
+            result = self.updater.start_initial(operation='a'*32, expected=expected, held_lock=lease,
+                                                before_effect=Mock(), authority='owner')
+        self.assertEqual(result['generation'], expected['generation'])
+        self.assertEqual((self.game/'civ13.dmb').read_bytes(), before)
+        self.assertTrue((self.root/'backups'/('a'*32)/'receipt.json').is_file())
+        self.assertTrue((self.root/'updates'/('a'*32+'-artifacts.zip')).is_file())
+        self.assertNotIn('compile', self.events)
+
+    def test_canonical_initial_start_expiry_preserves_original_save(self):
+        binding = self.initial_bot_binding()
+        marker = (self.game/'map_saves/save_complete.txt').read_bytes()
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            backend = self.bot_backend(binding, lease)
+            with self.assertRaisesRegex(RuntimeError, 'expired'):
+                backend.execute('start', 'a'*32, None, before_effect=Mock(side_effect=RuntimeError('expired')))
+        self.assertFalse(self.sup.running)
+        self.assertEqual((self.game/'map_saves/save_complete.txt').read_bytes(), marker)
+        self.assertTrue((self.root/'backups'/('a'*32)/'receipt.json').is_file())
+        self.assertTrue((self.root/'updates'/('a'*32+'-artifacts.zip')).is_file())
+        self.assertTrue((self.root/'HALTED.json').is_file())
 
     def test_nonpersistent_save_is_retained_but_fresh_world_does_not_import(self):
         self.sup.persistence_mode = 0
@@ -443,6 +939,20 @@ class CanonicalUpdateTests(unittest.TestCase):
         result = json.loads(output.getvalue())
         self.assertIn('unknown', result['persistence_mode'])
         self.assertIn('stage and validate build', result['plan'])
+
+    def test_standalone_mutating_cli_rejects_without_creating_owner(self):
+        path = self.base / 'config.json'
+        path.write_text(json.dumps(self.config))
+        for action in ('watch-admin', 'update-once'):
+            with self.subTest(action=action), \
+                 patch.object(sys, 'argv', ['canonical_update.py', action, '--config', str(path)]), \
+                 patch.object(m.core, 'Supervisor') as supervisor, patch.object(m.core, 'query') as query, \
+                 self.assertRaises(SystemExit) as stopped:
+                m.main()
+            self.assertEqual(stopped.exception.code, 2)
+            supervisor.assert_not_called()
+            query.assert_not_called()
+        self.assertFalse((self.root / 'HALTED.json').exists())
 
     def test_admin_request_with_connected_clients_runs_once(self):
         operation = 'd' * 32

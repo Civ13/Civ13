@@ -14,6 +14,9 @@
 	var/datum/nanoui/ui = locate(uiref)
 
 	if (istype(ui))
+		// Migrated windows may only be closed by their owning client.
+		if (istype(ui, /datum/nanoui/tgui) && ui.user != mob)
+			return
 		ui.close()
 
 		if (ui.ref)

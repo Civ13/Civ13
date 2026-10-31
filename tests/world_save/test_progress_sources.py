@@ -117,6 +117,23 @@ class ProgressSources(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Expected'):
                 progress.instrument(saving.replace('\tif(!operation || !operation.enter_contents(src, "save")) return FALSE\n', broken), '', True)
 
+    def test_headroom_wait_is_named_and_missing_duplicate_or_drift_rejects(self):
+        saving = self.inputs['saving'][1].decode().replace('\r\n', '\n')
+        capture = '/map_storage/proc/capture_moving_save_root(savefile/destination, list/record)\n'
+        prefix, body = saving.split(capture)
+        anchor = '\tif(world.tick_usage >= 80)\n\t\tsleep(world.tick_lag)\n'
+        self.assertEqual(body.count(anchor), 1)
+        generated, _ = progress.instrument(saving, '')
+        self.assertEqual(generated.count('world_save_progress_sleep('), 4)
+        for changed in ('', anchor + anchor,
+                        anchor.replace('>= 80', '>= 81'),
+                        anchor.replace('world.tick_lag', '2')):
+            with self.subTest(change=changed):
+                with self.assertRaisesRegex(ValueError, 'Expected'):
+                    progress.instrument(prefix + capture + body.replace(anchor, changed, 1), '')
+        with self.assertRaisesRegex(ValueError, 'Expected'):
+            progress.instrument(saving + '\n/proc/unreviewed_wait()\n\tsleep(0)\n', '')
+
     def test_wrong_source_hash_rejects_before_creating_outputs(self):
         for name in self.inputs:
             with self.subTest(source=name):

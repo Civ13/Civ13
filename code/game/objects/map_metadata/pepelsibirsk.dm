@@ -829,7 +829,7 @@ var/global/datum/external_relations/external_relations = new()
 
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "warehouse_book.tmpl", name, 400, 500)
+		ui = new /datum/nanoui/tgui(user, src, ui_key, "warehouse_book.tmpl", name, 400, 500)
 		ui.set_initial_data(data)
 		ui.open()
 

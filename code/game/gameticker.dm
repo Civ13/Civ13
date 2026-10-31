@@ -194,8 +194,10 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 			if (!player.mind.assigned_role)
 				continue
 			else
-				player.create_character()
-				qdel(player)
+				if (player.create_character())
+					qdel(player)
+				else if (player && player.client && player.client.mob == player)
+					player.ready = FALSE
 
 
 /datum/controller/gameticker/proc/collect_minds()

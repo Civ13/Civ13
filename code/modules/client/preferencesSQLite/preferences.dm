@@ -146,6 +146,8 @@ var/list/preferences_datums = list()
 	return TRUE
 
 /datum/preferences/proc/copy_to(mob/living/human/character, safety = FALSE)
+	if (get_trait_selection_error(traits))
+		return FALSE
 	// Sanitizing rather than saving as someone might still be editing when copy_to occurs.
 	player_setup.sanitize_setup()
 	if (be_random_name)
@@ -178,15 +180,19 @@ var/list/preferences_datums = list()
 
 	character.s_tone = s_tone
 
+	// Copy choices so regional runtime changes cannot rewrite saved preferences.
+	character.traits = traits.Copy()
+	character.traits_dirty = TRUE
 	character.h_style = h_style
 	character.f_style = f_style
-	if(!character.find_trait("Baldness"))
+	if (character.find_trait("Baldness"))
+		character.h_style = "Bald"
+		character.h_growth = 0
+	else
 		character.h_growth = hair_styles_list[h_style].growth
 	if(character.gender == MALE)
 		character.f_growth = facial_hair_styles_list[f_style].growth
 
-	character.traits = traits
-	character.traits_dirty = TRUE
 
 
 	//Debugging report to track down a bug, which randomly assigned the plural gender to people.
@@ -194,6 +200,8 @@ var/list/preferences_datums = list()
 		if (isliving(src)) //Ghosts get neuter by default
 			message_admins("[character] ([character.ckey]) has spawned with their gender as plural or neuter. Please notify coders.", character.ckey)
 			character.gender = MALE
+
+	return TRUE
 
 /client/proc/is_preference_enabled(var/preference)
 

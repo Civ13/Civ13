@@ -11,24 +11,12 @@ import supervisor as core
 from master_guard import verified_master
 
 
+def require_unique_loopback_listener(pid, port, process_rows, system_rows, listen_status):
+    return core.require_unique_listener(pid, port, '127.0.0.1', process_rows, system_rows, listen_status)
+
+
 def windows_observation(host, daemon, run, port):
-    if os.name != 'nt':
-        raise RuntimeError('Native consumer execution supports Windows only')
-    import psutil  # Explicit runtime prerequisite, never installed automatically.
-    pid, created = host['pid'], host['creation_filetime']
-    if core.process_identity(pid) != created:
-        raise RuntimeError('Owned process exited or PID was reused')
-    process = psutil.Process(pid)
-    if Path(process.exe()).resolve(strict=True) != daemon or Path(process.cwd()).resolve(strict=True) != run:
-        raise RuntimeError('Actual native executable or working directory differs')
-    listeners = [item for item in process.net_connections(kind='tcp')
-                 if item.status == psutil.CONN_LISTEN and item.laddr.port == port]
-    if not listeners or any(item.laddr.ip != '127.0.0.1' for item in listeners):
-        raise RuntimeError('Owned native listener is absent or not loopback-only')
-    if core.process_identity(pid) != created:
-        raise RuntimeError('Process identity changed during native inspection')
-    return {'pid': pid, 'creation_filetime': str(created),
-            'executable': str(daemon), 'working_directory': str(run)}
+    return core.windows_listener_observation(host, daemon, run, port, '127.0.0.1')
 
 
 def closed_port(port):
@@ -48,7 +36,9 @@ class PreparedBackend:
         self.run = Path(binding['runtime_directory'])
         self.daemon = Path(binding['daemon'])
         self.observe_process, self.assert_closed, self.guard = observe, assert_closed, guard
-        self.supervisor = supervisor or core.Supervisor(config)
+        if supervisor is None:
+            raise RuntimeError('A same-process supervisor owner is required')
+        self.supervisor = supervisor
 
     def master(self):
         result = self.guard(self.binding['repository'], self.config['git'])
@@ -81,13 +71,16 @@ class PreparedBackend:
             raise RuntimeError('Owned state points to another runtime directory')
         observed = self.observe_process(sup.state['host'], self.daemon, self.run, self.config['port'])
         status = sup.status()
+        # The listener observation must agree with the boot session retained by
+        # this exact owner, not merely with a same-map/revision responder.
+        sup.require_owned_session(core.startup_session(status))
         sup.accept_ready(status, None)
         if status.get('restart_intent') or status.get('clients'):
             raise RuntimeError('World has clients or an unconsumed restart intent; no lifecycle action')
         return observed | {'dmb_sha256': self.binding['expected']['dmb_sha256'],
                            'rsc_sha256': self.binding['expected']['rsc_sha256']}
 
-    def start(self, operation, generation):
+    def start(self, operation, generation, *, before_effect):
         if self.observe() is not None:
             raise RuntimeError('Start refuses an existing owned process')
         state, _ = core.validate_generation(self.run / 'map_saves', expected_map=self.binding['expected']['map'])
@@ -101,16 +94,25 @@ class PreparedBackend:
                     for name, digest in receipt['files'].items()):
                 raise RuntimeError('Prepared save does not match the acknowledged backup')
         self.assert_closed(self.config['port'])
-        sup.launch_prepared(self.run, self.manifest(), generation, operation, sup.state.get('backup'))
+        def bind_startup(status):
+            self.observe_process(sup.state['host'], self.daemon, self.run, self.config['port'])
+            if not sup.alive():
+                raise RuntimeError('Owned process exited during listener binding')
+            confirmed = sup.status()
+            if core.startup_session(confirmed) != core.startup_session(status):
+                raise RuntimeError('Startup listener session changed during binding')
+            return confirmed
+        sup.launch_prepared(self.run, self.manifest(), generation, operation, sup.state.get('backup'),
+                            readiness_check=bind_startup, before_spawn=before_effect)
         after = self.observe()
         if after is None:
             raise RuntimeError('Native startup did not establish an owned ready process')
         return after
 
-    def stop(self, operation, before):
+    def stop(self, operation, before, *, before_effect):
         if self.observe() != before:
             raise RuntimeError('Native stop ownership changed before save')
-        backup, generation = self.supervisor.stop_saved(operation)
+        backup, generation = self.supervisor.stop_saved(operation, before_mutation=before_effect)
         # stop_saved already verified identity-bound exit, intent and copied raw bytes.
         self.assert_closed(self.config['port'])
         state = dict(self.supervisor.state)
@@ -120,21 +122,25 @@ class PreparedBackend:
         self.supervisor.state = state
         return generation, core.digest(Path(backup) / 'receipt.json')
 
-    def execute(self, action, operation, before):
+    def execute(self, action, operation, before, *, before_effect):
         if action not in ('start', 'save-stop', 'restart'):
             raise ValueError('Unsupported native action')
+        if not callable(before_effect):
+            raise RuntimeError('Native effect admission is required')
         self.master()
         if self.observe() != before:
             raise RuntimeError('Native ownership changed since the advertised capability')
         result = {}
         generation = self.binding['expected']['generation']
         if action in ('save-stop', 'restart'):
-            generation, receipt = self.stop(operation, before)
+            generation, receipt = self.stop(operation, before, before_effect=before_effect)
             result.update(exit_acknowledged=True, save_complete=True,
                           saved_generation=generation, save_receipt_sha256=receipt)
         if action in ('start', 'restart'):
             self.master()  # A failed/offline changed master after stop prevents startup.
-            result.update(after=self.start(operation, generation), ready=True,
+            # A restart remains one admitted transaction after its save begins.
+            start_admission = before_effect if action == 'start' else lambda: None
+            result.update(after=self.start(operation, generation, before_effect=start_admission), ready=True,
                           restored_generation=generation)
         else:
             result.update(after=None, ready=False)

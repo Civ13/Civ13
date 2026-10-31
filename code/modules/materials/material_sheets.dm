@@ -1,4 +1,26 @@
 #define SHEET_MATERIAL_AMOUNT 2000
+
+// Conservative gameplay batch unit, not a physical chip-yield measurement.
+/proc/wood_chip_logs_per_batch()
+	return 5
+
+// Deliberately outside /stack/material: chips cannot stand in for full wood.
+/obj/item/stack/wood_chips
+	name = "wood chip batches"
+	singular_name = "batch of wood chips"
+	desc = "Each batch contains five log units' worth of wood chips. Use it as oven fuel; it cannot replace logs in crafting."
+	icon = 'icons/obj/materials.dmi'
+	icon_state = "sheet-wood"
+	w_class = ITEM_SIZE_NORMAL
+	max_amount = 10 // Same 50-log-equivalent capacity as one raw wood stack.
+	can_stack = TRUE
+	stacktype = /obj/item/stack/wood_chips
+	value = 0
+	matter = null
+	recipes = null
+	build_type = null
+	flammable = FALSE // Only the explicit oven route assigns fuel/wood credit.
+
 // Stacked resources. They use a material datum for a lot of inherited values.
 /obj/item/stack/material
 	force = WEAPON_FORCE_NORMAL

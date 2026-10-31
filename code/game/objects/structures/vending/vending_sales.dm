@@ -278,13 +278,13 @@
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
+			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
 		else if (map.ID == MAP_GULAG13)
-			ui = new(user, src, ui_key, "vending_machine_gulag.tmpl", name, 540, 600)
+			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine_gulag.tmpl", name, 540, 600)
 		else if (map.ID == MAP_KANDAHAR)
-			ui = new(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
+			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine_taotd.tmpl", name, 540, 600)
 		else
-			ui = new(user, src, ui_key, "vending_machine2.tmpl", name, 540, 600)
+			ui = new /datum/nanoui/tgui(user, src, ui_key, "vending_machine2.tmpl", name, 540, 600)
 		ui.set_initial_data(data)
 		ui.open()
 

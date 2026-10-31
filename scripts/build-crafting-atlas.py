@@ -27,6 +27,8 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.rstrip('/') == '/obj/structure/grinder/constructed':
+        return 'wood grinder'
     if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
         return 'finished planks'
     if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
@@ -97,6 +99,8 @@ for p,s in files.items():
             ingredients=[(a,c)]
             joint=joinery.get(n)
             tool_notes=''
+            if b == '/obj/structure/grinder/constructed':
+                tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
             if n.startswith('joinery: '):
                 if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
                     raise ValueError('Joinery recipe contract drift: '+n)

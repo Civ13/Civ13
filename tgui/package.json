@@ -1,0 +1,34 @@
+{
+  "name": "civ13-tgui",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "node scripts/licenses.mjs && node scripts/build.cjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm test && npm run build && npm run test:bundle",
+    "test:browser": "node scripts/browser-smoke.mjs",
+    "test:bundle": "node scripts/bundle-smoke.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "tgui-core": "6.1.1"
+  },
+  "devDependencies": {
+    "@rspack/core": "1.7.12",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "css-loader": "7.1.4",
+    "jsdom": "27.4.0",
+    "playwright-core": "1.64.1",
+    "sass": "1.97.3",
+    "sass-loader": "16.0.8",
+    "typescript": "5.9.3",
+    "vitest": "4.1.12"
+  }
+}

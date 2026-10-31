@@ -65,7 +65,7 @@ class Preparation(unittest.TestCase):
         self.assertNotIn("SEE_OBJS", plane)
         self.assertNotIn("client.images", plane)
         self.assertIn("mouse_opacity = 0", plane)
-        self.assertIn("#define LIGHTING_COMPOSITION_V2 0", (ROOT / "code/__defines/_planes+layers.dm").read_text())
+        self.assertIn("#define LIGHTING_COMPOSITION_V2 1", (ROOT / "code/__defines/_planes+layers.dm").read_text())
         self.assertIn("#define LIGHTING_COMPOSITION_V2 0", runner.prepare(enabled=False)["probe.dme"])
 
     def test_coverage_mutation_changes_only_creation_guard(self):

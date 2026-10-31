@@ -66,12 +66,14 @@
 		. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
 		. += "<i>(The sum of trait values has to be less or equal to <b>0</b>)</i><br>"
 		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
-		if (pref.traits.len)
-			for (var/i=1, i<=pref.traits.len, i++)
-				if (i == pref.traits.len)
-					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]])"
-				else if (pref.traits.len)
-					. += "[pref.traits[i]] ([trait_list[pref.traits[i]][1]]), "
+		var/trait_error = get_trait_selection_error(pref.traits)
+		if (trait_error)
+			. += "<b>[html_encode(trait_error)]</b><br>Saved choices are preserved until you remove them.<br>"
+		if (islist(pref.traits))
+			for (var/choice in pref.traits)
+				var/list/definition = istext(choice) ? trait_list[choice] : null
+				var/cost_label = definition ? "[definition[1]]" : "unknown"
+				. += "[html_encode("[choice]")] ([cost_label])<br>"
 
 /datum/category_item/player_setup_item/general/basic/OnTopic(var/href,var/list/href_list, var/mob/user)
 
@@ -118,42 +120,66 @@
 		return TOPIC_REFRESH
 
 	else if (href_list["add_traits"])
-		var/list/possible = list("Cancel")
-		for(var/i=1, i<= trait_list.len, i++)
-			var/check_repeat = trait_list[i]
-			if (!(check_repeat in pref.traits)) //Checks if the trait was already choosen and leave it out of the options
-				possible += "[trait_list[i]] ([trait_list[trait_list[i]][1]])"
-		var/add = WWinput(usr, "Add Trait:", "Traits", "Cancel", possible)
-		if (add == "Cancel")
+		var/trait_error = get_trait_selection_error(pref.traits, FALSE)
+		if (trait_error)
+			WWalert(user, trait_error, "Traits")
 			return TOPIC_REFRESH
-		else
-			var/list/padd = splittext(add," (")
-			switch(alert(usr,"[trait_list[padd[1]][3]]","[padd[1]]","Add","Cancel"))
-				if ("Add")
-					pref.traits += padd[1]
-				if ("Cancel")
-					return TOPIC_REFRESH
-		if ("Cancel" in pref.traits) //Failsafe, since it works with strings
-			pref.traits -= "Cancel"
+		var/list/possible = list("Cancel")
+		for (var/choice in trait_list)
+			var/list/candidate = pref.traits.Copy()
+			candidate += choice
+			if (!get_trait_selection_error(candidate, FALSE))
+				possible["[choice] ([trait_list[choice][1]])"] = choice
+		var/add = WWinput(user, "Add Trait:", "Traits", "Cancel", possible)
+		if (!add || add == "Cancel" || !CanUseTopic(user) || !(add in possible))
+			return TOPIC_REFRESH
+		var/choice = possible[add]
+		if (alert(user, "[trait_list[choice][3]]", choice, "Add", "Cancel") != "Add" || !CanUseTopic(user))
+			return TOPIC_REFRESH
+		// Both prompts can yield: rebuild from current choices before committing.
+		if (!islist(pref.traits))
+			return TOPIC_REFRESH
+		var/list/candidate = pref.traits.Copy()
+		candidate += choice
+		trait_error = get_trait_selection_error(candidate, FALSE)
+		if (trait_error)
+			WWalert(user, trait_error, "Traits")
+			return TOPIC_REFRESH
+		pref.traits = candidate
 		pref.save_preferences()
 		return TOPIC_REFRESH
 
 	else if (href_list["remove_traits"])
-		var/remove = WWinput(usr, "Remove Trait:", "Traits", "Cancel", pref.traits + "Cancel")
-		if (remove == "Cancel")
+		if (!islist(pref.traits))
+			if (alert(user, "Clear invalid trait data? This removes the saved malformed trait value.", "Traits", "Clear", "Cancel") == "Clear" && CanUseTopic(user) && !islist(pref.traits))
+				pref.traits = list()
+				pref.save_preferences()
 			return TOPIC_REFRESH
-		else
-			for(var/i in pref.traits)
-				if (findtext(remove, i))
-					pref.traits -= i
+		// Number entries so duplicate and unknown legacy choices can be removed individually.
+		var/list/snapshot = pref.traits.Copy()
+		var/list/possible = list("Cancel")
+		for (var/i = 1, i <= snapshot.len, i++)
+			possible["[i]: [snapshot[i]]"] = i
+		var/remove = WWinput(user, "Remove Trait:", "Traits", "Cancel", possible)
+		if (!remove || remove == "Cancel" || !CanUseTopic(user) || !(remove in possible) || !islist(pref.traits))
+			return TOPIC_REFRESH
+		// Refuse stale removal rather than remove a different choice after another edit.
+		if (snapshot.len != pref.traits.len)
+			return TOPIC_REFRESH
+		for (var/i = 1, i <= snapshot.len, i++)
+			if (snapshot[i] != pref.traits[i])
+				return TOPIC_REFRESH
+		var/index = possible[remove]
+		pref.traits.Cut(index, index + 1)
 		pref.save_preferences()
 		return TOPIC_REFRESH
+
 	return ..()
 /proc/check_trait_points(var/list/traitlist = list())
-	if (isemptylist(traitlist))
+	if (!islist(traitlist) || !traitlist.len)
 		return 0
 	var/count = 0
 	for (var/i in traitlist)
-		if (trait_list[i] && trait_list[i][1]!=0)
+		if (istext(i) && trait_list[i] && trait_list[i][1]!=0)
 			count += trait_list[i][1]
 	return count

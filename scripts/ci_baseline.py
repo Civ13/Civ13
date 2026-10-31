@@ -54,6 +54,21 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    # Stdlib-only scalar/callback projections; no native runner or subprocesses.
+    # Shared chemistry/stack sources retain their conservative all-suite fallback.
+    'grinder': {'files': ('tests/grinder/test_transaction.py',),
+        'paths': ('tests/grinder/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Machinery.dm',
+            'code/modules/materials/material_sheets.dm',
+            'code/game/objects/structures/kitchen/oven.dm',
+            'code/modules/1713/wood_ash_compost.dm',
+            'code/game/objects/structures.dm',
+            'code/game/objects/items/stacks/civ_recipes.dm',
+            'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt',
+            'config/crafting/material_recipes_camp.txt',
+            'config/crafting/material_recipes_carib.txt',
+            'code/game/objects/items/stacks/stack.dm')},
     # Stdlib-only source projection; no native runner is imported or executed.
     # Keep shared farming.dm unmapped so its all-suite fallback stays intact.
     'crop_stage_step': {'files': ('tests/crop_stage_step/test_source.py',), 'paths': (
@@ -82,7 +97,10 @@ SUITES = {
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
         'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
-    'los_context': {'files': ('tests/los_context/test_offline.py',), 'paths': (
+    'los_context': {'files': ('tests/los_context/test_offline.py',
+                              'tests/los_context/test_production.py',
+                              'tests/test_geometric_presentation.py',
+                              'tests/test_visibility_diagnostics.py'), 'paths': (
         'tests/los_context/', 'code/modules/visibility/', 'civ13.dme',
         'code/_onclick/hud/hover_name.dm', 'code/game/mob/mob.dm',
         'code/game/mob/logout.dm', 'code/modules/client/client_procs.dm')},
@@ -91,6 +109,7 @@ SUITES = {
     # Keep shared movement/lighting files unmapped: they retain all-suite fallback.
     'root_tree_presentation': {'files': (
         'tests/root_tree_presentation/test_contract.py',
+        'tests/root_tree_presentation/test_noop_refresh.py',
         'tests/root_tree_presentation/test_preparation.py',
         'tests/root_tree_presentation/test_protocol.py'), 'paths': (
         'tests/root_tree_presentation/', 'code/modules/visibility/',

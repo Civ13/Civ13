@@ -136,7 +136,7 @@
 	data["change_facial_hair_color"] = can_change(APPEARANCE_FACIAL_HAIR_COLOR)
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "appearance_changer.tmpl", name, 800, 450, _state = _state)
+		ui = new /datum/nanoui/tgui(user, src, ui_key, "appearance_changer.tmpl", name, 800, 450, _state = _state)
 		ui.set_initial_data(data)
 		ui.open()
 		ui.set_auto_update(1)

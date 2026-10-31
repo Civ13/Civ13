@@ -46,6 +46,8 @@
 
 	update_client_colour(0)
 	if (src && client)
+		if(client.los_context)
+			client.los_context.retire()
 		client.images = null				//remove the images such as AIs being unable to see runes
 		client.screen = null				//remove hud items just in case
 		if (hud_used)	qdel(hud_used)		//remove the hud objects
@@ -67,3 +69,6 @@
 
 	if (client.is_preference_enabled(/datum/client_preference/fit_viewport))
 		client.fit_viewport()
+	if(client)
+		client.los_dirty = TRUE
+		client.reconcile_geometric_los()

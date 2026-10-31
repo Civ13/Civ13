@@ -473,6 +473,27 @@ jobs:
           bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
 
+      # Compile-only candidate fixture. Never invoke DreamDaemon or the DMB.
+      - name: Compile exact Gaia visibility fixture without running it
+        id: gaia_fixture_compile
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/gaia_visibility')
+        timeout-minutes: 6
+        shell: bash
+        env:
+          GAIA_FIXTURE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 -B -m unittest discover -s tests/gaia_visibility -p 'test_*.py' -v
+          python3 -B tests/gaia_visibility/compile_fixture.py --head "$GAIA_FIXTURE_HEAD" --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/gaia-visibility-compile"
+      - name: Retain Gaia fixture compile evidence including failure
+        if: always() && needs.changes.result == 'success' && steps.gaia_fixture_compile.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gaia-fixture-compile-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/gaia-visibility-compile/evidence/
+          retention-days: 7
+          if-no-files-found: error
+
       - name: Compile Art of the Deal with current game declarations
         id: aotd_compile
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aotd_map')
@@ -2149,6 +2170,11 @@ jobs:
           for control in overflow rate retention; do
             /usr/bin/python3 tests/memory_telemetry/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/memory-telemetry-$control" --negative-control "$control"
           done
+      - name: Verify admin player care source contracts
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_player_care')
+        timeout-minutes: 2
+        shell: bash
+        run: python3 -m unittest discover -s tests/admin_player_care -p 'test_player_care.py' -v
       - name: Verify admin item cleaning and rejection controls
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_clean')
         timeout-minutes: 5
@@ -2329,7 +2355,7 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          /usr/bin/python3 tests/animal_harvest/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/animal_harvest/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --acceptance-scope limited
 
       - name: Verify flintlock assembly, races, catalog and persistence
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/blackpowder')
