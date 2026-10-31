@@ -249,6 +249,22 @@ class BaselinePolicyTests(unittest.TestCase):
         self.assertIn('los_context', self.selected(['code/modules/visibility/los_context.dm']))
         self.assertIn('los_context', self.selected(['code/_onclick/hud/hover_name.dm']))
 
+    def test_visibility_shared_motion_inputs_select_los_without_fallback(self):
+        inputs = ('code/game/atoms_movable.dm', 'tests/save_movement/source_adapter.py')
+        suite = ci.SUITES['los_context']
+        for path in inputs:
+            with self.subTest(path=path):
+                result = ci.impact([path])
+                self.assertEqual(result['fallback_reasons'], [])
+                self.assertTrue(result['suites']['los_context']['selected'])
+                self.assertEqual(result['suites']['los_context']['reason'], ['Affected input: ' + path])
+                # Existing exclusive owners suppress fallback. Omitting this
+                # shared read must reproduce the previously skipped LOS suite.
+                remaining = tuple(p for p in suite.get('shared_paths', ()) if p != path)
+                with patch.dict(suite, shared_paths=remaining):
+                    self.assertNotIn('los_context', self.selected([path]))
+                    self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+
     def test_woodworking_runs_on_production_or_modified_test_changes_without_extensive(self):
         self.assertEqual(ci.SUITES['woodworking']['files'],('tests/primitive_woodworking/test_source.py','tests/test_atlas_navigation.py'))
         dedicated=('code/modules/1713/primitive_woodworking.dm',
