@@ -72,6 +72,13 @@ def extended_receipt():
 
 
 class ExtendedContracts(unittest.TestCase):
+    def test_turf_trace_only_inspects_known_fixture_types(self):
+        source=(HERE/'large_native_observe.dm').read_text(encoding='utf-8')
+        self.assertNotIn('mover.vars["fixture_native_trace"]',source)
+        self.assertIn('istype(mover, /mob/living/simple_animal/hostile/mammoth/large_native_observe)',source)
+        self.assertIn('istype(mover, /mob/living/simple_animal/hostile/dinosaur/trex/large_native_observe)',source)
+        self.assertEqual(source.count('if (large_native_traced(mover))'),2)
+
     def test_geometry_observations_precede_full_source_daemon(self):
         source=(HERE/'cloud_npc_smoke.py').read_text(encoding='utf-8')
         suite=source.split('def run_extended(',1)[1].split('def run_production_compile(',1)[0]

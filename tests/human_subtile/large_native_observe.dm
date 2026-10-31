@@ -68,13 +68,16 @@ var/large_native_checks = 0
 	large_native_log("completion", src)
 	return ..()
 
+/proc/large_native_traced(atom/movable/mover)
+	return istype(mover, /mob/living/simple_animal/hostile/mammoth/large_native_observe) || istype(mover, /mob/living/simple_animal/hostile/dinosaur/trex/large_native_observe)
+
 /turf/floor/plating/subtile_fixture/Enter(atom/movable/mover, atom/forget)
-	if (mover && mover.vars["fixture_native_trace"])
+	if (large_native_traced(mover))
 		large_native_log("Enter", src)
 	return ..()
 
 /turf/floor/plating/subtile_fixture/Exit(atom/movable/mover, atom/newloc)
-	if (mover && mover.vars["fixture_native_trace"])
+	if (large_native_traced(mover))
 		large_native_log("Exit", src)
 	return ..()
 
