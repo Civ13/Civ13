@@ -64,7 +64,7 @@
 	if (!ui)
 		// Reuses the symbol editor's canvas stylesheet and cell-binding
 		// script wholesale -- same grid markup, same behavior.
-		ui = new(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)
+		ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)
 		// "basic" layout: no stock SS13 NanoUI chrome around the parchment
 		// (see the research bench UI for the same choice).
 		ui.set_layout_key("basic")

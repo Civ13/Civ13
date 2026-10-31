@@ -383,7 +383,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 
 	ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
-		ui = new(user, src, ui_key, "faction_symbol.tmpl", name, 620, 760)
+		ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_symbol.tmpl", name, 620, 760)
 		// "basic" layout: no stock SS13 NanoUI chrome around the parchment
 		// (see the research bench UI for the same choice).
 		ui.set_layout_key("basic")

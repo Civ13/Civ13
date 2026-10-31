@@ -82,6 +82,7 @@
 
 	if (active)
 		new_character.key = key		//now transfer the key to link the client to our new body
+		GLOB.nanomanager.user_transfer_completed(new_character)
 
 /datum/mind/proc/add_note(section, note)
 	if (!notes.Find(section))
