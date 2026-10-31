@@ -1,0 +1,40 @@
+{
+  "directx": {
+    "official_page": "https://www.microsoft.com/en-us/download/details.aspx?id=8109",
+    "release_version": "9.29.1974.1",
+    "source": "https://download.microsoft.com/download/8/4/a/84a35bf1-dafe-4ae8-82af-ad2ae20b6b14/directx_Jun2010_redist.exe",
+    "outer_bytes": 100275120,
+    "outer_sha256": "053f76dcbb28802e23341b6a787e3b0791c0fa5c8d4d011b1044172dbf89c73b",
+    "outer_signer_thumbprint": "2485A7AFA98E178CB8F30C9838346B514AEA4769",
+    "components": {
+      "DXSETUP.exe": "8f47d7121ef6532ad9ad9901e44e237f5c30448b752028c58a9d19521414e40d",
+      "DSETUP.dll": "2a61679eeedabf7d0d0ac14e5447486575622d6b7cfa56f136c1576ff96da21f",
+      "dsetup32.dll": "fb0e534f9b0926e518f1c2980640dfd29f14217cdfa37cf3a0c13349127ed9a8",
+      "Jun2010_d3dx9_43_x86.cab": "fcc6cf0966b4853d6fa3d32ab299cde5a9824feaecb0d4f34ea452fb9fd1c867",
+      "Jun2010_D3DCompiler_43_x86.cab": "417eebd5b19f45c67c94c2d2ba8b774c0fc6d958b896d7b1ac12cf5a0ea06e0e"
+    },
+    "component_signer_thumbprint": "93859EBF98AFDEB488CCFA263899640E81BC49F1",
+    "english_agreement_sha256": "55eaf19bbbbcc80e36e22e3bac1842413376874505b4927abd7eb0c203987771",
+    "prior_reviewed_agreement_library_id": "libfile_41cd9d854098819182a5b5ea64b93c7c",
+    "dlls": {
+      "d3dx9_43.dll": "0b28546be22c71834501f7d7185ede5d79742457331c7ee09efc14490dd64f5f",
+      "D3DCompiler_43.dll": "2f23182ec6f4889397ac4bf03d62536136c5bdba825c7d2c4ef08c827f3a8a1c"
+    }
+  },
+  "ffmpeg": {
+    "official_download_page": "https://ffmpeg.org/download.html",
+    "provider": "BtbN/FFmpeg-Builds",
+    "release_tag": "autobuild-2026-10-30-13-01",
+    "asset": "ffmpeg-n9.0.2-39-g7adfbe40dc-win64-gpl-shared-9.0.zip",
+    "source": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-30-13-01/ffmpeg-n9.0.2-39-g7adfbe40dc-win64-gpl-shared-9.0.zip",
+    "archive_bytes": 85920853,
+    "archive_sha256": "7c09a4c6bd73a5013963f06b1c6175326605cbc2585444ebe0f740ef4f35b4c9",
+    "ffmpeg_exe_sha256": "8ae725e6b560339faf248371b97e14c9c23f63842a4a89a6349dc88b59503ed9",
+    "ffprobe_exe_sha256": "757fe225d0f11079e43f52629ed761d52754aeb9bd66d03418e25858f93699cf",
+    "license": "GPL version 3 license text included; component terms require review",
+    "license_file_sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+    "windows_signature": "NotSigned",
+    "github_digest_verified": true,
+    "independent_publisher_signature_verified": false
+  }
+}

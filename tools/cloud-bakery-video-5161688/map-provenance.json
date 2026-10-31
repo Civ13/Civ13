@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "disabled": true,
+  "native_execution_admitted": false,
+  "source_revision": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "source_map": "maps/1873/little_creek.dmm",
+  "source_map_sha256": "7d67c4bc869859bcfdaf549a7922497517cd573556731d43365570bf85961dd5",
+  "crop_sha256": "6f361982bb0c8dd5822d0aae840651e7826db69eda91fa63dc12665a134597ae",
+  "bounds_original": [
+    1,
+    90,
+    96,
+    164,
+    2
+  ],
+  "translation": [
+    0,
+    -89,
+    -1
+  ],
+  "dimensions": [
+    96,
+    75,
+    1
+  ],
+  "cells_checked": 7200,
+  "route_steps": [
+    138,
+    72
+  ],
+  "route_json_sha256": "bf212c9f71d6be47a882a5ebab47053f3b397065b9e049415a5e6bc2ec91c506",
+  "scope": "source-faithful crop only; no staging changes, controller, capture or native runtime"
+}

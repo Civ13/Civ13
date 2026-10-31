@@ -1,0 +1,579 @@
+{
+  "schema": 1,
+  "version": "516.1688",
+  "source_url": "https://cmss13-devs.github.io/byond-build-mirror/download/build/516/516.1688_byond.zip",
+  "archive_bytes": 8602470,
+  "archive_sha256": "9079f29b0747719233715dfeff223641e6fb69bd16b8ba9676d5cd42cfcd0148",
+  "manifest_provenance": "All 45 ZIP files match prior desktop-compile toolchain-files.json evidence.",
+  "files": [
+    {
+      "path": "byond/bin/byond.exe",
+      "bytes": 1608192,
+      "sha256": "a2a44d56cfdc0e8bae17b5134f74a18a0be4747b087365c6bd60b5be959f1a4e"
+    },
+    {
+      "path": "byond/bin/byondcore.dll",
+      "bytes": 4481536,
+      "sha256": "fd3855446a094ac57e4cf7189d7249be29c3f45b0cf620fd96104d93d901c29c"
+    },
+    {
+      "path": "byond/bin/byondext.dll",
+      "bytes": 1976320,
+      "sha256": "7d8d115728059d48a2c9134f08ef010d59dd4d9e1c2df47e63aa9c33e87cdf79"
+    },
+    {
+      "path": "byond/bin/byondwin.dll",
+      "bytes": 2720768,
+      "sha256": "160181fed9699847d9ec39dfb38e066540bc7a68378f0cd9c8ce2dff05530d69"
+    },
+    {
+      "path": "byond/bin/dd.exe",
+      "bytes": 38400,
+      "sha256": "abb21de26047724bf64411e17da5e17cacc74221817c3e049a79626156b44866"
+    },
+    {
+      "path": "byond/bin/dm.exe",
+      "bytes": 46080,
+      "sha256": "f29b3041c46df453b3f999583bef0bb0ff79fe2b53ee1b8686bb46ce18c7df77"
+    },
+    {
+      "path": "byond/bin/dreamdaemon.exe",
+      "bytes": 268800,
+      "sha256": "3fed7fae084c90ed42bfa7436572862e6d0080618bdafc32bca0d91ce592ad57"
+    },
+    {
+      "path": "byond/bin/dreamdeploy.exe",
+      "bytes": 51200,
+      "sha256": "acf86e5324b9278a1b78f1ffaec8aa3e214458aa3d06c9b6bc680e0937161781"
+    },
+    {
+      "path": "byond/bin/dreammaker.exe",
+      "bytes": 2145280,
+      "sha256": "25e3b9744d11d2a5e85260e759b8d79c73f6dbdf783451027491d704c1e068ec"
+    },
+    {
+      "path": "byond/bin/dreamseeker.exe",
+      "bytes": 881152,
+      "sha256": "dde2893d7d6721eb8cb73d9e6b9f8cb28d86d1e432b42edaad10b066800a97e4"
+    },
+    {
+      "path": "byond/bin/fmodex.dll",
+      "bytes": 381440,
+      "sha256": "70d2fb7c17820dd3671f4481dc37b4bc386313a9d8ec5fa73cd2dac375b27312"
+    },
+    {
+      "path": "byond/bin/trace.bat",
+      "bytes": 16,
+      "sha256": "62d859118a1bf66971b438b14db3dd0cfd7c4a50b0e357dd58bab09323af8458"
+    },
+    {
+      "path": "byond/bin/WebView2Loader.dll",
+      "bytes": 117328,
+      "sha256": "93894609e3365b62fbb4d5b4219b4199a271888160669c33dbaadbbaf5aff087"
+    },
+    {
+      "path": "byond/byondapi/byondapi.h",
+      "bytes": 32219,
+      "sha256": "75cf62fcc19b9238557360257090e7fe6f29370a57d098b83d64b6af1b0b368e"
+    },
+    {
+      "path": "byond/byondapi/byondapi.lib",
+      "bytes": 13970,
+      "sha256": "bd1a3f215a52fa12acfaa63c7bb3169988affd42129f0d3f62c3e69b98bad036"
+    },
+    {
+      "path": "byond/byondapi/byondapi_cpp_wrappers.cpp",
+      "bytes": 20436,
+      "sha256": "789a2115a9966269bb8d34e6a8359fb807dadbbf17bbf674d4d61bcb6031301b"
+    },
+    {
+      "path": "byond/byondapi/byondapi_cpp_wrappers.h",
+      "bytes": 10062,
+      "sha256": "269015b06b82a16557c72523abb3b05be1289c510faf59cb8af9e457931b7f08"
+    },
+    {
+      "path": "byond/byondapi/sample/byondapi_sample.vcxproj",
+      "bytes": 3011,
+      "sha256": "e392353830b947fe4ab3715f1afc50808b8a44d14e51613c1106693bd1e13356"
+    },
+    {
+      "path": "byond/byondapi/sample/byondapi_sample.vcxproj.filters",
+      "bytes": 1366,
+      "sha256": "f7127f243c91e50e77a05081fd7348d3bec07f830dd0a4998c162ac9e5f5ff41"
+    },
+    {
+      "path": "byond/byondapi/sample/byondapi_sample.vcxproj.user",
+      "bytes": 162,
+      "sha256": "06f4745c7f20e14bdd3beff97e7213168028fcfa4878d7689afc09fe250eb3ec"
+    },
+    {
+      "path": "byond/byondapi/sample/main.cpp",
+      "bytes": 1035,
+      "sha256": "22c3acd29e2aeb064016758200f9e78b197111cfeaf792cabec08e26df2fc41a"
+    },
+    {
+      "path": "byond/byondapi/sample/Makefile",
+      "bytes": 614,
+      "sha256": "3a1fb31d3c9ff5cfc5f3b46da19f00bc42f1614af0a9c54fb146193c900f1f39"
+    },
+    {
+      "path": "byond/cfg/byond.dmf",
+      "bytes": 16069,
+      "sha256": "4d625cd958d537a82e361f640f320b4be174ff1614029761e4450b20cc232263"
+    },
+    {
+      "path": "byond/cfg/irc.dms",
+      "bytes": 3685,
+      "sha256": "de8249a1957180df5adf1bf3217d8bff10b0c394639c9a5bfb4e5eae320bc17d"
+    },
+    {
+      "path": "byond/cfg/joysticks.txt",
+      "bytes": 3748,
+      "sha256": "f0ee995be65e3d89dc89e0549ae58b7ce5e6c854739c6daf956a6303df26e5d1"
+    },
+    {
+      "path": "byond/cfg/stub.dm",
+      "bytes": 319,
+      "sha256": "905f344860dfe19dcac117390dfd1e273f2a7e1ee85e06df4067c45bc572ef75"
+    },
+    {
+      "path": "byond/cfg/telnet.dms",
+      "bytes": 1416,
+      "sha256": "d3fc02e810c52da3a71fa4276cb4ad7c268e3034f9ae2c3ef372b6f57e039ca0"
+    },
+    {
+      "path": "byond/directx/DSETUP.dll",
+      "bytes": 89944,
+      "sha256": "def6f245762be36cf18b435ba8b7ebc224b9c21d1a1db606a8e8fafdaa97bba0"
+    },
+    {
+      "path": "byond/directx/dsetup32.dll",
+      "bytes": 1801048,
+      "sha256": "642d9e7db6d4fc15129f011dce2ea087bf7f7fb015aececf82bf84ff6634a6fb"
+    },
+    {
+      "path": "byond/directx/DXSETUP.exe",
+      "bytes": 537432,
+      "sha256": "046041aba6ba77534c36bb0c2496408d23c6a09f930c46b392f1edc70dfd66de"
+    },
+    {
+      "path": "byond/directx/dxupdate.cab",
+      "bytes": 94011,
+      "sha256": "13393a91201e69e70a9f68d21428453fff3951535dec88f879270269cfe54d6f"
+    },
+    {
+      "path": "byond/directx/Jun2010_D3DCompiler_43_x86.cab",
+      "bytes": 931471,
+      "sha256": "417eebd5b19f45c67c94c2d2ba8b774c0fc6d958b896d7b1ac12cf5a0ea06e0e"
+    },
+    {
+      "path": "byond/directx/Jun2010_d3dx9_43_x86.cab",
+      "bytes": 768036,
+      "sha256": "fcc6cf0966b4853d6fa3d32ab299cde5a9824feaecb0d4f34ea452fb9fd1c867"
+    },
+    {
+      "path": "byond/help/byond.chm",
+      "bytes": 29199,
+      "sha256": "2372aa77786081ec2c842b41360d451b592dbe6d69fe50831822d2951e5d3a39"
+    },
+    {
+      "path": "byond/help/dreamdaemon.chm",
+      "bytes": 44661,
+      "sha256": "b4fb2208856499d2116dcb9a977ee54c0b99b8bfca7cc81de6b3817eb89b6529"
+    },
+    {
+      "path": "byond/help/dreammaker.chm",
+      "bytes": 72980,
+      "sha256": "d457e267cb7f555f3756cc77d5cacd53db24b199f1684a247efa3f41f1ee2660"
+    },
+    {
+      "path": "byond/help/dreamseeker.chm",
+      "bytes": 19982,
+      "sha256": "759c836b75f95cb9e136750c1d0cf8920a31f947eb2f8a3eebaf760d621fdbfc"
+    },
+    {
+      "path": "byond/help/legal.txt",
+      "bytes": 2651,
+      "sha256": "ad36d8959fd06124d064d1bc6b8f05907d92b917d684928cd63342d203a126cd"
+    },
+    {
+      "path": "byond/help/license.txt",
+      "bytes": 8244,
+      "sha256": "4c0f2adc0c82119d305fd5f9a94525daac6c5627a07960b8cc755ff33a85b98d"
+    },
+    {
+      "path": "byond/help/ref/contents.html",
+      "bytes": 88966,
+      "sha256": "69b6fec3b1e292f4a719f61d6ffe838dac0ab891ad1c829268231da4123d863d"
+    },
+    {
+      "path": "byond/help/ref/IE9.js",
+      "bytes": 41520,
+      "sha256": "9e944a50d373c0db808ad6eb0ee65e1abadbfa150bf1ecd6b9ead0aee13e9e9a"
+    },
+    {
+      "path": "byond/help/ref/index.html",
+      "bytes": 5019,
+      "sha256": "e0d7b553be9eb4c56378242d276e007fe67ec2909f75cdc4a22ff1684e58d9bb"
+    },
+    {
+      "path": "byond/help/ref/info.html",
+      "bytes": 1321009,
+      "sha256": "5d428076e32d78713c2fe358b6710451788216604fe0e00ccd7be630454217dd"
+    },
+    {
+      "path": "byond/help/ref/prettyref.js",
+      "bytes": 26434,
+      "sha256": "5d59f4bb026a78bb2bfadd53754fd8a97cc5225dffcd81da94069f94a7955b42"
+    },
+    {
+      "path": "byond/help/ref/reference.png",
+      "bytes": 17845,
+      "sha256": "a877686c64f403177e077335e171666a3a74c18356844e2bbf30ac8b8548672e"
+    }
+  ],
+  "binaries": {
+    "byond/bin/byond.exe": {
+      "bytes": 1608192,
+      "sha256": "a2a44d56cfdc0e8bae17b5134f74a18a0be4747b087365c6bd60b5be959f1a4e",
+      "machine": "0x014c",
+      "imports": [
+        "byondwin.dll",
+        "winmm.dll",
+        "byondcore.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "ws2_32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/byondcore.dll": {
+      "bytes": 4481536,
+      "sha256": "fd3855446a094ac57e4cf7189d7249be29c3f45b0cf620fd96104d93d901c29c",
+      "machine": "0x014c",
+      "imports": [
+        "byondext.dll",
+        "wsock32.dll",
+        "winmm.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "advapi32.dll",
+        "shell32.dll",
+        "msvcp140.dll",
+        "winhttp.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-multibyte-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": [
+        "steam_api.dll"
+      ]
+    },
+    "byond/bin/byondext.dll": {
+      "bytes": 1976320,
+      "sha256": "7d8d115728059d48a2c9134f08ef010d59dd4d9e1c2df47e63aa9c33e87cdf79",
+      "machine": "0x014c",
+      "imports": [
+        "user32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "kernel32.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/byondwin.dll": {
+      "bytes": 2720768,
+      "sha256": "160181fed9699847d9ec39dfb38e066540bc7a68378f0cd9c8ce2dff05530d69",
+      "machine": "0x014c",
+      "imports": [
+        "webview2loader.dll",
+        "byondcore.dll",
+        "version.dll",
+        "msimg32.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "comdlg32.dll",
+        "advapi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "shlwapi.dll",
+        "uxtheme.dll",
+        "ole32.dll",
+        "oleaut32.dll",
+        "winmm.dll",
+        "msvcp140.dll",
+        "d3dx9_43.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll"
+      ],
+      "delay_imports": [
+        "d3d9.dll"
+      ]
+    },
+    "byond/bin/dd.exe": {
+      "bytes": 38400,
+      "sha256": "abb21de26047724bf64411e17da5e17cacc74221817c3e049a79626156b44866",
+      "machine": "0x014c",
+      "imports": [
+        "byondcore.dll",
+        "dbghelp.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/dm.exe": {
+      "bytes": 46080,
+      "sha256": "f29b3041c46df453b3f999583bef0bb0ff79fe2b53ee1b8686bb46ce18c7df77",
+      "machine": "0x014c",
+      "imports": [
+        "byondcore.dll",
+        "kernel32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/dreamdaemon.exe": {
+      "bytes": 268800,
+      "sha256": "3fed7fae084c90ed42bfa7436572862e6d0080618bdafc32bca0d91ce592ad57",
+      "machine": "0x014c",
+      "imports": [
+        "byondwin.dll",
+        "byondcore.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "ws2_32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/dreamdeploy.exe": {
+      "bytes": 51200,
+      "sha256": "acf86e5324b9278a1b78f1ffaec8aa3e214458aa3d06c9b6bc680e0937161781",
+      "machine": "0x014c",
+      "imports": [
+        "mfc140.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "oleaut32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/dreammaker.exe": {
+      "bytes": 2145280,
+      "sha256": "25e3b9744d11d2a5e85260e759b8d79c73f6dbdf783451027491d704c1e068ec",
+      "machine": "0x014c",
+      "imports": [
+        "byondwin.dll",
+        "byondext.dll",
+        "byondcore.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "oleaut32.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/dreamseeker.exe": {
+      "bytes": 881152,
+      "sha256": "dde2893d7d6721eb8cb73d9e6b9f8cb28d86d1e432b42edaad10b066800a97e4",
+      "machine": "0x014c",
+      "imports": [
+        "byondwin.dll",
+        "version.dll",
+        "byondcore.dll",
+        "mfc140u.dll",
+        "kernel32.dll",
+        "user32.dll",
+        "gdi32.dll",
+        "shell32.dll",
+        "comctl32.dll",
+        "oleaut32.dll",
+        "ws2_32.dll",
+        "psapi.dll",
+        "vcruntime140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll"
+      ],
+      "delay_imports": [
+        "fmodex.dll",
+        "steam_api.dll"
+      ]
+    },
+    "byond/bin/fmodex.dll": {
+      "bytes": 381440,
+      "sha256": "70d2fb7c17820dd3671f4481dc37b4bc386313a9d8ec5fa73cd2dac375b27312",
+      "machine": "0x014c",
+      "imports": [
+        "kernel32.dll",
+        "advapi32.dll",
+        "msacm32.dll",
+        "msvcrt.dll",
+        "ole32.dll",
+        "user32.dll",
+        "winmm.dll",
+        "wsock32.dll"
+      ],
+      "delay_imports": []
+    },
+    "byond/bin/WebView2Loader.dll": {
+      "bytes": 117328,
+      "sha256": "93894609e3365b62fbb4d5b4219b4199a271888160669c33dbaadbbaf5aff087",
+      "machine": "0x014c",
+      "imports": [
+        "kernel32.dll"
+      ],
+      "delay_imports": [
+        "advapi32.dll",
+        "ole32.dll"
+      ]
+    }
+  },
+  "cab_data_inspection": {
+    "method": "Installed libarchive CAB parser, memory-only data inspection; no inspected binary executed",
+    "cab_bytes": 768036,
+    "cab_sha256": "fcc6cf0966b4853d6fa3d32ab299cde5a9824feaecb0d4f34ea452fb9fd1c867",
+    "files": [
+      {
+        "path": "d3dx9_43.dll",
+        "bytes": 1998168,
+        "sha256": "0b28546be22c71834501f7d7185ede5d79742457331c7ee09efc14490dd64f5f"
+      },
+      {
+        "path": "d3dx9_43_x86.cat",
+        "bytes": 6796,
+        "sha256": "70dcb8f80d45d878003ce58c438ead8c97bb5c5d93b94f6dbd0116b8b8a73ce4"
+      },
+      {
+        "path": "d3dx9_43_x86.inf",
+        "bytes": 779,
+        "sha256": "d125f988976274cbbe55a4c5933dd78346654d91066dd97eced75aa4be53a85e"
+      },
+      {
+        "path": "d3dx9_43_x86_xp.inf",
+        "bytes": 556,
+        "sha256": "673c70ac772c9d0a9aec86efca3c761c1b082295ac1df07a3507d8ac819657f7"
+      },
+      {
+        "path": "JUN2010_d3dx9_43_x86.inf",
+        "bytes": 1628,
+        "sha256": "6b33d32da02f664092d44b05237990f825b4062c105a063badcf978648b5e95b"
+      }
+    ]
+  },
+  "limitations": [
+    "Hashes establish identity against the observed and reviewed artifacts, not independent publisher authenticity.",
+    "The mirror installer matched the earlier official-observed installer pin; this ZIP is separately pinned and all 45 files matched prior desktop-compile evidence.",
+    "Static import inspection cannot close dynamically loaded dependencies or prove renderer availability."
+  ],
+  "installer_identity_evidence": {
+    "bytes": 7264990,
+    "sha256": "d1c8d916d684d5163f88b6ceb6312d1cba2128ea64d0b94c1d4e6db35ea46e21",
+    "observation": "Mirror EXE matches the earlier official-observed installer pin. Installer not executed and not used by this module."
+  }
+}

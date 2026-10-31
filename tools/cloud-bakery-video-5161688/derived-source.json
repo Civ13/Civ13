@@ -1,0 +1,28 @@
+{
+  "scene_revision": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "native_released": true,
+  "changes": {
+    "civ13.dme": "7bd410e0a9a52fb29ecaaae382325e11064c7f18a8a3f326c007d6f3d3b54280",
+    "code/controllers/mc/master.dm": "34ed27c2ded433e44407a9ee911c14daf2b0399d34d53dc62c8bc59b55f4cb9b",
+    "code/game/mob/living/chat_overlay.dm": "ed5b1ca686865582fc288d07b78d94b4d0ce3be2b424846b1d2c8857cf730b7c",
+    "code/game/mob/mob_movement.dm": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b",
+    "code/modules/admin/ToRban.dm": "c89611cafbc8b41db1b19a9d7497834711a6fd21796e595f1d27602432db9f61",
+    "code/modules/admin/verbs/bot_service.dm": "841828ceffbb5d1e112aced7ba4b7affceeb43be2682a4b334a52aa86044ba23",
+    "code/modules/client/client_procs.dm": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba",
+    "code/modules/client/movement.dm": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "code/modules/error_handler/error_handler.dm": "898a74b29842fb35c60bba3ac415e101e3501e977ae17d619e816b3ad8902bb6",
+    "code/modules/statpanel/statpanel.dm": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db",
+    "code/modules/webhooks/webhooks.dm": "674dc0d65864b30a625266640e72269807dfce6701febd14d45d85c7c7ca9132",
+    "code/processes/python.dm": "0db780017f31ed4dc55cc6bacf5eabc0edffe6e0307a29178a1bfcb3435e97b8",
+    "code/setup.dm": "1f633aa3bb4b8099d824b785f242935185d73f7c0ef3e2e13b098fb70edfd797",
+    "code/world.dm": "2dcf1030f8670d8d297f78d8d87177ed6798d76c1f4aad28f0744d6f1c80e74f",
+    "filming/actions.dm": "cfad5da265e5f668a1064e7e0566dc38aad1310251b4ad7002bc5228460cefde",
+    "filming/bakery.dmf": "5ea768b764035982c891c76fb074f6257bae82b1019f35efa8cda0bea8c1fc46",
+    "filming/bakery.dmm": "6f361982bb0c8dd5822d0aae840651e7826db69eda91fa63dc12665a134597ae",
+    "filming/scene.dm": "d38c3ad6b6f766d77f1cb5d525696cab749e9e4f08049fb9784b465010e37716",
+    "filming/city_route_actions.review.dm": "1496b0ea8b47bbacc51441647dfd9789598e6d2d9c202d5fcd42f064e19d494a",
+    "filming/city_route_data.review.dm": "0c075b9581297cda067bdfed6a3530da103ed40b1992e94f9bfdd59adbb217cd",
+    "filming/train_staging.review.dm": "17258187aaf915341ed649f5e28e177754b559cbd7e8c00b4caef71b05f102da",
+    "filming/city_carriage_actions.review.dm": "b014da6c800c6dc40a64117117f12256e8bde645a2c370fd8bbc69457d085ba3"
+  }
+}
