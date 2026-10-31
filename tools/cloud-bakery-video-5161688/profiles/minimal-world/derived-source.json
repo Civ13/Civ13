@@ -1,0 +1,9 @@
+{
+  "scene_revision": "standalone-minimal-world-v1",
+  "native_released": true,
+  "changes": {
+    "civ13.dme": "1a8a1b86436fd16ed8c766c7a81e25a79b9256881ed7129af58fb79533f43c90",
+    "filming/minimal.dm": "b56e4a563c0e92cd9f8abe129cce20976ce54b5d81db8ebe1ffdd32ff12fa755",
+    "filming/minimal.dmf": "b184c51e16380ffa9a36df255c86efd8d543f4644f411e8463c605d7adf0bb0b"
+  }
+}

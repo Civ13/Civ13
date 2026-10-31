@@ -1,0 +1,24 @@
+{
+  "scene_revision": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "native_released": false,
+  "changes": {
+    "civ13.dme": "5e009973ec1954ae2c4b70b772add88f6094df2519e80f7ea1ba1d2948fbc88f",
+    "code/controllers/mc/master.dm": "34ed27c2ded433e44407a9ee911c14daf2b0399d34d53dc62c8bc59b55f4cb9b",
+    "code/game/mob/living/chat_overlay.dm": "ed5b1ca686865582fc288d07b78d94b4d0ce3be2b424846b1d2c8857cf730b7c",
+    "code/game/mob/mob_movement.dm": "c790cd38cc3c43c036b7f49c1be3ad87587707ab9857df5ce6af8404bf4af52b",
+    "code/modules/admin/ToRban.dm": "c89611cafbc8b41db1b19a9d7497834711a6fd21796e595f1d27602432db9f61",
+    "code/modules/admin/verbs/bot_service.dm": "841828ceffbb5d1e112aced7ba4b7affceeb43be2682a4b334a52aa86044ba23",
+    "code/modules/client/client_procs.dm": "38c539ae3efc673bb1cc4ef04f366257ebbcee3bd0b1a70a5cf8c7f306c90dba",
+    "code/modules/client/movement.dm": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "code/modules/error_handler/error_handler.dm": "898a74b29842fb35c60bba3ac415e101e3501e977ae17d619e816b3ad8902bb6",
+    "code/modules/statpanel/statpanel.dm": "c9145fbd60973bddbeacf35892018025606e9f2ed18a045c3282ee1f70ba27db",
+    "code/modules/webhooks/webhooks.dm": "674dc0d65864b30a625266640e72269807dfce6701febd14d45d85c7c7ca9132",
+    "code/processes/python.dm": "0db780017f31ed4dc55cc6bacf5eabc0edffe6e0307a29178a1bfcb3435e97b8",
+    "code/setup.dm": "1f633aa3bb4b8099d824b785f242935185d73f7c0ef3e2e13b098fb70edfd797",
+    "code/world.dm": "2dcf1030f8670d8d297f78d8d87177ed6798d76c1f4aad28f0744d6f1c80e74f",
+    "filming/actions.dm": "ab8664d81de9a728480d0c98a46ff24fb975c43098ef06c653d9aa3bfa3718d5",
+    "filming/bakery.dmf": "9d2e37f8982c77df7aa5c9bfb9011b9e49a466ca10c98207505fb704ea329e50",
+    "filming/bakery.dmm": "c78f44ca5f834be56e382fa2e71e84d814cce4fa0ea1ec872912fddb33b97788",
+    "filming/scene.dm": "23f6b3e4b9022d13127c94fecc5795c2bcf5c77ed2a8c220f233db4273a9501b"
+  }
+}

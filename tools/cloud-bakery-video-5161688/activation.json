@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "released": true,
+  "client_startup_diagnostic": true,
+  "source": "standalone-minimal-world-v1",
+  "branch": "ci/minimal-world-startup-5161688-20261031-r1",
+  "message": "ci: bounded standalone minimal-world startup control r1",
+  "deadline_utc": "2026-10-31T20:00:00Z",
+  "job": "bakery",
+  "attempt": 1,
+  "scene_sha256": "73c862ada9acaec3fcdfad0eb553b2eec58a3a57d1d3141cda5453b5adae5708",
+  "approval": "Reviewed one-job five-second standalone startup diagnostic and six owned outbound-block rules; authorization retained privately; no capture or production access.",
+  "scene_profile": "minimal-world-control"
+}
