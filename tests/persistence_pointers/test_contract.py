@@ -126,7 +126,8 @@ class PointerContracts(unittest.TestCase):
         self.assertLess(guard, loading.index('object = new type(starting_loc)'))
 
     def test_unsaved_worker_and_pull_graphs_stay_unsaved(self):
-        for path, types in ((NPC, ('npc_subtile_pulse', 'npc_subtile_transaction')),
+        for path, types in ((NPC, ('npc_subtile_pulse', 'npc_subtile_transaction', 'npc_subtile_follow', 'npc_subtile_flee', 'npc_subtile_pet_walk', 'npc_subtile_recovery', 'npc_subtile_pending_intent', 'npc_subtile_wild_walk')),
+                            ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm', ('npc_subtile_pursuit',)),
                             ('code/game/mob/living/carbon/human/pull_pair_ownership.dm',
                              ('subtile_pull_pair', 'subtile_pull_capability'))):
             for name in types:

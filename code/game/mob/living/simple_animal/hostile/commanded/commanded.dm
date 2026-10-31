@@ -70,7 +70,7 @@
 	if (!target_mob)
 		return
 	if (target_mob in ListTargets(7))
-		walk_to(src,target_mob,1,move_to_delay)
+		npc_subtile_species_walk("path", target_mob, move_to_delay, 0, 1)
 
 /mob/living/simple_animal/hostile/commanded/proc/commanded_stop() //basically a proc that runs whenever we are asked to stay put. Probably going to remain unused.
 	return
@@ -119,8 +119,8 @@
 
 
 /mob/living/simple_animal/hostile/commanded/proc/attack_command(var/mob/speaker,var/text)
-	target_mob = null //want me to attack something? Well I better forget my old target.
-	walk(src,0)
+	npc_set_combat_target(null) //want me to attack something? Well I better forget my old target.
+	npc_subtile_stop_continuous_walk()
 	stance = HOSTILE_STANCE_IDLE
 	if (text == "attack" || findtext(text,"everyone") || findtext(text,"anybody") || findtext(text, "somebody") || findtext(text, "someone")) //if its just 'attack' then just attack anybody, same for if they say 'everyone', somebody, anybody. Assuming non-pickiness.
 		allowed_targets = list("everyone")//everyone? EVERYONE
@@ -131,15 +131,15 @@
 	return targets.len != FALSE
 
 /mob/living/simple_animal/hostile/commanded/proc/stay_command(var/mob/speaker,var/text)
-	target_mob = null
+	npc_set_combat_target(null)
 	stance = COMMANDED_STOP
-	walk(src,0)
+	npc_subtile_stop_continuous_walk()
 	return TRUE
 
 /mob/living/simple_animal/hostile/commanded/proc/stop_command(var/mob/speaker,var/text)
 	allowed_targets = list()
-	walk(src,0)
-	target_mob = null //gotta stop SOMETHIN
+	npc_subtile_stop_continuous_walk()
+	npc_set_combat_target(null) //gotta stop SOMETHIN
 	stance = HOSTILE_STANCE_IDLE
 	stop_automated_movement = FALSE
 	return TRUE
@@ -148,14 +148,14 @@
 	//we can assume 'stop following' is handled by stop_command
 	if (findtext(text,"me"))
 		stance = COMMANDED_FOLLOW
-		target_mob = speaker //this wont bite me in the ass later.
+		npc_set_combat_target(speaker) //this wont bite me in the ass later.
 		return TRUE
 	var/list/targets = get_targets_by_name(text)
 	if (targets.len > 1 || !targets.len) //CONFUSED. WHO DO I FOLLOW?
 		return FALSE
 
 	stance = COMMANDED_FOLLOW //GOT SOMEBODY. BETTER FOLLOW EM.
-	target_mob = targets[1] //YEAH GOOD IDEA
+	npc_set_combat_target(targets[1]) //YEAH GOOD IDEA
 
 	return TRUE
 
@@ -168,7 +168,7 @@
 	. = ..()
 	if (!.)
 		stance = HOSTILE_STANCE_ATTACK
-		target_mob = user
+		npc_set_combat_target(user)
 		allowed_targets += user //fuck this guy in particular.
 		if (user in friends) //We were buds :'(
 			friends -= user
@@ -177,7 +177,7 @@
 /mob/living/simple_animal/hostile/commanded/attack_hand(mob/living/human/M as mob)
 	..()
 	if (M.a_intent == I_HARM) //assume he wants to hurt us.
-		target_mob = M
+		npc_set_combat_target(M)
 		allowed_targets += M
 		stance = HOSTILE_STANCE_ATTACK
 		if (M in friends)

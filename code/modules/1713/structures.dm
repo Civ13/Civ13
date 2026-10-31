@@ -34,7 +34,7 @@
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == TRUE && (src in range(3,L.S1)))
 			L.S2 = src
-			L.S1.following_mob = src
+			L.S1.npc_set_following(src)
 			L.S1.stop_automated_movement = TRUE
 			to_chat(user, SPAN_NOTICE("You tie \the [L.S1] to \the [src] with the leash."))
 			qdel(L)
@@ -66,7 +66,7 @@
 		var/obj/item/weapon/leash/L = O
 		if (L.onedefined == TRUE && (src in range(3,L.S1)))
 			L.S2 = src
-			L.S1.following_mob = src
+			L.S1.npc_set_following(src)
 			L.S1.stop_automated_movement = TRUE
 			to_chat(user, SPAN_NOTICE("You tie \the [L.S1] to \the [src] with the leash."))
 			attached = "animal"

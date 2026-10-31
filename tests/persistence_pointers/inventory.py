@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCOPE = (
     'code/game/mob/living/simple_animal/simple_animal.dm',
     'code/game/mob/living/simple_animal/hostile/hostile.dm',
+    'code/game/mob/living/simple_animal/hostile/tactical_ai.dm',
     'code/game/mob/living/simple_animal/subtile_movement.dm',
     'code/game/mob/grab.dm',
     'code/game/objects/structures/optable.dm',

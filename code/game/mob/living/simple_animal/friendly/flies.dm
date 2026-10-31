@@ -36,7 +36,7 @@
 /mob/living/simple_animal/fly/Life()
 	..()
 	if (stat != DEAD)
-		walk_rand(src,4)
+		npc_subtile_species_walk("random", null, 4)
 
 /mob/living/simple_animal/fly/bullet_act(var/obj/item/projectile/Proj)
 	return
@@ -45,7 +45,7 @@
 	M.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	visible_message("[M] swats away the [src]!","You swat away the [src]!")
 	if (prob(40))
-		walk_away_od(src, M, 3, 3)
+		npc_subtile_species_walk("away", M, 3, 0, 3)
 		return
 	if (prob(10))
 		if (origin)
@@ -67,7 +67,6 @@
 
 /obj/structure/curtain/Crossed(var/mob/living/simple_animal/fly/M)
 	if (icon_state != "open" && istype(M, /mob/living/simple_animal/fly))
-		walk(M,0)
-		walk(M,turn(dir,180),3)
+		M.npc_subtile_species_walk("direction", null, 3, turn(dir,180))
 	else
 		..()

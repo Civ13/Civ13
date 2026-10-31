@@ -1,0 +1,463 @@
+"""Reviewed-source proposal: bounded Linux vendor/codec smoke, never wildlife acceptance.
+
+This program does not configure a container, network, cgroup, mount or host security.
+Provision and independently review the closed cloud envelope described in
+WILDLIFE-NATIVE-PLAN.md before use. The operator must explicitly acknowledge that
+review; automated checks are additional fail-closed checks, not its substitute.
+"""
+import argparse
+import hashlib
+import importlib.util
+import io
+import json
+import os
+from pathlib import Path
+import re
+import signal
+import shutil
+import stat
+import struct
+import subprocess
+import sys
+import tarfile
+import threading
+import time
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+MAX_MEMORY = 3 * 1024**3
+MAX_DISK = 1024**3
+MAX_PIDS = 64
+MAX_SECONDS = 600
+EXPECTED_ARCHIVE = '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9'
+RUN_STATE = {'phase': 'entry', 'outcome': 'incomplete', 'history': []}
+RUN_ROOT = None
+RUN_STARTED = None
+SCRATCH_METER = None
+EVIDENCE_PATHS = (
+    'harness-status.json', 'smoke-summary.json', 'npc-smoke/cloud-manifest.json',
+    'npc-smoke/npc-manifest.json', 'npc-smoke/stage/compile-stdout.log',
+    'npc-smoke/stage/compile-stderr.log',
+    *(f'npc-smoke/{suite}/{name}' for suite in ('runtime', 'runtime-wildlife')
+      for name in ('receipt.json', 'result.txt', 'port-closed.txt', 'runtime.log',
+                   'daemon-stdout.log', 'daemon-stderr.log', 'npc-receipt.json')),
+    *(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout','stderr')),
+)
+EVIDENCE_LIMIT = 16 * 1024**2
+
+
+def load_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def require(ok, message):
+    if not ok:
+        raise RuntimeError(message)
+
+
+def checkpoint(phase, **fields):
+    RUN_STATE.update(fields)
+    RUN_STATE['phase'] = phase
+    if len(RUN_STATE['history']) < 24:
+        RUN_STATE['history'].append(phase)
+    encoded = (json.dumps(RUN_STATE, sort_keys=True) + '\n').encode()
+    require(len(encoded) <= 32768, 'Failure receipt bound exceeded')
+    if RUN_ROOT is not None:
+        # The output root was checked fresh and isolated before assignment.
+        temp = RUN_ROOT / 'harness-status.tmp'
+        temp.write_bytes(encoded)
+        os.replace(temp, RUN_ROOT / 'harness-status.json')
+
+
+def package_evidence(root):
+    """Copy only small named regular files as data, with no links or saves."""
+    collected = []
+    total = 0
+    for rel in EVIDENCE_PATHS:
+        path = root / rel
+        if not path.exists():
+            continue
+        info = path.lstat()
+        require(stat.S_ISREG(info.st_mode) and path.resolve().is_relative_to(root),
+                'Unsafe evidence path: ' + rel)
+        require(info.st_size <= 4 * 1024**2, 'Evidence file exceeds bound: ' + rel)
+        total += info.st_size + 2048
+        require(total <= EVIDENCE_LIMIT - 10240, 'Evidence aggregate exceeds bound')
+        data = path.read_bytes()
+        require(len(data) == info.st_size, 'Evidence changed while reading: ' + rel)
+        collected.append((rel, data))
+    require(any(name == 'harness-status.json' for name, _ in collected), 'Missing harness status')
+    result = root / 'harness-evidence.tar'
+    with result.open('xb') as raw:
+        with tarfile.open(fileobj=raw, mode='w') as archive:
+            for rel, data in collected:
+                entry = tarfile.TarInfo(rel)
+                entry.size = len(data)
+                entry.mode = 0o600
+                entry.mtime = 0
+                archive.addfile(entry, io.BytesIO(data))
+    require(result.stat().st_size <= EVIDENCE_LIMIT, 'Evidence archive exceeds bound')
+    return {'bytes': result.stat().st_size, 'sha256': file_hash(result), 'files': len(collected)}
+
+
+def validate_envelope(*, uid, interfaces, memory, swap, pids, cpu, disk_bytes,
+                      scratch_mount, scratch_empty, source_readonly, bin_readonly,
+                      archive_readonly, cgroup_pids, own_pid, effective_caps,
+                      no_new_privs, cgroup_writable):
+    require(uid != 0, 'Test worker must be unprivileged')
+    require(effective_caps == '0000000000000000' and no_new_privs == '1',
+            'Worker must have no effective capabilities and no-new-privileges')
+    require(not cgroup_writable, 'Worker may not alter or leave its cgroup')
+    require(set(interfaces) == {'lo'}, 'Only an isolated loopback interface is permitted')
+    require(memory.isdigit() and 0 < int(memory) <= MAX_MEMORY, 'Missing 3 GiB cgroup memory cap')
+    require(swap == '0', 'Worker cgroup must have zero swap')
+    require(pids.isdigit() and 1 < int(pids) <= MAX_PIDS, 'Missing 64-process cgroup cap')
+    fields = cpu.split()
+    require(len(fields) == 2 and all(x.isdigit() for x in fields), 'Missing finite cgroup CPU cap')
+    quota, period = map(int, fields)
+    require(quota > 0 and period > 0 and quota <= 2 * period, 'CPU cap exceeds two cores')
+    require(scratch_mount and scratch_empty and 0 < disk_bytes <= MAX_DISK,
+            'Scratch must be a fresh dedicated filesystem of at most 1 GiB')
+    require(source_readonly and bin_readonly and archive_readonly,
+            'Reviewed source, binary directory and archive must be mounted read-only')
+    require(set(cgroup_pids) == {own_pid}, 'Dedicated cgroup must contain only this supervisor at start')
+
+
+def current_cgroup():
+    membership = Path('/proc/self/cgroup').read_text().splitlines()
+    rows = [line.split(':', 2)[2] for line in membership if line.startswith('0::')]
+    require(len(rows) == 1, 'A unified cgroup-v2 membership is required')
+    root = Path('/sys/fs/cgroup').resolve()
+    # The mounted cgroup namespace may present our cgroup as its root.
+    group = (root / rows[0].lstrip('/')).resolve()
+    require(group.is_relative_to(root) and group.is_dir(), 'Unresolvable cgroup-v2 path')
+    return group
+
+
+def pids_in(group):
+    return [int(x) for x in (group / 'cgroup.procs').read_text().split()]
+
+
+def read_only(path):
+    return bool(os.statvfs(path).f_flag & os.ST_RDONLY)
+
+
+def check_environment(scratch, binary, archive):
+    group = current_cgroup()
+    fs = os.statvfs(scratch)
+    status = {}
+    for line in Path('/proc/self/status').read_text().splitlines():
+        key, _, value = line.partition(':')
+        if key in ('CapEff', 'NoNewPrivs'):
+            status[key] = value.strip()
+    envelope = dict(uid=os.geteuid(), interfaces=os.listdir('/sys/class/net'),
+        memory=(group / 'memory.max').read_text().strip(),
+        swap=(group / 'memory.swap.max').read_text().strip(),
+        pids=(group / 'pids.max').read_text().strip(),
+        cpu=(group / 'cpu.max').read_text().strip(),
+        disk_bytes=fs.f_blocks * fs.f_frsize, scratch_mount=os.path.ismount(scratch),
+        scratch_empty=not any(scratch.iterdir()), source_readonly=read_only(ROOT),
+        bin_readonly=read_only(binary), archive_readonly=read_only(archive),
+        cgroup_pids=pids_in(group), own_pid=os.getpid(),
+        effective_caps=status.get('CapEff'), no_new_privs=status.get('NoNewPrivs'),
+        cgroup_writable=os.access(group, os.W_OK) or os.access(group / 'cgroup.procs', os.W_OK))
+    validate_envelope(**envelope)
+    return group, envelope
+
+
+def require_only_supervisor(group):
+    require(set(pids_in(group)) == {os.getpid()},
+            'Child escaped process-group cleanup; destroy the isolated cloud worker')
+
+
+def run_owned_phase(legacy, group, command, cwd, name, deadline):
+    try:
+        return legacy.run_process(command, cwd, name, deadline)
+    finally:
+        # The legacy runner kills its owned process group on success or error.
+        # A different-group escape is reported for the cloud provider to destroy.
+        require_only_supervisor(group)
+
+
+def check_clean_exact(head):
+    require(re.fullmatch('[0-9a-f]{40}', head) is not None, 'Expected full exact commit')
+    observed = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], timeout=10).decode().strip()
+    require(observed == head, 'Git HEAD differs from reviewed commit')
+    dirty = subprocess.check_output(['git', '-C', str(ROOT), 'status', '--porcelain=v1', '--untracked-files=all'], timeout=30)
+    require(not dirty, 'Source tree must be clean')
+
+
+def file_hash(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+class ScratchMeter:
+    """Sample filesystem allocation; the tmpfs quota is the actual hard bound."""
+    def __init__(self, root):
+        self.root = root
+        self.peak = 0
+        self.samples = 0
+        self.error = None
+        self.stop_event = threading.Event()
+        self.thread = threading.Thread(target=self.run, daemon=True)
+
+    def sample(self):
+        stats = os.statvfs(self.root)
+        self.peak = max(self.peak, (stats.f_blocks - stats.f_bfree) * stats.f_frsize)
+        self.samples += 1
+
+    def run(self):
+        try:
+            while not self.stop_event.wait(.25):
+                self.sample()
+        except BaseException as exc:
+            self.error = type(exc).__name__
+
+    def start(self):
+        self.sample()
+        self.thread.start()
+
+    def finish(self):
+        self.stop_event.set()
+        self.thread.join(timeout=2)
+        self.sample()
+        require(not self.thread.is_alive() and not self.error, 'Scratch observation failed')
+        return {'sampled_peak_bytes': self.peak, 'samples': self.samples, 'period_seconds': .25,
+                'limitation': 'Sampled allocation may miss short peaks; tmpfs is the hard bound.'}
+
+
+def prepare_linked_runtime(out, stage, dme, name):
+    """Share compiled read-only bytes on the same bounded scratch filesystem."""
+    work = out / name
+    work.mkdir()
+    artifacts = {}
+    for extension in ('.dmb', '.rsc'):
+        source = dme.with_suffix(extension)
+        info = source.lstat()
+        require(stat.S_ISREG(info.st_mode) and 0 < info.st_size <= MAX_DISK,
+                'Missing or oversized compiled fixture artifact')
+        os.chmod(source, 0o444)
+        target = work / source.name
+        os.link(source, target)
+        require(os.path.samefile(source, target), 'Fixture artifact hardlink mismatch')
+        artifacts[target.name] = {'bytes': info.st_size, 'sha256': file_hash(target)}
+    shutil.copytree(stage / 'config', work / 'config')
+    return work, work / dme.with_suffix('.dmb').name, artifacts
+
+
+def verify_linked_runtime(work, artifacts):
+    for name, expected in artifacts.items():
+        path = work / name
+        require(path.is_file() and path.stat().st_size == expected['bytes'] and
+                file_hash(path) == expected['sha256'], 'Compiled fixture artifact changed: ' + name)
+
+
+def parse_ldd(text):
+    require('not found' not in text.lower(), 'Unresolved shared library')
+    paths=[]
+    for line in text.splitlines():
+        match=re.search(r'(?:=>\s*)?(/\S+)\s+\(0x[0-9a-fA-F]+\)', line)
+        if match:
+            paths.append(match.group(1))
+    require(paths, 'Missing dynamic loader observations')
+    return paths
+
+
+def collect_abi(legacy, group, scratch, binary):
+    """After admission, trace dynamic loaders in-container; no BYOND process runs."""
+    git=shutil.which('git')
+    ldd=shutil.which('ldd')
+    require(git and ldd, 'Pinned image must provide Git and ldd')
+    targets=[Path(git), Path(sys.executable), *(binary/name for name in
+             ('DreamMaker','DreamDaemon','libbyond.so','libext.so'))]
+    directory=scratch/'abi'
+    directory.mkdir()
+    inventory={}
+    for index,target in enumerate(targets):
+        if index == 2:
+            checkpoint('byond-abi-preflight')
+        resolved=target.resolve()
+        with resolved.open('rb') as stream:
+            header=stream.read(20)
+        require(len(header)==20 and header[:5]==b'\x7fELF\x01' and header[5]==1 and
+                struct.unpack('<H',header[18:20])[0] == 3 and read_only(resolved),
+                'Expected read-only i386 ELF: ' + str(target))
+        run_owned_phase(legacy,group,[ldd,str(target)],directory,'abi-'+str(index),10)
+        stdout=(directory/('abi-'+str(index)+'-stdout.log')).read_text(errors='replace')
+        stderr=(directory/('abi-'+str(index)+'-stderr.log')).read_text(errors='replace')
+        libraries=[]
+        for raw in parse_ldd(stdout+'\n'+stderr):
+            path=Path(raw).resolve()
+            require(path.is_file() and read_only(path) and path.stat().st_size <= 32*1024**2,
+                    'Untrusted dynamic library: ' + raw)
+            libraries.append({'path':str(path),'sha256':file_hash(path),'bytes':path.stat().st_size})
+        inventory[str(target)]={'sha256':file_hash(resolved),'bytes':resolved.stat().st_size,'libraries':libraries}
+    return inventory
+
+
+def validate_wildlife_receipt(row, head):
+    require(type(row) is dict and row.get('head') == head and row.get('error') is None and
+            row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688),
+            'Wrong wildlife source/engine or failed fixture')
+    require(row.get('cloud_wildlife_checks') == 9 and row.get('npc_checks') == 0,
+            'Incomplete wildlife or mixed vendor assertions')
+
+
+def timeout_handler(_signal, _frame):
+    raise TimeoutError('Entire 600-second envelope expired')
+
+
+def interrupt_handler(signum, _frame):
+    raise InterruptedError('Supervisor received signal ' + str(signum))
+
+
+def main():
+    global RUN_ROOT, RUN_STARTED, SCRATCH_METER
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--head', required=True, help='full reviewed exact Git commit')
+    parser.add_argument('--byond-bin', required=True, type=Path)
+    parser.add_argument('--byond-archive', required=True, type=Path)
+    parser.add_argument('--scratch-root', required=True, type=Path,
+                        help='fresh dedicated <=1 GiB mount; evidence remains inside it')
+    parser.add_argument('--reviewed-cloud-envelope', action='store_true',
+                        help='operator confirms separate cloud isolation review')
+    args = parser.parse_args()
+    require(sys.platform == 'linux', 'Cloud smoke supports Linux only')
+    require(args.reviewed_cloud_envelope, 'Separate cloud envelope review is required')
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.signal(signal.SIGTERM, interrupt_handler)
+    signal.signal(signal.SIGINT, interrupt_handler)
+    signal.alarm(MAX_SECONDS)
+    began = time.monotonic()
+    RUN_STARTED = began
+    scratch, binary, archive = (args.scratch_root.resolve(), args.byond_bin.resolve(), args.byond_archive.resolve())
+    require(scratch.is_dir() and binary.is_dir() and archive.is_file(), 'Missing reviewed paths')
+    require(not ROOT.is_relative_to(scratch) and not scratch.is_relative_to(ROOT) and not binary.is_relative_to(scratch) and
+            not archive.is_relative_to(scratch), 'Scratch must not contain source or toolchain')
+    group, envelope = check_environment(scratch, binary, archive)
+    RUN_ROOT = scratch
+    SCRATCH_METER = ScratchMeter(scratch)
+    SCRATCH_METER.start()
+    checkpoint('envelope-accepted', head=args.head, envelope=envelope)
+    home, temp = scratch / 'home', scratch / 'tmp'
+    home.mkdir()
+    temp.mkdir()
+    # Native children receive only these values, never the caller's credentials.
+    os.environ.clear()
+    os.environ.update({'PATH': '/usr/bin:/bin', 'HOME': str(home), 'TMPDIR': str(temp),
+                       'LANG': 'C.UTF-8', 'LD_LIBRARY_PATH': str(binary)})
+    check_clean_exact(args.head)
+    checkpoint('staging')
+    npc = load_module('cloud_npc', HERE / 'run-npc.py')
+    runtime = load_module('cloud_byond_runtime', ROOT / 'scripts/byond_runtime.py')
+    legacy = npc.current.legacy
+    identity = runtime.verify_linux(binary, archive)
+    require(file_hash(archive) == EXPECTED_ARCHIVE, 'Wrong archive bytes')
+    checkpoint('base-image-preflight')
+    abi=collect_abi(legacy,group,scratch,binary)
+    out = scratch / 'npc-smoke'
+    manifest = npc.prepare(out)
+    require(manifest['head'] == args.head, 'Staged commit differs from reviewed commit')
+    require_only_supervisor(group)
+    stage, dme = out / 'stage', out / manifest['dme']
+    npc.current.adapt(out, manifest, 'tests/human_subtile/probe.dm',
+        '\t\t\tnpc_subtile_fixture()',
+        '\t\t\tif (world.params["cloud_wildlife"])\n\t\t\t\tcloud_wildlife_fixture()\n\t\t\telse\n\t\t\t\tnpc_subtile_fixture()')
+    npc.current.adapt(out, manifest, 'tests/human_subtile/probe.dm',
+        '"npc_checks" = npc_subtile_checks,',
+        '"cloud_wildlife_checks" = cloud_wildlife_checks, "npc_checks" = npc_subtile_checks,')
+    npc.current.adapt(out, manifest, 'tests/human_subtile/probe.dm',
+        '"scope" = "actual human/codec; headless authority adapter"',
+        '"scope" = (world.params["cloud_wildlife"] ? "wildlife owner/contact helper only; no Life/bite acceptance" : "vendor AI pulses and owned-offset codec; no wildlife acceptance")')
+    with dme.open('a', encoding='utf-8') as stream:
+        stream.write('\n#include "tests\\human_subtile\\cloud_wildlife.dm"\n')
+    for rel in ('tests/human_subtile/probe.dm', 'human_subtile.dme'):
+        path = stage / rel
+        manifest['stage_files'][rel] = dict(bytes=path.stat().st_size, sha256=file_hash(path))
+    manifest['cloud_scope'] = 'two separate vendor and minimal wildlife-owner fixtures'
+    (out / 'cloud-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    runtime.verify_linux(binary, archive)
+    checkpoint('fixture-compile')
+    compile_result = run_owned_phase(legacy, group, [str(binary / 'DreamMaker'), '-max_errors', '0', str(dme)], stage, 'compile', 120)
+    log = ''.join((stage / ('compile-' + part + '.log')).read_text(errors='replace') for part in ('stdout', 'stderr'))
+    legacy.validate_compile(log, dme.with_suffix('.dmb').name)
+    for rel, expected in manifest['stage_files'].items():
+        path = stage / rel
+        require(path.stat().st_size == expected['bytes'] and file_hash(path) == expected['sha256'],
+                'Compiler changed fixture input: ' + rel)
+    # Separate fresh save/log directories refer to one hashed copy of each
+    # compiled artifact, reducing scratch use without weakening its hard quota.
+    vendor_work, vendor_dmb, artifacts = prepare_linked_runtime(out, stage, dme, 'runtime')
+    wild_work, wild_dmb, wild_artifacts = prepare_linked_runtime(out, stage, dme, 'runtime-wildlife')
+    require(artifacts == wild_artifacts, 'Fixture artifact identities differ')
+    results = {}
+    for label, work, dmb in (('vendor', vendor_work, vendor_dmb), ('wildlife', wild_work, wild_dmb)):
+        checkpoint(label + '-daemon')
+        require(not any(work.rglob('*.sav')), 'Runtime save directory must begin empty')
+        verify_linked_runtime(work, artifacts)
+        runtime.verify_linux(binary, archive)
+        params = 'tested_commit=' + args.head + (';cloud_wildlife=1' if label == 'wildlife' else '')
+        result = run_owned_phase(legacy, group, [str(binary / 'DreamDaemon'), str(dmb), '59474', '-ip', '127.0.0.1',
+            '-trusted', '-params', params, '-log', 'runtime.log'], work, 'daemon', 90)
+        verify_linked_runtime(work, artifacts)
+        legacy.inspect_logs(work)
+        require((work / 'port-closed.txt').read_bytes() == b'closed\n', 'Missing fixture port closure')
+        require((work / 'result.txt').read_bytes() == b'PASS\n', 'Missing exact PASS marker')
+        receipt_path = work / 'receipt.json'
+        require(receipt_path.stat().st_size <= 64 * 1024, 'Receipt exceeds bound')
+        receipt = json.loads(receipt_path.read_text())
+        if label == 'vendor':
+            npc.validate_npc_receipt(receipt, args.head)
+            require(receipt.get('cloud_wildlife_checks') == 0, 'Vendor suite unexpectedly ran wildlife fixture')
+            require(receipt.get('scope') == 'vendor AI pulses and owned-offset codec; no wildlife acceptance', 'Incorrect vendor scope')
+        else:
+            validate_wildlife_receipt(receipt, args.head)
+            require(receipt.get('scope') == 'wildlife owner/contact helper only; no Life/bite acceptance', 'Incorrect wildlife scope')
+        results[label] = dict(daemon=result, receipt_sha256=file_hash(receipt_path))
+    summary = dict(head=args.head, accepted=True, identity=identity, abi=abi, envelope=envelope,
+        compile=compile_result, results=results, artifacts=artifacts,
+        scope='Vendor 46 and separate nine minimal owner/contact assertions; no bite, disease or runtime save acceptance beyond vendor codec.',
+        seconds=time.monotonic() - began,
+        limitation='Provider must independently verify sealed namespace, no host socket mounts, and container cleanup.')
+    (scratch / 'smoke-summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+    print(json.dumps(summary))
+    checkpoint('complete', outcome='passed', fixture_dme_only=True)
+
+
+def guarded_entry():
+    error = None
+    try:
+        main()
+    except BaseException as exc:
+        error = exc
+        # No environment, arguments or traceback contents are captured here.
+        try:
+            checkpoint(RUN_STATE['phase'], outcome='failed', error_type=type(exc).__name__,
+                       error_message=str(exc)[:1024])
+        except BaseException as receipt_error:
+            print('HARNESS_RECEIPT_FAILED ' + type(receipt_error).__name__, file=sys.stderr, flush=True)
+    finally:
+        # Tempfs survives only while this process is running. The cloud controller
+        # may copy the fixed allowlist during this bounded lease, never via exec.
+        if RUN_ROOT is not None and RUN_STARTED is not None:
+            try:
+                package = package_evidence(RUN_ROOT)
+                scratch_observation = SCRATCH_METER.finish() if SCRATCH_METER else None
+                remaining = max(0.0, MAX_SECONDS - (time.monotonic() - RUN_STARTED) - 1.0)
+                lease = min(15.0, remaining)
+                print('HARNESS_EVIDENCE_READY ' + json.dumps({'outcome': RUN_STATE['outcome'], 'lease_seconds': lease, 'package': package, 'scratch': scratch_observation}), flush=True)
+                if lease:
+                    time.sleep(lease)
+            except BaseException as hold_error:
+                print('HARNESS_EVIDENCE_UNAVAILABLE ' + type(hold_error).__name__, file=sys.stderr, flush=True)
+        signal.alarm(0)
+    if error is not None:
+        raise error
+
+
+if __name__ == '__main__':
+    guarded_entry()

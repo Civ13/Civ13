@@ -120,6 +120,230 @@
     "reason": "Whole runtime movement ownership datum declares should_save = FALSE."
   },
   {
+    "owner": "/datum/npc_subtile_pursuit",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/hostile/tactical_ai.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pursuit worker and its target are not serialized or replayed on import."
+  },
+  {
+    "owner": "/datum/npc_subtile_pursuit",
+    "field": "target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/hostile/tactical_ai.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pursuit worker and its target are not serialized or replayed on import."
+  },
+  {
+    "owner": "/datum/npc_subtile_pursuit",
+    "field": "pending_side_origin",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/hostile/tactical_ai.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pursuit side choice and its original turf are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_pursuit",
+    "field": "pending_side_target",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/hostile/tactical_ai.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pursuit side choice and its target turf are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient follow worker is not serialized; the separate following_mob link remains durable."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient follow worker is not serialized; the separate following_mob link remains durable."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient follow worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_follow",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient follow worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient flee worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient flee worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient flee worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient flee worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_flee",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "This captured follow reference is transient; the animal's following_mob link remains durable."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "actor",
+    "type": "/mob/living/simple_animal/pet",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pet movement worker and its target are not serialized or replayed on import."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pet movement worker and its target are not serialized or replayed on import."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pet movement worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient pet movement worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_pet_walk",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "This captured follow reference is transient; the animal's following_mob link remains durable."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient offset-recovery worker is not serialized or replayed during import."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient recovery worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient recovery worker and its captured AI ownership state are not serialized."
+  },
+  {
+    "owner": "/datum/npc_subtile_recovery",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "This captured follow reference is transient; the animal's following_mob link remains durable."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The bounded deferred command is runtime-only and is never replayed from a save."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The deferred command target is runtime-only and revalidated before any replay."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The transient command's captured combat state is excluded with its unsaved owner."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The captured follow reference is transient; the separate following_mob link remains durable."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "side_origin",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The deferred side choice and its source turf are transient and never loaded from saves."
+  },
+  {
+    "owner": "/datum/npc_subtile_pending_intent",
+    "field": "side_target",
+    "type": "/turf",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "The deferred side choice and target turf are transient and never loaded from saves."
+  },
+  {
     "owner": "/obj/item/weapon/grab",
     "field": "hud",
     "type": "/obj/screen/grab",
@@ -222,5 +446,45 @@
     "path": "code/_onclick/hud/action.dm",
     "policy": "unsaved_graph",
     "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "actor",
+    "type": "/mob/living/simple_animal",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient continuous walker is excluded from persistence and rebuilt by AI."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient continuous walker is excluded from persistence and rebuilt by AI."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "expected_combat_target",
+    "type": "/mob/living",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient continuous walker is excluded from persistence and rebuilt by AI."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "expected_path_target",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient continuous walker is excluded from persistence and rebuilt by AI."
+  },
+  {
+    "owner": "/datum/npc_subtile_wild_walk",
+    "field": "expected_following",
+    "type": "/atom",
+    "path": "code/game/mob/living/simple_animal/subtile_movement.dm",
+    "policy": "unsaved_graph",
+    "reason": "Transient continuous walker is excluded from persistence and rebuilt by AI."
   }
 ]

@@ -9,7 +9,7 @@ Run with a verified Python interpreter:
 This is an offline source contract. It does not launch BYOND or send messages.
 The bounded baseline CI registry runs it for the declared impact paths, without
 changing existing native admission. `inventory.py` prints file/line/type/owner
-for the 28 typed atom-pointer declarations in the ten #3407 audit modules.
+for the 61 typed atom-pointer declarations in the eleven scoped audit modules.
 `classifications.json` records every scoped field, including unsaved owners and
 deliberately retained links. New or changed declarations require review.
 
