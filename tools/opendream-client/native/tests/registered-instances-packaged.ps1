@@ -54,3 +54,6 @@ try {
         Remove-Item -LiteralPath $resolved -Recurse -Force
     }
 }
+# GitHub Actions propagates LASTEXITCODE after the script. The final negative
+# control must return 1 from the launcher, but the completed fixture succeeded.
+exit 0
