@@ -90,7 +90,7 @@ def package_evidence(root):
     for rel in EVIDENCE_PATHS:
         # The extended manifest contains both the original and final source
         # inventories; its pre-adaptation npc manifest is redundant.
-        if RUN_STATE.get('suite') in ('extended', 'bridge', 'scheduler') and rel == 'npc-smoke/npc-manifest.json':
+        if RUN_STATE.get('suite') in ('extended', 'bridge') and rel == 'npc-smoke/npc-manifest.json':
             continue
         path = root / rel
         if not path.exists():
@@ -548,55 +548,6 @@ def run_bridge(args, scratch, binary, archive, group, envelope, identity, abi, b
     checkpoint('complete',outcome='passed',fixture_dme_only=True,suite='bridge')
 
 
-def run_scheduler(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy):
-    """One fixture build, two sequential fresh daemons, paired insect oracle."""
-    checkpoint('scheduler-staging',suite='scheduler')
-    scheduler=load_module('scheduler_contract',HERE/'cloud_wildlife_scheduler_draft.py')
-    out=scratch/'npc-smoke';manifest=npc.prepare(out)
-    require(manifest['head']==args.head,'Staged commit differs from reviewed commit')
-    scheduler.adapt_scheduler(out,manifest,npc.current)
-    (out/'cloud-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-    stage=out/'stage';dme=out/manifest['dme']
-    checkpoint('scheduler-fixture-compile')
-    runtime.verify_linux(binary,archive)
-    build=run_owned_phase(legacy,group,[str(binary/'DreamMaker'),'-max_errors','0',str(dme)],stage,'compile',120)
-    log=''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
-    legacy.validate_compile(log,dme.with_suffix('.dmb').name)
-    for rel,expected in manifest['stage_files'].items():
-        path=stage/rel
-        require(path.stat().st_size==expected['bytes'] and file_hash(path)==expected['sha256'],'Compiler changed fixture input: '+rel)
-    work,dmb,artifacts=prepare_linked_runtime(out,stage,dme,'runtime')
-    peer,peer_dmb,peer_artifacts=prepare_linked_runtime(out,stage,dme,'runtime-wildlife')
-    resource=dme.with_suffix('.rsc').name
-    require(artifacts==peer_artifacts and not os.path.samefile(dmb.with_suffix('.rsc'),peer_dmb.with_suffix('.rsc')),
-            'Scheduler runtime resource copies differ or share an inode')
-    checkpoint('scheduler-runtime-staged',runtime_artifacts=artifacts,resource_copies_independent=True)
-    states={};results={};receipts={};peer_states={'legacy':dict(artifacts[resource]),'smooth':dict(artifacts[resource])}
-    for label,folder,local_dmb,other,other_label in (('legacy',work,dmb,peer,'smooth'),('smooth',peer,peer_dmb,work,'legacy')):
-        checkpoint('scheduler-'+label+'-daemon')
-        require(not any(folder.rglob('*.sav')),'Scheduler daemon must begin with fresh save state')
-        runtime.verify_linux(binary,archive)
-        params='tested_commit='+args.head+';scheduler_mode='+label
-        result=run_checked_runtime(legacy,group,[str(binary/'DreamDaemon'),str(local_dmb),'59474','-ip','127.0.0.1',
-            '-trusted','-params',params,'-log','runtime.log'],folder,dme,other,artifacts,peer_states[other_label],label,states)
-        peer_states[label]=dict(states[label]['after'])
-        legacy.inspect_logs(folder)
-        require((folder/'port-closed.txt').read_bytes()==b'closed\n' and (folder/'result.txt').read_bytes()==b'PASS\n',
-                'Scheduler fixture result/port failed: '+label)
-        path=folder/'receipt.json'
-        require(path.stat().st_size<=4*1024**2,'Scheduler receipt exceeds evidence member bound')
-        receipts[label]=json.loads(path.read_text())
-        scheduler.validate_run(receipts[label],args.head,label)
-        results[label]=dict(daemon=result,receipt_sha256=file_hash(path))
-    comparison=scheduler.compare_pair(receipts['legacy'],receipts['smooth'],args.head)
-    summary=dict(head=args.head,accepted=True,suite='scheduler',fixture_dme_only=True,identity=identity,abi=abi,envelope=envelope,
-        compile=build,artifacts=artifacts,resource_states=states,results=results,comparison=comparison,
-        scope=scheduler.SCOPE,seconds=time.monotonic()-began)
-    (scratch/'smoke-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-    print(json.dumps(summary))
-    checkpoint('complete',outcome='passed',fixture_dme_only=True,suite='scheduler')
-
-
 def run_production_compile(args,scratch,binary,archive,group,envelope,identity,abi,began,runtime,legacy):
     """Compile the unmodified complete tracked game DME; never launch it."""
     production=load_module('production_stage',HERE/'cloud_production_compile.py')
@@ -638,7 +589,7 @@ def main():
                         help='fresh dedicated <=1 GiB mount; evidence remains inside it')
     parser.add_argument('--reviewed-cloud-envelope', action='store_true',
                         help='operator confirms separate cloud isolation review')
-    parser.add_argument('--suite', choices=('smoke','extended','bridge','scheduler','production_compile'), default='smoke')
+    parser.add_argument('--suite', choices=('smoke','extended','bridge','production_compile'), default='smoke')
     args = parser.parse_args()
     require(sys.platform == 'linux', 'Cloud smoke supports Linux only')
     require(args.reviewed_cloud_envelope, 'Separate cloud envelope review is required')
@@ -677,8 +628,6 @@ def main():
         return run_extended(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'bridge':
         return run_bridge(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
-    if args.suite == 'scheduler':
-        return run_scheduler(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'production_compile':
         return run_production_compile(args,scratch,binary,archive,group,envelope,identity,abi,began,runtime,legacy)
     out = scratch / 'npc-smoke'

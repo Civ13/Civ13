@@ -179,7 +179,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute',action='store_true');parser.add_argument('--head',required=True)
     parser.add_argument('--output',required=True,type=Path);parser.add_argument('--controller-output',required=True,type=Path)
-    parser.add_argument('--suite',choices=('smoke','extended','bridge','scheduler','production_compile'),default='smoke')
+    parser.add_argument('--suite',choices=('smoke','extended','bridge','production_compile'),default='smoke')
     args=parser.parse_args();require(args.execute,'Explicit --execute required')
     controller.hosted(os.environ,args.head)
     signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)

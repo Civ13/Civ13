@@ -107,19 +107,24 @@ var/large_native_checks = 0
 	if (!ok)
 		throw EXCEPTION(label)
 
+
+// Convert a raw native offset into an equivalent requested turf and a
+// canonical residual. Large bound_x can make native step_x span many tiles.
+// This only calculates a request; it never mutates the actor's position.
+/proc/large_native_axis_request(anchor, raw, delta)
+	var/offset = raw + delta
+	var/tiles = floor(offset / 32)
+	return list("anchor" = anchor + tiles, "residual" = offset - tiles * 32)
+
 /proc/large_native_pulse(mob/living/simple_animal/A, direction, dx, dy)
 	var/sx = A.step_x + dx
 	var/sy = A.step_y + dy
-	var/tx = A.x
-	var/ty = A.y
-	if (sx < 0)
-		tx--; sx += 32
-	if (sx >= 32)
-		tx++; sx -= 32
-	if (sy < 0)
-		ty--; sy += 32
-	if (sy >= 32)
-		ty++; sy -= 32
+	var/list/x_request = large_native_axis_request(A.x, A.step_x, dx)
+	var/list/y_request = large_native_axis_request(A.y, A.step_y, dy)
+	var/tx = x_request["anchor"]
+	var/ty = y_request["anchor"]
+	sx = x_request["residual"]
+	sy = y_request["residual"]
 	var/turf/destination = locate(tx, ty, A.z)
 	large_native_assert(destination && !A.npc_subtile_pulse && !A.npc_subtile_transaction, "native_pulse_fresh_destination")
 	var/datum/npc_subtile_transaction/large_native_observe/T = new

@@ -32,11 +32,6 @@ on:
         type: boolean
         required: true
         default: false
-      wildlife_scheduler:
-        description: 'Run only the reviewed paired insect scheduler fixture'
-        type: boolean
-        required: true
-        default: false
       wildlife_production_compile:
         description: 'Run only the bounded full production DME compile'
         type: boolean
@@ -50,7 +45,7 @@ permissions:
   contents: read
 jobs:
   isolated-native:
-    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true && inputs.wildlife_scheduler != true && inputs.wildlife_production_compile != true) }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true && inputs.wildlife_production_compile != true) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -104,7 +99,7 @@ jobs:
           retention-days: 7
 
   wildlife-cloud-smoke:
-    if: ${{ github.event_name == 'workflow_dispatch' && ((inputs.wildlife_smoke == true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true && inputs.wildlife_production_compile != true && inputs.wildlife_scheduler != true) || (inputs.wildlife_extended == true && inputs.wildlife_smoke != true && inputs.wildlife_bridge != true && inputs.wildlife_scheduler != true && inputs.wildlife_production_compile != true) || (inputs.wildlife_bridge == true && inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_production_compile != true && inputs.wildlife_scheduler != true) || (inputs.wildlife_scheduler == true && inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true && inputs.wildlife_production_compile != true) || (inputs.wildlife_production_compile == true && inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true && inputs.wildlife_scheduler != true)) && github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && ((inputs.wildlife_smoke == true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true && inputs.wildlife_production_compile != true) || (inputs.wildlife_extended == true && inputs.wildlife_smoke != true && inputs.wildlife_bridge != true && inputs.wildlife_production_compile != true) || (inputs.wildlife_bridge == true && inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_production_compile != true) || (inputs.wildlife_production_compile == true && inputs.wildlife_smoke != true && inputs.wildlife_extended != true && inputs.wildlife_bridge != true)) && github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
@@ -131,15 +126,12 @@ jobs:
           python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_wildlife_extended.py'
           python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_large_exit_bridge.py'
           python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_wildlife_bridge.py'
-          python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_core_draft.py'
-          python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_wildlife_scheduler_draft.py'
-          python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_scheduler_lane.py'
           python3 -I -B -m unittest discover -s tests/human_subtile -p 'test_cloud_production_compile.py'
       - name: Run exact-head bounded fixture smoke
         env:
           EXPECTED_HEAD: ${{ inputs.expected_wildlife_head }}
           CIV13_REPOSITORY_VISIBILITY: ${{ github.event.repository.visibility }}
-          WILDLIFE_SUITE: ${{ inputs.wildlife_production_compile == true && 'production_compile' || inputs.wildlife_extended == true && 'extended' || inputs.wildlife_bridge == true && 'bridge' || inputs.wildlife_scheduler == true && 'scheduler' || 'smoke' }}
+          WILDLIFE_SUITE: ${{ inputs.wildlife_production_compile == true && 'production_compile' || inputs.wildlife_extended == true && 'extended' || inputs.wildlife_bridge == true && 'bridge' || 'smoke' }}
         run: |
           set -euo pipefail
           python3 -I -B tests/human_subtile/cloud_npc_job.py --execute --head "$EXPECTED_HEAD" \

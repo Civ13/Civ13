@@ -24,12 +24,12 @@ def receipt():
                     sy=(30 if direction==1 else 2 if direction==2 else 2 if orthogonal else 0)
                     b=dict(x=9,y=7,z=1,sx=sx,sy=sy,dir=direction,bound_x=variant,bound_y=0,
                            bound_width=96,bound_height=96,locs=[dict(x=6,y=6,z=1)])
+                    if variant == 64:
+                        # Native may re-anchor without changing world position.
+                        b['x'] += 2; b['sx'] -= 64
                     dx,dy={1:(0,2),2:(0,-2),4:(2,0),8:(-2,0)}[direction]
-                    tx,ty=9,7; nx,ny=sx+dx,sy+dy
-                    if nx>=32: tx+=1;nx-=32
-                    if nx<0: tx-=1;nx+=32
-                    if ny>=32: ty+=1;ny-=32
-                    if ny<0: ty-=1;ny+=32
+                    qx,nx=divmod(b['sx']+dx,32); qy,ny=divmod(b['sy']+dy,32)
+                    tx,ty=b['x']+qx,b['y']+qy
                     auth=dict(consumed=1,restoring=0,direction=direction,before=copy.deepcopy(b),bound_x=variant,
                               bound_y=0,width=96,height=96,destination_x=tx,destination_y=ty,sx=nx,sy=ny)
                     for allow in (0,1):
@@ -42,7 +42,7 @@ def receipt():
                                          checks=1,exit_direction=direction,frame_cleared=1,trace=trace))
     p=dict(x=9,y=7,z=1,sx=0,sy=0)
     controls=[dict(case=k,before=copy.deepcopy(p),after=copy.deepcopy(p),result=0,trace=[]) for k in
-              ('missing','stale','wrong_actor','unarmed','wrong_destination','replay')]
+              ('missing','stale','wrong_actor','unarmed','wrong_destination','nonintegral','replay')]
     ordinary=dict(p,bound_width=32,bound_height=32)
     controls.append(dict(case='ordinary_32',before=ordinary,after=dict(ordinary,sx=2),trace=[]))
     for name in ('callback_invalidate','callback_cancel','callback_finish','callback_delete','callback_blocker_delete','callback_incapacitate','callback_reassign','callback_control','callback_disable'):
@@ -61,6 +61,11 @@ def receipt():
     controls.append(dict(case='callback_actor_delete',before=copy.deepcopy(p),actor_deleted=1,pulse_consumed=1,
                          error=None,checks=1,retired_state=dict(exists=1,**{k:0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start','destination','path_target','combat_target','following')}),
                          trace=[dict(event='CheckExit:bridge')]))
+    controls.append(dict(case='callback_actor_delete_throw',before=copy.deepcopy(p),actor_deleted=1,pulse_consumed=1,
+                         error=None,checks=1,retired_state=dict(exists=1,**{k:0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start','destination','path_target','combat_target','following')}),
+                         retired_after_throw=dict(exists=1,**{k:0 for k in ('active','valid','faulted','fault','actor','pulse','transaction','intent')}),
+                         boundary_caught=1,boundary_name='fixture_bridge_exception',
+                         trace=[dict(event='CheckExit:bridge'),dict(event='fixture_throw_attempt'),dict(event='Uncross:throw_catch')]))
     controls.append(dict(case='policy_mutation',before=copy.deepcopy(p),after=copy.deepcopy(p),mutator_checks=1,
                          subject_checks=1,subject_allow=0,trace=[dict(event='policy_mutated'),dict(event='CheckExit:policy_subject')]))
     for kind in ('window','railing','table'):
@@ -82,10 +87,22 @@ def receipt():
     controls.append(dict(case='retirement_ownership',preserved=1,cleared=1,plain_deleted=1))
     for control in controls: control['frame_cleared']=1
     return dict(head='a'*40,error=None,port=0,byond_version=516,byond_build=1688,scope=bridge.SCOPE,
-                npc_checks=0,large_bridge_checks=4269,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
+                npc_checks=0,large_bridge_checks=4482,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
                 large_bridge_rows=rows,large_bridge_controls=controls)
 
 class BridgeReceiptTests(unittest.TestCase):
+    def test_axis_normalization_preserves_world_coordinate(self):
+        for axis in ('x', 'y'):
+            for raw in (-65, -64, -33, -32, -1, 0, 31, 32, 63, 64, 65):
+                for delta in (-2, -1, 1, 2):
+                    with self.subTest(axis=axis, raw=raw, delta=delta):
+                        anchor = 11
+                        quotient, residual = divmod(raw + delta, 32)
+                        self.assertGreaterEqual(residual, 0)
+                        self.assertLess(residual, 32)
+                        self.assertEqual((anchor + quotient) * 32 + residual, anchor * 32 + raw + delta)
+        self.assertEqual((11 + divmod(-62 + 2, 32)[0], divmod(-62 + 2, 32)[1]), (9, 4))
+
     def test_complete_fixture(self):
         bridge.validate_bridge(receipt(),'a'*40)
 
@@ -96,6 +113,9 @@ class BridgeReceiptTests(unittest.TestCase):
             lambda r: r['large_bridge_rows'][0]['after'].update(sx=1),
             lambda r: r['large_bridge_rows'][0]['trace'].reverse(),
             lambda r: r['large_bridge_rows'][0]['auth'].update(sx=99),
+            lambda r: r['large_bridge_rows'][0]['auth'].update(sx=1.5),
+            lambda r: r['large_bridge_rows'][0]['auth'].update(sx=-1),
+            lambda r: r['large_bridge_rows'][0]['auth'].update(destination_x=9.5),
             lambda r: r['large_bridge_controls'][0].update(result=1),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case'].startswith('real_')).update(checks=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(actor_deleted=0),
@@ -104,6 +124,8 @@ class BridgeReceiptTests(unittest.TestCase):
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete')['retired_state'].update(actor=1),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='retirement_ownership').update(preserved=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='retirement_ownership').update(cleared=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete_throw')['retired_after_throw'].update(faulted=1),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete_throw')['retired_after_throw'].update(fault=1),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw').update(throw_attempted=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw')['auth'].update(actor_frame_present=1),
             lambda r: r.update(large_bridge_checks=4120),
