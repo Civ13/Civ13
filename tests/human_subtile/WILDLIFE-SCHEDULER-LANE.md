@@ -55,3 +55,26 @@ is capped at 2 px. It compares pursuit travel through first arrival and keeps
 the existing one-tick arrival and bite limits. Detour holds are handled only
 for the documented traced case, requiring the staged animal to hold through
 the rest of that target epoch. This is not acceptance of other timing changes.
+
+The subsequent paired run 41191623671 corrected first-bite timing but failed
+final reacquisition: the legacy actor settled at 61 ds after the target moved
+at 60, while the staged actor started at 62.5 and was observed settled at 64.5.
+The 64 ds Life bite roll occurred during the staged transaction and produced
+no damage. Other recorded target changes at 20 and 40 produced staged starts
+at 20.5 and 41.5, and observed arrivals at 22.5 and 43.5, respectively.
+
+The next, unrun candidate leaves an already-due start slot open while the
+actor is settled on the target's turf, for up to the original full transit
+interval. It rechecks only at world ticks. A target change in that window may
+start one normally authorized transaction with the unchanged transit interval;
+expiry advances the original period without moving, and delayed workers skip
+elapsed slots rather than burst. A replacement clears the old slot. Blocked
+moves still use the normal period, and neither Life nor attack work is queued.
+For the recorded last move, a model predicts an admission at 60 instead of
+62.5, but the full 1.5 ds transit and cleanup/observation quantization remain.
+It is not proved that arrival or the 64 ds bite will match legacy. A target
+change exactly at expiry is conservatively treated as outside the old slot.
+The next fixture records owner, due, idle-window end, revision, generation,
+pending intent and recovery alongside the original movement observations.
+Its timing changes and any remaining phase difference require native evidence;
+no comparison threshold is widened.

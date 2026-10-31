@@ -20,9 +20,15 @@ var/global/list/fixture_scheduler_rows = list()
 /proc/fixture_scheduler_record(label, mob/living/simple_animal/A, choice = null, raw = null, chance = null)
 	if (fixture_scheduler_events.len >= 4096)
 		throw EXCEPTION("scheduler_event_bound")
+	var/datum/npc_subtile_wild_walk/W = A.npc_subtile_wild_walk
 	fixture_scheduler_events += list(list("event" = label, "at" = world.time,
 		"x" = A.x, "y" = A.y, "z" = A.z, "sx" = A.step_x, "sy" = A.step_y,
 		"settled" = A.npc_subtile_contact_settled(), "transaction" = !!A.npc_subtile_transaction,
+		"wild_owner" = !!W, "wild_due" = W ? W.due : null, "wild_idle_end" = W ? W.idle_window_end : null,
+		"wild_revision" = W ? W.revision : null, "wild_generation" = W ? W.generation : null,
+		"wild_mode" = W ? W.mode : null, "wild_target_matches" = W ? (W.target == fixture_scheduler_target) : null,
+		"generation" = A.move_gen,
+		"pending" = !!A.npc_subtile_pending_intent, "recovery" = !!A.npc_subtile_recovery,
 		"choice" = choice, "native_choice" = raw, "chance" = chance,
 		"target_x" = fixture_scheduler_target ? fixture_scheduler_target.x : null,
 		"target_y" = fixture_scheduler_target ? fixture_scheduler_target.y : null,

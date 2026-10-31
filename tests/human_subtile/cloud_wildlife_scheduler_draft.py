@@ -101,6 +101,17 @@ def validate_run(receipt,head,mode):
                     not (event.get('transaction') and event.get('settled')) and
                     not (mode=='smooth' and event.get('settled') and (event['sx'] or event['sy'])),
                     'Invalid event position or authority')
+            require(event.get('wild_owner') in (0,1) and event.get('pending') in (0,1) and event.get('recovery') in (0,1) and
+                    type(event.get('generation')) is int and event['generation'] >= 0, 'Invalid owner observation')
+            owner_fields=('wild_due','wild_idle_end','wild_revision','wild_generation','wild_mode','wild_target_matches')
+            if event['wild_owner']:
+                require(finite(event.get('wild_due')) and finite(event.get('wild_idle_end')) and event['wild_idle_end'] >= 0 and
+                        type(event.get('wild_revision')) is int and event['wild_revision'] >= 0 and
+                        type(event.get('wild_generation')) is int and event['wild_generation'] >= 0 and
+                        event.get('wild_mode') in ('random','towards','away','path','direction') and
+                        event.get('wild_target_matches') in (0,1), 'Invalid active owner observation')
+            else:
+                require(all(event.get(k) is None for k in owner_fields), 'Unexpected absent-owner fields')
         require(all(b['at']>=a['at'] for a,b in zip(events,events[1:])), 'Events are not time ordered')
         before=[e for e in events if e.get('event')==kind+'_life_before']
         after=[e for e in events if e.get('event')==kind+'_life_after']

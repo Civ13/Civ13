@@ -19,6 +19,10 @@ def receipt(enabled):
             at=tick/2
             def event(label,**kwargs):
                 return dict(event=label,at=at,x=actor_px//32,y=6,z=1,sx=actor_px%32,sy=0,settled=int(not pulsing),transaction=int(pulsing),
+                            wild_owner=int(enabled),wild_due=0 if enabled else None,wild_idle_end=0 if enabled else None,
+                            wild_revision=1 if enabled else None,wild_generation=1 if enabled else None,
+                            wild_mode='towards' if enabled else None,wild_target_matches=1 if enabled else None,
+                            generation=1,pending=0,recovery=0,
                             target_in_range=int(abs(target_x-actor_px//32)<=1),target_brute=brute,target_disease=disease,
                             target_x=target_x,target_y=6,target_z=1,target_sx=0,target_sy=0,**kwargs)
             if scenario=='chase' and at in (20,40,60):
@@ -143,7 +147,7 @@ class SchedulerDraftContracts(unittest.TestCase):
 
     def test_rejects_missing_movement_damage_infection_and_suppressed_bites(self):
         legacy=receipt(False)
-        for defect in ('no_moves','no_damage','no_infection','no_secondary','stationary_target','suppressed_bite','late_contact','missed_step','false_arrival','wrong_target','teleport','truncated_samples'):
+        for defect in ('no_moves','no_damage','no_infection','no_secondary','stationary_target','suppressed_bite','late_contact','missed_step','false_arrival','wrong_target','teleport','truncated_samples','missing_owner_observation','invalid_deadline'):
             with self.subTest(defect=defect):
                 candidate=receipt(True);row=candidate['scheduler_rows'][2 if defect=='no_secondary' else 0];events=row['events']
                 if defect=='no_moves':
@@ -174,6 +178,10 @@ class SchedulerDraftContracts(unittest.TestCase):
                     next(e for e in events if e['event']=='mosquito_move_after')['x']+=1
                 elif defect=='truncated_samples':
                     events[:]=[e for e in events if not (e['event']=='position_sample' and e['at']>75)]
+                elif defect=='missing_owner_observation':
+                    del events[0]['pending']
+                elif defect=='invalid_deadline':
+                    events[0]['wild_due']=float('nan')
                 else:
                     bite=next(e for e in events if e['event']=='bite_before' and e['at']==24)
                     bite['at']+=1

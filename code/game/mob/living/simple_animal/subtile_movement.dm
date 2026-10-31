@@ -401,6 +401,7 @@
 	W.interval = interval
 	W.direction = direction
 	W.distance_limit = distance_limit
+	W.idle_window_end = 0
 	W.due = world.time + interval
 	W.expected_stance = stance
 	W.expected_behaviour = behaviour
@@ -431,6 +432,9 @@
 	var/direction
 	var/distance_limit
 	var/due
+	// A no-op at the target may keep the current paid start slot open until
+	// its nominal arrival deadline; this is never an attack or movement queue.
+	var/idle_window_end = 0
 	var/revision = 0
 	var/generation
 	var/expected_stance
@@ -477,12 +481,30 @@
 			continue
 		var/current_revision = revision
 		if (actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))
+			idle_window_end = 0
 			var/list/before = actor.npc_subtile_snapshot()
 			actor.npc_subtile_settle_axis(src, interval)
 			if (valid() && revision == current_revision && human_subtile_same(before, actor.npc_subtile_snapshot()))
 				actor.npc_subtile_defer_intent("wild", target, mode, distance_limit, interval, direction, TRUE)
 				break
 			continue
+		var/period = actor.npc_subtile_wild_period(mode, interval)
+		if (!idle_window_end && mode == "towards" && period > interval && get_turf(actor) == get_turf(target))
+			idle_window_end = due + interval
+		if (idle_window_end)
+			// Expire before observing a boundary-time target change. A delayed
+			// worker skips elapsed slots without allowing a burst of moves.
+			if (world.time >= idle_window_end)
+				idle_window_end = 0
+				due += max(1, floor((world.time - due) / period) + 1) * period
+				sleep(world.tick_lag)
+				continue
+			if (get_turf(actor) == get_turf(target))
+				sleep(world.tick_lag)
+				continue
+			// Target moved inside this existing slot. Keep the original
+			// transit interval and the single transaction/owner checks.
+			idle_window_end = 0
 		var/started = world.time
 		var/turf/next
 		switch (mode)
@@ -499,7 +521,7 @@
 		if (next && valid())
 			actor.ai_step_wait(next, interval, src)
 		if (valid() && revision == current_revision)
-			due = max(started + actor.npc_subtile_wild_period(mode, interval), world.time)
+			due = max(started + period, world.time)
 
 /datum/npc_subtile_recovery
 	should_save = FALSE
