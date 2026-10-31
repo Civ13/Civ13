@@ -29,6 +29,8 @@
 	if (material.shard_type)
 		name = "[material.display_name] [material.shard_type]"
 		desc = "A small piece of [material.display_name]. It looks sharp, you wouldn't want to step on it barefoot. Could probably be used as ... a throwing weapon?"
+		if (material.name == "flint")
+			desc = "A sharp fragment of flint. It can sharpen sticks, flatten crude planks, and butcher or skin dead animals. Watch your bare feet."
 		switch(material.shard_type)
 			if (SHARD_SPLINTER, SHARD_SHRAPNEL)
 				gender = PLURAL
