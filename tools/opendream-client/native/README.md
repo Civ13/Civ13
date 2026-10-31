@@ -1,5 +1,8 @@
 # Single-file Windows launcher
 
+Run `Civ13.exe --help` to list launcher and operator options without starting the
+normal launcher flow. The launcher is optional for ordinary BYOND gameplay.
+
 The stable feed references launcher 1.0.7 with BYOND 516.1681. This source
 prepares unreleased launcher 1.0.8 with BYOND 516.1688; publishing it requires exact-head packaging/CI, independent review
 and the applicable acceptance checks. No HTTPS server directory or additional
