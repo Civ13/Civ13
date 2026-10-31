@@ -75,6 +75,7 @@ def check_output_budget(directory):
                 raise RuntimeError('Task-owned output budget exceeded')
             if path.suffix in ('.log', '.txt', '.json') and path.stat().st_size > LOG_LIMIT:
                 raise RuntimeError('Native diagnostic file exceeds bound: ' + str(path))
+    return count, total
 
 
 def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
@@ -224,8 +225,8 @@ def retain_upload_aliases(output, generated, manifest):
         size, digest = bounded_digest(original, limit)
         record.update(bytes=size, sha256=digest)
         if not destination.exists():
-            files = [path for path in output.rglob('*') if path.is_file()]
-            if len(files) + 1 > FILE_LIMIT or sum(path.stat().st_size for path in files) + size > OUTPUT_LIMIT:
+            count, total = check_output_budget(output)
+            if count + 1 > FILE_LIMIT or total + size > OUTPUT_LIMIT:
                 raise RuntimeError('Upload alias exceeds task-owned output budget')
             destination.parent.mkdir(exist_ok=True)
             record['status'] = 'copying'
