@@ -74,7 +74,7 @@ var/global/list/full_map_probe_nature_done = list()
 	if(input["action"] == "status" && input["session"] == "observe") return json_encode(full_map_probe_status())
 	if(input["session"] != full_map_probe_session || persistence_restart.busy || persistence_restart.startup_hold || persistence_save_in_progress || persistence_restart.exists()) return "rejected"
 	if(input["action"] == "start")
-		if(!ticker || ticker.current_state != GAME_STATE_PREGAME || !ticker.pregame_timeleft || full_map_probe_start_requested) return "rejected"
+		if(!ticker || ticker.current_state != GAME_STATE_PREGAME || full_map_probe_start_requested) return "rejected"
 		full_map_probe_start_requested = TRUE
 		// These are the existing admin Start Now inputs. The ordinary pregame
 		// scheduler performs setup and changes current_state itself.

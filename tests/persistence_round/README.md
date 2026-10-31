@@ -42,3 +42,17 @@ callback that enables persistence must prevent the resolved route from ending
 the round. Generic questions also cannot hide map/epoch transition callbacks.
 `python -m unittest discover -s tests/persistence_round -p 'test_*.py'` checks
 source integration contracts only; it is not native compiler or runtime proof.
+
+## Persistent lobby countdown
+
+`python3 -m unittest discover -s tests/persistence_round -p test_pregame.py`
+checks the boot/countdown, immediate mode-toggle cancellation, delayed vote and
+setup-admission guards, unchanged ordinary timer, manual Start Now override,
+and restore/save/startup guard ordering. It mechanically projects the two small
+production cancellation helpers into Python; scheduler/callback ordering is
+checked as source contracts, not exercised in a native event loop.
+
+Automatic start cancellation is latched for this lobby: switching persistence
+off does not resurrect an old timer. Start Now remains available. No native
+compile, live startup, graphical lobby, save/load or callback acceptance is
+implied by these offline checks.
