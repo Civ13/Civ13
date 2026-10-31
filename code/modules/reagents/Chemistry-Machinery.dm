@@ -553,6 +553,10 @@
 	powerneeded = 30
 	var/obj/item/stack/inserted = null
 
+// Paid construction has no structural salvage. Keep mapped base grinders unchanged.
+/obj/structure/grinder/constructed
+	not_disassemblable = TRUE
+
 /obj/structure/grinder/persistence_runtime_var(key)
 	return key == "active" || key == "grinding_batch" || ..()
 

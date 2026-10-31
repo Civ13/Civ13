@@ -85,6 +85,12 @@ class BaselinePolicyTests(unittest.TestCase):
                              'code/modules/materials/material_sheets.dm',
                              'code/game/objects/structures/kitchen/oven.dm',
                              'code/modules/1713/wood_ash_compost.dm',
+                             'code/game/objects/structures.dm',
+                             'code/game/objects/items/stacks/civ_recipes.dm',
+                             'code/modules/research_tree/research_node.dm',
+                             'config/crafting/material_recipes_global.txt',
+                             'config/crafting/material_recipes_camp.txt',
+                             'config/crafting/material_recipes_carib.txt',
                              'code/game/objects/items/stacks/stack.dm'):
                 destination = root / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)

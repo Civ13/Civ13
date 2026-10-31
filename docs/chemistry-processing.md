@@ -65,9 +65,38 @@ residue units, exactly what its five input logs would supply. Loading creates no
 ash; only burning paid fuel can produce ash through the existing ledger. No
 other fuel family, wood recipe, pulp conversion or chemical product is added.
 
-The grinder's existing Wizard Boy placement remains available; no construction
-recipe or new era/research gate is introduced. Broader availability and the
-remaining requirements of #2301/#2303 remain separate work.
+### Acquiring a grinder
+
+The global crafting catalog offers a wood grinder for a nominal 20 electronics,
+with a base duration of 120 deciseconds. Strength and crafting coefficients scale
+that duration through the existing builder. Construction requires a 20-unit
+stack even when Production's existing discount makes the actual debit 18.
+There is no added grinder crafting-skill gate. Crafting the circuits themselves
+requires a crafting coefficient of at least 2.2 and copper with iron in the other
+hand: nominally one copper and one iron per circuit, subject to existing bulk
+discounts. Trade or existing stock can supply electronics instead.
+
+The exact constructed variant unlocks under Electricity (era tier 5, minimum
+bench tier 4, Steam Power prerequisite and a cable prototype). Existing faction
+completion and baseline-era grants apply; this adds no calendar-year gate. The
+recipe's maximum era is 8. It is global-only: camp, Carib and species catalogs do
+not gain it. Wizard Boy's mapped base grinder and camp catalog are unchanged.
+Catalog availability does not prove a map's resources or full progression path.
+
+The crafted machine starts empty, off and unanchored. Use the existing wrench
+(five iron, Basic Toolmaking), then connect a paid cable run with 30 available
+capacity after other loads. A white coil costs one copper for ten cable pieces;
+its Paved Infrastructure gate permits Electricity's cable prototype. A steam
+engine with two lit adjacent heatsources is an existing source-backed option
+for 30 capacity, not native or map-level acceptance. One jar cell, voltaic pile
+or lead-acid battery alone supplies only 1, 5 or 10 respectively.
+
+Crafted grinders cannot be dismantled and return no structural materials. To
+relocate one, remove cables with wirecutters, unfasten it with a wrench and move
+it. This leaves mapped grinders' existing behavior intact and avoids generic
+wood salvage or a nominal-electronics refund exceeding the actual paid debit.
+No pulp, additional operation or transaction change is introduced; remaining
+requirements of #2301/#2303 stay separate.
 
 `tests/grinder/test_transaction.py` checks the transaction offline using source
 projections, deterministic callbacks and external adapters. It does not establish
