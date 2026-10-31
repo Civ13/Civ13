@@ -60,8 +60,19 @@ An adjacent oven, campfire or wood stove accepts held chip batches. One batch
 adds five existing oven fuel units and five paid wood-residue units, equal to
 the five logs consumed. Ash appears only when paid fuel burns, not when loaded.
 Other fuel equipment and wood uses retain their existing behavior. No pulp,
-cellulose or fibre recipe is introduced. The grinder is presently map-placed in
-Wizard Boy; its construction and broader-map acquisition remain undefined.
+cellulose or fibre recipe is introduced.
+
+The global catalog's wood grinder costs a nominal 20 electronics and has a base
+120-decisecond duration scaled by strength and crafting. Electricity gates its
+exact constructed variant (tier 5; maximum recipe era 8). Admission needs 20
+electronics; Production's existing debit is 18. There is no extra grinder skill
+gate. Making the circuits requires crafting coefficient >= 2.2 plus held copper
+and iron; their costs are nominal because bulk discounts apply. The variant is
+non-refundable and cannot be dismantled, but can be disconnected, unanchored
+and relocated. Use a wrench, paid cable run and 30 free supply capacity. A steam
+engine plus two lit heatsources is a source-backed option, not a native or map
+guarantee. No recipe is added to camp, Carib or species overrides; Wizard Boy's
+mapped grinder stays unchanged. See [acquisition details](chemistry-processing.md#acquiring-a-grinder).
 
 | Chain | Game conversion |
 | --- | --- |

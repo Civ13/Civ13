@@ -24,6 +24,11 @@ OVEN = '/obj/structure/oven'
 SHEETS_SOURCE = (ROOT / 'code/modules/materials/material_sheets.dm').read_text(encoding='utf-8')
 OVEN_SOURCE = (ROOT / 'code/game/objects/structures/kitchen/oven.dm').read_text(encoding='utf-8')
 ASH_SOURCE = (ROOT / 'code/modules/1713/wood_ash_compost.dm').read_text(encoding='utf-8')
+STRUCTURE_SOURCE = (ROOT / 'code/game/objects/structures.dm').read_text(encoding='utf-8')
+RESEARCH_SOURCE = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+MENU_SOURCE = (ROOT / 'code/game/objects/items/stacks/civ_recipes.dm').read_text(encoding='utf-8')
+CONSTRUCTED = MACHINE + '/constructed'
+GLOBAL_RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 
 
 def chip_fields(source=SHEETS_SOURCE):
@@ -71,7 +76,7 @@ class Projection:
                      ast.Not, ast.USub, ast.Compare, ast.Eq, ast.NotEq, ast.Lt,
                      ast.LtE, ast.Gt, ast.GtE, ast.BinOp, ast.Mult, ast.Div,
                      ast.Add, ast.Sub, ast.Call, ast.Name, ast.Load,
-                     ast.Attribute, ast.Constant)
+                     ast.Attribute, ast.Constant, ast.Subscript, ast.In, ast.IfExp)
         if any(not isinstance(node, permitted) for node in ast.walk(tree)):
             raise AssertionError('Unsupported expression: ' + text)
         environment = dict(receiver.__dict__) | self.globals | local
@@ -135,8 +140,10 @@ class Projection:
             elif line.startswith('return'):
                 raise Returned(evaluate(line[7:]) if line != 'return' else None)
             else:
+                if re.fullmatch(r'var/[\w/]+', line):
+                    line += ' = null'
                 declaration = re.match(r'var/(\S+) = (.+)', line)
-                assignment = re.fullmatch(r'([\w.]+) ([-+]?)= (.+)', line)
+                assignment = re.fullmatch(r'([\w.]+) ([-+*/]?)= (.+)', line)
                 if declaration or assignment:
                     if declaration:
                         target, value = declaration.groups()
@@ -164,7 +171,9 @@ class Projection:
                     else:
                         result = evaluate(value)
                     if operator:
-                        result = evaluate(target) + result if operator == '+' else evaluate(target) - result
+                        previous = evaluate(target)
+                        result = {'+': lambda: previous + result, '-': lambda: previous - result,
+                                  '*': lambda: previous * result, '/': lambda: previous / result}[operator]()
                     if '.' in target:
                         parent, _, key = target.rpartition('.')
                         setattr(evaluate(parent), key, result)
@@ -694,6 +703,239 @@ class ChipFuelTransaction(unittest.TestCase):
                 p, oven, chips, user = self.fixture(projection=Projection(oven=OVEN_SOURCE.replace(before, after, 1)))
                 self.assertTrue(oven.refuel(chips, user))
                 self.assertFalse(oven.fuel == 5 and oven.account.wood_remaining == 5 and chips.debits == [1])
+
+
+def grinder_initials(kind=CONSTRUCTED, source=SOURCE):
+    """Static inheritance only; native constructors remain external adapters."""
+    fields = {}
+    for path, text in (('/obj/structure', STRUCTURE_SOURCE), (MACHINE, source), (kind, source)):
+        block = text.split(path + '\n', 1)[1].split('\n/', 1)[0]
+        for key, value in re.findall(r'^\t(?:var/(?:\w+/)*)?(\w+) = ([^\n]+)', block, re.M):
+            value = value.split(' //', 1)[0]
+            fields[key] = {'TRUE': True, 'FALSE': False, 'null': None}.get(value, value)
+    return fields
+
+
+class DmRow:
+    def __init__(self, row):
+        self.row = row
+
+    def __getitem__(self, index):
+        return self.row[index - 1]  # DM lists are one-based.
+
+
+class NodeRequirements(dict):
+    def __missing__(self, key):
+        return None
+
+
+class BuildTurf(Record):
+    def __init__(self, floor=True, occupied=False):
+        super().__init__(turf=True, floor=floor, occupied=occupied)
+
+    def __contains__(self, kind):
+        return self.occupied and kind == CONSTRUCTED
+
+
+class AcquisitionProjection(Projection):
+    """Execute real menu/build windows, not the unrelated 2,000-line recipe cases.
+
+    Windows retain production order: ordinary admission, scaled wait, paid use,
+    constructor. Native placement/waits/constructors and map.is_node_done are
+    adapters. It does not establish post-wait occupancy or research revalidation.
+    """
+    def __init__(self, stack=STACK_SOURCE, research=RESEARCH_SOURCE):
+        super().__init__()
+        self.source += '\n' + STRUCTURE_SOURCE + '\n' + research
+        self.source = self.source.replace(STACK_SOURCE, stack, 1)
+        self.created = []
+        self.waits = []
+        declarations = re.search(r'^\t\tvar/node_req = .+$', MENU_SOURCE, re.M)[0]
+        research_gate = MENU_SOURCE.split('\t\tvar/research_allowed\n', 1)[1].split('\t\tif(i[1]', 1)[0]
+        menu_gate = re.search(r'^\t\tif\((i\[1\].+)\)$', MENU_SOURCE, re.M)[1]
+        self.source += ('\n/datum/acquisition/proc/menu()\n' + declarations +
+                        '\n\t\tvar/research_allowed\n' + research_gate +
+                        '\t\tif (' + menu_gate + ')\n\t\t\treturn TRUE\n\treturn FALSE\n')
+        admission = stack.split('\n\tif (!can_use(required))\n', 1)[1].split(
+            '\n\tif (ishuman(user))', 1)[0]
+        timing = stack.split('\n\tif (recipe.time)\n', 1)[1].split(
+            '\n\tif (findtext(recipe.title, "coil"))', 1)[0]
+        debit = re.search(r'^\tif \(use\(required, joinery \? null : H\)\)', stack, re.M)[0]
+        constructor = stack.split('\n\t\tvar/atom/O\n', 1)[1].split('\n\t\tif (building_floor_recipe)', 1)[0]
+        self.source += ('\n/datum/acquisition/proc/build()\n\tif (!can_use(required))\n' + admission +
+                        '\n\tif (recipe.time)\n' + timing + '\n' + debit +
+                        '\n\t\tvar/atom/O\n' + constructor)
+        # Only the pre-existing circuit skill predicate is needed here; payment
+        # and held secondary iron are separately source-backed below.
+        circuit_gate = stack.split('else if (recipe.result_type == /obj/item/stack/material/electronics)\n', 1)[1].split(
+            '\t\tif (!electronics_construction_iron', 1)[0]
+        self.source += '\n/datum/acquisition/proc/circuit_skill()\n' + circuit_gate + '\treturn TRUE\n'
+        self.globals |= dict(recipe_node_requirements=NodeRequirements(re.findall(
+            r'"(/obj/[^"\n]+)" = "([a-z_]+)"', research)), text2num=int,
+            material_prefix='/material/electronics/',
+            get_recipe_node_req=lambda value: self.run('/proc/get_recipe_node_req', Record(), result_path_string=value),
+            locate=lambda kind: kind, isfloor=lambda site: site.floor, usr=None,
+            exercise_can_build=lambda *_args: True, civ_telecom_can_build=lambda *_args: True,
+            civ_generation_can_build=lambda *_args: True,
+            construct=self.construct, handReturnMap={})
+
+    def expression(self, text, receiver, local):
+        # Known DM interpolation/ternary and dynamic-constructor adapters only.
+        text = text.replace('"[type]/"', 'material_prefix').replace('joinery ? null : H', 'H')
+        text = text.replace('new recipe.result_type(user.loc)', 'construct(recipe.result_type, user.loc)')
+        return super().expression(text, receiver, local)
+
+    def construct(self, kind, site):
+        if kind != CONSTRUCTED:
+            raise AssertionError('Unexpected acquisition constructor')
+        product = Record(type=kind, loc=site, **grinder_initials())
+        self.created.append(product)
+        return product
+
+    def menu(self, row, done=True, age=5, legacy=0):
+        self.globals['map'] = Record(ordinal_age=age, is_node_done=lambda _faction, node: done and node == 'electricity')
+        return self.run('/datum/acquisition/proc/menu', Record(), i=DmRow(row),
+                        research_faction='fixture', current_res=DmRow([legacy, legacy, legacy]))
+
+    def build(self, amount=20, production=False, complete=True, floor=True, occupied=False, crafting=1, strength=1, after_wait=None):
+        row = grinder_recipe()
+        actor = Record(type='/mob/living/human', loc=BuildTurf(floor, occupied), key='fixture')
+        actor.getStatCoeff = lambda name: crafting if name == 'crafting' else strength
+        actor.adaptStat = lambda *_args: None
+        actor.religion_check = lambda: 'Production' if production else 'none'
+        stock = Stock(actor, amount, '/obj/item/stack/material/electronics')
+        def wait(_actor, duration):
+            self.waits.append(duration)
+            if complete and after_wait:
+                after_wait(stock)
+            return complete
+        self.globals |= dict(can_use=lambda used: self.run(STACK + '/proc/can_use', stock, used=used),
+                             use=lambda used, human: self.run(STACK + '/proc/use', stock, used=used, H=human),
+                             do_after=wait)
+        recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
+                        on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
+        self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,
+                 required=recipe.req_amount, produced=1, joinery=None)
+        return stock
+
+
+def grinder_recipe(text=GLOBAL_RECIPES):
+    rows = [line.split('RECIPE: ', 1)[1].split(',') for line in text.splitlines()
+            if line.startswith('RECIPE: ') and ',/obj/structure/grinder/constructed,' in line]
+    if len(rows) != 1:
+        raise AssertionError('Exactly one constructed grinder recipe required')
+    return rows[0]
+
+
+class GrinderAcquisition(unittest.TestCase):
+    def test_catalog_and_exact_research_contract(self):
+        row = grinder_recipe()
+        self.assertEqual(row, ['/material/electronics/', 'wood grinder', CONSTRUCTED,
+                              '20', '120', '1', '1', 'none', '100', '0', '0', '8', 'null'])
+        for catalog in ('camp', 'carib'):
+            self.assertNotIn(CONSTRUCTED, (ROOT / ('config/crafting/material_recipes_' + catalog + '.txt')).read_text())
+        p = AcquisitionProjection()
+        self.assertEqual(p.globals['recipe_node_requirements'][CONSTRUCTED], 'electricity')
+        self.assertTrue(p.menu(row, done=True, age=5))
+        self.assertTrue(p.menu(row, done=True, age=8))
+        self.assertFalse(p.menu(row, done=True, age=9))
+        self.assertFalse(p.menu(row, done=False))
+        self.assertFalse(p.menu(row, done=False, legacy=999))
+        self.assertIn('352, 4, RESEARCH_MODE_PROTOTYPE, list("steam_power"), 5, /obj/item/stack/cable_coil', RESEARCH_SOURCE)
+
+    def test_missing_or_wrong_exact_registration_is_detected(self):
+        binding = '"' + CONSTRUCTED + '" = "electricity",'
+        self.assertEqual(RESEARCH_SOURCE.count(binding), 1)
+        for replacement in ('', '"' + MACHINE + '" = "electricity",',
+                            '"' + CONSTRUCTED + '" = "power_tools",'):
+            p = AcquisitionProjection(research=RESEARCH_SOURCE.replace(binding, replacement, 1))
+            self.assertFalse(p.menu(grinder_recipe(), done=True))
+
+    def test_build_requires_twenty_and_uses_existing_paid_debit(self):
+        for production, debit in ((False, 20), (True, 18)):
+            for amount in (0, 18, 19, 20, 21, 40):
+                with self.subTest(production=production, amount=amount):
+                    p = AcquisitionProjection()
+                    stock = p.build(amount, production)
+                    self.assertEqual(len(p.created), int(amount >= 20))
+                    self.assertEqual(stock.amount, amount - debit if amount >= 20 else amount)
+                    if p.created:
+                        product = p.created[0]
+                        self.assertEqual(product.type, CONSTRUCTED)
+                        self.assertFalse(product.anchored)
+                        self.assertFalse(product.active)
+                        self.assertIsNone(product.inserted)
+                        self.assertTrue(product.not_disassemblable)
+                        self.assertFalse(product.not_movable)
+
+    def test_interruption_floor_and_existing_occupancy_admission(self):
+        for kwargs in (dict(complete=False), dict(floor=False), dict(occupied=True)):
+            p = AcquisitionProjection()
+            stock = p.build(**kwargs)
+            self.assertEqual(stock.amount, 20)
+            self.assertFalse(p.created)
+
+    def test_insufficient_stock_after_wait_cannot_use_the_discount_as_admission(self):
+        for production in (False, True):
+            for remaining in (0, 18, 19):
+                p = AcquisitionProjection()
+                stock = p.build(production=production, after_wait=lambda item: setattr(item, 'amount', remaining))
+                self.assertEqual(stock.amount, remaining)
+                self.assertFalse(p.created)
+
+    def test_base_duration_is_scaled_and_circuits_keep_their_own_skill_gate(self):
+        for crafting, strength, duration in ((1, 1, 120), (2, 2, 15)):
+            p = AcquisitionProjection()
+            p.build(crafting=crafting, strength=strength)
+            self.assertEqual(p.waits, [duration])
+            self.assertEqual(len(p.created), 1)  # No new grinder crafting coefficient gate.
+        for coefficient, accepted in ((2.19, False), (2.2, True), (3, True)):
+            p = AcquisitionProjection()
+            actor = Record(getStatCoeff=lambda _name: coefficient)
+            self.assertEqual(bool(p.run('/datum/acquisition/proc/circuit_skill', Record(), H=actor)), accepted)
+        self.assertIn('circuit_iron.use(quantity)', STACK_SOURCE)
+        self.assertIn('else if (used >= 10)\n\t\t\t\tamount -= (used-2)', STACK_SOURCE)
+
+    def test_subtype_only_changes_dismantling_flag_and_blocks_generic_salvage(self):
+        block = SOURCE.split(CONSTRUCTED + '\n', 1)[1].split('\n/', 1)[0]
+        self.assertEqual([line.strip() for line in block.splitlines() if line.strip()], ['not_disassemblable = TRUE'])
+        self.assertFalse(grinder_initials(MACHINE)['not_disassemblable'])
+        p = Projection(STRUCTURE_SOURCE)
+        item = Record(type='/obj/item/weapon/hammer')
+        actor = Record()
+        product = Record(**grinder_initials())
+        for _ in range(3):
+            p.run('/obj/structure/attackby', product, O=item, user=actor)
+        self.assertFalse(p.outputs)
+        # The actual parent guard would admit wood salvage if this flag regressed.
+        guard = re.search(r'else if \((istype\(O, /obj/item/weapon/hammer\).+)\)', STRUCTURE_SOURCE)[1]
+        self.assertFalse(p.expression(guard, product, dict(O=item)))
+        product.not_disassemblable = False
+        self.assertTrue(p.expression(guard, product, dict(O=item)))
+        self.assertIn('new /obj/item/stack/material/wood(get_turf(src))', STRUCTURE_SOURCE)
+
+    def test_missing_payment_and_wrong_discount_mutations_fail_paid_oracle(self):
+        # Mutate generated projections, never the checkout. Constructor execution
+        # without the production use gate must expose unpaid equipment.
+        p = AcquisitionProjection()
+        gate = 'if (use(required, joinery ? null : H))'
+        self.assertIn(gate, p.source)
+        p.source = p.source.replace(gate, 'if (TRUE)')
+        stock = p.build()
+        self.assertEqual(len(p.created), 1)
+        self.assertNotEqual(20 - stock.amount, 20)
+        p = AcquisitionProjection(stack=STACK_SOURCE.replace('amount -= (used-2)', 'amount -= (used-3)', 1))
+        stock = p.build(production=True)
+        self.assertEqual(len(p.created), 1)
+        self.assertNotEqual(20 - stock.amount, 18)
+
+
+class ConstructedGrinderTransaction(GrinderTransaction):
+    def scenario(self, source=SOURCE):
+        p, machine, stock = super().scenario(source)
+        machine.type = CONSTRUCTED
+        machine.not_disassemblable = grinder_initials()['not_disassemblable']
+        return p, machine, stock
 
 
 if __name__ == '__main__':

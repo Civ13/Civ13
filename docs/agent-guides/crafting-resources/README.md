@@ -336,6 +336,16 @@ isolated runtime data and must detect exactly the lost recipe.
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
 
 <!-- 2026-10-31: abstract chip batches and equal oven fuel -->
+<!-- 2026-10-31: global grinder acquisition -->
+The global-only constructed grinder uses 20 electronics, a scaled 120-ds base
+time and exact Electricity mapping. Standard admission needs 20 even when
+Production debits 18. Circuits have their existing crafting coefficient >= 2.2
+and held copper/iron prerequisites; costs are nominal with bulk discounts.
+No new grinder skill gate. The subtype disables dismantling/structural salvage
+while retaining relocation; mapped Wizard Boy is unchanged. Preserve inherited
+transaction procedures. Offline menu/build windows are limited projections,
+not native construction, post-wait generic admission or map-reachability proof.
+
 The grinder pays five logs per nonmaterial chip batch; a stack holds ten batches.
 Held chips use only the oven-family fuel path, paying before equal fuel/residue
 credits of five per batch. No wood-material alias, reverse conversion or pulp
