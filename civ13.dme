@@ -1187,6 +1187,7 @@
 #include "code\modules\reagents\Chemistry-Colours.dm"
 #include "code\modules\reagents\Chemistry-Holder.dm"
 #include "code\modules\reagents\Chemistry-Machinery.dm"
+#include "code\modules\reagents\tablet_press.dm"
 #include "code\modules\reagents\laboratory.dm"
 #include "code\modules\reagents\biochemistry.dm"
 #include "code\modules\reagents\Chemistry-Metabolism.dm"

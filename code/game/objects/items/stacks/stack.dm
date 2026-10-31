@@ -325,6 +325,11 @@
 		if (quantity != 1 || !carving.valid())
 			to_chat(user, SPAN_WARNING("Carving molds needs sandstone, completed research, a chisel and a hammer or mallet equipped or at your feet."))
 			return
+	var/datum/tablet_press_construction/press_construction
+	if (recipe.result_type == /obj/structure/chem_master/tablet_press/constructed)
+		press_construction = new(src, H, recipe, quantity)
+		if (!press_construction.valid())
+			return
 	if (findtext(recipe.title, "joinery: ") == 1)
 		joinery = new(src, H, recipe)
 		if (quantity != 1 || !joinery.valid())
@@ -1856,6 +1861,8 @@
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
 		if (H && !joinery && !carving)
+			if (press_construction && !press_construction.valid())
+				return
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1964,6 +1971,8 @@
 		return
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
+		return
+	if (press_construction && !press_construction.valid())
 		return
 	if (use(required, (joinery || carving) ? null : H))
 		if (joinery)

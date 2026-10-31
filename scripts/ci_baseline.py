@@ -345,6 +345,10 @@ SUITES = {
             'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm')},
+    # Reviewed stdlib-only projection; shared production changes keep fallback.
+    'tablet_press': {'files': ('tests/tablet_press/test_contract.py',),
+        'paths': ('tests/tablet_press/',),
+        'shared_paths': ('code/modules/reagents/tablet_press.dm',)},
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection, and the link test
     # imports the cross-level runner only to stage files; no native launch.

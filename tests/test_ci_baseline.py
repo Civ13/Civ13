@@ -619,6 +619,96 @@ class BaselinePolicyTests(unittest.TestCase):
                         self.assertIn('Incomplete test execution: character_traits', errors)
                     else:
                         self.assertEqual(errors, [])
+    def test_tablet_registration_and_failure_reach_required_aggregate(self):
+        suite_name = 'tablet_press'
+        suite = ci.SUITES[suite_name]
+        self.assertEqual(suite['files'], ('tests/tablet_press/test_contract.py',))
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', suite_name})
+        self.assertEqual(self.selected(['code/modules/reagents/tablet_press.dm']), set(ci.SUITES))
+        # Real registered child and execute()/aggregate() receipts on isolated
+        # production inputs. Only unrelated mandatory children use inert adapters.
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sources = ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+                       'tools/byond/version.json', *suite['files'],
+                       'code/modules/reagents/tablet_press.dm',
+                       'code/game/objects/items/stacks/stack.dm',
+                       'code/game/objects/items/stacks/civ_recipes.dm',
+                       'code/modules/research_tree/research_node.dm',
+                       'code/modules/reagents/laboratory.dm')
+            for relative in (*sources, *(p.relative_to(ROOT).as_posix()
+                                         for p in (ROOT / 'config/crafting').glob('*.txt'))):
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, destination)
+
+            def git(*args):
+                return subprocess.check_output(['git', '-C', temporary, *args],
+                                               stderr=subprocess.PIPE, timeout=10).decode().strip()
+
+            git('init')
+            git('config', 'user.name', 'Tablet CI fixture')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('add', '.')
+            git('commit', '-qm', 'passing tablet CI fixture')
+            real_run = ci.subprocess.run
+
+            def child(command, **kwargs):
+                if 'unit' not in command:
+                    return real_run(command, **kwargs)
+                if command[command.index('--suite') + 1] == suite_name:
+                    command = list(command)
+                    command[2] = str(root / 'scripts/ci_baseline.py')
+                    return real_run(command, **(kwargs | {'cwd': root}))
+                ci.write_json(command[command.index('--output') + 1], dict(
+                    status='passed', tests=1, errors=0, failures=0, skipped=0))
+                return subprocess.CompletedProcess(command, 0)
+
+            positive_count = None
+            for failing in (False, True):
+                with self.subTest(failing=failing):
+                    if failing:
+                        target = root / 'code/modules/reagents/tablet_press.dm'
+                        original = target.read_text()
+                        self.assertEqual(original.count('year > 1843'), 1)
+                        target.write_text(original.replace('year > 1843', 'year >= 1843'))
+                        git('add', '.')
+                        git('commit', '-qm', 'isolated invalid date boundary control')
+                    plan, _, compiler, jobs = fixtures(suite['files'])
+                    plan['head'] = compiler['head'] = git('rev-parse', 'HEAD')
+                    compiler['selection_sha256'] = ci.digest(plan)
+                    evidence = root / ('negative' if failing else 'positive')
+                    with patch.object(ci, 'ROOT', root), patch.object(ci.subprocess, 'run', side_effect=child), \
+                            patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '1'}), patch('builtins.print'):
+                        exit_code = ci.execute(plan, evidence)
+                    baseline = json.loads((evidence / 'baseline.json').read_text())
+                    selected = baseline['suites'][suite_name]
+                    counts = selected['counts']
+                    self.assertEqual(exit_code, int(failing))
+                    self.assertEqual(baseline['status'], 'failed' if failing else 'passed')
+                    self.assertTrue(baseline['source_unchanged'])
+                    self.assertFalse(baseline['tracked_dirty'])
+                    self.assertFalse(baseline['tracked_dirty_after'])
+                    self.assertEqual(selected['exit_code'], int(failing))
+                    self.assertEqual(selected['files'], list(suite['files']))
+                    self.assertEqual(counts['status'], 'failed' if failing else 'passed')
+                    self.assertEqual(counts['errors'], 0)
+                    self.assertEqual(counts['skipped'], 0)
+                    errors = ci.aggregate(plan, baseline, compiler, jobs, False)
+                    if failing:
+                        self.assertEqual(counts['tests'], positive_count)
+                        self.assertGreater(counts['failures'], 0)
+                        self.assertIn('test_strict_canonical_year_boundary',
+                                      (evidence / 'tablet_press.log').read_text())
+                        self.assertIn('Baseline did not pass', errors)
+                        self.assertIn('Missing, failed or unexpectedly skipped suite: tablet_press', errors)
+                        self.assertIn('Incomplete test execution: tablet_press', errors)
+                    else:
+                        positive_count = counts['tests']
+                        self.assertGreater(positive_count, 0)
+                        self.assertEqual(counts['failures'], 0)
+                        self.assertEqual(errors, [])
 
     def test_grinder_registration_preserves_shared_source_fallback(self):
         suite = ci.SUITES['grinder']
