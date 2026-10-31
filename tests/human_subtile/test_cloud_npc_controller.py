@@ -4,8 +4,10 @@ import importlib.util
 import io
 import contextlib
 import json
+import os
 from pathlib import Path
 import tarfile
+import tempfile
 import time
 import unittest
 from unittest.mock import patch
@@ -13,6 +15,8 @@ from unittest.mock import patch
 HERE=Path(__file__).resolve().parent
 spec=importlib.util.spec_from_file_location('wildlife_controller',HERE/'cloud_npc_controller.py')
 controller=importlib.util.module_from_spec(spec);spec.loader.exec_module(controller)
+spec2=importlib.util.spec_from_file_location('wildlife_smoke',HERE/'cloud_npc_smoke.py')
+smoke=importlib.util.module_from_spec(spec2);spec2.loader.exec_module(smoke)
 
 CID='a'*64
 OWNER='b'*32
@@ -51,6 +55,52 @@ def tar_bytes(entries):
 
 
 class ControllerContracts(unittest.TestCase):
+    def test_log_transport_survives_exit_and_rejects_corruption_or_missing_parts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'harness-status.json').write_text('{"phase":"fixture-compile"}')
+            out=io.StringIO()
+            with contextlib.redirect_stdout(out): smoke.emit_package(root,'failed',{'samples':1})
+            log=out.getvalue().encode(); lines=log.splitlines()
+            marker=json.loads(lines[-1].split(b' ',1)[1])
+            self.assertTrue(marker['package']['complete'])
+            data=controller.package_from_logs(log,marker)
+            with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                self.assertEqual(json.load(archive.extractfile('harness-status.json'))['phase'],'fixture-compile')
+            for bad in (b'\n'.join(lines[1:]), b'\n'.join([lines[0],*lines]),
+                        log.replace(b'HARNESS_EVIDENCE_PART 1/',b'HARNESS_EVIDENCE_PART 2/',1)):
+                with self.subTest(bad=bad[:40]), self.assertRaises((RuntimeError, ValueError)):
+                    controller.package_from_logs(bad,marker)
+            wrong=dict(marker, package=dict(marker['package'],sha256='0'*64))
+            with self.assertRaises(RuntimeError): controller.package_from_logs(log,wrong)
+
+    def test_large_incompressible_failure_keeps_status_and_marks_partial(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'harness-status.json').write_text('{"phase":"fixture-compile","outcome":"failed"}')
+            path=root/'npc-smoke/stage/compile-stdout.log'; path.parent.mkdir(parents=True)
+            path.write_bytes(os.urandom(500000))
+            out=io.StringIO()
+            with contextlib.redirect_stdout(out): smoke.emit_package(root,'failed',{'samples':1})
+            log=out.getvalue().encode(); marker=json.loads(log.splitlines()[-1].split(b' ',1)[1])
+            self.assertFalse(marker['package']['complete'])
+            data=controller.package_from_logs(log,marker)
+            with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                self.assertEqual(json.load(archive.extractfile('harness-status.json'))['outcome'],'failed')
+                self.assertEqual(archive.getmember('npc-smoke/stage/compile-stdout.log').size,8192)
+
+    def test_checkpoint_is_logged_even_when_no_package_can_be_written(self):
+        out=io.StringIO()
+        with patch.object(smoke,'RUN_ROOT',None), patch.object(smoke,'RUN_STATE',{'history':[]}), \
+             contextlib.redirect_stdout(out):
+            smoke.checkpoint('fixture-compile',outcome='failed',error_type='RuntimeError',error_message='compile failed')
+        row=json.loads(out.getvalue().split(' ',1)[1])
+        self.assertEqual(row,{'phase':'fixture-compile','outcome':'failed',
+                              'error_type':'RuntimeError','error_message':'compile failed'})
+
+    def test_controller_does_not_copy_from_tmpfs_or_accept_partial_as_pass(self):
+        source=(HERE/'cloud_npc_controller.py').read_text(encoding='utf-8')
+        self.assertNotIn("docker.call(['cp'",source)
+        self.assertIn("report['outcome'] == 'passed' and package['complete']",source)
+
     def test_owned_removal_and_verified_absence(self):
         fake=FakeDocker()
         result=controller.retire(fake,CID,NAME,OWNER,HEAD)
@@ -74,15 +124,13 @@ class ControllerContracts(unittest.TestCase):
 
     def test_evidence_exact_hash_and_allowlist(self):
         data=tar_bytes([('harness-status.json',b'{}',tarfile.REGTYPE)])
-        outer=tar_bytes([('harness-evidence.tar',data,tarfile.REGTYPE)])
         expected={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
-        self.assertEqual(controller.unpack_copy(outer,expected),data)
-        with self.assertRaises(RuntimeError): controller.unpack_copy(outer,dict(expected,sha256='0'*64))
+        self.assertEqual(controller.validate_package(data,expected),data)
+        with self.assertRaises(RuntimeError): controller.validate_package(data,dict(expected,sha256='0'*64))
         bad=tar_bytes([('harness-status.json',b'{}',tarfile.REGTYPE),('stolen.txt',b'x',tarfile.REGTYPE)])
-        bad_outer=tar_bytes([('harness-evidence.tar',bad,tarfile.REGTYPE)])
-        with self.assertRaises(RuntimeError): controller.unpack_copy(bad_outer,{'bytes':len(bad),'sha256':hashlib.sha256(bad).hexdigest()})
+        with self.assertRaises(RuntimeError): controller.validate_package(bad,{'bytes':len(bad),'sha256':hashlib.sha256(bad).hexdigest()})
         symlink=tar_bytes([('harness-status.json',b'',tarfile.SYMTYPE)])
-        with self.assertRaises(RuntimeError): controller.unpack_copy(tar_bytes([('harness-evidence.tar',symlink,tarfile.REGTYPE)]),{'bytes':len(symlink),'sha256':hashlib.sha256(symlink).hexdigest()})
+        with self.assertRaises(RuntimeError): controller.validate_package(symlink,{'bytes':len(symlink),'sha256':hashlib.sha256(symlink).hexdigest()})
 
     def test_only_restricted_direct_container_arguments(self):
         args=controller.create_args(NAME,OWNER,HEAD,Path('/reviewed'),Path('/bin-by'),Path('/by.zip'),'1001:1001')

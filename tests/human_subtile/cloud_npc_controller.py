@@ -5,6 +5,8 @@ configure host networking, host security, package repositories or Docker daemon.
 The pinned 386 image and complete ABI must be independently reviewed first.
 """
 import argparse
+import base64
+import gzip
 import hashlib
 import importlib.util
 import io
@@ -26,6 +28,7 @@ MAX_SECONDS = 600
 WORK_SECONDS = 490  # reserve 110 seconds for evidence and owned teardown
 MAX_CLI = 2 * 1024**2
 MAX_PACKAGE = 16 * 1024**2
+MAX_LOG_PACKAGE = 320 * 1024
 SHA = re.compile(r'^[0-9a-f]{40}$')
 CID = re.compile(r'^[0-9a-f]{64}$')
 OWNER = re.compile(r'^[0-9a-f]{32}$')
@@ -155,13 +158,7 @@ def retire(docker,cid,name,owner,head,log_path=None):
     return {'absent':True,'before':before,'after':after,'logs':logs}
 
 
-def unpack_copy(raw, expected):
-    require(len(raw) <= MAX_PACKAGE+1024*1024, 'Docker copy exceeds bound')
-    with tarfile.open(fileobj=io.BytesIO(raw), mode='r:') as outer:
-        rows=outer.getmembers()
-        require(len(rows)==1 and rows[0].isfile() and rows[0].name.lstrip('./') == 'harness-evidence.tar' and
-                rows[0].size <= MAX_PACKAGE, 'Unexpected Docker copy payload')
-        data=outer.extractfile(rows[0]).read(MAX_PACKAGE+1)
+def validate_package(data, expected):
     require(len(data) == expected['bytes'] <= MAX_PACKAGE and hashlib.sha256(data).hexdigest() == expected['sha256'],
             'Evidence package identity mismatch')
     with tarfile.open(fileobj=io.BytesIO(data), mode='r:') as inner:
@@ -179,6 +176,28 @@ def unpack_copy(raw, expected):
         names=[x.name for x in entries]
         require(len(set(names))==len(names) and 'harness-status.json' in names, 'Missing/duplicate evidence')
     return data
+
+
+def package_from_logs(log, marker):
+    """Reject partial, reordered, duplicated or oversized log-carried evidence."""
+    package = marker.get('package') or {}
+    count = package.get('parts')
+    require(type(count) is int and 0 < count <= 54 and type(package.get('compressed_bytes')) is int and
+            0 < package['compressed_bytes'] <= MAX_LOG_PACKAGE and type(package.get('complete')) is bool,
+            'Invalid log package metadata')
+    chunks = []
+    for line in log.splitlines():
+        if line.startswith(b'HARNESS_EVIDENCE_PART '):
+            match = re.fullmatch(rb'HARNESS_EVIDENCE_PART ([0-9]+)/([0-9]+) ([A-Za-z0-9+/=]+)', line)
+            require(match is not None and int(match.group(1)) == len(chunks)+1 and
+                    int(match.group(2)) == count and len(match.group(3)) <= 8192, 'Invalid evidence part')
+            chunks.append(match.group(3))
+    require(len(chunks) == count, 'Missing evidence parts')
+    compressed = base64.b64decode(b''.join(chunks), validate=True)
+    require(len(compressed) == package['compressed_bytes'], 'Compressed evidence size mismatch')
+    with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as zipped:
+        data = zipped.read(MAX_PACKAGE+1)
+    return validate_package(data, package)
 
 
 def validate_pass_evidence(data, head):
@@ -221,7 +240,7 @@ def save(path, report):
 
 
 def save_container_logs(docker, cid, path, timeout=3):
-    _,stdout,stderr=docker.call(['logs','--tail','100',cid],timeout=timeout)
+    _,stdout,stderr=docker.call(['logs',cid],timeout=timeout)
     data=stdout+b'\n'+stderr
     path.write_bytes(data[-1024**2:])
     return {'bytes':min(len(data),1024**2),'truncated':len(data)>1024**2}
@@ -353,7 +372,7 @@ def main():
         marker=None
         while time.monotonic() < deadline-(MAX_SECONDS-WORK_SECONDS):
             info=inspect(docker,cid); inspect_owned(info,cid,name,owner,head)
-            _,outlog,errlog=docker.call(['logs','--tail','100',cid],timeout=5)
+            _,outlog,errlog=docker.call(['logs',cid],timeout=5)
             rows=[line for line in (outlog+b'\n'+errlog).decode(errors='replace').splitlines() if line.startswith('HARNESS_EVIDENCE_READY ')]
             require(len(rows)<=1, 'Duplicate evidence markers')
             if rows:
@@ -368,17 +387,17 @@ def main():
             require(type(scratch.get('sampled_peak_bytes')) is int and 0 <= scratch['sampled_peak_bytes'] <= 1024**3 and
                     type(scratch.get('samples')) is int and scratch['samples'] > 0, 'Missing bounded scratch observation')
             report['scratch_observation']=scratch
-            raw=docker.call(['cp',cid+':/work/harness-evidence.tar','-'],timeout=10,maximum=MAX_PACKAGE+1024*1024)[1]
-            evidence=unpack_copy(raw,package)
+            # Capture complete logs after the marker, including if PID 1 already exited.
+            _,outlog,errlog=docker.call(['logs',cid],timeout=5)
+            evidence=package_from_logs(outlog+b'\n'+errlog,marker)
             (out/'harness-evidence.tar').write_bytes(evidence)
             report['evidence']={'bytes':len(evidence),'sha256':hashlib.sha256(evidence).hexdigest()}
             report['outcome']=marker.get('outcome')
-            if report['outcome'] == 'passed':
+            report['evidence_complete']=package['complete']
+            if report['outcome'] == 'passed' and package['complete']:
                 validate_pass_evidence(evidence,head)
                 report['host_receipts_validated']=True
-            lease=marker.get('lease_seconds')
-            require(isinstance(lease,(int,float)) and 0 <= lease <= 15, 'Invalid evidence lease')
-            wait_end=min(deadline-20,time.monotonic()+lease+2)
+            wait_end=min(deadline-20,time.monotonic()+5)
             while time.monotonic() < wait_end:
                 info=inspect(docker,cid); inspect_owned(info,cid,name,owner,head)
                 if not info['State']['Running']: break

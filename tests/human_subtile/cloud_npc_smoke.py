@@ -6,6 +6,8 @@ WILDLIFE-NATIVE-PLAN.md before use. The operator must explicitly acknowledge tha
 review; automated checks are additional fail-closed checks, not its substitute.
 """
 import argparse
+import base64
+import gzip
 import hashlib
 import importlib.util
 import io
@@ -44,6 +46,7 @@ EVIDENCE_PATHS = (
     *(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout','stderr')),
 )
 EVIDENCE_LIMIT = 16 * 1024**2
+LOG_EVIDENCE_LIMIT = 320 * 1024
 
 
 def load_module(name, path):
@@ -65,6 +68,9 @@ def checkpoint(phase, **fields):
         RUN_STATE['history'].append(phase)
     encoded = (json.dumps(RUN_STATE, sort_keys=True) + '\n').encode()
     require(len(encoded) <= 32768, 'Failure receipt bound exceeded')
+    # Emit first so a full tmpfs cannot suppress the last bounded failure phase.
+    visible = {k: RUN_STATE[k] for k in ('phase', 'outcome', 'error_type', 'error_message') if k in RUN_STATE}
+    print('HARNESS_CHECKPOINT ' + json.dumps(visible, sort_keys=True), flush=True)
     if RUN_ROOT is not None:
         # The output root was checked fresh and isolated before assignment.
         temp = RUN_ROOT / 'harness-status.tmp'
@@ -101,6 +107,36 @@ def package_evidence(root):
                 archive.addfile(entry, io.BytesIO(data))
     require(result.stat().st_size <= EVIDENCE_LIMIT, 'Evidence archive exceeds bound')
     return {'bytes': result.stat().st_size, 'sha256': file_hash(result), 'files': len(collected)}
+
+
+def emit_package(root, outcome, scratch):
+    """Transfer bounded synthetic evidence through the worker's existing log stream."""
+    package_evidence(root)
+    raw = (root / 'harness-evidence.tar').read_bytes()
+    zipped = gzip.compress(raw, compresslevel=6, mtime=0)
+    complete = len(zipped) <= LOG_EVIDENCE_LIMIT
+    if not complete:
+        # Retain the full status plus bounded tails, explicitly disallowing a pass.
+        compact = io.BytesIO()
+        with tarfile.open(fileobj=io.BytesIO(raw), mode='r:') as original, \
+             tarfile.open(fileobj=compact, mode='w') as reduced:
+            for item in original.getmembers():
+                data = original.extractfile(item).read()
+                if item.name != 'harness-status.json':
+                    data = data[-8192:]
+                entry = tarfile.TarInfo(item.name); entry.size = len(data); entry.mode = 0o600
+                reduced.addfile(entry, io.BytesIO(data))
+        raw = compact.getvalue()
+        zipped = gzip.compress(raw, compresslevel=6, mtime=0)
+    require(len(zipped) <= LOG_EVIDENCE_LIMIT, 'Compact evidence exceeds log bound')
+    encoded = base64.b64encode(zipped).decode('ascii')
+    parts = [encoded[i:i+8192] for i in range(0, len(encoded), 8192)]
+    for index, part in enumerate(parts, 1):
+        print('HARNESS_EVIDENCE_PART ' + str(index) + '/' + str(len(parts)) + ' ' + part, flush=True)
+    package = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(),
+               'compressed_bytes': len(zipped), 'parts': len(parts), 'complete': complete}
+    print('HARNESS_EVIDENCE_READY ' + json.dumps({'outcome': outcome, 'package': package,
+          'scratch': scratch}, sort_keys=True), flush=True)
 
 
 def validate_envelope(*, uid, interfaces, memory, swap, pids, cpu, disk_bytes,
@@ -441,17 +477,11 @@ def guarded_entry():
         except BaseException as receipt_error:
             print('HARNESS_RECEIPT_FAILED ' + type(receipt_error).__name__, file=sys.stderr, flush=True)
     finally:
-        # Tempfs survives only while this process is running. The cloud controller
-        # may copy the fixed allowlist during this bounded lease, never via exec.
+        # The bounded log stream survives the tmpfs and worker's exit.
         if RUN_ROOT is not None and RUN_STARTED is not None:
             try:
-                package = package_evidence(RUN_ROOT)
                 scratch_observation = SCRATCH_METER.finish() if SCRATCH_METER else None
-                remaining = max(0.0, MAX_SECONDS - (time.monotonic() - RUN_STARTED) - 1.0)
-                lease = min(15.0, remaining)
-                print('HARNESS_EVIDENCE_READY ' + json.dumps({'outcome': RUN_STATE['outcome'], 'lease_seconds': lease, 'package': package, 'scratch': scratch_observation}), flush=True)
-                if lease:
-                    time.sleep(lease)
+                emit_package(RUN_ROOT, RUN_STATE['outcome'], scratch_observation)
             except BaseException as hold_error:
                 print('HARNESS_EVIDENCE_UNAVAILABLE ' + type(hold_error).__name__, file=sys.stderr, flush=True)
         signal.alarm(0)
