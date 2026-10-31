@@ -90,7 +90,7 @@ def package_evidence(root):
     for rel in EVIDENCE_PATHS:
         # The extended manifest contains both the original and final source
         # inventories; its pre-adaptation npc manifest is redundant.
-        if RUN_STATE.get('suite') == 'extended' and rel == 'npc-smoke/npc-manifest.json':
+        if RUN_STATE.get('suite') in ('extended', 'bridge') and rel == 'npc-smoke/npc-manifest.json':
             continue
         path = root / rel
         if not path.exists():
@@ -505,6 +505,49 @@ def run_extended(args, scratch, binary, archive, group, envelope, identity, abi,
     checkpoint('complete',outcome='passed',fixture_dme_only=True,suite='extended')
 
 
+def run_bridge(args, scratch, binary, archive, group, envelope, identity, abi, began, npc, runtime, legacy):
+    """One bounded full-source bridge fixture, without unrelated smoke reruns."""
+    checkpoint('bridge-staging', suite='bridge')
+    bridge = load_module('bridge_contract', HERE / 'cloud_wildlife_bridge.py')
+    out = scratch / 'npc-smoke'
+    manifest = npc.prepare(out)
+    require(manifest['head'] == args.head, 'Staged commit differs from reviewed commit')
+    bridge.adapt_bridge(out, manifest, npc.current)
+    (out / 'cloud-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    stage, dme = out / 'stage', out / manifest['dme']
+    checkpoint('bridge-fixture-compile')
+    runtime.verify_linux(binary, archive)
+    build = run_owned_phase(legacy, group, [str(binary/'DreamMaker'), '-max_errors', '0', str(dme)], stage, 'compile', 120)
+    compile_log = ''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
+    legacy.validate_compile(compile_log, dme.with_suffix('.dmb').name)
+    for rel, expected in manifest['stage_files'].items():
+        p = stage/rel
+        require(p.stat().st_size == expected['bytes'] and file_hash(p) == expected['sha256'], 'Compiler changed fixture input: '+rel)
+    work, dmb, artifacts = prepare_linked_runtime(out, stage, dme, 'runtime')
+    peer, peer_dmb, peer_artifacts = prepare_linked_runtime(out, stage, dme, 'runtime-wildlife')
+    require(artifacts == peer_artifacts and not os.path.samefile(dmb.with_suffix('.rsc'), peer_dmb.with_suffix('.rsc')),
+            'Bridge resource copies differ or share an inode')
+    checkpoint('bridge-runtime-staged', runtime_artifacts=artifacts, resource_copies_independent=True)
+    resource_states = {}
+    checkpoint('bridge-daemon')
+    runtime.verify_linux(binary, archive)
+    result = run_checked_runtime(legacy, group, [str(binary/'DreamDaemon'),str(dmb),'59474','-ip','127.0.0.1',
+        '-trusted','-params','tested_commit='+args.head,'-log','runtime.log'],
+        work,dme,peer,artifacts,artifacts[dme.with_suffix('.rsc').name],'bridge',resource_states)
+    legacy.inspect_logs(work)
+    require((work/'port-closed.txt').read_bytes() == b'closed\n' and (work/'result.txt').read_bytes() == b'PASS\n',
+            'Bridge fixture result/port failed')
+    receipt = json.loads((work/'receipt.json').read_text())
+    bridge.validate_bridge(receipt,args.head)
+    summary=dict(head=args.head,accepted=True,suite='bridge',fixture_dme_only=True,identity=identity,abi=abi,envelope=envelope,
+        compile=build,artifacts=artifacts,resource_states=resource_states,
+        results={'bridge':dict(daemon=result,receipt_sha256=file_hash(work/'receipt.json'))},
+        scope=bridge.SCOPE,seconds=time.monotonic()-began)
+    (scratch/'smoke-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    print(json.dumps(summary))
+    checkpoint('complete',outcome='passed',fixture_dme_only=True,suite='bridge')
+
+
 def run_production_compile(args,scratch,binary,archive,group,envelope,identity,abi,began,runtime,legacy):
     """Compile the unmodified complete tracked game DME; never launch it."""
     production=load_module('production_stage',HERE/'cloud_production_compile.py')
@@ -546,7 +589,7 @@ def main():
                         help='fresh dedicated <=1 GiB mount; evidence remains inside it')
     parser.add_argument('--reviewed-cloud-envelope', action='store_true',
                         help='operator confirms separate cloud isolation review')
-    parser.add_argument('--suite', choices=('smoke','extended','production_compile'), default='smoke')
+    parser.add_argument('--suite', choices=('smoke','extended','bridge','production_compile'), default='smoke')
     args = parser.parse_args()
     require(sys.platform == 'linux', 'Cloud smoke supports Linux only')
     require(args.reviewed_cloud_envelope, 'Separate cloud envelope review is required')
@@ -583,6 +626,8 @@ def main():
     abi=collect_abi(legacy,group,scratch,binary)
     if args.suite == 'extended':
         return run_extended(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
+    if args.suite == 'bridge':
+        return run_bridge(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
     if args.suite == 'production_compile':
         return run_production_compile(args,scratch,binary,archive,group,envelope,identity,abi,began,runtime,legacy)
     out = scratch / 'npc-smoke'

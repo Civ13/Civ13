@@ -305,6 +305,43 @@ def validate_extended_evidence(data, head):
             require(json.loads(read(name)).get('head') == head, 'Extended manifest head mismatch')
 
 
+def validate_bridge_evidence(data, head):
+    with tarfile.open(fileobj=io.BytesIO(data), mode='r:') as archive:
+        def read(name):
+            item=archive.getmember(name)
+            require(item.isfile() and item.size <= 4*1024**2, 'Invalid bridge evidence member')
+            return archive.extractfile(item).read()
+        status=json.loads(read('harness-status.json')); summary=json.loads(read('smoke-summary.json'))
+        require(status.get('head') == head and status.get('outcome') == 'passed' and status.get('phase') == 'complete' and
+                status.get('fixture_dme_only') is True and status.get('suite') == 'bridge' and
+                status.get('resource_copies_independent') is True and summary.get('head') == head and
+                summary.get('accepted') is True and summary.get('suite') == 'bridge' and
+                summary.get('fixture_dme_only') is True, 'Invalid bridge status')
+        states=summary.get('resource_states')
+        require(isinstance(states,dict) and set(states)=={'bridge'} and status.get('runtime_resources')==states,
+                'Missing bridge resource state')
+        state=states['bridge']; initial=summary.get('artifacts',{}).get('human_subtile.rsc',{})
+        before=state.get('before',{}); after=state.get('after',{})
+        require(before==initial and state.get('integrity_verified') is True and 'daemon_error' not in state and
+                'integrity_error' not in state and type(state.get('changed')) is bool and state['changed']==(before!=after),
+                'Invalid bridge resource integrity')
+        for item in (before,after):
+            require(type(item.get('bytes')) is int and 0 < item['bytes'] <= 1024**3 and item.get('mode') == 0o600 and
+                    re.fullmatch('[0-9a-f]{64}',item.get('sha256') or ''), 'Invalid bridge resource identity')
+        spec=importlib.util.spec_from_file_location('bridge_receipts',Path(__file__).with_name('cloud_wildlife_bridge.py'))
+        bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
+        spec2=importlib.util.spec_from_file_location('bridge_npc',Path(__file__).with_name('run-npc.py'))
+        npc=importlib.util.module_from_spec(spec2);spec2.loader.exec_module(npc)
+        prefix='npc-smoke/runtime/'
+        require(read(prefix+'result.txt') == b'PASS\n' and read(prefix+'port-closed.txt') == b'closed\n', 'Invalid bridge result')
+        raw=read(prefix+'receipt.json'); bridge.validate_bridge(json.loads(raw),head)
+        require(summary.get('results',{}).get('bridge',{}).get('receipt_sha256') == hashlib.sha256(raw).hexdigest(),
+                'Bridge receipt hash mismatch')
+        compile_prefix='npc-smoke/stage/compile-'
+        npc.current.legacy.validate_compile((read(compile_prefix+'stdout.log')+read(compile_prefix+'stderr.log')).decode(errors='replace'),'human_subtile.dmb')
+        require(json.loads(read('npc-smoke/cloud-manifest.json')).get('head') == head, 'Bridge manifest head mismatch')
+
+
 def validate_production_evidence(data,head,expected_tree,expected_inventory):
     with tarfile.open(fileobj=io.BytesIO(data),mode='r:') as archive:
         def read(name):
@@ -421,7 +458,7 @@ def main():
     parser.add_argument('--name',help=argparse.SUPPRESS)
     parser.add_argument('--owner',help=argparse.SUPPRESS)
     parser.add_argument('--deadline',type=float,help=argparse.SUPPRESS)
-    parser.add_argument('--suite',choices=('smoke','extended','production_compile'),default='smoke')
+    parser.add_argument('--suite',choices=('smoke','extended','bridge','production_compile'),default='smoke')
     args=parser.parse_args()
     started=time.monotonic()
     require(args.execute, 'Execution requires explicit --execute')
@@ -519,6 +556,7 @@ def main():
             report['evidence_complete']=package['complete']
             if report['outcome'] == 'passed' and package['complete']:
                 if args.suite == 'extended': validate_extended_evidence(evidence,head)
+                elif args.suite == 'bridge': validate_bridge_evidence(evidence,head)
                 elif args.suite == 'production_compile':
                     spec=importlib.util.spec_from_file_location('production_stage',Path(__file__).with_name('cloud_production_compile.py'))
                     production=importlib.util.module_from_spec(spec);spec.loader.exec_module(production)

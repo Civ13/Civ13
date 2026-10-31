@@ -1,0 +1,330 @@
+// Test-only integration cases for the disabled authenticated large-exit bridge.
+// Include after large_native_observe.dm; this file never enters the game DME.
+var/list/large_bridge_rows = list()
+var/list/large_bridge_controls = list()
+var/large_bridge_checks = 0
+
+/mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge
+	npc_subtile_large_exit_enabled = TRUE
+
+/mob/living/simple_animal/hostile/dinosaur/trex/large_native_observe/bridge
+	npc_subtile_large_exit_enabled = TRUE
+
+/obj/large_native_border/bridge
+	var/fixture_allow = FALSE
+	var/fixture_checks = 0
+	var/fixture_direction = null
+	var/fixture_fault = null
+	var/fixture_nested_result = null
+	var/datum/npc_subtile_transaction/fixture_replacement
+	var/fixture_token = null
+	var/obj/large_native_border/bridge/fixture_mutation_target
+
+/obj/large_native_border/bridge/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
+	large_native_log("CheckExit:bridge", src)
+	if (fixture_token)
+		large_native_log("CheckExit:[fixture_token]", src)
+	fixture_checks++
+	fixture_direction = exit_direction
+	if (fixture_mutation_target)
+		fixture_mutation_target.fixture_allow = FALSE
+		large_native_log("policy_mutated", src)
+	if (fixture_fault && istype(mover, /mob/living/simple_animal))
+		var/mob/living/simple_animal/A = mover
+		switch (fixture_fault)
+			if ("callback_invalidate")
+				A.move_gen++
+			if ("callback_cancel")
+				A.npc_subtile_transaction.cancelled = TRUE
+			if ("callback_finish")
+				A.npc_subtile_transaction.finished = TRUE
+			if ("callback_delete")
+				qdel(A.npc_subtile_transaction)
+			if ("callback_blocker_delete")
+				qdel(src)
+			if ("callback_incapacitate")
+				A.stunned = 1
+			if ("callback_reassign")
+				fixture_replacement = new
+				A.npc_subtile_transaction = fixture_replacement
+			if ("callback_control")
+				A.control_object = src
+			if ("callback_disable")
+				A.npc_subtile_enabled = FALSE
+			if ("callback_nested")
+				fixture_nested_result = A.Move(A.npc_subtile_pulse.destination, A.npc_subtile_pulse.direction)
+			if ("callback_throw")
+				throw EXCEPTION("fixture_bridge_exception")
+	return fixture_allow
+
+// This tests an object's own native Uncross rejection. It does not inject or
+// claim to test a FALSE return from /obj/Uncross's native parent.
+/obj/large_native_border/bridge/reject_uncross/Uncross(atom/movable/mover, atom/newloc)
+	large_native_log("Uncross:fixture_reject", src)
+	return FALSE
+
+// Fixture-only parent seam: native parent is still called, and only the
+// dedicated test object changes a successful parent result into rejection.
+/obj/large_native_border/bridge/parent_reject
+
+/atom/movable/Uncross(atom/movable/mover, atom/newloc)
+	. = ..()
+	if (. && istype(src, /obj/large_native_border/bridge/parent_reject))
+		large_native_log("Uncross:parent_reject", src)
+		return FALSE
+
+// These wrappers observe the real production directional implementations.
+/obj/structure/window/bridge_fixture
+	var/fixture_checks = 0
+	var/fixture_direction = null
+/obj/structure/window/bridge_fixture/Uncross(atom/movable/mover, atom/newloc)
+	large_native_log("Uncross:window", src)
+	return ..()
+/obj/structure/window/bridge_fixture/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
+	fixture_checks++; fixture_direction = exit_direction
+	large_native_log("CheckExit:window", src)
+	return ..()
+
+/obj/structure/railing/bridge_fixture
+	var/fixture_checks = 0
+	var/fixture_direction = null
+/obj/structure/railing/bridge_fixture/Uncross(atom/movable/mover, atom/newloc)
+	large_native_log("Uncross:railing", src)
+	return ..()
+/obj/structure/railing/bridge_fixture/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
+	fixture_checks++; fixture_direction = exit_direction
+	large_native_log("CheckExit:railing", src)
+	return ..()
+
+/obj/structure/table/bridge_fixture
+	flags = ON_BORDER
+	flipped = TRUE
+	var/fixture_checks = 0
+	var/fixture_direction = null
+/obj/structure/table/bridge_fixture/Uncross(atom/movable/mover, atom/newloc)
+	large_native_log("Uncross:table", src)
+	return ..()
+/obj/structure/table/bridge_fixture/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
+	fixture_checks++; fixture_direction = exit_direction
+	large_native_log("CheckExit:table", src)
+	return ..()
+
+/proc/large_bridge_assert(ok, label)
+	large_bridge_checks++
+	if (!ok)
+		throw EXCEPTION(label)
+
+/proc/large_bridge_capability_control(case_name)
+	var/mob/living/simple_animal/A = new /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge(locate(9, 7, 1))
+	A.dir = EAST
+	A.bound_x = 0
+	var/list/before = A.npc_subtile_snapshot()
+	var/datum/npc_subtile_transaction/large_native_observe/T = new
+	T.actor = A; T.expected = before.Copy()
+	T.generation = A.move_gen; T.end_time = world.time + 100
+	T.fixture_bound_x = A.bound_x; T.fixture_bound_y = A.bound_y
+	T.fixture_width = A.bound_width; T.fixture_height = A.bound_height
+	T.fixture_dir = EAST; T.fixture_destination = A.loc
+	T.fixture_sx = 2; T.fixture_sy = 0
+	var/datum/npc_subtile_pulse/P = new
+	P.actor = A; P.before = before.Copy(); P.destination = A.loc
+	P.direction = EAST; P.sx = 2; P.sy = 0
+	A.npc_subtile_transaction = T; A.npc_subtile_pulse = P
+	if (case_name == "stale")
+		P.before["sx"] = 1
+	else if (case_name == "wrong_actor")
+		P.actor = null
+	else if (case_name == "unarmed")
+		P.armed = FALSE
+	else if (case_name == "wrong_destination")
+		P.destination = locate(A.x + 1, A.y, A.z)
+	else if (case_name == "replay")
+		A.Move(A.loc, EAST)
+		large_bridge_assert(!P.armed && A.step_x == 2, "bridge_replay_first_move")
+		before = A.npc_subtile_snapshot()
+	large_native_trace = list()
+	var/result = A.Move(A.loc, EAST)
+	var/list/after = A.npc_subtile_snapshot()
+	large_bridge_assert(!result && human_subtile_same(before, after) && !A.npc_subtile_large_frame, "bridge_capability_rejected")
+	large_bridge_controls += list(list("case" = case_name, "before" = before, "after" = after,
+		"result" = result, "armed" = P.armed, "frame_cleared" = !A.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
+	A.npc_subtile_pulse = null; A.npc_subtile_transaction = null
+	qdel(P); qdel(T); qdel(A)
+
+/proc/large_bridge_ordinary_control()
+	var/mob/living/simple_animal/A = new /mob/living/simple_animal/hostile/mammoth/large_native_observe(locate(9, 7, 1))
+	A.dir = EAST; A.bound_x = 0; A.bound_y = 0; A.bound_width = 32; A.bound_height = 32
+	var/list/before = large_native_snapshot(A)
+	large_native_trace = list()
+	var/list/auth = large_native_pulse(A, EAST, 2, 0)
+	var/list/after = large_native_snapshot(A)
+	large_bridge_assert(!A.npc_subtile_large_exit_enabled && !A.npc_subtile_large_frame && after["sx"] == before["sx"] + 2, "bridge_ordinary_32_progress")
+	large_bridge_controls += list(list("case" = "ordinary_32", "before" = before, "after" = after,
+		"auth" = auth, "frame_cleared" = !A.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
+	qdel(A)
+
+/proc/large_bridge_missing_control()
+	var/mob/living/simple_animal/A = new /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge(locate(9, 7, 1))
+	A.dir = EAST; A.bound_x = 0
+	large_native_pulse(A, EAST, 2, 0)
+	A.npc_subtile_offset_owned = TRUE
+	var/list/before = A.npc_subtile_snapshot()
+	large_native_trace = list()
+	var/result = A.Move(A.loc, EAST)
+	var/list/after = A.npc_subtile_snapshot()
+	large_bridge_assert(!result && human_subtile_same(before, after) && !A.npc_subtile_large_frame, "bridge_missing_capability_rejected")
+	large_bridge_controls += list(list("case" = "missing", "before" = before, "after" = after,
+		"result" = result, "frame_cleared" = !A.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
+	qdel(A)
+
+/proc/large_bridge_setup(animal_type, variant, direction, orthogonal)
+	var/mob/living/simple_animal/A = new animal_type(locate(9, 7, 1))
+	A.dir = direction
+	A.bound_x = variant
+	if (orthogonal)
+		var/orthogonal_direction = (direction == EAST || direction == WEST) ? NORTH : EAST
+		A.dir = orthogonal_direction
+		large_native_pulse(A, orthogonal_direction, orthogonal_direction == EAST ? 2 : 0, orthogonal_direction == NORTH ? 2 : 0)
+		A.dir = direction
+		A.bound_x = variant
+	for (var/i = 1, i <= 15, i++)
+		large_native_trace = list()
+		var/list/before = A.npc_subtile_snapshot()
+		large_native_pulse(A, direction, direction == EAST ? 2 : (direction == WEST ? -2 : 0), direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
+		var/dx = (A.x - before["x"]) * 32 + A.step_x - before["sx"]
+		var/dy = (A.y - before["y"]) * 32 + A.step_y - before["sy"]
+		large_bridge_assert(dx == (direction == EAST ? 2 : (direction == WEST ? -2 : 0)) && dy == (direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0)), "bridge_clear_setup_progress")
+		large_bridge_assert(A.bound_x == variant && A.dir == direction && A.bound_width == 96 && A.bound_height == 96, "bridge_setup_geometry")
+	return A
+
+/proc/large_bridge_fixture()
+	for (var/animal_type in list(/mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge, /mob/living/simple_animal/hostile/dinosaur/trex/large_native_observe/bridge))
+		for (var/variant in list(0, 64))
+			for (var/direction in list(EAST, WEST, NORTH, SOUTH))
+				for (var/orthogonal in list(FALSE, TRUE))
+					var/mob/living/simple_animal/reference = large_bridge_setup(animal_type, variant, direction, orthogonal)
+					var/list/old_turfs = large_native_turfs(reference)
+					var/turf/old_anchor = reference.loc
+					large_native_pulse(reference, direction, direction == EAST ? 2 : (direction == WEST ? -2 : 0), direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
+					var/list/new_turfs = large_native_turfs(reference)
+					var/turf/exiting = null
+					for (var/turf/T in old_turfs)
+						if (!(T in new_turfs) && T != old_anchor && !exiting)
+							exiting = T
+					large_bridge_assert(exiting, "bridge_remote_exit_observed")
+					qdel(reference)
+					for (var/allow in list(FALSE, TRUE))
+						var/mob/living/simple_animal/A = large_bridge_setup(animal_type, variant, direction, orthogonal)
+						large_bridge_assert(exiting in A.locs, "bridge_remote_exit_same_setup")
+						var/obj/large_native_border/bridge/B = new(exiting)
+						B.fixture_allow = allow
+						large_native_trace = list()
+						var/list/before = large_native_snapshot(A)
+						var/list/auth = large_native_pulse(A, direction, direction == EAST ? 2 : (direction == WEST ? -2 : 0), direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
+						var/list/after = large_native_snapshot(A)
+						var/dx = (after["x"] - before["x"]) * 32 + after["sx"] - before["sx"]
+						var/dy = (after["y"] - before["y"]) * 32 + after["sy"] - before["sy"]
+						var/native_exits = 0
+						for (var/list/event in large_native_trace)
+							if (event["event"] == "Uncross")
+								native_exits++
+						large_bridge_assert(native_exits > 0 && B.fixture_checks == native_exits && B.fixture_direction == direction, "bridge_direction_and_each_check")
+						large_bridge_assert(dx == (allow ? (direction == EAST ? 2 : (direction == WEST ? -2 : 0)) : 0) && dy == (allow ? (direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0)) : 0), "bridge_allowed_or_blocked")
+						large_bridge_assert(!A.npc_subtile_large_frame, "bridge_frame_cleared")
+						sleep(world.tick_lag)
+						var/list/after_async = large_native_snapshot(A)
+						large_bridge_assert(after_async["x"] == after["x"] && after_async["y"] == after["y"] && after_async["sx"] == after["sx"] && after_async["sy"] == after["sy"], "bridge_no_late_displacement")
+						large_bridge_rows += list(list("animal" = "[animal_type]", "variant" = variant,
+							"direction" = direction, "orthogonal" = orthogonal, "allow" = allow,
+							"edge_x" = exiting.x, "edge_y" = exiting.y, "before" = before,
+							"after" = after, "after_async" = after_async, "auth" = auth, "trace" = large_native_trace.Copy(),
+							"checks" = B.fixture_checks, "exit_direction" = B.fixture_direction, "frame_cleared" = !A.npc_subtile_large_frame))
+						qdel(B)
+						qdel(A)
+					if (animal_type == /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge && variant == 0 && direction == WEST && !orthogonal)
+						for (var/control in list("callback_invalidate", "callback_cancel", "callback_finish", "callback_delete", "callback_blocker_delete", "callback_incapacitate", "callback_reassign", "callback_control", "callback_disable", "callback_nested", "callback_throw", "object_uncross_reject", "parent_uncross_reject"))
+							var/mob/living/simple_animal/C = large_bridge_setup(animal_type, variant, direction, orthogonal)
+							if (control == "callback_disable")
+								C.npc_subtile_enabled = TRUE
+							var/obj/large_native_border/bridge/B
+							if (control == "object_uncross_reject")
+								B = new /obj/large_native_border/bridge/reject_uncross(exiting)
+							else if (control == "parent_uncross_reject")
+								B = new /obj/large_native_border/bridge/parent_reject(exiting)
+							else
+								B = new(exiting)
+								B.fixture_allow = TRUE
+								B.fixture_fault = control
+							large_native_trace = list()
+							var/list/control_before = large_native_snapshot(C)
+							var/list/control_auth
+							var/caught = FALSE
+							if (control == "callback_throw")
+								try
+									large_native_pulse(C, WEST, -2, 0)
+								catch (var/exception/fixture_error)
+									caught = fixture_error.name == "fixture_bridge_exception"
+								var/datum/npc_subtile_pulse/P = C.npc_subtile_pulse
+								var/datum/npc_subtile_transaction/T = C.npc_subtile_transaction
+								control_auth = list("consumed" = (P && !P.armed))
+								C.npc_subtile_pulse = null; C.npc_subtile_transaction = null
+								qdel(P); qdel(T)
+							else
+								control_auth = large_native_pulse(C, WEST, -2, 0)
+							var/list/control_after = large_native_snapshot(C)
+							var/control_dx = (control_after["x"] - control_before["x"]) * 32 + control_after["sx"] - control_before["sx"]
+							large_bridge_assert(control_dx == (control == "callback_nested" ? -2 : 0) && !C.npc_subtile_large_frame && (control != "callback_nested" || !B.fixture_nested_result) && (control != "callback_throw" || (caught && control_auth["consumed"])), "bridge_callback_rejected")
+							large_bridge_assert(B.fixture_checks == ((control == "object_uncross_reject" || control == "parent_uncross_reject") ? 0 : 1), "bridge_callback_check_count")
+							large_bridge_controls += list(list("case" = control, "before" = control_before, "after" = control_after,
+								"auth" = control_auth, "checks" = B.fixture_checks, "caught" = caught, "nested_result" = B.fixture_nested_result, "frame_cleared" = !C.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
+							C.control_object = null
+							if (B.fixture_replacement)
+								qdel(B.fixture_replacement)
+							qdel(B); qdel(C)
+						var/mob/living/simple_animal/policy_actor = large_bridge_setup(animal_type, variant, direction, orthogonal)
+						var/obj/large_native_border/bridge/mutator = new(exiting)
+						var/obj/large_native_border/bridge/subject = new(exiting)
+						mutator.fixture_allow = TRUE; mutator.fixture_token = "policy_mutator"
+						mutator.fixture_mutation_target = subject
+						subject.fixture_allow = TRUE; subject.fixture_token = "policy_subject"
+						large_native_trace = list()
+						var/list/policy_before = large_native_snapshot(policy_actor)
+						var/list/policy_auth = large_native_pulse(policy_actor, WEST, -2, 0)
+						var/list/policy_after = large_native_snapshot(policy_actor)
+						large_bridge_assert(mutator.fixture_checks > 0 && subject.fixture_checks > 0 && !subject.fixture_allow, "bridge_policy_mutation_observed")
+						large_bridge_assert(policy_before["x"] == policy_after["x"] && policy_before["sx"] == policy_after["sx"], "bridge_mutated_policy_denied")
+						large_bridge_assert(!policy_actor.npc_subtile_large_frame, "bridge_mutated_policy_frame_cleared")
+						large_bridge_controls += list(list("case" = "policy_mutation", "before" = policy_before, "after" = policy_after,
+							"auth" = policy_auth, "mutator_checks" = mutator.fixture_checks, "subject_checks" = subject.fixture_checks,
+							"subject_allow" = subject.fixture_allow, "frame_cleared" = !policy_actor.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
+						mutator.fixture_mutation_target = null
+						qdel(mutator); qdel(subject); qdel(policy_actor)
+					if (animal_type == /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge && !orthogonal && ((variant == 0 && direction == WEST) || (variant == 64 && direction == EAST)))
+						for (var/border_type in list(/obj/structure/window/bridge_fixture, /obj/structure/railing/bridge_fixture, /obj/structure/table/bridge_fixture))
+							for (var/allow in list(FALSE, TRUE))
+								var/mob/living/simple_animal/C = large_bridge_setup(animal_type, variant, direction, orthogonal)
+								var/obj/B = new border_type(exiting)
+								B.dir = allow ? (direction == WEST ? EAST : WEST) : direction
+								B.anchored = TRUE
+								B.flags |= ON_BORDER
+								if (istype(B, /obj/structure/table))
+									B.vars["flipped"] = TRUE
+								large_native_trace = list()
+								var/list/real_before = large_native_snapshot(C)
+								var/list/real_auth = large_native_pulse(C, direction, direction == WEST ? -2 : 2, 0)
+								var/list/real_after = large_native_snapshot(C)
+								var/real_dx = (real_after["x"] - real_before["x"]) * 32 + real_after["sx"] - real_before["sx"]
+								large_bridge_assert(B.vars["fixture_checks"] > 0 && B.vars["fixture_direction"] == direction, "bridge_real_direction")
+								large_bridge_assert(real_dx == (allow ? (direction == WEST ? -2 : 2) : 0), "bridge_real_directional_outcome")
+								large_bridge_assert(!C.npc_subtile_large_frame, "bridge_real_frame_cleared")
+								large_bridge_controls += list(list("case" = "real_[border_type]_[direction]_[allow]", "allow" = allow, "direction" = direction, "variant" = variant,
+									"border_type" = "[border_type]", "before" = real_before, "after" = real_after, "auth" = real_auth,
+									"checks" = B.vars["fixture_checks"], "exit_direction" = B.vars["fixture_direction"],
+									"frame_cleared" = !C.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
+								qdel(B); qdel(C)
+	large_bridge_assert(large_bridge_rows.len == 64, "bridge_matrix_complete")
+	for (var/control in list("stale", "wrong_actor", "unarmed", "wrong_destination", "replay"))
+		large_bridge_capability_control(control)
+	large_bridge_missing_control()
+	large_bridge_ordinary_control()
+	large_bridge_assert(large_bridge_controls.len == 33, "bridge_controls_complete")

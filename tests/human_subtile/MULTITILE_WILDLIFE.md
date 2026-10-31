@@ -73,6 +73,34 @@ unchecked physical footprint, the adapter cannot admit that direction until an
 engine-backed transition is designed and demonstrated. Never correct a failed
 rotation by snapping or temporarily shrinking the box.
 
+The actual DMI metadata identifies the mammoth as 192x144 per frame and the
+T. rex as 128x96, both with four directional frames. Inspection of nontransparent
+pixels within those frames gives mammoth horizontal bounds 7..182 for south/east
+and 9..184 for north/west, and T. rex bounds 0..99 for south/east and 28..127
+for north/west. These are file-local pixel coordinates, not rendered placement:
+icon centering and runtime pixel offsets still require engine/client checks.
+
+Two design choices remain open. A fixed 96x96 collider would avoid a physical
+turn shift but changes the existing north/west occupied cells and potentially
+interactions. Preserving the existing shift keeps its current directional shape,
+but requires an atomic, collision-checked transition across the 64px difference
+and cannot be proved by a temporary bounds assignment or probe Move. Neither
+choice is admitted by the current bridge; it requires direction to remain fixed
+through an authenticated pulse and the production shape guard remains 32x32.
+
+## Experimental exit bridge
+
+The default-off exit bridge is a candidate for cardinal pulses only. Its
+executing frame binds the consumed pulse, actor, transaction, generation, start,
+destination, offsets, facing and 96x96 bounds; it is closed on return or error.
+Native `Uncross` remains authoritative, including its parent rejection. Only
+`ON_BORDER` objects reached by that callback receive the additional `CheckExit`
+with the authenticated direction. The base and four in-repository overrides
+accept that optional direction while their existing two-argument calls retain
+their original calculation. This is not an admission of large actors, a save
+format, or proof that facing and map-edge transitions are safe. Diagonals remain
+excluded. Native positive and negative fixtures are required before use.
+
 ## Save, interactions, and LOS
 
 The existing five-field position capsule and 2x2 restore scan do not describe or

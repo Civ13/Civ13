@@ -397,7 +397,7 @@
 			return TRUE
 	return TRUE
 
-/obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)
+/obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf, exit_direction = null)
 	if (istype(O, /obj/structure/drone))
 		var/obj/structure/drone/D = O
 		if (D.flying)
@@ -405,7 +405,7 @@
 	if (istype(O) && O.checkpass(PASSTABLE))
 		return TRUE
 	if (flipped)
-		if (get_dir(loc, target) == dir)
+		if ((isnull(exit_direction) ? get_dir(loc, target) : exit_direction) == dir)
 			return !density
 		else
 			return TRUE

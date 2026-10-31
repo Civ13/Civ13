@@ -22,6 +22,9 @@
 	var/tmp/datum/npc_subtile_recovery/npc_subtile_recovery
 	var/tmp/datum/npc_subtile_pending_intent/npc_subtile_pending_intent
 	var/tmp/datum/npc_subtile_wild_walk/npc_subtile_wild_walk
+	// Experimental collision bridge; the normal 32x32 admission guard stays in force.
+	var/tmp/npc_subtile_large_exit_enabled = FALSE
+	var/tmp/datum/npc_subtile_large_frame/npc_subtile_large_frame
 
 /mob/living/simple_animal/proc/npc_subtile_snapshot()
 	return list("x" = x, "y" = y, "z" = z, "sx" = step_x, "sy" = step_y)
@@ -58,8 +61,11 @@
 	src.npc_subtile_stop_wild_walk()
 	walk(src, 0)
 
+/mob/living/simple_animal/proc/npc_subtile_authority_ready()
+	return !client && !stat && canmove && !anchored && !lying && !prone && !resting && !paralysis && !stunned && !weakened && !sleeping && !(status_flags & FAKEDEATH) && !buckled && !restrained() && !pulling && !pulledby && !ride && !rider && !control_object && !incorporeal_move && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && (!pinned || !pinned.len)
+
 /mob/living/simple_animal/proc/npc_subtile_ready()
-	return !client && !stat && canmove && !anchored && !lying && !prone && !resting && !paralysis && !stunned && !weakened && !sleeping && !(status_flags & FAKEDEATH) && !buckled && !restrained() && !pulling && !pulledby && !ride && !rider && !control_object && !incorporeal_move && (!grab_list || !grab_list.len) && (!grabbed_by || !grabbed_by.len) && (!pinned || !pinned.len) && npc_subtile_shape()
+	return npc_subtile_authority_ready() && npc_subtile_shape()
 
 /mob/living/simple_animal/proc/set_npc_subtile(enabled)
 	if (npc_subtile_transaction || npc_subtile_pulse || !npc_subtile_shape() || ((!enabled || !npc_subtile_offset_owned) && (step_x || step_y)))
@@ -859,6 +865,89 @@
 	var/restoring = FALSE
 	var/engine_return
 
+// Exists only across a consumed, native large-animal Move. Never saved.
+// Cardinal 2px pulses over a 96px footprint cannot enter and leave a tile
+// column in the same pulse. Keep diagonals and direction changes unsupported.
+/datum/npc_subtile_large_frame
+	should_save = FALSE
+	var/mob/living/simple_animal/actor
+	var/datum/npc_subtile_pulse/pulse
+	var/datum/npc_subtile_transaction/transaction
+	var/list/start
+	var/turf/destination
+	var/direction
+	var/sx
+	var/sy
+	var/generation
+	var/datum/intent_owner
+	var/deadline
+	var/enabled
+	var/bx
+	var/by
+	var/width
+	var/height
+	var/facing
+	var/atom/path_target
+	var/mob/living/combat_target
+	var/mob/living/following
+	var/stance
+	var/active = TRUE
+	var/checking = FALSE
+
+/datum/npc_subtile_large_frame/proc/valid()
+	return active && actor && !isDeleted(actor) && !actor.gc_destroyed && actor.npc_subtile_authority_ready() && !persistence_save_in_progress && actor.npc_subtile_large_exit_enabled && actor.npc_subtile_enabled == enabled && actor.npc_subtile_large_frame == src && actor.npc_subtile_pulse == pulse && actor.npc_subtile_transaction == transaction && transaction && !isDeleted(transaction) && !transaction.gc_destroyed && !transaction.cancelled && !transaction.finished && transaction.actor == actor && transaction.generation == generation && transaction.end_time == deadline && isnum(deadline) && world.time <= deadline + world.tick_lag && transaction.intent_owner == intent_owner && (!intent_owner || (!isDeleted(intent_owner) && !intent_owner.gc_destroyed)) && actor.npc_subtile_intent_valid(intent_owner) && human_subtile_same(start, transaction.expected) && pulse && !isDeleted(pulse) && !pulse.gc_destroyed && !pulse.armed && !pulse.restoring && pulse.actor == actor && pulse.destination == destination && pulse.direction == direction && pulse.sx == sx && pulse.sy == sy && human_subtile_same(start, pulse.before) && actor.move_gen == generation && actor.target_obj == path_target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && actor.bound_x == bx && actor.bound_y == by && actor.bound_width == width && actor.bound_height == height && actor.dir == facing && human_subtile_same(start, actor.npc_subtile_snapshot())
+
+/datum/npc_subtile_large_frame/proc/check_exit(obj/obstacle)
+	if (!valid() || checking)
+		return FALSE
+	if (!(obstacle.flags & ON_BORDER) || obstacle == actor)
+		return TRUE
+	// Every real callback checks current policy; recursive entry fails closed.
+	checking = TRUE
+	var/allowed = FALSE
+	try
+		allowed = obstacle.CheckExit(actor, destination, direction)
+	catch (var/exception/large_exit_error)
+		checking = FALSE
+		throw large_exit_error
+	checking = FALSE
+	if (!allowed || !obstacle || isDeleted(obstacle) || obstacle.gc_destroyed || !valid())
+		return FALSE
+	return TRUE
+
+/mob/living/simple_animal/proc/npc_subtile_begin_large_frame(datum/npc_subtile_pulse/P)
+	if (!npc_subtile_large_exit_enabled || npc_subtile_large_frame || !P || P.armed || P.restoring || P.actor != src || P != npc_subtile_pulse || !npc_subtile_transaction || client || !isturf(loc) || world.icon_size != 32 || !(P.direction in list(NORTH, SOUTH, EAST, WEST)) || dir != P.direction || bound_y != 0 || !(bound_x in list(0, 64)) || bound_width != 96 || bound_height != 96 || !(istype(src, /mob/living/simple_animal/hostile/mammoth) || istype(src, /mob/living/simple_animal/hostile/dinosaur/trex)) || !human_subtile_same(P.before, npc_subtile_snapshot()))
+		return null
+	if (!P.destination || P.destination.z != z || !isnum(P.sx) || !isnum(P.sy) || P.sx != round(P.sx) || P.sy != round(P.sy) || P.sx < 0 || P.sx >= 32 || P.sy < 0 || P.sy >= 32)
+		return null
+	var/dx = (P.destination.x - x) * 32 + P.sx - step_x
+	var/dy = (P.destination.y - y) * 32 + P.sy - step_y
+	if ((P.direction == EAST && !(dx > 0 && dx <= 2 && !dy)) || (P.direction == WEST && !(dx < 0 && dx >= -2 && !dy)) || (P.direction == NORTH && !(dy > 0 && dy <= 2 && !dx)) || (P.direction == SOUTH && !(dy < 0 && dy >= -2 && !dx)))
+		return null
+	var/datum/npc_subtile_large_frame/F = new
+	F.actor = src; F.pulse = P; F.transaction = npc_subtile_transaction
+	F.start = P.before.Copy(); F.destination = P.destination; F.direction = P.direction
+	F.sx = P.sx; F.sy = P.sy; F.generation = move_gen
+	F.intent_owner = npc_subtile_transaction.intent_owner; F.deadline = npc_subtile_transaction.end_time
+	F.enabled = npc_subtile_enabled
+	F.bx = bound_x; F.by = bound_y; F.width = bound_width; F.height = bound_height; F.facing = dir
+	F.path_target = target_obj; F.combat_target = target_mob; F.following = following_mob; F.stance = stance
+	npc_subtile_large_frame = F
+	if (!F.valid())
+		F.close()
+		return null
+	return F
+
+/datum/npc_subtile_large_frame/proc/close()
+	active = FALSE
+	if (actor && !isDeleted(actor) && actor.npc_subtile_large_frame == src)
+		actor.npc_subtile_large_frame = null
+	actor = null
+	pulse = null
+	transaction = null
+	intent_owner = null
+	qdel(src)
+
 /datum/npc_subtile_transaction
 	should_save = FALSE
 	var/mob/living/simple_animal/actor
@@ -1025,6 +1114,8 @@
 	if (key in list("target_obj", "target_mob", "pathfind_target", "found_path", "moving", "last_pathfound", "move_gen", "stance", "stance_step"))
 		return TRUE
 	if (key == "glide_size" && (npc_subtile_glide_owned || npc_subtile_import_owned || npc_subtile_position))
+		return TRUE
+	if (key == "npc_subtile_large_exit_enabled" || key == "npc_subtile_large_frame")
 		return TRUE
 	if ((key == "step_x" || key == "step_y") && (npc_subtile_import_owned || npc_subtile_position))
 		return TRUE
