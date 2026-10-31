@@ -71,4 +71,11 @@ class LargeExitContracts(unittest.TestCase):
         self.assertNotIn('T.expected',after)
         self.assertNotIn('T.fixture_',after)
 
+    def test_failed_callback_observation_is_recorded_before_assertion(self):
+        fixture=source('tests/human_subtile/large_bridge_fixture.dm')
+        segment=fixture.split('var/control_dx =',1)[1].split('C.control_object = null',1)[0]
+        self.assertLess(segment.index('large_bridge_controls += '),segment.index('large_bridge_assert('))
+        self.assertIn('"caught_name" = caught_name',segment)
+        self.assertIn('"frame_cleared" = !C.npc_subtile_large_frame',segment)
+
 if __name__ == '__main__': unittest.main()

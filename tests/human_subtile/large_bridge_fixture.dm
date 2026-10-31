@@ -301,11 +301,13 @@ var/large_bridge_checks = 0
 							var/list/control_before = large_native_snapshot(C)
 							var/list/control_auth
 							var/caught = FALSE
+							var/caught_name = null
 							if (control == "callback_throw")
 								try
 									large_native_pulse(C, WEST, -2, 0)
 								catch (var/exception/fixture_error)
-									caught = fixture_error.name == "fixture_bridge_exception"
+									caught_name = fixture_error.name
+									caught = caught_name == "fixture_bridge_exception"
 								var/datum/npc_subtile_pulse/P = C.npc_subtile_pulse
 								var/datum/npc_subtile_transaction/T = C.npc_subtile_transaction
 								control_auth = list("consumed" = (P && !P.armed))
@@ -315,10 +317,13 @@ var/large_bridge_checks = 0
 								control_auth = large_native_pulse(C, WEST, -2, 0)
 							var/list/control_after = large_native_snapshot(C)
 							var/control_dx = (control_after["x"] - control_before["x"]) * 32 + control_after["sx"] - control_before["sx"]
+							// Preserve the exact observation even when the next assertion fails.
+							large_bridge_controls += list(list("case" = control, "before" = control_before, "after" = control_after,
+								"auth" = control_auth, "checks" = B.fixture_checks, "caught" = caught, "caught_name" = caught_name,
+								"nested_result" = B.fixture_nested_result, "frame_cleared" = !C.npc_subtile_large_frame,
+								"trace" = large_native_trace.Copy()))
 							large_bridge_assert(control_dx == (control == "callback_nested" ? -2 : 0) && !C.npc_subtile_large_frame && (control != "callback_nested" || !B.fixture_nested_result) && (control != "callback_throw" || (caught && control_auth["consumed"])), "bridge_callback_rejected")
 							large_bridge_assert(B.fixture_checks == ((control == "object_uncross_reject" || control == "parent_uncross_reject") ? 0 : 1), "bridge_callback_check_count")
-							large_bridge_controls += list(list("case" = control, "before" = control_before, "after" = control_after,
-								"auth" = control_auth, "checks" = B.fixture_checks, "caught" = caught, "nested_result" = B.fixture_nested_result, "frame_cleared" = !C.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
 							C.control_object = null
 							if (B.fixture_replacement)
 								qdel(B.fixture_replacement)
