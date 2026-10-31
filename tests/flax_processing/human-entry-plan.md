@@ -99,7 +99,8 @@ SIGTERM, KeyboardInterrupt or early failure does not delete those files. A hard
 runner kill can leave a non-final manifest; that is incomplete evidence, not a
 pass. Each stream is capped at 16 MiB; combined logs at 16 MiB. Input snapshots
 are capped at 2 MiB/file, compiled artifacts at 256 MiB/file; output observation
-and inventory use 512 MiB/128-file ceilings. Direct native file writes may
+and inventory use a 512 MiB ceiling. The generated/output reserve remains 128
+files, separately from the 147 explicitly pinned required input files. Direct native file writes may
 overshoot between polls, so the external filesystem quota remains required.
 
 Flax also retains nonhidden `generated-inputs/generated-N.dm`/`.dme` and
@@ -108,10 +109,16 @@ generated files. Sources are copied before compile; compiled aliases are copied
 before daemon launch and retained on compile failure when available. The manifest's
 `upload_aliases` records original path, relative alias path, byte count, SHA-256,
 per-file bound and status. Existing originals and hidden snapshots stay in place.
-Aliases count toward the same 512 MiB/128-file ceiling; a mismatched existing alias
+Aliases count toward the same 512 MiB ceiling and 128-file generated/output reserve; a mismatched existing alias
 or bound breach fails without overwriting/deleting evidence. Default artifact
 upload can retain these copies without enabling hidden-file uploads or sweeping
 unrelated files. Shared harvest retention and its admission remain unchanged.
+
+The fixed input set and prelaunch accounting are detailed in
+`staging-inventory.md`. It includes all 146 eager global name-file reads and the
+recipe input, with byte-preserving copies and per-run hashes. Both compiler and
+daemon launches require a validated staged inventory; no native rerun of this
+correction has been admitted or performed.
 
 There is no automatic deletion or cleanup option in the flax runner. Retain the
 manifest, source snapshots, raw logs and actual failure state. Any later optional

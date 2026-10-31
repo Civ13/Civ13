@@ -39,6 +39,14 @@ OUTPUT_LIMIT = 512 * 1024 * 1024
 FILE_LIMIT = 128
 GENERATED_SUFFIXES = ('.dme', '_world.dm', '_globals.dm', '_flax.dm', '.dmb', '.rsc',
                       '_living.dm', '_human.dm')
+REQUIRED_INPUT_MANIFEST = 'tests/flax_processing/required-inputs.json'
+RESERVED_DIAGNOSTICS = ('metadata.json', 'tested.patch', 'evidence-manifest.json',
+    'staging-compile.json', 'staging-daemon.json', 'compiler-runtime.json', 'daemon-runtime.json',
+    'compile-phase.json', 'compile.stdout.log', 'compile.stderr.log', 'compile.log',
+    'daemon-phase.json', 'daemon.stdout.log', 'daemon.stderr.log', 'daemon.log',
+    'runtime/runtime.log', 'runtime/errors.txt', 'runtime/result.txt',
+    'runtime/fixture.json', 'runtime/port-closed.txt', 'runtime/flax-state.sav',
+    'runtime.log', 'errors.txt', 'result.txt', 'fixture.json', 'port-closed.txt')
 
 
 def write_json(path, value):
@@ -60,25 +68,119 @@ def write_log(path, text):
         raise RuntimeError('Combined diagnostic exceeded bound; bounded prefix retained: ' + str(path))
 
 
-def check_output_budget(directory):
+def required_input_plan():
+    """Pinned eager global reads, not a directory-wide staging exemption."""
+    plan = json.loads(bounded_text(ROOT / REQUIRED_INPUT_MANIFEST, INPUT_LIMIT))
+    names = (ROOT / 'code/names.dm').read_bytes().replace(b'\r\n', b'\n')
+    declarations = re.findall(rb'^var/list/\w+\s*=\s*file2list\s*\(\s*"(config/names/[^"\n]+)"\s*\)\s*(?://[^\n]*)?$', names, re.M)
+    paths = {path.decode() for path in declarations}
+    if (plan['schema_version'] != 1 or plan['names_source'] != 'code/names.dm'
+            or hashlib.sha256(names).hexdigest() != plan['names_source_sha256']
+            or len(declarations) != plan['global_name_declarations']
+            or len(paths) != plan['required_name_files']):
+        raise RuntimeError('Required-input source provenance changed; review the manifest')
+    expected = paths | {'config/crafting/material_recipes_global.txt'}
+    records = plan['inputs']
+    if len(records) != len(expected) or {row['path'] for row in records} != expected:
+        raise RuntimeError('Required-input manifest must enumerate exactly the eager reads and recipe')
+    bound_records = []
+    for row in records:
+        path = Path(row['path'])
+        if path.is_absolute() or '..' in path.parts or not 0 < row['bytes'] <= INPUT_LIMIT or not re.fullmatch('[0-9a-f]{64}', row['sha256']):
+            raise RuntimeError('Invalid required-input manifest record')
+        source = ROOT / path
+        if source.is_symlink() or source.stat().st_size > INPUT_LIMIT:
+            raise RuntimeError('Required source input exceeds its bound or is linked')
+        data = source.read_bytes()
+        fingerprint = data.replace(b'\r\n', b'\n')
+        if len(fingerprint) != row['bytes'] or hashlib.sha256(fingerprint).hexdigest() != row['sha256']:
+            raise RuntimeError('Required source input fingerprint changed: ' + row['path'])
+        # Git's text checkout may use CRLF. Bind and copy the actual source bytes;
+        # normalization is only for the checked-in cross-platform fingerprint.
+        bound_records.append({'path': row['path'], 'bytes': len(data),
+                              'sha256': hashlib.sha256(data).hexdigest(),
+                              'fingerprint_sha256': row['sha256']})
+    return bound_records
+
+
+def stage_required_inputs(output, records):
+    staged = {}
+    for row in records:
+        source = ROOT / row['path']
+        if source.is_symlink() or source.stat().st_size > INPUT_LIMIT:
+            raise RuntimeError('Required source input exceeds its bound or is linked')
+        data = source.read_bytes()
+        if len(data) != row['bytes'] or hashlib.sha256(data).hexdigest() != row['sha256']:
+            raise RuntimeError('Required source input changed: ' + row['path'])
+        relative = 'runtime/' + row['path']
+        destination = output / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with destination.open('xb') as stream:
+            stream.write(data)
+        staged[relative] = dict(row)
+    return staged
+
+
+def check_output_budget(directory, required_inputs=None):
     """Detect live-file overruns; an admitted filesystem quota is still required.
 
     Stream capture below has a hard byte cap. Native direct file writes can
     overshoot between observations; never equate this check with a disk quota.
     """
+    required_inputs = required_inputs or {}
     count = total = 0
+    seen = set()
     for path in directory.rglob('*'):
         if path.is_file():
-            count += 1
-            total += path.stat().st_size
+            relative = path.relative_to(directory).as_posix()
+            size = path.stat().st_size
+            if relative in required_inputs:
+                if path.is_symlink() or size != required_inputs[relative]['bytes']:
+                    raise RuntimeError('Required staged input changed: ' + relative)
+                seen.add(relative)
+            else:
+                if required_inputs and relative.startswith('runtime/config/'):
+                    raise RuntimeError('Unlisted staged input: ' + relative)
+                count += 1
+            total += size
             if count > FILE_LIMIT or total > OUTPUT_LIMIT:
                 raise RuntimeError('Task-owned output budget exceeded')
             if path.suffix in ('.log', '.txt', '.json') and path.stat().st_size > LOG_LIMIT:
                 raise RuntimeError('Native diagnostic file exceeds bound: ' + str(path))
+    if seen != set(required_inputs):
+        raise RuntimeError('Required staged input missing')
     return count, total
 
 
-def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
+def validate_staged_inventory(output, generated, manifest, phase):
+    required = manifest['required_inputs']
+    count, total = check_output_budget(output, required)
+    for relative, row in required.items():
+        if bounded_digest(output / relative, INPUT_LIMIT) != (row['bytes'], row['sha256']):
+            raise RuntimeError('Required staged input hash changed: ' + relative)
+    sources = {'generated-inputs/' + p.name for p in generated if p.suffix not in ('.dmb', '.rsc')}
+    binaries = {'runtime/' + p.name for p in generated if p.suffix in ('.dmb', '.rsc')}
+    aliases = {row['alias_path'] for row in manifest['upload_aliases']}
+    planned = sources | binaries | aliases | set(RESERVED_DIAGNOSTICS)
+    present = {p.relative_to(output).as_posix() for p in output.rglob('*') if p.is_file()} - set(required)
+    if len(present | planned) > FILE_LIMIT:
+        raise RuntimeError('Planned fixed evidence and runtime outputs exceed the 128-file reserve')
+    categories = {'required_inputs': set(required), 'generated_sources': sources,
+                  'runtime_binaries': binaries, 'artifact_aliases': aliases}
+    classified = set().union(*categories.values())
+    categories['diagnostics_and_outputs'] = present - classified
+    report = {'status': 'validated_before_' + phase, 'required_inputs': required,
+              'counts': {name: len(paths & (present | set(required))) for name, paths in categories.items()},
+              'non_required_present': count, 'non_required_planned': len(present | planned),
+              'non_required_file_limit': FILE_LIMIT, 'required_input_file_limit': len(required),
+              'derived_total_file_limit': FILE_LIMIT + len(required),
+              'observed_bytes': total, 'total_byte_limit': OUTPUT_LIMIT}
+    write_json(output / ('staging-' + phase + '.json'), report)
+    check_output_budget(output, required)
+    return report
+
+
+def run_phase(command, *, cwd, output, phase, timeout, creationflags=0, required_inputs=None):
     """Retain bounded stdout/stderr even on timeout or interruption.
 
     Only the direct child is stopped here. Descendant ownership and actual
@@ -86,7 +188,7 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
     """
     receipt = {'phase': phase, 'argv': command, 'cwd': str(cwd),
                'timeout_seconds': timeout, 'status': 'starting',
-               'descendant_cleanup': 'unverified', 'streams': {}}
+               'descendant_cleanup': 'unverified', 'socket_cleanup': 'unverified', 'streams': {}}
     receipt_path = output / (phase + '-phase.json')
     write_json(receipt_path, receipt)
     exceeded = threading.Event()
@@ -120,6 +222,11 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
             exceeded.set()
 
     try:
+        check_output_budget(output, required_inputs) if required_inputs else check_output_budget(output)
+        for relative, row in (required_inputs or {}).items():
+            if bounded_digest(output / relative, INPUT_LIMIT) != (row['bytes'], row['sha256']):
+                raise RuntimeError('Required input changed before process launch: ' + relative)
+        receipt['required_inputs_validated'] = len(required_inputs or {})
         if threading.current_thread() is threading.main_thread():
             previous_sigterm = signal.signal(signal.SIGTERM, interrupted)
         child = subprocess.Popen(command, cwd=cwd, stdout=subprocess.PIPE,
@@ -136,7 +243,7 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
         while child.poll() is None:
             if exceeded.is_set():
                 raise RuntimeError('Native stream capture exceeded its bound or failed')
-            check_output_budget(output)
+            check_output_budget(output, required_inputs) if required_inputs else check_output_budget(output)
             if time.monotonic() >= deadline:
                 raise subprocess.TimeoutExpired(command, timeout)
             time.sleep(0.05)
@@ -158,10 +265,16 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
             if reader.ident is not None:
                 reader.join(timeout=1)
         receipt['stream_writers_closed'] = all(not reader.is_alive() for reader in readers)
-        receipt['direct_child_exited'] = child is not None and child.poll() is not None
+        observed_exit = child.poll() if child is not None else None
+        receipt['direct_child_exited'] = observed_exit is not None
+        receipt['returncode'] = observed_exit
+        receipt['returncode_status'] = ('observed' if observed_exit is not None else
+                                      'unknown' if child is not None else 'not_started')
         receipt['retention_complete'] = (receipt['stream_writers_closed'] and not exceeded.is_set()
                                          and len(receipt['streams']) == 2
                                          and all(info['status'] == 'closed' for info in receipt['streams'].values()))
+        receipt['stream_retention_complete'] = receipt['retention_complete']
+        receipt['retention_complete_scope'] = 'captured_streams_only'
         if receipt['stream_writers_closed'] and child is not None:
             child.stdout.close()
             child.stderr.close()
@@ -179,7 +292,7 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
     stderr = bounded_text(output / (phase + '.stderr.log')) if (output / (phase + '.stderr.log')).exists() else ''
     if exceeded.is_set() or not receipt['stream_writers_closed']:
         raise RuntimeError('Native stream retention incomplete or over limit; see phase receipt')
-    check_output_budget(output)
+    check_output_budget(output, required_inputs) if required_inputs else check_output_budget(output)
     return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
 
 
@@ -225,7 +338,7 @@ def retain_upload_aliases(output, generated, manifest):
         size, digest = bounded_digest(original, limit)
         record.update(bytes=size, sha256=digest)
         if not destination.exists():
-            count, total = check_output_budget(output)
+            count, total = check_output_budget(output, manifest.get('required_inputs'))
             if count + 1 > FILE_LIMIT or total + size > OUTPUT_LIMIT:
                 raise RuntimeError('Upload alias exceeds task-owned output budget')
             destination.parent.mkdir(exist_ok=True)
@@ -271,11 +384,14 @@ def retain_manifest(output, generated, manifest, *, finalized=False):
     manifest['generated'] = records
     manifest['finalized'] = finalized
     manifest['retained_outputs'] = []
-    for index, path in enumerate(sorted(output.rglob('*'))):
-        if index >= FILE_LIMIT:
-            manifest['inventory_truncated'] = True
-            break
+    manifest['inventory_complete'] = True
+    manifest.pop('inventory_truncated', None)
+    inventory_limit = FILE_LIMIT + len(manifest.get('required_inputs', {}))
+    for path in output.rglob('*'):
         if path.is_file() and path.name != 'evidence-manifest.json':
+            if len(manifest['retained_outputs']) >= inventory_limit:
+                manifest.update(inventory_truncated=True, inventory_complete=False)
+                break
             size = path.stat().st_size
             record = {'path': path.relative_to(output).as_posix(), 'bytes': size}
             if size <= LOG_LIMIT and path.suffix not in ('.dmb', '.rsc', '.sav'):
@@ -288,7 +404,7 @@ def retain_manifest(output, generated, manifest, *, finalized=False):
     if alias_error is not None:
         raise alias_error
     if 'upload_aliases' in manifest:
-        check_output_budget(output)
+        check_output_budget(output, manifest.get('required_inputs'))
 
 
 def entry_sources(control=None):
@@ -368,6 +484,7 @@ def main():
             source_for(control)
         entry_sources()
         entry_sources('legacy-return')
+        required_input_plan()
         print('PASS: source and unique mutation targets; no compiler/runtime launched')
         return
     if args.human_entry and sys.platform != 'linux':
@@ -399,7 +516,7 @@ def main():
                                          'runtime/fixture.json', 'runtime/port-closed.txt'],
                 'limits': {'stream_bytes': LOG_LIMIT, 'input_bytes': INPUT_LIMIT,
                            'artifact_bytes': ARTIFACT_LIMIT, 'observed_output_bytes': OUTPUT_LIMIT,
-                           'inventory_files': FILE_LIMIT},
+                           'generated_and_output_files': FILE_LIMIT},
                 'hard_live_file_quota': 'requires admitted external filesystem quota'}
     write_json(args.output / 'evidence-manifest.json', manifest)
     try:
@@ -414,6 +531,8 @@ def main():
                  'code/modules/persistence/loading.dm', 'code/modules/persistence/functions.dm',
                  'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm',
                  probe, 'tests/flax_processing/run.py',
+                 REQUIRED_INPUT_MANIFEST, 'code/names.dm', 'code/_helpers/files.dm',
+                 'code/_helpers/type2type.dm',
                  'scripts/byond_runtime.py', 'scripts/byond_toolchain.py', 'scripts/native_fixture.py',
                  'tools/byond/version.json']
         if args.human_entry:
@@ -467,32 +586,39 @@ def main():
                 shutil.copy2(path, snapshots / path.name)
         # Persist inputs/ownership before either native launch. Even SIGKILL or
         # a failed finalizer cannot remove these snapshots or live runtime logs.
+        work = args.output / 'runtime'
+        work.mkdir()
+        planned_inputs = required_input_plan()
+        manifest['required_inputs'] = {'runtime/' + row['path']: dict(row) for row in planned_inputs}
+        manifest['limits'].update(required_input_files=len(planned_inputs),
+                                  derived_total_files=FILE_LIMIT + len(planned_inputs))
+        stage_required_inputs(args.output, planned_inputs)
         retain_manifest(args.output, generated, manifest)
+        validate_staged_inventory(args.output, generated, manifest, 'compile')
         identity = runtime_identity(binary, args.byond_archive)
         (args.output / 'compiler-runtime.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
         build = run_phase([str(compiler), '-max_errors', '0', str(generated[0])],
-                          cwd=ROOT, output=args.output, phase='compile', timeout=180, creationflags=flags)
+                          cwd=ROOT, output=args.output, phase='compile', timeout=180, creationflags=flags,
+                          required_inputs=manifest['required_inputs'])
         output = build.stdout + build.stderr
         write_log(args.output / 'compile.log', output)
         check_compile(build, requirement['version'])
         # Retain nonhidden compiled evidence before starting the daemon too.
         retain_manifest(args.output, generated, manifest)
-        work = args.output / 'runtime'
-        work.mkdir()
         for path in generated[4:6]:
             if path.stat().st_size > ARTIFACT_LIMIT:
                 raise RuntimeError('Compiled artifact exceeds retained bound: ' + str(path))
             shutil.copy2(path, work / path.name)
-        shutil.copytree(ROOT / 'config/names', work / 'config/names')
-        (work / 'config/crafting').mkdir(parents=True)
-        shutil.copy2(ROOT / 'config/crafting/material_recipes_global.txt', work / 'config/crafting/material_recipes_global.txt')
+        validate_staged_inventory(args.output, generated, manifest, 'daemon')
+        retain_manifest(args.output, generated, manifest)
         identity = runtime_identity(binary, args.byond_archive)
         (args.output / 'daemon-runtime.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
         result = run_phase([str(daemon), str(work / generated[4].name),
                                  *(['-invisible', '-close'] if os.name == 'nt' else []),
                                  *(no_port_args() if args.human_entry else []),
                                  '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'], cwd=work,
-                           output=args.output, phase='daemon', timeout=45, creationflags=flags)
+                           output=args.output, phase='daemon', timeout=45, creationflags=flags,
+                           required_inputs=manifest['required_inputs'])
         diagnostics = result.stdout + result.stderr
         for filename in ('runtime.log', 'errors.txt', 'result.txt', 'fixture.json', 'port-closed.txt'):
             path = work / filename

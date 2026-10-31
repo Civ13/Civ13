@@ -56,6 +56,8 @@ class FlaxRunnerContracts(unittest.TestCase):
                              'code/modules/persistence/loading.dm', 'code/modules/persistence/functions.dm',
                              'config/crafting/material_recipes_global.txt', 'code/modules/research_tree/research_node.dm',
                              'tests/flax_processing/probe.dm', 'tests/flax_processing/run.py',
+                             runner.REQUIRED_INPUT_MANIFEST, 'code/names.dm',
+                             'code/_helpers/files.dm', 'code/_helpers/type2type.dm',
                              'scripts/byond_runtime.py', 'scripts/byond_toolchain.py', 'scripts/native_fixture.py',
                              'tools/byond/version.json'):
                 target = root / relative
@@ -67,7 +69,11 @@ class FlaxRunnerContracts(unittest.TestCase):
                     target = root / relative
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes((ROOT / relative).read_bytes())
-            (root / 'config/names').mkdir()
+            for row in runner.required_input_plan():
+                if row['path'].startswith('config/names/'):
+                    target = root / row['path']
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes((ROOT / row['path']).read_bytes())
             (root / 'code/controllers/mc').mkdir(parents=True, exist_ok=True)
             (root / 'code/world.dm').write_text('/world/New()\n\t..()\n/datum/global_init/New()\n\treturn\n')
             (root / 'code/controllers/mc/globals.dm').write_text('/datum/controller/global_vars/New()\n\treturn\n')
@@ -89,6 +95,9 @@ class FlaxRunnerContracts(unittest.TestCase):
                 (output / (phase + '.stderr.log')).write_text('injected partial stderr')
                 if len(launches) == 1:
                     events.append('compile')
+                    preflight = json.loads((output / 'staging-compile.json').read_text())
+                    self.assertEqual(preflight['counts']['required_inputs'], 147)
+                    self.assertEqual(preflight['counts']['runtime_binaries'], 0)
                     dme = Path(command[-1])
                     if human_entry:
                         self.assertIn('#include "tests/flax_processing/human_entry_probe.dm"', dme.read_text())
@@ -104,6 +113,9 @@ class FlaxRunnerContracts(unittest.TestCase):
                     version = '516.1681' if defect == 'old_banner' else '516.1688'
                     return NS(returncode=0, stdout=f'DM compiler version {version}\nprobe.dmb - 0 errors, 0 warnings\n', stderr='')
                 events.append('daemon')
+                preflight = json.loads((output / 'staging-daemon.json').read_text())
+                self.assertEqual(preflight['counts']['required_inputs'], 147)
+                self.assertEqual(preflight['counts']['runtime_binaries'], 2)
                 upload = json.loads((output / 'evidence-manifest.json').read_text())
                 self.assertTrue(all(row['status'] == 'retained' for row in upload['upload_aliases']))
                 self.assertIn('-trusted', command)
@@ -180,6 +192,8 @@ class FlaxRunnerContracts(unittest.TestCase):
                 self.assertIn(manifest['status'], ('failed', 'interrupted'))
             else:
                 self.assertEqual(manifest['status'], 'passed_expected_control' if entry_control else 'passed')
+                self.assertTrue(manifest['inventory_complete'])
+                self.assertFalse(manifest.get('inventory_truncated', False))
             if launches:
                 self.assertTrue(list(root.glob('.flax_probe_*.dme')), 'generated source must survive')
                 self.assertTrue(list((output / 'generated-inputs').glob('*.dme')))
@@ -337,8 +351,15 @@ class NativePhaseRetention(unittest.TestCase):
                 stack.enter_context(patch.object(runner.time, 'monotonic', side_effect=clocks))
                 if mode == 'over_limit':
                     stack.enter_context(patch.object(runner, 'LOG_LIMIT', 8))
+                    # Isolate the stream cap from the much larger JSON receipt.
+                    stack.enter_context(patch.object(runner, 'check_output_budget', return_value=(0, 0)))
                 if mode == 'sigterm':
+                    calls = 0
                     def invoke_handler(directory):
+                        nonlocal calls
+                        calls += 1
+                        if calls == 1:
+                            return (0, 0)  # Prelaunch guard; interrupt only after launch.
                         runner.signal.getsignal(runner.signal.SIGTERM)(runner.signal.SIGTERM, None)
                     stack.enter_context(patch.object(runner, 'check_output_budget', side_effect=invoke_handler))
                 if mode in ('timeout', 'interrupt', 'sigterm', 'over_limit'):
@@ -349,6 +370,10 @@ class NativePhaseRetention(unittest.TestCase):
                     self.assertEqual(result.returncode, 7 if mode == 'early_exit' else 0)
             receipt = json.loads((output / 'daemon-phase.json').read_text())
             self.assertEqual(receipt['descendant_cleanup'], 'unverified')
+            self.assertEqual(receipt['socket_cleanup'], 'unverified')
+            self.assertEqual(receipt['returncode_status'], 'observed')
+            self.assertEqual(receipt['returncode'], child.returncode)
+            self.assertEqual(receipt['retention_complete_scope'], 'captured_streams_only')
             self.assertTrue(receipt['stream_writers_closed'])
             self.assertTrue(receipt['direct_child_exited'])
             if mode == 'over_limit':
@@ -367,6 +392,41 @@ class NativePhaseRetention(unittest.TestCase):
 
     def test_oversized_stream_retains_bounded_prefix_and_cannot_pass(self):
         self.exercise('over_limit')
+
+    def test_postlaunch_budget_failure_records_observed_or_unknown_exit_without_passing(self):
+        for outcome in ('killed', 'zero', 'unknown'):
+            with self.subTest(outcome=outcome), tempfile.TemporaryDirectory(prefix='flax-budget-cleanup-') as directory:
+                output = Path(directory)
+                class Child:
+                    pid = 12345
+                    returncode = None
+                    stdout = io.BytesIO(b'partial stdout')
+                    stderr = io.BytesIO(b'partial stderr')
+                    def poll(self): return self.returncode
+                    def kill(self):
+                        if outcome == 'unknown': raise OSError('injected stop failure')
+                        self.returncode = 0 if outcome == 'zero' else -9
+                    def wait(self, timeout): return self.returncode
+                child = Child()
+                calls = 0
+                def budget(*args):
+                    nonlocal calls
+                    calls += 1
+                    if calls > 1: raise RuntimeError('injected postlaunch budget failure')
+                    return (0, 0)
+                with patch.object(runner.subprocess, 'Popen', return_value=child) as launch, \
+                        patch.object(runner, 'check_output_budget', side_effect=budget):
+                    with self.assertRaisesRegex(RuntimeError, 'postlaunch budget failure'):
+                        runner.run_phase(['never-launched'], cwd=output, output=output, phase='daemon', timeout=1)
+                    launch.assert_called_once()
+                receipt = json.loads((output/'daemon-phase.json').read_text())
+                self.assertEqual(receipt['status'], 'failed')
+                self.assertEqual(receipt['returncode'], None if outcome == 'unknown' else 0 if outcome == 'zero' else -9)
+                self.assertEqual(receipt['returncode_status'], 'unknown' if outcome == 'unknown' else 'observed')
+                self.assertEqual(receipt['direct_child_exited'], outcome != 'unknown')
+                self.assertTrue(receipt['stream_retention_complete'])
+                self.assertEqual(receipt['descendant_cleanup'], 'unverified')
+                self.assertEqual(receipt['socket_cleanup'], 'unverified')
 
 
 if __name__ == '__main__':
