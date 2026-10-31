@@ -15,6 +15,35 @@ also needs a reviewed mapping for VC140 system dependencies; a matching payload
 directory alone is insufficient. This is not a working local execution route.
 All five spent attempts and their failed/uncertain outcomes stay preserved.
 
+## Terminal receipt retention (#3323)
+
+Terminal JSON stays strictly below 64 KiB and uses compact serialization.
+After all owned cleanup attempts, the runner atomically saves a failed cleanup
+checkpoint and `receipt.json` before optional aggregation. It independently
+retains the source hashes in `source-receipt.json` and the actual phase capture
+hashes/guest handshake in `capture-receipt.json`. This smoke has no gameplay
+take or viewport witness; these files must not be represented as those claims.
+
+A sibling temporary file is flushed/fsynced, the original entry budget is
+checked, and the failed checkpoint is replaced atomically only when all core
+evidence is retained and the full receipt fits. Successful outcomes also require
+three confirmed cleanup roles, the exact guest/build handshake, both phase
+images and their unchanged hashes. Overflow, missing evidence, expired time or
+write/replace failure remains failed; the primary exception is still raised.
+An oversized cleanup checkpoint uses explicit failure summaries/hashes and
+retains unconfirmed cleanup rather than claiming it succeeded.
+
+`terminal_committed: true` identifies a complete terminal document, including a
+complete failed outcome. It is not acceptance on its own. The independent
+cleanup checkpoint deliberately retains a failed/pending overall result while
+recording the actual per-role cleanup facts. V47's historical missing evidence
+and uncertainty remain unchanged.
+
+Offline coverage: `py -3.12 -B -m unittest discover -s tests/dreamseeker_smoke
+-p "test_*.py"`. Tests use synthetic files, injected adapters and temporary
+storage; they do not launch native tools or capture a desktop. Runtime admission,
+165-second budget, size/resource limits and all launch/network checks are unchanged.
+
 Native startup, exact pixels and cleanup for this source are unverified report
 items. Source publication or regular-PR status grants no local attempt, hosted
 dispatch, dependency setup, profile change or production operation. The existing
