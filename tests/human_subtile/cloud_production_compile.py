@@ -86,3 +86,26 @@ def verify_source(stage, manifest):
         with path.open('rb') as stream:
             digest=hashlib.file_digest(stream,'sha256').hexdigest()
         require(digest==expected['sha256'],'Production source changed: '+name)
+
+
+def compact_manifest(manifest):
+    """Preserve path order and measured SHA-256s; Git supplies the rest on host."""
+    return {'head':manifest['head'], 'tree':manifest['tree'],
+            'files':[[name,item['sha256']] for name,item in manifest['files'].items()]}
+
+
+def restore_manifest(compact, expected, expected_head, expected_tree):
+    """Reconstruct the exact worker manifest from the host's exact Git tree."""
+    require(isinstance(compact,dict) and compact.get('head')==expected_head and
+            compact.get('tree')==expected_tree and isinstance(compact.get('files'),list),
+            'Invalid compact source manifest')
+    files={};total=0
+    for row in compact['files']:
+        require(isinstance(row,list) and len(row)==2 and isinstance(row[0],str) and row[0] in expected and
+                row[0] not in files and isinstance(row[1],str) and len(row[1])==64 and
+                all(c in '0123456789abcdef' for c in row[1]), 'Invalid compact source entry')
+        info=expected[row[0]];total+=info['bytes']
+        files[row[0]]={'bytes':info['bytes'],'sha256':row[1],'git_blob':info['git_blob']}
+    require(set(files)==set(expected),'Compact source manifest incomplete')
+    return {'head':expected_head,'tree':expected_tree,'files':files,'bytes':total,
+            'dme':'civ13.dme','source_unmodified':True}

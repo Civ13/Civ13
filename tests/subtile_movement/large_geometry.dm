@@ -80,7 +80,7 @@
 				var/obj/large_geometry_blocker/B = new(blocker_turf)
 				var/list/before = large_geometry_snapshot(A)
 				var/before_distance = bounds_dist(A, B)
-				var/already_occupied = blocker_turf in A.locs
+				var/already_occupied = (blocker_turf in A.locs)
 				var/native_return = A.Move(A.loc, EAST, 2, 0)
 				var/list/after = large_geometry_snapshot(A)
 				rows += list(list("case" = "east_2px_blocker", "variant" = bound_variant, "direction" = EAST,

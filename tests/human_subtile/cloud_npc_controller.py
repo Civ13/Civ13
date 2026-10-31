@@ -168,7 +168,7 @@ def validate_package(data, expected):
                  'npc-smoke/npc-manifest.json', 'npc-smoke/stage/compile-stdout.log',
                  'npc-smoke/stage/compile-stderr.log',
                  'npc-smoke/geometry-stage/manifest.json', 'npc-smoke/geometry-stage/compile-stdout.log',
-                 'npc-smoke/geometry-stage/compile-stderr.log', 'production/source-manifest.json',
+                 'npc-smoke/geometry-stage/compile-stderr.log', 'production/source-compact.json',
                  'production/stage/compile-stdout.log', 'production/stage/compile-stderr.log'}
         allowed.update(f'npc-smoke/{suite}/{name}' for suite in ('runtime','runtime-wildlife')
                        for name in ('receipt.json','result.txt','port-closed.txt','runtime.log',
@@ -305,14 +305,18 @@ def validate_extended_evidence(data, head):
             require(json.loads(read(name)).get('head') == head, 'Extended manifest head mismatch')
 
 
-def validate_production_evidence(data,head,expected_tree):
+def validate_production_evidence(data,head,expected_tree,expected_inventory):
     with tarfile.open(fileobj=io.BytesIO(data),mode='r:') as archive:
         def read(name):
             item=archive.getmember(name)
             require(item.isfile() and item.size <= 4*1024**2, 'Invalid production evidence member')
             return archive.extractfile(item).read()
         status=json.loads(read('harness-status.json'));summary=json.loads(read('smoke-summary.json'))
-        manifest_raw=read('production/source-manifest.json');manifest=json.loads(manifest_raw)
+        compact=json.loads(read('production/source-compact.json'))
+        spec=importlib.util.spec_from_file_location('production_stage',Path(__file__).with_name('cloud_production_compile.py'))
+        production=importlib.util.module_from_spec(spec);spec.loader.exec_module(production)
+        manifest=production.restore_manifest(compact,expected_inventory,head,expected_tree)
+        manifest_raw=(json.dumps(manifest,indent=2)+'\n').encode()
         require(status.get('head')==head and status.get('outcome')=='passed' and status.get('phase')=='complete' and
                 status.get('suite')=='production_compile' and status.get('fixture_dme_only') is False and
                 summary.get('head')==head and summary.get('accepted') is True and summary.get('suite')=='production_compile' and
@@ -515,7 +519,11 @@ def main():
             report['evidence_complete']=package['complete']
             if report['outcome'] == 'passed' and package['complete']:
                 if args.suite == 'extended': validate_extended_evidence(evidence,head)
-                elif args.suite == 'production_compile': validate_production_evidence(evidence,head,exact_tree)
+                elif args.suite == 'production_compile':
+                    spec=importlib.util.spec_from_file_location('production_stage',Path(__file__).with_name('cloud_production_compile.py'))
+                    production=importlib.util.module_from_spec(spec);spec.loader.exec_module(production)
+                    inventory,_=production.tree_inventory(subprocess.check_output(git+['ls-tree','-r','-l','-z',head],timeout=30,env=git_env))
+                    validate_production_evidence(evidence,head,exact_tree,inventory)
                 else: validate_pass_evidence(evidence,head)
                 report['host_receipts_validated']=True
             wait_end=min(deadline-20,time.monotonic()+5)

@@ -42,7 +42,7 @@ EVIDENCE_PATHS = (
     'npc-smoke/stage/compile-stderr.log',
     'npc-smoke/geometry-stage/manifest.json',
     'npc-smoke/geometry-stage/compile-stdout.log', 'npc-smoke/geometry-stage/compile-stderr.log',
-    'production/source-manifest.json', 'production/stage/compile-stdout.log', 'production/stage/compile-stderr.log',
+    'production/source-compact.json', 'production/stage/compile-stdout.log', 'production/stage/compile-stderr.log',
     *(f'npc-smoke/geometry/{name}' for name in ('receipt.json','result.txt','port-closed.txt','runtime.log',
                                                 'daemon-stdout.log','daemon-stderr.log')),
     *(f'npc-smoke/{suite}/{name}' for suite in ('runtime', 'runtime-wildlife')
@@ -520,6 +520,7 @@ def run_production_compile(args,scratch,binary,archive,group,envelope,identity,a
     log=''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
     legacy.validate_compile(log,'civ13.dmb')
     production.verify_source(stage,manifest)
+    (out/'source-compact.json').write_text(json.dumps(production.compact_manifest(manifest),separators=(',',':'))+'\n')
     artifacts={}
     for suffix in ('.dmb','.rsc'):
         path=dme.with_suffix(suffix)

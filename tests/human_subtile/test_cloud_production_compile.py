@@ -3,6 +3,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import lzma
 from pathlib import Path
 import tarfile
 import tempfile
@@ -62,7 +63,11 @@ class ProductionContracts(unittest.TestCase):
         filedata=b'game'; manifest={'head': HEAD, 'tree': TREE, 'dme':'civ13.dme',
             'source_unmodified':True, 'bytes':len(filedata), 'files':{'civ13.dme':{
             'bytes':len(filedata), 'sha256':hashlib.sha256(filedata).hexdigest(), 'git_blob':blob(filedata)}}}
-        manifest_raw=json.dumps(manifest).encode()
+        expected,_=stage.tree_inventory(inventory({'civ13.dme':filedata}))
+        compact=stage.compact_manifest(manifest)
+        self.assertEqual(stage.restore_manifest(compact,expected,HEAD,TREE),manifest)
+        manifest=stage.restore_manifest(compact,expected,HEAD,TREE)
+        manifest_raw=(json.dumps(manifest,indent=2)+'\n').encode()
         status={'head':HEAD,'outcome':'passed','phase':'complete','suite':'production_compile','fixture_dme_only':False}
         phase={'returncode':0,'timed_out':False,'oversized_log':False,'deadline':120}
         artifact={'bytes':1,'sha256':'c'*64}
@@ -71,14 +76,32 @@ class ProductionContracts(unittest.TestCase):
                  'source_file_count':1,'source_bytes':len(filedata),'source_manifest_sha256':hashlib.sha256(manifest_raw).hexdigest(),
                  'compile':phase,'artifacts':{'civ13.dmb':artifact,'civ13.rsc':artifact}}
         files={'harness-status.json':json.dumps(status).encode(),'smoke-summary.json':json.dumps(summary).encode(),
-               'production/source-manifest.json':manifest_raw,
+               'production/source-compact.json':json.dumps(compact).encode(),
                'production/stage/compile-stdout.log':b'DM compiler version 516.1688\nciv13.dmb - 0 errors, 0 warnings\n',
                'production/stage/compile-stderr.log':b''}
-        controller.validate_production_evidence(archive(files).getvalue(),HEAD,TREE)
-        with self.assertRaises(RuntimeError): controller.validate_production_evidence(archive(files).getvalue(),HEAD,'d'*40)
+        controller.validate_production_evidence(archive(files).getvalue(),HEAD,TREE,expected)
+        with self.assertRaises(RuntimeError): controller.validate_production_evidence(archive(files).getvalue(),HEAD,'d'*40,expected)
         summary['compile']['returncode']=1; files['smoke-summary.json']=json.dumps(summary).encode()
-        with self.assertRaises(RuntimeError): controller.validate_production_evidence(archive(files).getvalue(),HEAD,TREE)
-        del files['production/source-manifest.json']
-        with self.assertRaises((RuntimeError, KeyError)): controller.validate_production_evidence(archive(files).getvalue(),HEAD,TREE)
+        with self.assertRaises(RuntimeError): controller.validate_production_evidence(archive(files).getvalue(),HEAD,TREE,expected)
+        del files['production/source-compact.json']
+        with self.assertRaises((RuntimeError, KeyError)): controller.validate_production_evidence(archive(files).getvalue(),HEAD,TREE,expected)
+
+    def test_compact_manifest_rejects_drift_and_fits_observed_scale(self):
+        files={'civ13.dme':b'game'}
+        files.update({f'code/generated/{i:04d}.dm':str(i).encode() for i in range(5882)})
+        expected,total=stage.tree_inventory(inventory(files))
+        manifest={'head':HEAD,'tree':TREE,'files':{name:{'bytes':len(data),
+                  'sha256':hashlib.sha256(data).hexdigest(),'git_blob':blob(data)} for name,data in files.items()},
+                  'bytes':total,'dme':'civ13.dme','source_unmodified':True}
+        compact=stage.compact_manifest(manifest)
+        self.assertEqual(stage.restore_manifest(compact,expected,HEAD,TREE),manifest)
+        encoded=json.dumps(compact,separators=(',',':')).encode()
+        self.assertLess(len(lzma.compress(encoded,preset=6)),280*1024)
+        compact['files'][1][1]='0'*64
+        changed=stage.restore_manifest(compact,expected,HEAD,TREE)
+        self.assertNotEqual(hashlib.sha256((json.dumps(changed,indent=2)+'\n').encode()).digest(),
+                            hashlib.sha256((json.dumps(manifest,indent=2)+'\n').encode()).digest())
+        compact['files'].pop()
+        with self.assertRaises(RuntimeError): stage.restore_manifest(compact,expected,HEAD,TREE)
 
 if __name__ == '__main__': unittest.main()
