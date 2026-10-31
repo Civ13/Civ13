@@ -9,7 +9,7 @@ namespace Civ13.Launcher;
 // Civilizationbot portable supervisor unless it is already running.
 public sealed record HostBot(string Php, string Root, string Profile, int HttpPort);
 public sealed record HostUpdate(string Git, string Branch);
-public sealed record HostProfile(string GameDirectory, string World, int Port, bool Public, HostBot? Bot, HostUpdate? Update = null);
+public sealed record HostProfile(string GameDirectory, string World, int Port, HostBot? Bot, HostUpdate? Update = null);
 
 public static class LocalHosting {
     public const string MenuKey = "H";
@@ -28,7 +28,6 @@ public static class LocalHosting {
         if (Path.GetFileName(world) != world || !world.EndsWith(".dmb", StringComparison.OrdinalIgnoreCase) || !File.Exists(Path.Combine(game, world)))
             throw new InvalidDataException("host.json world must name a compiled .dmb inside game_directory.");
         var port = Port(json, "port");
-        var isPublic = json.TryGetProperty("public", out var visibility) && visibility.ValueKind == JsonValueKind.True;
         HostUpdate? update = null;
         if (json.TryGetProperty("update", out var updateJson) && updateJson.ValueKind != JsonValueKind.Null) {
             var git = AbsoluteFile(Text(updateJson, "git"), "update.git");
@@ -50,13 +49,14 @@ public static class LocalHosting {
             using var botProfile = JsonDocument.Parse(File.ReadAllText(profile));
             bot = new HostBot(php, botRoot, profile, Port(botProfile.RootElement, "http_port"));
         }
-        return new HostProfile(game, world, port, isPublic, bot, update);
+        return new HostProfile(game, world, port, bot, update);
     }
 
+    // The hosted world is always listed publicly on the BYOND hub.
     public static ProcessStartInfo DaemonStart(HostProfile host, string byondBin) {
         var start = new ProcessStartInfo(Path.Combine(byondBin, "dd.exe")) {
             UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = host.GameDirectory };
-        foreach (var argument in new[] { host.World, host.Port.ToString(), "-trusted", host.Public ? "-public" : "-invisible", "-close", "-log", "logs/world.log" })
+        foreach (var argument in new[] { host.World, host.Port.ToString(), "-trusted", "-public", "-close", "-log", "logs/world.log" })
             start.ArgumentList.Add(argument);
         return start;
     }
@@ -114,7 +114,7 @@ public static class LocalHosting {
             }
             Directory.CreateDirectory(Path.Combine(host.GameDirectory, "logs"));
             start(DaemonStart(host, byondBin));
-            report.Add($"Started DreamDaemon: {host.World} on port {host.Port} ({(host.Public ? "public" : "invisible")}).");
+            report.Add($"Started DreamDaemon: {host.World} on port {host.Port} (public).");
         }
         if (host.Bot is { } bot) {
             if (listening(bot.HttpPort)) report.Add($"Civilizationbot is already running (port {bot.HttpPort}).");

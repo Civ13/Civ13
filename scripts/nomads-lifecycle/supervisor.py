@@ -537,7 +537,7 @@ class Supervisor:
             probe.bind((bind, c['port']))
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
         # -close ends the process when the world shuts down; save_shutdown waits for that exit.
-        argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-close', '-log', 'supervisor-runtime.log']
+        argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-public', '-close', '-log', 'supervisor-runtime.log']
         if bind == '127.0.0.1':
             argv += ['-ip', bind]
         if before_spawn is not None:
