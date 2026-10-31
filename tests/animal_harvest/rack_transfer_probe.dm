@@ -3,6 +3,10 @@
 /mob/living/human/rack_transfer_tester/New()
 	species = new /datum/species/human
 	body_build = new /datum/body_build
+	defaultHUD = "1713Style"
+	if (!HUDdatums[defaultHUD])
+		makeDatumRefLists()
+	create_HUDinventory()
 
 /mob/living/human/rack_transfer_tester/hide_worker_connected()
 	return TRUE
@@ -57,11 +61,15 @@
 				floor_hide = new(site, floor_count, FALSE)
 				held = new(worker, 3, FALSE)
 				if (left_hand)
-					worker.l_hand = held
+					harvest_assert(worker.put_in_l_hand(held), "Production left-hand rack pickup failed")
 				else
-					worker.r_hand = held
+					harvest_assert(worker.put_in_r_hand(held), "Production right-hand rack pickup failed")
+				harvest_assert(held.screen_loc && held.plane == HUD_PLANE, "Rack input was not in production HUD item state")
 				harvest_assert(held.resolve_attackby(rack, worker), "Rack click did not resolve")
 				harvest_assert(held.loc == rack && held.amount == 3 && rack.filled && !worker.item_is_in_hands(held), "Rack did not own exact held batch")
+				harvest_assert(!held.screen_loc && held.plane == GAME_PLANE, "Rack transfer retained stale HUD item state")
+				if (worker.client)
+					harvest_assert(!(held in worker.client.screen), "Rack transfer retained actual client screen membership")
 				harvest_assert(!QDELETED(floor_hide) && floor_hide.loc == site && floor_hide.amount == floor_count, "Rack touched unrelated floor hides")
 				harvest_assert(rack.finish_hide_drying(held, 3, rack.drying_epoch, get_turf(rack)) && tanning_amount(rack, /obj/item/stack/material/dryhide) == 3, "Transferred batch lost drying yield")
 				qdel(rack)

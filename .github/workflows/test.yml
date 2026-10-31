@@ -2355,7 +2355,7 @@ jobs:
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
-          /usr/bin/python3 tests/animal_harvest/run.py --byond-bin "$PWD/BYOND/byond/bin"
+          /usr/bin/python3 tests/animal_harvest/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --acceptance-scope limited
 
       - name: Verify flintlock assembly, races, catalog and persistence
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/blackpowder')

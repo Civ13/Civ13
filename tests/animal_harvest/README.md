@@ -1,16 +1,59 @@
 # Animal harvest regression
 
-Run with a verified Python interpreter and explicit BYOND 516.1681 bin path:
+Run only under the admitted native plan, with a verified Python interpreter and
+explicit BYOND 516.1688 bin path:
 
 ```powershell
-& '<verified-python-executable>' tests/animal_harvest/run.py --byond-bin '<516.1681-bin>'
+& '<verified-python-executable>' tests/animal_harvest/run.py --byond-bin '<516.1688-bin>'
 ```
 
 The runner compiles the production DME without its map or normal world startup,
 then launches a small offline world in unique temporary storage under ignored
-`data/animal-harvest-tests`. It copies only name configuration. Generated compiler
-inputs/outputs are removed in `finally`; evidence logs remain for review.
+`data/animal-harvest-tests`. It copies only name configuration. Unique owned
+generated files, prelaunch input snapshots and runtime logs are retained on
+success, failure, timeout and interruption. No runner path deletes them.
 Linux CI uses the downloaded pinned BYOND bin directory and `/usr/bin/python3`.
+Linux also requires `--byond-archive <reviewed-pinned.zip>`; the manifest version,
+one exact clean compiler banner, archive and four installed members are checked.
+This source reconciliation does not establish new native compatibility.
+
+Linux reuses the reviewed flax bounded capture/manifest helper instead of the
+bare subprocess fallback. The existing CI call explicitly selects
+`--acceptance-scope limited`; legacy callers default to that scope. It retains
+the pinned compile, fixture result, diagnostic and no-port checks and preserves
+all generated inputs/logs. A passing limited run records
+`limited_fixture_pass_cleanup_unverified`, prints a LIMITED notice and never
+claims verified Linux descendants/sockets or complete acceptance.
+
+The stricter lane requires explicit `--acceptance-scope full` together with
+`--external-cleanup-receipt <observer-produced.json>` (up to five seconds to
+arrive, adjustable downward with `--cleanup-receipt-wait`). The external observer
+must bind `head_sha`, the generated manifest's `run_id`, absolute
+`evidence_directory`, sorted compile/runtime `phase_pids`, `descendants_exited`
+and `sockets_closed` TRUE, a named `external_verifier`, and an owned relative
+`os_evidence_path` with matching `os_evidence_sha256`. It must actually verify
+owned descendants and sockets; the runner never generates that assertion.
+The receipt and OS evidence still require independent review. A JSON assertion
+is not authorization or independently proven containment. Missing/mismatched
+evidence fails closed in full scope while preserving the fixture's actual
+results and files. Full selection without a receipt path, or a receipt argument
+without explicit full selection, is rejected before launch. Full scope is
+prepared for Linux only; the existing Windows owned Session checks remain.
+`full_acceptance_complete` stays FALSE because complete #3322 acceptance also
+needs independent OS/capture review and the connected scene.
+
+No reviewed Linux external cleanup observer/producer is available in the shared
+helper or this fixture. CI therefore selects only limited checks; extensive
+selection does not promote them to full scope. The full lane is not wired into
+CI and remains gated on an admitted external observer and its actual evidence.
+No workflow was launched and no OS attestation was synthesized here.
+
+The reused #3322 rack matrix keeps production human left/right pickup and checks
+HUD item state on admission/cleanup. It retains its legacy-result, floor-merge,
+bag, denial and redirect controls. Its constructor initializes the existing HUD
+dependencies without replacing inventory handlers. See the source-only
+[human entry plan](../flax_processing/human-entry-plan.md) for the separate
+admission and evidence limits. No native run was performed in that preparation.
 
 The fixture executes production yield construction, harvesting claims, post-wait
 validation, sinew conversion, axe assembly and the actual map-storage object
