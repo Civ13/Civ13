@@ -549,22 +549,42 @@
 	not_movable = FALSE
 	not_disassemblable = FALSE
 	var/active = FALSE
+	var/tmp/datum/grinder_batch/grinding_batch = null
 	powerneeded = 30
 	var/obj/item/stack/inserted = null
 
+/obj/structure/grinder/persistence_runtime_var(key)
+	return key == "active" || key == "grinding_batch" || ..()
+
 /obj/structure/grinder/proc/check_power()
-	if (!powersource || !powerneeded)
-		powered = FALSE
+	powered = powersource && powerneeded > 0 && draw_cable_power()
+	if (!powered)
+		stop_grinding()
+	return powered
+
+// An old callback must never stop a replacement batch.
+/obj/structure/grinder/proc/stop_grinding(datum/grinder_batch/expected_batch)
+	if (expected_batch && grinding_batch != expected_batch)
 		return FALSE
-	else
-		powered = TRUE
-		if (draw_cable_power())
-			return TRUE
-		else
-			if (active)
-				powersource.update_power(-powerneeded,1,src)
-				active = FALSE
-			return FALSE
+	grinding_batch = null
+	active = FALSE
+	if (powersource)
+		powersource.update_power(0, 1, src)
+	update_icon()
+	return TRUE
+
+/obj/structure/grinder/Destroy()
+	stop_grinding()
+	var/turf/site = get_turf(src)
+	if (site && inserted && !inserted.gcDestroyed && !inserted.gc_destroyed && inserted.loc == src)
+		inserted.forceMove(site)
+	inserted = null
+	return ..()
+
+// Preserve the legacy five-wood-to-one-wood conversion until chips have a design.
+// Never consume fractional, burning, concurrently worked or unsupported stock.
+/obj/structure/grinder/proc/can_grind_input(obj/item/stack/material/wood/stock)
+	return istype(stock) && !stock.gcDestroyed && !stock.gc_destroyed && stock.material && stock.material.name == "wood" && !stock.onfire && !stock.splitting_in_progress && !stock.woodwork_owner && isnum(stock.amount) && stock.amount == round(stock.amount) && stock.amount >= 5 && stock.amount <= stock.max_amount
 
 /obj/structure/grinder/update_icon()
 	..()
@@ -586,6 +606,7 @@
 		to_chat(H, SPAN_NOTICE("\The [src] is empty."))
 		return
 	else if (inserted && !active)
+		stop_grinding()
 		to_chat(H, SPAN_NOTICE("You turn \the [src] active."))
 		active = TRUE
 		update_icon()
@@ -604,11 +625,14 @@
 		connect_cable(user,W)
 		return
 
-	else if (istype(W, /obj/item/stack) && !inserted)
+	else if (istype(W, /obj/item/stack) && !inserted && !active && !grinding_batch)
+		if (!can_grind_input(W))
+			to_chat(user, SPAN_WARNING("The grinder needs at least five whole units of unworked, unburnt wood."))
+			return
+		if (!user || W.loc != user || !user.item_is_in_hands(W) || !user.drop_from_inventory(W, src) || W.loc != src)
+			return
 		to_chat(user, "You place \the [W] in \the [src] for grinding.")
 		inserted =  W
-		user.drop_item()
-		W.loc = src
 		update_icon()
 		return
 
@@ -626,6 +650,7 @@
 		return
 
 	if (inserted && !active)
+		stop_grinding()
 		visible_message("You remove \the [inserted].","[usr] removes \the [inserted] from \the [src].")
 		inserted.loc = get_turf(src)
 		inserted = null
@@ -633,35 +658,85 @@
 	return
 
 /obj/structure/grinder/proc/process_machine()
+	if (!active || grinding_batch)
+		return FALSE
+	var/datum/grinder_batch/batch = new(src)
+	grinding_batch = batch
+	if (!batch.valid())
+		stop_grinding(batch)
+		visible_message(SPAN_WARNING("\The [src] cannot grind this input; nothing was consumed."))
+		return FALSE
 	if (!check_power())
 		visible_message(SPAN_WARNING("\The [src] abruptly stops grinding and powers down."))
-		return
-	else
-		spawn(10 SECONDS)
-			playsound(loc, 'sound/machines/grinder.ogg', 100, TRUE)
-			spawn (5 SECONDS)
-				if (!check_power())
-					visible_message(SPAN_WARNING("\The [src] abruptly stops grinding and powers down."))
+		return FALSE
+	spawn(10 SECONDS)
+		if (!src || gcDestroyed || gc_destroyed)
+			return
+		if (!batch.valid())
+			stop_grinding(batch)
+			return
+		if (!check_power())
+			visible_message(SPAN_WARNING("\The [src] abruptly stops grinding and powers down."))
+			return
+		playsound(loc, 'sound/machines/grinder.ogg', 100, TRUE)
+		spawn(5 SECONDS)
+			if (!src || gcDestroyed || gc_destroyed)
+				return
+			var/completed = batch.commit()
+			if (!stop_grinding(batch))
+				return
+			visible_message(completed ? "\The [src] stops grinding." : SPAN_WARNING("\The [src] stops without consuming inputs."))
+	return TRUE
 
-				var/obj/item/stack/tospawn
+// The callback retains this snapshot, rather than reading replacement input.
+/datum/grinder_batch
+	should_save = FALSE
+	var/obj/structure/grinder/machine
+	var/obj/item/stack/material/wood/stock
+	var/stock_type
+	var/material/stock_material
+	var/stock_amount
+	var/turf/site
+	var/obj/structure/cable/supply
+	var/save_epoch
+	var/committed = FALSE
 
-				if (istype(inserted, /obj/item/stack/material/wood))
-					tospawn = new /obj/item/stack/material/wood(get_turf(src))
-					tospawn.amount = inserted.amount/5
-				else
-					active = FALSE
-					update_icon()
-					visible_message(SPAN_WARNING("\The [src] cannot grind this item."))
-					playsound(loc, 'sound/machines/buzz-sigh.ogg', 50, TRUE)
-					inserted.loc = get_turf(src)
-					inserted = null
-					return
+/datum/grinder_batch/New(obj/structure/grinder/owner)
+	machine = owner
+	stock = owner.inserted
+	if (istype(stock))
+		stock_type = stock.type
+		stock_material = stock.material
+		stock_amount = stock.amount
+	site = get_turf(owner)
+	supply = owner.powersource
+	save_epoch = persistence_admission_identity
 
-				active = FALSE
-				qdel (inserted)
-				inserted = null
-				update_icon()
-				visible_message("\The [src] stops grinding.")
+/datum/grinder_batch/proc/valid()
+	if (committed || !machine || machine.gcDestroyed || machine.gc_destroyed || machine.grinding_batch != src || !machine.active)
+		return FALSE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)
+		return FALSE
+	if (!site || machine.loc != site || !machine.anchored || machine.powersource != supply || !supply || supply.gcDestroyed || supply.gc_destroyed)
+		return FALSE
+	return machine.can_grind_input(stock) && machine.inserted == stock && stock.loc == machine && stock.type == stock_type && stock.material == stock_material && stock.amount == stock_amount
+
+/datum/grinder_batch/proc/commit()
+	if (!valid() || !machine.check_power())
+		return FALSE
+	// Round down complete legacy batches; leave the unpaid remainder installed.
+	var/output_amount = round(stock_amount / 5)
+	var/input_amount = output_amount * 5
+	if (!stock.use(input_amount))
+		return FALSE
+	committed = TRUE
+	if (input_amount == stock_amount)
+		machine.inserted = null
+	// Explicit amount and merge=FALSE avoid constructor auto-merge before sizing.
+	var/obj/item/stack/material/wood/output = new(site, output_amount, FALSE)
+	output.update_icon()
+	output.update_strings()
+	return TRUE
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -38,3 +38,34 @@ The processing fixture executes production transfers, selected reactions and
 construction, but it does not click menus or test timed character interactions.
 The subsequent gelatin, heat/polypropylene, fuel and player acquisition paths
 are documented in [Chemistry Recipes](chemistry-recipes.md).
+
+## Grinder transaction safety
+
+The powered grinder retains the exact installed stack, type, material, count,
+tile and cable connection through its existing 10-second and 5-second waits.
+Both stages reject changed input or a cancelled/replaced operation. A failed
+power check invalidates that operation, including after power returns and a new
+cycle starts. Destruction cancels the cycle and releases its installed input
+onto the machine's turf before ordinary contents cleanup. Save/load admission
+also invalidates an in-flight operation; the running flag and callback owner
+are runtime state, while installed stock remains durable.
+
+This safety fix retains the existing conversion into ordinary wood: each complete
+five-unit batch pays five wood for one wood output. Partial batches remain
+installed, and fewer than five units, fractional/oversized stacks, burning wood,
+wood claimed by woodworking and other materials cannot start a conversion.
+Output is constructed with its final integer count and automatic merging
+disabled, avoiding constructor merging before the output has been sized.
+Existing wood crafting, fuel and material definitions are unchanged.
+
+Issues #2301 and #2303 describe wood chips but do not establish their unit or
+yield. This patch does not introduce chips, chip-to-wood recovery, new chemical
+products or downstream recipes. The chip yield and consumers need a separate
+design decision; these broader issues remain open.
+
+`tests/grinder/test_transaction.py` checks the transaction offline using source
+projections, deterministic callbacks and external adapters. It does not establish
+native compilation, real power-network integration, savefile round trips or
+gameplay. Power is sampled at start and both wait completions, and by other
+callers of `check_power()`; an outage that disappears between all observations
+is not recorded by the existing cable system. See its [verification notes](../tests/grinder/README.md).
