@@ -48,7 +48,7 @@ def validate_bridge(row, head):
     require(isinstance(row, dict) and row.get('head') == head and row.get('error') is None and
             row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688) and
             row.get('scope') == SCOPE and row.get('npc_checks') == 0 and
-            row.get('large_bridge_checks') == 4260, 'Invalid bridge receipt identity or count')
+            row.get('large_bridge_checks') == 4269, 'Invalid bridge receipt identity or count')
     sentinel=row.get('large_bridge_exception_sentinel')
     require(isinstance(sentinel,dict) and sentinel.get('caught') == 1 and sentinel.get('name') == 'fixture_bridge_exception',
             'Direct exception sentinel failed')
@@ -110,17 +110,18 @@ def validate_bridge(row, head):
                 edge not in {(c.get('x'),c.get('y')) for c in allowed['after']['locs'] if isinstance(c,dict)},
                 'Allowed move did not actually exit the measured remote edge')
     controls = row.get('large_bridge_controls')
-    require(isinstance(controls,list) and len(controls) == 38 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
+    require(isinstance(controls,list) and len(controls) == 39 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
     by_case={c.get('case'):c for c in controls}
     require(all(c.get('frame_cleared') == 1 for c in controls), 'Missing frame cleanup evidence')
     callbacks = {'callback_invalidate','callback_cancel','callback_finish','callback_delete','callback_blocker_delete','callback_incapacitate','callback_reassign','callback_control','callback_disable'}
     real={f'real_/obj/structure/{kind}/bridge_fixture_{direction}_{allow}' for kind in ('window','railing','table') for direction in (4,8) for allow in (0,1)}
     lifecycle={'lifecycle_first_fault','lifecycle_later_fault','lifecycle_ordinary_denial','lifecycle_replace_fault'}
-    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','policy_mutation'} | callbacks | real | lifecycle, 'Duplicate or missing controls')
+    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','policy_mutation','retirement_ownership'} | callbacks | real | lifecycle, 'Duplicate or missing controls')
     for name in lifecycle:
         case=by_case[name];before=point(case.get('before')); at=point(case.get('at_callback')); after=point(case.get('after'))
         require(at==after==point(case.get('after_wait')) and all(case.get(k)==1 for k in
-                ('pulse_consumed','owner_preserved','pulse_preserved','frame_cleared','finished','attempted')),
+                ('pulse_consumed','owner_preserved','pulse_preserved','frame_cleared','finished','attempted','glide_valid')) and
+                case.get('arrived')==0,
                 'Lifecycle cleanup, fault displacement, or late movement: '+name)
         expected_distance=2 if name=='lifecycle_later_fault' else 0
         require((at[0]-before[0])*32+at[3]-before[3]==-expected_distance and at[1:3]==before[1:3] and
@@ -155,8 +156,16 @@ def validate_bridge(row, head):
             'fixture_throw_attempt' in events(thrown) and 'Uncross:throw_catch' in events(thrown),
             'Exception cleanup control failed')
     deleted=by_case['callback_actor_delete']
+    state=deleted.get('retired_state')
     require(deleted.get('actor_deleted') == 1 and deleted.get('pulse_consumed') == 1 and deleted.get('checks') == 1 and
-            deleted.get('error') is None and 'CheckExit:bridge' in events(deleted), 'Actor-deletion control failed')
+            deleted.get('error') is None and 'CheckExit:bridge' in events(deleted) and
+            isinstance(state,dict) and state.get('exists')==1 and
+            all(state.get(k)==0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start',
+                                          'destination','path_target','combat_target','following')),
+            'Actor-deletion retirement failed')
+    retirement=by_case['retirement_ownership']
+    require(all(retirement.get(k)==1 for k in ('preserved','cleared','plain_deleted','frame_cleared')),
+            'Frame ownership, idempotence or ordinary deletion failed')
     point(deleted.get('before'))
     policy=by_case['policy_mutation']; trace=events(policy)
     require(point(policy.get('before')) == point(policy.get('after')) and policy.get('subject_allow') == 0 and

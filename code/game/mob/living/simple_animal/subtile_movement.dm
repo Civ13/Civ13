@@ -945,7 +945,7 @@
 		return null
 	return F
 
-/datum/npc_subtile_large_frame/proc/close()
+/datum/npc_subtile_large_frame/proc/retire()
 	active = FALSE
 	if (actor && !isDeleted(actor) && actor.npc_subtile_large_frame == src)
 		actor.npc_subtile_large_frame = null
@@ -953,8 +953,18 @@
 	pulse = null
 	transaction = null
 	intent_owner = null
+	start = null
+	destination = null
+	path_target = null
+	combat_target = null
+	following = null
 	fault = null
-	qdel(src)
+	checking = FALSE
+
+/datum/npc_subtile_large_frame/proc/close()
+	retire()
+	if (!isDeleted(src))
+		qdel(src)
 
 /datum/npc_subtile_transaction
 	should_save = FALSE

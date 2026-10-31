@@ -25,6 +25,7 @@ var/list/large_bridge_exception_sentinel = list()
 	var/obj/large_native_border/bridge/fixture_mutation_target
 	var/datum/npc_subtile_large_frame/fixture_deleted_actor_frame
 	var/fixture_actor_deleted = FALSE
+	var/list/fixture_retired_state
 
 /obj/large_native_border/bridge/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
 	large_native_log("CheckExit:bridge", src)
@@ -52,6 +53,15 @@ var/list/large_bridge_exception_sentinel = list()
 				fixture_deleted_actor_frame = A.npc_subtile_large_frame
 				qdel(A)
 				fixture_actor_deleted = !A || isDeleted(A)
+				var/datum/npc_subtile_large_frame/F = fixture_deleted_actor_frame
+				if (F && !isDeleted(F))
+					fixture_retired_state = list("exists" = TRUE, "active" = !!F.active, "valid" = !!F.valid(),
+						"actor" = !!F.actor, "pulse" = !!F.pulse, "transaction" = !!F.transaction,
+						"intent" = !!F.intent_owner, "fault" = !!F.fault, "start" = !!F.start,
+						"destination" = !!F.destination, "path_target" = !!F.path_target,
+						"combat_target" = !!F.combat_target, "following" = !!F.following)
+					F.retire()
+					F.retire()
 			if ("callback_incapacitate")
 				A.stunned = 1
 			if ("callback_reassign")
@@ -231,13 +241,46 @@ var/list/large_bridge_exception_sentinel = list()
 	var/actor_deleted = !A || isDeleted(A)
 	var/frame_cleared = !B.fixture_deleted_actor_frame || !B.fixture_deleted_actor_frame.active
 	var/pulse_consumed = P && !P.armed
+	large_bridge_controls += list(list("case" = "callback_actor_delete", "before" = before, "actor_deleted" = actor_deleted,
+		"frame_cleared" = frame_cleared, "pulse_consumed" = pulse_consumed, "checks" = B.fixture_checks,
+		"retired_state" = B.fixture_retired_state, "error" = error, "result" = result, "trace" = large_native_trace.Copy()))
 	large_bridge_assert(!error && actor_deleted && B.fixture_actor_deleted, "bridge_actor_deleted")
 	large_bridge_assert(B.fixture_checks == 1 && pulse_consumed, "bridge_delete_callback_consumed")
 	large_bridge_assert(frame_cleared, "bridge_delete_frame_cleared")
-	large_bridge_controls += list(list("case" = "callback_actor_delete", "before" = before, "actor_deleted" = actor_deleted,
-		"frame_cleared" = frame_cleared, "pulse_consumed" = pulse_consumed, "checks" = B.fixture_checks,
-		"error" = error, "result" = result, "trace" = large_native_trace.Copy()))
+	var/list/retired = B.fixture_retired_state
+	large_bridge_assert(retired && retired["exists"] && !retired["active"] && !retired["valid"] && !retired["actor"] && !retired["pulse"] && !retired["transaction"] && !retired["intent"] && !retired["fault"] && !retired["start"] && !retired["destination"] && !retired["path_target"] && !retired["combat_target"] && !retired["following"], "bridge_delete_frame_retired")
+	if (B.fixture_deleted_actor_frame) qdel(B.fixture_deleted_actor_frame)
 	qdel(P); qdel(T); qdel(B)
+
+// An invalid cross-actor pointer must not let one animal retire another's
+// frame. The fixture itself closes the retained frame only after callbacks end.
+/proc/large_bridge_retirement_control()
+	var/mob/living/simple_animal/other = new(locate(6, 6, 1))
+	var/mob/living/simple_animal/dying = new(locate(7, 6, 1))
+	var/datum/npc_subtile_large_frame/F = new
+	var/datum/npc_subtile_pulse/P = new
+	var/datum/npc_subtile_transaction/T = new
+	var/datum/owner = new
+	F.actor = other; F.pulse = P; F.transaction = T; F.intent_owner = owner
+	F.start = list("x" = 6); F.destination = other.loc; F.path_target = other.loc
+	F.combat_target = other; F.following = other; F.fault = EXCEPTION("fixture_retire_fault")
+	other.npc_subtile_large_frame = F; dying.npc_subtile_large_frame = F
+	qdel(dying)
+	var/preserved = F.active && F.actor == other && other.npc_subtile_large_frame == F
+	F.retire(); F.retire()
+	var/cleared = !F.active && !F.valid() && !F.actor && !F.pulse && !F.transaction && !F.intent_owner && !F.fault && !F.start && !F.destination && !F.path_target && !F.combat_target && !F.following && !other.npc_subtile_large_frame
+	F.close()
+	if (F && !isDeleted(F)) F.close()
+	var/mob/living/simple_animal/plain = new(locate(8, 6, 1))
+	qdel(plain)
+	var/plain_deleted = !plain || isDeleted(plain)
+	large_bridge_controls += list(list("case" = "retirement_ownership", "preserved" = !!preserved,
+		"cleared" = !!cleared, "plain_deleted" = !!plain_deleted, "frame_cleared" = !other.npc_subtile_large_frame))
+	large_bridge_assert(preserved, "bridge_other_actor_frame_preserved")
+	large_bridge_assert(cleared, "bridge_retire_idempotent_refs")
+	large_bridge_assert(!other.npc_subtile_large_frame, "bridge_repeat_close_safe")
+	large_bridge_assert(plain_deleted, "bridge_plain_destroy")
+	qdel(P); qdel(T); qdel(owner); qdel(other)
 
 /proc/large_bridge_setup(animal_type, variant, direction, orthogonal, pulse_count = 15)
 	var/mob/living/simple_animal/A = new animal_type(locate(9, 7, 1))
@@ -418,4 +461,5 @@ var/list/large_bridge_exception_sentinel = list()
 		large_bridge_capability_control(control)
 	large_bridge_missing_control()
 	large_bridge_ordinary_control()
-	large_bridge_assert(large_bridge_controls.len == 38, "bridge_controls_complete")
+	large_bridge_retirement_control()
+	large_bridge_assert(large_bridge_controls.len == 39, "bridge_controls_complete")

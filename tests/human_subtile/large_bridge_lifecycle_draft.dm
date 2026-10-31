@@ -1,5 +1,5 @@
 // Fixture-only large shape admission; production's 32x32 guard is unchanged.
-// This file is not wired into a job, DME or the existing accepted receipt.
+// This is included only by the isolated bridge fixture, never the game DME.
 /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge/lifecycle
 	npc_subtile_enabled = TRUE
 
@@ -23,13 +23,14 @@
 		throw EXCEPTION("fixture_bridge_exception")
 	return ..()
 
-// Invoked by a future reviewed bridge lane using its already measured remote
+// Invoked by the isolated bridge lane using its already measured remote
 // exiting turf. Tests real ai_step admission on the first-pulse cases and the
 // inherited transaction advance/perform_rest/finish on the later-pulse case.
 /proc/large_bridge_lifecycle_case(turf/exiting, mode)
 	large_bridge_assert(mode in list("first_fault", "later_fault", "ordinary_denial", "replace_fault"), "lifecycle_mode")
 	var/mob/living/simple_animal/A = large_bridge_setup(/mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge/lifecycle, 0, WEST, FALSE, mode == "later_fault" ? 14 : 15)
 	A.npc_subtile_offset_owned = TRUE
+	var/original_glide = A.glide_size
 	var/obj/large_native_border/bridge/lifecycle/B = new(exiting)
 	B.fixture_allow = FALSE
 	if (mode == "first_fault" || mode == "later_fault") B.fixture_fault = "callback_throw"
@@ -50,6 +51,10 @@
 			T.target = A.target_obj; T.combat_target = A.target_mob; T.following = A.following_mob; T.stance = A.stance
 			T.remaining_x = A.step_x; T.remaining_y = 0
 			A.npc_subtile_transaction = T
+			A.npc_subtile_previous_glide = A.glide_size
+			A.npc_subtile_glide_owned = TRUE
+			A.glide_size = max(T.remaining_x, T.remaining_y) * world.tick_lag / 8
+			A.npc_subtile_applied_glide = A.glide_size
 			large_bridge_assert(T.advance() && T.distance == 2, "lifecycle_later_first_progress")
 			T.perform_rest(TRUE)
 		else
@@ -64,20 +69,24 @@
 	var/frame_cleared = !A.npc_subtile_large_frame
 	var/completed = T && T.finished
 	var/attempted = T && T.attempted
+	var/arrived = T && T.arrived
+	var/glide_valid = mode == "replace_fault" ? (A.npc_subtile_glide_owned && A.glide_size == A.npc_subtile_applied_glide) : (!A.npc_subtile_glide_owned && A.glide_size == original_glide)
 	sleep(world.tick_lag * 2)
 	var/list/after_wait = A.npc_subtile_snapshot()
+	large_bridge_controls += list(list("case" = "lifecycle_[mode]", "before" = before, "at_callback" = B.at_callback,
+		"after" = after, "after_wait" = after_wait, "caught" = caught, "caught_name" = caught_name,
+		"pulse_consumed" = !!pulse_consumed, "owner_preserved" = !!owner_preserved, "pulse_preserved" = !!pulse_preserved,
+		"frame_cleared" = !!frame_cleared, "finished" = !!completed, "attempted" = !!attempted, "arrived" = !!arrived, "glide_valid" = !!glide_valid,
+		"distance" = T ? T.distance : null, "checks" = B.fixture_checks))
 	large_bridge_assert(B.fixture_checks == (mode == "replace_fault" ? 0 : 1) && pulse_consumed && frame_cleared && completed && attempted, "lifecycle_consumed_and_finished")
 	large_bridge_assert(owner_preserved && pulse_preserved && human_subtile_same(after, after_wait), "lifecycle_ownership_and_no_late_move")
 	large_bridge_assert(B.at_callback && human_subtile_same(B.at_callback, after), "lifecycle_no_fault_displacement")
 	large_bridge_assert(mode == "ordinary_denial" ? (!caught && !result) : (caught && caught_name == "fixture_bridge_exception"), "lifecycle_outcome")
-	large_bridge_controls += list(list("case" = "lifecycle_[mode]", "before" = before, "at_callback" = B.at_callback,
-		"after" = after, "after_wait" = after_wait, "caught" = caught, "caught_name" = caught_name,
-		"pulse_consumed" = !!pulse_consumed, "owner_preserved" = !!owner_preserved, "pulse_preserved" = !!pulse_preserved,
-		"frame_cleared" = !!frame_cleared, "finished" = !!completed, "attempted" = !!attempted,
-		"distance" = T ? T.distance : null, "checks" = B.fixture_checks))
+	large_bridge_assert(!arrived && glide_valid, "lifecycle_not_arrived_and_glide_ownership")
 	// Only the fixture removes the deliberately installed replacement after the
 	// assertions; the old production owner is not allowed to do so.
 	if (mode == "replace_fault")
 		A.npc_subtile_pulse = null; A.npc_subtile_transaction = null
+		A.npc_subtile_release_glide()
 		qdel(B.fixture_replacement)
 	qdel(B); qdel(A)

@@ -697,6 +697,13 @@
 			origin = null
 
 /mob/living/simple_animal/Destroy()
+	// A native Move may never return to its DM wrapper after src is deleted.
+	// Detach only the frame belonging to this actor; retire it without deleting
+	// the datum while its collision callback could still be on the stack.
+	var/datum/npc_subtile_large_frame/F = npc_subtile_large_frame
+	if (F && F.actor == src)
+		npc_subtile_large_frame = null
+		F.retire()
 	npc_subtile_pending_intent = null
 	unregisterSpawner()
 	..()

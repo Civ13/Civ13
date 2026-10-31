@@ -65,6 +65,22 @@ class LargeExitContracts(unittest.TestCase):
         self.assertLess(segment.index('var/exception/large_frame_fault = large_frame.fault'),segment.index('large_frame.close()'))
         self.assertLess(segment.index('large_frame.close()'),segment.index('throw large_frame_fault'))
 
+    def test_destroy_retires_only_owned_frame_without_deleting_callback_datum(self):
+        animal=source('code/game/mob/living/simple_animal/simple_animal.dm')
+        destroy=animal.split('/mob/living/simple_animal/Destroy()',1)[1].split('/mob/living/simple_animal/death(',1)[0]
+        self.assertIn('if (F && F.actor == src)',destroy)
+        self.assertLess(destroy.index('npc_subtile_large_frame = null'),destroy.index('F.retire()'))
+        self.assertNotIn('qdel(F)',destroy)
+        self.assertNotIn('living_movement_completed',destroy)
+        frame=source('code/game/mob/living/simple_animal/subtile_movement.dm')
+        retire=frame.split('/datum/npc_subtile_large_frame/proc/retire()',1)[1].split('/datum/npc_subtile_large_frame/proc/close()',1)[0]
+        self.assertLess(retire.index('active = FALSE'),retire.index('actor.npc_subtile_large_frame == src'))
+        for name in ('actor','pulse','transaction','intent_owner','fault','start','destination','path_target','combat_target','following'):
+            self.assertIn(name+' = null',retire)
+        self.assertNotIn('qdel(',retire)
+        close=frame.split('/datum/npc_subtile_large_frame/proc/close()',1)[1].split('/datum/npc_subtile_transaction',1)[0]
+        self.assertLess(close.index('retire()'),close.index('qdel(src)'))
+
     def test_native_fixture_draft_uses_engine_move_and_strict_matrix(self):
         fixture=source('tests/human_subtile/large_bridge_fixture.dm')
         self.assertIn('list(EAST, WEST, NORTH, SOUTH)', fixture)
