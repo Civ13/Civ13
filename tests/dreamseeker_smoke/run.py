@@ -18,6 +18,7 @@ import PIL
 from PIL import Image, ImageGrab
 from guard_config import VENDOR, LIMITS, digest
 from entry_budget import Budget
+import terminal_receipt
 
 ROOT = Path(__file__).resolve().parent
 INSTALLED_MANIFEST_SHA256 = None  # Fresh 1688 installed-runtime review is pending.
@@ -577,16 +578,10 @@ def run(output, local_admission=None, reviewed_admission_sha256=None, *, budget=
         if primary is not None or secondary:
             evidence['result'] = 'FAIL; no native acceptance'
         try:
-            (output/'receipt.json').write_text(json.dumps(evidence, indent=2))
-            budget.check(work=False)
+            terminal_receipt.persist(output, evidence, lambda: budget.check(work=False))
         except BaseException as error:
             secondary.append({'phase': 'receipt', 'error': str(error)[:1024]})
             evidence['result'] = 'FAIL; receipt finalization unconfirmed'
-            # One bounded corrective diagnostic write, no process or run retry.
-            try:
-                (output/'receipt.json').write_text(json.dumps(evidence, indent=2))
-            except BaseException as receipt_error:
-                secondary.append({'phase': 'receipt-write', 'error': str(receipt_error)[:1024]})
         if primary is not None:
             for row in secondary:
                 primary.add_note(str(row)[:1200])
