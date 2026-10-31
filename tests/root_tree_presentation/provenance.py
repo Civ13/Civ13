@@ -67,8 +67,8 @@ def renderer_variant(data,control):
     if control not in RENDERER_CONTROLS:raise Invalid('Unknown renderer control')
     before,after={
         'neighbor':(b'\tI.plane = ROOT_TREE_PLANE\n',b'\tI.plane = GAME_PLANE\n'),
-        'visibility':(b'\t\tif(!context.root_tree_admitted(T) || context.decision(context.body, T, "hover") == LOS_DENY || !(T.loc in view(owner.view, owner.eye)))\n',
-                      b'\t\tif(!context.root_tree_admitted(T))\n')
+        'visibility':(b'\t\tif(context.decision_snapshot(T, S, "visual") == LOS_DENY)\n',
+                      b'\t\tif(FALSE)\n')
     }[control]
     if data.count(before)!=1:raise Invalid('Renderer control source anchor changed')
     return data.replace(before,after)

@@ -99,7 +99,7 @@ class NpcContracts(unittest.TestCase):
         for path in ('code/_onclick/click.dm', 'code/pathfinding.dm',
                      'code/game/mob/living/carbon/human/subtile_movement.dm'):
             self.assertNotIn('npc_subtile', read(path), path)
-        client_move = read('code/game/mob/mob_movement.dm').split('/client/Move(n, direct, ordinal = FALSE)', 1)[1]
+        client_move = read('code/game/mob/mob_movement.dm').split('/client/Move(', 1)[1]
         self.assertNotIn('npc_subtile', client_move)
 
     def test_only_vendor_family_opts_in(self):

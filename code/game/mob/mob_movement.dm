@@ -212,6 +212,7 @@
 		l_move_time = world.time
 		if (previous_location != loc && previous_location && previous_location.z == z)
 			last_move = get_dir(previous_location, loc)
+		los_refresh_moved_viewer(src)
 		return .
 	if (istype(src, /mob/living/simple_animal))
 		var/mob/living/simple_animal/npc = src
@@ -231,6 +232,7 @@
 			l_move_time = world.time
 			if (old_location != loc && old_location && old_location.z == z)
 				last_move = get_dir(old_location, loc)
+			los_refresh_moved_viewer(src)
 			return .
 		if (npc.npc_subtile_offset_owned && (step_x || step_y))
 			return FALSE
@@ -304,6 +306,7 @@
 				H.stop_pulling()
 			H.riding_mob.forceMove(H.loc)
 			H.riding_mob.dir = H.dir
+	los_refresh_moved_viewer(src)
 	return
 
 /client/proc/Move_object(direct)
@@ -324,7 +327,7 @@
 /mob/var/next_cannotmove_message = -1
 /mob/var/list/next_change_dir = null
 
-/client/Move(n, direct, ordinal = FALSE)
+/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements
 	if (!canmove)
@@ -343,6 +346,10 @@
 		// A paid crawl retains admission even after early collision/posture exit.
 		if (subtile_input_actor.human_subtile_transaction && subtile_input_actor.human_subtile_transaction.paid_posture)
 			return FALSE
+		if (fine_step)
+			subtile_input_actor.human_subtile_initialize_default(direct)
+			if (!subtile_input_actor.human_subtile_fine_ready(direct))
+				return FALSE
 		subtile_input_actor.human_subtile_prepare_ui_movement()
 		if (!subtile_input_actor.human_subtile_input_supported(direct))
 			human_subtile_release_visuals()
@@ -351,6 +358,8 @@
 			human_subtile_release_visuals()
 	else
 		human_subtile_release_visuals()
+		if (fine_step)
+			return FALSE
 
 	if (!mob.next_change_dir)
 		mob.next_change_dir = list(
@@ -395,6 +404,7 @@
 	var/mob_loc = mob.loc
 	var/mob/input_actor = mob
 	var/subtile_deadline = null
+	var/distance_fraction = fine_step ? (2 / 32) : 1
 
 
 	// prevent passing the invisible wall: now supports diagonals :agony:
@@ -667,34 +677,35 @@
 
 		switch(mob.m_intent)
 			if ("run")
-				mob.velocity = min(mob.velocity+1, 15)
+				if (!fine_step)
+					mob.velocity = min(mob.velocity+1, 15)
 				mob.velocity_lastdir = direct
 				move_delay += mob.get_run_delay() + standing_on_snow
 				if (mob_is_human)
-					H.nutrition -= 0.005
-					H.water -= 0.005
+					H.nutrition -= 0.005 * distance_fraction
+					H.water -= 0.005 * distance_fraction
 					if (H.stats["stamina"][1] > 0)
 						if (H.find_trait("Flat Footed"))
-							H.stats["stamina"][1] -= 2
+							H.stats["stamina"][1] -= 2 * distance_fraction
 						else
-					 	--H.stats["stamina"][1]
+							H.stats["stamina"][1] -= distance_fraction
 					if (H.bodytemperature < H.species.body_temperature)
-						H.bodytemperature += 0.66
+						H.bodytemperature += 0.66 * distance_fraction
 			if ("walk")
 				move_delay += mob.get_walk_delay() + standing_on_snow
 				if (mob_is_human)
-					H.nutrition -= 0.002
-					H.water -= 0.002
+					H.nutrition -= 0.002 * distance_fraction
+					H.water -= 0.002 * distance_fraction
 			if ("stealth")
 				move_delay += mob.get_stealth_delay() + standing_on_snow
 				if (mob_is_human)
-					H.nutrition -= 0.004
-					H.water -= 0.004
+					H.nutrition -= 0.004 * distance_fraction
+					H.water -= 0.004 * distance_fraction
 			if ("proning")
 				move_delay += standing_on_snow
 				if (mob_is_human)
-					H.nutrition -= 0.0015
-					H.water -= 0.0015
+					H.nutrition -= 0.0015 * distance_fraction
+					H.water -= 0.0015 * distance_fraction
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
@@ -763,6 +774,10 @@
 			if (HH.riding == TRUE && !isnull(HH.riding_mob))
 				move_delay = world.time + 0.5
 
+		// A preceding climb wait/callback may have changed the body or links.
+		if (fine_step && (mob != input_actor || !H.human_subtile_fine_ready(direct)))
+			return FALSE
+
 		//We are now going to move
 		moving = TRUE
 
@@ -814,13 +829,19 @@
 								M.animate_movement = 2
 								return
 
-			else if (mob.confused && prob(40))
+			else if (!fine_step && mob.confused && prob(40))
 				step(mob, pick(cardinal))
 			else
 				if (mob_is_human && (H.human_subtile_eligible(direct) || H.human_subtile_pull_ready(direct)))
 					subtile_deadline = H.human_subtile_deadline(move_delay, world.time, ordinal)
-					. = H.SelfMove(n, direct, subtile_deadline)
-				else
+					if (fine_step)
+						subtile_deadline = world.time + max(world.tick_lag, (subtile_deadline - world.time) * distance_fraction)
+						// Reserve before callbacks: repeat input/failure cannot refund it.
+						move_delay = subtile_deadline
+						. = H.SelfMove(n, direct, subtile_deadline, TRUE)
+					else
+						. = H.SelfMove(n, direct, subtile_deadline)
+				else if (!fine_step)
 					. = mob.SelfMove(n, direct)
 			if (!isnull(subtile_deadline) && (mob != input_actor || input_actor.client != src))
 				moving = FALSE
@@ -830,8 +851,10 @@
 
 			#define STOMP_TIME 1
 
+			// Fine positioning is not a tile stomp: tiny boundary oscillations must
+			// not multiply attacks by the shorter precision-input cooldown.
 			// wall stomping is bad
-			if (t1 && !t1.density && !locate_dense_type(t1.contents, /obj/structure))
+			if ((!fine_step) && t1 && !t1.density && !locate_dense_type(t1.contents, /obj/structure))
 
 				//Step on nerds in our way
 				if (mob_is_human)
@@ -1281,3 +1304,20 @@
 		else
 			sleep(world.tick_lag)
 	#endif
+
+// Stateless modifier chords: no server-held Alt latch or repeat worker survives
+// key release, focus loss, logout or a body handoff. Each repeat is a fresh input.
+/client/verb/fine_offset_step(direction as num)
+	set name = ".fine-offset-step"
+	set hidden = TRUE
+	set instant = TRUE
+	if (!mob || !(direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)))
+		return FALSE
+	// Release through the ordinary lifecycle, including drone/turret stop hooks.
+	// Raw axis clearing would prevent the later key-up from stopping controls
+	// when precision input is refused for a linked body.
+	stopmovingup()
+	stopmovingdown()
+	stopmovingright()
+	stopmovingleft()
+	return Move(get_step(mob, direction), direction, !!(direction & (direction - 1)), TRUE)

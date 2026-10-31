@@ -87,9 +87,6 @@
 	return L.Copy()
 
 /atom/movable/lighting_overlay/proc/update_overlay()
-	#if CIV13_ROOT_TREE_PRESENTATION
-	root_tree_invalidate(loc)
-	#endif
 	var/turf/T = loc
 	if (!T || !istype(T)) // Erm...
 		if (loc)
@@ -162,6 +159,11 @@
 		if (identical)
 			return
 
+	// An unchanged update must not withdraw/re-publish client tree images.
+	// Pending-corner notifications still hide unsettled roots before this proc.
+	#if CIV13_ROOT_TREE_PRESENTATION
+	root_tree_invalidate(loc)
+	#endif
 	// Update last values and apply changes
 	last_color = L.Copy()
 	last_luminosity = new_luminosity

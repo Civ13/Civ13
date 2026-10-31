@@ -10,6 +10,7 @@ var/datum/process_list/processes = new
 	var/process/time_track/time_track = null
 	var/process/ping_track/ping_track = null
 	var/process/client/client = null
+	var/process/visibility/visibility = null
 
 	// SSEnvironment members
 	var/process/time_of_day/time_of_day = null

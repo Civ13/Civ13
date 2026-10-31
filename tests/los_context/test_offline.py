@@ -3,7 +3,7 @@
 Only five arithmetic helpers and three mutation methods use the constrained
 projection below. Native view, client events, persistence and pixels are NOT
 evaluated. Integer/half/quarter inputs stay exactly representable in float32
-on the admitted 21x21 slice. The independent oracle uses rational convex hulls.
+in the historical 21x21 arithmetic cases. The independent oracle uses rational convex hulls.
 """
 from fractions import Fraction as Q
 import os
@@ -157,7 +157,7 @@ def expression(text, method=False):
         text = re.sub(r'\b'+a+r'\b', b, text)
     text = re.sub(r'\blist\(', 'dm_list(', text)
     if method:
-        for name in ['revision','retired','mutations']:
+        for name in ['revision','retired','mutations','owner']:
             text = re.sub(r'(?<!\.)\b'+name+r'\b', 'self.'+name, text)
         for name in ['retire','advance_revision']:
             text = re.sub(r'(?<!\.)\b'+name+r'\(', 'self.'+name+'(', text)
@@ -205,7 +205,7 @@ def project(source, signature, env, method=False):
 def projected_geometry(source=None):
     source = CORE.read_text() if source is None else source
     env = {'__builtins__': {}, 'min': min, 'max': max, 'abs': abs, 'dm_list': dm_list}
-    for name in ['los_axis_separates','los_triangle_hits_cell','los_footprint_hits_cell',
+    for name in ['los_axis_separates','los_triangle_hits_cell','los_hull_axis_separates','los_footprint_hits_cell',
                  'los_ray_axis','los_ray_entry']:
         project(source, '/proc/'+name+'(', env)
     return env
@@ -266,7 +266,7 @@ class Mutation:
 
 class Context:
     def __init__(self):
-        self.retired=False; self.revision=1; self.mutations=[]
+        self.retired=False; self.revision=1; self.mutations=[]; self.owner=None
 
     def retire(self):
         self.retired=True
@@ -286,8 +286,9 @@ def projected_context(source=None):
 
 def boundary_failures(core, hover, mob):
     failures=[]
-    for label,token in [('unique_surface','first.owners != 1'),('surface_identity','first.surface_owner != target'),('surface_tie','tied ||')]:
-        if token not in core:
+    for label,token in [('same_tile_identity','target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y'),('surface_occlusion','if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))'),('target_blocker_dispatch','S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity)'),('exact_blocker_route','los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target)')]:
+        expected = 2 if label == 'exact_blocker_route' else 1
+        if core.count(token) != expected:
             failures.append(label)
     hover_body=fragment(hover,'/obj/screen/hover_name/proc/target_visible(')
     examine=fragment(mob,'/mob/verb/examinate(')
@@ -454,18 +455,15 @@ class SourceBoundaries(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'base is missing or inaccessible'):
                 event_base()
 
-    def test_default_off_and_no_activation_callers(self):
+    def test_default_enabled_with_explicit_opt_out(self):
         core = CORE.read_text()
-        self.assertTrue(core_disabled(core))
-        self.assertFalse(core_disabled(core.replace('#define CIV13_GEOMETRIC_LOS_CORE 0', '#define CIV13_GEOMETRIC_LOS_CORE 1')))
-        self.assertFalse(core_disabled(core + '\n#define CIV13_GEOMETRIC_LOS_CORE 1\n'))
+        self.assertIn('#ifndef CIV13_GEOMETRIC_LOS_CORE\n#define CIV13_GEOMETRIC_LOS_CORE 1', core)
+        disabled = core.replace('#define CIV13_GEOMETRIC_LOS_CORE 1', '#define CIV13_GEOMETRIC_LOS_CORE 0')
+        self.assertTrue(core_disabled(disabled))
+        self.assertFalse(core_disabled(core))
+        self.assertFalse(core_disabled(disabled + '\n#define CIV13_GEOMETRIC_LOS_CORE 1\n'))
         directive = r'(?m)^\s*#\s*(?:define|undef)\s+CIV13_GEOMETRIC_LOS_CORE\b'
         self.assertNotRegex((ROOT/'civ13.dme').read_text(), directive)
-        for path in (ROOT/'code').rglob('*.dm'):
-            if path!=CORE:
-                content = path.read_text(errors='replace')
-                self.assertNotRegex(content, r'new\s*/datum/los_context')
-                self.assertNotRegex(content, directive)
 
     def test_guards_before_information(self):
         hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text()
@@ -477,8 +475,9 @@ class SourceBoundaries(unittest.TestCase):
     def test_operation_type_cap_and_persistence_boundaries(self):
         source=CORE.read_text(); decision=fragment(source,'/datum/los_context/proc/decision(')
         self.assertLess(decision.index('operation != "hover" && operation != "examine"'),decision.index('capture()'))
-        self.assertNotIn('istype(',fragment(source,'/datum/los_context/proc/capture('))
-        for token in ['world.maxx != 21','world.maxz != 1','++visits > 1024','los_active_contexts.len >= 2','first.owners != 1','first.surface_owner != target']:
+        for token in ['world.maxx != 21','world.maxz != 1','++visits > 1024','los_active_contexts.len >= 2']:
+            self.assertNotIn(token,source)
+        for token in ['los_target_blocked(', 'B.tile_x = cx - S.eye_x','dimensions[1] > 63','dimensions[2] > 63']:
             self.assertIn(token,source)
         for name in ['los_cell','los_snapshot','los_mutation','los_context']:
             self.assertIn('should_save = FALSE',fragment(source,'/datum/'+name))
@@ -505,7 +504,7 @@ class SourceBoundaries(unittest.TestCase):
     def test_surface_and_adapter_omission_controls(self):
         core=CORE.read_text();hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text();mob=(ROOT/'code/game/mob/mob.dm').read_text()
         self.assertEqual(boundary_failures(core,hover,mob),[])
-        for label,token in [('unique_surface','first.owners != 1'),('surface_identity','first.surface_owner != target'),('surface_tie','tied ||')]:
+        for label,token in [('same_tile_identity','target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y'),('surface_occlusion','if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))'),('target_blocker_dispatch','S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity)'),('exact_blocker_route','los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target)')]:
             self.assertEqual(boundary_failures(core.replace(token,'OMITTED',1),hover,mob),[label])
         self.assertEqual(boundary_failures(core,hover.replace('los_read_allowed(parentmob','OMITTED',1),mob),['hover_guard'])
         self.assertEqual(boundary_failures(core,hover,mob.replace('los_read_allowed(src','OMITTED',1)),['examine_guard'])
