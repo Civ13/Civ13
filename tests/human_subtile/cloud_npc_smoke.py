@@ -436,29 +436,6 @@ def run_extended(args, scratch, binary, archive, group, envelope, identity, abi,
     ext.adapt_extended(out, manifest, npc.current)
     (out / 'cloud-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     stage, dme = out / 'stage', out / manifest['dme']
-    checkpoint('extended-fixture-compile')
-    build = run_owned_phase(legacy, group, [str(binary/'DreamMaker'), '-max_errors', '0', str(dme)], stage, 'compile', 120)
-    compile_log = ''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
-    legacy.validate_compile(compile_log, dme.with_suffix('.dmb').name)
-    for rel, expected in manifest['stage_files'].items():
-        p = stage/rel
-        require(p.stat().st_size == expected['bytes'] and file_hash(p) == expected['sha256'], 'Compiler changed fixture input: '+rel)
-    work, dmb, artifacts = prepare_linked_runtime(out, stage, dme, 'runtime')
-    peer, peer_dmb, peer_artifacts = prepare_linked_runtime(out, stage, dme, 'runtime-wildlife')
-    require(artifacts == peer_artifacts and not os.path.samefile(dmb.with_suffix('.rsc'),peer_dmb.with_suffix('.rsc')),
-            'Extended resource copies differ or share an inode')
-    checkpoint('extended-runtime-staged', runtime_artifacts=artifacts, resource_copies_independent=True)
-    resource_states = {}
-    checkpoint('extended-daemon')
-    runtime.verify_linux(binary, archive)
-    result = run_checked_runtime(legacy, group, [str(binary/'DreamDaemon'),str(dmb),'59474','-ip','127.0.0.1',
-        '-trusted','-params','tested_commit='+args.head+';wildlife_extended=1','-log','runtime.log'],
-        work,dme,peer,artifacts,artifacts[dme.with_suffix('.rsc').name],'extended',resource_states)
-    legacy.inspect_logs(work)
-    require((work/'port-closed.txt').read_bytes() == b'closed\n' and (work/'result.txt').read_bytes() == b'PASS\n',
-            'Extended fixture result/port failed')
-    receipt = json.loads((work/'receipt.json').read_text())
-    ext.validate_extended(receipt,args.head)
     geometry_stage = out/'geometry-stage'; geometry_stage.mkdir()
     geometry_inputs = {}
     for name in ('large_geometry.dm','large_geometry.dme'):
@@ -494,6 +471,30 @@ def run_extended(args, scratch, binary, archive, group, envelope, identity, abi,
             'Geometry fixture result/port failed')
     geometry_receipt=json.loads((geometry/'receipt.json').read_text())
     ext.validate_geometry(geometry_receipt,args.head)
+    checkpoint('geometry-complete', geometry_receipt_sha256=file_hash(geometry/'receipt.json'))
+    checkpoint('extended-fixture-compile')
+    build = run_owned_phase(legacy, group, [str(binary/'DreamMaker'), '-max_errors', '0', str(dme)], stage, 'compile', 120)
+    compile_log = ''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
+    legacy.validate_compile(compile_log, dme.with_suffix('.dmb').name)
+    for rel, expected in manifest['stage_files'].items():
+        p = stage/rel
+        require(p.stat().st_size == expected['bytes'] and file_hash(p) == expected['sha256'], 'Compiler changed fixture input: '+rel)
+    work, dmb, artifacts = prepare_linked_runtime(out, stage, dme, 'runtime')
+    peer, peer_dmb, peer_artifacts = prepare_linked_runtime(out, stage, dme, 'runtime-wildlife')
+    require(artifacts == peer_artifacts and not os.path.samefile(dmb.with_suffix('.rsc'),peer_dmb.with_suffix('.rsc')),
+            'Extended resource copies differ or share an inode')
+    checkpoint('extended-runtime-staged', runtime_artifacts=artifacts, resource_copies_independent=True)
+    resource_states = {}
+    checkpoint('extended-daemon')
+    runtime.verify_linux(binary, archive)
+    result = run_checked_runtime(legacy, group, [str(binary/'DreamDaemon'),str(dmb),'59474','-ip','127.0.0.1',
+        '-trusted','-params','tested_commit='+args.head+';wildlife_extended=1','-log','runtime.log'],
+        work,dme,peer,artifacts,artifacts[dme.with_suffix('.rsc').name],'extended',resource_states)
+    legacy.inspect_logs(work)
+    require((work/'port-closed.txt').read_bytes() == b'closed\n' and (work/'result.txt').read_bytes() == b'PASS\n',
+            'Extended fixture result/port failed')
+    receipt = json.loads((work/'receipt.json').read_text())
+    ext.validate_extended(receipt,args.head)
     summary=dict(head=args.head,accepted=True,suite='extended',fixture_dme_only=True,identity=identity,abi=abi,envelope=envelope,
         compile=build,geometry_compile=geometry_build,artifacts=artifacts,resource_states=resource_states,
         results={'extended':dict(daemon=result,receipt_sha256=file_hash(work/'receipt.json')),

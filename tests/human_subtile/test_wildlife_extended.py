@@ -72,6 +72,13 @@ def extended_receipt():
 
 
 class ExtendedContracts(unittest.TestCase):
+    def test_geometry_observations_precede_full_source_daemon(self):
+        source=(HERE/'cloud_npc_smoke.py').read_text(encoding='utf-8')
+        suite=source.split('def run_extended(',1)[1].split('def run_production_compile(',1)[0]
+        self.assertLess(suite.index("checkpoint('geometry-complete'"),
+                        suite.index("checkpoint('extended-fixture-compile'"))
+        self.assertLess(suite.index('ext.validate_geometry('),suite.index('ext.validate_extended('))
+
     def test_actual_staging_anchors_and_no_implicit_vendor_execution(self):
         with tempfile.TemporaryDirectory() as tmp:
             out=Path(tmp); stage=out/'stage'; testdir=stage/'tests/human_subtile';testdir.mkdir(parents=True)
