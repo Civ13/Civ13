@@ -60,7 +60,7 @@ skips about half its entries, and accepts additions through the shared validator
 with budget checking temporarily disabled. This allows positive intermediate
 totals to balance later. Every nonempty zero-total prefix enters a reservoir;
 the final result is validated again with the ordinary budget rule. The injected
-`/datum/trait_random_source/roll(upper)` seam returns integers from 1 through
+`/datum/trait_random_source/next_integer(upper)` seam returns integers from 1 through
 `upper` for deterministic future DM fixtures. Production uses `rand(1, upper)`.
 
 Sampling is deliberately **not uniform over valid trait sets**: greedy conflict

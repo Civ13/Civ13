@@ -68,7 +68,7 @@ def generator_contract(source):
                   'get_trait_selection_error(singleton, FALSE)',
                   'get_trait_selection_error(candidate, FALSE)',
                   'get_trait_selection_error(result)', 'check_trait_points(result) != 0',
-                  '!islist(result) || !result.len', 'random_source.roll(',
+                  '!islist(result) || !result.len', 'random_source.next_integer(',
                   'result = singleton.Copy()', 'result = selected.Copy()'):
         if guard not in body:
             raise AssertionError(guard)
@@ -206,6 +206,8 @@ class RandomTraits(unittest.TestCase):
         self.assertIn("'>Random</a> (total 0)", basic)
         self.assertIn('var/tmp/trait_random_revision = 0', basic)
         self.assertIn('return rand(1, upper)', traits)
+        self.assertIn('/datum/trait_random_source/proc/next_integer(upper)', traits)
+        self.assertNotIn('/proc/roll(', traits)  # BYOND reserves this built-in name.
         self.assertGreaterEqual(basic.count('trait_random_revision++'), 2)
         for old, new in (('attempt <= 64', 'TRUE'),
                          ('get_trait_selection_error(candidate, FALSE)', 'FALSE'),

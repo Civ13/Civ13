@@ -81,7 +81,7 @@ var/global/list/trait_list = list(
 	return null
 
 // Injectable for deterministic fixtures; production uses BYOND's RNG.
-/datum/trait_random_source/proc/roll(upper)
+/datum/trait_random_source/proc/next_integer(upper)
 	return rand(1, upper)
 
 // Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
@@ -103,15 +103,15 @@ var/global/list/trait_list = list(
 		// Always consider eligible zero-cost traits, even if every trial skips.
 		if (check_trait_points(singleton) == 0)
 			matches++
-			if (random_source.roll(matches) == 1)
+			if (random_source.next_integer(matches) == 1)
 				result = singleton.Copy()
 	for (var/attempt = 1, attempt <= 64, attempt++)
 		var/list/order = choices.Copy()
 		for (var/i = order.len, i > 1, i--)
-			order.Swap(i, random_source.roll(i))
+			order.Swap(i, random_source.next_integer(i))
 		var/list/selected = list()
 		for (var/choice in order)
-			if (random_source.roll(2) == 1)
+			if (random_source.next_integer(2) == 1)
 				continue
 			var/list/candidate = selected.Copy()
 			candidate += choice
@@ -121,7 +121,7 @@ var/global/list/trait_list = list(
 			selected = candidate
 			if (check_trait_points(selected) == 0)
 				matches++
-				if (random_source.roll(matches) == 1)
+				if (random_source.next_integer(matches) == 1)
 					result = selected.Copy()
 	// Null means exhausted/no nonempty result; callers must preserve old choices.
 	if (!islist(result) || !result.len || get_trait_selection_error(result) || check_trait_points(result) != 0)
