@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "released": true,
+  "client_startup_diagnostic": true,
+  "source": "58404f5bd16e3fed80f1d9844c5db3edd144942c",
+  "branch": "ci/cloud-bakery225-control-5161688-20261031-r1",
+  "message": "ci: bounded bakery225 startup comparison r1",
+  "deadline_utc": "2026-10-31T20:00:00Z",
+  "job": "bakery",
+  "attempt": 1,
+  "scene_sha256": "6133d4a11d63266cd7d36251da875b2799351214233466c73beacfabb150fb41",
+  "approval": "Reviewed one-job five-second bakery225 startup comparison; authorization retained privately; no capture or deployment.",
+  "scene_profile": "bakery225-control"
+}

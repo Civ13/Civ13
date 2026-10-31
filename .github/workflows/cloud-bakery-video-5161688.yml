@@ -1,0 +1,171 @@
+name: HELD bakery225 startup comparison
+on:
+  push:
+    branches: [ci/cloud-bakery225-control-5161688-20261031-r1]
+    paths:
+      - .github/workflows/cloud-bakery-video-5161688.yml
+      - tools/cloud-bakery-video-5161688/**
+permissions:
+  contents: read
+jobs:
+  bakery:
+    if: >-
+      true && github.repository == 'Civ13/Civ13' && github.event_name == 'push' &&
+      github.run_attempt == 1 &&
+      github.event.head_commit.message == 'ci: bounded bakery225 startup comparison r1'
+    env:
+      EVENT_BEFORE: ${{ github.event.before }}
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Admit only initial reviewed source publication
+        shell: powershell
+        env:
+          EVENT_BEFORE: ${{ github.event.before }}
+        run: |
+          $base = 'ff67d89241336d55f456967ec596d5cd10358df6'
+          $parents = (git rev-list --parents -n 1 HEAD).Trim().Split(' ')
+          if ($LASTEXITCODE -ne 0 -or $parents.Count -ne 2 -or $parents[0] -ne $env:GITHUB_SHA -or $parents[1] -ne $base) { throw 'Wrong source ancestry.' }
+          if ($env:EVENT_BEFORE -ne $base -and $env:EVENT_BEFORE -ne ('0' * 40)) { throw 'Not initial branch publication.' }
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 58404f5bd16e3fed80f1d9844c5db3edd144942c
+          path: source-checkout
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Materialize exact committed tooling bytes without Git conversions
+        timeout-minutes: 1
+        shell: powershell
+        run: |
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/materialize.py --repository "$env:GITHUB_WORKSPACE" --revision "$env:GITHUB_SHA" --destination "$env:RUNNER_TEMP/bakery-tooling"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Offline acquisition, capture and source controls
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 1
+        shell: powershell
+        run: |
+          & "$env:pythonLocation/python.exe" -B -m unittest discover -s tools/cloud-bakery-video-5161688 -p 'test_*.py' -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "$env:pythonLocation/python.exe" -B -m unittest discover -s tools/cloud-bakery-video-5161688/tests -p 'test_capture.py' -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/activation.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Stage only exact committed Civ13 source and authored assets
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 2
+        shell: powershell
+        run: |
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/stage.py --repository "$env:GITHUB_WORKSPACE/source-checkout" --destination "$env:RUNNER_TEMP/bakery-source"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Extract verified package data without running an installer
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 2
+        shell: powershell
+        run: |
+          $engine = Join-Path $env:RUNNER_TEMP 'bakery-engine'
+          if (Test-Path -LiteralPath $engine) { throw 'Fresh engine directory required.' }
+          New-Item -ItemType Directory -Path $engine -ErrorAction Stop | Out-Null
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/acquire.py --root "$engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Acquire pinned NuGet and portable encoder packages
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 4
+        shell: pwsh
+        run: |
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/prepare_nuget_toolchain.py --root "$env:RUNNER_TEMP/bakery-engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Check Microsoft x86 DLL signatures
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 1
+        shell: pwsh
+        run: |
+          & './tools/cloud-bakery-video-5161688/verify_nuget_signatures.ps1' -Root "$env:RUNNER_TEMP/bakery-engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Stage approved app-local runtime
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 1
+        shell: pwsh
+        run: |
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/nuget_local_runtime.py --root "$env:RUNNER_TEMP/bakery-engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify portable encoder on synthetic input
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 1
+        shell: pwsh
+        run: |
+          & "$env:pythonLocation/python.exe" -B tools/cloud-bakery-video-5161688/run_encoder_proof.py --root "$env:RUNNER_TEMP/bakery-engine"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile and observe one owned client for at most five seconds
+        working-directory: ${{ runner.temp }}/bakery-tooling
+        timeout-minutes: 5
+        shell: pwsh
+        run: |
+          & './tools/cloud-bakery-video-5161688/firewall_supervisor.ps1' -ClientStartupDiagnostic
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Admit bounded diagnostic artifacts only
+        id: evidence
+        if: always()
+        shell: powershell
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'bakery-evidence'
+          $allowed = @('receipt.json','cleanup-receipt.json','witness-receipt.json','source-receipt.json','intro-take.json','intro-checks.txt','intro-stop.txt','intro-cadence-admission.json','intro-cadence-start.json','intro-cadence-end.json','intro-action-start.json','intro-state-before.json','intro-state-after.json','cadence-recording.json','compiler.stdout.log','compiler.stderr.log','server.stdout.log','server.stderr.log','client.stdout.log','client.stderr.log')
+          $allowed += @('city-route-receipt.json','city-route-steps.txt','city-bakery-receipt.json','city-train-before.json','city-train-after.json','city-preflight-complete.txt','nuget-module-receipt.json')
+          $allowed += @('client-startup-diagnostic.json','cloud-client.txt')
+          $files = @()
+          if (Test-Path -LiteralPath $root) { $files = @(Get-ChildItem -LiteralPath $root -Force) }
+          # The private environment directory is not an artifact and is never uploaded.
+          $files = @($files | Where-Object { $_.Name -ne 'environment' })
+          $engine = Join-Path $env:RUNNER_TEMP 'bakery-engine'
+          foreach ($name in @('acquisition-receipt.json','dependency-receipt.json','acquisition-failure.json','nuget-preparation-receipt.json','nuget-signature-receipt.json','nuget-runtime-receipt.json')) {
+            $path = Join-Path $engine $name
+            if (Test-Path -LiteralPath $path) { $files += Get-Item -LiteralPath $path }
+          }
+          $allowed += @('acquisition-receipt.json','dependency-receipt.json','acquisition-failure.json','nuget-preparation-receipt.json','nuget-signature-receipt.json','nuget-runtime-receipt.json')
+          $encoderRoot = Join-Path $engine 'encoder-evidence'
+          if (Test-Path -LiteralPath $encoderRoot) {
+            $encoderFiles = @(Get-ChildItem -LiteralPath $encoderRoot -Force | Where-Object { $_.Name -notin @('environment','encoder-proof.mp4') })
+            $files += $encoderFiles
+          }
+          $allowed += @('encoder-proof-receipt.json','encode.stdout.log','encode.stderr.log','probe.stdout.log','probe.stderr.log','decode.stdout.log','decode.stderr.log')
+          $fwRoot = Join-Path $env:RUNNER_TEMP 'firewall-evidence'
+          if (Test-Path -LiteralPath $fwRoot) {
+            $fwFiles = @(Get-ChildItem -LiteralPath $fwRoot -Force)
+            # 3 aggregate files + 6 creation + 6 cleanup + first validation failure.
+            if ($fwFiles.Count -gt 16) { throw 'Firewall evidence count exceeded.' }
+            if (@($fwFiles | Where-Object { $_.Name -match '\.validation\.json$' }).Count -gt 1) { throw 'Multiple firewall validation failures.' }
+            foreach ($fwFile in $fwFiles) {
+              if ($fwFile.Name -notin @('planned.json','active.json','cleanup.json') -and
+                  $fwFile.Name -notmatch ('^civ13-preflight-' + $env:GITHUB_RUN_ID + '-1-[0-9a-f]{32}-(dm-exe|dd-exe|dreamseeker-exe)-(v4|v6)(\.created|\.PersistentStore\.cleanup|\.(PersistentStore|ActiveStore)\.validation)\.json$')) { throw 'Unexpected firewall evidence name.' }
+              $allowed += $fwFile.Name
+              $files += $fwFile
+            }
+          }
+          if ($files.Count -eq 0) { exit 0 }
+          $total = 0
+          foreach ($file in $files) {
+            if ($file.PSIsContainer -or $file.Name -notin $allowed -or $file.Length -gt 1048576 -or ($file.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Unexpected artifact data.' }
+            $total += $file.Length
+          }
+          # Additional bounded toolchain receipts; the total 16 MiB cap remains unchanged.
+          if ($files.Count -gt 64 -or $total -gt 16777216) { throw 'Artifact size/count bound.' }
+          $out = Join-Path $env:RUNNER_TEMP 'bakery-artifact'
+          if (Test-Path -LiteralPath $out) { throw 'Artifact staging already exists.' }
+          New-Item -ItemType Directory -Path $out | Out-Null
+          foreach ($file in $files) { Copy-Item -LiteralPath $file.FullName -Destination $out }
+          Add-Content -LiteralPath $env:GITHUB_OUTPUT -Value 'ready=true' -Encoding utf8
+      - name: Retain native scene evidence
+        if: ${{ always() && steps.evidence.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-bakery-${{ github.job }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/bakery-artifact/
+          retention-days: 7
+          if-no-files-found: error
