@@ -5,6 +5,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import lzma
 from pathlib import Path
 import tarfile
 import tempfile
@@ -49,8 +50,33 @@ class JobContracts(unittest.TestCase):
             lines=out.getvalue().splitlines();meta=json.loads(lines[0].split(' ',1)[1])
             encoded=''.join(line.split(' ',2)[2] for line in lines[1:]);payload=base64.b64decode(encoded)
             self.assertEqual(hashlib.sha256(payload).hexdigest(),meta['sha256'])
-            with tarfile.open(fileobj=io.BytesIO(payload),mode='r:gz') as archive:
+            self.assertEqual(meta['compression'],'xz')
+            with tarfile.open(fileobj=io.BytesIO(payload),mode='r:xz') as archive:
                 self.assertEqual(archive.getnames(),['coordinator.json','controller.json'])
+
+    def test_outer_evidence_keeps_nested_manifest_payload_within_existing_cap(self):
+        rows={f'code/path/{i:04d}.dm':{'bytes':i+1,'sha256':hashlib.sha256(str(i).encode()).hexdigest()}
+              for i in range(3823)}
+        manifest=json.dumps({'original_git_files':rows,'stage_files':rows},indent=2).encode()
+        nested=io.BytesIO()
+        with tarfile.open(fileobj=nested,mode='w') as archive:
+            for name in ('npc-manifest.json','cloud-manifest.json'):
+                entry=tarfile.TarInfo(name);entry.size=len(manifest);archive.addfile(entry,io.BytesIO(manifest))
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);setup=root/'setup';control=root/'control';setup.mkdir();control.mkdir()
+            (setup/'coordinator.json').write_text('{}');(control/'controller.json').write_text('{}')
+            (control/'harness-evidence.tar').write_bytes(nested.getvalue())
+            log=b'HARNESS_EVIDENCE_PART '+base64.b64encode(lzma.compress(nested.getvalue(),preset=6))
+            (control/'container-tail.log').write_bytes(log)
+            out=io.StringIO()
+            with contextlib.redirect_stdout(out): job.emit_evidence(setup,control)
+            lines=out.getvalue().splitlines();meta=json.loads(lines[0].split(' ',1)[1])
+            payload=base64.b64decode(''.join(line.split(' ',2)[2] for line in lines[1:]))
+            self.assertLessEqual(len(payload),1024**2)
+            self.assertEqual(hashlib.sha256(payload).hexdigest(),meta['sha256'])
+            with tarfile.open(fileobj=io.BytesIO(payload),mode='r:xz') as archive:
+                self.assertEqual(archive.extractfile('harness-evidence.tar').read(),nested.getvalue())
+                self.assertEqual(archive.extractfile('container-tail.log').read(),log)
 
     def test_default_off_manual_selector_and_unrelated_job_guard(self):
         workflow=(ROOT/'.github/workflows/moving-save-chunks.yml').read_text(encoding='utf-8')

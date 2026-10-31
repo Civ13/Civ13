@@ -1,9 +1,12 @@
 """Injected controller tests. No Docker, native process or network is launched."""
 import hashlib
+import base64
+import gzip
 import importlib.util
 import io
 import contextlib
 import json
+import lzma
 import os
 from pathlib import Path
 import tarfile
@@ -55,6 +58,37 @@ def tar_bytes(entries):
 
 
 class ControllerContracts(unittest.TestCase):
+    def test_lossless_transport_of_repeated_manifest_maps_within_existing_limit(self):
+        rows={f'code/path/{i:04d}.dm':{'bytes':i+1,'sha256':hashlib.sha256(str(i).encode()).hexdigest()}
+              for i in range(3823)}
+        manifest=json.dumps({'original_git_files':rows,'stage_files':rows},indent=2).encode()
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp); (root/'harness-status.json').write_text('{}')
+            manifest_dir=root/'npc-smoke';manifest_dir.mkdir()
+            for name in ('npc-manifest.json','cloud-manifest.json'):
+                (manifest_dir/name).write_bytes(manifest)
+            out=io.StringIO()
+            with contextlib.redirect_stdout(out): smoke.emit_package(root,'passed',{'samples':1})
+            log=out.getvalue().encode();marker=json.loads(log.splitlines()[-1].split(b' ',1)[1])
+            data=controller.package_from_logs(log,marker)
+            self.assertTrue(marker['package']['complete'])
+            self.assertEqual(marker['package']['compression'],'xz')
+            self.assertGreater(len(gzip.compress(data,compresslevel=6,mtime=0)),smoke.LOG_EVIDENCE_LIMIT)
+            self.assertLessEqual(marker['package']['compressed_bytes'],smoke.LOG_EVIDENCE_LIMIT)
+            with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                for name in ('npc-manifest.json','cloud-manifest.json'):
+                    self.assertEqual(archive.extractfile('npc-smoke/'+name).read(),manifest)
+
+    def test_xz_stream_rejects_oversized_or_trailing_data(self):
+        for raw,extra in ((b'x'*(controller.MAX_PACKAGE+1),b''),(b'valid',b'trailing')):
+            compressed=lzma.compress(raw,format=lzma.FORMAT_XZ,preset=6)+extra
+            encoded=base64.b64encode(compressed)
+            log=b'HARNESS_EVIDENCE_PART 1/1 '+encoded+b'\n'
+            marker={'package':{'parts':1,'compressed_bytes':len(compressed),'complete':True,'compression':'xz',
+                               'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}}
+            with self.subTest(extra=bool(extra)),self.assertRaises((RuntimeError,lzma.LZMAError)):
+                controller.package_from_logs(log,marker)
+
     def test_pass_receipt_requires_both_bounded_independent_resource_observations(self):
         initial={'bytes':4,'sha256':'a'*64,'mode':0o600}
         changed={'bytes':6,'sha256':'b'*64,'mode':0o600}
@@ -88,6 +122,8 @@ class ControllerContracts(unittest.TestCase):
                 with self.subTest(bad=bad[:40]), self.assertRaises((RuntimeError, ValueError)):
                     controller.package_from_logs(bad,marker)
             wrong=dict(marker, package=dict(marker['package'],sha256='0'*64))
+            with self.assertRaises(RuntimeError): controller.package_from_logs(log,wrong)
+            wrong=dict(marker, package=dict(marker['package'],compression='gzip'))
             with self.assertRaises(RuntimeError): controller.package_from_logs(log,wrong)
 
     def test_large_incompressible_failure_keeps_status_and_marks_partial(self):

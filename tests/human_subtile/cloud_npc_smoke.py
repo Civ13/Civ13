@@ -7,11 +7,11 @@ review; automated checks are additional fail-closed checks, not its substitute.
 """
 import argparse
 import base64
-import gzip
 import hashlib
 import importlib.util
 import io
 import json
+import lzma
 import os
 from pathlib import Path
 import re
@@ -113,7 +113,9 @@ def emit_package(root, outcome, scratch):
     """Transfer bounded synthetic evidence through the worker's existing log stream."""
     package_evidence(root)
     raw = (root / 'harness-evidence.tar').read_bytes()
-    zipped = gzip.compress(raw, compresslevel=6, mtime=0)
+    # XZ's bounded dictionary retains the repeated source-manifest maps that
+    # exceed gzip's short window; the archive itself stays byte-for-byte intact.
+    zipped = lzma.compress(raw, format=lzma.FORMAT_XZ, preset=6)
     complete = len(zipped) <= LOG_EVIDENCE_LIMIT
     if not complete:
         # Retain the full status plus bounded tails, explicitly disallowing a pass.
@@ -127,14 +129,15 @@ def emit_package(root, outcome, scratch):
                 entry = tarfile.TarInfo(item.name); entry.size = len(data); entry.mode = 0o600
                 reduced.addfile(entry, io.BytesIO(data))
         raw = compact.getvalue()
-        zipped = gzip.compress(raw, compresslevel=6, mtime=0)
+        zipped = lzma.compress(raw, format=lzma.FORMAT_XZ, preset=6)
     require(len(zipped) <= LOG_EVIDENCE_LIMIT, 'Compact evidence exceeds log bound')
     encoded = base64.b64encode(zipped).decode('ascii')
     parts = [encoded[i:i+8192] for i in range(0, len(encoded), 8192)]
     for index, part in enumerate(parts, 1):
         print('HARNESS_EVIDENCE_PART ' + str(index) + '/' + str(len(parts)) + ' ' + part, flush=True)
     package = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(),
-               'compressed_bytes': len(zipped), 'parts': len(parts), 'complete': complete}
+               'compressed_bytes': len(zipped), 'parts': len(parts), 'complete': complete,
+               'compression': 'xz'}
     print('HARNESS_EVIDENCE_READY ' + json.dumps({'outcome': outcome, 'package': package,
           'scratch': scratch}, sort_keys=True), flush=True)
 

@@ -155,7 +155,9 @@ def emit_evidence(setup, control):
              (control/'watchdog-tail.log','watchdog-tail.log'),
              (control/'harness-evidence.tar','harness-evidence.tar'))
     buffer=io.BytesIO()
-    with tarfile.open(fileobj=buffer,mode='w:gz') as archive:
+    # Lossless XZ also covers the large repeated manifest maps in the nested
+    # evidence tar without raising the existing workflow-log byte limit.
+    with tarfile.open(fileobj=buffer,mode='w:xz',preset=6) as archive:
         for path,name in allowed:
             if not path.exists(): continue
             info=path.lstat()
@@ -167,7 +169,7 @@ def emit_evidence(setup, control):
     encoded=base64.b64encode(raw).decode('ascii')
     parts=[encoded[i:i+4096] for i in range(0,len(encoded),4096)]
     print('CLOUD_EVIDENCE_META '+json.dumps({'sha256':hashlib.sha256(raw).hexdigest(),
-          'bytes':len(raw),'parts':len(parts)}),flush=True)
+          'bytes':len(raw),'parts':len(parts),'compression':'xz'}),flush=True)
     for index,part in enumerate(parts,1):
         print('CLOUD_EVIDENCE_PART '+str(index)+'/'+str(len(parts))+' '+part,flush=True)
 

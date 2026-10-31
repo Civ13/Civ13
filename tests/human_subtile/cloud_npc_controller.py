@@ -6,11 +6,11 @@ The pinned 386 image and complete ABI must be independently reviewed first.
 """
 import argparse
 import base64
-import gzip
 import hashlib
 import importlib.util
 import io
 import json
+import lzma
 import os
 from pathlib import Path
 import re
@@ -183,7 +183,8 @@ def package_from_logs(log, marker):
     package = marker.get('package') or {}
     count = package.get('parts')
     require(type(count) is int and 0 < count <= 54 and type(package.get('compressed_bytes')) is int and
-            0 < package['compressed_bytes'] <= MAX_LOG_PACKAGE and type(package.get('complete')) is bool,
+            0 < package['compressed_bytes'] <= MAX_LOG_PACKAGE and type(package.get('complete')) is bool and
+            package.get('compression') == 'xz',
             'Invalid log package metadata')
     chunks = []
     for line in log.splitlines():
@@ -195,8 +196,10 @@ def package_from_logs(log, marker):
     require(len(chunks) == count, 'Missing evidence parts')
     compressed = base64.b64decode(b''.join(chunks), validate=True)
     require(len(compressed) == package['compressed_bytes'], 'Compressed evidence size mismatch')
-    with gzip.GzipFile(fileobj=io.BytesIO(compressed)) as zipped:
-        data = zipped.read(MAX_PACKAGE+1)
+    decoder = lzma.LZMADecompressor(format=lzma.FORMAT_XZ, memlimit=64*1024**2)
+    data = decoder.decompress(compressed, max_length=MAX_PACKAGE+1)
+    require(decoder.eof and not decoder.unused_data and len(data) <= MAX_PACKAGE,
+            'Incomplete, oversized or trailing compressed evidence')
     return validate_package(data, package)
 
 
