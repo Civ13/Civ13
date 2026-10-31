@@ -407,7 +407,7 @@
 	H.equip_to_slot_or_del(new /obj/item/flashlight/militarylight/alt(H), slot_l_store)
 
 	H.civilization = "Faithful"
-	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home from the goverment scum!")
+	H.add_note("Role", "You are a <b>[title]</b>, Protecting your home from the government scum!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_MEDIUM_HIGH)
 	H.setStat("rifle", STAT_HIGH)

@@ -459,7 +459,7 @@
 					var/lfuel = rand(4,7)
 					var/deadname = remove_crewmember()
 					fuel -= lfuel
-					eventdat += "<br>[deadname] was lost deep in the wreckage, and your own vessel lost [lfuel] <b>Fuel</b> maneuvering to the the abandoned ship."
+					eventdat += "<br>[deadname] was lost deep in the wreckage, and your own vessel lost [lfuel] <b>Fuel</b> maneuvering to the abandoned ship."
 				if(35 to 65)
 					var/oldfood = rand(5,11)
 					food += oldfood

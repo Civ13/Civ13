@@ -476,7 +476,7 @@
 
 /obj/structure/farming/plant/flax
 	name = "flax plant"
-	desc = "A flax plant. Closely related to hemp in fiberous rope-making but has none of the uh, other stuff."
+	desc = "A flax plant. Closely related to hemp in fibrous rope-making but has none of the uh, other stuff."
 	icon_state = "flax-grow1"
 	plant = "flax"
 	stack ="material/flax"

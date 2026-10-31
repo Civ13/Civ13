@@ -177,7 +177,7 @@
 
 /obj/structure/converter/retting_trough
 	name = "retting trough"
-	desc = "Soaks fiberous plants over time into retted fabric. Requires at least two seperate hemp or flax at a time."
+	desc = "Soaks fibrous plants over time into retted fabric. Requires at least two separate hemp or flax at a time."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "retting_trough"
 	idlesprite = "retting_trough"

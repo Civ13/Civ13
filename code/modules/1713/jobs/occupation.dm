@@ -981,7 +981,7 @@
 	H.equip_to_slot_or_del(RUB, slot_r_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/civilian_passport(H), slot_wear_id)
 	give_random_name(H)
-	H.add_note("Role", "You are a <b>Doctor</b>. Your job is to to heal the sick and advise the healthy on staying that way. Misbehaviour can be met with severe punishment.")
+	H.add_note("Role", "You are a <b>Doctor</b>. Your job is to heal the sick and advise the healthy on staying that way. Misbehaviour can be met with severe punishment.")
 	randrole = "Doctor"
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)

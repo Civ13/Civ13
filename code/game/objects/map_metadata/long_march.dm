@@ -78,7 +78,7 @@ var/no_loop_lm = FALSE
 		return FALSE
 	if ((current_winner && current_loser && world.time > next_win) && no_loop_lm == TRUE)
 		ticker.finished = TRUE
-		var/message = "The <b>Red Army</b> managed to reach their destination in time! The retreat has been succesful!"
+		var/message = "The <b>Red Army</b> managed to reach their destination in time! The retreat has been successful!"
 		to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 		show_global_battle_report(null)
 		win_condition_spam_check = TRUE

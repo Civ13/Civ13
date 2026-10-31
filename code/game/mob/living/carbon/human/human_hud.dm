@@ -7,7 +7,7 @@
 
 	if (!check_HUDdatum())
 		log_debug("[H] trying to check a HUD, but HUDdatums does not have \"[H.client.prefs.UI_style]!\"")
-		to_chat(H, "Some problem has occured, use default HUD type.")
+		to_chat(H, "Some problem has occurred, use default HUD type.")
 		H.defaultHUD = "1713Style"
 		++recreate_flag
 	else if (H.client.prefs.UI_style != H.defaultHUD)

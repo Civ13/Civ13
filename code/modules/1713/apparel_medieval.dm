@@ -160,7 +160,7 @@
 
 /obj/item/clothing/head/plaguedoctor
 	name = "plague doctor hat"
-	desc = "A a short brimmed black hat. Often worn by plague doctors to cut a discreet figure in the streets between visitations."
+	desc = "A short brimmed black hat. Often worn by plague doctors to cut a discreet figure in the streets between visitations."
 	icon_state = "plaguedoctor"
 	item_state = "plaguedoctor"
 	flags_inv = BLOCKHAIR
@@ -1368,7 +1368,7 @@
 /obj/item/clothing/head/helmet/medieval/viking
 	name = "viking helmet"
 	desc = "A rounded viking helmet, with nose and ear protection"
-	icon_state = "new_viking" //to keep seperate from the wagner-esque viking helmet
+	icon_state = "new_viking" //to keep separate from the wagner-esque viking helmet
 	item_state = "new_viking"
 	body_parts_covered = HEAD|FACE
 	flags_inv = BLOCKHEADHAIR

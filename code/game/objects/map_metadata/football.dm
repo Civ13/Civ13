@@ -15,7 +15,7 @@
 	ordinal_age = 8
 	faction_distribution_coeffs = list(CIVILIAN = 1)
 	battle_name = "football game"
-	mission_start_message = "Two minutes untill the game starts!"
+	mission_start_message = "Two minutes until the game starts!"
 	ambience = list("sound/ambience/football.ogg")
 	faction1 = CIVILIAN
 	songs = list(
