@@ -127,7 +127,7 @@
 //catears
 /obj/item/clothing/accessory/catears
 	name = "cat tail and ears"
-	desc = "intresting"
+	desc = "interesting"
 	icon_state = "kitty"
 	item_state = "kitty"
 	body_parts_covered = FALSE

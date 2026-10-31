@@ -1071,7 +1071,7 @@
 
 /obj/item/clothing/head/helmet/asterix/apollo
 	name = "conspicious gaelic helmet"
-	desc = "The gold winged helmet of the god of the sun and light, as well a a messenger of olympus. The wearer feels energized to move quickly"
+	desc = "The gold winged helmet of the god of the sun and light, as well as a messenger of olympus. The wearer feels energized to move quickly"
 	icon_state = "apollo"
 	item_state = "apollo"
 	armor = list(melee = 50, arrow = 40, gun = 5, energy = 15, bomb = 50, bio = 20, rad = FALSE)

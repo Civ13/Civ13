@@ -903,7 +903,7 @@
 
 /datum/job/arab/syrian_commander
 	title = "J.A. Alqayid"
-	en_meaning = "Syrian Goverment Army Commander"
+	en_meaning = "Syrian Government Army Commander"
 	rank_abbreviation = "Alq."
 	allowed_maps = list(MAP_SYRIA)
 
@@ -964,7 +964,7 @@
 
 /datum/job/arab/syrian_sl
 	title = "J.A. Qayid Firqa"
-	en_meaning = "Syrian Goverment Army Squadleader"
+	en_meaning = "Syrian Government Army Squadleader"
 	rank_abbreviation = "Q.F."
 	allowed_maps = list(MAP_SYRIA)
 
@@ -1028,7 +1028,7 @@
 
 /datum/job/arab/syrian_soldier
 	title = "J.A. Sulydir"
-	en_meaning = "Syrian Goverment Army Soldier"
+	en_meaning = "Syrian Government Army Soldier"
 	rank_abbreviation = "S."
 	allowed_maps = list(MAP_SYRIA)
 
@@ -1116,7 +1116,7 @@
 
 /datum/job/arab/syrian_medic
 	title = "J.A. Museif Qitaliun"
-	en_meaning = "Syrian Goverment Army Combat Medic"
+	en_meaning = "Syrian Government Army Combat Medic"
 	rank_abbreviation = "Med."
 	allowed_maps = list(MAP_SYRIA)
 
@@ -1471,7 +1471,7 @@
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
+	H.add_note("Role", "You are an <b>[title]</b>, fighting against the Syrian Government Forces. Follow your squad leader's orders!")
 	H.setStat("strength", STAT_MEDIUM_HIGH)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_NORMAL)
@@ -1605,7 +1605,7 @@
 	var/obj/item/clothing/accessory/armband/portuguese/white = new /obj/item/clothing/accessory/armband/portuguese(null)
 	uniform.attackby(white, H)
 	give_random_name(H)
-	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Goverment Forces. Follow your squad leader's orders!")
+	H.add_note("Role", "You are an <b>[title]</b>, Fighting against the Syrian Government Forces. Follow your squad leader's orders!")
 	H.setStat("strength", STAT_MEDIUM_LOW)
 	H.setStat("crafting", STAT_MEDIUM_LOW)
 	H.setStat("rifle", STAT_LOW)

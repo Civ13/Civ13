@@ -111,7 +111,7 @@
 
 /obj/item/weapon/gun/projectile/semiautomatic/laser/e5
 	name = "E-5"
-	desc = "Standard issue rifle of the Confederacy of Independant Systems"
+	desc = "Standard issue rifle of the Confederacy of Independent Systems"
 	icon_state = "E-5"
 	item_state = "E-5"
 	base_icon = "E-5"
@@ -412,7 +412,7 @@
 
 /obj/item/weapon/gun/projectile/automatic/laser/lasgun
 	name = "Lasgun"
-	desc = "The standard lasgun used by the imperial gaurd."
+	desc = "The standard lasgun used by the imperial guard."
 	icon = 'icons/obj/guns/wip.dmi'
 	icon_state = "lasgunm36"
 	item_state = "lasgunm36"
@@ -436,7 +436,7 @@
 
 /obj/item/weapon/gun/projectile/pistol/laser/laspistol
 	name = "Laspistol"
-	desc = "A laspistol used by the imperial gaurd."
+	desc = "A laspistol used by the imperial guard."
 	icon_state = "laspistol"
 	w_class = ITEM_SIZE_SMALL
 	caliber = "laser"

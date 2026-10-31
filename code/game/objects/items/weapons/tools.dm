@@ -421,7 +421,7 @@
 
 /obj/item/weapon/fishing/net
 	name = "fishing net"
-	desc = "A classic fishing net, made of fiberous rope."
+	desc = "A classic fishing net, made of fibrous rope."
 	w_class = ITEM_SIZE_SMALL
 	icon_state = "fishing_net"
 	force = WEAPON_FORCE_WEAK

@@ -13,7 +13,7 @@
 
 /obj/item/weapon/dice/d20
 	name = "d20"
-	desc = "A dice with twenty sides. The prefered dice to throw at the GM."
+	desc = "A dice with twenty sides. The preferred dice to throw at the GM."
 	icon_state = "d20"
 	sides = 20
 
@@ -59,7 +59,7 @@
 
 /obj/item/weapon/dice/d8
 	name = "d8"
-	desc = "A dice with eight sides. The prefered dice to throw at the enemy."
+	desc = "A dice with eight sides. The preferred dice to throw at the enemy."
 	icon_state = "d8"
 	sides = 8
 

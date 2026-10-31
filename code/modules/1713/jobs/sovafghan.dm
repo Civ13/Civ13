@@ -716,7 +716,7 @@
 	H.setStat("machinegun", STAT_MEDIUM_HIGH)
 	return TRUE
 
-/////////DRA Goverment//////////////
+/////////DRA Government//////////////
 
 /datum/job/civilian/afghan/dra/governor
 	title = "DRA Governor"
@@ -771,7 +771,7 @@
 	H.g_facial = hex2num(copytext(hex_hair, 4, 6))
 	H.b_facial = hex2num(copytext(hex_hair, 6, 8))
 
-	H.add_note("Role", "You are an member of the DRA Goverment, manage the region in cooperation with the Soviets!")
+	H.add_note("Role", "You are an member of the DRA Government, manage the region in cooperation with the Soviets!")
 	H.setStat("strength", STAT_NORMAL)
 	H.setStat("crafting", STAT_NORMAL)
 	H.setStat("rifle", STAT_NORMAL)
