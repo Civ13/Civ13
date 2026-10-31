@@ -10,13 +10,15 @@ activation follows from this document.
 ## State and admission
 
 The proposed position is the engine's exact pixel anchor `(x, y, z, step_x,
-step_y)`, direction, all four bound fields and relevant visual offsets. Do not
-derive the physical rectangle by adding `bound_x` to the anchor: the current
-[BYOND reference](https://www.byond.com/docs/ref/info.html) describes newer
-`bound_x/y` behavior as subtracting those values from `pixel_w/z` for legacy
-compatibility. Its applicability to the pinned 516.1688 runtime and these
-types must be measured. In particular, do not assume that changing `bound_x`
-from 0 to 64 moves the physical footprint by 64 pixels. Require integral,
+step_y)`, direction, all four bound fields and relevant visual offsets. The
+standalone 516.1688 probe at `cef64b87dded27a47e9d85b03c677f5fa95a497d`
+observed the same 96x96 actor at anchor (7,7,1), with zero step offsets and
+`bound_x` 0 occupying x=7..9 and `bound_x` 64 occupying x=9..11 (both y=7..9).
+The `pixel_w` and `pixel_z` readbacks were zero in both cases. This establishes
+the recorded occupancy for that fixture, not sprite rendering or every move,
+compatibility mode, or animal type. The fixed blocker grid did not include the
+far leading x=12 column of the 64-offset case, so its absence of bumps must not
+be treated as proof of free passage. Require integral,
 in-map, fully supported bounds,
 no transaction or external mover, and authenticated save-owned offsets on entry.
 Any custom footprint or unverified facing transition remains rejected.
@@ -60,8 +62,9 @@ anchor. Deduplicate no callback unless an exact native baseline proves it redund
 
 ## Facing changes
 
-The existing icon update can change `bound_x` by 64 pixels. First measure whether
-this alters physical footprint, visual position, or both on 516.1688. Where a
+The existing icon update can change `bound_x` by 64 pixels. The standalone
+occupancy result above does not establish sprite rendering or the full-source
+animal's facing transition. Where a
 facing change alters the physical footprint, treat it as a transition with old
 and proposed bounds and their full swept union. Validate all newly occupied space and map
 edges before committing facing, bounds and movement as one indivisible transition.
