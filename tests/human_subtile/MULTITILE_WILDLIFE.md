@@ -77,8 +77,23 @@ The actual DMI metadata identifies the mammoth as 192x144 per frame and the
 T. rex as 128x96, both with four directional frames. Inspection of nontransparent
 pixels within those frames gives mammoth horizontal bounds 7..182 for south/east
 and 9..184 for north/west, and T. rex bounds 0..99 for south/east and 28..127
-for north/west. These are file-local pixel coordinates, not rendered placement:
+for north/west. The corresponding vertical ranges are 37..141 and 30..95,
+respectively, for all four frames. The SHA-256 of the mammoth DMI is
+`29b82f1971282f663fbb2e710ebd0bd09989be2a6f513216e533c73763c3465a`;
+the T. rex DMI is
+`c10e8e6e08ecd63753cadc0cdbf50b37c11ecbfc8db4b1d8ef9fa353e30f904`.
+These are inclusive file-local alpha-pixel coordinates, not rendered placement:
 icon centering and runtime pixel offsets still require engine/client checks.
+
+At zero step offsets and one anchor, the measured physical footprint covers
+columns 7..9 with `bound_x = 0`, versus 9..11 with `bound_x = 64`; both
+cover rows 7..9. Thus that aligned example shares one column but changes two
+columns on either side. In pixel coordinates relative to the anchor the
+horizontal intervals are `[0,96)` and `[64,160)`, with a 32px intersection
+and a 160px union. Nonzero offsets can touch additional tile rows or columns.
+The file-local alpha boxes move 2px for mammoth and 28px for T. rex across the
+two direction groups; those numbers cannot determine sprite-to-collider
+alignment because the actual client placement transformation is unmeasured.
 
 Two design choices remain open. A fixed 96x96 collider would avoid a physical
 turn shift but changes the existing north/west occupied cells and potentially

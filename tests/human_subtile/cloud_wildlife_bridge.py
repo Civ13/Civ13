@@ -46,7 +46,7 @@ def validate_bridge(row, head):
     require(isinstance(row, dict) and row.get('head') == head and row.get('error') is None and
             row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688) and
             row.get('scope') == SCOPE and row.get('npc_checks') == 0 and
-            row.get('large_bridge_checks') == 4087, 'Invalid bridge receipt identity or count')
+            row.get('large_bridge_checks') == 4120, 'Invalid bridge receipt identity or count')
     rows = row.get('large_bridge_rows')
     require(isinstance(rows, list) and len(rows) == 64, 'Incomplete bridge matrix')
     identities = set()
@@ -105,12 +105,12 @@ def validate_bridge(row, head):
                 edge not in {(c.get('x'),c.get('y')) for c in allowed['after']['locs'] if isinstance(c,dict)},
                 'Allowed move did not actually exit the measured remote edge')
     controls = row.get('large_bridge_controls')
-    require(isinstance(controls,list) and len(controls) == 33 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
+    require(isinstance(controls,list) and len(controls) == 34 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
     by_case={c.get('case'):c for c in controls}
     require(all(c.get('frame_cleared') == 1 for c in controls), 'Missing frame cleanup evidence')
     callbacks = {'callback_invalidate','callback_cancel','callback_finish','callback_delete','callback_blocker_delete','callback_incapacitate','callback_reassign','callback_control','callback_disable'}
     real={f'real_/obj/structure/{kind}/bridge_fixture_{direction}_{allow}' for kind in ('window','railing','table') for direction in (4,8) for allow in (0,1)}
-    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','policy_mutation'} | callbacks | real, 'Duplicate or missing controls')
+    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','policy_mutation'} | callbacks | real, 'Duplicate or missing controls')
     for name in ('missing','stale','wrong_actor','unarmed','wrong_destination','replay'):
         case=by_case[name]
         require(case.get('result') == 0 and point(case.get('before')) == point(case.get('after')) and
@@ -130,6 +130,10 @@ def validate_bridge(row, head):
     require(thrown.get('caught') == 1 and thrown.get('checks') == 1 and thrown.get('auth',{}).get('consumed') == 1 and
             point(thrown.get('before')) == point(thrown.get('after')) and 'CheckExit:bridge' in events(thrown),
             'Exception cleanup control failed')
+    deleted=by_case['callback_actor_delete']
+    require(deleted.get('actor_deleted') == 1 and deleted.get('pulse_consumed') == 1 and deleted.get('checks') == 1 and
+            deleted.get('error') is None and 'CheckExit:bridge' in events(deleted), 'Actor-deletion control failed')
+    point(deleted.get('before'))
     policy=by_case['policy_mutation']; trace=events(policy)
     require(point(policy.get('before')) == point(policy.get('after')) and policy.get('subject_allow') == 0 and
             type(policy.get('mutator_checks')) is int and policy['mutator_checks'] > 0 and

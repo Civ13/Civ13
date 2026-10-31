@@ -55,6 +55,8 @@ def receipt():
                          trace=[dict(event='CheckExit:bridge')]))
     controls.append(dict(case='callback_throw',before=copy.deepcopy(p),after=copy.deepcopy(p),checks=1,caught=1,
                          auth=dict(consumed=1),trace=[dict(event='CheckExit:bridge')]))
+    controls.append(dict(case='callback_actor_delete',before=copy.deepcopy(p),actor_deleted=1,pulse_consumed=1,
+                         error=None,checks=1,trace=[dict(event='CheckExit:bridge')]))
     controls.append(dict(case='policy_mutation',before=copy.deepcopy(p),after=copy.deepcopy(p),mutator_checks=1,
                          subject_checks=1,subject_allow=0,trace=[dict(event='policy_mutated'),dict(event='CheckExit:policy_subject')]))
     for kind in ('window','railing','table'):
@@ -66,7 +68,7 @@ def receipt():
                     trace=[dict(event='Uncross:'+kind),dict(event='CheckExit:'+kind)]))
     for control in controls: control['frame_cleared']=1
     return dict(head='a'*40,error=None,port=0,byond_version=516,byond_build=1688,scope=bridge.SCOPE,
-                npc_checks=0,large_bridge_checks=4087,large_bridge_rows=rows,large_bridge_controls=controls)
+                npc_checks=0,large_bridge_checks=4120,large_bridge_rows=rows,large_bridge_controls=controls)
 
 class BridgeReceiptTests(unittest.TestCase):
     def test_complete_fixture(self):
@@ -81,7 +83,10 @@ class BridgeReceiptTests(unittest.TestCase):
             lambda r: r['large_bridge_rows'][0]['auth'].update(sx=99),
             lambda r: r['large_bridge_controls'][0].update(result=1),
             lambda r: r['large_bridge_controls'][-1].update(checks=0),
-            lambda r: r.update(large_bridge_checks=4086),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(actor_deleted=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(frame_cleared=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(pulse_consumed=0),
+            lambda r: r.update(large_bridge_checks=4119),
         ]
         for mutate in mutations:
             row=receipt(); mutate(row)

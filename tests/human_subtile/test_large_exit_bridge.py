@@ -63,4 +63,12 @@ class LargeExitContracts(unittest.TestCase):
         self.assertIn('bridge_no_late_displacement', fixture)
         self.assertNotIn('.CheckExit(', fixture)
 
+    def test_native_helper_snapshots_before_callback_can_delete_transaction(self):
+        source_text=source('tests/human_subtile/large_native_observe.dm')
+        pulse=source_text.split('/proc/large_native_pulse(',1)[1].split('/proc/large_native_turfs(',1)[0]
+        before,after=pulse.split('var/native_result = A.Move',1)
+        self.assertIn('var/list/admitted_before = T.expected.Copy()',before)
+        self.assertNotIn('T.expected',after)
+        self.assertNotIn('T.fixture_',after)
+
 if __name__ == '__main__': unittest.main()

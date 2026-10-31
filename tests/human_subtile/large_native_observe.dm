@@ -135,6 +135,11 @@ var/large_native_checks = 0
 	P.direction = direction; P.sx = sx; P.sy = sy
 	A.npc_subtile_transaction = T
 	A.npc_subtile_pulse = P
+	// A callback may qdel T during the native Move; retain the admitted
+	// immutable evidence before entering it, without retaining deleted state.
+	var/list/admitted_before = T.expected.Copy()
+	var/admitted_bx = T.fixture_bound_x; var/admitted_by = T.fixture_bound_y
+	var/admitted_width = T.fixture_width; var/admitted_height = T.fixture_height
 	var/native_result = A.Move(destination, direction)
 	var/consumed = !P.armed
 	A.npc_subtile_pulse = null
@@ -143,8 +148,8 @@ var/large_native_checks = 0
 	var/list/result = list("native_return" = native_result, "engine_return" = P.engine_return,
 		"consumed" = consumed, "restoring" = P.restoring, "destination_x" = destination.x,
 		"destination_y" = destination.y, "sx" = sx, "sy" = sy, "direction" = direction,
-		"before" = T.expected, "bound_x" = T.fixture_bound_x, "bound_y" = T.fixture_bound_y,
-		"width" = T.fixture_width, "height" = T.fixture_height)
+		"before" = admitted_before, "bound_x" = admitted_bx, "bound_y" = admitted_by,
+		"width" = admitted_width, "height" = admitted_height)
 	qdel(P)
 	qdel(T)
 	return result

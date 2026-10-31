@@ -19,6 +19,8 @@ var/large_bridge_checks = 0
 	var/datum/npc_subtile_transaction/fixture_replacement
 	var/fixture_token = null
 	var/obj/large_native_border/bridge/fixture_mutation_target
+	var/datum/npc_subtile_large_frame/fixture_deleted_actor_frame
+	var/fixture_actor_deleted = FALSE
 
 /obj/large_native_border/bridge/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
 	large_native_log("CheckExit:bridge", src)
@@ -42,6 +44,10 @@ var/large_bridge_checks = 0
 				qdel(A.npc_subtile_transaction)
 			if ("callback_blocker_delete")
 				qdel(src)
+			if ("callback_actor_delete")
+				fixture_deleted_actor_frame = A.npc_subtile_large_frame
+				qdel(A)
+				fixture_actor_deleted = !A || isDeleted(A)
 			if ("callback_incapacitate")
 				A.stunned = 1
 			if ("callback_reassign")
@@ -177,6 +183,42 @@ var/large_bridge_checks = 0
 		"result" = result, "frame_cleared" = !A.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
 	qdel(A)
 
+// Deleting a mob can invalidate every reference to it immediately. Retain
+// the pulse, transaction and admitted frame separately; never read its final
+// position or imply that an actor which was deleted completed the movement.
+/proc/large_bridge_actor_delete_control(turf/exiting)
+	var/mob/living/simple_animal/A = large_bridge_setup(/mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge, 0, WEST, FALSE)
+	var/obj/large_native_border/bridge/B = new(exiting)
+	B.fixture_allow = TRUE; B.fixture_fault = "callback_actor_delete"
+	var/list/before = large_native_snapshot(A)
+	var/datum/npc_subtile_transaction/large_native_observe/T = new
+	T.actor = A; T.expected = A.npc_subtile_snapshot()
+	T.generation = A.move_gen; T.end_time = world.time + 100
+	T.fixture_bound_x = A.bound_x; T.fixture_bound_y = A.bound_y
+	T.fixture_width = A.bound_width; T.fixture_height = A.bound_height
+	T.fixture_dir = WEST; T.fixture_destination = A.loc; T.fixture_sx = 0; T.fixture_sy = A.step_y
+	var/datum/npc_subtile_pulse/P = new
+	P.actor = A; P.before = T.expected.Copy(); P.destination = A.loc
+	P.direction = WEST; P.sx = 0; P.sy = A.step_y
+	A.npc_subtile_transaction = T; A.npc_subtile_pulse = P
+	large_native_trace = list()
+	var/result = null
+	var/error = null
+	try
+		result = A.Move(P.destination, WEST)
+	catch (var/exception/fixture_error)
+		error = fixture_error.name
+	var/actor_deleted = !A || isDeleted(A)
+	var/frame_cleared = !B.fixture_deleted_actor_frame || !B.fixture_deleted_actor_frame.active
+	var/pulse_consumed = P && !P.armed
+	large_bridge_assert(!error && actor_deleted && B.fixture_actor_deleted, "bridge_actor_deleted")
+	large_bridge_assert(B.fixture_checks == 1 && pulse_consumed, "bridge_delete_callback_consumed")
+	large_bridge_assert(frame_cleared, "bridge_delete_frame_cleared")
+	large_bridge_controls += list(list("case" = "callback_actor_delete", "before" = before, "actor_deleted" = actor_deleted,
+		"frame_cleared" = frame_cleared, "pulse_consumed" = pulse_consumed, "checks" = B.fixture_checks,
+		"error" = error, "result" = result, "trace" = large_native_trace.Copy()))
+	qdel(P); qdel(T); qdel(B)
+
 /proc/large_bridge_setup(animal_type, variant, direction, orthogonal)
 	var/mob/living/simple_animal/A = new animal_type(locate(9, 7, 1))
 	A.dir = direction
@@ -299,6 +341,7 @@ var/large_bridge_checks = 0
 							"subject_allow" = subject.fixture_allow, "frame_cleared" = !policy_actor.npc_subtile_large_frame, "trace" = large_native_trace.Copy()))
 						mutator.fixture_mutation_target = null
 						qdel(mutator); qdel(subject); qdel(policy_actor)
+						large_bridge_actor_delete_control(exiting)
 					if (animal_type == /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge && !orthogonal && ((variant == 0 && direction == WEST) || (variant == 64 && direction == EAST)))
 						for (var/border_type in list(/obj/structure/window/bridge_fixture, /obj/structure/railing/bridge_fixture, /obj/structure/table/bridge_fixture))
 							for (var/allow in list(FALSE, TRUE))
@@ -327,4 +370,4 @@ var/large_bridge_checks = 0
 		large_bridge_capability_control(control)
 	large_bridge_missing_control()
 	large_bridge_ordinary_control()
-	large_bridge_assert(large_bridge_controls.len == 33, "bridge_controls_complete")
+	large_bridge_assert(large_bridge_controls.len == 34, "bridge_controls_complete")
