@@ -46,6 +46,11 @@ generated source snapshots, runtime binaries, artifact aliases and diagnostics.
 The complete anticipated diagnostic set must also fit the 128-file reserve.
 The process helper rechecks the bounded inventory and actual input hashes before
 creating either child. Output observations continue while it runs.
+After child exit/cleanup and stream finalization, a bounded digest comparison
+rechecks every required input before returning a successful phase outcome.
+Same-length mutations and input read failures leave a failed phase receipt and
+preserved diagnostics, even if the observed child exit code is zero. A preexisting
+phase failure stays primary; a final input-check failure is also recorded separately.
 
 The final inventory counts files rather than directories, uses the derived bound,
 and reports `inventory_complete` independently of `finalized`. `finalized` means

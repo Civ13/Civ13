@@ -188,6 +188,7 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0, required
     """
     receipt = {'phase': phase, 'argv': command, 'cwd': str(cwd),
                'timeout_seconds': timeout, 'status': 'starting',
+               'required_inputs_final_validation': 'not_checked' if required_inputs else 'not_applicable',
                'descendant_cleanup': 'unverified', 'socket_cleanup': 'unverified', 'streams': {}}
     receipt_path = output / (phase + '-phase.json')
     write_json(receipt_path, receipt)
@@ -280,6 +281,20 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0, required
             child.stderr.close()
         if previous_sigterm is not None:
             signal.signal(signal.SIGTERM, previous_sigterm)
+        if child is not None and required_inputs:
+            try:
+                for relative, row in required_inputs.items():
+                    path = output / relative
+                    if path.is_symlink() or not path.is_file() or bounded_digest(path, INPUT_LIMIT) != (row['bytes'], row['sha256']):
+                        raise RuntimeError('Required input changed after process launch: ' + relative)
+                receipt['required_inputs_final_validation'] = 'passed'
+            except BaseException as integrity_error:
+                receipt.update(required_inputs_final_validation='failed',
+                               required_inputs_final_error=repr(integrity_error))
+                if failure is None:
+                    failure = integrity_error
+                    receipt.update(status='failed', error_type=type(integrity_error).__name__,
+                                   error=repr(integrity_error))
         try:
             write_json(receipt_path, receipt)
         except BaseException as retention_error:

@@ -330,6 +330,69 @@ class DefaultArtifactSelection(unittest.TestCase):
 
 
 class NativePhaseRetention(unittest.TestCase):
+    def test_final_input_digest_rejects_same_size_mutation_and_read_failure(self):
+        for phase in ('compile', 'daemon'):
+            for mode in ('unchanged', 'same_size', 'read_failure', 'prior_failure'):
+                with self.subTest(phase=phase, mode=mode), tempfile.TemporaryDirectory(prefix='flax-final-input-') as directory:
+                    output = Path(directory)
+                    relative = 'runtime/config/names/pinned.txt'
+                    path = output/relative
+                    path.parent.mkdir(parents=True)
+                    path.write_bytes(b'original')
+                    required = {relative: {'bytes':8, 'sha256':hashlib.sha256(b'original').hexdigest()}}
+                    launched = False
+                    digest = runner.bounded_digest
+                    class Child:
+                        pid = 12345
+                        returncode = None if mode == 'prior_failure' else 0
+                        stdout = io.BytesIO(b'retained stdout')
+                        stderr = io.BytesIO(b'retained stderr')
+                        def poll(self): return self.returncode
+                        def kill(self): self.returncode = 0
+                        def wait(self, timeout): return self.returncode
+                    child = Child()
+                    def launch(*args, **kwargs):
+                        nonlocal launched
+                        launched = True
+                        (output/'runtime/result.txt').write_text('PASS: injected offline fixture result')
+                        if mode == 'same_size': path.write_bytes(b'modified')
+                        return child
+                    def read_digest(*args):
+                        if launched and mode in ('read_failure', 'prior_failure'):
+                            raise OSError('injected final input read failure')
+                        return digest(*args)
+                    budget = runner.check_output_budget
+                    def check_budget(*args):
+                        if launched and mode == 'prior_failure':
+                            raise RuntimeError('injected earlier budget failure')
+                        return budget(*args)
+                    with patch.object(runner.subprocess, 'Popen', side_effect=launch), \
+                            patch.object(runner, 'bounded_digest', side_effect=read_digest), \
+                            patch.object(runner, 'check_output_budget', side_effect=check_budget):
+                        if mode == 'unchanged':
+                            result = runner.run_phase(['never-launched'], cwd=output, output=output,
+                                                      phase=phase, timeout=1, required_inputs=required)
+                            self.assertEqual(result.returncode, 0)
+                        else:
+                            expected = RuntimeError if mode in ('same_size', 'prior_failure') else OSError
+                            with self.assertRaises(expected) as failure:
+                                runner.run_phase(['never-launched'], cwd=output, output=output,
+                                                 phase=phase, timeout=1, required_inputs=required)
+                            if mode == 'prior_failure': self.assertIn('earlier budget failure', str(failure.exception))
+                    receipt = json.loads((output/(phase+'-phase.json')).read_text())
+                    self.assertEqual(receipt['status'], 'exited' if mode == 'unchanged' else 'failed')
+                    self.assertEqual(receipt['required_inputs_final_validation'], 'passed' if mode == 'unchanged' else 'failed')
+                    self.assertEqual(receipt['returncode'], 0)
+                    self.assertEqual(receipt['returncode_status'], 'observed')
+                    self.assertTrue(receipt['stream_retention_complete'])
+                    self.assertEqual((output/(phase+'.stdout.log')).read_bytes(), b'retained stdout')
+                    self.assertEqual((output/(phase+'.stderr.log')).read_bytes(), b'retained stderr')
+                    self.assertEqual((output/'runtime/result.txt').read_text(), 'PASS: injected offline fixture result')
+                    if mode == 'same_size': self.assertEqual(path.read_bytes(), b'modified')
+                    if mode == 'prior_failure':
+                        self.assertIn('earlier budget failure', receipt['error'])
+                        self.assertIn('final input read failure', receipt['required_inputs_final_error'])
+
     def exercise(self, mode):
         with tempfile.TemporaryDirectory(prefix='flax-phase-offline-') as directory:
             output = Path(directory)
