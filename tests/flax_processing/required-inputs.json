@@ -6,740 +6,152 @@
   "required_name_files": 146,
   "normalization": "Fingerprint only: CRLF to LF; staging preserves the actual source bytes",
   "inputs": [
-    {
-      "path": "config/names/adjectives.txt",
-      "bytes": 2820,
-      "sha256": "44f3506febfec2f1fe9d13ad944d4728d1604e612458112c07ec475b300f7545"
-    },
-    {
-      "path": "config/names/ancient_names.txt",
-      "bytes": 4035,
-      "sha256": "be995afc28d5bbba97b1064f097394b58dababe4f6ec03a50f6a60cc41a8076d"
-    },
-    {
-      "path": "config/names/countries.txt",
-      "bytes": 842,
-      "sha256": "3445ad32b7d99f073fa6388297f164237f3cb69f0360e5923af135025ab58250"
-    },
-    {
-      "path": "config/names/epithets.txt",
-      "bytes": 562,
-      "sha256": "e7000eb79711a8ce1f3415b2beafd6851137cb298b1b9b40f5c85912a8632cee"
-    },
-    {
-      "path": "config/names/first_ant.txt",
-      "bytes": 731,
-      "sha256": "aba1e9670e6c01f4944a49557f77891b7b6f18cc8dd208fdc94141037fae0550"
-    },
-    {
-      "path": "config/names/first_carib.txt",
-      "bytes": 508,
-      "sha256": "84124519b2d2eaee060bc09d6e6cc37adb681bc44482e6f877b6e9dca5544541"
-    },
-    {
-      "path": "config/names/first_crab.txt",
-      "bytes": 297,
-      "sha256": "17e2c8607965bc910ea45f521843df2efdb52f21212c2a9ac1aa3f094fa357bf"
-    },
-    {
-      "path": "config/names/first_female.txt",
-      "bytes": 6187,
-      "sha256": "c3e0e6e042b7a1873e6bcd2ebdbb2ef654ae8b6889591cd9c226dac4c9ee2164"
-    },
-    {
-      "path": "config/names/first_female_ainu.txt",
-      "bytes": 46,
-      "sha256": "7c1c75682ce3a9979cc43c1e01ce8f3452ff9f750013a412629823dea3687676"
-    },
-    {
-      "path": "config/names/first_female_arab.txt",
-      "bytes": 1304,
-      "sha256": "ee80972094732274f1845a1a4d4d36eb56b28872fca4baeabe38e6fb485095fd"
-    },
-    {
-      "path": "config/names/first_female_aztec.txt",
-      "bytes": 153,
-      "sha256": "cb6d0f0bb5b6e76c3b30d649614f14fbd84eb27d241bca2698dca14b19afe330"
-    },
-    {
-      "path": "config/names/first_female_cherokee.txt",
-      "bytes": 285,
-      "sha256": "6eb767e6c70e060dc690bb7c27a1be5e22b513c18fdebb0eae2fe729a0b468a9"
-    },
-    {
-      "path": "config/names/first_female_chinese.txt",
-      "bytes": 1300,
-      "sha256": "53ccd1d3ea060f4faad1a3941c722ee41bae0266addea4abe2e64f64d81c2c27"
-    },
-    {
-      "path": "config/names/first_female_chinook.txt",
-      "bytes": 61,
-      "sha256": "00f899793984920de89c5a5da1b3bc63b7ab67928a60514de4aad5341b29f32f"
-    },
-    {
-      "path": "config/names/first_female_comanche.txt",
-      "bytes": 64,
-      "sha256": "345d5cf0bae789cedf336af8bada996f57af52fe9ca7a9dd1e668583f7103628"
-    },
-    {
-      "path": "config/names/first_female_dutch.txt",
-      "bytes": 696,
-      "sha256": "ec0b28cc7c9ab160e6112f4072e865340ec0cc5f480cc0610b9160e3d9b0a2b8"
-    },
-    {
-      "path": "config/names/first_female_egyptian.txt",
-      "bytes": 245,
-      "sha256": "14ae9326570baf610a073099792148d5a61efc5b92c31e5a073ce49e451569bf"
-    },
-    {
-      "path": "config/names/first_female_english.txt",
-      "bytes": 5472,
-      "sha256": "4947b1580d25acc2a09a0a285ba5c99827389b4ea9859aee57e1c4fb8bea2670"
-    },
-    {
-      "path": "config/names/first_female_filipino.txt",
-      "bytes": 802,
-      "sha256": "d5c9d9690d338f1ec9dd8dbf73d7e4971fcf547cc564470ced90c59245743097"
-    },
-    {
-      "path": "config/names/first_female_finnish.txt",
-      "bytes": 904,
-      "sha256": "e59c847a17b60d42df35349f44bcf8fb88e5d06af9c938bfdfba865854944c51"
-    },
-    {
-      "path": "config/names/first_female_french.txt",
-      "bytes": 162,
-      "sha256": "821a27b6f51950bd3d98b2cffcb1187dd9da730c2469170b15352adb90fd2724"
-    },
-    {
-      "path": "config/names/first_female_gaelic.txt",
-      "bytes": 168,
-      "sha256": "1ab8422abfadaf4bdb2252c54935819788606dc7f6d658b313aeb76bc8a46c12"
-    },
-    {
-      "path": "config/names/first_female_german.txt",
-      "bytes": 467,
-      "sha256": "927edc62c97671ccde662f7be2683dbfb9c62d5e1be860c1af7009b34bb0e763"
-    },
-    {
-      "path": "config/names/first_female_hebrew.txt",
-      "bytes": 595,
-      "sha256": "59c151252292208beffb619b47593c0c3366b36a167f28ec2a620c4d69cddd57"
-    },
-    {
-      "path": "config/names/first_female_inuit.txt",
-      "bytes": 274,
-      "sha256": "ee30aa31f58a5570219d6aca00ba9b4f4953124d9a7db66f704b71f60cb2f58b"
-    },
-    {
-      "path": "config/names/first_female_irish.txt",
-      "bytes": 148,
-      "sha256": "199945b6f7a222930bae2f616ef9e1b7870aa837b661fe29ed1d8fe567e062d5"
-    },
-    {
-      "path": "config/names/first_female_iroquois.txt",
-      "bytes": 112,
-      "sha256": "3fcbb01f0952d3bde5beccd8ce8801ac2a9fbc85b516f6f0c48a797ddc235d77"
-    },
-    {
-      "path": "config/names/first_female_italian.txt",
-      "bytes": 150,
-      "sha256": "53b51c04c473c699a2fc1086ae1355710d3c8a3e89b73416b8bb759db2765090"
-    },
-    {
-      "path": "config/names/first_female_japanese.txt",
-      "bytes": 209,
-      "sha256": "76457560295485ddce8db2a8e425c47c7ff494c1d9007cdddabc9a7f4956110e"
-    },
-    {
-      "path": "config/names/first_female_kazakh.txt",
-      "bytes": 882,
-      "sha256": "e2c415917d2c6b6c72fa01cd88f79f631143edd4e6e698a36f5dd92b1c7d361b"
-    },
-    {
-      "path": "config/names/first_female_korean.txt",
-      "bytes": 421,
-      "sha256": "e0b9472dab0133a2c9187e633354058c623dc202dd47f762628c47b7fbc70919"
-    },
-    {
-      "path": "config/names/first_female_mayan.txt",
-      "bytes": 63,
-      "sha256": "aaf606637a91b681d0aae67bdb67e06a404be847fea17704fed3e8a52de25bb7"
-    },
-    {
-      "path": "config/names/first_female_navajo.txt",
-      "bytes": 67,
-      "sha256": "2d8a0f8af3788dd3e60a1eb4d33e77fdeb64261cdbb5886e3de5dfe3aeecf1c6"
-    },
-    {
-      "path": "config/names/first_female_oldnorse.txt",
-      "bytes": 260,
-      "sha256": "e8ddf14f502d782560863e486f51b2ef9506ffbf80771b3ec1088ee6309a62ad"
-    },
-    {
-      "path": "config/names/first_female_pirate.txt",
-      "bytes": 5472,
-      "sha256": "4947b1580d25acc2a09a0a285ba5c99827389b4ea9859aee57e1c4fb8bea2670"
-    },
-    {
-      "path": "config/names/first_female_polish.txt",
-      "bytes": 150,
-      "sha256": "5c7d720b0c3e5e62bf9c3cb4fa62c3a310e7868e948b72bed0866920d739a5e6"
-    },
-    {
-      "path": "config/names/first_female_portuguese.txt",
-      "bytes": 163,
-      "sha256": "3fc6b55c590a3ba83fad236696678af23f29542ce6974c62e52df35204093b8a"
-    },
-    {
-      "path": "config/names/first_female_roman.txt",
-      "bytes": 309,
-      "sha256": "b901be9beade462fa01a296d8da1f322ebd7cbb9594b70cf5c8794ad19ffe332"
-    },
-    {
-      "path": "config/names/first_female_russian.txt",
-      "bytes": 415,
-      "sha256": "9e73802f9cfc0fa95e530fbc7e34b8d2f3c889f9b1402b4369707fbde878c4bf"
-    },
-    {
-      "path": "config/names/first_female_scots.txt",
-      "bytes": 352,
-      "sha256": "3348868d86067e3cb259a0846cb7d8b40da6c96ef9ee2405b75d836a532372b1"
-    },
-    {
-      "path": "config/names/first_female_scottishgaelic.txt",
-      "bytes": 352,
-      "sha256": "3348868d86067e3cb259a0846cb7d8b40da6c96ef9ee2405b75d836a532372b1"
-    },
-    {
-      "path": "config/names/first_female_sioux.txt",
-      "bytes": 65,
-      "sha256": "d5669cef8440f69e3547dd064af5ccaf9d5224f312cfd6f7bfb35e5d69871c25"
-    },
-    {
-      "path": "config/names/first_female_spanish.txt",
-      "bytes": 560,
-      "sha256": "8c21b3373f7c5e05d8a52d9f49d0c0f1e3ab6397ea0e57e6272562337c618fd8"
-    },
-    {
-      "path": "config/names/first_female_swahili.txt",
-      "bytes": 504,
-      "sha256": "9d1b71042f94379dee7df182bd2ffb1eabc850b5ce77698f2b657f66192f3a61"
-    },
-    {
-      "path": "config/names/first_female_tajik.txt",
-      "bytes": 742,
-      "sha256": "632f3f08c7c2263adb68e611500e198a77549ce16a6117302840a4ea34d5567a"
-    },
-    {
-      "path": "config/names/first_female_ukrainian.txt",
-      "bytes": 123,
-      "sha256": "e242a25fb17a952980547f8521c945fdba25f759124a9e6ed9860c232dbefed1"
-    },
-    {
-      "path": "config/names/first_female_vietnamese.txt",
-      "bytes": 323,
-      "sha256": "048e0fcba1964b804f78b684c0fc129710403f346e35fde1a92fee1bb1de9d9a"
-    },
-    {
-      "path": "config/names/first_female_welsh.txt",
-      "bytes": 339,
-      "sha256": "7b72944b6d833b046c9d55092d552cc7967e806402a619be00b2232aaea02690"
-    },
-    {
-      "path": "config/names/first_female_zulu.txt",
-      "bytes": 503,
-      "sha256": "2eead60122ef3e3ba05bd59ed680b2203760ff872c9c07fe9155a21bafc66bb5"
-    },
-    {
-      "path": "config/names/first_goblin.txt",
-      "bytes": 242,
-      "sha256": "b58f97d47ce7c45423810b7585c45094e29d4982790fcf71870844ed44cd6d34"
-    },
-    {
-      "path": "config/names/first_gorilla.txt",
-      "bytes": 378,
-      "sha256": "f19f6c8504b26ea613537662cc106803be40ba3a6f0976d966c8d35a6b77caa7"
-    },
-    {
-      "path": "config/names/first_lizard.txt",
-      "bytes": 601,
-      "sha256": "e7783c2d8f917938a89577317c8c27d80a2efd2174ba4dc1eba90c233001f332"
-    },
-    {
-      "path": "config/names/first_male.txt",
-      "bytes": 7035,
-      "sha256": "491779da4695522f5fc8795852b2cc484ddcc076c8d5ec07a71423c1bf14077b"
-    },
-    {
-      "path": "config/names/first_male_afrikaans.txt",
-      "bytes": 269,
-      "sha256": "45961fae4be42c81e8a0738f236b7680cd9e10ffc4a9789b019b5ef5e66cdf8a"
-    },
-    {
-      "path": "config/names/first_male_afro_american.txt",
-      "bytes": 203,
-      "sha256": "eb4bfe10971994b93dd1c102ad458912dcf8589838196d100744cbd151d7d3f5"
-    },
-    {
-      "path": "config/names/first_male_ainu.txt",
-      "bytes": 101,
-      "sha256": "863abfd63328ba25626c9c949da007f1ac7d84f444a1031bbacff0d83ca43bd9"
-    },
-    {
-      "path": "config/names/first_male_apache.txt",
-      "bytes": 305,
-      "sha256": "cbc42208dfce067b63c9bccbb4ca353c5480b0848ae38a4a234097222d249a40"
-    },
-    {
-      "path": "config/names/first_male_arab.txt",
-      "bytes": 967,
-      "sha256": "c0e6b0669d14735573eb25275667dc94e27a25ac81850efb2604c234dd85f7b2"
-    },
-    {
-      "path": "config/names/first_male_aztec.txt",
-      "bytes": 311,
-      "sha256": "a6559b52fe99b8032f3ec61ca084dd4f972fd575ab6e635c6fe9d795497c8171"
-    },
-    {
-      "path": "config/names/first_male_chechen.txt",
-      "bytes": 1058,
-      "sha256": "327d55a885f7be804fb154a476003cbce4bacaefaa7b8adc770bc16d29b2999c"
-    },
-    {
-      "path": "config/names/first_male_cherokee.txt",
-      "bytes": 324,
-      "sha256": "afb0201db3148f7827ac6c385865fd27eeebf5eda60f010cb581ae0e454360c1"
-    },
-    {
-      "path": "config/names/first_male_chinese.txt",
-      "bytes": 1284,
-      "sha256": "1766ac67080b206f7150d9ab9aafde491d3985071a773334a9f2c59551efc0de"
-    },
-    {
-      "path": "config/names/first_male_chinook.txt",
-      "bytes": 156,
-      "sha256": "37f5e2d118089faf69c3db27be0c106aa729054dbeadd9d4d3840ff03655354f"
-    },
-    {
-      "path": "config/names/first_male_comanche.txt",
-      "bytes": 380,
-      "sha256": "816963e064188621672422d81acb29add5278ada81f40725dec0c9933d6beca3"
-    },
-    {
-      "path": "config/names/first_male_dutch.txt",
-      "bytes": 616,
-      "sha256": "429920de73abd36989bc4b33941f2eb8443a1b90daee4a824a3aa0445a150f1a"
-    },
-    {
-      "path": "config/names/first_male_egyptian.txt",
-      "bytes": 280,
-      "sha256": "6caaf0d726cabfc46fecc7ec4e3209a0ebf30b618a7ee52b6d5df6e5c46e4942"
-    },
-    {
-      "path": "config/names/first_male_english.txt",
-      "bytes": 4473,
-      "sha256": "9b84b3ec3bf11f7b535b6fbd60ab6759db8cc95625cbcbb95a838492fe3b5a86"
-    },
-    {
-      "path": "config/names/first_male_filipino.txt",
-      "bytes": 711,
-      "sha256": "fe1bcf81545d650a689dfd29881f8ffccc00e59537675d476c28869b46c7f78e"
-    },
-    {
-      "path": "config/names/first_male_finnish.txt",
-      "bytes": 2565,
-      "sha256": "25110a338e15531e35cfa6cd91f69b1c06fcbe323ea5b926b3a0a199ac3ab524"
-    },
-    {
-      "path": "config/names/first_male_french.txt",
-      "bytes": 1167,
-      "sha256": "1c942b5f4961d8fb5f3e682e397396c4e53da6e20f58e166184e8d33c956e547"
-    },
-    {
-      "path": "config/names/first_male_gaelic.txt",
-      "bytes": 496,
-      "sha256": "ff607917a4bb9418c5226645dcdd9f8e29a44ea849cfea55b5915fe5c2dea78f"
-    },
-    {
-      "path": "config/names/first_male_german.txt",
-      "bytes": 706,
-      "sha256": "9c8abdb68f95205720644d3c2ed94847a07b12d1bd71e455607056225f47f019"
-    },
-    {
-      "path": "config/names/first_male_greek.txt",
-      "bytes": 1718,
-      "sha256": "23ff8a332b6a98aabcd4a52733ba6e9298a5cb6849d42a66d3bf2163020ad92b"
-    },
-    {
-      "path": "config/names/first_male_hawaiian.txt",
-      "bytes": 296,
-      "sha256": "75c9d41317f1fd72fc3a90e78dbf40b7564ed41685f7164cbc0d956a579c422a"
-    },
-    {
-      "path": "config/names/first_male_hebrew.txt",
-      "bytes": 612,
-      "sha256": "5dcf9b6d1832113f712ad50045a17267a1b9bdece2f3af2dbea2b50369cecf93"
-    },
-    {
-      "path": "config/names/first_male_inuit.txt",
-      "bytes": 290,
-      "sha256": "c638c191631689bb08f15ce1c10d37e3235be2a856fd93ca3881471f0051f030"
-    },
-    {
-      "path": "config/names/first_male_irish.txt",
-      "bytes": 273,
-      "sha256": "df7a64cfda41fa071854751ecd99a64bf95f5d721f5ca00cf4973972aea58d27"
-    },
-    {
-      "path": "config/names/first_male_iroquois.txt",
-      "bytes": 467,
-      "sha256": "5cbe3b6bdd133bf16f2aa9f966220f37f9ec80073a55484c60c4286c5db68de7"
-    },
-    {
-      "path": "config/names/first_male_italian.txt",
-      "bytes": 164,
-      "sha256": "34f44157390db817ab5f9fba4be1084d67517ae247aff29613997277571aed84"
-    },
-    {
-      "path": "config/names/first_male_japanese.txt",
-      "bytes": 256,
-      "sha256": "59bd5f25b3928137200381f822430f00c99a5a33fd40828c1893f570bd110ac3"
-    },
-    {
-      "path": "config/names/first_male_kazakh.txt",
-      "bytes": 842,
-      "sha256": "29df079351d9e500d972572dba97b13f92fffe143f285d65d5533d267edcac0c"
-    },
-    {
-      "path": "config/names/first_male_korean.txt",
-      "bytes": 468,
-      "sha256": "07022ae742aa1047624ecc8228cf2afd6d9f64d5e50c5a0b122e350d913229ef"
-    },
-    {
-      "path": "config/names/first_male_mayan.txt",
-      "bytes": 139,
-      "sha256": "b07f6e27df23d7b05e432cb618126a2ba31b0070f3a4a12db3328062be4fd5c9"
-    },
-    {
-      "path": "config/names/first_male_navajo.txt",
-      "bytes": 209,
-      "sha256": "0625c3b2a50256e0c2de2eb6d80a82f4b89e7477949f3a04a40a666ad9fa5c59"
-    },
-    {
-      "path": "config/names/first_male_oldnorse.txt",
-      "bytes": 774,
-      "sha256": "b81bee323d3dc61bb50c480d490044970fb3c04c592e296e3a8f3a889a6307d6"
-    },
-    {
-      "path": "config/names/first_male_pirate.txt",
-      "bytes": 4473,
-      "sha256": "9b84b3ec3bf11f7b535b6fbd60ab6759db8cc95625cbcbb95a838492fe3b5a86"
-    },
-    {
-      "path": "config/names/first_male_polish.txt",
-      "bytes": 163,
-      "sha256": "39293372758dec1994a01b57ae5f59cee94c33fbc7aeb43b0e249f640f147f65"
-    },
-    {
-      "path": "config/names/first_male_portuguese.txt",
-      "bytes": 213,
-      "sha256": "8232f87d181c5d8175076d8ec5fa21569519b2780f4d97622086d753060f3395"
-    },
-    {
-      "path": "config/names/first_male_roman.txt",
-      "bytes": 347,
-      "sha256": "f903681040fb962132b0da1bd7cd9fea916eb1e90356841eba3e8e985aae3801"
-    },
-    {
-      "path": "config/names/first_male_russian.txt",
-      "bytes": 589,
-      "sha256": "5d254e6acec6a2d87fdde2cfc4eb181aa5677680136bf659daa4af103b0e76ab"
-    },
-    {
-      "path": "config/names/first_male_scots.txt",
-      "bytes": 404,
-      "sha256": "58a09f847b76a4a8610c70e165862c106aad836029825b9efd745fbe300df73a"
-    },
-    {
-      "path": "config/names/first_male_scottishgaelic.txt",
-      "bytes": 169,
-      "sha256": "ade8ee169926bf3df296fa4034b2076829ec553eb4d4aaf973fd615f106f38e1"
-    },
-    {
-      "path": "config/names/first_male_sioux.txt",
-      "bytes": 152,
-      "sha256": "fe579b9e525a18b55142fcc0e716d07af3e5b25b293e969864104150bed98d08"
-    },
-    {
-      "path": "config/names/first_male_spanish.txt",
-      "bytes": 531,
-      "sha256": "634608c975d8f98a3dd0d975f36585059477014cda3aac5f18e2b3be232083fe"
-    },
-    {
-      "path": "config/names/first_male_swahili.txt",
-      "bytes": 374,
-      "sha256": "73fd3b9741ab288e849ee6bed519417542443149cae694a8e8a257de65cd8b53"
-    },
-    {
-      "path": "config/names/first_male_tajik.txt",
-      "bytes": 694,
-      "sha256": "19cb9907502178abb0ec8d02c4b3c36bafa5ecdc4f8e5ea24296bb2920e14a63"
-    },
-    {
-      "path": "config/names/first_male_ukrainian.txt",
-      "bytes": 124,
-      "sha256": "0f32c5711f6cdbcafab8ba304de6c43818ac888081be9f8cc01fed313850d27d"
-    },
-    {
-      "path": "config/names/first_male_vietnamese.txt",
-      "bytes": 468,
-      "sha256": "07022ae742aa1047624ecc8228cf2afd6d9f64d5e50c5a0b122e350d913229ef"
-    },
-    {
-      "path": "config/names/first_male_welsh.txt",
-      "bytes": 683,
-      "sha256": "ea45c56ac236cb1763028ca196e8e487c13a44726e4b6ba64a72381b1401dde6"
-    },
-    {
-      "path": "config/names/first_male_zulu.txt",
-      "bytes": 707,
-      "sha256": "4aaa4862323264cbeb85d6772a9b2a2362707d6a2d059235d0a1a14a1522729b"
-    },
-    {
-      "path": "config/names/first_orc.txt",
-      "bytes": 800,
-      "sha256": "2cb64945ff0a113e7bacd1fe3c4206d9de10b1bd4a5e3560d13658243790ae93"
-    },
-    {
-      "path": "config/names/first_wolf.txt",
-      "bytes": 257,
-      "sha256": "2f383eeb3aaea1a33188cdacbcb213293724200ed282bc8d458e143776006fd2"
-    },
-    {
-      "path": "config/names/last.txt",
-      "bytes": 8686,
-      "sha256": "5b117c48594d4813454c825bdd97694bdbf57a241ae89598cfca198de8392a4d"
-    },
-    {
-      "path": "config/names/last_afrikaans.txt",
-      "bytes": 767,
-      "sha256": "92997de6db2027c0cdcef19f63654207411d327575affdb0500ea8cea589eded"
-    },
-    {
-      "path": "config/names/last_afro_american.txt",
-      "bytes": 370,
-      "sha256": "2e82e8071ed860a39861f1c5b5f7d51a1cf20c7b1af9dd48d04e35d8c7509a87"
-    },
-    {
-      "path": "config/names/last_ainu.txt",
-      "bytes": 98,
-      "sha256": "86730012e31c33459132dd66838ed134b83a8395cc97bef785aa28a04fed8641"
-    },
-    {
-      "path": "config/names/last_carib.txt",
-      "bytes": 276,
-      "sha256": "1e0a80f1bf15809fd9d1df327bc1e28af271dc03fe37df5b7df7abf184f664f9"
-    },
-    {
-      "path": "config/names/last_chechen.txt",
-      "bytes": 623,
-      "sha256": "a64e931891d45f58a1256b3381854c6e34da58fa5131c9cfcd89ab20e5583493"
-    },
-    {
-      "path": "config/names/last_chinese.txt",
-      "bytes": 88,
-      "sha256": "fb1ec38a5d68d3a03d0d62ba63c1c970952bb15bfa86447e2a359303b68e67cb"
-    },
-    {
-      "path": "config/names/last_crab.txt",
-      "bytes": 188,
-      "sha256": "5820ca0f3f688e77abd47a5037bc3f757eebcce95f797020b71150da770b1594"
-    },
-    {
-      "path": "config/names/last_dutch.txt",
-      "bytes": 1021,
-      "sha256": "740bbdccbf956fcaf1561e4efd5fb88ac8f6e2ad601fb7fdbd02bf2a8b9daee2"
-    },
-    {
-      "path": "config/names/last_egyptian.txt",
-      "bytes": 369,
-      "sha256": "126b5642ae232601a3ee5c032544b387b903b5384cdba340a5d37fc59450f470"
-    },
-    {
-      "path": "config/names/last_english.txt",
-      "bytes": 3154,
-      "sha256": "cbfa4849ee2e90a0c8e364f153605908ff30efc8fae2ee2b59111d271e392fce"
-    },
-    {
-      "path": "config/names/last_filipino.txt",
-      "bytes": 956,
-      "sha256": "7d18882aa313e866c1991c281773af05c2011ce5d9d012457a770d40fa6f95e0"
-    },
-    {
-      "path": "config/names/last_finnish.txt",
-      "bytes": 736,
-      "sha256": "38d36daf7c27aa7b33be96df2e76722fc03d77cd7ddffc7dbd79a50d79849711"
-    },
-    {
-      "path": "config/names/last_french.txt",
-      "bytes": 668,
-      "sha256": "9e571465fad0debf7e8cecc3fdad9a578fe2b90fbbb4bf90cb102361337a44d7"
-    },
-    {
-      "path": "config/names/last_gaelic.txt",
-      "bytes": 446,
-      "sha256": "4b299a70e66c766a62ceb0661e3978fd33499320a6cd2d01e330393d8ef82227"
-    },
-    {
-      "path": "config/names/last_german.txt",
-      "bytes": 516,
-      "sha256": "6ce95c4ab3585842040a489e9c0e401b05992494ad63593e4aba3a7040b52a6a"
-    },
-    {
-      "path": "config/names/last_greek.txt",
-      "bytes": 3485,
-      "sha256": "bd885247db7bece0fd17100d74effe439f71f823d80e3ffb5a9101f4bc1d452e"
-    },
-    {
-      "path": "config/names/last_hebrew.txt",
-      "bytes": 755,
-      "sha256": "3d263ba9aad6c875b6f48ed6bee05f3f4f6b8dd5b93fbf7a3eb0f58b2713bb27"
-    },
-    {
-      "path": "config/names/last_irish.txt",
-      "bytes": 2749,
-      "sha256": "adbb1149349b7b58842135cb0790d1e310cde7a30e316cb5e8289b8e2f33add5"
-    },
-    {
-      "path": "config/names/last_iroquois.txt",
-      "bytes": 175,
-      "sha256": "0c56ff7127439964633319274df0aaf46ccdb918d08822a1650ee7ffd3c64182"
-    },
-    {
-      "path": "config/names/last_italian.txt",
-      "bytes": 177,
-      "sha256": "f4f13a308fbc682d7f1a74a7849a78fea5bffd2bae20e3e88c46451d6dc592ed"
-    },
-    {
-      "path": "config/names/last_japanese.txt",
-      "bytes": 255,
-      "sha256": "9f21e107faa6b8046d28a4a83e514b3c400961134642d7b936128aa905ff7fb7"
-    },
-    {
-      "path": "config/names/last_kazakh.txt",
-      "bytes": 1165,
-      "sha256": "f576bc1c9f1ddf3a85bc0ef7a895476865575638fce8a1e917dca9529f252fd7"
-    },
-    {
-      "path": "config/names/last_korean.txt",
-      "bytes": 370,
-      "sha256": "4c15ca7d118a9aa37a279bf9d617f27575acbd6627e116605c1d936ba8aa686d"
-    },
-    {
-      "path": "config/names/last_oldnorse.txt",
-      "bytes": 447,
-      "sha256": "68b4d1271393b203de604d4998d93eb9adff8e6e50f0e674b7d3678bf192138c"
-    },
-    {
-      "path": "config/names/last_pirate.txt",
-      "bytes": 4259,
-      "sha256": "35f5b0c0f8a46c7bc9bda4be5fa4795e7d0a5b22c353706db05218a8c579e964"
-    },
-    {
-      "path": "config/names/last_polish.txt",
-      "bytes": 172,
-      "sha256": "aa13223ffa3f142f6e9d5a930628f5606019e24d6c7622381670308e8c14dd41"
-    },
-    {
-      "path": "config/names/last_portuguese.txt",
-      "bytes": 670,
-      "sha256": "831760802466819e3181ecdeb45978da7bb172aa35ac8089f93b9c48eff0b861"
-    },
-    {
-      "path": "config/names/last_roman.txt",
-      "bytes": 853,
-      "sha256": "3ba0b5dfa4fab2c199e1384191c45bf60c949aab586ebe94b8bbd8349e7f29de"
-    },
-    {
-      "path": "config/names/last_russian.txt",
-      "bytes": 1040,
-      "sha256": "acbb78a64856fafda1bf5cd1841fb7f08e13b4ff70e2e3d824fb13b04fa7dfa5"
-    },
-    {
-      "path": "config/names/last_scots.txt",
-      "bytes": 601,
-      "sha256": "434c4cd560397bc54c606efafdb02c6f768384f04a5cd698ac2a0d2cfd12acdb"
-    },
-    {
-      "path": "config/names/last_scottishgaelic.txt",
-      "bytes": 375,
-      "sha256": "8410fb2e4817549a2d34dbef4cf4a8e146a1b461ae7ffcf7d99ca9f730143a6a"
-    },
-    {
-      "path": "config/names/last_spanish.txt",
-      "bytes": 706,
-      "sha256": "5a6f778b8299e83bd173c2d41fdc38b6c1e4d73f0ca031f64d6309d75f80dd85"
-    },
-    {
-      "path": "config/names/last_swahili.txt",
-      "bytes": 708,
-      "sha256": "58bf366eea448a04fba692fba277f31b198a1804c11b1ca0b55f995f85b402d6"
-    },
-    {
-      "path": "config/names/last_tajik.txt",
-      "bytes": 887,
-      "sha256": "c3ff63341e293a7168d7d503617857e77a9dfb5ca7eae3fdeeeb26679bfccd75"
-    },
-    {
-      "path": "config/names/last_ukrainian.txt",
-      "bytes": 262,
-      "sha256": "20bd83333030f4257a0e5f5d8b0af6fc279659d20d048e10cdb4d06baa2d3cd1"
-    },
-    {
-      "path": "config/names/last_vietnamese.txt",
-      "bytes": 800,
-      "sha256": "2ede12de685fce514bd9e2a8e3bba7396833f89335c60631358fa2e498dbe771"
-    },
-    {
-      "path": "config/names/last_welsh.txt",
-      "bytes": 682,
-      "sha256": "027d4dae3de65560e40d0e4499fddba0fc573db8598f9d2b7b210a231e311c7d"
-    },
-    {
-      "path": "config/names/last_wolf.txt",
-      "bytes": 144,
-      "sha256": "e92bd9c9dafb7951c10dcbc81ead4fa6617a4f26fb66ca729bd0961e9ccf05fe"
-    },
-    {
-      "path": "config/names/last_zulu.txt",
-      "bytes": 1013,
-      "sha256": "e36006798a5c19eab832df31af12b19f3e9e4b612d8a91aab0c1fef5e8b39a80"
-    },
-    {
-      "path": "config/names/middle_roman.txt",
-      "bytes": 810,
-      "sha256": "1965f11e2a41f84937ff8f7df16f6f44558f461c8a12c0b4801920de189c0445"
-    },
-    {
-      "path": "config/names/mongolian_female.txt",
-      "bytes": 2247,
-      "sha256": "234a637d7757d36cbb294a1be125a457416c012ffeac292b8980e5d42e9c226d"
-    },
-    {
-      "path": "config/names/mongolian_male.txt",
-      "bytes": 2232,
-      "sha256": "0f3b48d84f41e22f47c07712a5030772b27d1098f202ceab1d4fc2481a937a75"
-    },
-    {
-      "path": "config/names/verbs.txt",
-      "bytes": 3981,
-      "sha256": "3a2b75d1dd1d284d5c43d83afeac7c271804a355f9249ae35263d47fec76ac75"
-    },
-    {
-      "path": "config/crafting/material_recipes_global.txt",
-      "bytes": 209167,
-      "sha256": "80e76b606e347576156971a195833a73c055a319c6357a401850a7bc310ba85b"
-    }
+    {"path": "config/names/adjectives.txt", "bytes": 2820, "sha256": "44f3506febfec2f1fe9d13ad944d4728d1604e612458112c07ec475b300f7545"},
+    {"path": "config/names/ancient_names.txt", "bytes": 4035, "sha256": "be995afc28d5bbba97b1064f097394b58dababe4f6ec03a50f6a60cc41a8076d"},
+    {"path": "config/names/countries.txt", "bytes": 842, "sha256": "3445ad32b7d99f073fa6388297f164237f3cb69f0360e5923af135025ab58250"},
+    {"path": "config/names/epithets.txt", "bytes": 562, "sha256": "e7000eb79711a8ce1f3415b2beafd6851137cb298b1b9b40f5c85912a8632cee"},
+    {"path": "config/names/first_ant.txt", "bytes": 731, "sha256": "aba1e9670e6c01f4944a49557f77891b7b6f18cc8dd208fdc94141037fae0550"},
+    {"path": "config/names/first_carib.txt", "bytes": 508, "sha256": "84124519b2d2eaee060bc09d6e6cc37adb681bc44482e6f877b6e9dca5544541"},
+    {"path": "config/names/first_crab.txt", "bytes": 297, "sha256": "17e2c8607965bc910ea45f521843df2efdb52f21212c2a9ac1aa3f094fa357bf"},
+    {"path": "config/names/first_female.txt", "bytes": 6187, "sha256": "c3e0e6e042b7a1873e6bcd2ebdbb2ef654ae8b6889591cd9c226dac4c9ee2164"},
+    {"path": "config/names/first_female_ainu.txt", "bytes": 46, "sha256": "7c1c75682ce3a9979cc43c1e01ce8f3452ff9f750013a412629823dea3687676"},
+    {"path": "config/names/first_female_arab.txt", "bytes": 1304, "sha256": "ee80972094732274f1845a1a4d4d36eb56b28872fca4baeabe38e6fb485095fd"},
+    {"path": "config/names/first_female_aztec.txt", "bytes": 153, "sha256": "cb6d0f0bb5b6e76c3b30d649614f14fbd84eb27d241bca2698dca14b19afe330"},
+    {"path": "config/names/first_female_cherokee.txt", "bytes": 285, "sha256": "6eb767e6c70e060dc690bb7c27a1be5e22b513c18fdebb0eae2fe729a0b468a9"},
+    {"path": "config/names/first_female_chinese.txt", "bytes": 1300, "sha256": "53ccd1d3ea060f4faad1a3941c722ee41bae0266addea4abe2e64f64d81c2c27"},
+    {"path": "config/names/first_female_chinook.txt", "bytes": 61, "sha256": "00f899793984920de89c5a5da1b3bc63b7ab67928a60514de4aad5341b29f32f"},
+    {"path": "config/names/first_female_comanche.txt", "bytes": 64, "sha256": "345d5cf0bae789cedf336af8bada996f57af52fe9ca7a9dd1e668583f7103628"},
+    {"path": "config/names/first_female_dutch.txt", "bytes": 696, "sha256": "ec0b28cc7c9ab160e6112f4072e865340ec0cc5f480cc0610b9160e3d9b0a2b8"},
+    {"path": "config/names/first_female_egyptian.txt", "bytes": 245, "sha256": "14ae9326570baf610a073099792148d5a61efc5b92c31e5a073ce49e451569bf"},
+    {"path": "config/names/first_female_english.txt", "bytes": 5472, "sha256": "4947b1580d25acc2a09a0a285ba5c99827389b4ea9859aee57e1c4fb8bea2670"},
+    {"path": "config/names/first_female_filipino.txt", "bytes": 802, "sha256": "d5c9d9690d338f1ec9dd8dbf73d7e4971fcf547cc564470ced90c59245743097"},
+    {"path": "config/names/first_female_finnish.txt", "bytes": 904, "sha256": "e59c847a17b60d42df35349f44bcf8fb88e5d06af9c938bfdfba865854944c51"},
+    {"path": "config/names/first_female_french.txt", "bytes": 162, "sha256": "821a27b6f51950bd3d98b2cffcb1187dd9da730c2469170b15352adb90fd2724"},
+    {"path": "config/names/first_female_gaelic.txt", "bytes": 168, "sha256": "1ab8422abfadaf4bdb2252c54935819788606dc7f6d658b313aeb76bc8a46c12"},
+    {"path": "config/names/first_female_german.txt", "bytes": 467, "sha256": "927edc62c97671ccde662f7be2683dbfb9c62d5e1be860c1af7009b34bb0e763"},
+    {"path": "config/names/first_female_hebrew.txt", "bytes": 595, "sha256": "59c151252292208beffb619b47593c0c3366b36a167f28ec2a620c4d69cddd57"},
+    {"path": "config/names/first_female_inuit.txt", "bytes": 274, "sha256": "ee30aa31f58a5570219d6aca00ba9b4f4953124d9a7db66f704b71f60cb2f58b"},
+    {"path": "config/names/first_female_irish.txt", "bytes": 148, "sha256": "199945b6f7a222930bae2f616ef9e1b7870aa837b661fe29ed1d8fe567e062d5"},
+    {"path": "config/names/first_female_iroquois.txt", "bytes": 112, "sha256": "3fcbb01f0952d3bde5beccd8ce8801ac2a9fbc85b516f6f0c48a797ddc235d77"},
+    {"path": "config/names/first_female_italian.txt", "bytes": 150, "sha256": "53b51c04c473c699a2fc1086ae1355710d3c8a3e89b73416b8bb759db2765090"},
+    {"path": "config/names/first_female_japanese.txt", "bytes": 209, "sha256": "76457560295485ddce8db2a8e425c47c7ff494c1d9007cdddabc9a7f4956110e"},
+    {"path": "config/names/first_female_kazakh.txt", "bytes": 882, "sha256": "e2c415917d2c6b6c72fa01cd88f79f631143edd4e6e698a36f5dd92b1c7d361b"},
+    {"path": "config/names/first_female_korean.txt", "bytes": 421, "sha256": "e0b9472dab0133a2c9187e633354058c623dc202dd47f762628c47b7fbc70919"},
+    {"path": "config/names/first_female_mayan.txt", "bytes": 63, "sha256": "aaf606637a91b681d0aae67bdb67e06a404be847fea17704fed3e8a52de25bb7"},
+    {"path": "config/names/first_female_navajo.txt", "bytes": 67, "sha256": "2d8a0f8af3788dd3e60a1eb4d33e77fdeb64261cdbb5886e3de5dfe3aeecf1c6"},
+    {"path": "config/names/first_female_oldnorse.txt", "bytes": 260, "sha256": "e8ddf14f502d782560863e486f51b2ef9506ffbf80771b3ec1088ee6309a62ad"},
+    {"path": "config/names/first_female_pirate.txt", "bytes": 5472, "sha256": "4947b1580d25acc2a09a0a285ba5c99827389b4ea9859aee57e1c4fb8bea2670"},
+    {"path": "config/names/first_female_polish.txt", "bytes": 150, "sha256": "5c7d720b0c3e5e62bf9c3cb4fa62c3a310e7868e948b72bed0866920d739a5e6"},
+    {"path": "config/names/first_female_portuguese.txt", "bytes": 163, "sha256": "3fc6b55c590a3ba83fad236696678af23f29542ce6974c62e52df35204093b8a"},
+    {"path": "config/names/first_female_roman.txt", "bytes": 309, "sha256": "b901be9beade462fa01a296d8da1f322ebd7cbb9594b70cf5c8794ad19ffe332"},
+    {"path": "config/names/first_female_russian.txt", "bytes": 415, "sha256": "9e73802f9cfc0fa95e530fbc7e34b8d2f3c889f9b1402b4369707fbde878c4bf"},
+    {"path": "config/names/first_female_scots.txt", "bytes": 352, "sha256": "3348868d86067e3cb259a0846cb7d8b40da6c96ef9ee2405b75d836a532372b1"},
+    {"path": "config/names/first_female_scottishgaelic.txt", "bytes": 352, "sha256": "3348868d86067e3cb259a0846cb7d8b40da6c96ef9ee2405b75d836a532372b1"},
+    {"path": "config/names/first_female_sioux.txt", "bytes": 65, "sha256": "d5669cef8440f69e3547dd064af5ccaf9d5224f312cfd6f7bfb35e5d69871c25"},
+    {"path": "config/names/first_female_spanish.txt", "bytes": 560, "sha256": "8c21b3373f7c5e05d8a52d9f49d0c0f1e3ab6397ea0e57e6272562337c618fd8"},
+    {"path": "config/names/first_female_swahili.txt", "bytes": 504, "sha256": "9d1b71042f94379dee7df182bd2ffb1eabc850b5ce77698f2b657f66192f3a61"},
+    {"path": "config/names/first_female_tajik.txt", "bytes": 742, "sha256": "632f3f08c7c2263adb68e611500e198a77549ce16a6117302840a4ea34d5567a"},
+    {"path": "config/names/first_female_ukrainian.txt", "bytes": 123, "sha256": "e242a25fb17a952980547f8521c945fdba25f759124a9e6ed9860c232dbefed1"},
+    {"path": "config/names/first_female_vietnamese.txt", "bytes": 323, "sha256": "048e0fcba1964b804f78b684c0fc129710403f346e35fde1a92fee1bb1de9d9a"},
+    {"path": "config/names/first_female_welsh.txt", "bytes": 339, "sha256": "7b72944b6d833b046c9d55092d552cc7967e806402a619be00b2232aaea02690"},
+    {"path": "config/names/first_female_zulu.txt", "bytes": 503, "sha256": "2eead60122ef3e3ba05bd59ed680b2203760ff872c9c07fe9155a21bafc66bb5"},
+    {"path": "config/names/first_goblin.txt", "bytes": 242, "sha256": "b58f97d47ce7c45423810b7585c45094e29d4982790fcf71870844ed44cd6d34"},
+    {"path": "config/names/first_gorilla.txt", "bytes": 378, "sha256": "f19f6c8504b26ea613537662cc106803be40ba3a6f0976d966c8d35a6b77caa7"},
+    {"path": "config/names/first_lizard.txt", "bytes": 601, "sha256": "e7783c2d8f917938a89577317c8c27d80a2efd2174ba4dc1eba90c233001f332"},
+    {"path": "config/names/first_male.txt", "bytes": 7035, "sha256": "491779da4695522f5fc8795852b2cc484ddcc076c8d5ec07a71423c1bf14077b"},
+    {"path": "config/names/first_male_afrikaans.txt", "bytes": 269, "sha256": "45961fae4be42c81e8a0738f236b7680cd9e10ffc4a9789b019b5ef5e66cdf8a"},
+    {"path": "config/names/first_male_afro_american.txt", "bytes": 203, "sha256": "eb4bfe10971994b93dd1c102ad458912dcf8589838196d100744cbd151d7d3f5"},
+    {"path": "config/names/first_male_ainu.txt", "bytes": 101, "sha256": "863abfd63328ba25626c9c949da007f1ac7d84f444a1031bbacff0d83ca43bd9"},
+    {"path": "config/names/first_male_apache.txt", "bytes": 305, "sha256": "cbc42208dfce067b63c9bccbb4ca353c5480b0848ae38a4a234097222d249a40"},
+    {"path": "config/names/first_male_arab.txt", "bytes": 967, "sha256": "c0e6b0669d14735573eb25275667dc94e27a25ac81850efb2604c234dd85f7b2"},
+    {"path": "config/names/first_male_aztec.txt", "bytes": 311, "sha256": "a6559b52fe99b8032f3ec61ca084dd4f972fd575ab6e635c6fe9d795497c8171"},
+    {"path": "config/names/first_male_chechen.txt", "bytes": 1058, "sha256": "327d55a885f7be804fb154a476003cbce4bacaefaa7b8adc770bc16d29b2999c"},
+    {"path": "config/names/first_male_cherokee.txt", "bytes": 324, "sha256": "afb0201db3148f7827ac6c385865fd27eeebf5eda60f010cb581ae0e454360c1"},
+    {"path": "config/names/first_male_chinese.txt", "bytes": 1284, "sha256": "1766ac67080b206f7150d9ab9aafde491d3985071a773334a9f2c59551efc0de"},
+    {"path": "config/names/first_male_chinook.txt", "bytes": 156, "sha256": "37f5e2d118089faf69c3db27be0c106aa729054dbeadd9d4d3840ff03655354f"},
+    {"path": "config/names/first_male_comanche.txt", "bytes": 380, "sha256": "816963e064188621672422d81acb29add5278ada81f40725dec0c9933d6beca3"},
+    {"path": "config/names/first_male_dutch.txt", "bytes": 616, "sha256": "429920de73abd36989bc4b33941f2eb8443a1b90daee4a824a3aa0445a150f1a"},
+    {"path": "config/names/first_male_egyptian.txt", "bytes": 280, "sha256": "6caaf0d726cabfc46fecc7ec4e3209a0ebf30b618a7ee52b6d5df6e5c46e4942"},
+    {"path": "config/names/first_male_english.txt", "bytes": 4473, "sha256": "9b84b3ec3bf11f7b535b6fbd60ab6759db8cc95625cbcbb95a838492fe3b5a86"},
+    {"path": "config/names/first_male_filipino.txt", "bytes": 711, "sha256": "fe1bcf81545d650a689dfd29881f8ffccc00e59537675d476c28869b46c7f78e"},
+    {"path": "config/names/first_male_finnish.txt", "bytes": 2565, "sha256": "25110a338e15531e35cfa6cd91f69b1c06fcbe323ea5b926b3a0a199ac3ab524"},
+    {"path": "config/names/first_male_french.txt", "bytes": 1167, "sha256": "1c942b5f4961d8fb5f3e682e397396c4e53da6e20f58e166184e8d33c956e547"},
+    {"path": "config/names/first_male_gaelic.txt", "bytes": 496, "sha256": "ff607917a4bb9418c5226645dcdd9f8e29a44ea849cfea55b5915fe5c2dea78f"},
+    {"path": "config/names/first_male_german.txt", "bytes": 706, "sha256": "9c8abdb68f95205720644d3c2ed94847a07b12d1bd71e455607056225f47f019"},
+    {"path": "config/names/first_male_greek.txt", "bytes": 1718, "sha256": "23ff8a332b6a98aabcd4a52733ba6e9298a5cb6849d42a66d3bf2163020ad92b"},
+    {"path": "config/names/first_male_hawaiian.txt", "bytes": 296, "sha256": "75c9d41317f1fd72fc3a90e78dbf40b7564ed41685f7164cbc0d956a579c422a"},
+    {"path": "config/names/first_male_hebrew.txt", "bytes": 612, "sha256": "5dcf9b6d1832113f712ad50045a17267a1b9bdece2f3af2dbea2b50369cecf93"},
+    {"path": "config/names/first_male_inuit.txt", "bytes": 290, "sha256": "c638c191631689bb08f15ce1c10d37e3235be2a856fd93ca3881471f0051f030"},
+    {"path": "config/names/first_male_irish.txt", "bytes": 273, "sha256": "df7a64cfda41fa071854751ecd99a64bf95f5d721f5ca00cf4973972aea58d27"},
+    {"path": "config/names/first_male_iroquois.txt", "bytes": 467, "sha256": "5cbe3b6bdd133bf16f2aa9f966220f37f9ec80073a55484c60c4286c5db68de7"},
+    {"path": "config/names/first_male_italian.txt", "bytes": 164, "sha256": "34f44157390db817ab5f9fba4be1084d67517ae247aff29613997277571aed84"},
+    {"path": "config/names/first_male_japanese.txt", "bytes": 256, "sha256": "59bd5f25b3928137200381f822430f00c99a5a33fd40828c1893f570bd110ac3"},
+    {"path": "config/names/first_male_kazakh.txt", "bytes": 842, "sha256": "29df079351d9e500d972572dba97b13f92fffe143f285d65d5533d267edcac0c"},
+    {"path": "config/names/first_male_korean.txt", "bytes": 468, "sha256": "07022ae742aa1047624ecc8228cf2afd6d9f64d5e50c5a0b122e350d913229ef"},
+    {"path": "config/names/first_male_mayan.txt", "bytes": 139, "sha256": "b07f6e27df23d7b05e432cb618126a2ba31b0070f3a4a12db3328062be4fd5c9"},
+    {"path": "config/names/first_male_navajo.txt", "bytes": 209, "sha256": "0625c3b2a50256e0c2de2eb6d80a82f4b89e7477949f3a04a40a666ad9fa5c59"},
+    {"path": "config/names/first_male_oldnorse.txt", "bytes": 774, "sha256": "b81bee323d3dc61bb50c480d490044970fb3c04c592e296e3a8f3a889a6307d6"},
+    {"path": "config/names/first_male_pirate.txt", "bytes": 4473, "sha256": "9b84b3ec3bf11f7b535b6fbd60ab6759db8cc95625cbcbb95a838492fe3b5a86"},
+    {"path": "config/names/first_male_polish.txt", "bytes": 163, "sha256": "39293372758dec1994a01b57ae5f59cee94c33fbc7aeb43b0e249f640f147f65"},
+    {"path": "config/names/first_male_portuguese.txt", "bytes": 213, "sha256": "8232f87d181c5d8175076d8ec5fa21569519b2780f4d97622086d753060f3395"},
+    {"path": "config/names/first_male_roman.txt", "bytes": 347, "sha256": "f903681040fb962132b0da1bd7cd9fea916eb1e90356841eba3e8e985aae3801"},
+    {"path": "config/names/first_male_russian.txt", "bytes": 589, "sha256": "5d254e6acec6a2d87fdde2cfc4eb181aa5677680136bf659daa4af103b0e76ab"},
+    {"path": "config/names/first_male_scots.txt", "bytes": 404, "sha256": "58a09f847b76a4a8610c70e165862c106aad836029825b9efd745fbe300df73a"},
+    {"path": "config/names/first_male_scottishgaelic.txt", "bytes": 169, "sha256": "ade8ee169926bf3df296fa4034b2076829ec553eb4d4aaf973fd615f106f38e1"},
+    {"path": "config/names/first_male_sioux.txt", "bytes": 152, "sha256": "fe579b9e525a18b55142fcc0e716d07af3e5b25b293e969864104150bed98d08"},
+    {"path": "config/names/first_male_spanish.txt", "bytes": 531, "sha256": "634608c975d8f98a3dd0d975f36585059477014cda3aac5f18e2b3be232083fe"},
+    {"path": "config/names/first_male_swahili.txt", "bytes": 374, "sha256": "73fd3b9741ab288e849ee6bed519417542443149cae694a8e8a257de65cd8b53"},
+    {"path": "config/names/first_male_tajik.txt", "bytes": 694, "sha256": "19cb9907502178abb0ec8d02c4b3c36bafa5ecdc4f8e5ea24296bb2920e14a63"},
+    {"path": "config/names/first_male_ukrainian.txt", "bytes": 124, "sha256": "0f32c5711f6cdbcafab8ba304de6c43818ac888081be9f8cc01fed313850d27d"},
+    {"path": "config/names/first_male_vietnamese.txt", "bytes": 468, "sha256": "07022ae742aa1047624ecc8228cf2afd6d9f64d5e50c5a0b122e350d913229ef"},
+    {"path": "config/names/first_male_welsh.txt", "bytes": 683, "sha256": "ea45c56ac236cb1763028ca196e8e487c13a44726e4b6ba64a72381b1401dde6"},
+    {"path": "config/names/first_male_zulu.txt", "bytes": 707, "sha256": "4aaa4862323264cbeb85d6772a9b2a2362707d6a2d059235d0a1a14a1522729b"},
+    {"path": "config/names/first_orc.txt", "bytes": 800, "sha256": "2cb64945ff0a113e7bacd1fe3c4206d9de10b1bd4a5e3560d13658243790ae93"},
+    {"path": "config/names/first_wolf.txt", "bytes": 257, "sha256": "2f383eeb3aaea1a33188cdacbcb213293724200ed282bc8d458e143776006fd2"},
+    {"path": "config/names/last.txt", "bytes": 8686, "sha256": "5b117c48594d4813454c825bdd97694bdbf57a241ae89598cfca198de8392a4d"},
+    {"path": "config/names/last_afrikaans.txt", "bytes": 767, "sha256": "92997de6db2027c0cdcef19f63654207411d327575affdb0500ea8cea589eded"},
+    {"path": "config/names/last_afro_american.txt", "bytes": 370, "sha256": "2e82e8071ed860a39861f1c5b5f7d51a1cf20c7b1af9dd48d04e35d8c7509a87"},
+    {"path": "config/names/last_ainu.txt", "bytes": 98, "sha256": "86730012e31c33459132dd66838ed134b83a8395cc97bef785aa28a04fed8641"},
+    {"path": "config/names/last_carib.txt", "bytes": 276, "sha256": "1e0a80f1bf15809fd9d1df327bc1e28af271dc03fe37df5b7df7abf184f664f9"},
+    {"path": "config/names/last_chechen.txt", "bytes": 623, "sha256": "a64e931891d45f58a1256b3381854c6e34da58fa5131c9cfcd89ab20e5583493"},
+    {"path": "config/names/last_chinese.txt", "bytes": 88, "sha256": "fb1ec38a5d68d3a03d0d62ba63c1c970952bb15bfa86447e2a359303b68e67cb"},
+    {"path": "config/names/last_crab.txt", "bytes": 188, "sha256": "5820ca0f3f688e77abd47a5037bc3f757eebcce95f797020b71150da770b1594"},
+    {"path": "config/names/last_dutch.txt", "bytes": 1021, "sha256": "740bbdccbf956fcaf1561e4efd5fb88ac8f6e2ad601fb7fdbd02bf2a8b9daee2"},
+    {"path": "config/names/last_egyptian.txt", "bytes": 369, "sha256": "126b5642ae232601a3ee5c032544b387b903b5384cdba340a5d37fc59450f470"},
+    {"path": "config/names/last_english.txt", "bytes": 3154, "sha256": "cbfa4849ee2e90a0c8e364f153605908ff30efc8fae2ee2b59111d271e392fce"},
+    {"path": "config/names/last_filipino.txt", "bytes": 956, "sha256": "7d18882aa313e866c1991c281773af05c2011ce5d9d012457a770d40fa6f95e0"},
+    {"path": "config/names/last_finnish.txt", "bytes": 736, "sha256": "38d36daf7c27aa7b33be96df2e76722fc03d77cd7ddffc7dbd79a50d79849711"},
+    {"path": "config/names/last_french.txt", "bytes": 668, "sha256": "9e571465fad0debf7e8cecc3fdad9a578fe2b90fbbb4bf90cb102361337a44d7"},
+    {"path": "config/names/last_gaelic.txt", "bytes": 446, "sha256": "4b299a70e66c766a62ceb0661e3978fd33499320a6cd2d01e330393d8ef82227"},
+    {"path": "config/names/last_german.txt", "bytes": 516, "sha256": "6ce95c4ab3585842040a489e9c0e401b05992494ad63593e4aba3a7040b52a6a"},
+    {"path": "config/names/last_greek.txt", "bytes": 3485, "sha256": "bd885247db7bece0fd17100d74effe439f71f823d80e3ffb5a9101f4bc1d452e"},
+    {"path": "config/names/last_hebrew.txt", "bytes": 755, "sha256": "3d263ba9aad6c875b6f48ed6bee05f3f4f6b8dd5b93fbf7a3eb0f58b2713bb27"},
+    {"path": "config/names/last_irish.txt", "bytes": 2749, "sha256": "adbb1149349b7b58842135cb0790d1e310cde7a30e316cb5e8289b8e2f33add5"},
+    {"path": "config/names/last_iroquois.txt", "bytes": 175, "sha256": "0c56ff7127439964633319274df0aaf46ccdb918d08822a1650ee7ffd3c64182"},
+    {"path": "config/names/last_italian.txt", "bytes": 177, "sha256": "f4f13a308fbc682d7f1a74a7849a78fea5bffd2bae20e3e88c46451d6dc592ed"},
+    {"path": "config/names/last_japanese.txt", "bytes": 255, "sha256": "9f21e107faa6b8046d28a4a83e514b3c400961134642d7b936128aa905ff7fb7"},
+    {"path": "config/names/last_kazakh.txt", "bytes": 1165, "sha256": "f576bc1c9f1ddf3a85bc0ef7a895476865575638fce8a1e917dca9529f252fd7"},
+    {"path": "config/names/last_korean.txt", "bytes": 370, "sha256": "4c15ca7d118a9aa37a279bf9d617f27575acbd6627e116605c1d936ba8aa686d"},
+    {"path": "config/names/last_oldnorse.txt", "bytes": 447, "sha256": "68b4d1271393b203de604d4998d93eb9adff8e6e50f0e674b7d3678bf192138c"},
+    {"path": "config/names/last_pirate.txt", "bytes": 4259, "sha256": "35f5b0c0f8a46c7bc9bda4be5fa4795e7d0a5b22c353706db05218a8c579e964"},
+    {"path": "config/names/last_polish.txt", "bytes": 172, "sha256": "aa13223ffa3f142f6e9d5a930628f5606019e24d6c7622381670308e8c14dd41"},
+    {"path": "config/names/last_portuguese.txt", "bytes": 670, "sha256": "831760802466819e3181ecdeb45978da7bb172aa35ac8089f93b9c48eff0b861"},
+    {"path": "config/names/last_roman.txt", "bytes": 853, "sha256": "3ba0b5dfa4fab2c199e1384191c45bf60c949aab586ebe94b8bbd8349e7f29de"},
+    {"path": "config/names/last_russian.txt", "bytes": 1040, "sha256": "acbb78a64856fafda1bf5cd1841fb7f08e13b4ff70e2e3d824fb13b04fa7dfa5"},
+    {"path": "config/names/last_scots.txt", "bytes": 601, "sha256": "434c4cd560397bc54c606efafdb02c6f768384f04a5cd698ac2a0d2cfd12acdb"},
+    {"path": "config/names/last_scottishgaelic.txt", "bytes": 375, "sha256": "8410fb2e4817549a2d34dbef4cf4a8e146a1b461ae7ffcf7d99ca9f730143a6a"},
+    {"path": "config/names/last_spanish.txt", "bytes": 706, "sha256": "5a6f778b8299e83bd173c2d41fdc38b6c1e4d73f0ca031f64d6309d75f80dd85"},
+    {"path": "config/names/last_swahili.txt", "bytes": 708, "sha256": "58bf366eea448a04fba692fba277f31b198a1804c11b1ca0b55f995f85b402d6"},
+    {"path": "config/names/last_tajik.txt", "bytes": 887, "sha256": "c3ff63341e293a7168d7d503617857e77a9dfb5ca7eae3fdeeeb26679bfccd75"},
+    {"path": "config/names/last_ukrainian.txt", "bytes": 262, "sha256": "20bd83333030f4257a0e5f5d8b0af6fc279659d20d048e10cdb4d06baa2d3cd1"},
+    {"path": "config/names/last_vietnamese.txt", "bytes": 800, "sha256": "2ede12de685fce514bd9e2a8e3bba7396833f89335c60631358fa2e498dbe771"},
+    {"path": "config/names/last_welsh.txt", "bytes": 682, "sha256": "027d4dae3de65560e40d0e4499fddba0fc573db8598f9d2b7b210a231e311c7d"},
+    {"path": "config/names/last_wolf.txt", "bytes": 144, "sha256": "e92bd9c9dafb7951c10dcbc81ead4fa6617a4f26fb66ca729bd0961e9ccf05fe"},
+    {"path": "config/names/last_zulu.txt", "bytes": 1013, "sha256": "e36006798a5c19eab832df31af12b19f3e9e4b612d8a91aab0c1fef5e8b39a80"},
+    {"path": "config/names/middle_roman.txt", "bytes": 810, "sha256": "1965f11e2a41f84937ff8f7df16f6f44558f461c8a12c0b4801920de189c0445"},
+    {"path": "config/names/mongolian_female.txt", "bytes": 2247, "sha256": "234a637d7757d36cbb294a1be125a457416c012ffeac292b8980e5d42e9c226d"},
+    {"path": "config/names/mongolian_male.txt", "bytes": 2232, "sha256": "0f3b48d84f41e22f47c07712a5030772b27d1098f202ceab1d4fc2481a937a75"},
+    {"path": "config/names/verbs.txt", "bytes": 3981, "sha256": "3a2b75d1dd1d284d5c43d83afeac7c271804a355f9249ae35263d47fec76ac75"},
+    {"path": "config/crafting/material_recipes_global.txt", "bytes": 209167, "sha256": "80e76b606e347576156971a195833a73c055a319c6357a401850a7bc310ba85b"}
   ]
 }
