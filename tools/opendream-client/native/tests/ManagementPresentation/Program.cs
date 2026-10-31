@@ -80,4 +80,5 @@ foreach (var context in new[] { (Host: "", Scope: "collector-a", Now: 105L, Age:
     (Host: "host-a", Scope: "", Now: 105L, Age: 10L), (Host: "host-a", Scope: "collector-a", Now: -1L, Age: 10L),
     (Host: "host-a", Scope: "collector-a", Now: 105L, Age: 0L) })
     Reject(() => Render(host: context.Host, scope: context.Scope, now: context.Now, age: context.Age), "invalid display context rejected");
-Console.WriteLine($"PASS {assertions} launcher management presentation assertions; supplied fake facts only, no Main, discovery, process reader, network or runtime configuration.");
+assertions += await RegisteredInstancesCommandTests.Run();
+Console.WriteLine($"PASS {assertions} launcher management presentation assertions; supplied fake facts only, no discovery, process reader, network or runtime configuration.");

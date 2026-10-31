@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
+using Civ13.Launcher.Management;
+using Civ13.ServerManagement;
 
 namespace Civ13.Launcher;
 
@@ -29,6 +31,9 @@ public static class Program {
     public static async Task<int> Main(string[] args) {
         try {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
+            if (args.Length > 0 && args[0] == RegisteredInstancesCommand.Option)
+                return RegisteredInstancesCommand.Run(args, Console.Out,
+                    root => new ReadOnlyRegistrationFileReader(root), new MonotonicProcessObservationClock());
             if (args.SequenceEqual(["--version"])) {
                 Console.WriteLine(JsonSerializer.Serialize(new { version = version.ToString(3), platform = "win-x64", selfContained = true }));
                 return 0;
@@ -59,7 +64,7 @@ public static class Program {
                     serverPort = args[++index];
                     Connection.Port("Nomads", serverPort);
                 }
-                else throw new ArgumentException("Supported options: --version, --self-check, --root <absolute folder>, --local-dreamdaemon <absolute host receipt>, --server-port <1-65535>.");
+                else throw new ArgumentException("Supported options: --version, --self-check, --registered-instances <trusted-D-root> <registration-file> <local-host-id> (standalone), --root <absolute folder>, --local-dreamdaemon <absolute host receipt>, --server-port <1-65535>.");
             }
             var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
             if (localReceipt != null) {
