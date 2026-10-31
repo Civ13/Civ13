@@ -16,6 +16,20 @@ async Task RejectAsync(Func<Task> action, string message) {
     throw new Exception("Negative control accepted: " + message);
 }
 try {
+    using (var helpText = new StringWriter()) {
+        var oldOutput = Console.Out;
+        try {
+            Console.SetOut(helpText);
+            var helpExit = await Civ13.Launcher.Program.Main(["--help"]);
+            Require(helpExit == 0, "help failed");
+        } finally { Console.SetOut(oldOutput); }
+        var help = helpText.ToString();
+        Require(help.Contains("--registered-instances") && help.Contains("trusted D: root"), "help omitted the explicit operator view");
+        Require(help.Contains("process state, ownership and readiness remain unknown") &&
+            help.Contains("inspect the displayed status for freshness"), "help implied parsed registrations prove readiness");
+        Require(help.Contains("launcher is optional for BYOND gameplay"), "help omitted the ordinary BYOND path");
+        Require(help.Contains("--root") && help.Contains("--local-dreamdaemon") && help.Contains("--server-port"), "help omitted existing options");
+    }
     if (args.Length is 1 or 2 && args[0] == "--byond-only") {
         await ByondDetectionTests.Run(root, args.Length == 2 ? args[1] : null);
         return 0;
