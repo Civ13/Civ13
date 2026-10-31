@@ -90,38 +90,6 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'assertions incomplete'):
             runner.verify_results(rows, self.phases)
 
-    def test_main_preserves_failed_receipt_and_cleans_generated_files(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            output = root / 'evidence'
-            created = [root / ('probe' + suffix) for suffix in ('.dme', '.dmb', '.rsc')]
-            for path in created:
-                path.write_bytes(b'offline fixture')
-            def generated(control, files, *args):
-                files.extend(created)
-                return created[0], None
-            def git(*args):
-                return 'a' * 40 if args[0] == 'rev-parse' else ''
-            probe = root / 'tests/core_boot/probe.dm'
-            probe.parent.mkdir(parents=True)
-            probe.write_text('// offline fixture', encoding='utf-8')
-            (root / 'civ13.dme').write_text('// offline fixture', encoding='utf-8')
-            (probe.parent / 'run.py').write_text('# offline fixture', encoding='utf-8')
-            daemon = FakeDaemon(runner.EXPECTED, returncode=7)
-            build = subprocess.CompletedProcess([], 0, '516.1681: 0 errors, 0 warnings', '')
-            argv = ['run.py', '--legacy-fixture-5161681', '--byond-bin', str(root), '--output', str(output)]
-            with mock.patch.object(runner, 'ROOT', root), mock.patch.object(runner, 'git', side_effect=git), \
-                    mock.patch.object(runner, 'generate', side_effect=generated), \
-                    mock.patch.object(runner.subprocess, 'run', return_value=build), \
-                    mock.patch.object(runner.subprocess, 'Popen', side_effect=daemon.start), \
-                    mock.patch.object(sys, 'argv', argv):
-                with self.assertRaisesRegex(RuntimeError, 'did not exit cleanly'):
-                    runner.main()
-            receipt = json.loads((output / 'summary.json').read_text())
-            self.assertEqual(receipt['phases'][0]['returncode'], 7)
-            self.assertTrue((output / 'runtime/boot-result.txt').is_file())
-            self.assertTrue(all(not path.exists() for path in created))
-
     def control_case(self):
         site = {'file': '.core_boot_offline_control.dm', 'line': 117}
         receipt = dict(site, message=runner.RUNTIME_CONTROL_MESSAGE, phase='chemistry')
@@ -211,315 +179,189 @@ class RunnerTests(unittest.TestCase):
 
 
 class CompileOnlyTests(unittest.TestCase):
-    def invoke(self, root, options=(), build=None, toolchain=('--legacy-fixture-5161681',)):
-        probe = root / 'tests/core_boot/probe.dm'
-        probe.parent.mkdir(parents=True)
-        probe.write_text('// offline probe', encoding='utf-8')
-        (probe.parent / 'run.py').write_text('# offline runner', encoding='utf-8')
-        (probe.parent / 'lighting_load.dm').write_text('// offline lighting', encoding='utf-8')
-        path, old, _, _ = runner.CONTROLS['runtime']
-        production = root / path
-        production.parent.mkdir(parents=True)
-        production.write_text(old + '\treturn FALSE\n', encoding='utf-8')
-        (root / 'civ13.dme').write_text('#include "' + path.replace('/', '\\') + '"\n', encoding='utf-8')
-        if '--byond-archive' in toolchain:
-            for name in ('tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
-                         'scripts/byond_toolchain.py', 'tools/byond/version.json',
-                         'tests/new_z_budget/z_budget_evidence.py'):
-                item = root / name
-                item.parent.mkdir(parents=True, exist_ok=True)
-                item.write_text('offline hashed input', encoding='utf-8')
-        output = root / 'evidence'
-        compiler_calls = []
-        def compiler(command, **kwargs):
-            compiler_calls.append((command, kwargs))
-            source = Path(command[-1])
-            self.assertTrue(source.is_file())
-            text = source.read_text(encoding='utf-8')
-            self.assertIn('#include "tests\\core_boot\\probe.dm"', text)
-            self.assertEqual('#define CORE_BOOT_LIGHTING_LOAD' in text, '--lighting-load' in options)
-            control_sources = list(root.glob('.core_boot_*_control.dm'))
-            self.assertEqual(bool(control_sources), 'runtime' in options)
-            if control_sources:
-                self.assertIn('throw EXCEPTION("' + runner.RUNTIME_CONTROL_MESSAGE + '")',
-                              control_sources[0].read_text(encoding='utf-8'))
-            self.assertEqual(command[:3], [str(root / ('dm.exe' if runner.os.name == 'nt' else 'DreamMaker')),
-                                          '-max_errors', '0'])
-            self.assertEqual(kwargs['cwd'], root)
-            self.assertEqual(kwargs['timeout'], 600)
-            # Provenance must already exist if the compiler fails or times out.
-            manifest = json.loads((output / 'compile-inputs.json').read_text())
-            self.assertEqual(manifest['source_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
-            for path, digest in manifest['inputs_sha256'].items():
-                self.assertEqual(digest, hashlib.sha256((root / path).read_bytes()).hexdigest())
-            for path, digest in manifest['generated_controls_sha256'].items():
-                generated = root / path
-                self.assertEqual(digest, hashlib.sha256(generated.read_bytes()).hexdigest())
-                self.assertIn(runner.RUNTIME_CONTROL_MESSAGE,
-                              generated.read_text().splitlines()[manifest['runtime_control_site']['line'] - 1])
-            # No binary is needed for a compile-only receipt. Runtime staging
-            # would fail if the early return were removed, even without mocks.
-            if isinstance(build, BaseException):
-                raise build
-            if callable(build):
-                return build(command)
-            return build or subprocess.CompletedProcess(command, 0, '516.1681: 0 errors, 0 warnings', '')
-        def git(*args):
-            if args == ('rev-parse', 'HEAD'):
-                return 'a' * 40
-            if args == ('rev-parse', 'HEAD^{tree}'):
-                return 'b' * 40
-            if args == ('diff', 'HEAD'):
-                return ''
-            self.fail('Compile-only entered runtime config enumeration: ' + repr(args))
-        argv = ['run.py', '--byond-bin', str(root), '--output', str(output), '--compile-only', *toolchain, *options]
-        with mock.patch.object(runner, 'ROOT', root), mock.patch.object(runner, 'git', side_effect=git), \
-                mock.patch.object(runner.subprocess, 'run', side_effect=compiler), \
-                mock.patch.object(runner.subprocess, 'Popen', side_effect=AssertionError('Daemon launch forbidden')), \
-                mock.patch.object(runner, 'run_phases', side_effect=AssertionError('Runtime phases forbidden')), \
-                mock.patch.object(runner, 'verify_results', side_effect=AssertionError('Runtime assertions forbidden')), \
-                mock.patch.object(runner.tempfile, 'TemporaryDirectory', side_effect=AssertionError('Runtime staging forbidden')), \
-                mock.patch.object(runner.shutil, 'copy2', side_effect=AssertionError('Runtime config/binary copying forbidden')), \
-                mock.patch.object(sys, 'argv', argv), \
-                mock.patch.dict(runner.os.environ, {'CORE_BOOT_CI_HEAD_SHA': 'c' * 40}):
-            runner.main()
-        return output, compiler_calls
-
-    def test_three_variants_generate_compile_and_never_enter_runtime(self):
-        for options, define in [((), None), (('--negative-control', 'runtime'), None),
-                                (('--lighting-load',), '#define CORE_BOOT_LIGHTING_LOAD')]:
-            with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                output, calls = self.invoke(root, options)
-                self.assertEqual(len(calls), 1)
-                metadata = json.loads((output / 'metadata.json').read_text())
-                summary = json.loads((output / 'compile-summary.json').read_text())
-                self.assertTrue(metadata['compile_only'])
-                self.assertEqual(metadata['toolchain_mode'], 'legacy-fixture-5161681')
-                self.assertEqual(metadata['expected_byond'], '516.1681')
-                self.assertEqual(metadata['checkout_commit_sha'], 'a' * 40)
-                self.assertEqual(metadata['checkout_tree_sha'], 'b' * 40)
-                self.assertEqual(metadata['head_sha'], metadata['checkout_commit_sha'])
-                self.assertEqual(metadata['ci_event_head_sha'], 'c' * 40)
-                self.assertNotEqual(metadata['checkout_commit_sha'], metadata['ci_event_head_sha'])
-                self.assertFalse(summary['runtime_executed'])
-                self.assertEqual(summary['returncode'], 0)
-                self.assertRegex(summary['source_sha256'], r'^[0-9a-f]{64}$')
-                self.assertEqual(metadata['lighting_load'], bool(define))
-                self.assertEqual(bool(summary['runtime_control_site']), 'runtime' in options)
-                self.assertFalse((output / 'runtime').exists())
-                self.assertFalse((output / 'summary.json').exists())
-                self.assertFalse(list(root.glob('.core_boot_*')))
-
-    def test_nonzero_compile_rejects_and_preserves_log(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with self.assertRaisesRegex(RuntimeError, 'compilation failed'):
-                self.invoke(root, ('--negative-control', 'runtime'),
-                            build=subprocess.CompletedProcess([], 4, '516.1681: 0 errors, 0 warnings', ''))
-            self.assertIn('0 errors', (root / 'evidence/compile.log').read_text())
-            self.assertEqual(json.loads((root / 'evidence/compile-status.json').read_text())['returncode'], 4)
-            self.assertFalse((root / 'evidence/compile-summary.json').exists())
-            manifest = json.loads((root / 'evidence/compile-inputs.json').read_text())
-            self.assertIsNotNone(manifest['runtime_control_site'])
-            self.assertEqual(len(manifest['generated_controls_sha256']), 1)
-            self.assertFalse(list(root.glob('.core_boot_*')))
-
-    def test_wrong_version_errors_warnings_or_missing_summary_reject(self):
-        for log in ['516.1680: 0 errors, 0 warnings', '516.1688: 0 errors, 0 warnings', '516.16810: 0 errors, 0 warnings',
-                    '516.1681: 10 errors, 0 warnings', '516.1681: 0 errors, 1 warning', '516.1681']:
-            with self.subTest(log=log), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                with self.assertRaisesRegex(RuntimeError, 'compilation failed'):
-                    self.invoke(root, build=subprocess.CompletedProcess([], 0, log, ''))
-                self.assertEqual((root / 'evidence/compile.log').read_text(), log)
-                self.assertFalse(json.loads((root / 'evidence/compile-status.json').read_text())['runtime_executed'])
-                self.assertFalse(list(root.glob('.core_boot_*')))
-
-    def test_compile_timeout_never_falls_through_and_cleans_generated_files(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with self.assertRaises(subprocess.TimeoutExpired):
-                self.invoke(root, build=subprocess.TimeoutExpired('offline compiler', 600, output=b'partial compile', stderr=b' timeout'))
-            self.assertEqual((root / 'evidence/compile.log').read_text(), 'partial compile timeout')
-            status = json.loads((root / 'evidence/compile-status.json').read_text())
-            self.assertTrue(status['timed_out'])
-            self.assertFalse(status['runtime_executed'])
-            self.assertTrue((root / 'evidence/compile-inputs.json').is_file())
-            self.assertFalse(list(root.glob('.core_boot_*')))
-            self.assertFalse((root / 'evidence/compile-summary.json').exists())
-
-    def test_workflow_compile_argv_and_actual_introduced_suite_selection(self):
-        root = HERE.parents[1]
-        spec = importlib.util.spec_from_file_location('core_boot_ci_selection', root / 'scripts/select-ci.py')
-        selection = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(selection)
-        workflow = (root / '.github/workflows/test.yml').read_text(encoding='utf-8')
-        step = workflow.split('      - name: Check core-boot runner offline and compile generated variants\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/core_boot')", step)
-        self.assertIn('timeout-minutes: 32', step)
-        commands = [line.strip() for line in step.splitlines() if 'tests/core_boot/run.py ' in line]
-        self.assertEqual(len(commands), 3)
-        self.assertTrue(all('--compile-only' in line for line in commands))
-        self.assertTrue(all('--byond-archive "$PWD/BYOND/pinned.zip"' in line for line in commands))
-        self.assertEqual(sum('--negative-control runtime' in line for line in commands), 1)
-        self.assertEqual(sum('--lighting-load' in line for line in commands), 1)
-        self.assertIn('-m unittest discover -s tests/core_boot -p test_runner.py -v', step)
-        for added, event, opted_in, expected in [
-                (b'tests/core_boot/test_runner.py\0', 'pull_request', False, True),
-                (b'tests/unrelated/probe.dm\0', 'pull_request', False, False),
-                (b'', 'pull_request', False, False),
-                (b'', 'workflow_dispatch', True, True),
-                (b'', 'workflow_dispatch', False, False),
-                (b'tests/core_boot/test_runner.py\0', 'push', False, False)]:
-            with self.subTest(added=added, event=event, opted_in=opted_in), \
-                    mock.patch.object(selection.subprocess, 'check_output', return_value=added):
-                suites = selection.introduced_tests('base', 'head', event)
-                selected = selection.needs_extensive(event, opted_in) or 'tests/core_boot' in suites
-                self.assertEqual(selected, expected)
-
-    def test_workflow_retains_only_started_compile_evidence_even_on_failure(self):
-        workflow = (HERE.parents[1] / '.github/workflows/test.yml').read_text(encoding='utf-8')
-        compile_step = workflow.split('      - name: Check core-boot runner offline and compile generated variants\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn('id: core_boot_compile', compile_step)
-        self.assertIn('echo "started=true" >> "$GITHUB_OUTPUT"', compile_step)
-        self.assertIn('git rev-parse HEAD HEAD^{tree}', compile_step)
-        self.assertIn('CORE_BOOT_CI_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}', compile_step)
-        retain = workflow.split('      - name: Retain core-boot compile-only evidence\n', 1)[1].split('\n      - name:', 1)[0]
-        self.assertIn("if: always() && needs.changes.result == 'success' && steps.core_boot_compile.outputs.started == 'true'", retain)
-        self.assertIn('uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02', retain)
-        self.assertIn('retention-days: 7', retain)
-        self.assertIn('if-no-files-found: error', retain)
-        paths = [line.strip() for line in retain.split('          path: |\n', 1)[1].split('          if-no-files-found:', 1)[0].splitlines()]
-        self.assertEqual(paths, ['${{ runner.temp }}/core-boot-compile/' + name for name in (
-            'checkout-commit-tree.txt', 'offline-tests.log', '*/metadata.json', '*/compile-inputs.json',
-            '*/compile.log', '*/compile-status.json', '*/compile-summary.json', '*/runtime-identity.json')])
-
-
-class CurrentToolchainTests(unittest.TestCase):
-    invoke = CompileOnlyTests.invoke
-
     def runtime(self):
-        # Exercise the actual strict compile validator, with passive identity
-        # acquisition replaced. Existing byond_runtime tests cover archive bytes.
         module = runner.load_current_runtime()
         runtime = object.__new__(module.CurrentRuntime)
-        runtime.identity = {'version': '516.1688'}
-        runtime.compiler = SimpleNamespace(
-            MAX_COMPILE_LOG=1024 * 1024,
-            DIAGNOSTIC=re.compile(r'runtime error|fatal error|segmentation', re.I))
+        runtime.identity = {'version': json.loads((HERE.parents[1] / 'tools/byond/version.json').read_text())['version']}
+        runtime.compiler = module.load('core_boot_compile_contract', HERE.parents[1] / 'tests/new_z_budget/z_budget_evidence.py')
         runtime.bin_dir, runtime.archive = Path('inert-bin'), Path('inert.zip')
         runtime.verifier = SimpleNamespace(verify_linux=mock.Mock(return_value=dict(runtime.identity)))
         runtime.checks = []
         runtime.before_launch = mock.Mock(wraps=runtime.before_launch)
         return runtime
 
-    def build(self, command, log=None, code=0):
-        artifact = Path(command[-1]).with_suffix('.dmb').name
-        return subprocess.CompletedProcess(command, code, log if log is not None else
-            'DM compiler version 516.1688\n' + artifact + ' - 0 errors, 0 warnings\n', '')
+    def invoke(self, root, options=(), build=None, runtime=None, select_error=None, missing_identity=False):
+        runtime = runtime or self.runtime()
+        probe = root / 'tests/core_boot/probe.dm'
+        probe.parent.mkdir(parents=True)
+        for name in ('probe.dm', 'run.py', 'lighting_load.dm'):
+            (probe.parent / name).write_text('// offline fixture', encoding='utf-8')
+        for name in ('tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+                     'scripts/byond_toolchain.py', 'tools/byond/version.json',
+                     'tests/new_z_budget/z_budget_evidence.py'):
+            item = root / name
+            item.parent.mkdir(parents=True, exist_ok=True)
+            item.write_text('offline hashed input', encoding='utf-8')
+        path, old, _, _ = runner.CONTROLS['runtime']
+        production = root / path
+        production.parent.mkdir(parents=True)
+        production.write_text(old + '\treturn FALSE\n', encoding='utf-8')
+        (root / 'civ13.dme').write_text('#include "' + path.replace('/', '\\') + '"\n', encoding='utf-8')
+        output, calls = root / 'evidence', []
+        def compiler(command, **kwargs):
+            calls.append(command)
+            runtime.before_launch.assert_called_once_with('compiler', output)
+            source = Path(command[-1])
+            self.assertEqual(command[:3], [str(root / 'DreamMaker'), '-max_errors', '0'])
+            self.assertEqual(kwargs['timeout'], 600)
+            self.assertTrue(source.is_file())
+            manifest = json.loads((output / 'compile-inputs.json').read_text())
+            self.assertEqual(manifest['source_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
+            for name, digest in manifest['inputs_sha256'].items():
+                self.assertEqual(digest, hashlib.sha256((root / name).read_bytes()).hexdigest())
+            for name, digest in manifest['generated_controls_sha256'].items():
+                self.assertEqual(digest, hashlib.sha256((root / name).read_bytes()).hexdigest())
+            if isinstance(build, BaseException): raise build
+            log = 'DM compiler version ' + runtime.identity['version'] + '\n' + source.with_suffix('.dmb').name + ' - 0 errors, 0 warnings\n'
+            result = subprocess.CompletedProcess(command, 0, log, '')
+            return build(result) if callable(build) else result
+        def git(*args):
+            if args == ('rev-parse', 'HEAD'): return 'a' * 40
+            if args == ('rev-parse', 'HEAD^{tree}'): return 'b' * 40
+            if args == ('diff', 'HEAD'): return ''
+            self.fail('Compile-only entered runtime config enumeration: ' + repr(args))
+        selector = mock.Mock(return_value=None if missing_identity else runtime, side_effect=select_error)
+        argv = ['run.py', '--byond-bin', str(root), '--byond-archive', str(root / 'inert.zip'),
+                '--output', str(output), '--compile-only', *options]
+        with mock.patch.object(runner, 'ROOT', root), mock.patch.object(runner, 'git', side_effect=git), \
+                mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(select=selector)), \
+                mock.patch.object(runner.subprocess, 'run', side_effect=compiler), \
+                mock.patch.object(runner.subprocess, 'Popen', side_effect=AssertionError('Daemon forbidden')), \
+                mock.patch.object(runner, 'run_phases', side_effect=AssertionError('Runtime phases forbidden')), \
+                mock.patch.object(runner, 'verify_results', side_effect=AssertionError('Runtime assertions forbidden')), \
+                mock.patch.object(runner.shutil, 'copy2', side_effect=AssertionError('Runtime staging forbidden')), \
+                mock.patch.object(sys, 'argv', argv), \
+                mock.patch.dict(runner.os.environ, {'CORE_BOOT_CI_HEAD_SHA': 'c' * 40}):
+            runner.main()
+        selector.assert_called_once_with(root.absolute(), root / 'inert.zip')
+        return output, calls, runtime
 
-    def test_current_compile_only_binds_identity_validator_and_receipts(self):
+    def test_three_canonical_variants_compile_without_runtime(self):
         for options in ((), ('--negative-control', 'runtime'), ('--lighting-load',)):
-            runtime = self.runtime()
-            with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary, \
-                    mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(
-                        select=mock.Mock(return_value=runtime))) as loader:
+            with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                def compiler(command):
-                    runtime.before_launch.assert_called_once_with('compiler', root / 'evidence')
-                    return self.build(command)
-                output, calls = self.invoke(root, options, compiler,
-                    ('--byond-archive', str(root / 'inert.zip')))
-                loader.return_value.select.assert_called_once_with(root.absolute(), root / 'inert.zip')
-                self.assertEqual(len(calls), 1)
+                output, calls, runtime = self.invoke(root, options)
                 metadata = json.loads((output / 'metadata.json').read_text())
                 summary = json.loads((output / 'compile-summary.json').read_text())
-                self.assertEqual(metadata['expected_byond'], '516.1688')
-                self.assertEqual(summary['toolchain_mode'], 'current-linux-archive')
-                self.assertEqual(summary['runtime_identity_receipt'], 'runtime-identity.json')
                 receipt = json.loads((output / 'runtime-identity.json').read_text())
+                self.assertEqual(len(calls), 1)
+                self.assertEqual(metadata['toolchain_mode'], 'canonical-linux-archive')
+                self.assertEqual(metadata['expected_byond'], runtime.identity['version'])
+                self.assertEqual(metadata['checkout_commit_sha'], 'a' * 40)
+                self.assertEqual(metadata['checkout_tree_sha'], 'b' * 40)
+                self.assertEqual(metadata['ci_event_head_sha'], 'c' * 40)
+                self.assertEqual(metadata['canonical_manifest_sha256'], hashlib.sha256((root / 'tools/byond/version.json').read_bytes()).hexdigest())
                 self.assertEqual(receipt['verified_before'], ['compiler'])
-                self.assertEqual(receipt['runtime'], runtime.identity)
                 self.assertFalse(summary['runtime_executed'])
+                self.assertEqual(bool(summary['runtime_control_site']), 'runtime' in options)
                 self.assertFalse((output / 'runtime').exists())
+                self.assertFalse(list(root.glob('.core_boot_*')))
 
-    def test_current_rejects_wrong_banner_duplicate_banner_diagnostics_exit_and_summary(self):
-        # A historical banner in current mode must not fall back to legacy.
-        for change, code in (('legacy', 0), ('duplicate', 0), ('diagnostic', 0),
-                             ('wrong-artifact', 0), ('warning', 0), ('clean', 7)):
-            runtime = self.runtime()
-            def compiler(command):
-                build = self.build(command, code=code)
-                if change == 'legacy': build.stdout = build.stdout.replace('516.1688', '516.1681')
-                if change == 'duplicate': build.stdout = 'DM compiler version 516.1688\n' + build.stdout
-                if change == 'diagnostic': build.stdout += 'fatal error\n'
-                if change == 'wrong-artifact': build.stdout = build.stdout.replace(Path(command[-1]).stem, 'unrelated')
-                if change == 'warning': build.stdout = build.stdout.replace('0 warnings', '1 warning')
-                return build
-            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary, \
-                    mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(select=lambda *a: runtime)):
+    def test_wrong_version_summary_diagnostics_or_exit_reject_without_fallback(self):
+        for defect in ('old-version', 'duplicate-banner', 'missing-summary', 'warnings',
+                       'errors', 'wrong-artifact', 'diagnostic', 'nonzero-exit', 'reversed-order'):
+            def mutate(result):
+                lines = result.stdout.splitlines()
+                if defect == 'old-version': lines[0] = 'DM compiler version 516.1681'
+                if defect == 'duplicate-banner': lines.insert(0, lines[0])
+                if defect == 'missing-summary': lines.pop()
+                if defect == 'warnings': lines[1] = lines[1].replace('0 warnings', '1 warning')
+                if defect == 'errors': lines[1] = lines[1].replace('0 errors', '10 errors')
+                if defect == 'wrong-artifact': lines[1] = 'unrelated.dmb - 0 errors, 0 warnings'
+                if defect == 'diagnostic': lines.append('fatal error')
+                if defect == 'nonzero-exit': result.returncode = 7
+                if defect == 'reversed-order': lines.reverse()
+                result.stdout = '\n'.join(lines) + '\n'
+                return result
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
-                with self.assertRaises(RuntimeError):
-                    self.invoke(root, build=compiler, toolchain=('--byond-archive', str(root / 'inert.zip')))
-                self.assertTrue((root / 'evidence/compile.log').exists())
+                with self.assertRaises(RuntimeError): self.invoke(root, build=mutate)
+                self.assertTrue((root / 'evidence/compile.log').is_file())
                 self.assertFalse((root / 'evidence/compile-summary.json').exists())
                 self.assertFalse(list(root.glob('.core_boot_*')))
 
-    def test_bad_archive_or_nonlinux_identity_never_generates_or_compiles(self):
-        for reason in ('Linux archive differs from the reviewed SHA-256',
-                       'Current fixture archive identity requires Linux'):
-            with self.subTest(reason=reason), tempfile.TemporaryDirectory() as temporary, \
-                    mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(
-                        select=mock.Mock(side_effect=ValueError(reason)))), \
-                    mock.patch.object(runner, 'generate', side_effect=AssertionError('Generation forbidden')):
-                root = Path(temporary)
-                with self.assertRaisesRegex(ValueError, reason):
-                    self.invoke(root, toolchain=('--byond-archive', str(root / 'inert.zip')))
-                self.assertTrue((root / 'evidence/metadata.json').exists())
-                self.assertFalse((root / 'evidence/compile.log').exists())
-
-    def test_changed_identity_before_compiler_never_launches_or_falls_back(self):
-        runtime = self.runtime()
-        runtime.verifier.verify_linux.return_value = {'version': '516.1681'}
-        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(
-                runner, 'load_current_runtime', return_value=SimpleNamespace(select=lambda *a: runtime)):
-            root = Path(temporary)
-            with self.assertRaisesRegex(ValueError, 'identity changed'):
-                self.invoke(root, build=AssertionError('Compiler forbidden'),
-                    toolchain=('--byond-archive', str(root / 'inert.zip')))
-            runtime.before_launch.assert_called_once()
-            self.assertTrue((root / 'evidence/compile-inputs.json').exists())
-            receipt = json.loads((root / 'evidence/runtime-identity.json').read_text())
-            self.assertIn('identity changed', receipt['error'])
-            self.assertFalse((root / 'evidence/compile.log').exists())
-            self.assertFalse(list(root.glob('.core_boot_*')))
-
-    def test_current_compile_timeout_preserves_identity_and_failure_without_runtime(self):
-        runtime = self.runtime()
-        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(
-                runner, 'load_current_runtime', return_value=SimpleNamespace(select=lambda *a: runtime)):
+    def test_compile_timeout_retains_identity_and_failed_input_evidence(self):
+        with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with self.assertRaises(subprocess.TimeoutExpired):
-                self.invoke(root, build=subprocess.TimeoutExpired('offline compiler', 600, output=b'partial current compile'),
-                    toolchain=('--byond-archive', str(root / 'inert.zip')))
+                self.invoke(root, ('--negative-control', 'runtime'),
+                    build=subprocess.TimeoutExpired('offline compiler', 600, output=b'partial current compile'))
             self.assertEqual((root / 'evidence/compile.log').read_text(), 'partial current compile')
             self.assertTrue((root / 'evidence/runtime-identity.json').exists())
             self.assertTrue(json.loads((root / 'evidence/compile-status.json').read_text())['timed_out'])
-            self.assertFalse((root / 'evidence/compile-summary.json').exists())
+            manifest = json.loads((root / 'evidence/compile-inputs.json').read_text())
+            self.assertIsNotNone(manifest['runtime_control_site'])
+            self.assertEqual(len(manifest['generated_controls_sha256']), 1)
             self.assertFalse(list(root.glob('.core_boot_*')))
 
-    def test_explicit_exclusive_mode_and_compile_only_current_are_required(self):
-        for options in ((), ('--legacy-fixture-5161681', '--byond-archive', 'inert.zip'),
-                        ('--byond-archive', 'inert.zip')):
+    def test_bad_archive_or_platform_stops_before_generation(self):
+        for reason in ('Archive hash mismatch', 'Current fixture archive identity requires Linux'):
+            with self.subTest(reason=reason), tempfile.TemporaryDirectory() as temporary, \
+                    mock.patch.object(runner, 'generate', side_effect=AssertionError('Generation forbidden')):
+                root = Path(temporary)
+                with self.assertRaisesRegex(ValueError, reason): self.invoke(root, select_error=ValueError(reason))
+                self.assertTrue((root / 'evidence/metadata.json').exists())
+                self.assertFalse((root / 'evidence/compile.log').exists())
+
+    def test_missing_identity_is_not_accepted(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with self.assertRaisesRegex(ValueError, 'no fallback'):
+                self.invoke(root, missing_identity=True)
+            self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_changed_identity_stops_before_compiler_and_preserves_error(self):
+        runtime = self.runtime()
+        runtime.verifier.verify_linux.return_value = {'version': '516.1681'}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with self.assertRaisesRegex(ValueError, 'identity changed'):
+                self.invoke(root, runtime=runtime, build=AssertionError('Compiler forbidden'))
+            receipt = json.loads((root / 'evidence/runtime-identity.json').read_text())
+            self.assertIn('identity changed', receipt['error'])
+            self.assertTrue((root / 'evidence/compile-inputs.json').exists())
+            self.assertFalse((root / 'evidence/compile.log').exists())
+            self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_archive_and_compile_only_required_and_old_option_removed(self):
+        for options in ((), ('--compile-only',), ('--byond-archive', 'inert.zip'),
+                        ('--byond-archive', 'inert.zip', '--compile-only', '--legacy-fixture-5161681')):
             with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary, \
-                    mock.patch.object(runner.subprocess, 'run', side_effect=AssertionError('Launch forbidden')), \
                     mock.patch.object(runner, 'generate', side_effect=AssertionError('Generation forbidden')):
                 output = Path(temporary) / 'absent'
                 argv = ['run.py', '--byond-bin', temporary, '--output', str(output), *options]
-                with mock.patch.object(sys, 'argv', argv), self.assertRaises(SystemExit):
-                    runner.main()
+                with mock.patch.object(sys, 'argv', argv), self.assertRaises(SystemExit): runner.main()
                 self.assertFalse(output.exists())
+
+    def test_workflow_compile_commands_preserve_existing_admission(self):
+        workflow = (HERE.parents[1] / '.github/workflows/test.yml').read_text()
+        step = workflow.split('      - name: Check core-boot runner offline and compile generated variants\n', 1)[1].split('\n      - name:', 1)[0]
+        self.assertIn("if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/core_boot')", step)
+        self.assertIn('timeout-minutes: 32', step)
+        commands = [line.strip() for line in step.splitlines() if 'tests/core_boot/run.py ' in line]
+        self.assertEqual(len(commands), 3)
+        self.assertTrue(all('--compile-only' in line and '--byond-archive "$PWD/BYOND/pinned.zip"' in line for line in commands))
+        self.assertEqual(sum('--negative-control runtime' in line for line in commands), 1)
+        self.assertEqual(sum('--lighting-load' in line for line in commands), 1)
+        self.assertNotIn('--legacy-fixture', step)
+
+    def test_workflow_retains_started_identity_and_compile_evidence_on_failure(self):
+        workflow = (HERE.parents[1] / '.github/workflows/test.yml').read_text()
+        retain = workflow.split('      - name: Retain core-boot compile-only evidence\n', 1)[1].split('\n      - name:', 1)[0]
+        self.assertIn("always() && needs.changes.result == 'success' && steps.core_boot_compile.outputs.started == 'true'", retain)
+        self.assertIn('retention-days: 7', retain)
+        self.assertIn('*/runtime-identity.json', retain)
+        self.assertIn('if-no-files-found: error', retain)
 
 
 class DMList:

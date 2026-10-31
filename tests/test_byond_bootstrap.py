@@ -17,12 +17,13 @@ def shell_path(path):
     return '/' + text[0].lower() + text[2:] if os.name == 'nt' else text
 
 class ByondBootstrapTests(unittest.TestCase):
-    def test_unknown_option_exits_before_setup(self):
-        result = subprocess.run([BASH, '--noprofile', '--norc', shell_path(SCRIPT), '--unreviewed-version'],
-                                capture_output=True, text=True, timeout=5)
-        self.assertEqual(result.returncode, 2)
-        self.assertIn('Unsupported BYOND bootstrap option', result.stderr)
-        self.assertNotIn('Setting up', result.stdout)
+    def test_unknown_or_retired_option_exits_before_setup(self):
+        for option in ('--unreviewed-version', '--legacy-fixture-5161681'):
+            result = subprocess.run([BASH, '--noprofile', '--norc', shell_path(SCRIPT), option],
+                                    capture_output=True, text=True, timeout=5)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn('Unsupported BYOND bootstrap option', result.stderr)
+            self.assertNotIn('Setting up', result.stdout)
 
     def run_package_prefix(self, fail_phase='', fail_status=19):
         source = SCRIPT.read_text()
@@ -89,20 +90,19 @@ exit 0
                 'Verify-Peer=false', 'Verify-Host=false', 'ForceIPv', 'sources.list',
                 '/etc/apt/', 'iptables', 'ufw', 'sysctl')))
 
-    def test_download_is_bounded_without_source_or_tls_changes(self):
-        commands = [shlex.split(line.strip()) for line in SCRIPT.read_text().splitlines()
-                    if line.strip().startswith('timeout -k 5 65 wget ')]
-        self.assertEqual(commands, [[
-            'timeout', '-k', '5', '65', 'wget', '--timeout=30', '--tries=1', '--no-verbose',
-            '-O', 'pinned.zip',
-            'https://civ13.com/downloads/516.1681_byond_linux.zip',
-        ]])
+    def test_download_is_bounded_and_uses_only_canonical_verified_acquisition(self):
+        source = SCRIPT.read_text()
+        self.assertFalse(any(line.strip().startswith(('wget ', 'timeout -k 5 65 wget '))
+                             for line in source.splitlines()))
+        self.assertNotIn('legacy_fixture', source)
+        self.assertIn('byond_version="$(python3 "$script_dir/byond_toolchain.py" field version)"', source)
+        self.assertIn('timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download', source)
 
     def test_shell_syntax_and_pinned_compiler_contract(self):
         subprocess.run([BASH, '-n', shell_path(SCRIPT)], check=True, timeout=5)
         source = SCRIPT.read_text()
-        self.assertIn('https://civ13.com/downloads/516.1681_byond_linux.zip', source)
-        self.assertIn('--legacy-fixture-5161681', source)
+        self.assertNotIn('516.1681', source)
+        self.assertNotIn('--legacy-fixture-5161681', source)
         self.assertIn('archive_args=(--platform linux --output pinned.zip --source "${BYOND_ARCHIVE_SOURCE:-official}")', source)
         self.assertIn('byond_toolchain.py" download "${archive_args[@]}"', source)
         self.assertIn('--cache-dir "$BYOND_ARCHIVE_CACHE"', source)
@@ -111,7 +111,7 @@ exit 0
         self.assertIn('timeout -k 5 300 DreamMaker -max_errors 0 civ13.dme 2>&1 | tee result.log', source)
         self.assertIn("grep -q -- '- 0 errors, 0 warnings' result.log", source)
         self.assertNotIn('/home/runner/work/', source)
-        for contract in ('set -eo pipefail', '--timeout=30 --tries=1',
+        for contract in ('set -eo pipefail', 'timeout -k 5 65 python3',
                          'timeout -k 5 30 unzip', 'timeout -k 5 60 make',
                          'byond-archive.sha256', 'trap ', 'source-before.patch'):
             self.assertIn(contract, source)

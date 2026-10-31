@@ -1,15 +1,12 @@
-// This file contains defines allowing targeting byond versions newer than the supported
-
-//Update this whenever you need to take advantage of more recent byond features
+// Compile-time projection of tools/byond/version.json; update both together.
 #define MIN_COMPILER_VERSION 516
-#define MIN_COMPILER_BUILD 1681
-#if (DM_VERSION < MIN_COMPILER_VERSION || DM_BUILD < MIN_COMPILER_BUILD) && !defined(SPACEMAN_DMM)
-//Don't forget to update this part
-#error Your version of BYOND is too out-of-date to compile this project. Go to https://secure.byond.com/download and update.
-#error You need version 516.1681 or higher
+#define MIN_COMPILER_BUILD 1688
+#if (DM_VERSION != MIN_COMPILER_VERSION || DM_BUILD != MIN_COMPILER_BUILD) && !defined(SPACEMAN_DMM)
+#error Compile this project with the exact canonical BYOND pin from tools/byond/version.json.
+#error The required compiler is 516.1688.
 #endif
 
-// Keep savefile compatibilty at minimum supported level
+// Use the canonical engine major for savefiles; this is not older-engine support.
 /savefile/byond_version = MIN_COMPILER_VERSION
 
 // So we want to have compile time guarantees these methods exist on local type

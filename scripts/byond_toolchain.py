@@ -62,8 +62,8 @@ def load(path=MANIFEST):
         raise ValueError('Invalid BYOND metadata schema')
     major, _ = version(value['version'])
     minimum = version(value['minimumCompiler'])
-    if minimum > version(value['version']) or minimum[0] != major or type(value['savefileMajor']) is not int or value['savefileMajor'] != major:
-        raise ValueError('Inconsistent compiler minimum or savefile major')
+    if minimum != version(value['version']) or type(value['savefileMajor']) is not int or value['savefileMajor'] != major:
+        raise ValueError('Compiler admission must equal the canonical pin and savefile major')
     source = value['integritySource']
     if not isinstance(source, str) or not re.fullmatch(r'Observed official HTTPS downloads on [0-9]{4}-[0-9]{2}-[0-9]{2}' + re.escape(TRUST_SUFFIX), source):
         raise ValueError('Invalid observed provenance declaration')

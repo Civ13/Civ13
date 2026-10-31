@@ -179,9 +179,9 @@ its separate admission/resource holds are resolved; compiled core_boot variants
 are not a native smoke pass.
 
 Core-boot's three existing compile-only commands explicitly select the reviewed
-516.1688 Linux archive/member identity. The runner retains explicit historical
-516.1681 mode and refuses implicit or conflicting selection. Its new current
-mode cannot start DreamDaemon. The step's admission condition, compile count and
+canonical Linux archive/member identity. The runner requires that identity and
+`--compile-only`, with no older-engine selection or fallback. It cannot start
+DreamDaemon. The step's admission condition, compile count and
 deadlines are unchanged; `runtime-identity.json` adds passive identity evidence.
 
 `ready_for_review` remains outside the workflow subscription and ordinary selector

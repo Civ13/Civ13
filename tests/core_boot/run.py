@@ -12,7 +12,6 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
-import tempfile
 import time
 import uuid
 
@@ -167,58 +166,52 @@ def generate(control, created, lighting_load=False, map_path=None, lighting_rest
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
-    toolchain = parser.add_mutually_exclusive_group(required=True)
-    toolchain.add_argument('--legacy-fixture-5161681', action='store_true',
-                           help='Explicit historical compiler-banner mode; no archive identity claimed')
-    toolchain.add_argument('--byond-archive', type=Path,
-                           help='Explicit reviewed 516.1688 Linux archive/member identity; compile-only')
+    parser.add_argument('--byond-archive', type=Path, required=True,
+                        help='Reviewed canonical-pin Linux archive/member identity')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--negative-control', choices=CONTROLS)
-    parser.add_argument('--compile-only', action='store_true',
-                        help='Generate and strictly compile the selected fixture, then exit without launching DreamDaemon')
+    parser.add_argument('--compile-only', action='store_true', required=True,
+                        help='Compile source variants only; no DreamDaemon admission')
     parser.add_argument('--lighting-load', action='store_true',
-                        help='Also save and load the world, comparing turf lighting overlays')
+                        help='Compile the in-process lighting save/load source variant')
     parser.add_argument('--lighting-restart', action='store_true',
-                        help='Save in one process, then compare lighting after a fresh process imports the save')
-    parser.add_argument('--diverge-turfs', action='store_true',
-                        help='With --lighting-restart, change alternate sampled turfs before saving so the import replaces them')
+                        help='Compile the fresh-process lighting source variant')
+    parser.add_argument('--diverge-turfs', action='store_true')
     parser.add_argument('--map', help='Repository-relative .dmm replacing the default Nomads map include')
     args = parser.parse_args()
-    if args.byond_archive is not None and not args.compile_only:
-        parser.error('The 516.1688 identity path is compile-only; native core-boot admission is unchanged')
     args.output.mkdir(parents=True, exist_ok=True)
     if any(args.output.iterdir()):
         parser.error('Preserve existing evidence; use an empty output directory')
-    # Do not resolve away links before the current identity verifier inspects them.
-    byond = args.byond_bin.absolute() if args.byond_archive is not None else args.byond_bin.resolve()
-    compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
-    flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+    byond = args.byond_bin.absolute()  # Preserve links for the identity verifier.
+    compiler = byond / 'DreamMaker'
     head = git('rev-parse', 'HEAD').strip()
-    (args.output / 'metadata.json').write_text(json.dumps({
-        'head_sha': head,  # Compatibility alias: actual checkout, not a claimed PR head.
-        'checkout_commit_sha': head, 'checkout_tree_sha': git('rev-parse', 'HEAD^{tree}').strip(),
+    metadata = {
+        'head_sha': head, 'checkout_commit_sha': head,
+        'checkout_tree_sha': git('rev-parse', 'HEAD^{tree}').strip(),
         'ci_event_head_sha': os.environ.get('CORE_BOOT_CI_HEAD_SHA'),
-        'control': args.negative_control,
-        'compile_only': args.compile_only, 'lighting_load': args.lighting_load,
-        'lighting_restart': args.lighting_restart,
-        'toolchain_mode': 'current-linux-archive' if args.byond_archive is not None else 'legacy-fixture-5161681',
-        'expected_byond': '516.1688' if args.byond_archive is not None else '516.1681',
+        'control': args.negative_control, 'compile_only': True,
+        'lighting_load': args.lighting_load, 'lighting_restart': args.lighting_restart,
+        'toolchain_mode': 'canonical-linux-archive',
+        'canonical_manifest_sha256': hashlib.sha256((ROOT / 'tools/byond/version.json').read_bytes()).hexdigest(),
         'probe_sha256': hashlib.sha256((ROOT / 'tests/core_boot/probe.dm').read_bytes()).hexdigest(),
-        'scope': ('Generated full-source fixture compilation only; no DreamDaemon or runtime assertions' if args.compile_only else
-                  'Headless full-source boot and round start with processes running; no clients, rendering or long-term memory')}, indent=2), encoding='utf-8')
+        'scope': 'Generated full-source fixture compilation only; no DreamDaemon or runtime assertions',
+    }
+    metadata_path = args.output / 'metadata.json'
+    metadata_path.write_text(json.dumps(metadata, indent=2), encoding='utf-8')
     (args.output / 'tested.patch').write_text(git('diff', 'HEAD'), encoding='utf-8')
     created = []
     try:
-        runtime = None
-        if args.byond_archive is not None:
-            # Failure propagates; never fall back to the historical banner mode.
-            runtime = load_current_runtime().select(byond, args.byond_archive)
-        source, runtime_site = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart, args.diverge_turfs)
-        inputs = ['civ13.dme', 'tests/core_boot/probe.dm', 'tests/core_boot/run.py']
-        if runtime is not None:
-            inputs += ['tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
-                       'scripts/byond_toolchain.py', 'tools/byond/version.json',
-                       'tests/new_z_budget/z_budget_evidence.py']
+        runtime = load_current_runtime().select(byond, args.byond_archive)
+        if runtime is None:
+            raise ValueError('Canonical archive identity is required; no fallback')
+        metadata['expected_byond'] = runtime.identity['version']
+        metadata_path.write_text(json.dumps(metadata, indent=2), encoding='utf-8')
+        source, runtime_site = generate(args.negative_control, created, args.lighting_load,
+                                        args.map, args.lighting_restart, args.diverge_turfs)
+        inputs = ['civ13.dme', 'tests/core_boot/probe.dm', 'tests/core_boot/run.py',
+                  'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+                  'scripts/byond_toolchain.py', 'tools/byond/version.json',
+                  'tests/new_z_budget/z_budget_evidence.py']
         if args.lighting_load or args.lighting_restart:
             inputs.append('tests/core_boot/lighting_load.dm')
         if args.negative_control:
@@ -231,10 +224,9 @@ def main():
                                           for path in created if path.suffix == '.dm'},
             'scope': 'Input hashes and control location captured before compilation; no runtime assertion'}, indent=2), encoding='utf-8')
         try:
-            if runtime is not None:
-                runtime.before_launch('compiler', args.output)
+            runtime.before_launch('compiler', args.output)
             build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
-                                   capture_output=True, text=True, timeout=600, creationflags=flags)
+                                   capture_output=True, text=True, timeout=600, creationflags=0)
         except subprocess.TimeoutExpired as error:
             def decoded(value):
                 return value.decode('utf-8', errors='replace') if isinstance(value, bytes) else (value or '')
@@ -248,55 +240,15 @@ def main():
         (args.output / 'compile-status.json').write_text(json.dumps({
             'returncode': build.returncode, 'timed_out': False, 'deadline_seconds': 600,
             'runtime_executed': False}, indent=2), encoding='utf-8')
-        if runtime is not None:
-            runtime.validate_compile(build.returncode, compile_log, source.with_suffix('.dmb').name)
-        elif (build.returncode or not re.search(r'\b516\.1681\b', compile_log) or
-                not re.search(r'(?<!\d)0 errors, 0 warnings\b', compile_log)):
-            raise RuntimeError('Pinned zero-error/zero-warning compilation failed:\n' + compile_log[-4000:])
-        if args.compile_only:
-            (args.output / 'compile-summary.json').write_text(json.dumps({
-                'head_sha': head, 'returncode': build.returncode,
-                'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
-                'runtime_control_site': runtime_site, 'runtime_executed': False,
-                'toolchain_mode': 'current-linux-archive' if runtime is not None else 'legacy-fixture-5161681',
-                'expected_byond': '516.1688' if runtime is not None else '516.1681',
-                'runtime_identity_receipt': 'runtime-identity.json' if runtime is not None else None,
-                'scope': 'Compilation only; no runtime or negative-control detection verified'}, indent=2), encoding='utf-8')
-            print('PASS: generated core-boot fixture compiled only (no DreamDaemon)')
-            return
-        daemon = byond / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
-        with tempfile.TemporaryDirectory(prefix='civ13-core-boot-') as temporary:
-            work = Path(temporary)
-            for suffix in ('.dmb', '.rsc'):
-                shutil.copy2(source.with_suffix(suffix), work / ('probe' + suffix))
-            for path in git('ls-files', '--', 'config').splitlines():
-                destination = work / path
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(ROOT / path, destination)
-            if args.lighting_restart:
-                config_path = work / 'config/config.txt'
-                text = config_path.read_text(encoding='utf-8')
-                if text.count('ALLOWED_GAMEMODES ALL') != 1:
-                    raise RuntimeError('Expected ALLOWED_GAMEMODES ALL in config')
-                config_path.write_text(text.replace('ALLOWED_GAMEMODES ALL', 'ALLOWED_GAMEMODES PERSISTENCE'), encoding='utf-8')
-            phases = [('save', 'PASS: restart save phase'), ('load', 'PASS: restart import lighting')] if args.lighting_restart else [('boot', EXPECTED)]
-            command = [str(daemon), 'probe.dmb'] + (['-invisible', '-close'] if os.name == 'nt' else []) + ['-trusted']
-            rows = run_phases(command, work, phases)
-            summary = {'phases': rows, 'diagnostics': rows[-1]['diagnostics'][:200],
-                       'runtime_control_site': runtime_site}
-            for path in work.rglob('*'):
-                if path.is_file() and path.suffix in ('.log', '.txt', '.json') and path.stat().st_size < 8 * 1024 * 1024:
-                    destination = args.output / 'runtime' / path.relative_to(work)
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(path, destination)
-            (args.output / 'summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
-            receipt_path = work / 'runtime-control.json'
-            runtime_receipt = json.loads(receipt_path.read_text(encoding='utf-8')) if receipt_path.exists() else None
-        verify_results(rows, phases, args.negative_control, runtime_site, runtime_receipt)
-        if args.negative_control:
-            print(f'PASS expected mutation: {args.negative_control} detected ({rows[-1]["result"]})')
-            return
-        print(f'{rows[-1]["result"]} ({sum(row["wall_seconds"] for row in rows):.0f}s)')
+        runtime.validate_compile(build.returncode, compile_log, source.with_suffix('.dmb').name)
+        (args.output / 'compile-summary.json').write_text(json.dumps({
+            'head_sha': head, 'returncode': build.returncode,
+            'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
+            'runtime_control_site': runtime_site, 'runtime_executed': False,
+            'toolchain_mode': 'canonical-linux-archive', 'expected_byond': runtime.identity['version'],
+            'runtime_identity_receipt': 'runtime-identity.json',
+            'scope': 'Compilation only; no runtime or negative-control detection verified'}, indent=2), encoding='utf-8')
+        print('PASS: generated core-boot fixture compiled only (no DreamDaemon)')
     finally:
         for path in created:
             path.unlink(missing_ok=True)

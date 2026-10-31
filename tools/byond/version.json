@@ -19,7 +19,7 @@
       "provenance": "Complete unchanged official-observed Linux archive and bundled notices; user-approved repository mirror, not a vendor-authenticated checksum"
     }
   },
-  "minimumCompiler": "516.1681",
+  "minimumCompiler": "516.1688",
   "savefileMajor": 516,
   "integritySource": "Observed official HTTPS downloads on 2026-10-24; exact-byte reproducibility only, not BYOND-published or independently authenticated checksums",
   "releaseNotes": "https://www.byond.com/docs/notes/516.html",
