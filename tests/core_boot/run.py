@@ -5,6 +5,7 @@ the tracked config with webhooks, ToR bans and persistence saving disabled.
 """
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -33,6 +34,15 @@ CONTROLS = {
                 'FAIL: overlays are visible after the restart import'),
 }
 DEADLINE_SECONDS = 1500
+
+
+def load_current_runtime():
+    """Reuse the reviewed passive Linux archive/member and compiler contracts."""
+    spec = importlib.util.spec_from_file_location(
+        'core_boot_current_runtime', ROOT / 'tests/world_save/current_runtime.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def git(*args):
@@ -157,6 +167,11 @@ def generate(control, created, lighting_load=False, map_path=None, lighting_rest
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
+    toolchain = parser.add_mutually_exclusive_group(required=True)
+    toolchain.add_argument('--legacy-fixture-5161681', action='store_true',
+                           help='Explicit historical compiler-banner mode; no archive identity claimed')
+    toolchain.add_argument('--byond-archive', type=Path,
+                           help='Explicit reviewed 516.1688 Linux archive/member identity; compile-only')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--negative-control', choices=CONTROLS)
     parser.add_argument('--compile-only', action='store_true',
@@ -169,10 +184,13 @@ def main():
                         help='With --lighting-restart, change alternate sampled turfs before saving so the import replaces them')
     parser.add_argument('--map', help='Repository-relative .dmm replacing the default Nomads map include')
     args = parser.parse_args()
+    if args.byond_archive is not None and not args.compile_only:
+        parser.error('The 516.1688 identity path is compile-only; native core-boot admission is unchanged')
     args.output.mkdir(parents=True, exist_ok=True)
     if any(args.output.iterdir()):
         parser.error('Preserve existing evidence; use an empty output directory')
-    byond = args.byond_bin.resolve()
+    # Do not resolve away links before the current identity verifier inspects them.
+    byond = args.byond_bin.absolute() if args.byond_archive is not None else args.byond_bin.resolve()
     compiler = byond / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
     head = git('rev-parse', 'HEAD').strip()
@@ -183,14 +201,24 @@ def main():
         'control': args.negative_control,
         'compile_only': args.compile_only, 'lighting_load': args.lighting_load,
         'lighting_restart': args.lighting_restart,
+        'toolchain_mode': 'current-linux-archive' if args.byond_archive is not None else 'legacy-fixture-5161681',
+        'expected_byond': '516.1688' if args.byond_archive is not None else '516.1681',
         'probe_sha256': hashlib.sha256((ROOT / 'tests/core_boot/probe.dm').read_bytes()).hexdigest(),
         'scope': ('Generated full-source fixture compilation only; no DreamDaemon or runtime assertions' if args.compile_only else
                   'Headless full-source boot and round start with processes running; no clients, rendering or long-term memory')}, indent=2), encoding='utf-8')
     (args.output / 'tested.patch').write_text(git('diff', 'HEAD'), encoding='utf-8')
     created = []
     try:
+        runtime = None
+        if args.byond_archive is not None:
+            # Failure propagates; never fall back to the historical banner mode.
+            runtime = load_current_runtime().select(byond, args.byond_archive)
         source, runtime_site = generate(args.negative_control, created, args.lighting_load, args.map, args.lighting_restart, args.diverge_turfs)
         inputs = ['civ13.dme', 'tests/core_boot/probe.dm', 'tests/core_boot/run.py']
+        if runtime is not None:
+            inputs += ['tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+                       'scripts/byond_toolchain.py', 'tools/byond/version.json',
+                       'tests/new_z_budget/z_budget_evidence.py']
         if args.lighting_load or args.lighting_restart:
             inputs.append('tests/core_boot/lighting_load.dm')
         if args.negative_control:
@@ -203,6 +231,8 @@ def main():
                                           for path in created if path.suffix == '.dm'},
             'scope': 'Input hashes and control location captured before compilation; no runtime assertion'}, indent=2), encoding='utf-8')
         try:
+            if runtime is not None:
+                runtime.before_launch('compiler', args.output)
             build = subprocess.run([str(compiler), '-max_errors', '0', str(source)], cwd=ROOT,
                                    capture_output=True, text=True, timeout=600, creationflags=flags)
         except subprocess.TimeoutExpired as error:
@@ -218,7 +248,9 @@ def main():
         (args.output / 'compile-status.json').write_text(json.dumps({
             'returncode': build.returncode, 'timed_out': False, 'deadline_seconds': 600,
             'runtime_executed': False}, indent=2), encoding='utf-8')
-        if (build.returncode or not re.search(r'\b516\.1681\b', compile_log) or
+        if runtime is not None:
+            runtime.validate_compile(build.returncode, compile_log, source.with_suffix('.dmb').name)
+        elif (build.returncode or not re.search(r'\b516\.1681\b', compile_log) or
                 not re.search(r'(?<!\d)0 errors, 0 warnings\b', compile_log)):
             raise RuntimeError('Pinned zero-error/zero-warning compilation failed:\n' + compile_log[-4000:])
         if args.compile_only:
@@ -226,6 +258,9 @@ def main():
                 'head_sha': head, 'returncode': build.returncode,
                 'source_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
                 'runtime_control_site': runtime_site, 'runtime_executed': False,
+                'toolchain_mode': 'current-linux-archive' if runtime is not None else 'legacy-fixture-5161681',
+                'expected_byond': '516.1688' if runtime is not None else '516.1681',
+                'runtime_identity_receipt': 'runtime-identity.json' if runtime is not None else None,
                 'scope': 'Compilation only; no runtime or negative-control detection verified'}, indent=2), encoding='utf-8')
             print('PASS: generated core-boot fixture compiled only (no DreamDaemon)')
             return

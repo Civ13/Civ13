@@ -124,7 +124,7 @@ not queue overlay updates; only light sources and daylight do. Fresh rounds
 apply daylight through the roundstart hook, but restored rounds skip
 `ticker.setup()`, so `restore_round_state()` calls `apply_restored_lighting()`
 for every restored round, including legacy saves without durable metadata.
-`tests/core_boot/run.py --lighting-restart --map maps/nomads/nomads_europe.dmm`
+`tests/core_boot/run.py --legacy-fixture-5161681 --lighting-restart --map maps/nomads/nomads_europe.dmm`
 checks a real save, fresh-process import and sampled overlay luminosity; its
 `restored-lighting` control removes that application. Default Nomads cannot be
 saved (cross-level ladders), so use a single-level persistence map.

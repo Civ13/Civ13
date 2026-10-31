@@ -29,12 +29,32 @@ DM compilation, native scheduling, rendering or heap behavior.
 Generate and compile a fixture without starting DreamDaemon:
 
 ```powershell
-py -3 -B tests/core_boot/run.py --byond-bin C:/BYOND/bin --compile-only --output C:/evidence/core-boot-default
+py -3 -B tests/core_boot/run.py --legacy-fixture-5161681 --byond-bin C:/BYOND/bin --compile-only --output C:/evidence/core-boot-default
 ```
 
 Use an empty output directory. Add `--negative-control runtime` or
 `--lighting-load` to compile those generated variants. Compilation requires
-BYOND 516.1681, exit zero and zero errors/warnings, with a 600-second deadline.
+an explicitly selected toolchain, exit zero and zero errors/warnings, with a
+600-second deadline. `--legacy-fixture-5161681` retains the historical 516.1681
+banner check and Windows/Linux support, without claiming archive identity.
+Omitting a mode or combining modes fails before generation or compilation.
+
+For current Linux compile-only checks, select the reviewed archive explicitly:
+
+```sh
+python3 -B tests/core_boot/run.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" --compile-only --output /tmp/core-boot-current
+```
+
+This path reuses `tests/world_save/current_runtime.py` and
+`scripts/byond_runtime.py`. It requires exactly 516.1688, verifies the pinned
+archive and installed compiler/daemon/library members, and rechecks identity
+immediately before compilation. It requires one exact compiler banner and a
+zero-error/zero-warning summary for the generated artifact. Wrong platform,
+archive, member, version, diagnostic or identity changes fail without falling
+back to legacy mode. `runtime-identity.json` records passive member identity;
+it is not a native runtime observation. Current mode requires `--compile-only`:
+this slice does not admit a current DreamDaemon run.
+
 Compile-only returns before runtime staging, config copying or daemon launch;
 it preserves compile logs, source hash and control location, then removes the
 generated source and binaries. It does not verify an expected runtime failure.
@@ -51,7 +71,14 @@ the suite. The step has a 32-minute cap for three sequential 600-second compiles
 An upload step runs after an actually started check, including failure, and
 retains its offline log, checkout identity and selected compile metadata/logs
 for seven days. Its explicit file allowlist excludes configs, binaries and runtime
-files. Skipped checks do not request an artifact.
+files. The three existing compile-only commands explicitly select the current
+archive and retain `runtime-identity.json`. Their selection condition, deadlines
+and number of compiles are unchanged. Skipped checks do not request an artifact.
+
+`ready_for_review` is not subscribed or an ordinary selector action. Adding it
+to both would admit introduced native suites, while existing label gates can
+also admit runtime work. That event change requires a separate scope review;
+the current workflow events, selector and runtime fixture gates are unchanged.
 
 Native core-boot and fresh-process lighting runs still need separate authorized
 BYOND 516.1681 execution and graphical acceptance. The runtime exception's native

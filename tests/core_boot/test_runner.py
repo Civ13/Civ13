@@ -109,7 +109,7 @@ class RunnerTests(unittest.TestCase):
             (probe.parent / 'run.py').write_text('# offline fixture', encoding='utf-8')
             daemon = FakeDaemon(runner.EXPECTED, returncode=7)
             build = subprocess.CompletedProcess([], 0, '516.1681: 0 errors, 0 warnings', '')
-            argv = ['run.py', '--byond-bin', str(root), '--output', str(output)]
+            argv = ['run.py', '--legacy-fixture-5161681', '--byond-bin', str(root), '--output', str(output)]
             with mock.patch.object(runner, 'ROOT', root), mock.patch.object(runner, 'git', side_effect=git), \
                     mock.patch.object(runner, 'generate', side_effect=generated), \
                     mock.patch.object(runner.subprocess, 'run', return_value=build), \
@@ -211,7 +211,7 @@ class RunnerTests(unittest.TestCase):
 
 
 class CompileOnlyTests(unittest.TestCase):
-    def invoke(self, root, options=(), build=None):
+    def invoke(self, root, options=(), build=None, toolchain=('--legacy-fixture-5161681',)):
         probe = root / 'tests/core_boot/probe.dm'
         probe.parent.mkdir(parents=True)
         probe.write_text('// offline probe', encoding='utf-8')
@@ -222,6 +222,13 @@ class CompileOnlyTests(unittest.TestCase):
         production.parent.mkdir(parents=True)
         production.write_text(old + '\treturn FALSE\n', encoding='utf-8')
         (root / 'civ13.dme').write_text('#include "' + path.replace('/', '\\') + '"\n', encoding='utf-8')
+        if '--byond-archive' in toolchain:
+            for name in ('tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+                         'scripts/byond_toolchain.py', 'tools/byond/version.json',
+                         'tests/new_z_budget/z_budget_evidence.py'):
+                item = root / name
+                item.parent.mkdir(parents=True, exist_ok=True)
+                item.write_text('offline hashed input', encoding='utf-8')
         output = root / 'evidence'
         compiler_calls = []
         def compiler(command, **kwargs):
@@ -254,6 +261,8 @@ class CompileOnlyTests(unittest.TestCase):
             # would fail if the early return were removed, even without mocks.
             if isinstance(build, BaseException):
                 raise build
+            if callable(build):
+                return build(command)
             return build or subprocess.CompletedProcess(command, 0, '516.1681: 0 errors, 0 warnings', '')
         def git(*args):
             if args == ('rev-parse', 'HEAD'):
@@ -263,7 +272,7 @@ class CompileOnlyTests(unittest.TestCase):
             if args == ('diff', 'HEAD'):
                 return ''
             self.fail('Compile-only entered runtime config enumeration: ' + repr(args))
-        argv = ['run.py', '--byond-bin', str(root), '--output', str(output), '--compile-only', *options]
+        argv = ['run.py', '--byond-bin', str(root), '--output', str(output), '--compile-only', *toolchain, *options]
         with mock.patch.object(runner, 'ROOT', root), mock.patch.object(runner, 'git', side_effect=git), \
                 mock.patch.object(runner.subprocess, 'run', side_effect=compiler), \
                 mock.patch.object(runner.subprocess, 'Popen', side_effect=AssertionError('Daemon launch forbidden')), \
@@ -286,6 +295,8 @@ class CompileOnlyTests(unittest.TestCase):
                 metadata = json.loads((output / 'metadata.json').read_text())
                 summary = json.loads((output / 'compile-summary.json').read_text())
                 self.assertTrue(metadata['compile_only'])
+                self.assertEqual(metadata['toolchain_mode'], 'legacy-fixture-5161681')
+                self.assertEqual(metadata['expected_byond'], '516.1681')
                 self.assertEqual(metadata['checkout_commit_sha'], 'a' * 40)
                 self.assertEqual(metadata['checkout_tree_sha'], 'b' * 40)
                 self.assertEqual(metadata['head_sha'], metadata['checkout_commit_sha'])
@@ -315,7 +326,7 @@ class CompileOnlyTests(unittest.TestCase):
             self.assertFalse(list(root.glob('.core_boot_*')))
 
     def test_wrong_version_errors_warnings_or_missing_summary_reject(self):
-        for log in ['516.1680: 0 errors, 0 warnings', '516.16810: 0 errors, 0 warnings',
+        for log in ['516.1680: 0 errors, 0 warnings', '516.1688: 0 errors, 0 warnings', '516.16810: 0 errors, 0 warnings',
                     '516.1681: 10 errors, 0 warnings', '516.1681: 0 errors, 1 warning', '516.1681']:
             with self.subTest(log=log), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
@@ -350,6 +361,7 @@ class CompileOnlyTests(unittest.TestCase):
         commands = [line.strip() for line in step.splitlines() if 'tests/core_boot/run.py ' in line]
         self.assertEqual(len(commands), 3)
         self.assertTrue(all('--compile-only' in line for line in commands))
+        self.assertTrue(all('--byond-archive "$PWD/BYOND/pinned.zip"' in line for line in commands))
         self.assertEqual(sum('--negative-control runtime' in line for line in commands), 1)
         self.assertEqual(sum('--lighting-load' in line for line in commands), 1)
         self.assertIn('-m unittest discover -s tests/core_boot -p test_runner.py -v', step)
@@ -381,7 +393,133 @@ class CompileOnlyTests(unittest.TestCase):
         paths = [line.strip() for line in retain.split('          path: |\n', 1)[1].split('          if-no-files-found:', 1)[0].splitlines()]
         self.assertEqual(paths, ['${{ runner.temp }}/core-boot-compile/' + name for name in (
             'checkout-commit-tree.txt', 'offline-tests.log', '*/metadata.json', '*/compile-inputs.json',
-            '*/compile.log', '*/compile-status.json', '*/compile-summary.json')])
+            '*/compile.log', '*/compile-status.json', '*/compile-summary.json', '*/runtime-identity.json')])
+
+
+class CurrentToolchainTests(unittest.TestCase):
+    invoke = CompileOnlyTests.invoke
+
+    def runtime(self):
+        # Exercise the actual strict compile validator, with passive identity
+        # acquisition replaced. Existing byond_runtime tests cover archive bytes.
+        module = runner.load_current_runtime()
+        runtime = object.__new__(module.CurrentRuntime)
+        runtime.identity = {'version': '516.1688'}
+        runtime.compiler = SimpleNamespace(
+            MAX_COMPILE_LOG=1024 * 1024,
+            DIAGNOSTIC=re.compile(r'runtime error|fatal error|segmentation', re.I))
+        runtime.bin_dir, runtime.archive = Path('inert-bin'), Path('inert.zip')
+        runtime.verifier = SimpleNamespace(verify_linux=mock.Mock(return_value=dict(runtime.identity)))
+        runtime.checks = []
+        runtime.before_launch = mock.Mock(wraps=runtime.before_launch)
+        return runtime
+
+    def build(self, command, log=None, code=0):
+        artifact = Path(command[-1]).with_suffix('.dmb').name
+        return subprocess.CompletedProcess(command, code, log if log is not None else
+            'DM compiler version 516.1688\n' + artifact + ' - 0 errors, 0 warnings\n', '')
+
+    def test_current_compile_only_binds_identity_validator_and_receipts(self):
+        for options in ((), ('--negative-control', 'runtime'), ('--lighting-load',)):
+            runtime = self.runtime()
+            with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary, \
+                    mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(
+                        select=mock.Mock(return_value=runtime))) as loader:
+                root = Path(temporary)
+                def compiler(command):
+                    runtime.before_launch.assert_called_once_with('compiler', root / 'evidence')
+                    return self.build(command)
+                output, calls = self.invoke(root, options, compiler,
+                    ('--byond-archive', str(root / 'inert.zip')))
+                loader.return_value.select.assert_called_once_with(root.absolute(), root / 'inert.zip')
+                self.assertEqual(len(calls), 1)
+                metadata = json.loads((output / 'metadata.json').read_text())
+                summary = json.loads((output / 'compile-summary.json').read_text())
+                self.assertEqual(metadata['expected_byond'], '516.1688')
+                self.assertEqual(summary['toolchain_mode'], 'current-linux-archive')
+                self.assertEqual(summary['runtime_identity_receipt'], 'runtime-identity.json')
+                receipt = json.loads((output / 'runtime-identity.json').read_text())
+                self.assertEqual(receipt['verified_before'], ['compiler'])
+                self.assertEqual(receipt['runtime'], runtime.identity)
+                self.assertFalse(summary['runtime_executed'])
+                self.assertFalse((output / 'runtime').exists())
+
+    def test_current_rejects_wrong_banner_duplicate_banner_diagnostics_exit_and_summary(self):
+        # A historical banner in current mode must not fall back to legacy.
+        for change, code in (('legacy', 0), ('duplicate', 0), ('diagnostic', 0),
+                             ('wrong-artifact', 0), ('warning', 0), ('clean', 7)):
+            runtime = self.runtime()
+            def compiler(command):
+                build = self.build(command, code=code)
+                if change == 'legacy': build.stdout = build.stdout.replace('516.1688', '516.1681')
+                if change == 'duplicate': build.stdout = 'DM compiler version 516.1688\n' + build.stdout
+                if change == 'diagnostic': build.stdout += 'fatal error\n'
+                if change == 'wrong-artifact': build.stdout = build.stdout.replace(Path(command[-1]).stem, 'unrelated')
+                if change == 'warning': build.stdout = build.stdout.replace('0 warnings', '1 warning')
+                return build
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary, \
+                    mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(select=lambda *a: runtime)):
+                root = Path(temporary)
+                with self.assertRaises(RuntimeError):
+                    self.invoke(root, build=compiler, toolchain=('--byond-archive', str(root / 'inert.zip')))
+                self.assertTrue((root / 'evidence/compile.log').exists())
+                self.assertFalse((root / 'evidence/compile-summary.json').exists())
+                self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_bad_archive_or_nonlinux_identity_never_generates_or_compiles(self):
+        for reason in ('Linux archive differs from the reviewed SHA-256',
+                       'Current fixture archive identity requires Linux'):
+            with self.subTest(reason=reason), tempfile.TemporaryDirectory() as temporary, \
+                    mock.patch.object(runner, 'load_current_runtime', return_value=SimpleNamespace(
+                        select=mock.Mock(side_effect=ValueError(reason)))), \
+                    mock.patch.object(runner, 'generate', side_effect=AssertionError('Generation forbidden')):
+                root = Path(temporary)
+                with self.assertRaisesRegex(ValueError, reason):
+                    self.invoke(root, toolchain=('--byond-archive', str(root / 'inert.zip')))
+                self.assertTrue((root / 'evidence/metadata.json').exists())
+                self.assertFalse((root / 'evidence/compile.log').exists())
+
+    def test_changed_identity_before_compiler_never_launches_or_falls_back(self):
+        runtime = self.runtime()
+        runtime.verifier.verify_linux.return_value = {'version': '516.1681'}
+        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(
+                runner, 'load_current_runtime', return_value=SimpleNamespace(select=lambda *a: runtime)):
+            root = Path(temporary)
+            with self.assertRaisesRegex(ValueError, 'identity changed'):
+                self.invoke(root, build=AssertionError('Compiler forbidden'),
+                    toolchain=('--byond-archive', str(root / 'inert.zip')))
+            runtime.before_launch.assert_called_once()
+            self.assertTrue((root / 'evidence/compile-inputs.json').exists())
+            receipt = json.loads((root / 'evidence/runtime-identity.json').read_text())
+            self.assertIn('identity changed', receipt['error'])
+            self.assertFalse((root / 'evidence/compile.log').exists())
+            self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_current_compile_timeout_preserves_identity_and_failure_without_runtime(self):
+        runtime = self.runtime()
+        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(
+                runner, 'load_current_runtime', return_value=SimpleNamespace(select=lambda *a: runtime)):
+            root = Path(temporary)
+            with self.assertRaises(subprocess.TimeoutExpired):
+                self.invoke(root, build=subprocess.TimeoutExpired('offline compiler', 600, output=b'partial current compile'),
+                    toolchain=('--byond-archive', str(root / 'inert.zip')))
+            self.assertEqual((root / 'evidence/compile.log').read_text(), 'partial current compile')
+            self.assertTrue((root / 'evidence/runtime-identity.json').exists())
+            self.assertTrue(json.loads((root / 'evidence/compile-status.json').read_text())['timed_out'])
+            self.assertFalse((root / 'evidence/compile-summary.json').exists())
+            self.assertFalse(list(root.glob('.core_boot_*')))
+
+    def test_explicit_exclusive_mode_and_compile_only_current_are_required(self):
+        for options in ((), ('--legacy-fixture-5161681', '--byond-archive', 'inert.zip'),
+                        ('--byond-archive', 'inert.zip')):
+            with self.subTest(options=options), tempfile.TemporaryDirectory() as temporary, \
+                    mock.patch.object(runner.subprocess, 'run', side_effect=AssertionError('Launch forbidden')), \
+                    mock.patch.object(runner, 'generate', side_effect=AssertionError('Generation forbidden')):
+                output = Path(temporary) / 'absent'
+                argv = ['run.py', '--byond-bin', temporary, '--output', str(output), *options]
+                with mock.patch.object(sys, 'argv', argv), self.assertRaises(SystemExit):
+                    runner.main()
+                self.assertFalse(output.exists())
 
 
 class DMList:
