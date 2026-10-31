@@ -7,4 +7,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="../../Civ13.Launcher.csproj" /></ItemGroup>
+  <!-- Shared fake is compiled into tests only, never into the launcher. -->
+  <ItemGroup><Compile Include="../../../../../tools/manager-log-tests/SyntheticLogSource.cs" Link="SyntheticLogSource.cs" /></ItemGroup>
 </Project>

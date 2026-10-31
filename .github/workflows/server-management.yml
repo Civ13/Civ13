@@ -4,6 +4,9 @@ on:
     branches: [master]
     paths:
       - tools/server-management/**
+      - tools/manager-log-tests/**
+      - tools/opendream-client/native/Management/**
+      - tools/opendream-client/native/tests/ManagementPresentation/**
       - .github/workflows/server-management.yml
 permissions:
   contents: read
@@ -39,4 +42,12 @@ jobs:
           dotnet restore tools/server-management/tests/Contracts.csproj --configfile tools/server-management/NuGet.Config -p:NuGetAudit=false --disable-parallel
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           dotnet run --project tools/server-management/tests/Contracts.csproj --no-restore --configuration Release --disable-build-servers -p:UseSharedCompilation=false
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet restore tools/manager-log-tests/ManagerLogTests.csproj --configfile tools/manager-log-tests/NuGet.Config -p:NuGetAudit=false --disable-parallel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tools/manager-log-tests/ManagerLogTests.csproj --no-restore --configuration Release --disable-build-servers -p:UseSharedCompilation=false
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet restore tools/opendream-client/native/tests/ManagementPresentation/ManagementPresentation.csproj --configfile tools/opendream-client/native/tests/ManagementPresentation/NuGet.Config -p:NuGetAudit=false --disable-parallel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project tools/opendream-client/native/tests/ManagementPresentation/ManagementPresentation.csproj --no-restore --configuration Release --disable-build-servers -p:UseSharedCompilation=false
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
