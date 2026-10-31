@@ -64,6 +64,7 @@ class AtlasNavigationTests(unittest.TestCase):
         self.assertEqual([(i['id'], i['quantity']) for i in recipe['outputs']], [(kind, '1')])
         self.assertEqual(recipe['unlock_eras'], [5])
         self.assertEqual(recipe['maximum_era'], 8)
+        self.assertEqual(self.catalog['resources'][kind]['name'], 'wood grinder')
         for note in ('base duration scaled', 'coefficient >= 2.2', 'nominal', 'full listed amount', 'No dismantling'):
             self.assertIn(note, recipe['conditions'])
         route, = self.catalog['acquisition'][kind]

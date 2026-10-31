@@ -27,6 +27,8 @@ def uncomment(s):
     s=re.sub(r'/\*.*?\*/',lambda m:'\n'*m[0].count('\n'),s,flags=re.S)
     return '\n'.join(re.sub(r'//.*','',x) for x in s.splitlines())
 def label(s):
+    if s.rstrip('/') == '/obj/structure/grinder/constructed':
+        return 'wood grinder'
     if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
         return 'finished planks'
     if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
