@@ -4,6 +4,7 @@ var/list/large_bridge_rows = list()
 var/list/large_bridge_controls = list()
 var/large_bridge_checks = 0
 var/list/large_bridge_exception_sentinel = list()
+var/list/large_bridge_setup_failure
 
 /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge
 	npc_subtile_large_exit_enabled = TRUE
@@ -26,6 +27,7 @@ var/list/large_bridge_exception_sentinel = list()
 	var/datum/npc_subtile_large_frame/fixture_deleted_actor_frame
 	var/fixture_actor_deleted = FALSE
 	var/list/fixture_retired_state
+	var/list/fixture_retired_after_throw
 
 /obj/large_native_border/bridge/CheckExit(atom/movable/mover, turf/target, exit_direction = null)
 	large_native_log("CheckExit:bridge", src)
@@ -49,7 +51,7 @@ var/list/large_bridge_exception_sentinel = list()
 				qdel(A.npc_subtile_transaction)
 			if ("callback_blocker_delete")
 				qdel(src)
-			if ("callback_actor_delete")
+			if ("callback_actor_delete", "callback_actor_delete_throw")
 				fixture_deleted_actor_frame = A.npc_subtile_large_frame
 				qdel(A)
 				fixture_actor_deleted = !A || isDeleted(A)
@@ -62,6 +64,10 @@ var/list/large_bridge_exception_sentinel = list()
 						"combat_target" = !!F.combat_target, "following" = !!F.following)
 					F.retire()
 					F.retire()
+				if (fixture_fault == "callback_actor_delete_throw")
+					fixture_throw_attempted = TRUE
+					large_native_log("fixture_throw_attempt", src)
+					throw EXCEPTION("fixture_bridge_exception")
 			if ("callback_incapacitate")
 				A.stunned = 1
 			if ("callback_reassign")
@@ -94,6 +100,11 @@ var/list/large_bridge_exception_sentinel = list()
 	catch (var/exception/fixture_boundary_error)
 		fixture_boundary_caught = TRUE
 		fixture_boundary_name = fixture_boundary_error.name
+		var/datum/npc_subtile_large_frame/F = fixture_deleted_actor_frame
+		if (F && !isDeleted(F))
+			fixture_retired_after_throw = list("exists" = TRUE, "active" = !!F.active, "valid" = !!F.valid(),
+				"faulted" = !!F.faulted, "fault" = !!F.fault, "actor" = !!F.actor,
+				"pulse" = !!F.pulse, "transaction" = !!F.transaction, "intent" = !!F.intent_owner)
 		large_native_log("Uncross:throw_catch", src)
 		throw fixture_boundary_error
 	large_native_log("Uncross:throw_return", src)
@@ -216,10 +227,14 @@ var/list/large_bridge_exception_sentinel = list()
 // Deleting a mob can invalidate every reference to it immediately. Retain
 // the pulse, transaction and admitted frame separately; never read its final
 // position or imply that an actor which was deleted completed the movement.
-/proc/large_bridge_actor_delete_control(turf/exiting)
+/proc/large_bridge_actor_delete_control(turf/exiting, throw_after = FALSE)
 	var/mob/living/simple_animal/A = large_bridge_setup(/mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge, 0, WEST, FALSE)
-	var/obj/large_native_border/bridge/B = new(exiting)
-	B.fixture_allow = TRUE; B.fixture_fault = "callback_actor_delete"
+	var/obj/large_native_border/bridge/B
+	if (throw_after)
+		B = new /obj/large_native_border/bridge/throw_boundary(exiting)
+	else
+		B = new(exiting)
+	B.fixture_allow = TRUE; B.fixture_fault = throw_after ? "callback_actor_delete_throw" : "callback_actor_delete"
 	var/list/before = large_native_snapshot(A)
 	var/datum/npc_subtile_transaction/large_native_observe/T = new
 	T.actor = A; T.expected = A.npc_subtile_snapshot()
@@ -241,14 +256,19 @@ var/list/large_bridge_exception_sentinel = list()
 	var/actor_deleted = !A || isDeleted(A)
 	var/frame_cleared = !B.fixture_deleted_actor_frame || !B.fixture_deleted_actor_frame.active
 	var/pulse_consumed = P && !P.armed
-	large_bridge_controls += list(list("case" = "callback_actor_delete", "before" = before, "actor_deleted" = actor_deleted,
+	large_bridge_controls += list(list("case" = throw_after ? "callback_actor_delete_throw" : "callback_actor_delete", "before" = before, "actor_deleted" = actor_deleted,
 		"frame_cleared" = frame_cleared, "pulse_consumed" = pulse_consumed, "checks" = B.fixture_checks,
-		"retired_state" = B.fixture_retired_state, "error" = error, "result" = result, "trace" = large_native_trace.Copy()))
+		"retired_state" = B.fixture_retired_state, "retired_after_throw" = B.fixture_retired_after_throw,
+		"boundary_caught" = B.fixture_boundary_caught, "boundary_name" = B.fixture_boundary_name,
+		"error" = error, "result" = result, "trace" = large_native_trace.Copy()))
 	large_bridge_assert(!error && actor_deleted && B.fixture_actor_deleted, "bridge_actor_deleted")
 	large_bridge_assert(B.fixture_checks == 1 && pulse_consumed, "bridge_delete_callback_consumed")
 	large_bridge_assert(frame_cleared, "bridge_delete_frame_cleared")
 	var/list/retired = B.fixture_retired_state
 	large_bridge_assert(retired && retired["exists"] && !retired["active"] && !retired["valid"] && !retired["actor"] && !retired["pulse"] && !retired["transaction"] && !retired["intent"] && !retired["fault"] && !retired["start"] && !retired["destination"] && !retired["path_target"] && !retired["combat_target"] && !retired["following"], "bridge_delete_frame_retired")
+	if (throw_after)
+		var/list/after_throw = B.fixture_retired_after_throw
+		large_bridge_assert(B.fixture_boundary_caught && B.fixture_boundary_name == "fixture_bridge_exception" && after_throw && after_throw["exists"] && !after_throw["active"] && !after_throw["valid"] && !after_throw["faulted"] && !after_throw["fault"] && !after_throw["actor"] && !after_throw["pulse"] && !after_throw["transaction"] && !after_throw["intent"], "bridge_delete_throw_stays_retired")
 	if (B.fixture_deleted_actor_frame) qdel(B.fixture_deleted_actor_frame)
 	qdel(P); qdel(T); qdel(B)
 
@@ -282,6 +302,75 @@ var/list/large_bridge_exception_sentinel = list()
 	large_bridge_assert(plain_deleted, "bridge_plain_destroy")
 	qdel(P); qdel(T); qdel(owner); qdel(other)
 
+/proc/large_bridge_setup_state(mob/living/simple_animal/A)
+	return list("geometry" = large_native_snapshot(A), "loc_is_turf" = isturf(A.loc),
+		"enabled" = !!A.npc_subtile_enabled, "large_exit_enabled" = !!A.npc_subtile_large_exit_enabled,
+		"shape" = !!A.npc_subtile_shape(), "authority_ready" = !!A.npc_subtile_authority_ready(), "ready" = !!A.npc_subtile_ready(),
+		"frame" = !!A.npc_subtile_large_frame, "pulse" = !!A.npc_subtile_pulse, "transaction" = !!A.npc_subtile_transaction,
+		"offset_owned" = !!A.npc_subtile_offset_owned, "until" = A.npc_subtile_until, "generation" = A.move_gen,
+		"client" = !!A.client, "stat" = A.stat, "canmove" = !!A.canmove, "anchored" = !!A.anchored,
+		"density" = !!A.density, "step_size" = A.step_size, "world_movement_mode" = world.movement_mode,
+		"lying" = !!A.lying, "prone" = !!A.prone, "resting" = !!A.resting, "restrained" = !!A.restrained(),
+		"paralysis" = A.paralysis, "stunned" = A.stunned, "weakened" = A.weakened, "sleeping" = A.sleeping,
+		"status_flags" = A.status_flags, "buckled" = !!A.buckled, "pulling" = !!A.pulling, "pulledby" = !!A.pulledby,
+		"ride" = !!A.ride, "rider" = !!A.rider, "control_object" = !!A.control_object,
+		"incorporeal_move" = !!A.incorporeal_move, "grab_count" = A.grab_list ? A.grab_list.len : 0,
+		"grabbed_count" = A.grabbed_by ? A.grabbed_by.len : 0, "pinned_count" = A.pinned ? A.pinned.len : 0)
+
+// Diagnostic only: use measured before/after locs and the requested 96px
+// half-open rectangle. Enumerate the full fixture map on failure, including
+// leading-edge tiles outside range(4); never alter occupancy or call Move.
+/proc/large_bridge_setup_footprint(mob/living/simple_animal/A, list/before_geometry, list/auth)
+	var/list/tiles = list()
+	var/truncated = FALSE
+	var/left = (auth["destination_x"] - 1) * 32 + auth["sx"] + auth["bound_x"]
+	var/bottom = (auth["destination_y"] - 1) * 32 + auth["sy"] + auth["bound_y"]
+	var/right = left + auth["width"]
+	var/top = bottom + auth["height"]
+	var/list/covered_before = before_geometry["locs"]
+	for (var/turf/T in world)
+		if (T.z != before_geometry["z"]) continue
+		var/was_covered = FALSE
+		for (var/list/C in covered_before)
+			if (C["x"] == T.x && C["y"] == T.y && C["z"] == T.z) was_covered = TRUE
+		var/tile_left = (T.x - 1) * 32
+		var/tile_bottom = (T.y - 1) * 32
+		var/requested = tile_left < right && tile_left + 32 > left && tile_bottom < top && tile_bottom + 32 > bottom
+		var/after_covered = (T in A.locs)
+		if (!(was_covered || requested || after_covered)) continue
+		if (tiles.len >= 64)
+			truncated = TRUE
+			continue
+		var/list/occupants = list()
+		for (var/atom/movable/O in T)
+			if (O != A && !isDeleted(O) && (O.density || (O.flags & ON_BORDER)))
+				if (occupants.len >= 64)
+					truncated = TRUE
+					continue
+				occupants += list(list("type" = "[O.type]", "x" = O.x, "y" = O.y, "z" = O.z,
+					"density" = !!O.density, "border" = !!(O.flags & ON_BORDER), "anchored" = !!O.anchored))
+		tiles += list(list("x" = T.x, "y" = T.y, "z" = T.z, "turf_type" = "[T.type]", "turf_dense" = !!T.density,
+			"before" = was_covered, "requested" = requested, "after" = after_covered, "occupants" = occupants))
+	return list("requested_rect" = list("left" = left, "right" = right, "bottom" = bottom, "top" = top),
+		"world_maxx" = world.maxx, "world_maxy" = world.maxy, "world_maxz" = world.maxz,
+		"tiles" = tiles, "truncated" = truncated)
+
+/proc/large_bridge_setup_request(mob/living/simple_animal/A, direction)
+	var/sx = A.step_x + (direction == EAST ? 2 : (direction == WEST ? -2 : 0))
+	var/sy = A.step_y + (direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
+	var/tx = A.x; var/ty = A.y
+	if (sx < 0)
+		tx--; sx += 32
+	if (sx >= 32)
+		tx++; sx -= 32
+	if (sy < 0)
+		ty--; sy += 32
+	if (sy >= 32)
+		ty++; sy -= 32
+	return list("destination_x" = tx, "destination_y" = ty, "sx" = sx, "sy" = sy,
+		"direction" = direction, "bound_x" = A.bound_x, "bound_y" = A.bound_y,
+		"width" = A.bound_width, "height" = A.bound_height)
+
 /proc/large_bridge_setup(animal_type, variant, direction, orthogonal, pulse_count = 15)
 	var/mob/living/simple_animal/A = new animal_type(locate(9, 7, 1))
 	A.dir = direction
@@ -295,9 +384,22 @@ var/list/large_bridge_exception_sentinel = list()
 	for (var/i = 1, i <= pulse_count, i++)
 		large_native_trace = list()
 		var/list/before = A.npc_subtile_snapshot()
-		large_native_pulse(A, direction, direction == EAST ? 2 : (direction == WEST ? -2 : 0), direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
+		var/list/before_state = large_bridge_setup_state(A)
+		var/list/setup_request = large_bridge_setup_request(A, direction)
+		var/list/before_footprint
+		// The retained failure is the second warm-up pulse of this case.
+		// Avoid scanning the whole world in every successful setup pulse.
+		if (animal_type == /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge && variant == 64 && direction == EAST && !orthogonal && i == 2)
+			before_footprint = large_bridge_setup_footprint(A, before_state["geometry"], setup_request)
+		var/list/setup_auth = large_native_pulse(A, direction, direction == EAST ? 2 : (direction == WEST ? -2 : 0), direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
 		var/dx = (A.x - before["x"]) * 32 + A.step_x - before["sx"]
 		var/dy = (A.y - before["y"]) * 32 + A.step_y - before["sy"]
+		if (dx != (direction == EAST ? 2 : (direction == WEST ? -2 : 0)) || dy != (direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0)))
+			large_bridge_setup_failure = list("animal" = "[animal_type]", "variant" = variant, "direction" = direction,
+				"orthogonal" = !!orthogonal, "pulse" = i, "before" = before_state, "after" = large_bridge_setup_state(A),
+				"request" = setup_request, "auth" = setup_auth, "trace" = large_native_trace.Copy(),
+				"footprint_before" = before_footprint,
+				"footprint_after" = large_bridge_setup_footprint(A, before_state["geometry"], setup_auth))
 		large_bridge_assert(dx == (direction == EAST ? 2 : (direction == WEST ? -2 : 0)) && dy == (direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0)), "bridge_clear_setup_progress")
 		large_bridge_assert(A.bound_x == variant && A.dir == direction && A.bound_width == 96 && A.bound_height == 96, "bridge_setup_geometry")
 	return A
@@ -431,6 +533,7 @@ var/list/large_bridge_exception_sentinel = list()
 						mutator.fixture_mutation_target = null
 						qdel(mutator); qdel(subject); qdel(policy_actor)
 						large_bridge_actor_delete_control(exiting)
+						large_bridge_actor_delete_control(exiting, TRUE)
 						for (var/lifecycle_mode in list("first_fault", "later_fault", "ordinary_denial", "replace_fault"))
 							large_bridge_lifecycle_case(exiting, lifecycle_mode)
 					if (animal_type == /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge && !orthogonal && ((variant == 0 && direction == WEST) || (variant == 64 && direction == EAST)))
@@ -462,4 +565,4 @@ var/list/large_bridge_exception_sentinel = list()
 	large_bridge_missing_control()
 	large_bridge_ordinary_control()
 	large_bridge_retirement_control()
-	large_bridge_assert(large_bridge_controls.len == 39, "bridge_controls_complete")
+	large_bridge_assert(large_bridge_controls.len == 40, "bridge_controls_complete")
