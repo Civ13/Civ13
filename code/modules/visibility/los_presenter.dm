@@ -42,8 +42,8 @@
 	var/turf/cell = get_turf(changed)
 	if(!cell || changed == context.body || cell.z != context.body.z)
 		return
-	var/ex = context.body.x + context.body.step_x / 32
-	var/ey = context.body.y + context.body.step_y / 32
+	var/ex = context.body.x
+	var/ey = context.body.y
 	var/cx = cell.x - ex
 	var/cy = cell.y - ey
 	if(ismovable(changed))
@@ -55,7 +55,7 @@
 			continue
 		var/tx = A.x - ex
 		var/ty = A.y - ey
-		if(ismovable(A))
+		if(ismovable(A) && !ishuman(A))
 			var/atom/movable/target = A
 			tx += target.step_x / 32
 			ty += target.step_y / 32
@@ -109,7 +109,7 @@
 		last_policy = null
 		return FALSE
 	if(!S)
-		S = context.capture()
+		S = context.capture(TRUE)
 	if(!S || S.policy != context.policy_key())
 		// Keep previous conservative masks while a mutation is in flight. Do not
 		// black out the screen or publish a partial fresh geometry decision.

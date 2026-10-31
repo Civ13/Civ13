@@ -38,7 +38,7 @@
 			root_tree_presenter.invalidate()
 		los_dirty = TRUE
 		return
-	var/key = V.policy_key()
+	var/key = V.presentation_key()
 	if(!key || !mob.hud_used)
 		// Native blindness, observer/camera vision and loading retain their own
 		// policy. Never leave stale tree/weather leases on a replaced HUD.
@@ -61,7 +61,7 @@
 		return
 	if(!los_presenter)
 		new /datum/los_presenter(src, V)
-	var/datum/los_snapshot/S = V.capture()
+	var/datum/los_snapshot/S = V.capture(TRUE)
 	if(!S)
 		los_dirty = TRUE
 		return
@@ -76,6 +76,7 @@
 	los_last_error = null
 	los_last_policy = key
 	los_dirty = FALSE
+	V.movement_turf = get_turf(mob)
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	los_next_audit = world.time + 5
@@ -100,18 +101,68 @@
 		if(C.los_presenter)
 			C.los_presenter.invalidate(changed, possible_opacity)
 
+// Transparent player geometry is tile anchored. Before a movement attempt,
+// neither its eye nor its target footprint has changed; failed/offset-only
+// moves must not withdraw tree images or dirty every nearby viewer.
+/proc/los_invalidate_movement(atom/movable/A)
+	if(!CIV13_GEOMETRIC_LOS_CORE || !A)
+		return
+	if(ishuman(A) && !A.opacity)
+		var/mob/living/human/H = A
+		if(H.client && H.client.los_context && !H.client.los_context.retired && H.client.los_context.body == H && H.client.los_context.owner == H.client)
+			return
+	// Opaque actors and other movers still change physical blocker geometry.
+	los_invalidate(A)
+
 // Called after authoritative movement callbacks, before the movement proc
 // returns to a yielding locomotion loop. Native client timing remains tested
 // separately; this avoids intentionally waiting for the next process tick.
-/proc/los_refresh_moved_viewer(atom/movable/A)
-	if(!CIV13_GEOMETRIC_LOS_CORE)
+/proc/los_refresh_moved_viewer(atom/movable/A, force_refresh = FALSE)
+	if(!CIV13_GEOMETRIC_LOS_CORE || !A)
 		return
-	// Same-turf physical pulses do not necessarily raise Entered. Withdraw
-	// newly occluded content for all nearby viewers at the new offset too.
+	var/turf/previous_turf = null
+	var/turf/current_turf = get_turf(A)
+	var/tile_changed = FALSE
+	if(ishuman(A))
+		var/mob/living/human/H = A
+		if(H.client && H.client.los_context)
+			var/datum/los_context/V = H.client.los_context
+			var/turf/T = get_turf(H)
+			if(!force_refresh && !H.opacity && !V.retired && V.body == H && V.owner == H.client && T && V.movement_turf == T)
+				return
+			previous_turf = V.movement_turf
+			tile_changed = previous_turf != T
+			V.movement_turf = T
+	// Entered handles old/new tile neighborhoods. Blocker offsets still need
+	// immediate withdrawal even without a native tile transition.
 	los_invalidate(A)
+	if(tile_changed && previous_turf)
+		los_invalidate(previous_turf, A.opacity)
 	if(!ismob(A))
 		return
 	var/mob/M = A
 	if(M.client && M.client.los_context)
 		M.client.los_dirty = TRUE
 		M.client.reconcile_geometric_los()
+	// A human's target footprint moved too. Refresh nearby other viewers at
+	// this tile boundary before returning, so a previously visible character
+	// cannot retain a visible image after entering a denied tile. Offset-only
+	// pulses never enter this path; opaque actors retain blocker invalidation.
+	if(tile_changed && M.client && los_active_contexts)
+		for(var/datum/los_context/other_context in los_active_contexts.Copy())
+			var/client/C = other_context.owner
+			if(!C || C == M.client || !los_movement_affects_context(other_context, previous_turf, current_turf))
+				continue
+			C.los_dirty = TRUE
+			C.reconcile_geometric_los()
+
+/proc/los_movement_affects_context(datum/los_context/V, turf/old_turf, turf/new_turf)
+	if(!V || !V.owner || !V.body)
+		return FALSE
+	var/list/dimensions = V.viewport()
+	if(!dimensions)
+		return FALSE
+	for(var/turf/T in list(old_turf, new_turf))
+		if(T && T.z == V.body.z && abs(T.x-V.body.x) <= dimensions[1]/2+6 && abs(T.y-V.body.y) <= dimensions[2]/2+6)
+			return TRUE
+	return FALSE

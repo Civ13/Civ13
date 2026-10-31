@@ -206,7 +206,7 @@
 			if (is_new_area && is_destination_turf)
 				destination.loc.Entered(src, origin)
 	#if CIV13_ROOT_TREE_PRESENTATION
-	los_refresh_moved_viewer(src)
+	los_refresh_moved_viewer(src, TRUE)
 	#endif
 	return TRUE
 
@@ -221,7 +221,7 @@
 	loc = destination
 	#if CIV13_ROOT_TREE_PRESENTATION
 	los_invalidate(src)
-	los_refresh_moved_viewer(src)
+	los_refresh_moved_viewer(src, TRUE)
 	#endif
 	return TRUE
 

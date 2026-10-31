@@ -36,7 +36,7 @@ class Preparation(unittest.TestCase):
                 else:
                     self.assertIn('if(FALSE)',text)
                     self.assertNotIn('context.decision_snapshot(',text)
-                    self.assertIn('S = context.capture()',text);self.assertIn('I.plane = ROOT_TREE_PLANE',text)
+                    self.assertIn('S = context.capture(TRUE)',text);self.assertIn('I.plane = ROOT_TREE_PLANE',text)
                     env=projection.environment();env.update(LOS_DENY=0)
                     c=N(decision_snapshot=lambda *a:0)
                     t=projection.tree()

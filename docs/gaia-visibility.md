@@ -1,5 +1,42 @@
 # Gaia geometric visibility and root-owned tree presentation
 
+## Mouse routing correction (2026-10-31)
+
+The game/tree compositor uses hidden render targets. Its interactive relay
+chain must opt into `PASS_MOUSE`, with mouse-transparent plane masters at 1
+(children retain their own mouse opacity), rather than plane-wide input at 0.
+Only game/tree relays opt in; mask, roof and weather copies remain inert.
+This preserves the original atom for hover, clicks and native context menus,
+including human visible names, without inventing targets in server hover code.
+Withdrawn tree images keep mouse opacity 0 and blank appearances.
+See the [BYOND render-source reference](https://www.byond.com/docs/ref/info.html#/atom/var/render_source).
+Source/model tests verify the routing flags; actual mouse priority, popup lists,
+and client pixels remain native acceptance items.
+
+## Player movement cadence (2026-10-31)
+
+Player-driven presentation uses tile-centered eyes and human target footprints.
+Transparent connected players' offset-only movement attempts leave that display
+snapshot intact; both the movement callback and scheduled presentation identity
+ignore their step offsets. A tile transition refreshes the moving viewer and
+nearby viewers before the movement callback returns. Explicit relocations keep
+their forced refresh, including relocation within one tile.
+
+This deliberately makes the geometric display boundary advance at native tile
+transitions while sprites continue smooth movement. Fresh hover/examine reads
+still capture physical eye/target offsets and retain the full stale-snapshot
+guard; presentation identity is not their authorization identity. Opaque movers
+and blockers keep physical offsets. Door/wall invalidation, vision/FOV and body/
+client changes, reconstruction guards, and the periodic raw-writer audit remain
+active independently of player movement. A turn or audit can therefore still
+refresh presentation while a player remains on the same tile.
+
+Source-derived movement and geometry projections cover offset pulses, tile and
+z transitions, forced relocation, nearby versus distant viewers, and a character
+entering a denied tile. Omission controls demonstrate offset recapture and stale
+neighbor presentation when their respective guards are removed. These checks
+do not establish engine scheduling, native mouse priority, or client pixels.
+
 ## Scope and current evidence
 
 The October 30 request is to make LOS and oversized-tree lighting enabled by
