@@ -473,31 +473,6 @@ jobs:
           bash ./scripts/travis_pre_byond.sh 2>&1 | tee .ci/compile/bootstrap.log
         shell: bash
 
-      # Temporary integration evidence only; no DreamDaemon or client invocation.
-      - name: Focused fine-offset offline contracts after integration compile
-        id: fine_integration
-        if: github.ref == 'refs/heads/ci/los-fine-integration-20261031' && steps.compile.outcome == 'success'
-        timeout-minutes: 2
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .ci/fine-integration
-          git rev-parse HEAD 'HEAD^{tree}' > .ci/fine-integration/commit-tree.txt
-          git diff --binary HEAD > .ci/fine-integration/source-before.patch
-          python3 -B tests/human_subtile/test_fine_offset.py 2>&1 | tee .ci/fine-integration/offline.log
-          sha256sum civ13.dmb civ13.rsc > .ci/fine-integration/compiled.sha256
-          git diff --binary HEAD > .ci/fine-integration/source-after.patch
-          printf '%s\n' 'Native runtime, real-client Alt/repeat/focus, combined save/load and FPS: NOT RUN' > .ci/fine-integration/limits.txt
-      - name: Retain focused integration evidence including failure
-        if: always() && github.ref == 'refs/heads/ci/los-fine-integration-20261031'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: fine-integration-${{ github.sha }}-${{ github.run_id }}
-          path: .ci/fine-integration/
-          include-hidden-files: true
-          retention-days: 7
-          if-no-files-found: warn
-
       # Compile-only candidate fixture. Never invoke DreamDaemon or the DMB.
       - name: Compile exact Gaia visibility fixture without running it
         id: gaia_fixture_compile
@@ -2533,3 +2508,12 @@ jobs:
           path: .ci/aggregate/
           retention-days: 7
           if-no-files-found: error
+
+  fine-integration-offline:
+    needs: build
+    if: github.ref == 'refs/heads/ci/los-fine-integration-20261031' && needs.build.result == 'success'
+    uses: ./.github/workflows/fine-integration-offline.yml
+    with:
+      expected_head: ${{ github.sha }}
+    permissions:
+      contents: read
