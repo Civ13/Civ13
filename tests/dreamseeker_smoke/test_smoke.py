@@ -727,19 +727,34 @@ class LocalRunOrchestrationContracts(unittest.TestCase):
         self.assertEqual(record['receipt']['result'], 'FAIL; receipt finalization unconfirmed')
 
     def test_receipt_write_failures_do_not_replace_primary_or_skip_cleanup(self):
-        original = Path.write_text
+        original = run.terminal_receipt.atomic_write
         attempts = []
         def failed_receipt(path, *args, **kwargs):
             if path.name == 'receipt.json':
                 attempts.append(path)
                 raise OSError('injected diagnostic receipt write failure')
             return original(path, *args, **kwargs)
-        with patch.object(Path, 'write_text', failed_receipt):
+        with patch.object(run.terminal_receipt, 'atomic_write', failed_receipt):
             record = self.invoke()
         self.assertEqual(str(record['error']), 'primary capture failure')
         self.assertEqual([p for p, _ in record['cleanup']], ['client', 'server', 'compile'])
         self.assertEqual(len(attempts), 2)
         self.assertTrue(any('receipt write failure' in note for note in record['error'].__notes__))
+
+    def test_terminal_overflow_preserves_primary_cleanup_and_core_witnesses(self):
+        with patch.dict(run.VENDOR, oversized_diagnostic='x' * 65536):
+            record = self.invoke()
+        self.assertEqual(str(record['error']), 'primary capture failure')
+        self.assertLess((self.output/'receipt.json').stat().st_size, 65536)
+        self.assertEqual(record['receipt']['result'], 'FAIL; receipt finalization unconfirmed')
+        self.assertFalse(record['receipt']['terminal_committed'])
+        self.assertEqual(record['receipt']['error'], 'primary capture failure')
+        self.assertEqual([row['phase'] for row in record['receipt']['cleanup']], ['client','server','compile'])
+        self.assertTrue(all(row['all_exited'] for row in record['receipt']['cleanup']))
+        for name in ('cleanup-receipt.json','source-receipt.json','capture-receipt.json'):
+            self.assertTrue((self.output/name).is_file(), name)
+            self.assertLess((self.output/name).stat().st_size, 65536)
+        self.assertTrue(any('cap exceeded' in note for note in record['error'].__notes__))
 
 
 class BudgetContracts(unittest.TestCase):
