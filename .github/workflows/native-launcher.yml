@@ -4,6 +4,7 @@ on:
     branches: [master]
     paths:
       - tools/opendream-client/native/**
+      - tools/server-management/Core/**
       - tools/byond/version.json
       - tools/opendream-client/channel.json
       - .github/workflows/native-launcher.yml
@@ -34,6 +35,9 @@ jobs:
       - name: Build self-contained executable and check startup
         shell: pwsh
         run: ./tools/opendream-client/native/Build.ps1 -Dotnet (Get-Command dotnet).Source -Python (Get-Command python).Source
+      - name: Verify packaged registered-instance command with a synthetic catalog
+        shell: pwsh
+        run: ./tools/opendream-client/native/tests/registered-instances-packaged.ps1 -Executable ./tools/opendream-client/native/publish/Civ13.exe -FixtureParent $env:RUNNER_TEMP
       - name: Isolated updater contracts and actual executable replacement
         shell: pwsh
         run: |
