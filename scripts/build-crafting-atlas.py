@@ -100,7 +100,7 @@ for p,s in files.items():
             joint=joinery.get(n)
             tool_notes=''
             if b == '/obj/structure/grinder/constructed':
-                tool_notes += ' This is a base duration scaled by strength and crafting; no new grinder skill threshold. Making circuits requires crafting coefficient >= 2.2 with copper and iron; costs are nominal with existing bulk discounts. Construction admission needs the full listed amount before any Production discount. No dismantling or material refund; disconnect and unanchor to relocate. Global catalog only; map reachability unverified.'
+                tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
             if n.startswith('joinery: '):
                 if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
                     raise ValueError('Joinery recipe contract drift: '+n)

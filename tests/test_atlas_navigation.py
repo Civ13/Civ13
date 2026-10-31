@@ -34,6 +34,8 @@ class AtlasNavigationTests(unittest.TestCase):
         self.assertEqual(producer['inputs'], ['/material/wood'])
         self.assertIn('Five logs produce one abstract batch', producer['conditions'])
         self.assertIn('wizard_boy.dmm', producer['map_notes'])
+        self.assertIn('Mapped base grinder:', producer['era'])
+        self.assertIn('Constructed variant: Electricity', producer['era'])
         self.assertEqual(consumer['inputs'], [chips])
         self.assertEqual(consumer['outputs'], [])
         self.assertIn('five existing oven fuel units', consumer['steps'][1])
@@ -65,7 +67,7 @@ class AtlasNavigationTests(unittest.TestCase):
         self.assertEqual(recipe['unlock_eras'], [5])
         self.assertEqual(recipe['maximum_era'], 8)
         self.assertEqual(self.catalog['resources'][kind]['name'], 'wood grinder')
-        for note in ('base duration scaled', 'coefficient >= 2.2', 'nominal', 'full listed amount', 'No dismantling'):
+        for note in ('Scaled base time', 'coefficient >= 2.2', 'nominal', 'full listed amount', 'No dismantling'):
             self.assertIn(note, recipe['conditions'])
         route, = self.catalog['acquisition'][kind]
         self.assertEqual(route['outputs'], [])  # Details for the real recipe, no duplicate build route.

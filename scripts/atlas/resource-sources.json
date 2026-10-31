@@ -15179,7 +15179,7 @@
       ],
       "conditions": "Five logs produce one abstract batch containing five log units of feedstock, not a physical yield measurement. Ten batches per stack. Power/ownership/input checks must succeed at completion; observed power loss or cancellation gives no output. Chips cannot replace logs in crafting or convert back to logs.",
       "map_notes": "Wizard Boy retains its mapped base grinder in maps/special/wizard_boy.dmm and its camp catalog. The global catalog can build a constructed wood grinder under Electricity; no recipe in camp, Carib or species overrides and no map-level resource reachability guarantee.",
-      "era": "No new era/research gate; grinder acquisition remains map-dependent.",
+      "era": "Mapped base grinder: no added machine research gate. Constructed variant: Electricity node (era tier 5), maximum recipe era 8; existing baseline grants apply.",
       "status": "Source-reviewed candidate; offline transaction checks passed; native gameplay and save/load unverified"
     },
     {
