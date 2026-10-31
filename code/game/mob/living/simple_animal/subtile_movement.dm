@@ -912,7 +912,7 @@
 	try
 		allowed = obstacle.CheckExit(actor, destination, direction)
 	catch (var/exception/large_exit_error)
-		if (active && !faulted)
+		if (!faulted)
 			faulted = TRUE
 			fault = large_exit_error
 		checking = FALSE

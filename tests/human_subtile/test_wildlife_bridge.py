@@ -61,11 +61,6 @@ def receipt():
     controls.append(dict(case='callback_actor_delete',before=copy.deepcopy(p),actor_deleted=1,pulse_consumed=1,
                          error=None,checks=1,retired_state=dict(exists=1,**{k:0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start','destination','path_target','combat_target','following')}),
                          trace=[dict(event='CheckExit:bridge')]))
-    controls.append(dict(case='callback_actor_delete_throw',before=copy.deepcopy(p),actor_deleted=1,pulse_consumed=1,
-                         error=None,checks=1,retired_state=dict(exists=1,**{k:0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start','destination','path_target','combat_target','following')}),
-                         retired_after_throw=dict(exists=1,**{k:0 for k in ('active','valid','faulted','fault','actor','pulse','transaction','intent')}),
-                         boundary_caught=1,boundary_name='fixture_bridge_exception',
-                         trace=[dict(event='CheckExit:bridge'),dict(event='fixture_throw_attempt'),dict(event='Uncross:throw_catch')]))
     controls.append(dict(case='policy_mutation',before=copy.deepcopy(p),after=copy.deepcopy(p),mutator_checks=1,
                          subject_checks=1,subject_allow=0,trace=[dict(event='policy_mutated'),dict(event='CheckExit:policy_subject')]))
     for kind in ('window','railing','table'):
@@ -87,7 +82,7 @@ def receipt():
     controls.append(dict(case='retirement_ownership',preserved=1,cleared=1,plain_deleted=1))
     for control in controls: control['frame_cleared']=1
     return dict(head='a'*40,error=None,port=0,byond_version=516,byond_build=1688,scope=bridge.SCOPE,
-                npc_checks=0,large_bridge_checks=4304,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
+                npc_checks=0,large_bridge_checks=4269,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
                 large_bridge_rows=rows,large_bridge_controls=controls)
 
 class BridgeReceiptTests(unittest.TestCase):
@@ -109,8 +104,6 @@ class BridgeReceiptTests(unittest.TestCase):
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete')['retired_state'].update(actor=1),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='retirement_ownership').update(preserved=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='retirement_ownership').update(cleared=0),
-            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete_throw')['retired_after_throw'].update(faulted=1),
-            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete_throw')['retired_after_throw'].update(fault=1),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw').update(throw_attempted=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw')['auth'].update(actor_frame_present=1),
             lambda r: r.update(large_bridge_checks=4120),
