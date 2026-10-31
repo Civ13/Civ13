@@ -899,6 +899,7 @@ class GrinderAcquisition(unittest.TestCase):
     def test_subtype_only_changes_dismantling_flag_and_blocks_generic_salvage(self):
         block = SOURCE.split(CONSTRUCTED + '\n', 1)[1].split('\n/', 1)[0]
         self.assertEqual([line.strip() for line in block.splitlines() if line.strip()], ['not_disassemblable = TRUE'])
+        self.assertNotIn(CONSTRUCTED + '/', SOURCE)  # No lifecycle/refund/processing overrides.
         self.assertFalse(grinder_initials(MACHINE)['not_disassemblable'])
         p = Projection(STRUCTURE_SOURCE)
         item = Record(type='/obj/item/weapon/hammer')

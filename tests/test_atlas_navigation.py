@@ -38,7 +38,9 @@ class AtlasNavigationTests(unittest.TestCase):
         self.assertEqual(consumer['outputs'], [])
         self.assertIn('five existing oven fuel units', consumer['steps'][1])
         self.assertIn('native', consumer['status'])
-        self.assertTrue(producer['audit_commit'] == consumer['audit_commit'])
+        # Acquisition notes and the unchanged fuel route have separate reviews.
+        for route in (producer, consumer):
+            self.assertRegex(route['audit_commit'], r'^[0-9a-f]{40}$')
         self.assertFalse(any('/material/wood' in r['outputs'] for r in routes))
 
     def test_era_order_and_unknown_are_explicit(self):
@@ -51,6 +53,24 @@ class AtlasNavigationTests(unittest.TestCase):
         modern = [r for r in recipes if 'Minimum era Modern' in r['conditions']]
         self.assertTrue(modern)
         self.assertTrue(all(r['unlock_eras'] == [8] for r in modern))
+
+    def test_constructed_grinder_has_exact_global_gate_and_prerequisite_notes(self):
+        kind = '/obj/structure/grinder/constructed'
+        recipes = [r for r in self.catalog['recipes'] if r['name'] == 'wood grinder']
+        self.assertEqual(len(recipes), 1)
+        recipe = recipes[0]
+        self.assertEqual(recipe['kind'], 'Material / global')
+        self.assertEqual([(i['id'], i['quantity']) for i in recipe['inputs']], [('/material/electronics', '20')])
+        self.assertEqual([(i['id'], i['quantity']) for i in recipe['outputs']], [(kind, '1')])
+        self.assertEqual(recipe['unlock_eras'], [5])
+        self.assertEqual(recipe['maximum_era'], 8)
+        for note in ('base duration scaled', 'coefficient >= 2.2', 'nominal', 'full listed amount', 'No dismantling'):
+            self.assertIn(note, recipe['conditions'])
+        route, = self.catalog['acquisition'][kind]
+        self.assertEqual(route['outputs'], [])  # Details for the real recipe, no duplicate build route.
+        self.assertIn('global catalog', route['conditions'])
+        self.assertIn('Wizard Boy', route['map_notes'])
+        self.assertNotIn('/obj/structure/grinder', self.catalog['acquisition'])
 
     def test_multiple_research_eras_and_expiry_negative_control(self):
         nodes = 'new /datum/research_node("a", "A", "I", 10, 0, MODE, null, 1)\nnew /datum/research_node("b", "B", "I", 10, 0, MODE, null, 4)\n"/obj/a" = "a"\n"/obj/b" = "b"'

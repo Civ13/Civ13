@@ -15160,8 +15160,8 @@
     {
       "name": "Grind logs into chip batches",
       "file": "code/modules/reagents/Chemistry-Machinery.dm",
-      "line": 724,
-      "source_commit": "283beab622e1b721210168cacccc2bf377d7d6d5",
+      "line": 728,
+      "source_commit": "aa4281a14a2d440f0319e9b86c876e671aeb3611",
       "inputs": [
         "/obj/item/stack/material/wood"
       ],
@@ -15169,7 +15169,8 @@
         "/obj/item/stack/wood_chips"
       ],
       "tools": [
-        "/obj/structure/grinder"
+        "/obj/structure/grinder",
+        "constructed wood grinder (global catalog)"
       ],
       "steps": [
         "Anchor the powered grinder, insert at least five whole raw logs and start it.",
@@ -15177,7 +15178,7 @@
         "Hold the chips and apply them to an adjacent oven-family structure to refuel it."
       ],
       "conditions": "Five logs produce one abstract batch containing five log units of feedstock, not a physical yield measurement. Ten batches per stack. Power/ownership/input checks must succeed at completion; observed power loss or cancellation gives no output. Chips cannot replace logs in crafting or convert back to logs.",
-      "map_notes": "Existing placement in maps/special/wizard_boy.dmm; no grinder construction recipe or broader map availability established.",
+      "map_notes": "Wizard Boy retains its mapped base grinder in maps/special/wizard_boy.dmm and its camp catalog. The global catalog can build a constructed wood grinder under Electricity; no recipe in camp, Carib or species overrides and no map-level resource reachability guarantee.",
       "era": "No new era/research gate; grinder acquisition remains map-dependent.",
       "status": "Source-reviewed candidate; offline transaction checks passed; native gameplay and save/load unverified"
     },
@@ -15204,6 +15205,33 @@
       "map_notes": "Requires an accessible existing oven-family structure and chip stock; no map-level reachability guarantee.",
       "era": "No new fuel-specific era/research gate; station availability remains separate.",
       "status": "Source-reviewed candidate; offline raw-log parity checks passed; native burn and save/load unverified"
+    },
+    {
+      "name": "Use a constructed wood grinder",
+      "file": "config/crafting/material_recipes_global.txt",
+      "line": 406,
+      "source_commit": "aa4281a14a2d440f0319e9b86c876e671aeb3611",
+      "inputs": [
+        "/obj/structure/grinder/constructed"
+      ],
+      "outputs": [],
+      "related_resources": [
+        "/obj/structure/grinder/constructed"
+      ],
+      "tools": [
+        "wrench",
+        "paid cable run",
+        "30 available cable capacity"
+      ],
+      "steps": [
+        "Build the wood grinder from a required 20 electronics; ordinary debit is 20 and Production debit is 18.",
+        "Anchor the initially empty, off machine, connect paid cable supply and insert at least five raw logs.",
+        "To relocate, remove cables and unfasten it; constructed machines cannot be dismantled for materials."
+      ],
+      "conditions": "Existing global catalog only; Electricity completed or supplied by baseline-era rules. Base 120-ds construction time is scaled by strength and crafting. No new grinder skill gate. Circuit crafting requires coefficient >= 2.2 plus copper and iron; input costs are nominal because bulk discounts apply. All grinder transaction and chip/fuel behavior is inherited unchanged.",
+      "map_notes": "Wizard Boy mapped base grinder and camp catalog unchanged; no new Carib, camp or species recipe. Existing steam engine plus two lit heatsources is a source-backed 30-capacity option, not a native or full-map guarantee.",
+      "era": "Electricity node era tier 5, minimum bench tier 4, Steam Power prerequisite and cable prototype; maximum recipe era 8. No new calendar-year/minimum-era gate.",
+      "status": "Source-reviewed candidate; offline acquisition checks passed; native construction, inventory, power network and save/load unverified"
     }
   ],
   "mechanism_overview": [
