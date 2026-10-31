@@ -1,7 +1,10 @@
 # Civ13 tgui migration proposal
 
-Research date: 2026-10-30. This document starts a draft implementation PR;
-checkboxes are acceptance criteria, not claims of completed work.
+Research date: 2026-10-30. The proposal and implementation sequence below
+preserve the original decisions. Implementation is published in PR #3427;
+the dated evidence appendix distinguishes verified source/browser checks from
+remaining native acceptance. Checkboxes remain acceptance criteria, not an
+independent verification record.
 
 ## Pinned evidence and scope
 
@@ -148,29 +151,54 @@ Toolchain references: [Node supported releases](https://nodejs.org/en/about/prev
 [upstream Rspack browser target](https://github.com/tgstation/tgstation/blob/bf6f771a1e221e06938978e36bbaf78543f85ebe/tgui/rspack.config.ts),
 [tgui-core component library](https://github.com/tgstation/tgui-core).
 
-## Implementation evidence (2026-10-30, local work pending publication)
+## Implementation evidence (reconciled 2026-10-31)
 
-The adapter and all ten React/tgui-core screens have been implemented in the
-isolated cloud checkout. The first implementation commit is local only until
-publication authorization is resolved; the public draft currently contains this
-proposal, not a claim of completed implementation or passed implementation CI.
+The adapter and all ten React/tgui-core screens are published in
+[PR #3427](https://github.com/Civ13/Civ13/pull/3427), reviewed source head
+`53ac7726baefa4ff24aef969a9e6a9cdba4cb101` on `codex/tgui-upgrade`.
+The original local-only/publication-pending status is superseded. The PR remains
+a draft at this evidence checkpoint; no merge, deployment or activation is claimed.
 
-Local checks: TypeScript, production Rspack build, 16 component/state tests,
-eight backend source-contract tests, and executable ES5 bootstrap tests pass.
-A second smoke executes the production bundle with real React/tgui-core in
-JSDOM, rendering all ten routes and checking action/read-only/text/fallback
-wiring. These source/DOM checks are not native gameplay or pixel validation.
+[Actual-head frontend CI](https://github.com/Civ13/Civ13/actions/runs/41096667753/job/124204083942)
+passed TypeScript, the production Rspack build, 16 component/state tests,
+eight backend source-contract tests, executable ES5 bootstrap checks,
+production-bundle JSDOM smoke, generated-asset consistency and Chromium
+interaction smoke. JSDOM renders all ten routes with real React/tgui-core.
+[BYOND 516.1688 compilation](https://github.com/Civ13/Civ13/actions/runs/41096667959/job/124204352194)
+passed with zero errors and zero warnings; the
+[required aggregate](https://github.com/Civ13/Civ13/actions/runs/41096667959/job/124204908442)
+passed. Skipped/path-filtered jobs do not add runtime coverage.
+
+The initial local Chromium attempt was blocked by cloud process/socket limits.
+The later hosted Chromium success above supersedes that pending-browser status;
+it does not establish native transport. `tgui/scripts/browser-smoke.mjs`
+substitutes `window.Civ13Tgui` and observes synthetic ready/action/update wiring.
+It does not execute BYOND `Topic`, the native asset cache or a classic-window reopen.
+
+[Four QA-reviewed Chrome previews](https://github.com/Civ13/Civ13/pull/3427#issuecomment-6528744788)
+show research, faction creation, chemistry and warehouse using fictional data.
+Reuse the [gallery and provenance](screenshots/README.md): captures came from
+`9bc71d86c38a1560bd3c23e80acacd7ba6a1c282` with unchanged production assets,
+and were committed at the reviewed head. These are cloud browser screenshots,
+not native BYOND/OpenDream screenshots or acceptance of all ten screens.
+
 Independent review found a research ancestor-highlighting mismatch and a
 bootstrap-outage fallback gap; both were corrected with focused regressions.
 The migrated close callback checks its owning client and the early update queue
 is bounded. Unused management actions are not exposed through the bridge.
+This records those fixes, not completion of every independent review criterion.
+Unused legacy PC/map layout hooks are outside the completed ten-screen scope;
+the proposed layout conversion above does not claim they were all ported.
 
-Real local Chromium smoke could not start: the cloud shell sandbox prevents
-Chromium process sockets; escalation failed at environment setup. No denied
-filesystem path was read or modified. A scoped CI workflow is prepared to run
-that smoke with the runner's existing Chrome, alongside generated-asset
-consistency and source tests. Hosted implementation CI, native compilation and
-BYOND/OpenDream graphical acceptance remain pending/not run, not green.
+Native BYOND 516.1688 acceptance is **not run**: actual ready -> snapshot ->
+action -> update delivery, automatic/manual fallback and classic reopen,
+cold/warm cache, focus, close/logout/mob transfer, stale generations and
+multi-chunk faction stroke/undo ordering remain unverified. Compilation and
+browser results do not prove these behaviors. OpenDream compatibility is also
+unverified and is not included in the native plan. See the bounded
+[native acceptance scene plan](native-acceptance.md), which prepares future work
+without launching a compiler, daemon or client. Current-master integration
+requires reconciliation and refreshed evidence if implementation bytes change.
 
 A dependency audit found development-tool advisories in an initial test-runner
 pin and unnecessary Rspack CLI development-server dependencies. The follow-on
