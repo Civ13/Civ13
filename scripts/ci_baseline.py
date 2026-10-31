@@ -25,6 +25,18 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Full import graph: stdlib source/catalog checks plus the adjacent inert
+    # test_foundations specification helper. No native runner or network import.
+    # Shared production sources retain their conservative all-suite fallback.
+    'character_traits': {'files': ('tests/character_traits/test_foundations.py',
+                                   'tests/character_traits/test_random.py'),
+        'paths': ('tests/character_traits/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/traits.dm',
+            'code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm',
+            'code/modules/client/preferencesSQLite/preferences.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm')},
     # Source-only pointer inventory/hooks and injected alert counter. Imports are
     # stdlib plus the existing inert save-movement projection, and the link test
     # imports the cross-level runner only to stage files; no native launch.
@@ -343,9 +355,9 @@ def load_selection(path, head, base, selection_attempt=None):
 def run_unit(name, output):
     """Child interpreter emits counts so zero tests or unittest skips cannot pass."""
     suite = unittest.TestSuite()
-    # This reviewed suite imports its adjacent, source-only projection adapter.
-    if name == 'save_movement':
-        sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+    # These reviewed suites import adjacent, source-only specification helpers.
+    if name in ('save_movement', 'character_traits'):
+        sys.path.insert(0, str(ROOT / 'tests' / name))
     for index, relative in enumerate(SUITES[name]['files']):
         path = ROOT / relative
         spec = importlib.util.spec_from_file_location(f'baseline_{name}_{index}', path)

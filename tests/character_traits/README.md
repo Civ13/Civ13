@@ -89,3 +89,12 @@ model, **not execution of the DM implementation**; source contracts tie its
 intended algorithm and commit guards to production. Native compilation, actual
 BYOND RNG/list behavior, client refresh and real preference serialization remain
 separate verification work.
+
+Normal CI registers both `test_foundations.py` and `test_random.py` in the
+reviewed `character_traits` offline baseline suite. Changes under this test
+directory select that suite; its six shared production inputs keep the existing
+conservative all-suite fallback. The existing required aggregate rejects a failed
+or skipped selected suite. `tests/test_ci_baseline.py` runs the actual registered
+child in temporary offline storage, then removes the exact-zero commit guard in
+that copied source and verifies failure propagates through baseline and aggregate.
+This registration adds no native fixture, workflow permission or admission gate.

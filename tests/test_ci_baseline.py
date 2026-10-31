@@ -53,6 +53,109 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_character_traits_registration_and_shared_source_fallback(self):
+        suite = ci.SUITES['character_traits']
+        self.assertEqual(suite['files'], ('tests/character_traits/test_foundations.py',
+                                         'tests/character_traits/test_random.py'))
+        self.assertEqual(suite['paths'], ('tests/character_traits/',))
+        self.assertFalse(suite.get('always', False))
+        for path in (*suite['files'], 'tests/character_traits/README.md'):
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'character_traits'})
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+        expected_sources = {
+            'code/game/mob/living/carbon/human/traits.dm',
+            'code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm',
+            'code/modules/client/preferencesSQLite/preferences.dm',
+            'code/modules/client/preferencesSQLite/preferences_saving&loading&del.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm',
+        }
+        self.assertEqual(set(suite['shared_paths']), expected_sources)
+        for path in expected_sources:
+            with self.subTest(shared=path):
+                self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+        for path, imports, from_imports in (
+            (suite['files'][0], {'re', 'unittest'}, {'pathlib'}),
+            (suite['files'][1], {'random', 'unittest'}, {'test_foundations'}),
+        ):
+            tree = ast.parse((ROOT / path).read_text())
+            self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
+                              for alias in node.names}, imports)
+            self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}, from_imports)
+
+    def test_failing_character_traits_child_fails_baseline_and_required_aggregate(self):
+        # Run the actual registered child on copied production inputs. Only the
+        # unrelated mandatory suites use passing adapters to avoid recursion.
+        suite_name = 'character_traits'
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+                             'tools/byond/version.json', *ci.SUITES[suite_name]['files'],
+                             *ci.SUITES[suite_name]['shared_paths']):
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, destination)
+
+            def git(*args):
+                return subprocess.check_output(['git', '-C', temporary, *args],
+                                               stderr=subprocess.PIPE, timeout=10).decode().strip()
+
+            git('init')
+            git('config', 'user.name', 'Trait CI fixture')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('add', '.')
+            git('commit', '-qm', 'passing trait CI fixture')
+            real_run = ci.subprocess.run
+
+            def child(command, **kwargs):
+                if 'unit' not in command:
+                    return real_run(command, **kwargs)
+                if command[command.index('--suite') + 1] == suite_name:
+                    command = list(command)
+                    command[2] = str(root / 'scripts/ci_baseline.py')
+                    return real_run(command, **(kwargs | {'cwd': root}))
+                ci.write_json(command[command.index('--output') + 1], dict(
+                    status='passed', tests=1, errors=0, failures=0, skipped=0))
+                return subprocess.CompletedProcess(command, 0)
+
+            for failing in (False, True):
+                with self.subTest(failing=failing):
+                    if failing:
+                        # Mutate only the isolated copy: the selected real test
+                        # must fail when the zero-total commit guard is removed.
+                        target = root / ci.SUITES[suite_name]['shared_paths'][1]
+                        target.write_text(target.read_text().replace('check_trait_points(candidate) != 0', 'FALSE'))
+                        git('add', '.')
+                        git('commit', '-qm', 'isolated missing zero-total guard control')
+                    plan, _, compiler, jobs = fixtures(('tests/character_traits/test_random.py',))
+                    plan['head'] = compiler['head'] = git('rev-parse', 'HEAD')
+                    compiler['selection_sha256'] = ci.digest(plan)
+                    evidence = root / ('negative' if failing else 'positive')
+                    with patch.object(ci, 'ROOT', root), patch.object(ci.subprocess, 'run', side_effect=child), \
+                            patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '1'}), patch('builtins.print'):
+                        exit_code = ci.execute(plan, evidence)
+                    baseline = json.loads((evidence / 'baseline.json').read_text())
+                    traits = baseline['suites'][suite_name]
+                    self.assertEqual(exit_code, int(failing))
+                    self.assertEqual(baseline['status'], 'failed' if failing else 'passed')
+                    self.assertTrue(baseline['source_unchanged'])
+                    self.assertFalse(baseline['tracked_dirty'])
+                    self.assertFalse(baseline['tracked_dirty_after'])
+                    self.assertEqual(traits['exit_code'], int(failing))
+                    self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
+                        tests=16, failures=int(failing), errors=0, skipped=0))
+                    self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
+                    errors = ci.aggregate(plan, baseline, compiler, jobs, False)
+                    if failing:
+                        self.assertIn('check_trait_points(candidate) != 0', (evidence / 'character_traits.log').read_text())
+                        self.assertIn('Baseline did not pass', errors)
+                        self.assertIn('Missing, failed or unexpectedly skipped suite: character_traits', errors)
+                        self.assertIn('Incomplete test execution: character_traits', errors)
+                    else:
+                        self.assertEqual(errors, [])
+
     def test_grinder_registration_preserves_shared_source_fallback(self):
         suite = ci.SUITES['grinder']
         self.assertEqual(suite['files'], ('tests/grinder/test_transaction.py',))
