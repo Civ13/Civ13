@@ -347,6 +347,45 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	log_admin("[key_name(src)] cleaned [I] at [get_turf(I)]")
 	message_admins("[key_name_admin(src)] cleaned [I] at [get_turf(I)]", key_name_admin(src))
 
+/client/proc/cmd_admin_clean_player(mob/living/human/H as mob in mob_list)
+	set category = "Admin"
+	set name = "Clean Player"
+	set desc = "Restore hygiene and remove dirt and fleas from worn suit, uniform and shoes; preserve forensic stains."
+
+	if (!check_rights(R_ADMIN, TRUE, src))
+		return
+	if (!istype(H) || QDELETED(H) || H.gcDestroyed || !H.loc)
+		return
+
+	H.set_hygiene(HYGIENE_LEVEL_CLEAN)
+	// These are the clothing slots examined by handle_hygiene(). Do not wash
+	// blood, radiation or reagents, or invoke its aging/disease side effects.
+	for (var/obj/item/clothing/C in list(H.wear_suit, H.w_uniform, H.shoes))
+		if (C && !QDELETED(C) && !C.gcDestroyed && C.loc == H)
+			C.dirtyness = 0
+			C.fleas = FALSE
+	H.overlays_standing[27] = null
+	H.update_icons()
+
+	log_admin("[key_name(src)] restored hygiene for [key_name(H)]")
+	message_admins("[key_name_admin(src)] restored hygiene for [key_name_admin(H)]", key_name_admin(src))
+
+/client/proc/cmd_admin_restore_mood(mob/living/human/H as mob in mob_list)
+	set category = "Admin"
+	set name = "Restore Mood"
+	set desc = "Restore baseline morale without healing or removing existing mood boosts."
+
+	if (!check_rights(R_ADMIN, TRUE, src))
+		return
+	if (!istype(H) || QDELETED(H) || H.gcDestroyed || !H.loc)
+		return
+
+	H.mood = max(H.mood, initial(H.mood))
+	H.handle_mood()
+
+	log_admin("[key_name(src)] restored mood for [key_name(H)]")
+	message_admins("[key_name_admin(src)] restored mood for [key_name_admin(H)]", key_name_admin(src))
+
 /client/proc/cmd_admin_delete(atom/O as obj|mob|turf in range(7))
 	set category = "Admin"
 	set name = "Delete"
