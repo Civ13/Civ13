@@ -3,6 +3,7 @@
 /datum/category_item/player_setup_item/general/basic
 	name = "Basic"
 	sort_order = 1
+	var/tmp/trait_random_revision = 0
 
 /datum/category_item/player_setup_item/general/basic/sanitize_character()
 	var/list/valid_player_genders = list(MALE, FEMALE)
@@ -65,10 +66,11 @@
 		. += "<b>Always Randomize Name:</b> <a href='?src=\ref[src];always_random_name=1'>[pref.be_random_name ? "Yes" : "No"]</a><br><br>"
 		. += "<b>Traits: ([check_trait_points(pref.traits)])</b><br>"
 		. += "<i>(The sum of trait values has to be less or equal to <b>0</b>)</i><br>"
-		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a><br><br>"
+		trait_random_revision++
+		. += "<a href='?src=\ref[src];add_traits=1'>Add</a> <a href='?src=\ref[src];remove_traits=1'>Remove</a> <a href='?src=\ref[src];random_traits=[trait_random_revision]'>Random</a> (total 0)<br><br>"
 		var/trait_error = get_trait_selection_error(pref.traits)
 		if (trait_error)
-			. += "<b>[html_encode(trait_error)]</b><br>Saved choices are preserved until you remove them.<br>"
+			. += "<b>[html_encode(trait_error)]</b><br>Saved choices are preserved until you remove or randomize them.<br>"
 		if (islist(pref.traits))
 			for (var/choice in pref.traits)
 				var/list/definition = istext(choice) ? trait_list[choice] : null
@@ -116,6 +118,24 @@
 			pref.cursor = 'icons/effects/green_cursors.dmi'
 		else
 			pref.cursor = null
+		pref.save_preferences()
+		return TOPIC_REFRESH
+
+	else if (!isnull(href_list["random_traits"]))
+		// Only the owning preferences session and its latest rendered link may act.
+		if (!user || !user.client || user != preference_mob() || user.client.prefs != pref || !CanUseTopic(user))
+			return TOPIC_NOACTION
+		if (!trait_random_revision || !istext(href_list["random_traits"]) || href_list["random_traits"] != "[trait_random_revision]")
+			return TOPIC_NOACTION
+		trait_random_revision++ // Consume before generating; copied/old links cannot replay.
+		var/list/candidate = random_zero_point_traits()
+		if (!islist(candidate) || !candidate.len || get_trait_selection_error(candidate) || check_trait_points(candidate) != 0)
+			to_chat(user, "<span class='warning'>No nonempty zero-point trait combination was found. Your choices have been kept. You can try Random again.</span>")
+			return TOPIC_REFRESH
+		// No prompts or sleeps between admission, generation and this atomic swap.
+		if (!user.client || user != preference_mob() || user.client.prefs != pref || !CanUseTopic(user))
+			return TOPIC_NOACTION
+		pref.traits = candidate
 		pref.save_preferences()
 		return TOPIC_REFRESH
 
