@@ -27,6 +27,9 @@ GLOBAL_DATUM_INIT(moved_event, /decl/observ/moved, new)
 
 /atom/Entered(var/atom/movable/am, var/atom/old_loc)
 	. = ..()
+	if(old_loc)
+		los_invalidate(old_loc, am.opacity)
+	los_invalidate(am)
 	GLOB.moved_event.raise_event(am, old_loc, am.loc)
 
 /atom/movable/Entered(var/atom/movable/am, atom/old_loc)

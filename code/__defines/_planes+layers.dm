@@ -53,14 +53,17 @@ What is the naming convention for planes or layers?
 #define HUD_PLANE 15
 
 #define LIGHTING_PLANE 3
-// Experimental renderer remains disabled until native pixel acceptance.
+// Production composition; compile-time opt-out remains available for rollback.
 #ifndef LIGHTING_COMPOSITION_V2
-#define LIGHTING_COMPOSITION_V2 0
+#define LIGHTING_COMPOSITION_V2 1
 #endif
 #define LIGHTING_MASK_PLANE 4
-// Plane5 remains available for the separate geometric cell presentation lane.
+// Root composition replays the captured mask here, avoiding a source feedback loop.
+#define ROOT_FLOOR_LIGHT_PLANE 5
 #define ROOT_TREE_PLANE 6
-#define ROOT_WEATHER_PLANE 7
+#define ROOT_SCENE_PLANE 8
+#define ROOT_ROOF_PLANE 9
+#define ROOT_WEATHER_PLANE 10
 
 #define ROOF_PLANE 2
 

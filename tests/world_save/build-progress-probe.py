@@ -23,6 +23,19 @@ def instrument(saving, functions, phase_profile=False):
         raise ValueError('Expected the production serializer tick checks')
     saving = saving.replace('TICK_CHECK', 'WORLD_SAVE_PROGRESS_TICK_CHECK')
     if bounded:
+        # The root-admission wait is outside synchronous capture. Instrument
+        # this exact named seam separately; arbitrary extra sleeps still reject.
+        capture = '/map_storage/proc/capture_moving_save_root(savefile/destination, list/record)\n'
+        edge = '/map_storage/proc/moving_save_root_edge('
+        if capture in saving:
+            if saving.count(capture) != 1 or saving.count(edge) != 1:
+                raise ValueError('Expected one moving capture boundary')
+            prefix, body = saving.split(capture)
+            body, suffix = body.split(edge)
+            headroom = '\tif(world.tick_usage >= 80)\n\t\tsleep(world.tick_lag)\n'
+            body = replace_once(body, headroom,
+                                '\tif(world.tick_usage >= 80)\n\t\tworld_save_progress_sleep(world.tick_lag)\n')
+            saving = prefix + capture + body + edge + suffix
         # Preserve the bounded policy's thresholds, counters and wait delays.
         saving, sleeps = re.subn(r'(?m)^(\s*)sleep\((world.tick_lag|0)\)$',
                                  r'\1world_save_progress_sleep(\2)', saving)
