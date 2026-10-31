@@ -1,8 +1,12 @@
 {
   "canonical_update_enabled": false,
   "canonical_bot_enabled": false,
+  "canonical_owner_enabled": false,
   "canonical_initial_start_enabled": false,
   "canonical_initial_generation": null,
+  "canonical_owner_revision": "REPLACE_WITH_EXACT_40_HEX_REVISION",
+  "canonical_owner_dmb_sha256": "REPLACE_WITH_EXACT_DMB_SHA256",
+  "canonical_owner_rsc_sha256": "REPLACE_WITH_EXACT_RSC_SHA256",
   "bot_control_protocol": "civilizationbot.native-supervisor.v2",
   "bot_control_files": {
     "supervisor.py": "REPLACE_WITH_REVIEWED_SUPERVISOR_SHA256",

@@ -393,12 +393,21 @@ class CanonicalUpdater:
                             'operation': operation, 'recovery': 'Retain saved generation and artifacts; no retry or forced kill'})
             raise
 
-    def validate_initial(self, *, expected, held_lock):
+    def validate_initial(self, *, expected, held_lock, authority='bot'):
         """Inspect an explicitly pinned existing canonical save before first start."""
-        require(self.config.get('canonical_bot_enabled') is True and
+        require(self.config.get('canonical_update_enabled') is True and
+                (authority == 'bot' and self.config.get('canonical_bot_enabled') is True or
+                 authority == 'owner' and self.config.get('canonical_owner_enabled') is True and
+                 self.config.get('canonical_bot_enabled') is False) and
                 self.config.get('canonical_initial_start_enabled') is True and
                 self.config.get('canonical_initial_generation') == expected['generation'],
                 'Canonical initial start is disabled or lacks an exact generation pin')
+        if authority == 'owner':
+            require(expected.get('revision') == self.config.get('canonical_owner_revision') and
+                    expected.get('dmb_sha256') == self.config.get('canonical_owner_dmb_sha256') and
+                    expected.get('rsc_sha256') == self.config.get('canonical_owner_rsc_sha256') and
+                    expected.get('map') == self.config.get('map'),
+                    'Canonical owner binding differs from its configured pins')
         require(isinstance(held_lock, core._HeldLock), 'Supervisor lock lease required')
         held_lock.require(self.root / 'supervisor.lock')
         require(isinstance(self.sup, core.Supervisor) and self.sup.root == self.root and
@@ -420,11 +429,11 @@ class CanonicalUpdater:
         core.verify_binaries(self.game, manifest, expected['revision'], expected['map'])
         return manifest, names
 
-    def start_initial(self, *, operation, expected, held_lock, before_effect):
+    def start_initial(self, *, operation, expected, held_lock, before_effect, authority='bot'):
         """Snapshot and archive the exact initial save before a first owned start."""
         require(isinstance(operation, str) and re.fullmatch(r'[0-9a-f]{32}', operation) is not None and
-                callable(before_effect), 'Invalid fixed bot operation')
-        manifest, names = self.validate_initial(expected=expected, held_lock=held_lock)
+                callable(before_effect), 'Invalid initial start operation')
+        manifest, names = self.validate_initial(expected=expected, held_lock=held_lock, authority=authority)
         self.held_lock = held_lock
         self.transaction = {'operation': operation, 'previous_host': None,
                             'previous_revision': expected['revision'], 'previous_binaries': manifest['binaries'],

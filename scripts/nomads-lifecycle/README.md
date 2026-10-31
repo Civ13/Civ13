@@ -26,12 +26,17 @@ operator path. Source verification does not establish a current running binary.
 ### Single canonical hosting directory
 
 See [canonical save/load updates](../../docs/canonical-save-load-updates.md) for
-the explicit, default-off one-shot updater. It confirms a successful same-map
-save and exact process exit **before** fetching, fast-forwarding or compiling
-inside the named-master checkout. It preserves one canonical DMB path and uses
+the explicit, default-off canonical transaction prototype. Its same-process
+coordinator confirms a successful same-map save and exact process exit **before**
+fetching, fast-forwarding or compiling inside the named-master checkout. It
+preserves one canonical DMB path and uses
 the existing generation-bound startup and real readiness publisher. Failure
 retains recovery; it does not start a fresh world, retry or force-kill. Native
 admission and actual-cycle acceptance remain separate from source preparation.
+The standalone update commands refuse mutation. The default-off canonical-only
+owner starts a pinned existing save and holds the same child and lock through
+typed maintenance; it cannot adopt an existing process. The combined bot
+dispatcher remains unavailable until spool-writer authorization can be verified.
 
 The older cycle below is for separate noncanonical runtimes. Canonical configs
 are refused by that cycle and its builder, so it cannot compile before saving

@@ -16,8 +16,13 @@ the existing default-off `canonical_update_enabled` setting. The separately
 started `watch-admin` and `update-once` CLI actions are refused: a fresh process
 cannot inherit a live OS process handle. The held, default-off canonical bot
 source can bootstrap only an explicitly pinned existing save after snapshotting
-it; its unconditional spool authorization denial prevents activation. If the coordinator is not running, the game expires an
-unaccepted request after five minutes and tells admins. The game issues a
+it; its unconditional spool authorization denial prevents bot activation. A
+separate, default-off canonical-only owner starts only a pinned existing save,
+retains the child and lock, and polls typed maintenance requests without enabling
+the bot spool. See [its bootstrap and recovery contract](canonical-owner-contract.md).
+It cannot adopt a running process or recover a prior owner. If the coordinator is
+not running, the game expires an unaccepted request after five minutes and tells
+admins. The game issues a
 one-minute warning before making the request visible to the supervisor. An
 `R_SERVER` admin must confirm it, including the warning that gameplay during
 serialization may not be preserved. This explicit request permits connected
@@ -86,7 +91,8 @@ for owner reconciliation; do not automatically kill, retry or start a fresh worl
 
 The operator must first satisfy any prerequisite on the requested real cycle,
 notify affected players and establish the exact owned process. Connected clients
-defer this updater. An unexpected exit, PID reuse, another native process
+defer ordinary updates; a confirmed typed maintenance request permits them after
+its warning. An unexpected exit, PID reuse, another native process
 (including an unreviewed idle GUI), foreign listener or incomplete prior update
 requires reconciliation; the updater never kills or adopts those processes.
 

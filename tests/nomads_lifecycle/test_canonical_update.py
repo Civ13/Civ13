@@ -727,6 +727,30 @@ class CanonicalUpdateTests(unittest.TestCase):
         self.assertTrue((self.root/'updates'/('a'*32+'-artifacts.zip')).is_file())
         self.assertNotIn('compile', self.events)
 
+    def test_canonical_only_initial_start_reuses_pinned_preservation_without_bot(self):
+        binding = self.initial_bot_binding()
+        self.config['canonical_bot_enabled'] = False
+        self.config['canonical_owner_enabled'] = True
+        expected = binding['expected']
+        self.config.update(canonical_owner_revision=expected['revision'],
+                           canonical_owner_dmb_sha256=expected['dmb_sha256'],
+                           canonical_owner_rsc_sha256=expected['rsc_sha256'])
+        before = (self.game/'civ13.dmb').read_bytes()
+        with m.core.exclusive_lock(self.root/'supervisor.lock') as lease:
+            with self.assertRaisesRegex(RuntimeError, 'disabled or lacks'):
+                self.updater.validate_initial(expected=expected, held_lock=lease)
+            for field in ('revision', 'dmb_sha256', 'rsc_sha256', 'map'):
+                with self.subTest(field=field), self.assertRaisesRegex(RuntimeError, 'binding differs'):
+                    self.updater.validate_initial(expected=dict(expected, **{field: 'wrong'}),
+                                                  held_lock=lease, authority='owner')
+            result = self.updater.start_initial(operation='a'*32, expected=expected, held_lock=lease,
+                                                before_effect=Mock(), authority='owner')
+        self.assertEqual(result['generation'], expected['generation'])
+        self.assertEqual((self.game/'civ13.dmb').read_bytes(), before)
+        self.assertTrue((self.root/'backups'/('a'*32)/'receipt.json').is_file())
+        self.assertTrue((self.root/'updates'/('a'*32+'-artifacts.zip')).is_file())
+        self.assertNotIn('compile', self.events)
+
     def test_canonical_initial_start_expiry_preserves_original_save(self):
         binding = self.initial_bot_binding()
         marker = (self.game/'map_saves/save_complete.txt').read_bytes()
