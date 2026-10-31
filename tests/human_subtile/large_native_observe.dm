@@ -30,11 +30,7 @@ var/large_native_checks = 0
 
 /datum/npc_subtile_transaction/large_native_observe/valid()
 	var/datum/npc_subtile_pulse/P = actor ? actor.npc_subtile_pulse : null
-	return (actor && !isDeleted(actor) && !actor.client && !actor.npc_subtile_enabled &&
-		actor.npc_subtile_transaction == src && P && P.armed && !P.restoring && P.actor == actor &&
-		P.destination == fixture_destination && P.direction == fixture_dir && P.sx == fixture_sx && P.sy == fixture_sy &&
-		actor.bound_x == fixture_bound_x && actor.bound_y == fixture_bound_y && actor.bound_width == fixture_width &&
-		actor.bound_height == fixture_height && actor.dir == fixture_dir && human_subtile_same(expected, actor.npc_subtile_snapshot()))
+	return actor && !isDeleted(actor) && !actor.client && !actor.npc_subtile_enabled && actor.npc_subtile_transaction == src && P && P.armed && !P.restoring && P.actor == actor && P.destination == fixture_destination && P.direction == fixture_dir && P.sx == fixture_sx && P.sy == fixture_sy && actor.bound_x == fixture_bound_x && actor.bound_y == fixture_bound_y && actor.bound_width == fixture_width && actor.bound_height == fixture_height && actor.dir == fixture_dir && human_subtile_same(expected, actor.npc_subtile_snapshot())
 
 /mob/living/simple_animal/hostile/mammoth/large_native_observe
 	npc_subtile_enabled = FALSE
