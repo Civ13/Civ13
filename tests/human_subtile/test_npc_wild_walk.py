@@ -89,23 +89,17 @@ class WildWalkContracts(unittest.TestCase):
         finish = section(self.source, '/datum/npc_subtile_wild_walk/proc/finish()', '/datum/npc_subtile_wild_walk/proc/perform_loop()')
         self.assertIn('semantic_valid() && !actor.npc_subtile_ready() && actor.npc_subtile_can_defer() && !actor.npc_subtile_pending_intent', finish)
 
-    def test_bounded_contact_window_keeps_roll_in_life(self):
-        tick = project(self.source, '/mob/living/simple_animal/proc/npc_subtile_contact_tick', 'src', {})
-        owner = SimpleNamespace(await_contact=True)
-        actor = SimpleNamespace(npc_subtile_wild_walk=owner, npc_subtile_settled=lambda: False)
-        tick(actor)
-        self.assertTrue(owner.await_contact)
-        actor.npc_subtile_settled = lambda: True
-        tick(actor)
-        self.assertFalse(owner.await_contact)
+    def test_contact_roll_stays_in_life_without_gating_movement(self):
         loop = section(self.source, '/datum/npc_subtile_wild_walk/proc/perform_loop()', '/datum/npc_subtile_recovery\n')
-        self.assertLess(loop.index('if (await_contact)'), loop.index('actor.ai_step_wait(next, interval, src)'))
-        self.assertIn('actor.npc_subtile_wait_contact_tick()', loop)
+        self.assertNotIn('await_contact', loop)
+        self.assertNotIn('npc_subtile_wait_contact_tick', self.source)
+        self.assertIn('actor.ai_step_wait(next, interval, src)', loop)
         self.assertNotIn('prob(', loop)
         for name, chance in (('mosquitoes', 'prob(10)'), ('vampirebat', 'prob(5)')):
             text = (ROOT / f'code/game/mob/living/simple_animal/hostile/{name}.dm').read_text(encoding='utf-8')
             life = text.split('/Life()\n', 1)[1]
-            self.assertLess(life.index('npc_subtile_contact_tick()'), life.index(chance))
+            self.assertNotIn('npc_subtile_contact_tick()', life)
+            self.assertIn('if (!npc_subtile_contact_settled())', life)
             self.assertEqual(life.count(chance), 2 if name == 'mosquitoes' else 1)
 
     def test_monster_path_and_stops_keep_legacy_adapter(self):

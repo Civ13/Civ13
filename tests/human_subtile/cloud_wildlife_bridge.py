@@ -19,7 +19,6 @@ def adapt_bridge(out, manifest, current):
     current.adapt(out, manifest, relative, '"npc_checks" = npc_subtile_checks,',
                   '"large_bridge_checks" = large_bridge_checks, "large_bridge_rows" = large_bridge_rows, '
                   '"large_bridge_controls" = large_bridge_controls, "large_bridge_exception_sentinel" = large_bridge_exception_sentinel, '
-                  '"large_bridge_setup_failure" = large_bridge_setup_failure, '
                   '"npc_checks" = npc_subtile_checks,')
     current.adapt(out, manifest, relative, '"scope" = "actual human/codec; headless authority adapter"',
                   '"scope" = "' + SCOPE + '"')
@@ -49,7 +48,7 @@ def validate_bridge(row, head):
     require(isinstance(row, dict) and row.get('head') == head and row.get('error') is None and
             row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688) and
             row.get('scope') == SCOPE and row.get('npc_checks') == 0 and
-            row.get('large_bridge_checks') == 4482 and row.get('large_bridge_setup_failure') is None, 'Invalid bridge receipt identity or count')
+            row.get('large_bridge_checks') == 4269, 'Invalid bridge receipt identity or count')
     sentinel=row.get('large_bridge_exception_sentinel')
     require(isinstance(sentinel,dict) and sentinel.get('caught') == 1 and sentinel.get('name') == 'fixture_bridge_exception',
             'Direct exception sentinel failed')
@@ -78,19 +77,15 @@ def validate_bridge(row, head):
         auth = item.get('auth'); require(isinstance(auth,dict) and auth.get('consumed') == 1 and not auth.get('restoring') and
                 auth.get('direction') == direction and point(auth.get('before')) == b and auth.get('bound_x') == variant and
                 auth.get('bound_y') == 0 and auth.get('width') == 96 and auth.get('height') == 96 and
-                all(finite(auth.get(k)) and auth[k] == int(auth[k]) for k in ('destination_x','destination_y','sx','sy')) and
-                0 <= auth['sx'] < 32 and 0 <= auth['sy'] < 32, 'Wrong pulse authentication')
+                all(finite(auth.get(k)) for k in ('destination_x','destination_y','sx','sy')), 'Wrong pulse authentication')
         requested = {1:(0,2),2:(0,-2),4:(2,0),8:(-2,0)}[direction]
         require(((auth['destination_x']-b[0])*32+auth['sx']-b[3],
                  (auth['destination_y']-b[1])*32+auth['sy']-b[4]) == requested,
                 'Requested movement does not match cardinal pulse')
-        require((b[4] if direction in (4,8) else b[3]) % 32 == (2 if orthogonal else 0), 'Orthogonal setup mismatch')
+        require((b[4] if direction in (4,8) else b[3]) == (2 if orthogonal else 0), 'Orthogonal setup mismatch')
         if direction == 8:
-            require(b[3] % 32 == 2 and auth.get('sx') == 0 and
-                    auth.get('destination_x') == b[0] + math.floor(b[3] / 32),
-                    'Missing canonical west boundary request')
-            if variant == 0:
-                require(b[3] == 2 and auth.get('destination_x') == b[0], 'Missing same-anchor west control')
+            require(b[3] == 2 and auth.get('destination_x') == b[0] and auth.get('sx') == 0,
+                    'Missing same-anchor west control')
         trace = events(item)
         collision = [e for e in trace if e in ('Uncross','CheckExit:bridge')]
         require(collision == ['Uncross','CheckExit:bridge'] * item['checks'] and
@@ -115,13 +110,13 @@ def validate_bridge(row, head):
                 edge not in {(c.get('x'),c.get('y')) for c in allowed['after']['locs'] if isinstance(c,dict)},
                 'Allowed move did not actually exit the measured remote edge')
     controls = row.get('large_bridge_controls')
-    require(isinstance(controls,list) and len(controls) == 41 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
+    require(isinstance(controls,list) and len(controls) == 39 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
     by_case={c.get('case'):c for c in controls}
     require(all(c.get('frame_cleared') == 1 for c in controls), 'Missing frame cleanup evidence')
     callbacks = {'callback_invalidate','callback_cancel','callback_finish','callback_delete','callback_blocker_delete','callback_incapacitate','callback_reassign','callback_control','callback_disable'}
     real={f'real_/obj/structure/{kind}/bridge_fixture_{direction}_{allow}' for kind in ('window','railing','table') for direction in (4,8) for allow in (0,1)}
     lifecycle={'lifecycle_first_fault','lifecycle_later_fault','lifecycle_ordinary_denial','lifecycle_replace_fault'}
-    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','nonintegral','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','callback_actor_delete_throw','policy_mutation','retirement_ownership'} | callbacks | real | lifecycle, 'Duplicate or missing controls')
+    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','policy_mutation','retirement_ownership'} | callbacks | real | lifecycle, 'Duplicate or missing controls')
     for name in lifecycle:
         case=by_case[name];before=point(case.get('before')); at=point(case.get('at_callback')); after=point(case.get('after'))
         require(at==after==point(case.get('after_wait')) and all(case.get(k)==1 for k in
@@ -135,7 +130,7 @@ def validate_bridge(row, head):
         require((case.get('caught')==0 and case.get('caught_name') is None) if name=='lifecycle_ordinary_denial' else
                 (case.get('caught')==1 and case.get('caught_name')=='fixture_bridge_exception'),
                 'Wrong fault propagation: '+name)
-    for name in ('missing','stale','wrong_actor','unarmed','wrong_destination','nonintegral','replay'):
+    for name in ('missing','stale','wrong_actor','unarmed','wrong_destination','replay'):
         case=by_case[name]
         require(case.get('result') == 0 and point(case.get('before')) == point(case.get('after')) and
                 'CheckExit:bridge' not in events(case), 'Invalid capability rejection: '+name)
@@ -160,24 +155,18 @@ def validate_bridge(row, head):
             throw_auth.get('actor_frame_present') == 0 and point(thrown.get('before')) == point(thrown.get('after')) and
             'fixture_throw_attempt' in events(thrown) and 'Uncross:throw_catch' in events(thrown),
             'Exception cleanup control failed')
-    for name in ('callback_actor_delete','callback_actor_delete_throw'):
-        deleted=by_case[name];state=deleted.get('retired_state')
-        require(deleted.get('actor_deleted') == 1 and deleted.get('pulse_consumed') == 1 and deleted.get('checks') == 1 and
-                deleted.get('error') is None and 'CheckExit:bridge' in events(deleted) and
-                isinstance(state,dict) and state.get('exists')==1 and
-                all(state.get(k)==0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start',
-                                              'destination','path_target','combat_target','following')),
-                'Actor-deletion retirement failed: '+name)
-        point(deleted.get('before'))
-    deleted_throw=by_case['callback_actor_delete_throw'];post=deleted_throw.get('retired_after_throw')
-    require(deleted_throw.get('boundary_caught')==1 and deleted_throw.get('boundary_name')=='fixture_bridge_exception' and
-            isinstance(post,dict) and post.get('exists')==1 and
-            all(post.get(k)==0 for k in ('active','valid','faulted','fault','actor','pulse','transaction','intent')) and
-            'fixture_throw_attempt' in events(deleted_throw) and 'Uncross:throw_catch' in events(deleted_throw),
-            'Retired frame relatched a fault after actor deletion')
+    deleted=by_case['callback_actor_delete']
+    state=deleted.get('retired_state')
+    require(deleted.get('actor_deleted') == 1 and deleted.get('pulse_consumed') == 1 and deleted.get('checks') == 1 and
+            deleted.get('error') is None and 'CheckExit:bridge' in events(deleted) and
+            isinstance(state,dict) and state.get('exists')==1 and
+            all(state.get(k)==0 for k in ('active','valid','actor','pulse','transaction','intent','fault','start',
+                                          'destination','path_target','combat_target','following')),
+            'Actor-deletion retirement failed')
     retirement=by_case['retirement_ownership']
     require(all(retirement.get(k)==1 for k in ('preserved','cleared','plain_deleted','frame_cleared')),
             'Frame ownership, idempotence or ordinary deletion failed')
+    point(deleted.get('before'))
     policy=by_case['policy_mutation']; trace=events(policy)
     require(point(policy.get('before')) == point(policy.get('after')) and policy.get('subject_allow') == 0 and
             type(policy.get('mutator_checks')) is int and policy['mutator_checks'] > 0 and

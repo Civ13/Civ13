@@ -16,21 +16,17 @@ var/list/wildlife_runtime_rows = list()
 	npc_subtile_recovery_enabled = TRUE
 	var/fixture_manual_life = FALSE
 	var/fixture_life_calls = 0
-	var/fixture_contact_ticks = 0
-	var/fixture_settled_windows = 0
+	var/fixture_life_entry_observations = 0
+	var/fixture_settled_at_life_entry = 0
 
 /mob/living/simple_animal/mosquito/wildlife_runtime_observe/Life()
 	fixture_manual_life = TRUE
 	fixture_life_calls++
+	fixture_life_entry_observations++
+	if (npc_subtile_contact_settled())
+		fixture_settled_at_life_entry++
 	. = ..()
 	fixture_manual_life = FALSE
-
-/mob/living/simple_animal/mosquito/wildlife_runtime_observe/npc_subtile_contact_tick()
-	if (fixture_manual_life)
-		fixture_contact_ticks++
-		if (npc_subtile_contact_settled())
-			fixture_settled_windows++
-	return ..()
 
 /mob/living/simple_animal/vampirebatblack/wildlife_runtime_observe
 	npc_subtile_enabled = TRUE
@@ -38,21 +34,17 @@ var/list/wildlife_runtime_rows = list()
 	npc_subtile_recovery_enabled = TRUE
 	var/fixture_manual_life = FALSE
 	var/fixture_life_calls = 0
-	var/fixture_contact_ticks = 0
-	var/fixture_settled_windows = 0
+	var/fixture_life_entry_observations = 0
+	var/fixture_settled_at_life_entry = 0
 
 /mob/living/simple_animal/vampirebatblack/wildlife_runtime_observe/Life()
 	fixture_manual_life = TRUE
 	fixture_life_calls++
+	fixture_life_entry_observations++
+	if (npc_subtile_contact_settled())
+		fixture_settled_at_life_entry++
 	. = ..()
 	fixture_manual_life = FALSE
-
-/mob/living/simple_animal/vampirebatblack/wildlife_runtime_observe/npc_subtile_contact_tick()
-	if (fixture_manual_life)
-		fixture_contact_ticks++
-		if (npc_subtile_contact_settled())
-			fixture_settled_windows++
-	return ..()
 
 /mob/living/simple_animal/npc_vendor/smuggler/wildlife_recovery_observe
 	npc_subtile_enabled = TRUE
@@ -100,21 +92,21 @@ var/list/wildlife_runtime_rows = list()
 	var/mob/living/human/subtile_fixture/H = human_subtile_fixture_actor(8, 6)
 	wildlife_runtime_assert(M.npc_subtile_species_walk("direction", null, 3, EAST), "[label]_initial_walk")
 	var/deadline = world.time + 12
-	while ((!M.npc_subtile_wild_walk || !M.npc_subtile_wild_walk.await_contact) && world.time < deadline)
+	while (!M.npc_subtile_wild_walk && world.time < deadline)
 		sleep(world.tick_lag)
-	wildlife_runtime_assert(M.npc_subtile_wild_walk && M.npc_subtile_wild_walk.await_contact && M.npc_subtile_contact_settled(), "[label]_first_arrival_window")
+	wildlife_runtime_assert(M.npc_subtile_wild_walk, "[label]_owner_started")
 	for (var/i = 1, i <= 14, i++)
 		var/before_calls = M.vars["fixture_life_calls"]
-		var/before_ticks = M.vars["fixture_contact_ticks"]
+		var/before_ticks = M.vars["fixture_life_entry_observations"]
 		M.Life()
-		wildlife_runtime_assert(M.vars["fixture_life_calls"] == before_calls + 1 && M.vars["fixture_contact_ticks"] == before_ticks + 1, "[label]_one_contact_tick_per_life_[i]")
+		wildlife_runtime_assert(M.vars["fixture_life_calls"] == before_calls + 1 && M.vars["fixture_life_entry_observations"] == before_ticks + 1, "[label]_one_entry_observation_per_life_[i]")
 		sleep(4)
 	wildlife_runtime_rows += list(list("case" = label, "life_calls" = M.vars["fixture_life_calls"],
-		"contact_ticks" = M.vars["fixture_contact_ticks"], "settled_windows" = M.vars["fixture_settled_windows"],
+		"life_entry_observations" = M.vars["fixture_life_entry_observations"], "settled_at_life_entry" = M.vars["fixture_settled_at_life_entry"],
 		"target_health" = H.health, "target_disease" = H.disease))
-	// This tests repeated opportunity, not a prescribed random bite count. An
-	// unlucky/random path that never yields two windows is an inconclusive failure.
-	wildlife_runtime_assert(M.vars["fixture_settled_windows"] >= 2, "[label]_sustained_contact_windows")
+	// This records Life entry, not the later bite decision. An unlucky/random
+	// path that never yields two settled entries is an inconclusive failure.
+	wildlife_runtime_assert(M.vars["fixture_settled_at_life_entry"] >= 2, "[label]_settled_life_entries")
 	M.npc_subtile_stop_wild_walk()
 	qdel(M)
 	qdel(H)

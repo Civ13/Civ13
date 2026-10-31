@@ -40,14 +40,9 @@
 /mob/living/simple_animal/proc/npc_subtile_contact_settled(mob/living/simple_animal/other = null)
 	return src.npc_subtile_settled() && (!other || other.npc_subtile_settled())
 
-// Species with Life-based contact rolls request one observation opportunity
-// after arrival. The roll itself stays in Life and is never queued or repeated.
-/mob/living/simple_animal/proc/npc_subtile_wait_contact_tick()
-	return FALSE
-
-/mob/living/simple_animal/proc/npc_subtile_contact_tick()
-	if (src.npc_subtile_wild_walk && src.npc_subtile_wild_walk.await_contact && src.npc_subtile_settled())
-		src.npc_subtile_wild_walk.await_contact = FALSE
+// Other species retain their existing staged cadence.
+/mob/living/simple_animal/proc/npc_subtile_wild_period(mode, interval)
+	return interval
 
 /mob/living/simple_animal/proc/npc_subtile_native_interval(lag)
 	return lag * world.tick_lag
@@ -373,6 +368,11 @@
 			return FALSE
 	if (!npc_subtile_species_enabled || !npc_subtile_enabled)
 		return FALSE
+	// Reaffirming an unchanged live command must not invalidate its admitted
+	// transaction or postpone its next deadline on every Life call.
+	var/datum/npc_subtile_wild_walk/W = npc_subtile_wild_walk
+	if (W && !npc_subtile_pending_intent && W.valid() && W.mode == mode && W.target == target && W.interval == interval && W.direction == direction && W.distance_limit == distance_limit)
+		return TRUE
 	if (npc_subtile_can_defer())
 		return npc_subtile_defer_intent("wild", target, mode, distance_limit, interval, direction)
 	if (!npc_subtile_ready())
@@ -388,7 +388,6 @@
 		moving = FALSE
 		target_obj = null
 		found_path = list()
-	var/datum/npc_subtile_wild_walk/W = npc_subtile_wild_walk
 	var/new_owner = !W
 	if (new_owner)
 		W = new
@@ -436,7 +435,6 @@
 	var/generation
 	var/expected_stance
 	var/expected_behaviour
-	var/await_contact = FALSE
 	var/mob/living/expected_combat_target
 	var/atom/expected_path_target
 	var/atom/expected_following
@@ -474,9 +472,6 @@
 
 /datum/npc_subtile_wild_walk/proc/perform_loop()
 	while (valid())
-		if (await_contact)
-			sleep(world.tick_lag)
-			continue
 		if (world.time < due || actor.npc_subtile_transaction || world.time < actor.npc_subtile_until)
 			sleep(world.tick_lag)
 			continue
@@ -484,8 +479,6 @@
 		if (actor.npc_subtile_offset_owned && (actor.step_x || actor.step_y))
 			var/list/before = actor.npc_subtile_snapshot()
 			actor.npc_subtile_settle_axis(src, interval)
-			if (valid() && actor.npc_subtile_settled() && actor.npc_subtile_wait_contact_tick())
-				await_contact = TRUE
 			if (valid() && revision == current_revision && human_subtile_same(before, actor.npc_subtile_snapshot()))
 				actor.npc_subtile_defer_intent("wild", target, mode, distance_limit, interval, direction, TRUE)
 				break
@@ -504,11 +497,9 @@
 			if ("direction")
 				next = get_step(actor, direction)
 		if (next && valid())
-			var/arrived = actor.ai_step_wait(next, interval, src)
-			if (arrived && valid() && actor.npc_subtile_settled() && actor.npc_subtile_wait_contact_tick())
-				await_contact = TRUE
+			actor.ai_step_wait(next, interval, src)
 		if (valid() && revision == current_revision)
-			due = max(started + interval, world.time)
+			due = max(started + actor.npc_subtile_wild_period(mode, interval), world.time)
 
 /datum/npc_subtile_recovery
 	should_save = FALSE
@@ -912,7 +903,7 @@
 	try
 		allowed = obstacle.CheckExit(actor, destination, direction)
 	catch (var/exception/large_exit_error)
-		if (active && !faulted)
+		if (!faulted)
 			faulted = TRUE
 			fault = large_exit_error
 		checking = FALSE

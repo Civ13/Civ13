@@ -30,8 +30,8 @@ def extended_receipt():
             borders.append({'classification':'expected_gap_characterization','animal':'/hostile/'+kind+'/large_border_observe','variant':variant,
                 'baseline':1,'remote_result':1,'remote_calls':0,'anchor_result':0,'anchor_calls':1,
                 'occupied':[{'x':1},{'x':2}]})
-    rows=[{'case':'mosquito_life','life_calls':14,'contact_ticks':14,'settled_windows':2},
-          {'case':'bat_life','life_calls':14,'contact_ticks':14,'settled_windows':3},
+    rows=[{'case':'mosquito_life','life_calls':14,'life_entry_observations':14,'settled_at_life_entry':2},
+          {'case':'bat_life','life_calls':14,'life_entry_observations':14,'settled_at_life_entry':3},
           {'case':'valid_recovery','flee_dispatches':1,'max_dx':2,'max_dy':0},
           {'case':'invalidated_recovery','flee_dispatches':0,'max_dx':2,'max_dy':0,
            'terminal_observed':1,'pending':0,'recovering':0,'position':{'sx':0,'sy':0}},
@@ -118,7 +118,7 @@ class ExtendedContracts(unittest.TestCase):
         row=copy.deepcopy(good);row['large_native_rows'][0]['edge_x']=7;variants.append(row)
         row=copy.deepcopy(good);row['large_native_rows'][4]['trace']=[{'event':'Move:before'},{'event':'Move:after'}];variants.append(row)
         row=copy.deepcopy(good);row['large_native_rows'][3]['after']['locs']=row['large_native_rows'][3]['before']['locs'];variants.append(row)
-        row=copy.deepcopy(good);row['wildlife_runtime_rows'][0]['settled_windows']=1;variants.append(row)
+        row=copy.deepcopy(good);row['wildlife_runtime_rows'][0]['settled_at_life_entry']=1;variants.append(row)
         row=copy.deepcopy(good);row['wildlife_runtime_rows'][2]['max_dx']=3;variants.append(row)
         row=copy.deepcopy(good);row['wildlife_runtime_rows'][3]['flee_dispatches']=1;variants.append(row)
         row=copy.deepcopy(good);row['wildlife_runtime_rows'][3]['terminal_observed']=0;variants.append(row)

@@ -63,8 +63,8 @@ class CloudEnvelope(unittest.TestCase):
         fixture = (HERE / 'cloud_wildlife.dm').read_text(encoding='utf-8')
         runner = (HERE / 'cloud_npc_smoke.py').read_text(encoding='utf-8')
         self.assertEqual(fixture.count('cloud_wildlife_assert('), 10)  # definition plus nine cases
-        for key in ('wildlife_partial_contact_denied', 'wildlife_waits_for_contact_tick',
-                    'wildlife_resumes_after_contact_tick', 'wildlife_changed_semantics_not_requeued'):
+        for key in ('wildlife_partial_contact_denied', 'wildlife_moves_without_life_tick',
+                    'wildlife_continues_without_life_tick', 'wildlife_changed_semantics_not_requeued'):
             self.assertIn(key, fixture)
         self.assertNotIn('prob(', fixture)
         self.assertIn('npc.validate_npc_receipt(receipt, args.head)', runner)

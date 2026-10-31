@@ -27,12 +27,15 @@
 	density = FALSE
 	layer = 4.1
 
-/mob/living/simple_animal/mosquito/npc_subtile_wait_contact_tick()
-	return TRUE
+/mob/living/simple_animal/mosquito/npc_subtile_wild_period(mode, interval)
+	// The measured native lag-3 chase advances one tile every 3 ds at 0.5 ds
+	// ticks. Preserve that full cycle while each pulse transaction takes 1.5 ds.
+	if (mode == "towards" && interval == npc_subtile_native_interval(3))
+		return 2 * interval
+	return ..()
 
 /mob/living/simple_animal/mosquito/Life()
 	..()
-	npc_subtile_contact_tick()
 	if (weather == WEATHER_EXTREME || weather == WEATHER_WET)
 		spawn(1000)//Wait a bit
 			var/area/A = get_area(loc)

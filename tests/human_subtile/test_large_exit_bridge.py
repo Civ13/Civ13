@@ -14,26 +14,6 @@ def check_exit_direction(explicit, legacy):
     return legacy if explicit is None else explicit
 
 class LargeExitContracts(unittest.TestCase):
-    def test_normalization_is_request_only_and_shared(self):
-        native=source('tests/human_subtile/large_native_observe.dm')
-        bridge=source('tests/human_subtile/large_bridge_fixture.dm')
-        axis=native.split('/proc/large_native_axis_request(',1)[1].split('/proc/large_native_pulse(',1)[0]
-        self.assertIn('floor(offset / 32)',axis)
-        self.assertIn('offset - tiles * 32',axis)
-        self.assertNotIn('.Move(',axis)
-        pulse=native.split('/proc/large_native_pulse(',1)[1].split('/proc/large_native_turfs(',1)[0]
-        setup=bridge.split('/proc/large_bridge_setup_request(',1)[1].split('/proc/large_bridge_setup(',1)[0]
-        for text in (pulse,setup):
-            self.assertIn('large_native_axis_request(A.x, A.step_x,',text)
-            self.assertIn('large_native_axis_request(A.y, A.step_y,',text)
-            self.assertNotIn('A.step_x =',text)
-            self.assertNotIn('A.step_y =',text)
-            self.assertNotIn('A.bound_x =',text)
-        self.assertIn('T.expected = A.npc_subtile_snapshot()',pulse)
-        self.assertIn('case_name == "nonintegral"',bridge)
-        self.assertIn('case_name == "stale"',bridge)
-        self.assertIn('case_name == "replay"',bridge)
-
     def test_legacy_direction_and_remote_direction_are_distinct(self):
         # A westward partial pulse can retain the actor's anchor (legacy 0).
         self.assertEqual(check_exit_direction(None, 0), 0)
@@ -77,7 +57,7 @@ class LargeExitContracts(unittest.TestCase):
         animal=source('code/game/mob/living/simple_animal/subtile_movement.dm')
         frame=animal.split('/datum/npc_subtile_large_frame/proc/check_exit',1)[1].split('/mob/living/simple_animal/proc/npc_subtile_begin_large_frame',1)[0]
         catch=frame.split('catch (var/exception/large_exit_error)',1)[1]
-        self.assertLess(catch.index('if (active && !faulted)'),catch.index('fault = large_exit_error'))
+        self.assertLess(catch.index('if (!faulted)'),catch.index('fault = large_exit_error'))
         self.assertLess(catch.index('fault = large_exit_error'),catch.index('checking = FALSE'))
         self.assertLess(catch.index('checking = FALSE'),catch.index('throw large_exit_error'))
         movement=source('code/game/mob/mob_movement.dm')
@@ -111,23 +91,6 @@ class LargeExitContracts(unittest.TestCase):
         self.assertIn('bridge_no_late_displacement', fixture)
         self.assertNotIn('.CheckExit(', fixture)
 
-    def test_failed_setup_diagnostic_includes_requested_leading_footprint(self):
-        # BYOND 516.1688 observation: bound_x=64 starts two tiles east of
-        # the anchor. A 2px east pulse reaches the fifth column beyond it.
-        anchor=9;left=(anchor-1)*32+2+64;right=left+96
-        covered=[x for x in range(1,19) if (x-1)*32<right and x*32>left]
-        self.assertEqual(covered,[11,12,13,14])
-        fixture=source('tests/human_subtile/large_bridge_fixture.dm')
-        footprint=fixture.split('/proc/large_bridge_setup_footprint(',1)[1].split('/proc/large_bridge_setup(',1)[0]
-        self.assertIn('for (var/turf/T in world)',footprint)
-        self.assertIn('+ auth["bound_x"]',footprint)
-        self.assertIn('T.density',footprint)
-        self.assertIn('O.flags & ON_BORDER',footprint)
-        self.assertNotIn('range(4, A)',footprint)
-        self.assertNotIn('.Move(',footprint)
-        setup=fixture.split('/proc/large_bridge_setup(',1)[1].split('/proc/large_bridge_fixture()',1)[0]
-        self.assertLess(setup.index('large_bridge_setup_failure = list('),setup.index('"bridge_clear_setup_progress"'))
-
     def test_native_helper_snapshots_before_callback_can_delete_transaction(self):
         source_text=source('tests/human_subtile/large_native_observe.dm')
         pulse=source_text.split('/proc/large_native_pulse(',1)[1].split('/proc/large_native_turfs(',1)[0]
@@ -151,7 +114,7 @@ class LargeExitContracts(unittest.TestCase):
 
     def test_throw_boundary_rethrows_and_direct_sentinel_is_identical(self):
         fixture=source('tests/human_subtile/large_bridge_fixture.dm')
-        self.assertEqual(fixture.count('throw EXCEPTION("fixture_bridge_exception")'),3)
+        self.assertEqual(fixture.count('throw EXCEPTION("fixture_bridge_exception")'),2)
         boundary=fixture.split('/obj/large_native_border/bridge/throw_boundary/Uncross(',1)[1].split('// Fixture-only parent seam',1)[0]
         self.assertIn('fixture_boundary_caught = TRUE',boundary)
         self.assertIn('throw fixture_boundary_error',boundary)

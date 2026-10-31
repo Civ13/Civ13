@@ -76,9 +76,9 @@ def validate_extended(row, head):
                            'pursuit_ai_ticks','attack_handoff'}, 'Duplicate/missing wildlife case')
     for label in ('mosquito_life','bat_life'):
         item = cases[label]
-        require(item.get('life_calls') == 14 and item.get('contact_ticks') == 14 and
-                isinstance(item.get('settled_windows'), (int, float)) and item['settled_windows'] >= 2,
-                'Insufficient sustained contact opportunity: ' + label)
+        require(item.get('life_calls') == 14 and item.get('life_entry_observations') == 14 and
+                isinstance(item.get('settled_at_life_entry'), (int, float)) and item['settled_at_life_entry'] >= 2,
+                'Insufficient settled Life-entry observations: ' + label)
     for label, dispatches in (('valid_recovery',1),('invalidated_recovery',0)):
         item = cases[label]
         require(item.get('flee_dispatches') == dispatches and 0 <= item.get('max_dx', 999) <= 2 and
