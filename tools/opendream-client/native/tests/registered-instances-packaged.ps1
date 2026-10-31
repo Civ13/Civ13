@@ -22,6 +22,12 @@ try {
     $payload = @{ schema = 'civ13.catalog.v1'; instances = @($example) } | ConvertTo-Json -Depth 8 -Compress
     [IO.File]::WriteAllText($catalog, $payload, [Text.UTF8Encoding]::new($false))
 
+    $help = @(& $exe --help 2>&1) -join "`n"
+    if ($LASTEXITCODE -ne 0 -or !$help.Contains('--registered-instances') -or
+        !$help.Contains('inspect the displayed status for freshness') -or
+        !$help.Contains('launcher is optional for BYOND gameplay')) {
+        throw 'Packaged help omitted the operator view or its status and gameplay limits.'
+    }
     $output = @(& $exe --registered-instances $fixture $catalog 'example-host' 2>&1)
     $code = $LASTEXITCODE
     $text = $output -join "`n"

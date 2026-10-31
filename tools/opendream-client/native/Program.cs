@@ -7,6 +7,24 @@ using Civ13.ServerManagement;
 namespace Civ13.Launcher;
 
 public static class Program {
+    public static void WriteHelp(TextWriter output) {
+        ArgumentNullException.ThrowIfNull(output);
+        output.WriteLine("Civ13 Launcher options:");
+        output.WriteLine("  --help                         Show this help and exit.");
+        output.WriteLine("  --version                      Show launcher version and exit.");
+        output.WriteLine("  --self-check                   Check bundled manifests and exit.");
+        output.WriteLine("  --byond-contract               Show the bundled BYOND requirement and exit.");
+        output.WriteLine("  --registered-instances <trusted-D-root> <registration-file> <local-host-id>");
+        output.WriteLine("      Inspect one explicitly selected registration catalog and exit. Use a trusted D: root.");
+        output.WriteLine("      Registrations are declarations; process state, ownership and readiness remain unknown.");
+        output.WriteLine("      Exit 0 means the catalog parsed; inspect the displayed status for freshness.");
+        output.WriteLine("  --root <absolute folder>       Use an explicit launcher data folder.");
+        output.WriteLine("  --local-dreamdaemon <absolute host receipt>");
+        output.WriteLine("      Join the verified local host; requires --root.");
+        output.WriteLine("  --server-port <1-65535>        Specify an operator OpenDream port.");
+        output.WriteLine("Run without options for the normal launcher. The launcher is optional for BYOND gameplay.");
+    }
+
     public static void WriteMainMenu(TextWriter output, bool hosting = false) {
         output.WriteLine(ServerCatalog.MainMenu);
         foreach (var link in CommunityLinks.Items)
@@ -31,6 +49,10 @@ public static class Program {
     public static async Task<int> Main(string[] args) {
         try {
             var version = Assembly.GetExecutingAssembly().GetName().Version!;
+            if (args.SequenceEqual(["--help"])) {
+                WriteHelp(Console.Out);
+                return 0;
+            }
             if (args.Length > 0 && args[0] == RegisteredInstancesCommand.Option)
                 return RegisteredInstancesCommand.Run(args, Console.Out,
                     root => new ReadOnlyRegistrationFileReader(root), new MonotonicProcessObservationClock());
@@ -64,7 +86,7 @@ public static class Program {
                     serverPort = args[++index];
                     Connection.Port("Nomads", serverPort);
                 }
-                else throw new ArgumentException("Supported options: --version, --self-check, --registered-instances <trusted-D-root> <registration-file> <local-host-id> (standalone), --root <absolute folder>, --local-dreamdaemon <absolute host receipt>, --server-port <1-65535>.");
+                else throw new ArgumentException("Unsupported option. Run --help for available launcher options.");
             }
             var root = explicitRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Civ13");
             if (localReceipt != null) {
