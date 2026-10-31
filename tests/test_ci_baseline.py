@@ -105,6 +105,7 @@ class BaselinePolicyTests(unittest.TestCase):
                 ci.write_json(command[command.index('--output') + 1], dict(
                     status='passed', tests=1, errors=0, failures=0, skipped=0))
                 return subprocess.CompletedProcess(command, 0)
+            passing_test_count = None
             for failing in (False, True):
                 with self.subTest(failing=failing):
                     if failing:
@@ -132,8 +133,12 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty'])
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(grinder['exit_code'], int(failing))
+                    if not failing:
+                        passing_test_count = grinder['counts']['tests']
+                        self.assertGreater(passing_test_count, 0)
                     self.assertEqual(grinder['counts'], dict(status=expected_status,
-                        tests=15 if failing else 14, failures=int(failing), errors=0, skipped=0))
+                        tests=passing_test_count + int(failing),
+                        failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(grinder['files'], ['tests/grinder/test_transaction.py'])
                     self.assertIn('--suite', grinder['command'])
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)

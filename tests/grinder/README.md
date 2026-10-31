@@ -3,7 +3,7 @@
 From the repository root, with a verified Python installation:
 
 ```powershell
-& C:\Users\valza\AppData\Local\Programs\Python\Python313\python.exe tests\grinder\test_transaction.py
+py -3 tests/grinder/test_transaction.py
 ```
 
 This offline runner does not compile or launch BYOND. Its small interpreter
