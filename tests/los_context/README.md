@@ -13,8 +13,10 @@ examination and screen-slot hover remain independent of world geometry.
 
 Capture covers the actual z level and viewport (up to 63x63), plus one edge tile,
 accepts ordinary terrain and clutter, and derives blockers from raw opacity.
-Partial movement contributes `step_x/32` and `step_y/32` to the eye and moving
-opaque blockers. All geometric products use eye-relative coordinates rather
+Fresh hover/examine captures include `step_x/32` and `step_y/32` in the eye and
+moving targets. Presentation captures instead anchor the eye and human targets
+to native tile centers. Moving opaque blockers retain physical offsets in both
+modes. All geometric products use eye-relative coordinates rather
 than whole-map coordinates. Opaque targets use a closed ray and nonopaque targets a closed quarter-tile
 footprint. Blockers on the target's own native turf do not occlude that target,
 including items, mobs, ground, offset objects and multiple opaque owners. Other
@@ -23,8 +25,9 @@ separately from fractional geometric centers; cache keys include both tile and
 geometry plus the opaque/nonopaque policy. This is a
 tile opacity model, not a reconstruction of irregular collision bounds.
 
-A renderer captures once and calls `decision_snapshot(target, snapshot)` for its
-pass; repeated nonopaque footprints share a snapshot-local cache. Hover/examine
+A renderer captures once with `capture(TRUE)` and calls
+`decision_snapshot(target, snapshot)` for its pass; repeated nonopaque footprints
+share a snapshot-local cache. Hover/examine
 capture fresh raw geometry each time. A snapshot is never an action lease.
 The visual presenter only subtracts from native visibility; native transport and
 BYOND sight restrictions remain in effect. No guarantee of seeing geometry that
@@ -79,7 +82,9 @@ add a derived 4x4-cell center index. Each target visits inclusive bins covering
 the eye/target hull bounding box expanded by a blocker's half-cell extent, then
 runs the unchanged exact blocker predicate. Empty/sparse captures use the flat
 path. Native tile identity remains distinct from fractional blocker centers;
-there is no cross-snapshot visibility cache or reduced refresh cadence.
+there is no cross-snapshot visibility cache. Player-driven presentation now
+refreshes on tile transitions rather than transparent-player offset pulses;
+vision/blocker invalidations and periodic raw-writer audits remain active.
 BYOND's one-argument `round` supplies floor semantics for negative bin indices.
 
 The production projection checks 48,600 target/blocker pairs with fractional

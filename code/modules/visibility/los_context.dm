@@ -140,6 +140,7 @@ var/global/list/los_active_contexts
 	var/owners = 0
 
 /datum/los_snapshot
+	var/presentation = FALSE
 	should_save = FALSE
 	var/revision
 	var/policy
@@ -198,6 +199,7 @@ var/global/list/los_active_contexts
 	should_save = FALSE
 	var/client/owner
 	var/mob/living/human/body
+	var/turf/movement_turf
 	var/revision = 1
 	var/retired = FALSE
 	var/list/mutations = list()
@@ -217,6 +219,7 @@ var/global/list/los_active_contexts
 		los_active_contexts = list()
 	owner = C
 	body = C.mob
+	movement_turf = get_turf(body)
 	C.los_context = src
 	los_active_contexts += src
 
@@ -246,6 +249,7 @@ var/global/list/los_active_contexts
 			los_active_contexts = null
 	owner = null
 	body = null
+	movement_turf = null
 
 /datum/los_context/proc/advance_revision()
 	if (retired || revision >= 1000000)
@@ -300,25 +304,35 @@ var/global/list/los_active_contexts
 	viewport_cached_dimensions = dimensions
 	return viewport_cached_dimensions
 
-/datum/los_context/proc/policy_key()
+/datum/los_context/proc/policy_key(tile_anchored = FALSE)
 	if (!eligible() || !viewport() || mutations.len || (persistence_active_operation && persistence_active_operation.kind != "save") || body.stat || is_blind(body))
 		return null
-	return "[revision]|\ref[body]|[body.x],[body.y],[body.z],[body.step_x],[body.step_y]|[owner.view]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
+	var/offset_key = tile_anchored ? "" : ",[body.step_x],[body.step_y]"
+	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.perspective]|[body.sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
-/datum/los_context/proc/capture()
+/datum/los_context/proc/presentation_key()
+	return policy_key(TRUE)
+
+/datum/los_context/proc/capture(presentation = FALSE)
 	var/key = policy_key()
 	if (!key)
 		return null
 	var/list/dimensions = viewport()
 	var/datum/los_snapshot/S = new
+	S.presentation = presentation
 	S.revision = revision
 	S.policy = key
-	S.eye_x = body.x + body.step_x / 32
-	S.eye_y = body.y + body.step_y / 32
+	// Tile cadence is a presentation policy. Information reads still capture
+	// fresh physical eye/target offsets rather than borrowing a visual lease.
+	S.eye_x = body.x
+	S.eye_y = body.y
+	if (!presentation)
+		S.eye_x += body.step_x / 32
+		S.eye_y += body.step_y / 32
 	S.eye_z = body.z
 	S.radius_x = round(dimensions[1] / 2)
 	S.radius_y = round(dimensions[2] / 2)
-	// One extra tile covers fractional eye movement and edge blockers. Ordinary
+	// One extra tile covers fractional blockers and edge geometry. Ordinary
 	// clutter never invalidates the scene; opacity alone owns blocking geometry.
 	for (var/cx = max(1, body.x-S.radius_x-1), cx <= min(world.maxx, body.x+S.radius_x+1), cx++)
 		for (var/cy = max(1, body.y-S.radius_y-1), cy <= min(world.maxy, body.y+S.radius_y+1), cy++)
@@ -374,7 +388,7 @@ var/global/list/los_active_contexts
 	var/target_tile_y = target.y - S.eye_y
 	var/tx = target_tile_x
 	var/ty = target_tile_y
-	if (ismovable(target))
+	if (ismovable(target) && (!S.presentation || !ishuman(target)))
 		var/atom/movable/moving_target = target
 		tx += moving_target.step_x / 32
 		ty += moving_target.step_y / 32

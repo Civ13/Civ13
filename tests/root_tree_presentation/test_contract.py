@@ -347,7 +347,8 @@ class OwnershipAndComposition(unittest.TestCase):
     def test_invalidation_precedes_native_mutation_and_has_omission_control(self):
         def check(source,signature,write):
             body=P.fragment(source,signature)
-            self.assertLess(body.index('root_tree_invalidate('),body.index(write))
+            hook='los_invalidate_movement(' if signature=='/atom/movable/Move(' else 'root_tree_invalidate('
+            self.assertLess(body.index(hook),body.index(write))
         for path,signature,write in [
             ('code/game/atoms_movable.dm','/atom/movable/proc/forceMove(','loc = destination'),
             ('code/game/atoms_movable.dm','/atom/movable/proc/persistence_set_loc(','loc = destination'),
@@ -356,7 +357,7 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
             ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','last_color = L.Copy()')]:
             source=(ROOT/path).read_text();check(source,signature,write)
-            mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)')
+            mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)').replace('los_invalidate_movement(src)','removed_invalidation(src)')
             with self.assertRaises(ValueError):check(mutant,signature,write)
 
 class SceneFallback(unittest.TestCase):

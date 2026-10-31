@@ -175,7 +175,7 @@ var/global/list/root_tree_presenters
 	if(retired || !owner || owner.root_tree_presenter != src || owner.los_context != context)
 		return FALSE
 	if(!S)
-		S = context.capture()
+		S = context.capture(TRUE)
 	if(!S)
 		invalidate()
 		return FALSE
