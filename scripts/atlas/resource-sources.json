@@ -15156,6 +15156,54 @@
       "map_notes": "Rock must be cleared then suitable dirt ploughed. Jungle dirt and Desert-map dust remain unsuitable.",
       "era": "Plough: four wood planks, Basic Agriculture research rules (node tier 1); no new era gate for seed or food.",
       "status": "Source-reviewed proposed extension of pinned base; native harvest/consumption/save acceptance unverified"
+    },
+    {
+      "name": "Grind logs into chip batches",
+      "file": "code/modules/reagents/Chemistry-Machinery.dm",
+      "line": 724,
+      "source_commit": "283beab622e1b721210168cacccc2bf377d7d6d5",
+      "inputs": [
+        "/obj/item/stack/material/wood"
+      ],
+      "outputs": [
+        "/obj/item/stack/wood_chips"
+      ],
+      "tools": [
+        "/obj/structure/grinder"
+      ],
+      "steps": [
+        "Anchor the powered grinder, insert at least five whole raw logs and start it.",
+        "After the existing ten-plus-five-second cycle, collect one chip batch per five logs. Unpaid remainders stay installed.",
+        "Hold the chips and apply them to an adjacent oven-family structure to refuel it."
+      ],
+      "conditions": "Five logs produce one abstract batch containing five log units of feedstock, not a physical yield measurement. Ten batches per stack. Power/ownership/input checks must succeed at completion; observed power loss or cancellation gives no output. Chips cannot replace logs in crafting or convert back to logs.",
+      "map_notes": "Existing placement in maps/special/wizard_boy.dmm; no grinder construction recipe or broader map availability established.",
+      "era": "No new era/research gate; grinder acquisition remains map-dependent.",
+      "status": "Source-reviewed candidate; offline transaction checks passed; native gameplay and save/load unverified"
+    },
+    {
+      "name": "Fuel an oven with chip batches",
+      "file": "code/game/objects/structures/kitchen/oven.dm",
+      "line": 27,
+      "source_commit": "283beab622e1b721210168cacccc2bf377d7d6d5",
+      "inputs": [
+        "/obj/item/stack/wood_chips"
+      ],
+      "outputs": [],
+      "related_resources": [
+        "/obj/item/stack/wood_chips"
+      ],
+      "tools": [
+        "/obj/structure/oven"
+      ],
+      "steps": [
+        "Hold a chip stack in hand and use it on an adjacent oven, campfire or wood stove.",
+        "Each paid batch supplies five existing oven fuel units and five paid-wood residue units, equal to its five input logs."
+      ],
+      "conditions": "Consumes held whole batches once before assigning fuel or residue credit. Loading creates no ash; the existing paid-fuel burn ledger governs residue. No other fuel family or pulp recipe added.",
+      "map_notes": "Requires an accessible existing oven-family structure and chip stock; no map-level reachability guarantee.",
+      "era": "No new fuel-specific era/research gate; station availability remains separate.",
+      "status": "Source-reviewed candidate; offline raw-log parity checks passed; native burn and save/load unverified"
     }
   ],
   "mechanism_overview": [
