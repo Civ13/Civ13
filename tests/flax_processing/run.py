@@ -37,6 +37,8 @@ INPUT_LIMIT = 2 * 1024 * 1024
 ARTIFACT_LIMIT = 256 * 1024 * 1024
 OUTPUT_LIMIT = 512 * 1024 * 1024
 FILE_LIMIT = 128
+GENERATED_SUFFIXES = ('.dme', '_world.dm', '_globals.dm', '_flax.dm', '.dmb', '.rsc',
+                      '_living.dm', '_human.dm')
 
 
 def write_json(path, value):
@@ -180,12 +182,79 @@ def run_phase(command, *, cwd, output, phase, timeout, creationflags=0):
     return subprocess.CompletedProcess(command, child.returncode, stdout, stderr)
 
 
+def bounded_digest(path, limit):
+    digest = hashlib.sha256()
+    size = 0
+    with path.open('rb') as stream:
+        while chunk := stream.read(65536):
+            size += len(chunk)
+            if size > limit:
+                raise RuntimeError('Generated evidence exceeds alias bound: ' + str(path))
+            digest.update(chunk)
+    return size, digest.hexdigest()
+
+
+def retain_upload_aliases(output, generated, manifest):
+    """Copy only this flax run's enumerated files to nonhidden artifact paths."""
+    if len(generated) not in (6, 8):
+        raise RuntimeError('Upload aliases require the enumerated owned flax files')
+    prefix = generated[0].name.removesuffix('.dme')
+    if (not re.fullmatch(r'\.flax_probe_[0-9a-f]{32}', prefix)
+            or [path.name for path in generated] != [prefix + suffix for suffix in GENERATED_SUFFIXES[:len(generated)]]
+            or any(path.parent.resolve() != ROOT.resolve() for path in generated)):
+        raise RuntimeError('Upload aliases require the enumerated owned flax files')
+    manifest['upload_aliases'] = []
+    manifest['upload_alias_status'] = 'retaining'
+    for index, original in enumerate(generated):
+        binary = original.suffix in ('.dmb', '.rsc')
+        limit = ARTIFACT_LIMIT if binary else INPUT_LIMIT
+        alias = Path('generated-artifacts' if binary else 'generated-inputs') / ('generated-' + str(index) + original.suffix)
+        record = {'original_path': str(original), 'alias_path': alias.as_posix(),
+                  'limit_bytes': limit, 'status': 'missing'}
+        manifest['upload_aliases'].append(record)
+        if original.is_symlink():
+            raise RuntimeError('Generated evidence must not be a symlink: ' + str(original))
+        if not original.exists():
+            continue  # Compiled outputs are absent during prelaunch source retention.
+        if not original.is_file() or original.stat().st_size > limit:
+            raise RuntimeError('Generated evidence exceeds alias bound: ' + str(original))
+        destination = output / alias
+        if destination.parent.is_symlink() or destination.is_symlink():
+            raise RuntimeError('Upload alias must not follow a symlink: ' + str(destination))
+        size, digest = bounded_digest(original, limit)
+        record.update(bytes=size, sha256=digest)
+        if not destination.exists():
+            files = [path for path in output.rglob('*') if path.is_file()]
+            if len(files) + 1 > FILE_LIMIT or sum(path.stat().st_size for path in files) + size > OUTPUT_LIMIT:
+                raise RuntimeError('Upload alias exceeds task-owned output budget')
+            destination.parent.mkdir(exist_ok=True)
+            record['status'] = 'copying'
+            with original.open('rb') as source, destination.open('xb') as target:
+                copied = 0
+                while chunk := source.read(65536):
+                    copied += len(chunk)
+                    if copied > size:
+                        raise RuntimeError('Generated evidence changed while aliasing: ' + str(original))
+                    target.write(chunk)
+        if bounded_digest(destination, limit) != (size, digest):
+            raise RuntimeError('Preserve mismatched upload alias: ' + str(destination))
+        record['status'] = 'retained'
+    manifest['upload_alias_status'] = 'complete_for_existing_generated_files'
+
+
 def retain_manifest(output, generated, manifest, *, finalized=False):
     """Inventory known generated files and stable diagnostic paths; never delete.
 
     Source snapshots are written before native launch, so an uncatchable process
     exit still leaves inputs and live logs in their persistent owned locations.
     """
+    alias_error = None
+    if 'upload_aliases' in manifest:  # Flax opt-in only; shared harvest retention is unchanged.
+        try:
+            retain_upload_aliases(output, generated, manifest)
+        except BaseException as error:
+            alias_error = error
+            manifest.update(upload_alias_status='failed', upload_alias_error=repr(error))
     records = []
     for path in generated:
         record = {'path': str(path), 'exists': path.exists()}
@@ -215,6 +284,10 @@ def retain_manifest(output, generated, manifest, *, finalized=False):
                     record.update(sha256=hashlib.sha256(data).hexdigest(), bytes_hashed=len(data))
             manifest['retained_outputs'].append(record)
     write_json(output / 'evidence-manifest.json', manifest)
+    if alias_error is not None:
+        raise alias_error
+    if 'upload_aliases' in manifest:
+        check_output_budget(output)
 
 
 def entry_sources(control=None):
@@ -316,7 +389,7 @@ def main():
                  ('.dme', '_world.dm', '_globals.dm', '_flax.dm', '.dmb', '.rsc')]
     if args.human_entry:
         generated.extend(ROOT / (prefix + suffix) for suffix in ('_living.dm', '_human.dm'))
-    manifest = {'schema_version': 1, 'status': 'preparing',
+    manifest = {'schema_version': 1, 'status': 'preparing', 'upload_aliases': [],
                 'generated_prefix': prefix, 'runtime_directory': str(args.output / 'runtime'),
                 'automatic_deletion': False, 'descendant_cleanup': 'unverified',
                 'expected_diagnostics': ['compile.stdout.log', 'compile.stderr.log', 'compile-phase.json',
@@ -401,6 +474,8 @@ def main():
         output = build.stdout + build.stderr
         write_log(args.output / 'compile.log', output)
         check_compile(build, requirement['version'])
+        # Retain nonhidden compiled evidence before starting the daemon too.
+        retain_manifest(args.output, generated, manifest)
         work = args.output / 'runtime'
         work.mkdir()
         for path in generated[4:6]:

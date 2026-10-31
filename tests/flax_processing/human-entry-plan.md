@@ -102,6 +102,17 @@ are capped at 2 MiB/file, compiled artifacts at 256 MiB/file; output observation
 and inventory use 512 MiB/128-file ceilings. Direct native file writes may
 overshoot between polls, so the external filesystem quota remains required.
 
+Flax also retains nonhidden `generated-inputs/generated-N.dm`/`.dme` and
+`generated-artifacts/generated-N.dmb`/`.rsc` aliases for only its enumerated owned
+generated files. Sources are copied before compile; compiled aliases are copied
+before daemon launch and retained on compile failure when available. The manifest's
+`upload_aliases` records original path, relative alias path, byte count, SHA-256,
+per-file bound and status. Existing originals and hidden snapshots stay in place.
+Aliases count toward the same 512 MiB/128-file ceiling; a mismatched existing alias
+or bound breach fails without overwriting/deleting evidence. Default artifact
+upload can retain these copies without enabling hidden-file uploads or sweeping
+unrelated files. Shared harvest retention and its admission remain unchanged.
+
 There is no automatic deletion or cleanup option in the flax runner. Retain the
 manifest, source snapshots, raw logs and actual failure state. Any later optional
 scratch removal needs separate authorization, evidence preservation and verified
