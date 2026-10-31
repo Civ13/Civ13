@@ -1,5 +1,18 @@
 # Gaia geometric visibility and root-owned tree presentation
 
+## Mouse routing correction (2026-10-31)
+
+The game/tree compositor uses hidden render targets. Its interactive relay
+chain must opt into `PASS_MOUSE`, with mouse-transparent plane masters at 1
+(children retain their own mouse opacity), rather than plane-wide input at 0.
+Only game/tree relays opt in; mask, roof and weather copies remain inert.
+This preserves the original atom for hover, clicks and native context menus,
+including human visible names, without inventing targets in server hover code.
+Withdrawn tree images keep mouse opacity 0 and blank appearances.
+See the [BYOND render-source reference](https://www.byond.com/docs/ref/info.html#/atom/var/render_source).
+Source/model tests verify the routing flags; actual mouse priority, popup lists,
+and client pixels remain native acceptance items.
+
 ## Scope and current evidence
 
 The October 30 request is to make LOS and oversized-tree lighting enabled by

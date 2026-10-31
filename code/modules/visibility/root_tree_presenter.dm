@@ -92,8 +92,8 @@ var/global/list/root_tree_presenters
 	// per tree. The shared shadow now follows root lighting (native acceptance).
 	scene_plane.filters = original_filters.Copy()
 	G.filters = list()
-	make_lit_relay(game_target, mask_target, ROOT_SCENE_PLANE, 1)
-	make_relay(tree_target, ROOT_SCENE_PLANE, 2)
+	make_lit_relay(game_target, mask_target, ROOT_SCENE_PLANE, 1, TRUE)
+	make_relay(tree_target, ROOT_SCENE_PLANE, 2, TRUE)
 	make_lit_relay(roof_target, mask_target, ROOT_ROOF_PLANE, 1)
 	make_relay(weather_target, ROOT_WEATHER_PLANE, 1)
 	// Keep floor/underfloor lighting even though the mask source is hidden.
@@ -112,21 +112,30 @@ var/global/list/root_tree_presenters
 /datum/root_tree_presenter/proc/make_plane(number)
 	var/obj/screen/root_scene_master/P = new
 	P.plane = number
+	// A plane master at 0 disables mouse hits for ALL of its children. Keep
+	// visual-only planes inert, but allow the game/tree relay chain to route.
+	if(number == ROOT_TREE_PLANE || number == ROOT_SCENE_PLANE)
+		P.mouse_opacity = 1
 	screens += P
 	owner.screen += P
 	return P
 
-/datum/root_tree_presenter/proc/make_relay(source, number, order)
+/datum/root_tree_presenter/proc/make_relay(source, number, order, mouse_passthrough = FALSE)
 	var/obj/screen/root_scene_relay/R = new
 	R.render_source = source
 	R.plane = number
 	R.layer = order
+	// render_source is otherwise only a visual copy: hits belong to the relay.
+	// PASS_MOUSE preserves the real character/tree identity and native priority.
+	if(mouse_passthrough)
+		R.appearance_flags |= PASS_MOUSE
+		R.mouse_opacity = 1
 	screens += R
 	owner.screen += R
 	return R
 
-/datum/root_tree_presenter/proc/make_lit_relay(source, mask_source, number, order)
-	var/obj/screen/root_scene_relay/R = make_relay(source, number, order)
+/datum/root_tree_presenter/proc/make_lit_relay(source, mask_source, number, order, mouse_passthrough = FALSE)
+	var/obj/screen/root_scene_relay/R = make_relay(source, number, order, mouse_passthrough)
 	// Both inputs are full-viewport plane slates. Apply the mask directly as
 	// a composite filter, avoiding child-overlay plane/layer/group ordering.
 	// BLEND_MULTIPLY retains destination alpha; applying source alpha again

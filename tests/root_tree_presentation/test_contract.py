@@ -233,11 +233,11 @@ class OwnershipAndComposition(unittest.TestCase):
         self.assertIn('I.icon = null',P.fragment(TREE,'/datum/root_tree_presenter/proc/withdraw_tree('))
     def test_lit_relay_uses_direct_mask_composite_and_preserves_source_alpha(self):
         env=environment();calls=[]
-        def relay(source,number,order):
+        def relay(source,number,order,mouse_passthrough=False):
             r=N(render_source=source,plane=number,layer=order,filters=Values([]))
             calls.append(r);return r
         env.update(make_relay=relay,filter=lambda **kw:kw,FILTER_OVERLAY=1,BLEND_MULTIPLY=3)
-        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/make_lit_relay(','self, source, mask_source, number, order',env,True)
+        f=compile_proc(TREE,'/datum/root_tree_presenter/proc/make_lit_relay(','self, source, mask_source, number, order, mouse_passthrough=False',env,True)
         for plane in [8,9]:
             r=f(N(),'raw-scene','committed-mask',plane,1)
             self.assertEqual((r.render_source,r.plane,r.layer),('raw-scene',plane,1))
@@ -254,6 +254,71 @@ class OwnershipAndComposition(unittest.TestCase):
                 self.assertEqual(lit[3],source[3])
                 self.assertEqual(lit[:3],(0.8*mask,0.4*mask,0.2*mask))
         self.assertNotEqual(0.5*0.5,0.5)  # old redundant-alpha negative control
+
+    def mouse_route_model(self, source=TREE):
+        # Only engine object construction/list insertion are adapters. Execute
+        # the actual plane/relay proc bodies and document mouse semantics below.
+        class DMItems(Items):
+            def __iadd__(self, value):
+                self.append(value)
+                return self
+        env=environment()
+        env.update(ROOT_SCENE_PLANE=8,PASS_MOUSE=128,
+                   fresh_plane=lambda:N(mouse_opacity=0),
+                   fresh_relay=lambda:N(mouse_opacity=0,appearance_flags=3))
+        source=source.replace('var/obj/screen/root_scene_master/P = new','var/P = fresh_plane()')
+        source=source.replace('var/obj/screen/root_scene_relay/R = new','var/R = fresh_relay()')
+        plane=compile_proc(source,'/datum/root_tree_presenter/proc/make_plane(','self, number',env,True)
+        relay=compile_proc(source,'/datum/root_tree_presenter/proc/make_relay(',
+                           'self, source, number, order, mouse_passthrough=False',env,True)
+        owner=N(screen=DMItems())
+        r=N(owner=owner,screens=DMItems())
+        return r,plane,relay,env
+
+    def test_interactive_planes_and_pass_mouse_preserve_world_identity(self):
+        r,plane,relay,env=self.mouse_route_model()
+        for number in [6,8]:
+            self.assertEqual(plane(r,number).mouse_opacity,1)
+        for number in [2,5,9,10]:
+            self.assertEqual(plane(r,number).mouse_opacity,0)
+        actor,tree,grass=object(),object(),object()
+        for source,target in [('game',actor),('trees',tree)]:
+            image=relay(r,source,8,1,True)
+            self.assertEqual(image.mouse_opacity,1)
+            self.assertTrue(image.appearance_flags & env['PASS_MOUSE'])
+            # Model the documented render_source routing, not native pixels.
+            hits=[target] if image.mouse_opacity and image.appearance_flags & env['PASS_MOUSE'] else [grass]
+            self.assertEqual(hits,[target])
+            self.assertNotIn(image,hits)
+        for source in ['mask','weather','roof']:
+            visual=relay(r,source,9,1)
+            self.assertEqual(visual.mouse_opacity,0)
+            self.assertFalse(visual.appearance_flags & env['PASS_MOUSE'])
+
+    def test_mouse_routing_omissions_and_only_game_tree_optin(self):
+        for omitted in ['P.mouse_opacity = 1','R.mouse_opacity = 1','R.appearance_flags |= PASS_MOUSE']:
+            mutant=TREE.replace(omitted,omitted.split(' = ')[0]+' = 0' if ' = ' in omitted else 'R.appearance_flags |= 0',1)
+            r,plane,relay,env=self.mouse_route_model(mutant)
+            p=plane(r,8);image=relay(r,'game',8,1,True)
+            routed=p.mouse_opacity and image.mouse_opacity and image.appearance_flags & env['PASS_MOUSE']
+            self.assertFalse(routed)
+        setup=P.fragment(TREE,'/datum/root_tree_presenter/proc/setup_scene(')
+        self.assertIn('make_lit_relay(game_target, mask_target, ROOT_SCENE_PLANE, 1, TRUE)',setup)
+        self.assertIn('make_relay(tree_target, ROOT_SCENE_PLANE, 2, TRUE)',setup)
+        self.assertIn('make_lit_relay(roof_target, mask_target, ROOT_ROOF_PLANE, 1)',setup)
+        self.assertIn('make_relay(weather_target, ROOT_WEATHER_PLANE, 1)',setup)
+        self.assertIn('make_relay(mask_target, ROOT_FLOOR_LIGHT_PLANE, 1)',setup)
+        lit=P.fragment(TREE,'/datum/root_tree_presenter/proc/make_lit_relay(')
+        self.assertIn('make_relay(source, number, order, mouse_passthrough)',lit)
+        # Native events retain the real atom; no nearest-mob/tree fabrication.
+        client=(ROOT/'code/modules/client/client_procs.dm').read_text()
+        hover=(ROOT/'code/_onclick/hud/hover_name.dm').read_text()
+        click=(ROOT/'code/_onclick/click.dm').read_text()
+        self.assertIn('update_hover_name(object)',client)
+        self.assertIn('label = H.get_visible_name()',hover)
+        self.assertIn('los_read_allowed(parentmob, target, "hover")',hover)
+        self.assertIn('usr.ClickOn(src, params)',click)
+        self.assertIn('I.mouse_opacity = 0',P.fragment(TREE,'/datum/root_tree_presenter/proc/withdraw_tree('))
 
     def test_default_activation_has_owned_lifecycle(self):
         core=(ROOT/'code/modules/visibility/los_context.dm').read_text()
