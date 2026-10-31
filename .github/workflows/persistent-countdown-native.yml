@@ -1,0 +1,135 @@
+name: Reviewed persistent countdown native fixture
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  countdown-native:
+    # Deliberately narrow. The lane branch and its PR do not yet exist.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.head.repo.full_name == 'Civ13/Civ13' &&
+       github.event.pull_request.head.ref == 'persistent-countdown-native-fixture')
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout reviewed fixture branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: harness
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Checkout exact PR source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 1
+        with:
+          ref: 304a95ef5bd0dfa7bdadd511bca6cb740d4f0167
+          path: target
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Acquire exact pinned BYOND archive
+        timeout-minutes: 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/countdown-runtime"
+          timeout --signal=TERM --kill-after=5s 50s env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C /usr/bin/python3 -B \
+            target/scripts/byond_toolchain.py download --platform linux --source repository-release \
+            --output "$RUNNER_TEMP/countdown-runtime/pinned.zip" > "$RUNNER_TEMP/countdown-runtime/acquisition.json"
+          unzip -q "$RUNNER_TEMP/countdown-runtime/pinned.zip" -d "$RUNNER_TEMP/countdown-runtime"
+      - name: Build isolated image
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout --signal=TERM --kill-after=5s 130s docker build --pull \
+            -t civ13-countdown-fixture:"$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            -f harness/tests/persistent_countdown/lane/Dockerfile harness/tests/persistent_countdown/lane
+      - name: Run bounded fixture and controls
+        id: native
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/countdown-output"
+          mkdir "$work"
+          container="civ13-countdown-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          owned_id=''
+          create_succeeded=0
+          cleanup() {
+            status=$?
+            trap - EXIT
+            if [ -z "$owned_id" ]; then
+              if [ "$create_succeeded" -eq 1 ]; then
+                echo 'create succeeded but ownership verification failed; cleanup uncertain' >>"$work/container-cleanup.log"
+                exit 1
+              fi
+              echo 'no container acquired; create failed or was interrupted' >>"$work/container-cleanup.log"
+              if [ "$status" -eq 0 ]; then exit 1; fi
+              exit "$status"
+            fi
+            rm_status=0
+            docker rm -f "$owned_id" >>"$work/container-cleanup.log" 2>&1 || rm_status=$?
+            if ! remaining=$(docker container ls --all --quiet --no-trunc \
+              --filter "id=$owned_id" 2>>"$work/container-cleanup.log"); then
+              echo 'container census failed' >>"$work/container-cleanup.log"
+              exit 1
+            fi
+            if [ "$rm_status" -ne 0 ] || [ -n "$remaining" ]; then
+              echo 'container removal or absence verification failed' >>"$work/container-cleanup.log"
+              exit 1
+            fi
+            echo "owned container removal and absence verified: $owned_id" >>"$work/container-cleanup.log"
+            exit "$status"
+          }
+          trap cleanup EXIT
+          if created_id=$(docker create --name "$container" --init --network none --read-only \
+            --cap-drop ALL --security-opt no-new-privileges --pids-limit 16 \
+            --memory 1536m --memory-swap 1536m --cpus 2 \
+            --user "$(id -u):$(id -g)" --tmpfs /tmp:rw,nosuid,nodev,noexec,size=64m \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/target,dst=/repo,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/harness/tests/persistent_countdown,dst=/packet,readonly" \
+            --mount "type=bind,src=$RUNNER_TEMP/countdown-runtime,dst=/runtime,readonly" \
+            --mount "type=bind,src=$work,dst=/output" \
+            civ13-countdown-fixture:"$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            /usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C PYTHONDONTWRITEBYTECODE=1 \
+            LD_LIBRARY_PATH=/runtime/byond/bin TMPDIR=/tmp \
+            /usr/bin/python3 -B /packet/lane/run_ci.py --repo /repo --byond-bin /runtime/byond/bin \
+            --byond-archive /runtime/pinned.zip --output /output/evidence 2>>"$work/container-cleanup.log"); then
+            create_succeeded=1
+          else
+            create_status=$?
+            echo "create failed with status $create_status" >>"$work/container-cleanup.log"
+            exit "$create_status"
+          fi
+          if [[ ! "$created_id" =~ ^[0-9a-f]{64}$ ]]; then
+            echo 'docker create returned an invalid container ID' >>"$work/container-cleanup.log"
+            exit 1
+          fi
+          if ! inspected=$(docker inspect --format '{{.Id}} {{.Name}}' "$created_id" 2>>"$work/container-cleanup.log"); then
+            echo 'container ownership inspection failed' >>"$work/container-cleanup.log"
+            exit 1
+          fi
+          if [ "$inspected" != "$created_id /$container" ]; then
+            echo 'container ID/name mismatch' >>"$work/container-cleanup.log"
+            exit 1
+          fi
+          owned_id=$created_id
+          timeout --signal=TERM --kill-after=5s 340s docker start -a "$owned_id"
+      - name: Retain bounded synthetic evidence and acquisition receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: persistent-countdown-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/countdown-output/
+            ${{ runner.temp }}/countdown-runtime/acquisition.json
+          retention-days: 7
+          if-no-files-found: error
