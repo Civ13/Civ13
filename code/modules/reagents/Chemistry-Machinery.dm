@@ -581,10 +581,10 @@
 	inserted = null
 	return ..()
 
-// Preserve the legacy five-wood-to-one-wood conversion until chips have a design.
+// One abstract chip batch contains five log units; preserve integer input payment.
 // Never consume fractional, burning, concurrently worked or unsupported stock.
 /obj/structure/grinder/proc/can_grind_input(obj/item/stack/material/wood/stock)
-	return istype(stock) && !stock.gcDestroyed && !stock.gc_destroyed && stock.material && stock.material.name == "wood" && !stock.onfire && !stock.splitting_in_progress && !stock.woodwork_owner && isnum(stock.amount) && stock.amount == round(stock.amount) && stock.amount >= 5 && stock.amount <= stock.max_amount
+	return istype(stock) && !stock.gcDestroyed && !stock.gc_destroyed && stock.material && stock.material.name == "wood" && !stock.onfire && !stock.splitting_in_progress && !stock.woodwork_owner && isnum(stock.amount) && stock.amount == round(stock.amount) && stock.amount >= wood_chip_logs_per_batch() && stock.amount <= stock.max_amount
 
 /obj/structure/grinder/update_icon()
 	..()
@@ -724,16 +724,16 @@
 /datum/grinder_batch/proc/commit()
 	if (!valid() || !machine.check_power())
 		return FALSE
-	// Round down complete legacy batches; leave the unpaid remainder installed.
-	var/output_amount = round(stock_amount / 5)
-	var/input_amount = output_amount * 5
+	// Complete five-log gameplay batches only; leave the unpaid remainder installed.
+	var/output_amount = round(stock_amount / wood_chip_logs_per_batch())
+	var/input_amount = output_amount * wood_chip_logs_per_batch()
 	if (!stock.use(input_amount))
 		return FALSE
 	committed = TRUE
 	if (input_amount == stock_amount)
 		machine.inserted = null
 	// Explicit amount and merge=FALSE avoid constructor auto-merge before sizing.
-	var/obj/item/stack/material/wood/output = new(site, output_amount, FALSE)
+	var/obj/item/stack/wood_chips/output = new(site, output_amount, FALSE)
 	output.update_icon()
 	output.update_strings()
 	return TRUE

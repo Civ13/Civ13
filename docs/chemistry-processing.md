@@ -50,18 +50,24 @@ onto the machine's turf before ordinary contents cleanup. Save/load admission
 also invalidates an in-flight operation; the running flag and callback owner
 are runtime state, while installed stock remains durable.
 
-This safety fix retains the existing conversion into ordinary wood: each complete
-five-unit batch pays five wood for one wood output. Partial batches remain
-installed, and fewer than five units, fractional/oversized stacks, burning wood,
+Each complete five-log batch produces one distinct batch of wood chips. This
+retains the conservative counted ratio as a gameplay unit, not a physical yield
+measurement: one batch contains five log units' worth of chips. Partial batches
+remain installed. Fewer than five logs, fractional/oversized stacks, burning wood,
 wood claimed by woodworking and other materials cannot start a conversion.
 Output is constructed with its final integer count and automatic merging
-disabled, avoiding constructor merging before the output has been sized.
-Existing wood crafting, fuel and material definitions are unchanged.
+disabled. Chips stack up to ten batches, the feedstock equivalent of one 50-log
+stack, and cannot substitute for ordinary wood in crafting or convert back to logs.
 
-Issues #2301 and #2303 describe wood chips but do not establish their unit or
-yield. This patch does not introduce chips, chip-to-wood recovery, new chemical
-products or downstream recipes. The chip yield and consumers need a separate
-design decision; these broader issues remain open.
+Hold chips and use them on an adjacent oven, campfire or wood stove. Each batch
+is paid once and adds five of the oven's existing fuel units and five paid-wood
+residue units, exactly what its five input logs would supply. Loading creates no
+ash; only burning paid fuel can produce ash through the existing ledger. No
+other fuel family, wood recipe, pulp conversion or chemical product is added.
+
+The grinder's existing Wizard Boy placement remains available; no construction
+recipe or new era/research gate is introduced. Broader availability and the
+remaining requirements of #2301/#2303 remain separate work.
 
 `tests/grinder/test_transaction.py` checks the transaction offline using source
 projections, deterministic callbacks and external adapters. It does not establish

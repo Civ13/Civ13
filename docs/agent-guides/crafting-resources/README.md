@@ -335,6 +335,14 @@ isolated runtime data and must detect exactly the lost recipe.
 <!-- 2026-10-12: finite digging completion -->
 Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
 
+<!-- 2026-10-31: abstract chip batches and equal oven fuel -->
+The grinder pays five logs per nonmaterial chip batch; a stack holds ten batches.
+Held chips use only the oven-family fuel path, paying before equal fuel/residue
+credits of five per batch. No wood-material alias, reverse conversion or pulp
+recipe is added. Existing grinder guards stay intact. Tests/grinder projects the
+production branches offline; native inventory, burn and save round trips remain
+separate acceptance. Reuse the existing small-wood sprite.
+
 <!-- 2026-10-15: paid wood residue and plant nitrary -->
 Wood-fuel residue uses a saved scalar ledger shared by existing ovens, furnaces
 and factories; unknown legacy fuel earns no ash. The existing compost bin's

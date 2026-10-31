@@ -22,6 +22,24 @@
 	else
 		icon_state = base_state
 
+// Paid chip batches use the existing one-fuel/one-wood-credit-per-log contract.
+// No wait or yielding callback may separate the debit from these two credits.
+/obj/structure/oven/proc/refuel_wood_chips(obj/item/stack/wood_chips/chips, mob/living/human/H)
+	if (gcDestroyed || gc_destroyed || !isturf(loc) || !istype(chips, /obj/item/stack/wood_chips) || chips.gcDestroyed || chips.gc_destroyed)
+		return FALSE
+	if (!istype(H, /mob/living/human) || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || !H.Adjacent(src) || chips.loc != H || !H.item_is_in_hands(chips))
+		return FALSE
+	if (!isnum(chips.amount) || chips.amount < 1 || chips.amount > chips.max_amount || chips.amount != round(chips.amount))
+		return FALSE
+	var/batches = chips.amount
+	var/log_units = batches * wood_chip_logs_per_batch()
+	var/datum/wood_fuel_residue/account = wood_residue_account()
+	if (!account || !chips.use(batches))
+		return FALSE
+	fuel += log_units
+	account.wood_remaining += log_units
+	return TRUE
+
 /obj/structure/oven/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !I.loc)
 		return
@@ -34,6 +52,11 @@
 		H.remove_from_mob(POT)
 		POT.loc = src.loc
 		POT.on_stove = TRUE
+		return TRUE
+
+	if (istype(I, /obj/item/stack/wood_chips))
+		if (refuel_wood_chips(I, H))
+			to_chat(H, "You add the wood chips to \the [src], refueling it.")
 		return TRUE
 
 	if (istype(I, /obj/item/stack/material/wood))	//FUEL NORMAL (without * multiplication or + addition, only input)

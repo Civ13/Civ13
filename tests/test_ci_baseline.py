@@ -82,6 +82,9 @@ class BaselinePolicyTests(unittest.TestCase):
                              'tools/byond/version.json', *ci.SUITES['grinder']['files'],
                              'tests/grinder/historical-grinder.dm',
                              'code/modules/reagents/Chemistry-Machinery.dm',
+                             'code/modules/materials/material_sheets.dm',
+                             'code/game/objects/structures/kitchen/oven.dm',
+                             'code/modules/1713/wood_ash_compost.dm',
                              'code/game/objects/items/stacks/stack.dm'):
                 destination = root / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)

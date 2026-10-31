@@ -59,6 +59,9 @@ SUITES = {
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
         'paths': ('tests/grinder/',), 'shared_paths': (
             'code/modules/reagents/Chemistry-Machinery.dm',
+            'code/modules/materials/material_sheets.dm',
+            'code/game/objects/structures/kitchen/oven.dm',
+            'code/modules/1713/wood_ash_compost.dm',
             'code/game/objects/items/stacks/stack.dm')},
     # Stdlib-only source projection; no native runner is imported or executed.
     # Keep shared farming.dm unmapped so its all-suite fallback stays intact.
