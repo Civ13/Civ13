@@ -209,11 +209,11 @@ def package_from_logs(log, marker):
     return validate_package(data, package)
 
 
-def validate_resource_states(summary, status):
+def validate_resource_states(summary, status, labels=('vendor','wildlife')):
     artifacts = summary.get('artifacts') or {}
     initial = artifacts.get('human_subtile.rsc') or {}
     states = summary.get('resource_states')
-    require(isinstance(states, dict) and set(states) == {'vendor', 'wildlife'} and
+    require(isinstance(states, dict) and set(states) == set(labels) and
             status.get('resource_copies_independent') is True and status.get('runtime_resources') == states,
             'Missing or mismatched resource receipts')
     def valid(observation):
@@ -222,7 +222,7 @@ def validate_resource_states(summary, status):
                 re.fullmatch('[0-9a-f]{64}', observation.get('sha256') or '') and
                 type(observation.get('mode')) is int and observation['mode'] == 0o600)
     require(valid(initial), 'Invalid initial resource identity')
-    for label in ('vendor', 'wildlife'):
+    for label in labels:
         state = states[label]
         require(isinstance(state, dict) and valid(state.get('before')) and valid(state.get('after')) and
                 state['before'] == initial and type(state.get('changed')) is bool and
@@ -342,6 +342,48 @@ def validate_bridge_evidence(data, head):
         require(json.loads(read('npc-smoke/cloud-manifest.json')).get('head') == head, 'Bridge manifest head mismatch')
 
 
+def validate_scheduler_evidence(data,head):
+    """Independently compare both retained insect receipts on the host."""
+    with tarfile.open(fileobj=io.BytesIO(data),mode='r:') as archive:
+        def read(name):
+            item=archive.getmember(name)
+            require(item.isfile() and item.size<=4*1024**2,'Invalid scheduler evidence member')
+            return archive.extractfile(item).read()
+        status=json.loads(read('harness-status.json'));summary=json.loads(read('smoke-summary.json'))
+        require(status.get('head')==head and status.get('outcome')=='passed' and status.get('phase')=='complete' and
+                status.get('fixture_dme_only') is True and status.get('suite')=='scheduler' and
+                summary.get('head')==head and summary.get('accepted') is True and summary.get('suite')=='scheduler' and
+                summary.get('fixture_dme_only') is True,'Invalid scheduler status')
+        validate_resource_states(summary,status,('legacy','smooth'))
+        spec=importlib.util.spec_from_file_location('scheduler_receipts',Path(__file__).with_name('cloud_wildlife_scheduler_draft.py'))
+        scheduler=importlib.util.module_from_spec(spec);spec.loader.exec_module(scheduler)
+        spec2=importlib.util.spec_from_file_location('scheduler_npc',Path(__file__).with_name('run-npc.py'))
+        npc=importlib.util.module_from_spec(spec2);spec2.loader.exec_module(npc)
+        receipts={}
+        for label,folder in (('legacy','runtime'),('smooth','runtime-wildlife')):
+            prefix='npc-smoke/'+folder+'/'
+            phase=summary.get('results',{}).get(label,{}).get('daemon',{})
+            require(phase.get('returncode')==0 and phase.get('timed_out') is False and
+                    phase.get('oversized_log') is False and phase.get('deadline')==90,
+                    'Scheduler daemon phase is not bounded and successful: '+label)
+            require(read(prefix+'result.txt')==b'PASS\n' and read(prefix+'port-closed.txt')==b'closed\n',
+                    'Scheduler daemon did not complete: '+label)
+            raw=read(prefix+'receipt.json');receipts[label]=json.loads(raw)
+            require(summary.get('results',{}).get(label,{}).get('receipt_sha256')==hashlib.sha256(raw).hexdigest(),
+                    'Scheduler receipt hash mismatch: '+label)
+        require(summary.get('scope')==scheduler.SCOPE and
+                scheduler.compare_pair(receipts['legacy'],receipts['smooth'],head)==summary.get('comparison'),
+                'Scheduler pair comparison mismatch')
+        compile_prefix='npc-smoke/stage/compile-'
+        phase=summary.get('compile',{})
+        require(phase.get('returncode')==0 and phase.get('timed_out') is False and
+                phase.get('oversized_log') is False and phase.get('deadline')==120,
+                'Scheduler compiler phase is not bounded and successful')
+        npc.current.legacy.validate_compile((read(compile_prefix+'stdout.log')+read(compile_prefix+'stderr.log')).decode(errors='replace'),'human_subtile.dmb')
+        manifest=json.loads(read('npc-smoke/cloud-manifest.json'))
+        require(manifest.get('head')==head and manifest.get('scheduler_scope')==scheduler.SCOPE,'Scheduler manifest mismatch')
+
+
 def validate_production_evidence(data,head,expected_tree,expected_inventory):
     with tarfile.open(fileobj=io.BytesIO(data),mode='r:') as archive:
         def read(name):
@@ -458,7 +500,7 @@ def main():
     parser.add_argument('--name',help=argparse.SUPPRESS)
     parser.add_argument('--owner',help=argparse.SUPPRESS)
     parser.add_argument('--deadline',type=float,help=argparse.SUPPRESS)
-    parser.add_argument('--suite',choices=('smoke','extended','bridge','production_compile'),default='smoke')
+    parser.add_argument('--suite',choices=('smoke','extended','bridge','scheduler','production_compile'),default='smoke')
     args=parser.parse_args()
     started=time.monotonic()
     require(args.execute, 'Execution requires explicit --execute')
@@ -557,6 +599,7 @@ def main():
             if report['outcome'] == 'passed' and package['complete']:
                 if args.suite == 'extended': validate_extended_evidence(evidence,head)
                 elif args.suite == 'bridge': validate_bridge_evidence(evidence,head)
+                elif args.suite == 'scheduler': validate_scheduler_evidence(evidence,head)
                 elif args.suite == 'production_compile':
                     spec=importlib.util.spec_from_file_location('production_stage',Path(__file__).with_name('cloud_production_compile.py'))
                     production=importlib.util.module_from_spec(spec);spec.loader.exec_module(production)
