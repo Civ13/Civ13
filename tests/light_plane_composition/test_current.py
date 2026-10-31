@@ -269,7 +269,7 @@ class CurrentRunner(unittest.TestCase):
         self.assertEqual(len(set(re.findall(r'--output "([^"]+)"', '\n'.join(new_calls)))), 13)
         condition = "if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/light_plane_composition')"
         self.assertIn(condition, text)
-        self.assertIn('LIGHTING_COMPOSITION_V2 0', (current.ROOT / 'code/__defines/_planes+layers.dm').read_text())
+        self.assertIn('LIGHTING_COMPOSITION_V2 1', (current.ROOT / 'code/__defines/_planes+layers.dm').read_text())
 
 
 if __name__ == '__main__':
