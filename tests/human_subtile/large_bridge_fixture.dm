@@ -239,7 +239,7 @@ var/list/large_bridge_exception_sentinel = list()
 		"error" = error, "result" = result, "trace" = large_native_trace.Copy()))
 	qdel(P); qdel(T); qdel(B)
 
-/proc/large_bridge_setup(animal_type, variant, direction, orthogonal)
+/proc/large_bridge_setup(animal_type, variant, direction, orthogonal, pulse_count = 15)
 	var/mob/living/simple_animal/A = new animal_type(locate(9, 7, 1))
 	A.dir = direction
 	A.bound_x = variant
@@ -249,7 +249,7 @@ var/list/large_bridge_exception_sentinel = list()
 		large_native_pulse(A, orthogonal_direction, orthogonal_direction == EAST ? 2 : 0, orthogonal_direction == NORTH ? 2 : 0)
 		A.dir = direction
 		A.bound_x = variant
-	for (var/i = 1, i <= 15, i++)
+	for (var/i = 1, i <= pulse_count, i++)
 		large_native_trace = list()
 		var/list/before = A.npc_subtile_snapshot()
 		large_native_pulse(A, direction, direction == EAST ? 2 : (direction == WEST ? -2 : 0), direction == NORTH ? 2 : (direction == SOUTH ? -2 : 0))
@@ -388,6 +388,8 @@ var/list/large_bridge_exception_sentinel = list()
 						mutator.fixture_mutation_target = null
 						qdel(mutator); qdel(subject); qdel(policy_actor)
 						large_bridge_actor_delete_control(exiting)
+						for (var/lifecycle_mode in list("first_fault", "later_fault", "ordinary_denial", "replace_fault"))
+							large_bridge_lifecycle_case(exiting, lifecycle_mode)
 					if (animal_type == /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge && !orthogonal && ((variant == 0 && direction == WEST) || (variant == 64 && direction == EAST)))
 						for (var/border_type in list(/obj/structure/window/bridge_fixture, /obj/structure/railing/bridge_fixture, /obj/structure/table/bridge_fixture))
 							for (var/allow in list(FALSE, TRUE))
@@ -416,4 +418,4 @@ var/list/large_bridge_exception_sentinel = list()
 		large_bridge_capability_control(control)
 	large_bridge_missing_control()
 	large_bridge_ordinary_control()
-	large_bridge_assert(large_bridge_controls.len == 34, "bridge_controls_complete")
+	large_bridge_assert(large_bridge_controls.len == 38, "bridge_controls_complete")

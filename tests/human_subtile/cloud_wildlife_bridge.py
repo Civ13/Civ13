@@ -13,7 +13,7 @@ def require(value, message):
 def adapt_bridge(out, manifest, current):
     stage = Path(out) / 'stage'
     relative = 'tests/human_subtile/probe.dm'
-    for name in ('large_native_observe.dm', 'large_bridge_fixture.dm'):
+    for name in ('large_native_observe.dm', 'large_bridge_fixture.dm', 'large_bridge_lifecycle_draft.dm'):
         require((stage / 'tests/human_subtile' / name).is_file(), 'Missing bridge fixture: ' + name)
     current.adapt(out, manifest, relative, '\t\t\tnpc_subtile_fixture()', '\t\t\tlarge_bridge_fixture()')
     current.adapt(out, manifest, relative, '"npc_checks" = npc_subtile_checks,',
@@ -24,7 +24,8 @@ def adapt_bridge(out, manifest, current):
                   '"scope" = "' + SCOPE + '"')
     with (Path(out) / manifest['dme']).open('a', encoding='utf-8', newline='\n') as stream:
         stream.write('\n#include "tests\\human_subtile\\large_native_observe.dm"\n'
-                     '#include "tests\\human_subtile\\large_bridge_fixture.dm"\n')
+                     '#include "tests\\human_subtile\\large_bridge_fixture.dm"\n'
+                     '#include "tests\\human_subtile\\large_bridge_lifecycle_draft.dm"\n')
     for rel in (relative, 'human_subtile.dme'):
         data = (stage / rel).read_bytes()
         manifest['stage_files'][rel] = {'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
@@ -47,7 +48,7 @@ def validate_bridge(row, head):
     require(isinstance(row, dict) and row.get('head') == head and row.get('error') is None and
             row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688) and
             row.get('scope') == SCOPE and row.get('npc_checks') == 0 and
-            row.get('large_bridge_checks') == 4121, 'Invalid bridge receipt identity or count')
+            row.get('large_bridge_checks') == 4260, 'Invalid bridge receipt identity or count')
     sentinel=row.get('large_bridge_exception_sentinel')
     require(isinstance(sentinel,dict) and sentinel.get('caught') == 1 and sentinel.get('name') == 'fixture_bridge_exception',
             'Direct exception sentinel failed')
@@ -109,12 +110,25 @@ def validate_bridge(row, head):
                 edge not in {(c.get('x'),c.get('y')) for c in allowed['after']['locs'] if isinstance(c,dict)},
                 'Allowed move did not actually exit the measured remote edge')
     controls = row.get('large_bridge_controls')
-    require(isinstance(controls,list) and len(controls) == 34 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
+    require(isinstance(controls,list) and len(controls) == 38 and all(isinstance(c,dict) for c in controls), 'Missing bridge controls')
     by_case={c.get('case'):c for c in controls}
     require(all(c.get('frame_cleared') == 1 for c in controls), 'Missing frame cleanup evidence')
     callbacks = {'callback_invalidate','callback_cancel','callback_finish','callback_delete','callback_blocker_delete','callback_incapacitate','callback_reassign','callback_control','callback_disable'}
     real={f'real_/obj/structure/{kind}/bridge_fixture_{direction}_{allow}' for kind in ('window','railing','table') for direction in (4,8) for allow in (0,1)}
-    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','policy_mutation'} | callbacks | real, 'Duplicate or missing controls')
+    lifecycle={'lifecycle_first_fault','lifecycle_later_fault','lifecycle_ordinary_denial','lifecycle_replace_fault'}
+    require(set(by_case) == {'missing','stale','wrong_actor','unarmed','wrong_destination','replay','ordinary_32','object_uncross_reject','parent_uncross_reject','callback_nested','callback_throw','callback_actor_delete','policy_mutation'} | callbacks | real | lifecycle, 'Duplicate or missing controls')
+    for name in lifecycle:
+        case=by_case[name];before=point(case.get('before')); at=point(case.get('at_callback')); after=point(case.get('after'))
+        require(at==after==point(case.get('after_wait')) and all(case.get(k)==1 for k in
+                ('pulse_consumed','owner_preserved','pulse_preserved','frame_cleared','finished','attempted')),
+                'Lifecycle cleanup, fault displacement, or late movement: '+name)
+        expected_distance=2 if name=='lifecycle_later_fault' else 0
+        require((at[0]-before[0])*32+at[3]-before[3]==-expected_distance and at[1:3]==before[1:3] and
+                case.get('distance')==expected_distance and case.get('checks')==(0 if name=='lifecycle_replace_fault' else 1),
+                'Wrong inherited transaction progress: '+name)
+        require((case.get('caught')==0 and case.get('caught_name') is None) if name=='lifecycle_ordinary_denial' else
+                (case.get('caught')==1 and case.get('caught_name')=='fixture_bridge_exception'),
+                'Wrong fault propagation: '+name)
     for name in ('missing','stale','wrong_actor','unarmed','wrong_destination','replay'):
         case=by_case[name]
         require(case.get('result') == 0 and point(case.get('before')) == point(case.get('after')) and

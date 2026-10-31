@@ -44,7 +44,7 @@ class LargeExitContracts(unittest.TestCase):
         self.assertIn('!pulse.armed && !pulse.restoring',animal)
         self.assertIn('actor.npc_subtile_large_frame == src',animal)
         self.assertIn('actor.npc_subtile_transaction == transaction',animal)
-        self.assertIn('if (!valid() || checking)',animal)
+        self.assertIn('if (faulted || !valid() || checking)',animal)
         self.assertNotIn('checked[obstacle]',animal)
         self.assertIn('obstacle.CheckExit(actor, destination, direction)',animal)
         self.assertIn('if (!. || !istype(mover, /mob/living/simple_animal))',atoms)
@@ -52,6 +52,18 @@ class LargeExitContracts(unittest.TestCase):
         self.assertIn('if (npc.npc_subtile_large_exit_enabled)',movement)
         self.assertIn('catch (var/exception/large_move_error)\n\t\t\t\t\tlarge_frame.close()',movement)
         self.assertNotIn('Bump(',animal[animal.index('/datum/npc_subtile_large_frame'):animal.index('/datum/npc_subtile_transaction\n')])
+
+    def test_callback_fault_survives_native_boundary_and_frame_closes_first(self):
+        animal=source('code/game/mob/living/simple_animal/subtile_movement.dm')
+        frame=animal.split('/datum/npc_subtile_large_frame/proc/check_exit',1)[1].split('/mob/living/simple_animal/proc/npc_subtile_begin_large_frame',1)[0]
+        catch=frame.split('catch (var/exception/large_exit_error)',1)[1]
+        self.assertLess(catch.index('if (!faulted)'),catch.index('fault = large_exit_error'))
+        self.assertLess(catch.index('fault = large_exit_error'),catch.index('checking = FALSE'))
+        self.assertLess(catch.index('checking = FALSE'),catch.index('throw large_exit_error'))
+        movement=source('code/game/mob/mob_movement.dm')
+        segment=movement.split('var/large_frame_faulted = large_frame.faulted',1)[1].split('\n\t\t\telse',1)[0]
+        self.assertLess(segment.index('var/exception/large_frame_fault = large_frame.fault'),segment.index('large_frame.close()'))
+        self.assertLess(segment.index('large_frame.close()'),segment.index('throw large_frame_fault'))
 
     def test_native_fixture_draft_uses_engine_move_and_strict_matrix(self):
         fixture=source('tests/human_subtile/large_bridge_fixture.dm')

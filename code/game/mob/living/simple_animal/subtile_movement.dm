@@ -893,12 +893,16 @@
 	var/stance
 	var/active = TRUE
 	var/checking = FALSE
+	// Native Move can consume a callback exception. Preserve its first fault so
+	// the outer DM Move boundary can propagate it after the frame is closed.
+	var/faulted = FALSE
+	var/exception/fault
 
 /datum/npc_subtile_large_frame/proc/valid()
 	return active && actor && !isDeleted(actor) && !actor.gc_destroyed && actor.npc_subtile_authority_ready() && !persistence_save_in_progress && actor.npc_subtile_large_exit_enabled && actor.npc_subtile_enabled == enabled && actor.npc_subtile_large_frame == src && actor.npc_subtile_pulse == pulse && actor.npc_subtile_transaction == transaction && transaction && !isDeleted(transaction) && !transaction.gc_destroyed && !transaction.cancelled && !transaction.finished && transaction.actor == actor && transaction.generation == generation && transaction.end_time == deadline && isnum(deadline) && world.time <= deadline + world.tick_lag && transaction.intent_owner == intent_owner && (!intent_owner || (!isDeleted(intent_owner) && !intent_owner.gc_destroyed)) && actor.npc_subtile_intent_valid(intent_owner) && human_subtile_same(start, transaction.expected) && pulse && !isDeleted(pulse) && !pulse.gc_destroyed && !pulse.armed && !pulse.restoring && pulse.actor == actor && pulse.destination == destination && pulse.direction == direction && pulse.sx == sx && pulse.sy == sy && human_subtile_same(start, pulse.before) && actor.move_gen == generation && actor.target_obj == path_target && actor.target_mob == combat_target && actor.following_mob == following && actor.stance == stance && actor.bound_x == bx && actor.bound_y == by && actor.bound_width == width && actor.bound_height == height && actor.dir == facing && human_subtile_same(start, actor.npc_subtile_snapshot())
 
 /datum/npc_subtile_large_frame/proc/check_exit(obj/obstacle)
-	if (!valid() || checking)
+	if (faulted || !valid() || checking)
 		return FALSE
 	if (!(obstacle.flags & ON_BORDER) || obstacle == actor)
 		return TRUE
@@ -908,6 +912,9 @@
 	try
 		allowed = obstacle.CheckExit(actor, destination, direction)
 	catch (var/exception/large_exit_error)
+		if (!faulted)
+			faulted = TRUE
+			fault = large_exit_error
 		checking = FALSE
 		throw large_exit_error
 	checking = FALSE
@@ -946,6 +953,7 @@
 	pulse = null
 	transaction = null
 	intent_owner = null
+	fault = null
 	qdel(src)
 
 /datum/npc_subtile_transaction

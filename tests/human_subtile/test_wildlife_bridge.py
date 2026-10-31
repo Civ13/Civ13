@@ -69,9 +69,18 @@ def receipt():
                     direction=direction,variant=64 if direction==4 else 0,before=dict(p,sx=2),
                     after=dict(p,sx=(2+(2 if direction==4 else -2)) if allow else 2),checks=1,exit_direction=direction,
                     trace=[dict(event='Uncross:'+kind),dict(event='CheckExit:'+kind)]))
+    for name in ('first_fault','later_fault','ordinary_denial','replace_fault'):
+        start=dict(p,sx=4 if name=='later_fault' else 2)
+        end=dict(p,sx=2)
+        controls.append(dict(case='lifecycle_'+name,before=start,at_callback=end,after=end,after_wait=end,
+                             caught=0 if name=='ordinary_denial' else 1,
+                             caught_name=None if name=='ordinary_denial' else 'fixture_bridge_exception',
+                             pulse_consumed=1,owner_preserved=1,pulse_preserved=1,frame_cleared=1,
+                             finished=1,attempted=1,distance=2 if name=='later_fault' else 0,
+                             checks=0 if name=='replace_fault' else 1))
     for control in controls: control['frame_cleared']=1
     return dict(head='a'*40,error=None,port=0,byond_version=516,byond_build=1688,scope=bridge.SCOPE,
-                npc_checks=0,large_bridge_checks=4121,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
+                npc_checks=0,large_bridge_checks=4260,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
                 large_bridge_rows=rows,large_bridge_controls=controls)
 
 class BridgeReceiptTests(unittest.TestCase):
@@ -86,13 +95,17 @@ class BridgeReceiptTests(unittest.TestCase):
             lambda r: r['large_bridge_rows'][0]['trace'].reverse(),
             lambda r: r['large_bridge_rows'][0]['auth'].update(sx=99),
             lambda r: r['large_bridge_controls'][0].update(result=1),
-            lambda r: r['large_bridge_controls'][-1].update(checks=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case'].startswith('real_')).update(checks=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(actor_deleted=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(frame_cleared=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(pulse_consumed=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw').update(throw_attempted=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw')['auth'].update(actor_frame_present=1),
             lambda r: r.update(large_bridge_checks=4120),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='lifecycle_first_fault').update(caught=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='lifecycle_later_fault').update(distance=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='lifecycle_replace_fault').update(owner_preserved=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='lifecycle_ordinary_denial').update(caught=1),
             lambda r: r['large_bridge_exception_sentinel'].update(caught=0),
         ]
         for mutate in mutations:
@@ -111,7 +124,7 @@ class BridgeReceiptTests(unittest.TestCase):
             out=Path(temp); stage=out/'stage'; fixture=stage/'tests/human_subtile'; fixture.mkdir(parents=True)
             (fixture/'probe.dm').write_text('\t\t\tnpc_subtile_fixture()\n"npc_checks" = npc_subtile_checks,\n'
                                            '"scope" = "actual human/codec; headless authority adapter"')
-            for name in ('large_native_observe.dm','large_bridge_fixture.dm'): (fixture/name).write_text('// fixture')
+            for name in ('large_native_observe.dm','large_bridge_fixture.dm','large_bridge_lifecycle_draft.dm'): (fixture/name).write_text('// fixture')
             (stage/'human_subtile.dme').write_text('// dme')
             manifest=dict(dme='stage/human_subtile.dme',stage_files={},head='a'*40)
             bridge.adapt_bridge(out,manifest,Adapter())
