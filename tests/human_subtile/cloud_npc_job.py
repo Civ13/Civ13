@@ -105,12 +105,13 @@ def run(argv, env, deadline, timeout, storage, maximum=1024**2, optional=False, 
     return child.returncode,out,err
 
 
-def selected_estimate(raw):
+def selected_estimate(raw,suite='smoke'):
     total=count=0
+    wanted_paths=SELECTED + (('tests/subtile_movement/large_geometry.dm','tests/subtile_movement/large_geometry.dme') if suite=='extended' else ())
     for row in raw.split(b'\0'):
         if not row: continue
         meta,path=row.split(b'\t',1);name=path.decode('utf-8')
-        if any(name==wanted or name.startswith(wanted) for wanted in SELECTED):
+        if suite == 'production_compile' or any(name==wanted or name.startswith(wanted) for wanted in wanted_paths):
             parts=meta.split();require(parts[0] in (b'100644',b'100755') and parts[1]==b'blob' and parts[3]!=b'-','Unsupported Git entry')
             total+=int(parts[3]);count+=1
     require(count>0,'No selected source')
@@ -178,6 +179,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute',action='store_true');parser.add_argument('--head',required=True)
     parser.add_argument('--output',required=True,type=Path);parser.add_argument('--controller-output',required=True,type=Path)
+    parser.add_argument('--suite',choices=('smoke','extended','production_compile'),default='smoke')
     args=parser.parse_args();require(args.execute,'Explicit --execute required')
     controller.hosted(os.environ,args.head)
     signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
@@ -207,7 +209,7 @@ def main():
         _,dirty,_=run(git+['status','--porcelain=v1','--untracked-files=all'],clean_env,deadline,30,storage)
         require(head.decode().strip()==args.head and not dirty,'Source differs from clean exact head')
         _,tree,_=run(git+['ls-tree','-r','-l','-z',args.head],clean_env,deadline,30,storage,maximum=16*1024**2)
-        record['scratch_estimate']=selected_estimate(tree);record['phase']='image-acquisition';save(out/'coordinator.json',record)
+        record['scratch_estimate']=selected_estimate(tree,args.suite);record['suite']=args.suite;record['phase']='image-acquisition';save(out/'coordinator.json',record)
         rc,existing,err=run(docker+['image','inspect',controller.IMAGE],clean_env,deadline,10,storage,optional=True)
         if rc:
             require(b'No such image' in err or b'No such object' in err,'Docker image state uncertain')
@@ -238,14 +240,16 @@ def main():
         # Preserve a 10-second coordinator receipt lease after controller/watchdog.
         command=[sys.executable,'-I','-B',str(HERE/'cloud_npc_controller.py'),'--execute','--head',args.head,
                  '--source',str(ROOT),'--byond-bin',str(binary),'--byond-archive',str(archive),
-                 '--output',str(control),'--deadline',str(deadline-10)]
+                 '--output',str(control),'--deadline',str(deadline-10),'--suite',args.suite]
         child_env={k:v for k,v in os.environ.items() if k in ('GITHUB_ACTIONS','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_ARCH',
           'GITHUB_REPOSITORY','GITHUB_REPOSITORY_ID','GITHUB_EVENT_NAME','CIV13_REPOSITORY_VISIBILITY','GITHUB_SHA','RUNNER_TEMP')}
         child_env.update(PATH='/usr/bin:/bin',LANG='C.UTF-8')
         record['native_executed']='controller-started-not-proof-of-launch'
         run(command,child_env,deadline-5,max(1,deadline-time.monotonic()-5),storage,interrupt=True)
         receipt=json.loads((control/'controller.json').read_text())
-        require(receipt.get('head')==args.head and receipt.get('complete') is True and receipt.get('fixture_dme_only') is True,
+        require(receipt.get('head')==args.head and receipt.get('complete') is True and
+                receipt.get('fixture_dme_only') is (args.suite != 'production_compile') and
+                receipt.get('suite')==args.suite,
                 'Controller did not produce exact-head fixture acceptance')
         record['complete']=True;record['phase']='complete'
     except BaseException as exc:

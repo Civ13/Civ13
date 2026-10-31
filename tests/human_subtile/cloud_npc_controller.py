@@ -56,7 +56,7 @@ def inspect_owned(info, cid, name, owner, head):
             'Container labels mismatch')
 
 
-def inspect_settings(info, image_id, mounts, uidgid, head):
+def inspect_settings(info, image_id, mounts, uidgid, head, suite='smoke'):
     host, config = info['HostConfig'], info['Config']
     require(info['Image'] == image_id and config['Image'] == IMAGE, 'Container image drift')
     require(host['Memory'] == 3*1024**3 and host['MemorySwap'] == 3*1024**3 and
@@ -77,6 +77,7 @@ def inspect_settings(info, image_id, mounts, uidgid, head):
     expected_cmd=['-I','-B','/source/tests/human_subtile/cloud_npc_smoke.py','--head',head,
                   '--byond-bin','/opt/byond/bin','--byond-archive','/inputs/byond.zip',
                   '--scratch-root','/work','--reviewed-cloud-envelope']
+    if suite != 'smoke': expected_cmd += ['--suite',suite]
     require(config.get('Cmd') == expected_cmd, 'Worker command mismatch')
     env_names = [(item.split('=',1)[0]).upper() for item in (config.get('Env') or [])]
     require(not any(re.search(r'(GITHUB|GH_TOKEN|SECRET|CREDENTIAL|PASSWORD|API_KEY)', key) for key in env_names),
@@ -165,11 +166,16 @@ def validate_package(data, expected):
         entries=inner.getmembers()
         allowed={'harness-status.json', 'smoke-summary.json', 'npc-smoke/cloud-manifest.json',
                  'npc-smoke/npc-manifest.json', 'npc-smoke/stage/compile-stdout.log',
-                 'npc-smoke/stage/compile-stderr.log'}
+                 'npc-smoke/stage/compile-stderr.log',
+                 'npc-smoke/geometry-stage/manifest.json', 'npc-smoke/geometry-stage/compile-stdout.log',
+                 'npc-smoke/geometry-stage/compile-stderr.log', 'production/source-manifest.json',
+                 'production/stage/compile-stdout.log', 'production/stage/compile-stderr.log'}
         allowed.update(f'npc-smoke/{suite}/{name}' for suite in ('runtime','runtime-wildlife')
                        for name in ('receipt.json','result.txt','port-closed.txt','runtime.log',
                                     'daemon-stdout.log','daemon-stderr.log','npc-receipt.json'))
         allowed.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout','stderr'))
+        allowed.update('npc-smoke/geometry/'+name for name in ('receipt.json','result.txt','port-closed.txt',
+            'runtime.log','daemon-stdout.log','daemon-stderr.log'))
         require(len(entries) <= 32 and all(x.isfile() and not x.name.startswith('/') and
                 '..' not in Path(x.name).parts and x.name in allowed and x.size <= 4*1024**2 for x in entries)
                 and sum(x.size for x in entries) <= MAX_PACKAGE, 'Unsafe evidence archive')
@@ -259,6 +265,87 @@ def validate_pass_evidence(data, head):
         npc.current.legacy.validate_compile(log, 'human_subtile.dmb')
 
 
+def validate_extended_evidence(data, head):
+    with tarfile.open(fileobj=io.BytesIO(data), mode='r:') as archive:
+        def read(name):
+            item=archive.getmember(name)
+            require(item.isfile() and item.size <= 4*1024**2, 'Invalid extended evidence member')
+            return archive.extractfile(item).read()
+        status=json.loads(read('harness-status.json')); summary=json.loads(read('smoke-summary.json'))
+        require(status.get('head') == head and status.get('outcome') == 'passed' and status.get('phase') == 'complete' and
+                status.get('fixture_dme_only') is True and status.get('suite') == 'extended' and
+                status.get('resource_copies_independent') is True and summary.get('head') == head and
+                summary.get('accepted') is True and summary.get('suite') == 'extended' and
+                summary.get('fixture_dme_only') is True, 'Invalid extended status')
+        states=summary.get('resource_states')
+        require(isinstance(states,dict) and set(states)=={'extended'} and status.get('runtime_resources')==states,
+                'Missing extended resource state')
+        state=states['extended']; initial=summary.get('artifacts',{}).get('human_subtile.rsc',{})
+        before=state.get('before',{});after=state.get('after',{})
+        require(before==initial and state.get('integrity_verified') is True and 'daemon_error' not in state and
+                'integrity_error' not in state and type(state.get('changed')) is bool and state['changed']==(before!=after),
+                'Invalid extended resource integrity')
+        for item in (before,after):
+            require(type(item.get('bytes')) is int and 0 < item['bytes'] <= 1024**3 and item.get('mode') == 0o600 and
+                    re.fullmatch('[0-9a-f]{64}',item.get('sha256') or ''), 'Invalid extended resource identity')
+        spec=importlib.util.spec_from_file_location('extended_receipts',Path(__file__).with_name('cloud_wildlife_extended.py'))
+        ext=importlib.util.module_from_spec(spec);spec.loader.exec_module(ext)
+        spec2=importlib.util.spec_from_file_location('extended_npc',Path(__file__).with_name('run-npc.py'))
+        npc=importlib.util.module_from_spec(spec2);spec2.loader.exec_module(npc)
+        for label,folder,validator in (('extended','runtime',ext.validate_extended),('geometry','geometry',ext.validate_geometry)):
+            prefix='npc-smoke/'+folder+'/'
+            require(read(prefix+'result.txt') == b'PASS\n' and read(prefix+'port-closed.txt') == b'closed\n', 'Invalid extended result')
+            raw=read(prefix+'receipt.json');validator(json.loads(raw),head)
+            require(summary.get('results',{}).get(label,{}).get('receipt_sha256') == hashlib.sha256(raw).hexdigest(),
+                    'Extended receipt hash mismatch')
+        for folder,artifact in (('stage','human_subtile.dmb'),('geometry-stage','large_geometry.dmb')):
+            prefix='npc-smoke/'+folder+'/compile-'
+            npc.current.legacy.validate_compile((read(prefix+'stdout.log')+read(prefix+'stderr.log')).decode(errors='replace'),artifact)
+        for name in ('npc-smoke/cloud-manifest.json','npc-smoke/geometry-stage/manifest.json'):
+            require(json.loads(read(name)).get('head') == head, 'Extended manifest head mismatch')
+
+
+def validate_production_evidence(data,head,expected_tree):
+    with tarfile.open(fileobj=io.BytesIO(data),mode='r:') as archive:
+        def read(name):
+            item=archive.getmember(name)
+            require(item.isfile() and item.size <= 4*1024**2, 'Invalid production evidence member')
+            return archive.extractfile(item).read()
+        status=json.loads(read('harness-status.json'));summary=json.loads(read('smoke-summary.json'))
+        manifest_raw=read('production/source-manifest.json');manifest=json.loads(manifest_raw)
+        require(status.get('head')==head and status.get('outcome')=='passed' and status.get('phase')=='complete' and
+                status.get('suite')=='production_compile' and status.get('fixture_dme_only') is False and
+                summary.get('head')==head and summary.get('accepted') is True and summary.get('suite')=='production_compile' and
+                summary.get('fixture_dme_only') is False and summary.get('scope') ==
+                'unmodified full tracked production DME compile only; no daemon or game acceptance', 'Invalid production compile status')
+        files=manifest.get('files')
+        require(manifest.get('head')==head and manifest.get('source_unmodified') is True and manifest.get('dme')=='civ13.dme' and
+                isinstance(files,dict) and 0 < len(files) <= 8000 and 'civ13.dme' in files and
+                summary.get('tree') == manifest.get('tree') == expected_tree and re.fullmatch('[0-9a-f]{40}',manifest.get('tree') or '') and
+                summary.get('source_file_count')==len(files) and summary.get('source_bytes')==manifest.get('bytes') and
+                summary.get('source_manifest_sha256')==hashlib.sha256(manifest_raw).hexdigest(), 'Invalid production source manifest')
+        total=0
+        for name,item in files.items():
+            require(isinstance(name,str) and name and not name.startswith('/') and '..' not in Path(name).parts and
+                    isinstance(item,dict) and type(item.get('bytes')) is int and 0 <= item['bytes'] <= 256*1024**2 and
+                    re.fullmatch('[0-9a-f]{64}',item.get('sha256') or '') and re.fullmatch('[0-9a-f]{40}',item.get('git_blob') or ''),
+                    'Invalid production source identity')
+            total+=item['bytes']
+        require(total==manifest['bytes'] and total<=1024**3,'Invalid production source total')
+        phase=summary.get('compile',{})
+        require(phase.get('returncode') == 0 and phase.get('timed_out') is False and
+                phase.get('oversized_log') is False and phase.get('deadline') == 120,
+                'Invalid production compiler phase')
+        for name in ('civ13.dmb','civ13.rsc'):
+            item=summary.get('artifacts',{}).get(name,{})
+            require(type(item.get('bytes')) is int and 0 < item['bytes'] <= 1024**3 and
+                    re.fullmatch('[0-9a-f]{64}',item.get('sha256') or ''),'Missing production compile artifact identity')
+        spec=importlib.util.spec_from_file_location('production_npc',Path(__file__).with_name('run-npc.py'))
+        npc=importlib.util.module_from_spec(spec);spec.loader.exec_module(npc)
+        npc.current.legacy.validate_compile((read('production/stage/compile-stdout.log')+
+                                             read('production/stage/compile-stderr.log')).decode(errors='replace'),'civ13.dmb')
+
+
 def save(path, report):
     data=(json.dumps(report,indent=2,sort_keys=True)+'\n').encode()
     require(len(data) <= 65536, 'Controller receipt bound')
@@ -272,8 +359,8 @@ def save_container_logs(docker, cid, path, timeout=3):
     return {'bytes':min(len(data),1024**2),'truncated':len(data)>1024**2}
 
 
-def create_args(name,owner,head,source,binary,archive,uidgid):
-    return ['create','--name',name,'--platform','linux/386','--pull','never',
+def create_args(name,owner,head,source,binary,archive,uidgid,suite='smoke'):
+    args = ['create','--name',name,'--platform','linux/386','--pull','never',
         '--label','scope='+SCOPE,'--label','owner='+owner,'--label','head='+head,
         '--network','none','--read-only','--user',uidgid,'--cap-drop','ALL',
         '--security-opt','no-new-privileges','--pids-limit','64','--memory','3g',
@@ -287,6 +374,8 @@ def create_args(name,owner,head,source,binary,archive,uidgid):
         '--entrypoint','/usr/local/bin/python3.12',IMAGE,'-I','-B','/source/tests/human_subtile/cloud_npc_smoke.py',
         '--head',head,'--byond-bin','/opt/byond/bin','--byond-archive','/inputs/byond.zip',
         '--scratch-root','/work','--reviewed-cloud-envelope']
+    if suite != 'smoke': args += ['--suite',suite]
+    return args
 
 
 def absent_name(docker, name):
@@ -328,6 +417,7 @@ def main():
     parser.add_argument('--name',help=argparse.SUPPRESS)
     parser.add_argument('--owner',help=argparse.SUPPRESS)
     parser.add_argument('--deadline',type=float,help=argparse.SUPPRESS)
+    parser.add_argument('--suite',choices=('smoke','extended','production_compile'),default='smoke')
     args=parser.parse_args()
     started=time.monotonic()
     require(args.execute, 'Execution requires explicit --execute')
@@ -349,6 +439,8 @@ def main():
     git=['git','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null','-C',str(source)]
     head=subprocess.check_output(git+['rev-parse','HEAD'],timeout=10,env=git_env).decode().strip()
     require(head == args.head and not subprocess.check_output(git+['status','--porcelain=v1','--untracked-files=all'],timeout=30,env=git_env), 'Source differs from exact clean head')
+    exact_tree=subprocess.check_output(git+['rev-parse',head+'^{tree}'],timeout=10,env=git_env).decode().strip()
+    require(SHA.fullmatch(exact_tree),'Invalid exact Git tree')
     config_check=subprocess.run(git+['config','--local','--name-only','--get-regexp',r'(http\..*\.extraheader|credential\.)'],capture_output=True,timeout=10,env=git_env)
     require(config_check.returncode == 1 and not config_check.stdout, 'Credential config in checkout')
     require(archive.stat().st_size == 4887281 and hashlib.sha256(archive.read_bytes()).hexdigest() == '16278f318cdeb4b77c57868dd7135032fde717ea6226269d22b2a1a50968e7f9', 'Archive pin mismatch')
@@ -360,7 +452,8 @@ def main():
         require(started < args.deadline <= started+MAX_SECONDS, 'Invalid shared outer deadline')
     deadline=min(started+MAX_SECONDS,args.deadline) if args.deadline is not None else started+MAX_SECONDS
     docker=Docker(out/'docker-config',deadline)
-    report={'head':head,'owner':owner,'name':name,'complete':False,'scope':SCOPE,'fixture_dme_only':True}
+    report={'head':head,'owner':owner,'name':name,'complete':False,'scope':SCOPE,
+            'fixture_dme_only':args.suite != 'production_compile','suite':args.suite}
     save(out/'controller.json',report)
     cid=None; watch=None; create_uncertain=False
     try:
@@ -378,11 +471,11 @@ def main():
         env.update(PATH='/usr/bin:/bin',LANG='C.UTF-8')
         watch=subprocess.Popen([sys.executable,'-I','-B',str(Path(__file__).resolve()),'--execute','--watchdog',
             '--head',head,'--source',str(source),'--byond-bin',str(binary),'--byond-archive',str(archive),
-            '--output',str(out),'--name',name,'--owner',owner,'--deadline',str(deadline)],
+            '--output',str(out),'--name',name,'--owner',owner,'--deadline',str(deadline),'--suite',args.suite],
             env=env,stdin=subprocess.DEVNULL,start_new_session=True)
         try:
             create_uncertain=True
-            value=docker.call(create_args(name,owner,head,source,binary,archive,uidgid),timeout=15)[1].decode().strip()
+            value=docker.call(create_args(name,owner,head,source,binary,archive,uidgid,args.suite),timeout=15)[1].decode().strip()
             require(CID.fullmatch(value), 'Bad created container ID'); cid=value; create_uncertain=False
         except BaseException:
             # Reconcile a possible completed create by this fresh name and labels.
@@ -393,7 +486,7 @@ def main():
         report['cid']=cid; save(out/'controller.json',report)
         info=inspect(docker,cid); inspect_owned(info,cid,name,owner,head)
         mounts=((source,'/source'),(binary,'/opt/byond/bin'),(archive,'/inputs/byond.zip'))
-        inspect_settings(info,image['Id'],mounts,uidgid,head)
+        inspect_settings(info,image['Id'],mounts,uidgid,head,args.suite)
         docker.call(['start',cid],timeout=10)
         marker=None
         while time.monotonic() < deadline-(MAX_SECONDS-WORK_SECONDS):
@@ -421,7 +514,9 @@ def main():
             report['outcome']=marker.get('outcome')
             report['evidence_complete']=package['complete']
             if report['outcome'] == 'passed' and package['complete']:
-                validate_pass_evidence(evidence,head)
+                if args.suite == 'extended': validate_extended_evidence(evidence,head)
+                elif args.suite == 'production_compile': validate_production_evidence(evidence,head,exact_tree)
+                else: validate_pass_evidence(evidence,head)
                 report['host_receipts_validated']=True
             wait_end=min(deadline-20,time.monotonic()+5)
             while time.monotonic() < wait_end:

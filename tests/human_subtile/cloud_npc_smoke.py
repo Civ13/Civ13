@@ -40,6 +40,11 @@ EVIDENCE_PATHS = (
     'harness-status.json', 'smoke-summary.json', 'npc-smoke/cloud-manifest.json',
     'npc-smoke/npc-manifest.json', 'npc-smoke/stage/compile-stdout.log',
     'npc-smoke/stage/compile-stderr.log',
+    'npc-smoke/geometry-stage/manifest.json',
+    'npc-smoke/geometry-stage/compile-stdout.log', 'npc-smoke/geometry-stage/compile-stderr.log',
+    'production/source-manifest.json', 'production/stage/compile-stdout.log', 'production/stage/compile-stderr.log',
+    *(f'npc-smoke/geometry/{name}' for name in ('receipt.json','result.txt','port-closed.txt','runtime.log',
+                                                'daemon-stdout.log','daemon-stderr.log')),
     *(f'npc-smoke/{suite}/{name}' for suite in ('runtime', 'runtime-wildlife')
       for name in ('receipt.json', 'result.txt', 'port-closed.txt', 'runtime.log',
                    'daemon-stdout.log', 'daemon-stderr.log', 'npc-receipt.json')),
@@ -83,6 +88,10 @@ def package_evidence(root):
     collected = []
     total = 0
     for rel in EVIDENCE_PATHS:
+        # The extended manifest contains both the original and final source
+        # inventories; its pre-adaptation npc manifest is redundant.
+        if RUN_STATE.get('suite') == 'extended' and rel == 'npc-smoke/npc-manifest.json':
+            continue
         path = root / rel
         if not path.exists():
             continue
@@ -417,6 +426,114 @@ def interrupt_handler(signum, _frame):
     raise InterruptedError('Supervisor received signal ' + str(signum))
 
 
+def run_extended(args, scratch, binary, archive, group, envelope, identity, abi, began, npc, runtime, legacy):
+    """One full-source observation daemon and one standalone geometry daemon."""
+    checkpoint('extended-staging', suite='extended')
+    ext = load_module('extended_contract', HERE / 'cloud_wildlife_extended.py')
+    out = scratch / 'npc-smoke'
+    manifest = npc.prepare(out)
+    require(manifest['head'] == args.head, 'Staged commit differs from reviewed commit')
+    ext.adapt_extended(out, manifest, npc.current)
+    (out / 'cloud-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    stage, dme = out / 'stage', out / manifest['dme']
+    checkpoint('extended-fixture-compile')
+    build = run_owned_phase(legacy, group, [str(binary/'DreamMaker'), '-max_errors', '0', str(dme)], stage, 'compile', 120)
+    compile_log = ''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
+    legacy.validate_compile(compile_log, dme.with_suffix('.dmb').name)
+    for rel, expected in manifest['stage_files'].items():
+        p = stage/rel
+        require(p.stat().st_size == expected['bytes'] and file_hash(p) == expected['sha256'], 'Compiler changed fixture input: '+rel)
+    work, dmb, artifacts = prepare_linked_runtime(out, stage, dme, 'runtime')
+    peer, peer_dmb, peer_artifacts = prepare_linked_runtime(out, stage, dme, 'runtime-wildlife')
+    require(artifacts == peer_artifacts and not os.path.samefile(dmb.with_suffix('.rsc'),peer_dmb.with_suffix('.rsc')),
+            'Extended resource copies differ or share an inode')
+    checkpoint('extended-runtime-staged', runtime_artifacts=artifacts, resource_copies_independent=True)
+    resource_states = {}
+    checkpoint('extended-daemon')
+    runtime.verify_linux(binary, archive)
+    result = run_checked_runtime(legacy, group, [str(binary/'DreamDaemon'),str(dmb),'59474','-ip','127.0.0.1',
+        '-trusted','-params','tested_commit='+args.head+';wildlife_extended=1','-log','runtime.log'],
+        work,dme,peer,artifacts,artifacts[dme.with_suffix('.rsc').name],'extended',resource_states)
+    legacy.inspect_logs(work)
+    require((work/'port-closed.txt').read_bytes() == b'closed\n' and (work/'result.txt').read_bytes() == b'PASS\n',
+            'Extended fixture result/port failed')
+    receipt = json.loads((work/'receipt.json').read_text())
+    ext.validate_extended(receipt,args.head)
+    geometry_stage = out/'geometry-stage'; geometry_stage.mkdir()
+    geometry_inputs = {}
+    for name in ('large_geometry.dm','large_geometry.dme'):
+        rel='tests/subtile_movement/'+name
+        data=subprocess.check_output(['git','-C',str(ROOT),'show',args.head+':'+rel],timeout=10)
+        require(len(data) <= 1024**2 and data == (ROOT/rel).read_bytes(), 'Geometry source differs from exact Git: '+rel)
+        (geometry_stage/name).write_bytes(data)
+        geometry_inputs[name]={'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+    (geometry_stage/'manifest.json').write_text(json.dumps({'head':args.head,'inputs':geometry_inputs},indent=2)+'\n')
+    geometry_dme=geometry_stage/'large_geometry.dme'
+    checkpoint('geometry-fixture-compile')
+    runtime.verify_linux(binary, archive)
+    geometry_build=run_owned_phase(legacy,group,[str(binary/'DreamMaker'),'-max_errors','0',str(geometry_dme)],geometry_stage,'compile',120)
+    geometry_log=''.join((geometry_stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
+    legacy.validate_compile(geometry_log,'large_geometry.dmb')
+    for name, expected in geometry_inputs.items():
+        p=geometry_stage/name
+        require(p.stat().st_size == expected['bytes'] and file_hash(p) == expected['sha256'], 'Compiler changed geometry input: '+name)
+    geometry=out/'geometry';geometry.mkdir()
+    for extension in ('.dmb','.rsc'):
+        source=geometry_dme.with_suffix(extension)
+        if extension == '.rsc' and not source.exists():
+            continue
+        require(source.is_file() and 0 < source.stat().st_size <= MAX_DISK, 'Missing geometry artifact')
+        shutil.copy2(source,geometry/source.name)
+        require(file_hash(source)==file_hash(geometry/source.name), 'Geometry artifact copy mismatch')
+    checkpoint('geometry-daemon')
+    runtime.verify_linux(binary, archive)
+    geometry_result=run_owned_phase(legacy,group,[str(binary/'DreamDaemon'),str(geometry/'large_geometry.dmb'),'59474','-ip','127.0.0.1',
+        '-trusted','-params','tested_commit='+args.head,'-log','runtime.log'],geometry,'daemon',90)
+    legacy.inspect_logs(geometry)
+    require((geometry/'port-closed.txt').read_bytes()==b'closed\n' and (geometry/'result.txt').read_bytes()==b'PASS\n',
+            'Geometry fixture result/port failed')
+    geometry_receipt=json.loads((geometry/'receipt.json').read_text())
+    ext.validate_geometry(geometry_receipt,args.head)
+    summary=dict(head=args.head,accepted=True,suite='extended',fixture_dme_only=True,identity=identity,abi=abi,envelope=envelope,
+        compile=build,geometry_compile=geometry_build,artifacts=artifacts,resource_states=resource_states,
+        results={'extended':dict(daemon=result,receipt_sha256=file_hash(work/'receipt.json')),
+                 'geometry':dict(daemon=geometry_result,receipt_sha256=file_hash(geometry/'receipt.json'))},
+        scope=ext.SCOPE,seconds=time.monotonic()-began)
+    (scratch/'smoke-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    print(json.dumps(summary))
+    checkpoint('complete',outcome='passed',fixture_dme_only=True,suite='extended')
+
+
+def run_production_compile(args,scratch,binary,archive,group,envelope,identity,abi,began,runtime,legacy):
+    """Compile the unmodified complete tracked game DME; never launch it."""
+    production=load_module('production_stage',HERE/'cloud_production_compile.py')
+    checkpoint('production-staging',suite='production_compile',fixture_dme_only=False)
+    out=scratch/'production'
+    manifest=production.prepare(ROOT,out,args.head)
+    (out/'source-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    require_only_supervisor(group)
+    stage=out/'stage';dme=stage/'civ13.dme'
+    checkpoint('production-compile')
+    runtime.verify_linux(binary,archive)
+    result=run_owned_phase(legacy,group,[str(binary/'DreamMaker'),'-max_errors','0',str(dme)],stage,'compile',120)
+    log=''.join((stage/('compile-'+part+'.log')).read_text(errors='replace') for part in ('stdout','stderr'))
+    legacy.validate_compile(log,'civ13.dmb')
+    production.verify_source(stage,manifest)
+    artifacts={}
+    for suffix in ('.dmb','.rsc'):
+        path=dme.with_suffix(suffix)
+        require(path.is_file() and 0 < path.stat().st_size <= MAX_DISK,'Missing production compiler artifact')
+        artifacts[path.name]={'bytes':path.stat().st_size,'sha256':file_hash(path)}
+    summary=dict(head=args.head,tree=manifest['tree'],accepted=True,suite='production_compile',fixture_dme_only=False,
+        scope='unmodified full tracked production DME compile only; no daemon or game acceptance',
+        source_manifest_sha256=file_hash(out/'source-manifest.json'),source_file_count=len(manifest['files']),
+        source_bytes=manifest['bytes'],compile=result,artifacts=artifacts,identity=identity,abi=abi,envelope=envelope,
+        seconds=time.monotonic()-began)
+    (scratch/'smoke-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    print(json.dumps(summary))
+    checkpoint('complete',outcome='passed',fixture_dme_only=False,suite='production_compile')
+
+
 def main():
     global RUN_ROOT, RUN_STARTED, SCRATCH_METER
     parser = argparse.ArgumentParser(description=__doc__)
@@ -427,6 +544,7 @@ def main():
                         help='fresh dedicated <=1 GiB mount; evidence remains inside it')
     parser.add_argument('--reviewed-cloud-envelope', action='store_true',
                         help='operator confirms separate cloud isolation review')
+    parser.add_argument('--suite', choices=('smoke','extended','production_compile'), default='smoke')
     args = parser.parse_args()
     require(sys.platform == 'linux', 'Cloud smoke supports Linux only')
     require(args.reviewed_cloud_envelope, 'Separate cloud envelope review is required')
@@ -461,6 +579,10 @@ def main():
     require(file_hash(archive) == EXPECTED_ARCHIVE, 'Wrong archive bytes')
     checkpoint('base-image-preflight')
     abi=collect_abi(legacy,group,scratch,binary)
+    if args.suite == 'extended':
+        return run_extended(args,scratch,binary,archive,group,envelope,identity,abi,began,npc,runtime,legacy)
+    if args.suite == 'production_compile':
+        return run_production_compile(args,scratch,binary,archive,group,envelope,identity,abi,began,runtime,legacy)
     out = scratch / 'npc-smoke'
     manifest = npc.prepare(out)
     require(manifest['head'] == args.head, 'Staged commit differs from reviewed commit')

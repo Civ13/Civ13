@@ -81,9 +81,11 @@ class JobContracts(unittest.TestCase):
     def test_default_off_manual_selector_and_unrelated_job_guard(self):
         workflow=(ROOT/'.github/workflows/moving-save-chunks.yml').read_text(encoding='utf-8')
         self.assertIn('wildlife_smoke:\n',workflow)
-        self.assertIn('default: false',workflow)
-        self.assertIn("github.event_name != 'workflow_dispatch' || inputs.wildlife_smoke != true",workflow)
-        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.wildlife_smoke == true",workflow)
+        self.assertIn('wildlife_extended:\n',workflow)
+        self.assertGreaterEqual(workflow.count('default: false'),2)
+        self.assertIn("inputs.wildlife_smoke != true && inputs.wildlife_extended != true",workflow)
+        self.assertIn("inputs.wildlife_smoke == true && inputs.wildlife_extended != true",workflow)
+        self.assertIn("inputs.wildlife_extended == true && inputs.wildlife_smoke != true",workflow)
         self.assertIn('persist-credentials: false',workflow)
         self.assertIn('tests/human_subtile/cloud_npc_job.py --execute',workflow)
         wildlife=workflow.split('  wildlife-cloud-smoke:',1)[1]
