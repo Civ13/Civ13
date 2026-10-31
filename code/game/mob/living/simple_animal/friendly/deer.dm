@@ -85,7 +85,7 @@
 
 /mob/living/simple_animal/deer/Life()
 	..()
-	if (female)
+	if (female && !istype(src, /mob/living/simple_animal/deer/dikdik))
 		if (overpopulationCountdown > 0) //don't do any checks while overpopulation is in effect
 			overpopulationCountdown--
 			return
