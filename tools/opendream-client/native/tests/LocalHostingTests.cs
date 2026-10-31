@@ -39,9 +39,9 @@ static class LocalHostingTests {
             Require(hosting.ToString().TrimEnd().EndsWith(LocalHosting.Menu), "hosting option missing after the existing options");
         }
 
-        Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, @public = true, bot = new { php, root = bot, profile } });
+        Write(new { schema = 1, game_directory = game, world = "civ13.dmb", port = 1714, bot = new { php, root = bot, profile } });
         var host = LocalHosting.Load(launcher) ?? throw new Exception("valid host.json not loaded");
-        Require(host.Port == 1714 && host.Public && host.World == "civ13.dmb" && host.Bot is { HttpPort: 25565 }, "valid profile fields not read");
+        Require(host.Port == 1714 && host.World == "civ13.dmb" && host.Bot is { HttpPort: 25565 }, "valid profile fields not read");
 
         var started = new List<ProcessStartInfo>();
         var lines = LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add);
@@ -70,7 +70,7 @@ static class LocalHostingTests {
         host = LocalHosting.Load(launcher)!;
         started.Clear();
         LocalHosting.Run(host, @"C:\BYOND\bin", _ => false, started.Add);
-        Require(host.Bot is null && !host.Public && started.Count == 1 && started[0].ArgumentList.Contains("-invisible"), "server-only profile changed");
+        Require(host.Bot is null && started.Count == 1 && started[0].ArgumentList.Contains("-public") && !started[0].ArgumentList.Contains("-invisible"), "server-only profile changed");
 
         var git = Path.Combine(dir, "git.exe");
         File.WriteAllText(git, "");

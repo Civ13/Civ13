@@ -147,12 +147,12 @@ launcher root (`%LOCALAPPDATA%\Civ13`, or the `--root` folder). Without that fil
 the menu is unchanged. With it, `H: Host local DreamDaemon server` appears:
 
 ```json
-{"schema": 1, "game_directory": "D:/GitHub/Civ13", "world": "civ13.dmb", "port": 1714, "public": true,
+{"schema": 1, "game_directory": "D:/GitHub/Civ13", "world": "civ13.dmb", "port": 1714,
  "bot": {"php": "C:/php/php.exe", "root": "D:/Civilizationbot-local/bot", "profile": "D:/Civilizationbot-local/profile.json"}}
 ```
 
-`H` starts the verified BYOND `dd.exe` with `-trusted`, `-public` (or `-invisible`),
-`-close` and `-log logs/world.log` in `game_directory`, unless something already listens on
+`H` starts the verified BYOND `dd.exe` with `-trusted`, `-public` (always; the
+hosted world is listed on the hub), `-close` and `-log logs/world.log` in `game_directory`, unless something already listens on
 `port`. When `bot` is present it also starts the Civilizationbot portable supervisor
 (`control.php start <profile>`) unless the bot's `http_port` from that profile is
 already listening. `bot` is optional. Paths must be absolute and exist, and `world`
