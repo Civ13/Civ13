@@ -79,3 +79,51 @@ var/global/list/trait_list = list(
 	if (check_budget && check_trait_points(trait_choices) > 0)
 		return "Your traits are not balanced. The sum must be 0 or less."
 	return null
+
+// Injectable for deterministic fixtures; production uses BYOND's RNG.
+/datum/trait_random_source/proc/roll(upper)
+	return rand(1, upper)
+
+// Bounded, biased sampling of valid prefixes, not uniform sampling of all sets.
+// The current catalog has 24 entries. Refuse oversized future catalogs rather
+// than silently truncating eligibility or letting a click do unbounded work.
+/proc/random_zero_point_traits(datum/trait_random_source/random_source = null)
+	if (!islist(trait_list) || trait_list.len > 64)
+		return null
+	if (!random_source)
+		random_source = new /datum/trait_random_source
+	var/list/choices = list()
+	var/list/result = null
+	var/matches = 0
+	for (var/choice in trait_list)
+		var/list/singleton = list(choice)
+		if (get_trait_selection_error(singleton, FALSE))
+			continue
+		choices += choice
+		// Always consider eligible zero-cost traits, even if every trial skips.
+		if (check_trait_points(singleton) == 0)
+			matches++
+			if (random_source.roll(matches) == 1)
+				result = singleton.Copy()
+	for (var/attempt = 1, attempt <= 64, attempt++)
+		var/list/order = choices.Copy()
+		for (var/i = order.len, i > 1, i--)
+			order.Swap(i, random_source.roll(i))
+		var/list/selected = list()
+		for (var/choice in order)
+			if (random_source.roll(2) == 1)
+				continue
+			var/list/candidate = selected.Copy()
+			candidate += choice
+			// Allow intermediate positive totals so later drawbacks can balance them.
+			if (get_trait_selection_error(candidate, FALSE))
+				continue
+			selected = candidate
+			if (check_trait_points(selected) == 0)
+				matches++
+				if (random_source.roll(matches) == 1)
+					result = selected.Copy()
+	// Null means exhausted/no nonempty result; callers must preserve old choices.
+	if (!islist(result) || !result.len || get_trait_selection_error(result) || check_trait_points(result) != 0)
+		return null
+	return result
