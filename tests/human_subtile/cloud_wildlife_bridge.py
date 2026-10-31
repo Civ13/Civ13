@@ -18,7 +18,8 @@ def adapt_bridge(out, manifest, current):
     current.adapt(out, manifest, relative, '\t\t\tnpc_subtile_fixture()', '\t\t\tlarge_bridge_fixture()')
     current.adapt(out, manifest, relative, '"npc_checks" = npc_subtile_checks,',
                   '"large_bridge_checks" = large_bridge_checks, "large_bridge_rows" = large_bridge_rows, '
-                  '"large_bridge_controls" = large_bridge_controls, "npc_checks" = npc_subtile_checks,')
+                  '"large_bridge_controls" = large_bridge_controls, "large_bridge_exception_sentinel" = large_bridge_exception_sentinel, '
+                  '"npc_checks" = npc_subtile_checks,')
     current.adapt(out, manifest, relative, '"scope" = "actual human/codec; headless authority adapter"',
                   '"scope" = "' + SCOPE + '"')
     with (Path(out) / manifest['dme']).open('a', encoding='utf-8', newline='\n') as stream:
@@ -46,7 +47,10 @@ def validate_bridge(row, head):
     require(isinstance(row, dict) and row.get('head') == head and row.get('error') is None and
             row.get('port') == 0 and (row.get('byond_version'), row.get('byond_build')) == (516, 1688) and
             row.get('scope') == SCOPE and row.get('npc_checks') == 0 and
-            row.get('large_bridge_checks') == 4120, 'Invalid bridge receipt identity or count')
+            row.get('large_bridge_checks') == 4121, 'Invalid bridge receipt identity or count')
+    sentinel=row.get('large_bridge_exception_sentinel')
+    require(isinstance(sentinel,dict) and sentinel.get('caught') == 1 and sentinel.get('name') == 'fixture_bridge_exception',
+            'Direct exception sentinel failed')
     rows = row.get('large_bridge_rows')
     require(isinstance(rows, list) and len(rows) == 64, 'Incomplete bridge matrix')
     identities = set()
@@ -127,8 +131,14 @@ def validate_bridge(row, head):
             (after[0]-before[0])*32+after[3]-before[3] == -2 and 'CheckExit:bridge' in events(nested),
             'Nested pulse was not rejected or outer pulse did not complete')
     thrown=by_case['callback_throw']
-    require(thrown.get('caught') == 1 and thrown.get('checks') == 1 and thrown.get('auth',{}).get('consumed') == 1 and
-            point(thrown.get('before')) == point(thrown.get('after')) and 'CheckExit:bridge' in events(thrown),
+    throw_auth=thrown.get('auth',{})
+    require(thrown.get('caught') == 1 and thrown.get('caught_name') == 'fixture_bridge_exception' and
+            thrown.get('throw_attempted') == 1 and thrown.get('helper_returned') == 0 and
+            thrown.get('boundary_caught') == 1 and thrown.get('boundary_name') == 'fixture_bridge_exception' and
+            thrown.get('checks') == 1 and throw_auth.get('consumed') == 1 and
+            throw_auth.get('actor_pulse_present') == 1 and throw_auth.get('actor_transaction_present') == 1 and
+            throw_auth.get('actor_frame_present') == 0 and point(thrown.get('before')) == point(thrown.get('after')) and
+            'fixture_throw_attempt' in events(thrown) and 'Uncross:throw_catch' in events(thrown),
             'Exception cleanup control failed')
     deleted=by_case['callback_actor_delete']
     require(deleted.get('actor_deleted') == 1 and deleted.get('pulse_consumed') == 1 and deleted.get('checks') == 1 and

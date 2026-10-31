@@ -142,11 +142,17 @@ var/large_native_checks = 0
 	var/admitted_width = T.fixture_width; var/admitted_height = T.fixture_height
 	var/native_result = A.Move(destination, direction)
 	var/consumed = !P.armed
+	// Observe ownership immediately after native Move, before fixture cleanup.
+	var/actor_pulse_present = !!A.npc_subtile_pulse
+	var/actor_transaction_present = !!A.npc_subtile_transaction
+	var/actor_frame_present = !!A.npc_subtile_large_frame
 	A.npc_subtile_pulse = null
 	A.npc_subtile_transaction = null
 	large_native_assert(consumed && !P.restoring, "native_pulse_consumed_once")
 	var/list/result = list("native_return" = native_result, "engine_return" = P.engine_return,
 		"consumed" = consumed, "restoring" = P.restoring, "destination_x" = destination.x,
+		"actor_pulse_present" = actor_pulse_present, "actor_transaction_present" = actor_transaction_present,
+		"actor_frame_present" = actor_frame_present,
 		"destination_y" = destination.y, "sx" = sx, "sy" = sy, "direction" = direction,
 		"before" = admitted_before, "bound_x" = admitted_bx, "bound_y" = admitted_by,
 		"width" = admitted_width, "height" = admitted_height)

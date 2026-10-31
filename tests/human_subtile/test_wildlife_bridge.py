@@ -54,7 +54,10 @@ def receipt():
     controls.append(dict(case='callback_nested',before=dict(p,sx=2),after=dict(p,sx=0),checks=1,nested_result=0,
                          trace=[dict(event='CheckExit:bridge')]))
     controls.append(dict(case='callback_throw',before=copy.deepcopy(p),after=copy.deepcopy(p),checks=1,caught=1,
-                         auth=dict(consumed=1),trace=[dict(event='CheckExit:bridge')]))
+                         caught_name='fixture_bridge_exception',throw_attempted=1,helper_returned=0,boundary_caught=1,
+                         boundary_name='fixture_bridge_exception',auth=dict(consumed=1,actor_pulse_present=1,
+                         actor_transaction_present=1,actor_frame_present=0),
+                         trace=[dict(event='CheckExit:bridge'),dict(event='fixture_throw_attempt'),dict(event='Uncross:throw_catch')]))
     controls.append(dict(case='callback_actor_delete',before=copy.deepcopy(p),actor_deleted=1,pulse_consumed=1,
                          error=None,checks=1,trace=[dict(event='CheckExit:bridge')]))
     controls.append(dict(case='policy_mutation',before=copy.deepcopy(p),after=copy.deepcopy(p),mutator_checks=1,
@@ -68,7 +71,8 @@ def receipt():
                     trace=[dict(event='Uncross:'+kind),dict(event='CheckExit:'+kind)]))
     for control in controls: control['frame_cleared']=1
     return dict(head='a'*40,error=None,port=0,byond_version=516,byond_build=1688,scope=bridge.SCOPE,
-                npc_checks=0,large_bridge_checks=4120,large_bridge_rows=rows,large_bridge_controls=controls)
+                npc_checks=0,large_bridge_checks=4121,large_bridge_exception_sentinel=dict(caught=1,name='fixture_bridge_exception'),
+                large_bridge_rows=rows,large_bridge_controls=controls)
 
 class BridgeReceiptTests(unittest.TestCase):
     def test_complete_fixture(self):
@@ -86,7 +90,10 @@ class BridgeReceiptTests(unittest.TestCase):
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(actor_deleted=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(frame_cleared=0),
             lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_actor_delete').update(pulse_consumed=0),
-            lambda r: r.update(large_bridge_checks=4119),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw').update(throw_attempted=0),
+            lambda r: next(c for c in r['large_bridge_controls'] if c['case']=='callback_throw')['auth'].update(actor_frame_present=1),
+            lambda r: r.update(large_bridge_checks=4120),
+            lambda r: r['large_bridge_exception_sentinel'].update(caught=0),
         ]
         for mutate in mutations:
             row=receipt(); mutate(row)

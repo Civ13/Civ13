@@ -70,12 +70,26 @@ class LargeExitContracts(unittest.TestCase):
         self.assertIn('var/list/admitted_before = T.expected.Copy()',before)
         self.assertNotIn('T.expected',after)
         self.assertNotIn('T.fixture_',after)
+        self.assertLess(after.index('actor_pulse_present = !!A.npc_subtile_pulse'),after.index('A.npc_subtile_pulse = null'))
+        self.assertLess(after.index('actor_transaction_present = !!A.npc_subtile_transaction'),after.index('A.npc_subtile_transaction = null'))
+        self.assertIn('actor_frame_present = !!A.npc_subtile_large_frame',after)
 
     def test_failed_callback_observation_is_recorded_before_assertion(self):
         fixture=source('tests/human_subtile/large_bridge_fixture.dm')
         segment=fixture.split('var/control_dx =',1)[1].split('C.control_object = null',1)[0]
         self.assertLess(segment.index('large_bridge_controls += '),segment.index('large_bridge_assert('))
         self.assertIn('"caught_name" = caught_name',segment)
+        self.assertIn('"helper_returned" = helper_returned',segment)
+        self.assertIn('"throw_attempted" = B.fixture_throw_attempted',segment)
+        self.assertIn('"boundary_caught" = B.fixture_boundary_caught',segment)
         self.assertIn('"frame_cleared" = !C.npc_subtile_large_frame',segment)
+
+    def test_throw_boundary_rethrows_and_direct_sentinel_is_identical(self):
+        fixture=source('tests/human_subtile/large_bridge_fixture.dm')
+        self.assertEqual(fixture.count('throw EXCEPTION("fixture_bridge_exception")'),2)
+        boundary=fixture.split('/obj/large_native_border/bridge/throw_boundary/Uncross(',1)[1].split('// Fixture-only parent seam',1)[0]
+        self.assertIn('fixture_boundary_caught = TRUE',boundary)
+        self.assertIn('throw fixture_boundary_error',boundary)
+        self.assertIn('bridge_direct_exception_sentinel',fixture)
 
 if __name__ == '__main__': unittest.main()

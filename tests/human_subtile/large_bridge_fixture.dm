@@ -3,6 +3,7 @@
 var/list/large_bridge_rows = list()
 var/list/large_bridge_controls = list()
 var/large_bridge_checks = 0
+var/list/large_bridge_exception_sentinel = list()
 
 /mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge
 	npc_subtile_large_exit_enabled = TRUE
@@ -16,6 +17,9 @@ var/large_bridge_checks = 0
 	var/fixture_direction = null
 	var/fixture_fault = null
 	var/fixture_nested_result = null
+	var/fixture_throw_attempted = FALSE
+	var/fixture_boundary_caught = FALSE
+	var/fixture_boundary_name = null
 	var/datum/npc_subtile_transaction/fixture_replacement
 	var/fixture_token = null
 	var/obj/large_native_border/bridge/fixture_mutation_target
@@ -60,6 +64,8 @@ var/large_bridge_checks = 0
 			if ("callback_nested")
 				fixture_nested_result = A.Move(A.npc_subtile_pulse.destination, A.npc_subtile_pulse.direction)
 			if ("callback_throw")
+				fixture_throw_attempted = TRUE
+				large_native_log("fixture_throw_attempt", src)
 				throw EXCEPTION("fixture_bridge_exception")
 	return fixture_allow
 
@@ -68,6 +74,20 @@ var/large_bridge_checks = 0
 /obj/large_native_border/bridge/reject_uncross/Uncross(atom/movable/mover, atom/newloc)
 	large_native_log("Uncross:fixture_reject", src)
 	return FALSE
+
+// Dedicated throw case: report the last DM wrapper before native Move and
+// rethrow unchanged. This does not invoke any callback outside native Move.
+/obj/large_native_border/bridge/throw_boundary/Uncross(atom/movable/mover, atom/newloc)
+	large_native_log("Uncross:throw_enter", src)
+	try
+		. = ..()
+	catch (var/exception/fixture_boundary_error)
+		fixture_boundary_caught = TRUE
+		fixture_boundary_name = fixture_boundary_error.name
+		large_native_log("Uncross:throw_catch", src)
+		throw fixture_boundary_error
+	large_native_log("Uncross:throw_return", src)
+	return .
 
 // Fixture-only parent seam: native parent is still called, and only the
 // dedicated test object changes a successful parent result into rejection.
@@ -240,6 +260,15 @@ var/large_bridge_checks = 0
 	return A
 
 /proc/large_bridge_fixture()
+	var/direct_caught = FALSE
+	var/direct_name = null
+	try
+		throw EXCEPTION("fixture_bridge_exception")
+	catch (var/exception/direct_error)
+		direct_name = direct_error.name
+		direct_caught = direct_name == "fixture_bridge_exception"
+	large_bridge_exception_sentinel = list("caught" = direct_caught, "name" = direct_name)
+	large_bridge_assert(direct_caught, "bridge_direct_exception_sentinel")
 	for (var/animal_type in list(/mob/living/simple_animal/hostile/mammoth/large_native_observe/bridge, /mob/living/simple_animal/hostile/dinosaur/trex/large_native_observe/bridge))
 		for (var/variant in list(0, 64))
 			for (var/direction in list(EAST, WEST, NORTH, SOUTH))
@@ -293,6 +322,10 @@ var/large_bridge_checks = 0
 								B = new /obj/large_native_border/bridge/reject_uncross(exiting)
 							else if (control == "parent_uncross_reject")
 								B = new /obj/large_native_border/bridge/parent_reject(exiting)
+							else if (control == "callback_throw")
+								B = new /obj/large_native_border/bridge/throw_boundary(exiting)
+								B.fixture_allow = TRUE
+								B.fixture_fault = control
 							else
 								B = new(exiting)
 								B.fixture_allow = TRUE
@@ -302,17 +335,23 @@ var/large_bridge_checks = 0
 							var/list/control_auth
 							var/caught = FALSE
 							var/caught_name = null
+							var/helper_returned = FALSE
 							if (control == "callback_throw")
 								try
-									large_native_pulse(C, WEST, -2, 0)
+									control_auth = large_native_pulse(C, WEST, -2, 0)
+									helper_returned = TRUE
 								catch (var/exception/fixture_error)
 									caught_name = fixture_error.name
 									caught = caught_name == "fixture_bridge_exception"
-								var/datum/npc_subtile_pulse/P = C.npc_subtile_pulse
-								var/datum/npc_subtile_transaction/T = C.npc_subtile_transaction
-								control_auth = list("consumed" = (P && !P.armed))
-								C.npc_subtile_pulse = null; C.npc_subtile_transaction = null
-								qdel(P); qdel(T)
+								if (!helper_returned)
+									var/datum/npc_subtile_pulse/P = C.npc_subtile_pulse
+									var/datum/npc_subtile_transaction/T = C.npc_subtile_transaction
+									control_auth = list("consumed" = (P && !P.armed),
+										"actor_pulse_present" = !!C.npc_subtile_pulse,
+										"actor_transaction_present" = !!C.npc_subtile_transaction,
+										"actor_frame_present" = !!C.npc_subtile_large_frame)
+									C.npc_subtile_pulse = null; C.npc_subtile_transaction = null
+									qdel(P); qdel(T)
 							else
 								control_auth = large_native_pulse(C, WEST, -2, 0)
 							var/list/control_after = large_native_snapshot(C)
@@ -320,6 +359,8 @@ var/large_bridge_checks = 0
 							// Preserve the exact observation even when the next assertion fails.
 							large_bridge_controls += list(list("case" = control, "before" = control_before, "after" = control_after,
 								"auth" = control_auth, "checks" = B.fixture_checks, "caught" = caught, "caught_name" = caught_name,
+								"helper_returned" = helper_returned, "throw_attempted" = B.fixture_throw_attempted,
+								"boundary_caught" = B.fixture_boundary_caught, "boundary_name" = B.fixture_boundary_name,
 								"nested_result" = B.fixture_nested_result, "frame_cleared" = !C.npc_subtile_large_frame,
 								"trace" = large_native_trace.Copy()))
 							large_bridge_assert(control_dx == (control == "callback_nested" ? -2 : 0) && !C.npc_subtile_large_frame && (control != "callback_nested" || !B.fixture_nested_result) && (control != "callback_throw" || (caught && control_auth["consumed"])), "bridge_callback_rejected")
