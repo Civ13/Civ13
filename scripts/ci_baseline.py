@@ -54,6 +54,12 @@ SUITES = {
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
     'progress': {'files': ('tests/world_save/test_progress_sources.py',), 'always': True, 'paths': ()},
+    # Stdlib-only scalar/callback projections; no native runner or subprocesses.
+    # Shared chemistry/stack sources retain their conservative all-suite fallback.
+    'grinder': {'files': ('tests/grinder/test_transaction.py',),
+        'paths': ('tests/grinder/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Machinery.dm',
+            'code/game/objects/items/stacks/stack.dm')},
     # Stdlib-only source projection; no native runner is imported or executed.
     # Keep shared farming.dm unmapped so its all-suite fallback stays intact.
     'crop_stage_step': {'files': ('tests/crop_stage_step/test_source.py',), 'paths': (

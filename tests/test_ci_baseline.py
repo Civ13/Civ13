@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -52,6 +53,103 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_grinder_registration_preserves_shared_source_fallback(self):
+        suite = ci.SUITES['grinder']
+        self.assertEqual(suite['files'], ('tests/grinder/test_transaction.py',))
+        self.assertEqual(suite['paths'], ('tests/grinder/',))
+        self.assertFalse(suite.get('always', False))
+        for path in ('tests/grinder/test_transaction.py', 'tests/grinder/historical-grinder.dm'):
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'grinder'})
+                self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+        for path in suite['shared_paths']:
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+                self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+        self.assertEqual(self.selected(['unknown-grinder-impact.dm']), set(ci.SUITES))
+        tree = ast.parse((ROOT / suite['files'][0]).read_text())
+        imports = {node.names[0].name.split('.')[0] for node in ast.walk(tree) if isinstance(node, ast.Import)}
+        self.assertEqual(imports, {'ast', 'heapq', 'math', 're', 'unittest'})
+        self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}, {'pathlib'})
+
+    def test_failing_grinder_child_fails_selected_baseline_and_aggregate(self):
+        # Stage exact reviewed inputs; never mutate production or launch DM.
+        # Only unrelated mandatory suites use passing adapters to avoid recursively
+        # running this policy test inside its own selected baseline fixture.
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for relative in ('scripts/ci_baseline.py', 'scripts/byond_toolchain.py',
+                             'tools/byond/version.json', *ci.SUITES['grinder']['files'],
+                             'tests/grinder/historical-grinder.dm',
+                             'code/modules/reagents/Chemistry-Machinery.dm',
+                             'code/game/objects/items/stacks/stack.dm'):
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, destination)
+            def git(*args):
+                return subprocess.check_output(['git', '-C', temporary, *args],
+                                               stderr=subprocess.PIPE, timeout=10).decode().strip()
+            git('init')
+            git('config', 'user.name', 'Grinder CI fixture')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('add', '.')
+            git('commit', '-qm', 'passing grinder fixture')
+            real_run = ci.subprocess.run
+            def child(command, **kwargs):
+                if 'unit' not in command:
+                    return real_run(command, **kwargs)
+                if command[command.index('--suite') + 1] == 'grinder':
+                    command = list(command)
+                    command[2] = str(root / 'scripts/ci_baseline.py')
+                    return real_run(command, **(kwargs | {'cwd': root}))
+                ci.write_json(command[command.index('--output') + 1], dict(
+                    status='passed', tests=1, errors=0, failures=0, skipped=0))
+                return subprocess.CompletedProcess(command, 0)
+            passing_test_count = None
+            for failing in (False, True):
+                with self.subTest(failing=failing):
+                    if failing:
+                        test_file = root / ci.SUITES['grinder']['files'][0]
+                        with test_file.open('a', encoding='utf-8') as output:
+                            output.write('\nclass GrinderCiFailureControl(unittest.TestCase):\n'
+                                         '    def test_selected_grinder_failure(self):\n'
+                                         '        self.fail("intentional grinder CI failure")\n')
+                        git('add', '.')
+                        git('commit', '-qm', 'intentional isolated grinder test failure')
+                    head = git('rev-parse', 'HEAD')
+                    plan, _, compiler, jobs = fixtures(('tests/grinder/test_transaction.py',))
+                    plan['head'] = compiler['head'] = head
+                    compiler['selection_sha256'] = ci.digest(plan)
+                    evidence = root / ('negative' if failing else 'positive')
+                    with patch.object(ci, 'ROOT', root), patch.object(ci.subprocess, 'run', side_effect=child), \
+                            patch.dict(os.environ, {'GITHUB_RUN_ATTEMPT': '1'}), patch('builtins.print'):
+                        exit_code = ci.execute(plan, evidence)
+                    baseline = json.loads((evidence / 'baseline.json').read_text())
+                    grinder = baseline['suites']['grinder']
+                    expected_status = 'failed' if failing else 'passed'
+                    self.assertEqual(exit_code, int(failing))
+                    self.assertEqual(baseline['status'], expected_status)
+                    self.assertTrue(baseline['source_unchanged'])
+                    self.assertFalse(baseline['tracked_dirty'])
+                    self.assertFalse(baseline['tracked_dirty_after'])
+                    self.assertEqual(grinder['exit_code'], int(failing))
+                    if not failing:
+                        passing_test_count = grinder['counts']['tests']
+                        self.assertGreater(passing_test_count, 0)
+                    self.assertEqual(grinder['counts'], dict(status=expected_status,
+                        tests=passing_test_count + int(failing),
+                        failures=int(failing), errors=0, skipped=0))
+                    self.assertEqual(grinder['files'], ['tests/grinder/test_transaction.py'])
+                    self.assertIn('--suite', grinder['command'])
+                    errors = ci.aggregate(plan, baseline, compiler, jobs, False)
+                    if failing:
+                        self.assertIn('intentional grinder CI failure', (evidence / 'grinder.log').read_text())
+                        self.assertIn('Baseline did not pass', errors)
+                        self.assertIn('Missing, failed or unexpectedly skipped suite: grinder', errors)
+                        self.assertIn('Incomplete test execution: grinder', errors)
+                    else:
+                        self.assertEqual(errors, [])
+
     def test_character_return_preparation_selects_actual_source_and_helper_inputs(self):
         manifest = json.loads((ROOT / 'tests/world_save/character_return/inputs.json').read_text())
         inputs = set(manifest['reference_sha256'])
