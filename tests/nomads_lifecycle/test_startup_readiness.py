@@ -1,12 +1,14 @@
 """Owned readiness publication and help follow-up; no native process or socket."""
 import copy
 import importlib.util
+import itertools
 import json
 from pathlib import Path
 import sys
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
+from types import SimpleNamespace
 
 SCRIPTS = Path(__file__).resolve().parents[2] / 'scripts/nomads-lifecycle'
 sys.path.insert(0, str(SCRIPTS))
@@ -38,9 +40,13 @@ class StartupReadinessTests(unittest.TestCase):
         m.write_json(self.root / 'state.json', self.state)
 
     def publish(self, **overrides):
+        owner = m.Supervisor.__new__(m.Supervisor)
+        owner.root = self.root.resolve()
+        owner.state = copy.deepcopy(self.state)
+        owner.require_owned_listener = Mock()
         arguments = {'revision': self.revision, 'expected_map': 'NOMADS_GAIA',
                      'host': self.host.copy(), 'generation': None, 'session': self.session,
-                     'status': self.status.copy(), 'identity': lambda pid: 200}
+                     'status': self.status.copy(), 'identity': lambda pid: 200, 'owner': owner}
         arguments.update(overrides)
         return m.publish_ready(self.root, **arguments)
 
@@ -138,6 +144,15 @@ class StartupReadinessTests(unittest.TestCase):
             self.publish(identity=identity)
         self.assertEqual(json.loads((self.root / 'state.json').read_text())['phase'], 'saving')
 
+    def test_readiness_publication_requires_same_process_owner(self):
+        self.unchanged_rejection(owner=None)
+        foreign = m.Supervisor.__new__(m.Supervisor)
+        foreign.root = self.root / 'other'
+        foreign.state = copy.deepcopy(self.state)
+        foreign.require_owned_listener = Mock()
+        self.unchanged_rejection(owner=foreign)
+        foreign.require_owned_listener.assert_not_called()
+
     def supervisor(self, statuses, *, clock=lambda: 0):
         config = self.root / 'config'
         config.mkdir(exist_ok=True)
@@ -145,7 +160,8 @@ class StartupReadinessTests(unittest.TestCase):
         supervisor = m.Supervisor({'root': str(self.root), 'config_directory': str(config),
             'port': 1714, 'daemon': 'injected-no-native', 'startup_timeout_seconds': 5},
             clock=clock, sleep=lambda _: None)
-        supervisor.status = Mock(side_effect=statuses)
+        supervisor.status = Mock(side_effect=itertools.chain(statuses, itertools.repeat(statuses[-1])))
+        supervisor.require_owned_listener = Mock()
         return supervisor
 
     def staged_build(self):
@@ -171,11 +187,18 @@ class StartupReadinessTests(unittest.TestCase):
                 status = dict(self.status, map='NOMADS_EUROPE', generation=generation or '',
                               restart_import_complete=int(restored))
                 supervisor = self.supervisor([dict(status, ready=0), status])
-                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=Mock(pid=100)), \
+                child = Mock(pid=100, poll=Mock(return_value=None))
+                supervisor.owned_session = 'f' * 32
+                def spawn(*_args, **_kwargs):
+                    self.assertIsNone(supervisor.owned_session)
+                    return child
+                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', side_effect=spawn), \
                         patch.object(m, 'process_identity', return_value=200), \
                         patch.object(m, 'publish_ready', wraps=m.publish_ready) as publisher:
                     supervisor.start(build, backup, generation, 'e' * 32 if restored else 'f' * 32)
                 publisher.assert_called_once()
+                self.assertIs(supervisor.child, child)
+                self.assertEqual(supervisor.owned_session, self.session)
                 self.assertEqual(supervisor.state['phase'], 'ready')
                 self.assertEqual(supervisor.state['map'], 'NOMADS_EUROPE')
                 self.assertNotIn(self.session, (self.root / 'events.jsonl').read_text())
@@ -188,7 +211,7 @@ class StartupReadinessTests(unittest.TestCase):
                 statuses = [dict(status, ready=0), dict(status, session='d' * 32)]
                 supervisor = self.supervisor(statuses, clock=lambda: 0) if changed_session else \
                     self.supervisor([dict(status, ready=0)], clock=Mock(side_effect=[0, 6]))
-                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=Mock(pid=100)), \
+                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=Mock(pid=100, poll=Mock(return_value=None))), \
                         patch.object(m, 'process_identity', return_value=200), \
                         patch.object(m, 'publish_ready', wraps=m.publish_ready) as publisher:
                     with self.assertRaisesRegex(RuntimeError, 'session changed' if changed_session else 'readiness timeout'):
@@ -196,24 +219,108 @@ class StartupReadinessTests(unittest.TestCase):
                 publisher.assert_not_called()
                 self.assertEqual(supervisor.state['phase'], 'starting')
 
-    def test_resumed_reconciliation_uses_same_publisher_and_stable_session(self):
-        for final_change in ({}, {'ready': 0}, {'session': 'd' * 32}):
-            with self.subTest(final_change=final_change):
-                self.save_state()
-                supervisor = self.supervisor([self.status, dict(self.status, **final_change), self.status])
-                with patch.object(supervisor, 'candidate', return_value=self.revision), \
+    def test_restarted_helper_does_not_adopt_persisted_pid(self):
+        self.save_state()
+        supervisor = self.supervisor([self.status])
+        with patch.object(supervisor, 'candidate', return_value=self.revision) as candidate, \
+                patch.object(m, 'process_identity') as identity, \
+                patch.object(m, 'publish_ready') as publisher, \
+                patch.object(supervisor, 'build') as build:
+            with self.assertRaisesRegex(RuntimeError, 'helper_lost'):
+                supervisor.cycle()
+            identity.assert_not_called()
+            candidate.assert_not_called()
+            supervisor.status.assert_not_called()
+            publisher.assert_not_called()
+            build.assert_not_called()
+
+    def test_ordinary_launch_rejects_foreign_unknown_or_multiple_listeners(self):
+        daemon = self.root / 'inert-daemon'
+        daemon.touch()
+        for name in ('civ13.dmb', 'civ13.rsc'):
+            (self.run / name).write_bytes(b'inert')
+        manifest = {'revision': self.revision, 'map': 'NOMADS_GAIA',
+                    'binaries': {name: m.digest(self.run / name) for name in ('civ13.dmb', 'civ13.rsc')}}
+        addr = SimpleNamespace(ip='0.0.0.0', port=1714)
+        owned = SimpleNamespace(status='LISTEN', laddr=addr, pid=100)
+        cases = (PermissionError('listener denied'), [], [SimpleNamespace(status='LISTEN', laddr=addr, pid=None)],
+                 [SimpleNamespace(status='LISTEN', laddr=addr, pid=999)],
+                 [owned, SimpleNamespace(status='LISTEN', laddr=addr, pid=999)])
+        for rows in cases:
+            with self.subTest(rows=rows):
+                supervisor = self.supervisor([self.status])
+                supervisor.config.update(daemon=str(daemon), map='NOMADS_GAIA')
+                supervisor.require_owned_listener = m.Supervisor.require_owned_listener.__get__(supervisor)
+                child = Mock(pid=100, poll=Mock(return_value=None))
+                def observe(host, daemon_path, run, port, bind):
+                    if isinstance(rows, Exception):
+                        raise rows
+                    m.require_unique_listener(host['pid'], port, bind, [owned], rows, 'LISTEN')
+                with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=child), \
                         patch.object(m, 'process_identity', return_value=200), \
-                        patch.object(m, 'publish_ready', wraps=m.publish_ready) as publisher, \
-                        patch.object(supervisor, 'build') as build:
-                    if final_change:
-                        with self.assertRaises(RuntimeError):
-                            supervisor.cycle()
-                        self.assertEqual(supervisor.state['phase'], 'fresh_gaia_available')
-                    else:
-                        supervisor.cycle()
-                        self.assertEqual(supervisor.state['phase'], 'ready')
-                    publisher.assert_called_once()
-                    build.assert_not_called()
+                        patch.object(m, 'windows_listener_observation', side_effect=observe), \
+                        self.assertRaises((RuntimeError, PermissionError)):
+                    supervisor.launch_prepared(self.run, manifest, None, 'a' * 32)
+                self.assertEqual(supervisor.state['phase'], 'starting')
+                self.assertIsNone(supervisor.owned_session)
+                supervisor.status.assert_not_called()
+                self.assertNotIn('cycle_complete', (self.root / 'events.jsonl').read_text())
+
+    def test_startup_waits_for_absent_listener_before_querying_status(self):
+        daemon = self.root / 'inert-daemon'
+        daemon.touch()
+        for name in ('civ13.dmb', 'civ13.rsc'):
+            (self.run / name).write_bytes(b'inert')
+        manifest = {'revision': self.revision, 'map': 'NOMADS_GAIA',
+                    'binaries': {name: m.digest(self.run / name) for name in ('civ13.dmb', 'civ13.rsc')}}
+        supervisor = self.supervisor([self.status])
+        supervisor.config.update(daemon=str(daemon), map='NOMADS_GAIA')
+        supervisor.require_owned_listener.side_effect = [m.ListenerNotReady('not ready'), None, None, None]
+        supervisor.sleep = Mock()
+        child = Mock(pid=100, poll=Mock(return_value=None))
+        def before_wait(_):
+            supervisor.status.assert_not_called()
+        supervisor.sleep.side_effect = before_wait
+        with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=child), \
+                patch.object(m, 'process_identity', return_value=200):
+            supervisor.launch_prepared(self.run, manifest, None, 'a' * 32)
+        supervisor.sleep.assert_called_once()
+        self.assertEqual(supervisor.state['phase'], 'ready')
+
+    def test_listener_change_after_ready_status_never_publishes(self):
+        daemon = self.root / 'inert-daemon'
+        daemon.touch()
+        for name in ('civ13.dmb', 'civ13.rsc'):
+            (self.run / name).write_bytes(b'inert')
+        manifest = {'revision': self.revision, 'map': 'NOMADS_GAIA',
+                    'binaries': {name: m.digest(self.run / name) for name in ('civ13.dmb', 'civ13.rsc')}}
+        supervisor = self.supervisor([self.status])
+        supervisor.config.update(daemon=str(daemon), map='NOMADS_GAIA')
+        supervisor.require_owned_listener.side_effect = [None, RuntimeError('listener replaced')]
+        child = Mock(pid=100, poll=Mock(return_value=None))
+        with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=child), \
+                patch.object(m, 'process_identity', return_value=200), \
+                self.assertRaisesRegex(RuntimeError, 'listener replaced'):
+            supervisor.launch_prepared(self.run, manifest, None, 'a' * 32)
+        self.assertEqual(supervisor.state['phase'], 'starting')
+        self.assertIsNone(supervisor.owned_session)
+
+    def test_session_change_after_listener_check_never_publishes(self):
+        daemon = self.root / 'inert-daemon'
+        daemon.touch()
+        for name in ('civ13.dmb', 'civ13.rsc'):
+            (self.run / name).write_bytes(b'inert')
+        manifest = {'revision': self.revision, 'map': 'NOMADS_GAIA',
+                    'binaries': {name: m.digest(self.run / name) for name in ('civ13.dmb', 'civ13.rsc')}}
+        supervisor = self.supervisor([self.status, dict(self.status, session='d' * 32)])
+        supervisor.config.update(daemon=str(daemon), map='NOMADS_GAIA')
+        child = Mock(pid=100, poll=Mock(return_value=None))
+        with patch.object(m.socket, 'socket'), patch.object(m.subprocess, 'Popen', return_value=child), \
+                patch.object(m, 'process_identity', return_value=200), \
+                self.assertRaisesRegex(RuntimeError, 'changed during listener verification'):
+            supervisor.launch_prepared(self.run, manifest, None, 'a' * 32)
+        self.assertEqual(supervisor.state['phase'], 'starting')
+        self.assertIsNone(supervisor.owned_session)
 
 
 if __name__ == '__main__':
