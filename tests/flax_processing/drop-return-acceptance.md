@@ -1,7 +1,11 @@
 # Issue #3322 source review and remaining acceptance
 
-Source-only proposal. No native compiler, daemon, client, capture or workflow
-was run for this change. Main owns independent review and any later admission.
+The production fix merged in #3324 at `ee976baa004ad86528d7eddc4c06da3d94a43ec9`.
+The earlier review and acceptance proposal below remain historical evidence.
+The previously unpublished fixture is now prepared on current source; see
+[the reconciled source-only plan](human-entry-plan.md). No native compiler,
+daemon, client, capture or workflow was run for this preparation. Main owns
+independent review and any later admission.
 
 ## Decision and dispatch boundary
 
@@ -118,6 +122,8 @@ banner and clean summary, and passively verifies the pinned Linux archive and it
 four installed runtime members immediately before each existing compiler/daemon
 launch. Offline tests inject these launch seams; they never launch BYOND. Existing
 180-second compile/45-second runtime bounds, isolation, output preservation,
-cleanup and payment/replay/persistence controls remain. No other frozen runner or
-native selection rule is changed. Ordinary PR CI may verify the prepared flax
-fixture; it still cannot establish production-human afterattack/HUD acceptance.
+cleanup and payment/replay/persistence controls remain. The follow-on source
+preparation reconciles the harvest runner's version contract and passes its
+archive argument without changing native selection rules. Ordinary PR CI still
+runs the older processing probe, not the explicit human-entry mode; it cannot
+establish production-human afterattack/HUD acceptance.
