@@ -46,7 +46,15 @@ the selector fails without publishing outputs, retaining failed gating contexts.
 The cheap offline baseline below runs on ordinary PR and master-push CI, explicit
 build requests and manual CI runs. Unforced feature pushes skip it. Other existing
 regression suites remain opt-in, including game runtime, atlas, resource
-inventory, MCP protocol, comment collector and changelog tests.
+inventory, comment collector and changelog tests. The independent MCP workflow
+also runs on ordinary master PRs and master pushes when files under `tools/mcp/`,
+its workflow, selector, checkout helper, the three fixed runtime-reader modules,
+their focused tests, or the six exact persistence files that supply recovery
+status and phase contracts change. This intentionally runs MCP tests for any
+edit to those six files; it does not select other game files. It runs on
+both Linux and Windows at the verified event head, without expanding native fixture admission. A missing or
+failed comparison fails selection rather than silently skipping the workflow;
+an initial master push without a base runs it conservatively.
 In Actions, select **CI**, **Run workflow**, and enable **extensive_regressions**
 to run all game/offline suites. The option defaults to false. For MCP, comment
 review, changelog, environment sweeps, component tools or trains, manually run

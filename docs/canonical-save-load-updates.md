@@ -7,21 +7,24 @@ the candidate binary before replacing that pair. Source preparation and offline 
 authorize deployment, player interruption, a native compiler or a real cycle.
 There is no scheduled task or automatic retry in this path.
 
-The separately started `watch-admin` mode polls only the existing authenticated
-loopback lifecycle status for a typed in-game maintenance request. It uses the
-same updater and `supervisor.lock`, not a second server owner. It is not installed
-or enabled by this source change. It requires the existing reviewed canonical
-configuration and `canonical_update_enabled: true`; keep the private configuration
-and operational state on D:. Do not run this mode until the source and native
-admission have been reviewed. If it is not running, the game expires an
+The source-only `CanonicalCoordinator` accepts the actual long-lived Supervisor
+and a scoped lease for the `supervisor.lock` already held by that same process.
+Its `poll_admin()` reads the existing authenticated loopback status for a typed
+maintenance request without reacquiring the lock; `update_once()` uses that same
+owner and lease. Neither entry point starts a scheduler or listener. Both require
+the existing default-off `canonical_update_enabled` setting. The separately
+started `watch-admin` and `update-once` CLI actions are refused: a fresh process
+cannot inherit a live OS process handle. The held, default-off canonical bot
+source can bootstrap only an explicitly pinned existing save after snapshotting
+it; its unconditional spool authorization denial prevents activation. If the coordinator is not running, the game expires an
 unaccepted request after five minutes and tells admins. The game issues a
 one-minute warning before making the request visible to the supervisor. An
 `R_SERVER` admin must confirm it, including the warning that gameplay during
 serialization may not be preserved. This explicit request permits connected
-clients; ordinary `update-once` retains the existing connected-client deferral.
+clients; the coordinator's ordinary update retains the connected-client deferral.
 
 The game supplies only an operation identity bound to its current session; it
-does not supply a command, path, branch or revision. The watcher records an
+does not supply a command, path, branch or revision. The coordinator records an
 exclusive per-operation receipt before submitting the save, then rechecks the
 session and request at the save boundary. The supervisor submits the distinct
 `maintenance_save_shutdown` action; the game atomically verifies that the same
@@ -30,7 +33,7 @@ expired request can never fall through to the ordinary `save_shutdown` action.
 An existing receipt prevents replay,
 including after a crash or an ambiguous response. Failures are recorded in the
 receipt and, if the original world is still reachable, a fixed failure signal
-notifies admins. An interrupted watcher requires operator inspection; it never
+notifies admins. An interrupted coordinator requires operator inspection; it never
 automatically retries an accepted identity. A completed receipt is written only
 after the updater's mode-specific restore or fresh-start and readiness checks succeed.
 
@@ -45,19 +48,31 @@ do not delete the retained generation or launch a fresh world as a substitute.
 it does not load a token, query a process, fetch Git, compile or launch anything.
 `canonical_update.py dry-run --config ABSOLUTE_CONFIG` prints the same offline
 plan; it cannot know the running world's persistence mode or prove readiness.
-Invoke either with the reviewed absolute Python executable. After a separate
-scoped live-cycle authorization and installation of a compatible game build,
-the single operator trigger is `REVIEWED_PYTHON canonical_update.py update-once
---config ABSOLUTE_CONFIG`; it retains the ordinary connected-client deferral.
+Invoke either with the reviewed absolute Python executable. An actual cycle needs
+a separately reviewed owner process that already retains the launched child,
+its bound session and the lock lease; no standalone command can provide that
+ownership. Source tests do not authorize a live cycle.
 The bounded heartbeat observation defaults to 60 seconds and can be configured
 from 1 through 300 seconds using `continuity_timeout_seconds`.
-The separate `update-once` action requires `canonical_update_enabled: true` in
-a reviewed private configuration. The example remains disabled and contains
+The in-process coordinator requires `canonical_update_enabled: true` in a
+reviewed private configuration. The example remains disabled and contains
 unavailable toolchain placeholders. Existing native ownership/admission must
 cover the compiler's bounded work/cleanup and the independent save/startup
 windows; a source merge does not supply that admission. Install pinned helpers
 in durable ignored software storage, not a tracked path the update replaces.
-Do not reuse a consumed native grant or treat this command as an allocation.
+Do not reuse a consumed native grant or treat the coordinator as an allocation.
+
+Readiness and mutation admission now call the supervisor's shared child and
+listener check. It uses the retained process, creation identity, executable,
+working directory and unique configured listener, failing closed on missing or
+inaccessible observations. Mocked tests do not establish complete Windows
+listener visibility or eliminate races; independent platform review and
+authorized evidence remain necessary. The source dispatcher shares its owner and
+lease with the separately typed canonical bot target; the prepared-run target
+retains its existing path rule. Before an update, the old bot capability is
+revoked under the short spool lock, and queued requests prevent admission. The
+old binding stays blocked after an update and requires explicit reconciliation.
+Keep this prototype on hold; it changes no credentials, ACLs or activation state.
 
 Before an authorized cycle, review `save_timeout_seconds` and
 `startup_timeout_seconds` against measured save and load times with sufficient

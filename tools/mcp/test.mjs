@@ -5,13 +5,23 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import path from 'node:path';
 
 test('real stdio handshake, discovery, bounded calls and error isolation', async () => {
- const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs')],env:{...process.env}});
+ const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs')],env:{...process.env,CIV13_RUNTIME_ENABLED:'0'}});
  const client = new Client({name:'civ13-test',version:'1.0.0'});
  try {
   await client.connect(transport);
-  const tools = await client.listTools(); assert.equal(tools.tools.length,7);
+  const tools = await client.listTools(); assert.equal(tools.tools.length,8);
   assert.equal(tools.tools.find(t => t.name === 'dm_reference_read').annotations.openWorldHint,true);
   const call = (name,args={}) => client.callTool({name,arguments:args});
+  const catalog = await call('fixture_catalog');
+  assert.equal(catalog.isError,undefined);
+  assert.deepEqual(catalog.structuredContent.fixtures.map(f => f.id), ['character-return','season-transition','seasonal-construction','zone-persistence']);
+  for (const fixture of catalog.structuredContent.fixtures) {
+   assert.ok(fixture.guide && fixture.prerequisites && fixture.evidence);
+   assert.equal(await (await import('node:fs/promises')).stat(path.resolve(import.meta.dirname,'../..',fixture.guide)).then(s => s.isFile()), true);
+   assert.equal((await call('source_read',{path:fixture.guide,lines:1})).isError,undefined);
+  }
+  assert.equal((await call('source_read',{path:'tests/zone_persistence/probe.dm'})).isError,true);
+  assert.equal((await call('source_read',{path:'tests/season_transition/../zone_persistence/README.md'})).isError,true);
   assert.equal((await call('dm_reference_search',{query:' '})).isError,true);
   assert.equal((await call('dm_reference_read',{topic:'/list',length:16001})).isError,true);
   const read = await call('source_read',{path:'README.md',lines:2}); assert.equal(read.isError,undefined);
@@ -72,6 +82,31 @@ test('official reference search and read through stdio with an offline transport
  } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
 });
 
+test('optional runtime tools use the fixed adapter through stdio with an injected process', async () => {
+ const fs = await import('node:fs/promises'); const os = await import('node:os');
+ const dir = await fs.mkdtemp(path.join(os.tmpdir(),'civ13-mcp-runtime-'));
+ const preload = path.join(dir,'spawn.cjs');
+ await fs.writeFile(preload, `const cp = require('node:child_process'); const {EventEmitter} = require('node:events');
+ const {PassThrough} = require('node:stream'); cp.spawn = (exe, args, options) => {
+   if (args[0] !== '-I' || args[1] !== '-B' || !args[2].endsWith('runtime_bridge.py') || !['recovery','variables'].includes(args[3]) || options.shell !== false) throw Error('wrong adapter');
+   const child = new EventEmitter(); child.stdout = new PassThrough(); child.kill = () => child.emit('close',null);
+   process.nextTick(() => { child.stdout.write(JSON.stringify({ok:true,method:args[3]})); child.emit('close',0); }); return child;
+ }; require('node:module').syncBuiltinESMExports();`);
+ const transport = new StdioClientTransport({command:process.execPath,args:['--require',preload,path.join(import.meta.dirname,'server.mjs')],
+  env:{...process.env,CIV13_RUNTIME_ENABLED:'1',CIV13_RUNTIME_PYTHON:process.execPath,CIV13_RUNTIME_ROOT:dir,
+   CIV13_RUNTIME_REVISION:'a'.repeat(40),CIV13_RUNTIME_SESSION:'b'.repeat(32),CIV13_RUNTIME_ROUND:'round-1'}});
+ const client = new Client({name:'runtime-test',version:'1.0.0'});
+ try {
+  await client.connect(transport);
+  const tools = await client.listTools(); assert.equal(tools.tools.length,10);
+  assert.equal(tools.tools.find(t=>t.name === 'runtime_recovery').annotations.openWorldHint,true);
+  for (const [name,method] of [['runtime_recovery','recovery'],['runtime_variables','variables']]) {
+   const response = await client.callTool({name,arguments:{}});
+   assert.deepEqual(response.structuredContent,{ok:true,method});
+  }
+ } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
+});
+
 
 
 test('realpath rejects directory links escaping configured root', async () => {
@@ -80,12 +115,17 @@ test('realpath rejects directory links escaping configured root', async () => {
  const repo = path.join(dir,'repo'), outside = path.join(dir,'outside');
  await fs.mkdir(repo); await fs.mkdir(outside);
  await fs.writeFile(path.join(outside,'escape.dm'),'private fixture');
+ await fs.writeFile(path.join(outside,'README.md'),'private guide');
  await fs.symlink(outside,path.join(repo,'code'),process.platform==='win32'?'junction':'dir');
+ await fs.mkdir(path.join(repo,'tests'));
+ await fs.symlink(outside,path.join(repo,'tests','season_transition'),process.platform==='win32'?'junction':'dir');
  const transport = new StdioClientTransport({command:process.execPath,args:[path.join(import.meta.dirname,'server.mjs'),repo]});
  const client = new Client({name:'path-test',version:'1.0.0'});
  try {
   await client.connect(transport);
   const response = await client.callTool({name:'source_read',arguments:{path:'code/escape.dm'}});
   assert.equal(response.isError,true); assert.match(response.content[0].text,/escapes repository/);
+  const guide = await client.callTool({name:'source_read',arguments:{path:'tests/season_transition/README.md'}});
+  assert.equal(guide.isError,true); assert.match(guide.content[0].text,/escapes repository/);
  } finally { await client.close(); await fs.rm(dir,{recursive:true,force:true}); }
 });

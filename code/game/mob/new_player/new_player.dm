@@ -371,7 +371,11 @@ var/global/redirect_all_players = null
 	if (lobby_join_active || src != usr || !client || client.mob != src || spawning)
 		lobby_join_trace("handler_denied", "owner_or_busy")
 		return FALSE
-	if(!map_storage.allow_new_character(src)) return FALSE
+	if(!map_storage.allow_new_character(src))
+		// Reclaim may have transferred/deleted this lobby. Record only a lobby
+		// that is still owned by the same client, with no private details.
+		if(!QDELETED(src) && client && client.mob == src) lobby_join_trace("handler_denied", "character_or_recovery_hold")
+		return FALSE
 	lobby_join_trace("handler_entered", "none")
 	lobby_join_result = null
 	lobby_join_active = TRUE

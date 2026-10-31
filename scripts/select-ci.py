@@ -237,6 +237,35 @@ def changed_atlas_tests(base, head, event):
     return sorted({ATLAS_TEST_INPUTS[path] for path in paths if path in ATLAS_TEST_INPUTS})
 
 
+def select_mcp(base, head, event):
+    """Select the offline MCP workflow without expanding native suite admission."""
+    if event == 'workflow_dispatch' or (event == 'push' and (not base or set(base) == {'0'})):
+        return True
+    if not base or not head or set(base) == {'0'}:
+        raise RuntimeError('MCP selection requires a valid base and head comparison')
+    try:
+        paths = subprocess.check_output(
+            ['git', 'diff', '--name-only', '--no-renames', '-z', base, head],
+            stderr=subprocess.PIPE, timeout=15).decode('utf-8').split('\0')
+    except (subprocess.SubprocessError, OSError, UnicodeError) as exc:
+        raise RuntimeError('MCP selection could not compare base and head') from exc
+    return any(path.startswith('tools/mcp/') or path in {
+        '.github/workflows/mcp.yml', 'scripts/select-ci.py', 'tests/test_ci_selection.py',
+        'scripts/ci_checkout_refs.py', 'tests/test_ci_checkout_refs.py',
+        'scripts/nomads-lifecycle/agent_debug.py',
+        'scripts/nomads-lifecycle/variable_observability.py',
+        'scripts/nomads-lifecycle/read_blackout.py',
+        'tests/nomads_lifecycle/test_agent_debug.py',
+        'tests/nomads_lifecycle/test_variable_observability.py',
+        # Fixed production readers and phase-contract inputs; no general DM glob.
+        'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+        'code/modules/persistence/restart_transaction.dm',
+        'code/modules/persistence/nomads_lifecycle.dm',
+        'code/modules/persistence/variable_observability.dm',
+        'code/modules/persistence/zone_topology.dm'
+    } for path in paths)
+
+
 def introduced_tests(base, head, event):
     """Only added executable tests on a PR qualify, never edits or prose.
 
@@ -292,7 +321,16 @@ def main():
     parser.add_argument('--extensive', choices=('true', 'false'), default='false')
     parser.add_argument('--build-prefix', choices=('true', 'false'), default='false')
     parser.add_argument('--receipt', help='Exact-source machine-readable selection receipt')
+    parser.add_argument('--mcp-only', action='store_true', help='Select the independent offline MCP workflow')
     args = parser.parse_args()
+    if args.mcp_only:
+        try:
+            selected = select_mcp(args.base, args.head, args.event)
+        except RuntimeError as error:
+            parser.error(str(error))
+        with open(args.output, 'a', encoding='utf-8') as output:
+            output.write(f'mcp={str(selected).lower()}\n')
+        return
     if args.event == 'workflow_dispatch' and args.build_prefix == 'true':
         try:
             validate_manual_base(args.base, args.head)

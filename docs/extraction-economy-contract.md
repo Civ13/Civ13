@@ -48,6 +48,81 @@ Quotes bind policy version, trader, graph digest, account revisions, condition,
 quantity, price and expiry. Confirmation repeats eligibility and rejects stale
 condition, duplicate IDs, changed policy and busy or deployed accounts.
 
+## Real-world currency valuation for future traders
+
+Extraction game modes must use actual real-world foreign-exchange (FX) rates
+when future traders value supported real-world currencies. Pounds, euros and
+other supported currencies must not be interchangeable skins for equal-value
+credits or use invented exchange rates. This means currency exchange rates,
+not stock/security prices. This is a future implementation requirement: the
+current prototype game-credit economy does not perform FX conversion.
+
+### Currency and denomination identity
+
+Use an explicit allowlist mapping each supported money item type and its existing
+sprite to an ISO 4217 currency code and face denomination. Stack count multiplies
+that denomination; stacked icon variants do not multiply it again. The existing
+[money definitions](../code/game/objects/items/stacks/money.dm) and
+[item sprites](../icons/obj/items.dmi) include these verified starting points:
+
+| Item types under `/obj/item/stack/money/european/` | Currency | Face denominations per item | Initial icon states |
+| --- | --- | --- | --- |
+| `britpound`, `britpound5`, `britpound10`, `britpound20`, `britpound50` | GBP | 1, 5, 10, 20, 50 pounds respectively | `britpound`, `5britpound`, `10britpound`, `20britpound`, `50britpound` |
+| `euro`, `euro2`, `euro5`, `euro10`, `euro20`, `euro50`, `euro100`, `euro200`, `euro500` | EUR | 1, 2, 5, 10, 20, 50, 100, 200, 500 euros respectively | `euro`, `2euro`, `5euro`, `10euro`, `20euro`, `50euro`, `100euro`, `200euro`, `500euro` |
+
+Audit other currencies before admitting them; this table is not an exhaustive
+currency catalog. Do not infer currency identity or face value from the legacy
+`value` field alone: `/money/dollar` changes identity/denomination by map and era,
+and `/money/rubles` describes Soviet rubles, not modern RUB. Historical,
+fictional, ambiguous and unsupported money must remain outside contemporary FX
+conversion unless a separate explicit policy is reviewed. Reuse existing sprites;
+this requirement does not authorize adding art or changing legacy mode prices.
+
+### Rate source and deterministic settlement
+
+- Select and document a trusted, free public FX source at implementation time,
+  verifying currency coverage, quotation direction, publication cadence and
+  permitted use. Record provider identity, source effective time, fetch time,
+  base currency and snapshot/version ID. No provider or current numeric rate is
+  selected here; published reference rates must not be presented as guaranteed
+  live executable prices. No paid service, credential or client-side request is
+  required or authorized by this design note.
+- Normalize all supported currencies to one explicit real-world base currency.
+  Define `r_C` as base-currency units per one unit of currency C (`r_base = 1`).
+  Then `base_value = stack_count * face_denomination * r_C`; conversion from C
+  to D is `amount_C * r_C / r_D`. Invert provider quotes where required rather
+  than accidentally reversing buy/sell conversion. The base selection and any
+  mapping from base units to game credits are separately versioned design
+  decisions, not an assumption that one game credit equals one real-world unit.
+- Fetch and validate rates server-side on a bounded schedule, outside the trade
+  transaction. Cache last-known-good snapshots with explicit freshness and
+  maximum-stale limits that account for the provider's publication calendar.
+  Reject malformed, missing, non-positive or non-finite required rates. On a
+  fetch failure, use only an explicitly labeled cached snapshot within the
+  reviewed stale limit; otherwise refuse new FX-dependent trades. Never silently
+  substitute 1:1, fabricated rates or zero value. Show source date and stale state.
+- Pin one immutable accepted snapshot for the round's economy and bind its ID to
+  every quote, settlement receipt and recovery record. A refresh is for a later
+  round, not repricing a pending trade. Once the pinned snapshot exceeds the
+  maximum-stale limit, refuse new FX quotes rather than silently refreshing it;
+  honor already accepted durable settlements using their recorded terms.
+  Recovery/replay must use the original snapshot and amounts, never today's rate.
+- Keep quotes and settlement server-authoritative across native and bot adapters.
+  Specify bounded fixed-point/rational arithmetic and rounding once at the
+  settlement boundary; buying and selling must not create profit from rounding
+  or split-stack conversion. Retain existing custody, account-revision,
+  conservation, bounds and idempotency checks.
+- Keep trader buy/sell spreads, fees, condition, scarcity and game-balance
+  multipliers explicit and separate from the recorded FX rate. Display face
+  amount/currency, FX conversion, each adjustment and final payable amount.
+  Balancing must not silently replace the real-world relative currency values.
+
+Before activation, cover GBP/EUR denominations and stacks, both quote directions,
+cross-currency conversion, unsupported/historical money, missing/stale/malformed
+rates, provider outages, round snapshot pinning, quote expiry, rounding and
+split-stack arbitrage, bounds, concurrent confirmation and crash/replay. These
+are future acceptance requirements, not claims of implemented or tested FX.
+
 ## Fixed-price listings and fees
 
 Listing creation atomically moves the actual graph to escrow and transfers the

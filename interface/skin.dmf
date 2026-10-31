@@ -144,6 +144,30 @@ macro "macro"
 		name = "F12"
 		command = "ChangeHUD"
 
+	elem
+		name = "ALT+North+REP"
+		command = ".fine-offset-step 1"
+	elem
+		name = "ALT+South+REP"
+		command = ".fine-offset-step 2"
+	elem
+		name = "ALT+East+REP"
+		command = ".fine-offset-step 4"
+	elem
+		name = "ALT+West+REP"
+		command = ".fine-offset-step 8"
+	elem
+		name = "ALT+Northeast+REP"
+		command = ".fine-offset-step 5"
+	elem
+		name = "ALT+Northwest+REP"
+		command = ".fine-offset-step 9"
+	elem
+		name = "ALT+Southeast+REP"
+		command = ".fine-offset-step 6"
+	elem
+		name = "ALT+Southwest+REP"
+		command = ".fine-offset-step 10"
 macro "hotkeymode"
 	elem 
 		name = "Return"
@@ -413,6 +437,42 @@ macro "hotkeymode"
 		name = ","
 		command = "m-intent-prone"
 
+	elem
+		name = "ALT+North+REP"
+		command = ".fine-offset-step 1"
+	elem
+		name = "ALT+South+REP"
+		command = ".fine-offset-step 2"
+	elem
+		name = "ALT+East+REP"
+		command = ".fine-offset-step 4"
+	elem
+		name = "ALT+West+REP"
+		command = ".fine-offset-step 8"
+	elem
+		name = "ALT+Northeast+REP"
+		command = ".fine-offset-step 5"
+	elem
+		name = "ALT+Northwest+REP"
+		command = ".fine-offset-step 9"
+	elem
+		name = "ALT+Southeast+REP"
+		command = ".fine-offset-step 6"
+	elem
+		name = "ALT+Southwest+REP"
+		command = ".fine-offset-step 10"
+	elem
+		name = "ALT+W+REP"
+		command = ".fine-offset-step 1"
+	elem
+		name = "ALT+S+REP"
+		command = ".fine-offset-step 2"
+	elem
+		name = "ALT+D+REP"
+		command = ".fine-offset-step 4"
+	elem
+		name = "ALT+A+REP"
+		command = ".fine-offset-step 8"
 menu "menu"
 	elem 
 		name = "&File"

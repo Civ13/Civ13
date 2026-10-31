@@ -12,7 +12,7 @@
       "name": "Desktop Nomads TEST1714", "host": "local operator", "supported": false, "moderate": false, "legacy_relay": false,
       "discussion": "", "playercount": "", "ooc": "", "lobby": "", "asay": "", "ic": "", "transit": "", "adminlog": "", "debug": "", "garbage": "", "runtime": "", "attack": "",
       "native_lifecycle": {
-        "enabled": false, "supervisor_root": "D:/Civ13-example/supervisor",
+        "enabled": false, "target_type": "prepared", "supervisor_root": "D:/Civ13-example/supervisor",
         "daemon": "D:/Civ13-example/BYOND/bin/dd.exe",
         "supervisor_sha256": "REVIEWED_SUPERVISOR_SHA256", "guard_sha256": "REVIEWED_GUARD_SHA256",
         "config_sha256": "REVIEWED_CONFIG_SHA256", "daemon_sha256": "REVIEWED_DAEMON_SHA256",

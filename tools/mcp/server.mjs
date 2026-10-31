@@ -6,6 +6,8 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawn } from 'node:child_process';
 import { createReference } from './dm-reference.mjs';
+import { fixtureCatalog } from './fixture-catalog.mjs';
+import { createRuntimeAdapter } from './runtime-adapter.mjs';
 
 const root = await fs.realpath(process.argv[2] || path.resolve(import.meta.dirname, '../..'));
 const compiler = process.env.CIV13_DM_COMPILER;
@@ -13,8 +15,9 @@ const server = new McpServer({ name: 'civ13-local', version: '1.0.0' });
 const children = new Set();
 let compiling = false;
 const inside = p => p === root || p.startsWith(root + path.sep);
+const fixtureGuides = new Set(fixtureCatalog.map(fixture => fixture.guide));
 async function source(relative) {
-  if (!/^(code\/.*\.dm|civ13\.dme|README\.md|INSTALL|docs\/api\/(README|index)\.md)$/.test(relative) || relative.includes('..') || relative.includes('\\')) throw Error('Source path is not allowed');
+  if ((!/^(code\/.*\.dm|civ13\.dme|README\.md|INSTALL|docs\/api\/(README|index)\.md)$/.test(relative) && !fixtureGuides.has(relative)) || relative.includes('..') || relative.includes('\\')) throw Error('Source path is not allowed');
   const absolute = await fs.realpath(path.resolve(root, relative));
   if (!inside(absolute)) throw Error('Source escapes repository');
   const stat = await fs.stat(absolute);
@@ -42,6 +45,15 @@ function tool(name, description, inputSchema, readonly, run, openWorld = false) 
   });
 }
 const reference = createReference();
+const runtime = createRuntimeAdapter(process.env, path.join(import.meta.dirname, 'runtime_bridge.py'));
+if (runtime.enabled) {
+  tool('runtime_recovery', 'Read a redacted, fresh recovery summary from the operator-configured local target.', {}, true,
+    async (_, signal) => runtime.run('recovery', signal), true);
+  tool('runtime_variables', 'Read redacted, fresh operation and failure classifications from the operator-configured local target.', {}, true,
+    async (_, signal) => runtime.run('variables', signal), true);
+}
+tool('fixture_catalog', 'List curated fixture preparation metadata. Does not prepare, execute, or discover tests dynamically.', {}, true,
+  async () => ({ fixtures: fixtureCatalog, scope: 'Curated subset; consult each guide for current details. Listing is not test evidence.' }));
 tool('dm_reference_search', 'Search official BYOND DM language reference. Fetches only the fixed official HTTPS page, with bounded in-memory cache; not semantic source analysis.',
   { query: z.string().trim().min(1).max(120), limit: z.number().int().min(1).max(40).default(20) }, true, reference, true);
 tool('dm_reference_read', 'Read an exact DM reference topic returned by search. Plain text with source provenance; live docs may exceed pinned compiler version.',
@@ -113,5 +125,5 @@ for (const [name, relative] of [['api-guide','docs/api/README.md'],['api-index',
 }
 const transport = new StdioServerTransport();
 await server.connect(transport);
-process.stdin.on('end', async () => { for (const child of children) child.kill(); await server.close(); });
-for (const event of ['SIGINT','SIGTERM']) process.on(event, () => { for (const child of children) child.kill(); process.stdin.destroy(); });
+process.stdin.on('end', async () => { runtime.close(); for (const child of children) child.kill(); await server.close(); });
+for (const event of ['SIGINT','SIGTERM']) process.on(event, () => { runtime.close(); for (const child of children) child.kill(); process.stdin.destroy(); });

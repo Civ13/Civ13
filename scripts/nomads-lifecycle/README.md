@@ -64,17 +64,19 @@ to the acknowledged request. An older internally consistent save is insufficient
    paths, and place reviewed server configuration in `config_directory`. Create
    its secret token locally and restrict directory access to the server account.
    Never commit that directory. Disable other automatic reboot mechanisms.
-3. Run `python supervisor.py --config <absolute-config> --once` with the verified
-   full Python path. No existing state means an explicitly authorized fresh
-   bootstrap, unless `initial_save` points to a validated generation with intent.
-   This does not authorize discarding another server's progress.
-4. Verify `state.json`, `events.jsonl`, build hashes and runtime readiness.
-   Exercise one real save/restart/load with `--once --force-cycle` before claiming
-   runtime acceptance. Keep users out of the test during this verification.
-5. Run `install.ps1 -ConfigPath <absolute-config>` under the server account, then
-   start its scheduled task. It runs a persistent polling loop at user logon,
+3. Run `install.ps1 -ConfigPath <absolute-config>` under the server account. It
+   installs a persistent polling loop at user logon,
    with no elevation, no task restart policy and overlapping instances refused.
    The account must remain logged in. Installation does not itself start it.
+4. With separate runtime authorization, start that persistent task. No existing
+   state means a fresh bootstrap unless `initial_save` names a validated generation
+   with intent; this does not authorize discarding another server's progress.
+   Keep the same supervisor process alive while checking state, events, build
+   hashes and readiness. Do not transfer a running host to a new supervisor.
+5. A save/restart/load acceptance needs a controlled update through that same
+   owner and separate authorization. There is no supported one-shot acceptance
+   handoff in this design. `--once`, including `--once --force-cycle`, is
+   rejected before configuration or game startup.
 
 Do not install from a temporary worktree that will be archived. Copy the reviewed
 script into a durable installation and record its hash. No task or host is
@@ -89,36 +91,39 @@ The supervisor retains its launched child handle while that supervisor process
 remains alive and checks its PID and creation FILETIME before treating it as
 running. The lock serializes supervisors. An unexpected owned exit requires
 operator action. A persisted PID and FILETIME are not a retained OS handle:
-after supervisor termination, including `--once`, a later instance reports
+after supervisor termination, a later instance reports
 `helper_lost` and refuses automatic adoption, status queries and updates. It
 does not infer that the game exited. Direct launches remain independent of this
 supervisor. The in-process state distinguishes absent, running, exited,
 helper_lost, identity_mismatch, access_denied and unknown; inaccessible or
 ambiguous observations never authorize a mutation.
 
-All readiness publication uses `supervisor.publish_ready(root, revision=...,
-expected_map=..., host=..., generation=..., session=..., status=...)`. Public
-fresh startup (no import) and restored startup call this same function before
-writing canonical `phase: ready`. A healthy lobby with
-`ready: 0` remains unavailable to the help observer.
+An admitted save compares the current status session to the session retained
+by this supervisor at readiness and rechecks the owned child immediately before
+submitting. The server independently checks that session at admission. Before
+readiness publication and mutation, the owner checks executable, working
+directory, creation identity and a unique configured listener. Missing psutil,
+access denial, unknown ownership or conflicting listeners fail closed. These
+source checks do not prove Windows listener-table completeness or remove the
+race after an observation. Do not enable the separately started canonical or
+bot consumers: fresh supervisors cannot inherit a retained handle.
 
-An explicitly owned manual launcher must reuse this function from its pinned
-reviewed supervisor module under the same `supervisor.lock`; a private phase
-label alone cannot establish readiness. Capture the expected revision, map,
-host PID/creation/workdir and intended generation from the owned startup state.
-Bind `session` from that process's initial authenticated lifecycle status, then
-supply its final status as `status`. The function checks success/ready flags,
-revision/map, the stable lowercase-hex session, exact current owned state and
-run directory, and rechecks PID creation before atomic publication. Restored
-startup additionally requires the intended generation, completed import and no
-pending intent. Fresh no-import startup requires the lifecycle's exact empty
-string generation marker and `restart_import_complete: 0`; a null, missing or
-other false-like marker is not accepted as an empty generation. Raw session
-challenges are never written to state or events. Other context from state is
-preserved, and any changed context or identity refuses publication. This reuse
-does not enable Gaia build/save automation or authorize a new host, game query,
-helper start, retry reset or installation. The existing Europe builder remains
-unchanged.
+Both fresh and restored readiness publication require the same in-process
+`Supervisor` with its retained child and listener observation. A manually
+launched game is not adopted or published as supervisor-owned readiness. The
+publisher checks the bound session, revision, map, owned state and generation;
+fresh startup requires an empty generation and no completed import, while
+restore requires the exact generation and completed import. Raw sessions are
+not written to state or events. A healthy lobby with `ready: 0` remains
+unavailable to the help observer.
+
+The source-only owner dispatcher can serialize the typed canonical bot target
+and `CanonicalCoordinator` under one held `supervisor.lock`, retaining the same
+child and session. It revokes the old bot capability before a canonical update
+and never converts v2 restart into an update. The default-off canonical binding
+and initial start require explicit configuration and paired source review; the
+unconditional spool-writer authorization refusal still prevents activation.
+Separately started canonical updater commands cannot inherit a child handle.
 
 Each update retains the old run, exact staged binaries, and a hash-verified copy
 of the completed round-v2 save plus its matching one-shot restart intent. The

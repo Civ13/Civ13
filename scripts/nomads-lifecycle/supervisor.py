@@ -8,10 +8,12 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import socket
 import struct
 import subprocess
+import threading
 import time
 import urllib.parse
 import uuid
@@ -45,6 +47,33 @@ def verify_binaries(folder, manifest, revision, expected_map='NOMADS_EUROPE'):
             raise RuntimeError('Staged build binary changed')
 
 
+class _HeldLock:
+    """In-process proof of a currently held lock, not an IPC credential."""
+    def __init__(self, path, stream):
+        self.path = Path(path).resolve()
+        self.stream = stream
+        self.pid = os.getpid()
+        self.thread = threading.get_ident()
+        self.active = True
+
+    def require(self, path):
+        if (not self.active or self.stream.closed or self.pid != os.getpid()
+                or self.thread != threading.get_ident() or self.path != Path(path).resolve()):
+            raise RuntimeError('Supervisor lock is not held by this execution context')
+
+
+class _BotRevocation:
+    """Single-use in-process evidence; never an IPC credential."""
+    def __init__(self, owner, lease):
+        self.owner, self.lease, self.used = owner, lease, False
+
+    def consume(self, owner, lease):
+        if self.used or self.owner is not owner or self.lease is not lease:
+            raise RuntimeError('Bot capability revocation does not match this owner')
+        lease.require(owner.root/'supervisor.lock')
+        self.used = True
+
+
 @contextmanager
 def exclusive_lock(path):
     with Path(path).open('a+b') as stream:
@@ -58,7 +87,11 @@ def exclusive_lock(path):
         else:
             import fcntl
             fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        yield
+        lease = _HeldLock(path, stream)
+        try:
+            yield lease
+        finally:
+            lease.active = False
 
 
 def process_identity(pid):
@@ -98,6 +131,42 @@ def startup_session(status):
     return session
 
 
+class ListenerNotReady(RuntimeError):
+    """No listener exists yet; only startup may wait for it."""
+
+
+def require_unique_listener(pid, port, bind, process_rows, system_rows, listen_status):
+    """Require exactly the configured listener, attributed to the owned PID."""
+    if bind not in ('127.0.0.1', '0.0.0.0'):
+        raise RuntimeError('Unsupported native bind address')
+    own = [row for row in process_rows if row.status == listen_status and row.laddr.port == port]
+    all_rows = [row for row in system_rows if row.status == listen_status and row.laddr.port == port]
+    if not own and not all_rows:
+        raise ListenerNotReady('Owned listener is not ready')
+    if (len(own) != 1 or len(all_rows) != 1 or own[0].laddr.ip != bind or
+            all_rows[0].laddr.ip != bind or all_rows[0].pid != pid):
+        raise RuntimeError('Native listener owner is absent, unknown, foreign or ambiguous')
+
+
+def windows_listener_observation(host, daemon, run, port, bind):
+    """Inspect only the configured child and listener; never elevate or adopt."""
+    if os.name != 'nt':
+        raise RuntimeError('Native listener inspection supports Windows only')
+    import psutil
+    pid, created = host['pid'], host['creation_filetime']
+    if process_identity(pid) != created:
+        raise RuntimeError('Owned process exited or PID was reused')
+    process = psutil.Process(pid)
+    if Path(process.exe()).resolve(strict=True) != daemon or Path(process.cwd()).resolve(strict=True) != run:
+        raise RuntimeError('Actual native executable or working directory differs')
+    require_unique_listener(pid, port, bind, process.net_connections(kind='tcp'),
+                            psutil.net_connections(kind='tcp'), psutil.CONN_LISTEN)
+    if process_identity(pid) != created:
+        raise RuntimeError('Process identity changed during native inspection')
+    return {'pid': pid, 'creation_filetime': str(created),
+            'executable': str(daemon), 'working_directory': str(run)}
+
+
 def validate_prepared_directory(root, run, canonical_game_directory=None):
     root, run = Path(root).resolve(strict=True), Path(run).resolve(strict=True)
     if canonical_game_directory is None:
@@ -110,12 +179,12 @@ def validate_prepared_directory(root, run, canonical_game_directory=None):
     return run
 
 
-def publish_ready(root, *, revision, expected_map, host, generation, session, status, identity=None,
+def publish_ready(root, *, revision, expected_map, host, generation, session, status, owner=None, identity=None,
                   canonical_game_directory=None):
     """Publish canonical readiness under the caller's supervisor.lock.
 
     The caller binds session from its initial lifecycle status for this owned
-    process. A final status cannot replace that challenge or the owned context.
+    process. A live same-process owner must verify the listener before publication.
     This function never queries, starts or stops a process, or records a session.
     """
     root = Path(root).resolve(strict=True)
@@ -147,6 +216,9 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
         raise RuntimeError('Startup process session changed')
     if (identity or process_identity)(host['pid']) != host['creation_filetime']:
         raise RuntimeError('Startup host identity changed')
+    if not isinstance(owner, Supervisor) or owner.root != root or owner.state.get('host') != host:
+        raise RuntimeError('Readiness requires the retained same-process owner')
+    owner.require_owned_listener()
     # Cooperating writers hold supervisor.lock; detect stale caller state and
     # changes during the final process check before replacing the state file.
     if json.loads(state_path.read_text(encoding='utf-8-sig')) != state:
@@ -246,6 +318,7 @@ class Supervisor:
         self.state = json.loads(self.state_path.read_text()) if self.state_path.exists() else {}
         # This handle belongs to this supervisor instance, not the persisted PID.
         self.child = None
+        self.owned_session = None
         self.token = (Path(config['config_directory']) / 'lifecycle-token.txt').read_text().strip()
         if len(self.token) != 32 or any(c not in '0123456789abcdef' for c in self.token):
             raise ValueError('Expected a 32-character lowercase hex lifecycle token')
@@ -336,7 +409,23 @@ class Supervisor:
             return False
         raise RuntimeError('Owned host state is ' + state + '; refusing process adoption or mutation')
 
+    def require_owned_session(self, session):
+        if (not isinstance(session, str) or not re.fullmatch(r'[0-9a-f]{32}', session)
+                or self.owned_session != session or not self.alive()):
+            raise RuntimeError('Owned process session changed before mutation')
+        self.require_owned_listener()
+
+    def require_owned_listener(self):
+        if not self.alive():
+            raise RuntimeError('Owned process exited before listener verification')
+        host = self.state['host']
+        windows_listener_observation(host, Path(self.config['daemon']).resolve(strict=True),
+            Path(host['workdir']).resolve(strict=True), self.config['port'], self.config.get('bind', '0.0.0.0'))
+        if not self.alive():
+            raise RuntimeError('Owned process exited during listener verification')
+
     def status(self):
+        self.require_owned_listener()
         value = query(self.config['port'], self.token)
         if value.get('revision') != self.state['revision'] or value.get('map') != self.config.get('map', 'NOMADS_EUROPE'):
             raise RuntimeError('Running host revision/map differs from owned state')
@@ -352,9 +441,13 @@ class Supervisor:
         self.state = publish_ready(self.root, revision=self.state['revision'],
             expected_map=self.state.get('map', 'NOMADS_EUROPE'), host=self.state['host'].copy(),
             generation=generation, session=session, status=status,
+            owner=self,
             canonical_game_directory=self.config.get('canonical_game_directory'))
 
-    def stop_saved(self, operation, expected_session=None, admin_operation=False, expected_persistence=None):
+    def stop_saved(self, operation, expected_session=None, admin_operation=False, expected_persistence=None, before_mutation=None):
+        if not self.alive():
+            raise RuntimeError('Owned host exited before save; no mutation sent')
+        self.require_owned_listener()
         before = self.status()
         if admin_operation and before.get('maintenance_operation') != operation:
             raise RuntimeError('Admin maintenance request changed before save')
@@ -363,13 +456,17 @@ class Supervisor:
         session = before.get('session', '')
         if len(session) != 32 or any(c not in '0123456789abcdef' for c in session):
             raise RuntimeError('Current world supplied no valid process session challenge')
-        if expected_session is not None and (session != expected_session or not self.alive()):
+        if expected_session is not None and session != expected_session:
             raise RuntimeError('Owned process session changed before save; no mutation sent')
+        self.require_owned_session(session)
         if expected_persistence is not None and (type(before.get('persistence_mode')) is not int or
                 before['persistence_mode'] != expected_persistence):
             raise RuntimeError('Persistence mode changed before save; no mutation sent')
         self.record('save_requested', operation=operation, revision=self.state['revision'])
         action = 'maintenance_save_shutdown' if admin_operation else 'save_shutdown'
+        self.require_owned_session(session)
+        if before_mutation is not None:
+            before_mutation()
         if expected_persistence is None:
             answer = query(self.config['port'], self.token, action, operation, session)
         else:
@@ -384,6 +481,14 @@ class Supervisor:
             if self.clock() > deadline:
                 raise RuntimeError('Save shutdown timed out; leaving owned world untouched')
             self.sleep(5)
+            if not self.alive():
+                break
+            try:
+                self.require_owned_session(session)
+            except ListenerNotReady:
+                # The owned child may close its listener before it exits.
+                # Wait without sending credentials to an unbound endpoint.
+                continue
             try:
                 status = self.status()
                 if status.get('error'):
@@ -411,7 +516,7 @@ class Supervisor:
             shutil.copytree(backup, run / 'map_saves')
         self.launch_prepared(run, manifest, generation, operation, backup)
 
-    def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None):
+    def launch_prepared(self, run, manifest, generation, operation, backup=None, readiness_check=None, before_spawn=None):
         """Start a verified prepared run; the caller owns supervisor.lock.
 
         The bot consumer uses this existing lifecycle/startup path without a
@@ -435,6 +540,9 @@ class Supervisor:
         argv = [c['daemon'], 'civ13.dmb', str(c['port']), '-trusted', '-invisible', '-close', '-log', 'supervisor-runtime.log']
         if bind == '127.0.0.1':
             argv += ['-ip', bind]
+        if before_spawn is not None:
+            before_spawn()
+        self.owned_session = None
         child = subprocess.Popen(argv, cwd=run, creationflags=flags)
         self.child = child
         previous = {key: self.state.get(key) for key in ('revision', 'host', 'generation', 'backup', 'operation')} if self.state else None
@@ -445,9 +553,14 @@ class Supervisor:
         session = None
         while self.alive():
             try:
-                status = self.status()
-            except (OSError, TimeoutError):
+                self.require_owned_listener()
+            except ListenerNotReady:
                 status = None
+            else:
+                try:
+                    status = self.status()
+                except (OSError, TimeoutError):
+                    status = None
             if status:
                 if status.get('error'):
                     raise RuntimeError('Startup recovery failed; preserve this host and matched backup')
@@ -463,7 +576,13 @@ class Supervisor:
                         self.accept_ready(status, generation)
                         if startup_session(status) != session or not self.alive():
                             raise RuntimeError('Startup process changed during continuity acceptance')
+                    self.require_owned_listener()
+                    status = self.status()
+                    self.accept_ready(status, generation)
+                    if startup_session(status) != session or not self.alive():
+                        raise RuntimeError('Startup process changed during listener verification')
                     self.publish_ready(status, generation, session)
+                    self.owned_session = session
                     public_status = {key: value for key, value in status.items() if key not in ('session', 'token')}
                     self.record('cycle_complete', revision=revision, generation=generation, operation=operation, status=public_status)
                     return
@@ -481,12 +600,15 @@ class Supervisor:
             raise RuntimeError('Previously owned host exited unexpectedly; refusing automatic restart')
         revision = self.candidate()
         if self.state and self.state.get('phase') != 'ready':
+            self.require_owned_listener()
             initial = self.status()
             self.accept_ready(initial, self.state.get('generation'))
             session = startup_session(initial)
+            self.require_owned_listener()
             self.publish_ready(self.status(), self.state.get('generation'), session)
             self.record('reconciled_ready', revision=self.state['revision'], generation=self.state.get('generation'))
         if self.state:
+            self.require_owned_listener()
             status = self.status()
             # An ordinary admin save temporarily clears ready and replaces the
             # completion generation. Startup binding is checked above; it must
@@ -520,6 +642,8 @@ def main():
     parser.add_argument('--bot-profile', type=Path, help='Explicit disabled-by-default portable bot profile')
     parser.add_argument('--bot-check', action='store_true', help='Read-only metadata preflight; no token load or process/network access')
     args = parser.parse_args()
+    if args.once:
+        parser.error('--once cannot retain an owned game process; use a persistent supervisor')
     config = json.loads(args.config.read_text(encoding='utf-8-sig'))
     if args.bot_profile:
         if args.force_cycle or args.once:

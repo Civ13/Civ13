@@ -1,5 +1,6 @@
 """Offline injected-transport tests. No server, token disclosure or native launch."""
 import importlib.util
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 import sys
@@ -61,6 +62,7 @@ class AgentTools(unittest.TestCase):
         result = m.run('recovery', self.root, self.revision, transport=self.query)
         self.assertTrue(result['ok'])
         self.assertEqual(result['data']['error_code'], 'lighting_owner_mismatch')
+        self.assertEqual(result['data']['error_correlation'], 'uncorrelated')
         self.assertTrue(result['data']['restart_hold'])
         self.assertFalse(result['data']['debug']['available'])
         for secret in (self.token, 'private-path', 'at 1,2,1'):
@@ -90,6 +92,23 @@ class AgentTools(unittest.TestCase):
                            ('raw traceback', 'runtime_error_details_withheld')]:
             self.assertEqual(m.classify(text), code)
 
+    def test_captured_zone_row_is_bounded_and_raw_error_is_withheld(self):
+        self.status.update(maxz=3, maxy=400,
+                           error='Intended generation import failed: Missing captured zone row z=2 y=37 on secret path')
+        result = m.run('recovery', self.root, self.revision, transport=self.query)
+        self.assertEqual(result['data']['error_code'], 'captured_zone_row_missing')
+        self.assertEqual(result['data']['captured_zone_row'], dict(z=2, y=37))
+        self.assertNotIn('secret path', json.dumps(result))
+        for error, maxz, maxy in (('Missing captured zone row z=4 y=37', 3, 400),
+                                  ('Missing captured zone row z=2 y=0', 3, 400),
+                                  ('Missing captured zone row z=2 y=99999999', 3, 400),
+                                  ('Missing captured zone row z=2 y=37', None, 400),
+                                  ('Missing captured zone row', 3, 400)):
+            self.status.update(error=error, maxz=maxz, maxy=maxy)
+            result = m.run('recovery', self.root, self.revision, transport=self.query)
+            self.assertTrue(result['ok'])
+            self.assertIsNone(result['data']['captured_zone_row'])
+
     def debug(self):
         return dict(schema=1, tick=10, progress=dict(active=1, kind='load', saving_z=None, loading_z=2,
                     backend_started=1, contents_started=1, mutation_started=1, restoring_players=0, percent_available=0),
@@ -103,6 +122,15 @@ class AgentTools(unittest.TestCase):
         self.assertTrue(result['ok'])
         self.assertEqual(result['data']['debug']['progress']['loading_z'], 2)
         self.assertEqual(result['data']['debug']['runtime']['sources'][0]['line'], 119)
+        self.assertIsNone(result['data']['debug']['progress']['phase'])
+        self.status['debug']['progress'].update(phase='preflight', transaction_phase='restore')
+        progress = m.run('recovery', self.root, self.revision, transport=self.query)['data']['debug']['progress']
+        self.assertEqual((progress['phase'], progress['transaction_phase']), ('preflight', 'restore'))
+        self.assertFalse(progress['percent_available'])
+        self.status['debug']['progress']['phase'] = 'capture'
+        self.assertEqual(m.run('recovery', self.root, self.revision, transport=self.query)['error_code'], 'snapshot_rejected')
+        self.status['debug']['progress'].update(phase='preflight', transaction_phase='invented')
+        self.assertEqual(m.run('recovery', self.root, self.revision, transport=self.query)['error_code'], 'snapshot_rejected')
 
     def test_metadata_rejects_paths_unbounded_sources_unknown_schema_and_malformed(self):
         import copy
@@ -123,6 +151,20 @@ class AgentTools(unittest.TestCase):
         for malformed in ([], 'text', dict(schema=2), dict(schema=1, progress=[], runtime={})):
             self.status['debug'] = malformed
             self.assertEqual(m.run('recovery', self.root, self.revision, transport=self.query)['error_code'], 'snapshot_rejected')
+
+    def test_freshness_rejects_stale_future_and_malformed_without_inference(self):
+        now = datetime(2026, 10, 30, 12, 0, 0, tzinfo=timezone.utc)
+        value = self.debug()
+        self.assertEqual(m.debug_state(value, now=now)['freshness'], 'unavailable')
+        for seconds in (0, 60):
+            value['observed_utc'] = (now - timedelta(seconds=seconds)).strftime('%Y-%m-%d %H:%M:%S')
+            self.assertEqual(m.debug_state(value, now=now)['age_seconds'], seconds)
+        for seconds in (-1, 61):
+            value['observed_utc'] = (now - timedelta(seconds=seconds)).strftime('%Y-%m-%d %H:%M:%S')
+            with self.assertRaises(m.StaleSnapshot): m.debug_state(value, now=now)
+        for invalid in ('private-path', '2026-02-30 12:00:00', 123):
+            value['observed_utc'] = invalid
+            with self.assertRaises(ValueError): m.debug_state(value, now=now)
 
     def test_own_host_tiles_and_vision_use_existing_reader_admission(self):
         nonce = 'd' * 32

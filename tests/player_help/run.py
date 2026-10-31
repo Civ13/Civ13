@@ -112,6 +112,15 @@ var/list/probe_clients = list()
     var/on_fire = TRUE
     var/stunned = FALSE
     var/weakened = FALSE
+/mob/living/simple_animal/hostile/alligator
+/obj/item/organ/external
+    var/mob/living/human/owner
+    var/brute_dam = 0
+    var/burn_dam = 0
+/mob/living/human
+    var/list/probe_organs = list()
+    proc/get_organ(part)
+        return probe_organs[part]
 /obj/item/stack
     var/amount = 5
 /obj/item/weapon/storage

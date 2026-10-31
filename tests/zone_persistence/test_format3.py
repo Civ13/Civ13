@@ -16,7 +16,7 @@ class FormatCompatibility(unittest.TestCase):
         def check_detached_rows(text):
             listing = text.index('F.cd = "/map/[z]"')
             copied = text.index('var/list/rows = F.dir.Copy()', listing)
-            checked = text.index('if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row")', copied)
+            checked = text.index('if(!("[y]" in rows)) throw EXCEPTION("Missing captured zone row z=[z] y=[y]")', copied)
             self.assertLess(checked, text.index('F.cd = "/zone_capture/[ref]"', checked))
 
         check_detached_rows(body)

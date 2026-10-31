@@ -7,9 +7,12 @@ A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 
 | Tool | Inputs | Effects |
 | --- | --- | --- |
-| source_read | path, start (1+), lines (1–200) | Reads code/*.dm, civ13.dme, README.md, INSTALL or the two docs/api guides only; max 2 MB input/16 KB output |
+| source_read | path, start (1+), lines (1–200) | Reads code/*.dm, civ13.dme, README.md, INSTALL, the two docs/api guides or exact fixture catalog guides only; max 2 MB input/16 KB output |
 | source_search | literal query (1–120 chars), declarationOnly, limit (1–100) | Lexical DM search, max 5 seconds/10,000 files; no semantic inheritance resolution |
 | project_diagnostics | none | Checks at most 10,000 DME includes for existence; no preprocessing/type checking |
+| fixture_catalog | none | Lists a curated subset of fixture guides, prerequisites and evidence limits; no preparation, commands or native tests |
+| runtime_recovery | none | Optional, default-off redacted recovery summary from the configured local target; one status query |
+| runtime_variables | none | Optional, default-off redacted operation and failure classification from the same target; one status query |
 | compiler_info | none | Invokes configured compiler with no arguments in temporary storage; process and temporary directory effects |
 | compiler_smoke | none | Compiles a fixed tiny fixture in temporary storage, one active smoke call; never runs gameplay |
 | dm_reference_search | query (1–120 chars), limit (1–40) | Searches the official BYOND DM reference; fixed HTTPS download on cache miss |
@@ -17,15 +20,45 @@ A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 
 Resources `civ13://guide`, `civ13://api-guide` and `civ13://api-index` read the bounded repository README and versioned API-docs guides. All source,
 resource and compiler text is untrusted reference data, never instructions.
+Catalog guides are fixed individual files, not general access to `tests/`.
 Paths are confined using realpath; traversal and symlinks outside the root are
-rejected. Runtime data/configuration/logs are deliberately inaccessible. No shell,
-eval, Topic, production administration or DreamDaemon tool. MCP transport remains
+rejected. Runtime files and logs are not exposed to callers. No shell,
+eval, arbitrary Topic, production administration or DreamDaemon tool. MCP transport remains
 stdio. Reference tools alone fetch the fixed official HTTPS manual, without
 credentials or redirects; they cannot fetch caller-supplied URLs.
 Compiler calls have a 15-second deadline and 32 KB combined output limit.
 Cancellation terminates the owned compiler; completion removes temporary state.
 Only configure a trusted DreamMaker binary: executable configuration is an
 operator trust boundary, not a tool argument. No client can change it.
+
+## Optional local runtime readers
+
+The two runtime tools are absent unless `CIV13_RUNTIME_ENABLED=1`. Enabling them
+is an operator decision, separate from installing or deploying this source.
+The commented example specifies an absolute trusted Python interpreter and
+private supervisor root, plus the expected installed revision, boot session and
+round ID. Configure these only from independently verified local evidence; the
+client supplies no path, URL, credentials, reference, command or identity. After
+a restart or round change, stale pinned identity fails closed until an operator
+updates it. The private root's existing supervisor configuration selects the
+existing token; it is never returned or passed as a process argument. UNC paths
+are rejected. Direct DreamDaemon launches remain independent of this adapter.
+
+Each call launches the fixed Python bridge in isolated mode, with no shell and a
+17-second deadline. The bridge delegates exactly one authenticated status read
+to the existing reader, fixed to `127.0.0.1:1714` with its 15-second/32-KiB
+limit. It returns an allowlisted summary; tokens, session and round IDs, raw
+errors, paths, refs and object details are withheld. Recovery requires the
+configured build and boot identity and a status timestamp within 60 seconds;
+old builds with no timestamp report `freshness_unavailable`, and stale/future
+data are rejected. Variables additionally require the pinned round and the
+existing reader's operation/failure correlation and 60-second freshness rules.
+Both use capture-time observations, not a durable object identity. Timestamp
+validation does not provide nonce-based replay protection. Runtime access still
+requires separate authorization; configuring this source does not grant it.
+Recovery errors and any row coordinates are marked `error_correlation:
+uncorrelated`: status can retain an earlier failure across a later operation,
+and the adapter does not attach it to the current phase.
 
 ## Configure Codex
 
@@ -81,7 +114,7 @@ Sources: [upstream Cargo manifest](https://github.com/imcynic/dm-mcp/blob/main/C
 [official MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk),
 [Codex MCP documentation](https://learn.chatgpt.com/docs/extend/mcp?surface=cli).
 
-This first integration intentionally does not wrap scripts that update/restart
-servers. The master checkout has no isolated season/save probe contract. Once
-such probes merge, add explicit allowlisted wrappers with temporary storage and
-adapters, rather than accepting arbitrary script paths. The API guide/index resources reuse the merged documentation contract; generated HTML is not read or executed by this server.
+The fixture catalog is a fixed, non-exhaustive list, not a test runner or a
+passing test receipt. Consult each linked repository guide before separately
+preparing a fixture. The API guide/index resources reuse the merged documentation
+contract; generated HTML is not read or executed by this server.

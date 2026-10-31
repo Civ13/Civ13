@@ -353,6 +353,7 @@ map_storage
 		return
 
 /map_storage/persistence_runtime_var(key)
+	if(key in list("moving_save_roots", "moving_save_chunk")) return TRUE
 	if(key == "consecutive_save_failures") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
@@ -411,6 +412,8 @@ map_storage
 // collected - these lists otherwise pin every atom they touched until the next
 // save/load runs. Called after a save or load finishes, successfully or not.
 /map_storage/proc/clear_bookkeeping()
+	moving_save_roots = list()
+	moving_save_chunk = null
 	for(var/datum/save_export_frame/frame in saving_export_stack.Copy())
 		release_export_frame(frame)
 	saving_export_frames = list()
@@ -495,6 +498,8 @@ map_storage
 var/global/persistence_save_in_progress = FALSE
 var/global/datum/persistence_world_operation/persistence_active_operation
 var/global/persistence_load_recovery_required = FALSE
+// Observational startup state; it never authorizes or releases recovery.
+var/global/persistence_startup_recovery_status
 // Runtime-only identity changes on each accepted save or load, even when the
 // operation completes before a waiting gameplay action wakes.
 var/global/datum/persistence_admission_identity
@@ -557,6 +562,8 @@ var/global/datum/persistence_admission_identity
 	var/contents_started = FALSE
 	var/mutation_started = FALSE
 	var/restoring_players = FALSE
+	// Observational only; never used for admission or recovery decisions.
+	var/diagnostic_phase = "admitted"
 	var/datum/persistence_restore_policy/restore_policy
 	var/datum/persistence_restore_attempt/restore_attempt
 	var/restore_reserved = FALSE
@@ -787,6 +794,7 @@ var/global/datum/persistence_admission_identity
 	var/attempt_owned = FALSE
 	var/release_attempted = FALSE
 	var/phase = "preflight"
+	operation.diagnostic_phase = "preflight"
 	storage.restore_cleanup_error = null
 	try
 		if(policy)
@@ -809,6 +817,7 @@ var/global/datum/persistence_admission_identity
 		storage.require_durable_world_idle()
 		operation.authorize_restore_mutation(storage)
 		phase = "clear"
+		operation.diagnostic_phase = "restore"
 		operation.mutation_started = TRUE
 		if(transaction) transaction.import_started = TRUE
 		// Validated geography must be authoritative before replacement constructors.
@@ -822,6 +831,7 @@ var/global/datum/persistence_admission_identity
 		if(!storage.run_world_operation("load", operation))
 			throw EXCEPTION(storage.last_error ? storage.last_error : "World-save restoration rejected")
 		phase = "metadata"
+		operation.diagnostic_phase = "metadata"
 		if(storage.load_map_metadata() != TRUE)
 			throw EXCEPTION("World metadata restoration rejected")
 		storage.restore_durable_world()
@@ -836,8 +846,10 @@ var/global/datum/persistence_admission_identity
 				throw EXCEPTION("Restore transient release rejected")
 		if(!transaction)
 			phase = "players"
+			operation.diagnostic_phase = "players"
 			operation.restoring_players = TRUE
-			storage.finish_player_restoration()
+			if(!storage.finish_player_restoration())
+				throw EXCEPTION("Player restoration readiness was not confirmed")
 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
 		var/primary_failure = "[e] on [e.file]:[e.line]"
@@ -867,6 +879,7 @@ var/global/datum/persistence_admission_identity
 		message_admins("Import failed during restoration; restart from the original map before retrying: [e]")
 		return FALSE
 	operation.finish(TRUE)
+	persistence_startup_recovery_status = null
 	// Restart recovery reclaims waiting clients after consuming its intent.
 	return 1
 
@@ -983,8 +996,15 @@ var/global/datum/persistence_admission_identity
 	var/list/items = list()
 	var/committed = FALSE
 
+// Native matrix reference-string conversion can consume an entire tick.
+// Direct matrix keys retain identity; all other entry keys keep their contract.
+// This key is process-local only: on-disk entries still use numeric IDs.
+/map_storage/proc/save_entry_identity(datum/A)
+	if(istype(A, /matrix)) return A
+	return "\ref[A]"
+
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
-	if(!frame || !frame.active || frame.exporter != src || !frame.source || "\ref[frame.source]" != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
+	if(!frame || !frame.active || frame.exporter != src || !frame.source || save_entry_identity(frame.source) != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
 	if(isturf(frame.source) && frame.source:persistence_export_frame != frame)
 		throw EXCEPTION("Save export turf was replaced")
@@ -1045,6 +1065,11 @@ var/global/datum/persistence_admission_identity
 
 /map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)
 	if(!ref) return
+	var/datum/child = saving_reference_pins[ref]
+	var/list/moving_root = child ? moving_save_roots["\ref[child]"] : null
+	if(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
+		if(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
+		return // The frozen origin owns this root; roster drain will attach it.
 	var/key = "[ref]"
 	// Keep the first captured edge if a completed child later moves.
 	var/owner = saving_content_owners[key]
@@ -1152,10 +1177,12 @@ var/global/datum/persistence_admission_identity
 		dimension_recovery_required = TRUE
 		if(operation)
 			operation.mutation_started = TRUE
+			operation.diagnostic_phase = "allocate_levels"
 			if(operation.restart_transaction) operation.restart_transaction.import_started = TRUE
 		for(var/z = world.maxz + 1, z <= target_z, z++)
 			if(!allocate_saved_level(z) || world.maxz != z)
 				throw EXCEPTION("Saved level allocation failed; preserve files and restart before retrying")
+		if(operation) operation.diagnostic_phase = "preflight"
 		if(!validate_world_save())
 			throw EXCEPTION("Allocated saved world failed exact validation: [last_error]")
 		if(!world_z_budget.finish(dimension_reservation, TRUE))

@@ -4,6 +4,7 @@ Discovery is offline. Queries require separate runtime authorization; this
 module never launches a process, changes configuration or repairs a world.
 """
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
 import math
@@ -68,6 +69,7 @@ def classify(error):
     if not error:
         return None
     for text, code in (
+        ('Missing captured zone row', 'captured_zone_row_missing'),
         ('non-turf location', 'lighting_non_turf_location'),
         ('owner mismatch', 'lighting_owner_mismatch'),
         ('duplicate registry entry', 'lighting_duplicate_registry'),
@@ -79,11 +81,40 @@ def classify(error):
     return 'runtime_error_details_withheld'
 
 
-def debug_state(value):
+def captured_zone_row(error, status):
+    """Only release bounded numeric coordinates from the fixed row diagnostic."""
+    if not isinstance(error, str):
+        return None
+    match = re.search(r'\bMissing captured zone row z=([1-9][0-9]{0,6}) y=([1-9][0-9]{0,6})(?![0-9])', error)
+    if not match:
+        return None
+    z, y = map(int, match.groups())
+    maxz, maxy = status.get('maxz'), status.get('maxy')
+    if type(maxz) is not int or type(maxy) is not int or not (1 <= z <= maxz <= 9999999 and 1 <= y <= maxy <= 9999999):
+        return None
+    return dict(z=z, y=y)
+
+
+class StaleSnapshot(ValueError):
+    pass
+
+
+def debug_state(value, *, now=None):
     if value is None:
         return dict(available=False, reason='not exposed by installed status schema')
     if not isinstance(value, dict) or value.get('schema') != 1:
         raise ValueError('debug schema')
+    observed = value.get('observed_utc')
+    freshness = 'unavailable'
+    age = None
+    if observed is not None:
+        if not isinstance(observed, str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', observed):
+            raise ValueError('observation time')
+        captured = datetime.strptime(observed, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc)
+        age = ((now or datetime.now(timezone.utc)) - captured).total_seconds()
+        if age < 0 or age > 60:
+            raise StaleSnapshot('stale observation')
+        freshness = 'within_60_seconds'
 
     def count(number, nullable=False):
         if number is None and nullable:
@@ -106,6 +137,21 @@ def debug_state(value):
         safe_progress[key] = flag(progress[key])
     if safe_progress['active'] != (safe_progress['kind'] != 'idle'):
         raise ValueError('progress consistency')
+    phases = {'save': ('admitted', 'capture', 'candidate_validation', 'write_marker'),
+              'load': ('admitted', 'preflight', 'allocate_levels', 'restore', 'metadata', 'players'),
+              'idle': ()}
+    phase = progress.get('phase')
+    if phase is not None and phase not in phases[safe_progress['kind']]:
+        raise ValueError('operation phase')
+    transaction = progress.get('transaction_phase')
+    if transaction is not None and transaction not in (
+            'idle', 'notice', 'save', 'post_save_validation', 'intent_publication',
+            'final_validation', 'shutdown', 'failure_cleanup', 'failed',
+            'restore_preflight', 'restore', 'consume_intent', 'players',
+            'complete', 'readiness_unconfirmed'):
+        raise ValueError('transaction phase')
+    # Older schemas omit these fields; null is unavailable, never inferred idle.
+    safe_progress.update(phase=phase, transaction_phase=transaction)
     if flag(runtime['stack_available']) or flag(runtime['proc_available']) or runtime['prefix_limit'] != 8:
         raise ValueError('runtime schema')
     sources = runtime['sources']
@@ -123,7 +169,8 @@ def debug_state(value):
     safe_runtime = dict(cache_available=flag(runtime['cache_available']), prefix_limit=8,
                         stack_available=False, proc_available=False, sources=safe_sources,
                         **{key: count(runtime[key], True) for key in ('total', 'skipped', 'source_total')})
-    return dict(available=True, schema=1, tick=count(value['tick']), progress=safe_progress, runtime=safe_runtime)
+    return dict(available=True, schema=1, tick=count(value['tick']), freshness=freshness,
+                age_seconds=age, progress=safe_progress, runtime=safe_runtime)
 
 
 def recovery(root, revision, transport):
@@ -148,6 +195,8 @@ def recovery(root, revision, transport):
         raise ValueError('error')
     return dict(revision=revision, session=status['session'],
                 **{key: bool(status[key]) for key in flags}, error_code=classify(error),
+                error_correlation='uncorrelated' if error else None,
+                captured_zone_row=captured_zone_row(error, status),
                 debug=debug_state(status.get('debug')),
                 variable_identity=variables.identity_header(
                     status.get('debug', {}).get('variables') if isinstance(status.get('debug'), dict) else None,
@@ -183,6 +232,11 @@ def run(tool, root=None, revision=None, *, transport=reader.exchange, nonce=None
         if len(json.dumps(result, allow_nan=False).encode('utf-8')) > reader.LIMIT:
             raise ValueError('response bound')
         return result
+    except StaleSnapshot:
+        return dict(schema=1, ok=False, tool=tool, error_code='stale_snapshot')
+    except variables.Rejected as error:
+        return dict(schema=1, ok=False, tool=tool,
+                    error_code='stale_snapshot' if str(error) == 'stale_snapshot' else 'snapshot_rejected')
     except (OSError, TimeoutError):
         return dict(schema=1, ok=False, tool=tool, error_code='transport_unavailable')
     except (ValueError, KeyError, TypeError, OverflowError, AttributeError):
