@@ -439,7 +439,7 @@ class BlockingTreeSurface(unittest.TestCase):
             self.assertEqual(m.decision(tree,'hover'),2 if mode=='cache-omitted' else 0)
 
     def test_offset_blocker_ownership_and_existing_visibility_guards(self):
-        for step in [-8,0,8,16]:
+        for step in [-16,-8,-2,0,2,8,16,30]:
             m=self.model();tree=m.target(2,1);tree.step_x=step;tx=2+step/32
             m.S.blockers=[m.cell(tx,1,tree,(2,1)),m.cell(1,1)]
             self.assertEqual(m.decision(tree),2)
@@ -479,10 +479,10 @@ class BlockingTreeSurface(unittest.TestCase):
         from collections import defaultdict
         m=self.model();rng=random.Random(20261101);cases=0
         for _ in range(1800):
-            tx,ty=[rng.randrange(-28,29)/8 for _ in range(2)]
+            tx,ty=[rng.randrange(-56,57)/16 for _ in range(2)]
             if abs(tx)<=.5 and abs(ty)<=.5:continue
             tree=m.target(tx,ty);tile=(20,20)
-            coordinates=[(rng.randrange(-24,25)/8,rng.randrange(-24,25)/8) for _ in range(4)]
+            coordinates=[(rng.randrange(-48,49)/16,rng.randrange(-48,49)/16) for _ in range(4)]
             m.S.surface_cells=None;m.S.blockers=[m.cell(tx,ty,tree,tile)]+[m.cell(x,y,tile=(30+i,30+i)) for i,(x,y) in enumerate(coordinates)]
             expected=self.oracle(tx,ty,coordinates)
             m.S.blocker_bins=None

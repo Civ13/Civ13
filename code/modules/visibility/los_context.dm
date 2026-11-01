@@ -193,7 +193,8 @@ var/global/list/los_active_contexts
 	return FALSE
 
 // A unit blocker's shadow on an eye-facing unit edge. Depth is positive in
-// this coordinate system. Rational bounds avoid opening a corner by epsilon.
+// this coordinate system. Keep slope ratios: multiplying face into both sides
+// would add an unnecessary third factor to bounded subtile comparisons.
 /proc/los_surface_shadow(face, edge_low, edge_high, cx, cy)
 	var/near_depth = max(0, cx - 0.5)
 	var/far_depth = min(face, cx + 0.5)
@@ -201,20 +202,20 @@ var/global/list/los_active_contexts
 		return null
 	var/low_y = cy - 0.5
 	var/high_y = cy + 0.5
-	var/low_n = face * low_y
+	var/low_n = low_y
 	var/low_d = far_depth
-	var/high_n = face * high_y
+	var/high_n = high_y
 	var/high_d = far_depth
 	if (low_y < 0)
 		low_d = near_depth
 		if (!low_d)
 			low_n = edge_low
-			low_d = 1
+			low_d = face
 	if (high_y > 0)
 		high_d = near_depth
 		if (!high_d)
 			high_n = edge_high
-			high_d = 1
+			high_d = face
 	return list(low_n, low_d, high_n, high_d)
 
 /datum/los_snapshot/proc/surface_blockers(tx, ty)
@@ -237,9 +238,9 @@ var/global/list/los_active_contexts
 // the edge. Their union needs two bounds, not sorting or per-pixel ray casts.
 /datum/los_snapshot/proc/surface_edge_visible(face, edge_low, edge_high, axis, direction, tile_x, tile_y, atom/target, list/candidates)
 	var/visible_low_n = edge_low
-	var/visible_low_d = 1
+	var/visible_low_d = face
 	var/visible_high_n = edge_high
-	var/visible_high_d = 1
+	var/visible_high_d = face
 	for (var/datum/los_cell/B in candidates)
 		if ((B.tile_x == tile_x && B.tile_y == tile_y) || los_cell_has_owner(B, target))
 			continue
@@ -251,10 +252,10 @@ var/global/list/los_active_contexts
 			depth = B.cell_y * direction
 			side = B.cell_x
 		var/list/shadow = los_surface_shadow(face, edge_low, edge_high, depth, side)
-		if (!shadow || shadow[3] < edge_low * shadow[4] || shadow[1] > edge_high * shadow[2])
+		if (!shadow || shadow[3] * face < edge_low * shadow[4] || shadow[1] * face > edge_high * shadow[2])
 			continue
-		var/covers_low = shadow[1] <= edge_low * shadow[2]
-		var/covers_high = shadow[3] >= edge_high * shadow[4]
+		var/covers_low = shadow[1] * face <= edge_low * shadow[2]
+		var/covers_high = shadow[3] * face >= edge_high * shadow[4]
 		if (covers_low && covers_high)
 			return FALSE
 		if (covers_low)
