@@ -13,9 +13,10 @@ source control flow, not DM compilation, native physics or connected-client beha
 
 ## Conditional source selection
 
-The adapter explicitly selects the collector-disabled branch through
-`DEFAULT_DEFINES = {'CIV13_VARIABLE_OBSERVABILITY': False}`. This is an offline
-fixture policy, not a change to game compilation or local collector settings.
+The adapter explicitly selects the collector-disabled and human-spatial-source-
+absent fixture branches; the experimental human spatial path is disabled. The
+pull-pair source remains enabled. These are offline fixture settings, not changes
+to game compilation, collector settings, or evidence for human spatial capture.
 `extract` and `project` accept a keyword-only `defines` mapping of explicit
 Boolean symbol values. Only proc-local #ifdef/#ifndef, #else and #endif are
 supported. Unknown symbols/directives, duplicate/unmatched branches and a

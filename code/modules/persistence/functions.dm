@@ -354,6 +354,9 @@ map_storage
 
 /map_storage/persistence_runtime_var(key)
 	if(key in list("moving_save_roots", "moving_save_chunk")) return TRUE
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(key == "human_save_roots") return TRUE
+#endif
 	if(key == "consecutive_save_failures") return TRUE
 	if(key in list("saving_level_links", "saving_level_link_ids", "validated_level_links", "loading_level_links", "loading_level_link_targets", "loading_level_link_fields")) return TRUE
 	if(key in list("validated_roof_areas", "validated_roof_entries", "validated_roof_types", "validated_roof_instances", "validated_roof_absent", "restoring_roof_areas")) return TRUE
@@ -414,6 +417,9 @@ map_storage
 /map_storage/proc/clear_bookkeeping()
 	moving_save_roots = list()
 	moving_save_chunk = null
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	human_save_roots = list()
+#endif
 	for(var/datum/save_export_frame/frame in saving_export_stack.Copy())
 		release_export_frame(frame)
 	saving_export_frames = list()
@@ -504,6 +510,15 @@ var/global/persistence_startup_recovery_status
 // operation completes before a waiting gameplay action wakes.
 var/global/datum/persistence_admission_identity
 
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+// Never blocks a player. Changes after roster sealing make this candidate
+// unpublishable until late enrollment and account ownership are proven.
+/proc/persistence_note_human_roster_change()
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(operation && operation.kind == "save" && operation.human_roster_sealed)
+		operation.human_roster_changed = TRUE
+#endif
+
 /proc/persistence_save_active()
 	return persistence_active_operation && persistence_active_operation.kind == "save"
 
@@ -527,6 +542,11 @@ var/global/datum/persistence_admission_identity
 	var/datum/persistence_world_operation/operation = new
 	operation.storage = storage
 	operation.kind = kind
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// Save motion can be admitted during maintenance only by this operation's
+	// already-authorized restart owner, not merely by observing a busy flag.
+	if(kind == "save") operation.restart_transaction = transaction
+#endif
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 	operation.observability_id = "operation-[++variable_observability_operation_sequence]"
 	operation.observability_started = world.time
@@ -540,6 +560,16 @@ var/global/datum/persistence_admission_identity
 	// native intent, interrupted pair or orphaned partial survivor still holds
 	// positions; the unstarted reservation is then withdrawn.
 	try
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(kind == "save")
+			var/list/humans = global.vars["human_mob_list"]
+			if(!islist(humans) || humans.len > 8192)
+				operation.withdraw()
+				return null
+			// Seal before the single bounded copy, before any save-work yield.
+			operation.human_roster_sealed = TRUE
+			operation.human_initial_roster = humans.Copy()
+#endif
 #ifdef CIV13_SUBTILE_PULL_PAIRS
 		if(kind == "save" && (!subtile_pull_ownership.resolve_quiet("save_admission", operation) || !operation.current(storage, kind) || !subtile_pull_ownership.save_ready()))
 			operation.withdraw()
@@ -568,6 +598,84 @@ var/global/datum/persistence_admission_identity
 	var/datum/persistence_restore_attempt/restore_attempt
 	var/restore_reserved = FALSE
 	var/datum/persistence_restart_transaction/restart_transaction
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	var/human_roster_sealed = FALSE
+	var/human_roster_changed = FALSE
+	var/list/human_initial_roster
+	var/list/human_roster_records
+	// Proof concerns saved candidate ownership, not transient live history.
+	var/human_containment_coverage_complete = FALSE
+#endif
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	var/list/human_spatial_requests = list()
+	proc/track_human_spatial_request(datum/human_subtile_save_request/request)
+		if(!current(storage, "save") || !request || request.operation != src || human_spatial_requests.len >= 8192) return FALSE
+		human_spatial_requests += request
+		return TRUE
+	proc/release_human_spatial_requests()
+		var/list/owned = human_spatial_requests
+		human_spatial_requests = list()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		human_initial_roster = null
+		human_roster_records = null
+#endif
+		for(var/datum/human_subtile_save_request/request in owned)
+			if(request && request.operation == src)
+				try
+					request.release()
+				catch(var/exception/release_error)
+					world.log << "Human save request cleanup failed: [release_error]"
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// The proof concerns the encoded candidate, not an atomic world snapshot.
+	// Unknown containment/control states remain refused by the checks below.
+	proc/seal_human_containment_proof()
+		human_containment_coverage_complete = FALSE
+		if(!current(storage, "save") || human_roster_changed || !islist(human_roster_records)) throw EXCEPTION("Human roster proof has no stable owner")
+		var/list/owned = list()
+		for(var/datum/human_subtile_save_request/request in human_spatial_requests)
+			if(!request || request.operation != src || !request.actor || !request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
+				throw EXCEPTION("Human roster proof lacks an encoded check")
+			var/key = "\ref[request]"
+			if(owned[key]) throw EXCEPTION("Human roster request is duplicated")
+			owned[key] = request
+		var/matched = 0
+		for(var/identity in human_roster_records)
+			var/list/record = human_roster_records[identity]
+			var/mob/living/human/H = record["atom"]
+			if(!H || isDeleted(H) || storage.save_entry_identity(H) != identity || !!H.should_save != record["saveable"])
+				throw EXCEPTION("Human roster identity or classification changed")
+			if(record["saveable"])
+				var/datum/human_subtile_save_request/request = record["request"]
+				if(!isturf(H.loc) || !H.human_subtile_unlinked() || H.pulling || subtile_pull_ownership.owners[H] || !request || owned["\ref[request]"] != request || request.actor != H || request.saved_ref != record["ref"] || request.origin != record["origin"])
+					throw EXCEPTION("Human roster has unsupported containment or control")
+				matched++
+			storage.save_work_check()
+		if(matched != human_spatial_requests.len || human_roster_changed || !current(storage, "save")) throw EXCEPTION("Human roster proof changed before completion")
+		human_containment_coverage_complete = TRUE
+		return TRUE
+#endif
+	proc/validate_human_spatial_candidates()
+		if(!current(storage, "save")) throw EXCEPTION("Human spatial validation lost its save operation")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(human_roster_changed) throw EXCEPTION("Human roster changed during capture")
+		if(!islist(human_roster_records)) throw EXCEPTION("Human roster coverage is unavailable")
+		for(var/identity in human_roster_records)
+			var/list/record = human_roster_records[identity]
+			var/mob/living/human/H = record["atom"]
+			if(!H || isDeleted(H) || storage.save_entry_identity(H) != identity || !!H.should_save != record["saveable"])
+				throw EXCEPTION("Human roster classification changed")
+			if(record["saveable"])
+				var/datum/human_subtile_save_request/request = record["request"]
+				if(!isturf(H.loc) || !H.human_subtile_unlinked() || H.pulling || subtile_pull_ownership.owners[H] || !request || request.actor != H || request.operation != src || !human_containment_coverage_complete)
+					throw EXCEPTION("Human roster capture or containment proof is incomplete")
+#endif
+		for(var/datum/human_subtile_save_request/request in human_spatial_requests)
+			if(!request || request.operation != src || !request.actor || request.actor.human_subtile_save_request != request || !request.captured || !islist(request.position) || !human_subtile_same(request.position, request.position))
+				throw EXCEPTION("Human spatial request was not captured")
+			if(!request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
+				throw EXCEPTION("Human spatial candidate validation is incomplete")
+		return TRUE
+#endif
 	proc/authorize_restore_mutation(map_storage/expected_storage)
 		var/datum/persistence_restore_policy/expected_policy = restore_policy
 		var/datum/persistence_restore_attempt/expected_attempt = restore_attempt
@@ -595,11 +703,17 @@ var/global/datum/persistence_admission_identity
 	// Release an admission that never entered the backend.
 	proc/withdraw()
 		if(persistence_active_operation != src || backend_started) return FALSE
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+		release_human_spatial_requests()
+#endif
 		persistence_active_operation = null
 		persistence_save_in_progress = persistence_load_recovery_required || storage.dimension_recovery_required || storage.dimension_budget_hold || persistence_restart.startup_hold
 		return TRUE
 	proc/finish(success)
 		if(persistence_active_operation != src) return FALSE
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+		release_human_spatial_requests()
+#endif
 #ifdef CIV13_VARIABLE_OBSERVABILITY
 		try
 			storage.variable_observability_finish(src, success)
@@ -987,6 +1101,11 @@ var/global/datum/persistence_admission_identity
 	var/list/declared_seen = list()
 	var/declared_cursor = 1
 	var/list/tickets = list()
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	// Only a validated human save request may install these frame-local values.
+	var/datum/human_subtile_save_request/human_spatial_request
+	var/list/human_spatial_position
+#endif
 
 /datum/save_transfer
 	var/datum/save_export_frame/producer
@@ -1006,6 +1125,10 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/require_export_frame(datum/save_export_frame/frame)
 	if(!frame || !frame.active || frame.exporter != src || !frame.source || save_entry_identity(frame.source) != frame.source_identity || saving_references[frame.source_identity] != frame.entry || saving_reference_pins[frame.entry] != frame.source || saving_export_frames["[frame.entry]"] != frame)
 		throw EXCEPTION("Save export frame is no longer valid")
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	if(frame.human_spatial_request && (!frame.human_spatial_request.captured || !frame.human_spatial_request.actor || frame.human_spatial_request.actor != frame.source || frame.human_spatial_request.actor.human_subtile_save_request != frame.human_spatial_request || !frame.human_spatial_request.operation || !frame.human_spatial_request.operation.current(src, "save")))
+		throw EXCEPTION("Human spatial request lost its operation owner")
+#endif
 	if(isturf(frame.source) && frame.source:persistence_export_frame != frame)
 		throw EXCEPTION("Save export turf was replaced")
 	return TRUE
@@ -1066,6 +1189,12 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/add_export_content(datum/save_export_frame/frame, ref)
 	if(!ref) return
 	var/datum/child = saving_reference_pins[ref]
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	var/list/human_root = child ? human_save_roots[save_entry_identity(child)] : null
+	if(human_root && human_root["ref"] == ref && frame.source != human_root["origin"])
+		if(!isturf(frame.source)) throw EXCEPTION("Human save root entered a captured container")
+		return // The saved origin receives the only spatial edge during drain.
+#endif
 	var/list/moving_root = child ? moving_save_roots["\ref[child]"] : null
 	if(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
 		if(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
@@ -1109,6 +1238,10 @@ var/global/datum/persistence_admission_identity
 		ticket.destination = null
 		ticket.items = list()
 	frame.tickets = list()
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	frame.human_spatial_request = null
+	frame.human_spatial_position = null
+#endif
 	frame.declared_children = list()
 	frame.declared_seen = list()
 	frame.content_refs = list()

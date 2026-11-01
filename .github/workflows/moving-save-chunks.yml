@@ -16,10 +16,24 @@ on:
       - 'tools/byond/version.json'
       - '.github/workflows/moving-save-chunks.yml'
   workflow_dispatch:
+    inputs:
+      human_spatial_only:
+        description: 'Run the separately reviewed human spatial fixture only'
+        type: boolean
+        default: false
+      reviewed_head:
+        description: 'Full independently reviewed commit SHA (required for human fixture)'
+        type: string
+        default: ''
+      reviewed_scope_sha256:
+        description: 'Independently reviewed overlay and driver SHA-256 (required for human fixture)'
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
   isolated-native:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.human_spatial_only != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -68,6 +82,78 @@ jobs:
             .ci/compile/
             !${{ runner.temp }}/moving-save-evidence/**/*.dmb
             !${{ runner.temp }}/moving-save-evidence/**/*.rsc
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+  human-spatial:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify approved immutable head and offline source contracts
+        env:
+          REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+          REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+          EVENT_HEAD: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$REVIEWED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$REVIEWED_SCOPE" =~ ^[0-9a-f]{64}$ ]]
+          test "$REVIEWED_HEAD" = "$EVENT_HEAD"
+          test "$(git rev-parse HEAD)" = "$REVIEWED_HEAD"
+          git diff --quiet HEAD --
+          git diff --cached --quiet
+          python3 -B -c 'import os,sys; sys.path.insert(0,"tests/movement_save_chunks"); import human_spatial_stage as s; s.review_scope()["sha256"] == os.environ["REVIEWED_SCOPE"] or sys.exit("review scope mismatch")'
+          python3 -B -m unittest discover -s tests/movement_save_chunks -p 'test_human*.py' -v
+      - name: Install reviewed toolchain and compile the full game
+        timeout-minutes: 18
+        env:
+          BYOND_MAJOR: '516'
+          BYOND_MINOR: '1688'
+          BYOND_ARCHIVE_SOURCE: repository-release
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(python3 scripts/byond_toolchain.py field version)" = 516.1688
+          bash scripts/travis_pre_byond.sh
+      - name: Run approved synthetic writer, reader and rejection controls
+        timeout-minutes: 15
+        env:
+          REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+          REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$REVIEWED_HEAD"
+          git diff --quiet HEAD --
+          git diff --cached --quiet
+          mkdir -p "$RUNNER_TEMP/human-spatial-evidence"
+          python3 -B tests/movement_save_chunks/human_spatial_run.py --run-native \
+            --expected-head "$REVIEWED_HEAD" --expected-scope-sha256 "$REVIEWED_SCOPE" \
+            --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" \
+            --output "$RUNNER_TEMP/human-spatial-evidence/run"
+      - name: Retain synthetic evidence and bootstrap diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: human-spatial-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .ci/compile/
+            ${{ runner.temp }}/human-spatial-evidence/run/*.json
+            ${{ runner.temp }}/human-spatial-evidence/run/stage/compile-*.log
+            ${{ runner.temp }}/human-spatial-evidence/run/stage/compile-supervision.json
+            ${{ runner.temp }}/human-spatial-evidence/run/writer-*/**
+            ${{ runner.temp }}/human-spatial-evidence/run/reader-*/**
+            ${{ runner.temp }}/human-spatial-evidence/run/negative-*/**
+            ${{ runner.temp }}/human-spatial-evidence/run/drag/**
+            !${{ runner.temp }}/human-spatial-evidence/run/**/*.dmb
+            !${{ runner.temp }}/human-spatial-evidence/run/**/*.rsc
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7

@@ -43,6 +43,9 @@
 		round_state["world_state"] = world_state
 	clear_bookkeeping()
 	prepare_moving_save_roster()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	prepare_human_save_roster(operation)
+#endif
 	// ***** MAP SECTION *****
 	var/backup_dir = "map_backups/"
 	// Back up the whole previous completed generation before overwriting any
@@ -102,6 +105,9 @@
 				savefile["/map/[A]/[y]/[x]"] << ref
 				save_work_check()
 		drain_moving_save_roster(savefile)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		drain_human_save_roster(savefile, operation)
+#endif
 		savefile.Flush()
 		savefile = null // Close the candidate level before consistency validation.
 		sleep(world.tick_lag)
@@ -120,19 +126,39 @@
 			clear_saved_zones()
 			release_durable_world()
 			clear_zone_export()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	inspect_human_saved_origins(operation)
+	inspect_human_present_saved_slots(operation)
+	inspect_human_saved_geometry(operation)
+	operation.seal_human_containment_proof()
+#endif
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	operation.validate_human_spatial_candidates()
+#endif
 	operation.diagnostic_phase = "write_marker"
 	if(fexists("map_saves/round.json") && !fdel("map_saves/round.json"))
 		throw EXCEPTION("Could not replace round state")
 	if(!text2file(json_encode(round_state), "map_saves/round.json"))
 		throw EXCEPTION("Could not write round state")
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	operation.validate_human_spatial_candidates()
+#endif
 	if(!text2file(generation,"map_saves/save_complete.txt"))
 		throw EXCEPTION("Could not write save completion marker")
 	log_startup_progress("Finished saving.")
 	return 1
 
-/map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0, traversal = FALSE)
+/map_storage/proc/BuildVarDirectory(savefile/savefile, datum/A, var/contents = 0, traversal = FALSE, datum/human_request = null)
 	if(!A || istype(A, /client))
 		return 0
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(ishuman(A))
+		var/list/classification = human_save_roots[save_entry_identity(A)]
+		if(!classification || classification["atom"] != A || !!A.should_save != classification["saveable"])
+			throw EXCEPTION("Human traversal is not covered by the sealed roster")
+		if(classification["saveable"] && !isturf(A:loc))
+			throw EXCEPTION("Human traversal has unsupported containment")
+#endif
 	if(!A.should_save)
 		return 0
 	if(istype(A, /obj/map_metadata))
@@ -158,12 +184,19 @@
 		var/list/root = moving_save_roots["\ref[A]"]
 		if(root["atom"] != A) throw EXCEPTION("Moving save root identity changed")
 		if(!saving_references["\ref[A]"]) return capture_moving_save_root(savefile, root)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(!human_request && !moving_save_chunk && ishuman(A))
+		var/list/human_root = human_save_roots[save_entry_identity(A)]
+		if(human_root && human_root["atom"] != A) throw EXCEPTION("Human save root identity changed")
+		if(human_root && !saving_references[save_entry_identity(A)]) return capture_human_save_root(savefile, human_root)
+#endif
 	if(moving_save_chunk && istype(A, /atom/movable) && A != moving_save_chunk.root && !saving_references["\ref[A]"])
 		throw EXCEPTION("Moving save chunk references an uncaptured external movable")
 	var/identity = save_entry_identity(A)
 	var/ind = saving_references[identity]
 	var/ref = 0
 	if(ind && saving_reference_pins[ind] == A)
+		if(human_request) throw EXCEPTION("Human spatial request reached an existing saved entry")
 		return ind
 	if(moving_save_chunk) moving_save_chunk.reserve_node()
 	ref = saving_reference_pins.len + 1
@@ -179,6 +212,19 @@
 	frame.source = A
 	frame.source_identity = identity
 	frame.entry = ref
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(human_request)
+		var/list/human_root = human_save_roots[save_entry_identity(A)]
+		if(!human_root || human_root["atom"] != A || human_root["request"] != human_request || human_root["ref"])
+			throw EXCEPTION("Human spatial root registration changed")
+		human_root["ref"] = ref
+#endif
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	if(human_request)
+		bind_human_spatial_frame(frame, human_request)
+#else
+	if(human_request) throw EXCEPTION("Human spatial capture is unavailable")
+#endif
 	if(isturf(A))
 		A:persistence_export_frame = frame
 	frame.accepts_children = A.load_contents && contents && istype(A, /atom)
@@ -217,6 +263,24 @@
 				save_work_check()
 				require_export_frame(frame)
 		var/list/changing_vars = A.get_saved_vars()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		// Explicitly encode the audited defaults; do not infer constructor state
+		// from an absent savefile field or change a live relationship.
+		if(frame.human_spatial_position)
+			changing_vars |= human_spatial_link_fields()
+			changing_vars |= human_spatial_slot_fields()
+			changing_vars |= list("bound_x", "bound_y", "bound_width", "bound_height")
+		if(A.type in list(/turf/floor/dirt, /turf/floor/wood, /turf/floor/grass))
+			changing_vars |= list("density", "vehicle_transforming")
+		if(A.type in list(/obj/item/weapon/pen, /obj/item/weapon/paper))
+			changing_vars |= "density"
+#endif
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+		if(frame.human_spatial_position)
+			changing_vars -= list("step_x", "step_y", "glide_size", "human_subtile_position")
+			if(frame.human_spatial_position["sx"] || frame.human_spatial_position["sy"])
+				changing_vars |= "human_subtile_position"
+#endif
 		if(istype(A, /atom/movable))
 			var/atom/movable/AM = A
 			if(contents && AM.load_datums)
@@ -231,10 +295,17 @@
 			if(A.vars.Find(v))
 				frame.current_field = v
 				var/value
-				if(level_link_target(A, v, A.vars[v]))
-					value = encode_level_link(A.vars[v])
-				else
-					value = encode_saved_value(savefile, A.vars[v])
+				var/human_spatial_override = FALSE
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+				if(frame.human_spatial_position && v == "human_subtile_position")
+					value = encode_saved_value(savefile, frame.human_spatial_position)
+					human_spatial_override = TRUE
+#endif
+				if(!human_spatial_override)
+					if(level_link_target(A, v, A.vars[v]))
+						value = encode_level_link(A.vars[v])
+					else
+						value = encode_saved_value(savefile, A.vars[v])
 				frame.current_field = null
 				require_export_frame(frame)
 				savefile.cd = entry_path(savefile, ref)
@@ -255,6 +326,12 @@
 		release_export_frame(frame)
 		throw e
 	release_export_frame(frame)
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+	if(human_request)
+		var/datum/human_subtile_save_request/completed_request = human_request
+		if(!completed_request.operation || !completed_request.operation.current(src, "save")) throw EXCEPTION("Human spatial operation ended before serialization")
+		completed_request.serialized = TRUE
+#endif
 	return ref
 
 // Typed envelopes preserve literal marker strings and associative/nested lists.
@@ -399,6 +476,9 @@
 /map_storage
 	var/tmp/list/moving_save_roots = list()
 	var/tmp/datum/moving_save_capture/moving_save_chunk
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	var/tmp/list/human_save_roots = list()
+#endif
 
 /map_storage/proc/moving_save_root_supported(mob/living/simple_animal/A)
 	if(!istype(A) || !A.should_save || A.client || !isturf(A.loc) || A.contents.len) return FALSE
@@ -439,6 +519,92 @@
 // serializer IDs. Conservative limits leave headroom for the actual typed encoder.
 // Source audit: admitted simple-animal and nonmovable datum getters/exclusion
 // hooks do not yield; new overrides require extending that audit before admission.
+#ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
+// Install only the detached value of an exact operation-owned handoff. The
+// caller must still own roster admission and the frozen spatial edge.
+/map_storage/proc/bind_human_spatial_frame(datum/save_export_frame/frame, datum/human_subtile_save_request/request)
+	if(!frame || !request || !request.captured || !request.actor || request.actor.human_subtile_save_request != request || frame.source != request.actor || frame.exporter != src || !request.operation || !request.operation.current(src, "save") || !request.origin || !islist(request.position))
+		throw EXCEPTION("Human spatial frame does not own a captured request")
+	var/list/position = request.position.Copy()
+	if(position.len != 5 || position["x"] != request.origin.x || position["y"] != request.origin.y || position["z"] != request.origin.z || !human_subtile_same(position, position) || position["sx"] < 0 || position["sx"] >= 32 || position["sy"] < 0 || position["sy"] >= 32)
+		throw EXCEPTION("Human spatial frame has an invalid frozen origin")
+	frame.human_spatial_request = request
+	frame.human_spatial_position = position
+	request.saved_ref = frame.entry
+	request.saved_z = saving_z
+	return TRUE
+
+// Preparation only: this is not an admission to the moving-save roster and
+// does not invoke hooks, reserve export IDs, or encode any values. Human save
+// admission must remain disabled until field closure, handoff and mutation
+// coverage are separately established. A returned group is a short-lived
+// inventory for that future audit, never a durable snapshot or mutation lease.
+/datum/moving_human_ownership_preflight
+	should_save = FALSE
+	var/mob/living/human/root
+	var/turf/origin
+	var/list/position
+	var/start_tick
+	var/list/members = list()
+	var/list/parents = list()
+	var/list/slots = list()
+
+	proc/inspect(map_storage/exporter, mob/living/human/H)
+		// A reused or partially failed inspection cannot accidentally authorize.
+		root = null
+		origin = null
+		position = null
+		members = list()
+		parents = list()
+		slots = list()
+		if(!exporter || !H || isDeleted(H) || !H.should_save || !isturf(H.loc) || H.human_subtile_pulse) return FALSE
+		start_tick = world.time
+		var/turf/start = H.loc
+		var/list/start_position = H.human_subtile_snapshot()
+		var/datum/human_subtile_transaction/transaction = H.human_subtile_transaction
+		if(transaction && (transaction.actor != H || transaction.cancelled || !human_subtile_same(transaction.expected, start_position))) return FALSE
+		var/list/queue = list(H)
+		var/list/seen = list()
+		var/list/local_parents = list()
+		var/list/local_slots = list()
+		var/list/counts = list()
+		var/list/slot_names = list("shoulder", "eyes", "l_hand", "r_hand", "back", "wear_mask", "handcuffed", "legcuffed", "wear_suit", "w_uniform", "shoes", "belt", "gloves", "head", "l_ear", "r_ear", "wear_id", "r_store", "l_store")
+		seen["\ref[H]"] = H
+		for(var/i = 1, i <= queue.len, i++)
+			if(world.time != start_tick || queue.len > 128) return FALSE
+			var/atom/movable/parent = queue[i]
+			if(!parent || isDeleted(parent) || !parent.should_save) return FALSE
+			for(var/ignored in exporter.ignore_types)
+				if(istype(parent, ignored)) return FALSE
+			if(parent.contents.len && !parent.load_contents) return FALSE
+			if(parent.contents.len > 128 - queue.len) return FALSE
+			counts["\ref[parent]"] = parent.contents.len
+			for(var/atom/movable/child in parent.contents)
+				if(!child || isDeleted(child) || child.loc != parent || seen["\ref[child]"]) return FALSE
+				seen["\ref[child]"] = child
+				local_parents["\ref[child]"] = parent
+				queue += child
+		for(var/key in slot_names)
+			var/obj/item/item = H.vars[key]
+			if(item)
+				if(!istype(item) || item.loc != H || seen["\ref[item]"] != item) return FALSE
+				local_slots[key] = item
+		if(world.time != start_tick || H.loc != start || H.human_subtile_pulse || H.human_subtile_transaction != transaction || !human_subtile_same(start_position, H.human_subtile_snapshot())) return FALSE
+		if(transaction && (transaction.actor != H || transaction.cancelled || !human_subtile_same(transaction.expected, start_position))) return FALSE
+		for(var/key in slot_names)
+			if(H.vars[key] != local_slots[key]) return FALSE
+		for(var/atom/movable/member in queue)
+			if(!member || isDeleted(member) || !member.should_save || (member.contents.len && !member.load_contents) || seen["\ref[member]"] != member || member.contents.len != counts["\ref[member]"]) return FALSE
+			if(member != H && member.loc != local_parents["\ref[member]"]) return FALSE
+		root = H
+		origin = start
+		position = start_position
+		members = queue
+		parents = local_parents
+		slots = local_slots
+		return TRUE
+#endif
+
 /datum/moving_save_preflight
 	should_save = FALSE
 	var/map_storage/exporter
@@ -573,6 +739,11 @@
 
 /map_storage/proc/moving_save_root_edge(atom/movable/A, atom/parent)
 	var/identity = "\ref[A]"
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	var/list/human_root = human_save_roots[identity]
+	if(human_root && human_root["atom"] == A && human_root["identity"] == identity && human_root["ref"] && saving_reference_pins[human_root["ref"]] == A)
+		return isturf(parent) && isturf(A.loc) && isturf(human_root["origin"]) && A.z == human_root["z"]
+#endif
 	var/list/record = moving_save_roots[identity]
 	// A pre-capture wait can move the root away from the traversed turf.
 	// add_export_content defers that edge to its frozen actual origin; never
@@ -606,3 +777,378 @@
 			F[path] << chunks
 			saving_content_owners[key] = parent_ref
 		save_work_check()
+
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+// This opt-in source prototype has no production enablement. Its pre-marker
+// gate deliberately refuses until encoded link and geometry checks exist.
+/proc/human_spatial_link_fields()
+	return list("buckled", "riding", "riding_mob", "using_drone", "control_object", "incorporeal_move", "pulledby", "using_object", "using_cannon", "football", "pulling", "driver", "driver_vehicle")
+
+/proc/human_spatial_slot_fields()
+	return list("shoulder", "eyes", "l_hand", "r_hand", "back", "wear_mask", "handcuffed", "legcuffed", "wear_suit", "w_uniform", "shoes", "belt", "gloves", "head", "l_ear", "r_ear", "wear_id", "r_store", "l_store")
+
+/map_storage/proc/human_saved_entry_fields(savefile/F, ref)
+	if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Human candidate entry identity is invalid")
+	F.cd = "/"
+	if(!("entries" in F.dir)) throw EXCEPTION("Human candidate entries are missing")
+	F.cd = "/entries"
+	var/shard = round((ref - 1) / 512)
+	if(!("[shard]" in F.dir)) throw EXCEPTION("Human candidate entry shard is missing")
+	F.cd = "/entries/[shard]"
+	if(!("[ref]" in F.dir)) throw EXCEPTION("Human candidate entry is missing")
+	F.cd = entry_path(F, ref)
+	return F.dir.Copy()
+
+/proc/human_candidate_scalar(value)
+	if(!islist(value)) throw EXCEPTION("Human candidate scalar envelope is invalid")
+	var/list/envelope = value
+	if(envelope["kind"] == "entry" && ("ref" in envelope) && isnum(envelope["ref"]) && envelope["ref"] == 0) return null
+	if(envelope["kind"] != "value" || !("value" in envelope)) throw EXCEPTION("Human candidate field is not a scalar")
+	return envelope["value"]
+
+/datum/human_candidate_reference_budget
+	should_save = FALSE
+	var/work = 0
+	var/list/seen = list()
+
+// Traverse only known physical fields. Ordinary AI target fields are not
+// treated as physical ownership. Unknown encodings and cross-level physical
+// links are refused, not decoded into live objects.
+/map_storage/proc/human_candidate_mentions(savefile/F, value, list/targets, datum/human_candidate_reference_budget/budget, depth = 0)
+	if(!islist(value) || !budget || ++budget.work > 10000 || depth > 32) throw EXCEPTION("Human reciprocal reference budget or envelope is invalid")
+	var/list/envelope = value
+	switch(envelope["kind"])
+		if("entry")
+			if(!("ref" in envelope) || !isnum(envelope["ref"]) || envelope["ref"] < 0 || envelope["ref"] != round(envelope["ref"])) throw EXCEPTION("Human reciprocal entry is invalid")
+			return !!targets["[envelope["ref"]]"]
+		if("level_link")
+			throw EXCEPTION("Human reciprocal cross-level link is unsupported")
+		if("list")
+			var/id = envelope["ref"]
+			if(!isnum(id) || id < 1 || id != round(id)) throw EXCEPTION("Human reciprocal list identity is invalid")
+			if(budget.seen["[id]"]) return FALSE
+			budget.seen["[id]"] = TRUE
+			F.cd = "/"
+			if(!("lists" in F.dir)) throw EXCEPTION("Human reciprocal list root is missing")
+			F.cd = "/lists"
+			if(!("[id]" in F.dir)) throw EXCEPTION("Human reciprocal list is missing")
+			F.cd = "/lists/[id]"
+			if(!("length" in F.dir)) throw EXCEPTION("Human reciprocal list length is missing")
+			var/count = F["length"]
+			if(!isnum(count) || count < 0 || count != round(count) || count > 4096) throw EXCEPTION("Human reciprocal list length is invalid")
+			for(var/i = 1, i <= count, i++)
+				F.cd = "/lists/[id]"
+				if(!("[i]" in F.dir)) throw EXCEPTION("Human reciprocal list element is missing")
+				F.cd = "/lists/[id]/[i]"
+				if(!("key" in F.dir) || !("value" in F.dir)) throw EXCEPTION("Human reciprocal list edge is missing")
+				var/key = F["key"]
+				var/item = F["value"]
+				if(human_candidate_mentions(F, key, targets, budget, depth + 1) || human_candidate_mentions(F, item, targets, budget, depth + 1)) return TRUE
+			return FALSE
+		if("value", "turf", "area", "zone", "map")
+			return FALSE
+	throw EXCEPTION("Human reciprocal value kind is unsupported")
+
+/map_storage/proc/human_candidate_scalar_field(savefile/F, ref, key)
+	var/list/fields = human_saved_entry_fields(F, ref)
+	if(!(key in fields)) throw EXCEPTION("Human candidate required field is missing")
+	return human_candidate_scalar(F[key])
+
+/map_storage/proc/human_candidate_map_ref(savefile/F, z, y, x)
+	F.cd = "/"
+	if(!("map" in F.dir)) throw EXCEPTION("Human candidate map is missing")
+	F.cd = "/map"
+	if(!("[z]" in F.dir)) throw EXCEPTION("Human candidate level is missing")
+	F.cd = "/map/[z]"
+	if(!("[y]" in F.dir)) throw EXCEPTION("Human candidate row is missing")
+	F.cd = "/map/[z]/[y]"
+	if(!("[x]" in F.dir)) throw EXCEPTION("Human candidate cell is missing")
+	return F["[x]"]
+
+/map_storage/proc/human_candidate_position_matches(savefile/F, ref, list/expected)
+	var/list/fields = human_saved_entry_fields(F, ref)
+	if(!expected["sx"] && !expected["sy"])
+		return !("human_subtile_position" in fields)
+	if(!("human_subtile_position" in fields)) return FALSE
+	var/list/envelope = F["human_subtile_position"]
+	if(!islist(envelope) || envelope["kind"] != "list" || !isnum(envelope["ref"]) || envelope["ref"] < 1 || envelope["ref"] != round(envelope["ref"])) return FALSE
+	var/id = envelope["ref"]
+	F.cd = "/"
+	if(!("lists" in F.dir)) return FALSE
+	F.cd = "/lists"
+	if(!("[id]" in F.dir)) return FALSE
+	F.cd = "/lists/[id]"
+	if(!("length" in F.dir) || F["length"] != 5) return FALSE
+	var/list/seen = list()
+	for(var/i = 1, i <= 5, i++)
+		F.cd = "/lists/[id]"
+		if(!("[i]" in F.dir)) return FALSE
+		F.cd = "/lists/[id]/[i]"
+		if(!("key" in F.dir) || !("value" in F.dir)) return FALSE
+		var/key = human_candidate_scalar(F["key"])
+		var/value = human_candidate_scalar(F["value"])
+		if(!(key in list("x", "y", "z", "sx", "sy")) || seen[key] || !isnum(value) || value != expected[key]) return FALSE
+		seen[key] = TRUE
+	return seen.len == 5
+
+/map_storage/proc/inspect_human_saved_geometry(datum/persistence_world_operation/operation)
+	if(!operation || !operation.current(src, "save")) throw EXCEPTION("Human geometry inspection lost its operation")
+	var/list/files = list()
+	var/deadline = world.time + 1200
+	for(var/datum/human_subtile_save_request/request in operation.human_spatial_requests)
+		if(world.time >= deadline || !request || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !operation.current(src, "save")) throw EXCEPTION("Human geometry inspection lacks its prerequisites")
+		var/z = request.saved_z
+		var/list/position = request.position
+		var/savefile/F = files["[z]"]
+		if(!F)
+			if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Human geometry level is missing")
+			F = new("map_saves/[z].sav")
+			files["[z]"] = F
+		var/list/human_fields = human_saved_entry_fields(F, request.saved_ref)
+		if(!("type" in human_fields) || F["type"] != /mob/living/human || !human_candidate_position_matches(F, request.saved_ref, position)) throw EXCEPTION("Human saved type or position is unsupported")
+		for(var/key in human_spatial_link_fields())
+			var/link = human_candidate_scalar_field(F, request.saved_ref, key)
+			if(!isnull(link) && (!isnum(link) || link != 0)) throw EXCEPTION("Human saved physical link is unsupported")
+		for(var/key in list("bound_x", "bound_y"))
+			var/offset = human_candidate_scalar_field(F, request.saved_ref, key)
+			if(!isnum(offset) || offset != 0) throw EXCEPTION("Human saved bounds are unsupported")
+		for(var/key in list("bound_width", "bound_height"))
+			var/size = human_candidate_scalar_field(F, request.saved_ref, key)
+			if(!isnum(size) || size != 32) throw EXCEPTION("Human saved size is unsupported")
+		for(var/dx = 0, dx <= !!position["sx"], dx++)
+			for(var/dy = 0, dy <= !!position["sy"], dy++)
+				var/x = position["x"] + dx
+				var/y = position["y"] + dy
+				if(x < 1 || x > world.maxx || y < 1 || y > world.maxy) throw EXCEPTION("Human saved footprint is outside the map")
+				var/turf_ref = human_candidate_map_ref(F, z, y, x)
+				var/list/turf_fields = human_saved_entry_fields(F, turf_ref)
+				if(!("type" in turf_fields) || !(F["type"] in list(/turf/floor/dirt, /turf/floor/wood, /turf/floor/grass)) || !("content" in turf_fields)) throw EXCEPTION("Human saved turf type is not audited")
+				var/turf_density = human_candidate_scalar_field(F, turf_ref, "density")
+				var/transforming = human_candidate_scalar_field(F, turf_ref, "vehicle_transforming")
+				if(!isnum(turf_density) || turf_density != 0 || (!isnull(transforming) && (!isnum(transforming) || transforming != 0))) throw EXCEPTION("Human saved turf is blocked or transforming")
+				F.cd = entry_path(F, turf_ref)
+				var/list/raw = F["content"]
+				if(!islist(raw) || raw.len > 256) throw EXCEPTION("Human footprint content budget exceeded")
+				var/list/occupants = saved_content_refs(raw, 3)
+				if(occupants.len > 128000) throw EXCEPTION("Human footprint occupant budget exceeded")
+				for(var/occupant in occupants)
+					var/occupant_ref = text2num("[occupant]")
+					if(!isnum(occupant_ref) || occupant_ref < 1 || occupant_ref != round(occupant_ref) || "[occupant_ref]" != "[occupant]") throw EXCEPTION("Human saved occupant identity is invalid")
+					if(occupant_ref == request.saved_ref && !dx && !dy) continue
+					var/list/occupant_fields = human_saved_entry_fields(F, occupant_ref)
+					if(!("type" in occupant_fields) || !(F["type"] in list(/obj/item/weapon/pen, /obj/item/weapon/paper))) throw EXCEPTION("Human saved footprint has an unaudited occupant")
+					var/item_density = human_candidate_scalar_field(F, occupant_ref, "density")
+					if(!isnum(item_density) || item_density != 0) throw EXCEPTION("Human saved footprint has a dense occupant")
+				if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human geometry inspection exceeded its budget")
+		request.encoded_geometry_checked = TRUE
+		request.encoded_links_checked = TRUE
+	files = list()
+
+/map_storage/proc/prepare_human_save_roster(datum/persistence_world_operation/operation)
+	if(!operation || !operation.current(src, "save")) throw EXCEPTION("Human roster has no save owner")
+	var/list/registry = operation.human_initial_roster
+	if(!operation.human_roster_sealed || !islist(registry) || registry.len > 8192) throw EXCEPTION("Human save roster is unavailable or over budget")
+	human_save_roots = list()
+	var/list/copy = registry.Copy()
+	for(var/i = 1, i <= copy.len, i++)
+		var/mob/living/human/H = copy[i]
+		if(!istype(H) || isDeleted(H)) throw EXCEPTION("Sealed human roster member is unavailable")
+		var/identity = save_entry_identity(H)
+		if(human_save_roots[identity]) throw EXCEPTION("Human save roster identity is duplicated")
+		var/saveable = !!H.should_save
+		if(saveable)
+			if(!isturf(H.loc)) throw EXCEPTION("Sealed human has unsupported containment")
+			for(var/ignored in ignore_types)
+				if(istype(H, ignored)) throw EXCEPTION("Saveable human matches an ignored type")
+		human_save_roots[identity] = list("atom" = H, "identity" = identity, "saveable" = saveable, "z" = H.z, "origin" = null, "request" = null, "ref" = 0)
+		save_work_check()
+	operation.human_roster_records = human_save_roots
+
+/map_storage/proc/capture_human_save_root(savefile/F, list/record)
+	var/mob/living/human/H = record["atom"]
+	var/datum/persistence_world_operation/operation = persistence_active_operation
+	if(!H || isDeleted(H) || save_entry_identity(H) != record["identity"] || H.z != record["z"] || H.z != saving_z || !operation || !operation.current(src, "save"))
+		throw EXCEPTION("Human save root changed before capture")
+	var/datum/human_subtile_save_request/request = H.request_human_subtile_save_position(operation)
+	if(!request) throw EXCEPTION("Human save position request was not admitted")
+	var/deadline = world.time + 100
+	while(!request.captured && world.time < deadline && operation.current(src, "save"))
+		sleep(world.tick_lag)
+		if(H && !H.human_subtile_transaction && !H.human_subtile_pulse)
+			request.acknowledge(H, null)
+	if(!request.captured || !H || isDeleted(H) || !operation.current(src, "save") || H.z != record["z"] || !request.origin || request.origin.z != saving_z)
+		throw EXCEPTION("Human save position handoff did not complete")
+	record["origin"] = request.origin
+	record["request"] = request
+	return BuildVarDirectory(F, H, 1, FALSE, request)
+
+/map_storage/proc/drain_human_save_roster(savefile/F, datum/persistence_world_operation/operation)
+	for(var/identity in human_save_roots)
+		var/list/record = human_save_roots[identity]
+		if(!record["saveable"]) continue
+		if(record["z"] != saving_z) continue
+		var/mob/living/human/H = record["atom"]
+		if(!H || isDeleted(H) || save_entry_identity(H) != identity || H.z != saving_z || !isturf(H.loc) || !operation.current(src, "save"))
+			throw EXCEPTION("Human save roster changed before spatial drain")
+		var/ref = record["ref"]
+		if(!ref) ref = capture_human_save_root(F, record)
+		var/datum/human_subtile_save_request/request = record["request"]
+		var/turf/origin = record["origin"]
+		var/parent_ref = origin ? saving_references[save_entry_identity(origin)] : null
+		if(!request || !request.serialized || !parent_ref || saving_reference_pins[parent_ref] != origin || saving_reference_pins[ref] != H)
+			throw EXCEPTION("Human saved origin or entry was not captured")
+		var/key = "[ref]"
+		var/owner = saving_content_owners[key]
+		if(owner && owner != parent_ref) throw EXCEPTION("Human save root has conflicting spatial owners")
+		if(!owner)
+			var/path = "[entry_path(F, parent_ref)]/content"
+			var/list/chunks = F[path]
+			if(!islist(chunks)) throw EXCEPTION("Human saved origin has no version-3 contents")
+			chunks += list2params(list(key))
+			F[path] << chunks
+			saving_content_owners[key] = parent_ref
+		request.spatial_attached = TRUE
+		save_work_check()
+
+// Read only fields whose directory membership is proven. This checks the
+// encoded anchor edge; geometry and reciprocal links are checked separately
+// before the operation can seal its candidate-ownership proof.
+/map_storage/proc/inspect_human_saved_origins(datum/persistence_world_operation/operation)
+	if(!operation || !operation.current(src, "save")) throw EXCEPTION("Human saved-origin inspection lost its operation")
+	var/list/files = list()
+	for(var/datum/human_subtile_save_request/request in operation.human_spatial_requests)
+		if(!request || request.operation != operation || !request.serialized || !request.spatial_attached || !request.saved_ref || !request.saved_z || !islist(request.position))
+			throw EXCEPTION("Human saved-origin inspection lacks a completed entry")
+		var/z = request.saved_z
+		var/x = request.position["x"]
+		var/y = request.position["y"]
+		if(!isnum(x) || !isnum(y) || !isnum(z) || x != round(x) || y != round(y) || z != round(z) || request.position["z"] != z || x < 1 || x > world.maxx || y < 1 || y > world.maxy || z < 1 || z > world.maxz)
+			throw EXCEPTION("Human saved-origin coordinates are invalid")
+		var/savefile/F = files["[z]"]
+		if(!F)
+			if(!fexists("map_saves/[z].sav")) throw EXCEPTION("Human saved-origin level is missing")
+			F = new("map_saves/[z].sav")
+			F.cd = "/"
+			if(!("format_version" in F.dir) || F["format_version"] != 3 || !("map" in F.dir)) throw EXCEPTION("Human saved-origin format is invalid")
+			files["[z]"] = F
+		F.cd = "/map"
+		if(!("[z]" in F.dir)) throw EXCEPTION("Human saved-origin level is absent")
+		F.cd = "/map/[z]"
+		if(!("[y]" in F.dir)) throw EXCEPTION("Human saved-origin row is absent")
+		F.cd = "/map/[z]/[y]"
+		if(!("[x]" in F.dir)) throw EXCEPTION("Human saved-origin cell is absent")
+		var/parent_ref = F["[x]"]
+		if(!isnum(parent_ref) || parent_ref < 1 || parent_ref != round(parent_ref)) throw EXCEPTION("Human saved-origin reference is invalid")
+		F.cd = "/"
+		if(!("entries" in F.dir)) throw EXCEPTION("Human saved-origin entries are absent")
+		F.cd = "/entries"
+		var/shard = round((parent_ref - 1) / 512)
+		if(!("[shard]" in F.dir)) throw EXCEPTION("Human saved-origin shard is absent")
+		F.cd = "/entries/[shard]"
+		if(!("[parent_ref]" in F.dir)) throw EXCEPTION("Human saved-origin entry is absent")
+		F.cd = entry_path(F, parent_ref)
+		if(!("type" in F.dir) || !("content" in F.dir) || !ispath(F["type"], /turf)) throw EXCEPTION("Human saved-origin entry is invalid")
+		var/list/contents = saved_content_refs(F["content"], 3)
+		if(!operation.current(src, "save")) throw EXCEPTION("Human saved-origin inspection lost ownership")
+		var/matches = 0
+		for(var/child in contents)
+			if("[child]" == "[request.saved_ref]") matches++
+		if(matches != 1) throw EXCEPTION("Human saved-origin edge is missing or duplicated")
+		var/ref = request.saved_ref
+		if(!isnum(ref) || ref < 1 || ref != round(ref)) throw EXCEPTION("Human saved entry reference is invalid")
+		F.cd = "/entries"
+		var/human_shard = round((ref - 1) / 512)
+		if(!("[human_shard]" in F.dir)) throw EXCEPTION("Human saved entry shard is absent")
+		F.cd = "/entries/[human_shard]"
+		if(!("[ref]" in F.dir)) throw EXCEPTION("Human saved entry is absent")
+		F.cd = entry_path(F, ref)
+		if(!("type" in F.dir) || !ispath(F["type"], /mob/living/human)) throw EXCEPTION("Human saved entry has an invalid type")
+		request.encoded_origin_checked = TRUE
+	files = list()
+
+// A partial candidate check: explicit saved slot references must name direct
+// saved children with a unique saved parent. Missing fields, constructor hooks,
+// reciprocal links and collision geometry need independent proofs.
+/map_storage/proc/inspect_human_present_saved_slots(datum/persistence_world_operation/operation)
+	if(!operation || !operation.current(src, "save")) throw EXCEPTION("Human slot inspection lost its operation")
+	var/list/files = list()
+	var/list/parents_by_level = list()
+	var/list/targets_by_level = list()
+	var/deadline = world.time + 1200
+	var/edge_count = 0
+	var/list/slot_names = human_spatial_slot_fields()
+	var/list/physical_fields = list("buckled_mob", "buckled", "rider", "riding_mob", "pulledby", "pulling", "driver", "driver_vehicle", "ontop", "riders", "passengers", "occupants", "control_object", "using_cannon", "using_drone", "football")
+	for(var/datum/human_subtile_save_request/target in operation.human_spatial_requests)
+		if(!target || !target.encoded_origin_checked || !target.saved_ref) throw EXCEPTION("Human reciprocal target is unavailable")
+		var/z_key = "[target.saved_z]"
+		var/list/targets = targets_by_level[z_key]
+		if(!targets)
+			targets = list()
+			targets_by_level[z_key] = targets
+		targets["[target.saved_ref]"] = TRUE
+	for(var/datum/human_subtile_save_request/request in operation.human_spatial_requests)
+		if(world.time >= deadline || !request || !request.encoded_origin_checked || !operation.current(src, "save")) throw EXCEPTION("Human slot inspection lacks a verified origin or exceeded its budget")
+		var/z_key = "[request.saved_z]"
+		var/savefile/F = files[z_key]
+		var/list/parents = parents_by_level[z_key]
+		if(!F)
+			if(!fexists("map_saves/[z_key].sav")) throw EXCEPTION("Human slot level is missing")
+			F = new("map_saves/[z_key].sav")
+			F.cd = "/"
+			if(!("format_version" in F.dir) || F["format_version"] != 3 || !("entries" in F.dir)) throw EXCEPTION("Human slot format is invalid")
+			F.cd = "/entries"
+			var/list/shards = F.dir.Copy()
+			if(shards.len > 4096) throw EXCEPTION("Human slot shard budget exceeded")
+			parents = list()
+			for(var/shard in shards)
+				var/shard_number = text2num("[shard]")
+				if(!isnum(shard_number) || shard_number < 0 || shard_number != round(shard_number) || "[shard_number]" != "[shard]") throw EXCEPTION("Human slot shard identity is invalid")
+				F.cd = "/entries/[shard]"
+				var/list/entries = F.dir.Copy()
+				if(entries.len > 512) throw EXCEPTION("Human slot entry shard exceeds its bound")
+				for(var/ref in entries)
+					var/number = text2num("[ref]")
+					if(!isnum(number) || number < 1 || number != round(number) || "[number]" != "[ref]" || round((number - 1) / 512) != shard_number) throw EXCEPTION("Human slot entry identity is invalid")
+					F.cd = entry_path(F, number)
+					var/list/entry_fields = F.dir.Copy()
+					if(!("type" in entry_fields)) throw EXCEPTION("Human reciprocal entry type is missing")
+					var/entry_type = F["type"]
+					if("content" in F.dir)
+						var/list/raw_contents = F["content"]
+						if(!islist(raw_contents) || raw_contents.len > 256) throw EXCEPTION("Human slot parent content budget exceeded")
+						var/list/children = saved_content_refs(raw_contents, 3)
+						edge_count += children.len
+						if(edge_count > 1000000) throw EXCEPTION("Human slot edge budget exceeded")
+						for(var/child in children)
+							var/key = "[child]"
+							if(parents[key]) throw EXCEPTION("Human slot candidate has duplicate saved parents")
+							parents[key] = "[ref]"
+					if(ispath(entry_type, /atom/movable))
+						var/list/fields_to_check = physical_fields
+						if(ispath(entry_type, /obj/item/football)) fields_to_check = physical_fields + list("owner")
+						for(var/key in fields_to_check)
+							if(!(key in entry_fields)) continue
+							F.cd = entry_path(F, number)
+							var/datum/human_candidate_reference_budget/budget = new
+							if(human_candidate_mentions(F, F[key], targets_by_level[z_key], budget)) throw EXCEPTION("Human saved reciprocal physical link is unsupported")
+					if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human slot inspection lost ownership or exceeded its budget")
+					save_work_check()
+			files[z_key] = F
+			parents_by_level[z_key] = parents
+		F.cd = entry_path(F, request.saved_ref)
+		var/list/fields = F.dir.Copy()
+		for(var/key in slot_names)
+			if(!(key in fields)) throw EXCEPTION("Human saved slot field is missing")
+			F.cd = entry_path(F, request.saved_ref)
+			var/list/value = F[key]
+			if(!islist(value)) throw EXCEPTION("Human saved slot encoding is invalid")
+			if(value["kind"] == "value" && isnull(value["value"])) continue
+			if(value["kind"] != "entry" || !isnum(value["ref"]) || value["ref"] < 0 || value["ref"] != round(value["ref"]))
+				throw EXCEPTION("Human saved slot reference is invalid")
+			if(value["ref"] && parents["[value["ref"]]"] != "[request.saved_ref]")
+				throw EXCEPTION("Human saved slot does not match direct containment")
+		if(!operation.current(src, "save")) throw EXCEPTION("Human slot inspection lost ownership")
+		request.encoded_present_slots_checked = TRUE
+		request.reciprocal_links_checked = TRUE
+	files = list()
+#endif
