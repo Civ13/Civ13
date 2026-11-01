@@ -117,10 +117,10 @@
 
 	if (istype(pages[page], /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/P = W
-		if (!(istype(usr, /mob/living/human) || isghost(usr)))
-			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[stars(P.info)][P.stamps]</BODY></HTML>"
-		else
-			dat+= "<HTML><HEAD><TITLE>[P.name]</TITLE></HEAD><BODY>[P.info][P.stamps]</BODY></HTML>"
+		var/paper_html = P.document_classic_html(user, FALSE, "bundle", src)
+		if (isnull(paper_html))
+			return
+		dat += paper_html
 		user << browse(dat, "window=[name]")
 
 /obj/item/weapon/paper_bundle/attack_self(mob/user as mob)

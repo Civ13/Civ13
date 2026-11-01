@@ -215,18 +215,13 @@
 /obj/item/weapon/paper/examine(mob/user)
 	..()
 	if (in_range(user, src) || isghost(user))
-		show_content(usr)
+		show_content(user)
 	else
 		to_chat(user, SPAN_NOTICE("You have to go closer if you want to read it."))
 	return
 
 /obj/item/weapon/paper/proc/show_content(var/mob/user, var/forceshow=0)
-	if (!(istype(user, /mob/living/human) || isghost(user) && !forceshow))
-		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[stars(info)][stamps]</BODY></HTML>", "window=[name]")
-		onclose(user, "[name]")
-	else
-		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info][stamps]</BODY></HTML>", "window=[name]")
-		onclose(user, "[name]")
+	return show_document(user, forceshow)
 
 /obj/item/weapon/paper/verb/rename()
 	set name = "Rename paper"
@@ -502,7 +497,7 @@
 		playsound(src,'sound/effects/pen.ogg',40,1)
 		update_space(t)
 
-		usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
+		show_document(usr, FALSE, "editor") // Project the legacy editor refresh.
 
 		update_icon()
 
@@ -560,7 +555,7 @@
 		if ( istype(RP) && RP.mode == 2 )
 			RP.RenamePaper(user,src)
 		else*/
-		user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]")
+		show_document(user, FALSE, "editor")
 		return
 
 	else if ((istype(P, /obj/item/weapon/stamp) && !(istype(P, /obj/item/weapon/stamp/mail))))
