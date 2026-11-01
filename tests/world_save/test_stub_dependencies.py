@@ -43,6 +43,27 @@ class StubDependencies(unittest.TestCase):
             side_effect=AssertionError('Native process forbidden')))
         self.enterContext(patch.object(socket, 'socket', side_effect=AssertionError('Socket forbidden')))
 
+    def test_lighting_retirement_dependencies_match_production_predicate(self):
+        stubs = (FIXTURE / 'stubs.dm').read_text(encoding='utf-8')
+        defines = (ROOT / 'code/__defines/qdel.dm').read_text(encoding='utf-8')
+        for line in ('#define QDELING(X) (X.gc_destroyed)',
+                     '#define QDELETED(X) (!X || QDELING(X))'):
+            self.assertIn(line, stubs)
+            self.assertIn(line, defines)
+        self.assertIn('/datum/var/gcDestroyed = 0', stubs)
+        self.assertIn('/datum/var/gc_destroyed', stubs)
+        self.assertIn('/proc/qdel(datum/D)\n\tdel(D)', stubs)
+        sleep = (FIXTURE / 'sleep_transfer_probe.dm').read_text(encoding='utf-8')
+        self.assertNotRegex(sleep, r'(?m)^\s*var/(?:gcDestroyed|gc_destroyed)\b')
+
+    def test_empty_mob_registry_is_shared_and_moving_fixtures_do_not_redeclare(self):
+        stubs = (FIXTURE / 'stubs.dm').read_text(encoding='utf-8')
+        self.assertEqual(len(re.findall(r'(?m)^var/list/mob_list = list\(\)$', stubs)), 1)
+        for relative in ('tests/movement_save_chunks/probe.dm', 'tests/movement_save_chunks/benchmark.dm'):
+            with self.subTest(relative=relative):
+                fixture = (ROOT / relative).read_text(encoding='utf-8')
+                self.assertNotRegex(fixture, r'(?m)^var/(?:global/)?list/mob_list\b')
+
     def test_pull_fixture_admits_only_empty_registry_owned_save(self):
         text = (FIXTURE / 'stubs.dm').read_text(encoding='utf-8')
         start = text.index('/datum/world_save_idle_pull_registry\n')

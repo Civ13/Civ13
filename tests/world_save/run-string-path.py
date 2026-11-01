@@ -17,6 +17,7 @@ PUBLICATION_FAILURE = 'Chunk transfer publication did not detect late movement'
 PUBLICATION_ANCHOR = (
     '\t\t\tdrain_save_transfers(frame)\n'
     '\t\t\tsavefile.cd = entry_path(savefile, ref)\n'
+    '\t\t\trecord_save_capture_path(savefile, "content")\n'
     '\t\t\tsavefile["content"] << content_value\n'
 )
 

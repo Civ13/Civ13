@@ -1,6 +1,6 @@
 #define TRUE 1
 #define FALSE 0
-// Match the production default; this fixture does not model tree presentation.
+// Fixture-only opt-out: this serializer probe does not model tree presentation.
 #define CIV13_ROOT_TREE_PRESENTATION 0
 #define TICK_CHECK fixture_tick_check()
 #define TICK_LIMIT_TO_RUN 100

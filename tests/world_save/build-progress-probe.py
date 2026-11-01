@@ -18,9 +18,29 @@ def replace_once(source, before, after):
 
 def instrument(saving, functions, phase_profile=False):
     bounded = '/map_storage/proc/save_work_check()\n' in saving
-    expected_ticks = 1 if bounded else 2
+    spatial = bounded and 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving
+    tile = spatial and '/map_storage/proc/inspect_human_saved_tile_and_links(' in saving
+    expected_ticks = (1 if tile else 4) if spatial else (1 if bounded else 2)
     if saving.count('\tTICK_CHECK\n') != expected_ticks:
         raise ValueError('Expected the production serializer tick checks')
+    if tile:
+        start = '/map_storage/proc/encode_saved_value_contents('
+        end = '/map_storage/proc/encode_saved_contents('
+        if saving.count(start) != 1 or saving.count(end) != 1:
+            raise ValueError('Expected one bounded saved-value boundary')
+        value_body = saving.split(start, 1)[1].split(end, 1)[0]
+        if value_body.count('\tTICK_CHECK\n') != 1:
+            raise ValueError('Expected one saved-value tick check')
+        if '/map_storage/proc/build_human_obstruction_index(' in saving or '/map_storage/proc/validate_human_saved_geometry(' in saving:
+            raise ValueError('Unexpected legacy human geometry index')
+    elif spatial:
+        start = '/map_storage/proc/build_human_obstruction_index('
+        end = '/map_storage/proc/validate_human_saved_geometry('
+        if saving.count(start) != 1 or saving.count(end) != 1:
+            raise ValueError('Expected one human obstruction index boundary')
+        index = saving.split(start, 1)[1].split(end, 1)[0]
+        if index.count('\tTICK_CHECK\n') != 3:
+            raise ValueError('Expected three human obstruction index tick checks')
     saving = saving.replace('TICK_CHECK', 'WORLD_SAVE_PROGRESS_TICK_CHECK')
     if bounded:
         # The root-admission wait is outside synchronous capture. Instrument
@@ -36,6 +56,21 @@ def instrument(saving, functions, phase_profile=False):
             body = replace_once(body, headroom,
                                 '\tif(world.tick_usage >= 80)\n\t\tworld_save_progress_sleep(world.tick_lag)\n')
             saving = prefix + capture + body + edge + suffix
+        if spatial:
+            # Instrument the saver-side late enrollment and group wait. Actors
+            # never wait in these seams; reject missing or duplicated anchors.
+            boundaries = (('/map_storage/proc/classify_human_save_entry(', '/map_storage/proc/capture_human_save_root('),) if tile else (
+                ('/map_storage/proc/classify_human_save_entry(', '/map_storage/proc/capture_human_save_roster_positions('),
+                ('/map_storage/proc/capture_human_save_roster_positions(', '/map_storage/proc/capture_human_save_root('),
+            )
+            for start, end in boundaries:
+                if saving.count(start) != 1 or saving.count(end) != 1:
+                    raise ValueError('Expected one human handoff boundary')
+                prefix, body = saving.split(start)
+                body, suffix = body.split(end)
+                handoff = '\t\tsleep(world.tick_lag)\n'
+                body = replace_once(body, handoff, '\t\tworld_save_progress_sleep(world.tick_lag)\n')
+                saving = prefix + start + body + end + suffix
         # Preserve the bounded policy's thresholds, counters and wait delays.
         saving, sleeps = re.subn(r'(?m)^(\s*)sleep\((world.tick_lag|0)\)$',
                                  r'\1world_save_progress_sleep(\2)', saving)
@@ -133,6 +168,9 @@ def instrument_phases(saving, bounded=False):
     if bounded:
         build_signature += ', traversal = FALSE'
         build_arguments += ', traversal'
+        if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving:
+            build_signature += ', datum/human_request = null'
+            build_arguments += ', human_request'
     for name, signature, arguments, phase, counter in (
         ('BuildVarDirectory', build_signature, build_arguments, 'object', 'objects'),
         ('encode_saved_value', 'savefile/F, value', 'F, value', 'value', 'values'),
