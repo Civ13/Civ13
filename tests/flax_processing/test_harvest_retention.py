@@ -34,7 +34,7 @@ class HarvestRetention(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='harvest-offline-retain-') as temporary, ExitStack() as stack:
             root = Path(temporary)
             (root/'code').mkdir()
-            (root/'code/world.dm').write_text('/world/New()\n\t..()\n')
+            (root/'code/world.dm').write_text('/datum/global_init/New()\n\tqdel(src)\n\n/world/New()\n\t..()\n')
             (root/'civ13.dme').write_text('#include "code\\world.dm"\n')
             (root/'config/names').mkdir(parents=True)
             (root/'tests/flax_processing').mkdir(parents=True)

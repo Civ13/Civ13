@@ -15,6 +15,52 @@ spec.loader.exec_module(runner)
 
 
 class HarvestInputs(unittest.TestCase):
+    def test_fixture_defers_global_bootstrap_without_changing_its_body(self):
+        source = (ROOT/'code/world.dm').read_text(encoding='utf-8')
+        prepared = runner.prepare_world_source(source)
+        marker = '/datum/global_init/New()\n'
+        body = source.split(marker, 1)[1].split('\n/', 1)[0]
+        deferred = prepared.split('/datum/global_init/proc/initialize_harvest_globals()\n', 1)[1].split('\n/', 1)[0]
+        self.assertEqual(deferred, body)
+        self.assertIn('makeDatumRefLists()', deferred)
+        self.assertIn('load_configuration()', deferred)
+        self.assertIn('initialize_chemical_reagents()', deferred)
+        self.assertIn('initialize_chemical_reactions()', deferred)
+        self.assertIn('qdel(src)', deferred)
+        self.assertNotIn(marker, prepared)
+        self.assertNotIn('/world/New()\n', prepared)
+        self.assertEqual(prepared.count('/world/proc/unused_harvest_startup()\n'), 1)
+        self.assertEqual(prepared.count('var/global/datum/global_init/init = new ()'), 1)
+
+    def test_startup_isolation_drift_is_refused_without_a_native_launch(self):
+        source = (ROOT/'code/world.dm').read_text(encoding='utf-8')
+        mutations = (
+            source.replace('/datum/global_init/New()\n', '', 1),
+            source + '\n/datum/global_init/New()\n',
+            source.replace('/world/New()\n', '', 1),
+            source + '\n/world/New()\n',
+            source.replace('\n\t..()', '\n\tparent_changed()'),
+        )
+        for mutant in mutations:
+            with self.subTest(mutant=mutations.index(mutant)), \
+                    patch.object(runner, 'run_retained', side_effect=AssertionError('No native launch')) as launch:
+                with self.assertRaisesRegex(RuntimeError, 'Harvest .* marker'):
+                    runner.prepare_world_source(mutant)
+                launch.assert_not_called()
+
+    def test_fixture_initializes_after_globals_before_scenarios_and_retains_error_guard(self):
+        fixture = (ROOT/'tests/animal_harvest/probe.dm').read_text().split('/world/New()\n', 1)[1]
+        self.assertEqual(fixture.count('init.initialize_harvest_globals()'), 1)
+        self.assertLess(fixture.index('sleep(1)'), fixture.index('init.initialize_harvest_globals()'))
+        self.assertLess(fixture.index('init.initialize_harvest_globals()'), fixture.index('new /obj/map_metadata/harvest_fixture'))
+        self.assertLess(fixture.index('Production body catalog did not initialize'), fixture.index('for (var/action in list('))
+        self.assertNotIn('male_body_builds =', fixture)
+        source = (ROOT/'tests/animal_harvest/run.py').read_text()
+        self.assertIn("'runtime error:' in log.lower()", source)
+        self.assertIn('(errors.exists() and errors.stat().st_size)', source)
+        self.assertIn("phase='harvest-runtime', timeout=60", source)
+        self.assertIn("phase='harvest-compile', timeout=120", source)
+
     def stage(self, root):
         logs = root/'evidence'
         logs.mkdir()

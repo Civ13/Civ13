@@ -22,6 +22,28 @@ import byond_toolchain
 _retention_spec = importlib.util.spec_from_file_location('harvest_retained_evidence', ROOT/'tests/flax_processing/run.py')
 evidence = importlib.util.module_from_spec(_retention_spec)
 _retention_spec.loader.exec_module(evidence)
+
+
+def prepare_world_source(world):
+    """Defer the same production global bootstrap until fixture world entry.
+
+    Global constructors precede world/New; replacing world/New alone does not
+    isolate them. Keep the initializer body intact, rather than suppressing its
+    failures or reproducing its catalog/config/chemistry effects in test code.
+    """
+    startup = '/world/New()\n'
+    initializer = '/datum/global_init/New()\n'
+    if world.count(startup) != 1 or world.count(initializer) != 1:
+        raise RuntimeError('Harvest startup isolation markers changed')
+    start = world.index(startup)
+    next_proc = re.search(r'\n/[^/]', world[start+len(startup):])
+    end = start+len(startup)+next_proc.start() if next_proc else len(world)
+    body = world[start:end]
+    if body.count('\n\t..()') != 1:
+        raise RuntimeError('Harvest world startup parent marker changed')
+    world = world[:start]+body.replace('\n\t..()', '', 1)+world[end:]
+    world = world.replace(startup, '/world/proc/unused_harvest_startup()\n', 1)
+    return world.replace(initializer, '/datum/global_init/proc/initialize_harvest_globals()\n', 1)
 OFFLINE_CONFIG = b'# Offline fixture\n'
 RUNTIME_INPUT_FILES = 147
 # Pinned names: 134930 LF bytes + at most 18317 CRLF expansion bytes; config: 18.
@@ -207,11 +229,7 @@ def main(argv=None, session=None):
     evidence.write_json(logs/'evidence-manifest.json', manifest)
     try:
         world = (root / 'code/world.dm').read_text(encoding='utf-8')
-        start = world.index('/world/New()')
-        parent = world.index('\n\t..()', start)
-        world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
-        world = world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
-        generated[1].write_text(world, encoding='utf-8')
+        generated[1].write_text(prepare_world_source(world), encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)

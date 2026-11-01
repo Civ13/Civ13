@@ -77,6 +77,12 @@ var/global/harvest_duplicate_result = null
 	try
 		harvest_assert(!world.port && !OpenPort(12345), "Fixture refuses listening ports")
 		text2file("closed", "port-closed.txt")
+		// The production global initializer previously ran before the lists and
+		// process registry it uses existed. Run its unchanged body after global
+		// construction, before any harvesting/config/chemistry-dependent case.
+		harvest_assert(init && islist(male_body_builds) && islist(female_body_builds) && processes, "Fixture global prerequisites not initialized")
+		init.initialize_harvest_globals()
+		harvest_assert(male_body_builds["Default"] && female_body_builds["Default"], "Production body catalog did not initialize")
 		new /obj/map_metadata/harvest_fixture
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy)), "metadata.json")
 		var/turf/site = locate(3,3,1)

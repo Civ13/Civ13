@@ -18,9 +18,11 @@ parts and repair targets. It asserts no second grass wait/start/cooldown, no
 resource/durability changes, the original wait remains owned and completes,
 and idle grass cutting still announces and yields normally. The existing
 tall-grass matrix also checks busy entry. These added native assertions
-were compiled at `011931e0a` with zero errors/warnings, but not executed: runtime
-preflight rejected the copied-name file count. The prepared input-accounting
-correction below has not been compiled or run natively.
+were compiled at `011931e0a`, where runtime preflight rejected the copied-name
+file count. At `8cc5ddd1d` the input correction passed preflight, both compiles
+passed, and one daemon ran, but startup runtime errors caused the runner to
+reject the attempt. Later tanning PASS markers are partial progress only.
+See [startup diagnosis and local proposal](startup-isolation.md).
 
 Normal CI registers this exact offline file as the bounded baseline's
 `action_admission` suite. Its stdlib-only imports never launch a native runner;
@@ -123,12 +125,13 @@ inject movement, stun and hand switching during a real wait. The substantive
 cases and adapters live in `tall_grass_probe.dm`, included and called by the
 existing fixture; its new executable path selects this registered suite on PRs
 without changing the CI workflow. Client, inventory setup and wait adapters
-remain fixture-only; these added cases have not been compiled or executed yet.
+remain fixture-only. They were included in the compiled `8cc5ddd1d` fixture,
+whose daemon attempt failed its runtime guard; there is no clean native pass.
 
-The baseline global controller can emit BYOND `BUG: Bad ref ... globals.dm:16`
-diagnostics at startup before this fixture starts; normal DM exceptions are
-separately recorded and fail the runner. This is not a clean full-game startup
-claim. The bounded output assertion measures item count, not heap usage.
+Startup diagnostics and DM exceptions remain failures, recorded by the runner;
+the local startup proposal does not change that guard or establish a clean
+full-game startup. The bounded output assertion measures item count, not heap
+usage.
 
 With Pillow, `preview.py --output <file.png>` validates each new item's effective
 existing DMI state (including rotten variants), rejects blank/missing sprites and
