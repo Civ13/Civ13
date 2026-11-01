@@ -80,7 +80,7 @@ class BackendContract(unittest.TestCase):
             source = path.read_text(errors='replace')
             templates.update(re.findall(r'new /datum/nanoui/tgui(?:/\w+)*\((?:user, src|viewer, src|viewer, reference), ui_key, "([^"]+)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'character_flavor.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'character_flavor.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'photo_viewer.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'ship_stocks.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn('href="byond://?src=\\ref[src]&amp;window_id=', DM)
