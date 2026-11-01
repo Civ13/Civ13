@@ -9,7 +9,7 @@ world
 	fps = 20
 	visibility = 0
 	sleep_offline = FALSE
-var/list/mob_list = list()
+// mob_list is declared by the shared serializer stubs.
 var/benchmark_baseline = FALSE
 var/benchmark_inject_failure = FALSE
 var/benchmark_injected = FALSE

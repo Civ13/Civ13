@@ -1,12 +1,20 @@
 """Opt-in copied-packet identity timing; never edit production files."""
 
 
-EXPECTED_SAVER_REF_SITES = 12
+EXPECTED_SAVER_REF_SITES = 13
 
 def instrument_datum_references(name, source):
     if name == 'code/modules/persistence/saving.dm':
         needle = '"\\ref[A]"'
         if source.count(needle) != EXPECTED_SAVER_REF_SITES: raise ValueError('Native datum reference sites changed')
+        start = '/map_storage/proc/drain_moving_save_roster('
+        end = '\n#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL'
+        if source.count(start) != 1: raise ValueError('Drain boundary changed')
+        tail = source.split(start, 1)[1]
+        if end not in tail: raise ValueError('Drain boundary changed')
+        drain = tail.split(end, 1)[0]
+        anchor = '\t\tif(!A || record["atom"] != A || "\\ref[A]" != identity || !moving_save_root_supported(A) || A.z != saving_z)\n\t\t\tthrow EXCEPTION("Moving save roster member changed after drain checkpoint")'
+        if drain.count(anchor) != 1 or drain.index('save_work_check()') > drain.index(anchor): raise ValueError('Final drain reference guard changed')
         source = source.replace(needle, 'profile_native_identity(A)')
         anchor = '\tproc/check()\n'
         if source.count(anchor) != 1: raise ValueError('Capture checker changed')

@@ -1,0 +1,12 @@
+{
+ "name":"Fictional dated and signed paper",
+ "info":"<font face=\"Verdana\" color=#ffffff>Written on 12:34, Fictional date. <font face=\"Times New Roman\"><i>Forged fixture</i></font></font><table><tr><td>Incomplete <span class=\"paper_field\"></span> 🚢 日本語",
+ "info_links":"<span class=\"paper_field\"><A href='?src=fixture;write=1'>write</A></span><A href='?src=fixture;write=end'>write</A>",
+ "stamps":"<img src='fictional-stamp.png'>",
+ "fields":1,
+ "free_space":2400,
+ "stamped":[],
+ "ico":[],
+ "offset_x":[],
+ "offset_y":[]
+}

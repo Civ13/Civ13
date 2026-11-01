@@ -25,6 +25,13 @@
 	var/datum/subtile_pull_pair/P = subtile_pull_ownership.owners[src]
 	if (P)
 		return P.recovery_required && direct == turn(P.direction, 180) && P.recovery_ready(src)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// Pair capabilities cannot run during a save. For an unowned pair, use the
+	// existing ordinary human path, whose tile crossings already drag objects.
+	// A held pair retains its recovery rules above and is never silently adopted.
+	if (persistence_save_in_progress && human_subtile_save_motion_allowed())
+		return FALSE
+#endif
 	if (!istype(pulling, /obj) || subtile_pull_ownership.owners[pulling] || !subtile_pull_shape(src, TRUE) || !subtile_pull_shape(pulling, TRUE) || pulling.pulledby != src || get_step(src, turn(direct, 180)) != pulling.loc)
 		return FALSE
 	// Read-only preflight precedes client.moving. Real input authority is

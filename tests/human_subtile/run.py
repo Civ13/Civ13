@@ -196,28 +196,53 @@ def prepare_runtime(out, manifest):
     return work, work / dme.with_suffix('.dmb').name, artifacts
 
 
-def run_process(command, cwd, name, deadline):
+def run_process(command, cwd, name, deadline, *, preexec_fn=None, monitor=None, env=None, retain_leader=False, on_event=None):
     started = time.monotonic()
     timed_out = False
     oversized_log = False
     logs = [cwd / (name + '-' + stream + '.log') for stream in ('stdout', 'stderr')]
     with logs[0].open('wb') as stdout, logs[1].open('wb') as stderr:
         process = subprocess.Popen(command, cwd=cwd, stdout=stdout, stderr=stderr,
-                                   start_new_session=True)
+                                   start_new_session=True, preexec_fn=preexec_fn, env=env)
+        if on_event is not None:
+            on_event('spawn', process.pid)
         try:
-            while process.poll() is None:
+            # The optional Linux waitid path keeps an exited group leader
+            # unreaped until cleanup, preventing its PID from being reused.
+            def running():
+                if retain_leader:
+                    return os.waitid(os.P_PID, process.pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is None
+                return process.poll() is None
+            while running():
                 if time.monotonic() - started >= deadline:
                     timed_out = True
                     break
+                if monitor is not None:
+                    monitor(process.pid, cwd)
                 inspect_logs(cwd, check_diagnostics=name != 'compile')
                 time.sleep(0.05)
         finally:
             # Own process group only, including a surviving descendant on exit.
             try:
                 os.killpg(process.pid, signal.SIGKILL)
+                if on_event is not None:
+                    on_event('group_signal_sent', process.pid)
             except ProcessLookupError:
-                pass
-            process.wait(timeout=10)
+                if on_event is not None:
+                    on_event('group_already_absent', process.pid)
+            except OSError as exc:
+                if on_event is not None:
+                    on_event('group_signal_error', str(exc))
+                raise
+            finally:
+                try:
+                    code = process.wait(timeout=10)
+                    if on_event is not None:
+                        on_event('wait', code)
+                except Exception as exc:
+                    if on_event is not None:
+                        on_event('wait_error', str(exc))
+                    raise
     inspect_logs(cwd, check_diagnostics=name != 'compile')
     row = {'command': command, 'returncode': process.returncode, 'timed_out': timed_out,
            'oversized_log': oversized_log,
