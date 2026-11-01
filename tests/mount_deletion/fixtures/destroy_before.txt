@@ -1,0 +1,4 @@
+// Frozen from master e1cd2ad03a559a1fb3beb678cb37836dd295bf7b.
+/mob/living/simple_animal/Destroy()
+	unregisterSpawner()
+	..()

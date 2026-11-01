@@ -53,6 +53,19 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_mount_deletion_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['mount_deletion']
+        self.assertEqual(suite['files'], ('tests/mount_deletion/test_destroy.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'mount_deletion'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/mount_deletion/fixtures/destroy_before.txt']), expected)
+        self.assertEqual(self.selected(['tests/mount_deletion/NATIVE_PLAN.md']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_deletion'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'mount_deletion'})
+
     def test_mount_distance_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['mount_distance']
         self.assertEqual(suite['files'], ('tests/mount_distance/test_distance.py',))

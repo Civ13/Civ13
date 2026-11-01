@@ -25,6 +25,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only Destroy, canonical macro and qdel-admission projections.
+    'mount_deletion': {'files': ('tests/mount_deletion/test_destroy.py',),
+        'paths': ('tests/mount_deletion/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm', 'code/processes/garbage.dm',
+            'code/__defines/qdel.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only complete distance branch with inert movement/icon boundaries.
     'mount_distance': {'files': ('tests/mount_distance/test_distance.py',),
         'paths': ('tests/mount_distance/',), 'shared_paths': (
