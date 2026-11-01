@@ -7,6 +7,31 @@ the default for the ten converted NanoUI screens, with capability/classic
 fallback. This plan extends that work; it does not reimplement it or claim every
 game screen is already converted. Save/movement fixes remain higher priority.
 
+## Progress and next independent slice at fb0e5c41
+
+The baseline inventory/counts below remain historical. Ten original routes plus
+Known Languages #3452, Ship Stocks #3460, Religion List #3461, Crew Log #3462,
+Faction List #3463 and Crafting Atlas #3468 are merged: sixteen modern routes.
+This does not convert the other surfaces sharing their source families.
+
+The next local slice is the photo viewer in
+`code/game/objects/items/paper/photography.dm`, a read-only image and short
+caption snapshot through existing examine/folder/clipboard entrypoints. It does
+not migrate albums, camera controls, photo writing/renaming or paper/book editors.
+Its concrete lifecycle/text/image contract is [photo-viewer.md](photo-viewer.md).
+No open photo/paper/book/instrument migration or photography issue was found in
+the bounded current search. Main still reviews the local proposal before any
+publication; previous six-hour publication/admin windows do not carry forward.
+
+| Remaining slice | Dependency/disposition |
+| --- | --- |
+| Photo viewer | Selected independent reader; existing image plus canonical inert caption, no domain action or new prompt service. |
+| Notes/memory | Defer to character/save/knowledge rules and owners; only already learned records may be sent. |
+| Paper, books, notices, bundles, folders, clipboard editors | Need structured rich-text/stamp/link policy and per-action item/containment checks; no arbitrary stored HTML in React. |
+| Instruments, shops/fuel, inventory/container, crafting, groups/votes | Need finite transaction/playback contracts and, where required, typed cancellation/post-wait validation. No generic href forwarding. |
+| Preferences/lobby, program host, privileged tools | Host, persistence and rights contracts; coordinate existing owners before implementation. |
+| Help, HUD/FPS, manager, vehicles/combat, chat/stat shell and engine controls | Existing owners/boundary review; not part of this slice. Engine MAP/INPUT/OUTPUT and screen widgets remain explicitly on the inventory. |
+
 ## Baseline inventory and counting rules
 
 The exact-source lexical scan covers 1,351 DM files. It finds 135 `browse()`

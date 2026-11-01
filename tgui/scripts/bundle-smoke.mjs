@@ -85,6 +85,21 @@ assert.ok(classicDom.window.document.body.textContent.includes('2 members.'));
 assert.ok(classicDom.window.document.body.textContent.indexOf('First') < classicDom.window.document.body.textContent.indexOf('Second'));
 assert.ok(renderFactionClassic({ factions: [] }, {}, {}).includes('No populated factions are available.'));
 classicDom.window.close();
+const photoFixture = { name: 'Sand &amp; sea', image: 'tmp_photo_12.png', width: 448, scribble: '&lt;script&gt;inert&lt;/script&gt; &amp; a boat.' };
+const renderPhotoClassic = classic.module.exports.template(readFileSync(new URL('../../UI/templates/photo_viewer.tmpl', import.meta.url), 'utf8'));
+const photoClassicDom = new JSDOM(renderPhotoClassic(photoFixture, {}, {}));
+assert.equal(photoClassicDom.window.document.querySelector('h3').textContent, 'Sand & sea');
+assert.equal(photoClassicDom.window.document.querySelector('img').getAttribute('src'), 'tmp_photo_12.png');
+assert.equal(photoClassicDom.window.document.querySelector('img').width, 448);
+assert.ok(photoClassicDom.window.document.body.textContent.includes('<script>inert</script> & a boat.'));
+assert.equal(photoClassicDom.window.document.querySelectorAll('script,[onerror],a,input,button').length, 0);
+photoClassicDom.window.close();
+for (const image of ['', 'https://example.com/a.png', '../tmp_photo_1.png', 'tmp_photo_1.png?x', 'tmp_photo_x.png']) {
+  const fixture = new JSDOM(renderPhotoClassic({ ...photoFixture, image, scribble: '' }, {}, {}));
+  assert.equal(fixture.window.document.querySelectorAll('img').length, 0);
+  assert.ok(!fixture.window.document.body.textContent.includes('Written on the back:'));
+  fixture.window.close();
+}
 const errors = [];
 const console = new VirtualConsole(); console.on('jsdomError', error => errors.push(error.message));
 const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading... <a id="tgui-legacy">Classic</a></p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
@@ -182,7 +197,15 @@ try {
   await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });
   assert.ok(!w.document.body.textContent.includes('Fictional transformation'));
   assert.equal(w.document.querySelectorAll('[data-result-type]').length, 0);
+  await update('photo_viewer.tmpl', photoFixture, 1);
+  assert.equal(w.document.querySelector('.photo-viewer img').getAttribute('src'), 'tmp_photo_12.png');
+  assert.equal(w.document.querySelector('.photo-viewer img').width, 448);
+  assert.ok(w.document.body.textContent.includes('<script>inert</script> & a boat.'));
+  assert.equal(w.document.querySelectorAll('.photo-viewer script,.photo-viewer [onerror],.photo-viewer button,.photo-viewer a').length, 0);
+  await update('photo_viewer.tmpl', { name: 'Empty', image: '', scribble: '' }, 1);
+  assert.equal(w.document.querySelectorAll('.photo-viewer img,.photo-viewer em').length, 0);
+  assert.ok(!w.document.body.textContent.includes('inert'));
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 16 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and all 17 registered routes, retained classic fixtures including photo, handshake/action/text/image/fallback contracts\n");
 } finally { w.close(); }
