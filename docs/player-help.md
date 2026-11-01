@@ -18,6 +18,15 @@ With a conversation-capable worker, the answer window offers **Follow up** and
 **New conversation**. Ask for help also continues the current session. New
 conversation clears the context; use Ask for help again to ask a fresh question.
 The normal cooldown and one-pending-request-per-account rules still apply.
+Below the wiki and atlas links, retained exchanges display their questions and
+answers as escaped text. **Follow up on this exchange** sends only that selected
+pair as previous context for the next question; the other retained exchanges stay
+visible until normal retention removes them. The general **Follow up** continues
+using the current bounded conversation. Expired, replaced or copied links cannot
+select another client's history. If the selected pair, question and current
+snapshot exceed the request limit, the game refuses the targeted follow-up with
+an explanation rather than silently sending it without the selected pair. The
+existing admission cooldown still applies to a request refused at this size check.
 
 The authenticated client owns its completed question/answer pairs. No browser
 parameter selects an account, session or model role. Action tokens belong to
@@ -92,7 +101,8 @@ separately coordinated save/update before affecting a running host.
 
 The game never performs model HTTP calls. A separately supervised Python 3.10+
 worker exchanges small local files under `SQL/player-help`. This supports native
-BYOND 516.1681 and OpenDream without rust-g or shell execution in the game.
+the current BYOND 516.1688 pin without rust-g or shell execution in the game.
+OpenDream compatibility has not been established for this change.
 Run one worker per game directory, with the same OS user as the game or suitable
 private directory permissions. Do not share a spool across Nomads and TDM.
 
@@ -213,12 +223,12 @@ are omitted. At most six matching code/wiki/guide/recipe entries and 16,000 cont
 are sent per question. Unmatched or truncated recipe details must be checked in
 the atlas, including current map and research availability.
 
-Question text, approved guidance and the bounded gameplay/inventory snapshot
-described below are sent. No account name, chat history, filesystem, developer
-MCP tools or administration API is exposed.
-There is no conversational memory, command execution or tool calling. Questions
-are temporary spool files, removed when completed, disconnected or timed out;
-the remote service may keep its own logs, so owners should disclose its policy.
+Question text, approved guidance, bounded conversation pairs and the bounded
+gameplay/inventory snapshot described below are sent. No account name, general
+chat history, filesystem, developer MCP tools or administration API is exposed.
+The worker has no command execution or tool calling. Questions use temporary spool
+files, removed on completion or timeout; disconnect alone does not cancel pending
+work. The remote service may keep its own logs, so owners should disclose its policy.
 Raw model HTML is escaped; the renderer generates only allowlisted formatting and validated HTTP/HTTPS links.
 
 The worker is separate from the developer MCP server: player requests do not
@@ -300,9 +310,14 @@ source, while the collected sand stack is a separate item. Missing Atlas routes
 do not prove an item has no uses or sources.
 
 The answer window shows the submitted question and, below the wiki and atlas
-links, previous questions from the same bounded client conversation. Questions
-are rendered as text. Existing session, expiry and disconnect limits apply; an
-older worker still displays the current standalone question.
+links, retained questions and answers from the same bounded client conversation.
+History is rendered as escaped text. Existing session, expiry and disconnect
+limits apply; an older worker still displays the current standalone question.
+
+The asking human's snapshot includes only the mood category shown by the mood
+indicator, not a raw mood value or hidden reasons. Reviewed general mechanics
+explain that mood tends toward neutral and can affect some statistics; the current
+category alone does not establish why a particular character feels that way.
 
 The bridge retrieves reviewed gameplay excerpts from the game's bloomery and
 anvil implementation in addition to generated recipe data. Excerpt boundary
