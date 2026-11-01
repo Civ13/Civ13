@@ -11,6 +11,8 @@ on:
       - 'code/modules/client/asset_cache.dm'
       - 'civ13.dme'
       - 'code/game/mob/groups/faction_creation.dm'
+      - 'code/game/mob/mob.dm'
+      - 'code/game/mob/flavor_reader.dm'
       - 'code/game/mob/crafting_atlas.dm'
       - 'code/game/mob/crafting_atlas_tgui.dm'
       - 'code/game/mob/groups/faction_symbol.dm'
@@ -50,6 +52,7 @@ jobs:
       - name: Backend source and ES5 bootstrap contracts
         run: |
           python3 -B -m unittest discover -s tests/tgui -p 'test_*.py' -v
+          python3 -B tests/tgui/flavor_negative_controls.py
           node tests/tgui/bootstrap.test.cjs
       - name: Check generated assets match source
         run: git diff --exit-code -- UI/tgui tgui/THIRD_PARTY.md

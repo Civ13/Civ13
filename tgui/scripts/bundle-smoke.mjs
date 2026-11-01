@@ -182,7 +182,30 @@ try {
   await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });
   assert.ok(!w.document.body.textContent.includes('Fictional transformation'));
   assert.equal(w.document.querySelectorAll('[data-result-type]').length, 0);
+  await update('character_flavor.tmpl', { name: 'Fictional subject', text: 'First\n\u65e5\u672c\u8a9e \ud83d\ude00 &#10; &amp;lt;b&amp;gt; &lt;img src=x&gt;' }, 1);
+  const flavor = w.document.querySelector('article.character-flavor');
+  assert.ok(flavor.textContent.includes('\u65e5\u672c\u8a9e \ud83d\ude00 \n &lt;b&gt; <img src=x>'));
+  assert.equal(flavor.querySelectorAll('br').length, 1);
+  assert.equal(flavor.querySelectorAll('img,script,a,button,input').length, 0);
+  await update('character_flavor.tmpl', { name: 'Second subject', text: '' }, 1);
+  assert.equal(w.document.querySelector('article.character-flavor').textContent, '');
+  assert.ok(!w.document.body.textContent.includes('Fictional subject'));
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 16 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and all 17 registered routes, retained classic fixtures, flavor inert Unicode/literal-LF/snapshot replacement, handshake/action/text/fallback contracts\n");
 } finally { w.close(); }
+
+const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
+try {
+  const rw = recovery.window, sent = [];
+  Object.defineProperty(rw.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
+  rw.cef_to_byond = url => sent.push(new URL(url).searchParams.get('type'));
+  rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui-bootstrap.js', import.meta.url), 'utf8'));
+  rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
+  await settle();
+  rw.receiveUpdateData(JSON.stringify({ config: { template: 'character_flavor.tmpl', status: 1, ref: '[0x123]', window: 'main[0x456]', generation: 2 }, data: { name: 'Fictional subject', text: 'PARTIAL\n<b>unsupported</b>' } }));
+  await settle();
+  assert.equal(sent.filter(type => type === 'fallback').length, 1);
+  assert.ok(!rw.document.body.textContent.includes('PARTIAL'));
+  process.stdout.write('PASS: fresh flavor production root rejects a mixed malformed snapshot through the real bootstrap fallback\n');
+} finally { recovery.window.close(); }

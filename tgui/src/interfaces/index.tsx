@@ -9,6 +9,7 @@ import { ReligionList } from './ReligionList';
 import { CrewLog } from './CrewLog';
 import { FactionList } from './FactionList';
 import { CraftingAtlas } from './CraftingAtlas';
+import { CharacterFlavor } from './CharacterFlavor';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -26,4 +27,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'crew_log.tmpl': CrewLog,
   'faction_list.tmpl': FactionList,
   'crafting_atlas.tmpl': CraftingAtlas,
+  'character_flavor.tmpl': CharacterFlavor,
 };

@@ -1,5 +1,17 @@
 # Remaining in-game UI migration
 
+## Independent flavor reader checkpoint
+
+At master `1c41467e`, Known Languages, Ship Stocks, Religion List, Crew Log,
+Faction List and Crafting Atlas are merged, for sixteen modern routes including
+the original ten. Photo #3470 and Notes #3471 are separate proposed readers.
+The next local slice is the expanded character flavor More... reader, described
+in [character-flavor.md](character-flavor.md). It needs no unmerged rich-text
+parser or new dependency. Paper/books still need pencode/literacy contracts;
+noticeboard writing depends on item/prompt workflows. Help, HUD, preferences
+and manager owners retain their separate lanes. The historical inventory and
+initial Known Languages checkpoint below are retained as dated source context.
+
 Inventory baseline: `5255b72a3f40b52b6eb92599d29335cb4f4d81a2` (remote master
 verified 2026-11-01). Main reports that baseline deployed; this source task did
 not inspect or operate the live server. #3427 is merged. Its modern adapter is
