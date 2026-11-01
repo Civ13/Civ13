@@ -24,9 +24,110 @@ evidence = importlib.util.module_from_spec(_retention_spec)
 _retention_spec.loader.exec_module(evidence)
 
 
-def run_retained(session, command, *, logs, cwd, phase, timeout, **kwargs):
+def prepare_world_source(world):
+    """Defer the same production global bootstrap until fixture world entry.
+
+    Global constructors precede world/New; replacing world/New alone does not
+    isolate them. Keep the initializer body intact, rather than suppressing its
+    failures or reproducing its catalog/config/chemistry effects in test code.
+    """
+    startup = '/world/New()\n'
+    initializer = '/datum/global_init/New()\n'
+    if world.count(startup) != 1 or world.count(initializer) != 1:
+        raise RuntimeError('Harvest startup isolation markers changed')
+    start = world.index(startup)
+    next_proc = re.search(r'\n/[^/]', world[start+len(startup):])
+    end = start+len(startup)+next_proc.start() if next_proc else len(world)
+    body = world[start:end]
+    if body.count('\n\t..()') != 1:
+        raise RuntimeError('Harvest world startup parent marker changed')
+    world = world[:start]+body.replace('\n\t..()', '', 1)+world[end:]
+    world = world.replace(startup, '/world/proc/unused_harvest_startup()\n', 1)
+    return world.replace(initializer, '/datum/global_init/proc/initialize_harvest_globals()\n', 1)
+OFFLINE_CONFIG = b'# Offline fixture\n'
+RUNTIME_INPUT_FILES = 147
+# Pinned names: 134930 LF bytes + at most 18317 CRLF expansion bytes; config: 18.
+RUNTIME_INPUT_BYTE_LIMIT = 153265
+
+
+def required_name_plan():
+    # Validate only the eager name dependency, not flax's separate loose recipe.
+    plan = json.loads(evidence.bounded_text(ROOT/'tests/flax_processing/required-inputs.json', evidence.INPUT_LIMIT))
+    names = (ROOT/'code/names.dm').read_bytes().replace(b'\r\n', b'\n')
+    declarations = re.findall(rb'^var/list/\w+\s*=\s*file2list\s*\(\s*"(config/names/[^"\n]+)"\s*\)\s*(?://[^\n]*)?$', names, re.M)
+    paths = {path.decode() for path in declarations}
+    if (plan['schema_version'] != 1 or plan['names_source'] != 'code/names.dm'
+            or hashlib.sha256(names).hexdigest() != plan['names_source_sha256']
+            or len(declarations) != plan['global_name_declarations']
+            or len(paths) != plan['required_name_files'] or len(paths) != 146):
+        raise RuntimeError('Harvest eager name source changed; review staging')
+    records = [row for row in plan['inputs'] if row['path'].startswith('config/names/')]
+    if len(records) != len(paths) or {row['path'] for row in records} != paths:
+        raise RuntimeError('Harvest name manifest does not match exact eager reads')
+    bound = []
+    for row in records:
+        path = Path(row['path'])
+        source = ROOT/path
+        if (path.is_absolute() or '..' in path.parts or source.is_symlink() or not source.is_file()
+                or not 0 < row['bytes'] <= evidence.INPUT_LIMIT
+                or source.stat().st_size > evidence.INPUT_LIMIT):
+            raise RuntimeError('Invalid harvest required name input: '+row['path'])
+        data = source.read_bytes()
+        fingerprint = data.replace(b'\r\n', b'\n')
+        if len(fingerprint) != row['bytes'] or hashlib.sha256(fingerprint).hexdigest() != row['sha256']:
+            raise RuntimeError('Harvest name fingerprint changed: '+row['path'])
+        bound.append(dict(path=row['path'], bytes=len(data), sha256=hashlib.sha256(data).hexdigest(),
+                          fingerprint_sha256=row['sha256']))
+    return bound
+
+
+def input_allowance(required):
+    input_bytes = sum(row['bytes'] for row in required.values())
+    if len(required) != RUNTIME_INPUT_FILES or input_bytes > RUNTIME_INPUT_BYTE_LIMIT:
+        raise RuntimeError('Harvest required-input allowance exceeded')
+    return {'required_input_files': len(required), 'required_input_bytes': input_bytes,
+            'required_input_byte_limit': RUNTIME_INPUT_BYTE_LIMIT,
+            'non_required_file_limit': evidence.FILE_LIMIT,
+            'derived_total_files': evidence.FILE_LIMIT+len(required),
+            'total_byte_limit': evidence.OUTPUT_LIMIT}
+
+
+def stage_runtime_inputs(logs, manifest=None):
+    # The recipe is a compiled resource in hide_recipe_probe.dm, not a loose input.
+    probe = (ROOT/'tests/animal_harvest/hide_recipe_probe.dm').read_text(encoding='utf-8')
+    if (not re.search(r"^var/global/tanning_recipe_config = 'config/crafting/material_recipes_global.txt'$", probe, re.M)
+            or 'file2list(tanning_recipe_config, "\\n")' not in probe):
+        raise RuntimeError('Harvest recipe resource changed; review loose runtime inputs')
+    names = required_name_plan()
+    config = 'runtime/config/config.txt'
+    required = {'runtime/'+row['path']: dict(row) for row in names}
+    required[config] = {'path': 'generated minimal config', 'bytes': len(OFFLINE_CONFIG),
+                        'sha256': hashlib.sha256(OFFLINE_CONFIG).hexdigest()}
+    limits = input_allowance(required)
+    if manifest is not None:
+        # Persist the bounded plan before copying; partial staging must not fall
+        # back to the obsolete 128-all-files final inventory and hide inputs.
+        manifest.update(required_inputs=required, limits=limits)
+        evidence.write_json(logs/'evidence-manifest.json', manifest)
+    evidence.stage_required_inputs(logs, names)
+    with (logs/config).open('xb') as stream:
+        stream.write(OFFLINE_CONFIG)
+    return required
+
+
+def validate_runtime_inputs(logs, required):
+    limits = input_allowance(required)
+    count, total = evidence.check_output_budget(logs, required)
+    for relative, row in required.items():
+        if evidence.bounded_digest(logs/relative, evidence.INPUT_LIMIT) != (row['bytes'], row['sha256']):
+            raise RuntimeError('Harvest required input fingerprint changed: '+relative)
+    return dict(limits, non_required_present=count, observed_bytes=total)
+
+
+def run_retained(session, command, *, logs, cwd, phase, timeout, required_inputs=None, **kwargs):
     if sys.platform == 'linux':
-        return evidence.run_phase(command, cwd=cwd, output=logs, phase=phase, timeout=timeout)
+        return evidence.run_phase(command, cwd=cwd, output=logs, phase=phase, timeout=timeout,
+                                  required_inputs=required_inputs)
     return run_native(session, command, cwd=cwd, phase=phase, timeout=timeout, **kwargs)
 
 
@@ -122,16 +223,13 @@ def main(argv=None, session=None):
                 'expected_diagnostics': ['harvest-compile.stdout.log', 'harvest-compile.stderr.log',
                                          'harvest-compile-phase.json', 'harvest-runtime.stdout.log',
                                          'harvest-runtime.stderr.log', 'harvest-runtime-phase.json',
-                                         'runtime.log', 'errors.txt', 'result.txt', 'port-closed.txt']}
+                                         'runtime/runtime.log', 'runtime/errors.txt',
+                                         'runtime/result.txt', 'runtime/port-closed.txt']}
     manifest['retention_source_sha256'] = hashlib.sha256((root/'tests/flax_processing/run.py').read_bytes()).hexdigest()
     evidence.write_json(logs/'evidence-manifest.json', manifest)
     try:
         world = (root / 'code/world.dm').read_text(encoding='utf-8')
-        start = world.index('/world/New()')
-        parent = world.index('\n\t..()', start)
-        world = world[:parent] + world[parent:].replace('\n\t..()', '', 1)
-        world = world.replace('/world/New()', '/world/proc/unused_harvest_startup()', 1)
-        generated[1].write_text(world, encoding='utf-8')
+        generated[1].write_text(prepare_world_source(world), encoding='utf-8')
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         source = source.replace('code\\world.dm', prefix + '_world.dm')
         source = re.sub(r'^#include ".*\.dmm".*$', '', source, flags=re.M)
@@ -142,34 +240,40 @@ def main(argv=None, session=None):
             if path.stat().st_size > evidence.INPUT_LIMIT:
                 raise RuntimeError('Harvest generated input exceeds retention bound')
             shutil.copy2(path, snapshots/path.name)
+        required = stage_runtime_inputs(logs, manifest)
+        manifest['limits'] = validate_runtime_inputs(logs, required)
         evidence.retain_manifest(logs, generated, manifest)
         print(f'Commit: {commit}', flush=True)
         identity = runtime_identity(binary, args.byond_archive)
         (logs / 'compiler-runtime.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
         build = run_retained(session, [str(compiler), '-max_errors', '0', str(generated[0])], logs=logs,
-                             cwd=root, phase='harvest-compile', timeout=120, artifacts=generated[2:])
+                             cwd=root, phase='harvest-compile', timeout=120, artifacts=generated[2:],
+                             required_inputs=required)
         output = build.stdout + build.stderr
         evidence.write_log(logs/'compile.log', output)
         print(output, flush=True)
         check_compile(build, requirement['version'])
         if any(path.stat().st_size > evidence.ARTIFACT_LIMIT for path in generated[2:]):
             raise RuntimeError('Harvest compiled artifact exceeds retention bound')
-        shutil.copy2(generated[2], logs / generated[2].name)
-        shutil.copy2(generated[3], logs / generated[3].name)
-        shutil.copytree(root / 'config/names', logs / 'config/names')
-        (logs / 'config/config.txt').write_text('# Offline fixture\n', encoding='utf-8')
+        work = logs/'runtime'
+        shutil.copy2(generated[2], work/generated[2].name)
+        shutil.copy2(generated[3], work/generated[3].name)
+        manifest['staging_before_runtime'] = validate_runtime_inputs(logs, required)
+        evidence.retain_manifest(logs, generated, manifest)
         identity = runtime_identity(binary, args.byond_archive)
         (logs / 'daemon-runtime.json').write_text(json.dumps(identity, indent=2), encoding='utf-8')
-        runtime = run_retained(session, [str(daemon), str(logs / generated[2].name),
+        runtime = run_retained(session, [str(daemon), str(work / generated[2].name),
                                   *(['-invisible', '-close'] if os.name == 'nt' else []),
                                   *no_port_args(), '-trusted', '-params', f'tested_commit={commit}', '-log', 'runtime.log'],
-                                logs=logs, cwd=logs, phase='harvest-runtime', timeout=60, state_directory=logs)
+                                logs=logs, cwd=work, phase='harvest-runtime', timeout=60,
+                                state_directory=work, required_inputs=required)
         evidence.write_log(logs/'daemon.log', runtime.stdout + runtime.stderr)
-        result = read_bounded(logs/'result.txt', 4096).strip()
-        log = read_bounded(logs/'runtime.log')
-        if read_bounded(logs/'port-closed.txt', 16).strip() != 'closed':
+        manifest['staging_after_runtime'] = validate_runtime_inputs(logs, required)
+        result = read_bounded(work/'result.txt', 4096).strip()
+        log = read_bounded(work/'runtime.log')
+        if read_bounded(work/'port-closed.txt', 16).strip() != 'closed':
             raise RuntimeError('Native no-port assertion did not complete')
-        errors = logs / 'errors.txt'
+        errors = work / 'errors.txt'
         if runtime.returncode or not result.startswith('PASS:') or 'runtime error:' in log.lower() or (errors.exists() and errors.stat().st_size):
             print(log, flush=True)
             raise RuntimeError('Harvest fixture failed')

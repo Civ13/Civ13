@@ -4,7 +4,7 @@
 /proc/harvest_tall_grass_regressions(turf/site, mob/living/harvest_tester/U, obj/item/weapon/material/kitchen/utensil/knife/K)
 	// Both scenery variants enter through the actual player attackby handler.
 	for (var/path in list(/obj/structure/wild/tallgrass/twine_tester, /obj/structure/wild/tallgrass2/twine_tester))
-		for (var/action in list("complete", "concurrent", "cancel", "drop", "unsharpen", "move", "actor_move", "adjacent_move", "delete", "disconnect", "disconnect_after", "unconscious", "stunned_entry", "stunned", "hand_entry", "hand_switch", "inventory_entry", "inventory", "nested_entry", "nested", "far_entry", "realwait_move", "realwait_complete", "realwait_stunned", "realwait_hand_switch"))
+		for (var/action in list("complete", "concurrent", "cancel", "busy_entry", "drop", "unsharpen", "move", "actor_move", "adjacent_move", "delete", "disconnect", "disconnect_after", "unconscious", "stunned_entry", "stunned", "hand_entry", "hand_switch", "inventory_entry", "inventory", "nested_entry", "nested", "far_entry", "realwait_move", "realwait_complete", "realwait_stunned", "realwait_hand_switch"))
 			var/obj/structure/wild/G = new path(site)
 			var/obj/item/weapon/flint/sharpened/H = new(U)
 			// Setup seam only: exercise real get_active_hand and inventory guards.
@@ -23,6 +23,9 @@
 			if (action == "far_entry")
 				U.loc = locate(7,7,1)
 			G.vars["test_action"] = action
+			U.may_do_after = action != "busy_entry"
+			U.grass_start_messages = 0
+			var/cooldown_before = U.next_move
 			var/turf/original_floor = site
 			harvest_duplicate_result = null
 			var/result = G.attackby(H, U)
@@ -42,8 +45,11 @@
 				qdel(cord)
 			else
 				harvest_assert(!result && !cuttings && (QDELETED(G) || !G.cutting_grass), "Interrupted tall grass cut: [path] [action]")
-				if (action in list("hand_entry", "inventory_entry", "nested_entry", "stunned_entry", "far_entry", "disconnect"))
+				if (action in list("busy_entry", "hand_entry", "inventory_entry", "nested_entry", "stunned_entry", "far_entry", "disconnect"))
 					harvest_assert(G.vars["test_wait_calls"] == 0, "Invalid entry reached tall grass wait: [action]")
+				if (action == "busy_entry")
+					harvest_assert(!U.grass_start_messages && U.next_move == cooldown_before && !U.may_do_after, "Busy grass attempt announced, changed cooldown or released another wait")
+			U.may_do_after = TRUE
 			harvest_assert(locate(3,3,1) == original_floor, "Tall grass cutting replaced underlying floor")
 			U.loc = site
 			U.stat = CONSCIOUS

@@ -20,6 +20,8 @@
 #else
 /turf/floor/grass/proc/gather_grass_cuttings(mob/user, obj/item/weapon/flint/tool)
 #endif
+	if (!user || !user.may_do_after)
+		return
 	if (has_snow_cover() || busy || !grass_cutting_actor_connected(user) || QDELETED(tool) || user.stat != CONSCIOUS || tool.loc != user || !tool.sharpened || get_dist(user, src) > 1)
 		return
 #ifdef CIV13_GAMEPLAY_BRIDGE
