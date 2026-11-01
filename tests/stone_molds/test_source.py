@@ -188,6 +188,32 @@ class StoneMoldTests(unittest.TestCase):
             self.assertIn('fired clay blacksmith pot/jug',source)
         self.assertIn('stone_molds',read('scripts/ci_baseline.py'))
 
+    def test_native_oven_assertion_matches_existing_survivor_ejection(self):
+        oven=read('code/game/objects/structures/kitchen/oven.dm')
+        body=adapter.extract(oven,'/obj/structure/oven/process')
+        tail='\tfor (var/obj/item/I in contents)'+body.rsplit('\tfor (var/obj/item/I in contents)',1)[1]
+        native=read('tests/crafting/stone_molds.dm')
+
+        def projected_assertion(fixture):
+            # Execute the real final ejection loop with inert location/type calls,
+            # then evaluate the native fixture's actual assertion condition.
+            turf=object()
+            oven_object=NS(turf=turf)
+            mold=NS(loc=oven_object,capacity=1,current_material='bronze',type=path('axehead'))
+            saved=mold
+            env=dict(contents=[mold],get_turf=lambda obj:obj.turf,
+                     typed_iter=lambda values,_type:values)
+            source='/proc/stone_mold_oven_ejection_ci()\n'+tail+'\n'
+            adapter.project(source,'/proc/stone_mold_oven_ejection_ci','src',env)(oven_object)
+            condition=re.search(r'stone_mold_ci_expect\(([^\n]+), "oven preserves exact filled stone mold:',fixture)[1]
+            condition=condition.replace('&&',' and ').replace('!QDELETED','not QDELETED')
+            return eval(condition,dict(QDELETED=lambda obj:False,get_turf=lambda obj:obj.turf),
+                        dict(M=mold,O=oven_object,C=NS(recipe=NS(result_type=path('axehead'))))) and mold is saved
+
+        self.assertTrue(projected_assertion(native))
+        previous=native.replace('M.loc == get_turf(O)','M.loc == O')
+        self.assertFalse(projected_assertion(previous), 'Previous inside-oven expectation must fail after real ejection')
+
     def test_generated_atlas_names_gates_and_native_wiring(self):
         catalog=json.loads(read('UI/crafting-atlas.json'))
         required=json.loads(read('tests/sprites/required-types.json'))

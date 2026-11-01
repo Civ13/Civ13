@@ -67,7 +67,10 @@ commit ordering, oven preservation, Atlas/Help instructions, and causal omission
 controls. These are offline source/model checks, not native gameplay.
 `tests/crafting/stone_molds.dm` adds actual production crafting/payment and
 late-rejection assertions to the existing isolated recipe fixture. Compilation
-alone does not execute those assertions. Native/client, save/load and graphical
+alone does not execute those assertions. The fixture assigns metal and empty
+states directly; it does not exercise actual pouring or anvil casting. Oven
+preservation retains the same mold and metal while ejecting it onto the oven turf.
+Native/client, save/load and graphical
 acceptance must be reported separately for the exact tested commit.
 
 Player-facing changelog: Added reusable sandstone casting molds carved with a

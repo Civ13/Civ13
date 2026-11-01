@@ -46,6 +46,7 @@
 		var/obj/item/weapon/clay/mold/M = locate(C.recipe.result_type) in locate(2,1,1)
 		if (M)
 			stone_mold_ci_expect(M.fired && M.stone_mold && M.capacity == 0, "usable immediately: [shape]")
+			// Seed metal directly for oven/icon checks; this does not exercise pouring or casting.
 			M.capacity = 1
 			M.current_material = "bronze"
 			M.update_icon()
@@ -53,11 +54,11 @@
 			var/obj/structure/oven/O = new(locate(2,1,1))
 			M.loc = O
 			O.process()
-			stone_mold_ci_expect(!QDELETED(M) && M.loc == O && M.capacity == 1 && M.current_material == "bronze" && M.type == C.recipe.result_type, "oven preserves exact filled stone mold: [shape]")
+			stone_mold_ci_expect(!QDELETED(M) && M.loc == get_turf(O) && M.capacity == 1 && M.current_material == "bronze" && M.type == C.recipe.result_type, "oven preserves exact filled stone mold: [shape]")
 			M.capacity = 0
 			M.current_material = null
 			M.update_icon()
-			stone_mold_ci_expect(M.icon_state == "[M.base_icon]_empty", "empty appearance after casting: [shape]")
+			stone_mold_ci_expect(M.icon_state == "[M.base_icon]_empty", "empty appearance after reset: [shape]")
 			M.loc = locate(2,1,1)
 			qdel(O)
 		C.clean()
