@@ -50,7 +50,10 @@ class LightingInterleaveAdapter(unittest.TestCase):
         self.assertIn("lighting_interleave_target.gcDestroyed = world.time + 1", probe)
         self.assertIn("lighting_interleave_target.gc_destroyed = GC_QUEUED_FOR_QUEUING", probe)
         self.assertIn("spawn(0) lighting_interleave_mutate(storage, level)", probe)
-        self.assertIn("del(lighting_interleave_target)", probe)
+        self.assertIn("hard_target.fixture_hard_delete_now = TRUE", probe)
+        self.assertIn("if(hard_delete_now) return QDEL_HINT_HARDDEL_NOW", probe)
+        self.assertIn("qdel(hard_target)", probe)
+        self.assertNotIn("\n\t\t\tdel(lighting_interleave_target)", probe)
         self.assertIn("isnull(storage.all_loaded[index])", probe)
         self.assertIn("lighting_interleave_hardnull && !lighting_interleave_target && !lighting_interleave_null_calls", probe)
 

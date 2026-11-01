@@ -6,10 +6,13 @@
 	light_range = 2
 	light_power = 1
 	var/tmp/fixture_destroyed = FALSE
+	var/tmp/fixture_hard_delete_now = FALSE
 
 /obj/item/lighting_interleave_target/Destroy()
+	var/hard_delete_now = fixture_hard_delete_now
 	..()
 	fixture_destroyed = TRUE
+	if(hard_delete_now) return QDEL_HINT_HARDDEL_NOW
 	return QDEL_HINT_HARDDEL
 
 var/global/lighting_interleave_case
@@ -57,7 +60,9 @@ var/global/lighting_interleave_light_calls = 0
 			var/index = storage.all_loaded.Find(lighting_interleave_target)
 			var/original_length = storage.all_loaded.len
 			lighting_interleave_assert(index && lighting_interleave_target, "hard-delete target missing")
-			del(lighting_interleave_target)
+			var/obj/item/lighting_interleave_target/hard_target = lighting_interleave_target
+			hard_target.fixture_hard_delete_now = TRUE
+			qdel(hard_target)
 			lighting_interleave_hardnull = !lighting_interleave_target && storage.all_loaded.len == original_length && isnull(storage.all_loaded[index])
 			lighting_interleave_assert(lighting_interleave_hardnull, "pending entry did not become hard null")
 		if("atom_legacy", "turf_legacy")
