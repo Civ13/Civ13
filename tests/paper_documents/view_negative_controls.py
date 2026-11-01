@@ -26,8 +26,8 @@ CONTROLS={
 def run():
  rows=[];original=tests.environment
  for name,(before,after,target) in CONTROLS.items():
-  # The legacy write adapter now shares the page predicate. Mutate this
-  # original reader boundary alone, retaining the same causal assertion.
+  # The legacy write adapter repeats this page check. Mutate only the reader
+  # boundary in paper_document_route_access, retaining the causal assertion.
   scope=tests.vm.body(tests.SOURCE,'/proc/paper_document_route_access') if name=='selected-page' else tests.SOURCE
   assert scope.count(before)==1,(name,'source anchor drift')
   changed=scope.replace(before,after)

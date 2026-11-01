@@ -1,6 +1,6 @@
 # Paper transactions: first integration slice
 
-Base: merged reader30be33c31e21be5131651ea57f08319167a07602. This slice does
+Base: merged reader `30be33c31e21be5131651ea57f08319167a07602`. This slice does
 not initialize classified documents from a
 player route, add a language selector, enable TGUI authoring or change pencode.
 Copying, rename/airplane/crumple adapters and subtype/system writers remain
