@@ -110,16 +110,19 @@ class TileMotion(unittest.TestCase):
         self.assertEqual(s.clients[1].captures,0)
         self.assertFalse(s.clients[1].masked)
 
-    def render_key(self,body,owner,anchored,source=CORE):
+    def render_key(self,body,owner,anchored,source=CORE,time=0):
         # Evaluate the actual key template/offset branch, not a separate cache.
         policy=P.fragment(source,'/datum/los_context/proc/policy_key(')
         branch=re.search(r'var/offset_key = tile_anchored \? "([^"]*)" : "([^"]*)"',policy)
         self.assertIsNotNone(branch)
         offset_key=branch[1] if anchored else branch[2]
         template=re.search(r'\treturn "([^\n]*)"',policy)[1]
-        names=dict(body=body,owner=owner,revision=1,offset_key=offset_key)
+        names=dict(body=body,owner=owner,revision=1,offset_key=offset_key,world=N(time=time))
         def expression(code):
             if code=='config ? config.disable_fov : 1':return 1
+            if ' ? ' in code:
+                condition,values=code.split(' ? ');yes,no=values.split(' : ')
+                return eval(yes if eval(condition,{'__builtins__':{}},names) else no,{'__builtins__':{}},names)
             return eval(code,{'__builtins__':{}},names)
         template=re.sub(r'\\ref\[([^\]]+)\]',lambda m:str(id(expression(m[1]))),template)
         for _ in range(2):
@@ -129,7 +132,7 @@ class TileMotion(unittest.TestCase):
     def test_scheduled_identity_ignores_offsets_but_fresh_read_policy_does_not(self):
         body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,see_in_dark=2,
                dir=2,resting=False,lying=False,prone=False,pulling=None)
-        owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0)
+        owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         presentation=self.render_key(body,owner,True);physical=self.render_key(body,owner,False)
         body.step_x=12;body.step_y=-4
         self.assertEqual(self.render_key(body,owner,True),presentation)
@@ -212,17 +215,20 @@ class DistanceCamera(unittest.TestCase):
         from collections import defaultdict
         class Cells(P.DMList):
             def __iadd__(self,x):self.append(x);return self
+            @property
+            def len(self):return len(self)
         body=N(type='/mob/living/human',x=100,y=100,z=1,step_x=0,step_y=0,see_invisible=25)
-        owner=N(pixel_x=pan_x,pixel_y=pan_y)
+        owner=N(view=7,pixel_x=pan_x,pixel_y=pan_y,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         context=N(body=body,owner=owner,revision=1,policy_key=lambda:f'{owner.pixel_x},{owner.pixel_y}',
-                  viewport=lambda:Cells([15,15]))
+                  viewport=lambda:Cells([owner.view*2+1,owner.view*2+1]))
         env=P.projected_geometry(source)
         P.project(source,'/proc/los_target_blocked(',env)
         env.update(round=math.floor,list=lambda *xs:Cells(xs),typed_iter=lambda xs,t:getattr(xs,'contents',xs),isnull=lambda x:x is None,
             ismovable=lambda a:not a.type.startswith('/turf/'),ishuman=lambda a:a.type.startswith('/mob/living/human'),
             isturf=lambda a:a.type.startswith('/turf/'),istype=lambda a,t:a.type.startswith(t),config=None,
             LOS_DENY=0,LOS_WORLD=1,LOS_SURFACE=2,LOS_SELF=4,
-            world=N(maxx=200,maxy=200),inclusive_range=lambda lo,hi:range(int(lo),int(hi)+1))
+            world=N(maxx=200,maxy=200,time=0),inclusive_range=lambda lo,hi:range(int(lo),int(hi)+1),
+            getviewsize=lambda v:Cells([v*2+1,v*2+1]))
         def method(name,args,fields):
             text=P.fragment(source,'/datum/los_context/proc/'+name+'(')
             head,code=text.split('\n',1)
@@ -250,7 +256,13 @@ class DistanceCamera(unittest.TestCase):
         def target(x,y):
             return N(type='/obj/item',x=x,y=y,z=1,step_x=0,step_y=0,opacity=False,alpha=255,invisibility=0,
                      gcDestroyed=False,gc_destroyed=False,loc=N(type='/turf/floor'))
-        return N(V=context,C=owner,body=body,capture=capture,decision=decision,target=target,opaque=opaque,visited=visited)
+        text=P.fragment(LIFE,'/client/proc/los_prepare_camera_pan(')
+        head,code=text.split('\n',1)
+        for field in ['view','pixel_x','pixel_y','los_camera_union_until','los_camera_radius_x','los_camera_radius_y','los_dirty']:
+            code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
+        prepare=A.project(head+'\n'+code,'/client/proc/los_prepare_camera_pan','self, target_x, target_y, animation_time, previous_view',env)
+        return N(V=context,C=owner,body=body,capture=capture,decision=decision,target=target,opaque=opaque,visited=visited,
+                 env=env,prepare=lambda x,y,d,old_view=None:prepare(owner,x,y,d,owner.view if old_view is None else old_view))
 
     def test_panned_leading_edges_capture_from_real_body_and_keep_intervening_blockers(self):
         for dx,dy in [(3,0),(-3,0),(0,3),(0,-3),(3,3)]:
@@ -272,7 +284,7 @@ class DistanceCamera(unittest.TestCase):
     def test_camera_pan_key_rounding_bounds_and_offset_cadence(self):
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
             see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
-        owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0)
+        owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         key=motion.render_key(body,owner,True);owner.pixel_x=96
         self.assertNotEqual(motion.render_key(body,owner,True),key)
         key=motion.render_key(body,owner,True);body.step_x=2
@@ -291,7 +303,7 @@ class DistanceCamera(unittest.TestCase):
         self.assertEqual(m.decision(m.target(110,100),m.capture(True)),0)
         motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
             see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
-        owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0)
+        owner=N(view=7,perspective=0,pixel_x=0,pixel_y=0,los_camera_union_until=-1,los_camera_radius_x=0,los_camera_radius_y=0)
         mutant=CORE.replace('|[owner.pixel_x],[owner.pixel_y]','')
         key=motion.render_key(body,owner,True,mutant);owner.pixel_x=96
         self.assertEqual(motion.render_key(body,owner,True,mutant),key)
@@ -302,6 +314,55 @@ class DistanceCamera(unittest.TestCase):
         invalidate=A.project(LIFE,'/proc/los_invalidate','changed, possible_opacity=False',env)
         door=Tile(116,100);invalidate(door,True);self.assertEqual(events,[(door,True)])
         events.clear();m.C.pixel_x=0;invalidate(door,True);self.assertEqual(events,[])
+
+    def test_exit_shrink_axis_change_and_rapid_toggle_retain_previous_animation_extents(self):
+        m=self.camera(96);m.prepare(0,0,2);m.C.pixel_x=0
+        for time in [0,1,2,3]:
+            m.env['world'].time=time
+            self.assertEqual(m.V.viewport_radii()[1],10,time)
+            m.visited.clear();S=m.capture(True);self.assertEqual(S.radius_x,10)
+            self.assertIn((110,100),m.visited)
+        m.opaque.add((105,100))
+        self.assertEqual(m.decision(m.target(110,100),m.capture(True)),0)
+        m.env['world'].time=4;self.assertEqual(m.V.viewport_radii()[1],7)
+        # Shrinking both zoom/view and pan retains the old full viewport.
+        m=self.camera(160);m.C.view=12;m.prepare(32,0,3);m.C.view=7;m.C.pixel_x=32
+        self.assertEqual(m.V.viewport_radii()[1],17)
+        # A new orthogonal animation must retain both earlier axes and deadline.
+        m.env['world'].time=1;m.prepare(0,96,3);m.C.pixel_x=0;m.C.pixel_y=96
+        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(17,12))
+        m.env['world'].time=2;m.prepare(0,0,2);m.C.pixel_y=0
+        self.assertEqual((m.V.viewport_radii()[1],m.V.viewport_radii()[2]),(17,12))
+        self.assertEqual(m.C.los_camera_union_until,5)
+        m.env['world'].time=5;self.assertEqual(m.V.viewport_radii()[1],17)
+        m.env['world'].time=6;self.assertEqual(m.V.viewport_radii()[1],7)
+        # A fresh sequence after expiry must not retain ancient extrema.
+        m.prepare(32,0,3);m.C.pixel_x=32
+        self.assertEqual(m.V.viewport_radii()[1],8)
+
+    def test_animation_lease_expiry_changes_policy_and_each_call_precedes_animate(self):
+        motion=TileMotion();body=N(x=3,y=1,z=1,step_x=0,step_y=0,sight=0,see_invisible=0,
+            see_in_dark=2,dir=2,resting=False,lying=False,prone=False,pulling=None)
+        m=self.camera(96);m.C.perspective=0;m.prepare(0,0,2);m.C.pixel_x=0
+        active=motion.render_key(body,m.C,True,time=3)
+        expired=motion.render_key(body,m.C,True,time=4)
+        self.assertNotEqual(active,expired)
+        for field in ['los_camera_radius_x','los_camera_radius_y','los_camera_union_until']:
+            self.assertIn('/client/var/tmp/'+field,LIFE)
+            self.assertNotIn(field,P.fragment(CORE,'/datum/los_context/proc/retire('))
+        body.step_x=2;self.assertEqual(motion.render_key(body,m.C,True,time=3),active)
+        mutant=CORE.replace('if (world.time <= owner.los_camera_union_until)','if (FALSE)',1)
+        broken=self.camera(96,source=mutant);broken.prepare(0,0,2);broken.C.pixel_x=0
+        self.assertEqual(broken.V.viewport_radii()[1],7)  # Old endpoint-only gap.
+        look=P.fragment(self.HUMAN,'/mob/living/human/proc/look_into_distance(')
+        self.assertEqual(look.count('los_prepare_camera_pan('),3)
+        self.assertLess(look.index('var/old_camera_view = user.client.view'),look.index('user.client.view +='))
+        for line in look.splitlines():
+            if 'animate(user.client,' in line:
+                previous=look[:look.index(line)].rstrip().splitlines()[-1]
+                self.assertIn('los_prepare_camera_pan(',previous)
+                duration=re.search(r'time = (\d+)',line)[1]
+                self.assertIn(', '+duration+', old_camera_view)',previous)
 
 
 if __name__=='__main__':unittest.main()

@@ -1217,6 +1217,7 @@ var/list/coefflist = list()
 	if(!user || !user.client)
 		return
 
+	var/old_camera_view = user.client.view
 	switch(forced_look)
 		if(FALSE)
 			looking = FALSE
@@ -1253,10 +1254,12 @@ var/list/coefflist = list()
 						_y += view_offset
 					if (WEST)
 						_x += view_offset
+				user.client.los_prepare_camera_pan(world.icon_size*_x, world.icon_size*_y, 3, old_camera_view)
 				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
 			else // Otherwise just slide the camera
+				user.client.los_prepare_camera_pan(world.icon_size*_x, world.icon_size*_y, 3, old_camera_view)
 				animate(user.client, pixel_x = world.icon_size*_x, pixel_y = world.icon_size*_y, time = 3, easing = SINE_EASING)
 				user.client.pixel_x = world.icon_size*_x
 				user.client.pixel_y = world.icon_size*_y
@@ -1264,6 +1267,7 @@ var/list/coefflist = list()
 			handle_ui_visibility()
 			user.dizzycheck = TRUE
 	else//Resets
+		user.client.los_prepare_camera_pan(0, 0, 2, old_camera_view)
 		animate(user.client, pixel_x = 0, pixel_y = 0, time = 2, easing = SINE_EASING)
 		user.client.pixel_x = 0
 		user.client.pixel_y = 0

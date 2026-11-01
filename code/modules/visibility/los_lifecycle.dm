@@ -4,6 +4,30 @@
 /client/var/tmp/los_last_policy
 /client/var/tmp/los_next_audit = 0
 /client/var/tmp/los_last_error
+/client/var/tmp/los_camera_radius_x = 0
+/client/var/tmp/los_camera_radius_y = 0
+/client/var/tmp/los_camera_union_until = -1
+
+// animate() changes endpoint vars immediately. Preserve the previous viewport
+// and every still-active endpoint until the declared animation finishes. This
+// is client-owned so rebuilding the HUD/context cannot drop the in-flight sweep.
+/client/proc/los_prepare_camera_pan(target_x, target_y, animation_time, previous_view)
+	var/list/old_dimensions = getviewsize(previous_view)
+	var/list/new_dimensions = getviewsize(view)
+	if(!old_dimensions || old_dimensions.len != 2 || !new_dimensions || new_dimensions.len != 2)
+		return
+	var/old_x = round(old_dimensions[1] / 2) - round(-abs(pixel_x) / 32)
+	var/old_y = round(old_dimensions[2] / 2) - round(-abs(pixel_y) / 32)
+	var/new_x = round(new_dimensions[1] / 2) - round(-abs(target_x) / 32)
+	var/new_y = round(new_dimensions[2] / 2) - round(-abs(target_y) / 32)
+	if(world.time <= los_camera_union_until)
+		old_x = max(old_x, los_camera_radius_x)
+		old_y = max(old_y, los_camera_radius_y)
+	los_camera_radius_x = max(old_x, new_x)
+	los_camera_radius_y = max(old_y, new_y)
+	// One decisecond margin also covers tick quantization at the endpoint.
+	los_camera_union_until = max(los_camera_union_until, world.time + max(0, animation_time) + 1)
+	los_dirty = TRUE
 
 /client/proc/set_geometric_los(enabled)
 	los_enabled = !!enabled

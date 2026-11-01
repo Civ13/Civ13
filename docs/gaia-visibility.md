@@ -48,7 +48,12 @@ still restores only objects marked by the scope routine.
 Client camera pixel offsets now participate in the presentation/read snapshot
 identity. Capture and neighborhood invalidation cover the body-centered view
 plus the absolute camera pan, rounded outward to whole tiles, in each axis.
-This conservative rectangle includes the complete animated sweep. LOS rays keep
+Before each scope animation, a client-owned lease retains the old full viewport,
+new endpoint and any still-active earlier extrema through the declared animation
+duration plus one decisecond. This also covers exit, view shrink and rapid axis
+changes, despite endpoint vars changing immediately. Lease expiry changes the
+snapshot identity so the scheduler can release extra coverage. HUD/context
+replacement does not discard an active client lease. LOS rays keep
 the player's actual eye (tile-centered for presentation, physical for reads);
 the camera cannot see around an intervening blocker. Scope entry/exit refreshes
 presentation synchronously after changing the camera and HUD state.
