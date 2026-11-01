@@ -183,7 +183,7 @@ class ContractTests(unittest.TestCase):
         self.assertIn('fail-fast: true',text)
         self.assertIn('group: civ13-wildlife-random-cadence-exclusive',text)
         self.assertIn('cancel-in-progress: false',text)
-        self.assertIn('queue: max',text)
+        self.assertNotIn('queue:',text)
         self.assertIn('fetch-depth: 0',text)
         self.assertIn('persist-credentials: false',text)
         self.assertIn('test "$EXPECTED_HEAD" = "$GITHUB_SHA"',text)
@@ -194,6 +194,7 @@ class ContractTests(unittest.TestCase):
         self.assertIn('exit 1',shim)
         self.assertNotIn('cloud_npc_job.py',shim)
         self.assertIn('group: civ13-wildlife-random-cadence-exclusive',shim)
+        self.assertNotIn('queue:',shim)
 
     def test_complete_synthetic_matrix_for_each_mode_and_rate(self):
         for mode in contract.MODES:

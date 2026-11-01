@@ -13,7 +13,6 @@ permissions:
 concurrency:
   group: civ13-wildlife-random-cadence-exclusive
   cancel-in-progress: false
-  queue: max
 jobs:
   registration-only:
     runs-on: ubuntu-24.04

@@ -11,7 +11,6 @@ permissions:
 concurrency:
   group: civ13-wildlife-random-cadence-exclusive
   cancel-in-progress: false
-  queue: max
 jobs:
   random-cadence:
     if: ${{ github.repository == 'Civ13/Civ13' && github.repository_id == '141349998' && github.event.repository.visibility == 'public' }}
