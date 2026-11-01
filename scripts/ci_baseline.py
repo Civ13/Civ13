@@ -25,6 +25,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib + reviewed source projection with inert recipients and event queue.
+    # No native fixture, process, network or live message transport is imported.
+    'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
+        'paths': ('tests/telephone/',), 'shared_paths': (
+            'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only admin care/appearance source contracts. Shared inputs retain
     # their existing conservative fallback and other suites' ownership.
     'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',
