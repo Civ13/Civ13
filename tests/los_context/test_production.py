@@ -381,9 +381,10 @@ class BlockingTreeSurface(unittest.TestCase):
                        typed_iter=lambda xs,kind:getattr(xs,'contents',xs) if xs is not None else [])
             snapshot.index_blockers=lambda:None
             context.viewport=lambda:Cells([31,31])
+            context.viewport_radii=lambda:Cells([15,15])
             text=fragment(source,'/datum/los_context/proc/capture(')
             head,code=text.split('\n',1)
-            for field in ['body','revision','policy_key','viewport']:
+            for field in ['body','revision','policy_key','viewport','viewport_radii']:
                 code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
             code=code.replace('var/datum/los_snapshot/S = new','var/datum/los_snapshot/S = new_snapshot()')
             code=re.sub(r'(var/datum/los_cell/\w+) = new',r'\1 = new_cell()',code)
