@@ -2,6 +2,7 @@
 import ast
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -14,6 +15,64 @@ BASE = '01566713425d9e923b6ed2e18332113d48f6bc67'
 HUMAN = 'code/game/mob/living/carbon/human/subtile_movement.dm'
 STACK = 'code/game/objects/items/stacks/stack.dm'
 WAIT = 'code/_helpers/mobs.dm'
+FLOOR = 'code/game/turfs/floor_attackby.dm'
+
+
+def replace_reviewed_once(source, current, previous):
+    """Inverse only an exact reviewed addition, refusing omission or drift."""
+    if source.count(current) != 1:
+        raise AssertionError('reviewed projection edit missing or ambiguous: ' + current)
+    return source.replace(current, previous, 1)
+
+
+def restore_crafting_projection(path, source):
+    # The original crafting reference stays fixed. Later independently reviewed
+    # changes are recognized exactly, not erased by broad pattern substitution.
+    if path == WAIT:
+        edits = (
+            ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
+            ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
+            ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
+        )
+    elif path == FLOOR:
+        # #3451: admission before announcements/effects. #3458: one owned work
+        # image around the same wait, with release cleanup and unchanged reward.
+        wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
+        edits = (
+            ('\tif (!user || !user.may_do_after)\n\t\treturn\n\tif (has_snow_cover() || busy', '\tif (has_snow_cover() || busy'),
+            ('\tvar/datum/progressbar/progressbar\n\tvar/datum/resource_work_animation/work_animation\n', '\tvar/datum/progressbar/progressbar\n'),
+            ('/datum/pickaxe_mining_action/proc/release()\n\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '/datum/pickaxe_mining_action/proc/release()\n'),
+            ('\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, 240 / actor.getStatCoeff("strength") / tool:usespeed)\n'
+             + '\t\t\tvar/completed = ' + wait + '\n'
+             + '\t\t\tif (work_animation)\n\t\t\t\twork_animation.stop()\n\t\t\t\twork_animation = null\n'
+             + '\t\t\tif (completed && valid(actor, wall))', '\t\t\tif (' + wait + ' && valid(actor, wall))'),
+        )
+    else:
+        edits = ()
+    for current, previous in edits:
+        source = replace_reviewed_once(source, current, previous)
+    return source
+
+
+def verify_crafting_projection(module, references, path, raw_source, enabled):
+    symbols = {module.FEATURE} if enabled else set()
+    projected = module.project(raw_source, symbols)[0]
+    restored = restore_crafting_projection(path, projected)
+    mode = 'enabled_sha256' if enabled else 'disabled_sha256'
+    if hashlib.sha256(restored.encode()).hexdigest() != references[path][mode]:
+        raise AssertionError('unreviewed crafting projection drift: ' + path + ' ' + mode)
+    if not enabled and hashlib.sha256(projected.encode()).hexdigest() != module.DISABLED_SHA256[path]:
+        raise AssertionError('current disabled whole-file projection drift: ' + path)
+
+
+def gather_projection_inputs():
+    spec = importlib.util.spec_from_file_location('crafting_gather_projection', ROOT / 'scripts/gameplay_bridge/gather_context.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    frozen = json.loads(read('tests/human_subtile/crafting_gather_baseline.json'))
+    if frozen['base_sha'] != BASE or set(frozen['source_files']) != set(module.PATHS):
+        raise AssertionError('original crafting reference identity changed')
+    return module, frozen['source_files']
 
 
 def read(path):
@@ -44,22 +103,53 @@ def expression(source):
 
 class CraftingMovementContracts(unittest.TestCase):
     def test_all_four_gather_projections_are_verified_against_reviewed_master(self):
-        spec = importlib.util.spec_from_file_location('crafting_gather_projection', ROOT / 'scripts/gameplay_bridge/gather_context.py')
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        module, references = gather_projection_inputs()
         for path in module.PATHS:
             for enabled in (False, True):
-                symbols = {module.FEATURE} if enabled else set()
-                old = module.project(baseline(path), symbols)[0]
-                current = module.project(read(path), symbols)[0]
-                restored = current
-                if path == WAIT:
-                    restored = restored.replace('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', '')
-                    restored = restored.replace('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', '')
-                    restored = restored.replace('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc')
-                self.assertEqual(restored, old, path)
-                if not enabled:
-                    self.assertEqual(hashlib.sha256(current.encode()).hexdigest(), module.DISABLED_SHA256[path])
+                with self.subTest(path=path, enabled=enabled):
+                    verify_crafting_projection(module, references, path, read(path), enabled)
+
+    def test_projection_inverse_requires_admission_and_owned_animation(self):
+        module, references = gather_projection_inputs()
+        source = read(FLOOR)
+        controls = (
+            ('\tif (!user || !user.may_do_after)\n\t\treturn\n', ''),
+            ('!user.may_do_after', 'user.may_do_after'),
+            ('\tvar/datum/resource_work_animation/work_animation\n', ''),
+            ('\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '\tif (work_animation)\n\t\twork_animation = null\n'),
+            ('prepare_resource_work_animation(tool, wall,', 'prepare_resource_work_animation(null, wall,'),
+            ('var/completed = do_after(actor, 240 /', 'var/completed = do_after(actor, 120 /'),
+            ('wall.mining_proc(actor)', 'wall.mining_proc(null)'),
+        )
+        for before, after in controls:
+            self.assertEqual(source.count(before), 1, before)
+            mutated = source.replace(before, after, 1)
+            for enabled in (False, True):
+                with self.subTest(control=before, enabled=enabled), self.assertRaises(AssertionError):
+                    verify_crafting_projection(module, references, FLOOR, mutated, enabled)
+
+    def test_projection_controls_reject_wait_and_enabled_context_regressions(self):
+        module, references = gather_projection_inputs()
+        controls = (
+            (WAIT, 'original_step_y = user.step_y', 'original_step_y = 0'),
+            (WAIT, '!gameplay_lease.claim_gather_wait(user, target)', 'FALSE'),
+            (FLOOR, 'grass_cutting_wait(user, gameplay_context)', 'grass_cutting_wait(user)'),
+            (FLOOR, '!istype(gameplay_context, /datum/gameplay_action_lease)', 'FALSE'),
+            ('code/modules/gameplay_bridge/bridge.dm', 'survival_action(kind, target, A["recipe"], worker_context)', 'survival_action(kind, target, A["recipe"])'),
+            ('code/modules/gameplay_bridge/mechanics.dm', 'wait_claimed || !matches_gather_wait(user, wait_target)', 'FALSE'),
+        )
+        for path, before, after in controls:
+            source = read(path)
+            self.assertEqual(source.count(before), 1, before)
+            with self.subTest(path=path, control=before), self.assertRaises(AssertionError):
+                verify_crafting_projection(module, references, path, source.replace(before, after, 1), True)
+
+    def test_all_projection_modes_reject_unreviewed_file_changes(self):
+        module, references = gather_projection_inputs()
+        for path in module.PATHS:
+            for enabled in (False, True):
+                with self.subTest(path=path, enabled=enabled), self.assertRaises(AssertionError):
+                    verify_crafting_projection(module, references, path, read(path) + '// unexpected drift\n', enabled)
 
     def test_held_stack_policy_accepts_only_current_owned_valid_recipe_view(self):
         source = block(STACK, '/obj/item/stack/allows_smooth_movement_ui', '/obj/item/stack/proc/list_recipes')

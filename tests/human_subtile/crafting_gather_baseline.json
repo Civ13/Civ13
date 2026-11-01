@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "base_sha": "01566713425d9e923b6ed2e18332113d48f6bc67",
+  "provenance": "Original reviewed crafting master0156671; LF-normalized full-file projections under CIV13_GAMEPLAY_BRIDGE off/on. Not refreshed to current source. Tests require no Git lookup for these identities.",
+  "source_files": {
+    "code/_helpers/mobs.dm": {
+      "git_blob_sha1": "1d739a4f334a3438973675bce7c07d8f145e5eac",
+      "disabled_sha256": "992e84bc73a9fb4299827a26f53a862eb3e56910e10243df2e278654f7a21498",
+      "enabled_sha256": "8b3ad6f6b0d93db4edf1666aab1b55c559837a4c0067f23be56aebf93be18f82"
+    },
+    "code/game/turfs/floor_attackby.dm": {
+      "git_blob_sha1": "795a1933eb71d210a9e93349b5c3e763434df2a7",
+      "disabled_sha256": "f6f2b4014157f9886f93be0b9a39919b3b121b9d1626522fb20e6122c2e49955",
+      "enabled_sha256": "731a88b457b8c9af8fd7af22e66fc4c6b83f0f2c6dba01c0bb345df480db8197"
+    },
+    "code/modules/gameplay_bridge/bridge.dm": {
+      "git_blob_sha1": "7b01ac3b46aa339efcc43c202b8da49bbe653fa5",
+      "disabled_sha256": "9a2f299490853811f6bb6c6bffaf25a1d1a4e92b1c7224b3c0e68c1bf01d53e9",
+      "enabled_sha256": "200835cef54fb4f88be54db8f860fea3b1d4b5610d227ee057f41a2ef9ee62be"
+    },
+    "code/modules/gameplay_bridge/mechanics.dm": {
+      "git_blob_sha1": "4aab4817bfcf47de7d642d6309948cebec70d93f",
+      "disabled_sha256": "ef11a72c838e5b704e6e88029964d04182ba8f9920dd4493c1a76ce956ca369f",
+      "enabled_sha256": "1493c87dfb753f7dc2dfa761e74bfdb96c7ad6885f101fb576569f881e9b5241"
+    }
+  }
+}

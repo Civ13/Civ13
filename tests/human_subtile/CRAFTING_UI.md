@@ -33,10 +33,20 @@ unchanged and remain after the existing action wait.
 `test_crafting_ui.py` has offline source-derived policy and parity checks.
 The held-stack predicate and physical-position boolean are evaluated from their
 production expressions. These are not native DM or browser simulations.
-All four disabled/enabled gather projections are also compared to master0156671:
-only the helper's intended physical-wait predicate changes. Its hash is refreshed;
-the previously stale floor hash is refreshed to unchanged reviewed master bytes.
-Bridge/mechanics hashes and all context-slot/claim semantics remain unchanged.
+All four disabled/enabled gather projections retain the original master0156671
+full-file identities in `crafting_gather_baseline.json`. This corrected check
+needs no historical Git checkout. It reverses only exact reviewed additions:
+the stationary wait's physical-offset checks, #3451's early grass busy-admission
+guard, and #3458's call-local mining work image/cleanup around the unchanged wait.
+Each inverse must match exactly once; missing or changed guards, image ownership,
+wait duration and rewards fail. The normalized whole-file digest must match the
+original frozen projection in both feature modes. Current disabled projections
+must also match the existing helper hashes, which are not refreshed by this
+correction. Enabled context-claim, type and forwarding omissions and arbitrary
+file drift are negative controls. Other existing checks in this file retain
+their earlier Git-history references; this correction does not migrate them.
+Bridge/mechanics, FPS feature code, workflow admission and native fixture inputs
+remain unchanged. These controls are offline source checks, not native evidence.
 `crafting_ui.dm` prepares fourteen native assertions using real human/stack Move,
 inventory drop, reverse recovery and `do_after`, under the existing headless
 fixture authority. It is not included or launched by the ordinary walking lane.
