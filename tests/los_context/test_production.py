@@ -306,6 +306,11 @@ class InventoryHoverName(unittest.TestCase):
         A=importlib.util.module_from_spec(spec);spec.loader.exec_module(A)
         class Node:
             def __init__(self,**values):vars(self).update(values)
+            def __getattribute__(self,key):
+                values=object.__getattribute__(self,'__dict__')
+                if key=='name' and values.get('name_reads') is not None:
+                    values['name_reads'].append(values.get('name'))
+                return object.__getattribute__(self,key)
         class Handle:
             def __init__(self,item):self.weak=weakref.ref(item)
             def resolve(self):
@@ -374,7 +379,112 @@ class InventoryHoverName(unittest.TestCase):
             if item:
                 item.loc=body;item.screen_loc=S.screen_loc;C.screen.append(item);readable.add(item)
             body.slots[slot_id]=item;return S
-        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,readable=readable,reads=read_calls,source=source)
+        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,readable=readable,reads=read_calls,source=source,env=env)
+
+    def test_entry_and_each_later_refresh_obtain_one_fresh_visibility_read(self):
+        for mode in ['world','owned-item','slot-art']:
+            with self.subTest(mode=mode):
+                m=self.model();names=[]
+                I=m.atom(name='visible <item>',name_reads=names,loc=m.atom('/turf/floor'))
+                origin=I
+                if mode=='world':m.visible.add(I);m.readable.add(I)
+                else:
+                    S=m.slot(I)
+                    if mode=='slot-art':origin=S
+                m.C.MouseEntered(origin)
+                self.assertTrue(m.W.maptext)
+                self.assertEqual(m.reads,[(m.H,I,'hover')])
+                self.assertEqual(names,['visible <item>'])
+                m.W.process()
+                self.assertEqual(len(m.reads),2)
+                m.readable.remove(I);names.clear()
+                m.W.process()
+                self.assertEqual(len(m.reads),3)
+                self.assertEqual(names,[])
+                self.assertEqual(m.W.maptext,'')
+                self.assertIsNone(m.W.hover_target)
+
+    def test_entry_outcomes_and_name_reads_match_frozen_preimage(self):
+        before=(Path(__file__).with_name('fixtures')/'hover_entry_before.txt').read_text()
+        after=(CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text()
+        def observe(source,case):
+            m=self.model(source);names=[];masked=[]
+            I=m.atom(name='raw <name>',name_reads=names,loc=m.atom('/turf/floor'))
+            origin=I;m.visible.add(I);m.readable.add(I)
+            if case in ['owned-item','slot-art','hidden-slot','foreign-slot','replaced-item']:
+                S=m.slot(I)
+                if case in ['slot-art','hidden-slot','foreign-slot']:origin=S
+                if case=='hidden-slot':S.alpha=0
+                if case=='foreign-slot':S.parentmob=m.atom('/mob/living/human')
+                if case=='replaced-item':m.H.slots[S.slot_id]=m.atom()
+            if case=='los-denied':m.readable.remove(I)
+            if case=='outside-native-view':m.visible.remove(I)
+            if case=='alpha-zero':I.alpha=0
+            if case=='no-mouse':I.mouse_opacity=0
+            if case=='invisible':I.invisibility=99
+            if case=='deleted':I.deleted=True
+            if case=='empty-name':I.name=''
+            if case=='screen-object':I.type='/obj/screen/close'
+            if case=='null-target':origin=None
+            if case=='missing-parent':m.W.parentmob=None
+            if case=='missing-client':m.H.client=None
+            if case=='foreign-body':m.C.mob=m.atom('/mob/living/human')
+            if case=='replaced-widget':m.H.HUDneed['hover name']=object()
+            if case=='removed-widget':m.C.screen.remove(m.W)
+            if case=='masked-human':
+                I.type='/mob/living/human';I.real_name='private real name'
+                I.get_visible_name=lambda:masked.append('read') or 'Unknown'
+            if case in ['foreign-body','replaced-widget']:
+                # Exercise a stale widget directly; the client's current widget
+                # route belongs to the replacement body/HUD instead.
+                m.W.set_target(origin)
+            else:
+                m.C.MouseEntered(origin)
+            target=m.W.hover_target.resolve() if m.W.hover_target else None
+            pointer=m.W.hover_origin.resolve() if m.W.hover_origin else None
+            return (m.W.maptext,m.W.hover_inventory,m.W.hover_screen_loc,
+                    target is I,pointer is origin and pointer is not None,names,masked)
+        for case in ['world','owned-item','slot-art','hidden-slot','foreign-slot','replaced-item',
+                     'los-denied','outside-native-view','alpha-zero','no-mouse','invisible','deleted',
+                     'empty-name','screen-object','null-target','missing-parent','missing-client',
+                     'foreign-body','replaced-widget','removed-widget','masked-human']:
+            with self.subTest(case=case):
+                self.assertEqual(observe(after,case),observe(before,case))
+
+    def test_metadata_setup_cannot_reuse_an_earlier_visibility_authorization(self):
+        # A deliberately adversarial weakref boundary changes admission during
+        # setup. The later process check must deny before even reading a name.
+        for change in ['los','alpha','body','widget','deleted']:
+            with self.subTest(change=change):
+                m=self.model();names=[]
+                I=m.atom(name='private name',name_reads=names,loc=m.atom('/turf/floor'))
+                m.visible.add(I);m.readable.add(I)
+                original=m.env['WEAKREF']
+                def revoke(target):
+                    if change=='los':m.readable.discard(I)
+                    if change=='alpha':I.alpha=0
+                    if change=='body':m.C.mob=m.atom('/mob/living/human')
+                    if change=='widget':m.H.HUDneed['hover name']=object()
+                    if change=='deleted':I.deleted=True
+                    return original(target)
+                m.env['WEAKREF']=revoke
+                m.C.MouseEntered(I)
+                self.assertEqual(names,[])
+                self.assertEqual(m.W.maptext,'')
+                self.assertIsNone(m.W.hover_target)
+                self.assertIsNone(m.W.hover_origin)
+
+    def test_omitting_process_fresh_visibility_is_an_observable_privacy_defect(self):
+        source=(CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text()
+        guard='|| !target_visible(target)'
+        self.assertEqual(source.count(guard),1)
+        m=self.model(source.replace(guard,'|| FALSE',1));names=[]
+        I=m.atom(name='private name',name_reads=names,loc=m.atom('/turf/floor'))
+        m.visible.add(I)  # Native delivery alone must not authorize the read.
+        m.C.MouseEntered(I)
+        self.assertEqual(m.reads,[])
+        self.assertEqual(names,['private name'])
+        self.assertIn('private name',m.W.maptext)
 
     def test_displayed_owned_slot_routes_actual_item_and_matching_pointer_exit(self):
         m=self.model();I=m.atom(name='<rifle & sling>');S=m.slot(I)
