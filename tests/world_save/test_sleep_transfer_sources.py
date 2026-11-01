@@ -74,7 +74,7 @@ class SleepTransferSourceTests(unittest.TestCase):
             startup_count = sum((output / name).read_text().count('/world/New()\n') for name in sources)
             self.assertEqual(startup_count, 1)
 
-    def test_movement_fixture_uses_exact_disabled_production_presentation_default(self):
+    def test_movement_fixture_uses_exact_enabled_production_presentation_default(self):
         source = (ROOT / 'code/modules/visibility/los_context.dm').read_text(encoding='utf-8')
         default = RUNNER.presentation_default(source)
         with tempfile.TemporaryDirectory() as directory:
@@ -85,24 +85,30 @@ class SleepTransferSourceTests(unittest.TestCase):
             self.assertIn('#if CIV13_ROOT_TREE_PRESENTATION', (output / 'force_move.dm').read_text(encoding='utf-8'))
             self.assertEqual(receipt['source_projections']['presentation_default']['source'], 'code/modules/visibility/los_context.dm')
             self.assertEqual(receipt['source_sha256']['code/modules/visibility/los_context.dm'], RUNNER.BASE.sha((ROOT / 'code/modules/visibility/los_context.dm').read_bytes()))
-        for altered in (source.replace(default, '', 1), source.replace(default, default.replace(' 0\n', ' 1\n'), 1), source + default):
-            with self.subTest(count=altered.count(default)), self.assertRaisesRegex(RuntimeError, 'disabled production presentation default'):
+        for altered in (source.replace(default, '', 1), source.replace(default, default.replace(' 1\n', ' 0\n'), 1), source + default):
+            with self.subTest(count=altered.count(default)), self.assertRaisesRegex(RuntimeError, 'enabled production presentation default'):
                 RUNNER.presentation_default(altered)
 
     def test_complete_movement_dependency_closure_uses_neutral_production_throw_state(self):
         production = (ROOT / 'code/game/atoms_movable.dm').read_text()
         defaults = (ROOT / 'code/modules/visibility/los_context.dm').read_text()
-        self.assertIn('#define CIV13_ROOT_TREE_PRESENTATION 0', defaults)
+        self.assertIn('#define CIV13_ROOT_TREE_PRESENTATION 1', defaults)
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             RUNNER.prepare(output)
             environment = (output / 'probe.dme').read_text()
-            self.assertEqual(environment.count('#define CIV13_ROOT_TREE_PRESENTATION 0'), 1)
-            self.assertLess(environment.index('#define CIV13_ROOT_TREE_PRESENTATION 0'),
+            self.assertEqual(environment.count('#define CIV13_ROOT_TREE_PRESENTATION 1'), 1)
+            self.assertNotIn('#define CIV13_ROOT_TREE_PRESENTATION 0', environment)
+            self.assertLess(environment.index('#define CIV13_ROOT_TREE_PRESENTATION 1'),
                             environment.index('#include "force_move.dm"'))
             movement = (output / 'force_move.dm').read_text()
             self.assertIn(RUNNER.BASE.extract_proc(production, '/atom/movable/proc/clear_throw_launch'), movement)
             adapters = (output / 'sleep_transfer_probe.dm').read_text()
+            for hook in ('/proc/root_tree_invalidate(atom/changed)',
+                         '/proc/los_invalidate(atom/changed, possible_opacity = FALSE)',
+                         '/proc/los_refresh_moved_viewer(atom/movable/changed, force_refresh = FALSE)'):
+                self.assertIn(hook, adapters)
+            self.assertIn('root;invalidate;refresh', adapters)
             for field in ('var/tmp/mob/living/human/throw_launch_source = null',
                           'var/tmp/throw_launch_dx = null', 'var/tmp/throw_launch_dy = null',
                           'var/tmp/throw_launch_x = null', 'var/tmp/throw_launch_y = null',
@@ -207,6 +213,14 @@ class SleepTransferSourceTests(unittest.TestCase):
             for result in ('PASS', expected + ' extra', 'FAIL: unrelated failure'):
                 with self.assertRaisesRegex(RuntimeError, 'Wrong assertion'):
                     RUNNER.BASE.adjudicate(dict(row, result=result), '', case, expected)
+
+    def test_wake_actor_control_reports_wrong_actor_before_presentation_hooks(self):
+        fixture = (ROOT / 'tests/world_save/sleep_transfer_probe.dm').read_text()
+        body = RUNNER.BASE.extract_proc(fixture, '/proc/sleep_check_normal')
+        self.assertLess(body.index('wake helper moved the wrong actor'),
+                        body.index('wake omitted enabled presentation hooks'))
+        self.assertEqual(RUNNER.CONTROLS['wake-actor'],
+                         ('normal', 'FAIL: wake helper moved the wrong actor'))
 
     def test_diagnostic_omission_preserves_both_production_rejection_guards(self):
         source = (ROOT / 'code/modules/persistence/functions.dm').read_text()
