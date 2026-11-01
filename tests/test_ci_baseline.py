@@ -1029,5 +1029,24 @@ class AggregateTests(unittest.TestCase):
         self.assertIn('--suite policy', policy)
 
 
+class AdminCareSelection(unittest.TestCase):
+    def test_care_source_suite_selects_shared_renderer_without_claiming_it(self):
+        path = 'code/modules/visibility/root_tree_presenter.dm'
+        plan = ci.impact([path])
+        self.assertTrue(plan['suites']['admin_player_care']['selected'])
+        self.assertFalse(plan['fallback_reasons'])
+        self.assertEqual(ci.SUITES['admin_player_care']['files'],
+                         ('tests/admin_player_care/test_player_care.py',))
+        self.assertNotIn(path, ci.SUITES['admin_player_care']['paths'])
+        # Removing this owned-elsewhere dependency must lose care coverage:
+        # it cannot be rescued by the conservative unmapped-input fallback.
+        original = ci.SUITES['admin_player_care']
+        try:
+            ci.SUITES['admin_player_care'] = dict(original, shared_paths=())
+            self.assertFalse(ci.impact([path])['suites']['admin_player_care']['selected'])
+        finally:
+            ci.SUITES['admin_player_care'] = original
+
+
 if __name__ == '__main__':
     unittest.main()
