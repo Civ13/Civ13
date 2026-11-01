@@ -88,6 +88,7 @@ describe('standard screen parity', () => {
       'chem_disp.tmpl',
       'crew_log.tmpl',
       'faction_creation.tmpl',
+      'faction_list.tmpl',
       'faction_symbol.tmpl',
       'known_languages.tmpl',
       'religion_list.tmpl',

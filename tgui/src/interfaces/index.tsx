@@ -7,6 +7,7 @@ import { KnownLanguages } from './KnownLanguages';
 import { ShipStocks } from './ShipStocks';
 import { ReligionList } from './ReligionList';
 import { CrewLog } from './CrewLog';
+import { FactionList } from './FactionList';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -22,4 +23,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'ship_stocks.tmpl': ShipStocks,
   'religion_list.tmpl': ReligionList,
   'crew_log.tmpl': CrewLog,
+  'faction_list.tmpl': FactionList,
 };
