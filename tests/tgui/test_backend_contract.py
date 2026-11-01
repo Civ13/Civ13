@@ -74,7 +74,7 @@ class BackendContract(unittest.TestCase):
     def test_modern_adapter_is_default_for_converted_producers(self):
         self.assertIn('var/legacy_renderer = FALSE', DM)
 
-    def test_all_ten_templates_adopted(self):
+    def test_existing_ten_and_crew_log_templates_adopted(self):
         templates = set()
         for path in (ROOT / 'code').rglob('*.dm'):
             source = path.read_text(errors='replace')
@@ -83,7 +83,7 @@ class BackendContract(unittest.TestCase):
         self.assertEqual(templates, {'appearance_changer.tmpl', 'chem_disp.tmpl', 'faction_creation.tmpl',
                                     'faction_symbol.tmpl', 'research_bench.tmpl', 'warehouse_book.tmpl',
                                     'vending_machine.tmpl', 'vending_machine2.tmpl',
-                                    'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl'})
+                                    'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'crew_log.tmpl'})
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn('href="byond://?src=\\ref[src]&amp;window_id=', DM)

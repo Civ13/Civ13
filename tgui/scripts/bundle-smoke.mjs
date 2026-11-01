@@ -3,6 +3,22 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
+import vm from 'node:vm';
+const crewClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', crewClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), crewClassicContext);
+const renderCrewClassic = crewClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/crew_log.tmpl', import.meta.url), 'utf8'));
+const crewClassicMarkup = renderCrewClassic({ crew: [
+  { name: 'Masked sailor', job: 'Sailor' }, { name: 'NPC doctor', job: 'Doctor' },
+  { name: 'Unassigned', job: '' }, { name: '&lt;img src=x&gt;', job: '&lt;script&gt;inert&lt;/script&gt;' },
+] }, {}, {});
+assert.ok(crewClassicMarkup.indexOf('Masked sailor') < crewClassicMarkup.indexOf('NPC doctor'));
+assert.ok(crewClassicMarkup.includes('&lt;img src=x&gt;'));
+assert.ok(crewClassicMarkup.includes('&lt;script&gt;inert&lt;/script&gt;'));
+assert.ok(!crewClassicMarkup.includes('<img'));
+assert.ok(!crewClassicMarkup.includes('<script>'));
+assert.ok(!crewClassicMarkup.includes('null'));
+assert.ok(renderCrewClassic({ crew: [] }, {}, {}).includes('No crew are listed.'));
 const errors = [];
 const console = new VirtualConsole(); console.on('jsdomError', error => errors.push(error.message));
 const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading... <a id="tgui-legacy">Classic</a></p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
@@ -38,7 +54,13 @@ try {
   await update('warehouse_book.tmpl', { items: [{ name: '&lt;img src=x onerror=alert(1)&gt;', amount: 1 }] });
   assert.ok(w.document.body.textContent.includes('<img src=x onerror=alert(1)>'));
   assert.equal(w.document.querySelectorAll('img').length, 0);
+  await update('crew_log.tmpl', { crew: [{ name: 'Fictional sailor', job: 'Sailor' }, { name: '&lt;script&gt;inert&lt;/script&gt;', job: '' }] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Crew log"] tbody tr').length, 2);
+  assert.ok(w.document.body.textContent.includes('Fictional sailor'));
+  assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write('PASS: real bootstrap and production bundle complete ready/snapshot/ack, reject stale generation, render ten routes, dispatch/block actions, escape data and invoke fallback\n');
+  process.stdout.write('PASS: real bootstrap and production bundle complete ready/snapshot/ack, reject stale generation, render ten routes plus Crew Log, compile classic fallback, dispatch/block actions, escape data and invoke fallback\n');
 } finally { w.close(); }

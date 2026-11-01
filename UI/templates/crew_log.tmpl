@@ -1,0 +1,14 @@
+<div class="item_list">
+	<h3>Crew Log</h3>
+	<p>Snapshot from the crew log book. Use the book again to refresh.</p>
+	{{if data.crew && data.crew.length}}
+		<table style="width:100%" aria-label="Crew log">
+			<thead><tr><th scope="col" style="text-align:left">Name</th><th scope="col" style="text-align:right">Job</th></tr></thead>
+			<tbody>{{for data.crew}}
+				<tr><th scope="row" style="text-align:left">{{:value.name}}</th><td style="text-align:right">{{:value.job}}</td></tr>
+			{{/for}}</tbody>
+		</table>
+	{{else}}
+		<p>No crew are listed.</p>
+	{{/if}}
+</div>
