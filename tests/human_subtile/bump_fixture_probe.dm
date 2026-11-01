@@ -18,13 +18,25 @@ var/global/fixture_bump_assertions = 0
 	fixture_bump_setup["ready_usage"] = world.tick_usage
 	fixture_bump_assert(world.tick_lag == 0.5 && world.time > fixture_bump_setup["startup_time"] && isnum(world.tick_usage) && world.tick_usage >= 0 && world.tick_usage < 100, "bump_ready")
 	fixture_bump_rows = list()
-	for (var/name in list("human_active", "animal_active", "human_idle", "animal_idle"))
+	for (var/name in list("human_blocked", "animal_active", "human_idle", "animal_idle"))
 		fixture_bump_rows += list(fixture_bump_case_run(name))
 	fixture_bump_assert(fixture_bump_rows.len == 4, "bump_case_count")
 
 /proc/fixture_bump_case_run(name)
 	fixture_bump_case = name
-	fixture_bump_assert(name in list("human_active", "animal_active", "human_idle", "animal_idle"), "bump_case_name")
+	// A setup failure must not expose the previous case's trace as this case.
+	fixture_bump_running = FALSE
+	fixture_bump_human = null
+	fixture_bump_animal = null
+	fixture_bump_events = list()
+	fixture_bump_human_admissions = list()
+	fixture_bump_animal_admissions = list()
+	fixture_bump_collision_id = 0
+	fixture_bump_frame_next = 0
+	fixture_bump_human_frame = null
+	fixture_bump_animal_frame = null
+	fixture_bump_overflow = FALSE
+	fixture_bump_assert(name in list("human_blocked", "animal_active", "human_idle", "animal_idle"), "bump_case_name")
 	var/mob/living/human/subtile_fixture/bump_probe/H = new(locate(10, 10, 1))
 	var/mob/living/simple_animal/goat/bump_probe/A = new(locate(11, 10, 1))
 	fixture_bump_assert(H && A && !H.client && !A.client && !H.stat && !A.stat, "bump_fresh_actors")
@@ -36,11 +48,6 @@ var/global/fixture_bump_assertions = 0
 	A.wander = FALSE
 	fixture_bump_human = H
 	fixture_bump_animal = A
-	fixture_bump_events = list()
-	fixture_bump_human_admissions = list()
-	fixture_bump_animal_admissions = list()
-	fixture_bump_collision_id = 0
-	fixture_bump_overflow = FALSE
 	fixture_bump_assert(H.density && A.density && H.human_subtile_shape() && A.npc_subtile_shape(), "bump_shape")
 	fixture_bump_assert(!H.riding && !H.riding_mob && !H.buckled && !A.ride && !A.rider && !A.buckled && !H.pulling && !H.pulledby && !A.pulling && !A.pulledby, "bump_unlinked")
 	fixture_bump_assert(H.canmove && A.canmove && !H.restrained() && !A.restrained() && !H.now_pushing && !A.now_pushing && (!H.grab_list || !H.grab_list.len) && (!H.grabbed_by || !H.grabbed_by.len) && (!A.grab_list || !A.grab_list.len) && (!A.grabbed_by || !A.grabbed_by.len), "bump_ordinary_eligibility")
@@ -51,7 +58,7 @@ var/global/fixture_bump_assertions = 0
 			fixture_bump_assert(T && !T.density, "bump_clear_floor")
 			for (var/atom/movable/M in T)
 				fixture_bump_assert(M == H || M == A || !M.density, "bump_clear_contents")
-	var/active = (name == "human_active" || name == "animal_active")
+	var/active = (name == "human_blocked" || name == "animal_active")
 	var/list/call_state = list("done" = FALSE, "result" = null)
 	var/start = world.time
 	var/deadline
@@ -61,8 +68,8 @@ var/global/fixture_bump_assertions = 0
 		A.npc_subtile_enabled = TRUE
 		A.npc_subtile_species_enabled = TRUE
 		A.npc_subtile_recovery_enabled = TRUE
-		if (name == "human_active")
-			// Real pulse movement creates a gap with a fractional animal offset.
+		if (name == "human_blocked")
+			// Real pulse movement creates an owned fractional animal offset.
 			// The human is already next to the goat; the goat moves east away.
 			fixture_bump_observe("prime_before", A, H)
 			fixture_bump_assert(A.npc_subtile_species_walk("direction", null, 4, EAST), "bump_goat_prime_admission")
@@ -78,6 +85,7 @@ var/global/fixture_bump_assertions = 0
 			fixture_bump_observe("prime_after", A, H)
 			spawn(0)
 				call_state["result"] = H.SelfMove(get_step(H, EAST), EAST, world.time + 20)
+				fixture_bump_observe("human_call_return", H, A)
 				call_state["done"] = TRUE
 		else
 			spawn(0)
@@ -99,14 +107,23 @@ var/global/fixture_bump_assertions = 0
 		deadline = world.time + 12
 		while (!fixture_bump_collision_id && world.time < deadline && !fixture_bump_overflow)
 			sleep(world.tick_lag)
-		fixture_bump_assert(fixture_bump_collision_id == 1, "bump_goat_collision")
+		fixture_bump_observe("collision_checkpoint", A, H)
+		fixture_bump_assert(fixture_bump_collision_id >= 1 && fixture_bump_collision_id <= 2, "bump_goat_collision")
 		fixture_bump_observe("animal_stop_before", A, H)
 		A.npc_subtile_stop_wild_walk()
 		fixture_bump_observe("animal_stop_after", A, H)
 	deadline = world.time + 28
 	while ((!fixture_bump_collision_id || !call_state["done"]) && world.time < deadline && !fixture_bump_overflow)
 		sleep(world.tick_lag)
-	fixture_bump_assert(fixture_bump_collision_id == 1 && call_state["done"] && !fixture_bump_overflow, "bump_collision_and_completion")
+	fixture_bump_observe("completion_checkpoint", H, A)
+	fixture_bump_assert(fixture_bump_collision_id >= 1 && fixture_bump_collision_id <= 2 && call_state["done"] && !fixture_bump_overflow, "bump_collision_and_completion")
+	if (name == "animal_active")
+		var/list/impact
+		for (var/list/event in fixture_bump_events)
+			if (event["kind"] == "collision" && event["collision_id"] == 1)
+				impact = event
+				break
+		fixture_bump_assert(impact && impact["human_active"] && impact["human_offset_owned"] && (impact["human_sx"] || impact["human_sy"]), "bump_collision_requires_human_partial")
 	deadline = world.time + 10
 	while ((H.human_subtile_transaction || A.npc_subtile_transaction) && world.time < deadline)
 		sleep(world.tick_lag)

@@ -7,7 +7,7 @@ fixture until the real recorder and exact staged source have been reviewed.
 import math
 import re
 
-CASES = ('human_active', 'animal_active', 'human_idle', 'animal_idle')
+CASES = ('human_blocked', 'animal_active', 'human_idle', 'animal_idle')
 MAX_EVENTS = 512
 SCOPE = 'human-goat ordinary bump; headless authority adapter; no wildlife activation'
 
@@ -19,6 +19,50 @@ def require(condition, message):
 
 def flag(value, expected):
     return type(value) in (int, bool) and value == int(expected)
+
+
+def validate_collision_lifecycle(events, mover):
+    collisions = [e for e in events if e.get('kind') == 'collision']
+    require(1 <= len(collisions) <= 2, 'collision count')
+    require(all(type(e.get('collision_id')) is int for e in collisions) and
+            [e.get('collision_id') for e in collisions] == list(range(1, len(collisions) + 1)), 'collision ids')
+    first = collisions[0]
+    frame = first.get('move_frame')
+    require(type(frame) is int and frame > 0, 'collision move frame')
+    fields = ('actor_lifetime', 'move_frame', 'human_x', 'human_y', 'human_sx', 'human_sy',
+              'animal_x', 'animal_y', 'animal_sx', 'animal_sy', 'human_admission',
+              'human_admission_epoch', 'animal_admission', 'animal_tx_generation')
+    require(first.get('actor_lifetime') == mover and
+            all(all(e.get(k) == first.get(k) for k in fields) for e in collisions), 'collision frame identity')
+    opened = [e for e in events if e.get('kind') == ('human_move_before' if mover == 1 else 'animal_move_before')
+              and e.get('move_frame') == frame]
+    closed = [e for e in events if e.get('kind') == ('human_move_after' if mover == 1 else 'animal_move_after')
+              and e.get('move_frame') == frame]
+    require(len(opened) == len(closed) == 1 and opened[0]['ordinal'] < first['ordinal'] <= collisions[-1]['ordinal'] < closed[0]['ordinal'], 'collision outside move')
+    require(sum(e.get('kind') == 'deferred_entry' for e in events) == len(collisions) and
+            sum(e.get('kind') in ('deferred', 'deferred_reject') for e in events) == len(collisions),
+            'unmatched callback outcomes')
+    admitted = []
+    for collision in collisions:
+        cid = collision['collision_id']
+        entries = [e for e in events if e.get('kind') == 'deferred_entry' and e.get('collision_id') == cid]
+        accepts = [e for e in events if e.get('kind') == 'deferred' and e.get('collision_id') == cid]
+        rejects = [e for e in events if e.get('kind') == 'deferred_reject' and e.get('collision_id') == cid]
+        require(len(entries) == 1 and len(accepts) + len(rejects) == 1 and collision['ordinal'] < entries[0]['ordinal'] and
+                entries[0].get('actor_lifetime') == mover, 'callback lifecycle')
+        entry = entries[0]
+        detail = entry.get('detail')
+        require(type(detail) is dict and (detail.get('yes') is None or flag(detail.get('yes'), True) or flag(detail.get('yes'), False)) and
+                (flag(detail.get('now_pushing'), True) or flag(detail.get('now_pushing'), False)) and
+                (flag(detail.get('has_loc'), True) or flag(detail.get('has_loc'), False)), 'deferred state')
+        eligible = bool(detail.get('yes')) and not bool(detail['now_pushing']) and bool(detail['has_loc'])
+        outcome = (accepts or rejects)[0]
+        require(entries[0]['ordinal'] < outcome['ordinal'] and outcome.get('actor_lifetime') == mover and
+                bool(accepts) == eligible and (not rejects or outcome.get('detail') == detail), 'deferred gate mismatch')
+        if accepts:
+            admitted.append(outcome)
+    require(len(admitted) == 1 and admitted[0]['collision_id'] == 1, 'admitted collision count')
+    return first, admitted[0]
 
 
 def human_position(event):
@@ -185,17 +229,51 @@ def validate_row(row, candidate):
         require(type(at) in (int, float) and math.isfinite(at) and at >= previous, 'time')
         require(type(event.get('actor_lifetime')) is int and event['actor_lifetime'] in (1, 2), 'event actor lifetime')
         previous = at
-    collisions = [e for e in events if e.get('kind') == 'collision']
-    deferred = [e for e in events if e.get('kind') == 'deferred']
-    require(len(collisions) == 1 and len(deferred) == 1 and
-            collisions[0]['ordinal'] < deferred[0]['ordinal'], 'collision lifecycle')
-    collision = collisions[0]
     expected_mover = 1 if case.startswith('human_') else 2
-    require(collision['actor_lifetime'] == expected_mover and type(collision.get('collision_id')) is int and
-            type(deferred[0].get('collision_id')) is int and deferred[0]['collision_id'] == collision['collision_id'] == 1,
-            'collision identity')
+    collision, deferred = validate_collision_lifecycle(events, expected_mover)
     require(flag(row.get('overflow'), False) and flag(row.get('quiesced'), True), 'terminal')
-    if active:
+    if case == 'human_blocked':
+        tx = collision.get('human_admission')
+        require(type(tx) is int and tx > 0 and type(collision.get('human_admission_epoch')) is int and collision.get('human_admission_epoch') == 1 and
+                flag(collision.get('human_active'), True) and flag(collision.get('human_offset_owned'), False) and
+                collision.get('human_sx') == collision.get('human_sy') == 0 and
+                flag(collision.get('animal_offset_owned'), True) and
+                bool(collision.get('animal_sx') or collision.get('animal_sy')), 'blocked admission and goat offset')
+        calls = [e for e in events if e.get('kind') == 'human_call_return']
+        require(len(calls) == 1 and calls[0]['ordinal'] > collision['ordinal'] and
+                flag(calls[0].get('human_active'), False), 'blocked admission not retired')
+        require(not any(e.get('kind') in ('human_completed', 'human_living_completed') for e in events),
+                'blocked movement paid completion')
+        require(sum(e.get('kind') == 'human_move_before' for e in events) == 1, 'blocked movement repeated')
+        started = next(e for e in events if e.get('kind') == 'human_move_before')
+        require(type(started.get('human_admission')) is int and started['human_admission'] == tx and
+                type(started.get('human_admission_epoch')) is int and started['human_admission_epoch'] == 1 and
+                observed_position(started, 'human') == observed_position(collision, 'human'), 'blocked movement admission')
+        branch = [e for e in events if e.get('kind') == 'swap_branch' and e.get('collision_id') == 1]
+        legs = [e for e in events if e.get('kind') == 'legacy_swap_leg_before' and e.get('collision_id') == 1]
+        require(len(branch) == 1 and len(legs) == (0 if candidate else 2), 'blocked swap branch')
+        if candidate:
+            require(flag(deferred.get('latched_guard'), True), 'latched guard')
+            origin = (observed_position(collision, 'human'), observed_position(collision, 'animal'))
+            released = False
+            for event in events[collision['ordinal']-1:]:
+                require((observed_position(event, 'human'), observed_position(event, 'animal')) == origin and
+                        flag(event.get('human_offset_owned'), False) and
+                        flag(event.get('animal_offset_owned'), True) and
+                        event.get('animal_generation') == collision.get('animal_generation'), 'blocked offset integrity')
+                if flag(event.get('human_active'), False):
+                    released = True
+                    require(event.get('human_admission') is None and event.get('human_admission_epoch') is None, 'blocked release identity')
+                else:
+                    require(not released and flag(event.get('human_active'), True) and
+                            type(event.get('human_admission')) is int and event['human_admission'] == tx and
+                            type(event.get('human_admission_epoch')) is int and event['human_admission_epoch'] == 1, 'blocked admission changed')
+            require(not any(e.get('kind') in ('legacy_swap_leg_before', 'legacy_push_before') for e in events), 'blocked displacement')
+            require(events[-1].get('kind') == 'terminal' and flag(events[-1].get('human_active'), False), 'blocked terminal')
+            result = row.get('legacy_result')
+            require(type(result) is dict and all(result.get(role + '_' + part) == events[-1].get(role + '_' + part)
+                    for role in ('human', 'animal') for part in ('x', 'y', 'sx', 'sy')), 'blocked terminal position mismatch')
+    elif active:
         tx = collision.get('human_admission')
         require(type(tx) is int and tx > 0 and type(collision.get('human_admission_epoch')) is int and
                 collision['human_admission_epoch'] == 1 and
@@ -266,7 +344,7 @@ def validate_row(row, candidate):
                 require(event.get('kind') not in ('human_pulse', 'human_move_before'),
                         'unrequested later human movement')
         if candidate:
-            require(flag(deferred[0].get('latched_guard'), True), 'latched guard')
+            require(flag(deferred.get('latched_guard'), True), 'latched guard')
             require(not any(e.get('kind') in ('legacy_swap_leg_before', 'legacy_push_before') and
                             e.get('collision_id') == 1 for e in events), 'protected displacement')
             validate_candidate_after_impact(row, collision, terminals[0])

@@ -14,6 +14,15 @@ def baseline():
 
 
 class StageControls(unittest.TestCase):
+    def test_failed_setup_cannot_reuse_previous_case_trace(self):
+        fixture = (ROOT / 'tests/human_subtile/bump_fixture_probe.dm').read_text(encoding='utf-8')
+        case = fixture.split('/proc/fixture_bump_case_run(name)', 1)[1]
+        reset = case.index('fixture_bump_events = list()')
+        self.assertLess(reset, case.index('fixture_bump_assert('))
+        self.assertLess(reset, case.index('var/mob/living/human/'))
+        self.assertIn('fixture_bump_observe("collision_checkpoint"', case)
+        self.assertIn('fixture_bump_observe("completion_checkpoint"', case)
+
     def test_both_exact_preimages_and_instrumented_leg_counts(self):
         original = baseline()
         candidate = build_guard.build(build_guard.OLD.read_bytes(), build_guard.WALKER.read_bytes(),
@@ -22,7 +31,11 @@ class StageControls(unittest.TestCase):
             result = stage_observer.stage(raw, variant).decode()
             with self.subTest(candidate=variant):
                 self.assertEqual(result.count('fixture_bump_observe("collision"'), 1)
+                self.assertEqual(result.count('fixture_bump_observe("deferred_entry"'), 1)
+                self.assertEqual(result.count('fixture_bump_observe("deferred_reject"'), 1)
                 self.assertEqual(result.count('fixture_bump_observe("deferred"'), 1)
+                self.assertIn('if ((!( yes ) || now_pushing) || !loc)', result)
+                self.assertIn('list("yes" = yes, "now_pushing" = !!now_pushing, "has_loc" = !!loc)', result)
                 self.assertEqual(result.count('fixture_bump_observe("legacy_swap_leg_before"'), 4)
                 self.assertEqual(result.count('fixture_bump_observe("legacy_swap_leg_after"'), 4)
                 self.assertEqual(result.count('fixture_bump_observe("legacy_push_before"'), 1)

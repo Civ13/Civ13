@@ -13,8 +13,8 @@ PROBE = 'tests/human_subtile/probe.dm'
 OBSERVER = 'tests/human_subtile/bump_fixture_observer.dm'
 SCENARIO = 'tests/human_subtile/bump_fixture_probe.dm'
 FIXTURE_BLOBS = {
-    OBSERVER: 'd133a83d4dc40fd372aa0c2e5a204e05d826900e',
-    SCENARIO: '27c69dd0c9de5015eb13157d186ffc1e10fbbea6',
+    OBSERVER: 'ecd5c7d13ec6b3f77f2c3f27932fde0466b74102',
+    SCENARIO: '0975dba12d5116ff1a894c27354be01ec0d37dbc',
 }
 
 

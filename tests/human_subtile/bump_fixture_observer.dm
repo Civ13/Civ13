@@ -6,6 +6,9 @@ var/global/list/fixture_bump_events = list()
 var/global/list/fixture_bump_human_admissions = list()
 var/global/list/fixture_bump_animal_admissions = list()
 var/global/fixture_bump_collision_id = 0
+var/global/fixture_bump_frame_next = 0
+var/global/fixture_bump_human_frame = null
+var/global/fixture_bump_animal_frame = null
 var/global/mob/living/human/subtile_fixture/bump_probe/fixture_bump_human
 var/global/mob/living/simple_animal/goat/bump_probe/fixture_bump_animal
 
@@ -35,6 +38,7 @@ var/global/mob/living/simple_animal/goat/bump_probe/fixture_bump_animal
 		fixture_bump_animal_admissions[N] = animal_admission
 	fixture_bump_events += list(list("kind" = label, "time" = world.time,
 		"ordinal" = fixture_bump_events.len + 1, "collision_id" = tracked_id,
+		"move_frame" = subject == H ? fixture_bump_human_frame : fixture_bump_animal_frame,
 		"latched_guard" = latched_guard, "detail" = detail,
 		"actor_lifetime" = subject == H ? 1 : 2,
 		"human_admission" = admission, "human_admission_epoch" = admission,
@@ -56,9 +60,13 @@ var/global/mob/living/simple_animal/goat/bump_probe/fixture_bump_animal
 		fixture_bump_observe(label, fixture_bump_animal, fixture_bump_human)
 
 /mob/living/human/subtile_fixture/bump_probe/Move()
+	var/previous_frame = fixture_bump_human_frame
+	fixture_bump_frame_next++
+	fixture_bump_human_frame = fixture_bump_frame_next
 	fixture_bump_observe("human_move_before", src, fixture_bump_animal)
 	. = ..()
 	fixture_bump_observe("human_move_after", src, fixture_bump_animal)
+	fixture_bump_human_frame = previous_frame
 
 /mob/living/human/subtile_fixture/bump_probe/human_movement_completed()
 	fixture_bump_observe("human_completed", src, fixture_bump_animal)
@@ -69,9 +77,13 @@ var/global/mob/living/simple_animal/goat/bump_probe/fixture_bump_animal
 	return ..()
 
 /mob/living/simple_animal/goat/bump_probe/Move()
+	var/previous_frame = fixture_bump_animal_frame
+	fixture_bump_frame_next++
+	fixture_bump_animal_frame = fixture_bump_frame_next
 	fixture_bump_observe("animal_move_before", src, fixture_bump_human)
 	. = ..()
 	fixture_bump_observe("animal_move_after", src, fixture_bump_human)
+	fixture_bump_animal_frame = previous_frame
 
 /mob/living/human/subtile_fixture/bump_probe/Bumped(atom/movable/AM)
 	fixture_bump_observe("bumped_before", src, AM)

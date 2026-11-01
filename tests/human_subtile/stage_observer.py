@@ -18,10 +18,15 @@ def stage(raw, candidate):
     start = text.index('/mob/living/Bump(atom/movable/AM, yes)')
     end = text.index('/proc/swap_density_check', start)
     prefix, body, suffix = text[:start], text[start:end], text[end:]
-    anchor = '\tspawn(0)\n\t\tif ((!( yes ) || now_pushing) || !loc)'
+    anchor = '\tspawn(0)\n\t\tif ((!( yes ) || now_pushing) || !loc)\n\t\t\treturn'
     if body.count(anchor) != 1:
         raise ValueError('impact anchor')
-    body = body.replace(anchor, '\tvar/fixture_bump_id = fixture_bump_observe("collision", src, AM)\n' + anchor, 1)
+    state = 'list("yes" = yes, "now_pushing" = !!now_pushing, "has_loc" = !!loc)'
+    body = body.replace(anchor, '\tvar/fixture_bump_id = fixture_bump_observe("collision", src, AM, null, null, null, ' + state + ')\n'
+                        '\tspawn(0)\n\t\tfixture_bump_observe("deferred_entry", src, AM, fixture_bump_id, null, null, ' + state + ')\n'
+                        '\t\tif ((!( yes ) || now_pushing) || !loc)\n'
+                        '\t\t\tfixture_bump_observe("deferred_reject", src, AM, fixture_bump_id, null, null, ' + state + ')\n'
+                        '\t\t\treturn', 1)
     anchor = '\t\tnow_pushing = TRUE\n\t\tif (istype(AM, /mob/living))'
     if body.count(anchor) != 1:
         raise ValueError('deferred anchor')
