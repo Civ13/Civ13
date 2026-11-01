@@ -53,6 +53,18 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_telephone_recipients_are_bounded_and_keep_existing_dependency_coverage(self):
+        suite = ci.SUITES['telephone_recipients']
+        self.assertEqual(suite['files'], ('tests/telephone/test_recipients.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'telephone_recipients'}
+        self.assertEqual(self.selected(['tests/telephone/test_recipients.py']), expected)
+        self.assertEqual(self.selected(['tests/telephone/fixtures/telephone_before.txt']), expected)
+        prior = {name: spec for name, spec in ci.SUITES.items() if name != 'telephone_recipients'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', prior):
+                previous = self.selected([shared])
+            self.assertEqual(self.selected([shared]), previous | {'telephone_recipients'})
+
     def test_vehicle_hud_registration_is_bounded_and_preserves_shared_fallback(self):
         suite = ci.SUITES['vehicle_hud']
         self.assertEqual(suite['files'], ('tests/vehicle_hud/test_driver_axis.py',))
