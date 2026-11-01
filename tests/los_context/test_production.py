@@ -493,5 +493,466 @@ class InventoryHoverName(unittest.TestCase):
         I.screen_loc='9,9';S.screen_loc=I.screen_loc;m.W.process();self.assertTrue(m.W.maptext)
 
 
-if __name__ == '__main__':
-    unittest.main()
+class BlockingTreeSurface(unittest.TestCase):
+    """Actual DM arithmetic/control flow with Python list/storage adapters only."""
+    def model(self, source=None):
+        import re, math
+        from types import SimpleNamespace as N
+        from collections import defaultdict
+        source = source or CORE.read_text()
+        spec=importlib.util.spec_from_file_location('surface_adapter',CORE.parents[3]/'tests/save_movement/source_adapter.py')
+        adapter=importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
+        class Atom(N):
+            __eq__=object.__eq__
+            __hash__=object.__hash__
+        class Cells(_offline.DMList):
+            def __iadd__(self,value):
+                self.extend(value) if isinstance(value,list) else self.append(value)
+                return self
+        env=projected_geometry(source)
+        _offline.project(source,'/proc/los_surface_shadow(',env)
+        _offline.project(source,'/proc/los_target_blocked(',env)
+        for name in ['los_bucket_index','los_bucket_lower','los_bucket_upper']:
+            env['round']=math.floor;_offline.project(source,'/proc/'+name+'(',env)
+        env.update(typed_iter=lambda xs,kind:xs if xs is not None else [], list=lambda *xs:Cells(xs),owner_map=lambda:defaultdict(lambda:None),
+            inclusive_range=lambda lo,hi:range(int(lo),int(hi)+1),bin_key=lambda x,y:f'{x},{y}',
+            unit_starts=lambda lo,hi:[lo+i for i in range(max(0,math.ceil(hi-lo)))],
+            new_bounds=lambda:N(cells=None),new_surface=lambda:N(),
+            isnull=lambda x:x is None, ismovable=lambda x:x.type.startswith('/obj/'),
+            isturf=lambda x:x.type.startswith('/turf/'),ishuman=lambda x:x.type.startswith('/mob/'),
+            istype=lambda x,t:x.type.startswith(t),config=None,
+            root_tree_family=lambda x:x.type.startswith(('/obj/structure/wild/tree','/obj/structure/wild/jungle','/obj/structure/wild/palm')),
+            LOS_DENY=0,LOS_WORLD=1,LOS_SURFACE=2,LOS_SELF=4,id=id)
+        snapshot=N(blockers=Cells(),blocker_bins=None,tree_bounds=None,presentation=True,eye_x=0,eye_y=0,eye_z=1,
+                   radius_x=15,radius_y=15,revision=1,policy='fresh',clear_footprints=defaultdict(lambda:None))
+        def method(name,args,fields):
+            declaration='/datum/los_snapshot/proc/'+name
+            text=fragment(source,declaration+'(')
+            head,body=text.split('\n',1)
+            for field in fields:
+                body=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,body)
+            body=body.replace('for (var/bx = min_x, bx <= max_x, bx++)','for (var/bx in inclusive_range(min_x, max_x))')
+            body=body.replace('for (var/by = min_y, by <= max_y, by++)','for (var/by in inclusive_range(min_y, max_y))')
+            body=body.replace('"[bx],[by]"','bin_key(bx, by)')
+            body=body.replace('self.tree_bounds = list()','self.tree_bounds = owner_map()')
+            body=body.replace('var/datum/los_tree_bounds/R = new','var/datum/los_tree_bounds/R = new_bounds()')
+            body=body.replace('var/datum/los_surface_cell/C = new','var/datum/los_surface_cell/C = new_surface()')
+            body=body.replace('for (var/cell_left = left, cell_left < right, cell_left++)','for (var/cell_left in unit_starts(left, right))')
+            body=body.replace('for (var/cell_bottom = bottom, cell_bottom < top, cell_bottom++)','for (var/cell_bottom in unit_starts(bottom, top))')
+            f=adapter.project(head+'\n'+body,declaration,'self, '+args,env)
+            setattr(snapshot,name,lambda *a:f(snapshot,*a))
+        method('surface_blockers','tx, ty',['blocker_bins','blockers'])
+        method('surface_edge_visible','face, edge_low, edge_high, axis, direction, tile_x, tile_y, target, candidates',[])
+        method('capture_tree_bounds','A',['tree_bounds','eye_x','eye_y'])
+        method('owned_surface_cells','target',['tree_bounds','radius_x','radius_y'])
+        method('tree_surface_visible','target, tx, ty, tile_x, tile_y',['owned_surface_cells','surface_blockers','surface_edge_visible','radius_x','radius_y'])
+        snapshot.blocks_target=lambda tx,ty,tile_x,tile_y,opaque:any(env['los_target_blocked'](tx,ty,b.cell_x,b.cell_y,tile_x,tile_y,b.tile_x,b.tile_y,opaque) for b in snapshot.blockers)
+        body=N(type='/mob/living/human',see_invisible=25)
+        context=N(body=body,revision=1,policy_key=lambda:'fresh')
+        text=fragment(source,'/datum/los_context/proc/decision_snapshot(')
+        declaration,body_text=text.split('\n',1)
+        for field in ['body','revision','policy_key']:
+            body_text=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,body_text)
+        body_text=body_text.replace('/mob/living/human',repr('/mob/living/human'))
+        body_text=body_text.replace('target.opacity ? LOS_SURFACE : LOS_WORLD','(LOS_SURFACE if target.opacity else LOS_WORLD)')
+        body_text=body_text.replace('"[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"','(target.opacity, target_tile_x, target_tile_y, tx, ty)')
+        body_text=body_text.replace(r'"|tree-surface-\ref[target]"','("tree-surface", id(target))')
+        decision=adapter.project(declaration+'\n'+body_text,'/datum/los_context/proc/decision_snapshot','self, target, S, operation="visual"',env)
+        def target(x,y,opaque=True,kind='/obj/structure/wild/tree'):
+            return Atom(type=kind,x=x,y=y,z=1,step_x=0,step_y=0,opacity=opaque,alpha=255,
+                     bound_x=0,bound_y=0,bound_width=32,bound_height=64 if kind.endswith('/jungle') else 32,
+                     invisibility=0,gcDestroyed=False,gc_destroyed=False,loc=N(type='/turf/floor'))
+        def cell(x,y,owner=None,tile=None,owners=1):
+            if isinstance(owner,Atom):snapshot.capture_tree_bounds(owner)
+            return N(cell_x=x,cell_y=y,tile_x=(tile or (x,y))[0],tile_y=(tile or (x,y))[1],surface_owner=owner,owners=owners)
+        def capture(objects,opaque_tiles=(),presentation=True):
+            # Engine boundary: native contents lists every strictly overlapping
+            # turf, including partial overlaps. Execute the entire DM capture.
+            snapshot.tree_bounds=None;snapshot.blockers=Cells();snapshot.clear_footprints.clear()
+            body.x=10;body.y=10;body.z=1;body.step_x=body.step_y=0
+            def locate(x,y,z):
+                t=Atom(type='/turf/floor',x=x,y=y,z=z,opacity=(x,y) in opaque_tiles)
+                t.contents=[a for a in objects if a.x+(a.step_x+a.bound_x)/32 < x+1 and a.x+(a.step_x+a.bound_x+a.bound_width)/32 > x
+                            and a.y+(a.step_y+a.bound_y)/32 < y+1 and a.y+(a.step_y+a.bound_y+a.bound_height)/32 > y]
+                return t
+            env.update(locate=locate,world=N(maxx=40,maxy=40),new_snapshot=lambda:snapshot,new_cell=lambda:N(),
+                       typed_iter=lambda xs,kind:getattr(xs,'contents',xs) if xs is not None else [])
+            snapshot.index_blockers=lambda:None
+            context.viewport=lambda:Cells([31,31])
+            text=fragment(source,'/datum/los_context/proc/capture(')
+            head,code=text.split('\n',1)
+            for field in ['body','revision','policy_key','viewport']:
+                code=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,code)
+            code=code.replace('var/datum/los_snapshot/S = new','var/datum/los_snapshot/S = new_snapshot()')
+            code=re.sub(r'(var/datum/los_cell/\w+) = new',r'\1 = new_cell()',code)
+            code=re.sub(r'for \(var/(c[xy]) = (.*), \1 <= (.*), \1\+\+\)',r'for (var/\1 in inclusive_range(\2, \3))',code)
+            f=adapter.project(head+'\n'+code,'/datum/los_context/proc/capture','self, presentation=False',env)
+            return f(context,presentation)
+        return N(S=snapshot,env=env,target=target,cell=cell,context=context,
+                 capture=capture,
+                 decision=lambda t,op='visual_tree':decision(context,t,snapshot,op))
+
+    def test_exposed_blocking_tree_renders_while_ground_entities_and_reads_stay_denied(self):
+        m=self.model();tree=m.target(2,1)
+        m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]
+        self.assertTrue(m.S.blocks_target(2,1,2,1,True))  # Old center-ray omission.
+        self.assertEqual(m.decision(tree),2)
+        for operation in ['visual','hover','examine']:
+            self.assertEqual(m.decision(tree,operation),0,operation)
+        self.assertEqual(m.decision(m.target(2,1,False,'/turf/floor'),'visual'),0)
+        self.assertEqual(m.decision(m.target(4,2,False,'/obj/item'),'visual'),0)
+        m.S.presentation=False;self.assertEqual(m.decision(tree),0)
+        m.S.presentation=True;m.S.policy='stale';self.assertEqual(m.decision(tree),0)
+
+    def test_enclosed_surface_unowned_cells_and_multiple_owners(self):
+        m=self.model();tree=m.target(3,0)
+        m.S.blockers=[m.cell(3,0,tree),m.cell(1,0)]
+        self.assertFalse(m.S.tree_surface_visible(tree,3,0,3,0))
+        self.assertEqual(m.decision(tree),0)
+        tree=m.target(2,1);m.S.tree_bounds=None;m.S.blockers=[m.cell(2,1,object()),m.cell(1,1)]
+        self.assertFalse(m.S.tree_surface_visible(tree,2,1,2,1))
+        m.S.blockers[0].owners=2;m.S.tree_bounds=None
+        self.assertFalse(m.S.tree_surface_visible(tree,2,1,2,1))
+        m.S.capture_tree_bounds(tree)
+        self.assertTrue(m.S.tree_surface_visible(tree,2,1,2,1))
+        m.S.tree_bounds=None;m.S.blockers=[m.cell(3,0,tree),m.cell(1,.5,tile=(1,1)),m.cell(1,-.5,tile=(1,-1))]
+        self.assertFalse(m.S.tree_surface_visible(tree,3,0,3,0))
+
+    def test_two_tile_jungle_cannot_hide_behind_its_own_nearer_blocker_cell(self):
+        m=self.model();tree=m.target(0,-3,kind='/obj/structure/wild/jungle')
+        m.S.blockers=[m.cell(0,-3,tree),m.cell(0,-2,tree)]
+        self.assertTrue(m.S.blocks_target(0,-3,0,-3,True))
+        self.assertEqual(m.decision(tree),2)
+        self.assertEqual(m.decision(m.target(0,-4,False,'/obj/item'),'visual'),0)
+        self.assertEqual(m.decision(m.target(0,-3,False,'/turf/floor'),'visual'),0)
+        self.assertEqual(m.decision(tree,'hover'),0)
+        index=m.S.tree_bounds;self.assertEqual(len(index[tree].cells),2)
+        m.S.clear_footprints.clear();self.assertEqual(m.decision(tree),2)
+        self.assertIs(m.S.tree_bounds,index)
+        m.S.blockers.append(m.cell(0,-1));m.S.tree_bounds=None;m.S.clear_footprints.clear()
+        self.assertEqual(m.decision(tree),0)
+        capture=fragment(CORE.read_text(),'/datum/los_context/proc/capture(')
+        self.assertIn('S.capture_tree_bounds(AM)',capture)
+
+    def test_foreign_co_owner_still_blocks_tree_surface(self):
+        m=self.model();tree=m.target(0,-3,kind='/obj/structure/wild/jungle')
+        root=m.cell(0,-3,tree);front=m.cell(0,-1,tree,owners=2)
+        m.S.blockers=[root,front]
+        self.assertEqual(m.decision(tree),0)
+        front.owners=1;m.S.clear_footprints.clear()
+        self.assertEqual(m.decision(tree),2)
+
+    def test_real_capture_uses_physical_overhang_not_shifted_full_overlap_cells(self):
+        m=self.model();tree=m.target(10,13);tree.step_x=2
+        S=m.capture([tree],[(10,12)])
+        self.assertEqual(len([b for b in S.blockers if b.surface_owner is tree]),2)
+        cells=S.owned_surface_cells(tree)
+        self.assertEqual([(c.cell_x,c.cell_y,c.half_x,c.half_y) for c in cells],[(.0625,3,.5,.5)])
+        self.assertEqual(m.decision(tree),0)
+        self.assertEqual(m.decision(tree,'hover'),0)
+        # Omission witness: the fabricated second full cell grants visibility.
+        cells.append(type(cells[0])(cell_x=1.0625,cell_y=3,half_x=.5,half_y=.5))
+        S.clear_footprints.clear();self.assertEqual(m.decision(tree),2)
+        tree=m.target(10,7,kind='/obj/structure/wild/jungle');tree.step_y=2
+        S=m.capture([tree]);self.assertEqual(len(S.owned_surface_cells(tree)),2)
+        self.assertEqual(len([b for b in S.blockers if b.surface_owner is tree]),3)
+        S=m.capture([tree],presentation=False);self.assertIsNone(S.tree_bounds)
+
+    def test_partial_rectangles_clipping_and_stale_bound_records(self):
+        m=self.model();tree=m.target(2,1);tree.bound_width=17;tree.bound_height=9
+        m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]
+        cells=m.S.owned_surface_cells(tree)
+        self.assertEqual((cells[0].half_x,cells[0].half_y),(17/64,9/64))
+        for field in ['step_x','bound_x','bound_y','bound_width','bound_height']:
+            old=getattr(tree,field);setattr(tree,field,old+2)
+            self.assertIsNone(m.S.owned_surface_cells(tree),field)
+            setattr(tree,field,old)
+        tree=m.target(15,0);tree.bound_width=64;m.S.capture_tree_bounds(tree)
+        cells=m.S.owned_surface_cells(tree)
+        self.assertTrue(all(c.cell_x+c.half_x<=15.5 for c in cells))
+        self.assertEqual(sum(c.half_x*2 for c in cells),1)
+
+    def test_root_outside_view_needs_a_captured_owned_blocker_inside_view(self):
+        m=self.model();tree=m.target(0,-16,kind='/obj/structure/wild/jungle')
+        m.S.blockers=[m.cell(0,-16,tree),m.cell(0,-15,tree)]
+        self.assertEqual(m.decision(tree),2)
+        self.assertEqual(m.decision(tree,'hover'),0)
+        self.assertEqual(m.decision(m.target(0,-16,False,'/turf/floor'),'visual'),0)
+        m=self.model();tree=m.target(0,-17,kind='/obj/structure/wild/jungle')
+        m.S.blockers=[m.cell(0,-17,tree),m.cell(0,-16,tree)]
+        self.assertEqual(m.decision(tree),0)
+        m=self.model();tree=m.target(2,1);m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]
+        tree.x=100  # A stale owner record cannot admit the moved root.
+        self.assertEqual(m.decision(tree),0)
+
+    def test_cache_and_surface_admission_omission_controls(self):
+        for mode in ['normal','surface-omitted','cache-omitted']:
+            source=CORE.read_text()
+            if mode=='surface-omitted':source=source.replace('if (tree_presentation && S.tree_surface_visible','if (FALSE && S.tree_surface_visible',1)
+            if mode=='cache-omitted':source=source.replace('if (tree_presentation)\n\t\tfootprint_key','if (FALSE)\n\t\tfootprint_key',1)
+            m=self.model(source);tree=m.target(2,1);m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]
+            self.assertEqual(m.decision(tree),0 if mode=='surface-omitted' else 2)
+            self.assertEqual(m.decision(tree,'hover'),2 if mode=='cache-omitted' else 0)
+
+    def test_offset_blocker_ownership_and_existing_visibility_guards(self):
+        for step in [-16,-8,-2,0,2,8,16,30]:
+            m=self.model();tree=m.target(2,1);tree.step_x=step;tx=2+step/32
+            m.S.blockers=[m.cell(tx,1,tree,(2,1)),m.cell(1,1)]
+            self.assertEqual(m.decision(tree),2)
+            self.assertEqual(m.decision(tree,'examine'),0)
+        for field,value in [('alpha',0),('invisibility',100),('gcDestroyed',True),
+                            ('gc_destroyed',True),('z',2),('x',100)]:
+            m=self.model();tree=m.target(2,1);m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]
+            setattr(tree,field,value);self.assertEqual(m.decision(tree),0,field)
+        m=self.model();tree=m.target(2,1);m.S.blockers=[m.cell(2,1,tree),m.cell(0,0)]
+        self.assertFalse(m.S.tree_surface_visible(tree,2,1,2,1))
+
+    def oracle(self,tx,ty,blockers,half_x=.5,half_y=.5):
+        from fractions import Fraction as Q
+        tx,ty=Q(tx),Q(ty)
+        half_x,half_y=Q(half_x),Q(half_y)
+        if abs(tx)<=half_x and abs(ty)<=half_y:return True
+        for axis,sign,center,side,depth_half,side_half in [(0,1,tx,ty,half_x,half_y),(0,-1,-tx,ty,half_x,half_y),(1,1,ty,tx,half_y,half_x),(1,-1,-ty,tx,half_y,half_x)]:
+            if center<=depth_half:continue
+            face=center-depth_half;lo=side-side_half;hi=side+side_half;points={lo,hi}
+            for x,y in blockers:
+                depth,across=(Q(y)*sign,Q(x)) if axis else (Q(x)*sign,Q(y))
+                near=max(Q(0),depth-Q(1,2));far=min(face,depth+Q(1,2))
+                for d in [near,far]:
+                    if d>0:
+                        for v in [across-Q(1,2),across+Q(1,2)]:
+                            p=face*v/d
+                            if lo<p<hi:points.add(p)
+            points=sorted(points)
+            for a,b in zip(points,points[1:]):
+                sidepoint=(a+b)/2
+                point=(sidepoint,face*sign) if axis else (face*sign,sidepoint)
+                entries=[reference_entry(0,0,*point,Q(x),Q(y)) for x,y in blockers]
+                if not any(t is not None and t<1 for t in entries):return True
+        return False
+
+    def test_rational_visibility_oracle_with_offsets_and_binned_flat_parity(self):
+        import random
+        from collections import defaultdict
+        m=self.model();rng=random.Random(20261101);cases=0
+        for _ in range(1800):
+            tx,ty=[rng.randrange(-56,57)/16 for _ in range(2)]
+            if abs(tx)<=.5 and abs(ty)<=.5:continue
+            tree=m.target(tx,ty);tile=(20,20)
+            coordinates=[(rng.randrange(-48,49)/16,rng.randrange(-48,49)/16) for _ in range(4)]
+            m.S.tree_bounds=None;m.S.blockers=[m.cell(tx,ty,tree,tile)]+[m.cell(x,y,tile=(30+i,30+i)) for i,(x,y) in enumerate(coordinates)]
+            expected=self.oracle(tx,ty,coordinates)
+            m.S.blocker_bins=None
+            self.assertEqual(m.S.tree_surface_visible(tree,tx,ty,*tile),expected,(tx,ty,coordinates))
+            bins=defaultdict(lambda:None)
+            for b in m.S.blockers:
+                key=f'{m.env["los_bucket_index"](b.cell_x)},{m.env["los_bucket_index"](b.cell_y)}'
+                if bins[key] is None:bins[key]=[]
+                bins[key].append(b)
+            m.S.blocker_bins=bins
+            self.assertEqual(m.S.tree_surface_visible(tree,tx,ty,*tile),expected,(tx,ty,coordinates))
+            cases+=1
+        self.assertGreater(cases,1700)
+
+    def test_partial_physical_edges_match_rational_oracle(self):
+        import random
+        rng=random.Random(3450)
+        for _ in range(500):
+            m=self.model();tree=m.target(rng.randrange(-5,6),rng.randrange(-5,6))
+            tree.bound_width=rng.randrange(1,33);tree.bound_height=rng.randrange(1,33)
+            tree.step_x=rng.randrange(-16,17);tree.step_y=rng.randrange(-16,17)
+            coordinates=[(rng.randrange(-48,49)/16,rng.randrange(-48,49)/16) for _ in range(4)]
+            m.S.blockers=[m.cell(tree.x,tree.y,tree)]+[m.cell(x,y) for x,y in coordinates]
+            C=m.S.owned_surface_cells(tree)[1]
+            expected=self.oracle(C.cell_x,C.cell_y,coordinates,C.half_x,C.half_y)
+            self.assertEqual(m.S.tree_surface_visible(tree,0,0,tree.x,tree.y),expected,
+                             (C,coordinates))
+
+    def test_surface_work_is_cached_and_linear_and_scoped_to_tree_presenters(self):
+        m=self.model();tree=m.target(2,1);m.S.blockers=[m.cell(2,1,tree),m.cell(1,1)]+[m.cell(10,i) for i in range(50)]
+        calls=[];original=m.env['los_surface_shadow']
+        m.env['los_surface_shadow']=lambda *a:(calls.append(a),original(*a))[1]
+        self.assertEqual(m.decision(tree),2);count=len(calls)
+        self.assertLessEqual(count,2*len(m.S.blockers))
+        for _ in range(10):self.assertEqual(m.decision(tree),2)
+        self.assertEqual(len(calls),count)
+        root=CORE.parents[3]
+        presenter=(root/'code/modules/visibility/root_tree_presenter.dm').read_text()
+        masks=(root/'code/modules/visibility/los_presenter.dm').read_text()
+        self.assertIn('decision_snapshot(T, S, "visual_tree")',presenter)
+        self.assertIn('root_tree_family(A) && A.opacity ? "visual_tree" : "visual"',masks)
+        self.assertIn('I.appearance_flags &= ~TILE_BOUND',presenter)
+        self.assertIn('var/datum/los_snapshot/S = capture()',fragment(CORE.read_text(),'/datum/los_context/proc/decision('))
+
+
+# Native-composition fallback source contracts (engine boundaries injected).
+import importlib.util
+from pathlib import Path
+import re
+from types import SimpleNamespace as N
+import unittest
+
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE = ROOT / 'code/modules/visibility/los_presenter.dm'
+spec = importlib.util.spec_from_file_location('fallback_source', ROOT / 'tests/save_movement/source_adapter.py')
+adapter = importlib.util.module_from_spec(spec);spec.loader.exec_module(adapter)
+spec = importlib.util.spec_from_file_location('fallback_geometry', ROOT / 'tests/los_context/test_offline.py')
+geometry = importlib.util.module_from_spec(spec);spec.loader.exec_module(geometry)
+
+
+class Identity(N):
+    __eq__ = object.__eq__
+    __hash__ = object.__hash__
+
+
+class List:
+    """DM associative/list operations at the engine storage boundary."""
+    def __init__(self, items=()):self.items=list(items);self.assoc={}
+    def __iter__(self):return iter(self.items)
+    def __contains__(self,x):return x in self.items
+    def __getitem__(self,k):return self.assoc.get(k)
+    def __setitem__(self,k,v):
+        if k not in self.items:self.items.append(k)
+        self.assoc[k]=v
+    def __bool__(self):return bool(self.items)
+    def __iadd__(self,x):
+        self.items.extend(x.items if isinstance(x,List) else [x]);return self
+    def __ior__(self,x):
+        for v in x.items if isinstance(x,List) else [x]:
+            if v not in self.items:self.items.append(v)
+        return self
+    def __sub__(self,x):
+        excluded=x.items if isinstance(x,List) else [x]
+        return List(v for v in self.items if v not in excluded)
+    def __isub__(self,x):
+        result=self-x;self.items=result.items
+        self.assoc={k:v for k,v in self.assoc.items() if k in self.items};return self
+    def Copy(self):
+        result=List(self.items);result.assoc=dict(self.assoc);return result
+    def Cut(self):self.items.clear();self.assoc.clear()
+
+
+def atom(x,y,*,tree=False,opaque=False,turf=False):
+    tile=Identity(type='/turf/floor',x=x,y=y,z=1,opacity=False,contents=[],gcDestroyed=False,gc_destroyed=False)
+    a=tile if turf else Identity(type='/obj/structure/wild/tree' if tree else '/obj/item',x=x,y=y,z=1,
+                                loc=tile,step_x=0,step_y=0)
+    a.opacity=opaque;a.gcDestroyed=a.gc_destroyed=False;a.mouse_opacity=2
+    a.plane=0;a.layer=4;a.appearance=Identity(appearance_flags=16,plane=0,layer=4,
+        color='#123456',alpha=200,pixel_x=9,pixel_y=-3,opacity=opaque)
+    return a
+
+
+def model(source=None):
+    source=source or SOURCE.read_text()
+    body=atom(10,10);owner=N(images=List(),root_tree_presenter=None)
+    context=N(body=body,revision=1,policy_key=lambda:'fresh',eligible=lambda:True)
+    presenter=N(owner=owner,context=context,retired=False,dirty=True,
+                images=List(),owned_images=List(),visible_targets=List(),tree_images=List(),tree_appearances=List())
+    owner.los_presenter=presenter;owner.los_context=context
+    outcomes={};grid={};allocations=[]
+    def image(appearance,A):
+        I=Identity(**vars(appearance)) if appearance else Identity(appearance_flags=0)
+        I.loc=A;allocations.append(I);return I
+    env=geometry.projected_geometry()
+    env.update(list=List,image=image,typed_iter=lambda x,t:getattr(x,'contents',x) if x is not None else [],
+        get_turf=lambda a:a if a.type.startswith('/turf/') else a.loc,
+        root_tree_family=lambda a:a.type.startswith('/obj/structure/wild/tree'),
+        ismovable=lambda a:not a.type.startswith('/turf/'),ishuman=lambda a:False,
+        isturf=lambda a:a.type.startswith('/turf/'),istype=lambda a,t:a.type.startswith(t),
+        TILE_BOUND=16,RESET_COLOR=1,RESET_ALPHA=2,RESET_TRANSFORM=4,LOS_DENY=0,
+        world=N(maxx=25,maxy=25,time=1),locate=lambda x,y,z:grid.get((x,y,z)),
+        inclusive_range=lambda lo,hi:range(int(lo),int(hi)+1))
+    fields=list(vars(presenter))+['owns_atom','hidden_image','native_tree_image','withdraw_tree_image','clear_images']
+    def project(name,args):
+        declaration='/datum/los_presenter/proc/'+name
+        text=declaration+'('+args+')\n'+adapter.extract(source,declaration)+'\n'
+        for field in fields:
+            text=re.sub(r'(?<![\w./])'+field+r'\b','self.'+field,text)
+        # Restore qualified proc name if field matching altered the declaration.
+        text=text.replace('/proc/self.','/proc/')
+        text=re.sub(r'\bsrc\b','self',text)
+        for path in ['/obj/screen','/atom/movable/lighting_overlay','/atom/movable/lighting_fullbright']:
+            text=text.replace(path,repr(path))
+        text=text.replace('root_tree_family(A) && A.opacity ? "visual_tree" : "visual"',
+                          '("visual_tree" if root_tree_family(A) and A.opacity else "visual")')
+        text=re.sub(r'for\(var/(c[xy]) = (.*), \1 <= (.*), \1\+\+\)',
+                    r'for(var/\1 in inclusive_range(\2, \3))',text)
+        return adapter.project(text,declaration,'self'+(', '+args if args else ''),env)
+    for name,args in [('withdraw_tree_image','A'),('hidden_image','A'),('native_tree_image','A'),
+                      ('owns_atom','A'),('invalidate','changed=None, possible_opacity=False'),
+                      ('refresh','S=None'),('clear_images',''),('retire','')]:
+        f=project(name,args);setattr(presenter,name,lambda *a,_f=f:_f(presenter,*a))
+    S=N(policy='fresh',revision=1,eye_z=1,radius_x=4,radius_y=4)
+    context.capture=lambda presentation:S
+    context.decision_snapshot=lambda a,s,op:outcomes.get(a,1)
+    def include(A):
+        grid[(A.loc.x,A.loc.y,A.z)]=A.loc;A.loc.contents.append(A)
+    return N(P=presenter,C=owner,V=context,S=S,outcomes=outcomes,grid=grid,include=include,allocations=allocations)
+
+
+class FallbackTreeSource(unittest.TestCase):
+    def test_allowed_copy_identity_light_plane_offsets_and_deduplication(self):
+        m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
+        other=atom(13,11,turf=True);other.contents=[tree];m.grid[(13,11,1)]=other
+        self.assertTrue(m.P.refresh(m.S));I=m.P.tree_images[tree]
+        self.assertIs(I.loc,tree);self.assertEqual(I.appearance_flags,7)
+        self.assertEqual((I.plane,I.layer,I.color,I.alpha),(0,4,'#123456',200))
+        self.assertEqual((I.pixel_x,I.pixel_y,I.mouse_opacity),(0,0,2))
+        self.assertTrue(I.override);self.assertIn(I,m.C.images)
+        self.assertEqual(tree.appearance.appearance_flags,16)
+        self.assertEqual(len([i for i in m.P.owned_images if i.loc is tree]),1)
+        self.assertTrue(m.P.refresh(m.S));self.assertIs(m.P.tree_images[tree],I)
+
+    def test_fallback_denial_opacity_viewport_and_compositor_handoff(self):
+        m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
+        m.P.refresh(m.S);I=m.P.tree_images[tree]
+        m.outcomes[tree]=0;m.P.refresh(m.S)
+        self.assertNotIn(I,m.C.images);mask=m.P.images[tree]
+        self.assertIs(mask.loc,tree);self.assertEqual(mask.mouse_opacity,0)
+        m.outcomes[tree]=2;m.P.refresh(m.S);self.assertNotIn(mask,m.C.images)
+        I=m.P.tree_images[tree];tree.opacity=False
+        m.P.refresh(m.S);self.assertNotIn(I,m.C.images);self.assertIsNone(m.P.tree_images[tree])
+        tree.opacity=True;m.P.refresh(m.S);I=m.P.tree_images[tree]
+        tree.appearance=Identity(**{**vars(tree.appearance),'opacity':False})
+        m.P.refresh(m.S);self.assertIsNot(m.P.tree_images[tree],I)
+        I=m.P.tree_images[tree];m.grid.clear();m.P.refresh(m.S)
+        self.assertNotIn(I,m.C.images);self.assertFalse(m.P.tree_images)
+        m.include(tree);m.P.refresh(m.S);I=m.P.tree_images[tree]
+        m.C.root_tree_presenter=N(retired=False,owns_tree=lambda a:a is tree)
+        m.P.refresh(m.S);self.assertNotIn(I,m.C.images)
+        m.C.root_tree_presenter=None;m.P.refresh(m.S);I=m.P.tree_images[tree]
+        m.V.eligible=lambda:False;m.P.refresh(m.S);self.assertNotIn(I,m.C.images)
+        m.V.eligible=lambda:True;m.P.refresh(m.S);m.P.retire()
+        self.assertFalse(m.C.images);self.assertIsNone(m.C.los_presenter)
+
+    def test_upper_cell_invalidation_is_synchronous_and_per_client(self):
+        m=model();other=model();tree=atom(13,10,tree=True,opaque=True)
+        m.include(tree);other.include(tree);m.P.refresh(m.S);other.P.refresh(other.S)
+        I=m.P.tree_images[tree];other_I=other.P.tree_images[tree]
+        # Door ray misses root footprint, but can conceal a second owned cell.
+        door=atom(11,11);ordinary=atom(10,13);m.include(ordinary);m.P.refresh(m.S)
+        m.P.invalidate(door,True)
+        self.assertIsNone(m.P.tree_images[tree]);self.assertNotIn(I,m.C.images)
+        self.assertIn(m.P.images[tree],m.C.images);self.assertIn(other_I,other.C.images)
+        self.assertIsNone(m.P.images[ordinary])
+        m.P.refresh(m.S);I=m.P.tree_images[tree]
+        m.P.invalidate(atom(11,11))  # Transparent unrelated clutter preserves copy.
+        self.assertIn(I,m.C.images)
+        m.P.invalidate()  # Unknown/viewer context transition withdraws copy.
+        self.assertNotIn(I,m.C.images)
+        m.P.refresh(m.S);m.P.clear_images()
+        self.assertFalse(m.C.images);self.assertFalse(m.P.tree_appearances)
+
+    def test_omission_controls_catch_each_confirmed_fallback_gap(self):
+        source=SOURCE.read_text()
+        m=model(source.replace('I.appearance_flags &= ~TILE_BOUND','I.appearance_flags |= TILE_BOUND'))
+        tree=atom(13,10,tree=True,opaque=True);m.include(tree);m.P.refresh(m.S)
+        self.assertTrue(m.P.tree_images[tree].appearance_flags & 16)
+        start=source.index('\tif(!changed || changed == context.body')
+        end=source.index('\t// Before a blocker write/move',start)
+        m=model(source[:start]+source[end:]);tree=atom(13,10,tree=True,opaque=True)
+        m.include(tree);m.P.refresh(m.S);I=m.P.tree_images[tree]
+        m.P.invalidate(atom(11,11),True);self.assertIn(I,m.C.images)
+
+
+if __name__=='__main__':unittest.main()
