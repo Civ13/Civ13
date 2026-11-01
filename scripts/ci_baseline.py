@@ -25,6 +25,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only riding death and admission projections with inert callbacks.
+    'mount_lifecycle': {'files': ('tests/mount_lifecycle/test_death.py',),
+        'paths': ('tests/mount_lifecycle/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/carbon/human/subtile_movement.dm',
+            'code/modules/persistence/bed_return.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only complete destruction-layer projection; frozen source is data.
     'ladder_cleanup': {'files': ('tests/ladder_cleanup/test_destroy.py',),
         'paths': ('tests/ladder_cleanup/',), 'shared_paths': (
