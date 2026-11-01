@@ -114,11 +114,39 @@ def receipt(mode='candidate', tick=.5):
             for policy in contract.POLICIES for phase in contract.PHASES]
     return {'head': 'a'*40, 'error': None, 'port': 0, 'byond_version': 516, 'byond_build': 1688,
             'scope': contract.SCOPE, 'npc_checks': 0, 'random_rows': rows, 'random_overflow': 0,
+            'random_setup': {'stage':'ready', 'mode':mode, 'mode_is_text':1, 'raw_tick':str(tick),
+                             'tick_is_text':1, 'requested_tick':tick, 'initial_tick':1,
+                             'actual_tick':tick, 'mode_valid':1, 'tick_valid':1, 'original_combined':0},
             'random_partial':rows[-1]['events'], 'random_case':rows[-1]['case'],
             'random_phase_count':len(rows[-1]['events']), 'random_count': sum(len(row['events']) for row in rows)}
 
 
 class ContractTests(unittest.TestCase):
+    def test_setup_diagnostics_are_required_and_input_specific(self):
+        for mode in contract.MODES:
+            for tick in contract.TICKS:
+                good = receipt(mode, tick)
+                contract.validate(good, 'a'*40, mode, tick)
+                for key, value in (('stage', 'before_validation'), ('mode', 'wrong'), ('mode_is_text', 0),
+                                   ('raw_tick', 'wrong'), ('tick_is_text', 0), ('requested_tick', 2),
+                                   ('actual_tick', 2), ('mode_valid', 0), ('tick_valid', 0),
+                                   ('original_combined', None)):
+                    bad = receipt(mode, tick); bad['random_setup'][key] = value
+                    with self.subTest(mode=mode, tick=tick, field=key), self.assertRaises(ValueError):
+                        contract.validate(bad, 'a'*40, mode, tick)
+
+    def test_membership_checks_are_grouped_and_diagnostics_reach_receipt(self):
+        source = (HERE/'random_cadence_fixture.dm').read_text()
+        self.assertIn('var/mode_valid = (mode in list("legacy", "parent", "candidate"))', source)
+        self.assertIn('var/tick_valid = (requested_tick in list(0.5, 1))', source)
+        self.assertIn('fixture_scheduler_assert(mode_valid && tick_valid, "random_mode_tick")', source)
+        self.assertIn('(policy in list("held", "reissue")) && (phase_ticks in list(0, 2))', source)
+        adapter = (HERE/'random_cadence_contract.py').read_text()
+        self.assertIn('"random_setup" = fixture_random_setup', adapter)
+        for field in ('mode_is_text', 'tick_is_text', 'requested_tick', 'initial_tick',
+                      'actual_tick', 'mode_valid', 'tick_valid', 'original_combined'):
+            self.assertIn('"' + field + '"', source)
+
     def test_selector_is_explicit_and_exclusive(self):
         self.assertEqual(contract.selection('random05'), .5)
         self.assertEqual(contract.selection('random10'), 1)

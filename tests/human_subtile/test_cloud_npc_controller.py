@@ -58,6 +58,54 @@ def tar_bytes(entries):
 
 
 class ControllerContracts(unittest.TestCase):
+    def test_random_worker_complete_package_and_narrow_archive_policy(self):
+        # Exercise the actual worker's selection and transport, including both
+        # parents and all three runtime outputs, not a hand-built happy path.
+        names = {'harness-status.json', 'smoke-summary.json'}
+        names.update(f'{prefix}/{name}' for prefix in ('npc-smoke', 'npc-parent')
+                     for name in ('cloud-manifest.json', 'stage/compile-stdout.log', 'stage/compile-stderr.log'))
+        names.update(f'{prefix}/{runtime}/{name}' for prefix, runtime in
+                     (('npc-smoke', 'runtime'), ('npc-parent', 'runtime'), ('npc-parent', 'runtime-wildlife'))
+                     for name in ('receipt.json', 'result.txt', 'port-closed.txt', 'runtime.log',
+                                  'daemon-stdout.log', 'daemon-stderr.log'))
+        names.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout', 'stderr'))
+        self.assertEqual(len(names), 38)
+        self.assertTrue(names <= set(smoke.EVIDENCE_PATHS))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in names:
+                target = root / name; target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((name + '\n').encode())
+            out = io.StringIO()
+            with patch.object(smoke, 'RUN_STATE', {'suite': 'random05'}), contextlib.redirect_stdout(out):
+                smoke.emit_package(root, 'passed', {'samples': 1})
+            log = out.getvalue().encode(); marker = json.loads(log.splitlines()[-1].split(b' ', 1)[1])
+            data = controller.package_from_logs(log, marker, 'random05')
+            self.assertTrue(marker['package']['complete'])
+            with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                self.assertEqual(set(archive.getnames()), names)
+                for name in names:
+                    self.assertEqual(archive.extractfile(name).read(), (name + '\n').encode())
+            with self.assertRaises(RuntimeError):
+                controller.package_from_logs(log, marker)  # other suites retain their old boundary
+        base = [(name, b'x', tarfile.REGTYPE) for name in sorted(names)]
+        for extra in (('npc-parent/runtime/unknown.txt', b'x', tarfile.REGTYPE),
+                      ('../escape', b'x', tarfile.REGTYPE),
+                      ('npc-parent/runtime/receipt.json', b'x', tarfile.REGTYPE),
+                      ('npc-parent/runtime/symlink', b'', tarfile.SYMTYPE)):
+            bad = tar_bytes(base + [extra])
+            expected = {'bytes': len(bad), 'sha256': hashlib.sha256(bad).hexdigest()}
+            with self.subTest(extra=extra[0]), self.assertRaises(RuntimeError):
+                controller.validate_package(bad, expected, 'random05')
+        # The allowlist must reject unknown paths even below the 38-file cap.
+        for badname in ('npc-parent/runtime/unknown.txt', 'npc-smoke/runtime-wildlife/receipt.json',
+                        '../escape'):
+            bad = tar_bytes([('harness-status.json', b'{}', tarfile.REGTYPE),
+                             (badname, b'x', tarfile.REGTYPE)])
+            expected = {'bytes': len(bad), 'sha256': hashlib.sha256(bad).hexdigest()}
+            with self.subTest(badname=badname), self.assertRaises(RuntimeError):
+                controller.validate_package(bad, expected, 'random05')
+
     def test_lossless_transport_of_repeated_manifest_maps_within_existing_limit(self):
         rows={f'code/path/{i:04d}.dm':{'bytes':i+1,'sha256':hashlib.sha256(str(i).encode()).hexdigest()}
               for i in range(3823)}

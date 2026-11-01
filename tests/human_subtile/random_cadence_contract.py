@@ -200,7 +200,7 @@ def adapt(out, manifest, current):
         (source, '\tmaxx = 18\n\tmaxy = 14', '\tmaxx = 65\n\tmaxy = 65'),
         (source, '\t\t\tnpc_subtile_fixture()', '\t\t\tfixture_random_main()'),
         (source, '"scope" = "actual human/codec; headless authority adapter"',
-         '"scope" = "' + SCOPE + '", "random_rows" = fixture_random_rows, "random_partial" = fixture_random_events, "random_case" = fixture_random_case, "random_count" = fixture_random_count, "random_phase_count" = fixture_random_phase_count, "random_overflow" = fixture_random_overflow'),
+         '"scope" = "' + SCOPE + '", "random_setup" = fixture_random_setup, "random_rows" = fixture_random_rows, "random_partial" = fixture_random_events, "random_case" = fixture_random_case, "random_count" = fixture_random_count, "random_phase_count" = fixture_random_phase_count, "random_overflow" = fixture_random_overflow'),
     ]
     for path in ('code/game/mob/living/simple_animal/hostile/mosquitoes.dm',
                  'code/game/mob/living/simple_animal/hostile/vampirebat.dm'):
@@ -434,6 +434,13 @@ def validate(receipt, head, mode, tick):
             (receipt.get('byond_version'), receipt.get('byond_build')) == (516, 1688) and
             receipt.get('scope') == SCOPE and receipt.get('npc_checks') == 0 and receipt.get('random_overflow') in (0, False) and
             type(receipt.get('random_count')) is int and 0 < receipt['random_count'] <= MAX_EVENTS, 'receipt identity')
+    setup = receipt.get('random_setup')
+    require(isinstance(setup, dict) and setup.get('stage') == 'ready' and setup.get('mode') == mode and
+            setup.get('mode_is_text') in (1, True) and setup.get('tick_is_text') in (1, True) and
+            setup.get('raw_tick') == str(tick) and setup.get('requested_tick') == tick and
+            setup.get('actual_tick') == tick and finite(setup.get('initial_tick')) and
+            setup.get('mode_valid') in (1, True) and setup.get('tick_valid') in (1, True) and
+            setup.get('original_combined') in (0, 1, False, True), 'setup diagnostics')
     rows = receipt.get('random_rows')
     require(isinstance(rows, list) and len(rows) == 8, 'case count')
     require(isinstance(rows[-1],dict) and isinstance(rows[-1].get('events'),list) and

@@ -162,7 +162,7 @@ def retire(docker,cid,name,owner,head,log_path=None):
     return {'absent':True,'before':before,'after':after,'logs':logs}
 
 
-def validate_package(data, expected):
+def validate_package(data, expected, suite='smoke'):
     require(len(data) == expected['bytes'] <= MAX_PACKAGE and hashlib.sha256(data).hexdigest() == expected['sha256'],
             'Evidence package identity mismatch')
     with tarfile.open(fileobj=io.BytesIO(data), mode='r:') as inner:
@@ -179,7 +179,21 @@ def validate_package(data, expected):
         allowed.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout','stderr'))
         allowed.update('npc-smoke/geometry/'+name for name in ('receipt.json','result.txt','port-closed.txt',
             'runtime.log','daemon-stdout.log','daemon-stderr.log'))
-        require(len(entries) <= 32 and all(x.isfile() and not x.name.startswith('/') and
+        limit = 32
+        if suite in ('random05', 'random10'):
+            # These are the only files the three-mode random worker can emit:
+            # one candidate runtime and two separate parent runtimes.
+            allowed = {'harness-status.json', 'smoke-summary.json'}
+            allowed.update(f'{prefix}/{name}' for prefix in ('npc-smoke', 'npc-parent')
+                           for name in ('cloud-manifest.json', 'stage/compile-stdout.log', 'stage/compile-stderr.log'))
+            allowed.update(f'{prefix}/{runtime}/{name}'
+                           for prefix, runtime in (('npc-smoke', 'runtime'), ('npc-parent', 'runtime'),
+                                                   ('npc-parent', 'runtime-wildlife'))
+                           for name in ('receipt.json', 'result.txt', 'port-closed.txt', 'runtime.log',
+                                        'daemon-stdout.log', 'daemon-stderr.log'))
+            allowed.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout', 'stderr'))
+            limit = len(allowed)  # 38; fixed names, with no additional evidence classes.
+        require(len(entries) <= limit and all(x.isfile() and not x.name.startswith('/') and
                 '..' not in Path(x.name).parts and x.name in allowed and x.size <= 4*1024**2 for x in entries)
                 and sum(x.size for x in entries) <= MAX_PACKAGE, 'Unsafe evidence archive')
         names=[x.name for x in entries]
@@ -187,7 +201,7 @@ def validate_package(data, expected):
     return data
 
 
-def package_from_logs(log, marker):
+def package_from_logs(log, marker, suite='smoke'):
     """Reject partial, reordered, duplicated or oversized log-carried evidence."""
     package = marker.get('package') or {}
     count = package.get('parts')
@@ -209,7 +223,7 @@ def package_from_logs(log, marker):
     data = decoder.decompress(compressed, max_length=MAX_PACKAGE+1)
     require(decoder.eof and not decoder.unused_data and len(data) <= MAX_PACKAGE,
             'Incomplete, oversized or trailing compressed evidence')
-    return validate_package(data, package)
+    return validate_package(data, package, suite)
 
 
 def validate_resource_states(summary, status, labels=('vendor','wildlife')):
@@ -703,7 +717,7 @@ def main():
             report['scratch_observation']=scratch
             # Capture complete logs after the marker, including if PID 1 already exited.
             _,outlog,errlog=docker.call(['logs',cid],timeout=5)
-            evidence=package_from_logs(outlog+b'\n'+errlog,marker)
+            evidence=package_from_logs(outlog+b'\n'+errlog,marker,args.suite)
             (out/'harness-evidence.tar').write_bytes(evidence)
             report['evidence']={'bytes':len(evidence),'sha256':hashlib.sha256(evidence).hexdigest()}
             report['outcome']=marker.get('outcome')

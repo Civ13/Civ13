@@ -15,6 +15,7 @@ var/global/fixture_random_policy
 var/global/fixture_random_calls = 0
 var/global/fixture_random_case
 var/global/fixture_random_life_depth = 0
+var/global/list/fixture_random_setup = list()
 
 /proc/fixture_random_observe(label, mob/living/simple_animal/A, detail = null, datum/npc_subtile_transaction/T = null)
 	if (!fixture_random_running || !(A in fixture_scheduler_test_subjects))
@@ -110,7 +111,7 @@ var/global/fixture_random_life_depth = 0
 
 /proc/fixture_random_phase(animal_type, enabled, policy, phase_ticks)
 	fixture_scheduler_assert(animal_type in list(/mob/living/simple_animal/mosquito/scheduler_probe/random_probe, /mob/living/simple_animal/vampirebatblack/scheduler_probe/random_probe), "random_type")
-	fixture_scheduler_assert(policy in list("held", "reissue") && phase_ticks in list(0, 2), "random_case")
+	fixture_scheduler_assert((policy in list("held", "reissue")) && (phase_ticks in list(0, 2)), "random_case")
 	fixture_scheduler_assert(!processScheduler && !fixture_random_running && !living_mob_list.len, "random_fresh_phase")
 	var/mob/living/simple_animal/A = new animal_type(locate(33, 33, 1))
 	var/mob/living/human/subtile_fixture/scheduler_target/H = new(locate(33, 34, 1))
@@ -184,10 +185,25 @@ var/global/fixture_random_life_depth = 0
 
 /proc/fixture_random_main()
 	var/mode = world.params["random_mode"]
-	var/requested_tick = text2num(world.params["random_tick"])
-	fixture_scheduler_assert(mode in list("legacy", "parent", "candidate") && requested_tick in list(0.5, 1), "random_mode_tick")
+	var/raw_tick = world.params["random_tick"]
+	var/requested_tick = text2num(raw_tick)
+	var/mode_valid = (mode in list("legacy", "parent", "candidate"))
+	var/tick_valid = (requested_tick in list(0.5, 1))
+	// Record the original expression, separately from both intended predicates,
+	// so a failure receipt identifies parsing, input, or readback independently.
+	var/original_combined = (mode in list("legacy", "parent", "candidate") && requested_tick in list(0.5, 1))
+	fixture_random_setup = list("stage" = "before_validation", "mode" = copytext("[mode]", 1, 33),
+		"mode_is_text" = istext(mode), "raw_tick" = copytext("[raw_tick]", 1, 17),
+		"tick_is_text" = istext(raw_tick), "requested_tick" = requested_tick,
+		"initial_tick" = world.tick_lag, "actual_tick" = world.tick_lag,
+		"mode_valid" = !!mode_valid, "tick_valid" = !!tick_valid, "original_combined" = !!original_combined)
+	fixture_scheduler_assert(mode_valid && tick_valid, "random_mode_tick")
+	fixture_random_setup["stage"] = "before_tick_assignment"
 	world.tick_lag = requested_tick
+	fixture_random_setup["actual_tick"] = world.tick_lag
+	fixture_random_setup["stage"] = "after_tick_assignment"
 	fixture_scheduler_assert(world.tick_lag == requested_tick, "random_tick_readback")
+	fixture_random_setup["stage"] = "ready"
 	fixture_random_rows = list()
 	for (var/policy in list("held", "reissue"))
 		for (var/phase_ticks in list(0, 2))
