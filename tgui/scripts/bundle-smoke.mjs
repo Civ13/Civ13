@@ -3,6 +3,23 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
+import vm from 'node:vm';
+// Exercise the actual retained NanoUI compiler and this reader's fallback.
+const shipClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', shipClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), shipClassicContext);
+const renderShipClassic = shipClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/ship_stocks.tmpl', import.meta.url), 'utf8'));
+const shipClassicMarkup = renderShipClassic({ stocks: [
+  { label: 'Wood', amount: 0, unit: 'logs' }, { label: 'Water', amount: 12.5, unit: 'units' },
+  { label: '<script>fictional</script>', amount: '<img src=x>', unit: '<b>units</b>' },
+] }, {}, {});
+assert.ok(shipClassicMarkup.includes('>0 logs<'));
+assert.ok(shipClassicMarkup.includes('>12.5 units<'));
+assert.ok(shipClassicMarkup.includes('&#60;script&#62;fictional'));
+assert.ok(!shipClassicMarkup.includes('<script>'));
+assert.ok(!shipClassicMarkup.includes('<img'));
+assert.ok(!shipClassicMarkup.includes('<b>'));
+assert.ok(renderShipClassic({ stocks: [] }, {}, {}).includes('No stock snapshot is available.'));
 const errors = [];
 const console = new VirtualConsole(); console.on('jsdomError', error => errors.push(error.message));
 const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading... <a id="tgui-legacy">Classic</a></p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
@@ -38,7 +55,17 @@ try {
   await update('warehouse_book.tmpl', { items: [{ name: '&lt;img src=x onerror=alert(1)&gt;', amount: 1 }] });
   assert.ok(w.document.body.textContent.includes('<img src=x onerror=alert(1)>'));
   assert.equal(w.document.querySelectorAll('img').length, 0);
+  await update('ship_stocks.tmpl', { stocks: [
+    { label: 'Treasury', amount: 125, unit: 'reales' },
+    { label: 'Wood', amount: 0, unit: 'logs' },
+    { label: 'Water', amount: 12.5, unit: 'units' },
+  ] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Ship stocks"] tbody tr').length, 3);
+  assert.ok(w.document.body.textContent.includes('0 logs'));
+  assert.ok(w.document.body.textContent.includes('12.5 units'));
+  assert.ok(w.document.body.textContent.includes('Use the book again to refresh.'));
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write('PASS: real bootstrap and production bundle complete ready/snapshot/ack, reject stale generation, render ten routes, dispatch/block actions, escape data and invoke fallback\n');
+  process.stdout.write('PASS: real bootstrap and production bundle complete ready/snapshot/ack, reject stale generation, render ten routes plus Ship Stocks, compile classic ledger, dispatch/block actions, escape data and invoke fallback\n');
 } finally { w.close(); }
