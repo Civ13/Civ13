@@ -47,10 +47,16 @@ jobs:
       MANIFEST_SHA: ${{ inputs.manifest_sha256 }}
       AUTHORIZED_UNTIL: ${{ inputs.authorized_until }}
       EXECUTION_APPROVED: ${{ inputs.execution_approved && 'true' || 'false' }}
-      PREPARED: ${{ runner.temp }}/mount-prepared-${{ github.run_id }}-${{ github.run_attempt }}
-      TOOLCHAIN: ${{ runner.temp }}/mount-toolchain
-      OUTPUT: ${{ runner.temp }}/mount-execution-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
+      - name: Bind private runner paths in supported step context
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$RUNNER_TEMP"
+          printf '%s\n' \
+            "PREPARED=$RUNNER_TEMP/mount-prepared-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            "TOOLCHAIN=$RUNNER_TEMP/mount-toolchain" \
+            "OUTPUT=$RUNNER_TEMP/mount-execution-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
       - name: Require immutable dispatch implementation and source
         shell: bash
         run: |
@@ -116,7 +122,7 @@ jobs:
             --expected-head "$SOURCE_SHA" --manifest-sha256 "$MANIFEST_SHA" \
             --authorized-until "$AUTHORIZED_UNTIL"
       - name: Retain review and all execution evidence including failures
-        if: always()
+        if: always() && env.PREPARED != '' && env.OUTPUT != ''
         timeout-minutes: 3
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
