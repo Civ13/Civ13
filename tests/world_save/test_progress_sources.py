@@ -124,7 +124,8 @@ class ProgressSources(unittest.TestCase):
         anchor = '\tif(world.tick_usage >= 80)\n\t\tsleep(world.tick_lag)\n'
         self.assertEqual(body.count(anchor), 1)
         generated, _ = progress.instrument(saving, '')
-        expected = 6 if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving else 4
+        tile = '/map_storage/proc/inspect_human_saved_tile_and_links(' in saving
+        expected = (5 if tile else 6) if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving else 4
         self.assertEqual(generated.count('world_save_progress_sleep('), expected)
         for changed in ('', anchor + anchor,
                         anchor.replace('>= 80', '>= 81'),
@@ -140,7 +141,8 @@ class ProgressSources(unittest.TestCase):
         if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' not in saving:
             self.skipTest('Source has no experimental human handoff')
         generated, _ = progress.instrument(saving, '')
-        boundaries = (
+        tile = '/map_storage/proc/inspect_human_saved_tile_and_links(' in saving
+        boundaries = (('/map_storage/proc/classify_human_save_entry(', '/map_storage/proc/capture_human_save_root('),) if tile else (
             ('/map_storage/proc/classify_human_save_entry(', '/map_storage/proc/capture_human_save_roster_positions('),
             ('/map_storage/proc/capture_human_save_roster_positions(', '/map_storage/proc/capture_human_save_root('),
         )
@@ -163,6 +165,19 @@ class ProgressSources(unittest.TestCase):
         saving = self.inputs['saving'][1].decode().replace('\r\n', '\n')
         if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' not in saving:
             self.skipTest('Source has no experimental human index')
+        if '/map_storage/proc/inspect_human_saved_tile_and_links(' in saving:
+            start = '/map_storage/proc/encode_saved_value_contents('
+            end = '/map_storage/proc/encode_saved_contents('
+            prefix, body = saving.split(start)
+            body, suffix = body.split(end)
+            anchor = '\tTICK_CHECK\n'
+            self.assertEqual(body.count(anchor), 1)
+            generated, _ = progress.instrument(saving, '')
+            self.assertEqual(generated.count('\tWORLD_SAVE_PROGRESS_TICK_CHECK\n'), 1)
+            moved = prefix + start + body.replace(anchor, '\tOTHER_CHECK\n', 1) + end + suffix + '\n/proc/extra_tick()\n\tTICK_CHECK\n'
+            with self.assertRaisesRegex(ValueError, 'saved-value tick check'):
+                progress.instrument(moved, '')
+            return
         start = '/map_storage/proc/build_human_obstruction_index('
         end = '/map_storage/proc/validate_human_saved_geometry('
         prefix, body = saving.split(start)

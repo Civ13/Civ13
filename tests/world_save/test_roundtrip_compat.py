@@ -209,9 +209,18 @@ class RoundtripCompatibilityTests(unittest.TestCase):
             self.assertIn('\tvar/map_storage/storage = map_storage\n', loadmap)
             self.assertIn('\t\tstorage.begin_zone_restore(operation)\n', loadmap)
             self.assertLess(loadmap.index('storage.begin_zone_restore(operation)'), loadmap.index('storage.ClearMap()'))
-            self.assertEqual('operation.validate_human_direct_restores()' in loadmap, enabled)
+            self.assertLess(loadmap.index('storage.validate_world_save()'), loadmap.index('storage.ClearMap()'))
+            self.assertNotIn('operation.validate_human_direct_restores()', loadmap)
+            loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+            contents = _adapter.extract(loading, '/map_storage/proc/load_world_contents', defines=defines)
+            self.assertEqual('H.human_saved_tile_final_clear()' in contents, enabled)
+            if enabled:
+                self.assertLess(contents.index('ob.after_load()'), contents.index('H.human_saved_tile_final_clear()'))
         with self.assertRaisesRegex(AssertionError, 'Unknown conditional symbol'):
-            _adapter.extract(functions.replace('#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL', '#ifdef UNREVIEWED_HUMAN_MODE'),
+            altered = functions.replace('\t\tstorage.begin_zone_restore(operation)\n',
+                                        '#ifdef UNREVIEWED_HUMAN_MODE\n\t\tstorage.begin_zone_restore(operation)\n#endif\n', 1)
+            self.assertNotEqual(altered, functions)
+            _adapter.extract(altered,
                              '/datum/controller/gameticker/proc/loadmap')
         pins = json.loads((HERE / 'character_return/inputs.json').read_text())['reference_sha256']
         self.assertEqual(len(pins), 20)

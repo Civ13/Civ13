@@ -199,17 +199,24 @@ jobs:
           git diff --cached --quiet
           python3 -B -c 'import os,sys; sys.path.insert(0,"tests/movement_save_chunks"); import human_spatial_stage as s; s.review_scope()["sha256"] == os.environ["REVIEWED_SCOPE"] or sys.exit("review scope mismatch")'
           python3 -B -m unittest discover -s tests/movement_save_chunks -p 'test_human*.py' -v
-      - name: Install reviewed toolchain and compile the full game
-        timeout-minutes: 18
-        env:
-          BYOND_MAJOR: '516'
-          BYOND_MINOR: '1688'
-          BYOND_ARCHIVE_SOURCE: repository-release
+      - name: Provision pinned runtime without compiling the game
+        timeout-minutes: 10
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/human-spatial-meta"
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/human-spatial-meta/bootstrap.json"' EXIT
           test "$(python3 scripts/byond_toolchain.py field version)" = 516.1688
-          bash scripts/travis_pre_byond.sh
+          sudo timeout -k 5 30 dpkg --add-architecture i386
+          apt_acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get "${apt_acquire[@]}" update
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" install -y --no-install-recommends python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+          mkdir BYOND
+          timeout -k 5 65 python3 -B scripts/byond_toolchain.py download --platform linux --output BYOND/pinned.zip --source repository-release > "$RUNNER_TEMP/human-spatial-meta/byond-download.json"
+          timeout -k 5 30 unzip -q BYOND/pinned.zip -d BYOND
+          test -x BYOND/byond/bin/DreamMaker
+          test -x BYOND/byond/bin/DreamDaemon
+          python3 -B scripts/byond_runtime.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" > "$RUNNER_TEMP/human-spatial-meta/byond-runtime.json"
       - name: Run approved synthetic writer, reader and rejection controls
         timeout-minutes: 15
         env:
@@ -233,6 +240,7 @@ jobs:
           name: human-spatial-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             .ci/compile/
+            ${{ runner.temp }}/human-spatial-meta/*.json
             ${{ runner.temp }}/human-spatial-evidence/run/*.json
             ${{ runner.temp }}/human-spatial-evidence/run/stage/compile-*.log
             ${{ runner.temp }}/human-spatial-evidence/run/stage/compile-supervision.json

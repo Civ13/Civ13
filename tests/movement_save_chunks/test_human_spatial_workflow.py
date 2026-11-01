@@ -17,10 +17,14 @@ class WorkflowContracts(unittest.TestCase):
     def test_external_review_binding_precedes_bootstrap_and_reaches_driver(self):
         text = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
         body = text.split('  human-spatial:\n', 1)[1].split('  human-scale:\n', 1)[0]
-        self.assertLess(body.index('review_scope()['), body.index('bash scripts/travis_pre_byond.sh'))
+        self.assertLess(body.index('review_scope()['), body.index('dpkg --add-architecture i386'))
         self.assertIn('test "$REVIEWED_HEAD" = "$EVENT_HEAD"', body)
         self.assertIn('--expected-head "$REVIEWED_HEAD" --expected-scope-sha256 "$REVIEWED_SCOPE"', body)
-        self.assertIn('BYOND_ARCHIVE_SOURCE: repository-release', body)
+        self.assertIn('--source repository-release', body)
+        self.assertIn('scripts/byond_runtime.py --byond-bin', body)
+        for forbidden in ('travis_pre_byond.sh', 'make here', 'build-crafting-atlas.py', 'DreamMaker -max_errors 0 civ13.dme'):
+            self.assertNotIn(forbidden, body)
+        self.assertIn('human-spatial-meta/*.json', body)
         self.assertIn('timeout-minutes: 40', body)
 
 

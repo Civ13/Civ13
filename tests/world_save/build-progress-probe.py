@@ -19,10 +19,21 @@ def replace_once(source, before, after):
 def instrument(saving, functions, phase_profile=False):
     bounded = '/map_storage/proc/save_work_check()\n' in saving
     spatial = bounded and 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving
-    expected_ticks = 4 if spatial else (1 if bounded else 2)
+    tile = spatial and '/map_storage/proc/inspect_human_saved_tile_and_links(' in saving
+    expected_ticks = (1 if tile else 4) if spatial else (1 if bounded else 2)
     if saving.count('\tTICK_CHECK\n') != expected_ticks:
         raise ValueError('Expected the production serializer tick checks')
-    if spatial:
+    if tile:
+        start = '/map_storage/proc/encode_saved_value_contents('
+        end = '/map_storage/proc/encode_saved_contents('
+        if saving.count(start) != 1 or saving.count(end) != 1:
+            raise ValueError('Expected one bounded saved-value boundary')
+        value_body = saving.split(start, 1)[1].split(end, 1)[0]
+        if value_body.count('\tTICK_CHECK\n') != 1:
+            raise ValueError('Expected one saved-value tick check')
+        if '/map_storage/proc/build_human_obstruction_index(' in saving or '/map_storage/proc/validate_human_saved_geometry(' in saving:
+            raise ValueError('Unexpected legacy human geometry index')
+    elif spatial:
         start = '/map_storage/proc/build_human_obstruction_index('
         end = '/map_storage/proc/validate_human_saved_geometry('
         if saving.count(start) != 1 or saving.count(end) != 1:
@@ -48,7 +59,7 @@ def instrument(saving, functions, phase_profile=False):
         if spatial:
             # Instrument the saver-side late enrollment and group wait. Actors
             # never wait in these seams; reject missing or duplicated anchors.
-            boundaries = (
+            boundaries = (('/map_storage/proc/classify_human_save_entry(', '/map_storage/proc/capture_human_save_root('),) if tile else (
                 ('/map_storage/proc/classify_human_save_entry(', '/map_storage/proc/capture_human_save_roster_positions('),
                 ('/map_storage/proc/capture_human_save_roster_positions(', '/map_storage/proc/capture_human_save_root('),
             )
