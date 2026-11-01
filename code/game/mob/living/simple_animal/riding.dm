@@ -86,6 +86,8 @@
 	if (can_ride && !isnull(rider))
 		rider.visible_message("<span class='danger'>[rider] falls off from \the [src]!</span>", "<span class='danger'>You fall off from \the [src]!</span>")
 		rider.riding = FALSE
+		if (rider.riding_mob == src)
+			rider.riding_mob = null
 		rider.SpinAnimation(5,1)
 		rider.forceMove(locate(x+1,y,z))
 		rider.Weaken(5)

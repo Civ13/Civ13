@@ -1,3 +1,5 @@
+**Historical design record:** This describes the superseded exact-offset prototype at the stated baseline. Its zero-acceptance and no-native-test statements are historical, not the current tile-only implementation. See `docs/human-save-motion-candidate.md` for the current contract and dated evidence.
+
 # Human detached-capture contract (proposal, disabled)
 
 This is an offline design and executable model for review, not a production

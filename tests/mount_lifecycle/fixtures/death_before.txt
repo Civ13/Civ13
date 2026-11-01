@@ -1,0 +1,14 @@
+// Frozen from master fe45306ae516d33abd00e888f1919cfbcf91e142.
+/mob/living/simple_animal/death()
+	..()
+	if (can_ride && !isnull(rider))
+		rider.visible_message("<span class='danger'>[rider] falls off from \the [src]!</span>", "<span class='danger'>You fall off from \the [src]!</span>")
+		rider.riding = FALSE
+		rider.SpinAnimation(5,1)
+		rider.forceMove(locate(x+1,y,z))
+		rider.Weaken(5)
+		ride = FALSE
+		rider.pixel_x = 0
+		rider.pixel_y = 0
+		rider = null
+		overlays.Cut()

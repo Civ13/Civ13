@@ -53,6 +53,66 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_mount_distance_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['mount_distance']
+        self.assertEqual(suite['files'], ('tests/mount_distance/test_distance.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'mount_distance'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/mount_distance/fixtures/distance_before.txt']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_distance'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'mount_distance'})
+
+    def test_mount_lifecycle_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['mount_lifecycle']
+        self.assertEqual(suite['files'], ('tests/mount_lifecycle/test_death.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'mount_lifecycle'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/mount_lifecycle/fixtures/death_before.txt']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'mount_lifecycle'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'mount_lifecycle'})
+
+    def test_ladder_cleanup_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['ladder_cleanup']
+        self.assertEqual(suite['files'], ('tests/ladder_cleanup/test_destroy.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'ladder_cleanup'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/ladder_cleanup/fixtures/destroy_before.txt']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'ladder_cleanup'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'ladder_cleanup'})
+
+    def test_telephone_recipients_are_bounded_and_keep_existing_dependency_coverage(self):
+        suite = ci.SUITES['telephone_recipients']
+        self.assertEqual(suite['files'], ('tests/telephone/test_recipients.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'telephone_recipients'}
+        self.assertEqual(self.selected(['tests/telephone/test_recipients.py']), expected)
+        self.assertEqual(self.selected(['tests/telephone/fixtures/telephone_before.txt']), expected)
+        prior = {name: spec for name, spec in ci.SUITES.items() if name != 'telephone_recipients'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', prior):
+                previous = self.selected([shared])
+            self.assertEqual(self.selected([shared]), previous | {'telephone_recipients'})
+
+    def test_vehicle_hud_registration_is_bounded_and_preserves_shared_fallback(self):
+        suite = ci.SUITES['vehicle_hud']
+        self.assertEqual(suite['files'], ('tests/vehicle_hud/test_driver_axis.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'vehicle_hud'}
+        self.assertEqual(self.selected(['tests/vehicle_hud/test_driver_axis.py']), expected)
+        self.assertEqual(self.selected(['tests/vehicle_hud/fixtures/axis_handlers_before.dm']), expected)
+        previous_suites = {name: spec for name, spec in ci.SUITES.items() if name != 'vehicle_hud'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous_suites):
+                previous_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), previous_selection | {'vehicle_hud'})
+
     def test_tanning_rack_appearance_registration_is_offline_and_preserves_shared_fallback(self):
         suite = ci.SUITES['tanning_rack_appearance']
         self.assertEqual(suite['files'], ('tests/test_tanning_rack_appearance.py',))

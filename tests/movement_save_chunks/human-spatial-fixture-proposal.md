@@ -1,3 +1,5 @@
+**Historical proposal:** This describes the earlier exact-offset fixture and its original approval status, not the current tile-only fixture. Subsequent authorized synthetic runs are recorded in `docs/human-save-motion-candidate.md`.
+
 # Minimal native evidence proposal - not authorized or run
 
 The offline candidate model accepts a synthetic unlinked human at nonzero x/y

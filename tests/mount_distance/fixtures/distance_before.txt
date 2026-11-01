@@ -1,0 +1,12 @@
+// Frozen complete distance branch from master 706bdc9fbba05ccb0d585fbf69b5c9036b5a4c1f.
+	if (riding && riding_mob)
+		if (!(riding_mob in range(1,src)))
+			riding = FALSE
+			riding_mob = null
+			var/mob/living/human/H = src
+			forceMove(H.loc)
+			if (riding_mob)
+				riding_mob.ride = FALSE
+				riding_mob.rider = null
+				riding_mob.update_icons()
+				riding_mob.stop_automated_movement = FALSE

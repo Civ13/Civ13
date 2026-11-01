@@ -90,7 +90,7 @@
 /obj/screen/hover_name/proc/set_target(atom/origin)
 	clear_target()
 	var/atom/target = pointer_target(origin)
-	if (!target_visible(target))
+	if (!target)
 		return
 	hover_target = WEAKREF(target)
 	hover_origin = WEAKREF(origin)
@@ -98,6 +98,8 @@
 	if(hover_inventory)
 		var/obj/item/I = target
 		hover_screen_loc = I.screen_loc
+	// Complete pointer setup synchronously, then validate in process once before
+	// reading a label. Later process calls still obtain their own fresh visibility.
 	process()
 
 /obj/screen/hover_name/process()

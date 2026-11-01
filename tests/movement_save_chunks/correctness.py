@@ -73,7 +73,7 @@ def main(argv=None):
         prepare.prepare(packet); mutate(packet, control)
         # Mutations must get their own hashes, not masquerade as positive bytes.
         import hashlib
-        hashes = {str(p.relative_to(packet)): hashlib.sha256(p.read_bytes()).hexdigest()
+        hashes = {p.relative_to(packet).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for p in packet.rglob('*') if p.is_file() and p.name != 'receipt.json'}
         (packet / 'receipt.json').write_text(json.dumps({'control': control, 'execution': 'not_run', 'sources': hashes, 'headroom_injection': control == 'headroom', 'headroom_helper_sha256': hashlib.sha256((HERE / 'headroom_fixture.py').read_bytes()).hexdigest() if control == 'headroom' else None}, indent=2))
     if not args.run_native: return 0

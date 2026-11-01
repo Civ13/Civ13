@@ -1,3 +1,5 @@
+**Historical scale proposal:** This describes the earlier exact-offset experiment and its original execution proposal. Its production geometry assumptions do not describe the current tile-only path. Subsequent synthetic measurements are historical, not a tile-only or live-Gaia acceptance result.
+
 # Synthetic human scale comparison: source-only proposal
 
 This adapter is not approved for native execution by its presence in the tree.
