@@ -201,6 +201,107 @@ note dizziness decrements automatically in the mob's Life() proc.
 	// And animate the attack!
 	animate(I, alpha = 175, pixel_x = FALSE, pixel_y = FALSE, pixel_z = FALSE, time = 3)
 
+// Call-local visual companion to a stationary do_after. It owns images only;
+// movement, camera offsets, action admission and rewards remain with the caller.
+/mob/proc/prepare_resource_work_animation(obj/item/tool, atom/target, duration)
+	if (!may_do_after || !tool || !target || duration <= 0)
+		return null
+	return new /datum/resource_work_animation(src, tool, target, duration)
+
+/datum/resource_work_animation
+	should_save = FALSE
+	var/mob/actor
+	var/obj/item/tool
+	var/atom/target
+	var/client/controller
+	var/atom/origin
+	var/atom/target_loc
+	var/sx
+	var/sy
+	var/active_tool
+	var/expires
+	var/running = TRUE
+	var/image/strike
+	var/list/viewing = list()
+
+/datum/resource_work_animation/New(mob/user, obj/item/held_tool, atom/work_target, duration)
+	..()
+	actor = user
+	tool = held_tool
+	target = work_target
+	controller = user.client
+	origin = user.loc
+	target_loc = target.loc
+	sx = user.step_x
+	sy = user.step_y
+	active_tool = user.get_active_hand() == tool
+	expires = world.time + duration
+	spawn(0)
+		animate_work_images()
+
+/datum/resource_work_animation/proc/valid(require_wait = TRUE)
+	return running && actor && !actor.gcDestroyed && !actor.gc_destroyed && !actor.stat && !actor.incapacitated() && actor.client == controller && (!controller || controller.mob == actor) && actor.loc == origin && actor.step_x == sx && actor.step_y == sy && tool && !tool.gcDestroyed && !tool.gc_destroyed && tool.loc == actor && (actor.l_hand == tool || actor.r_hand == tool) && (!active_tool || actor.get_active_hand() == tool) && target && !target.gcDestroyed && !target.gc_destroyed && target.loc == target_loc && world.time < expires && (!require_wait || !actor.may_do_after)
+
+/datum/resource_work_animation/proc/animate_work_images()
+	try
+		// The caller immediately enters do_after without yielding. A rejected
+		// wait stops us synchronously; only an observed admitted wait can draw.
+		// If spawn runs first, wait for admission without displaying anything.
+		while (valid(FALSE) && actor.may_do_after)
+			sleep(1)
+		var/next_strike = world.time
+		while (valid())
+			if (world.time >= next_strike)
+				show_strike()
+				next_strike = world.time + 5
+			sleep(1)
+	catch (var/exception/animation_error)
+		stop()
+		throw animation_error
+	stop()
+
+/datum/resource_work_animation/proc/show_strike()
+	clear_strike()
+	strike = image(tool.icon, target, tool.icon_state, target.layer + 1)
+	strike.transform *= 0.75
+	var/direction = get_dir(actor, target)
+	if (direction & NORTH)
+		strike.pixel_y = -16
+	else if (direction & SOUTH)
+		strike.pixel_y = 16
+	if (direction & EAST)
+		strike.pixel_x = -16
+	else if (direction & WEST)
+		strike.pixel_x = 16
+	if (!direction)
+		strike.pixel_z = 16
+	for (var/mob/M in viewers(target))
+		if (M.client)
+			viewing |= M.client
+	for (var/client/C in viewing)
+		C.images += strike
+	animate(strike, alpha = 175, pixel_x = 0, pixel_y = 0, pixel_z = 0, time = 3)
+
+/datum/resource_work_animation/proc/clear_strike()
+	for (var/client/C in viewing)
+		C.images -= strike
+	viewing.Cut()
+	strike = null
+
+/datum/resource_work_animation/proc/stop()
+	running = FALSE
+	clear_strike()
+	actor = null
+	tool = null
+	target = null
+	controller = null
+	origin = null
+	target_loc = null
+
+/datum/resource_work_animation/Destroy()
+	stop()
+	return ..()
+
 /mob/proc/spin(spintime, speed)
 	spawn()
 		var/D = dir

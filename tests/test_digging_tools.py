@@ -129,8 +129,13 @@ class DiggingToolRules(unittest.TestCase):
         # Keep its shovel/spoon admission; snowfall_ground projects that body.
         self.assertIn(start, floor)
         self.assertIn(start, old)
-        self.assertEqual(procedure(floor, '/datum/pickaxe_mining_action/proc/perform()'),
-                         procedure(old, '/datum/pickaxe_mining_action/proc/perform()'))
+        # Resource work now owns a visual companion. Keep the paid wait and
+        # single committed output contract without freezing rendering scaffolding.
+        mining = procedure(floor, '/datum/pickaxe_mining_action/proc/perform()')
+        self.assertIn('var/completed = do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)', mining)
+        self.assertIn('if (completed && valid(actor, wall))\n\t\t\t\tcommitted = TRUE', mining)
+        self.assertLess(mining.index('committed = TRUE'), mining.index('wall.collapse_check()'))
+        self.assertEqual(mining.count('wall.mining_proc(actor)'), 1)
         research = 'code/modules/research_tree/research_node.dm'
         strip_comments = lambda text: re.sub(r'(?m)^\s*//[^\n]*\n', '', text)
         self.assertEqual(strip_comments(source(research)), strip_comments(baseline(research)))
