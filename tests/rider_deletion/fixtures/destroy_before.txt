@@ -1,0 +1,8 @@
+/mob/living/human/Destroy()
+	cancel_exercise()
+	unregister_corpse_decay()
+	human_mob_list -= src
+	human_clients_mob_list -= src
+	for (var/organ in organs)
+		qdel(organ)
+	return ..()
