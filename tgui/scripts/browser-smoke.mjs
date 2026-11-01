@@ -75,6 +75,16 @@ try {
   await update('crafting_atlas.tmpl', atlas);
   await page.getByRole('searchbox').waitFor();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  const flavorBefore = await page.evaluate(() => window.sent.length);
+  await update('character_flavor.tmpl', { name: 'Fictional subject', text: 'First\n\u65e5\u672c\u8a9e \ud83d\ude00 &#10; &amp;lt;b&amp;gt; &lt;img src=x&gt;' }, 1);
+  await page.getByRole('article', { name: 'Character description: Fictional subject' }).waitFor();
+  assert.ok((await page.locator('article').textContent()).includes('\u65e5\u672c\u8a9e \ud83d\ude00 \n &lt;b&gt; <img src=x>'));
+  assert.equal(await page.locator('article br').count(), 1);
+  assert.equal(await page.locator('article img,article script,article a,article button,article input').count(), 0);
+  assert.equal(await page.evaluate(() => window.sent.length), flavorBefore);
+  await update('character_flavor.tmpl', { name: 'Second subject', text: '' }, 1);
+  await page.getByRole('article', { name: 'Character description: Second subject' }).waitFor({ state: 'attached' });
+  assert.equal(await page.locator('article').textContent(), '');
   const note = (text, bold = 0, italic = 0) => ({ text, bold, italic });
   const beforeNotes = await page.evaluate(() => window.sent.length);
   await update('character_notes.tmpl', { character: [note('Fictional reader')], sections: [{ title: [note('Role')], entries: [{ runs: [note('Guard', 1), { br: 1 }, note('the gate', 0, 1)] }] }], memory: [note('\u65e5\u672c\u8a9e \ud83d\ude00 &amp;lt;b&amp;gt; &lt;img src=x&gt;')], discoveries: [note('Discoveries', 1), { br: 1 }, note('Public observation')] }, 1);
@@ -108,7 +118,15 @@ try {
   await page.getByText('Classic interface', { exact: true }).click();
   assert.equal(await page.evaluate(() => window.fallback), true);
   assert.deepEqual(errors, []);
-  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas/research/Atlas contracts, Notes inert Unicode/read-only/replacement, photo image/caption/clear/responsive layout, manual fallback; fixtures, no native bridge/cache claim');
+  const invalid = await browser.newPage();
+  await invalid.goto(`http://127.0.0.1:${server.address().port}`);
+  await invalid.waitForFunction(() => window.ready);
+  await invalid.evaluate(() => window.receiveUpdateData(JSON.stringify({ config: { template: 'character_flavor.tmpl', status: 1 }, data: { name: 'Fictional subject', text: 'PARTIAL\n<bad>' } })));
+  await invalid.getByText('Switching to classic interface...', { exact: true }).waitFor();
+  assert.equal(await invalid.evaluate(() => window.fallback), true);
+  assert.ok(!(await invalid.locator('body').textContent()).includes('PARTIAL'));
+  await invalid.close();
+  console.log('PASS: production Chromium retained routes/actions, photo, Notes and flavor inert Unicode/read-only/replacement, manual and malformed fallback; fixtures, no native bridge/cache claim');
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

@@ -71,13 +71,13 @@ const factionFixture = [
   { name: 'First', motto: 'Together &amp; safe', flavour: '&lt;script&gt;inert&lt;/script&gt;', members: 1, symbol: 'flist_first.png' },
   { name: 'Second', members: 2, symbol: '' },
   { name: '&lt;img src=x&gt;', members: 3, symbol: 'https://example.com/a.png' },
-  { name: 'Unicode symbol', members: 4, symbol: 'flist_кириллица.png' },
+  { name: 'Unicode symbol', members: 4, symbol: 'flist_ÐºÐ¸Ñ€Ð¸Ð»Ð»Ð¸Ñ†Ð°.png' },
 ];
 const classicDom = new JSDOM(renderFactionClassic({ factions: factionFixture }, {}, {}));
 assert.equal(classicDom.window.document.querySelectorAll('tbody tr').length, 4);
 assert.equal(classicDom.window.document.querySelectorAll('img').length, 2);
 assert.equal(classicDom.window.document.querySelectorAll('img')[0].getAttribute('src'), 'flist_first.png');
-assert.equal(classicDom.window.document.querySelectorAll('img')[1].getAttribute('src'), encodeURIComponent('flist_кириллица.png'));
+assert.equal(classicDom.window.document.querySelectorAll('img')[1].getAttribute('src'), encodeURIComponent('flist_ÐºÐ¸Ñ€Ð¸Ð»Ð»Ð¸Ñ†Ð°.png'));
 assert.equal(classicDom.window.document.querySelector('script'), null);
 assert.ok(classicDom.window.document.body.textContent.includes('<script>inert</script>'));
 assert.ok(classicDom.window.document.body.textContent.includes('1 member.'));
@@ -197,6 +197,14 @@ try {
   await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });
   assert.ok(!w.document.body.textContent.includes('Fictional transformation'));
   assert.equal(w.document.querySelectorAll('[data-result-type]').length, 0);
+  await update('character_flavor.tmpl', { name: 'Fictional subject', text: 'First\n\u65e5\u672c\u8a9e \ud83d\ude00 &#10; &amp;lt;b&amp;gt; &lt;img src=x&gt;' }, 1);
+  const flavor = w.document.querySelector('article.character-flavor');
+  assert.ok(flavor.textContent.includes('\u65e5\u672c\u8a9e \ud83d\ude00 \n &lt;b&gt; <img src=x>'));
+  assert.equal(flavor.querySelectorAll('br').length, 1);
+  assert.equal(flavor.querySelectorAll('img,script,a,button,input').length, 0);
+  await update('character_flavor.tmpl', { name: 'Second subject', text: '' }, 1);
+  assert.equal(w.document.querySelector('article.character-flavor').textContent, '');
+  assert.ok(!w.document.body.textContent.includes('Fictional subject'));
   const note = (text, bold = 0, italic = 0) => ({ text, bold, italic });
   const notes = { character: [note('Fictional ghost')], sections: [{ title: [note('Role')], entries: [{ runs: [note('Guard', 1), { br: 1 }, note('the gate', 0, 1)] }] }], memory: [note('\u65e5\u672c\u8a9e \ud83d\ude00 &amp;lt;b&amp;gt; &lt;img src=x&gt;')], discoveries: [note('Discoveries', 1), { br: 1 }, note('Public observation')] };
   await update('character_notes.tmpl', notes, 1);
@@ -218,11 +226,30 @@ try {
   assert.ok(!w.document.body.textContent.includes('inert'));
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 18 registered routes, retained classic fixtures including photo, Notes inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and all 19 registered routes, retained photo/Notes/flavor fixtures, inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
 } finally { w.close(); }
 
-// Fresh root/real bootstrap: malformed Notes content requests fallback once,
-// rather than displaying a partial private record. This does not execute DM.
+// Preserve this reviewed reader recovery in its own fresh root.
+{
+const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
+try {
+  const rw = recovery.window, sent = [];
+  Object.defineProperty(rw.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
+  rw.cef_to_byond = url => sent.push(new URL(url).searchParams.get('type'));
+  rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui-bootstrap.js', import.meta.url), 'utf8'));
+  rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
+  await settle();
+  rw.receiveUpdateData(JSON.stringify({ config: { template: 'character_flavor.tmpl', status: 1, ref: '[0x123]', window: 'main[0x456]', generation: 2 }, data: { name: 'Fictional subject', text: 'PARTIAL\n<b>unsupported</b>' } }));
+  await settle();
+  assert.equal(sent.filter(type => type === 'fallback').length, 1);
+  assert.ok(!rw.document.body.textContent.includes('PARTIAL'));
+  process.stdout.write('PASS: fresh flavor production root rejects a mixed malformed snapshot through the real bootstrap fallback\n');
+} finally { recovery.window.close(); }
+
+}
+
+// Preserve this reviewed reader recovery in its own fresh root.
+{
 const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
 try {
   const rw = recovery.window, sent = [];
@@ -238,3 +265,5 @@ try {
   assert.ok(rw.document.body.textContent.includes('Switching to classic interface'));
   process.stdout.write('PASS: fresh production Notes root rejects malformed content through real bootstrap fallback; cached server HTML verified separately by source contracts\n');
 } finally { recovery.window.close(); }
+
+}
