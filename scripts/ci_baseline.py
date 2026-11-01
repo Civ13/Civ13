@@ -134,7 +134,8 @@ SUITES = {
         'paths': ('tests/world_save/character_return/',),
         # Shared reads must select this suite without claiming exclusive impact
         # ownership and removing the existing all-suite unmapped fallback.
-        'shared_paths': ('tests/world_save/', 'tests/new_z_budget/z_budget_evidence.py',
+        'shared_paths': ('tests/world_save/', 'tests/save_movement/source_adapter.py',
+            'tests/new_z_budget/z_budget_evidence.py',
             'tests/floor_decal_tracking/prepare.py', 'code/predefines.dm', 'code/_macros.dm',
             'code/modules/persistence/', 'code/modules/multiz/world_z_budget.dm',
             'code/game/mob/living/carbon/human/human_helpers.dm', 'code/game/objects/buckling.dm',
