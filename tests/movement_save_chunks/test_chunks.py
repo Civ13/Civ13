@@ -142,6 +142,11 @@ class ProductionBoundaryTests(unittest.TestCase):
         drain = SAVING.split('/map_storage/proc/drain_moving_save_roster', 1)[1]
         self.assertLess(drain.index('capture_moving_save_root(F, record)'), drain.index('changed during chunk replay'))
         self.assertLess(drain.index('changed during chunk replay'), drain.index('F[path] << chunks'))
+        self.assertLess(drain.index('F[path] << chunks'), drain.index('save_work_check()'))
+        self.assertLess(drain.index('save_work_check()'), drain.index('changed after drain checkpoint'))
+        probe = (ROOT / 'tests/movement_save_chunks/probe.dm').read_text(encoding='utf-8')
+        self.assertIn('frontier_delete_attempted = TRUE', probe)
+        self.assertLess(probe.index('if(!frontier_delete_attempted)'), probe.index('if(refused != expect_refusal)'))
 
     def test_animal_callback_inventory_requires_explicit_reaudit(self):
         found = set()
@@ -178,7 +183,10 @@ class ProductionBoundaryTests(unittest.TestCase):
             control_source = (output / 'origin-source/code/modules/persistence/functions.dm').read_text()
             control_proc = control_source.split('/map_storage/proc/add_export_content(', 1)[1].split('/map_storage/proc/', 1)[0]
             self.assertNotIn('var/list/moving_root', control_proc)
-            self.assertNotIn('var/datum/child', control_proc)
+            # The independently guarded human root still needs this shared
+            # lookup; only the moving-animal ownership guard is omitted.
+            self.assertIn('var/datum/child', control_proc)
+            self.assertIn('var/list/human_root', control_proc)
             self.assertFalse(list(output.rglob('*.dmb')))
 
     def test_fresh_process_codec_and_shared_legacy_chunk_alias_are_wired(self):

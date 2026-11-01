@@ -260,6 +260,18 @@ jobs:
       - name: Test optional roof upper-floor source contracts offline
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/roof_construction')
         run: python3 -B -m unittest discover -s tests/roof_construction -v
+      - name: Prepare exact historical selected-toolchain source
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/world_save') || inputs.protected_sleep_regressions == true || inputs.save_latency_regressions == true
+        shell: bash
+        run: |
+          set -euo pipefail
+          # This historical commit is no longer reachable through advertised
+          # branches. A full branch checkout need not include orphaned objects.
+          historical=f05659dd5d117302b7ab494ad6e226f2b3f50ab1
+          if ! git cat-file -e "$historical^{commit}"; then
+            timeout -k 5 30s git fetch --no-tags origin "$historical"
+          fi
+          git cat-file -e "$historical^{commit}"
       - name: Test protected sleep source and fixture contracts
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/world_save') || inputs.protected_sleep_regressions == true || inputs.save_latency_regressions == true
         run: |
@@ -269,7 +281,11 @@ jobs:
           python3 -B tests/world_save/test_irrigation_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_round_metadata_toolchain.py -v
+          diagnostic_status=0
+          python3 -B -m unittest discover -s tests/world_save -p test_selected_git_diagnostic.py -v || diagnostic_status=$?
+          python3 -B tests/world_save/selected_git_diagnostic.py || diagnostic_status=$?
           python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
+          test "$diagnostic_status" -eq 0
           python3 -B -m unittest discover -s tests/world_save -p test_graph_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_wound_compatibility.py -v
       - name: Test continuous persistence round contracts offline

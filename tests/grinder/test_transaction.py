@@ -760,7 +760,7 @@ class AcquisitionProjection(Projection):
             '\n\tif (ishuman(user))', 1)[0]
         timing = stack.split('\n\tif (recipe.time)\n', 1)[1].split(
             '\n\tif (findtext(recipe.title, "coil"))', 1)[0]
-        debit = re.search(r'^\tif \(use\(required, joinery \? null : H\)\)', stack, re.M)[0]
+        debit = re.search(r'^\tif \(use\(required, \(joinery \|\| carving\) \? null : H\)\)', stack, re.M)[0]
         constructor = stack.split('\n\t\tvar/atom/O\n', 1)[1].split('\n\t\tif (building_floor_recipe)', 1)[0]
         self.source += ('\n/datum/acquisition/proc/build()\n\tif (!can_use(required))\n' + admission +
                         '\n\tif (recipe.time)\n' + timing + '\n' + debit +
@@ -781,7 +781,7 @@ class AcquisitionProjection(Projection):
 
     def expression(self, text, receiver, local):
         # Known DM interpolation/ternary and dynamic-constructor adapters only.
-        text = text.replace('"[type]/"', 'material_prefix').replace('joinery ? null : H', 'H')
+        text = text.replace('"[type]/"', 'material_prefix').replace('(joinery || carving) ? null : H', 'H')
         text = text.replace('new recipe.result_type(user.loc)', 'construct(recipe.result_type, user.loc)')
         return super().expression(text, receiver, local)
 
@@ -815,7 +815,7 @@ class AcquisitionProjection(Projection):
         recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
                         on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
         self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,
-                 required=recipe.req_amount, produced=1, joinery=None)
+                 required=recipe.req_amount, produced=1, joinery=None, carving=None)
         return stock
 
 
@@ -919,7 +919,7 @@ class GrinderAcquisition(unittest.TestCase):
         # Mutate generated projections, never the checkout. Constructor execution
         # without the production use gate must expose unpaid equipment.
         p = AcquisitionProjection()
-        gate = 'if (use(required, joinery ? null : H))'
+        gate = 'if (use(required, (joinery || carving) ? null : H))'
         self.assertIn(gate, p.source)
         p.source = p.source.replace(gate, 'if (TRUE)')
         stock = p.build()

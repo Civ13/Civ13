@@ -19,12 +19,12 @@ def load(name):
 
 SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth')
 ROSTER_ANCHOR = '/map_storage/proc/prepare_moving_save_roster()\n'
-ORIGIN_ANCHOR = '''\tvar/datum/child = saving_reference_pins[ref]
-\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
+ORIGIN_ANCHOR = '''\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
 \tif(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
 \t\tif(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
 \t\treturn // The frozen origin owns this root; roster drain will attach it.
 '''
+ORIGIN_CHILD_ANCHOR = '\tvar/datum/child = saving_reference_pins[ref]\n#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL\n'
 
 def mutate(packet, control):
     if control == 'roster':
@@ -36,6 +36,10 @@ def mutate(packet, control):
         path = packet / 'code/modules/persistence/functions.dm'
         text = path.read_text()
         if text.count(ORIGIN_ANCHOR) != 1: raise ValueError('origin mutation anchor differs')
+        if text.count(ORIGIN_CHILD_ANCHOR) != 1: raise ValueError('origin child anchor differs')
+        # Only the experimental human guard still needs child after removing
+        # the animal guard. Avoid an unused variable in the normal fixture.
+        text = text.replace(ORIGIN_CHILD_ANCHOR, '#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL\n\tvar/datum/child = saving_reference_pins[ref]\n', 1)
         path.write_text(text.replace(ORIGIN_ANCHOR, '', 1))
     elif control == 'old-keys':
         baseline = load('datum_profile')
@@ -69,7 +73,7 @@ def main(argv=None):
         prepare.prepare(packet); mutate(packet, control)
         # Mutations must get their own hashes, not masquerade as positive bytes.
         import hashlib
-        hashes = {str(p.relative_to(packet)): hashlib.sha256(p.read_bytes()).hexdigest()
+        hashes = {p.relative_to(packet).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for p in packet.rglob('*') if p.is_file() and p.name != 'receipt.json'}
         (packet / 'receipt.json').write_text(json.dumps({'control': control, 'execution': 'not_run', 'sources': hashes, 'headroom_injection': control == 'headroom', 'headroom_helper_sha256': hashlib.sha256((HERE / 'headroom_fixture.py').read_bytes()).hexdigest() if control == 'headroom' else None}, indent=2))
     if not args.run_native: return 0

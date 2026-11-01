@@ -6,10 +6,11 @@ world
 	fps = 20
 	visibility = 0
 	sleep_offline = FALSE
-var/list/mob_list = list()
+// mob_list is declared by the shared serializer stubs.
 var/mob/living/simple_animal/chunk_fixture/subject
 var/armed = FALSE
 var/mutations = 0
+var/frontier_delete_attempted = FALSE
 /mob/living/simple_animal/chunk_fixture
 	// Production cohort predicate reads these by name. Minimal shared stubs do
 	// not define them; neutral nulls model an uncoupled, empty fixture animal.
@@ -100,6 +101,7 @@ var/peak_capture_tick_usage = 0
 				subject.loc = locate(1,1,1)
 				mutations++
 			else if(world.params["scenario"] == "frontier-delete" && record && record["ref"])
+				frontier_delete_attempted = TRUE
 				del(subject)
 		else if(record && record["ref"])
 			mutations++
@@ -165,6 +167,9 @@ var/peak_capture_tick_usage = 0
 			refusal_text = "[error]"
 			world.log << "REFUSED: [error]"
 		armed = FALSE
+		if(world.params["scenario"] == "frontier-delete")
+			world.log << "FRONTIER_DELETE: attempted=[frontier_delete_attempted] refused=[refused]"
+			if(!frontier_delete_attempted) throw EXCEPTION("FRONTIER_DELETE: deletion was not exercised")
 		var/expect_refusal = !!(world.params["scenario"] in list("delete", "frontier-delete", "inventory", "cross-z", "yield", "depth", "headroom-delete", "headroom-container", "headroom-cross-z", "headroom-parent-replaced", "headroom-parent-closed", "headroom-nonprogress"))
 		if(refused != expect_refusal) throw EXCEPTION("unexpected acceptance/refusal")
 		if(fixture_is_headroom())

@@ -13,9 +13,19 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	// Admission does not yield, so both participants are reserved together.
 	if (!istype(leader, /mob/living/human) || !istype(follower, /obj) || owners[leader] || owners[follower] || owners.len > 126)
 		return null
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if (persistence_save_in_progress)
+		return null
+#endif
 	var/datum/subtile_pull_pair/P = new
 	if (!P.prepare(src, leader, follower, controller, direction, deadline))
 		return null
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// If a future admission hook yields, do not publish a lease after a save
+	// began between preflight and preparation.
+	if (persistence_save_in_progress)
+		return null
+#endif
 	owners[leader] = P
 	owners[follower] = P
 	P.claimed = TRUE

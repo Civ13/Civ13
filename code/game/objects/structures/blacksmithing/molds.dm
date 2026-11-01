@@ -12,6 +12,8 @@
 	var/max_capacity = 0
 	var/current_material = null
 	var/craftable_classes = null
+	// Stone variants retain the existing casting/prototype type contracts.
+	var/stone_mold = FALSE
 
 /obj/item/weapon/clay/mold/update_icon()
 	..()
@@ -322,3 +324,133 @@
 	fired = TRUE
 	craftable_classes = "keys"
 	max_capacity = 3
+
+// Carved sandstone molds inherit each fired shape so existing pouring, anvil
+// classes and research-prototype checks accept both materials. No clay vessels
+// or key molds are added. The color matrix desaturates and tints existing art.
+#define SANDSTONE_MOLD_COLOR list(0.255,0.227,0.142,0, 0.501,0.446,0.279,0, 0.097,0.086,0.054,0, 0,0,0,1, 0,0,0,0)
+
+/obj/item/weapon/clay/mold/fired/sandstone
+	name = "sandstone ingot mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/axehead/fired/sandstone
+	name = "sandstone axehead mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/sword/fired/sandstone
+	name = "sandstone sword mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/knife/fired/sandstone
+	name = "sandstone knife mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/spearhead/fired/sandstone
+	name = "sandstone spearhead mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/pickaxe/fired/sandstone
+	name = "sandstone pickaxe mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/shovel/fired/sandstone
+	name = "sandstone shovel mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+/obj/item/weapon/clay/mold/arrowhead/fired/sandstone
+	name = "sandstone arrowhead mold"
+	desc = "A reusable mold carved from sandstone. Ready for pouring without firing; use a fired clay blacksmith pot or jug to supply molten metal, then work the filled mold on an anvil."
+	stone_mold = TRUE
+	result = null
+	color = SANDSTONE_MOLD_COLOR
+
+#undef SANDSTONE_MOLD_COLOR
+
+/proc/stone_mold_type(result_type)
+	if (!ispath(result_type, /obj/item/weapon/clay/mold))
+		return FALSE
+	var/obj/item/weapon/clay/mold/M = result_type
+	return initial(M.stone_mold)
+
+/proc/stone_mold_tool_available(mob/living/human/H, obj/item/I, role)
+	if (QDELETED(H) || QDELETED(I) || I.woodwork_owner || (!isnull(I.health) && I.health <= 0))
+		return FALSE
+	if (!(I.loc == H && H.get_inventory_slot(I)) && !(isturf(I.loc) && I.loc == get_turf(H)))
+		return FALSE
+	return role == "chisel" ? istype(I, /obj/item/weapon/chisel) : (istype(I, /obj/item/weapon/hammer) || istype(I, /obj/item/weapon/gongmallet))
+
+// This datum is owned only by the local crafting call, never stored on an atom.
+/datum/stone_mold_carving
+	var/mob/living/human/actor
+	var/obj/item/stack/material/sandstone/stock
+	var/datum/stack_recipe/recipe
+	var/atom/stock_loc
+	var/turf/site
+	var/datum/save_epoch
+	var/list/tools = list()
+
+/datum/stone_mold_carving/New(obj/item/stack/S, mob/living/human/H, datum/stack_recipe/R)
+	..()
+	actor = H
+	if (istype(S, /obj/item/stack/material/sandstone))
+		stock = S
+	recipe = R
+	stock_loc = S.loc
+	site = get_turf(H)
+	save_epoch = persistence_admission_identity
+	if (!istype(H))
+		return
+	for (var/role in list("chisel", "hammer"))
+		for (var/slot in (list(slot_l_hand, slot_r_hand) + slot_equipment_priority))
+			var/obj/item/I = H.get_equipped_item(slot)
+			if (stone_mold_tool_available(H, I, role))
+				tools[role] = I
+				break
+		if (!tools[role])
+			var/visited = 0
+			for (var/atom/movable/A in site)
+				if (++visited > 32)
+					break
+				if (istype(A, /obj/item) && stone_mold_tool_available(H, A, role))
+					tools[role] = A
+					break
+
+/datum/stone_mold_carving/proc/valid()
+	if (QDELETED(actor) || QDELETED(stock) || actor.incapacitated() || !recipe || !stone_mold_type(recipe.result_type))
+		return FALSE
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || save_epoch != persistence_admission_identity)
+		return FALSE
+	if (actor.woodwork_owner || stock.woodwork_owner || stock.loc != stock_loc || !stock.crafting_stack_accessible(actor) || get_turf(actor) != site)
+		return FALSE
+	var/material/actual = stock.get_material()
+	if (!actual || actual.type != /material/sandstone || !stock.can_use(recipe.req_amount))
+		return FALSE
+	var/node = get_recipe_node_req("[recipe.result_type]")
+	if (!map || !node || !map.is_node_done(actor.civilization, node) || map.ordinal_age > 8)
+		return FALSE
+	for (var/role in list("chisel", "hammer"))
+		if (!stone_mold_tool_available(actor, tools[role], role))
+			return FALSE
+	return TRUE

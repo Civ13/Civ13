@@ -269,6 +269,8 @@
 				title+= "[R.title]"
 			title+= " ([R.req_amount] [singular_name]\s)"
 			var/list/joint_spec = furniture_joinery_spec(R)
+			if (stone_mold_type(R.result_type))
+				title += "; chisel and hammer/mallet equipped or at your feet; no firing needed"
 			if (joint_spec)
 				if (joint_spec["component_cost"])
 					title += " + [joint_spec["component_cost"]] wooden dowel set(s); chisel and hammer/mallet equipped or at your feet"
@@ -317,6 +319,12 @@
 	var/turn_dir = 0
 	var/mob/living/human/H = user
 	var/datum/furniture_joinery_action/joinery
+	var/datum/stone_mold_carving/carving
+	if (stone_mold_type(recipe.result_type))
+		carving = new(src, H, recipe)
+		if (quantity != 1 || !carving.valid())
+			to_chat(user, SPAN_WARNING("Carving molds needs sandstone, completed research, a chisel and a hammer or mallet equipped or at your feet."))
+			return
 	if (findtext(recipe.title, "joinery: ") == 1)
 		joinery = new(src, H, recipe)
 		if (quantity != 1 || !joinery.valid())
@@ -1847,7 +1855,7 @@
 			return
 		if (!exercise_can_build(H, recipe.result_type) || !civ_telecom_can_build(H, recipe.result_type) || !civ_generation_can_build(H, recipe.result_type))
 			return
-		if (H && !joinery)
+		if (H && !joinery && !carving)
 			H.adaptStat("crafting", 1*recipe.req_amount)
 	if (findtext(recipe.title, "coil"))
 		produced = 10
@@ -1953,11 +1961,14 @@
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
 		return
-	if (use(required, joinery ? null : H))
+	if (carving && !carving.valid())
+		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
+		return
+	if (use(required, (joinery || carving) ? null : H))
 		if (joinery)
 			joinery.consume_component()
-			if (H && recipe.time)
-				H.adaptStat("crafting", 1*recipe.req_amount)
+		if ((joinery || carving) && H && recipe.time)
+			H.adaptStat("crafting", 1*recipe.req_amount)
 		if (needs_crafting_handle)
 			// No wait between revalidation and commit. Clear the actual equipment slot.
 			H.remove_from_mob(crafting_handle)

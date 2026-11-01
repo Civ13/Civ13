@@ -25,6 +25,27 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only source contracts and causal omission controls; no native world.
+    # Shared game/Atlas/Help sources retain the existing conservative fallback.
+    'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
+        'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    # Stdlib-only document model/language projections with inert engine seams.
+    # No speech/learning callbacks, UI, native process or savefile execution.
+    # Production inputs stay unmapped to preserve the all-suite fallback.
+    'paper_documents': {'files': ('tests/paper_documents/test_documents.py',
+                                  'tests/paper_documents/test_views.py'),
+        'paths': ('tests/paper_documents/',)},
+    # Stdlib-only human Destroy layers and admission with inert effect boundaries.
+    'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
+        'paths': ('tests/rider_deletion/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human.dm', 'code/game/mob/living/carbon/carbon.dm',
+            'civ13.dme', 'code/processes/garbage.dm', 'code/__defines/qdel.dm',
+            'tests/save_movement/source_adapter.py')},
+    # Stdlib-only Destroy, canonical macro and qdel-admission projections.
+    'mount_deletion': {'files': ('tests/mount_deletion/test_destroy.py',),
+        'paths': ('tests/mount_deletion/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm', 'code/processes/garbage.dm',
+            'code/__defines/qdel.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only complete distance branch with inert movement/icon boundaries.
     'mount_distance': {'files': ('tests/mount_distance/test_distance.py',),
         'paths': ('tests/mount_distance/',), 'shared_paths': (
@@ -252,7 +273,8 @@ SUITES = {
         'paths': ('tests/world_save/character_return/',),
         # Shared reads must select this suite without claiming exclusive impact
         # ownership and removing the existing all-suite unmapped fallback.
-        'shared_paths': ('tests/world_save/', 'tests/new_z_budget/z_budget_evidence.py',
+        'shared_paths': ('tests/world_save/', 'tests/save_movement/source_adapter.py',
+            'tests/new_z_budget/z_budget_evidence.py',
             'tests/floor_decal_tracking/prepare.py', 'code/predefines.dm', 'code/_macros.dm',
             'code/modules/persistence/', 'code/modules/multiz/world_z_budget.dm',
             'code/game/mob/living/carbon/human/human_helpers.dm', 'code/game/objects/buckling.dm',

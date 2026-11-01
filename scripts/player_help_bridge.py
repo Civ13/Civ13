@@ -283,6 +283,7 @@ def bronze_knowledge(root):
     anvil = read('code/game/objects/structures/blacksmithing/blacksmithing.dm')
     oven = read('code/game/objects/structures/kitchen/oven.dm')
     production = '\n'.join([
+        'Carved sandstone molds are an alternative to fired clay molds. The sandstone stack menu requires a chisel and hammer/mallet equipped or at your feet throughout carving. They need no oven firing; use the same fired clay blacksmith pot/jug and anvil. Ingots still require Bronze Working; tool molds retain their clay equivalents\' research gates. Sandstone occurs in sandy/desert underground mining; map access and obtainable mining tools are required. Clay pots, jugs and recipes remain unchanged.',
         between(refining, '/obj/structure/furnace/attack_hand', '/obj/structure/furnace/process()'),
         between(refining, '\t\tif (istype(I, /obj/item/weapon/clay/mold))', None),
         between(molds, '/obj/item/weapon/clay/mold/attackby', '\telse if (istype(I, /obj/item/stack/ore)'),
