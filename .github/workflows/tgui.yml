@@ -13,6 +13,8 @@ on:
       - 'code/game/mob/groups/faction_creation.dm'
       - 'code/game/mob/crafting_atlas.dm'
       - 'code/game/mob/crafting_atlas_tgui.dm'
+      - 'code/datums/mind.dm'
+      - 'code/datums/character_notes_ui.dm'
       - 'code/game/mob/groups/faction_symbol.dm'
       - 'code/game/mob/language/**'
       - 'code/game/objects/map_metadata/pepelsibirsk.dm'
@@ -22,6 +24,7 @@ on:
       - 'code/game/objects/map_metadata/voyage.dm'
       - 'code/game/mob/groups/religions.dm'
       - 'code/game/mob/groups/factions.dm'
+      - 'tests/character_discoveries/test_discoveries.py'
       - 'tests/tgui/**'
       - '.github/workflows/tgui.yml'
   push:
@@ -50,6 +53,8 @@ jobs:
       - name: Backend source and ES5 bootstrap contracts
         run: |
           python3 -B -m unittest discover -s tests/tgui -p 'test_*.py' -v
+          python3 -B tests/tgui/notes_negative_controls.py
+          python3 -B -m unittest discover -s tests/character_discoveries -p 'test_*.py' -v
           node tests/tgui/bootstrap.test.cjs
       - name: Check generated assets match source
         run: git diff --exit-code -- UI/tgui tgui/THIRD_PARTY.md

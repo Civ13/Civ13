@@ -71,11 +71,24 @@ try {
   await update('crafting_atlas.tmpl', atlas);
   await page.getByRole('searchbox').waitFor();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  const note = (text, bold = 0, italic = 0) => ({ text, bold, italic });
+  const beforeNotes = await page.evaluate(() => window.sent.length);
+  await update('character_notes.tmpl', { character: [note('Fictional reader')], sections: [{ title: [note('Role')], entries: [{ runs: [note('Guard', 1), { br: 1 }, note('the gate', 0, 1)] }] }], memory: [note('\u65e5\u672c\u8a9e \ud83d\ude00 &amp;lt;b&amp;gt; &lt;img src=x&gt;')], discoveries: [note('Discoveries', 1), { br: 1 }, note('Public observation')] }, 1);
+  await page.getByText('You are Fictional reader', { exact: true }).waitFor();
+  assert.equal(await page.locator('article button,article a,article input,article img,article script').count(), 0);
+  assert.equal(await page.locator('article strong').count(), 3);
+  assert.equal(await page.locator('article br').count(), 2);
+  assert.ok((await page.locator('article').textContent()).includes('\u65e5\u672c\u8a9e \ud83d\ude00 &lt;b&gt; <img src=x>'));
+  assert.equal(await page.evaluate(() => window.sent.length), beforeNotes);
+  await update('character_notes.tmpl', { character: [note('Reopened reader')], sections: [], memory: [note('No memories stored.')], discoveries: [note('No discoveries recorded.')] }, 1);
+  await page.getByText('You are Reopened reader', { exact: true }).waitFor();
+  assert.equal(await page.getByText('Guard', { exact: true }).count(), 0);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   if (process.env.SCREENSHOT_PATH) await page.screenshot({ path: process.env.SCREENSHOT_PATH, fullPage: true });
   await page.getByText('Classic interface', { exact: true }).click();
   assert.equal(await page.evaluate(() => window.fallback), true);
   assert.deepEqual(errors, []);
-  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas drag/found, research detail/assign/Escape, Atlas navigation/filter/cancel/disabled/no horizontal overflow, manual fallback; browser fixture, no native bridge claim');
+  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas drag/found, research detail/assign/Escape, Atlas navigation/filter/cancel/disabled, Notes formatted inert Unicode/read-only/snapshot replacement/no overflow, manual fallback; browser fixture, no native bridge claim');
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

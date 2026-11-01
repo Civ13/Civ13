@@ -182,7 +182,36 @@ try {
   await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });
   assert.ok(!w.document.body.textContent.includes('Fictional transformation'));
   assert.equal(w.document.querySelectorAll('[data-result-type]').length, 0);
+  const note = (text, bold = 0, italic = 0) => ({ text, bold, italic });
+  const notes = { character: [note('Fictional ghost')], sections: [{ title: [note('Role')], entries: [{ runs: [note('Guard', 1), { br: 1 }, note('the gate', 0, 1)] }] }], memory: [note('\u65e5\u672c\u8a9e \ud83d\ude00 &amp;lt;b&amp;gt; &lt;img src=x&gt;')], discoveries: [note('Discoveries', 1), { br: 1 }, note('Public observation')] };
+  await update('character_notes.tmpl', notes, 1);
+  assert.ok(w.document.body.textContent.includes('You are Fictional ghost'));
+  assert.ok(w.document.body.textContent.includes('\u65e5\u672c\u8a9e \ud83d\ude00 &lt;b&gt; <img src=x>'));
+  assert.equal(w.document.querySelectorAll('article strong').length, 3);
+  assert.equal(w.document.querySelectorAll('article br').length, 2);
+  assert.equal(w.document.querySelectorAll('article button,article a,article input,article img,article script').length, 0);
+  await update('character_notes.tmpl', { character: [note('Reopened owner')], sections: [], memory: [note('No memories stored.')], discoveries: [note('No discoveries recorded.')] }, 1);
+  assert.ok(!w.document.body.textContent.includes('Guard'));
+  assert.ok(w.document.body.textContent.includes('Reopened owner'));
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 16 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and all 17 registered routes, retained classic fixtures, Notes inert text/snapshot replacement, handshake/action/text/fallback contracts\n");
 } finally { w.close(); }
+
+// Fresh root/real bootstrap: malformed Notes content requests fallback once,
+// rather than displaying a partial private record. This does not execute DM.
+const recovery = new JSDOM('<body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading"><a id="tgui-legacy">Classic</a></p>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: new VirtualConsole() });
+try {
+  const rw = recovery.window, sent = [];
+  Object.defineProperty(rw.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
+  rw.cef_to_byond = url => sent.push(new URL(url).searchParams.get('type'));
+  rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui-bootstrap.js', import.meta.url), 'utf8'));
+  rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
+  await settle();
+  rw.receiveUpdateData(JSON.stringify({ config: { template: 'character_notes.tmpl', status: 1, ref: '[0x123]', window: 'main[0x456]', generation: 2 }, data: { character: [], sections: [], memory: [{ text: '<b>UNSAFE_PARTIAL</b>', bold: 0, italic: 0 }], discoveries: [] } }));
+  await settle();
+  assert.equal(sent.filter(type => type === 'fallback').length, 1);
+  assert.ok(!rw.document.body.textContent.includes('UNSAFE_PARTIAL'));
+  assert.ok(rw.document.body.textContent.includes('Switching to classic interface'));
+  process.stdout.write('PASS: fresh production Notes root rejects malformed content through real bootstrap fallback; cached server HTML verified separately by source contracts\n');
+} finally { recovery.window.close(); }
