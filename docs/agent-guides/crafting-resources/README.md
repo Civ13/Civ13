@@ -205,6 +205,15 @@ see the whole holder volume. The rack preserves actual contents and excludes its
 runtime epoch/busy flag from saves. `tests/animal_harvest/test_tanning_sources.py`
 is offline evidence; `tanning_probe.dm` requires separate native acceptance.
 
+<!-- 2026-11-01: tanning rack stage appearance -->
+Rebuild rack overlays from live wet/dry contents on the empty frame, using the
+stored item's icon, state and colour. The full-rack state contains a baked-in
+hide and `filled` is false for a completed dry batch. Skip retiring/empty wet
+children before drawing the new dry output; refresh load, completion, removal
+and `after_load`. [Offline appearance checks](../../../tests/test_tanning_rack_appearance.py)
+project the renderer and inspect existing DMI pixels; they are not engine or
+savefile acceptance. Keep appearance work separate from ownership/timer rules.
+
 Rack insertion must transfer held inventory directly with `transfer_held_item_to`,
 not stage stacks through a turf. Human `drop_from_inventory` definitions must
 forward the parent's result with `return ..()`; keep both organ guards and the
