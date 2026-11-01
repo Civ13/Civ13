@@ -648,13 +648,26 @@ var/global/datum/persistence_admission_identity
 		if(kind == "save") record_save_outcome(FALSE)
 		if(owns_operation)
 			cleanup_world_operation()
-			operation.finish(FALSE)
+			if(operation.finish(FALSE) && kind == "save")
+				report_save_child_capture_failure(operation)
 		throw e
 	if(kind == "save") record_save_outcome(success)
 	if(owns_operation)
 		if(!success) cleanup_world_operation()
 		operation.finish(success)
 	return success
+
+// Notify only the owner of this failed capture, after it has released admission.
+// The retained record contains scalars only; a stale or unrelated record is silent.
+/map_storage/proc/report_save_child_capture_failure(datum/persistence_world_operation/operation)
+	try
+		var/list/failure = last_save_reference_failure
+		if(!operation || !istext(operation.diagnostic_save_id) || !islist(failure)) return
+		if(failure["kind"] != "child_moved_or_disappeared" || failure["operation_id"] != operation.diagnostic_save_id) return
+		message_admins("Save capture diagnostic: operation=[failure["operation_id"]] generation=[failure["generation"]] stage=[failure["stage"]] saved_z=[failure["saved_z"]] state=[failure["child_state"]]. Inspect map_storage.last_save_reference_failure for structural details.")
+	catch
+		// Notification failure must never replace the original export exception.
+		world.log << "Save capture diagnostic delivery unavailable."
 
 // Count only admitted backend attempts, including direct Save_World calls.
 // Keep notifications bounded and use the existing log/admin destinations.

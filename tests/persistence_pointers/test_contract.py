@@ -199,6 +199,59 @@ class PointerContracts(unittest.TestCase):
         saving = read('code/modules/persistence/saving.dm')
         self.assertLess(saving.index('operation.diagnostic_generation = generation'), saving.index('var/ref = BuildVarDirectory(savefile, T, 1)'))
 
+    def test_direct_child_failure_notice_is_owned_private_and_does_not_duplicate_wrapper(self):
+        source = read(FUNCTIONS)
+        backend = extract(source, '/map_storage/proc/run_world_operation')
+        notice = extract(source, '/map_storage/proc/report_save_child_capture_failure')
+        wrapper = extract(source, '/datum/controller/gameticker/proc/savemap')
+        self.assertIn('if(operation.finish(FALSE) && kind == "save")', backend)
+        self.assertLess(backend.index('cleanup_world_operation()'), backend.index('report_save_child_capture_failure(operation)'))
+        self.assertLess(backend.index('report_save_child_capture_failure(operation)'), backend.index('throw e'))
+        self.assertNotIn('report_save_child_capture_failure', wrapper)
+        self.assertIn('failure["operation_id"] != operation.diagnostic_save_id', notice)
+        self.assertIn('failure["kind"] != "child_moved_or_disappeared"', notice)
+        self.assertIn('message_admins(', notice)
+        self.assertIn('\n\tcatch\n', '\n' + notice + '\n')
+        for private in ('lookup_ref', '\\ref[', '.name', '.key', '.ckey', '.client', '.contents', '.vars'):
+            self.assertNotIn(private, notice)
+
+    def test_direct_exception_notice_runs_once_after_release_wrapper_does_not(self):
+        from test_guard import Fixture
+        for wrapped in (False, True):
+            f = Fixture()
+            notices = []
+            f.store.cleanup_world_operation = lambda: None
+            def report(operation):
+                notices.append((operation, f.env['persistence_active_operation']))
+            f.store.report_save_child_capture_failure = report
+            def fail(operation):
+                raise RuntimeError('original capture failure')
+            f.store.save_world_contents = fail
+            op = f.begin(f.store, 'save') if wrapped else None
+            with self.assertRaisesRegex(RuntimeError, 'original capture failure'):
+                f.backend(f.store, 'save', op)
+            if wrapped:
+                self.assertEqual(notices, [])
+                self.assertIs(f.env['persistence_active_operation'], op)
+                op.finish(False)
+            else:
+                self.assertEqual(len(notices), 1)
+                self.assertIsNone(notices[0][1])
+
+    def test_direct_owner_loss_does_not_send_capture_notice(self):
+        from test_guard import Fixture
+        f = Fixture()
+        notices = []
+        f.store.cleanup_world_operation = lambda: None
+        f.store.report_save_child_capture_failure = notices.append
+        def fail(operation):
+            f.env['persistence_active_operation'] = object()
+            raise RuntimeError('original capture failure')
+        f.store.save_world_contents = fail
+        with self.assertRaisesRegex(RuntimeError, 'original capture failure'):
+            f.backend(f.store, 'save')
+        self.assertEqual(notices, [])
+
     def test_full_game_cross_z_regression_uses_real_save_and_keeps_live_targets(self):
         source = read('tests/world_save/full_game_probe.dm')
         body = extract(source, '/datum/world_save_game_probe/proc/check_runtime_pointers')
