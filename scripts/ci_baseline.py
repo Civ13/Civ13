@@ -36,6 +36,23 @@ SUITES = {
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/living_hud.dm',
             'code/modules/visibility/root_tree_presenter.dm', '.github/workflows/test.yml')},
+    # Offline injected transport and temporary wiki fixtures. Shared production
+    # inputs remain shared so they do not suppress other suites' fallback.
+    'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py',),
+        'paths': (), 'shared_paths': (
+            'scripts/player_help_bridge.py', 'UI/player-help.json', 'UI/crafting-atlas.json',
+            'code/game/objects/structures/blacksmithing/refining.dm',
+            'code/game/objects/structures/blacksmithing/molds.dm',
+            'code/game/objects/structures/blacksmithing/blacksmithing.dm',
+            'code/game/objects/structures/kitchen/oven.dm',
+            'code/modules/research_tree/research_node.dm',
+            'code/game/objects/items/stacks/civ_recipes.dm',
+            'code/modules/research_tree/research_bench.dm',
+            'code/modules/materials/materials.dm',
+            'code/game/objects/items/weapons/material/shards.dm',
+            'code/predefines.dm', 'code/game/objects/items/clothing/clothing.dm',
+            'code/modules/reagents/reagent_containers/food/sandwich.dm',
+            'code/modules/1713/dew_collector.dm')},
     # Only stdlib source contracts; the shared DM inputs stay unmapped so their
     # existing all-suite fallback and other owners' coverage remain intact.
     'help_tab_links': {'files': ('tests/player_help/test_help_links.py',),
