@@ -122,6 +122,7 @@ var/global/fixture_moves = 0
 	debug_fixture_assert(fixture_moves == 2 && !fixture_armed, "fixture_debug_fault_not_reached")
 	debug_fixture_assert(fixture_subject && fixture_subject.loc == locate(2, 2, 1), "fixture_live_animal_changed")
 	debug_fixture_assert(item && item.loc == box, "fixture_live_item_changed")
+	debug_fixture_assert(box.fixture_alias == shared && islist(box.fixture_nested) && box.fixture_nested.len == 1 && box.fixture_nested[1] == shared && shared.len == 4 && shared[1] == fixture_subject && shared[2] == "preserved-neighbor" && shared["linked"] == fixture_subject && shared[4] == shared, "fixture_live_nested_changed")
 	var/list/round = map_storage.read_round_state()
 	var/list/audit = round["debug_recovery"]
 	var/generation = trim(file2text("map_saves/save_complete.txt"))
@@ -132,6 +133,7 @@ var/global/fixture_moves = 0
 	result["seed_generation"] = seed_generation
 	result["audit"] = audit
 	result["fixture_moves"] = fixture_moves
+	result["live_nested_unchanged"] = TRUE
 	result["controls"] = list("unsupported_contents" = TRUE, "missing_child" = TRUE, "associated_key" = TRUE, "owner_bound" = TRUE, "owner_lost" = TRUE)
 	return TRUE
 

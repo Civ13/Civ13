@@ -34,6 +34,11 @@ def require(condition, message):
         raise ValueError(message)
 
 
+def fixture_true(value):
+    # BYOND encodes TRUE as integer 1. Reject floats, strings and missing values.
+    return value is True or (type(value) is int and value == 1)
+
+
 def bounded_bytes(path, maximum):
     require(path.is_file() and not path.is_symlink(), 'missing or non-regular file')
     with path.open('rb') as stream:
@@ -154,6 +159,7 @@ def validate_writer(writer, seed, backup, marker, seed_marker):
     require(seed_marker == writer.get('seed_generation'), 'seed marker mismatch')
     require(marker == writer.get('generation') and marker != writer.get('seed_generation'), 'writer marker mismatch')
     require(writer.get('fixture_moves') == 2, 'writer did not reach both capture faults')
+    require(fixture_true(writer.get('live_nested_unchanged')), 'live nested list changed')
     require(writer.get('controls') == {'unsupported_contents': True, 'missing_child': True, 'associated_key': True, 'owner_bound': True, 'owner_lost': True}, 'writer controls incomplete')
     audit = writer.get('audit')
     require(type(audit) is dict and audit.get('generation') == marker and audit.get('attempt') == 2, 'writer audit binding')
@@ -166,6 +172,7 @@ def validate_evidence(writer, reader, seed, backup, current):
     require(reader.get('generation') == generation and current == generation, 'reader/marker generation mismatch')
     require(writer.get('seed_generation') != generation, 'candidate did not replace seed')
     require(writer.get('fixture_moves') == 2, 'actual failed save and debug attempt not both reached')
+    require(fixture_true(writer.get('live_nested_unchanged')), 'live nested list changed')
     require(writer.get('controls') == {'unsupported_contents': True, 'missing_child': True, 'associated_key': True, 'owner_bound': True, 'owner_lost': True}, 'refusal controls incomplete')
     audit = writer.get('audit')
     require(type(audit) is dict and audit == reader.get('audit'), 'reader audit differs')
@@ -179,12 +186,10 @@ def validate_evidence(writer, reader, seed, backup, current):
     require(any(row.get('source_type') == '/obj/structure/debug_save_fixture' and row.get('source_ref') == incident.get('parent_ref') and row.get('field') == 'fixture_reference' and row.get('replacement') == 'null_reference' for row in omissions), 'fixture reference omission not audited')
     locations = [row.get('list_location') for row in omissions if row.get('list_location') is not None]
     require(len(locations) == 2 and all(type(loc) is dict and set(loc) == {'z', 'list_id', 'index', 'side'} and type(loc['z']) is int and loc['z'] == 1 and type(loc['list_id']) is int and loc['list_id'] > 0 and type(loc['index']) is int and loc['index'] > 0 and loc['side'] in {'key', 'value'} for loc in locations), 'nested omissions missing exact saved slots')
-    require(locations[0]['list_id'] == locations[1]['list_id'] and {loc['side'] for loc in locations} == {'key', 'value'}, 'nested omissions do not identify the shared list')
+    require(locations[0]['list_id'] == locations[1]['list_id'] and {(loc['index'], loc['side']) for loc in locations} == {(1, 'key'), (3, 'value')}, 'nested omissions do not identify the expected shared list slots')
     # BYOND serializes TRUE as the JSON integer 1. Accept only that integer or
     # a literal JSON true; do not accept floats, strings, or missing values.
-    def reader_true(value):
-        return value is True or (type(value) is int and value == 1)
-    require(all(reader_true(reader.get(key)) for key in ('retained_box', 'retained_item', 'retained_control_item', 'omitted_animal', 'reference_null', 'nested_alias_and_cycle', 'nested_losses_and_neighbor')), 'fresh reader graph')
+    require(all(fixture_true(reader.get(key)) for key in ('retained_box', 'retained_item', 'retained_control_item', 'omitted_animal', 'reference_null', 'nested_alias_and_cycle', 'nested_losses_and_neighbor')), 'fresh reader graph')
     return True
 
 
