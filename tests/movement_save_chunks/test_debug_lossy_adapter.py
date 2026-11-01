@@ -20,7 +20,7 @@ def module(name):
 
 
 def verify(text):
-    for name in ('bind', 'observe', 'finish_failure', 'finish_success', 'audit'):
+    for name in ('bind', 'observe', 'finish_failure', 'finish_success', 'audit', 'is_quarantined', 'encode_list_member'):
         match = re.search(r'(?m)^\tproc/' + name + r'\([^\n]*\)\n\t\t([^\n]+)', text)
         if not match or match.group(1) != REFUSAL:
             raise AssertionError('policy method does not refuse: ' + name)
@@ -44,9 +44,14 @@ class AdapterContracts(unittest.TestCase):
     def test_every_recovery_entry_refuses_and_default_does_not_omit(self):
         text = (ROOT / ADAPTER).read_text(encoding='utf-8')
         verify(text)
-        self.assertEqual(text.count(REFUSAL), 9)
+        self.assertEqual(text.count(REFUSAL), 11)
         with self.assertRaises(AssertionError): verify(text.replace(REFUSAL, 'return TRUE', 1))
         with self.assertRaises(AssertionError): verify(text.replace('persistence_active_operation.debug_recovery', 'FALSE', 1))
+        for name in ('is_quarantined', 'encode_list_member'):
+            original = re.search(r'(?m)^\tproc/' + name + r'\([^\n]*\)\n\t\t' + re.escape(REFUSAL), text)
+            self.assertIsNotNone(original)
+            mutated = text[:original.start()] + original.group().replace(REFUSAL, 'return FALSE') + text[original.end():]
+            with self.subTest(name=name), self.assertRaises(AssertionError): verify(mutated)
 
 
 if __name__ == '__main__': unittest.main()

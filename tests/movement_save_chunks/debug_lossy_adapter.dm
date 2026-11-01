@@ -14,6 +14,10 @@
 		throw EXCEPTION("Debug recovery requires the full-source fixture")
 	proc/audit(generation, datum/persistence_world_operation/operation)
 		throw EXCEPTION("Debug recovery requires the full-source fixture")
+	proc/is_quarantined(value)
+		throw EXCEPTION("Debug recovery requires the full-source fixture")
+	proc/encode_list_member(map_storage/storage, savefile/F, list_id, index, side, value)
+		throw EXCEPTION("Debug recovery requires the full-source fixture")
 
 /map_storage/proc/debug_backup_identity_valid()
 	throw EXCEPTION("Debug recovery requires the full-source fixture")
