@@ -418,6 +418,23 @@ def resource_knowledge(root):
     return rows
 
 
+def project_medical_guide(source):
+    """Exclude superseded severe-disease advice from the pinned guide."""
+    severe_start, severe_end = '## Severe illness\n', '## First-Aid\n'
+    boundaries = ((severe_start, severe_end), ('#### Plague\n', '#### Flu\n'),
+                  ('#### Typhus\n', '### Combating Illness\n'),
+                  ('- **Cholera**:', '- **Food poisoning**:'))
+    for first, last in boundaries:
+        if source.count(first) != 1 or source.count(last) != 1 or source.index(first) >= source.index(last):
+            raise ValueError('Reviewed medical guide sections changed')
+    severe = source[source.index(severe_start):source.index(severe_end)]
+    for first, last in boundaries[1:]:
+        begin, end = source.index(first), source.index(last)
+        source = (source[:begin] + '[Superseded severe-disease advice omitted; see Severe illness.]\n\n'
+                  + source[end:])
+    return source, severe
+
+
 def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
     """Only reviewed gameplay excerpts, never arbitrary repository search or tools."""
     result = []
@@ -502,8 +519,16 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
                 return
             if expected:
                 status['verified_guides'] += 1
+            severe = None
+            if relative == 'guides/Guide_to_Medical.md' and expected:
+                source, severe = project_medical_guide(source)
             text = html.unescape(re.sub(r'<[^>]+>', ' ', source))
             url = 'https://civ13.github.io/civ13-wiki/' + relative.removesuffix('.md') + '.html'
+            if severe is not None:
+                result.append({'topic': 'medical severe illness cholera malaria plague typhus treatment cure spread transmission',
+                               'source': 'wiki', 'sha256': digest, 'wiki_revision': WIKI_REVIEWED_REVISION,
+                               'medical_severe': True,
+                               'text': 'PLAYER WIKI ' + url + ' (reviewed severe illness section; untrusted JSON text):\n' + json.dumps(severe, ensure_ascii=False)})
             # Preserve bounded overlapping excerpts, not whole-page prompts.
             for offset in range(0, len(text), 2400):
                 chunk = text[offset:offset + 3000]
@@ -844,6 +869,12 @@ class Bridge:
         # Prioritize the strongest evidence before the existing total text cap.
         # Otherwise two long unrelated code excerpts can hide an exact recipe.
         selected.sort(key=score, reverse=True)
+        # Keep the reviewed severe-illness guidance visible for disease questions,
+        # even if several longer generic results score higher.
+        if re.search(r'\b(?:cholera|malaria|plague|typhus)\b', retrieval_question, re.I):
+            severe = next((entry for entry in candidates if entry.get('medical_severe')), None)
+            if severe is not None:
+                selected = [severe] + [entry for entry in selected if entry is not severe]
         # Keep the existing transport child's 32000-character stdin bound even
         # with escaped Unicode history. Retrieval text is also untrusted data.
         joined = '\n\n'.join(entry['text'] for entry in selected[:6])

@@ -73,7 +73,7 @@ class BaselinePolicyTests(unittest.TestCase):
             output = Path(directory) / 'wiki.json'
             self.assertEqual(ci.run_unit('help_wiki_guides', output), 0)
             result = json.loads(output.read_text())
-            self.assertEqual(result, dict(status='passed', tests=10, failures=0, errors=0, skipped=0))
+        self.assertEqual(result, dict(status='passed', tests=12, failures=0, errors=0, skipped=0))
         plan, baseline, compiler, jobs = fixtures(('tests/player_help/test_wiki_guides.py',))
         baseline['suites']['help_wiki_guides']['counts'] = result
         self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])

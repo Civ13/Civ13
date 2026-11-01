@@ -328,6 +328,13 @@ counts, keyword-match and context-truncation status. Neither a missing page nor 
 zero keyword match establishes that a recipe or gameplay use does not exist.
 Matching reviewed wiki content establishes provenance, not that every guide is
 current with the game; code takes precedence over conflicting wiki prose.
+The pinned Medical guide contains older severe-disease sections that conflict
+with its newer reviewed guidance and current disease code. The bridge omits those
+older plague, malaria, cholera and typhus descriptions and the old cholera
+treatment bullet from its indexed projection; it retains unrelated guidance and
+prioritizes the newer severe-illness section for questions naming those diseases.
+The original public wiki is unchanged. Re-review the projection when updating
+the Medical guide pin or disease behavior.
 
 No network downloads, arbitrary files, or recursive repository scans occur.
 To refresh the additional guides, review the new wiki revision and update the
