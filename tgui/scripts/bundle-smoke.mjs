@@ -160,7 +160,29 @@ try {
   await update('faction_list.tmpl', { factions: [] }, 1);
   assert.ok(w.document.body.textContent.includes('No populated factions are available.'));
   assert.equal(w.document.querySelectorAll('table img').length, 0);
+  const atlasFixture = {
+    query: 'ore', mode: 'graph', era: 'multiple', processor: 'sawmill', recipe_count: 1, resource_count: 1,
+    resources: [{ id: '/material/ore', name: 'Indexed ore' }],
+    recipes: [{ id: 'recipe-one', name: 'Fictional transformation', era_label: 'Multiple eras' }],
+    detail: { id: 'recipe-one', name: 'Fictional transformation', kind: 'Combine',
+      inputs: [{ id: '/material/ore', name: 'Input ore', quantity: 2 }], outputs: [],
+      conditions: '&lt;script&gt;inert&lt;/script&gt;', file: 'code/game/fixture.dm', line: 12 },
+  };
+  await update('crafting_atlas.tmpl', atlasFixture);
+  assert.equal(w.document.querySelectorAll('[data-result-type="resource"]').length, 1);
+  assert.equal(w.document.querySelectorAll('[data-result-type="recipe"]').length, 1);
+  assert.ok(w.document.body.textContent.includes('Input ore (2)'));
+  assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  click('Indexed ore');
+  assert.equal(messages.at(-1).type, 'act/atlas_navigate');
+  assert.equal(messages.at(-1).payload.atlas_navigate, JSON.stringify({ route: 'resource', resource: '/material/ore' }));
+  await update('crafting_atlas.tmpl', atlasFixture, 1);
+  const atlasBefore = messages.length; click('Indexed ore'); assert.equal(messages.length, atlasBefore);
+  await update('crafting_atlas.tmpl', { mode: 'graph', recipes: [], resources: [], recipe_count: 0, resource_count: 0 });
+  assert.ok(!w.document.body.textContent.includes('Fictional transformation'));
+  assert.equal(w.document.querySelectorAll('[data-result-type]').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 15 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and all 16 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
 } finally { w.close(); }

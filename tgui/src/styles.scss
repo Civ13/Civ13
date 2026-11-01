@@ -42,3 +42,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid #ffd985; outline-
 progress { width: 100%; height: 10px; accent-color: #b58d47; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 10; background: #000a; display: flex; align-items: center; justify-content: center; padding: 16px; }
 .detail-modal { background: #30271e; border: 2px solid #a98b4d; padding: 16px; max-height: 90vh; overflow: auto; max-width: 650px; width: 100%; }
+
+.atlas-columns { display: grid; grid-template-columns: minmax(190px, 26%) minmax(0, 1fr); gap: 12px; }
+.atlas-dependency { display: grid; grid-template-columns: 1fr minmax(100px, .6fr) 1fr; gap: 12px; }
+.atlas-filter { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
+.atlas-filter label { display: flex; flex-direction: column; gap: 4px; }
+.atlas-resource { display: inline-flex; align-items: center; gap: 6px; }
+.atlas-columns li { margin-bottom: 8px; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .atlas-columns, .atlas-dependency { grid-template-columns: 1fr; } }
