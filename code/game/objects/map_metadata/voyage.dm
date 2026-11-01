@@ -533,13 +533,40 @@
 	icon_state = "book_bs"
 	layer = 3.2
 	anchored = TRUE
+
 	attack_hand(mob/living/human/H)
-		if (H.original_job_title == "Pirate Boatswain" || H.title == "Deputy Boatswain" || H.original_job_title == "Pirate Captain")
-			var/dat = "<h1>CREW LOG</h1>"
-			dat += tally_crew()
-			H << browse(dat, "window=Crew Log")
-	proc/tally_crew()
-		var/t_text = "<style>table, th, td {border: 1px solid black;}</style><table><tr><th>Name</th><th>Job</th></tr>"
+		ui_interact(H)
+
+	proc/can_read_crew_log(mob/user)
+		if (!ishuman(user))
+			return FALSE
+		var/mob/living/human/H = user
+		return H.original_job_title == "Pirate Boatswain" || H.title == "Deputy Boatswain" || H.original_job_title == "Pirate Captain"
+
+	ui_interact(mob/user, ui_key = "crew_log", var/datum/nanoui/ui = null, var/force_open = TRUE)
+		if (!can_read_crew_log(user) || !user.client)
+			if (ui)
+				ui.close()
+			return
+		// Reusing the book refreshes; manager updates keep the existing snapshot.
+		if (ui)
+			ui.push_data(null, TRUE)
+			return
+		if (default_state.can_use_topic(src, user) != STATUS_INTERACTIVE)
+			return
+		var/list/data = crew_log_data()
+		ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
+		if (!ui)
+			var/datum/topic_state/crew_log/reader_state = new(src, user)
+			ui = new /datum/nanoui/tgui(user, src, ui_key, "crew_log.tmpl", "Crew Log", 500, 520, _state = reader_state)
+			ui.use_on_close_logic(FALSE)
+			ui.set_initial_data(data)
+			ui.open()
+
+	proc/crew_log_data()
+		var/list/entries = list()
+		// Preserve the existing world-wide non-dead human roster, including NPCs
+		// and non-pirate jobs; this is a renderer migration, not a roster rewrite.
 		for(var/mob/living/human/HM in world)
 			if (HM.stat != DEAD)
 				var/t_title = HM.original_job_title
@@ -547,9 +574,23 @@
 					t_title = "Sailor"
 				else
 					t_title = replacetext(HM.original_job_title,"Pirate ","")
-				t_text += "<tr><td>[HM.name]</td><td>[t_title]</td></tr>"
-		t_text += "</table>"
-		return t_text
+				entries += list(list("name" = html_encode(HM.name), "job" = html_encode("[t_title]")))
+		return list("crew" = entries)
+
+// Bound to the original reader/book; roles are rechecked on status/transport.
+/datum/topic_state/crew_log
+	var/obj/structure/voyage/boatswain_book/book
+	var/mob/reader
+
+/datum/topic_state/crew_log/New(var/obj/structure/voyage/boatswain_book/new_book, var/mob/new_reader)
+	..()
+	book = new_book
+	reader = new_reader
+
+/datum/topic_state/crew_log/can_use_topic(var/src_object, var/mob/user)
+	if (!book || src_object != book || !user || user != reader || !user.client || !book.can_read_crew_log(user))
+		return STATUS_CLOSE
+	return STATUS_UPDATE
 
 /obj/structure/voyage/quartermaster_book
 	name = "ship inventory"

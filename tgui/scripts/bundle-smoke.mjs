@@ -48,6 +48,21 @@ assert.ok(religionClassicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;
 assert.ok(!religionClassicMarkup.includes('<script>'));
 assert.ok(!religionClassicMarkup.includes('<img'));
 assert.ok(renderReligionClassic({ religions: [] }, {}, {}).includes('No religions have been founded.'));
+const crewClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', crewClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), crewClassicContext);
+const renderCrewClassic = crewClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/crew_log.tmpl', import.meta.url), 'utf8'));
+const crewClassicMarkup = renderCrewClassic({ crew: [
+  { name: 'Masked sailor', job: 'Sailor' }, { name: 'NPC doctor', job: 'Doctor' },
+  { name: 'Unassigned', job: '' }, { name: '&lt;img src=x&gt;', job: '&lt;script&gt;inert&lt;/script&gt;' },
+] }, {}, {});
+assert.ok(crewClassicMarkup.indexOf('Masked sailor') < crewClassicMarkup.indexOf('NPC doctor'));
+assert.ok(crewClassicMarkup.includes('&lt;img src=x&gt;'));
+assert.ok(crewClassicMarkup.includes('&lt;script&gt;inert&lt;/script&gt;'));
+assert.ok(!crewClassicMarkup.includes('<img'));
+assert.ok(!crewClassicMarkup.includes('<script>'));
+assert.ok(!crewClassicMarkup.includes('null'));
+assert.ok(renderCrewClassic({ crew: [] }, {}, {}).includes('No crew are listed.'));
 const errors = [];
 const console = new VirtualConsole(); console.on('jsdomError', error => errors.push(error.message));
 const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading... <a id="tgui-legacy">Classic</a></p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
@@ -108,7 +123,13 @@ try {
   assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
   assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
   assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
+  await update('crew_log.tmpl', { crew: [{ name: 'Fictional sailor', job: 'Sailor' }, { name: '&lt;script&gt;inert&lt;/script&gt;', job: '' }] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Crew log"] tbody tr').length, 2);
+  assert.ok(w.document.body.textContent.includes('Fictional sailor'));
+  assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 13 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and all 14 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
 } finally { w.close(); }
