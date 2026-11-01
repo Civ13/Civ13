@@ -19,9 +19,12 @@ compatibility or publish the launcher. Compiler admission is the exact canonical
 pin; savefile major remains 516. Older-engine compatibility is not required after
 a pin advances. Retire obsolete modes and port valuable behavior regressions to
 the current pin; retain old receipts and hashes as labelled historical evidence.
-The canonical bootstrap rejects retired legacy flags. Unmigrated manual workflows
-and strict old-version harnesses are migration/retirement debt, not active support;
-do not relabel their results or silently skip failed current-pin validation.
+The canonical bootstrap rejects retired legacy flags. Component/train Linux
+manual profiles use that bootstrap and shared archive/member identity before
+each compiler/daemon launch; workflow_dispatch admission remains unchanged.
+Their source port is not native acceptance. Other strict old-version harnesses
+remain migration/retirement debt; do not relabel old results or silently skip
+failed current-pin validation.
 Windows fixture callers must inject a reviewed current-pin facade; the shared
 runner refuses the old implicit floor-decal binding. See docs/byond-5161688.md.
 Active hosted compilation explicitly selects the user-approved Civ13/Civ13
