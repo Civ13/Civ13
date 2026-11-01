@@ -139,6 +139,30 @@ var/global/list/los_active_contexts
 	var/atom/surface_owner
 	var/owners = 0
 
+/datum/los_tree_bounds
+	should_save = FALSE
+	var/root_x
+	var/root_y
+	var/root_z
+	var/step_x
+	var/step_y
+	var/bound_x
+	var/bound_y
+	var/bound_width
+	var/bound_height
+	var/left
+	var/right
+	var/bottom
+	var/top
+	var/list/cells
+
+/datum/los_surface_cell
+	should_save = FALSE
+	var/cell_x
+	var/cell_y
+	var/half_x
+	var/half_y
+
 /datum/los_snapshot
 	var/presentation = FALSE
 	should_save = FALSE
@@ -152,6 +176,7 @@ var/global/list/los_active_contexts
 	var/list/blockers = list()
 	var/list/blocker_bins
 	var/list/clear_footprints = list()
+	var/list/tree_bounds
 
 // The flat list remains authoritative and is retained for sparse scenes and
 // snapshot fixtures. Bins are derived once per fresh capture, never shared.
@@ -188,6 +213,156 @@ var/global/list/los_active_contexts
 			for(var/datum/los_cell/B in bin)
 				if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
 					return TRUE
+	return FALSE
+
+// A unit blocker's shadow on an eye-facing unit edge. Depth is positive in
+// this coordinate system. Keep slope ratios: multiplying face into both sides
+// would add an unnecessary third factor to bounded subtile comparisons.
+/proc/los_surface_shadow(face, edge_low, edge_high, cx, cy)
+	var/near_depth = max(0, cx - 0.5)
+	var/far_depth = min(face, cx + 0.5)
+	if (far_depth <= 0 || near_depth >= face)
+		return null
+	var/low_y = cy - 0.5
+	var/high_y = cy + 0.5
+	var/low_n = low_y
+	var/low_d = far_depth
+	var/high_n = high_y
+	var/high_d = far_depth
+	if (low_y < 0)
+		low_d = near_depth
+		if (!low_d)
+			low_n = edge_low
+			low_d = face
+	if (high_y > 0)
+		high_d = near_depth
+		if (!high_d)
+			high_n = edge_high
+			high_d = face
+	return list(low_n, low_d, high_n, high_d)
+
+/datum/los_snapshot/proc/surface_blockers(tx, ty)
+	if (!blocker_bins)
+		return blockers
+	var/list/candidates = list()
+	var/min_x = los_bucket_lower(tx, 0.5)
+	var/max_x = los_bucket_upper(tx, 0.5)
+	var/min_y = los_bucket_lower(ty, 0.5)
+	var/max_y = los_bucket_upper(ty, 0.5)
+	for (var/bx = min_x, bx <= max_x, bx++)
+		for (var/by = min_y, by <= max_y, by++)
+			var/list/bin = blocker_bins["[bx],[by]"]
+			if (bin)
+				candidates += bin
+	return candidates
+
+// Every nearer unit blocker projects a shadow at least one unit wide. On a
+// unit target edge it can therefore cover only a prefix, a suffix, or all of
+// the edge. Their union needs two bounds, not sorting or per-pixel ray casts.
+/datum/los_snapshot/proc/surface_edge_visible(face, edge_low, edge_high, axis, direction, tile_x, tile_y, atom/target, list/candidates)
+	var/visible_low_n = edge_low
+	var/visible_low_d = face
+	var/visible_high_n = edge_high
+	var/visible_high_d = face
+	for (var/datum/los_cell/B in candidates)
+		// Co-located foreign owners still occlude. Only this tree's own
+		// contributions may be ignored, including conservative overlap cells.
+		if (B.owners == 1 && B.surface_owner == target)
+			continue
+		if (abs(B.cell_x) <= 0.5 && abs(B.cell_y) <= 0.5)
+			return FALSE
+		var/depth = B.cell_x * direction
+		var/side = B.cell_y
+		if (axis)
+			depth = B.cell_y * direction
+			side = B.cell_x
+		var/list/shadow = los_surface_shadow(face, edge_low, edge_high, depth, side)
+		if (!shadow || shadow[3] * face < edge_low * shadow[4] || shadow[1] * face > edge_high * shadow[2])
+			continue
+		var/covers_low = shadow[1] * face <= edge_low * shadow[2]
+		var/covers_high = shadow[3] * face >= edge_high * shadow[4]
+		if (covers_low && covers_high)
+			return FALSE
+		if (covers_low)
+			if (shadow[3] * visible_low_d > visible_low_n * shadow[4])
+				visible_low_n = shadow[3]
+				visible_low_d = shadow[4]
+		else if (covers_high)
+			if (shadow[1] * visible_high_d < visible_high_n * shadow[2])
+				visible_high_n = shadow[1]
+				visible_high_d = shadow[2]
+		else
+			// Fail closed if a future non-unit blocker violates the invariant.
+			return FALSE
+		if (visible_low_n * visible_high_d >= visible_high_n * visible_low_d)
+			return FALSE
+	return TRUE
+
+// Freeze the actual physical rectangle once per opaque movable. Native turf
+// contents includes fractional overlaps; shifting a full unit for EVERY such
+// turf would fabricate surfaces beyond the physical tree. Reads skip this path.
+/datum/los_snapshot/proc/capture_tree_bounds(atom/movable/A)
+	if (!tree_bounds)
+		tree_bounds = list()
+	if (tree_bounds[A])
+		return
+	var/datum/los_tree_bounds/R = new
+	R.root_x = A.x
+	R.root_y = A.y
+	R.root_z = A.z
+	R.step_x = A.step_x
+	R.step_y = A.step_y
+	R.bound_x = A.bound_x
+	R.bound_y = A.bound_y
+	R.bound_width = A.bound_width
+	R.bound_height = A.bound_height
+	R.left = A.x - eye_x + (A.step_x + A.bound_x) / 32 - 0.5
+	R.bottom = A.y - eye_y + (A.step_y + A.bound_y) / 32 - 0.5
+	R.right = R.left + A.bound_width / 32
+	R.top = R.bottom + A.bound_height / 32
+	tree_bounds[A] = R
+
+/datum/los_snapshot/proc/owned_surface_cells(atom/movable/target)
+	if (!tree_bounds)
+		return null
+	var/datum/los_tree_bounds/R = tree_bounds[target]
+	if (!R || R.root_x != target.x || R.root_y != target.y || R.root_z != target.z || R.step_x != target.step_x || R.step_y != target.step_y || R.bound_x != target.bound_x || R.bound_y != target.bound_y || R.bound_width != target.bound_width || R.bound_height != target.bound_height)
+		return null
+	if (R.cells)
+		return R.cells
+	R.cells = list()
+	// Clip to the viewport before subdividing; even custom large bounds cannot
+	// cause unbounded surface allocation. Each real subrectangle is <=1x1.
+	var/left = max(R.left, -radius_x - 0.5)
+	var/right = min(R.right, radius_x + 0.5)
+	var/bottom = max(R.bottom, -radius_y - 0.5)
+	var/top = min(R.top, radius_y + 0.5)
+	for (var/cell_left = left, cell_left < right, cell_left++)
+		for (var/cell_bottom = bottom, cell_bottom < top, cell_bottom++)
+			var/datum/los_surface_cell/C = new
+			C.half_x = min(1, right - cell_left) / 2
+			C.half_y = min(1, top - cell_bottom) / 2
+			C.cell_x = cell_left + C.half_x
+			C.cell_y = cell_bottom + C.half_y
+			R.cells += C
+	return R.cells
+
+/datum/los_snapshot/proc/tree_surface_visible(atom/target, tx, ty, tile_x, tile_y)
+	var/list/cells = owned_surface_cells(target)
+	for (var/datum/los_surface_cell/owned in cells)
+		tx = owned.cell_x
+		ty = owned.cell_y
+		var/list/candidates = surface_blockers(tx, ty)
+		if (abs(tx) <= owned.half_x && abs(ty) <= owned.half_y)
+			return TRUE
+		if (tx > owned.half_x && surface_edge_visible(tx-owned.half_x, ty-owned.half_y, ty+owned.half_y, 0, 1, tile_x, tile_y, target, candidates))
+			return TRUE
+		if (tx < -owned.half_x && surface_edge_visible(-tx-owned.half_x, ty-owned.half_y, ty+owned.half_y, 0, -1, tile_x, tile_y, target, candidates))
+			return TRUE
+		if (ty > owned.half_y && surface_edge_visible(ty-owned.half_y, tx-owned.half_x, tx+owned.half_x, 1, 1, tile_x, tile_y, target, candidates))
+			return TRUE
+		if (ty < -owned.half_y && surface_edge_visible(-ty-owned.half_y, tx-owned.half_x, tx+owned.half_x, 1, -1, tile_x, tile_y, target, candidates))
+			return TRUE
 	return FALSE
 
 /datum/los_mutation
@@ -369,6 +544,8 @@ var/global/list/los_active_contexts
 				if (A.opacity && A != body)
 					if (ismovable(A))
 						var/atom/movable/AM = A
+						if (presentation && root_tree_family(AM))
+							S.capture_tree_bounds(AM)
 						if (AM.step_x || AM.step_y)
 							var/datum/los_cell/moving_blocker = new
 							moving_blocker.tile_x = cx - S.eye_x
@@ -413,7 +590,9 @@ var/global/list/los_active_contexts
 		var/atom/movable/moving_target = target
 		tx += moving_target.step_x / 32
 		ty += moving_target.step_y / 32
-	if (abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5)
+	var/tree_presentation = S.presentation && operation == "visual_tree" && target.opacity
+	var/outside_view = abs(tx) > S.radius_x + 0.5 || abs(ty) > S.radius_y + 0.5
+	if (outside_view && !tree_presentation)
 		return LOS_DENY
 	// Preserve the existing directional human concealment policy, when active.
 	if (istype(target, /mob/living/human) && config && !config.disable_fov && body.HUDtech && !body.resting && !body.lying && !body.prone && get_dist(body, target) > 1 && body.pulling != target)
@@ -424,10 +603,17 @@ var/global/list/los_active_contexts
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
+	if (tree_presentation)
+		footprint_key += "|tree-surface-\ref[target]"
 	var/cached = S.clear_footprints[footprint_key]
 	if (!isnull(cached))
 		return cached
-	if (S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
+	if (outside_view || S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
+		// Only tree presentation may admit an exposed blocker edge. Terrain,
+		// entities and fresh hover/examine retain their existing decisions.
+		if (tree_presentation && S.tree_surface_visible(target, tx, ty, target_tile_x, target_tile_y))
+			S.clear_footprints[footprint_key] = LOS_SURFACE
+			return LOS_SURFACE
 		S.clear_footprints[footprint_key] = LOS_DENY
 		return LOS_DENY
 	S.clear_footprints[footprint_key] = result

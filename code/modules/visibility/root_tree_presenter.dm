@@ -211,7 +211,7 @@ var/global/list/root_tree_presenters
 			images[T] = I
 			owned_images += I
 			owner.images += I
-		if(context.decision_snapshot(T, S, "visual") == LOS_DENY)
+		if(context.decision_snapshot(T, S, "visual_tree") == LOS_DENY)
 			withdraw_tree(T, I)
 			continue
 		var/rgb = cached_light(T)
@@ -314,7 +314,13 @@ var/global/list/root_tree_presenters
 	I.icon_state = ""
 	I.color = null
 	I.plane = ROOT_TREE_PLANE
-	I.appearance_flags |= TILE_BOUND | RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
+	// An admitted canopy may overlap visible turf while its root turf is hidden.
+	// The geometric surface gate owns admission; retain native pixel visibility.
+	if(T.opacity)
+		I.appearance_flags &= ~TILE_BOUND
+	else
+		I.appearance_flags |= TILE_BOUND
+	I.appearance_flags |= RESET_COLOR | RESET_ALPHA | RESET_TRANSFORM
 	I.override = TRUE
 	I.mouse_opacity = T.mouse_opacity
 
