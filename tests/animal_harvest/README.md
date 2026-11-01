@@ -20,11 +20,16 @@ and idle grass cutting still announces and yields normally. The existing
 tall-grass matrix also checks busy entry. These added native assertions have
 not been compiled or run; new native runs require their own admitted plan.
 
+Normal CI registers this exact offline file as the bounded baseline's
+`action_admission` suite. Its stdlib-only imports never launch a native runner;
+shared game and fixture inputs preserve the existing all-suite fallback.
+
 CI selection proposal: an ordinary PR against master introducing the new probe
-and offline test selects the registered `tests/animal_harvest` suite in CI,
-including its existing pinned 516.1688 limited fixture runner after compilation.
-Leave `extensive_regressions` off. The offline command above must also be run
-explicitly; the native suite step does not discover Python tests. If publication
+and offline test also selects the registered `tests/animal_harvest` native suite
+in CI, including its existing pinned 516.1688 limited fixture runner after
+compilation. Leave `extensive_regressions` off. The new competing-click fixture
+is included and invoked by that runner; it is not a separate manual case.
+If publication
 of a new native test is not yet admitted, retain this branch locally. No workflow
 dispatch is needed or authorized by preparing the source. Connected-client
 message delivery, smooth movement and live Gaia behavior remain separate.

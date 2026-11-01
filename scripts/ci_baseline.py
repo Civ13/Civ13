@@ -25,6 +25,17 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only admission expressions and fixture wiring; never import a native
+    # runner. Shared game/fixture inputs retain conservative all-suite fallback.
+    'action_admission': {'files': ('tests/animal_harvest/test_action_admission.py',),
+        'paths': ('tests/animal_harvest/test_action_admission.py',), 'shared_paths': (
+            'code/game/objects/structures/wild.dm',
+            'code/game/turfs/floor_attackby.dm',
+            'code/game/objects/items/weapons/material/ooga_booga_weapons.dm',
+            'code/game/objects/structures/rocks.dm',
+            'code/game/objects/structures/repairing.dm',
+            'tests/animal_harvest/probe.dm',
+            'tests/animal_harvest/action_admission_probe.dm')},
     # Full import graph: stdlib source/catalog checks plus the adjacent inert
     # test_foundations specification helper. No native runner or network import.
     # Shared production sources retain their conservative all-suite fallback.

@@ -53,6 +53,24 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_action_admission_registration_is_offline_and_preserves_fallback(self):
+        suite = ci.SUITES['action_admission']
+        self.assertEqual(suite['files'], ('tests/animal_harvest/test_action_admission.py',))
+        self.assertEqual(suite['paths'], suite['files'])
+        self.assertFalse(suite.get('always', False))
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', 'action_admission'})
+        self.assertEqual(ci.impact(list(suite['files']))['fallback_reasons'], [])
+        for path in suite['shared_paths']:
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+                self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+        tree = ast.parse((ROOT/suite['files'][0]).read_text())
+        self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
+                          for alias in node.names}, {'re', 'unittest'})
+        self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)},
+                         {'pathlib', 'types'})
+
     def test_character_traits_registration_and_shared_source_fallback(self):
         suite = ci.SUITES['character_traits']
         self.assertEqual(suite['files'], ('tests/character_traits/test_foundations.py',
