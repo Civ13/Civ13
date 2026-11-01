@@ -441,6 +441,9 @@ def validate(receipt, head, mode, tick):
             setup.get('actual_tick') == tick and finite(setup.get('initial_tick')) and
             setup.get('mode_valid') in (1, True) and setup.get('tick_valid') in (1, True) and
             setup.get('original_combined') in (0, 1, False, True), 'setup diagnostics')
+    require(all(finite(setup.get(key)) for key in ('startup_time', 'ready_time', 'startup_usage', 'ready_usage')) and
+            0 <= setup['startup_time'] < setup['ready_time'] and 0 <= setup['ready_usage'] < 100,
+            'startup readiness')
     rows = receipt.get('random_rows')
     require(isinstance(rows, list) and len(rows) == 8, 'case count')
     require(isinstance(rows[-1],dict) and isinstance(rows[-1].get('events'),list) and
@@ -463,6 +466,7 @@ def validate(receipt, head, mode, tick):
                 row.get('initial_start_delay_ds') == 6 and row.get('speed_argument') == 0 and
                 finite(row.get('step_size')) and row['step_size'] > 0 and row.get('seed') == 741239 and
                 finite(row.get('started')) and finite(row.get('ended')) and
+                row['started'] >= setup['ready_time'] and
                 row.get('observation_ds')==OBSERVATION_DS and
                 OBSERVATION_DS <= row['ended'] - row['started'] <= OBSERVATION_DS+11 and
                 type(row.get('process_ticks')) is int and

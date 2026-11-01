@@ -203,6 +203,20 @@ var/global/list/fixture_random_setup = list()
 	fixture_random_setup["actual_tick"] = world.tick_lag
 	fixture_random_setup["stage"] = "after_tick_assignment"
 	fixture_scheduler_assert(world.tick_lag == requested_tick, "random_tick_readback")
+	// The fixture is invoked inside world/New. Yield exactly one requested
+	// tick before constructing actors or starting the process scheduler;
+	// preserve both samples even if readiness fails. This does not claim New returned.
+	fixture_scheduler_assert(!processScheduler && !fixture_random_running && !living_mob_list.len, "random_startup_empty")
+	var/startup_time = world.time
+	fixture_random_setup["startup_time"] = startup_time
+	fixture_random_setup["startup_usage"] = world.tick_usage
+	fixture_random_setup["stage"] = "before_startup_yield"
+	sleep(world.tick_lag)
+	fixture_random_setup["ready_time"] = world.time
+	fixture_random_setup["ready_usage"] = world.tick_usage
+	fixture_random_setup["stage"] = "after_startup_yield"
+	fixture_scheduler_assert(world.time > startup_time && world.tick_lag == requested_tick && \
+		isnum(world.tick_usage) && world.tick_usage >= 0 && world.tick_usage < 100, "random_startup_readiness")
 	fixture_random_setup["stage"] = "ready"
 	fixture_random_rows = list()
 	for (var/policy in list("held", "reissue"))

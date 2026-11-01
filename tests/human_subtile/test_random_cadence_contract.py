@@ -100,9 +100,11 @@ def make_row(kind, policy, phase, mode, tick):
             else:
                 events += [event('move_enter', begin, x=pos, detail=4), event('move_exit', begin, x=pos+1, detail=1)]
     events.append(event('phase_end', 28, x=37,owner=None))
-    for item in events: item['enabled']=int(enabled)
-    return {'case': animal + ':' + policy + ':' + str(phase), 'subject': animal, 'policy': policy, 'phase_ticks': phase, 'started': 0,
-            'ended': 28, 'tick_lag_ds': tick, 'observation_ds':28, 'enabled': enabled, 'step_size': 32, 'speed_argument': 0,
+    for item in events:
+        item['enabled']=int(enabled)
+        item['at'] += 1
+    return {'case': animal + ':' + policy + ':' + str(phase), 'subject': animal, 'policy': policy, 'phase_ticks': phase, 'started': 1,
+            'ended': 29, 'tick_lag_ds': tick, 'observation_ds':28, 'enabled': enabled, 'step_size': 32, 'speed_argument': 0,
             'process_ticks': 3, 'life_interval_ds': 10, 'initial_start_delay_ds': 6, 'actual_clients': 0,
             'seed': 741239, 'event_count':len(events), 'life_count':3, 'tx_count':4 if enabled else 0,
             'move_enter_count':sum(e['event']=='move_enter' for e in events),
@@ -116,7 +118,8 @@ def receipt(mode='candidate', tick=.5):
             'scope': contract.SCOPE, 'npc_checks': 0, 'random_rows': rows, 'random_overflow': 0,
             'random_setup': {'stage':'ready', 'mode':mode, 'mode_is_text':1, 'raw_tick':str(tick),
                              'tick_is_text':1, 'requested_tick':tick, 'initial_tick':1,
-                             'actual_tick':tick, 'mode_valid':1, 'tick_valid':1, 'original_combined':0},
+                             'actual_tick':tick, 'mode_valid':1, 'tick_valid':1, 'original_combined':0,
+                             'startup_time':0, 'ready_time':tick, 'startup_usage':26876100000000.0, 'ready_usage':1},
             'random_partial':rows[-1]['events'], 'random_case':rows[-1]['case'],
             'random_phase_count':len(rows[-1]['events']), 'random_count': sum(len(row['events']) for row in rows)}
 
@@ -134,6 +137,29 @@ class ContractTests(unittest.TestCase):
                     bad = receipt(mode, tick); bad['random_setup'][key] = value
                     with self.subTest(mode=mode, tick=tick, field=key), self.assertRaises(ValueError):
                         contract.validate(bad, 'a'*40, mode, tick)
+
+    def test_startup_readiness_fails_closed_and_keeps_raw_initial_usage(self):
+        for mode in contract.MODES:
+            for tick in contract.TICKS:
+                good = receipt(mode, tick)
+                contract.validate(good, 'a'*40, mode, tick)
+                for field, value in (('startup_time', -1), ('ready_time', 0), ('ready_usage', 100),
+                                     ('ready_usage', -1), ('startup_usage', float('nan'))):
+                    bad = receipt(mode, tick); bad['random_setup'][field] = value
+                    with self.subTest(mode=mode, tick=tick, field=field), self.assertRaises(ValueError):
+                        contract.validate(bad, 'a'*40, mode, tick)
+                bad = receipt(mode, tick); bad['random_setup']['ready_time'] = 2
+                with self.assertRaises(ValueError):
+                    contract.validate(bad, 'a'*40, mode, tick)
+
+    def test_startup_yield_precedes_every_phase_and_actor_construction(self):
+        source = (HERE/'random_cadence_fixture.dm').read_text()
+        main = source.split('/proc/fixture_random_main()',1)[1]
+        self.assertLess(main.index('fixture_scheduler_assert(world.tick_lag == requested_tick'), main.index('sleep(world.tick_lag)'))
+        self.assertLess(main.index('sleep(world.tick_lag)'), main.index('for (var/policy in list('))
+        self.assertIn('world.time > startup_time && world.tick_lag == requested_tick', main)
+        self.assertIn('world.tick_usage >= 0 && world.tick_usage < 100', main)
+        self.assertEqual(main.count('sleep(world.tick_lag)'), 1)
 
     def test_membership_checks_are_grouped_and_diagnostics_reach_receipt(self):
         source = (HERE/'random_cadence_fixture.dm').read_text()
@@ -299,11 +325,12 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'incomplete Life'):
             contract.validate(r,'a'*40,'candidate',.5)
         r=receipt();row=r['random_rows'][0]
-        ix=next(i for i,e in enumerate(row['events']) if e['event']=='contact_mosquito_life_after' and e['at']==24)
-        positive=[event('contact_bite_before',24,x=37,target_brute=0),event('contact_bite_after',24,x=37,target_brute=1),
-                  event('contact_infection_before',24,x=37,target_brute=1),
-                  event('contact_infection_roll',24,x=37,target_brute=1,detail={'choice':1,'raw':1,'chance':20}),
-                  event('contact_infection_after',24,x=37,target_brute=1,target_disease=1,target_disease_type='malaria',
+        at=row['started']+24
+        ix=next(i for i,e in enumerate(row['events']) if e['event']=='contact_mosquito_life_after' and e['at']==at)
+        positive=[event('contact_bite_before',at,x=37,target_brute=0),event('contact_bite_after',at,x=37,target_brute=1),
+                  event('contact_infection_before',at,x=37,target_brute=1),
+                  event('contact_infection_roll',at,x=37,target_brute=1,detail={'choice':1,'raw':1,'chance':20}),
+                  event('contact_infection_after',at,x=37,target_brute=1,target_disease=1,target_disease_type='malaria',
                         detail={'choice':1,'raw':None,'chance':None})]
         row['events'][ix:ix]=positive;row['event_count']+=len(positive);r['random_count']+=len(positive)
         result=contract.validate(r,'a'*40,'candidate',.5)
