@@ -36,3 +36,6 @@
 #define MAX_NAME_LEN 45
 
 #define WORLD_VIEW "15x15"
+
+// Client animation target, independent of the world's simulation tick rate.
+#define DEFAULT_CLIENT_FPS 100
