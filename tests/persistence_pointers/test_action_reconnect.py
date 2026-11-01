@@ -69,12 +69,12 @@ class ActionReconnect(unittest.TestCase):
         holder, env, grant, _ = fixture()
         declaration = '/mob/living/simple_animal/Login'
         body = extract(source('code/game/mob/living/simple_animal/simple_animal.dm'), declaration)
-        # Native screen=null empties its list; parent login rebuilds the HUD.
-        # Keep both clears explicit so refreshing before the parent fails.
-        self.assertEqual(body.count('client.screen = null'), 1)
+        # Parent login owns retirement and the screen reset. The subclass must
+        # leave the old owner's screen intact until that boundary is entered.
         self.assertEqual(body.count('..()'), 1)
         body = body.replace('client.screen = null', 'client.screen.clear()').replace('..()', 'parent_login()')
         def parent_login():
+            self.assertIn('prior-owner HUD', env['client'].screen)
             env['client'].screen.clear()
             env['client'].screen.add('animal HUD')
         env.update(src=holder, parent_login=parent_login)
@@ -86,19 +86,33 @@ class ActionReconnect(unittest.TestCase):
             holder.client = env['client'] = NS(screen=Screen())
             grant(action, holder)
             self.assertNotIn(button, holder.client.screen)
+            holder.client.screen.add('prior-owner HUD')
             login()
+            self.assertNotIn('prior-owner HUD', holder.client.screen)
             self.assertIn(button, holder.client.screen)
             self.assertIn('animal HUD', holder.client.screen)
             self.assertIs(action.owner, holder)
             self.assertIs(action.button, button)
             self.assertEqual(len(holder.actions), 1)
             button.moved, button.screen_loc = True, 'animal-custom-position'
+            holder.client.screen.add('prior-owner HUD')
             login()
+            self.assertNotIn('prior-owner HUD', holder.client.screen)
             self.assertIn(button, holder.client.screen)
             self.assertEqual(button.screen_loc, 'animal-custom-position')
+
+        # Reintroducing the former subclass clear must break the ownership
+        # boundary, even though the parent would rebuild the final screen.
+        mutant_body = '\tif (src && client)\n\t\tclient.screen.clear()\n' + body
+        mutant = project(declaration+'()\n'+mutant_body+'\n', declaration, '', env)
+        holder.client.screen.add('prior-owner HUD')
+        with self.assertRaisesRegex(AssertionError, 'prior-owner HUD'):
+            mutant()
+
         parent = extract(source('code/game/mob/login.dm'), '/mob/Login')
         living = extract(source('code/game/mob/living/login.dm'), '/mob/living/Login')
         self.assertIn('client.screen = null', parent)
+        self.assertLess(parent.index('client.los_context.retire()'), parent.index('client.screen = null'))
         self.assertIn('hud_used = new /datum/hud(src)', parent)
         self.assertNotIn('update_action_buttons()', parent+living)
 
