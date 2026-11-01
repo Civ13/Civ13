@@ -169,8 +169,11 @@ def stage(output):
         '\tif(human_spatial_fixture_case == "roster") operation.human_roster_changed = TRUE',
         'roster invalidation control')
     data = replace_once(data, '\tinspect_human_saved_origins(operation)',
-        '\thuman_spatial_fixture_mutate_candidate(operation)\n'
+        '\tif(human_spatial_fixture_case != "missing_roster") human_spatial_fixture_mutate_candidate(operation)\n'
         '\tinspect_human_saved_origins(operation)', 'candidate negative controls')
+    data = replace_once(data, '\toperation.seal_human_containment_proof()',
+        '\tif(human_spatial_fixture_case == "missing_roster") human_spatial_fixture_mutate_candidate(operation)\n'
+        '\toperation.seal_human_containment_proof()', 'missing roster control after candidate inspections')
     data = replace_once(data, '\t\tcompleted_request.serialized = TRUE\n#endif\n\treturn ref',
         '\t\tcompleted_request.serialized = TRUE\n#endif\n'
         '\tif(ishuman(A) && A:persistence_owner_ckey == "syntheticseated") human_spatial_fixture_move_saved_seated(A)\n'

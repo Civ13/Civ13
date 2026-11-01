@@ -10,6 +10,15 @@ spec.loader.exec_module(stage)
 
 
 class StageChecks(unittest.TestCase):
+    def test_missing_roster_mutates_after_origin_and_owner_inspections(self):
+        source = (HERE / 'human_spatial_stage.py').read_text()
+        saver = (stage.ROOT / 'code/modules/persistence/saving.dm').read_text()
+        self.assertIn('if(human_spatial_fixture_case != "missing_roster") human_spatial_fixture_mutate_candidate(operation)', source)
+        self.assertIn('if(human_spatial_fixture_case == "missing_roster") human_spatial_fixture_mutate_candidate(operation)', source)
+        self.assertLess(saver.index('\tinspect_human_saved_origins(operation)'), saver.index('\tinspect_human_saved_owners(operation, generation)'))
+        self.assertLess(saver.index('\tinspect_human_saved_owners(operation, generation)'), saver.index('\toperation.seal_human_containment_proof()'))
+        self.assertEqual(saver.count('\toperation.seal_human_containment_proof()'), 1)
+
     def test_clearance_controls_use_interior_actor_and_preserve_saved_receipt(self):
         probe = (HERE / 'human_spatial_probe.dm').read_text()
         self.assertIn('var/mob/living/human/clearance_actor = H2', probe)
