@@ -43,6 +43,21 @@ def historical_wound_roof_helpers(loading, existing):
     return roof
 
 
+def historical_wound_link_helper(loading, existing):
+    """Supply current round-state dependency without changing the old loader."""
+    start = '/map_storage/proc/validate_level_link_rows(list/rows)\n'
+    end = '\n/map_storage/proc/is_level_link_value(value)\n'
+    if loading.count(start) != 1 or loading.count(end) != 1:
+        raise RuntimeError('Historical wound link compatibility anchors changed')
+    if re.search(r'^/map_storage/proc/validate_level_link_rows\(', existing, re.M):
+        raise RuntimeError('Historical wound link compatibility dependency duplicated')
+    first = loading.index(start)
+    last = loading.index(end)
+    if last <= first:
+        raise RuntimeError('Historical wound link compatibility anchors changed')
+    return loading[first:last]
+
+
 def selected_runtime(bin_dir, archive):
     if archive is None: return None  # Frozen historical fixtures keep 1681.
     spec = importlib.util.spec_from_file_location('durable_current_runtime', Path(__file__).with_name('current_runtime.py'))
@@ -195,8 +210,8 @@ def main():
             'reclaim-order': ('code/modules/persistence/restart_transaction.dm', '\t\tplayers_ready = map_storage.finish_player_restoration()\n', ''),
             'lighting-export': ('code/modules/persistence/functions.dm', 'if ("appearance", "light", "light_sources")', 'if ("appearance")'),
             'lighting-legacy': ('code/modules/persistence/loading.dm', 'if(ispath(type, /datum/light_source) || ispath(type, /datum/lighting_corner) || ispath(type, /atom/movable/lighting_overlay) || ispath(type, /atom/movable/lighting_fullbright))', 'if(FALSE)'),
-            'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
-            'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tlight_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
+            'lighting-rebuild': ('code/modules/persistence/loading.dm', '\t\t\t\tif(!QDELETED(light_owner) && !light_owner.gcDestroyed) light_owner.update_light()', '\t\t\t\tif(FALSE) light_owner.update_light()'),
+            'lighting-opacity': ('code/modules/persistence/loading.dm', '\t\t\t\tif(!QDELETED(light_turf) && !light_turf.gcDestroyed) light_turf.recalc_atom_opacity()', '\t\t\t\tif(FALSE) light_turf.recalc_atom_opacity()'),
             'lighting-view': ('code/modules/persistence/functions.dm', '!istype(mob, /mob/new_player) && mob != dview_mob', '!istype(mob, /mob/new_player)'),
             'shutdown-return': ('code/modules/persistence/restart_transaction.dm', '\tdel(world)\n\t// Native deletion can return until the current execution yields. Give BYOND\n\t// that boundary before failure cleanup can consume the valid restart intent.\n\tsleep(1)\n', '\tdel(world)\n'),
         }
@@ -254,9 +269,11 @@ def main():
             if marker in existing:
                 raise RuntimeError('Historical wound content compatibility helper duplicated')
             roof = historical_wound_roof_helpers(loading, existing)
-            replacements[relative] = functions + '\n' + roof + '\n' + helper
+            link_helper = historical_wound_link_helper(loading, existing + '\n' + roof + '\n' + helper)
+            replacements[relative] = functions + '\n' + roof + '\n' + helper + '\n' + link_helper
             receipt['wound_control_compatibility_helper_sha256'] = hashlib.sha256(helper.encode()).hexdigest()
             receipt['wound_control_roof_helpers_sha256'] = hashlib.sha256(roof.encode()).hexdigest()
+            receipt['wound_control_link_helper_sha256'] = hashlib.sha256(link_helper.encode()).hexdigest()
         elif args.negative_control == 'lighting-shared':
             relative = 'code/modules/lighting/lighting_source.dm'
             text = (root / relative).read_text(encoding='utf-8')

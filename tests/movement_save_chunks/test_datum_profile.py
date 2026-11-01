@@ -12,6 +12,13 @@ SPEC.loader.exec_module(profile)
 
 
 class DatumProfileTests(unittest.TestCase):
+    def test_final_drain_reference_guard_is_named_and_cannot_move(self):
+        name = 'code/modules/persistence/saving.dm'
+        source = (ROOT / name).read_text()
+        anchor = '\t\t\tthrow EXCEPTION("Moving save roster member changed after drain checkpoint")'
+        self.assertEqual(source.count(anchor), 1)
+        with self.assertRaisesRegex(ValueError, 'Final drain reference guard changed'):
+            profile.instrument_datum_references(name, source.replace(anchor, '\t\t\tthrow EXCEPTION("changed")', 1))
     def test_existing_reference_calls_are_wrapped_once_without_new_checks_or_yields(self):
         for name, original, replacement in (
             ('code/modules/persistence/saving.dm', '"\\ref[A]"', 'profile_native_identity(A)'),

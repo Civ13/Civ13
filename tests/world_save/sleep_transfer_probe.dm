@@ -4,11 +4,19 @@
 var/mob/living/human/sleep_fixture/sleep_actor
 var/mob/living/human/sleep_fixture/sleep_decoy
 var/obj/structure/bed/sleep_fixture/sleep_bed
+// No clients/presenters exist here. These observers record the enabled
+// production movement call sites, not actual visibility or rendered pixels.
+var/list/sleep_visibility_events = list()
+/proc/root_tree_invalidate(atom/changed)
+	if(changed == sleep_actor) sleep_visibility_events += "root"
+/proc/los_invalidate(atom/changed, possible_opacity = FALSE)
+	if(changed == sleep_actor) sleep_visibility_events += "invalidate"
+/proc/los_refresh_moved_viewer(atom/movable/changed, force_refresh = FALSE)
+	if(changed == sleep_actor && force_refresh) sleep_visibility_events += "refresh"
 
 /atom/movable
 	var/anchored = FALSE // Production atoms_movable.dm default used by unbuckle.
-	var/gcDestroyed = FALSE
-	var/gc_destroyed = FALSE
+	// Both retirement fields come from the shared serializer stubs.
 	// Neutral production throw state needed by the complete forceMove projection.
 	var/tmp/mob/living/human/throw_launch_source = null
 	var/tmp/throw_launch_dx = null
@@ -102,15 +110,19 @@ var/obj/structure/bed/sleep_fixture/sleep_bed
 
 /proc/sleep_check_normal()
 	sleep_setup()
+	sleep_visibility_events.Cut()
 	cross_check(sleep_actor.enter_protected_sleep(), "protected sleep entry failed")
+	cross_check(jointext(sleep_visibility_events, ";") == "root;invalidate;refresh", "entry omitted enabled presentation hooks")
 	cross_check(!sleep_actor.buckled && !sleep_bed.buckled_mob, "protected sleep retained a cross-level buckle")
 	cross_check(sleep_bed.fixture_unbuckle_calls == 1, "protected sleep bypassed normal unbuckle")
 	sleep_assert_protected(sleep_actor, locate(1,1,1))
 	cross_check(sleep_actor.lastx == 3 && sleep_actor.lasty == 2 && sleep_actor.lastz == 2, "protected sleep lost its return coordinates")
 	cross_check(sleep_actor.fixture_drop_calls == 1 && sleep_actor.fixture_sleep_calls == 1, "successful entry omitted its existing gameplay hooks")
 	cross_check(sleep_decoy.loc == locate(2,2,2) && !sleep_decoy.inducedSSD && !sleep_decoy.sleeping, "sleep entry changed an unrelated actor")
+	sleep_visibility_events.Cut()
 	var/woke = sleep_actor.complete_protected_wakeup()
 	cross_check(sleep_actor.loc == locate(3,2,2) && sleep_decoy.loc == locate(2,2,2), "wake helper moved the wrong actor")
+	cross_check(jointext(sleep_visibility_events, ";") == "root;invalidate;refresh", "wake omitted enabled presentation hooks")
 	cross_check(woke && !sleep_actor.inducedSSD && !sleep_actor.sleeping, "protected wake did not complete")
 	cross_check(!sleep_actor.complete_protected_wakeup(), "repeated wake completion was accepted")
 
