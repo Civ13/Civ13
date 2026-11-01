@@ -1,6 +1,7 @@
 """Offline source/preparation contracts; never compile or execute the DM world."""
 import ast
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -12,6 +13,9 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[2]
 HERE = ROOT / 'tests/world_save'
 ZONE_OVERRIDE = '/map_storage/roundtrip_fixture/begin_zone_restore'
+_adapter_spec = importlib.util.spec_from_file_location('roundtrip_source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+_adapter = importlib.util.module_from_spec(_adapter_spec)
+_adapter_spec.loader.exec_module(_adapter)
 
 
 def procedure(source, path):
@@ -198,11 +202,17 @@ class RoundtripCompatibilityTests(unittest.TestCase):
         self.assertIn('write_legacy_fixture()\n\t\t\tcheck(ticker.loadmap(), "legacy fixture import failed")', start)
         functions = (ROOT / 'code/modules/persistence/functions.dm').read_text()
         self.assertIn('var/map_storage/map_storage = new("SS13")', functions)
-        loadmap = procedure(functions, '/datum/controller/gameticker/proc/loadmap')
-        # loadmap reads the global through a local alias, so the fixture subtype still applies.
-        self.assertIn('\tvar/map_storage/storage = map_storage\n', loadmap)
-        self.assertIn('\t\tstorage.begin_zone_restore(operation)\n', loadmap)
-        self.assertLess(loadmap.index('storage.begin_zone_restore(operation)'), loadmap.index('storage.ClearMap()'))
+        # Select both explicitly known branches; unknown conditionals still fail.
+        for enabled in (False, True):
+            defines = {**_adapter.DEFAULT_DEFINES, 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL': enabled}
+            loadmap = _adapter.extract(functions, '/datum/controller/gameticker/proc/loadmap', defines=defines)
+            self.assertIn('\tvar/map_storage/storage = map_storage\n', loadmap)
+            self.assertIn('\t\tstorage.begin_zone_restore(operation)\n', loadmap)
+            self.assertLess(loadmap.index('storage.begin_zone_restore(operation)'), loadmap.index('storage.ClearMap()'))
+            self.assertEqual('operation.validate_human_direct_restores()' in loadmap, enabled)
+        with self.assertRaisesRegex(AssertionError, 'Unknown conditional symbol'):
+            _adapter.extract(functions.replace('#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL', '#ifdef UNREVIEWED_HUMAN_MODE'),
+                             '/datum/controller/gameticker/proc/loadmap')
         pins = json.loads((HERE / 'character_return/inputs.json').read_text())['reference_sha256']
         self.assertEqual(len(pins), 20)
         self.assertNotIn('tests/world_save/roundtrip.dm', pins)

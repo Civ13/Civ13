@@ -74,9 +74,12 @@ class LevelLinkContracts(unittest.TestCase):
         self.assertLess(load.index('begin_level_link_import()'), load.index('for(var/B = 1, B <= world.maxz, B++)'))
         self.assertLess(load.index('restore_level_links()'), load.index('verify_restored_roof_areas()'))
         self.assertIn('object.vars[v] = decode_saved_value(savefile, savefile[v])', loading)
-        validate = extract(loading, '/map_storage/proc/validate_world_save')
-        self.assertIn('validate_level_link_targets(level_links, round_state["generation"])', validate)
-        self.assertIn('if(!candidate) validated_level_links', validate)
+        for enabled in (False, True):
+            from source_adapter import DEFAULT_DEFINES
+            defines = {**DEFAULT_DEFINES, 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL': enabled}
+            validate = extract(loading, '/map_storage/proc/validate_world_save', defines=defines)
+            self.assertIn('validate_level_link_targets(level_links, round_state["generation"])', validate)
+            self.assertIn('if(!candidate)\n\t\t\tvalidated_level_links = level_links ? level_links.Copy() : list()', validate)
         # Nested values never carry links; the generic validator rejects them.
         self.assertNotIn('level_link', extract(loading, '/map_storage/proc/validate_saved_value'))
         self.assertIn('has_level_links', extract(read(FUNCTIONS), '/map_storage/proc/read_round_state'))

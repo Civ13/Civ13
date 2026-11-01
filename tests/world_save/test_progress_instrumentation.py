@@ -19,7 +19,8 @@ class ProgressInstrumentationTests(unittest.TestCase):
         body = generated[generated.index(start):generated.index(end)]
         self.assertEqual(body.replace('world_save_progress_sleep(', 'sleep('),
                          original[original.index(start):original.index(end)])
-        self.assertEqual(generated.count('world_save_progress_sleep('), 4)
+        expected = 6 if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in original else 4
+        self.assertEqual(generated.count('world_save_progress_sleep('), expected)
         capture = '/map_storage/proc/capture_moving_save_root('
         edge = '/map_storage/proc/moving_save_root_edge('
         self.assertEqual(generated[generated.index(capture):generated.index(edge)]
@@ -42,7 +43,9 @@ class ProgressInstrumentationTests(unittest.TestCase):
         self.assertIn('var/turf/T = locate(x, y, A)\n'
                       '\t\t\t\tworld_save_profile_visited++\n'
                       '\t\t\t\tworld_save_profile_selected++\n', generated)
-        call = 'world_save_profile_original_BuildVarDirectory(savefile, A, contents, traversal)'
+        call = ('world_save_profile_original_BuildVarDirectory(savefile, A, contents, traversal, human_request)'
+                if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in original else
+                'world_save_profile_original_BuildVarDirectory(savefile, A, contents, traversal)')
         self.assertEqual(generated.count(call), 2)
         self.assertIn('BuildVarDirectory(savefile, content, 1, TRUE)', generated)
         self.assertIn('world_save_profile_phase("index")\n'
