@@ -249,28 +249,32 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			human_spatial_fixture_assert(restored_floor.type == /turf/floor/winter/grass/human_spatial_probe && restored_flint && restored_flint.loc == restored_floor, "fixture_audited_floor_and_tool")
 			human_spatial_fixture_assert(human_subtile_same(H.human_subtile_snapshot(), expected["capsule"]), "fixture_frozen_tile_and_zero_offset")
 			human_spatial_fixture_assert(human_spatial_fixture_direct_actor && !human_spatial_fixture_direct_active && !human_spatial_fixture_direct_callbacks && !human_spatial_fixture_restore_living && !human_spatial_fixture_restore_human, "fixture_restore_callbacks")
+			// Capture the restored late walker's receipt before using it to test
+			// overlapping dynamic occupants below.
+			observed["late_position"] = restored_late.human_subtile_snapshot()
 			// Exercise the actual engine bounds query after restoration. An object
 			// whose west-neighbour bounds merely touch the body is permitted;
 			// expanding those bounds into the body's tile must be refused.
-			human_spatial_fixture_assert(H.x > 1 && H.human_saved_tile_final_clear(), "fixture_clear_before_obstacle")
-			var/obj/edge_obstacle = new(locate(H.x - 1, H.y, H.z))
+			var/mob/living/human/clearance_actor = H2
+			human_spatial_fixture_assert(clearance_actor.x > 1, "fixture_clearance_has_west_neighbor")
+			human_spatial_fixture_assert(clearance_actor.human_saved_tile_final_clear(), "fixture_clear_before_obstacle")
+			var/obj/edge_obstacle = new(locate(clearance_actor.x - 1, clearance_actor.y, clearance_actor.z))
 			edge_obstacle.density = TRUE
 			edge_obstacle.bound_width = 32
-			human_spatial_fixture_assert(H.human_saved_tile_final_clear(), "fixture_edge_touch_rejected")
+			human_spatial_fixture_assert(clearance_actor.human_saved_tile_final_clear(), "fixture_edge_touch_rejected")
 			edge_obstacle.bound_width = 64
-			human_spatial_fixture_assert(!H.human_saved_tile_final_clear(), "fixture_overhang_not_rejected")
+			human_spatial_fixture_assert(!clearance_actor.human_saved_tile_final_clear(), "fixture_overhang_not_rejected")
 			edge_obstacle.density = FALSE
-			human_spatial_fixture_assert(H.human_saved_tile_final_clear(), "fixture_nondense_overhang_rejected")
-			edge_obstacle.loc = H.loc
+			human_spatial_fixture_assert(clearance_actor.human_saved_tile_final_clear(), "fixture_nondense_overhang_rejected")
+			edge_obstacle.loc = clearance_actor.loc
 			edge_obstacle.density = TRUE
-			human_spatial_fixture_assert(!H.human_saved_tile_final_clear(), "fixture_same_tile_solid_not_rejected")
+			human_spatial_fixture_assert(!clearance_actor.human_saved_tile_final_clear(), "fixture_same_tile_solid_not_rejected")
 			edge_obstacle.density = FALSE
-			H2.forceMove(H.loc)
-			human_spatial_fixture_assert(H2.loc == H.loc && H.human_saved_tile_final_clear(), "fixture_other_mob_rejected")
+			restored_late.forceMove(clearance_actor.loc)
+			human_spatial_fixture_assert(restored_late.loc == clearance_actor.loc && clearance_actor.human_saved_tile_final_clear(), "fixture_other_mob_rejected")
 			human_spatial_fixture_assert(restored_seated.human_saved_tile_final_clear() && restored_contained.human_saved_tile_final_clear(), "fixture_linked_parent_rejected")
 			observed["local_clearance_controls"] = TRUE
 			observed["position"] = H.human_subtile_snapshot()
-			observed["late_position"] = restored_late.human_subtile_snapshot()
 			observed["generation"] = trim(file2text("map_saves/save_complete.txt"))
 		else if(world.params["phase"] == "drag")
 			var/mob/living/human/H = new(locate(2, 2, 1))

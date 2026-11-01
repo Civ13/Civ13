@@ -10,6 +10,17 @@ spec.loader.exec_module(stage)
 
 
 class StageChecks(unittest.TestCase):
+    def test_clearance_controls_use_interior_actor_and_preserve_saved_receipt(self):
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        self.assertIn('var/mob/living/human/clearance_actor = H2', probe)
+        self.assertIn('H2.x == 3 && H2.y == 1', probe)
+        self.assertIn('fixture_clearance_has_west_neighbor', probe)
+        self.assertLess(probe.index('observed["late_position"] = restored_late.human_subtile_snapshot()'),
+                        probe.index('restored_late.forceMove(clearance_actor.loc)'))
+        for label in ('fixture_edge_touch_rejected', 'fixture_overhang_not_rejected',
+                      'fixture_same_tile_solid_not_rejected', 'fixture_other_mob_rejected',
+                      'fixture_linked_parent_rejected'):
+            self.assertIn(label, probe)
     def test_anchor_replacement_fails_closed(self):
         self.assertEqual(stage.replace_once('a b c', 'b', 'B', 'x'), 'a B c')
         for text in ('none', 'b b'):
