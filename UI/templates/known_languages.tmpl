@@ -1,0 +1,13 @@
+<h2>Known Languages</h2>
+{{if data.current_default}}
+<p>Current default language: <strong>{{:data.current_default}}</strong></p>
+{{/if}}
+{{if data.languages.length}}
+<ul>
+{{for data.languages}}
+<li><strong>{{:value.name}} ({{:value.prefix}})</strong>{{if value.is_default}} - default{{/if}}<p>{{:value.description}}</p></li>
+{{/for}}
+</ul>
+{{else}}
+<p>No known languages are available.</p>
+{{/if}}
