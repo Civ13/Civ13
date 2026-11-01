@@ -25,6 +25,12 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only document model/language projections with inert engine seams.
+    # No speech/learning callbacks, UI, native process or savefile execution.
+    # Production inputs stay unmapped to preserve the all-suite fallback.
+    'paper_documents': {'files': ('tests/paper_documents/test_documents.py',
+                                  'tests/paper_documents/test_views.py'),
+        'paths': ('tests/paper_documents/',)},
     # Stdlib-only riding death and admission projections with inert callbacks.
     'mount_lifecycle': {'files': ('tests/mount_lifecycle/test_death.py',),
         'paths': ('tests/mount_lifecycle/',), 'shared_paths': (
