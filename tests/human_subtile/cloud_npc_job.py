@@ -183,7 +183,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute',action='store_true');parser.add_argument('--head',required=True)
     parser.add_argument('--output',required=True,type=Path);parser.add_argument('--controller-output',required=True,type=Path)
-    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10'),required=True)
+    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10','transition05'),required=True)
     args=parser.parse_args();require(args.execute,'Explicit --execute required')
     controller.hosted(os.environ,args.head)
     signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)

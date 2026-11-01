@@ -78,7 +78,7 @@ def inspect_settings(info, image_id, mounts, uidgid, head, suite='smoke', work_d
                   '--byond-bin','/opt/byond/bin','--byond-archive','/inputs/byond.zip',
                   '--scratch-root','/work','--reviewed-cloud-envelope']
     if suite != 'smoke': expected_cmd += ['--suite',suite]
-    if suite in ('random05','random10','cardinal05','cardinal10'):
+    if suite in ('random05','random10','cardinal05','cardinal10','transition05'):
         require(isinstance(work_deadline,float) and work_deadline>0, 'Missing random work deadline')
         expected_cmd += ['--work-deadline',str(work_deadline)]
     require(config.get('Cmd') == expected_cmd, 'Worker command mismatch')
@@ -193,6 +193,13 @@ def validate_package(data, expected, suite='smoke'):
                                         'daemon-stdout.log', 'daemon-stderr.log'))
             allowed.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout', 'stderr'))
             limit = len(allowed)  # 38; fixed names, with no additional evidence classes.
+        elif suite == 'transition05':
+            allowed = {'harness-status.json', 'smoke-summary.json', 'npc-smoke/cloud-manifest.json',
+                       'npc-smoke/stage/compile-stdout.log', 'npc-smoke/stage/compile-stderr.log'}
+            allowed.update(f'npc-smoke/runtime/{name}' for name in ('receipt.json','result.txt','port-closed.txt',
+                           'runtime.log','daemon-stdout.log','daemon-stderr.log'))
+            allowed.update(f'abi/abi-{index}-{part}.log' for index in range(6) for part in ('stdout','stderr'))
+            limit = len(allowed)  # Exact 23-file maximum; failed phases may omit files.
         elif suite in ('cardinal05', 'cardinal10'):
             allowed = {'harness-status.json', 'smoke-summary.json', 'npc-smoke/cloud-manifest.json',
                        'npc-smoke/stage/compile-stdout.log', 'npc-smoke/stage/compile-stderr.log'}
@@ -590,7 +597,7 @@ def create_args(name,owner,head,source,binary,archive,uidgid,suite='smoke',work_
         '--head',head,'--byond-bin','/opt/byond/bin','--byond-archive','/inputs/byond.zip',
         '--scratch-root','/work','--reviewed-cloud-envelope']
     if suite != 'smoke': args += ['--suite',suite]
-    if suite in ('random05','random10','cardinal05','cardinal10'):
+    if suite in ('random05','random10','cardinal05','cardinal10','transition05'):
         require(isinstance(work_deadline,float) and work_deadline>0, 'Missing random work deadline')
         args += ['--work-deadline',str(work_deadline)]
     return args
@@ -635,7 +642,7 @@ def main():
     parser.add_argument('--name',help=argparse.SUPPRESS)
     parser.add_argument('--owner',help=argparse.SUPPRESS)
     parser.add_argument('--deadline',type=float,help=argparse.SUPPRESS)
-    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10'),required=True)
+    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10','transition05'),required=True)
     args=parser.parse_args()
     started=time.monotonic()
     require(args.execute, 'Execution requires explicit --execute')
@@ -694,7 +701,7 @@ def main():
         try:
             create_uncertain=True
             config_args=(create_args(name,owner,head,source,binary,archive,uidgid,args.suite,
-                         deadline-(MAX_SECONDS-WORK_SECONDS)) if args.suite in ('random05','random10','cardinal05','cardinal10') else
+                         deadline-(MAX_SECONDS-WORK_SECONDS)) if args.suite in ('random05','random10','cardinal05','cardinal10','transition05') else
                          create_args(name,owner,head,source,binary,archive,uidgid,args.suite))
             value=docker.call(config_args,timeout=15)[1].decode().strip()
             require(CID.fullmatch(value), 'Bad created container ID'); cid=value; create_uncertain=False
@@ -707,7 +714,7 @@ def main():
         report['cid']=cid; save(out/'controller.json',report)
         info=inspect(docker,cid); inspect_owned(info,cid,name,owner,head)
         mounts=((source,'/source'),(binary,'/opt/byond/bin'),(archive,'/inputs/byond.zip'))
-        if args.suite in ('random05','random10','cardinal05','cardinal10'):
+        if args.suite in ('random05','random10','cardinal05','cardinal10','transition05'):
             inspect_settings(info,image['Id'],mounts,uidgid,head,args.suite,deadline-(MAX_SECONDS-WORK_SECONDS))
         else:
             inspect_settings(info,image['Id'],mounts,uidgid,head,args.suite)
@@ -742,6 +749,10 @@ def main():
                 elif args.suite == 'bridge': validate_bridge_evidence(evidence,head)
                 elif args.suite == 'scheduler': validate_scheduler_evidence(evidence,head)
                 elif args.suite in ('random05','random10'): validate_random_evidence(evidence,head,args.suite,git,git_env)
+                elif args.suite == 'transition05':
+                    spec=importlib.util.spec_from_file_location('transition_evidence',Path(__file__).with_name('transition_evidence.py'))
+                    transition=importlib.util.module_from_spec(spec);spec.loader.exec_module(transition)
+                    transition.validate(evidence,head,args.suite,git,git_env)
                 elif args.suite in ('cardinal05','cardinal10'):
                     spec=importlib.util.spec_from_file_location('cardinal_evidence',Path(__file__).with_name('cardinal_evidence.py'))
                     cardinal=importlib.util.module_from_spec(spec);spec.loader.exec_module(cardinal)
