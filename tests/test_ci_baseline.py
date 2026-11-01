@@ -53,6 +53,24 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_destroyed_grab_preflight_registration_and_shared_fallback(self):
+        suite = ci.SUITES['destroyed_grab_preflight']
+        self.assertEqual(suite['files'], ('tests/test_destroyed_grab_preflight.py',))
+        self.assertEqual(suite['paths'], ())
+        self.assertEqual(set(suite['shared_paths']), {
+            'code/game/mob/mob_movement.dm',
+            'code/game/mob/living/carbon/human/subtile_movement.dm'})
+        self.assertEqual(self.selected(suite['files']), {'policy', 'bootstrap', 'progress', 'destroyed_grab_preflight'})
+        for source in suite['shared_paths']:
+            with self.subTest(source=source):
+                result = ci.impact([source])
+                self.assertIn('Unmapped impact: ' + source, result['fallback_reasons'])
+                self.assertEqual(self.selected([source]), set(ci.SUITES))
+        tree = ast.parse((ROOT / suite['files'][0]).read_text())
+        self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
+                          for alias in node.names}, {'unittest'})
+        self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}, {'dataclasses', 'pathlib'})
+
     def test_character_traits_registration_and_shared_source_fallback(self):
         suite = ci.SUITES['character_traits']
         self.assertEqual(suite['files'], ('tests/character_traits/test_foundations.py',
