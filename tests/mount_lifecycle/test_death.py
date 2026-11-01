@@ -150,6 +150,8 @@ class DeathTests(unittest.TestCase):
         world = World(self.after, on_move=lambda h: observed.append((unlinked(h), character_return(h))))
         world.run()
         self.assertEqual([row[0] for row in world.trace], ['parent', 'message', 'spin', 'forceMove', 'weaken', 'cut'])
+        spin = next(row for row in world.trace if row[0] == 'spin')
+        self.assertEqual(spin, ('spin', (5, 1), False, None))
         movement = next(row for row in world.trace if row[0] == 'forceMove')
         self.assertEqual(movement, ('forceMove', ((5, 5, 1),), False, None))
         self.assertEqual(observed, [(True, True)])
