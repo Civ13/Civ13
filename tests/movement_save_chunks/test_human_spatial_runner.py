@@ -83,9 +83,35 @@ class RunnerTests(unittest.TestCase):
             stage.assert_not_called()
             self.assertFalse(out.exists())
 
+    def test_negative_errors_still_check_prior_generation_without_hiding_reason(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            seed, work = root / 'seed', root / 'work'
+            seed.mkdir()
+            work.mkdir()
+            (seed / 'save_complete.txt').write_bytes(b'round-v1:old')
+            (seed / '1.sav').write_bytes(b'old synthetic generation')
+            shutil.copytree(seed, work / 'map_saves')
+            (work / 'map_backups').mkdir()
+
+            def failed(*_):
+                raise RuntimeError('fixture error: wrong rejection')
+
+            with self.assertRaisesRegex(RuntimeError, 'fixture error: wrong rejection'):
+                runner.execute_negative(failed, work, seed, 'wall', 'expected')
+            (work / 'map_saves' / 'save_complete.txt').write_bytes(b'round-v1:new')
+            with self.assertRaisesRegex(RuntimeError, 'fixture error: wrong rejection.*published a different current marker'):
+                runner.execute_negative(failed, work, seed, 'wall', 'expected')
+            (work / 'map_saves' / 'save_complete.txt').write_bytes(b'round-v1:old')
+            with self.assertRaisesRegex(RuntimeError, 'negative failed for wrong reason'):
+                runner.execute_negative(lambda *_: {'case': 'wall', 'rejection': 'different'},
+                                        work, seed, 'wall', 'expected')
+            self.assertEqual(runner.execute_negative(lambda *_: {'case': 'wall', 'rejection': 'expected'},
+                                                     work, seed, 'wall', 'expected')['case'], 'wall')
+
     def test_final_acceptance_checks_deadline_after_negative_controls(self):
         source = (HERE / 'human_spatial_run.py').read_text()
-        self.assertLess(source.index('negative_publication(work /'), source.index("require(time.monotonic() < job_deadline, 'native sequence deadline exceeded before final acceptance')"))
+        self.assertLess(source.index('execute_negative(execute, work, seed, case, expected)'), source.index("require(time.monotonic() < job_deadline, 'native sequence deadline exceeded before final acceptance')"))
         self.assertLess(source.index("require(time.monotonic() < job_deadline, 'native sequence deadline exceeded before final acceptance')"), source.index("result['execution'] = 'passed'"))
 
     def test_owned_group_cleanup_when_monitor_rejects(self):

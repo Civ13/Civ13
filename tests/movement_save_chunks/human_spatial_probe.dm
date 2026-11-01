@@ -123,10 +123,11 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 /proc/human_spatial_fixture_mutate_candidate(datum/persistence_world_operation/operation)
 	if(!(human_spatial_fixture_case in list("duplicate", "missing_roster", "unsafe_default"))) return
 	human_spatial_fixture_assert(operation && operation.human_spatial_requests.len == 1, "fixture_mutation_request")
+	var/datum/human_subtile_save_request/request = operation.human_spatial_requests[1]
+	human_spatial_fixture_assert(request && request.operation == operation && request.actor && request.captured && request.serialized && request.spatial_attached && request.saved_ref && request.saved_z == 1 && islist(request.position) && request.position["sx"] == 4 && request.position["sy"] == 4, "fixture_mutation_captured_request")
 	if(human_spatial_fixture_case == "missing_roster")
 		operation.human_roster_records = list()
 		return
-	var/datum/human_subtile_save_request/request = operation.human_spatial_requests[1]
 	var/savefile/F = new("map_saves/[request.saved_z].sav")
 	if(human_spatial_fixture_case == "duplicate")
 		var/other_ref = F["/map/[request.saved_z]/3/3"]
@@ -279,6 +280,8 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			observed["human_completions"] = human_spatial_fixture_human_completions
 		else if(world.params["phase"] == "negative")
 			human_spatial_fixture_case = world.params["case"]
+			observed["case"] = human_spatial_fixture_case
+			observed["rejection"] = null
 			var/previous = trim(file2text("map_saves/save_complete.txt"))
 			human_spatial_fixture_assert(length(previous) > 0, "fixture_negative_seed_missing")
 			var/mob/living/human/H = new(locate(1, 1, 1))
@@ -286,8 +289,12 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			H.canmove = TRUE
 			H.stat = CONSCIOUS
 			human_spatial_fixture_assert(H.set_human_subtile(TRUE), "fixture_negative_enable")
-			H.step_x = 4
-			H.step_y = 4
+			// Use the existing legacy restore path to establish a real owned
+			// partial offset before introducing any negative condition.
+			H.human_subtile_position = list("x" = H.x, "y" = H.y, "z" = H.z, "sx" = 4, "sy" = 4)
+			H.human_subtile_import_owned = TRUE
+			H.after_load()
+			human_spatial_fixture_assert(H.human_subtile_offset_owned && H.step_x == 4 && H.step_y == 4 && !H.human_subtile_pulse && !H.human_subtile_transaction, "fixture_negative_owned_offset")
 			var/expected = null
 			switch(human_spatial_fixture_case)
 				if("wall")
@@ -301,9 +308,18 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 				if("contained")
 					var/obj/structure/closet/crate/C = new(locate(3, 3, 1))
 					H.forceMove(C)
+					// Explicitly construct the unsupported contained partial
+					// state even if the native containment move resets offsets.
+					H.step_x = 4
+					H.step_y = 4
+					human_spatial_fixture_assert(H.loc == C && H.step_x == 4 && H.step_y == 4, "fixture_negative_contained_partial")
 					expected = "Human legacy save needs an aligned idle position"
 				if("buckle")
-					H.buckled = new /obj/structure/bed/chair(locate(1, 1, 1))
+					var/obj/structure/bed/chair/C = new(locate(1, 1, 1))
+					human_spatial_fixture_assert(C.buckle_mob(H), "fixture_negative_buckle_setup")
+					H.step_x = 4
+					H.step_y = 4
+					human_spatial_fixture_assert(H.buckled == C && C.buckled_mob == H && H.loc == C.loc && H.step_x == 4 && H.step_y == 4, "fixture_negative_buckle_partial")
 					expected = "Human legacy save needs an aligned idle position"
 				if("roster")
 					expected = "Human roster proof has no stable owner"
@@ -311,6 +327,7 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 					var/obj/item/weapon/pen/P = new(locate(2, 2, 1))
 					H.pulling = P
 					P.pulledby = H
+					human_spatial_fixture_assert(H.pulling == P && P.pulledby == H && H.step_x == 4 && H.step_y == 4, "fixture_negative_pulling_partial")
 					expected = "Human legacy save needs an aligned idle position"
 				if("duplicate")
 					expected = "Human slot candidate has duplicate saved parents"
@@ -320,20 +337,28 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 					expected = "Human saved size is unsupported"
 				else
 					throw EXCEPTION("fixture_negative_case_unknown")
+			if(human_spatial_fixture_case in list("wall", "dense", "roster", "duplicate", "missing_roster", "unsafe_default"))
+				human_spatial_fixture_assert(H.x == 1 && H.y == 1 && H.z == 1 && H.step_x == 4 && H.step_y == 4 && H.human_subtile_offset_owned && H.human_subtile_shape() && H.human_subtile_unlinked() && !H.pulling, "fixture_negative_spatial_precondition")
 			var/rejection = null
 			try
 				if(map_storage.Save_World()) throw EXCEPTION("fixture_negative_unexpected_success")
 			catch(var/exception/rejected)
 				rejection = rejected.name
-			human_spatial_fixture_assert(rejection == expected, "fixture_negative_wrong_rejection")
+			// Record the actual reason even when it differs from the oracle.
+			observed["case"] = human_spatial_fixture_case
+			observed["expected_rejection"] = expected
+			observed["rejection"] = rejection
+			observed["previous_generation"] = previous
 			var/current_exists = fexists("map_saves/save_complete.txt")
 			var/current = current_exists ? trim(file2text("map_saves/save_complete.txt")) : null
 			var/backup = trim(file2text("map_backups/save_complete.txt"))
+			observed["current_marker_exists"] = !!current_exists
+			observed["backup_marker_exists"] = !!fexists("map_backups/save_complete.txt")
+			observed["current_marker"] = current
+			observed["backup_marker"] = backup
 			human_spatial_fixture_assert(!current_exists || current == previous, "fixture_negative_published_new_marker")
 			human_spatial_fixture_assert(current == previous || backup == previous, "fixture_negative_previous_generation_lost")
-			observed["case"] = human_spatial_fixture_case
-			observed["rejection"] = rejection
-			observed["previous_generation"] = previous
+			human_spatial_fixture_assert(rejection == expected, "fixture_negative_wrong_rejection")
 		else
 			throw EXCEPTION("fixture_phase_unknown")
 	catch(var/exception/E)

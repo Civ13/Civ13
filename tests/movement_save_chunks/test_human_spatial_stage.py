@@ -121,6 +121,37 @@ class StageChecks(unittest.TestCase):
         self.assertIn('i <= 16 && cursor', probe)
         self.assertIn('observed["legacy_parent_diagnostic"]', probe)
 
+    def test_negative_cases_establish_owned_offsets_and_keep_exact_oracles(self):
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        body = probe.split('else if(world.params["phase"] == "negative")', 1)[1].split('\n\t\telse\n\t\t\tthrow EXCEPTION("fixture_phase_unknown")', 1)[0]
+        self.assertLess(body.index('H.after_load()'), body.index('switch(human_spatial_fixture_case)'))
+        for required in ('human_subtile_import_owned = TRUE', 'fixture_negative_owned_offset',
+                         'fixture_negative_spatial_precondition', 'fixture_negative_contained_partial',
+                         'fixture_negative_buckle_partial', 'fixture_negative_pulling_partial',
+                         'C.buckled_mob == H', 'P.pulledby == H'):
+            self.assertIn(required, body)
+        cases = {
+            'wall': 'Human saved turf type is not audited',
+            'dense': 'Human saved footprint has a hard or unaudited occupant',
+            'contained': 'Human legacy save needs an aligned idle position',
+            'buckle': 'Human legacy save needs an aligned idle position',
+            'roster': 'Human roster proof has no stable owner',
+            'pulling': 'Human legacy save needs an aligned idle position',
+            'duplicate': 'Human slot candidate has duplicate saved parents',
+            'missing_roster': 'Human roster proof changed before completion',
+            'unsafe_default': 'Human saved size is unsupported',
+        }
+        for name, expected in cases.items():
+            block = body.split('if("' + name + '")', 1)[1].split('\n\t\t\t\tif("', 1)[0]
+            self.assertIn('expected = "' + expected + '"', block, name)
+        self.assertLess(body.index('observed["rejection"] = rejection'), body.index('rejection == expected'))
+        self.assertLess(body.index('fixture_negative_previous_generation_lost'), body.index('rejection == expected'))
+        mutation = probe.split('/proc/human_spatial_fixture_mutate_candidate(', 1)[1].split('\n/world/', 1)[0]
+        for required in ('operation.human_spatial_requests.len == 1', 'request.captured',
+                         'request.serialized', 'request.spatial_attached', 'request.saved_ref',
+                         'request.position["sx"] == 4', 'request.position["sy"] == 4'):
+            self.assertIn(required, mutation)
+
 
 if __name__ == '__main__':
     unittest.main()

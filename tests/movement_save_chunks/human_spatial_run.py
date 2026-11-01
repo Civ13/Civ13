@@ -133,6 +133,23 @@ def negative_publication(current, backup, seed):
     require(current_hashes == seed_hashes or backup_hashes == seed_hashes, 'negative lost prior bytes')
 
 
+def execute_negative(execute, work, seed, case, expected):
+    # Preserve both execution and backup-integrity failures. Even an invalid
+    # receipt or wrong rejection must not skip the independent byte check.
+    try:
+        row = execute(work, 'negative', '&case=' + case)
+    except Exception as error:
+        try:
+            negative_publication(work / 'map_saves', work / 'map_backups', seed)
+        except Exception as publication_error:
+            raise RuntimeError('negative execution failed: ' + str(error) +
+                               '; prior generation check failed: ' + str(publication_error)) from error
+        raise
+    negative_publication(work / 'map_saves', work / 'map_backups', seed)
+    require(row.get('case') == case and row.get('rejection') == expected, 'negative failed for wrong reason')
+    return row
+
+
 def bounded_child():
     import resource
     limit = 1024 * 1024 * 1024
@@ -346,9 +363,7 @@ def run(output, byond_bin, archive, expected_head, expected_scope):
             work = runtime_dir('negative-' + case)
             shutil.copytree(seed, work / 'map_saves', dirs_exist_ok=True)
             require(hashes(work / 'map_saves') == seeds['ordinary'], 'negative seed copy changed')
-            row = execute(work, 'negative', '&case=' + case)
-            require(row.get('case') == case and row.get('rejection') == expected, 'negative failed for wrong reason')
-            negative_publication(work / 'map_saves', work / 'map_backups', seed)
+            execute_negative(execute, work, seed, case, expected)
         require(time.monotonic() < job_deadline, 'native sequence deadline exceeded before final acceptance')
         result['execution'] = 'passed'
     except Exception as exc:
