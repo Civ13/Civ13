@@ -64,7 +64,7 @@ def instrument_legacy_parent_refusal(data):
         '\t\tif(!istype(legacy_parent) || legacy_parent.z != H.z)\n'
         '\t\t\ttry\n'
         '\t\t\t\thuman_spatial_fixture_record_legacy_refusal(H, legacy_parent, record["mode"])\n'
-        '\t\t\tcatch(var/exception/diagnostic_error)\n'
+        '\t\t\tcatch\n'
         '\t\t\t\thuman_spatial_fixture_legacy_diagnostic = list("diagnostic_error" = TRUE)\n'
         '\t\t\tthrow EXCEPTION("Human legacy save has no valid parent")'
     )

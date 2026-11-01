@@ -71,7 +71,7 @@ class StageChecks(unittest.TestCase):
         self.assertEqual(adapted.count(condition), 1)
         self.assertEqual(adapted.count(error), 1)
         self.assertLess(adapted.index('human_spatial_fixture_record_legacy_refusal(H, legacy_parent'), adapted.index(error))
-        self.assertIn('catch(var/exception/diagnostic_error)', adapted)
+        self.assertIn('\t\t\tcatch\n', adapted)
         with self.assertRaises(ValueError):
             stage.instrument_legacy_parent_refusal(adapted)
         probe = (HERE / 'human_spatial_probe.dm').read_text()
