@@ -1,0 +1,542 @@
+{
+  "schema": 1,
+  "scope": "production code and interface DM roots; collision declarations and parent_type assignments",
+  "files": [
+    {
+      "path": "code/game/atoms.dm",
+      "sha256_normalized": "8a3b3738d6efbbe0bfa564e395a7f239b4cf64d6199f38abcfe2466cc38dabdc",
+      "declarations": [
+        {
+          "line": 44,
+          "declaration": "/atom/proc/CanPass(atom/movable/mover, turf/target, height=1.5, air_group = FALSE)"
+        },
+        {
+          "line": 89,
+          "declaration": "/atom/proc/CheckExit()"
+        }
+      ]
+    },
+    {
+      "path": "code/game/mob/mob_movement.dm",
+      "sha256_normalized": "24947662d07e131a2cff1242b2e8b3548ddd6bde63c944c90bca7551ca9e07ea",
+      "declarations": [
+        {
+          "line": 81,
+          "declaration": "/mob/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/mob/observer/observer.dm",
+      "sha256_normalized": "7283c621aea5de98abb2e5992a9841b55fd6b0155a7b01d6fe0b9607052ed5fa",
+      "declarations": [
+        {
+          "line": 43,
+          "declaration": "/mob/observer/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/covers.dm",
+      "sha256_normalized": "243c808efeca0c2f174e00671f5b6640125150ae2b34ae7267c8e2a94d33250d",
+      "declarations": [
+        {
+          "line": 180,
+          "declaration": "/obj/covers/CanPass(var/atom/movable/mover)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/covers_types/cover_jail.dm",
+      "sha256_normalized": "8e7a099828a6333857d3f8684d9954cbe7e265263cf6bc455cd0fe9037fce8b0",
+      "declarations": [
+        {
+          "line": 82,
+          "declaration": "/obj/covers/jail/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/covers_types/covers_buildable.dm",
+      "sha256_normalized": "7eebc907a6a75fb93f2cd1433dcc1c9a3bab67fae45a1549dae0d7787c83e216",
+      "declarations": [
+        {
+          "line": 37,
+          "declaration": "/obj/covers/dirt_wall/blocks/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        },
+        {
+          "line": 123,
+          "declaration": "/obj/covers/clay_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        },
+        {
+          "line": 214,
+          "declaration": "/obj/covers/clay_wall/sumerian/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        },
+        {
+          "line": 411,
+          "declaration": "/obj/covers/cement_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        },
+        {
+          "line": 457,
+          "declaration": "/obj/covers/brick_wall/incomplete/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/effects/effect_system.dm",
+      "sha256_normalized": "2c4fa14e0bea93faa6307a1355320f1ffc48abfbe6246270ee04b5d51cddafb8",
+      "declarations": [
+        {
+          "line": 328,
+          "declaration": "/obj/effect/effect/smoke/bad/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/farming.dm",
+      "sha256_normalized": "bd8124747ef8dfa7986f0bd3e3932bda972186795826de0d43354b782be37678",
+      "declarations": [
+        {
+          "line": 699,
+          "declaration": "parent_type = /obj/structure/farming/plant/mushroom"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/items/weapons/policetape.dm",
+      "sha256_normalized": "60f2ee09b9e8be5ae72ba60cd907aa728d295f92cee2ad6600da477bf6a91f96",
+      "declarations": [
+        {
+          "line": 235,
+          "declaration": "/obj/item/tape/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/appliances.dm",
+      "sha256_normalized": "1bd47340fc70eb41a6251822b27aaf4f60b939ee2db48c5931fa42f136b28928",
+      "declarations": [
+        {
+          "line": 86,
+          "declaration": "/obj/structure/TV/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/barricades.dm",
+      "sha256_normalized": "d62fbb19e006761db3fc7932802c7111434ae7642085869bbe2f678bc9dfef3d",
+      "declarations": [
+        {
+          "line": 157,
+          "declaration": "/obj/structure/barricade/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/crates_lockers/closets.dm",
+      "sha256_normalized": "341f129ab4a2924a6d53604e1d0b848d61d716b23d118bb8d462235b1634d718",
+      "declarations": [
+        {
+          "line": 74,
+          "declaration": "/obj/structure/closet/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/crates_lockers/crates.dm",
+      "sha256_normalized": "af5ba9b377fa1c1577b16d56135c86ab3420491608fb872e8e4693277a018aba",
+      "declarations": [
+        {
+          "line": 71,
+          "declaration": "/obj/structure/closet/crate/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/door.dm",
+      "sha256_normalized": "51b6323aea181c724fc9e9c996d43b9a67b9c455bf1ab67f98a8798b3783191e",
+      "declarations": [
+        {
+          "line": 116,
+          "declaration": "/obj/structure/simple_door/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/grille.dm",
+      "sha256_normalized": "ef993a9f4b82b25f46dcabc227f218ff13c76d75b628bda98b2281f1c51bec27",
+      "declarations": [
+        {
+          "line": 47,
+          "declaration": "/obj/structure/grille/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        },
+        {
+          "line": 213,
+          "declaration": "/obj/structure/grille/cult/CanPass(atom/movable/mover, turf/target, height = 1.5, air_group = FALSE)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/iv_drip.dm",
+      "sha256_normalized": "63b30a28ce06c40dc5d9e6b5df05311f50fbfcdb0d07b7cde214e78e5b020c5c",
+      "declarations": [
+        {
+          "line": 168,
+          "declaration": "/obj/structure/iv_drip/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/optable.dm",
+      "sha256_normalized": "c9478ea1c0c8f85f5bff4e17ecbac9ad89c18fcf2914df91b85b1ca89c4ee7b0",
+      "declarations": [
+        {
+          "line": 45,
+          "declaration": "/obj/structure/optable/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/plant_pots.dm",
+      "sha256_normalized": "697945f58fceb3225fdbced58a8edce129e9bb543fbe6d3016c0f198f100df15",
+      "declarations": [
+        {
+          "line": 492,
+          "declaration": "/obj/structure/plant_pot/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/railing.dm",
+      "sha256_normalized": "c7b575712656699cf912228eb981bcc2e1dfa8a037563d0f5c71edc6ca0bfa6b",
+      "declarations": [
+        {
+          "line": 44,
+          "declaration": "/obj/structure/railing/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        },
+        {
+          "line": 167,
+          "declaration": "/obj/structure/railing/CheckExit(atom/movable/O as mob|obj, target as turf)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/stool_bed_chair_nest/bed.dm",
+      "sha256_normalized": "54a3ae84390e4f6294458cab05819f2ad1716762fdb3e143865a3ff1d4bdab48",
+      "declarations": [
+        {
+          "line": 129,
+          "declaration": "/obj/structure/bed/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/table.dm",
+      "sha256_normalized": "bc482c091f77a8ec0ad765c009f421af4843b82e1a8e95c2d7312c3bbb3e3ffc",
+      "declarations": [
+        {
+          "line": 349,
+          "declaration": "/obj/structure/table/CanPass(atom/movable/mover, turf/target)"
+        },
+        {
+          "line": 400,
+          "declaration": "/obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/wild.dm",
+      "sha256_normalized": "4316209017d113dad4bd2327df91e3227a3c67f5c9a8e455a09818b4e9a1befe",
+      "declarations": [
+        {
+          "line": 156,
+          "declaration": "/obj/structure/wild/CanPass(var/atom/movable/mover)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures/window.dm",
+      "sha256_normalized": "296e7b3441b50bdbce0641b055e6bc26676dc38a57de54dd1d32d67521de342d",
+      "declarations": [
+        {
+          "line": 171,
+          "declaration": "/obj/structure/window/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        },
+        {
+          "line": 181,
+          "declaration": "/obj/structure/window/CheckExit(atom/movable/O as mob|obj, target as turf)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/objects/structures.dm",
+      "sha256_normalized": "4a936a28bd9a1e95cd24f8d2877abb6f05e234bd5af0c2832e5cc6ce20f4e178",
+      "declarations": [
+        {
+          "line": 66,
+          "declaration": "/obj/structure/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/turfs/floor_types.dm",
+      "sha256_normalized": "b23e2610746b461617bf30354b6744142c18e1f7e4bdc6ed64c6d927a7168b06",
+      "declarations": [
+        {
+          "line": 397,
+          "declaration": "/turf/floor/beach/water/deep/CanPass(atom/movable/mover)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/turfs/ships/shipwalls.dm",
+      "sha256_normalized": "3ecb853ceaa720d3d9a5c3ad9454c260395b5ea712c85d2c3ff435ccd120be5e",
+      "declarations": [
+        {
+          "line": 46,
+          "declaration": "/obj/structure/barricade/ship/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/game/turfs/turf.dm",
+      "sha256_normalized": "5e0dda68b71c99b02a79255a9c8d3bea5deaa59119cac5f0fa3b7ee39cc33d95",
+      "declarations": [
+        {
+          "line": 59,
+          "declaration": "/turf/CanPass(atom/movable/mover, turf/target, height=1.5,air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/barbwire.dm",
+      "sha256_normalized": "c15d77ed1cce1c163a4401bc33ef775d9d4a68987a75f1dfcae95775bf05f992",
+      "declarations": [
+        {
+          "line": 27,
+          "declaration": "/obj/structure/barbwire/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/barriers/cover.dm",
+      "sha256_normalized": "e0d4db78afaa3af9de81902e628304707c86a0300e1a633c3ee01c23ddfa9d98",
+      "declarations": [
+        {
+          "line": 17,
+          "declaration": "/obj/structure/window/barrier/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/extraction/container_keys.dm",
+      "sha256_normalized": "c7dc69c8c0a5a8df86ca02557f13a771577d94f8bf6f4905e8dda379add4de48",
+      "declarations": [
+        {
+          "line": 15,
+          "declaration": "parent_type = /obj/item"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/extraction/mall.dm",
+      "sha256_normalized": "be5e3ea2fef68778f1f6a490d49fdf5f51a0d3c1702935dab85c5688886d8601",
+      "declarations": [
+        {
+          "line": 67,
+          "declaration": "parent_type = /obj/structure/table/wood"
+        },
+        {
+          "line": 231,
+          "declaration": "parent_type = /obj/structure/extraction_mall_fixture"
+        },
+        {
+          "line": 239,
+          "declaration": "parent_type = /obj/structure/extraction_mall_fixture"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/machinery/modular_vehicles/frame.dm",
+      "sha256_normalized": "e0041a4a36d13c768d415740574437fe28d51b723bb8886fc11050e86668066d",
+      "declarations": [
+        {
+          "line": 138,
+          "declaration": "/obj/structure/vehicleparts/frame/CheckExit(atom/movable/O as mob|obj, target as turf)"
+        },
+        {
+          "line": 199,
+          "declaration": "/obj/structure/vehicleparts/frame/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/modern_items.dm",
+      "sha256_normalized": "19f899820e35c0d40990bf81fe72392513e85600998c9a9f2e19dfbb9b8a48b6",
+      "declarations": [
+        {
+          "line": 26,
+          "declaration": "/obj/structure/lamp/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/structures.dm",
+      "sha256_normalized": "4d600d76d93284f3a637461c339cd3532ade5edf1b191a438d7ccffd20ff823b",
+      "declarations": [
+        {
+          "line": 621,
+          "declaration": "/obj/structure/props/sofa/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        },
+        {
+          "line": 631,
+          "declaration": "/obj/structure/props/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)//So bullets will fly over and stuff."
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/weapons/football.dm",
+      "sha256_normalized": "2bea57fb1767c39cd066869b32f402028582d4ea7aa3c45db415d8f9b1bc7b4e",
+      "declarations": [
+        {
+          "line": 615,
+          "declaration": "/obj/structure/basketball_hoop/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/1713/weapons/guns/mg/_stationary.dm",
+      "sha256_normalized": "20965fb5f9b06d15575a9da62933f090fbca415acfd82e84948d33bd698eecaf",
+      "declarations": [
+        {
+          "line": 69,
+          "declaration": "/obj/item/weapon/gun/projectile/automatic/stationary/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/client/client_defines.dm",
+      "sha256_normalized": "9a559a7a3717a10878c109a0b5d1043f7c54ec52a05e2410c3d9b06378598f69",
+      "declarations": [
+        {
+          "line": 3,
+          "declaration": "parent_type = /datum"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/dmm_suite/_preprocessor_and_utilities.dm",
+      "sha256_normalized": "838f9349d33faa42ad3e1a925712d2acd5ac99dee4f5d1a4467780f7c5cfe5f8",
+      "declarations": [
+        {
+          "line": 88,
+          "declaration": "parent_type = /datum"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/magic/magic_wands_premade.dm",
+      "sha256_normalized": "8c7cbd364ee075d72db9e8550efd356935c63fb769bad3c3044f1b4de277d07c",
+      "declarations": [
+        {
+          "line": 10,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted"
+        },
+        {
+          "line": 17,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 28,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 39,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 50,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 61,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 72,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 83,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 94,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 105,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 116,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        },
+        {
+          "line": 127,
+          "declaration": "parent_type = /obj/item/weapon/material/magic/wand/crafted/premade"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/multiz/structures.dm",
+      "sha256_normalized": "7e9f7205f6a2a30e239b3a05a6742a4503b6315ec2b9688d168d1ee59ea88d43",
+      "declarations": [
+        {
+          "line": 45,
+          "declaration": "CanPass(obj/mover, turf/source, height, airflow)"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/reagents/biochemistry.dm",
+      "sha256_normalized": "23e4d3cb69829eb22e5b61fa0b3137f9cc9a973c1e8026007b87168dcc49050f",
+      "declarations": [
+        {
+          "line": 52,
+          "declaration": "parent_type = /datum/reagent/gasoline"
+        }
+      ]
+    },
+    {
+      "path": "code/processes/__processScheduler.dm",
+      "sha256_normalized": "f546f3b48ceadc510d0c6feca59ab00215b05647c701efd6b5282904c568da12",
+      "declarations": [
+        {
+          "line": 5,
+          "declaration": "parent_type = /datum"
+        }
+      ]
+    },
+    {
+      "path": "code/processes/_process.dm",
+      "sha256_normalized": "09fc608d18b205006374d3b0a541c84d22fb8d4dd01bdf6f370d9896fe54c02e",
+      "declarations": [
+        {
+          "line": 4,
+          "declaration": "parent_type = /datum"
+        }
+      ]
+    },
+    {
+      "path": "code/processes/callproc.dm",
+      "sha256_normalized": "1765bbd7dc76a944738cdab68b39f243d34742065a8bf6bda0683f9f45899777",
+      "declarations": [
+        {
+          "line": 125,
+          "declaration": "parent_type = /datum"
+        }
+      ]
+    }
+  ]
+}
