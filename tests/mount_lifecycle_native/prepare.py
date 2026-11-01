@@ -62,6 +62,7 @@ def validate_receipt(row, head, variant):
             'Receipt source/variant mismatch')
     require((row.get('byond_version'), row.get('byond_build')) == (516, 1688) and row.get('port') == 0,
             'Wrong native engine or open application port')
+    require('cleanup_error' in row and row['cleanup_error'] is None, 'Fixture-owned cleanup failed/missing')
     expected = labels()
     failure = VARIANTS[variant][1]
     if failure:
@@ -88,6 +89,9 @@ def validate_receipt(row, head, variant):
         required = ('native_forceMove_return' if operation in ('death', 'separation') else
                     'native_mount_Destroy_entry' if operation == 'mount_qdel' else 'native_human_Destroy_entry')
         require(any(item['phase'] == required for item in phases), 'Missing native boundary: ' + case)
+        if operation == 'rider_qdel' or (state == 'retiring' and operation in ('death', 'mount_qdel')):
+            require(any(item['phase'] == 'native_teardown_forceMove_return' for item in phases),
+                    'Missing actual human teardown forceMove: ' + case)
         if operation in ('mount_qdel', 'rider_qdel'):
             require(any(item['phase'] == 'native_destroyed_event' and item['values'].get('modern') == -2
                         for item in phases), 'Missing in-progress actual destroyed event: ' + case)

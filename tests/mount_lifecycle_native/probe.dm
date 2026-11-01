@@ -22,13 +22,16 @@ var/list/mount_native_observations = list()
 /mob/living/human/mount_native/forceMove(atom/destination, var/special_event, list/throw_hop_token = null)
 	var/datum/mount_native_case/C = mount_native_active
 	if (C && C.active && src == C.H)
-		C.force_calls++
-		C.before_force_riding = riding
-		C.before_force_mount = riding_mob
+		if (isturf(destination))
+			C.force_calls++
+			C.before_force_riding = riding
+			C.before_force_mount = riding_mob
+		else
+			C.teardown_force_calls++
 	. = ..(destination, special_event, throw_hop_token)
 	if (C && C.active && src == C.H)
-		C.note("native_forceMove_return", list("return" = ., "x" = x, "y" = y))
-		if ((C.operation == "death" || C.operation == "separation") && C.kind == "reassignment" && !C.injected)
+		C.note(isturf(destination) ? "native_forceMove_return" : "native_teardown_forceMove_return", list("return" = ., "x" = x, "y" = y))
+		if (isturf(destination) && (C.operation == "death" || C.operation == "separation") && C.kind == "reassignment" && !C.injected)
 			C.injected = TRUE
 			C.bind_b()
 			C.note("synthetic_forceMove_reassignment", list("target" = "B"))
@@ -90,6 +93,7 @@ var/list/mount_native_observations = list()
 	var/a_ref
 	var/list/owned_refs
 	var/force_calls = 0
+	var/teardown_force_calls = 0
 	var/icon_calls = 0
 	var/human_destroy_calls = 0
 	var/mount_destroy_calls = 0
@@ -225,6 +229,8 @@ var/list/mount_native_observations = list()
 			state_ok = state_ok && !H.riding && isnull(H.riding_mob)
 			ownership_ok = H && !J.riding && isnull(J.riding_mob)
 		callback_ok = force_calls == 1 && !before_force_riding && (kind == "foreign" ? before_force_mount == B : isnull(before_force_mount))
+		if (kind == "retiring")
+			callback_ok = callback_ok && teardown_force_calls == 1
 	else if (operation == "separation")
 		if (kind == "retiring")
 			state_ok = isnull(locate(a_ref)) && H && !H.riding && isnull(H.riding_mob)
@@ -272,7 +278,7 @@ var/list/mount_native_observations = list()
 	mount_native_check(callback_ok, "[id].callbacks")
 	mount_native_check(ownership_ok, "[id].ownership")
 
-/datum/mount_native_case/proc/cleanup()
+/datum/mount_native_case/proc/cleanup(record = TRUE)
 	active = FALSE
 	if (A)
 		GLOB.destroyed_event.unregister(A, src)
@@ -285,7 +291,9 @@ var/list/mount_native_observations = list()
 	for (var/ref_id in owned_refs)
 		if (locate(ref_id))
 			gone = FALSE
-	mount_native_check(gone, "[id].cleanup")
+	if (record)
+		mount_native_check(gone, "[id].cleanup")
+	return gone
 
 /proc/mount_native_run_case(operation, kind)
 	var/datum/mount_native_case/C = new
@@ -303,6 +311,7 @@ var/list/mount_native_observations = list()
 	if (!port)
 		text2file("closed", "port-closed.txt")
 	var/error = null
+	var/cleanup_error = null
 	try
 		mount_native_check(!port && !OpenPort(0) && !port, "startup.closed_port")
 		mount_native_check(byond_version == 516 && byond_build == 1688, "startup.engine")
@@ -317,8 +326,17 @@ var/list/mount_native_observations = list()
 				mount_native_run_case(operation, "absent")
 	catch (var/exception/mount_failure)
 		error = mount_failure.name
-	// Failures retain their prefix observations. Host cleanup owns any remainder.
-	text2file(json_encode(list("head" = MOUNT_NATIVE_HEAD, "variant" = MOUNT_NATIVE_VARIANT, "byond_version" = byond_version, "byond_build" = byond_build, "initial_native_port" = initial_native_port, "port" = port, "checks" = mount_native_rows, "observations" = mount_native_observations, "error" = error, "scope" = "native fields/qdel/Destroy;selected separation branch;synthetic callback injections")), "receipt.json")
+		if (mount_native_active)
+			try
+				var/datum/mount_native_case/failed_case = mount_native_active
+				if (!failed_case.cleanup(FALSE))
+					cleanup_error = "fixture_owned_mobs_survived"
+				mount_native_active = null
+				qdel(failed_case)
+			catch (var/exception/mount_cleanup_failure)
+				cleanup_error = mount_cleanup_failure.name
+	// Preserve the first assertion and prefix; cleanup never adds passing rows.
+	text2file(json_encode(list("head" = MOUNT_NATIVE_HEAD, "variant" = MOUNT_NATIVE_VARIANT, "byond_version" = byond_version, "byond_build" = byond_build, "initial_native_port" = initial_native_port, "port" = port, "checks" = mount_native_rows, "observations" = mount_native_observations, "error" = error, "cleanup_error" = cleanup_error, "scope" = "native fields/qdel/Destroy;selected separation branch;synthetic callback injections")), "receipt.json")
 	text2file(error ? "FAIL [error]" : "PASS", "result.txt")
 	del(world)
 	return

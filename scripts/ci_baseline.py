@@ -25,6 +25,16 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
+    'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',),
+        'paths': ('tests/mount_lifecycle_native/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/game/mob/living/carbon/human/human.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'tests/human_subtile/run-npc.py', 'tests/human_subtile/run-diagonal.py',
+            'tests/human_subtile/run.py', 'tests/human_subtile/probe.dm',
+            'scripts/native_fixture.py', 'tools/byond/version.json')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.

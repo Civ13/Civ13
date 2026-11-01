@@ -5,6 +5,8 @@ daemon, client, live world or save has been used. There is deliberately no new
 native execution CLI or workflow admission. Existing offline lifecycle behavior
 suites are not duplicated here; test_prepare.py checks only composition, selectors,
 mutation identities and strict receipt rejection using synthetic receipt data.
+Only that explicit preparation test file enters the offline baseline registry.
+No native compile/run step or manual dispatch is added to test.yml.
 
 ## Source and entry selector
 
@@ -31,6 +33,10 @@ compiled from the full source. They are not replaced by Python models or fake
 qdel/parent implementations. Fixture subtypes log before/after native parent
 calls and inject explicitly labelled synthetic callbacks. Destroyed-event
 callbacks use the actual synchronous production observer dispatcher.
+That event occurs inside the parent chain, before movable Destroy's later
+contents/pull cleanup and forceMove(null) return. It is not an after-all-cleanup
+signal. The fixture distinguishes turf forceMove observations from that native
+teardown forceMove(null); neither is replaced or omitted.
 
 Separation selects the exact outer riding branch from human_life.dm into a native
 fixture-only proc. The selector requires one anchor and the complete known release
@@ -71,6 +77,9 @@ wrappers for the positive variant. Each control must compile cleanly, produce no
 unexpected runtime, and fail exactly its named operation.matching.state assertion
 after the correct passing prefix. Compiler errors, missing receipts, timeouts or
 earlier assertions are failed attempts, never successful negative controls.
+The failing case still qdels its owned mobs with callbacks disarmed, without
+adding post-failure assertion rows. A separate cleanup error retains the original
+assertion and makes the whole attempt fail. Host-owned cleanup remains mandatory.
 
 ## Proposed execution envelope, not admission
 

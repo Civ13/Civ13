@@ -27,8 +27,10 @@ def receipt(variant='none'):
         observations.append(dict(case=case, phase=phase, values=dict(modern=-2)))
         if operation in ('mount_qdel', 'rider_qdel'):
             observations.append(dict(case=case, phase='native_destroyed_event', values=dict(modern=-2)))
+        if operation == 'rider_qdel' or (case.endswith('.retiring') and operation in ('death', 'mount_qdel')):
+            observations.append(dict(case=case, phase='native_teardown_forceMove_return', values=dict()))
     return dict(head='a'*40, variant=variant, byond_version=516, byond_build=1688,
-                port=0, checks=checks, observations=observations, error=failure)
+                port=0, checks=checks, observations=observations, error=failure, cleanup_error=None)
 
 
 class PrepareTests(unittest.TestCase):
@@ -77,6 +79,7 @@ class PrepareTests(unittest.TestCase):
                        lambda row: row.update(port=1234),
                        lambda row: row.update(byond_build=1681),
                        lambda row: row.update(head='b'*40),
+                       lambda row: row.update(cleanup_error='owned cleanup failed'),
                        lambda row: row.update(observations=[])):
             row = receipt()
             mutate(row)
