@@ -132,3 +132,9 @@
 /datum/gameplay_action_lease/proc/valid()
 	return FALSE
 #endif
+/datum/resource_work_animation/proc/stop()
+	return
+
+// Rendering is intentionally outside this extracted mining-behaviour fixture.
+/mob/proc/prepare_resource_work_animation(obj/item/tool, atom/target, duration)
+	return null
