@@ -35,3 +35,10 @@ No compiler, native daemon/client, real clock, socket, message transport or save
 is launched. Native list lookup cost, callback timing, sound, UI and gameplay
 remain unverified. No FPS or measured CPU improvement is claimed. Modern network
 landline overrides are separate and untouched.
+
+Null and unrelated registry/view entries are explicitly filtered. An adversarial
+delivery callback withdraws the current hearer and a later candidate. Pre/post
+traces are compared under two declared test boundaries: retained mock references
+and omission at the next iterator yield. These establish refactor parity under
+those adapters, not BYOND's actual deletion, reference-nulling, iterator or
+associative-key removal semantics; native deletion behavior remains unproven.

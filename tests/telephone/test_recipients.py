@@ -82,10 +82,11 @@ class Phone:
 
 
 class Network:
-    def __init__(self, text):
+    def __init__(self, text, deletion_policy='retained-mock-reference'):
         self.text, self.now, self.sequence, self.literal = text, 0, 0, 0
         self.queue, self.trace, self.humans, self.phones, self.views = [], [], [], [], {}
         self.next_number, self.list_allocations = 0, 0
+        self.deletion_policy, self.withdrawn = deletion_policy, set()
         self.dial = self.bind('/proc/ring_phone', 'target,origin,originphone,user=None')
 
     def human(self, name):
@@ -131,14 +132,26 @@ class Network:
         self.list_allocations += 1
         return DMList(*values)
 
+    def typed_iter(self, values, kind):
+        matched = [v for v in values if v and
+                   (isinstance(v, DMList) if kind == '/list' else getattr(v, 'type', '').startswith(kind))]
+        if self.deletion_policy == 'omit-withdrawn-at-yield':
+            return (v for v in matched if v not in self.withdrawn)
+        return matched
+
+    def withdraw(self, value):
+        # Explicit adversarial reference policy, not a simulation of native
+        # qdel, reference nulling, GC, or associative object-key deletion.
+        self.withdrawn.add(value)
+        self.trace.append(('withdraw', self.now, str(value)))
+
     def bind(self, declaration, args, phone=None):
         body = extract(self.text, declaration)
         locals_ = set(re.findall(r'\bvar/(?:\w+/)*(\w+)\b', body))
         locals_.update(arg.split('=')[0] for arg in args.split(','))
         env = dict(CONSCIOUS=0, human_mob_list=self.humans, world=self.phones,
                    list=self.make_list, view=self.view, range=lambda radius, loc: [],
-                   typed_iter=lambda values, kind: [v for v in values if v and
-                       (isinstance(v, DMList) if kind == '/list' else getattr(v, 'type', '').startswith(kind))],
+                   typed_iter=self.typed_iter,
                    dd_hasprefix=lambda text, prefix: text.startswith(prefix),
                    ishuman=lambda value: isinstance(value, Human),
                    to_chat=lambda user, msg: self.trace.append(('chat', self.now, user.uid if user else None, msg)),
@@ -246,6 +259,34 @@ class TelephoneCharacterization(unittest.TestCase):
             n=Network(text);h=n.human('human');p=n.phone('phone',1001,h);n.views[h]=[p]
             n.list_allocations=0;p.broadcast('*waves',h)
             self.assertEqual(n.trace,[]);self.assertEqual(n.list_allocations,0)
+
+    def test_null_and_unrelated_registry_entries_preserve_typed_recipient_filtering(self):
+        results=[]
+        for text in [self.before,self.after]:
+            n=Network(text);h=n.human('listener');p=n.phone('source',1001,h)
+            n.humans[:]=[None,object(),p,h,None,h]
+            n.views[h]=[None,object(),h,p]
+            p.broadcast('message',h)
+            self.assertEqual([e[2] for e in n.trace if e[0]=='view'],[h.uid])
+            self.assertEqual([e[-1] for e in n.trace if e[0]=='heard'],['source'])
+            results.append(n.trace)
+        self.assertEqual(*results)
+
+    def test_deletion_during_delivery_parity_under_explicit_mock_reference_policies(self):
+        for policy in ['retained-mock-reference','omit-withdrawn-at-yield']:
+            results=[]
+            for text in [self.before,self.after]:
+                n=Network(text,deletion_policy=policy);a=n.human('first');b=n.human('second')
+                p=n.phone('source',1001,a);q=n.phone('future candidate',2002,b);q.origincall=p
+                n.humans[:]=[a,b,a];n.views[a]=[p,q];n.views[b]=[p,q]
+                def invalidate(destination):
+                    n.withdraw(a);n.withdraw(q)
+                a.on_hear=invalidate
+                p.broadcast('message',b)
+                heard=[e for e in n.trace if e[0]=='heard']
+                self.assertEqual(len(heard),4 if policy=='retained-mock-reference' else 2)
+                results.append(n.trace)
+            self.assertEqual(*results)
 
     def test_empty_unconscious_and_empty_view_inputs_do_not_deliver(self):
         for mode in ['empty','unconscious','empty-view']:
