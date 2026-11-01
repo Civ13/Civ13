@@ -11,6 +11,8 @@ on:
       - 'civ13.dme'
       - 'code/game/mob/groups/faction_creation.dm'
       - 'code/game/mob/groups/faction_symbol.dm'
+      - 'code/game/mob/groups/religions.dm'
+      - 'UI/js/libraries/doT.js'
       - 'code/game/objects/map_metadata/pepelsibirsk.dm'
       - 'code/game/objects/structures/vending/**'
       - 'code/modules/reagents/Chemistry-Machinery.dm'
