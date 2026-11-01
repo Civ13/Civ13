@@ -44,8 +44,13 @@ separate reviewed source change after verifying all three artifacts belong to
 one publication. Archive an obsolete ignored artifact directory explicitly
 before acquiring a replacement. No client/tool argument can select a source,
 path, URL, revision or refresh. Runtime startup reads only the three fixed files
-and rejects symlinked components, nonregular files, oversized/mutated bytes and
-mismatched provenance. No runtime network fetch or fallback occurs.
+and rejects a symlinked artifact directory or fixed corpus file, nonregular files,
+oversized/mutated bytes and mismatched provenance. The operator trusts storage
+ancestry: OS aliases such as macOS `/var` are allowed, then the artifact directory
+is anchored to its canonical local root before fixed-file reads. File redirects
+outside that root are rejected. These checks are not a hostile writable-directory
+race boundary. No runtime network fetch or fallback occurs. Setup storage failures
+use `artifact_write_failed`; they are not labelled as network fetch failures.
 
 Missing, mismatched or invalid artifacts leave initialization/discovery available,
 but lookup returns `isError` with an explicit `artifact_*` code. A pinned older
@@ -67,7 +72,9 @@ environment variables from the mixed local MCP are ignored by this entry.
 | `docs_search` | Existing documented labels and safe fixed-site links; not full-text source/wiki search or arbitrary HTML reads |
 
 Queries normalize case, underscores and whitespace without guessed reagent aliases.
-Search retains matching variant IDs; old variant IDs remain selectable. Grouping
+Search indexes selected semantic values (including ingredient IDs/quantities and
+variant source paths), never JSON property names. Search retains matching variant
+IDs; old variant IDs remain selectable. Grouping
 is inherited from the Atlas and checked for equal semantics. A maximum era is
 not relabelled as an unlock era. Quantities remain verbatim, including alternative
 feedstocks, conditional yields and zero values. Tools/catalysts and map/research
@@ -87,9 +94,13 @@ stdio read buffer is capped at16KiB; oversized buffered input closes the session
 UTF-8 is strict. Malformed envelopes/JSON are rejected by the SDK without dispatch;
 diagnostics are generic, never raw input or private paths. Valid unknown methods
 get the SDK's method-not-found error. Notifications do not receive invented IDs.
-Responses, including the envelope, are capped at24KiB UTF-8. An oversized SDK
+Responses, including the envelope, are capped at24KiB UTF-8. Successful tool results
+are checked with both text/structured copies, JSON escaping and the request ID;
+oversized results return `result_too_large`. A final independent oversized SDK
 response becomes a bounded error retaining its original valid request ID; use a
 smaller page or follow the pinned source link. The session stays responsive.
+Unexpected lookup exceptions return a generic `internal_error`, without raw
+diagnostics or inaccurate artifact/argument guidance.
 
 Every successful result includes artifact hashes, source revision, safe links,
 coverage limits and separate historical acquisition-audit provenance. Raw

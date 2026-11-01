@@ -32,15 +32,10 @@ export function decodeArtifact(bytes, name, pin = manifest) {
   try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); }
   catch { throw new ReferenceError('artifact_json_invalid'); }
 }
-async function noLinks(absolute) {
-  let current = absolute;
-  while (true) {
-    const stat = await fs.lstat(current);
-    if (stat.isSymbolicLink()) throw new ReferenceError('artifact_path_invalid');
-    const parent = path.dirname(current);
-    if (parent === current) break;
-    current = parent;
-  }
+async function noLink(absolute) {
+  const stat = await fs.lstat(absolute);
+  if (stat.isSymbolicLink()) throw new ReferenceError('artifact_path_invalid');
+  return stat;
 }
 // A fixed three-file artifact set, read only at initialization. No tool supplies
 // a path, URL or manifest. An injected directory/pin is a test/composition seam.
@@ -49,14 +44,21 @@ export async function loadArtifacts(directory = ARTIFACT_DIRECTORY, pin = manife
   try {
     const absolute = path.resolve(directory);
     if (absolute.startsWith('\\\\')) throw new ReferenceError('artifact_path_invalid');
-    await noLinks(absolute);
+    // The operator trusts storage ancestry (including OS aliases such as /var).
+    // Reject a linked artifact root, then anchor fixed reads to its canonical
+    // local directory. This is not a hostile writable-directory race boundary.
+    if (!(await noLink(absolute)).isDirectory()) throw new ReferenceError('artifact_path_invalid');
+    const root = await fs.realpath(absolute);
+    if (root.startsWith('\\\\')) throw new ReferenceError('artifact_path_invalid');
     const result = {};
     for (const name of Object.keys(SOURCES)) {
-      const file = path.join(absolute, name);
-      await noLinks(file);
+      const file = path.join(root, name);
+      const observed = await noLink(file);
+      if (!observed.isFile() || await fs.realpath(file) !== file) throw new ReferenceError('artifact_path_invalid');
       const handle = await fs.open(file, 'r');
       try {
         const stat = await handle.stat();
+        if (stat.dev !== observed.dev || stat.ino !== observed.ino) throw new ReferenceError('artifact_path_invalid');
         if (!stat.isFile() || stat.size !== pin.files[name].bytes || stat.size > SOURCES[name].max)
           throw new ReferenceError('artifact_size_invalid');
         const bytes = Buffer.alloc(stat.size + 1);

@@ -5,20 +5,23 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { Writable } from 'node:stream';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { fixture } from './reference-fixtures.mjs';
-import { MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES } from './reference-server.mjs';
+import { MAX_REQUEST_BYTES, MAX_RESPONSE_BYTES, boundedOutput } from './reference-server.mjs';
 
-async function entrypoint({ failure = null, wide = false } = {}) {
+async function entrypoint({ failure = null, wide = false, unexpected = false } = {}) {
   const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'civ13-reference-protocol-'));
   const entry = path.join(directory, 'entry.mjs');
-  const data = fixture(); if (wide) data.atlas.recipes[0].conditions = 'x'.repeat(7000);
+  const data = fixture(); if (wide) data.atlas.recipes[0].conditions = 'x'.repeat(typeof wide === 'number' ? wide : 7000);
   await fs.writeFile(entry,
     `import {createReference} from ${JSON.stringify(new URL('atlas-reference.mjs', import.meta.url).href)};\n`
     + `import {startReferenceStdio} from ${JSON.stringify(new URL('reference-server.mjs', import.meta.url).href)};\n`
     + (failure ? `await startReferenceStdio({failure:${JSON.stringify(failure)}});\n`
-      : `await startReferenceStdio({reference:createReference(${JSON.stringify(data)})});\n`));
+      : `const reference=createReference(${JSON.stringify(data)});\n`
+        + (unexpected ? `reference.search=()=>{throw new TypeError('PRIVATE_PATH');};\n` : '')
+        + `await startReferenceStdio({reference});\n`));
   return { entry, cleanup: () => fs.rm(directory, { recursive: true, force: true }) };
 }
 const environment = () => ({ ...process.env, NODE_OPTIONS: '', CIV13_DM_COMPILER: 'MUST_NOT_RUN',
@@ -110,14 +113,37 @@ test('SDK rejects malformed envelopes/JSON and unknown methods without dispatchi
     assert.match(peer.diagnostic(), /reference_protocol_error/); assert.equal(peer.diagnostic().includes('PRIVATE_MARKER'), false);
   } finally { await peer.close(); }
 });
-test('oversized responses become a bounded protocol error retaining the original request ID', async () => {
-  const peer = await raw({ wide: true });
+test('full duplicated result, escaping and request ID size produce explicit result_too_large', async () => {
+  const peer = await raw({ wide: 14000 });
   try {
     await initialize(peer);
-    const id = 'i'.repeat(15000);
-    peer.send({ jsonrpc: '2.0', id, method: 'tools/call', params: { name: 'atlas_recipe', arguments: { id: 'r_global' } } });
-    const result = await peer.wait(id); assert.equal(result.id, id); assert.equal(result.error.code, -32603);
+    for (const id of [3, 'i'.repeat(15000)]) {
+      peer.send({ jsonrpc: '2.0', id, method: 'tools/call', params: { name: 'atlas_recipe', arguments: { id: 'r_global' } } });
+      const result = await peer.wait(id); assert.equal(result.id, id);
+      assert.equal(result.result.isError, true); assert.equal(result.result.structuredContent.error, 'result_too_large');
+    }
     peer.send({ jsonrpc: '2.0', id: 2, method: 'ping' }); await peer.wait(2);
+  } finally { await peer.close(); }
+});
+test('the independent final wire guard retains the request ID without truncating an SDK response', async () => {
+  const written = [];
+  const output = new Writable({ write(chunk, _encoding, callback) { written.push(chunk.toString()); callback(); } });
+  const guard = boundedOutput(output);
+  guard.end(JSON.stringify({ jsonrpc: '2.0', id: 7, result: { text: 'x'.repeat(MAX_RESPONSE_BYTES) } }));
+  await once(guard, 'finish');
+  assert.equal(written.length, 1); assert.ok(Buffer.byteLength(written[0]) <= MAX_RESPONSE_BYTES);
+  const result = JSON.parse(written[0]); assert.equal(result.id, 7); assert.equal(result.error.code, -32603);
+});
+test('unexpected lookup exceptions produce safe internal_error rather than artifact or argument guidance', async () => {
+  const peer = await raw({ unexpected: true });
+  try {
+    await initialize(peer);
+    peer.send({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'atlas_search', arguments: {} } });
+    const result = (await peer.wait(2)).result;
+    assert.equal(result.isError, true); assert.equal(result.structuredContent.error, 'internal_error');
+    assert.match(result.structuredContent.instruction, /internal lookup error/);
+    assert.equal(JSON.stringify(result).includes('PRIVATE_PATH'), false);
+    peer.send({ jsonrpc: '2.0', id: 3, method: 'ping' }); await peer.wait(3);
   } finally { await peer.close(); }
 });
 test('oversized input and malformed UTF-8 close their bounded sessions', { timeout: 15000 }, async () => {

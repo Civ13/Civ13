@@ -27,11 +27,12 @@ const descriptions = {
 };
 const knownErrors = new Set(['artifact_missing', 'artifact_unavailable', 'artifact_manifest_invalid', 'artifact_path_invalid',
   'artifact_size_invalid', 'artifact_hash_mismatch', 'artifact_json_invalid', 'artifact_revision_mismatch', 'artifact_schema_invalid',
-  'invalid_arguments', 'unknown_recipe', 'unknown_variant', 'unknown_resource', 'result_too_large', 'cancelled']);
+  'invalid_arguments', 'unknown_recipe', 'unknown_variant', 'unknown_resource', 'result_too_large', 'cancelled', 'internal_error']);
 const errorResult = (code, provenance) => {
   const data = { error: code, provenance,
     instruction: code === 'result_too_large' ? 'Narrow the page or consult the pinned Atlas/source links; ingredients were not truncated.'
-      : code.startsWith('artifact_') ? 'Pinned artifacts are missing, invalid or mismatched. No automatic network refresh or fallback occurs.' : 'Use valid bounded lookup arguments.' };
+      : code === 'internal_error' ? 'An internal lookup error occurred. No private diagnostic details are returned.'
+        : code.startsWith('artifact_') ? 'Pinned artifacts are missing, invalid or mismatched. No automatic network refresh or fallback occurs.' : 'Use valid bounded lookup arguments.' };
   return { isError: true, content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data };
 };
 export function createReferenceServer({ reference = null, failure = 'artifact_missing' } = {}) {
@@ -43,9 +44,14 @@ export function createReferenceServer({ reference = null, failure = 'artifact_mi
       try {
         if (!reference) throw new ReferenceError(knownErrors.has(failure) ? failure : 'artifact_unavailable');
         const data = reference[methods[name]](args, extra.signal);
-        return { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data };
+        const result = { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data };
+        // Include both copies, escaping, the real request ID and wire delimiter.
+        // Keep boundedOutput as the final independent guard for all SDK messages.
+        if (Buffer.byteLength(JSON.stringify({ jsonrpc: '2.0', id: extra.requestId, result }) + '\n') > MAX_RESPONSE_BYTES)
+          throw new ReferenceError('result_too_large');
+        return result;
       } catch (error) {
-        return errorResult(error instanceof ReferenceError && knownErrors.has(error.code) ? error.code : 'artifact_unavailable', provenance);
+        return errorResult(error instanceof ReferenceError && knownErrors.has(error.code) ? error.code : 'internal_error', provenance);
       }
     });
   }

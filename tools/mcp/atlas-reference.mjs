@@ -10,6 +10,8 @@ export const normalize = value => value.toLowerCase().replace(/_/g, ' ').replace
 const bad = () => { throw new ReferenceError('artifact_schema_invalid'); };
 const check = condition => { if (!condition) bad(); };
 const fields = (object, names) => Object.fromEntries(names.filter(key => Object.hasOwn(object, key)).map(key => [key, object[key]]));
+const values = value => Array.isArray(value) ? value.flatMap(values)
+  : plain(value) ? Object.values(value).flatMap(values) : value === null ? [] : [String(value)];
 const recipeFields = ['name', 'kind', 'inputs', 'outputs', 'conditions', 'maximum_era', 'unlock_eras',
   'era_sort', 'era_status', 'era_label', 'era_basis', 'processor', 'processor_name', 'station'];
 const routeFields = ['name', 'inputs', 'outputs', 'tools', 'steps', 'conditions', 'map_notes', 'era', 'status', 'audit_commit', 'source_sha256'];
@@ -129,8 +131,13 @@ export function createReference({ atlas, docs, build, pin = manifest }) {
   const documents = docs.map(row => {
     check(plain(row) && string(row.label, 2048)); return { label: row.label, url: docLink(row.url) };
   });
-  const searchable = recipes.map(record => ({ record, variants: record.variants.map(selected => ({ selected,
-    text: normalize(JSON.stringify({ ...fields(record, recipeFields), kind: selected.kind, id: selected.id, source: selected.source.file })) })) }));
+  const searchable = recipes.map(record => {
+    // Search semantic values, never JSON property names. Shared ingredients/gates
+    // are normalized once; catalog kind, ID and source remain variant-specific.
+    const shared = normalize(values(fields(record, recipeFields.filter(key => key !== 'kind'))).join(' '));
+    return { record, variants: record.variants.map(selected => ({ selected,
+      text: shared + ' ' + normalize([selected.kind, selected.id, selected.source.file].join(' ')) })) };
+  });
   const reply = data => {
     const result = { provenance, limitations: atlas.limitations, ...data };
     if (Buffer.byteLength(JSON.stringify(result)) > MAX_RESULT_BYTES) throw new ReferenceError('result_too_large');

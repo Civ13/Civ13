@@ -36,25 +36,31 @@ export async function fetchArtifact(name, fetcher = fetch, pin = manifest) {
 export async function acquireArtifacts({ fetcher = fetch, directory = ARTIFACT_DIRECTORY, pin = manifest } = {}) {
   validateManifest(pin);
   directory = path.resolve(directory);
-  try { await fs.lstat(directory); }
-  catch (error) { if (error.code !== 'ENOENT') throw error; }
-  try {
-    await fs.access(directory);
+  let existing = false;
+  try { await fs.lstat(directory); existing = true; }
+  catch (error) { if (error.code !== 'ENOENT') throw new ReferenceError('artifact_unavailable'); }
+  if (existing) {
     createReference(await loadArtifacts(directory, pin)); return { state: 'already_verified', revision: pin.revision };
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error; // Never replace an existing invalid set.
   }
+  // Never replace an existing invalid set; writes are distinct from download errors.
+  const write = async operation => {
+    try { return await operation(); }
+    catch { throw new ReferenceError('artifact_write_failed'); }
+  };
   const parent = path.dirname(directory), prefix = path.join(parent, '.reference-pending-');
-  const temporary = await fs.mkdtemp(prefix);
+  const temporary = await write(() => fs.mkdtemp(prefix));
   try {
-    for (const name of Object.keys(SOURCES)) await fs.writeFile(path.join(temporary, name), await fetchArtifact(name, fetcher, pin), { flag: 'wx' });
+    for (const name of Object.keys(SOURCES)) {
+      const bytes = await fetchArtifact(name, fetcher, pin);
+      await write(() => fs.writeFile(path.join(temporary, name), bytes, { flag: 'wx' }));
+    }
     createReference(await loadArtifacts(temporary, pin));
-    await fs.rename(temporary, directory);
+    await write(() => fs.rename(temporary, directory));
     return { state: 'verified', revision: pin.revision };
   } finally {
     // Only the fresh mkdtemp child owned by this operation is cleaned up.
     if (path.dirname(temporary) !== parent || !temporary.startsWith(prefix)) throw new ReferenceError('artifact_path_invalid');
-    await fs.rm(temporary, { recursive: true, force: true });
+    await write(() => fs.rm(temporary, { recursive: true, force: true }));
   }
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

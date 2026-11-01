@@ -31,6 +31,35 @@ test('links at artifact directory/components are rejected without following them
   await fs.symlink(actual, linked, process.platform === 'win32' ? 'junction' : 'dir');
   await assert.rejects(loadArtifacts(linked, data.pin), /artifact_path_invalid/);
 }));
+test('trusted linked ancestry resolves to a canonical artifact root with exact hash checks', async () => temporary(async root => {
+  const parent = path.join(root, 'actual'), linked = path.join(root, 'alias');
+  const data = await writeArtifacts(path.join(parent, 'artifacts'));
+  await fs.symlink(parent, linked, process.platform === 'win32' ? 'junction' : 'dir');
+  const directory = path.join(linked, 'artifacts');
+  assert.equal((await loadArtifacts(directory, data.pin)).atlas.sha, data.pin.revision);
+  await fs.writeFile(path.join(parent, 'artifacts', 'atlas.json'), Buffer.alloc(data.pin.files['atlas.json'].bytes, 32));
+  await assert.rejects(loadArtifacts(directory, data.pin), /artifact_hash_mismatch/);
+}));
+test('fixed corpus files cannot redirect outside the canonical root', async context => temporary(async root => {
+  const directory = path.join(root, 'artifacts'), data = await writeArtifacts(directory);
+  const realpath = fs.realpath;
+  context.mock.method(fs, 'realpath', async candidate => path.basename(candidate) === 'atlas.json'
+    ? path.join(root, 'outside.json') : realpath(candidate));
+  await assert.rejects(loadArtifacts(directory, data.pin), /artifact_path_invalid/);
+}));
+test('a linked corpus file is rejected even when its target has the exact pinned bytes', async context => temporary(async root => {
+  const directory = path.join(root, 'artifacts'), data = await writeArtifacts(directory);
+  const file = path.join(directory, 'atlas.json'), outside = path.join(root, 'outside.json');
+  await fs.rename(file, outside);
+  try { await fs.symlink(outside, file, 'file'); }
+  catch (error) {
+    if (process.platform === 'win32' && error.code === 'EPERM') {
+      context.skip('Windows file-symlink privilege unavailable; no security setting changed'); return;
+    }
+    throw error;
+  }
+  await assert.rejects(loadArtifacts(directory, data.pin), /artifact_path_invalid/);
+}));
 test('JSON and UTF-8 validation remain strict even when test pins match malformed bytes', () => {
   for (const bytes of [Buffer.from('{'), Buffer.from([0xff])]) {
     const data = fixture(), name = 'build.json';
@@ -67,6 +96,19 @@ test('failed fetch never replaces an existing set or promotes partially download
   await fs.mkdir(directory);
   await assert.rejects(acquireArtifacts({ directory, fetcher, pin: data.pin }), /artifact_missing/);
   assert.equal(calls, 1);
+}));
+test('staging, write and rename failures have a safe storage-specific error and no partial promotion', async context => temporary(async root => {
+  const data = fixture();
+  const fetcher = async url => {
+    const name = Object.keys(data.pin.files).find(key => data.pin.files[key].url === url);
+    return new Response(data.bodies[name], { headers: { 'Content-Type': 'application/json' } });
+  };
+  for (const operation of ['mkdtemp', 'writeFile', 'rename']) {
+    context.mock.method(fs, operation, async () => { throw Object.assign(new Error('PRIVATE_PATH'), { code: 'ENOSPC' }); });
+    try { await assert.rejects(acquireArtifacts({ directory: path.join(root, operation), fetcher, pin: data.pin }), /^Error: artifact_write_failed$/); }
+    finally { context.mock.restoreAll(); }
+    assert.deepEqual(await fs.readdir(root), []);
+  }
 }));
 test('fetch rejects wrong MIME, size overflow, malformed body and hash drift without retries', async () => {
   const data = fixture();

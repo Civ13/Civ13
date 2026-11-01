@@ -24,12 +24,23 @@ test('matching variants and retained old IDs preserve quantities, material and r
   assert.throws(() => reference.recipe({ id: 'r_global', variant_id: 'r_enzyme' }), /unknown_variant/);
   assert.equal(JSON.stringify(result).includes('not exposed'), false);
 });
+test('recipe search matches selected semantic values without JSON property-name false positives', () => {
+  const reference = createReference(fixture());
+  for (const query of ['inputs', 'outputs', 'conditions', 'maximum_era', 'unlock_eras'])
+    assert.deepEqual(reference.search({ query, kind: 'recipe' }).entries, []);
+  for (const query of ['Flintlock assembly', '/material/wood', '/obj/item/flintlock', '2 iron OR 1 steel',
+    'Research node', 'Bronze Age', 'r_nomads', 'config/nomads.txt', 'Material / Nomads'])
+    assert.ok(reference.search({ query, kind: 'recipe' }).entries.some(row => row.id === 'r_global'), query);
+  assert.deepEqual(reference.search({ query: '0', kind: 'recipe' }).entries.map(row => row.id), ['r_enzyme']);
+  assert.deepEqual(reference.search({ query: 'global', kind: 'recipe' }).entries[0].matching_variant_ids, ['r_global']);
+  assert.deepEqual(reference.search({ query: 'nomads', kind: 'recipe' }).entries[0].matching_variant_ids, ['r_nomads']);
+});
 test('resource routes retain separate historical audit provenance and exclude raw production sites', () => {
   const reference = createReference(fixture()), result = reference.resource({ id: 'proteolytic_enzyme' });
   assert.equal(result.provenance.revision, 'a'.repeat(40));
   assert.equal(result.entries[0].route.audit_revision, 'b'.repeat(40));
   assert.match(result.entries[0].route.source.url, new RegExp('/' + 'b'.repeat(40) + '/code/extraction.dm#L8'));
-  assert.match(result.entries[0].route.steps[0], /<script>/); // Returned as data only.
+  assert.ok(result.entries[0].route.steps[0].includes('<script>')); // Returned as data only.
   assert.equal(JSON.stringify(result).includes('admin_setup'), false);
   assert.equal(result.entries[1].direction, 'produces');
 });
@@ -75,7 +86,9 @@ test('oversized detail is an error, never an ingredient/quantity truncation', ()
 });
 test('docs lookup returns safe existing labels/links and explicit pinned hashes', () => {
   const result = createReference(fixture()).docs({ query: '/callback Invoke' });
-  assert.equal(result.entries.length, 1); assert.match(result.entries[0].url, /^https:\/\/civ13.github.io\/Civ13\//);
+  assert.equal(result.entries.length, 1);
+  assert.equal(new URL(result.entries[0].url).origin, 'https://civ13.github.io');
+  assert.ok(new URL(result.entries[0].url).pathname.startsWith('/Civ13/'));
   assert.match(result.provenance.docs_sha256, /^[a-f0-9]{64}$/);
   assert.match(result.provenance.scope, /untrusted/);
   assert.deepEqual(createReference(fixture()).docs({ query: '///' }).entries, []);
