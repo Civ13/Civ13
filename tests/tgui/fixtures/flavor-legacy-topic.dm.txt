@@ -1,0 +1,13 @@
+/mob/Topic(href, href_list)
+	if (href_list["mach_close"])
+		var/t1 = text("window=[href_list["mach_close"]]")
+		unset_using_object()
+		src << browse(null, t1)
+
+	if (href_list["flavor_more"])
+		if (src in view(usr))
+			var/window_name = "flavor[ckey(name)]"
+			usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), "window=[window_name];size=500x200")
+			onclose(usr, window_name)
+	if (href_list["flavor_change"])
+		update_flavor_text()

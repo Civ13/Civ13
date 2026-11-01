@@ -509,8 +509,10 @@
 	if (href_list["flavor_more"])
 		if (src in view(usr))
 			var/window_name = "flavor[ckey(name)]"
-			usr << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>")), "window=[window_name];size=500x200")
-			onclose(usr, window_name)
+			var/legacy_snapshot = text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", name, replacetext(flavor_text, "\n", "<BR>"))
+			if (!hascall(src, "present_character_flavor_ui") || !call(src, "present_character_flavor_ui")(usr, legacy_snapshot))
+				usr << browse(legacy_snapshot, "window=[window_name];size=500x200")
+				onclose(usr, window_name)
 	if (href_list["flavor_change"])
 		update_flavor_text()
 //	..()

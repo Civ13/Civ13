@@ -192,7 +192,8 @@
 	else
 		output += "<i>No memories stored.</i>"
 
-	output += discoveries_html()
+	var/discovery_snapshot = discoveries_html()
+	output += discovery_snapshot
 
 	var/memory_stylized = {"
 	<br>
@@ -207,7 +208,12 @@
 	</body></html>
 	"}
 
-	recipient << browse(replacetext(memory_stylized, "PLACEHOLDER", output),"window=memory;size=625x650")
+	var/legacy_snapshot = replacetext(memory_stylized, "PLACEHOLDER", output)
+	// Fixed optional presentation hook: isolated mind fixtures keep the original
+	// renderer without importing the full game's NanoUI implementation.
+	if (hascall(src, "present_character_notes_ui") && call(src, "present_character_notes_ui")(recipient, legacy_snapshot, discovery_snapshot))
+		return
+	recipient << browse(legacy_snapshot,"window=memory;size=625x650")
 
 /datum/mind/proc/edit_memory()
 	if (!ticker)

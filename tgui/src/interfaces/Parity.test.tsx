@@ -86,6 +86,8 @@ describe('standard screen parity', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
       'appearance_changer.tmpl',
       'book_reader.tmpl',
+      'character_flavor.tmpl',
+      'character_notes.tmpl',
       'chem_disp.tmpl',
       'crafting_atlas.tmpl',
       'crew_log.tmpl',

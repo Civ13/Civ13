@@ -1,8 +1,8 @@
 # Book reader compatibility contract
 
 This is a local source candidate for the existing base book reader, based on
-master `7c1937d49899d4190400ed36b88bdc51f00440f4`. It does not depend on the
-unmerged Notes or Flavor readers. It uses the existing modern adapter with
+the reviewed source at `7c1937d49899d4190400ed36b88bdc51f00440f4`, then
+mechanically integrated with master `157df2a3` after Notes and Flavor merged. It uses the existing modern adapter with
 complete classic fallback. Publication and native execution await Main review.
 
 ## Authorized snapshot
@@ -60,12 +60,12 @@ The offline tests execute fail-closed projections of the actual parser's source
 statements under character-index and UTF-8 byte-index adapters. They verify
 inheritance, unsupported subtree/metadata rejection, budgets and the original
 human/ghost/force matrix. They are not a DM interpreter or proof of native
-Unicode indexing. Causal omission controls check owner/client, cached HTML,
+Unicode indexing. Local-only causal omission controls check owner/client, cached HTML,
 whole-view fallback, metadata admission and close behavior.
 
 Component tests cover inert decoded text, white styling, ordinary selection
-metadata, invalid nodes and budgets. The production bundle keeps the 17 earlier
-routes and registers this eighteenth route. JSDOM deliberately exercises Book
+metadata, invalid nodes and budgets. The integrated production bundle keeps the 19 earlier
+routes and registers this twentieth route. JSDOM deliberately exercises Book
 fallback because it cannot establish the required computed styling. Real
 Chromium tests use the production bundle and a fictional snapshot shared with
 the source projection; they check white-on-white ink, nested signature fonts,
