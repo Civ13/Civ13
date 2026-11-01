@@ -327,6 +327,15 @@
 /mob/var/next_cannotmove_message = -1
 /mob/var/list/next_change_dir = null
 
+// Reuse the legacy movement cleanup before smooth admission can reject a
+// stale grab at an owned offset. Never remove a live or in-progress grab.
+/mob/proc/prune_destroyed_grab_list()
+	if (!grab_list || !grab_list.len)
+		return
+	for (var/datum/D in grab_list.Copy())
+		if (D.gcDestroyed)
+			grab_list -= D
+
 /client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements
@@ -343,6 +352,7 @@
 		return // Moved here to avoid nullrefs below
 	if (ishuman(mob))
 		var/mob/living/human/subtile_input_actor = mob
+		subtile_input_actor.prune_destroyed_grab_list()
 		// A paid crawl retains admission even after early collision/posture exit.
 		if (subtile_input_actor.human_subtile_transaction && subtile_input_actor.human_subtile_transaction.paid_posture)
 			return FALSE
@@ -786,10 +796,7 @@
 		try
 			if (!mob.grab_list)
 				mob.grab_list = list()
-			for (var/datum in mob.grab_list)
-				var/datum/D = datum
-				if (D.gcDestroyed)
-					mob.grab_list -= D
+			mob.prune_destroyed_grab_list()
 
 			//Something with grabbing things
 			if (mob.grab_list.len)
