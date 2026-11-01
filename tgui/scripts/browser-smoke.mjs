@@ -6,8 +6,12 @@ import { createServer } from 'node:http';
 const root = new URL('../../UI/tgui/', import.meta.url);
 const js = await readFile(new URL('civ13-tgui.js', root));
 const css = await readFile(new URL('civ13-tgui.css', root));
+// Reuse the repository logo only as an explicit browser image fixture, not a
+// captured in-game photo. Native resource delivery/cache are not exercised.
+const photoPng = await readFile(new URL('../../UI/images/civ13.png', import.meta.url));
 const html = '<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/civ13-tgui.css"></head><body><div id="root"></div><script>window.sent=[];window.Civ13Tgui={queue:[],acceptSnapshot:function(){return true},send:function(type,payload){sent.push({type,payload})},ready:function(){window.ready=true},fallback:function(){window.fallback=true}};</script><script src="/civ13-tgui.js"></script></body></html>';
 const server = createServer((req, res) => {
+  if (req.url === '/tmp_photo_12.png') { res.setHeader('Content-Type', 'image/png'); res.end(photoPng); return; }
   res.setHeader('Content-Type', req.url?.endsWith('.js') ? 'application/javascript' : req.url?.endsWith('.css') ? 'text/css' : 'text/html');
   res.end(req.url === '/civ13-tgui.js' ? js : req.url === '/civ13-tgui.css' ? css : html);
 });
@@ -84,11 +88,27 @@ try {
   await page.getByText('You are Reopened reader', { exact: true }).waitFor();
   assert.equal(await page.getByText('Guard', { exact: true }).count(), 0);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  await update('photo_viewer.tmpl', { name: 'Fictional photo fixture', image: 'tmp_photo_12.png', width: 448, scribble: '&lt;script&gt;inert&lt;/script&gt; &amp; a boat.' }, 1);
+  const photo = page.getByRole('img', { name: 'Photograph', exact: true });
+  await photo.waitFor(); await page.waitForFunction(() => document.querySelector('.photo-viewer img')?.naturalWidth > 0);
+  assert.equal(await photo.getAttribute('src'), 'tmp_photo_12.png');
+  assert.equal(await photo.evaluate(image => image.width), 448);
+  const photoBefore = await page.evaluate(() => window.sent.length);
+  await photo.click(); assert.equal(await page.evaluate(() => window.sent.length), photoBefore);
+  assert.equal(await page.locator('.photo-viewer button,.photo-viewer a,.photo-viewer script,.photo-viewer [onerror]').count(), 0);
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  await page.getByText('<script>inert</script> & a boat.', { exact: true }).waitFor();
+  await page.setViewportSize({ width: 360, height: 400 });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  assert.equal(await photo.evaluate(image => image.getBoundingClientRect().width <= image.parentElement.clientWidth), true);
+  await update('photo_viewer.tmpl', { name: 'Empty photo', image: '', scribble: '' }, 1);
+  await page.getByText('No captured image is available.', { exact: true }).waitFor();
+  assert.equal(await page.locator('.photo-viewer img,.photo-viewer em').count(), 0);
   if (process.env.SCREENSHOT_PATH) await page.screenshot({ path: process.env.SCREENSHOT_PATH, fullPage: true });
   await page.getByText('Classic interface', { exact: true }).click();
   assert.equal(await page.evaluate(() => window.fallback), true);
   assert.deepEqual(errors, []);
-  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas drag/found, research detail/assign/Escape, Atlas navigation/filter/cancel/disabled, Notes formatted inert Unicode/read-only/snapshot replacement/no overflow, manual fallback; browser fixture, no native bridge claim');
+  console.log('PASS: production Chromium rendering, real tgui-core actions, safe text, canvas/research/Atlas contracts, Notes inert Unicode/read-only/replacement, photo image/caption/clear/responsive layout, manual fallback; fixtures, no native bridge/cache claim');
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

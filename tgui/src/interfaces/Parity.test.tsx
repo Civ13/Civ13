@@ -93,6 +93,7 @@ describe('standard screen parity', () => {
       'faction_list.tmpl',
       'faction_symbol.tmpl',
       'known_languages.tmpl',
+      'photo_viewer.tmpl',
       'religion_list.tmpl',
       'research_bench.tmpl',
       'ship_stocks.tmpl',
