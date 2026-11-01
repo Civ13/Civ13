@@ -246,7 +246,7 @@
     },
     {
       "path": "code/game/objects/structures/wild.dm",
-      "sha256_normalized": "e71078e10936eec13ca1c1729adbff4ea480b4c4fc4a978a0054e454bd1d5fb3",
+      "sha256_normalized": "2ccf472281070aefa42609657883cc320cb184a571ef9e4c73aee88b91940f6e",
       "declarations": [
         {
           "line": 156,
