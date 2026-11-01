@@ -328,13 +328,31 @@
 
 
 /obj/item/weapon/paper/proc/clearpaper()
-	info = null
-	stamps = null
-	free_space = MAX_PAPER_MESSAGE_LEN
-	stamped = list()
+	if (!isnull(document_record))
+		// Trusted physical erasure (acetone/ethanol), not an actor/UI edit grant.
+		// Keep document identity/sequence, erase every classified run atomically.
+		var/list/edit = paper_document_prepare_edit(src)
+		if (!edit)
+			return FALSE
+		var/list/next = edit["record"]
+		var/list/legacy = next["legacy"]
+		legacy["info"] = null
+		legacy["stamps"] = null
+		legacy["free_space"] = MAX_PAPER_MESSAGE_LEN
+		legacy["stamped"] = list()
+		next["sections"] = list()
+		next["revision"]++
+		if (!paper_document_commit_edit(src, edit))
+			return FALSE
+	else
+		info = null
+		stamps = null
+		free_space = MAX_PAPER_MESSAGE_LEN
+		stamped = list()
 	overlays.Cut()
 	updateinfolinks()
 	update_icon()
+	return TRUE
 
 /obj/item/weapon/paper/proc/get_signature(var/obj/item/weapon/pen/P, mob/user as mob)
 	if (P && istype(P, /obj/item/weapon/pen))
@@ -441,6 +459,11 @@
 		return
 
 	if (href_list["write"])
+		var/mob/writer = usr
+		var/client/writer_client = writer.client
+		var/obj/item/weapon/pen/writing_pen = writer.get_active_hand()
+		if (!paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))
+			return
 		var/id = href_list["write"]
 		//var/t = strip_html_simple(input(usr, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
 
@@ -450,7 +473,7 @@
 
 		var/t =  sanitize(input("Enter what you want to write:", "Write", null, null) as message, free_space, extra = FALSE)
 
-		if (!t)
+		if (!t || usr != writer || !paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))
 			return
 
 		var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.

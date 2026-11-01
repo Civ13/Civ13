@@ -500,10 +500,10 @@
     },
     {
       "path": "code/modules/paperwork/view.dm",
-      "sha256_normalized": "31af2dbb4334794127bf50938434a46cbedab93fbab488356b985b1ddc17b0d7",
+      "sha256_normalized": "56c66ea7823b16b2a7f3d71ddf2fa55f846e1c37ca96badd0b16367a6b9edfd6",
       "declarations": [
         {
-          "line": 31,
+          "line": 61,
           "declaration": "parent_type = /datum/paper_document_service"
         }
       ]

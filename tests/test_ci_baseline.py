@@ -53,6 +53,13 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_paper_mutation_contracts_are_registered_offline(self):
+        suite = ci.SUITES['paper_documents']
+        self.assertEqual(suite['files'], ('tests/paper_documents/test_documents.py',
+            'tests/paper_documents/test_views.py', 'tests/paper_documents/test_mutations.py'))
+        self.assertEqual(self.selected(['tests/paper_documents/test_mutations.py']),
+            {'policy', 'bootstrap', 'progress', 'paper_documents'})
+
     def test_stone_molds_registration_is_offline_and_preserves_shared_fallback(self):
         suite=ci.SUITES['stone_molds']
         self.assertEqual(suite['files'],('tests/stone_molds/test_source.py',))

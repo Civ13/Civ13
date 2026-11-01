@@ -33,7 +33,8 @@ SUITES = {
     # No speech/learning callbacks, UI, native process or savefile execution.
     # Production inputs stay unmapped to preserve the all-suite fallback.
     'paper_documents': {'files': ('tests/paper_documents/test_documents.py',
-                                  'tests/paper_documents/test_views.py'),
+                                  'tests/paper_documents/test_views.py',
+                                  'tests/paper_documents/test_mutations.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),

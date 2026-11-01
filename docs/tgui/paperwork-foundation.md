@@ -9,6 +9,9 @@ copies retain the depth16 and 131072 text-unit limits; section count, total
 authored text and physical free-space guards remain unchanged.
 Authoring, TGUI and study are still separate work. Historical "not routed"
 statements below describe the first foundation candidate, not that reader slice.
+The later [first transaction slice](paperwork-transactions.md) shares prepare/
+commit between append and physical erasure and guards legacy prompts; it does
+not complete the remaining copy/subtype/authoring activation prerequisites.
 
 The source baseline is `157df2a34cb71758231b39a78308da6af5106953`.
 The local candidate also incorporates merged Book master `4e26d579`.
