@@ -57,6 +57,20 @@ def replace_once(data, old, new, label):
     return data.replace(old, new, 1)
 
 
+def instrument_legacy_parent_refusal(data):
+    """Record fixture-only evidence without changing the refusal condition."""
+    original = '\t\tif(!istype(legacy_parent) || legacy_parent.z != H.z) throw EXCEPTION("Human legacy save has no valid parent")'
+    instrumented = (
+        '\t\tif(!istype(legacy_parent) || legacy_parent.z != H.z)\n'
+        '\t\t\ttry\n'
+        '\t\t\t\thuman_spatial_fixture_record_legacy_refusal(H, legacy_parent, record["mode"])\n'
+        '\t\t\tcatch(var/exception/diagnostic_error)\n'
+        '\t\t\t\thuman_spatial_fixture_legacy_diagnostic = list("diagnostic_error" = TRUE)\n'
+        '\t\t\tthrow EXCEPTION("Human legacy save has no valid parent")'
+    )
+    return replace_once(data, original, instrumented, 'legacy parent refusal diagnostic')
+
+
 def stage(output):
     spec = importlib.util.spec_from_file_location('human_fixture_stager', ROOT / 'tests/human_subtile/run.py')
     legacy = importlib.util.module_from_spec(spec)
@@ -141,6 +155,7 @@ def stage(output):
 
     saver = root / 'code/modules/persistence/saving.dm'
     data = saver.read_text(encoding='utf-8')
+    data = instrument_legacy_parent_refusal(data)
     data = replace_once(data, '\trecord["mode"] = "spatial"\n\treturn record',
         '\trecord["mode"] = "spatial"\n'
         '\tif(H == human_spatial_fixture_late_actor) human_spatial_fixture_wait_late_pulse()\n'

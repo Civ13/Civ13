@@ -62,6 +62,28 @@ class StageChecks(unittest.TestCase):
         self.assertIn('geometry_metrics', probe)
         self.assertIn('human_spatial_fixture_move_saved_seated(A)', staged)
 
+    def test_legacy_parent_diagnostic_preserves_refusal_and_has_bounded_identity(self):
+        saver = (stage.ROOT / 'code/modules/persistence/saving.dm').read_text()
+        adapted = stage.instrument_legacy_parent_refusal(saver)
+        condition = 'if(!istype(legacy_parent) || legacy_parent.z != H.z)'
+        error = 'throw EXCEPTION("Human legacy save has no valid parent")'
+        self.assertEqual(saver.count(condition), 1)
+        self.assertEqual(adapted.count(condition), 1)
+        self.assertEqual(adapted.count(error), 1)
+        self.assertLess(adapted.index('human_spatial_fixture_record_legacy_refusal(H, legacy_parent'), adapted.index(error))
+        self.assertIn('catch(var/exception/diagnostic_error)', adapted)
+        with self.assertRaises(ValueError):
+            stage.instrument_legacy_parent_refusal(adapted)
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        for role in ('moving', 'second', 'seated', 'contained', 'late', 'unregistered'):
+            self.assertIn('"' + role + '"', probe)
+        for field in ('actor_identity', 'actor_type', 'saveable', 'deleted', 'dead',
+                      'actor_z', 'parent_valid', 'parent_identity', 'parent_type',
+                      'parent_z', 'resolved_turf_z', 'capture_mode', 'chain'):
+            self.assertIn('"' + field + '"', probe)
+        self.assertIn('i <= 16 && cursor', probe)
+        self.assertIn('observed["legacy_parent_diagnostic"]', probe)
+
 
 if __name__ == '__main__':
     unittest.main()

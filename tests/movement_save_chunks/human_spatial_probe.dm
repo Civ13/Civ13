@@ -18,6 +18,37 @@ var/global/list/human_spatial_fixture_late_capsule = null
 var/global/human_spatial_fixture_late_pulses = 0
 var/global/list/human_spatial_fixture_geometry_metrics = null
 var/global/human_spatial_fixture_seated_moved = 0
+// Private to this synthetic fixture; no player identities or live data.
+var/global/list/human_spatial_fixture_roles = list()
+var/global/list/human_spatial_fixture_legacy_diagnostic = null
+
+/proc/human_spatial_fixture_register_actor(mob/living/human/H, role)
+	human_spatial_fixture_roles["\ref[H]"] = role
+
+// Called only on the staged refusal branch. Bound containment inspection so a
+// malformed chain cannot prevent the original fail-closed exception.
+/proc/human_spatial_fixture_record_legacy_refusal(mob/living/human/H, atom/parent, capture_mode)
+	var/list/chain = list()
+	var/atom/cursor = H
+	var/turf/resolved = null
+	for(var/i = 1, i <= 16 && cursor, i++)
+		chain += list(list("identity" = "\ref[cursor]", "type" = "[cursor.type]", "z" = cursor.z))
+		if(isturf(cursor))
+			resolved = cursor
+			break
+		cursor = cursor.loc
+	var/role = human_spatial_fixture_roles["\ref[H]"]
+	if(!role) role = "unregistered"
+	human_spatial_fixture_legacy_diagnostic = list(
+		"actor_identity" = "\ref[H]", "actor_type" = "[H.type]",
+		"role" = role,
+		"saveable" = !!H.should_save, "deleted" = !!isDeleted(H), "dead" = H.stat == DEAD,
+		"actor_z" = H.z, "parent_valid" = !!istype(parent),
+		"parent_identity" = parent ? "\ref[parent]" : null,
+		"parent_type" = parent ? "[parent.type]" : null,
+		"parent_z" = parent ? parent.z : null,
+		"resolved_turf_z" = resolved ? resolved.z : null,
+		"chain" = chain, "capture_mode" = capture_mode)
 
 // Test-only collision callbacks on the exact floor and item in the fixture.
 /turf/floor/winter/grass/human_spatial_probe/Entered(atom/movable/A)
@@ -38,6 +69,7 @@ var/global/human_spatial_fixture_seated_moved = 0
 // Staged writer only: created after the initial spatial group was captured.
 /proc/human_spatial_fixture_start_late_walker()
 	var/mob/living/human/H = new(locate(7, 9, 1))
+	human_spatial_fixture_register_actor(H, "late")
 	H.persistence_owner_ckey = "syntheticlate"
 	H.canmove = TRUE
 	H.stat = CONSCIOUS
@@ -95,15 +127,19 @@ var/global/human_spatial_fixture_seated_moved = 0
 		human_subtile_fixture_initialize()
 		if(world.params["phase"] == "writer")
 			var/mob/living/human/H = new(locate(1, 1, 1))
+			human_spatial_fixture_register_actor(H, "moving")
 			H.persistence_owner_ckey = "syntheticfixture"
 			var/mob/living/human/H2 = new(locate(3, 1, 1))
+			human_spatial_fixture_register_actor(H2, "second")
 			H2.persistence_owner_ckey = "syntheticsecond"
 			var/obj/structure/bed/chair/seat = new(locate(6, 6, 1))
 			var/mob/living/human/seated = new(locate(6, 6, 1))
+			human_spatial_fixture_register_actor(seated, "seated")
 			seated.persistence_owner_ckey = "syntheticseated"
 			human_spatial_fixture_assert(seat.buckle_mob(seated), "fixture_seated_setup")
 			var/obj/structure/closet/crate/box = new(locate(8, 6, 1))
 			var/mob/living/human/contained = new(box)
+			human_spatial_fixture_register_actor(contained, "contained")
 			contained.persistence_owner_ckey = "syntheticcontained"
 			H.canmove = TRUE
 			H.stat = CONSCIOUS
@@ -276,6 +312,8 @@ var/global/human_spatial_fixture_seated_moved = 0
 			throw EXCEPTION("fixture_phase_unknown")
 	catch(var/exception/E)
 		error = E.name
+	if(human_spatial_fixture_legacy_diagnostic)
+		observed["legacy_parent_diagnostic"] = human_spatial_fixture_legacy_diagnostic
 	observed["error"] = error
 	text2file(json_encode(observed), "human-spatial-[world.params["phase"]].json")
 	if(error) world.log << "FAIL: [error]"
