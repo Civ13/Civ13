@@ -74,16 +74,13 @@ class BackendContract(unittest.TestCase):
     def test_modern_adapter_is_default_for_converted_producers(self):
         self.assertIn('var/legacy_renderer = FALSE', DM)
 
-    def test_all_ten_templates_adopted(self):
+    def test_direct_tgui_templates_adopted(self):
         templates = set()
         for path in (ROOT / 'code').rglob('*.dm'):
             source = path.read_text(errors='replace')
-            templates.update(re.findall(r'new /datum/nanoui/tgui\(user, src, ui_key, "([^"]+)"', source))
+            templates.update(re.findall(r'new /datum/nanoui/tgui(?:/\w+)*\(user, src, ui_key, "([^"]+)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'chem_disp.tmpl', 'faction_creation.tmpl',
-                                    'faction_symbol.tmpl', 'research_bench.tmpl', 'warehouse_book.tmpl',
-                                    'vending_machine.tmpl', 'vending_machine2.tmpl',
-                                    'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'chem_disp.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'research_bench.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
 
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn('href="byond://?src=\\ref[src]&amp;window_id=', DM)

@@ -4,10 +4,21 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
 import vm from 'node:vm';
+// Compile the actual classic template with the retained NanoUI doT compiler.
+// Object.size is the existing utility seam; no browser or native transport here.
 const classic = vm.createContext({ module: { exports: {} } });
-vm.runInContext('Object.size = value => Object.keys(value).length;', classic);
+vm.runInContext('Object.size = function (value) { return Object.keys(value).length; };', classic);
 vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), classic);
-const renderFactionClassic = classic.module.exports.template(readFileSync(new URL('../../UI/templates/faction_list.tmpl', import.meta.url), 'utf8'));
+const renderClassicLanguages = classic.module.exports.template(readFileSync(new URL('../../UI/templates/known_languages.tmpl', import.meta.url), 'utf8'));
+const classicMarkup = renderClassicLanguages({ current_default: 'Common', languages: [{ name: 'Common', prefix: ':c', description: '&lt;script&gt;fictional&lt;/script&gt;', is_default: 1 }] }, {}, {});
+assert.ok(classicMarkup.includes('Common (:c)'));
+assert.ok(classicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;'));
+assert.ok(!classicMarkup.includes('<script>'));
+assert.ok(renderClassicLanguages({ languages: [], current_default: '' }, {}, {}).includes('No known languages are available.'));
+const factionClassic = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', factionClassic);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), factionClassic);
+const renderFactionClassic = factionClassic.module.exports.template(readFileSync(new URL('../../UI/templates/faction_list.tmpl', import.meta.url), 'utf8'));
 const factionFixture = [
   { name: 'First', motto: 'Together &amp; safe', flavour: '&lt;script&gt;inert&lt;/script&gt;', members: 1, symbol: 'flist_first.png' },
   { name: 'Second', members: 2, symbol: '' },
@@ -61,6 +72,11 @@ try {
   await update('warehouse_book.tmpl', { items: [{ name: '&lt;img src=x onerror=alert(1)&gt;', amount: 1 }] });
   assert.ok(w.document.body.textContent.includes('<img src=x onerror=alert(1)>'));
   assert.equal(w.document.querySelectorAll('img').length, 0);
+  await update('known_languages.tmpl', { current_default: 'Common', languages: [{ name: 'Common', prefix: ':c', description: '&lt;script&gt;fictional&lt;/script&gt;', is_default: 1 }] }, 1);
+  assert.ok(w.document.body.textContent.includes('Common (:c)'));
+  assert.ok(w.document.body.textContent.includes('<script>fictional</script>'));
+  assert.equal(w.document.querySelectorAll('li[aria-current="true"]').length, 1);
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
   await update('faction_list.tmpl', { factions: factionFixture }, 1);
   assert.equal(w.document.querySelectorAll('table[aria-label="Faction list"] tbody tr').length, 4);
   assert.equal(w.document.querySelectorAll('table img').length, 2);
@@ -72,5 +88,5 @@ try {
   assert.equal(w.document.querySelectorAll('table img').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write('PASS: real bootstrap and production bundle complete ready/snapshot/ack, reject stale generation, render ten routes plus Faction List and compile its classic fallback, dispatch/block actions, escape data and invoke fallback\n');
+  process.stdout.write("PASS: real bootstrap/production bundle, original ten routes, Known Languages and Faction List, both classic fixtures, ready/snapshot/ack, stale generation, action guards, safe text and fallback\\n");
 } finally { w.close(); }
