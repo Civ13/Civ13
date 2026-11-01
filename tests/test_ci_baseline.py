@@ -180,6 +180,20 @@ class BaselinePolicyTests(unittest.TestCase):
                           for alias in node.names}, {'re', 'unittest'})
         self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)},
                          {'pathlib', 'types'})
+    def test_help_mood_history_offline_registration(self):
+        suite = ci.SUITES['help_mood_history']
+        self.assertEqual(suite['files'], ('tests/player_help/test_bridge.py',
+                                          'tests/player_help/test_question_display_source.py'))
+        for path in (*suite['files'], *suite['shared_paths']):
+            with self.subTest(path=path):
+                self.assertTrue(ci.impact([path])['suites']['help_mood_history']['selected'])
+        self.assertFalse(ci.impact(['README.md'])['suites']['help_mood_history']['selected'])
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'mood-history.json'
+            self.assertEqual(ci.run_unit('help_mood_history', output), 0)
+            result = json.loads(output.read_text())
+        self.assertEqual(result, dict(status='passed', tests=28, failures=0, errors=0, skipped=0))
+
     def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
         suite = ci.SUITES['help_wiki_guides']
         self.assertEqual(suite['files'], ('tests/player_help/test_wiki_guides.py',))

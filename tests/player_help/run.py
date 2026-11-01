@@ -102,6 +102,7 @@ var/list/probe_clients = list()
     var/obj/item/l_store
     var/obj/item/r_store
     var/health = 45
+    var/mood = 50
     var/maxHealth = 100
     var/nutrition = 200
     var/max_nutrition = 400
@@ -289,6 +290,10 @@ var/failures = 0
     var/list/snapshot = H.game_context(player)
     var/list/condition = snapshot["player"]
     check(condition["health_percent"] == 45 && condition["wetness_percent"] == 50, "asking player condition")
+    check(condition["mood_category"] == "Neutral" && !("mood" in condition), "visible mood category without raw mood")
+    player.mood = 10
+    check(H.game_context(player)["player"]["mood_category"] == "Horrible" && condition["mood_category"] == "Neutral", "mood snapshot is detached")
+    check(H.mood_category(20) == "Horrible" && H.mood_category(40) == "Bad" && H.mood_category(60) == "Neutral" && H.mood_category(80) == "Good", "mood boundaries match print_mood order")
     check(snapshot["season"] == "WINTER" && snapshot["time_of_day"] == "Night", "public environment")
     check("On fire" in condition["active_effects"], "active public effect")
     player.health = 80

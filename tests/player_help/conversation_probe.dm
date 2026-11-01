@@ -12,21 +12,36 @@
     check(!D.valid_action(bob, alice.player_help_action_token), "copied action token cannot select another client")
     check(D.valid_action(alice, alice.player_help_action_token), "own action token accepted")
     check(findtext(D.render_answer("Answer", "plain-v1", alice), "Follow up"), "follow-up action after acknowledged answer")
-    var/list/prior_questions = list("Earlier <b>question</b> & one", "Another question")
-    var/rendered_questions = D.render_answer("Answer", "plain-v1", alice, "Current <script> & question", prior_questions)
+    D.remember(alice, "Earlier <b>question</b> & one", "Earlier <script>answer</script> & one")
+    D.remember(alice, "Another question", "Another answer")
+    var/list/prior_pairs = alice.player_help_turns.Copy()
+    var/rendered_questions = D.render_answer("Answer", "plain-v1", alice, "Current <script> & question", prior_pairs)
     check(findtext(rendered_questions, "Current &lt;script&gt; &amp; question"), "current question escaped as text")
     check(findtext(rendered_questions, "Earlier &lt;b&gt;question&lt;/b&gt; &amp; one"), "previous question escaped as text")
-    check(findtext(rendered_questions, "Crafting Atlas</a>") < findtext(rendered_questions, "Previous questions"), "question history below reference links")
-    check(findtext(rendered_questions, "Previous questions") < findtext(rendered_questions, "Another question"), "previous questions kept in order")
+    check(findtext(rendered_questions, "Earlier &lt;script&gt;answer&lt;/script&gt; &amp; one"), "previous answer escaped as text")
+    check(findtext(rendered_questions, "Crafting Atlas</a>") < findtext(rendered_questions, "Previous exchanges"), "exchange history below reference links")
+    check(findtext(rendered_questions, "Previous exchanges") < findtext(rendered_questions, "Another question"), "previous exchanges kept in order")
+    check(findtext(rendered_questions, "action=followup;token=[alice.player_help_action_token];turn=2"), "retained exchange has targeted follow-up")
     check(!findtext(rendered_questions, "How do I stay warm?"), "other client's history not shown")
     var/legacy_rendered = D.render_answer("Legacy reply", "plain-v1", null, "Legacy question", list())
-    check(findtext(legacy_rendered, "Legacy question") && !findtext(legacy_rendered, "Previous questions"), "legacy worker current question shown without prior context")
+    check(findtext(legacy_rendered, "Legacy question") && !findtext(legacy_rendered, "Previous exchanges"), "legacy worker current question shown without prior context")
+    var/list/selected_pair = alice.player_help_turns[1]
+    check(findtext(D.enqueue(md5("conversation alice"), "Wrong owner", alice, bob.player_help_turns[1]), "no longer available"), "other client pair rejected before reservation")
+    check(!D.pending.len, "wrong-owner pair does not reserve queue")
+    check(D.enqueue(md5("conversation alice"), "What fuel does it need?", alice, selected_pair) == TRUE, "targeted follow-up enqueued")
+    var/list/target_request = D.read_json("spool/1.request.json", 16384)
+    var/list/target_contract = target_request["conversation"]
+    var/list/target_turns = target_contract["turns"]
+    check(target_turns.len == 1 && target_turns[1]["question"] == "How do I smelt iron?" && alice.player_help_turns.len == 3, "target sends selected pair and retains other exchanges")
+    D.clear_slot(1)
+    D.accounts = list()
+    D.global_times = list()
     check(D.enqueue(md5("conversation alice"), "What fuel does it need?", alice) == TRUE, "actual follow-up enqueued")
     var/list/followup = D.read_json("spool/1.request.json", 16384)
     var/list/contract = followup["conversation"]
     var/list/pairs = contract["turns"]
     var/list/first_pair = pairs[1]
-    check(contract["version"] == 1 && pairs.len == 1 && first_pair["question"] == "How do I smelt iron?", "server snapshot contains only asking session turns")
+    check(contract["version"] == 1 && pairs.len == 3 && first_pair["question"] == "How do I smelt iron?", "server snapshot contains only asking session turns")
     check(findtext(D.enqueue(md5("conversation alice"), "Duplicate", alice), "pending"), "one pending follow-up per account")
     var/generation = alice.player_help_generation
     D.reset_conversation(alice)

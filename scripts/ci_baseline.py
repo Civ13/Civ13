@@ -75,7 +75,20 @@ SUITES = {
             'code/game/objects/items/weapons/material/shards.dm',
             'code/predefines.dm', 'code/game/objects/items/clothing/clothing.dm',
             'code/modules/reagents/reagent_containers/food/sandwich.dm',
-            'code/modules/1713/dew_collector.dm')},
+            'code/modules/1713/dew_collector.dm',
+            'code/_onclick/hud/base_screen_objects.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/human/human_stats.dm')},
+    # Injected transport and source-only contracts; no BYOND or network calls.
+    'help_mood_history': {'files': ('tests/player_help/test_bridge.py',
+                                   'tests/player_help/test_question_display_source.py'),
+        'paths': ('tests/player_help/test_bridge.py', 'tests/player_help/test_question_display_source.py'),
+        'shared_paths': ('scripts/player_help_bridge.py', 'code/game/mob/player_help.dm',
+                         'code/_onclick/hud/base_screen_objects.dm',
+                         'code/game/mob/living/carbon/human/human_life.dm',
+                         'code/game/mob/living/carbon/human/human_needs.dm',
+                         'code/game/mob/living/carbon/human/human_stats.dm')},
     # Only stdlib source contracts; the shared DM inputs stay unmapped so their
     # existing all-suite fallback and other owners' coverage remain intact.
     'help_tab_links': {'files': ('tests/player_help/test_help_links.py',),
