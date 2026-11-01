@@ -98,7 +98,10 @@ var/global/lighting_interleave_light_calls = 0
 
 /proc/lighting_interleave_reset(case_name)
 	lighting_interleave_case = case_name
-	lighting_interleave_phase = case_name in list("turf_legacy", "turf_new", "replace_list", "change_level") ? "opacity" : "light"
+	if(case_name in list("turf_legacy", "turf_new", "replace_list", "change_level"))
+		lighting_interleave_phase = "opacity"
+	else
+		lighting_interleave_phase = "light"
 	lighting_interleave_done = FALSE
 	lighting_interleave_mutated = FALSE
 	lighting_interleave_omit_guard = case_name == "omitted_guard"
@@ -186,6 +189,9 @@ var/global/lighting_interleave_light_calls = 0
 	catch(var/exception/E)
 		result["error"] = "[E]"
 		result["case"] = lighting_interleave_case
+		result["selected_phase"] = lighting_interleave_phase
+		result["checkpoint_done"] = lighting_interleave_done
+		result["mutation_done"] = lighting_interleave_mutated
 		result["events"] = lighting_interleave_events
 	text2file(json_encode(result), "lighting-interleave-result.json")
 	del(world)

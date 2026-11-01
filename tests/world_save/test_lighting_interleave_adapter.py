@@ -54,6 +54,14 @@ class LightingInterleaveAdapter(unittest.TestCase):
         self.assertIn("isnull(storage.all_loaded[index])", probe)
         self.assertIn("lighting_interleave_hardnull && !lighting_interleave_target && !lighting_interleave_null_calls", probe)
 
+    def test_phase_selection_is_explicit_and_failure_receipt_keeps_state(self):
+        probe = Path(__file__).with_name("lighting_interleave_probe.dm").read_text()
+        reset = probe.split('/proc/lighting_interleave_reset(case_name)', 1)[1].split('/proc/lighting_interleave_case_run(', 1)[0]
+        self.assertIn('if(case_name in list("turf_legacy", "turf_new", "replace_list", "change_level"))\n\t\tlighting_interleave_phase = "opacity"\n\telse\n\t\tlighting_interleave_phase = "light"', reset)
+        self.assertNotIn('lighting_interleave_phase = case_name in', reset)
+        for field in ('selected_phase', 'checkpoint_done', 'mutation_done'):
+            self.assertIn('result["' + field + '"]', probe)
+
     def test_receipts_require_exact_phases_engine_and_complete_controls(self):
         head = "a" * 40
         writer = {"head": head, "phase": "writer", "version": 516, "build": 1688,
