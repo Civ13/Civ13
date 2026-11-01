@@ -1,0 +1,10 @@
+{
+  "html": "Default <font face=\"Verdana\" color=white>Hidden <font face=\"Times New Roman\"><i>Signature</i></font></font><br><font color=#Ab12Ef><b>Visible &amp; safe</b></font>",
+  "runs": [
+    {"text":"Default ","ink":"#000000","face":"times","bold":false,"italic":false},
+    {"text":"Hidden ","ink":"#ffffff","face":"verdana","bold":false,"italic":false},
+    {"text":"Signature","ink":"#ffffff","face":"times","bold":false,"italic":true},
+    {"br":true,"ink":"#000000","face":"times","bold":false,"italic":false},
+    {"text":"Visible &amp; safe","ink":"#ab12ef","face":"times","bold":true,"italic":false}
+  ]
+}

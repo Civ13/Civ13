@@ -25,6 +25,36 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only Destroy, canonical macro and qdel-admission projections.
+    'mount_deletion': {'files': ('tests/mount_deletion/test_destroy.py',),
+        'paths': ('tests/mount_deletion/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm', 'code/processes/garbage.dm',
+            'code/__defines/qdel.dm', 'tests/save_movement/source_adapter.py')},
+    # Stdlib-only complete distance branch with inert movement/icon boundaries.
+    'mount_distance': {'files': ('tests/mount_distance/test_distance.py',),
+        'paths': ('tests/mount_distance/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human_life.dm', 'tests/save_movement/source_adapter.py')},
+    # Stdlib-only riding death and admission projections with inert callbacks.
+    'mount_lifecycle': {'files': ('tests/mount_lifecycle/test_death.py',),
+        'paths': ('tests/mount_lifecycle/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/riding.dm',
+            'code/game/mob/living/carbon/human/subtile_movement.dm',
+            'code/modules/persistence/bed_return.dm', 'tests/save_movement/source_adapter.py')},
+    # Stdlib-only complete destruction-layer projection; frozen source is data.
+    'ladder_cleanup': {'files': ('tests/ladder_cleanup/test_destroy.py',),
+        'paths': ('tests/ladder_cleanup/',), 'shared_paths': (
+            'code/modules/multiz/structures.dm', 'tests/save_movement/source_adapter.py')},
+    # Stdlib + reviewed source projection with inert recipients and event queue.
+    # No native fixture, process, network or live message transport is imported.
+    'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
+        'paths': ('tests/telephone/',), 'shared_paths': (
+            'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
+
+    # Stdlib + reviewed source projection only; frozen DM is offline data.
+    # No native runner, engine process, socket or network boundary is imported.
+    'vehicle_hud': {'files': ('tests/vehicle_hud/test_driver_axis.py',),
+        'paths': ('tests/vehicle_hud/',), 'shared_paths': (
+            'code/_onclick/hud/hud_vehicles.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only admin care/appearance source contracts. Shared inputs retain
     # their existing conservative fallback and other suites' ownership.
     'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',
@@ -227,7 +257,8 @@ SUITES = {
         'paths': ('tests/world_save/character_return/',),
         # Shared reads must select this suite without claiming exclusive impact
         # ownership and removing the existing all-suite unmapped fallback.
-        'shared_paths': ('tests/world_save/', 'tests/new_z_budget/z_budget_evidence.py',
+        'shared_paths': ('tests/world_save/', 'tests/save_movement/source_adapter.py',
+            'tests/new_z_budget/z_budget_evidence.py',
             'tests/floor_decal_tracking/prepare.py', 'code/predefines.dm', 'code/_macros.dm',
             'code/modules/persistence/', 'code/modules/multiz/world_z_budget.dm',
             'code/game/mob/living/carbon/human/human_helpers.dm', 'code/game/objects/buckling.dm',

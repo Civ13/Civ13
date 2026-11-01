@@ -104,12 +104,17 @@
 	return
 
 /obj/item/weapon/book/proc/show_content(var/mob/user, var/forceshow=0)
+	var/display_snapshot
 	if (!(istype(user, /mob/living/human) || isghost(user) && !forceshow))
-		user << browse("<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[stars(dat)]</BODY></HTML>", "window=[name]")
-		onclose(user, "[name]")
+		display_snapshot = stars(dat)
 	else
-		user << browse("<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[dat]</BODY></HTML>", "window=[name]")
-		onclose(user, "[name]")
+		display_snapshot = dat
+	var/legacy_snapshot = "<HTML><HEAD><TITLE>[title]</TITLE></HEAD><BODY>[display_snapshot]</BODY></HTML>"
+	// Fixed presentation hook keeps isolated base-book fixtures independent.
+	if (hascall(src, "present_book_reader") && call(src, "present_book_reader")(user, legacy_snapshot, "[display_snapshot]", "[title]", "[name]"))
+		return
+	user << browse(legacy_snapshot, "window=[name]")
+	onclose(user, "[name]")
 
 /obj/item/weapon/book/verb/rename()
 	set name = "Rename book"

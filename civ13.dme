@@ -769,6 +769,7 @@
 #include "code\modules\1713\betting.dm"
 #include "code\modules\1713\blueprint.dm"
 #include "code\modules\1713\book.dm"
+#include "code\modules\1713\book_reader.dm"
 #include "code\modules\1713\books.dm"
 #include "code\modules\1713\cane.dm"
 #include "code\modules\1713\closets.dm"

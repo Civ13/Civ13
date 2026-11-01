@@ -19,6 +19,8 @@ on:
       - 'code/datums/mind.dm'
       - 'code/datums/character_notes_ui.dm'
       - 'code/game/objects/items/paper/photography.dm'
+      - 'code/modules/1713/book.dm'
+      - 'code/modules/1713/book_reader.dm'
       - 'code/game/mob/groups/faction_symbol.dm'
       - 'code/game/mob/language/**'
       - 'code/game/objects/map_metadata/pepelsibirsk.dm'

@@ -85,6 +85,7 @@ describe('standard screen parity', () => {
   it('registers all merged reader routes', () => {
     expect(Object.keys(interfaces).sort()).toEqual([
       'appearance_changer.tmpl',
+      'book_reader.tmpl',
       'character_flavor.tmpl',
       'character_notes.tmpl',
       'chem_disp.tmpl',

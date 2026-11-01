@@ -50,7 +50,10 @@ class DiagnosticCaseTests(unittest.TestCase):
 
     def test_acceptance_workflow_keeps_limits_and_full_uninstrumented_matrix(self):
         text = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
-        commands = [line for line in text.splitlines() if 'python3 -B tests/movement_save_chunks/' in line and '--run-native' in line]
+        # The manual human fixture is a separate job; keep the original
+        # ordinary acceptance matrix unchanged without counting its command.
+        ordinary = text.split('  isolated-native:\n', 1)[1].split('\n  human-spatial:\n', 1)[0]
+        commands = [line for line in ordinary.splitlines() if 'python3 -B tests/movement_save_chunks/' in line and '--run-native' in line]
         self.assertEqual(len(commands), 2)
         correctness, memory = commands
         self.assertIn('correctness.py', correctness)

@@ -126,15 +126,17 @@
 			size_multiplier = 1.1
 	if (riding && riding_mob)
 		if (!(riding_mob in range(1,src)))
+			var/mob/living/simple_animal/old_mount = riding_mob
 			riding = FALSE
 			riding_mob = null
 			var/mob/living/human/H = src
 			forceMove(H.loc)
-			if (riding_mob)
-				riding_mob.ride = FALSE
-				riding_mob.rider = null
-				riding_mob.update_icons()
-				riding_mob.stop_automated_movement = FALSE
+			if (!QDELETED(old_mount) && old_mount.rider == src && riding_mob != old_mount)
+				old_mount.ride = FALSE
+				old_mount.rider = null
+				old_mount.update_icons()
+				if (!QDELETED(old_mount) && !old_mount.ride && isnull(old_mount.rider) && riding_mob != old_mount)
+					old_mount.stop_automated_movement = FALSE
 
 	// handle nutrition stuff before we handle stomach stuff in the callback
 
