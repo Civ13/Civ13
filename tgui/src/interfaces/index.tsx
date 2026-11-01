@@ -10,6 +10,7 @@ import { CrewLog } from './CrewLog';
 import { FactionList } from './FactionList';
 import { CraftingAtlas } from './CraftingAtlas';
 import { PhotoViewer } from './PhotoViewer';
+import { BookReader } from './BookReader';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -28,4 +29,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'faction_list.tmpl': FactionList,
   'crafting_atlas.tmpl': CraftingAtlas,
   'photo_viewer.tmpl': PhotoViewer,
+  'book_reader.tmpl': BookReader,
 };

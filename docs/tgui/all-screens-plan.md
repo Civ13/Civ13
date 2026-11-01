@@ -179,3 +179,17 @@ selection for the language producer and classic compiler dependency. It has not
 been compiled in BYOND, exercised natively, published, merged or deployed.
 Native observer access, real asset delivery, focus/movement, scroll/close and
 body-transfer behavior remain explicit future acceptance work after scope review.
+
+## Base Book reader - local candidate, 2026-11-01
+
+The next independent reader is base `book.show_content()`, using bounded option B
+in [the compatibility contract](book-reader.md). Its only new inline metadata is
+explicit font face and ink, including inherited white signature ink on an opaque
+white page. Unsupported content switches the complete authorized snapshot to
+the original classic view. Authoring and book subtype behavior stay in their
+existing paths. Notes #3471 and Flavor #3472 remain separate pending readers;
+this candidate is based on merged Photo master and does not stack on either.
+The implementation and offline/browser evidence are local pending Main review;
+no publication, native execution or deployment is included. Paper/stamp and
+mutation-heavy readers remain later work requiring their own compatibility
+contracts. Existing HUD, Player Help and manager owners retain those lanes.

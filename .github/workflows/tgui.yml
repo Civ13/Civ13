@@ -15,6 +15,8 @@ on:
       - 'code/game/mob/crafting_atlas.dm'
       - 'code/game/mob/crafting_atlas_tgui.dm'
       - 'code/game/objects/items/paper/photography.dm'
+      - 'code/modules/1713/book.dm'
+      - 'code/modules/1713/book_reader.dm'
       - 'code/game/mob/groups/faction_symbol.dm'
       - 'code/game/mob/language/**'
       - 'code/game/objects/map_metadata/pepelsibirsk.dm'

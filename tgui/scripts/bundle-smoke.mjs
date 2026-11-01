@@ -207,5 +207,6 @@ try {
   assert.ok(!w.document.body.textContent.includes('inert'));
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 17 registered routes, retained classic fixtures including photo, handshake/action/text/image/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and 17 retained routes, classic fixtures including photo, handshake/action/text/image/fallback contracts\n");
 } finally { w.close(); }
+await import('./book-bundle-smoke.mjs');
