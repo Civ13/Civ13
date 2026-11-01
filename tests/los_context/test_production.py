@@ -474,6 +474,27 @@ class InventoryHoverName(unittest.TestCase):
                 self.assertIsNone(m.W.hover_target)
                 self.assertIsNone(m.W.hover_origin)
 
+    def test_populated_label_is_cleared_before_a_denied_or_deleted_replacement(self):
+        for kind in ['denied','deleted']:
+            with self.subTest(kind=kind):
+                m=self.model();old=m.atom(name='previous held item');slot=m.slot(old)
+                m.C.MouseEntered(slot)
+                self.assertTrue(m.W.maptext)
+                self.assertTrue(m.W.hover_inventory)
+                self.assertIsNotNone(m.W.hover_screen_loc)
+                self.assertIs(m.W.hover_target.resolve(),old)
+                names=[]
+                target=m.atom(name='new private name',name_reads=names,loc=m.atom('/turf/floor'))
+                m.visible.add(target)
+                if kind=='deleted':m.readable.add(target);target.deleted=True
+                m.C.MouseEntered(target)
+                self.assertEqual(names,[])
+                self.assertEqual(m.W.maptext,'')
+                self.assertIsNone(m.W.hover_target)
+                self.assertIsNone(m.W.hover_origin)
+                self.assertFalse(m.W.hover_inventory)
+                self.assertIsNone(m.W.hover_screen_loc)
+
     def test_omitting_process_fresh_visibility_is_an_observable_privacy_defect(self):
         source=(CORE.parents[3]/'code/_onclick/hud/hover_name.dm').read_text()
         guard='|| !target_visible(target)'
