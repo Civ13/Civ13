@@ -192,7 +192,7 @@ class BaselinePolicyTests(unittest.TestCase):
             output = Path(directory) / 'mood-history.json'
             self.assertEqual(ci.run_unit('help_mood_history', output), 0)
             result = json.loads(output.read_text())
-        self.assertEqual(result, dict(status='passed', tests=28, failures=0, errors=0, skipped=0))
+        self.assertEqual(result, dict(status='passed', tests=30, failures=0, errors=0, skipped=0))
 
     def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
         suite = ci.SUITES['help_wiki_guides']

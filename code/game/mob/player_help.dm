@@ -434,6 +434,10 @@ var/global/datum/player_help_service/player_help_service = new
 		var/list/turns = target_pair ? list(target_pair) : C.player_help_turns.Copy()
 		request["conversation"] = list("version" = 1, "turns" = turns)
 	// Includes escaping, IDs, context and metadata, not just dialogue bytes.
+	// A targeted reply must never silently lose the exchange it refers to.
+	if (target_pair && request_size(request) > 16384)
+		clear_slot(slot)
+		return "The selected exchange and current context are too large for a follow-up. Please try a shorter question or start a new conversation."
 	// Retain complete newest pairs when the existing spool envelope is tight.
 	while (request_size(request) > 16384 && request["conversation"])
 		var/list/conversation = request["conversation"]

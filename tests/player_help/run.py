@@ -76,9 +76,11 @@ var/list/probe_clients = list()
 /datum/player_help_service/probe_backend
     var/online = TRUE
     var/fail_write = FALSE
+    var/write_calls = 0
     available()
         return online
     write_request(slot, list/request)
+        write_calls++
         if (fail_write)
             return FALSE
         return ..()

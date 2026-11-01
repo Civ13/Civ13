@@ -23,7 +23,10 @@ answers as escaped text. **Follow up on this exchange** sends only that selected
 pair as previous context for the next question; the other retained exchanges stay
 visible until normal retention removes them. The general **Follow up** continues
 using the current bounded conversation. Expired, replaced or copied links cannot
-select another client's history.
+select another client's history. If the selected pair, question and current
+snapshot exceed the request limit, the game refuses the targeted follow-up with
+an explanation rather than silently sending it without the selected pair. The
+existing admission cooldown still applies to a request refused at this size check.
 
 The authenticated client owns its completed question/answer pairs. No browser
 parameter selects an account, session or model role. Action tokens belong to

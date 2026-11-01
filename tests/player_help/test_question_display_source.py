@@ -1,4 +1,5 @@
 """Offline contract checks; native fixture exercises the actual renderer separately."""
+import json
 from pathlib import Path
 import unittest
 
@@ -48,6 +49,37 @@ class QuestionDisplaySourceTests(unittest.TestCase):
         context = text.split('/datum/player_help_service/proc/game_context(', 1)[1].split('/datum/player_help_service/proc/submit', 1)[0]
         self.assertIn('condition["mood_category"] = mood_category(H.mood)', context)
         self.assertNotIn('condition["mood"]', context)
+
+    def test_targeted_overflow_refuses_before_trimming_or_writing(self):
+        text = SOURCE.read_text(encoding='utf-8')
+        enqueue = text.split('/datum/player_help_service/proc/enqueue(', 1)[1].split('/datum/player_help_service/proc/write_request', 1)[0]
+        guard = 'if (target_pair && request_size(request) > 16384)'
+        self.assertIn(guard, enqueue)
+        section = enqueue.split(guard, 1)[1].split('// Retain complete newest pairs', 1)[0]
+        self.assertIn('clear_slot(slot)', section)
+        self.assertIn('selected exchange and current context are too large', section)
+        self.assertNotIn('player_help_turns.Cut', section)
+        self.assertNotIn('write_request', section)
+        self.assertLess(enqueue.index(guard), enqueue.index('turns.Cut(1, 2)'))
+        self.assertLess(enqueue.index(guard), enqueue.index('write_request(slot, request)'))
+
+    def test_multibyte_budget_example_keeps_target_and_history_separate(self):
+        name = '😀' * 20  # The game projects at most 80 UTF-8 bytes per item name.
+        inventory = [{'name': name, 'quantity': 1, 'place': 'back'}] + [
+            {'name': name, 'quantity': 1, 'place': name} for _ in range(23)]
+        large = {'question': 'q' * 500, 'answer': '😀' * 750}
+        small = {'question': 'short earlier', 'answer': '😀' * 100}
+        history = [large, small]
+        request = {'id': 'fixture-id', 'account': 'a' * 32, 'question': 'q' * 500,
+                   'game_context': {'player': {'inventory': {'items': inventory, 'truncated': False}}},
+                   'render_contract': {'version': 1, 'capabilities': ['markdown-basic-v1']},
+                   'conversation': {'version': 1, 'turns': [large]}}
+        size = lambda value: len(json.dumps(value, ensure_ascii=True, separators=(',', ':')))
+        self.assertGreater(size(request), 16384)
+        request['conversation']['turns'] = [small]
+        self.assertGreater(size(request), 10000)
+        self.assertLess(size(request), 16000)
+        self.assertEqual(history, [large, small])
 
 
 if __name__ == '__main__':
