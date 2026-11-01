@@ -1,0 +1,9 @@
+<div class="item_list" style="text-align:center">
+  <h3>{{:data.name}}</h3>
+  {{if typeof data.image === 'string' && /^tmp_photo_[0-9]+\.png$/.test(data.image)}}
+    <img src="{{>encodeURIComponent(data.image)}}" width="{{>String(isFinite(Number(data.width)) ? Math.max(64, Math.min(448, Number(data.width))) : 192)}}" style="max-width:100%;height:auto;-ms-interpolation-mode:nearest-neighbor;image-rendering:pixelated" alt="Photograph">
+  {{else}}
+    <p>No captured image is available.</p>
+  {{/if}}
+  {{if data.scribble}}<p>Written on the back:<br><i>{{:data.scribble}}</i></p>{{/if}}
+</div>
