@@ -52,7 +52,7 @@ var/message_calls = 0
 	var/fleas = TRUE
 /mob
 	var/refreshes = 0
-/mob/proc/regenerate_icons()
+/mob/proc/regenerate_icons(refresh_hud = TRUE)
 	refreshes++
 /mob/proc/probe_no_refresh()
 	return

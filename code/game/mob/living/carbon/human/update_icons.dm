@@ -471,14 +471,15 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)   update_icons()
 
 //For legacy support.
-/mob/living/human/regenerate_icons()
+/mob/living/human/regenerate_icons(refresh_hud = TRUE)
 	..()
 	if (transforming)
 		return
 	update_mutations(0)
 	update_body(0)
 	update_hair(0)
-	update_hud()//Hud Stuff
+	if (refresh_hud)
+		update_hud()//Hud Stuff
 	update_inv_w_uniform(0)
 	update_inv_wear_id(0)
 	update_inv_gloves(0)
