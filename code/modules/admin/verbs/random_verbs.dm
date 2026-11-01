@@ -342,7 +342,9 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	I.clean_blood()
 	if (ismob(I.loc))
 		var/mob/M = I.loc
-		M.regenerate_icons()
+		// Washing changes appearance, not the HUD. A HUD rebuild drops private
+		// world-render screens until LOS repairs their compositor leases.
+		M.regenerate_icons(FALSE)
 
 	log_admin("[key_name(src)] cleaned [I] at [get_turf(I)]")
 	message_admins("[key_name_admin(src)] cleaned [I] at [get_turf(I)]", key_name_admin(src))
