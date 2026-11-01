@@ -65,6 +65,18 @@ class BaselinePolicyTests(unittest.TestCase):
                 previous = self.selected([shared])
             self.assertEqual(self.selected([shared]), previous | {'telephone_recipients'})
 
+    def test_vehicle_hud_registration_is_bounded_and_preserves_shared_fallback(self):
+        suite = ci.SUITES['vehicle_hud']
+        self.assertEqual(suite['files'], ('tests/vehicle_hud/test_driver_axis.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'vehicle_hud'}
+        self.assertEqual(self.selected(['tests/vehicle_hud/test_driver_axis.py']), expected)
+        self.assertEqual(self.selected(['tests/vehicle_hud/fixtures/axis_handlers_before.dm']), expected)
+        previous_suites = {name: spec for name, spec in ci.SUITES.items() if name != 'vehicle_hud'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous_suites):
+                previous_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), previous_selection | {'vehicle_hud'})
+
     def test_tanning_rack_appearance_registration_is_offline_and_preserves_shared_fallback(self):
         suite = ci.SUITES['tanning_rack_appearance']
         self.assertEqual(suite['files'], ('tests/test_tanning_rack_appearance.py',))

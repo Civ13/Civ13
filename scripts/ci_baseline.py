@@ -30,6 +30,12 @@ SUITES = {
     'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
         'paths': ('tests/telephone/',), 'shared_paths': (
             'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
+
+    # Stdlib + reviewed source projection only; frozen DM is offline data.
+    # No native runner, engine process, socket or network boundary is imported.
+    'vehicle_hud': {'files': ('tests/vehicle_hud/test_driver_axis.py',),
+        'paths': ('tests/vehicle_hud/',), 'shared_paths': (
+            'code/_onclick/hud/hud_vehicles.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only admin care/appearance source contracts. Shared inputs retain
     # their existing conservative fallback and other suites' ownership.
     'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',
