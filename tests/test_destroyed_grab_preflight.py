@@ -11,6 +11,7 @@ SOURCE=(ROOT/'code/game/mob/mob_movement.dm').read_text(encoding='utf-8')
 HUMAN=(ROOT/'code/game/mob/living/carbon/human/subtile_movement.dm').read_text(encoding='utf-8')
 HELPER=SOURCE.partition('/mob/proc/prune_destroyed_grab_list()')[2].partition('/client/Move(')[0]
 CLIENT=SOURCE.split('/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)',1)[1]
+GUARDED_REMOVAL=r'(?m)^([ \t]*)if \(D\.gcDestroyed\)[ \t]*\n\1\tgrab_list -= D[ \t]*$'
 
 @dataclass(eq=False)
 class Grab:
@@ -45,12 +46,18 @@ class DestroyedGrabContracts(unittest.TestCase):
 
     def test_source_preserves_narrow_existing_gc_condition_and_list_identity(self):
         self.assertIn('for (var/datum/D in grab_list.Copy())',HELPER)
-        self.assertIn('if (D.gcDestroyed)',HELPER)
-        self.assertIn('grab_list -= D',HELPER)
+        self.assertRegex(HELPER,GUARDED_REMOVAL)
+        self.assertEqual(HELPER.count('grab_list -= D'),1)
         for forbidden in ('gc_destroyed','QDELETED','isDeleted(','qdel(','del(',
                           'grabbed_by','canmove','loc =','grab_list = list(',
                           'step_x','step_y','forceMove','human_subtile_transaction'):
             self.assertNotIn(forbidden,HELPER)
+
+    def test_unguarded_removal_mutation_is_rejected(self):
+        original='\t\tif (D.gcDestroyed)\n\t\t\tgrab_list -= D'
+        mutant='\t\tif (D.gcDestroyed)\n\t\t\tcontinue\n\t\tgrab_list -= D'
+        self.assertEqual(HELPER.count(original),1)
+        self.assertNotRegex(HELPER.replace(original,mutant),GUARDED_REMOVAL)
 
     def test_confirmed_destroyed_entry_removed_without_touching_live_grab(self):
         stale=Grab(gcDestroyed=15585.4,gc_destroyed=15585.4)
