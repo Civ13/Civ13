@@ -23,7 +23,7 @@ var/global/datum/player_help_service/player_help_service = new
 		player_help_service.submit(src, question)
 
 /client/proc/player_help_prompt()
-	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
+	return input(src, "Ask a gameplay question. Your question and gameplay condition (health, mood category, recent observed injuries, inventory, exposure and public server state) are sent to the server owner's AI service. Do not enter personal information.", "Ask for help") as text|null
 
 /datum/player_help_service
 	var/root = "SQL/player-help/"
@@ -118,7 +118,20 @@ var/global/datum/player_help_service/player_help_service = new
 		if (!available() || !conversation_supported || !C.player_help_acknowledged || !C.player_help_turns.len)
 			C << "Follow-up context is unavailable. Start a new conversation or try again later."
 			return
-		C.ask_player_help()
+		if (isnull(href_list["turn"]))
+			C.ask_player_help()
+			return
+		var/raw_turn = href_list["turn"]
+		var/turn = istext(raw_turn) ? text2num(raw_turn) : null
+		if (!isnum(turn) || turn != round(turn) || turn < 1 || turn > C.player_help_turns.len || "[turn]" != raw_turn)
+			return
+		var/list/pair = C.player_help_turns[turn]
+		var/generation = C.player_help_generation
+		var/mob/body = C.mob
+		var/question = C.player_help_prompt()
+		expire_conversations()
+		if (question && valid_action(C, href_list["token"]) && C.mob == body && C.player_help_generation == generation && turn <= C.player_help_turns.len && C.player_help_turns[turn] == pair)
+			submit(C, question, pair)
 
 /datum/player_help_service/proc/valid_action(client/C, token)
 	if (C && (C in clients))
@@ -343,6 +356,21 @@ var/global/datum/player_help_service/player_help_service = new
 		results += list(list("body_part" = part, "missing" = present ? FALSE : TRUE, "brute" = present ? round(max(0, min(1000, O.brute_dam))) : 0, "burn" = present ? round(max(0, min(1000, O.burn_dam))) : 0))
 	return results
 
+// Match the categories shown to the character by print_mood(), not raw mood.
+/datum/player_help_service/proc/mood_category(value)
+	switch(value)
+		if(-5000000 to 20)
+			return "Horrible"
+		if(20 to 40)
+			return "Bad"
+		if(40 to 60)
+			return "Neutral"
+		if(60 to 80)
+			return "Good"
+		if(80 to 10000)
+			return "Excellent"
+	return null
+
 // Read public map metadata directly; never accept player text as server state.
 /datum/player_help_service/proc/game_context(mob/asking_player)
 	var/list/context = list("map" = "Unknown", "gamemode" = "Unknown")
@@ -353,6 +381,7 @@ var/global/datum/player_help_service/player_help_service = new
 	if (istype(asking_player, /mob/living/human))
 		var/mob/living/human/H = asking_player
 		var/list/condition = list("health_percent" = round(100 * H.health / max(1, H.maxHealth)), "nutrition_percent" = round(100 * H.nutrition / max(1, H.max_nutrition)), "hydration_percent" = round(100 * H.water / max(1, H.max_water)), "body_temperature_kelvin" = round(H.bodytemperature), "wetness_percent" = round(100 * H.cold_wetness))
+		condition["mood_category"] = mood_category(H.mood)
 		var/list/events = list()
 		if (H.on_fire)
 			events += "On fire"
@@ -371,10 +400,10 @@ var/global/datum/player_help_service/player_help_service = new
 		context["player"] = condition
 	return context
 
-/datum/player_help_service/proc/submit(client/C, question)
+/datum/player_help_service/proc/submit(client/C, question, list/target_pair = null)
 	if (!C || !istext(question) || !length(question))
 		return FALSE
-	var/result = enqueue(account_key(C), question, C)
+	var/result = enqueue(account_key(C), question, C, target_pair)
 	if (istext(result))
 		C << result
 		return FALSE
@@ -382,7 +411,7 @@ var/global/datum/player_help_service/player_help_service = new
 	return TRUE
 
 // Server-owned queue boundary; no client/Topic-supplied account identifiers.
-/datum/player_help_service/proc/enqueue(account, question, client/C)
+/datum/player_help_service/proc/enqueue(account, question, client/C, list/target_pair = null)
 	expire_conversations()
 	if (C)
 		bind_body(C, C.mob)
@@ -392,6 +421,8 @@ var/global/datum/player_help_service/player_help_service = new
 		return "Please keep your question to 1 through 500 characters."
 	if (C && C.player_help_turns.len && !conversation_supported)
 		return "This helper cannot carry follow-up context. Use New conversation to ask a standalone question."
+	if (target_pair && (!C || !conversation_supported || !C.player_help_acknowledged || !C.player_help_turns.Find(target_pair)))
+		return "That exchange is no longer available. Please choose a current conversation."
 	var/slot = reserve(account)
 	if (!isnum(slot))
 		return slot
@@ -400,8 +431,13 @@ var/global/datum/player_help_service/player_help_service = new
 	var/list/request = list("id" = id, "account" = account, "question" = question, "game_context" = game_context(C ? C.mob : null))
 	request["render_contract"] = list("version" = 1, "capabilities" = list("markdown-basic-v1"))
 	if (C && conversation_supported)
-		request["conversation"] = list("version" = 1, "turns" = C.player_help_turns.Copy())
+		var/list/turns = target_pair ? list(target_pair) : C.player_help_turns.Copy()
+		request["conversation"] = list("version" = 1, "turns" = turns)
 	// Includes escaping, IDs, context and metadata, not just dialogue bytes.
+	// A targeted reply must never silently lose the exchange it refers to.
+	if (target_pair && request_size(request) > 16384)
+		clear_slot(slot)
+		return "The selected exchange and current context are too large for a follow-up. Please try a shorter question or start a new conversation."
 	// Retain complete newest pairs when the existing spool envelope is tight.
 	while (request_size(request) > 16384 && request["conversation"])
 		var/list/conversation = request["conversation"]
@@ -446,16 +482,14 @@ var/global/datum/player_help_service/player_help_service = new
 				C << "The helper did not accept follow-up context. Your conversation was cleared; please start a new conversation."
 				reset_conversation(C)
 			else if (C && answer_format && response["status"] == "ok" && istext(response["answer"]) && length(response["answer"]) && length(response["answer"]) <= 4000)
-				// Snapshot only this session's completed questions before appending the current pair.
-				var/list/previous_questions = list()
-				for (var/list/pair in C.player_help_turns)
-					previous_questions += pair["question"]
+				// Snapshot only this session's completed pairs before appending the current pair.
+				var/list/previous_pairs = C.player_help_turns.Copy()
 				if (entry["conversation"] && response["conversation_protocol"] == 1)
 					remember(C, entry["question"], response["answer"])
 				else
 					reset_conversation(C)
 					C.player_help_action_token = md5("[entry["id"]]-[rand(1, 1000000000)]")
-				C << browse(render_answer(response["answer"], answer_format, C, entry["question"], previous_questions), "window=player_help;size=600x500")
+				C << browse(render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs), "window=player_help;size=600x500")
 			else if (C && response["status"] == "rate_limited")
 				C << "AI gameplay help rate limit reached. Please wait [max(1, min(86400, text2num("[response["retry_seconds"]]")))] seconds and try again."
 			else if (C && (response["status"] == "busy" || response["status"] == "pending"))
@@ -478,7 +512,7 @@ var/global/datum/player_help_service/player_help_service = new
 		return response["answer_format"]
 	return null
 
-/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null, question = null, list/previous_questions = null)
+/datum/player_help_service/proc/render_answer(answer, answer_format = "markdown-basic-v1", client/C = null, question = null, list/previous_pairs = null)
 	if (!istext(answer) || length(answer) > 4000)
 		answer = "AI gameplay help did not receive a usable response."
 	var/body
@@ -492,11 +526,16 @@ var/global/datum/player_help_service/player_help_service = new
 	if (istext(question) && length(question) <= 500)
 		current_question = "<p><b>Question:</b> [html_encode(question)]</p>"
 	var/history = ""
-	if (islist(previous_questions) && previous_questions.len)
-		history = "<h3>Previous questions</h3>"
-		for (var/previous_question in previous_questions)
-			if (istext(previous_question) && length(previous_question) <= 500)
-				history += "<p>[html_encode(previous_question)]</p>"
+	if (islist(previous_pairs) && previous_pairs.len)
+		for (var/list/pair in previous_pairs)
+			var/turn = C ? C.player_help_turns.Find(pair) : 0
+			if (!turn || !istext(pair["question"]) || !istext(pair["answer"]) || length(pair["question"]) > 500 || length(pair["answer"]) > 3000)
+				continue
+			if (!length(history))
+				history = "<h3>Previous exchanges</h3>"
+			history += "<p><b>Question:</b> [html_encode(pair["question"])]</p><pre style='white-space:pre-wrap'>[html_encode(pair["answer"])]</pre>"
+			if (C.player_help_action_token && C.player_help_acknowledged)
+				history += "<p><a href='?src=\ref[src];action=followup;token=[C.player_help_action_token];turn=[turn]'>Follow up on this exchange</a></p>"
 	if (C && C.player_help_action_token)
 		var/actions = "<a href='?src=\ref[src];action=reset;token=[C.player_help_action_token]'>New conversation</a>"
 		if (C.player_help_acknowledged && C.player_help_turns.len)
