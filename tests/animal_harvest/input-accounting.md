@@ -4,6 +4,8 @@ This correction is prepared above published `011931e0a0482239628d7031196be572b13
 It has not been pushed, compiled or run natively. Main retains review and retry
 authorization. The existing animal runner and shared retention helper remain the
 only proposed route; no cap is bypassed and no alternate runner is added.
+The reviewed scope is a Linux trusted checkout. Windows native execution remains
+unverified; publication and native approval are still pending.
 
 ## Exact required inputs
 
@@ -24,9 +26,16 @@ The 146 name paths are checked against the pinned source hash, declaration count
 exact distinct path set, normalized byte counts and SHA-256 fingerprints. The
 actual source bytes are preserved and their size/hash bound before copying.
 The existing literal 18-byte `# Offline fixture\n` config is the 147th input.
-It has its own fingerprint. Inputs are expected to remain immutable; prelaunch
+It has its own fingerprint. Inputs are expected to stay unchanged; prelaunch
 and post-phase checks reject persistent changes, including equal-length changes.
-These are checksum checks, not read-only mounts or an atomic filesystem snapshot.
+The checks reject symlinks; they do not generally reject hard links. These are
+fingerprint checks, not immutable/read-only mounts or an atomic filesystem snapshot.
+
+The private review packet's 146 name payloads have mixed line endings: 135,796
+raw bytes, or 134,930 after CRLF-to-LF normalization. Including the fixed config,
+the packet payload is 135,814 raw bytes; the normalized equivalent is 134,948.
+Do not assume a Linux checkout or the packet contains only LF bytes. Each run
+records and preserves its actual source bytes after normalized validation.
 
 The shared flax manifest additionally lists a loose recipe input. Harvest's
 `hide_recipe_probe.dm` embeds that same recipe with a single-quoted resource
@@ -49,7 +58,8 @@ input inventory plus the 128-file reserve. Harvest now supplies its own exact
 | Required loose inputs | 150 copied names + minimal config, counted as outputs | 146 pinned names + minimal config = 147 |
 | Generated/evidence/other file reserve | All files share 128 | 128 non-input files, unchanged |
 | Evidence-tree derived file ceiling | 128 | 147 + 128 = 275 |
-| Exact LF input bytes | Not separately recorded | 134,948 |
+| Normalized input bytes, including config | Not separately recorded | 134,948 |
+| Review-packet raw input bytes, including config | Not separately recorded | 135,814 (mixed line endings) |
 | Cross-platform input byte ceiling | Not separately recorded | 153,265 including CRLF expansion |
 | Combined evidence-tree byte ceiling, including inputs | 512 MiB | 512 MiB, unchanged |
 | Text/generated input per file | 2 MiB | 2 MiB, unchanged |
@@ -58,13 +68,13 @@ input inventory plus the 128-file reserve. Harvest now supplies its own exact
 
 The four declared generated files in the checkout remain additional existing
 owned paths: two source files at 2 MiB each and two binary files at 256 MiB each.
-Thus the declared whole-case maximum is 279 files and 1,028 MiB across the evidence
+Thus the declared whole-case observed accounting bound is 279 files and 1,028 MiB across the evidence
 tree plus those four paths. The checkout/toolchain itself is outside that case
 inventory. As before, observations and post-compile artifact checks are not OS
 filesystem/RSS/CPU quotas; native writes can overshoot between checks. Linux
 descendant/socket cleanup remains unverified in limited scope.
 
-Unlisted files under `runtime/config` fail. Missing, linked, resized or
+Unlisted files under `runtime/config` fail. Missing, symlinked, resized or
 fingerprint-changed required inputs fail. Other outputs still count toward 128,
 and all input bytes count toward 512 MiB. The bounded plan is written before
 copying, so partial staging preserves a complete observed inventory without
@@ -81,7 +91,7 @@ external-receipt and no-deletion tests are adapted to those paths.
 `test_input_accounting.py` runs through baseline suite `harvest_inputs` without
 starting a process. It checks exact source/input sets, maximal CRLF bytes,
 omitted source/duplicate manifest/input changes, recipe resource provenance,
-missing/linked/equal-length-changed/unlisted staged inputs, the 128-output limit,
+missing/symlinked/equal-length-changed/unlisted staged inputs, the 128-output limit,
 and combined input-plus-output bytes. Negative preflight controls assert zero
 `Popen` calls. The post-phase mutation control uses an explicit in-memory fake
 child and proves a zero-exit adapter cannot turn changed inputs into a pass.
