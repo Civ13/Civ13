@@ -25,23 +25,23 @@ HISTORY_PAIRS = 3
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'abe992e6c4efdb1f7115ff9fc2096af634fead70'
+WIKI_REVIEWED_REVISION = '48094b1fbac7031a3a49c5c9ddce84e51dea0258'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Character.md': ('492d3e6fcd489423d7d4e7fb6f615d227dba6f099a238bf3abfab15935ac840a', 'character skills traits languages'),
-    'guides/Guide_to_Chemistry.md': ('3fbcddebc4fc41e5333a33c42f8b47d3d6a08a132b29eb674a290b05185b84ec', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Communications.md': ('f09c2cf39772d4c4f2513ca0a3a3cd66b64db6a22b5c5360be39b1b13c74d260', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('10702f6adacff4a09d0b311ca851b3424b92674f5441b2a675dc29395ff3ec68', 'construction build building walls roof floor'),
-    'guides/Guide_to_Cooking.md': ('1296aea46f8703d1e2198454e9dff242333cec04c0d757831c48a144fea5a10d', 'cooking cook food meal ingredients'),
-    'guides/Guide_to_Farming.md': ('40de66ccec360a3a7c18465a507b6779bd62149f66f5561fa556a2c3db6f07c8', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Chemistry.md': ('7066a1672a5f4072358f9752059266b22c2f58810bd21edb36a57fcf2bce9669', 'chemistry chemicals reactions reagents'),
+    'guides/Guide_to_Communications.md': ('bc5c9f1ac8d937db01e3624624b33c5188a3cd5d9411a67eddf297899bf9a1cc', 'communications radio transmit'),
+    'guides/Guide_to_Construction.md': ('e04d3847c8712ac36a96a4ae603bdb31aa8d6bf6b78afe8be7730a828886eaaf', 'construction build building walls roof floor'),
+    'guides/Guide_to_Cooking.md': ('1b74102d6eb3eec2cd5c220bd7e7ead95cf4b656f74a12683c5f7cabdbefe99d', 'cooking cook food meal ingredients'),
+    'guides/Guide_to_Farming.md': ('cb231bd89758dfa563711311f0da25a1055f7ff825067f80ff7b014c063edff4', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('9a959bca38ed8dd71a14b4959f2e73ff83b41ff4d5e331039378d8a161acfec1', 'fishing fish rod bait'),
-    'guides/Guide_to_Hygiene.md': ('bce75f026a7e26d0706927d6b35327349d43e1f0360167af127c8b721675f6d2', 'hygiene clean washing soap'),
-    'guides/Guide_to_Medical.md': ('9362eb24347d7fd7a1d0a81cdea1405fe0ad67f499c3bfea35670f706125ce91', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Hygiene.md': ('d8b085e3f57e239ab4c6b302777dbe6cb003f332b9e5d19af45be5460581771c', 'hygiene clean washing soap'),
+    'guides/Guide_to_Medical.md': ('764cb68e2787ad0e79c0bf7776ba3caee2e6038f7c81fc72f406c64478da8be2', 'medical heal injury wound surgery'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('6972824530cda732c69e1c63b07a3f130ae2e8f1ace49f19d2208062fd6c076d', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('f98815349158ab8c00654f0d19448bc4b43f6fb19ed9ba8ed693adc62e9d2bfc', 'ranching livestock animal breeding'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('a4ca0ae7f84d52c54fabd2ea5a13c789059cbcdef86d269e040cf3dd65fb8768', 'research unlock study technology research bench'),
-    'guides/Guide_to_Tanks.md': ('23479cfd2e81d45f89b3aa668ee30bb9dafe22c1dd9ea8bcf3fbde0dfdfe84be', 'tank driving crew ammunition'),
-    'guides/Guide_to_Weapons.md': ('d225e014b459b3ad9d25445935436bc5261b6087a9e46470fb1c84a7881c20f8', 'weapons gun reload ammunition'),
+    'guides/Guide_to_Research.md': ('bb2a368122309dab2b4c83312b7daeb22e5f3d6e3b4d0f324f1ae3b7c4e82241', 'research unlock study technology research bench'),
+    'guides/Guide_to_Tanks.md': ('26815645c3e090b5f329aee29edca24b987690ac237f0152ecd6acaefb8b6d68', 'tank driving crew ammunition'),
+    'guides/Guide_to_Weapons.md': ('60a2a3c141d82fdc06a12717b040b39c177f632734dbb2f0df52c0baed5c738e', 'weapons gun reload ammunition'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 

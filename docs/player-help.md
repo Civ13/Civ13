@@ -318,7 +318,7 @@ so their freshness is unknown. The bridge also checks an explicit allowlist of
 fishing, hygiene, medical, radiation, ranching, religion, research, tank, and
 weapons guides. The allowlist and normalized-content hashes in
 `scripts/player_help_bridge.py` record the reviewed wiki revision
-`abe992e6c4efdb1f7115ff9fc2096af634fead70`.
+`48094b1fbac7031a3a49c5c9ddce84e51dea0258`.
 
 Additional pages are loaded only when their UTF-8 content matches the reviewed
 hash after line-ending normalization; missing, changed, invalid, and oversized
