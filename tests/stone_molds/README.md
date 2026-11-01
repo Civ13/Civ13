@@ -55,8 +55,10 @@ metal pixels receive the same tint, as already documented in the feature.
 Use existing `.github/workflows/test.yml` on the exact reviewed branch head,
 `comparison_base=c95cf23fbe69be0d9c54c570b3c20e0bacce8283`,
 `stone_mold_casting_regressions=true`, `extensive_regressions=false`; every other
-optional native input stays false. Main must bind dispatch to the immutable head
-in the review packet and respect the current testing deadline. No dispatch has
+optional native input stays false. `stone_mold_expected_head` must equal the
+immutable reviewed head. A guard before checkout/bootstrap rejects a missing or
+mismatched SHA, nonempty introduced-native selection, extensive mode or another
+optional input. Main must respect the current testing deadline. No dispatch has
 occurred. Existing selection code is unchanged. Added test files are under
 `tests/stone_molds`, so they do not select the broad `tests/crafting` native cases.
 Normal required offline policy/compile checks remain enabled.

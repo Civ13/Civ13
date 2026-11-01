@@ -34,6 +34,11 @@ on:
         description: 'Opt in only to actual stone-mold pouring/casting and headless engine sprite checks'
         type: boolean
         default: false
+      stone_mold_expected_head:
+        description: 'Exact reviewed 40-character source SHA required for focused stone casting'
+        type: string
+        required: false
+        default: ''
       dagger_map_compile:
         description: 'Opt in to native compilation of the inactive Dagger map and missing-type control'
         type: boolean
@@ -432,6 +437,26 @@ jobs:
           case "$EXTENSIVE_SELECTION" in true|false) ;; *) exit 1 ;; esac
           case "$GATING_SELECTION" in 0|1) ;; *) exit 1 ;; esac
           python3 -c 'import json,os; v=json.loads(os.environ["NEW_TEST_SELECTION"]); assert isinstance(v,list) and all(isinstance(x,str) and x for x in v)'
+      - name: Admit exact focused stone casting dispatch
+        if: github.event_name == 'workflow_dispatch' && inputs.stone_mold_casting_regressions == true
+        env:
+          STONE_EXPECTED_HEAD: ${{ inputs.stone_mold_expected_head }}
+          STONE_ACTUAL_HEAD: ${{ github.sha }}
+          STONE_DISPATCH_INPUTS: ${{ toJSON(inputs) }}
+          STONE_SELECTED_TESTS: ${{ needs.changes.outputs.new_tests }}
+          STONE_EXTENSIVE: ${{ needs.changes.outputs.extensive }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          expected = os.environ['STONE_EXPECTED_HEAD']
+          assert re.fullmatch(r'[0-9a-f]{40}', expected)
+          assert expected == os.environ['STONE_ACTUAL_HEAD']
+          assert json.loads(os.environ['STONE_SELECTED_TESTS']) == []
+          assert os.environ['STONE_EXTENSIVE'] == 'false'
+          inputs = json.loads(os.environ['STONE_DISPATCH_INPUTS'])
+          allowed = {'comparison_base', 'stone_mold_casting_regressions', 'stone_mold_expected_head'}
+          assert all(value in (False, 'false', '', None) for key, value in inputs.items() if key not in allowed)
+          PY
       - name: Explain compilation skip
         if: needs.changes.outputs.game != 'true'
         run: echo 'Game compilation skipped by change and build-prefix selection.'
