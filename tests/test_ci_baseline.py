@@ -53,6 +53,34 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
+        suite = ci.SUITES['help_wiki_guides']
+        self.assertEqual(suite['files'], ('tests/player_help/test_wiki_guides.py',))
+        self.assertEqual(suite['paths'], ())
+        tree = ast.parse((ROOT / 'scripts/player_help_bridge.py').read_text(encoding='utf-8'))
+        production_sources = {node.value for node in ast.walk(tree)
+                              if isinstance(node, ast.Constant) and isinstance(node.value, str)
+                              and node.value.startswith('code/') and node.value.endswith('.dm')}
+        self.assertTrue(production_sources)
+        self.assertTrue(production_sources <= set(suite['shared_paths']))
+        for path in (*suite['files'], *suite['shared_paths']):
+            with self.subTest(path=path):
+                self.assertTrue(ci.impact([path])['suites']['help_wiki_guides']['selected'])
+        self.assertFalse(ci.impact(['README.md'])['suites']['help_wiki_guides']['selected'])
+        for path in ('scripts/player_help_bridge.py', 'UI/crafting-atlas.json'):
+            self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'wiki.json'
+            self.assertEqual(ci.run_unit('help_wiki_guides', output), 0)
+            result = json.loads(output.read_text())
+            self.assertEqual(result, dict(status='passed', tests=9, failures=0, errors=0, skipped=0))
+        plan, baseline, compiler, jobs = fixtures(('tests/player_help/test_wiki_guides.py',))
+        baseline['suites']['help_wiki_guides']['counts'] = result
+        self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
+        del baseline['suites']['help_wiki_guides']
+        self.assertIn('Missing, failed or unexpectedly skipped suite: help_wiki_guides',
+                      ci.aggregate(plan, baseline, compiler, jobs, False))
+
     def test_help_links_offline_registration_and_shared_fallback(self):
         suite = ci.SUITES['help_tab_links']
         self.assertEqual(suite['files'], ('tests/player_help/test_help_links.py',))
