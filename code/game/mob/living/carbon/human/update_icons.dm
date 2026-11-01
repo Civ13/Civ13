@@ -470,7 +470,17 @@ var/global/list/damage_icon_parts = list()
 
 	if (update_icons)   update_icons()
 
-//For legacy support.
+/mob/living/human/regenerate_appearance()
+	if (transforming)
+		return
+	// Cosmetic work normally keeps the HUD. Missing restored/initial state
+	// uses the default ordering: repair the HUD before locating inventory icons.
+	if (client && (!hud_used || !HUDinventory.len || !HUDneed.len))
+		regenerate_icons()
+	else
+		..()
+
+//For legacy support and explicit HUD repair.
 /mob/living/human/regenerate_icons(refresh_hud = TRUE)
 	..()
 	if (transforming)

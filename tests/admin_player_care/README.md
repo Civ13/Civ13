@@ -30,3 +30,6 @@ repeat both actions, check mood below and above 100, and confirm unrelated stats
 forensic evidence and inventory contents are unchanged. Check smell/lice visuals
 and current mood bonuses immediately, then verify normal progression resumes.
 No live-server invocation is needed or authorized by these source checks.
+
+Shared HUD membership, cosmetic regeneration and missing-state recovery checks
+and the unexecuted native acceptance plan are documented in [HUD_REFRESH.md](HUD_REFRESH.md).

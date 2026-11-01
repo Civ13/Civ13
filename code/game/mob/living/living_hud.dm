@@ -3,41 +3,47 @@
 
 /mob/living/proc/destroy_HUD()
 	var/mob/living/H = src
-	client.screen.Cut()
-	H.HUDprocess.Cut()
-	for (var/i=1,i<=H.HUDneed.len,i++)
-		var/p = H.HUDneed[i]
-		qdel(H.HUDneed[p])
+	// Other owners keep their renderer, vehicle, spell and transient screens.
+	for (var/p in H.HUDneed)
+		H.remove_HUD_element(H.HUDneed[p])
 	for (var/HUDelement in H.HUDinventory)
-		qdel(HUDelement)
+		H.remove_HUD_element(HUDelement)
 	for (var/HUDelement in H.HUDfrippery)
-		qdel(HUDelement)
-	for (var/i=1,i<=H.HUDtech.len,i++)
-		var/p = H.HUDtech[i]
-		qdel(H.HUDtech[p])
+		H.remove_HUD_element(HUDelement)
+	for (var/p in H.HUDtech)
+		H.remove_HUD_element(H.HUDtech[p])
 	H.HUDtech.Cut()
 	H.HUDneed.Cut()
 	H.HUDinventory.Cut()
 	H.HUDfrippery.Cut()
 
+/mob/living/proc/remove_HUD_element(obj/screen/HUDelement)
+	if (!HUDelement)
+		return
+	if (client)
+		client.screen -= HUDelement
+	HUDprocess -= HUDelement
+	qdel(HUDelement)
+
 /mob/living/proc/show_HUD()
 	if (client)
-		client.screen.Cut()
-		for (var/i=1,i<=HUDneed.len,i++)
-			var/p = HUDneed[i]
-			client.screen += HUDneed[p]
+		// Reattach owned members without withdrawing another owner's screens.
+		for (var/p in HUDneed)
+			client.screen |= HUDneed[p]
 		for (var/obj/screen/HUDinv in HUDinventory)
-			client.screen += HUDinv
+			client.screen |= HUDinv
 		for (var/obj/screen/frippery/HUDfri in HUDfrippery)
-			client.screen += HUDfri
-		for (var/i=1,i<=HUDtech.len,i++)
-			var/p = HUDtech[i]
-			client.screen += HUDtech[p]
+			client.screen |= HUDfri
+		for (var/p in HUDtech)
+			client.screen |= HUDtech[p]
 		if(src.hud_used)
 			for(var/thing in hud_used.plane_masters)
 				var/obj/screen/plane_master/PM = hud_used.plane_masters[thing]
-				PM.backdrop(src)
-				src.client.screen += PM
+				// The constructor and sight updates own backdrop policy. In
+				// particular, the root scene leases the raw game plane's filters.
+				src.client.screen |= PM
+			client.screen |= hud_used.vehicle_hud
+			client.screen |= hud_used.wizard_hud
 //For HUD checking needs
 
 /mob/living/proc/recolor_HUD(var/_color, var/_alpha)

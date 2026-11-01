@@ -1191,7 +1191,8 @@ class AdminCareSelection(unittest.TestCase):
         self.assertTrue(plan['suites']['admin_player_care']['selected'])
         self.assertFalse(plan['fallback_reasons'])
         self.assertEqual(ci.SUITES['admin_player_care']['files'],
-                         ('tests/admin_player_care/test_player_care.py',))
+                         ('tests/admin_player_care/test_player_care.py',
+                          'tests/admin_player_care/test_hud_refresh.py'))
         self.assertNotIn(path, ci.SUITES['admin_player_care']['paths'])
         # Removing this owned-elsewhere dependency must lose care coverage:
         # it cannot be rescued by the conservative unmapped-input fallback.

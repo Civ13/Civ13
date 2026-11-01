@@ -55,13 +55,21 @@
 
 /mob/living/human/update_hud()	//TODO: do away with this if possible
 	if (client)
+		var/rebuilt_planes = FALSE
+		if (!hud_used)
+			hud_used = new /datum/hud(src)
+			rebuilt_planes = TRUE
 		if (client.prefs && client.prefs.cursor && client.prefs.cursor != client.mouse_pointer_icon)
 			client.mouse_pointer_icon = client.prefs.cursor
-		check_HUD()
+		var/rebuilt_controls = check_HUD()
 		client.screen |= contents
 		// Reconnect rebuilds clear screen; restored actions can already have
 		// this owner, so Grant() intentionally returns before adding buttons.
 		update_action_buttons()
+		if (rebuilt_planes || rebuilt_controls)
+			// New controls must obey an active scope; renderer/camera leases
+			// stay client-owned and are reconciled after the new members exist.
+			handle_ui_visibility()
 
 /mob/living/human/create_HUD()
 
