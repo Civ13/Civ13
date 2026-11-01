@@ -134,7 +134,8 @@
 			for(var/atom/movable/A in T)
 				if(!owns_atom(A))
 					continue
-				if(context.decision_snapshot(A, S, "visual") == LOS_DENY)
+				var/visual_operation = root_tree_family(A) && A.opacity ? "visual_tree" : "visual"
+				if(context.decision_snapshot(A, S, visual_operation) == LOS_DENY)
 					var/image/atom_mask = hidden_image(A)
 					next[A] = atom_mask
 					next_owned += atom_mask

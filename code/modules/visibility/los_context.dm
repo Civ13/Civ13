@@ -137,6 +137,7 @@ var/global/list/los_active_contexts
 	var/tile_x
 	var/tile_y
 	var/atom/surface_owner
+	var/list/surface_owners
 	var/owners = 0
 
 /datum/los_snapshot
@@ -152,6 +153,7 @@ var/global/list/los_active_contexts
 	var/list/blockers = list()
 	var/list/blocker_bins
 	var/list/clear_footprints = list()
+	var/list/surface_cells
 
 // The flat list remains authoritative and is retained for sparse scenes and
 // snapshot fixtures. Bins are derived once per fresh capture, never shared.
@@ -188,6 +190,130 @@ var/global/list/los_active_contexts
 			for(var/datum/los_cell/B in bin)
 				if(los_target_blocked(tx, ty, B.cell_x, B.cell_y, target_tile_x, target_tile_y, B.tile_x, B.tile_y, opaque_target))
 					return TRUE
+	return FALSE
+
+// A unit blocker's shadow on an eye-facing unit edge. Depth is positive in
+// this coordinate system. Rational bounds avoid opening a corner by epsilon.
+/proc/los_surface_shadow(face, edge_low, edge_high, cx, cy)
+	var/near_depth = max(0, cx - 0.5)
+	var/far_depth = min(face, cx + 0.5)
+	if (far_depth <= 0 || near_depth >= face)
+		return null
+	var/low_y = cy - 0.5
+	var/high_y = cy + 0.5
+	var/low_n = face * low_y
+	var/low_d = far_depth
+	var/high_n = face * high_y
+	var/high_d = far_depth
+	if (low_y < 0)
+		low_d = near_depth
+		if (!low_d)
+			low_n = edge_low
+			low_d = 1
+	if (high_y > 0)
+		high_d = near_depth
+		if (!high_d)
+			high_n = edge_high
+			high_d = 1
+	return list(low_n, low_d, high_n, high_d)
+
+/datum/los_snapshot/proc/surface_blockers(tx, ty)
+	if (!blocker_bins)
+		return blockers
+	var/list/candidates = list()
+	var/min_x = los_bucket_lower(tx, 0.5)
+	var/max_x = los_bucket_upper(tx, 0.5)
+	var/min_y = los_bucket_lower(ty, 0.5)
+	var/max_y = los_bucket_upper(ty, 0.5)
+	for (var/bx = min_x, bx <= max_x, bx++)
+		for (var/by = min_y, by <= max_y, by++)
+			var/list/bin = blocker_bins["[bx],[by]"]
+			if (bin)
+				candidates += bin
+	return candidates
+
+// Every nearer unit blocker projects a shadow at least one unit wide. On a
+// unit target edge it can therefore cover only a prefix, a suffix, or all of
+// the edge. Their union needs two bounds, not sorting or per-pixel ray casts.
+/datum/los_snapshot/proc/surface_edge_visible(face, edge_low, edge_high, axis, direction, tile_x, tile_y, atom/target, list/candidates)
+	var/visible_low_n = edge_low
+	var/visible_low_d = 1
+	var/visible_high_n = edge_high
+	var/visible_high_d = 1
+	for (var/datum/los_cell/B in candidates)
+		if ((B.tile_x == tile_x && B.tile_y == tile_y) || los_cell_has_owner(B, target))
+			continue
+		if (abs(B.cell_x) <= 0.5 && abs(B.cell_y) <= 0.5)
+			return FALSE
+		var/depth = B.cell_x * direction
+		var/side = B.cell_y
+		if (axis)
+			depth = B.cell_y * direction
+			side = B.cell_x
+		var/list/shadow = los_surface_shadow(face, edge_low, edge_high, depth, side)
+		if (!shadow || shadow[3] < edge_low * shadow[4] || shadow[1] > edge_high * shadow[2])
+			continue
+		var/covers_low = shadow[1] <= edge_low * shadow[2]
+		var/covers_high = shadow[3] >= edge_high * shadow[4]
+		if (covers_low && covers_high)
+			return FALSE
+		if (covers_low)
+			if (shadow[3] * visible_low_d > visible_low_n * shadow[4])
+				visible_low_n = shadow[3]
+				visible_low_d = shadow[4]
+		else if (covers_high)
+			if (shadow[1] * visible_high_d < visible_high_n * shadow[2])
+				visible_high_n = shadow[1]
+				visible_high_d = shadow[2]
+		else
+			// Fail closed if a future non-unit blocker violates the invariant.
+			return FALSE
+		if (visible_low_n * visible_high_d >= visible_high_n * visible_low_d)
+			return FALSE
+	return TRUE
+
+/proc/los_cell_has_owner(datum/los_cell/B, atom/target)
+	return B.surface_owner == target || (B.surface_owners && (target in B.surface_owners))
+
+/datum/los_snapshot/proc/add_surface_cell(atom/target, datum/los_cell/B)
+	if (!target)
+		return
+	var/list/cells = surface_cells[target]
+	if (!cells)
+		cells = list()
+		surface_cells[target] = cells
+	cells += B
+
+// Build once, lazily, only when a tree's root-center decision was denied.
+/datum/los_snapshot/proc/owned_surface_cells(atom/target)
+	if (!surface_cells)
+		surface_cells = list()
+		for (var/datum/los_cell/B in blockers)
+			if (B.surface_owners)
+				for (var/atom/A in B.surface_owners)
+					add_surface_cell(A, B)
+			else
+				add_surface_cell(B.surface_owner, B)
+	return surface_cells[target]
+
+/datum/los_snapshot/proc/tree_surface_visible(atom/target, tx, ty, tile_x, tile_y)
+	var/list/cells = owned_surface_cells(target)
+	for (var/datum/los_cell/owned in cells)
+		tx = owned.cell_x
+		ty = owned.cell_y
+		tile_x = owned.tile_x
+		tile_y = owned.tile_y
+		var/list/candidates = surface_blockers(tx, ty)
+		if (abs(tx) <= 0.5 && abs(ty) <= 0.5)
+			return TRUE
+		if (tx > 0.5 && surface_edge_visible(tx-0.5, ty-0.5, ty+0.5, 0, 1, tile_x, tile_y, target, candidates))
+			return TRUE
+		if (tx < -0.5 && surface_edge_visible(-tx-0.5, ty-0.5, ty+0.5, 0, -1, tile_x, tile_y, target, candidates))
+			return TRUE
+		if (ty > 0.5 && surface_edge_visible(ty-0.5, tx-0.5, tx+0.5, 1, 1, tile_x, tile_y, target, candidates))
+			return TRUE
+		if (ty < -0.5 && surface_edge_visible(-ty-0.5, tx-0.5, tx+0.5, 1, -1, tile_x, tile_y, target, candidates))
+			return TRUE
 	return FALSE
 
 /datum/los_mutation
@@ -341,6 +467,7 @@ var/global/list/los_active_contexts
 				continue
 			var/owner_count = 0
 			var/atom/cell_owner = null
+			var/list/cell_owners = null
 			if (T.opacity)
 				cell_owner = T
 				owner_count++
@@ -358,6 +485,12 @@ var/global/list/los_active_contexts
 							moving_blocker.owners = 1
 							S.blockers += moving_blocker
 							continue
+					// Information captures keep the old scalar-only path. Only
+					// ambiguous presentation cells need their complete owner list.
+					if (presentation && owner_count)
+						if (!cell_owners)
+							cell_owners = list(cell_owner)
+						cell_owners += A
 					cell_owner = A
 					owner_count++
 			// Empty ground allocates no los_cell; moving blockers stay separate.
@@ -368,6 +501,7 @@ var/global/list/los_active_contexts
 				B.cell_x = cx - S.eye_x
 				B.cell_y = cy - S.eye_y
 				B.surface_owner = cell_owner
+				B.surface_owners = cell_owners
 				B.owners = owner_count
 				S.blockers += B
 	if (S.revision != revision || S.policy != policy_key())
@@ -403,10 +537,18 @@ var/global/list/los_active_contexts
 	// Equal visual coordinates can belong to different native tiles during a
 	// smooth step. Include BOTH native tile and opacity policy in the cache key.
 	var/footprint_key = "[target.opacity]|[target_tile_x],[target_tile_y]|[tx],[ty]"
+	var/tree_presentation = S.presentation && operation == "visual_tree" && target.opacity
+	if (tree_presentation)
+		footprint_key += "|tree-surface-\ref[target]"
 	var/cached = S.clear_footprints[footprint_key]
 	if (!isnull(cached))
 		return cached
 	if (S.blocks_target(tx, ty, target_tile_x, target_tile_y, target.opacity))
+		// Only tree presentation may admit an exposed blocker edge. Terrain,
+		// entities and fresh hover/examine retain their existing decisions.
+		if (tree_presentation && S.tree_surface_visible(target, tx, ty, target_tile_x, target_tile_y))
+			S.clear_footprints[footprint_key] = LOS_SURFACE
+			return LOS_SURFACE
 		S.clear_footprints[footprint_key] = LOS_DENY
 		return LOS_DENY
 	S.clear_footprints[footprint_key] = result
