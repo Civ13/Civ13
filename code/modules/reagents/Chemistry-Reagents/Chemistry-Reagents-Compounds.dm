@@ -13,8 +13,8 @@
 /datum/reagent/acetone/touch_obj(var/obj/O)	//I copied this wholesale from ethanol and could likely be converted into a shared proc. ~Techhead
 	if (istype(O, /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/paperaffected = O
-		paperaffected.clearpaper()
-		to_chat(usr, "The solution dissolves the ink on the paper.")
+		if (paperaffected.clearpaper())
+			to_chat(usr, "The solution dissolves the ink on the paper.")
 		return
 	if (istype(O, /obj/item/weapon/book))
 		if (volume < 5)
@@ -141,8 +141,8 @@
 /datum/reagent/ethanol/touch_obj(var/obj/O)
 	if (istype(O, /obj/item/weapon/paper))
 		var/obj/item/weapon/paper/paperaffected = O
-		paperaffected.clearpaper()
-		to_chat(usr, SPAN_NOTICE("The solution dissolves the ink on the paper."))
+		if (paperaffected.clearpaper())
+			to_chat(usr, SPAN_NOTICE("The solution dissolves the ink on the paper."))
 		return
 	if (istype(O, /obj/item/weapon/book))
 		if (volume < 5)
