@@ -21,11 +21,12 @@
 			UI_style_new = all_ui_styles[2]
 		else
 			UI_style_new = all_ui_styles[1]
-	if (UI_style_new)
-		prefs.UI_style = UI_style_new
-		var/datum/hud/currhud = global.HUDdatums[UI_style_new]
-		if (currhud)
-			prefs.UI_file = currhud.icon
+	if (!UI_style_new || UI_style_new == prefs.UI_style)
+		return
+	prefs.UI_style = UI_style_new
+	var/datum/hud/currhud = global.HUDdatums[UI_style_new]
+	if (currhud)
+		prefs.UI_file = currhud.icon
 	prefs.save_preferences()
 	usr:regenerate_icons()
 

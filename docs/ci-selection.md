@@ -141,7 +141,7 @@ discovery admits future test files automatically.
 
 | ID | Reviewed files/effects | Admission |
 |---|---|---|
-| admin_player_care | `admin_player_care/test_player_care.py`; source checks and injected regeneration call effects only | Care tests or shared admin, human appearance/HUD and root-presenter inputs |
+| admin_player_care | `admin_player_care/test_player_care.py`, `test_hud_refresh.py`; source checks and injected appearance, HUD membership and recovery effects only | Care tests or shared admin, human appearance/HUD, cosmetic/healing callers and root-presenter inputs |
 | policy | Four named `test_ci_*.py` files; temporary Git repos, mocked outcomes, source reads | Always |
 | bootstrap | `test_byond_bootstrap.py` and `test_byond_toolchain.py`; Bash syntax, stub commands, strict pin validation and injected archive/receipt controls only | Always |
 | progress | `world_save/test_progress_sources.py`; AST dispatch, source preparation and temporary files | Always |

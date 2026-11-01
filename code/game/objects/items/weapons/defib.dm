@@ -446,7 +446,7 @@
 	M.switch_from_dead_to_living_mob_list()
 	M.timeofdeath = 0
 	M.stat = UNCONSCIOUS //Life() can bring them back to consciousness if it needs to.
-	M.regenerate_icons()
+	M.regenerate_appearance()
 
 	M.emote("gasp")
 	M.Weaken(rand(10,25))

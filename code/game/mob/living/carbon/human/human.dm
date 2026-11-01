@@ -764,12 +764,10 @@ var/list/coefflist = list()
 		fixblood()
 
 
-	// Rebuild the HUD. If they aren't logged in then login() should reinstantiate it for them.
-	if (client && client.screen)//HUD HERE!!!!!!!!!!
-		client.screen.Cut()
-		if (hud_used)
-			qdel(hud_used)
-		hud_used = new /datum/hud(src)
+	// Species can change the gear layout. Discard only these collections;
+	// the deferred regeneration (or next login) rebuilds them once. Keep the
+	// same body's renderer and auxiliary owners, including while disconnected.
+	destroy_HUD()
 
 	if (species)
 		return TRUE

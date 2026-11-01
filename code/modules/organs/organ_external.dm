@@ -826,7 +826,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	spawn(1)
 		victim.updatehealth()
 		victim.UpdateDamageIcon()
-		victim.regenerate_icons()
+		victim.regenerate_appearance()
 		dir = 2
 
 	victim.instadeath_check()
