@@ -33,6 +33,12 @@ SUITES = {
             'code/game/objects/structures/converters.dm',
             'code/game/objects/items/stacks/sheets/leather.dm',
             'icons/obj/structures.dmi', 'icons/obj/materials.dmi')},
+    # Stdlib-only production predicate/worker projections with inert clients.
+    # No renderer, native runner, process, clock or network boundary is imported.
+    'resource_work_animation': {'files': ('tests/test_resource_work_animation.py',),
+        'paths': ('tests/test_resource_work_animation.py',), 'shared_paths': (
+            'code/game/mob/animations.dm', 'code/game/objects/structures/wild.dm',
+            'code/game/turfs/floor_attackby.dm', 'tests/bump_mining/support.dm')},
     # Inert existing harvest/flax runner imports plus stdlib file/transport
     # adapters only. Tests replace every process boundary; no native execution.
     'harvest_inputs': {'files': ('tests/animal_harvest/test_input_accounting.py',),

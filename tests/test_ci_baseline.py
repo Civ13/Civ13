@@ -130,6 +130,22 @@ class BaselinePolicyTests(unittest.TestCase):
                 else:
                     self.assertEqual(errors, [])
 
+    def test_work_animation_registration_and_source_fallback(self):
+        suite = ci.SUITES['resource_work_animation']
+        self.assertEqual(suite['files'], ('tests/test_resource_work_animation.py',))
+        self.assertEqual(suite['paths'], suite['files'])
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', 'resource_work_animation'})
+        for path in suite['shared_paths']:
+            with self.subTest(path=path):
+                self.assertEqual(self.selected([path]), set(ci.SUITES))
+                self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])
+        tree = ast.parse((ROOT/suite['files'][0]).read_text())
+        self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
+                          for alias in node.names}, {'re', 'unittest'})
+        self.assertEqual({node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)},
+                         {'pathlib', 'types'})
+
     def test_harvest_inputs_registration_is_bounded_and_preserves_fallback(self):
         suite = ci.SUITES['harvest_inputs']
         self.assertEqual(suite['files'], ('tests/animal_harvest/test_input_accounting.py',))
