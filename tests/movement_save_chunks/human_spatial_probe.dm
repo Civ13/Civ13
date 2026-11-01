@@ -51,7 +51,9 @@ var/global/human_spatial_fixture_human_completions = 0
 			H.back = B
 			var/obj/item/weapon/pen/nested = new(B)
 			nested.name = "synthetic nested pen"
-			new /obj/item/weapon/pen(locate(2, 2, 1))
+			var/turf/candidate_floor = locate(2, 2, 1)
+			candidate_floor.ChangeTurf(/turf/floor/winter/grass)
+			new /obj/item/weapon/flint(locate(2, 2, 1))
 			human_spatial_fixture_authorized = TRUE
 			spawn(0)
 				H.human_subtile_travel(get_step(H, NORTHEAST), NORTHEAST, world.time + 80)
@@ -92,6 +94,9 @@ var/global/human_spatial_fixture_human_completions = 0
 			human_spatial_fixture_assert(H && H.type == /mob/living/human && istype(H.back, /obj/item/weapon/storage/backpack), "fixture_owner_or_slot")
 			var/obj/item/weapon/pen/P = locate(/obj/item/weapon/pen) in H.back
 			human_spatial_fixture_assert(P && P.loc == H.back && H.back.loc == H && P.name == "synthetic nested pen", "fixture_nested_item_or_slot")
+			var/turf/restored_floor = locate(2, 2, 1)
+			var/obj/item/weapon/flint/restored_flint = locate(/obj/item/weapon/flint) in restored_floor
+			human_spatial_fixture_assert(restored_floor.type == /turf/floor/winter/grass && restored_flint && restored_flint.loc == restored_floor, "fixture_audited_floor_and_tool")
 			human_spatial_fixture_assert(human_subtile_same(H.human_subtile_snapshot(), expected["capsule"]), "fixture_exact_frozen_capsule")
 			observed["position"] = H.human_subtile_snapshot()
 			observed["generation"] = trim(file2text("map_saves/save_complete.txt"))

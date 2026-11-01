@@ -3,8 +3,15 @@
 This model deliberately treats audit/default assertions as supplied inputs. It
 must not be used as evidence that the native loader honors those assertions.
 """
-FLOORS = {"/turf/floor/dirt", "/turf/floor/wood", "/turf/floor/grass"}
-ITEMS = {"/obj/item/weapon/pen", "/obj/item/weapon/paper"}
+FLOORS = {"/turf/floor/dirt", "/turf/floor/wood", "/turf/floor/grass",
+          "/turf/floor/winter", "/turf/floor/winter/grass", "/turf/floor/grass/jungle",
+          "/turf/floor/grass/jungle/savanna",
+          "/turf/floor/dirt/dust", "/turf/floor/dirt/jungledirt",
+          "/turf/floor/beach/sand", "/turf/floor/beach/sand/dark", "/turf/floor/beach/sand/desert"}
+ITEMS = {"/obj/item/weapon/pen", "/obj/item/weapon/paper", "/obj/item/weapon/flint",
+         "/obj/item/weapon/flint/sharpened", "/obj/item/weapon/material/hatchet",
+         "/obj/item/weapon/material/hatchet/tribal/flint", "/obj/item/weapon/material/pickaxe",
+         "/obj/item/weapon/material/pickaxe/stone"}
 LINKS = {"buckled", "riding", "riding_mob", "using_drone", "control_object",
          "incorporeal_move", "pulledby", "using_object", "using_cannon", "football"}
 RECIPROCAL = {"buckled_mob", "rider", "riding_mob", "pulledby", "pulling",

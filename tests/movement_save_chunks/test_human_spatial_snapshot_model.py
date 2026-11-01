@@ -264,12 +264,20 @@ class SourceConstraints(unittest.TestCase):
         body = saving.split("/map_storage/proc/inspect_human_saved_geometry(", 1)[1].split("\n/map_storage/proc/", 1)[0]
         for required in ("human_candidate_position_matches", 'human_candidate_scalar_field(F, turf_ref, "density")',
                          'human_candidate_scalar_field(F, turf_ref, "vehicle_transforming")',
-                         '/turf/floor/dirt', '/turf/floor/wood', '/turf/floor/grass',
-                         '/obj/item/weapon/pen', '/obj/item/weapon/paper',
+                         'human_spatial_audited_floor(F["type"])',
+                         'human_spatial_audited_item(F["type"])',
                          'Human saved footprint has an unaudited occupant', 'request.encoded_geometry_checked = TRUE'):
             self.assertIn(required, body)
         self.assertNotIn("new type(", body)
         self.assertNotIn(".CanPass(", body)
+        floor = saving.split('/proc/human_spatial_audited_floor(path)', 1)[1].split('\n/proc/', 1)[0]
+        item = saving.split('/proc/human_spatial_audited_item(path)', 1)[1].split('\n/proc/', 1)[0]
+        for path in ('/turf/floor/dirt', '/turf/floor/wood', '/turf/floor/grass', '/turf/floor/winter/grass'):
+            self.assertIn(path, floor)
+        for path in ('/obj/item/weapon/pen', '/obj/item/weapon/paper', '/obj/item/weapon/flint'):
+            self.assertIn(path, item)
+        self.assertIn('if(human_spatial_audited_floor(A.type))', saving)
+        self.assertIn('if(human_spatial_audited_item(A.type))', saving)
 
     def test_experimental_save_motion_keeps_recovery_holds_and_pull_fallback(self):
         human = (self.root / "code/game/mob/living/carbon/human/subtile_movement.dm").read_text()

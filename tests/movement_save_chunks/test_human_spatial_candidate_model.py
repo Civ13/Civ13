@@ -1,9 +1,10 @@
 """Executable hypothetical candidate proof; no DM or native savefiles used."""
 from copy import deepcopy
 from pathlib import Path
+import re
 import unittest
 
-from human_spatial_candidate_model import LINKS, supported
+from human_spatial_candidate_model import FLOORS, ITEMS, LINKS, supported
 
 
 def candidate():
@@ -24,6 +25,23 @@ def candidate():
 class CandidateTests(unittest.TestCase):
     def test_positive_nonzero_offset_nested_bag_and_nondense_pen(self):
         self.assertTrue(supported(candidate()))
+
+    def test_positive_winter_floor_and_nondense_flint_in_footprint(self):
+        case = candidate()
+        cell = case['cells'][(2, 2, 1)]
+        cell['type'] = '/turf/floor/winter/grass'
+        cell['occupants'] = [{'ref': 31, 'type': '/obj/item/weapon/flint', 'density': 0, 'hooks_audited': True}]
+        self.assertTrue(supported(case))
+        cell['occupants'][0]['density'] = 1
+        self.assertFalse(supported(case))
+
+    def test_parent_subtypes_are_not_implicitly_trusted(self):
+        case = candidate()
+        case['cells'][(2, 2, 1)]['type'] = '/turf/floor/winter/grass/unknown'
+        self.assertFalse(supported(case))
+        case = candidate()
+        case['cells'][(2, 1, 1)]['occupants'][0]['type'] = '/obj/item/tape'
+        self.assertFalse(supported(case))
 
     def test_each_unsafe_change_refuses(self):
         def wall(c): c["cells"][(2, 2, 1)]["type"] = "/turf/wall"
@@ -54,6 +72,24 @@ class CandidateTests(unittest.TestCase):
         tape = (root / "code/game/objects/items/weapons/policetape.dm").read_text()
         self.assertIn("/obj/item/tape/CanPass(", tape)
         self.assertNotIn("/obj/item/tape", {item["type"] for cell in candidate()["cells"].values() for item in cell.get("occupants", []) if "type" in item})
+
+    def test_production_and_model_type_lists_match_exactly(self):
+        root = Path(__file__).resolve().parents[2]
+        saving = (root / 'code/modules/persistence/saving.dm').read_text()
+        for proc, expected in [('human_spatial_audited_floor', FLOORS), ('human_spatial_audited_item', ITEMS)]:
+            body = saving.split('/proc/' + proc + '(path)', 1)[1].split('\n/proc/', 1)[0]
+            self.assertEqual(set(re.findall(r'/(?:turf|obj)/[A-Za-z0-9_/]+', body)), expected)
+            self.assertIn('return path in allowed', body)
+
+    def test_audited_item_chains_have_no_explicit_special_pass_or_load_hook(self):
+        root = Path(__file__).resolve().parents[2]
+        overrides = []
+        pattern = re.compile(r'(?m)^(/obj/item(?:/[A-Za-z0-9_]+)*)/(CanPass|after_load)\s*\(')
+        for path in (root / 'code').rglob('*.dm'):
+            overrides.extend(pattern.findall(path.read_text(encoding='utf-8', errors='replace')))
+        for item in ITEMS:
+            relevant = {(owner, method) for owner, method in overrides if item == owner or item.startswith(owner + '/')}
+            self.assertEqual(relevant, {('/obj/item', 'after_load')}, item)
 
 
 if __name__ == "__main__":

@@ -32,7 +32,8 @@ class StageChecks(unittest.TestCase):
                          'human_spatial_fixture_pulses_after > 0', 'map_storage.Load_World()',
                          'persistence_restored_bodies["syntheticfixture"]',
                          'H.type == /mob/living/human', 'fixture_nested_item_or_slot',
-                         'fixture_exact_frozen_capsule', 'fixture_restart_owner'):
+                         'fixture_exact_frozen_capsule', 'fixture_restart_owner',
+                         'fixture_audited_floor_and_tool'):
             self.assertIn(evidence, probe)
 
     def test_drag_authority_seam_is_scoped_to_fixture_actor(self):

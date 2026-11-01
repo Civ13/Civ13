@@ -270,9 +270,9 @@
 			changing_vars |= human_spatial_link_fields()
 			changing_vars |= human_spatial_slot_fields()
 			changing_vars |= list("bound_x", "bound_y", "bound_width", "bound_height")
-		if(A.type in list(/turf/floor/dirt, /turf/floor/wood, /turf/floor/grass))
+		if(human_spatial_audited_floor(A.type))
 			changing_vars |= list("density", "vehicle_transforming")
-		if(A.type in list(/obj/item/weapon/pen, /obj/item/weapon/paper))
+		if(human_spatial_audited_item(A.type))
 			changing_vars |= "density"
 #endif
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
@@ -781,6 +781,18 @@
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 // This opt-in source prototype has no production enablement. Its pre-marker
 // gate deliberately refuses until encoded link and geometry checks exist.
+/proc/human_spatial_audited_floor(path)
+	// Exact types only. Their turf/floor constructor and after_load chains do
+	// not change density or vehicle_transforming after field restoration.
+	var/static/list/allowed = list(/turf/floor/dirt, /turf/floor/wood, /turf/floor/grass, /turf/floor/winter, /turf/floor/winter/grass, /turf/floor/grass/jungle, /turf/floor/grass/jungle/savanna, /turf/floor/dirt/dust, /turf/floor/dirt/jungledirt, /turf/floor/beach/sand, /turf/floor/beach/sand/dark, /turf/floor/beach/sand/desert)
+	return path in allowed
+
+/proc/human_spatial_audited_item(path)
+	// These exact item types use the base density-only CanPass for humans;
+	// tape and stationary-gun overrides are not admitted by this list.
+	var/static/list/allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/weapon/flint, /obj/item/weapon/flint/sharpened, /obj/item/weapon/material/hatchet, /obj/item/weapon/material/hatchet/tribal/flint, /obj/item/weapon/material/pickaxe, /obj/item/weapon/material/pickaxe/stone)
+	return path in allowed
+
 /proc/human_spatial_link_fields()
 	return list("buckled", "riding", "riding_mob", "using_drone", "control_object", "incorporeal_move", "pulledby", "using_object", "using_cannon", "football", "pulling", "driver", "driver_vehicle")
 
@@ -922,7 +934,7 @@
 				if(x < 1 || x > world.maxx || y < 1 || y > world.maxy) throw EXCEPTION("Human saved footprint is outside the map")
 				var/turf_ref = human_candidate_map_ref(F, z, y, x)
 				var/list/turf_fields = human_saved_entry_fields(F, turf_ref)
-				if(!("type" in turf_fields) || !(F["type"] in list(/turf/floor/dirt, /turf/floor/wood, /turf/floor/grass)) || !("content" in turf_fields)) throw EXCEPTION("Human saved turf type is not audited")
+				if(!("type" in turf_fields) || !human_spatial_audited_floor(F["type"]) || !("content" in turf_fields)) throw EXCEPTION("Human saved turf type is not audited")
 				var/turf_density = human_candidate_scalar_field(F, turf_ref, "density")
 				var/transforming = human_candidate_scalar_field(F, turf_ref, "vehicle_transforming")
 				if(!isnum(turf_density) || turf_density != 0 || (!isnull(transforming) && (!isnum(transforming) || transforming != 0))) throw EXCEPTION("Human saved turf is blocked or transforming")
@@ -936,7 +948,7 @@
 					if(!isnum(occupant_ref) || occupant_ref < 1 || occupant_ref != round(occupant_ref) || "[occupant_ref]" != "[occupant]") throw EXCEPTION("Human saved occupant identity is invalid")
 					if(occupant_ref == request.saved_ref && !dx && !dy) continue
 					var/list/occupant_fields = human_saved_entry_fields(F, occupant_ref)
-					if(!("type" in occupant_fields) || !(F["type"] in list(/obj/item/weapon/pen, /obj/item/weapon/paper))) throw EXCEPTION("Human saved footprint has an unaudited occupant")
+					if(!("type" in occupant_fields) || !human_spatial_audited_item(F["type"])) throw EXCEPTION("Human saved footprint has an unaudited occupant")
 					var/item_density = human_candidate_scalar_field(F, occupant_ref, "density")
 					if(!isnum(item_density) || item_density != 0) throw EXCEPTION("Human saved footprint has a dense occupant")
 				if(world.time >= deadline || !operation.current(src, "save")) throw EXCEPTION("Human geometry inspection exceeded its budget")
