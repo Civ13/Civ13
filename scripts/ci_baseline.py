@@ -25,6 +25,17 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Stdlib-only admin care/appearance source contracts. Shared inputs retain
+    # their existing conservative fallback and other suites' ownership.
+    'admin_player_care': {'files': ('tests/admin_player_care/test_player_care.py',),
+        'paths': ('tests/admin_player_care/',), 'shared_paths': (
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/verbs/random_verbs.dm',
+            'code/game/mob/update_icons.dm',
+            'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/game/mob/living/carbon/human/human_needs.dm',
+            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/game/mob/living/living_hud.dm',
+            'code/modules/visibility/root_tree_presenter.dm', '.github/workflows/test.yml')},
     # Stdlib-only source projection and bounded RGBA8 PNG/DMI inspection.
     # No harvest preview helper, external package, native runner or network import.
     # Shared production/art inputs retain conservative all-suite fallback.
