@@ -139,8 +139,25 @@ class DebugLossySourceContracts(unittest.TestCase):
         self.assertIn('!pending_valid()', retry[:backup])
         self.assertIn('!pending_valid()', retry[backup:])
         self.assertIn('persistence_active_operation', retry[backup:])
-        self.assertIn('Debug omission in nested list is unsupported', self.policy)
+        self.assertIn('Debug nested omission lacks list context', self.policy)
         self.assertIn('"outcome" = "candidate_commit_intent"', self.policy)
+
+    def test_nested_location_is_bounded_and_associative_key_fails_closed(self):
+        encode = body(self.saving, '/map_storage/proc/encode_saved_value_contents(')
+        self.assertIn('policy.is_quarantined(key) && !isnull(associated_value)', encode)
+        self.assertIn('Debug omission of an associated list key is unsupported', encode)
+        self.assertIn('policy.encode_list_member(src, F, id, i, "key", key)', encode)
+        self.assertIn('policy.encode_list_member(src, F, id, i, "value", associated_value)', encode)
+        member = body(self.policy, '/datum/save_debug_recovery/proc/encode_list_member(')
+        self.assertIn('encoding_list_context.len >= 64', member)
+        self.assertIn('"z" = storage.saving_z, "list_id" = list_id, "index" = index, "side" = side, "frame" = frame', member)
+        self.assertIn('encoding_list_context[encoding_list_context.len] != context', member)
+        self.assertIn('owner.current(storage, "save")', member)
+        self.assertIn('storage.saving_z != context["z"]', member)
+        self.assertIn('if(location["frame"] == frame)', self.policy)
+        self.assertIn('row["list_location"] = list("z" = location["z"]', self.policy)
+        strict = encode.split('\n\t\t\t\telse\n', 1)[1]
+        self.assertLess(strict.index('encoded_key = encode_saved_value(F, key)'), strict.index('encoded_value = encode_saved_value(F, (isnum(key) || isnull(key)) ? null : snapshot[key])'))
     def test_cleanup_is_owned_and_failed_cleanup_holds_only_saves(self):
         cleanup = body(self.policy, '/map_storage/proc/debug_cleanup_owned(')
         self.assertGreaterEqual(cleanup.count('operation.current(src, "save")'), 5)

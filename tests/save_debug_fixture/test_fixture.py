@@ -20,11 +20,14 @@ def evidence():
     audit = {'mode': 'debug_lossy', 'outcome': 'candidate_commit_intent', 'generation': generation,
              'attempt': 2, 'incidents': [incident],
              'attempt_history': [{'attempt': 1, 'outcome': 'failed_retryable'}],
-             'omissions': [{'target_ref': 'synthetic', 'target_type': incident['child_type'], 'source_type': '/obj/structure/debug_save_fixture', 'source_ref': 'box', 'field': 'fixture_reference', 'replacement': 'null_reference'}]}
+             'omissions': [{'target_ref': 'synthetic', 'target_type': incident['child_type'], 'source_type': '/obj/structure/debug_save_fixture', 'source_ref': 'box', 'field': 'fixture_reference', 'replacement': 'null_reference'},
+                           {'target_ref': 'synthetic', 'target_type': incident['child_type'], 'replacement': 'null_reference', 'list_location': {'z': 1, 'list_id': 2, 'index': 1, 'side': 'key'}},
+                           {'target_ref': 'synthetic', 'target_type': incident['child_type'], 'replacement': 'null_reference', 'list_location': {'z': 1, 'list_id': 2, 'index': 3, 'side': 'value'}}]}
     writer = {'generation': generation, 'seed_generation': seed, 'fixture_moves': 2, 'audit': audit,
-              'controls': {'unsupported_contents': True, 'missing_child': True, 'nested_list': True, 'owner_bound': True, 'owner_lost': True}}
+              'controls': {'unsupported_contents': True, 'missing_child': True, 'associated_key': True, 'owner_bound': True, 'owner_lost': True}}
     reader = {'generation': generation, 'audit': copy.deepcopy(audit), 'retained_box': True,
-              'retained_item': True, 'retained_control_item': True, 'omitted_animal': True, 'reference_null': True}
+              'retained_item': True, 'retained_control_item': True, 'omitted_animal': True, 'reference_null': True,
+              'nested_alias_and_cycle': True, 'nested_losses_and_neighbor': True}
     files = {'map.txt': 'a', 'round.json': 'b', '1.sav': 'c', 'save_complete.txt': 'd'}
     return writer, reader, files, dict(files), generation
 
@@ -96,6 +99,10 @@ class ControllerContracts(unittest.TestCase):
         a = list(evidence()); a[1]['reference_null'] = False; cases.append(a)
         a = list(evidence()); a[1]['reference_null'] = 1.0; cases.append(a)
         a = list(evidence()); a[1]['reference_null'] = '1'; cases.append(a)
+        a = list(evidence()); a[1]['nested_alias_and_cycle'] = False; cases.append(a)
+        a = list(evidence()); a[1]['nested_losses_and_neighbor'] = False; cases.append(a)
+        a = list(evidence()); a[0]['audit']['omissions'][1]['list_location']['index'] = 0; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)
+        a = list(evidence()); a[0]['audit']['omissions'][2]['list_location']['list_id'] = 9; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)
         a = list(evidence()); del a[1]['reference_null']; cases.append(a)
         a = list(evidence()); a[0]['audit']['omissions'][0]['target_ref'] = 'wrong'; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)
         a = list(evidence()); a[0]['audit']['omissions'][0]['source_ref'] = 'wrong'; a[1]['audit'] = copy.deepcopy(a[0]['audit']); cases.append(a)

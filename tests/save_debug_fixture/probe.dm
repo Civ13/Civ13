@@ -10,6 +10,8 @@ var/global/fixture_moves = 0
 /obj/structure/debug_save_fixture
 	name = "synthetic retained box"
 	var/mob/living/simple_animal/fixture_reference
+	var/list/fixture_nested
+	var/list/fixture_alias
 
 /obj/item/debug_save_fixture
 	name = "synthetic retained item"
@@ -64,14 +66,16 @@ var/global/fixture_moves = 0
 	debug_fixture_assert(contained.loc == locate(3, 3, 1) && !animal.contents.len, "fixture_control_detach_failed")
 	debug_fixture_assert(policy.observe(box, animal, op), "fixture_supported_fault_not_observed")
 	policy.quarantine["\ref[animal]"] = animal
-	policy.encoding_depth = 2
-	var/nested_refused = FALSE
+	var/savefile/control_file = new("fixture-control.sav")
+	var/list/associated = list()
+	associated[animal] = "must not silently drop this association"
+	var/associated_key_refused = FALSE
 	try
-		policy.omits(animal, null)
-	catch(var/exception/nested_error)
-		nested_refused = nested_error.name == "Debug omission in nested list is unsupported"
-	debug_fixture_assert(nested_refused, "fixture_nested_list_admitted")
-	policy.encoding_depth = 0
+		map_storage.encode_saved_value(control_file, associated)
+	catch(var/exception/key_error)
+		associated_key_refused = key_error.name == "Debug omission of an associated list key is unsupported"
+	control_file = null
+	debug_fixture_assert(associated_key_refused, "fixture_associated_key_admitted")
 	policy.quarantine = list()
 	var/fault = policy.pending_fault_id
 	var/attempt_id = policy.pending_operation_id
@@ -97,6 +101,11 @@ var/global/fixture_moves = 0
 	var/obj/item/debug_save_fixture/item = new(box)
 	fixture_subject = new(box)
 	box.fixture_reference = fixture_subject
+	var/list/shared = list(fixture_subject, "preserved-neighbor")
+	shared["linked"] = fixture_subject
+	shared += list(shared)
+	box.fixture_nested = list(shared)
+	box.fixture_alias = shared
 	debug_fixture_assert(fixture_subject.loc == box && item.loc == box, "fixture_initial_containment")
 	debug_fixture_assert(debug_fixture_refusal_controls(box, fixture_subject), "fixture_refusal_controls")
 	debug_fixture_assert(ticker.savemap(null, null), "fixture_seed_save_failed")
@@ -123,7 +132,7 @@ var/global/fixture_moves = 0
 	result["seed_generation"] = seed_generation
 	result["audit"] = audit
 	result["fixture_moves"] = fixture_moves
-	result["controls"] = list("unsupported_contents" = TRUE, "missing_child" = TRUE, "nested_list" = TRUE, "owner_bound" = TRUE, "owner_lost" = TRUE)
+	result["controls"] = list("unsupported_contents" = TRUE, "missing_child" = TRUE, "associated_key" = TRUE, "owner_bound" = TRUE, "owner_lost" = TRUE)
 	return TRUE
 
 /proc/debug_fixture_reader(list/result)
@@ -150,6 +159,9 @@ var/global/fixture_moves = 0
 	for(var/mob/living/simple_animal/debug_save_fixture/A in world)
 		if(A) animal_count++
 	debug_fixture_assert(box_count == 1 && item_count == 1 && control_count == 1 && !animal_count && box && item && control_item && item.loc == box && control_item.loc == locate(3, 3, 1) && !box.fixture_reference && box.x == 4 && box.y == 4 && box.z == 1 && item.name == "synthetic retained item", "fixture_reader_retained_graph")
+	var/list/shared = box.fixture_alias
+	debug_fixture_assert(islist(box.fixture_nested) && box.fixture_nested.len == 1 && islist(shared) && box.fixture_nested[1] == shared && shared.len == 4, "fixture_reader_list_alias")
+	debug_fixture_assert(isnull(shared[1]) && shared[2] == "preserved-neighbor" && isnull(shared["linked"]) && shared[4] == shared, "fixture_reader_nested_list")
 	result["generation"] = generation
 	result["audit"] = round["debug_recovery"]
 	result["retained_box"] = TRUE
@@ -157,6 +169,8 @@ var/global/fixture_moves = 0
 	result["retained_control_item"] = TRUE
 	result["omitted_animal"] = TRUE
 	result["reference_null"] = TRUE
+	result["nested_alias_and_cycle"] = TRUE
+	result["nested_losses_and_neighbor"] = TRUE
 	return TRUE
 
 /world/New()
