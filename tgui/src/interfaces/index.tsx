@@ -12,6 +12,7 @@ import { CraftingAtlas } from './CraftingAtlas';
 import { CharacterFlavor } from './CharacterFlavor';
 import { CharacterNotes } from './CharacterNotes';
 import { PhotoViewer } from './PhotoViewer';
+import { BookReader } from './BookReader';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -32,4 +33,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'character_flavor.tmpl': CharacterFlavor,
   'character_notes.tmpl': CharacterNotes,
   'photo_viewer.tmpl': PhotoViewer,
+  'book_reader.tmpl': BookReader,
 };

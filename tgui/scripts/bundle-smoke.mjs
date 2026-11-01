@@ -226,7 +226,7 @@ try {
   assert.ok(!w.document.body.textContent.includes('inert'));
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and all 19 registered routes, retained photo/Notes/flavor fixtures, inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and 19 retained routes, retained photo/Notes/flavor fixtures, inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
 } finally { w.close(); }
 
 // Preserve this reviewed reader recovery in its own fresh root.
@@ -267,3 +267,5 @@ try {
 } finally { recovery.window.close(); }
 
 }
+
+await import('./book-bundle-smoke.mjs');
