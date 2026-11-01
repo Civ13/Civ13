@@ -10,24 +10,17 @@ LAGS = (3, 4)
 MODES = ('legacy', 'smooth')
 MAX_EVENTS = 512
 OBSERVATION_DS = 16
-SOURCE_MOVEMENT_BLOB = '2fc2143df9925df0231bb52dda97526a24cd59fd'
-BASE_COMMIT = '846df66099f62d24612b149e6128c9e151ed1c3a'
-BASE_TREE = 'df008e20c72ae9839ee3b8f95e5106d56eefb00c'
+SOURCE_MOVEMENT_BLOB = 'c658aa260cd486f5c8a82dc796e048c321362d54'
+BASE_COMMIT = '40e9f25336eb0ce1f5abcc1e6e33c3bd90529ee9'
+BASE_TREE = 'b7fb57be52ceb22328b2ebe05d7ad50c194f557d'
 ALLOWED_DELTA = frozenset({
-    '.github/workflows/wildlife-cardinal-cadence.yml',
+    'code/game/mob/living/simple_animal/subtile_movement.dm',
+    'code/game/mob/living/simple_animal/hostile/mosquitoes.dm',
+    'code/game/mob/living/simple_animal/hostile/vampirebat.dm',
+    'tests/human_subtile/test_random_cadence_contract.py',
     'tests/human_subtile/cardinal_contract.py',
-    'tests/human_subtile/cardinal_evidence.py',
-    'tests/human_subtile/cardinal_probe.dm',
     'tests/human_subtile/cardinal_stage.py',
-    'tests/human_subtile/cardinal_worker.py',
-    'tests/human_subtile/cloud_npc_controller.py',
-    'tests/human_subtile/cloud_npc_job.py',
-    'tests/human_subtile/cloud_npc_smoke.py',
     'tests/human_subtile/test_cardinal_contract.py',
-    'tests/human_subtile/test_cardinal_evidence.py',
-    'tests/human_subtile/test_cardinal_stage.py',
-    'tests/human_subtile/test_cardinal_worker.py',
-    'tests/human_subtile/test_cloud_npc_controller.py',
 })
 SCOPE = 'one held cardinal mosquito movement command; no Life, random, contact or gameplay acceptance'
 
@@ -70,7 +63,7 @@ def validate_case(row, mode, tick, lag):
     require(mode in MODES and tick in TICKS and type(lag) is int and lag in LAGS, 'case selector')
     require(isinstance(row, dict) and row.get('enabled') == (mode == 'smooth') and
             row.get('lag_ticks') == lag and row.get('tick_lag_ds') == tick and
-            row.get('converted_ds') == lag*tick and row.get('observation_ds') == OBSERVATION_DS and
+            row.get('converted_ds') == lag and row.get('observation_ds') == OBSERVATION_DS and
             number(row.get('step_size')) and row['step_size'] > 0 and row.get('life_count') == 0,
             'case setup')
     start, end = row.get('started'), row.get('ended')

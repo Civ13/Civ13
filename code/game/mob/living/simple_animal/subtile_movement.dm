@@ -45,8 +45,9 @@
 /mob/living/simple_animal/proc/npc_subtile_wild_period(mode, interval)
 	return interval
 
+// Use the supplied lag in deciseconds; native modes other than direction need validation.
 /mob/living/simple_animal/proc/npc_subtile_native_interval(lag)
-	return lag * world.tick_lag
+	return lag
 
 // Native walk(0) cancels a continuous walker, but not the step-based pursuit.
 // Keep the same distinction for staged owners and their pending commands.
@@ -369,7 +370,7 @@
 				walk(src, 0)
 				walk(src, direction, lag)
 		return
-	// Native walker lag counts world ticks; world.time and sleep use deciseconds.
+	// Pass the supplied lag in deciseconds at the adapter boundary.
 	return npc_subtile_start_wild_walk(mode, target, npc_subtile_native_interval(lag), direction, distance_limit)
 
 /mob/living/simple_animal/proc/npc_subtile_start_wild_walk(mode, atom/target, interval, direction, distance_limit)

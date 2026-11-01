@@ -7,6 +7,7 @@ import inspect
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import tarfile
 import tempfile
 import time
@@ -28,6 +29,20 @@ worker_spec.loader.exec_module(worker)
 job_spec = importlib.util.spec_from_file_location('random_job', HERE / 'cloud_npc_job.py')
 job = importlib.util.module_from_spec(job_spec)
 job_spec.loader.exec_module(job)
+
+
+def historical_candidate(path):
+    """Read the immutable, already-published handoff experiment preimages."""
+    expected = contract.CANDIDATE_BLOBS | {contract.MOVEMENT: contract.CANDIDATE_MOVEMENT_BLOB}
+    if path not in expected:
+        raise ValueError('unexpected historical path')
+    raw = subprocess.check_output(
+        ['git', '-C', str(ROOT), 'show', '846df66099f62d24612b149e6128c9e151ed1c3a:' + path],
+        timeout=10)
+    digest = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+    if digest != expected[path]:
+        raise ValueError('historical source blob mismatch: ' + path)
+    return raw
 
 
 def event(label, at, x=33, sx=0, **fields):
@@ -130,6 +145,15 @@ def receipt(mode='candidate', tick=.5):
 
 
 class ContractTests(unittest.TestCase):
+    def test_historical_candidate_is_exact_and_rejects_forged_source(self):
+        for path in (*contract.SPECIES, contract.MOVEMENT):
+            self.assertTrue(historical_candidate(path))
+            with self.subTest(path=path), mock.patch.object(subprocess, 'check_output', return_value=b'forged'):
+                with self.assertRaisesRegex(ValueError, 'blob mismatch'):
+                    historical_candidate(path)
+        with self.assertRaisesRegex(ValueError, 'unexpected historical path'):
+            historical_candidate('unrelated')
+
     def test_handoff_receipt_requires_terminal_cleanup_and_bound_waiter(self):
         for field, value in (('tx_intent_present', 1), ('detail', None)):
             r=receipt(); finished=next(e for row in r['random_rows'] for e in row['events'] if e['event']=='tx_finished')
@@ -422,7 +446,11 @@ class ContractTests(unittest.TestCase):
                  'code/game/mob/living/simple_animal/simple_animal.dm',
                  'code/game/mob/living/simple_animal/subtile_movement.dm', *contract.SPECIES)
         for rel in files:
-            dest=stage/rel;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(ROOT/rel,dest)
+            dest=stage/rel;dest.parent.mkdir(parents=True,exist_ok=True)
+            if rel in (*contract.SPECIES, contract.MOVEMENT):
+                dest.write_bytes(historical_candidate(rel))
+            else:
+                shutil.copyfile(ROOT/rel,dest)
         probe=stage/'tests/human_subtile/probe.dm'
         probe.write_text(probe.read_text(encoding='utf-8').replace('\t\t\thuman_subtile_fixture_headless()',
                          '\t\t\tnpc_subtile_fixture()'),encoding='utf-8',newline='\n')
@@ -463,7 +491,7 @@ class ContractTests(unittest.TestCase):
 
     def test_independent_host_verifier_rejects_tampered_evidence(self):
         head='a'*40;parent=contract.HANDOFF_BASE
-        candidates={p:(ROOT/p).read_bytes() for p in (*contract.SPECIES,contract.MOVEMENT)}
+        candidates={p:historical_candidate(p) for p in (*contract.SPECIES,contract.MOVEMENT)}
         parents={p:candidates[p] for p in contract.SPECIES}
         parents[contract.MOVEMENT]=(ROOT/contract.PARENT_FIXTURE).read_bytes()
         blobs={parent:parents,head:candidates}

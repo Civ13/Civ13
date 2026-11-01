@@ -7,10 +7,10 @@ PROBE = 'tests/human_subtile/probe.dm'
 RANDOM_FIXTURE = 'tests/human_subtile/random_cadence_fixture.dm'
 CORE = 'tests/human_subtile/scheduler_core_draft.dm'
 CARDINAL_FIXTURE = 'tests/human_subtile/cardinal_probe.dm'
-EXPECTED_MOVEMENT_BLOB = '2fc2143df9925df0231bb52dda97526a24cd59fd'
+EXPECTED_MOVEMENT_BLOB = 'c658aa260cd486f5c8a82dc796e048c321362d54'
 EXPECTED_SPECIES_BLOBS = {
-    'code/game/mob/living/simple_animal/hostile/mosquitoes.dm': 'bdb0e42fb6a3e78a01d11dd46a107577457e1595',
-    'code/game/mob/living/simple_animal/hostile/vampirebat.dm': 'd1be76d011b2825228c03b604f6ce1993a1f172e',
+    'code/game/mob/living/simple_animal/hostile/mosquitoes.dm': '9bea59584d822537d5fbeb446d95d7f9fb6b12d4',
+    'code/game/mob/living/simple_animal/hostile/vampirebat.dm': '5cb84fe68311d5095a8369feabccdb00f7c745d8',
 }
 
 

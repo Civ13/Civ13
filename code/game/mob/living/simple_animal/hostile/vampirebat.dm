@@ -30,18 +30,6 @@
 	wandersounds = list('sound/animals/bat/bats_1.ogg','sound/animals/bat/bats_2.ogg','sound/animals/bat/bats_3.ogg')
 	hostilesounds = list('sound/animals/bat/bats_1.ogg','sound/animals/bat/bats_2.ogg','sound/animals/bat/bats_3.ogg')
 
-/mob/living/simple_animal/vampirebatblack/npc_subtile_wild_period(mode, interval)
-	// The measured native lag-3 chase advances one tile every 3 ds at 0.5 ds
-	// ticks. Preserve that full cycle while each pulse transaction takes 1.5 ds.
-	if (mode == "towards" && interval == npc_subtile_native_interval(3))
-		return 2 * interval
-	// The lag-4 random walker was observed at 4 ds between starts only at
-	// 0.5 ds ticks. Keep this calibration separate from the pulse duration;
-	// other tick rates and producers need their own native measurements.
-	if (mode == "random" && world.tick_lag == 0.5 && interval == npc_subtile_native_interval(4))
-		return 4
-	return ..()
-
 /mob/living/simple_animal/vampirebatblack/Life()
 	..()
 	if (stat != DEAD)

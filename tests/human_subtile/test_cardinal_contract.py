@@ -40,7 +40,7 @@ def receipt(mode='smooth', tick=.5, lag=4):
             add('move_exit', at)
     add('observation_end', 16)
     add('phase_end', 16)
-    return {'enabled': enabled, 'lag_ticks': lag, 'tick_lag_ds': tick, 'converted_ds': lag*tick,
+    return {'enabled': enabled, 'lag_ticks': lag, 'tick_lag_ds': tick, 'converted_ds': lag,
             'started': 0, 'ended': 16, 'observation_ds': 16, 'event_count': len(events), 'events': events,
             'step_size': 32, 'life_count': 0, 'tx_count': 3 if enabled else 0,
             'move_enter_count': 48 if enabled else 3, 'move_exit_count': 48 if enabled else 3}
@@ -86,7 +86,7 @@ class CardinalContractTests(unittest.TestCase):
             lambda r: r.update(events=[], event_count=0),
             lambda r: r['events'][1]['detail'].update(direction=8),
             lambda r: r['events'][5].update(sy=2),
-            lambda r: r.update(converted_ds=4),
+            lambda r: r.update(converted_ds=2),
         ):
             bad = copy.deepcopy(row); mutate(bad)
             with self.assertRaises(ValueError): c.validate_case(bad, 'smooth', .5, 4)
