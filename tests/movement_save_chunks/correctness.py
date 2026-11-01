@@ -19,8 +19,7 @@ def load(name):
 
 SCENARIOS = ('walking', 'codec-read', 'reference', 'frontier', 'frontier-delete', 'delete', 'inventory', 'cross-z', 'yield', 'depth')
 ROSTER_ANCHOR = '/map_storage/proc/prepare_moving_save_roster()\n'
-ORIGIN_ANCHOR = '''\tvar/datum/child = saving_reference_pins[ref]
-\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
+ORIGIN_ANCHOR = '''\tvar/list/moving_root = child ? moving_save_roots["\\ref[child]"] : null
 \tif(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
 \t\tif(!isturf(frame.source)) throw EXCEPTION("Moving save root entered a captured container")
 \t\treturn // The frozen origin owns this root; roster drain will attach it.

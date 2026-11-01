@@ -136,6 +136,12 @@ def bounded_child():
     resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_BYTES, MAX_BYTES))
 
 
+def child_exited_unreaped(pid):
+    # The owned process-group leader is not reaped until group cleanup.
+    # A zombie has no RSS but its final status remains available via waitid.
+    return os.waitid(os.P_PID, pid, os.WEXITED | os.WNOHANG | os.WNOWAIT) is not None
+
+
 def monitor_for(folder, started, global_deadline, compile_mode=False, source_bytes=0):
     samples = {'count': 0, 'peak_rss': 0}
     def monitor(pid, cwd):
@@ -146,7 +152,12 @@ def monitor_for(folder, started, global_deadline, compile_mode=False, source_byt
             samples['peak_rss'] = max(samples['peak_rss'], memory['rss_bytes'])
             require(memory['rss_bytes'] <= 1024 * 1024 * 1024, 'sampled RSS exceeded')
         elif time.monotonic() - started > 1:
-            raise RuntimeError('RSS sampling unavailable')
+            # /proc may lose VmRSS after the loop observed a live process but
+            # before this sample. A live process with no RSS still fails; a
+            # witnessed exit must later pass wait/exit and prior-sample checks.
+            if not child_exited_unreaped(pid):
+                raise RuntimeError('RSS sampling unavailable')
+            samples['rss_exit_race'] = True
         if compile_mode:
             inventory(folder, total_limit=source_bytes + MAX_BYTES, max_entries=12000)
             for name in ('compile-stdout.log', 'compile-stderr.log', 'human_subtile.dmb', 'human_subtile.rsc'):

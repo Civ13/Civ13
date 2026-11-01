@@ -136,6 +136,29 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(trace['events'][-1]['value'], -9)
             self.assertEqual(trace['memory']['count'], 1)
 
+    def test_missing_rss_is_tolerated_only_after_an_observed_exit(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(runner.benchmark, 'proc_memory', side_effect=[{'rss_bytes': 1024}, {}, {}]), \
+             mock.patch.object(runner, 'child_exited_unreaped', side_effect=[True, False]):
+            monitor, samples = runner.monitor_for(Path(tmp), time.monotonic() - 2, time.monotonic() + 10)
+            monitor(123, Path(tmp))
+            monitor(123, Path(tmp))
+            self.assertEqual(samples['count'], 1)
+            self.assertTrue(samples['rss_exit_race'])
+            with self.assertRaisesRegex(RuntimeError, 'RSS sampling unavailable'):
+                monitor(123, Path(tmp))
+
+    def test_exit_without_any_memory_sample_still_fails(self):
+        def fake_process(command, cwd, name, deadline, **kwargs):
+            kwargs['monitor'](123, cwd)
+            return {'returncode': 0}
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.object(runner.legacy, 'run_process', side_effect=fake_process), \
+             mock.patch.object(runner.benchmark, 'proc_memory', return_value={}):
+            cwd = Path(tmp)
+            with self.assertRaisesRegex(RuntimeError, 'RSS was not sampled'):
+                runner.launch(['synthetic'], cwd, 'writer', 90, time.monotonic() + 100, cwd)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -124,7 +124,8 @@ class ProgressSources(unittest.TestCase):
         anchor = '\tif(world.tick_usage >= 80)\n\t\tsleep(world.tick_lag)\n'
         self.assertEqual(body.count(anchor), 1)
         generated, _ = progress.instrument(saving, '')
-        self.assertEqual(generated.count('world_save_progress_sleep('), 4)
+        expected = 5 if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving else 4
+        self.assertEqual(generated.count('world_save_progress_sleep('), expected)
         for changed in ('', anchor + anchor,
                         anchor.replace('>= 80', '>= 81'),
                         anchor.replace('world.tick_lag', '2')):
@@ -133,6 +134,25 @@ class ProgressSources(unittest.TestCase):
                     progress.instrument(prefix + capture + body.replace(anchor, changed, 1), '')
         with self.assertRaisesRegex(ValueError, 'Expected'):
             progress.instrument(saving + '\n/proc/unreviewed_wait()\n\tsleep(0)\n', '')
+
+    def test_human_handoff_wait_is_named_and_drift_rejected(self):
+        saving = self.inputs['saving'][1].decode().replace('\r\n', '\n')
+        capture = '/map_storage/proc/capture_human_save_root(savefile/F, list/record)\n'
+        if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' not in saving:
+            self.skipTest('Source has no experimental human handoff')
+        prefix, body = saving.split(capture)
+        anchor = '\twhile(!request.captured && world.time < deadline && operation.current(src, "save"))\n\t\tsleep(world.tick_lag)\n'
+        self.assertEqual(body.count(anchor), 1)
+        generated, _ = progress.instrument(saving, '')
+        self.assertIn(anchor.replace('sleep(world.tick_lag)', 'world_save_progress_sleep(world.tick_lag)'), generated)
+        for changed in ('', anchor + anchor, anchor.replace('sleep(world.tick_lag)', 'sleep(2)')):
+            with self.subTest(change=changed):
+                with self.assertRaisesRegex(ValueError, 'Expected'):
+                    progress.instrument(prefix + capture + body.replace(anchor, changed, 1), '')
+
+        profiled, _ = progress.instrument(saving, '', phase_profile=True)
+        call = 'world_save_profile_original_BuildVarDirectory(savefile, A, contents, traversal, human_request)'
+        self.assertEqual(profiled.count(call), 2)
 
     def test_wrong_source_hash_rejects_before_creating_outputs(self):
         for name in self.inputs:

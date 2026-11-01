@@ -36,6 +36,16 @@ def instrument(saving, functions, phase_profile=False):
             body = replace_once(body, headroom,
                                 '\tif(world.tick_usage >= 80)\n\t\tworld_save_progress_sleep(world.tick_lag)\n')
             saving = prefix + capture + body + edge + suffix
+        if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving:
+            capture = '/map_storage/proc/capture_human_save_root(savefile/F, list/record)\n'
+            drain = '/map_storage/proc/drain_human_save_roster('
+            if saving.count(capture) != 1 or saving.count(drain) != 1:
+                raise ValueError('Expected one human handoff boundary')
+            prefix, body = saving.split(capture)
+            body, suffix = body.split(drain)
+            handoff = '\twhile(!request.captured && world.time < deadline && operation.current(src, "save"))\n\t\tsleep(world.tick_lag)\n'
+            body = replace_once(body, handoff, handoff.replace('sleep(world.tick_lag)', 'world_save_progress_sleep(world.tick_lag)'))
+            saving = prefix + capture + body + drain + suffix
         # Preserve the bounded policy's thresholds, counters and wait delays.
         saving, sleeps = re.subn(r'(?m)^(\s*)sleep\((world.tick_lag|0)\)$',
                                  r'\1world_save_progress_sleep(\2)', saving)
@@ -133,6 +143,9 @@ def instrument_phases(saving, bounded=False):
     if bounded:
         build_signature += ', traversal = FALSE'
         build_arguments += ', traversal'
+        if 'CIV13_HUMAN_SPATIAL_EXPERIMENTAL' in saving:
+            build_signature += ', datum/human_request = null'
+            build_arguments += ', human_request'
     for name, signature, arguments, phase, counter in (
         ('BuildVarDirectory', build_signature, build_arguments, 'object', 'objects'),
         ('encode_saved_value', 'savefile/F, value', 'F, value', 'value', 'values'),
