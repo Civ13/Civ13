@@ -88,7 +88,26 @@
 	var/tmp/drying_epoch = 0
 
 /obj/structure/converter/tanning/persistence_runtime_var(key)
-	return (key in list("drying_epoch", "filled")) || ..()
+	// Derived appearance is rebuilt from saved contents, never imported as image data.
+	return (key in list("drying_epoch", "filled", "overlays")) || ..()
+
+/obj/structure/converter/tanning/update_icon()
+	// The full-rack state has a baked-in hide. Use the empty frame and the
+	// actual stored hide's appearance so wet and dry batches stay distinct.
+	icon_state = idlesprite
+	overlays.Cut()
+	for (var/obj/item/stack/material/hide in contents)
+		if (QDELETED(hide) || hide.amount < 1 || (!istype(hide, /obj/item/stack/material/wethide) && !istype(hide, /obj/item/stack/material/dryhide)))
+			continue
+		var/image/hide_overlay = image(icon = hide.icon, icon_state = hide.icon_state, dir = hide.dir)
+		hide_overlay.color = hide.color
+		overlays += hide_overlay
+		break
+
+/obj/structure/converter/tanning/Exited(atom/movable/AM, atom/new_loc)
+	. = ..()
+	update_icon()
+	return .
 
 /obj/structure/converter/tanning/attackby(obj/item/W, mob/living/user)
 	if (istype(W, /obj/item/stack/material/wethide))
@@ -127,7 +146,7 @@
 	var/turf/site = loc
 	var/count = hide.amount
 	filled = TRUE
-	icon_state = activesprite
+	update_icon()
 	spawn(delay)
 		finish_hide_drying(hide, count, epoch, site)
 	return TRUE
@@ -140,7 +159,7 @@
 	if (!hide.use(count))
 		return FALSE
 	new /obj/item/stack/material/dryhide(src, count, FALSE)
-	icon_state = activesprite
+	update_icon()
 	visible_message(SPAN_NOTICE("The hides on [src] have dried. Remove them and apply tannin."))
 	return TRUE
 
@@ -152,20 +171,20 @@
 /obj/structure/converter/tanning/proc/release_hides()
 	drying_epoch++
 	filled = FALSE
-	icon_state = idlesprite
 	var/turf/site = get_turf(src)
 	if (site)
 		for (var/obj/item/I in contents.Copy())
 			I.forceMove(site)
+	update_icon()
 
 /obj/structure/converter/tanning/after_load()
 	..()
 	filled = FALSE
-	icon_state = contents.len ? activesprite : idlesprite
 	// Saved contents are durable. A restored wet batch gets a fresh full delay.
 	var/obj/item/stack/material/wethide/hide = locate() in contents
 	if (hide)
 		start_hide_drying(hide)
+	update_icon()
 
 /obj/structure/converter/tanning/Destroy()
 	release_hides()

@@ -36,6 +36,14 @@ SUITES = {
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/living_hud.dm',
             'code/modules/visibility/root_tree_presenter.dm', '.github/workflows/test.yml')},
+    # Stdlib-only source projection and bounded RGBA8 PNG/DMI inspection.
+    # No harvest preview helper, external package, native runner or network import.
+    # Shared production/art inputs retain conservative all-suite fallback.
+    'tanning_rack_appearance': {'files': ('tests/test_tanning_rack_appearance.py',),
+        'paths': (), 'shared_paths': (
+            'code/game/objects/structures/converters.dm',
+            'code/game/objects/items/stacks/sheets/leather.dm',
+            'icons/obj/structures.dmi', 'icons/obj/materials.dmi')},
     # Stdlib-only production predicate/worker projections with inert clients.
     # No renderer, native runner, process, clock or network boundary is imported.
     'resource_work_animation': {'files': ('tests/test_resource_work_animation.py',),
