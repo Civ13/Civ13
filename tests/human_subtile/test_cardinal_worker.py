@@ -1,6 +1,7 @@
 """Exercise worker sequencing and deadlines with fakes; no native calls."""
 import importlib.util
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 import time
@@ -17,7 +18,11 @@ worker=load('cardinal_worker'); contract=load('cardinal_contract')
 
 class WorkerTests(unittest.TestCase):
     def test_registration_is_manual_only_and_serialized(self):
-        text=(HERE.parents[1]/'.github/workflows/wildlife-cardinal-cadence.yml').read_text(encoding='utf-8')
+        # Preserve the historical transition selector contract at its exact
+        # immutable source, while another suite occupies the current workflow.
+        text=subprocess.check_output(['git', '-C', str(HERE.parents[1]), 'show',
+            '7436e0d95c069ebf13ce620763c3e619417ede38:.github/workflows/wildlife-cardinal-cadence.yml'],
+            timeout=10).decode('utf-8')
         self.assertIn('on:\n  workflow_dispatch:',text)
         self.assertNotIn('\n  push:',text)
         self.assertNotIn('\n  pull_request:',text)

@@ -117,13 +117,13 @@ def selected_estimate(raw,suite='smoke'):
     require(count>0,'No selected source')
     # Random comparison adds a hardlinked second stage with separate metadata.
     # Compiled artifacts and runtime resources remain additional bounded scratch.
-    metadata_per_file=32768 if suite in ('random05','random10') else 16384
+    metadata_per_file=32768 if suite in ('random05','random10','bump05') else 16384
     estimate=2*total+metadata_per_file*count
     require(estimate<SCRATCH,'Selected source alone cannot fit 1 GiB scratch')
     return {'files':count,'blob_bytes':total,'archive_and_stage_estimate_bytes':estimate,
             'scratch_limit_bytes':SCRATCH,
             'limitation':('Includes second-stage metadata but not compiled artifacts, logs, saves or short-lived peaks.'
-                          if suite in ('random05','random10') else
+                          if suite in ('random05','random10','bump05') else
                           'Does not include compiled artifacts, logs, saves or short-lived peaks.')}
 
 
@@ -183,7 +183,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute',action='store_true');parser.add_argument('--head',required=True)
     parser.add_argument('--output',required=True,type=Path);parser.add_argument('--controller-output',required=True,type=Path)
-    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10','transition05'),required=True)
+    parser.add_argument('--suite',choices=('random05','random10','cardinal05','cardinal10','transition05','bump05'),required=True)
     args=parser.parse_args();require(args.execute,'Explicit --execute required')
     controller.hosted(os.environ,args.head)
     signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
