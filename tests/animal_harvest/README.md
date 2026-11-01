@@ -17,8 +17,10 @@ sharpening wait while clicking both tall-grass variants, another stick, axe
 parts and repair targets. It asserts no second grass wait/start/cooldown, no
 resource/durability changes, the original wait remains owned and completes,
 and idle grass cutting still announces and yields normally. The existing
-tall-grass matrix also checks busy entry. These added native assertions have
-not been compiled or run; new native runs require their own admitted plan.
+tall-grass matrix also checks busy entry. These added native assertions
+were compiled at `011931e0a` with zero errors/warnings, but not executed: runtime
+preflight rejected the copied-name file count. The prepared input-accounting
+correction below has not been compiled or run natively.
 
 Normal CI registers this exact offline file as the bounded baseline's
 `action_admission` suite. Its stdlib-only imports never launch a native runner;
@@ -43,7 +45,12 @@ explicit BYOND 516.1688 bin path:
 
 The runner compiles the production DME without its map or normal world startup,
 then launches a small offline world in unique temporary storage under ignored
-`data/animal-harvest-tests`. It copies only name configuration. Unique owned
+`data/animal-harvest-tests`. The prepared correction stages the exact 146 pinned
+eager name inputs and the existing minimal config under `runtime/`, with separate
+input/output accounting. See [input-accounting.md](input-accounting.md) for the
+source proof, old/new bounds, zero-launch controls and native review proposal.
+The baseline registers `test_input_accounting.py` as the offline `harvest_inputs`
+suite. Unique owned
 generated files, prelaunch input snapshots and runtime logs are retained on
 success, failure, timeout and interruption. No runner path deletes them.
 Linux CI uses the downloaded pinned BYOND bin directory and `/usr/bin/python3`.

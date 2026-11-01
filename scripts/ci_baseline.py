@@ -25,6 +25,15 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    # Inert existing harvest/flax runner imports plus stdlib file/transport
+    # adapters only. Tests replace every process boundary; no native execution.
+    'harvest_inputs': {'files': ('tests/animal_harvest/test_input_accounting.py',),
+        'paths': ('tests/animal_harvest/test_input_accounting.py',), 'shared_paths': (
+            'tests/animal_harvest/run.py', 'tests/animal_harvest/hide_recipe_probe.dm',
+            'tests/flax_processing/run.py', 'tests/flax_processing/required-inputs.json',
+            'code/names.dm', 'config/names/', 'scripts/native_fixture.py',
+            'scripts/byond_runtime.py', 'scripts/byond_toolchain.py',
+            'tools/byond/version.json')},
     # Stdlib-only admission expressions and fixture wiring; never import a native
     # runner. Shared game/fixture inputs retain conservative all-suite fallback.
     'action_admission': {'files': ('tests/animal_harvest/test_action_admission.py',),

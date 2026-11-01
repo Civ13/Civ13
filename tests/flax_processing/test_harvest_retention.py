@@ -30,6 +30,7 @@ class HarvestRetention(unittest.TestCase):
         return tokens[2:]
 
     def exercise(self, defect=None, scope='full', workflow=False):
+        name_plan = harvest.required_name_plan()
         with tempfile.TemporaryDirectory(prefix='harvest-offline-retain-') as temporary, ExitStack() as stack:
             root = Path(temporary)
             (root/'code').mkdir()
@@ -38,6 +39,9 @@ class HarvestRetention(unittest.TestCase):
             (root/'config/names').mkdir(parents=True)
             (root/'tests/flax_processing').mkdir(parents=True)
             (root/'tests/flax_processing/run.py').write_bytes((ROOT/'tests/flax_processing/run.py').read_bytes())
+            (root/'tests/animal_harvest').mkdir()
+            (root/'tests/animal_harvest/hide_recipe_probe.dm').write_bytes(
+                (ROOT/'tests/animal_harvest/hide_recipe_probe.dm').read_bytes())
             logs = root/'evidence'
             receipt_path = root/'external-receipt.json'
             launches = []
@@ -54,15 +58,15 @@ class HarvestRetention(unittest.TestCase):
                     if defect == 'compile_timeout':
                         raise harvest.subprocess.TimeoutExpired(command, timeout)
                     return NS(returncode=0, stdout='DM compiler version 516.1688\nprobe.dmb - 0 errors, 0 warnings\n', stderr='')
-                (logs/'runtime.log').write_text('offline diagnostic survives')
-                (logs/'errors.txt').write_text('')
-                (logs/'port-closed.txt').write_text('closed')
+                (cwd/'runtime.log').write_text('offline diagnostic survives')
+                (cwd/'errors.txt').write_text('')
+                (cwd/'port-closed.txt').write_text('closed')
                 if defect == 'runtime_timeout':
                     raise harvest.subprocess.TimeoutExpired(command, timeout)
                 if defect == 'runtime_interrupt':
                     raise KeyboardInterrupt('offline interruption')
                 if defect != 'early_exit':
-                    (logs/'result.txt').write_text('PASS: injected offline result')
+                    (cwd/'result.txt').write_text('PASS: injected offline result')
                 if scope != 'full':
                     return NS(returncode=0, stdout='', stderr='')
                 manifest = json.loads((logs/'evidence-manifest.json').read_text())
@@ -83,6 +87,7 @@ class HarvestRetention(unittest.TestCase):
                 return NS(returncode=0, stdout='', stderr='')
 
             stack.enter_context(patch.object(harvest, 'ROOT', root))
+            stack.enter_context(patch.object(harvest, 'required_name_plan', return_value=name_plan))
             stack.enter_context(patch.object(harvest.sys, 'platform', 'linux'))
             stack.enter_context(patch.object(harvest.subprocess, 'check_output', return_value='a'*40))
             stack.enter_context(patch.object(harvest, 'runtime_identity', return_value={'scope':'offline-injected'}))
@@ -109,7 +114,7 @@ class HarvestRetention(unittest.TestCase):
             self.assertTrue(list((logs/'generated-inputs').glob('*.dme')))
             self.assertTrue((logs/'harvest-compile.stderr.log').exists())
             if len(launches)==2:
-                self.assertIn('diagnostic survives', (logs/'runtime.log').read_text())
+                self.assertIn('diagnostic survives', (logs/'runtime/runtime.log').read_text())
             self.assertEqual(manifest['status'], 'failed' if defect else 'fixture_pass_with_cleanup_evidence' if scope == 'full' else 'limited_fixture_pass_cleanup_unverified')
             self.assertFalse(manifest['full_acceptance_complete'])
             if not defect and scope == 'full':

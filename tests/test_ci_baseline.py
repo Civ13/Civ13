@@ -53,6 +53,23 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_harvest_inputs_registration_is_bounded_and_preserves_fallback(self):
+        suite = ci.SUITES['harvest_inputs']
+        self.assertEqual(suite['files'], ('tests/animal_harvest/test_input_accounting.py',))
+        self.assertEqual(suite['paths'], suite['files'])
+        self.assertFalse(suite.get('always', False))
+        self.assertEqual(self.selected(list(suite['files'])),
+                         {'policy', 'bootstrap', 'progress', 'harvest_inputs'})
+        self.assertEqual(ci.impact(list(suite['files']))['fallback_reasons'], [])
+        for path in suite['shared_paths']:
+            candidate = path+'first.txt' if path.endswith('/') else path
+            previous_suites = {name:spec for name,spec in ci.SUITES.items() if name != 'harvest_inputs'}
+            with patch.object(ci,'SUITES',previous_suites):
+                previous_selected = self.selected([candidate])
+                previous_fallback = ci.impact([candidate])['fallback_reasons']
+            self.assertEqual(self.selected([candidate]), previous_selected|{'harvest_inputs'})
+            self.assertEqual(ci.impact([candidate])['fallback_reasons'], previous_fallback)
+
     def test_action_admission_registration_is_offline_and_preserves_fallback(self):
         suite = ci.SUITES['action_admission']
         self.assertEqual(suite['files'], ('tests/animal_harvest/test_action_admission.py',))
