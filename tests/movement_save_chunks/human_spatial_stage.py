@@ -22,6 +22,7 @@ OVERLAY = (
     'code/game/mob/living/carbon/human/pull_pair_producer.dm',
     'code/game/mob/living/carbon/human/pull_pair_ownership.dm',
     'code/modules/persistence/functions.dm',
+    'code/modules/persistence/loading.dm',
     'code/modules/persistence/saving.dm',
 )
 DRIVER_INPUTS = (
@@ -80,12 +81,19 @@ def stage(output):
         'headless authority')
     data = replace_once(data,
         '\t\tif (actor.human_subtile_save_request)\n\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)',
-        '\t\tif (human_spatial_fixture_handoffs) human_spatial_fixture_pulses_after++\n'
-        '\t\tif (actor.human_subtile_save_request)\n'
-        '\t\t\tif (actor.human_subtile_save_request.acknowledge(actor, src))\n'
-        '\t\t\t\thuman_spatial_fixture_handoffs++\n'
-        '\t\t\t\thuman_spatial_fixture_capsule = actor.human_subtile_save_request.position.Copy()',
-        'handoff instrumentation')
+        '\t\tif (human_spatial_fixture_handoffs && actor.persistence_owner_ckey == "syntheticfixture") human_spatial_fixture_pulses_after++\n'
+        '\t\tif (actor == human_spatial_fixture_late_actor && human_spatial_fixture_late_capsule && persistence_save_in_progress) human_spatial_fixture_late_pulses++\n'
+        '\t\tif (actor.human_subtile_save_request)\n\t\t\tactor.human_subtile_save_request.acknowledge(actor, src)',
+        'post-handoff pulse instrumentation')
+    data = replace_once(data,
+        '\t\tcaptured = TRUE\n\t\treturn TRUE',
+        '\t\tcaptured = TRUE\n'
+        '\t\tif (human_spatial_fixture_authorized && T && H.persistence_owner_ckey == "syntheticfixture")\n'
+        '\t\t\thuman_spatial_fixture_handoffs++\n'
+        '\t\t\thuman_spatial_fixture_capsule = position.Copy()\n'
+        '\t\tif (H == human_spatial_fixture_late_actor) human_spatial_fixture_late_capsule = position.Copy()\n'
+        '\t\treturn TRUE',
+        'group capture instrumentation')
     data = replace_once(data,
         '\t\tactor.living_movement_completed()\n\t\tactor.human_movement_completed()',
         '\t\tactor.living_movement_completed()\n'
@@ -93,7 +101,29 @@ def stage(output):
         '\t\tactor.human_movement_completed()\n'
         '\t\tif (actor == human_spatial_fixture_drag_actor) human_spatial_fixture_human_completions++',
         'drag completion instrumentation')
+    data = replace_once(data,
+        '\t\tstep_x = S["sx"]\n\t\tstep_y = S["sy"]',
+        '\t\thuman_spatial_fixture_direct_actor = src\n'
+        '\t\thuman_spatial_fixture_direct_active = TRUE\n'
+        '\t\tstep_x = S["sx"]\n\t\tstep_y = S["sy"]\n'
+        '\t\thuman_spatial_fixture_direct_active = FALSE',
+        'direct assignment callback instrumentation')
+    data = replace_once(data,
+        '\tliving_movement_completed()\n\thuman_movement_completed()\n',
+        '\tliving_movement_completed()\n'
+        '\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_restore_living++\n'
+        '\thuman_movement_completed()\n'
+        '\tif(src == human_spatial_fixture_direct_actor) human_spatial_fixture_restore_human++\n',
+        'restore completion instrumentation')
     path.write_text(data, encoding='utf-8', newline='\n')
+
+    human = root / 'code/game/mob/living/carbon/human/human.dm'
+    data = human.read_text(encoding='utf-8')
+    data = replace_once(data, '/mob/living/human/Move()\n',
+        '/mob/living/human/Move()\n'
+        '\tif(human_spatial_fixture_direct_active && src == human_spatial_fixture_direct_actor) human_spatial_fixture_direct_callbacks++\n',
+        'direct Move callback instrumentation')
+    human.write_text(data, encoding='utf-8', newline='\n')
 
     # The native living Move drag path requires a moving client. Only the
     # fixture's explicitly named headless actor may simulate that predicate;
@@ -111,13 +141,23 @@ def stage(output):
 
     saver = root / 'code/modules/persistence/saving.dm'
     data = saver.read_text(encoding='utf-8')
-    data = replace_once(data, '\tprepare_human_save_roster(operation)',
-        '\tprepare_human_save_roster(operation)\n'
-        '\tif(human_spatial_fixture_case == "roster") persistence_note_human_roster_change()',
+    data = replace_once(data, '\trecord["mode"] = "spatial"\n\treturn record',
+        '\trecord["mode"] = "spatial"\n'
+        '\tif(H == human_spatial_fixture_late_actor) human_spatial_fixture_wait_late_pulse()\n'
+        '\treturn record', 'late walker continuation witness')
+    data = replace_once(data, '\tcapture_human_save_roster_positions(operation)',
+        '\tcapture_human_save_roster_positions(operation)\n'
+        '\tif(world.params["phase"] == "writer") human_spatial_fixture_start_late_walker()\n'
+        '\tif(human_spatial_fixture_case == "roster") operation.human_roster_changed = TRUE',
         'roster invalidation control')
     data = replace_once(data, '\tinspect_human_saved_origins(operation)',
+        '\thuman_spatial_fixture_geometry_metrics = list("turfs" = operation.human_geometry_turf_records, "objects" = operation.human_geometry_object_records, "added_fields" = operation.human_geometry_added_fields)\n'
         '\thuman_spatial_fixture_mutate_candidate(operation)\n'
         '\tinspect_human_saved_origins(operation)', 'candidate negative controls')
+    data = replace_once(data, '\t\tcompleted_request.serialized = TRUE\n#endif\n\treturn ref',
+        '\t\tcompleted_request.serialized = TRUE\n#endif\n'
+        '\tif(ishuman(A) && A:persistence_owner_ckey == "syntheticseated") human_spatial_fixture_move_saved_seated(A)\n'
+        '\treturn ref', 'legacy reference-first exit witness')
     saver.write_text(data, encoding='utf-8', newline='\n')
 
     probe = root / 'tests/human_subtile/probe.dm'
@@ -136,6 +176,7 @@ def stage(output):
                     driver_inputs={p: sha((ROOT / p).read_bytes()) for p in DRIVER_INPUTS},
                     review_scope_sha256=scope['sha256'],
                     adapted_subtile_sha256=sha(path.read_bytes()),
+                    adapted_human_sha256=sha(human.read_bytes()),
                     adapted_living_sha256=sha(living.read_bytes()),
                     adapted_saver_sha256=sha(saver.read_bytes()),
                     adapted_probe_sha256=sha(probe.read_bytes()),

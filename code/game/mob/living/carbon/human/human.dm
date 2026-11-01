@@ -12,9 +12,6 @@
 	var/immune_to_barbwire = FALSE
 
 /mob/living/human/New(var/new_loc, var/new_species = null)
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-	persistence_note_human_roster_change()
-#endif
 
 	if (original_job_title && !client)
 		if (job_master)
@@ -101,9 +98,6 @@
 	spawn(5)
 		nomads_spawn()
 /mob/living/human/Destroy()
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-	persistence_note_human_roster_change()
-#endif
 	cancel_exercise()
 	unregister_corpse_decay()
 	human_mob_list -= src

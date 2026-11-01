@@ -263,6 +263,13 @@
 			restored_human.persistence_restored = TRUE
 			savefile.cd = entry_path(savefile, ind)
 			restored_human.human_subtile_prepare_import(savefile)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			if("human_subtile_restore_schema" in savefile.dir)
+				var/datum/persistence_world_operation/direct_owner = persistence_active_operation
+				var/list/proven_position = direct_owner ? direct_owner.human_direct_preflight_records["[loading_z]:[ind]"] : null
+				if(!direct_owner || !direct_owner.current(src, "load") || !islist(proven_position)) throw EXCEPTION("Human direct import lacks preflight proof")
+				restored_human.human_direct_preflight_position = proven_position.Copy()
+#endif
 		if (istype(object, /mob/living/simple_animal))
 			var/mob/living/simple_animal/restored_npc = object
 			savefile.cd = entry_path(savefile, ind)
@@ -417,6 +424,9 @@
 	// Allocate all levels first so references to turfs on later levels stay valid.
 	for(var/z = 1, z <= world.maxz, z++)
 		var/savefile/F = new("map_saves/[z].sav")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
+#endif
 		for(var/y = 1, y <= world.maxy, y++)
 			for(var/x = 1, x <= world.maxx, x++)
 				var/ref = F["/map/[z]/[y]/[x]"]
@@ -438,6 +448,9 @@
 			if(!fexists("map_saves/[B].sav"))
 				throw EXCEPTION("Missing saved level [B]")
 			var/savefile/savefile = new("map_saves/[B].sav")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			if(operation.human_direct_preflight_generation && savefile["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed during import")
+#endif
 			saved_turfs = list()
 			// Index every turf before recursive contents/variable references load.
 			for(var/ty = 1, ty <= world.maxy, ty++)
@@ -518,6 +531,11 @@
 	release_durable_world()
 	clear_saved_zones()
 	validated_level_links = null
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
+		persistence_active_operation.human_direct_preflight_generation = null
+		persistence_active_operation.human_direct_preflight_records = list()
+#endif
 	try
 		if(candidate && (!persistence_active_operation || !persistence_active_operation.current(src, "save") || candidate["generation"] != zone_export_generation)) throw EXCEPTION("Unowned candidate validation")
 		if((!candidate && !fexists("map_saves/save_complete.txt")) || !fexists("map_saves/map.txt"))
@@ -546,6 +564,12 @@
 				throw EXCEPTION("Saved world dimensions differ from the current world")
 			var/list/validated_lists = list()
 			var/list/turf_refs = list()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			var/list/human_direct_turfs = list()
+			var/list/human_direct_parents = list()
+			var/list/human_direct_parent_counts = list()
+			var/list/human_direct_entries = list()
+#endif
 			F.cd = "/map"
 			if(F.dir.len != 1 || !("[z]" in F.dir))
 				throw EXCEPTION("Unexpected z-level grid in [z].sav")
@@ -562,6 +586,9 @@
 					if(!isnum(ref) || ref < 1 || ref != round(ref) || turf_refs["[ref]"])
 						throw EXCEPTION("Missing or duplicate turf at [x],[y],[z]")
 					turf_refs["[ref]"] = TRUE
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+					human_direct_turfs["[ref]"] = list("x" = x, "y" = y, "z" = z)
+#endif
 					F.cd = entry_path(F, ref)
 					var/type = F["type"]
 					if(!ispath(type, /turf))
@@ -590,6 +617,14 @@
 				if(ispath(type, /mob/living/human))
 					validate_saved_player_owner(F, ref, player_owners)
 				var/list/fields = F.dir.Copy()
+				if("human_subtile_restore_schema" in fields)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+					if(!candidate && (!persistence_active_operation || !persistence_active_operation.current(src, "load"))) throw EXCEPTION("Human direct preflight lacks its load owner")
+					if(type != /mob/living/human || human_candidate_scalar(F["human_subtile_restore_schema"]) != 1) throw EXCEPTION("Human direct restore schema is invalid")
+					human_direct_entries += "[ref]"
+#else
+					throw EXCEPTION("Human direct restore schema is unavailable")
+#endif
 				for(var/field in fields)
 					F.cd = entry_path(F, ref)
 					var/value = F[field]
@@ -602,6 +637,12 @@
 							var/content_type = F["[entry_path(F, content_ref)]/type"]
 							if(!ispath(content_type, /atom/movable))
 								throw EXCEPTION("Non-movable entry in saved contents on z=[z]")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+							var/child_key = "[content_ref]"
+							var/old_count = human_direct_parent_counts[child_key]
+							human_direct_parent_counts[child_key] = (isnum(old_count) ? old_count : 0) + 1
+							human_direct_parents[child_key] = "[ref]"
+#endif
 					else if((version == 2 || version == 3) && is_level_link_value(value))
 						if(!level_links || !validate_level_link_value(value, level_links))
 							throw EXCEPTION("Invalid cross-level link on z=[z]")
@@ -614,12 +655,38 @@
 						for(var/item in params2list(copytext(value, 7)))
 							if(findtext(item, "**entry") == 1 && !entry_set[copytext(item, 8)])
 								throw EXCEPTION("Missing legacy list entry on z=[z]")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			var/list/human_direct_positions = list()
+			var/list/human_direct_positions_by_ref = list()
+			for(var/human_ref in human_direct_entries)
+				var/list/origin = human_direct_turfs[human_direct_parents[human_ref]]
+				var/list/position = human_candidate_read_position(F, text2num(human_ref))
+				if(human_direct_parent_counts[human_ref] != 1 || !islist(origin) || !islist(position) || origin["x"] != position["x"] || origin["y"] != position["y"] || origin["z"] != position["z"] || (!position["sx"] && !position["sy"])) throw EXCEPTION("Human direct saved origin is invalid")
+				human_direct_positions += list(position)
+				human_direct_positions_by_ref[human_ref] = position
+			if(human_direct_entries.len)
+				var/owner_kind = candidate ? "save" : "load"
+				var/deadline = world.time + 1200
+				var/list/obstructions = build_human_obstruction_index(F, z, human_direct_positions, persistence_active_operation, owner_kind, deadline)
+				for(var/human_ref in human_direct_entries)
+					validate_human_saved_geometry(F, text2num(human_ref), human_direct_positions_by_ref[human_ref], obstructions, persistence_active_operation, owner_kind, deadline)
+					if(!candidate) persistence_active_operation.human_direct_preflight_records["[z]:[human_ref]"] = human_direct_positions_by_ref[human_ref]
+#endif
 		if(level_links) validate_level_link_targets(level_links, round_state["generation"])
 		if(round_state["version"] == 2) validate_durable_world(round_state["world_state"], round_state["generation"])
 		// Candidate validation during export never authorizes a later import.
-		if(!candidate) validated_level_links = level_links ? level_links.Copy() : list()
+		if(!candidate)
+			validated_level_links = level_links ? level_links.Copy() : list()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+			if(persistence_active_operation && persistence_active_operation.current(src, "load")) persistence_active_operation.human_direct_preflight_generation = round_state["generation"]
+#endif
 		return TRUE
 	catch(var/exception/e)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(!candidate && persistence_active_operation && persistence_active_operation.current(src, "load"))
+			persistence_active_operation.human_direct_preflight_generation = null
+			persistence_active_operation.human_direct_preflight_records = list()
+#endif
 		validated_level_links = null
 		clear_saved_roof_areas()
 		clear_saved_zones()

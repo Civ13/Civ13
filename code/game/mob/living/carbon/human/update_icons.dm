@@ -142,9 +142,6 @@ Please contact me on #coderbus IRC. ~Carn x
 	var/previous_damage_appearance // store what the body last looked like, so we only have to update it if something changed
 
 /mob/living/human/Login()
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-	persistence_note_human_roster_change()
-#endif
 	..()
 	if(client)
 		human_clients_mob_list |= src

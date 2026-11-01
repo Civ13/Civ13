@@ -3,15 +3,19 @@
 This model deliberately treats audit/default assertions as supplied inputs. It
 must not be used as evidence that the native loader honors those assertions.
 """
-FLOORS = {"/turf/floor/dirt", "/turf/floor/wood", "/turf/floor/grass",
-          "/turf/floor/winter", "/turf/floor/winter/grass", "/turf/floor/grass/jungle",
-          "/turf/floor/grass/jungle/savanna",
-          "/turf/floor/dirt/dust", "/turf/floor/dirt/jungledirt",
-          "/turf/floor/beach/sand", "/turf/floor/beach/sand/dark", "/turf/floor/beach/sand/desert"}
-ITEMS = {"/obj/item/weapon/pen", "/obj/item/weapon/paper", "/obj/item/weapon/flint",
-         "/obj/item/weapon/flint/sharpened", "/obj/item/weapon/material/hatchet",
-         "/obj/item/weapon/material/hatchet/tribal/flint", "/obj/item/weapon/material/pickaxe",
-         "/obj/item/weapon/material/pickaxe/stone"}
+SPECIAL = {"/obj/item/tape", "/obj/item/weapon/gun/projectile/automatic/stationary",
+           "/obj/effect/effect/smoke/bad", "/obj/covers", "/obj/structure/TV",
+           "/obj/structure/barricade", "/obj/structure/closet", "/obj/structure/simple_door",
+           "/obj/structure/grille", "/obj/structure/iv_drip", "/obj/structure/optable",
+           "/obj/structure/plant_pot", "/obj/structure/railing", "/obj/structure/bed",
+           "/obj/structure/table", "/obj/structure/window", "/obj/structure/barbwire",
+           "/obj/structure/vehicleparts/frame", "/obj/structure/lamp", "/obj/structure/props",
+           "/obj/structure/basketball_hoop", "/obj/structure/multiz"}
+
+
+def generic_object(path):
+    return (isinstance(path, str) and path.startswith('/obj/') and
+            not any(path == root or path.startswith(root + '/') for root in SPECIAL))
 LINKS = {"buckled", "riding", "riding_mob", "using_drone", "control_object",
          "incorporeal_move", "pulledby", "using_object", "using_cannon", "football"}
 RECIPROCAL = {"buckled_mob", "rider", "riding_mob", "pulledby", "pulling",
@@ -63,13 +67,13 @@ def supported(case):
         return False
     human_matches = 0
     for coordinate, cell in cells.items():
-        if cell.get("type") not in FLOORS or cell.get("density") != 0 or cell.get("transforming"):
+        if not cell.get("type", "").startswith('/turf/floor/') or cell.get("density") != 0 or cell.get("transforming"):
             return False
         for occupant in cell.get("occupants", []):
             if occupant.get("ref") == human and coordinate == (x, y, z):
                 human_matches += 1
                 continue
-            if (occupant.get("type") not in ITEMS or occupant.get("density") != 0
+            if (not generic_object(occupant.get("type")) or occupant.get("density") != 0
                     or not occupant.get("hooks_audited")):
                 return False
     return human_matches == 1

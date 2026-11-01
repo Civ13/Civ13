@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 import unittest
 
-from human_spatial_candidate_model import FLOORS, ITEMS, LINKS, supported
+from human_spatial_candidate_model import LINKS, SPECIAL, generic_object, supported
 
 
 def candidate():
@@ -35,9 +35,10 @@ class CandidateTests(unittest.TestCase):
         cell['occupants'][0]['density'] = 1
         self.assertFalse(supported(case))
 
-    def test_parent_subtypes_are_not_implicitly_trusted(self):
+    def test_special_roots_do_not_inherit_generic_profile(self):
         case = candidate()
         case['cells'][(2, 2, 1)]['type'] = '/turf/floor/winter/grass/unknown'
+        case['cells'][(2, 2, 1)]['density'] = 1
         self.assertFalse(supported(case))
         case = candidate()
         case['cells'][(2, 1, 1)]['occupants'][0]['type'] = '/obj/item/tape'
@@ -73,13 +74,15 @@ class CandidateTests(unittest.TestCase):
         self.assertIn("/obj/item/tape/CanPass(", tape)
         self.assertNotIn("/obj/item/tape", {item["type"] for cell in candidate()["cells"].values() for item in cell.get("occupants", []) if "type" in item})
 
-    def test_production_and_model_type_lists_match_exactly(self):
+    def test_production_special_roots_match_model(self):
         root = Path(__file__).resolve().parents[2]
         saving = (root / 'code/modules/persistence/saving.dm').read_text()
-        for proc, expected in [('human_spatial_audited_floor', FLOORS), ('human_spatial_audited_item', ITEMS)]:
-            body = saving.split('/proc/' + proc + '(path)', 1)[1].split('\n/proc/', 1)[0]
-            self.assertEqual(set(re.findall(r'/(?:turf|obj)/[A-Za-z0-9_/]+', body)), expected)
-            self.assertIn('return path in allowed', body)
+        body = saving.split('/proc/human_spatial_generic_object(path)', 1)[1].split('\n/proc/', 1)[0]
+        roots = set(re.findall(r'/obj/[A-Za-z0-9_/]+', body))
+        self.assertEqual(roots, SPECIAL)
+        self.assertTrue(generic_object('/obj/item/weapon/flint/sharpened'))
+        self.assertFalse(generic_object('/obj/item/tape'))
+        self.assertFalse(generic_object('/obj/structure/window'))
 
     def test_audited_item_chains_have_no_explicit_special_pass_or_load_hook(self):
         root = Path(__file__).resolve().parents[2]
@@ -87,7 +90,7 @@ class CandidateTests(unittest.TestCase):
         pattern = re.compile(r'(?m)^(/obj/item(?:/[A-Za-z0-9_]+)*)/(CanPass|after_load)\s*\(')
         for path in (root / 'code').rglob('*.dm'):
             overrides.extend(pattern.findall(path.read_text(encoding='utf-8', errors='replace')))
-        for item in ITEMS:
+        for item in ('/obj/item/weapon/pen', '/obj/item/weapon/flint', '/obj/item/weapon/material/hatchet'):
             relevant = {(owner, method) for owner, method in overrides if item == owner or item.startswith(owner + '/')}
             self.assertEqual(relevant, {('/obj/item', 'after_load')}, item)
 

@@ -9,12 +9,15 @@
 	var/tmp/datum/human_subtile_save_request/human_subtile_save_request
 	var/tmp/datum/save_export_frame/human_subtile_save_hook_frame
 	var/tmp/human_subtile_import_owned = FALSE
+	var/tmp/list/human_direct_preflight_position
 	var/tmp/human_subtile_offset_owned = FALSE
 	var/tmp/human_subtile_glide_owned = FALSE
 	var/tmp/human_subtile_previous_glide = 0
 	var/tmp/human_subtile_applied_glide = 0
 	var/tmp/client/human_subtile_visual_owner
 	var/list/human_subtile_position
+	// Absent in historical capsules. Only validated new captures may use 1.
+	var/human_subtile_restore_schema = 0
 
 /client
 	var/tmp/mob/living/human/human_subtile_visual_actor
@@ -555,10 +558,12 @@
 		return TRUE
 	if ((key == "step_x" || key == "step_y") && (human_subtile_import_owned || human_subtile_position))
 		return TRUE
-	return (key in list("human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner")) || ..()
+	return (key in list("human_subtile_enabled", "human_subtile_default_pending", "human_subtile_transaction", "human_subtile_pulse", "human_subtile_save_request", "human_subtile_save_hook_frame", "human_subtile_import_owned", "human_direct_preflight_position", "human_subtile_offset_owned", "human_subtile_glide_owned", "human_subtile_previous_glide", "human_subtile_applied_glide", "human_subtile_visual_owner")) || ..()
 
 // Entry ownership is decided BEFORE assignments, independent of field order.
 /mob/living/human/proc/human_subtile_prepare_import(savefile/F)
+	human_subtile_restore_schema = 0
+	human_direct_preflight_position = null
 	human_subtile_import_owned = ("human_subtile_position" in F.dir)
 	if (!human_subtile_import_owned)
 		human_subtile_position = null
@@ -612,8 +617,43 @@
 					return FALSE
 	return TRUE
 
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+/datum/human_restore_geometry_budget
+	should_save = FALSE
+	var/observed = 0
+
+// New-schema restore only. This read and the following assignment must not
+// yield or invoke collision callbacks. Turf contents include overhangers;
+// do not filter them to atoms whose anchor is this turf.
+/mob/living/human/proc/human_subtile_restore_hard_clear(list/S, datum/human_restore_geometry_budget/budget)
+	if(!budget) return FALSE
+	var/left = (S["x"] - 1) * 32 + S["sx"]
+	var/bottom = (S["y"] - 1) * 32 + S["sy"]
+	for(var/tx = S["x"], tx <= S["x"] + (S["sx"] > 0), tx++)
+		for(var/ty = S["y"], ty <= S["y"] + (S["sy"] > 0), ty++)
+			var/turf/T = locate(tx, ty, S["z"])
+			if(!T || T.density || T.vehicle_transforming) return FALSE
+			for(var/atom/movable/A in T)
+				if(++budget.observed > 128000) return FALSE
+				if(A == src || ismob(A)) continue
+				if(!isturf(A.loc) || !isnum(A.density) || !isnum(A.bound_x) || !isnum(A.bound_y) || !isnum(A.bound_width) || !isnum(A.bound_height) || !isnum(A.step_x) || !isnum(A.step_y) || A.bound_width < 0 || A.bound_height < 0) return FALSE
+				for(var/key in list("density", "bound_x", "bound_y", "bound_width", "bound_height", "step_x", "step_y"))
+					if(isnan(A.vars[key]) || isinf(A.vars[key])) return FALSE
+				if(!A.bound_width || !A.bound_height) continue
+				var/a_left = (A.x - 1) * 32 + A.step_x + A.bound_x
+				var/a_bottom = (A.y - 1) * 32 + A.step_y + A.bound_y
+				var/a_right = a_left + A.bound_width
+				var/a_top = a_bottom + A.bound_height
+				if(isnan(a_left) || isinf(a_left) || isnan(a_bottom) || isinf(a_bottom) || isnan(a_right) || isinf(a_right) || isnan(a_top) || isinf(a_top)) return FALSE
+				if(left >= a_right || a_left >= left + 32 || bottom >= a_top || a_bottom >= bottom + 32) continue
+				if(A.density || !human_spatial_generic_object(A.type)) return FALSE
+	return TRUE
+#endif
+
 /mob/living/human/after_load()
 	. = ..()
+	if(human_subtile_restore_schema && (!isnum(human_subtile_restore_schema) || human_subtile_restore_schema != 1 || !human_subtile_import_owned))
+		throw EXCEPTION("Unsupported human sub-tile restore schema")
 	if (!human_subtile_import_owned)
 		return
 	var/list/S = human_subtile_position
@@ -622,25 +662,42 @@
 	for (var/key in list("x", "y", "z", "sx", "sy"))
 		if (!(key in S) || !isnum(S[key]) || S[key] != round(S[key]))
 			throw EXCEPTION("Malformed sub-tile position field")
-	if (!human_subtile_shape() || !human_subtile_unlinked() || x != S["x"] || y != S["y"] || z != S["z"] || S["sx"] < 0 || S["sx"] >= 32 || S["sy"] < 0 || S["sy"] >= 32 || !human_subtile_destination_clear(S))
+	if (!human_subtile_shape() || !human_subtile_unlinked() || x != S["x"] || y != S["y"] || z != S["z"] || S["sx"] < 0 || S["sx"] >= 32 || S["sy"] < 0 || S["sy"] >= 32)
 		throw EXCEPTION("Sub-tile anchor or destination rejected")
-	var/datum/human_subtile_pulse/P = new
-	P.actor = src
-	P.destination = loc
-	P.direction = dir
-	P.sx = S["sx"]
-	P.sy = S["sy"]
-	P.before = human_subtile_snapshot()
-	P.restoring = TRUE
-	human_subtile_pulse = P
-	try
-		Move(loc, dir)
-	catch (var/exception/subtile_load_error)
+	if(human_subtile_restore_schema == 1)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		var/datum/persistence_world_operation/operation = persistence_active_operation
+		var/datum/human_restore_geometry_budget/budget = new
+		if(!operation || !operation.current(map_storage, "load") || !operation.mutation_started || !operation.human_direct_preflight_generation || !human_subtile_same(S, human_direct_preflight_position) || !persistence_save_in_progress || operation.human_direct_restores.len >= 8192 || !human_subtile_restore_hard_clear(S, budget))
+			throw EXCEPTION("Human direct restore lacks an owned clear destination")
+		step_x = S["sx"]
+		step_y = S["sy"]
+		if(!human_subtile_same(S, human_subtile_snapshot())) throw EXCEPTION("Human direct restore did not retain its exact position")
+		operation.human_direct_restores += list(list("actor" = src, "position" = S.Copy()))
+		human_subtile_restore_schema = 0
+		human_direct_preflight_position = null
+#else
+		throw EXCEPTION("Human direct restore is unavailable")
+#endif
+	else
+		if(!human_subtile_destination_clear(S)) throw EXCEPTION("Sub-tile anchor or destination rejected")
+		var/datum/human_subtile_pulse/P = new
+		P.actor = src
+		P.destination = loc
+		P.direction = dir
+		P.sx = S["sx"]
+		P.sy = S["sy"]
+		P.before = human_subtile_snapshot()
+		P.restoring = TRUE
+		human_subtile_pulse = P
+		try
+			Move(loc, dir)
+		catch (var/exception/subtile_load_error)
+			human_subtile_pulse = null
+			throw subtile_load_error
 		human_subtile_pulse = null
-		throw subtile_load_error
-	human_subtile_pulse = null
-	if (P.invalid || !human_subtile_same(S, human_subtile_snapshot()))
-		throw EXCEPTION("Native sub-tile placement did not reach saved position")
+		if (P.invalid || !human_subtile_same(S, human_subtile_snapshot()))
+			throw EXCEPTION("Native sub-tile placement did not reach saved position")
 	human_subtile_offset_owned = TRUE
 	human_subtile_import_owned = FALSE
 	living_movement_completed()

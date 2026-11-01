@@ -510,15 +510,6 @@ var/global/persistence_startup_recovery_status
 // operation completes before a waiting gameplay action wakes.
 var/global/datum/persistence_admission_identity
 
-#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-// Never blocks a player. Changes after roster sealing make this candidate
-// unpublishable until late enrollment and account ownership are proven.
-/proc/persistence_note_human_roster_change()
-	var/datum/persistence_world_operation/operation = persistence_active_operation
-	if(operation && operation.kind == "save" && operation.human_roster_sealed)
-		operation.human_roster_changed = TRUE
-#endif
-
 /proc/persistence_save_active()
 	return persistence_active_operation && persistence_active_operation.kind == "save"
 
@@ -603,8 +594,17 @@ var/global/datum/persistence_admission_identity
 	var/human_roster_changed = FALSE
 	var/list/human_initial_roster
 	var/list/human_roster_records
+	var/list/human_spatial_footprints = list()
+	// Counts additional requested fields and sidecar records; not byte or time measurements.
+	var/human_geometry_turf_records = 0
+	var/human_geometry_object_records = 0
+	var/human_geometry_added_fields = 0
 	// Proof concerns saved candidate ownership, not transient live history.
 	var/human_containment_coverage_complete = FALSE
+	// Only successful load preflight can bind direct capsules to a generation.
+	var/human_direct_preflight_generation
+	var/list/human_direct_preflight_records = list()
+	var/list/human_direct_restores = list()
 #endif
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	var/list/human_spatial_requests = list()
@@ -618,6 +618,7 @@ var/global/datum/persistence_admission_identity
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		human_initial_roster = null
 		human_roster_records = null
+		human_spatial_footprints = list()
 #endif
 		for(var/datum/human_subtile_save_request/request in owned)
 			if(request && request.operation == src)
@@ -626,14 +627,24 @@ var/global/datum/persistence_admission_identity
 				catch(var/exception/release_error)
 					world.log << "Human save request cleanup failed: [release_error]"
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
-	// The proof concerns the encoded candidate, not an atomic world snapshot.
-	// Unknown containment/control states remain refused by the checks below.
+	// Run after all restore callbacks, under the same operation. No yield is
+	// allowed between checking the restored static geometry and releasing it.
+	proc/validate_human_direct_restores()
+		if(!current(storage, "load") || !human_direct_preflight_generation || human_direct_restores.len > 8192) throw EXCEPTION("Human final geometry lacks its load owner")
+		var/datum/human_restore_geometry_budget/budget = new
+		for(var/list/record in human_direct_restores)
+			var/mob/living/human/H = record["actor"]
+			var/list/position = record["position"]
+			if(!H || isDeleted(H) || !islist(position) || !H.human_subtile_restore_hard_clear(position, budget)) throw EXCEPTION("Human final restored geometry is blocked")
+		return TRUE
+
+	// The proof concerns completed candidate entries, not later live state.
 	proc/seal_human_containment_proof()
 		human_containment_coverage_complete = FALSE
 		if(!current(storage, "save") || human_roster_changed || !islist(human_roster_records)) throw EXCEPTION("Human roster proof has no stable owner")
 		var/list/owned = list()
 		for(var/datum/human_subtile_save_request/request in human_spatial_requests)
-			if(!request || request.operation != src || !request.actor || !request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
+			if(!request || request.operation != src || !request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
 				throw EXCEPTION("Human roster proof lacks an encoded check")
 			var/key = "\ref[request]"
 			if(owned[key]) throw EXCEPTION("Human roster request is duplicated")
@@ -642,13 +653,16 @@ var/global/datum/persistence_admission_identity
 		for(var/identity in human_roster_records)
 			var/list/record = human_roster_records[identity]
 			var/mob/living/human/H = record["atom"]
-			if(!H || isDeleted(H) || storage.save_entry_identity(H) != identity || !!H.should_save != record["saveable"])
-				throw EXCEPTION("Human roster identity or classification changed")
-			if(record["saveable"])
+			if(!record["mode"])
+				if(record["initial"] && H && !isDeleted(H) && H.should_save) throw EXCEPTION("Initial human was not represented in the candidate")
+			else if(record["mode"] == "legacy")
+				if(!record["ref"] || !record["parent_attached"]) throw EXCEPTION("Legacy human candidate lacks a saved parent")
+			else if(record["mode"] == "spatial")
 				var/datum/human_subtile_save_request/request = record["request"]
-				if(!isturf(H.loc) || !H.human_subtile_unlinked() || H.pulling || subtile_pull_ownership.owners[H] || !request || owned["\ref[request]"] != request || request.actor != H || request.saved_ref != record["ref"] || request.origin != record["origin"])
-					throw EXCEPTION("Human roster has unsupported containment or control")
+				if(!request || owned["\ref[request]"] != request || request.saved_ref != record["ref"] || !record["ref"]) throw EXCEPTION("Human spatial candidate lacks its request")
 				matched++
+			else
+				throw EXCEPTION("Human roster has an unknown capture mode")
 			storage.save_work_check()
 		if(matched != human_spatial_requests.len || human_roster_changed || !current(storage, "save")) throw EXCEPTION("Human roster proof changed before completion")
 		human_containment_coverage_complete = TRUE
@@ -659,18 +673,10 @@ var/global/datum/persistence_admission_identity
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 		if(human_roster_changed) throw EXCEPTION("Human roster changed during capture")
 		if(!islist(human_roster_records)) throw EXCEPTION("Human roster coverage is unavailable")
-		for(var/identity in human_roster_records)
-			var/list/record = human_roster_records[identity]
-			var/mob/living/human/H = record["atom"]
-			if(!H || isDeleted(H) || storage.save_entry_identity(H) != identity || !!H.should_save != record["saveable"])
-				throw EXCEPTION("Human roster classification changed")
-			if(record["saveable"])
-				var/datum/human_subtile_save_request/request = record["request"]
-				if(!isturf(H.loc) || !H.human_subtile_unlinked() || H.pulling || subtile_pull_ownership.owners[H] || !request || request.actor != H || request.operation != src || !human_containment_coverage_complete)
-					throw EXCEPTION("Human roster capture or containment proof is incomplete")
+		if(!human_containment_coverage_complete) throw EXCEPTION("Human roster capture or containment proof is incomplete")
 #endif
 		for(var/datum/human_subtile_save_request/request in human_spatial_requests)
-			if(!request || request.operation != src || !request.actor || request.actor.human_subtile_save_request != request || !request.captured || !islist(request.position) || !human_subtile_same(request.position, request.position))
+			if(!request || request.operation != src || !request.captured || !islist(request.position) || !human_subtile_same(request.position, request.position))
 				throw EXCEPTION("Human spatial request was not captured")
 			if(!request.serialized || !request.spatial_attached || !request.encoded_origin_checked || !request.encoded_present_slots_checked || !request.reciprocal_links_checked || !request.encoded_geometry_checked || !request.encoded_links_checked)
 				throw EXCEPTION("Human spatial candidate validation is incomplete")
@@ -736,7 +742,22 @@ var/global/datum/persistence_admission_identity
 /map_storage/proc/run_world_operation(kind, datum/persistence_world_operation/operation)
 	var/owns_operation = !operation
 	if(owns_operation) operation = begin_persistence_operation(src, kind)
-	if(!operation || !operation.enter_backend(src, kind)) return FALSE
+	if(!operation) return FALSE
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	// Direct imports must establish the same source proof before mutation as the
+	// ticker wrapper. Historical formats remain subject to existing validation.
+	if(owns_operation && kind == "load")
+		try
+			if(!prepare_saved_dimensions(null, operation) || !validate_world_save())
+				cleanup_world_operation()
+				operation.withdraw()
+				return FALSE
+		catch(var/exception/direct_preflight_error)
+			cleanup_world_operation()
+			operation.withdraw()
+			throw direct_preflight_error
+#endif
+	if(!operation.enter_backend(src, kind)) return FALSE
 	// A busy/rejected request must not erase the active save's failure context.
 	if(kind == "save") last_save_reference_failure = null
 #ifdef CIV13_VARIABLE_OBSERVABILITY
@@ -746,6 +767,9 @@ var/global/datum/persistence_admission_identity
 	try
 		if(kind == "save") success = save_world_contents(operation)
 		else success = load_world_contents(operation)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(owns_operation && kind == "load" && success && operation.human_direct_restores.len) operation.validate_human_direct_restores()
+#endif
 	catch(var/exception/e)
 		if(kind == "save") record_save_outcome(FALSE)
 		if(owns_operation)
@@ -958,12 +982,18 @@ var/global/datum/persistence_admission_identity
 			release_attempted = TRUE
 			if(attempt.release_transients() != TRUE)
 				throw EXCEPTION("Restore transient release rejected")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(operation.human_direct_restores.len) operation.validate_human_direct_restores()
+#endif
 		if(!transaction)
 			phase = "players"
 			operation.diagnostic_phase = "players"
 			operation.restoring_players = TRUE
 			if(!storage.finish_player_restoration())
 				throw EXCEPTION("Player restoration readiness was not confirmed")
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(operation.human_direct_restores.len) operation.validate_human_direct_restores()
+#endif
 		log_startup_progress("\tLoaded the map in [stop_watch(watch)]s.")
 	catch(var/exception/e)
 		var/primary_failure = "[e] on [e.file]:[e.line]"
@@ -1101,6 +1131,9 @@ var/global/datum/persistence_admission_identity
 	var/list/declared_seen = list()
 	var/declared_cursor = 1
 	var/list/tickets = list()
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	var/human_legacy_aligned = FALSE
+#endif
 #ifdef CIV13_HUMAN_SUBTILE_CAPTURE_SOURCE
 	// Only a validated human save request may install these frame-local values.
 	var/datum/human_subtile_save_request/human_spatial_request
@@ -1191,9 +1224,13 @@ var/global/datum/persistence_admission_identity
 	var/datum/child = saving_reference_pins[ref]
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 	var/list/human_root = child ? human_save_roots[save_entry_identity(child)] : null
-	if(human_root && human_root["ref"] == ref && frame.source != human_root["origin"])
+	if(human_root && human_root["mode"] == "spatial" && human_root["ref"] == ref && frame.source != human_root["origin"])
 		if(!isturf(frame.source)) throw EXCEPTION("Human save root entered a captured container")
 		return // The saved origin receives the only spatial edge during drain.
+	if(human_root && human_root["mode"] == "legacy" && human_root["ref"] == ref)
+		var/atom/legacy_parent = human_root["origin"]
+		if(!legacy_parent || isDeleted(legacy_parent) || save_entry_identity(legacy_parent) != human_root["origin_identity"] || legacy_parent.z != human_root["z"]) throw EXCEPTION("Legacy human captured parent changed")
+		if(frame.source != legacy_parent) return // Drain attaches the captured parent.
 #endif
 	var/list/moving_root = child ? moving_save_roots["\ref[child]"] : null
 	if(moving_root && moving_root["ref"] == ref && frame.source != moving_root["origin"])
@@ -1202,8 +1239,15 @@ var/global/datum/persistence_admission_identity
 	var/key = "[ref]"
 	// Keep the first captured edge if a completed child later moves.
 	var/owner = saving_content_owners[key]
-	if(owner && owner != frame.entry) return
+	if(owner && owner != frame.entry)
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+		if(human_root && human_root["mode"] == "legacy") human_root["parent_attached"] = TRUE
+#endif
+		return
 	saving_content_owners[key] = frame.entry
+#ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
+	if(human_root && human_root["mode"] == "legacy") human_root["parent_attached"] = TRUE
+#endif
 	if(!frame.content_seen[key])
 		frame.content_seen[key] = TRUE
 		frame.content_refs += key

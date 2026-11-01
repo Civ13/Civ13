@@ -18,8 +18,9 @@ class StageChecks(unittest.TestCase):
 
     def test_stage_has_fixed_candidate_paths_and_no_native_launch(self):
         source = (HERE / 'human_spatial_stage.py').read_text()
-        self.assertEqual(len(stage.OVERLAY), 7)
-        self.assertEqual(len(set(stage.OVERLAY)), 7)
+        self.assertEqual(len(stage.OVERLAY), 8)
+        self.assertEqual(len(set(stage.OVERLAY)), 8)
+        self.assertIn('code/modules/persistence/loading.dm', stage.OVERLAY)
         self.assertTrue(all(not p.startswith('/') and '..' not in p.split('/') for p in stage.OVERLAY))
         self.assertIn("native_runner='requires separate approval'", source)
         self.assertNotIn('subprocess.', source)
@@ -33,7 +34,10 @@ class StageChecks(unittest.TestCase):
                          'persistence_restored_bodies["syntheticfixture"]',
                          'H.type == /mob/living/human', 'fixture_nested_item_or_slot',
                          'fixture_exact_frozen_capsule', 'fixture_restart_owner',
-                         'fixture_audited_floor_and_tool'):
+                         'fixture_audited_floor_and_tool', 'fixture_second_body_position',
+                         'fixture_restore_callbacks', 'fixture_legacy_parent_and_link',
+                         'fixture_late_exact_capsule', 'fixture_late_walk_did_not_continue',
+                         'fixture_seated_did_not_move', 'fixture_seated_reference_first'):
             self.assertIn(evidence, probe)
 
     def test_drag_authority_seam_is_scoped_to_fixture_actor(self):
@@ -46,6 +50,17 @@ class StageChecks(unittest.TestCase):
         probe = (HERE / 'human_spatial_probe.dm').read_text()
         self.assertIn('fixture_unadapted_headless_control', probe)
         self.assertIn('human_spatial_fixture_drag_actor = H', probe)
+
+    def test_late_fixture_witness_runs_inside_owned_save_and_counts_both_actors(self):
+        staged = (HERE / 'human_spatial_stage.py').read_text()
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        self.assertIn('actor == human_spatial_fixture_late_actor && human_spatial_fixture_late_capsule && persistence_save_in_progress', staged)
+        self.assertIn('actor.persistence_owner_ckey == "syntheticfixture"', staged)
+        self.assertIn('human_spatial_fixture_wait_late_pulse()', staged)
+        self.assertIn('human_spatial_fixture_restore_living == 2', probe)
+        self.assertIn('human_spatial_fixture_restore_human == 2', probe)
+        self.assertIn('geometry_metrics', probe)
+        self.assertIn('human_spatial_fixture_move_saved_seated(A)', staged)
 
 
 if __name__ == '__main__':
