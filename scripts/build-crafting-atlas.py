@@ -103,7 +103,7 @@ for p,s in files.items():
             joint=joinery.get(n)
             tool_notes=''
             if b.endswith('/fired/sandstone') and b.startswith('/obj/item/weapon/clay/mold/'):
-                tool_notes+=' Carved sandstone casting mold: chisel and hammer/mallet equipped or at your feet; tools reused and rechecked after carving. Ready without firing. Pour from a fired clay blacksmith pot/jug, then use the filled mold on an anvil. Sandstone availability depends on the map; clay recipes remain available.'
+                tool_notes+=' Chisel + hammer/mallet equipped/at feet; reused/rechecked. Ready without firing. From fired clay blacksmith pot/jug to anvil.'
             if b == '/obj/structure/grinder/constructed':
                 tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
             if n.startswith('joinery: '):
