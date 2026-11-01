@@ -25,6 +25,10 @@ on:
         description: 'Run the separately reviewed synthetic human scale comparison only'
         type: boolean
         default: false
+      lighting_interleave_only:
+        description: 'Run the separately reviewed synthetic lighting interleaving fixture only'
+        type: boolean
+        default: false
       reviewed_head:
         description: 'Full independently reviewed commit SHA (required for human fixture)'
         type: string
@@ -37,7 +41,7 @@ permissions:
   contents: read
 jobs:
   isolated-native:
-    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true) }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -89,8 +93,88 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+  lighting-interleave:
+    # Conflicting manual-only selectors fail before provisioning or native work.
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.lighting_interleave_only == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify reviewed fixture and offline controls
+        env:
+          REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+          REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+          EVENT_HEAD: ${{ github.sha }}
+          SPATIAL_ONLY: ${{ inputs.human_spatial_only }}
+          SCALE_ONLY: ${{ inputs.human_scale_only }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lighting-interleave-meta"
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/lighting-interleave-meta/preflight.json"' EXIT
+          test "$SPATIAL_ONLY" != true
+          test "$SCALE_ONLY" != true
+          [[ "$REVIEWED_HEAD" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$REVIEWED_SCOPE" =~ ^[0-9a-f]{64}$ ]]
+          test "$REVIEWED_HEAD" = "$EVENT_HEAD"
+          test "$(git rev-parse HEAD)" = "$REVIEWED_HEAD"
+          git diff --quiet HEAD --
+          git diff --cached --quiet
+          python3 -B -c 'import os,sys; sys.path.insert(0,"tests/world_save"); import lighting_interleave_run as r; r.verify(os.environ["REVIEWED_HEAD"],os.environ["REVIEWED_SCOPE"]); r.scale.free_space(os.environ["RUNNER_TEMP"], r.scale.MIN_FREE_START)'
+          python3 -B -m unittest discover -s tests/world_save -p 'test_lighting_interleave_*.py' -v
+          python3 -B -m unittest discover -s tests/world_save -p 'test_restore_integration_sources.py' -v
+      - name: Provision pinned runtime without compiling the game
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/lighting-interleave-meta/bootstrap.json"' EXIT
+          test "$(python3 scripts/byond_toolchain.py field version)" = 516.1688
+          sudo timeout -k 5 30 dpkg --add-architecture i386
+          apt_acquire=(-o Acquire::Retries=2 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 120 apt-get "${apt_acquire[@]}" update
+          sudo env DEBIAN_FRONTEND=noninteractive timeout -k 5 180 apt-get "${apt_acquire[@]}" install -y --no-install-recommends python3 wget git unzip make sudo libstdc++6:i386 libgcc-s1:i386 libc6-i386 libcurl4:i386 lib32z1 libncurses6 libncurses6:i386
+          mkdir BYOND
+          timeout -k 5 65 python3 -B scripts/byond_toolchain.py download --platform linux --output BYOND/pinned.zip --source repository-release > "$RUNNER_TEMP/lighting-interleave-meta/byond-download.json"
+          timeout -k 5 30 unzip -q BYOND/pinned.zip -d BYOND
+          test -x BYOND/byond/bin/DreamMaker
+          test -x BYOND/byond/bin/DreamDaemon
+          python3 -B scripts/byond_runtime.py --byond-bin "$PWD/BYOND/byond/bin" --byond-archive "$PWD/BYOND/pinned.zip" > "$RUNNER_TEMP/lighting-interleave-meta/byond-runtime.json"
+      - name: Run one bounded synthetic lighting fixture
+        timeout-minutes: 8
+        env:
+          REVIEWED_HEAD: ${{ inputs.reviewed_head }}
+          REVIEWED_SCOPE: ${{ inputs.reviewed_scope_sha256 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap 'code=$?; printf "{\"exit_code\":%s}\n" "$code" > "$RUNNER_TEMP/lighting-interleave-meta/fixture.json"' EXIT
+          python3 -B tests/world_save/lighting_interleave_run.py --run-native \
+            --expected-head "$REVIEWED_HEAD" --expected-scope-sha256 "$REVIEWED_SCOPE" \
+            --output "$RUNNER_TEMP/lighting-interleave-evidence"
+      - name: Retain synthetic receipts and diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lighting-interleave-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/lighting-interleave-meta/*.json
+            ${{ runner.temp }}/lighting-interleave-evidence/*.json
+            ${{ runner.temp }}/lighting-interleave-evidence/stage/compile-*.log
+            ${{ runner.temp }}/lighting-interleave-evidence/stage/compile-supervision.json
+            ${{ runner.temp }}/lighting-interleave-evidence/writer/*.json
+            ${{ runner.temp }}/lighting-interleave-evidence/writer/*.log
+            ${{ runner.temp }}/lighting-interleave-evidence/reader/*.json
+            ${{ runner.temp }}/lighting-interleave-evidence/reader/*.log
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
   human-spatial:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true && inputs.human_scale_only != true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_spatial_only == true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -163,7 +247,7 @@ jobs:
           retention-days: 7
   human-scale:
     # If both exclusive inputs are true this job fails explicitly before staging.
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_scale_only == true }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.human_scale_only == true && inputs.lighting_interleave_only != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:

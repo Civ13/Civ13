@@ -8,11 +8,12 @@ ROOT = Path(__file__).resolve().parents[2]
 class ScaleWorkflowContracts(unittest.TestCase):
     def test_scale_is_manual_exclusive_and_bounded(self):
         text = (ROOT / '.github/workflows/moving-save-chunks.yml').read_text()
-        self.assertIn("github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true)", text)
+        self.assertIn("github.event_name != 'workflow_dispatch' || (inputs.human_spatial_only != true && inputs.human_scale_only != true && inputs.lighting_interleave_only != true)", text)
         spatial = text.split('  human-spatial:\n', 1)[1].split('  human-scale:\n', 1)[0]
         scale = text.split('  human-scale:\n', 1)[1]
         self.assertIn('inputs.human_scale_only != true', spatial)
         self.assertIn("github.event_name == 'workflow_dispatch' && inputs.human_scale_only == true", scale)
+        self.assertIn('inputs.lighting_interleave_only != true', scale)
         self.assertIn('test "$SPATIAL_ONLY" != true', scale)
         self.assertLess(scale.index('test "$SPATIAL_ONLY" != true'), scale.index('bash scripts/travis_pre_byond.sh'))
         self.assertIn('timeout-minutes: 90', scale)

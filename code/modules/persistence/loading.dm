@@ -486,10 +486,15 @@
 			if (surface_inventory && !surface_inventory.feed_loaded_level(B, all_loaded)) throw EXCEPTION("Surface world identity inventory requires recovery")
 			// Constructors see defaults before saved fields/contents are restored.
 			// Rebuild obstruction caches before queuing any final source updates.
-			for(var/turf/light_turf in all_loaded)
-				light_turf.recalc_atom_opacity()
-			for(var/atom/light_owner in all_loaded)
-				light_owner.update_light()
+			var/list/lighting_entries = all_loaded
+			for(var/turf/light_turf in lighting_entries)
+				if(!QDELETED(light_turf) && !light_turf.gcDestroyed) light_turf.recalc_atom_opacity()
+				if(TICK_CHECK)
+					if(!operation.current(src, "load") || all_loaded != lighting_entries || loading_z != B) throw EXCEPTION("Load ownership changed during lighting restoration")
+			for(var/atom/light_owner in lighting_entries)
+				if(!QDELETED(light_owner) && !light_owner.gcDestroyed) light_owner.update_light()
+				if(TICK_CHECK)
+					if(!operation.current(src, "load") || all_loaded != lighting_entries || loading_z != B) throw EXCEPTION("Load ownership changed during lighting restoration")
 			log_startup_progress("	Loaded z-level [B] in [stop_watch(watch)]s.")
 		catch(var/exception/e)
 			if (surface_inventory) surface_inventory.discovery_fail()
