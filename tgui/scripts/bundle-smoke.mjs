@@ -15,6 +15,54 @@ assert.ok(classicMarkup.includes('Common (:c)'));
 assert.ok(classicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;'));
 assert.ok(!classicMarkup.includes('<script>'));
 assert.ok(renderClassicLanguages({ languages: [], current_default: '' }, {}, {}).includes('No known languages are available.'));
+// Exercise the actual retained NanoUI compiler and this reader's fallback.
+const shipClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', shipClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), shipClassicContext);
+const renderShipClassic = shipClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/ship_stocks.tmpl', import.meta.url), 'utf8'));
+const shipClassicMarkup = renderShipClassic({ stocks: [
+  { label: 'Wood', amount: 0, unit: 'logs' }, { label: 'Water', amount: 12.5, unit: 'units' },
+  { label: '<script>fictional</script>', amount: '<img src=x>', unit: '<b>units</b>' },
+] }, {}, {});
+assert.ok(shipClassicMarkup.includes('>0 logs<'));
+assert.ok(shipClassicMarkup.includes('>12.5 units<'));
+assert.ok(shipClassicMarkup.includes('&#60;script&#62;fictional'));
+assert.ok(!shipClassicMarkup.includes('<script>'));
+assert.ok(!shipClassicMarkup.includes('<img'));
+assert.ok(!shipClassicMarkup.includes('<b>'));
+assert.ok(renderShipClassic({ stocks: [] }, {}, {}).includes('No stock snapshot is available.'));
+// Compile the actual retained template; this is an offline fallback fixture.
+const religionClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', religionClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), religionClassicContext);
+const renderReligionClassic = religionClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/religion_list.tmpl', import.meta.url), 'utf8'));
+const religionClassicMarkup = renderReligionClassic({ religions: [
+  { name: 'First', points: 0 }, { name: 'Second', points: -2 }, { name: 'Third', points: 12.5 },
+  { name: '&lt;script&gt;fictional&lt;/script&gt;', points: '<img src=x>' },
+] }, {}, {});
+assert.ok(religionClassicMarkup.indexOf('First') < religionClassicMarkup.indexOf('Second'));
+assert.ok(religionClassicMarkup.includes('>0</td>'));
+assert.ok(religionClassicMarkup.includes('>-2</td>'));
+assert.ok(religionClassicMarkup.includes('>12.5</td>'));
+assert.ok(religionClassicMarkup.includes('&lt;script&gt;fictional&lt;/script&gt;'));
+assert.ok(!religionClassicMarkup.includes('<script>'));
+assert.ok(!religionClassicMarkup.includes('<img'));
+assert.ok(renderReligionClassic({ religions: [] }, {}, {}).includes('No religions have been founded.'));
+const crewClassicContext = vm.createContext({ module: { exports: {} } });
+vm.runInContext('Object.size = value => Object.keys(value).length;', crewClassicContext);
+vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), crewClassicContext);
+const renderCrewClassic = crewClassicContext.module.exports.template(readFileSync(new URL('../../UI/templates/crew_log.tmpl', import.meta.url), 'utf8'));
+const crewClassicMarkup = renderCrewClassic({ crew: [
+  { name: 'Masked sailor', job: 'Sailor' }, { name: 'NPC doctor', job: 'Doctor' },
+  { name: 'Unassigned', job: '' }, { name: '&lt;img src=x&gt;', job: '&lt;script&gt;inert&lt;/script&gt;' },
+] }, {}, {});
+assert.ok(crewClassicMarkup.indexOf('Masked sailor') < crewClassicMarkup.indexOf('NPC doctor'));
+assert.ok(crewClassicMarkup.includes('&lt;img src=x&gt;'));
+assert.ok(crewClassicMarkup.includes('&lt;script&gt;inert&lt;/script&gt;'));
+assert.ok(!crewClassicMarkup.includes('<img'));
+assert.ok(!crewClassicMarkup.includes('<script>'));
+assert.ok(!crewClassicMarkup.includes('null'));
+assert.ok(renderCrewClassic({ crew: [] }, {}, {}).includes('No crew are listed.'));
 const factionClassic = vm.createContext({ module: { exports: {} } });
 vm.runInContext('Object.size = value => Object.keys(value).length;', factionClassic);
 vm.runInContext(readFileSync(new URL('../../UI/js/libraries/doT.js', import.meta.url), 'utf8'), factionClassic);
@@ -77,6 +125,32 @@ try {
   assert.ok(w.document.body.textContent.includes('<script>fictional</script>'));
   assert.equal(w.document.querySelectorAll('li[aria-current="true"]').length, 1);
   assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  await update('ship_stocks.tmpl', { stocks: [
+    { label: 'Treasury', amount: 125, unit: 'reales' },
+    { label: 'Wood', amount: 0, unit: 'logs' },
+    { label: 'Water', amount: 12.5, unit: 'units' },
+  ] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Ship stocks"] tbody tr').length, 3);
+  assert.ok(w.document.body.textContent.includes('0 logs'));
+  assert.ok(w.document.body.textContent.includes('12.5 units'));
+  assert.ok(w.document.body.textContent.includes('Use the book again to refresh.'));
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
+  await update('religion_list.tmpl', { religions: [
+    { name: 'Fictional zero', points: 0 }, { name: 'Fictional fractional', points: 12.5 },
+    { name: '&lt;script&gt;inert&lt;/script&gt;', points: -2 },
+  ] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Religion list"] tbody tr').length, 3);
+  assert.ok(w.document.body.textContent.includes('Fictional zero'));
+  assert.ok(w.document.body.textContent.includes('12.5'));
+  assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
+  await update('crew_log.tmpl', { crew: [{ name: 'Fictional sailor', job: 'Sailor' }, { name: '&lt;script&gt;inert&lt;/script&gt;', job: '' }] }, 1);
+  assert.equal(w.document.querySelectorAll('table[aria-label="Crew log"] tbody tr').length, 2);
+  assert.ok(w.document.body.textContent.includes('Fictional sailor'));
+  assert.ok(w.document.body.textContent.includes('<script>inert</script>'));
+  assert.equal(w.document.querySelectorAll('script:not([src])').length, 0);
+  assert.equal(w.document.querySelectorAll('table button,table a').length, 0);
   await update('faction_list.tmpl', { factions: factionFixture }, 1);
   assert.equal(w.document.querySelectorAll('table[aria-label="Faction list"] tbody tr').length, 4);
   assert.equal(w.document.querySelectorAll('table img').length, 2);
@@ -88,5 +162,5 @@ try {
   assert.equal(w.document.querySelectorAll('table img').length, 0);
   click('Classic interface'); assert.equal(messages.at(-1).type, 'fallback');
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: real bootstrap/production bundle, original ten routes, Known Languages and Faction List, both classic fixtures, ready/snapshot/ack, stale generation, action guards, safe text and fallback\\n");
+  process.stdout.write("PASS: production bundle and all 15 registered routes, retained classic fixtures, handshake/action/text/fallback contracts\n");
 } finally { w.close(); }
