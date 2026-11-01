@@ -560,32 +560,43 @@
 	anchored = TRUE
 
 	attack_hand(mob/living/human/H)
-		var/tres = tally_treasure()
-		var/mats = tally_materials()
-		var/mats_cloth = mats["cloth"]
-		var/mats_wood = mats["wood"]
-		var/mats_rope = mats["rope"]
-		var/food = tally_food()
-		var/mats_food = food["food"]
-		var/mats_water = food["water"]
-		var/wep = tally_weapons()
-		var/mats_cannon = wep["cannonballs"]
-		var/mats_musket = wep["musket"]
-		var/mats_pistol = wep["pistol"]
-		var/mats_blunderbuss = wep["blunderbuss"]
+		ui_interact(H)
 
-		var/dat = "<h1>SHIP STOCKS</h1>"
-		dat += "<b>Treasury:</b> [tres] reales<br>"
-		dat += "<b>Wood:</b> [mats_wood] logs<br>"
-		dat += "<b>Cloth:</b> [mats_cloth] sheets<br>"
-		dat += "<b>Rope:</b> [mats_rope] coils<br>"
-		dat += "<b>Food:</b> [mats_food] doses<br>"
-		dat += "<b>Water:</b> [mats_water] units<br>"
-		dat += "<b>Cannon Ammo:</b> [mats_cannon] balls<br>"
-		dat += "<b>Musket Ammo:</b> [mats_musket] projectiles<br>"
-		dat += "<b>Pistol Ammo:</b> [mats_pistol] projectiles<br>"
-		dat += "<b>Blunderbuss Ammo:</b> [mats_blunderbuss] projectiles<br>"
-		H << browse(dat, "window=Ship Stocks")
+	ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+		if (!ishuman(user) || !user.client)
+			if (ui)
+				ui.close()
+			return
+		// Preserve the old reader's snapshot until the book is used again.
+		// Manager refreshes must not rescan distant storage or poll the world.
+		if (ui)
+			ui.push_data(null, TRUE)
+			return
+		if (default_state.can_use_topic(src, user) != STATUS_INTERACTIVE)
+			return
+
+		var/list/mats = tally_materials()
+		var/list/food = tally_food()
+		var/list/wep = tally_weapons()
+		var/list/data = list("stocks" = list(
+			list("label" = "Treasury", "amount" = tally_treasure(), "unit" = "reales"),
+			list("label" = "Wood", "amount" = mats["wood"], "unit" = "logs"),
+			list("label" = "Cloth", "amount" = mats["cloth"], "unit" = "sheets"),
+			list("label" = "Rope", "amount" = mats["rope"], "unit" = "coils"),
+			list("label" = "Food", "amount" = food["food"], "unit" = "doses"),
+			list("label" = "Water", "amount" = food["water"], "unit" = "units"),
+			list("label" = "Cannon Ammo", "amount" = wep["cannonballs"], "unit" = "balls"),
+			list("label" = "Musket Ammo", "amount" = wep["musket"], "unit" = "projectiles"),
+			list("label" = "Pistol Ammo", "amount" = wep["pistol"], "unit" = "projectiles"),
+			list("label" = "Blunderbuss Ammo", "amount" = wep["blunderbuss"], "unit" = "projectiles")))
+		ui = GLOB.nanomanager.try_update_ui(user, src, ui_key, null, data, TRUE)
+		if (!ui)
+			var/datum/topic_state/ship_stocks/reader_state = new(src, user)
+			ui = new /datum/nanoui/tgui(user, src, ui_key, "ship_stocks.tmpl", "Ship Stocks", 500, 520, _state = reader_state)
+			ui.set_initial_data(data)
+			ui.use_on_close_logic(FALSE)
+			ui.open()
+
 	proc/tally_treasure()
 		var/tally = 0
 		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/upper/inside/treasury)
@@ -657,6 +668,22 @@
 			for(var/obj/item/cannon_ball/CB in sel_turf)
 				tally["cannonballs"]++
 		return tally
+
+// A detached ledger snapshot can stay readable while walking, but cannot be
+// used by a transferred body or forward actions through either renderer.
+/datum/topic_state/ship_stocks
+	var/obj/structure/voyage/quartermaster_book/book
+	var/mob/reader
+
+/datum/topic_state/ship_stocks/New(var/obj/structure/voyage/quartermaster_book/new_book, var/mob/new_reader)
+	..()
+	book = new_book
+	reader = new_reader
+
+/datum/topic_state/ship_stocks/can_use_topic(var/src_object, var/mob/user)
+	if (src_object != book || user != reader || !ishuman(user) || !user.client)
+		return STATUS_CLOSE
+	return STATUS_UPDATE
 
 /obj/structure/voyage/sextant
 	name = "sextant"
