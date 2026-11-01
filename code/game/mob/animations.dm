@@ -237,12 +237,12 @@ note dizziness decrements automatically in the mob's Life() proc.
 	active_tool = user.get_active_hand() == tool
 	expires = world.time + duration
 	spawn(0)
-		run()
+		animate_work_images()
 
 /datum/resource_work_animation/proc/valid(require_wait = TRUE)
 	return running && actor && !actor.gcDestroyed && !actor.gc_destroyed && !actor.stat && !actor.incapacitated() && actor.client == controller && (!controller || controller.mob == actor) && actor.loc == origin && actor.step_x == sx && actor.step_y == sy && tool && !tool.gcDestroyed && !tool.gc_destroyed && tool.loc == actor && (actor.l_hand == tool || actor.r_hand == tool) && (!active_tool || actor.get_active_hand() == tool) && target && !target.gcDestroyed && !target.gc_destroyed && target.loc == target_loc && world.time < expires && (!require_wait || !actor.may_do_after)
 
-/datum/resource_work_animation/proc/run()
+/datum/resource_work_animation/proc/animate_work_images()
 	try
 		// The caller immediately enters do_after without yielding. A rejected
 		// wait stops us synchronously; only an observed admitted wait can draw.

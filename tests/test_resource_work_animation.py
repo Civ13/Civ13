@@ -28,7 +28,7 @@ def valid(scope, text=None, require_wait=True):
 
 def worker(scope, text=None):
     """Project only the bounded while/if/assignment/sleep body from production."""
-    body = proc(text or PATH.read_text(), '/datum/resource_work_animation/proc/run()')
+    body = proc(text or PATH.read_text(), '/datum/resource_work_animation/proc/animate_work_images()')
     body = body.split('\ttry\n', 1)[1].split('\tcatch ', 1)[0]
     rows = []
     for line in body.splitlines():
