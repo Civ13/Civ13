@@ -33,6 +33,43 @@ SUITES = {
             'code/game/objects/structures/converters.dm',
             'code/game/objects/items/stacks/sheets/leather.dm',
             'icons/obj/structures.dmi', 'icons/obj/materials.dmi')},
+    # Inert existing harvest/flax runner imports plus stdlib file/transport
+    # adapters only. Tests replace every process boundary; no native execution.
+    'harvest_inputs': {'files': ('tests/animal_harvest/test_input_accounting.py',),
+        'paths': ('tests/animal_harvest/test_input_accounting.py',), 'shared_paths': (
+            'tests/animal_harvest/run.py', 'tests/animal_harvest/hide_recipe_probe.dm',
+            'tests/flax_processing/run.py', 'tests/flax_processing/required-inputs.json',
+            'code/names.dm', 'config/names/', 'scripts/native_fixture.py',
+            'scripts/byond_runtime.py', 'scripts/byond_toolchain.py',
+            'tools/byond/version.json')},
+    # Stdlib-only admission expressions and fixture wiring; never import a native
+    # runner. Shared game/fixture inputs retain conservative all-suite fallback.
+    'action_admission': {'files': ('tests/animal_harvest/test_action_admission.py',),
+        'paths': ('tests/animal_harvest/test_action_admission.py',), 'shared_paths': (
+            'code/game/objects/structures/wild.dm',
+            'code/game/turfs/floor_attackby.dm',
+            'code/game/objects/items/weapons/material/ooga_booga_weapons.dm',
+            'code/game/objects/structures/rocks.dm',
+            'code/game/objects/structures/repairing.dm',
+            'tests/animal_harvest/probe.dm',
+            'tests/animal_harvest/action_admission_probe.dm')},
+    # Offline injected transport and temporary wiki fixtures. Shared production
+    # inputs remain shared so they do not suppress other suites' fallback.
+    'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py',),
+        'paths': (), 'shared_paths': (
+            'scripts/player_help_bridge.py', 'UI/player-help.json', 'UI/crafting-atlas.json',
+            'code/game/objects/structures/blacksmithing/refining.dm',
+            'code/game/objects/structures/blacksmithing/molds.dm',
+            'code/game/objects/structures/blacksmithing/blacksmithing.dm',
+            'code/game/objects/structures/kitchen/oven.dm',
+            'code/modules/research_tree/research_node.dm',
+            'code/game/objects/items/stacks/civ_recipes.dm',
+            'code/modules/research_tree/research_bench.dm',
+            'code/modules/materials/materials.dm',
+            'code/game/objects/items/weapons/material/shards.dm',
+            'code/predefines.dm', 'code/game/objects/items/clothing/clothing.dm',
+            'code/modules/reagents/reagent_containers/food/sandwich.dm',
+            'code/modules/1713/dew_collector.dm')},
     # Only stdlib source contracts; the shared DM inputs stay unmapped so their
     # existing all-suite fallback and other owners' coverage remain intact.
     'help_tab_links': {'files': ('tests/player_help/test_help_links.py',),
@@ -75,6 +112,11 @@ SUITES = {
             'code/game/mob/living/living_hud.dm',
             'code/game/mob/living/carbon/human/human_hud.dm',
             'code/game/objects/items/weapons/swords_axes_etc.dm')},
+    # Inert stdlib-only source/model checks; no native runner or subprocesses.
+    # Shared movement sources retain their conservative all-suite fallback.
+    'destroyed_grab_preflight': {'files': ('tests/test_destroyed_grab_preflight.py',),
+        'paths': (), 'shared_paths': ('code/game/mob/mob_movement.dm',
+                                     'code/game/mob/living/carbon/human/subtile_movement.dm')},
     'policy': {'files': POLICY_FILES, 'always': True, 'paths': ()},
     'bootstrap': {'files': ('tests/test_byond_bootstrap.py', 'tests/test_byond_toolchain.py',
                             'tests/test_byond_runtime.py', 'tests/test_sprite_toolchain.py'), 'always': True, 'paths': ()},
