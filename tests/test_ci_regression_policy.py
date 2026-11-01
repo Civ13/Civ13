@@ -413,6 +413,35 @@ class RegressionPolicyTests(unittest.TestCase):
                 self.assert_explicit_suite_guards(workflow.replace(block, block.replace(before, after), 1))
 
 
+class PlayerHelpLinkAdmissionTests(unittest.TestCase):
+    def test_only_the_registered_static_file_is_exempt(self):
+        offline = 'tests/player_help/test_help_links.py'
+        self.assertEqual(selection.PLAYER_HELP_OFFLINE_TESTS, frozenset({offline}))
+        for added, expected in (([offline], []),
+                                ([offline, 'tests/player_help/new_test.py'], ['tests/player_help']),
+                                ([offline, 'tests/player_help/run_native.py'], ['tests/player_help']),
+                                ([offline, 'tests/player_help/new_probe.dm'], ['tests/player_help']),
+                                ([offline, 'tests/other/new_test.py'], ['tests/other'])):
+            with self.subTest(added=added), patch.object(selection.subprocess, 'check_output',
+                    return_value=('\0'.join(added) + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'), expected)
+
+    def test_actual_pr_selection_compiles_without_adding_native_suite(self):
+        offline = 'tests/player_help/test_help_links.py'
+        client = 'code/modules/client/client_verbs.dm'
+        payload = {'action': 'synchronize', 'pull_request': {'title': 'help links', 'base': {'ref': 'master'}}}
+        for changed, added, expected in (
+                ([client, offline], [offline], []),
+                ([client, offline, 'tests/player_help/new_test.py'],
+                 [offline, 'tests/player_help/new_test.py'], ['tests/player_help'])):
+            def diff(command, **kwargs):
+                paths = added if '--diff-filter=A' in command else changed
+                return ('\0'.join(paths) + '\0').encode()
+            with self.subTest(changed=changed), patch.object(selection.subprocess, 'check_output', side_effect=diff):
+                self.assertEqual(selection.selections('base', 'head', 'pull_request',
+                                 False, True, payload)[:3], (True, False, expected))
+
+
 class SourcePreparationAdmissionTests(unittest.TestCase):
     FILES = (
         'tests/world_save/character_return/fixture.dm',
