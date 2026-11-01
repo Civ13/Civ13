@@ -324,6 +324,7 @@ class InventoryHoverName(unittest.TestCase):
         def allowed(user,target,operation):
             read_calls.append((user,target,operation));return target in readable
         env=dict(istype=lambda x,t:bool(x and x.type.startswith(t)),ismovable=lambda x:bool(x and not x.type.startswith('/turf/')),
+            typed_iter=lambda xs,t:[x for x in xs if x and x.type.startswith(t)],
             isturf=lambda x:bool(x and x.type.startswith('/turf/')),ishuman=lambda x:bool(x and x.type.startswith('/mob/living/human')),
             los_read_allowed=allowed,view=lambda v,e:world_visible,WEAKREF=Handle,
             resolve=lambda h:h.resolve() if h else None,length=lambda x:len(x) if x else 0,
@@ -347,8 +348,8 @@ class InventoryHoverName(unittest.TestCase):
             text=re.sub(r'(?<=, )(/obj/[\w/]+)(?=\))',lambda m:repr(m[1]),text)
             return A.project(text,declaration,'self'+(', '+args if args else ''),env)
         fields=['hover_target','hover_origin','hover_inventory','hover_screen_loc','maptext','parentmob','clear_target',
-                'inventory_item_visible','inventory_target_current','pointer_target','target_visible','process']
-        for name,args in [('clear_target',''),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
+                'inventory_slot_visible','inventory_item_visible','inventory_target_current','pointer_target','target_visible','process']
+        for name,args in [('clear_target',''),('inventory_slot_visible','target'),('inventory_item_visible','target'),('inventory_target_current','target'),('pointer_target','origin'),
                           ('target_visible','target'),('set_target','origin'),('process',''),('persistence_runtime_var','key')]:
             sig='/obj/screen/hover_name'+('/'+name if name=='process' else '/proc/'+name)
             if name=='persistence_runtime_var':sig='/obj/screen/hover_name/'+name
@@ -397,7 +398,7 @@ class InventoryHoverName(unittest.TestCase):
             I.loc=m.atom('/turf/floor');I.screen_loc=None;m.C.screen.remove(I);m.visible.add(I)
             m.W.process();self.assertEqual(m.W.maptext,'')
             m=self.model();I=m.atom();S=m.slot(I);m.C.MouseEntered(S if via_slot else I)
-            I.screen_loc='9,9';m.W.process();self.assertEqual(m.W.maptext,'')
+            I.screen_loc='9,9';S.screen_loc=I.screen_loc;m.W.process();self.assertEqual(m.W.maptext,'')
         for mutate in ['removed-slot','replaced-item','item-hidden','item-alpha','item-deleted','ui-rebuild','ui-removed','body-change','client-gone']:
             m=self.model();I=m.atom();S=m.slot(I);m.C.MouseEntered(S)
             if mutate=='removed-slot':m.H.HUDinventory.remove(S)
@@ -442,6 +443,39 @@ class InventoryHoverName(unittest.TestCase):
         self.assertFalse(m.W.persistence_runtime_var('durable_example'))
         m.W.destroy();self.assertEqual(m.W.maptext,'');self.assertIsNone(m.W.parentmob)
 
+    def test_direct_item_hit_and_stationary_refresh_require_current_visible_equipped_slot(self):
+        def mutate(m,I,S,kind):
+            if kind=='slot-hidden':S.invisibility=99
+            if kind=='slot-transparent':S.alpha=0
+            if kind=='slot-inert':S.mouse_opacity=0
+            if kind=='slot-empty-position':S.screen_loc=None
+            if kind=='slot-removed':m.C.screen.remove(S)
+            if kind=='unregistered':m.H.HUDinventory.remove(S)
+            if kind=='foreign-slot':S.parentmob=m.atom('/mob/living/human')
+            if kind=='equipment-replaced':m.H.slots[S.slot_id]=m.atom()
+            if kind=='position-mismatch':S.screen_loc='9,9'
+        kinds=['slot-hidden','slot-transparent','slot-inert','slot-empty-position',
+               'slot-removed','unregistered','foreign-slot','equipment-replaced','position-mismatch']
+        for kind in kinds:
+            for during_hover in [False,True]:
+                with self.subTest(kind=kind,during_hover=during_hover):
+                    m=self.model();I=m.atom(name='pouch contents');S=m.slot(I)
+                    if during_hover:
+                        m.C.MouseEntered(I);self.assertTrue(m.W.maptext)
+                    mutate(m,I,S,kind)
+                    self.assertIs(I.loc,m.H);self.assertIn(I,m.C.screen);self.assertTrue(I.screen_loc)
+                    if during_hover:m.W.process()
+                    else:m.C.MouseEntered(I)
+                    self.assertEqual(m.W.maptext,'')
+        source=self.model().source
+        start=source.index('\t// A stale displayed item')
+        end=source.index('\n/obj/screen/hover_name/proc/inventory_target_current',start)
+        old=source[:start]+'\treturn TRUE\n'+source[end:]
+        m=self.model(old);I=m.atom(name='stale pouch');S=m.slot(I);S.invisibility=99
+        m.C.MouseEntered(I);self.assertTrue(m.W.maptext)
+        m=self.model(old);I=m.atom();S=m.slot(I);m.C.MouseEntered(I)
+        S.invisibility=99;m.W.process();self.assertTrue(m.W.maptext)
+
     def test_named_omissions_reproduce_slot_routing_and_stale_pointer_regressions(self):
         source=self.model().source
         mutant=source.replace('var/atom/target = pointer_target(origin)','var/atom/target = origin',1)
@@ -455,8 +489,8 @@ class InventoryHoverName(unittest.TestCase):
         I.loc=m.atom('/turf/floor');I.screen_loc=None;m.C.screen.remove(I);m.visible.add(I)
         m.W.process();self.assertTrue(m.W.maptext)
         mutant=source.replace('(hover_inventory && !inventory_target_current(target))','(hover_inventory && !inventory_item_visible(target))',1)
-        m=self.model(mutant);I=m.atom();m.slot(I);m.C.MouseEntered(I)
-        I.screen_loc='9,9';m.W.process();self.assertTrue(m.W.maptext)
+        m=self.model(mutant);I=m.atom();S=m.slot(I);m.C.MouseEntered(I)
+        I.screen_loc='9,9';S.screen_loc=I.screen_loc;m.W.process();self.assertTrue(m.W.maptext)
 
 
 if __name__ == '__main__':

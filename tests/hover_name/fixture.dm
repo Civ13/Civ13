@@ -147,6 +147,13 @@
 	check(!L.maptext, "screen membership without slot hidden")
 	B.screen_loc = "1,1"
 	B.loc = viewer
+	var/obj/screen/inventory/slot = new
+	slot.parentmob = viewer
+	slot.slot_id = "probe"
+	slot.screen_loc = B.screen_loc
+	viewer.HUDinventory += slot
+	viewer.test_slots[slot.slot_id] = B
+	C.screen += slot
 	C.MouseEntered(B, null, "map", "")
 	check(findtext(L.maptext, "rifle"), "inventory item")
 	C.screen -= B

@@ -28,12 +28,26 @@
 	parentmob = null
 	return ..()
 
+/obj/screen/hover_name/proc/inventory_slot_visible(atom/target)
+	if(!istype(target, /obj/screen/inventory) || !parentmob || !parentmob.client)
+		return FALSE
+	var/client/C = parentmob.client
+	var/obj/screen/inventory/slot = target
+	return C.mob == parentmob && slot.parentmob == parentmob && (slot in parentmob.HUDinventory) && (slot in C.screen) && slot.screen_loc && slot.mouse_opacity && slot.alpha && slot.invisibility <= parentmob.see_invisible
+
 /obj/screen/hover_name/proc/inventory_item_visible(atom/target)
 	if(!istype(target, /obj/item) || !parentmob || !parentmob.client)
 		return FALSE
 	var/client/C = parentmob.client
 	var/obj/item/I = target
-	return C.mob == parentmob && I.loc == parentmob && I.screen_loc && (I in C.screen)
+	if(C.mob != parentmob || I.loc != parentmob || !I.screen_loc || !(I in C.screen))
+		return FALSE
+	// A stale displayed item can outlive its hidden slot (for example a pouch).
+	// Apply this to direct item hits as well as slot art and stationary refresh.
+	for(var/obj/screen/inventory/slot in parentmob.HUDinventory)
+		if(inventory_slot_visible(slot) && parentmob.get_equipped_item(slot.slot_id) == I && I.screen_loc == slot.screen_loc)
+			return TRUE
+	return FALSE
 
 /obj/screen/hover_name/proc/inventory_target_current(atom/target)
 	if(!inventory_item_visible(target))
@@ -47,12 +61,9 @@
 /obj/screen/hover_name/proc/pointer_target(atom/origin)
 	if(!istype(origin, /obj/screen/inventory))
 		return origin
-	if(!parentmob || !parentmob.client)
+	if(!inventory_slot_visible(origin))
 		return null
-	var/client/C = parentmob.client
 	var/obj/screen/inventory/slot = origin
-	if(C.mob != parentmob || slot.parentmob != parentmob || !(slot in parentmob.HUDinventory) || !(slot in C.screen) || !slot.screen_loc || !slot.mouse_opacity || !slot.alpha || slot.invisibility > parentmob.see_invisible)
-		return null
 	var/obj/item/I = parentmob.get_equipped_item(slot.slot_id)
 	if(!inventory_item_visible(I) || I.screen_loc != slot.screen_loc)
 		return null

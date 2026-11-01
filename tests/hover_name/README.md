@@ -13,6 +13,9 @@ to its actual equipped item. The item must belong directly to that body and be
 displayed at the same screen location. Other bodies, closed/nested containers,
 generic HUD controls, empty slots and arbitrary `screen.master` references do not
 grant a name. The existing world LOS/read guard still checks the resolved item.
+Direct item hits and stationary revalidation require the same visible registered
+slot, equipped item identity and matching screen location. A pouch item left in
+the client's screen list after hiding its slot cannot retain a hover label.
 Separate weak pointer-origin and item references keep exits tied to the correct
 enter event. Removal/drop, slot replacement and body/UI changes clear old text
 on the existing HUD refresh, even if a dropped item is now visible in the world.
