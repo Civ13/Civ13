@@ -171,12 +171,23 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	var/timed_chop = FALSE
 	if (istype(W,/obj/item/weapon/material/hatchet) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
 		var/obj/item/weapon/material/HT = W
+		timed_chop = TRUE
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-		user.do_attack_animation(src)
-		if (do_after(user, 30*HT.chopping_speed, user.loc))
+		var/datum/resource_work_animation/work_animation = user.prepare_resource_work_animation(HT, src, 30*HT.chopping_speed)
+		var/completed
+		try
+			completed = do_after(user, 30*HT.chopping_speed, user.loc)
+		catch (var/exception/chopping_error)
+			if (work_animation)
+				work_animation.stop()
+			throw chopping_error
+		if (work_animation)
+			work_animation.stop()
+		if (completed)
 			health = 0
 			try_destroy()
 			HT.health -= 0.25
@@ -196,7 +207,8 @@ var/list/seed_list_jungle
 				else
 					health -= W.force * 0.20
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-	user.do_attack_animation(src)
+	if (!timed_chop)
+		user.do_attack_animation(src)
 	try_destroy()
 	..()
 

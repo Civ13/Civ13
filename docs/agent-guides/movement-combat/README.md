@@ -1,5 +1,10 @@
 # Movement combat: scoped agent notes
 
+Mining and timed chopping work effects animate owned tool images only. Keep
+actor/client pixel offsets and physical step/glide ownership out of those effects.
+See [resource work images](../../resource-work-animation.md) for admission,
+lifecycle cleanup and the offline-versus-native verification boundary.
+
 Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts

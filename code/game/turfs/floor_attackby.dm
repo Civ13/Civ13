@@ -760,6 +760,7 @@
 	var/committed = FALSE
 	var/wait_started = FALSE
 	var/datum/progressbar/progressbar
+	var/datum/resource_work_animation/work_animation
 
 /datum/pickaxe_mining_action/proc/valid(mob/user, atom/target)
 	return actor && user == actor && target == wall && wall && istype(wall, /turf/floor/dirt/underground) && locate(wall.x, wall.y, wall.z) == wall && wall.is_mineable && wall.pickaxe_mining_owner == src && wall.mining_in_progress && actor.pickaxe_mining_action == src && actor.pickaxe_mining_ready() && actor.loc == origin && actor.step_x == sx && actor.step_y == sy && tool && !tool.gcDestroyed && !tool.gc_destroyed && tool.loc == actor && (actor.l_hand == tool || actor.r_hand == tool) && (!active_tool || actor.get_active_hand() == tool) && wall.Adjacent(actor) && !committed
@@ -771,6 +772,9 @@
 	return TRUE
 
 /datum/pickaxe_mining_action/proc/release()
+	if (work_animation)
+		work_animation.stop()
+		work_animation = null
 	if (progressbar)
 		qdel(progressbar)
 		progressbar = null
@@ -793,7 +797,12 @@
 		if (valid(actor, wall))
 			actor.visible_message("<span class = 'notice'>[actor] starts to break the rock with \the [tool.name].</span>", "<span class = 'notice'>You start to break the rock with \the [tool.name].</span>")
 			playsound(wall, 'sound/effects/pickaxe.ogg', 100, 1)
-			if (do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src) && valid(actor, wall))
+			work_animation = actor.prepare_resource_work_animation(tool, wall, 240 / actor.getStatCoeff("strength") / tool:usespeed)
+			var/completed = do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)
+			if (work_animation)
+				work_animation.stop()
+				work_animation = null
+			if (completed && valid(actor, wall))
 				committed = TRUE // Before mining_proc/collapse yields or replaces turf.
 				wall.collapse_check()
 				if (wall && locate(wall.x, wall.y, wall.z) == wall)

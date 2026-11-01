@@ -414,6 +414,16 @@ class RegressionPolicyTests(unittest.TestCase):
 
 
 class PlayerHelpLinkAdmissionTests(unittest.TestCase):
+    def test_only_the_registered_work_animation_projection_is_exempt(self):
+        offline = 'tests/test_resource_work_animation.py'
+        self.assertEqual(selection.RESOURCE_WORK_OFFLINE_TESTS, frozenset({offline}))
+        for added, expected in (([offline], []),
+                                ([offline, 'tests/resource_work_animation/run.py'], ['tests/resource_work_animation']),
+                                ([offline, 'tests/new_animation_test.py'], ['tests/new_animation_test.py'])):
+            with self.subTest(added=added), patch.object(selection.subprocess, 'check_output',
+                    return_value=('\0'.join(added) + '\0').encode()):
+                self.assertEqual(selection.introduced_tests('base', 'head', 'pull_request'), expected)
+
     def test_only_the_registered_static_file_is_exempt(self):
         offline = 'tests/player_help/test_help_links.py'
         self.assertEqual(selection.PLAYER_HELP_OFFLINE_TESTS, frozenset({offline}))
