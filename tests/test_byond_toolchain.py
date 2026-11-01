@@ -1,5 +1,6 @@
 """Reviewed offline pin/download/receipt controls. No sockets, DLLs or native tools."""
 from copy import deepcopy
+import ast
 import hashlib
 import importlib.util
 import io
@@ -48,7 +49,7 @@ class ByondToolchainTests(unittest.TestCase):
 
     def test_canonical_manifest_embedded_directly_and_version_configuration_agrees(self):
         self.assertEqual(self.value['version'], '516.1688')
-        self.assertEqual(self.value['minimumCompiler'], '516.1681')
+        self.assertEqual(self.value['minimumCompiler'], self.value['version'])
         self.assertEqual(self.value['savefileMajor'], 516)
         native = ROOT / 'tools/opendream-client/native'
         project = ET.parse(native / 'Civ13.Launcher.csproj').getroot()
@@ -68,10 +69,33 @@ class ByondToolchainTests(unittest.TestCase):
             del value[key]
             with self.subTest(missing=key), self.assertRaises(ValueError):
                 self.read_value(value)
-        value = deepcopy(self.value)
-        value['minimumCompiler'] = '516.1689'
-        with self.assertRaises(ValueError):
-            self.read_value(value)
+        for compiler in ('516.1681', '516.1689'):
+            value = deepcopy(self.value)
+            value['minimumCompiler'] = compiler
+            with self.subTest(compiler=compiler), self.assertRaises(ValueError):
+                self.read_value(value)
+
+    def test_compile_gate_matches_canonical_pin_and_rejects_other_builds(self):
+        source = (ROOT / 'code/__byond_version_compat.dm').read_text()
+        major, build = pin.version(self.value['version'])
+        self.assertEqual(re.findall(r'^#define MIN_COMPILER_VERSION (\d+)$', source, re.M), [str(major)])
+        self.assertEqual(re.findall(r'^#define MIN_COMPILER_BUILD (\d+)$', source, re.M), [str(build)])
+        expression = re.search(r'^#if \((.+)\) && !defined\(SPACEMAN_DMM\)$', source, re.M).group(1)
+        expression = expression.replace('||', ' or ')
+        tree = ast.parse(expression, mode='eval')
+        allowed = (ast.Expression, ast.BoolOp, ast.Or, ast.Compare, ast.NotEq, ast.Name, ast.Load)
+        self.assertTrue(all(isinstance(node, allowed) for node in ast.walk(tree)))
+        for actual in ((major, build), (major, build-1), (major, build+1), (major+1, build)):
+            scope = dict(DM_VERSION=actual[0], DM_BUILD=actual[1], MIN_COMPILER_VERSION=major, MIN_COMPILER_BUILD=build)
+            with self.subTest(actual=actual):
+                self.assertEqual(bool(eval(compile(tree, '<canonical compile gate>', 'eval'), {'__builtins__': {}}, scope)), actual != (major, build))
+
+    def test_windows_fixture_has_no_implicit_old_toolchain_binding(self):
+        spec = importlib.util.spec_from_file_location('canonical_native_fixture', ROOT / 'scripts/native_fixture.py')
+        fixture = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fixture)
+        with self.assertRaisesRegex(RuntimeError, 'No default Windows fixture binding'):
+            fixture.WindowsBackend()
 
     def test_invalid_duplicate_or_oversized_metadata_rejects(self):
         path = self.root / 'bad.json'
@@ -197,16 +221,6 @@ class ByondToolchainTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stdout.strip(), expected)
         self.assertNotEqual(subprocess.run([*command, 'url;echo unsafe'], capture_output=True, timeout=5).returncode, 0)
-
-    def test_legacy_workflow_selection_is_explicit_and_separate(self):
-        for name in ('component-tools.yml', 'train-collision.yml'):
-            text = (ROOT / '.github/workflows' / name).read_text()
-            self.assertIn('travis_pre_byond.sh --legacy-fixture-5161681', text)
-            self.assertIn("BYOND_MINOR: '1681'", text)
-        workflow = (ROOT / '.github/workflows/test.yml').read_text()
-        self.assertIn('BYOND_MINOR: "1688"', workflow)
-        extraction = workflow.split('  extraction-instances:\n')[1].split('\n  build:')[0]
-        self.assertIn('BYOND_MINOR: "1681"', extraction)
 
     def test_default_workflow_literals_match_the_central_manifest(self):
         # GitHub top-level env cannot read a checkout file. Keep this deliberate

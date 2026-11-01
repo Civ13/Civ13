@@ -10,14 +10,31 @@ On Windows BYOND 516.1681, actual opposed hitch calls followed by movement produ
 
 The patch prevents cyclic hitching, disconnects the actual leader on unhitch, guards recursive/reentrant wagon movement, and returns failure before carrying riders/cargo/followers after blocked movement. Train bump callbacks cannot start a train push cascade. Ordinary human pushing remains allowed. Automatic train contact, including contact with another car in its consist, retains the existing stop and five-health damage rule. No collision damage is globally disabled.
 
-## Safe replication
+## Canonical Linux manual profile
 
-Use an isolated checkout and BYOND 516.1681; never run the baseline against production.
+The manual workflow acquires the canonical manifest pin (currently 516.1688)
+through the checked bootstrap. After loading its environment, the CLI is:
+
+```sh
+bash tests/train_collision/run.sh "$PWD/BYOND/byond/bin" "$PWD/BYOND/pinned.zip" /tmp/train-evidence-new
+```
+
+All three arguments are required and output must be new. Shared archive/member
+identity is checked before compiler and daemon; compilation requires one exact
+clean current-pin result. The fixture compiler has a 60-second bound; the daemon
+retains its 15-second wall, five-second CPU and 256 MiB address-space bounds.
+Generated sources, logs, input hashes, status and identity receipts are retained,
+including failures. The workflow remains dispatch-only with its ten-minute job
+limit. This source port has offline controls, not new native acceptance.
+
+## Historical Windows replication and observations
+
+The following old 516.1681 routes/results are historical, not active current-pin
+interfaces or acceptance. Port them before reuse; never run the baseline against production.
 
 - Normal regression: `./tests/train_collision/run.ps1 -ByondBin <bin>`.
 - Checked baseline: add `-Revision 0d38999d5f9f987a944493f11c456537f39ac2f6 -Baseline`.
 - Unchecked comparison: add `-Unchecked` to either command. This deliberately produces the compiler's loop-check warning; it is fixture-only.
-- Linux: after loading the pinned BYOND environment, run `bash tests/train_collision/run.sh`.
 
 The generated 20x10x1 fixture extracts production train procedures, replaces audiovisual resources with null, and injects no-op map/effect adapters plus the deferred bump callback. Windows processes are bounded by 15 seconds, 5 CPU seconds and a sampled 256 MiB working-set ceiling; Linux uses timeout and CPU/address-space limits. The runner stops only its own PID, waits for exit and prints temporary log paths. A sampled ceiling is not a Windows OS hard memory limit. No production storage or train is touched.
 
@@ -27,8 +44,8 @@ Thirty-five assertions cover actual hitch/unhitch, cycle rejection, malformed ex
 
 In an isolated local game at the final commit, place a locomotive and two wagons on straight rails. Hitch the rear cars and run the train, verifying following positions and transported cargo. Stop it, oppose adjacent wagons and attempt reciprocal hitching; the second hitch must fail. Unhitch must release the front car's connection. Exercise head-on, rear and side contact between independent trains, plus a blocked route and self-consist contact: movement must stop, collision health loss must remain, and the server must remain responsive. Capture genuine before/after screenshots and a movement/collision video linked to the tested commit/map and steps. Upload as verified PR attachments, without committing media. Graphical evidence is outstanding.
 
-## Full-game headless probe and capture preparation
+## Historical full-game headless probe and capture preparation
 
-Run `./tests/train_collision/run-game.ps1 -ByondBin <bin>`. It compiles the actual game plus a test-only harness, copies public config/assets into fresh temporary storage, disables optional outbound webhook/ban hooks, and tests real constructors, movement, deferred bump callbacks and two powered locomotives colliding through their normal asynchronous movement loops. Nineteen train assertions passed on the NOMADS map (155x225x2), Windows BYOND 516.1681. Historical startup printed engine bad-reference diagnostics before the train probes. The hardened launcher rejects engine/runtime diagnostics in startup, daemon streams and all runtime logs; assertion success alone is insufficient. Headless startup closes its port and refuses reopening, and the probe checks that contract. Limits are 90 seconds, 45 sampled CPU seconds and 768 MiB sampled working set; the runner closes its owned process and retains logs/results, pre-generation commit/dirty metadata, tested patch and source hashes. Compiler/runtime version is pinned to 516.1681.
+The historical `./tests/train_collision/run-game.ps1 -ByondBin <bin>` compiled the actual game plus a test-only harness, copied public config/assets into fresh temporary storage, disabled optional outbound webhook/ban hooks, and tested real constructors, movement, deferred bump callbacks and two powered locomotives colliding through their normal asynchronous movement loops. Nineteen train assertions passed on the NOMADS map (155x225x2), Windows BYOND 516.1681. Historical startup printed engine bad-reference diagnostics before the train probes. The hardened launcher rejects engine/runtime diagnostics in startup, daemon streams and all runtime logs; assertion success alone is insufficient. Headless startup closes its port and refuses reopening, and the probe checks that contract. Limits are 90 seconds, 45 sampled CPU seconds and 768 MiB sampled working set; the runner closes its owned process and retains logs/results, pre-generation commit/dirty metadata, tested patch and source hashes. This old entrypoint remains pinned to 516.1681 pending a separate port or retirement.
 
 Only when the coordinator assigns screen control, add `-Visual -TimeoutSeconds 600`, connect a local Dream Seeker to the port in `startup.log`, use **Inspect local train probe**, then **Run local train collision**. This runs two real steam locomotives toward each other, one towing two flatbed wagons, through the normal rail movement loop. Capture the initial arrangement, movement/collision video and stopped result with displayed health and movement state. The optional visual path is prepared, not yet accepted or captured. No graphical waiver applies.

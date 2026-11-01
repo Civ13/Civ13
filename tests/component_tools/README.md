@@ -1,8 +1,24 @@
 # Component work tools
 
-Run `scripts/check-component-tools.py` with Python and BYOND 516.1681. On Windows
-use verified absolute Python, `--compiler` and `--runtime` executable paths.
-Optional `--report` preserves the assertion summary.
+The Linux CLI requires the canonical archive, installed bin directory and a new
+evidence directory:
+
+```sh
+python3 scripts/check-component-tools.py --byond-bin "$PWD/BYOND/byond/bin" \
+  --byond-archive "$PWD/BYOND/pinned.zip" --output /tmp/component-positive-new
+```
+
+The manual workflow acquires the checked canonical manifest pin (currently
+516.1688). The shared verifier binds the archive and four installed members,
+rechecks before compiler and daemon, and requires one exact clean compiler result.
+The compiler/daemon limits remain 180/90 seconds and the workflow remains manual
+with a ten-minute job limit. Positive, consumption and runtime-save omission
+controls retain separate fresh output directories. Generated source, logs and
+identity/error receipts survive failures; optional `--report` also copies the
+assertion summary. No current-pin native run was performed for this source port.
+
+Previous 516.1681 and Windows CLI examples are historical. Bare executable
+selection is no longer an active unverified alternative to archive identity.
 
 The runner uses the recipe harness's startup isolation: actual game definitions,
 no maps, world/controller startup disabled, temporary runtime/config storage,

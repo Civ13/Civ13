@@ -1,10 +1,54 @@
 """Run production component assembly and save/load without game startup/maps."""
 import argparse
+from contextlib import contextmanager
+import hashlib
+import importlib.util
+import json
 from pathlib import Path
 import re
 import shutil
 import subprocess
-import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_runtime(byond_bin, archive):
+    spec = importlib.util.spec_from_file_location('component_current_runtime', ROOT / 'tests/world_save/current_runtime.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    runtime = module.select(byond_bin, archive)
+    if runtime is None:
+        raise ValueError('Canonical Linux archive identity is required')
+    return runtime
+
+
+@contextmanager
+def evidence_workspace(output):
+    output.mkdir(parents=True, exist_ok=False)
+    build, run = output / 'source', output / 'runtime'
+    build.mkdir(); run.mkdir()
+    try:
+        yield build, run
+    except BaseException as error:
+        try:
+            (output / 'failure.json').write_text(json.dumps({'error': str(error)[:4096]}), encoding='utf-8')
+        except OSError:
+            pass  # Preserve the original failure if secondary retention fails.
+        raise
+
+
+def compile_fixture(runtime, byond_bin, source, output, root):
+    runtime.before_launch('compiler', output)
+    try:
+        compiled = subprocess.run([str(byond_bin / 'DreamMaker'), '-max_errors', '0', str(source)], cwd=root,
+                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=180)
+    except subprocess.TimeoutExpired as error:
+        log = error.stdout or b''
+        (output / 'compile.log').write_text(log.decode(errors='replace') if isinstance(log, bytes) else log, encoding='utf-8')
+        raise
+    (output / 'compile.log').write_text(compiled.stdout, encoding='utf-8')
+    runtime.validate_compile(compiled.returncode, compiled.stdout, 'recipes.dmb')
+    print(compiled.stdout)
 
 
 def replace_once(source, old, new):
@@ -12,17 +56,28 @@ def replace_once(source, old, new):
         raise RuntimeError(f"Isolation include changed: {old}")
     return source.replace(old, new)
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--report", type=Path)
-    parser.add_argument("--compiler", default="DreamMaker")
-    parser.add_argument("--runtime", default="DreamDaemon")
+    parser.add_argument("--byond-bin", type=Path, required=True)
+    parser.add_argument("--byond-archive", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--negative-control", choices=("consumption", "runtime-save"))
-    args = parser.parse_args()
-    root = Path(__file__).resolve().parents[1]
+    args = parser.parse_args(argv)
+    args.output = args.output.absolute()
+    root = ROOT
+    byond_bin = args.byond_bin.absolute()
     # Assets/includes are resolved relative to the checkout; runtime storage is isolated.
-    with tempfile.TemporaryDirectory(prefix=".recipe-ci-", dir=root) as build, tempfile.TemporaryDirectory(prefix="civ13-recipes-") as run:
-        build, run = Path(build), Path(run)
+    with evidence_workspace(args.output) as (build, run):
+        inputs = ('scripts/check-component-tools.py', 'code/world.dm', 'code/controllers/mc/globals.dm',
+                  'code/game/objects/structures/blacksmithing/component_workbench.dm', 'civ13.dme',
+                  'tests/component_tools/checks.dm', 'tests/component_tools/workbench.dm', 'tests/world_save/current_runtime.py',
+                  'scripts/byond_runtime.py', 'scripts/byond_toolchain.py', 'tools/byond/version.json',
+                  'tests/new_z_budget/z_budget_evidence.py')
+        (args.output / 'inputs.json').write_text(json.dumps({
+            'negative_control': args.negative_control,
+            'inputs_sha256': {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in inputs}}, indent=2), encoding='utf-8')
+        runtime = load_runtime(byond_bin, args.byond_archive)
         source = (root / "code/world.dm").read_text(encoding="utf-8")
         for marker, replacement in [
             ("/datum/global_init/New()\n", "\treturn\n"),
@@ -57,16 +112,17 @@ def main():
         dme = dme.replace('#define FILE_DIR .', f'#define FILE_DIR "{root.as_posix()}"')
         dme = re.sub(r'^#include "([^/":][^":]*)"', lambda m: f'#include "{root.as_posix()}/{m[1].replace(chr(92), "/")}"', dme, flags=re.M)
         (build / "recipes.dme").write_text(dme, encoding="utf-8")
-        compiled = subprocess.run([args.compiler, "-max_errors", "0", str(build / "recipes.dme")], cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=180)
-        print(compiled.stdout)
-        if compiled.returncode or "0 errors, 0 warnings" not in compiled.stdout:
-            return 1
+        (args.output / 'generated-source.json').write_text(json.dumps({
+            p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in build.iterdir()
+            if p.suffix in ('.dm', '.dme')}, indent=2), encoding='utf-8')
+        compile_fixture(runtime, byond_bin, build / 'recipes.dme', args.output, root)
         shutil.copytree(root / "config/crafting", run / "config/crafting")
         shutil.copytree(root / "config/names", run / "config/names")
         for suffix in (".dmb", ".rsc"):
             shutil.copy2(build / ("recipes" + suffix), run)
+        runtime.before_launch('daemon', args.output)
         with (run / "runtime.log").open("w", encoding="utf-8") as log:
-            runtime = subprocess.run([args.runtime, str(run / "recipes.dmb"), "0", "-invisible", "-close", "-trusted"], cwd=run, stdout=log, stderr=subprocess.STDOUT, timeout=90)
+            executed = subprocess.run([str(byond_bin / 'DreamDaemon'), str(run / "recipes.dmb"), "0", "-invisible", "-close", "-trusted"], cwd=run, stdout=log, stderr=subprocess.STDOUT, timeout=90)
         runtime_log = (run / "runtime.log").read_text(encoding="utf-8", errors="replace")
         print(runtime_log)
         report = run / "component-checks.txt"
@@ -77,7 +133,7 @@ def main():
         if args.report:
             args.report.write_text(output, encoding="utf-8")
         print(output)
-        if runtime.returncode or any(marker in runtime_log.lower() for marker in ("runtime error:", "bug:", "## error:")):
+        if executed.returncode or any(marker in runtime_log.lower() for marker in ("runtime error:", "bug:", "## error:")):
             return 1
         expected = "FAIL" if args.negative_control else "PASS"
         return 0 if output.rstrip().endswith(expected) else 1

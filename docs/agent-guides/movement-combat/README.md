@@ -147,12 +147,13 @@ onto the workshop; cable coils feed its material stock.
 <!-- 2026-10-11: train collision investigation -->
 `code/modules/1713/trains.dm` connections point from leader to follower. Reject
 coupling cycles and stop failed movement before recursively moving followers;
-`Bumped` is deferred by the movable atom's bump callback. Run bounded isolated
-regressions with `tests/train_collision/run.ps1 -ByondBin <516.1681-bin>` and real
-game callback/locomotive-loop tests with `tests/train_collision/run-game.ps1`.
-The full-game probe uses temporary state and outbound-hook controls. Its optional
-visual mode needs separate capture authorization; it never proves production
-crash behavior. Do not replace required gameplay captures with fixture output.
+`Bumped` is deferred by the movable atom's bump callback. The canonical Linux
+manual profile uses `tests/train_collision/run.sh <byond-bin> <pinned.zip> <new-output>`
+with shared archive/member checks before each launch. Its source port has not
+established current-pin native acceptance. The 516.1681 Windows/full-game probes
+and their observed results are historical; port those entrypoints before current
+use. Their prepared visual path never proves production crash behavior. Do not
+replace required gameplay captures with fixture output.
 
 <!-- 2026-10-11: conveyor verification -->
 `tests/conveyor/run.ps1` compares production tick snapshots with isolated storage;

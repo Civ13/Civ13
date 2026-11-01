@@ -1,22 +1,16 @@
 #!/bin/bash
 set -eo pipefail
 
-# Only the two reviewed manual fixture workflows use this historical toolchain.
-case "${1:-}" in
-    '') legacy_fixture=false ;;
-    --legacy-fixture-5161681) legacy_fixture=true ;;
-    *) echo 'Unsupported BYOND bootstrap option' >&2; exit 2 ;;
-esac
-test "$#" -le 1 || exit 2
+# Toolchain selection is exclusively the canonical repository manifest.
+if [ "$#" -ne 0 ]; then
+    echo 'Unsupported BYOND bootstrap option; only the canonical pin is supported' >&2
+    exit 2
+fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "$script_dir/.."
 repo_root="$PWD"
-if "$legacy_fixture"; then
-    byond_version=516.1681
-else
-    byond_version="$(python3 "$script_dir/byond_toolchain.py" field version)"
-fi
+byond_version="$(python3 "$script_dir/byond_toolchain.py" field version)"
 if [ -n "${BYOND_MAJOR:-}" ] && [ "$BYOND_MAJOR" != "${byond_version%.*}" ]; then
     echo 'BYOND major differs from selected toolchain' >&2; exit 2
 fi
@@ -55,16 +49,11 @@ trap 'status=$?; cd "$repo_root"; cp result.log .ci/compile/compiler.log 2>/dev/
 # Fresh hosted checkout only. Refuse an existing install rather than deleting it.
 mkdir BYOND
 cd BYOND
-if "$legacy_fixture"; then
-    # Preserve the historical fixture download; no independent checksum is claimed.
-    timeout -k 5 65 wget --timeout=30 --tries=1 --no-verbose -O pinned.zip "https://civ13.com/downloads/516.1681_byond_linux.zip"
-else
-    archive_args=(--platform linux --output pinned.zip --source "${BYOND_ARCHIVE_SOURCE:-official}")
-    if [ -n "${BYOND_ARCHIVE_CACHE:-}" ]; then
-        archive_args+=(--cache-dir "$BYOND_ARCHIVE_CACHE")
-    fi
-    timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download "${archive_args[@]}" > "$repo_root/.ci/compile/byond-download.json"
+archive_args=(--platform linux --output pinned.zip --source "${BYOND_ARCHIVE_SOURCE:-official}")
+if [ -n "${BYOND_ARCHIVE_CACHE:-}" ]; then
+    archive_args+=(--cache-dir "$BYOND_ARCHIVE_CACHE")
 fi
+timeout -k 5 65 python3 "$script_dir/byond_toolchain.py" download "${archive_args[@]}" > "$repo_root/.ci/compile/byond-download.json"
 sha256sum pinned.zip > "$repo_root/.ci/compile/byond-archive.sha256"
 printf '%s\n' "$byond_version" > "$repo_root/.ci/compile/byond-version.txt"
 timeout -k 5 30 unzip -q pinned.zip

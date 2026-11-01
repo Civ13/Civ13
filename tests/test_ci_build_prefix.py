@@ -52,6 +52,37 @@ def workflow_contexts(selection_result, gating):
 
 
 class BuildPrefixTests(unittest.TestCase):
+    def test_ready_for_review_is_held_outside_subscription_and_native_admission(self):
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        subscription = workflow.split('\n  pull_request:\n', 1)[1].split('\n  #', 1)[0]
+        self.assertIn('types: [ opened, synchronize, reopened, edited ]', subscription)
+        self.assertNotIn('ready_for_review', subscription)
+        for title, expected in (('ordinary', False), ('build: compile', True)):
+            payload = pr(title, 'master', 'ready_for_review')
+            policy = selection.eligibility('pull_request', payload, True)
+            self.assertEqual(policy['compile']['eligible'], expected)
+            self.assertFalse(policy['native']['eligible'])
+            self.assertFalse(policy['gating']['eligible'])
+            with patch.object(selection, 'select', return_value=(True, 'offline diff')), \
+                    patch.object(selection, 'introduced_tests', side_effect=AssertionError('Native expansion forbidden')), \
+                    patch.object(selection, 'changed_atlas_tests', side_effect=AssertionError('Atlas expansion forbidden')):
+                self.assertEqual(selection.selections('base', 'head', 'pull_request', True, True, payload)[:3],
+                                 (expected, False, []))
+
+    def test_ordinary_ready_for_review_proposal_would_expand_native_selection(self):
+        # Demonstrate why changing the event and action set needs separate review.
+        payload = pr('source', 'master', 'ready_for_review')
+        with patch.object(selection, 'ORDINARY_PR_ACTIONS', selection.ORDINARY_PR_ACTIONS | {'ready_for_review'}), \
+                patch.object(selection, 'select', return_value=(True, 'offline diff')), \
+                patch.object(selection, 'introduced_tests', return_value=['tests/world_save']) as introduced, \
+                patch.object(selection, 'changed_atlas_tests', return_value=[]):
+            policy = selection.eligibility('pull_request', payload, True)
+            self.assertTrue(policy['native']['eligible'])
+            self.assertTrue(policy['gating']['eligible'])
+            self.assertEqual(selection.selections('base', 'head', 'pull_request', False, True, payload)[:3],
+                             (True, False, ['tests/world_save']))
+            introduced.assert_called_once()
+
     def test_only_valid_text_edits_skip_and_retargets_fail_closed(self):
         for field, old in (('title', 'old title'), ('body', None)):
             payload = pr('ordinary', 'master', 'edited')

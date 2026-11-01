@@ -25,8 +25,8 @@ PINS = {
     "tests/animal_registry/run_native.py": "da0c2d5c7bebf45f584a6b0c8b67d8ab0094798024cddf9fc899ad482ba19b1f",
     "tests/animal_registry/test_source_contract.py": "485e34f625efd0064e2ee9f35aac0075a5332d951a4b0828fa7592cd0385f08a",
     "scripts/byond_runtime.py": "43346f4a9f33af6b6d9cbe67f15d4f1843c400fa758d4cccba35002f0c30da4c",
-    "scripts/byond_toolchain.py": "2fb8e2dbd3646124e366f17011fcbb7857ee47b913402d9a4c2a90dde0c957cc",
-    "tools/byond/version.json": "662acc3d771988e91de44b7be6f648c256aee7b2173e42a64956b8aca3bad95d",
+    "scripts/byond_toolchain.py": "4ed24048e3e375a037521c81a57c27318d9ba05671f8f53d91485ca5937276d5",
+    "tools/byond/version.json": "c089c06bd6890a3914f21c587728e70ac422af7a0c646bc5371567b7743755a6",
 }
 
 
