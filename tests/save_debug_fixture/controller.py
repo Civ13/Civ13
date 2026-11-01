@@ -22,7 +22,11 @@ MAX_DEPTH = 16
 MAX_AS = 1024**3
 NATIVE_SECONDS = 360
 PHASE_SECONDS = 120
-DIAGNOSTIC = re.compile(r'infinite[ _]loop|switching proc to background|runtime error|bad ref|bad loc|segmentation|fatal error|out of memory', re.I)
+DIAGNOSTIC = re.compile(
+    r'infinite[ _]loop|switching proc to background|runtime error|unexpected runtime|'
+    r'\bBad ref\b|\bBad loc\b|Cannot read null|Cannot execute null|\bBUG:|'
+    r'##\s*ERROR\s*:|uncaught exception|fatal error|segmentation|assertion failed|\bRUNTIME:|'
+    r'\bOOM\b|out of memory|access violation|\bCRASH(?:ED)?\b|invalid file', re.I)
 
 
 def require(condition, message):
@@ -36,6 +40,24 @@ def bounded_bytes(path, maximum):
         data = stream.read(maximum + 1)
     require(len(data) <= maximum, 'file exceeded read budget')
     return data
+
+
+def copy_name_data(staged, work, deadline):
+    """Copy only committed fixture name data with explicit size and entry limits."""
+    source = staged / 'config' / 'names'
+    require(not (staged / 'config').is_symlink() and source.is_dir() and not source.is_symlink(), 'invalid name data root')
+    target = work / 'config' / 'names'
+    target.mkdir(parents=True)
+    total = count = 0
+    with os.scandir(source) as entries:
+        for entry in entries:
+            require(time.monotonic() < deadline, 'name data deadline')
+            count += 1
+            require(count <= 512 and not entry.is_symlink() and entry.is_file(follow_symlinks=False), 'invalid name data entry')
+            data = bounded_bytes(Path(entry.path), 8 * 1024**2 - total)
+            total += len(data)
+            (target / entry.name).write_bytes(data)
+    require(count > 0, 'name data absent')
 
 
 def inventory(root, deadline):
@@ -225,6 +247,7 @@ def execute(output, head, reviewed_scope, byond, archive):
     compiler, daemon = byond / 'DreamMaker', byond / 'DreamDaemon'
     records = []
     try:
+        copy_name_data(staged, work, deadline)
         require(compiler.is_file() and daemon.is_file(), 'missing pinned executables')
         runtime = RuntimeIdentity(byond, archive, reviewed_scope, output)
         runtime.before('compile')

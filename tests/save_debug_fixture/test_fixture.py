@@ -30,6 +30,52 @@ def evidence():
 
 
 class ControllerContracts(unittest.TestCase):
+    def test_name_data_copy_is_bounded_and_rejects_unexpected_entries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'stage' / 'config' / 'names'
+            source.mkdir(parents=True)
+            (source / 'names.txt').write_bytes(b'fixture')
+            work = root / 'work'
+            work.mkdir()
+            controller.copy_name_data(root / 'stage', work, time.monotonic() + 5)
+            self.assertEqual((work / 'config' / 'names' / 'names.txt').read_bytes(), b'fixture')
+            other = root / 'unexpected'
+            other.mkdir()
+            (source / 'subdir').mkdir()
+            with self.assertRaises(ValueError): controller.copy_name_data(root / 'stage', other, time.monotonic() + 5)
+            late = root / 'late'
+            late.mkdir()
+            with self.assertRaises(ValueError): controller.copy_name_data(root / 'stage', late, time.monotonic() - 1)
+            fake = SimpleNamespace(is_symlink=lambda: True, is_file=lambda **kwargs: True)
+            with mock.patch.object(controller.os, 'scandir') as scan:
+                scan.return_value.__enter__.return_value = iter([fake])
+                rejected = root / 'rejected'
+                rejected.mkdir()
+                with self.assertRaises(ValueError): controller.copy_name_data(root / 'stage', rejected, time.monotonic() + 5)
+
+    def test_native_diagnostic_scanner_preserves_handled_capture_failure(self):
+        for text in ('## ERROR: File not found (config/names/test.txt)',
+                     'Cannot execute null.initialize_position_limits()', 'runtime error: issue',
+                     'BUG: issue', 'RUNTIME: issue', 'assertion failed'):
+            with self.subTest(text=text): self.assertIsNotNone(controller.DIAGNOSTIC.search(text))
+        self.assertIsNone(controller.DIAGNOSTIC.search('World-save export failed: Child moved or disappeared during capture'))
+
+    def test_name_data_copy_rejects_excess_bytes_and_entries(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'stage' / 'config' / 'names'
+            source.mkdir(parents=True)
+            (source / 'oversized').write_bytes(b'x' * (8 * 1024**2 + 1))
+            work = root / 'size'
+            work.mkdir()
+            with self.assertRaises(ValueError): controller.copy_name_data(root / 'stage', work, time.monotonic() + 10)
+            (source / 'oversized').unlink()
+            for index in range(513): (source / str(index)).write_bytes(b'')
+            work = root / 'count'
+            work.mkdir()
+            with self.assertRaises(ValueError): controller.copy_name_data(root / 'stage', work, time.monotonic() + 10)
+
     def test_positive_and_independent_fault_controls(self):
         args = evidence()
         controller.validate_writer(args[0], args[2], args[3], args[4], args[0]['seed_generation'])
@@ -133,6 +179,8 @@ class ControllerContracts(unittest.TestCase):
             roles = []
             def fake_stage(out, head, review_scope):
                 (out / 'stage').mkdir(parents=True)
+                (out / 'stage' / 'config' / 'names').mkdir(parents=True)
+                (out / 'stage' / 'config' / 'names' / 'fixture.txt').write_text('fixture')
                 (out / 'debug-fixture-manifest.json').write_text('{}')
                 for ext in ('.dmb', '.rsc'):
                     (out / 'stage' / ('human_subtile' + ext)).write_bytes(b'fake')
@@ -192,6 +240,12 @@ class ControllerContracts(unittest.TestCase):
 
 
 class StagingContracts(unittest.TestCase):
+    def test_fixture_initializes_real_job_controller_before_load(self):
+        probe = (stage.ROOT / 'tests/save_debug_fixture/probe.dm').read_text(encoding='utf-8')
+        self.assertIn('job_master = new /datum/controller/occupations()', probe)
+        self.assertIn('debug_fixture_assert(job_master, "fixture_no_job_controller")', probe)
+        self.assertIn('ticker.loadmap(', probe)
+
     def test_handoff_injection_retains_guard_and_refuses_drift(self):
         source = (stage.ROOT / 'code/modules/persistence/saving.dm').read_text(encoding='utf-8')
         result = stage.inject_mob_handoff(source)

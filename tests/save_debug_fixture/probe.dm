@@ -42,8 +42,10 @@ var/global/fixture_moves = 0
 	processes.time_of_day = new
 	processes.weather = new
 	map = new /obj/map_metadata/nomads/gaia(locate(1, 1, 1))
+	job_master = new /datum/controller/occupations()
 	game_id = "synthetic-debug-lossy-round"
 	debug_fixture_assert(map && map.uses_durable_metadata(), "fixture_no_durable_profile")
+	debug_fixture_assert(job_master, "fixture_no_job_controller")
 
 /proc/debug_fixture_refusal_controls(obj/structure/debug_save_fixture/box, mob/living/simple_animal/debug_save_fixture/animal)
 	var/datum/persistence_world_operation/op = begin_persistence_operation(map_storage, "save")
