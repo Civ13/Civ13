@@ -31,6 +31,11 @@ SUITES = {
     'paper_documents': {'files': ('tests/paper_documents/test_documents.py',
                                   'tests/paper_documents/test_views.py'),
         'paths': ('tests/paper_documents/',)},
+    # Stdlib-only Destroy, canonical macro and qdel-admission projections.
+    'mount_deletion': {'files': ('tests/mount_deletion/test_destroy.py',),
+        'paths': ('tests/mount_deletion/',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/simple_animal.dm', 'code/processes/garbage.dm',
+            'code/__defines/qdel.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only complete distance branch with inert movement/icon boundaries.
     'mount_distance': {'files': ('tests/mount_distance/test_distance.py',),
         'paths': ('tests/mount_distance/',), 'shared_paths': (
