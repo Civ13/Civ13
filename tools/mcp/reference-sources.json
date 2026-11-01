@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "revision": "e1cd2ad03a559a1fb3beb678cb37836dd295bf7b",
+  "files": {
+    "atlas.json": {
+      "url": "https://civ13.github.io/Civ13/crafting/crafting-data.json",
+      "bytes": 10718092,
+      "sha256": "3c91d6e9328675c80ac5f3f770058d937a17d79c1b1684f54b4c34a3c9fcaeb6"
+    },
+    "docs-index.json": {
+      "url": "https://civ13.github.io/Civ13/search-index.json",
+      "bytes": 68916,
+      "sha256": "c10561d41a98c9522b350d49a957f3594f47eea8aa5c1e9f8f5e2fe33d7f4890"
+    },
+    "build.json": {
+      "url": "https://civ13.github.io/Civ13/build.json",
+      "bytes": 195,
+      "sha256": "d4783067226fcd46c25256990b6046de55f0ec06f9dedc274eb9c412e63cde26"
+    }
+  }
+}

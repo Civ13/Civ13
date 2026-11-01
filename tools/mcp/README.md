@@ -1,5 +1,9 @@
 # Civ13 local MCP
 
+For a separate entry exposing only bounded public Atlas/docs lookups, see
+[Read-only public Atlas/docs MCP](REFERENCE.md). It reuses pinned generated
+artifacts and does not register this server's compiler or runtime tools.
+
 A local stdio server using the official MCP TypeScript SDK. Requires Node 20+;
 `npm ci --prefix tools/mcp` installs exact dependencies from the lockfile.
 
