@@ -51,8 +51,8 @@ class ActionAdmissionSources(unittest.TestCase):
                 actor.may_do_after = True
                 self.assertTrue(admitted(actor), 'Idle action was suppressed')
 
-    def test_direct_helpers_refuse_a_missing_actor(self):
-        for case in (CASES[0], CASES[1], CASES[4]):
+    def test_direct_helpers_and_attackby_refuse_a_missing_actor(self):
+        for case in (CASES[0], CASES[1], CASES[4], CASES[6], CASES[8], CASES[9]):
             admitted, _ = admission_guard((ROOT/case[0]).read_text(), case)
             self.assertFalse(admitted(None))
 

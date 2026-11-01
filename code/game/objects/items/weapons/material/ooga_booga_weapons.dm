@@ -153,7 +153,7 @@
 
 /obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (W.edge && !sharpened)
-		if (!user.may_do_after)
+		if (!user || !user.may_do_after)
 			return
 		to_chat(user, "You start sharpening the stick...")
 		if (do_after(user, 80, src))
