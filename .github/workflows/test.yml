@@ -269,7 +269,11 @@ jobs:
           python3 -B tests/world_save/test_irrigation_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save/partial_save_inspector -p test_inspector.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_round_metadata_toolchain.py -v
+          diagnostic_status=0
+          python3 -B -m unittest discover -s tests/world_save -p test_selected_git_diagnostic.py -v || diagnostic_status=$?
+          python3 -B tests/world_save/selected_git_diagnostic.py || diagnostic_status=$?
           python3 -B -m unittest discover -s tests/world_save -p test_selected_toolchains.py -v
+          test "$diagnostic_status" -eq 0
           python3 -B -m unittest discover -s tests/world_save -p test_graph_fixture_dependencies.py -v
           python3 -B -m unittest discover -s tests/world_save -p test_wound_compatibility.py -v
       - name: Test continuous persistence round contracts offline

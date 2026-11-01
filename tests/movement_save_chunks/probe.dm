@@ -6,7 +6,7 @@ world
 	fps = 20
 	visibility = 0
 	sleep_offline = FALSE
-var/list/mob_list = list()
+// mob_list is declared by the shared serializer stubs.
 var/mob/living/simple_animal/chunk_fixture/subject
 var/armed = FALSE
 var/mutations = 0

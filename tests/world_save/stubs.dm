@@ -14,6 +14,8 @@
 #endif
 /datum/var/gcDestroyed = 0
 /datum/var/gc_destroyed
+// Empty by default; moving-save fixtures explicitly populate the shared list.
+var/list/mob_list = list()
 /datum/world_save_idle_pull_registry
 	var/list/owners = list()
 	proc/resolve_quiet(reason, datum/persistence_world_operation/operation)
