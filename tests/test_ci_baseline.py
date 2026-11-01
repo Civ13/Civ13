@@ -53,6 +53,30 @@ def fixtures(paths=('README.md',)):
 
 
 class BaselinePolicyTests(unittest.TestCase):
+    def test_stone_molds_registration_is_offline_and_preserves_shared_fallback(self):
+        suite=ci.SUITES['stone_molds']
+        self.assertEqual(suite['files'],('tests/stone_molds/test_source.py',))
+        self.assertEqual(self.selected(list(suite['files'])), {'policy','bootstrap','progress','stone_molds'})
+        self.assertIn('stone_molds',self.selected(['tests/save_movement/source_adapter.py']))
+        for path in ('code/game/objects/structures/blacksmithing/molds.dm',
+                     'scripts/build-crafting-atlas.py', 'scripts/player_help_bridge.py'):
+            decision=ci.impact([path])
+            self.assertTrue(all(row['selected'] for row in decision['suites'].values()))
+            self.assertIn('Unmapped impact: '+path,decision['fallback_reasons'])
+
+    def test_rider_deletion_registration_preserves_shared_fallback(self):
+        suite = ci.SUITES['rider_deletion']
+        self.assertEqual(suite['files'], ('tests/rider_deletion/test_destroy.py',))
+        expected = {'policy', 'bootstrap', 'progress', 'rider_deletion'}
+        self.assertEqual(self.selected(list(suite['files'])), expected)
+        self.assertEqual(self.selected(['tests/rider_deletion/fixtures/destroy_before.txt']), expected)
+        self.assertEqual(self.selected(['tests/rider_deletion/README.md']), expected)
+        previous = {name: spec for name, spec in ci.SUITES.items() if name != 'rider_deletion'}
+        for shared in suite['shared_paths']:
+            with patch.object(ci, 'SUITES', previous):
+                prior_selection = self.selected([shared])
+            self.assertEqual(self.selected([shared]), prior_selection | {'rider_deletion'})
+
     def test_mount_deletion_registration_preserves_shared_fallback(self):
         suite = ci.SUITES['mount_deletion']
         self.assertEqual(suite['files'], ('tests/mount_deletion/test_destroy.py',))
