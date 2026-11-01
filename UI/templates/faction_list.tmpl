@@ -1,0 +1,17 @@
+<div class="item_list">
+	<h3>Faction List</h3>
+	<p>Snapshot of populated factions. Use Check Faction List again to refresh.</p>
+	{{if data.factions && data.factions.length}}
+		<table style="width:100%" aria-label="Faction list">
+			<thead><tr><th scope="col">Symbol</th><th scope="col">Faction</th></tr></thead>
+			<tbody>{{for data.factions}}
+				<tr><td>{{if typeof value.symbol === 'string' && /^flist_[^/\\:?#%."'<>\s]*\.png$/.test(value.symbol)}}<img src="{{>encodeURIComponent(value.symbol)}}" width="32" height="32" alt="">{{/if}}</td>
+				<th scope="row" style="text-align:left"><strong>{{:value.name}}</strong>{{if value.motto}} - <em>{{:value.motto}}</em>{{/if}}
+				{{if value.flavour}}<p>{{:value.flavour}}</p>{{/if}}
+				<p>{{>String(value.members)}} {{if value.members === 1}}member{{else}}members{{/if}}.</p></th></tr>
+			{{/for}}</tbody>
+		</table>
+	{{else}}
+		<p>No populated factions are available.</p>
+	{{/if}}
+</div>
