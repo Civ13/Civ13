@@ -31,6 +31,12 @@ SUITES = {
     'paper_documents': {'files': ('tests/paper_documents/test_documents.py',
                                   'tests/paper_documents/test_views.py'),
         'paths': ('tests/paper_documents/',)},
+    # Stdlib-only human Destroy layers and admission with inert effect boundaries.
+    'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
+        'paths': ('tests/rider_deletion/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/human.dm', 'code/game/mob/living/carbon/carbon.dm',
+            'civ13.dme', 'code/processes/garbage.dm', 'code/__defines/qdel.dm',
+            'tests/save_movement/source_adapter.py')},
     # Stdlib-only Destroy, canonical macro and qdel-admission projections.
     'mount_deletion': {'files': ('tests/mount_deletion/test_destroy.py',),
         'paths': ('tests/mount_deletion/',), 'shared_paths': (

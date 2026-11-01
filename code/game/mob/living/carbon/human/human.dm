@@ -98,6 +98,14 @@
 	spawn(5)
 		nomads_spawn()
 /mob/living/human/Destroy()
+	var/mob/living/simple_animal/old_mount = riding_mob
+	riding = FALSE
+	riding_mob = null
+	if (!QDELETED(old_mount) && old_mount.rider == src)
+		old_mount.ride = FALSE
+		old_mount.rider = null
+		old_mount.stop_automated_movement = FALSE
+		old_mount.update_icons()
 	cancel_exercise()
 	unregister_corpse_decay()
 	human_mob_list -= src
