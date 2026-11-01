@@ -1,13 +1,11 @@
 # Consolidated mount lifecycle native acceptance proposal
 
 Status: source/preparation for Main review, not native acceptance. No compiler,
-daemon, client, live world or save has been used. The explicit run_linux.py entry
-is prepared for review, not admitted or invoked; no native workflow is added.
-Existing offline lifecycle behavior
-suites are not duplicated here; test_prepare.py checks only composition, selectors,
-mutation identities and strict receipt rejection using synthetic receipt data.
-Only that explicit preparation test file enters the offline baseline registry.
-No native compile/run step or manual dispatch is added to test.yml.
+daemon, client, live world, save or workflow dispatch has been used. The dedicated
+manual-only .github/workflows/mount-lifecycle-native.yml now invokes the actual
+mount runner through the explicit guards described below. Ordinary push/PR CI
+runs only the three named offline preparation, supervisor and hosted-entry tests;
+test.yml gains no native selection.
 
 ## Source and entry selector
 
@@ -109,19 +107,39 @@ it. A Linux hosted selection requires Main's explicit review of the existing
 process-group/deadline/loopback application-closure scope; it does not establish
 Windows containment or continuous OS network isolation. Neither -close nor the
 DM port check proves socket prevention. No host firewall/security changes,
-privileged namespaces, credentials, paid services or dependency installation.
+privileged namespaces, credentials or paid services. Execute mode uses only the
+existing pinned Linux CI acquisition and its existing i386 package set; prepare
+mode does not acquire a toolchain or install packages.
 
-The proposed executable command on the reviewed hosted Linux job is:
+The dedicated hosted workflow is workflow_dispatch only, with contents: read,
+pinned checkout/artifact actions and persisted checkout credentials disabled.
+Its default mode=prepare requires the full source_sha to equal both the branch
+dispatch SHA and workflow implementation SHA. It runs offline contracts and stages
+the exact committed source, then uploads the manifest, five entrypoints and
+fixture source for review. No compiler or daemon is acquired or launched.
+
+After independent source and prepared-artifact review, a separately authorized
+manual mode=execute dispatch must use that same immutable head, its reviewed
+Linux manifest_sha256, execution_approved=true and the renewed specific
+authorized_until deadline. These are identity and intent fields, not permission.
+A moved branch or different workflow implementation is rejected before checkout.
+Execution restages source and must reproduce the reviewed canonical manifest
+before acquiring the pinned toolchain. The toolchain and all staging/runtime
+outputs use private RUNNER_TEMP directories; acquisition does not dirty source.
+
+The guarded native step invokes:
 
 ```
-/usr/bin/python3 tests/mount_lifecycle_native/run_linux.py --prepared PREPARED --output NEW_RUNNER_TEMP_DIRECTORY --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --archive "$GITHUB_WORKSPACE/BYOND/pinned.zip" --expected-head FULL_SHA --manifest-sha256 MANIFEST_SHA256 --authorized-until 2026-11-01T23:46:26Z
+/usr/bin/python3 -B tests/mount_lifecycle_native/run_linux.py --prepared "$PREPARED" --output "$OUTPUT" --byond-bin "$TOOLCHAIN/byond/bin" --archive "$TOOLCHAIN/pinned.zip" --expected-head "$SOURCE_SHA" --manifest-sha256 "$MANIFEST_SHA" --authorized-until "$AUTHORIZED_UNTIL"
 ```
 
-The code requires an isolated Civ13 GitHub Linux pull_request
-job, exact clean checkout, a reviewed manifest hash, private RUNNER_TEMP paths and
-the existing pinned CI engine paths. These flags bind identity, not permission;
-Main must approve this source, selected event/profile and exact command first.
-No job, dispatch or native launch has occurred. The normal workflow is unchanged.
+The runner rechecks the dedicated workflow path, event, implementation/source
+SHA, exact clean checkout, private paths and full remaining 900-second window
+after tool acquisition. The job cap is 25 minutes; the native step cap is 16
+minutes, while the actual attempt remains 900 seconds. Artifact retention is
+always selected, including partial compiler/supervision/runtime evidence on
+failure. No job, dispatch or native launch has occurred.
+
 It refuses other active native engines, foreign/extra session members, changed
 birth identities, UDP/connected/external sockets, occupied port and all sockets
 after closure. Final socket observation occurs while the leader is retained;
@@ -135,8 +153,10 @@ Cap compile at 120 seconds/variant, the entire daemon phase at 30 seconds/varian
 reserve 15 seconds for each phase's owned cleanup and cap the complete attempt at
 900 seconds. Source preparation has the existing 30-second Git archive and
 2GiB/8000-file bounds, separately from native deadlines. Check memory/disk budgets
-and remaining authorization before launch. The present testing window ends
-2026-11-01 23:46:26 UTC; do not begin the 15-minute attempt after 23:31:26 UTC.
+and remaining authorization before launch. The former testing window ended
+2026-11-01 23:46:26 UTC and its 23:31:26 admission cutoff passed without a
+native attempt. Any later attempt requires a valid specifically approved testing
+window and Main source/admission review before execution.
 Elapsed time is not permission and no execution has been admitted by this file.
 
 On success/failure/timeout, clean only owned processes through the existing

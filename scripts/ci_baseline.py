@@ -27,7 +27,8 @@ POLICY_FILES = tuple('tests/' + name for name in (
 SUITES = {
     # Stdlib-only native-fixture composition/receipt contracts; never launches BYOND.
     'mount_native_preparation': {'files': ('tests/mount_lifecycle_native/test_prepare.py',
-                                         'tests/mount_lifecycle_native/test_runner.py'),
+                                         'tests/mount_lifecycle_native/test_runner.py',
+                                         'tests/mount_lifecycle_native/test_hosted_entry.py'),
         'paths': ('tests/mount_lifecycle_native/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/riding.dm',
             'code/game/mob/living/simple_animal/simple_animal.dm',
@@ -42,6 +43,7 @@ SUITES = {
             'tests/nomads_lifecycle/run_variable_probe_linux.py',
             'tests/nomads_lifecycle/run_variable_probe.py',
             'tests/world_save/current_runtime.py', 'scripts/byond_runtime.py',
+            '.github/workflows/mount-lifecycle-native.yml',
             'tests/save_movement/source_adapter.py')},
     # Stdlib-only document model/language projections with inert engine seams.
     # No speech/learning callbacks, UI, native process or savefile execution.

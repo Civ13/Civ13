@@ -1,6 +1,7 @@
 """Selector, mutation and receipt contracts only. No DM process or game models."""
 from copy import deepcopy
 import importlib.util
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -150,6 +151,10 @@ class PrepareTests(unittest.TestCase):
             with patch.object(probe.stager.current.legacy, 'git', side_effect=fake_git), \
                     patch.object(probe.stager, 'prepare_source', side_effect=fake_archive):
                 manifest = probe.prepare(ROOT, out, 'a'*40)
+            self.assertEqual(manifest['mount_manifest_schema'], 2)
+            self.assertEqual(manifest['sequence'], list(probe.VARIANTS))
+            self.assertEqual((out/'mount-native-manifest.json').read_bytes(),
+                             (json.dumps(manifest, indent=2, sort_keys=True)+'\n').encode('utf-8'))
             self.assertFalse(manifest['native_executed'])
             self.assertFalse(manifest['execution_admitted'])
             self.assertEqual(set(manifest['variants']), set(probe.VARIANTS))

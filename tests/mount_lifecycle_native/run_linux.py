@@ -28,6 +28,7 @@ def load(name, path):
 prepare = load('mount_reviewed_prepare', HERE/'prepare.py')
 common = load('mount_retained_monitor', ROOT/'tests/movement_save_chunks/human_spatial_run.py')
 linux = load('mount_linux_census', ROOT/'tests/nomads_lifecycle/run_variable_probe_linux.py')
+hosted = load('mount_manual_entry', HERE/'hosted_entry.py')
 
 
 def require(ok, message):
@@ -43,8 +44,19 @@ def gate(prepared, output, head, manifest_sha, until):
     require(sys.platform == 'linux', 'Windows startup-socket hold unchanged; hosted Linux only')
     require(os.environ.get('GITHUB_ACTIONS') == 'true' and os.environ.get('RUNNER_OS') == 'Linux'
             and os.environ.get('GITHUB_REPOSITORY') == 'Civ13/Civ13'
-            and os.environ.get('GITHUB_EVENT_NAME') == 'pull_request',
+            and os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch',
             'Requires explicitly selected isolated Civ13 hosted Linux job')
+    require(os.environ.get('MODE') == 'execute' and os.environ.get('EXECUTION_APPROVED') == 'true',
+            'Explicit manual execution intent required')
+    admission=hosted.validate(head,os.environ.get('GITHUB_SHA',''),os.environ.get('GITHUB_REF',''),
+        'execute',True,manifest_sha,os.environ.get('AUTHORIZED_UNTIL',''),
+        repository=os.environ.get('GITHUB_REPOSITORY'),event=os.environ.get('GITHUB_EVENT_NAME'),
+        workflow_sha=os.environ.get('GITHUB_WORKFLOW_SHA'))
+    require(datetime.fromisoformat(admission['authorized_until']) == until
+            and os.environ.get('SOURCE_SHA') == head and os.environ.get('MANIFEST_SHA') == manifest_sha,
+            'Command differs from reviewed manual inputs')
+    expected_workflow='Civ13/Civ13/.github/workflows/mount-lifecycle-native.yml@'+os.environ.get('GITHUB_REF','')
+    require(os.environ.get('GITHUB_WORKFLOW_REF') == expected_workflow, 'Use the dedicated reviewed workflow')
     workspace = Path(os.environ['GITHUB_WORKSPACE']).resolve(strict=True)
     temporary = Path(os.environ['RUNNER_TEMP']).resolve(strict=True)
     require(ROOT.resolve() == workspace, 'Wrong source checkout')
@@ -60,7 +72,8 @@ def gate(prepared, output, head, manifest_sha, until):
     require(common.digest(path) == manifest_sha, 'Reviewed prepared manifest changed')
     manifest = json.loads(path.read_text())
     require(manifest['head'] == head and manifest['fixture'] == 'mount_lifecycle'
-            and manifest['target_engine'] == '516.1688' and list(manifest['variants']) == list(prepare.VARIANTS),
+            and manifest['target_engine'] == '516.1688' and set(manifest['variants']) == set(prepare.VARIANTS)
+            and manifest.get('mount_manifest_schema') == 2 and manifest.get('sequence') == list(prepare.VARIANTS),
             'Wrong source/fixture/variant set')
     return manifest
 
@@ -178,8 +191,9 @@ def supervised(command, cwd, phase, seconds, deadline, until, byond, source_byte
 def run(prepared, output, byond, archive, head, manifest_sha, until):
     attempt_started = time.monotonic()
     manifest = gate(prepared, output, head, manifest_sha, until)
-    workspace = ROOT.resolve()
-    require(byond == workspace/'BYOND/byond/bin' and archive == workspace/'BYOND/pinned.zip', 'Existing pinned CI engine paths required')
+    toolchain = Path(os.environ['RUNNER_TEMP']).resolve(strict=True)/'mount-toolchain'
+    require(byond == toolchain/'byond/bin' and archive == toolchain/'pinned.zip',
+            'Dedicated private pinned CI engine paths required')
     require(os.environ.get('BYOND_MAJOR') == '516' and os.environ.get('BYOND_MINOR') == '1688', 'CI engine pin mismatch')
     verify_inputs(prepared, manifest)
     require(shutil.disk_usage(output.parent).free >= 6*1024**3, 'Insufficient private evidence disk budget')
@@ -192,7 +206,8 @@ def run(prepared, output, byond, archive, head, manifest_sha, until):
     generated=set()
     stage = prepared/'stage'
     try:
-        for variant, data in manifest['variants'].items():
+        for variant in prepare.VARIANTS:
+            data = manifest['variants'][variant]
             report['active_variant']=variant
             report['active_phase']='compile'
             write(output/'mount-run.json',report)

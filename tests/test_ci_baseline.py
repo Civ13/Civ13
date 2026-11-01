@@ -56,7 +56,8 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_mount_native_preparation_registration_preserves_existing_coverage(self):
         suite = ci.SUITES['mount_native_preparation']
         self.assertEqual(suite['files'], ('tests/mount_lifecycle_native/test_prepare.py',
-                                         'tests/mount_lifecycle_native/test_runner.py'))
+                                         'tests/mount_lifecycle_native/test_runner.py',
+                                         'tests/mount_lifecycle_native/test_hosted_entry.py'))
         expected = {'policy', 'bootstrap', 'progress', 'mount_native_preparation'}
         self.assertEqual(self.selected(list(suite['files'])), expected)
         self.assertEqual(self.selected(['tests/mount_lifecycle_native/probe.dm']), expected)

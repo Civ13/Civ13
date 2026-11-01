@@ -179,7 +179,8 @@ def prepare(root, out, expected_head):
         variants[variant] = dict(dme=entry.relative_to(out).as_posix(), expected_failure=failure,
             expected_assertions=len(labels()) if not failure else labels().index(failure)+1,
             sha256=digest(entry.read_bytes()))
-    manifest.update(fixture='mount_lifecycle', target_engine='516.1688', variants=variants,
+    manifest.update(fixture='mount_lifecycle', mount_manifest_schema=2, sequence=list(VARIANTS),
+        target_engine='516.1688', variants=variants,
         canonical_pin=dict(path='tools/byond/version.json', sha256=digest(pin_raw), data=pin),
         fixture_adaptations=adaptations, prepared_only=True, native_executed=False,
         selector=dict(source=source_relative, source_sha256=digest(source), selected_sha256=digest(selected.encode()),
@@ -191,7 +192,7 @@ def prepare(root, out, expected_head):
                     cleanup_seconds_per_variant=15, aggregate_seconds=900))
     manifest['stage_files'] = {p.relative_to(stage).as_posix(): dict(bytes=p.stat().st_size,
         sha256=stager.file_digest(p)) for p in stage.rglob('*') if p.is_file()}
-    (out / 'mount-native-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    (out / 'mount-native-manifest.json').write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8', newline='\n')
     return manifest
 
 
