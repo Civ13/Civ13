@@ -71,6 +71,15 @@ def instrument_legacy_parent_refusal(data):
     return replace_once(data, original, instrumented, 'legacy parent refusal diagnostic')
 
 
+def instrument_final_placement_refusal(data):
+    """Observe the original refusal without weakening its predicate or error."""
+    original = '\t\t\t\tif(!QDELETED(H) && !H.gcDestroyed && !H.human_saved_tile_final_clear()) throw EXCEPTION("Restored human tile is obstructed")'
+    replacement = ('\t\t\t\tif(!QDELETED(H) && !H.gcDestroyed && !H.human_saved_tile_final_clear())\n'
+                   '\t\t\t\t\thuman_spatial_fixture_obstructed_human = H\n'
+                   '\t\t\t\t\tthrow EXCEPTION("Restored human tile is obstructed")')
+    return replace_once(data, original, replacement, 'final placement refusal diagnostic')
+
+
 def stage(output):
     spec = importlib.util.spec_from_file_location('human_fixture_stager', ROOT / 'tests/human_subtile/run.py')
     legacy = importlib.util.module_from_spec(spec)
@@ -180,6 +189,10 @@ def stage(output):
         '\treturn ref', 'legacy reference-first exit witness')
     saver.write_text(data, encoding='utf-8', newline='\n')
 
+    loader = root / 'code/modules/persistence/loading.dm'
+    data = instrument_final_placement_refusal(loader.read_text(encoding='utf-8'))
+    loader.write_text(data, encoding='utf-8', newline='\n')
+
     probe = root / 'tests/human_subtile/probe.dm'
     data = probe.read_text(encoding='utf-8')
     data = replace_once(data, '\tturf = /turf/floor/plating/subtile_fixture', '\tturf = /turf/floor/dirt', 'fixture turf')
@@ -199,6 +212,7 @@ def stage(output):
                     adapted_human_sha256=sha(human.read_bytes()),
                     adapted_living_sha256=sha(living.read_bytes()),
                     adapted_saver_sha256=sha(saver.read_bytes()),
+                    adapted_loader_sha256=sha(loader.read_bytes()),
                     adapted_probe_sha256=sha(probe.read_bytes()),
                     adapted_dme_sha256=sha(dme.read_bytes()),
                     scope='synthetic headless writer and fresh reader; no connected-client proof',

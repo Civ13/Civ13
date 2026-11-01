@@ -115,6 +115,18 @@ def reader_receipt(row, head, expected):
     require(clearance is True or (type(clearance) is int and clearance == 1), 'reader local clearance controls missing')
 
 
+def obstruction_reader_receipt(row, head, expected):
+    receipt(row, 'reader-obstruction', head)
+    false = lambda v: v is False or (type(v) is int and v == 0)
+    true = lambda v: v is True or (type(v) is int and v == 1)
+    require(false(row.get('load_result')), 'obstructed load did not refuse')
+    for field in ('afterload_created', 'guard_actor_is_target', 'solid_is_target', 'recovery_hold', 'save_hold'):
+        require(true(row.get(field)), 'missing after-load obstruction evidence: ' + field)
+    require(false(row.get('active_operation')), 'load owner was not released')
+    require(isinstance(row.get('last_error'), str) and row['last_error'].startswith('Restored human tile is obstructed'), 'wrong obstruction refusal')
+    require(row.get('generation') == expected['generation'], 'obstructed reader generation changed')
+
+
 def negative_publication(current, backup, seed):
     """Refuse a new current marker independently of retained old bytes."""
     seed_hashes = hashes(seed)
@@ -283,7 +295,7 @@ def run(output, byond_bin, archive, expected_head, expected_scope):
     source_bytes = sum(row['bytes'] for row in manifest['stage_files'].values())
     compiler, daemon = byond_bin / 'DreamMaker', byond_bin / 'DreamDaemon'
     plan = ['stage/compile', 'writer-ordinary/writer', 'reader-ordinary/reader',
-            'writer-restart/writer', 'reader-restart/reader', 'drag/drag'] + ['negative-' + case + '/negative' for case in NEGATIVES]
+            'writer-restart/writer', 'reader-restart/reader', 'reader-obstruction/reader-obstruction', 'drag/drag'] + ['negative-' + case + '/negative' for case in NEGATIVES]
     result = {'head': head, 'execution': 'running', 'plan': plan, 'phases': [],
               'boundaries': {'egress_sandbox': False, 'sampled_workdir_output_bytes': MAX_BYTES,
                              'output_scope': 'per runtime directory; compile allowance above staged source',
@@ -342,9 +354,11 @@ def run(output, byond_bin, archive, expected_head, expected_scope):
         require('human_subtile.dmb' in result['artifacts'], 'compiled DMB missing')
         record()
         seeds = {}
+        expected_receipts = {}
         for mode in ('ordinary', 'restart'):
             writer = runtime_dir('writer-' + mode)
             saved = writer_receipt(execute(writer, 'writer', '&mode=' + mode), head, mode)
+            expected_receipts[mode] = saved
             seeds[mode] = hashes(writer / 'map_saves')
             require((writer / 'map_saves/save_complete.txt').read_text().strip() == saved['generation'], 'writer marker differs from receipt')
             reader = runtime_dir('reader-' + mode)
@@ -354,6 +368,12 @@ def run(output, byond_bin, archive, expected_head, expected_scope):
             reader_receipt(execute(reader, 'reader'), head, saved)
             require(hashes(writer / 'map_saves') == seeds[mode], 'writer seed changed')
         seed = output / 'writer-ordinary' / 'map_saves'
+        blocked_reader = runtime_dir('reader-obstruction')
+        shutil.copytree(seed, blocked_reader / 'map_saves', dirs_exist_ok=True)
+        require(hashes(blocked_reader / 'map_saves') == seeds['ordinary'], 'obstruction reader seed copy changed')
+        (blocked_reader / 'human-spatial-expected.json').write_text(json.dumps(expected_receipts['ordinary']), encoding='utf-8')
+        obstruction_reader_receipt(execute(blocked_reader, 'reader-obstruction'), head, expected_receipts['ordinary'])
+        require(hashes(seed) == seeds['ordinary'] and hashes(blocked_reader / 'map_saves') == seeds['ordinary'], 'obstruction reader changed saved generation')
         drag = execute(runtime_dir('drag'), 'drag')
         require(drag.get('living_completions') == 1 and drag.get('human_completions') == 1, 'drag completion mismatch')
         for case, expected in NEGATIVES.items():

@@ -10,6 +10,28 @@ spec.loader.exec_module(stage)
 
 
 class StageChecks(unittest.TestCase):
+    def test_afterload_refusal_instrumentation_preserves_guard(self):
+        loader = (stage.ROOT / 'code/modules/persistence/loading.dm').read_text()
+        original = 'if(!QDELETED(H) && !H.gcDestroyed && !H.human_saved_tile_final_clear())'
+        error = 'throw EXCEPTION("Restored human tile is obstructed")'
+        adapted = stage.instrument_final_placement_refusal(loader)
+        self.assertEqual(loader.count(original), 1)
+        self.assertEqual(adapted.count(original), 1)
+        self.assertEqual(adapted.count(error), 1)
+        self.assertLess(adapted.index('human_spatial_fixture_obstructed_human = H'), adapted.index(error))
+        with self.assertRaises(ValueError): stage.instrument_final_placement_refusal(adapted)
+        probe = (HERE / 'human_spatial_probe.dm').read_text()
+        callback = probe.split('/obj/item/weapon/flint/human_spatial_probe/after_load()', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('world.params["phase"] != "reader-obstruction"', callback)
+        self.assertIn('persistence_active_operation.current(map_storage, "load")', callback)
+        self.assertIn('new(T)', callback)
+        self.assertIn('human_spatial_fixture_afterload_created++', callback)
+        reader = probe.split('else if(world.params["phase"] == "reader-obstruction")', 1)[1].split('else if(world.params["phase"] == "reader")', 1)[0]
+        for required in ('map_storage.Load_World()', 'fixture_afterload_obstruction_not_refused',
+                         'fixture_afterload_wrong_refusal', 'fixture_afterload_recovery_hold',
+                         'fixture_afterload_generation_changed'):
+            self.assertIn(required, reader)
+
     def test_missing_roster_mutates_after_origin_and_owner_inspections(self):
         source = (HERE / 'human_spatial_stage.py').read_text()
         saver = (stage.ROOT / 'code/modules/persistence/saving.dm').read_text()
@@ -78,7 +100,10 @@ class StageChecks(unittest.TestCase):
         branch = probe.index('if(world.params["phase"] == "writer")', initialization)
         self.assertLess(initialization, round_identity)
         self.assertLess(round_identity, branch)
-        self.assertEqual(probe.count('\t\t\thuman_spatial_fixture_assert_saved_round()'), 2)
+        self.assertEqual(probe.count('\t\t\thuman_spatial_fixture_assert_saved_round()'), 3)
+        for phase in ('writer', 'reader', 'reader-obstruction'):
+            branch = probe.split('world.params["phase"] == "' + phase + '"', 1)[1].split('\n\t\telse', 1)[0]
+            self.assertIn('human_spatial_fixture_assert_saved_round()', branch, phase)
         helper = probe.split('/proc/human_spatial_fixture_assert_saved_round()', 1)[1].split('\n/proc/', 1)[0]
         for required in ('round_mode_metadata(meta)', 'map_storage.read_round_state()',
                          'fixture_saved_map_identity', 'fixture_saved_modes',

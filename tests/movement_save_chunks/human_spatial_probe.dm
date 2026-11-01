@@ -20,6 +20,9 @@ var/global/human_spatial_fixture_seated_moved = 0
 // Private to this synthetic fixture; no player identities or live data.
 var/global/list/human_spatial_fixture_roles = list()
 var/global/list/human_spatial_fixture_legacy_diagnostic = null
+var/global/human_spatial_fixture_afterload_created = 0
+var/global/obj/human_spatial_fixture_afterload_obstacle = null
+var/global/mob/living/human/human_spatial_fixture_obstructed_human = null
 
 // Both fresh processes use the same nonempty synthetic identity. Production
 // preflight must still compare the saved map ID to the active map.
@@ -66,6 +69,21 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 /obj/item/weapon/flint/human_spatial_probe/Crossed(atom/movable/A)
 	if(human_spatial_fixture_direct_active && A == human_spatial_fixture_direct_actor) human_spatial_fixture_direct_callbacks++
 	return ..()
+
+// This saved fixture object really receives the loader's after_load callback.
+// The separate fresh reader creates the solid only during that callback, so
+// it was absent from the saved candidate and its preflight validation.
+/obj/item/weapon/flint/human_spatial_probe/after_load()
+	. = ..()
+	if(world.params["phase"] != "reader-obstruction") return .
+	human_spatial_fixture_assert(!human_spatial_fixture_afterload_created && persistence_active_operation && persistence_active_operation.current(map_storage, "load"), "fixture_afterload_not_owned")
+	var/turf/T = locate(3, 1, 1)
+	human_spatial_fixture_assert(T && !T.density, "fixture_afterload_target_missing")
+	var/obj/structure/closet/crate/solid = new(T)
+	human_spatial_fixture_assert(solid && solid.loc == T && solid.density, "fixture_afterload_solid_missing")
+	human_spatial_fixture_afterload_obstacle = solid
+	human_spatial_fixture_afterload_created++
+	return .
 
 /proc/human_spatial_fixture_assert(ok, label)
 	if(!ok) throw EXCEPTION(label)
@@ -219,6 +237,26 @@ var/global/list/human_spatial_fixture_legacy_diagnostic = null
 			observed["late_pulses"] = human_spatial_fixture_late_pulses
 			observed["seated_moved"] = human_spatial_fixture_seated_moved
 			observed["mode"] = world.params["mode"]
+		else if(world.params["phase"] == "reader-obstruction")
+			var/list/expected = json_decode(file2text("human-spatial-expected.json"))
+			human_spatial_fixture_assert(islist(expected) && expected["generation"] == trim(file2text("map_saves/save_complete.txt")), "fixture_obstruction_seed")
+			human_spatial_fixture_assert_saved_round()
+			var/result = map_storage.Load_World()
+			var/mob/living/human/H = human_spatial_fixture_obstructed_human
+			var/obj/solid = human_spatial_fixture_afterload_obstacle
+			observed["load_result"] = result
+			observed["afterload_created"] = human_spatial_fixture_afterload_created
+			observed["guard_actor_is_target"] = !!(H && H.loc == locate(3, 1, 1))
+			observed["solid_is_target"] = !!(solid && solid.loc == locate(3, 1, 1) && solid.density)
+			observed["last_error"] = map_storage.last_error
+			observed["recovery_hold"] = !!persistence_load_recovery_required
+			observed["save_hold"] = !!persistence_save_in_progress
+			observed["active_operation"] = !!persistence_active_operation
+			observed["generation"] = trim(file2text("map_saves/save_complete.txt"))
+			human_spatial_fixture_assert(!result && human_spatial_fixture_afterload_created == 1 && H && H.loc == locate(3, 1, 1) && solid && solid.loc == H.loc && solid.density && !H.human_saved_tile_final_clear(), "fixture_afterload_obstruction_not_refused")
+			human_spatial_fixture_assert(istext(map_storage.last_error) && findtextEx(map_storage.last_error, "Restored human tile is obstructed") == 1, "fixture_afterload_wrong_refusal")
+			human_spatial_fixture_assert(persistence_load_recovery_required && persistence_save_in_progress && !persistence_active_operation, "fixture_afterload_recovery_hold")
+			human_spatial_fixture_assert(observed["generation"] == expected["generation"], "fixture_afterload_generation_changed")
 		else if(world.params["phase"] == "reader")
 			var/list/expected = json_decode(file2text("human-spatial-expected.json"))
 			human_spatial_fixture_assert(islist(expected) && islist(expected["capsule"]) && expected["generation"] == trim(file2text("map_saves/save_complete.txt")), "fixture_expected_generation")

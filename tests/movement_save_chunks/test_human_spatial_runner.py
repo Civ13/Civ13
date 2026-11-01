@@ -15,6 +15,28 @@ spec.loader.exec_module(runner)
 
 
 class RunnerTests(unittest.TestCase):
+    def test_afterload_obstruction_receipt_rejects_missing_evidence(self):
+        head = 'a' * 40
+        generation = 'round-v1:' + 'b' * 32
+        expected = {'generation': generation}
+        row = dict(phase='reader-obstruction', head=head, byond_version=516, byond_build=1688,
+                   port=0, error=None, load_result=0, afterload_created=1,
+                   guard_actor_is_target=1, solid_is_target=1, recovery_hold=1,
+                   save_hold=1, active_operation=0,
+                   last_error='Restored human tile is obstructed on synthetic:1', generation=generation)
+        runner.obstruction_reader_receipt(row, head, expected)
+        for field in ('afterload_created', 'guard_actor_is_target', 'solid_is_target', 'recovery_hold', 'save_hold'):
+            altered = dict(row); altered[field] = 0
+            with self.assertRaisesRegex(RuntimeError, 'missing after-load obstruction evidence'):
+                runner.obstruction_reader_receipt(altered, head, expected)
+        for field, value in (('load_result', 1), ('active_operation', 1),
+                             ('last_error', 'different refusal'), ('generation', 'round-v1:wrong')):
+            altered = dict(row); altered[field] = value
+            with self.assertRaises(RuntimeError): runner.obstruction_reader_receipt(altered, head, expected)
+        altered = dict(row); altered.pop('load_result')
+        with self.assertRaisesRegex(RuntimeError, 'did not refuse'):
+            runner.obstruction_reader_receipt(altered, head, expected)
+
     def test_frozen_tile_zero_offsets_and_generation_across_fresh_reader(self):
         head = 'a' * 40
         capsule = dict(x=1, y=1, z=1, sx=0, sy=0)
