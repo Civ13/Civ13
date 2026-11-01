@@ -11,6 +11,8 @@ on:
       - 'code/modules/client/asset_cache.dm'
       - 'civ13.dme'
       - 'code/game/mob/groups/faction_creation.dm'
+      - 'code/game/mob/crafting_atlas.dm'
+      - 'code/game/mob/crafting_atlas_tgui.dm'
       - 'code/game/mob/groups/faction_symbol.dm'
       - 'code/game/mob/language/**'
       - 'code/game/objects/map_metadata/pepelsibirsk.dm'
