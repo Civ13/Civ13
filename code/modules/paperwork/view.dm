@@ -27,6 +27,36 @@
 		return B.loc == reader || in_range(reader, B) || isghost(reader)
 	return FALSE
 
+// Legacy prompts bind the actual body, control session and pen. No classified
+// field/EOF write may silently rebase new text as legacy_unclassified.
+/proc/paper_document_legacy_edit_allowed(obj/item/weapon/paper/P, mob/actor, client/expected_client, obj/item/weapon/pen/pen)
+	if (!P || P.gc_destroyed || !isnull(P.document_record) || !actor || !expected_client || actor.client != expected_client || expected_client.mob != actor || actor.stat || actor.restrained())
+		return FALSE
+	if (!istype(pen) || pen.gc_destroyed || pen.loc != actor || actor.get_active_hand() != pen)
+		return FALSE
+	if (P.loc == actor)
+		return TRUE
+	if (isturf(P.loc))
+		return P.Adjacent(actor)
+	var/obj/item/container = P.loc
+	if (!container || container.gc_destroyed)
+		return FALSE
+	if (istype(container, /obj/item/weapon/clipboard) || istype(container, /obj/item/weapon/folder))
+		return container.loc == actor || (isturf(container.loc) && container.Adjacent(actor))
+	if (istype(container, /obj/item/weapon/storage/envelope))
+		// Knifing sets opened even when the historical seal flag remains set.
+		var/obj/item/weapon/storage/envelope/E = container
+		return E.opened && (E.loc == actor || (isturf(E.loc) && E.Adjacent(actor)))
+	if (istype(container, /obj/item/weapon/paper_bundle))
+		var/obj/item/weapon/paper_bundle/B = container
+		if (!islist(B.pages) || !isnum(B.page) || B.page != round(B.page) || B.page < 1 || B.page > B.pages.len || B.pages[B.page] != P)
+			return FALSE
+		if (istype(B.loc, /obj/item/weapon/folder))
+			var/obj/item/weapon/folder/F = B.loc
+			return !F.gc_destroyed && (F.loc == actor || (isturf(F.loc) && F.Adjacent(actor)))
+		return B.loc == actor || (isturf(B.loc) && B.Adjacent(actor))
+	return FALSE
+
 /datum/paper_document_reader
 	parent_type = /datum/paper_document_service
 	var/read_route
